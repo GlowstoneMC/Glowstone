@@ -52,11 +52,11 @@ public class MinecraftHandler extends SimpleChannelUpstreamHandler {
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) {
-		Channel c = e.getChannel();
-		if (c.isOpen()) {
-			logger.log(Level.WARNING, "Exception caught, closing channel: " + c + "...", e.getCause());
-			c.close();
-		}
+		//Channel c = e.getChannel();
+		//if (c.isOpen()) {
+		//	logger.log(Level.WARNING, "Exception caught, closing channel: " + c + "...", e.getCause());
+		//	c.close();
+		//}
 	}
 
 }

@@ -7,7 +7,7 @@ public final class PingMessageHandler extends MessageHandler<PingMessage> {
 
 	@Override
 	public void handle(Session session, PingMessage message) {
-		// TODO do something to ensure the channel is kept alive
+		session.send(new PingMessage());
 	}
 
 }

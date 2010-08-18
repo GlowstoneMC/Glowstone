@@ -3,6 +3,8 @@ package com.grahamedgecombe.smpd.msg.handler;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.grahamedgecombe.smpd.msg.HandshakeMessage;
+import com.grahamedgecombe.smpd.msg.IdentificationMessage;
 import com.grahamedgecombe.smpd.msg.Message;
 import com.grahamedgecombe.smpd.msg.PingMessage;
 
@@ -13,6 +15,8 @@ public final class HandlerLookupService {
 	static {
 		try {
 			bind(PingMessage.class, PingMessageHandler.class);
+			bind(IdentificationMessage.class, IdentificationMessageHandler.class);
+			bind(HandshakeMessage.class, HandshakeMessageHandler.class);
 		} catch (Exception ex) {
 			throw new ExceptionInInitializerError(ex);
 		}

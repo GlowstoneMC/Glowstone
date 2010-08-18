@@ -1,5 +1,7 @@
 package com.grahamedgecombe.smpd.net.codec;
 
+import java.io.IOException;
+
 import org.jboss.netty.buffer.ChannelBuffer;
 
 import com.grahamedgecombe.smpd.msg.Message;
@@ -22,8 +24,8 @@ public abstract class MessageCodec<T extends Message> {
 		return opcode;
 	}
 
-	public abstract ChannelBuffer encode(T message);
+	public abstract ChannelBuffer encode(T message) throws IOException;
 
-	public abstract T decode(ChannelBuffer buffer);
+	public abstract T decode(ChannelBuffer buffer) throws IOException;
 
 }

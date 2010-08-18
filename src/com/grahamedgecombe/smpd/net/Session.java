@@ -2,8 +2,11 @@ package com.grahamedgecombe.smpd.net;
 
 import org.jboss.netty.channel.Channel;
 
-import com.grahamedgecombe.smpd.msg.KickMessage;
+import com.grahamedgecombe.smpd.msg.ChatMessage;
+import com.grahamedgecombe.smpd.msg.CompressedChunkMessage;
 import com.grahamedgecombe.smpd.msg.Message;
+import com.grahamedgecombe.smpd.msg.LoadChunkMessage;
+import com.grahamedgecombe.smpd.msg.WorldVisibleMessage;
 import com.grahamedgecombe.smpd.msg.handler.MessageHandler;
 import com.grahamedgecombe.smpd.msg.handler.HandlerLookupService;
 
@@ -13,11 +16,45 @@ public final class Session {
 
 	public Session(Channel channel) {
 		this.channel = channel;
-		init();
 	}
 
-	private void init() {
-		send(new KickMessage("Hello, World!"));
+	public void init() {
+		send(new ChatMessage("Hello, World!"));
+
+		for (int x = -8; x <= 8; x++) {
+			for (int z = -8; z <= 8; z++) {
+				byte[] data = new byte[(16 * 16 * 128 * 5) / 2];
+				
+				for (int tx = 0; tx < 16; tx++) {
+					for (int tz = 0; tz < 16; tz++) {
+						for (int ty = 0; ty < 128; ty++) {
+							data[((tx * 16) + tz) * 128 + ty] = (byte) (ty > 60 ? 0 : 4);
+						}
+					}
+				}
+				
+				for (int tx = 0; tx < 16; tx++) {
+					for (int tz = 0; tz < 16; tz++) {
+						for (int ty = 0; ty < 128; ty++) {
+							data[(16 * 16 * 128) + ((tx * 16) + tz) * 128 + ty] = 0;
+						}
+					}
+				}
+				
+				for (int tx = 0; tx < 16; tx++) {
+					for (int tz = 0; tz < 16; tz++) {
+						for (int ty = 0; ty < 64; ty++) {
+							data[(16 * 16 * 128 * 2) + ((tx * 16) + tz) * 64 + ty] = (byte) 0xFF;
+						}
+					}
+				}
+
+				send(new LoadChunkMessage(x, z, true));
+				send(new CompressedChunkMessage(x * 16, z * 16, 0, 16, 16, 128, data));
+			}
+		}
+
+		send(new WorldVisibleMessage(true));
 	}
 
 	@SuppressWarnings("unchecked")
