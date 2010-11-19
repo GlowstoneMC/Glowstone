@@ -35,7 +35,7 @@ public final class Server {
 	private final ChannelGroup group = new DefaultChannelGroup();
 
 	public Server() {
-		logger.info("Starting minecraft-smpd...");
+		logger.info("Starting Lightstone...");
 		init();
 	}
 
