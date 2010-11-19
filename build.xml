@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<project name="lightstone" default="build">
+  <property name="src" location="src" />
+  <property name="bin" location="bin" />
+  <property name="lib" location="lib" />
+
+  <path id="binaries">
+    <pathelement path="${bin}" />
+  </path>
+
+  <path id="libraries">
+    <fileset dir="${lib}">
+      <include name="*.jar" />
+    </fileset>
+  </path>
+
+  <path id="master">
+    <path refid="binaries" />
+    <path refid="libraries" />
+  </path>
+
+  <fileset id="sources" dir="${src}">
+    <include name="**/*.java" />
+  </fileset>
+
+  <target name="init">
+    <mkdir dir="${bin}" />
+  </target>
+
+  <target name="build" depends="init">
+    <javac srcdir="${src}" destdir="${bin}" includeantruntime="false">
+      <classpath refid="libraries" />
+    </javac>
+  </target>
+
+  <target name="clean">
+    <delete dir="${bin}" />
+  </target>
+
+  <target name="rebuild" depends="clean, build" />
+
+  <target name="run" depends="build">
+    <java classpathref="master" fork="true" classname="net.lightstone.Server" />
+  </target>
+</project>
