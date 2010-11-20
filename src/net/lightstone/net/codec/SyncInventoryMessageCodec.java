@@ -8,9 +8,9 @@ import org.jboss.netty.buffer.ChannelBuffers;
 import net.lightstone.model.Item;
 import net.lightstone.msg.SyncInventoryMessage;
 
-public final class SyncInventoryCodec extends MessageCodec<SyncInventoryMessage> {
+public final class SyncInventoryMessageCodec extends MessageCodec<SyncInventoryMessage> {
 
-	public SyncInventoryCodec() {
+	public SyncInventoryMessageCodec() {
 		super(SyncInventoryMessage.class, 0x05);
 	}
 
