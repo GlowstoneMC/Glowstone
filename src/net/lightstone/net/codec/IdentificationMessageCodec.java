@@ -18,7 +18,7 @@ public final class IdentificationMessageCodec extends MessageCodec<Identificatio
 		String name = ChannelBufferUtils.readString(buffer);
 		String password = ChannelBufferUtils.readString(buffer);
 		long seed = buffer.readLong();
-		int dimension = buffer.readUnsignedByte();
+		int dimension = buffer.readByte();
 		return new IdentificationMessage(version, name, password, seed, dimension);
 	}
 
