@@ -16,6 +16,7 @@ import net.lightstone.net.codec.PingMessageCodec;
 import net.lightstone.net.codec.PositionMessageCodec;
 import net.lightstone.net.codec.PositionRotationMessageCodec;
 import net.lightstone.net.codec.RotationMessageCodec;
+import net.lightstone.net.codec.SyncInventoryCodec;
 import net.lightstone.net.codec.TimeMessageCodec;
 
 public final class CodecLookupService {
@@ -30,6 +31,7 @@ public final class CodecLookupService {
 			/* 0x02 */ bind(HandshakeMessageCodec.class);
 			/* 0x03 */ bind(ChatMessageCodec.class);
 			/* 0x04 */ bind(TimeMessageCodec.class);
+			/* 0x05 */ bind(SyncInventoryCodec.class);
 			/* 0x0A */ bind(FlyingMessageCodec.class);
 			/* 0x0B */ bind(PositionMessageCodec.class);
 			/* 0x0C */ bind(RotationMessageCodec.class);
