@@ -1,4 +1,4 @@
-package net.lightstone.net;
+package net.lightstone.net.codec;
 
 import java.io.IOException;
 
@@ -6,7 +6,6 @@ import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 
 import net.lightstone.msg.SpawnPositionMessage;
-import net.lightstone.net.codec.MessageCodec;
 
 public final class SpawnPositionMessageCodec extends MessageCodec<SpawnPositionMessage> {
 

@@ -19,6 +19,7 @@ import net.lightstone.net.codec.PositionMessageCodec;
 import net.lightstone.net.codec.PositionRotationMessageCodec;
 import net.lightstone.net.codec.RespawnMessageCodec;
 import net.lightstone.net.codec.RotationMessageCodec;
+import net.lightstone.net.codec.SpawnPositionMessageCodec;
 import net.lightstone.net.codec.SyncInventoryMessageCodec;
 import net.lightstone.net.codec.TimeMessageCodec;
 
