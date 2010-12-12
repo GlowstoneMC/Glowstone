@@ -7,9 +7,9 @@ import org.jboss.netty.buffer.ChannelBuffers;
 
 import net.lightstone.msg.HealthMessage;
 
-public final class HealthMessageCodec extends MessageCodec<HealthMessage> {
+public final class HealthCodec extends MessageCodec<HealthMessage> {
 
-	public HealthMessageCodec() {
+	public HealthCodec() {
 		super(HealthMessage.class, 0x08);
 	}
 

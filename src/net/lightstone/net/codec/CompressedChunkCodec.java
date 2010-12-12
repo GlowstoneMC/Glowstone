@@ -10,11 +10,11 @@ import net.lightstone.msg.CompressedChunkMessage;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 
-public final class CompressedChunkMessageCodec extends MessageCodec<CompressedChunkMessage> {
+public final class CompressedChunkCodec extends MessageCodec<CompressedChunkMessage> {
 
 	private static final int COMPRESSION_LEVEL = Deflater.BEST_SPEED;
 
-	public CompressedChunkMessageCodec() {
+	public CompressedChunkCodec() {
 		super(CompressedChunkMessage.class, 0x33);
 	}
 

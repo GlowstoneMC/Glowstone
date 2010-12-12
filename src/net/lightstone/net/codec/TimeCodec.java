@@ -7,9 +7,9 @@ import net.lightstone.msg.TimeMessage;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 
-public final class TimeMessageCodec extends MessageCodec<TimeMessage> {
+public final class TimeCodec extends MessageCodec<TimeMessage> {
 
-	public TimeMessageCodec() {
+	public TimeCodec() {
 		super(TimeMessage.class, 0x04);
 	}
 

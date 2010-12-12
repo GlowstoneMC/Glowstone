@@ -6,9 +6,9 @@ import net.lightstone.util.ChannelBufferUtils;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 
-public final class IdentificationMessageCodec extends MessageCodec<IdentificationMessage> {
+public final class IdentificationCodec extends MessageCodec<IdentificationMessage> {
 
-	public IdentificationMessageCodec() {
+	public IdentificationCodec() {
 		super(IdentificationMessage.class, 0x01);
 	}
 

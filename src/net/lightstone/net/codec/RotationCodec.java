@@ -7,9 +7,9 @@ import net.lightstone.msg.RotationMessage;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 
-public final class RotationMessageCodec extends MessageCodec<RotationMessage> {
+public final class RotationCodec extends MessageCodec<RotationMessage> {
 
-	public RotationMessageCodec() {
+	public RotationCodec() {
 		super(RotationMessage.class, 0x0C);
 	}
 

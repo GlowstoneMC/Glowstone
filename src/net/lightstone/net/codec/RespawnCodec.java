@@ -7,9 +7,9 @@ import org.jboss.netty.buffer.ChannelBuffers;
 
 import net.lightstone.msg.RespawnMessage;
 
-public final class RespawnMessageCodec extends MessageCodec<RespawnMessage> {
+public final class RespawnCodec extends MessageCodec<RespawnMessage> {
 
-	public RespawnMessageCodec() {
+	public RespawnCodec() {
 		super(RespawnMessage.class, 0x09);
 	}
 

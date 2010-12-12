@@ -5,9 +5,9 @@ import net.lightstone.msg.LoadChunkMessage;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 
-public final class LoadChunkMessageCodec extends MessageCodec<LoadChunkMessage> {
+public final class LoadChunkCodec extends MessageCodec<LoadChunkMessage> {
 
-	public LoadChunkMessageCodec() {
+	public LoadChunkCodec() {
 		super(LoadChunkMessage.class, 0x32);
 	}
 

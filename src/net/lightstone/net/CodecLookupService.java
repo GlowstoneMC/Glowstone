@@ -4,24 +4,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.lightstone.msg.Message;
-import net.lightstone.net.codec.ChatMessageCodec;
-import net.lightstone.net.codec.CompressedChunkMessageCodec;
-import net.lightstone.net.codec.EntityInteractionMessageCodec;
-import net.lightstone.net.codec.FlyingMessageCodec;
-import net.lightstone.net.codec.HandshakeMessageCodec;
-import net.lightstone.net.codec.HealthMessageCodec;
-import net.lightstone.net.codec.IdentificationMessageCodec;
-import net.lightstone.net.codec.KickMessageCodec;
-import net.lightstone.net.codec.LoadChunkMessageCodec;
+import net.lightstone.net.codec.ActivateItemCodec;
+import net.lightstone.net.codec.ChatCodec;
+import net.lightstone.net.codec.CompressedChunkCodec;
+import net.lightstone.net.codec.EntityInteractionCodec;
+import net.lightstone.net.codec.FlyingCodec;
+import net.lightstone.net.codec.HandshakeCodec;
+import net.lightstone.net.codec.HealthCodec;
+import net.lightstone.net.codec.IdentificationCodec;
+import net.lightstone.net.codec.KickCodec;
+import net.lightstone.net.codec.LoadChunkCodec;
 import net.lightstone.net.codec.MessageCodec;
-import net.lightstone.net.codec.PingMessageCodec;
-import net.lightstone.net.codec.PositionMessageCodec;
-import net.lightstone.net.codec.PositionRotationMessageCodec;
-import net.lightstone.net.codec.RespawnMessageCodec;
-import net.lightstone.net.codec.RotationMessageCodec;
-import net.lightstone.net.codec.SpawnPositionMessageCodec;
-import net.lightstone.net.codec.SyncInventoryMessageCodec;
-import net.lightstone.net.codec.TimeMessageCodec;
+import net.lightstone.net.codec.PingCodec;
+import net.lightstone.net.codec.BlockPlacementCodec;
+import net.lightstone.net.codec.DiggingCodec;
+import net.lightstone.net.codec.PositionCodec;
+import net.lightstone.net.codec.PositionRotationCodec;
+import net.lightstone.net.codec.RespawnCodec;
+import net.lightstone.net.codec.RotationCodec;
+import net.lightstone.net.codec.SpawnPositionCodec;
+import net.lightstone.net.codec.SyncInventoryCodec;
+import net.lightstone.net.codec.TimeCodec;
 
 public final class CodecLookupService {
 
@@ -30,23 +33,26 @@ public final class CodecLookupService {
 
 	static {
 		try {
-			/* 0x00 */ bind(PingMessageCodec.class);
-			/* 0x01 */ bind(IdentificationMessageCodec.class);
-			/* 0x02 */ bind(HandshakeMessageCodec.class);
-			/* 0x03 */ bind(ChatMessageCodec.class);
-			/* 0x04 */ bind(TimeMessageCodec.class);
-			/* 0x05 */ bind(SyncInventoryMessageCodec.class);
-			/* 0x06 */ bind(SpawnPositionMessageCodec.class);
-			/* 0x07 */ bind(EntityInteractionMessageCodec.class);
-			/* 0x08 */ bind(HealthMessageCodec.class);
-			/* 0x09 */ bind(RespawnMessageCodec.class);
-			/* 0x0A */ bind(FlyingMessageCodec.class);
-			/* 0x0B */ bind(PositionMessageCodec.class);
-			/* 0x0C */ bind(RotationMessageCodec.class);
-			/* 0x0D */ bind(PositionRotationMessageCodec.class);
-			/* 0x32 */ bind(LoadChunkMessageCodec.class);
-			/* 0x33 */ bind(CompressedChunkMessageCodec.class);
-			/* 0xFF */ bind(KickMessageCodec.class);
+			/* 0x00 */ bind(PingCodec.class);
+			/* 0x01 */ bind(IdentificationCodec.class);
+			/* 0x02 */ bind(HandshakeCodec.class);
+			/* 0x03 */ bind(ChatCodec.class);
+			/* 0x04 */ bind(TimeCodec.class);
+			/* 0x05 */ bind(SyncInventoryCodec.class);
+			/* 0x06 */ bind(SpawnPositionCodec.class);
+			/* 0x07 */ bind(EntityInteractionCodec.class);
+			/* 0x08 */ bind(HealthCodec.class);
+			/* 0x09 */ bind(RespawnCodec.class);
+			/* 0x0A */ bind(FlyingCodec.class);
+			/* 0x0B */ bind(PositionCodec.class);
+			/* 0x0C */ bind(RotationCodec.class);
+			/* 0x0D */ bind(PositionRotationCodec.class);
+			/* 0x0E */ bind(DiggingCodec.class);
+			/* 0x0F */ bind(BlockPlacementCodec.class);
+			/* 0x10 */ bind(ActivateItemCodec.class);
+			/* 0x32 */ bind(LoadChunkCodec.class);
+			/* 0x33 */ bind(CompressedChunkCodec.class);
+			/* 0xFF */ bind(KickCodec.class);
 		} catch (Exception ex) {
 			throw new ExceptionInInitializerError(ex);
 		}

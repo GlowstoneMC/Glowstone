@@ -6,9 +6,9 @@ import net.lightstone.util.ChannelBufferUtils;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 
-public final class KickMessageCodec extends MessageCodec<KickMessage> {
+public final class KickCodec extends MessageCodec<KickMessage> {
 
-	public KickMessageCodec() {
+	public KickCodec() {
 		super(KickMessage.class, 0xFF);
 	}
 

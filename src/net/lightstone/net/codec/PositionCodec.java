@@ -7,9 +7,9 @@ import net.lightstone.msg.PositionMessage;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 
-public final class PositionMessageCodec extends MessageCodec<PositionMessage> {
+public final class PositionCodec extends MessageCodec<PositionMessage> {
 
-	public PositionMessageCodec() {
+	public PositionCodec() {
 		super(PositionMessage.class, 0x0B);
 	}
 

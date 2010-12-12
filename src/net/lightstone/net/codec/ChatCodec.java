@@ -6,9 +6,9 @@ import net.lightstone.util.ChannelBufferUtils;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 
-public final class ChatMessageCodec extends MessageCodec<ChatMessage> {
+public final class ChatCodec extends MessageCodec<ChatMessage> {
 
-	public ChatMessageCodec() {
+	public ChatCodec() {
 		super(ChatMessage.class, 0x03);
 	}
 

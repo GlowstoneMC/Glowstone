@@ -7,9 +7,9 @@ import org.jboss.netty.buffer.ChannelBuffers;
 
 import net.lightstone.msg.EntityInteractionMessage;
 
-public final class EntityInteractionMessageCodec extends MessageCodec<EntityInteractionMessage> {
+public final class EntityInteractionCodec extends MessageCodec<EntityInteractionMessage> {
 
-	public EntityInteractionMessageCodec() {
+	public EntityInteractionCodec() {
 		super(EntityInteractionMessage.class, 0x07);
 	}
 

@@ -5,11 +5,11 @@ import net.lightstone.msg.PingMessage;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 
-public final class PingMessageCodec extends MessageCodec<PingMessage> {
+public final class PingCodec extends MessageCodec<PingMessage> {
 
 	private static final PingMessage PING_MESSAGE = new PingMessage();
 
-	public PingMessageCodec() {
+	public PingCodec() {
 		super(PingMessage.class, 0x00);
 	}
 

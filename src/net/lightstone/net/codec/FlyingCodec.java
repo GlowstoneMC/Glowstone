@@ -7,9 +7,9 @@ import net.lightstone.msg.FlyingMessage;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 
-public final class FlyingMessageCodec extends MessageCodec<FlyingMessage> {
+public final class FlyingCodec extends MessageCodec<FlyingMessage> {
 
-	public FlyingMessageCodec() {
+	public FlyingCodec() {
 		super(FlyingMessage.class, 0x0A);
 	}
 

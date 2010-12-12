@@ -6,9 +6,9 @@ import net.lightstone.util.ChannelBufferUtils;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 
-public final class HandshakeMessageCodec extends MessageCodec<HandshakeMessage> {
+public final class HandshakeCodec extends MessageCodec<HandshakeMessage> {
 
-	public HandshakeMessageCodec() {
+	public HandshakeCodec() {
 		super(HandshakeMessage.class, 0x02);
 	}
 
