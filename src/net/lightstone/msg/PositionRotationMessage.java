@@ -2,18 +2,18 @@ package net.lightstone.msg;
 
 public final class PositionRotationMessage extends Message {
 
-	private final double x, y, stance, z;
+	private final double x, y, z, stance;
 	private final float rotation, pitch;
-	private final boolean flying;
+	private final boolean onGround;
 
-	public PositionRotationMessage(double x, double y, double stance, double z, float rotation, float pitch, boolean flying) {
+	public PositionRotationMessage(double x, double y, double z, double stance, float rotation, float pitch, boolean onGround) {
 		this.x = x;
 		this.y = y;
-		this.stance = stance;
 		this.z = z;
+		this.stance = stance;
 		this.rotation = rotation;
 		this.pitch = pitch;
-		this.flying = flying;
+		this.onGround = onGround;
 	}
 
 	public double getX() {
@@ -40,8 +40,8 @@ public final class PositionRotationMessage extends Message {
 		return pitch;
 	}
 
-	public boolean isFlying() {
-		return flying;
+	public boolean isOnGround() {
+		return onGround;
 	}
 
 }

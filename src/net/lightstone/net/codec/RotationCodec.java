@@ -17,8 +17,8 @@ public final class RotationCodec extends MessageCodec<RotationMessage> {
 	public RotationMessage decode(ChannelBuffer buffer) throws IOException {
 		float rotation = buffer.readFloat();
 		float pitch = buffer.readFloat();
-		boolean flying = buffer.readByte() == 1;
-		return new RotationMessage(rotation, pitch, flying);
+		boolean onGround = buffer.readByte() == 1;
+		return new RotationMessage(rotation, pitch, onGround);
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public final class RotationCodec extends MessageCodec<RotationMessage> {
 		ChannelBuffer buffer = ChannelBuffers.buffer(9);
 		buffer.writeFloat(message.getRotation());
 		buffer.writeFloat(message.getPitch());
-		buffer.writeByte(message.isFlying() ? 1 : 0);
+		buffer.writeByte(message.isOnGround() ? 1 : 0);
 		return buffer;
 	}
 

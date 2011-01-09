@@ -2,15 +2,15 @@ package net.lightstone.msg;
 
 public final class PositionMessage extends Message {
 
-	private final double x, y, stance, z;
-	private final boolean flying;
+	private final double x, y, z, stance;
+	private final boolean onGround;
 
-	public PositionMessage(double x, double y, double stance, double z, boolean flying) {
+	public PositionMessage(double x, double y, double z, double stance, boolean onGround) {
 		this.x = x;
 		this.y = y;
-		this.stance = stance;
 		this.z = z;
-		this.flying = flying;
+		this.stance = stance;
+		this.onGround = onGround;
 	}
 
 	public double getX() {
@@ -29,8 +29,8 @@ public final class PositionMessage extends Message {
 		return z;
 	}
 
-	public boolean isFlying() {
-		return flying;
+	public boolean isOnGround() {
+		return onGround;
 	}
 
 }

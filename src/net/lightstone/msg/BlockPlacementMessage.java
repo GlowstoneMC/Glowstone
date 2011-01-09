@@ -2,14 +2,28 @@ package net.lightstone.msg;
 
 public final class BlockPlacementMessage extends Message {
 
-	private final int id, x, y, z, direction;
+	private final int id, x, y, z, direction, count, damage;
 
-	public BlockPlacementMessage(int id, int x, int y, int z, int direction) {
+	public BlockPlacementMessage(int x, int y, int z, int direction) {
+		this(x, y, z, direction, -1, 0, 0);
+	}
+
+	public BlockPlacementMessage(int x, int y, int z, int direction, int id, int count, int damage) {
 		this.id = id;
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		this.direction = direction;
+		this.count = count;
+		this.damage = damage;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public int getDamage() {
+		return damage;
 	}
 
 	public int getId() {

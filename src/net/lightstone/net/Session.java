@@ -2,7 +2,7 @@ package net.lightstone.net;
 
 import net.lightstone.msg.ChatMessage;
 import net.lightstone.msg.CompressedChunkMessage;
-import net.lightstone.msg.FlyingMessage;
+import net.lightstone.msg.GroundMessage;
 import net.lightstone.msg.LoadChunkMessage;
 import net.lightstone.msg.Message;
 import net.lightstone.msg.handler.HandlerLookupService;
@@ -59,7 +59,7 @@ public final class Session {
 			}
 		}
 
-		send(new FlyingMessage(true));
+		send(new GroundMessage(true));
 	}
 
 	@SuppressWarnings("unchecked")

@@ -21,8 +21,8 @@ public final class PositionRotationCodec extends MessageCodec<PositionRotationMe
 		double z = buffer.readDouble();
 		float rotation = buffer.readFloat();
 		float pitch = buffer.readFloat();
-		boolean flying = buffer.readByte() == 1;
-		return new PositionRotationMessage(x, y, stance, z, rotation, pitch, flying);
+		boolean onGround = buffer.readByte() == 1;
+		return new PositionRotationMessage(x, y, z, stance, rotation, pitch, onGround);
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public final class PositionRotationCodec extends MessageCodec<PositionRotationMe
 		buffer.writeDouble(message.getZ());
 		buffer.writeFloat(message.getRotation());
 		buffer.writeFloat(message.getPitch());
-		buffer.writeByte(message.isFlying() ? 1 : 0);
+		buffer.writeByte(message.isOnGround() ? 1 : 0);
 		return buffer;
 	}
 

@@ -20,7 +20,7 @@ public final class PositionCodec extends MessageCodec<PositionMessage> {
 		double stance = buffer.readDouble();
 		double z = buffer.readDouble();
 		boolean flying = buffer.readByte() == 1;
-		return new PositionMessage(x, y, stance, z, flying);
+		return new PositionMessage(x, y, z, stance, flying);
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public final class PositionCodec extends MessageCodec<PositionMessage> {
 		buffer.writeDouble(message.getY());
 		buffer.writeDouble(message.getStance());
 		buffer.writeDouble(message.getZ());
-		buffer.writeByte(message.isFlying() ? 1 : 0);
+		buffer.writeByte(message.isOnGround() ? 1 : 0);
 		return buffer;
 	}
 
