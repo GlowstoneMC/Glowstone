@@ -15,16 +15,14 @@ public final class ActivateItemCodec extends MessageCodec<ActivateItemMessage> {
 
 	@Override
 	public ActivateItemMessage decode(ChannelBuffer buffer) throws IOException {
-		int id = buffer.readInt();
-		int item = buffer.readShort();
-		return new ActivateItemMessage(id, item);
+		int slot = buffer.readUnsignedShort();
+		return new ActivateItemMessage(slot);
 	}
 
 	@Override
 	public ChannelBuffer encode(ActivateItemMessage message) throws IOException {
 		ChannelBuffer buffer = ChannelBuffers.buffer(6);
-		buffer.writeInt(message.getId());
-		buffer.writeShort(message.getItem());
+		buffer.writeShort(message.getSlot());
 		return buffer;
 	}
 

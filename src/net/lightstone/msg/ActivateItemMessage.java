@@ -2,19 +2,14 @@ package net.lightstone.msg;
 
 public final class ActivateItemMessage extends Message {
 
-	private final int id, item;
+	private final int slot;
 
-	public ActivateItemMessage(int id, int item) {
-		this.id = id;
-		this.item = item;
+	public ActivateItemMessage(int slot) {
+		this.slot = slot;
 	}
 
-	public int getId() {
-		return id;
-	}
-
-	public int getItem() {
-		return item;
+	public int getSlot() {
+		return slot;
 	}
 
 }
