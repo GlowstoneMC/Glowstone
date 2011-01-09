@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.lightstone.net.MinecraftPipelineFactory;
+import net.lightstone.task.TaskScheduler;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.ChannelFactory;
@@ -31,8 +32,9 @@ public final class Server {
 	}
 
 	private final ServerBootstrap bootstrap = new ServerBootstrap();
-	private final ExecutorService executor = Executors.newCachedThreadPool();
 	private final ChannelGroup group = new DefaultChannelGroup();
+	private final TaskScheduler scheduler = new TaskScheduler();
+	private final ExecutorService executor = Executors.newCachedThreadPool();
 
 	public Server() {
 		logger.info("Starting Lightstone...");
@@ -42,7 +44,7 @@ public final class Server {
 	private void init() {
 		ChannelFactory factory = new NioServerSocketChannelFactory(executor, executor);
 		bootstrap.setFactory(factory);
-		
+
 		ChannelPipelineFactory pipelineFactory = new MinecraftPipelineFactory(group);
 		bootstrap.setPipelineFactory(pipelineFactory);
 	}
