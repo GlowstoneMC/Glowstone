@@ -18,16 +18,16 @@ public class MinecraftEncoder extends OneToOneEncoder {
 	protected Object encode(ChannelHandlerContext ctx, Channel c, Object msg) throws Exception {
 		if (msg instanceof Message) {
 			Message message = (Message) msg;
-			
+
 			Class<? extends Message> clazz = message.getClass();
 			MessageCodec<Message> codec = (MessageCodec<Message>) CodecLookupService.find(clazz);
 			if (codec == null) {
 				throw new IOException("Unknown message type: " + clazz + ".");
 			}
-			
+
 			ChannelBuffer opcodeBuf = ChannelBuffers.buffer(1);
 			opcodeBuf.writeByte(codec.getOpcode());
-			
+
 			return ChannelBuffers.wrappedBuffer(opcodeBuf, codec.encode(message));
 		}
 		return msg;

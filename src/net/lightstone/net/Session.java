@@ -29,7 +29,7 @@ public final class Session {
 		for (int x = -8; x <= 8; x++) {
 			for (int z = -8; z <= 8; z++) {
 				byte[] data = new byte[(16 * 16 * 128 * 5) / 2];
-				
+
 				for (int tx = 0; tx < 16; tx++) {
 					for (int tz = 0; tz < 16; tz++) {
 						for (int ty = 0; ty < 128; ty++) {
@@ -37,7 +37,7 @@ public final class Session {
 						}
 					}
 				}
-				
+
 				for (int tx = 0; tx < 16; tx++) {
 					for (int tz = 0; tz < 16; tz++) {
 						for (int ty = 0; ty < 128; ty++) {
@@ -45,7 +45,7 @@ public final class Session {
 						}
 					}
 				}
-				
+
 				for (int tx = 0; tx < 16; tx++) {
 					for (int tz = 0; tz < 16; tz++) {
 						for (int ty = 0; ty < 64; ty++) {

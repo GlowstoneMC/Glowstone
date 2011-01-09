@@ -112,7 +112,7 @@ public final class CodecLookupService {
 
 	private static <T extends Message, C extends MessageCodec<T>> void bind(Class<C> clazz) throws InstantiationException, IllegalAccessException {
 		MessageCodec<T> codec = clazz.newInstance();
-		
+
 		opcodeTable[codec.getOpcode()] = codec;
 		classTable.put(codec.getType(), codec);
 	}
@@ -127,7 +127,7 @@ public final class CodecLookupService {
 	}
 
 	private CodecLookupService() {
-		
+
 	}
 
 }

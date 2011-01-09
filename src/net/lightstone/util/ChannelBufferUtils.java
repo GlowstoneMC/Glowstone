@@ -13,22 +13,22 @@ public final class ChannelBufferUtils {
 		if (bytes.length >= 65536) {
 			throw new IllegalArgumentException("Encoded UTF-8 string too long.");
 		}
-		
+
 		buf.writeShort(bytes.length);
 		buf.writeBytes(bytes);
 	}
 
 	public static String readString(ChannelBuffer buf) {
 		int length = buf.readUnsignedShort();
-		
+
 		byte[] bytes = new byte[length];
 		buf.readBytes(bytes);
-		
+
 		return new String(bytes, CHARSET_UTF8);
 	}
 
 	private ChannelBufferUtils() {
-		
+
 	}
 
 }
