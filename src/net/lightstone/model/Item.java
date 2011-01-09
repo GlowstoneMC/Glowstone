@@ -2,7 +2,7 @@ package net.lightstone.model;
 
 public class Item {
 
-	private final int id, count, health;
+	private final int id, count, damage;
 
 	public Item(int id) {
 		this(id, 1);
@@ -12,10 +12,10 @@ public class Item {
 		this(id, count, 0);
 	}
 
-	public Item(int id, int count, int health) {
+	public Item(int id, int count, int damage) {
 		this.id = id;
 		this.count = count;
-		this.health = health;
+		this.damage = damage;
 	}
 
 	public int getId() {
@@ -26,8 +26,8 @@ public class Item {
 		return count;
 	}
 
-	public int getHealth() {
-		return health;
+	public int getDamage() {
+		return damage;
 	}
 
 }

@@ -2,10 +2,18 @@ package net.lightstone.msg;
 
 public final class SetWindowSlotMessage extends Message {
 
-	private final int id, slot, item, count, uses;
+	private final int id, slot, item, count, damage;
 
 	public SetWindowSlotMessage(int id, int slot) {
 		this(id, slot, -1, 0, 0);
+	}
+
+	public SetWindowSlotMessage(int id, int slot, int item, int count, int damage) {
+		this.id = id;
+		this.slot = slot;
+		this.item = item;
+		this.count = count;
+		this.damage = damage;
 	}
 
 	public int getId() {
@@ -24,16 +32,8 @@ public final class SetWindowSlotMessage extends Message {
 		return count;
 	}
 
-	public int getUses() {
-		return uses;
-	}
-
-	public SetWindowSlotMessage(int id, int slot, int item, int count, int uses) {
-		this.id = id;
-		this.slot = slot;
-		this.item = item;
-		this.count = count;
-		this.uses = uses;
+	public int getDamage() {
+		return damage;
 	}
 
 }

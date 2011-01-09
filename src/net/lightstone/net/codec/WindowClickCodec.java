@@ -24,8 +24,8 @@ public final class WindowClickCodec extends MessageCodec<WindowClickMessage> {
 			return new WindowClickMessage(id, slot, rightClick, transaction);
 		} else {
 			int count = buffer.readUnsignedByte();
-			int uses = buffer.readUnsignedByte();
-			return new WindowClickMessage(id, slot, rightClick, transaction, item, count, uses);
+			int damage = buffer.readUnsignedByte();
+			return new WindowClickMessage(id, slot, rightClick, transaction, item, count, damage);
 		}
 	}
 
@@ -41,7 +41,7 @@ public final class WindowClickCodec extends MessageCodec<WindowClickMessage> {
 		buffer.writeShort(item);
 		if (item != -1) {
 			buffer.writeByte(message.getCount());
-			buffer.writeByte(message.getUses());
+			buffer.writeByte(message.getDamage());
 		}
 		return buffer;
 	}

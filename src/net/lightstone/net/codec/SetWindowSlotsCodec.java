@@ -25,8 +25,8 @@ public final class SetWindowSlotsCodec extends MessageCodec<SetWindowSlotsMessag
 				items[slot] = null;
 			} else {
 				int itemCount = buffer.readUnsignedByte();
-				int uses = buffer.readUnsignedByte();
-				items[slot] = new Item(item, itemCount, uses);
+				int damage = buffer.readUnsignedByte();
+				items[slot] = new Item(item, itemCount, damage);
 			}
 		}
 		return new SetWindowSlotsMessage(id, items);
@@ -46,7 +46,7 @@ public final class SetWindowSlotsCodec extends MessageCodec<SetWindowSlotsMessag
 			} else {
 				buffer.writeShort(item.getId());
 				buffer.writeByte(item.getCount());
-				buffer.writeByte(item.getHealth());
+				buffer.writeByte(item.getDamage());
 			}
 		}
 

@@ -4,20 +4,20 @@ public final class WindowClickMessage extends Message {
 
 	private final int id, slot;
 	private final boolean rightClick;
-	private final int transaction, item, count, uses;
+	private final int transaction, item, count, damage;
 
 	public WindowClickMessage(int id, int slot, boolean rightClick, int transaction) {
 		this(id, slot, rightClick, transaction, -1, 0, 0);
 	}
 
-	public WindowClickMessage(int id, int slot, boolean rightClick, int transaction, int item, int count, int uses) {
+	public WindowClickMessage(int id, int slot, boolean rightClick, int transaction, int item, int count, int damage) {
 		this.id = id;
 		this.slot = slot;
 		this.rightClick = rightClick;
 		this.transaction = transaction;
 		this.item = item;
 		this.count = count;
-		this.uses = uses;
+		this.damage = damage;
 	}
 
 	public int getId() {
@@ -44,8 +44,8 @@ public final class WindowClickMessage extends Message {
 		return count;
 	}
 
-	public int getUses() {
-		return uses;
+	public int getDamage() {
+		return damage;
 	}
 
 }
