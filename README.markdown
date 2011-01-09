@@ -32,9 +32,11 @@ the project if the binaries are out of date.
 Credits
 -------
 
- * The Minecraft Coalition - protocol and formats research
- * Trustin Lee - author of the [Netty](http://jboss.org/netty) library
- * Notch - for making such a super awesome game in the first place!
+ * [The Minecraft Coalition](http://wiki.vg) - protocol and formats research
+ * [Trustin Lee](http://gleamynode.net) - author of the
+   [Netty](http://jboss.org/netty) library
+ * [Notch](http://mojang.com/notch) - for making such a super awesome game in
+   the first place!
 
 Copyright
 ---------
