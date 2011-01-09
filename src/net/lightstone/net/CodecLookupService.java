@@ -9,6 +9,7 @@ import net.lightstone.net.codec.AnimateEntityCodec;
 import net.lightstone.net.codec.AttachEntityCodec;
 import net.lightstone.net.codec.BlockChangeCodec;
 import net.lightstone.net.codec.ChatCodec;
+import net.lightstone.net.codec.CloseWindowCodec;
 import net.lightstone.net.codec.CollectItemCodec;
 import net.lightstone.net.codec.CompressedChunkCodec;
 import net.lightstone.net.codec.CreateEntityCodec;
@@ -27,15 +28,19 @@ import net.lightstone.net.codec.KickCodec;
 import net.lightstone.net.codec.LoadChunkCodec;
 import net.lightstone.net.codec.MessageCodec;
 import net.lightstone.net.codec.MultiBlockChangeCodec;
+import net.lightstone.net.codec.OpenWindowCodec;
 import net.lightstone.net.codec.PingCodec;
 import net.lightstone.net.codec.BlockPlacementCodec;
 import net.lightstone.net.codec.DiggingCodec;
 import net.lightstone.net.codec.PositionCodec;
 import net.lightstone.net.codec.PositionRotationCodec;
+import net.lightstone.net.codec.ProgressBarCodec;
 import net.lightstone.net.codec.RelativeEntityPositionCodec;
 import net.lightstone.net.codec.RelativeEntityPositionRotationCodec;
 import net.lightstone.net.codec.RespawnCodec;
 import net.lightstone.net.codec.RotationCodec;
+import net.lightstone.net.codec.SetWindowSlotCodec;
+import net.lightstone.net.codec.SetWindowSlotsCodec;
 import net.lightstone.net.codec.SpawnItemCodec;
 import net.lightstone.net.codec.SpawnMobCodec;
 import net.lightstone.net.codec.SpawnVehicleCodec;
@@ -43,6 +48,9 @@ import net.lightstone.net.codec.SpawnPlayerCodec;
 import net.lightstone.net.codec.SpawnPositionCodec;
 import net.lightstone.net.codec.SyncInventoryCodec;
 import net.lightstone.net.codec.TimeCodec;
+import net.lightstone.net.codec.TransactionCodec;
+import net.lightstone.net.codec.UpdateSignCodec;
+import net.lightstone.net.codec.WindowClickCodec;
 
 public final class CodecLookupService {
 
@@ -88,6 +96,14 @@ public final class CodecLookupService {
 			/* 0x34 */ bind(MultiBlockChangeCodec.class);
 			/* 0x35 */ bind(BlockChangeCodec.class);
 			/* 0x3C */ bind(ExplosionCodec.class);
+			/* 0x64 */ bind(OpenWindowCodec.class);
+			/* 0x65 */ bind(CloseWindowCodec.class);
+			/* 0x66 */ bind(WindowClickCodec.class);
+			/* 0x67 */ bind(SetWindowSlotCodec.class);
+			/* 0x68 */ bind(SetWindowSlotsCodec.class);
+			/* 0x69 */ bind(ProgressBarCodec.class);
+			/* 0x6A */ bind(TransactionCodec.class);
+			/* 0x82 */ bind(UpdateSignCodec.class);
 			/* 0xFF */ bind(KickCodec.class);
 		} catch (Exception ex) {
 			throw new ExceptionInInitializerError(ex);
