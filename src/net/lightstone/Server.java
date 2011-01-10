@@ -45,7 +45,7 @@ public final class Server {
 		ChannelFactory factory = new NioServerSocketChannelFactory(executor, executor);
 		bootstrap.setFactory(factory);
 
-		ChannelPipelineFactory pipelineFactory = new MinecraftPipelineFactory(group);
+		ChannelPipelineFactory pipelineFactory = new MinecraftPipelineFactory(this);
 		bootstrap.setPipelineFactory(pipelineFactory);
 	}
 
@@ -56,6 +56,14 @@ public final class Server {
 
 	public void start() {
 		logger.info("Ready for connections.");
+	}
+
+	public ChannelGroup getChannelGroup() {
+		return group;
+	}
+
+	public TaskScheduler getScheduler() {
+		return scheduler;
 	}
 
 }

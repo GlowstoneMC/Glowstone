@@ -13,7 +13,6 @@ public final class IdentificationMessageHandler extends MessageHandler<Identific
 	public void handle(Session session, IdentificationMessage message) {
 		logger.info(session + " identified as: " + message.getName() + " (using protocol " + message.getId() + ")");
 		session.send(new IdentificationMessage(0, "", "", 0, 0));
-		session.init(); // TODO temp!!!
 	}
 
 }

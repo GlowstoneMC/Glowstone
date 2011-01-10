@@ -3,6 +3,7 @@ package net.lightstone.net;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.lightstone.Server;
 import net.lightstone.msg.Message;
 
 import org.jboss.netty.channel.Channel;
@@ -11,24 +12,23 @@ import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
-import org.jboss.netty.channel.group.ChannelGroup;
 
 public class MinecraftHandler extends SimpleChannelUpstreamHandler {
 
 	private static final Logger logger = Logger.getLogger(MinecraftHandler.class.getName());
 
-	private final ChannelGroup group;
+	private final Server server;
 
-	public MinecraftHandler(ChannelGroup group) {
-		this.group = group;
+	public MinecraftHandler(Server server) {
+		this.server = server;
 	}
 
 	@Override
 	public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) {
 		Channel c = e.getChannel();
-		group.add(c);
+		server.getChannelGroup().add(c);
 
-		ctx.setAttachment(new Session(c));
+		ctx.setAttachment(new Session(server, c));
 
 		logger.info("Channel connected: " + c + ".");
 	}
@@ -36,7 +36,7 @@ public class MinecraftHandler extends SimpleChannelUpstreamHandler {
 	@Override
 	public void channelDisconnected(ChannelHandlerContext ctx, ChannelStateEvent e) {
 		Channel c = e.getChannel();
-		group.remove(c);
+		server.getChannelGroup().remove(c);
 
 		Session session = (Session) ctx.getAttachment();
 		session.dispose();

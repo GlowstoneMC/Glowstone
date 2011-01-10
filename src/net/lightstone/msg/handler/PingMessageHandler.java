@@ -7,7 +7,7 @@ public final class PingMessageHandler extends MessageHandler<PingMessage> {
 
 	@Override
 	public void handle(Session session, PingMessage message) {
-		session.send(new PingMessage());
+		// TODO: reset timeout counter
 	}
 
 }

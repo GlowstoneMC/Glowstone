@@ -1,16 +1,17 @@
 package net.lightstone.net;
 
+import net.lightstone.Server;
+
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.StaticChannelPipeline;
-import org.jboss.netty.channel.group.ChannelGroup;
 
 public final class MinecraftPipelineFactory implements ChannelPipelineFactory {
 
-	private final ChannelGroup group;
+	private final Server server;
 
-	public MinecraftPipelineFactory(ChannelGroup group) {
-		this.group = group;
+	public MinecraftPipelineFactory(Server server) {
+		this.server = server;
 	}
 
 	@Override
@@ -18,7 +19,7 @@ public final class MinecraftPipelineFactory implements ChannelPipelineFactory {
 		return new StaticChannelPipeline(
 			new MinecraftDecoder(),
 			new MinecraftEncoder(),
-			new MinecraftHandler(group)
+			new MinecraftHandler(server)
 		);
 	}
 
