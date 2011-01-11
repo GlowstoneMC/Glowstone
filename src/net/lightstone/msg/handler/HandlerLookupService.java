@@ -3,6 +3,7 @@ package net.lightstone.msg.handler;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.lightstone.msg.ChatMessage;
 import net.lightstone.msg.HandshakeMessage;
 import net.lightstone.msg.IdentificationMessage;
 import net.lightstone.msg.Message;
@@ -17,6 +18,7 @@ public final class HandlerLookupService {
 			bind(PingMessage.class, PingMessageHandler.class);
 			bind(IdentificationMessage.class, IdentificationMessageHandler.class);
 			bind(HandshakeMessage.class, HandshakeMessageHandler.class);
+			bind(ChatMessage.class, ChatMessageHandler.class);
 		} catch (Exception ex) {
 			throw new ExceptionInInitializerError(ex);
 		}

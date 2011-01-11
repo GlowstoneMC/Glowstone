@@ -28,7 +28,9 @@ public class MinecraftHandler extends SimpleChannelUpstreamHandler {
 		Channel c = e.getChannel();
 		server.getChannelGroup().add(c);
 
-		ctx.setAttachment(new Session(server, c));
+		Session session = new Session(server, c);
+		server.getSessionRegistry().add(session);
+		ctx.setAttachment(session);
 
 		logger.info("Channel connected: " + c + ".");
 	}
@@ -39,6 +41,7 @@ public class MinecraftHandler extends SimpleChannelUpstreamHandler {
 		server.getChannelGroup().remove(c);
 
 		Session session = (Session) ctx.getAttachment();
+		server.getSessionRegistry().remove(session);
 		session.dispose();
 
 		logger.info("Channel disconnected: " + c + ".");

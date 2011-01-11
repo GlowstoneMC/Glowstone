@@ -2,6 +2,8 @@ package net.lightstone.model;
 
 public final class Rotation {
 
+	public static final Rotation ZERO = new Rotation(0, 0, 0);
+
 	private final double yaw, pitch, roll;
 
 	public Rotation(double yaw, double pitch) {

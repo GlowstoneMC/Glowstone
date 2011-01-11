@@ -1,15 +1,32 @@
 package net.lightstone.model;
 
+import net.lightstone.world.World;
+
 public abstract class Entity {
+
+	protected final World world;
 
 	protected final int id;
 
-	protected Position position;
+	protected Position position = Position.ZERO;
 
-	protected Rotation rotation;
+	protected Rotation rotation = Rotation.ZERO;
 
-	public Entity() {
-		this.id = 0; // TODO allocate the ID
+	public Entity(World world) {
+		this.world = world;
+		this.id = world.getEntities().allocate(this);
+	}
+
+	public World getWorld() {
+		return world;
+	}
+
+	public void destroy() {
+		world.getEntities().deallocate(this);
+	}
+
+	public int getId() {
+		return id;
 	}
 
 	public Position getPosition() {
