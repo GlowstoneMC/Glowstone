@@ -46,8 +46,9 @@ Credits
    research.
  * [Trustin Lee](http://gleamynode.net) - author of the
    [Netty](http://jboss.org/netty) library.
- * All the people behind the [JRuby](http://jruby.org) library, Ant, Ivy and
-   Java itself.
+ * All the people behind [JRuby](http://jruby.org),
+   [Ant](http://ant.apache.org), [Ivy](http://ant.apache.org/ivy) and
+   [Java](http://java.oracle.com).
  * [Notch](http://mojang.com/notch) - for making such a super awesome game in
    the first place!
 
