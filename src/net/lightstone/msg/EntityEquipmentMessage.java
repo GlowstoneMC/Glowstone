@@ -2,12 +2,13 @@ package net.lightstone.msg;
 
 public final class EntityEquipmentMessage extends Message {
 
-	private final int id, slot, item;
+	private final int id, slot, item, damage;
 
-	public EntityEquipmentMessage(int id, int slot, int item) {
+	public EntityEquipmentMessage(int id, int slot, int item, int damage) {
 		this.id = id;
 		this.slot = slot;
 		this.item = item;
+		this.damage = damage;
 	}
 
 	public int getId() {
@@ -20,6 +21,10 @@ public final class EntityEquipmentMessage extends Message {
 
 	public int getItem() {
 		return item;
+	}
+
+	public int getDamage() {
+		return damage;
 	}
 
 }

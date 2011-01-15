@@ -1,10 +1,15 @@
 package net.lightstone.msg;
 
+import java.util.List;
+
+import net.lightstone.util.Parameter;
+
 public class SpawnMobMessage extends Message {
 
 	private final int id, type, x, y, z, rotation, pitch;
+	private final List<Parameter<?>> parameters;
 
-	public SpawnMobMessage(int id, int type, int x, int y, int z, int rotation, int pitch) {
+	public SpawnMobMessage(int id, int type, int x, int y, int z, int rotation, int pitch, List<Parameter<?>> parameters) {
 		this.id = id;
 		this.type = type;
 		this.x = x;
@@ -12,6 +17,7 @@ public class SpawnMobMessage extends Message {
 		this.z = z;
 		this.rotation = rotation;
 		this.pitch = pitch;
+		this.parameters = parameters;
 	}
 
 	public int getId() {
@@ -40,6 +46,10 @@ public class SpawnMobMessage extends Message {
 
 	public int getPitch() {
 		return pitch;
+	}
+
+	public List<Parameter<?>> getParameters() {
+		return parameters;
 	}
 
 }

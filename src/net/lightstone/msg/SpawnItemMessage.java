@@ -2,12 +2,13 @@ package net.lightstone.msg;
 
 public final class SpawnItemMessage extends Message {
 
-	private final int id, item, count, x, y, z, rotation, pitch, roll;
+	private final int id, item, count, damage, x, y, z, rotation, pitch, roll;
 
-	public SpawnItemMessage(int id, int item, int count, int x, int y, int z, int rotation, int pitch, int roll) {
+	public SpawnItemMessage(int id, int item, int count, int damage, int x, int y, int z, int rotation, int pitch, int roll) {
 		this.id = id;
 		this.item = item;
 		this.count = count;
+		this.damage = damage;
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -26,6 +27,10 @@ public final class SpawnItemMessage extends Message {
 
 	public int getCount() {
 		return count;
+	}
+
+	public int getDamage() {
+		return damage;
 	}
 
 	public int getX() {

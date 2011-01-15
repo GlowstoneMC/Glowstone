@@ -18,13 +18,14 @@ public class SpawnItemCodec extends MessageCodec<SpawnItemMessage> {
 		int id = buffer.readInt();
 		int item = buffer.readUnsignedShort();
 		int count = buffer.readUnsignedByte();
+		int damage = buffer.readUnsignedShort();
 		int x = buffer.readInt();
 		int y = buffer.readInt();
 		int z = buffer.readInt();
 		int rotation = buffer.readUnsignedByte();
 		int pitch = buffer.readUnsignedByte();
 		int roll = buffer.readUnsignedByte();
-		return new SpawnItemMessage(id, item, count, x, y, z, rotation, pitch, roll);
+		return new SpawnItemMessage(id, item, count, damage, x, y, z, rotation, pitch, roll);
 	}
 
 	@Override
@@ -33,6 +34,7 @@ public class SpawnItemCodec extends MessageCodec<SpawnItemMessage> {
 		buffer.writeInt(message.getId());
 		buffer.writeShort(message.getItem());
 		buffer.writeByte(message.getCount());
+		buffer.writeShort(message.getDamage());
 		buffer.writeInt(message.getX());
 		buffer.writeInt(message.getY());
 		buffer.writeInt(message.getZ());

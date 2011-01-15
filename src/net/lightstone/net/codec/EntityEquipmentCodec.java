@@ -18,7 +18,8 @@ public final class EntityEquipmentCodec extends MessageCodec<EntityEquipmentMess
 		int id = buffer.readInt();
 		int slot = buffer.readUnsignedShort();
 		int item = buffer.readUnsignedShort();
-		return new EntityEquipmentMessage(id, slot, item);
+		int damage = buffer.readUnsignedByte();
+		return new EntityEquipmentMessage(id, slot, item, damage);
 	}
 
 	@Override
@@ -27,6 +28,7 @@ public final class EntityEquipmentCodec extends MessageCodec<EntityEquipmentMess
 		buffer.writeInt(message.getId());
 		buffer.writeShort(message.getSlot());
 		buffer.writeShort(message.getItem());
+		buffer.writeShort(message.getDamage());
 		return buffer;
 	}
 
