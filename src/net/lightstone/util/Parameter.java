@@ -12,7 +12,7 @@ public class Parameter<T> {
 
 	public static final int TYPE_STRING = 4;
 
-	public static final int TYPE_COORDINATE = 5;
+	public static final int TYPE_ITEM = 5;
 
 	private final int type, index;
 	private final T value;

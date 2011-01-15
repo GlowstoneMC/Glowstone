@@ -4,7 +4,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.lightstone.model.Coordinate;
+import net.lightstone.model.Item;
 
 import org.jboss.netty.buffer.ChannelBuffer;
 
@@ -36,11 +36,11 @@ public final class ChannelBufferUtils {
 			case Parameter.TYPE_STRING:
 				writeString(buf, ((Parameter<String>) parameter).getValue());
 				break;
-			case Parameter.TYPE_COORDINATE:
-				Coordinate coordinate = ((Parameter<Coordinate>) parameter).getValue();
-				buf.writeShort(coordinate.getX());
-				buf.writeByte(coordinate.getY());
-				buf.writeShort(coordinate.getZ());
+			case Parameter.TYPE_ITEM:
+				Item item = ((Parameter<Item>) parameter).getValue();
+				buf.writeShort(item.getId());
+				buf.writeByte(item.getCount());
+				buf.writeShort(item.getDamage());
 				break;
 			}
 		}
@@ -71,12 +71,12 @@ public final class ChannelBufferUtils {
 			case Parameter.TYPE_STRING:
 				parameters.add(new Parameter<String>(type, index, readString(buf)));
 				break;
-			case Parameter.TYPE_COORDINATE:
-				int x = buf.readShort();
-				int y = buf.readByte();
-				int z = buf.readShort();
-				Coordinate coordinate = new Coordinate(x, y, z);
-				parameters.add(new Parameter<Coordinate>(type, index, coordinate));
+			case Parameter.TYPE_ITEM:
+				int id = buf.readShort();
+				int count = buf.readByte();
+				int damage = buf.readShort();
+				Item item = new Item(id, count, damage);
+				parameters.add(new Parameter<Item>(type, index, item));
 				break;
 			}
 		}
