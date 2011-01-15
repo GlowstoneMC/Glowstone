@@ -18,6 +18,11 @@ Lightstone can be built with the
 [Java Development Kit](http://oracle.com/technetwork/java/javase/downloads) and
 [Apache Ant](http://ant.apache.org).
 
+[Apache Ivy](http://ant.apache.org/ivy) is used for dependency management.
+
+If you have not yet done so, you will need to download the project's
+dependencies which can be done with the `ant resolve` command.
+
 Typing the command `ant` in the terminal will build the project.
 
 Running
@@ -36,6 +41,8 @@ Credits
    research.
  * [Trustin Lee](http://gleamynode.net) - author of the
    [Netty](http://jboss.org/netty) library.
+ * All the people behind the [JRuby](http://jruby.org) library, Ant, Ivy and
+   Java itself.
  * [Notch](http://mojang.com/notch) - for making such a super awesome game in
    the first place!
 

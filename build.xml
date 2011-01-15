@@ -1,5 +1,5 @@
-<?xml version="1.0"?>
-<project name="lightstone" default="build">
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="lightstone" default="build" xmlns:ivy="antlib:org.apache.ivy.ant">
   <property name="src" location="src" />
   <property name="bin" location="bin" />
   <property name="lib" location="lib" />
@@ -25,6 +25,11 @@
 
   <target name="init">
     <mkdir dir="${bin}" />
+    <mkdir dir="${lib}" />
+  </target>
+
+  <target name="resolve" depends="init">
+    <ivy:retrieve pattern="${lib}/[artifact].[ext]" sync="true" />
   </target>
 
   <target name="build" depends="init">
