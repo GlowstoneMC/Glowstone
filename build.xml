@@ -3,6 +3,7 @@
   <property name="src" location="src" />
   <property name="bin" location="bin" />
   <property name="lib" location="lib" />
+  <property name="doc" location="doc" />
 
   <path id="binaries">
     <pathelement path="${bin}" />
@@ -29,7 +30,7 @@
   </target>
 
   <target name="resolve" depends="init">
-    <ivy:retrieve pattern="${lib}/[artifact].[ext]" sync="true" />
+    <ivy:retrieve pattern="${lib}/[artifact]-[revision].[ext]" sync="true" />
   </target>
 
   <target name="build" depends="init">
@@ -40,11 +41,23 @@
 
   <target name="clean">
     <delete dir="${bin}" />
+    <delete dir="${doc}" />
   </target>
 
   <target name="rebuild" depends="clean, build" />
 
   <target name="run" depends="build">
     <java classpathref="master" fork="true" classname="net.lightstone.Server" />
+  </target>
+
+  <target name="doc" depends="init">
+    <javadoc sourcepath="${src}" classpathref="master" destdir="${doc}"
+             access="private" author="true" version="true" use="true"
+             windowtitle="Lightstone Documentation">
+      <doctitle><![CDATA[<h1>Lightstone Documentation</h1>]]></doctitle>
+      <link href="http://download.oracle.com/javase/6/docs/api/" />
+      <link href="http://docs.jboss.org/netty/3.2/api/" />
+      <link href="http://jruby.org/apidocs/" />
+    </javadoc>
   </target>
 </project>
