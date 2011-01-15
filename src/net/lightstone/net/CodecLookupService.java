@@ -52,6 +52,7 @@ import net.lightstone.net.codec.SpawnPositionCodec;
 import net.lightstone.net.codec.EntityEquipmentCodec;
 import net.lightstone.net.codec.TimeCodec;
 import net.lightstone.net.codec.TransactionCodec;
+import net.lightstone.net.codec.PlayNoteCodec;
 import net.lightstone.net.codec.UpdateSignCodec;
 import net.lightstone.net.codec.WindowClickCodec;
 
@@ -101,6 +102,7 @@ public final class CodecLookupService {
 			/* 0x33 */ bind(CompressedChunkCodec.class);
 			/* 0x34 */ bind(MultiBlockChangeCodec.class);
 			/* 0x35 */ bind(BlockChangeCodec.class);
+			/* 0x36 */ bind(PlayNoteCodec.class);
 			/* 0x3C */ bind(ExplosionCodec.class);
 			/* 0x64 */ bind(OpenWindowCodec.class);
 			/* 0x65 */ bind(CloseWindowCodec.class);
