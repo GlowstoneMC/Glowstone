@@ -13,7 +13,7 @@ public final class Player extends Mob {
 	private final String name;
 	private final Session session;
 	private Set<Chunk.Key> knownChunks = new HashSet<Chunk.Key>();
-	private Set<Chunk.Key> previousChunks = new HashSet<Chunk.Key>();  
+	private Set<Chunk.Key> previousChunks = new HashSet<Chunk.Key>();
 
 	public Player(Session session, String name) {
 		super(session.getServer().getWorld());

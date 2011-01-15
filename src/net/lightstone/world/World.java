@@ -18,7 +18,7 @@ public class World {
 	}
 
 	public void pulse() {
-		
+
 	}
 
 	public ChunkManager getChunks() {

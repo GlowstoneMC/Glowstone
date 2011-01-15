@@ -13,7 +13,7 @@ public final class NbtChunkIoService implements ChunkIoService {
 
 	@Override
 	public void write(int x, int z, Chunk chunk) throws IOException {
-		
+
 	}
 
 }
