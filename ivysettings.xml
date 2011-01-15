@@ -3,10 +3,6 @@
   <settings defaultResolver="resolvers" />
   <resolvers>
     <chain name="resolvers">
-      <!--<ibiblio name="maven-r1" root="http://repo1.maven.org/maven2/" m2compatible="true" />
-      <ibiblio name="maven-r2" root="http://repo2.maven.org/maven2/" m2compatible="true" />
-      <ibiblio name="jboss" root="http://repository.jboss.org/nexus/content/groups/public-jboss/" m2compatible="true" />
-      <ibiblio name="jboss-old" root="http://repository.jboss.org/maven2/" m2compatible="true" />-->
       <url name="maven-r1" m2compatible="true">
         <artifact pattern="http://repo1.maven.org/maven2/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />
       </url>
