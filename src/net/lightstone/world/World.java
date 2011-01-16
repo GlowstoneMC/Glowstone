@@ -8,6 +8,7 @@ import net.lightstone.model.Entity;
 import net.lightstone.model.EntityManager;
 import net.lightstone.model.Player;
 import net.lightstone.model.Position;
+import net.lightstone.msg.ChatMessage;
 
 public class World {
 
@@ -43,6 +44,12 @@ public class World {
 
 	public Position getSpawnPosition() {
 		return spawnPosition;
+	}
+
+	public void broadcastMessage(String text) {
+		ChatMessage message = new ChatMessage(text);
+		for (Player player : getPlayers())
+			player.getSession().send(message);
 	}
 
 }

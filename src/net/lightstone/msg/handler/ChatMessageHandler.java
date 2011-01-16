@@ -2,7 +2,6 @@ package net.lightstone.msg.handler;
 
 import net.lightstone.model.Player;
 import net.lightstone.msg.ChatMessage;
-import net.lightstone.msg.Message;
 import net.lightstone.net.Session;
 
 public final class ChatMessageHandler extends MessageHandler<ChatMessage> {
@@ -18,10 +17,7 @@ public final class ChatMessageHandler extends MessageHandler<ChatMessage> {
 		} else if (text.startsWith("/")) {
 			// TODO process command
 		} else {
-			Message m = new ChatMessage("<" + player.getName() + "> " + text);
-			for (Player p : player.getWorld().getPlayers()) {
-				p.getSession().send(m);
-			}
+			player.getWorld().broadcastMessage("<" + player.getName() + "> " + text);
 		}
 	}
 
