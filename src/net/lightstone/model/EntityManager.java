@@ -1,24 +1,26 @@
 package net.lightstone.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
-public final class EntityManager {
+public final class EntityManager implements Iterable<Entity> {
 
 	private final Map<Integer, Entity> entities = new HashMap<Integer, Entity>();
-	private final Map<Class<? extends Entity>, Collection<? extends Entity>> groupedEntities = new HashMap<Class<? extends Entity>, Collection<? extends Entity>>();
+	private final Map<Class<? extends Entity>, Set<? extends Entity>> groupedEntities = new HashMap<Class<? extends Entity>, Set<? extends Entity>>();
 	private int nextId = 1;
 
 	@SuppressWarnings("unchecked")
 	public <T extends Entity> Collection<T> getAll(Class<T> type) {
-		Collection<T> collection = (Collection<T>) groupedEntities.get(type);
-		if (collection == null) {
-			collection = new ArrayList<T>();
-			groupedEntities.put(type, collection);
+		Set<T> set = (Set<T>) groupedEntities.get(type);
+		if (set == null) {
+			set = new HashSet<T>();
+			groupedEntities.put(type, set);
 		}
-		return collection;
+		return set;
 	}
 
 	public Entity getEntity(int id) {
@@ -30,6 +32,7 @@ public final class EntityManager {
 		for (int id = nextId; id < Integer.MAX_VALUE; id++) {
 			if (!entities.containsKey(id)) {
 				entities.put(id, entity);
+				entity.id = id;
 				((Collection<Entity>) getAll(entity.getClass())).add(entity);
 				nextId = id + 1;
 				return id;
@@ -39,7 +42,7 @@ public final class EntityManager {
 		for (int id = Integer.MIN_VALUE; id < -1; id++) { // as -1 is used as a special value
 			if (!entities.containsKey(id)) {
 				entities.put(id, entity);
-				getAll(entity.getClass()).remove(entity);
+				((Collection<Entity>) getAll(entity.getClass())).add(entity);
 				nextId = id + 1;
 				return id;
 			}
@@ -50,6 +53,12 @@ public final class EntityManager {
 
 	void deallocate(Entity entity) {
 		entities.remove(entity.getId());
+		getAll(entity.getClass()).remove(entity);
+	}
+
+	@Override
+	public Iterator<Entity> iterator() {
+		return entities.values().iterator();
 	}
 
 }

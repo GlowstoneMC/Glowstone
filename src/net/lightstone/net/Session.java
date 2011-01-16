@@ -22,6 +22,7 @@ public final class Session {
 	private final Server server;
 	private final Channel channel;
 	private final Queue<Message> messageQueue = new ArrayDeque<Message>();
+	private int timeoutCounter = 0;
 	private State state = State.EXCHANGE_HANDSHAKE;
 	private Player player;
 
@@ -52,16 +53,19 @@ public final class Session {
 
 	@SuppressWarnings("unchecked")
 	public void pulse() {
+		timeoutCounter++;
+
 		Message message;
 		while ((message = messageQueue.poll()) != null) {
 			MessageHandler<Message> handler = (MessageHandler<Message>) HandlerLookupService.find(message.getClass());
 			if (handler != null) {
 				handler.handle(this, player, message);
 			}
+			timeoutCounter = 0;
 		}
 
-		if (player != null && state == State.GAME)
-			player.pulse();
+		if (timeoutCounter >= 6)
+			disconnect("Timed out.");
 	}
 
 	public void send(Message message) {
@@ -87,12 +91,9 @@ public final class Session {
 
 	void dispose() {
 		if (player != null) {
-			server.getWorld().getPlayers().remove(player);
 			player.destroy();
+			player = null; // in case we are disposed twice
 		}
-
-		if (channel.isOpen())
-			channel.close();
 	}
 
 }

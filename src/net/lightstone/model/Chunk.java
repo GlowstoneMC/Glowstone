@@ -5,6 +5,8 @@ import net.lightstone.msg.Message;
 
 public final class Chunk {
 
+	public static final int VISIBLE_RADIUS = 8;
+
 	public static final class Key {
 
 		private final int x, z;

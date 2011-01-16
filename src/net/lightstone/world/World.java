@@ -4,10 +4,14 @@ import java.util.Collection;
 
 import net.lightstone.io.ChunkIoService;
 import net.lightstone.model.ChunkManager;
+import net.lightstone.model.Entity;
 import net.lightstone.model.EntityManager;
 import net.lightstone.model.Player;
+import net.lightstone.model.Position;
 
 public class World {
+
+	private final Position spawnPosition = new Position(0, 63, 0);
 
 	private final ChunkManager chunks;
 
@@ -18,7 +22,11 @@ public class World {
 	}
 
 	public void pulse() {
+		for (Entity entity : entities)
+			entity.pulse();
 
+		for (Entity entity : entities)
+			entity.reset();
 	}
 
 	public ChunkManager getChunks() {
@@ -31,6 +39,10 @@ public class World {
 
 	public Collection<Player> getPlayers() {
 		return entities.getAll(Player.class);
+	}
+
+	public Position getSpawnPosition() {
+		return spawnPosition;
 	}
 
 }

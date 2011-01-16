@@ -1,5 +1,6 @@
 package net.lightstone.model;
 
+import net.lightstone.msg.Message;
 import net.lightstone.world.World;
 
 public final class ItemEntity extends Entity {
@@ -13,6 +14,16 @@ public final class ItemEntity extends Entity {
 
 	public Item getItem() {
 		return item;
+	}
+
+	@Override
+	public Message createSpawnMessage() {
+		return null;
+	}
+
+	@Override
+	public Message createUpdateMessage() {
+		return null;
 	}
 
 }
