@@ -31,7 +31,7 @@ public final class SpawnMobCodec extends MessageCodec<SpawnMobMessage> {
 
 	@Override
 	public ChannelBuffer encode(SpawnMobMessage message) throws IOException {
-		ChannelBuffer buffer = ChannelBuffers.buffer(19);
+		ChannelBuffer buffer = ChannelBuffers.dynamicBuffer();
 		buffer.writeInt(message.getId());
 		buffer.writeByte(message.getType());
 		buffer.writeInt(message.getX());
