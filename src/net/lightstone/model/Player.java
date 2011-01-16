@@ -13,6 +13,8 @@ import net.lightstone.net.Session;
 
 public final class Player extends Mob {
 
+	public static final double EYE_HEIGHT = 1.62D;
+
 	private final String name;
 	private final Session session;
 	private Set<Entity> knownEntities = new HashSet<Entity>();
@@ -27,7 +29,7 @@ public final class Player extends Mob {
 		// stream the initial set of blocks and teleport us
 		this.streamBlocks();
 		this.position = world.getSpawnPosition();
-		this.session.send(new PositionRotationMessage(position.getX(), position.getY(), position.getZ(), position.getY() + 1.62D, (float) rotation.getYaw(), (float) rotation.getPitch(), true));
+		this.session.send(new PositionRotationMessage(position.getX(), position.getY(), position.getZ(), position.getY() + EYE_HEIGHT, (float) rotation.getYaw(), (float) rotation.getPitch(), true));
 	}
 
 	public String getName() {
