@@ -49,8 +49,9 @@ Credits
  * All the people behind [JRuby](http://jruby.org),
    [Ant](http://ant.apache.org), [Ivy](http://ant.apache.org/ivy) and
    [Java](http://java.oracle.com).
- * [Notch](http://mojang.com/notch) - for making such a super awesome game in
-   the first place!
+ * [Notch](http://mojang.com/notch) and all the other people at
+   [Mojang][http://mojang.com)- for making such an awesome game in the first
+   place!
 
 Copyright
 ---------
