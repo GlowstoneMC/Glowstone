@@ -8,6 +8,9 @@ import net.lightstone.msg.HandshakeMessage;
 import net.lightstone.msg.IdentificationMessage;
 import net.lightstone.msg.Message;
 import net.lightstone.msg.PingMessage;
+import net.lightstone.msg.PositionMessage;
+import net.lightstone.msg.PositionRotationMessage;
+import net.lightstone.msg.RotationMessage;
 
 public final class HandlerLookupService {
 
@@ -19,6 +22,9 @@ public final class HandlerLookupService {
 			bind(IdentificationMessage.class, IdentificationMessageHandler.class);
 			bind(HandshakeMessage.class, HandshakeMessageHandler.class);
 			bind(ChatMessage.class, ChatMessageHandler.class);
+			bind(PositionMessage.class, PositionMessageHandler.class);
+			bind(RotationMessage.class, RotationMessageHandler.class);
+			bind(PositionRotationMessage.class, PositionRotationMessageHandler.class);
 		} catch (Exception ex) {
 			throw new ExceptionInInitializerError(ex);
 		}

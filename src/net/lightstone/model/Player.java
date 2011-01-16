@@ -51,6 +51,7 @@ public final class Player extends Mob {
 		}
 
 		for (Chunk.Key key : previousChunks) {
+			session.send(new LoadChunkMessage(key.getX(), key.getZ(), false));
 			knownChunks.remove(key);
 		}
 
