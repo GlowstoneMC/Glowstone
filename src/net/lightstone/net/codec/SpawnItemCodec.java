@@ -21,6 +21,7 @@ package net.lightstone.net.codec;
 
 import java.io.IOException;
 
+import net.lightstone.model.Item;
 import net.lightstone.msg.SpawnItemMessage;
 
 import org.jboss.netty.buffer.ChannelBuffer;
@@ -44,16 +45,16 @@ public class SpawnItemCodec extends MessageCodec<SpawnItemMessage> {
 		int rotation = buffer.readUnsignedByte();
 		int pitch = buffer.readUnsignedByte();
 		int roll = buffer.readUnsignedByte();
-		return new SpawnItemMessage(id, item, count, damage, x, y, z, rotation, pitch, roll);
+		return new SpawnItemMessage(id, new Item(item, count, damage), x, y, z, rotation, pitch, roll);
 	}
 
 	@Override
 	public ChannelBuffer encode(SpawnItemMessage message) throws IOException {
 		ChannelBuffer buffer = ChannelBuffers.buffer(22);
 		buffer.writeInt(message.getId());
-		buffer.writeShort(message.getItem());
-		buffer.writeByte(message.getCount());
-		buffer.writeShort(message.getDamage());
+		buffer.writeShort(message.getItem().getId());
+		buffer.writeByte(message.getItem().getCount());
+		buffer.writeShort(message.getItem().getDamage());
 		buffer.writeInt(message.getX());
 		buffer.writeInt(message.getY());
 		buffer.writeInt(message.getZ());

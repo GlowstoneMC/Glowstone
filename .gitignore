@@ -3,6 +3,9 @@
 *.iml
 *.ipr
 *.iws
+build
+out
+classes
 nbproject
 bin
 lib

@@ -30,16 +30,42 @@ import net.lightstone.msg.PositionRotationMessage;
 import net.lightstone.msg.SpawnPlayerMessage;
 import net.lightstone.net.Session;
 
+/**
+ * Represents an in-game player.
+ * @author Graham Edgecombe
+ */
 public final class Player extends Mob {
 
+    /**
+     * The normal height of a player's eyes above their feet.
+     */
 	public static final double EYE_HEIGHT = 1.62D;
 
+    /**
+     * The name of this player.
+     */
 	private final String name;
-	private final Session session;
-	private Set<Entity> knownEntities = new HashSet<Entity>();
-	private Set<Chunk.Key> knownChunks = new HashSet<Chunk.Key>();
-	private Set<Chunk.Key> previousChunks = new HashSet<Chunk.Key>();
 
+    /**
+     * This player's session.
+     */
+	private final Session session;
+
+    /**
+     * The entities that the client knows about.
+     */
+	private Set<Entity> knownEntities = new HashSet<Entity>();
+
+    /**
+     * The chunks that the client knows about.
+     */
+	private Set<Chunk.Key> knownChunks = new HashSet<Chunk.Key>();
+
+    /**
+     * Creates a new player and adds it to the world.
+     * @param session The player's session.
+     * @param name The player's name.
+     */
 	public Player(Session session, String name) {
 		super(session.getServer().getWorld());
 		this.name = name;
@@ -51,6 +77,10 @@ public final class Player extends Mob {
 		this.session.send(new PositionRotationMessage(position.getX(), position.getY(), position.getZ(), position.getY() + EYE_HEIGHT, (float) rotation.getYaw(), (float) rotation.getPitch(), true));
 	}
 
+    /**
+     * Gets the name of this player.
+     * @return The name of this player.
+     */
 	public String getName() {
 		return name;
 	}
@@ -87,7 +117,12 @@ public final class Player extends Mob {
 		}
 	}
 
+    /**
+     * Streams chunks to the player's client.
+     */
 	private void streamBlocks() {
+        Set<Chunk.Key> previousChunks = new HashSet<Chunk.Key>(knownChunks);
+
 		int centralX = ((int) position.getX()) / Chunk.WIDTH;
 		int centralZ = ((int) position.getZ()) / Chunk.HEIGHT;
 
@@ -109,20 +144,23 @@ public final class Player extends Mob {
 		}
 
 		previousChunks.clear();
-		previousChunks.addAll(knownChunks);
 	}
 
+    /**
+     * Gets the session.
+     * @return The session.
+     */
 	public Session getSession() {
 		return session;
 	}
 
 	@Override
 	public Message createSpawnMessage() {
-		int x = position.getAbsX();
-		int y = position.getAbsY();
-		int z = position.getAbsZ();
-		int yaw = rotation.getAbsYaw();
-		int pitch = rotation.getAbsPitch();
+		int x = position.getIntX();
+		int y = position.getIntY();
+		int z = position.getIntZ();
+		int yaw = rotation.getIntYaw();
+		int pitch = rotation.getIntPitch();
 		return new SpawnPlayerMessage(id, name, x, y, z, yaw, pitch, 0);
 	}
 

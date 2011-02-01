@@ -20,6 +20,7 @@
 package net.lightstone.model;
 
 import net.lightstone.msg.Message;
+import net.lightstone.msg.SpawnItemMessage;
 import net.lightstone.world.World;
 
 public final class ItemEntity extends Entity {
@@ -37,7 +38,15 @@ public final class ItemEntity extends Entity {
 
 	@Override
 	public Message createSpawnMessage() {
-		return null;
+        int x = position.getIntX();
+        int y = position.getIntY();
+        int z = position.getIntZ();
+
+        int yaw = rotation.getIntYaw();
+        int pitch = rotation.getIntPitch();
+        int roll = rotation.getIntRoll();
+
+		return new SpawnItemMessage(id, item, x, y, z, yaw, pitch, roll);
 	}
 
 	@Override

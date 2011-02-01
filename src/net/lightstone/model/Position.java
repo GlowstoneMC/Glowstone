@@ -19,41 +19,89 @@
 
 package net.lightstone.model;
 
+/**
+ * An immutable class which represents a position within the in-game world.
+ * @author Graham Edgecombe
+ */
 public final class Position {
 
+    /**
+     * The number of integer values between each double value. For example, if
+     * the coordinate was {@code 1.5}, this would be sent as
+     * {@code 1.5 * 32 = 48} within certain packets.
+     */
 	public static final int GRANULARITY = 32;
 
+    /**
+     * A position where all the coordinates are set to zero.
+     */
 	public static final Position ZERO = new Position(0, 0, 0);
 
+    /**
+     * The coordinates.
+     */
 	private final double x, y, z;
 
+    /**
+     * Creates a new position.
+     * @param x The X coordinate.
+     * @param y The Y coordinate.
+     * @param z The Z coordinate.
+     */
 	public Position(double x, double y, double z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
 
+    /**
+     * Gets the X coordinate.
+     * @return The X coordinate.
+     */
 	public double getX() {
 		return x;
 	}
 
+    /**
+     * Gets the Y coordinate.
+     * @return The Y coordinate.
+     */
 	public double getY() {
 		return y;
 	}
 
+    /**
+     * Gets the Z coordinate.
+     * @return The Z coordinate.
+     */
 	public double getZ() {
 		return z;
 	}
 
-	public int getAbsX() {
+    /**
+     * Gets the X coordinate multiplied the granularity and rounded to an
+     * integer.
+     * @return An integer approximation of the X coordinate.
+     */
+	public int getIntX() {
 		return (int) (x * GRANULARITY);
 	}
 
-	public int getAbsY() {
+    /**
+     * Gets the Y coordinate multiplied the granularity and rounded to an
+     * integer.
+     * @return An integer approximation of the Y coordinate.
+     */
+	public int getIntY() {
 		return (int) (y * GRANULARITY);
 	}
 
-	public int getAbsZ() {
+    /**
+     * Gets the Z coordinate multiplied the granularity and rounded to an
+     * integer.
+     * @return An integer approximation of the Z coordinate.
+     */
+	public int getIntZ() {
 		return (int) (z * GRANULARITY);
 	}
 

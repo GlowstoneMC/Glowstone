@@ -19,43 +19,88 @@
 
 package net.lightstone.model;
 
+/**
+ * An immutable class which represents a rotation in the in-game world.
+ * @author Graham Edgecombe
+ */
 public final class Rotation {
 
+    /**
+     * A rotation in which all the components are set to zero.
+     */
 	public static final Rotation ZERO = new Rotation(0, 0, 0);
 
+    /**
+     * The components of this rotation.
+     */
 	private final double yaw, pitch, roll;
 
+    /**
+     * Creates a rotation with just a yaw and pitch. The roll is set to zero.
+     * @param yaw The yaw.
+     * @param pitch The pitch.
+     */
 	public Rotation(double yaw, double pitch) {
 		this(yaw, pitch, 0);
 	}
 
+    /**
+     * Creates a rotation with a yaw, pitch and roll.
+     * @param yaw The yaw.
+     * @param pitch The pitch.
+     * @param roll The roll.
+     */
 	public Rotation(double yaw, double pitch, int roll) {
 		this.yaw = yaw;
 		this.pitch = pitch;
 		this.roll = roll;
 	}
 
+    /**
+     * Gets the yaw.
+     * @return The yaw.
+     */
 	public double getYaw() {
 		return yaw;
 	}
 
+    /**
+     * Gets the pitch.
+     * @return The pitch.
+     */
 	public double getPitch() {
 		return pitch;
 	}
 
+    /**
+     * Gets the roll.
+     * @return The roll.
+     */
 	public double getRoll() {
 		return roll;
 	}
 
-	public int getAbsYaw() {
+    /**
+     * Gets an integer approximation of the yaw between 0 and 255.
+     * @return An integer approximation of the yaw.
+     */
+	public int getIntYaw() {
 		return (int) (((yaw % 360) / 360) * 256);
 	}
 
-	public int getAbsPitch() {
+    /**
+     * Gets an integer approximation of the pitch between 0 and 255.
+     * @return An integer approximation of the pitch.
+     */
+	public int getIntPitch() {
 		return (int) (((pitch % 360) / 360) * 256);
 	}
 
-	public int getAbsRoll() {
+    /**
+     * Gets an integer approximation of the roll between 0 and 255.
+     * @return An integer approximation of the roll.
+     */
+	public int getIntRoll() {
 		return (int) (((roll % 360) / 360) * 256);
 	}
 
