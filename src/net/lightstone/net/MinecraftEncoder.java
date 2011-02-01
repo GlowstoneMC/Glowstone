@@ -30,6 +30,10 @@ import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
 
+/**
+ * A {@link OneToOneEncoder} which encodes Minecraft {@link Message}s into
+ * {@link ChannelBuffer}s.
+ */
 public class MinecraftEncoder extends OneToOneEncoder {
 
 	@SuppressWarnings("unchecked")

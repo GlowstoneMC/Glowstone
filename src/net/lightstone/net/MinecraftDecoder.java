@@ -29,6 +29,10 @@ import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.handler.codec.replay.ReplayingDecoder;
 import org.jboss.netty.handler.codec.replay.VoidEnum;
 
+/**
+ * A {@link ReplayingDecoder} which decodes {@link ChannelBuffer}s into
+ * Minecraft {@link net.lightstone.msg.Message}s.
+ */
 public class MinecraftDecoder extends ReplayingDecoder<VoidEnum> {
 
 	private int previousOpcode = -1;

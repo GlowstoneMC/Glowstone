@@ -32,12 +32,27 @@ import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 
+/**
+ * A {@link SimpleChannelUpstreamHandler} which processes incoming network
+ * events.
+ * @author Graham Edgecombe.
+ */
 public class MinecraftHandler extends SimpleChannelUpstreamHandler {
 
+    /**
+     * The logger for this class.
+     */
 	private static final Logger logger = Logger.getLogger(MinecraftHandler.class.getName());
 
+    /**
+     * The server.
+     */
 	private final Server server;
 
+    /**
+     * Creates a new network event handler.
+     * @param server The server.
+     */
 	public MinecraftHandler(Server server) {
 		this.server = server;
 	}
