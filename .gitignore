@@ -1,6 +1,12 @@
 .*
 *~
+*.iml
+*.ipr
+*.iws
+nbproject
 bin
 lib
 doc
 !.gitignore
+!.gitmodules
+!.mailmap
