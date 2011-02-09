@@ -40,6 +40,12 @@ import org.jboss.netty.channel.ChannelFutureListener;
 public final class Session {
 
     /**
+     * The number of ticks which are elapsed before a client is disconnected due
+     * to a timeout.
+     */
+    private static final int TIMEOUT_TICKS = 300;
+
+    /**
      * The state this connection is currently in.
      */
 	public enum State {
@@ -154,7 +160,7 @@ public final class Session {
 			timeoutCounter = 0;
 		}
 
-		if (timeoutCounter >= 6)
+		if (timeoutCounter >= TIMEOUT_TICKS)
 			disconnect("Timed out.");
 	}
 
