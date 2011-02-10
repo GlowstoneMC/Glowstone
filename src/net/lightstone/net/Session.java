@@ -161,7 +161,7 @@ public final class Session {
 		}
 
 		if (timeoutCounter >= TIMEOUT_TICKS)
-			disconnect("Timed out.");
+			disconnect("Timed out");
 	}
 
     /**
