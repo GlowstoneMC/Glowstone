@@ -21,6 +21,10 @@ package net.lightstone.world;
 
 import net.lightstone.model.Chunk;
 
+/**
+ * A {@link WorldGenerator} used to generate a test world.
+ * @author Graham Edgecombe
+ */
 public final class TestWorldGenerator implements WorldGenerator {
 
 	@Override

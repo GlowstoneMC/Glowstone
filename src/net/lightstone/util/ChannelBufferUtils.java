@@ -27,10 +27,22 @@ import net.lightstone.model.Item;
 
 import org.jboss.netty.buffer.ChannelBuffer;
 
+/**
+ * Contains several {@link ChannelBuffer}-related utility methods.
+ * @author Graham Edgecombe
+ */
 public final class ChannelBufferUtils {
 
+	/**
+	 * The UTF-8 character set.
+	 */
 	private static final Charset CHARSET_UTF8 = Charset.forName("UTF-8");
 
+	/**
+	 * Writes a list of parameters (e.g. mob metadata) to the buffer.
+	 * @param buf The buffer.
+	 * @param parameters The parameters.
+	 */
 	@SuppressWarnings("unchecked")
 	public static void writeParameters(ChannelBuffer buf, List<Parameter<?>> parameters) {
 		for (Parameter<?> parameter : parameters) {
@@ -67,6 +79,11 @@ public final class ChannelBufferUtils {
 		buf.writeByte(127);
 	}
 
+	/**
+	 * Reads a list of parameters from the buffer.
+	 * @param buf The buffer.
+	 * @return The parameters.
+	 */
 	public static List<Parameter<?>> readParameters(ChannelBuffer buf) {
 		List<Parameter<?>> parameters = new ArrayList<Parameter<?>>();
 
@@ -103,6 +120,13 @@ public final class ChannelBufferUtils {
 		return parameters;
 	}
 
+	/**
+	 * Writes a string to the buffer.
+	 * @param buf The buffer.
+	 * @param str The string.
+	 * @throws IllegalArgumentException if the string is too long
+	 * <em>after</em> it is encoded.
+	 */
 	public static void writeString(ChannelBuffer buf, String str) {
 		byte[] bytes = str.getBytes(CHARSET_UTF8);
 		if (bytes.length >= 65536) {
@@ -113,6 +137,11 @@ public final class ChannelBufferUtils {
 		buf.writeBytes(bytes);
 	}
 
+	/**
+	 * Reads a string from the buffer.
+	 * @param buf The buffer.
+	 * @return The string.
+	 */
 	public static String readString(ChannelBuffer buf) {
 		int length = buf.readUnsignedShort();
 
@@ -122,6 +151,9 @@ public final class ChannelBufferUtils {
 		return new String(bytes, CHARSET_UTF8);
 	}
 
+	/**
+	 * Default private constructor to prevent instantiation.
+	 */
 	private ChannelBufferUtils() {
 
 	}
