@@ -18,7 +18,7 @@
   ~ along with Lightstone.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<project name="lightstone" default="build" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="glowstone" default="build" xmlns:ivy="antlib:org.apache.ivy.ant">
   <property name="src" location="src" />
   <property name="bin" location="bin" />
   <property name="lib" location="lib" />
