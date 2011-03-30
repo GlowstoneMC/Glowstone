@@ -7,7 +7,7 @@ import org.jboss.netty.buffer.ChannelBuffers;
 
 import net.lightstone.msg.AnimateEntityMessage;
 
-public class AnimateEntityCodec extends MessageCodec<AnimateEntityMessage> {
+public final class AnimateEntityCodec extends MessageCodec<AnimateEntityMessage> {
 
 	public AnimateEntityCodec() {
 		super(AnimateEntityMessage.class, 0x12);

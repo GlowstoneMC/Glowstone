@@ -1,6 +1,4 @@
-package net.lightstone.net.codec;
-
-import net.lightstone.msg.Message;
+package net.lightstone.msg;
 
 public final class ProgressBarMessage extends Message {
 

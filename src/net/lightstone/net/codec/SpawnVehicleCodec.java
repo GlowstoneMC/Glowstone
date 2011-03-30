@@ -7,7 +7,7 @@ import net.lightstone.msg.SpawnVehicleMessage;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 
-public class SpawnVehicleCodec extends MessageCodec<SpawnVehicleMessage> {
+public final class SpawnVehicleCodec extends MessageCodec<SpawnVehicleMessage> {
 
 	public SpawnVehicleCodec() {
 		super(SpawnVehicleMessage.class, 0x17);

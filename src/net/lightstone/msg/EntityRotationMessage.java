@@ -1,6 +1,6 @@
 package net.lightstone.msg;
 
-public class EntityRotationMessage extends Message {
+public final class EntityRotationMessage extends Message {
 
 	private final int id, rotation, pitch;
 

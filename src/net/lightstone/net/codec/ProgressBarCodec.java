@@ -2,6 +2,8 @@ package net.lightstone.net.codec;
 
 import java.io.IOException;
 
+import net.lightstone.msg.ProgressBarMessage;
+
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 

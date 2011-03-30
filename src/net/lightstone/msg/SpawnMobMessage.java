@@ -4,7 +4,7 @@ import java.util.List;
 
 import net.lightstone.util.Parameter;
 
-public class SpawnMobMessage extends Message {
+public final class SpawnMobMessage extends Message {
 
 	private final int id, type, x, y, z, rotation, pitch;
 	private final List<Parameter<?>> parameters;

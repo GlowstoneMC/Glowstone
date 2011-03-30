@@ -1,6 +1,6 @@
 package net.lightstone.msg;
 
-public class SpawnVehicleMessage extends Message {
+public final class SpawnVehicleMessage extends Message {
 
 	private final int id, type, x, y, z;
 

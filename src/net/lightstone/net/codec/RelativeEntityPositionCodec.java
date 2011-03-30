@@ -7,7 +7,7 @@ import org.jboss.netty.buffer.ChannelBuffers;
 
 import net.lightstone.msg.RelativeEntityPositionMessage;
 
-public class RelativeEntityPositionCodec extends MessageCodec<RelativeEntityPositionMessage> {
+public final class RelativeEntityPositionCodec extends MessageCodec<RelativeEntityPositionMessage> {
 
 	public RelativeEntityPositionCodec() {
 		super(RelativeEntityPositionMessage.class, 0x1F);

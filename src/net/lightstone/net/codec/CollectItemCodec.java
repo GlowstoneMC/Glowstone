@@ -7,7 +7,7 @@ import org.jboss.netty.buffer.ChannelBuffers;
 
 import net.lightstone.msg.CollectItemMessage;
 
-public class CollectItemCodec extends MessageCodec<CollectItemMessage> {
+public final class CollectItemCodec extends MessageCodec<CollectItemMessage> {
 
 	public CollectItemCodec() {
 		super(CollectItemMessage.class, 0x16);

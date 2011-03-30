@@ -8,7 +8,7 @@ import net.lightstone.msg.SpawnItemMessage;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 
-public class SpawnItemCodec extends MessageCodec<SpawnItemMessage> {
+public final class SpawnItemCodec extends MessageCodec<SpawnItemMessage> {
 
 	public SpawnItemCodec() {
 		super(SpawnItemMessage.class, 0x15);
