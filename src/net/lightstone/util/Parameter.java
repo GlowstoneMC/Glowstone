@@ -41,12 +41,12 @@ public class Parameter<T> {
 	 * The type of parameter.
 	 */
 	private final int type;
-	
+
 	/**
 	 * The index.
 	 */
 	private final int index;
-	
+
 	/**
 	 * The value.
 	 */

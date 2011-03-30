@@ -10,12 +10,12 @@ public abstract class Task {
 	 * The number of ticks between calls to the {@link #execute()} method.
 	 */
 	private int ticks;
-	
+
 	/**
 	 * The current count of remaining ticks.
 	 */
 	private int counter;
-	
+
 	/**
 	 * A flag which indicates if this task is running.
 	 */

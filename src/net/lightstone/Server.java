@@ -53,12 +53,12 @@ public final class Server {
 	 * The {@link ServerBootstrap} used to initialize Netty.
 	 */
 	private final ServerBootstrap bootstrap = new ServerBootstrap();
-	
+
 	/**
 	 * A group containing all of the channels.
 	 */
 	private final ChannelGroup group = new DefaultChannelGroup();
-	
+
 	/**
 	 * The network executor service - Netty dispatches events to this thread
 	 * pool.
@@ -69,12 +69,12 @@ public final class Server {
 	 * A list of all the active {@link Session}s.
 	 */
 	private final SessionRegistry sessions = new SessionRegistry();
-	
+
 	/**
 	 * The task scheduler used by this server.
 	 */
 	private final TaskScheduler scheduler = new TaskScheduler();
-	
+
 	/**
 	 * The world this server is managing.
 	 */

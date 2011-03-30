@@ -22,12 +22,12 @@ public final class TaskScheduler {
 	 * The scheduled executor service which backs this scheduler.
 	 */
 	private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-	
+
 	/**
 	 * A list of new tasks to be added.
 	 */
 	private final List<Task> newTasks = new ArrayList<Task>();
-	
+
 	/**
 	 * A list of active tasks.
 	 */
