@@ -1,22 +1,3 @@
-/*
- * Copyright (c) 2010-2011 Graham Edgecombe.
- *
- * This file is part of Lightstone.
- *
- * Lightstone is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Lightstone is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Lightstone.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package net.lightstone;
 
 import java.net.InetSocketAddress;
@@ -72,12 +53,12 @@ public final class Server {
 	 * The {@link ServerBootstrap} used to initialize Netty.
 	 */
 	private final ServerBootstrap bootstrap = new ServerBootstrap();
-	
+
 	/**
 	 * A group containing all of the channels.
 	 */
 	private final ChannelGroup group = new DefaultChannelGroup();
-	
+
 	/**
 	 * The network executor service - Netty dispatches events to this thread
 	 * pool.
@@ -88,12 +69,12 @@ public final class Server {
 	 * A list of all the active {@link Session}s.
 	 */
 	private final SessionRegistry sessions = new SessionRegistry();
-	
+
 	/**
 	 * The task scheduler used by this server.
 	 */
 	private final TaskScheduler scheduler = new TaskScheduler();
-	
+
 	/**
 	 * The world this server is managing.
 	 */

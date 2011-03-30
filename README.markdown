@@ -56,5 +56,6 @@ Credits
 Copyright
 ---------
 
-Lightstone is open-source software released under the GPL license, please see
-the `COPYING` and `LICENSE` files for details.
+Lightstone is open-source software released under the MIT license, please see
+the `LICENSE` file for details.
+
