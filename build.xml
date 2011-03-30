@@ -53,8 +53,8 @@
   <target name="doc" depends="init">
     <javadoc sourcepath="${src}" classpathref="master" destdir="${doc}"
              access="private" author="true" version="true" use="true"
-             windowtitle="Lightstone Documentation">
-      <doctitle><![CDATA[<h1>Lightstone Documentation</h1>]]></doctitle>
+             windowtitle="Glowstone Documentation">
+      <doctitle><![CDATA[<h1>Glowstone Documentation</h1>]]></doctitle>
       <link href="http://download.oracle.com/javase/6/docs/api/" />
       <link href="http://docs.jboss.org/netty/3.2/api/" />
       <link href="http://jruby.org/apidocs/" />
