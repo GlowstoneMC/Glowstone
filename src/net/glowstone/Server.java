@@ -42,7 +42,7 @@ public final class Server {
 	public static void main(String[] args) {
 		try {
 			Server server = new Server();
-			server.bind(new InetSocketAddress(25565));
+			server.bind(new InetSocketAddress(13000));
 			server.start();
 		} catch (Throwable t) {
 			logger.log(Level.SEVERE, "Error during server startup.", t);

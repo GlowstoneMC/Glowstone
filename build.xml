@@ -47,7 +47,7 @@
   <target name="rebuild" depends="clean, build" />
 
   <target name="run" depends="build">
-    <java classpathref="master" fork="true" classname="net.lightstone.Server" />
+    <java classpathref="master" fork="true" classname="net.glowstone.Server" />
   </target>
 
   <target name="doc" depends="init">
