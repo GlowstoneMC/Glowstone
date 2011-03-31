@@ -44,11 +44,11 @@ public final class Monster extends Mob {
 
 	@Override
 	public Message createSpawnMessage() {
-		int x = position.getIntX();
-		int y = position.getIntY();
-		int z = position.getIntZ();
-		int yaw = rotation.getIntYaw();
-		int pitch = rotation.getIntPitch();
+		int x = Position.getIntX(location);
+		int y = Position.getIntY(location);
+		int z = Position.getIntZ(location);
+		int yaw = Position.getIntYaw(location);
+		int pitch = Position.getIntPitch(location);
 		return new SpawnMobMessage(id, type, x, y, z, yaw, pitch, metadata);
 	}
 

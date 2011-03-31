@@ -1,8 +1,8 @@
 package net.glowstone.msg.handler;
 
+import org.bukkit.Location;
+
 import net.glowstone.model.Player;
-import net.glowstone.model.Position;
-import net.glowstone.model.Rotation;
 import net.glowstone.msg.PositionRotationMessage;
 import net.glowstone.net.Session;
 
@@ -13,8 +13,8 @@ public final class PositionRotationMessageHandler extends MessageHandler<Positio
 		if (player == null)
 			return;
 
-		player.setPosition(new Position(message.getX(), message.getY(), message.getZ()));
-		player.setRotation(new Rotation(message.getRotation(), message.getPitch()));
+        // TODO: change 'null' to player.getWorld()
+		player.setLocation(new Location(null, message.getX(), message.getY(), message.getZ(), message.getRotation(), message.getPitch()));
 	}
 
 }

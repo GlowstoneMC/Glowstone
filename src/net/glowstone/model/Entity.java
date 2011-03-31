@@ -1,5 +1,7 @@
 package net.glowstone.model;
 
+import org.bukkit.Location;
+
 import net.glowstone.msg.Message;
 import net.glowstone.world.World;
 
@@ -27,22 +29,12 @@ public abstract class Entity {
     /**
      * The current position.
      */
-	protected Position position = Position.ZERO;
+	protected Location location = Position.ZERO;
 
     /**
      * The position in the last cycle.
      */
-	protected Position previousPosition = Position.ZERO;
-
-    /**
-     * The current rotation.
-     */
-	protected Rotation rotation = Rotation.ZERO;
-
-    /**
-     * The rotation in the last cycle.
-     */
-	protected Rotation previousRotation = Rotation.ZERO;
+	protected Location previousLocation = Position.ZERO;
 
     /**
      * Creates an entity and adds it to the specified world.
@@ -61,8 +53,8 @@ public abstract class Entity {
      * not.
      */
 	public boolean isWithinDistance(Entity other) {
-		double dx = Math.abs(position.getX() - other.position.getX());
-		double dz = Math.abs(position.getZ() - other.position.getZ());
+		double dx = Math.abs(location.getX() - other.location.getX());
+		double dz = Math.abs(location.getZ() - other.location.getZ());
 		return dx <= (Chunk.VISIBLE_RADIUS * Chunk.WIDTH) && dz <= (Chunk.VISIBLE_RADIUS * Chunk.HEIGHT);
 	}
 
@@ -112,56 +104,31 @@ public abstract class Entity {
      * position and rotation.
      */
 	public void reset() {
-		previousPosition = position;
-		previousRotation = rotation;
+		previousLocation = location;
 	}
 
     /**
      * Gets this entity's position.
      * @return The position of this entity.
      */
-	public Position getPosition() {
-		return position;
+	public Location getLocation() {
+		return location;
 	}
 
     /**
      * Gets the entity's previous position.
      * @return The previous position of this entity.
      */
-	public Position getPreviousPosition() {
-		return previousPosition;
+	public Location getPreviousLocation() {
+		return previousLocation;
 	}
 
     /**
      * Sets this entity's position.
      * @param position The new position.
      */
-	public void setPosition(Position position) {
-		this.position = position;
-	}
-
-    /**
-     * Gets this entity's rotation.
-     * @return The rotation of this entity.
-     */
-	public Rotation getRotation() {
-		return rotation;
-	}
-
-    /**
-     * Gets the entity's previous rotation.
-     * @return The previous rotation of this entity.
-     */
-	public Rotation getPreviousRotation() {
-		return previousRotation;
-	}
-
-    /**
-     * Sets this entity's rotation.
-     * @param rotation The new rotation.
-     */
-	public void setRotation(Rotation rotation) {
-		this.rotation = rotation;
+	public void setLocation(Location location) {
+		this.location = location;
 	}
 
 	@Override
@@ -205,7 +172,7 @@ public abstract class Entity {
      * @return {@code true} if so, {@code false} if not.
      */
 	public boolean hasMoved() {
-		return !position.equals(previousPosition);
+		return Position.hasMoved(location, previousLocation);
 	}
 
     /**
@@ -213,7 +180,7 @@ public abstract class Entity {
      * @return {@code true} if so, {@code false} if not.
      */
 	public boolean hasRotated() {
-		return !rotation.equals(previousRotation);
+		return Position.hasRotated(location, previousLocation);
 	}
 
 }

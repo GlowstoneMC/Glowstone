@@ -35,15 +35,14 @@ public final class ItemEntity extends Entity {
 
 	@Override
 	public Message createSpawnMessage() {
-        int x = position.getIntX();
-        int y = position.getIntY();
-        int z = position.getIntZ();
+        int x = Position.getIntX(location);
+        int y = Position.getIntY(location);
+        int z = Position.getIntZ(location);
 
-        int yaw = rotation.getIntYaw();
-        int pitch = rotation.getIntPitch();
-        int roll = rotation.getIntRoll();
+        int yaw = Position.getIntYaw(location);
+        int pitch = Position.getIntPitch(location);
 
-		return new SpawnItemMessage(id, item, x, y, z, yaw, pitch, roll);
+		return new SpawnItemMessage(id, item, x, y, z, yaw, pitch, 0);
 	}
 
 	@Override

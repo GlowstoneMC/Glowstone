@@ -55,8 +55,8 @@ public final class Player extends Mob {
 
 		// stream the initial set of blocks and teleport us
 		this.streamBlocks();
-		this.position = world.getSpawnPosition();
-		this.session.send(new PositionRotationMessage(position.getX(), position.getY(), position.getZ(), position.getY() + EYE_HEIGHT, (float) rotation.getYaw(), (float) rotation.getPitch(), true));
+		this.location = world.getSpawnLocation();
+		this.session.send(new PositionRotationMessage(location.getX(), location.getY(), location.getZ(), location.getY() + EYE_HEIGHT, (float) location.getYaw(), (float) location.getPitch(), true));
 	}
 
     /**
@@ -106,8 +106,8 @@ public final class Player extends Mob {
 	private void streamBlocks() {
         Set<Chunk.Key> previousChunks = new HashSet<Chunk.Key>(knownChunks);
 
-		int centralX = ((int) position.getX()) / Chunk.WIDTH;
-		int centralZ = ((int) position.getZ()) / Chunk.HEIGHT;
+		int centralX = ((int) location.getX()) / Chunk.WIDTH;
+		int centralZ = ((int) location.getZ()) / Chunk.HEIGHT;
 
 		for (int x = (centralX - Chunk.VISIBLE_RADIUS); x <= (centralX + Chunk.VISIBLE_RADIUS); x++) {
 			for (int z = (centralZ - Chunk.VISIBLE_RADIUS); z <= (centralZ + Chunk.VISIBLE_RADIUS); z++) {
@@ -139,11 +139,11 @@ public final class Player extends Mob {
 
 	@Override
 	public Message createSpawnMessage() {
-		int x = position.getIntX();
-		int y = position.getIntY();
-		int z = position.getIntZ();
-		int yaw = rotation.getIntYaw();
-		int pitch = rotation.getIntPitch();
+		int x = Position.getIntX(location);
+		int y = Position.getIntY(location);
+		int z = Position.getIntZ(location);
+		int yaw = Position.getIntYaw(location);
+		int pitch = Position.getIntPitch(location);
 		return new SpawnPlayerMessage(id, name, x, y, z, yaw, pitch, 0);
 	}
 

@@ -23,21 +23,21 @@ public abstract class Mob extends Entity {
 
 	@Override
 	public Message createUpdateMessage() {
-		boolean moved = !position.equals(previousPosition);
-		boolean rotated = !rotation.equals(previousRotation);
+		boolean moved = hasMoved();
+		boolean rotated = hasRotated();
 
-		int x = position.getIntX();
-		int y = position.getIntY();
-		int z = position.getIntZ();
+		int x = Position.getIntX(location);
+		int y = Position.getIntY(location);
+		int z = Position.getIntZ(location);
 
-		int dx = x - previousPosition.getIntX();
-		int dy = y - previousPosition.getIntY();
-		int dz = z - previousPosition.getIntZ();
+		int dx = x - Position.getIntX(previousLocation);
+		int dy = y - Position.getIntY(previousLocation);
+		int dz = z - Position.getIntZ(previousLocation);
 
 		boolean teleport = dx > Byte.MAX_VALUE || dy > Byte.MAX_VALUE || dz > Byte.MAX_VALUE || dx < Byte.MIN_VALUE || dy < Byte.MIN_VALUE || dz < Byte.MIN_VALUE;
 
-		int yaw = rotation.getIntYaw();
-		int pitch = rotation.getIntPitch();
+		int yaw = Position.getIntYaw(previousLocation);
+		int pitch = Position.getIntPitch(previousLocation);
 
 		if (moved && teleport) {
 			return new EntityTeleportMessage(id, x, y, z, yaw, pitch);

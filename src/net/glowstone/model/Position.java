@@ -1,5 +1,7 @@
 package net.glowstone.model;
 
+import org.bukkit.Location;
+
 /**
  * An immutable class which represents a position within the in-game world.
  * @author Graham Edgecombe
@@ -14,58 +16,18 @@ public final class Position {
 	public static final int GRANULARITY = 32;
 
     /**
-     * A position where all the coordinates are set to zero.
+     * A position where all the coordinates are set to zero, and there is no
+     * world associated.
      */
-	public static final Position ZERO = new Position(0, 0, 0);
-
-    /**
-     * The coordinates.
-     */
-	private final double x, y, z;
-
-    /**
-     * Creates a new position.
-     * @param x The X coordinate.
-     * @param y The Y coordinate.
-     * @param z The Z coordinate.
-     */
-	public Position(double x, double y, double z) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
-
-    /**
-     * Gets the X coordinate.
-     * @return The X coordinate.
-     */
-	public double getX() {
-		return x;
-	}
-
-    /**
-     * Gets the Y coordinate.
-     * @return The Y coordinate.
-     */
-	public double getY() {
-		return y;
-	}
-
-    /**
-     * Gets the Z coordinate.
-     * @return The Z coordinate.
-     */
-	public double getZ() {
-		return z;
-	}
+	public static final Location ZERO = new Location(null, 0, 0, 0);
 
     /**
      * Gets the X coordinate multiplied the granularity and rounded to an
      * integer.
      * @return An integer approximation of the X coordinate.
      */
-	public int getIntX() {
-		return (int) (x * GRANULARITY);
+	public static int getIntX(Location loc) {
+		return (int) (loc.getX() * GRANULARITY);
 	}
 
     /**
@@ -73,8 +35,8 @@ public final class Position {
      * integer.
      * @return An integer approximation of the Y coordinate.
      */
-	public int getIntY() {
-		return (int) (y * GRANULARITY);
+	public static int getIntY(Location loc) {
+		return (int) (loc.getY() * GRANULARITY);
 	}
 
     /**
@@ -82,40 +44,40 @@ public final class Position {
      * integer.
      * @return An integer approximation of the Z coordinate.
      */
-	public int getIntZ() {
-		return (int) (z * GRANULARITY);
+	public static int getIntZ(Location loc) {
+		return (int) (loc.getZ() * GRANULARITY);
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		long temp;
-		temp = Double.doubleToLongBits(x);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(y);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(z);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		return result;
+    /**
+     * Gets an integer approximation of the yaw between 0 and 255.
+     * @return An integer approximation of the yaw.
+     */
+	public static int getIntYaw(Location loc) {
+		return (int) (((loc.getYaw() % 360) / 360) * 256);
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Position other = (Position) obj;
-		if (Double.doubleToLongBits(x) != Double.doubleToLongBits(other.x))
-			return false;
-		if (Double.doubleToLongBits(y) != Double.doubleToLongBits(other.y))
-			return false;
-		if (Double.doubleToLongBits(z) != Double.doubleToLongBits(other.z))
-			return false;
-		return true;
+    /**
+     * Gets an integer approximation of the pitch between 0 and 255.
+     * @return An integer approximation of the yaw.
+     */
+	public static int getIntPitch(Location loc) {
+		return (int) (((loc.getPitch() % 360) / 360) * 256);
 	}
+
+    /**
+     * Gets whether there has been a position change between the two Locations.
+     * @return A boolean.
+     */
+    public static boolean hasMoved(Location first, Location second) {
+        return first.getX() != second.getX() || first.getY() != second.getY() || first.getZ() != second.getZ();
+    }
+
+    /**
+     * Gets whether there has been a rotation change between the two Locations.
+     * @return A boolean.
+     */
+    public static boolean hasRotated(Location first, Location second) {
+        return first.getPitch() != second.getPitch() || first.getYaw() != second.getYaw();
+    }
 
 }

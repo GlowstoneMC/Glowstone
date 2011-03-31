@@ -2,12 +2,13 @@ package net.glowstone.world;
 
 import java.util.Collection;
 
+import org.bukkit.Location;
+
 import net.glowstone.io.ChunkIoService;
 import net.glowstone.model.ChunkManager;
 import net.glowstone.model.Entity;
 import net.glowstone.model.EntityManager;
 import net.glowstone.model.Player;
-import net.glowstone.model.Position;
 import net.glowstone.msg.ChatMessage;
 
 /**
@@ -19,7 +20,7 @@ public class World {
 	/**
 	 * The spawn position.
 	 */
-	private final Position spawnPosition = new Position(0, 63, 0);
+	private final Location spawnLocation = new Location(null, 0, 63, 0);
 
 	/**
 	 * The chunk manager.
@@ -80,8 +81,8 @@ public class World {
 	 * Gets the spawn position.
 	 * @return The spawn position.
 	 */
-	public Position getSpawnPosition() {
-		return spawnPosition;
+	public Location getSpawnLocation() {
+		return spawnLocation;
 	}
 
 	/**

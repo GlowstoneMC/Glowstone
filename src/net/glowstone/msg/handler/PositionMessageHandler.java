@@ -1,7 +1,8 @@
 package net.glowstone.msg.handler;
 
+import org.bukkit.Location;
+
 import net.glowstone.model.Player;
-import net.glowstone.model.Position;
 import net.glowstone.msg.PositionMessage;
 import net.glowstone.net.Session;
 
@@ -12,7 +13,8 @@ public final class PositionMessageHandler extends MessageHandler<PositionMessage
 		if (player == null)
 			return;
 
-		player.setPosition(new Position(message.getX(), message.getY(), message.getZ()));
+        // TODO: change 'null' to player.getWorld()
+		player.setLocation(new Location(null, message.getX(), message.getY(), message.getZ()));
 	}
 
 }
