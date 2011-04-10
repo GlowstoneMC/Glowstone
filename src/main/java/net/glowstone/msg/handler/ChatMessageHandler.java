@@ -1,7 +1,7 @@
 package net.glowstone.msg.handler;
 
 import net.glowstone.Server;
-import net.glowstone.model.Player;
+import net.glowstone.entity.Player;
 import net.glowstone.msg.ChatMessage;
 import net.glowstone.net.Session;
 

@@ -4,7 +4,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.glowstone.model.Item;
+import net.glowstone.inventory.ItemStack;
 
 import org.jboss.netty.buffer.ChannelBuffer;
 
@@ -49,7 +49,7 @@ public final class ChannelBufferUtils {
 				writeString(buf, ((Parameter<String>) parameter).getValue());
 				break;
 			case Parameter.TYPE_ITEM:
-				Item item = ((Parameter<Item>) parameter).getValue();
+				ItemStack item = ((Parameter<ItemStack>) parameter).getValue();
 				buf.writeShort(item.getId());
 				buf.writeByte(item.getCount());
 				buf.writeShort(item.getDamage());
@@ -92,8 +92,8 @@ public final class ChannelBufferUtils {
 				int id = buf.readShort();
 				int count = buf.readByte();
 				int damage = buf.readShort();
-				Item item = new Item(id, count, damage);
-				parameters.add(new Parameter<Item>(type, index, item));
+				ItemStack item = new ItemStack(id, count, damage);
+				parameters.add(new Parameter<ItemStack>(type, index, item));
 				break;
 			}
 		}

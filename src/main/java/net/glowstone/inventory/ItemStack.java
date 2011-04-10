@@ -1,11 +1,11 @@
-package net.glowstone.model;
+package net.glowstone.inventory;
 
 /**
  * An immutable class which represents an in-game item (this also includes
  * blocks which are dropped on the floor or placed in the player's inventory).
  * @author Graham Edgecombe
  */
-public class Item {
+public class ItemStack {
 
     /**
      * The item's id.
@@ -26,7 +26,7 @@ public class Item {
      * Creates a single item with no damage.
      * @param id The item id.
      */
-	public Item(int id) {
+	public ItemStack(int id) {
 		this(id, 1);
 	}
 
@@ -35,7 +35,7 @@ public class Item {
      * @param id The id.
      * @param count The number of items within the stack.
      */
-	public Item(int id, int count) {
+	public ItemStack(int id, int count) {
 		this(id, count, 0);
 	}
 
@@ -46,7 +46,7 @@ public class Item {
      * @param count The number of items within the stack.
      * @param damage The damage.
      */
-	public Item(int id, int count, int damage) {
+	public ItemStack(int id, int count, int damage) {
 		this.id = id;
 		this.count = count;
 		this.damage = damage;

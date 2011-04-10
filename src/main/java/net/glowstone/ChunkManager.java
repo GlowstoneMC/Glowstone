@@ -1,4 +1,4 @@
-package net.glowstone.model;
+package net.glowstone;
 
 import java.io.IOException;
 import java.util.HashMap;

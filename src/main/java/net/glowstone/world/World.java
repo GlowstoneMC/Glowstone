@@ -5,10 +5,10 @@ import java.util.Collection;
 import org.bukkit.Location;
 
 import net.glowstone.io.ChunkIoService;
-import net.glowstone.model.ChunkManager;
-import net.glowstone.model.Entity;
-import net.glowstone.model.EntityManager;
-import net.glowstone.model.Player;
+import net.glowstone.ChunkManager;
+import net.glowstone.entity.Entity;
+import net.glowstone.entity.EntityManager;
+import net.glowstone.entity.Player;
 import net.glowstone.msg.ChatMessage;
 
 /**

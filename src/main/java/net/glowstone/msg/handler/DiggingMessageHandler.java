@@ -1,8 +1,8 @@
 package net.glowstone.msg.handler;
 
-import net.glowstone.model.Player;
+import net.glowstone.entity.Player;
 import net.glowstone.msg.DiggingMessage;
-import net.glowstone.model.Chunk;
+import net.glowstone.Chunk;
 import net.glowstone.msg.BlockChangeMessage;
 import net.glowstone.net.Session;
 import net.glowstone.world.World;

@@ -11,8 +11,8 @@ import net.glowstone.io.NbtChunkIoService;
 import net.glowstone.net.MinecraftPipelineFactory;
 import net.glowstone.net.Session;
 import net.glowstone.net.SessionRegistry;
-import net.glowstone.task.PulseTask;
-import net.glowstone.task.TaskScheduler;
+import net.glowstone.scheduler.PulseTask;
+import net.glowstone.scheduler.TaskScheduler;
 import net.glowstone.world.TestWorldGenerator;
 import net.glowstone.world.World;
 

@@ -2,7 +2,7 @@ package net.glowstone.msg.handler;
 
 import org.bukkit.Location;
 
-import net.glowstone.model.Player;
+import net.glowstone.entity.Player;
 import net.glowstone.msg.PositionMessage;
 import net.glowstone.net.Session;
 

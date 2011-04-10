@@ -1,4 +1,4 @@
-package net.glowstone.task;
+package net.glowstone.scheduler;
 
 import net.glowstone.Server;
 import net.glowstone.net.SessionRegistry;

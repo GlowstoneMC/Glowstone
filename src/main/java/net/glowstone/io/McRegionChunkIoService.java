@@ -7,7 +7,7 @@ import java.util.Map;
 
 import net.glowstone.io.region.RegionFile;
 import net.glowstone.io.region.RegionFileCache;
-import net.glowstone.model.Chunk;
+import net.glowstone.Chunk;
 import net.glowstone.util.nbt.ByteArrayTag;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;

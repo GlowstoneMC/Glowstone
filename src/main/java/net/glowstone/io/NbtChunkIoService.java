@@ -2,7 +2,7 @@ package net.glowstone.io;
 
 import java.io.IOException;
 
-import net.glowstone.model.Chunk;
+import net.glowstone.Chunk;
 
 /**
  * An implementation of the {@link ChunkIoService} which reads and writes NBT

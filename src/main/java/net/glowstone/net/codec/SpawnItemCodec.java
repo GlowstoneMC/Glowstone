@@ -2,7 +2,7 @@ package net.glowstone.net.codec;
 
 import java.io.IOException;
 
-import net.glowstone.model.Item;
+import net.glowstone.inventory.ItemStack;
 import net.glowstone.msg.SpawnItemMessage;
 
 import org.jboss.netty.buffer.ChannelBuffer;
@@ -26,7 +26,7 @@ public final class SpawnItemCodec extends MessageCodec<SpawnItemMessage> {
 		int rotation = buffer.readUnsignedByte();
 		int pitch = buffer.readUnsignedByte();
 		int roll = buffer.readUnsignedByte();
-		return new SpawnItemMessage(id, new Item(item, count, damage), x, y, z, rotation, pitch, roll);
+		return new SpawnItemMessage(id, new ItemStack(item, count, damage), x, y, z, rotation, pitch, roll);
 	}
 
 	@Override

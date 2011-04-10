@@ -1,5 +1,7 @@
-package net.glowstone.model;
+package net.glowstone.entity;
 
+import net.glowstone.inventory.ItemStack;
+import net.glowstone.util.Position;
 import net.glowstone.msg.Message;
 import net.glowstone.msg.SpawnItemMessage;
 import net.glowstone.world.World;
@@ -13,14 +15,14 @@ public final class ItemEntity extends Entity {
 	/**
 	 * The item.
 	 */
-	private final Item item;
+	private final ItemStack item;
 
 	/**
 	 * Creates a new item entity.
 	 * @param world The world.
 	 * @param item The item.
 	 */
-	public ItemEntity(World world, Item item) {
+	public ItemEntity(World world, ItemStack item) {
 		super(world);
 		this.item = item;
 	}
@@ -29,7 +31,7 @@ public final class ItemEntity extends Entity {
 	 * Gets the item that this {@link ItemEntity} represents.
 	 * @return The item.
 	 */
-	public Item getItem() {
+	public ItemStack getItem() {
 		return item;
 	}
 

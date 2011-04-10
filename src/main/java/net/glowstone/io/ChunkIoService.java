@@ -2,7 +2,7 @@ package net.glowstone.io;
 
 import java.io.IOException;
 
-import net.glowstone.model.Chunk;
+import net.glowstone.Chunk;
 
 /**
  * This interface should be implemented by classes which wish to provide some

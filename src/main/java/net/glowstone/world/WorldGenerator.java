@@ -1,6 +1,6 @@
 package net.glowstone.world;
 
-import net.glowstone.model.Chunk;
+import net.glowstone.Chunk;
 
 /**
  * A {@link WorldGenerator} is used to populate new chunks which have just been

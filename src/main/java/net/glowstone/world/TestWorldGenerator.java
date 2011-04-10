@@ -1,6 +1,6 @@
 package net.glowstone.world;
 
-import net.glowstone.model.Chunk;
+import net.glowstone.Chunk;
 
 /**
  * A {@link WorldGenerator} used to generate a test world.

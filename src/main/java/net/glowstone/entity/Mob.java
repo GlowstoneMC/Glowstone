@@ -1,5 +1,6 @@
-package net.glowstone.model;
+package net.glowstone.entity;
 
+import net.glowstone.util.Position;
 import net.glowstone.msg.EntityRotationMessage;
 import net.glowstone.msg.EntityTeleportMessage;
 import net.glowstone.msg.Message;

@@ -1,4 +1,4 @@
-package net.glowstone.task;
+package net.glowstone.scheduler;
 
 /**
  * Represents a task which is executed periodically.

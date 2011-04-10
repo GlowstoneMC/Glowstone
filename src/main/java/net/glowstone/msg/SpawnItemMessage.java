@@ -1,13 +1,13 @@
 package net.glowstone.msg;
 
-import net.glowstone.model.Item;
+import net.glowstone.inventory.ItemStack;
 
 public final class SpawnItemMessage extends Message {
 
 	private final int id, x, y, z, rotation, pitch, roll;
-    private final Item item;
+    private final ItemStack item;
 
-	public SpawnItemMessage(int id, Item item, int x, int y, int z, int rotation, int pitch, int roll) {
+	public SpawnItemMessage(int id, ItemStack item, int x, int y, int z, int rotation, int pitch, int roll) {
 		this.id = id;
 		this.item = item;
 		this.x = x;
@@ -22,7 +22,7 @@ public final class SpawnItemMessage extends Message {
 		return id;
 	}
 
-	public Item getItem() {
+	public ItemStack getItem() {
 		return item;
 	}
 

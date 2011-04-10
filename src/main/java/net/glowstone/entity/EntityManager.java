@@ -1,4 +1,4 @@
-package net.glowstone.model;
+package net.glowstone.entity;
 
 import java.util.Collection;
 import java.util.HashMap;

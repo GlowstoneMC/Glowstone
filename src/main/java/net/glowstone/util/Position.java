@@ -1,4 +1,4 @@
-package net.glowstone.model;
+package net.glowstone.util;
 
 import org.bukkit.Location;
 

@@ -1,7 +1,8 @@
-package net.glowstone.model;
+package net.glowstone.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.glowstone.util.Position;
 
 import net.glowstone.msg.Message;
 import net.glowstone.msg.SpawnMobMessage;

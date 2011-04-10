@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 
-import net.glowstone.model.Item;
+import net.glowstone.inventory.ItemStack;
 import net.glowstone.msg.SetWindowSlotsMessage;
 
 public final class SetWindowSlotsCodec extends MessageCodec<SetWindowSlotsMessage> {
@@ -18,7 +18,7 @@ public final class SetWindowSlotsCodec extends MessageCodec<SetWindowSlotsMessag
 	public SetWindowSlotsMessage decode(ChannelBuffer buffer) throws IOException {
 		int id = buffer.readUnsignedByte();
 		int count = buffer.readUnsignedShort();
-		Item[] items = new Item[count];
+		ItemStack[] items = new ItemStack[count];
 		for (int slot = 0; slot < count; slot++) {
 			int item = buffer.readUnsignedShort();
 			if (item == 0xFFFF) {
@@ -26,7 +26,7 @@ public final class SetWindowSlotsCodec extends MessageCodec<SetWindowSlotsMessag
 			} else {
 				int itemCount = buffer.readUnsignedByte();
 				int damage = buffer.readUnsignedByte();
-				items[slot] = new Item(item, itemCount, damage);
+				items[slot] = new ItemStack(item, itemCount, damage);
 			}
 		}
 		return new SetWindowSlotsMessage(id, items);
@@ -34,13 +34,13 @@ public final class SetWindowSlotsCodec extends MessageCodec<SetWindowSlotsMessag
 
 	@Override
 	public ChannelBuffer encode(SetWindowSlotsMessage message) throws IOException {
-		Item[] items = message.getItems();
+		ItemStack[] items = message.getItems();
 
 		ChannelBuffer buffer = ChannelBuffers.dynamicBuffer();
 		buffer.writeByte(message.getId());
 		buffer.writeShort(items.length);
 		for (int slot = 0; slot < items.length; slot++) {
-			Item item = items[slot];
+			ItemStack item = items[slot];
 			if (item == null) {
 				buffer.writeShort(-1);
 			} else {

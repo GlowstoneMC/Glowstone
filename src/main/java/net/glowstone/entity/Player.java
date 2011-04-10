@@ -1,8 +1,10 @@
-package net.glowstone.model;
+package net.glowstone.entity;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import net.glowstone.Chunk;
+import net.glowstone.util.Position;
 
 import net.glowstone.msg.DestroyEntityMessage;
 import net.glowstone.msg.LoadChunkMessage;

@@ -1,5 +1,7 @@
-package net.glowstone.model;
+package net.glowstone.entity;
 
+import net.glowstone.Chunk;
+import net.glowstone.util.Position;
 import org.bukkit.Location;
 
 import net.glowstone.msg.Message;

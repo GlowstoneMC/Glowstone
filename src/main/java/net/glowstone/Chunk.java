@@ -1,4 +1,4 @@
-package net.glowstone.model;
+package net.glowstone;
 
 import net.glowstone.msg.CompressedChunkMessage;
 import net.glowstone.msg.Message;

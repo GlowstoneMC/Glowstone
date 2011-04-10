@@ -1,10 +1,10 @@
-package net.glowstone.model;
+package net.glowstone.inventory;
 
 /**
- * A class which represents an {@link Item} and its associated slot in an
+ * A class which represents an {@link ItemStack} and its associated slot in an
  * inventory.
  */
-public final class SlottedItem {
+public final class ItemSlot {
 
     /**
      * The slot.
@@ -14,14 +14,14 @@ public final class SlottedItem {
     /**
      * The item.
      */
-	private final Item item;
+	private final ItemStack item;
 
     /**
      * Creates a slotted item.
      * @param slot The slot.
      * @param item The item.
      */
-	public SlottedItem(int slot, Item item) {
+	public ItemSlot(int slot, ItemStack item) {
 		this.slot = slot;
 		this.item = item;
 	}
@@ -38,7 +38,7 @@ public final class SlottedItem {
      * Gets the item.
      * @return The item.
      */
-	public Item getItem() {
+	public ItemStack getItem() {
 		return item;
 	}
 

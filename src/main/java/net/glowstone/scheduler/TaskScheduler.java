@@ -1,4 +1,4 @@
-package net.glowstone.task;
+package net.glowstone.scheduler;
 
 import java.util.ArrayList;
 import java.util.Iterator;

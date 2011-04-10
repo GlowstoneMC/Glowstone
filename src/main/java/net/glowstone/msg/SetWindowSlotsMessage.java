@@ -1,13 +1,13 @@
 package net.glowstone.msg;
 
-import net.glowstone.model.Item;
+import net.glowstone.inventory.ItemStack;
 
 public final class SetWindowSlotsMessage extends Message {
 
 	private final int id;
-	private final Item[] items;
+	private final ItemStack[] items;
 
-	public SetWindowSlotsMessage(int id, Item[] items) {
+	public SetWindowSlotsMessage(int id, ItemStack[] items) {
 		this.id = id;
 		this.items = items;
 	}
@@ -16,7 +16,7 @@ public final class SetWindowSlotsMessage extends Message {
 		return id;
 	}
 
-	public Item[] getItems() {
+	public ItemStack[] getItems() {
 		return items;
 	}
 

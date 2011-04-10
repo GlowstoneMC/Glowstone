@@ -4,7 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 
 import net.glowstone.Server;
-import net.glowstone.model.Player;
+import net.glowstone.entity.Player;
 import net.glowstone.msg.KickMessage;
 import net.glowstone.msg.Message;
 import net.glowstone.msg.handler.HandlerLookupService;

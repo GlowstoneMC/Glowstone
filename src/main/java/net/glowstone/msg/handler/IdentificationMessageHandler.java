@@ -1,6 +1,6 @@
 package net.glowstone.msg.handler;
 
-import net.glowstone.model.Player;
+import net.glowstone.entity.Player;
 import net.glowstone.msg.IdentificationMessage;
 import net.glowstone.net.Session;
 import net.glowstone.net.Session.State;
