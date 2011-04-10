@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.glowstone.msg.ChatMessage;
+import net.glowstone.msg.DiggingMessage;
 import net.glowstone.msg.HandshakeMessage;
 import net.glowstone.msg.IdentificationMessage;
 import net.glowstone.msg.KickMessage;
@@ -25,6 +26,7 @@ public final class HandlerLookupService {
 			bind(RotationMessage.class, RotationMessageHandler.class);
 			bind(PositionRotationMessage.class, PositionRotationMessageHandler.class);
 			bind(KickMessage.class, KickMessageHandler.class);
+            bind(DiggingMessage.class, DiggingMessageHandler.class);
 		} catch (Exception ex) {
 			throw new ExceptionInInitializerError(ex);
 		}
