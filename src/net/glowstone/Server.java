@@ -32,7 +32,7 @@ public final class Server {
 	/**
 	 * The logger for this class.
 	 */
-	private static final Logger logger = Logger.getLogger(Server.class.getName());
+	public static final Logger logger = Logger.getLogger(Server.class.getName());
 
 	/**
 	 * Creates a new server on TCP port 25565 and starts listening for

@@ -1,5 +1,6 @@
 package net.glowstone.msg.handler;
 
+import net.glowstone.Server;
 import net.glowstone.model.Player;
 import net.glowstone.msg.ChatMessage;
 import net.glowstone.net.Session;
@@ -15,9 +16,10 @@ public final class ChatMessageHandler extends MessageHandler<ChatMessage> {
 		if (text.length() > 100) {
 			session.disconnect("Chat message too long.");
 		} else if (text.startsWith("/")) {
-			// TODO process command
+			// TODO: process command
 		} else {
 			player.getWorld().broadcastMessage("<" + player.getName() + "> " + text);
+            Server.logger.info("<" + player.getName() + "> " + text);
 		}
 	}
 
