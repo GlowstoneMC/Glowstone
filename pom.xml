@@ -1,10 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.glowstone</groupId>
   <artifactId>glowstone</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>Glowstone</name>
   <url>http://github.com/SpaceManiac/Glowstone</url>
+  
   <build>
     <plugins>
       <plugin>
@@ -12,12 +14,25 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.0.2</version>
         <configuration>
-           <source>1.5</source>
-           <target>1.5</target>
+          <source>1.5</source>
+          <target>1.5</target>
         </configuration>
       </plugin>
     </plugins>
   </build>
+
+  <repositories>
+    <repository>
+      <id>jboss</id>
+      <name>JBoss Nexus</name>
+      <layout>default</layout>
+      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+  
   <dependencies>
     <dependency>
       <groupId>org.bukkit</groupId>
@@ -34,4 +49,5 @@
       <scope>compile</scope>
     </dependency>
   </dependencies>
+  
 </project>
