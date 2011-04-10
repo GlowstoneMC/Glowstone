@@ -1,6 +1,10 @@
 package net.glowstone.msg;
 
 public final class DiggingMessage extends Message {
+    
+    public static final int STATE_START_DIGGING = 0;
+    public static final int STATE_DONE_DIGGING = 2;
+    public static final int STATE_DROP_ITEM = 4;
 
 	private final int state, x, y, z, face;
 
