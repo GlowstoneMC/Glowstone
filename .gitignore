@@ -10,6 +10,7 @@ nbproject
 bin
 lib
 doc
+target
 !.gitignore
 !.gitmodules
 !.mailmap

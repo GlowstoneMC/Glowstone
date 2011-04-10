@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ivy-module version="2.0">
-  <info organisation="net.glowstone" module="glowstone" />
-  <dependencies>http://ci.bukkit.org/job/dev-Bukkit/lastSuccessfulBuild/artifact/target/bukkit-0.0.1-SNAPSHOT.jar
-    <dependency org="org.jboss.netty" name="netty" rev="3.2.4.Final" />
-    <dependency org="org.jruby" name="jruby-complete" rev="1.6.0" />
-	<dependency org="org.bukkit" name="bukkit" rev="0.0.1-SNAPSHOT" />
-  </dependencies>
-</ivy-module>
