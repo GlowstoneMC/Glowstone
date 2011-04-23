@@ -3,13 +3,12 @@ package net.glowstone.msg;
 public final class IdentificationMessage extends Message {
 
 	private final int id, dimension;
-	private final String name, message;
+	private final String name;
 	private final long seed;
 
-	public IdentificationMessage(int id, String name, String message, long seed, int dimension) {
+	public IdentificationMessage(int id, String name, long seed, int dimension) {
 		this.id = id;
 		this.name = name;
-		this.message = message;
 		this.seed = seed;
 		this.dimension = dimension;
 	}
@@ -20,10 +19,6 @@ public final class IdentificationMessage extends Message {
 
 	public String getName() {
 		return name;
-	}
-
-	public String getMessage() {
-		return message;
 	}
 
 	public long getSeed() {
