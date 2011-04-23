@@ -1,0 +1,350 @@
+org.bukkit.block
+================
+org.bukkit.block.Block
+	byte getData()
+	Block getFace(BlockFace face)
+	Block getFace(BlockFace face, int distance)
+	Block getRelative(int modX, int modY, int modZ)
+	Block getRelative(BlockFace face)
+	Material getType()
+	int getTypeId();
+	byte getLightLevel();
+	World getWorld();
+	int getX();
+	int getY();
+	int getZ();
+	Location getLocation();
+	Chunk getChunk();
+	void setData(byte data);
+	void setData(byte data, boolean applyPhysics);
+	void setType(Material type);
+	boolean setTypeId(int type);
+	boolean setTypeId(int type, boolean applyPhysics);
+	boolean setTypeIdAndData(int type, byte data, boolean applyPhysics);
+	BlockFace getFace(Block block);
+	BlockState getState();
+	Biome getBiome();
+	boolean isBlockPowered();
+	boolean isBlockIndirectlyPowered();
+	boolean isBlockFacePowered(BlockFace face);
+	boolean isBlockFaceIndirectlyPowered(BlockFace face);
+	int getBlockPower(BlockFace face);
+	int getBlockPower();
+org.bukkit.block.BlockState
+	Block getBlock();
+	MaterialData getData();
+	Material getType();
+	int getTypeId();
+	byte getLightLevel();
+	World getWorld();
+	int getX();
+	int getY();
+	int getZ();
+	Chunk getChunk();
+	void setData(MaterialData data);
+	void setType(Material type);
+	boolean setTypeId(int type);
+	boolean update();
+	boolean update(boolean force);
+	byte getRawData();
+org.bukkit.block.Chest
+	Inventory getInventory();
+org.bukkit.block.CreatureSpawner
+	CreatureType getCreatureType();
+	void setCreatureType(CreatureType creatureType);
+	String getCreatureTypeId();
+	void setCreatureTypeId(String creatureType);
+	int getDelay();
+	void setDelay();
+org.bukkit.block.Dispenser
+	Inventory getInventory();
+	boolean dispense();
+org.bukkit.block.Furnace
+	Inventory getInventory();
+	short getBurnTime();
+	void setBurnTime(short burnTime);
+	short getCookTime();
+org.bukkit.block.NoteBlock
+	byte getNote();
+	void setNote(byte note);
+	boolean play();
+org.bukkit.block.Sign
+	String[] getLines();
+	String getLine(int index) throws IndexOutOfBoundsException;
+	void setLine(int index, String line) throws IndexOutOfBoundsException;
+
+org.bukkit
+==========
+org.bukkit.Chunk
+	int getX();
+	int getZ();
+	World getWorld();
+	Block getBlock(int x, int y, int z);
+	Entity[] getEntities();
+	BlockState[] getTileEntities();
+org.bukkit.Server
+	String getName();
+	String getVersion();
+	Player[] getOnlinePlayers();
+	int getMaxPlayers();
+	int getPort();
+	String getIp();
+	String getServerName();
+	String getServerId();
+	int broadcastMessage(String message);
+	Player getPlayer(String name);
+	List<Player> matchPlayer(String name);
+	PluginManager getPluginManager();
+	BukkitScheduler getScheduler();
+	List<World> getWorlds();
+	World createWorld(String name, World.Environment environment);
+	World createWorld(String name, World.Environment environment, long seed);
+	World getWorld(String name);
+	void reload();
+	Logger getLogger();
+	PluginCommand getPluginCommand(String name);
+	void savePlayers();
+	boolean dispatchCommand(CommandSender sender, String commandLine);
+	void configureDbConfig(ServerConfig config);
+org.bukkit.World
+	Block getBlockAt(int x, int y, int z);
+	Block getBlockAt(Location location);
+	int getBlockTypeIdAt(int x, int y, int z);
+	int getBlockTypeIdAt(Location location);
+	int getHighestBlockYAt(int x, int z);
+	int getHighestBlockYAt(Location location);
+	Chunk getChunkAt(int x, int z);
+	Chunk getChunkAt(Location location);
+	Chunk getChunkAt(Block block);
+	boolean isChunkLoaded(Chunk chunk);
+	Chunk[] getLoadedChunks();
+	void loadChunk(Chunk chunk);
+	boolean isChunkLoaded(int x, int z);
+	void loadChunk(int x, int z);
+	boolean loadChunk(int x, int z, boolean generate);
+	boolean unloadChunk(int x, int z);
+	boolean unloadChunk(int x, int z, boolean save);
+	boolean unloadChunk(int x, int z, boolean save, boolean safe);
+	boolean unloadChunkRequest(int x, int z);
+	boolean unloadChunkRequest(int x, int z, boolean safe);
+	boolean regenerateChunk(int x, int z);
+	boolean refreshChunk(int x, int z);
+	Item dropItem(Location location, ItemStack item);
+	Item dropItemNaturally(Location location, ItemStack item);
+	Arrow spawnArrow(Location location, Vector velocity, float speed, float spread);
+	boolean generateTree(Location location, TreeType type);
+	boolean generateTree(Location loc, TreeType type, BlockChangeDelegate delegate);
+	Minecart spawnMinecart(Location location);
+	StorageMinecart spawnStorageMinecart(Location loc);
+	PoweredMinecart spawnPoweredMinecart(Location loc);
+	Boat spawnBoat(Location loc);
+	LivingEntity spawnCreature(Location loc, CreatureType type);
+	LightningStrike strikeLightning(Location loc);
+	List<Entity> getEntities();
+	List<LivingEntity> getLivingEntities();
+	List<Player> getPlayers();
+	String getName();
+	long getId();
+	Location getSpawnLocation();
+	boolean setSpawnLocation(int x, int y, int z);
+	long getTime();
+	void setTime(long time);
+	long getFullTime();
+	void setFullTime(long time);
+	boolean hasStorm();
+	void setStorm(boolean hasStorm);
+	int getWeatherDuration();
+	void setWeatherDuration(int duration);
+	boolean isThundering();
+	void setThundering(boolean thundering);
+	int getThunderDuration();
+	void setThunderDuration(int duration);
+	Environment getEnvironment();
+	void save();
+
+org.bukkit.entity
+=================
+Refer http://dl.dropbox.com/u/465123/minecraft/bukkitentity.png
+Entities with no methods are not listed.
+org.bukkit.entity.Entity
+	Location getLocation();
+	void setVelocity(Vector velocity);
+	Vector getVelocity();
+	World getWorld();
+	boolean teleport(Location location);
+	boolean teleport(Entity destination);
+	void teleportTo(Location location);
+	void teleportTo(Entity destination);
+	List<org.bukkit.entity.Entity> getNearbyEntities(double x, double y, double z);
+	int getEntityId();
+	int getFireTicks();
+	int getMaxFireTicks();
+	void setFireTicks(int ticks);
+	void remove();
+	boolean isDead();
+	Server getServer();
+	abstract Entity getPassenger();
+	abstract boolean setPassenger(Entity passenger);
+	abstract boolean isEmpty();
+	abstract boolean eject();
+	float getFallDistance();
+	void setFallDistance(float distance);
+org.bukkit.entity.Item
+	ItemStack getItemStack();
+	void setItemStack(ItemStack stack);
+org.bukkit.entity.Vehicle
+	Vector getVelocity();
+	void setVelocity(Vector vel);
+org.bukkit.entity.Boat
+	double getMaxSpeed();
+	void setMaxSpeed(double speed);
+org.bukkit.entity.Minecart
+	void setDamage(int damage);
+	int getDamage();
+	double getMaxSpeed();
+	void setMaxSpeed(double speed);
+	boolean isSlowWhenEmpty();
+	void setSlowWhenEmpty(boolean slow);
+	Vector getFlyingVelocityMod();
+	void setFlyingVelocityMod(Vector flying);
+	Vector getDerailedVelocityMod();
+	void setDerailedVelocityMod(Vector derailed);
+org.bukkit.entity.StorageMinecart
+	Inventory getInventory();
+org.bukkit.entity.LivingEntity
+	int getHealth();
+	void setHealth(int health);
+	double getEyeHeight();
+	double getEyeHeight(boolean ignoreSneaking);
+	Location getEyeLocation();
+	List<Block> getLineOfSight(HashSet<Byte> transparent, int maxDistance);
+	Block getTargetBlock(HashSet<Byte> transparent, int maxDistance);
+	List<Block> getLastTwoTargetBlocks(HashSet<Byte> transparent, int maxDistance);
+	Egg throwEgg();
+	Snowball throwSnowball();
+	Arrow shootArrow();
+	boolean isInsideVehicle();
+	boolean leaveVehicle();
+	Vehicle getVehicle();
+	int getRemainingAir();
+	void setRemainingAir(int ticks);
+	int getMaximumAir();
+	void setMaximumAir(int ticks);
+	void damage(int amount);
+	void damage(int amount, Entity source);
+	int getMaximumNoDamageTicks();
+	void setMaximumNoDamageTicks(int ticks);
+	int getLastDamage();
+	void setLastDamage(int damage);
+	int getNoDamageTicks();
+	void setNoDamageTicks(int ticks);
+org.bukkit.entity.Slime
+	int getSize();
+	void setSize(int sz);
+org.bukkit.entity.HumanEntity
+	String getName();
+	PlayerInventory getInventory();
+	ItemStack getItemInHand();
+	void setItemInHand(ItemStack item);
+	boolean isSleeping();
+	int getSleepTicks();
+org.bukkit.entity.Player
+	boolean isOnline();
+	String getDisplayName();
+	void setDisplayName(String name);
+	void setCompassTarget(Location loc);
+	Location getCompassTarget();
+	InetSocketAddress getAddress();
+	void sendRawMessage(String message);
+	void kickPlayer(String message);
+	void chat(String msg);
+	boolean performCommand(String command);
+	boolean isSneaking();
+	void setSneaking(boolean sneak);
+	void saveData();
+	void loadData();
+	void setSleepingIgnored(boolean isSleeping);
+	boolean isSleepingIgnored();
+	void updateInventory();
+	void awardAchievement(Achievement achievement);
+	void incrementStatistic(Statistic statistic);
+	void incrementStatistic(Statistic statistic, int amount);
+	void incrementStatistic(Statistic statistic, Material material);
+	void incrementStatistic(Statistic statistic, Material material, int amount);
+org.bukkit.entity.Creature
+	void setTarget(LivingEntity target);
+	LivingEntity getTarget();
+org.bukkit.entity.Creeper
+	boolean isPowered();
+	void setPowered(boolean value);
+org.bukkit.entity.Sheep
+	boolean isSheared();
+	void setSheared(boolean flag);
+org.bukkit.entity.Wolf
+	boolean isAngry();
+	void setAngry(boolean angry);
+	boolean isSitting();
+	void setSitting(boolean sitting);
+
+org.bukkit.inventory
+====================
+org.bukkit.inventory.Inventory
+	int getSize();
+	String getName();
+	ItemStack getItem(int index);
+	void setItem(int index, ItemStack item);
+	HashMap<Integer, ItemStack> addItem(ItemStack... items);
+	HashMap<Integer, ItemStack> removeItem(ItemStack... items);
+	ItemStack[] getContents();
+	void setContents(ItemStack[] items);
+	boolean contains(int materialId);
+	boolean contains(Material material);
+	boolean contains(ItemStack item);
+	boolean contains(int materialId, int amount); 
+	boolean contains(Material material, int amount); 
+	boolean contains(ItemStack item, int amount);
+	HashMap<Integer, ? extends ItemStack> all(int materialId);
+	HashMap<Integer, ? extends ItemStack> all(Material material);
+	HashMap<Integer, ? extends ItemStack> all(ItemStack item);
+	int first(int materialId);
+	int first(Material material);
+	int first(ItemStack item);
+	int firstEmpty();
+	void remove(int materialId);
+	void remove(Material material);
+	void remove(ItemStack item);
+	void clear(int index);
+	void clear();
+org.bukkit.inventory.PlayerInventory
+	ItemStack[] getArmorContents();
+	ItemStack getHelmet();
+	ItemStack getChestplate();
+	ItemStack getLeggings();
+	ItemStack getBoots();
+	void setHelmet(ItemStack helmet);
+	void setChestplate(ItemStack chestplate);
+	void setLeggings(ItemStack leggings);
+	void setBoots(ItemStack boots);
+	ItemStack getItemInHand();
+	void setItemInHand(ItemStack stack);
+	int getHeldItemSlot();
+org.bukkit.inventory.Slot
+	Inventory getInventory();
+	int getIndex();
+	ItemStack getItem();
+
+org.bukkit.scheduler
+====================
+org.bukkit.scheduler.BukkitScheduler
+	int scheduleSyncDelayedTask(Plugin plugin, Runnable task, long delay);
+	int scheduleSyncDelayedTask(Plugin plugin, Runnable task);
+	int scheduleSyncRepeatingTask(Plugin plugin, Runnable task, long delay, long period);
+	int scheduleAsyncDelayedTask(Plugin plugin, Runnable task, long delay);
+	int scheduleAsyncDelayedTask(Plugin plugin, Runnable task);
+	int scheduleAsyncRepeatingTask(Plugin plugin, Runnable task, long delay, long period);
+	<T> Future<T> callSyncMethod(Plugin plugin, Callable<T> task);
+	void cancelTask(int taskId);
+	void cancelTasks(Plugin plugin);
+	void cancelAllTasks();
+	boolean isCurrentlyRunning(int taskId);
+	boolean isQueued(int taskId);
