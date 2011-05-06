@@ -5,7 +5,7 @@ import net.glowstone.util.Position;
 import org.bukkit.Location;
 
 import net.glowstone.msg.Message;
-import net.glowstone.world.World;
+import net.glowstone.World;
 
 /**
  * Represents some entity in the world such as an item on the floor or a player.

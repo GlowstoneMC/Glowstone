@@ -162,6 +162,10 @@ org.bukkit.World
 	Environment getEnvironment();
 	void save();
 
+org.bukkit.command
+==================
+[Extends] org.bukkit.command.ConsolecommandSender
+
 org.bukkit.entity
 =================
 Refer http://dl.dropbox.com/u/465123/minecraft/bukkitentity.png

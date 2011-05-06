@@ -14,7 +14,6 @@ import net.glowstone.net.SessionRegistry;
 import net.glowstone.scheduler.PulseTask;
 import net.glowstone.scheduler.TaskScheduler;
 import net.glowstone.world.TestWorldGenerator;
-import net.glowstone.world.World;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.ChannelFactory;

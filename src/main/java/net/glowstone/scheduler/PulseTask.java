@@ -2,7 +2,7 @@ package net.glowstone.scheduler;
 
 import net.glowstone.Server;
 import net.glowstone.net.SessionRegistry;
-import net.glowstone.world.World;
+import net.glowstone.World;
 
 /**
  * A simple {@link Task} which calls the {@link SessionRegistry#pulse()} and

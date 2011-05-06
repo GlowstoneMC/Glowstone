@@ -7,7 +7,7 @@ import net.glowstone.util.Position;
 import net.glowstone.msg.Message;
 import net.glowstone.msg.SpawnMobMessage;
 import net.glowstone.util.Parameter;
-import net.glowstone.world.World;
+import net.glowstone.World;
 
 /**
  * Represents a monster such as a creeper.

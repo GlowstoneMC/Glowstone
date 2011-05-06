@@ -5,7 +5,7 @@ import net.glowstone.msg.DiggingMessage;
 import net.glowstone.Chunk;
 import net.glowstone.msg.BlockChangeMessage;
 import net.glowstone.net.Session;
-import net.glowstone.world.World;
+import net.glowstone.World;
 
 import org.bukkit.Material;
 

@@ -6,7 +6,7 @@ import net.glowstone.msg.EntityTeleportMessage;
 import net.glowstone.msg.Message;
 import net.glowstone.msg.RelativeEntityPositionMessage;
 import net.glowstone.msg.RelativeEntityPositionRotationMessage;
-import net.glowstone.world.World;
+import net.glowstone.World;
 
 /**
  * A Mob is a {@link Player} or {@link Monster}.

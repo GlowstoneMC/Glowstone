@@ -4,7 +4,7 @@ import net.glowstone.inventory.ItemStack;
 import net.glowstone.util.Position;
 import net.glowstone.msg.Message;
 import net.glowstone.msg.SpawnItemMessage;
-import net.glowstone.world.World;
+import net.glowstone.World;
 
 /**
  * Represents an item that is also an {@link Entity} within the world.

@@ -1,4 +1,4 @@
-package net.glowstone.world;
+package net.glowstone;
 
 import java.util.Collection;
 
@@ -10,6 +10,7 @@ import net.glowstone.entity.Entity;
 import net.glowstone.entity.EntityManager;
 import net.glowstone.entity.Player;
 import net.glowstone.msg.ChatMessage;
+import net.glowstone.world.WorldGenerator;
 
 /**
  * A class which represents the in-game world.
