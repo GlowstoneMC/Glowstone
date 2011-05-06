@@ -2,7 +2,8 @@ package net.glowstone.net.codec;
 
 import java.io.IOException;
 
-import net.glowstone.inventory.ItemStack;
+import org.bukkit.inventory.ItemStack;
+
 import net.glowstone.msg.SpawnItemMessage;
 
 import org.jboss.netty.buffer.ChannelBuffer;
@@ -26,16 +27,16 @@ public final class SpawnItemCodec extends MessageCodec<SpawnItemMessage> {
 		int rotation = buffer.readUnsignedByte();
 		int pitch = buffer.readUnsignedByte();
 		int roll = buffer.readUnsignedByte();
-		return new SpawnItemMessage(id, new ItemStack(item, count, damage), x, y, z, rotation, pitch, roll);
+		return new SpawnItemMessage(id, new ItemStack(item, count, (short) damage), x, y, z, rotation, pitch, roll);
 	}
 
 	@Override
 	public ChannelBuffer encode(SpawnItemMessage message) throws IOException {
 		ChannelBuffer buffer = ChannelBuffers.buffer(22);
 		buffer.writeInt(message.getId());
-		buffer.writeShort(message.getItem().getId());
-		buffer.writeByte(message.getItem().getCount());
-		buffer.writeShort(message.getItem().getDamage());
+		buffer.writeShort(message.getItem().getTypeId());
+		buffer.writeByte(message.getItem().getAmount());
+		buffer.writeShort(message.getItem().getDurability());
 		buffer.writeInt(message.getX());
 		buffer.writeInt(message.getY());
 		buffer.writeInt(message.getZ());

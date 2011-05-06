@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 
-import net.glowstone.inventory.ItemStack;
+import org.bukkit.inventory.ItemStack;
 import net.glowstone.msg.SetWindowSlotsMessage;
 
 public final class SetWindowSlotsCodec extends MessageCodec<SetWindowSlotsMessage> {
@@ -26,7 +26,7 @@ public final class SetWindowSlotsCodec extends MessageCodec<SetWindowSlotsMessag
 			} else {
 				int itemCount = buffer.readUnsignedByte();
 				int damage = buffer.readUnsignedByte();
-				items[slot] = new ItemStack(item, itemCount, damage);
+				items[slot] = new ItemStack(item, itemCount, (short) damage);
 			}
 		}
 		return new SetWindowSlotsMessage(id, items);
@@ -44,9 +44,9 @@ public final class SetWindowSlotsCodec extends MessageCodec<SetWindowSlotsMessag
 			if (item == null) {
 				buffer.writeShort(-1);
 			} else {
-				buffer.writeShort(item.getId());
-				buffer.writeByte(item.getCount());
-				buffer.writeByte(item.getDamage());
+				buffer.writeShort(item.getTypeId());
+				buffer.writeByte(item.getAmount());
+				buffer.writeByte(item.getDurability());
 			}
 		}
 

@@ -1,6 +1,7 @@
 package net.glowstone.entity;
 
-import net.glowstone.inventory.ItemStack;
+import org.bukkit.inventory.ItemStack;
+
 import net.glowstone.util.Position;
 import net.glowstone.msg.Message;
 import net.glowstone.msg.SpawnItemMessage;

@@ -5,7 +5,7 @@ package net.glowstone.inventory;
  * blocks which are dropped on the floor or placed in the player's inventory).
  * @author Graham Edgecombe
  */
-public class ItemStack {
+public class ConstItemStack {
 
     /**
      * The item's id.
@@ -26,7 +26,7 @@ public class ItemStack {
      * Creates a single item with no damage.
      * @param id The item id.
      */
-	public ItemStack(int id) {
+	public ConstItemStack(int id) {
 		this(id, 1);
 	}
 
@@ -35,7 +35,7 @@ public class ItemStack {
      * @param id The id.
      * @param count The number of items within the stack.
      */
-	public ItemStack(int id, int count) {
+	public ConstItemStack(int id, int count) {
 		this(id, count, 0);
 	}
 
@@ -46,7 +46,7 @@ public class ItemStack {
      * @param count The number of items within the stack.
      * @param damage The damage.
      */
-	public ItemStack(int id, int count, int damage) {
+	public ConstItemStack(int id, int count, int damage) {
 		this.id = id;
 		this.count = count;
 		this.damage = damage;

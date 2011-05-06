@@ -1,6 +1,6 @@
 package net.glowstone.msg;
 
-import net.glowstone.inventory.ItemStack;
+import org.bukkit.inventory.ItemStack;
 
 public final class SpawnItemMessage extends Message {
 
