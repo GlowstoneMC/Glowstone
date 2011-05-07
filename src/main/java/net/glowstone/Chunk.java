@@ -156,7 +156,7 @@ public final class Chunk {
 	 * @param type The type.
 	 */
 	public void setType(int x, int z, int y, int type) {
-		if (type < 0 || type >= 16)
+		if (type < 0 || type >= 256)
 			throw new IllegalArgumentException();
 
 		types[coordToIndex(x, z, y)] = (byte) type;
