@@ -55,7 +55,7 @@ public class GlowBlock implements Block {
     }
 
     public BlockState getState() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new GlowBlockState(this);
     }
 
     public Biome getBiome() {
