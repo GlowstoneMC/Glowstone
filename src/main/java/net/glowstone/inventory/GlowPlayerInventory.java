@@ -31,6 +31,10 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         return armor;
     }
 
+    public void setArmorContents(ItemStack[] items) {
+        armor = items;
+    }
+
     public ItemStack getHelmet() {
         return armor[0];
     }
