@@ -34,12 +34,12 @@ public final class DiggingMessageHandler extends MessageHandler<DiggingMessage> 
 			int localX = (x - chunkX * GlowChunk.WIDTH) % GlowChunk.WIDTH;
 			int localZ = (z - chunkZ * GlowChunk.HEIGHT) % GlowChunk.HEIGHT;
 
-			GlowChunk chunk = world.getChunks().getChunk(chunkX, chunkZ);
+			GlowChunk chunk = world.getChunkManager().getChunk(chunkX, chunkZ);
 			chunk.setType(localX, localZ, y, Material.AIR.getId());
 
 			// TODO this should also be somewhere else as well... perhaps in the chunk.setType() method itself?
 			BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, 0, 0);
-			for (Player p: world.getPlayers()) {
+			for (Player p: world.getRawPlayers()) {
 				p.getSession().send(bcmsg);
 			}
 		}

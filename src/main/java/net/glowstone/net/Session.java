@@ -125,7 +125,7 @@ public final class Session {
 			throw new IllegalStateException();
 
 		this.player = player;
-		this.server.getWorld().getPlayers().add(player);
+		this.server.getWorld().getRawPlayers().add(player);
 	}
 
 	@SuppressWarnings("unchecked")

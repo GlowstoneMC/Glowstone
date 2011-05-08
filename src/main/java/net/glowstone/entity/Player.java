@@ -90,7 +90,7 @@ public final class Player extends Mob {
 			}
 		}
 
-		for (Entity entity : world.getEntities()) {
+		for (Entity entity : world.getEntityManager()) {
 			if (entity == this)
 				continue;
 			boolean withinDistance = entity.isActive() && isWithinDistance(entity);
@@ -117,7 +117,7 @@ public final class Player extends Mob {
 				if (!knownChunks.contains(key)) {
 					knownChunks.add(key);
 					session.send(new LoadChunkMessage(x, z, true));
-					session.send(world.getChunks().getChunk(x, z).toMessage());
+					session.send(world.getChunkManager().getChunk(x, z).toMessage());
 				}
 				previousChunks.remove(key);
 			}

@@ -44,7 +44,7 @@ public abstract class Entity {
      */
 	public Entity(GlowWorld world) {
 		this.world = world;
-		world.getEntities().allocate(this);
+		world.getEntityManager().allocate(this);
 	}
 
     /**
@@ -74,7 +74,7 @@ public abstract class Entity {
      */
 	public void destroy() {
 		active = false;
-		world.getEntities().deallocate(this);
+		world.getEntityManager().deallocate(this);
 	}
 
     /**
