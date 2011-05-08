@@ -2,7 +2,7 @@ package net.glowstone.io;
 
 import java.io.IOException;
 
-import net.glowstone.Chunk;
+import net.glowstone.GlowChunk;
 
 /**
  * An implementation of the {@link ChunkIoService} which reads and writes NBT
@@ -12,12 +12,12 @@ import net.glowstone.Chunk;
 public final class NbtChunkIoService implements ChunkIoService {
 
 	@Override
-	public Chunk read(int x, int z) {
+	public GlowChunk read(int x, int z) {
 		return null;
 	}
 
 	@Override
-	public void write(int x, int z, Chunk chunk) throws IOException {
+	public void write(int x, int z, GlowChunk chunk) throws IOException {
 
 	}
 

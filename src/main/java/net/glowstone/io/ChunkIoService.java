@@ -2,7 +2,7 @@ package net.glowstone.io;
 
 import java.io.IOException;
 
-import net.glowstone.Chunk;
+import net.glowstone.GlowChunk;
 
 /**
  * This interface should be implemented by classes which wish to provide some
@@ -17,18 +17,18 @@ public interface ChunkIoService {
 	 * Reads a single chunk.
 	 * @param x The X coordinate.
 	 * @param z The Z coordinate.
-	 * @return The {@link Chunk} or {@code null} if it does not exist.
+	 * @return The {@link GlowChunk} or {@code null} if it does not exist.
 	 * @throws IOException if an I/O error occurs.
 	 */
-	public Chunk read(int x, int z) throws IOException;
+	public GlowChunk read(int x, int z) throws IOException;
 
 	/**
 	 * Writes a single chunk.
 	 * @param x The X coordinate.
 	 * @param z The Z coordinate.
-	 * @param chunk The {@link Chunk}.
+	 * @param chunk The {@link GlowChunk}.
 	 * @throws IOException if an I/O error occurs.
 	 */
-	public void write(int x, int z, Chunk chunk) throws IOException;
+	public void write(int x, int z, GlowChunk chunk) throws IOException;
 
 }

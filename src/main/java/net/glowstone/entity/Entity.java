@@ -1,6 +1,6 @@
 package net.glowstone.entity;
 
-import net.glowstone.Chunk;
+import net.glowstone.GlowChunk;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
 
@@ -48,7 +48,7 @@ public abstract class Entity {
 	}
 
     /**
-     * Checks if this entity is within the {@link Chunk#VISIBLE_RADIUS} of
+     * Checks if this entity is within the {@link GlowChunk#VISIBLE_RADIUS} of
      * another.
      * @param other The other entity.
      * @return {@code true} if the entities can see each other, {@code false} if
@@ -57,7 +57,7 @@ public abstract class Entity {
 	public boolean isWithinDistance(Entity other) {
 		double dx = Math.abs(location.getX() - other.location.getX());
 		double dz = Math.abs(location.getZ() - other.location.getZ());
-		return dx <= (Chunk.VISIBLE_RADIUS * Chunk.WIDTH) && dz <= (Chunk.VISIBLE_RADIUS * Chunk.HEIGHT);
+		return dx <= (GlowChunk.VISIBLE_RADIUS * GlowChunk.WIDTH) && dz <= (GlowChunk.VISIBLE_RADIUS * GlowChunk.HEIGHT);
 	}
 
     /**

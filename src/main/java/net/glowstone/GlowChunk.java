@@ -1,13 +1,19 @@
 package net.glowstone;
 
+import org.bukkit.Chunk;
+
 import net.glowstone.msg.CompressedChunkMessage;
 import net.glowstone.msg.Message;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.entity.Entity;
 
 /**
  * Represents a chunk of the map.
  * @author Graham Edgecombe
  */
-public final class Chunk {
+public final class GlowChunk implements Chunk {
 
 	/**
 	 * The radius (not including the current chunk) of the chunks that the
@@ -101,7 +107,7 @@ public final class Chunk {
 	 * @param x The X coordinate.
 	 * @param z The Z coordinate.
 	 */
-	public Chunk(int x, int z) {
+	public GlowChunk(int x, int z) {
 		this.x = x;
 		this.z = z;
 		this.types = new byte[WIDTH * HEIGHT * DEPTH];
@@ -243,7 +249,7 @@ public final class Chunk {
 	 * @return The {@link CompressedChunkMessage}.
 	 */
 	public Message toMessage() {
-		return new CompressedChunkMessage(x * Chunk.WIDTH, z * Chunk.HEIGHT, 0, WIDTH, HEIGHT, DEPTH, serializeTileData());
+		return new CompressedChunkMessage(x * GlowChunk.WIDTH, z * GlowChunk.HEIGHT, 0, WIDTH, HEIGHT, DEPTH, serializeTileData());
 	}
 
 	/**
@@ -292,5 +298,21 @@ public final class Chunk {
 
 		return dest;
 	}
+
+    public World getWorld() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Block getBlock(int x, int y, int z) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Entity[] getEntities() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public BlockState[] getTileEntities() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
 }

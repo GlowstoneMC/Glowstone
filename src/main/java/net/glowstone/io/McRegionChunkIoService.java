@@ -7,7 +7,7 @@ import java.util.Map;
 
 import net.glowstone.io.region.RegionFile;
 import net.glowstone.io.region.RegionFileCache;
-import net.glowstone.Chunk;
+import net.glowstone.GlowChunk;
 import net.glowstone.util.nbt.ByteArrayTag;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
@@ -51,7 +51,7 @@ public final class McRegionChunkIoService implements ChunkIoService {
 	}
 
 	@Override
-	public Chunk read(int x, int z) throws IOException {
+	public GlowChunk read(int x, int z) throws IOException {
 		RegionFile region = cache.getRegionFile(dir, x, z);
 		int regionX = x & (REGION_SIZE - 1);
 		int regionZ = z & (REGION_SIZE - 1);
@@ -60,7 +60,7 @@ public final class McRegionChunkIoService implements ChunkIoService {
 		}
 
 		DataInputStream in = region.getChunkDataInputStream(regionX, regionZ);
-		Chunk chunk = new Chunk(x, z);
+		GlowChunk chunk = new GlowChunk(x, z);
 
 		NBTInputStream nbt = new NBTInputStream(in, false);
 		CompoundTag tag = (CompoundTag) nbt.readTag();
@@ -73,11 +73,11 @@ public final class McRegionChunkIoService implements ChunkIoService {
 		byte[] blockLightData = ((ByteArrayTag) levelTags.get("BlockLight")).getValue();
 		byte[] metaData = ((ByteArrayTag) levelTags.get("Data")).getValue();
 
-		for (int cx = 0; cx < Chunk.WIDTH; cx++) {
-			for (int cz = 0; cz < Chunk.HEIGHT; cz++) {
-				for (int cy = 0; cy < Chunk.DEPTH; cy++) {
-					boolean mostSignificantNibble = ((cx * Chunk.HEIGHT + cz) * Chunk.DEPTH + cy) % 2 == 1;
-					int offset = ((cx * Chunk.HEIGHT + cz) * Chunk.DEPTH + cy) / 2;
+		for (int cx = 0; cx < GlowChunk.WIDTH; cx++) {
+			for (int cz = 0; cz < GlowChunk.HEIGHT; cz++) {
+				for (int cy = 0; cy < GlowChunk.DEPTH; cy++) {
+					boolean mostSignificantNibble = ((cx * GlowChunk.HEIGHT + cz) * GlowChunk.DEPTH + cy) % 2 == 1;
+					int offset = ((cx * GlowChunk.HEIGHT + cz) * GlowChunk.DEPTH + cy) / 2;
 
 					int skyLight, blockLight, meta;
 					if (mostSignificantNibble) {
@@ -101,7 +101,7 @@ public final class McRegionChunkIoService implements ChunkIoService {
 	}
 
 	@Override
-	public void write(int x, int z, Chunk chunk) throws IOException {
+	public void write(int x, int z, GlowChunk chunk) throws IOException {
 		// TODO
 	}
 

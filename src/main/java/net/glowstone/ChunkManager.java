@@ -8,7 +8,7 @@ import net.glowstone.io.ChunkIoService;
 import net.glowstone.world.WorldGenerator;
 
 /**
- * A class which manages the {@link Chunk}s currently loaded in memory.
+ * A class which manages the {@link GlowChunk}s currently loaded in memory.
  * @author Graham Edgecombe
  */
 public final class ChunkManager {
@@ -27,7 +27,7 @@ public final class ChunkManager {
     /**
      * A map of chunks currently loaded in memory.
      */
-	private final Map<Chunk.Key, Chunk> chunks = new HashMap<Chunk.Key, Chunk>();
+	private final Map<GlowChunk.Key, GlowChunk> chunks = new HashMap<GlowChunk.Key, GlowChunk>();
 
     /**
      * Creates a new chunk manager with the specified I/O service and world
@@ -47,9 +47,9 @@ public final class ChunkManager {
      * @param z The Z coordinate.
      * @return The chunk.
      */
-	public Chunk getChunk(int x, int z) {
-		Chunk.Key key = new Chunk.Key(x, z);
-		Chunk chunk = chunks.get(key);
+	public GlowChunk getChunk(int x, int z) {
+		GlowChunk.Key key = new GlowChunk.Key(x, z);
+		GlowChunk chunk = chunks.get(key);
 		if (chunk == null) {
 			try {
 				chunk = service.read(x, z);

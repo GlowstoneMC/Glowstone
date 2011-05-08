@@ -1,6 +1,6 @@
 package net.glowstone.world;
 
-import net.glowstone.Chunk;
+import net.glowstone.GlowChunk;
 
 /**
  * A {@link WorldGenerator} is used to populate new chunks which have just been
@@ -15,6 +15,6 @@ public interface WorldGenerator {
 	 * @param z The Z coordinate.
 	 * @return The chunk.
 	 */
-	public Chunk generate(int x, int z);
+	public GlowChunk generate(int x, int z);
 
 }

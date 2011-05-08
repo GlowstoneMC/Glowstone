@@ -2,7 +2,7 @@ package net.glowstone.world;
 
 import java.util.Random;
 
-import net.glowstone.Chunk;
+import net.glowstone.GlowChunk;
 
 import org.bukkit.Material;
 
@@ -31,13 +31,13 @@ public final class ForestWorldGenerator extends FlatGrassWorldGenerator {
 	private Random random = new Random();
 
 	@Override
-	public Chunk generate(int chunkX, int chunkZ) {
-		Chunk chunk = super.generate(chunkX, chunkZ);
+	public GlowChunk generate(int chunkX, int chunkZ) {
+		GlowChunk chunk = super.generate(chunkX, chunkZ);
 
 		int numTrees = random.nextInt(MAX_TREES + 1);
 		for (int i = 0; i < numTrees; i++) {
-			int x = random.nextInt(Chunk.WIDTH - (TREE_CANOPY_WIDTH * 2) + TREE_CANOPY_WIDTH);
-			int z = random.nextInt(Chunk.HEIGHT- (TREE_CANOPY_WIDTH * 2) + TREE_CANOPY_WIDTH);
+			int x = random.nextInt(GlowChunk.WIDTH - (TREE_CANOPY_WIDTH * 2) + TREE_CANOPY_WIDTH);
+			int z = random.nextInt(GlowChunk.HEIGHT- (TREE_CANOPY_WIDTH * 2) + TREE_CANOPY_WIDTH);
 			int height = random.nextInt(TREE_MAX_HEIGHT - TREE_MIN_HEIGHT) + TREE_MIN_HEIGHT;
 			int type = random.nextInt(3); // standard, redwood, birch
 			makeTree(chunk, x, z, 61, height, type);
@@ -47,7 +47,7 @@ public final class ForestWorldGenerator extends FlatGrassWorldGenerator {
 	}
 
 	/** Grows a tree in a chunk. */
-	private static void makeTree(Chunk chunk, int x, int z, int y, int height, int type){
+	private static void makeTree(GlowChunk chunk, int x, int z, int y, int height, int type){
 		if (type != TREE_TYPE_NORMAL && type != TREE_TYPE_BIRCH && type != TREE_TYPE_REDWOOD) {
 			throw new IllegalArgumentException("Type of tree not valid");
 		}

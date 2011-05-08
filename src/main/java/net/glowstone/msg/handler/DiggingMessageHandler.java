@@ -2,7 +2,7 @@ package net.glowstone.msg.handler;
 
 import net.glowstone.entity.Player;
 import net.glowstone.msg.DiggingMessage;
-import net.glowstone.Chunk;
+import net.glowstone.GlowChunk;
 import net.glowstone.msg.BlockChangeMessage;
 import net.glowstone.net.Session;
 import net.glowstone.World;
@@ -28,13 +28,13 @@ public final class DiggingMessageHandler extends MessageHandler<DiggingMessage> 
 			int y = message.getY();
 
 			// TODO it might be nice to move these calculations somewhere else since they will need to be reused
-			int chunkX = x / Chunk.WIDTH + ((x < 0 && x % Chunk.WIDTH != 0) ? -1 : 0);
-			int chunkZ = z / Chunk.HEIGHT + ((z < 0 && z % Chunk.HEIGHT != 0) ? -1 : 0);
+			int chunkX = x / GlowChunk.WIDTH + ((x < 0 && x % GlowChunk.WIDTH != 0) ? -1 : 0);
+			int chunkZ = z / GlowChunk.HEIGHT + ((z < 0 && z % GlowChunk.HEIGHT != 0) ? -1 : 0);
 
-			int localX = (x - chunkX * Chunk.WIDTH) % Chunk.WIDTH;
-			int localZ = (z - chunkZ * Chunk.HEIGHT) % Chunk.HEIGHT;
+			int localX = (x - chunkX * GlowChunk.WIDTH) % GlowChunk.WIDTH;
+			int localZ = (z - chunkZ * GlowChunk.HEIGHT) % GlowChunk.HEIGHT;
 
-			Chunk chunk = world.getChunks().getChunk(chunkX, chunkZ);
+			GlowChunk chunk = world.getChunks().getChunk(chunkX, chunkZ);
 			chunk.setType(localX, localZ, y, Material.AIR.getId());
 
 			// TODO this should also be somewhere else as well... perhaps in the chunk.setType() method itself?

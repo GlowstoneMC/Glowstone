@@ -3,7 +3,7 @@ package net.glowstone.entity;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import net.glowstone.Chunk;
+import net.glowstone.GlowChunk;
 import net.glowstone.util.Position;
 
 import net.glowstone.msg.DestroyEntityMessage;
@@ -43,7 +43,7 @@ public final class Player extends Mob {
     /**
      * The chunks that the client knows about.
      */
-	private Set<Chunk.Key> knownChunks = new HashSet<Chunk.Key>();
+	private Set<GlowChunk.Key> knownChunks = new HashSet<GlowChunk.Key>();
 
     /**
      * Creates a new player and adds it to the world.
@@ -106,14 +106,14 @@ public final class Player extends Mob {
      * Streams chunks to the player's client.
      */
 	private void streamBlocks() {
-        Set<Chunk.Key> previousChunks = new HashSet<Chunk.Key>(knownChunks);
+        Set<GlowChunk.Key> previousChunks = new HashSet<GlowChunk.Key>(knownChunks);
 
-		int centralX = ((int) location.getX()) / Chunk.WIDTH;
-		int centralZ = ((int) location.getZ()) / Chunk.HEIGHT;
+		int centralX = ((int) location.getX()) / GlowChunk.WIDTH;
+		int centralZ = ((int) location.getZ()) / GlowChunk.HEIGHT;
 
-		for (int x = (centralX - Chunk.VISIBLE_RADIUS); x <= (centralX + Chunk.VISIBLE_RADIUS); x++) {
-			for (int z = (centralZ - Chunk.VISIBLE_RADIUS); z <= (centralZ + Chunk.VISIBLE_RADIUS); z++) {
-				Chunk.Key key = new Chunk.Key(x, z);
+		for (int x = (centralX - GlowChunk.VISIBLE_RADIUS); x <= (centralX + GlowChunk.VISIBLE_RADIUS); x++) {
+			for (int z = (centralZ - GlowChunk.VISIBLE_RADIUS); z <= (centralZ + GlowChunk.VISIBLE_RADIUS); z++) {
+				GlowChunk.Key key = new GlowChunk.Key(x, z);
 				if (!knownChunks.contains(key)) {
 					knownChunks.add(key);
 					session.send(new LoadChunkMessage(x, z, true));
@@ -123,7 +123,7 @@ public final class Player extends Mob {
 			}
 		}
 
-		for (Chunk.Key key : previousChunks) {
+		for (GlowChunk.Key key : previousChunks) {
 			session.send(new LoadChunkMessage(key.getX(), key.getZ(), false));
 			knownChunks.remove(key);
 		}
