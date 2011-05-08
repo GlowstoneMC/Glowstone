@@ -3,18 +3,19 @@ package net.glowstone.msg;
 public final class WindowClickMessage extends Message {
 
 	private final int id, slot;
-	private final boolean rightClick;
+	private final boolean rightClick, shift;
 	private final int transaction, item, count, damage;
 
-	public WindowClickMessage(int id, int slot, boolean rightClick, int transaction) {
-		this(id, slot, rightClick, transaction, -1, 0, 0);
+	public WindowClickMessage(int id, int slot, boolean rightClick, int transaction, boolean shift) {
+		this(id, slot, rightClick, transaction, shift, -1, 0, 0);
 	}
 
-	public WindowClickMessage(int id, int slot, boolean rightClick, int transaction, int item, int count, int damage) {
+	public WindowClickMessage(int id, int slot, boolean rightClick, int transaction, boolean shift, int item, int count, int damage) {
 		this.id = id;
 		this.slot = slot;
 		this.rightClick = rightClick;
 		this.transaction = transaction;
+        this.shift = shift;
 		this.item = item;
 		this.count = count;
 		this.damage = damage;

@@ -19,13 +19,14 @@ public final class WindowClickCodec extends MessageCodec<WindowClickMessage> {
 		int slot = buffer.readUnsignedShort();
 		boolean rightClick = buffer.readUnsignedByte() != 0;
 		int transaction = buffer.readUnsignedShort();
+        boolean shift = buffer.readUnsignedByte() != 0;
 		int item = buffer.readUnsignedShort();
 		if (item == 0xFFFF) {
-			return new WindowClickMessage(id, slot, rightClick, transaction);
+			return new WindowClickMessage(id, slot, rightClick, transaction, shift);
 		} else {
 			int count = buffer.readUnsignedByte();
 			int damage = buffer.readUnsignedByte();
-			return new WindowClickMessage(id, slot, rightClick, transaction, item, count, damage);
+			return new WindowClickMessage(id, slot, rightClick, transaction, shift, item, count, damage);
 		}
 	}
 
