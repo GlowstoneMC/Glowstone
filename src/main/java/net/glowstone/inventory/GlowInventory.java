@@ -61,7 +61,7 @@ public class GlowInventory implements Inventory {
     }
 
     public ItemStack[] getContents() {
-        return slots.clone();
+        return slots;
     }
 
     public void setContents(ItemStack[] items) {
