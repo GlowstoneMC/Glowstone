@@ -3,10 +3,12 @@ package net.glowstone.util;
 import org.bukkit.Location;
 
 /**
- * An immutable class which represents a position within the in-game world.
+ * A static class housing position-related utilities and constants.
  * @author Graham Edgecombe
  */
 public final class Position {
+
+    private Position() {}
 
     /**
      * The number of integer values between each double value. For example, if
