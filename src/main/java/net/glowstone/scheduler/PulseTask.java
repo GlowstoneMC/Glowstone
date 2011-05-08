@@ -2,11 +2,11 @@ package net.glowstone.scheduler;
 
 import net.glowstone.Server;
 import net.glowstone.net.SessionRegistry;
-import net.glowstone.World;
+import net.glowstone.GlowWorld;
 
 /**
  * A simple {@link Task} which calls the {@link SessionRegistry#pulse()} and
- * {@link World#pulse()} methods every tick.
+ * {@link GlowWorld#pulse()} methods every tick.
  * @author Graham Edgecombe
  */
 public final class PulseTask extends Task {

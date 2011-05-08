@@ -5,7 +5,7 @@ import net.glowstone.msg.DiggingMessage;
 import net.glowstone.GlowChunk;
 import net.glowstone.msg.BlockChangeMessage;
 import net.glowstone.net.Session;
-import net.glowstone.World;
+import net.glowstone.GlowWorld;
 
 import org.bukkit.Material;
 
@@ -21,7 +21,7 @@ public final class DiggingMessageHandler extends MessageHandler<DiggingMessage> 
 			return;
 
 		if (message.getState() == DiggingMessage.STATE_DONE_DIGGING) {
-			World world = player.getWorld();
+			GlowWorld world = player.getWorld();
 
 			int x = message.getX();
 			int z = message.getZ();

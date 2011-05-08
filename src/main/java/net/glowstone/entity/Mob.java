@@ -6,7 +6,7 @@ import net.glowstone.msg.EntityTeleportMessage;
 import net.glowstone.msg.Message;
 import net.glowstone.msg.RelativeEntityPositionMessage;
 import net.glowstone.msg.RelativeEntityPositionRotationMessage;
-import net.glowstone.World;
+import net.glowstone.GlowWorld;
 
 /**
  * A Mob is a {@link Player} or {@link Monster}.
@@ -18,7 +18,7 @@ public abstract class Mob extends Entity {
      * Creates a mob within the specified world.
      * @param world The world.
      */
-	public Mob(World world) {
+	public Mob(GlowWorld world) {
 		super(world);
 	}
 

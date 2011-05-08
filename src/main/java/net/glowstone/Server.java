@@ -77,7 +77,7 @@ public final class Server {
 	/**
 	 * The world this server is managing.
 	 */
-	private final World world = new World(new NbtChunkIoService(), new ForestWorldGenerator());
+	private final GlowWorld world = new GlowWorld(new NbtChunkIoService(), new ForestWorldGenerator());
 
 	/**
 	 * Creates a new server.
@@ -141,9 +141,9 @@ public final class Server {
 
 	/**
 	 * Gets the world this server manages.
-	 * @return The {@link World} this server manages.
+	 * @return The {@link GlowWorld} this server manages.
 	 */
-	public World getWorld() {
+	public GlowWorld getWorld() {
 		return world;
 	}
 

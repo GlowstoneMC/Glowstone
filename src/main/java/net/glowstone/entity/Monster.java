@@ -7,7 +7,7 @@ import net.glowstone.util.Position;
 import net.glowstone.msg.Message;
 import net.glowstone.msg.SpawnMobMessage;
 import net.glowstone.util.Parameter;
-import net.glowstone.World;
+import net.glowstone.GlowWorld;
 
 /**
  * Represents a monster such as a creeper.
@@ -30,7 +30,7 @@ public final class Monster extends Mob {
      * @param world The world this monster is in.
      * @param type The type of monster.
      */
-	public Monster(World world, int type) {
+	public Monster(GlowWorld world, int type) {
 		super(world);
 		this.type = type;
 	}

@@ -5,7 +5,7 @@ import net.glowstone.util.Position;
 import org.bukkit.Location;
 
 import net.glowstone.msg.Message;
-import net.glowstone.World;
+import net.glowstone.GlowWorld;
 
 /**
  * Represents some entity in the world such as an item on the floor or a player.
@@ -16,7 +16,7 @@ public abstract class Entity {
     /**
      * The world this entity belongs to.
      */
-	protected final World world;
+	protected final GlowWorld world;
 
     /**
      * A flag indicating if this entity is currently active.
@@ -42,7 +42,7 @@ public abstract class Entity {
      * Creates an entity and adds it to the specified world.
      * @param world The world.
      */
-	public Entity(World world) {
+	public Entity(GlowWorld world) {
 		this.world = world;
 		world.getEntities().allocate(this);
 	}
@@ -64,7 +64,7 @@ public abstract class Entity {
      * Gets the world this entity is in.
      * @return The world this entity is in.
      */
-	public World getWorld() {
+	public GlowWorld getWorld() {
 		return world;
 	}
 

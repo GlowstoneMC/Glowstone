@@ -5,7 +5,7 @@ import org.bukkit.inventory.ItemStack;
 import net.glowstone.util.Position;
 import net.glowstone.msg.Message;
 import net.glowstone.msg.SpawnItemMessage;
-import net.glowstone.World;
+import net.glowstone.GlowWorld;
 
 /**
  * Represents an item that is also an {@link Entity} within the world.
@@ -23,7 +23,7 @@ public final class ItemEntity extends Entity {
 	 * @param world The world.
 	 * @param item The item.
 	 */
-	public ItemEntity(World world, ItemStack item) {
+	public ItemEntity(GlowWorld world, ItemStack item) {
 		super(world);
 		this.item = item;
 	}

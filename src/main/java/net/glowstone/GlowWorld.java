@@ -16,7 +16,7 @@ import net.glowstone.world.WorldGenerator;
  * A class which represents the in-game world.
  * @author Graham Edgecombe
  */
-public class World {
+public class GlowWorld  {
 
 	/**
 	 * The spawn position.
@@ -39,7 +39,7 @@ public class World {
 	 * @param service The chunk I/O service.
 	 * @param generator The world generator.
 	 */
-	public World(ChunkIoService service, WorldGenerator generator) {
+	public GlowWorld(ChunkIoService service, WorldGenerator generator) {
 		chunks = new ChunkManager(service, generator);
 	}
 
