@@ -13,7 +13,7 @@ import net.glowstone.net.Session;
 import net.glowstone.net.SessionRegistry;
 import net.glowstone.scheduler.PulseTask;
 import net.glowstone.scheduler.TaskScheduler;
-import net.glowstone.world.ForestWorldGenerator;
+import net.glowstone.world.*;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.ChannelFactory;
@@ -77,7 +77,7 @@ public final class Server {
 	/**
 	 * The world this server is managing.
 	 */
-	private final GlowWorld world = new GlowWorld(new NbtChunkIoService(), new ForestWorldGenerator());
+	private final GlowWorld world = new GlowWorld(new NbtChunkIoService(), new InfiniMapWorldGenerator());
 
 	/**
 	 * Creates a new server.
