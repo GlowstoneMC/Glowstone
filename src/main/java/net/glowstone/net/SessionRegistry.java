@@ -1,7 +1,7 @@
 package net.glowstone.net;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * A list of all the sessions which provides a convenient {@link #pulse()}
@@ -18,11 +18,9 @@ public final class SessionRegistry {
     /**
      * Pulses all the sessions.
      */
-	public synchronized void pulse() {
-        for (Session session : sessions) {
-            synchronized (session) {
-                session.pulse();
-            }
+	public void pulse() {
+        for (Session session : new ArrayList<Session>(sessions)) {
+            session.pulse();
         }
 	}
 
@@ -30,7 +28,7 @@ public final class SessionRegistry {
      * Adds a new session.
      * @param session The session to add.
      */
-	public synchronized void add(Session session) {
+	public void add(Session session) {
         sessions.add(session);
 	}
 
@@ -38,10 +36,8 @@ public final class SessionRegistry {
      * Removes a session.
      * @param session The session to remove.
      */
-    public synchronized void remove(Session session) {
-        synchronized (session) {
-            sessions.remove(session);
-        }
+    public void remove(Session session) {
+        sessions.remove(session);
     }
 
 }
