@@ -27,8 +27,13 @@ public final class PulseTask extends Task {
 
 	@Override
 	public void execute() {
-		server.getSessionRegistry().pulse();
-		server.getWorld().pulse();
+        try {
+            server.getSessionRegistry().pulse();
+            server.getWorld().pulse();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
 	}
 
 }

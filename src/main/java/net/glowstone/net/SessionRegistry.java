@@ -18,25 +18,28 @@ public final class SessionRegistry {
     /**
      * Pulses all the sessions.
      */
-	public void pulse() {
-		for (Session session : sessions)
-			session.pulse();
+	public synchronized void pulse() {
+        System.out.println("Session registry is pulsing: " + sessions.size());
+        for (Session session : sessions)
+            session.pulse();
+        System.out.println("Done.");
 	}
 
     /**
      * Adds a new session.
      * @param session The session to add.
      */
-	void add(Session session) {
-		sessions.add(session);
+	public synchronized void add(Session session) {
+        sessions.add(session);
 	}
 
     /**
      * Removes a session.
      * @param session The session to remove.
      */
-	void remove(Session session) {
-		sessions.remove(session);
-	}
+    public synchronized void remove(Session session) {
+        System.out.println("Removin' a session.");
+        sessions.remove(session);
+    }
 
 }

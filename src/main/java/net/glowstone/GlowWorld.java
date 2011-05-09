@@ -39,7 +39,7 @@ public class GlowWorld implements World {
 	/**
 	 * The spawn position.
 	 */
-	private final Location spawnLocation = new Location(null, 0, 63, 0);
+	private final Location spawnLocation = new Location(null, 0, 128, 0);
 
 	/**
 	 * The chunk manager.
