@@ -3,15 +3,7 @@ package net.glowstone.msg.handler;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.glowstone.msg.ChatMessage;
-import net.glowstone.msg.DiggingMessage;
-import net.glowstone.msg.HandshakeMessage;
-import net.glowstone.msg.IdentificationMessage;
-import net.glowstone.msg.KickMessage;
-import net.glowstone.msg.Message;
-import net.glowstone.msg.PositionMessage;
-import net.glowstone.msg.PositionRotationMessage;
-import net.glowstone.msg.RotationMessage;
+import net.glowstone.msg.*;
 
 public final class HandlerLookupService {
 
@@ -27,6 +19,7 @@ public final class HandlerLookupService {
 			bind(PositionRotationMessage.class, PositionRotationMessageHandler.class);
 			bind(KickMessage.class, KickMessageHandler.class);
             bind(DiggingMessage.class, DiggingMessageHandler.class);
+            bind(BlockPlacementMessage.class, BlockPlacementMessageHandler.class);
 		} catch (Exception ex) {
 			throw new ExceptionInInitializerError(ex);
 		}

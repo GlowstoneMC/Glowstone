@@ -53,7 +53,7 @@ public class InfiniMapWorldGenerator implements WorldGenerator {
         }
 
         protected Material floatingBlock(int y, int h) {
-            int h2 = 128 - h + 32;
+            int h2 = 128 - 16;
             int base = 128 - 16;
             int h3 = base - 3 * (h2 - base);
             if (y > h2) return Material.AIR;
@@ -82,12 +82,12 @@ public class InfiniMapWorldGenerator implements WorldGenerator {
     }
 
     private class Floating extends Biome {
-        public Floating() { super(10, 32, 16, 1, 2, 1); }
+        public Floating() { super(30, 32, 16, 1, 2, 1); }
         public Material get(int y, int h) { return floatingBlock(y, h); }
     }
 
     private class Desert extends Biome {
-        public Desert() { super(50, 74, 16, 1, 2, 4); }
+        public Desert() { super(20, 74, 16, 1, 2, 4); }
         public Material get(int y, int h) { return desertBlock(y, h); }
     }
 
@@ -102,12 +102,12 @@ public class InfiniMapWorldGenerator implements WorldGenerator {
     
     public InfiniMapWorldGenerator() {
         biomes = new ArrayList<Biome>();
-        
+
+        //biomes.add(new Islands());
+        //biomes.add(new Desert());
         biomes.add(new Forest());
-        biomes.add(new Islands());
+        //biomes.add(new Mountains());
         biomes.add(new Floating());
-        biomes.add(new Desert());
-        biomes.add(new Mountains());
 
         int total = 0;
         for (Biome b : biomes) {

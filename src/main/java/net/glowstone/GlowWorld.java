@@ -100,10 +100,9 @@ public class GlowWorld implements World {
 	 * @param text The message text.
 	 */
 	public void broadcastMessage(String text) {
-		/*ChatMessage message = new ChatMessage(text);
-		for (Player player : getPlayers())
-			player.getSession().send(message);*/
-        throw new UnsupportedOperationException("To be refactored.");
+		ChatMessage message = new ChatMessage(text);
+		for (Player player : getRawPlayers())
+			player.getSession().send(message);
 	}
 
     // Entity lists

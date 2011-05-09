@@ -20,7 +20,7 @@ public final class DiggingMessageHandler extends MessageHandler<DiggingMessage> 
 		if (player == null)
 			return;
 
-		if (message.getState() == DiggingMessage.STATE_DONE_DIGGING) {
+		if (message.getState() == DiggingMessage.STATE_START_DIGGING) {
 			GlowWorld world = player.getWorld();
 
 			int x = message.getX();
