@@ -3,6 +3,7 @@ package net.glowstone.world;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 import net.glowstone.GlowChunk;
+import net.glowstone.GlowWorld;
 import org.bukkit.Material;
 
 /**
@@ -159,8 +160,8 @@ public class InfiniMapWorldGenerator implements WorldGenerator {
         }
     }
 
-    public GlowChunk generate(int chunkX, int chunkZ) {
-		GlowChunk chunk = new GlowChunk(chunkX, chunkZ);
+    public GlowChunk generate(GlowWorld world, int chunkX, int chunkZ) {
+		GlowChunk chunk = new GlowChunk(world, chunkX, chunkZ);
 		for (int x = 0; x < GlowChunk.WIDTH; x++) {
 			for (int z = 0; z < GlowChunk.HEIGHT; z++) {
                 double noiseX = chunkX + (x / 16.0);

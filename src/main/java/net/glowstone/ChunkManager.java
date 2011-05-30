@@ -23,6 +23,11 @@ public final class ChunkManager {
      * The world generator used to generate new chunks.
      */
 	private final WorldGenerator generator;
+    
+    /**
+     * The world this ChunkManager is managing.
+     */
+    private final GlowWorld world;
 
     /**
      * A map of chunks currently loaded in memory.
@@ -35,7 +40,8 @@ public final class ChunkManager {
      * @param service The I/O service.
      * @param generator The world generator.
      */
-	public ChunkManager(ChunkIoService service, WorldGenerator generator) {
+	public ChunkManager(GlowWorld world, ChunkIoService service, WorldGenerator generator) {
+        this.world = world;
 		this.service = service;
 		this.generator = generator;
 	}
@@ -52,13 +58,13 @@ public final class ChunkManager {
 		GlowChunk chunk = chunks.get(key);
 		if (chunk == null) {
 			try {
-				chunk = service.read(x, z);
+				chunk = service.read(world, x, z);
 			} catch (IOException e) {
 				chunk = null;
 			}
 
 			if (chunk == null) {
-				chunk = generator.generate(x, z);
+				chunk = generator.generate(world, x, z);
 			}
 
 			chunks.put(key, chunk);

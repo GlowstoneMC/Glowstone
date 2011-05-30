@@ -1,6 +1,5 @@
 package net.glowstone;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.bukkit.BlockChangeDelegate;
@@ -11,7 +10,6 @@ import org.bukkit.TreeType;
 import org.bukkit.World;
 
 import net.glowstone.io.ChunkIoService;
-import net.glowstone.ChunkManager;
 import net.glowstone.entity.Entity;
 import net.glowstone.entity.EntityManager;
 import net.glowstone.entity.Player;
@@ -58,7 +56,7 @@ public class GlowWorld implements World {
 	 * @param generator The world generator.
 	 */
 	public GlowWorld(ChunkIoService service, WorldGenerator generator) {
-		chunks = new ChunkManager(service, generator);
+		chunks = new ChunkManager(this, service, generator);
 	}
 
     ////////////////////////////////////////

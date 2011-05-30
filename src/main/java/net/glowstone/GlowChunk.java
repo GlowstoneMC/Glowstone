@@ -91,6 +91,11 @@ public final class GlowChunk implements Chunk {
 	 * The dimensions of a chunk.
 	 */
 	public static final int WIDTH = 16, HEIGHT = 16, DEPTH = 128;
+    
+    /**
+     * The world of this chunk.
+     */
+    private final GlowWorld world;
 
 	/**
 	 * The coordinates of this chunk.
@@ -107,7 +112,8 @@ public final class GlowChunk implements Chunk {
 	 * @param x The X coordinate.
 	 * @param z The Z coordinate.
 	 */
-	public GlowChunk(int x, int z) {
+	public GlowChunk(GlowWorld world, int x, int z) {
+        this.world = world;
 		this.x = x;
 		this.z = z;
 		this.types = new byte[WIDTH * HEIGHT * DEPTH];
@@ -300,11 +306,11 @@ public final class GlowChunk implements Chunk {
 	}
 
     public World getWorld() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return world;
     }
 
     public Block getBlock(int x, int y, int z) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return getWorld().getBlockAt(this.x << 4 | x, y, this.z << 4 | z);
     }
 
     public Entity[] getEntities() {

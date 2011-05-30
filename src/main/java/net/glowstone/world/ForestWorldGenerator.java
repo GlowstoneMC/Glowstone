@@ -3,6 +3,7 @@ package net.glowstone.world;
 import java.util.Random;
 
 import net.glowstone.GlowChunk;
+import net.glowstone.GlowWorld;
 
 import org.bukkit.Material;
 
@@ -31,8 +32,8 @@ public final class ForestWorldGenerator extends FlatGrassWorldGenerator {
 	private Random random = new Random();
 
 	@Override
-	public GlowChunk generate(int chunkX, int chunkZ) {
-		GlowChunk chunk = super.generate(chunkX, chunkZ);
+	public GlowChunk generate(GlowWorld world, int chunkX, int chunkZ) {
+		GlowChunk chunk = super.generate(world, chunkX, chunkZ);
 
 		int numTrees = random.nextInt(MAX_TREES + 1);
 		for (int i = 0; i < numTrees; i++) {

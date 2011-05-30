@@ -1,6 +1,7 @@
 package net.glowstone.world;
 
 import net.glowstone.GlowChunk;
+import net.glowstone.GlowWorld;
 
 /**
  * A {@link WorldGenerator} used to generate a test world.
@@ -9,8 +10,8 @@ import net.glowstone.GlowChunk;
 public final class TestWorldGenerator implements WorldGenerator {
 
 	@Override
-	public GlowChunk generate(int chunkX, int chunkZ) {
-		GlowChunk chunk = new GlowChunk(chunkX, chunkZ);
+	public GlowChunk generate(GlowWorld world, int chunkX, int chunkZ) {
+		GlowChunk chunk = new GlowChunk(world, chunkX, chunkZ);
 		for (int x = 0; x < GlowChunk.WIDTH; x++) {
 			for (int z = 0; z < GlowChunk.HEIGHT; z++) {
 				for (int y = 0; y < GlowChunk.DEPTH; y++) {

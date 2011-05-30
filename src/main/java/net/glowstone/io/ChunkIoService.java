@@ -3,6 +3,7 @@ package net.glowstone.io;
 import java.io.IOException;
 
 import net.glowstone.GlowChunk;
+import net.glowstone.GlowWorld;
 
 /**
  * This interface should be implemented by classes which wish to provide some
@@ -20,7 +21,7 @@ public interface ChunkIoService {
 	 * @return The {@link GlowChunk} or {@code null} if it does not exist.
 	 * @throws IOException if an I/O error occurs.
 	 */
-	public GlowChunk read(int x, int z) throws IOException;
+	public GlowChunk read(GlowWorld world, int x, int z) throws IOException;
 
 	/**
 	 * Writes a single chunk.

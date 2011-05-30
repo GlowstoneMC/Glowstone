@@ -8,6 +8,7 @@ import java.util.Map;
 import net.glowstone.io.region.RegionFile;
 import net.glowstone.io.region.RegionFileCache;
 import net.glowstone.GlowChunk;
+import net.glowstone.GlowWorld;
 import net.glowstone.util.nbt.ByteArrayTag;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
@@ -51,7 +52,7 @@ public final class McRegionChunkIoService implements ChunkIoService {
 	}
 
 	@Override
-	public GlowChunk read(int x, int z) throws IOException {
+	public GlowChunk read(GlowWorld world, int x, int z) throws IOException {
 		RegionFile region = cache.getRegionFile(dir, x, z);
 		int regionX = x & (REGION_SIZE - 1);
 		int regionZ = z & (REGION_SIZE - 1);
@@ -60,7 +61,7 @@ public final class McRegionChunkIoService implements ChunkIoService {
 		}
 
 		DataInputStream in = region.getChunkDataInputStream(regionX, regionZ);
-		GlowChunk chunk = new GlowChunk(x, z);
+		GlowChunk chunk = new GlowChunk(world, x, z);
 
 		NBTInputStream nbt = new NBTInputStream(in, false);
 		CompoundTag tag = (CompoundTag) nbt.readTag();
