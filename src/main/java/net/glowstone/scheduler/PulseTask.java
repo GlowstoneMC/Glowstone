@@ -1,6 +1,8 @@
 package net.glowstone.scheduler;
 
-import net.glowstone.Server;
+import org.bukkit.World;
+
+import net.glowstone.GlowServer;
 import net.glowstone.net.SessionRegistry;
 import net.glowstone.GlowWorld;
 
@@ -14,13 +16,13 @@ public final class PulseTask extends Task {
 	/**
 	 * The server.
 	 */
-	private final Server server;
+	private final GlowServer server;
 
 	/**
 	 * Creates a new pulse task.
 	 * @param server The server.
 	 */
-	public PulseTask(Server server) {
+	public PulseTask(GlowServer server) {
 		super(1);
 		this.server = server;
 	}
@@ -29,7 +31,8 @@ public final class PulseTask extends Task {
 	public void execute() {
         try {
             server.getSessionRegistry().pulse();
-            server.getWorld().pulse();
+            for (World world : server.getWorlds())
+                ((GlowWorld) world).pulse();
         }
         catch (Exception ex) {
             ex.printStackTrace();

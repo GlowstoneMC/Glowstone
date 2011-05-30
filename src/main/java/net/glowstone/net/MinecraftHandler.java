@@ -3,7 +3,7 @@ package net.glowstone.net;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.glowstone.Server;
+import net.glowstone.GlowServer;
 import net.glowstone.msg.Message;
 
 import org.jboss.netty.channel.Channel;
@@ -28,13 +28,13 @@ public class MinecraftHandler extends SimpleChannelUpstreamHandler {
     /**
      * The server.
      */
-	private final Server server;
+	private final GlowServer server;
 
     /**
      * Creates a new network event handler.
      * @param server The server.
      */
-	public MinecraftHandler(Server server) {
+	public MinecraftHandler(GlowServer server) {
 		this.server = server;
 	}
 

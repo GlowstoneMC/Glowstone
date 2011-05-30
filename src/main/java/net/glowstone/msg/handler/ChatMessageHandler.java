@@ -1,6 +1,6 @@
 package net.glowstone.msg.handler;
 
-import net.glowstone.Server;
+import net.glowstone.GlowServer;
 import net.glowstone.entity.Player;
 import net.glowstone.msg.ChatMessage;
 import net.glowstone.net.Session;
@@ -19,7 +19,7 @@ public final class ChatMessageHandler extends MessageHandler<ChatMessage> {
 			// TODO: process command
 		} else {
 			player.getWorld().broadcastMessage("<" + player.getName() + "> " + text);
-            Server.logger.info("<" + player.getName() + "> " + text);
+            GlowServer.logger.info("<" + player.getName() + "> " + text);
 		}
 	}
 

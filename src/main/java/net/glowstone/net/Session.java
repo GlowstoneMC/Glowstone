@@ -3,7 +3,8 @@ package net.glowstone.net;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-import net.glowstone.Server;
+import net.glowstone.GlowServer;
+import net.glowstone.GlowWorld;
 import net.glowstone.entity.Player;
 import net.glowstone.msg.KickMessage;
 import net.glowstone.msg.Message;
@@ -52,7 +53,7 @@ public final class Session {
     /**
      * The server this session belongs to.
      */
-	private final Server server;
+	private final GlowServer server;
 
     /**
      * The channel associated with this session.
@@ -85,7 +86,7 @@ public final class Session {
      * @param server The server this session belongs to.
      * @param channel The channel associated with this session.
      */
-	public Session(Server server, Channel channel) {
+	public Session(GlowServer server, Channel channel) {
 		this.server = server;
 		this.channel = channel;
 	}
@@ -125,7 +126,7 @@ public final class Session {
 			throw new IllegalStateException();
 
 		this.player = player;
-		this.server.getWorld().getRawPlayers().add(player);
+		((GlowWorld) this.server.getWorlds().get(0)).getRawPlayers().add(player);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -167,7 +168,7 @@ public final class Session {
      * Gets the server associated with this session.
      * @return The server.
      */
-	public Server getServer() {
+	public GlowServer getServer() {
 		return server;
 	}
 

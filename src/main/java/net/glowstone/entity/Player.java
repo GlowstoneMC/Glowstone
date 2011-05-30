@@ -3,9 +3,10 @@ package net.glowstone.entity;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import net.glowstone.GlowChunk;
-import net.glowstone.util.Position;
 
+import net.glowstone.GlowChunk;
+import net.glowstone.GlowWorld;
+import net.glowstone.util.Position;
 import net.glowstone.msg.DestroyEntityMessage;
 import net.glowstone.msg.LoadChunkMessage;
 import net.glowstone.msg.Message;
@@ -51,7 +52,7 @@ public final class Player extends Mob {
      * @param name The player's name.
      */
 	public Player(Session session, String name) {
-		super(session.getServer().getWorld());
+		super((GlowWorld) session.getServer().getWorlds().get(0));
 		this.name = name;
 		this.session = session;
 
