@@ -8,10 +8,10 @@ import net.glowstone.msg.SpawnItemMessage;
 import net.glowstone.GlowWorld;
 
 /**
- * Represents an item that is also an {@link Entity} within the world.
+ * Represents an item that is also an {@link GlowEntity} within the world.
  * @author Graham Edgecombe
  */
-public final class ItemEntity extends Entity {
+public final class GlowItem extends GlowEntity {
 
 	/**
 	 * The item.
@@ -23,13 +23,13 @@ public final class ItemEntity extends Entity {
 	 * @param world The world.
 	 * @param item The item.
 	 */
-	public ItemEntity(GlowWorld world, ItemStack item) {
+	public GlowItem(GlowWorld world, ItemStack item) {
 		super(world);
 		this.item = item;
 	}
 
 	/**
-	 * Gets the item that this {@link ItemEntity} represents.
+	 * Gets the item that this {@link GlowItem} represents.
 	 * @return The item.
 	 */
 	public ItemStack getItem() {

@@ -1,6 +1,6 @@
 package net.glowstone.msg.handler;
 
-import net.glowstone.entity.Player;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.msg.BlockPlacementMessage;
 import net.glowstone.GlowChunk;
 import net.glowstone.msg.BlockChangeMessage;
@@ -16,7 +16,7 @@ import org.bukkit.Material;
 public final class BlockPlacementMessageHandler extends MessageHandler<BlockPlacementMessage> {
 
 	@Override
-	public void handle(Session session, Player player, BlockPlacementMessage message) {
+	public void handle(Session session, GlowPlayer player, BlockPlacementMessage message) {
 		if (player == null)
 			return;
 
@@ -52,7 +52,7 @@ public final class BlockPlacementMessageHandler extends MessageHandler<BlockPlac
 
         // TODO this should also be somewhere else as well... perhaps in the chunk.setType() method itself?
         BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, Material.WOOD.getId(), 0);
-        for (Player p: world.getRawPlayers()) {
+        for (GlowPlayer p: world.getRawPlayers()) {
             p.getSession().send(bcmsg);
         }
 	}

@@ -5,7 +5,7 @@ import java.util.Queue;
 
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
-import net.glowstone.entity.Player;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.msg.KickMessage;
 import net.glowstone.msg.Message;
 import net.glowstone.msg.handler.HandlerLookupService;
@@ -79,7 +79,7 @@ public final class Session {
     /**
      * The player associated with this session (if there is one).
      */
-	private Player player;
+	private GlowPlayer player;
 
     /**
      * Creates a new session.
@@ -111,7 +111,7 @@ public final class Session {
      * Gets the player associated with this session.
      * @return The player, or {@code null} if no player is associated with it.
      */
-	public Player getPlayer() {
+	public GlowPlayer getPlayer() {
 		return player;
 	}
 
@@ -121,7 +121,7 @@ public final class Session {
      * @throws IllegalStateException if there is already a player associated
      * with this session.
      */
-	public void setPlayer(Player player) {
+	public void setPlayer(GlowPlayer player) {
 		if (this.player != null)
 			throw new IllegalStateException();
 

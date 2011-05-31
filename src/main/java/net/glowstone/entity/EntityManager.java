@@ -11,17 +11,17 @@ import java.util.Set;
  * A class which manages all of the entities within a world.
  * @author Graham Edgecombe
  */
-public final class EntityManager implements Iterable<Entity> {
+public final class EntityManager implements Iterable<GlowEntity> {
 
     /**
      * A map of all the entity ids to the corresponding entities.
      */
-	private final Map<Integer, Entity> entities = new HashMap<Integer, Entity>();
+	private final Map<Integer, GlowEntity> entities = new HashMap<Integer, GlowEntity>();
 
     /**
      * A map of entity types to a set containing all entities of that type.
      */
-	private final Map<Class<? extends Entity>, Set<? extends Entity>> groupedEntities = new HashMap<Class<? extends Entity>, Set<? extends Entity>>();
+	private final Map<Class<? extends GlowEntity>, Set<? extends GlowEntity>> groupedEntities = new HashMap<Class<? extends GlowEntity>, Set<? extends GlowEntity>>();
 
     /**
      * The next id to check.
@@ -35,7 +35,7 @@ public final class EntityManager implements Iterable<Entity> {
      * @return A collection of entities with the specified type.
      */
 	@SuppressWarnings("unchecked")
-	public <T extends Entity> Collection<T> getAll(Class<T> type) {
+	public <T extends GlowEntity> Collection<T> getAll(Class<T> type) {
 		Set<T> set = (Set<T>) groupedEntities.get(type);
 		if (set == null) {
 			set = new HashSet<T>();
@@ -49,7 +49,7 @@ public final class EntityManager implements Iterable<Entity> {
      * @param id The id.
      * @return The entity, or {@code null} if it could not be found.
      */
-	public Entity getEntity(int id) {
+	public GlowEntity getEntity(int id) {
 		return entities.get(id);
 	}
 
@@ -59,12 +59,12 @@ public final class EntityManager implements Iterable<Entity> {
      * @return The id.
      */
 	@SuppressWarnings("unchecked")
-	int allocate(Entity entity) {
+	int allocate(GlowEntity entity) {
 		for (int id = nextId; id < Integer.MAX_VALUE; id++) {
 			if (!entities.containsKey(id)) {
 				entities.put(id, entity);
 				entity.id = id;
-				((Collection<Entity>) getAll(entity.getClass())).add(entity);
+				((Collection<GlowEntity>) getAll(entity.getClass())).add(entity);
 				nextId = id + 1;
 				return id;
 			}
@@ -73,7 +73,7 @@ public final class EntityManager implements Iterable<Entity> {
 		for (int id = Integer.MIN_VALUE; id < -1; id++) { // as -1 is used as a special value
 			if (!entities.containsKey(id)) {
 				entities.put(id, entity);
-				((Collection<Entity>) getAll(entity.getClass())).add(entity);
+				((Collection<GlowEntity>) getAll(entity.getClass())).add(entity);
 				nextId = id + 1;
 				return id;
 			}
@@ -86,13 +86,13 @@ public final class EntityManager implements Iterable<Entity> {
      * Deallocates the id for an entity.
      * @param entity The entity.
      */
-	void deallocate(Entity entity) {
+	void deallocate(GlowEntity entity) {
 		entities.remove(entity.getId());
 		getAll(entity.getClass()).remove(entity);
 	}
 
 	@Override
-	public Iterator<Entity> iterator() {
+	public Iterator<GlowEntity> iterator() {
 		return entities.values().iterator();
 	}
 

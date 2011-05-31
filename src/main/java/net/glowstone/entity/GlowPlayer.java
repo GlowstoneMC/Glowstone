@@ -19,7 +19,7 @@ import net.glowstone.net.Session;
  * Represents an in-game player.
  * @author Graham Edgecombe
  */
-public final class Player extends Mob {
+public final class GlowPlayer extends GlowLivingEntity {
 
     /**
      * The normal height of a player's eyes above their feet.
@@ -39,7 +39,7 @@ public final class Player extends Mob {
     /**
      * The entities that the client knows about.
      */
-	private Set<Entity> knownEntities = new HashSet<Entity>();
+	private Set<GlowEntity> knownEntities = new HashSet<GlowEntity>();
 
     /**
      * The chunks that the client knows about.
@@ -51,7 +51,7 @@ public final class Player extends Mob {
      * @param session The player's session.
      * @param name The player's name.
      */
-	public Player(Session session, String name) {
+	public GlowPlayer(Session session, String name) {
 		super((GlowWorld) session.getServer().getWorlds().get(0));
 		this.name = name;
 		this.session = session;
@@ -77,8 +77,8 @@ public final class Player extends Mob {
 
 		streamBlocks();
 
-		for (Iterator<Entity> it = knownEntities.iterator(); it.hasNext(); ) {
-			Entity entity = it.next();
+		for (Iterator<GlowEntity> it = knownEntities.iterator(); it.hasNext(); ) {
+			GlowEntity entity = it.next();
 			boolean withinDistance = entity.isActive() && isWithinDistance(entity);
 
 			if (withinDistance) {
@@ -91,7 +91,7 @@ public final class Player extends Mob {
 			}
 		}
 
-		for (Entity entity : world.getEntityManager()) {
+		for (GlowEntity entity : world.getEntityManager()) {
 			if (entity == this)
 				continue;
 			boolean withinDistance = entity.isActive() && isWithinDistance(entity);

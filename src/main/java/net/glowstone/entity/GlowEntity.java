@@ -11,7 +11,7 @@ import net.glowstone.GlowWorld;
  * Represents some entity in the world such as an item on the floor or a player.
  * @author Graham Edgecombe
  */
-public abstract class Entity {
+public abstract class GlowEntity {
 
     /**
      * The world this entity belongs to.
@@ -42,7 +42,7 @@ public abstract class Entity {
      * Creates an entity and adds it to the specified world.
      * @param world The world.
      */
-	public Entity(GlowWorld world) {
+	public GlowEntity(GlowWorld world) {
 		this.world = world;
 		world.getEntityManager().allocate(this);
 	}
@@ -54,7 +54,7 @@ public abstract class Entity {
      * @return {@code true} if the entities can see each other, {@code false} if
      * not.
      */
-	public boolean isWithinDistance(Entity other) {
+	public boolean isWithinDistance(GlowEntity other) {
 		double dx = Math.abs(location.getX() - other.location.getX());
 		double dz = Math.abs(location.getZ() - other.location.getZ());
 		return dx <= (GlowChunk.VISIBLE_RADIUS * GlowChunk.WIDTH) && dz <= (GlowChunk.VISIBLE_RADIUS * GlowChunk.HEIGHT);
@@ -149,7 +149,7 @@ public abstract class Entity {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Entity other = (Entity) obj;
+		GlowEntity other = (GlowEntity) obj;
 		if (id != other.id)
 			return false;
 		return true;

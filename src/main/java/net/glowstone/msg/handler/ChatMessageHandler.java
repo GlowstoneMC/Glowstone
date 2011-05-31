@@ -1,14 +1,14 @@
 package net.glowstone.msg.handler;
 
 import net.glowstone.GlowServer;
-import net.glowstone.entity.Player;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.msg.ChatMessage;
 import net.glowstone.net.Session;
 
 public final class ChatMessageHandler extends MessageHandler<ChatMessage> {
 
 	@Override
-	public void handle(Session session, Player player, ChatMessage message) {
+	public void handle(Session session, GlowPlayer player, ChatMessage message) {
 		if (player == null)
 			return;
 

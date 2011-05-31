@@ -10,9 +10,9 @@ import org.bukkit.TreeType;
 import org.bukkit.World;
 
 import net.glowstone.io.ChunkIoService;
-import net.glowstone.entity.Entity;
+import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.EntityManager;
-import net.glowstone.entity.Player;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.msg.ChatMessage;
 import net.glowstone.world.WorldGenerator;
 import org.bukkit.block.Block;
@@ -66,10 +66,10 @@ public class GlowWorld implements World {
 	 * Updates all the entities within this world.
 	 */
 	public void pulse() {
-		for (Entity entity : entities)
+		for (GlowEntity entity : entities)
 			entity.pulse();
 
-		for (Entity entity : entities)
+		for (GlowEntity entity : entities)
 			entity.reset();
 	}
 
@@ -89,8 +89,8 @@ public class GlowWorld implements World {
 		return entities;
 	}
 
-	public Collection<Player> getRawPlayers() {
-        return entities.getAll(Player.class);
+	public Collection<GlowPlayer> getRawPlayers() {
+        return entities.getAll(GlowPlayer.class);
 	}
 
 	/**
@@ -99,17 +99,17 @@ public class GlowWorld implements World {
 	 */
 	public void broadcastMessage(String text) {
 		ChatMessage message = new ChatMessage(text);
-		for (Player player : getRawPlayers())
+		for (GlowPlayer player : getRawPlayers())
 			player.getSession().send(message);
 	}
 
-    // Entity lists
+    // GlowEntity lists
 	
 	public List<org.bukkit.entity.Player> getPlayers() {
 		/*
-        Collection<Player> players = entities.getAll(Player.class);
+        Collection<Player> players = entities.getAll(GlowPlayer.class);
         List<Player> result = new ArrayList<Player>();
-        for (Player p : players) {
+        for (GlowPlayer p : players) {
             result.add(p);
         }
         return result;
@@ -273,7 +273,7 @@ public class GlowWorld implements World {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    // Entity spawning
+    // GlowEntity spawning
 
     public Item dropItem(Location location, ItemStack item) {
         throw new UnsupportedOperationException("Not supported yet.");

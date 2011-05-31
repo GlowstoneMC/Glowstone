@@ -9,16 +9,16 @@ import net.glowstone.msg.RelativeEntityPositionRotationMessage;
 import net.glowstone.GlowWorld;
 
 /**
- * A Mob is a {@link Player} or {@link Monster}.
+ * A GlowLivingEntity is a {@link Player} or {@link Monster}.
  * @author Graham Edgecombe.
  */
-public abstract class Mob extends Entity {
+public abstract class GlowLivingEntity extends GlowEntity {
 
     /**
      * Creates a mob within the specified world.
      * @param world The world.
      */
-	public Mob(GlowWorld world) {
+	public GlowLivingEntity(GlowWorld world) {
 		super(world);
 	}
 

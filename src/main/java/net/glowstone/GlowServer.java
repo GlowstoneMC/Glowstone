@@ -365,6 +365,7 @@ public final class GlowServer implements Server {
     public void reload() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+    
     /**
      * Returns the primary logger associated with this server instance
      *

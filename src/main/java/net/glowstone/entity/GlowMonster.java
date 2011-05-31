@@ -13,7 +13,7 @@ import net.glowstone.GlowWorld;
  * Represents a monster such as a creeper.
  * @author Graham Edgecombe
  */
-public final class Monster extends Mob {
+public final class GlowMonster extends GlowLivingEntity {
 
     /**
      * The type of monster.
@@ -30,7 +30,7 @@ public final class Monster extends Mob {
      * @param world The world this monster is in.
      * @param type The type of monster.
      */
-	public Monster(GlowWorld world, int type) {
+	public GlowMonster(GlowWorld world, int type) {
 		super(world);
 		this.type = type;
 	}

@@ -1,6 +1,6 @@
 package net.glowstone.msg.handler;
 
-import net.glowstone.entity.Player;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.msg.DiggingMessage;
 import net.glowstone.GlowChunk;
 import net.glowstone.msg.BlockChangeMessage;
@@ -16,7 +16,7 @@ import org.bukkit.Material;
 public final class DiggingMessageHandler extends MessageHandler<DiggingMessage> {
 
 	@Override
-	public void handle(Session session, Player player, DiggingMessage message) {
+	public void handle(Session session, GlowPlayer player, DiggingMessage message) {
 		if (player == null)
 			return;
 
@@ -26,20 +26,12 @@ public final class DiggingMessageHandler extends MessageHandler<DiggingMessage> 
 			int x = message.getX();
 			int z = message.getZ();
 			int y = message.getY();
-
-			// TODO it might be nice to move these calculations somewhere else since they will need to be reused
-			int chunkX = x / GlowChunk.WIDTH + ((x < 0 && x % GlowChunk.WIDTH != 0) ? -1 : 0);
-			int chunkZ = z / GlowChunk.HEIGHT + ((z < 0 && z % GlowChunk.HEIGHT != 0) ? -1 : 0);
-
-			int localX = (x - chunkX * GlowChunk.WIDTH) % GlowChunk.WIDTH;
-			int localZ = (z - chunkZ * GlowChunk.HEIGHT) % GlowChunk.HEIGHT;
-
-			GlowChunk chunk = world.getChunkManager().getChunk(chunkX, chunkZ);
-			chunk.setType(localX, localZ, y, Material.AIR.getId());
+            
+            world.getBlockAt(x, y, z).setType(Material.AIR);
 
 			// TODO this should also be somewhere else as well... perhaps in the chunk.setType() method itself?
 			BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, 0, 0);
-			for (Player p: world.getRawPlayers()) {
+			for (GlowPlayer p: world.getRawPlayers()) {
 				p.getSession().send(bcmsg);
 			}
 		}
