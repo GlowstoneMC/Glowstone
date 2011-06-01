@@ -389,7 +389,8 @@ public final class GlowServer implements Server {
      * Writes loaded players to disk
      */
     public void savePlayers() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        for (Player player : getOnlinePlayers())
+            player.saveData();
     }
 
     /**
