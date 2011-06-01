@@ -87,7 +87,7 @@ public final class EntityManager implements Iterable<GlowEntity> {
      * @param entity The entity.
      */
 	void deallocate(GlowEntity entity) {
-		entities.remove(entity.getId());
+		entities.remove(entity.getEntityId());
 		getAll(entity.getClass()).remove(entity);
 	}
 

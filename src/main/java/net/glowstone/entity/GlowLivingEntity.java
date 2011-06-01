@@ -1,5 +1,17 @@
 package net.glowstone.entity;
 
+import java.util.HashSet;
+import java.util.List;
+
+import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Egg;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Snowball;
+import org.bukkit.entity.Vehicle;
+
 import net.glowstone.util.Position;
 import net.glowstone.msg.EntityRotationMessage;
 import net.glowstone.msg.EntityTeleportMessage;
@@ -12,7 +24,12 @@ import net.glowstone.GlowWorld;
  * A GlowLivingEntity is a {@link Player} or {@link Monster}.
  * @author Graham Edgecombe.
  */
-public abstract class GlowLivingEntity extends GlowEntity {
+public abstract class GlowLivingEntity extends GlowEntity implements LivingEntity {
+    
+    /**
+     * The entity's health.
+     */
+    protected int health = 0;
 
     /**
      * Creates a mob within the specified world.
@@ -52,5 +69,113 @@ public abstract class GlowLivingEntity extends GlowEntity {
 
 		return null;
 	}
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        if (health < 0) health = 0;
+        if (health > 200) health = 200;
+        this.health = health;
+    }
+
+    public double getEyeHeight() {
+       return getEyeHeight(false);
+    }
+
+    public double getEyeHeight(boolean ignoreSneaking) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Location getEyeLocation() {
+        Location loc = getLocation();
+        loc.setY(loc.getY() + getEyeHeight());
+        return loc;
+    }
+
+    public List<Block> getLineOfSight(HashSet<Byte> transparent, int maxDistance) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Block getTargetBlock(HashSet<Byte> transparent, int maxDistance) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public List<Block> getLastTwoTargetBlocks(HashSet<Byte> transparent, int maxDistance) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Egg throwEgg() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Snowball throwSnowball() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Arrow shootArrow() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean isInsideVehicle() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean leaveVehicle() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Vehicle getVehicle() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public int getRemainingAir() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setRemainingAir(int ticks) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public int getMaximumAir() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setMaximumAir(int ticks) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void damage(int amount) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void damage(int amount, Entity source) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public int getMaximumNoDamageTicks() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setMaximumNoDamageTicks(int ticks) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public int getLastDamage() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setLastDamage(int damage) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public int getNoDamageTicks() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setNoDamageTicks(int ticks) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
 }

@@ -13,8 +13,7 @@ public final class PositionMessageHandler extends MessageHandler<PositionMessage
 		if (player == null)
 			return;
 
-        // TODO: change 'null' to player.getWorld()
-		player.setLocation(new Location(null, message.getX(), message.getY(), message.getZ()));
+		player.setRawLocation(new Location(player.getWorld(), message.getX(), message.getY(), message.getZ()));
 	}
 
 }

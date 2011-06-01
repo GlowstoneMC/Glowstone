@@ -192,7 +192,7 @@ public final class Session {
      */
 	void dispose() {
 		if (player != null) {
-			player.destroy();
+			player.remove();
 			player = null; // in case we are disposed twice
 		}
 	}

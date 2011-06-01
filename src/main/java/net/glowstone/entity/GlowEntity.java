@@ -1,17 +1,23 @@
 package net.glowstone.entity;
 
-import net.glowstone.GlowChunk;
-import net.glowstone.util.Position;
+import java.util.List;
+import org.bukkit.util.Vector;
+import org.bukkit.entity.Entity;
 import org.bukkit.Location;
+
+import net.glowstone.GlowChunk;
+import net.glowstone.GlowServer;
+import net.glowstone.util.Position;
 
 import net.glowstone.msg.Message;
 import net.glowstone.GlowWorld;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 /**
  * Represents some entity in the world such as an item on the floor or a player.
  * @author Graham Edgecombe
  */
-public abstract class GlowEntity {
+public abstract class GlowEntity implements Entity {
 
     /**
      * The world this entity belongs to.
@@ -37,6 +43,11 @@ public abstract class GlowEntity {
      * The position in the last cycle.
      */
 	protected Location previousLocation = Position.ZERO;
+    
+    /**
+     * An EntityDamageEvent representing the last damage cause on this entity.
+     */
+    private EntityDamageEvent lastDamageCause;
 
     /**
      * Creates an entity and adds it to the specified world.
@@ -69,27 +80,36 @@ public abstract class GlowEntity {
 	}
 
     /**
+     * Gets the {@link Server} that contains this Entity
+     *
+     * @return Server instance running this Entity
+     */
+    public GlowServer getServer() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /**
      * Destroys this entity by removing it from the world and marking it as not
      * being active.
      */
-	public void destroy() {
+	public void remove() {
 		active = false;
 		world.getEntityManager().deallocate(this);
 	}
 
     /**
-     * Checks if this entity is active.
+     * Checks if this entity is inactive.
      * @return {@code true} if so, {@code false} if not.
      */
-	public boolean isActive() {
-		return active;
+	public boolean isDead() {
+		return !active;
 	}
 
     /**
      * Gets the id of this entity.
      * @return The id.
      */
-	public int getId() {
+	public int getEntityId() {
 		return id;
 	}
 
@@ -114,7 +134,7 @@ public abstract class GlowEntity {
      * @return The position of this entity.
      */
 	public Location getLocation() {
-		return location;
+		return location.clone();
 	}
 
     /**
@@ -129,7 +149,7 @@ public abstract class GlowEntity {
      * Sets this entity's position.
      * @param position The new position.
      */
-	public void setLocation(Location location) {
+	public void setRawLocation(Location location) {
 		this.location = location;
 	}
 
@@ -184,5 +204,80 @@ public abstract class GlowEntity {
 	public boolean hasRotated() {
 		return Position.hasRotated(location, previousLocation);
 	}
+
+    
+    public void setVelocity(Vector velocity) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Vector getVelocity() {
+        return location.toVector().subtract(previousLocation.toVector());
+    }
+
+    public boolean teleport(Location location) {
+        this.location = location;
+        reset();
+        return true;
+    }
+
+    public boolean teleport(Entity destination) {
+        return teleport(destination.getLocation());
+    }
+
+    public void teleportTo(Location location) {
+        teleport(location);
+    }
+
+    public void teleportTo(Entity destination) {
+        teleport(destination.getLocation());
+    }
+
+    public List<Entity> getNearbyEntities(double x, double y, double z) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public int getFireTicks() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public int getMaxFireTicks() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setFireTicks(int ticks) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Entity getPassenger() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean setPassenger(Entity passenger) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean isEmpty() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean eject() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public float getFallDistance() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setFallDistance(float distance) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setLastDamageCause(EntityDamageEvent event) {
+        lastDamageCause = event;
+    }
+
+    public EntityDamageEvent getLastDamageCause() {
+        return lastDamageCause;
+    }
 
 }

@@ -1,25 +1,32 @@
 package net.glowstone.entity;
 
+import java.net.InetSocketAddress;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import org.bukkit.Achievement;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Statistic;
+
+import org.bukkit.entity.Player;
 
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowWorld;
-import net.glowstone.util.Position;
+import net.glowstone.msg.BlockChangeMessage;
+import net.glowstone.msg.ChatMessage;
 import net.glowstone.msg.DestroyEntityMessage;
 import net.glowstone.msg.LoadChunkMessage;
 import net.glowstone.msg.Message;
 import net.glowstone.msg.PingMessage;
 import net.glowstone.msg.PositionRotationMessage;
-import net.glowstone.msg.SpawnPlayerMessage;
 import net.glowstone.net.Session;
 
 /**
  * Represents an in-game player.
  * @author Graham Edgecombe
  */
-public final class GlowPlayer extends GlowLivingEntity {
+public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     /**
      * The normal height of a player's eyes above their feet.
@@ -27,14 +34,14 @@ public final class GlowPlayer extends GlowLivingEntity {
 	public static final double EYE_HEIGHT = 1.62D;
 
     /**
-     * The name of this player.
-     */
-	private final String name;
-
-    /**
      * This player's session.
      */
 	private final Session session;
+    
+    /**
+     * The display name of this player, for chat purposes.
+     */
+    private String displayName;
 
     /**
      * The entities that the client knows about.
@@ -52,22 +59,13 @@ public final class GlowPlayer extends GlowLivingEntity {
      * @param name The player's name.
      */
 	public GlowPlayer(Session session, String name) {
-		super((GlowWorld) session.getServer().getWorlds().get(0));
-		this.name = name;
+		super((GlowWorld) session.getServer().getWorlds().get(0), name);
 		this.session = session;
 
 		// stream the initial set of blocks and teleport us
 		this.streamBlocks();
 		this.location = world.getSpawnLocation();
 		this.session.send(new PositionRotationMessage(location.getX(), location.getY(), location.getZ(), location.getY() + EYE_HEIGHT, (float) location.getYaw(), (float) location.getPitch(), true));
-	}
-
-    /**
-     * Gets the name of this player.
-     * @return The name of this player.
-     */
-	public String getName() {
-		return name;
 	}
 
 	@Override
@@ -79,14 +77,14 @@ public final class GlowPlayer extends GlowLivingEntity {
 
 		for (Iterator<GlowEntity> it = knownEntities.iterator(); it.hasNext(); ) {
 			GlowEntity entity = it.next();
-			boolean withinDistance = entity.isActive() && isWithinDistance(entity);
+			boolean withinDistance = !entity.isDead() && isWithinDistance(entity);
 
 			if (withinDistance) {
 				Message msg = entity.createUpdateMessage();
 				if (msg != null)
 					session.send(msg);
 			} else {
-				session.send(new DestroyEntityMessage(entity.getId()));
+				session.send(new DestroyEntityMessage(entity.getEntityId()));
 				it.remove();
 			}
 		}
@@ -94,7 +92,7 @@ public final class GlowPlayer extends GlowLivingEntity {
 		for (GlowEntity entity : world.getEntityManager()) {
 			if (entity == this)
 				continue;
-			boolean withinDistance = entity.isActive() && isWithinDistance(entity);
+			boolean withinDistance = !entity.isDead() && isWithinDistance(entity);
 
 			if (withinDistance && !knownEntities.contains(entity)) {
 				knownEntities.add(entity);
@@ -140,14 +138,117 @@ public final class GlowPlayer extends GlowLivingEntity {
 		return session;
 	}
 
-	@Override
-	public Message createSpawnMessage() {
-		int x = Position.getIntX(location);
-		int y = Position.getIntY(location);
-		int z = Position.getIntZ(location);
-		int yaw = Position.getIntYaw(location);
-		int pitch = Position.getIntPitch(location);
-		return new SpawnPlayerMessage(id, name, x, y, z, yaw, pitch, 0);
-	}
+    public boolean isOnline() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public String getDisplayName() {
+        return displayName == null ? getName() : displayName;
+    }
+
+    public void setDisplayName(String name) {
+        displayName = name;
+    }
+
+    public void setCompassTarget(Location loc) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Location getCompassTarget() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public InetSocketAddress getAddress() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void sendRawMessage(String message) {
+        session.send(new ChatMessage(message));
+    }
+
+    public void kickPlayer(String message) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /**
+     * Says a message (or runs a command).
+     *
+     * @param msg message to print
+     */
+    public void chat(String msg) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean performCommand(String command) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean isSneaking() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setSneaking(boolean sneak) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void saveData() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void loadData() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setSleepingIgnored(boolean isSleeping) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean isSleepingIgnored() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void playNote(Location loc, byte instrument, byte note) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void sendBlockChange(Location loc, Material material, byte data) {
+        sendBlockChange(loc, material.getId(), data);
+    }
+
+    public void sendBlockChange(Location loc, int material, byte data) {
+        session.send(new BlockChangeMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), material, data));
+    }
+
+    public void updateInventory() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void awardAchievement(Achievement achievement) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void incrementStatistic(Statistic statistic) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void incrementStatistic(Statistic statistic, int amount) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void incrementStatistic(Statistic statistic, Material material) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void incrementStatistic(Statistic statistic, Material material, int amount) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void sendMessage(String message) {
+        sendRawMessage(message);
+    }
+
+    public boolean isOp() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
 }

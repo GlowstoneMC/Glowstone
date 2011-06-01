@@ -16,7 +16,7 @@ public final class RotationMessageHandler extends MessageHandler<RotationMessage
         Location loc = player.getLocation();
         loc.setYaw(message.getRotation());
         loc.setPitch(message.getPitch());
-		player.setLocation(loc);
+		player.setRawLocation(loc);
 	}
 
 }
