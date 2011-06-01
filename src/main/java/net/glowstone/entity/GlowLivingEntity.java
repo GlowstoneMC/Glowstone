@@ -2,6 +2,7 @@ package net.glowstone.entity;
 
 import java.util.HashSet;
 import java.util.List;
+import net.glowstone.GlowServer;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -35,8 +36,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * Creates a mob within the specified world.
      * @param world The world.
      */
-	public GlowLivingEntity(GlowWorld world) {
-		super(world);
+	public GlowLivingEntity(GlowServer server, GlowWorld world) {
+		super(server, world);
 	}
 
 	@Override

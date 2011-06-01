@@ -59,7 +59,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * @param name The player's name.
      */
 	public GlowPlayer(Session session, String name) {
-		super((GlowWorld) session.getServer().getWorlds().get(0), name);
+		super(session.getServer(), (GlowWorld) session.getServer().getWorlds().get(0), name);
 		this.session = session;
 
 		// stream the initial set of blocks and teleport us

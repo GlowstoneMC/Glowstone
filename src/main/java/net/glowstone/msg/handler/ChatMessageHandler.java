@@ -13,12 +13,15 @@ public final class ChatMessageHandler extends MessageHandler<ChatMessage> {
 			return;
 
 		String text = message.getMessage();
+        text = text.trim();
+        
 		if (text.length() > 100) {
 			session.disconnect("Chat message too long.");
 		} else if (text.startsWith("/")) {
 			// TODO: process command
 		} else {
-			player.getWorld().broadcastMessage("<" + player.getName() + "> " + text);
+            player.getServer().broadcastMessage("<" + player.getName() + "> " + text);
+			player.getWorld().broadcastMessage("[" + player.getWorld().getName() + "]<" + player.getName() + "> " + text);
             GlowServer.logger.info("<" + player.getName() + "> " + text);
 		}
 	}

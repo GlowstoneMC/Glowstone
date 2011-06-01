@@ -1,5 +1,6 @@
 package net.glowstone;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Minecart;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.PoweredMinecart;
 import org.bukkit.entity.StorageMinecart;
 import org.bukkit.inventory.ItemStack;
@@ -26,20 +28,16 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.io.ChunkIoService;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.EntityManager;
+import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.msg.ChatMessage;
 import net.glowstone.world.WorldGenerator;
+import org.bukkit.entity.Entity;
 
 /**
  * A class which represents the in-game world.
  * @author Graham Edgecombe
  */
 public class GlowWorld implements World {
-
-	/**
-	 * The spawn position.
-	 */
-	private final Location spawnLocation = new Location(null, 0, 128, 0);
 
 	/**
 	 * The chunk manager.
@@ -55,6 +53,21 @@ public class GlowWorld implements World {
      * A map between locations and cached Block objects.
      */
     private final HashMap<Location, GlowBlock> blockCache = new HashMap<Location, GlowBlock>();
+
+	/**
+	 * The spawn position.
+	 */
+	private Location spawnLocation = new Location(null, 0, 128, 0);
+    
+    /**
+     * Whether PvP is allowed in this world.
+     */
+    private boolean pvpAllowed = true;
+    
+    /**
+     * The current world time.
+     */
+    private long time = 0;
 
 	/**
 	 * Creates a new world with the specified chunk I/O service and world
@@ -78,6 +91,9 @@ public class GlowWorld implements World {
 
 		for (GlowEntity entity : entities)
 			entity.reset();
+        
+        // We currently tick at 1/4 the speed of regular MC
+        time = (time + 4) % 24000;
 	}
 
 	/**
@@ -105,31 +121,37 @@ public class GlowWorld implements World {
 	 * @param text The message text.
 	 */
 	public void broadcastMessage(String text) {
-		ChatMessage message = new ChatMessage(text);
-		for (GlowPlayer player : getRawPlayers())
-			player.getSession().send(message);
+		for (Player player : getPlayers())
+			player.sendMessage(text);
 	}
 
     // GlowEntity lists
 	
-	public List<org.bukkit.entity.Player> getPlayers() {
-		/*
-        Collection<Player> players = entities.getAll(GlowPlayer.class);
-        List<Player> result = new ArrayList<Player>();
-        for (GlowPlayer p : players) {
+	public List<Player> getPlayers() {
+        Collection<GlowPlayer> players = entities.getAll(GlowPlayer.class);
+        ArrayList<Player> result = new ArrayList<Player>();
+        for (Player p : players) {
             result.add(p);
         }
         return result;
-         */
-        throw new UnsupportedOperationException("Not supported yet.");
 	}
 
-    public List<org.bukkit.entity.Entity> getEntities() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public List<Entity> getEntities() {
+        Collection<GlowEntity> list = entities.getAll(GlowEntity.class);
+        ArrayList<Entity> result = new ArrayList<Entity>();
+        for (Entity e : list) {
+            result.add(e);
+        }
+        return result;
     }
 
     public List<LivingEntity> getLivingEntities() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Collection<GlowLivingEntity> list = entities.getAll(GlowLivingEntity.class);
+        ArrayList<LivingEntity> result = new ArrayList<LivingEntity>();
+        for (LivingEntity e : list) {
+            result.add(e);
+        }
+        return result;
     }
 
 	// Spawn location
@@ -139,17 +161,18 @@ public class GlowWorld implements World {
 	}
 
     public boolean setSpawnLocation(int x, int y, int z) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        spawnLocation = new Location(this, x, y, z);
+        return true;
     }
     
     // Pvp on/off
 
     public boolean getPVP() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return pvpAllowed;
     }
 
     public void setPVP(boolean pvp) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        pvpAllowed = pvp;
     }
 
     // force-save
@@ -169,11 +192,11 @@ public class GlowWorld implements World {
     }
 
     public String getName() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return "world";
     }
 
     public long getId() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return getName().hashCode();
     }
 
     // get block, chunk, id, highest methods with coords
@@ -331,19 +354,21 @@ public class GlowWorld implements World {
     // Time related methods
 
     public long getTime() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return time;
     }
 
     public void setTime(long time) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (time < 0) time = (time % 24000) + 24000;
+        if (time > 24000) time %= 24000;
+        this.time = time;
     }
 
     public long getFullTime() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return getTime();
     }
 
     public void setFullTime(long time) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        setTime(time);
     }
 
     // Weather related methods

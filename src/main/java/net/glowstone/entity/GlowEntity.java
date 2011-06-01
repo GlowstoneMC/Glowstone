@@ -18,6 +18,11 @@ import org.bukkit.event.entity.EntityDamageEvent;
  * @author Graham Edgecombe
  */
 public abstract class GlowEntity implements Entity {
+    
+    /**
+     * The server this entity belongs to.
+     */
+    protected final GlowServer server;
 
     /**
      * The world this entity belongs to.
@@ -53,7 +58,8 @@ public abstract class GlowEntity implements Entity {
      * Creates an entity and adds it to the specified world.
      * @param world The world.
      */
-	public GlowEntity(GlowWorld world) {
+	public GlowEntity(GlowServer server, GlowWorld world) {
+        this.server = server;
 		this.world = world;
 		world.getEntityManager().allocate(this);
 	}
@@ -85,7 +91,7 @@ public abstract class GlowEntity implements Entity {
      * @return Server instance running this Entity
      */
     public GlowServer getServer() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return server;
     }
 
     /**

@@ -202,7 +202,7 @@ public final class GlowServer implements Server {
      * @return version of this server implementation
      */
     public String getVersion() {
-        return "no-version";
+        return "git-Glowstone-unknown";
     }
     
     /**
@@ -211,7 +211,12 @@ public final class GlowServer implements Server {
      * @return An array of Players that are currently online
      */
     public Player[] getOnlinePlayers() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        ArrayList<Player> result = new ArrayList<Player>();
+        for (World world : getWorlds()) {
+            for (Player player : world.getPlayers())
+                result.add(player);
+        }
+        return result.toArray(new Player[] {});
     }
     
     /**

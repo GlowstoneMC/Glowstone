@@ -68,18 +68,3 @@ org.bukkit.entity.Wolf
 	boolean isSitting();
 	void setSitting(boolean sitting);
 
-org.bukkit.scheduler
-====================
-org.bukkit.scheduler.BukkitScheduler
-	int scheduleSyncDelayedTask(Plugin plugin, Runnable task, long delay);
-	int scheduleSyncDelayedTask(Plugin plugin, Runnable task);
-	int scheduleSyncRepeatingTask(Plugin plugin, Runnable task, long delay, long period);
-	int scheduleAsyncDelayedTask(Plugin plugin, Runnable task, long delay);
-	int scheduleAsyncDelayedTask(Plugin plugin, Runnable task);
-	int scheduleAsyncRepeatingTask(Plugin plugin, Runnable task, long delay, long period);
-	<T> Future<T> callSyncMethod(Plugin plugin, Callable<T> task);
-	void cancelTask(int taskId);
-	void cancelTasks(Plugin plugin);
-	void cancelAllTasks();
-	boolean isCurrentlyRunning(int taskId);
-	boolean isQueued(int taskId);

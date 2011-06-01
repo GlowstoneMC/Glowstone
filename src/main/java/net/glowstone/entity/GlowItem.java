@@ -7,6 +7,7 @@ import net.glowstone.util.Position;
 import net.glowstone.msg.Message;
 import net.glowstone.msg.SpawnItemMessage;
 import net.glowstone.GlowWorld;
+import net.glowstone.GlowServer;
 
 /**
  * Represents an item that is also an {@link GlowEntity} within the world.
@@ -24,8 +25,8 @@ public final class GlowItem extends GlowEntity implements Item {
 	 * @param world The world.
 	 * @param item The item.
 	 */
-	public GlowItem(GlowWorld world, ItemStack item) {
-		super(world);
+	public GlowItem(GlowServer server, GlowWorld world, ItemStack item) {
+		super(server, world);
 		this.item = item;
 	}
 

@@ -1,5 +1,6 @@
 package net.glowstone.entity;
 
+import net.glowstone.GlowServer;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -41,8 +42,8 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
      * @param world The world.
      * @param name The human's name.
      */
-	public GlowHumanEntity(GlowWorld world, String name) {
-		super(world);
+	public GlowHumanEntity(GlowServer server, GlowWorld world, String name) {
+		super(server, world);
         this.name = name;
 	}
 

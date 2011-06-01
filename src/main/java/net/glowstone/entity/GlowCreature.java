@@ -2,6 +2,7 @@ package net.glowstone.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.glowstone.GlowServer;
       
 import org.bukkit.entity.Creature;
 
@@ -38,8 +39,8 @@ public final class GlowCreature extends GlowLivingEntity implements Creature {
      * @param world The world this monster is in.
      * @param type The type of monster.
      */
-	public GlowCreature(GlowWorld world, int type) {
-		super(world);
+	public GlowCreature(GlowServer server, GlowWorld world, int type) {
+		super(server, world);
 		this.type = type;
 	}
 
