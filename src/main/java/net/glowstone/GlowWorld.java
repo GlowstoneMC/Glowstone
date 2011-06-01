@@ -184,7 +184,7 @@ public class GlowWorld implements World {
     }
 
     public Chunk getChunkAt(int x, int z) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return chunks.getChunk(x << 4, z << 4);
     }
 
     // get block, chunk, id, highest with locations

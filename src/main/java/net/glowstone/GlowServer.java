@@ -16,6 +16,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Recipe;
+import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicesManager;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -24,8 +25,7 @@ import net.glowstone.io.NbtChunkIoService;
 import net.glowstone.net.MinecraftPipelineFactory;
 import net.glowstone.net.Session;
 import net.glowstone.net.SessionRegistry;
-import net.glowstone.scheduler.PulseTask;
-import net.glowstone.scheduler.TaskScheduler;
+import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.world.*;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
@@ -65,6 +65,11 @@ public final class GlowServer implements Server {
 			logger.log(Level.SEVERE, "Error during server startup.", t);
 		}
 	}
+    
+    /**
+     * The plugin manager of this server.
+     */
+    private final PluginManager pluginManager = new SimplePluginManager(this);
 
 	/**
 	 * The {@link ServerBootstrap} used to initialize Netty.
@@ -90,7 +95,7 @@ public final class GlowServer implements Server {
 	/**
 	 * The task scheduler used by this server.
 	 */
-	private final TaskScheduler scheduler = new TaskScheduler();
+	private final GlowScheduler scheduler = new GlowScheduler(this);
 
 	/**
 	 * The world this server is managing.
@@ -131,7 +136,6 @@ public final class GlowServer implements Server {
 	 * Starts this server.
 	 */
 	public void start() {
-		scheduler.schedule(new PulseTask(this));
 		logger.info("Ready for connections.");
 	}
 
@@ -153,9 +157,9 @@ public final class GlowServer implements Server {
 
 	/**
 	 * Gets the task scheduler.
-	 * @return The {@link TaskScheduler}.
+	 * @return The {@link GlowScheduler}.
 	 */
-	public TaskScheduler getRawScheduler() {
+	public GlowScheduler getRawScheduler() {
 		return scheduler;
 	}
 
