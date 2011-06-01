@@ -1,20 +1,14 @@
 package net.glowstone;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+
 import org.bukkit.BlockChangeDelegate;
 import org.bukkit.Chunk;
-
 import org.bukkit.Location;
 import org.bukkit.TreeType;
 import org.bukkit.World;
-
-import net.glowstone.io.ChunkIoService;
-import net.glowstone.entity.GlowEntity;
-import net.glowstone.entity.EntityManager;
-import net.glowstone.entity.GlowPlayer;
-import net.glowstone.msg.ChatMessage;
-import net.glowstone.world.WorldGenerator;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Boat;
@@ -27,6 +21,14 @@ import org.bukkit.entity.PoweredMinecart;
 import org.bukkit.entity.StorageMinecart;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
+import net.glowstone.block.GlowBlock;
+import net.glowstone.io.ChunkIoService;
+import net.glowstone.entity.GlowEntity;
+import net.glowstone.entity.EntityManager;
+import net.glowstone.entity.GlowPlayer;
+import net.glowstone.msg.ChatMessage;
+import net.glowstone.world.WorldGenerator;
 
 /**
  * A class which represents the in-game world.
@@ -48,6 +50,11 @@ public class GlowWorld implements World {
 	 * The entity manager.
 	 */
 	private final EntityManager entities = new EntityManager();
+    
+    /**
+     * A map between locations and cached Block objects.
+     */
+    private final HashMap<Location, GlowBlock> blockCache = new HashMap<Location, GlowBlock>();
 
 	/**
 	 * Creates a new world with the specified chunk I/O service and world
@@ -171,8 +178,14 @@ public class GlowWorld implements World {
 
     // get block, chunk, id, highest methods with coords
 
-    public Block getBlockAt(int x, int y, int z) {
-        return getChunkAt(x >> 4, z >> 4).getBlock(x & 0xF, y & 0x7F, z & 0xF);
+    public GlowBlock getBlockAt(int x, int y, int z) {
+        if (blockCache.containsKey(new Location(this, x, y, z))) {
+            return blockCache.get(new Location(this, x, y, z));
+        } else {
+            GlowBlock block = new GlowBlock(getChunkAt(x >> 4, z >> 4), x, y, z);
+            blockCache.put(new Location(this, x, y, z), block);
+            return block;
+        }
     }
 
     public int getBlockTypeIdAt(int x, int y, int z) {
@@ -183,13 +196,13 @@ public class GlowWorld implements World {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public Chunk getChunkAt(int x, int z) {
-        return chunks.getChunk(x << 4, z << 4);
+    public GlowChunk getChunkAt(int x, int z) {
+        return chunks.getChunk(x, z);
     }
 
     // get block, chunk, id, highest with locations
 
-    public Block getBlockAt(Location location) {
+    public GlowBlock getBlockAt(Location location) {
         return getBlockAt(location.getBlockX(), location.getBlockY(), location.getBlockZ());
     }
 

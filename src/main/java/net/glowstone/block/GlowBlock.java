@@ -1,14 +1,14 @@
 package net.glowstone.block;
 
 import net.glowstone.GlowChunk;
-import org.bukkit.Chunk;
+import net.glowstone.GlowWorld;
+import net.glowstone.entity.GlowPlayer;
+import net.glowstone.msg.BlockChangeMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 
 /**
  *
@@ -30,11 +30,11 @@ public class GlowBlock implements Block {
 
     // Basic getters
 
-    public World getWorld() {
+    public GlowWorld getWorld() {
         return chunk.getWorld();
     }
 
-    public Chunk getChunk() {
+    public GlowChunk getChunk() {
         return chunk;
     }
 
@@ -54,7 +54,7 @@ public class GlowBlock implements Block {
         return new Location(getWorld(), x, y, z);
     }
 
-    public BlockState getState() {
+    public GlowBlockState getState() {
         return new GlowBlockState(this);
     }
 
@@ -75,19 +75,19 @@ public class GlowBlock implements Block {
         return null;
     }
 
-    public Block getFace(BlockFace face) {
+    public GlowBlock getFace(BlockFace face) {
         return getRelative(face.getModX(), face.getModY(), face.getModZ());
     }
 
-    public Block getFace(BlockFace face, int distance) {
+    public GlowBlock getFace(BlockFace face, int distance) {
         return getRelative(face.getModX() * distance, face.getModY() * distance, face.getModZ() * distance);
     }
 
-    public Block getRelative(int modX, int modY, int modZ) {
+    public GlowBlock getRelative(int modX, int modY, int modZ) {
         return getWorld().getBlockAt(x + modX, y + modY, z + modZ);
     }
 
-    public Block getRelative(BlockFace face) {
+    public GlowBlock getRelative(BlockFace face) {
         return getRelative(face.getModX(), face.getModY(), face.getModZ());
     }
     
@@ -110,18 +110,19 @@ public class GlowBlock implements Block {
     }
 
     public boolean setTypeId(int type, boolean applyPhysics) {
-        // TODO: there aren't actually physics yet or anything else that should prevent setType
-        chunk.setType(x & 0xf, z & 0xf, y & 0x7f, type);
-        return true;
+        return setTypeIdAndData(type, (byte) 0, applyPhysics);
     }
 
     public boolean setTypeIdAndData(int type, byte data, boolean applyPhysics) {
-        if (setTypeId(type, applyPhysics)) {
-            setData(data, applyPhysics);
-            return true;
-        } else {
-            return false;
+        chunk.setType(x & 0xf, z & 0xf, y & 0x7f, type);
+        chunk.setMetaData(x & 0xf, z & 0xf, y & 0x7f, data);
+        
+        BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, type, data);
+        for (GlowPlayer p : getWorld().getRawPlayers()) {
+            p.getSession().send(bcmsg);
         }
+        
+        return true;
     }
 
     // data and light getters/setters
@@ -136,6 +137,11 @@ public class GlowBlock implements Block {
 
     public void setData(byte data, boolean applyPhyiscs) {
         chunk.setMetaData(x & 0xf, z & 0xf, y & 0x7f, data);
+        
+        BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, getTypeId(), data);
+        for (GlowPlayer p : getWorld().getRawPlayers()) {
+            p.getSession().send(bcmsg);
+        }
     }
 
     public byte getLightLevel() {

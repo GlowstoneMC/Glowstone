@@ -1,13 +1,16 @@
 package net.glowstone.msg.handler;
 
+import java.util.logging.Level;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.msg.DiggingMessage;
 import net.glowstone.GlowChunk;
+import net.glowstone.GlowServer;
 import net.glowstone.msg.BlockChangeMessage;
 import net.glowstone.net.Session;
 import net.glowstone.GlowWorld;
 
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 
 /**
  * A {@link MessageHandler} which processes digging messages.
@@ -16,7 +19,7 @@ import org.bukkit.Material;
 public final class DiggingMessageHandler extends MessageHandler<DiggingMessage> {
 
 	@Override
-	public void handle(Session session, GlowPlayer player, DiggingMessage message) {
+	public void handle(Session session, GlowPlayer player, DiggingMessage message) {        
 		if (player == null)
 			return;
 
@@ -24,16 +27,11 @@ public final class DiggingMessageHandler extends MessageHandler<DiggingMessage> 
 			GlowWorld world = player.getWorld();
 
 			int x = message.getX();
-			int z = message.getZ();
 			int y = message.getY();
+			int z = message.getZ();
             
-            world.getBlockAt(x, y, z).setType(Material.AIR);
-
-			// TODO this should also be somewhere else as well... perhaps in the chunk.setType() method itself?
-			BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, 0, 0);
-			for (GlowPlayer p: world.getRawPlayers()) {
-				p.getSession().send(bcmsg);
-			}
+            Block block = world.getBlockAt(x, y, z);
+            block.setType(Material.AIR);
 		}
 	}
 

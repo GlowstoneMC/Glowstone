@@ -103,22 +103,16 @@ public class GlowTask implements BukkitTask {
 		if (!running)
 			return false;
         
-        try {
-            ++counter;
-            if (counter >= delay) {
-                if (period == -1) {
-                    task.run();
-                    running = false;
-                } else if ((counter - delay) % period == 0) {
-                    task.run();
-                }
+        ++counter;
+        if (counter >= delay) {
+            if (period == -1) {
+                task.run();
+                running = false;
+            } else if ((counter - delay) % period == 0) {
+                task.run();
             }
         }
-        catch (Exception ex) {
-            GlowServer.logger.severe("Error while pulsing: " + ex.getMessage());
-            ex.printStackTrace();
-        }
-
+        
 		return running;
 	}
 

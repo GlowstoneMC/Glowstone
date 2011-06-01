@@ -58,7 +58,13 @@ public final class GlowScheduler implements BukkitScheduler {
 		executor.scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
-				pulse();
+                try {
+                    pulse();
+                }
+                catch (Exception ex) {
+                    GlowServer.logger.log(Level.SEVERE, "Error while pulsing: {0}", ex.getMessage());
+                    ex.printStackTrace();
+                }
 			}
 		}, 0, PULSE_EVERY, TimeUnit.MILLISECONDS);
 	}
@@ -79,15 +85,9 @@ public final class GlowScheduler implements BukkitScheduler {
 	 */
 	private void pulse() {
         // Perform basic world pulse.
-        try {
-            server.getSessionRegistry().pulse();
-            for (World world : server.getWorlds())
-                ((GlowWorld) world).pulse();
-        }
-        catch (Exception ex) {
-            GlowServer.logger.severe("Error while pulsing: " + ex.getMessage());
-            ex.printStackTrace();
-        }
+        server.getSessionRegistry().pulse();
+        for (World world : server.getWorlds())
+            ((GlowWorld) world).pulse();
         
         // Bring in new tasks this tick.
 		synchronized (newTasks) {

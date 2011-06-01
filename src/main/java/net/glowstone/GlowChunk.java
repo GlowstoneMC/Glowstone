@@ -1,13 +1,14 @@
 package net.glowstone;
 
 import org.bukkit.Chunk;
-
-import net.glowstone.msg.CompressedChunkMessage;
-import net.glowstone.msg.Message;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
+
+import net.glowstone.block.GlowBlock;
+import net.glowstone.msg.CompressedChunkMessage;
+import net.glowstone.msg.Message;
 
 /**
  * Represents a chunk of the map.
@@ -305,11 +306,11 @@ public final class GlowChunk implements Chunk {
 		return dest;
 	}
 
-    public World getWorld() {
+    public GlowWorld getWorld() {
         return world;
     }
 
-    public Block getBlock(int x, int y, int z) {
+    public GlowBlock getBlock(int x, int y, int z) {
         return getWorld().getBlockAt(this.x << 4 | x, y, this.z << 4 | z);
     }
 

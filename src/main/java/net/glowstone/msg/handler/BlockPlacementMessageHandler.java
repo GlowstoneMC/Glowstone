@@ -39,22 +39,8 @@ public final class BlockPlacementMessageHandler extends MessageHandler<BlockPlac
             case 5:
                 ++x; break;
         }
-
-        // TODO it might be nice to move these calculations somewhere else since they will need to be reused
-        int chunkX = x / GlowChunk.WIDTH + ((x < 0 && x % GlowChunk.WIDTH != 0) ? -1 : 0);
-        int chunkZ = z / GlowChunk.HEIGHT + ((z < 0 && z % GlowChunk.HEIGHT != 0) ? -1 : 0);
-
-        int localX = (x - chunkX * GlowChunk.WIDTH) % GlowChunk.WIDTH;
-        int localZ = (z - chunkZ * GlowChunk.HEIGHT) % GlowChunk.HEIGHT;
-
-        GlowChunk chunk = world.getChunkManager().getChunk(chunkX, chunkZ);
-        chunk.setType(localX, localZ, y, Material.WOOD.getId());
-
-        // TODO this should also be somewhere else as well... perhaps in the chunk.setType() method itself?
-        BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, Material.WOOD.getId(), 0);
-        for (GlowPlayer p: world.getRawPlayers()) {
-            p.getSession().send(bcmsg);
-        }
+        
+        world.getBlockAt(x, y, z).setType(Material.WOOD); 
 	}
 
 }

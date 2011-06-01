@@ -19,7 +19,6 @@ public final class SessionRegistry {
      * Pulses all the sessions.
      */
 	public void pulse() {
-        // TODO: fix this when scheduler system gets revamped.
         for (Session session : new ArrayList<Session>(sessions)) {
             session.pulse();
         }
