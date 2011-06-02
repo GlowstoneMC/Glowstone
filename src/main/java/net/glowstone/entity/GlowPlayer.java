@@ -19,7 +19,9 @@ import net.glowstone.msg.DestroyEntityMessage;
 import net.glowstone.msg.LoadChunkMessage;
 import net.glowstone.msg.Message;
 import net.glowstone.msg.PingMessage;
+import net.glowstone.msg.PlayNoteMessage;
 import net.glowstone.msg.PositionRotationMessage;
+import net.glowstone.msg.SpawnPositionMessage;
 import net.glowstone.net.Session;
 
 /**
@@ -42,6 +44,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * The display name of this player, for chat purposes.
      */
     private String displayName;
+    
+    /**
+     * The player's compass target.
+     */
+    private Location compassTarget;
 
     /**
      * The entities that the client knows about.
@@ -65,8 +72,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 		// stream the initial set of blocks and teleport us
 		this.streamBlocks();
 		this.location = world.getSpawnLocation();
+        this.setCompassTarget(world.getSpawnLocation());
 		this.session.send(new PositionRotationMessage(location.getX(), location.getY(), location.getZ(), location.getY() + EYE_HEIGHT, (float) location.getYaw(), (float) location.getPitch(), true));
-	}
+    }
 
 	@Override
 	public void pulse() {
@@ -151,11 +159,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     public void setCompassTarget(Location loc) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        compassTarget = loc;
+        session.send(new SpawnPositionMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
     }
 
     public Location getCompassTarget() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return compassTarget;
     }
 
     public InetSocketAddress getAddress() {
@@ -167,7 +176,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     public void kickPlayer(String message) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        session.disconnect(message);
     }
 
     /**
@@ -180,7 +189,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     public boolean performCommand(String command) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return getServer().dispatchCommand(this, command);
     }
 
     public boolean isSneaking() {
@@ -208,7 +217,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     public void playNote(Location loc, byte instrument, byte note) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        session.send(new PlayNoteMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), instrument, note));
     }
 
     public void sendBlockChange(Location loc, Material material, byte data) {
@@ -248,7 +257,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     public boolean isOp() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // TODO
+        return false;
     }
 
 }

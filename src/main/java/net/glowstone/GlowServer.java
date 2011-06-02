@@ -1,9 +1,14 @@
 package net.glowstone;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -12,14 +17,18 @@ import java.util.logging.Logger;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Recipe;
+import org.bukkit.plugin.InvalidDescriptionException;
+import org.bukkit.plugin.InvalidPluginException;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.SimplePluginManager;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicesManager;
-import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.plugin.UnknownDependencyException;
+import org.bukkit.plugin.java.JavaPluginLoader;
 
 import net.glowstone.io.NbtChunkIoService;
 import net.glowstone.net.MinecraftPipelineFactory;
@@ -27,6 +36,9 @@ import net.glowstone.net.Session;
 import net.glowstone.net.SessionRegistry;
 import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.world.*;
+import org.bukkit.command.Command;
+import org.bukkit.command.PluginCommandYamlParser;
+import org.bukkit.command.SimpleCommandMap;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.ChannelFactory;
@@ -45,11 +57,11 @@ public final class GlowServer implements Server {
 	 * The logger for this class.
 	 */
 	public static final Logger logger = Logger.getLogger(GlowServer.class.getName());
-    
+            
     /**
-     * The port the server runs on.
+     * The configuration the server uses.
      */
-    private static int port = 13000;
+    private static final Properties properties = new Properties();
 
 	/**
 	 * Creates a new server on TCP port 25565 and starts listening for
@@ -58,6 +70,15 @@ public final class GlowServer implements Server {
 	 */
 	public static void main(String[] args) {
 		try {
+            File props = new File("server.properties");
+            if (props.exists()) {
+                properties.load(new FileInputStream(props));
+            } else {
+                properties.setProperty("server-port", "25565");
+                properties.save(new FileOutputStream(props), "Glowstone server properties");
+            }
+            int port = Integer.valueOf(properties.getProperty("server-port", "25565"));
+            
 			GlowServer server = new GlowServer();
 			server.bind(new InetSocketAddress(port));
 			server.start();
@@ -65,11 +86,6 @@ public final class GlowServer implements Server {
 			logger.log(Level.SEVERE, "Error during server startup.", t);
 		}
 	}
-    
-    /**
-     * The plugin manager of this server.
-     */
-    private final PluginManager pluginManager = new SimplePluginManager(this);
 
 	/**
 	 * The {@link ServerBootstrap} used to initialize Netty.
@@ -91,6 +107,16 @@ public final class GlowServer implements Server {
 	 * A list of all the active {@link Session}s.
 	 */
 	private final SessionRegistry sessions = new SessionRegistry();
+    
+    /**
+     * The plugin manager of this server.
+     */
+    private final SimplePluginManager pluginManager = new SimplePluginManager(this);
+    
+    /**
+     * The command map of this server.
+     */
+    private final SimpleCommandMap commandMap = new SimpleCommandMap(this);
 
 	/**
 	 * The task scheduler used by this server.
@@ -114,7 +140,7 @@ public final class GlowServer implements Server {
 	 * Initializes the channel and pipeline factories.
 	 */
 	private void init() {
-        worlds.add(new GlowWorld(new NbtChunkIoService(), new InfiniMapWorldGenerator()));
+        worlds.add(new GlowWorld(new NbtChunkIoService(), new ForestWorldGenerator()));
         
 		ChannelFactory factory = new NioServerSocketChannelFactory(executor, executor);
 		bootstrap.setFactory(factory);
@@ -136,8 +162,57 @@ public final class GlowServer implements Server {
 	 * Starts this server.
 	 */
 	public void start() {
+        reload();
+        
 		logger.info("Ready for connections.");
 	}
+
+    /**
+     * Reloads the server, refreshing settings and plugin information
+     */
+    public void reload() {
+        try {
+            properties.load(new FileInputStream(new File("server.properties")));
+            
+            File folder = new File(properties.getProperty("plugin-folder", "plugins"));
+            folder.mkdirs();
+            
+            pluginManager.clearPlugins();
+            pluginManager.registerInterface(JavaPluginLoader.class);
+        
+            Plugin[] plugins = pluginManager.loadPlugins(folder);
+            
+            // call onLoad methods
+            for (Plugin plugin : plugins) {
+                try {
+                    plugin.onLoad();
+                } catch (Exception ex) {
+                    logger.log(Level.SEVERE, "Error loading {0}: {1}", new Object[]{plugin.getDescription().getName(), ex.getMessage()});
+                    ex.printStackTrace();
+                }
+            }
+            
+            // register plugin commands
+            for (Plugin plugin : plugins) {
+                List<Command> commands = PluginCommandYamlParser.parse(plugin);
+                commandMap.registerAll(plugin.getDescription().getName(), commands);
+            }
+            
+            // enable plugins
+            for (Plugin plugin : plugins) {
+                try {
+                    pluginManager.enablePlugin(plugin);
+                } catch (Exception ex) {
+                    logger.log(Level.SEVERE, "Error enabling {0}: {1}", new Object[]{plugin.getDescription().getName(), ex.getMessage()});
+                    ex.printStackTrace();
+                }
+            }
+        }
+        catch (Exception ex) {
+            logger.log(Level.SEVERE, "Uncaught error while reloading: {0}", ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
 
 	/**
 	 * Gets the channel group.
@@ -225,7 +300,7 @@ public final class GlowServer implements Server {
      * @return The amount of players this server allows
      */
     public int getMaxPlayers() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return Integer.valueOf(properties.getProperty("max-players", "0"));
     }
 
     /**
@@ -233,7 +308,7 @@ public final class GlowServer implements Server {
      * @return The port number the server is listening on.
      */
     public int getPort() {
-        return port;
+        return Integer.valueOf(properties.getProperty("server-port", "25565"));
     }
 
     /**
@@ -261,7 +336,7 @@ public final class GlowServer implements Server {
      * @return The ID of this server
      */
     public String getServerId() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return Integer.toHexString(getServerName().hashCode());
     }
 
     /**
@@ -284,7 +359,7 @@ public final class GlowServer implements Server {
      * @return The name of the update folder
      */
     public String getUpdateFolder() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return properties.getProperty("update-folder", "update");
     }
     
     /**
@@ -296,7 +371,11 @@ public final class GlowServer implements Server {
      * @return Player if it was found, otherwise null
      */
     public Player getPlayer(String name) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        for (Player player : getOnlinePlayers()) {
+            if (player.getName().equalsIgnoreCase(name))
+                return player;
+        }
+        return null;
     }
 
     /**
@@ -310,7 +389,13 @@ public final class GlowServer implements Server {
      * @return List of all possible players
      */
     public List<Player> matchPlayer(String name) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        ArrayList<Player> result = new ArrayList<Player>();
+        for (Player player : getOnlinePlayers()) {
+            if (player.getName().startsWith(name)) {
+                result.add(player);
+            }
+        }
+        return result;
     }
 
     /**
@@ -318,8 +403,8 @@ public final class GlowServer implements Server {
      *
      * @return PluginManager for this GlowServer instance
      */
-    public PluginManager getPluginManager() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public SimplePluginManager getPluginManager() {
+        return pluginManager;
     }
 
     /**
@@ -327,8 +412,8 @@ public final class GlowServer implements Server {
      *
      * @return Scheduler for this GlowServer instance
      */
-    public BukkitScheduler getScheduler() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public GlowScheduler getScheduler() {
+        return scheduler;
     }
 
     /**
@@ -349,9 +434,8 @@ public final class GlowServer implements Server {
      * @param environment Environment type of the world
      * @return Newly created or loaded World
      */
-    public World createWorld(String name, Environment environment) {
-        if (getWorld(name) != null) return getWorld(name);
-        throw new UnsupportedOperationException("Not supported yet.");
+    public GlowWorld createWorld(String name, Environment environment) {
+        return createWorld(name, environment, new Random().nextLong());
     }
 
     /**
@@ -364,14 +448,8 @@ public final class GlowServer implements Server {
      * @param seed Seed value to create the world with
      * @return Newly created or loaded World
      */
-    public World createWorld(String name, Environment environment, long seed) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    /**
-     * Reloads the server, refreshing settings and plugin information
-     */
-    public void reload() {
+    public GlowWorld createWorld(String name, Environment environment, long seed) {
+        if (getWorld(name) != null) return getWorld(name);
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
@@ -410,7 +488,13 @@ public final class GlowServer implements Server {
      * @throws CommandException Thrown when the executor for the given command fails with an unhandled exception
      */
     public boolean dispatchCommand(CommandSender sender, String commandLine) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try {
+            throw new UnsupportedOperationException("Not supported yet.");
+            //return false;
+        }
+        catch (Exception ex) {
+            throw new CommandException("Unhandled exception executing command", ex);
+        }
     }
 
     /**
