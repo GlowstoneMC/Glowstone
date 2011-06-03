@@ -22,12 +22,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Recipe;
-import org.bukkit.plugin.InvalidDescriptionException;
-import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.ServicesManager;
-import org.bukkit.plugin.UnknownDependencyException;
 import org.bukkit.plugin.java.JavaPluginLoader;
 
 import net.glowstone.io.NbtChunkIoService;
@@ -469,7 +466,12 @@ public final class GlowServer implements Server {
      * @return PluginCommand if found, otherwise null
      */
     public PluginCommand getPluginCommand(String name) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Command command = commandMap.getCommand(name);
+        if (command instanceof PluginCommand) {
+            return (PluginCommand) command;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -489,8 +491,18 @@ public final class GlowServer implements Server {
      */
     public boolean dispatchCommand(CommandSender sender, String commandLine) {
         try {
-            throw new UnsupportedOperationException("Not supported yet.");
-            //return false;
+            String[] args = commandLine.split(" +");
+            String commandName = args[0];
+            
+            String[] newargs = new String[args.length - 1];
+            for (int i = 1; i < args.length; ++i) {
+                newargs[i - 1] = args[i];
+            }
+            
+            Command command = commandMap.getCommand(commandName);
+            if (command == null)
+                return false;
+            return command.execute(sender, commandName, newargs);
         }
         catch (Exception ex) {
             throw new CommandException("Unhandled exception executing command", ex);
