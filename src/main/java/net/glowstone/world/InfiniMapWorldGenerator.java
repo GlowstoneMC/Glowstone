@@ -1,5 +1,6 @@
 package net.glowstone.world;
 
+import net.glowstone.util.Perlin2D;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 import net.glowstone.GlowChunk;

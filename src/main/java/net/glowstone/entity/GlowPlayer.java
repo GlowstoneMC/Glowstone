@@ -286,8 +286,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     public boolean isOp() {
-        // TODO
-        return false;
+        return getServer().getOpsList().contains(getName());
     }
 
 }

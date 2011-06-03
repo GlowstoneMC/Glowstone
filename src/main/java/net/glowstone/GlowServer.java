@@ -32,6 +32,7 @@ import net.glowstone.net.MinecraftPipelineFactory;
 import net.glowstone.net.Session;
 import net.glowstone.net.SessionRegistry;
 import net.glowstone.scheduler.GlowScheduler;
+import net.glowstone.util.PlayerListFile;
 import net.glowstone.world.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.PluginCommandYamlParser;
@@ -106,6 +107,11 @@ public final class GlowServer implements Server {
 	private final SessionRegistry sessions = new SessionRegistry();
     
     /**
+     * The list of OPs on the server.
+     */
+    private final PlayerListFile opsList = new PlayerListFile("ops.txt");
+    
+    /**
      * The plugin manager of this server.
      */
     private final SimplePluginManager pluginManager = new SimplePluginManager(this);
@@ -170,6 +176,7 @@ public final class GlowServer implements Server {
     public void reload() {
         try {
             properties.load(new FileInputStream(new File("server.properties")));
+            opsList.load();
             
             File folder = new File(properties.getProperty("plugin-folder", "plugins"));
             folder.mkdirs();
@@ -226,14 +233,13 @@ public final class GlowServer implements Server {
 	public SessionRegistry getSessionRegistry() {
 		return sessions;
 	}
-
-	/**
-	 * Gets the task scheduler.
-	 * @return The {@link GlowScheduler}.
-	 */
-	public GlowScheduler getRawScheduler() {
-		return scheduler;
-	}
+    
+    /**
+     * Returns the list of OPs on this server.
+     */
+    public PlayerListFile getOpsList() {
+        return opsList;
+    }
 
 	/**
 	 * Gets the world by the given name.

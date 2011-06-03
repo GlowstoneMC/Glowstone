@@ -1,4 +1,4 @@
-package net.glowstone.world;
+package net.glowstone.util;
 
 /**
  * Simple 2-dimensional Perlin noise generator.
