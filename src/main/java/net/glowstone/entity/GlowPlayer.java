@@ -4,6 +4,7 @@ import java.net.InetSocketAddress;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Level;
 import org.bukkit.Achievement;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,6 +24,7 @@ import net.glowstone.msg.PlayNoteMessage;
 import net.glowstone.msg.PositionRotationMessage;
 import net.glowstone.msg.SpawnPositionMessage;
 import net.glowstone.net.Session;
+import org.bukkit.ChatColor;
 
 /**
  * Represents an in-game player.
@@ -139,6 +141,19 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 	}
 
     /**
+     * Teleport the player.
+     * @param location The destination to teleport to.
+     * @return Whether the teleport was a success.
+     */
+    @Override
+    public boolean teleport(Location location) {
+		this.session.send(new PositionRotationMessage(location.getX(), location.getY(), location.getZ(), location.getY() + EYE_HEIGHT, (float) location.getYaw(), (float) location.getPitch(), true));
+        this.location = location;
+        reset();
+        return true;
+    }
+
+    /**
      * Gets the session.
      * @return The session.
      */
@@ -182,10 +197,24 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * Says a message (or runs a command).
      *
-     * @param msg message to print
+     * @param text message to print
      */
-    public void chat(String msg) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void chat(String text) {
+        if (text.startsWith("/")) {
+			try {
+                if (!performCommand(text.substring(1))) {
+                    sendMessage(ChatColor.RED + "Your command could not be executed.");
+                }
+            }
+            catch (Exception ex) {
+                sendMessage(ChatColor.RED + "An exception occured while executing your command.");
+                getServer().getLogger().log(Level.SEVERE, "Error while executing command: {0}", ex.getMessage());
+                ex.printStackTrace();
+            }
+		} else {
+            getServer().broadcastMessage("<" + getName() + "> " + text);
+            getServer().getLogger().log(Level.INFO, "<{0}> {1}", new Object[]{getName(), text});
+		}
     }
 
     public boolean performCommand(String command) {

@@ -53,7 +53,6 @@ public abstract class GlowEntity implements Entity {
      * An EntityDamageEvent representing the last damage cause on this entity.
      */
     private EntityDamageEvent lastDamageCause;
-
     /**
      * Creates an entity and adds it to the specified world.
      * @param world The world.

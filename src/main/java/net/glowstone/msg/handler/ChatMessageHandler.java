@@ -21,21 +21,9 @@ public final class ChatMessageHandler extends MessageHandler<ChatMessage> {
         
 		if (text.length() > 100) {
 			session.disconnect("Chat message too long.");
-		} else if (text.startsWith("/")) {
-			try {
-                if (!player.performCommand(text.substring(1))) {
-                    player.sendMessage(ChatColor.RED + "An error occurred while executing your command.");
-                }
-            }
-            catch (Exception ex) {
-                player.sendMessage(ChatColor.RED + "An exception occured while executing your command.");
-                GlowServer.logger.log(Level.SEVERE, "Error while executing command: {0}", ex.getMessage());
-                ex.printStackTrace();
-            }
 		} else {
-            player.getServer().broadcastMessage("<" + player.getName() + "> " + text);
-            GlowServer.logger.log(Level.INFO, "<{0}> {1}", new Object[]{player.getName(), text});
-		}
+            player.chat(text);
+        }
 	}
 
 }
