@@ -75,7 +75,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 		this.streamBlocks();
 		this.location = world.getSpawnLocation();
         this.setCompassTarget(world.getSpawnLocation());
-		this.session.send(new PositionRotationMessage(location.getX(), location.getY(), location.getZ(), location.getY() + EYE_HEIGHT, (float) location.getYaw(), (float) location.getPitch(), true));
+		this.session.send(new PositionRotationMessage(location.getX(), location.getY() + EYE_HEIGHT + 0.01, location.getZ(), location.getY(), (float) location.getYaw(), (float) location.getPitch(), true));
     }
 
 	@Override
@@ -147,7 +147,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      */
     @Override
     public boolean teleport(Location location) {
-		this.session.send(new PositionRotationMessage(location.getX(), location.getY(), location.getZ(), location.getY() + EYE_HEIGHT, (float) location.getYaw(), (float) location.getPitch(), true));
+		this.session.send(new PositionRotationMessage(location.getX(), location.getY() + EYE_HEIGHT + 0.01, location.getZ(), location.getY(), (float) location.getYaw(), (float) location.getPitch(), true));
         this.location = location;
         reset();
         return true;
