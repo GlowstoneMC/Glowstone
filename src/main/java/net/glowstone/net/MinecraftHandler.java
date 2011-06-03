@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import net.glowstone.GlowServer;
 import net.glowstone.msg.Message;
+import org.bukkit.ChatColor;
 
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;

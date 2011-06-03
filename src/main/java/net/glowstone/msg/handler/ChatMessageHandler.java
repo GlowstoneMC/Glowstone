@@ -34,7 +34,6 @@ public final class ChatMessageHandler extends MessageHandler<ChatMessage> {
             }
 		} else {
             player.getServer().broadcastMessage("<" + player.getName() + "> " + text);
-			player.getWorld().broadcastMessage("[" + player.getWorld().getName() + "]<" + player.getName() + "> " + text);
             GlowServer.logger.log(Level.INFO, "<{0}> {1}", new Object[]{player.getName(), text});
 		}
 	}

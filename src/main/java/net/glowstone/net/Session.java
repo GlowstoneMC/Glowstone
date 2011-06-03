@@ -2,6 +2,7 @@ package net.glowstone.net;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.logging.Level;
 
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
@@ -10,6 +11,7 @@ import net.glowstone.msg.KickMessage;
 import net.glowstone.msg.Message;
 import net.glowstone.msg.handler.HandlerLookupService;
 import net.glowstone.msg.handler.MessageHandler;
+import org.bukkit.ChatColor;
 
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFutureListener;
@@ -127,6 +129,9 @@ public final class Session {
 
 		this.player = player;
 		((GlowWorld) this.server.getWorlds().get(0)).getRawPlayers().add(player);
+        
+        GlowServer.logger.log(Level.INFO, "{0} joined the game", player.getName());
+        server.broadcastMessage(ChatColor.YELLOW + player.getName() + " joined the game");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -192,6 +197,9 @@ public final class Session {
      */
 	void dispose() {
 		if (player != null) {
+            GlowServer.logger.log(Level.INFO, "{0} left the game", player.getName());
+            server.broadcastMessage(ChatColor.YELLOW + player.getName() + " left the game");
+            
 			player.remove();
 			player = null; // in case we are disposed twice
 		}
