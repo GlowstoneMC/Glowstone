@@ -216,7 +216,10 @@ public class GlowWorld implements World {
     }
 
     public int getHighestBlockYAt(int x, int z) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        for (int y = GlowChunk.HEIGHT - 1; y >= 0; --y) {
+            if (getBlockTypeIdAt(x, y, z) != 0) return y;
+        }
+        return 0;
     }
 
     public GlowChunk getChunkAt(int x, int z) {

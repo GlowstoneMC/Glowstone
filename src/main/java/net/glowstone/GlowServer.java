@@ -34,6 +34,7 @@ import net.glowstone.net.SessionRegistry;
 import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.util.PlayerListFile;
 import net.glowstone.world.*;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.PluginCommandYamlParser;
 import org.bukkit.command.SimpleCommandMap;
@@ -148,6 +149,8 @@ public final class GlowServer implements Server {
 	 * Initializes the channel and pipeline factories.
 	 */
 	private void init() {
+        Bukkit.setServer(this);
+        
         worlds.add(new GlowWorld(new NbtChunkIoService(), new ForestWorldGenerator()));
         
 		ChannelFactory factory = new NioServerSocketChannelFactory(executor, executor);
