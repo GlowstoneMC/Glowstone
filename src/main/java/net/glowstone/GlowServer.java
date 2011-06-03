@@ -24,7 +24,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.SimplePluginManager;
-import org.bukkit.plugin.ServicesManager;
+import org.bukkit.plugin.SimpleServicesManager;
 import org.bukkit.plugin.java.JavaPluginLoader;
 
 import net.glowstone.io.NbtChunkIoService;
@@ -115,6 +115,11 @@ public final class GlowServer implements Server {
      * The plugin manager of this server.
      */
     private final SimplePluginManager pluginManager = new SimplePluginManager(this);
+    
+    /**
+     * The services manager of this server.
+     */
+    private final SimpleServicesManager servicesManager = new SimpleServicesManager();
     
     /**
      * The command map of this server.
@@ -424,8 +429,8 @@ public final class GlowServer implements Server {
      *
      * @return Services manager
      */
-    public ServicesManager getServicesManager() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public SimpleServicesManager getServicesManager() {
+        return servicesManager;
     }
 
     /**
