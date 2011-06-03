@@ -186,9 +186,15 @@ public final class GlowServer implements Server {
             File folder = new File(properties.getProperty("plugin-folder", "plugins"));
             folder.mkdirs();
             
+            // clear and reregister our commands
+            commandMap.clearCommands();
+            commandMap.register("glowstone", new net.glowstone.command.OpCommand(this));
+            commandMap.register("glowstone", new net.glowstone.command.DeopCommand(this));
+            commandMap.register("glowstone", new net.glowstone.command.ListCommand(this));
+            
+            // clear plugins and prepare to load
             pluginManager.clearPlugins();
             pluginManager.registerInterface(JavaPluginLoader.class);
-        
             Plugin[] plugins = pluginManager.loadPlugins(folder);
             
             // call onLoad methods

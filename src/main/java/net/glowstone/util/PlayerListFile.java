@@ -13,7 +13,7 @@ import java.util.Scanner;
  * Utility class for storing lists of player names.
  * @author Tad
  */
-public class PlayerListFile {
+public final class PlayerListFile {
     
     /**
      * The list as we currently know it.
@@ -50,9 +50,10 @@ public class PlayerListFile {
         try {
             Scanner input = new Scanner(file);
             while (input.hasNextLine()) {
-                String line = input.nextLine().trim();
+                String line = input.nextLine().trim().toLowerCase();
                 if (line.length() > 0) {
-                    list.add(line);
+                    if (!list.contains(line))
+                        list.add(line);
                 }
             }
             Collections.sort(list);
@@ -82,7 +83,7 @@ public class PlayerListFile {
      * Add a player to the list.
      */
     public void add(String player) {
-        list.add(player);
+        if (!contains(player)) list.add(player.trim().toLowerCase());
         Collections.sort(list);
         save();
     }
@@ -91,7 +92,7 @@ public class PlayerListFile {
      * Remove a player from the list.
      */
     public void remove(String player) {
-        list.remove(player);
+        list.remove(player.trim());
         save();
     }
     
@@ -99,22 +100,11 @@ public class PlayerListFile {
      * Check if a player is in the list.
      */
     public boolean contains(String player) {
-        return contains(player, true);
-    }
-    
-    /**
-     * Check if a player is in the list.
-     */
-    public boolean contains(String player, boolean ignoreCase) {
-        if (ignoreCase) {
-            for (String str : list) {
-                if (str.equalsIgnoreCase(player))
-                    return true;
-            }
-            return false;
-        } else {
-            return list.contains(player);
+        for (String str : list) {
+            if (str.equalsIgnoreCase(player.trim()))
+                return true;
         }
+        return false;
     }
     
 }
