@@ -1,5 +1,7 @@
 package net.glowstone.net;
 
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.logging.Level;
@@ -176,6 +178,19 @@ public final class Session {
 	public GlowServer getServer() {
 		return server;
 	}
+    
+    /**
+     * Returns the address of this session.
+     * @return The remote address.
+     */
+    public InetSocketAddress getAddress() {
+        SocketAddress addr = channel.getRemoteAddress();
+        if (addr instanceof InetSocketAddress) {
+            return (InetSocketAddress) addr;
+        } else {
+            return null;
+        }
+    }
 
 	@Override
 	public String toString() {

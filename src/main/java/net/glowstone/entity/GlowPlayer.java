@@ -183,7 +183,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     public InetSocketAddress getAddress() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return session.getAddress();
     }
 
     public void sendRawMessage(String message) {

@@ -30,6 +30,7 @@ import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.EntityManager;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.msg.TimeMessage;
 import net.glowstone.world.WorldGenerator;
 import org.bukkit.entity.Entity;
 
@@ -93,7 +94,11 @@ public class GlowWorld implements World {
 			entity.reset();
         
         // We currently tick at 1/4 the speed of regular MC
-        time = (time + 4) % 24000;
+        // Modulus by 12000 to force permanent day.
+        time = (time + 4) % 12000;
+        for (GlowPlayer player : getRawPlayers()) {
+            player.getSession().send(new TimeMessage(time));
+        }
 	}
 
 	/**
@@ -184,11 +189,11 @@ public class GlowWorld implements World {
     // various fixed world properties
 
     public Environment getEnvironment() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return Environment.NORMAL;
     }
 
     public long getSeed() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return 0;
     }
 
     public String getName() {
@@ -212,12 +217,14 @@ public class GlowWorld implements World {
     }
 
     public int getBlockTypeIdAt(int x, int y, int z) {
-        return ((GlowChunk)getChunkAt(x >> 4, z >> 4)).getType(x & 0xF, z & 0xF, y & 0x7F);
+        return ((GlowChunk) getChunkAt(x >> 4, z >> 4)).getType(x & 0xF, z & 0xF, y & 0x7F);
     }
 
     public int getHighestBlockYAt(int x, int z) {
-        for (int y = GlowChunk.HEIGHT - 1; y >= 0; --y) {
-            if (getBlockTypeIdAt(x, y, z) != 0) return y;
+        for (int y = GlowChunk.DEPTH - 1; y >= 0; --y) {
+            if (getBlockTypeIdAt(x, y, z) != 0) {
+                return y;
+            }
         }
         return 0;
     }
