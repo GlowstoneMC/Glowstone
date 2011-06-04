@@ -3,6 +3,7 @@ package net.glowstone;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import net.glowstone.io.ChunkIoService;
 import net.glowstone.world.WorldGenerator;
@@ -71,5 +72,66 @@ public final class ChunkManager {
 		}
 		return chunk;
 	}
+    
+    /**
+     * Forces generation of the given chunk.
+     * @param x The X coordinate.
+     * @param z The Z coordinate.
+     * @return Whether the chunk was successfully regenerated.
+     */
+    public boolean forceRegeneration(int x, int z) {
+		GlowChunk.Key key = new GlowChunk.Key(x, z);
+        GlowChunk chunk = generator.generate(world, x, z);
+        if (chunk == null || !unloadChunk(x, z, false)) {
+            return false;
+        }
+        chunks.put(key, chunk);
+        return true;
+    }
+    
+    /**
+     * Checks whether the given Chunk is loaded.
+     * @param x The X coordinate.
+     * @param z The Z coordinate.
+     * @return Whether the chunk was loaded.
+     */
+    public boolean isLoaded(int x, int z) {
+        GlowChunk.Key key = new GlowChunk.Key(x, z);
+        return chunks.get(key) != null;
+    }
+    
+    /**
+     * Unloads a given chunk from memory.
+     * @param x The X coordinate.
+     * @param z The Z coordinate.
+     * @param save Whether to save the chunk if needed.
+     * @return Whether the chunk was unloaded successfully.
+     */
+    public boolean unloadChunk(int x, int z, boolean save) {
+        GlowChunk.Key key = new GlowChunk.Key(x, z);
+        GlowChunk chunk = chunks.get(key);
+        if (chunk != null) {
+            if (save) {
+                try {
+                    service.write(x, z, chunk);
+                } catch (IOException ex) {
+                    GlowServer.logger.log(Level.SEVERE, "Error while saving chunk: {0}", ex.getMessage());
+                    ex.printStackTrace();
+                    return false;
+                }
+            }
+            chunks.remove(key);
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Gets a list of loaded chunks.
+     * @return The currently loaded chunks.
+     */
+    public GlowChunk[] getLoadedChunks() {
+        return chunks.keySet().toArray(new GlowChunk[] {});
+    }
 
 }

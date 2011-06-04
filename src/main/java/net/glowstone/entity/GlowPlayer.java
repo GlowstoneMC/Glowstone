@@ -139,6 +139,22 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
 		previousChunks.clear();
 	}
+    
+    /**
+     * Checks whether the player can see the given chunk.
+     * @return If the chunk is known to the player's client.
+     */
+    public boolean canSee(GlowChunk.Key chunk) {
+        return knownChunks.contains(chunk);
+    }
+    
+    /**
+     * Checks whether the player can see the given entity.
+     * @return If the entity is known to the player's client.
+     */
+    public boolean canSee(GlowEntity entity) {
+        return knownEntities.contains(entity);
+    }
 
     /**
      * Teleport the player.

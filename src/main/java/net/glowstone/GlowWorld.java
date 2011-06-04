@@ -30,6 +30,7 @@ import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.EntityManager;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.msg.LoadChunkMessage;
 import net.glowstone.msg.TimeMessage;
 import net.glowstone.world.WorldGenerator;
 import org.bukkit.entity.Entity;
@@ -258,23 +259,24 @@ public class GlowWorld implements World {
     // Chunk loading and unloading
 
     public boolean isChunkLoaded(Chunk chunk) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return isChunkLoaded(chunk.getX(), chunk.getZ());
     }
 
     public boolean isChunkLoaded(int x, int z) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return chunks.isLoaded(x, z);
     }
 
     public Chunk[] getLoadedChunks() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return chunks.getLoadedChunks();
     }
 
     public void loadChunk(Chunk chunk) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        loadChunk(chunk.getX(), chunk.getZ());
     }
 
     public void loadChunk(int x, int z) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // Force load by getting chunk.
+        chunks.getChunk(x, z);
     }
 
     public boolean loadChunk(int x, int z, boolean generate) {
@@ -282,19 +284,22 @@ public class GlowWorld implements World {
     }
 
     public boolean unloadChunk(int x, int z) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return unloadChunk(x, z, true);
     }
 
     public boolean unloadChunk(int x, int z, boolean save) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return chunks.unloadChunk(x, z, save);
     }
 
     public boolean unloadChunk(int x, int z, boolean save, boolean safe) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (!safe) {
+            throw new UnsupportedOperationException("unloadChunk does not yet support unsafe unloading.");
+        }
+        return unloadChunk(x, z, save);
     }
 
     public boolean unloadChunkRequest(int x, int z) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return unloadChunkRequest(x, z, true);
     }
 
     public boolean unloadChunkRequest(int x, int z, boolean safe) {
@@ -302,11 +307,28 @@ public class GlowWorld implements World {
     }
 
     public boolean regenerateChunk(int x, int z) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return chunks.forceRegeneration(x, z);
     }
 
     public boolean refreshChunk(int x, int z) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (!isChunkLoaded(x, z)) {
+            return false;
+        }
+        
+        GlowChunk.Key key = new GlowChunk.Key(x, z);
+        boolean result = false;
+        
+        for (Player p : getPlayers()) {
+            GlowPlayer player = (GlowPlayer) p;
+            if (player.canSee(key)) {
+                player.getSession().send(new LoadChunkMessage(x, z, false));
+                player.getSession().send(new LoadChunkMessage(x, z, true));
+                player.getSession().send(getChunkAt(x, z).toMessage());
+                result = true;
+            }
+        }
+        
+        return result;
     }
     
     // Map gen related things
