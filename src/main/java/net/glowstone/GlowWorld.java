@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import org.bukkit.BlockChangeDelegate;
 import org.bukkit.Chunk;
@@ -39,7 +40,7 @@ import org.bukkit.entity.Entity;
  * A class which represents the in-game world.
  * @author Graham Edgecombe
  */
-public class GlowWorld implements World {
+public final class GlowWorld implements World {
 
 	/**
 	 * The chunk manager.
@@ -67,6 +68,26 @@ public class GlowWorld implements World {
     private boolean pvpAllowed = true;
     
     /**
+     * Whether it is currently raining/snowing on this world.
+     */
+    private boolean currentlyRaining = false;
+    
+    /**
+     * How many ticks until the rain/snow status is expected to change.
+     */
+    private int rainingTicks = 0;
+    
+    /**
+     * Whether it is currently thundering on this world.
+     */
+    private boolean currentlyThundering = false;
+    
+    /**
+     * How many ticks until the thundering status is expected to change.
+     */
+    private int thunderingTicks = 0;
+    
+    /**
      * The current world time.
      */
     private long time = 0;
@@ -79,6 +100,9 @@ public class GlowWorld implements World {
 	 */
 	public GlowWorld(ChunkIoService service, WorldGenerator generator) {
 		chunks = new ChunkManager(this, service, generator);
+        
+        setStorm(false);
+        setThundering(false);
 	}
 
     ////////////////////////////////////////
@@ -406,35 +430,49 @@ public class GlowWorld implements World {
     // Weather related methods
 
     public boolean hasStorm() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return currentlyRaining;
     }
 
     public void setStorm(boolean hasStorm) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        currentlyRaining = hasStorm;
+        
+        // Numbers borrowed from CraftBukkit.
+        if (currentlyRaining) {
+            setWeatherDuration(new Random().nextInt(12000) + 12000);
+        } else {
+            setWeatherDuration(new Random().nextInt(168000) + 12000);
+        }
     }
 
     public int getWeatherDuration() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return rainingTicks;
     }
 
     public void setWeatherDuration(int duration) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        rainingTicks = duration;
     }
 
     public boolean isThundering() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return currentlyThundering;
     }
 
     public void setThundering(boolean thundering) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        currentlyThundering = thundering;
+        
+        // Numbers borrowed from CraftBukkit.
+        if (currentlyThundering) {
+            setThunderDuration(new Random().nextInt(12000) + 3600);
+        } else {
+            setThunderDuration(new Random().nextInt(168000) + 12000);
+        }
     }
 
     public int getThunderDuration() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return thunderingTicks;
     }
 
     public void setThunderDuration(int duration) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        thunderingTicks = duration;
     }
 
 }
