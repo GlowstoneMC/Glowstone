@@ -114,10 +114,12 @@ public final class GlowWorld implements World {
 	 * Updates all the entities within this world.
 	 */
 	public void pulse() {
-		for (GlowEntity entity : entities)
+        ArrayList<GlowEntity> temp = new ArrayList<GlowEntity>(entities.getAll(GlowEntity.class));
+        
+		for (GlowEntity entity : temp)
 			entity.pulse();
 
-		for (GlowEntity entity : entities)
+		for (GlowEntity entity : temp)
 			entity.reset();
         
         final int TIME_SCALE = 4;
