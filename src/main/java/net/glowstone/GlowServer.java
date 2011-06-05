@@ -524,6 +524,9 @@ public final class GlowServer implements Server {
                 return false;
             return command.execute(sender, commandName, newargs);
         }
+        catch (CommandException ex) {
+            throw ex;
+        }
         catch (Exception ex) {
             throw new CommandException("Unhandled exception executing command", ex);
         }
