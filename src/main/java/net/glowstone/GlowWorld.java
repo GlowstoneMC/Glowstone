@@ -32,6 +32,7 @@ import net.glowstone.entity.EntityManager;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.msg.LoadChunkMessage;
+import net.glowstone.msg.StateChangeMessage;
 import net.glowstone.msg.TimeMessage;
 import net.glowstone.world.WorldGenerator;
 import org.bukkit.entity.Entity;
@@ -118,11 +119,36 @@ public final class GlowWorld implements World {
 		for (GlowEntity entity : entities)
 			entity.reset();
         
+        final int TIME_SCALE = 4;
+        
         // We currently tick at 1/4 the speed of regular MC
         // Modulus by 12000 to force permanent day.
-        time = (time + 4) % 12000;
+        time = (time + TIME_SCALE) % 12000;
         for (GlowPlayer player : getRawPlayers()) {
             player.getSession().send(new TimeMessage(time));
+        }
+        
+        rainingTicks -= TIME_SCALE;
+        if (rainingTicks <= 0) {
+            setStorm(!currentlyRaining);
+        }
+        
+        thunderingTicks -= TIME_SCALE;
+        if (thunderingTicks <= 0) {
+            setThundering(!currentlyThundering);
+        }
+        
+        if (currentlyThundering) {
+            if (Math.random() < .001) {
+                GlowChunk[] chunkList = chunks.getLoadedChunks();
+                GlowChunk chunk = chunkList[new Random().nextInt(chunkList.length)];
+                
+                int x = (chunk.getX() << 4) + (int)(Math.random() * 16);
+                int z = (chunk.getZ() << 4) + (int)(Math.random() * 16);
+                int y = getHighestBlockYAt(x, z);
+                
+                // strikeLightning(new Location(this, x, z, y));
+            }
         }
 	}
 
@@ -208,7 +234,9 @@ public final class GlowWorld implements World {
     // force-save
 
     public void save() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        for (GlowChunk chunk : chunks.getLoadedChunks()) {
+            chunks.forceSave(chunk.getX(), chunk.getZ());
+        }
     }
 
     // various fixed world properties
@@ -441,6 +469,10 @@ public final class GlowWorld implements World {
             setWeatherDuration(new Random().nextInt(12000) + 12000);
         } else {
             setWeatherDuration(new Random().nextInt(168000) + 12000);
+        }
+        
+        for (GlowPlayer player : getRawPlayers()) {
+            player.getSession().send(new StateChangeMessage((byte)(currentlyRaining ? 1 : 2)));
         }
     }
 

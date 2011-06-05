@@ -133,5 +133,25 @@ public final class ChunkManager {
     public GlowChunk[] getLoadedChunks() {
         return chunks.keySet().toArray(new GlowChunk[] {});
     }
+    
+    /**
+     * Force-saves the given chunk.
+     * @param x The X coordinate.
+     * @param Z The Z coordinate.
+     */
+    public boolean forceSave(int x, int z) {
+        GlowChunk.Key key = new GlowChunk.Key(x, z);
+        GlowChunk chunk = chunks.get(key);
+        if (chunk != null) {
+            try {
+                service.write(x, z, chunk);
+            } catch (IOException ex) {
+                GlowServer.logger.log(Level.SEVERE, "Error while saving chunk: {0}", ex.getMessage());
+                ex.printStackTrace();
+                return false;
+            }
+        }
+        return false;
+    }
 
 }

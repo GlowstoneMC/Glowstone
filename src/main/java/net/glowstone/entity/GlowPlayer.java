@@ -23,6 +23,7 @@ import net.glowstone.msg.PingMessage;
 import net.glowstone.msg.PlayNoteMessage;
 import net.glowstone.msg.PositionRotationMessage;
 import net.glowstone.msg.SpawnPositionMessage;
+import net.glowstone.msg.StateChangeMessage;
 import net.glowstone.net.Session;
 import org.bukkit.ChatColor;
 
@@ -71,11 +72,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 		super(session.getServer(), (GlowWorld) session.getServer().getWorlds().get(0), name);
 		this.session = session;
 
-		// stream the initial set of blocks and teleport us
-		this.streamBlocks();
-		this.location = world.getSpawnLocation();
-        this.setCompassTarget(world.getSpawnLocation());
-		this.session.send(new PositionRotationMessage(location.getX(), location.getY() + EYE_HEIGHT + 0.01, location.getZ(), location.getY(), (float) location.getYaw(), (float) location.getPitch(), true));
+		this.streamBlocks(); // stream the initial set of blocks
+        this.setCompassTarget(world.getSpawnLocation()); // set our compass target
+		this.teleport(world.getSpawnLocation()); // take us to spawn position
+        this.session.send(new StateChangeMessage((byte)(getWorld().hasStorm() ? 1 : 2))); // send the world's weather
     }
 
 	@Override
