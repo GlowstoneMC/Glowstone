@@ -45,6 +45,14 @@ public final class EntityManager implements Iterable<GlowEntity> {
 	}
 
     /**
+     * Gets all entities.
+     * @return A collection of entities.
+     */
+	public Collection<GlowEntity> getAll() {
+		return entities.values();
+	}
+
+    /**
      * Gets an entity by its id.
      * @param id The id.
      * @return The entity, or {@code null} if it could not be found.

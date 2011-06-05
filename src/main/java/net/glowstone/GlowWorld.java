@@ -114,7 +114,7 @@ public final class GlowWorld implements World {
 	 * Updates all the entities within this world.
 	 */
 	public void pulse() {
-        ArrayList<GlowEntity> temp = new ArrayList<GlowEntity>(entities.getAll(GlowEntity.class));
+        ArrayList<GlowEntity> temp = new ArrayList<GlowEntity>(entities.getAll());
         
 		for (GlowEntity entity : temp)
 			entity.pulse();
@@ -197,7 +197,7 @@ public final class GlowWorld implements World {
 	}
 
     public List<Entity> getEntities() {
-        Collection<GlowEntity> list = entities.getAll(GlowEntity.class);
+        Collection<GlowEntity> list = entities.getAll();
         ArrayList<Entity> result = new ArrayList<Entity>();
         for (Entity e : list) {
             result.add(e);
@@ -206,10 +206,10 @@ public final class GlowWorld implements World {
     }
 
     public List<LivingEntity> getLivingEntities() {
-        Collection<GlowLivingEntity> list = entities.getAll(GlowLivingEntity.class);
+        Collection<GlowEntity> list = entities.getAll();
         ArrayList<LivingEntity> result = new ArrayList<LivingEntity>();
-        for (LivingEntity e : list) {
-            result.add(e);
+        for (Entity e : list) {
+            if (e instanceof GlowLivingEntity) result.add((GlowLivingEntity) e);
         }
         return result;
     }
