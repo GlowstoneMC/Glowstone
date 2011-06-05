@@ -131,7 +131,7 @@ public final class ChunkManager {
      * @return The currently loaded chunks.
      */
     public GlowChunk[] getLoadedChunks() {
-        return chunks.keySet().toArray(new GlowChunk[] {});
+        return chunks.values().toArray(new GlowChunk[]{});
     }
     
     /**

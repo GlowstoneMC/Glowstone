@@ -35,6 +35,7 @@ import net.glowstone.msg.LoadChunkMessage;
 import net.glowstone.msg.StateChangeMessage;
 import net.glowstone.msg.TimeMessage;
 import net.glowstone.world.WorldGenerator;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 
 /**
@@ -138,7 +139,7 @@ public final class GlowWorld implements World {
             setThundering(!currentlyThundering);
         }
         
-        if (currentlyThundering) {
+        if (currentlyRaining && currentlyThundering) {
             if (Math.random() < .001) {
                 GlowChunk[] chunkList = chunks.getLoadedChunks();
                 GlowChunk chunk = chunkList[new Random().nextInt(chunkList.length)];
@@ -148,6 +149,7 @@ public final class GlowWorld implements World {
                 int y = getHighestBlockYAt(x, z);
                 
                 // strikeLightning(new Location(this, x, z, y));
+                broadcastMessage(ChatColor.GREEN + "Pretend lightning struck at " + x + "," + y + "," + z);
             }
         }
 	}
