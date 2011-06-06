@@ -73,6 +73,11 @@ public final class GlowWorld implements World {
 	private Location spawnLocation = new Location(this, 0, 128, 0);
     
     /**
+     * The environment.
+     */
+    private final Environment environment;
+    
+    /**
      * Whether PvP is allowed in this world.
      */
     private boolean pvpAllowed = true;
@@ -102,6 +107,11 @@ public final class GlowWorld implements World {
      */
     private long time = 0;
     
+    /**
+     * The time until the next full-save.
+     */
+    private int saveTimer = 0;
+    
 	/**
 	 * Creates a new world with the specified chunk I/O service, and environment.
      * @param name The name of the world.
@@ -120,7 +130,7 @@ public final class GlowWorld implements World {
      * @param seed The seed.
 	 */
 	public GlowWorld(String name, ChunkIoService service, Environment environment, long seed) {
-        this(name, service, environment, environment == Environment.NETHER ? new FlatNetherWorldGenerator() : new FlatGrassWorldGenerator());
+        this(name, service, environment, environment == Environment.NETHER ? new FlatNetherWorldGenerator() : new ForestWorldGenerator());
 	}
 
 	/**
@@ -132,6 +142,7 @@ public final class GlowWorld implements World {
 	 * @param generator The world generator.
 	 */
 	public GlowWorld(String name, ChunkIoService service, Environment environment, WorldGenerator generator) {
+        this.environment = environment;
         this.name = name;
 		chunks = new ChunkManager(this, service, generator);
         
@@ -154,7 +165,7 @@ public final class GlowWorld implements World {
 		for (GlowEntity entity : temp)
 			entity.reset();
         
-        final int TIME_SCALE = 4;
+        final int TIME_SCALE = 1;
         
         // We currently tick at 1/4 the speed of regular MC
         // Modulus by 12000 to force permanent day.
@@ -185,6 +196,12 @@ public final class GlowWorld implements World {
                 // strikeLightning(new Location(this, x, z, y));
                 broadcastMessage(ChatColor.GREEN + "Pretend lightning struck at " + x + "," + y + "," + z);
             }
+        }
+        
+        saveTimer -= TIME_SCALE;
+        if (saveTimer <= 0) {
+            saveTimer = 20/TIME_SCALE * 60;
+            save();
         }
 	}
 
@@ -278,7 +295,7 @@ public final class GlowWorld implements World {
     // various fixed world properties
 
     public Environment getEnvironment() {
-        return Environment.NORMAL;
+        return environment;
     }
 
     public long getSeed() {

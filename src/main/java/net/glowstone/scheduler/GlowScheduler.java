@@ -27,7 +27,7 @@ public final class GlowScheduler implements BukkitScheduler {
 	/**
 	 * The number of milliseconds between pulses.
 	 */
-	private static final int PULSE_EVERY = 200;
+	private static final int PULSE_EVERY = 50;
     
     /**
      * The server this scheduler is managing for.

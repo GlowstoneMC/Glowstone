@@ -12,13 +12,6 @@ from glob import glob
 from solum import JarFile, ClassFile, ConstantType
 from os import path
 
-def info(filename, plugin):
-    """
-    Extracts name and author info from the given jar.
-    """
-    
-    return 
-
 def narrow(constant):
     name = constant["class"]["name"]["value"]
     if name.startswith("org/bukkit/craftbukkit"):

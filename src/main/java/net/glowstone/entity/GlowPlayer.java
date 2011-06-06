@@ -202,7 +202,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 	}
 
     public boolean isOnline() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return true;
     }
 
     public String getDisplayName() {
@@ -322,7 +322,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     public void sendMessage(String message) {
-        sendRawMessage(message);
+        do {
+            int len = message.length() > 100 ? 100 : message.length();
+            sendRawMessage(message.substring(0, len));
+            message = message.substring(len);
+        } while (message.length() > 0);
     }
 
     public boolean isOp() {
