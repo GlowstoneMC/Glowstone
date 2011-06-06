@@ -22,6 +22,8 @@ import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.PoweredMinecart;
 import org.bukkit.entity.StorageMinecart;
+import org.bukkit.generator.BlockPopulator;
+import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -34,10 +36,6 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.msg.LoadChunkMessage;
 import net.glowstone.msg.StateChangeMessage;
 import net.glowstone.msg.TimeMessage;
-import net.glowstone.world.FlatGrassWorldGenerator;
-import net.glowstone.world.FlatNetherWorldGenerator;
-import net.glowstone.world.ForestWorldGenerator;
-import net.glowstone.world.WorldGenerator;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 
@@ -70,12 +68,17 @@ public final class GlowWorld implements World {
 	/**
 	 * The spawn position.
 	 */
-	private Location spawnLocation = new Location(this, 0, 128, 0);
+	private Location spawnLocation;
     
     /**
      * The environment.
      */
     private final Environment environment;
+    
+    /**
+     * The world seed.
+     */
+    private final long seed;
     
     /**
      * Whether PvP is allowed in this world.
@@ -111,27 +114,6 @@ public final class GlowWorld implements World {
      * The time until the next full-save.
      */
     private int saveTimer = 0;
-    
-	/**
-	 * Creates a new world with the specified chunk I/O service, and environment.
-     * @param name The name of the world.
-	 * @param service The chunk I/O service.
-	 * @param environment The environment.
-	 */
-	public GlowWorld(String name, ChunkIoService service, Environment environment) {
-        this(name, service, environment, new Random().nextLong());
-    }
-
-	/**
-	 * Creates a new world with the specified chunk I/O service, environment, and seed.
-     * @param name The name of the world.
-	 * @param service The chunk I/O service.
-	 * @param environment The environment.
-     * @param seed The seed.
-	 */
-	public GlowWorld(String name, ChunkIoService service, Environment environment, long seed) {
-        this(name, service, environment, environment == Environment.NETHER ? new FlatNetherWorldGenerator() : new ForestWorldGenerator());
-	}
 
 	/**
 	 * Creates a new world with the specified chunk I/O service, environment, 
@@ -141,10 +123,24 @@ public final class GlowWorld implements World {
      * @param environment The environment.
 	 * @param generator The world generator.
 	 */
-	public GlowWorld(String name, ChunkIoService service, Environment environment, WorldGenerator generator) {
-        this.environment = environment;
+	public GlowWorld(String name, Environment environment, long seed, ChunkIoService service, ChunkGenerator generator) {
         this.name = name;
+        this.environment = environment;
+        this.seed = seed;
 		chunks = new ChunkManager(this, service, generator);
+        
+        spawnLocation = generator.getFixedSpawnLocation(this, new Random());
+        if (spawnLocation == null) {
+            spawnLocation = new Location(this, 0, 128, 0);
+            
+            // 10 tries only to prevent a return false; bomb
+            for (int tries = 0; tries < 10 && !generator.canSpawn(this, spawnLocation.getBlockX(), spawnLocation.getBlockZ()); ++tries) {
+                spawnLocation.setX(spawnLocation.getX() + Math.random() * 128 - 64);
+                spawnLocation.setZ(spawnLocation.getZ() + Math.random() * 128 - 64);
+            }
+            
+            spawnLocation.setY(1 + getHighestBlockYAt(spawnLocation.getBlockX(), spawnLocation.getBlockZ()));
+        }
         
         setStorm(false);
         setThundering(false);
@@ -185,7 +181,7 @@ public final class GlowWorld implements World {
         }
         
         if (currentlyRaining && currentlyThundering) {
-            if (Math.random() < .001) {
+            if (Math.random() < .01) {
                 GlowChunk[] chunkList = chunks.getLoadedChunks();
                 GlowChunk chunk = chunkList[new Random().nextInt(chunkList.length)];
                 
@@ -299,7 +295,7 @@ public final class GlowWorld implements World {
     }
 
     public long getSeed() {
-        return chunks.getSeed();
+        return seed;
     }
 
     public String getName() {
@@ -308,6 +304,16 @@ public final class GlowWorld implements World {
 
     public long getId() {
         return (getSeed() + "_" + getName()).hashCode();
+    }
+    
+    // generator-related stuff
+
+    public ChunkGenerator getGenerator() {
+        return chunks.getGenerator();
+    }
+
+    public List<BlockPopulator> getPopulators() {
+        return chunks.getGenerator().getDefaultPopulators(this);
     }
 
     // get block, chunk, id, highest methods with coords

@@ -121,6 +121,10 @@ public final class GlowChunk implements Chunk {
 		this.metaData = new byte[WIDTH * HEIGHT * DEPTH];
 		this.skyLight = new byte[WIDTH * HEIGHT * DEPTH];
 		this.blockLight = new byte[WIDTH * HEIGHT * DEPTH];
+        
+        for (int i = 0; i < WIDTH * HEIGHT * DEPTH; ++i) {
+            skyLight[i] = 15;
+        }
 	}
 
 	/**

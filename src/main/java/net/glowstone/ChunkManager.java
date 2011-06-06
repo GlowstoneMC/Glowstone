@@ -3,10 +3,12 @@ package net.glowstone;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.Level;
 
+import org.bukkit.generator.ChunkGenerator;
+
 import net.glowstone.io.ChunkIoService;
-import net.glowstone.world.WorldGenerator;
 
 /**
  * A class which manages the {@link GlowChunk}s currently loaded in memory.
@@ -21,9 +23,9 @@ public final class ChunkManager {
 	private final ChunkIoService service;
 
     /**
-     * The world generator used to generate new chunks.
+     * The chunk generator used to generate new chunks.
      */
-	private final WorldGenerator generator;
+	private final ChunkGenerator generator;
     
     /**
      * The world this ChunkManager is managing.
@@ -41,7 +43,7 @@ public final class ChunkManager {
      * @param service The I/O service.
      * @param generator The world generator.
      */
-	public ChunkManager(GlowWorld world, ChunkIoService service, WorldGenerator generator) {
+	public ChunkManager(GlowWorld world, ChunkIoService service, ChunkGenerator generator) {
         this.world = world;
 		this.service = service;
 		this.generator = generator;
@@ -65,7 +67,10 @@ public final class ChunkManager {
 			}
 
 			if (chunk == null) {
-				chunk = generator.generate(world, x, z);
+                // TODO: Random object.
+                chunk = new GlowChunk(world, x, z);
+				byte[] data = generator.generate(world, new Random(), x, z);
+                chunk.setTypes(data);
 			}
 
 			chunks.put(key, chunk);
@@ -81,7 +86,8 @@ public final class ChunkManager {
      */
     public boolean forceRegeneration(int x, int z) {
 		GlowChunk.Key key = new GlowChunk.Key(x, z);
-        GlowChunk chunk = generator.generate(world, x, z);
+        GlowChunk chunk = new GlowChunk(world, x, z);
+        chunk.setTypes(generator.generate(world, new Random(), x, z));
         if (chunk == null || !unloadChunk(x, z, false)) {
             return false;
         }
@@ -155,11 +161,10 @@ public final class ChunkManager {
     }
     
     /**
-     * Gets the seed of the world generator.
-     * @return The seed.
+     * Get the chunk generator.
      */
-    public long getSeed() {
-        return generator.getSeed();
+    public ChunkGenerator getGenerator() {
+        return generator;
     }
 
 }
