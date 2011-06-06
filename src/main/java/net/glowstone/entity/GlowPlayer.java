@@ -22,6 +22,7 @@ import net.glowstone.msg.Message;
 import net.glowstone.msg.PingMessage;
 import net.glowstone.msg.PlayNoteMessage;
 import net.glowstone.msg.PositionRotationMessage;
+import net.glowstone.msg.RespawnMessage;
 import net.glowstone.msg.SpawnPositionMessage;
 import net.glowstone.msg.StateChangeMessage;
 import net.glowstone.net.Session;
@@ -61,7 +62,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * The chunks that the client knows about.
      */
-	private Set<GlowChunk.Key> knownChunks = new HashSet<GlowChunk.Key>();
+	private final Set<GlowChunk.Key> knownChunks = new HashSet<GlowChunk.Key>();
 
     /**
      * Creates a new player and adds it to the world.
@@ -72,10 +73,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 		super(session.getServer(), (GlowWorld) session.getServer().getWorlds().get(0), name);
 		this.session = session;
 
-		this.streamBlocks(); // stream the initial set of blocks
-        this.setCompassTarget(world.getSpawnLocation()); // set our compass target
-		this.teleport(world.getSpawnLocation()); // take us to spawn position
-        this.session.send(new StateChangeMessage((byte)(getWorld().hasStorm() ? 1 : 2))); // send the world's weather
+		streamBlocks(); // stream the initial set of blocks
+        setCompassTarget(world.getSpawnLocation()); // set our compass target
+		teleport(world.getSpawnLocation()); // take us to spawn position
+        session.send(new StateChangeMessage((byte)(getWorld().hasStorm() ? 1 : 2))); // send the world's weather
     }
 
 	@Override
@@ -117,27 +118,27 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 	private void streamBlocks() {
         Set<GlowChunk.Key> previousChunks = new HashSet<GlowChunk.Key>(knownChunks);
 
-		int centralX = ((int) location.getX()) / GlowChunk.WIDTH;
-		int centralZ = ((int) location.getZ()) / GlowChunk.HEIGHT;
+		int centralX = ((int) location.getX()) >> 4;
+		int centralZ = ((int) location.getZ()) >> 4;
+        
+        for (int x = (centralX - GlowChunk.VISIBLE_RADIUS); x <= (centralX + GlowChunk.VISIBLE_RADIUS); x++) {
+            for (int z = (centralZ - GlowChunk.VISIBLE_RADIUS); z <= (centralZ + GlowChunk.VISIBLE_RADIUS); z++) {
+                GlowChunk.Key key = new GlowChunk.Key(x, z);
+                if (!knownChunks.contains(key)) {
+                    knownChunks.add(key);
+                    session.send(new LoadChunkMessage(x, z, true));
+                    session.send(world.getChunkManager().getChunk(x, z).toMessage());
+                }
+                previousChunks.remove(key);
+            }
+        }
 
-		for (int x = (centralX - GlowChunk.VISIBLE_RADIUS); x <= (centralX + GlowChunk.VISIBLE_RADIUS); x++) {
-			for (int z = (centralZ - GlowChunk.VISIBLE_RADIUS); z <= (centralZ + GlowChunk.VISIBLE_RADIUS); z++) {
-				GlowChunk.Key key = new GlowChunk.Key(x, z);
-				if (!knownChunks.contains(key)) {
-					knownChunks.add(key);
-					session.send(new LoadChunkMessage(x, z, true));
-					session.send(world.getChunkManager().getChunk(x, z).toMessage());
-				}
-				previousChunks.remove(key);
-			}
-		}
+        for (GlowChunk.Key key : previousChunks) {
+            session.send(new LoadChunkMessage(key.getX(), key.getZ(), false));
+            knownChunks.remove(key);
+        }
 
-		for (GlowChunk.Key key : previousChunks) {
-			session.send(new LoadChunkMessage(key.getX(), key.getZ(), false));
-			knownChunks.remove(key);
-		}
-
-		previousChunks.clear();
+        previousChunks.clear();
 	}
     
     /**
@@ -163,9 +164,32 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      */
     @Override
     public boolean teleport(Location location) {
-		this.session.send(new PositionRotationMessage(location.getX(), location.getY() + EYE_HEIGHT + 0.01, location.getZ(), location.getY(), (float) location.getYaw(), (float) location.getPitch(), true));
-        this.location = location;
-        reset();
+        if (location.getWorld() != world) {
+            world.getEntityManager().deallocate(this);
+            
+            world = (GlowWorld) location.getWorld();
+            world.getEntityManager().allocate(this);
+            
+            for (GlowChunk.Key key : knownChunks) {
+                session.send(new LoadChunkMessage(key.getX(), key.getZ(), false));
+            }
+            knownChunks.clear();
+            
+            session.send(new RespawnMessage((byte) world.getEnvironment().getId()));
+            
+            streamBlocks(); // stream blocks
+            
+            setCompassTarget(world.getSpawnLocation()); // set our compass target
+            this.session.send(new PositionRotationMessage(location.getX(), location.getY() + EYE_HEIGHT + 0.01, location.getZ(), location.getY(), (float) location.getYaw(), (float) location.getPitch(), true));
+            this.location = location; // take us to spawn position
+            session.send(new StateChangeMessage((byte)(getWorld().hasStorm() ? 1 : 2))); // send the world's weather
+            reset();
+        } else {
+            this.session.send(new PositionRotationMessage(location.getX(), location.getY() + EYE_HEIGHT + 0.01, location.getZ(), location.getY(), (float) location.getYaw(), (float) location.getPitch(), true));
+            this.location = location;
+            reset();
+        }
+        
         return true;
     }
 

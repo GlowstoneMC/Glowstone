@@ -4,10 +4,11 @@ import net.glowstone.GlowChunk;
 import net.glowstone.GlowWorld;
 
 /**
- * A simple {@link WorldGenerator} used to generate a "flat grass" world.
- * @author Graham Edgecombe
+ * A simple {@link WorldGenerator} used to generate the Nether equivalent of
+ * a "flat grass" world.
+ * @author Tad
  */
-public class FlatGrassWorldGenerator implements WorldGenerator {
+public class FlatNetherWorldGenerator implements WorldGenerator {
 
 	public GlowChunk generate(GlowWorld world, int chunkX, int chunkZ) {
 		GlowChunk chunk = new GlowChunk(world, chunkX, chunkZ);
@@ -15,12 +16,10 @@ public class FlatGrassWorldGenerator implements WorldGenerator {
 			for (int z = 0; z < GlowChunk.HEIGHT; z++) {
 				for (int y = 0; y < GlowChunk.DEPTH; y++) {
 					int id = 0;
-					if (y == 60)
-						id = 2;
-					else if (y >= 55 && y < 60)
-						id = 3;
-					else if (y < 55)
-						id = 1;
+					if (y <= 60)
+						id = 87;
+					else if (y < 4)
+						id = 7;
 
 					chunk.setType(x, z, y, id);
 					chunk.setMetaData(x, z, y, 0);

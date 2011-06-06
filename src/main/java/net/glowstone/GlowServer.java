@@ -31,13 +31,12 @@ import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.SimpleServicesManager;
 import org.bukkit.plugin.java.JavaPluginLoader;
 
-import net.glowstone.io.NbtChunkIoService;
+import net.glowstone.io.McRegionChunkIoService;
 import net.glowstone.net.MinecraftPipelineFactory;
 import net.glowstone.net.Session;
 import net.glowstone.net.SessionRegistry;
 import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.util.PlayerListFile;
-import net.glowstone.world.*;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.ChannelFactory;
@@ -151,7 +150,7 @@ public final class GlowServer implements Server {
 	private void init() {
         Bukkit.setServer(this);
         
-        worlds.add(new GlowWorld(new NbtChunkIoService(), new ForestWorldGenerator()));
+        createWorld(properties.getProperty("world-name", "world"), Environment.NORMAL);
         
 		ChannelFactory factory = new NioServerSocketChannelFactory(executor, executor);
 		bootstrap.setFactory(factory);
@@ -467,7 +466,9 @@ public final class GlowServer implements Server {
      */
     public GlowWorld createWorld(String name, Environment environment, long seed) {
         if (getWorld(name) != null) return getWorld(name);
-        throw new UnsupportedOperationException("Not supported yet.");
+        GlowWorld world = new GlowWorld(name, new McRegionChunkIoService(new File(name)), environment, seed);
+        if (world != null) worlds.add(world);
+        return world;
     }
     
     /**

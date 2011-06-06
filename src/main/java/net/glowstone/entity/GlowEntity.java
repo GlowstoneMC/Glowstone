@@ -27,7 +27,7 @@ public abstract class GlowEntity implements Entity {
     /**
      * The world this entity belongs to.
      */
-	protected final GlowWorld world;
+	protected GlowWorld world;
 
     /**
      * A flag indicating if this entity is currently active.
@@ -73,7 +73,7 @@ public abstract class GlowEntity implements Entity {
 	public boolean isWithinDistance(GlowEntity other) {
 		double dx = Math.abs(location.getX() - other.location.getX());
 		double dz = Math.abs(location.getZ() - other.location.getZ());
-		return dx <= (GlowChunk.VISIBLE_RADIUS * GlowChunk.WIDTH) && dz <= (GlowChunk.VISIBLE_RADIUS * GlowChunk.HEIGHT);
+		return other.getWorld() == getWorld() && dx <= (GlowChunk.VISIBLE_RADIUS * GlowChunk.WIDTH) && dz <= (GlowChunk.VISIBLE_RADIUS * GlowChunk.HEIGHT);
 	}
 
     /**
@@ -220,6 +220,11 @@ public abstract class GlowEntity implements Entity {
     }
 
     public boolean teleport(Location location) {
+        if (location.getWorld() != world) {
+            world.getEntityManager().deallocate(this);
+            world = (GlowWorld) location.getWorld();
+            world.getEntityManager().allocate(this);
+        }
         this.location = location;
         reset();
         return true;

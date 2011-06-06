@@ -9,7 +9,6 @@ import net.glowstone.GlowWorld;
  */
 public final class TestWorldGenerator implements WorldGenerator {
 
-	@Override
 	public GlowChunk generate(GlowWorld world, int chunkX, int chunkZ) {
 		GlowChunk chunk = new GlowChunk(world, chunkX, chunkZ);
 		for (int x = 0; x < GlowChunk.WIDTH; x++) {
@@ -32,5 +31,9 @@ public final class TestWorldGenerator implements WorldGenerator {
 		}
 		return chunk;
 	}
+
+    public long getSeed() {
+        return 0;
+    }
 
 }

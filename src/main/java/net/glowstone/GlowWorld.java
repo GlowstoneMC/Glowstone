@@ -34,6 +34,9 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.msg.LoadChunkMessage;
 import net.glowstone.msg.StateChangeMessage;
 import net.glowstone.msg.TimeMessage;
+import net.glowstone.world.FlatGrassWorldGenerator;
+import net.glowstone.world.FlatNetherWorldGenerator;
+import net.glowstone.world.ForestWorldGenerator;
 import net.glowstone.world.WorldGenerator;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
@@ -43,6 +46,11 @@ import org.bukkit.entity.Entity;
  * @author Graham Edgecombe
  */
 public final class GlowWorld implements World {
+    
+    /**
+     * The name of this world.
+     */
+    private final String name;
 
 	/**
 	 * The chunk manager.
@@ -62,7 +70,7 @@ public final class GlowWorld implements World {
 	/**
 	 * The spawn position.
 	 */
-	private Location spawnLocation = new Location(null, 0, 128, 0);
+	private Location spawnLocation = new Location(this, 0, 128, 0);
     
     /**
      * Whether PvP is allowed in this world.
@@ -93,14 +101,38 @@ public final class GlowWorld implements World {
      * The current world time.
      */
     private long time = 0;
+    
+	/**
+	 * Creates a new world with the specified chunk I/O service, and environment.
+     * @param name The name of the world.
+	 * @param service The chunk I/O service.
+	 * @param environment The environment.
+	 */
+	public GlowWorld(String name, ChunkIoService service, Environment environment) {
+        this(name, service, environment, new Random().nextLong());
+    }
 
 	/**
-	 * Creates a new world with the specified chunk I/O service and world
-	 * generator.
+	 * Creates a new world with the specified chunk I/O service, environment, and seed.
+     * @param name The name of the world.
 	 * @param service The chunk I/O service.
+	 * @param environment The environment.
+     * @param seed The seed.
+	 */
+	public GlowWorld(String name, ChunkIoService service, Environment environment, long seed) {
+        this(name, service, environment, environment == Environment.NETHER ? new FlatNetherWorldGenerator() : new FlatGrassWorldGenerator());
+	}
+
+	/**
+	 * Creates a new world with the specified chunk I/O service, environment, 
+	 * and world generator.
+     * @param name The name of the world.
+	 * @param service The chunk I/O service.
+     * @param environment The environment.
 	 * @param generator The world generator.
 	 */
-	public GlowWorld(ChunkIoService service, WorldGenerator generator) {
+	public GlowWorld(String name, ChunkIoService service, Environment environment, WorldGenerator generator) {
+        this.name = name;
 		chunks = new ChunkManager(this, service, generator);
         
         setStorm(false);
@@ -250,15 +282,15 @@ public final class GlowWorld implements World {
     }
 
     public long getSeed() {
-        return 0;
+        return chunks.getSeed();
     }
 
     public String getName() {
-        return "world";
+        return name;
     }
 
     public long getId() {
-        return getName().hashCode();
+        return (getSeed() + "_" + getName()).hashCode();
     }
 
     // get block, chunk, id, highest methods with coords
@@ -336,7 +368,12 @@ public final class GlowWorld implements World {
     }
 
     public boolean loadChunk(int x, int z, boolean generate) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (generate) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        } else {
+            loadChunk(x, z);
+            return true;
+        }
     }
 
     public boolean unloadChunk(int x, int z) {

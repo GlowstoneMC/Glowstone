@@ -191,5 +191,9 @@ public class InfiniMapWorldGenerator implements WorldGenerator {
 		}
 		return chunk;
 	}
+
+    public long getSeed() {
+        return 0;
+    }
     
 }

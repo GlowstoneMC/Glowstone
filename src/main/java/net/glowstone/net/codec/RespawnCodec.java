@@ -15,13 +15,14 @@ public final class RespawnCodec extends MessageCodec<RespawnMessage> {
 
 	@Override
 	public RespawnMessage decode(ChannelBuffer buffer) throws IOException {
-		return new RespawnMessage();
+        byte dimension = buffer.readByte();
+		return new RespawnMessage(dimension);
 	}
 
 	@Override
 	public ChannelBuffer encode(RespawnMessage message) throws IOException {
 		ChannelBuffer buffer = ChannelBuffers.buffer(1);
-		buffer.writeByte(0); // TODO: unknown
+		buffer.writeByte(message.getDimension());
 		return buffer;
 	}
 

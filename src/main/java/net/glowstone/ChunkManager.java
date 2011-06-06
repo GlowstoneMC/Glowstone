@@ -153,5 +153,13 @@ public final class ChunkManager {
         }
         return false;
     }
+    
+    /**
+     * Gets the seed of the world generator.
+     * @return The seed.
+     */
+    public long getSeed() {
+        return generator.getSeed();
+    }
 
 }

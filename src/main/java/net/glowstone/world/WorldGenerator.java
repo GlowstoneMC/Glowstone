@@ -17,5 +17,11 @@ public interface WorldGenerator {
 	 * @return The chunk.
 	 */
 	public GlowChunk generate(GlowWorld world, int x, int z);
+    
+    /**
+     * Returns the seed of this WorldGenerator.
+     * @return The seed.
+     */
+    public long getSeed();
 
 }
