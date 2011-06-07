@@ -1,5 +1,6 @@
 package net.glowstone.inventory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.Material;
@@ -10,14 +11,60 @@ import org.bukkit.inventory.Inventory;
  * A class which represents an inventory and the items it contains.
  */
 public class GlowInventory implements Inventory {
+    
+    /**
+     * The ID of the inventory.
+     */
+    private final byte id;
 
-    protected ItemStack[] slots;
+    /**
+     * The list of InventoryViewers attached to this inventory.
+     */
+    private final ArrayList<InventoryViewer> viewers = new ArrayList<InventoryViewer>();
+    
+    /**
+     * This inventory's contents.
+     */
+    private final ItemStack[] slots;
 
-    public GlowInventory(int size) {
+    /**
+     * Initialize the inventory 
+     * @param size 
+     */
+    protected GlowInventory(byte id, int size) {
+        this.id = id;
         slots = new ItemStack[size];
+    }
+    
+    /**
+     * Add a viewer to the inventory.
+     * @param viewer The InventoryViewer to add.
+     */
+    public void addViewer(InventoryViewer viewer) {
+        if (!viewers.contains(viewer)) {
+            viewers.add(viewer);
+        }
+    }
+    
+    /**
+     * Remove a viewer from the inventory.
+     * @param viewer The InventoryViewer to remove.
+     */
+    public void removeViewer(InventoryViewer viewer) {
+        if (viewers.contains(viewer)) {
+            viewers.remove(viewer);
+        }
     }
 
     // Basic Stuff ///////////////
+    
+    /**
+     * Gets the inventory ID.
+     * @return The inventory id for wire purposes.
+     */
+    public int getId() {
+        return id;
+    }
 
     /**
      * Returns the size of the inventory
@@ -50,13 +97,17 @@ public class GlowInventory implements Inventory {
     }
 
     /**
-     * Stores the ItemStack at the given index
+     * Stores the ItemStack at the given index.
+     * Notifies all attached InventoryViewers of the change.
      *
      * @param index The index where to put the ItemStack
      * @param item The ItemStack to set
      */
     public void setItem(int index, ItemStack item) {
         slots[index] = item;
+        for (InventoryViewer viewer : viewers) {
+            viewer.onSlotSet(this, index, item);
+        }
     }
 
     /**
@@ -75,7 +126,7 @@ public class GlowInventory implements Inventory {
         for (ItemStack stack : items) {
             int open = firstEmpty();
             if (open < 0) break;
-            slots[open] = stack;
+            setItem(open, stack);
             result.put(open, stack);
         }
         return result;
@@ -97,7 +148,7 @@ public class GlowInventory implements Inventory {
         for (ItemStack stack : items) {
             HashMap<Integer, ? extends ItemStack> stacks = all(stack);
             for (Integer slot : stacks.keySet()) {
-                slots[slot] = null;
+                setItem(slot, null);
                 result.put(slot, stacks.get(slot));
             }
         }
@@ -122,7 +173,9 @@ public class GlowInventory implements Inventory {
         if (items.length != slots.length) {
             throw new IllegalArgumentException("Length of items must be " + slots.length);
         }
-        slots = items;
+        for (int i = 0; i < items.length; ++i) {
+            setItem(i, items[i]);
+        }
     }
 
     // Contains family ///////////
@@ -301,7 +354,7 @@ public class GlowInventory implements Inventory {
     public void remove(int materialId) {
         HashMap<Integer, ? extends ItemStack> stacks = all(materialId);
         for (Integer slot : stacks.keySet()) {
-            slots[slot] = null;
+            setItem(slot, null);
         }
     }
 
@@ -313,7 +366,7 @@ public class GlowInventory implements Inventory {
     public void remove(Material material) {
         HashMap<Integer, ? extends ItemStack> stacks = all(material);
         for (Integer slot : stacks.keySet()) {
-            slots[slot] = null;
+            setItem(slot, null);
         }
     }
 
@@ -326,7 +379,7 @@ public class GlowInventory implements Inventory {
     public void remove(ItemStack item) {
         HashMap<Integer, ? extends ItemStack> stacks = all(item);
         for (Integer slot : stacks.keySet()) {
-            slots[slot] = null;
+            setItem(slot, null);
         }
     }
 
@@ -338,7 +391,7 @@ public class GlowInventory implements Inventory {
      * @param index The index to empty.
      */
     public void clear(int index) {
-        slots[index] = null;
+        setItem(index, null);
     }
 
     /**
@@ -346,7 +399,7 @@ public class GlowInventory implements Inventory {
      */
     public void clear() {
         for (int i = 0; i < slots.length; ++i) {
-            slots[i] = null;
+            clear(i);
         }
     }
     

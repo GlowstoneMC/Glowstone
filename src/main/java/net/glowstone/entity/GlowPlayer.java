@@ -5,15 +5,19 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.bukkit.Achievement;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
-
 import org.bukkit.entity.Player;
 
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowWorld;
+import net.glowstone.inventory.GlowInventory;
+import net.glowstone.inventory.GlowPlayerInventory;
+import net.glowstone.inventory.InventoryViewer;
 import net.glowstone.msg.BlockChangeMessage;
 import net.glowstone.msg.ChatMessage;
 import net.glowstone.msg.DestroyEntityMessage;
@@ -23,16 +27,17 @@ import net.glowstone.msg.PingMessage;
 import net.glowstone.msg.PlayNoteMessage;
 import net.glowstone.msg.PositionRotationMessage;
 import net.glowstone.msg.RespawnMessage;
+import net.glowstone.msg.SetWindowSlotMessage;
 import net.glowstone.msg.SpawnPositionMessage;
 import net.glowstone.msg.StateChangeMessage;
 import net.glowstone.net.Session;
-import org.bukkit.ChatColor;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Represents an in-game player.
  * @author Graham Edgecombe
  */
-public final class GlowPlayer extends GlowHumanEntity implements Player {
+public final class GlowPlayer extends GlowHumanEntity implements Player, InventoryViewer {
 
     /**
      * The normal height of a player's eyes above their feet.
@@ -77,7 +82,19 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         setCompassTarget(world.getSpawnLocation()); // set our compass target
 		teleport(world.getSpawnLocation()); // take us to spawn position
         session.send(new StateChangeMessage((byte)(getWorld().hasStorm() ? 1 : 2))); // send the world's weather
+        
+        ((GlowInventory) getInventory()).addViewer(this);
     }
+
+    /**
+     * Destroys this entity by removing it from the world and marking it as not
+     * being active.
+     */
+    @Override
+	public void remove() {
+		((GlowInventory) getInventory()).removeViewer(this);
+        super.remove();
+	}
 
 	@Override
 	public void pulse() {
@@ -200,6 +217,21 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 	public Session getSession() {
 		return session;
 	}
+    
+    /**
+     * Inform the client that an item has changed.
+     * @param inventory The GlowInventory in which a slot has changed.
+     * @param slot The slot number which has changed.
+     * @param item The ItemStack which the slot has changed to.
+     */
+    public void onSlotSet(GlowInventory inventory, int slot, ItemStack item) {
+        slot = GlowPlayerInventory.inventorySlotToNetwork(slot);
+        if (item == null) {
+            session.send(new SetWindowSlotMessage(inventory.getId(), slot));
+        } else {
+            session.send(new SetWindowSlotMessage(inventory.getId(), slot, item.getTypeId(), item.getAmount(), item.getDurability()));
+        }
+    }
 
     public boolean isOnline() {
         return true;

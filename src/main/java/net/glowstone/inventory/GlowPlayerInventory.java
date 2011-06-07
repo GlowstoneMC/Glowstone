@@ -12,8 +12,9 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     private int heldSlot = 0;
 
     public GlowPlayerInventory() {
+        // all player inventories are ID 0
         // 36 = 4 rows of 9 = complete player inventory
-        super(36);
+        super((byte) 0, 36);
     }
 
     /**
@@ -90,6 +91,29 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
 
     public int getHeldItemSlot() {
         return heldSlot;
+    }
+    
+    // Helper static functions
+    
+    private final static int slotConversion[] = {
+        36, 37, 38, 39, 40, 41, 42, 43, 44, // quickbar
+        9,  10, 11, 12, 13, 14, 15, 16, 17,
+        18, 19, 20, 21, 22, 23, 24, 25, 26,
+        27, 28, 29, 30, 31, 32, 33, 34, 35,
+        5, 6, 7, 8, // armor
+        1, 2, 3, 4, // crafting
+        0 // crafting result
+    };
+    
+    public static int inventorySlotToNetwork(int slot) {
+        return slotConversion[slot];
+    }
+    
+    public static int networkSlotToInventory(int slot) {
+        for (int i = 0; i < slotConversion.length; ++i) {
+            if (slotConversion[i] == slot) return i;
+        }
+        return -1;
     }
 
 }
