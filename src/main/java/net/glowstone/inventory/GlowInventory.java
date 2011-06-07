@@ -19,25 +19,58 @@ public class GlowInventory implements Inventory {
 
     // Basic Stuff ///////////////
 
+    /**
+     * Returns the size of the inventory
+     *
+     * @return The inventory size
+     */
     public int getSize() {
         return slots.length;
     }
 
+    /**
+     * Return the name of the inventory
+     *
+     * @return The inventory name
+     */
     public String getName() {
         return "Generic Inventory";
     }
 
     // Get, Set, Add, Remove /////
 
+    /**
+     * Get the ItemStack found in the slot at the given index
+     *
+     * @param index The index of the Slot's ItemStack to return
+     * @return The ItemStack in the slot
+     */
     public ItemStack getItem(int index) {
         return slots[index];
     }
 
+    /**
+     * Stores the ItemStack at the given index
+     *
+     * @param index The index where to put the ItemStack
+     * @param item The ItemStack to set
+     */
     public void setItem(int index, ItemStack item) {
         slots[index] = item;
     }
 
+    /**
+     * Stores the given ItemStacks in the inventory.
+     *
+     * This will try to fill existing stacks and empty slots as good as it can.
+     * It will return a HashMap of what it couldn't fit.
+     *
+     * @param items The ItemStacks to add
+     * @return
+     */
     public HashMap<Integer, ItemStack> addItem(ItemStack... items) {
+        // TODO: make it actually fit the documentation, work with maxStackSize, etc.
+        
         HashMap<Integer, ItemStack> result = new HashMap<Integer, ItemStack>();
         for (ItemStack stack : items) {
             int open = firstEmpty();
@@ -48,7 +81,18 @@ public class GlowInventory implements Inventory {
         return result;
     }
 
+    /**
+     * Removes the given ItemStacks from the inventory.
+     *
+     * It will try to remove 'as much as possible' from the types and amounts you
+     * give as arguments. It will return a HashMap of what it couldn't remove.
+     *
+     * @param items The ItemStacks to remove
+     * @return
+     */
     public HashMap<Integer, ItemStack> removeItem(ItemStack... items) {
+        // TODO: make it actually fit the documentation, work with maxStackSize, etc.
+        
         HashMap<Integer, ItemStack> result = new HashMap<Integer, ItemStack>();
         for (ItemStack stack : items) {
             HashMap<Integer, ? extends ItemStack> stacks = all(stack);
@@ -60,28 +104,67 @@ public class GlowInventory implements Inventory {
         return result;
     }
 
+    /**
+     * Get all ItemStacks from the inventory
+     *
+     * @return All the ItemStacks from all slots
+     */
     public ItemStack[] getContents() {
         return slots;
     }
 
+    /**
+     * Set the inventory's contents
+     *
+     * @return All the ItemStacks from all slots
+     */
     public void setContents(ItemStack[] items) {
+        if (items.length != slots.length) {
+            throw new IllegalArgumentException("Length of items must be " + slots.length);
+        }
         slots = items;
     }
 
     // Contains family ///////////
 
+    /**
+     * Check if the inventory contains any ItemStacks with the given materialId
+     *
+     * @param materialId The materialId to check for
+     * @return If any ItemStacks were found
+     */
     public boolean contains(int materialId) {
         return first(materialId) >= 0;
     }
 
+    /**
+     * Check if the inventory contains any ItemStacks with the given material
+     *
+     * @param material The material to check for
+     * @return If any ItemStacks were found
+     */
     public boolean contains(Material material) {
         return first(material) >= 0;
     }
 
+    /**
+     * Check if the inventory contains any ItemStacks matching the given ItemStack
+     * This will only match if both the type and the amount of the stack match
+     *
+     * @param item The ItemStack to match against
+     * @return If any matching ItemStacks were found
+     */
     public boolean contains(ItemStack item) {
         return first(item) >= 0;
     }
 
+    /**
+     * Check if the inventory contains any ItemStacks with the given materialId and at least the minimum amount specified
+     *
+     * @param materialId The materialId to check for
+     * @param amount The minimum amount to look for
+     * @return If any ItemStacks were found
+     */
     public boolean contains(int materialId, int amount) {
         HashMap<Integer, ? extends ItemStack> found = all(materialId);
         int total = 0;
@@ -91,16 +174,35 @@ public class GlowInventory implements Inventory {
         return total >= amount;
     }
 
+    /**
+     * Check if the inventory contains any ItemStacks with the given material and at least the minimum amount specified
+     *
+     * @param material The material to check for
+     * @return If any ItemStacks were found
+     */
     public boolean contains(Material material, int amount) {
         return contains(material.getId(), amount);
     }
 
+    /**
+     * Check if the inventory contains any ItemStacks matching the given ItemStack and at least the minimum amount specified
+     * This will only match if both the type and the amount of the stack match
+     *
+     * @param item The ItemStack to match against
+     * @return If any matching ItemStacks were found
+     */
     public boolean contains(ItemStack item, int amount) {
         return contains(item.getTypeId(), amount);
     }
 
     // All Family ////////////////
 
+    /**
+     * Find all slots in the inventory containing any ItemStacks with the given materialId
+     *
+     * @param materialId The materialId to look for
+     * @return The Slots found.
+     */
     public HashMap<Integer, ? extends ItemStack> all(int materialId) {
         HashMap<Integer, ItemStack> result = new HashMap<Integer, ItemStack>();
         for (int i = 0; i < slots.length; ++i) {
@@ -111,10 +213,23 @@ public class GlowInventory implements Inventory {
         return result;
     }
 
+    /**
+     * Find all slots in the inventory containing any ItemStacks with the given material
+     *
+     * @param materialId The material to look for
+     * @return The Slots found.
+     */
     public HashMap<Integer, ? extends ItemStack> all(Material material) {
         return all(material.getId());
     }
 
+    /**
+     * Find all slots in the inventory containing any ItemStacks with the given ItemStack
+     * This will only match slots if both the type and the amount of the stack match
+     *
+     * @param item The ItemStack to match against
+     * @return The Slots found.
+     */
     public HashMap<Integer, ? extends ItemStack> all(ItemStack item) {
         HashMap<Integer, ItemStack> result = new HashMap<Integer, ItemStack>();
         for (int i = 0; i < slots.length; ++i) {
@@ -127,6 +242,12 @@ public class GlowInventory implements Inventory {
 
     // First Family //////////////
 
+    /**
+     * Find the first slot in the inventory containing an ItemStack with the given materialId
+     *
+     * @param materialId The materialId to look for
+     * @return The Slot found.
+     */
     public int first(int materialId) {
         for (int i = 0; i < slots.length; ++i) {
             if (slots[i] != null && slots[i].getTypeId() == materialId) return i;
@@ -134,10 +255,23 @@ public class GlowInventory implements Inventory {
         return -1;
     }
 
+    /**
+     * Find the first slot in the inventory containing an ItemStack with the given material
+     *
+     * @param materialId The material to look for
+     * @return The Slot found.
+     */
     public int first(Material material) {
         return first(material.getId());
     }
 
+    /**
+     * Find the first slot in the inventory containing an ItemStack with the given stack
+     * This will only match a slot if both the type and the amount of the stack match
+     *
+     * @param item The ItemStack to match against
+     * @return The Slot found.
+     */
     public int first(ItemStack item) {
         for (int i = 0; i < slots.length; ++i) {
             if (slots[i] != null && slots[i].equals(item)) return i;
@@ -145,6 +279,11 @@ public class GlowInventory implements Inventory {
         return -1;
     }
 
+    /**
+     * Find the first empty Slot.
+     *
+     * @return The first empty Slot found.
+     */
     public int firstEmpty() {
         for (int i = 0; i < slots.length; ++i) {
             if (slots[i] == null) return i;
@@ -154,6 +293,11 @@ public class GlowInventory implements Inventory {
 
     // Remove Family /////////////
 
+    /**
+     * Remove all stacks in the inventory matching the given materialId.
+     *
+     * @param materialId The material to remove
+     */
     public void remove(int materialId) {
         HashMap<Integer, ? extends ItemStack> stacks = all(materialId);
         for (Integer slot : stacks.keySet()) {
@@ -161,6 +305,11 @@ public class GlowInventory implements Inventory {
         }
     }
 
+    /**
+     * Remove all stacks in the inventory matching the given material.
+     *
+     * @param material The material to remove
+     */
     public void remove(Material material) {
         HashMap<Integer, ? extends ItemStack> stacks = all(material);
         for (Integer slot : stacks.keySet()) {
@@ -168,6 +317,12 @@ public class GlowInventory implements Inventory {
         }
     }
 
+    /**
+     * Remove all stacks in the inventory matching the given stack.
+     * This will only match a slot if both the type and the amount of the stack match
+     *
+     * @param item The ItemStack to match against
+     */
     public void remove(ItemStack item) {
         HashMap<Integer, ? extends ItemStack> stacks = all(item);
         for (Integer slot : stacks.keySet()) {
@@ -177,10 +332,18 @@ public class GlowInventory implements Inventory {
 
     // Clear Family //////////////
 
+    /**
+     * Clear out a particular slot in the index
+     *
+     * @param index The index to empty.
+     */
     public void clear(int index) {
         slots[index] = null;
     }
 
+    /**
+     * Clear out the whole index
+     */
     public void clear() {
         for (int i = 0; i < slots.length; ++i) {
             slots[i] = null;

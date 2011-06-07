@@ -3,7 +3,7 @@ package net.glowstone.inventory;
 import org.bukkit.inventory.*;
 
 /**
- *
+ * An Inventory representing the items a player is holding.
  * @author Tad
  */
 public class GlowPlayerInventory extends GlowInventory implements PlayerInventory {
@@ -14,6 +14,16 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     public GlowPlayerInventory() {
         // 36 = 4 rows of 9 = complete player inventory
         super(36);
+    }
+
+    /**
+     * Return the name of the inventory
+     *
+     * @return The inventory name
+     */
+    @Override
+    public String getName() {
+        return "Player Inventory";
     }
 
     /**
@@ -32,6 +42,9 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     public void setArmorContents(ItemStack[] items) {
+        if (items.length != 4) {
+            throw new IllegalArgumentException("Length of armor must be 4");
+        }
         armor = items;
     }
 

@@ -82,10 +82,8 @@ public final class ChunkManager {
                             chunk2.setPopulated(true);
                             
                             for (BlockPopulator p : world.getPopulators()) {
-                                long ms = new Date().getTime();
                                 p.populate(world, new Random(), chunk2);
-                                long t = new Date().getTime() - ms;
-                                world.broadcastMessage("pop " + t + "ms " + p.getClass().getName());
+                                System.out.println("pop " + world.getName() + " " + p.getClass().getName());
                             }
                         }
                     }
