@@ -47,5 +47,18 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
      * @return byte[32768] containing the types for each block created by this generator
      */
     public abstract byte[] generate(World world, Random random, int chunkX, int chunkZ);
+    
+    /**
+     * Tests if the specified location is valid for a natural spawn position
+     *
+     * @param world The world we're testing on
+     * @param x X-coordinate of the block to test
+     * @param z Z-coordinate of the block to test
+     * @return true if the location is valid, otherwise false
+     */
+    @Override
+    public boolean canSpawn(World world, int x, int z) {
+        return true;
+    }
 
 }

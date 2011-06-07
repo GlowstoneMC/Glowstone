@@ -64,6 +64,11 @@ public final class GlowWorld implements World {
      * A map between locations and cached Block objects.
      */
     private final HashMap<Location, GlowBlock> blockCache = new HashMap<Location, GlowBlock>();
+    
+    /**
+     * The world populators for this world.
+     */
+    private final List<BlockPopulator> populators;
 
 	/**
 	 * The spawn position.
@@ -129,14 +134,18 @@ public final class GlowWorld implements World {
         this.seed = seed;
 		chunks = new ChunkManager(this, service, generator);
         
+        populators = generator.getDefaultPopulators(this);
         spawnLocation = generator.getFixedSpawnLocation(this, new Random());
+        
         if (spawnLocation == null) {
             spawnLocation = new Location(this, 0, 128, 0);
             
-            // 10 tries only to prevent a return false; bomb
-            for (int tries = 0; tries < 10 && !generator.canSpawn(this, spawnLocation.getBlockX(), spawnLocation.getBlockZ()); ++tries) {
-                spawnLocation.setX(spawnLocation.getX() + Math.random() * 128 - 64);
-                spawnLocation.setZ(spawnLocation.getZ() + Math.random() * 128 - 64);
+            if (!generator.canSpawn(this, spawnLocation.getBlockX(), spawnLocation.getBlockZ())) {
+                // 10 tries only to prevent a return false; bomb
+                for (int tries = 0; tries < 10 && !generator.canSpawn(this, spawnLocation.getBlockX(), spawnLocation.getBlockZ()); ++tries) {
+                    spawnLocation.setX(spawnLocation.getX() + Math.random() * 128 - 64);
+                    spawnLocation.setZ(spawnLocation.getZ() + Math.random() * 128 - 64);
+                }
             }
             
             spawnLocation.setY(1 + getHighestBlockYAt(spawnLocation.getBlockX(), spawnLocation.getBlockZ()));
@@ -313,7 +322,7 @@ public final class GlowWorld implements World {
     }
 
     public List<BlockPopulator> getPopulators() {
-        return chunks.getGenerator().getDefaultPopulators(this);
+        return populators;
     }
 
     // get block, chunk, id, highest methods with coords
@@ -423,7 +432,9 @@ public final class GlowWorld implements World {
     }
 
     public boolean regenerateChunk(int x, int z) {
-        return chunks.forceRegeneration(x, z);
+        if (!chunks.forceRegeneration(x, z)) return false;
+        refreshChunk(x, z);
+        return true;
     }
 
     public boolean refreshChunk(int x, int z) {

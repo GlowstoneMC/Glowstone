@@ -1,12 +1,14 @@
 package net.glowstone;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
 
 import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.generator.BlockPopulator;
 
 import net.glowstone.io.ChunkIoService;
 
@@ -67,16 +69,54 @@ public final class ChunkManager {
 			}
 
 			if (chunk == null) {
-                // TODO: Random object.
                 chunk = new GlowChunk(world, x, z);
 				byte[] data = generator.generate(world, new Random(), x, z);
                 chunk.setTypes(data);
+                
+                chunks.put(key, chunk);
+                
+                for (int x2 = x - 1; x2 <= x + 1; ++x2) {
+                    for (int z2 = z - 1; z2 <= z + 1; ++z2) {
+                        if (canPopulate(x2, z2)) {
+                            GlowChunk chunk2 = getChunk(x2, z2);
+                            chunk2.setPopulated(true);
+                            
+                            for (BlockPopulator p : world.getPopulators()) {
+                                long ms = new Date().getTime();
+                                p.populate(world, new Random(), chunk2);
+                                long t = new Date().getTime() - ms;
+                                world.broadcastMessage("pop " + t + "ms " + p.getClass().getName());
+                            }
+                        }
+                    }
+                }
 			}
 
 			chunks.put(key, chunk);
 		}
+        
 		return chunk;
 	}
+    
+    /**
+     * Checks whether the given chunk can be populated by map features.
+     * @return Whether population is needed and safe.
+     */
+    private boolean canPopulate(int x, int z) {
+        if (isLoaded(x, z)) {
+            if (getChunk(x, z).getPopulated()) return false;
+        } else {
+            return false;
+        }
+        for (int x2 = x - 1; x2 <= x + 1; ++x2) {
+            for (int z2 = z - 1; z2 <= z + 1; ++z2) {
+                if (!isLoaded(x2, z2)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
     
     /**
      * Forces generation of the given chunk.
@@ -88,9 +128,18 @@ public final class ChunkManager {
 		GlowChunk.Key key = new GlowChunk.Key(x, z);
         GlowChunk chunk = new GlowChunk(world, x, z);
         chunk.setTypes(generator.generate(world, new Random(), x, z));
+        
         if (chunk == null || !unloadChunk(x, z, false)) {
             return false;
         }
+        
+        if (canPopulate(x, z)) {
+            chunk.setPopulated(true);
+            for (BlockPopulator p : world.getPopulators()) {
+                p.populate(world, new Random(), chunk);
+            }
+        }
+        
         chunks.put(key, chunk);
         return true;
     }

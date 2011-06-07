@@ -107,6 +107,12 @@ public final class GlowChunk implements Chunk {
 	 * The data in this chunk representing all of the blocks and their state.
 	 */
 	private final byte[] types, metaData, skyLight, blockLight;
+    
+    /**
+     * Whether the chunk has been populated by special features.
+     * Used in map generation.
+     */
+    private boolean populated = false;
 
 	/**
 	 * Creates a new chunk with a specified X and Z coordinate.
@@ -142,6 +148,22 @@ public final class GlowChunk implements Chunk {
 	public int getZ() {
 		return z;
 	}
+    
+    /**
+     * Gets whether this chunk has been populated by special features.
+     * @return Population status.
+     */
+    public boolean getPopulated() {
+        return populated;
+    }
+    
+    /**
+     * Sets the population status of this chunk.
+     * @param populated Population status.
+     */
+    public void setPopulated(boolean populated) {
+        this.populated = populated;
+    }
 
 	/**
 	 * Gets the type of a block within this chunk.
