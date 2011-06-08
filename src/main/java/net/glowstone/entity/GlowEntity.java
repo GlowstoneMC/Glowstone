@@ -1,6 +1,7 @@
 package net.glowstone.entity;
 
 import java.util.List;
+import java.util.UUID;
 import org.bukkit.util.Vector;
 import org.bukkit.entity.Entity;
 import org.bukkit.Location;
@@ -288,6 +289,10 @@ public abstract class GlowEntity implements Entity {
 
     public EntityDamageEvent getLastDamageCause() {
         return lastDamageCause;
+    }
+
+    public UUID getUniqueId() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

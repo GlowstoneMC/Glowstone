@@ -1,8 +1,7 @@
 package net.glowstone;
 
 import org.bukkit.Chunk;
-import org.bukkit.World;
-import org.bukkit.block.Block;
+import org.bukkit.ChunkSnapshot;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 
@@ -345,6 +344,10 @@ public final class GlowChunk implements Chunk {
     }
 
     public BlockState[] getTileEntities() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public ChunkSnapshot getChunkSnapshot() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
