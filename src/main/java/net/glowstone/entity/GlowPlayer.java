@@ -23,7 +23,6 @@ import net.glowstone.msg.ChatMessage;
 import net.glowstone.msg.DestroyEntityMessage;
 import net.glowstone.msg.LoadChunkMessage;
 import net.glowstone.msg.Message;
-import net.glowstone.msg.PingMessage;
 import net.glowstone.msg.PlayNoteMessage;
 import net.glowstone.msg.PositionRotationMessage;
 import net.glowstone.msg.RespawnMessage;

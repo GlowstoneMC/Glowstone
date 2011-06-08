@@ -86,7 +86,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     public double getEyeHeight(boolean ignoreSneaking) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (false /* TODO: sneaking */ || !ignoreSneaking) {
+            return 1.6;
+        } else {
+            return 1.4;
+        }
     }
 
     public Location getEyeLocation() {

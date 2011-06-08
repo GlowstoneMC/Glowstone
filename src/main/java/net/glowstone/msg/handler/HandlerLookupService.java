@@ -22,6 +22,7 @@ public final class HandlerLookupService {
             bind(BlockPlacementMessage.class, BlockPlacementMessageHandler.class);
             bind(WindowClickMessage.class, WindowClickMessageHandler.class);
             bind(CloseWindowMessage.class, CloseWindowMessageHandler.class);
+            bind(ActivateItemMessage.class, ActivateItemMessageHandler.class);
 		} catch (Exception ex) {
 			throw new ExceptionInInitializerError(ex);
 		}

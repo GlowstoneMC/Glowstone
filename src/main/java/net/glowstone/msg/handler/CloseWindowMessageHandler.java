@@ -11,9 +11,10 @@ public final class CloseWindowMessageHandler extends MessageHandler<CloseWindowM
 		if (player == null)
 			return;
         
-        if (player.getItemInHand() != null) {
-            player.getWorld().dropItem(player.getEyeLocation(), player.getItemInHand());
-            player.setItemInHand(null);
+        if (player.getItemOnCursor() != null) {
+            // player.getWorld().dropItem(player.getEyeLocation(), player.getItemInHand());
+            player.getInventory().addItem(player.getItemOnCursor());
+            player.setItemOnCursor(null);
         }
 	}
     

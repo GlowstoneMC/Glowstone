@@ -83,6 +83,16 @@ public class GlowInventory implements Inventory {
     public String getName() {
         return "Generic Inventory";
     }
+    
+    /**
+     * Updates all attached inventory viewers about a change to index.
+     * @param index The index to update.
+     */
+    protected void sendUpdate(int index) {
+        for (InventoryViewer viewer : viewers) {
+            viewer.onSlotSet(this, index, slots[index]);
+        }
+    }
 
     // Get, Set, Add, Remove /////
 
@@ -93,7 +103,7 @@ public class GlowInventory implements Inventory {
      * @return The ItemStack in the slot
      */
     public ItemStack getItem(int index) {
-        return slots[index] == null ? null : slots[index].clone();
+        return slots[index];
     }
 
     /**
@@ -105,9 +115,7 @@ public class GlowInventory implements Inventory {
      */
     public void setItem(int index, ItemStack item) {
         slots[index] = item;
-        for (InventoryViewer viewer : viewers) {
-            viewer.onSlotSet(this, index, item);
-        }
+        sendUpdate(index);
     }
 
     /**
@@ -120,15 +128,43 @@ public class GlowInventory implements Inventory {
      * @return
      */
     public HashMap<Integer, ItemStack> addItem(ItemStack... items) {
-        // TODO: make it actually fit the documentation, work with maxStackSize, etc.
-        
         HashMap<Integer, ItemStack> result = new HashMap<Integer, ItemStack>();
-        for (ItemStack stack : items) {
-            int open = firstEmpty();
-            if (open < 0) break;
-            setItem(open, stack);
-            result.put(open, stack);
+        
+        for (int i = 0; i < items.length; ++i) {
+            Material mat = items[i].getType();
+            int toAdd = items[i].getAmount();
+            
+            for (int j = 0; toAdd > 0 && j < getSize(); ++j) {
+                // Look for existing stacks to add to
+                if (slots[j] != null && slots[j].getType() == mat) {
+                    int space = mat.getMaxStackSize() - slots[j].getAmount();
+                    if (space < 0) continue;
+                    if (space > toAdd) space = toAdd;
+                    
+                    slots[j].setAmount(slots[j].getAmount() + space);
+                    toAdd -= space;
+                    sendUpdate(j);
+                }
+            }
+            
+            if (toAdd > 0) {
+                // Look for empty slots to add to
+                for (int j = 0; toAdd > 0 && j < getSize(); ++j) {
+                    if (slots[j] == null) {
+                        int num = toAdd > mat.getMaxStackSize() ? mat.getMaxStackSize() : toAdd;
+                        slots[j] = new ItemStack(mat, num);
+                        toAdd -= num;
+                        sendUpdate(j);
+                    }
+                }
+            }
+            
+            if (toAdd > 0) {
+                // Still couldn't stash them all.
+                result.put(i, new ItemStack(mat, toAdd));
+            }
         }
+        
         return result;
     }
 
@@ -142,16 +178,31 @@ public class GlowInventory implements Inventory {
      * @return
      */
     public HashMap<Integer, ItemStack> removeItem(ItemStack... items) {
-        // TODO: make it actually fit the documentation, work with maxStackSize, etc.
-        
         HashMap<Integer, ItemStack> result = new HashMap<Integer, ItemStack>();
-        for (ItemStack stack : items) {
-            HashMap<Integer, ? extends ItemStack> stacks = all(stack);
-            for (Integer slot : stacks.keySet()) {
-                setItem(slot, null);
-                result.put(slot, stacks.get(slot));
+        
+        for (int i = 0; i < items.length; ++i) {
+            Material mat = items[i].getType();
+            int toRemove = items[i].getAmount();
+            
+            for (int j = 0; j < getSize(); ++j) {
+                // Look for stacks to remove from.
+                if (slots[j] != null && slots[j].getType() == mat) {
+                    if (slots[j].getAmount() > toRemove) {
+                        slots[j].setAmount(slots[j].getAmount() - toRemove);
+                    } else {
+                        toRemove -= slots[j].getAmount();
+                        slots[j] = null;
+                    }
+                    sendUpdate(j);
+                }
+            }
+            
+            if (toRemove > 0) {
+                // Couldn't remove them all.
+                result.put(i, new ItemStack(mat, toRemove));
             }
         }
+        
         return result;
     }
 

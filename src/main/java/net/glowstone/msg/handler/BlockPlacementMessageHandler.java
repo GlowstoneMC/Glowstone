@@ -1,13 +1,12 @@
 package net.glowstone.msg.handler;
 
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.msg.BlockPlacementMessage;
-import net.glowstone.GlowChunk;
-import net.glowstone.msg.BlockChangeMessage;
 import net.glowstone.net.Session;
 import net.glowstone.GlowWorld;
-
-import org.bukkit.Material;
 
 /**
  * A {@link MessageHandler} which processes digging messages.
@@ -40,7 +39,18 @@ public final class BlockPlacementMessageHandler extends MessageHandler<BlockPlac
                 ++x; break;
         }
         
-        world.getBlockAt(x, y, z).setType(Material.WOOD); 
+        if (player.getItemInHand() != null && player.getItemInHand().getTypeId() < 256) {
+            if (world.getBlockAt(x, y, z).getType() == Material.AIR) {
+                world.getBlockAt(x, y, z).setType(player.getItemInHand().getType());
+                ItemStack stack = player.getItemInHand();
+                stack.setAmount(stack.getAmount() - 1);
+                if (stack.getAmount() == 0) {
+                    player.setItemInHand(null);
+                } else {
+                    player.setItemInHand(stack);
+                }
+            }
+        }
 	}
 
 }

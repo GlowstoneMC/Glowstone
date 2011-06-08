@@ -1,16 +1,13 @@
 package net.glowstone.msg.handler;
 
-import java.util.logging.Level;
-import net.glowstone.entity.GlowPlayer;
-import net.glowstone.msg.DiggingMessage;
-import net.glowstone.GlowChunk;
-import net.glowstone.GlowServer;
-import net.glowstone.msg.BlockChangeMessage;
-import net.glowstone.net.Session;
-import net.glowstone.GlowWorld;
-
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.inventory.ItemStack;
+
+import net.glowstone.entity.GlowPlayer;
+import net.glowstone.msg.DiggingMessage;
+import net.glowstone.net.Session;
+import net.glowstone.GlowWorld;
 
 /**
  * A {@link MessageHandler} which processes digging messages.
@@ -31,6 +28,9 @@ public final class DiggingMessageHandler extends MessageHandler<DiggingMessage> 
 			int z = message.getZ();
             
             Block block = world.getBlockAt(x, y, z);
+            if (block.getType() != Material.AIR) {
+                player.getInventory().addItem(new ItemStack(block.getType(), 1));
+            }
             block.setType(Material.AIR);
 		}
 	}
