@@ -29,13 +29,11 @@ public final class SetWindowSlotCodec extends MessageCodec<SetWindowSlotMessage>
 
 	@Override
 	public ChannelBuffer encode(SetWindowSlotMessage message) throws IOException {
-		int item = message.getId();
-
 		ChannelBuffer buffer = ChannelBuffers.dynamicBuffer();
 		buffer.writeByte(message.getId());
 		buffer.writeShort(message.getSlot());
 		buffer.writeShort(message.getItem());
-		if (item != -1) {
+		if (message.getItem() != -1) {
 			buffer.writeByte(message.getCount());
 			buffer.writeShort(message.getDamage());
 		}

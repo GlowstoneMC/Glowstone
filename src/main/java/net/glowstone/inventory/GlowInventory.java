@@ -93,7 +93,7 @@ public class GlowInventory implements Inventory {
      * @return The ItemStack in the slot
      */
     public ItemStack getItem(int index) {
-        return slots[index];
+        return slots[index] == null ? null : slots[index].clone();
     }
 
     /**

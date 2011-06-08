@@ -182,22 +182,21 @@ public final class GlowWorld implements World {
 		for (GlowEntity entity : temp)
 			entity.reset();
         
-        final int TIME_SCALE = 1;
-        
         // We currently tick at 1/4 the speed of regular MC
         // Modulus by 12000 to force permanent day.
-        time = (time + TIME_SCALE) % 12000;
-        for (GlowPlayer player : getRawPlayers()) {
-            player.getSession().send(new TimeMessage(time));
+        time = (time + 1) % 12000;
+        if (time % 12 == 0) {
+            // Only send the time every so often; clients are smart.
+            for (GlowPlayer player : getRawPlayers()) {
+                player.getSession().send(new TimeMessage(time));
+            }
         }
         
-        rainingTicks -= TIME_SCALE;
-        if (rainingTicks <= 0) {
+        if (--rainingTicks <= 0) {
             setStorm(!currentlyRaining);
         }
         
-        thunderingTicks -= TIME_SCALE;
-        if (thunderingTicks <= 0) {
+        if (--thunderingTicks <= 0) {
             setThundering(!currentlyThundering);
         }
         
@@ -215,9 +214,8 @@ public final class GlowWorld implements World {
             }
         }
         
-        saveTimer -= TIME_SCALE;
-        if (saveTimer <= 0) {
-            saveTimer = 20/TIME_SCALE * 60;
+        if (--saveTimer <= 0) {
+            saveTimer = 60 * 20;
             save();
         }
 	}

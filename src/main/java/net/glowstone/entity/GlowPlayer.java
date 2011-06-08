@@ -68,6 +68,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      * The chunks that the client knows about.
      */
 	private final Set<GlowChunk.Key> knownChunks = new HashSet<GlowChunk.Key>();
+    
+    /**
+     * The item the player has on their cursor.
+     */
+    private ItemStack itemOnCursor;
 
     /**
      * Creates a new player and adds it to the world.
@@ -83,7 +88,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
 		teleport(world.getSpawnLocation()); // take us to spawn position
         session.send(new StateChangeMessage((byte)(getWorld().hasStorm() ? 1 : 2))); // send the world's weather
         
-        ((GlowInventory) getInventory()).addViewer(this);
+        getInventory().addViewer(this);
     }
 
     /**
@@ -92,14 +97,13 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      */
     @Override
 	public void remove() {
-		((GlowInventory) getInventory()).removeViewer(this);
+		getInventory().removeViewer(this);
         super.remove();
 	}
 
 	@Override
 	public void pulse() {
 		super.pulse();
-        session.send(new PingMessage());
 
 		streamBlocks();
 
@@ -218,6 +222,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
 		return session;
 	}
     
+    // Inventory-related
+    
     /**
      * Inform the client that an item has changed.
      * @param inventory The GlowInventory in which a slot has changed.
@@ -232,6 +238,29 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
             session.send(new SetWindowSlotMessage(inventory.getId(), slot, item.getTypeId(), item.getAmount(), item.getDurability()));
         }
     }
+    
+    /**
+     * Get the current item on the player's cursor, for inventory screen purposes.
+     * @return The ItemStack the player is holding.
+     */
+    public ItemStack getItemOnCursor() {
+        return itemOnCursor;
+    }
+    
+    /**
+     * Set the item on the player's cursor, for inventory screen purposes.
+     * @param item The ItemStack to set the cursor to.
+     */
+    public void setItemOnCursor(ItemStack item) {
+        itemOnCursor = item;
+        if (item == null) {
+            session.send(new SetWindowSlotMessage(-1, -1));
+        } else {
+            session.send(new SetWindowSlotMessage(-1, -1, item.getTypeId(), item.getAmount(), item.getDurability()));
+        }
+    }
+    
+    // More implementation
 
     public boolean isOnline() {
         return true;

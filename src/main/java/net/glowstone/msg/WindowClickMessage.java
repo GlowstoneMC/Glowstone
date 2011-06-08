@@ -32,6 +32,10 @@ public final class WindowClickMessage extends Message {
 	public boolean isRightClick() {
 		return rightClick;
 	}
+    
+    public boolean isShift() {
+        return shift;
+    }
 
 	public int getTransaction() {
 		return transaction;

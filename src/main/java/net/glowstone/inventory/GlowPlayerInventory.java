@@ -8,13 +8,18 @@ import org.bukkit.inventory.*;
  */
 public class GlowPlayerInventory extends GlowInventory implements PlayerInventory {
     
-    private ItemStack[] armor = new ItemStack[4];
+    public static int HELMET_SLOT = 36;
+    public static int CHESTPLATE_SLOT = 37;
+    public static int LEGGINGS_SLOT = 38;
+    public static int BOOTS_SLOT = 39;
+    
     private int heldSlot = 0;
 
     public GlowPlayerInventory() {
         // all player inventories are ID 0
-        // 36 = 4 rows of 9 = complete player inventory
-        super((byte) 0, 36);
+        // 36 = 4 rows of 9
+        // + 4 = armor, completed inventory
+        super((byte) 0, 40);
     }
 
     /**
@@ -39,6 +44,10 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     public ItemStack[] getArmorContents() {
+        ItemStack[] armor = new ItemStack[4];
+        for (int i = 0; i < 4; ++i) {
+            armor[i] = getItem(HELMET_SLOT + i);
+        }
         return armor;
     }
 
@@ -46,39 +55,41 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         if (items.length != 4) {
             throw new IllegalArgumentException("Length of armor must be 4");
         }
-        armor = items;
+        for (int i = 0; i < 4; ++i) {
+            setItem(HELMET_SLOT + i, items[i]);
+        }
     }
 
     public ItemStack getHelmet() {
-        return armor[0];
+        return getItem(HELMET_SLOT);
     }
 
     public ItemStack getChestplate() {
-        return armor[1];
+        return getItem(CHESTPLATE_SLOT);
     }
 
     public ItemStack getLeggings() {
-        return armor[2];
+        return getItem(LEGGINGS_SLOT);
     }
 
     public ItemStack getBoots() {
-        return armor[3];
+        return getItem(BOOTS_SLOT);
     }
 
     public void setHelmet(ItemStack helmet) {
-        armor[0] = helmet;
+        setItem(HELMET_SLOT, helmet);
     }
 
     public void setChestplate(ItemStack chestplate) {
-        armor[1] = chestplate;
+        setItem(CHESTPLATE_SLOT, chestplate);
     }
 
     public void setLeggings(ItemStack leggings) {
-        armor[2] = leggings;
+        setItem(LEGGINGS_SLOT, leggings);
     }
 
     public void setBoots(ItemStack boots) {
-        armor[3] = boots;
+        setItem(BOOTS_SLOT, boots);
     }
 
     public ItemStack getItemInHand() {
