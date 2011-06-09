@@ -393,4 +393,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         return getServer().getOpsList().contains(getName());
     }
 
+    public boolean sendChunkChange(Location loc, int sx, int sy, int sz, byte[] data) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

@@ -515,6 +515,39 @@ public final class GlowServer implements Server {
         if (world != null) worlds.add(world);
         return world;
     }
+
+    /**
+     * Unloads a world with the given name.
+     *
+     * @param name Name of the world to unload
+     * @param save Whether to save the chunks before unloading.
+     * @return Whether the action was Successful
+     */
+    public boolean unloadWorld(String name, boolean save) {
+        if (getWorld(name) == null) return false;
+        return unloadWorld(getWorld(name), save);
+    }
+
+    /**
+     * Unloads the given world.
+     *
+     * @param world The world to unload
+     * @param save Whether to save the chunks before unloading.
+     * @return Whether the action was Successful
+     */
+    public boolean unloadWorld(World world, boolean save) {
+        if (save) {
+            world.save();
+        }
+        if (!(world instanceof GlowWorld)) {
+            return false;
+        }
+        if (worlds.contains((GlowWorld) world)) {
+            worlds.remove((GlowWorld) world);
+            return true;
+        }
+        return false;
+    }
     
     /**
      * Returns the primary logger associated with this server instance
