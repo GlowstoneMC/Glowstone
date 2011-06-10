@@ -40,17 +40,13 @@ local Maven repository.
 Running
 -------
 
-Running Glowstone is somewhat complicated at present, since the Bukkit jar is
-not yet shaded into Glowstone's jar and must be included in the classpath.
-Here's a quick example of the command line NetBeans uses to execute Glowstone:
+Running Glowstone is simple because all dependencies, including Bukkit, are
+shaded into the output jar at compile time thanks to a nifty Maven plugin.
+Simply execute `java -jar glowstone-0.0.1-SNAPSHOT.jar` along with whatever
+memory-related options to java you desire, and the server should start.
 
-    cd D:\projects\Bukkit\Glowstone; "JAVA_HOME=C:\\Program Files\\Java\\jdk1.6.0_24" 
-    D:\\tools\\apache-ant\\apache-maven\\bin\\mvn.bat -Dexec.classpathScope=runtime
-    -Dexec.workingdir=target  "-Dexec.args=-classpath %classpath net.glowstone.GlowServer"
-    "-Dexec.executable=C:\\Program Files\\Java\\jdk1.6.0_24\\bin\\java.exe"
-    process-classes org.codehaus.mojo:exec-maven-plugin:1.2:exec
-
-I will be sorting out issues with this step of the process at a later date.
+A proper console is coming at a later date - for now, use Ctrl-C to stop the
+server and enter commands in-game.
 
 Documentation
 -------------
