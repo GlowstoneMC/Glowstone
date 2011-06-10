@@ -8,10 +8,12 @@ import java.util.logging.Level;
 
 import org.bukkit.Achievement;
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowWorld;
@@ -23,6 +25,7 @@ import net.glowstone.msg.ChatMessage;
 import net.glowstone.msg.DestroyEntityMessage;
 import net.glowstone.msg.LoadChunkMessage;
 import net.glowstone.msg.Message;
+import net.glowstone.msg.PlayEffectMessage;
 import net.glowstone.msg.PlayNoteMessage;
 import net.glowstone.msg.PositionRotationMessage;
 import net.glowstone.msg.RespawnMessage;
@@ -30,7 +33,6 @@ import net.glowstone.msg.SetWindowSlotMessage;
 import net.glowstone.msg.SpawnPositionMessage;
 import net.glowstone.msg.StateChangeMessage;
 import net.glowstone.net.Session;
-import org.bukkit.inventory.ItemStack;
 
 /**
  * Represents an in-game player.
@@ -391,6 +393,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
 
     public boolean isOp() {
         return getServer().getOpsList().contains(getName());
+    }
+
+    public void playEffect(Location loc, Effect effect, int data) {
+        getSession().send(new PlayEffectMessage(effect.getId(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), data));
     }
 
     public boolean sendChunkChange(Location loc, int sx, int sy, int sz, byte[] data) {

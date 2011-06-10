@@ -8,6 +8,7 @@ import java.util.Random;
 
 import org.bukkit.BlockChangeDelegate;
 import org.bukkit.Chunk;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.TreeType;
 import org.bukkit.World;
@@ -590,6 +591,28 @@ public final class GlowWorld implements World {
 
     public void setThunderDuration(int duration) {
         thunderingTicks = duration;
+    }
+    
+    // to be sorted
+
+    public boolean createExplosion(double x, double y, double z, float power) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean createExplosion(Location loc, float power) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void playEffect(Location location, Effect effect, int data) {
+        playEffect(location, effect, data, 64);
+    }
+
+    public void playEffect(Location location, Effect effect, int data, int radius) {
+        for (Player player : getPlayers()) {
+            if (player.getLocation().distance(location) <= radius) {
+                player.playEffect(location, effect, data);
+            }
+        }
     }
 
 }

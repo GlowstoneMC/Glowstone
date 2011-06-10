@@ -70,6 +70,7 @@ public final class CodecLookupService {
 			/* 0x35 */ bind(BlockChangeCodec.class);
 			/* 0x36 */ bind(PlayNoteCodec.class);
 			/* 0x3C */ bind(ExplosionCodec.class);
+            /* 0x3D */ bind(PlayEffectCodec.class);
             /* 0x46 */ bind(StateChangeCodec.class);
 			/* 0x64 */ bind(OpenWindowCodec.class);
 			/* 0x65 */ bind(CloseWindowCodec.class);
