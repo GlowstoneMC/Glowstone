@@ -5,7 +5,13 @@
 	<artifactId>glowstone</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Glowstone</name>
-	<url>http://github.com/SpaceManiac/Glowstone</url>
+	<url>https://github.com/SpaceManiac/Glowstone</url>
+    
+    <scm>
+        <connection>scm:git:git://github.com/SpaceManiac/Glowstone.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/SpaceManiac/Glowstone.git</developerConnection>
+        <url>https://github.com/SpaceManiac/Glowstone</url>
+    </scm>
 
 	<repositories>
 		<repository>
@@ -18,6 +24,13 @@
 			</snapshots>
 		</repository>
 	</repositories>
+    
+    <pluginRepositories>
+        <pluginRepository>
+            <id>bukkit-plugins</id>
+            <url>http://repo.bukkit.org/artifactory/plugins-release</url>
+        </pluginRepository>
+    </pluginRepositories>
 	
 	<dependencies>
 		<dependency>
@@ -37,16 +50,14 @@
 	</dependencies>
 	
 	<build>
-        <!-- Generates a ready-to-use jar. Based on CraftBukkit's pom.xml. -->
         <defaultGoal>clean install</defaultGoal>
         <plugins>
-            <!-- Disabled until I get ahold of the plugin and figure out how CB does their tagging.
             <plugin>
                 <groupId>com.lukegb.mojo</groupId>
                 <artifactId>gitdescribe-maven-plugin</artifactId>
                 <version>1.3</version>
                 <configuration>
-                    <outputPrefix>git-Glow-</outputPrefix>
+                    <outputPrefix>git-Glowstone-</outputPrefix>
                     <outputPostfix></outputPostfix>
                 </configuration>
                 <executions>
@@ -58,7 +69,6 @@
                     </execution>
                 </executions>
             </plugin>
-            -->
             
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -69,7 +79,7 @@
                         <manifestEntries>
                             <Main-Class>net.glowstone.GlowServer</Main-Class>
                             <Implementation-Title>Glowstone</Implementation-Title>
-                            <Implementation-Version>unknown</Implementation-Version>
+                            <Implementation-Version>${describe}</Implementation-Version>
                             <Implementation-Vendor>SpaceManiac</Implementation-Vendor>
                             <Specification-Title>Bukkit</Specification-Title>
                             <Specification-Version>${api.version}</Specification-Version>

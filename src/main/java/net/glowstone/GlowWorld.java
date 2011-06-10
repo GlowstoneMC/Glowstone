@@ -2,9 +2,11 @@ package net.glowstone;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
 
 import org.bukkit.BlockChangeDelegate;
 import org.bukkit.Chunk;
@@ -141,14 +143,22 @@ public final class GlowWorld implements World {
         int centerX = (spawnLocation == null) ? 0 : spawnLocation.getBlockX() >> 4;
         int centerZ = (spawnLocation == null) ? 0 : spawnLocation.getBlockZ() >> 4;
         
+        GlowServer.logger.log(Level.INFO, "Preparing spawn for {0}", name);
+        long loadTime = new Date().getTime();
+        
         int radius = 4 * GlowChunk.VISIBLE_RADIUS / 3;
+        
         for (int x = centerX - radius; x <= centerX + radius; ++x) {
-            int progress = 100 * (x - centerX + radius) / (2 * radius);
-            GlowServer.logger.info("Preparing spawn for " + name + ": " + progress + "%");
             for (int z = centerZ - radius; z <= centerZ + radius; ++z) {
                 chunks.getChunk(x, z);
+            
+                if (new Date().getTime() >= loadTime + 1000) {
+                    int progress = 100 * (x - centerX + radius) / (2 * radius);
+                    GlowServer.logger.log(Level.INFO, "Preparing spawn for {0}: {1}%", new Object[]{name, progress});
+                }
             }
         }
+        GlowServer.logger.log(Level.INFO, "Preparing spawn for {0}: done", name);
         
         if (spawnLocation == null) {
             spawnLocation = new Location(this, 0, 128, 0);

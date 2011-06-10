@@ -141,7 +141,7 @@ public final class GlowServer implements Server {
 	 * Creates a new server.
 	 */
 	public GlowServer() {
-		logger.info("Starting Glowstone...");
+		logger.log(Level.INFO, "This server is running {0} version {1}", new Object[]{getName(), getVersion()});
 		init();
 	}
 
@@ -174,7 +174,6 @@ public final class GlowServer implements Server {
 	 */
 	public void start() {
         reload();
-        
 		logger.info("Ready for connections.");
 	}
 
@@ -294,7 +293,7 @@ public final class GlowServer implements Server {
      * @return version of this server implementation
      */
     public String getVersion() {
-        return "git-Glowstone-unknown";
+        return getClass().getPackage().getImplementationVersion();
     }
     
     /**
