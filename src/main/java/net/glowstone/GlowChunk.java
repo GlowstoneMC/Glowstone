@@ -351,4 +351,8 @@ public final class GlowChunk implements Chunk {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public ChunkSnapshot getChunkSnapshot(boolean includeMaxblocky, boolean includeBiome, boolean includeBiomeTempRain) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

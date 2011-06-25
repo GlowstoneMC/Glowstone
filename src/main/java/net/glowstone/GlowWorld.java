@@ -10,6 +10,7 @@ import java.util.logging.Level;
 
 import org.bukkit.BlockChangeDelegate;
 import org.bukkit.Chunk;
+import org.bukkit.ChunkSnapshot;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.TreeType;
@@ -623,6 +624,34 @@ public final class GlowWorld implements World {
                 player.playEffect(location, effect, data);
             }
         }
+    }
+
+    public boolean createExplosion(double x, double y, double z, float power, boolean setFire) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean createExplosion(Location loc, float power, boolean setFire) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public <T extends Entity> T spawn(Location location, Class<T> clazz) throws IllegalArgumentException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public ChunkSnapshot getEmptyChunkSnapshot(int x, int z, boolean includeBiome, boolean includeBiomeTempRain) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setSpawnFlags(boolean allowMonsters, boolean allowAnimals) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean getAllowAnimals() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean getAllowMonsters() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

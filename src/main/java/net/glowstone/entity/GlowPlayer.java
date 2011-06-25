@@ -33,6 +33,8 @@ import net.glowstone.msg.SetWindowSlotMessage;
 import net.glowstone.msg.SpawnPositionMessage;
 import net.glowstone.msg.StateChangeMessage;
 import net.glowstone.net.Session;
+import org.bukkit.Instrument;
+import org.bukkit.Note;
 
 /**
  * Represents an in-game player.
@@ -400,6 +402,70 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
 
     public boolean sendChunkChange(Location loc, int sx, int sy, int sz, byte[] data) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /**
+     * Play a note for a player at a location. This requires a note block
+     * at the particular location (as far as the client is concerned). This
+     * will not work without a note block. This will not work with cake.
+     *
+     * @param loc
+     * @param instrument
+     * @param note
+     */
+    public void playNote(Location loc, Instrument instrument, Note note) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    /**
+     * Sets the current time on the player's client. When relative is true the player's time
+     * will be kept synchronized to its world time with the specified offset.
+     *
+     * When using non relative time the player's time will stay fixed at the specified time parameter. It's up to
+     * the caller to continue updating the player's time. To restore player time to normal use resetPlayerTime().
+     *
+     * @param time The current player's perceived time or the player's time offset from the server time.
+     * @param relative When true the player time is kept relative to its world time.
+     */
+    public void setPlayerTime(long time, boolean relative) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /**
+     * Returns the player's current timestamp.
+     *
+     * @return
+     */
+    public long getPlayerTime() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /**
+     * Returns the player's current time offset relative to server time, or the current player's fixed time
+     * if the player's time is absolute.
+     *
+     * @return
+     */
+    public long getPlayerTimeOffset() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /**
+     * Returns true if the player's time is relative to the server time, otherwise the player's time is absolute and
+     * will not change its current time unless done so with setPlayerTime().
+     *
+     * @return true if the player's time is relative to the server time.
+     */
+    public boolean isPlayerTimeRelative() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /**
+     * Restores the normal condition where the player's time is synchronized with the server time.
+     * Equivalent to calling setPlayerTime(0, true).
+     */
+    public void resetPlayerTime() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

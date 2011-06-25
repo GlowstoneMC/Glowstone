@@ -7,6 +7,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
@@ -625,6 +626,22 @@ public final class GlowServer implements Server {
      * @return True to indicate that the recipe was added.
      */
     public boolean addRecipe(Recipe recipe) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Map<String, String[]> getCommandAliases() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public int getSpawnRadius() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setSpawnRadius(int value) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean getOnlineMode() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
