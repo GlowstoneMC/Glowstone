@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>net.glowstone</groupId>
-	<artifactId>glowstone</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>Glowstone</name>
-	<url>https://github.com/SpaceManiac/Glowstone</url>
+    
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.glowstone</groupId>
+    <artifactId>glowstone</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>Glowstone</name>
+    <url>https://github.com/SpaceManiac/Glowstone</url>
     
     <scm>
         <connection>scm:git:git://github.com/SpaceManiac/Glowstone.git</connection>
@@ -13,23 +13,23 @@
         <url>https://github.com/SpaceManiac/Glowstone</url>
     </scm>
 
-	<repositories>
+    <repositories>
         <repository>
             <id>bukkit</id>
             <name>Bukkit Artifactory</name>
             <layout>default</layout>
             <url>http://repo.bukkit.org/artifactory/repo/</url>
         </repository>
-		<repository>
-			<id>jboss</id>
-			<name>JBoss Nexus</name>
-			<layout>default</layout>
-			<url>https://repository.jboss.org/nexus/content/groups/public/</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
+        <repository>
+            <id>jboss</id>
+            <name>JBoss Nexus</name>
+            <layout>default</layout>
+            <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
     
     <pluginRepositories>
         <pluginRepository>
@@ -37,25 +37,25 @@
             <url>http://repo.bukkit.org/artifactory/plugins-release</url>
         </pluginRepository>
     </pluginRepositories>
-	
-	<dependencies>
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>bukkit</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.netty</groupId>
-			<artifactId>netty</artifactId>
-			<version>3.2.4.Final</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
-	</dependencies>
-	
-	<build>
+    
+    <dependencies>
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.netty</groupId>
+            <artifactId>netty</artifactId>
+            <version>3.2.4.Final</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+    
+    <build>
         <defaultGoal>clean install</defaultGoal>
         <plugins>
             <plugin>
@@ -125,16 +125,16 @@
                 </executions>
             </plugin>
             
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.0.2</version>
-				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-	
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.0.2</version>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    
 </project>
