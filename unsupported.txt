@@ -58,7 +58,6 @@ entity.GlowPlayer: public boolean isPlayerTimeRelative() {
 entity.GlowPlayer: public void resetPlayerTime() {
 GlowChunk: public Entity[] getEntities() {
 GlowChunk: public BlockState[] getTileEntities() {
-GlowChunk: public ChunkSnapshot getChunkSnapshot() {
 GlowChunk: public ChunkSnapshot getChunkSnapshot(boolean includeMaxblocky, boolean includeBiome, boolean includeBiomeTempRain) {
 GlowServer: public void configureDbConfig(com.avaje.ebean.config.ServerConfig config) {
 GlowServer: public boolean addRecipe(Recipe recipe) {
@@ -66,29 +65,15 @@ GlowServer: public Map<String, String[]> getCommandAliases() {
 GlowServer: public int getSpawnRadius() {
 GlowServer: public void setSpawnRadius(int value) {
 GlowServer: public boolean getOnlineMode() {
+GlowWorld: public boolean generateTree(Location location, TreeType type) {
+GlowWorld: public boolean generateTree(Location loc, TreeType type, BlockChangeDelegate delegate) {
 GlowWorld: public boolean loadChunk(int x, int z, boolean generate) {
 GlowWorld: public boolean unloadChunk(int x, int z, boolean save, boolean safe) {
     ("unloadChunk does not yet support unsafe unloading.");
 GlowWorld: public boolean unloadChunkRequest(int x, int z, boolean safe) {
-GlowWorld: public boolean generateTree(Location location, TreeType type) {
-GlowWorld: public boolean generateTree(Location loc, TreeType type, BlockChangeDelegate delegate) {
-GlowWorld: public Item dropItem(Location location, ItemStack item) {
-GlowWorld: public Item dropItemNaturally(Location location, ItemStack item) {
-GlowWorld: public Arrow spawnArrow(Location location, Vector velocity, float speed, float spread) {
-GlowWorld: public Minecart spawnMinecart(Location location) {
-GlowWorld: public StorageMinecart spawnStorageMinecart(Location loc) {
-GlowWorld: public PoweredMinecart spawnPoweredMinecart(Location loc) {
-GlowWorld: public Boat spawnBoat(Location loc) {
-GlowWorld: public LivingEntity spawnCreature(Location loc, CreatureType type) {
+GlowWorld: public <T extends Entity> T spawn(Location location, Class<T> clazz) throws IllegalArgumentException {
 GlowWorld: public LightningStrike strikeLightning(Location loc) {
 GlowWorld: public LightningStrike strikeLightningEffect(Location loc) {
-GlowWorld: public boolean createExplosion(double x, double y, double z, float power) {
-GlowWorld: public boolean createExplosion(Location loc, float power) {
-GlowWorld: public boolean createExplosion(double x, double y, double z, float power, boolean setFire) {
 GlowWorld: public boolean createExplosion(Location loc, float power, boolean setFire) {
-GlowWorld: public <T extends Entity> T spawn(Location location, Class<T> clazz) throws IllegalArgumentException {
 GlowWorld: public ChunkSnapshot getEmptyChunkSnapshot(int x, int z, boolean includeBiome, boolean includeBiomeTempRain) {
-GlowWorld: public void setSpawnFlags(boolean allowMonsters, boolean allowAnimals) {
-GlowWorld: public boolean getAllowAnimals() {
-GlowWorld: public boolean getAllowMonsters() {
 scheduler.GlowScheduler: public <T> Future<T> callSyncMethod(Plugin plugin, Callable<T> task) {

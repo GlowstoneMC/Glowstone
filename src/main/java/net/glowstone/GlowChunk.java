@@ -131,6 +131,17 @@ public final class GlowChunk implements Chunk {
             skyLight[i] = 15;
         }
 	}
+    
+    // ======== Basic stuff ========
+
+    /**
+     * Gets the world containing this chunk
+     *
+     * @return Parent World
+     */
+    public GlowWorld getWorld() {
+        return world;
+    }
 
 	/**
 	 * Gets the X coordinate of this chunk.
@@ -149,6 +160,45 @@ public final class GlowChunk implements Chunk {
 	}
     
     /**
+     * Gets a block from this chunk
+     *
+     * @param x 0-15
+     * @param y 0-127
+     * @param z 0-15
+     * @return the Block
+     */
+    public GlowBlock getBlock(int x, int y, int z) {
+        return getWorld().getBlockAt(this.x << 4 | x, y, this.z << 4 | z);
+    }
+
+    public Entity[] getEntities() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public BlockState[] getTileEntities() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    /**
+     * Capture thread-safe read-only snapshot of chunk data
+     * @return ChunkSnapshot
+     */
+    public ChunkSnapshot getChunkSnapshot() {
+        return getChunkSnapshot(true, false, false);
+    }
+
+    /**
+     * Capture thread-safe read-only snapshot of chunk data
+     * @param includeMaxblocky - if true, snapshot includes per-coordinate maximum Y values
+     * @param includeBiome - if true, snapshot includes per-coordinate biome type
+     * @param includeBiomeTempRain - if true, snapshot includes per-coordinate raw biome temperature and rainfall
+     * @return ChunkSnapshot
+     */
+    public ChunkSnapshot getChunkSnapshot(boolean includeMaxblocky, boolean includeBiome, boolean includeBiomeTempRain) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    /**
      * Gets whether this chunk has been populated by special features.
      * @return Population status.
      */
@@ -163,6 +213,8 @@ public final class GlowChunk implements Chunk {
     public void setPopulated(boolean populated) {
         this.populated = populated;
     }
+    
+    // ======== Data access ========
 
 	/**
 	 * Gets the type of a block within this chunk.
@@ -274,6 +326,8 @@ public final class GlowChunk implements Chunk {
 
 		this.blockLight[coordToIndex(x, z, y)] = (byte) blockLight;
 	}
+    
+    // ======== Helper functions ========
 
 	/**
 	 * Creates a new {@link Message} which can be sent to a client to stream
@@ -330,29 +384,5 @@ public final class GlowChunk implements Chunk {
 
 		return dest;
 	}
-
-    public GlowWorld getWorld() {
-        return world;
-    }
-
-    public GlowBlock getBlock(int x, int y, int z) {
-        return getWorld().getBlockAt(this.x << 4 | x, y, this.z << 4 | z);
-    }
-
-    public Entity[] getEntities() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public BlockState[] getTileEntities() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public ChunkSnapshot getChunkSnapshot() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public ChunkSnapshot getChunkSnapshot(boolean includeMaxblocky, boolean includeBiome, boolean includeBiomeTempRain) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
 }

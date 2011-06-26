@@ -151,7 +151,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
                 if (!knownChunks.contains(key)) {
                     knownChunks.add(key);
                     session.send(new LoadChunkMessage(x, z, true));
-                    session.send(world.getChunkManager().getChunk(x, z).toMessage());
+                    session.send(world.getChunkAt(x, z).toMessage());
                 }
                 previousChunks.remove(key);
             }

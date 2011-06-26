@@ -19,6 +19,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
@@ -40,8 +41,6 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.msg.LoadChunkMessage;
 import net.glowstone.msg.StateChangeMessage;
 import net.glowstone.msg.TimeMessage;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Entity;
 
 /**
  * A class which represents the in-game world.
@@ -63,6 +62,11 @@ public final class GlowWorld implements World {
 	 * The entity manager.
 	 */
 	private final EntityManager entities = new EntityManager();
+    
+    /**
+     * This world's Random instance.
+     */
+    private final Random random = new Random();
     
     /**
      * A map between locations and cached Block objects.
@@ -93,6 +97,16 @@ public final class GlowWorld implements World {
      * Whether PvP is allowed in this world.
      */
     private boolean pvpAllowed = true;
+    
+    /**
+     * Whether animals can spawn in this world.
+     */
+    private boolean spawnAnimals = true;
+    
+    /**
+     * Whether monsters can spawn in this world.
+     */
+    private boolean spawnMonsters = true;
     
     /**
      * Whether it is currently raining/snowing on this world.
@@ -139,7 +153,7 @@ public final class GlowWorld implements World {
 		chunks = new ChunkManager(this, service, generator);
         
         populators = generator.getDefaultPopulators(this);
-        spawnLocation = generator.getFixedSpawnLocation(this, new Random());
+        spawnLocation = generator.getFixedSpawnLocation(this, random);
         
         int centerX = (spawnLocation == null) ? 0 : spawnLocation.getBlockX() >> 4;
         int centerZ = (spawnLocation == null) ? 0 : spawnLocation.getBlockZ() >> 4;
@@ -167,8 +181,8 @@ public final class GlowWorld implements World {
             if (!generator.canSpawn(this, spawnLocation.getBlockX(), spawnLocation.getBlockZ())) {
                 // 10 tries only to prevent a return false; bomb
                 for (int tries = 0; tries < 10 && !generator.canSpawn(this, spawnLocation.getBlockX(), spawnLocation.getBlockZ()); ++tries) {
-                    spawnLocation.setX(spawnLocation.getX() + Math.random() * 128 - 64);
-                    spawnLocation.setZ(spawnLocation.getZ() + Math.random() * 128 - 64);
+                    spawnLocation.setX(spawnLocation.getX() + random.nextDouble() * 128 - 64);
+                    spawnLocation.setZ(spawnLocation.getZ() + random.nextDouble() * 128 - 64);
                 }
             }
             
@@ -213,16 +227,16 @@ public final class GlowWorld implements World {
         }
         
         if (currentlyRaining && currentlyThundering) {
-            if (Math.random() < .01) {
+            if (random.nextDouble() < .01) {
                 GlowChunk[] chunkList = chunks.getLoadedChunks();
-                GlowChunk chunk = chunkList[new Random().nextInt(chunkList.length)];
+                GlowChunk chunk = chunkList[random.nextInt(chunkList.length)];
                 
-                int x = (chunk.getX() << 4) + (int)(Math.random() * 16);
-                int z = (chunk.getZ() << 4) + (int)(Math.random() * 16);
+                int x = (chunk.getX() << 4) + (int)(random.nextDouble() * 16);
+                int z = (chunk.getZ() << 4) + (int)(random.nextDouble() * 16);
                 int y = getHighestBlockYAt(x, z);
                 
+                // TODO: lightning.
                 // strikeLightning(new Location(this, x, z, y));
-                broadcastMessage(ChatColor.GREEN + "Pretend lightning struck at " + x + "," + y + "," + z);
             }
         }
         
@@ -230,14 +244,6 @@ public final class GlowWorld implements World {
             saveTimer = 60 * 20;
             save();
         }
-	}
-
-	/**
-	 * Gets the chunk manager.
-	 * @return The chunk manager.
-	 */
-	public ChunkManager getChunkManager() {
-		return chunks;
 	}
 
 	/**
@@ -250,15 +256,6 @@ public final class GlowWorld implements World {
 
 	public Collection<GlowPlayer> getRawPlayers() {
         return entities.getAll(GlowPlayer.class);
-	}
-
-	/**
-	 * Broadcasts a message to every player.
-	 * @param text The message text.
-	 */
-	public void broadcastMessage(String text) {
-		for (Player player : getPlayers())
-			player.sendMessage(text);
 	}
 
     // GlowEntity lists
@@ -290,7 +287,7 @@ public final class GlowWorld implements World {
         return result;
     }
 
-	// Spawn location
+	// Various malleable world properties
 
 	public Location getSpawnLocation() {
 		return spawnLocation;
@@ -300,8 +297,6 @@ public final class GlowWorld implements World {
         spawnLocation = new Location(this, x, y, z);
         return true;
     }
-    
-    // Pvp on/off
 
     public boolean getPVP() {
         return pvpAllowed;
@@ -311,12 +306,17 @@ public final class GlowWorld implements World {
         pvpAllowed = pvp;
     }
 
-    // force-save
+    public void setSpawnFlags(boolean allowMonsters, boolean allowAnimals) {
+        spawnMonsters = allowMonsters;
+        spawnAnimals = allowAnimals;
+    }
 
-    public void save() {
-        for (GlowChunk chunk : chunks.getLoadedChunks()) {
-            chunks.forceSave(chunk.getX(), chunk.getZ());
-        }
+    public boolean getAllowAnimals() {
+        return spawnAnimals;
+    }
+
+    public boolean getAllowMonsters() {
+        return spawnMonsters;
     }
 
     // various fixed world properties
@@ -336,8 +336,16 @@ public final class GlowWorld implements World {
     public long getId() {
         return (getSeed() + "_" + getName()).hashCode();
     }
+
+    // force-save
+
+    public void save() {
+        for (GlowChunk chunk : chunks.getLoadedChunks()) {
+            chunks.forceSave(chunk.getX(), chunk.getZ());
+        }
+    }
     
-    // generator-related stuff
+    // map generation
 
     public ChunkGenerator getGenerator() {
         return chunks.getGenerator();
@@ -345,6 +353,14 @@ public final class GlowWorld implements World {
 
     public List<BlockPopulator> getPopulators() {
         return populators;
+    }
+
+    public boolean generateTree(Location location, TreeType type) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean generateTree(Location loc, TreeType type, BlockChangeDelegate delegate) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     // get block, chunk, id, highest methods with coords
@@ -479,49 +495,97 @@ public final class GlowWorld implements World {
         
         return result;
     }
-    
-    // Map gen related things
 
-    public boolean generateTree(Location location, TreeType type) {
+    // entity spawning
+
+    public <T extends Entity> T spawn(Location location, Class<T> clazz) throws IllegalArgumentException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-    public boolean generateTree(Location loc, TreeType type, BlockChangeDelegate delegate) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    // GlowEntity spawning
 
     public Item dropItem(Location location, ItemStack item) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // TODO: maybe spawn special due to item-ness?
+        Item itemEntity = spawn(location, Item.class);
+        itemEntity.setItemStack(item);
+        return itemEntity;
     }
 
     public Item dropItemNaturally(Location location, ItemStack item) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        double xs = random.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
+        double ys = random.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
+        double zs = random.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
+        location = location.clone().add(new Location(this, xs, ys, zs));
+        return dropItem(location, item);
     }
 
     public Arrow spawnArrow(Location location, Vector velocity, float speed, float spread) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Arrow arrow = spawn(location, Arrow.class);
+        
+        // Transformative magic
+        Vector randVec = new Vector(random.nextGaussian(), random.nextGaussian(), random.nextGaussian());
+        randVec.multiply(0.007499999832361937D * (double) spread);
+        
+        velocity.normalize();
+        velocity.add(randVec);
+        velocity.multiply(speed);
+        
+        // yaw = Math.atan2(x, z) * 180.0D / 3.1415927410125732D;
+        // pitch = Math.atan2(y, Math.sqrt(x * x + z * z)) * 180.0D / 3.1415927410125732D
+        
+        arrow.setVelocity(velocity);
+        return arrow;
     }
 
     public Minecart spawnMinecart(Location location) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return spawn(location, Minecart.class);
     }
 
-    public StorageMinecart spawnStorageMinecart(Location loc) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public StorageMinecart spawnStorageMinecart(Location location) {
+        return spawn(location, StorageMinecart.class);
     }
 
-    public PoweredMinecart spawnPoweredMinecart(Location loc) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public PoweredMinecart spawnPoweredMinecart(Location location) {
+        return spawn(location, PoweredMinecart.class);
     }
 
-    public Boat spawnBoat(Location loc) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Boat spawnBoat(Location location) {
+        return spawn(location, Boat.class);
     }
 
     public LivingEntity spawnCreature(Location loc, CreatureType type) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        switch (type) {
+            case CHICKEN:
+                return spawn(loc, org.bukkit.entity.Chicken.class);
+            case COW:
+                return spawn(loc, org.bukkit.entity.Cow.class);
+            case CREEPER:
+                return spawn(loc, org.bukkit.entity.Creeper.class);
+            case GHAST:
+                return spawn(loc, org.bukkit.entity.Ghast.class);
+            case GIANT:
+                return spawn(loc, org.bukkit.entity.Giant.class);
+            case MONSTER:
+                return spawn(loc, org.bukkit.entity.Monster.class);
+            case PIG:
+                return spawn(loc, org.bukkit.entity.Pig.class);
+            case PIG_ZOMBIE:
+                return spawn(loc, org.bukkit.entity.PigZombie.class);
+            case SHEEP:
+                return spawn(loc, org.bukkit.entity.Sheep.class);
+            case SKELETON:
+                return spawn(loc, org.bukkit.entity.Skeleton.class);
+            case SLIME:
+                return spawn(loc, org.bukkit.entity.Slime.class);
+            case SPIDER:
+                return spawn(loc, org.bukkit.entity.Spider.class);
+            case SQUID:
+                return spawn(loc, org.bukkit.entity.Squid.class);
+            case ZOMBIE:
+                return spawn(loc, org.bukkit.entity.Zombie.class);
+            case WOLF:
+                return spawn(loc, org.bukkit.entity.Wolf.class);
+            default:
+                throw new IllegalArgumentException();
+        }
     }
 
     public LightningStrike strikeLightning(Location loc) {
@@ -563,9 +627,9 @@ public final class GlowWorld implements World {
         
         // Numbers borrowed from CraftBukkit.
         if (currentlyRaining) {
-            setWeatherDuration(new Random().nextInt(12000) + 12000);
+            setWeatherDuration(random.nextInt(12000) + 12000);
         } else {
-            setWeatherDuration(new Random().nextInt(168000) + 12000);
+            setWeatherDuration(random.nextInt(168000) + 12000);
         }
         
         for (GlowPlayer player : getRawPlayers()) {
@@ -590,9 +654,9 @@ public final class GlowWorld implements World {
         
         // Numbers borrowed from CraftBukkit.
         if (currentlyThundering) {
-            setThunderDuration(new Random().nextInt(12000) + 3600);
+            setThunderDuration(random.nextInt(12000) + 3600);
         } else {
-            setThunderDuration(new Random().nextInt(168000) + 12000);
+            setThunderDuration(random.nextInt(168000) + 12000);
         }
     }
 
@@ -604,15 +668,25 @@ public final class GlowWorld implements World {
         thunderingTicks = duration;
     }
     
-    // to be sorted
+    // explosions
 
-    public boolean createExplosion(double x, double y, double z, float power) {
+    public boolean createExplosion(Location loc, float power, boolean setFire) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public boolean createExplosion(Location loc, float power) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return createExplosion(loc, power, false);
     }
+
+    public boolean createExplosion(double x, double y, double z, float power, boolean setFire) {
+        return createExplosion(new Location(this, x, y, z), power, setFire);
+    }
+
+    public boolean createExplosion(double x, double y, double z, float power) {
+        return createExplosion(new Location(this, x, y, z), power, false);
+    }
+    
+    // effects
 
     public void playEffect(Location location, Effect effect, int data) {
         playEffect(location, effect, data, 64);
@@ -625,32 +699,10 @@ public final class GlowWorld implements World {
             }
         }
     }
-
-    public boolean createExplosion(double x, double y, double z, float power, boolean setFire) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public boolean createExplosion(Location loc, float power, boolean setFire) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public <T extends Entity> T spawn(Location location, Class<T> clazz) throws IllegalArgumentException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+    
+    // misc
 
     public ChunkSnapshot getEmptyChunkSnapshot(int x, int z, boolean includeBiome, boolean includeBiomeTempRain) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void setSpawnFlags(boolean allowMonsters, boolean allowAnimals) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public boolean getAllowAnimals() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public boolean getAllowMonsters() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
