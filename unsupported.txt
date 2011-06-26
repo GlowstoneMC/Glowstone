@@ -39,23 +39,12 @@ entity.GlowLivingEntity: public int getNoDamageTicks() {
 entity.GlowLivingEntity: public void setNoDamageTicks(int ticks) {
 entity.GlowPlayer: public boolean isSneaking() {
 entity.GlowPlayer: public void setSneaking(boolean sneak) {
+entity.GlowPlayer: public boolean isSleepingIgnored() {
+entity.GlowPlayer: public void setSleepingIgnored(boolean isSleeping) {
 entity.GlowPlayer: public void saveData() {
 entity.GlowPlayer: public void loadData() {
-entity.GlowPlayer: public void setSleepingIgnored(boolean isSleeping) {
-entity.GlowPlayer: public boolean isSleepingIgnored() {
-entity.GlowPlayer: public void updateInventory() {
-entity.GlowPlayer: public void awardAchievement(Achievement achievement) {
-entity.GlowPlayer: public void incrementStatistic(Statistic statistic) {
-entity.GlowPlayer: public void incrementStatistic(Statistic statistic, int amount) {
-entity.GlowPlayer: public void incrementStatistic(Statistic statistic, Material material) {
-entity.GlowPlayer: public void incrementStatistic(Statistic statistic, Material material, int amount) {
 entity.GlowPlayer: public boolean sendChunkChange(Location loc, int sx, int sy, int sz, byte[] data) {
-entity.GlowPlayer: public void playNote(Location loc, Instrument instrument, Note note) {
-entity.GlowPlayer: public void setPlayerTime(long time, boolean relative) {
-entity.GlowPlayer: public long getPlayerTime() {
-entity.GlowPlayer: public long getPlayerTimeOffset() {
-entity.GlowPlayer: public boolean isPlayerTimeRelative() {
-entity.GlowPlayer: public void resetPlayerTime() {
+entity.GlowPlayer: public void updateInventory() {
 GlowChunk: public Entity[] getEntities() {
 GlowChunk: public BlockState[] getTileEntities() {
 GlowChunk: public ChunkSnapshot getChunkSnapshot(boolean includeMaxblocky, boolean includeBiome, boolean includeBiomeTempRain) {

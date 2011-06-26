@@ -39,6 +39,7 @@ import net.glowstone.net.Session;
 import net.glowstone.net.SessionRegistry;
 import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.util.PlayerListFile;
+import org.bukkit.plugin.PluginLoadOrder;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.ChannelFactory;
@@ -152,8 +153,6 @@ public final class GlowServer implements Server {
 	private void init() {
         Bukkit.setServer(this);
         
-        createWorld(properties.getProperty("world-name", "world"), Environment.NORMAL);
-        
 		ChannelFactory factory = new NioServerSocketChannelFactory(executor, executor);
 		bootstrap.setFactory(factory);
 
@@ -174,9 +173,61 @@ public final class GlowServer implements Server {
 	 * Starts this server.
 	 */
 	public void start() {
+        loadPlugins();
+        enablePlugins(PluginLoadOrder.STARTUP);
+        createWorld(properties.getProperty("world-name", "world"), Environment.NORMAL);
+        enablePlugins(PluginLoadOrder.POSTWORLD);
+        
         reload();
 		logger.info("Ready for connections.");
 	}
+    
+    /**
+     * Loads all plugins, calling onLoad, &c.
+     */
+    private void loadPlugins() {
+        File folder = new File(properties.getProperty("plugin-folder", "plugins"));
+        folder.mkdirs();
+            
+        // clear plugins and prepare to load
+        pluginManager.clearPlugins();
+        pluginManager.registerInterface(JavaPluginLoader.class);
+        Plugin[] plugins = pluginManager.loadPlugins(folder);
+
+        // call onLoad methods
+        for (Plugin plugin : plugins) {
+            try {
+                plugin.onLoad();
+            } catch (Exception ex) {
+                logger.log(Level.SEVERE, "Error loading {0}: {1}", new Object[]{plugin.getDescription().getName(), ex.getMessage()});
+                ex.printStackTrace();
+            }
+        }
+    }
+    
+    /**
+     * 
+     * @param type The type of plugin to enable.
+     */
+    public void enablePlugins(PluginLoadOrder type) {
+        Plugin[] plugins = pluginManager.getPlugins();
+        for (Plugin plugin : plugins) {
+            if (!plugin.isEnabled() && plugin.getDescription().getLoad() == type) {
+                List<Command> pluginCommands = PluginCommandYamlParser.parse(plugin);
+
+                if (!pluginCommands.isEmpty()) {
+                    commandMap.registerAll(plugin.getDescription().getName(), pluginCommands);
+                }
+
+                try {
+                    pluginManager.enablePlugin(plugin);
+                } catch (Throwable ex) {
+                    logger.log(Level.SEVERE, "Error loading {0}", plugin.getDescription().getFullName());
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
 
     /**
      * Reloads the server, refreshing settings and plugin information
@@ -186,45 +237,18 @@ public final class GlowServer implements Server {
             properties.load(new FileInputStream(new File("server.properties")));
             opsList.load();
             
-            File folder = new File(properties.getProperty("plugin-folder", "plugins"));
-            folder.mkdirs();
-            
             // clear and reregister our commands
             commandMap.clearCommands();
             commandMap.register("glowstone", new net.glowstone.command.OpCommand(this));
             commandMap.register("glowstone", new net.glowstone.command.DeopCommand(this));
             commandMap.register("glowstone", new net.glowstone.command.ListCommand(this));
             
-            // clear plugins and prepare to load
-            pluginManager.clearPlugins();
-            pluginManager.registerInterface(JavaPluginLoader.class);
-            Plugin[] plugins = pluginManager.loadPlugins(folder);
+            // load plugins
+            loadPlugins();
+            enablePlugins(PluginLoadOrder.STARTUP);
+            enablePlugins(PluginLoadOrder.POSTWORLD);
             
-            // call onLoad methods
-            for (Plugin plugin : plugins) {
-                try {
-                    plugin.onLoad();
-                } catch (Exception ex) {
-                    logger.log(Level.SEVERE, "Error loading {0}: {1}", new Object[]{plugin.getDescription().getName(), ex.getMessage()});
-                    ex.printStackTrace();
-                }
-            }
-            
-            // register plugin commands
-            for (Plugin plugin : plugins) {
-                List<Command> commands = PluginCommandYamlParser.parse(plugin);
-                commandMap.registerAll(plugin.getDescription().getName(), commands);
-            }
-            
-            // enable plugins
-            for (Plugin plugin : plugins) {
-                try {
-                    pluginManager.enablePlugin(plugin);
-                } catch (Exception ex) {
-                    logger.log(Level.SEVERE, "Error enabling {0}: {1}", new Object[]{plugin.getDescription().getName(), ex.getMessage()});
-                    ex.printStackTrace();
-                }
-            }
+            // TODO: register aliases
         }
         catch (Exception ex) {
             logger.log(Level.SEVERE, "Uncaught error while reloading: {0}", ex.getMessage());
