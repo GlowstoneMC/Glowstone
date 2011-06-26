@@ -6,9 +6,9 @@ import net.glowstone.net.Session;
 
 public final class KickMessageHandler extends MessageHandler<KickMessage> {
 
-	@Override
-	public void handle(Session session, GlowPlayer player, KickMessage message) {
-		session.disconnect("Goodbye!");
-	}
+    @Override
+    public void handle(Session session, GlowPlayer player, KickMessage message) {
+        session.disconnect("Goodbye!");
+    }
 
 }

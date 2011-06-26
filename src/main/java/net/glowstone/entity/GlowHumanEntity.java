@@ -20,7 +20,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     /**
      * The name of this human.
      */
-	private final String name;
+    private final String name;
     
     /**
      * The inventory of this human.
@@ -42,20 +42,20 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
      * @param world The world.
      * @param name The human's name.
      */
-	public GlowHumanEntity(GlowServer server, GlowWorld world, String name) {
-		super(server, world);
+    public GlowHumanEntity(GlowServer server, GlowWorld world, String name) {
+        super(server, world);
         this.name = name;
-	}
+    }
 
     @Override
-	public Message createSpawnMessage() {
-		int x = Position.getIntX(location);
-		int y = Position.getIntY(location);
-		int z = Position.getIntZ(location);
-		int yaw = Position.getIntYaw(location);
-		int pitch = Position.getIntPitch(location);
-		return new SpawnPlayerMessage(id, name, x, y, z, yaw, pitch, 0);
-	}
+    public Message createSpawnMessage() {
+        int x = Position.getIntX(location);
+        int y = Position.getIntY(location);
+        int z = Position.getIntZ(location);
+        int yaw = Position.getIntYaw(location);
+        int pitch = Position.getIntPitch(location);
+        return new SpawnPlayerMessage(id, name, x, y, z, yaw, pitch, 0);
+    }
 
     public String getName() {
         return name;
@@ -81,8 +81,8 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         return sleepingTicks;
     }
     
-	@Override
-	public void pulse() {
+    @Override
+    public void pulse() {
         super.pulse();
         if (sleeping) {
             ++sleepingTicks;

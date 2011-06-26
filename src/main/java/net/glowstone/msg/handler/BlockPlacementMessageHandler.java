@@ -14,10 +14,10 @@ import net.glowstone.GlowWorld;
  */
 public final class BlockPlacementMessageHandler extends MessageHandler<BlockPlacementMessage> {
 
-	@Override
-	public void handle(Session session, GlowPlayer player, BlockPlacementMessage message) {
-		if (player == null)
-			return;
+    @Override
+    public void handle(Session session, GlowPlayer player, BlockPlacementMessage message) {
+        if (player == null)
+            return;
 
         GlowWorld world = player.getWorld();
 
@@ -51,6 +51,6 @@ public final class BlockPlacementMessageHandler extends MessageHandler<BlockPlac
                 }
             }
         }
-	}
+    }
 
 }

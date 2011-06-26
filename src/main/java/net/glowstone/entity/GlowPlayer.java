@@ -46,12 +46,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     /**
      * The normal height of a player's eyes above their feet.
      */
-	public static final double EYE_HEIGHT = 1.62D;
+    public static final double EYE_HEIGHT = 1.62D;
 
     /**
      * This player's session.
      */
-	private final Session session;
+    private final Session session;
     
     /**
      * This player's current time offset.
@@ -76,12 +76,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     /**
      * The entities that the client knows about.
      */
-	private Set<GlowEntity> knownEntities = new HashSet<GlowEntity>();
+    private Set<GlowEntity> knownEntities = new HashSet<GlowEntity>();
 
     /**
      * The chunks that the client knows about.
      */
-	private final Set<GlowChunk.Key> knownChunks = new HashSet<GlowChunk.Key>();
+    private final Set<GlowChunk.Key> knownChunks = new HashSet<GlowChunk.Key>();
     
     /**
      * The item the player has on their cursor.
@@ -93,13 +93,13 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      * @param session The player's session.
      * @param name The player's name.
      */
-	public GlowPlayer(Session session, String name) {
-		super(session.getServer(), (GlowWorld) session.getServer().getWorlds().get(0), name);
-		this.session = session;
+    public GlowPlayer(Session session, String name) {
+        super(session.getServer(), (GlowWorld) session.getServer().getWorlds().get(0), name);
+        this.session = session;
 
-		streamBlocks(); // stream the initial set of blocks
+        streamBlocks(); // stream the initial set of blocks
         setCompassTarget(world.getSpawnLocation()); // set our compass target
-		teleport(world.getSpawnLocation()); // take us to spawn position
+        teleport(world.getSpawnLocation()); // take us to spawn position
         session.send(new StateChangeMessage((byte)(getWorld().hasStorm() ? 1 : 2))); // send the world's weather
         
         getInventory().addViewer(this);
@@ -112,51 +112,51 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      * being active.
      */
     @Override
-	public void remove() {
-		getInventory().removeViewer(this);
+    public void remove() {
+        getInventory().removeViewer(this);
         super.remove();
-	}
+    }
 
-	@Override
-	public void pulse() {
-		super.pulse();
+    @Override
+    public void pulse() {
+        super.pulse();
 
-		streamBlocks();
+        streamBlocks();
 
-		for (Iterator<GlowEntity> it = knownEntities.iterator(); it.hasNext(); ) {
-			GlowEntity entity = it.next();
-			boolean withinDistance = !entity.isDead() && isWithinDistance(entity);
+        for (Iterator<GlowEntity> it = knownEntities.iterator(); it.hasNext(); ) {
+            GlowEntity entity = it.next();
+            boolean withinDistance = !entity.isDead() && isWithinDistance(entity);
 
-			if (withinDistance) {
-				Message msg = entity.createUpdateMessage();
-				if (msg != null)
-					session.send(msg);
-			} else {
-				session.send(new DestroyEntityMessage(entity.getEntityId()));
-				it.remove();
-			}
-		}
+            if (withinDistance) {
+                Message msg = entity.createUpdateMessage();
+                if (msg != null)
+                    session.send(msg);
+            } else {
+                session.send(new DestroyEntityMessage(entity.getEntityId()));
+                it.remove();
+            }
+        }
 
-		for (GlowEntity entity : world.getEntityManager()) {
-			if (entity == this)
-				continue;
-			boolean withinDistance = !entity.isDead() && isWithinDistance(entity);
+        for (GlowEntity entity : world.getEntityManager()) {
+            if (entity == this)
+                continue;
+            boolean withinDistance = !entity.isDead() && isWithinDistance(entity);
 
-			if (withinDistance && !knownEntities.contains(entity)) {
-				knownEntities.add(entity);
-				session.send(entity.createSpawnMessage());
-			}
-		}
-	}
+            if (withinDistance && !knownEntities.contains(entity)) {
+                knownEntities.add(entity);
+                session.send(entity.createSpawnMessage());
+            }
+        }
+    }
 
     /**
      * Streams chunks to the player's client.
      */
-	private void streamBlocks() {
+    private void streamBlocks() {
         Set<GlowChunk.Key> previousChunks = new HashSet<GlowChunk.Key>(knownChunks);
 
-		int centralX = ((int) location.getX()) >> 4;
-		int centralZ = ((int) location.getZ()) >> 4;
+        int centralX = ((int) location.getX()) >> 4;
+        int centralZ = ((int) location.getZ()) >> 4;
         
         for (int x = (centralX - GlowChunk.VISIBLE_RADIUS); x <= (centralX + GlowChunk.VISIBLE_RADIUS); x++) {
             for (int z = (centralZ - GlowChunk.VISIBLE_RADIUS); z <= (centralZ + GlowChunk.VISIBLE_RADIUS); z++) {
@@ -176,7 +176,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         }
 
         previousChunks.clear();
-	}
+    }
     
     /**
      * Checks whether the player can see the given chunk.
@@ -200,9 +200,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      * Gets the session.
      * @return The session.
      */
-	public Session getSession() {
-		return session;
-	}
+    public Session getSession() {
+        return session;
+    }
 
     public boolean isOnline() {
         return true;
@@ -316,7 +316,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      */
     public void chat(String text) {
         if (text.startsWith("/")) {
-			try {
+            try {
                 if (!performCommand(text.substring(1))) {
                     sendMessage(ChatColor.RED + "Your command could not be executed.");
                 }
@@ -326,10 +326,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
                 getServer().getLogger().log(Level.SEVERE, "Error while executing command: {0}", ex.getMessage());
                 ex.printStackTrace();
             }
-		} else {
+        } else {
             getServer().broadcastMessage("<" + getName() + "> " + text);
             getServer().getLogger().log(Level.INFO, "<{0}> {1}", new Object[]{getName(), text});
-		}
+        }
     }
 
     public void saveData() {

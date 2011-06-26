@@ -2,19 +2,19 @@ package net.glowstone.msg;
 
 public final class EntityStatusMessage extends Message {
 
-	private final int id, status;
+    private final int id, status;
 
-	public EntityStatusMessage(int id, int status) {
-		this.id = id;
-		this.status = status;
-	}
+    public EntityStatusMessage(int id, int status) {
+        this.id = id;
+        this.status = status;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public int getStatus() {
-		return status;
-	}
+    public int getStatus() {
+        return status;
+    }
 
 }

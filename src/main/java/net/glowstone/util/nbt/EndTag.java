@@ -6,22 +6,22 @@ package net.glowstone.util.nbt;
  */
 public final class EndTag extends Tag {
 
-	/**
-	 * Creates the tag.
-	 */
-	public EndTag() {
-		super();
-	}
+    /**
+     * Creates the tag.
+     */
+    public EndTag() {
+        super();
+    }
 
-	@Override
-	public Object getValue() {
-		return null;
-	}
+    @Override
+    public Object getValue() {
+        return null;
+    }
 
-	@Override
-	public String toString() {
-		return "TAG_End";
-	}
+    @Override
+    public String toString() {
+        return "TAG_End";
+    }
 
 }
 

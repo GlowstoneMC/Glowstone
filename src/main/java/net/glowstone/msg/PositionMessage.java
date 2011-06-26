@@ -2,35 +2,35 @@ package net.glowstone.msg;
 
 public final class PositionMessage extends Message {
 
-	private final double x, y, z, stance;
-	private final boolean onGround;
+    private final double x, y, z, stance;
+    private final boolean onGround;
 
-	public PositionMessage(double x, double y, double z, double stance, boolean onGround) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		this.stance = stance;
-		this.onGround = onGround;
-	}
+    public PositionMessage(double x, double y, double z, double stance, boolean onGround) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.stance = stance;
+        this.onGround = onGround;
+    }
 
-	public double getX() {
-		return x;
-	}
+    public double getX() {
+        return x;
+    }
 
-	public double getY() {
-		return y;
-	}
+    public double getY() {
+        return y;
+    }
 
-	public double getStance() {
-		return stance;
-	}
+    public double getStance() {
+        return stance;
+    }
 
-	public double getZ() {
-		return z;
-	}
+    public double getZ() {
+        return z;
+    }
 
-	public boolean isOnGround() {
-		return onGround;
-	}
+    public boolean isOnGround() {
+        return onGround;
+    }
 
 }

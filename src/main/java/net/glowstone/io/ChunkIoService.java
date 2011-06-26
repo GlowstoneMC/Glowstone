@@ -14,22 +14,22 @@ import net.glowstone.GlowWorld;
  */
 public interface ChunkIoService {
 
-	/**
-	 * Reads a single chunk.
-	 * @param x The X coordinate.
-	 * @param z The Z coordinate.
-	 * @return The {@link GlowChunk} or {@code null} if it does not exist.
-	 * @throws IOException if an I/O error occurs.
-	 */
-	public GlowChunk read(GlowWorld world, int x, int z) throws IOException;
+    /**
+     * Reads a single chunk.
+     * @param x The X coordinate.
+     * @param z The Z coordinate.
+     * @return The {@link GlowChunk} or {@code null} if it does not exist.
+     * @throws IOException if an I/O error occurs.
+     */
+    public GlowChunk read(GlowWorld world, int x, int z) throws IOException;
 
-	/**
-	 * Writes a single chunk.
-	 * @param x The X coordinate.
-	 * @param z The Z coordinate.
-	 * @param chunk The {@link GlowChunk}.
-	 * @throws IOException if an I/O error occurs.
-	 */
-	public void write(int x, int z, GlowChunk chunk) throws IOException;
+    /**
+     * Writes a single chunk.
+     * @param x The X coordinate.
+     * @param z The Z coordinate.
+     * @param chunk The {@link GlowChunk}.
+     * @throws IOException if an I/O error occurs.
+     */
+    public void write(int x, int z, GlowChunk chunk) throws IOException;
 
 }
