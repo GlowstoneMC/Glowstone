@@ -3,12 +3,14 @@ package net.glowstone;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 /**
@@ -59,4 +61,9 @@ public final class EventFactory {
         return event;
     }
     
+    public static PlayerMoveEvent onPlayerMove(Player player, Location from, Location to) {
+        PlayerMoveEvent event = new PlayerMoveEvent(player, from, to);
+        callEvent(event);
+        return event;
+    }
 }
