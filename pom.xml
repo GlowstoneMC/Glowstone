@@ -14,6 +14,12 @@
     </scm>
 
 	<repositories>
+        <repository>
+            <id>bukkit</id>
+            <name>Bukkit Artifactory</name>
+            <layout>default</layout>
+            <url>http://repo.bukkit.org/artifactory/repo/</url>
+        </repository>
 		<repository>
 			<id>jboss</id>
 			<name>JBoss Nexus</name>

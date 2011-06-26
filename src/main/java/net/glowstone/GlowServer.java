@@ -2,7 +2,9 @@ package net.glowstone;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.ArrayList;
@@ -173,12 +175,19 @@ public final class GlowServer implements Server {
      * Starts this server.
      */
     public void start() {
+        try {
+            properties.load(new FileInputStream(new File("server.properties")));
+        } catch (Exception ex) {
+            logger.warning("Failed to load server.properties, using defaults");
+        }
+        
+        opsList.load();
+
         loadPlugins();
         enablePlugins(PluginLoadOrder.STARTUP);
         createWorld(properties.getProperty("world-name", "world"), Environment.NORMAL);
         enablePlugins(PluginLoadOrder.POSTWORLD);
-        
-        reload();
+
         logger.info("Ready for connections.");
     }
     
@@ -186,6 +195,12 @@ public final class GlowServer implements Server {
      * Loads all plugins, calling onLoad, &c.
      */
     private void loadPlugins() {
+        // clear and reregister our commands
+        commandMap.clearCommands();
+        commandMap.register("glowstone", new net.glowstone.command.OpCommand(this));
+        commandMap.register("glowstone", new net.glowstone.command.DeopCommand(this));
+        commandMap.register("glowstone", new net.glowstone.command.ListCommand(this));
+            
         File folder = new File(properties.getProperty("plugin-folder", "plugins"));
         folder.mkdirs();
             
@@ -236,12 +251,6 @@ public final class GlowServer implements Server {
         try {
             properties.load(new FileInputStream(new File("server.properties")));
             opsList.load();
-            
-            // clear and reregister our commands
-            commandMap.clearCommands();
-            commandMap.register("glowstone", new net.glowstone.command.OpCommand(this));
-            commandMap.register("glowstone", new net.glowstone.command.DeopCommand(this));
-            commandMap.register("glowstone", new net.glowstone.command.ListCommand(this));
             
             // load plugins
             loadPlugins();
