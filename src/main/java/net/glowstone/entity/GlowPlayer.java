@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
+import net.glowstone.EventFactory;
 
 import org.bukkit.Achievement;
 import org.bukkit.ChatColor;
@@ -36,6 +37,8 @@ import net.glowstone.msg.StatisticMessage;
 import net.glowstone.net.Session;
 import org.bukkit.Instrument;
 import org.bukkit.Note;
+import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 /**
  * Represents an in-game player.
@@ -317,9 +320,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     public void chat(String text) {
         if (text.startsWith("/")) {
             try {
-                if (!performCommand(text.substring(1))) {
-                    sendMessage(ChatColor.RED + "Your command could not be executed.");
+                if (EventFactory.onPlayerCommand(this, text).isCancelled()) {
+                    return;
                 }
+                
+                performCommand(text.substring(1));
             }
             catch (Exception ex) {
                 sendMessage(ChatColor.RED + "An exception occured while executing your command.");
@@ -327,8 +332,16 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
                 ex.printStackTrace();
             }
         } else {
-            getServer().broadcastMessage("<" + getName() + "> " + text);
-            getServer().getLogger().log(Level.INFO, "<{0}> {1}", new Object[]{getName(), text});
+            PlayerChatEvent event = EventFactory.onPlayerChat(this, text);
+            if (event.isCancelled()) {
+                return;
+            }
+            
+            String message = String.format(event.getFormat(), event.getPlayer().getDisplayName(), event.getMessage());
+            getServer().getLogger().info(message);
+            for (Player recipient : event.getRecipients()) {
+                recipient.sendMessage(message);
+            }
         }
     }
 
@@ -351,7 +364,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
 
     public void playEffect(Location loc, Effect effect, int data) {
-        getSession().send(new PlayEffectMessage(effect.getId(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), data));
+        session.send(new PlayEffectMessage(effect.getId(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), data));
     }
 
     public void sendBlockChange(Location loc, Material material, byte data) {

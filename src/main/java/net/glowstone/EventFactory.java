@@ -1,9 +1,12 @@
 package net.glowstone;
 
+import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -25,6 +28,18 @@ public final class EventFactory {
     }
     
     // -- Player Events
+
+    public static PlayerChatEvent onPlayerChat(Player player, String message) {
+        PlayerChatEvent event = new PlayerChatEvent(player, message);
+        callEvent(event);
+        return event;
+    }
+
+    public static PlayerCommandPreprocessEvent onPlayerCommand(Player player, String message) {
+        PlayerCommandPreprocessEvent event = new PlayerCommandPreprocessEvent(player, message);
+        callEvent(event);
+        return event;
+    }
     
     public static PlayerJoinEvent onPlayerJoin(Player player) {
         PlayerJoinEvent event = new PlayerJoinEvent(player, ChatColor.YELLOW + player.getName() + " joined the game");
