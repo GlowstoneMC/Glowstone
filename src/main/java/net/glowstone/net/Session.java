@@ -5,6 +5,7 @@ import java.net.SocketAddress;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.logging.Level;
+import net.glowstone.EventFactory;
 
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
@@ -14,6 +15,7 @@ import net.glowstone.msg.Message;
 import net.glowstone.msg.handler.HandlerLookupService;
 import net.glowstone.msg.handler.MessageHandler;
 import org.bukkit.ChatColor;
+import org.bukkit.event.player.PlayerKickEvent;
 
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFutureListener;
@@ -133,7 +135,11 @@ public final class Session {
 		((GlowWorld) this.server.getWorlds().get(0)).getRawPlayers().add(player);
         
         GlowServer.logger.log(Level.INFO, "{0} joined the game", player.getName());
-        server.broadcastMessage(ChatColor.YELLOW + player.getName() + " joined the game");
+
+        String message = EventFactory.onPlayerJoin(player).getJoinMessage();
+        if (message != null) {
+            server.broadcastMessage(message);
+        }
 	}
 
 	@SuppressWarnings("unchecked")
@@ -168,6 +174,24 @@ public final class Session {
      * @param reason The reason for disconnection.
      */
 	public void disconnect(String reason) {
+		if (player != null) {
+            GlowServer.logger.log(Level.INFO, "{0} left the game", player.getName());
+            
+            PlayerKickEvent event = EventFactory.onPlayerKick(player, reason);
+            if (event.isCancelled()) {
+                return;
+            }
+            
+            reason = event.getReason();
+            
+            if (event.getLeaveMessage() != null) {
+                server.broadcastMessage(event.getLeaveMessage());
+            }
+            
+			player.remove();
+			player = null; // in case we are disposed twice
+		}
+    
 		channel.write(new KickMessage(reason)).addListener(ChannelFutureListener.CLOSE);
 	}
 
@@ -213,7 +237,11 @@ public final class Session {
 	void dispose() {
 		if (player != null) {
             GlowServer.logger.log(Level.INFO, "{0} left the game", player.getName());
-            server.broadcastMessage(ChatColor.YELLOW + player.getName() + " left the game");
+            
+            String message = EventFactory.onPlayerQuit(player).getQuitMessage();
+            if (message != null) {
+                server.broadcastMessage(message);
+            }
             
 			player.remove();
 			player = null; // in case we are disposed twice

@@ -302,7 +302,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
 
     public void kickPlayer(String message) {
-        session.disconnect(message);
+        session.disconnect(message == null ? "" : message);
     }
 
     public boolean performCommand(String command) {
