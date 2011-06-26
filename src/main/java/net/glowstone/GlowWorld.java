@@ -139,7 +139,7 @@ public final class GlowWorld implements World {
     private int saveTimer = 0;
 
     /**
-     * Creates a new world with the specified chunk I/O service, environment, 
+     * Creates a new world with the specified chunk I/O service, environment,
      * and world generator.
      * @param name The name of the world.
      * @param service The chunk I/O service.
@@ -366,11 +366,12 @@ public final class GlowWorld implements World {
     // get block, chunk, id, highest methods with coords
 
     public GlowBlock getBlockAt(int x, int y, int z) {
-        if (blockCache.containsKey(new Location(this, x, y, z))) {
-            return blockCache.get(new Location(this, x, y, z));
+        Location blockLoc = new Location(this, x, y, z);
+        if (blockCache.containsKey(blockLoc)) {
+            return blockCache.get(blockLoc);
         } else {
             GlowBlock block = new GlowBlock(getChunkAt(x >> 4, z >> 4), x, y, z);
-            blockCache.put(new Location(this, x, y, z), block);
+            blockCache.put(blockLoc, block);
             return block;
         }
     }
@@ -389,7 +390,8 @@ public final class GlowWorld implements World {
     }
 
     public GlowChunk getChunkAt(int x, int z) {
-        return chunks.getChunk(x, z);
+        GlowChunk ret = chunks.getChunk(x, z);
+        return ret;
     }
 
     // get block, chunk, id, highest with locations
