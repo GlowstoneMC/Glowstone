@@ -12,14 +12,14 @@ import net.glowstone.GlowWorld;
  */
 public final class NbtChunkIoService implements ChunkIoService {
 
-	@Override
-	public GlowChunk read(GlowWorld world, int x, int z) {
-		return null;
-	}
+    @Override
+    public GlowChunk read(GlowWorld world, int x, int z) {
+        return null;
+    }
 
-	@Override
-	public void write(int x, int z, GlowChunk chunk) throws IOException {
+    @Override
+    public void write(int x, int z, GlowChunk chunk) throws IOException {
 
-	}
+    }
 
 }

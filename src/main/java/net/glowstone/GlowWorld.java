@@ -53,15 +53,15 @@ public final class GlowWorld implements World {
      */
     private final String name;
 
-	/**
-	 * The chunk manager.
-	 */
-	private final ChunkManager chunks;
+    /**
+     * The chunk manager.
+     */
+    private final ChunkManager chunks;
 
-	/**
-	 * The entity manager.
-	 */
-	private final EntityManager entities = new EntityManager();
+    /**
+     * The entity manager.
+     */
+    private final EntityManager entities = new EntityManager();
     
     /**
      * This world's Random instance.
@@ -78,10 +78,10 @@ public final class GlowWorld implements World {
      */
     private final List<BlockPopulator> populators;
 
-	/**
-	 * The spawn position.
-	 */
-	private Location spawnLocation;
+    /**
+     * The spawn position.
+     */
+    private Location spawnLocation;
     
     /**
      * The environment.
@@ -138,19 +138,19 @@ public final class GlowWorld implements World {
      */
     private int saveTimer = 0;
 
-	/**
-	 * Creates a new world with the specified chunk I/O service, environment, 
-	 * and world generator.
+    /**
+     * Creates a new world with the specified chunk I/O service, environment, 
+     * and world generator.
      * @param name The name of the world.
-	 * @param service The chunk I/O service.
+     * @param service The chunk I/O service.
      * @param environment The environment.
-	 * @param generator The world generator.
-	 */
-	public GlowWorld(String name, Environment environment, long seed, ChunkIoService service, ChunkGenerator generator) {
+     * @param generator The world generator.
+     */
+    public GlowWorld(String name, Environment environment, long seed, ChunkIoService service, ChunkGenerator generator) {
         this.name = name;
         this.environment = environment;
         this.seed = seed;
-		chunks = new ChunkManager(this, service, generator);
+        chunks = new ChunkManager(this, service, generator);
         
         populators = generator.getDefaultPopulators(this);
         spawnLocation = generator.getFixedSpawnLocation(this, random);
@@ -191,22 +191,22 @@ public final class GlowWorld implements World {
         
         setStorm(false);
         setThundering(false);
-	}
+    }
 
     ////////////////////////////////////////
     // Various internal mechanisms
 
-	/**
-	 * Updates all the entities within this world.
-	 */
-	public void pulse() {
+    /**
+     * Updates all the entities within this world.
+     */
+    public void pulse() {
         ArrayList<GlowEntity> temp = new ArrayList<GlowEntity>(entities.getAll());
         
-		for (GlowEntity entity : temp)
-			entity.pulse();
+        for (GlowEntity entity : temp)
+            entity.pulse();
 
-		for (GlowEntity entity : temp)
-			entity.reset();
+        for (GlowEntity entity : temp)
+            entity.reset();
         
         // We currently tick at 1/4 the speed of regular MC
         // Modulus by 12000 to force permanent day.
@@ -244,30 +244,30 @@ public final class GlowWorld implements World {
             saveTimer = 60 * 20;
             save();
         }
-	}
+    }
 
-	/**
-	 * Gets the entity manager.
-	 * @return The entity manager.
-	 */
-	public EntityManager getEntityManager() {
-		return entities;
-	}
+    /**
+     * Gets the entity manager.
+     * @return The entity manager.
+     */
+    public EntityManager getEntityManager() {
+        return entities;
+    }
 
-	public Collection<GlowPlayer> getRawPlayers() {
+    public Collection<GlowPlayer> getRawPlayers() {
         return entities.getAll(GlowPlayer.class);
-	}
+    }
 
     // GlowEntity lists
-	
-	public List<Player> getPlayers() {
+    
+    public List<Player> getPlayers() {
         Collection<GlowPlayer> players = entities.getAll(GlowPlayer.class);
         ArrayList<Player> result = new ArrayList<Player>();
         for (Player p : players) {
             result.add(p);
         }
         return result;
-	}
+    }
 
     public List<Entity> getEntities() {
         Collection<GlowEntity> list = entities.getAll();
@@ -287,11 +287,11 @@ public final class GlowWorld implements World {
         return result;
     }
 
-	// Various malleable world properties
+    // Various malleable world properties
 
-	public Location getSpawnLocation() {
-		return spawnLocation;
-	}
+    public Location getSpawnLocation() {
+        return spawnLocation;
+    }
 
     public boolean setSpawnLocation(int x, int y, int z) {
         spawnLocation = new Location(this, x, y, z);

@@ -16,17 +16,17 @@ public final class EntityManager implements Iterable<GlowEntity> {
     /**
      * A map of all the entity ids to the corresponding entities.
      */
-	private final Map<Integer, GlowEntity> entities = new HashMap<Integer, GlowEntity>();
+    private final Map<Integer, GlowEntity> entities = new HashMap<Integer, GlowEntity>();
 
     /**
      * A map of entity types to a set containing all entities of that type.
      */
-	private final Map<Class<? extends GlowEntity>, Set<? extends GlowEntity>> groupedEntities = new HashMap<Class<? extends GlowEntity>, Set<? extends GlowEntity>>();
+    private final Map<Class<? extends GlowEntity>, Set<? extends GlowEntity>> groupedEntities = new HashMap<Class<? extends GlowEntity>, Set<? extends GlowEntity>>();
 
     /**
      * The next id to check.
      */
-	private int nextId = 1;
+    private int nextId = 1;
 
     /**
      * Gets all entities with the specified type.
@@ -34,74 +34,74 @@ public final class EntityManager implements Iterable<GlowEntity> {
      * @param <T> The type of entity.
      * @return A collection of entities with the specified type.
      */
-	@SuppressWarnings("unchecked")
-	public <T extends GlowEntity> Collection<T> getAll(Class<T> type) {
-		Set<T> set = (Set<T>) groupedEntities.get(type);
-		if (set == null) {
-			set = new HashSet<T>();
-			groupedEntities.put(type, set);
-		}
-		return set;
-	}
+    @SuppressWarnings("unchecked")
+    public <T extends GlowEntity> Collection<T> getAll(Class<T> type) {
+        Set<T> set = (Set<T>) groupedEntities.get(type);
+        if (set == null) {
+            set = new HashSet<T>();
+            groupedEntities.put(type, set);
+        }
+        return set;
+    }
 
     /**
      * Gets all entities.
      * @return A collection of entities.
      */
-	public Collection<GlowEntity> getAll() {
-		return entities.values();
-	}
+    public Collection<GlowEntity> getAll() {
+        return entities.values();
+    }
 
     /**
      * Gets an entity by its id.
      * @param id The id.
      * @return The entity, or {@code null} if it could not be found.
      */
-	public GlowEntity getEntity(int id) {
-		return entities.get(id);
-	}
+    public GlowEntity getEntity(int id) {
+        return entities.get(id);
+    }
 
     /**
      * Allocates the id for an entity.
      * @param entity The entity.
      * @return The id.
      */
-	@SuppressWarnings("unchecked")
-	int allocate(GlowEntity entity) {
-		for (int id = nextId; id < Integer.MAX_VALUE; id++) {
-			if (!entities.containsKey(id)) {
-				entities.put(id, entity);
-				entity.id = id;
-				((Collection<GlowEntity>) getAll(entity.getClass())).add(entity);
-				nextId = id + 1;
-				return id;
-			}
-		}
+    @SuppressWarnings("unchecked")
+    int allocate(GlowEntity entity) {
+        for (int id = nextId; id < Integer.MAX_VALUE; id++) {
+            if (!entities.containsKey(id)) {
+                entities.put(id, entity);
+                entity.id = id;
+                ((Collection<GlowEntity>) getAll(entity.getClass())).add(entity);
+                nextId = id + 1;
+                return id;
+            }
+        }
 
-		for (int id = Integer.MIN_VALUE; id < -1; id++) { // as -1 is used as a special value
-			if (!entities.containsKey(id)) {
-				entities.put(id, entity);
-				((Collection<GlowEntity>) getAll(entity.getClass())).add(entity);
-				nextId = id + 1;
-				return id;
-			}
-		}
+        for (int id = Integer.MIN_VALUE; id < -1; id++) { // as -1 is used as a special value
+            if (!entities.containsKey(id)) {
+                entities.put(id, entity);
+                ((Collection<GlowEntity>) getAll(entity.getClass())).add(entity);
+                nextId = id + 1;
+                return id;
+            }
+        }
 
-		throw new IllegalStateException("No free entity ids");
-	}
+        throw new IllegalStateException("No free entity ids");
+    }
 
     /**
      * Deallocates the id for an entity.
      * @param entity The entity.
      */
-	void deallocate(GlowEntity entity) {
-		entities.remove(entity.getEntityId());
-		getAll(entity.getClass()).remove(entity);
-	}
+    void deallocate(GlowEntity entity) {
+        entities.remove(entity.getEntityId());
+        getAll(entity.getClass()).remove(entity);
+    }
 
-	@Override
-	public Iterator<GlowEntity> iterator() {
-		return entities.values().iterator();
-	}
+    @Override
+    public Iterator<GlowEntity> iterator() {
+        return entities.values().iterator();
+    }
 
 }

@@ -24,58 +24,58 @@ public class MinecraftHandler extends SimpleChannelUpstreamHandler {
     /**
      * The logger for this class.
      */
-	private static final Logger logger = Logger.getLogger(MinecraftHandler.class.getName());
+    private static final Logger logger = Logger.getLogger(MinecraftHandler.class.getName());
 
     /**
      * The server.
      */
-	private final GlowServer server;
+    private final GlowServer server;
 
     /**
      * Creates a new network event handler.
      * @param server The server.
      */
-	public MinecraftHandler(GlowServer server) {
-		this.server = server;
-	}
+    public MinecraftHandler(GlowServer server) {
+        this.server = server;
+    }
 
-	@Override
-	public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) {
-		Channel c = e.getChannel();
-		server.getChannelGroup().add(c);
+    @Override
+    public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) {
+        Channel c = e.getChannel();
+        server.getChannelGroup().add(c);
 
-		Session session = new Session(server, c);
-		server.getSessionRegistry().add(session);
-		ctx.setAttachment(session);
+        Session session = new Session(server, c);
+        server.getSessionRegistry().add(session);
+        ctx.setAttachment(session);
 
-		logger.info("Channel connected: " + c + ".");
-	}
+        logger.info("Channel connected: " + c + ".");
+    }
 
-	@Override
-	public void channelDisconnected(ChannelHandlerContext ctx, ChannelStateEvent e) {
-		Channel c = e.getChannel();
-		server.getChannelGroup().remove(c);
+    @Override
+    public void channelDisconnected(ChannelHandlerContext ctx, ChannelStateEvent e) {
+        Channel c = e.getChannel();
+        server.getChannelGroup().remove(c);
 
-		Session session = (Session) ctx.getAttachment();
-		server.getSessionRegistry().remove(session);
-		session.dispose();
+        Session session = (Session) ctx.getAttachment();
+        server.getSessionRegistry().remove(session);
+        session.dispose();
 
-		logger.info("Channel disconnected: " + c + ".");
-	}
+        logger.info("Channel disconnected: " + c + ".");
+    }
 
-	@Override
-	public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) {
-		Session session = (Session) ctx.getAttachment();
-		session.messageReceived((Message) e.getMessage());
-	}
+    @Override
+    public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) {
+        Session session = (Session) ctx.getAttachment();
+        session.messageReceived((Message) e.getMessage());
+    }
 
-	@Override
-	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) {
-		Channel c = e.getChannel();
-		if (c.isOpen()) {
-			logger.log(Level.WARNING, "Exception caught, closing channel: " + c + "...", e.getCause());
-			c.close();
-		}
-	}
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) {
+        Channel c = e.getChannel();
+        if (c.isOpen()) {
+            logger.log(Level.WARNING, "Exception caught, closing channel: " + c + "...", e.getCause());
+            c.close();
+        }
+    }
 
 }

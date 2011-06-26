@@ -10,10 +10,10 @@ import net.glowstone.net.Session;
 
 public final class WindowClickMessageHandler extends MessageHandler<WindowClickMessage> {
 
-	@Override
-	public void handle(Session session, GlowPlayer player, WindowClickMessage message) {
-		if (player == null)
-			return;
+    @Override
+    public void handle(Session session, GlowPlayer player, WindowClickMessage message) {
+        if (player == null)
+            return;
         
         int slot = GlowPlayerInventory.networkSlotToInventory(message.getSlot());
         
@@ -64,7 +64,7 @@ public final class WindowClickMessageHandler extends MessageHandler<WindowClickM
         
         inv.setItem(slot, player.getItemOnCursor());
         player.setItemOnCursor(currentItem);
-	}
+    }
     
     private void response(Session session, WindowClickMessage message, boolean success) {
         session.send(new TransactionMessage(message.getId(), message.getTransaction(), success));

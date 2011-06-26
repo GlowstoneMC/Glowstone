@@ -22,12 +22,12 @@ public final class ChunkManager {
      * The chunk I/O service used to read chunks from the disk and write them to
      * the disk.
      */
-	private final ChunkIoService service;
+    private final ChunkIoService service;
 
     /**
      * The chunk generator used to generate new chunks.
      */
-	private final ChunkGenerator generator;
+    private final ChunkGenerator generator;
     
     /**
      * The world this ChunkManager is managing.
@@ -37,7 +37,7 @@ public final class ChunkManager {
     /**
      * A map of chunks currently loaded in memory.
      */
-	private final Map<GlowChunk.Key, GlowChunk> chunks = new HashMap<GlowChunk.Key, GlowChunk>();
+    private final Map<GlowChunk.Key, GlowChunk> chunks = new HashMap<GlowChunk.Key, GlowChunk>();
 
     /**
      * Creates a new chunk manager with the specified I/O service and world
@@ -45,11 +45,11 @@ public final class ChunkManager {
      * @param service The I/O service.
      * @param generator The world generator.
      */
-	public ChunkManager(GlowWorld world, ChunkIoService service, ChunkGenerator generator) {
+    public ChunkManager(GlowWorld world, ChunkIoService service, ChunkGenerator generator) {
         this.world = world;
-		this.service = service;
-		this.generator = generator;
-	}
+        this.service = service;
+        this.generator = generator;
+    }
 
     /**
      * Gets the chunk at the specified X and Z coordinates, loading it from the
@@ -58,19 +58,19 @@ public final class ChunkManager {
      * @param z The Z coordinate.
      * @return The chunk.
      */
-	public GlowChunk getChunk(int x, int z) {
-		GlowChunk.Key key = new GlowChunk.Key(x, z);
-		GlowChunk chunk = chunks.get(key);
-		if (chunk == null) {
-			try {
-				chunk = service.read(world, x, z);
-			} catch (IOException e) {
-				chunk = null;
-			}
+    public GlowChunk getChunk(int x, int z) {
+        GlowChunk.Key key = new GlowChunk.Key(x, z);
+        GlowChunk chunk = chunks.get(key);
+        if (chunk == null) {
+            try {
+                chunk = service.read(world, x, z);
+            } catch (IOException e) {
+                chunk = null;
+            }
 
-			if (chunk == null) {
+            if (chunk == null) {
                 chunk = new GlowChunk(world, x, z);
-				byte[] data = generator.generate(world, new Random(), x, z);
+                byte[] data = generator.generate(world, new Random(), x, z);
                 chunk.setTypes(data);
                 
                 chunks.put(key, chunk);
@@ -88,13 +88,13 @@ public final class ChunkManager {
                         }
                     }
                 }
-			}
+            }
 
-			chunks.put(key, chunk);
-		}
+            chunks.put(key, chunk);
+        }
         
-		return chunk;
-	}
+        return chunk;
+    }
     
     /**
      * Checks whether the given chunk can be populated by map features.
@@ -123,7 +123,7 @@ public final class ChunkManager {
      * @return Whether the chunk was successfully regenerated.
      */
     public boolean forceRegeneration(int x, int z) {
-		GlowChunk.Key key = new GlowChunk.Key(x, z);
+        GlowChunk.Key key = new GlowChunk.Key(x, z);
         GlowChunk chunk = new GlowChunk(world, x, z);
         chunk.setTypes(generator.generate(world, new Random(), x, z));
         

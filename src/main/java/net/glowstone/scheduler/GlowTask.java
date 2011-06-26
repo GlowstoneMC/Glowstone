@@ -36,45 +36,45 @@ public class GlowTask implements BukkitTask {
      */
     private final Plugin owner;
 
-	/**
-	 * The number of ticks before the call to the Runnable.
-	 */
-	private final long delay;
+    /**
+     * The number of ticks before the call to the Runnable.
+     */
+    private final long delay;
 
-	/**
-	 * The number of ticks between each call to the Runnable.
-	 */
-	private final long period;
+    /**
+     * The number of ticks between each call to the Runnable.
+     */
+    private final long period;
 
-	/**
-	 * The current number of ticks since last initialization.
-	 */
-	private long counter;
+    /**
+     * The current number of ticks since last initialization.
+     */
+    private long counter;
 
-	/**
-	 * A flag which indicates if this task is running.
-	 */
-	private boolean running = true;
+    /**
+     * A flag which indicates if this task is running.
+     */
+    private boolean running = true;
 
-	/**
-	 * Creates a new task with the specified number of ticks between
-	 * consecutive calls to {@link #execute()}.
-	 * @param ticks The number of ticks.
-	 */
-	public GlowTask(Plugin owner, Runnable task, long delay, long period) {
+    /**
+     * Creates a new task with the specified number of ticks between
+     * consecutive calls to {@link #execute()}.
+     * @param ticks The number of ticks.
+     */
+    public GlowTask(Plugin owner, Runnable task, long delay, long period) {
         synchronized (nextTaskIdLock) {
             this.taskId = nextTaskId++;
         }
         this.owner = owner;
         this.task = task;
-		this.delay = delay;
+        this.delay = delay;
         this.period = period;
-		this.counter = 0;
-	}
+        this.counter = 0;
+    }
 
-	/**
-	 * Gets the ID of this task.
-	 */
+    /**
+     * Gets the ID of this task.
+     */
     public int getTaskId() {
         return taskId;
     }
@@ -87,21 +87,21 @@ public class GlowTask implements BukkitTask {
         return owner;
     }
 
-	/**
-	 * Stops this task.
-	 */
-	public void stop() {
-		running = false;
-	}
+    /**
+     * Stops this task.
+     */
+    public void stop() {
+        running = false;
+    }
 
-	/**
-	 * Called every 'pulse' which is around 200ms in Minecraft. This method
-	 * updates the counters and calls {@link #execute()} if necessary.
-	 * @return The {@link #isRunning()} flag.
-	 */
-	boolean pulse() {
-		if (!running)
-			return false;
+    /**
+     * Called every 'pulse' which is around 200ms in Minecraft. This method
+     * updates the counters and calls {@link #execute()} if necessary.
+     * @return The {@link #isRunning()} flag.
+     */
+    boolean pulse() {
+        if (!running)
+            return false;
         
         ++counter;
         if (counter >= delay) {
@@ -113,7 +113,7 @@ public class GlowTask implements BukkitTask {
             }
         }
         
-		return running;
-	}
+        return running;
+    }
 
 }

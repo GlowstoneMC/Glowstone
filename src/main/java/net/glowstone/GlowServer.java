@@ -54,23 +54,23 @@ import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
  */
 public final class GlowServer implements Server {
 
-	/**
-	 * The logger for this class.
-	 */
-	public static final Logger logger = Logger.getLogger(GlowServer.class.getName());
+    /**
+     * The logger for this class.
+     */
+    public static final Logger logger = Logger.getLogger(GlowServer.class.getName());
             
     /**
      * The configuration the server uses.
      */
     private static final Properties properties = new Properties();
 
-	/**
-	 * Creates a new server on TCP port 25565 and starts listening for
-	 * connections.
-	 * @param args The command-line arguments.
-	 */
-	public static void main(String[] args) {
-		try {
+    /**
+     * Creates a new server on TCP port 25565 and starts listening for
+     * connections.
+     * @param args The command-line arguments.
+     */
+    public static void main(String[] args) {
+        try {
             File props = new File("server.properties");
             if (props.exists()) {
                 properties.load(new FileInputStream(props));
@@ -80,34 +80,34 @@ public final class GlowServer implements Server {
             }
             int port = Integer.valueOf(properties.getProperty("server-port", "25565"));
             
-			GlowServer server = new GlowServer();
-			server.bind(new InetSocketAddress(port));
-			server.start();
-		} catch (Throwable t) {
-			logger.log(Level.SEVERE, "Error during server startup.", t);
-		}
-	}
+            GlowServer server = new GlowServer();
+            server.bind(new InetSocketAddress(port));
+            server.start();
+        } catch (Throwable t) {
+            logger.log(Level.SEVERE, "Error during server startup.", t);
+        }
+    }
 
-	/**
-	 * The {@link ServerBootstrap} used to initialize Netty.
-	 */
-	private final ServerBootstrap bootstrap = new ServerBootstrap();
+    /**
+     * The {@link ServerBootstrap} used to initialize Netty.
+     */
+    private final ServerBootstrap bootstrap = new ServerBootstrap();
 
-	/**
-	 * A group containing all of the channels.
-	 */
-	private final ChannelGroup group = new DefaultChannelGroup();
+    /**
+     * A group containing all of the channels.
+     */
+    private final ChannelGroup group = new DefaultChannelGroup();
 
-	/**
-	 * The network executor service - Netty dispatches events to this thread
-	 * pool.
-	 */
-	private final ExecutorService executor = Executors.newCachedThreadPool();
+    /**
+     * The network executor service - Netty dispatches events to this thread
+     * pool.
+     */
+    private final ExecutorService executor = Executors.newCachedThreadPool();
 
-	/**
-	 * A list of all the active {@link Session}s.
-	 */
-	private final SessionRegistry sessions = new SessionRegistry();
+    /**
+     * A list of all the active {@link Session}s.
+     */
+    private final SessionRegistry sessions = new SessionRegistry();
     
     /**
      * The list of OPs on the server.
@@ -129,58 +129,58 @@ public final class GlowServer implements Server {
      */
     private final SimplePluginManager pluginManager = new SimplePluginManager(this, commandMap);
 
-	/**
-	 * The task scheduler used by this server.
-	 */
-	private final GlowScheduler scheduler = new GlowScheduler(this);
+    /**
+     * The task scheduler used by this server.
+     */
+    private final GlowScheduler scheduler = new GlowScheduler(this);
 
-	/**
-	 * The world this server is managing.
-	 */
-	private final ArrayList<GlowWorld> worlds = new ArrayList<GlowWorld>();
+    /**
+     * The world this server is managing.
+     */
+    private final ArrayList<GlowWorld> worlds = new ArrayList<GlowWorld>();
 
-	/**
-	 * Creates a new server.
-	 */
-	public GlowServer() {
-		logger.log(Level.INFO, "This server is running {0} version {1}", new Object[]{getName(), getVersion()});
-		init();
-	}
+    /**
+     * Creates a new server.
+     */
+    public GlowServer() {
+        logger.log(Level.INFO, "This server is running {0} version {1}", new Object[]{getName(), getVersion()});
+        init();
+    }
 
-	/**
-	 * Initializes the channel and pipeline factories.
-	 */
-	private void init() {
+    /**
+     * Initializes the channel and pipeline factories.
+     */
+    private void init() {
         Bukkit.setServer(this);
         
-		ChannelFactory factory = new NioServerSocketChannelFactory(executor, executor);
-		bootstrap.setFactory(factory);
+        ChannelFactory factory = new NioServerSocketChannelFactory(executor, executor);
+        bootstrap.setFactory(factory);
 
-		ChannelPipelineFactory pipelineFactory = new MinecraftPipelineFactory(this);
-		bootstrap.setPipelineFactory(pipelineFactory);
-	}
+        ChannelPipelineFactory pipelineFactory = new MinecraftPipelineFactory(this);
+        bootstrap.setPipelineFactory(pipelineFactory);
+    }
 
-	/**
-	 * Binds this server to the specified address.
-	 * @param address The addresss.
-	 */
-	public void bind(SocketAddress address) {
-		logger.log(Level.INFO, "Binding to address: {0}...", address);
-		group.add(bootstrap.bind(address));
-	}
+    /**
+     * Binds this server to the specified address.
+     * @param address The addresss.
+     */
+    public void bind(SocketAddress address) {
+        logger.log(Level.INFO, "Binding to address: {0}...", address);
+        group.add(bootstrap.bind(address));
+    }
 
-	/**
-	 * Starts this server.
-	 */
-	public void start() {
+    /**
+     * Starts this server.
+     */
+    public void start() {
         loadPlugins();
         enablePlugins(PluginLoadOrder.STARTUP);
         createWorld(properties.getProperty("world-name", "world"), Environment.NORMAL);
         enablePlugins(PluginLoadOrder.POSTWORLD);
         
         reload();
-		logger.info("Ready for connections.");
-	}
+        logger.info("Ready for connections.");
+    }
     
     /**
      * Loads all plugins, calling onLoad, &c.
@@ -256,21 +256,21 @@ public final class GlowServer implements Server {
         }
     }
 
-	/**
-	 * Gets the channel group.
-	 * @return The {@link ChannelGroup}.
-	 */
-	public ChannelGroup getChannelGroup() {
-		return group;
-	}
+    /**
+     * Gets the channel group.
+     * @return The {@link ChannelGroup}.
+     */
+    public ChannelGroup getChannelGroup() {
+        return group;
+    }
 
-	/**
-	 * Gets the session registry.
-	 * @return The {@link SessionRegistry}.
-	 */
-	public SessionRegistry getSessionRegistry() {
-		return sessions;
-	}
+    /**
+     * Gets the session registry.
+     * @return The {@link SessionRegistry}.
+     */
+    public SessionRegistry getSessionRegistry() {
+        return sessions;
+    }
     
     /**
      * Returns the list of OPs on this server.
@@ -279,18 +279,18 @@ public final class GlowServer implements Server {
         return opsList;
     }
 
-	/**
-	 * Gets the world by the given name.
+    /**
+     * Gets the world by the given name.
      * @param name The name of the world to look up.
-	 * @return The {@link GlowWorld} this server manages.
-	 */
-	public GlowWorld getWorld(String name) {
+     * @return The {@link GlowWorld} this server manages.
+     */
+    public GlowWorld getWorld(String name) {
         for (GlowWorld world : worlds) {
             if (world.getName().equalsIgnoreCase(name))
                 return world;
         }
-		return null;
-	}
+        return null;
+    }
     
     /**
      * Gets the list of worlds currently loaded.

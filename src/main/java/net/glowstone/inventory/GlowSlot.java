@@ -18,23 +18,23 @@ public final class GlowSlot implements Slot {
     /**
      * The slot.
      */
-	private final int slot;
+    private final int slot;
 
     /**
      * The item.
      */
-	private final ItemStack item;
+    private final ItemStack item;
 
     /**
      * Creates a slotted item.
      * @param slot The slot.
      * @param item The item.
      */
-	public GlowSlot(Inventory inventory, int slot, ItemStack item) {
+    public GlowSlot(Inventory inventory, int slot, ItemStack item) {
         this.inventory = inventory;
-		this.slot = slot;
-		this.item = item;
-	}
+        this.slot = slot;
+        this.item = item;
+    }
 
     /*
      * Gets the inventory.
@@ -48,16 +48,16 @@ public final class GlowSlot implements Slot {
      * Gets the slot index.
      * @return The slot index.
      */
-	public int getIndex() {
-		return slot;
-	}
+    public int getIndex() {
+        return slot;
+    }
 
     /**
      * Gets the item.
      * @return The item.
      */
-	public ItemStack getItem() {
-		return item;
-	}
+    public ItemStack getItem() {
+        return item;
+    }
 
 }
