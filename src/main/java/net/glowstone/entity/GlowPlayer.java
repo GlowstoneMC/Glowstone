@@ -32,6 +32,7 @@ import net.glowstone.msg.RespawnMessage;
 import net.glowstone.msg.SetWindowSlotMessage;
 import net.glowstone.msg.SpawnPositionMessage;
 import net.glowstone.msg.StateChangeMessage;
+import net.glowstone.msg.StatisticMessage;
 import net.glowstone.net.Session;
 import org.bukkit.Instrument;
 import org.bukkit.Note;
@@ -51,6 +52,16 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      * This player's session.
      */
 	private final Session session;
+    
+    /**
+     * This player's current time offset.
+     */
+    private long timeOffset = 0;
+    
+    /**
+     * Whether the time offset is relative.
+     */
+    private boolean timeRelative = true;
     
     /**
      * The display name of this player, for chat purposes.
@@ -93,6 +104,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         
         getInventory().addViewer(this);
     }
+    
+    // -- Various internal mechanisms
 
     /**
      * Destroys this entity by removing it from the world and marking it as not
@@ -180,6 +193,65 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     public boolean canSee(GlowEntity entity) {
         return knownEntities.contains(entity);
     }
+    
+    // -- Basic getters
+
+    /**
+     * Gets the session.
+     * @return The session.
+     */
+	public Session getSession() {
+		return session;
+	}
+
+    public boolean isOnline() {
+        return true;
+    }
+    
+    public InetSocketAddress getAddress() {
+        return session.getAddress();
+    }
+
+    public boolean isOp() {
+        return getServer().getOpsList().contains(getName());
+    }
+    
+    // -- Malleable properties
+
+    public String getDisplayName() {
+        return displayName == null ? getName() : displayName;
+    }
+
+    public void setDisplayName(String name) {
+        displayName = name;
+    }
+
+    public Location getCompassTarget() {
+        return compassTarget;
+    }
+
+    public void setCompassTarget(Location loc) {
+        compassTarget = loc;
+        session.send(new SpawnPositionMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+    }
+
+    public boolean isSneaking() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setSneaking(boolean sneak) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean isSleepingIgnored() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setSleepingIgnored(boolean isSleeping) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    // -- Actions
 
     /**
      * Teleport the player.
@@ -217,77 +289,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         return true;
     }
 
-    /**
-     * Gets the session.
-     * @return The session.
-     */
-	public Session getSession() {
-		return session;
-	}
-    
-    // Inventory-related
-    
-    /**
-     * Inform the client that an item has changed.
-     * @param inventory The GlowInventory in which a slot has changed.
-     * @param slot The slot number which has changed.
-     * @param item The ItemStack which the slot has changed to.
-     */
-    public void onSlotSet(GlowInventory inventory, int slot, ItemStack item) {
-        slot = GlowPlayerInventory.inventorySlotToNetwork(slot);
-        if (item == null) {
-            session.send(new SetWindowSlotMessage(inventory.getId(), slot));
-        } else {
-            session.send(new SetWindowSlotMessage(inventory.getId(), slot, item.getTypeId(), item.getAmount(), item.getDurability()));
-        }
-    }
-    
-    /**
-     * Get the current item on the player's cursor, for inventory screen purposes.
-     * @return The ItemStack the player is holding.
-     */
-    public ItemStack getItemOnCursor() {
-        return itemOnCursor;
-    }
-    
-    /**
-     * Set the item on the player's cursor, for inventory screen purposes.
-     * @param item The ItemStack to set the cursor to.
-     */
-    public void setItemOnCursor(ItemStack item) {
-        itemOnCursor = item;
-        if (item == null) {
-            session.send(new SetWindowSlotMessage(-1, -1));
-        } else {
-            session.send(new SetWindowSlotMessage(-1, -1, item.getTypeId(), item.getAmount(), item.getDurability()));
-        }
-    }
-    
-    // More implementation
-
-    public boolean isOnline() {
-        return true;
-    }
-
-    public String getDisplayName() {
-        return displayName == null ? getName() : displayName;
-    }
-
-    public void setDisplayName(String name) {
-        displayName = name;
-    }
-
-    public void setCompassTarget(Location loc) {
-        compassTarget = loc;
-        session.send(new SpawnPositionMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
-    }
-
-    public Location getCompassTarget() {
-        return compassTarget;
-    }
-
-    public InetSocketAddress getAddress() {
-        return session.getAddress();
+    public void sendMessage(String message) {
+        do {
+            int len = message.length() > 100 ? 100 : message.length();
+            sendRawMessage(message.substring(0, len));
+            message = message.substring(len);
+        } while (message.length() > 0);
     }
 
     public void sendRawMessage(String message) {
@@ -296,6 +303,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
 
     public void kickPlayer(String message) {
         session.disconnect(message);
+    }
+
+    public boolean performCommand(String command) {
+        return getServer().dispatchCommand(this, command);
     }
 
     /**
@@ -321,18 +332,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
 		}
     }
 
-    public boolean performCommand(String command) {
-        return getServer().dispatchCommand(this, command);
-    }
-
-    public boolean isSneaking() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void setSneaking(boolean sneak) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     public void saveData() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -340,17 +339,19 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     public void loadData() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-    public void setSleepingIgnored(boolean isSleeping) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public boolean isSleepingIgnored() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    
+    // -- Data transmission
+    
+    public void playNote(Location loc, Instrument instrument, Note note) {
+        playNote(loc, instrument.getType(), note.getId());
     }
 
     public void playNote(Location loc, byte instrument, byte note) {
         session.send(new PlayNoteMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), instrument, note));
+    }
+
+    public void playEffect(Location loc, Effect effect, int data) {
+        getSession().send(new PlayEffectMessage(effect.getId(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), data));
     }
 
     public void sendBlockChange(Location loc, Material material, byte data) {
@@ -361,62 +362,99 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         session.send(new BlockChangeMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), material, data));
     }
 
-    public void updateInventory() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void awardAchievement(Achievement achievement) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void incrementStatistic(Statistic statistic) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void incrementStatistic(Statistic statistic, int amount) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void incrementStatistic(Statistic statistic, Material material) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void incrementStatistic(Statistic statistic, Material material, int amount) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void sendMessage(String message) {
-        do {
-            int len = message.length() > 100 ? 100 : message.length();
-            sendRawMessage(message.substring(0, len));
-            message = message.substring(len);
-        } while (message.length() > 0);
-    }
-
-    public boolean isOp() {
-        return getServer().getOpsList().contains(getName());
-    }
-
-    public void playEffect(Location loc, Effect effect, int data) {
-        getSession().send(new PlayEffectMessage(effect.getId(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), data));
-    }
-
     public boolean sendChunkChange(Location loc, int sx, int sy, int sz, byte[] data) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+    
+    // -- Achievements & Statistics [mostly borrowed from CraftBukkit]
 
-    /**
-     * Play a note for a player at a location. This requires a note block
-     * at the particular location (as far as the client is concerned). This
-     * will not work without a note block. This will not work with cake.
-     *
-     * @param loc
-     * @param instrument
-     * @param note
-     */
-    public void playNote(Location loc, Instrument instrument, Note note) {
+    public void awardAchievement(Achievement achievement) {
+        sendStatistic(achievement.getId(), 1);
+    }
+
+    public void incrementStatistic(Statistic statistic) {
+        incrementStatistic(statistic, 1);
+    }
+
+    public void incrementStatistic(Statistic statistic, int amount) {
+        sendStatistic(statistic.getId(), amount);
+    }
+
+    public void incrementStatistic(Statistic statistic, Material material) {
+        incrementStatistic(statistic, material, 1);
+    }
+
+    public void incrementStatistic(Statistic statistic, Material material, int amount) {
+        if (!statistic.isSubstatistic()) {
+            throw new IllegalArgumentException("Given statistic is not a substatistic");
+        }
+        if (statistic.isBlock() != material.isBlock()) {
+            throw new IllegalArgumentException("Given material is not valid for this substatistic");
+        }
+
+        int mat = material.getId();
+
+        if (!material.isBlock()) {
+            mat -= 255;
+        }
+
+        sendStatistic(statistic.getId() + mat, amount);
+    }
+
+    private void sendStatistic(int id, int amount) {
+        while (amount > Byte.MAX_VALUE) {
+            sendStatistic(id, Byte.MAX_VALUE);
+            amount -= Byte.MAX_VALUE;
+        }
+
+        if (amount > 0) {
+            session.send(new StatisticMessage(id, (byte) amount));
+        }
+    }
+    
+    // -- Inventory
+
+    public void updateInventory() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+    
+    /**
+     * Get the current item on the player's cursor, for inventory screen purposes.
+     * @return The ItemStack the player is holding.
+     */
+    public ItemStack getItemOnCursor() {
+        return itemOnCursor;
+    }
+    
+    /**
+     * Set the item on the player's cursor, for inventory screen purposes.
+     * @param item The ItemStack to set the cursor to.
+     */
+    public void setItemOnCursor(ItemStack item) {
+        itemOnCursor = item;
+        if (item == null) {
+            session.send(new SetWindowSlotMessage(-1, -1));
+        } else {
+            session.send(new SetWindowSlotMessage(-1, -1, item.getTypeId(), item.getAmount(), item.getDurability()));
+        }
+    }
+    
+    /**
+     * Inform the client that an item has changed.
+     * @param inventory The GlowInventory in which a slot has changed.
+     * @param slot The slot number which has changed.
+     * @param item The ItemStack which the slot has changed to.
+     */
+    public void onSlotSet(GlowInventory inventory, int slot, ItemStack item) {
+        slot = GlowPlayerInventory.inventorySlotToNetwork(slot);
+        if (item == null) {
+            session.send(new SetWindowSlotMessage(inventory.getId(), slot));
+        } else {
+            session.send(new SetWindowSlotMessage(inventory.getId(), slot, item.getTypeId(), item.getAmount(), item.getDurability()));
+        }
+    }
+    
+    // -- Goofy relative time stuff --
     
     /**
      * Sets the current time on the player's client. When relative is true the player's time
@@ -429,7 +467,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      * @param relative When true the player time is kept relative to its world time.
      */
     public void setPlayerTime(long time, boolean relative) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        timeOffset = time % 24000;
+        timeRelative = relative;
+        
+        if (timeOffset < 0) timeOffset += 24000;
     }
 
     /**
@@ -438,7 +479,13 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      * @return
      */
     public long getPlayerTime() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (timeRelative) {
+            // add timeOffset ticks to current time
+            return (world.getTime() + timeOffset) % 24000;
+        } else {
+            // return time offset
+            return timeOffset % 24000;
+        }
     }
 
     /**
@@ -448,7 +495,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      * @return
      */
     public long getPlayerTimeOffset() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return timeOffset;
     }
 
     /**
@@ -458,7 +505,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      * @return true if the player's time is relative to the server time.
      */
     public boolean isPlayerTimeRelative() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return timeRelative;
     }
 
     /**
@@ -466,7 +513,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      * Equivalent to calling setPlayerTime(0, true).
      */
     public void resetPlayerTime() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        setPlayerTime(0, true);
     }
 
 }

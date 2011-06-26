@@ -214,7 +214,7 @@ public final class GlowWorld implements World {
         if (time % 12 == 0) {
             // Only send the time every so often; clients are smart.
             for (GlowPlayer player : getRawPlayers()) {
-                player.getSession().send(new TimeMessage(time));
+                player.getSession().send(new TimeMessage(player.getPlayerTime()));
             }
         }
         
