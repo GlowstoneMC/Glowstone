@@ -115,11 +115,6 @@ public final class GlowServer implements Server {
     private final PlayerListFile opsList = new PlayerListFile("ops.txt");
     
     /**
-     * The plugin manager of this server.
-     */
-    private final SimplePluginManager pluginManager = new SimplePluginManager(this);
-    
-    /**
      * The services manager of this server.
      */
     private final SimpleServicesManager servicesManager = new SimpleServicesManager();
@@ -128,6 +123,11 @@ public final class GlowServer implements Server {
      * The command map of this server.
      */
     private final SimpleCommandMap commandMap = new SimpleCommandMap(this);
+    
+    /**
+     * The plugin manager of this server.
+     */
+    private final SimplePluginManager pluginManager = new SimplePluginManager(this, commandMap);
 
 	/**
 	 * The task scheduler used by this server.
