@@ -18,7 +18,7 @@ public final class KickMessageHandler extends MessageHandler<KickMessage> {
             session.getServer().broadcastMessage(text);
         }
         
-        session.disconnect("Goodbye!");
+        session.disconnect("Goodbye!", true);
     }
 
 }
