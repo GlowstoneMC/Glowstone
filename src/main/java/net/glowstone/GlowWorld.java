@@ -390,8 +390,7 @@ public final class GlowWorld implements World {
     }
 
     public GlowChunk getChunkAt(int x, int z) {
-        GlowChunk ret = chunks.getChunk(x, z);
-        return ret;
+        return chunks.getChunk(x, z);
     }
 
     // get block, chunk, id, highest with locations
