@@ -14,7 +14,6 @@ import net.glowstone.msg.KickMessage;
 import net.glowstone.msg.Message;
 import net.glowstone.msg.handler.HandlerLookupService;
 import net.glowstone.msg.handler.MessageHandler;
-import org.bukkit.ChatColor;
 import org.bukkit.event.player.PlayerKickEvent;
 
 import org.jboss.netty.channel.Channel;
@@ -174,22 +173,30 @@ public final class Session {
      * @param reason The reason for disconnection.
      */
     public void disconnect(String reason) {
-        if (player != null) {
+        disconnect(reason, false);
+    }
+    
+    /**
+     * Disconnects the session with the specified reason. This causes a
+     * {@link KickMessage} to be sent. When it has been delivered, the channel
+     * is closed.
+     * @param reason The reason for disconnection.
+     * @param overrideKick Whether to override the kick event.
+     */
+    public void disconnect(String reason, boolean overrideKick) {
+        if (player != null && !overrideKick) {
             GlowServer.logger.log(Level.INFO, "{0} left the game", player.getName());
-            
+
             PlayerKickEvent event = EventFactory.onPlayerKick(player, reason);
             if (event.isCancelled()) {
                 return;
             }
-            
+
             reason = event.getReason();
-            
+
             if (event.getLeaveMessage() != null) {
                 server.broadcastMessage(event.getLeaveMessage());
             }
-            
-            player.remove();
-            player = null; // in case we are disposed twice
         }
     
         channel.write(new KickMessage(reason)).addListener(ChannelFutureListener.CLOSE);
@@ -235,14 +242,7 @@ public final class Session {
      * one.
      */
     void dispose() {
-        if (player != null) {
-            GlowServer.logger.log(Level.INFO, "{0} left the game", player.getName());
-            
-            String message = EventFactory.onPlayerQuit(player).getQuitMessage();
-            if (message != null) {
-                server.broadcastMessage(message);
-            }
-            
+        if (player != null) {            
             player.remove();
             player = null; // in case we are disposed twice
         }
