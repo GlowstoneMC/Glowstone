@@ -2,9 +2,7 @@ package net.glowstone;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.ArrayList;
@@ -34,6 +32,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.SimpleServicesManager;
 import org.bukkit.plugin.java.JavaPluginLoader;
+import org.bukkit.plugin.PluginLoadOrder;
 
 import net.glowstone.io.McRegionChunkIoService;
 import net.glowstone.net.MinecraftPipelineFactory;
@@ -41,7 +40,7 @@ import net.glowstone.net.Session;
 import net.glowstone.net.SessionRegistry;
 import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.util.PlayerListFile;
-import org.bukkit.plugin.PluginLoadOrder;
+import net.glowstone.inventory.CraftingManager;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.ChannelFactory;
@@ -132,14 +131,19 @@ public final class GlowServer implements Server {
     private final SimplePluginManager pluginManager = new SimplePluginManager(this, commandMap);
 
     /**
-     * The task scheduler used by this server.
-     */
-    private final GlowScheduler scheduler = new GlowScheduler(this);
-
-    /**
      * The world this server is managing.
      */
     private final ArrayList<GlowWorld> worlds = new ArrayList<GlowWorld>();
+
+    /**
+     * The task scheduler used by this server.
+     */
+    private final GlowScheduler scheduler = new GlowScheduler(this);
+    
+    /**
+     * The crafting manager for this server.
+     */
+    private CraftingManager craftingManager = new CraftingManager();
 
     /**
      * Creates a new server.
@@ -251,6 +255,9 @@ public final class GlowServer implements Server {
         try {
             properties.load(new FileInputStream(new File("server.properties")));
             opsList.load();
+            
+            // reset crafting
+            craftingManager.resetRecipes();
             
             // load plugins
             loadPlugins();
@@ -652,6 +659,14 @@ public final class GlowServer implements Server {
     public void configureDbConfig(com.avaje.ebean.config.ServerConfig config) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+    
+    /**
+     * Return the crafting manager.
+     * @return The server's crafting manager.
+     */
+    public CraftingManager getCraftingManager() {
+        return craftingManager;
+    }
 
     /**
      * Adds a recipe to the crafting manager.
@@ -659,7 +674,7 @@ public final class GlowServer implements Server {
      * @return True to indicate that the recipe was added.
      */
     public boolean addRecipe(Recipe recipe) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return craftingManager.addRecipe(recipe);
     }
 
     public Map<String, String[]> getCommandAliases() {
