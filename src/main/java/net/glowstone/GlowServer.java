@@ -3,6 +3,7 @@ package net.glowstone;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.ArrayList;
@@ -10,10 +11,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import jline.ConsoleReader;
+import jline.ArgumentCompletor;
+import jline.Completor;
+import jline.NullCompletor;
+import jline.SimpleCompletor;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -24,6 +32,7 @@ import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
@@ -191,6 +200,8 @@ public final class GlowServer implements Server {
         enablePlugins(PluginLoadOrder.STARTUP);
         createWorld(properties.getProperty("world-name", "world"), Environment.NORMAL);
         enablePlugins(PluginLoadOrder.POSTWORLD);
+
+        new ConsoleCommandThread(this).start();
 
         logger.info("Ready for connections.");
     }
@@ -693,4 +704,61 @@ public final class GlowServer implements Server {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    private class ConsoleCommandThread extends Thread{
+        private Server server;
+        private ConsoleCommandSender sender;
+        public ConsoleCommandThread(Server server){
+            this.server = server;
+            this.sender = new ConsoleCommandSender(server);
+        }
+        public void run(){
+            ConsoleReader reader; 
+            ArgumentCompletor argcomplete = new ArgumentCompletor(new Completor[]{new SimpleCompletor(getAllCommands()), new NullCompletor()});
+            try{
+                reader = new ConsoleReader();
+                reader.addCompletor(argcomplete);
+            }
+            catch(Exception e) {
+                System.err.println("Failed to initialize console command reader.");
+                e.printStackTrace();
+                return;
+            }
+            while (true) {
+                //TODO: Command completion
+                //Needs to get list of all commands?
+                try {
+                    System.out.print(">");
+                    String command = reader.readLine();
+                    if (command == null || command.equals(""))
+                        continue;
+                    boolean success = server.dispatchCommand(sender, command);
+                    if (!success) {
+                        System.out.println("Unable to execute command.");
+                    }
+                }
+                catch (CommandException e) {
+                        System.out.println("Error while executing command.");
+                        e.printStackTrace();
+                }
+                catch (Exception ex) {
+                        ex.printStackTrace();
+                }
+            }
+        }
+        private String[] getAllCommands() {
+            //There's probably a better way of doing this.
+            try {
+                Class clazz = commandMap.getClass();
+                Field knownCommandsField = clazz.getDeclaredField("knownCommands");
+                knownCommandsField.setAccessible(true);
+                Map<String, Command> knownCommands = (Map<String, Command>) knownCommandsField.get(commandMap);
+                return (String[]) knownCommands.keySet().toArray(new String[0]);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                return new String[0];
+            }
+        }
+    }
+                
 }
