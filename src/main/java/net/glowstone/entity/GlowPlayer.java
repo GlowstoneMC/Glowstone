@@ -25,9 +25,11 @@ import net.glowstone.TextWrapper;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowPlayerInventory;
 import net.glowstone.inventory.InventoryViewer;
+import net.glowstone.util.Parameter;
 import net.glowstone.msg.BlockChangeMessage;
 import net.glowstone.msg.ChatMessage;
 import net.glowstone.msg.DestroyEntityMessage;
+import net.glowstone.msg.EntityMetadataMessage;
 import net.glowstone.msg.LoadChunkMessage;
 import net.glowstone.msg.Message;
 import net.glowstone.msg.PlayEffectMessage;
@@ -90,6 +92,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      * The item the player has on their cursor.
      */
     private ItemStack itemOnCursor;
+
+    /**
+     * Whether the player is sneaking.
+     */
+    private boolean sneaking = false;
 
     /**
      * Creates a new player and adds it to the world.
@@ -250,11 +257,22 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
 
     public boolean isSneaking() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return sneaking;
     }
 
     public void setSneaking(boolean sneak) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (EventFactory.onPlayerToggleSneak(this, sneak).isCancelled()) {
+            return;
+        }
+        this.sneaking = sneak;
+        setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, 0, new Byte((byte) (this.sneaking ? 0x02: 0))));
+        // FIXME: other bits in the bitmask would be wiped out
+        EntityMetadataMessage message = new EntityMetadataMessage(id, metadata);
+        for (Player player : world.getPlayers()) {
+            if (player != this && canSee((GlowPlayer) player)) {
+                ((GlowPlayer) player).session.send(message);
+            }
+        }
     }
 
     public boolean isSleepingIgnored() {

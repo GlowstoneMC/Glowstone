@@ -1,7 +1,5 @@
 package net.glowstone.entity;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.glowstone.GlowServer;
       
 import org.bukkit.entity.Creature;
@@ -23,12 +21,7 @@ public final class GlowCreature extends GlowLivingEntity implements Creature {
      * The type of monster.
      */
     private final int type;
-
-    /**
-     * The monster's metadata.
-     */
-    private final List<Parameter<?>> metadata = new ArrayList<Parameter<?>>();
-    
+   
     /**
      * The monster's target.
      */

@@ -65,6 +65,10 @@ public final class EventFactory {
     
     // -- Block Events
 
+    public static PlayerToggleSneakEvent onPlayerToggleSneak(Player player, boolean isSneaking) {
+        return callEvent(new PlayerToggleSneakEvent(player, isSneaking));
+    }
+
     public static BlockBreakEvent onBlockBreak(Block block, Player player) {
         return callEvent(new BlockBreakEvent(block, player));
     }

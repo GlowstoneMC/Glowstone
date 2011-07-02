@@ -1,6 +1,7 @@
 package net.glowstone.entity;
 
 import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import net.glowstone.GlowServer;
 
@@ -13,6 +14,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Snowball;
 import org.bukkit.entity.Vehicle;
 
+import net.glowstone.util.Parameter;
 import net.glowstone.util.Position;
 import net.glowstone.msg.EntityRotationMessage;
 import net.glowstone.msg.EntityTeleportMessage;
@@ -31,6 +33,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * The entity's health.
      */
     protected int health = 0;
+
+    /**
+     * The monster's metadata.
+     */
+    protected final List<Parameter<?>> metadata = new ArrayList<Parameter<?>>();
 
     /**
      * Creates a mob within the specified world.
@@ -181,6 +188,18 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     public void setNoDamageTicks(int ticks) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    protected Parameter<?> getMetadata(int index) {
+        return metadata.get(index);
+    }
+
+    protected void setMetadata(Parameter<?> data) {
+        if(data.getIndex() < metadata.size()) {
+            metadata.set(data.getIndex(), data);
+        } else {
+            metadata.add(data);
+        }
     }
 
 }
