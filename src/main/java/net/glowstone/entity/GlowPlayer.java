@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
-import net.glowstone.EventFactory;
 
 import org.bukkit.Achievement;
 import org.bukkit.ChatColor;
@@ -13,9 +12,13 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
+import org.bukkit.Instrument;
+import org.bukkit.Note;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.event.player.PlayerChatEvent;
 
+import net.glowstone.EventFactory;
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowWorld;
 import net.glowstone.inventory.GlowInventory;
@@ -35,10 +38,6 @@ import net.glowstone.msg.SpawnPositionMessage;
 import net.glowstone.msg.StateChangeMessage;
 import net.glowstone.msg.StatisticMessage;
 import net.glowstone.net.Session;
-import org.bukkit.Instrument;
-import org.bukkit.Note;
-import org.bukkit.event.player.PlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 /**
  * Represents an in-game player.
@@ -215,8 +214,19 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         return session.getAddress();
     }
 
+    @Override
     public boolean isOp() {
         return getServer().getOpsList().contains(getName());
+    }
+    
+    @Override
+    public void setOp(boolean value) {
+        if (value) {
+            getServer().getOpsList().add(getName());
+        } else {
+            getServer().getOpsList().remove(getName());
+        }
+        this.recalculatePermissions();
     }
     
     // -- Malleable properties

@@ -46,6 +46,7 @@ import net.glowstone.net.SessionRegistry;
 import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.util.PlayerListFile;
 import net.glowstone.inventory.CraftingManager;
+import org.bukkit.permissions.Permission;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.ChannelFactory;
@@ -386,6 +387,15 @@ public final class GlowServer implements Server {
 
                 if (!pluginCommands.isEmpty()) {
                     commandMap.registerAll(plugin.getDescription().getName(), pluginCommands);
+                }
+                
+                List<Permission> perms = plugin.getDescription().getPermissions();
+                for (Permission perm : perms) {
+                    try {
+                        pluginManager.addPermission(perm);
+                    } catch (IllegalArgumentException ex) {
+                        getLogger().log(Level.WARNING, "Plugin " + plugin.getDescription().getFullName() + " tried to register permission '" + perm.getName() + "' but it's already registered", ex);
+                    }
                 }
 
                 try {
