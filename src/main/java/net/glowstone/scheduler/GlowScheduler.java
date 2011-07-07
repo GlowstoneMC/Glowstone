@@ -45,6 +45,11 @@ public final class GlowScheduler implements BukkitScheduler {
     private final List<GlowTask> newTasks = new ArrayList<GlowTask>();
 
     /**
+     * A list of tasks to be removed.
+     */
+    private final List<GlowTask> oldTasks = new ArrayList<GlowTask>();
+
+    /**
      * A list of active tasks.
      */
     private final List<GlowTask> tasks = new ArrayList<GlowTask>();
@@ -96,6 +101,14 @@ public final class GlowScheduler implements BukkitScheduler {
             }
             newTasks.clear();
         }
+        
+        // Remove old tasks this tick.
+        synchronized (oldTasks) {
+            for (GlowTask task : oldTasks) {
+                tasks.remove(task);
+            }
+            oldTasks.clear();
+        }
 
         // Run the relevant tasks.
         for (Iterator<GlowTask> it = tasks.iterator(); it.hasNext(); ) {
@@ -138,26 +151,34 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     public void cancelTask(int taskId) {
-        for (Iterator<GlowTask> it = tasks.iterator(); it.hasNext(); ) {
-            GlowTask task = it.next();
-            if (task.getTaskId() == taskId) {
-                it.remove();
-                return;
+        synchronized(oldTasks) {
+            for (Iterator<GlowTask> it = tasks.iterator(); it.hasNext(); ) {
+                GlowTask task = it.next();
+                if (task.getTaskId() == taskId) {
+                    oldTasks.add(task);
+                    return;
+                }
             }
         }
     }
 
     public void cancelTasks(Plugin plugin) {
-        for (Iterator<GlowTask> it = tasks.iterator(); it.hasNext(); ) {
-            GlowTask task = it.next();
-            if (task.getOwner() == plugin) {
-                it.remove();
+        synchronized(oldTasks) {
+            for (Iterator<GlowTask> it = tasks.iterator(); it.hasNext(); ) {
+                GlowTask task = it.next();
+                if (task.getOwner() == plugin) {
+                    oldTasks.add(task);
+                }
             }
         }
     }
 
     public void cancelAllTasks() {
-        tasks.clear();
+        synchronized(oldTasks) {
+            for (Iterator<GlowTask> it = tasks.iterator(); it.hasNext(); ) {
+                oldTasks.add(it.next());
+            }
+        }
     }
 
     public boolean isCurrentlyRunning(int taskId) {
