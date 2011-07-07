@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 
 import net.glowstone.GlowServer;
-import org.bukkit.entity.Player;
 
 /**
  * Common base class for inbuilt Glowstone commands.
@@ -41,6 +42,8 @@ public abstract class GlowCommand extends Command {
     protected boolean tellOps(CommandSender sender, String message) {
         if (sender instanceof Player) {
             message = "(" + ((Player) sender).getName() + ": " + message + ")";
+        } else if (sender instanceof ConsoleCommandSender) {
+            message = "(CONSOLE: " + message + ")";
         } else {
             message = "(" + sender.getClass().getName() + ": " + message + ")";
         }

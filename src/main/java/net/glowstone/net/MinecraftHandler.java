@@ -22,11 +22,6 @@ import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 public class MinecraftHandler extends SimpleChannelUpstreamHandler {
 
     /**
-     * The logger for this class.
-     */
-    private static final Logger logger = Logger.getLogger(MinecraftHandler.class.getName());
-
-    /**
      * The server.
      */
     private final GlowServer server;
@@ -48,7 +43,7 @@ public class MinecraftHandler extends SimpleChannelUpstreamHandler {
         server.getSessionRegistry().add(session);
         ctx.setAttachment(session);
 
-        logger.info("Channel connected: " + c + ".");
+        server.getLogger().info("Channel connected: " + c + ".");
     }
 
     @Override
@@ -60,7 +55,7 @@ public class MinecraftHandler extends SimpleChannelUpstreamHandler {
         server.getSessionRegistry().remove(session);
         session.dispose();
 
-        logger.info("Channel disconnected: " + c + ".");
+        server.getLogger().info("Channel disconnected: " + c + ".");
     }
 
     @Override
@@ -73,7 +68,7 @@ public class MinecraftHandler extends SimpleChannelUpstreamHandler {
     public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) {
         Channel c = e.getChannel();
         if (c.isOpen()) {
-            logger.log(Level.WARNING, "Exception caught, closing channel: " + c + "...", e.getCause());
+            server.getLogger().log(Level.WARNING, "Exception caught, closing channel: " + c + "...", e.getCause());
             c.close();
         }
     }

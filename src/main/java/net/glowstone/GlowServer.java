@@ -11,17 +11,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import jline.ConsoleReader;
-import jline.ArgumentCompletor;
-import jline.Completor;
-import jline.NullCompletor;
-import jline.SimpleCompletor;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -32,7 +25,6 @@ import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
@@ -67,7 +59,7 @@ public final class GlowServer implements Server {
     /**
      * The logger for this class.
      */
-    public static final Logger logger = Logger.getLogger(GlowServer.class.getName());
+    public static final Logger logger = Logger.getLogger("Minecraft");
             
     /**
      * The configuration the server uses.
@@ -120,9 +112,9 @@ public final class GlowServer implements Server {
     private final SessionRegistry sessions = new SessionRegistry();
     
     /**
-     * The list of OPs on the server.
+     * The console manager of this server.
      */
-    private final PlayerListFile opsList = new PlayerListFile("ops.txt");
+    private final ConsoleManager consoleManager = new ConsoleManager(this, true);
     
     /**
      * The services manager of this server.
@@ -138,6 +130,16 @@ public final class GlowServer implements Server {
      * The plugin manager of this server.
      */
     private final SimplePluginManager pluginManager = new SimplePluginManager(this, commandMap);
+    
+    /**
+     * The crafting manager for this server.
+     */
+    private final CraftingManager craftingManager = new CraftingManager();
+    
+    /**
+     * The list of OPs on the server.
+     */
+    private final PlayerListFile opsList = new PlayerListFile("ops.txt");
 
     /**
      * The world this server is managing.
@@ -148,11 +150,6 @@ public final class GlowServer implements Server {
      * The task scheduler used by this server.
      */
     private final GlowScheduler scheduler = new GlowScheduler(this);
-    
-    /**
-     * The crafting manager for this server.
-     */
-    private CraftingManager craftingManager = new CraftingManager();
 
     /**
      * Creates a new server.
@@ -201,20 +198,44 @@ public final class GlowServer implements Server {
         createWorld(properties.getProperty("world-name", "world"), Environment.NORMAL);
         enablePlugins(PluginLoadOrder.POSTWORLD);
 
-        new ConsoleCommandThread(this).start();
-
         logger.info("Ready for connections.");
+    }
+    
+    /**
+     * Stops this server.
+     */
+    public void stop() {
+        logger.info("The server is shutting down...");
+        
+        // Disable plugins
+        pluginManager.disablePlugins();
+        
+        // Save worlds
+        for (World world : getWorlds()) {
+            world.save();
+        }
+        
+        // Kick (and save) all players
+        for (Player player : getOnlinePlayers()) {
+            player.kickPlayer("Server shutting down.");
+        }
+        
+        // Print out all threads
+        for (Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
+            String lastTrace = "NO TRACE";
+            if (entry.getValue().length >= 1) {
+                lastTrace = entry.getValue()[entry.getValue().length - 1].toString();
+            }
+            System.out.println(entry.getKey() + " [" + entry.getKey().isDaemon() + "]: " + lastTrace);
+        }
     }
     
     /**
      * Loads all plugins, calling onLoad, &c.
      */
     private void loadPlugins() {
-        // clear and reregister our commands
+        // clear the map
         commandMap.clearCommands();
-        commandMap.register("glowstone", new net.glowstone.command.OpCommand(this));
-        commandMap.register("glowstone", new net.glowstone.command.DeopCommand(this));
-        commandMap.register("glowstone", new net.glowstone.command.ListCommand(this));
             
         File folder = new File(properties.getProperty("plugin-folder", "plugins"));
         folder.mkdirs();
@@ -233,6 +254,13 @@ public final class GlowServer implements Server {
                 ex.printStackTrace();
             }
         }
+        
+        // register our commands after plugins so they can override them
+        commandMap.register("#", new net.glowstone.command.OpCommand(this));
+        commandMap.register("#", new net.glowstone.command.DeopCommand(this));
+        commandMap.register("#", new net.glowstone.command.ListCommand(this));
+        commandMap.register("#", new net.glowstone.command.ColorCommand(this));
+        commandMap.register("#", new net.glowstone.command.StopCommand(this));
     }
     
     /**
@@ -328,6 +356,25 @@ public final class GlowServer implements Server {
         for (GlowWorld world : worlds)
             result.add(world);
         return result;
+    }
+    
+    /**
+     * Reflectionize available commands.
+     * @return A list of all commands at the time.
+     */
+    protected String[] getAllCommands() {
+        // There's probably a better way of doing this.
+        try {
+            Class clazz = commandMap.getClass();
+            Field knownCommandsField = clazz.getDeclaredField("knownCommands");
+            knownCommandsField.setAccessible(true);
+            Map<String, Command> knownCommands = (Map<String, Command>) knownCommandsField.get(commandMap);
+            return (String[]) knownCommands.keySet().toArray(new String[0]);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return new String[0];
+        }
     }
 
     /**
@@ -702,63 +749,6 @@ public final class GlowServer implements Server {
 
     public boolean getOnlineMode() {
         throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    private class ConsoleCommandThread extends Thread{
-        private Server server;
-        private ConsoleCommandSender sender;
-        public ConsoleCommandThread(Server server){
-            this.server = server;
-            this.sender = new ConsoleCommandSender(server);
-        }
-        public void run(){
-            ConsoleReader reader; 
-            ArgumentCompletor argcomplete = new ArgumentCompletor(new Completor[]{new SimpleCompletor(getAllCommands()), new NullCompletor()});
-            try{
-                reader = new ConsoleReader();
-                reader.addCompletor(argcomplete);
-            }
-            catch(Exception e) {
-                System.err.println("Failed to initialize console command reader.");
-                e.printStackTrace();
-                return;
-            }
-            while (true) {
-                //TODO: Command completion
-                //Needs to get list of all commands?
-                try {
-                    System.out.print(">");
-                    String command = reader.readLine();
-                    if (command == null || command.equals(""))
-                        continue;
-                    boolean success = server.dispatchCommand(sender, command);
-                    if (!success) {
-                        System.out.println("Unable to execute command.");
-                    }
-                }
-                catch (CommandException e) {
-                        System.out.println("Error while executing command.");
-                        e.printStackTrace();
-                }
-                catch (Exception ex) {
-                        ex.printStackTrace();
-                }
-            }
-        }
-        private String[] getAllCommands() {
-            //There's probably a better way of doing this.
-            try {
-                Class clazz = commandMap.getClass();
-                Field knownCommandsField = clazz.getDeclaredField("knownCommands");
-                knownCommandsField.setAccessible(true);
-                Map<String, Command> knownCommands = (Map<String, Command>) knownCommandsField.get(commandMap);
-                return (String[]) knownCommands.keySet().toArray(new String[0]);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-                return new String[0];
-            }
-        }
     }
                 
 }
