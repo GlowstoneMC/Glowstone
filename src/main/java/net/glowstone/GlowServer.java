@@ -44,6 +44,7 @@ import net.glowstone.util.PlayerListFile;
 import net.glowstone.inventory.CraftingManager;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
+import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFactory;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.group.ChannelGroup;
@@ -197,6 +198,7 @@ public final class GlowServer implements Server {
         enablePlugins(PluginLoadOrder.STARTUP);
         createWorld(properties.getProperty("world-name", "world"), Environment.NORMAL);
         enablePlugins(PluginLoadOrder.POSTWORLD);
+        registerCommands();
 
         logger.info("Ready for connections.");
     }
@@ -207,8 +209,9 @@ public final class GlowServer implements Server {
     public void stop() {
         logger.info("The server is shutting down...");
         
-        // Disable plugins
-        pluginManager.disablePlugins();
+        // Stop scheduler and disable plugins
+        scheduler.stop();
+        pluginManager.clearPlugins();
         
         // Save worlds
         for (World world : getWorlds()) {
@@ -220,14 +223,9 @@ public final class GlowServer implements Server {
             player.kickPlayer("Server shutting down.");
         }
         
-        // Print out all threads
-        for (Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
-            String lastTrace = "NO TRACE";
-            if (entry.getValue().length >= 1) {
-                lastTrace = entry.getValue()[entry.getValue().length - 1].toString();
-            }
-            System.out.println(entry.getKey() + " [" + entry.getKey().isDaemon() + "]: " + lastTrace);
-        }
+        // Gracefully stop Netty
+        group.close();
+        bootstrap.getFactory().releaseExternalResources();
     }
     
     /**
@@ -254,17 +252,10 @@ public final class GlowServer implements Server {
                 ex.printStackTrace();
             }
         }
-        
-        // register our commands after plugins so they can override them
-        commandMap.register("#", new net.glowstone.command.OpCommand(this));
-        commandMap.register("#", new net.glowstone.command.DeopCommand(this));
-        commandMap.register("#", new net.glowstone.command.ListCommand(this));
-        commandMap.register("#", new net.glowstone.command.ColorCommand(this));
-        commandMap.register("#", new net.glowstone.command.StopCommand(this));
     }
     
     /**
-     * 
+     * Enable all plugins of the given load order type.
      * @param type The type of plugin to enable.
      */
     public void enablePlugins(PluginLoadOrder type) {
@@ -286,6 +277,19 @@ public final class GlowServer implements Server {
             }
         }
     }
+    
+    /**
+     * Registers built-in Glowstone commands and refreshes the autocomplete index.
+     */
+    private void registerCommands() {
+        commandMap.register("#", new net.glowstone.command.OpCommand(this));
+        commandMap.register("#", new net.glowstone.command.DeopCommand(this));
+        commandMap.register("#", new net.glowstone.command.ListCommand(this));
+        commandMap.register("#", new net.glowstone.command.ColorCommand(this));
+        commandMap.register("#", new net.glowstone.command.StopCommand(this));
+        
+        consoleManager.refreshCommands();
+    }
 
     /**
      * Reloads the server, refreshing settings and plugin information
@@ -302,6 +306,7 @@ public final class GlowServer implements Server {
             loadPlugins();
             enablePlugins(PluginLoadOrder.STARTUP);
             enablePlugins(PluginLoadOrder.POSTWORLD);
+            registerCommands();
             
             // TODO: register aliases
         }

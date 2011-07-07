@@ -6,6 +6,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.logging.Formatter;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
@@ -15,6 +16,7 @@ import java.util.logging.Logger;
 import jline.ArgumentCompletor;
 import jline.Completor;
 import jline.ConsoleReader;
+import jline.NullCompletor;
 import jline.SimpleCompletor;
 
 import org.bukkit.ChatColor;
@@ -71,10 +73,12 @@ public class ConsoleManager {
     }
     
     public void refreshCommands() {
-        for (Object c : reader.getCompletors()) {
+        for (Object c : new ArrayList(reader.getCompletors())) {
             reader.removeCompletor((Completor) c);
         }
-        reader.addCompletor(new ArgumentCompletor(new SimpleCompletor(server.getAllCommands())));
+        
+        Completor[] list = new Completor[] { new SimpleCompletor(server.getAllCommands()), new NullCompletor() };
+        reader.addCompletor(new ArgumentCompletor(list));
     }
     
     public String colorize(String string) {

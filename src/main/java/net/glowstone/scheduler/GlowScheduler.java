@@ -73,6 +73,14 @@ public final class GlowScheduler implements BukkitScheduler {
             }
         }, 0, PULSE_EVERY, TimeUnit.MILLISECONDS);
     }
+    
+    /**
+     * Stops the scheduler and all tasks.
+     */
+    public void stop() {
+        cancelAllTasks();
+        executor.shutdown();
+    }
 
     /**
      * Schedules the specified task.
