@@ -351,6 +351,20 @@ public final class GlowServer implements Server {
         }
         return null;
     }
+
+    /**
+     * Gets the world from the given Unique ID
+     *
+     * @param uid Unique ID of the world to retrieve.
+     * @return World with the given Unique ID, or null if none exists.
+     */
+    public GlowWorld getWorld(long uid) {
+        for (GlowWorld world : worlds) {
+            if (world.getUID() == uid)
+                return world;
+        }
+        return null;
+    }
     
     /**
      * Gets the list of worlds currently loaded.

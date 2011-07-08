@@ -329,6 +329,10 @@ public final class GlowWorld implements World {
         return seed;
     }
 
+    public long getUID() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     public String getName() {
         return name;
     }
