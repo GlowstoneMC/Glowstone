@@ -72,6 +72,7 @@ public final class CodecLookupService {
             /* 0x3C */ bind(ExplosionCodec.class);
             /* 0x3D */ bind(PlayEffectCodec.class);
             /* 0x46 */ bind(StateChangeCodec.class);
+            /* 0x47 */ bind(SpawnLightningStrikeCodec.class);
             /* 0x64 */ bind(OpenWindowCodec.class);
             /* 0x65 */ bind(CloseWindowCodec.class);
             /* 0x66 */ bind(WindowClickCodec.class);

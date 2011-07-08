@@ -628,7 +628,7 @@ public final class GlowServer implements Server {
      */
     public GlowWorld createWorld(String name, Environment environment, long seed, ChunkGenerator generator) {
         if (getWorld(name) != null) return getWorld(name);
-        GlowWorld world = new GlowWorld(name, environment, seed, new McRegionChunkIoService(new File(name)), generator);
+        GlowWorld world = new GlowWorld(this, name, environment, seed, new McRegionChunkIoService(new File(name)), generator);
         if (world != null) worlds.add(world);
         return world;
     }
