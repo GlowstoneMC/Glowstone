@@ -184,12 +184,48 @@ public final class CraftingManager {
         addRecipe(new ShapedRecipe(new ItemStack(Material.ARROW)).shape("^","|","f").setIngredient('^', Material.FLINT).setIngredient('|', Material.STICK).setIngredient('f', Material.FEATHER)); // Arrow
         
         // Transportation Recipes
+        addRecipe(new ShapedRecipe(new ItemStack(Material.MINECART)).shape("i i","iii").setIngredient('i', Material.IRON_INGOT));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.POWERED_MINECART)).shape("f","m").setIngredient('f', Material.FURNACE).setIngredient('m', Material.MINECART));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.STORAGE_MINECART)).shape("c","m").setIngredient('c', Material.CHEST).setIngredient('m', Material.MINECART));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.RAILS, 16)).shape("i i","isi","i i").setIngredient('i', Material.IRON_INGOT).setIngredient('s', Material.STICK));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.POWERED_RAIL, 16)).shape("g g","gsg","grg").setIngredient('g', Material.GOLD_INGOT).setIngredient('s', Material.STICK).setIngredient('r', Material.REDSTONE));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.DETECTOR_RAIL, 16)).shape("i i","ipi","iri").setIngredient('i', Material.IRON_INGOT).setIngredient('p', Material.STONE_PLATE).setIngredient('r', Material.REDSTONE));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.BOAT)).shape("w w","www").setIngredient('w', Material.WOOD));
         
         // Mechanism Recipes
+        addRecipe(new ShapedRecipe(new ItemStack(Material.WOOD_DOOR)).shape("ww","ww","ww").setIngredient('w', Material.WOOD));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.IRON_DOOR)).shape("ii","ii","ii").setIngredient('i', Material.IRON_INGOT));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.TRAP_DOOR)).shape("www","www").setIngredient('w', Material.WOOD));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.WOOD_PLATE)).shape("ww").setIngredient('w', Material.WOOD));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.STONE_PLATE)).shape("ss").setIngredient('s', Material.STONE));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.STONE_BUTTON)).shape("s","s").setIngredient('s', Material.STONE));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.REDSTONE_TORCH_ON)).shape("r","/").setIngredient('r', Material.REDSTONE).setIngredient('/', Material.STICK));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.LEVER)).shape("/","s").setIngredient('s', Material.COBBLESTONE).setIngredient('/', Material.STICK));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.NOTE_BLOCK)).shape("www","wrw","www").setIngredient('w', Material.WOOD).setIngredient('r', Material.REDSTONE));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.JUKEBOX)).shape("www","wdw","www").setIngredient('w', Material.WOOD).setIngredient('d', Material.DIAMOND));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.DISPENSER)).shape("ccc", "cbc", "crc").setIngredient('c', Material.COBBLESTONE).setIngredient('b', Material.BOW).setIngredient('r', Material.REDSTONE));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.DIODE)).shape("trt","sss").setIngredient('t', Material.REDSTONE_TORCH_ON).setIngredient('r', Material.REDSTONE).setIngredient('s', Material.STONE));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.PISTON_BASE)).shape("www","sis","srs").setIngredient('w', Material.WOOD).setIngredient('s', Material.COBBLESTONE).setIngredient('i', Material.IRON_INGOT).setIngredient('r', Material.REDSTONE));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.PISTON_STICKY_BASE)).shape("s","p").setIngredient('s', Material.SLIME_BALL).setIngredient('p', Material.PISTON_BASE));
         
         // Food Recipes
+        addRecipe(new ShapedRecipe(new ItemStack(Material.BOWL)).shape("w w"," w ").setIngredient('w', Material.WOOD));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.MUSHROOM_SOUP)).shape("r","b","u").setIngredient('r', Material.RED_MUSHROOM).setIngredient('b', Material.BROWN_MUSHROOM).setIngredient('u', Material.BOWL));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.MUSHROOM_SOUP)).shape("b","r","u").setIngredient('r', Material.RED_MUSHROOM).setIngredient('b', Material.BROWN_MUSHROOM).setIngredient('u', Material.BOWL));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.BREAD)).shape("www").setIngredient('w', Material.WHEAT));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.SUGAR)).shape("s").setIngredient('s', Material.SUGAR_CANE));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.CAKE)).shape("mmm","ses","www").setIngredient('m', Material.MILK_BUCKET).setIngredient('s', Material.SUGAR).setIngredient('e', Material.EGG).setIngredient('w', Material.WHEAT));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.COOKIE, 8)).shape("wdw").setIngredient('w', Material.WHEAT).setIngredient('d', Material.INK_SACK, 3));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.GOLDEN_APPLE)).shape("ggg","gag","ggg").setIngredient('g', Material.GOLD_BLOCK).setIngredient('a', Material.APPLE));
         
         // Miscellaneous Recipes
+        addRecipe(new ShapedRecipe(new ItemStack(Material.PAINTING)).shape("///","/w/","///").setIngredient('/', Material.STICK).setIngredient('w', Material.WOOL));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.SIGN)).shape("www","www"," / ").setIngredient('w', Material.WOOD).setIngredient('/', Material.STICK));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.LADDER, 2)).shape("/ /","///","/ /").setIngredient('/', Material.STICK));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.PAPER, 3)).shape("sss").setIngredient('s', Material.SUGAR_CANE));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.BOOK)).shape("p","p","p").setIngredient('p', Material.PAPER));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.FENCE, 2)).shape("///","///").setIngredient('/', Material.STICK));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.BED)).shape("ccc","www").setIngredient('c', Material.WOOL).setIngredient('w', Material.WOOD)); 
         
         // Dye Recipes
         addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 1, (byte) 1)).addIngredient(Material.RED_ROSE)); // Rose Red
@@ -210,7 +246,7 @@ public final class CraftingManager {
         
         
         // Wool Recipies
-        for (int i = 0; i < 16; ++i) {
+        for (int i = 1; i < 16; ++i) {
             // Note: data for wool and dye is inverse, hence 15-i
             addRecipe(new ShapelessRecipe(new ItemStack(Material.WOOL, 1, (byte) i)).addIngredient(Material.WOOL).addIngredient(Material.INK_SACK, (byte)(15 - i)));
         }
@@ -228,7 +264,8 @@ public final class CraftingManager {
         addRecipe(new FurnaceRecipe(new ItemStack(Material.DIAMOND), Material.DIAMOND_ORE));
         
         // Yay!
-        GlowServer.logger.log(Level.INFO, "Registered {0},{1},{2} recipes", new Object[]{shapedRecipes.size(), shapelessRecipes.size(), furnaceRecipes.size()});
+        int shape = shapedRecipes.size(), nshape = shapelessRecipes.size(), furnace = furnaceRecipes.size();
+        GlowServer.logger.log(Level.INFO, "Registered {0}/{1}/{2} ({3}) recipes", new Object[] { shape, nshape, furnace, shape + nshape + furnace });
     }
     
     private enum CraftingSet {
