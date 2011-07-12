@@ -11,7 +11,7 @@ import net.glowstone.util.ChannelBufferUtils;
 public final class PlayEffectCodec extends MessageCodec<PlayEffectMessage> {
 
     public PlayEffectCodec() {
-        super(PlayEffectMessage.class, 0x64);
+        super(PlayEffectMessage.class, 0x3d);
     }
 
     @Override
@@ -26,7 +26,7 @@ public final class PlayEffectCodec extends MessageCodec<PlayEffectMessage> {
 
     @Override
     public ChannelBuffer encode(PlayEffectMessage message) throws IOException {
-        ChannelBuffer buffer = ChannelBuffers.dynamicBuffer();
+        ChannelBuffer buffer = ChannelBuffers.buffer(17);
         buffer.writeInt(message.getId());
         buffer.writeInt(message.getX());
         buffer.writeByte(message.getY());
