@@ -59,7 +59,15 @@ public class GlowBlock implements Block {
     }
 
     public Biome getBiome() {
-        return Biome.PLAINS;
+        return getWorld().getBiome(x, z);
+    }
+
+    public double getTemperature() {
+        return getWorld().getTemperature(x, z);
+    }
+
+    public double getHumidity() {
+        return getWorld().getHumidity(x, z);
     }
 
     // getFace & getRelative
@@ -123,6 +131,14 @@ public class GlowBlock implements Block {
         }
         
         return true;
+    }
+
+    public boolean isEmpty() {
+        return getType() == Material.AIR;
+    }
+
+    public boolean isLiquid() {
+        return getType() == Material.WATER || getType() == Material.STATIONARY_WATER || getType() == Material.LAVA || getType() == Material.STATIONARY_LAVA;
     }
 
     // data and light getters/setters

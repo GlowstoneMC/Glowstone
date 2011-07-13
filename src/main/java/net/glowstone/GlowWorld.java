@@ -16,6 +16,7 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.TreeType;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Boat;
@@ -417,6 +418,14 @@ public final class GlowWorld implements World {
         return getHighestBlockYAt(location.getBlockX(), location.getBlockZ());
     }
 
+    public Block getHighestBlockAt(int x, int z) {
+        return getBlockAt(x, getHighestBlockYAt(x, z), z);
+    }
+
+    public Block getHighestBlockAt(Location location) {
+        return getBlockAt(location.getBlockX(), getHighestBlockYAt(location), location.getBlockZ());
+    }
+
     public Chunk getChunkAt(Location location) {
         return getChunkAt(location.getBlockX(), location.getBlockZ());
     }
@@ -505,6 +514,20 @@ public final class GlowWorld implements World {
         }
         
         return result;
+    }
+    
+    // biomes
+
+    public Biome getBiome(int x, int z) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public double getTemperature(int x, int z) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public double getHumidity(int x, int z) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     // entity spawning
