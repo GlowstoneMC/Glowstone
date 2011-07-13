@@ -31,6 +31,32 @@ public final class CraftingManager {
         // Report stats
         int shape = shapedRecipes.size(), nshape = shapelessRecipes.size(), furnace = furnaceRecipes.size(), fuel = furnaceFuels.size();
         GlowServer.logger.log(Level.INFO, "Recipes: {0} shaped, {1} shapeless, {2} furnace, {3} fuels.", new Object[] { shape, nshape, furnace, fuel });
+        
+        testRecipe("workbench", new ItemStack(Material.WORKBENCH), s("WOOD"), s("WOOD"), s("WOOD"), s("WOOD"));
+        testRecipe("iron", new ItemStack(Material.IRON_INGOT, 9), s("IRON_BLOCK"));
+    }
+    
+    private ItemStack s(String s) {
+        return new ItemStack(Material.getMaterial(s), 1);
+    }
+    
+    /**
+     * Tests a recipe to make sure it 
+     */
+    private void testRecipe(String name, ItemStack want, ItemStack... input) {
+        Recipe recipe = getCraftingRecipe(input);
+        if (recipe == null) {
+            if (want == null) {
+                System.out.println("Test " + name + ": OK [null]");
+            } else {
+                System.out.println("Test " + name + ": FAIL: want " + want + " got null");
+            }
+        } else if (want.equals(recipe.getResult())) {
+            System.out.println("Test " + name + ": OK [" + want + "]");
+        } else {
+            String result = (recipe == null) ? null : recipe.getResult().toString();
+            System.out.println("Test " + name + ": FAIL: want " + want + " got " + result);
+        }
     }
     
     /**
@@ -106,23 +132,60 @@ public final class CraftingManager {
             
             if (rows == 0 || cols == 0) continue;
             
+            //System.out.println("Testing shaped recipe " + recipe.getResult());
+            
             for (int rStart = 0; rStart <= size - rows; ++rStart) {
                 for (int cStart = 0; cStart <= size - cols; ++cStart) {
+                    //System.out.println("Checking start " + rStart + "," + cStart);
                     boolean failed = false;
-                    for (int row = rStart; row < rows; ++row) {
-                        for (int col = cStart; col < cols; ++col) {
+                    boolean[] accountedFor = new boolean[items.length];
+                    
+                    for (int row = 0; row < rows; ++row) {
+                        for (int col = 0; col < cols; ++col) {
                             ItemStack given = items[(rStart + row) * size + cStart + col];
                             char ingredientChar = shape[row].length() >= col - 1 ? shape[row].charAt(col) : ' ';
-                            if (given == null && ingredientChar != ' ') {
+                            
+                            //System.out.println("Checking " + row + "," + col + ": " + given + " " + ingredientChar);
+                            
+                            if (given == null) {
+                                if (ingredientChar != ' ') {
+                                    failed = true;
+                                    break;
+                                } else {
+                                    accountedFor[(rStart + row) * size + cStart + col] = true;
+                                }
+                            } else if (ingredients.get(ingredientChar) == null) {
                                 failed = true;
                                 break;
-                            }
-                            if (!given.getData().equals(ingredients.get(ingredientChar))) {
-                                failed = true;
-                                break;
+                            } else {
+                                MaterialData data = ingredients.get(ingredientChar);
+                                //System.out.println("Checking " + given + " against " + data);
+                                if (data.getItemType() != given.getType()) {
+                                    //System.out.println("Type does not equal");
+                                    failed = true;
+                                    break;
+                                } else if (data.getData() >= 0 && data.getData() != given.getDurability()) {
+                                    //System.out.println("Data does not equal");
+                                    failed = true;
+                                    break;
+                                } else {
+                                    //System.out.println("Type and data equal");
+                                    accountedFor[(rStart + row) * size + cStart + col] = true;
+                                }
                             }
                         }
+                        if (failed) {
+                            break;
+                        }
                     }
+                    
+                    for (int i = 0; i < accountedFor.length; ++i) {
+                        if (!accountedFor[i]) {
+                            failed = true;
+                            break;
+                        }
+                    }
+                    
                     if (!failed) {
                         return recipe;
                     }
@@ -138,10 +201,18 @@ public final class CraftingManager {
             for (MaterialData ingredient : recipe.getIngredientList()) {
                 boolean found = false;
                 for (int i = 0; i < items.length; ++i) {
-                    if (!accountedFor[i] && items[i].getData().equals(ingredient)) {
-                        found = true;
-                        accountedFor[i] = true;
-                        break;
+                    if (!accountedFor[i]) {
+                        if (ingredient.getItemType() != items[i].getType()) {
+                            failed = true;
+                            break;
+                        } else if (ingredient.getData() >= 0 && ingredient.getData() != items[i].getDurability()) {
+                            failed = true;
+                            break;
+                        } else {
+                            found = true;
+                            accountedFor[i] = true;
+                            break;
+                        }
                     }
                 }
                 if (!found) {
@@ -177,10 +248,9 @@ public final class CraftingManager {
         
         // Crafting sets
         for (CraftingSet set : CraftingSet.values()) {
-            if (set.getBlockSize() == 2) {
-                addRecipe(new ShapedRecipe(new ItemStack(set.getBlock(), 1)).shape("xx", "xx").setIngredient('x', set.getInput()));
-            } else if (set.getBlockSize() == 3) {
+            if (set.getBlock() != null) {
                 addRecipe(new ShapedRecipe(new ItemStack(set.getBlock(), 1)).shape("xxx", "xxx", "xxx").setIngredient('x', set.getInput()));
+                addRecipe(new ShapedRecipe(new ItemStack(set.getInput(), 9)).shape("x").setIngredient('x', set.getBlock()));
             }
             
             if (set.getArmor() != null) {
@@ -201,23 +271,30 @@ public final class CraftingManager {
         }
         
         // Basic Recipes
-        addRecipe(new ShapedRecipe(new ItemStack(Material.WOOD, 4)).shape("l").setIngredient('l', Material.LOG)); // Wooden Planks
+        addRecipe(new ShapedRecipe(new ItemStack(Material.WOOD, 4)).shape("l").setIngredient('l', Material.LOG, -1)); // Wooden Planks
         addRecipe(new ShapedRecipe(new ItemStack(Material.STICK, 4)).shape("w", "w").setIngredient('w', Material.WOOD)); // Sticks
-        addRecipe(new ShapedRecipe(new ItemStack(Material.TORCH, 4)).shape("c", "s").setIngredient('c', Material.COAL).setIngredient('s', Material.STICK)); // Torches
+        addRecipe(new ShapedRecipe(new ItemStack(Material.TORCH, 4)).shape("c", "s").setIngredient('c', Material.COAL, -1).setIngredient('s', Material.STICK)); // Torches
         addRecipe(new ShapedRecipe(new ItemStack(Material.WORKBENCH)).shape("ww", "ww").setIngredient('w', Material.WOOD)); // Workbench
         addRecipe(new ShapedRecipe(new ItemStack(Material.FURNACE)).shape("ccc", "c c", "ccc").setIngredient('c', Material.COBBLESTONE)); // Furnace
         addRecipe(new ShapedRecipe(new ItemStack(Material.CHEST)).shape("www","w w","www").setIngredient('w', Material.WOOD)); // Chest
         
         // Block Recipes
         addRecipe(new ShapedRecipe(new ItemStack(Material.LAPIS_BLOCK)).shape("xxx","xxx","xxx").setIngredient('x', Material.INK_SACK, 4)); // Lapis
+        addRecipe(new ShapedRecipe(new ItemStack(Material.INK_SACK, 9, (byte) 4)).shape("xxx","xxx","xxx").setIngredient('x', Material.LAPIS_BLOCK));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.GLOWSTONE)).shape("xx","xx").setIngredient('x', Material.GLOWSTONE_DUST));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.WOOL)).shape("xx","xx").setIngredient('x', Material.STRING));
         addRecipe(new ShapedRecipe(new ItemStack(Material.TNT)).shape("-o-","o-o","-o-").setIngredient('-', Material.SULPHUR).setIngredient('o', Material.SAND)); // TNT
-        addRecipe(new ShapedRecipe(new ItemStack(Material.STEP, 1, (byte)0)).shape("xxx").setIngredient('x', Material.STONE)); // Slab #0
-        addRecipe(new ShapedRecipe(new ItemStack(Material.STEP, 1, (byte)1)).shape("xxx").setIngredient('x', Material.SANDSTONE)); // Slab #1
-        addRecipe(new ShapedRecipe(new ItemStack(Material.STEP, 1, (byte)2)).shape("xxx").setIngredient('x', Material.WOOD)); // Slab #2
-        addRecipe(new ShapedRecipe(new ItemStack(Material.STEP, 1, (byte)3)).shape("xxx").setIngredient('x', Material.COBBLESTONE)); // Slab #3
-        addRecipe(new ShapedRecipe(new ItemStack(Material.COBBLESTONE_STAIRS, 1)).shape("x  ","xx ","xxx").setIngredient('x', Material.COBBLESTONE)); // Stairs one
-        addRecipe(new ShapedRecipe(new ItemStack(Material.WOOD_STAIRS)).shape("x  ","xx ","xxx").setIngredient('x', Material.WOOD)); // Stairs two
+        addRecipe(new ShapedRecipe(new ItemStack(Material.STEP, 3, (byte)0)).shape("xxx").setIngredient('x', Material.STONE)); // Slab #0
+        addRecipe(new ShapedRecipe(new ItemStack(Material.STEP, 3, (byte)1)).shape("xxx").setIngredient('x', Material.SANDSTONE)); // Slab #1
+        addRecipe(new ShapedRecipe(new ItemStack(Material.STEP, 3, (byte)2)).shape("xxx").setIngredient('x', Material.WOOD)); // Slab #2
+        addRecipe(new ShapedRecipe(new ItemStack(Material.STEP, 3, (byte)3)).shape("xxx").setIngredient('x', Material.COBBLESTONE)); // Slab #3
+        addRecipe(new ShapedRecipe(new ItemStack(Material.COBBLESTONE_STAIRS, 4)).shape("x  ","xx ","xxx").setIngredient('x', Material.COBBLESTONE)); // Stairs one
+        addRecipe(new ShapedRecipe(new ItemStack(Material.WOOD_STAIRS, 4)).shape("x  ","xx ","xxx").setIngredient('x', Material.WOOD)); // Stairs two
+        addRecipe(new ShapedRecipe(new ItemStack(Material.SNOW_BLOCK)).shape("xx","xx").setIngredient('x', Material.SNOW_BALL));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.CLAY)).shape("xx","xx").setIngredient('x', Material.CLAY_BALL));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.BRICK)).shape("xx","xx").setIngredient('x', Material.CLAY_BRICK));
         addRecipe(new ShapedRecipe(new ItemStack(Material.BOOKSHELF)).shape("www","bbb","www").setIngredient('w', Material.WOOD).setIngredient('b', Material.BOOK)); // Bookshelf
+        addRecipe(new ShapedRecipe(new ItemStack(Material.SANDSTONE)).shape("xx","xx").setIngredient('x', Material.SAND));
         addRecipe(new ShapedRecipe(new ItemStack(Material.JACK_O_LANTERN)).shape("p","t").setIngredient('p', Material.PUMPKIN).setIngredient('t', Material.TORCH)); // Jack-o-lantern
         
         // Tool Recipes
@@ -229,21 +306,21 @@ public final class CraftingManager {
         addRecipe(new ShapedRecipe(new ItemStack(Material.FISHING_ROD)).shape("  |"," |s","| s").setIngredient('|', Material.STICK).setIngredient('s', Material.STRING)); // Fishing rod
         addRecipe(new ShapedRecipe(new ItemStack(Material.SHEARS)).shape(" i","i ").setIngredient('i', Material.IRON_INGOT)); // Shears
         addRecipe(new ShapedRecipe(new ItemStack(Material.BOW)).shape(" |s","| s"," |s").setIngredient('|', Material.STICK).setIngredient('s', Material.STRING)); // Bow
-        addRecipe(new ShapedRecipe(new ItemStack(Material.ARROW)).shape("^","|","f").setIngredient('^', Material.FLINT).setIngredient('|', Material.STICK).setIngredient('f', Material.FEATHER)); // Arrow
+        addRecipe(new ShapedRecipe(new ItemStack(Material.ARROW, 4)).shape("^","|","f").setIngredient('^', Material.FLINT).setIngredient('|', Material.STICK).setIngredient('f', Material.FEATHER)); // Arrow
         
         // Transportation Recipes
         addRecipe(new ShapedRecipe(new ItemStack(Material.MINECART)).shape("i i","iii").setIngredient('i', Material.IRON_INGOT));
         addRecipe(new ShapedRecipe(new ItemStack(Material.POWERED_MINECART)).shape("f","m").setIngredient('f', Material.FURNACE).setIngredient('m', Material.MINECART));
         addRecipe(new ShapedRecipe(new ItemStack(Material.STORAGE_MINECART)).shape("c","m").setIngredient('c', Material.CHEST).setIngredient('m', Material.MINECART));
         addRecipe(new ShapedRecipe(new ItemStack(Material.RAILS, 16)).shape("i i","isi","i i").setIngredient('i', Material.IRON_INGOT).setIngredient('s', Material.STICK));
-        addRecipe(new ShapedRecipe(new ItemStack(Material.POWERED_RAIL, 16)).shape("g g","gsg","grg").setIngredient('g', Material.GOLD_INGOT).setIngredient('s', Material.STICK).setIngredient('r', Material.REDSTONE));
-        addRecipe(new ShapedRecipe(new ItemStack(Material.DETECTOR_RAIL, 16)).shape("i i","ipi","iri").setIngredient('i', Material.IRON_INGOT).setIngredient('p', Material.STONE_PLATE).setIngredient('r', Material.REDSTONE));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.POWERED_RAIL, 6)).shape("g g","gsg","grg").setIngredient('g', Material.GOLD_INGOT).setIngredient('s', Material.STICK).setIngredient('r', Material.REDSTONE));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.DETECTOR_RAIL, 6)).shape("i i","ipi","iri").setIngredient('i', Material.IRON_INGOT).setIngredient('p', Material.STONE_PLATE).setIngredient('r', Material.REDSTONE));
         addRecipe(new ShapedRecipe(new ItemStack(Material.BOAT)).shape("w w","www").setIngredient('w', Material.WOOD));
         
         // Mechanism Recipes
         addRecipe(new ShapedRecipe(new ItemStack(Material.WOOD_DOOR)).shape("ww","ww","ww").setIngredient('w', Material.WOOD));
         addRecipe(new ShapedRecipe(new ItemStack(Material.IRON_DOOR)).shape("ii","ii","ii").setIngredient('i', Material.IRON_INGOT));
-        addRecipe(new ShapedRecipe(new ItemStack(Material.TRAP_DOOR)).shape("www","www").setIngredient('w', Material.WOOD));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.TRAP_DOOR, 2)).shape("www","www").setIngredient('w', Material.WOOD));
         addRecipe(new ShapedRecipe(new ItemStack(Material.WOOD_PLATE)).shape("ww").setIngredient('w', Material.WOOD));
         addRecipe(new ShapedRecipe(new ItemStack(Material.STONE_PLATE)).shape("ss").setIngredient('s', Material.STONE));
         addRecipe(new ShapedRecipe(new ItemStack(Material.STONE_BUTTON)).shape("s","s").setIngredient('s', Material.STONE));
@@ -257,7 +334,7 @@ public final class CraftingManager {
         addRecipe(new ShapedRecipe(new ItemStack(Material.PISTON_STICKY_BASE)).shape("s","p").setIngredient('s', Material.SLIME_BALL).setIngredient('p', Material.PISTON_BASE));
         
         // Food Recipes
-        addRecipe(new ShapedRecipe(new ItemStack(Material.BOWL)).shape("w w"," w ").setIngredient('w', Material.WOOD));
+        addRecipe(new ShapedRecipe(new ItemStack(Material.BOWL, 4)).shape("w w"," w ").setIngredient('w', Material.WOOD));
         addRecipe(new ShapedRecipe(new ItemStack(Material.MUSHROOM_SOUP)).shape("r","b","u").setIngredient('r', Material.RED_MUSHROOM).setIngredient('b', Material.BROWN_MUSHROOM).setIngredient('u', Material.BOWL));
         addRecipe(new ShapedRecipe(new ItemStack(Material.MUSHROOM_SOUP)).shape("b","r","u").setIngredient('r', Material.RED_MUSHROOM).setIngredient('b', Material.BROWN_MUSHROOM).setIngredient('u', Material.BOWL));
         addRecipe(new ShapedRecipe(new ItemStack(Material.BREAD)).shape("www").setIngredient('w', Material.WHEAT));
@@ -276,21 +353,22 @@ public final class CraftingManager {
         addRecipe(new ShapedRecipe(new ItemStack(Material.BED)).shape("ccc","www").setIngredient('c', Material.WOOL).setIngredient('w', Material.WOOD)); 
         
         // Dye Recipes
-        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 1, (byte) 1)).addIngredient(Material.RED_ROSE)); // Rose Red
+        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 2, (byte) 1)).addIngredient(Material.RED_ROSE)); // Rose Red
         // 2 = cactus [smelt], 3 = cocoa [dungeon], 4 = lapis [mine]
-        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 1, (byte) 5)).addIngredient(Material.INK_SACK, 4).addIngredient(Material.INK_SACK, 1)); // Purple
-        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 1, (byte) 6)).addIngredient(Material.INK_SACK, 4).addIngredient(Material.INK_SACK, 2)); // Cyan
-        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 1, (byte) 7)).addIngredient(Material.INK_SACK).addIngredient(2, Material.INK_SACK, 15)); // Light gray
-        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 1, (byte) 7)).addIngredient(Material.INK_SACK, 8).addIngredient(Material.INK_SACK, 15)); // Light gray
-        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 1, (byte) 8)).addIngredient(Material.INK_SACK).addIngredient(Material.INK_SACK, 15)); // Gray
-        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 1, (byte) 9)).addIngredient(Material.INK_SACK, 1).addIngredient(Material.INK_SACK, 15)); // Pink
-        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 1, (byte) 10)).addIngredient(Material.INK_SACK, 2).addIngredient(Material.INK_SACK, 15)); // Lime
-        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 1, (byte) 11)).addIngredient(Material.YELLOW_FLOWER)); // Dandelion Yellow
-        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 1, (byte) 12)).addIngredient(Material.INK_SACK, 4).addIngredient(Material.INK_SACK, 15)); // Light blue
-        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 1, (byte) 13)).addIngredient(Material.INK_SACK, 5).addIngredient(Material.INK_SACK, 9)); // Magenta
-        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 1, (byte) 13)).addIngredient(Material.INK_SACK, 4).addIngredient(Material.INK_SACK, 15).addIngredient(2, Material.INK_SACK, 1)); // Magenta
-        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 1, (byte) 14)).addIngredient(Material.INK_SACK, 1).addIngredient(Material.INK_SACK, 11)); // Orange
-        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 1, (byte) 15)).addIngredient(Material.BONE)); // Bonemeal
+        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 2, (byte) 5)).addIngredient(Material.INK_SACK, 4).addIngredient(Material.INK_SACK, 1)); // Purple
+        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 2, (byte) 6)).addIngredient(Material.INK_SACK, 4).addIngredient(Material.INK_SACK, 2)); // Cyan
+        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 3, (byte) 7)).addIngredient(Material.INK_SACK).addIngredient(2, Material.INK_SACK, 15)); // Light gray
+        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 2, (byte) 7)).addIngredient(Material.INK_SACK, 8).addIngredient(Material.INK_SACK, 15)); // Light gray
+        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 2, (byte) 8)).addIngredient(Material.INK_SACK).addIngredient(Material.INK_SACK, 15)); // Gray
+        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 2, (byte) 9)).addIngredient(Material.INK_SACK, 1).addIngredient(Material.INK_SACK, 15)); // Pink
+        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 2, (byte) 10)).addIngredient(Material.INK_SACK, 2).addIngredient(Material.INK_SACK, 15)); // Lime
+        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 2, (byte) 11)).addIngredient(Material.YELLOW_FLOWER)); // Dandelion Yellow
+        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 2, (byte) 12)).addIngredient(Material.INK_SACK, 4).addIngredient(Material.INK_SACK, 15)); // Light blue
+        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 2, (byte) 13)).addIngredient(Material.INK_SACK, 5).addIngredient(Material.INK_SACK, 9)); // Magenta
+        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 3, (byte) 13)).addIngredient(Material.INK_SACK, 4).addIngredient(Material.INK_SACK, 9).addIngredient(Material.INK_SACK, 1)); // Magenta
+        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 4, (byte) 13)).addIngredient(Material.INK_SACK, 4).addIngredient(Material.INK_SACK, 15).addIngredient(2, Material.INK_SACK, 1)); // Magenta
+        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 2, (byte) 14)).addIngredient(Material.INK_SACK, 1).addIngredient(Material.INK_SACK, 11)); // Orange
+        addRecipe(new ShapelessRecipe(new ItemStack(Material.INK_SACK, 3, (byte) 15)).addIngredient(Material.BONE)); // Bonemeal
         
         
         // Wool Recipies
@@ -322,31 +400,25 @@ public final class CraftingManager {
         furnaceFuels.put(Material.LOG, 300);
         furnaceFuels.put(Material.WORKBENCH, 300);
         furnaceFuels.put(Material.BOOKSHELF, 300);
+        furnaceFuels.put(Material.CHEST, 300);
         furnaceFuels.put(Material.JUKEBOX, 300);
         furnaceFuels.put(Material.NOTE_BLOCK, 300);
         furnaceFuels.put(Material.LOCKED_CHEST, 300);
         furnaceFuels.put(Material.LAVA_BUCKET, 20000);
     }
     
-    private enum CraftingSet {
-        SNOW(Material.SNOW_BALL, block(2, Material.SNOW_BLOCK)),
-        CLAY(Material.CLAY_BALL, block(2, Material.CLAY)),
-        BRICK(Material.CLAY_BRICK, block(2, Material.BRICK)),
-        SANDSTONE(Material.SAND, block(2, Material.SANDSTONE)),
-        GLOWSTONE(Material.GLOWSTONE_DUST, block(2, Material.GLOWSTONE)),
-        WOOL(Material.STRING, block(2, Material.WOOL)),
-        
+    private enum CraftingSet {        
         WOOD(Material.WOOD,
                 tools(Material.WOOD_AXE, Material.WOOD_PICKAXE, Material.WOOD_SPADE, Material.WOOD_HOE, Material.WOOD_SWORD)),
         STONE(Material.COBBLESTONE,
                 tools(Material.STONE_AXE, Material.STONE_PICKAXE, Material.STONE_SPADE, Material.STONE_HOE, Material.STONE_SWORD)),
-        GOLD(Material.GOLD_INGOT, block(3, Material.GOLD_BLOCK),
+        GOLD(Material.GOLD_INGOT, block(Material.GOLD_BLOCK),
                 tools(Material.GOLD_AXE, Material.GOLD_PICKAXE, Material.GOLD_SPADE, Material.GOLD_HOE, Material.GOLD_SWORD),
                 armor(Material.GOLD_HELMET, Material.GOLD_CHESTPLATE, Material.GOLD_LEGGINGS, Material.GOLD_BOOTS)),
-        IRON(Material.IRON_INGOT, block(3, Material.IRON_BLOCK),
+        IRON(Material.IRON_INGOT, block(Material.IRON_BLOCK),
                 tools(Material.IRON_AXE, Material.IRON_PICKAXE, Material.IRON_SPADE, Material.IRON_HOE, Material.IRON_SWORD),
                 armor(Material.IRON_HELMET, Material.IRON_CHESTPLATE, Material.IRON_LEGGINGS, Material.IRON_BOOTS)),
-        DIAMOND(Material.DIAMOND, block(3, Material.DIAMOND_BLOCK),
+        DIAMOND(Material.DIAMOND, block(Material.DIAMOND_BLOCK),
                 tools(Material.DIAMOND_AXE, Material.DIAMOND_PICKAXE, Material.DIAMOND_SPADE, Material.DIAMOND_HOE, Material.DIAMOND_SWORD),
                 armor(Material.DIAMOND_HELMET, Material.DIAMOND_CHESTPLATE, Material.DIAMOND_LEGGINGS, Material.DIAMOND_BOOTS)),
         LEATHER(Material.LEATHER,
@@ -357,8 +429,6 @@ public final class CraftingManager {
         
         private Material material;
         private Material block;
-        private int blockSize;
-        private boolean unblock;
         
         private Material[] armor;
         private Material[] tools;
@@ -377,10 +447,6 @@ public final class CraftingManager {
             return block;
         }
         
-        public int getBlockSize() {
-            return blockSize;
-        }
-        
         public Material[] getArmor() {
             return armor;
         }
@@ -389,19 +455,14 @@ public final class CraftingManager {
             return tools;
         }
         
-        public boolean getUnblock() {
-            return unblock;
-        }
-        
         // -----------------
     
         private interface Property {
             void apply(CraftingSet set);
         }
         
-        private static Property block(final int size, final Material mat) {
+        private static Property block(final Material mat) {
             return new Property() { public void apply(CraftingSet s) {
-                s.blockSize = size;
                 s.block = mat;
             }};
         }
