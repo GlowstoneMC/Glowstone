@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.BlockChangeDelegate;
@@ -334,7 +335,7 @@ public final class GlowWorld implements World {
         return seed;
     }
 
-    public long getUID() {
+    public UUID getUID() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

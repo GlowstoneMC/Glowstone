@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -358,9 +359,9 @@ public final class GlowServer implements Server {
      * @param uid Unique ID of the world to retrieve.
      * @return World with the given Unique ID, or null if none exists.
      */
-    public GlowWorld getWorld(long uid) {
+    public GlowWorld getWorld(UUID uid) {
         for (GlowWorld world : worlds) {
-            if (world.getUID() == uid)
+            if (uid.equals(world.getUID()))
                 return world;
         }
         return null;
