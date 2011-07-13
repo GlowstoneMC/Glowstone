@@ -1,6 +1,8 @@
 package net.glowstone.inventory;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.logging.Level;
 
 import org.bukkit.Material;
@@ -18,12 +20,17 @@ import net.glowstone.GlowServer;
  */
 public final class CraftingManager {
     
-    private ArrayList<ShapedRecipe> shapedRecipes = new ArrayList<ShapedRecipe>();
-    private ArrayList<ShapelessRecipe> shapelessRecipes = new ArrayList<ShapelessRecipe>();
-    private ArrayList<FurnaceRecipe> furnaceRecipes = new ArrayList<FurnaceRecipe>();
+    private final ArrayList<ShapedRecipe> shapedRecipes = new ArrayList<ShapedRecipe>();
+    private final ArrayList<ShapelessRecipe> shapelessRecipes = new ArrayList<ShapelessRecipe>();
+    private final ArrayList<FurnaceRecipe> furnaceRecipes = new ArrayList<FurnaceRecipe>();
+    private final EnumMap<Material, Integer> furnaceFuels = new EnumMap<Material, Integer>(Material.class);
     
     public CraftingManager() {
         resetRecipes();
+        
+        // Report stats
+        int shape = shapedRecipes.size(), nshape = shapelessRecipes.size(), furnace = furnaceRecipes.size(), fuel = furnaceFuels.size();
+        GlowServer.logger.log(Level.INFO, "Recipes: {0} shaped, {1} shapeless, {2} furnace, {3} fuels.", new Object[] { shape, nshape, furnace, fuel });
     }
     
     /**
@@ -51,9 +58,9 @@ public final class CraftingManager {
      * @param input The furnace input.
      * @return The FurnaceRecipe, or null if none is found.
      */
-    public FurnaceRecipe getFurnace(ItemStack input) {
+    public FurnaceRecipe getFurnaceRecipe(ItemStack input) {
         for (FurnaceRecipe recipe : furnaceRecipes) {
-            if (recipe.getInput().equals(input)) {
+            if (recipe.getInput().equals(input.getData())) {
                 return recipe;
             }
         }
@@ -61,31 +68,68 @@ public final class CraftingManager {
         return null;
     }
     
-    public Recipe get2by2(ItemStack[] items) {
-        if (items.length != 4) {
-            throw new IllegalArgumentException("Expected ItemStack[4], got ItemStack[" + items.length + "]");
+    /**
+     * Get how long a given fuel material will burn for.
+     * @param material The fuel material.
+     * @return The time in ticks, or 0 if that material does not burn.
+     */
+    public int getFuelTime(Material material) {
+        if (furnaceFuels.containsKey(material)) {
+            return furnaceFuels.get(material);
+        } else {
+            return 0;
         }
-        
-        for (ShapedRecipe recipe : shapedRecipes) {
-            
-        }
-        
-        return getShapeless(items);
     }
     
-    public Recipe get3by3(ItemStack[] items) {
-        if (items.length != 9) {
-            throw new IllegalArgumentException("Expected ItemStack[9], got ItemStack[" + items.length + "]");
+    /**
+     * Get a shaped or shapeless recipe from the crafting manager.
+     * @param items An array of items with null being empty slots. Length should be a perfect square.
+     * @return The ShapedRecipe or ShapelessRecipe that matches the input, or null if none match.
+     */
+    public Recipe getCraftingRecipe(ItemStack[] items) {
+        if (Math.sqrt(items.length) != (int)Math.sqrt(items.length)) {
+            throw new IllegalArgumentException("ItemStack list was not square (was " + items.length + ")");
         }
+        
+        int size = (int) Math.sqrt(items.length);
         
         for (ShapedRecipe recipe : shapedRecipes) {
+            HashMap<Character, MaterialData> ingredients = recipe.getIngredientMap();
+            String[] shape = recipe.getShape();
             
+            int rows = shape.length, cols = 0;
+            for (int row = 0; row < rows; ++row) {
+                if (shape[row].length() > cols) {
+                    cols = shape[row].length();
+                }
+            }
+            
+            if (rows == 0 || cols == 0) continue;
+            
+            for (int rStart = 0; rStart <= size - rows; ++rStart) {
+                for (int cStart = 0; cStart <= size - cols; ++cStart) {
+                    boolean failed = false;
+                    for (int row = rStart; row < rows; ++row) {
+                        for (int col = cStart; col < cols; ++col) {
+                            ItemStack given = items[(rStart + row) * size + cStart + col];
+                            char ingredientChar = shape[row].length() >= col - 1 ? shape[row].charAt(col) : ' ';
+                            if (given == null && ingredientChar != ' ') {
+                                failed = true;
+                                break;
+                            }
+                            if (!given.getData().equals(ingredients.get(ingredientChar))) {
+                                failed = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!failed) {
+                        return recipe;
+                    }
+                }
+            }
         }
         
-        return getShapeless(items);
-    }
-    
-    private ShapelessRecipe getShapeless(ItemStack[] items) {
         for (ShapelessRecipe recipe : shapelessRecipes) {
             boolean failed = false;
             boolean[] accountedFor = new boolean[items.length];
@@ -122,10 +166,14 @@ public final class CraftingManager {
         return null;
     }
     
+    /**
+     * Reset the crafting recipe lists to their default states.
+     */
     public void resetRecipes() {
         shapedRecipes.clear();
         shapelessRecipes.clear();
         furnaceRecipes.clear();
+        furnaceFuels.clear();
         
         // Crafting sets
         for (CraftingSet set : CraftingSet.values()) {
@@ -168,7 +216,7 @@ public final class CraftingManager {
         addRecipe(new ShapedRecipe(new ItemStack(Material.STEP, 1, (byte)2)).shape("xxx").setIngredient('x', Material.WOOD)); // Slab #2
         addRecipe(new ShapedRecipe(new ItemStack(Material.STEP, 1, (byte)3)).shape("xxx").setIngredient('x', Material.COBBLESTONE)); // Slab #3
         addRecipe(new ShapedRecipe(new ItemStack(Material.COBBLESTONE_STAIRS, 1)).shape("x  ","xx ","xxx").setIngredient('x', Material.COBBLESTONE)); // Stairs one
-        addRecipe(new ShapedRecipe(new ItemStack(Material.WOOD)).shape("x  ","xx ","xxx").setIngredient('x', Material.WOOD)); // Stairs two
+        addRecipe(new ShapedRecipe(new ItemStack(Material.WOOD_STAIRS)).shape("x  ","xx ","xxx").setIngredient('x', Material.WOOD)); // Stairs two
         addRecipe(new ShapedRecipe(new ItemStack(Material.BOOKSHELF)).shape("www","bbb","www").setIngredient('w', Material.WOOD).setIngredient('b', Material.BOOK)); // Bookshelf
         addRecipe(new ShapedRecipe(new ItemStack(Material.JACK_O_LANTERN)).shape("p","t").setIngredient('p', Material.PUMPKIN).setIngredient('t', Material.TORCH)); // Jack-o-lantern
         
@@ -263,9 +311,21 @@ public final class CraftingManager {
         addRecipe(new FurnaceRecipe(new ItemStack(Material.INK_SACK, 1, (byte)2), Material.CACTUS)); // Cactus green
         addRecipe(new FurnaceRecipe(new ItemStack(Material.DIAMOND), Material.DIAMOND_ORE));
         
-        // Yay!
-        int shape = shapedRecipes.size(), nshape = shapelessRecipes.size(), furnace = furnaceRecipes.size();
-        GlowServer.logger.log(Level.INFO, "Registered {0}/{1}/{2} ({3}) recipes", new Object[] { shape, nshape, furnace, shape + nshape + furnace });
+        // Smelting fuels (time is in ticks)
+        furnaceFuels.put(Material.COAL, 1600);
+        furnaceFuels.put(Material.WOOD, 300);
+        furnaceFuels.put(Material.SAPLING, 100);
+        furnaceFuels.put(Material.STICK, 100);
+        furnaceFuels.put(Material.FENCE, 300);
+        furnaceFuels.put(Material.WOOD_STAIRS, 400);
+        furnaceFuels.put(Material.TRAP_DOOR, 300);
+        furnaceFuels.put(Material.LOG, 300);
+        furnaceFuels.put(Material.WORKBENCH, 300);
+        furnaceFuels.put(Material.BOOKSHELF, 300);
+        furnaceFuels.put(Material.JUKEBOX, 300);
+        furnaceFuels.put(Material.NOTE_BLOCK, 300);
+        furnaceFuels.put(Material.LOCKED_CHEST, 300);
+        furnaceFuels.put(Material.LAVA_BUCKET, 20000);
     }
     
     private enum CraftingSet {
