@@ -741,7 +741,7 @@ public final class GlowWorld implements World {
     // misc
 
     public ChunkSnapshot getEmptyChunkSnapshot(int x, int z, boolean includeBiome, boolean includeBiomeTempRain) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new GlowChunkSnapshot.EmptySnapshot(x, z, this, includeBiome, includeBiomeTempRain);
     }
 
 }
