@@ -158,11 +158,8 @@ public final class CraftingManager {
             
             if (rows == 0 || cols == 0) continue;
             
-            //System.out.println("Testing shaped recipe " + recipe.getResult());
-            
             for (int rStart = 0; rStart <= size - rows; ++rStart) {
                 for (int cStart = 0; cStart <= size - cols; ++cStart) {
-                    //System.out.println("Checking start " + rStart + "," + cStart);
                     boolean failed = false;
                     boolean[] accountedFor = new boolean[items.length];
                     
@@ -171,10 +168,8 @@ public final class CraftingManager {
                             ItemStack given = items[(rStart + row) * size + cStart + col];
                             char ingredientChar = shape[row].length() >= col - 1 ? shape[row].charAt(col) : ' ';
                             
-                            //System.out.println("Checking " + row + "," + col + ": " + given + " " + ingredientChar);
-                            
                             if (given == null) {
-                                if (ingredientChar != ' ') {
+                                if (ingredients.containsKey(ingredientChar)) {
                                     failed = true;
                                     break;
                                 } else {
@@ -185,17 +180,13 @@ public final class CraftingManager {
                                 break;
                             } else {
                                 MaterialData data = ingredients.get(ingredientChar);
-                                //System.out.println("Checking " + given + " against " + data);
                                 if (data.getItemType() != given.getType()) {
-                                    //System.out.println("Type does not equal");
                                     failed = true;
                                     break;
                                 } else if (data.getData() >= 0 && data.getData() != given.getDurability()) {
-                                    //System.out.println("Data does not equal");
                                     failed = true;
                                     break;
                                 } else {
-                                    //System.out.println("Type and data equal");
                                     accountedFor[(rStart + row) * size + cStart + col] = true;
                                 }
                             }

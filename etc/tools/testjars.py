@@ -38,10 +38,14 @@ def examine(buffer_):
 
     return True
 
-if __name__ == "__main__":    
+if __name__ == "__main__":
+    total = safe = 0
     for jar in glob("plugins/*.jar"):
+        total = total + 1
         plugin = JarFile(jar)
         if False in plugin.map(examine, parallel=False):
-            print "UNSAFE  %s" % path.basename(jar)
+            print "UNSAFE  %s" % info(jar, plugin)
         else:
-            print "SAFE    %s" % path.basename(jar)
+            safe = safe + 1
+            print "SAFE    %s" % info(jar, plugin)
+    print "  %d in %d plugins were safe (%d%%)" % (safe, total, safe * 100 / total)
