@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.logging.Formatter;
 import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -47,10 +48,17 @@ public class ConsoleManager {
         thread = new ConsoleCommandThread();
         handler = new LoggingConsoleHandler();
         
+        handler.setFormatter(new DateOutputFormatter(new SimpleDateFormat()));
+        
         Logger logger = server.getLogger();
         logger.setUseParentHandlers(false);
-        handler.setFormatter(new DateOutputFormatter(new SimpleDateFormat()));
         logger.addHandler(handler);
+        
+        Logger global = Logger.getLogger("");
+        for (Handler handler: global.getHandlers()) {
+            global.removeHandler(handler);
+        }
+        global.addHandler(handler);
         
         try {
             reader = new ConsoleReader();

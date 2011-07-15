@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -45,7 +46,6 @@ import net.glowstone.util.PlayerListFile;
 import net.glowstone.inventory.CraftingManager;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
-import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFactory;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.group.ChannelGroup;
@@ -61,7 +61,7 @@ public final class GlowServer implements Server {
     /**
      * The logger for this class.
      */
-    public static final Logger logger = Logger.getLogger("Minecraft");
+    public static final Logger logger = Logger.getLogger("Minecraft"); 
             
     /**
      * The configuration the server uses.
@@ -127,6 +127,11 @@ public final class GlowServer implements Server {
      * The command map of this server.
      */
     private final SimpleCommandMap commandMap = new SimpleCommandMap(this);
+    
+    /**
+     * The command map for commands built-in to Glowstone.
+     */
+    private final SimpleCommandMap builtinCommandMap = new SimpleCommandMap(this);
     
     /**
      * The plugin manager of this server.
@@ -283,11 +288,11 @@ public final class GlowServer implements Server {
      * Registers built-in Glowstone commands and refreshes the autocomplete index.
      */
     private void registerCommands() {
-        commandMap.register("#", new net.glowstone.command.OpCommand(this));
-        commandMap.register("#", new net.glowstone.command.DeopCommand(this));
-        commandMap.register("#", new net.glowstone.command.ListCommand(this));
-        commandMap.register("#", new net.glowstone.command.ColorCommand(this));
-        commandMap.register("#", new net.glowstone.command.StopCommand(this));
+        builtinCommandMap.register("#", new net.glowstone.command.OpCommand(this));
+        builtinCommandMap.register("#", new net.glowstone.command.DeopCommand(this));
+        builtinCommandMap.register("#", new net.glowstone.command.ListCommand(this));
+        builtinCommandMap.register("#", new net.glowstone.command.ColorCommand(this));
+        builtinCommandMap.register("#", new net.glowstone.command.StopCommand(this));
         
         consoleManager.refreshCommands();
     }
@@ -379,7 +384,7 @@ public final class GlowServer implements Server {
     }
     
     /**
-     * Reflectionize available commands.
+     * Use reflection to get a list of available commands from the command map.
      * @return A list of all commands at the time.
      */
     protected String[] getAllCommands() {
@@ -388,8 +393,9 @@ public final class GlowServer implements Server {
             Class clazz = commandMap.getClass();
             Field knownCommandsField = clazz.getDeclaredField("knownCommands");
             knownCommandsField.setAccessible(true);
-            Map<String, Command> knownCommands = (Map<String, Command>) knownCommandsField.get(commandMap);
-            return (String[]) knownCommands.keySet().toArray(new String[0]);
+            HashSet<String> knownCommands = new HashSet<String>(((Map<String, Command>) knownCommandsField.get(commandMap)).keySet());
+            knownCommands.addAll(((Map<String, Command>) knownCommandsField.get(builtinCommandMap)).keySet());
+            return knownCommands.toArray(new String[0]);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -708,18 +714,15 @@ public final class GlowServer implements Server {
      */
     public boolean dispatchCommand(CommandSender sender, String commandLine) {
         try {
-            String[] args = commandLine.split(" +");
-            String commandName = args[0];
-            
-            String[] newargs = new String[args.length - 1];
-            for (int i = 1; i < args.length; ++i) {
-                newargs[i - 1] = args[i];
+            if (commandMap.dispatch(sender, commandLine)) {
+                return true;
             }
             
-            Command command = commandMap.getCommand(commandName);
-            if (command == null)
-                return false;
-            return command.execute(sender, commandName, newargs);
+            if (builtinCommandMap.dispatch(sender, commandLine)) {
+                return true;
+            }
+            
+            return false;
         }
         catch (CommandException ex) {
             throw ex;

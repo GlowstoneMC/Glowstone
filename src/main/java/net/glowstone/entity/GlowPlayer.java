@@ -324,11 +324,18 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
                     return;
                 }
                 
-                performCommand(text.substring(1));
+                if (!performCommand(text.substring(1))) {
+                    String firstword = text.substring(1);
+                    if (firstword.indexOf(' ') >= 0) {
+                        firstword = firstword.substring(0, firstword.indexOf(' '));
+                    }
+                    
+                    sendMessage(ChatColor.GRAY + "Command not found: " + firstword);
+                }
             }
             catch (Exception ex) {
-                sendMessage(ChatColor.RED + "An exception occured while executing your command.");
-                getServer().getLogger().log(Level.SEVERE, "Error while executing command: {0}", ex.getMessage());
+                sendMessage(ChatColor.RED + "An internal error occured while executing your command.");
+                getServer().getLogger().log(Level.SEVERE, "Exception while executing command: {0}", ex.getMessage());
                 ex.printStackTrace();
             }
         } else {
