@@ -12,7 +12,11 @@ public final class HandshakeMessageHandler extends MessageHandler<HandshakeMessa
         Session.State state = session.getState();
         if (state == Session.State.EXCHANGE_HANDSHAKE) {
             session.setState(State.EXCHANGE_IDENTIFICATION);
-            session.send(new HandshakeMessage("-"));
+            if (session.getServer().getOnlineMode()) {
+                session.send(new HandshakeMessage(session.getSessionId()));
+            } else {
+                session.send(new HandshakeMessage("-"));
+            }
         } else {
             session.disconnect("Handshake already exchanged.");
         }
