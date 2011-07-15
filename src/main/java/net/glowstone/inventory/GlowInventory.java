@@ -133,10 +133,11 @@ public class GlowInventory implements Inventory {
         for (int i = 0; i < items.length; ++i) {
             Material mat = items[i].getType();
             int toAdd = items[i].getAmount();
+            short damage = items[i].getDurability();
             
             for (int j = 0; toAdd > 0 && j < getSize(); ++j) {
                 // Look for existing stacks to add to
-                if (slots[j] != null && slots[j].getType() == mat) {
+                if (slots[j] != null && slots[j].getType() == mat && slots[j].getDurability() == damage) {
                     int space = mat.getMaxStackSize() - slots[j].getAmount();
                     if (space < 0) continue;
                     if (space > toAdd) space = toAdd;
@@ -152,7 +153,7 @@ public class GlowInventory implements Inventory {
                 for (int j = 0; toAdd > 0 && j < getSize(); ++j) {
                     if (slots[j] == null) {
                         int num = toAdd > mat.getMaxStackSize() ? mat.getMaxStackSize() : toAdd;
-                        slots[j] = new ItemStack(mat, num);
+                        slots[j] = new ItemStack(mat, num, damage);
                         toAdd -= num;
                         sendUpdate(j);
                     }
@@ -161,7 +162,7 @@ public class GlowInventory implements Inventory {
             
             if (toAdd > 0) {
                 // Still couldn't stash them all.
-                result.put(i, new ItemStack(mat, toAdd));
+                result.put(i, new ItemStack(mat, toAdd, damage));
             }
         }
         
@@ -183,10 +184,11 @@ public class GlowInventory implements Inventory {
         for (int i = 0; i < items.length; ++i) {
             Material mat = items[i].getType();
             int toRemove = items[i].getAmount();
+            short damage = items[i].getDurability();
             
             for (int j = 0; j < getSize(); ++j) {
                 // Look for stacks to remove from.
-                if (slots[j] != null && slots[j].getType() == mat) {
+                if (slots[j] != null && slots[j].getType() == mat && slots[j].getDurability() == damage) {
                     if (slots[j].getAmount() > toRemove) {
                         slots[j].setAmount(slots[j].getAmount() - toRemove);
                     } else {
@@ -199,7 +201,7 @@ public class GlowInventory implements Inventory {
             
             if (toRemove > 0) {
                 // Couldn't remove them all.
-                result.put(i, new ItemStack(mat, toRemove));
+                result.put(i, new ItemStack(mat, toRemove, damage));
             }
         }
         

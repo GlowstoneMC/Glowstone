@@ -42,6 +42,7 @@ public final class BlockPlacementMessageHandler extends MessageHandler<BlockPlac
         if (player.getItemInHand() != null && player.getItemInHand().getTypeId() < 256) {
             if (world.getBlockAt(x, y, z).getType() == Material.AIR) {
                 world.getBlockAt(x, y, z).setType(player.getItemInHand().getType());
+                world.getBlockAt(x, y, z).setData((byte)player.getItemInHand().getDurability());
                 ItemStack stack = player.getItemInHand();
                 stack.setAmount(stack.getAmount() - 1);
                 if (stack.getAmount() == 0) {

@@ -48,7 +48,7 @@ public final class DiggingMessageHandler extends MessageHandler<DiggingMessage> 
 
         if (blockBroken) {
             if (block.getType() != Material.AIR) {
-                player.getInventory().addItem(new ItemStack(block.getType(), 1));
+                player.getInventory().addItem(new ItemStack(block.getType(), 1, block.getData()));
             }
             block.setType(Material.AIR);
         }
