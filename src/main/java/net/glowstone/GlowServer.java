@@ -1,8 +1,6 @@
 package net.glowstone;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -10,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -36,6 +33,7 @@ import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.SimpleServicesManager;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.plugin.PluginLoadOrder;
+import org.bukkit.util.config.Configuration;
 
 import net.glowstone.io.McRegionChunkIoService;
 import net.glowstone.net.MinecraftPipelineFactory;
@@ -61,12 +59,18 @@ public final class GlowServer implements Server {
     /**
      * The logger for this class.
      */
-    public static final Logger logger = Logger.getLogger("Minecraft"); 
+    public static final Logger logger = Logger.getLogger("Minecraft");
+
+    /**
+     * The directory configurations are stored in
+     */
+    private static final File configDir = new File("config");
             
     /**
      * The configuration the server uses.
      */
-    private static final Properties properties = new Properties();
+    private static final Configuration config = new Configuration(new File(configDir, "glowstone.yml"));
+
 
     /**
      * Creates a new server on TCP port 25565 and starts listening for
@@ -75,16 +79,28 @@ public final class GlowServer implements Server {
      */
     public static void main(String[] args) {
         try {
-            File props = new File("server.properties");
-            if (props.exists()) {
-                properties.load(new FileInputStream(props));
-            } else {
-                properties.setProperty("server-port", "25565");
-                properties.setProperty("online-mode", "true");
-                properties.save(new FileOutputStream(props), "Glowstone server properties");
+            if (!configDir.exists() || !configDir.isDirectory())
+                configDir.mkdirs();
+            config.load();
+            if (config.getKeys().size() == 0) { // setting defaults
+                // Server config
+                config.setProperty("server.port", 25565);
+                config.setProperty("server.world-name", "world");
+                config.setProperty("server.max-players", "0");
+                config.setProperty("server.online", true);
+                // Server folders config
+                config.setProperty("server.folders.plugins", "plugins");
+                config.setProperty("server.folders.update", "update");
+                // Database config
+                config.setProperty("database.driver", "org.sqlite.JDBC");
+                config.setProperty("database.url", "jdbc:sqlite:{DIR}{NAME}.db");
+                config.setProperty("database.user", "glow");
+                config.setProperty("database.pass", "stone");
+                config.setProperty("database.isolation", "SERIALIZABLE");
+                // End setting defaults
+                config.save();
             }
-            int port = Integer.valueOf(properties.getProperty("server-port", "25565"));
-
+            int port = config.getInt("server.port", 25565);
             
             GlowServer server = new GlowServer();
             server.bind(new InetSocketAddress(port));
@@ -148,7 +164,7 @@ public final class GlowServer implements Server {
     /**
      * The list of OPs on the server.
      */
-    private final PlayerListFile opsList = new PlayerListFile("ops.txt");
+    private final PlayerListFile opsList = new PlayerListFile(new File(configDir, "ops.txt"));
 
     /**
      * The world this server is managing.
@@ -195,16 +211,16 @@ public final class GlowServer implements Server {
      */
     public void start() {
         try {
-            properties.load(new FileInputStream(new File("server.properties")));
+            config.load();
         } catch (Exception ex) {
-            logger.warning("Failed to load server.properties, using defaults");
+            logger.warning("Failed to load glowstone.yml, using defaults");
         }
         
         opsList.load();
 
         loadPlugins();
         enablePlugins(PluginLoadOrder.STARTUP);
-        createWorld(properties.getProperty("world-name", "world"), Environment.NORMAL);
+        createWorld(config.getString("server.world-name", "world"), Environment.NORMAL);
         enablePlugins(PluginLoadOrder.POSTWORLD);
         registerCommands();
 
@@ -243,7 +259,7 @@ public final class GlowServer implements Server {
         // clear the map
         commandMap.clearCommands();
             
-        File folder = new File(properties.getProperty("plugin-folder", "plugins"));
+        File folder = new File(config.getString("server.folders.plugins", "plugins"));
         folder.mkdirs();
             
         // clear plugins and prepare to load
@@ -304,7 +320,7 @@ public final class GlowServer implements Server {
      */
     public void reload() {
         try {
-            properties.load(new FileInputStream(new File("server.properties")));
+            config.load();
             opsList.load();
             
             // reset crafting
@@ -443,7 +459,7 @@ public final class GlowServer implements Server {
      * @return The amount of players this server allows
      */
     public int getMaxPlayers() {
-        return Integer.valueOf(properties.getProperty("max-players", "0"));
+        return config.getInt("server.max-players", 0);
     }
 
     /**
@@ -451,7 +467,7 @@ public final class GlowServer implements Server {
      * @return The port number the server is listening on.
      */
     public int getPort() {
-        return Integer.valueOf(properties.getProperty("server-port", "25565"));
+        return config.getInt("server.port", 25565);
     }
 
     /**
@@ -502,7 +518,7 @@ public final class GlowServer implements Server {
      * @return The name of the update folder
      */
     public String getUpdateFolder() {
-        return properties.getProperty("update-folder", "update");
+        return config.getString("server.folders.update", "update");
     }
     
     /**
@@ -737,10 +753,22 @@ public final class GlowServer implements Server {
     /**
      * Populates a given {@link ServerConfig} with values attributes to this server
      *
-     * @param config ServerConfig to populate
+     * @param dbConfig ServerConfig to populate
      */
-    public void configureDbConfig(com.avaje.ebean.config.ServerConfig config) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void configureDbConfig(com.avaje.ebean.config.ServerConfig dbConfig) {
+        com.avaje.ebean.config.DataSourceConfig ds = new com.avaje.ebean.config.DataSourceConfig();
+        ds.setDriver(config.getString("database.driver", "org.sqlite.JDBC"));
+        ds.setUrl(config.getString("database.url", "jdbc:sqlite:{DIR}{NAME}.db"));
+        ds.setUsername(config.getString("database.user", "glow"));
+        ds.setPassword(config.getString("database.pass", "stone"));
+        ds.setIsolationLevel(com.avaje.ebeaninternal.server.lib.sql.TransactionIsolation.getLevel(config.getString("database.isolation", "SERIALIZABLE")));
+
+        if (ds.getDriver().contains("sqlite")) {
+            dbConfig.setDatabasePlatform(new com.avaje.ebean.config.dbplatform.SQLitePlatform());
+            dbConfig.getDatabasePlatform().getDbDdlSyntax().setIdentity("");
+        }
+
+        dbConfig.setDataSourceConfig(ds);
     }
     
     /**
@@ -773,7 +801,7 @@ public final class GlowServer implements Server {
     }
 
     public boolean getOnlineMode() {
-        return Boolean.parseBoolean(properties.getProperty("online-mode", "true"));
+        return config.getBoolean("server.online-mode", true);
     }
                 
 }
