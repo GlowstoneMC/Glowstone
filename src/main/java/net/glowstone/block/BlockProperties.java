@@ -35,7 +35,7 @@ public enum BlockProperties {
     LAPIS_BLOCK(),
     DISPENSER(interact(), place(), redstone()),
     SANDSTONE(),
-    NOTE_BLOCK(interact(), redstone()),
+    NOTE_BLOCK(interact(), redstone(), entity(GlowNoteBlock.class)),
     BED_BLOCK(interact()),                  // todo: height
     POWERED_RAIL(place(), redstone()),
     DETECTOR_RAIL(place(), redstone()),
@@ -130,8 +130,10 @@ public enum BlockProperties {
     
     private final Material material;
     private ItemStack[] drops;
+    private Class<? extends GlowBlockState> entity;
+    
     private boolean physics = false;
-    private boolean redstone = true;
+    private boolean redstone = false;
     private boolean interact = false;
     private boolean place = false;
     private boolean solid = true;
@@ -142,12 +144,17 @@ public enum BlockProperties {
         material = Material.getMaterial(toString());
         drops = new ItemStack[] { new ItemStack(material, 1) };
         
-        for (Property p : props)
+        for (Property p : props) {
             p.apply(this);
+        }
     }
     
     public ItemStack[] getDrops() {
         return drops;
+    }
+    
+    public Class<? extends GlowBlockState> getEntityClass() {
+        return entity;
     }
     
     public boolean hasPhysics() {
@@ -236,6 +243,12 @@ public enum BlockProperties {
     private static Property place() {
         return new Property() { public void apply(BlockProperties p) {
             p.place = true;
+        }};
+    }
+    
+    private static Property entity(final Class<? extends GlowBlockState> clazz) {
+        return new Property() { public void apply(BlockProperties p) {
+            p.entity = clazz;
         }};
     }
     

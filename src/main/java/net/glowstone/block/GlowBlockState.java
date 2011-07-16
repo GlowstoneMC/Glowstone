@@ -1,12 +1,19 @@
 package net.glowstone.block;
 
-import net.glowstone.GlowChunk;
-import org.bukkit.Chunk;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.MaterialData;
+
+import net.glowstone.GlowChunk;
+import net.glowstone.GlowWorld;
+import net.glowstone.util.nbt.Tag;
+import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.IntTag;
+import net.glowstone.util.nbt.StringTag;
 
 /**
  *
@@ -14,7 +21,7 @@ import org.bukkit.material.MaterialData;
  */
 public class GlowBlockState implements BlockState {
 
-    private final World world;
+    private final GlowWorld world;
     private final GlowChunk chunk;
     private final int x;
     private final int y;
@@ -23,7 +30,7 @@ public class GlowBlockState implements BlockState {
     protected MaterialData data;
     protected byte light;
 
-    public GlowBlockState(final Block block) {
+    public GlowBlockState(GlowBlock block) {
         world = block.getWorld();
         x = block.getX();
         y = block.getY();
@@ -35,15 +42,15 @@ public class GlowBlockState implements BlockState {
 
     // Basic getters
 
-    public World getWorld() {
+    public GlowWorld getWorld() {
         return world;
     }
 
-    public Chunk getChunk() {
+    public GlowChunk getChunk() {
         return chunk;
     }
 
-    public Block getBlock() {
+    public GlowBlock getBlock() {
         return world.getBlockAt(x, y, z);
     }
 
@@ -69,29 +76,29 @@ public class GlowBlockState implements BlockState {
         this.data = data;
     }
 
-    public Material getType() {
+    final public Material getType() {
         return Material.getMaterial(type);
     }
 
-    public int getTypeId() {
+    final public int getTypeId() {
         return type;
     }
 
-    public void setType(Material type) {
+    final public void setType(Material type) {
         setTypeId(type.getId());
     }
 
-    public boolean setTypeId(int type) {
+    final public boolean setTypeId(int type) {
         this.type = type;
         return true;
     }
 
-    public byte getLightLevel() {
+    final public byte getLightLevel() {
         return light;
     }
 
-    public byte getRawData() {
-        return data.getData();
+    final public byte getRawData() {
+        return getData().getData();
     }
 
     // Update
@@ -113,6 +120,42 @@ public class GlowBlockState implements BlockState {
 
         block.setData(data.getData());
         return true;
+    }
+    
+    // Internal mechanisms
+    
+    public void destroy() {
+        throw new UnsupportedOperationException("Cannot destroy a generic BlockState");
+    }
+    
+    public void load(CompoundTag compound) {
+        throw new UnsupportedOperationException("Cannot load to a generic BlockState");
+    }
+    
+    public CompoundTag save() {
+        throw new UnsupportedOperationException("Cannot save from a generic BlockState");
+    }
+    
+    protected void load(CompoundTag compound, String id) {
+        String checkId = ((StringTag) compound.getValue().get("id")).getValue();
+        if (!id.equalsIgnoreCase(checkId)) {
+            throw new IllegalArgumentException("Invalid ID loading tile entity, expected " + id + " got " + checkId);
+        }
+        int checkX = ((IntTag) compound.getValue().get("x")).getValue();
+        int checkY = ((IntTag) compound.getValue().get("y")).getValue();
+        int checkZ = ((IntTag) compound.getValue().get("z")).getValue();
+        if (x != checkX || y != checkY || z != checkZ) {
+            throw new IllegalArgumentException("Invalid coords loading tile entity, expected (" + x + "," + y + "," + z + ") got (" + checkX + "," + checkY + "," + checkZ + ")");
+        }
+    }
+    
+    protected Map<String, Tag> save(String id) {
+        Map<String, Tag> result = new HashMap<String, Tag>();
+        result.put("id", new StringTag("id", id));
+        result.put("x", new IntTag("x", x));
+        result.put("y", new IntTag("y", y));
+        result.put("z", new IntTag("z", z));
+        return result;
     }
 
 }

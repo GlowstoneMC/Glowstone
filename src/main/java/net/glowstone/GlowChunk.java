@@ -1,11 +1,18 @@
 package net.glowstone;
 
+import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 
+import net.glowstone.block.BlockProperties;
 import net.glowstone.block.GlowBlock;
+import net.glowstone.block.GlowBlockState;
 import net.glowstone.msg.CompressedChunkMessage;
 import net.glowstone.msg.Message;
 
@@ -106,6 +113,11 @@ public final class GlowChunk implements Chunk {
      * The data in this chunk representing all of the blocks and their state.
      */
     private final byte[] types, metaData, skyLight, blockLight;
+    
+    /**
+     * The tile entities that reside in this chunk.
+     */
+    private final HashMap<Integer, GlowBlockState> tileEntities = new HashMap<Integer, GlowBlockState>();
     
     /**
      * Whether the chunk has been populated by special features.
@@ -215,6 +227,17 @@ public final class GlowChunk implements Chunk {
     }
     
     // ======== Data access ========
+    
+    /**
+     * Attempt to get the tile entity located at the given coordinates.
+     * @param x The X coordinate.
+     * @param z The Z coordinate.
+     * @param y The Y coordinate.
+     * @return A GlowBlockState if the entity exists, or null otherwise.
+     */
+    public GlowBlockState getEntity(int x, int y, int z) {
+        return tileEntities.get(coordToIndex(x, z, y));
+    }
 
     /**
      * Gets the type of a block within this chunk.
@@ -249,7 +272,24 @@ public final class GlowChunk implements Chunk {
         if (type < 0 || type >= 256)
             throw new IllegalArgumentException();
 
+        if (tileEntities.containsKey(coordToIndex(x, z, y))) {
+            getEntity(x, y, z).destroy();
+            tileEntities.remove(coordToIndex(x, z, y));
+        }
+        
         types[coordToIndex(x, z, y)] = (byte) type;
+        
+        Class<? extends GlowBlockState> clazz = BlockProperties.get(type).getEntityClass();
+        if (clazz != null && clazz != GlowBlockState.class) {
+            try {
+                Constructor<? extends GlowBlockState> constructor = clazz.getConstructor(GlowBlock.class);
+                GlowBlockState state = constructor.newInstance(getBlock(x, y, z));
+                tileEntities.put(coordToIndex(x, z, y), state);
+            } catch (Exception ex) {
+                GlowServer.logger.log(Level.SEVERE, "Unable to initialize tile entity {0}: {1}", new Object[]{clazz.getName(), ex.getMessage()});
+                ex.printStackTrace();
+            }
+        }
     }
 
     /**
