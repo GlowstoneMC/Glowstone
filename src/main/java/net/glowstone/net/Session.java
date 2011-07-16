@@ -4,6 +4,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.Random;
 import java.util.logging.Level;
 import net.glowstone.EventFactory;
 
@@ -85,6 +86,12 @@ public final class Session {
      * The player associated with this session (if there is one).
      */
     private GlowPlayer player;
+
+    /**
+     * The random long used for client-server handshake
+     */
+
+    private String sessionId = Long.toHexString(new Random().nextLong());
 
     /**
      * Creates a new session.
@@ -246,6 +253,10 @@ public final class Session {
             player.remove();
             player = null; // in case we are disposed twice
         }
+    }
+
+    public String getSessionId() {
+        return sessionId;
     }
 
 }

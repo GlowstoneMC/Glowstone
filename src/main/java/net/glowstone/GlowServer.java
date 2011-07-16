@@ -80,9 +80,11 @@ public final class GlowServer implements Server {
                 properties.load(new FileInputStream(props));
             } else {
                 properties.setProperty("server-port", "25565");
+                properties.setProperty("online-mode", "true");
                 properties.save(new FileOutputStream(props), "Glowstone server properties");
             }
             int port = Integer.valueOf(properties.getProperty("server-port", "25565"));
+
             
             GlowServer server = new GlowServer();
             server.bind(new InetSocketAddress(port));
@@ -771,7 +773,7 @@ public final class GlowServer implements Server {
     }
 
     public boolean getOnlineMode() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return Boolean.parseBoolean(properties.getProperty("online-mode", "true"));
     }
                 
 }
