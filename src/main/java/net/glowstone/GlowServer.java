@@ -71,7 +71,6 @@ public final class GlowServer implements Server {
      */
     private static final Configuration config = new Configuration(new File(configDir, "glowstone.yml"));
 
-
     /**
      * Creates a new server on TCP port 25565 and starts listening for
      * connections.
@@ -82,24 +81,30 @@ public final class GlowServer implements Server {
             if (!configDir.exists() || !configDir.isDirectory())
                 configDir.mkdirs();
             config.load();
-            if (config.getKeys().size() == 0) { // setting defaults
+            
+            if (config.getKeys().size() == 0) {
                 // Server config
                 config.setProperty("server.port", 25565);
                 config.setProperty("server.world-name", "world");
-                config.setProperty("server.max-players", "0");
-                config.setProperty("server.online", true);
+                config.setProperty("server.max-players", 0);
+                config.setProperty("server.spawn-radius", 16);
+                config.setProperty("server.online-mode", true);
+                config.setProperty("server.log-file", "logs/log-%D.txt");
+                
                 // Server folders config
                 config.setProperty("server.folders.plugins", "plugins");
                 config.setProperty("server.folders.update", "update");
+                
                 // Database config
                 config.setProperty("database.driver", "org.sqlite.JDBC");
                 config.setProperty("database.url", "jdbc:sqlite:{DIR}{NAME}.db");
                 config.setProperty("database.user", "glow");
                 config.setProperty("database.pass", "stone");
                 config.setProperty("database.isolation", "SERIALIZABLE");
-                // End setting defaults
+                
                 config.save();
             }
+            
             int port = config.getInt("server.port", 25565);
             
             GlowServer server = new GlowServer();
@@ -793,15 +798,19 @@ public final class GlowServer implements Server {
     }
 
     public int getSpawnRadius() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return config.getInt("server.spawn-radius", 16);
     }
 
     public void setSpawnRadius(int value) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        config.setProperty("server.spawn-radius", value);
     }
 
     public boolean getOnlineMode() {
         return config.getBoolean("server.online-mode", true);
     }
-                
+    
+    public String getLogFile() {
+        return config.getString("server.log-file", "logs/log-%D.txt");
+    }
+     
 }
