@@ -166,22 +166,25 @@ public final class GlowWorld implements World {
         int centerX = (spawnLocation == null) ? 0 : spawnLocation.getBlockX() >> 4;
         int centerZ = (spawnLocation == null) ? 0 : spawnLocation.getBlockZ() >> 4;
         
-        GlowServer.logger.log(Level.INFO, "Preparing spawn for {0}", name);
-        long loadTime = new Date().getTime();
+        server.getLogger().log(Level.INFO, "Preparing spawn for {0}", name);
+        long loadTime = System.currentTimeMillis();
         
         int radius = 4 * GlowChunk.VISIBLE_RADIUS / 3;
         
+        int total = (radius * 2 + 1) * (radius * 2 + 1);
         for (int x = centerX - radius; x <= centerX + radius; ++x) {
             for (int z = centerZ - radius; z <= centerZ + radius; ++z) {
                 chunks.getChunk(x, z);
             
-                if (new Date().getTime() >= loadTime + 1000) {
-                    int progress = 100 * (x - centerX + radius) / (2 * radius);
+                if (System.currentTimeMillis() >= loadTime + 1000) {
+                    int count = (x - centerX + radius) * (2 * radius + 1) + (z - centerZ + radius);
+                    int progress = 100 * count / total;
                     GlowServer.logger.log(Level.INFO, "Preparing spawn for {0}: {1}%", new Object[]{name, progress});
+                    loadTime = System.currentTimeMillis();
                 }
             }
         }
-        GlowServer.logger.log(Level.INFO, "Preparing spawn for {0}: done", name);
+        server.getLogger().log(Level.INFO, "Preparing spawn for {0}: done", name);
         
         if (spawnLocation == null) {
             spawnLocation = new Location(this, 0, 128, 0);
@@ -519,7 +522,8 @@ public final class GlowWorld implements World {
     // biomes
 
     public Biome getBiome(int x, int z) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // TODO: Biomes
+        return Biome.PLAINS;
     }
 
     public double getTemperature(int x, int z) {
