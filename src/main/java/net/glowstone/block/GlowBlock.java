@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.PistonMoveReaction;
 
 /**
  *
@@ -195,6 +196,14 @@ public class GlowBlock implements Block {
     }
 
     public int getBlockPower() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Block getRelative(BlockFace face, int distance) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public PistonMoveReaction getPistonMoveReaction() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
