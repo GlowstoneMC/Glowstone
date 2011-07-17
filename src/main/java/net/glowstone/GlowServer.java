@@ -230,7 +230,13 @@ public final class GlowServer implements Server {
                     separator = ", ";
                 }
 
-                // TODO: move worlds and aliases when those are implemented
+                if (bukkit.getNode("worlds") != null) {
+                    config.setProperty("worlds", bukkit.getNode("worlds").getAll());
+                    moved += separator + "world generators";
+                    separator = ", ";
+                }
+
+                // TODO: move aliases when those are implemented
 
                 if (moved.length() > 0) {
                     System.out.println("Copied " + moved + " from bukkit.yml");
@@ -694,7 +700,16 @@ public final class GlowServer implements Server {
      * Gets the default ChunkGenerator for the given environment.
      * @return The ChunkGenerator.
      */
-    private ChunkGenerator getGenerator(Environment environment) {
+    private ChunkGenerator getGenerator(String name, Environment environment) {
+        if (config.getString("worlds." + name + ".generator") != null) {
+            String[] args = config.getString("worlds." + name + ".generator").split(":", 2);
+            if (getPluginManager().getPlugin(args[0]) == null) {
+                logger.log(Level.WARNING, "Plugin {0} specified for world {1} does not exist, using default.", new Object[]{args[0], name});
+            } else {
+                return getPluginManager().getPlugin(args[0]).getDefaultWorldGenerator(name, args.length == 2 ? args[1] : "");
+            }
+        }
+        
         if (environment == Environment.NETHER) {
             return new net.glowstone.generator.FlatNetherGenerator();
         } else if (environment == Environment.SKYLANDS) {
@@ -715,7 +730,7 @@ public final class GlowServer implements Server {
      * @return Newly created or loaded World
      */
     public GlowWorld createWorld(String name, Environment environment) {
-        return createWorld(name, environment, new Random().nextLong(), getGenerator(environment));
+        return createWorld(name, environment, new Random().nextLong(), getGenerator(name, environment));
     }
 
     /**
@@ -729,7 +744,7 @@ public final class GlowServer implements Server {
      * @return Newly created or loaded World
      */
     public GlowWorld createWorld(String name, Environment environment, long seed) {
-        return createWorld(name, environment, seed, getGenerator(environment));
+        return createWorld(name, environment, seed, getGenerator(name, environment));
     }
 
     /**
