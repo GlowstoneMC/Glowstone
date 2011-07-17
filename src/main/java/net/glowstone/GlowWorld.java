@@ -171,14 +171,14 @@ public final class GlowWorld implements World {
         
         int radius = 4 * GlowChunk.VISIBLE_RADIUS / 3;
         
-        int total = (radius * 2 + 1) * (radius * 2 + 1);
+        int total = (radius * 2 + 1) * (radius * 2 + 1), current = 0;
         for (int x = centerX - radius; x <= centerX + radius; ++x) {
             for (int z = centerZ - radius; z <= centerZ + radius; ++z) {
+                ++current;
                 chunks.getChunk(x, z);
             
                 if (System.currentTimeMillis() >= loadTime + 1000) {
-                    int count = (x - centerX + radius) * (2 * radius + 1) + (z - centerZ + radius);
-                    int progress = 100 * count / total;
+                    int progress = 100 * current / total;
                     GlowServer.logger.log(Level.INFO, "Preparing spawn for {0}: {1}%", new Object[]{name, progress});
                     loadTime = System.currentTimeMillis();
                 }
@@ -571,22 +571,6 @@ public final class GlowWorld implements World {
         
         arrow.setVelocity(velocity);
         return arrow;
-    }
-
-    public Minecart spawnMinecart(Location location) {
-        return spawn(location, Minecart.class);
-    }
-
-    public StorageMinecart spawnStorageMinecart(Location location) {
-        return spawn(location, StorageMinecart.class);
-    }
-
-    public PoweredMinecart spawnPoweredMinecart(Location location) {
-        return spawn(location, PoweredMinecart.class);
-    }
-
-    public Boat spawnBoat(Location location) {
-        return spawn(location, Boat.class);
     }
 
     public LivingEntity spawnCreature(Location loc, CreatureType type) {
