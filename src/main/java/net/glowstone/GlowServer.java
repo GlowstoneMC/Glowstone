@@ -1,6 +1,9 @@
 package net.glowstone;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -8,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -81,29 +85,6 @@ public final class GlowServer implements Server {
             if (!configDir.exists() || !configDir.isDirectory())
                 configDir.mkdirs();
             config.load();
-            
-            if (config.getKeys().size() == 0) {
-                // Server config
-                config.setProperty("server.port", 25565);
-                config.setProperty("server.world-name", "world");
-                config.setProperty("server.max-players", 0);
-                config.setProperty("server.spawn-radius", 16);
-                config.setProperty("server.online-mode", true);
-                config.setProperty("server.log-file", "logs/log-%D.txt");
-                
-                // Server folders config
-                config.setProperty("server.folders.plugins", "plugins");
-                config.setProperty("server.folders.update", "update");
-                
-                // Database config
-                config.setProperty("database.driver", "org.sqlite.JDBC");
-                config.setProperty("database.url", "jdbc:sqlite:{DIR}{NAME}.db");
-                config.setProperty("database.user", "glow");
-                config.setProperty("database.pass", "stone");
-                config.setProperty("database.isolation", "SERIALIZABLE");
-                
-                config.save();
-            }
             
             int port = config.getInt("server.port", 25565);
             
@@ -200,6 +181,116 @@ public final class GlowServer implements Server {
 
         ChannelPipelineFactory pipelineFactory = new MinecraftPipelineFactory(this);
         bootstrap.setPipelineFactory(pipelineFactory);
+        
+        if (config.getKeys().size() <= 1) {
+            System.out.println("Generating default configuration config/glowstone.yml...");
+
+            // Server config
+            config.setProperty("server.port", 25565);
+            config.setProperty("server.world-name", "world");
+            config.setProperty("server.max-players", 0);
+            config.setProperty("server.spawn-radius", 16);
+            config.setProperty("server.online-mode", true);
+            config.setProperty("server.log-file", "logs/log-%D.txt");
+
+            // Server folders config
+            config.setProperty("server.folders.plugins", "plugins");
+            config.setProperty("server.folders.update", "update");
+
+            // Database config
+            config.setProperty("database.driver", "org.sqlite.JDBC");
+            config.setProperty("database.url", "jdbc:sqlite:{DIR}{NAME}.db");
+            config.setProperty("database.username", "glowstone");
+            config.setProperty("database.password", "nether");
+            config.setProperty("database.isolation", "SERIALIZABLE");
+
+            // Autodetect any movable configuration
+            File bukkitYml = new File("bukkit.yml");
+            if (bukkitYml.exists()) {
+                Configuration bukkit = new Configuration(bukkitYml);
+                bukkit.load();
+                String moved = "", separator = "";
+
+                if (bukkit.getNode("database") != null) {
+                    config.setProperty("database", bukkit.getNode("database").getAll());
+                    moved += separator + "database settings";
+                    separator = ", ";
+                }
+
+                if (bukkit.getProperty("settings.spawn-radius") != null) {
+                    config.setProperty("server.spawn-radius", bukkit.getInt("settings.spawn-radius", 16));
+                    moved += separator + "spawn radius";
+                    separator = ", ";
+                }
+
+                if (bukkit.getString("settings.update-folder") != null) {
+                    config.setProperty("server.folders.update", bukkit.getString("settings.update-folder"));
+                    moved += separator + "update folder";
+                    separator = ", ";
+                }
+
+                // TODO: move worlds and aliases when those are implemented
+
+                if (moved.length() > 0) {
+                    System.out.println("Copied " + moved + " from bukkit.yml");
+                }
+            }
+
+            File serverProps = new File("server.properties");
+            if (serverProps.exists()) {
+                try {
+                    Properties properties = new Properties();
+                    properties.load(new FileInputStream(serverProps));
+                    String moved = "", separator = "";
+
+                    if (properties.containsKey("level-name")) {
+                        String world = properties.getProperty("level-name", "world");
+                        config.setProperty("server.world-name", world);
+                        moved += separator + "world name";
+                        separator = ", ";
+                    }
+
+                    if (properties.containsKey("online-mode")) {
+                        String value = properties.getProperty("online-mode", "true");
+                        boolean bool = value.equalsIgnoreCase("on") || value.equalsIgnoreCase("yes") || value.equalsIgnoreCase("true");
+                        config.setProperty("server.online-mode", bool);
+                        moved += separator + "online mode";
+                        separator = ", ";
+                    }
+
+                    if (properties.containsKey("server-port")) {
+                        String value = properties.getProperty("server-port", "25565");
+                        try {
+                            int port = Integer.parseInt(value);
+                            config.setProperty("server.port", port);
+                            moved += separator + "port";
+                            separator = ", ";
+                        }
+                        catch (NumberFormatException ex) {}
+                    }
+
+                    if (properties.containsKey("max-players")) {
+                        String value = properties.getProperty("max-players", "20");
+                        try {
+                            int players = Integer.parseInt(value);
+                            config.setProperty("server.max-players", players);
+                            moved += separator + "max players";
+                            separator = ", ";
+                        }
+                        catch (NumberFormatException ex) {}
+                    }
+
+                    // TODO: move nether, view distance, monsters, etc when implemented
+
+                    if (moved.length() > 0) {
+                        System.out.println("Copied " + moved + " from server.properties");
+                    }
+                }
+                catch (IOException ex) {}
+            }
+
+            config.save();
+        }
     }
 
     /**
@@ -764,8 +855,8 @@ public final class GlowServer implements Server {
         com.avaje.ebean.config.DataSourceConfig ds = new com.avaje.ebean.config.DataSourceConfig();
         ds.setDriver(config.getString("database.driver", "org.sqlite.JDBC"));
         ds.setUrl(config.getString("database.url", "jdbc:sqlite:{DIR}{NAME}.db"));
-        ds.setUsername(config.getString("database.user", "glow"));
-        ds.setPassword(config.getString("database.pass", "stone"));
+        ds.setUsername(config.getString("database.username", "glow"));
+        ds.setPassword(config.getString("database.password", "stone"));
         ds.setIsolationLevel(com.avaje.ebeaninternal.server.lib.sql.TransactionIsolation.getLevel(config.getString("database.isolation", "SERIALIZABLE")));
 
         if (ds.getDriver().contains("sqlite")) {
