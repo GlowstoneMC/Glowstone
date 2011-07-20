@@ -4,11 +4,15 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
+import net.glowstone.block.GlowBlockState;
+import net.glowstone.io.StorageOperation;
 import net.glowstone.msg.*;
 import net.glowstone.util.Position;
 import org.bukkit.*;
@@ -115,6 +119,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     private boolean dispNameAsEntityName = false;
 
     /**
+     * The bed spawn location of a player
+     */
+    private Location bedSpawn;
+
+    /**
      * Creates a new player and adds it to the world.
      * @param session The player's session.
      * @param name The player's name.
@@ -125,14 +134,16 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         if (session.getState() != Session.State.GAME) {
             session.send(new IdentificationMessage(getEntityId(), "", world.getSeed(), getGameMode().getValue(), world.getEnvironment().getId(), 1, world.getMaxHeight(), session.getServer().getMaxPlayers()));
         }
-
         streamBlocks(); // stream the initial set of blocks
+        health = 20;
         setCompassTarget(world.getSpawnLocation()); // set our compass target
-        teleport(world.getSpawnLocation()); // take us to spawn position
         session.send(new StateChangeMessage((byte)(getWorld().hasStorm() ? 1 : 2), (byte)0)); // send the world's weather
-        
+
         getInventory().addViewer(this);
         getInventory().getCraftingInventory().addViewer(this);
+
+        loadData();
+        saveData();
     }
     
     // -- Various internal mechanisms
@@ -143,6 +154,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      */
     @Override
     public void remove() {
+        saveData();
         getInventory().removeViewer(this);
         getInventory().getCraftingInventory().removeViewer(this);
         super.remove();
@@ -217,6 +229,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         for (GlowChunk.Key key : newChunks) {
             session.send(new LoadChunkMessage(key.getX(), key.getZ(), true));
             session.send(world.getChunkAt(key.getX(), key.getZ()).toMessage());
+            for (GlowBlockState state : world.getChunkAt(key.getX(), key.getZ()).getTileEntities()) {
+                state.update(this);
+            }
         }
 
         for (GlowChunk.Key key : previousChunks) {
@@ -279,10 +294,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
 
     public InetSocketAddress getAddress() {
         return session.getAddress();
-    }
-
-    public Location getBedSpawnLocation() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -356,8 +367,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
 
     @Override
     public void setGameMode(GameMode mode) {
+        boolean changed = getGameMode() != mode;
         super.setGameMode(mode);
-        session.send(new StateChangeMessage((byte) 3, (byte) mode.getValue()));
+        if (changed) session.send(new StateChangeMessage((byte) 3, (byte) mode.getValue()));
     }
 
     public int getExperience() {
@@ -378,7 +390,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         for (int i = 0; i <= level; i++) {
             calcExperience += (level + 1) * 10;
         }
-        this.experience = calcExperience;
+        setExperience(calcExperience);
         session.send(createExperienceMessage());
     }
 
@@ -387,7 +399,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
 
     public void setTotalExperience(int exp) {
+        int calcExperience = exp;
         this.experience = exp;
+        level = 0;
+        while ((calcExperience -= (getLevel() + 1) * 10) > 0) ++level;
+        session.send(createExperienceMessage());
     }
 
     public float getExhaustion() {
@@ -404,6 +420,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
 
     public void setSaturation(float value) {
         saturation = value;
+        session.send(createHealthMessage());
     }
     
     // -- Actions
@@ -415,7 +432,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      */
     @Override
     public boolean teleport(Location location) {
-        if (location != null && location.getWorld() != null) {
+        if (location != null && this.location != null) {
             PlayerTeleportEvent event = EventFactory.onPlayerTeleport(this, getLocation(), location);
             if (event.isCancelled()) return false;
             location = event.getTo();
@@ -507,11 +524,55 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
 
     public void saveData() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        final GlowPlayer player = this;
+        server.getStorageQueue().queue(new StorageOperation() {
+            @Override
+            public boolean isParallel() {
+                return true;
+            }
+
+            @Override
+            public String getGroup() {
+                return getName() + "_" + getWorld().getName();
+            }
+
+            @Override
+            public boolean queueMultiple() {
+                return true;
+            }
+
+            @Override
+            public String getOperation() {
+                return "player-data-save";
+            }
+
+            public void run() {
+                GlowWorld dataWorld = (GlowWorld) server.getWorlds().get(0);
+                dataWorld.getMetadataService().writePlayerData(player);
+            }
+        });
     }
 
     public void loadData() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        
+        GlowWorld dataWorld = (GlowWorld)server.getWorlds().get(0);
+        dataWorld.getMetadataService().readPlayerData(this);
+
+        //teleport((Location) dat.get(PlayerData.LOCATION));
+        // setFallDistance((Float)dat.get(PlayerData.FALL_DISTANCE));
+        //if (dat.containsKey(PlayerData.INVENTORY))
+        //    getInventory().setContents((ItemStack[])dat.get(PlayerData.INVENTORY));
+        //setHealth((Short)dat.get(PlayerData.HEALTH));
+        // setVelocity((Vector)dat.get(PlayerData.MOTION));
+        // setFireTicks((Short)dat.get(PlayerData.FIRE_TICKS));
+        // setRemainingAir((Short)dat.get(PlayerData.AIR_TICKS));
+        // setNoDamageTicks((Short)dat.get(PlayerData.HURT_TICKS));
+        // sleeping = (Boolean)dat.get(PlayerData.IS_SLEEPING);
+        //setSleepTicks((Short)dat.get(PlayerData.SLEEP_TICKS));
+        //if (dat.containsKey(PlayerData.BED_LOCATION))
+        //    bedSpawn = (Location)dat.get(PlayerData.BED_LOCATION);
+
+
     }
     
     // -- Data transmission
@@ -589,7 +650,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     // -- Inventory
 
     public void updateInventory() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        getInventory().setContents(getInventory().getContents());
     }
     
     /**

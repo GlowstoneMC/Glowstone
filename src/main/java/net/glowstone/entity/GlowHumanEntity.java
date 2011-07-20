@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissibleBase;
@@ -40,6 +41,11 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
      * Whether this human is sleeping or not.
      */
     protected boolean sleeping = false;
+
+    /**
+     * The bed spawn location of a player
+     */
+    private Location bedSpawn;
     
     /**
      * How long this human has been sleeping.
@@ -120,6 +126,10 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         gameMode = mode;
     }
     
+    protected void setSleepTicks (int ticks) {
+        sleepingTicks = ticks;
+    }
+    
     @Override
     public void pulse() {
         super.pulse();
@@ -128,8 +138,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         } else {
             sleepingTicks = 0;
         }
-        for (Iterator<ActiveEntityEffect> i = activeEffects.iterator(); i.hasNext();) {
-            ActiveEntityEffect effect = i.next();
+        for (ActiveEntityEffect effect : activeEffects) {
             if (!effect.pulse()) removeEntityEffect(effect);
         }
     }
@@ -199,6 +208,14 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     public void removeEntityEffect(ActiveEntityEffect effect) {
         activeEffects.remove(effect);
+    }
+
+    public Location getBedSpawnLocation() {
+        return bedSpawn;
+    }
+
+    public void setBedSpawnLocation(Location bedSpawn) {
+        this.bedSpawn = bedSpawn;
     }
     
 }

@@ -30,41 +30,17 @@ public class GlowCommandMap extends SimpleCommandMap {
         this.server = server;
     }
 
-    // Blacklist of "vanilla" notchcode commands
-    protected boolean isBlacklistedFallback(Command cmd) {
-        return ((cmd instanceof ListCommand
-                || cmd instanceof KickCommand
-                || cmd instanceof TimeCommand
-                || cmd instanceof WhitelistCommand
-                || cmd instanceof MeCommand
-                || cmd instanceof HelpCommand
-                || cmd instanceof BanCommand
-                || cmd instanceof BanIpCommand
-                || cmd instanceof PardonCommand
-                || cmd instanceof PardonIpCommand
-                || cmd instanceof SaveCommand
-                || cmd instanceof SaveOffCommand
-                || cmd instanceof SaveOnCommand));
+    @Override
+    public VanillaCommand getFallback(String name) {
+        return null;
     }
-
+    
     public Set<String> getKnownCommandNames() {
         return knownCommands.keySet();
     }
 
     public Collection<Command> getKnownCommands() {
         return knownCommands.values();
-    }
-
-    public List<Command> registerFallbacksAsNormal() {
-        List<Command> ret = new ArrayList<Command>();
-        for (VanillaCommand cmd : fallbackCommands) {
-            if (!isBlacklistedFallback(cmd)) {
-                register("#", cmd);
-                ret.add(cmd);
-            }
-        }
-        fallbackCommands.clear();
-        return ret;
     }
 
     /**

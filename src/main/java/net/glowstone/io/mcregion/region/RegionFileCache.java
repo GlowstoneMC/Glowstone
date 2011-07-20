@@ -1,4 +1,4 @@
-package net.glowstone.io.region;
+package net.glowstone.io.mcregion.region;
 
 /*
  ** 2011 January 5

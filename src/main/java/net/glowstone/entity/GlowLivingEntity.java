@@ -142,22 +142,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public int getRemainingAir() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void setRemainingAir(int ticks) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public int getMaximumAir() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void setMaximumAir(int ticks) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     public void damage(int amount) {
         throw new UnsupportedOperationException("Not supported yet.");
     }

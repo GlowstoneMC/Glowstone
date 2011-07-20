@@ -1,69 +1,51 @@
-package net.glowstone.io;
+package net.glowstone.io.nbt;
 
 import java.io.File;
-import java.io.DataInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Map;
 
-import net.glowstone.io.region.RegionFile;
-import net.glowstone.io.region.RegionFileCache;
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowWorld;
+import net.glowstone.io.ChunkIoService;
 import net.glowstone.util.nbt.ByteArrayTag;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.Tag;
 
 /**
- * An implementation of the {@link ChunkIoService} which reads and writes
- * McRegion maps.
- * <p />
- * Information on the McRegion file format can be found on the
- * <a href="http://mojang.com/2011/02/16/minecraft-save-file-format-in-beta-1-3">Mojang</a>
- * blog.
+ * An implementation of the {@link net.glowstone.io.ChunkIoService} which reads and writes NBT
+ * maps.
  * @author Graham Edgecombe
  */
-public final class McRegionChunkIoService implements ChunkIoService {
+public final class NbtChunkIoService implements ChunkIoService {
+    private final File dir;
 
-    /**
-     * The size of a region - a 32x32 group of chunks.
-     */
-    private static final int REGION_SIZE = 32;
-
-    /**
-     * The root directory of the map.
-     */
-    private File dir;
-
-    /**
-     * The region file cache.
-     */
-    private RegionFileCache cache = new RegionFileCache();
-
-    // TODO: consider the session.lock file
-
-    public McRegionChunkIoService() {
+    public NbtChunkIoService() {
         this(new File("world"));
     }
 
-    public McRegionChunkIoService(File dir) {
+    public NbtChunkIoService(File dir) {
         this.dir = dir;
     }
 
+
     @Override
-    public boolean read(GlowChunk chunk, int x, int z) throws IOException {
-        RegionFile region = cache.getRegionFile(dir, x, z);
-        int regionX = x & (REGION_SIZE - 1);
-        int regionZ = z & (REGION_SIZE - 1);
-        if (!region.hasChunk(regionX, regionZ)){
+    public boolean read(GlowChunk chunk, int x, int z) {
+        int fileX = formatInt(x);
+        int fileZ = formatInt(z);
+
+        File chunkFile = new File(dir, Integer.toString(fileX & 63, 36) + File.separatorChar + Integer.toString(fileZ & 63, 36)
+                + File.separatorChar + "c." + Integer.toString(fileX, 36) + "." + Integer.toString(fileZ, 36) + ".dat");
+
+        Map<String, Tag> levelTags;
+        try {
+            NBTInputStream nbt = new NBTInputStream(new FileInputStream(chunkFile));
+            CompoundTag tag = (CompoundTag) nbt.readTag();
+            levelTags = ((CompoundTag) tag.getValue().get("Level")).getValue();
+        } catch (IOException e) {
             return false;
         }
-
-        DataInputStream in = region.getChunkDataInputStream(regionX, regionZ);
-
-        NBTInputStream nbt = new NBTInputStream(in, false);
-        CompoundTag tag = (CompoundTag) nbt.readTag();
-        Map<String, Tag> levelTags = ((CompoundTag) tag.getValue().get("Level")).getValue();
 
         byte[] tileData = ((ByteArrayTag) levelTags.get("Blocks")).getValue();
         chunk.initializeTypes(tileData);
@@ -101,7 +83,21 @@ public final class McRegionChunkIoService implements ChunkIoService {
 
     @Override
     public void write(int x, int z, GlowChunk chunk) throws IOException {
-        // TODO
+
+    }
+
+    private int formatInt(int i) {
+        if (i >= 0)
+            return i;
+        String bin = Integer.toBinaryString(i);
+        StringBuilder ret = new StringBuilder();
+        byte[] bytes = bin.getBytes();
+        for (int ii = 1; i < bytes.length; ii++) {
+            if (bytes[ii] == 1)
+                break;
+            ret.append((ii == 0) ? 1 : ii);
+        }
+        return Integer.parseInt(ret.toString());
     }
 
 }

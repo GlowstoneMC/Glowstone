@@ -20,6 +20,8 @@ import java.util.logging.Logger;
 
 import org.bukkit.*;
 import org.bukkit.command.*;
+import net.glowstone.io.StorageQueue;
+import net.glowstone.io.mcregion.McRegionWorldStorageProvider;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
@@ -34,7 +36,6 @@ import org.bukkit.plugin.PluginLoadOrder;
 import org.bukkit.util.config.Configuration;
 
 import net.glowstone.command.*;
-import net.glowstone.io.McRegionChunkIoService;
 import net.glowstone.net.MinecraftPipelineFactory;
 import net.glowstone.net.Session;
 import net.glowstone.net.SessionRegistry;
@@ -79,6 +80,9 @@ public final class GlowServer implements Server {
      */
     public static final int PROTOCOL_VERSION = 17;
 
+
+    public static final StorageQueue storeQueue = new StorageQueue();
+
     /**
      * Creates a new server on TCP port 25565 and starts listening for
      * connections.
@@ -89,9 +93,10 @@ public final class GlowServer implements Server {
             if (!configDir.exists() || !configDir.isDirectory())
                 configDir.mkdirs();
             config.load();
+
+            storeQueue.start();
             
             int port = config.getInt("server.port", 25565);
-            
             GlowServer server = new GlowServer();
             server.start();
             server.bind(new InetSocketAddress(port));
@@ -382,7 +387,6 @@ public final class GlowServer implements Server {
 
         // Register these first so they're usable while the worlds are loading
         GlowCommandMap.initGlowPermissions(this);
-        builtinCommandMap.registerFallbacksAsNormal();
         builtinCommandMap.register(new MeCommand(this));
         builtinCommandMap.register(new ColorCommand(this));
         builtinCommandMap.register(new KickCommand(this));
@@ -391,6 +395,11 @@ public final class GlowServer implements Server {
         builtinCommandMap.register(new WhitelistCommand(this));
         builtinCommandMap.register(new BanCommand(this));
         builtinCommandMap.register(new GameModeCommand(this));
+        builtinCommandMap.register(new OpCommand(this));
+        builtinCommandMap.register(new DeopCommand(this));
+        builtinCommandMap.register(new StopCommand(this));
+        builtinCommandMap.register(new SaveCommand(this));
+        builtinCommandMap.register(new SayCommand(this));
         builtinCommandMap.register(new HelpCommand(this, builtinCommandMap.getKnownCommands()));
 
         enablePlugins(PluginLoadOrder.STARTUP);
@@ -409,7 +418,7 @@ public final class GlowServer implements Server {
     /**
      * Stops this server.
      */
-    public void stop() {
+    public void shutdown() {
         logger.info("The server is shutting down...");
         
         // Stop scheduler and disable plugins
@@ -432,6 +441,8 @@ public final class GlowServer implements Server {
         
         // And finally kill the console
         consoleManager.stop();
+
+        storeQueue.end();
     }
     
     /**
@@ -514,6 +525,8 @@ public final class GlowServer implements Server {
             enablePlugins(PluginLoadOrder.STARTUP);
             enablePlugins(PluginLoadOrder.POSTWORLD);
             consoleManager.refreshCommands();
+
+            storeQueue.reset();
             
             // TODO: Register aliases
         }
@@ -863,7 +876,7 @@ public final class GlowServer implements Server {
      */
     public GlowWorld createWorld(String name, Environment environment, long seed, ChunkGenerator generator) {
         if (getWorld(name) != null) return getWorld(name);
-        GlowWorld world = new GlowWorld(this, name, environment, seed, new McRegionChunkIoService(new File(name)), generator);
+        GlowWorld world = new GlowWorld(this, name, environment, seed, new McRegionWorldStorageProvider(new File(name)), generator);
         if (world != null) worlds.add(world);
         return world;
     }
@@ -1042,11 +1055,6 @@ public final class GlowServer implements Server {
         return config.getBoolean("server.allow-flight", false);
     }
 
-    public void shutdown() {
-        broadcast("Stopping the server", BROADCAST_CHANNEL_ADMINISTRATIVE);
-        stop();
-    }
-
     public int broadcast(String message, String permission) {
         int count = 0;
         for (Permissible permissible : getPluginManager().getPermissionSubscriptions(permission)) {
@@ -1139,6 +1147,10 @@ public final class GlowServer implements Server {
     public void setMOTD(String motd, boolean permanent) {
         this.motd = motd;
         if (permanent) config.setProperty("server.motd", motd);
+    }
+
+    public StorageQueue getStorageQueue() {
+        return storeQueue;
     }
      
 }

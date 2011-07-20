@@ -3,6 +3,7 @@ package net.glowstone.block;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -122,6 +123,8 @@ public class GlowBlockState implements BlockState {
         block.setData(getRawData());
         return true;
     }
+
+    public void update(GlowPlayer player) {}
     
     // Internal mechanisms
 
@@ -140,36 +143,6 @@ public class GlowBlockState implements BlockState {
     
     public void destroy() {
         throw new IllegalStateException("Cannot destroy a generic BlockState");
-    }
-    
-    public void load(CompoundTag compound) {
-        throw new IllegalStateException("Cannot load to a generic BlockState");
-    }
-    
-    public CompoundTag save() {
-        throw new IllegalStateException("Cannot save from a generic BlockState");
-    }
-    
-    protected void load(CompoundTag compound, String id) {
-        String checkId = ((StringTag) compound.getValue().get("id")).getValue();
-        if (!id.equalsIgnoreCase(checkId)) {
-            throw new IllegalArgumentException("Invalid ID loading tile entity, expected " + id + " got " + checkId);
-        }
-        int checkX = ((IntTag) compound.getValue().get("x")).getValue();
-        int checkY = ((IntTag) compound.getValue().get("y")).getValue();
-        int checkZ = ((IntTag) compound.getValue().get("z")).getValue();
-        if (x != checkX || y != checkY || z != checkZ) {
-            throw new IllegalArgumentException("Invalid coords loading tile entity, expected (" + x + "," + y + "," + z + ") got (" + checkX + "," + checkY + "," + checkZ + ")");
-        }
-    }
-    
-    protected Map<String, Tag> save(String id) {
-        Map<String, Tag> result = new HashMap<String, Tag>();
-        result.put("id", new StringTag("id", id));
-        result.put("x", new IntTag("x", x));
-        result.put("y", new IntTag("y", y));
-        result.put("z", new IntTag("z", z));
-        return result;
     }
 
 }

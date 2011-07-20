@@ -62,7 +62,7 @@ public class TimeCommand extends GlowCommand {
     public Set<Permission> registerPermissions(String prefix) {
         Set<Permission> perms = new HashSet<Permission>();
         perms.add(new Permission(prefix + ".add", "Allows users to add to the current time"));
-        perms.add(new Permission(prefix + ".set", "Allows users to add to the current time"));
+        perms.add(new Permission(prefix + ".set", "Allows users to set current time"));
         return perms;
     }
 

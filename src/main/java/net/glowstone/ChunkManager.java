@@ -208,7 +208,7 @@ public final class ChunkManager {
     /**
      * Force-saves the given chunk.
      * @param x The X coordinate.
-     * @param Z The Z coordinate.
+     * @param z The Z coordinate.
      */
     public boolean forceSave(int x, int z) {
         GlowChunk.Key key = new GlowChunk.Key(x, z);

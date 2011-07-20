@@ -6,7 +6,7 @@ import net.glowstone.GlowChunk;
 
 /**
  * This interface should be implemented by classes which wish to provide some
- * way of performing chunk I/O e.g. the {@link NbtChunkIoService}. This
+ * way of performing chunk I/O e.g. the {@link net.glowstone.io.nbt.NbtChunkIoService}. This
  * interface is abstracted away from the implementation because a new format is
  * due to arrive soon (McRegion).
  * @author Graham Edgecombe

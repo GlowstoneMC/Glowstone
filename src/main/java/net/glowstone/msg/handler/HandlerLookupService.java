@@ -14,6 +14,7 @@ public final class HandlerLookupService {
             bind(IdentificationMessage.class, IdentificationMessageHandler.class);
             bind(HandshakeMessage.class, HandshakeMessageHandler.class);
             bind(ChatMessage.class, ChatMessageHandler.class);
+            bind(GroundMessage.class, GroundMessageHandler.class);
             bind(PositionMessage.class, PositionMessageHandler.class);
             bind(RotationMessage.class, RotationMessageHandler.class);
             bind(PositionRotationMessage.class, PositionRotationMessageHandler.class);

@@ -156,7 +156,7 @@ public final class Session {
             disconnect(event.getKickMessage(), true);
             return;
         }
-        ((GlowWorld) this.server.getWorlds().get(0)).getRawPlayers().add(player);
+        player.getWorld().getRawPlayers().add(player);
 
         String message = EventFactory.onPlayerJoin(player).getJoinMessage();
         if (message != null) {

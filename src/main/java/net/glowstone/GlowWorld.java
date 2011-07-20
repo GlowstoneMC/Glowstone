@@ -1,13 +1,11 @@
 package net.glowstone;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.io.IOException;
+import java.util.*;
 import java.util.logging.Level;
 
+import net.glowstone.entity.*;
+import net.glowstone.io.StorageOperation;
 import org.bukkit.BlockChangeDelegate;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
@@ -28,13 +26,10 @@ import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import net.glowstone.io.WorldMetadataService;
+import net.glowstone.io.WorldMetadataService.WorldFinalValues;
+import net.glowstone.io.WorldStorageProvider;
 import net.glowstone.block.GlowBlock;
-import net.glowstone.io.ChunkIoService;
-import net.glowstone.entity.GlowEntity;
-import net.glowstone.entity.EntityManager;
-import net.glowstone.entity.GlowLightningStrike;
-import net.glowstone.entity.GlowLivingEntity;
-import net.glowstone.entity.GlowPlayer;
 import net.glowstone.msg.LoadChunkMessage;
 import net.glowstone.msg.StateChangeMessage;
 import net.glowstone.msg.TimeMessage;
@@ -73,7 +68,7 @@ public final class GlowWorld implements World {
     /**
      * A map between locations and cached Block objects.
      */
-    private final HashMap<Location, GlowBlock> blockCache = new HashMap<Location, GlowBlock>();
+    private final Map<Location, GlowBlock> blockCache = new HashMap<Location, GlowBlock>();
     
     /**
      * The world populators for this world.
@@ -150,23 +145,54 @@ public final class GlowWorld implements World {
      */
     private boolean autosave = true;
 
+    /*
+     * The world metadata service used
+     */
+    private final WorldMetadataService metadataService;
+
+    /**
+     * The world's UUID
+     */
+    private final UUID uid;
+
     /**
      * Creates a new world with the specified chunk I/O service, environment,
      * and world generator.
      * @param name The name of the world.
-     * @param service The chunk I/O service.
+     * @param provider The world storage provider
      * @param environment The environment.
      * @param generator The world generator.
      */
-    public GlowWorld(GlowServer server, String name, Environment environment, long seed, ChunkIoService service, ChunkGenerator generator) {
+    public GlowWorld(GlowServer server, String name, Environment environment, long seed, WorldStorageProvider provider, ChunkGenerator generator) {
         this.server = server;
         this.name = name;
         this.environment = environment;
-        this.seed = seed;
-        chunks = new ChunkManager(this, service, generator);
-        
+        provider.setWorld(this);
+        chunks = new ChunkManager(this, provider.getChunkIoService(), generator);
+        metadataService = provider.getMetadataService();
+
+        WorldFinalValues values = null;
+        try {
+            values = metadataService.readWorldData();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // Extra checks for seed
+        if (values != null) {
+            if (values.getSeed() == 0L) {
+                this.seed = seed;
+            } else {
+                this.seed = values.getSeed();
+            }
+            this.uid = values.getUuid();
+        } else {
+            this.seed = seed;
+            this.uid = UUID.randomUUID();
+        }
+
         populators = generator.getDefaultPopulators(this);
-        
+        if (spawnLocation == null) spawnLocation = generator.getFixedSpawnLocation(this, random);
+
         int centerX = (spawnLocation == null) ? 0 : spawnLocation.getBlockX() >> 4;
         int centerZ = (spawnLocation == null) ? 0 : spawnLocation.getBlockZ() >> 4;
         
@@ -192,7 +218,7 @@ public final class GlowWorld implements World {
         
         spawnLocation = generator.getFixedSpawnLocation(this, random);
         if (spawnLocation == null) {
-            spawnLocation = new Location(this, 0, getMaxHeight(), 0);
+            spawnLocation = new Location(this, 0, getHighestBlockYAt(0, 0), 0);
             
             if (!generator.canSpawn(this, spawnLocation.getBlockX(), spawnLocation.getBlockZ())) {
                 // 10 tries only to prevent a return false; bomb
@@ -204,9 +230,8 @@ public final class GlowWorld implements World {
             
             spawnLocation.setY(1 + getHighestBlockYAt(spawnLocation.getBlockX(), spawnLocation.getBlockZ()));
         }
-        
-        setStorm(false);
-        setThundering(false);
+        save();
+
     }
 
     ////////////////////////////////////////
@@ -321,6 +346,12 @@ public final class GlowWorld implements World {
         return true;
     }
 
+    public boolean setSpawnLocation(Location loc) {
+        loc.setWorld(this);
+        spawnLocation = loc;
+        return true;
+    }
+
     public boolean getPVP() {
         return pvpAllowed;
     }
@@ -353,7 +384,7 @@ public final class GlowWorld implements World {
     }
 
     public UUID getUID() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return uid;
     }
 
     public String getName() {
@@ -371,9 +402,39 @@ public final class GlowWorld implements World {
     // force-save
 
     public void save() {
-        for (GlowChunk chunk : chunks.getLoadedChunks()) {
-            chunks.forceSave(chunk.getX(), chunk.getZ());
+        server.getStorageQueue().queue(new StorageOperation() {
+            @Override
+            public boolean isParallel() {
+                return false;
+            }
+
+            @Override
+            public String getGroup() {
+                return getName();
+            }
+
+            @Override
+            public String getOperation() {
+                return "world-save";
+            }
+
+            @Override
+            public boolean queueMultiple() {
+                return false;
+            }
+
+            public void run() {
+                for (GlowChunk chunk : chunks.getLoadedChunks()) {
+                    chunks.forceSave(chunk.getX(), chunk.getZ());
+                }
+            }
+        });
+        
+        for (GlowPlayer player : getRawPlayers()) {
+            player.saveData();
         }
+
+        writeWorldData();
     }
     
     // map generation
@@ -396,7 +457,7 @@ public final class GlowWorld implements World {
 
     // get block, chunk, id, highest methods with coords
 
-    public GlowBlock getBlockAt(int x, int y, int z) {
+    public synchronized GlowBlock getBlockAt(int x, int y, int z) {
         Location blockLoc = new Location(this, x, y, z);
         if (blockCache.containsKey(blockLoc)) {
             return blockCache.get(blockLoc);
@@ -420,7 +481,7 @@ public final class GlowWorld implements World {
         return 0;
     }
 
-    public GlowChunk getChunkAt(int x, int z) {
+    public synchronized GlowChunk getChunkAt(int x, int z) {
         return chunks.getChunk(x, z);
     }
 
@@ -630,6 +691,12 @@ public final class GlowWorld implements World {
                 return spawn(loc, org.bukkit.entity.Zombie.class);
             case WOLF:
                 return spawn(loc, org.bukkit.entity.Wolf.class);
+            case CAVE_SPIDER:
+                return spawn(loc, org.bukkit.entity.CaveSpider.class);
+            case SILVERFISH:
+                return spawn(loc, org.bukkit.entity.Silverfish.class);
+            case ENDERMAN:
+                return spawn(loc, org.bukkit.entity.Enderman.class);
             default:
                 throw new IllegalArgumentException();
         }
@@ -781,4 +848,52 @@ public final class GlowWorld implements World {
         autosave = value;
     }
 
+    // level data write
+
+    void writeWorldData() {
+        server.getStorageQueue().queue(new WorldMetadataSaveOperation(this, metadataService));
+    }
+
+    public WorldMetadataService getMetadataService() {
+        return metadataService;
+    }
+
+    public static class WorldMetadataSaveOperation extends StorageOperation {
+        private final GlowWorld world;
+        private final WorldMetadataService service;
+
+        protected WorldMetadataSaveOperation(GlowWorld world, WorldMetadataService service) {
+            this.world = world;
+            this.service = service;
+        }
+
+        @Override
+        public boolean isParallel() {
+            return true;
+        }
+
+        @Override
+        public String getGroup() {
+            return world.getName();
+        }
+
+        @Override
+        public boolean queueMultiple() {
+            return false;
+        }
+
+        @Override
+        public String getOperation() {
+            return "world-metadata-save";
+        }
+
+        public void run() {
+            try {
+                service.writeWorldData();
+            } catch (IOException e) {
+                world.server.getLogger().severe("Could not save world metadata file for world" + world.getName());
+                e.printStackTrace();
+            }
+        }
+    }
 }

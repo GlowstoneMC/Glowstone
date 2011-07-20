@@ -115,17 +115,4 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
         setRawNote((byte) 0);
     }
     
-    @Override
-    public void load(CompoundTag compound) {
-        super.load(compound, "Music");
-        setRawNote(((ByteTag) compound.getValue().get("note")).getValue());
-    }
-    
-    @Override
-    public CompoundTag save() {
-        Map<String, Tag> map = super.save("Music");
-        map.put("note", new ByteTag("note", getRawNote()));
-        return new CompoundTag("", map);
-    }
-    
 }

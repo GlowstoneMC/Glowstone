@@ -53,10 +53,10 @@ public class SurfaceGenerator extends GlowChunkGenerator {
 
         byte[] buf = start(Material.AIR);
 
-        int baseHeight = 64;
+        int baseHeight = world.getMaxHeight() / 2;
         double terrainHeight = 50;
         boolean noDirt = true;
-        int waterLevel = 64;
+        int waterLevel = world.getMaxHeight() / 2;
 
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {

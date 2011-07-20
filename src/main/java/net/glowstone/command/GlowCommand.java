@@ -51,14 +51,6 @@ public abstract class GlowCommand extends Command {
         return true;
     }
     
-    protected boolean checkOp(CommandSender sender) {
-        if (!sender.isOp()) {
-            sender.sendMessage(ChatColor.GRAY + "You do not have privileges to use this command.");
-            return false;
-        }
-        return true;
-    }
-    
     protected boolean tellOps(CommandSender sender, String message) {
         server.broadcast("(" + sender.getName() + ": " + message + ")", Server.BROADCAST_CHANNEL_ADMINISTRATIVE);
         return true;

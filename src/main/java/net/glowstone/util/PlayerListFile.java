@@ -1,5 +1,8 @@
 package net.glowstone.util;
 
+import net.glowstone.GlowServer;
+import net.glowstone.io.StorageOperation;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -46,37 +49,87 @@ public final class PlayerListFile {
      * Reloads from the file.
      */
     public void load() {
-        list.clear();
-        try {
-            Scanner input = new Scanner(file);
-            while (input.hasNextLine()) {
-                String line = input.nextLine().trim().toLowerCase();
-                if (line.length() > 0) {
-                    if (!list.contains(line))
-                        list.add(line);
+        GlowServer.storeQueue.queue(new StorageOperation() {
+            @Override
+            public boolean isParallel() {
+                return true;
+            }
+
+            @Override
+            public String getGroup() {
+                return file.getName();
+            }
+
+            @Override
+            public boolean queueMultiple() {
+                return true;
+            }
+
+            @Override
+            public String getOperation() {
+                return "playerlistfile-load";
+            }
+
+            public void run() {
+                synchronized (list) {
+                    list.clear();
+                    try {
+                        Scanner input = new Scanner(file);
+                        while (input.hasNextLine()) {
+                            String line = input.nextLine().trim().toLowerCase();
+                            if (line.length() > 0) {
+                                if (!list.contains(line))
+                                    list.add(line);
+                            }
+                        }
+                        Collections.sort(list);
+                        save();
+                    } catch (FileNotFoundException ex) {
+                        save();
+                    }
                 }
             }
-            Collections.sort(list);
-            save();
-        } catch (FileNotFoundException ex) {
-            save();
-        }
+        });
     }
     
     /**
      * Saves to the file.
      */
     private void save() {
-        try {
-            PrintWriter out = new PrintWriter(new FileWriter(file));
-            for (String str : list) {
-                out.println(str);
+        GlowServer.storeQueue.queue(new StorageOperation() {
+            @Override
+            public boolean isParallel() {
+                return true;
             }
-            out.flush();
-            out.close();
-        } catch (IOException ex) {
-            // Pfft.
-        }
+
+            @Override
+            public String getGroup() {
+                return file.getName();
+            }
+
+            @Override
+            public boolean queueMultiple() {
+                return true;
+            }
+
+            @Override
+            public String getOperation() {
+                return "playerlistfile-save";
+            }
+
+            public void run() {
+                try {
+                    PrintWriter out = new PrintWriter(new FileWriter(file));
+                    for (String str : list) {
+                        out.println(str);
+                    }
+                    out.flush();
+                    out.close();
+                } catch (IOException ex) {
+                    // Pfft.
+                }
+            }
+        });
     }
     
     /**

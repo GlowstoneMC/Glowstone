@@ -25,8 +25,8 @@ public class CakeTownGenerator extends GlowChunkGenerator {
 
     @Override
     public byte[] generate(World world, Random random, int chunkX, int chunkZ) {
-        final int base = 32;
-        final int top = 64 + base;
+        final int base = world.getMaxHeight() / 4;
+        final int top = world.getMaxHeight() / 2 + base;
 
         Location center = new Location(world, 0, base, 0);
 
@@ -62,8 +62,8 @@ public class CakeTownGenerator extends GlowChunkGenerator {
 
     @Override
     public Location getFixedSpawnLocation(World world, Random random) {
-        int x = random.nextInt(world.getMaxHeight()) - 64;
-        int z = random.nextInt(world.getMaxHeight()) - 64;
+        int x = random.nextInt(world.getMaxHeight()) - world.getMaxHeight() / 2;
+        int z = random.nextInt(world.getMaxHeight()) - world.getMaxHeight() / 2;
         return new Location(world, x, world.getHighestBlockYAt(x, z), z);
     }
     

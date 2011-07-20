@@ -228,7 +228,7 @@ public final class ConsoleManager {
     private class ServerShutdownThread extends Thread {
         @Override
         public void run() {
-            server.stop();
+            server.shutdown();
         }
     }
     
@@ -389,7 +389,7 @@ public final class ConsoleManager {
         public void keyReleased(KeyEvent e) {}
         
         public void windowClosing(WindowEvent e) {
-            server.stop();
+            server.shutdown();
         }
 
         public void keyTyped(KeyEvent e) {
