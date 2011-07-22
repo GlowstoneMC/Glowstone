@@ -81,6 +81,7 @@ public final class CodecLookupService {
             /* 0x69 */ bind(ProgressBarCodec.class);
             /* 0x6A */ bind(TransactionCodec.class);
             /* 0x82 */ bind(UpdateSignCodec.class);
+            /* 0x83 */ bind(MapDataCodec.class);
             /* 0xC8 */ bind(StatisticCodec.class);
             /* 0xFF */ bind(KickCodec.class);
         } catch (Exception ex) {

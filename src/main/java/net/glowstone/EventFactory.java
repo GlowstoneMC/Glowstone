@@ -1,7 +1,5 @@
 package net.glowstone;
 
-import net.glowstone.entity.GlowPlayer;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -30,52 +28,41 @@ public final class EventFactory {
      * Calls an event through the plugin manager.
      * @param event The event to throw.
      */
-    public static void callEvent(Event event) {
+    private static <T extends Event> T callEvent(T event) {
         Bukkit.getServer().getPluginManager().callEvent(event);
+        return event;
     }
 
     // -- Player Events
 
     public static PlayerChatEvent onPlayerChat(Player player, String message) {
-        PlayerChatEvent event = new PlayerChatEvent(player, message);
-        callEvent(event);
-        return event;
+        return callEvent(new PlayerChatEvent(player, message));
     }
 
     public static PlayerCommandPreprocessEvent onPlayerCommand(Player player, String message) {
-        PlayerCommandPreprocessEvent event = new PlayerCommandPreprocessEvent(player, message);
-        callEvent(event);
-        return event;
+        return callEvent(new PlayerCommandPreprocessEvent(player, message));
     }
 
     public static PlayerJoinEvent onPlayerJoin(Player player) {
-        PlayerJoinEvent event = new PlayerJoinEvent(player, ChatColor.YELLOW + player.getName() + " joined the game");
-        callEvent(event);
-        return event;
+        return callEvent(new PlayerJoinEvent(player, ChatColor.YELLOW + player.getName() + " joined the game"));
     }
 
     public static PlayerKickEvent onPlayerKick(Player player, String reason) {
-        PlayerKickEvent event = new PlayerKickEvent(player, reason, ChatColor.YELLOW + player.getName() + " left the game");
-        callEvent(event);
-        return event;
+        return callEvent(new PlayerKickEvent(player, reason, ChatColor.YELLOW + player.getName() + " left the game"));
     }
 
     public static PlayerQuitEvent onPlayerQuit(Player player) {
-        PlayerQuitEvent event = new PlayerQuitEvent(player, ChatColor.YELLOW + player.getName() + " left the game");
-        callEvent(event);
-        return event;
+        return callEvent(new PlayerQuitEvent(player, ChatColor.YELLOW + player.getName() + " left the game"));
     }
 
     public static PlayerMoveEvent onPlayerMove(Player player, Location from, Location to) {
-        PlayerMoveEvent event = new PlayerMoveEvent(player, from, to);
-        callEvent(event);
-        return event;
+        return callEvent(new PlayerMoveEvent(player, from, to));
     }
+    
+    // -- Block Events
 
     public static BlockBreakEvent onBlockBreak(Block block, Player player) {
-        BlockBreakEvent event = new BlockBreakEvent(block, player);
-        callEvent(event);
-        return event;
+        return callEvent(new BlockBreakEvent(block, player));
     }
 
     public static BlockDamageEvent onBlockDamage(Player player, Block block) {
@@ -83,8 +70,6 @@ public final class EventFactory {
     }
 
     public static BlockDamageEvent onBlockDamage(Player player, Block block, ItemStack tool, boolean instaBreak) {
-        BlockDamageEvent event = new BlockDamageEvent(player, block, tool, instaBreak);
-        callEvent(event);
-        return event;
+        return callEvent(new BlockDamageEvent(player, block, tool, instaBreak));
     }
 }
