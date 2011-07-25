@@ -25,7 +25,7 @@ public abstract class GlowCommand extends Command {
     
     protected boolean checkArgs(CommandSender sender, String[] args, int expected) {
         if (args.length != expected) {
-            sender.sendMessage(ChatColor.GRAY + "Wrong number of args: expected " + expected + ", got " + args.length);
+            sender.sendMessage(ChatColor.GRAY + "Wrong number of arguments. Usage: " + getUsage());
             return false;
         }
         return true;

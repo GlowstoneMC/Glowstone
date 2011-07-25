@@ -418,11 +418,14 @@ public final class GlowServer implements Server {
      * Registers built-in Glowstone commands and refreshes the autocomplete index.
      */
     private void registerCommands() {
-        builtinCommandMap.register("#", new net.glowstone.command.OpCommand(this));
-        builtinCommandMap.register("#", new net.glowstone.command.DeopCommand(this));
-        builtinCommandMap.register("#", new net.glowstone.command.ListCommand(this));
         builtinCommandMap.register("#", new net.glowstone.command.ColorCommand(this));
+        builtinCommandMap.register("#", new net.glowstone.command.DeopCommand(this));
+        builtinCommandMap.register("#", new net.glowstone.command.KickCommand(this));
+        builtinCommandMap.register("#", new net.glowstone.command.ListCommand(this));
+        builtinCommandMap.register("#", new net.glowstone.command.MeCommand(this));
+        builtinCommandMap.register("#", new net.glowstone.command.OpCommand(this));
         builtinCommandMap.register("#", new net.glowstone.command.StopCommand(this));
+        builtinCommandMap.register("#", new net.glowstone.command.TimeCommand(this));
         
         consoleManager.refreshCommands();
     }
