@@ -2,12 +2,12 @@ package net.glowstone;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +32,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.Recipe;
+import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.SimpleServicesManager;
@@ -39,6 +40,7 @@ import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.plugin.PluginLoadOrder;
 import org.bukkit.util.config.Configuration;
 
+import net.glowstone.command.*;
 import net.glowstone.io.McRegionChunkIoService;
 import net.glowstone.net.MinecraftPipelineFactory;
 import net.glowstone.net.Session;
@@ -46,7 +48,6 @@ import net.glowstone.net.SessionRegistry;
 import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.util.PlayerListFile;
 import net.glowstone.inventory.CraftingManager;
-import org.bukkit.permissions.Permission;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.ChannelFactory;
@@ -418,14 +419,17 @@ public final class GlowServer implements Server {
      * Registers built-in Glowstone commands and refreshes the autocomplete index.
      */
     private void registerCommands() {
-        builtinCommandMap.register("#", new net.glowstone.command.ColorCommand(this));
-        builtinCommandMap.register("#", new net.glowstone.command.DeopCommand(this));
-        builtinCommandMap.register("#", new net.glowstone.command.KickCommand(this));
-        builtinCommandMap.register("#", new net.glowstone.command.ListCommand(this));
-        builtinCommandMap.register("#", new net.glowstone.command.MeCommand(this));
-        builtinCommandMap.register("#", new net.glowstone.command.OpCommand(this));
-        builtinCommandMap.register("#", new net.glowstone.command.StopCommand(this));
-        builtinCommandMap.register("#", new net.glowstone.command.TimeCommand(this));
+        List<Command> commands = Arrays.<Command>asList(
+                new MeCommand(this),
+                new OpCommand(this),
+                new DeopCommand(this),
+                new ColorCommand(this),
+                new KickCommand(this),
+                new ListCommand(this),
+                new TimeCommand(this),
+                new StopCommand(this));
+        builtinCommandMap.registerAll("#", commands);
+        builtinCommandMap.register("#", new HelpCommand(this, commands));
         
         consoleManager.refreshCommands();
     }

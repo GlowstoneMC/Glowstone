@@ -1,5 +1,6 @@
 package net.glowstone.command;
 
+import java.util.logging.Level;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.ChatColor;
@@ -28,7 +29,8 @@ public class MeCommand extends GlowCommand {
         }
         
         String senderName = sender instanceof Player ? ((Player) sender).getDisplayName() : "Console";
-        server.broadcastMessage(ChatColor.WHITE + " * " + senderName + message);
+        server.broadcastMessage(" * " + senderName + message);
+        server.getLogger().log(Level.INFO, " * {0}{1}", new Object[]{senderName, message});
         return true;
     }
     

@@ -54,6 +54,7 @@ public class TimeCommand extends GlowCommand {
                 sender.sendMessage(ChatColor.GRAY + action + " is not a valid action for the time command.");
                 return false;
             }
+            tellOps(sender, "Changing time of world " + world.getName());
             return true;
         }
     }
