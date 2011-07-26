@@ -21,6 +21,7 @@ import org.bukkit.event.player.PlayerChatEvent;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowWorld;
+import net.glowstone.TextWrapper;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowPlayerInventory;
 import net.glowstone.inventory.InventoryViewer;
@@ -303,15 +304,13 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
 
     public void sendMessage(String message) {
-        do {
-            int len = message.length() > 100 ? 100 : message.length();
-            sendRawMessage(message.substring(0, len));
-            message = message.substring(len);
-        } while (message.length() > 0);
+        for (String line : TextWrapper.wrapText(message)) {
+            sendRawMessage(line);
+        }
     }
 
     public void sendRawMessage(String message) {
-        session.send(new ChatMessage(message));
+        session.send(new ChatMessage(message.length() <= 119 ? message : message.substring(0, 119)));
     }
 
     public void kickPlayer(String message) {
