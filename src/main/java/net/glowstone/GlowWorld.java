@@ -728,6 +728,14 @@ public final class GlowWorld implements World {
             }
         }
     }
+
+    public void playEffectExceptTo(Location location, Effect effect, int data, int radius, Player exclude) {
+        for (Player player : getPlayers()) {
+            if (!player.equals(exclude) && player.getLocation().distance(location) <= radius) {
+                player.playEffect(location, effect, data);
+            }
+        }
+    }
     
     // misc
 

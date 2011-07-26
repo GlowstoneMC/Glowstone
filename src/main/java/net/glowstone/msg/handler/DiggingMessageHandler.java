@@ -1,5 +1,6 @@
 package net.glowstone.msg.handler;
 
+import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -50,6 +51,7 @@ public final class DiggingMessageHandler extends MessageHandler<DiggingMessage> 
             if (!block.isEmpty() && !block.isLiquid()) {
                 player.getInventory().addItem(new ItemStack(block.getType(), 1, block.getData()));
             }
+            world.playEffectExceptTo(block.getLocation(), Effect.STEP_SOUND, block.getTypeId(), 64, player);
             block.setType(Material.AIR);
         }
     }
