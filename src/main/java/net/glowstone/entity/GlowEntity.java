@@ -235,14 +235,6 @@ public abstract class GlowEntity implements Entity {
         return teleport(destination.getLocation());
     }
 
-    public void teleportTo(Location location) {
-        teleport(location);
-    }
-
-    public void teleportTo(Entity destination) {
-        teleport(destination.getLocation());
-    }
-
     public List<Entity> getNearbyEntities(double x, double y, double z) {
         throw new UnsupportedOperationException("Not supported yet.");
     }

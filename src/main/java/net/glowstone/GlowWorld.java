@@ -483,6 +483,10 @@ public final class GlowWorld implements World {
         return unloadChunk(x, z, save);
     }
 
+    public boolean unloadChunk(Chunk chunk) {
+        return unloadChunk(chunk.getX(), chunk.getZ());
+    }
+
     public boolean unloadChunkRequest(int x, int z) {
         return unloadChunkRequest(x, z, true);
     }

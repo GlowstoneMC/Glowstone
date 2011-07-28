@@ -226,6 +226,32 @@ public final class GlowChunk implements Chunk {
         this.populated = populated;
     }
     
+    // ======== Helper Functions ========
+
+    public boolean isLoaded() {
+        return world.isChunkLoaded(this);
+    }
+
+    public boolean load(boolean generate) {
+        return world.loadChunk(x, z, generate);
+    }
+
+    public boolean load() {
+        return world.loadChunk(x, z, true);
+    }
+
+    public boolean unload(boolean save, boolean safe) {
+        return world.unloadChunk(x, z, save, safe);
+    }
+
+    public boolean unload(boolean save) {
+        return world.unloadChunk(x, z, save);
+    }
+
+    public boolean unload() {
+        return world.unloadChunk(x, z);
+    }
+    
     // ======== Data access ========
     
     /**

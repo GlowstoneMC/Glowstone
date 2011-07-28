@@ -29,8 +29,8 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
         }
     }
     
-    public byte getNote() {
-        return getRawNote();
+    public Note getNote() {
+        return note;
     }
     
     public byte getRawNote() {
@@ -39,10 +39,6 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
 
     public void setNote(Note note) {
         this.note = note;
-    }
-
-    public void setNote(byte note) {
-        setRawNote(note);
     }
 
     public void setRawNote(byte note) {
