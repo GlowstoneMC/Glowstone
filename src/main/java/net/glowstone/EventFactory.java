@@ -4,16 +4,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.event.player.PlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockDamageEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
+import org.bukkit.event.block.*;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -59,6 +55,14 @@ public final class EventFactory {
         return callEvent(new PlayerMoveEvent(player, from, to));
     }
     
+    public static PlayerInteractEvent onPlayerInteract(Player player, Action action) {
+        return callEvent(new PlayerInteractEvent(player, action, player.getItemInHand(), null, null));
+    }
+    
+    public static PlayerInteractEvent onPlayerInteract(Player player, Action action, Block clicked, BlockFace face) {
+        return callEvent(new PlayerInteractEvent(player, action, player.getItemInHand(), clicked, face));
+    }
+    
     // -- Block Events
 
     public static BlockBreakEvent onBlockBreak(Block block, Player player) {
@@ -71,5 +75,9 @@ public final class EventFactory {
 
     public static BlockDamageEvent onBlockDamage(Player player, Block block, ItemStack tool, boolean instaBreak) {
         return callEvent(new BlockDamageEvent(player, block, tool, instaBreak));
+    }
+    
+    public static BlockPlaceEvent onBlockPlace(Block block, BlockState newState, Block against, Player player) {
+        return callEvent(new BlockPlaceEvent(block, newState, against, player.getItemInHand(), player, true));
     }
 }
