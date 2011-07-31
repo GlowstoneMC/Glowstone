@@ -43,6 +43,7 @@ import net.glowstone.msg.SpawnPositionMessage;
 import net.glowstone.msg.StateChangeMessage;
 import net.glowstone.msg.StatisticMessage;
 import net.glowstone.net.Session;
+import org.bukkit.map.MapView;
 
 /**
  * Represents an in-game player.
@@ -592,6 +593,16 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      */
     public void resetPlayerTime() {
         setPlayerTime(0, true);
+    }
+
+    /**
+     * Render a map and send it to the player in its entirety. This may be used
+     * when streaming the map in the normal manner is not desirbale.
+     * 
+     * @param map The map to be sent
+     */
+    public void sendMap(MapView map) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

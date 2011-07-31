@@ -48,6 +48,7 @@ import net.glowstone.net.SessionRegistry;
 import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.util.PlayerListFile;
 import net.glowstone.inventory.CraftingManager;
+import net.glowstone.map.GlowMapView;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.ChannelFactory;
@@ -976,6 +977,14 @@ public final class GlowServer implements Server {
     
     public String getLogFile() {
         return config.getString("server.log-file", "logs/log-%D.txt");
+    }
+
+    public GlowMapView getMap(short id) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public GlowMapView createMap(World world) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
      
 }
