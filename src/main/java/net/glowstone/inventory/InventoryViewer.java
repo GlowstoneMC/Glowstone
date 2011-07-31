@@ -4,7 +4,6 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  * Represents an entity which can view an inventory.
- * @author Tad
  */
 public interface InventoryViewer {
     

@@ -11,7 +11,6 @@ import java.util.Scanner;
 
 /**
  * Utility class for storing lists of player names.
- * @author Tad
  */
 public final class PlayerListFile {
     

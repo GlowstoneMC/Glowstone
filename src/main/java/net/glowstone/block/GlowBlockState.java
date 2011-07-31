@@ -16,8 +16,7 @@ import net.glowstone.util.nbt.IntTag;
 import net.glowstone.util.nbt.StringTag;
 
 /**
- *
- * @author Tad
+ * Represents a state a block could be in as well as any tile entities.
  */
 public class GlowBlockState implements BlockState {
 

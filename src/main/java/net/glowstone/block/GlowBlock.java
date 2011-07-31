@@ -12,8 +12,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.PistonMoveReaction;
 
 /**
- *
- * @author Tad
+ * Represents a single block in a world.
  */
 public class GlowBlock implements Block {
 

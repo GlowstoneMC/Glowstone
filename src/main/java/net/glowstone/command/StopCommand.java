@@ -6,7 +6,6 @@ import net.glowstone.GlowServer;
 
 /**
  * A built-in command to stop the Glowstone server.
- * @author Tad
  */
 public class StopCommand extends GlowCommand {
     

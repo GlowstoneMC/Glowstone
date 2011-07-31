@@ -8,7 +8,6 @@ import org.bukkit.ChatColor;
 
 /**
  * A built-in command to remove a player's OP status.
- * @author Tad
  */
 public class ListCommand extends GlowCommand {
     

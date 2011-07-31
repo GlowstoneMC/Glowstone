@@ -6,7 +6,6 @@ import net.glowstone.GlowServer;
 
 /**
  * A built-in command to give a player OP status.
- * @author Tad
  */
 public class OpCommand extends GlowCommand {
     

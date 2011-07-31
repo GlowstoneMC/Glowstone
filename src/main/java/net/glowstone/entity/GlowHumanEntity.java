@@ -17,8 +17,7 @@ import net.glowstone.util.Position;
 import net.glowstone.inventory.GlowPlayerInventory;
 
 /**
- *
- * @author Tad
+ * Represents a human entity, such as an NPC or a player.
  */
 public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanEntity {
 

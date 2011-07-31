@@ -4,7 +4,6 @@ import org.bukkit.inventory.*;
 
 /**
  * An Inventory representing the items a player is holding.
- * @author Tad
  */
 public class GlowPlayerInventory extends GlowInventory implements PlayerInventory {
     

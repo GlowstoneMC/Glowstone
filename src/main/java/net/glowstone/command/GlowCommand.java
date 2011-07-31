@@ -12,7 +12,6 @@ import net.glowstone.GlowServer;
 
 /**
  * Common base class for inbuilt Glowstone commands.
- * @author Tad
  */
 public abstract class GlowCommand extends Command {
     

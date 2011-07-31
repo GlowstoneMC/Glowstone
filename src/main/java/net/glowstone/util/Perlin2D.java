@@ -2,7 +2,6 @@ package net.glowstone.util;
 
 /**
  * Simple 2-dimensional Perlin noise generator.
- * @author Tad
  */
 public class Perlin2D {
 

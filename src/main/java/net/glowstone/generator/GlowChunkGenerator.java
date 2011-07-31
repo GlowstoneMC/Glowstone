@@ -9,7 +9,6 @@ import net.glowstone.GlowChunk;
 
 /**
  * A helper class for use with ChunkGenerator.
- * @author Tad
  */
 public abstract class GlowChunkGenerator extends ChunkGenerator {
     

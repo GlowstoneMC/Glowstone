@@ -6,7 +6,6 @@ import net.glowstone.GlowServer;
 
 /**
  * A built-in command to remove a player's OP status.
- * @author Tad
  */
 public class DeopCommand extends GlowCommand {
     

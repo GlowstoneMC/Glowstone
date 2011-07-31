@@ -7,7 +7,6 @@ import net.glowstone.GlowServer;
 
 /**
  * A built-in command to demonstrate all chat colors.
- * @author Tad
  */
 public class ColorCommand extends GlowCommand {
     
