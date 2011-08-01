@@ -24,6 +24,7 @@ public final class HandlerLookupService {
             bind(CloseWindowMessage.class, CloseWindowMessageHandler.class);
             bind(ActivateItemMessage.class, ActivateItemMessageHandler.class);
             bind(EntityActionMessage.class, EntityActionMessageHandler.class);
+            bind(AnimateEntityMessage.class, AnimateEntityMessageHandler.class);
         } catch (Exception ex) {
             throw new ExceptionInInitializerError(ex);
         }
