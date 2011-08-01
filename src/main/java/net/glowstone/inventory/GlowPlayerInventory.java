@@ -7,10 +7,10 @@ import org.bukkit.inventory.*;
  */
 public class GlowPlayerInventory extends GlowInventory implements PlayerInventory {
     
-    public static int HELMET_SLOT = 36;
-    public static int CHESTPLATE_SLOT = 37;
-    public static int LEGGINGS_SLOT = 38;
-    public static int BOOTS_SLOT = 39;
+    public static final int HELMET_SLOT = 36;
+    public static final int CHESTPLATE_SLOT = 37;
+    public static final int LEGGINGS_SLOT = 38;
+    public static final int BOOTS_SLOT = 39;
     
     private int heldSlot = 0;
 
@@ -40,6 +40,7 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         if (slot < 0) heldSlot = 0;
         else if (slot > 8) heldSlot = 8;
         else heldSlot = slot;
+        setItemInHand(getItemInHand());
     }
 
     public ItemStack[] getArmorContents() {
@@ -96,7 +97,7 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     public void setItemInHand(ItemStack stack) {
-        super.setItem(heldSlot, stack);
+        setItem(heldSlot, stack);
     }
 
     public int getHeldItemSlot() {

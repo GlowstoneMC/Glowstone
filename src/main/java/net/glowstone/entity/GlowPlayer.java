@@ -1,6 +1,7 @@
 package net.glowstone.entity;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -29,6 +30,7 @@ import net.glowstone.util.Parameter;
 import net.glowstone.msg.BlockChangeMessage;
 import net.glowstone.msg.ChatMessage;
 import net.glowstone.msg.DestroyEntityMessage;
+import net.glowstone.msg.EntityEquipmentMessage;
 import net.glowstone.msg.EntityMetadataMessage;
 import net.glowstone.msg.LoadChunkMessage;
 import net.glowstone.msg.Message;
@@ -493,7 +495,35 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      * @param item The ItemStack which the slot has changed to.
      */
     public void onSlotSet(GlowInventory inventory, int slot, ItemStack item) {
-        slot = GlowPlayerInventory.inventorySlotToNetwork(slot);
+        if (inventory == getInventory()) {
+            int type = item == null ? -1 : item.getTypeId();
+            int data = item == null ? 0 : item.getDurability();
+            
+            int equipSlot = -1;
+            if (slot == getInventory().getHeldItemSlot()) {
+                equipSlot = EntityEquipmentMessage.HELD_ITEM;
+            } else if (slot == GlowPlayerInventory.HELMET_SLOT) {
+                equipSlot = EntityEquipmentMessage.HELMET_SLOT;
+            } else if (slot == GlowPlayerInventory.CHESTPLATE_SLOT) {
+                equipSlot = EntityEquipmentMessage.CHESTPLATE_SLOT;
+            } else if (slot == GlowPlayerInventory.LEGGINGS_SLOT) {
+                equipSlot = EntityEquipmentMessage.LEGGINGS_SLOT;
+            } else if (slot == GlowPlayerInventory.BOOTS_SLOT) {
+                equipSlot = EntityEquipmentMessage.BOOTS_SLOT;
+            }
+            
+            if (equipSlot >= 0) {
+                EntityEquipmentMessage message = new EntityEquipmentMessage(getEntityId(), equipSlot, type, data);
+                for (GlowPlayer player : new ArrayList<GlowPlayer>(getWorld().getRawPlayers())) {
+                    if (player != this && player.canSee(this)) {
+                        player.getSession().send(message);
+                    }
+                }
+            }
+            
+            slot = GlowPlayerInventory.inventorySlotToNetwork(slot);
+        }
+        
         if (item == null) {
             session.send(new SetWindowSlotMessage(inventory.getId(), slot));
         } else {

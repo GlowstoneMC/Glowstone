@@ -20,7 +20,7 @@ public class GlowInventory implements Inventory {
     /**
      * The list of InventoryViewers attached to this inventory.
      */
-    private final ArrayList<InventoryViewer> viewers = new ArrayList<InventoryViewer>();
+    protected final ArrayList<InventoryViewer> viewers = new ArrayList<InventoryViewer>();
     
     /**
      * This inventory's contents.

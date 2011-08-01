@@ -24,7 +24,7 @@ public final class EntityEquipmentCodec extends MessageCodec<EntityEquipmentMess
 
     @Override
     public ChannelBuffer encode(EntityEquipmentMessage message) throws IOException {
-        ChannelBuffer buffer = ChannelBuffers.buffer(8);
+        ChannelBuffer buffer = ChannelBuffers.buffer(10);
         buffer.writeInt(message.getId());
         buffer.writeShort(message.getSlot());
         buffer.writeShort(message.getItem());
