@@ -79,11 +79,6 @@ public final class GlowWorld implements World {
      * The world populators for this world.
      */
     private final List<BlockPopulator> populators;
-
-    /**
-     * The spawn position.
-     */
-    private Location spawnLocation;
     
     /**
      * The environment.
@@ -94,6 +89,16 @@ public final class GlowWorld implements World {
      * The world seed.
      */
     private final long seed;
+
+    /**
+     * The spawn position.
+     */
+    private Location spawnLocation;
+    
+    /**
+     * Whether to keep the spawn chunks in memory (prevent them from being unloaded)
+     */
+    private boolean keepSpawnLoaded = true;
     
     /**
      * Whether PvP is allowed in this world.
@@ -741,6 +746,14 @@ public final class GlowWorld implements World {
 
     public ChunkSnapshot getEmptyChunkSnapshot(int x, int z, boolean includeBiome, boolean includeBiomeTempRain) {
         return new GlowChunkSnapshot.EmptySnapshot(x, z, this, includeBiome, includeBiomeTempRain);
+    }
+
+    public boolean getKeepSpawnInMemory() {
+        return keepSpawnLoaded;
+    }
+
+    public void setKeepSpawnInMemory(boolean keepLoaded) {
+        keepSpawnLoaded = keepLoaded;
     }
 
 }
