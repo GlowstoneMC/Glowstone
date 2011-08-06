@@ -29,6 +29,15 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>heroes</id>
+            <name>Heroes Artifactory</name>
+            <layout>default</layout>
+            <url>http://repo.onarandombox.com/artifactory/repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
     </repositories>
     
     <pluginRepositories>
