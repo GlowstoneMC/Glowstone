@@ -122,7 +122,7 @@ public final class GlowServer implements Server {
     /**
      * The console manager of this server.
      */
-    private final ConsoleManager consoleManager = new ConsoleManager(this, true);
+    private final ConsoleManager consoleManager = new ConsoleManager(this, config.getString("server.terminal-mode", "jline"));
     
     /**
      * The services manager of this server.
@@ -194,6 +194,7 @@ public final class GlowServer implements Server {
             config.setProperty("server.spawn-radius", 16);
             config.setProperty("server.online-mode", true);
             config.setProperty("server.log-file", "logs/log-%D.txt");
+            config.setProperty("server.terminal-mode", "jline");
 
             // Server folders config
             config.setProperty("server.folders.plugins", "plugins");
@@ -326,7 +327,19 @@ public final class GlowServer implements Server {
         enablePlugins(PluginLoadOrder.STARTUP);
         createWorld(config.getString("server.world-name", "world"), Environment.NORMAL);
         enablePlugins(PluginLoadOrder.POSTWORLD);
-        registerCommands();
+        
+        List<Command> commands = Arrays.<Command>asList(
+                new MeCommand(this),
+                new OpCommand(this),
+                new DeopCommand(this),
+                new ColorCommand(this),
+                new KickCommand(this),
+                new ListCommand(this),
+                new TimeCommand(this),
+                new StopCommand(this));
+        builtinCommandMap.registerAll("#", commands);
+        builtinCommandMap.register("#", new HelpCommand(this, commands));
+        consoleManager.refreshCommands();
 
         logger.info("Ready for connections.");
     }
@@ -354,6 +367,9 @@ public final class GlowServer implements Server {
         // Gracefully stop Netty
         group.close();
         bootstrap.getFactory().releaseExternalResources();
+        
+        // And finally kill the console
+        consoleManager.stop();
     }
     
     /**
@@ -365,7 +381,7 @@ public final class GlowServer implements Server {
             
         File folder = new File(config.getString("server.folders.plugins", "plugins"));
         folder.mkdirs();
-            
+        
         // clear plugins and prepare to load
         pluginManager.clearPlugins();
         pluginManager.registerInterface(JavaPluginLoader.class);
@@ -414,25 +430,6 @@ public final class GlowServer implements Server {
             }
         }
     }
-    
-    /**
-     * Registers built-in Glowstone commands and refreshes the autocomplete index.
-     */
-    private void registerCommands() {
-        List<Command> commands = Arrays.<Command>asList(
-                new MeCommand(this),
-                new OpCommand(this),
-                new DeopCommand(this),
-                new ColorCommand(this),
-                new KickCommand(this),
-                new ListCommand(this),
-                new TimeCommand(this),
-                new StopCommand(this));
-        builtinCommandMap.registerAll("#", commands);
-        builtinCommandMap.register("#", new HelpCommand(this, commands));
-        
-        consoleManager.refreshCommands();
-    }
 
     /**
      * Reloads the server, refreshing settings and plugin information
@@ -449,7 +446,7 @@ public final class GlowServer implements Server {
             loadPlugins();
             enablePlugins(PluginLoadOrder.STARTUP);
             enablePlugins(PluginLoadOrder.POSTWORLD);
-            registerCommands();
+            consoleManager.refreshCommands();
             
             // TODO: register aliases
         }

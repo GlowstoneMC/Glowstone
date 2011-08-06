@@ -1,5 +1,16 @@
 package net.glowstone;
 
+import com.grahamedgecombe.jterminal.JTerminal;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Insets;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,12 +24,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
+
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.border.Border;
 
 import jline.ArgumentCompletor;
 import jline.Completor;
@@ -34,7 +51,7 @@ import org.bukkit.command.ConsoleCommandSender;
  * A meta-class to handle all logging and input-related console improvements.
  * Portions are heavily based on CraftBukkit.
  */
-public class ConsoleManager {
+public final class ConsoleManager {
     
     private GlowServer server;
     
@@ -44,12 +61,53 @@ public class ConsoleManager {
     private FancyConsoleHandler consoleHandler;
     private RotatingFileHandler fileHandler;
     
-    private boolean running = true;
-    private boolean fancy = true;
+    private JFrame jFrame = null;
+    private JTerminal jTerminal = null;
+    private JTextField jInput = null;
     
-    public ConsoleManager(GlowServer server, boolean fancy) {
+    private boolean running = true;
+    private boolean jLine = false;
+    
+    public ConsoleManager(GlowServer server, String mode) {
         this.server = server;
-        this.fancy = fancy;
+        
+        if (mode.equalsIgnoreCase("gui")) {
+            JTerminalListener listener = new JTerminalListener();
+            
+            jFrame = new JFrame("Glowstone");
+            jTerminal = new JTerminal();
+            jInput = new JTextField(80) {
+                @Override public void setBorder(Border border) {}
+            };
+            jInput.paint(null);
+            jInput.setFont(new Font("Monospaced", Font.PLAIN, 12));
+            jInput.setBackground(Color.BLACK);
+            jInput.setForeground(Color.WHITE);
+            jInput.setMargin(new Insets(0, 0, 0, 0));
+            jInput.addKeyListener(listener);
+            
+            JLabel caret = new JLabel("> ");
+            caret.setFont(new Font("Monospaced", Font.PLAIN, 12));
+            caret.setForeground(Color.WHITE);
+            
+            JPanel ipanel = new JPanel();
+            ipanel.add(caret, BorderLayout.WEST);
+            ipanel.add(jInput, BorderLayout.EAST);
+            ipanel.setBorder(BorderFactory.createEmptyBorder());
+            ipanel.setBackground(Color.BLACK);
+            ipanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+            ipanel.setSize(jTerminal.getWidth(), ipanel.getHeight());
+            
+            jFrame.getContentPane().add(jTerminal, BorderLayout.NORTH);
+            jFrame.getContentPane().add(ipanel, BorderLayout.SOUTH);
+            jFrame.addWindowListener(listener);
+            jFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            jFrame.setLocationRelativeTo(null);
+            jFrame.pack();
+            jFrame.setVisible(true);
+        } else if (mode.equalsIgnoreCase("jline")) {
+            jLine = true;
+        }
         
         sender = new ColoredCommandSender();
         thread = new ConsoleCommandThread();
@@ -80,8 +138,10 @@ public class ConsoleManager {
         
         Runtime.getRuntime().addShutdownHook(new ServerShutdownThread());
         
-        thread.setDaemon(true);
-        thread.start();
+        if (jTerminal == null) {
+            thread.setDaemon(true);
+            thread.start();
+        }
         
         System.setOut(new PrintStream(new LoggerOutputStream(Level.INFO), true));
         System.setErr(new PrintStream(new LoggerOutputStream(Level.SEVERE), true));
@@ -92,6 +152,9 @@ public class ConsoleManager {
         fileHandler.flush();
         fileHandler.close();
         running = false;
+        if (jFrame != null) {
+            jFrame.dispose();
+        }
     }
     
     public void refreshCommands() {
@@ -106,7 +169,7 @@ public class ConsoleManager {
     public String colorize(String string) {
         if (!string.contains("\u00A7")) {
             return string;
-        } else if (!fancy || !reader.getTerminal().isANSISupported()) {
+        } else if ((!jLine || !reader.getTerminal().isANSISupported()) && jTerminal == null) {
             return ChatColor.stripColor(string);
         } else {
             return string.replace(ChatColor.RED.toString(), "\033[1;31m")
@@ -135,7 +198,7 @@ public class ConsoleManager {
             String command;
             while (running) {
                 try {
-                    if (fancy) {
+                    if (jLine) {
                         command = reader.readLine(">", null);
                     } else {
                         command = reader.readLine();
@@ -216,10 +279,16 @@ public class ConsoleManager {
     }
     
     private class FancyConsoleHandler extends ConsoleHandler {
+        public FancyConsoleHandler() {
+            if (jTerminal != null) {
+                setOutputStream(new TerminalOutputStream());
+            }
+        }
+        
         @Override
         public synchronized void flush() {
             try {
-                if (fancy) {
+                if (jLine && jTerminal == null) {
                     reader.printString(ConsoleReader.RESET_LINE + "");
                     reader.flushConsole();
                     super.flush();
@@ -301,6 +370,47 @@ public class ConsoleManager {
             }
             
             return builder.toString();
+        }
+    }
+    
+    private class JTerminalListener implements WindowListener, KeyListener {
+        public void windowOpened(WindowEvent e) {}
+        public void windowIconified(WindowEvent e) {}
+        public void windowDeiconified(WindowEvent e) {}
+        public void windowActivated(WindowEvent e) {}
+        public void windowDeactivated(WindowEvent e) {}
+        public void windowClosed(WindowEvent e) {}
+        public void keyPressed(KeyEvent e) {}
+        public void keyReleased(KeyEvent e) {}
+        
+        public void windowClosing(WindowEvent e) {
+            server.stop();
+        }
+
+        public void keyTyped(KeyEvent e) {
+            if (e.getKeyChar() == '\n') {
+                String command = jInput.getText().trim();
+                if (command.length() > 0) {
+                    server.getScheduler().scheduleSyncDelayedTask(null, new CommandTask(command));
+                }
+                jInput.setText("");
+            }
+        }
+    }
+
+    private class TerminalOutputStream extends ByteArrayOutputStream {
+        private final String separator = System.getProperty("line.separator");
+        
+        @Override
+        public synchronized void flush() throws IOException {
+            super.flush();
+            String record = this.toString();
+            super.reset();
+            
+            if (record.length() > 0 && !record.equals(separator)) {
+                jTerminal.print(record);
+                jFrame.repaint();
+            }
         }
     }
     

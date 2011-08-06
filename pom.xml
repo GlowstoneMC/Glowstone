@@ -74,6 +74,11 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.grahamedgecombe</groupId>
+            <artifactId>jterminal</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
     
     <build>
