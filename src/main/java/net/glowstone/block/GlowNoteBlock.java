@@ -20,7 +20,7 @@ import net.glowstone.util.nbt.Tag;
  */
 public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
     
-    private Note note = new Note((byte) 0);
+    private NoteWrapper wrapper = new NoteWrapper(new Note((byte) 0));
 
     public GlowNoteBlock(GlowBlock block) {
         super(block);
@@ -30,23 +30,23 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
     }
     
     public Note getNote() {
-        return note;
+        return wrapper.note;
     }
     
     public byte getRawNote() {
-        return note.getId();
+        return wrapper.note.getId();
     }
 
     public void setNote(Note note) {
-        this.note = note;
+        this.wrapper.note = note;
     }
 
     public void setRawNote(byte note) {
-        this.note = new Note(note);
+        this.wrapper.note = new Note(note);
     }
 
     public boolean play() {
-        return play(instrumentOf(getBlock().getRelative(BlockFace.DOWN).getType()), note);
+        return play(instrumentOf(getBlock().getRelative(BlockFace.DOWN).getType()), wrapper.note);
     }
 
     public boolean play(byte instrument, byte note) {
@@ -95,6 +95,20 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
     }
     
     // Internal mechanisms
+    
+    private class NoteWrapper {
+        public Note note;
+        public NoteWrapper(Note note) {
+            this.note = note;
+        }
+    }
+    
+    @Override
+    public GlowNoteBlock shallowClone() {
+        GlowNoteBlock result = new GlowNoteBlock(getBlock());
+        result.wrapper = wrapper;
+        return result;
+    }
     
     @Override
     public void destroy() {

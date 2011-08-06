@@ -188,7 +188,7 @@ public final class GlowChunk implements Chunk {
     }
 
     public BlockState[] getTileEntities() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return tileEntities.values().toArray(new BlockState[tileEntities.size()]);
     }
     
     /**
@@ -285,6 +285,24 @@ public final class GlowChunk implements Chunk {
             throw new IllegalArgumentException();
         }
         System.arraycopy(types, 0, this.types, 0, types.length);
+        
+        for (int x = 0; x < WIDTH; ++x) {
+            for (int y = 0; y < DEPTH; ++y) {
+                for (int z = 0; z < HEIGHT; ++z) {
+                    Class<? extends GlowBlockState> clazz = BlockProperties.get(getType(x, z, y)).getEntityClass();
+                    if (clazz != null && clazz != GlowBlockState.class) {
+                        try {
+                            Constructor<? extends GlowBlockState> constructor = clazz.getConstructor(GlowBlock.class);
+                            GlowBlockState state = constructor.newInstance(getBlock(x, y, z));
+                            tileEntities.put(coordToIndex(x, z, y), state);
+                        } catch (Exception ex) {
+                            GlowServer.logger.log(Level.SEVERE, "Unable to initialize tile entity {0}: {1}", new Object[]{clazz.getName(), ex.getMessage()});
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**

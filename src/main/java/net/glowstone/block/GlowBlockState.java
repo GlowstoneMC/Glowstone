@@ -123,16 +123,20 @@ public class GlowBlockState implements BlockState {
     
     // Internal mechanisms
     
+    public GlowBlockState shallowClone() {
+        return getBlock().getState();
+    }
+    
     public void destroy() {
-        throw new UnsupportedOperationException("Cannot destroy a generic BlockState");
+        throw new IllegalStateException("Cannot destroy a generic BlockState");
     }
     
     public void load(CompoundTag compound) {
-        throw new UnsupportedOperationException("Cannot load to a generic BlockState");
+        throw new IllegalStateException("Cannot load to a generic BlockState");
     }
     
     public CompoundTag save() {
-        throw new UnsupportedOperationException("Cannot save from a generic BlockState");
+        throw new IllegalStateException("Cannot save from a generic BlockState");
     }
     
     protected void load(CompoundTag compound, String id) {

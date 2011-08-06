@@ -8,8 +8,12 @@ import org.bukkit.Material;
 import org.bukkit.block.Sign;
 
 import java.util.Map;
+import net.glowstone.GlowChunk;
+import net.glowstone.entity.GlowPlayer;
+import net.glowstone.msg.UpdateSignMessage;
 
 public class GlowSign extends GlowBlockState implements Sign {
+    
     private String[] lines;
 
     public GlowSign(GlowBlock block) {
@@ -20,24 +24,43 @@ public class GlowSign extends GlowBlockState implements Sign {
         lines = new String[4];
     }
 
-    @Override
     public String[] getLines() {
         return lines.clone();
     }
 
-    @Override
     public String getLine(int index) throws IndexOutOfBoundsException {
-        return lines.clone()[index];
+        return lines[index];
     }
 
-    @Override
     public void setLine(int index, String line) throws IndexOutOfBoundsException {
-        if (index >= 4)
+        if (index < 0 || index >= lines.length) {
             throw new IndexOutOfBoundsException();
+        }
         lines[index] = line;
     }
+    
+    @Override
+    public boolean update(boolean force) {
+        boolean result = super.update(force);
+        if (result) {
+            UpdateSignMessage message = new UpdateSignMessage(getX(), getY(), getZ(), getLines());
+            for (GlowPlayer player : getWorld().getRawPlayers()) {
+                if (player.canSee(new GlowChunk.Key(getChunk().getX(), getChunk().getZ()))) {
+                    player.getSession().send(message);
+                }
+            }
+        }
+        return result;
+    }
 
-        // Internal mechanisms
+    // Internal mechanisms
+    
+    @Override
+    public GlowSign shallowClone() {
+        GlowSign result = new GlowSign(getBlock());
+        result.lines = lines;
+        return result;
+    }
 
     @Override
     public void destroy() {
@@ -65,4 +88,5 @@ public class GlowSign extends GlowBlockState implements Sign {
         map.put("Logic", new ByteTag("Logic", (byte)0)); // Not sure what this does
         return new CompoundTag("", map);
     }
+    
 }

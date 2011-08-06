@@ -56,11 +56,7 @@ public class GlowBlock implements Block {
 
     public GlowBlockState getState() {
         if (chunk.getEntity(x & 0xf, y, z & 0xf) != null) {
-            // TODO: Return some kind of clone of the entity.
-            // Entity-specific info (inventory, etc) should be synced across
-            // copies & the original, but block metadata should not be.
-            // I have a plan to do this, will do so later.
-            return chunk.getEntity(x, y, z);
+            return chunk.getEntity(x, y, z).shallowClone();
         }
         return new GlowBlockState(this);
     }
