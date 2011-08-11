@@ -74,7 +74,7 @@ public abstract class GlowEntity implements Entity {
     public boolean isWithinDistance(GlowEntity other) {
         double dx = Math.abs(location.getX() - other.location.getX());
         double dz = Math.abs(location.getZ() - other.location.getZ());
-        return other.getWorld() == getWorld() && dx <= (GlowChunk.VISIBLE_RADIUS * GlowChunk.WIDTH) && dz <= (GlowChunk.VISIBLE_RADIUS * GlowChunk.HEIGHT);
+        return other.getWorld() == getWorld() && dx <= (server.getViewDistance() * GlowChunk.WIDTH) && dz <= (server.getViewDistance() * GlowChunk.HEIGHT);
     }
 
     /**

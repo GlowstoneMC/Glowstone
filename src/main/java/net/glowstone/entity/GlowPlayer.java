@@ -170,8 +170,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         int centralX = ((int) location.getX()) >> 4;
         int centralZ = ((int) location.getZ()) >> 4;
         
-        for (int x = (centralX - GlowChunk.VISIBLE_RADIUS); x <= (centralX + GlowChunk.VISIBLE_RADIUS); x++) {
-            for (int z = (centralZ - GlowChunk.VISIBLE_RADIUS); z <= (centralZ + GlowChunk.VISIBLE_RADIUS); z++) {
+        int radius = server.getViewDistance();
+        for (int x = (centralX - radius); x <= (centralX + radius); x++) {
+            for (int z = (centralZ - radius); z <= (centralZ + radius); z++) {
                 GlowChunk.Key key = new GlowChunk.Key(x, z);
                 if (!knownChunks.contains(key)) {
                     knownChunks.add(key);

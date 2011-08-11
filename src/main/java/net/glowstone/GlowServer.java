@@ -153,6 +153,11 @@ public final class GlowServer implements Server {
      * The list of OPs on the server.
      */
     private final PlayerListFile opsList = new PlayerListFile(new File(configDir, "ops.txt"));
+    
+    /**
+     * The list of players whitelisted on the server.
+     */
+    private final PlayerListFile whitelist = new PlayerListFile(new File(configDir, "whitelist.txt"));
 
     /**
      * The world this server is managing.
@@ -184,30 +189,11 @@ public final class GlowServer implements Server {
         ChannelPipelineFactory pipelineFactory = new MinecraftPipelineFactory(this);
         bootstrap.setPipelineFactory(pipelineFactory);
         
+        // If the configuration is empty, attempt to migrate non-Glowstone configs
         if (config.getKeys().size() <= 1) {
             System.out.println("Generating default configuration config/glowstone.yml...");
 
-            // Server config
-            config.setProperty("server.port", 25565);
-            config.setProperty("server.world-name", "world");
-            config.setProperty("server.max-players", 0);
-            config.setProperty("server.spawn-radius", 16);
-            config.setProperty("server.online-mode", true);
-            config.setProperty("server.log-file", "logs/log-%D.txt");
-            config.setProperty("server.terminal-mode", "jline");
-
-            // Server folders config
-            config.setProperty("server.folders.plugins", "plugins");
-            config.setProperty("server.folders.update", "update");
-
-            // Database config
-            config.setProperty("database.driver", "org.sqlite.JDBC");
-            config.setProperty("database.url", "jdbc:sqlite:{DIR}{NAME}.db");
-            config.setProperty("database.username", "glowstone");
-            config.setProperty("database.password", "nether");
-            config.setProperty("database.isolation", "SERIALIZABLE");
-
-            // Autodetect any movable configuration
+            // bukkit.yml
             File bukkitYml = new File("bukkit.yml");
             if (bukkitYml.exists()) {
                 Configuration bukkit = new Configuration(bukkitYml);
@@ -245,6 +231,7 @@ public final class GlowServer implements Server {
                 }
             }
 
+            // server.properties
             File serverProps = new File("server.properties");
             if (serverProps.exists()) {
                 try {
@@ -297,9 +284,34 @@ public final class GlowServer implements Server {
                 }
                 catch (IOException ex) {}
             }
-
-            config.save();
         }
+
+        // Ensure default values are set on everything
+        // Server config
+        config.getInt("server.port", 25565);
+        config.getString("server.world-name", "world");
+        config.getInt("server.max-players", 0);
+        config.getInt("server.spawn-radius", 16);
+        config.getBoolean("server.online-mode", true);
+        config.getString("server.log-file", "logs/log-%D.txt");
+        config.getString("server.terminal-mode", "jline");
+        config.getBoolean("server.whitelist", false);
+        config.getBoolean("server.allow-nether", true);
+        config.getBoolean("server.allow-flight", false);
+        config.getInt("server.view-distance", GlowChunk.VISIBLE_RADIUS);
+
+        // Server folders config
+        config.getString("server.folders.plugins", "plugins");
+        config.getString("server.folders.update", "update");
+
+        // Database config
+        config.getString("database.driver", "org.sqlite.JDBC");
+        config.getString("database.url", "jdbc:sqlite:{DIR}{NAME}.db");
+        config.getString("database.username", "glowstone");
+        config.getString("database.password", "nether");
+        config.getString("database.isolation", "SERIALIZABLE");
+
+        config.save();
     }
 
     /**
@@ -315,19 +327,10 @@ public final class GlowServer implements Server {
      * Starts this server.
      */
     public void start() {
-        try {
-            config.load();
-        } catch (Exception ex) {
-            logger.warning("Failed to load glowstone.yml, using defaults");
-        }
+        // Config should have already loaded by this point, but to be safe...
+        config.load();
         
-        opsList.load();
-
-        loadPlugins();
-        enablePlugins(PluginLoadOrder.STARTUP);
-        createWorld(config.getString("server.world-name", "world"), Environment.NORMAL);
-        enablePlugins(PluginLoadOrder.POSTWORLD);
-        
+        // Register these first so they're usable while the worlds are loading
         List<Command> commands = Arrays.<Command>asList(
                 new MeCommand(this),
                 new OpCommand(this),
@@ -336,9 +339,27 @@ public final class GlowServer implements Server {
                 new KickCommand(this),
                 new ListCommand(this),
                 new TimeCommand(this),
-                new StopCommand(this));
+                new StopCommand(this),
+                new WhitelistCommand(this));
         builtinCommandMap.registerAll("#", commands);
         builtinCommandMap.register("#", new HelpCommand(this, commands));
+        
+        // Load player lists
+        opsList.load();
+        whitelist.load();
+
+        // Start loading plugins
+        loadPlugins();
+        enablePlugins(PluginLoadOrder.STARTUP);
+        
+        // Create worlds
+        createWorld(config.getString("server.world-name", "world"), Environment.NORMAL);
+        if (getAllowNether()) {
+            createWorld(config.getString("server.world-name", "world") + "_nether", Environment.NETHER);
+        }
+        
+        // Finish loading plugins
+        enablePlugins(PluginLoadOrder.POSTWORLD);
         consoleManager.refreshCommands();
 
         logger.info("Ready for connections.");
@@ -436,19 +457,21 @@ public final class GlowServer implements Server {
      */
     public void reload() {
         try {
+            // Reload relevant configuration
             config.load();
             opsList.load();
+            whitelist.load();
             
-            // reset crafting
+            // Reset crafting
             craftingManager.resetRecipes();
             
-            // load plugins
+            // Load plugins
             loadPlugins();
             enablePlugins(PluginLoadOrder.STARTUP);
             enablePlugins(PluginLoadOrder.POSTWORLD);
             consoleManager.refreshCommands();
             
-            // TODO: register aliases
+            // TODO: Register aliases
         }
         catch (Exception ex) {
             logger.log(Level.SEVERE, "Uncaught error while reloading: {0}", ex.getMessage());
@@ -477,6 +500,13 @@ public final class GlowServer implements Server {
      */
     public PlayerListFile getOpsList() {
         return opsList;
+    }
+    
+    /**
+     * Returns the list of OPs on this server.
+     */
+    public PlayerListFile getWhitelist() {
+        return whitelist;
     }
 
     /**
@@ -511,10 +541,7 @@ public final class GlowServer implements Server {
      * @return An ArrayList containing all loaded worlds.
      */
     public List<World> getWorlds() {
-        ArrayList<World> result = new ArrayList<World>();
-        for (GlowWorld world : worlds)
-            result.add(world);
-        return result;
+        return new ArrayList<World>(worlds);
     }
     
     /**
@@ -927,6 +954,26 @@ public final class GlowServer implements Server {
 
     public boolean getOnlineMode() {
         return config.getBoolean("server.online-mode", true);
+    }
+
+    public boolean getAllowNether() {
+        return config.getBoolean("server.allow-nether", true);
+    }
+
+    public boolean hasWhitelist() {
+        return config.getBoolean("server.whitelist", false);
+    }
+
+    public void setWhitelist(boolean enabled) {
+        config.setProperty("server.whitelist", enabled);
+    }
+
+    public boolean getAllowFlight() {
+        return config.getBoolean("server.allow-flight", false);
+    }
+
+    public int getViewDistance() {
+        return config.getInt("server.view-distance", GlowChunk.VISIBLE_RADIUS);
     }
     
     public String getLogFile() {

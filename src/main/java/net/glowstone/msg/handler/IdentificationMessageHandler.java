@@ -1,10 +1,6 @@
 package net.glowstone.msg.handler;
 
 import java.util.logging.Level;
-import net.glowstone.entity.GlowPlayer;
-import net.glowstone.msg.IdentificationMessage;
-import net.glowstone.net.Session;
-import net.glowstone.net.Session.State;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,14 +8,29 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import net.glowstone.entity.GlowPlayer;
+import net.glowstone.msg.IdentificationMessage;
+import net.glowstone.net.Session;
+import net.glowstone.net.Session.State;
+
 public final class IdentificationMessageHandler extends MessageHandler<IdentificationMessage> {
 
     @Override
     public void handle(Session session, GlowPlayer player, IdentificationMessage message) {
         Session.State state = session.getState();
+        
+        // Is the player on the whitelist?
+        if (session.getServer().hasWhitelist() && !session.getServer().getWhitelist().contains(message.getName())) {
+            session.getServer().getLogger().log(Level.INFO, "Player {0} was not on the whitelist.", message.getName());
+            session.disconnect("You're not whitelisted!");
+        }
+        
+        // Are we at the proper stage?
         if (state == Session.State.EXCHANGE_IDENTIFICATION) {
             session.setState(State.GAME);
-            boolean allow = true;
+            boolean allow = true; // Default to okay
+            
+            // If we're in online mode, attempt to verify with mc.net
             if (session.getServer().getOnlineMode()) {
                 allow = false;
                 try {
@@ -34,7 +45,9 @@ public final class IdentificationMessageHandler extends MessageHandler<Identific
                     session.disconnect("Player identification failed [" + ex.getMessage() + "]");
                 }
             }
-            if (allow){
+            
+            // Was the player allowed?
+            if (allow) {
                 session.send(new IdentificationMessage(0, "", 0, 0));
                 session.setPlayer(new GlowPlayer(session, message.getName())); // TODO case-correct the name
             } else {
@@ -42,6 +55,7 @@ public final class IdentificationMessageHandler extends MessageHandler<Identific
                 session.disconnect("Player identification failed!");
             }
         } else {
+            // Kick if they send ident at the wrong time
             boolean game = state == State.GAME;
             session.disconnect(game ? "Identification already exchanged." : "Handshake not yet exchanged.");
         }

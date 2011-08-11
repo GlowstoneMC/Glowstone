@@ -169,7 +169,7 @@ public final class GlowWorld implements World {
         server.getLogger().log(Level.INFO, "Preparing spawn for {0}", name);
         long loadTime = System.currentTimeMillis();
         
-        int radius = 4 * GlowChunk.VISIBLE_RADIUS / 3;
+        int radius = 4 * server.getViewDistance() / 3;
         
         int total = (radius * 2 + 1) * (radius * 2 + 1), current = 0;
         for (int x = centerX - radius; x <= centerX + radius; ++x) {

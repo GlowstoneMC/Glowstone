@@ -24,7 +24,7 @@ public final class GlowChunk implements Chunk {
 
     /**
      * The radius (not including the current chunk) of the chunks that the
-     * player can see.
+     * player can see. Used as a default when no custom value is specified.
      */
     public static final int VISIBLE_RADIUS = 8;
 
