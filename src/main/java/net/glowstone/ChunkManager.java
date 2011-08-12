@@ -81,7 +81,7 @@ public final class ChunkManager {
                 chunkRandom.setSeed((long) x * 341873128712L + (long) z * 132897987541L);
                 
                 try {
-					chunk = new GlowChunk(world, x, z);
+                    chunk = new GlowChunk(world, x, z);
                     byte[] data = generator.generate(world, chunkRandom, x, z);
                     chunk.setTypes(data);
                 }

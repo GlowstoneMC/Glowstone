@@ -144,8 +144,8 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>1.4</version>
                 <executions>
-              <execution>
-                <phase>package</phase>
+                <execution>
+                    <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
                         </goals>

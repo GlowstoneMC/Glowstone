@@ -9,7 +9,6 @@ import net.glowstone.GlowServer;
 
 /**
  * A built-in command to change the time on the server
- * @author Zhuowei
  */
 public class TimeCommand extends GlowCommand {
     

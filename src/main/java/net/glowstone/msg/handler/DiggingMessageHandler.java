@@ -15,7 +15,6 @@ import net.glowstone.net.Session;
 
 /**
  * A {@link MessageHandler} which processes digging messages.
- * @author Zhuowei Zhang
  */
 public final class DiggingMessageHandler extends MessageHandler<DiggingMessage> {
 

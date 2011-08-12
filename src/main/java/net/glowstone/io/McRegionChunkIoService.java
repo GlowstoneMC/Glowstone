@@ -21,7 +21,6 @@ import net.glowstone.util.nbt.Tag;
  * Information on the McRegion file format can be found on the
  * <a href="http://mojang.com/2011/02/16/minecraft-save-file-format-in-beta-1-3">Mojang</a>
  * blog.
- * @author Zhuowei Zhang
  * @author Graham Edgecombe
  */
 public final class McRegionChunkIoService implements ChunkIoService {

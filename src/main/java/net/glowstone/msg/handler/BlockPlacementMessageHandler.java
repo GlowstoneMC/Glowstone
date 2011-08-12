@@ -1,24 +1,21 @@
 package net.glowstone.msg.handler;
 
-import net.glowstone.EventFactory;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import net.glowstone.entity.GlowPlayer;
-import net.glowstone.msg.BlockPlacementMessage;
-import net.glowstone.net.Session;
-import net.glowstone.GlowWorld;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.material.MaterialData;
+
+import net.glowstone.EventFactory;
+import net.glowstone.entity.GlowPlayer;
+import net.glowstone.msg.BlockPlacementMessage;
+import net.glowstone.net.Session;
 
 /**
  * A {@link MessageHandler} which processes digging messages.
- * @author Zhuowei Zhang
  */
 public final class BlockPlacementMessageHandler extends MessageHandler<BlockPlacementMessage> {
 

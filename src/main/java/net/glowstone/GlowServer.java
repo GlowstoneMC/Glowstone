@@ -91,8 +91,9 @@ public final class GlowServer implements Server {
             int port = config.getInt("server.port", 25565);
             
             GlowServer server = new GlowServer();
-            server.bind(new InetSocketAddress(port));
             server.start();
+            server.bind(new InetSocketAddress(port));
+            logger.info("Ready for connections.");
         } catch (Throwable t) {
             logger.log(Level.SEVERE, "Error during server startup.", t);
         }
@@ -361,8 +362,6 @@ public final class GlowServer implements Server {
         // Finish loading plugins
         enablePlugins(PluginLoadOrder.POSTWORLD);
         consoleManager.refreshCommands();
-
-        logger.info("Ready for connections.");
     }
     
     /**

@@ -56,7 +56,7 @@ public class GlowBlock implements Block {
 
     public GlowBlockState getState() {
         if (chunk.getEntity(x & 0xf, y, z & 0xf) != null) {
-            return chunk.getEntity(x, y, z).shallowClone();
+            return chunk.getEntity(x & 0xf, y, z & 0xf).shallowClone();
         }
         return new GlowBlockState(this);
     }

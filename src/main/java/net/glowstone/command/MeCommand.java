@@ -3,13 +3,11 @@ package net.glowstone.command;
 import java.util.logging.Level;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.ChatColor;
 
 import net.glowstone.GlowServer;
 
 /**
  * A built-in command to display the message in form of * USER message
- * @author Zhuowei
  */
 public class MeCommand extends GlowCommand {
     

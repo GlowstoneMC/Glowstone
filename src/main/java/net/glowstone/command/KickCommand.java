@@ -8,7 +8,6 @@ import net.glowstone.GlowServer;
 
 /**
  * A built-in command to kick a person off the server.
- * @author Zhuowei
  */
 public class KickCommand extends GlowCommand {
     

@@ -1,4 +1,4 @@
-package net.glowstone;
+package net.glowstone.util;
 
 /**
  * Class for automatically wrapping chat lines while maintaining color.

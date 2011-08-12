@@ -11,7 +11,6 @@ import net.glowstone.GlowWorld;
 
 /**
  * A GlowLightning strike is an entity produced during thunderstorms.
- * @author Zhuowei
  */
 public class GlowLightningStrike extends GlowWeather implements LightningStrike {
 

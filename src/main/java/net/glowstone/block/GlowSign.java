@@ -43,9 +43,10 @@ public class GlowSign extends GlowBlockState implements Sign {
     public boolean update(boolean force) {
         boolean result = super.update(force);
         if (result) {
+            GlowChunk.Key key = new GlowChunk.Key(getChunk().getX(), getChunk().getZ());
             UpdateSignMessage message = new UpdateSignMessage(getX(), getY(), getZ(), getLines());
             for (GlowPlayer player : getWorld().getRawPlayers()) {
-                if (player.canSee(new GlowChunk.Key(getChunk().getX(), getChunk().getZ()))) {
+                if (player.canSee(key)) {
                     player.getSession().send(message);
                 }
             }

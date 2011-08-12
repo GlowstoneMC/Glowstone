@@ -6,7 +6,6 @@ import net.glowstone.net.Session;
 
 /**
  * A {@link MessageHandler} which handles {@link Entity} action messages.
- * @author Zhuowei Zhang
  */
 public final class EntityActionMessageHandler extends MessageHandler<EntityActionMessage> {
 
