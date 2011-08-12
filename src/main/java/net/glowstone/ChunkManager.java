@@ -1,7 +1,6 @@
 package net.glowstone;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -38,6 +37,16 @@ public final class ChunkManager {
      * A map of chunks currently loaded in memory.
      */
     private final Map<GlowChunk.Key, GlowChunk> chunks = new HashMap<GlowChunk.Key, GlowChunk>();
+    
+    /**
+     * A Random object to be used to generate chunks.
+     */
+    private final Random chunkRandom = new Random();
+    
+    /**
+     * A Random object to be used to populate chunks.
+     */
+    private final Random popRandom = new Random();
 
     /**
      * Creates a new chunk manager with the specified I/O service and world
@@ -69,9 +78,17 @@ public final class ChunkManager {
             }
 
             if (chunk == null) {
-                chunk = new GlowChunk(world, x, z);
-                byte[] data = generator.generate(world, new Random(), x, z);
-                chunk.setTypes(data);
+                chunkRandom.setSeed((long) x * 341873128712L + (long) z * 132897987541L);
+                
+                try {
+					chunk = new GlowChunk(world, x, z);
+                    byte[] data = generator.generate(world, chunkRandom, x, z);
+                    chunk.setTypes(data);
+                }
+                catch (Exception ex) {
+                    GlowServer.logger.log(Level.SEVERE, "Error while generating chunk ({0},{1})", new Object[]{x, z});
+                    ex.printStackTrace();
+                }
                 
                 chunks.put(key, chunk);
                 
@@ -81,9 +98,13 @@ public final class ChunkManager {
                             GlowChunk chunk2 = getChunk(x2, z2);
                             chunk2.setPopulated(true);
                             
+                            popRandom.setSeed(world.getSeed());
+                            long xRand = popRandom.nextLong() / 2 * 2 + 1;
+                            long zRand = popRandom.nextLong() / 2 * 2 + 1;
+                            popRandom.setSeed((long) x * xRand + (long) z * zRand ^ world.getSeed());
+                            
                             for (BlockPopulator p : world.getPopulators()) {
-                                p.populate(world, new Random(), chunk2);
-                                System.out.println("pop " + world.getName() + " " + p.getClass().getName());
+                                p.populate(world, popRandom, chunk2);
                             }
                         }
                     }

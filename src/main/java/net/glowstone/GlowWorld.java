@@ -161,7 +161,6 @@ public final class GlowWorld implements World {
         chunks = new ChunkManager(this, service, generator);
         
         populators = generator.getDefaultPopulators(this);
-        spawnLocation = generator.getFixedSpawnLocation(this, random);
         
         int centerX = (spawnLocation == null) ? 0 : spawnLocation.getBlockX() >> 4;
         int centerZ = (spawnLocation == null) ? 0 : spawnLocation.getBlockZ() >> 4;
@@ -186,6 +185,7 @@ public final class GlowWorld implements World {
         }
         server.getLogger().log(Level.INFO, "Preparing spawn for {0}: done", name);
         
+        spawnLocation = generator.getFixedSpawnLocation(this, random);
         if (spawnLocation == null) {
             spawnLocation = new Location(this, 0, 128, 0);
             
@@ -401,7 +401,7 @@ public final class GlowWorld implements World {
     public int getHighestBlockYAt(int x, int z) {
         for (int y = GlowChunk.DEPTH - 1; y >= 0; --y) {
             if (getBlockTypeIdAt(x, y, z) != 0) {
-                return y;
+                return y + 1;
             }
         }
         return 0;
@@ -530,8 +530,13 @@ public final class GlowWorld implements World {
     // biomes
 
     public Biome getBiome(int x, int z) {
-        // TODO: Biomes
-        return Biome.PLAINS;
+        if (environment == Environment.SKYLANDS) {
+            return Biome.SKY;
+        } else if (environment == Environment.NETHER) {
+            return Biome.HELL;
+        }
+        
+        return Biome.FOREST;
     }
 
     public double getTemperature(int x, int z) {

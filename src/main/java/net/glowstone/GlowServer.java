@@ -742,12 +742,11 @@ public final class GlowServer implements Server {
         }
         
         if (environment == Environment.NETHER) {
-            return new net.glowstone.generator.FlatNetherGenerator();
+            return new net.glowstone.generator.UndergroundGenerator();
         } else if (environment == Environment.SKYLANDS) {
-            // TODO: add skylands generator
-            return new net.glowstone.generator.FlatgrassGenerator();
+            return new net.glowstone.generator.CakeTownGenerator();
         } else {
-            return new net.glowstone.generator.FlatForestGenerator();
+            return new net.glowstone.generator.SurfaceGenerator();
         }
     }
 
