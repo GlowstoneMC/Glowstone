@@ -17,42 +17,42 @@ import org.bukkit.generator.BlockPopulator;
  */
 public class SnowPopulator extends BlockPopulator {
 
-	@Override
-	public void populate(World world, Random random, Chunk source) {
-		int chunkX = source.getX() * 16;
-		int chunkZ = source.getZ() * 16;
-		ChunkSnapshot snapshot = source.getChunkSnapshot();
-		for (int x = 0; x < 16; x++) {
-			for (int z = 0; z < 16; z++) {
-				Biome biome = world.getBiome(x + chunkX, z + chunkZ);
-				if (biome != Biome.TAIGA && biome != Biome.TUNDRA) {
-					continue;
-				}
+    @Override
+    public void populate(World world, Random random, Chunk source) {
+        int chunkX = source.getX() * 16;
+        int chunkZ = source.getZ() * 16;
+        ChunkSnapshot snapshot = source.getChunkSnapshot();
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                Biome biome = world.getBiome(x + chunkX, z + chunkZ);
+                if (biome != Biome.TAIGA && biome != Biome.TUNDRA) {
+                    continue;
+                }
 
-				int y = snapshot.getHighestBlockYAt(x, z);
-				if (source.getBlock(x, y, z).getType() == Material.AIR) {
-					y--;
-				}
+                int y = snapshot.getHighestBlockYAt(x, z);
+                if (source.getBlock(x, y, z).getType() == Material.AIR) {
+                    y--;
+                }
 
-				Block block = source.getBlock(x, y, z);
-				switch (block.getType()) {
-				case WATER:
-				case STATIONARY_WATER:
-					if (block.getData() == 0) {
-						block.setType(Material.ICE);
-					}
-					break;
-				case LAVA:
-				case STATIONARY_LAVA:
-					break;
-				case DIRT:
-					block.setType(Material.GRASS);
-				default:
-					block.getRelative(BlockFace.UP).setType(Material.SNOW);
-					break;
-				}
-			}
-		}
-	}
+                Block block = source.getBlock(x, y, z);
+                switch (block.getType()) {
+                    case WATER:
+                    case STATIONARY_WATER:
+                        if (block.getData() == 0) {
+                            block.setType(Material.ICE);
+                        }
+                        break;
+                    case LAVA:
+                    case STATIONARY_LAVA:
+                        break;
+                    case DIRT:
+                        block.setType(Material.GRASS);
+                    default:
+                        block.getRelative(BlockFace.UP).setType(Material.SNOW);
+                        break;
+                }
+            }
+        }
+    }
     
 }

@@ -14,15 +14,13 @@ import net.glowstone.generator.populators.*;
 public class CakeTownGenerator extends GlowChunkGenerator {
 
     public CakeTownGenerator() {
-        super(
-            // In-ground
-            //new LakePopulator(),
-            // On-ground
-            //new DesertPopulator(), new TreePopulator(), new MushroomPopulator(),
-            new SnowPopulator(), new FlowerPopulator()
-            // Belowground
-            //new CavePopulator()
-            );
+        super(  // In-ground
+                //new LakePopulator(),
+                // On-ground
+                //new DesertPopulator(), new TreePopulator(), new MushroomPopulator(),
+                new SnowPopulator(), new FlowerPopulator() // Belowground
+                //new CavePopulator()
+                );
     }
 
     @Override
@@ -31,7 +29,7 @@ public class CakeTownGenerator extends GlowChunkGenerator {
         final int top = 64 + base;
 
         Location center = new Location(world, 0, base, 0);
-        
+
         byte[] buf = start(Material.AIR);
 
         for (int x = 0; x < 16; x++) {
@@ -58,7 +56,7 @@ public class CakeTownGenerator extends GlowChunkGenerator {
                 }
             }
         }
-        
+
         return buf;
     }
 
