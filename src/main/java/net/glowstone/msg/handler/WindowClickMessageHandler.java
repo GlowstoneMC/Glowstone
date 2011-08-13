@@ -1,9 +1,11 @@
 package net.glowstone.msg.handler;
 
+import java.util.logging.Level;
 import org.bukkit.inventory.ItemStack;
 
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.inventory.GlowPlayerInventory;
+import net.glowstone.inventory.CraftingInventory;
+import net.glowstone.inventory.GlowInventory;
 import net.glowstone.msg.TransactionMessage;
 import net.glowstone.msg.WindowClickMessage;
 import net.glowstone.net.Session;
@@ -15,26 +17,41 @@ public final class WindowClickMessageHandler extends MessageHandler<WindowClickM
         if (player == null)
             return;
         
-        int slot = GlowPlayerInventory.networkSlotToInventory(message.getSlot());
+        GlowInventory inv = player.getInventory();
+        int slot = inv.getItemSlot(message.getSlot());
         
-        GlowPlayerInventory inv = player.getInventory();
+        // Modify slot if needed
+        if (slot < 0) {
+            inv = player.getInventory().getCraftingInventory();
+            slot = inv.getItemSlot(message.getSlot());
+        }
+        if (slot < 0) {
+            response(session, message, false);
+            player.getServer().getLogger().log(Level.WARNING, "Got invalid inventory slot {0} from {1}", new Object[]{message.getSlot(), player.getName()});
+            return;
+        }
+        
         ItemStack currentItem = inv.getItem(slot);
         
         if (currentItem == null) {
             if (message.getItem() != -1) {
+                player.onSlotSet(inv, slot, currentItem);
                 response(session, message, false);
                 return;
             }
         } else if (message.getItem() != currentItem.getTypeId() ||
                 message.getCount() != currentItem.getAmount() ||
                 message.getDamage() != currentItem.getDurability()) {
+            player.onSlotSet(inv, slot, currentItem);
             response(session, message, false);
             return;
         }
         
         if (message.isShift()) {
-            if (false) {
+            if (false /* inv == player.getInventory().getOpenWindow() */) {
                 // TODO: if player has e.g. chest open
+            } else if (inv == player.getInventory().getCraftingInventory()) {
+                // TODO: crafting stuff
             } else {
                 if (slot < 9) {
                     for (int i = 9; i < 36; ++i) {
@@ -62,8 +79,18 @@ public final class WindowClickMessageHandler extends MessageHandler<WindowClickM
             return;
         }
         
+        if (inv == player.getInventory().getCraftingInventory() && slot == CraftingInventory.RESULT_SLOT && player.getItemOnCursor() != null) {
+            response(session, message, false);
+            return;
+        }
+        
+        response(session, message, true);
         inv.setItem(slot, player.getItemOnCursor());
         player.setItemOnCursor(currentItem);
+        
+        if (inv == player.getInventory().getCraftingInventory() && slot == CraftingInventory.RESULT_SLOT && currentItem != null) {
+            player.getInventory().getCraftingInventory().craft();
+        }
     }
     
     private void response(Session session, WindowClickMessage message, boolean success) {

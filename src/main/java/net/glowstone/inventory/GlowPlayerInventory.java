@@ -12,6 +12,8 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     public static final int LEGGINGS_SLOT = 38;
     public static final int BOOTS_SLOT = 39;
     
+    private final CraftingInventory crafting = new CraftingInventory();
+    
     private int heldSlot = 0;
 
     public GlowPlayerInventory() {
@@ -29,6 +31,14 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     @Override
     public String getName() {
         return "Player Inventory";
+    }
+    
+    /**
+     * Get the crafting inventory.
+     * @return The CraftingInventory attached to this player
+     */
+    public CraftingInventory getCraftingInventory() {
+        return crafting;
     }
 
     /**
@@ -104,25 +114,36 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         return heldSlot;
     }
     
-    // Helper static functions
+    // Helper stuff
     
     private final static int slotConversion[] = {
         36, 37, 38, 39, 40, 41, 42, 43, 44, // quickbar
         9,  10, 11, 12, 13, 14, 15, 16, 17,
         18, 19, 20, 21, 22, 23, 24, 25, 26,
         27, 28, 29, 30, 31, 32, 33, 34, 35,
-        5, 6, 7, 8, // armor
-        1, 2, 3, 4, // crafting
-        0 // crafting result
+        5, 6, 7, 8 // armor
     };
     
-    public static int inventorySlotToNetwork(int slot) {
-        return slotConversion[slot];
+    /**
+     * Get the network index from a slot index.
+     * @param itemSlot The index for use with getItem/setItem.
+     * @return The index modified for transfer over the network, or -1 if there is no equivalent.
+     */
+    @Override
+    public int getNetworkSlot(int itemSlot) {
+        if (itemSlot > slotConversion.length) return -1;
+        return slotConversion[itemSlot];
     }
     
-    public static int networkSlotToInventory(int slot) {
+    /**
+     * Get the slot index from a network index.
+     * @param networkSlot The index received over the network.
+     * @return The index modified for use with getItem/setItem, or -1 if there is no equivalent.
+     */
+    @Override
+    public int getItemSlot(int networkSlot) {
         for (int i = 0; i < slotConversion.length; ++i) {
-            if (slotConversion[i] == slot) return i;
+            if (slotConversion[i] == networkSlot) return i;
         }
         return -1;
     }

@@ -115,6 +115,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         session.send(new StateChangeMessage((byte)(getWorld().hasStorm() ? 1 : 2))); // send the world's weather
         
         getInventory().addViewer(this);
+        getInventory().getCraftingInventory().addViewer(this);
     }
     
     // -- Various internal mechanisms
@@ -126,6 +127,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     @Override
     public void remove() {
         getInventory().removeViewer(this);
+        getInventory().getCraftingInventory().removeViewer(this);
         super.remove();
     }
 
@@ -521,14 +523,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
                     }
                 }
             }
-            
-            slot = GlowPlayerInventory.inventorySlotToNetwork(slot);
         }
         
         if (item == null) {
-            session.send(new SetWindowSlotMessage(inventory.getId(), slot));
+            session.send(new SetWindowSlotMessage(inventory.getId(), inventory.getNetworkSlot(slot)));
         } else {
-            session.send(new SetWindowSlotMessage(inventory.getId(), slot, item.getTypeId(), item.getAmount(), item.getDurability()));
+            session.send(new SetWindowSlotMessage(inventory.getId(), inventory.getNetworkSlot(slot), item.getTypeId(), item.getAmount(), item.getDurability()));
         }
     }
     

@@ -34,6 +34,8 @@ public final class CraftingManager {
         
         testRecipe("workbench", new ItemStack(Material.WORKBENCH, 1), s("WOOD"), s("WOOD"), s("WOOD"), s("WOOD"));
         testRecipe("iron", new ItemStack(Material.IRON_INGOT, 9), s("IRON_BLOCK"));
+        testRecipe("wood", new ItemStack(Material.WOOD, 4), s("LOG"));
+        testRecipe("wood 2", new ItemStack(Material.WOOD, 4), null, s("LOG"), null, null);
     }
     
     private ItemStack s(String s) {
@@ -112,6 +114,15 @@ public final class CraftingManager {
     }
     
     /**
+     * Remove enough items from the given item list to form the given recipe.
+     * @param items The items to remove the ingredients from.
+     * @param recipe A recipe known to match the items.
+     */
+    public void removeItems(ItemStack[] items, Recipe recipe) {
+        // TODO
+    }
+    
+    /**
      * Get a shaped or shapeless recipe from the crafting manager.
      * @param items An array of items with null being empty slots. Length should be a perfect square.
      * @return The ShapedRecipe or ShapelessRecipe that matches the input, or null if none match.
@@ -162,6 +173,10 @@ public final class CraftingManager {
                 for (int cStart = 0; cStart <= size - cols; ++cStart) {
                     boolean failed = false;
                     boolean[] accountedFor = new boolean[items.length];
+                    
+                    for (int i = 0; i < items.length; ++i) {
+                        accountedFor[i] = items[i] == null;
+                    }
                     
                     for (int row = 0; row < rows; ++row) {
                         for (int col = 0; col < cols; ++col) {
@@ -223,7 +238,10 @@ public final class CraftingManager {
                 boolean found = false;
                 for (int i = 0; i < items.length; ++i) {
                     if (!accountedFor[i]) {
-                        if (ingredient.getItemType() != items[i].getType()) {
+                        if (items[i] == null) {
+                            accountedFor[i] = true;
+                            continue;
+                        } else if (ingredient.getItemType() != items[i].getType()) {
                             failed = true;
                             break;
                         } else if (ingredient.getData() >= 0 && ingredient.getData() != items[i].getDurability()) {
@@ -426,6 +444,8 @@ public final class CraftingManager {
         furnaceFuels.put(Material.LOCKED_CHEST, 300);
         furnaceFuels.put(Material.LAVA_BUCKET, 20000);
     }
+    
+    // -- Helper functions
     
     private ShapedRecipe makeShaped(Material mat) {
         return makeShaped(mat, 1, 0);

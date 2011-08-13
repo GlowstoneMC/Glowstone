@@ -55,6 +55,24 @@ public class GlowInventory implements Inventory {
             viewers.remove(viewer);
         }
     }
+    
+    /**
+     * Get the network index from a slot index.
+     * @param itemSlot The index for use with getItem/setItem.
+     * @return The index modified for transfer over the network, or -1 if there is no equivalent.
+     */
+    public int getNetworkSlot(int itemSlot) {
+        return itemSlot;
+    }
+    
+    /**
+     * Get the slot index from a network index.
+     * @param networkSlot The index received over the network.
+     * @return The index modified for use with getItem/setItem, or -1 if there is no equivalent.
+     */
+    public int getItemSlot(int networkSlot) {
+        return networkSlot;
+    }
 
     // Basic Stuff ///////////////
     
