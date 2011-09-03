@@ -11,7 +11,6 @@ public final class KickMessageHandler extends MessageHandler<KickMessage> {
 
     @Override
     public void handle(Session session, GlowPlayer player, KickMessage message) {
-        GlowServer.logger.log(Level.INFO, "{0} left the game", player.getName());
         
         String text = EventFactory.onPlayerQuit(player).getQuitMessage();
         if (message != null) {

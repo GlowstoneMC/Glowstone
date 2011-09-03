@@ -16,6 +16,7 @@ import org.bukkit.Statistic;
 import org.bukkit.Instrument;
 import org.bukkit.Note;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.event.player.PlayerChatEvent;
 
@@ -223,7 +224,27 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     public boolean isOnline() {
         return true;
     }
-    
+
+    public boolean isBanned() {
+        return server.getBanManager().isBanned(getName());
+    }
+
+    public void setBanned(boolean banned) {
+        server.getBanManager().setBanned(getName(), banned);
+    }
+
+    public boolean isWhitelisted() {
+        return !server.hasWhitelist() || server.getWhitelist().contains(getName());
+    }
+
+    public void setWhitelisted(boolean value) {
+        if (value) {
+            server.getWhitelist().add(getName());
+        } else {
+            server.getWhitelist().remove(getName());
+        }
+    }
+
     public InetSocketAddress getAddress() {
         return session.getAddress();
     }
@@ -298,6 +319,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      */
     @Override
     public boolean teleport(Location location) {
+        PlayerTeleportEvent event = EventFactory.onPlayerTeleport(this, getLocation(), location);
+        if (event.isCancelled()) return false;
+        location = event.getTo();
         if (location.getWorld() != world) {
             world.getEntityManager().deallocate(this);
             

@@ -4,6 +4,11 @@ import org.bukkit.command.CommandSender;
 
 import net.glowstone.GlowServer;
 import org.bukkit.ChatColor;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A built-in command to manipulate the whitelist functionality.
@@ -15,7 +20,7 @@ public class WhitelistCommand extends GlowCommand {
     }
 
     @Override
-    public boolean execute(CommandSender sender, String commandLabel, String[] args) {
+    public boolean run(CommandSender sender, String commandLabel, String[] args) {
         if (args.length < 1 || args.length > 2) {
             sender.sendMessage(ChatColor.GRAY + "Wrong number of arguments. Usage: " + getUsage());
             return false;
@@ -24,21 +29,25 @@ public class WhitelistCommand extends GlowCommand {
         } else {
             String command = args[0].trim();
             if (command.equalsIgnoreCase("on")) {
+                if (!checkPermission(sender, PERM_PREFIX  + ".whitelist.enable")) return false;
                 // Enable whitelist
                 if (!checkArgs(sender, args, 1)) return false;
                 server.setWhitelist(true);
                 return tellOps(sender, "Enabling whitelist");
             } else if (command.equalsIgnoreCase("off")) {
+                if (!checkPermission(sender, PERM_PREFIX  + ".whitelist.disable")) return false;
                 // Disable whitelist
                 if (!checkArgs(sender, args, 1)) return false;
                 server.setWhitelist(false);
                 return tellOps(sender, "Disabling whitelist");
             } else if (command.equalsIgnoreCase("")) {
+                if (!checkPermission(sender, PERM_PREFIX  + ".whitelist.add")) return false;
                 // Add player to list
                 if (!checkArgs(sender, args, 2)) return false;
                 server.getWhitelist().add(args[1]);
                 return tellOps(sender, "Adding " + args[1] + " to whitelist");
             } else if (command.equalsIgnoreCase("remove")) {
+                if (!checkPermission(sender, PERM_PREFIX  + ".whitelist.remove")) return false;
                 // Remove player from list
                 if (!checkArgs(sender, args, 2)) return false;
                 server.getWhitelist().add(args[1]);
@@ -49,5 +58,19 @@ public class WhitelistCommand extends GlowCommand {
             }
         }
     }
-    
+
+    @Override
+    public Set<Permission> registerPermissions(String prefix) {
+        Set<Permission> perms = new HashSet<Permission>();
+        perms.add(new Permission(prefix + ".add", "Allows users to add to the whitelist"));
+        perms.add(new Permission(prefix + ".remove", "Allows users to remove from the whitelist"));
+        perms.add(new Permission(prefix + ".enable", "Allows users to enable the whitelist"));
+        perms.add(new Permission(prefix + ".disable", "Allows users to disable the whitelist"));
+        return perms;
+    }
+
+    @Override
+    public PermissionDefault getPermissionDefault() {
+        return PermissionDefault.OP;
+    }
 }

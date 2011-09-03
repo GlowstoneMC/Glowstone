@@ -17,6 +17,7 @@ import net.glowstone.msg.handler.HandlerLookupService;
 import net.glowstone.msg.handler.MessageHandler;
 import org.bukkit.event.player.PlayerKickEvent;
 
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFutureListener;
 
@@ -138,9 +139,12 @@ public final class Session {
             throw new IllegalStateException();
 
         this.player = player;
+        PlayerLoginEvent event = EventFactory.onPlayerLogin(player);
+        if (event.getResult() != PlayerLoginEvent.Result.ALLOWED) {
+            disconnect(event.getKickMessage(), true);
+            return;
+        }
         ((GlowWorld) this.server.getWorlds().get(0)).getRawPlayers().add(player);
-        
-        GlowServer.logger.log(Level.INFO, "{0} joined the game", player.getName());
 
         String message = EventFactory.onPlayerJoin(player).getJoinMessage();
         if (message != null) {
@@ -192,8 +196,6 @@ public final class Session {
      */
     public void disconnect(String reason, boolean overrideKick) {
         if (player != null && !overrideKick) {
-            GlowServer.logger.log(Level.INFO, "{0} left the game", player.getName());
-
             PlayerKickEvent event = EventFactory.onPlayerKick(player, reason);
             if (event.isCancelled()) {
                 return;
@@ -204,6 +206,7 @@ public final class Session {
             if (event.getLeaveMessage() != null) {
                 server.broadcastMessage(event.getLeaveMessage());
             }
+            GlowServer.logger.log(Level.INFO, "Player {0} disconected: {1}", new Object[] {player.getName(), reason});
         }
     
         channel.write(new KickMessage(reason)).addListener(ChannelFutureListener.CLOSE);

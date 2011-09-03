@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -104,6 +105,10 @@ public final class PlayerListFile {
                 return true;
         }
         return false;
+    }
+
+    public List<String> getContents() {
+        return list;
     }
     
 }

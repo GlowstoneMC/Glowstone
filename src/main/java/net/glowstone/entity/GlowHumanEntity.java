@@ -145,6 +145,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     public void recalculatePermissions() {
         permissions.recalculatePermissions();
+        permissions.calculatePermissions();
     }
 
     public Set<PermissionAttachmentInfo> getEffectivePermissions() {

@@ -146,6 +146,11 @@ public final class GlowWorld implements World {
     private int saveTimer = 0;
 
     /**
+     * The check to autosave
+     */
+    private boolean autosave = true;
+
+    /**
      * Creates a new world with the specified chunk I/O service, environment,
      * and world generator.
      * @param name The name of the world.
@@ -250,7 +255,7 @@ public final class GlowWorld implements World {
             }
         }
         
-        if (--saveTimer <= 0) {
+        if (autosave && --saveTimer <= 0) {
             saveTimer = 60 * 20;
             save();
         }
@@ -759,6 +764,14 @@ public final class GlowWorld implements World {
 
     public void setKeepSpawnInMemory(boolean keepLoaded) {
         keepSpawnLoaded = keepLoaded;
+    }
+
+    public boolean isAutoSave() {
+        return autosave;
+    }
+
+    public void setAutoSave(boolean value) {
+        autosave = value;
     }
 
 }
