@@ -99,9 +99,9 @@ public class UndergroundGenerator extends GlowChunkGenerator {
     @Override
     public Location getFixedSpawnLocation(World world, Random random) {
         while (true) {
-            int x = random.nextInt(128) - 64;
-            int y = 128 * 3 / 4;
-            int z = random.nextInt(128) - 64;
+            int x = random.nextInt(world.getMaxHeight()) - 64;
+            int y = world.getMaxHeight() * 3 / 4;
+            int z = random.nextInt(world.getMaxHeight()) - 64;
 
             if (world.getBlockAt(x, y, z).isEmpty()) {
                 while (world.getBlockAt(x, y - 1, z).isEmpty() && y > 0) {

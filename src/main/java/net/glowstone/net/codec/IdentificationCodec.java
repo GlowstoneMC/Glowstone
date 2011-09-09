@@ -17,8 +17,11 @@ public final class IdentificationCodec extends MessageCodec<IdentificationMessag
         int version = buffer.readInt();
         String name = ChannelBufferUtils.readString(buffer);
         long seed = buffer.readLong();
+        int mode = buffer.readInt();
         int dimension = buffer.readByte();
-        return new IdentificationMessage(version, name, seed, dimension);
+        int worldHeight = buffer.readByte();
+        int maxPlayers = buffer.readByte();
+        return new IdentificationMessage(version, name, seed, mode, dimension, worldHeight, maxPlayers);
     }
 
     @Override
@@ -27,7 +30,10 @@ public final class IdentificationCodec extends MessageCodec<IdentificationMessag
         buffer.writeInt(message.getId());
         ChannelBufferUtils.writeString(buffer, message.getName());
         buffer.writeLong(message.getSeed());
+        buffer.writeInt(message.getGameMode());
         buffer.writeByte(message.getDimension());
+        buffer.writeByte(message.getWorldHeight());
+        buffer.writeByte(message.getSomething());
         return buffer;
     }
 

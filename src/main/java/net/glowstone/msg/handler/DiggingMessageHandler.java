@@ -1,6 +1,7 @@
 package net.glowstone.msg.handler;
 
 import org.bukkit.Effect;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -37,7 +38,7 @@ public final class DiggingMessageHandler extends MessageHandler<DiggingMessage> 
         if (message.getState() == DiggingMessage.STATE_START_DIGGING) {
             BlockDamageEvent event = EventFactory.onBlockDamage(player, block);
             if (!event.isCancelled()) {
-                blockBroken = event.getInstaBreak();
+                blockBroken = event.getInstaBreak() || player.getGameMode() == GameMode.CREATIVE;
             }
         } else if (message.getState() == DiggingMessage.STATE_DONE_DIGGING) {
             BlockBreakEvent event = EventFactory.onBlockBreak(block, player);
@@ -48,7 +49,9 @@ public final class DiggingMessageHandler extends MessageHandler<DiggingMessage> 
 
         if (blockBroken) {
             if (!block.isEmpty() && !block.isLiquid()) {
-                player.getInventory().addItem(new ItemStack(block.getType(), 1, block.getData()));
+                if ((!player.getInventory().contains(block.getType()) || player.getGameMode() != GameMode.CREATIVE)) {
+                    player.getInventory().addItem(new ItemStack(block.getType(), 1, block.getData()));
+                }
             }
             world.playEffectExceptTo(block.getLocation(), Effect.STEP_SOUND, block.getTypeId(), 64, player);
             block.setType(Material.AIR);

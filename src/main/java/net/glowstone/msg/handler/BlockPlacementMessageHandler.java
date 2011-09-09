@@ -1,5 +1,6 @@
 package net.glowstone.msg.handler;
 
+import org.bukkit.GameMode;
 import org.bukkit.inventory.ItemStack;
 
 import org.bukkit.block.Block;
@@ -54,11 +55,13 @@ public final class BlockPlacementMessageHandler extends MessageHandler<BlockPlac
                 BlockPlaceEvent event = EventFactory.onBlockPlace(target, newState, against, player);
                 if (!event.isCancelled() && event.canBuild()) {
                     newState.update(true);
+                    if (player.getGameMode() != GameMode.CREATIVE) {
                     holding.setAmount(holding.getAmount() - 1);
-                    if (holding.getAmount() == 0) {
-                        player.setItemInHand(null);
-                    } else {
-                        player.setItemInHand(holding);
+                        if (holding.getAmount() == 0) {
+                            player.setItemInHand(null);
+                        } else {
+                            player.setItemInHand(holding);
+                        }
                     }
                 }
             }

@@ -64,6 +64,9 @@ public final class CodecLookupService {
             /* 0x26 */ bind(EntityStatusCodec.class);
             /* 0x27 */ bind(AttachEntityCodec.class);
             /* 0x28 */ bind(EntityMetadataCodec.class);
+            /* 0x29 */ bind(EntityEffectCodec.class);
+            /* 0x2A */ bind(EntityRemoveEffectCodec.class);
+            /* 0x2B */ bind(ExperienceCodec.class);
             /* 0x32 */ bind(LoadChunkCodec.class);
             /* 0x33 */ bind(CompressedChunkCodec.class);
             /* 0x34 */ bind(MultiBlockChangeCodec.class);
@@ -80,9 +83,12 @@ public final class CodecLookupService {
             /* 0x68 */ bind(SetWindowSlotsCodec.class);
             /* 0x69 */ bind(ProgressBarCodec.class);
             /* 0x6A */ bind(TransactionCodec.class);
+            /* 0x6B */ bind(QuickBarCodec.class);
             /* 0x82 */ bind(UpdateSignCodec.class);
             /* 0x83 */ bind(MapDataCodec.class);
             /* 0xC8 */ bind(StatisticCodec.class);
+            /* 0xC9 */ bind(UserListItemCodec.class);
+            /* 0xFE */ bind(ServerListPingCodec.class);
             /* 0xFF */ bind(KickCodec.class);
         } catch (Exception ex) {
             throw new ExceptionInInitializerError(ex);

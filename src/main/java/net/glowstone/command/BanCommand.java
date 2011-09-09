@@ -23,7 +23,7 @@ public class BanCommand extends GlowCommand {
     public boolean run(CommandSender sender, String commandLabel, String[] args) {
         int mod = 0;
         boolean ip = false;
-        if (!checkArgs(sender, args, 2, 3) || !checkOp(sender)) return false;
+        if (!checkArgs(sender, args, 2, 3)) return false;
         if (args[0].equalsIgnoreCase("-ip")) {
             ip = true; mod = 1;
         }

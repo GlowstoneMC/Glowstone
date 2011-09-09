@@ -21,16 +21,9 @@ import java.util.logging.Logger;
 
 import net.glowstone.util.bans.BanManager;
 import net.glowstone.util.bans.FlatFileBanManager;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
-import org.bukkit.command.PluginCommandYamlParser;
-import org.bukkit.Server;
-import org.bukkit.World;
+import org.bukkit.*;
+import org.bukkit.command.*;
 import org.bukkit.World.Environment;
-import org.bukkit.command.CommandException;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.Recipe;
@@ -81,6 +74,11 @@ public final class GlowServer implements Server {
      * The configuration the server uses.
      */
     private static final Configuration config = new Configuration(new File(configDir, "glowstone.yml"));
+
+    /**
+     * The protocol version supported by the server
+     */
+    public static final int PROTOCOL_VERSION = 15;
 
     /**
      * Creates a new server on TCP port 25565 and starts listening for
@@ -286,6 +284,13 @@ public final class GlowServer implements Server {
                         catch (NumberFormatException ex) {}
                     }
 
+                    if (properties.containsKey("motd")) {
+                        String motd = properties.getProperty("motd", "Glowstone server");
+                        config.setProperty("server.motd", motd);
+                        moved += separator + "MOTD";
+                        separator = ", ";
+                    }
+
                     // TODO: move nether, view distance, monsters, etc when implemented
 
                     if (moved.length() > 0) {
@@ -309,6 +314,7 @@ public final class GlowServer implements Server {
         config.getBoolean("server.allow-nether", true);
         config.getBoolean("server.allow-flight", false);
         config.getInt("server.view-distance", GlowChunk.VISIBLE_RADIUS);
+        config.getString("server.motd", "Glowstone server");
 
         // Server folders config
         config.getString("server.folders.plugins", "plugins");
@@ -339,22 +345,6 @@ public final class GlowServer implements Server {
     public void start() {
         // Config should have already loaded by this point, but to be safe...
         config.load();
-        
-        DefaultPermissions.registerCorePermissions();
-        
-        // Register these first so they're usable while the worlds are loading
-        GlowCommandMap.initGlowPermissions(this);
-        List<GlowCommand> commands = new ArrayList<GlowCommand>(Arrays.<GlowCommand>asList(
-                new MeCommand(this),
-                new ColorCommand(this),
-                new KickCommand(this),
-                new ListCommand(this),
-                new TimeCommand(this),
-                new WhitelistCommand(this),
-                new BanCommand(this)));
-        builtinCommandMap.registerAll(commands);
-        builtinCommandMap.registerFallbacksAsNormal();
-        builtinCommandMap.register(new HelpCommand(this, builtinCommandMap.getKnownCommands()));
         consoleManager.setupConsole();
         
         // Load player lists
@@ -364,6 +354,23 @@ public final class GlowServer implements Server {
 
         // Start loading plugins
         loadPlugins();
+
+        // Begin registering permissions
+        DefaultPermissions.registerCorePermissions();
+
+        // Register these first so they're usable while the worlds are loading
+        GlowCommandMap.initGlowPermissions(this);
+        builtinCommandMap.registerFallbacksAsNormal();
+        builtinCommandMap.register(new MeCommand(this));
+        builtinCommandMap.register(new ColorCommand(this));
+        builtinCommandMap.register(new KickCommand(this));
+        builtinCommandMap.register(new ListCommand(this));
+        builtinCommandMap.register(new TimeCommand(this));
+        builtinCommandMap.register(new WhitelistCommand(this));
+        builtinCommandMap.register(new BanCommand(this));
+        builtinCommandMap.register(new GameModeCommand(this));
+        builtinCommandMap.register(new HelpCommand(this, builtinCommandMap.getKnownCommands()));
+
         enablePlugins(PluginLoadOrder.STARTUP);
         
         // Create worlds
@@ -479,6 +486,9 @@ public final class GlowServer implements Server {
             
             // Load plugins
             loadPlugins();
+            DefaultPermissions.registerCorePermissions();
+            GlowCommandMap.initGlowPermissions(this);
+            builtinCommandMap.registerAllPermissions();
             enablePlugins(PluginLoadOrder.STARTUP);
             enablePlugins(PluginLoadOrder.POSTWORLD);
             consoleManager.refreshCommands();
@@ -1053,6 +1063,14 @@ public final class GlowServer implements Server {
         return bannedPlayers;
     }
 
+    public GameMode getDefaultGameMode() {
+        return GameMode.SURVIVAL;
+    }
+
+    public void setDefaultGameMode(GameMode mode) {
+        throw new UnsupportedOperationException("Not on 1.8 yet");
+    }
+
     public int getViewDistance() {
         return config.getInt("server.view-distance", GlowChunk.VISIBLE_RADIUS);
     }
@@ -1067,6 +1085,14 @@ public final class GlowServer implements Server {
 
     public GlowMapView createMap(World world) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public String getMOTD() {
+        return config.getString("server.motd");
+    }
+
+    public void setMOTD(String motd) {
+        config.setProperty("server.motd", motd);
     }
      
 }

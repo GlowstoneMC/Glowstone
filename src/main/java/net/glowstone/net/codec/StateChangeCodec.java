@@ -16,13 +16,15 @@ public final class StateChangeCodec extends MessageCodec<StateChangeMessage> {
     @Override
     public StateChangeMessage decode(ChannelBuffer buffer) throws IOException {
         byte state = buffer.readByte();
-        return new StateChangeMessage(state);
+        byte something = buffer.readByte();
+        return new StateChangeMessage(state, something);
     }
 
     @Override
     public ChannelBuffer encode(StateChangeMessage message) throws IOException {
-        ChannelBuffer buffer = ChannelBuffers.buffer(1);
+        ChannelBuffer buffer = ChannelBuffers.buffer(3);
         buffer.writeByte(message.getState());
+        buffer.writeByte(message.getGameMode());
         return buffer;
     }
 

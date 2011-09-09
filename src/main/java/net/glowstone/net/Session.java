@@ -2,19 +2,21 @@ package net.glowstone.net;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.util.ArrayDeque;
-import java.util.Queue;
-import java.util.Random;
+import java.util.*;
 import java.util.logging.Level;
 import net.glowstone.EventFactory;
 
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
+import net.glowstone.entity.EntityEffect;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.msg.KickMessage;
 import net.glowstone.msg.Message;
+import net.glowstone.msg.PingMessage;
+import net.glowstone.msg.UserListItemMessage;
 import net.glowstone.msg.handler.HandlerLookupService;
 import net.glowstone.msg.handler.MessageHandler;
+import org.bukkit.World;
 import org.bukkit.event.player.PlayerKickEvent;
 
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -63,6 +65,11 @@ public final class Session {
     private final GlowServer server;
 
     /**
+     * The Random for this session
+     */
+    private final Random random = new Random();
+
+    /**
      * The channel associated with this session.
      */
     private final Channel channel;
@@ -92,7 +99,12 @@ public final class Session {
      * The random long used for client-server handshake
      */
 
-    private String sessionId = Long.toHexString(new Random().nextLong());
+    private String sessionId = Long.toHexString(random.nextLong());
+
+    /**
+     * Handling ping messages
+     */
+    private int pingMessageId;
 
     /**
      * Creates a new session.
@@ -150,6 +162,14 @@ public final class Session {
         if (message != null) {
             server.broadcastMessage(message);
         }
+        Message userListMessage = new UserListItemMessage(player.getName(), true, (short)timeoutCounter);
+        for (World world : server.getWorlds()) {
+            for (GlowPlayer sendPlayer : ((GlowWorld)world).getRawPlayers()) {
+                sendPlayer.getSession().send(userListMessage);
+                if (sendPlayer != player) send(new UserListItemMessage(sendPlayer.getName(), true,
+                        (short)sendPlayer.getSession().timeoutCounter));
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -166,7 +186,13 @@ public final class Session {
         }
 
         if (timeoutCounter >= TIMEOUT_TICKS)
-            disconnect("Timed out");
+            if (pingMessageId == 0) {
+                pingMessageId = new Random().nextInt();
+                send(new PingMessage(pingMessageId));
+                timeoutCounter = 0;
+            } else {
+                disconnect("Timed out");
+            }
     }
 
     /**
@@ -206,7 +232,8 @@ public final class Session {
             if (event.getLeaveMessage() != null) {
                 server.broadcastMessage(event.getLeaveMessage());
             }
-            GlowServer.logger.log(Level.INFO, "Player {0} disconected: {1}", new Object[] {player.getName(), reason});
+            
+            GlowServer.logger.log(Level.INFO, "Player {0} disconected: {1}", new Object[]{player.getName(), reason});
         }
     
         channel.write(new KickMessage(reason)).addListener(ChannelFutureListener.CLOSE);
@@ -254,12 +281,27 @@ public final class Session {
     void dispose() {
         if (player != null) {            
             player.remove();
+            Message userListMessage = new UserListItemMessage(player.getName(), false, (short)0);
+            for (World world : server.getWorlds()) {
+                for (GlowPlayer player : ((GlowWorld)world).getRawPlayers()) {
+                    player.getSession().send(userListMessage);
+                }
+            }
             player = null; // in case we are disposed twice
         }
     }
 
     public String getSessionId() {
         return sessionId;
+    }
+
+    public int getPingMessageId() {
+        return pingMessageId;
+    }
+
+    public void pong() {
+        timeoutCounter = 0;
+        pingMessageId = 0;
     }
 
 }

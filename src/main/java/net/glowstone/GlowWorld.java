@@ -192,7 +192,7 @@ public final class GlowWorld implements World {
         
         spawnLocation = generator.getFixedSpawnLocation(this, random);
         if (spawnLocation == null) {
-            spawnLocation = new Location(this, 0, 128, 0);
+            spawnLocation = new Location(this, 0, getMaxHeight(), 0);
             
             if (!generator.canSpawn(this, spawnLocation.getBlockX(), spawnLocation.getBlockZ())) {
                 // 10 tries only to prevent a return false; bomb
@@ -357,7 +357,7 @@ public final class GlowWorld implements World {
     }
 
     public int getMaxHeight() {
-        return 128;
+        return GlowChunk.DEPTH;
     }
 
     // force-save
@@ -677,7 +677,7 @@ public final class GlowWorld implements World {
         }
         
         for (GlowPlayer player : getRawPlayers()) {
-            player.getSession().send(new StateChangeMessage((byte)(currentlyRaining ? 1 : 2)));
+            player.getSession().send(new StateChangeMessage((byte)(currentlyRaining ? 1 : 2), (byte)0));
         }
     }
 

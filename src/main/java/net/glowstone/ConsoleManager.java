@@ -168,6 +168,7 @@ public final class ConsoleManager {
         
         Completor[] list = new Completor[] { new SimpleCompletor(server.getAllCommands()), new NullCompletor() };
         reader.addCompletor(new ArgumentCompletor(list));
+        sender.recalculatePermissions();
     }
     
     public String colorize(String string) {

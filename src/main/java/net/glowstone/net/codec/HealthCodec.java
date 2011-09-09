@@ -15,14 +15,18 @@ public final class HealthCodec extends MessageCodec<HealthMessage> {
 
     @Override
     public HealthMessage decode(ChannelBuffer buffer) throws IOException {
-        int health = buffer.readUnsignedByte();
-        return new HealthMessage(health);
+        int health = buffer.readShort();
+        int food = buffer.readShort();
+        float foodSaturation = buffer.readFloat();
+        return new HealthMessage(health, food, foodSaturation);
     }
 
     @Override
     public ChannelBuffer encode(HealthMessage message) throws IOException {
-        ChannelBuffer buffer = ChannelBuffers.buffer(1);
-        buffer.writeByte(message.getHealth());
+        ChannelBuffer buffer = ChannelBuffers.buffer(9);
+        buffer.writeShort(message.getHealth());
+        buffer.writeShort(message.getFood());
+        buffer.writeFloat(message.getFoodSaturation());
         return buffer;
     }
 

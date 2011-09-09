@@ -3,6 +3,7 @@ package net.glowstone.msg.handler;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.msg.CloseWindowMessage;
 import net.glowstone.net.Session;
+import org.bukkit.GameMode;
 
 public final class CloseWindowMessageHandler extends MessageHandler<CloseWindowMessage> {
 
@@ -13,7 +14,9 @@ public final class CloseWindowMessageHandler extends MessageHandler<CloseWindowM
         
         if (player.getItemOnCursor() != null) {
             // player.getWorld().dropItem(player.getEyeLocation(), player.getItemInHand());
-            player.getInventory().addItem(player.getItemOnCursor());
+            if (player.getGameMode() != GameMode.CREATIVE) {
+                player.getInventory().addItem(player.getItemOnCursor());
+            }
             player.setItemOnCursor(null);
         }
     }

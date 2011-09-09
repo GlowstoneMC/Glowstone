@@ -1,6 +1,9 @@
 package net.glowstone.msg.handler;
 
 import java.util.logging.Level;
+
+import net.glowstone.msg.CloseWindowMessage;
+import org.bukkit.GameMode;
 import org.bukkit.inventory.ItemStack;
 
 import net.glowstone.entity.GlowPlayer;
@@ -25,6 +28,10 @@ public final class WindowClickMessageHandler extends MessageHandler<WindowClickM
             inv = player.getInventory().getCraftingInventory();
             slot = inv.getItemSlot(message.getSlot());
         }
+        if (slot == -1) {
+            player.setItemOnCursor(null);
+            response(session, message, true);
+        }
         if (slot < 0) {
             response(session, message, false);
             player.getServer().getLogger().log(Level.WARNING, "Got invalid inventory slot {0} from {1}", new Object[]{message.getSlot(), player.getName()});
@@ -32,7 +39,13 @@ public final class WindowClickMessageHandler extends MessageHandler<WindowClickM
         }
         
         ItemStack currentItem = inv.getItem(slot);
-        
+
+        if (player.getGameMode() == GameMode.CREATIVE && message.getId() == inv.getId()) {
+            response(session, message, false);
+            player.onSlotSet(inv, slot, currentItem);
+            player.getServer().getLogger().log(Level.WARNING, "{0} tried to do an invalid inventory action in Creative mode!", new Object[]{player.getName()});
+            return;
+        }
         if (currentItem == null) {
             if (message.getItem() != -1) {
                 player.onSlotSet(inv, slot, currentItem);

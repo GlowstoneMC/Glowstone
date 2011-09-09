@@ -62,8 +62,8 @@ public class CakeTownGenerator extends GlowChunkGenerator {
 
     @Override
     public Location getFixedSpawnLocation(World world, Random random) {
-        int x = random.nextInt(128) - 64;
-        int z = random.nextInt(128) - 64;
+        int x = random.nextInt(world.getMaxHeight()) - 64;
+        int z = random.nextInt(world.getMaxHeight()) - 64;
         return new Location(world, x, world.getHighestBlockYAt(x, z), z);
     }
     

@@ -7,20 +7,21 @@ import org.jboss.netty.buffer.ChannelBuffers;
 
 public final class PingCodec extends MessageCodec<PingMessage> {
 
-    private static final PingMessage PING_MESSAGE = new PingMessage();
-
     public PingCodec() {
         super(PingMessage.class, 0x00);
     }
 
     @Override
     public PingMessage decode(ChannelBuffer buffer) {
-        return PING_MESSAGE;
+        int id = buffer.readInt();
+        return new PingMessage(id);
     }
 
     @Override
     public ChannelBuffer encode(PingMessage message) {
-        return ChannelBuffers.EMPTY_BUFFER;
+        ChannelBuffer buffer = ChannelBuffers.buffer(5);
+        buffer.writeInt(message.getPingId());
+        return buffer;
     }
 
 }

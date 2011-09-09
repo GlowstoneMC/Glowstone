@@ -65,7 +65,7 @@ public class SurfaceGenerator extends GlowChunkGenerator {
                         + noiseHeight.noise(x + chunkX, z + chunkZ, 0.7, 0.6, true)
                         * terrainHeight
                         + noiseJitter.noise(x + chunkX, z + chunkZ, 0.5, 0.5)
-                        * 1.5, 127); y > 0; y--) {
+                        * 1.5, world.getMaxHeight() - 1); y > 0; y--) {
                     double terrainType = noiseType.noise(x + chunkX, y, z + chunkZ, 0.5, 0.5);
                     Material ground = matTop;
                     if (Math.abs(terrainType) < random.nextDouble() / 3 && !noDirt) {
@@ -126,7 +126,7 @@ public class SurfaceGenerator extends GlowChunkGenerator {
         octaves.put("jitter", gen);
 
         gen = new SimplexOctaveGenerator(seed, 2);
-        gen.setScale(1 / 128.0);
+        gen.setScale(1 / world.getMaxHeight());
         octaves.put("type", gen);
     }
     

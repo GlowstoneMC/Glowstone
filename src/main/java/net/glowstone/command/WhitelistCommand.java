@@ -24,8 +24,6 @@ public class WhitelistCommand extends GlowCommand {
         if (args.length < 1 || args.length > 2) {
             sender.sendMessage(ChatColor.GRAY + "Wrong number of arguments. Usage: " + getUsage());
             return false;
-        } else if (!checkOp(sender)) {
-            return false;
         } else {
             String command = args[0].trim();
             if (command.equalsIgnoreCase("on")) {
