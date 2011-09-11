@@ -8,7 +8,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public class QuickBarMessageHandler extends MessageHandler<QuickBarMessage>{
+public class QuickBarMessageHandler extends MessageHandler<QuickBarMessage> {
 
     @Override
     public void handle(Session session, GlowPlayer player, QuickBarMessage message) {
@@ -33,4 +33,5 @@ public class QuickBarMessageHandler extends MessageHandler<QuickBarMessage>{
             player.setItemOnCursor(null);
         }
     }
+    
 }

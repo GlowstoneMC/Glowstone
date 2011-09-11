@@ -11,8 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- *
- * @author zml2008
+ * Command to ban players or IP addresses.
  */
 public class BanCommand extends GlowCommand {
 

@@ -1,6 +1,7 @@
 package net.glowstone.msg;
 
 public class QuickBarMessage extends Message {
+
     private final short slot, id, amount, damage;
 
     public QuickBarMessage(short slot, short id, short amount, short damage) {
@@ -24,7 +25,6 @@ public class QuickBarMessage extends Message {
 
     public short getDamage() {
         return damage;
-
     }
-
+    
 }

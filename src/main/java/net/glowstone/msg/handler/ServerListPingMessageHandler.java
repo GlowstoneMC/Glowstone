@@ -9,7 +9,9 @@ public class ServerListPingMessageHandler extends MessageHandler<ServerListPingM
 
     @Override
     public void handle(Session session, GlowPlayer player, ServerListPingMessage message) {
-        session.send(new KickMessage(session.getServer().getMOTD() + "\u00A7" + session.getServer().getOnlinePlayers().length
-                + "\u00A7" + session.getServer().getMaxPlayers()));
+        String text = session.getServer().getMOTD() + "\u00A7" + session.getServer().getOnlinePlayers().length;
+        text += "\u00A7" + session.getServer().getMaxPlayers();
+        session.send(new KickMessage(text));
     }
+    
 }

@@ -8,7 +8,7 @@ import org.jboss.netty.buffer.ChannelBuffers;
 import java.io.IOException;
 
 public class UserListItemCodec extends MessageCodec<UserListItemMessage> {
-    
+
     public UserListItemCodec() {
         super(UserListItemMessage.class, 0xC9);
     }
@@ -29,4 +29,5 @@ public class UserListItemCodec extends MessageCodec<UserListItemMessage> {
         short ping = buffer.readShort();
         return new UserListItemMessage(name, something, ping);
     }
+    
 }

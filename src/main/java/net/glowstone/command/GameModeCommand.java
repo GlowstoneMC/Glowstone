@@ -1,7 +1,6 @@
 package net.glowstone.command;
 
 import net.glowstone.GlowServer;
-import net.glowstone.entity.GlowPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
@@ -13,9 +12,12 @@ public class GameModeCommand extends GlowCommand {
     public GameModeCommand(GlowServer server) {
         super(server, "gamemode", "Change the game mode for players", "[player] <mode>");
     }
+
     @Override
     public boolean run(CommandSender sender, String commandLabel, String[] args) {
-        if (!checkArgs(sender, args, 1 , 2)) return false;
+        if (!checkArgs(sender, args, 1, 2)) {
+            return false;
+        }
         String name;
         String target;
         if (args.length < 2) {
@@ -49,4 +51,5 @@ public class GameModeCommand extends GlowCommand {
     public PermissionDefault getPermissionDefault() {
         return PermissionDefault.OP;
     }
+    
 }

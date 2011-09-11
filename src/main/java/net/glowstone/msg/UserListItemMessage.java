@@ -1,6 +1,7 @@
 package net.glowstone.msg;
 
 public class UserListItemMessage extends Message {
+
     private final String name;
     private final boolean something;
     private final short ping;
@@ -22,4 +23,5 @@ public class UserListItemMessage extends Message {
     public short getPing() {
         return ping;
     }
+    
 }

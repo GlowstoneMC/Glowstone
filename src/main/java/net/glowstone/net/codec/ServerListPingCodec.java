@@ -6,7 +6,7 @@ import org.jboss.netty.buffer.ChannelBuffers;
 
 import java.io.IOException;
 
-public class ServerListPingCodec extends MessageCodec<ServerListPingMessage>{
+public class ServerListPingCodec extends MessageCodec<ServerListPingMessage> {
 
     private static final ServerListPingMessage LIST_PING_MESSAGE = new ServerListPingMessage();
 
@@ -23,4 +23,5 @@ public class ServerListPingCodec extends MessageCodec<ServerListPingMessage>{
     public ServerListPingMessage decode(ChannelBuffer buffer) throws IOException {
         return LIST_PING_MESSAGE;
     }
+    
 }

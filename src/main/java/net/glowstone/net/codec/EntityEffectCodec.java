@@ -30,4 +30,5 @@ public class EntityEffectCodec extends MessageCodec<EntityEffectMessage> {
         short duration = buffer.readShort();
         return new EntityEffectMessage(id, effect, amplifier, duration);
     }
+    
 }

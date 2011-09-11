@@ -8,11 +8,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @author zml2008
+ * Implementation of BanManager that uses PlayerListFiles.
  */
-public class FlatFileBanManager implements BanManager{
+public class FlatFileBanManager implements BanManager {
+
     private final PlayerListFile bannedNames;
     private final PlayerListFile bannedIps;
+
     public FlatFileBanManager(GlowServer server) {
         this.bannedIps = new PlayerListFile(new File(server.getConfigDir(), "banned-ips.txt"));
         this.bannedNames = new PlayerListFile(new File(server.getConfigDir(), "banned-names.txt"));
@@ -70,4 +72,5 @@ public class FlatFileBanManager implements BanManager{
     public boolean isBanned(String player, String address) {
         return isBanned(player) || isIpBanned(address);
     }
+    
 }

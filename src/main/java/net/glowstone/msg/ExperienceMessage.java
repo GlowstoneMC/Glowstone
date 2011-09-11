@@ -1,10 +1,7 @@
 package net.glowstone.msg;
 
-/**
- *
- * @author zml2008
- */
 public class ExperienceMessage extends Message {
+
     private final byte barValue, level;
     private final short totalExp;
 
@@ -25,4 +22,5 @@ public class ExperienceMessage extends Message {
     public short getTotalExp() {
         return totalExp;
     }
+    
 }

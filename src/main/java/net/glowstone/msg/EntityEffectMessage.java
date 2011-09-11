@@ -1,6 +1,7 @@
 package net.glowstone.msg;
 
-public class EntityEffectMessage extends Message{
+public class EntityEffectMessage extends Message {
+
     private final int id;
     private final byte effect, amplifier;
     private final short duration;
@@ -17,7 +18,7 @@ public class EntityEffectMessage extends Message{
     }
 
     public byte getEffect() {
-        return  effect;
+        return effect;
     }
 
     public byte getAmplifier() {
@@ -27,4 +28,5 @@ public class EntityEffectMessage extends Message{
     public short getDuration() {
         return duration;
     }
+    
 }

@@ -1,6 +1,7 @@
 package net.glowstone.entity;
 
 public enum EntityEffect {
+
     MOVE_SPEED(1),
     MOVE_SLOW(2),
     DIG_SPEED(3),
@@ -20,14 +21,15 @@ public enum EntityEffect {
     HUNGER(17),
     WEAKNESS(18),
     POISON(19);
-
-
+    
     private final byte id;
+
     private EntityEffect(int id) {
-        this.id = (byte)id;
+        this.id = (byte) id;
     }
 
     public byte getId() {
         return id;
     }
+    
 }

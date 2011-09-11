@@ -11,6 +11,7 @@ public class QuickBarCodec extends MessageCodec<QuickBarMessage> {
     public QuickBarCodec() {
         super(QuickBarMessage.class, 0x6B);
     }
+
     @Override
     public ChannelBuffer encode(QuickBarMessage message) throws IOException {
         ChannelBuffer buffer = ChannelBuffers.buffer(9);
@@ -29,4 +30,5 @@ public class QuickBarCodec extends MessageCodec<QuickBarMessage> {
         short damage = buffer.readShort();
         return new QuickBarMessage(slot, id, amount, damage);
     }
+    
 }

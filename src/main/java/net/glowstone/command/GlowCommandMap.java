@@ -12,17 +12,16 @@ import org.bukkit.command.defaults.TimeCommand;
 import org.bukkit.command.defaults.WhitelistCommand;
 import org.bukkit.command.defaults.ListCommand;
 import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.PluginManager;
 
 import java.util.*;
 
 /**
- * @author zml2008
+ * SimpleCommandMap that ignores certain "vanilla" commands.
  */
 public class GlowCommandMap extends SimpleCommandMap {
-    private final Server server;
 
+    private final Server server;
     private static Permission parent;
     private static Permission betterParent;
 
@@ -102,13 +101,15 @@ public class GlowCommandMap extends SimpleCommandMap {
         Permission child = new Permission(GlowCommand.PERM_PREFIX + "." + command.getName(), command.getPermissionDefault());
         for (Permission permission : command.registerPermissions(child.getName())) {
             child.getChildren().put(permission.getName(), true);
-            if (pm.getPermission(permission.getName()) == null)
+            if (pm.getPermission(permission.getName()) == null) {
                 pm.addPermission(permission);
+            }
             permission.recalculatePermissibles();
         }
         parent.getChildren().put(child.getName(), true);
-        if (pm.getPermission(child.getName()) == null)
+        if (pm.getPermission(child.getName()) == null) {
             pm.addPermission(child);
+        }
         command.setPermission(child.getName());
         child.recalculatePermissibles();
         parent.recalculatePermissibles();
@@ -139,5 +140,5 @@ public class GlowCommandMap extends SimpleCommandMap {
         }
         return perms;
     }
-
+    
 }

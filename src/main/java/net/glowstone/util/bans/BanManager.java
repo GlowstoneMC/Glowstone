@@ -3,7 +3,7 @@ package net.glowstone.util.bans;
 import java.util.Set;
 
 /**
- * @author zml2008
+ * Represents a system capable of managing player and IP bans and messages.
  */
 public interface BanManager {
 
@@ -84,6 +84,5 @@ public interface BanManager {
      * @return
      */
     public boolean isBanned(String player, String address);
-
-
+    
 }
