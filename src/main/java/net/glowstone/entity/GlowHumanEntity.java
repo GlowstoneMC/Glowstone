@@ -47,7 +47,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     /**
      * This human's PermissibleBase for permissions.
      */
-    protected PermissibleBase permissions = new PermissibleBase(this);
+    protected PermissibleBase permissions;
     
     /**
      * Whether this human is considered an op.
@@ -72,8 +72,8 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     public GlowHumanEntity(GlowServer server, GlowWorld world, String name) {
         super(server, world);
         this.name = name;
+        permissions = new PermissibleBase(this);
         gameMode = server.getDefaultGameMode();
-        recalculatePermissions();
     }
 
     @Override

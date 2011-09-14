@@ -78,7 +78,7 @@ public final class GlowServer implements Server {
     /**
      * The protocol version supported by the server
      */
-    public static final int PROTOCOL_VERSION = 15;
+    public static final int PROTOCOL_VERSION = 17;
 
     /**
      * Creates a new server on TCP port 25565 and starts listening for

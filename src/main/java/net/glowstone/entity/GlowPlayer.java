@@ -320,7 +320,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
             }
             knownChunks.clear();
             
-            session.send(new RespawnMessage((byte) world.getEnvironment().getId(), gameModeNum(getGameMode()), (short)world.getMaxHeight(), world.getSeed()));
+            session.send(new RespawnMessage((byte) world.getEnvironment().getId(), (byte)1 /*unknown*/, gameModeNum(getGameMode()), (short)world.getMaxHeight(), world.getSeed()));
             
             streamBlocks(); // stream blocks
             

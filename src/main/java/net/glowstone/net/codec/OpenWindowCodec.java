@@ -18,7 +18,7 @@ public final class OpenWindowCodec extends MessageCodec<OpenWindowMessage> {
     public OpenWindowMessage decode(ChannelBuffer buffer) throws IOException {
         int id = buffer.readUnsignedByte();
         int type = buffer.readUnsignedByte();
-        String title = ChannelBufferUtils.readUtf8String(buffer);
+        String title = ChannelBufferUtils.readString(buffer);
         int slots = buffer.readUnsignedByte();
         return new OpenWindowMessage(id, type, title, slots);
     }
@@ -28,7 +28,7 @@ public final class OpenWindowCodec extends MessageCodec<OpenWindowMessage> {
         ChannelBuffer buffer = ChannelBuffers.dynamicBuffer();
         buffer.writeByte(message.getId());
         buffer.writeByte(message.getType());
-        ChannelBufferUtils.writeUtf8String(buffer, message.getTitle());
+        ChannelBufferUtils.writeString(buffer, message.getTitle());
         buffer.writeByte(message.getSlots());
         return buffer;
     }

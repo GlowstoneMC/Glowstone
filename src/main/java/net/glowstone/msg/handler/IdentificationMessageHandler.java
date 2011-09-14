@@ -10,10 +10,12 @@ import java.net.URLEncoder;
 
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
+import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.msg.IdentificationMessage;
 import net.glowstone.net.Session;
 import net.glowstone.net.Session.State;
+import org.bukkit.GameMode;
 import org.bukkit.event.player.PlayerPreLoginEvent;
 
 public final class IdentificationMessageHandler extends MessageHandler<IdentificationMessage> {
@@ -54,8 +56,9 @@ public final class IdentificationMessageHandler extends MessageHandler<Identific
                 if (event.getResult() != PlayerPreLoginEvent.Result.ALLOWED) {
                     session.disconnect(event.getKickMessage());
                 }
-                session.send(new IdentificationMessage(0, "", 0, 0, 0, session.getServer().getWorlds().get(0).getMaxHeight(), session.getServer().getMaxPlayers()));
-                session.setPlayer(new GlowPlayer(session, event.getName())); // TODO case-correct the name
+                GlowPlayer newPlayer = new GlowPlayer(session, event.getName()); // TODO case-correct the name
+                GlowWorld world = newPlayer.getWorld();
+                session.send(new IdentificationMessage(newPlayer.getEntityId(), "", world.getSeed(), GlowPlayer.gameModeNum(GameMode.SURVIVAL), world.getEnvironment().getId(), 1 /*unknown*/, world.getMaxHeight(), session.getServer().getMaxPlayers()));
             } else {
                 session.getServer().getLogger().log(Level.INFO, "Failed to authenticate {0} with minecraft.net.", message.getName());
                 session.disconnect("Player identification failed!");

@@ -99,7 +99,7 @@ public final class PlayerListFile {
     /**
      * Check if a player is in the list.
      */
-    public boolean contains(String player) {
+    public boolean contains(String player) {        
         for (String str : list) {
             if (str.equalsIgnoreCase(player.trim()))
                 return true;
