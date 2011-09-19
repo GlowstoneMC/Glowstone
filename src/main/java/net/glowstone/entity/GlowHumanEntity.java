@@ -183,30 +183,16 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         recalculatePermissions();
     }
 
-    public int getFood() {
+    public int getFoodLevel() {
         return food;
     }
 
-    public void setFood(int food) {
+    public void setFoodLevel(int food) {
         this.food = Math.min(food, 20);
     }
 
     public Message prepareHealthMessage() {
-        return new HealthMessage(getHealth(), getFood(), 1.0F);
-    }
-
-    public static byte gameModeNum(GameMode mode) {
-        byte ret;
-        switch (mode) {
-            case CREATIVE:
-                ret = 1;
-                break;
-            case SURVIVAL:
-            default:
-                ret = 0;
-                break;
-        }
-        return ret;
+        return new HealthMessage(getHealth(), getFoodLevel(), 1.0F);
     }
     
 }

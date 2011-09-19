@@ -58,7 +58,7 @@ public final class IdentificationMessageHandler extends MessageHandler<Identific
                 }
                 GlowPlayer newPlayer = new GlowPlayer(session, event.getName()); // TODO case-correct the name
                 GlowWorld world = newPlayer.getWorld();
-                session.send(new IdentificationMessage(newPlayer.getEntityId(), "", world.getSeed(), GlowPlayer.gameModeNum(GameMode.SURVIVAL), world.getEnvironment().getId(), 1 /*unknown*/, world.getMaxHeight(), session.getServer().getMaxPlayers()));
+                session.send(new IdentificationMessage(newPlayer.getEntityId(), "", world.getSeed(), GameMode.SURVIVAL.getValue(), world.getEnvironment().getId(), 2 /*unknown*/, world.getMaxHeight(), session.getServer().getMaxPlayers()));
             } else {
                 session.getServer().getLogger().log(Level.INFO, "Failed to authenticate {0} with minecraft.net.", message.getName());
                 session.disconnect("Player identification failed!");

@@ -42,6 +42,31 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     private final Session session;
     
     /**
+     * Amount of experience points the player currently has.
+     */
+    private int experience = 0;
+    
+    /**
+     * The current level (or skill point amount) of the player.
+     */
+    private int level = 0;
+    
+    /**
+     * Cumulative experience of the player.
+     */
+    private int totalExperience = 0;
+    
+    /**
+     * The player's current exhaustion level.
+     */
+    private float exhaustion = 0;
+    
+    /**
+     * The player's current saturation level.
+     */
+    private float saturation = 0;
+    
+    /**
      * This player's current time offset.
      */
     private long timeOffset = 0;
@@ -292,7 +317,47 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     @Override
     public void setGameMode(GameMode mode) {
         super.setGameMode(mode);
-        session.send(new StateChangeMessage((byte)3, gameModeNum(mode)));
+        session.send(new StateChangeMessage((byte) 3, (byte) mode.getValue()));
+    }
+
+    public int getExperience() {
+        return experience;
+    }
+
+    public void setExperience(int exp) {
+        experience = exp;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public int getTotalExperience() {
+        return totalExperience;
+    }
+
+    public void setTotalExperience(int exp) {
+        totalExperience = exp;
+    }
+
+    public float getExhaustion() {
+        return exhaustion;
+    }
+
+    public void setExhaustion(float value) {
+        exhaustion = value;
+    }
+
+    public float getSaturation() {
+        return saturation;
+    }
+
+    public void setSaturation(float value) {
+        saturation = value;
     }
     
     // -- Actions
@@ -320,7 +385,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
             }
             knownChunks.clear();
             
-            session.send(new RespawnMessage((byte) world.getEnvironment().getId(), (byte)1 /*unknown*/, gameModeNum(getGameMode()), (short)world.getMaxHeight(), world.getSeed()));
+            session.send(new RespawnMessage((byte) world.getEnvironment().getId(), (byte)2 /*unknown*/, (byte) getGameMode().getValue(), (short) world.getMaxHeight(), world.getSeed()));
             
             streamBlocks(); // stream blocks
             
@@ -623,9 +688,15 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
 
     @Override
-    public void setFood(int food) {
-        super.setFood(food);
+    public void setFoodLevel(int food) {
+        super.setFoodLevel(food);
         session.send(prepareHealthMessage());
+    }
+    
+    public void addExperience(int exp) {
+        experience += exp;
+        level += (experience / 200);
+        experience %= 200;
     }
 
 }
