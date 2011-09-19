@@ -322,16 +322,18 @@ public final class GlowChunk implements Chunk {
         }
         
         types[coordToIndex(x, z, y)] = (byte) type;
-        
-        Class<? extends GlowBlockState> clazz = BlockProperties.get(type).getEntityClass();
-        if (clazz != null && clazz != GlowBlockState.class) {
-            try {
-                Constructor<? extends GlowBlockState> constructor = clazz.getConstructor(GlowBlock.class);
-                GlowBlockState state = constructor.newInstance(getBlock(x, y, z));
-                tileEntities.put(coordToIndex(x, z, y), state);
-            } catch (Exception ex) {
-                GlowServer.logger.log(Level.SEVERE, "Unable to initialize tile entity {0}: {1}", new Object[]{clazz.getName(), ex.getMessage()});
-                ex.printStackTrace();
+        BlockProperties property = BlockProperties.get(type);
+        if (property != null) {
+            Class<? extends GlowBlockState> clazz = property.getEntityClass();
+            if (clazz != null && clazz != GlowBlockState.class) {
+                try {
+                    Constructor<? extends GlowBlockState> constructor = clazz.getConstructor(GlowBlock.class);
+                    GlowBlockState state = constructor.newInstance(getBlock(x, y, z));
+                    tileEntities.put(coordToIndex(x, z, y), state);
+                } catch (Exception ex) {
+                    GlowServer.logger.log(Level.SEVERE, "Unable to initialize tile entity {0}: {1}", new Object[]{clazz.getName(), ex.getMessage()});
+                    ex.printStackTrace();
+                }
             }
         }
     }

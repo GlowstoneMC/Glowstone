@@ -16,18 +16,18 @@ public final class RespawnCodec extends MessageCodec<RespawnMessage> {
     @Override
     public RespawnMessage decode(ChannelBuffer buffer) throws IOException {
         byte dimension = buffer.readByte();
-        byte unknown = buffer.readByte();
+        byte difficulty = buffer.readByte();
         byte mode = buffer.readByte();
         short worldHeight = buffer.readShort();
         long seed = buffer.readLong();
-        return new RespawnMessage(dimension, unknown, mode, worldHeight, seed);
+        return new RespawnMessage(dimension, difficulty, mode, worldHeight, seed);
     }
 
     @Override
     public ChannelBuffer encode(RespawnMessage message) throws IOException {
-        ChannelBuffer buffer = ChannelBuffers.buffer(13);
+        ChannelBuffer buffer = ChannelBuffers.buffer(14);
         buffer.writeByte(message.getDimension());
-        buffer.writeByte(message.getUnknown());
+        buffer.writeByte(message.getDifficulty());
         buffer.writeByte(message.getGameMode());
         buffer.writeShort(message.getWorldHeight());
         buffer.writeLong(message.getSeed());

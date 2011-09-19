@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import net.glowstone.msg.*;
+import net.glowstone.util.Position;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -42,7 +43,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     private final Session session;
     
     /**
-     * Amount of experience points the player currently has.
+     * Cumulative amount of experience points the player has collected.
      */
     private int experience = 0;
     
@@ -50,11 +51,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      * The current level (or skill point amount) of the player.
      */
     private int level = 0;
-    
-    /**
-     * Cumulative experience of the player.
-     */
-    private int totalExperience = 0;
     
     /**
      * The player's current exhaustion level.
@@ -107,6 +103,16 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     private boolean sneaking = false;
 
     /**
+     * The human entity's current food level
+     */
+    private int food = 20;
+
+    /**
+     * Whether to use the display name when sending spawn messages to 
+     */
+    private boolean dispNameAsEntityName = false;
+
+    /**
      * Creates a new player and adds it to the world.
      * @param session The player's session.
      * @param name The player's name.
@@ -114,6 +120,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     public GlowPlayer(Session session, String name) {
         super(session.getServer(), (GlowWorld) session.getServer().getWorlds().get(0), name);
         this.session = session;
+        if (session.getState() != Session.State.GAME) {
+            session.send(new IdentificationMessage(getEntityId(), "", world.getSeed(), getGameMode().getValue(), world.getEnvironment().getId(), 1, world.getMaxHeight(), session.getServer().getMaxPlayers()));
+        }
 
         streamBlocks(); // stream the initial set of blocks
         setCompassTarget(world.getSpawnLocation()); // set our compass target
@@ -321,11 +330,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
 
     public int getExperience() {
-        return experience;
+        return experience % ((getLevel() + 1) * 10);
     }
 
     public void setExperience(int exp) {
-        experience = exp;
+        setTotalExperience(experience - getExperience() + exp);
     }
 
     public int getLevel() {
@@ -333,15 +342,21 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
 
     public void setLevel(int level) {
+        int calcExperience = getExperience();
         this.level = level;
+        for (int i = 0; i <= level; i++) {
+            calcExperience += (level + 1) * 10;
+        }
+        this.experience = calcExperience;
+        session.send(createExperienceMessage());
     }
 
     public int getTotalExperience() {
-        return totalExperience;
+        return experience;
     }
 
     public void setTotalExperience(int exp) {
-        totalExperience = exp;
+        this.experience = exp;
     }
 
     public float getExhaustion() {
@@ -385,8 +400,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
             }
             knownChunks.clear();
             
-            session.send(new RespawnMessage((byte) world.getEnvironment().getId(), (byte)2 /*unknown*/, (byte) getGameMode().getValue(), (short) world.getMaxHeight(), world.getSeed()));
-            
+            session.send(new RespawnMessage((byte) world.getEnvironment().getId(), (byte)1, (byte) getGameMode().getValue(), (short) world.getMaxHeight(), world.getSeed()));
             streamBlocks(); // stream blocks
             
             setCompassTarget(world.getSpawnLocation()); // set our compass target
@@ -684,13 +698,52 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     @Override
     public void setHealth(int health) {
         super.setHealth(health);
-        session.send(prepareHealthMessage());
+        session.send(createHealthMessage());
     }
 
     @Override
+    public void addEntityEffect(ActiveEntityEffect effect) {
+        super.addEntityEffect(effect);
+        EntityEffectMessage msg = new EntityEffectMessage(getEntityId(), effect.getEffect().getId(), effect.getAmplitude(), effect.getDuration());
+        for (Player player : server.getOnlinePlayers()) {
+            ((GlowPlayer) player).getSession().send(msg);
+        }
+    }
+
+    @Override
+    public void removeEntityEffect(ActiveEntityEffect effect) {
+        super.removeEntityEffect(effect);
+        EntityRemoveEffectMessage msg = new EntityRemoveEffectMessage(getEntityId(), effect.getEffect().getId());
+        for (Player player : server.getOnlinePlayers()) {
+            ((GlowPlayer) player).getSession().send(msg);
+        }
+    }
+
+    @Override
+    public Message createSpawnMessage() {
+        int x = Position.getIntX(location);
+        int y = Position.getIntY(location);
+        int z = Position.getIntZ(location);
+        int yaw = Position.getIntYaw(location);
+        int pitch = Position.getIntPitch(location);
+        return new SpawnPlayerMessage(id, dispNameAsEntityName ? displayName : getName(), x, y, z, yaw, pitch, 0);
+    }
+
+    public int getFoodLevel() {
+        return food;
+    }
+
     public void setFoodLevel(int food) {
-        super.setFoodLevel(food);
-        session.send(prepareHealthMessage());
+        this.food = Math.min(food, 20);
+        session.send(createHealthMessage());
+    }
+
+    public Message createHealthMessage() {
+        return new HealthMessage(getHealth(), getFoodLevel(), getSaturation());
+    }
+    
+    public Message createExperienceMessage() {
+        return new ExperienceMessage((byte)getExperience(), (byte)getLevel(), (short)getTotalExperience());
     }
     
     public void addExperience(int exp) {

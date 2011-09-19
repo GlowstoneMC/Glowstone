@@ -18,6 +18,7 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.bans.BanManager;
 import net.glowstone.util.bans.FlatFileBanManager;
 import org.bukkit.*;
@@ -178,6 +179,16 @@ public final class GlowServer implements Server {
     private final GlowScheduler scheduler = new GlowScheduler(this);
 
     /**
+     * The server's default game mode
+     */
+    private GameMode defaultGameMode = GameMode.SURVIVAL;
+
+    /**
+     * The server's message of the day
+     */
+    private String motd;
+
+    /**
      * Creates a new server.
      */
     public GlowServer() {
@@ -290,6 +301,18 @@ public final class GlowServer implements Server {
                         separator = ", ";
                     }
 
+                    if (properties.containsKey("gamemode")) {
+                        String value = properties.getProperty("gamemode", "0");
+                        try {
+                            int mode = Integer.parseInt(value);
+                            GameMode gMode = GameMode.getByValue(mode);
+                            if (gMode == null) gMode = GameMode.SURVIVAL;
+                            config.setProperty("server.def-game-mode", gMode.name());
+                            moved += separator + "default game mode";
+                            separator = ", ";
+                        } catch (NumberFormatException ex) {}
+                    }
+
                     // TODO: move nether, view distance, monsters, etc when implemented
 
                     if (moved.length() > 0) {
@@ -313,7 +336,8 @@ public final class GlowServer implements Server {
         config.getBoolean("server.allow-nether", true);
         config.getBoolean("server.allow-flight", false);
         config.getInt("server.view-distance", GlowChunk.VISIBLE_RADIUS);
-        config.getString("server.motd", "Glowstone server");
+        motd = config.getString("server.motd", "Glowstone server");
+        setDefaultGameMode(config.getString("server.def-game-mode", GameMode.SURVIVAL.name()));
 
         // Server folders config
         config.getString("server.folders.plugins", "plugins");
@@ -1063,11 +1087,30 @@ public final class GlowServer implements Server {
     }
 
     public GameMode getDefaultGameMode() {
-        return GameMode.SURVIVAL;
+        return defaultGameMode;
     }
 
     public void setDefaultGameMode(GameMode mode) {
-        throw new UnsupportedOperationException("Not on 1.8 yet");
+        GameMode oldMode = defaultGameMode;
+        defaultGameMode = mode;
+        for (Player player : getOnlinePlayers()) {
+            if (player.getGameMode() == oldMode) {
+                player.setGameMode(mode);
+            }
+        }
+        config.setProperty("server.def-game-mode", mode.name());
+    }
+
+    public GameMode setDefaultGameMode(String mode) {
+        GameMode gameMode;
+        try {
+            gameMode = GameMode.valueOf(mode);
+        } catch (Throwable t) {
+            logger.severe("Unknown game mode specified. Defaulting to survival");
+            gameMode = GameMode.SURVIVAL;
+        }
+        setDefaultGameMode(gameMode);
+        return getDefaultGameMode();
     }
 
     public int getViewDistance() {
@@ -1087,11 +1130,16 @@ public final class GlowServer implements Server {
     }
 
     public String getMOTD() {
-        return config.getString("server.motd");
+        return motd;
     }
 
     public void setMOTD(String motd) {
-        config.setProperty("server.motd", motd);
+        setMOTD(motd, true);
+    }
+
+    public void setMOTD(String motd, boolean permanent) {
+        this.motd = motd;
+        if (permanent) config.setProperty("server.motd", motd);
     }
      
 }

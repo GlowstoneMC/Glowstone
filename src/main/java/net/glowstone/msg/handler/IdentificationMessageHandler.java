@@ -26,7 +26,6 @@ public final class IdentificationMessageHandler extends MessageHandler<Identific
         
         // Are we at the proper stage?
         if (state == Session.State.EXCHANGE_IDENTIFICATION) {
-            session.setState(State.GAME);
             if (message.getId() < GlowServer.PROTOCOL_VERSION) {
                 session.disconnect("Outdated client!");
             } else if (message.getId() > GlowServer.PROTOCOL_VERSION) {
@@ -57,12 +56,12 @@ public final class IdentificationMessageHandler extends MessageHandler<Identific
                     session.disconnect(event.getKickMessage());
                 }
                 GlowPlayer newPlayer = new GlowPlayer(session, event.getName()); // TODO case-correct the name
-                GlowWorld world = newPlayer.getWorld();
-                session.send(new IdentificationMessage(newPlayer.getEntityId(), "", world.getSeed(), GameMode.SURVIVAL.getValue(), world.getEnvironment().getId(), 2 /*unknown*/, world.getMaxHeight(), session.getServer().getMaxPlayers()));
+                session.setPlayer(newPlayer);
             } else {
                 session.getServer().getLogger().log(Level.INFO, "Failed to authenticate {0} with minecraft.net.", message.getName());
                 session.disconnect("Player identification failed!");
             }
+            session.setState(State.GAME);
         } else {
             // Kick if they send ident at the wrong time
             boolean game = state == State.GAME;

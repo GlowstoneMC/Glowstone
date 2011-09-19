@@ -2,17 +2,17 @@ package net.glowstone.msg;
 
 public final class IdentificationMessage extends Message {
 
-    private final int id, dimension, mode, unknown, worldHeight, maxPlayers;
+    private final int id, dimension, mode, difficulty, worldHeight, maxPlayers;
     private final String name;
     private final long seed;
 
-    public IdentificationMessage(int id, String name, long seed, int mode, int dimension, int unknown, int worldHeight, int maxPlayers) {
+    public IdentificationMessage(int id, String name, long seed, int mode, int dimension, int difficulty, int worldHeight, int maxPlayers) {
         this.id = id;
         this.name = name;
         this.seed = seed;
         this.mode = mode;
         this.dimension = dimension;
-        this.unknown = unknown;
+        this.difficulty = difficulty;
         this.worldHeight = worldHeight;
         this.maxPlayers = maxPlayers;
     }
@@ -37,8 +37,8 @@ public final class IdentificationMessage extends Message {
         return dimension;
     }
     
-    public int getUnknown() {
-        return unknown;
+    public int getDifficulty() {
+        return difficulty;
     }
 
     public int getWorldHeight() {

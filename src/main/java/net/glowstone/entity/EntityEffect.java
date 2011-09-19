@@ -1,5 +1,8 @@
 package net.glowstone.entity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum EntityEffect {
 
     MOVE_SPEED(1),
@@ -23,6 +26,18 @@ public enum EntityEffect {
     POISON(19);
     
     private final byte id;
+
+    private static final Map<Integer, EntityEffect> lookup = new HashMap<Integer, EntityEffect>();
+
+    static {
+        for (EntityEffect effect : EntityEffect.values()) {
+            lookup.put((int)effect.getId(), effect);
+        }
+    }
+
+    public static EntityEffect getById(int id) {
+        return lookup.get(id);
+    }
 
     private EntityEffect(int id) {
         this.id = (byte) id;

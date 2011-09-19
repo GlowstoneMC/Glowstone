@@ -1,5 +1,8 @@
 package net.glowstone.entity;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import net.glowstone.msg.HealthMessage;
@@ -60,9 +63,9 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     private GameMode gameMode;
 
     /**
-     * The human entity's current food level
+     * The human entity's active effects
      */
-    private int food = 20;
+    private Set<ActiveEntityEffect> activeEffects = Collections.synchronizedSet(new HashSet<ActiveEntityEffect>());
     
     /**
      * Creates a human within the specified world and with the specified name.
@@ -126,6 +129,10 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         } else {
             sleepingTicks = 0;
         }
+        for (Iterator<ActiveEntityEffect> i = activeEffects.iterator(); i.hasNext();) {
+            ActiveEntityEffect effect = i.next();
+            if (!effect.pulse()) removeEntityEffect(effect);
+        }
     }
 
     // ---- Permissions stuff
@@ -182,17 +189,17 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         isOp = value;
         recalculatePermissions();
     }
-
-    public int getFoodLevel() {
-        return food;
+    
+    public void addEntityEffect(ActiveEntityEffect effect) {
+        activeEffects.add(effect);
     }
 
-    public void setFoodLevel(int food) {
-        this.food = Math.min(food, 20);
+    public void addEntityEffect(EntityEffect effect, byte amplitude, short duration) {
+        addEntityEffect(new ActiveEntityEffect(effect, amplitude, duration));
     }
 
-    public Message prepareHealthMessage() {
-        return new HealthMessage(getHealth(), getFoodLevel(), 1.0F);
+    public void removeEntityEffect(ActiveEntityEffect effect) {
+        activeEffects.remove(effect);
     }
     
 }

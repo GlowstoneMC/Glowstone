@@ -54,6 +54,7 @@ public final class CodecLookupService {
             /* 0x17 */ bind(SpawnVehicleCodec.class);
             /* 0x18 */ bind(SpawnMobCodec.class);
             /* 0x19 */ bind(SpawnPaintingCodec.class);
+            /* 0x1A */ bind(ExperienceOrbCodec.class);
             /* 0x1C */ bind(EntityVelocityCodec.class);
             /* 0x1D */ bind(DestroyEntityCodec.class);
             /* 0x1E */ bind(CreateEntityCodec.class);
