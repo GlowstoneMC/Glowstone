@@ -2,6 +2,8 @@ package net.glowstone.entity;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -183,6 +185,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      */
     private void streamBlocks() {
         Set<GlowChunk.Key> previousChunks = new HashSet<GlowChunk.Key>(knownChunks);
+        ArrayList<GlowChunk.Key> newChunks = new ArrayList<GlowChunk.Key>();
 
         int centralX = ((int) location.getX()) >> 4;
         int centralZ = ((int) location.getZ()) >> 4;
@@ -193,11 +196,27 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
                 GlowChunk.Key key = new GlowChunk.Key(x, z);
                 if (!knownChunks.contains(key)) {
                     knownChunks.add(key);
-                    session.send(new LoadChunkMessage(x, z, true));
-                    session.send(world.getChunkAt(x, z).toMessage());
+                    newChunks.add(key);
                 }
                 previousChunks.remove(key);
             }
+        }
+        
+        Collections.sort(newChunks, new Comparator<GlowChunk.Key>() {
+            public int compare(GlowChunk.Key a, GlowChunk.Key b) {
+                double dx = 16 * a.getX() + 8 - location.getX();
+                double dz = 16 * a.getZ() + 8 - location.getZ();
+                double da = dx * dx + dz * dz;
+                dx = 16 * b.getX() + 8 - location.getX();
+                dz = 16 * b.getZ() + 8 - location.getZ();
+                double db = dx * dx + dz * dz;
+                return Double.compare(da, db);
+            }
+        });
+        
+        for (GlowChunk.Key key : newChunks) {
+            session.send(new LoadChunkMessage(key.getX(), key.getZ(), true));
+            session.send(world.getChunkAt(key.getX(), key.getZ()).toMessage());
         }
 
         for (GlowChunk.Key key : previousChunks) {
