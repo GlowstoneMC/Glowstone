@@ -281,6 +281,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         return session.getAddress();
     }
 
+    public Location getBedSpawnLocation() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     @Override
     public boolean isOp() {
         return getServer().getOpsList().contains(getName());
@@ -332,6 +336,14 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
                 ((GlowPlayer) player).session.send(message);
             }
         }
+    }
+
+    public boolean isSprinting() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setSprinting(boolean sprinting) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public boolean isSleepingIgnored() {

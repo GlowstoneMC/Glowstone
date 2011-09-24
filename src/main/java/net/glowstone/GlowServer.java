@@ -18,9 +18,6 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.glowstone.entity.GlowPlayer;
-import net.glowstone.util.bans.BanManager;
-import net.glowstone.util.bans.FlatFileBanManager;
 import org.bukkit.*;
 import org.bukkit.command.*;
 import org.bukkit.World.Environment;
@@ -43,6 +40,8 @@ import net.glowstone.net.Session;
 import net.glowstone.net.SessionRegistry;
 import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.util.PlayerListFile;
+import net.glowstone.util.bans.BanManager;
+import net.glowstone.util.bans.FlatFileBanManager;
 import net.glowstone.inventory.CraftingManager;
 import net.glowstone.map.GlowMapView;
 
