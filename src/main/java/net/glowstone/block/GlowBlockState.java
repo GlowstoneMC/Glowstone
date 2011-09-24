@@ -37,6 +37,7 @@ public class GlowBlockState implements BlockState {
         type = block.getTypeId();
         light = block.getLightLevel();
         chunk = (GlowChunk) block.getChunk();
+        makeData(block.getData());
     }
 
     // Basic getters
@@ -89,6 +90,7 @@ public class GlowBlockState implements BlockState {
 
     final public boolean setTypeId(int type) {
         this.type = type;
+        makeData((byte) 0);
         return true;
     }
 
@@ -117,11 +119,20 @@ public class GlowBlockState implements BlockState {
             }
         }
 
-        block.setData(data.getData());
+        block.setData(getRawData());
         return true;
     }
     
     // Internal mechanisms
+
+    private void makeData(byte data) {
+        Material mat = Material.getMaterial(type);
+        if (mat == null || mat.getData() == null) {
+            this.data = new MaterialData(type, data);
+        } else {
+            this.data = mat.getNewData(data);
+        }
+    }
     
     public GlowBlockState shallowClone() {
         return getBlock().getState();
