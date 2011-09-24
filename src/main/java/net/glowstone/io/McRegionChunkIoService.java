@@ -51,23 +51,22 @@ public final class McRegionChunkIoService implements ChunkIoService {
     }
 
     @Override
-    public GlowChunk read(GlowWorld world, int x, int z) throws IOException {
+    public boolean read(GlowChunk chunk, int x, int z) throws IOException {
         RegionFile region = cache.getRegionFile(dir, x, z);
         int regionX = x & (REGION_SIZE - 1);
         int regionZ = z & (REGION_SIZE - 1);
         if (!region.hasChunk(regionX, regionZ)){
-            return null;
+            return false;
         }
 
         DataInputStream in = region.getChunkDataInputStream(regionX, regionZ);
-        GlowChunk chunk = new GlowChunk(world, x, z);
 
         NBTInputStream nbt = new NBTInputStream(in, false);
         CompoundTag tag = (CompoundTag) nbt.readTag();
         Map<String, Tag> levelTags = ((CompoundTag) tag.getValue().get("Level")).getValue();
 
         byte[] tileData = ((ByteArrayTag) levelTags.get("Blocks")).getValue();
-        chunk.setTypes(tileData);
+        chunk.initializeTypes(tileData);
 
         byte[] skyLightData = ((ByteArrayTag) levelTags.get("SkyLight")).getValue();
         byte[] blockLightData = ((ByteArrayTag) levelTags.get("BlockLight")).getValue();
@@ -97,7 +96,7 @@ public final class McRegionChunkIoService implements ChunkIoService {
             }
         }
 
-        return chunk;
+        return true;
     }
 
     @Override

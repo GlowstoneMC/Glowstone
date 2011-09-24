@@ -1,6 +1,7 @@
 package net.glowstone;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -71,50 +72,64 @@ public final class ChunkManager {
         GlowChunk.Key key = new GlowChunk.Key(x, z);
         GlowChunk chunk = chunks.get(key);
         if (chunk == null) {
+            chunk = new GlowChunk(world, x, z);
+            chunks.put(key, chunk);
+        }
+        return chunk;
+    }
+    
+    /**
+     * Call the ChunkIoService to load a chunk, optionally generating the chunk.
+     * @param x The X coordinate of the chunk to load.
+     * @param z The Y coordinate of the chunk to load.
+     * @param generate Whether to generate the chunk if needed.
+     * @return True on success, false on failure.
+     */
+    public boolean loadChunk(int x, int z, boolean generate) {
+        boolean success;
+        try {
+            success = service.read(getChunk(x, z), x, z);
+        } catch (IOException e) {
+            GlowServer.logger.log(Level.SEVERE, "Error while loading chunk ({0},{1})", new Object[]{x, z});
+            e.printStackTrace();
+            success = false;
+        }
+        
+        if (!success && generate) {
+            chunkRandom.setSeed((long) x * 341873128712L + (long) z * 132897987541L);
+            
+            GlowChunk chunk = getChunk(x, z);
             try {
-                chunk = service.read(world, x, z);
-            } catch (IOException e) {
-                chunk = null;
+                chunk.initializeTypes(generator.generate(world, chunkRandom, x, z));
+            }
+            catch (Exception ex) {
+                GlowServer.logger.log(Level.SEVERE, "Error while generating chunk ({0},{1})", new Object[]{x, z});
+                ex.printStackTrace();
+                return false;
             }
 
-            if (chunk == null) {
-                chunkRandom.setSeed((long) x * 341873128712L + (long) z * 132897987541L);
-                
-                try {
-                    chunk = new GlowChunk(world, x, z);
-                    byte[] data = generator.generate(world, chunkRandom, x, z);
-                    chunk.setTypes(data);
-                }
-                catch (Exception ex) {
-                    GlowServer.logger.log(Level.SEVERE, "Error while generating chunk ({0},{1})", new Object[]{x, z});
-                    ex.printStackTrace();
-                }
-                
-                chunks.put(key, chunk);
-                
-                for (int x2 = x - 1; x2 <= x + 1; ++x2) {
-                    for (int z2 = z - 1; z2 <= z + 1; ++z2) {
-                        if (canPopulate(x2, z2)) {
-                            GlowChunk chunk2 = getChunk(x2, z2);
-                            chunk2.setPopulated(true);
-                            
-                            popRandom.setSeed(world.getSeed());
-                            long xRand = popRandom.nextLong() / 2 * 2 + 1;
-                            long zRand = popRandom.nextLong() / 2 * 2 + 1;
-                            popRandom.setSeed((long) x * xRand + (long) z * zRand ^ world.getSeed());
-                            
-                            for (BlockPopulator p : world.getPopulators()) {
-                                p.populate(world, popRandom, chunk2);
-                            }
+            for (int x2 = x - 1; x2 <= x + 1; ++x2) {
+                for (int z2 = z - 1; z2 <= z + 1; ++z2) {
+                    if (canPopulate(x2, z2)) {
+                        GlowChunk chunk2 = getChunk(x2, z2);
+                        chunk2.setPopulated(true);
+
+                        popRandom.setSeed(world.getSeed());
+                        long xRand = popRandom.nextLong() / 2 * 2 + 1;
+                        long zRand = popRandom.nextLong() / 2 * 2 + 1;
+                        popRandom.setSeed((long) x * xRand + (long) z * zRand ^ world.getSeed());
+
+                        for (BlockPopulator p : world.getPopulators()) {
+                            p.populate(world, popRandom, chunk2);
                         }
                     }
                 }
             }
-
-            chunks.put(key, chunk);
+            
+            return true;
         }
         
-        return chunk;
+        return success;
     }
     
     /**
@@ -146,11 +161,13 @@ public final class ChunkManager {
     public boolean forceRegeneration(int x, int z) {
         GlowChunk.Key key = new GlowChunk.Key(x, z);
         GlowChunk chunk = new GlowChunk(world, x, z);
-        chunk.setTypes(generator.generate(world, new Random(), x, z));
         
-        if (chunk == null || !unloadChunk(x, z, false)) {
+        if (chunk == null || !chunk.unload(false, false)) {
             return false;
         }
+        
+        chunkRandom.setSeed((long) x * 341873128712L + (long) z * 132897987541L);
+        chunk.initializeTypes(generator.generate(world, chunkRandom, x, z));
         
         if (canPopulate(x, z)) {
             chunk.setPopulated(true);
@@ -175,37 +192,17 @@ public final class ChunkManager {
     }
     
     /**
-     * Unloads a given chunk from memory.
-     * @param x The X coordinate.
-     * @param z The Z coordinate.
-     * @param save Whether to save the chunk if needed.
-     * @return Whether the chunk was unloaded successfully.
-     */
-    public boolean unloadChunk(int x, int z, boolean save) {
-        GlowChunk.Key key = new GlowChunk.Key(x, z);
-        GlowChunk chunk = chunks.get(key);
-        if (chunk != null) {
-            if (save) {
-                try {
-                    service.write(x, z, chunk);
-                } catch (IOException ex) {
-                    GlowServer.logger.log(Level.SEVERE, "Error while saving chunk: {0}", ex.getMessage());
-                    ex.printStackTrace();
-                    return false;
-                }
-            }
-            chunks.remove(key);
-            return true;
-        }
-        return false;
-    }
-    
-    /**
      * Gets a list of loaded chunks.
      * @return The currently loaded chunks.
      */
     public GlowChunk[] getLoadedChunks() {
-        return chunks.values().toArray(new GlowChunk[]{});
+        ArrayList<GlowChunk> result = new ArrayList<GlowChunk>();
+        for (GlowChunk chunk : chunks.values()) {
+            if (chunk.isLoaded()) {
+                result.add(chunk);
+            }
+        }
+        return result.toArray(new GlowChunk[result.size()]);
     }
     
     /**

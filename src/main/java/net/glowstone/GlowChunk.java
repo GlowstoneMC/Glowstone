@@ -112,7 +112,7 @@ public final class GlowChunk implements Chunk {
     /**
      * The data in this chunk representing all of the blocks and their state.
      */
-    private final byte[] types, metaData, skyLight, blockLight;
+    private byte[] types, metaData, skyLight, blockLight;
     
     /**
      * The tile entities that reside in this chunk.
@@ -134,14 +134,6 @@ public final class GlowChunk implements Chunk {
         this.world = world;
         this.x = x;
         this.z = z;
-        this.types = new byte[WIDTH * HEIGHT * DEPTH];
-        this.metaData = new byte[WIDTH * HEIGHT * DEPTH];
-        this.skyLight = new byte[WIDTH * HEIGHT * DEPTH];
-        this.blockLight = new byte[WIDTH * HEIGHT * DEPTH];
-        
-        for (int i = 0; i < WIDTH * HEIGHT * DEPTH; ++i) {
-            skyLight[i] = 15;
-        }
     }
     
     // ======== Basic stuff ========
@@ -229,27 +221,86 @@ public final class GlowChunk implements Chunk {
     // ======== Helper Functions ========
 
     public boolean isLoaded() {
-        return world.isChunkLoaded(this);
-    }
-
-    public boolean load(boolean generate) {
-        return world.loadChunk(x, z, generate);
+        return types != null;
     }
 
     public boolean load() {
-        return world.loadChunk(x, z, true);
+        return load(true);
     }
 
-    public boolean unload(boolean save, boolean safe) {
-        return world.unloadChunk(x, z, save, safe);
-    }
-
-    public boolean unload(boolean save) {
-        return world.unloadChunk(x, z, save);
+    public boolean load(boolean generate) {
+        if (isLoaded()) return true;
+        return world.getChunkManager().loadChunk(x, z, generate);
     }
 
     public boolean unload() {
-        return world.unloadChunk(x, z);
+        return unload(true, true);
+    }
+
+    public boolean unload(boolean save) {
+        return unload(save, true);
+    }
+
+    public boolean unload(boolean save, boolean safe) {
+        if (safe) {
+            if (false /* TODO: if we ought not to unload */) {
+                return false;
+            }
+        }
+        
+        if (save) {
+            world.getChunkManager().forceSave(x, z);
+        }
+        
+        // any other pre-unload actions
+        
+        types = metaData = skyLight = blockLight = null;
+        return true;
+    }
+
+    /**
+     * Sets the types of all tiles within the chunk.
+     * @param types The array of types.
+     */
+    public void initializeTypes(byte[] types) {
+        if (isLoaded()) {
+            GlowServer.logger.log(Level.SEVERE, "Tried to initialize already loaded chunk ({0},{1})", new Object[]{x, z});
+            return;
+        }
+        
+        this.types = new byte[WIDTH * HEIGHT * DEPTH];
+        metaData = new byte[WIDTH * HEIGHT * DEPTH];
+        skyLight = new byte[WIDTH * HEIGHT * DEPTH];
+        blockLight = new byte[WIDTH * HEIGHT * DEPTH];
+        for (int i = 0; i < WIDTH * HEIGHT * DEPTH; ++i) {
+            skyLight[i] = 15;
+        }
+        
+        //System.out.println("Init'd types, isLoaded = " + isLoaded());
+        
+        if (types.length != WIDTH * HEIGHT * DEPTH) {
+            throw new IllegalArgumentException();
+        }
+        System.arraycopy(types, 0, this.types, 0, types.length);
+        
+        for (int cx = 0; cx < WIDTH; ++cx) {
+            for (int cy = 0; cy < DEPTH; ++cy) {
+                for (int cz = 0; cz < HEIGHT; ++cz) {
+                    BlockProperties properties = BlockProperties.get(getType(cx, cz, cy));
+                    Class<? extends GlowBlockState> clazz = properties == null ? null : properties.getEntityClass();
+                    if (clazz != null && clazz != GlowBlockState.class) {
+                        try {
+                            Constructor<? extends GlowBlockState> constructor = clazz.getConstructor(GlowBlock.class);
+                            GlowBlockState state = constructor.newInstance(getBlock(cx, cy, cz));
+                            tileEntities.put(coordToIndex(cx, cz, cy), state);
+                        } catch (Exception ex) {
+                            GlowServer.logger.log(Level.SEVERE, "Unable to initialize tile entity {0}: {1}", new Object[]{clazz.getName(), ex.getMessage()});
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
     }
     
     // ======== Data access ========
@@ -262,6 +313,7 @@ public final class GlowChunk implements Chunk {
      * @return A GlowBlockState if the entity exists, or null otherwise.
      */
     public GlowBlockState getEntity(int x, int y, int z) {
+        load();
         return tileEntities.get(coordToIndex(x, z, y));
     }
 
@@ -273,36 +325,8 @@ public final class GlowChunk implements Chunk {
      * @return The type.
      */
     public int getType(int x, int z, int y) {
+        load();
         return types[coordToIndex(x, z, y)];
-    }
-
-    /**
-     * Sets the types of all tiles within the chunk.
-     * @param types The array of types.
-     */
-    public void setTypes(byte[] types){
-        if (types.length != WIDTH * HEIGHT * DEPTH) {
-            throw new IllegalArgumentException();
-        }
-        System.arraycopy(types, 0, this.types, 0, types.length);
-        
-        for (int x = 0; x < WIDTH; ++x) {
-            for (int y = 0; y < DEPTH; ++y) {
-                for (int z = 0; z < HEIGHT; ++z) {
-                    Class<? extends GlowBlockState> clazz = BlockProperties.get(getType(x, z, y)).getEntityClass();
-                    if (clazz != null && clazz != GlowBlockState.class) {
-                        try {
-                            Constructor<? extends GlowBlockState> constructor = clazz.getConstructor(GlowBlock.class);
-                            GlowBlockState state = constructor.newInstance(getBlock(x, y, z));
-                            tileEntities.put(coordToIndex(x, z, y), state);
-                        } catch (Exception ex) {
-                            GlowServer.logger.log(Level.SEVERE, "Unable to initialize tile entity {0}: {1}", new Object[]{clazz.getName(), ex.getMessage()});
-                            ex.printStackTrace();
-                        }
-                    }
-                }
-            }
-        }
     }
 
     /**
@@ -313,6 +337,7 @@ public final class GlowChunk implements Chunk {
      * @param type The type.
      */
     public void setType(int x, int z, int y, int type) {
+        load();
         if (type < 0 || type >= 256)
             throw new IllegalArgumentException();
 
@@ -346,6 +371,7 @@ public final class GlowChunk implements Chunk {
      * @return The metadata.
      */
     public int getMetaData(int x, int z, int y) {
+        load();
         return metaData[coordToIndex(x, z, y)];
     }
 
@@ -357,6 +383,7 @@ public final class GlowChunk implements Chunk {
      * @param metaData The metadata.
      */
     public void setMetaData(int x, int z, int y, int metaData) {
+        load();
         if (metaData < 0 || metaData >= 16)
             throw new IllegalArgumentException();
 
@@ -371,6 +398,7 @@ public final class GlowChunk implements Chunk {
      * @return The sky light level.
      */
     public int getSkyLight(int x, int z, int y) {
+        load();
         return skyLight[coordToIndex(x, z, y)];
     }
 
@@ -382,6 +410,7 @@ public final class GlowChunk implements Chunk {
      * @param skyLight The sky light level.
      */
     public void setSkyLight(int x, int z, int y, int skyLight) {
+        load();
         if (skyLight < 0 || skyLight >= 16)
             throw new IllegalArgumentException();
 
@@ -396,6 +425,7 @@ public final class GlowChunk implements Chunk {
      * @return The block light level.
      */
     public int getBlockLight(int x, int z, int y) {
+        load();
         return blockLight[coordToIndex(x, z, y)];
     }
 
@@ -407,6 +437,7 @@ public final class GlowChunk implements Chunk {
      * @param blockLight The block light level.
      */
     public void setBlockLight(int x, int z, int y, int blockLight) {
+        load();
         if (blockLight < 0 || blockLight >= 16)
             throw new IllegalArgumentException();
 
@@ -443,9 +474,10 @@ public final class GlowChunk implements Chunk {
      * Serializes tile data into a byte array.
      * @return The byte array populated with the tile data.
      */
-    private byte[] serializeTileData() {
+    private byte[] serializeTileData() {        
         byte[] dest = new byte[((WIDTH * HEIGHT * DEPTH * 5) / 2)];
 
+        load();
         System.arraycopy(types, 0, dest, 0, types.length);
 
         int pos = types.length;

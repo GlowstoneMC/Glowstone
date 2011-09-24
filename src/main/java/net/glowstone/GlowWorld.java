@@ -179,7 +179,7 @@ public final class GlowWorld implements World {
         for (int x = centerX - radius; x <= centerX + radius; ++x) {
             for (int z = centerZ - radius; z <= centerZ + radius; ++z) {
                 ++current;
-                chunks.getChunk(x, z);
+                loadChunk(x, z);
             
                 if (System.currentTimeMillis() >= loadTime + 1000) {
                     int progress = 100 * current / total;
@@ -211,6 +211,14 @@ public final class GlowWorld implements World {
 
     ////////////////////////////////////////
     // Various internal mechanisms
+    
+    /**
+     * Get the world chunk manager.
+     * @return The ChunkManager for the world.
+     */
+    protected ChunkManager getChunkManager() {
+        return chunks;
+    }
 
     /**
      * Updates all the entities within this world.
@@ -449,11 +457,11 @@ public final class GlowWorld implements World {
     // Chunk loading and unloading
 
     public boolean isChunkLoaded(Chunk chunk) {
-        return isChunkLoaded(chunk.getX(), chunk.getZ());
+        return chunk.isLoaded();
     }
 
     public boolean isChunkLoaded(int x, int z) {
-        return chunks.isLoaded(x, z);
+        return getChunkAt(x, z).isLoaded();
     }
 
     public Chunk[] getLoadedChunks() {
@@ -461,12 +469,11 @@ public final class GlowWorld implements World {
     }
 
     public void loadChunk(Chunk chunk) {
-        loadChunk(chunk.getX(), chunk.getZ());
+        chunk.load();
     }
 
     public void loadChunk(int x, int z) {
-        // Force load by getting chunk.
-        chunks.getChunk(x, z);
+        getChunkAt(x, z).load();
     }
 
     public boolean loadChunk(int x, int z, boolean generate) {
@@ -478,12 +485,16 @@ public final class GlowWorld implements World {
         }
     }
 
+    public boolean unloadChunk(Chunk chunk) {
+        return unloadChunk(chunk.getX(), chunk.getZ(), true);
+    }
+
     public boolean unloadChunk(int x, int z) {
         return unloadChunk(x, z, true);
     }
 
     public boolean unloadChunk(int x, int z, boolean save) {
-        return chunks.unloadChunk(x, z, save);
+        return unloadChunk(x, z, save, true);
     }
 
     public boolean unloadChunk(int x, int z, boolean save, boolean safe) {
@@ -491,10 +502,6 @@ public final class GlowWorld implements World {
             throw new UnsupportedOperationException("unloadChunk does not yet support unsafe unloading.");
         }
         return unloadChunk(x, z, save);
-    }
-
-    public boolean unloadChunk(Chunk chunk) {
-        return unloadChunk(chunk.getX(), chunk.getZ());
     }
 
     public boolean unloadChunkRequest(int x, int z) {
