@@ -141,6 +141,10 @@ public final class ConsoleManager {
         System.setErr(new PrintStream(new LoggerOutputStream(Level.SEVERE), true));
     }
     
+    public ConsoleCommandSender getSender() {
+        return sender;
+    }
+    
     public void stop() {
         consoleHandler.flush();
         fileHandler.flush();

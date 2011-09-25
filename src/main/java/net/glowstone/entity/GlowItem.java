@@ -19,6 +19,11 @@ public final class GlowItem extends GlowEntity implements Item {
      * The item.
      */
     private ItemStack item;
+    
+    /**
+     * The remaining delay until this item may be picked up.
+     */
+    private int pickupDelay;
 
     /**
      * Creates a new item entity.
@@ -28,6 +33,7 @@ public final class GlowItem extends GlowEntity implements Item {
     public GlowItem(GlowServer server, GlowWorld world, ItemStack item) {
         super(server, world);
         this.item = item;
+        pickupDelay = 20;
     }
 
     /**
@@ -63,6 +69,14 @@ public final class GlowItem extends GlowEntity implements Item {
         // TODO we can probably use some generic implementation for all of
         // these
         return null;
+    }
+
+    public int getPickupDelay() {
+        return pickupDelay;
+    }
+
+    public void setPickupDelay(int delay) {
+        pickupDelay = delay;
     }
 
 }

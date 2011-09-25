@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 
-import net.glowstone.entity.*;
-import net.glowstone.io.StorageOperation;
 import org.bukkit.BlockChangeDelegate;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
@@ -26,6 +24,8 @@ import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import net.glowstone.entity.*;
+import net.glowstone.io.StorageOperation;
 import net.glowstone.io.WorldMetadataService;
 import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
@@ -397,6 +397,10 @@ public final class GlowWorld implements World {
 
     public int getMaxHeight() {
         return GlowChunk.DEPTH;
+    }
+
+    public int getSeaLevel() {
+        return getMaxHeight() / 2;
     }
 
     // force-save

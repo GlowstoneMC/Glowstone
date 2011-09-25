@@ -20,8 +20,6 @@ import java.util.logging.Logger;
 
 import org.bukkit.*;
 import org.bukkit.command.*;
-import net.glowstone.io.StorageQueue;
-import net.glowstone.io.mcregion.McRegionWorldStorageProvider;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
@@ -34,8 +32,11 @@ import org.bukkit.plugin.SimpleServicesManager;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.plugin.PluginLoadOrder;
 import org.bukkit.util.config.Configuration;
+import org.bukkit.util.permissions.DefaultPermissions;
 
 import net.glowstone.command.*;
+import net.glowstone.io.StorageQueue;
+import net.glowstone.io.mcregion.McRegionWorldStorageProvider;
 import net.glowstone.net.MinecraftPipelineFactory;
 import net.glowstone.net.Session;
 import net.glowstone.net.SessionRegistry;
@@ -46,7 +47,6 @@ import net.glowstone.util.bans.FlatFileBanManager;
 import net.glowstone.inventory.CraftingManager;
 import net.glowstone.map.GlowMapView;
 
-import org.bukkit.util.permissions.DefaultPermissions;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.ChannelFactory;
 import org.jboss.netty.channel.ChannelPipelineFactory;
@@ -573,6 +573,10 @@ public final class GlowServer implements Server {
         return configDir;
     }
 
+    public Set<OfflinePlayer> getOperators() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     /**
      * Returns the currently used ban manager for the server
      */
@@ -708,6 +712,10 @@ public final class GlowServer implements Server {
         return Integer.toHexString(getServerName().hashCode());
     }
 
+    public ConsoleCommandSender getConsoleSender() {
+        return consoleManager.getSender();
+    }
+
     /**
      * Broadcast a message to all players.
      *
@@ -726,6 +734,10 @@ public final class GlowServer implements Server {
      */
     public String getUpdateFolder() {
         return config.getString("server.folders.update", "update");
+    }
+    
+    public File getUpdateFolderFile() {
+        return new File(getUpdateFolder());
     }
     
     /**
@@ -831,6 +843,7 @@ public final class GlowServer implements Server {
      * @param environment Environment type of the world
      * @return Newly created or loaded World
      */
+    @Deprecated
     public GlowWorld createWorld(String name, Environment environment) {
         return createWorld(name, environment, new Random().nextLong(), getGenerator(name, environment));
     }
@@ -845,6 +858,7 @@ public final class GlowServer implements Server {
      * @param seed Seed value to create the world with
      * @return Newly created or loaded World
      */
+    @Deprecated
     public GlowWorld createWorld(String name, Environment environment, long seed) {
         return createWorld(name, environment, seed, getGenerator(name, environment));
     }
@@ -859,6 +873,7 @@ public final class GlowServer implements Server {
      * @param generator ChunkGenerator to use in the construction of the new world
      * @return Newly created or loaded World
      */
+    @Deprecated
     public GlowWorld createWorld(String name, Environment environment, ChunkGenerator generator) {
         return createWorld(name, environment, new Random().nextLong(), generator);
     }
@@ -874,11 +889,32 @@ public final class GlowServer implements Server {
      * @param generator ChunkGenerator to use in the construction of the new world
      * @return Newly created or loaded World
      */
-    public GlowWorld createWorld(String name, Environment environment, long seed, ChunkGenerator generator) {
-        if (getWorld(name) != null) return getWorld(name);
+    @Deprecated
+    public GlowWorld createWorld(String name, Environment environment, long seed, ChunkGenerator generator) {        
+        if (getWorld(name) != null) {
+            return getWorld(name);
+        }
+        
+        if (generator == null) {
+            generator = getGenerator(name, environment);
+        }
+        
         GlowWorld world = new GlowWorld(this, name, environment, seed, new McRegionWorldStorageProvider(new File(name)), generator);
-        if (world != null) worlds.add(world);
+        worlds.add(world);
         return world;
+    }
+    
+    /**
+     * Creates or loads a world with the given name using the specified options.
+     * <p>
+     * If the world is already loaded, it will just return the equivalent of
+     * getWorld(creator.name()).
+     *
+     * @param options Options to use when creating the world
+     * @return Newly created or loaded world
+     */
+    public GlowWorld createWorld(WorldCreator creator) {
+        return createWorld(creator.name(), creator.environment(), creator.seed(), creator.generator());
     }
 
     /**
