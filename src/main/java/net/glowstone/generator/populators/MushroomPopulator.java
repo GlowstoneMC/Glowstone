@@ -2,8 +2,8 @@ package net.glowstone.generator.populators;
 
 import java.util.Random;
 
+import net.glowstone.block.BlockID;
 import org.bukkit.Chunk;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -29,15 +29,15 @@ public class MushroomPopulator extends BlockPopulator {
         if (block.getBiome() != Biome.TAIGA && block.getBiome() != Biome.TUNDRA) {
             return;
         }
-        if (block.getRelative(BlockFace.DOWN).getType() != Material.GRASS
-                && block.getRelative(BlockFace.DOWN).getType() != Material.DIRT) {
+        if (block.getRelative(BlockFace.DOWN).getTypeId() != BlockID.GRASS
+                && block.getRelative(BlockFace.DOWN).getTypeId() != BlockID.DIRT) {
             return;
         }
 
         int size = 2 + random.nextInt(4);
         for (int i = 0; i <= size + 1; i++) {
             Block mushroom = block.getRelative(0, i, 0);
-            mushroom.setTypeIdAndData(Material.LOG.getId(), (byte) 2, true);
+            mushroom.setTypeIdAndData(BlockID.LOG, (byte) 2, true);
 
             if (i >= size) {
                 int diff = i - size;
@@ -47,7 +47,7 @@ public class MushroomPopulator extends BlockPopulator {
                         if (x * x + z * z < (size - diff) * (size - diff)
                                 && (i > size || x * x + z * z + 1 > (size - diffNext)
                                 * (size - diffNext))) {
-                            mushroom.getRelative(x, 0, z).setType(Material.STONE);
+                            mushroom.getRelative(x, 0, z).setTypeId(BlockID.STONE);
                         }
                     }
                 }

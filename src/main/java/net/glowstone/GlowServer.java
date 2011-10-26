@@ -207,6 +207,11 @@ public final class GlowServer implements Server {
     private GameMode defaultGameMode = GameMode.SURVIVAL;
 
     /**
+     * Whether the server is shutting down
+     */
+    private boolean isShuttingDown = false;
+
+    /**
      * Creates a new server.
      */
     public GlowServer() {
@@ -453,6 +458,9 @@ public final class GlowServer implements Server {
      * Stops this server.
      */
     public void shutdown() {
+        // This is so we don't run this twice (/stop and actual shutdown)
+        if (isShuttingDown) return;
+        isShuttingDown = true;
         logger.info("The server is shutting down...");
         
         // Stop scheduler and disable plugins

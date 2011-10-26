@@ -4,9 +4,9 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Random;
 
+import net.glowstone.block.BlockID;
 import net.glowstone.generator.populators.*;
 
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.util.noise.OctaveGenerator;
@@ -44,14 +44,14 @@ public class SurfaceGenerator extends GlowChunkGenerator {
         chunkZ <<= 4;
 
         boolean nether = world.getEnvironment() == Environment.NETHER;
-        Material matMain = nether ? Material.NETHERRACK : Material.DIRT;
-        Material matShore = nether ? Material.SOUL_SAND : Material.SAND;
-        Material matShore2 = Material.GRAVEL;
-        Material matTop = nether ? Material.NETHERRACK : Material.GRASS;
-        Material matUnder = nether ? Material.NETHERRACK : Material.STONE;
-        Material matLiquid = nether ? Material.STATIONARY_LAVA : Material.STATIONARY_WATER;
+        int matMain = nether ? BlockID.NETHERRACK : BlockID.DIRT;
+        int matShore = nether ? BlockID.SOUL_SAND : BlockID.SAND;
+        int matShore2 = BlockID.GRAVEL;
+        int matTop = nether ? BlockID.NETHERRACK : BlockID.GRASS;
+        int matUnder = nether ? BlockID.NETHERRACK : BlockID.STONE;
+        int matLiquid = nether ? BlockID.STATIONARY_LAVA : BlockID.STATIONARY_WATER;
 
-        byte[] buf = start(Material.AIR);
+        byte[] buf = start(BlockID.AIR);
 
         int baseHeight = world.getMaxHeight() / 2;
         double terrainHeight = 50;
@@ -67,7 +67,7 @@ public class SurfaceGenerator extends GlowChunkGenerator {
                         + noiseJitter.noise(x + chunkX, z + chunkZ, 0.5, 0.5)
                         * 1.5, world.getMaxHeight() - 1); y > 0; y--) {
                     double terrainType = noiseType.noise(x + chunkX, y, z + chunkZ, 0.5, 0.5);
-                    Material ground = matTop;
+                    int ground = matTop;
                     if (Math.abs(terrainType) < random.nextDouble() / 3 && !noDirt) {
                         ground = matMain;
                     } else if (deep != 0 || y < waterLevel) {
@@ -91,14 +91,14 @@ public class SurfaceGenerator extends GlowChunkGenerator {
                     set(buf, x, y, z, ground);
                     deep++;
                 }
-                set(buf, x, 0, z, Material.BEDROCK);
+                set(buf, x, 0, z, BlockID.BEDROCK);
             }
         }
 
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 for (int y = 0; y < waterLevel; y++) {
-                    if (get(buf, x, y, z) == Material.AIR) {
+                    if (get(buf, x, y, z) == BlockID.AIR) {
                         set(buf, x, y, z, matLiquid);
                     }
                 }

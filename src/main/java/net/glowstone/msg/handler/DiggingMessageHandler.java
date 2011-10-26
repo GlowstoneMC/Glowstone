@@ -1,8 +1,8 @@
 package net.glowstone.msg.handler;
 
+import net.glowstone.block.BlockID;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
@@ -54,7 +54,7 @@ public final class DiggingMessageHandler extends MessageHandler<DiggingMessage> 
                 }
             }
             world.playEffectExceptTo(block.getLocation(), Effect.STEP_SOUND, block.getTypeId(), 64, player);
-            block.setType(Material.AIR);
+            block.setTypeId(BlockID.AIR);
         }
     }
 

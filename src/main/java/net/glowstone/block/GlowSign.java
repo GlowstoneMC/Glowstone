@@ -1,13 +1,6 @@
 package net.glowstone.block;
 
-import net.glowstone.util.nbt.ByteTag;
-import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.StringTag;
-import net.glowstone.util.nbt.Tag;
-import org.bukkit.Material;
 import org.bukkit.block.Sign;
-
-import java.util.Map;
 import net.glowstone.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.msg.UpdateSignMessage;
@@ -18,7 +11,7 @@ public class GlowSign extends GlowBlockState implements Sign {
 
     public GlowSign(GlowBlock block) {
         super(block);
-        if (block.getType() != Material.WALL_SIGN && block.getType() != Material.SIGN_POST) {
+        if (block.getTypeId() != BlockID.WALL_SIGN && block.getTypeId() != BlockID.SIGN_POST) {
             throw new IllegalArgumentException("GlowSign: expected WALL_SIGN or SIGN_POST, got " + block.getType());
         }
         lines = new String[4];

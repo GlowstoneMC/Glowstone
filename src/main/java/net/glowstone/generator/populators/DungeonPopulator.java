@@ -2,9 +2,11 @@ package net.glowstone.generator.populators;
 
 import java.util.Random;
 
+import net.glowstone.block.BlockID;
+import net.glowstone.block.BlockProperties;
+import net.glowstone.block.ItemID;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -32,7 +34,7 @@ public class DungeonPopulator extends BlockPopulator {
                 int y = snapshot.getHighestBlockYAt(x, z);
                 Block block = source.getBlock(x, y - 1, z);
 
-                if (block.getType() == Material.STONE
+                if (block.getTypeId() == BlockID.STONE
                         && random.nextInt(1024) == 0) {
                     placeChest(random, block);
                 }
@@ -65,7 +67,7 @@ public class DungeonPopulator extends BlockPopulator {
         for (int x = posX; x < posX + sizeX; x++) {
             for (int y = posY; y < posY + sizeY; y++) {
                 for (int z = posZ; z < posZ + sizeZ; z++) {
-                    placeBlock(world, x, y, z, Material.AIR);
+                    placeBlock(world, x, y, z, BlockID.AIR);
                 }
             }
         }
@@ -108,8 +110,8 @@ public class DungeonPopulator extends BlockPopulator {
         }
     }
 
-    private static Material pickStone(Random random) {
-        return random.nextInt(6) == 0 ? Material.MOSSY_COBBLESTONE : Material.COBBLESTONE;
+    private static int pickStone(Random random) {
+        return random.nextInt(6) == 0 ? BlockID.MOSSY_COBBLESTONE : BlockID.COBBLESTONE;
     }
 
     private static void placeSpawner(Random random, Block block) {
@@ -118,7 +120,7 @@ public class DungeonPopulator extends BlockPopulator {
             CreatureType.CREEPER, CreatureType.SPIDER
         };
 
-        block.setType(Material.MOB_SPAWNER);
+        block.setTypeId(BlockID.MOB_SPAWNER);
         BlockState state = block.getState();
         if (state instanceof CreatureSpawner) {
             ((CreatureSpawner) state).setCreatureType(types[random.nextInt(types.length)]);
@@ -126,7 +128,7 @@ public class DungeonPopulator extends BlockPopulator {
     }
 
     private static void placeChest(Random random, Block block) {
-        block.setType(Material.CHEST);
+        block.setTypeId(BlockID.CHEST);
         BlockState state = block.getState();
         if (state instanceof Chest) {
             Inventory chest = ((Chest) state).getInventory();
@@ -147,15 +149,15 @@ public class DungeonPopulator extends BlockPopulator {
         int count = random.nextInt(63) + 1;
 
         if (i > 253) {
-            return new ItemStack(Material.LAPIS_BLOCK, count);
+            return new ItemStack(BlockID.LAPIS_BLOCK, count);
         } else if (i > 230) {
-            return new ItemStack(Material.DIAMOND_ORE, count);
+            return new ItemStack(BlockID.DIAMOND_ORE, count);
         } else if (i > 190) {
-            return new ItemStack(Material.GOLD_ORE, count);
+            return new ItemStack(BlockID.GOLD_ORE, count);
         } else if (i > 150) {
-            return new ItemStack(Material.IRON_ORE, count);
+            return new ItemStack(BlockID.IRON_ORE, count);
         } else {
-            return new ItemStack(Material.COAL, count);
+            return new ItemStack(ItemID.COAL, count);
         }
     }
 
@@ -197,16 +199,16 @@ public class DungeonPopulator extends BlockPopulator {
         }
     }
 
-    private static void placeBlock(World world, int x, int y, int z, Material mat) {
-        if (canPlaceBlock(world, x, y, z)) {
-            world.getBlockAt(x, y, z).setType(mat);
+    private static void placeBlock(World world, int x, int y, int z, int mat) {
+        if (canPlaceBlock(world, x, y, z) && BlockProperties.get(mat) != null) {
+            world.getBlockAt(x, y, z).setTypeId(mat);
         }
     }
 
     private static boolean canPlaceBlock(World world, int x, int y, int z) {
         Block block = world.getBlockAt(x, y, z);
-        return !block.isLiquid() && block.getType() != Material.MOB_SPAWNER
-                && block.getType() != Material.CHEST;
+        return !block.isLiquid() && block.getTypeId() != BlockID.MOB_SPAWNER
+                && block.getTypeId() != BlockID.CHEST;
     }
     
 }

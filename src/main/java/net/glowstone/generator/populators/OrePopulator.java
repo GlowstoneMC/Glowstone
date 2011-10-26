@@ -2,8 +2,8 @@ package net.glowstone.generator.populators;
 
 import java.util.Random;
 
+import net.glowstone.block.BlockID;
 import org.bukkit.Chunk;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.generator.BlockPopulator;
@@ -15,12 +15,11 @@ public class OrePopulator extends BlockPopulator {
 
     private static final int[] iterations = new int[]{10, 20, 20, 2, 8, 1, 1, 1};
     private static final int[] amount = new int[]{32, 16, 8, 8, 7, 7, 6};
-    private static final int[] type = new int[]{Material.GRAVEL.getId(), Material.COAL_ORE.getId(),
-        Material.IRON_ORE.getId(), Material.GOLD_ORE.getId(), Material.REDSTONE_ORE.getId(),
-        Material.DIAMOND_ORE.getId(), Material.LAPIS_ORE.getId()};
+    private static final int[] type = new int[]{BlockID.GRAVEL, BlockID.COAL_ORE,
+        BlockID.IRON_ORE, BlockID.GOLD_ORE, BlockID.REDSTONE_ORE,
+        BlockID.DIAMOND_ORE, BlockID.LAPIS_ORE};
     private static final int[] maxHeight = new int[]{128, 128, 128, 128, 128, 64,
         32, 16, 16, 32};
-    private static final int STONE = Material.STONE.getId();
 
     @Override
     public void populate(World world, Random random, Chunk source) {
@@ -42,7 +41,7 @@ public class OrePopulator extends BlockPopulator {
                 continue;
             }
             Block block = source.getBlock(x, y, z);
-            if (block.getTypeId() == STONE) {
+            if (block.getTypeId() == BlockID.STONE) {
                 block.setTypeId(type, false);
             }
         }

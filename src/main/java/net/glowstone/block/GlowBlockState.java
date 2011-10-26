@@ -1,8 +1,5 @@
 package net.glowstone.block;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -11,10 +8,6 @@ import org.bukkit.material.MaterialData;
 
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowWorld;
-import net.glowstone.util.nbt.Tag;
-import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.IntTag;
-import net.glowstone.util.nbt.StringTag;
 
 /**
  * Represents a state a block could be in as well as any tile entities.

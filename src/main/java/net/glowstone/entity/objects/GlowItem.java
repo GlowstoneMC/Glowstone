@@ -1,5 +1,6 @@
-package net.glowstone.entity;
+package net.glowstone.entity.objects;
 
+import net.glowstone.entity.GlowEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.entity.Item;
 
@@ -10,7 +11,7 @@ import net.glowstone.GlowWorld;
 import net.glowstone.GlowServer;
 
 /**
- * Represents an item that is also an {@link GlowEntity} within the world.
+ * Represents an item that is also an {@link net.glowstone.entity.GlowEntity} within the world.
  * @author Graham Edgecombe
  */
 public final class GlowItem extends GlowEntity implements Item {

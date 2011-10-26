@@ -2,8 +2,8 @@ package net.glowstone.generator;
 
 import java.util.Random;
 
+import net.glowstone.block.BlockID;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 
 import net.glowstone.generator.populators.*;
@@ -30,7 +30,7 @@ public class CakeTownGenerator extends GlowChunkGenerator {
 
         Location center = new Location(world, 0, base, 0);
 
-        byte[] buf = start(Material.AIR);
+        byte[] buf = start(BlockID.AIR);
 
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
@@ -40,17 +40,17 @@ public class CakeTownGenerator extends GlowChunkGenerator {
                     double dist = new Location(world, realX, y, realZ).distance(center);
                     if (dist < 100) {
                         if (y <= base + 1 && y >= base) {
-                            set(buf, x, y, z, Material.BEDROCK);
+                            set(buf, x, y, z, BlockID.BEDROCK);
                         } else if (y == top) {
-                            set(buf, x, y, z, Material.GRASS);
+                            set(buf, x, y, z, BlockID.GRASS);
                         } else {
-                            set(buf, x, y, z, Material.STONE);
+                            set(buf, x, y, z, BlockID.STONE);
                         }
                     } else if (dist < 102) {
                         if (y <= base + 1 && y >= base) {
-                            set(buf, x, y, z, Material.BEDROCK);
+                            set(buf, x, y, z, BlockID.BEDROCK);
                         } else {
-                            set(buf, x, y, z, Material.GRASS);
+                            set(buf, x, y, z, BlockID.GRASS);
                         }
                     }
                 }

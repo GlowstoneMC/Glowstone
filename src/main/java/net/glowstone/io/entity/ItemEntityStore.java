@@ -2,7 +2,7 @@ package net.glowstone.io.entity;
 
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
-import net.glowstone.entity.GlowItem;
+import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.util.nbt.*;
 import org.bukkit.inventory.ItemStack;
 

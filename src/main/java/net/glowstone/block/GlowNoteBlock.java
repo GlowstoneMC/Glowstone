@@ -1,19 +1,13 @@
 package net.glowstone.block;
 
-import java.util.Map;
-
 import org.bukkit.Instrument;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Note;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.NoteBlock;
 
 import net.glowstone.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.util.nbt.ByteTag;
-import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.Tag;
 
 /**
  * Represents a noteblock in the world.
@@ -24,7 +18,7 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
 
     public GlowNoteBlock(GlowBlock block) {
         super(block);
-        if (block.getType() != Material.NOTE_BLOCK) {
+        if (block.getTypeId() != BlockID.NOTE_BLOCK) {
             throw new IllegalArgumentException("GlowNoteBlock: expected NOTE_BLOCK, got " + block.getType());
         }
     }
@@ -46,11 +40,11 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
     }
 
     public boolean play() {
-        return play(instrumentOf(getBlock().getRelative(BlockFace.DOWN).getType()), wrapper.note);
+        return play(instrumentOf(getBlock().getRelative(BlockFace.DOWN).getTypeId()), wrapper.note);
     }
 
     public boolean play(byte instrument, byte note) {
-        if (getBlock().getType() != Material.NOTE_BLOCK) {
+        if (getBlock().getTypeId() != BlockID.NOTE_BLOCK) {
             return false;
         }
         
@@ -68,27 +62,27 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
         return play(instrument.getType(), note.getId());
     }
     
-    public static Instrument instrumentOf(Material material) {
+    public static Instrument instrumentOf(int id) {
         // TODO: check more blocks.
-        switch (material) {
-            case WOOD:
-            case NOTE_BLOCK:
-            case WORKBENCH:
-            case LOG:
+        switch (id) {
+            case BlockID.WOOD:
+            case BlockID.NOTE_BLOCK:
+            case BlockID.WORKBENCH:
+            case BlockID.LOG:
                 return Instrument.BASS_GUITAR;
-            case SAND:
-            case GRAVEL:
-            case SOUL_SAND:
+            case BlockID.SAND:
+            case BlockID.GRAVEL:
+            case BlockID.SOUL_SAND:
                 return Instrument.SNARE_DRUM;
-            case GLASS:
+            case BlockID.GLASS:
                 return Instrument.STICKS;
-            case STONE:
-            case OBSIDIAN:
-            case NETHERRACK:
-            case BRICK:
+            case BlockID.STONE:
+            case BlockID.OBSIDIAN:
+            case BlockID.NETHERRACK:
+            case BlockID.BRICK:
                 return Instrument.BASS_DRUM;
-            case DIRT:
-            case AIR:
+            case BlockID.DIRT:
+            case BlockID.AIR:
             default:
                 return Instrument.PIANO;
         }
