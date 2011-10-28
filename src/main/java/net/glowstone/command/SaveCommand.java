@@ -27,7 +27,7 @@ public class SaveCommand extends GlowCommand {
         if (args.length == 2) {
             world = server.getWorld(args[1]);
             if (world == null) {
-                sender.sendMessage(ChatColor.GRAY + "World " + args[2] + " does not exist.");
+                sender.sendMessage(ChatColor.GRAY + "World " + args[1] + " does not exist.");
                 return false;
             }
         } else if (sender instanceof Player) {
@@ -37,15 +37,15 @@ public class SaveCommand extends GlowCommand {
         }
         String action = args[0];
         if (action.equals("on")) {
-            if (!checkPermission(sender, PERM_PREFIX  + ".save.on")) return false;
+            if (!checkPermission(sender, "on")) return false;
             world.setAutoSave(true);
             tellOps(sender, "Enabling autosave for world " + world.getName());
         } else if (action.equals("off")) {
-            if (!checkPermission(sender, PERM_PREFIX  + ".save.off")) return false;
+            if (!checkPermission(sender, "off")) return false;
             world.setAutoSave(false);
             tellOps(sender, "Disabling autosave for world " + world.getName());
         } else if (action.equals("do")){
-            if (!checkPermission(sender, PERM_PREFIX  + ".save.do")) return false;
+            if (!checkPermission(sender, "do")) return false;
             world.save();
             tellOps(sender, "Saving data of world " + world.getName());
         } else {

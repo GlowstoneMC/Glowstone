@@ -1,9 +1,6 @@
 package net.glowstone.command;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
@@ -21,13 +18,13 @@ public abstract class GlowCommand extends Command {
     
     protected final GlowServer server;
     public static final String PERM_PREFIX = "glowstone.command";
-    
-    public GlowCommand(GlowServer server, String name, String desc, String usage) {
-        super(name, desc, "/" + name + " " + usage, new ArrayList<String>());
+
+    public GlowCommand(GlowServer server, String name, String desc, String usage, String... aliases) {
+        super(name, desc, "/" + name + " " + usage, Arrays.asList(aliases));
         this.server = server;
-        setPermission("glowstone.command." + name);
+        setPermission(PERM_PREFIX + "." + name);
     }
-    
+
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         if (!testPermission(sender)) return false;
@@ -57,7 +54,7 @@ public abstract class GlowCommand extends Command {
     }
 
     public boolean checkPermission(CommandSender sender, String permission) {
-        if (!sender.hasPermission(permission)) {
+        if (!sender.hasPermission(getPermission() + "." + permission)) {
             sender.sendMessage(ChatColor.RED + "I'm sorry Dave but I cannot let you do that.");
             return false;
         }

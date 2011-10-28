@@ -18,9 +18,8 @@ public class StopCommand extends GlowCommand {
         if (!checkArgs(sender, args, 0)) {
             return false;
         } else {
-            tellOps(sender, "Stopping the server");
-            Runtime.getRuntime().exit(0);
-            return true;
+            server.shutdown();
+            return tellOps(sender, "Stopping the server");
         }
     }
 

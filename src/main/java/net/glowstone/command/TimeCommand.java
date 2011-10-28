@@ -45,10 +45,10 @@ public class TimeCommand extends GlowCommand {
             return false;
         }
         if (action.equals("add")) {
-            if (!checkPermission(sender, PERM_PREFIX  + ".time.add")) return false;
+            if (!checkPermission(sender, "add")) return false;
             world.setTime((world.getTime() + amount) % 24000);
         } else if (action.equals("set")) {
-            if (!checkPermission(sender, PERM_PREFIX  + ".time.set")) return false;
+            if (!checkPermission(sender, "set")) return false;
             world.setTime(amount);
         } else {
             sender.sendMessage(ChatColor.GRAY + action + " is not a valid action for the time command.");

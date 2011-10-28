@@ -71,6 +71,7 @@ public final class McRegionChunkIoService implements ChunkIoService {
         NBTInputStream nbt = new NBTInputStream(in, false);
         CompoundTag tag = (CompoundTag) nbt.readTag();
         Map<String, Tag> levelTags = ((CompoundTag) tag.getValue().get("Level")).getValue();
+        nbt.close();
 
         byte[] tileData = ((ByteArrayTag) levelTags.get("Blocks")).getValue();
         chunk.initializeTypes(tileData);

@@ -50,12 +50,6 @@ public class StorageQueue extends Thread {
         }
     }
 
-
-    public void reset() {
-        end();
-        start();
-    }
-
     public void end() {
         interrupt();
         running = false;

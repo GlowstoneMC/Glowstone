@@ -29,7 +29,7 @@ public final class BlockStateStoreLookupService {
     private static Map<Class<? extends GlowBlockState>, BlockStateStore<?>> classTable = new HashMap<Class<? extends GlowBlockState>, BlockStateStore<?>>();
 
     /**
-     * Populates the opcode and class tables with codecs.
+     * Populates the lookup maps with stores
      */
     static {
         try {
@@ -69,7 +69,7 @@ public final class BlockStateStoreLookupService {
      * Finds a store by entity class.
      * @param clazz The entity class.
      * @param <T> The type of entity.
-     * @return The codec, or {@code null} if it could not be found.
+     * @return The store, or {@code null} if it could not be found.
      */
     @SuppressWarnings("unchecked")
     public static <T extends GlowBlockState> BlockStateStore<T> find(Class<T> clazz) {

@@ -12,6 +12,7 @@ server:
     view-distance: 10
     motd: Glowstone Server
     def-game-mode: SURVIVAL
+    fuzzy-command-matching: false
     folders:
         plugins: plugins
         update: update

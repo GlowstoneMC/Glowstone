@@ -32,28 +32,28 @@ public class BanCommand extends GlowCommand {
         String senderName = (sender instanceof Player? ((Player) sender).getDisplayName(): "Console");
         if (option.equalsIgnoreCase("add")) {
             if (ip) {
-                if (!checkPermission(sender, PERM_PREFIX  + ".ban.addip")) return false;
+                if (!checkPermission(sender, "addip")) return false;
                 String newTarget = target;
                 if (player != null) newTarget = player.getAddress().getAddress().getHostAddress();
                 server.getBanManager().setIpBanned(newTarget, true);
             } else {
-                if (!checkPermission(sender, PERM_PREFIX  + ".ban.add")) return false;
+                if (!checkPermission(sender, "add")) return false;
                 server.getBanManager().setBanned(target, true);
             }
             if (player != null) player.kickPlayer("You have been " + (ip ? "ip banned" : "banned") + " by " + senderName);
             server.broadcastMessage(ChatColor.RED + target + " has been banned by " + senderName);
         } else if (option.equalsIgnoreCase("remove")) {
            if (ip) {
-               if (!checkPermission(sender, PERM_PREFIX  + ".ban.removeip")) return false;
+               if (!checkPermission(sender, "removeip")) return false;
                 server.getBanManager().setIpBanned(target, false);
             } else {
-               if (!checkPermission(sender, PERM_PREFIX  + ".ban.remove")) return false;
+               if (!checkPermission(sender, "remove")) return false;
                 server.getBanManager().setBanned(target, false);
             }
             sender.sendMessage(ChatColor.RED + target + " was unbanned.");
         } else if (option.equalsIgnoreCase("check")) {
             boolean banned;
-            if (!checkPermission(sender, PERM_PREFIX  + ".ban.check")) return false;
+            if (!checkPermission(sender, "check")) return false;
             if (ip) {
                 banned = server.getBanManager().isIpBanned(target);
             } else {
