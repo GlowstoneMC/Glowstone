@@ -2,7 +2,6 @@ package net.glowstone;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
@@ -13,7 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -26,7 +24,6 @@ import org.bukkit.command.*;
 import org.bukkit.World.Environment;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfigurationOptions;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
@@ -86,7 +83,7 @@ public final class GlowServer implements Server {
      * The main configuration file
      */
     private static final File configFile = new File(configDir, "glowstone.yml");
-            
+
     /**
      * The configuration the server uses.
      */
@@ -114,7 +111,7 @@ public final class GlowServer implements Server {
             loadConfiguration();
             config.options().indent(4);
             ConfigurationSerialization.registerClass(GlowOfflinePlayer.class);
-            
+
             int port = config.getInt("server.port", 25565);
             GlowServer server = new GlowServer();
             server.start();
@@ -205,6 +202,11 @@ public final class GlowServer implements Server {
      * Whether the server is shutting down
      */
     private boolean isShuttingDown = false;
+
+    /**
+     * Provides various config helper methods
+     */
+    private GlowConfiguration configurationManager = new GlowConfiguration(this);
 
     /**
      * Creates a new server.
@@ -491,7 +493,7 @@ public final class GlowServer implements Server {
     private void loadPlugins() {
         // clear the map
         commandMap.removeAllOfType(PluginCommand.class);
-            
+
         File folder = new File(config.getString("server.folders.plugins", "plugins"));
         folder.mkdirs();
         
@@ -690,7 +692,11 @@ public final class GlowServer implements Server {
     public String getVersion() {
         return getClass().getPackage().getImplementationVersion();
     }
-    
+
+    public String getBukkitVersion() {
+        return configurationManager.getBukkitVersion();
+    }
+
     /**
      * Gets a list of all currently logged in players
      *
