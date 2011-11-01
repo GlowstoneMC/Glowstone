@@ -18,7 +18,7 @@
             <id>bukkit</id>
             <name>Bukkit Artifactory</name>
             <layout>default</layout>
-            <url>http://repo.bukkit.org/artifactory/repo/</url>
+            <url>http://repo.bukkit.org/content/groups/bukkit_repos/</url>
         </repository>
         <repository>
             <id>jboss</id>
@@ -43,7 +43,7 @@
     <pluginRepositories>
         <pluginRepository>
             <id>bukkit-plugins</id>
-            <url>http://repo.bukkit.org/artifactory/plugins-release</url>
+            <url>hhttp://repo.bukkit.org/content/repositories/plugins-release-local/</url>
         </pluginRepository>
     </pluginRepositories>
     
@@ -125,7 +125,7 @@
                     <archive>
                         <manifestEntries>
                             <Main-Class>net.glowstone.GlowServer</Main-Class>
-                            <Implementation-Title>Glowstone</Implementation-Title>
+                            <Implementation-Title>${project.name}</Implementation-Title>
                             <Implementation-Version>${describe}</Implementation-Version>
                             <Implementation-Vendor>SpaceManiac</Implementation-Vendor>
                             <Specification-Title>Bukkit</Specification-Title>

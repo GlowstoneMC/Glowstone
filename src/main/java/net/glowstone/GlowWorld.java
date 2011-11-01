@@ -149,7 +149,7 @@ public final class GlowWorld implements World {
     /*
      * The world metadata service used
      */
-    private final WorldMetadataService metadataService;
+    private final WorldStorageProvider storageProvider;
 
     /**
      * The world's UUID
@@ -170,11 +170,11 @@ public final class GlowWorld implements World {
         this.environment = environment;
         provider.setWorld(this);
         chunks = new ChunkManager(this, provider.getChunkIoService(), generator);
-        metadataService = provider.getMetadataService();
+        storageProvider = provider;
         EventFactory.onWorldInit(this);
         WorldFinalValues values = null;
         try {
-            values = metadataService.readWorldData();
+            values = provider.getMetadataService().readWorldData();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -409,40 +409,50 @@ public final class GlowWorld implements World {
     // force-save
 
     public void save() {
+        save(true);
+    }
+
+    public void save(boolean async) {
         EventFactory.onWorldSave(this);
-        server.getStorageQueue().queue(new StorageOperation() {
-            @Override
-            public boolean isParallel() {
-                return true;
-            }
-
-            @Override
-            public String getGroup() {
-                return getName();
-            }
-
-            @Override
-            public String getOperation() {
-                return "world-save";
-            }
-
-            @Override
-            public boolean queueMultiple() {
-                return false;
-            }
-
-            public void run() {
-                for (GlowChunk chunk : chunks.getLoadedChunks()) {
-                    chunks.forceSave(chunk.getX(), chunk.getZ());
+        if (async) {
+            server.getStorageQueue().queue(new StorageOperation() {
+                @Override
+                public boolean isParallel() {
+                    return true;
                 }
+
+                @Override
+                public String getGroup() {
+                    return getName();
+                }
+
+                @Override
+                public String getOperation() {
+                    return "world-save";
+                }
+
+                @Override
+                public boolean queueMultiple() {
+                    return false;
+                }
+
+                public void run() {
+                    for (GlowChunk chunk : chunks.getLoadedChunks()) {
+                        chunks.forceSave(chunk.getX(), chunk.getZ());
+                    }
+                }
+            });
+        } else {
+            for (GlowChunk chunk : chunks.getLoadedChunks()) {
+                chunks.forceSave(chunk.getX(), chunk.getZ());
             }
-        });
+        }
         
         for (GlowPlayer player : getRawPlayers()) {
-            player.saveData();
+            player.saveData(async);
         }
 
-        writeWorldData();
+        writeWorldData(async);
     }
     
     // map generation
@@ -869,7 +879,8 @@ public final class GlowWorld implements World {
 
     // level data write
 
-    void writeWorldData() {
+    void writeWorldData(boolean async) {
+        if (async) {
         server.getStorageQueue().queue(new StorageOperation() {
             @Override
             public boolean isParallel() {
@@ -893,16 +904,38 @@ public final class GlowWorld implements World {
 
             public void run() {
                 try {
-                    metadataService.writeWorldData();
+                    storageProvider.getMetadataService().writeWorldData();
                 } catch (IOException e) {
                     server.getLogger().severe("Could not save world metadata file for world" + getName());
                     e.printStackTrace();
                 }
             }
         });
+        } else {
+            try {
+                storageProvider.getMetadataService().writeWorldData();
+            } catch (IOException e) {
+                server.getLogger().severe("Could not save world metadata file for world" + getName());
+                e.printStackTrace();
+            }
+        }
     }
 
     public WorldMetadataService getMetadataService() {
-        return metadataService;
+        return storageProvider.getMetadataService();
+    }
+
+    /**
+     * Unloads the world
+     * 
+     * @return true if successful
+     */
+    public boolean unload() {
+        try {
+            storageProvider.getChunkIoService().unload();
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
     }
 }

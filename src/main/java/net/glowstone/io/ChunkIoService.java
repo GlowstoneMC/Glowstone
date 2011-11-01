@@ -31,4 +31,10 @@ public interface ChunkIoService {
      */
     public void write(int x, int z, GlowChunk chunk) throws IOException;
 
+    /**
+     * Unloads the service, to clean up excess stuff.
+     * @throws IOException
+     */
+    public void unload() throws IOException;
+
 }

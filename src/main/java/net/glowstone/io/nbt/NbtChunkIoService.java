@@ -30,7 +30,6 @@ public final class NbtChunkIoService implements ChunkIoService {
     }
 
 
-    @Override
     public boolean read(GlowChunk chunk, int x, int z) {
         int fileX = formatInt(x);
         int fileZ = formatInt(z);
@@ -81,9 +80,11 @@ public final class NbtChunkIoService implements ChunkIoService {
         return true;
     }
 
-    @Override
     public void write(int x, int z, GlowChunk chunk) throws IOException {
 
+    }
+
+    public void unload() throws IOException {
     }
 
     private int formatInt(int i) {

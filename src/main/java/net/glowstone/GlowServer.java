@@ -227,6 +227,7 @@ public final class GlowServer implements Server {
         ChannelPipelineFactory pipelineFactory = new MinecraftPipelineFactory(this);
         bootstrap.setPipelineFactory(pipelineFactory);
 
+        // TODO: This needs a cleanup badly
         config.options().copyDefaults(true);
         InputStream stream = getClass().getClassLoader().getResourceAsStream("defaults/glowstone.yml");
         if (stream == null) {
@@ -465,16 +466,15 @@ public final class GlowServer implements Server {
         // Stop scheduler and disable plugins
         scheduler.stop();
         pluginManager.clearPlugins();
-        
-        // Save worlds
-        for (World world : getWorlds()) {
-            world.setAutoSave(false);
-            world.save();
-        }
-        
+
         // Kick (and save) all players
         for (Player player : getOnlinePlayers()) {
             player.kickPlayer("Server shutting down.");
+        }
+        
+        // Save worlds
+        for (World world : getWorlds()) {
+            unloadWorld(world, true);
         }
         
         // Gracefully stop Netty
@@ -1008,14 +1008,15 @@ public final class GlowServer implements Server {
      * @return Whether the action was Successful
      */
     public boolean unloadWorld(World world, boolean save) {
-        if (save) {
-            world.save();
-        }
         if (!(world instanceof GlowWorld)) {
             return false;
         }
+        if (save) {
+            ((GlowWorld) world).save(false);
+        }
         if (worlds.contains((GlowWorld) world)) {
             worlds.remove((GlowWorld) world);
+            ((GlowWorld) world).unload();
             EventFactory.onWorldUnload((GlowWorld)world);
             return true;
         }

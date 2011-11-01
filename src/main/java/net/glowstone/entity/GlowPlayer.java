@@ -139,11 +139,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     public GlowPlayer(Session session, String name) {
         super(session.getServer(), (GlowWorld) session.getServer().getWorlds().get(0), name);
         this.session = session;
+        health = 20;
         if (session.getState() != Session.State.GAME) {
             session.send(new IdentificationMessage(getEntityId(), "", world.getSeed(), getGameMode().getValue(), world.getEnvironment().getId(), 1, world.getMaxHeight(), session.getServer().getMaxPlayers()));
         }
         streamBlocks(); // stream the initial set of blocks
-        health = 20;
         setCompassTarget(world.getSpawnLocation()); // set our compass target
         session.send(new StateChangeMessage((byte)(getWorld().hasStorm() ? 1 : 2), (byte)0)); // send the world's weather
 
@@ -556,33 +556,41 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
 
     public void saveData() {
-        final GlowPlayer player = this;
-        server.getStorageQueue().queue(new StorageOperation() {
-            @Override
-            public boolean isParallel() {
-                return true;
-            }
+        saveData(true);
+    }
 
-            @Override
-            public String getGroup() {
-                return getName() + "_" + getWorld().getName();
-            }
+    public void saveData(boolean async) {
+        final GlowWorld dataWorld = (GlowWorld) server.getWorlds().get(0);
+        if (async) {
+            final GlowPlayer player = this;
+            server.getStorageQueue().queue(new StorageOperation() {
+                @Override
+                public boolean isParallel() {
+                    return true;
+                }
 
-            @Override
-            public boolean queueMultiple() {
-                return true;
-            }
+                @Override
+                public String getGroup() {
+                    return getName() + "_" + getWorld().getName();
+                }
 
-            @Override
-            public String getOperation() {
-                return "player-data-save";
-            }
+                @Override
+                public boolean queueMultiple() {
+                    return true;
+                }
 
-            public void run() {
-                GlowWorld dataWorld = (GlowWorld) server.getWorlds().get(0);
-                dataWorld.getMetadataService().writePlayerData(player);
-            }
-        });
+                @Override
+                public String getOperation() {
+                    return "player-data-save";
+                }
+
+                public void run() {
+                    dataWorld.getMetadataService().writePlayerData(player);
+                }
+            });
+        } else {
+            dataWorld.getMetadataService().writePlayerData(this);
+        }
     }
 
     public void loadData() {
@@ -807,6 +815,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     public void setHealth(int health) {
         super.setHealth(health);
         session.send(createHealthMessage());
+    }
+
+    public int getMaxHealth() {
+        return 20;
     }
 
     @Override

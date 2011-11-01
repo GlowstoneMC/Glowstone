@@ -192,4 +192,8 @@ public final class McRegionChunkIoService implements ChunkIoService {
 
     }
 
+    public void unload() throws IOException {
+        cache.clear();
+    }
+
 }
