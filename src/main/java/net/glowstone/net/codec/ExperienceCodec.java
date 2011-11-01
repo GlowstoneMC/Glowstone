@@ -14,17 +14,17 @@ public class ExperienceCodec extends MessageCodec<ExperienceMessage> {
 
     @Override
     public ChannelBuffer encode(ExperienceMessage message) throws IOException {
-        ChannelBuffer buffer = ChannelBuffers.buffer(5);
-        buffer.writeByte(message.getBarValue());
-        buffer.writeByte(message.getLevel());
+        ChannelBuffer buffer = ChannelBuffers.buffer(8);
+        buffer.writeFloat(message.getBarValue());
+        buffer.writeShort(message.getLevel());
         buffer.writeShort(message.getTotalExp());
         return buffer;
     }
 
     @Override
     public ExperienceMessage decode(ChannelBuffer buffer) throws IOException {
-        byte barValue = buffer.readByte();
-        byte level = buffer.readByte();
+        float barValue = buffer.readFloat();
+        short level = buffer.readShort();
         short totalExp = buffer.readShort();
         return new ExperienceMessage(barValue, level, totalExp);
     }

@@ -115,12 +115,25 @@ public enum BlockProperties {
     IRON_BARS(BlockID.IRON_BARS),
     GLASS_PANE(BlockID.GLASS_PANE),
     MELON_BLOCK(BlockID.MELON_BLOCK),
-    PUMPKIN_STEM(BlockID.PUMPKIN_STEM, drops()),
-    MELON_STEM(BlockID.MELON_STEM, drops()),
-    VINE(BlockID.VINE),
+    PUMPKIN_STEM(BlockID.PUMPKIN_STEM, drops(), passthru()),
+    MELON_STEM(BlockID.MELON_STEM, drops(), passthru()),
+    VINE(BlockID.VINE, passthru()),
     FENCE_GATE(BlockID.FENCE_GATE, interact()),
     BRICK_STAIRS(BlockID.BRICK_STAIRS, physics(new StairPhysics()), drops(BlockID.BRICK)),
-    SMOOTH_STAIRS(BlockID.SMOOTH_STAIRS, physics(new StairPhysics()), drops(BlockID.SMOOTH_BRICK));
+    SMOOTH_STAIRS(BlockID.SMOOTH_STAIRS, physics(new StairPhysics()), drops(BlockID.SMOOTH_BRICK)),
+    MYCELIUM(BlockID.MYCELIUM, drops(BlockID.DIRT)),
+    LILY_PAD(BlockID.LILY_PAD, passthru()),
+    NETHER_BRICK(BlockID.NETHER_BRICK),
+    NETHER_BRICK_FENCE(BlockID.NETHER_BRICK_FENCE, drops(BlockID.NETHER_BRICK)),
+    NETHER_BRICK_STAIRS(BlockID.NETHER_BRICK_STAIRS, physics(new StairPhysics())),
+    NETHER_WART(BlockID.NETHER_WART, passthru(), drops(ItemID.NETHER_WART_SEED)),
+    ENCHANTMENT_TABLE(BlockID.ENCHANTMENT_TABLE),
+    BREWING_STAND(BlockID.BREWING_STAND, drops(ItemID.BREWING_STAND)),
+    CAULDRON(BlockID.CAULDRON, drops(ItemID.CAULDRON)),
+    END_PORTAL(BlockID.END_PORTAL, passthru()),
+    END_PORTAL_FRAME(BlockID.END_PORTAL_FRAME),
+    END_STONE(BlockID.END_STONE),
+    DRAGON_EGG(BlockID.DRAGON_EGG);
     
     // -----------------
 

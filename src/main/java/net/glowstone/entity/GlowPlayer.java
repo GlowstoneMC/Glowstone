@@ -13,6 +13,7 @@ import java.util.logging.Level;
 
 import net.glowstone.GlowOfflinePlayer;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.inventory.GlowItemStack;
 import net.glowstone.io.StorageOperation;
 import net.glowstone.msg.*;
 import net.glowstone.util.Position;
@@ -104,7 +105,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     /**
      * The item the player has on their cursor.
      */
-    private ItemStack itemOnCursor;
+    private GlowItemStack itemOnCursor;
 
     /**
      * Whether the player is sneaking.
@@ -690,12 +691,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      * Set the item on the player's cursor, for inventory screen purposes.
      * @param item The ItemStack to set the cursor to.
      */
-    public void setItemOnCursor(ItemStack item) {
+    public void setItemOnCursor(GlowItemStack item) {
         itemOnCursor = item;
         if (item == null) {
             session.send(new SetWindowSlotMessage(-1, -1));
         } else {
-            session.send(new SetWindowSlotMessage(-1, -1, item.getTypeId(), item.getAmount(), item.getDurability()));
+            session.send(new SetWindowSlotMessage(-1, -1, item.getTypeId(), item.getAmount(), item.getDurability(), item.getNbtData()));
         }
     }
     
@@ -705,7 +706,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      * @param slot The slot number which has changed.
      * @param item The ItemStack which the slot has changed to.
      */
-    public void onSlotSet(GlowInventory inventory, int slot, ItemStack item) {
+    public void onSlotSet(GlowInventory inventory, int slot, GlowItemStack item) {
         if (inventory == getInventory()) {
             int type = item == null ? -1 : item.getTypeId();
             int data = item == null ? 0 : item.getDurability();
@@ -736,7 +737,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         if (item == null) {
             session.send(new SetWindowSlotMessage(inventory.getId(), inventory.getNetworkSlot(slot)));
         } else {
-            session.send(new SetWindowSlotMessage(inventory.getId(), inventory.getNetworkSlot(slot), item.getTypeId(), item.getAmount(), item.getDurability()));
+            session.send(new SetWindowSlotMessage(inventory.getId(), inventory.getNetworkSlot(slot), item.getTypeId(), item.getAmount(), item.getDurability(), item.getNbtData()));
         }
     }
     

@@ -88,7 +88,7 @@ public final class GlowServer implements Server {
     /**
      * The protocol version supported by the server
      */
-    public static final int PROTOCOL_VERSION = 17;
+    public static final int PROTOCOL_VERSION = 22;
 
 
     public static final StorageQueue storeQueue = new StorageQueue();
@@ -224,7 +224,6 @@ public final class GlowServer implements Server {
         bootstrap.setPipelineFactory(pipelineFactory);
 
         // TODO: This needs a cleanup badly
-        config.options().copyDefaults(true);
         InputStream stream = getClass().getClassLoader().getResourceAsStream("defaults/glowstone.yml");
         if (stream == null) {
             logger.severe("Error creating default config: Config not found in classpath");
@@ -353,6 +352,7 @@ public final class GlowServer implements Server {
                 catch (IOException ex) {}
             }
         }
+        config.options().copyDefaults(true);
         saveConfiguration();
     }
 

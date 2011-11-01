@@ -2,6 +2,7 @@ package net.glowstone.msg.handler;
 
 import java.util.logging.Level;
 
+import net.glowstone.inventory.GlowItemStack;
 import net.glowstone.msg.CloseWindowMessage;
 import org.bukkit.GameMode;
 import org.bukkit.inventory.ItemStack;
@@ -38,7 +39,7 @@ public final class WindowClickMessageHandler extends MessageHandler<WindowClickM
             return;
         }
         
-        ItemStack currentItem = inv.getItem(slot);
+        GlowItemStack currentItem = inv.getItem(slot);
 
         if (player.getGameMode() == GameMode.CREATIVE && message.getId() == inv.getId()) {
             response(session, message, false);

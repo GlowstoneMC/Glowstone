@@ -13,6 +13,6 @@ public interface InventoryViewer {
      * @param slot The slot number which has changed.
      * @param item The ItemStack which the slot has changed to.
      */
-    public void onSlotSet(GlowInventory inventory, int slot, ItemStack item);
+    public void onSlotSet(GlowInventory inventory, int slot, GlowItemStack item);
     
 }

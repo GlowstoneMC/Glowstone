@@ -1,15 +1,15 @@
 package net.glowstone.msg;
 
-import org.bukkit.inventory.ItemStack;
+import net.glowstone.inventory.GlowItemStack;
 
 import java.util.Arrays;
 
 public final class SetWindowSlotsMessage extends Message {
 
     private final int id;
-    private final ItemStack[] items;
+    private final GlowItemStack[] items;
 
-    public SetWindowSlotsMessage(int id, ItemStack[] items) {
+    public SetWindowSlotsMessage(int id, GlowItemStack[] items) {
         this.id = id;
         this.items = items;
     }
@@ -18,7 +18,7 @@ public final class SetWindowSlotsMessage extends Message {
         return id;
     }
 
-    public ItemStack[] getItems() {
+    public GlowItemStack[] getItems() {
         return items;
     }
 

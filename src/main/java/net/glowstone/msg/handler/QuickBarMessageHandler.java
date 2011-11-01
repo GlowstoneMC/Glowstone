@@ -2,6 +2,7 @@ package net.glowstone.msg.handler;
 
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.GlowInventory;
+import net.glowstone.inventory.GlowItemStack;
 import net.glowstone.msg.QuickBarMessage;
 import net.glowstone.net.Session;
 import org.bukkit.GameMode;
@@ -23,8 +24,8 @@ public class QuickBarMessageHandler extends MessageHandler<QuickBarMessage> {
                 || Material.getMaterial(message.getId()) == null) {
             return;
         }
-        ItemStack newItem = new ItemStack(message.getId(), message.getAmount(), message.getDamage());
-        ItemStack currentItem = inv.getItem(slot);
+        GlowItemStack newItem = new GlowItemStack(message.getId(), message.getAmount(), message.getDamage(), message.getNbtData());
+        GlowItemStack currentItem = inv.getItem(slot);
 
         inv.setItem(slot, newItem);
         if (currentItem != null) {

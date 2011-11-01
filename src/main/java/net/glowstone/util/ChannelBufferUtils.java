@@ -1,9 +1,17 @@
 package net.glowstone.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.NBTInputStream;
+import net.glowstone.util.nbt.NBTOutputStream;
+import net.glowstone.util.nbt.Tag;
 import org.bukkit.inventory.ItemStack;
 
 import org.jboss.netty.buffer.ChannelBuffer;
@@ -164,6 +172,55 @@ public final class ChannelBufferUtils {
         buf.readBytes(bytes);
 
         return new String(bytes, CHARSET_UTF8);
+    }
+
+    public static Map<String, Tag> readCompound(ChannelBuffer buf) {
+        int len = buf.readShort();
+        if (len >= 0) {
+            byte[] bytes = new byte[len];
+            buf.readBytes(bytes);
+            NBTInputStream str = null;
+            try {
+                str = new NBTInputStream(new ByteArrayInputStream(bytes));
+                Tag tag = str.readTag();
+                if (tag instanceof CompoundTag) {
+                    return ((CompoundTag) tag).getValue();
+                }
+            } catch (IOException e) {
+            } finally {
+                if (str != null) {
+                    try {
+                        str.close();
+                    } catch (IOException e) {}
+                }
+            }
+        }
+        return null;
+    }
+
+    public static void writeCompound(ChannelBuffer buf, Map<String, Tag> data) {
+        if (data == null) {
+            buf.writeShort(-1);
+            return;
+        }
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        NBTOutputStream str = null;
+        try {
+            str = new NBTOutputStream(out);
+            str.writeTag(new CompoundTag("", data));
+            str.close();
+            str = null;
+            buf.writeShort(out.size());
+            buf.writeBytes(out.toByteArray());
+        } catch (IOException e) {
+        } finally {
+            if (str != null) {
+                try {
+                    str.close();
+                } catch (IOException e) {}
+            }
+        }
+
     }
 
     /**

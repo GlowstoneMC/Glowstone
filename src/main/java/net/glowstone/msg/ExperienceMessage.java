@@ -2,20 +2,20 @@ package net.glowstone.msg;
 
 public class ExperienceMessage extends Message {
 
-    private final byte barValue, level;
-    private final short totalExp;
+    private final float barValue;
+    private final short level, totalExp;
 
-    public ExperienceMessage(byte barValue, byte level, short totalExp) {
+    public ExperienceMessage(float barValue, short level, short  totalExp) {
         this.barValue = barValue;
         this.level = level;
         this.totalExp = totalExp;
     }
 
-    public byte getBarValue() {
+    public float getBarValue() {
         return barValue;
     }
 
-    public byte getLevel() {
+    public short getLevel() {
         return level;
     }
 

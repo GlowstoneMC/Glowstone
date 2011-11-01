@@ -1,16 +1,20 @@
 package net.glowstone.msg;
 
+import net.glowstone.util.nbt.Tag;
+import java.util.Map;
+
 public final class WindowClickMessage extends Message {
 
     private final int id, slot;
     private final boolean rightClick, shift;
     private final int transaction, item, count, damage;
+    private final Map<String, Tag> nbtData;
 
     public WindowClickMessage(int id, int slot, boolean rightClick, int transaction, boolean shift) {
-        this(id, slot, rightClick, transaction, shift, -1, 0, 0);
+        this(id, slot, rightClick, transaction, shift, -1, 0, 0, null);
     }
 
-    public WindowClickMessage(int id, int slot, boolean rightClick, int transaction, boolean shift, int item, int count, int damage) {
+    public WindowClickMessage(int id, int slot, boolean rightClick, int transaction, boolean shift, int item, int count, int damage, Map<String, Tag> nbtData) {
         this.id = id;
         this.slot = slot;
         this.rightClick = rightClick;
@@ -19,6 +23,7 @@ public final class WindowClickMessage extends Message {
         this.item = item;
         this.count = count;
         this.damage = damage;
+        this.nbtData = nbtData;
     }
 
     public int getId() {
@@ -53,10 +58,15 @@ public final class WindowClickMessage extends Message {
         return damage;
     }
 
+    public Map<String, Tag> getNbtData() {
+        return nbtData;
+    }
+
     @Override
     public String toString() {
         return "WindowClickMessage{id=" + id + ",slot=" + slot + ",rightClick=" + rightClick +
                 ",shift=" + shift + ",transaction=" + transaction +
-                ",item=" + item + ",count=" + count + ",damage=" + damage + "}";
+                ",item=" + item + ",count=" + count + ",damage=" + damage + ",nbtData=" + nbtData + "}";
     }
+
 }

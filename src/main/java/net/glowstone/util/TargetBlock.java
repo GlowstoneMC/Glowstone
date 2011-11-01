@@ -95,7 +95,7 @@ public class TargetBlock {
                             (checkDistance * Math.sin(Math.toRadians(yRotation))),
                             (h * Math.sin(Math.toRadians(xRotation))));
 
-        targetPosDouble = loc.clone().add(0, viewHeight, 0).toVector();
+        targetPosDouble = loc.add(0, viewHeight, 0).toVector();
         targetPos = targetPosDouble.toBlockVector();
         prevPos = targetPos;
         this.transparentBlocks = transparent;
@@ -113,7 +113,7 @@ public class TargetBlock {
     public Location getAnyTargetBlock() {
         boolean searchForLastBlock = true;
         Location lastBlock = null;
-        while (getNextBlock() != null) {
+        while (getNextBlock()) {
             if (world.getBlockTypeIdAt(getCurrentBlock()) == BlockID.AIR) {
                 if(searchForLastBlock) {
                     lastBlock = getCurrentBlock();
@@ -136,7 +136,7 @@ public class TargetBlock {
      * @return Block
      */
     public Location getTargetBlock() {
-        while ((getNextBlock() != null)
+        while (getNextBlock()
                 && (world.getBlockTypeIdAt(getCurrentBlock()) == BlockID.AIR));
         return getCurrentBlock();
     }
@@ -148,7 +148,7 @@ public class TargetBlock {
      * @return Block
      */
     public Location getSolidTargetBlock() {
-        while ((getNextBlock() != null)
+        while (getNextBlock()
                 && transparentBlocks.contains(world.getBlockTypeIdAt(getCurrentBlock())));
         return getCurrentBlock();
     }
@@ -158,12 +158,12 @@ public class TargetBlock {
      * 
      * @return next block position
      */
-    public Location getNextBlock() {
+    public boolean getNextBlock() {
         prevPos = targetPos;
         do {
             curDistance += checkDistance;
             
-            targetPosDouble = offset.clone().add(targetPosDouble);
+            targetPosDouble.add(offset);
             targetPos = targetPosDouble.toBlockVector();
         } while (curDistance <= maxDistance
                 && targetPos.getBlockX() == prevPos.getBlockX()
@@ -171,10 +171,10 @@ public class TargetBlock {
                 && targetPos.getBlockZ() == prevPos.getBlockZ());
         
         if (curDistance > maxDistance) {
-            return null;
+            return false;
         }
 
-        return new Location(world, targetPos.getX(), targetPos.getY(), targetPos.getZ());
+        return true;
     }
 
     /**
@@ -186,7 +186,7 @@ public class TargetBlock {
         if (curDistance > maxDistance) {
             return null;
         } else {
-            return new Location(world, targetPos.getX(), targetPos.getY(), targetPos.getZ());
+            return targetPos.toLocation(world);
         }
     }
 
@@ -196,6 +196,6 @@ public class TargetBlock {
      * @return block position
      */
     public Location getPreviousBlock() {
-        return new Location(world, prevPos.getX(), prevPos.getY(), prevPos.getZ());
+        return prevPos.toLocation(world);
     }
 }

@@ -34,7 +34,7 @@ public class CraftingInventory extends GlowInventory {
      * @param item The ItemStack to set
      */
     @Override
-    public void setItem(int index, ItemStack item) {
+    public void setItem(int index, GlowItemStack item) {
         super.setItem(index, item);
         
         if (index != RESULT_SLOT) {
