@@ -87,11 +87,10 @@ public abstract class EntityStore<T extends GlowEntity> {
         Map<String, Tag> result = new HashMap<String, Tag>();
         result.put("id", new StringTag("id", id));
         Location loc = entity.getLocation();
-        result.putAll(NbtSerialization.locationToListTags(loc));
         UUID worldUUID = loc.getWorld().getUID();
         result.put("WorldUUIDLeast", new LongTag("WorldUUIDLeast", worldUUID.getLeastSignificantBits()));
         result.put("WorldUUIDMost", new LongTag("WorldUUIDMost", worldUUID.getMostSignificantBits()));
-        result.put("World", new StringTag("world", loc.getWorld().getName()));
+        result.put("World", new StringTag("World", loc.getWorld().getName()));
         result.put("Dimension", new IntTag("Dimension", loc.getWorld().getEnvironment().getId()));
         result.putAll(NbtSerialization.locationToListTags(loc));
         // result.put("UUIDLeast", new LongTag("UUIDLeast", entity.getUniqueId().getLeastSignificantBits()));

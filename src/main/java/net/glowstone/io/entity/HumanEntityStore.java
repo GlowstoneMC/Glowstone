@@ -42,7 +42,7 @@ public abstract class HumanEntityStore<T extends GlowHumanEntity> extends Living
         this.sleeping = nbttagcompound.m("Sleeping");
         this.sleepTicks = nbttagcompound.d("SleepTimer");
         */
-        Map<String, Tag> ret = new HashMap<String, Tag>();
+        Map<String, Tag> ret = super.save(entity);
         ret.put("Inventory", NbtSerialization.inventoryToTag(entity.getInventory().getContents()));
         Location bed = entity.getBedSpawnLocation();
         if (bed != null) {
