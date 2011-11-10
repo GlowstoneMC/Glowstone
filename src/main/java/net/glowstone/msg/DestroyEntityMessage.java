@@ -12,4 +12,8 @@ public final class DestroyEntityMessage extends Message {
         return id;
     }
 
+    @Override
+    public String toString() {
+        return "DestroyEntityMessage{id=" + id + "}";
+    }
 }

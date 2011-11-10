@@ -27,4 +27,8 @@ public final class EntityVelocityMessage extends Message {
         return velocityZ;
     }
 
+    @Override
+    public String toString() {
+        return "EntityVelocityMessage{id=" + id + ",velocityX=" + velocityX + ",velocityY=" + velocityY + ",velocityZ=" + velocityZ + "}";
+    }
 }

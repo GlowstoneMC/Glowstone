@@ -37,4 +37,8 @@ public final class EntityTeleportMessage extends Message {
         return pitch;
     }
 
+    @Override
+    public String toString() {
+        return "EntityTeleportMessage{id=" + id + ",x=" + x + ",y=" + y + ",z=" + z + ",rotation=" + rotation + ",pitch=" + pitch + "}";
+    }
 }

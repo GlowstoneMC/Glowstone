@@ -17,5 +17,9 @@ public class EntityRemoveEffectMessage extends Message {
     public byte getEffect() {
         return effect;
     }
-    
+
+    @Override
+    public String toString() {
+        return "EntityRemoveMessage{id=" + id + ",effect=" + effect + "}";
+    }
 }

@@ -23,4 +23,8 @@ public final class HealthMessage extends Message {
         return foodSaturation;
     }
 
+    @Override
+    public String toString() {
+        return "HealthMessage{health=" + health + ",food=" + food + ",foodSaturation=" + foodSaturation + "}";
+    }
 }

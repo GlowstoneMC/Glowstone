@@ -23,4 +23,8 @@ public final class RotationMessage extends Message {
         return onGround;
     }
 
+    @Override
+    public String toString() {
+        return "RotationMessage{rotation=" + rotation + ",pitch=" + pitch + ",onGround=" + onGround + "}";
+    }
 }

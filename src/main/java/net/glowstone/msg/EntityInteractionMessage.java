@@ -23,4 +23,8 @@ public final class EntityInteractionMessage extends Message {
         return punching;
     }
 
+    @Override
+    public String toString() {
+        return "EntityInteractionMessage{id=" + id + ",target=" + target + ",punching=" + punching + "}";
+    }
 }

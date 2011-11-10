@@ -28,5 +28,9 @@ public class EntityEffectMessage extends Message {
     public short getDuration() {
         return duration;
     }
-    
+
+    @Override
+    public String toString() {
+        return "EntityEffectMessage{id=" + id + ",effect=" + effect + ",amplifier=" + amplifier + ",duration=" + duration +"}";
+    }
 }

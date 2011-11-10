@@ -22,5 +22,9 @@ public class ExperienceMessage extends Message {
     public short getTotalExp() {
         return totalExp;
     }
-    
+
+    @Override
+    public String toString() {
+        return "ExperienceMessage{barValue=" + barValue + ",level=" + level + ",totalExp=" + totalExp + "}";
+    }
 }

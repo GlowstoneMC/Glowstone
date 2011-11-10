@@ -18,4 +18,8 @@ public final class StatisticMessage extends Message {
         return amount;
     }
 
+    @Override
+    public String toString() {
+        return "StatisticMessage{id=" + id + ",amount=" + amount + "}";
+    }
 }

@@ -11,4 +11,8 @@ public final class PingMessage extends Message {
         return pingId;
     }
 
+    @Override
+    public String toString() {
+        return "PingMessage{id=" + pingId + "}";
+    }
 }

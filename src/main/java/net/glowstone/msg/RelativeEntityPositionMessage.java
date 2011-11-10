@@ -27,4 +27,8 @@ public final class RelativeEntityPositionMessage extends Message {
         return deltaZ;
     }
 
+    @Override
+    public String toString() {
+        return "RelativeEntityPositionMessage{id=" + id + ",deltaX=" + deltaX + ",deltaY=" + deltaY + ",deltaZ=" + deltaZ + "}";
+    }
 }

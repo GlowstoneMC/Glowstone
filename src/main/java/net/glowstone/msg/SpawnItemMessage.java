@@ -50,4 +50,8 @@ public final class SpawnItemMessage extends Message {
         return roll;
     }
 
+    @Override
+    public String toString() {
+        return "SpawnItemMessage{id=" + id + ",item=" + item + ",x=" + x + ",y=" + y + ",z=" + z + ",rotation=" + rotation + ",pitch=" + pitch + ",roll=" + roll + "}";
+    }
 }

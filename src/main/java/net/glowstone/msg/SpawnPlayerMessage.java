@@ -51,4 +51,8 @@ public final class SpawnPlayerMessage extends Message {
         return item;
     }
 
+    @Override
+    public String toString() {
+        return "SpawnPlayerMessage{id=" + id + ",name=" + name + ",x=" + x + ",y=" + y + ",z=" + z + ",rotation=" + rotation + ",pitch=" + pitch + ",item=" + item + "}";
+    }
 }

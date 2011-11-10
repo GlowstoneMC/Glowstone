@@ -33,4 +33,8 @@ public final class EntityEquipmentMessage extends Message {
         return damage;
     }
 
+    @Override
+    public String toString() {
+        return "EntityEquipmentMessage{id=" + id + ",slot=" + slot + ",item=" + item + ",damage" + damage +"}";
+    }
 }

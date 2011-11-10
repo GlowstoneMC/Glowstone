@@ -113,7 +113,7 @@ public class GlowBlock implements Block {
     }
 
     public int getTypeId() {
-        return chunk.getType(x & 0xf, z & 0xf, y & 0x7f);
+        return chunk.getType(x & 0xf, z & 0xf, y);
     }
 
     public void setType(Material type) {
@@ -129,8 +129,8 @@ public class GlowBlock implements Block {
     }
 
     public boolean setTypeIdAndData(int type, byte data, boolean applyPhysics) {
-        chunk.setType(x & 0xf, z & 0xf, y & 0x7f, type);
-        chunk.setMetaData(x & 0xf, z & 0xf, y & 0x7f, data);
+        chunk.setType(x & 0xf, z & 0xf, y, type);
+        chunk.setMetaData(x & 0xf, z & 0xf, y, data);
         
         BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, type, data);
         for (GlowPlayer p : getWorld().getRawPlayers()) {
@@ -151,7 +151,7 @@ public class GlowBlock implements Block {
     // data and light getters/setters
 
     public byte getData() {
-        return (byte) chunk.getMetaData(x & 0xf, z & 0xf, y & 0x7f);
+        return (byte) chunk.getMetaData(x & 0xf, z & 0xf, y);
     }
 
     public void setData(byte data) {
@@ -168,7 +168,7 @@ public class GlowBlock implements Block {
     }
 
     public byte getLightLevel() {
-        return (byte) Math.max(chunk.getSkyLight(x & 0xf, z & 0xf, y & 0x7f), chunk.getBlockLight(x & 0xf, z & 0xf, y & 0x7f));
+        return (byte) Math.max(chunk.getSkyLight(x & 0xf, z & 0xf, y), chunk.getBlockLight(x & 0xf, z & 0xf, y));
     }
 
     // redstone-related shenanigans
@@ -200,6 +200,11 @@ public class GlowBlock implements Block {
 
     public PistonMoveReaction getPistonMoveReaction() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String toString() {
+        return "GlowBlock{loc=" + getLocation().toString() + ",type=" + getTypeId() + ",data=" + getData() + "}";
     }
 
 }

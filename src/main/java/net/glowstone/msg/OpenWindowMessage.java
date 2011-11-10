@@ -28,4 +28,8 @@ public final class OpenWindowMessage extends Message {
         return title;
     }
 
+    @Override
+    public String toString() {
+    return "OpenWindowMessage{id=" + id + ",type=" + type + ",slots=" + slots + ",title=" + title + "}";
+    }
 }

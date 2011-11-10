@@ -1,15 +1,14 @@
 package net.glowstone.scheduler;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
@@ -55,6 +54,8 @@ public final class GlowScheduler implements BukkitScheduler {
      * A list of active tasks.
      */
     private final List<GlowTask> tasks = new ArrayList<GlowTask>();
+
+    private final List<GlowWorker> activeWorkers = Collections.synchronizedList(new ArrayList<GlowWorker>());
 
     /**
      * Creates a new task scheduler.
@@ -124,7 +125,11 @@ public final class GlowScheduler implements BukkitScheduler {
             GlowTask task = it.next();
             boolean cont = false;
             try {
-                cont = task.pulse();
+                if (task.isSync()) {
+                    cont = task.pulse();
+                } else {
+                    activeWorkers.add(new GlowWorker(task, this));
+                }
             } finally {
                 if (!cont) it.remove();
             }
@@ -132,30 +137,27 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     public int scheduleSyncDelayedTask(Plugin plugin, Runnable task, long delay) {
-        return schedule(new GlowTask(plugin, task, delay, -1));
+        return scheduleSyncRepeatingTask(plugin, task, delay, -1);
     }
 
     public int scheduleSyncDelayedTask(Plugin plugin, Runnable task) {
-        return schedule(new GlowTask(plugin, task, 0, -1));
-    }
-
-    public int scheduleSyncRepeatingTask(Plugin plugin, Runnable task, long delay, long period) {
-        return schedule(new GlowTask(plugin, task, delay, period));
-    }
-
-    public int scheduleAsyncDelayedTask(Plugin plugin, Runnable task, long delay) {
-        GlowServer.logger.log(Level.WARNING, "Plugin {0}: Async tasks are not yet supported", plugin.getDescription().getName());
-        return scheduleSyncDelayedTask(plugin, task, delay);
-    }
-
-    public int scheduleAsyncDelayedTask(Plugin plugin, Runnable task) {
-        GlowServer.logger.log(Level.WARNING, "Plugin {0}: Async tasks are not yet supported", plugin.getDescription().getName());
         return scheduleSyncDelayedTask(plugin, task, 0);
     }
 
+    public int scheduleSyncRepeatingTask(Plugin plugin, Runnable task, long delay, long period) {
+        return schedule(new GlowTask(plugin, task, true, delay, period));
+    }
+
+    public int scheduleAsyncDelayedTask(Plugin plugin, Runnable task, long delay) {
+        return scheduleAsyncRepeatingTask(plugin, task, delay, -1);
+    }
+
+    public int scheduleAsyncDelayedTask(Plugin plugin, Runnable task) {
+        return scheduleAsyncRepeatingTask(plugin, task, 0, -1);
+    }
+
     public int scheduleAsyncRepeatingTask(Plugin plugin, Runnable task, long delay, long period) {
-        GlowServer.logger.log(Level.WARNING, "Plugin {0}: Async tasks are not yet supported", plugin.getDescription().getName());
-        return scheduleSyncRepeatingTask(plugin, task, delay, period);
+        return schedule(new GlowTask(plugin, task, false, delay, period));
     }
 
     public <T> Future<T> callSyncMethod(Plugin plugin, Callable<T> task) {
@@ -194,17 +196,23 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     public boolean isCurrentlyRunning(int taskId) {
-        // Can safely return false since this only refers to async tasks.
+        for (GlowWorker worker : activeWorkers) {
+            if (worker.getTaskId() == taskId && worker.getThread().isAlive()) return true;
+        }
         return false;
     }
 
     public boolean isQueued(int taskId) {
-        // Can safely return false since this only refers to async tasks.
+        synchronized (tasks) {
+            for (GlowTask task : tasks) {
+                if (task.getTaskId() == taskId) return true;
+            }
+        }
         return false;
     }
 
     public List<BukkitWorker> getActiveWorkers() {
-        return new ArrayList<BukkitWorker>();
+        return new ArrayList<BukkitWorker>(activeWorkers);
     }
 
     public List<BukkitTask> getPendingTasks() {
@@ -213,6 +221,13 @@ public final class GlowScheduler implements BukkitScheduler {
             result.add(it.next());
         }
         return result;
+    }
+
+    synchronized void workerComplete(GlowWorker worker) {
+        activeWorkers.remove(worker);
+        if (!worker.shouldContinue()) {
+            oldTasks.add(worker.getTask());
+        }
     }
 
 }

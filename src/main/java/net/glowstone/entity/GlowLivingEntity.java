@@ -1,10 +1,14 @@
 package net.glowstone.entity;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.List;
+
+import gnu.trove.set.hash.TIntHashSet;
 import net.glowstone.GlowServer;
 
+import net.glowstone.util.TargetBlock;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
@@ -24,7 +28,7 @@ import net.glowstone.msg.RelativeEntityPositionRotationMessage;
 import net.glowstone.GlowWorld;
 
 /**
- * A GlowLivingEntity is a {@link Player} or {@link Monster}.
+ * A GlowLivingEntity is a {@link org.bukkit.entity.Player} or {@link org.bukkit.entity.Monster}.
  * @author Graham Edgecombe.
  */
 public abstract class GlowLivingEntity extends GlowEntity implements LivingEntity {
@@ -107,15 +111,53 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     public List<Block> getLineOfSight(HashSet<Byte> transparent, int maxDistance) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        TIntHashSet transparentBlocks = new TIntHashSet();
+        if (transparent != null) {
+            for (byte byt : transparent) {
+                transparentBlocks.add(byt);
+            }
+        } else {
+            transparentBlocks.add(0);
+        }
+        List<Block> ret = new ArrayList<Block>();
+        TargetBlock target = new TargetBlock(this, maxDistance, 0.2, transparentBlocks);
+        while (target.getNextBlock() != null) {
+            Block block = target.getCurrentBlock().getBlock();
+            if (!transparentBlocks.contains(block.getTypeId())) {
+                ret.add(block);
+            }
+        }
+        return ret;
     }
 
     public Block getTargetBlock(HashSet<Byte> transparent, int maxDistance) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        TIntHashSet transparentBlocks = new TIntHashSet();
+        if (transparent != null) {
+            for (byte byt : transparent) {
+                transparentBlocks.add(byt);
+            }
+        } else {
+            transparentBlocks = null;
+        }
+        Location loc = new TargetBlock(this, maxDistance, 0.2, transparentBlocks).getSolidTargetBlock();
+        return loc == null ? null : loc.getBlock();
     }
 
     public List<Block> getLastTwoTargetBlocks(HashSet<Byte> transparent, int maxDistance) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        TIntHashSet transparentBlocks = new TIntHashSet();
+        if (transparent != null) {
+            for (byte byt : transparent) {
+                transparentBlocks.add(byt);
+            }
+        } else {
+            transparentBlocks = null;
+        }
+        TargetBlock target = new TargetBlock(this, maxDistance, 0.2, transparentBlocks);
+        Location last = target.getSolidTargetBlock();
+        if (last == null) {
+            return new ArrayList<Block>(Arrays.asList(target.getPreviousBlock().getBlock()));
+        }
+        return new ArrayList<Block>(Arrays.asList(target.getPreviousBlock().getBlock(), last.getBlock()));
     }
 
     public Egg throwEgg() {

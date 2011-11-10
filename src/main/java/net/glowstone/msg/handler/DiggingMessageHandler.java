@@ -4,8 +4,11 @@ import net.glowstone.block.BlockID;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.block.Block;
+import org.bukkit.event.Event;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import net.glowstone.EventFactory;
@@ -36,6 +39,14 @@ public final class DiggingMessageHandler extends MessageHandler<DiggingMessage> 
 
         // Need to have some sort of verification to deal with malicious clients.
         if (message.getState() == DiggingMessage.STATE_START_DIGGING) {
+            Action act = Action.LEFT_CLICK_BLOCK;
+            if (player.getLocation().distanceSquared(block.getLocation()) > 36 || block.getTypeId() == BlockID.AIR) {
+                act = Action.LEFT_CLICK_AIR;
+            }
+            PlayerInteractEvent interactEvent = EventFactory.onPlayerInteract(player, act, block, MessageHandlerUtils.messageToBlockFace(message.getFace()));
+            if (interactEvent.isCancelled()) return;
+            if (interactEvent.useItemInHand() == Event.Result.DENY) return;
+            // TODO: Item interactions
             BlockDamageEvent event = EventFactory.onBlockDamage(player, block);
             if (!event.isCancelled()) {
                 blockBroken = event.getInstaBreak() || player.getGameMode() == GameMode.CREATIVE;

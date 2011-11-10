@@ -12,4 +12,8 @@ public final class KickMessage extends Message {
         return reason;
     }
 
+    @Override
+    public String toString() {
+        return "KickMessage{reason=" + reason + "}";
+    }
 }

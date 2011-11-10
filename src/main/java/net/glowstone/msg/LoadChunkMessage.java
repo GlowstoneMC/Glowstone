@@ -23,4 +23,8 @@ public final class LoadChunkMessage extends Message {
         return loaded;
     }
 
+    @Override
+    public String toString() {
+        return "LoadChunkMessage{x=" + x + ",z=" + z + ",loaded=" + loaded + "}";
+    }
 }

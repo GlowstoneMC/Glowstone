@@ -14,6 +14,7 @@ import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.msg.BlockPlacementMessage;
 import net.glowstone.net.Session;
+import org.omg.SendingContext.RunTime;
 
 /**
  * A {@link MessageHandler} which processes digging messages.
@@ -24,28 +25,36 @@ public final class BlockPlacementMessageHandler extends MessageHandler<BlockPlac
     public void handle(Session session, GlowPlayer player, BlockPlacementMessage message) {
         if (player == null)
             return;
-        
-        if (message.getY() < 0) {
+
+        /**
+         * The notch client's packet sending is weird. Here's how it works:
+         * If the client is clicking a block not in range, sends a packet with x=-1,y=255,z=-1
+         * If the client is clicking a block in range with an item in hand (id > 255)
+         * Sends both the normal block placement packet and a (-1,255,-1) one
+         * If the client is placing a block in range with a block in hand, only one normal packet is sent
+         * That is how it usually happens. Sometimes it doesn't happen like that.
+         * Therefore, a hacky workaround.
+         */
+        if (message.getDirection() == 255) {
             // Right-clicked air. Note that the client doesn't send this if they are holding nothing.
-            EventFactory.onPlayerInteract(player, Action.RIGHT_CLICK_AIR);
+            BlockPlacementMessage previous = player.getPreviousPlacement();
+            if (previous == null
+                    || previous.getCount() == message.getCount()
+                    || previous.getId() == message.getId()
+                    || previous.getDamage() == message.getDamage()) {
+                EventFactory.onPlayerInteract(player, Action.RIGHT_CLICK_AIR);
+            }
+            player.setPreviousPlacement(null);
             return;
         }
 
         Block against = player.getWorld().getBlockAt(message.getX(), message.getY(), message.getZ());
-        BlockFace face;
-        switch (message.getDirection()) {
-            case 0: face = BlockFace.DOWN; break;
-            case 1: face = BlockFace.UP; break;
-            case 2: face = BlockFace.EAST; break;
-            case 3: face = BlockFace.WEST; break;
-            case 4: face = BlockFace.NORTH; break;
-            case 5: face = BlockFace.SOUTH; break;
-            default: return;
-        }
+        BlockFace face = MessageHandlerUtils.messageToBlockFace(message.getDirection());
+        if (face == BlockFace.SELF) return;
         
         Block target = against.getRelative(face);
         ItemStack holding = player.getItemInHand();
-        
+        if (EventFactory.onPlayerInteract(player, Action.RIGHT_CLICK_BLOCK, target, face).isCancelled()) return;
         if (holding != null && holding.getTypeId() < 256) {
             if (target.isEmpty() || target.isLiquid()) {
                 BlockState newState = target.getState();

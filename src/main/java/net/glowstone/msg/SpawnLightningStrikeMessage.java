@@ -35,5 +35,9 @@ public final class SpawnLightningStrikeMessage extends Message {
     public int getZ() {
         return z;
     }
-    
+
+    @Override
+    public String toString() {
+        return "SpawnLightningStrikeMessage{id=" + id + ",mode=" + mode + ",x=" + x + ",y=" + y + ",z=" + z + "}";
+    }
 }

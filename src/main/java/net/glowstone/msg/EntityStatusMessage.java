@@ -17,4 +17,8 @@ public final class EntityStatusMessage extends Message {
         return status;
     }
 
+    @Override
+    public String toString() {
+        return "EntityStatusMessage{id=" + id + ",status=" + status + "}";
+    }
 }

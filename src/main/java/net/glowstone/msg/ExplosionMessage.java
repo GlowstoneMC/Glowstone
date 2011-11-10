@@ -1,5 +1,7 @@
 package net.glowstone.msg;
 
+import java.util.Arrays;
+
 public final class ExplosionMessage extends Message {
 
     private final double x, y, z;
@@ -41,4 +43,8 @@ public final class ExplosionMessage extends Message {
         return coordinates;
     }
 
+    @Override
+    public String toString() {
+        return "ExplosionMessage{x=" + x + ",y=" + y + ",z=" + z + ",radius=" + radius + ",coordinates=" + Arrays.toString(coordinates) + "}";
+    }
 }

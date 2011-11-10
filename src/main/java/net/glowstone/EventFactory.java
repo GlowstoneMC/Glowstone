@@ -108,6 +108,10 @@ public final class EventFactory {
     public static PlayerChangedWorldEvent onPlayerChangedWorld(GlowPlayer player, GlowWorld fromWorld) {
         return callEvent(new PlayerChangedWorldEvent(player, fromWorld));
     }
+
+    public static PlayerAnimationEvent onPlayerAnimate(GlowPlayer player) {
+        return callEvent(new PlayerAnimationEvent(player));
+    }
     
     // -- Block Events
 

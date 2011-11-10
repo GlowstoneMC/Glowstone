@@ -49,4 +49,10 @@ public final class IdentificationMessage extends Message {
         return maxPlayers;
     }
 
+    @Override
+    public String toString() {
+        return "IdentificationMessage{id=" + id + ",name=" + name + ",seed=" + seed +
+                ",gameMode=" + mode + ",dimension=" + dimension + ",difficulty=" +
+                difficulty + ",worldHeight=" + worldHeight + ",maxPlayers=" + maxPlayers + "}";
+    }
 }

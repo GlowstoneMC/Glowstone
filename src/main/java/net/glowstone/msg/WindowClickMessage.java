@@ -53,4 +53,10 @@ public final class WindowClickMessage extends Message {
         return damage;
     }
 
+    @Override
+    public String toString() {
+        return "WindowClickMessage{id=" + id + ",slot=" + slot + ",rightClick=" + rightClick +
+                ",shift=" + shift + ",transaction=" + transaction +
+                ",item=" + item + ",count=" + count + ",damage=" + damage + "}";
+    }
 }

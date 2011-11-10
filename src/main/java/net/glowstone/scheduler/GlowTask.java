@@ -3,8 +3,6 @@ package net.glowstone.scheduler;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 
-import net.glowstone.GlowServer;
-
 /**
  * Represents a task which is executed periodically.
  * @author Graham Edgecombe
@@ -56,12 +54,14 @@ public class GlowTask implements BukkitTask {
      */
     private boolean running = true;
 
+    private final boolean sync;
+
     /**
      * Creates a new task with the specified number of ticks between
      * consecutive calls to {@link #execute()}.
      * @param ticks The number of ticks.
      */
-    public GlowTask(Plugin owner, Runnable task, long delay, long period) {
+    public GlowTask(Plugin owner, Runnable task, boolean sync, long delay, long period) {
         synchronized (nextTaskIdLock) {
             this.taskId = nextTaskId++;
         }
@@ -70,6 +70,7 @@ public class GlowTask implements BukkitTask {
         this.delay = delay;
         this.period = period;
         this.counter = 0;
+        this.sync = sync;
     }
 
     /**

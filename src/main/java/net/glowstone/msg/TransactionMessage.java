@@ -23,4 +23,8 @@ public final class TransactionMessage extends Message {
         return accepted;
     }
 
+    @Override
+    public String toString() {
+        return "TransactionMessage{id=" + id + ",transaction=" + transaction +",isAccepted=" + accepted + "}";
+    }
 }

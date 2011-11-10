@@ -44,4 +44,10 @@ public final class PositionRotationMessage extends Message {
         return onGround;
     }
 
+    @Override
+    public String toString() {
+        return "PositionRotationMessage{x=" + x + ",y=" + y + ",z=" + z +
+                ",stance=" + stance + ",rotation=" + rotation + ",pitch=" +
+                pitch + ",onGround=" + onGround + "}";
+    }
 }

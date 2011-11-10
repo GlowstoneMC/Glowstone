@@ -32,4 +32,8 @@ public final class BlockChangeMessage extends Message {
         return metadata;
     }
 
+    @Override
+    public String toString() {
+        return "BlockChangeMessage{x=" + x + ",y=" + y +",z=" + z + ",type=" + type + ",metadata=" + metadata + "}";
+    }
 }

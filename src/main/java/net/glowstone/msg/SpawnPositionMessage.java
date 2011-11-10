@@ -22,4 +22,8 @@ public final class SpawnPositionMessage extends Message {
         return z;
     }
 
+    @Override
+    public String toString() {
+        return "SpawnPositionMessage{x=" + x + ",y=" + y + ",z=" + z + "}";
+    }
 }

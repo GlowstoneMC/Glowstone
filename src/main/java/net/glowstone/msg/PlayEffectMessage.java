@@ -34,4 +34,8 @@ public final class PlayEffectMessage extends Message {
         return data;
     }
 
+    @Override
+    public String toString() {
+        return "PlayEffectMessage{id=" + id + ",x=" + x + ",y=" + y + ",z=" + z + ",data=" + data + "}";
+    }
 }

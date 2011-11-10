@@ -12,4 +12,8 @@ public final class CreateEntityMessage extends Message {
         return id;
     }
 
+    @Override
+    public String toString() {
+        return "CreateEntityMessage{id=" + id + "}";
+    }
 }

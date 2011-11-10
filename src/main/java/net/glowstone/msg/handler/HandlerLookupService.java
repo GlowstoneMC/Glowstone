@@ -29,6 +29,7 @@ public final class HandlerLookupService {
             bind(ServerListPingMessage.class, ServerListPingMessageHandler.class);
             bind(PingMessage.class, PingMessageHandler.class);
             bind(QuickBarMessage.class, QuickBarMessageHandler.class);
+            bind(RespawnMessage.class, RespawnMessageHandler.class);
         } catch (Exception ex) {
             throw new ExceptionInInitializerError(ex);
         }

@@ -22,4 +22,8 @@ public final class EntityRotationMessage extends Message {
         return pitch;
     }
 
+    @Override
+    public String toString() {
+        return "EntityRotationMessage{id=" + id + ",rotation=" + rotation + ",pitch=" + pitch + "}";
+    }
 }

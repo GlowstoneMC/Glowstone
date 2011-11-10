@@ -22,4 +22,8 @@ public final class ProgressBarMessage extends Message {
         return value;
     }
 
+    @Override
+    public String toString() {
+        return "ProgressBarMessage{id=" + id + ",progressBar=" + progressBar + ",value=" + value + "}";
+    }
 }

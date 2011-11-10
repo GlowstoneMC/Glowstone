@@ -17,4 +17,8 @@ public final class AttachEntityMessage extends Message {
         return vehicle;
     }
 
+    @Override
+    public String toString() {
+        return "AttachEntityMessage{id=" + id + ",vehicle=" + vehicle + "}";
+    }
 }

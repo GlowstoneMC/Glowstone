@@ -12,4 +12,8 @@ public final class ChatMessage extends Message {
         return message;
     }
 
+    @Override
+    public String toString() {
+        return "ChatMessage{message=" + message + "}";
+    }
 }

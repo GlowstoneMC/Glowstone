@@ -33,4 +33,8 @@ public final class PositionMessage extends Message {
         return onGround;
     }
 
+    @Override
+    public String toString() {
+        return "PositionMessage{x=" + x + ",y=" + y + ",z=" + z + ",stance=" + stance + ",onGround=" + onGround + "}";
+    }
 }

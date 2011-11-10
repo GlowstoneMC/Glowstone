@@ -38,4 +38,8 @@ public final class SpawnPaintingMessage extends Message {
         return title;
     }
 
+    @Override
+    public String toString() {
+        return "SpawnPaintingMessage{id=" + id + ",x=" + x + ",y=" + y + ",z=" + z + ",type=" + type + ",title=" + title + "}";
+    }
 }

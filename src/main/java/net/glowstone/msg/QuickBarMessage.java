@@ -26,5 +26,9 @@ public class QuickBarMessage extends Message {
     public short getDamage() {
         return damage;
     }
-    
+
+    @Override
+    public String toString() {
+        return "QuickBarMessage{slot=" + slot + ",id=" + id + ",amount=" + amount + ",damage=" + damage + "}";
+    }
 }

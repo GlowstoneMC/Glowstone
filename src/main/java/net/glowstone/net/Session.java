@@ -105,6 +105,11 @@ public final class Session {
     private int pingMessageId;
 
     /**
+     * Handling per-session debug mode.
+     */
+    private boolean isDebugging;
+
+    /**
      * Creates a new session.
      * @param server The server this session belongs to.
      * @param channel The channel associated with this session.

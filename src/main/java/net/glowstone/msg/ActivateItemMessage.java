@@ -12,4 +12,8 @@ public final class ActivateItemMessage extends Message {
         return slot;
     }
 
+    @Override
+    public String toString() {
+        return "ActivateItemMessage{slot=" + slot + "}";
+    }
 }

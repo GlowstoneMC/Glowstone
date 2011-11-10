@@ -36,4 +36,8 @@ public final class SetWindowSlotMessage extends Message {
         return damage;
     }
 
+    @Override
+    public String toString() {
+        return "SetWindowSlotMessage{id=" + id + ",slot=" + slot + ",item=" + item + ",count=" + count + ",damage=" + damage + "}";
+    }
 }

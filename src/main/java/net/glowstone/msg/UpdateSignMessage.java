@@ -1,5 +1,7 @@
 package net.glowstone.msg;
 
+import java.util.Arrays;
+
 public final class UpdateSignMessage extends Message {
 
     private final int x, y, z;
@@ -32,4 +34,8 @@ public final class UpdateSignMessage extends Message {
         return message;
     }
 
+    @Override
+    public String toString() {
+        return "UpdateSignMessage{x=" + x + ",y=" + y + ",z=" + z + ",message=" + Arrays.toString(message) + "}";
+    }
 }

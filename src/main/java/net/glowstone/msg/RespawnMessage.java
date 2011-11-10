@@ -33,5 +33,9 @@ public final class RespawnMessage extends Message {
     public long getSeed() {
         return seed;
     }
-    
+
+    @Override
+    public String toString() {
+        return "RespawnMessage{dimension=" + dimension + ",difficulty=" + difficulty + ",gameMode=" + mode + ",worldHeight=" + worldHeight + ",seed=" + seed + "}";
+    }
 }

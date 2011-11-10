@@ -12,4 +12,8 @@ public final class CloseWindowMessage extends Message {
         return id;
     }
 
+    @Override
+    public String toString() {
+        return "CloseWindowMessage{id=" + id + "}";
+    }
 }

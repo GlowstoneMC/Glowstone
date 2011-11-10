@@ -46,4 +46,8 @@ public final class BlockPlacementMessage extends Message {
         return direction;
     }
 
+    @Override
+    public String toString() {
+        return "BlockPlacementMessage{x=" + x + ",y=" + y +",z=" + z + ",direction=" + direction + ",id=" + id + ",count=" + count + ",damage=" + damage + "}";
+    }
 }

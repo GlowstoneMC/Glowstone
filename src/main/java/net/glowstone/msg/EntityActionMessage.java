@@ -21,4 +21,8 @@ public final class EntityActionMessage extends Message {
         return action;
     }
 
+    @Override
+    public String toString() {
+        return "EntityActionMessage{id=" + id + ",action=" + action + "}";
+    }
 }

@@ -23,5 +23,9 @@ public class UserListItemMessage extends Message {
     public short getPing() {
         return ping;
     }
-    
+
+    @Override
+    public String toString() {
+        return "UserListItemMessage{name=" + name + ",addOrRemove=" + addOrRemove +  ",ping=" + ping + "}";
+    }
 }

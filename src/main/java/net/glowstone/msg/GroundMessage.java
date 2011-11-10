@@ -12,4 +12,8 @@ public final class GroundMessage extends Message {
         return onGround;
     }
 
+    @Override
+    public String toString() {
+        return "GroundMessage{onGround=" + onGround + "}";
+    }
 }

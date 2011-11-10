@@ -17,4 +17,8 @@ public final class StateChangeMessage extends Message {
         return gameMode;
     }
 
+    @Override
+    public String toString() {
+        return "StateChangeMessage{state=" + state + ",gamemode=" + gameMode + "}";
+    }
 }

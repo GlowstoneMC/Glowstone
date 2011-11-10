@@ -12,4 +12,8 @@ public final class TimeMessage extends Message {
         return time;
     }
 
+    @Override
+    public String toString() {
+        return "TimeMessage{time=" + time + "}";
+    }
 }

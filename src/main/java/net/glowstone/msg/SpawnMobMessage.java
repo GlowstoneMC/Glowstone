@@ -52,4 +52,16 @@ public final class SpawnMobMessage extends Message {
         return parameters;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder build = new StringBuilder("SpawnMobMessage{id=").append(id).
+                append(",type=").append(type).append(",x=").append(x).append(",y=").
+                append(y).append(",z=").append(z).append(",rotation=").
+                append(rotation).append(",pitch=").append(pitch).append(",parameters=[");
+        for (Parameter<?> parm : parameters) {
+            build.append(parm).append(",");
+        }
+        build.append("]}");
+        return build.toString();
+    }
 }

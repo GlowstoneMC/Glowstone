@@ -45,4 +45,8 @@ public final class CompressedChunkMessage extends Message {
         return data;
     }
 
+    @Override
+    public String toString() {
+    return "CompressedChunkMessage{x=" + x + ",y=" + y + ",z=" + z + ",width=" + width + ",height=" + height + ",depth=" + depth + ",data=" + depth + "}";
+    }
 }

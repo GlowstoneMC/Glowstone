@@ -1,5 +1,7 @@
 package net.glowstone.msg;
 
+import java.util.Arrays;
+
 public final class MultiBlockChangeMessage extends Message {
 
     private final int chunkX, chunkZ;
@@ -42,4 +44,11 @@ public final class MultiBlockChangeMessage extends Message {
         return metadata;
     }
 
+    @Override
+    public String toString() {
+        return "MultiBlockChangeMessage{chunkX=" + chunkX + ",chunkZ=" + chunkZ +
+                ",coordinates=" + Arrays.toString(coordinates) +
+                ",types=" + Arrays.toString(types) +
+                ",metadata=" + Arrays.toString(metadata) + "}";
+    }
 }

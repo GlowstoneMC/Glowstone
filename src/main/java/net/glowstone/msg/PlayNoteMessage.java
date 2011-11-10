@@ -32,4 +32,8 @@ public final class PlayNoteMessage extends Message {
         return pitch;
     }
 
+    @Override
+    public String toString() {
+        return "PlayNoteMessage{x=" + x + ",y=" + y + ",z=" + z + ",instrument=" + instrument + ",pitch=" + pitch + "}";
+    }
 }

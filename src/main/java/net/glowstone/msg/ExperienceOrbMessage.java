@@ -31,4 +31,9 @@ public class ExperienceOrbMessage extends Message {
     public short getCount() {
         return count;
     }
+
+    @Override
+    public String toString() {
+        return "ExperienceOrbMessage{id=" + id + ",x=" + x + ",y=" + y + ",z=" + z + ",count=" + count + "}";
+    }
 }

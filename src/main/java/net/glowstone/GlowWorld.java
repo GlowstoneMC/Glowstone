@@ -487,7 +487,7 @@ public final class GlowWorld implements World {
     }
 
     public int getBlockTypeIdAt(int x, int y, int z) {
-        return ((GlowChunk) getChunkAt(x >> 4, z >> 4)).getType(x & 0xF, z & 0xF, y & 0x7F);
+        return ((GlowChunk) getChunkAt(x >> 4, z >> 4)).getType(x & 0xF, z & 0xF, y);
     }
 
     public int getHighestBlockYAt(int x, int z) {

@@ -2,6 +2,8 @@ package net.glowstone.msg;
 
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
+
 public final class SetWindowSlotsMessage extends Message {
 
     private final int id;
@@ -20,4 +22,8 @@ public final class SetWindowSlotsMessage extends Message {
         return items;
     }
 
+    @Override
+    public String toString() {
+        return "SetWindowSlotsMessage{id=" + id + ",slots=" + Arrays.toString(items) + "}";
+    }
 }

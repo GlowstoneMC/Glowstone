@@ -36,4 +36,8 @@ public final class DiggingMessage extends Message {
         return face;
     }
 
+    @Override
+    public String toString() {
+        return "DiggingMessage{state=" + state + ",x=" + x + ",y=" + y + ",z=" + z + ",face=" + face + "}";
+    }
 }

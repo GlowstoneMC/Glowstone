@@ -17,4 +17,8 @@ public final class CollectItemMessage extends Message {
         return collector;
     }
 
+    @Override
+    public String toString() {
+        return "CollectItemMessage{id=" + id + ",collector=" + collector + "}";
+    }
 }

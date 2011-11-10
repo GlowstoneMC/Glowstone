@@ -22,4 +22,14 @@ public final class EntityMetadataMessage extends Message {
         return parameters;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder build = new StringBuilder("EntityInteractionMessage{id=");
+        build.append(id).append(",metadata=[");
+        for (Parameter<?> param : parameters) {
+            build.append(param.toString()).append(",");
+        }
+        build.append("]}");
+        return build.toString();
+    }
 }

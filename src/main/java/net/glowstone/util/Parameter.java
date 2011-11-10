@@ -88,4 +88,9 @@ public class Parameter<T> {
         return value;
     }
 
+    @Override
+    public String toString() {
+        return "Parameter{type=" + type + ",index=" + index + ",value=" + value + "}";
+    }
+
 }
