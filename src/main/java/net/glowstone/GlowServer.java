@@ -1012,6 +1012,7 @@ public final class GlowServer implements Server {
             return false;
         }
         if (save) {
+            world.setAutoSave(false);
             ((GlowWorld) world).save(false);
         }
         if (worlds.contains((GlowWorld) world)) {
