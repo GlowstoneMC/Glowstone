@@ -11,8 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A class used to lookup message codecs.
- * @author Graham Edgecombe
+ * A class used to lookup block sstate stores
  */
 public final class BlockStateStoreLookupService {
 
@@ -35,6 +34,7 @@ public final class BlockStateStoreLookupService {
         try {
             bind(NoteBlockStore.class);
             bind(SignStore.class);
+            bind(CreatureSpawnerStore.class);
         } catch (Exception ex) {
             throw new ExceptionInInitializerError(ex);
         }
@@ -59,7 +59,7 @@ public final class BlockStateStoreLookupService {
     /**
      * Finds an entity store by entity id.
      * @param id The entity id.
-     * @return The codec, or {@code null} if it could not be found.
+     * @return The store, or {@code null} if it could not be found.
      */
     public static BlockStateStore<?> find(String id) {
         return idTable.get(id);

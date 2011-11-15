@@ -1,5 +1,7 @@
 package net.glowstone;
 
+import net.glowstone.block.BlockProperties;
+import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.Session;
 import net.glowstone.util.bans.BanManager;
@@ -133,6 +135,18 @@ public final class EventFactory {
     
     public static BlockPlaceEvent onBlockPlace(Block block, BlockState newState, Block against, Player player) {
         return callEvent(new BlockPlaceEvent(block, newState, against, player.getItemInHand(), player, true));
+    }
+
+    public static BlockPhysicsEvent onBlockPhysics(GlowBlock block) {
+        return callEvent(new BlockPhysicsEvent(block, block.getTypeId()));
+    }
+
+    public static BlockPhysicsEvent onBlockPhysics(GlowBlock block, int changedType) {
+        return callEvent(new BlockPhysicsEvent(block, changedType));
+    }
+
+    public static BlockCanBuildEvent onBlockCanBuild(GlowBlock block, int newId, BlockFace against) {
+        return callEvent(new BlockCanBuildEvent(block, newId, BlockProperties.get(newId).getPhysics().canPlaceAt(block, against)));
     }
 
     // -- Server Events

@@ -1,7 +1,9 @@
 package net.glowstone.block;
 
+import net.glowstone.EventFactory;
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowWorld;
+import net.glowstone.block.physics.BlockPhysicsEngine;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.msg.BlockChangeMessage;
 import org.bukkit.Location;
@@ -131,7 +133,9 @@ public class GlowBlock implements Block {
     public boolean setTypeIdAndData(int type, byte data, boolean applyPhysics) {
         chunk.setType(x & 0xf, z & 0xf, y, type);
         chunk.setMetaData(x & 0xf, z & 0xf, y, data);
-        
+        if (applyPhysics) {
+            BlockPhysicsEngine.doPhysics(this);
+        }
         BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, type, data);
         for (GlowPlayer p : getWorld().getRawPlayers()) {
             p.getSession().send(bcmsg);
@@ -160,7 +164,9 @@ public class GlowBlock implements Block {
 
     public void setData(byte data, boolean applyPhyiscs) {
         chunk.setMetaData(x & 0xf, z & 0xf, y & 0x7f, data);
-        
+        if (applyPhyiscs) {
+            BlockPhysicsEngine.doPhysics(this);
+        }
         BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, getTypeId(), data);
         for (GlowPlayer p : getWorld().getRawPlayers()) {
             p.getSession().send(bcmsg);

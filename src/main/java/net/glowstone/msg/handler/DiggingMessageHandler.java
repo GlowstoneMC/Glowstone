@@ -1,6 +1,8 @@
 package net.glowstone.msg.handler;
 
 import net.glowstone.block.BlockID;
+import net.glowstone.block.BlockProperties;
+import net.glowstone.msg.BlockPlacementMessage;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.block.Block;
@@ -61,7 +63,7 @@ public final class DiggingMessageHandler extends MessageHandler<DiggingMessage> 
         if (blockBroken) {
             if (!block.isEmpty() && !block.isLiquid()) {
                 if ((!player.getInventory().contains(block.getType()) || player.getGameMode() != GameMode.CREATIVE)) {
-                    player.getInventory().addItem(new ItemStack(block.getType(), 1, block.getData()));
+                    player.getInventory().addItem(BlockProperties.get(block.getTypeId()).getDrops(block.getData()));
                 }
             }
             world.playEffectExceptTo(block.getLocation(), Effect.STEP_SOUND, block.getTypeId(), 64, player);

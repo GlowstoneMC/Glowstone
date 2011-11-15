@@ -2,6 +2,7 @@ package net.glowstone;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import org.bukkit.BlockChangeDelegate;
@@ -69,7 +70,7 @@ public final class GlowWorld implements World {
     /**
      * A map between locations and cached Block objects.
      */
-    private final Map<Location, GlowBlock> blockCache = new HashMap<Location, GlowBlock>();
+    private final Map<Location, GlowBlock> blockCache = new ConcurrentHashMap<Location, GlowBlock>();
     
     /**
      * The world populators for this world.

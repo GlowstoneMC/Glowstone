@@ -30,7 +30,7 @@ public class GlowBlockState implements BlockState {
         z = block.getZ();
         type = block.getTypeId();
         light = block.getLightLevel();
-        chunk = (GlowChunk) block.getChunk();
+        chunk = block.getChunk();
         makeData(block.getData());
     }
 

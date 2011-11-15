@@ -131,11 +131,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      */
     private String playerListName;
 
-    /**
-     * Stores the last block placement message to work around a bug in the
-     * vanilla client where duplicate packets are sent.
-     */
-    private BlockPlacementMessage lastPlacement;
 
     /**
      * Creates a new player and adds it to the world.
@@ -882,13 +877,5 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         Map<String, Object> ret = new HashMap<String, Object>();
         ret.put("name", getName());
         return ret;
-    }
-
-    public BlockPlacementMessage getPreviousPlacement() {
-        return lastPlacement;
-    }
-
-    public void setPreviousPlacement(BlockPlacementMessage message) {
-        this.lastPlacement = message;
     }
 }

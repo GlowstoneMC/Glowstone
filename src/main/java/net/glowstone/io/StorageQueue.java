@@ -56,7 +56,7 @@ public class StorageQueue extends Thread {
         pending.clear();
         synchronized (active) {
             for (ParallelTaskThread thread : active) {
-                thread.interrupt();
+                if (thread != null) thread.interrupt();
             }
         }
     }

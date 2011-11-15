@@ -8,10 +8,7 @@ import net.glowstone.EventFactory;
 
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.msg.KickMessage;
-import net.glowstone.msg.Message;
-import net.glowstone.msg.PingMessage;
-import net.glowstone.msg.UserListItemMessage;
+import net.glowstone.msg.*;
 import net.glowstone.msg.handler.HandlerLookupService;
 import net.glowstone.msg.handler.MessageHandler;
 import org.bukkit.entity.Player;
@@ -108,6 +105,12 @@ public final class Session {
      * Handling per-session debug mode.
      */
     private boolean isDebugging;
+
+    /**
+     * Stores the last block placement message to work around a bug in the
+     * vanilla client where duplicate packets are sent.
+     */
+    private BlockPlacementMessage previousPlacement;
 
     /**
      * Creates a new session.
@@ -300,6 +303,14 @@ public final class Session {
     public void pong() {
         timeoutCounter = 0;
         pingMessageId = 0;
+    }
+
+    public BlockPlacementMessage getPreviousPlacement() {
+        return previousPlacement;
+    }
+
+    public void setPreviousPlacement(BlockPlacementMessage message) {
+        this.previousPlacement = message;
     }
 
 }
