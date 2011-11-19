@@ -3,11 +3,9 @@ package net.glowstone;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
-import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 
 import net.glowstone.block.BlockProperties;

@@ -46,7 +46,6 @@ import jline.SimpleCompletor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.event.server.ServerCommandEvent;
 
 /**
  * A meta-class to handle all logging and input-related console improvements.

@@ -1,6 +1,5 @@
 package net.glowstone.block;
 
-import net.glowstone.EventFactory;
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.physics.BlockPhysicsEngine;

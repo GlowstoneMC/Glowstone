@@ -35,11 +35,7 @@ import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.SimpleServicesManager;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.plugin.PluginLoadOrder;
-<<<<<<< HEAD
-import org.bukkit.util.config.Configuration;
-=======
 import org.bukkit.configuration.file.YamlConfiguration;
->>>>>>> 04dd9af... * Updated for bukkit changes + calling some more events now
 import org.bukkit.util.permissions.DefaultPermissions;
 
 import net.glowstone.command.*;
@@ -607,15 +603,11 @@ public final class GlowServer implements Server {
     }
 
     public Set<OfflinePlayer> getOperators() {
-<<<<<<< HEAD
-        throw new UnsupportedOperationException("Not supported yet.");
-=======
         Set<OfflinePlayer> offlinePlayers = new HashSet<OfflinePlayer>();
         for (String name : opsList.getContents()) {
             offlinePlayers.add(getOfflinePlayer(name));
         }
         return offlinePlayers;
->>>>>>> 04dd9af... * Updated for bukkit changes + calling some more events now
     }
 
     /**
@@ -934,18 +926,7 @@ public final class GlowServer implements Server {
      * @return Newly created or loaded World
      */
     @Deprecated
-    public GlowWorld createWorld(String name, Environment environment, long seed, ChunkGenerator generator) {        
-<<<<<<< HEAD
-        if (getWorld(name) != null) {
-            return getWorld(name);
-        }
-        
-        if (generator == null) {
-            generator = getGenerator(name, environment);
-        }
-        
-        GlowWorld world = new GlowWorld(this, name, environment, seed, new McRegionWorldStorageProvider(new File(name)), generator);
-=======
+    public GlowWorld createWorld(String name, Environment environment, long seed, ChunkGenerator generator) {
         return createWorld(WorldCreator.name(name).environment(environment).seed(seed).generator(generator));
     }
     
@@ -969,22 +950,8 @@ public final class GlowServer implements Server {
         }
 
         world = new GlowWorld(this, creator.name(), creator.environment(), creator.seed(), new McRegionWorldStorageProvider(new File(creator.name())), creator.generator());
->>>>>>> 04dd9af... * Updated for bukkit changes + calling some more events now
         worlds.add(world);
         return world;
-    }
-    
-    /**
-     * Creates or loads a world with the given name using the specified options.
-     * <p>
-     * If the world is already loaded, it will just return the equivalent of
-     * getWorld(creator.name()).
-     *
-     * @param options Options to use when creating the world
-     * @return Newly created or loaded world
-     */
-    public GlowWorld createWorld(WorldCreator creator) {
-        return createWorld(creator.name(), creator.environment(), creator.seed(), creator.generator());
     }
 
     /**

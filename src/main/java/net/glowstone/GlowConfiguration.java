@@ -1,12 +1,5 @@
 package net.glowstone;
 
-import org.bukkit.GameMode;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.yaml.snakeyaml.error.YAMLException;
-
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
