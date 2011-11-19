@@ -32,7 +32,14 @@ public class GameModeCommand extends GlowCommand {
             name = args[0];
             target = args[1];
         }
-        GameMode targetMode = GameMode.valueOf(target.toUpperCase());
+        GameMode targetMode = null;
+        try {
+        targetMode = GameMode.valueOf(target.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            try {
+                targetMode = GameMode.getByValue(Integer.parseInt(target));
+            } catch (NumberFormatException ex) {}
+        }
         if (targetMode == null) {
             sender.sendMessage(ChatColor.RED + "Unknown game mode: " + target);
             return false;

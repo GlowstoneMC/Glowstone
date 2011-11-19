@@ -46,6 +46,7 @@ import jline.SimpleCompletor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.event.server.ServerCommandEvent;
 
 /**
  * A meta-class to handle all logging and input-related console improvements.
@@ -244,6 +245,8 @@ public final class ConsoleManager {
         }
         
         public void run() {
+            command = EventFactory.onServerCommand(sender, command).getCommand();
+
             if (!server.dispatchCommand(sender, command)) {
                 String firstword = command;
                 if (command.indexOf(' ') >= 0) {

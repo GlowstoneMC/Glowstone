@@ -1,22 +1,27 @@
 package net.glowstone.io;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class StorageQueue extends Thread {
-    private final Vector<StorageOperation> pending = new Vector<StorageOperation>();
-    private final Vector<ParallelTaskThread> active = new Vector<ParallelTaskThread>();
+    private final BlockingQueue<StorageOperation> pending = new LinkedBlockingQueue<StorageOperation>();
+    private final List<ParallelTaskThread> active = new ArrayList<ParallelTaskThread>();
     private boolean running = false;
 
     @Override
     public void run() {
-        while (!this.isInterrupted()) {
-            synchronized (pending) {
-                if (pending.size() > 0) {
-                    StorageOperation op = pending.remove(0);
-                    if (op != null) {
-                        op.run();
-                    }
+        StorageOperation op;
+        while (!isInterrupted()) {
+            try {
+                if ((op = pending.take()) != null) {
+                    op.run();
                 }
+            } catch (InterruptedException e) {
+                break;
             }
         }
         running = false;
@@ -38,7 +43,7 @@ public class StorageQueue extends Thread {
             }
         } else {
             synchronized (pending) {
-                if (!pending.contains(op) || op.queueMultiple()) {
+                if (op.queueMultiple() || !pending.contains(op)) {
                     pending.add(op);
                 }
             }
@@ -69,7 +74,7 @@ public class StorageQueue extends Thread {
     }
 
     class ParallelTaskThread extends Thread {
-        private final Vector<StorageOperation> ops = new Vector<StorageOperation>();
+        private final Queue<StorageOperation> ops = new LinkedList<StorageOperation>();
         public ParallelTaskThread(StorageOperation op) {
             ops.add(op);
         }
@@ -78,11 +83,9 @@ public class StorageQueue extends Thread {
         public void run() {
             active.add(this);
             try {
-                while (!interrupted() && ops.size() > 0) {
-                    StorageOperation op = ops.remove(0);
-                    if (op != null) {
-                            op.run();
-                    }
+                StorageOperation op;
+                while (!isInterrupted() && (op = ops.poll()) != null) {
+                    op.run();
                 }
             } finally {
                 active.remove(this);
@@ -92,7 +95,7 @@ public class StorageQueue extends Thread {
         public void addOperation(StorageOperation op) {
             if (!isAlive() || isInterrupted())
                 throw new IllegalStateException("Thread is not running");
-            ops.add(op);
+            ops.offer(op);
         }
 
         @Override
@@ -100,7 +103,8 @@ public class StorageQueue extends Thread {
             if (!(other instanceof ParallelTaskThread)) {
                 return false;
             }
-            return ops.size() > 0 && ((ParallelTaskThread) other).ops.size() > 0 && ops.get(0).equals(((ParallelTaskThread) other).ops.get(0));
+            StorageOperation op = ops.peek();
+            return op != null && op.equals(((ParallelTaskThread) other).ops.peek());
         }
     }
 }

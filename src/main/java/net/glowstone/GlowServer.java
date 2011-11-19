@@ -2,10 +2,13 @@ package net.glowstone;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +24,10 @@ import java.util.logging.Logger;
 import org.bukkit.*;
 import org.bukkit.command.*;
 import org.bukkit.World.Environment;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfigurationOptions;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.Recipe;
@@ -31,7 +38,11 @@ import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.SimpleServicesManager;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.plugin.PluginLoadOrder;
+<<<<<<< HEAD
 import org.bukkit.util.config.Configuration;
+=======
+import org.bukkit.configuration.file.YamlConfiguration;
+>>>>>>> 04dd9af... * Updated for bukkit changes + calling some more events now
 import org.bukkit.util.permissions.DefaultPermissions;
 
 import net.glowstone.command.*;
@@ -53,6 +64,7 @@ import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
+import org.yaml.snakeyaml.error.YAMLException;
 
 /**
  * The core class of the Glowstone server.
@@ -69,11 +81,16 @@ public final class GlowServer implements Server {
      * The directory configurations are stored in
      */
     private static final File configDir = new File("config");
+
+    /**
+     * The main configuration file
+     */
+    private static final File configFile = new File(configDir, "glowstone.yml");
             
     /**
      * The configuration the server uses.
      */
-    private static final Configuration config = new Configuration(new File(configDir, "glowstone.yml"));
+    private static YamlConfiguration config = new YamlConfiguration();
 
     /**
      * The protocol version supported by the server
@@ -90,11 +107,13 @@ public final class GlowServer implements Server {
      */
     public static void main(String[] args) {
         try {
+            storeQueue.start();
+
             if (!configDir.exists() || !configDir.isDirectory())
                 configDir.mkdirs();
-            config.load();
-
-            storeQueue.start();
+            loadConfiguration();
+            config.options().indent(4);
+            ConfigurationSerialization.registerClass(GlowOfflinePlayer.class);
             
             int port = config.getInt("server.port", 25565);
             GlowServer server = new GlowServer();
@@ -188,11 +207,6 @@ public final class GlowServer implements Server {
     private GameMode defaultGameMode = GameMode.SURVIVAL;
 
     /**
-     * The server's message of the day
-     */
-    private String motd;
-
-    /**
      * Creates a new server.
      */
     public GlowServer() {
@@ -210,38 +224,52 @@ public final class GlowServer implements Server {
 
         ChannelPipelineFactory pipelineFactory = new MinecraftPipelineFactory(this);
         bootstrap.setPipelineFactory(pipelineFactory);
-        
+
+        config.options().copyDefaults(true);
+        InputStream stream = getClass().getClassLoader().getResourceAsStream("defaults/glowstone.yml");
+        if (stream == null) {
+            logger.severe("Error creating default config: Config not found in classpath");
+            return;
+        }
+        try {
+            config.setDefaults(YamlConfiguration.loadConfiguration(stream));
+        } finally {
+            try {
+                stream.close();
+            } catch (IOException e) {}
+        }
+        config.set("server.view-distance", GlowChunk.VISIBLE_RADIUS);
+
         // If the configuration is empty, attempt to migrate non-Glowstone configs
-        if (config.getKeys().size() <= 1) {
+        if (config.getKeys(false).size() <= 1) {
             System.out.println("Generating default configuration config/glowstone.yml...");
 
             // bukkit.yml
             File bukkitYml = new File("bukkit.yml");
             if (bukkitYml.exists()) {
-                Configuration bukkit = new Configuration(bukkitYml);
-                bukkit.load();
+                YamlConfiguration bukkit = YamlConfiguration.loadConfiguration(bukkitYml);
                 String moved = "", separator = "";
 
-                if (bukkit.getNode("database") != null) {
-                    config.setProperty("database", bukkit.getNode("database").getAll());
+                if (bukkit.get("database") != null) {
+                    config.set("database", bukkit.getConfigurationSection("database"));
                     moved += separator + "database settings";
                     separator = ", ";
                 }
 
-                if (bukkit.getProperty("settings.spawn-radius") != null) {
-                    config.setProperty("server.spawn-radius", bukkit.getInt("settings.spawn-radius", 16));
+                if (bukkit.get("settings.spawn-radius") != null) {
+                    config.set("server.spawn-radius", bukkit.getInt("settings.spawn-radius", 16));
                     moved += separator + "spawn radius";
                     separator = ", ";
                 }
 
                 if (bukkit.getString("settings.update-folder") != null) {
-                    config.setProperty("server.folders.update", bukkit.getString("settings.update-folder"));
+                    config.set("server.folders.update", bukkit.getString("settings.update-folder"));
                     moved += separator + "update folder";
                     separator = ", ";
                 }
 
-                if (bukkit.getNode("worlds") != null) {
-                    config.setProperty("worlds", bukkit.getNode("worlds").getAll());
+                if (bukkit.get("worlds") != null) {
+                    config.set("worlds", bukkit.getConfigurationSection("worlds"));
                     moved += separator + "world generators";
                     separator = ", ";
                 }
@@ -263,7 +291,7 @@ public final class GlowServer implements Server {
 
                     if (properties.containsKey("level-name")) {
                         String world = properties.getProperty("level-name", "world");
-                        config.setProperty("server.world-name", world);
+                        config.set("server.world-name", world);
                         moved += separator + "world name";
                         separator = ", ";
                     }
@@ -271,7 +299,7 @@ public final class GlowServer implements Server {
                     if (properties.containsKey("online-mode")) {
                         String value = properties.getProperty("online-mode", "true");
                         boolean bool = value.equalsIgnoreCase("on") || value.equalsIgnoreCase("yes") || value.equalsIgnoreCase("true");
-                        config.setProperty("server.online-mode", bool);
+                        config.set("server.online-mode", bool);
                         moved += separator + "online mode";
                         separator = ", ";
                     }
@@ -280,7 +308,7 @@ public final class GlowServer implements Server {
                         String value = properties.getProperty("server-port", "25565");
                         try {
                             int port = Integer.parseInt(value);
-                            config.setProperty("server.port", port);
+                            config.set("server.port", port);
                             moved += separator + "port";
                             separator = ", ";
                         }
@@ -291,16 +319,16 @@ public final class GlowServer implements Server {
                         String value = properties.getProperty("max-players", "20");
                         try {
                             int players = Integer.parseInt(value);
-                            config.setProperty("server.max-players", players);
+                            config.set("server.max-players", players);
                             moved += separator + "max players";
                             separator = ", ";
                         }
-                        catch (NumberFormatException ex) {}
+                        catch (NumberFormatException e) {}
                     }
 
                     if (properties.containsKey("motd")) {
                         String motd = properties.getProperty("motd", "Glowstone server");
-                        config.setProperty("server.motd", motd);
+                        config.set("server.motd", motd);
                         moved += separator + "MOTD";
                         separator = ", ";
                     }
@@ -311,7 +339,7 @@ public final class GlowServer implements Server {
                             int mode = Integer.parseInt(value);
                             GameMode gMode = GameMode.getByValue(mode);
                             if (gMode == null) gMode = GameMode.SURVIVAL;
-                            config.setProperty("server.def-game-mode", gMode.name());
+                            config.set("server.def-game-mode", gMode.name());
                             moved += separator + "default game mode";
                             separator = ", ";
                         } catch (NumberFormatException ex) {}
@@ -326,35 +354,40 @@ public final class GlowServer implements Server {
                 catch (IOException ex) {}
             }
         }
+        saveConfiguration();
+    }
 
-        // Ensure default values are set on everything
-        // Server config
-        config.getInt("server.port", 25565);
-        config.getString("server.world-name", "world");
-        config.getInt("server.max-players", 50);
-        config.getInt("server.spawn-radius", 16);
-        config.getBoolean("server.online-mode", true);
-        config.getString("server.log-file", "logs/log-%D.txt");
-        config.getString("server.terminal-mode", "jline");
-        config.getBoolean("server.whitelist", false);
-        config.getBoolean("server.allow-nether", true);
-        config.getBoolean("server.allow-flight", false);
-        config.getInt("server.view-distance", GlowChunk.VISIBLE_RADIUS);
-        motd = config.getString("server.motd", "Glowstone server");
-        setDefaultGameMode(config.getString("server.def-game-mode", GameMode.SURVIVAL.name()));
+    private static boolean loadConfiguration() {
+        try {
+            if (!configDir.exists() || !configDir.isDirectory()) {
+                configDir.mkdirs();
+            }
+            if (!configFile.exists()) {
+                configFile.createNewFile();
+            }
+            config.load(configFile);
+            return true;
+        } catch (IOException ex) {
+            logger.log(Level.SEVERE, "Cannot load " + configFile, ex);
+        } catch (InvalidConfigurationException ex) {
+            if (ex.getCause() instanceof YAMLException) {
+                logger.severe("Config file " + configFile + " isn't valid! " + ex.getCause());
+            } else if ((ex.getCause() == null) || (ex.getCause() instanceof ClassCastException)) {
+                logger.severe("Config file " + configFile + " isn't valid!");
+            } else {
+                logger.log(Level.SEVERE, "Cannot load " + configFile + ": " + ex.getCause().getClass(), ex);
+            }
+        }
+        return false;
+    }
 
-        // Server folders config
-        config.getString("server.folders.plugins", "plugins");
-        config.getString("server.folders.update", "update");
-
-        // Database config
-        config.getString("database.driver", "org.sqlite.JDBC");
-        config.getString("database.url", "jdbc:sqlite:{DIR}{NAME}.db");
-        config.getString("database.username", "glowstone");
-        config.getString("database.password", "nether");
-        config.getString("database.isolation", "SERIALIZABLE");
-
-        config.save();
+    private static boolean saveConfiguration() {
+        try {
+            config.save(configFile);
+        } catch (IOException ex) {
+            logger.log(Level.SEVERE, "Cannot save " + configFile, ex);
+        }
+        return false;
     }
 
     /**
@@ -371,7 +404,7 @@ public final class GlowServer implements Server {
      */
     public void start() {
         // Config should have already loaded by this point, but to be safe...
-        config.load();
+        loadConfiguration();
         consoleManager.setupConsole();
         
         // Load player lists
@@ -403,15 +436,16 @@ public final class GlowServer implements Server {
         builtinCommandMap.register(new HelpCommand(this, builtinCommandMap.getKnownCommands()));
 
         enablePlugins(PluginLoadOrder.STARTUP);
-        
+
         // Create worlds
-        createWorld(config.getString("server.world-name", "world"), Environment.NORMAL);
+        createWorld(WorldCreator.name(config.getString("server.world-name", "world")).environment(Environment.NORMAL));
         if (getAllowNether()) {
-            createWorld(config.getString("server.world-name", "world") + "_nether", Environment.NETHER);
+            createWorld(WorldCreator.name(config.getString("server.world-name", "world") + "_nether").environment(Environment.NETHER));
         }
-        
+
         // Finish loading plugins
         enablePlugins(PluginLoadOrder.POSTWORLD);
+        commandMap.registerServerAliases();
         consoleManager.refreshCommands();
     }
     
@@ -427,6 +461,7 @@ public final class GlowServer implements Server {
         
         // Save worlds
         for (World world : getWorlds()) {
+            world.setAutoSave(false);
             world.save();
         }
         
@@ -510,7 +545,7 @@ public final class GlowServer implements Server {
     public void reload() {
         try {
             // Reload relevant configuration
-            config.load();
+            config.load(configFile);
             opsList.load();
             whitelist.load();
             
@@ -524,6 +559,7 @@ public final class GlowServer implements Server {
             builtinCommandMap.registerAllPermissions();
             enablePlugins(PluginLoadOrder.STARTUP);
             enablePlugins(PluginLoadOrder.POSTWORLD);
+            commandMap.registerServerAliases();
             consoleManager.refreshCommands();
 
             storeQueue.reset();
@@ -574,7 +610,15 @@ public final class GlowServer implements Server {
     }
 
     public Set<OfflinePlayer> getOperators() {
+<<<<<<< HEAD
         throw new UnsupportedOperationException("Not supported yet.");
+=======
+        Set<OfflinePlayer> offlinePlayers = new HashSet<OfflinePlayer>();
+        for (String name : opsList.getContents()) {
+            offlinePlayers.add(getOfflinePlayer(name));
+        }
+        return offlinePlayers;
+>>>>>>> 04dd9af... * Updated for bukkit changes + calling some more events now
     }
 
     /**
@@ -664,7 +708,7 @@ public final class GlowServer implements Server {
             for (Player player : world.getPlayers())
                 result.add(player);
         }
-        return result.toArray(new Player[] {});
+        return result.toArray(new Player[]{});
     }
     
     /**
@@ -891,6 +935,7 @@ public final class GlowServer implements Server {
      */
     @Deprecated
     public GlowWorld createWorld(String name, Environment environment, long seed, ChunkGenerator generator) {        
+<<<<<<< HEAD
         if (getWorld(name) != null) {
             return getWorld(name);
         }
@@ -900,6 +945,31 @@ public final class GlowServer implements Server {
         }
         
         GlowWorld world = new GlowWorld(this, name, environment, seed, new McRegionWorldStorageProvider(new File(name)), generator);
+=======
+        return createWorld(WorldCreator.name(name).environment(environment).seed(seed).generator(generator));
+    }
+    
+    /**
+     * Creates or loads a world with the given name using the specified options.
+     * <p>
+     * If the world is already loaded, it will just return the equivalent of
+     * getWorld(creator.name()).
+     *
+     * @param creator Options to use when creating the world
+     * @return Newly created or loaded world
+     */
+    public GlowWorld createWorld(WorldCreator creator) {
+        GlowWorld world = getWorld(creator.name());
+        if (world != null) {
+            return world;
+        }
+
+        if (creator.generator() == null) {
+            creator.generator(getGenerator(creator.name(), creator.environment()));
+        }
+
+        world = new GlowWorld(this, creator.name(), creator.environment(), creator.seed(), new McRegionWorldStorageProvider(new File(creator.name())), creator.generator());
+>>>>>>> 04dd9af... * Updated for bukkit changes + calling some more events now
         worlds.add(world);
         return world;
     }
@@ -925,8 +995,9 @@ public final class GlowServer implements Server {
      * @return Whether the action was Successful
      */
     public boolean unloadWorld(String name, boolean save) {
-        if (getWorld(name) == null) return false;
-        return unloadWorld(getWorld(name), save);
+        GlowWorld world = getWorld(name);
+        if (world == null) return false;
+        return unloadWorld(world, save);
     }
 
     /**
@@ -945,6 +1016,7 @@ public final class GlowServer implements Server {
         }
         if (worlds.contains((GlowWorld) world)) {
             worlds.remove((GlowWorld) world);
+            EventFactory.onWorldUnload((GlowWorld)world);
             return true;
         }
         return false;
@@ -1048,7 +1120,16 @@ public final class GlowServer implements Server {
     }
 
     public Map<String, String[]> getCommandAliases() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Map<String, String[]> aliases = new HashMap<String, String[]>();
+        ConfigurationSection section = config.getConfigurationSection("aliases");
+        if (section == null) return aliases;
+        List<String> cmdAliases = new ArrayList<String>();
+        for (String key : section.getKeys(false)) {
+            cmdAliases.clear();
+            cmdAliases.addAll(section.getList(key));
+            aliases.put(key, cmdAliases.toArray(new String[cmdAliases.size()]));
+        }
+        return aliases;
     }
 
     public int getSpawnRadius() {
@@ -1056,7 +1137,7 @@ public final class GlowServer implements Server {
     }
 
     public void setSpawnRadius(int value) {
-        config.setProperty("server.spawn-radius", value);
+        config.set("server.spawn-radius", value);
     }
 
     public boolean getOnlineMode() {
@@ -1072,7 +1153,7 @@ public final class GlowServer implements Server {
     }
 
     public void setWhitelist(boolean enabled) {
-        config.setProperty("server.whitelist", enabled);
+        config.set("server.whitelist", enabled);
     }
 
     public Set<OfflinePlayer> getWhitelistedPlayers() {
@@ -1102,7 +1183,7 @@ public final class GlowServer implements Server {
     }
 
     public OfflinePlayer getOfflinePlayer(String name) {
-        OfflinePlayer player = getPlayer(name);
+        OfflinePlayer player = getPlayerExact(name);
         if (player == null) {
             player = new GlowOfflinePlayer(this, name);
         }
@@ -1141,7 +1222,7 @@ public final class GlowServer implements Server {
                 player.setGameMode(mode);
             }
         }
-        config.setProperty("server.def-game-mode", mode.name());
+        config.set("server.def-game-mode", mode.name());
     }
 
     public GameMode setDefaultGameMode(String mode) {
@@ -1172,17 +1253,12 @@ public final class GlowServer implements Server {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public String getMOTD() {
-        return motd;
+    public String getMotd() {
+        return config.getString("server.motd", "Glowstone server");
     }
 
-    public void setMOTD(String motd) {
-        setMOTD(motd, true);
-    }
-
-    public void setMOTD(String motd, boolean permanent) {
-        this.motd = motd;
-        if (permanent) config.setProperty("server.motd", motd);
+    public void setMotd(String motd) {
+        config.set("server.motd", motd);
     }
 
     public StorageQueue getStorageQueue() {

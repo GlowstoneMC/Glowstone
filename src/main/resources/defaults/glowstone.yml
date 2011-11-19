@@ -1,0 +1,29 @@
+server:
+    port: 25565
+    world-name: world
+    max-players: 50
+    spawn-radius: 16
+    online-mode: true
+    log-file: logs/log-%D.txt
+    terminal-mode: jline
+    whitelist: false
+    allow-nether: true
+    allow-flight: false
+    view-distance: 10
+    motd: Glowstone Server
+    def-game-mode: SURVIVAL
+    folders:
+        plugins: plugins
+        update: update
+
+database:
+    driver: "org.sqlite.JDBC"
+    url: jdbc:sqlite:{DIR}{NAME}.db
+    username: glowstone
+    password: nether
+    isolation: SERIALIZABLE
+
+aliases:
+    "<3glowstone":
+        - version
+        - plugins

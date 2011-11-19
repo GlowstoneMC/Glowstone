@@ -94,7 +94,7 @@ public final class ChunkManager {
             e.printStackTrace();
             success = false;
         }
-        
+        EventFactory.onChunkLoad(getChunk(x, z), !success);
         if (!success && generate) {
             chunkRandom.setSeed((long) x * 341873128712L + (long) z * 132897987541L);
             
@@ -125,7 +125,7 @@ public final class ChunkManager {
                     }
                 }
             }
-            
+            EventFactory.onChunkPopulate(chunk);
             return true;
         }
         

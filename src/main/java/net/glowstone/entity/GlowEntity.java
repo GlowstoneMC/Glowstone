@@ -59,6 +59,11 @@ public abstract class GlowEntity implements Entity {
      * A flag indicting if the entity is on the ground
      */
     private boolean onGround = true;
+
+    /**
+     * A counter of how long this entity has existed
+     */
+    private int ticksLived = 0;
     /**
      * Creates an entity and adds it to the specified world.
      * @param world The world.
@@ -104,7 +109,7 @@ public abstract class GlowEntity implements Entity {
     }
 
     /**
-     * Gets the {@link Server} that contains this Entity
+     * Gets the {@link org.bukkit.Server} that contains this Entity
      *
      * @return Server instance running this Entity
      */
@@ -142,7 +147,7 @@ public abstract class GlowEntity implements Entity {
      * periodic functionality e.g. mob AI.
      */
     public void pulse() {
-
+        ticksLived++;
     }
 
     /**
@@ -170,8 +175,8 @@ public abstract class GlowEntity implements Entity {
     }
 
     /**
-     * Sets this entity's position.
-     * @param position The new position.
+     * Sets this entity's location.
+     * @param location The new location.
      */
     public void setRawLocation(Location location) {
         this.location = location;
@@ -319,6 +324,14 @@ public abstract class GlowEntity implements Entity {
 
     public UUID getUniqueId() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public int getTicksLived() {
+        return ticksLived;
+    }
+
+    public void setTicksLived(int value) {
+        this.ticksLived = value;
     }
 
     public boolean isOnGround() {

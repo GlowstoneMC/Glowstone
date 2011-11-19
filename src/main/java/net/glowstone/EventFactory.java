@@ -9,11 +9,24 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.*;
 import org.bukkit.event.block.*;
+import org.bukkit.event.server.ServerCommandEvent;
+import org.bukkit.event.server.ServerListPingEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.event.world.ChunkPopulateEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
+import org.bukkit.event.world.SpawnChangeEvent;
+import org.bukkit.event.world.WorldInitEvent;
+import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.event.world.WorldSaveEvent;
+import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.net.InetAddress;
 
 /**
  * Central class for the calling of events.
@@ -26,6 +39,7 @@ public final class EventFactory {
     /**
      * Calls an event through the plugin manager.
      * @param event The event to throw.
+     * @return the called event
      */
     private static <T extends Event> T callEvent(T event) {
         Bukkit.getServer().getPluginManager().callEvent(event);
@@ -90,6 +104,10 @@ public final class EventFactory {
     public static PlayerPreLoginEvent onPlayerPreLogin(String name, Session session) {
         return callEvent(new PlayerPreLoginEvent(name, session.getAddress().getAddress()));
     }
+
+    public static PlayerChangedWorldEvent onPlayerChangedWorld(GlowPlayer player, GlowWorld fromWorld) {
+        return callEvent(new PlayerChangedWorldEvent(player, fromWorld));
+    }
     
     // -- Block Events
 
@@ -111,5 +129,49 @@ public final class EventFactory {
     
     public static BlockPlaceEvent onBlockPlace(Block block, BlockState newState, Block against, Player player) {
         return callEvent(new BlockPlaceEvent(block, newState, against, player.getItemInHand(), player, true));
+    }
+
+    // -- Server Events
+
+    public static ServerListPingEvent onServerListPing(InetAddress address, String message, int online, int max) {
+        return callEvent(new ServerListPingEvent(address, message, online, max));
+    }
+
+    public static ServerCommandEvent onServerCommand(ConsoleCommandSender sender, String command) {
+        return callEvent(new ServerCommandEvent(sender, command));
+    }
+
+    // -- World Events
+
+    public static ChunkLoadEvent onChunkLoad(GlowChunk chunk, boolean isNew) {
+        return callEvent(new ChunkLoadEvent(chunk, isNew));
+    }
+
+    public static ChunkPopulateEvent onChunkPopulate(GlowChunk populatedChunk) {
+        return callEvent(new ChunkPopulateEvent(populatedChunk));
+    }
+
+    public static ChunkUnloadEvent onChunkUnload(GlowChunk chunk) {
+        return callEvent(new ChunkUnloadEvent(chunk));
+    }
+
+    public static SpawnChangeEvent onSpawnChange(GlowWorld world, Location previousLocation) {
+        return callEvent(new SpawnChangeEvent(world, previousLocation));
+    }
+
+    public static WorldInitEvent onWorldInit(GlowWorld world) {
+        return callEvent(new WorldInitEvent(world));
+    }
+
+    public static WorldLoadEvent onWorldLoad(GlowWorld world) {
+        return callEvent(new WorldLoadEvent(world));
+    }
+
+    public static WorldSaveEvent onWorldSave(GlowWorld world) {
+        return callEvent(new WorldSaveEvent(world));
+    }
+
+    public static WorldUnloadEvent onWorldUnload(GlowWorld world) {
+        return callEvent(new WorldUnloadEvent(world));
     }
 }

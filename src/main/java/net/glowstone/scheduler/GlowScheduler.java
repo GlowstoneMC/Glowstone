@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
@@ -61,7 +63,6 @@ public final class GlowScheduler implements BukkitScheduler {
         this.server = server;
         
         executor.scheduleAtFixedRate(new Runnable() {
-            @Override
             public void run() {
                 try {
                     pulse();
@@ -121,8 +122,11 @@ public final class GlowScheduler implements BukkitScheduler {
         // Run the relevant tasks.
         for (Iterator<GlowTask> it = tasks.iterator(); it.hasNext(); ) {
             GlowTask task = it.next();
-            if (!task.pulse()) {
-                it.remove();
+            boolean cont = false;
+            try {
+                cont = task.pulse();
+            } finally {
+                if (!cont) it.remove();
             }
         }
     }

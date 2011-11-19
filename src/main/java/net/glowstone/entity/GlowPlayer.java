@@ -11,11 +11,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
+import net.glowstone.GlowOfflinePlayer;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.io.StorageOperation;
 import net.glowstone.msg.*;
 import net.glowstone.util.Position;
 import org.bukkit.*;
+import org.bukkit.configuration.serialization.DelegateDeserialization;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
@@ -36,6 +38,7 @@ import org.bukkit.map.MapView;
  * Represents an in-game player.
  * @author Graham Edgecombe
  */
+@DelegateDeserialization(GlowOfflinePlayer.class)
 public final class GlowPlayer extends GlowHumanEntity implements Player, InventoryViewer {
 
     /**
@@ -122,6 +125,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      * The bed spawn location of a player
      */
     private Location bedSpawn;
+
+    /**
+     * The name a player has in the player list
+     */
+    private String playerListName;
 
     /**
      * Creates a new player and adds it to the world.
@@ -292,6 +300,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         }
     }
 
+    public Player getPlayer() {
+        return this;
+    }
+
     public InetSocketAddress getAddress() {
         return session.getAddress();
     }
@@ -319,6 +331,24 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
 
     public void setDisplayName(String name) {
         displayName = name;
+    }
+
+    public String getPlayerListName() {
+        return playerListName == null || "".equals(playerListName) ? getName() : playerListName;
+    }
+
+    public void setPlayerListName(String name) {
+        if (name.length() > 15) throw new IllegalArgumentException("The given name was " + name.length() + " chars long, longer than the maximum of 16");
+        for (Player player : server.getOnlinePlayers()) {
+            if (player.getPlayerListName().equals(getPlayerListName())) throw new IllegalArgumentException("The name given, " + name + ", is already used by " + player.getName() + ".");
+        }
+        Message removeMessage = new UserListItemMessage(getPlayerListName(), false, (short)0);
+        playerListName = name;
+        Message reAddMessage = new UserListItemMessage(getPlayerListName(), true, (short)0);
+        for (Player player : server.getOnlinePlayers()) {
+            ((GlowPlayer) player).getSession().send(removeMessage);
+            ((GlowPlayer) player).getSession().send(reAddMessage);
+        }
     }
 
     public Location getCompassTarget() {
@@ -432,12 +462,13 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      */
     @Override
     public boolean teleport(Location location) {
-        if (location != null && this.location != null) {
+        if (this.location != null && this.location.getWorld() != null) {
             PlayerTeleportEvent event = EventFactory.onPlayerTeleport(this, getLocation(), location);
             if (event.isCancelled()) return false;
             location = event.getTo();
         }
         if (location.getWorld() != world) {
+            GlowWorld oldWorld = world;
             world.getEntityManager().deallocate(this);
             
             world = (GlowWorld) location.getWorld();
@@ -456,6 +487,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
             this.location = location; // take us to spawn position
             session.send(new StateChangeMessage((byte)(getWorld().hasStorm() ? 1 : 2), (byte)0)); // send the world's weather
             reset();
+            EventFactory.onPlayerChangedWorld(this, oldWorld);
         } else {
             this.session.send(new PositionRotationMessage(location.getX(), location.getY() + EYE_HEIGHT + 0.01, location.getZ(), location.getY(), (float) location.getYaw(), (float) location.getPitch(), true));
             this.location = location;
@@ -557,22 +589,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         
         GlowWorld dataWorld = (GlowWorld)server.getWorlds().get(0);
         dataWorld.getMetadataService().readPlayerData(this);
-
-        //teleport((Location) dat.get(PlayerData.LOCATION));
-        // setFallDistance((Float)dat.get(PlayerData.FALL_DISTANCE));
-        //if (dat.containsKey(PlayerData.INVENTORY))
-        //    getInventory().setContents((ItemStack[])dat.get(PlayerData.INVENTORY));
-        //setHealth((Short)dat.get(PlayerData.HEALTH));
-        // setVelocity((Vector)dat.get(PlayerData.MOTION));
-        // setFireTicks((Short)dat.get(PlayerData.FIRE_TICKS));
-        // setRemainingAir((Short)dat.get(PlayerData.AIR_TICKS));
-        // setNoDamageTicks((Short)dat.get(PlayerData.HURT_TICKS));
-        // sleeping = (Boolean)dat.get(PlayerData.IS_SLEEPING);
-        //setSleepTicks((Short)dat.get(PlayerData.SLEEP_TICKS));
-        //if (dat.containsKey(PlayerData.BED_LOCATION))
-        //    bedSpawn = (Location)dat.get(PlayerData.BED_LOCATION);
-
-
     }
     
     // -- Data transmission
@@ -844,4 +860,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         experience %= 200;
     }
 
+    public Map<String, Object> serialize() {
+        Map<String, Object> ret = new HashMap<String, Object>();
+        ret.put("name", getName());
+        return ret;
+    }
 }

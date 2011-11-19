@@ -31,34 +31,6 @@ public final class CraftingManager {
         // Report stats
         int shape = shapedRecipes.size(), nshape = shapelessRecipes.size(), furnace = furnaceRecipes.size(), fuel = furnaceFuels.size();
         GlowServer.logger.log(Level.INFO, "Recipes: {0} shaped, {1} shapeless, {2} furnace, {3} fuels.", new Object[] { shape, nshape, furnace, fuel });
-        
-        testRecipe("workbench", new ItemStack(Material.WORKBENCH, 1), s("WOOD"), s("WOOD"), s("WOOD"), s("WOOD"));
-        testRecipe("iron", new ItemStack(Material.IRON_INGOT, 9), s("IRON_BLOCK"));
-        testRecipe("wood", new ItemStack(Material.WOOD, 4), s("LOG"));
-        testRecipe("wood 2", new ItemStack(Material.WOOD, 4), null, s("LOG"), null, null);
-    }
-    
-    private ItemStack s(String s) {
-        return new ItemStack(Material.getMaterial(s), 1);
-    }
-    
-    /**
-     * Tests a recipe to make sure it 
-     */
-    private void testRecipe(String name, ItemStack want, ItemStack... input) {
-        Recipe recipe = getCraftingRecipe(input);
-        if (recipe == null) {
-            if (want == null) {
-                System.out.println("Test " + name + ": OK [null]");
-            } else {
-                System.out.println("Test " + name + ": FAIL: want " + want + " got null");
-            }
-        } else if (want.equals(recipe.getResult())) {
-            System.out.println("Test " + name + ": OK [" + want + "]");
-        } else {
-            String result = (recipe == null) ? null : recipe.getResult().toString();
-            System.out.println("Test " + name + ": FAIL: want " + want + " got " + result);
-        }
     }
     
     /**
@@ -307,6 +279,14 @@ public final class CraftingManager {
                 makeShaped(set.getTools()[3]).shape("xx"," |"," |").setIngredient('x', set.getInput()).setIngredient('|', Material.STICK); // hoe
                 makeShaped(set.getTools()[4]).shape("x","x","|").setIngredient('x', set.getInput()).setIngredient('|', Material.STICK); // sword
             }
+            
+            if (set.getStairMaterial() != null) {
+                makeShaped(set.getStairMaterial(), 4).shape("x  ","xx ","xxx").setIngredient('x', set.getInput());
+            }
+
+            if (set.getSlabData() != -1) {
+                makeShaped(Material.STEP, 3, set.getSlabData()).shape("xxx").setIngredient('x', set.getInput());
+            }
         }
         
         // Basic Recipes
@@ -328,17 +308,18 @@ public final class CraftingManager {
         makeShaped(Material.STEP, 3, 1).shape("xxx").setIngredient('x', Material.SANDSTONE);
         makeShaped(Material.STEP, 3, 2).shape("xxx").setIngredient('x', Material.WOOD);
         makeShaped(Material.STEP, 3, 3).shape("xxx").setIngredient('x', Material.COBBLESTONE);
-        makeShaped(Material.COBBLESTONE_STAIRS, 4).shape("x  ","xx ","xxx").setIngredient('x', Material.COBBLESTONE);
-        makeShaped(Material.WOOD_STAIRS, 4).shape("x  ","xx ","xxx").setIngredient('x', Material.WOOD);
         makeShaped(Material.SNOW_BLOCK).shape("xx","xx").setIngredient('x', Material.SNOW_BALL);
         makeShaped(Material.CLAY).shape("xx","xx").setIngredient('x', Material.CLAY_BALL);
         makeShaped(Material.BRICK).shape("xx","xx").setIngredient('x', Material.CLAY_BRICK);
         makeShaped(Material.BOOKSHELF).shape("www","bbb","www").setIngredient('w', Material.WOOD).setIngredient('b', Material.BOOK);
         makeShaped(Material.SANDSTONE).shape("xx","xx").setIngredient('x', Material.SAND);
         makeShaped(Material.JACK_O_LANTERN).shape("p","t").setIngredient('p', Material.PUMPKIN).setIngredient('t', Material.TORCH);
-        
+        makeShaped(Material.SMOOTH_BRICK, 4).shape("xx", "xx").setIngredient('x', Material.STONE);
+        makeShaped(Material.IRON_FENCE, 16).shape("xxx", "xxx").setIngredient('x', Material.IRON_INGOT);
+        makeShaped(Material.THIN_GLASS, 16).shape("xxx", "xxx").setIngredient('x', Material.GLASS);
+
         // Tool Recipes
-        makeShaped(Material.FLINT_AND_STEEL).shape("i "," f").setIngredient('i', Material.IRON_INGOT).setIngredient('f', Material.FLINT);
+        makeShaped(Material.FLINT_AND_STEEL).shape("i ", " f").setIngredient('i', Material.IRON_INGOT).setIngredient('f', Material.FLINT);
         makeShaped(Material.BUCKET).shape("i i"," i ").setIngredient('i', Material.IRON_INGOT);
         makeShaped(Material.COMPASS).shape(" i ","iri"," i ").setIngredient('i', Material.IRON_INGOT).setIngredient('r', Material.REDSTONE);
         makeShaped(Material.MAP).shape("ppp","pcp","ppp").setIngredient('p', Material.PAPER).setIngredient('c', Material.COMPASS);
@@ -372,6 +353,7 @@ public final class CraftingManager {
         makeShaped(Material.DIODE).shape("trt","sss").setIngredient('t', Material.REDSTONE_TORCH_ON).setIngredient('r', Material.REDSTONE).setIngredient('s', Material.STONE);
         makeShaped(Material.PISTON_BASE).shape("www","sis","srs").setIngredient('w', Material.WOOD).setIngredient('s', Material.COBBLESTONE).setIngredient('i', Material.IRON_INGOT).setIngredient('r', Material.REDSTONE);
         makeShaped(Material.PISTON_STICKY_BASE).shape("s","p").setIngredient('s', Material.SLIME_BALL).setIngredient('p', Material.PISTON_BASE);
+        makeShaped(Material.FENCE_GATE).shape("#W#", "#W#").setIngredient('#', Material.STICK).setIngredient('W', Material.WOOD);
         
         // Food Recipes
         makeShaped(Material.BOWL, 4).shape("w w"," w ").setIngredient('w', Material.WOOD);
@@ -382,6 +364,8 @@ public final class CraftingManager {
         makeShaped(Material.CAKE).shape("mmm","ses","www").setIngredient('m', Material.MILK_BUCKET).setIngredient('s', Material.SUGAR).setIngredient('e', Material.EGG).setIngredient('w', Material.WHEAT);
         makeShaped(Material.COOKIE, 8).shape("wdw").setIngredient('w', Material.WHEAT).setIngredient('d', Material.INK_SACK, 3);
         makeShaped(Material.GOLDEN_APPLE).shape("ggg","gag","ggg").setIngredient('g', Material.GOLD_BLOCK).setIngredient('a', Material.APPLE);
+        makeShaped(Material.MELON_BLOCK).shape("mmm", "mmm", "mmm").setIngredient('m', Material.MELON);
+        makeShaped(Material.MELON_SEEDS).shape("m").setIngredient('m', Material.MELON);
         
         // Miscellaneous Recipes
         makeShaped(Material.PAINTING).shape("///","/w/","///").setIngredient('/', Material.STICK).setIngredient('w', Material.WOOL);
@@ -421,6 +405,8 @@ public final class CraftingManager {
         addRecipe(new FurnaceRecipe(new ItemStack(Material.GLASS), Material.SAND));
         addRecipe(new FurnaceRecipe(new ItemStack(Material.STONE), Material.COBBLESTONE));
         addRecipe(new FurnaceRecipe(new ItemStack(Material.GRILLED_PORK), Material.PORK));
+        addRecipe(new FurnaceRecipe(new ItemStack(Material.COOKED_BEEF), Material.RAW_BEEF));
+        addRecipe(new FurnaceRecipe(new ItemStack(Material.COOKED_CHICKEN), Material.RAW_CHICKEN));
         addRecipe(new FurnaceRecipe(new ItemStack(Material.CLAY_BRICK), Material.CLAY));
         addRecipe(new FurnaceRecipe(new ItemStack(Material.COOKED_FISH), Material.RAW_FISH));
         addRecipe(new FurnaceRecipe(new ItemStack(Material.COAL, 1, (byte)1), Material.LOG)); // Charcoal
@@ -469,9 +455,9 @@ public final class CraftingManager {
     
     private enum CraftingSet {        
         WOOD(Material.WOOD,
-                tools(Material.WOOD_AXE, Material.WOOD_PICKAXE, Material.WOOD_SPADE, Material.WOOD_HOE, Material.WOOD_SWORD)),
-        STONE(Material.COBBLESTONE,
-                tools(Material.STONE_AXE, Material.STONE_PICKAXE, Material.STONE_SPADE, Material.STONE_HOE, Material.STONE_SWORD)),
+                tools(Material.WOOD_AXE, Material.WOOD_PICKAXE, Material.WOOD_SPADE, Material.WOOD_HOE, Material.WOOD_SWORD), stairs(2, Material.WOOD_STAIRS)),
+        COBBLESTONE(Material.COBBLESTONE,
+                tools(Material.STONE_AXE, Material.STONE_PICKAXE, Material.STONE_SPADE, Material.STONE_HOE, Material.STONE_SWORD), stairs(3, Material.COBBLESTONE_STAIRS)),
         GOLD(Material.GOLD_INGOT, block(Material.GOLD_BLOCK),
                 tools(Material.GOLD_AXE, Material.GOLD_PICKAXE, Material.GOLD_SPADE, Material.GOLD_HOE, Material.GOLD_SWORD),
                 armor(Material.GOLD_HELMET, Material.GOLD_CHESTPLATE, Material.GOLD_LEGGINGS, Material.GOLD_BOOTS)),
@@ -484,7 +470,11 @@ public final class CraftingManager {
         LEATHER(Material.LEATHER,
                 armor(Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS)),
         CHAINMAIL(Material.FIRE,
-                armor(Material.CHAINMAIL_HELMET, Material.CHAINMAIL_CHESTPLATE, Material.CHAINMAIL_LEGGINGS, Material.CHAINMAIL_BOOTS));
+                armor(Material.CHAINMAIL_HELMET, Material.CHAINMAIL_CHESTPLATE, Material.CHAINMAIL_LEGGINGS, Material.CHAINMAIL_BOOTS)),
+        BRICK(Material.BRICK, stairs(4, Material.BRICK_STAIRS)),
+        SMOOTH_BRICK(Material.SMOOTH_BRICK, stairs(5, Material.SMOOTH_STAIRS)),
+        SANDSTONE(Material.SANDSTONE, stairs(1, null)),
+        STONE(Material.STONE, stairs(0, null));
         
         
         private Material material;
@@ -492,6 +482,8 @@ public final class CraftingManager {
         
         private Material[] armor;
         private Material[] tools;
+        private Material stairs;
+        private int slabData = -1;
         
         private CraftingSet(Material mat, Property... props) {
             material = mat;
@@ -513,6 +505,14 @@ public final class CraftingManager {
         
         public Material[] getTools() {
             return tools;
+        }
+
+        public Material getStairMaterial() {
+            return stairs;
+        }
+
+        private int getSlabData() {
+            return slabData;
         }
         
         // -----------------
@@ -536,6 +536,13 @@ public final class CraftingManager {
         private static Property armor(final Material helmet, final Material chestplate, final Material leggings, final Material boots) {
             return new Property() { public void apply(CraftingSet s) {
                 s.armor = new Material[] { helmet, chestplate, leggings, boots };
+            }};
+        }
+
+        private static Property stairs(final int slabData, final Material stairs) {
+            return new Property() { public void apply(CraftingSet set) {
+                set.stairs = stairs;
+                set.slabData = slabData;
             }};
         }
         

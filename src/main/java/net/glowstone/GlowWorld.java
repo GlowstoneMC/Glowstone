@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import org.bukkit.BlockChangeDelegate;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
+import org.bukkit.Difficulty;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.TreeType;
@@ -170,7 +171,7 @@ public final class GlowWorld implements World {
         provider.setWorld(this);
         chunks = new ChunkManager(this, provider.getChunkIoService(), generator);
         metadataService = provider.getMetadataService();
-
+        EventFactory.onWorldInit(this);
         WorldFinalValues values = null;
         try {
             values = metadataService.readWorldData();
@@ -189,7 +190,6 @@ public final class GlowWorld implements World {
             this.seed = seed;
             this.uid = UUID.randomUUID();
         }
-
         populators = generator.getDefaultPopulators(this);
         if (spawnLocation == null) spawnLocation = generator.getFixedSpawnLocation(this, random);
 
@@ -215,21 +215,23 @@ public final class GlowWorld implements World {
             }
         }
         server.getLogger().log(Level.INFO, "Preparing spawn for {0}: done", name);
-        
-        spawnLocation = generator.getFixedSpawnLocation(this, random);
         if (spawnLocation == null) {
-            spawnLocation = new Location(this, 0, getHighestBlockYAt(0, 0), 0);
-            
-            if (!generator.canSpawn(this, spawnLocation.getBlockX(), spawnLocation.getBlockZ())) {
-                // 10 tries only to prevent a return false; bomb
-                for (int tries = 0; tries < 10 && !generator.canSpawn(this, spawnLocation.getBlockX(), spawnLocation.getBlockZ()); ++tries) {
-                    spawnLocation.setX(spawnLocation.getX() + random.nextDouble() * 128 - 64);
-                    spawnLocation.setZ(spawnLocation.getZ() + random.nextDouble() * 128 - 64);
+            spawnLocation = generator.getFixedSpawnLocation(this, random);
+            if (spawnLocation == null) {
+                spawnLocation = new Location(this, 0, getHighestBlockYAt(0, 0), 0);
+
+                if (!generator.canSpawn(this, spawnLocation.getBlockX(), spawnLocation.getBlockZ())) {
+                    // 10 tries only to prevent a return false; bomb
+                    for (int tries = 0; tries < 10 && !generator.canSpawn(this, spawnLocation.getBlockX(), spawnLocation.getBlockZ()); ++tries) {
+                        spawnLocation.setX(spawnLocation.getX() + random.nextDouble() * 128 - 64);
+                        spawnLocation.setZ(spawnLocation.getZ() + random.nextDouble() * 128 - 64);
+                    }
                 }
+
+                spawnLocation.setY(1 + getHighestBlockYAt(spawnLocation.getBlockX(), spawnLocation.getBlockZ()));
             }
-            
-            spawnLocation.setY(1 + getHighestBlockYAt(spawnLocation.getBlockX(), spawnLocation.getBlockZ()));
         }
+        EventFactory.onWorldLoad(this);
         save();
 
     }
@@ -342,14 +344,15 @@ public final class GlowWorld implements World {
     }
 
     public boolean setSpawnLocation(int x, int y, int z) {
-        spawnLocation = new Location(this, x, y, z);
-        return true;
+        return setSpawnLocation(new Location(this, x, y, z));
     }
 
     public boolean setSpawnLocation(Location loc) {
+        Location oldSpawn = spawnLocation;
         loc.setWorld(this);
         spawnLocation = loc;
-        return true;
+        EventFactory.onSpawnChange(this, oldSpawn);
+        return !loc.equals(oldSpawn);
     }
 
     public boolean getPVP() {
@@ -406,10 +409,11 @@ public final class GlowWorld implements World {
     // force-save
 
     public void save() {
+        EventFactory.onWorldSave(this);
         server.getStorageQueue().queue(new StorageOperation() {
             @Override
             public boolean isParallel() {
-                return false;
+                return true;
             }
 
             @Override
@@ -566,7 +570,10 @@ public final class GlowWorld implements World {
         if (!safe) {
             throw new UnsupportedOperationException("unloadChunk does not yet support unsafe unloading.");
         }
-        return unloadChunk(x, z, save);
+        if (save) {
+            getChunkManager().forceSave(x, z);
+        }
+        return unloadChunkRequest(x, z, safe);
     }
 
     public boolean unloadChunkRequest(int x, int z) {
@@ -852,52 +859,50 @@ public final class GlowWorld implements World {
         autosave = value;
     }
 
+    public void setDifficulty(Difficulty difficulty) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    public Difficulty getDifficulty() {
+        return Difficulty.PEACEFUL;
+    }
+
     // level data write
 
     void writeWorldData() {
-        server.getStorageQueue().queue(new WorldMetadataSaveOperation(this, metadataService));
+        server.getStorageQueue().queue(new StorageOperation() {
+            @Override
+            public boolean isParallel() {
+                return true;
+            }
+
+            @Override
+            public String getGroup() {
+                return getName();
+            }
+
+            @Override
+            public boolean queueMultiple() {
+                return false;
+            }
+
+            @Override
+            public String getOperation() {
+                return "world-metadata-save";
+            }
+
+            public void run() {
+                try {
+                    metadataService.writeWorldData();
+                } catch (IOException e) {
+                    server.getLogger().severe("Could not save world metadata file for world" + getName());
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public WorldMetadataService getMetadataService() {
         return metadataService;
-    }
-
-    public static class WorldMetadataSaveOperation extends StorageOperation {
-        private final GlowWorld world;
-        private final WorldMetadataService service;
-
-        protected WorldMetadataSaveOperation(GlowWorld world, WorldMetadataService service) {
-            this.world = world;
-            this.service = service;
-        }
-
-        @Override
-        public boolean isParallel() {
-            return true;
-        }
-
-        @Override
-        public String getGroup() {
-            return world.getName();
-        }
-
-        @Override
-        public boolean queueMultiple() {
-            return false;
-        }
-
-        @Override
-        public String getOperation() {
-            return "world-metadata-save";
-        }
-
-        public void run() {
-            try {
-                service.writeWorldData();
-            } catch (IOException e) {
-                world.server.getLogger().severe("Could not save world metadata file for world" + world.getName());
-                e.printStackTrace();
-            }
-        }
     }
 }

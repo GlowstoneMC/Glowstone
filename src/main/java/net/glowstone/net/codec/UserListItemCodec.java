@@ -17,7 +17,7 @@ public class UserListItemCodec extends MessageCodec<UserListItemMessage> {
     public ChannelBuffer encode(UserListItemMessage message) throws IOException {
         ChannelBuffer buffer = ChannelBuffers.dynamicBuffer();
         ChannelBufferUtils.writeString(buffer, message.getName());
-        buffer.writeByte(message.getSomething() ? 1 : 0);
+        buffer.writeByte(message.addOrRemove() ? 1 : 0);
         buffer.writeShort(message.getPing());
         return buffer;
     }
@@ -25,9 +25,9 @@ public class UserListItemCodec extends MessageCodec<UserListItemMessage> {
     @Override
     public UserListItemMessage decode(ChannelBuffer buffer) throws IOException {
         String name = ChannelBufferUtils.readString(buffer);
-        boolean something = buffer.readByte() == 1;
+        boolean addOrRemove = buffer.readByte() == 1;
         short ping = buffer.readShort();
-        return new UserListItemMessage(name, something, ping);
+        return new UserListItemMessage(name, addOrRemove, ping);
     }
     
 }
