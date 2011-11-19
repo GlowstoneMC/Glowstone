@@ -36,7 +36,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     /**
      * The entity's health.
      */
-    protected int health = getMaxHealth();
+    protected int health = 0;
 
     /**
      * The monster's metadata.
