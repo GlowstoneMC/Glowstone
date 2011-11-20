@@ -41,12 +41,12 @@ public final class McRegionChunkIoService implements ChunkIoService {
     /**
      * The root directory of the map.
      */
-    private File dir;
+    private final File dir;
 
     /**
      * The region file cache.
      */
-    private RegionFileCache cache = new RegionFileCache();
+    private final RegionFileCache cache = new RegionFileCache();
 
     // TODO: consider the session.lock file
 

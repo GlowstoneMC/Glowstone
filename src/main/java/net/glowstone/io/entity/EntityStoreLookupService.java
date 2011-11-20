@@ -15,13 +15,13 @@ public final class EntityStoreLookupService {
      * A table which maps entity ids to compound readers. This is generally used to map
      * stored entities to actual entities.
      */
-    private static Map<String, EntityStore<?>> idTable = new HashMap<String, EntityStore<?>>();
+    private static final Map<String, EntityStore<?>> idTable = new HashMap<String, EntityStore<?>>();
 
     /**
      * A table which maps entities to stores. This is generally used to map
      * entities being stored.
      */
-    private static Map<Class<? extends GlowEntity>, EntityStore<?>> classTable = new HashMap<Class<? extends GlowEntity>, EntityStore<?>>();
+    private static final Map<Class<? extends GlowEntity>, EntityStore<?>> classTable = new HashMap<Class<? extends GlowEntity>, EntityStore<?>>();
 
     /**
      * Populates the opcode and class tables with codecs.

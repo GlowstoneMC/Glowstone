@@ -64,7 +64,7 @@ public final class EventFactory {
     }
 
     public static PlayerKickEvent onPlayerKick(Player player, String reason) {
-        return callEvent(new PlayerKickEvent(player, reason, ChatColor.YELLOW + player.getName() + " left the game"));
+        return callEvent(new PlayerKickEvent(player, reason, null));
     }
 
     public static PlayerQuitEvent onPlayerQuit(Player player) {

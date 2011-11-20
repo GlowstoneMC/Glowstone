@@ -56,7 +56,13 @@ public class StorageQueue extends Thread {
         pending.clear();
         synchronized (active) {
             for (ParallelTaskThread thread : active) {
-                if (thread != null) thread.interrupt();
+                if (thread != null) {
+                    thread.interrupt();
+                    try {
+                        thread.join(500);
+                    } catch (InterruptedException e) {
+                    }
+                }
             }
         }
     }
@@ -70,6 +76,7 @@ public class StorageQueue extends Thread {
     class ParallelTaskThread extends Thread {
         private final Queue<StorageOperation> ops = new LinkedList<StorageOperation>();
         public ParallelTaskThread(StorageOperation op) {
+            setDaemon(false);
             ops.add(op);
         }
 

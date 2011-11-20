@@ -11,7 +11,7 @@ import java.util.List;
 import static org.junit.Assert.* ;
 
 public class BlockPropertiesTest {
-    private List<Integer> blockIdKnown = new ArrayList<Integer>();
+    private final List<Integer> blockIdKnown = new ArrayList<Integer>();
 
     @Before
     public void setUp() throws IllegalAccessException {

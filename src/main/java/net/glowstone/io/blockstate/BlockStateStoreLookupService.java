@@ -19,13 +19,13 @@ public final class BlockStateStoreLookupService {
      * A table which maps entity ids to compound readers. This is generally used to map
      * stored entities to actual entities.
      */
-    private static Map<String, BlockStateStore<?>> idTable = new HashMap<String, BlockStateStore<?>>();
+    private static final Map<String, BlockStateStore<?>> idTable = new HashMap<String, BlockStateStore<?>>();
 
     /**
      * A table which maps entities to stores. This is generally used to map
      * entities being stored.
      */
-    private static Map<Class<? extends GlowBlockState>, BlockStateStore<?>> classTable = new HashMap<Class<? extends GlowBlockState>, BlockStateStore<?>>();
+    private static final Map<Class<? extends GlowBlockState>, BlockStateStore<?>> classTable = new HashMap<Class<? extends GlowBlockState>, BlockStateStore<?>>();
 
     /**
      * Populates the lookup maps with stores

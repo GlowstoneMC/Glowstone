@@ -21,7 +21,7 @@ public class CavePopulator extends BlockPopulator {
         private final Location[] snake;
 
         public FinishSnakeTask(Set<Location> snake) {
-            this.snake = snake.toArray(new Location[0]);
+            this.snake = snake.toArray(new Location[snake.size()]);
         }
 
         @Override

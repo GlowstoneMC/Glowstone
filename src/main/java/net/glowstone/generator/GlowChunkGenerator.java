@@ -113,7 +113,7 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
     @Override
     public boolean canSpawn(World world, int x, int z) {
         Block block = world.getHighestBlockAt(x, z).getRelative(BlockFace.DOWN);
-        return !block.isLiquid() && !block.isEmpty() && !noSpawnFloors.contains(block.getType());
+        return !block.isLiquid() && !block.isEmpty() && !noSpawnFloors.contains(block.getTypeId());
     }
     
 }

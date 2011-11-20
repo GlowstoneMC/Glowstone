@@ -126,7 +126,9 @@ public final class ChannelBufferUtils {
         for (int i = 0; i < len; ++i) {
             buf.writeChar(str.charAt(i));
         }
-    }    /**
+    }
+
+    /**
      * Writes a UTF-8 string to the buffer.
      * @param buf The buffer.
      * @param str The string.

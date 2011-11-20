@@ -372,7 +372,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
             return;
         }
         this.sneaking = sneak;
-        setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, 0, new Byte((byte) (this.sneaking ? 0x02: 0))));
+        setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, 0, (byte) (this.sneaking ? 0x02: 0)));
         // FIXME: other bits in the bitmask would be wiped out
         EntityMetadataMessage message = new EntityMetadataMessage(id, metadata);
         for (Player player : world.getPlayers()) {
@@ -525,13 +525,13 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
             streamBlocks(); // stream blocks
             
             setCompassTarget(world.getSpawnLocation()); // set our compass target
-            this.session.send(new PositionRotationMessage(location.getX(), location.getY() + EYE_HEIGHT + 0.01, location.getZ(), location.getY(), (float) location.getYaw(), (float) location.getPitch(), true));
+            this.session.send(new PositionRotationMessage(location.getX(), location.getY() + EYE_HEIGHT + 0.01, location.getZ(), location.getY(), location.getYaw(), location.getPitch(), true));
             this.location = location; // take us to spawn position
             session.send(new StateChangeMessage((byte)(getWorld().hasStorm() ? 1 : 2), (byte)0)); // send the world's weather
             reset();
             EventFactory.onPlayerChangedWorld(this, oldWorld);
         } else {
-            this.session.send(new PositionRotationMessage(location.getX(), location.getY() + EYE_HEIGHT + 0.01, location.getZ(), location.getY(), (float) location.getYaw(), (float) location.getPitch(), true));
+            this.session.send(new PositionRotationMessage(location.getX(), location.getY() + EYE_HEIGHT + 0.01, location.getZ(), location.getY(), location.getYaw(), location.getPitch(), true));
             this.location = location;
             reset();
         }

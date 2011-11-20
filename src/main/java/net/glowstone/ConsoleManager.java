@@ -357,7 +357,7 @@ public final class ConsoleManager {
     }
     
     private class DateOutputFormatter extends Formatter {
-        private SimpleDateFormat date;
+        private final SimpleDateFormat date;
         
         public DateOutputFormatter(SimpleDateFormat date) {
             this.date = date;

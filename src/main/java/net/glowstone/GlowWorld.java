@@ -489,7 +489,7 @@ public final class GlowWorld implements World {
     }
 
     public int getBlockTypeIdAt(int x, int y, int z) {
-        return ((GlowChunk) getChunkAt(x >> 4, z >> 4)).getType(x & 0xF, z & 0xF, y);
+        return getChunkAt(x >> 4, z >> 4).getType(x & 0xF, z & 0xF, y);
     }
 
     public int getHighestBlockYAt(int x, int z) {
@@ -872,7 +872,7 @@ public final class GlowWorld implements World {
     }
 
     public void setDifficulty(Difficulty difficulty) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public Difficulty getDifficulty() {

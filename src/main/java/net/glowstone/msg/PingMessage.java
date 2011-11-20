@@ -1,7 +1,7 @@
 package net.glowstone.msg;
 
 public final class PingMessage extends Message {
-    private int pingId;
+    private final int pingId;
 
     public PingMessage(int pingId) {
         this.pingId = pingId;

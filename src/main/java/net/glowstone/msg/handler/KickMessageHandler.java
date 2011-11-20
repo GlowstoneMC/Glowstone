@@ -11,12 +11,6 @@ public final class KickMessageHandler extends MessageHandler<KickMessage> {
 
     @Override
     public void handle(Session session, GlowPlayer player, KickMessage message) {
-        
-        String text = EventFactory.onPlayerQuit(player).getQuitMessage();
-        if (message != null) {
-            session.getServer().broadcastMessage(text);
-        }
-        
         session.disconnect("Goodbye!", true);
     }
 

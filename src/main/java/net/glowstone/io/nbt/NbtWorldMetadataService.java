@@ -27,7 +27,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
     private final GlowWorld world;
     private final File dir;
     private final GlowServer server;
-    private Map<String, Tag> unknownTags = new HashMap<String, Tag>();
+    private final Map<String, Tag> unknownTags = new HashMap<String, Tag>();
 
     public NbtWorldMetadataService(GlowWorld world, File dir) {
         this.world = world;
@@ -167,7 +167,6 @@ public class NbtWorldMetadataService implements WorldMetadataService {
     }
 
     public void readPlayerData(GlowPlayer player) {
-        Map<String, Tag> playerData = new HashMap<String, Tag>();
         CompoundTag playerTag = null;
         // Map<PlayerData, Object> ret = new HashMap<PlayerData, Object>();
 
@@ -187,7 +186,6 @@ public class NbtWorldMetadataService implements WorldMetadataService {
                 NBTInputStream in = new NBTInputStream(new FileInputStream(playerFile));
                 playerTag = (CompoundTag) in.readTag();
                 in.close();
-                if (playerTag != null) playerData.putAll(playerTag.getValue());
             } catch (EOFException e) {
             } catch (IOException e) {
                 player.kickPlayer("Failed to read " + player.getName() + ".dat!");

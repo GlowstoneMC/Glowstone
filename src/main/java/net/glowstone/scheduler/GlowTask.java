@@ -81,7 +81,7 @@ public class GlowTask implements BukkitTask {
     }
 
     public boolean isSync() {
-        return true;
+        return sync;
     }
 
     public Plugin getOwner() {

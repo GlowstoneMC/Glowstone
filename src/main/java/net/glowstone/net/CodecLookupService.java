@@ -16,13 +16,13 @@ public final class CodecLookupService {
      * A table which maps opcodes to codecs. This is generally used to map
      * incoming packets to a codec.
      */
-    private static MessageCodec<?>[] opcodeTable = new MessageCodec<?>[256];
+    private static final MessageCodec<?>[] opcodeTable = new MessageCodec<?>[256];
 
     /**
      * A table which maps messages to codecs. This is generally used to map
      * outgoing packets to a codec.
      */
-    private static Map<Class<? extends Message>, MessageCodec<?>> classTable = new HashMap<Class<? extends Message>, MessageCodec<?>>();
+    private static final Map<Class<? extends Message>, MessageCodec<?>> classTable = new HashMap<Class<? extends Message>, MessageCodec<?>>();
 
     /**
      * Populates the opcode and class tables with codecs.

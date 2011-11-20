@@ -94,7 +94,7 @@ public final class Session {
      * The random long used for client-server handshake
      */
 
-    private String sessionId = Long.toHexString(random.nextLong());
+    private String sessionId = Long.toString(random.nextLong(), 16).trim();
 
     /**
      * Handling ping messages
@@ -236,7 +236,8 @@ public final class Session {
                 server.broadcastMessage(event.getLeaveMessage());
             }
             
-            GlowServer.logger.log(Level.INFO, "Player {0} disconected: {1}", new Object[]{player.getName(), reason});
+            GlowServer.logger.log(Level.INFO, "Player {0} kicked: {1}", new Object[]{player.getName(), reason});
+            dispose(false);
         }
     
         channel.write(new KickMessage(reason)).addListener(ChannelFutureListener.CLOSE);
@@ -281,12 +282,17 @@ public final class Session {
      * Disposes of this session by destroying the associated player, if there is
      * one.
      */
-    void dispose() {
+    void dispose(boolean broadcastQuit) {
         if (player != null) {            
             player.remove();
             Message userListMessage = new UserListItemMessage(player.getPlayerListName(), false, (short)0);
             for (Player player : server.getOnlinePlayers()) {
                 ((GlowPlayer) player).getSession().send(userListMessage);
+            }
+
+            String text = EventFactory.onPlayerQuit(player).getQuitMessage();
+            if (broadcastQuit &&text != null) {
+                server.broadcastMessage(text);
             }
             player = null; // in case we are disposed twice
         }

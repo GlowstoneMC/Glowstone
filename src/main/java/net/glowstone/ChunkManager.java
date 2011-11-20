@@ -89,7 +89,7 @@ public final class ChunkManager {
         boolean success;
         try {
             success = service.read(getChunk(x, z), x, z);
-        } catch (IOException e) {
+        } catch (Exception e) {
             GlowServer.logger.log(Level.SEVERE, "Error while loading chunk ({0},{1})", new Object[]{x, z});
             e.printStackTrace();
             success = false;
@@ -216,6 +216,7 @@ public final class ChunkManager {
         if (chunk != null) {
             try {
                 service.write(x, z, chunk);
+                return true;
             } catch (IOException ex) {
                 GlowServer.logger.log(Level.SEVERE, "Error while saving chunk: {0}", ex.getMessage());
                 ex.printStackTrace();

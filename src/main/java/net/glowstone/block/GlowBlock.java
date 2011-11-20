@@ -17,10 +17,10 @@ import org.bukkit.block.PistonMoveReaction;
  */
 public class GlowBlock implements Block {
 
-    private GlowChunk chunk;
-    private int x;
-    private int y;
-    private int z;
+    private final GlowChunk chunk;
+    private final int x;
+    private final int y;
+    private final int z;
 
     public GlowBlock(GlowChunk chunk, int x, int y, int z) {
         this.chunk = chunk;

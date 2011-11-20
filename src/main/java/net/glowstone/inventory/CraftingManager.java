@@ -80,7 +80,7 @@ public final class CraftingManager {
      * @param material The fuel material.
      * @return The time in ticks, or 0 if that material does not burn.
      */
-    public int getFuelTime(Material material) {
+    public int getFuelTime(int material) {
         if (furnaceFuels.containsKey(material)) {
             return furnaceFuels.get(material);
         } else {
@@ -484,7 +484,7 @@ public final class CraftingManager {
         STONE(Material.STONE, stairs(0, -1));
         
         
-        private Material material;
+        private final Material material;
         private Material block;
 
         private int[] armor;
