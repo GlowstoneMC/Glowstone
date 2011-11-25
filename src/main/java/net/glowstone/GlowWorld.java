@@ -625,7 +625,7 @@ public final class GlowWorld implements World {
     // biomes
 
     public Biome getBiome(int x, int z) {
-        if (environment == Environment.SKYLANDS) {
+        if (environment == Environment.THE_END) {
             return Biome.SKY;
         } else if (environment == Environment.NETHER) {
             return Biome.HELL;
