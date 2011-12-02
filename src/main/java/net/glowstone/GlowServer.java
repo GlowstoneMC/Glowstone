@@ -266,6 +266,12 @@ public final class GlowServer implements Server {
                     separator = ", ";
                 }
 
+                if(bukkit.getString("settings.world-container") != null) {
+                    config.set("server.folders.world-container", bukkit.getString("settings.world-container"));
+                    moved += separator + "world container";
+                    separator = "m ";
+                }
+
                 if (bukkit.get("worlds") != null) {
                     config.set("worlds", bukkit.getConfigurationSection("worlds"));
                     moved += separator + "world generators";
@@ -949,7 +955,7 @@ public final class GlowServer implements Server {
             creator.generator(getGenerator(creator.name(), creator.environment()));
         }
 
-        world = new GlowWorld(this, creator.name(), creator.environment(), creator.seed(), new McRegionWorldStorageProvider(new File(creator.name())), creator.generator());
+        world = new GlowWorld(this, creator.name(), creator.environment(), creator.seed(), new McRegionWorldStorageProvider(new File(getWorldContainer(), creator.name())), creator.generator());
         worlds.add(world);
         return world;
     }
@@ -1243,6 +1249,13 @@ public final class GlowServer implements Server {
 
     public boolean getFuzzyCommandMatching() {
         return config.getBoolean("server.fuzzy-command-matching", false);
+    }
+
+    /** The folder of world folders.
+     * @return The folder of world folders.
+     */
+    public File getWorldContainer() {
+        return new File(config.getString("server.folders.world-container", "."));
     }
      
 }

@@ -38,4 +38,8 @@ public class NbtWorldStorageProvider implements WorldStorageProvider {
     public WorldMetadataService getMetadataService() {
         return meta;
     }
+
+    public File getFolder() {
+        return dir;
+    }
 }

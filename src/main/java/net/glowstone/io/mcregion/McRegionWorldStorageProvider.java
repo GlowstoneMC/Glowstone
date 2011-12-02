@@ -37,4 +37,8 @@ public class McRegionWorldStorageProvider implements WorldStorageProvider {
     public WorldMetadataService getMetadataService() {
         return meta;
     }
+
+    public File getFolder() {
+        return dir;
+    }
 }

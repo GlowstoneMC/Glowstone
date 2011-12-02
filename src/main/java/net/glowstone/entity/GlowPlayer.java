@@ -405,7 +405,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
 
     public int getExperience() {
-        return experience % ((getLevel() + 1) * 10);
+        return experience % ((getLevel() + 1) * 7);
     }
 
     public void setExperience(int exp) {
@@ -420,7 +420,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         int calcExperience = getExperience();
         this.level = level;
         for (int i = 0; i <= level; i++) {
-            calcExperience += (level + 1) * 10;
+            calcExperience += (level + 1) * 7;
         }
         setExperience(calcExperience);
         session.send(createExperienceMessage());
@@ -434,8 +434,42 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         int calcExperience = exp;
         this.experience = exp;
         level = 0;
-        while ((calcExperience -= (getLevel() + 1) * 10) > 0) ++level;
+        while ((calcExperience -= (getLevel() + 1) * 7) > 0) ++level;
         session.send(createExperienceMessage());
+    }
+
+    /**
+     * Add xp to Player.
+     * @param xp to add
+     */
+    public void giveExp(int xp) {
+        experience += xp;
+        while(experience > (getLevel() + 1) * 7){
+            experience -= (getLevel() + 1) * 7;
+            ++level;            
+        }
+        session.send(createExperienceMessage());
+    }
+
+    /**
+     * Get the percent to level for player.
+     * @return value between 0 and 1: percent to next level.
+     */
+    public float getExp() {
+        float xpToLevel = (getLevel() + 1) * 7;
+        return (float)experience/xpToLevel;
+    }
+
+    /** 
+     * Set the experience progress to next level.
+     * 0 sets to current level, 1 is next level
+     * Values greater than 1 or less that 0 are undefined.
+     * TODO Test boundary conditions.
+     * @param percentToLevel
+     */
+    public void setExp(float percentToLevel) {
+        float xpToLevel = (getLevel() + 1) * 7;
+        experience = (int)(percentToLevel * xpToLevel);
     }
 
     public float getExhaustion() {
@@ -867,16 +901,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     public Message createExperienceMessage() {
         return new ExperienceMessage((byte)getExperience(), (byte)getLevel(), (short)getTotalExperience());
     }
-    
-    public void addExperience(int exp) {
-        experience += exp;
-        level += (experience / 200);
-        experience %= 200;
-    }
+
 
     public Map<String, Object> serialize() {
         Map<String, Object> ret = new HashMap<String, Object>();
         ret.put("name", getName());
         return ret;
     }
+
 }

@@ -1,5 +1,6 @@
 package net.glowstone;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -938,5 +939,12 @@ public final class GlowWorld implements World {
             return false;
         }
         return true;
+    }
+
+    /** Get the world folder.
+     * @return world folder
+     */
+    public File getWorldFolder() {
+        return storageProvider.getFolder();
     }
 }
