@@ -1,7 +1,7 @@
 package net.glowstone.net;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * A list of all the sessions which provides a convenient {@link #pulse()}
@@ -13,13 +13,13 @@ public final class SessionRegistry {
     /**
      * A list of the sessions.
      */
-    private final List<Session> sessions = new ArrayList<Session>();
+    private final ConcurrentMap<Session,Boolean> sessions = new ConcurrentHashMap<Session, Boolean>();
 
     /**
      * Pulses all the sessions.
      */
     public void pulse() {
-        for (Session session : new ArrayList<Session>(sessions)) {
+        for (Session session : sessions.keySet()) {
             session.pulse();
         }
     }
@@ -29,7 +29,7 @@ public final class SessionRegistry {
      * @param session The session to add.
      */
     public void add(Session session) {
-        sessions.add(session);
+        sessions.put(session,true);
     }
 
     /**
