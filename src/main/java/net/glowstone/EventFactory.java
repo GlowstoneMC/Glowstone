@@ -29,6 +29,7 @@ import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.net.InetAddress;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 /**
  * Central class for the calling of events.
@@ -82,8 +83,8 @@ public final class EventFactory {
         return callEvent(new PlayerInteractEvent(player, action, player.getItemInHand(), clicked, face));
     }
 
-    public static PlayerTeleportEvent onPlayerTeleport(Player player, Location from, Location to) {
-        return callEvent(new PlayerTeleportEvent(player, from, to));
+    public static PlayerTeleportEvent onPlayerTeleport(Player player, Location from, Location to, TeleportCause cause) {
+        return callEvent(new PlayerTeleportEvent(player, from, to, cause));
     }
 
     public static PlayerLoginEvent onPlayerLogin(GlowPlayer player) {

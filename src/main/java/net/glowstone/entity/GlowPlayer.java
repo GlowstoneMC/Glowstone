@@ -33,6 +33,7 @@ import net.glowstone.inventory.InventoryViewer;
 import net.glowstone.util.Parameter;
 import net.glowstone.util.TextWrapper;
 import net.glowstone.net.Session;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.map.MapView;
 
 /**
@@ -498,8 +499,13 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      */
     @Override
     public boolean teleport(Location location) {
+        return teleport(location, TeleportCause.UNKNOWN);
+    }
+
+    @Override
+    public boolean teleport(Location location, TeleportCause cause) {
         if (this.location != null && this.location.getWorld() != null) {
-            PlayerTeleportEvent event = EventFactory.onPlayerTeleport(this, getLocation(), location);
+            PlayerTeleportEvent event = EventFactory.onPlayerTeleport(this, getLocation(), location, cause);
             if (event.isCancelled()) return false;
             location = event.getTo();
         }

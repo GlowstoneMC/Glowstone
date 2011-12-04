@@ -13,6 +13,7 @@ import net.glowstone.util.Position;
 import net.glowstone.msg.Message;
 import net.glowstone.GlowWorld;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 /**
  * Represents some entity in the world such as an item on the floor or a player.
@@ -255,6 +256,14 @@ public abstract class GlowEntity implements Entity {
     }
 
     public boolean teleport(Entity destination) {
+        return teleport(destination.getLocation());
+    }
+
+    public boolean teleport(Location location, TeleportCause cause) {
+        return teleport(location);
+    }
+
+    public boolean teleport(Entity destination, TeleportCause cause) {
         return teleport(destination.getLocation());
     }
 

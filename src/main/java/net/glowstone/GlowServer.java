@@ -708,6 +708,15 @@ public final class GlowServer implements Server {
         }
         return result.toArray(new Player[result.size()]);
     }
+
+    /**
+     * Gets every player that has ever played on this server.
+     *
+     * @return Array containing all players
+     */
+    public OfflinePlayer[] getOfflinePlayers() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
     
     /**
      * Get the maximum amount of players which can login to this server
