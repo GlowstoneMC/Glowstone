@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<ruleset>
+  <rule  name="NotYetWrittenCode"
+    message="Replace default method implementation with valid implementation."
+    class="net.sourceforge.pmd.rules.XPathRule">
+    <description>
+    Eclipse and NetBeans place generic implementations in classes for methods that are required by parent abstract classes and parent interfaces.
+  
+    </description>
+    <properties>
+      <property name="xpath">
+      <value>
+<![CDATA[
+//AllocationExpression[ClassOrInterfaceType[@Image="UnsupportedOperationException"]
+and
+./Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal[
+contains(@Image,"Not supported yet") or
+contains(@Image,"Not implemented yet")]]
+]]>
+      </value>
+      </property>
+    </properties>
+    <priority>3</priority>
+    <example>
+<![CDATA[
+public class Foo {
+
+    public void notSupportedYet() {
+        throw new UnsupportedOperationException("Not supported yet."); //Fix this!
+    }
+
+    public void notImplementedYet() {
+        throw new UnsupportedOperationException("Not implemented yet");  //Fix this!
+    }
+
+    public void validUsage() {
+        throw new UnsupportedOperationException("This won't work ever."); //Valid usage.
+    }
+}
+]]>
+    </example>
+  </rule>
+</ruleset>
