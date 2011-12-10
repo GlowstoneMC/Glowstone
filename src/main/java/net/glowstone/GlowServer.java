@@ -450,10 +450,10 @@ public final class GlowServer implements Server {
         String world = config.getString("server.world-name", "world");
         createWorld(WorldCreator.name(world).environment(Environment.NORMAL));
         if (getAllowNether()) {
-            createWorld(WorldCreator.name(world).environment(Environment.NETHER));
+            createWorld(WorldCreator.name(world + "_nether").environment(Environment.NETHER));
         }
         if (getAllowEnd()) {
-            createWorld(WorldCreator.name(world).environment(Environment.THE_END));
+            createWorld(WorldCreator.name(world + "_the_end").environment(Environment.THE_END));
         }
 
         // Finish loading plugins
