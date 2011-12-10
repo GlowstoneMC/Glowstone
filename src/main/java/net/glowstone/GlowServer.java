@@ -447,9 +447,13 @@ public final class GlowServer implements Server {
         enablePlugins(PluginLoadOrder.STARTUP);
 
         // Create worlds
-        createWorld(WorldCreator.name(config.getString("server.world-name", "world")).environment(Environment.NORMAL));
+        String world = config.getString("server.world-name", "world");
+        createWorld(WorldCreator.name(world).environment(Environment.NORMAL));
         if (getAllowNether()) {
-            createWorld(WorldCreator.name(config.getString("server.world-name", "world") + "_nether").environment(Environment.NETHER));
+            createWorld(WorldCreator.name(world).environment(Environment.NETHER));
+        }
+        if (getAllowEnd()) {
+            createWorld(WorldCreator.name(world).environment(Environment.THE_END));
         }
 
         // Finish loading plugins
@@ -1139,6 +1143,10 @@ public final class GlowServer implements Server {
 
     public boolean getAllowNether() {
         return config.getBoolean("server.allow-nether", true);
+    }
+
+    public boolean getAllowEnd() {
+        return config.getBoolean("server.allow-end", true);
     }
 
     public boolean hasWhitelist() {

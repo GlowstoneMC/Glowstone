@@ -8,6 +8,7 @@ server:
     terminal-mode: jline
     whitelist: false
     allow-nether: true
+    allow-end: true
     allow-flight: false
     view-distance: 10
     motd: Glowstone Server
