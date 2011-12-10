@@ -472,10 +472,10 @@ public final class GlowChunk implements Chunk {
      * @return The index within the arrays.
      */
     private int coordToIndex(int x, int z, int y) {
-        if (x < 0 || z < 0 || y < 0 || x >= WIDTH || z >= world.getMaxHeight() || y >= DEPTH)
+        if (x < 0 || z < 0 || y < 0 || x >= WIDTH || z >= HEIGHT || y >= world.getMaxHeight())
             throw new IndexOutOfBoundsException();
 
-        return (x * world.getMaxHeight() + z) * DEPTH + y;
+        return (x * HEIGHT + z) * world.getMaxHeight() + y;
     }
 
     /**
