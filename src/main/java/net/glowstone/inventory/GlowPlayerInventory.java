@@ -1,5 +1,6 @@
 package net.glowstone.inventory;
 
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.*;
 
 /**
@@ -43,8 +44,6 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
 
     /**
      * Set the slot number of the currently held item
-     *
-     * @return Held item slot number
      */
     public void setHeldItemSlot(int slot) {
         if (slot < 0) heldSlot = 0;
@@ -148,4 +147,13 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         return -1;
     }
 
+    @Override
+    public int clear(int id, int data) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public HumanEntity getHolder() {
+        throw new UnsupportedOperationException();
+    }
 }

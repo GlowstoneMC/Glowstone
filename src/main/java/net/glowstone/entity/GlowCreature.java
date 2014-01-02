@@ -1,14 +1,11 @@
 package net.glowstone.entity;
 
 import net.glowstone.GlowServer;
-      
-import org.bukkit.entity.Creature;
-
-import net.glowstone.util.Position;
+import net.glowstone.GlowWorld;
 import net.glowstone.msg.Message;
 import net.glowstone.msg.SpawnMobMessage;
-import net.glowstone.util.Parameter;
-import net.glowstone.GlowWorld;
+import net.glowstone.util.Position;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.LivingEntity;
 
 /**
@@ -41,7 +38,7 @@ public final class GlowCreature extends GlowLivingEntity implements Creature {
      * Gets the type of monster.
      * @return The type of monster.
      */
-    public int getType() {
+    public int getIntType() {
         return type;
     }
 
@@ -63,7 +60,7 @@ public final class GlowCreature extends GlowLivingEntity implements Creature {
         return target;
     }
 
-    public int getMaxHealth() {
+    public double getMaxHealth() {
         throw new UnsupportedOperationException("Not supported yet!");
     }
 }

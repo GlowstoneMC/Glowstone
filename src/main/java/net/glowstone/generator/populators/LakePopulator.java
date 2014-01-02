@@ -1,8 +1,5 @@
 package net.glowstone.generator.populators;
 
-import java.util.ArrayList;
-import java.util.Random;
-
 import net.glowstone.block.BlockID;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
@@ -13,6 +10,9 @@ import org.bukkit.block.Block;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * BlockPopulator that generates water and lava lakes.
@@ -46,8 +46,7 @@ public class LakePopulator extends BlockPopulator {
         if (random.nextInt(96) < ry && world.getEnvironment() != Environment.NETHER) {
             liquidMaterial = BlockID.WATER;
             solidMaterial = BlockID.WATER;
-        } else if (world.getBlockAt(rx, ry, rz).getBiome() == Biome.FOREST
-                || world.getBlockAt(rx, ry, rz).getBiome() == Biome.SEASONAL_FOREST) {
+        } else if (world.getBlockAt(rx, ry, rz).getBiome() == Biome.FOREST) {
             return;
         }
 

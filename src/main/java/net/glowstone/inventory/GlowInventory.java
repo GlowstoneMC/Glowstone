@@ -1,11 +1,16 @@
 package net.glowstone.inventory;
 
+import org.bukkit.Material;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Inventory;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * A class which represents an inventory and the items it contains.
@@ -26,6 +31,11 @@ public class GlowInventory implements Inventory {
      * This inventory's contents.
      */
     private final GlowItemStack[] slots;
+
+    /**
+     * The inventory's maximum stack size.
+     */
+    private int maxStackSize = 64;
 
     /**
      * Initialize the inventory 
@@ -91,6 +101,16 @@ public class GlowInventory implements Inventory {
      */
     public int getSize() {
         return slots.length;
+    }
+
+    @Override
+    public int getMaxStackSize() {
+        return maxStackSize;
+    }
+
+    @Override
+    public void setMaxStackSize(int size) {
+        this.maxStackSize = size;
     }
 
     /**
@@ -324,6 +344,11 @@ public class GlowInventory implements Inventory {
         return contains(item.getTypeId(), amount);
     }
 
+    @Override
+    public boolean containsAtLeast(ItemStack item, int amount) {
+        return false;
+    }
+
     // All Family ////////////////
 
     /**
@@ -345,7 +370,7 @@ public class GlowInventory implements Inventory {
     /**
      * Find all slots in the inventory containing any ItemStacks with the given material
      *
-     * @param materialId The material to look for
+     * @param material The material to look for
      * @return The Slots found.
      */
     public HashMap<Integer, GlowItemStack> all(Material material) {
@@ -387,7 +412,7 @@ public class GlowInventory implements Inventory {
     /**
      * Find the first slot in the inventory containing an ItemStack with the given material
      *
-     * @param materialId The material to look for
+     * @param material The material to look for
      * @return The Slot found.
      */
     public int first(Material material) {
@@ -477,6 +502,38 @@ public class GlowInventory implements Inventory {
         for (int i = 0; i < slots.length; ++i) {
             clear(i);
         }
+    }
+
+    // Stuff
+
+    @Override
+    public List<HumanEntity> getViewers() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getTitle() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public InventoryType getType() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public InventoryHolder getHolder() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public ListIterator<ItemStack> iterator() {
+        return iterator(0);
+    }
+
+    @Override
+    public ListIterator<ItemStack> iterator(int index) {
+        throw new UnsupportedOperationException();
     }
 
     public GlowItemStack getGlowItemStack(ItemStack stack) {

@@ -58,8 +58,7 @@ public class GlowTask implements BukkitTask {
 
     /**
      * Creates a new task with the specified number of ticks between
-     * consecutive calls to {@link #execute()}.
-     * @param ticks The number of ticks.
+     * consecutive calls to execute().
      */
     public GlowTask(Plugin owner, Runnable task, boolean sync, long delay, long period) {
         synchronized (nextTaskIdLock) {
@@ -91,14 +90,14 @@ public class GlowTask implements BukkitTask {
     /**
      * Stops this task.
      */
-    public void stop() {
+    public void cancel() {
         running = false;
     }
 
     /**
      * Called every 'pulse' which is around 200ms in Minecraft. This method
-     * updates the counters and calls {@link #execute()} if necessary.
-     * @return The {@link #isRunning()} flag.
+     * updates the counters and calls execute() if necessary.
+     * @return The isRunning() flag.
      */
     boolean pulse() {
         if (!running)

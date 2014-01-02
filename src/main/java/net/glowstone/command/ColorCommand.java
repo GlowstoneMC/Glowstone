@@ -1,14 +1,9 @@
 package net.glowstone.command;
 
-import org.bukkit.command.CommandSender;
-import org.bukkit.ChatColor;
-
 import net.glowstone.GlowServer;
-import org.bukkit.permissions.Permission;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * A built-in command to demonstrate all chat colors.
@@ -28,7 +23,7 @@ public class ColorCommand extends GlowCommand {
             "RED", "LIGHT_PURPLE", "YELLOW", "WHITE"
         };
         for (int i = 0; i < 16; i += 2) {
-            sender.sendMessage(ChatColor.getByCode(i) + names[i] + ChatColor.WHITE + " -- " + ChatColor.getByCode(i + 1) + names[i + 1]);
+            sender.sendMessage(ChatColor.values()[i] + names[i] + ChatColor.WHITE + " -- " + ChatColor.values()[i + 1] + names[i + 1]);
         }
         return true;
     }

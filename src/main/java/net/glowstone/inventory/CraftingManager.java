@@ -1,22 +1,16 @@
 package net.glowstone.inventory;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-
+import net.glowstone.GlowServer;
 import net.glowstone.block.BlockID;
 import net.glowstone.block.ItemID;
 import org.bukkit.Material;
-import org.bukkit.inventory.FurnaceRecipe;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.inventory.*;
 import org.bukkit.material.MaterialData;
 
-import net.glowstone.GlowServer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * Manager for crafting and smelting recipes
@@ -63,9 +57,9 @@ public final class CraftingManager {
      */
     public FurnaceRecipe getFurnaceRecipe(ItemStack input) {
         for (FurnaceRecipe recipe : furnaceRecipes) {
-            if (recipe.getInput().getItemTypeId() != input.getTypeId()) {
+            if (recipe.getInput().getType() != input.getType()) {
                 continue;
-            } else if (recipe.getInput().getData() >= 0 && recipe.getInput().getData() != input.getDurability()) {
+            } else if (recipe.getInput().getDurability() >= 0 && recipe.getInput().getDurability() != input.getDurability()) {
                 continue;
             } else {
                 return recipe;
@@ -132,7 +126,7 @@ public final class CraftingManager {
     
     private ShapedRecipe getShapedRecipe(int size, ItemStack[] items) {
         for (ShapedRecipe recipe : shapedRecipes) {
-            HashMap<Character, MaterialData> ingredients = recipe.getIngredientMap();
+            Map<Character, ItemStack> ingredients = recipe.getIngredientMap();
             String[] shape = recipe.getShape();
             
             int rows = shape.length, cols = 0;
@@ -169,7 +163,7 @@ public final class CraftingManager {
                                 failed = true;
                                 break;
                             } else {
-                                MaterialData data = ingredients.get(ingredientChar);
+                                MaterialData data = ingredients.get(ingredientChar).getData();
                                 if (data.getItemType() != given.getType()) {
                                     failed = true;
                                     break;
@@ -209,7 +203,8 @@ public final class CraftingManager {
             boolean[] accountedFor = new boolean[items.length];
             
             // Make sure each ingredient in the recipe exists in the inventory
-            for (MaterialData ingredient : recipe.getIngredientList()) {
+            for (ItemStack stack : recipe.getIngredientList()) {
+                MaterialData ingredient = stack.getData();
                 boolean found = false;
                 for (int i = 0; i < items.length; ++i) {
                     if (!accountedFor[i]) {

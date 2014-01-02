@@ -1,54 +1,31 @@
 package net.glowstone;
 
 import com.grahamedgecombe.jterminal.JTerminal;
+import jline.*;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandException;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.conversations.Conversation;
+import org.bukkit.conversations.ConversationAbandonedEvent;
+import org.bukkit.permissions.PermissibleBase;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionAttachment;
+import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.plugin.Plugin;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Insets;
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
-import java.util.logging.Formatter;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-import java.util.logging.StreamHandler;
-
-import javax.swing.BorderFactory;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.border.Border;
-
-import jline.ArgumentCompletor;
-import jline.Completor;
-import jline.ConsoleReader;
-import jline.NullCompletor;
-import jline.SimpleCompletor;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandException;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.permissions.*;
-import org.bukkit.plugin.Plugin;
+import java.util.logging.*;
 
 /**
  * A meta-class to handle all logging and input-related console improvements.
@@ -262,6 +239,9 @@ public final class ConsoleManager {
     
     private class ColoredCommandSender implements ConsoleCommandSender {
         private final PermissibleBase perm = new PermissibleBase(this);
+
+        ////////////////////////////////////////////////////////////////////////
+        // CommandSender
         
         public String getName() {
             return "CONSOLE";
@@ -269,6 +249,16 @@ public final class ConsoleManager {
         
         public void sendMessage(String text) {
             server.getLogger().info(text);
+        }
+
+        public GlowServer getServer() {
+            return server;
+        }
+
+        public void sendMessage(String[] strings) {
+            for (String line : strings) {
+                sendMessage(line);
+            }
         }
 
         public boolean isOp() {
@@ -279,13 +269,8 @@ public final class ConsoleManager {
             throw new UnsupportedOperationException("Cannot change operator status of server console");
         }
 
-        public boolean isPlayer() {
-            return false;
-        }
-
-        public GlowServer getServer() {
-            return server;
-        }
+        ////////////////////////////////////////////////////////////////////////
+        // Permissible
 
         public boolean isPermissionSet(String name) {
             return perm.isPermissionSet(name);
@@ -329,6 +314,39 @@ public final class ConsoleManager {
 
         public Set<PermissionAttachmentInfo> getEffectivePermissions() {
             return perm.getEffectivePermissions();
+        }
+
+        ////////////////////////////////////////////////////////////////////////
+        // Conversable
+
+        @Override
+        public boolean isConversing() {
+            return false;
+        }
+
+        @Override
+        public void acceptConversationInput(String input) {
+
+        }
+
+        @Override
+        public boolean beginConversation(Conversation conversation) {
+            return false;
+        }
+
+        @Override
+        public void abandonConversation(Conversation conversation) {
+
+        }
+
+        @Override
+        public void abandonConversation(Conversation conversation, ConversationAbandonedEvent details) {
+
+        }
+
+        @Override
+        public void sendRawMessage(String message) {
+
         }
     }
     

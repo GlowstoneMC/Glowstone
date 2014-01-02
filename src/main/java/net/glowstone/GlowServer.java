@@ -1,47 +1,10 @@
 package net.glowstone;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.bukkit.*;
-import org.bukkit.command.*;
-import org.bukkit.World.Environment;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.entity.Player;
-import org.bukkit.generator.ChunkGenerator;
-import org.bukkit.inventory.Recipe;
-import org.bukkit.permissions.Permissible;
-import org.bukkit.permissions.Permission;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.SimplePluginManager;
-import org.bukkit.plugin.SimpleServicesManager;
-import org.bukkit.plugin.java.JavaPluginLoader;
-import org.bukkit.plugin.PluginLoadOrder;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.util.permissions.DefaultPermissions;
-
 import net.glowstone.command.*;
+import net.glowstone.inventory.CraftingManager;
 import net.glowstone.io.StorageQueue;
 import net.glowstone.io.mcregion.McRegionWorldStorageProvider;
+import net.glowstone.map.GlowMapView;
 import net.glowstone.net.MinecraftPipelineFactory;
 import net.glowstone.net.Session;
 import net.glowstone.net.SessionRegistry;
@@ -49,9 +12,29 @@ import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.util.PlayerListFile;
 import net.glowstone.util.bans.BanManager;
 import net.glowstone.util.bans.FlatFileBanManager;
-import net.glowstone.inventory.CraftingManager;
-import net.glowstone.map.GlowMapView;
-
+import org.bukkit.*;
+import org.bukkit.World.Environment;
+import org.bukkit.command.*;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.help.HelpMap;
+import org.bukkit.inventory.*;
+import org.bukkit.permissions.Permissible;
+import org.bukkit.permissions.Permission;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginLoadOrder;
+import org.bukkit.plugin.SimplePluginManager;
+import org.bukkit.plugin.SimpleServicesManager;
+import org.bukkit.plugin.java.JavaPluginLoader;
+import org.bukkit.plugin.messaging.Messenger;
+import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.util.CachedServerIcon;
+import org.bukkit.util.permissions.DefaultPermissions;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.ChannelFactory;
 import org.jboss.netty.channel.ChannelPipelineFactory;
@@ -59,6 +42,20 @@ import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 import org.yaml.snakeyaml.error.YAMLException;
+
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The core class of the Glowstone server.
@@ -1284,5 +1281,157 @@ public final class GlowServer implements Server {
     public File getWorldContainer() {
         return new File(config.getString("server.folders.world-container", "."));
     }
-     
+
+    // NEW STUFF
+
+
+    @Override
+    public String getWorldType() {
+        return null;
+    }
+
+    @Override
+    public boolean getGenerateStructures() {
+        return false;
+    }
+
+    @Override
+    public long getConnectionThrottle() {
+        return 0;
+    }
+
+    @Override
+    public int getTicksPerAnimalSpawns() {
+        return 0;
+    }
+
+    @Override
+    public int getTicksPerMonsterSpawns() {
+        return 0;
+    }
+
+    @Override
+    public List<Recipe> getRecipesFor(ItemStack result) {
+        return null;
+    }
+
+    @Override
+    public Iterator<Recipe> recipeIterator() {
+        return null;
+    }
+
+    @Override
+    public void clearRecipes() {
+
+    }
+
+    @Override
+    public void resetRecipes() {
+
+    }
+
+    @Override
+    public boolean isHardcore() {
+        return false;
+    }
+
+    @Override
+    public boolean useExactLoginLocation() {
+        return false;
+    }
+
+    @Override
+    public Messenger getMessenger() {
+        return null;
+    }
+
+    @Override
+    public HelpMap getHelpMap() {
+        return null;
+    }
+
+    @Override
+    public Inventory createInventory(InventoryHolder owner, InventoryType type) {
+        return null;
+    }
+
+    @Override
+    public Inventory createInventory(InventoryHolder owner, int size) {
+        return null;
+    }
+
+    @Override
+    public Inventory createInventory(InventoryHolder owner, int size, String title) {
+        return null;
+    }
+
+    @Override
+    public int getMonsterSpawnLimit() {
+        return 0;
+    }
+
+    @Override
+    public int getAnimalSpawnLimit() {
+        return 0;
+    }
+
+    @Override
+    public int getWaterAnimalSpawnLimit() {
+        return 0;
+    }
+
+    @Override
+    public int getAmbientSpawnLimit() {
+        return 0;
+    }
+
+    @Override
+    public boolean isPrimaryThread() {
+        return false;
+    }
+
+    @Override
+    public String getShutdownMessage() {
+        return null;
+    }
+
+    @Override
+    public Warning.WarningState getWarningState() {
+        return null;
+    }
+
+    @Override
+    public ItemFactory getItemFactory() {
+        return null;
+    }
+
+    @Override
+    public ScoreboardManager getScoreboardManager() {
+        return null;
+    }
+
+    @Override
+    public CachedServerIcon getServerIcon() {
+        return null;
+    }
+
+    @Override
+    public CachedServerIcon loadServerIcon(File file) throws IllegalArgumentException, Exception {
+        return null;
+    }
+
+    @Override
+    public CachedServerIcon loadServerIcon(BufferedImage image) throws IllegalArgumentException, Exception {
+        return null;
+    }
+
+    @Override
+    public void sendPluginMessage(Plugin source, String channel, byte[] message) {
+
+    }
+
+    @Override
+    public Set<String> getListeningPluginChannels() {
+        return null;
+    }
 }

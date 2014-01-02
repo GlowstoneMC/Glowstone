@@ -1,7 +1,5 @@
 package net.glowstone.generator.populators;
 
-import java.util.Random;
-
 import net.glowstone.block.BlockID;
 import org.bukkit.Chunk;
 import org.bukkit.World;
@@ -9,6 +7,8 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.generator.BlockPopulator;
+
+import java.util.Random;
 
 /**
  * BlockPopulator that places yellow flowers, red roses, and tall grass.
@@ -33,8 +33,7 @@ public class FlowerPopulator extends BlockPopulator {
                         } else if (n < 4) {
                             block.setTypeId(BlockID.YELLOW_FLOWER);
                         }
-                    } else if (block.getBiome() == Biome.SHRUBLAND
-                            || block.getBiome() == Biome.SAVANNA) {
+                    } else if (block.getBiome() == Biome.SAVANNA) {
                         int n = random.nextInt(256);
                         if (n < 2) {
                             block.setTypeId(BlockID.RED_ROSE);
@@ -44,8 +43,7 @@ public class FlowerPopulator extends BlockPopulator {
                             block.setTypeId(BlockID.LONG_GRASS);
                             block.setData((byte) 1);
                         }
-                    } else if (block.getBiome() == Biome.FOREST
-                            || block.getBiome() == Biome.SEASONAL_FOREST) {
+                    } else if (block.getBiome() == Biome.FOREST) {
                         int n = random.nextInt(256);
                         if (n < 16) {
                             block.setTypeId(BlockID.LONG_GRASS);

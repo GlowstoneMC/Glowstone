@@ -15,7 +15,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <bukkit.version>1.0.0-R1-SNAPSHOT</bukkit.version>
+        <bukkit.version>1.7.2-R0.2</bukkit.version>
     </properties>
 
     <repositories>
@@ -23,7 +23,7 @@
             <id>bukkit</id>
             <name>Bukkit Artifactory</name>
             <layout>default</layout>
-            <url>http://repo.bukkit.org/content/groups/bukkit_repos/</url>
+            <url>http://repo.bukkit.org/content/groups/public/</url>
         </repository>
         <repository>
             <id>jboss</id>
@@ -96,7 +96,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.8.1</version>
+            <version>4.11</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -181,8 +181,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.0.2</version>
                 <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
+                    <source>1.6</source>
+                    <target>1.6</target>
                 </configuration>
             </plugin>
 

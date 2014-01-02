@@ -78,6 +78,11 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
         return time;
     }
 
+    @Override
+    public boolean isSectionEmpty(int sy) {
+        throw new UnsupportedOperationException();
+    }
+
     public int getBlockTypeId(int x, int y, int z) {
         return types[coordToIndex(x, y, z)];
     }

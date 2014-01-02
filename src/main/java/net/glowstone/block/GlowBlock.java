@@ -11,6 +11,12 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.PistonMoveReaction;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.MetadataValue;
+import org.bukkit.plugin.Plugin;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Represents a single block in a world.
@@ -212,4 +218,65 @@ public class GlowBlock implements Block {
         return "GlowBlock{loc=" + getLocation().toString() + ",type=" + getTypeId() + ",data=" + getData() + "}";
     }
 
+    // NEW STUFF
+
+    @Override
+    public byte getLightFromSky() {
+        return 0;
+    }
+
+    @Override
+    public byte getLightFromBlocks() {
+        return 0;
+    }
+
+    @Override
+    public Location getLocation(Location loc) {
+        return null;
+    }
+
+    @Override
+    public void setBiome(Biome bio) {
+
+    }
+
+    @Override
+    public boolean breakNaturally() {
+        return false;
+    }
+
+    @Override
+    public boolean breakNaturally(ItemStack tool) {
+        return false;
+    }
+
+    @Override
+    public Collection<ItemStack> getDrops() {
+        return null;
+    }
+
+    @Override
+    public Collection<ItemStack> getDrops(ItemStack tool) {
+        return null;
+    }
+
+    @Override
+    public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
+
+    }
+
+    @Override
+    public List<MetadataValue> getMetadata(String metadataKey) {
+        return null;
+    }
+
+    @Override
+    public boolean hasMetadata(String metadataKey) {
+        return false;
+    }
+
+    @Override
+    public void removeMetadata(String metadataKey, Plugin owningPlugin) {
+
+    }
 }

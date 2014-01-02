@@ -1,7 +1,5 @@
 package net.glowstone.generator.populators;
 
-import java.util.Random;
-
 import net.glowstone.block.BlockID;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
@@ -11,8 +9,10 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.generator.BlockPopulator;
 
+import java.util.Random;
+
 /**
- * BlockPopulator that coats {@link Biome#TUNDRA tundra} and {@link Biome#TAIGA
+ * BlockPopulator that coats tundra and {@link Biome#TAIGA
  * taiga} with snow.
  */
 public class SnowPopulator extends BlockPopulator {
@@ -25,7 +25,7 @@ public class SnowPopulator extends BlockPopulator {
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 Biome biome = world.getBiome(x + chunkX, z + chunkZ);
-                if (biome != Biome.TAIGA && biome != Biome.TUNDRA) {
+                if (biome != Biome.TAIGA) {
                     continue;
                 }
 

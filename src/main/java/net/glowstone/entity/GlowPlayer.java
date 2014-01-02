@@ -1,40 +1,38 @@
 package net.glowstone.entity;
 
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-
-import net.glowstone.GlowOfflinePlayer;
-import net.glowstone.block.GlowBlockState;
-import net.glowstone.inventory.GlowItemStack;
-import net.glowstone.io.StorageOperation;
-import net.glowstone.msg.*;
-import net.glowstone.util.Position;
-import org.bukkit.*;
-import org.bukkit.configuration.serialization.DelegateDeserialization;
-import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.event.player.PlayerChatEvent;
-
 import net.glowstone.EventFactory;
 import net.glowstone.GlowChunk;
+import net.glowstone.GlowOfflinePlayer;
 import net.glowstone.GlowWorld;
+import net.glowstone.block.GlowBlockState;
 import net.glowstone.inventory.GlowInventory;
+import net.glowstone.inventory.GlowItemStack;
 import net.glowstone.inventory.GlowPlayerInventory;
 import net.glowstone.inventory.InventoryViewer;
-import net.glowstone.util.Parameter;
-import net.glowstone.util.TextWrapper;
+import net.glowstone.io.StorageOperation;
+import net.glowstone.msg.*;
 import net.glowstone.net.Session;
+import net.glowstone.util.Parameter;
+import net.glowstone.util.Position;
+import net.glowstone.util.TextWrapper;
+import org.bukkit.*;
+import org.bukkit.configuration.serialization.DelegateDeserialization;
+import org.bukkit.conversations.Conversation;
+import org.bukkit.conversations.ConversationAbandonedEvent;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapView;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scoreboard.Scoreboard;
+
+import java.net.InetSocketAddress;
+import java.util.*;
+import java.util.logging.Level;
 
 /**
  * Represents an in-game player.
@@ -376,7 +374,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         // FIXME: other bits in the bitmask would be wiped out
         EntityMetadataMessage message = new EntityMetadataMessage(id, metadata);
         for (Player player : world.getPlayers()) {
-            if (player != this && canSee((GlowPlayer) player)) {
+            if (player != this && canSee((GlowEntity) player)) {
                 ((GlowPlayer) player).session.send(message);
             }
         }
@@ -670,7 +668,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     // -- Achievements & Statistics [mostly borrowed from CraftBukkit]
 
     public void awardAchievement(Achievement achievement) {
-        sendStatistic(achievement.getId(), 1);
+        //sendStatistic(achievement.getId(), 1);
     }
 
     public void incrementStatistic(Statistic statistic) {
@@ -678,7 +676,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
 
     public void incrementStatistic(Statistic statistic, int amount) {
-        sendStatistic(statistic.getId(), amount);
+        //sendStatistic(statistic.getId(), amount);
     }
 
     public void incrementStatistic(Statistic statistic, Material material) {
@@ -699,7 +697,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
             mat -= 255;
         }
 
-        sendStatistic(statistic.getId() + mat, amount);
+        //sendStatistic(statistic.getId() + mat, amount);
     }
 
     private void sendStatistic(int id, int amount) {
@@ -767,7 +765,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
             if (equipSlot >= 0) {
                 EntityEquipmentMessage message = new EntityEquipmentMessage(getEntityId(), equipSlot, type, data);
                 for (GlowPlayer player : new ArrayList<GlowPlayer>(getWorld().getRawPlayers())) {
-                    if (player != this && player.canSee(this)) {
+                    if (player != this && player.canSee((GlowEntity) this)) {
                         player.getSession().send(message);
                     }
                 }
@@ -859,7 +857,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         session.send(createHealthMessage());
     }
 
-    public int getMaxHealth() {
+    public double getMaxHealth() {
         return 20;
     }
 
@@ -901,13 +899,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
 
     public Message createHealthMessage() {
-        return new HealthMessage(getHealth(), getFoodLevel(), getSaturation());
+        return new HealthMessage((int) getHealth(), getFoodLevel(), getSaturation());
     }
     
     public Message createExperienceMessage() {
         return new ExperienceMessage((byte)getExperience(), (byte)getLevel(), (short)getTotalExperience());
     }
-
 
     public Map<String, Object> serialize() {
         Map<String, Object> ret = new HashMap<String, Object>();
@@ -915,4 +912,251 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         return ret;
     }
 
+    // NEW STUFF
+
+
+    @Override
+    public void playSound(Location location, Sound sound, float volume, float pitch) {
+
+    }
+
+    @Override
+    public void playSound(Location location, String sound, float volume, float pitch) {
+
+    }
+
+    @Override
+    public <T> void playEffect(Location loc, Effect effect, T data) {
+
+    }
+
+    @Override
+    public void setPlayerWeather(WeatherType type) {
+
+    }
+
+    @Override
+    public WeatherType getPlayerWeather() {
+        return null;
+    }
+
+    @Override
+    public void resetPlayerWeather() {
+
+    }
+
+    @Override
+    public void giveExpLevels(int amount) {
+
+    }
+
+    @Override
+    public void setBedSpawnLocation(Location location, boolean force) {
+
+    }
+
+    @Override
+    public boolean getAllowFlight() {
+        return false;
+    }
+
+    @Override
+    public void setAllowFlight(boolean flight) {
+
+    }
+
+    @Override
+    public void hidePlayer(Player player) {
+
+    }
+
+    @Override
+    public void showPlayer(Player player) {
+
+    }
+
+    @Override
+    public boolean canSee(Player player) {
+        return false;
+    }
+
+    @Override
+    public boolean isFlying() {
+        return false;
+    }
+
+    @Override
+    public void setFlying(boolean value) {
+
+    }
+
+    @Override
+    public void setFlySpeed(float value) throws IllegalArgumentException {
+
+    }
+
+    @Override
+    public void setWalkSpeed(float value) throws IllegalArgumentException {
+
+    }
+
+    @Override
+    public float getFlySpeed() {
+        return 0;
+    }
+
+    @Override
+    public float getWalkSpeed() {
+        return 0;
+    }
+
+    @Override
+    public void setTexturePack(String url) {
+
+    }
+
+    @Override
+    public void setResourcePack(String url) {
+
+    }
+
+    @Override
+    public Scoreboard getScoreboard() {
+        return null;
+    }
+
+    @Override
+    public void setScoreboard(Scoreboard scoreboard) throws IllegalArgumentException, IllegalStateException {
+
+    }
+
+    @Override
+    public boolean isHealthScaled() {
+        return false;
+    }
+
+    @Override
+    public void setHealthScaled(boolean scale) {
+
+    }
+
+    @Override
+    public void setHealthScale(double scale) throws IllegalArgumentException {
+
+    }
+
+    @Override
+    public double getHealthScale() {
+        return 0;
+    }
+
+    @Override
+    public void sendMessage(String[] messages) {
+
+    }
+
+    @Override
+    public boolean isConversing() {
+        return false;
+    }
+
+    @Override
+    public void acceptConversationInput(String input) {
+
+    }
+
+    @Override
+    public boolean beginConversation(Conversation conversation) {
+        return false;
+    }
+
+    @Override
+    public void abandonConversation(Conversation conversation) {
+
+    }
+
+    @Override
+    public void abandonConversation(Conversation conversation, ConversationAbandonedEvent details) {
+
+    }
+
+    @Override
+    public Inventory getEnderChest() {
+        return null;
+    }
+
+    @Override
+    public boolean setWindowProperty(InventoryView.Property prop, int value) {
+        return false;
+    }
+
+    @Override
+    public InventoryView getOpenInventory() {
+        return null;
+    }
+
+    @Override
+    public InventoryView openInventory(Inventory inventory) {
+        return null;
+    }
+
+    @Override
+    public InventoryView openWorkbench(Location location, boolean force) {
+        return null;
+    }
+
+    @Override
+    public InventoryView openEnchanting(Location location, boolean force) {
+        return null;
+    }
+
+    @Override
+    public void openInventory(InventoryView inventory) {
+
+    }
+
+    @Override
+    public void closeInventory() {
+
+    }
+
+    @Override
+    public void setItemOnCursor(ItemStack item) {
+
+    }
+
+    @Override
+    public boolean isBlocking() {
+        return false;
+    }
+
+    @Override
+    public int getExpToLevel() {
+        return 0;
+    }
+
+    @Override
+    public long getFirstPlayed() {
+        return 0;
+    }
+
+    @Override
+    public long getLastPlayed() {
+        return 0;
+    }
+
+    @Override
+    public boolean hasPlayedBefore() {
+        return false;
+    }
+
+    @Override
+    public void sendPluginMessage(Plugin source, String channel, byte[] message) {
+
+    }
+
+    @Override
+    public Set<String> getListeningPluginChannels() {
+        return null;
+    }
 }

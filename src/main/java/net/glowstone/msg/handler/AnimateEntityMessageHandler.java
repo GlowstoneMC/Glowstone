@@ -2,6 +2,7 @@ package net.glowstone.msg.handler;
 
 import net.glowstone.EventFactory;
 import net.glowstone.block.BlockID;
+import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.msg.AnimateEntityMessage;
 import net.glowstone.net.Session;
@@ -24,7 +25,7 @@ public final class AnimateEntityMessageHandler extends MessageHandler<AnimateEnt
         case AnimateEntityMessage.ANIMATION_SWING_ARM:
             AnimateEntityMessage toSend = new AnimateEntityMessage(player.getEntityId(), AnimateEntityMessage.ANIMATION_SWING_ARM);
             for (GlowPlayer observer : player.getWorld().getRawPlayers()) {
-                if (observer != player && observer.canSee(player)) {
+                if (observer != player && observer.canSee((GlowEntity) player)) {
                     observer.getSession().send(toSend);
                 }
             }

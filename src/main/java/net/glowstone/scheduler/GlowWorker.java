@@ -49,7 +49,7 @@ public class GlowWorker implements BukkitWorker, Runnable {
             thread.interrupt();
             return;
         }
-        task.stop();
+        task.cancel();
     }
 
     public void run() {

@@ -1,31 +1,20 @@
 package net.glowstone.entity;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.ArrayList;
-import java.util.List;
-
 import gnu.trove.set.hash.TIntHashSet;
 import net.glowstone.GlowServer;
-
+import net.glowstone.GlowWorld;
+import net.glowstone.msg.*;
+import net.glowstone.util.Parameter;
+import net.glowstone.util.Position;
 import net.glowstone.util.TargetBlock;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Egg;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Snowball;
-import org.bukkit.entity.Vehicle;
+import org.bukkit.entity.*;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
-import net.glowstone.util.Parameter;
-import net.glowstone.util.Position;
-import net.glowstone.msg.EntityRotationMessage;
-import net.glowstone.msg.EntityTeleportMessage;
-import net.glowstone.msg.Message;
-import net.glowstone.msg.RelativeEntityPositionMessage;
-import net.glowstone.msg.RelativeEntityPositionRotationMessage;
-import net.glowstone.GlowWorld;
+import java.util.*;
 
 /**
  * A GlowLivingEntity is a {@link org.bukkit.entity.Player} or {@link org.bukkit.entity.Monster}.
@@ -82,7 +71,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return null;
     }
 
-    public int getHealth() {
+    public double getHealth() {
         return health;
     }
 
@@ -200,7 +189,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public int getLastDamage() {
+    public double getLastDamage() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -228,4 +217,185 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }
     }
 
+    // NEW STUFF
+
+    @Override
+    public <T extends Projectile> T launchProjectile(Class<? extends T> projectile) {
+        return null;
+    }
+
+    @Override
+    public int _INVALID_getLastDamage() {
+        return 0;
+    }
+
+    @Override
+    public void setLastDamage(double damage) {
+
+    }
+
+    @Override
+    public void _INVALID_setLastDamage(int damage) {
+
+    }
+
+    @Override
+    public Player getKiller() {
+        return null;
+    }
+
+    @Override
+    public boolean addPotionEffect(PotionEffect effect) {
+        return false;
+    }
+
+    @Override
+    public boolean addPotionEffect(PotionEffect effect, boolean force) {
+        return false;
+    }
+
+    @Override
+    public boolean addPotionEffects(Collection<PotionEffect> effects) {
+        return false;
+    }
+
+    @Override
+    public boolean hasPotionEffect(PotionEffectType type) {
+        return false;
+    }
+
+    @Override
+    public void removePotionEffect(PotionEffectType type) {
+
+    }
+
+    @Override
+    public Collection<PotionEffect> getActivePotionEffects() {
+        return null;
+    }
+
+    @Override
+    public boolean hasLineOfSight(Entity other) {
+        return false;
+    }
+
+    @Override
+    public boolean getRemoveWhenFarAway() {
+        return false;
+    }
+
+    @Override
+    public void setRemoveWhenFarAway(boolean remove) {
+
+    }
+
+    @Override
+    public EntityEquipment getEquipment() {
+        return null;
+    }
+
+    @Override
+    public void setCanPickupItems(boolean pickup) {
+
+    }
+
+    @Override
+    public boolean getCanPickupItems() {
+        return false;
+    }
+
+    @Override
+    public void setCustomName(String name) {
+
+    }
+
+    @Override
+    public String getCustomName() {
+        return null;
+    }
+
+    @Override
+    public void setCustomNameVisible(boolean flag) {
+
+    }
+
+    @Override
+    public boolean isCustomNameVisible() {
+        return false;
+    }
+
+    @Override
+    public boolean isLeashed() {
+        return false;
+    }
+
+    @Override
+    public Entity getLeashHolder() throws IllegalStateException {
+        return null;
+    }
+
+    @Override
+    public boolean setLeashHolder(Entity holder) {
+        return false;
+    }
+
+    @Override
+    public void damage(double amount) {
+
+    }
+
+    @Override
+    public void _INVALID_damage(int amount) {
+
+    }
+
+    @Override
+    public void damage(double amount, Entity source) {
+
+    }
+
+    @Override
+    public void _INVALID_damage(int amount, Entity source) {
+
+    }
+
+    @Override
+    public int _INVALID_getHealth() {
+        return 0;
+    }
+
+    @Override
+    public void setHealth(double health) {
+
+    }
+
+    @Override
+    public void _INVALID_setHealth(int health) {
+
+    }
+
+    @Override
+    public double getMaxHealth() {
+        return 0;
+    }
+
+    @Override
+    public int _INVALID_getMaxHealth() {
+        return 0;
+    }
+
+    @Override
+    public void setMaxHealth(double health) {
+
+    }
+
+    @Override
+    public void _INVALID_setMaxHealth(int health) {
+
+    }
+
+    @Override
+    public void resetMaxHealth() {
+
+    }
 }

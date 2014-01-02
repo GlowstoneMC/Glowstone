@@ -1,7 +1,5 @@
 package net.glowstone.generator.populators;
 
-import java.util.Random;
-
 import net.glowstone.block.BlockID;
 import org.bukkit.Chunk;
 import org.bukkit.World;
@@ -10,8 +8,10 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.generator.BlockPopulator;
 
+import java.util.Random;
+
 /**
- * BlockPopulator that generates giant mushrooms in {@link Biome#TUNDRA tundra}
+ * BlockPopulator that generates giant mushrooms in tundra
  * and {@link Biome#TAIGA taiga}, a la Minecraft 1.8.
  */
 public class MushroomPopulator extends BlockPopulator {
@@ -26,7 +26,7 @@ public class MushroomPopulator extends BlockPopulator {
         int rz = 2 + random.nextInt(12);
         Block block = source.getBlock(rx, world.getHighestBlockYAt((source.getX() << 4)
                 + rx, (source.getZ() << 4) + rz), rz);
-        if (block.getBiome() != Biome.TAIGA && block.getBiome() != Biome.TUNDRA) {
+        if (block.getBiome() != Biome.TAIGA) {
             return;
         }
         if (block.getRelative(BlockFace.DOWN).getTypeId() != BlockID.GRASS

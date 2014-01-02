@@ -1,13 +1,14 @@
 package net.glowstone.generator.populators;
 
-import java.util.Random;
-
 import net.glowstone.block.BlockID;
-import static net.glowstone.block.BlockID.LEAVES;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.generator.BlockPopulator;
+
+import java.util.Random;
+
+import static net.glowstone.block.BlockID.LEAVES;
 
 /**
  * BlockPopulator that adds trees based on the biome.
@@ -37,20 +38,20 @@ public class TreePopulator extends BlockPopulator {
             case PLAINS:
                 chance = 40;
                 break;
-            case RAINFOREST:
-                chance = 160;
-                multiplier = 10;
-                break;
+//            case RAINFOREST:
+//                chance = 160;
+//                multiplier = 10;
+//                break;
             case SAVANNA:
                 chance = 20;
                 break;
-            case SEASONAL_FOREST:
-                chance = 140;
-                multiplier = 8;
-                break;
-            case SHRUBLAND:
-                chance = 60;
-                break;
+//            case SEASONAL_FOREST:
+//                chance = 140;
+//                multiplier = 8;
+//                break;
+//            case SHRUBLAND:
+//                chance = 60;
+//                break;
             case SWAMPLAND:
                 chance = 120;
                 break;
@@ -60,17 +61,17 @@ public class TreePopulator extends BlockPopulator {
                 height = 8 + random.nextInt(3);
                 multiplier = 3;
                 break;
-            case TUNDRA:
-                chance = 5;
-                data = 1;
-                height = 7 + random.nextInt(3);
-                break;
+//            case TUNDRA:
+//                chance = 5;
+//                data = 1;
+//                height = 7 + random.nextInt(3);
+//                break;
             case SKY:
                 chance = 1;
                 break;
             case DESERT:
             case HELL:
-            case ICE_DESERT:
+//            case ICE_DESERT:
                 return;
         }
 

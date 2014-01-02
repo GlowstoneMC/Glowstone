@@ -1,41 +1,30 @@
 package net.glowstone;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-
-import org.bukkit.BlockChangeDelegate;
-import org.bukkit.Chunk;
-import org.bukkit.ChunkSnapshot;
-import org.bukkit.Difficulty;
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.TreeType;
-import org.bukkit.World;
-import org.bukkit.block.Biome;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.CreatureType;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.generator.BlockPopulator;
-import org.bukkit.generator.ChunkGenerator;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
-
+import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.*;
 import net.glowstone.io.StorageOperation;
 import net.glowstone.io.WorldMetadataService;
 import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
-import net.glowstone.block.GlowBlock;
 import net.glowstone.msg.LoadChunkMessage;
 import net.glowstone.msg.StateChangeMessage;
 import net.glowstone.msg.TimeMessage;
+import org.bukkit.*;
+import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
+import org.bukkit.entity.*;
+import org.bukkit.generator.BlockPopulator;
+import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.MetadataValue;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.util.Vector;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 
 /**
  * A class which represents the in-game world.
@@ -694,8 +683,6 @@ public final class GlowWorld implements World {
                 return spawn(loc, org.bukkit.entity.Ghast.class);
             case GIANT:
                 return spawn(loc, org.bukkit.entity.Giant.class);
-            case MONSTER:
-                return spawn(loc, org.bukkit.entity.Monster.class);
             case PIG:
                 return spawn(loc, org.bukkit.entity.Pig.class);
             case PIG_ZOMBIE:
@@ -946,5 +933,192 @@ public final class GlowWorld implements World {
      */
     public File getWorldFolder() {
         return storageProvider.getFolder();
+    }
+
+    // NEW STUFF
+
+    @Override
+    public boolean isChunkInUse(int x, int z) {
+        return false;
+    }
+
+    @Override
+    public Entity spawnEntity(Location loc, EntityType type) {
+        return null;
+    }
+
+    @Override
+    public LivingEntity spawnCreature(Location loc, EntityType type) {
+        return null;
+    }
+
+    @Override
+    public <T extends Entity> Collection<T> getEntitiesByClass(Class<T>... classes) {
+        return null;
+    }
+
+    @Override
+    public <T extends Entity> Collection<T> getEntitiesByClass(Class<T> cls) {
+        return null;
+    }
+
+    @Override
+    public Collection<Entity> getEntitiesByClasses(Class<?>... classes) {
+        return null;
+    }
+
+    @Override
+    public boolean createExplosion(double x, double y, double z, float power, boolean setFire, boolean breakBlocks) {
+        return false;
+    }
+
+    @Override
+    public FallingBlock spawnFallingBlock(Location location, Material material, byte data) throws IllegalArgumentException {
+        return null;
+    }
+
+    @Override
+    public FallingBlock spawnFallingBlock(Location location, int blockId, byte blockData) throws IllegalArgumentException {
+        return null;
+    }
+
+    @Override
+    public <T> void playEffect(Location location, Effect effect, T data) {
+
+    }
+
+    @Override
+    public <T> void playEffect(Location location, Effect effect, T data, int radius) {
+
+    }
+
+    @Override
+    public void setBiome(int x, int z, Biome bio) {
+
+    }
+
+    @Override
+    public WorldType getWorldType() {
+        return null;
+    }
+
+    @Override
+    public boolean canGenerateStructures() {
+        return false;
+    }
+
+    @Override
+    public long getTicksPerAnimalSpawns() {
+        return 0;
+    }
+
+    @Override
+    public void setTicksPerAnimalSpawns(int ticksPerAnimalSpawns) {
+
+    }
+
+    @Override
+    public long getTicksPerMonsterSpawns() {
+        return 0;
+    }
+
+    @Override
+    public void setTicksPerMonsterSpawns(int ticksPerMonsterSpawns) {
+
+    }
+
+    @Override
+    public int getMonsterSpawnLimit() {
+        return 0;
+    }
+
+    @Override
+    public void setMonsterSpawnLimit(int limit) {
+
+    }
+
+    @Override
+    public int getAnimalSpawnLimit() {
+        return 0;
+    }
+
+    @Override
+    public void setAnimalSpawnLimit(int limit) {
+
+    }
+
+    @Override
+    public int getWaterAnimalSpawnLimit() {
+        return 0;
+    }
+
+    @Override
+    public void setWaterAnimalSpawnLimit(int limit) {
+
+    }
+
+    @Override
+    public int getAmbientSpawnLimit() {
+        return 0;
+    }
+
+    @Override
+    public void setAmbientSpawnLimit(int limit) {
+
+    }
+
+    @Override
+    public void playSound(Location location, Sound sound, float volume, float pitch) {
+
+    }
+
+    @Override
+    public String[] getGameRules() {
+        return new String[0];
+    }
+
+    @Override
+    public String getGameRuleValue(String rule) {
+        return null;
+    }
+
+    @Override
+    public boolean setGameRuleValue(String rule, String value) {
+        return false;
+    }
+
+    @Override
+    public boolean isGameRule(String rule) {
+        return false;
+    }
+
+    @Override
+    public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
+
+    }
+
+    @Override
+    public List<MetadataValue> getMetadata(String metadataKey) {
+        return null;
+    }
+
+    @Override
+    public boolean hasMetadata(String metadataKey) {
+        return false;
+    }
+
+    @Override
+    public void removeMetadata(String metadataKey, Plugin owningPlugin) {
+
+    }
+
+    @Override
+    public void sendPluginMessage(Plugin source, String channel, byte[] message) {
+
+    }
+
+    @Override
+    public Set<String> getListeningPluginChannels() {
+        return null;
     }
 }

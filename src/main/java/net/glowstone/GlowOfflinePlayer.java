@@ -1,6 +1,7 @@
 package net.glowstone;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
@@ -75,5 +76,25 @@ public class GlowOfflinePlayer implements OfflinePlayer {
 
     public static OfflinePlayer deserialize(Map<String, Object> val) {
         return Bukkit.getServer().getOfflinePlayer(val.get("name").toString());
+    }
+
+    @Override
+    public long getFirstPlayed() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public long getLastPlayed() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean hasPlayedBefore() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Location getBedSpawnLocation() {
+        throw new UnsupportedOperationException();
     }
 }

@@ -2,6 +2,7 @@ package net.glowstone.block;
 
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.EntityType;
 
 public class GlowCreatureSpawner extends GlowBlockState implements CreatureSpawner {
     private MobSpawnerWrapper wrapper = new MobSpawnerWrapper(CreatureType.PIG, 15000);
@@ -58,5 +59,27 @@ public class GlowCreatureSpawner extends GlowBlockState implements CreatureSpawn
             this.type = type;
             this.delay = delay;
         }
+    }
+
+    // NEW STUFF
+
+    @Override
+    public EntityType getSpawnedType() {
+        return null;
+    }
+
+    @Override
+    public void setSpawnedType(EntityType creatureType) {
+
+    }
+
+    @Override
+    public void setCreatureTypeByName(String creatureType) {
+
+    }
+
+    @Override
+    public String getCreatureTypeName() {
+        return null;
     }
 }

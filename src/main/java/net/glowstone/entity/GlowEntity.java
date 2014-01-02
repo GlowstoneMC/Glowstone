@@ -1,19 +1,22 @@
 package net.glowstone.entity;
 
-import java.util.List;
-import java.util.UUID;
-import org.bukkit.util.Vector;
-import org.bukkit.entity.Entity;
-import org.bukkit.Location;
-
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowServer;
-import net.glowstone.util.Position;
-
-import net.glowstone.msg.Message;
 import net.glowstone.GlowWorld;
+import net.glowstone.msg.Message;
+import net.glowstone.util.Position;
+import org.bukkit.EntityEffect;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.metadata.MetadataValue;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.util.Vector;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Represents some entity in the world such as an item on the floor or a player.
@@ -350,4 +353,60 @@ public abstract class GlowEntity implements Entity {
         this.onGround = onGround;
     }
 
+    // NEW STUFF
+
+    @Override
+    public Location getLocation(Location loc) {
+        return null;
+    }
+
+    @Override
+    public boolean isValid() {
+        return false;
+    }
+
+    @Override
+    public void playEffect(EntityEffect type) {
+
+    }
+
+    @Override
+    public EntityType getType() {
+        return null;
+    }
+
+    @Override
+    public boolean isInsideVehicle() {
+        return false;
+    }
+
+    @Override
+    public boolean leaveVehicle() {
+        return false;
+    }
+
+    @Override
+    public Entity getVehicle() {
+        return null;
+    }
+
+    @Override
+    public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
+
+    }
+
+    @Override
+    public List<MetadataValue> getMetadata(String metadataKey) {
+        return null;
+    }
+
+    @Override
+    public boolean hasMetadata(String metadataKey) {
+        return false;
+    }
+
+    @Override
+    public void removeMetadata(String metadataKey, Plugin owningPlugin) {
+
+    }
 }

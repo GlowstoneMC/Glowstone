@@ -1,23 +1,19 @@
 package net.glowstone.scheduler;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import org.bukkit.World;
-
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scheduler.BukkitWorker;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.*;
+import java.util.logging.Level;
 
 /**
  * A class which schedules {@link GlowTask}s.
@@ -88,11 +84,11 @@ public final class GlowScheduler implements BukkitScheduler {
      * Schedules the specified task.
      * @param task The task.
      */
-    private int schedule(GlowTask task) {
+    private GlowTask schedule(GlowTask task) {
         synchronized (newTasks) {
             newTasks.add(task);
         }
-        return task.getTaskId();
+        return task;
     }
 
     /**
@@ -145,23 +141,56 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     public int scheduleSyncRepeatingTask(Plugin plugin, Runnable task, long delay, long period) {
-        return schedule(new GlowTask(plugin, task, true, delay, period));
+        return schedule(new GlowTask(plugin, task, true, delay, period)).getTaskId();
     }
 
+    @Deprecated
     public int scheduleAsyncDelayedTask(Plugin plugin, Runnable task, long delay) {
         return scheduleAsyncRepeatingTask(plugin, task, delay, -1);
     }
 
+    @Deprecated
     public int scheduleAsyncDelayedTask(Plugin plugin, Runnable task) {
         return scheduleAsyncRepeatingTask(plugin, task, 0, -1);
     }
 
+    @Deprecated
     public int scheduleAsyncRepeatingTask(Plugin plugin, Runnable task, long delay, long period) {
-        return schedule(new GlowTask(plugin, task, false, delay, period));
+        return schedule(new GlowTask(plugin, task, false, delay, period)).getTaskId();
     }
 
     public <T> Future<T> callSyncMethod(Plugin plugin, Callable<T> task) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public BukkitTask runTask(Plugin plugin, Runnable task) throws IllegalArgumentException {
+        return runTaskLater(plugin, task, 0);
+    }
+
+    @Override
+    public BukkitTask runTaskAsynchronously(Plugin plugin, Runnable task) throws IllegalArgumentException {
+        return runTaskLaterAsynchronously(plugin, task, 0);
+    }
+
+    @Override
+    public BukkitTask runTaskLater(Plugin plugin, Runnable task, long delay) throws IllegalArgumentException {
+        return runTaskTimer(plugin, task, delay, -1);
+    }
+
+    @Override
+    public BukkitTask runTaskLaterAsynchronously(Plugin plugin, Runnable task, long delay) throws IllegalArgumentException {
+        return runTaskTimerAsynchronously(plugin, task, delay, -1);
+    }
+
+    @Override
+    public BukkitTask runTaskTimer(Plugin plugin, Runnable task, long delay, long period) throws IllegalArgumentException {
+        return schedule(new GlowTask(plugin, task, true, delay, period));
+    }
+
+    @Override
+    public BukkitTask runTaskTimerAsynchronously(Plugin plugin, Runnable task, long delay, long period) throws IllegalArgumentException {
+        return schedule(new GlowTask(plugin, task, false, delay, period));
     }
 
     public void cancelTask(int taskId) {
