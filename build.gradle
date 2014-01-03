@@ -1,7 +1,7 @@
 // Plugins used
-apply plugin: 'java' // Specificies a java project, allows for javadoc generation etc.
-apply plugin: 'application' //Adds the 'gradle run' task
-apply plugin: 'project-report' //Adds project report tasks
+apply plugin: 'java' // Specifies a java project, allows for javadoc generation etc.
+apply plugin: 'application' // Adds the 'gradle run' task
+apply plugin: 'project-report' // Adds project report tasks
 
 // Method allowing us to run git describe
 def getVersionName = { ->
@@ -19,26 +19,24 @@ version = '0.0.1-SNAPSHOT'
 description = "Glowstone"
 mainClassName = "net.glowstone.GlowServer"
 
-// Extend project information
+// Extended project information
 ext.url = 'https://github.com/SpaceManiac/Glowstone'
-ext.bukkitVersion = '1.0.0-R1-SNAPSHOT'
+ext.bukkitVersion = '1.7.2-R0.2'
 ext.gitDescribe = "git-Glowstone-" + getVersionName()
 
-//Minimum java version required
-sourceCompatibility = '1.5'
-targetCompatibility = '1.5'
+// Minimum Java version required
+sourceCompatibility = '1.6'
+targetCompatibility = '1.6'
 
 // Compile encoding
-tasks.withType(Compile) {
+compileJava {
     options.encoding = 'UTF-8'
 }
 
 // Repositories storing our dependencies
 repositories {
     mavenCentral()
-    
     maven { url "http://repo.bukkit.org/content/groups/public/" }
-    
     maven { url "https://repository.jboss.org/nexus/content/groups/public/" }
 }
 
@@ -54,15 +52,14 @@ dependencies {
     testCompile 'junit:junit:4.8.1'
 }
 
-//JAR manifest information
+// Jar manifest information
 manifest.mainAttributes(
-	'Main-Class': 'net.glowstone.GlowServer',
-	'Implementation-Title': description, 
-	'Implementation-Version': ext.gitDescribe,
-	'Implementation-Vendor': 'SpaceManiac',
-	'Specification-Title': 'Bukkit',
-	'Specification-Version': ext.bukkitVersion,
-	'Specification-Vender': 'Bukkit Team',
-	'Sealed': true)
-	
-
+    'Main-Class': mainClassName,
+    'Implementation-Title': description,
+    'Implementation-Version': ext.gitDescribe,
+    'Implementation-Vendor': 'SpaceManiac',
+    'Specification-Title': 'Bukkit',
+    'Specification-Version': ext.bukkitVersion,
+    'Specification-Vendor': 'Bukkit Team',
+    'Sealed': true
+)
