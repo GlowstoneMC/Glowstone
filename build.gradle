@@ -1,0 +1,68 @@
+// Plugins used
+apply plugin: 'java' // Specificies a java project, allows for javadoc generation etc.
+apply plugin: 'application' //Adds the 'gradle run' task
+apply plugin: 'project-report' //Adds project report tasks
+
+// Method allowing us to run git describe
+def getVersionName = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'describe'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+// Basic project information
+group = 'net.glowstone'
+version = '0.0.1-SNAPSHOT'
+description = "Glowstone"
+mainClassName = "net.glowstone.GlowServer"
+
+// Extend project information
+ext.url = 'https://github.com/SpaceManiac/Glowstone'
+ext.bukkitVersion = '1.0.0-R1-SNAPSHOT'
+ext.gitDescribe = "git-Glowstone-" + getVersionName()
+
+//Minimum java version required
+sourceCompatibility = '1.5'
+targetCompatibility = '1.5'
+
+// Compile encoding
+tasks.withType(Compile) {
+    options.encoding = 'UTF-8'
+}
+
+// Repositories storing our dependencies
+repositories {
+    mavenCentral()
+    
+    maven { url "http://repo.bukkit.org/content/groups/public/" }
+    
+    maven { url "https://repository.jboss.org/nexus/content/groups/public/" }
+}
+
+// Dependencies used by our project
+dependencies {
+    compile group: 'org.bukkit', name: 'bukkit', version: ext.bukkitVersion    
+    compile 'org.jboss.netty:netty:3.2.4.Final'
+    compile 'jline:jline:0.9.94' 
+    compile 'org.xerial:sqlite-jdbc:3.7.2'
+    compile 'mysql:mysql-connector-java:5.1.14'
+    compile 'com.grahamedgecombe.jterminal:jterminal:1.0.1'
+    compile 'net.sf.trove4j:trove4j:3.0.1'
+    testCompile 'junit:junit:4.8.1'
+}
+
+//JAR manifest information
+manifest.mainAttributes(
+	'Main-Class': 'net.glowstone.GlowServer',
+	'Implementation-Title': description, 
+	'Implementation-Version': ext.gitDescribe,
+	'Implementation-Vendor': 'SpaceManiac',
+	'Specification-Title': 'Bukkit',
+	'Specification-Version': ext.bukkitVersion,
+	'Specification-Vender': 'Bukkit Team',
+	'Sealed': true)
+	
+
