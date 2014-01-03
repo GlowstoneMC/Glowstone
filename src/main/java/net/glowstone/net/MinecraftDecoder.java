@@ -1,9 +1,8 @@
 package net.glowstone.net;
 
-import java.io.IOException;
-
+import net.glowstone.GlowServer;
 import net.glowstone.net.codec.MessageCodec;
-
+import net.glowstone.util.ChannelBufferUtils;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -20,16 +19,31 @@ public class MinecraftDecoder extends ReplayingDecoder<VoidEnum> {
 
     @Override
     protected Object decode(ChannelHandlerContext ctx, Channel c, ChannelBuffer buf, VoidEnum state) throws Exception {
-        int opcode = buf.readUnsignedByte();
+        GlowServer.logger.info("About to read length field");
+        int length = ChannelBufferUtils.readVarInt(buf);
+        int bufPosition = buf.readerIndex();
+        GlowServer.logger.info("About to read opcode field (length: " + length + ")");
+        int opcode = ChannelBufferUtils.readVarInt(buf);
 
         MessageCodec<?> codec = CodecLookupService.find(opcode);
         if (codec == null) {
-            throw new IOException("Unknown operation code: " + opcode + " (previous opcode: " + previousOpcode + ").");
+            //throw new IOException("Unknown operation code: " + opcode + " (previous opcode: " + previousOpcode + ").");
+            GlowServer.logger.warning("Skipping unknown opcode: " + opcode + " (previous: " + previousOpcode + ")");
+            buf.readerIndex(bufPosition);
+            buf.skipBytes(length);
+            return null;
         }
 
         previousOpcode = opcode;
 
-        return codec.decode(buf);
+        GlowServer.logger.info("About to decode (opcode: " + opcode + ")");
+        // safety in case codec does not read right number of bytes
+        Object result = codec.decode(buf);
+        if (buf.readerIndex() != bufPosition + length) {
+            GlowServer.logger.warning("Opcode " + opcode + " decoded " + (buf.readerIndex() - bufPosition) + " bytes instead of " + length);
+            buf.readerIndex(bufPosition + length);
+        }
+        return result;
     }
 
 }

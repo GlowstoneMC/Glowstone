@@ -1,5 +1,12 @@
 package net.glowstone.util;
 
+import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.NBTInputStream;
+import net.glowstone.util.nbt.NBTOutputStream;
+import net.glowstone.util.nbt.Tag;
+import org.bukkit.inventory.ItemStack;
+import org.jboss.netty.buffer.ChannelBuffer;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -7,14 +14,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.NBTInputStream;
-import net.glowstone.util.nbt.NBTOutputStream;
-import net.glowstone.util.nbt.Tag;
-import org.bukkit.inventory.ItemStack;
-
-import org.jboss.netty.buffer.ChannelBuffer;
 
 /**
  * Contains several {@link ChannelBuffer}-related utility methods.
@@ -26,6 +25,11 @@ public final class ChannelBufferUtils {
      * The UTF-8 character set.
      */
     private static final Charset CHARSET_UTF8 = Charset.forName("UTF-8");
+
+    /**
+     * The bit flag indicating a varint continues.
+     */
+    private static final byte VARINT_MORE_FLAG = (byte) (1 << 7);
 
     /**
      * Writes a list of parameters (e.g. mob metadata) to the buffer.
@@ -110,21 +114,35 @@ public final class ChannelBufferUtils {
     }
 
     /**
-     * Writes a string to the buffer.
+     * Read a protobuf varint from the buffer.
      * @param buf The buffer.
-     * @param str The string.
-     * @throws IllegalArgumentException if the string is too long
-     * <em>after</em> it is encoded.
+     * @return The value read.
      */
-    public static void writeString(ChannelBuffer buf, String str) {
-        int len = str.length();
-        if (len >= 65536) {
-            throw new IllegalArgumentException("String too long.");
-        }
+    public static int readVarInt(ChannelBuffer buf) {
+        int ret = 0;
+        short read;
+        byte offset = 0;
+        do {
+            read = buf.readUnsignedByte();
+            ret = ret | ((read & ~VARINT_MORE_FLAG) << offset);
+            offset += 7;
+        } while (((read >> 7) & 1) != 0);
+        return ret;
+    }
 
-        buf.writeShort(len);
-        for (int i = 0; i < len; ++i) {
-            buf.writeChar(str.charAt(i));
+    /**
+     * Write a protobuf varint to the buffer.
+     * @param buf The buffer.
+     * @param num The value to write.
+     */
+    public static void writeVarInt(ChannelBuffer buf, int num) {
+        while (num != 0) {
+            short write = (short) (num & ~VARINT_MORE_FLAG);
+            num >>= 7;
+            if (num != 0) {
+                write |= VARINT_MORE_FLAG;
+            }
+            buf.writeByte(write);
         }
     }
 
@@ -135,40 +153,23 @@ public final class ChannelBufferUtils {
      * @throws IllegalArgumentException if the string is too long
      * <em>after</em> it is encoded.
      */
-    public static void writeUtf8String(ChannelBuffer buf, String str) {
+    public static void writeString(ChannelBuffer buf, String str) {
         byte[] bytes = str.getBytes(CHARSET_UTF8);
         if (bytes.length >= 65536) {
             throw new IllegalArgumentException("Encoded UTF-8 string too long.");
         }
 
-        buf.writeShort(bytes.length);
+        writeVarInt(buf, bytes.length);
         buf.writeBytes(bytes);
     }
-
-    /**
-     * Reads a string from the buffer.
-     * @param buf The buffer.
-     * @return The string.
-     */
-    public static String readString(ChannelBuffer buf) {
-        int len = buf.readUnsignedShort();
-
-        char[] characters = new char[len];
-        for (int i = 0; i < len; i++) {
-            characters[i] = buf.readChar();
-        }
-
-        return new String(characters);
-    }
-
 
     /**
      * Reads a UTF-8 encoded string from the buffer.
      * @param buf The buffer.
      * @return The string.
      */
-    public static String readUtf8String(ChannelBuffer buf) {
-        int len = buf.readUnsignedShort();
+    public static String readString(ChannelBuffer buf) {
+        int len = readVarInt(buf);
 
         byte[] bytes = new byte[len];
         buf.readBytes(bytes);

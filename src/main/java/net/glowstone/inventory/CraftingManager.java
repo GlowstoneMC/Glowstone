@@ -23,7 +23,7 @@ public final class CraftingManager {
     private final Map<Integer, Integer> furnaceFuels = new HashMap<Integer, Integer>();
     
     public CraftingManager() {
-        resetRecipes();
+        //resetRecipes();
         
         // Report stats
         int shape = shapedRecipes.size(), nshape = shapelessRecipes.size(), furnace = furnaceRecipes.size(), fuel = furnaceFuels.size();
