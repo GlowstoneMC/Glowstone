@@ -1,22 +1,21 @@
 package net.glowstone.net;
 
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.util.*;
-import java.util.logging.Level;
 import net.glowstone.EventFactory;
-
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.msg.*;
-import net.glowstone.msg.handler.HandlerLookupService;
-import net.glowstone.msg.handler.MessageHandler;
-import org.bukkit.entity.Player;
+import net.glowstone.msg.BlockPlacementMessage;
+import net.glowstone.net.message.HandshakeMessage;
+import net.glowstone.net.message.Message;
 import org.bukkit.event.player.PlayerKickEvent;
-
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelFutureListener;
+
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.Random;
+import java.util.logging.Level;
 
 /**
  * A single connection to the server, which may or may not be associated with a
@@ -30,29 +29,6 @@ public final class Session {
      * to a timeout.
      */
     private static final int TIMEOUT_TICKS = 300;
-
-    /**
-     * The state this connection is currently in.
-     */
-    public enum State {
-
-        /**
-         * In the exchange handshake state, the server is waiting for the client
-         * to send its initial handshake packet.
-         */
-        EXCHANGE_HANDSHAKE,
-
-        /**
-         * In the exchange identification state, the server is waiting for the
-         * client to send its identification packet.
-         */
-        EXCHANGE_IDENTIFICATION,
-
-        /**
-         * In the game state the session has an associated player.
-         */
-        GAME;
-    }
 
     /**
      * The server this session belongs to.
@@ -83,7 +59,7 @@ public final class Session {
     /**
      * The current state.
      */
-    private State state = State.EXCHANGE_HANDSHAKE;
+    private ProtocolState state = ProtocolState.HANDSHAKE;
 
     /**
      * The player associated with this session (if there is one).
@@ -94,7 +70,7 @@ public final class Session {
      * The random long used for client-server handshake
      */
 
-    private String sessionId = Long.toString(random.nextLong(), 16).trim();
+    private final String sessionId = Long.toString(random.nextLong(), 16).trim();
 
     /**
      * Handling ping messages
@@ -126,7 +102,7 @@ public final class Session {
      * Gets the state of this session.
      * @return The session's state.
      */
-    public State getState() {
+    public ProtocolState getState() {
         return state;
     }
 
@@ -134,7 +110,7 @@ public final class Session {
      * Sets the state of this session.
      * @param state The new state.
      */
-    public void setState(State state) {
+    public void setState(ProtocolState state) {
         this.state = state;
     }
 
@@ -168,11 +144,11 @@ public final class Session {
         if (message != null) {
             server.broadcastMessage(message);
         }
-        Message userListMessage = new UserListItemMessage(player.getPlayerListName(), true, (short)timeoutCounter);
+        /*Message userListMessage = new UserListItemMessage(player.getPlayerListName(), true, (short)timeoutCounter);
         for (Player sendPlayer : server.getOnlinePlayers()) {
             ((GlowPlayer) sendPlayer).getSession().send(userListMessage);
             send(new UserListItemMessage(sendPlayer.getPlayerListName(), true, (short)((GlowPlayer)sendPlayer).getSession().timeoutCounter));
-        }
+        }*/
     }
 
     @SuppressWarnings("unchecked")
@@ -181,17 +157,16 @@ public final class Session {
 
         Message message;
         while ((message = messageQueue.poll()) != null) {
-            MessageHandler<Message> handler = (MessageHandler<Message>) HandlerLookupService.find(message.getClass());
-            if (handler != null) {
-                handler.handle(this, player, message);
+            if (!MessageMap.getForState(state).callHandler(this, player, message)) {
+                GlowServer.logger.warning("Message " + message + " was not handled");
             }
             timeoutCounter = 0;
         }
 
         if (timeoutCounter >= TIMEOUT_TICKS)
             if (pingMessageId == 0) {
-                pingMessageId = new Random().nextInt();
-                send(new PingMessage(pingMessageId));
+                pingMessageId = random.nextInt();
+                //send(new PingMessage(pingMessageId));
                 timeoutCounter = 0;
             } else {
                 disconnect("Timed out");
@@ -207,8 +182,14 @@ public final class Session {
     }
 
     /**
+     * Placeholder method to prevent errors in lots of other places.
+     */
+    public void send(net.glowstone.msg.Message message) {
+    }
+
+    /**
      * Disconnects the session with the specified reason. This causes a
-     * {@link KickMessage} to be sent. When it has been delivered, the channel
+     * KickMessage to be sent. When it has been delivered, the channel
      * is closed.
      * @param reason The reason for disconnection.
      */
@@ -218,7 +199,7 @@ public final class Session {
     
     /**
      * Disconnects the session with the specified reason. This causes a
-     * {@link KickMessage} to be sent. When it has been delivered, the channel
+     * KickMessage to be sent. When it has been delivered, the channel
      * is closed.
      * @param reason The reason for disconnection.
      * @param overrideKick Whether to override the kick event.
@@ -239,8 +220,9 @@ public final class Session {
             GlowServer.logger.log(Level.INFO, "Player {0} kicked: {1}", new Object[]{player.getName(), reason});
             dispose(false);
         }
-    
-        channel.write(new KickMessage(reason)).addListener(ChannelFutureListener.CLOSE);
+
+        channel.close();
+        //channel.write(new KickMessage(reason)).addListener(ChannelFutureListener.CLOSE);
     }
 
     /**
@@ -275,7 +257,12 @@ public final class Session {
      * @param <T> The type of message.
      */
     <T extends Message> void messageReceived(T message) {
-        messageQueue.add(message);
+        if (message instanceof HandshakeMessage) {
+            // must handle immediately, because network reads are affected (a little hacky)
+            MessageMap.getForState(state).callHandler(this, player, message);
+        } else {
+            messageQueue.add(message);
+        }
     }
 
     /**
@@ -285,13 +272,13 @@ public final class Session {
     void dispose(boolean broadcastQuit) {
         if (player != null) {            
             player.remove();
-            Message userListMessage = new UserListItemMessage(player.getPlayerListName(), false, (short)0);
+            /*Message userListMessage = new UserListItemMessage(player.getPlayerListName(), false, (short)0);
             for (Player player : server.getOnlinePlayers()) {
                 ((GlowPlayer) player).getSession().send(userListMessage);
-            }
+            }*/
 
             String text = EventFactory.onPlayerQuit(player).getQuitMessage();
-            if (broadcastQuit &&text != null) {
+            if (broadcastQuit && text != null) {
                 server.broadcastMessage(text);
             }
             player = null; // in case we are disposed twice

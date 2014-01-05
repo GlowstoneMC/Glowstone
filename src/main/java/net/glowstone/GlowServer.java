@@ -86,7 +86,7 @@ public final class GlowServer implements Server {
     /**
      * The protocol version supported by the server
      */
-    public static final int PROTOCOL_VERSION = 22;
+    public static final int PROTOCOL_VERSION = 4;
 
 
     public static final StorageQueue storeQueue = new StorageQueue();
@@ -214,7 +214,7 @@ public final class GlowServer implements Server {
      */
     private void init() {
         Bukkit.setServer(this);
-        
+
         ChannelFactory factory = new NioServerSocketChannelFactory(executor, executor);
         bootstrap.setFactory(factory);
 

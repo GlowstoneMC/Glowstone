@@ -29,7 +29,7 @@ public final class ChannelBufferUtils {
     /**
      * The bit flag indicating a varint continues.
      */
-    private static final byte VARINT_MORE_FLAG = (byte) (1 << 7);
+    public static final byte VARINT_MORE_FLAG = (byte) (1 << 7);
 
     /**
      * Writes a list of parameters (e.g. mob metadata) to the buffer.
@@ -136,14 +136,14 @@ public final class ChannelBufferUtils {
      * @param num The value to write.
      */
     public static void writeVarInt(ChannelBuffer buf, int num) {
-        while (num != 0) {
+        do {
             short write = (short) (num & ~VARINT_MORE_FLAG);
             num >>= 7;
             if (num != 0) {
                 write |= VARINT_MORE_FLAG;
             }
             buf.writeByte(write);
-        }
+        } while (num != 0);
     }
 
     /**

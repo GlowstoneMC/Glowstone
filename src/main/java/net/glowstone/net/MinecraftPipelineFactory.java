@@ -1,7 +1,6 @@
 package net.glowstone.net;
 
 import net.glowstone.GlowServer;
-
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.StaticChannelPipeline;
@@ -27,10 +26,11 @@ public final class MinecraftPipelineFactory implements ChannelPipelineFactory {
 
     @Override
     public ChannelPipeline getPipeline() throws Exception {
+        MinecraftHandler handler = new MinecraftHandler(server);
         return new StaticChannelPipeline(
-            new MinecraftDecoder(),
-            new MinecraftEncoder(),
-            new MinecraftHandler(server)
+            new MinecraftDecoder(handler),
+            new MinecraftEncoder(handler),
+            handler
         );
     }
 

@@ -11,6 +11,7 @@ import net.glowstone.inventory.GlowPlayerInventory;
 import net.glowstone.inventory.InventoryViewer;
 import net.glowstone.io.StorageOperation;
 import net.glowstone.msg.*;
+import net.glowstone.net.ProtocolState;
 import net.glowstone.net.Session;
 import net.glowstone.util.Parameter;
 import net.glowstone.util.Position;
@@ -141,7 +142,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         super(session.getServer(), (GlowWorld) session.getServer().getWorlds().get(0), name);
         this.session = session;
         health = 20;
-        if (session.getState() != Session.State.GAME) {
+        if (session.getState() != ProtocolState.PLAY) {
             session.send(new IdentificationMessage(getEntityId(), "", world.getSeed(), getGameMode().getValue(), world.getEnvironment().getId(), 1, world.getMaxHeight(), session.getServer().getMaxPlayers()));
         }
         streamBlocks(); // stream the initial set of blocks

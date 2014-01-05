@@ -1,16 +1,10 @@
 package net.glowstone.net;
 
-import java.util.logging.Level;
-
 import net.glowstone.GlowServer;
-import net.glowstone.msg.Message;
+import net.glowstone.net.message.Message;
+import org.jboss.netty.channel.*;
 
-import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.ChannelStateEvent;
-import org.jboss.netty.channel.ExceptionEvent;
-import org.jboss.netty.channel.MessageEvent;
-import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
+import java.util.logging.Level;
 
 /**
  * A {@link SimpleChannelUpstreamHandler} which processes incoming network
@@ -23,6 +17,11 @@ public class MinecraftHandler extends SimpleChannelUpstreamHandler {
      * The server.
      */
     private final GlowServer server;
+
+    /**
+     * The session attached to this handler.
+     */
+    Session session;
 
     /**
      * Creates a new network event handler.
@@ -40,6 +39,7 @@ public class MinecraftHandler extends SimpleChannelUpstreamHandler {
         Session session = new Session(server, c);
         server.getSessionRegistry().add(session);
         ctx.setAttachment(session);
+        this.session = session; // hacky, fix later
 
         server.getLogger().info("Channel connected: " + c + ".");
     }

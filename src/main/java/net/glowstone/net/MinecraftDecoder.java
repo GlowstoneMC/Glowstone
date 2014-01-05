@@ -1,49 +1,55 @@
 package net.glowstone.net;
 
-import net.glowstone.GlowServer;
-import net.glowstone.net.codec.MessageCodec;
 import net.glowstone.util.ChannelBufferUtils;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.handler.codec.replay.ReplayingDecoder;
-import org.jboss.netty.handler.codec.replay.VoidEnum;
+import org.jboss.netty.handler.codec.frame.FrameDecoder;
 
 /**
- * A {@link ReplayingDecoder} which decodes {@link ChannelBuffer}s into
- * Minecraft {@link net.glowstone.msg.Message}s.
+ * A {@link FrameDecoder} which decodes {@link ChannelBuffer}s into
+ * Minecraft {@link net.glowstone.net.message.Message}s.
  */
-public class MinecraftDecoder extends ReplayingDecoder<VoidEnum> {
+public class MinecraftDecoder extends FrameDecoder {
 
-    private int previousOpcode = -1;
+    private final MinecraftHandler handler;
+
+    public MinecraftDecoder(MinecraftHandler handler) {
+        this.handler = handler;
+    }
 
     @Override
-    protected Object decode(ChannelHandlerContext ctx, Channel c, ChannelBuffer buf, VoidEnum state) throws Exception {
-        GlowServer.logger.info("About to read length field");
-        int length = ChannelBufferUtils.readVarInt(buf);
-        int bufPosition = buf.readerIndex();
-        GlowServer.logger.info("About to read opcode field (length: " + length + ")");
-        int opcode = ChannelBufferUtils.readVarInt(buf);
-
-        MessageCodec<?> codec = CodecLookupService.find(opcode);
-        if (codec == null) {
-            //throw new IOException("Unknown operation code: " + opcode + " (previous opcode: " + previousOpcode + ").");
-            GlowServer.logger.warning("Skipping unknown opcode: " + opcode + " (previous: " + previousOpcode + ")");
-            buf.readerIndex(bufPosition);
-            buf.skipBytes(length);
+    protected Object decode(ChannelHandlerContext ctx, Channel channel, ChannelBuffer buffer) throws Exception {
+        if (buffer.readableBytes() < 2) {
+            // a packet length + opcode is always at least 2 bytes
             return null;
         }
 
-        previousOpcode = opcode;
+        buffer.markReaderIndex();
 
-        GlowServer.logger.info("About to decode (opcode: " + opcode + ")");
-        // safety in case codec does not read right number of bytes
-        Object result = codec.decode(buf);
-        if (buf.readerIndex() != bufPosition + length) {
-            GlowServer.logger.warning("Opcode " + opcode + " decoded " + (buf.readerIndex() - bufPosition) + " bytes instead of " + length);
-            buf.readerIndex(bufPosition + length);
+        // see if an entire varint is available
+        short read;
+        do {
+            if (buffer.readableBytes() < 1) {
+                buffer.resetReaderIndex();
+                return null;
+            }
+            read = buffer.readUnsignedByte();
+        } while (((read >> 7) & 1) != 0);
+
+        // read and check length
+        buffer.resetReaderIndex();
+        int length = ChannelBufferUtils.readVarInt(buffer);
+        if (buffer.readableBytes() < length) {
+            buffer.resetReaderIndex();
+            return null;
         }
-        return result;
+
+        // decode message
+        ChannelBuffer frame = buffer.readBytes(length);
+        Session session = handler.session; // hacky, fix later
+        MessageMap map = MessageMap.getForState(session.getState());
+        return map.decode(frame);
     }
 
 }
