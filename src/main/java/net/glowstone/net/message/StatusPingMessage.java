@@ -2,7 +2,7 @@ package net.glowstone.net.message;
 
 import org.jboss.netty.buffer.ChannelBuffer;
 
-public class StatusPingMessage extends Message {
+public final class StatusPingMessage extends Message {
 
     private final long time;
 

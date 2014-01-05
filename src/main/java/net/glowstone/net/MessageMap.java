@@ -169,6 +169,11 @@ public final class MessageMap {
 
         // Login
         map = new MessageMap(ProtocolState.LOGIN);
+        //map.bindReceive(0x00, LoginStartMessage.class, null);
+        //map.bindReceive(0x01, EncryptResponseMessage.class, null);
+        map.bindSend(0x00, KickMessage.class);
+        //map.bindSend(0x01, EncryptRequestMessage.class);
+        //map.bindSend(0x02, LoginSuccessMessage.class);
 
         // Play
         map = new MessageMap(ProtocolState.PLAY);

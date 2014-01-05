@@ -33,5 +33,9 @@ public class HandshakeHandler extends MessageHandler<HandshakeMessage> {
 
         GlowServer.logger.info("Handshake [" + message.getAddress() + ":" + message.getPort() + "], next state " + newState);
         session.setState(newState);
+
+        if (newState == ProtocolState.LOGIN) {
+            session.disconnect("Login not implemented");
+        }
     }
 }

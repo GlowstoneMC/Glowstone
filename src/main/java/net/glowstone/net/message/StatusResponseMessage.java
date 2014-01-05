@@ -1,18 +1,9 @@
 package net.glowstone.net.message;
 
-import net.glowstone.util.ChannelBufferUtils;
-import org.jboss.netty.buffer.ChannelBuffer;
+import org.json.simple.JSONObject;
 
-public class StatusResponseMessage extends Message {
-
-    private final String json;
-
-    public StatusResponseMessage(String json) {
-        this.json = json;
-    }
-
-    @Override
-    public void encode(ChannelBuffer buf) {
-        ChannelBufferUtils.writeString(buf, json);
+public final class StatusResponseMessage extends JsonMessage {
+    public StatusResponseMessage(JSONObject json) {
+        super(json);
     }
 }
