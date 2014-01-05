@@ -2,6 +2,7 @@
 apply plugin: 'java' // Specifies a java project, allows for javadoc generation etc.
 apply plugin: 'application' // Adds the 'gradle run' task
 apply plugin: 'project-report' // Adds project report tasks
+apply plugin: 'shadow' // Allows for dependency shading
 
 // Method allowing us to run git describe
 def getVersionName = { ->
@@ -31,6 +32,16 @@ targetCompatibility = '1.6'
 // Compile encoding
 compileJava {
     options.encoding = 'UTF-8'
+}
+
+// Simple build script information
+buildscript {
+    repositories {
+        maven {url "http://jcenter.bintray.com"}  
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:0.8'
+    }
 }
 
 // Repositories storing our dependencies
