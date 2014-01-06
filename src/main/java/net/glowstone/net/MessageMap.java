@@ -83,6 +83,9 @@ public final class MessageMap {
         // look up the message class
         Class<? extends Message> clazz = receiveTable.get(opcode);
         if (clazz == null) {
+            if (opcode >= 0x03 && opcode <= 0x06 && state == ProtocolState.PLAY) {
+                return null; // don't give a warning for Player move messages
+            }
             GlowServer.logger.warning("Skipping unknown " + state + " opcode: " + hexcode);
             return null;
         }
@@ -186,6 +189,7 @@ public final class MessageMap {
 
         // Play
         map = new MessageMap(ProtocolState.PLAY);
+        map.bindReceive(0x00, PingMessage.class, PingHandler.class);
         map.bindSend(0x00, PingMessage.class);
         map.bindSend(0x01, JoinGameMessage.class);
         map.bindSend(0x02, ChatMessage.class);

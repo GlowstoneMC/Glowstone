@@ -5,7 +5,7 @@ import org.jboss.netty.buffer.ChannelBuffer;
 
 import java.util.zip.Deflater;
 
-public class ChunkDataMessage extends Message {
+public final class ChunkDataMessage extends Message {
 
     private static final int COMPRESSION_LEVEL = Deflater.BEST_SPEED;
 

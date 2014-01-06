@@ -1,12 +1,6 @@
 package net.glowstone.generator;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import net.glowstone.GlowChunk;
 import net.glowstone.block.BlockID;
 import net.glowstone.block.BlockProperties;
 import org.bukkit.World;
@@ -16,7 +10,7 @@ import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.util.noise.OctaveGenerator;
 
-import net.glowstone.GlowChunk;
+import java.util.*;
 
 /**
  * Base chunk generator class.
@@ -84,7 +78,7 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
         if (x < 0 || y < 0 || z < 0 || x >= GlowChunk.HEIGHT || y >= GlowChunk.DEPTH || z >= GlowChunk.WIDTH) {
             return;
         }
-        data[(x * GlowChunk.HEIGHT + z) * GlowChunk.DEPTH + y] = (byte) id;
+        data[(y * 16 + z) * 16 + x] = (byte) id;
     }
 
     /**
@@ -102,7 +96,7 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
         if (x < 0 || y < 0 || z < 0 || x >= GlowChunk.HEIGHT || y >= GlowChunk.DEPTH || z >= GlowChunk.WIDTH) {
             return BlockID.AIR;
         }
-        return data[(x * GlowChunk.HEIGHT + z) * GlowChunk.DEPTH + y];
+        return data[(y * 16 + z) * 16 + x];
     }
 
     @Override

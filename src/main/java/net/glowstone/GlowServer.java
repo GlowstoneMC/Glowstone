@@ -190,7 +190,7 @@ public final class GlowServer implements Server {
     /**
      * The server's default game mode
      */
-    private GameMode defaultGameMode = GameMode.SURVIVAL;
+    private GameMode defaultGameMode = GameMode.CREATIVE;
 
     /**
      * Whether the server is shutting down

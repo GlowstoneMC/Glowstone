@@ -4,7 +4,7 @@ import net.glowstone.net.message.Message;
 import net.glowstone.util.ChannelBufferUtils;
 import org.jboss.netty.buffer.ChannelBuffer;
 
-public class LoginSuccessMessage extends Message {
+public final class LoginSuccessMessage extends Message {
 
     private final String uuid;
     private final String username;
