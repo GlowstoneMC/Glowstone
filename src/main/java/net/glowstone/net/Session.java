@@ -68,7 +68,12 @@ public final class Session {
      * A timeout counter. This is increment once every tick and if it goes above
      * a certain value the session is disconnected.
      */
-    private int timeoutCounter = 0;
+    private int readTimeoutCounter = 0;
+
+    /**
+     * Similar to readTimeoutCounter but for writes.
+     */
+    private int writeTimeoutCounter = 0;
 
     /**
      * The player associated with this session (if there is one).
@@ -129,18 +134,20 @@ public final class Session {
     }
 
     /**
-     * Get the keep-alive message id that is expected from the client.
-     * @return The ping id.
+     * Note that the client has responded to a keep-alive.
+     * @param pingId The pingId to check for validity.
      */
-    public int getPingMessageId() {
-        return pingMessageId;
+    public void pong(long pingId) {
+        if (pingId == pingMessageId) {
+            pong();
+        }
     }
 
     /**
      * Note that the client has responded to a keep-alive.
      */
     public void pong() {
-        timeoutCounter = 0;
+        readTimeoutCounter = 0;
         pingMessageId = 0;
     }
 
@@ -192,10 +199,10 @@ public final class Session {
         if (message != null) {
             server.broadcastMessage(message);
         }
-        /*Message userListMessage = new UserListItemMessage(player.getPlayerListName(), true, (short)timeoutCounter);
+        /*Message userListMessage = new UserListItemMessage(player.getPlayerListName(), true, (short)readTimeoutCounter);
         for (Player sendPlayer : server.getOnlinePlayers()) {
             ((GlowPlayer) sendPlayer).getSession().send(userListMessage);
-            send(new UserListItemMessage(sendPlayer.getPlayerListName(), true, (short)((GlowPlayer)sendPlayer).getSession().timeoutCounter));
+            send(new UserListItemMessage(sendPlayer.getPlayerListName(), true, (short)((GlowPlayer)sendPlayer).getSession().readTimeoutCounter));
         }*/
     }
 
@@ -217,7 +224,7 @@ public final class Session {
      * @param message The message.
      */
     public void send(Message message) {
-        GlowServer.logger.info("Send " + message);
+        writeTimeoutCounter = 0;
         channel.write(message);
     }
 
@@ -282,24 +289,32 @@ public final class Session {
      * Pulse this session, performing any updates needed.
      */
     void pulse() {
-        timeoutCounter++;
+        readTimeoutCounter++;
+        writeTimeoutCounter++;
 
         Message message;
         while ((message = messageQueue.poll()) != null) {
             if (!MessageMap.getForState(state).callHandler(this, player, message)) {
                 GlowServer.logger.warning("Message " + message + " was not handled");
             }
-            timeoutCounter = 0;
+            readTimeoutCounter = 0;
         }
 
-        if (timeoutCounter >= TIMEOUT_TICKS)
+        // let us know if the client has timed out yet
+        if (readTimeoutCounter >= TIMEOUT_TICKS)
             if (pingMessageId == 0) {
                 pingMessageId = random.nextInt();
                 send(new PingMessage(pingMessageId));
-                timeoutCounter = 0;
+                readTimeoutCounter = 0;
             } else {
                 disconnect("Timed out");
             }
+
+        // let the client know we haven't timed out yet
+        if (writeTimeoutCounter >= TIMEOUT_TICKS) {
+            pingMessageId = random.nextInt();
+            send(new PingMessage(pingMessageId));
+        }
     }
 
     /**

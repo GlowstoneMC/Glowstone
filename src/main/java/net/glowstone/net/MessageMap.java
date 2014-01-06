@@ -9,6 +9,10 @@ import net.glowstone.net.message.Message;
 import net.glowstone.net.message.game.*;
 import net.glowstone.net.message.login.LoginStartMessage;
 import net.glowstone.net.message.login.LoginSuccessMessage;
+import net.glowstone.net.message.player.PlayerLookMessage;
+import net.glowstone.net.message.player.PlayerPositionLookMessage;
+import net.glowstone.net.message.player.PlayerPositionMessage;
+import net.glowstone.net.message.player.PlayerUpdateMessage;
 import net.glowstone.net.message.status.StatusPingMessage;
 import net.glowstone.net.message.status.StatusRequestMessage;
 import net.glowstone.net.message.status.StatusResponseMessage;
@@ -60,7 +64,7 @@ public final class MessageMap {
     /**
      * Bind an incoming opcode and message class, and optionally a handler.
      */
-    private <T extends Message, H extends MessageHandler<T>> void bindReceive(int opcode, Class<T> clazz, Class<H> handler) {
+    private <T extends Message, H extends MessageHandler<? super T>> void bindReceive(int opcode, Class<T> clazz, Class<H> handler) {
         receiveTable.put(opcode, clazz);
         if (handler != null) {
             try {
@@ -83,9 +87,6 @@ public final class MessageMap {
         // look up the message class
         Class<? extends Message> clazz = receiveTable.get(opcode);
         if (clazz == null) {
-            if (opcode >= 0x03 && opcode <= 0x06 && state == ProtocolState.PLAY) {
-                return null; // don't give a warning for Player move messages
-            }
             GlowServer.logger.warning("Skipping unknown " + state + " opcode: " + hexcode);
             return null;
         }
@@ -190,6 +191,10 @@ public final class MessageMap {
         // Play
         map = new MessageMap(ProtocolState.PLAY);
         map.bindReceive(0x00, PingMessage.class, PingHandler.class);
+        map.bindReceive(0x03, PlayerUpdateMessage.class, PlayerUpdateHandler.class);
+        map.bindReceive(0x04, PlayerPositionMessage.class, PlayerUpdateHandler.class);
+        map.bindReceive(0x05, PlayerLookMessage.class, PlayerUpdateHandler.class);
+        map.bindReceive(0x06, PlayerPositionLookMessage.class, PlayerUpdateHandler.class);
         map.bindSend(0x00, PingMessage.class);
         map.bindSend(0x01, JoinGameMessage.class);
         map.bindSend(0x02, ChatMessage.class);
