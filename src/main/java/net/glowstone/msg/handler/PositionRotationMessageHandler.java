@@ -5,12 +5,11 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.msg.PositionRotationMessage;
+import net.glowstone.net.message.game.PositionRotationMessage;
 import net.glowstone.net.Session;
 
-public final class PositionRotationMessageHandler extends MessageHandler<PositionRotationMessage> {
+public final class PositionRotationMessageHandler {
 
-    @Override
     public void handle(Session session, GlowPlayer player, PositionRotationMessage message) {
         if (player == null) {
             return;

@@ -1,19 +1,36 @@
-package net.glowstone.msg;
+package net.glowstone.net.message.game;
+
+import net.glowstone.net.message.Message;
+import org.bukkit.Location;
+import org.jboss.netty.buffer.ChannelBuffer;
 
 public final class PositionRotationMessage extends Message {
 
-    private final double x, y, z, stance;
+    private final double x, y, z;
     private final float rotation, pitch;
     private final boolean onGround;
 
-    public PositionRotationMessage(double x, double y, double z, double stance, float rotation, float pitch, boolean onGround) {
+    public PositionRotationMessage(double x, double y, double z, float rotation, float pitch, boolean onGround) {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.stance = stance;
         this.rotation = rotation;
         this.pitch = pitch;
         this.onGround = onGround;
+    }
+
+    public PositionRotationMessage(Location location, boolean onGround) {
+        this(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch(), onGround);
+    }
+
+    @Override
+    public void encode(ChannelBuffer buf) {
+        buf.writeDouble(x);
+        buf.writeDouble(y);
+        buf.writeDouble(z);
+        buf.writeFloat(rotation);
+        buf.writeFloat(pitch);
+        buf.writeByte(onGround ? 1 : 0);
     }
 
     public double getX() {
@@ -22,10 +39,6 @@ public final class PositionRotationMessage extends Message {
 
     public double getY() {
         return y;
-    }
-
-    public double getStance() {
-        return stance;
     }
 
     public double getZ() {
@@ -47,7 +60,7 @@ public final class PositionRotationMessage extends Message {
     @Override
     public String toString() {
         return "PositionRotationMessage{x=" + x + ",y=" + y + ",z=" + z +
-                ",stance=" + stance + ",rotation=" + rotation + ",pitch=" +
+                ",rotation=" + rotation + ",pitch=" +
                 pitch + ",onGround=" + onGround + "}";
     }
 }

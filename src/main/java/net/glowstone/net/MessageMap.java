@@ -6,6 +6,7 @@ import net.glowstone.net.handler.*;
 import net.glowstone.net.message.HandshakeMessage;
 import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.Message;
+import net.glowstone.net.message.game.*;
 import net.glowstone.net.message.login.LoginStartMessage;
 import net.glowstone.net.message.login.LoginSuccessMessage;
 import net.glowstone.net.message.status.StatusPingMessage;
@@ -77,16 +78,16 @@ public final class MessageMap {
      */
     public Message decode(ChannelBuffer buf) {
         int opcode = ChannelBufferUtils.readVarInt(buf);
+        String hexcode = "0x" + (opcode < 0x10 ? "0" : "") + Integer.toHexString(opcode);
 
         // look up the message class
         Class<? extends Message> clazz = receiveTable.get(opcode);
         if (clazz == null) {
-            GlowServer.logger.warning("Skipping unknown " + state + " opcode: " + opcode);
+            GlowServer.logger.warning("Skipping unknown " + state + " opcode: " + hexcode);
             return null;
         }
 
-        String errorDesc = clazz.getSimpleName() + " (" + state + "/" +
-                (opcode < 0x10 ? "0" : "") + Integer.toHexString(opcode) + ")";
+        String errorDesc = clazz.getSimpleName() + " (" + state + "/" + hexcode + ")";
 
         // construct & decode the message
         Message message;
@@ -185,6 +186,14 @@ public final class MessageMap {
 
         // Play
         map = new MessageMap(ProtocolState.PLAY);
+        map.bindSend(0x00, PingMessage.class);
+        map.bindSend(0x01, JoinGameMessage.class);
+        map.bindSend(0x02, ChatMessage.class);
+        map.bindSend(0x05, SpawnPositionMessage.class);
+        map.bindSend(0x08, PositionRotationMessage.class);
+        map.bindSend(0x21, ChunkDataMessage.class);
+        map.bindSend(0x2B, StateChangeMessage.class);
+        map.bindSend(0x40, KickMessage.class);
     }
 
 }

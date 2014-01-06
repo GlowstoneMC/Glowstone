@@ -27,4 +27,12 @@ public class LoginSuccessMessage extends Message {
     public String getUsername() {
         return username;
     }
+
+    @Override
+    public String toString() {
+        return "LoginSuccessMessage{" +
+                "uuid='" + uuid + '\'' +
+                ", username='" + username + '\'' +
+                '}';
+    }
 }

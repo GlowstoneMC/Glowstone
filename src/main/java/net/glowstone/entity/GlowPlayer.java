@@ -13,6 +13,8 @@ import net.glowstone.io.StorageOperation;
 import net.glowstone.msg.*;
 import net.glowstone.net.ProtocolState;
 import net.glowstone.net.Session;
+import net.glowstone.net.message.game.*;
+import net.glowstone.net.message.login.LoginSuccessMessage;
 import net.glowstone.util.Parameter;
 import net.glowstone.util.Position;
 import net.glowstone.util.TextWrapper;
@@ -148,12 +150,23 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         this.session = session;
         this.uuid = uuid;
         health = 20;
-        if (session.getState() != ProtocolState.PLAY) {
-            session.send(new IdentificationMessage(getEntityId(), "", world.getSeed(), getGameMode().getValue(), world.getEnvironment().getId(), 1, world.getMaxHeight(), session.getServer().getMaxPlayers()));
+
+        // send login response
+        session.send(new LoginSuccessMessage(uuid.toString().replace("-", ""), name));
+        session.setState(ProtocolState.PLAY);
+
+        // send join game
+        // in future, handle hardcore, difficulty, and level type
+        String type = "default";//world.getWorldType().getName().toLowerCase();
+        int gameMode = getGameMode().getValue();
+        if (server.isHardcore()) {
+            gameMode |= 0x8;
         }
+        session.send(new JoinGameMessage(getEntityId(), gameMode, world.getEnvironment().getId(), world.getDifficulty().getValue(), session.getServer().getMaxPlayers(), type));
+
         streamBlocks(); // stream the initial set of blocks
         setCompassTarget(world.getSpawnLocation()); // set our compass target
-        session.send(new StateChangeMessage((byte)(getWorld().hasStorm() ? 1 : 2), (byte)0)); // send the world's weather
+        session.send(new StateChangeMessage(getWorld().hasStorm() ? 1 : 2, 0)); // send the world's weather
 
         getInventory().addViewer(this);
         getInventory().getCraftingInventory().addViewer(this);
@@ -243,7 +256,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         });
         
         for (GlowChunk.Key key : newChunks) {
-            session.send(new LoadChunkMessage(key.getX(), key.getZ(), true));
             session.send(world.getChunkAt(key.getX(), key.getZ()).toMessage());
             for (GlowBlockState state : world.getChunkAt(key.getX(), key.getZ()).getTileEntities()) {
                 state.update(this);
@@ -251,7 +263,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         }
 
         for (GlowChunk.Key key : previousChunks) {
-            session.send(new LoadChunkMessage(key.getX(), key.getZ(), false));
+            session.send(ChunkDataMessage.unload(key.getX(), key.getZ()));
             knownChunks.remove(key);
         }
 
@@ -412,7 +424,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     public void setGameMode(GameMode mode) {
         boolean changed = getGameMode() != mode;
         super.setGameMode(mode);
-        if (changed) session.send(new StateChangeMessage((byte) 3, (byte) mode.getValue()));
+        if (changed) session.send(new StateChangeMessage(3, mode.getValue()));
     }
 
     public int getExperience() {
@@ -535,13 +547,13 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
             streamBlocks(); // stream blocks
             
             setCompassTarget(world.getSpawnLocation()); // set our compass target
-            this.session.send(new PositionRotationMessage(location.getX(), location.getY() + EYE_HEIGHT + 0.01, location.getZ(), location.getY(), location.getYaw(), location.getPitch(), true));
+            this.session.send(new PositionRotationMessage(location, true));
             this.location = location; // take us to spawn position
             session.send(new StateChangeMessage((byte)(getWorld().hasStorm() ? 1 : 2), (byte)0)); // send the world's weather
             reset();
             EventFactory.onPlayerChangedWorld(this, oldWorld);
         } else {
-            this.session.send(new PositionRotationMessage(location.getX(), location.getY() + EYE_HEIGHT + 0.01, location.getZ(), location.getY(), location.getYaw(), location.getPitch(), true));
+            this.session.send(new PositionRotationMessage(location, true));
             this.location = location;
             reset();
         }

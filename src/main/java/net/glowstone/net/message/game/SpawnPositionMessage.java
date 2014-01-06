@@ -1,4 +1,7 @@
-package net.glowstone.msg;
+package net.glowstone.net.message.game;
+
+import net.glowstone.net.message.Message;
+import org.jboss.netty.buffer.ChannelBuffer;
 
 public final class SpawnPositionMessage extends Message {
 
@@ -8,6 +11,13 @@ public final class SpawnPositionMessage extends Message {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    @Override
+    public void encode(ChannelBuffer buf) {
+        buf.writeInt(x);
+        buf.writeInt(y);
+        buf.writeInt(z);
     }
 
     public int getX() {

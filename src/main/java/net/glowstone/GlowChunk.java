@@ -1,18 +1,19 @@
 package net.glowstone;
 
-import java.lang.reflect.Constructor;
-import java.util.HashMap;
-import java.util.logging.Level;
-
-import org.bukkit.Chunk;
-import org.bukkit.ChunkSnapshot;
-import org.bukkit.entity.Entity;
-
 import net.glowstone.block.BlockProperties;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.msg.CompressedChunkMessage;
-import net.glowstone.msg.Message;
+import net.glowstone.net.message.Message;
+import net.glowstone.net.message.game.ChunkDataMessage;
+import org.bukkit.Chunk;
+import org.bukkit.ChunkSnapshot;
+import org.bukkit.World;
+import org.bukkit.entity.Entity;
+
+import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.logging.Level;
 
 /**
  * Represents a chunk of the map.
@@ -460,7 +461,11 @@ public final class GlowChunk implements Chunk {
      * @return The {@link CompressedChunkMessage}.
      */
     public Message toMessage() {
-        return new CompressedChunkMessage(x * GlowChunk.WIDTH, z * GlowChunk.HEIGHT, 0, WIDTH, HEIGHT, DEPTH, serializeTileData());
+        int primaryBitmask = (1 << (DEPTH / 16)) - 1; // 0xff, defines which chunks are being sent
+        int addBitmask = 0; // used for extended-value chunks which are not yet supported
+        boolean skylight = world.getEnvironment() == World.Environment.NORMAL;
+        byte[] tileData = serializeTileData(primaryBitmask, addBitmask, skylight);
+        return new ChunkDataMessage(x, z, true, primaryBitmask, addBitmask, tileData);
     }
 
     /**
@@ -481,9 +486,28 @@ public final class GlowChunk implements Chunk {
     /**
      * Serializes tile data into a byte array.
      * @return The byte array populated with the tile data.
+     * @param primaryBitmask primary bitmask
+     * @param addBitmask add bitmask
+     * @param skylight skylight
      */
-    private byte[] serializeTileData() {        
-        byte[] dest = new byte[((WIDTH * HEIGHT * DEPTH * 5) / 2)];
+    private byte[] serializeTileData(int primaryBitmask, int addBitmask, boolean skylight) {
+        // right now, assumes inputs are exactly what is given by default in toMessage above
+        // assuming ground up continuous is true
+        // also assuming addBitmask is zero, for simplicity (it always is right now)
+
+        //int numChunks = countBits(primaryBitmask);
+
+        int numBlocks = WIDTH * HEIGHT * DEPTH;
+        int bytes = 2 * numBlocks; // type, metadata, light
+        if (skylight) {
+            bytes += numBlocks / 2; // skylight
+        }
+        /*if (addArray) { bytes += numBlocks / 2; }*/
+        /*if (groundUpContinuous)*/ {
+            bytes += 256; // biomes
+        }
+
+        byte[] dest = new byte[bytes];
 
         load();
         System.arraycopy(types, 0, dest, 0, types.length);
@@ -496,19 +520,44 @@ public final class GlowChunk implements Chunk {
             dest[pos++] = (byte) ((meta2 << 4) | meta1);
         }
 
-        for (int i = 0; i < skyLight.length; i += 2) {
-            byte light1 = skyLight[i];
-            byte light2 = skyLight[i + 1];
-            dest[pos++] = (byte) ((light2 << 4) | light1);
-        }
-
         for (int i = 0; i < blockLight.length; i += 2) {
             byte light1 = blockLight[i];
             byte light2 = blockLight[i + 1];
             dest[pos++] = (byte) ((light2 << 4) | light1);
         }
 
+        if (skylight) {
+            for (int i = 0; i < skyLight.length; i += 2) {
+                byte light1 = skyLight[i];
+                byte light2 = skyLight[i + 1];
+                dest[pos++] = (byte) ((light2 << 4) | light1);
+            }
+        }
+
+        /*if (addArray) ... */
+
+        /*if (groundUpContinuous)*/ {
+            //Biome biome = world.getBiome(0, 0);
+            //int value = biome.ordinal(); // maybe this isn't right
+            for (int i = 0; i < 256; ++i) {
+                dest[pos++] = 0;
+            }
+        }
+
+        if (pos != bytes) {
+            throw new IllegalStateException("only wrote " + pos + " out of expected " + bytes + " bytes");
+        }
+
         return dest;
+    }
+
+    private int countBits(int v) {
+        // http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetKernighan
+        int c;
+        for (c = 0; v > 0; c++) {
+            v &= v - 1;
+        }
+        return c;
     }
 
 }

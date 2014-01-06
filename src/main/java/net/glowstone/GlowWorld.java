@@ -7,7 +7,7 @@ import net.glowstone.io.WorldMetadataService;
 import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
 import net.glowstone.msg.LoadChunkMessage;
-import net.glowstone.msg.StateChangeMessage;
+import net.glowstone.net.message.game.StateChangeMessage;
 import net.glowstone.msg.TimeMessage;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
@@ -253,7 +253,7 @@ public final class GlowWorld implements World {
         // We currently tick at 1/4 the speed of regular MC
         // Modulus by 12000 to force permanent day.
         time = (time + 1) % 12000;
-        if (time % 12 == 0) {
+        if (time % (60 * 20) == 0) {
             // Only send the time every so often; clients are smart.
             for (GlowPlayer player : getRawPlayers()) {
                 player.getSession().send(new TimeMessage(player.getPlayerTime()));
@@ -761,7 +761,7 @@ public final class GlowWorld implements World {
         }
         
         for (GlowPlayer player : getRawPlayers()) {
-            player.getSession().send(new StateChangeMessage((byte)(currentlyRaining ? 1 : 2), (byte)0));
+            player.getSession().send(new StateChangeMessage(currentlyRaining ? 1 : 2, 0));
         }
     }
 
