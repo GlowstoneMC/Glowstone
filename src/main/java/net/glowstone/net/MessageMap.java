@@ -191,6 +191,7 @@ public final class MessageMap {
         // Play
         map = new MessageMap(ProtocolState.PLAY);
         map.bindReceive(0x00, PingMessage.class, PingHandler.class);
+        map.bindReceive(0x01, IncomingChatMessage.class, ChatHandler.class);
         map.bindReceive(0x03, PlayerUpdateMessage.class, PlayerUpdateHandler.class);
         map.bindReceive(0x04, PlayerPositionMessage.class, PlayerUpdateHandler.class);
         map.bindReceive(0x05, PlayerLookMessage.class, PlayerUpdateHandler.class);

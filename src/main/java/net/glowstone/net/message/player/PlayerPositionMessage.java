@@ -3,7 +3,7 @@ package net.glowstone.net.message.player;
 import org.bukkit.Location;
 import org.jboss.netty.buffer.ChannelBuffer;
 
-public class PlayerPositionMessage extends PlayerUpdateMessage {
+public final class PlayerPositionMessage extends PlayerUpdateMessage {
 
     private final double x, stance, y, z;
 

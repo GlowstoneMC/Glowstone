@@ -294,6 +294,10 @@ public final class Session {
 
         Message message;
         while ((message = messageQueue.poll()) != null) {
+            if (state == ProtocolState.PLAY && player == null) {
+                // player has been unset, we are just seeing extra messages now
+                continue;
+            }
             if (!MessageMap.getForState(state).callHandler(this, player, message)) {
                 GlowServer.logger.warning("Message " + message + " was not handled");
             }
