@@ -1,5 +1,6 @@
-package net.glowstone.net.message;
+package net.glowstone.net.message.status;
 
+import net.glowstone.net.message.Message;
 import org.jboss.netty.buffer.ChannelBuffer;
 
 public final class StatusPingMessage extends Message {

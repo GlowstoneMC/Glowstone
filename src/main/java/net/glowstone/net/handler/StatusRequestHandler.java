@@ -3,8 +3,8 @@ package net.glowstone.net.handler;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.Session;
-import net.glowstone.net.message.StatusRequestMessage;
-import net.glowstone.net.message.StatusResponseMessage;
+import net.glowstone.net.message.status.StatusRequestMessage;
+import net.glowstone.net.message.status.StatusResponseMessage;
 import org.json.simple.JSONObject;
 
 public class StatusRequestHandler extends MessageHandler<StatusRequestMessage> {

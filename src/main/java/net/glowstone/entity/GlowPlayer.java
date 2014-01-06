@@ -51,7 +51,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      * This player's session.
      */
     private final Session session;
-    
+
+    /**
+     * This player's unique id.
+     */
+    private final UUID uuid;
+
     /**
      * Cumulative amount of experience points the player has collected.
      */
@@ -138,9 +143,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      * @param session The player's session.
      * @param name The player's name.
      */
-    public GlowPlayer(Session session, String name) {
+    public GlowPlayer(Session session, String name, UUID uuid) {
         super(session.getServer(), (GlowWorld) session.getServer().getWorlds().get(0), name);
         this.session = session;
+        this.uuid = uuid;
         health = 20;
         if (session.getState() != ProtocolState.PLAY) {
             session.send(new IdentificationMessage(getEntityId(), "", world.getSeed(), getGameMode().getValue(), world.getEnvironment().getId(), 1, world.getMaxHeight(), session.getServer().getMaxPlayers()));
@@ -280,6 +286,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
 
     public boolean isOnline() {
         return true;
+    }
+
+    @Override
+    public UUID getUniqueId() {
+        return uuid;
     }
 
     public boolean isBanned() {

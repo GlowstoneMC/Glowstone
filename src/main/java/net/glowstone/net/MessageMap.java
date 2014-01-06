@@ -2,11 +2,15 @@ package net.glowstone.net;
 
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.net.handler.HandshakeHandler;
-import net.glowstone.net.handler.MessageHandler;
-import net.glowstone.net.handler.StatusPingHandler;
-import net.glowstone.net.handler.StatusRequestHandler;
-import net.glowstone.net.message.*;
+import net.glowstone.net.handler.*;
+import net.glowstone.net.message.HandshakeMessage;
+import net.glowstone.net.message.KickMessage;
+import net.glowstone.net.message.Message;
+import net.glowstone.net.message.login.LoginStartMessage;
+import net.glowstone.net.message.login.LoginSuccessMessage;
+import net.glowstone.net.message.status.StatusPingMessage;
+import net.glowstone.net.message.status.StatusRequestMessage;
+import net.glowstone.net.message.status.StatusResponseMessage;
 import net.glowstone.util.ChannelBufferUtils;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
@@ -77,9 +81,12 @@ public final class MessageMap {
         // look up the message class
         Class<? extends Message> clazz = receiveTable.get(opcode);
         if (clazz == null) {
-            GlowServer.logger.warning("Skipping unknown opcode: " + opcode);
+            GlowServer.logger.warning("Skipping unknown " + state + " opcode: " + opcode);
             return null;
         }
+
+        String errorDesc = clazz.getSimpleName() + " (" + state + "/" +
+                (opcode < 0x10 ? "0" : "") + Integer.toHexString(opcode) + ")";
 
         // construct & decode the message
         Message message;
@@ -87,19 +94,19 @@ public final class MessageMap {
             Constructor<? extends Message> constructor = clazz.getConstructor(ChannelBuffer.class);
             message = constructor.newInstance(buf);
         } catch (NoSuchMethodException e) {
-            GlowServer.logger.severe("No decode constructor for " + clazz.getSimpleName() + " (" + opcode + ")");
+            GlowServer.logger.severe("No decode constructor for " + errorDesc);
             return null;
         } catch (InvocationTargetException e) {
-            GlowServer.logger.severe("Failed to decode " + clazz.getSimpleName() + " (" + opcode + "): " + e.getCause());
+            GlowServer.logger.severe("Error while decoding " + errorDesc + ": " + e.getCause());
             return null;
         } catch (ReflectiveOperationException e) {
-            GlowServer.logger.severe("Failed to construct " + clazz.getSimpleName() + " (" + opcode + "): " + e);
+            GlowServer.logger.severe("Failed to construct " + errorDesc + ": " + e);
             return null;
         }
 
         // give a warning if there's unread bytes left over
         if (buf.readableBytes() > 0) {
-            GlowServer.logger.warning("Decoding " + clazz.getSimpleName() + " (" + opcode + "): had " + buf.readableBytes() + " left over");
+            GlowServer.logger.warning("Decoding " + errorDesc + ": had " + buf.readableBytes() + " left over");
         }
 
         return message;
@@ -112,11 +119,12 @@ public final class MessageMap {
      */
     public void encode(Message message, ChannelBuffer buf) {
         // look up opcode for message class
-        if (!sendTable.containsKey(message.getClass())) {
-            GlowServer.logger.warning("Unknown class to encode: " + message.getClass().getSimpleName());
+        Class<? extends Message> clazz = message.getClass();
+        if (!sendTable.containsKey(clazz)) {
+            GlowServer.logger.warning("Cannot encode " + state + " message: " + clazz.getSimpleName());
             return;
         }
-        int opcode = sendTable.get(message.getClass());
+        int opcode = sendTable.get(clazz);
 
         // write message
         ChannelBuffer temp = ChannelBuffers.dynamicBuffer();
@@ -169,11 +177,11 @@ public final class MessageMap {
 
         // Login
         map = new MessageMap(ProtocolState.LOGIN);
-        //map.bindReceive(0x00, LoginStartMessage.class, null);
+        map.bindReceive(0x00, LoginStartMessage.class, LoginStartHandler.class);
         //map.bindReceive(0x01, EncryptResponseMessage.class, null);
         map.bindSend(0x00, KickMessage.class);
         //map.bindSend(0x01, EncryptRequestMessage.class);
-        //map.bindSend(0x02, LoginSuccessMessage.class);
+        map.bindSend(0x02, LoginSuccessMessage.class);
 
         // Play
         map = new MessageMap(ProtocolState.PLAY);

@@ -3,7 +3,7 @@ package net.glowstone.net.handler;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.Session;
-import net.glowstone.net.message.StatusPingMessage;
+import net.glowstone.net.message.status.StatusPingMessage;
 
 public class StatusPingHandler extends MessageHandler<StatusPingMessage> {
     @Override

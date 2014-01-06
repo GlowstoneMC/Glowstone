@@ -7,7 +7,7 @@ import org.json.simple.JSONObject;
 /**
  * Base class for outgoing Json messages.
  */
-public class JsonMessage extends Message {
+public abstract class JsonMessage extends Message {
 
     private final String json;
 
@@ -24,5 +24,11 @@ public class JsonMessage extends Message {
 
     public final String getJson() {
         return json;
+    }
+
+    @Override
+    public String toString() {
+        // ClassNameMessage{"json": "values"}
+        return getClass().getSimpleName() + json;
     }
 }

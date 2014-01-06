@@ -52,8 +52,8 @@ public final class IdentificationMessageHandler extends MessageHandler<Identific
                 if (event.getResult() != PlayerPreLoginEvent.Result.ALLOWED) {
                     session.disconnect(event.getKickMessage());
                 }
-                GlowPlayer newPlayer = new GlowPlayer(session, event.getName()); // TODO case-correct the name
-                session.setPlayer(newPlayer);
+                //GlowPlayer newPlayer = new GlowPlayer(session, event.getName()); // TODO case-correct the name
+                //session.setPlayer(newPlayer);
             } else {
                 session.getServer().getLogger().log(Level.INFO, "Failed to authenticate {0} with minecraft.net.", message.getName());
                 session.disconnect("Player identification failed!");

@@ -7,6 +7,7 @@ import net.glowstone.msg.BlockPlacementMessage;
 import net.glowstone.net.message.HandshakeMessage;
 import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.Message;
+import net.glowstone.net.message.login.LoginSuccessMessage;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.jboss.netty.channel.Channel;
@@ -177,6 +178,7 @@ public final class Session {
         if (this.player != null)
             throw new IllegalStateException();
 
+        // login event
         this.player = player;
         PlayerLoginEvent event = EventFactory.onPlayerLogin(player);
         if (event.getResult() != PlayerLoginEvent.Result.ALLOWED) {
@@ -185,6 +187,11 @@ public final class Session {
         }
         player.getWorld().getRawPlayers().add(player);
 
+        // tell player they've logged in
+        send(new LoginSuccessMessage(player.getUniqueId().toString().replace("-", ""), player.getName()));
+        setState(ProtocolState.PLAY);
+
+        // message and user list
         String message = EventFactory.onPlayerJoin(player).getJoinMessage();
         if (message != null) {
             server.broadcastMessage(message);
@@ -221,6 +228,7 @@ public final class Session {
      * Placeholder method to prevent errors in lots of other places.
      */
     public void send(net.glowstone.msg.Message message) {
+        GlowServer.logger.info("attempted to send " + message.getClass().getName());
     }
 
     /**

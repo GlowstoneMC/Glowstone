@@ -1,5 +1,6 @@
-package net.glowstone.net.message;
+package net.glowstone.net.message.status;
 
+import net.glowstone.net.message.JsonMessage;
 import org.json.simple.JSONObject;
 
 public final class StatusResponseMessage extends JsonMessage {
