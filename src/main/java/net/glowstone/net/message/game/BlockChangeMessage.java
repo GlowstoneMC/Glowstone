@@ -1,4 +1,8 @@
-package net.glowstone.msg;
+package net.glowstone.net.message.game;
+
+import net.glowstone.net.message.Message;
+import net.glowstone.util.ChannelBufferUtils;
+import org.jboss.netty.buffer.ChannelBuffer;
 
 public final class BlockChangeMessage extends Message {
 
@@ -10,6 +14,15 @@ public final class BlockChangeMessage extends Message {
         this.z = z;
         this.type = type;
         this.metadata = metadata;
+    }
+
+    @Override
+    public void encode(ChannelBuffer buf) {
+        buf.writeInt(x);
+        buf.writeByte(y);
+        buf.writeInt(z);
+        ChannelBufferUtils.writeVarInt(buf, type);
+        buf.writeByte(metadata);
     }
 
     public int getX() {

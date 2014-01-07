@@ -494,6 +494,7 @@ public final class GlowChunk implements Chunk {
      * @param skylight skylight
      */
     private byte[] serializeTileData(int primaryBitmask, int addBitmask, boolean skylight) {
+        // http://wiki.vg/SMP_Map_Format
         // right now, assumes inputs are exactly what is given by default in toMessage above
         // assuming ground up continuous is true
         // also assuming addBitmask is zero, for simplicity (it always is right now)

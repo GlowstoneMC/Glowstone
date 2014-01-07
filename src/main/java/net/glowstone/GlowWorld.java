@@ -8,7 +8,7 @@ import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
 import net.glowstone.msg.LoadChunkMessage;
 import net.glowstone.net.message.game.StateChangeMessage;
-import net.glowstone.msg.TimeMessage;
+import net.glowstone.net.message.game.TimeMessage;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -255,8 +255,13 @@ public final class GlowWorld implements World {
         time = (time + 1) % 12000;
         if (time % (60 * 20) == 0) {
             // Only send the time every so often; clients are smart.
+            long age = this.getFullTime();
             for (GlowPlayer player : getRawPlayers()) {
-                player.getSession().send(new TimeMessage(player.getPlayerTime()));
+                long playerTime = player.getPlayerTime();
+                if (!player.isPlayerTimeRelative()) {
+                    playerTime = -playerTime; // negative value indicates fixed time
+                }
+                player.getSession().send(new TimeMessage(age, playerTime));
             }
         }
         

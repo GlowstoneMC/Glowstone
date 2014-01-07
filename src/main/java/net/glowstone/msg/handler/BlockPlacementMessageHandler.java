@@ -3,7 +3,7 @@ package net.glowstone.msg.handler;
 import net.glowstone.block.BlockProperties;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.msg.BlockChangeMessage;
+import net.glowstone.net.message.game.BlockChangeMessage;
 import org.bukkit.GameMode;
 import org.bukkit.inventory.ItemStack;
 

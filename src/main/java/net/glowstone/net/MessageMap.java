@@ -199,9 +199,11 @@ public final class MessageMap {
         map.bindSend(0x00, PingMessage.class);
         map.bindSend(0x01, JoinGameMessage.class);
         map.bindSend(0x02, ChatMessage.class);
+        map.bindSend(0x03, TimeMessage.class);
         map.bindSend(0x05, SpawnPositionMessage.class);
         map.bindSend(0x08, PositionRotationMessage.class);
         map.bindSend(0x21, ChunkDataMessage.class);
+        map.bindSend(0x23, BlockChangeMessage.class);
         map.bindSend(0x2B, StateChangeMessage.class);
         map.bindSend(0x40, KickMessage.class);
     }
