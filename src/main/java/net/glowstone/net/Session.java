@@ -139,16 +139,9 @@ public final class Session {
      */
     public void pong(long pingId) {
         if (pingId == pingMessageId) {
-            pong();
+            readTimeoutCounter = 0;
+            pingMessageId = 0;
         }
-    }
-
-    /**
-     * Note that the client has responded to a keep-alive.
-     */
-    public void pong() {
-        readTimeoutCounter = 0;
-        pingMessageId = 0;
     }
 
     /**

@@ -92,9 +92,7 @@ public final class ConsoleManager {
         consoleHandler = new FancyConsoleHandler();
         
         String logFile = server.getLogFile();
-        if (new File(logFile).getParentFile() != null) {
-            new File(logFile).getParentFile().mkdirs();
-        }
+        new File(logFile).getParentFile().mkdirs();
         fileHandler = new RotatingFileHandler(logFile);
         
         consoleHandler.setFormatter(new DateOutputFormatter(new SimpleDateFormat("HH:mm:ss")));
@@ -110,7 +108,7 @@ public final class ConsoleManager {
         try {
             reader = new ConsoleReader();
         } catch (IOException ex) {
-            server.getLogger().log(Level.SEVERE, "Exception inintializing console reader: {0}", ex.getMessage());
+            server.getLogger().log(Level.SEVERE, "Exception initializing console reader: {0}", ex.getMessage());
             ex.printStackTrace();
         }
         

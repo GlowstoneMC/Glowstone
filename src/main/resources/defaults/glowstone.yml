@@ -1,22 +1,28 @@
 server:
+    ip: ''
     port: 25565
-    world-name: world
-    max-players: 50
-    spawn-radius: 16
-    online-mode: true
+    name: Glowstone Server
     log-file: logs/log-%D.txt
-    terminal-mode: jline
-    whitelist: false
+    fuzzy-commands: false
+    online-mode: true
+    max-players: 20
+    whitelisted: false
+    motd: Glowstone Server
+    shutdown-message: Server shutting down
+
+folders:
+    plugins: plugins
+    update: update
+    worlds: worlds
+
+world:
+    name: world
+    level-type: NORMAL
+    spawn-radius: 16
+    view-distance: 8
+    gen-structures: true
     allow-nether: true
     allow-end: true
-    allow-flight: false
-    view-distance: 10
-    motd: Glowstone Server
-    def-game-mode: SURVIVAL
-    fuzzy-command-matching: false
-    folders:
-        plugins: plugins
-        update: update
 
 database:
     driver: "org.sqlite.JDBC"
@@ -29,3 +35,4 @@ aliases:
     "<3glowstone":
         - version
         - plugins
+
