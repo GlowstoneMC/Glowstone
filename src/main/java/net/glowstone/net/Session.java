@@ -60,6 +60,16 @@ public final class Session {
     private final String sessionId = Long.toString(random.nextLong(), 16).trim();
 
     /**
+     * The verify token used in authentication
+     */
+    private byte[] verifyToken;
+
+    /**
+     * The verify username used in authentication
+     */
+    private String verifyUsername;
+
+    /**
      * The current state.
      */
     private ProtocolState state = ProtocolState.HANDSHAKE;
@@ -131,6 +141,38 @@ public final class Session {
      */
     public String getSessionId() {
         return sessionId;
+    }
+
+    /**
+     * Sets the verify token of this session.
+     * @param verifyToken The verify token.
+     */
+    public void setVerifyToken(byte[] verifyToken) {
+        this.verifyToken = verifyToken;
+    }
+
+    /**
+     * Get the randomly-generated verify token for this session.
+     * @return The verify token
+     */
+    public byte[] getVerifyToken() {
+        return verifyToken;
+    }
+
+    /**
+     * Sets the verify username for this session.
+     * @param verifyUsername The verify username.
+     */
+    public void setVerifyUsername(String verifyUsername) {
+        this.verifyUsername = verifyUsername;
+    }
+
+    /**
+     * Gets the verify username for this session.
+     * @return The verify username.
+     */
+    public String getVerifyUsername() {
+        return verifyUsername;
     }
 
     /**

@@ -7,6 +7,8 @@ import net.glowstone.net.message.HandshakeMessage;
 import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.Message;
 import net.glowstone.net.message.game.*;
+import net.glowstone.net.message.login.EncryptionKeyRequestMessage;
+import net.glowstone.net.message.login.EncryptionKeyResponseMessage;
 import net.glowstone.net.message.login.LoginStartMessage;
 import net.glowstone.net.message.login.LoginSuccessMessage;
 import net.glowstone.net.message.player.PlayerLookMessage;
@@ -184,9 +186,9 @@ public final class MessageMap {
         // Login
         map = new MessageMap(ProtocolState.LOGIN);
         map.bindReceive(0x00, LoginStartMessage.class, LoginStartHandler.class);
-        //map.bindReceive(0x01, EncryptResponseMessage.class, null);
+        map.bindReceive(0x01, EncryptionKeyResponseMessage.class, EncryptionKeyResponseHandler.class);
         map.bindSend(0x00, KickMessage.class);
-        //map.bindSend(0x01, EncryptRequestMessage.class);
+        map.bindSend(0x01, EncryptionKeyRequestMessage.class);
         map.bindSend(0x02, LoginSuccessMessage.class);
 
         // Play
