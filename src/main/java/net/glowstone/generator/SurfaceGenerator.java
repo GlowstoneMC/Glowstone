@@ -1,16 +1,14 @@
 package net.glowstone.generator;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Random;
-
 import net.glowstone.block.BlockID;
 import net.glowstone.generator.populators.*;
-
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.util.noise.OctaveGenerator;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
+
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Basic generator with lots of hills.
@@ -19,16 +17,16 @@ public class SurfaceGenerator extends GlowChunkGenerator {
 
     public SurfaceGenerator() {
         super(  // In-ground
-                new LakePopulator(),
+                //new LakePopulator(),
                 // On-ground
                 // Desert is before tree and mushroom but snow is after so trees have snow on top
                 new DesertPopulator(),
                 new TreePopulator(),
                 new MushroomPopulator(),
-                new SnowPopulator(),
+                //new SnowPopulator(),
                 new FlowerPopulator(),
                 // Below-ground
-                new DungeonPopulator(),
+                //new DungeonPopulator(),
                 //new CavePopulator(),
                 new OrePopulator());
     }
