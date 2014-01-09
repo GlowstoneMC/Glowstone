@@ -136,7 +136,7 @@ public class GlowBlockState implements BlockState {
     }
     
     public GlowBlockState shallowClone() {
-        return getBlock().getState();
+        return new GlowBlockState(getBlock());
     }
     
     public void destroy() {

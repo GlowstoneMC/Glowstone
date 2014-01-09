@@ -22,12 +22,6 @@ import java.util.logging.Level;
 public final class GlowChunk implements Chunk {
 
     /**
-     * The radius (not including the current chunk) of the chunks that the
-     * player can see. Used as a default when no custom value is specified.
-     */
-    public static final int VISIBLE_RADIUS = 8;
-
-    /**
      * A chunk key represents the X and Z coordinates of a chunk and implements
      * the {@link #hashCode()} and {@link #equals(Object)} methods making it
      * suitable for use as a key in a hash table or set.
@@ -228,8 +222,7 @@ public final class GlowChunk implements Chunk {
     }
 
     public boolean load(boolean generate) {
-        if (isLoaded()) return true;
-        return world.getChunkManager().loadChunk(x, z, generate);
+        return isLoaded() || world.getChunkManager().loadChunk(x, z, generate);
     }
 
     public boolean unload() {
@@ -399,7 +392,7 @@ public final class GlowChunk implements Chunk {
      * @param y The Y coordinate.
      * @return The sky light level.
      */
-    public int getSkyLight(int x, int z, int y) {
+    public byte getSkyLight(int x, int z, int y) {
         if (y >= world.getMaxHeight() - 1 || y < 0) return 0;
         load();
         return skyLight[coordToIndex(x, z, y)];
@@ -427,7 +420,7 @@ public final class GlowChunk implements Chunk {
      * @param y The Y coordinate.
      * @return The block light level.
      */
-    public int getBlockLight(int x, int z, int y) {
+    public byte getBlockLight(int x, int z, int y) {
         if (y >= world.getMaxHeight() - 1 || y < 0) return 0;
         load();
         return blockLight[coordToIndex(x, z, y)];

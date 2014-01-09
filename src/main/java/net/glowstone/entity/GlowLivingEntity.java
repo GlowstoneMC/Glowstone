@@ -161,26 +161,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public boolean isInsideVehicle() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public boolean leaveVehicle() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public Vehicle getVehicle() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void damage(int amount) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void damage(int amount, Entity source) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     public int getMaximumNoDamageTicks() {
         throw new UnsupportedOperationException("Not supported yet.");
     }

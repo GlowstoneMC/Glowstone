@@ -12,6 +12,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.MetadataStore;
+import org.bukkit.metadata.MetadataStoreBase;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
@@ -22,6 +24,20 @@ import java.util.List;
  * Represents a single block in a world.
  */
 public class GlowBlock implements Block {
+
+    /**
+     * The metadata store class for blocks.
+     */
+    private static final class BlockMetadataStore extends MetadataStoreBase<Block> implements MetadataStore<Block> {
+        protected String disambiguate(Block subject, String metadataKey) {
+            return subject.getWorld() + "," + subject.getX() + "," + subject.getY() + "," + subject.getZ() + ":" + metadataKey;
+        }
+    }
+
+    /**
+     * The metadata store for blocks.
+     */
+    private static final MetadataStore<Block> metadata = new BlockMetadataStore();
 
     private final GlowChunk chunk;
     private final int x;
@@ -61,6 +77,15 @@ public class GlowBlock implements Block {
         return new Location(getWorld(), x, y, z);
     }
 
+    public Location getLocation(Location loc) {
+        if (loc == null) return null;
+        loc.setWorld(getWorld());
+        loc.setX(x);
+        loc.setY(y);
+        loc.setZ(z);
+        return loc;
+    }
+
     public GlowBlockState getState() {
         if (chunk.getEntity(x & 0xf, y, z & 0xf) != null) {
             return chunk.getEntity(x & 0xf, y, z & 0xf).shallowClone();
@@ -70,6 +95,10 @@ public class GlowBlock implements Block {
 
     public Biome getBiome() {
         return getWorld().getBiome(x, z);
+    }
+
+    public void setBiome(Biome bio) {
+        getWorld().setBiome(x, z, bio);
     }
 
     public double getTemperature() {
@@ -93,14 +122,6 @@ public class GlowBlock implements Block {
         return null;
     }
 
-    public GlowBlock getFace(BlockFace face) {
-        return getRelative(face.getModX(), face.getModY(), face.getModZ());
-    }
-
-    public GlowBlock getFace(BlockFace face, int distance) {
-        return getRelative(face.getModX() * distance, face.getModY() * distance, face.getModZ() * distance);
-    }
-
     public GlowBlock getRelative(int modX, int modY, int modZ) {
         return getWorld().getBlockAt(x + modX, y + modY, z + modZ);
     }
@@ -109,7 +130,7 @@ public class GlowBlock implements Block {
         return getRelative(face.getModX(), face.getModY(), face.getModZ());
     }
 
-    public Block getRelative(BlockFace face, int distance) {
+    public GlowBlock getRelative(BlockFace face, int distance) {
         return getRelative(face.getModX() * distance, face.getModY() * distance, face.getModZ() * distance);
     }
     
@@ -179,7 +200,15 @@ public class GlowBlock implements Block {
     }
 
     public byte getLightLevel() {
-        return (byte) Math.max(chunk.getSkyLight(x & 0xf, z & 0xf, y), chunk.getBlockLight(x & 0xf, z & 0xf, y));
+        return (byte) Math.max(getLightFromSky(), getLightFromBlocks());
+    }
+
+    public byte getLightFromSky() {
+        return chunk.getSkyLight(x & 0xf, z & 0xf, y);
+    }
+
+    public byte getLightFromBlocks() {
+        return chunk.getBlockLight(x & 0xf, z & 0xf, y);
     }
 
     // redstone-related shenanigans
@@ -218,65 +247,41 @@ public class GlowBlock implements Block {
         return "GlowBlock{loc=" + getLocation().toString() + ",type=" + getTypeId() + ",data=" + getData() + "}";
     }
 
-    // NEW STUFF
+    ////////////////////////////////////////////////////////////////////////////
+    // Drops and breaking
 
-    @Override
-    public byte getLightFromSky() {
-        return 0;
-    }
-
-    @Override
-    public byte getLightFromBlocks() {
-        return 0;
-    }
-
-    @Override
-    public Location getLocation(Location loc) {
-        return null;
-    }
-
-    @Override
-    public void setBiome(Biome bio) {
-
-    }
-
-    @Override
     public boolean breakNaturally() {
         return false;
     }
 
-    @Override
     public boolean breakNaturally(ItemStack tool) {
         return false;
     }
 
-    @Override
     public Collection<ItemStack> getDrops() {
         return null;
     }
 
-    @Override
     public Collection<ItemStack> getDrops(ItemStack tool) {
         return null;
     }
 
-    @Override
+    ////////////////////////////////////////////////////////////////////////////
+    // Metadata
+
     public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
-
+        metadata.setMetadata(this, metadataKey, newMetadataValue);
     }
 
-    @Override
     public List<MetadataValue> getMetadata(String metadataKey) {
-        return null;
+        return metadata.getMetadata(this, metadataKey);
     }
 
-    @Override
     public boolean hasMetadata(String metadataKey) {
-        return false;
+        return metadata.hasMetadata(this, metadataKey);
     }
 
-    @Override
     public void removeMetadata(String metadataKey, Plugin owningPlugin) {
-
+        metadata.removeMetadata(this, metadataKey, owningPlugin);
     }
 }
