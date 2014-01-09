@@ -122,7 +122,7 @@ public class ServerConfig {
     }
 
     public int getInt(Key key) {
-        GlowServer.logger.info("config: getInt " + key);
+        if (key != Key.VIEW_DISTANCE) GlowServer.logger.info("config: getInt " + key);
         return config.getInt(key.path);
     }
 

@@ -1,5 +1,6 @@
 package net.glowstone.inventory;
 
+import com.google.common.collect.Iterators;
 import net.glowstone.GlowServer;
 import net.glowstone.block.BlockID;
 import net.glowstone.block.ItemID;
@@ -7,15 +8,13 @@ import org.bukkit.Material;
 import org.bukkit.inventory.*;
 import org.bukkit.material.MaterialData;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
  * Manager for crafting and smelting recipes
  */
-public final class CraftingManager {
+public final class CraftingManager implements Iterable<Recipe> {
     
     private final ArrayList<ShapedRecipe> shapedRecipes = new ArrayList<ShapedRecipe>();
     private final ArrayList<ShapelessRecipe> shapelessRecipes = new ArrayList<ShapelessRecipe>();
@@ -245,15 +244,44 @@ public final class CraftingManager {
         
         return null;
     }
+
+    public Iterator<Recipe> iterator() {
+        return Iterators.concat(shapedRecipes.iterator(), shapelessRecipes.iterator(), furnaceRecipes.iterator());
+    }
+
+    /**
+     * Get a list of all recipes for a given item. The stack size is ignored
+     * in comparisons. If the durability is -1, it will match any data value.
+     *
+     * @param result The item whose recipes you want
+     * @return The list of recipes
+     */
+    public List<Recipe> getRecipesFor(ItemStack result) {
+        List<Recipe> recipes = new LinkedList<Recipe>();
+        for (Recipe recipe : this) {
+            ItemStack stack = recipe.getResult();
+            if (stack.getType() == result.getType() && (result.getDurability() == -1 || result.getDurability() == stack.getDurability())) {
+                recipes.add(recipe);
+            }
+        }
+        return recipes;
+    }
+
+    /**
+     * Clear all recipes.
+     */
+    public void clearRecipes() {
+        shapedRecipes.clear();
+        shapelessRecipes.clear();
+        furnaceRecipes.clear();
+        furnaceFuels.clear();
+    }
     
     /**
      * Reset the crafting recipe lists to their default states.
      */
     public void resetRecipes() {
-        shapedRecipes.clear();
-        shapelessRecipes.clear();
-        furnaceRecipes.clear();
-        furnaceFuels.clear();
+        clearRecipes();
         
         // Crafting sets
         for (CraftingSet set : CraftingSet.values()) {
@@ -454,7 +482,7 @@ public final class CraftingManager {
         addRecipe(result);
         return result;
     }
-    
+
     private enum CraftingSet {        
         WOOD(Material.WOOD,
                 tools(ItemID.WOOD_AXE, ItemID.WOOD_PICKAXE, ItemID.WOOD_SPADE, ItemID.WOOD_HOE, ItemID.WOOD_SWORD), stairs(2, BlockID.WOOD_STAIRS)),

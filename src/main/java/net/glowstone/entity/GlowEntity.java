@@ -11,6 +11,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.metadata.MetadataStore;
+import org.bukkit.metadata.MetadataStoreBase;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
@@ -23,6 +25,20 @@ import java.util.UUID;
  * @author Graham Edgecombe
  */
 public abstract class GlowEntity implements Entity {
+
+    /**
+     * The metadata store class for entities.
+     */
+    private final static class EntityMetadataStore extends MetadataStoreBase<Entity> implements MetadataStore<Entity> {
+        protected String disambiguate(Entity subject, String metadataKey) {
+            return subject.getUniqueId() + ":" + metadataKey;
+        }
+    }
+
+    /**
+     * The metadata store for entities.
+     */
+    private final static MetadataStore<Entity> metadata = new EntityMetadataStore();
     
     /**
      * The server this entity belongs to.

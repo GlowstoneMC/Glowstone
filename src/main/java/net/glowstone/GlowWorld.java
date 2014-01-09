@@ -16,8 +16,11 @@ import org.bukkit.entity.*;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.MetadataStore;
+import org.bukkit.metadata.MetadataStoreBase;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.util.Vector;
 
 import java.io.File;
@@ -31,6 +34,20 @@ import java.util.logging.Level;
  * @author Graham Edgecombe
  */
 public final class GlowWorld implements World {
+
+    /**
+     * The metadata store class for worlds.
+     */
+    private final static class WorldMetadataStore extends MetadataStoreBase<World> implements MetadataStore<World> {
+        protected String disambiguate(World subject, String metadataKey) {
+            return subject.getName() + ":" + metadataKey;
+        }
+    }
+
+    /**
+     * The metadata store for world objects.
+     */
+    private final static MetadataStore<World> metadata = new WorldMetadataStore();
     
     /**
      * The server of this world.
@@ -46,6 +63,16 @@ public final class GlowWorld implements World {
      * The chunk manager.
      */
     private final ChunkManager chunks;
+
+    /**
+     * The world metadata service used.
+     */
+    private final WorldStorageProvider storageProvider;
+
+    /**
+     * The world's UUID
+     */
+    private final UUID uid;
 
     /**
      * The entity manager.
@@ -66,6 +93,11 @@ public final class GlowWorld implements World {
      * The world populators for this world.
      */
     private final List<BlockPopulator> populators;
+
+    /**
+     * The game rules used in this world.
+     */
+    private final Map<String, String> gameRules = new HashMap<String, String>();
     
     /**
      * The environment.
@@ -137,15 +169,20 @@ public final class GlowWorld implements World {
      */
     private boolean autosave = true;
 
-    /*
-     * The world metadata service used
+    /**
+     * The world's gameplay difficulty.
      */
-    private final WorldStorageProvider storageProvider;
+    private Difficulty difficulty = Difficulty.PEACEFUL;
 
     /**
-     * The world's UUID
+     * Ticks between when various types of entities are spawned.
      */
-    private final UUID uid;
+    private long ticksPerAnimal, ticksPerMonster;
+
+    /**
+     * Per-chunk spawn limits on various types of entities.
+     */
+    private int monsterLimit, animalLimit, waterAnimalLimit, ambientLimit;
 
     /**
      * Creates a new world with the specified chunk I/O service, environment,
@@ -225,9 +262,15 @@ public final class GlowWorld implements World {
         EventFactory.onWorldLoad(this);
         save();
 
+        ticksPerAnimal = server.getTicksPerAnimalSpawns();
+        ticksPerMonster = server.getTicksPerMonsterSpawns();
+        monsterLimit = server.getMonsterSpawnLimit();
+        animalLimit = server.getAnimalSpawnLimit();
+        waterAnimalLimit = server.getWaterAnimalSpawnLimit();
+        ambientLimit = server.getAmbientSpawnLimit();
     }
 
-    ////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
     // Various internal mechanisms
     
     /**
@@ -304,35 +347,56 @@ public final class GlowWorld implements World {
         return entities.getAll(GlowPlayer.class);
     }
 
-    // GlowEntity lists
+    ////////////////////////////////////////////////////////////////////////////
+    // Entity lists
     
     public List<Player> getPlayers() {
-        Collection<GlowPlayer> players = entities.getAll(GlowPlayer.class);
-        ArrayList<Player> result = new ArrayList<Player>();
-        for (Player p : players) {
-            result.add(p);
-        }
-        return result;
+        return new ArrayList<Player>(entities.getAll(GlowPlayer.class));
     }
 
     public List<Entity> getEntities() {
-        Collection<GlowEntity> list = entities.getAll();
-        ArrayList<Entity> result = new ArrayList<Entity>();
-        for (Entity e : list) {
-            result.add(e);
-        }
-        return result;
+        return new ArrayList<Entity>(entities.getAll());
     }
 
     public List<LivingEntity> getLivingEntities() {
-        Collection<GlowEntity> list = entities.getAll();
-        ArrayList<LivingEntity> result = new ArrayList<LivingEntity>();
-        for (Entity e : list) {
+        List<LivingEntity> result = new LinkedList<LivingEntity>();
+        for (Entity e : entities.getAll()) {
             if (e instanceof GlowLivingEntity) result.add((GlowLivingEntity) e);
         }
         return result;
     }
 
+    @Deprecated
+    @SuppressWarnings("unchecked")
+    public <T extends Entity> Collection<T> getEntitiesByClass(Class<T>... classes) {
+        return (Collection<T>) getEntitiesByClasses(classes);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends Entity> Collection<T> getEntitiesByClass(Class<T> cls) {
+        ArrayList<T> result = new ArrayList<T>();
+        for (Entity e : entities.getAll()) {
+            if (cls.isAssignableFrom(e.getClass())) {
+                result.add((T) e);
+            }
+        }
+        return result;
+    }
+
+    public Collection<Entity> getEntitiesByClasses(Class<?>... classes) {
+        ArrayList<Entity> result = new ArrayList<Entity>();
+        for (Entity e : entities.getAll()) {
+            for (Class<?> cls : classes) {
+                if (cls.isAssignableFrom(e.getClass())) {
+                    result.add(e);
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
     // Various malleable world properties
 
     public Location getSpawnLocation() {
@@ -340,15 +404,10 @@ public final class GlowWorld implements World {
     }
 
     public boolean setSpawnLocation(int x, int y, int z) {
-        return setSpawnLocation(new Location(this, x, y, z));
-    }
-
-    public boolean setSpawnLocation(Location loc) {
         Location oldSpawn = spawnLocation;
-        loc.setWorld(this);
-        spawnLocation = loc;
+        spawnLocation = new Location(this, x, y, z);
         EventFactory.onSpawnChange(this, oldSpawn);
-        return !loc.equals(oldSpawn);
+        return !spawnLocation.equals(oldSpawn);
     }
 
     public boolean getPVP() {
@@ -358,6 +417,33 @@ public final class GlowWorld implements World {
     public void setPVP(boolean pvp) {
         pvpAllowed = pvp;
     }
+
+    public boolean getKeepSpawnInMemory() {
+        return keepSpawnLoaded;
+    }
+
+    public void setKeepSpawnInMemory(boolean keepLoaded) {
+        keepSpawnLoaded = keepLoaded;
+    }
+
+    public boolean isAutoSave() {
+        return autosave;
+    }
+
+    public void setAutoSave(boolean value) {
+        autosave = value;
+    }
+
+    public Difficulty getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(Difficulty difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Entity spawning properties
 
     public void setSpawnFlags(boolean allowMonsters, boolean allowAnimals) {
         spawnMonsters = allowMonsters;
@@ -372,7 +458,56 @@ public final class GlowWorld implements World {
         return spawnMonsters;
     }
 
-    // various fixed world properties
+    public long getTicksPerAnimalSpawns() {
+        return ticksPerAnimal;
+    }
+
+    public void setTicksPerAnimalSpawns(int ticksPerAnimalSpawns) {
+        ticksPerAnimal = ticksPerAnimalSpawns;
+    }
+
+    public long getTicksPerMonsterSpawns() {
+        return ticksPerMonster;
+    }
+
+    public void setTicksPerMonsterSpawns(int ticksPerMonsterSpawns) {
+        ticksPerMonster = ticksPerMonsterSpawns;
+    }
+
+    public int getMonsterSpawnLimit() {
+        return monsterLimit;
+    }
+
+    public void setMonsterSpawnLimit(int limit) {
+        monsterLimit = limit;
+    }
+
+    public int getAnimalSpawnLimit() {
+        return animalLimit;
+    }
+
+    public void setAnimalSpawnLimit(int limit) {
+        animalLimit = limit;
+    }
+
+    public int getWaterAnimalSpawnLimit() {
+        return waterAnimalLimit;
+    }
+
+    public void setWaterAnimalSpawnLimit(int limit) {
+        waterAnimalLimit = limit;
+    }
+
+    public int getAmbientSpawnLimit() {
+        return ambientLimit;
+    }
+
+    public void setAmbientSpawnLimit(int limit) {
+        ambientLimit = limit;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Various fixed world properties
 
     public Environment getEnvironment() {
         return environment;
@@ -390,10 +525,6 @@ public final class GlowWorld implements World {
         return name;
     }
 
-    public long getId() {
-        return (getSeed() + "_" + getName()).hashCode();
-    }
-
     public int getMaxHeight() {
         return GlowChunk.DEPTH;
     }
@@ -402,6 +533,15 @@ public final class GlowWorld implements World {
         return getMaxHeight() / 2;
     }
 
+    public WorldType getWorldType() {
+        return null;
+    }
+
+    public boolean canGenerateStructures() {
+        return server.getGenerateStructures();
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
     // force-save
 
     public void save() {
@@ -450,7 +590,8 @@ public final class GlowWorld implements World {
 
         writeWorldData(async);
     }
-    
+
+    ////////////////////////////////////////////////////////////////////////////
     // map generation
 
     public ChunkGenerator getGenerator() {
@@ -469,6 +610,7 @@ public final class GlowWorld implements World {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    ////////////////////////////////////////////////////////////////////////////
     // get block, chunk, id, highest methods with coords
 
     public synchronized GlowBlock getBlockAt(int x, int y, int z) {
@@ -499,6 +641,7 @@ public final class GlowWorld implements World {
         return chunks.getChunk(x, z);
     }
 
+    ////////////////////////////////////////////////////////////////////////////
     // get block, chunk, id, highest with locations
 
     public GlowBlock getBlockAt(Location location) {
@@ -522,13 +665,14 @@ public final class GlowWorld implements World {
     }
 
     public Chunk getChunkAt(Location location) {
-        return getChunkAt(location.getBlockX(), location.getBlockZ());
+        return getChunkAt(location.getBlockX() >> 4, location.getBlockZ() >> 4);
     }
 
     public Chunk getChunkAt(Block block) {
-        return getChunkAt(block.getX(), block.getZ());
+        return block.getChunk();
     }
 
+    ////////////////////////////////////////////////////////////////////////////
     // Chunk loading and unloading
 
     public boolean isChunkLoaded(Chunk chunk) {
@@ -616,8 +760,17 @@ public final class GlowWorld implements World {
         
         return result;
     }
-    
-    // biomes
+
+    public ChunkSnapshot getEmptyChunkSnapshot(int x, int z, boolean includeBiome, boolean includeBiomeTempRain) {
+        return new GlowChunkSnapshot.EmptySnapshot(x, z, this, includeBiome, includeBiomeTempRain);
+    }
+
+    public boolean isChunkInUse(int x, int z) {
+        return false;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Biomes
 
     public Biome getBiome(int x, int z) {
         if (environment == Environment.THE_END) {
@@ -629,6 +782,10 @@ public final class GlowWorld implements World {
         return Biome.FOREST;
     }
 
+    public void setBiome(int x, int z, Biome bio) {
+
+    }
+
     public double getTemperature(int x, int z) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -637,7 +794,8 @@ public final class GlowWorld implements World {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    // entity spawning
+    ////////////////////////////////////////////////////////////////////////////
+    // Entity spawning
 
     public <T extends Entity> T spawn(Location location, Class<T> clazz) throws IllegalArgumentException {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -654,7 +812,7 @@ public final class GlowWorld implements World {
         double xs = random.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
         double ys = random.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
         double zs = random.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
-        location = location.clone().add(new Location(this, xs, ys, zs));
+        location = location.clone().add(xs, ys, zs);
         return dropItem(location, item);
     }
 
@@ -676,45 +834,26 @@ public final class GlowWorld implements World {
         return arrow;
     }
 
+    public FallingBlock spawnFallingBlock(Location location, Material material, byte data) throws IllegalArgumentException {
+        return null;
+    }
+
+    public FallingBlock spawnFallingBlock(Location location, int blockId, byte blockData) throws IllegalArgumentException {
+        return null;
+    }
+
+    public Entity spawnEntity(Location loc, EntityType type) {
+        return spawn(loc, type.getEntityClass());
+    }
+
+    @Deprecated
+    public LivingEntity spawnCreature(Location loc, EntityType type) {
+        return (LivingEntity) spawn(loc, type.getEntityClass());
+    }
+
+    @Deprecated
     public LivingEntity spawnCreature(Location loc, CreatureType type) {
-        switch (type) {
-            case CHICKEN:
-                return spawn(loc, org.bukkit.entity.Chicken.class);
-            case COW:
-                return spawn(loc, org.bukkit.entity.Cow.class);
-            case CREEPER:
-                return spawn(loc, org.bukkit.entity.Creeper.class);
-            case GHAST:
-                return spawn(loc, org.bukkit.entity.Ghast.class);
-            case GIANT:
-                return spawn(loc, org.bukkit.entity.Giant.class);
-            case PIG:
-                return spawn(loc, org.bukkit.entity.Pig.class);
-            case PIG_ZOMBIE:
-                return spawn(loc, org.bukkit.entity.PigZombie.class);
-            case SHEEP:
-                return spawn(loc, org.bukkit.entity.Sheep.class);
-            case SKELETON:
-                return spawn(loc, org.bukkit.entity.Skeleton.class);
-            case SLIME:
-                return spawn(loc, org.bukkit.entity.Slime.class);
-            case SPIDER:
-                return spawn(loc, org.bukkit.entity.Spider.class);
-            case SQUID:
-                return spawn(loc, org.bukkit.entity.Squid.class);
-            case ZOMBIE:
-                return spawn(loc, org.bukkit.entity.Zombie.class);
-            case WOLF:
-                return spawn(loc, org.bukkit.entity.Wolf.class);
-            case CAVE_SPIDER:
-                return spawn(loc, org.bukkit.entity.CaveSpider.class);
-            case SILVERFISH:
-                return spawn(loc, org.bukkit.entity.Silverfish.class);
-            case ENDERMAN:
-                return spawn(loc, org.bukkit.entity.Enderman.class);
-            default:
-                throw new IllegalArgumentException();
-        }
+        return (LivingEntity) spawn(loc, type.getEntityClass());
     }
 
     public GlowLightningStrike strikeLightning(Location loc) {
@@ -729,7 +868,8 @@ public final class GlowWorld implements World {
         return strike;
     }
 
-    // Time related methods
+    ////////////////////////////////////////////////////////////////////////////
+    // Time
 
     public long getTime() {
         return time;
@@ -749,7 +889,8 @@ public final class GlowWorld implements World {
         setTime(time);
     }
 
-    // Weather related methods
+    ////////////////////////////////////////////////////////////////////////////
+    // Weather
 
     public boolean hasStorm() {
         return currentlyRaining;
@@ -800,8 +941,9 @@ public final class GlowWorld implements World {
     public void setThunderDuration(int duration) {
         thunderingTicks = duration;
     }
-    
-    // explosions
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Explosions
 
     public boolean createExplosion(Location loc, float power, boolean setFire) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -818,8 +960,14 @@ public final class GlowWorld implements World {
     public boolean createExplosion(double x, double y, double z, float power) {
         return createExplosion(new Location(this, x, y, z), power, false);
     }
-    
-    // effects
+
+    @Override
+    public boolean createExplosion(double x, double y, double z, float power, boolean setFire, boolean breakBlocks) {
+        return false;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Effects
 
     public void playEffect(Location location, Effect effect, int data) {
         playEffect(location, effect, data, 64);
@@ -833,6 +981,14 @@ public final class GlowWorld implements World {
         }
     }
 
+    public <T> void playEffect(Location location, Effect effect, T data) {
+        playEffect(location, effect, data, 64);
+    }
+
+    public <T> void playEffect(Location location, Effect effect, T data, int radius) {
+
+    }
+
     public void playEffectExceptTo(Location location, Effect effect, int data, int radius, Player exclude) {
         for (Player player : getPlayers()) {
             if (!player.equals(exclude) && player.getLocation().distance(location) <= radius) {
@@ -840,38 +996,13 @@ public final class GlowWorld implements World {
             }
         }
     }
-    
-    // misc
 
-    public ChunkSnapshot getEmptyChunkSnapshot(int x, int z, boolean includeBiome, boolean includeBiomeTempRain) {
-        return new GlowChunkSnapshot.EmptySnapshot(x, z, this, includeBiome, includeBiomeTempRain);
+    public void playSound(Location location, Sound sound, float volume, float pitch) {
+
     }
 
-    public boolean getKeepSpawnInMemory() {
-        return keepSpawnLoaded;
-    }
-
-    public void setKeepSpawnInMemory(boolean keepLoaded) {
-        keepSpawnLoaded = keepLoaded;
-    }
-
-    public boolean isAutoSave() {
-        return autosave;
-    }
-
-    public void setAutoSave(boolean value) {
-        autosave = value;
-    }
-
-    public void setDifficulty(Difficulty difficulty) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public Difficulty getDifficulty() {
-        return Difficulty.PEACEFUL;
-    }
-
-    // level data write
+    ////////////////////////////////////////////////////////////////////////////
+    // Level data write
 
     void writeWorldData(boolean async) {
         if (async) {
@@ -940,190 +1071,74 @@ public final class GlowWorld implements World {
         return storageProvider.getFolder();
     }
 
-    // NEW STUFF
-
-    @Override
-    public boolean isChunkInUse(int x, int z) {
-        return false;
-    }
-
-    @Override
-    public Entity spawnEntity(Location loc, EntityType type) {
-        return null;
-    }
-
-    @Override
-    public LivingEntity spawnCreature(Location loc, EntityType type) {
-        return null;
-    }
-
-    @Override
-    public <T extends Entity> Collection<T> getEntitiesByClass(Class<T>... classes) {
-        return null;
-    }
-
-    @Override
-    public <T extends Entity> Collection<T> getEntitiesByClass(Class<T> cls) {
-        return null;
-    }
-
-    @Override
-    public Collection<Entity> getEntitiesByClasses(Class<?>... classes) {
-        return null;
-    }
-
-    @Override
-    public boolean createExplosion(double x, double y, double z, float power, boolean setFire, boolean breakBlocks) {
-        return false;
-    }
-
-    @Override
-    public FallingBlock spawnFallingBlock(Location location, Material material, byte data) throws IllegalArgumentException {
-        return null;
-    }
-
-    @Override
-    public FallingBlock spawnFallingBlock(Location location, int blockId, byte blockData) throws IllegalArgumentException {
-        return null;
-    }
-
-    @Override
-    public <T> void playEffect(Location location, Effect effect, T data) {
-
-    }
-
-    @Override
-    public <T> void playEffect(Location location, Effect effect, T data, int radius) {
-
-    }
-
-    @Override
-    public void setBiome(int x, int z, Biome bio) {
-
-    }
-
-    @Override
-    public WorldType getWorldType() {
-        return null;
-    }
-
-    @Override
-    public boolean canGenerateStructures() {
-        return false;
-    }
-
-    @Override
-    public long getTicksPerAnimalSpawns() {
-        return 0;
-    }
-
-    @Override
-    public void setTicksPerAnimalSpawns(int ticksPerAnimalSpawns) {
-
-    }
-
-    @Override
-    public long getTicksPerMonsterSpawns() {
-        return 0;
-    }
-
-    @Override
-    public void setTicksPerMonsterSpawns(int ticksPerMonsterSpawns) {
-
-    }
-
-    @Override
-    public int getMonsterSpawnLimit() {
-        return 0;
-    }
-
-    @Override
-    public void setMonsterSpawnLimit(int limit) {
-
-    }
-
-    @Override
-    public int getAnimalSpawnLimit() {
-        return 0;
-    }
-
-    @Override
-    public void setAnimalSpawnLimit(int limit) {
-
-    }
-
-    @Override
-    public int getWaterAnimalSpawnLimit() {
-        return 0;
-    }
-
-    @Override
-    public void setWaterAnimalSpawnLimit(int limit) {
-
-    }
-
-    @Override
-    public int getAmbientSpawnLimit() {
-        return 0;
-    }
-
-    @Override
-    public void setAmbientSpawnLimit(int limit) {
-
-    }
-
-    @Override
-    public void playSound(Location location, Sound sound, float volume, float pitch) {
-
-    }
+    ////////////////////////////////////////////////////////////////////////////
+    // Game rules
 
     @Override
     public String[] getGameRules() {
-        return new String[0];
+        return gameRules.keySet().toArray(new String[gameRules.size()]);
     }
 
     @Override
     public String getGameRuleValue(String rule) {
-        return null;
+        return gameRules.get(rule);
     }
 
     @Override
     public boolean setGameRuleValue(String rule, String value) {
-        return false;
+        if (value == null || !gameRules.containsKey(rule)) {
+            return false;
+        } else {
+            gameRules.put(rule, value);
+            return true;
+        }
     }
 
     @Override
     public boolean isGameRule(String rule) {
-        return false;
+        return gameRules.containsKey(rule);
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Metadata
 
     @Override
     public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
-
+        metadata.setMetadata(this, metadataKey, newMetadataValue);
     }
 
     @Override
     public List<MetadataValue> getMetadata(String metadataKey) {
-        return null;
+        return metadata.getMetadata(this, metadataKey);
     }
 
     @Override
     public boolean hasMetadata(String metadataKey) {
-        return false;
+        return metadata.hasMetadata(this, metadataKey);
     }
 
     @Override
     public void removeMetadata(String metadataKey, Plugin owningPlugin) {
-
+        metadata.removeMetadata(this, metadataKey, owningPlugin);
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Plugin messages
 
     @Override
     public void sendPluginMessage(Plugin source, String channel, byte[] message) {
-
+        StandardMessenger.validatePluginMessage(server.getMessenger(), source, channel, message);
+        for (Player player : getRawPlayers()) {
+            player.sendPluginMessage(source, channel, message);
+        }
     }
 
     @Override
     public Set<String> getListeningPluginChannels() {
-        return null;
+        HashSet<String> result = new HashSet<String>();
+        for (Player player : getRawPlayers()) {
+            result.addAll(player.getListeningPluginChannels());
+        }
+        return result;
     }
 }

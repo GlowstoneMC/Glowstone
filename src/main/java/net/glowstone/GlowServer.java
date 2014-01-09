@@ -131,7 +131,27 @@ public final class GlowServer implements Server {
     /**
      * The plugin manager of this server.
      */
-    private final SimplePluginManager pluginManager = new SimplePluginManager(this, commandMap);
+    private final PluginManager pluginManager = new SimplePluginManager(this, commandMap);
+
+    /**
+     * The plugin channel messenger for the server.
+     */
+    private final Messenger messenger = new StandardMessenger();
+
+    /**
+     * The item metadata factory for the server.
+     */
+    private final ItemFactory itemFactory = null;
+
+    /**
+     * The help map for the server.
+     */
+    private final HelpMap helpMap = null;
+
+    /**
+     * The scoreboard manager for the server.
+     */
+    private final ScoreboardManager scoreboardManager = null;
     
     /**
      * The crafting manager for this server.
@@ -206,8 +226,10 @@ public final class GlowServer implements Server {
             defaultGameMode = GameMode.valueOf(GameMode.class, config.getString(ServerConfig.Key.GAMEMODE));
         } catch (IllegalArgumentException e) {
             defaultGameMode = GameMode.SURVIVAL;
-            config.set(ServerConfig.Key.GAMEMODE, defaultGameMode.name());
+        } catch (NullPointerException e) {
+            defaultGameMode = GameMode.SURVIVAL;
         }
+        config.set(ServerConfig.Key.GAMEMODE, defaultGameMode.name());
         // config.getString("server.terminal-mode", "jline")
     }
 
@@ -323,7 +345,9 @@ public final class GlowServer implements Server {
         commandMap.removeAllOfType(PluginCommand.class);
 
         File folder = new File(config.getString(ServerConfig.Key.PLUGIN_FOLDER));
-        folder.mkdirs();
+        if (!folder.isDirectory() || !folder.mkdirs()) {
+            logger.log(Level.SEVERE, "Could not create plugins directory: " + folder);
+        }
         
         // clear plugins and prepare to load
         pluginManager.clearPlugins();
@@ -534,19 +558,19 @@ public final class GlowServer implements Server {
     }
 
     public Messenger getMessenger() {
-        return null;
+        return messenger;
     }
 
     public HelpMap getHelpMap() {
-        return null;
+        return helpMap;
     }
 
     public ItemFactory getItemFactory() {
-        return null;
+        return itemFactory;
     }
 
     public ScoreboardManager getScoreboardManager() {
-        return null;
+        return scoreboardManager;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -756,7 +780,7 @@ public final class GlowServer implements Server {
     }
 
     public List<World> getWorlds() {
-        return Collections.<World>unmodifiableList(worlds);
+        return new ArrayList<World>(worlds);
     }
 
     /**
@@ -811,8 +835,8 @@ public final class GlowServer implements Server {
             world.setAutoSave(false);
             ((GlowWorld) world).save(false);
         }
-        if (worlds.contains((GlowWorld) world)) {
-            worlds.remove((GlowWorld) world);
+        if (worlds.contains(world)) {
+            worlds.remove(world);
             ((GlowWorld) world).unload();
             EventFactory.onWorldUnload((GlowWorld)world);
             return true;
@@ -833,12 +857,12 @@ public final class GlowServer implements Server {
 
     @Override
     public List<Recipe> getRecipesFor(ItemStack result) {
-        return null;
+        return craftingManager.getRecipesFor(result);
     }
 
     @Override
     public Iterator<Recipe> recipeIterator() {
-        return null;
+        return craftingManager.iterator();
     }
 
     public boolean addRecipe(Recipe recipe) {
@@ -847,7 +871,7 @@ public final class GlowServer implements Server {
 
     @Override
     public void clearRecipes() {
-        //craftingManager.clearRecipes();
+        craftingManager.clearRecipes();
     }
 
     @Override
