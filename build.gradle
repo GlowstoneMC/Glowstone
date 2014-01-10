@@ -9,12 +9,16 @@ apply plugin: 'shadow' // Allows for dependency shading
 
 // Method allowing us to run git describe
 def getVersionName = { ->
-    def stdout = new ByteArrayOutputStream()
-    exec {
-        commandLine 'git', 'describe'
-        standardOutput = stdout
+    try {
+        def stdout = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'describe', '--always'
+            standardOutput = stdout
+        }
+        return stdout.toString().trim()
+    } catch (e) {
+        return "unknown"
     }
-    return stdout.toString().trim()
 }
 
 // Basic project information
@@ -26,7 +30,7 @@ mainClassName = "net.glowstone.GlowServer"
 // Extended project information
 ext.url = 'https://github.com/SpaceManiac/Glowstone'
 ext.bukkitVersion = '1.7.2-R0.2'
-ext.gitDescribe = "git-Glowstone-" + getVersionName()
+ext.gitDescribe = "git-" + getVersionName()
 
 // Minimum Java version required
 sourceCompatibility = '1.6'
