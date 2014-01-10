@@ -39,7 +39,7 @@ public final class NBTOutputStream implements Closeable {
      * specified underlying output stream. A flag indicates if the output
      * should be compressed with GZIP or not.
      * @param os The output stream.
-     * @param boolean A flag that indicates if the output should be compressed.
+     * @param compressed A flag that indicates if the output should be compressed.
      * @throws IOException if an I/O error occurs.
      */
     public NBTOutputStream(OutputStream os, boolean compressed) throws IOException {
@@ -119,6 +119,10 @@ public final class NBTOutputStream implements Closeable {
             writeCompoundTagPayload((CompoundTag) tag);
             break;
 
+        case NBTConstants.TYPE_INT_ARRAY:
+            writeIntArrayTagPayload((IntArrayTag) tag);
+            break;
+
         default:
             throw new IOException("Invalid tag type: " + type + ".");
         }
@@ -142,6 +146,19 @@ public final class NBTOutputStream implements Closeable {
         byte[] bytes = tag.getValue();
         os.writeInt(bytes.length);
         os.write(bytes);
+    }
+
+    /**
+     * Writes a {@code TAG_Int_Array} tag.
+     * @param tag The tag.
+     * @throws IOException if an I/O error occurs.
+     */
+    private void writeIntArrayTagPayload(IntArrayTag tag) throws IOException {
+        int[] ints = tag.getValue();
+        os.writeInt(ints.length);
+        for (int value : ints) {
+            os.writeInt(value);
+        }
     }
 
     /**
@@ -169,8 +186,8 @@ public final class NBTOutputStream implements Closeable {
 
         os.writeByte(NBTUtils.getTypeCode(clazz));
         os.writeInt(size);
-        for (int i = 0; i < size; i++) {
-            writeTagPayload(tags.get(i));
+        for (Tag child : tags) {
+            writeTagPayload(child);
         }
     }
 
@@ -233,7 +250,6 @@ public final class NBTOutputStream implements Closeable {
     /**
      * Writes a {@code TAG_Empty} tag.
      * @param tag The tag.
-     * @throws IOException if an I/O error occurs.
      */
     private void writeEndTagPayload(EndTag tag) {
         /* empty */

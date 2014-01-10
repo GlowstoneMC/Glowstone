@@ -1,12 +1,12 @@
 package net.glowstone.io;
 
-import java.io.IOException;
-
 import net.glowstone.GlowChunk;
+
+import java.io.IOException;
 
 /**
  * This interface should be implemented by classes which wish to provide some
- * way of performing chunk I/O e.g. the {@link net.glowstone.io.nbt.NbtChunkIoService}. This
+ * way of performing chunk I/O e.g. the {@link net.glowstone.io.anvil.AnvilChunkIoService}. This
  * interface is abstracted away from the implementation because a new format is
  * due to arrive soon (McRegion).
  * @author Graham Edgecombe

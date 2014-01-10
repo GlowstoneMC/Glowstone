@@ -3,7 +3,7 @@ package net.glowstone;
 import net.glowstone.command.*;
 import net.glowstone.inventory.CraftingManager;
 import net.glowstone.io.StorageQueue;
-import net.glowstone.io.mcregion.McRegionWorldStorageProvider;
+import net.glowstone.io.anvil.AnvilWorldStorageProvider;
 import net.glowstone.map.GlowMapView;
 import net.glowstone.net.MinecraftPipelineFactory;
 import net.glowstone.net.Session;
@@ -817,7 +817,7 @@ public final class GlowServer implements Server {
             creator.generator(getGenerator(creator.name(), creator.environment()));
         }
 
-        world = new GlowWorld(this, creator.name(), creator.environment(), creator.seed(), new McRegionWorldStorageProvider(new File(getWorldContainer(), creator.name())), creator.generator());
+        world = new GlowWorld(this, creator.name(), creator.environment(), creator.seed(), new AnvilWorldStorageProvider(new File(getWorldContainer(), creator.name())), creator.generator());
         worlds.add(world);
         return world;
     }

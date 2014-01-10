@@ -1,4 +1,4 @@
-package net.glowstone.io.mcregion.region;
+package net.glowstone.io.anvil;
 
 /*
  ** 2011 January 5
@@ -23,21 +23,32 @@ package net.glowstone.io.mcregion.region;
  *
  */
 
-// A simple cache and wrapper for efficiently multiple RegionFiles simultaneously.
+/*
+ * Some changes have been made as part of the Glowstone project.
+ */
 
 import java.io.*;
 import java.lang.ref.*;
 import java.util.*;
 
+/**
+ * A simple cache and wrapper for efficiently accessing multiple RegionFiles simultaneously.
+ */
 public class RegionFileCache {
 
-    private final int MAX_CACHE_SIZE = 256;
+    private static final int MAX_CACHE_SIZE = 256;
 
     private final Map<File, Reference<RegionFile>> cache = new HashMap<File, Reference<RegionFile>>();
 
+    private final String extension;
+
+    public RegionFileCache(String extension) {
+        this.extension = extension;
+    }
+
     public RegionFile getRegionFile(File basePath, int chunkX, int chunkZ) throws IOException {
         File regionDir = new File(basePath, "region");
-        File file = new File(regionDir, "r." + (chunkX >> 5) + "." + (chunkZ >> 5) + ".mcr");
+        File file = new File(regionDir, "r." + (chunkX >> 5) + "." + (chunkZ >> 5) + extension);
 
         Reference<RegionFile> ref = cache.get(file);
 
@@ -60,8 +71,9 @@ public class RegionFileCache {
 
     public void clear() throws IOException {
         for (Reference<RegionFile> ref : cache.values()) {
-            if (ref.get() != null) {
-                ref.get().close();
+            RegionFile value = ref.get();
+            if (value != null) {
+                value.close();
             }
         }
         cache.clear();

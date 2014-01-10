@@ -100,18 +100,23 @@ public final class GlowChunk implements Chunk {
     /**
      * A single cubic section of a chunk, with all data.
      */
-    private static final class ChunkSection {
+    public static final class ChunkSection {
         private static final int ARRAY_SIZE = WIDTH * HEIGHT * SEC_DEPTH;
 
-        private final byte[] types = new byte[ARRAY_SIZE];
-        private final byte[] metaData = new byte[ARRAY_SIZE];
-        private final byte[] skyLight = new byte[ARRAY_SIZE];
-        private final byte[] blockLight = new byte[ARRAY_SIZE];
+        // these probably should be made non-public
+        public final byte[] types;
+        public final byte[] metaData;
+        public final byte[] skyLight;
+        public final byte[] blockLight;
 
         /**
          * Create a new, empty ChunkSection.
          */
         public ChunkSection() {
+            types = new byte[ARRAY_SIZE];
+            metaData = new byte[ARRAY_SIZE];
+            skyLight = new byte[ARRAY_SIZE];
+            blockLight = new byte[ARRAY_SIZE];
         }
 
         /**
@@ -121,10 +126,14 @@ public final class GlowChunk implements Chunk {
             if (types.length != ARRAY_SIZE || metaData.length != ARRAY_SIZE || skyLight.length != ARRAY_SIZE || blockLight.length != ARRAY_SIZE) {
                 throw new IllegalArgumentException("An array length was not " + ARRAY_SIZE + ": " + types.length + " " + metaData.length + " " + skyLight.length + " " + blockLight.length);
             }
-            System.arraycopy(types, 0, this.types, 0, ARRAY_SIZE);
+            this.types = types;
+            this.metaData = metaData;
+            this.skyLight = skyLight;
+            this.blockLight = blockLight;
+            /*System.arraycopy(types, 0, this.types, 0, ARRAY_SIZE);
             System.arraycopy(metaData, 0, this.metaData, 0, ARRAY_SIZE);
             System.arraycopy(skyLight, 0, this.skyLight, 0, ARRAY_SIZE);
-            System.arraycopy(blockLight, 0, this.blockLight, 0, ARRAY_SIZE);
+            System.arraycopy(blockLight, 0, this.blockLight, 0, ARRAY_SIZE);*/
         }
 
         public int index(int x, int y, int z) {
@@ -277,13 +286,14 @@ public final class GlowChunk implements Chunk {
 
         this.sections = new ChunkSection[world.getMaxHeight() / SEC_DEPTH];
 
+        final int oldDepth = 128;
         int height = types.length / (WIDTH * HEIGHT);
-        if (height != DEPTH) {
+        if (height != oldDepth) {
             // old code using this method must provide the correct height
-            throw new IllegalArgumentException("Types should have depth " + DEPTH + ", were " + height);
+            throw new IllegalArgumentException("Types should have depth " + oldDepth + ", were " + height);
         }
 
-        for (int y = 0; y < DEPTH; y += SEC_DEPTH) {
+        for (int y = 0; y < oldDepth; y += SEC_DEPTH) {
             ChunkSection sec = new ChunkSection();
             System.arraycopy(types, WIDTH * HEIGHT * y, sec.types, 0, sec.types.length);
             Arrays.fill(sec.skyLight, (byte) 15);
@@ -291,12 +301,29 @@ public final class GlowChunk implements Chunk {
         }
         
         for (int cx = 0; cx < WIDTH; ++cx) {
-            for (int cy = 0; cy < DEPTH; ++cy) {
+            for (int cy = 0; cy < oldDepth; ++cy) {
                 for (int cz = 0; cz < HEIGHT; ++cz) {
                     createEntity(cx, cy, cz, getType(cx, cz, cy));
                 }
             }
         }
+    }
+
+    /**
+     * Initialize this chunk from the given sections.
+     * @param sections The ChunkSections to use.
+     */
+    public void initializeSections(ChunkSection[] sections) {
+        this.sections = new ChunkSection[DEPTH / SEC_DEPTH];
+        System.arraycopy(sections, 0, this.sections, 0, this.sections.length);
+    }
+
+    /**
+     * Get the ChunkSections contained in this chunk. Care should be taken that they are not modified.
+     * @return The ChunkSection array.
+     */
+    public ChunkSection[] getSections() {
+        return sections;
     }
 
     /**
@@ -327,13 +354,13 @@ public final class GlowChunk implements Chunk {
      * @return The ChunkSection, or null if it is empty.
      */
     private ChunkSection getSection(int y) {
-        int idx = y >> 4;
-        if (idx < 0 || idx >= DEPTH) {
+        if (y < 0 || y >= DEPTH) {
             return null;
         }
         if (!isLoaded() && !load()) {
             return null;
         }
+        int idx = y >> 4;
         if (idx >= sections.length) {
             return null;
         }

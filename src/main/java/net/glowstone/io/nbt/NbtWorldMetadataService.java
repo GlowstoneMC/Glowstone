@@ -170,7 +170,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         CompoundTag playerTag = null;
         // Map<PlayerData, Object> ret = new HashMap<PlayerData, Object>();
 
-        File playerDir = new File(world.getName(), "players");
+        File playerDir = new File(dir, "players");
         if (!playerDir.exists())
             playerDir.mkdirs();
 
@@ -200,7 +200,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
 
     public void writePlayerData(GlowPlayer player) {
 
-        File playerDir = new File(world.getName(), "players");
+        File playerDir = new File(dir, "players");
         if (!playerDir.exists())
             playerDir.mkdirs();
 

@@ -629,7 +629,7 @@ public final class GlowWorld implements World {
     }
 
     public int getHighestBlockYAt(int x, int z) {
-        for (int y = GlowChunk.DEPTH - 1; y >= 0; --y) {
+        for (int y = getMaxHeight() - 1; y >= 0; --y) {
             if (getBlockTypeIdAt(x, y, z) != 0) {
                 return y + 1;
             }
