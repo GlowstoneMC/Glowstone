@@ -1,16 +1,16 @@
 package net.glowstone;
 
+import net.glowstone.io.ChunkIoService;
+import org.bukkit.block.Biome;
+import org.bukkit.generator.BlockPopulator;
+import org.bukkit.generator.ChunkGenerator;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
-
-import org.bukkit.generator.ChunkGenerator;
-import org.bukkit.generator.BlockPopulator;
-
-import net.glowstone.io.ChunkIoService;
 
 /**
  * A class which manages the {@link GlowChunk}s currently loaded in memory.
@@ -96,11 +96,8 @@ public final class ChunkManager {
         }
         EventFactory.onChunkLoad(getChunk(x, z), !success);
         if (!success && generate) {
-            chunkRandom.setSeed((long) x * 341873128712L + (long) z * 132897987541L);
-            
-            GlowChunk chunk = getChunk(x, z);
             try {
-                chunk.initializeTypes(generator.generate(world, chunkRandom, x, z));
+                generateChunk(getChunk(x, z), x, z);
             }
             catch (Exception ex) {
                 GlowServer.logger.log(Level.SEVERE, "Error while generating chunk ({0},{1})", new Object[]{x, z});
@@ -110,28 +107,15 @@ public final class ChunkManager {
 
             for (int x2 = x - 1; x2 <= x + 1; ++x2) {
                 for (int z2 = z - 1; z2 <= z + 1; ++z2) {
-                    if (canPopulate(x2, z2)) {
-                        GlowChunk chunk2 = getChunk(x2, z2);
-                        chunk2.setPopulated(true);
-
-                        popRandom.setSeed(world.getSeed());
-                        long xRand = popRandom.nextLong() / 2 * 2 + 1;
-                        long zRand = popRandom.nextLong() / 2 * 2 + 1;
-                        popRandom.setSeed((long) x * xRand + (long) z * zRand ^ world.getSeed());
-
-                        for (BlockPopulator p : world.getPopulators()) {
-                            p.populate(world, popRandom, chunk2);
-                        }
-                    }
+                    populateChunk(x2, z2);
                 }
             }
-            EventFactory.onChunkPopulate(chunk);
             return true;
         }
         
         return success;
     }
-    
+
     /**
      * Checks whether the given chunk can be populated by map features.
      * @return Whether population is needed and safe.
@@ -151,6 +135,57 @@ public final class ChunkManager {
         }
         return true;
     }
+
+    /**
+     * Populate a single chunk if needed.
+     */
+    private void populateChunk(int x, int z) {
+        if (!canPopulate(x, z)) return;
+
+        GlowChunk chunk = getChunk(x, z);
+        chunk.setPopulated(true);
+
+        popRandom.setSeed(world.getSeed());
+        long xRand = popRandom.nextLong() / 2 * 2 + 1;
+        long zRand = popRandom.nextLong() / 2 * 2 + 1;
+        popRandom.setSeed((long) x * xRand + (long) z * zRand ^ world.getSeed());
+
+        for (BlockPopulator p : world.getPopulators()) {
+            p.populate(world, popRandom, chunk);
+        }
+
+        EventFactory.onChunkPopulate(chunk);
+    }
+
+    /**
+     * Initialize a single chunk from the chunk generator.
+     */
+    private void generateChunk(GlowChunk chunk, int x, int z) {
+        chunkRandom.setSeed((long) x * 341873128712L + (long) z * 132897987541L);
+        ChunkGenerator.BiomeGrid biomes = new BiomeGrid(x, z);
+
+        // try for extended sections
+        short[][] extSections = generator.generateExtBlockSections(world, chunkRandom, x, z, biomes);
+        if (extSections != null) {
+            throw new UnsupportedOperationException("Extended chunk sections not yet supported");
+        }
+
+        // normal sections
+        byte[][] sections = generator.generateBlockSections(world, chunkRandom, x, z, biomes);
+        if (sections != null) {
+            GlowChunk.ChunkSection[] chunkSections = new GlowChunk.ChunkSection[sections.length];
+            for (int i = 0; i < sections.length; ++i) {
+                // this is sort of messy.
+                chunkSections[i] = new GlowChunk.ChunkSection();
+                System.arraycopy(sections[i], 0, chunkSections[i].types, 0, chunkSections[i].types.length);
+            }
+            chunk.initializeSections(chunkSections);
+            return;
+        }
+
+        // deprecated flat generation
+        chunk.initializeTypes(generator.generate(world, chunkRandom, x, z));
+    }
     
     /**
      * Forces generation of the given chunk.
@@ -159,24 +194,15 @@ public final class ChunkManager {
      * @return Whether the chunk was successfully regenerated.
      */
     public boolean forceRegeneration(int x, int z) {
-        GlowChunk.Key key = new GlowChunk.Key(x, z);
-        GlowChunk chunk = new GlowChunk(world, x, z);
+        GlowChunk chunk = getChunk(x, z);
         
         if (chunk == null || !chunk.unload(false, false)) {
             return false;
         }
-        
-        chunkRandom.setSeed((long) x * 341873128712L + (long) z * 132897987541L);
-        chunk.initializeTypes(generator.generate(world, chunkRandom, x, z));
-        
-        if (canPopulate(x, z)) {
-            chunk.setPopulated(true);
-            for (BlockPopulator p : world.getPopulators()) {
-                p.populate(world, new Random(), chunk);
-            }
-        }
-        
-        chunks.put(key, chunk);
+
+        chunk.setPopulated(false);
+        generateChunk(chunk, x, z);
+        populateChunk(x, z);
         return true;
     }
     
@@ -233,4 +259,22 @@ public final class ChunkManager {
         return generator;
     }
 
+    /**
+     * A BiomeGrid implementation for chunk generation.
+     */
+    private class BiomeGrid implements ChunkGenerator.BiomeGrid {
+        private final int cx, cz;
+        public BiomeGrid(int x, int z) {
+            cx = x;
+            cz = z;
+        }
+
+        public Biome getBiome(int x, int z) {
+            return world.getBiome((cx << 4) | x, (cz << 4) | z);
+        }
+
+        public void setBiome(int x, int z, Biome bio) {
+            world.setBiome((cx << 4) | x, (cz << 4) | z, bio);
+        }
+    }
 }

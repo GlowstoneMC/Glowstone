@@ -6,7 +6,6 @@ import net.glowstone.io.StorageOperation;
 import net.glowstone.io.WorldMetadataService;
 import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
-import net.glowstone.msg.LoadChunkMessage;
 import net.glowstone.net.message.game.StateChangeMessage;
 import net.glowstone.net.message.game.TimeMessage;
 import org.bukkit.*;
@@ -196,17 +195,19 @@ public final class GlowWorld implements World {
         this.server = server;
         this.name = name;
         this.environment = environment;
+        storageProvider = provider;
         provider.setWorld(this);
         chunks = new ChunkManager(this, provider.getChunkIoService(), generator);
-        storageProvider = provider;
+        populators = generator.getDefaultPopulators(this);
         EventFactory.onWorldInit(this);
+
+        // read in world data
         WorldFinalValues values = null;
         try {
             values = provider.getMetadataService().readWorldData();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // Extra checks for seed
         if (values != null) {
             if (values.getSeed() == 0L) {
                 this.seed = seed;
@@ -218,16 +219,31 @@ public final class GlowWorld implements World {
             this.seed = seed;
             this.uid = UUID.randomUUID();
         }
-        populators = generator.getDefaultPopulators(this);
-        if (spawnLocation == null) spawnLocation = generator.getFixedSpawnLocation(this, random);
 
-        int centerX = (spawnLocation == null) ? 0 : spawnLocation.getBlockX() >> 4;
-        int centerZ = (spawnLocation == null) ? 0 : spawnLocation.getBlockZ() >> 4;
-        
-        server.getLogger().log(Level.INFO, "Preparing spawn for {0}", name);
-        long loadTime = System.currentTimeMillis();
-        
+        server.getLogger().log(Level.INFO, "Preparing spawn for {0}...", name);
+
+        // determine the spawn location if we need to
+        if (spawnLocation == null) {
+            // no location loaded, look for fixed spawn
+            spawnLocation = generator.getFixedSpawnLocation(this, random);
+
+            if (spawnLocation == null) {
+                // determine a location randomly
+                int spawnX = random.nextInt(128) - 64, spawnZ = random.nextInt(128) - 64;
+                for (int tries = 0; tries < 10 && !generator.canSpawn(this, spawnX, spawnZ); ++tries) {
+                    spawnX += random.nextInt(128) - 64;
+                    spawnZ += random.nextInt(128) - 64;
+                }
+                setSpawnLocation(spawnX, getHighestBlockYAt(spawnX, spawnZ), spawnZ);
+            }
+        }
+
+        // load up chunks around the spawn location
+        int centerX = spawnLocation.getBlockX() >> 4;
+        int centerZ = spawnLocation.getBlockZ() >> 4;
         int radius = 4 * server.getViewDistance() / 3;
+
+        long loadTime = System.currentTimeMillis();
         
         int total = (radius * 2 + 1) * (radius * 2 + 1), current = 0;
         for (int x = centerX - radius; x <= centerX + radius; ++x) {
@@ -238,27 +254,11 @@ public final class GlowWorld implements World {
                 if (System.currentTimeMillis() >= loadTime + 1000) {
                     int progress = 100 * current / total;
                     GlowServer.logger.log(Level.INFO, "Preparing spawn for {0}: {1}%", new Object[]{name, progress});
-                    loadTime = System.currentTimeMillis();
+                    loadTime += 1000;
                 }
             }
         }
         server.getLogger().log(Level.INFO, "Preparing spawn for {0}: done", name);
-        if (spawnLocation == null) {
-            spawnLocation = generator.getFixedSpawnLocation(this, random);
-            if (spawnLocation == null) {
-                spawnLocation = new Location(this, 0, getHighestBlockYAt(0, 0), 0);
-
-                if (!generator.canSpawn(this, spawnLocation.getBlockX(), spawnLocation.getBlockZ())) {
-                    // 10 tries only to prevent a return false; bomb
-                    for (int tries = 0; tries < 10 && !generator.canSpawn(this, spawnLocation.getBlockX(), spawnLocation.getBlockZ()); ++tries) {
-                        spawnLocation.setX(spawnLocation.getX() + random.nextDouble() * 128 - 64);
-                        spawnLocation.setZ(spawnLocation.getZ() + random.nextDouble() * 128 - 64);
-                    }
-                }
-
-                spawnLocation.setY(1 + getHighestBlockYAt(spawnLocation.getBlockX(), spawnLocation.getBlockZ()));
-            }
-        }
         EventFactory.onWorldLoad(this);
         save();
 
@@ -400,14 +400,14 @@ public final class GlowWorld implements World {
     // Various malleable world properties
 
     public Location getSpawnLocation() {
-        return spawnLocation;
+        return spawnLocation.clone();
     }
 
     public boolean setSpawnLocation(int x, int y, int z) {
         Location oldSpawn = spawnLocation;
         spawnLocation = new Location(this, x, y, z);
         EventFactory.onSpawnChange(this, oldSpawn);
-        return !spawnLocation.equals(oldSpawn);
+        return true;
     }
 
     public boolean getPVP() {
@@ -748,11 +748,8 @@ public final class GlowWorld implements World {
         GlowChunk.Key key = new GlowChunk.Key(x, z);
         boolean result = false;
         
-        for (Player p : getPlayers()) {
-            GlowPlayer player = (GlowPlayer) p;
+        for (GlowPlayer player : getRawPlayers()) {
             if (player.canSee(key)) {
-                player.getSession().send(new LoadChunkMessage(x, z, false));
-                player.getSession().send(new LoadChunkMessage(x, z, true));
                 player.getSession().send(getChunkAt(x, z).toMessage());
                 result = true;
             }
