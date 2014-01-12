@@ -526,13 +526,10 @@ public final class GlowChunk implements Chunk {
      * @return The index within the arrays.
      */
     private int coordToIndex(int x, int z, int y) {
-        if (y >= world.getMaxHeight())
-            y = 127; // temporary hack because the world height is wrong
         if (x < 0 || z < 0 || y < 0 || x >= WIDTH || z >= HEIGHT || y >= world.getMaxHeight())
             throw new IndexOutOfBoundsException("Coords (x=" + x + ",y=" + y + ",z=" + z + ") invalid");
 
-        return (y * 16 + z) * 16 + x;  // make constants cleaner later
-        //return (x * HEIGHT + z) * world.getMaxHeight() + y;
+        return (y * HEIGHT + z) * WIDTH + x;
     }
 
     /**
@@ -540,9 +537,20 @@ public final class GlowChunk implements Chunk {
      * this entire chunk to them.
      * @return The {@link ChunkDataMessage}.
      */
-    public Message toMessage() {
-        load();
-        return toMessage(true, 0);
+    public ChunkDataMessage toMessage() {
+        // this may need to be changed to "true" depending on resolution of
+        // some inconsistencies on the wiki
+        return toMessage(world.getEnvironment() == World.Environment.NORMAL);
+    }
+
+    /**
+     * Creates a new {@link Message} which can be sent to a client to stream
+     * this entire chunk to them.
+     * @param skylight Whether to include skylight data.
+     * @return The {@link ChunkDataMessage}.
+     */
+    public ChunkDataMessage toMessage(boolean skylight) {
+        return toMessage(skylight, true, 0);
     }
 
     /**
@@ -550,7 +558,9 @@ public final class GlowChunk implements Chunk {
      * parts of this chunk to them.
      * @return The {@link ChunkDataMessage}.
      */
-    public Message toMessage(boolean entireChunk, int sectionBitmask) {
+    public ChunkDataMessage toMessage(boolean skylight, boolean entireChunk, int sectionBitmask) {
+        load();
+
         // filter sectionBitmask based on actual chunk contents
         int sectionCount;
         if (sections == null) {
@@ -577,13 +587,11 @@ public final class GlowChunk implements Chunk {
 
         // break out early if there's nothing to send
         if (sections == null || sectionBitmask == 0) {
-            return new ChunkDataMessage(x, z, entireChunk, 0, 0, new byte[0]);
+            return ChunkDataMessage.empty(x, z);
         }
 
         // in future, take care of additional data
         int additionalBitmask = 0, additionalCount = 0;
-
-        boolean skylight = world.getEnvironment() == World.Environment.NORMAL;
 
         // calculate how big the data will need to be
         int numBlocks = WIDTH * HEIGHT * SEC_DEPTH;

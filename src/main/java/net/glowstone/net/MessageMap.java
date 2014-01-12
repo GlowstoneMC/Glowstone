@@ -205,6 +205,7 @@ public final class MessageMap {
         map.bindSend(0x08, PositionRotationMessage.class);
         map.bindSend(0x21, ChunkDataMessage.class);
         map.bindSend(0x23, BlockChangeMessage.class);
+        map.bindSend(0x26, ChunkBulkMessage.class);
         map.bindSend(0x2B, StateChangeMessage.class);
         map.bindSend(0x40, KickMessage.class);
     }

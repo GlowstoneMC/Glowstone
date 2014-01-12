@@ -228,18 +228,18 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         Set<GlowChunk.Key> previousChunks = new HashSet<GlowChunk.Key>(knownChunks);
         ArrayList<GlowChunk.Key> newChunks = new ArrayList<GlowChunk.Key>();
 
-        int centralX = ((int) location.getX()) >> 4;
-        int centralZ = ((int) location.getZ()) >> 4;
-        
+        int centralX = location.getBlockX() >> 4;
+        int centralZ = location.getBlockZ() >> 4;
+
         int radius = server.getViewDistance();
         for (int x = (centralX - radius); x <= (centralX + radius); x++) {
             for (int z = (centralZ - radius); z <= (centralZ + radius); z++) {
                 GlowChunk.Key key = new GlowChunk.Key(x, z);
-                if (!knownChunks.contains(key)) {
-                    knownChunks.add(key);
+                if (knownChunks.contains(key)) {
+                    previousChunks.remove(key);
+                } else {
                     newChunks.add(key);
                 }
-                previousChunks.remove(key);
             }
         }
         
@@ -254,16 +254,33 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
                 return Double.compare(da, db);
             }
         });
-        
+
+        List<GlowChunk> bulkChunks = null;
+        if (newChunks.size() > previousChunks.size()) {
+            // send a bulk message
+            bulkChunks = new LinkedList<GlowChunk>();
+        }
+
         for (GlowChunk.Key key : newChunks) {
-            session.send(world.getChunkAt(key.getX(), key.getZ()).toMessage());
-            for (GlowBlockState state : world.getChunkAt(key.getX(), key.getZ()).getTileEntities()) {
+            GlowChunk chunk = world.getChunkAt(key.getX(), key.getZ());
+            if (bulkChunks == null) {
+                session.send(chunk.toMessage());
+            } else {
+                bulkChunks.add(chunk);
+            }
+            for (GlowBlockState state : chunk.getTileEntities()) {
                 state.update(this);
             }
+            knownChunks.add(key);
+        }
+
+        if (bulkChunks != null) {
+            boolean skylight = world.getEnvironment() == World.Environment.NORMAL;
+            session.send(new ChunkBulkMessage(skylight, bulkChunks));
         }
 
         for (GlowChunk.Key key : previousChunks) {
-            session.send(ChunkDataMessage.unload(key.getX(), key.getZ()));
+            session.send(ChunkDataMessage.empty(key.getX(), key.getZ()));
             knownChunks.remove(key);
         }
 

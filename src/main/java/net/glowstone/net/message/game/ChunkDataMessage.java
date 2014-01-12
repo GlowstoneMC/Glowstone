@@ -7,12 +7,12 @@ import java.util.zip.Deflater;
 
 public final class ChunkDataMessage extends Message {
 
-    private static final int COMPRESSION_LEVEL = Deflater.BEST_SPEED;
+    static final int COMPRESSION_LEVEL = Deflater.BEST_SPEED;
 
-    private final int x, z;
-    private final boolean continuous;
-    private final int primaryMask, addMask;
-    private final byte[] data;
+    final int x, z;
+    final boolean continuous;
+    final int primaryMask, addMask;
+    final byte[] data;
 
     public ChunkDataMessage(int x, int z, boolean continuous, int primaryMask, int addMask, byte[] data) {
         this.x = x;
@@ -23,7 +23,7 @@ public final class ChunkDataMessage extends Message {
         this.data = data;
     }
 
-    public static ChunkDataMessage unload(int x, int z) {
+    public static ChunkDataMessage empty(int x, int z) {
         return new ChunkDataMessage(x, z, true, 0, 0, new byte[0]);
     }
 
