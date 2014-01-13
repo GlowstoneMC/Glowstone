@@ -149,6 +149,10 @@ public final class GlowChunk implements Chunk {
             }
             return true;
         }
+
+        public ChunkSection snapshot() {
+            return new ChunkSection(types.clone(), metaData.clone(), skyLight.clone(), blockLight.clone());
+        }
     }
     
     /**
@@ -182,7 +186,7 @@ public final class GlowChunk implements Chunk {
      * @param x The X coordinate.
      * @param z The Z coordinate.
      */
-    public GlowChunk(GlowWorld world, int x, int z) {
+    GlowChunk(GlowWorld world, int x, int z) {
         this.world = world;
         this.x = x;
         this.z = z;
@@ -219,8 +223,7 @@ public final class GlowChunk implements Chunk {
     }
 
     public ChunkSnapshot getChunkSnapshot(boolean includeMaxblocky, boolean includeBiome, boolean includeBiomeTempRain) {
-        return null;
-        //return new GlowChunkSnapshot(x, z, world, types, metaData, skyLight, blockLight, includeMaxblocky, includeBiome, includeBiomeTempRain);
+        return new GlowChunkSnapshot(x, z, world, sections, includeMaxblocky, includeBiome, includeBiomeTempRain);
     }
     
     /**
@@ -281,6 +284,7 @@ public final class GlowChunk implements Chunk {
     public void initializeTypes(byte[] types) {
         if (isLoaded()) {
             GlowServer.logger.log(Level.SEVERE, "Tried to initialize already loaded chunk ({0},{1})", new Object[]{x, z});
+            new Throwable().printStackTrace();
             return;
         }
 
