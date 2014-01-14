@@ -9,6 +9,7 @@ import net.glowstone.io.WorldStorageProvider;
 import net.glowstone.io.anvil.AnvilWorldStorageProvider;
 import net.glowstone.net.message.game.StateChangeMessage;
 import net.glowstone.net.message.game.TimeMessage;
+import net.glowstone.util.WeakValueMap;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -26,7 +27,6 @@ import org.bukkit.util.Vector;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 /**
@@ -65,6 +65,11 @@ public final class GlowWorld implements World {
     private final ChunkManager chunks;
 
     /**
+     * A lock kept on the spawn chunks.
+     */
+    private final ChunkManager.ChunkLock spawnChunkLock;
+
+    /**
      * The world metadata service used.
      */
     private final WorldStorageProvider storageProvider;
@@ -87,7 +92,7 @@ public final class GlowWorld implements World {
     /**
      * A map between locations and cached Block objects.
      */
-    private final Map<Location, GlowBlock> blockCache = new ConcurrentHashMap<Location, GlowBlock>();
+    private final WeakValueMap<Location, GlowBlock> blockCache = new WeakValueMap<Location, GlowBlock>();
     
     /**
      * The world populators for this world.
@@ -128,7 +133,7 @@ public final class GlowWorld implements World {
      * Whether to keep the spawn chunks in memory (prevent them from being unloaded)
      */
     private boolean keepSpawnLoaded = true;
-    
+
     /**
      * Whether PvP is allowed in this world.
      */
@@ -243,6 +248,9 @@ public final class GlowWorld implements World {
             if (spawnLocation == null) {
                 // determine a location randomly
                 int spawnX = random.nextInt(128) - 64, spawnZ = random.nextInt(128) - 64;
+                GlowChunk chunk = getChunkAt(spawnX >> 4, spawnZ >> 4);
+                GlowServer.logger.info("chunk = " + chunk);
+                chunk.load(true);  // I'm not sure there's a sane way around this
                 for (int tries = 0; tries < 10 && !generator.canSpawn(this, spawnX, spawnZ); ++tries) {
                     spawnX += random.nextInt(128) - 64;
                     spawnZ += random.nextInt(128) - 64;
@@ -252,6 +260,7 @@ public final class GlowWorld implements World {
         }
 
         // load up chunks around the spawn location
+        spawnChunkLock = newChunkLock();
         int centerX = spawnLocation.getBlockX() >> 4;
         int centerZ = spawnLocation.getBlockZ() >> 4;
         int radius = 4 * server.getViewDistance() / 3;
@@ -263,6 +272,7 @@ public final class GlowWorld implements World {
             for (int z = centerZ - radius; z <= centerZ + radius; ++z) {
                 ++current;
                 loadChunk(x, z);
+                spawnChunkLock.acquire(new GlowChunk.Key(x, z));
             
                 if (System.currentTimeMillis() >= loadTime + 1000) {
                     int progress = 100 * current / total;
@@ -290,8 +300,16 @@ public final class GlowWorld implements World {
      * Get the world chunk manager.
      * @return The ChunkManager for the world.
      */
-    protected ChunkManager getChunkManager() {
+    public ChunkManager getChunkManager() {
         return chunks;
+    }
+
+    /**
+     * Get a new chunk lock object a player or other party can use to keep chunks loaded.
+     * @return The ChunkLock.
+     */
+    public ChunkManager.ChunkLock newChunkLock() {
+        return new ChunkManager.ChunkLock(chunks);
     }
 
     /**
@@ -334,17 +352,20 @@ public final class GlowWorld implements World {
                 GlowChunk[] chunkList = chunks.getLoadedChunks();
                 GlowChunk chunk = chunkList[random.nextInt(chunkList.length)];
                 
-                int x = (chunk.getX() << 4) + (int)(random.nextDouble() * 16);
-                int z = (chunk.getZ() << 4) + (int)(random.nextDouble() * 16);
+                int x = (chunk.getX() << 4) + random.nextInt(16);
+                int z = (chunk.getZ() << 4) + random.nextInt(16);
                 int y = getHighestBlockYAt(x, z);
                 
                 //strikeLightning(new Location(this, x, y, z));
             }
         }
         
-        if (autosave && --saveTimer <= 0) {
+        if (--saveTimer <= 0) {
             saveTimer = 60 * 20;
-            save();
+            chunks.unloadOldChunks();
+            if (autosave) {
+                save();
+            }
         }
     }
 
@@ -437,6 +458,21 @@ public final class GlowWorld implements World {
 
     public void setKeepSpawnInMemory(boolean keepLoaded) {
         keepSpawnLoaded = keepLoaded;
+
+        // update the chunk lock as needed
+        spawnChunkLock.clear();
+        if (keepLoaded) {
+            int centerX = spawnLocation.getBlockX() >> 4;
+            int centerZ = spawnLocation.getBlockZ() >> 4;
+            int radius = 4 * server.getViewDistance() / 3;
+
+            for (int x = centerX - radius; x <= centerX + radius; ++x) {
+                for (int z = centerZ - radius; z <= centerZ + radius; ++z) {
+                    loadChunk(x, z);
+                    spawnChunkLock.acquire(new GlowChunk.Key(x, z));
+                }
+            }
+        }
     }
 
     public boolean isAutoSave() {
@@ -626,15 +662,9 @@ public final class GlowWorld implements World {
     ////////////////////////////////////////////////////////////////////////////
     // get block, chunk, id, highest methods with coords
 
-    public synchronized GlowBlock getBlockAt(int x, int y, int z) {
+    public GlowBlock getBlockAt(int x, int y, int z) {
         Location blockLoc = new Location(this, x, y, z);
-        if (blockCache.containsKey(blockLoc)) {
-            return blockCache.get(blockLoc);
-        } else {
-            GlowBlock block = new GlowBlock(getChunkAt(x >> 4, z >> 4), x, y, z);
-            blockCache.put(blockLoc, block);
-            return block;
-        }
+        return blockCache.getOrCreate(blockLoc, new GlowBlock(getChunkAt(x >> 4, z >> 4), x, y, z));
     }
 
     public int getBlockTypeIdAt(int x, int y, int z) {
@@ -650,7 +680,7 @@ public final class GlowWorld implements World {
         return 0;
     }
 
-    public synchronized GlowChunk getChunkAt(int x, int z) {
+    public GlowChunk getChunkAt(int x, int z) {
         return chunks.getChunk(x, z);
     }
 
@@ -709,16 +739,11 @@ public final class GlowWorld implements World {
     }
 
     public boolean loadChunk(int x, int z, boolean generate) {
-        if (generate) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        } else {
-            loadChunk(x, z);
-            return true;
-        }
+        return getChunkAt(x, z).load(generate);
     }
 
     public boolean unloadChunk(Chunk chunk) {
-        return unloadChunk(chunk.getX(), chunk.getZ(), true);
+        return chunk.unload();
     }
 
     public boolean unloadChunk(int x, int z) {
@@ -730,21 +755,23 @@ public final class GlowWorld implements World {
     }
 
     public boolean unloadChunk(int x, int z, boolean save, boolean safe) {
-        if (!safe) {
-            throw new UnsupportedOperationException("unloadChunk does not yet support unsafe unloading.");
-        }
-        if (save) {
-            getChunkManager().forceSave(x, z);
-        }
-        return unloadChunkRequest(x, z, safe);
+        return getChunkAt(x, z).unload(save, safe);
     }
 
     public boolean unloadChunkRequest(int x, int z) {
         return unloadChunkRequest(x, z, true);
     }
 
-    public boolean unloadChunkRequest(int x, int z, boolean safe) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public boolean unloadChunkRequest(final int x, final int z, final boolean safe) {
+        if (safe && isChunkInUse(x, z)) return false;
+
+        server.getScheduler().runTask(null, new Runnable() {
+            public void run() {
+                unloadChunk(x, z, safe);
+            }
+        });
+
+        return true;
     }
 
     public boolean regenerateChunk(int x, int z) {
@@ -776,7 +803,7 @@ public final class GlowWorld implements World {
     }
 
     public boolean isChunkInUse(int x, int z) {
-        return false;
+        return chunks.isChunkInUse(x, z);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -831,7 +858,7 @@ public final class GlowWorld implements World {
         
         // Transformative magic
         Vector randVec = new Vector(random.nextGaussian(), random.nextGaussian(), random.nextGaussian());
-        randVec.multiply(0.007499999832361937D * (double) spread);
+        randVec.multiply(0.0075 * (double) spread);
         
         velocity.normalize();
         velocity.add(randVec);

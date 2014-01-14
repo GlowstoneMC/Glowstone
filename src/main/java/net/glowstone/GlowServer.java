@@ -115,7 +115,7 @@ public final class GlowServer implements Server {
     /**
      * The console manager of this server.
      */
-    private final ConsoleManager consoleManager = new ConsoleManager(this, "jline");
+    private final ConsoleManager consoleManager = new ConsoleManager(this, "normal");
     
     /**
      * The services manager of this server.
@@ -793,7 +793,18 @@ public final class GlowServer implements Server {
      * Gets the default ChunkGenerator for the given environment and type.
      * @return The ChunkGenerator.
      */
-    private ChunkGenerator getGenerator(Environment environment, WorldType type) {
+    private ChunkGenerator getGenerator(String name, Environment environment, WorldType type) {
+        // find generator based on configuration
+        ConfigurationSection worlds = config.getSection("worlds");
+        if (worlds != null) {
+            String genName = worlds.getString(name + ".generator", null);
+            ChunkGenerator generator = WorldCreator.getGeneratorForName(name, genName, getConsoleSender());
+            if (generator != null) {
+                return generator;
+            }
+        }
+
+        // find generator based on environment and world type
         if (environment == Environment.NETHER) {
             return new net.glowstone.generator.UndergroundGenerator();
         } else if (environment == Environment.THE_END) {
@@ -810,14 +821,7 @@ public final class GlowServer implements Server {
         }
 
         if (creator.generator() == null) {
-            // find generator based on configuration
-            ConfigurationSection worlds = config.getSection("worlds");
-            creator.generator(worlds.getString(creator.name() + ".generator", null));
-
-            // find generator based on environment and world type
-            if (creator.generator() == null) {
-                creator.generator(getGenerator(creator.environment(), creator.type()));
-            }
+            creator.generator(getGenerator(creator.name(), creator.environment(), creator.type()));
         }
 
         world = new GlowWorld(this, creator);

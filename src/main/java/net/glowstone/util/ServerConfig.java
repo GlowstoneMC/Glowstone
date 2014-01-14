@@ -118,7 +118,7 @@ public class ServerConfig {
 
     public String getString(Key key) {
         GlowServer.logger.info("config: getString " + key);
-        return config.getString(key.path);
+        return config.getString(key.path, "");
     }
 
     public int getInt(Key key) {

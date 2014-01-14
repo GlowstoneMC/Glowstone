@@ -6,10 +6,9 @@ import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 
 /**
@@ -17,6 +16,11 @@ import java.util.logging.Level;
  * @author Graham Edgecombe
  */
 public final class ChunkManager {
+
+    /**
+     * The world this ChunkManager is managing.
+     */
+    private final GlowWorld world;
 
     /**
      * The chunk I/O service used to read chunks from the disk and write them to
@@ -28,22 +32,22 @@ public final class ChunkManager {
      * The chunk generator used to generate new chunks.
      */
     private final ChunkGenerator generator;
-    
-    /**
-     * The world this ChunkManager is managing.
-     */
-    private final GlowWorld world;
 
     /**
      * A map of chunks currently loaded in memory.
      */
-    private final Map<GlowChunk.Key, GlowChunk> chunks = new HashMap<GlowChunk.Key, GlowChunk>();
-    
+    private final ConcurrentMap<GlowChunk.Key, GlowChunk> chunks = new ConcurrentHashMap<GlowChunk.Key, GlowChunk>();
+
+    /**
+     * A map of chunks which are being kept loaded by players or other factors.
+     */
+    private final ConcurrentMap<GlowChunk.Key, Set<ChunkLock>> locks = new ConcurrentHashMap<GlowChunk.Key, Set<ChunkLock>>();
+
     /**
      * A Random object to be used to generate chunks.
      */
     private final Random chunkRandom = new Random();
-    
+
     /**
      * A Random object to be used to populate chunks.
      */
@@ -62,6 +66,13 @@ public final class ChunkManager {
     }
 
     /**
+     * Get the chunk generator.
+     */
+    public ChunkGenerator getGenerator() {
+        return generator;
+    }
+
+    /**
      * Gets the chunk at the specified X and Z coordinates, loading it from the
      * disk or generating it if necessary.
      * @param x The X coordinate.
@@ -70,14 +81,10 @@ public final class ChunkManager {
      */
     public GlowChunk getChunk(int x, int z) {
         GlowChunk.Key key = new GlowChunk.Key(x, z);
-        GlowChunk chunk = chunks.get(key);
-        if (chunk == null) {
-            chunk = new GlowChunk(world, x, z);
-            chunks.put(key, chunk);
-        }
-        return chunk;
+        // a simple new GlowChunk() does not allocate significant memory
+        return getOrCreate(chunks, key, new GlowChunk(world, x, z));
     }
-    
+
     /**
      * Call the ChunkIoService to load a chunk, optionally generating the chunk.
      * @param x The X coordinate of the chunk to load.
@@ -86,63 +93,90 @@ public final class ChunkManager {
      * @return True on success, false on failure.
      */
     public boolean loadChunk(int x, int z, boolean generate) {
-        boolean success;
+        GlowChunk chunk = getChunk(x, z);
+
+        // try to load chunk
         try {
-            success = service.read(getChunk(x, z), x, z);
+            if (service.read(chunk, x, z)) {
+                EventFactory.onChunkLoad(chunk, false);
+                return true;
+            }
         } catch (Exception e) {
-            GlowServer.logger.log(Level.SEVERE, "Error while loading chunk ({0},{1})", new Object[]{x, z});
-            e.printStackTrace();
-            success = false;
+            GlowServer.logger.log(Level.SEVERE, "Error while loading chunk (" + x + "," + z + ")", e);
         }
-        EventFactory.onChunkLoad(getChunk(x, z), !success);
-        if (!success && generate) {
-            try {
-                generateChunk(getChunk(x, z), x, z);
-            }
-            catch (Exception ex) {
-                GlowServer.logger.log(Level.SEVERE, "Error while generating chunk ({0},{1})", new Object[]{x, z});
-                ex.printStackTrace();
-                return false;
-            }
 
-            for (int x2 = x - 1; x2 <= x + 1; ++x2) {
-                for (int z2 = z - 1; z2 <= z + 1; ++z2) {
-                    populateChunk(x2, z2);
-                }
-            }
-            return true;
-        }
-        
-        return success;
-    }
-
-    /**
-     * Checks whether the given chunk can be populated by map features.
-     * @return Whether population is needed and safe.
-     */
-    private boolean canPopulate(int x, int z) {
-        if (isLoaded(x, z)) {
-            if (getChunk(x, z).getPopulated()) return false;
-        } else {
+        // stop here if we can't generate
+        if (!generate) {
             return false;
         }
+
+        // get generating
+        try {
+            generateChunk(chunk, x, z);
+        } catch (Exception ex) {
+            GlowServer.logger.log(Level.SEVERE, "Error while generating chunk (" + x + "," + z + ")", ex);
+            return false;
+        }
+
+        EventFactory.onChunkLoad(chunk, true);
+
         for (int x2 = x - 1; x2 <= x + 1; ++x2) {
             for (int z2 = z - 1; z2 <= z + 1; ++z2) {
-                if (!isLoaded(x2, z2)) {
-                    return false;
-                }
+                populateChunk(x2, z2);
             }
         }
         return true;
     }
 
     /**
+     * Check whether a chunk has locks on it preventing it from being unloaded.
+     * @param x The X coordinate.
+     * @param z The Z coordinate.
+     * @return Whether the chunk is in use.
+     */
+    public boolean isChunkInUse(int x, int z) {
+        GlowChunk.Key key = new GlowChunk.Key(x, z);
+        Set<ChunkLock> lockSet = locks.get(key);
+        return lockSet != null && lockSet.size() != 0;
+    }
+
+    /**
+     * Unload chunks with no locks on them.
+     */
+    public void unloadOldChunks() {
+        for (Map.Entry<GlowChunk.Key, GlowChunk> entry : chunks.entrySet()) {
+            Set<ChunkLock> lockSet = locks.get(entry.getKey());
+            if (lockSet == null || lockSet.size() == 0) {
+                boolean result = entry.getValue().unload(true, true);
+                GlowServer.logger.info("Unloading unused " + entry.getKey() + ": " + result);
+            }
+            if (!entry.getValue().isLoaded()) {
+                GlowServer.logger.info("Removing from cache " + entry.getKey());
+                chunks.entrySet().remove(entry);
+                locks.remove(entry.getKey());
+            }
+        }
+    }
+
+    /**
      * Populate a single chunk if needed.
      */
     private void populateChunk(int x, int z) {
-        if (!canPopulate(x, z)) return;
-
         GlowChunk chunk = getChunk(x, z);
+        // cancel out if it's already loaded or populated
+        if (!chunk.isLoaded() || chunk.getPopulated()) {
+            return;
+        }
+
+        // cancel out if the 3x3 around it isn't available
+        for (int x2 = x - 1; x2 <= x + 1; ++x2) {
+            for (int z2 = z - 1; z2 <= z + 1; ++z2) {
+                if (!getChunk(x2, z2).isLoaded()) {
+                    return;
+                }
+            }
+        }
+
         chunk.setPopulated(true);
 
         popRandom.setSeed(world.getSeed());
@@ -186,7 +220,7 @@ public final class ChunkManager {
         // deprecated flat generation
         chunk.initializeTypes(generator.generate(world, chunkRandom, x, z));
     }
-    
+
     /**
      * Forces generation of the given chunk.
      * @param x The X coordinate.
@@ -195,7 +229,7 @@ public final class ChunkManager {
      */
     public boolean forceRegeneration(int x, int z) {
         GlowChunk chunk = getChunk(x, z);
-        
+
         if (chunk == null || !chunk.unload(false, false)) {
             return false;
         }
@@ -205,18 +239,7 @@ public final class ChunkManager {
         populateChunk(x, z);
         return true;
     }
-    
-    /**
-     * Checks whether the given Chunk is loaded.
-     * @param x The X coordinate.
-     * @param z The Z coordinate.
-     * @return Whether the chunk was loaded.
-     */
-    public boolean isLoaded(int x, int z) {
-        GlowChunk.Key key = new GlowChunk.Key(x, z);
-        return chunks.get(key) != null;
-    }
-    
+
     /**
      * Gets a list of loaded chunks.
      * @return The currently loaded chunks.
@@ -230,7 +253,15 @@ public final class ChunkManager {
         }
         return result.toArray(new GlowChunk[result.size()]);
     }
-    
+
+    /**
+     * Get the size of the chunk object cache.
+     * @return The size of the chunk cache.
+     */
+    public int getCacheSize() {
+        return chunks.size();
+    }
+
     /**
      * Force-saves the given chunk.
      * @param x The X coordinate.
@@ -251,13 +282,6 @@ public final class ChunkManager {
         }
         return false;
     }
-    
-    /**
-     * Get the chunk generator.
-     */
-    public ChunkGenerator getGenerator() {
-        return generator;
-    }
 
     /**
      * A BiomeGrid implementation for chunk generation.
@@ -275,6 +299,53 @@ public final class ChunkManager {
 
         public void setBiome(int x, int z, Biome bio) {
             world.setBiome((cx << 4) | x, (cz << 4) | z, bio);
+        }
+    }
+
+    private Set<ChunkLock> getLockSet(GlowChunk.Key key) {
+        return getOrCreate(locks, key, new HashSet<ChunkLock>());
+    }
+
+    /**
+     * Helper method for getting or creating a value in ConcurrentMap.
+     */
+    private <K, V> V getOrCreate(ConcurrentMap<K, V> map, K key, V def) {
+        V prev = map.putIfAbsent(key, def);
+        return prev == null ? def : prev;
+    }
+
+    /**
+     * A group of locks on chunks to prevent them from being unloaded while in use.
+     */
+    public static class ChunkLock implements Iterable<GlowChunk.Key> {
+        private final ChunkManager cm;
+        private final Set<GlowChunk.Key> keys = new HashSet<GlowChunk.Key>();
+
+        public ChunkLock(ChunkManager cm) {
+            this.cm = cm;
+        }
+
+        public void acquire(GlowChunk.Key key) {
+            if (keys.contains(key)) return;
+            keys.add(key);
+            cm.getLockSet(key).add(this);
+        }
+
+        public void release(GlowChunk.Key key) {
+            if (!keys.contains(key)) return;
+            keys.remove(key);
+            cm.getLockSet(key).remove(this);
+        }
+
+        public void clear() {
+            for (GlowChunk.Key key : keys) {
+                cm.getLockSet(key).remove(this);
+            }
+            keys.clear();
+        }
+
+        public Iterator<GlowChunk.Key> iterator() {
+            return keys.iterator();
         }
     }
 }

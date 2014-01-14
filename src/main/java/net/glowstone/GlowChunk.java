@@ -73,6 +73,10 @@ public final class GlowChunk implements Chunk {
             return x == other.x && z == other.z;
         }
 
+        @Override
+        public String toString() {
+            return "ChunkKey{" + x + ',' + z + '}';
+        }
     }
 
     /**
@@ -253,6 +257,10 @@ public final class GlowChunk implements Chunk {
     }
 
     public boolean unload(boolean save, boolean safe) {
+        if (!isLoaded()) {
+            return true;
+        }
+
         if (safe && world.isChunkInUse(x, z)) {
             return false;
         }
@@ -306,6 +314,12 @@ public final class GlowChunk implements Chunk {
      * @param sections The ChunkSections to use.
      */
     public void initializeSections(ChunkSection[] sections) {
+        if (isLoaded()) {
+            GlowServer.logger.log(Level.SEVERE, "Tried to initialize already loaded chunk ({0},{1})", new Object[]{x, z});
+            new Throwable().printStackTrace();
+            return;
+        }
+
         this.sections = new ChunkSection[DEPTH / SEC_DEPTH];
         System.arraycopy(sections, 0, this.sections, 0, this.sections.length);
     }

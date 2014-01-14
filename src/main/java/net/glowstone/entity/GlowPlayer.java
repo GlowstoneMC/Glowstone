@@ -1,9 +1,6 @@
 package net.glowstone.entity;
 
-import net.glowstone.EventFactory;
-import net.glowstone.GlowChunk;
-import net.glowstone.GlowOfflinePlayer;
-import net.glowstone.GlowWorld;
+import net.glowstone.*;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowItemStack;
@@ -108,6 +105,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      * The chunks that the client knows about.
      */
     private final Set<GlowChunk.Key> knownChunks = new HashSet<GlowChunk.Key>();
+
+    /**
+     * The lock used to prevent chunks from unloading near the player.
+     */
+    private ChunkManager.ChunkLock chunkLock;
     
     /**
      * The item the player has on their cursor.
@@ -151,6 +153,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         this.uuid = uuid;
         health = 20;
 
+        chunkLock = world.newChunkLock();
+
         // send login response
         session.send(new LoginSuccessMessage(uuid.toString().replace("-", ""), name));
         session.setState(ProtocolState.PLAY);
@@ -183,6 +187,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      */
     @Override
     public void remove() {
+        knownChunks.clear();
+        chunkLock.clear();
         saveData();
         getInventory().removeViewer(this);
         getInventory().getCraftingInventory().removeViewer(this);
@@ -272,6 +278,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
                 state.update(this);
             }
             knownChunks.add(key);
+            chunkLock.acquire(key);
         }
 
         if (bulkChunks != null) {
@@ -282,6 +289,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         for (GlowChunk.Key key : previousChunks) {
             session.send(ChunkDataMessage.empty(key.getX(), key.getZ()));
             knownChunks.remove(key);
+            chunkLock.release(key);
         }
 
         previousChunks.clear();
@@ -551,14 +559,16 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         if (location.getWorld() != world) {
             GlowWorld oldWorld = world;
             world.getEntityManager().deallocate(this);
-            
+
             world = (GlowWorld) location.getWorld();
             world.getEntityManager().allocate(this);
-            
+
             for (GlowChunk.Key key : knownChunks) {
-                session.send(new LoadChunkMessage(key.getX(), key.getZ(), false));
+                session.send(ChunkDataMessage.empty(key.getX(), key.getZ()));
             }
             knownChunks.clear();
+            chunkLock.clear();
+            chunkLock = world.newChunkLock();
             
             session.send(new RespawnMessage((byte) world.getEnvironment().getId(), (byte)1, (byte) getGameMode().getValue(), (short) world.getMaxHeight(), world.getSeed()));
             streamBlocks(); // stream blocks
