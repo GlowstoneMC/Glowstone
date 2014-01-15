@@ -6,6 +6,7 @@ import net.glowstone.io.StorageOperation;
 import net.glowstone.io.WorldMetadataService;
 import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
+import net.glowstone.io.anvil.AnvilWorldStorageProvider;
 import net.glowstone.net.message.game.StateChangeMessage;
 import net.glowstone.net.message.game.TimeMessage;
 import org.bukkit.*;
@@ -102,6 +103,16 @@ public final class GlowWorld implements World {
      * The environment.
      */
     private final Environment environment;
+
+    /**
+     * The world type.
+     */
+    private final WorldType worldType;
+
+    /**
+     * Whether structure generation is enabled.
+     */
+    private final boolean generateStructures;
     
     /**
      * The world seed.
@@ -184,39 +195,41 @@ public final class GlowWorld implements World {
     private int monsterLimit, animalLimit, waterAnimalLimit, ambientLimit;
 
     /**
-     * Creates a new world with the specified chunk I/O service, environment,
-     * and world generator.
-     * @param name The name of the world.
-     * @param provider The world storage provider
-     * @param environment The environment.
-     * @param generator The world generator.
+     * Creates a new world from the options in the given WorldCreator.
+     * @param server The server for the world.
+     * @param creator The WorldCreator to use.
      */
-    public GlowWorld(GlowServer server, String name, Environment environment, long seed, WorldStorageProvider provider, ChunkGenerator generator) {
+    public GlowWorld(GlowServer server, WorldCreator creator) {
         this.server = server;
-        this.name = name;
-        this.environment = environment;
-        storageProvider = provider;
-        provider.setWorld(this);
-        chunks = new ChunkManager(this, provider.getChunkIoService(), generator);
+        name = creator.name();
+        environment = creator.environment();
+
+        final ChunkGenerator generator = creator.generator();
+        storageProvider = new AnvilWorldStorageProvider(new File(server.getWorldContainer(), name));
+        storageProvider.setWorld(this);
+        chunks = new ChunkManager(this, storageProvider.getChunkIoService(), generator);
         populators = generator.getDefaultPopulators(this);
         EventFactory.onWorldInit(this);
+
+        worldType = creator.type();
+        generateStructures = creator.generateStructures();
 
         // read in world data
         WorldFinalValues values = null;
         try {
-            values = provider.getMetadataService().readWorldData();
+            values = storageProvider.getMetadataService().readWorldData();
         } catch (IOException e) {
             e.printStackTrace();
         }
         if (values != null) {
             if (values.getSeed() == 0L) {
-                this.seed = seed;
+                this.seed = creator.seed();
             } else {
                 this.seed = values.getSeed();
             }
             this.uid = values.getUuid();
         } else {
-            this.seed = seed;
+            this.seed = creator.seed();
             this.uid = UUID.randomUUID();
         }
 
@@ -534,11 +547,11 @@ public final class GlowWorld implements World {
     }
 
     public WorldType getWorldType() {
-        return null;
+        return worldType;
     }
 
     public boolean canGenerateStructures() {
-        return server.getGenerateStructures();
+        return generateStructures;
     }
 
     ////////////////////////////////////////////////////////////////////////////

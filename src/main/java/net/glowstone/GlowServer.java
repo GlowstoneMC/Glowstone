@@ -3,7 +3,6 @@ package net.glowstone;
 import net.glowstone.command.*;
 import net.glowstone.inventory.CraftingManager;
 import net.glowstone.io.StorageQueue;
-import net.glowstone.io.anvil.AnvilWorldStorageProvider;
 import net.glowstone.map.GlowMapView;
 import net.glowstone.net.MinecraftPipelineFactory;
 import net.glowstone.net.Session;
@@ -272,13 +271,20 @@ public final class GlowServer implements Server {
         enablePlugins(PluginLoadOrder.STARTUP);
 
         // Create worlds
-        String world = config.getString(ServerConfig.Key.LEVEL_NAME);
-        createWorld(WorldCreator.name(world).environment(Environment.NORMAL));
+        String name = config.getString(ServerConfig.Key.LEVEL_NAME);
+        long seed = config.getString(ServerConfig.Key.LEVEL_SEED).hashCode();
+        boolean structs = getGenerateStructures();
+        WorldType type = WorldType.getByName(getWorldType());
+        if (type == null) {
+            type = WorldType.NORMAL;
+        }
+
+        createWorld(WorldCreator.name(name).environment(Environment.NORMAL).seed(seed).type(type).generateStructures(structs));
         if (getAllowNether()) {
-            createWorld(WorldCreator.name(world + "_nether").environment(Environment.NETHER));
+            createWorld(WorldCreator.name(name + "_nether").environment(Environment.NETHER).seed(seed).type(type).generateStructures(structs));
         }
         if (getAllowEnd()) {
-            createWorld(WorldCreator.name(world + "_the_end").environment(Environment.THE_END));
+            createWorld(WorldCreator.name(name + "_the_end").environment(Environment.THE_END).seed(seed).type(type).generateStructures(structs));
         }
 
         // Finish loading plugins
@@ -784,20 +790,10 @@ public final class GlowServer implements Server {
     }
 
     /**
-     * Gets the default ChunkGenerator for the given environment.
+     * Gets the default ChunkGenerator for the given environment and type.
      * @return The ChunkGenerator.
      */
-    private ChunkGenerator getGenerator(String name, Environment environment) {
-        ConfigurationSection worlds = config.getSection("worlds");
-        if (worlds != null && worlds.contains(name + ".generator")) {
-            String[] args = worlds.getString(name + ".generator").split(":", 2);
-            if (getPluginManager().getPlugin(args[0]) == null) {
-                logger.log(Level.WARNING, "Plugin {0} specified for world {1} does not exist, using default.", new Object[]{args[0], name});
-            } else {
-                return getPluginManager().getPlugin(args[0]).getDefaultWorldGenerator(name, args.length == 2 ? args[1] : "");
-            }
-        }
-
+    private ChunkGenerator getGenerator(Environment environment, WorldType type) {
         if (environment == Environment.NETHER) {
             return new net.glowstone.generator.UndergroundGenerator();
         } else if (environment == Environment.THE_END) {
@@ -814,10 +810,17 @@ public final class GlowServer implements Server {
         }
 
         if (creator.generator() == null) {
-            creator.generator(getGenerator(creator.name(), creator.environment()));
+            // find generator based on configuration
+            ConfigurationSection worlds = config.getSection("worlds");
+            creator.generator(worlds.getString(creator.name() + ".generator", null));
+
+            // find generator based on environment and world type
+            if (creator.generator() == null) {
+                creator.generator(getGenerator(creator.environment(), creator.type()));
+            }
         }
 
-        world = new GlowWorld(this, creator.name(), creator.environment(), creator.seed(), new AnvilWorldStorageProvider(new File(getWorldContainer(), creator.name())), creator.generator());
+        world = new GlowWorld(this, creator);
         worlds.add(world);
         return world;
     }
