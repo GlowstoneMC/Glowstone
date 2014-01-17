@@ -78,7 +78,7 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
         if (x < 0 || y < 0 || z < 0 || x >= GlowChunk.HEIGHT || y >= GlowChunk.DEPTH || z >= GlowChunk.WIDTH) {
             return;
         }
-        data[(y * 16 + z) * 16 + x] = (byte) id;
+        data[(x * 16 + z) * 128 + y] = (byte) id;
     }
 
     /**
@@ -96,7 +96,7 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
         if (x < 0 || y < 0 || z < 0 || x >= GlowChunk.HEIGHT || y >= GlowChunk.DEPTH || z >= GlowChunk.WIDTH) {
             return BlockID.AIR;
         }
-        return data[(y * 16 + z) * 16 + x];
+        return data[(x * 16 + z) * 128 + y];
     }
 
     @Override

@@ -139,7 +139,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
         // core properties
         levelTags.put("xPos", new IntTag("xPos", chunk.getX()));
         levelTags.put("zPos", new IntTag("zPos", chunk.getZ()));
-        levelTags.put("TerrainPopulated", new ByteTag("TerrainPopulated", (byte) (chunk.getPopulated() ? 1 : 0)));
+        levelTags.put("TerrainPopulated", new ByteTag("TerrainPopulated", (byte) (chunk.isPopulated() ? 1 : 0)));
         levelTags.put("LastUpdate", new LongTag("LastUpdate", 0));
 
         // chunk sections

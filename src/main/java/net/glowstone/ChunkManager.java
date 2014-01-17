@@ -164,7 +164,7 @@ public final class ChunkManager {
     private void populateChunk(int x, int z) {
         GlowChunk chunk = getChunk(x, z);
         // cancel out if it's already loaded or populated
-        if (!chunk.isLoaded() || chunk.getPopulated()) {
+        if (!chunk.isLoaded() || chunk.isPopulated()) {
             return;
         }
 
@@ -205,20 +205,38 @@ public final class ChunkManager {
         }
 
         // normal sections
-        byte[][] sections = generator.generateBlockSections(world, chunkRandom, x, z, biomes);
-        if (sections != null) {
-            GlowChunk.ChunkSection[] chunkSections = new GlowChunk.ChunkSection[sections.length];
-            for (int i = 0; i < sections.length; ++i) {
+        byte[][] blockSections = generator.generateBlockSections(world, chunkRandom, x, z, biomes);
+        if (blockSections != null) {
+            GlowChunk.ChunkSection[] sections = new GlowChunk.ChunkSection[blockSections.length];
+            for (int i = 0; i < blockSections.length; ++i) {
                 // this is sort of messy.
-                chunkSections[i] = new GlowChunk.ChunkSection();
-                System.arraycopy(sections[i], 0, chunkSections[i].types, 0, chunkSections[i].types.length);
+                sections[i] = new GlowChunk.ChunkSection();
+                System.arraycopy(blockSections[i], 0, sections[i].types, 0, sections[i].types.length);
+                Arrays.fill(sections[i].skyLight, (byte) 15);
             }
-            chunk.initializeSections(chunkSections);
+            chunk.initializeSections(sections);
             return;
         }
 
         // deprecated flat generation
-        chunk.initializeTypes(generator.generate(world, chunkRandom, x, z));
+        byte[] types = generator.generate(world, chunkRandom, x, z);
+        //GlowServer.logger.warning("Using deprecated generate() in generator: " + generator.getClass().getName());
+
+        GlowChunk.ChunkSection[] sections = new GlowChunk.ChunkSection[8];
+        for (int sy = 0; sy < sections.length; ++sy) {
+            GlowChunk.ChunkSection sec = new GlowChunk.ChunkSection();
+            int by = 16 * sy;
+            for (int cx = 0; cx < 16; ++cx) {
+                for (int cz = 0; cz < 16; ++cz) {
+                    for (int cy = by; cy < by + 16; ++cy) {
+                        sec.types[sec.index(cx, cy, cz)] = types[(cx * 16 + cz) * 128 + cy];
+                    }
+                }
+            }
+            Arrays.fill(sec.skyLight, (byte) 15);
+            sections[sy] = sec;
+        }
+        chunk.initializeSections(sections);
     }
 
     /**

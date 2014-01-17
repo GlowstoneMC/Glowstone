@@ -11,7 +11,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 
 import java.lang.reflect.Constructor;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.logging.Level;
 
@@ -222,7 +221,7 @@ public final class GlowChunk implements Chunk {
      * Gets whether this chunk has been populated by special features.
      * @return Population status.
      */
-    public boolean getPopulated() {
+    public boolean isPopulated() {
         return populated;
     }
     
@@ -274,54 +273,32 @@ public final class GlowChunk implements Chunk {
     }
 
     /**
-     * Sets the types of all tiles within the chunk.
-     * @param types The array of types.
+     * Initialize this chunk from the given sections.
+     * @param initSections The ChunkSections to use.
      */
-    public void initializeTypes(byte[] types) {
+    public void initializeSections(ChunkSection[] initSections) {
         if (isLoaded()) {
             GlowServer.logger.log(Level.SEVERE, "Tried to initialize already loaded chunk ({0},{1})", new Object[]{x, z});
             new Throwable().printStackTrace();
             return;
         }
+        GlowServer.logger.log(Level.INFO, "Initializing chunk ({0},{1})", new Object[]{x, z});
 
-        this.sections = new ChunkSection[world.getMaxHeight() / SEC_DEPTH];
+        sections = new ChunkSection[DEPTH / SEC_DEPTH];
+        System.arraycopy(initSections, 0, this.sections, 0, Math.min(this.sections.length, initSections.length));
 
-        final int oldDepth = 128;
-        int height = types.length / (WIDTH * HEIGHT);
-        if (height != oldDepth) {
-            // old code using this method must provide the correct height
-            throw new IllegalArgumentException("Types should have depth " + oldDepth + ", were " + height);
-        }
-
-        for (int y = 0; y < oldDepth; y += SEC_DEPTH) {
-            ChunkSection sec = new ChunkSection();
-            System.arraycopy(types, WIDTH * HEIGHT * y, sec.types, 0, sec.types.length);
-            Arrays.fill(sec.skyLight, (byte) 15);
-            sections[y / SEC_DEPTH] = sec;
-        }
-        
-        for (int cx = 0; cx < WIDTH; ++cx) {
-            for (int cy = 0; cy < oldDepth; ++cy) {
+        // tile entity initialization
+        for (int i = 0; i < sections.length; ++i) {
+            if (sections[i] == null) continue;
+            int by = 16 * i;
+            for (int cx = 0; cx < WIDTH; ++cx) {
                 for (int cz = 0; cz < HEIGHT; ++cz) {
-                    createEntity(cx, cy, cz, getType(cx, cz, cy));
+                    for (int cy = by; cy < by + 16; ++cy) {
+                        createEntity(cx, cy, cz, getType(cx, cz, cy));
+                    }
                 }
             }
         }
-    }
-
-    /**
-     * Initialize this chunk from the given sections.
-     * @param sections The ChunkSections to use.
-     */
-    public void initializeSections(ChunkSection[] sections) {
-        if (isLoaded()) {
-            GlowServer.logger.log(Level.SEVERE, "Tried to initialize already loaded chunk ({0},{1})", new Object[]{x, z});
-            new Throwable().printStackTrace();
-            return;
-        }
-
-        this.sections = new ChunkSection[DEPTH / SEC_DEPTH];
-        System.arraycopy(sections, 0, this.sections, 0, this.sections.length);
     }
 
     /**
@@ -420,9 +397,9 @@ public final class GlowChunk implements Chunk {
         }
 
         // destroy any tile entity there
-        if (tileEntities.containsKey(coordToIndex(x, z, y))) {
-            getEntity(x, y, z).destroy();
-            tileEntities.remove(coordToIndex(x, z, y));
+        int tileEntityIndex = coordToIndex(x, z, y);
+        if (tileEntities.containsKey(tileEntityIndex)) {
+            tileEntities.remove(tileEntityIndex).destroy();
         }
 
         // update the type
@@ -513,12 +490,6 @@ public final class GlowChunk implements Chunk {
         ChunkSection section = getSection(y);
         if (section == null) return;  // can't set light on an empty section
         section.blockLight[section.index(x, y, z)] = (byte) blockLight;
-    }
-
-    public byte[] getTypes() {
-        return new byte[16 * 16 * 128];
-        //load();
-        //return types.clone();
     }
     
     // ======== Helper functions ========
