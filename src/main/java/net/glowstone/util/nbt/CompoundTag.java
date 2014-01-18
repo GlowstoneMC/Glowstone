@@ -46,5 +46,41 @@ public final class CompoundTag extends Tag {
         return bldr.toString();
     }
 
+    // get helpers
+
+    public boolean containsKey(String key) {
+        return value.containsKey(key);
+    }
+
+    public byte getByte(String key) {
+        return get(key, (byte) 0);
+    }
+
+    public short getShort(String key) {
+        return ((ShortTag) value.get(key)).getValue();
+    }
+
+    public int getInt(String key) {
+        return ((IntTag) value.get(key)).getValue();
+    }
+
+    public long getLong(String key) {
+        return get(key, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T get(String key, T def) {
+        if (!containsKey(key)) return def;
+        try {
+            return (T) value.get(key).getValue();
+        } catch (ClassCastException e) {
+            return def;
+        }
+    }
+
+    private <T> T get(String key) {
+        return (T) value.get(key).getValue();
+    }
+
 }
 

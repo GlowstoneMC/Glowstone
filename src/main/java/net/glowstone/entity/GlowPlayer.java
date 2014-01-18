@@ -153,7 +153,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         this.uuid = uuid;
         health = 20;
 
-        chunkLock = world.newChunkLock();
+        chunkLock = world.newChunkLock(getName());
 
         // send login response
         session.send(new LoginSuccessMessage(uuid.toString().replace("-", ""), name));
@@ -268,14 +268,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         }
 
         for (GlowChunk.Key key : newChunks) {
+            world.getChunkManager().forcePopulation(key.getX(), key.getZ());
             GlowChunk chunk = world.getChunkAt(key.getX(), key.getZ());
             if (bulkChunks == null) {
                 session.send(chunk.toMessage());
             } else {
                 bulkChunks.add(chunk);
-            }
-            for (GlowBlockState state : chunk.getTileEntities()) {
-                state.update(this);
             }
             knownChunks.add(key);
             chunkLock.acquire(key);
@@ -284,6 +282,13 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         if (bulkChunks != null) {
             boolean skylight = world.getEnvironment() == World.Environment.NORMAL;
             session.send(new ChunkBulkMessage(skylight, bulkChunks));
+        }
+
+        for (GlowChunk.Key key : newChunks) {
+            GlowChunk chunk = world.getChunkAt(key.getX(), key.getZ());
+            for (GlowBlockState state : chunk.getTileEntities()) {
+                state.update(this);
+            }
         }
 
         for (GlowChunk.Key key : previousChunks) {
@@ -568,7 +573,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
             }
             knownChunks.clear();
             chunkLock.clear();
-            chunkLock = world.newChunkLock();
+            chunkLock = world.newChunkLock(getName());
             
             session.send(new RespawnMessage((byte) world.getEnvironment().getId(), (byte)1, (byte) getGameMode().getValue(), (short) world.getMaxHeight(), world.getSeed()));
             streamBlocks(); // stream blocks

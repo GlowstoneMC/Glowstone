@@ -67,7 +67,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
             byte[] data = ((ByteArrayTag) sectionTag.getValue().get("Data")).getValue();
             byte[] blockLight = ((ByteArrayTag) sectionTag.getValue().get("BlockLight")).getValue();
             byte[] skyLight = ((ByteArrayTag) sectionTag.getValue().get("SkyLight")).getValue();
-            sections[y] = new ChunkSection(types, expand(data), expand(blockLight), expand(skyLight));
+            sections[y] = new ChunkSection(types, expand(data), expand(skyLight), expand(blockLight));
         }
 
         // initialize the chunk

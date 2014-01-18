@@ -249,7 +249,7 @@ public final class GlowWorld implements World {
                 // determine a location randomly
                 int spawnX = random.nextInt(128) - 64, spawnZ = random.nextInt(128) - 64;
                 GlowChunk chunk = getChunkAt(spawnX >> 4, spawnZ >> 4);
-                GlowServer.logger.info("chunk = " + chunk);
+                //GlowServer.logger.info("determining spawn: " + chunk.getX() + " " + chunk.getZ());
                 chunk.load(true);  // I'm not sure there's a sane way around this
                 for (int tries = 0; tries < 10 && !generator.canSpawn(this, spawnX, spawnZ); ++tries) {
                     spawnX += random.nextInt(128) - 64;
@@ -260,7 +260,7 @@ public final class GlowWorld implements World {
         }
 
         // load up chunks around the spawn location
-        spawnChunkLock = newChunkLock();
+        spawnChunkLock = newChunkLock("spawn");
         int centerX = spawnLocation.getBlockX() >> 4;
         int centerZ = spawnLocation.getBlockZ() >> 4;
         int radius = 4 * server.getViewDistance() / 3;
@@ -308,8 +308,8 @@ public final class GlowWorld implements World {
      * Get a new chunk lock object a player or other party can use to keep chunks loaded.
      * @return The ChunkLock.
      */
-    public ChunkManager.ChunkLock newChunkLock() {
-        return new ChunkManager.ChunkLock(chunks);
+    public ChunkManager.ChunkLock newChunkLock(String desc) {
+        return new ChunkManager.ChunkLock(chunks, name + ": " + desc);
     }
 
     /**

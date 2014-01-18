@@ -282,7 +282,7 @@ public final class GlowChunk implements Chunk {
             new Throwable().printStackTrace();
             return;
         }
-        GlowServer.logger.log(Level.INFO, "Initializing chunk ({0},{1})", new Object[]{x, z});
+        //GlowServer.logger.log(Level.INFO, "Initializing chunk ({0},{1})", new Object[]{x, z});
 
         sections = new ChunkSection[DEPTH / SEC_DEPTH];
         System.arraycopy(initSections, 0, this.sections, 0, Math.min(this.sections.length, initSections.length));

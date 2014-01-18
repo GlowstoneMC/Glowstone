@@ -120,11 +120,11 @@ public final class ChunkManager {
 
         EventFactory.onChunkLoad(chunk, true);
 
-        for (int x2 = x - 1; x2 <= x + 1; ++x2) {
+        /*for (int x2 = x - 1; x2 <= x + 1; ++x2) {
             for (int z2 = z - 1; z2 <= z + 1; ++z2) {
-                populateChunk(x2, z2);
+                populateChunk(x2, z2, false);
             }
-        }
+        }*/
         return true;
     }
 
@@ -147,11 +147,12 @@ public final class ChunkManager {
         for (Map.Entry<GlowChunk.Key, GlowChunk> entry : chunks.entrySet()) {
             Set<ChunkLock> lockSet = locks.get(entry.getKey());
             if (lockSet == null || lockSet.size() == 0) {
-                boolean result = entry.getValue().unload(true, true);
-                GlowServer.logger.info("Unloading unused " + entry.getKey() + ": " + result);
+                if (!entry.getValue().unload(true, true)) {
+                    GlowServer.logger.warning("Failed to unload chunk " + world.getName() + ":" + entry.getKey());
+                }
             }
             if (!entry.getValue().isLoaded()) {
-                GlowServer.logger.info("Removing from cache " + entry.getKey());
+                //GlowServer.logger.info("Removing from cache " + entry.getKey());
                 chunks.entrySet().remove(entry);
                 locks.remove(entry.getKey());
             }
@@ -161,17 +162,17 @@ public final class ChunkManager {
     /**
      * Populate a single chunk if needed.
      */
-    private void populateChunk(int x, int z) {
+    private void populateChunk(int x, int z, boolean force) {
         GlowChunk chunk = getChunk(x, z);
-        // cancel out if it's already loaded or populated
-        if (!chunk.isLoaded() || chunk.isPopulated()) {
+        // cancel out if it's already populated
+        if (chunk.isPopulated()) {
             return;
         }
 
         // cancel out if the 3x3 around it isn't available
         for (int x2 = x - 1; x2 <= x + 1; ++x2) {
             for (int z2 = z - 1; z2 <= z + 1; ++z2) {
-                if (!getChunk(x2, z2).isLoaded()) {
+                if (!getChunk(x2, z2).isLoaded() && (!force || !loadChunk(x2, z2, true))) {
                     return;
                 }
             }
@@ -189,6 +190,16 @@ public final class ChunkManager {
         }
 
         EventFactory.onChunkPopulate(chunk);
+    }
+
+    /**
+     * Force a chunk to be populated by loading the chunks in an area around it. Used when streaming chunks to players
+     * so that they do not have to watch chunks being populated.
+     * @param x The X coordinate.
+     * @param z The Z coordinate.
+     */
+    public void forcePopulation(int x, int z) {
+        populateChunk(x, z, true);
     }
 
     /**
@@ -254,7 +265,7 @@ public final class ChunkManager {
 
         chunk.setPopulated(false);
         generateChunk(chunk, x, z);
-        populateChunk(x, z);
+        populateChunk(x, z, false);  // should this be forced?
         return true;
     }
 
@@ -337,29 +348,39 @@ public final class ChunkManager {
      */
     public static class ChunkLock implements Iterable<GlowChunk.Key> {
         private final ChunkManager cm;
+        private final String desc;
         private final Set<GlowChunk.Key> keys = new HashSet<GlowChunk.Key>();
 
-        public ChunkLock(ChunkManager cm) {
+        public ChunkLock(ChunkManager cm, String desc) {
             this.cm = cm;
+            this.desc = desc;
         }
 
         public void acquire(GlowChunk.Key key) {
             if (keys.contains(key)) return;
             keys.add(key);
             cm.getLockSet(key).add(this);
+            //GlowServer.logger.info(this + " acquires " + key);
         }
 
         public void release(GlowChunk.Key key) {
             if (!keys.contains(key)) return;
             keys.remove(key);
             cm.getLockSet(key).remove(this);
+            //GlowServer.logger.info(this + " releases " + key);
         }
 
         public void clear() {
             for (GlowChunk.Key key : keys) {
                 cm.getLockSet(key).remove(this);
+                //GlowServer.logger.info(this + " clearing " + key);
             }
             keys.clear();
+        }
+
+        @Override
+        public String toString() {
+            return "ChunkLock{" + desc + "}";
         }
 
         public Iterator<GlowChunk.Key> iterator() {

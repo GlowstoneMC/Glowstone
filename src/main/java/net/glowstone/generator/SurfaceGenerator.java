@@ -2,6 +2,7 @@ package net.glowstone.generator;
 
 import net.glowstone.block.BlockID;
 import net.glowstone.generator.populators.*;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.util.noise.OctaveGenerator;
@@ -126,6 +127,11 @@ public class SurfaceGenerator extends GlowChunkGenerator {
         gen = new SimplexOctaveGenerator(seed, 2);
         gen.setScale(1 / world.getMaxHeight());
         octaves.put("type", gen);
+    }
+
+    @Override
+    public Location getFixedSpawnLocation(World world, Random random) {
+        return new Location(world, 0, 2 + world.getHighestBlockYAt(0, 0), 0);
     }
     
 }
