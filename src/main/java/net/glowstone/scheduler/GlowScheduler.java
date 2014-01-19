@@ -58,15 +58,13 @@ public final class GlowScheduler implements BukkitScheduler {
      */
     public GlowScheduler(GlowServer server) {
         this.server = server;
-        
+
         executor.scheduleAtFixedRate(new Runnable() {
             public void run() {
                 try {
                     pulse();
-                }
-                catch (Exception ex) {
-                    GlowServer.logger.log(Level.SEVERE, "Error while pulsing: {0}", ex.getMessage());
-                    ex.printStackTrace();
+                } catch (Exception ex) {
+                    GlowServer.logger.log(Level.SEVERE, "Error while pulsing", ex);
                 }
             }
         }, 0, PULSE_EVERY, TimeUnit.MILLISECONDS);
@@ -195,8 +193,7 @@ public final class GlowScheduler implements BukkitScheduler {
 
     public void cancelTask(int taskId) {
         synchronized(oldTasks) {
-            for (Iterator<GlowTask> it = tasks.iterator(); it.hasNext(); ) {
-                GlowTask task = it.next();
+            for (GlowTask task : tasks) {
                 if (task.getTaskId() == taskId) {
                     oldTasks.add(task);
                     return;
@@ -207,8 +204,7 @@ public final class GlowScheduler implements BukkitScheduler {
 
     public void cancelTasks(Plugin plugin) {
         synchronized(oldTasks) {
-            for (Iterator<GlowTask> it = tasks.iterator(); it.hasNext(); ) {
-                GlowTask task = it.next();
+            for (GlowTask task : tasks) {
                 if (task.getOwner() == plugin) {
                     oldTasks.add(task);
                 }
@@ -218,9 +214,7 @@ public final class GlowScheduler implements BukkitScheduler {
 
     public void cancelAllTasks() {
         synchronized(oldTasks) {
-            for (Iterator<GlowTask> it = tasks.iterator(); it.hasNext(); ) {
-                oldTasks.add(it.next());
-            }
+            oldTasks.addAll(tasks);
         }
     }
 
@@ -245,11 +239,7 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     public List<BukkitTask> getPendingTasks() {
-        ArrayList<BukkitTask> result = new ArrayList<BukkitTask>();
-        for (Iterator<GlowTask> it = tasks.iterator(); it.hasNext(); ) {
-            result.add(it.next());
-        }
-        return result;
+        return new ArrayList<BukkitTask>(tasks);
     }
 
     synchronized void workerComplete(GlowWorker worker) {

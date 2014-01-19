@@ -24,6 +24,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * Mappings between opcodes and message types for various states of the protocol.
@@ -102,10 +103,10 @@ public final class MessageMap {
             GlowServer.logger.severe("No decode constructor for " + errorDesc);
             return null;
         } catch (InvocationTargetException e) {
-            GlowServer.logger.severe("Error while decoding " + errorDesc + ": " + e.getCause());
+            GlowServer.logger.log(Level.SEVERE, "Error while decoding " + errorDesc, e.getCause());
             return null;
         } catch (ReflectiveOperationException e) {
-            GlowServer.logger.severe("Failed to construct " + errorDesc + ": " + e);
+            GlowServer.logger.log(Level.SEVERE, "Failed to construct " + errorDesc, e);
             return null;
         }
 
