@@ -17,7 +17,7 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
 
     private final ChunkSection[] sections;
 
-    private final byte[] height;
+    private final int[] height;
     private final double[] temp, humid;
     private final Biome[] biomes;
 
@@ -37,10 +37,10 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
 
         final int baseX = x << 4, baseZ = z << 4;
         if (svHeight) {
-            height = new byte[16 * 16];
+            height = new int[16 * 16];
             for (int xx = 0; xx < 16; ++xx) {
                 for (int zz = 0; zz < 16; ++zz) {
-                    height[coordToIndex(xx, zz)] = (byte) world.getHighestBlockYAt(baseX + xx, baseZ + zz);
+                    height[coordToIndex(xx, zz)] = world.getHighestBlockYAt(baseX + xx, baseZ + zz);
                 }
             }
         } else {
@@ -78,6 +78,22 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
             return null;
         }
         return sections[idx];
+    }
+
+    /**
+     * Get the ChunkSection array backing this snapshot. In general, it should not be modified.
+     * @return The array of ChunkSections.
+     */
+    public ChunkSection[] getRawSections() {
+        return sections;
+    }
+
+    public int[] getRawHeightmap() {
+        return height;
+    }
+
+    public Biome[] getRawBiomes() {
+        return biomes;
     }
 
     public int getX() {
@@ -135,14 +151,14 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
     public double getRawBiomeRainfall(int x, int z) {
         return humid[coordToIndex(x, z)];
     }
-    
+
     private int coordToIndex(int x, int z) {
         if (x < 0 || z < 0 || x >= GlowChunk.WIDTH || z >= GlowChunk.HEIGHT)
             throw new IndexOutOfBoundsException();
 
-        return x * GlowChunk.HEIGHT + z;
+        return z * GlowChunk.WIDTH + x;
     }
-    
+
     public static class EmptySnapshot extends GlowChunkSnapshot {
         
         public EmptySnapshot(int x, int z, World world, boolean svBiome, boolean svTemp) {

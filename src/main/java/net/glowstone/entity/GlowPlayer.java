@@ -248,6 +248,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
                 }
             }
         }
+
+        if (newChunks.size() == 0 && previousChunks.size() == 0) {
+            return;
+        }
         
         Collections.sort(newChunks, new Comparator<GlowChunk.Key>() {
             public int compare(GlowChunk.Key a, GlowChunk.Key b) {
@@ -262,9 +266,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         });
 
         List<GlowChunk> bulkChunks = null;
-        if (newChunks.size() > previousChunks.size()) {
+        if (newChunks.size() > knownChunks.size() * 2 / 5) {
             // send a bulk message
             bulkChunks = new LinkedList<GlowChunk>();
+            GlowServer.logger.info("Sending bulk to: " + getName());
         }
 
         for (GlowChunk.Key key : newChunks) {

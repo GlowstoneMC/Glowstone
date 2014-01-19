@@ -6,11 +6,11 @@ import net.glowstone.block.GlowBlockState;
 import net.glowstone.net.message.Message;
 import net.glowstone.net.message.game.ChunkDataMessage;
 import org.bukkit.Chunk;
-import org.bukkit.ChunkSnapshot;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 
 import java.lang.reflect.Constructor;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.logging.Level;
 
@@ -108,6 +108,7 @@ public final class GlowChunk implements Chunk {
             metaData = new byte[ARRAY_SIZE];
             skyLight = new byte[ARRAY_SIZE];
             blockLight = new byte[ARRAY_SIZE];
+            Arrays.fill(skyLight, (byte) 0xf);
         }
 
         /**
@@ -209,11 +210,11 @@ public final class GlowChunk implements Chunk {
         return tileEntities.values().toArray(new GlowBlockState[tileEntities.size()]);
     }
 
-    public ChunkSnapshot getChunkSnapshot() {
+    public GlowChunkSnapshot getChunkSnapshot() {
         return getChunkSnapshot(true, false, false);
     }
 
-    public ChunkSnapshot getChunkSnapshot(boolean includeMaxblocky, boolean includeBiome, boolean includeBiomeTempRain) {
+    public GlowChunkSnapshot getChunkSnapshot(boolean includeMaxblocky, boolean includeBiome, boolean includeBiomeTempRain) {
         return new GlowChunkSnapshot(x, z, world, sections, includeMaxblocky, includeBiome, includeBiomeTempRain);
     }
     
@@ -302,14 +303,6 @@ public final class GlowChunk implements Chunk {
     }
 
     /**
-     * Get the ChunkSections contained in this chunk. Care should be taken that they are not modified.
-     * @return The ChunkSection array.
-     */
-    public ChunkSection[] getSections() {
-        return sections;
-    }
-
-    /**
      * If needed, create a new tile entity at the given location.
      */
     private void createEntity(int cx, int cy, int cz, int type) {
@@ -337,14 +330,8 @@ public final class GlowChunk implements Chunk {
      * @return The ChunkSection, or null if it is empty.
      */
     private ChunkSection getSection(int y) {
-        if (y < 0 || y >= DEPTH) {
-            return null;
-        }
-        if (!isLoaded() && !load()) {
-            return null;
-        }
         int idx = y >> 4;
-        if (idx >= sections.length) {
+        if (y < 0 || y >= DEPTH || !load() || idx >= sections.length) {
             return null;
         }
         return sections[idx];
@@ -614,6 +601,9 @@ public final class GlowChunk implements Chunk {
                 byte light1 = blockLight[i];
                 byte light2 = blockLight[i + 1];
                 tileData[pos++] = (byte) ((light2 << 4) | light1);
+                if (tileData[pos - 1] != 0x00) {
+                    System.out.println(this + ": blocklight was really " + tileData[pos - 1]);
+                }
             }
         }
 
@@ -624,6 +614,9 @@ public final class GlowChunk implements Chunk {
                 byte light1 = skyLight[i];
                 byte light2 = skyLight[i + 1];
                 tileData[pos++] = (byte) ((light2 << 4) | light1);
+                if ((tileData[pos - 1] & 0xFF) != 0xFF) {
+                    System.out.println(this + ": skylight was only " + tileData[pos - 1]);
+                }
             }
         }
 

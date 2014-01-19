@@ -2,18 +2,23 @@ package net.glowstone.io.anvil;
 
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowChunk.ChunkSection;
+import net.glowstone.GlowChunkSnapshot;
 import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.io.ChunkIoService;
 import net.glowstone.io.blockstate.BlockStateStore;
 import net.glowstone.io.blockstate.BlockStateStoreLookupService;
 import net.glowstone.util.nbt.*;
+import org.bukkit.block.Biome;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * An implementation of the {@link ChunkIoService} which reads and writes Anvil maps,
@@ -144,7 +149,8 @@ public final class AnvilChunkIoService implements ChunkIoService {
 
         // chunk sections
         List<CompoundTag> sectionTags = new ArrayList<CompoundTag>();
-        ChunkSection[] sections = chunk.getSections();
+        GlowChunkSnapshot snapshot = chunk.getChunkSnapshot(true, true, false);
+        ChunkSection[] sections = snapshot.getRawSections();
         for (byte i = 0; i < sections.length; ++i) {
             ChunkSection sec = sections[i];
             if (sec == null) continue;
@@ -161,16 +167,15 @@ public final class AnvilChunkIoService implements ChunkIoService {
         levelTags.put("Sections", new ListTag<CompoundTag>("Sections", CompoundTag.class, sectionTags));
 
         // height map
-        byte[] heightMap = new byte[GlowChunk.WIDTH * GlowChunk.HEIGHT];
-        for (int cx = 0; cx < GlowChunk.WIDTH; cx++) {
-            for (int cz = 0; cz < GlowChunk.HEIGHT; cz++) {
-                heightMap[(cx * GlowChunk.HEIGHT + cz) / 2] = (byte) chunk.getWorld().getHighestBlockYAt(x > 0 ? x * cx : cx, z > 0 ? z * cz : cz);
-            }
-        }
-        levelTags.put("HeightMap", new ByteArrayTag("HeightMap", heightMap));
+        levelTags.put("HeightMap", new IntArrayTag("HeightMap", snapshot.getRawHeightmap()));
 
-        // todo: biomes
-        levelTags.put("Biomes", new ByteArrayTag("Biomes", new byte[256]));
+        // biomes
+        Biome[] biomesArray = snapshot.getRawBiomes();
+        byte[] biomes = new byte[biomesArray.length];
+        for (int i = 0; i < biomes.length; ++i) {
+            biomes[i] = 0; // todo: convert Biome to value
+        }
+        levelTags.put("Biomes", new ByteArrayTag("Biomes", biomes));
 
         // todo: entities
         List<CompoundTag> entities = new ArrayList<CompoundTag>();

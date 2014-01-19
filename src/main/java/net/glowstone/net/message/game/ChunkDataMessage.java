@@ -7,7 +7,7 @@ import java.util.zip.Deflater;
 
 public final class ChunkDataMessage extends Message {
 
-    static final int COMPRESSION_LEVEL = Deflater.BEST_SPEED;
+    static final int COMPRESSION_LEVEL = Deflater.DEFAULT_COMPRESSION;
 
     final int x, z;
     final boolean continuous;

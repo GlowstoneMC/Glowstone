@@ -120,6 +120,7 @@ public final class ChunkManager {
 
         EventFactory.onChunkLoad(chunk, true);
 
+        // right now, forcePopulate takes care of populating chunks that players actually see.
         /*for (int x2 = x - 1; x2 <= x + 1; ++x2) {
             for (int z2 = z - 1; z2 <= z + 1; ++z2) {
                 populateChunk(x2, z2, false);
@@ -151,11 +152,13 @@ public final class ChunkManager {
                     GlowServer.logger.warning("Failed to unload chunk " + world.getName() + ":" + entry.getKey());
                 }
             }
-            if (!entry.getValue().isLoaded()) {
+            // cannot remove old chunks from cache - GlowBlock and GlowBlockState keep references.
+            // they must either be changed to look up the chunk again all the time, or this code left out.
+            /*if (!entry.getValue().isLoaded()) {
                 //GlowServer.logger.info("Removing from cache " + entry.getKey());
                 chunks.entrySet().remove(entry);
                 locks.remove(entry.getKey());
-            }
+            }*/
         }
     }
 
@@ -178,6 +181,10 @@ public final class ChunkManager {
             }
         }
 
+        // it might have loaded since before, so check again that it's not already populated
+        if (chunk.isPopulated()) {
+            return;
+        }
         chunk.setPopulated(true);
 
         popRandom.setSeed(world.getSeed());
@@ -223,7 +230,6 @@ public final class ChunkManager {
                 // this is sort of messy.
                 sections[i] = new GlowChunk.ChunkSection();
                 System.arraycopy(blockSections[i], 0, sections[i].types, 0, sections[i].types.length);
-                Arrays.fill(sections[i].skyLight, (byte) 15);
             }
             chunk.initializeSections(sections);
             return;
@@ -244,7 +250,6 @@ public final class ChunkManager {
                     }
                 }
             }
-            Arrays.fill(sec.skyLight, (byte) 15);
             sections[sy] = sec;
         }
         chunk.initializeSections(sections);
@@ -284,22 +289,13 @@ public final class ChunkManager {
     }
 
     /**
-     * Get the size of the chunk object cache.
-     * @return The size of the chunk cache.
-     */
-    public int getCacheSize() {
-        return chunks.size();
-    }
-
-    /**
      * Force-saves the given chunk.
      * @param x The X coordinate.
      * @param z The Z coordinate.
      */
     public boolean forceSave(int x, int z) {
-        GlowChunk.Key key = new GlowChunk.Key(x, z);
-        GlowChunk chunk = chunks.get(key);
-        if (chunk != null) {
+        GlowChunk chunk = getChunk(x, z);
+        if (chunk.isLoaded()) {
             try {
                 service.write(x, z, chunk);
                 return true;
