@@ -13,13 +13,13 @@ public final class SessionRegistry {
     /**
      * A list of the sessions.
      */
-    private final ConcurrentMap<Session,Boolean> sessions = new ConcurrentHashMap<Session, Boolean>();
+    private final ConcurrentMap<GlowSession,Boolean> sessions = new ConcurrentHashMap<GlowSession, Boolean>();
 
     /**
      * Pulses all the sessions.
      */
     public void pulse() {
-        for (Session session : sessions.keySet()) {
+        for (GlowSession session : sessions.keySet()) {
             session.pulse();
         }
     }
@@ -28,7 +28,7 @@ public final class SessionRegistry {
      * Adds a new session.
      * @param session The session to add.
      */
-    public void add(Session session) {
+    public void add(GlowSession session) {
         sessions.put(session,true);
     }
 
@@ -36,7 +36,7 @@ public final class SessionRegistry {
      * Removes a session.
      * @param session The session to remove.
      */
-    public void remove(Session session) {
+    public void remove(GlowSession session) {
         sessions.remove(session);
     }
 

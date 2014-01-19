@@ -1,13 +1,15 @@
 package net.glowstone.util;
 
 import net.glowstone.GlowServer;
+import org.bouncycastle.crypto.BufferedBlockCipher;
+import org.bouncycastle.crypto.engines.AESEngine;
+import org.bouncycastle.crypto.modes.CFBBlockCipher;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import java.security.*;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Random;
 import java.util.logging.Level;
 
 /**
@@ -15,7 +17,11 @@ import java.util.logging.Level;
  */
 public class SecurityUtils {
 
-    private static Random random = new Random();
+    private static SecureRandom random = new SecureRandom();
+
+    static {
+        Security.addProvider(new BouncyCastleProvider());
+    }
 
     /**
      * Generate a RSA key pair
@@ -101,7 +107,14 @@ public class SecurityUtils {
         return key;
     }
 
+    /**
+     * Generates a BufferedBlockCipher used in encryption
+     */
+    public static BufferedBlockCipher generateBouncyCastleAESCipher() {
+        BufferedBlockCipher cipher = null;
 
+        cipher = new BufferedBlockCipher(new CFBBlockCipher(new AESEngine(), 8));
 
-
+        return cipher;
+    }
 }

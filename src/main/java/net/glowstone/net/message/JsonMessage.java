@@ -1,13 +1,9 @@
 package net.glowstone.net.message;
 
-import net.glowstone.util.ChannelBufferUtils;
-import org.jboss.netty.buffer.ChannelBuffer;
+import com.flowpowered.networking.Message;
 import org.json.simple.JSONObject;
 
-/**
- * Base class for outgoing Json messages.
- */
-public abstract class JsonMessage extends Message {
+public class JsonMessage implements Message {
 
     private final String json;
 
@@ -15,11 +11,8 @@ public abstract class JsonMessage extends Message {
         this.json = json.toJSONString();
     }
 
-    // in the future, a constructor from a Json object
-
-    @Override
-    public final void encode(ChannelBuffer buf) {
-        ChannelBufferUtils.writeString(buf, json);
+    public JsonMessage(String json) {
+        this.json = json;
     }
 
     public final String getJson() {
@@ -30,5 +23,10 @@ public abstract class JsonMessage extends Message {
     public String toString() {
         // ClassNameMessage{"json": "values"}
         return getClass().getSimpleName() + json;
+    }
+
+    @Override
+    public boolean isAsync() {
+        return false;
     }
 }

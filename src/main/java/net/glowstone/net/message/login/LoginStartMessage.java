@@ -1,10 +1,8 @@
 package net.glowstone.net.message.login;
 
-import net.glowstone.net.message.Message;
-import net.glowstone.util.ChannelBufferUtils;
-import org.jboss.netty.buffer.ChannelBuffer;
+import com.flowpowered.networking.Message;
 
-public final class LoginStartMessage extends Message {
+public final class LoginStartMessage implements Message {
 
     private final String username;
 
@@ -12,16 +10,12 @@ public final class LoginStartMessage extends Message {
         this.username = username;
     }
 
-    public LoginStartMessage(ChannelBuffer buf) {
-        username = ChannelBufferUtils.readString(buf);
+    public String getUsername() {
+        return username;
     }
 
     @Override
-    public void encode(ChannelBuffer buf) {
-        ChannelBufferUtils.writeString(buf, username);
-    }
-
-    public String getUsername() {
-        return username;
+    public boolean isAsync() {
+        return false;
     }
 }

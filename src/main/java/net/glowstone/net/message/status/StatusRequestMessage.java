@@ -1,18 +1,11 @@
 package net.glowstone.net.message.status;
 
-import net.glowstone.net.message.Message;
-import org.jboss.netty.buffer.ChannelBuffer;
+import com.flowpowered.networking.Message;
 
-public final class StatusRequestMessage extends Message {
-
-    public StatusRequestMessage() {
-    }
-
-    public StatusRequestMessage(ChannelBuffer buf) {
-    }
+public final class StatusRequestMessage implements Message {
 
     @Override
-    public void encode(ChannelBuffer buf) {
+    public boolean isAsync() {
+        return false;
     }
-
 }

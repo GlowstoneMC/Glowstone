@@ -1,9 +1,8 @@
 package net.glowstone.net.message.status;
 
-import net.glowstone.net.message.Message;
-import org.jboss.netty.buffer.ChannelBuffer;
+import com.flowpowered.networking.Message;
 
-public final class StatusPingMessage extends Message {
+public final class StatusPingMessage implements Message {
 
     private final long time;
 
@@ -11,16 +10,12 @@ public final class StatusPingMessage extends Message {
         this.time = time;
     }
 
-    public StatusPingMessage(ChannelBuffer buf) {
-        time = buf.readLong();
+    public long getTime() {
+        return time;
     }
 
     @Override
-    public void encode(ChannelBuffer buf) {
-        buf.writeLong(time);
-    }
-
-    public long getTime() {
-        return time;
+    public boolean isAsync() {
+        return false;
     }
 }

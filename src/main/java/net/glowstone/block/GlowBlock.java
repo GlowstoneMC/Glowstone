@@ -4,7 +4,7 @@ import net.glowstone.GlowChunk;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.physics.BlockPhysicsEngine;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.net.message.game.BlockChangeMessage;
+import net.glowstone.net.message.play.game.BlockChangeMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;

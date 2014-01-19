@@ -3,7 +3,7 @@ package net.glowstone;
 import net.glowstone.block.BlockProperties;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.net.Session;
+import net.glowstone.net.GlowSession;
 import net.glowstone.util.bans.BanManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -97,7 +97,7 @@ public final class EventFactory {
         return callEvent(event);
     }
 
-    public static PlayerPreLoginEvent onPlayerPreLogin(String name, Session session) {
+    public static PlayerPreLoginEvent onPlayerPreLogin(String name, GlowSession session) {
         return callEvent(new PlayerPreLoginEvent(name, session.getAddress().getAddress()));
     }
 

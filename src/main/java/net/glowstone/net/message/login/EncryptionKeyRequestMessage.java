@@ -1,10 +1,8 @@
 package net.glowstone.net.message.login;
 
-import net.glowstone.net.message.Message;
-import net.glowstone.util.ChannelBufferUtils;
-import org.jboss.netty.buffer.ChannelBuffer;
+import com.flowpowered.networking.Message;
 
-public final class EncryptionKeyRequestMessage extends Message {
+public final class EncryptionKeyRequestMessage implements Message {
 
     private final String sessionId;
     private final byte[] publicKey;
@@ -16,13 +14,20 @@ public final class EncryptionKeyRequestMessage extends Message {
         this.verifyToken = verifyToken;
     }
 
-    @Override
-    public void encode(ChannelBuffer buf) {
-        ChannelBufferUtils.writeString(buf, sessionId);
+    public String getSessionId() {
+        return sessionId;
+    }
 
-        buf.writeShort(publicKey.length);
-        buf.writeBytes(publicKey);
-        buf.writeShort(verifyToken.length);
-        buf.writeBytes(verifyToken);
+    public byte[] getPublicKey() {
+        return publicKey;
+    }
+
+    public byte[] getVerifyToken() {
+        return verifyToken;
+    }
+
+    @Override
+    public boolean isAsync() {
+        return false;
     }
 }

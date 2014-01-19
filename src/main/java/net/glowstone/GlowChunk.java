@@ -3,8 +3,8 @@ package net.glowstone;
 import net.glowstone.block.BlockProperties;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.net.message.Message;
-import net.glowstone.net.message.game.ChunkDataMessage;
+import net.glowstone.msg.CompressedChunkMessage;
+import net.glowstone.net.message.play.game.ChunkDataMessage;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -497,7 +497,7 @@ public final class GlowChunk implements Chunk {
     }
 
     /**
-     * Creates a new {@link Message} which can be sent to a client to stream
+     * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream
      * this entire chunk to them.
      * @return The {@link ChunkDataMessage}.
      */
@@ -508,7 +508,7 @@ public final class GlowChunk implements Chunk {
     }
 
     /**
-     * Creates a new {@link Message} which can be sent to a client to stream
+     * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream
      * this entire chunk to them.
      * @param skylight Whether to include skylight data.
      * @return The {@link ChunkDataMessage}.
@@ -518,7 +518,7 @@ public final class GlowChunk implements Chunk {
     }
 
     /**
-     * Creates a new {@link Message} which can be sent to a client to stream
+     * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream
      * parts of this chunk to them.
      * @return The {@link ChunkDataMessage}.
      */

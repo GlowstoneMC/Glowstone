@@ -2,7 +2,10 @@ package net.glowstone;
 
 import com.grahamedgecombe.jterminal.JTerminal;
 import jline.console.ConsoleReader;
+import jline.console.completer.ArgumentCompleter;
 import jline.console.completer.Completer;
+import jline.console.completer.NullCompleter;
+import jline.console.completer.StringsCompleter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.ConsoleCommandSender;
@@ -171,22 +174,22 @@ public final class ConsoleManager {
             return ChatColor.stripColor(string);  // color not supported
         } else {
             return string.replace(ChatColor.RED.toString(), "\033[1;31m")
-                .replace(ChatColor.YELLOW.toString(), "\033[1;33m")
-                .replace(ChatColor.GREEN.toString(), "\033[1;32m")
-                .replace(ChatColor.AQUA.toString(), "\033[1;36m")
-                .replace(ChatColor.BLUE.toString(), "\033[1;34m")
-                .replace(ChatColor.LIGHT_PURPLE.toString(), "\033[1;35m")
-                .replace(ChatColor.BLACK.toString(), "\033[0;0m")
-                .replace(ChatColor.DARK_GRAY.toString(), "\033[1;30m")
-                .replace(ChatColor.DARK_RED.toString(), "\033[0;31m")
-                .replace(ChatColor.GOLD.toString(), "\033[0;33m")
-                .replace(ChatColor.DARK_GREEN.toString(), "\033[0;32m")
-                .replace(ChatColor.DARK_AQUA.toString(), "\033[0;36m")
-                .replace(ChatColor.DARK_BLUE.toString(), "\033[0;34m")
-                .replace(ChatColor.DARK_PURPLE.toString(), "\033[0;35m")
-                .replace(ChatColor.GRAY.toString(), "\033[0;37m")
-                .replace(ChatColor.WHITE.toString(), "\033[1;37m") +
-                "\033[0m";
+                    .replace(ChatColor.YELLOW.toString(), "\033[1;33m")
+                    .replace(ChatColor.GREEN.toString(), "\033[1;32m")
+                    .replace(ChatColor.AQUA.toString(), "\033[1;36m")
+                    .replace(ChatColor.BLUE.toString(), "\033[1;34m")
+                    .replace(ChatColor.LIGHT_PURPLE.toString(), "\033[1;35m")
+                    .replace(ChatColor.BLACK.toString(), "\033[0;0m")
+                    .replace(ChatColor.DARK_GRAY.toString(), "\033[1;30m")
+                    .replace(ChatColor.DARK_RED.toString(), "\033[0;31m")
+                    .replace(ChatColor.GOLD.toString(), "\033[0;33m")
+                    .replace(ChatColor.DARK_GREEN.toString(), "\033[0;32m")
+                    .replace(ChatColor.DARK_AQUA.toString(), "\033[0;36m")
+                    .replace(ChatColor.DARK_BLUE.toString(), "\033[0;34m")
+                    .replace(ChatColor.DARK_PURPLE.toString(), "\033[0;35m")
+                    .replace(ChatColor.GRAY.toString(), "\033[0;37m")
+                    .replace(ChatColor.WHITE.toString(), "\033[1;37m") +
+                    "\033[0m";
         }
     }
 

@@ -1,18 +1,18 @@
 package net.glowstone;
 
+import com.flowpowered.networking.NetworkServer;
 import net.glowstone.command.GlowCommandMap;
 import net.glowstone.inventory.CraftingManager;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.io.StorageQueue;
 import net.glowstone.map.GlowMapView;
-import net.glowstone.net.MinecraftPipelineFactory;
-import net.glowstone.net.Session;
+import net.glowstone.net.GlowNetworkServer;
 import net.glowstone.net.SessionRegistry;
 import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.util.GlowHelpMap;
 import net.glowstone.util.PlayerListFile;
-import net.glowstone.util.ServerConfig;
 import net.glowstone.util.SecurityUtils;
+import net.glowstone.util.ServerConfig;
 import net.glowstone.util.bans.BanManager;
 import net.glowstone.util.bans.FlatFileBanManager;
 import org.bukkit.*;
@@ -34,12 +34,6 @@ import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.util.CachedServerIcon;
 import org.bukkit.util.permissions.DefaultPermissions;
-import org.jboss.netty.bootstrap.ServerBootstrap;
-import org.jboss.netty.channel.ChannelFactory;
-import org.jboss.netty.channel.ChannelPipelineFactory;
-import org.jboss.netty.channel.group.ChannelGroup;
-import org.jboss.netty.channel.group.DefaultChannelGroup;
-import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -96,23 +90,13 @@ public final class GlowServer implements Server {
     }
 
     /**
-     * The {@link ServerBootstrap} used to initialize Netty.
-     */
-    private final ServerBootstrap bootstrap = new ServerBootstrap();
-
-    /**
-     * A group containing all of the channels.
-     */
-    private final ChannelGroup group = new DefaultChannelGroup();
-
-    /**
      * The network executor service - Netty dispatches events to this thread
      * pool.
      */
     private final ExecutorService executor = Executors.newCachedThreadPool();
 
     /**
-     * A list of all the active {@link Session}s.
+     * A list of all the active {@link net.glowstone.net.GlowSession}s.
      */
     private final SessionRegistry sessions = new SessionRegistry();
     
@@ -222,16 +206,15 @@ public final class GlowServer implements Server {
     private final KeyPair keyPair = SecurityUtils.generateKeyPair();
 
     /**
+     * The network server used for network communication
+     */
+    private final NetworkServer networkServer = new GlowNetworkServer(this);
+
+    /**
      * Creates a new server.
      */
     public GlowServer() {
         Bukkit.setServer(this);
-
-        ChannelFactory factory = new NioServerSocketChannelFactory(executor, executor);
-        bootstrap.setFactory(factory);
-
-        ChannelPipelineFactory pipelineFactory = new MinecraftPipelineFactory(this);
-        bootstrap.setPipelineFactory(pipelineFactory);
 
         config.load();
         warnState = Warning.WarningState.value(config.getString(ServerConfig.Key.WARNING_STATE));
@@ -308,7 +291,7 @@ public final class GlowServer implements Server {
         }
 
         logger.log(Level.INFO, "Binding to address: {0}...", address);
-        group.add(bootstrap.bind(address));
+        networkServer.bind(address);
     }
     
     /**
@@ -335,9 +318,8 @@ public final class GlowServer implements Server {
         }
         storeQueue.end();
         
-        // Gracefully stop Netty
-        group.close();
-        bootstrap.getFactory().releaseExternalResources();
+        // Gracefully stop the network server
+        networkServer.shutdown();
         
         // And finally kill the console
         consoleManager.stop();
@@ -447,14 +429,6 @@ public final class GlowServer implements Server {
      */
     public SimpleCommandMap getCommandMap() {
         return commandMap;
-    }
-
-    /**
-     * Gets the channel group.
-     * @return The {@link ChannelGroup}.
-     */
-    public ChannelGroup getChannelGroup() {
-        return group;
     }
 
     /**

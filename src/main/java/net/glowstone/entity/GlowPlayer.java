@@ -8,10 +8,11 @@ import net.glowstone.inventory.GlowPlayerInventory;
 import net.glowstone.inventory.InventoryViewer;
 import net.glowstone.io.StorageOperation;
 import net.glowstone.msg.*;
-import net.glowstone.net.ProtocolState;
-import net.glowstone.net.Session;
-import net.glowstone.net.message.game.*;
+import net.glowstone.net.GlowSession;
+import net.glowstone.net.message.game.ChunkBulkMessage;
 import net.glowstone.net.message.login.LoginSuccessMessage;
+import net.glowstone.net.message.play.game.*;
+import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.util.Parameter;
 import net.glowstone.util.Position;
 import net.glowstone.util.TextWrapper;
@@ -47,7 +48,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     /**
      * This player's session.
      */
-    private final Session session;
+    private final GlowSession session;
 
     /**
      * This player's unique id.
@@ -140,7 +141,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      * @param session The player's session.
      * @param name The player's name.
      */
-    public GlowPlayer(Session session, String name, UUID uuid) {
+    public GlowPlayer(GlowSession session, String name, UUID uuid) {
         super(session.getServer(), (GlowWorld) session.getServer().getWorlds().get(0), name);
         this.session = session;
         this.uuid = uuid;
@@ -149,7 +150,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
 
         // send login response
         session.send(new LoginSuccessMessage(uuid.toString().replace("-", ""), name));
-        session.setState(ProtocolState.PLAY);
+        session.setProtocol(new PlayProtocol(session.getServer()));
 
         // send join game
         // in future, handle hardcore, difficulty, and level type
@@ -319,7 +320,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      * Gets the session.
      * @return The session.
      */
-    public Session getSession() {
+    public GlowSession getSession() {
         return session;
     }
 
