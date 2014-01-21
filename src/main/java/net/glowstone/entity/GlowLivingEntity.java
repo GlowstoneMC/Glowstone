@@ -25,7 +25,17 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     /**
      * The entity's health.
      */
-    protected int health = 0;
+    protected double health;
+
+    /**
+     * The entity's maximum health.
+     */
+    protected double maxHealth;
+
+    /**
+     * The magnitude of the last damage the entity took.
+     */
+    private double lastDamage;
 
     /**
      * The monster's metadata.
@@ -43,6 +53,17 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      */
     public GlowLivingEntity(GlowServer server, GlowWorld world) {
         super(server, world);
+        resetMaxHealth();
+        health = maxHealth;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Internals
+
+    @Override
+    public void pulse() {
+        super.pulse();
+        // todo: tick down potion effects
     }
 
     @Override
@@ -76,15 +97,20 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return null;
     }
 
-    public double getHealth() {
-        return health;
+    protected Parameter<?> getMetadata(int index) {
+        return metadata.get(index);
     }
 
-    public void setHealth(int health) {
-        if (health < 0) health = 0;
-        if (health > 200) health = 200;
-        this.health = health;
+    protected void setMetadata(Parameter<?> data) {
+        if(data.getIndex() < metadata.size()) {
+            metadata.set(data.getIndex(), data);
+        } else {
+            metadata.add(data);
+        }
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Properties
 
     public double getEyeHeight() {
        return getEyeHeight(false);
@@ -103,6 +129,25 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         loc.setY(loc.getY() + getEyeHeight());
         return loc;
     }
+
+    public int getMaximumNoDamageTicks() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setMaximumNoDamageTicks(int ticks) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public int getNoDamageTicks() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setNoDamageTicks(int ticks) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Line of Sight
 
     public List<Block> getLineOfSight(HashSet<Byte> transparent, int maxDistance) {
         TIntHashSet transparentBlocks = new TIntHashSet();
@@ -154,93 +199,110 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return new ArrayList<Block>(Arrays.asList(target.getPreviousBlock().getBlock(), last.getBlock()));
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Projectiles
+
     public Egg throwEgg() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return launchProjectile(Egg.class);
     }
 
     public Snowball throwSnowball() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return launchProjectile(Snowball.class);
     }
 
     public Arrow shootArrow() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return launchProjectile(Arrow.class);
     }
 
-    public int getMaximumNoDamageTicks() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void setMaximumNoDamageTicks(int ticks) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public double getLastDamage() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void setLastDamage(int damage) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public int getNoDamageTicks() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void setNoDamageTicks(int ticks) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    protected Parameter<?> getMetadata(int index) {
-        return metadata.get(index);
-    }
-
-    protected void setMetadata(Parameter<?> data) {
-        if(data.getIndex() < metadata.size()) {
-            metadata.set(data.getIndex(), data);
-        } else {
-            metadata.add(data);
-        }
-    }
-
-    @Override
-    public void pulse() {
-        super.pulse();
-        // todo: tick down potion effects
-    }
-
-    // NEW STUFF
-
-    @Override
     public <T extends Projectile> T launchProjectile(Class<? extends T> projectile) {
         return null;
     }
 
-    @Override
-    public int _INVALID_getLastDamage() {
-        return 0;
+    ////////////////////////////////////////////////////////////////////////////
+    // Health
+
+    public double getHealth() {
+        return health;
     }
 
-    @Override
+    public void setHealth(double health) {
+        if (health < 0) health = 0;
+        if (health > maxHealth) health = maxHealth;
+        this.health = health;
+    }
+
+    public void damage(double amount) {
+        damage(amount, null);
+    }
+
+    public void damage(double amount, Entity source) {
+        lastDamage = amount;
+        health -= amount;
+        // todo: death, events, so on
+    }
+
+    public double getMaxHealth() {
+        return maxHealth;
+    }
+
+    public void setMaxHealth(double health) {
+        maxHealth = health;
+    }
+
+    public void resetMaxHealth() {
+        maxHealth = 20;
+    }
+
+    public double getLastDamage() {
+        return lastDamage;
+    }
+
     public void setLastDamage(double damage) {
-
+        lastDamage = damage;
     }
 
-    @Override
+    ////////////////////////////////////////////////////////////////////////////
+    // Invalid health methods
+
+    public void _INVALID_damage(int amount) {
+        throw new UnsupportedOperationException("Invalid/deprecated method");
+    }
+
+    public int _INVALID_getLastDamage() {
+        throw new UnsupportedOperationException("Invalid/deprecated method");
+    }
+
     public void _INVALID_setLastDamage(int damage) {
-
+        throw new UnsupportedOperationException("Invalid/deprecated method");
     }
 
-    @Override
-    public Player getKiller() {
-        return null;
+    public void _INVALID_setMaxHealth(int health) {
+        throw new UnsupportedOperationException("Invalid/deprecated method");
     }
 
-    @Override
+    public int _INVALID_getMaxHealth() {
+        throw new UnsupportedOperationException("Invalid/deprecated method");
+    }
+
+    public void _INVALID_damage(int amount, Entity source) {
+        throw new UnsupportedOperationException("Invalid/deprecated method");
+    }
+
+    public int _INVALID_getHealth() {
+        throw new UnsupportedOperationException("Invalid/deprecated method");
+    }
+
+    public void _INVALID_setHealth(int health) {
+        throw new UnsupportedOperationException("Invalid/deprecated method");
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Potion effects
+
     public boolean addPotionEffect(PotionEffect effect) {
         return addPotionEffect(effect, false);
     }
 
-    @Override
     public boolean addPotionEffect(PotionEffect effect, boolean force) {
         if (potionEffects.containsKey(effect.getType())) {
             if (force) {
@@ -260,7 +322,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return true;
     }
 
-    @Override
     public boolean addPotionEffects(Collection<PotionEffect> effects) {
         boolean result = true;
         for (PotionEffect effect : effects) {
@@ -271,12 +332,10 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return result;
     }
 
-    @Override
     public boolean hasPotionEffect(PotionEffectType type) {
         return potionEffects.containsKey(type);
     }
 
-    @Override
     public void removePotionEffect(PotionEffectType type) {
         if (!hasPotionEffect(type)) return;
         potionEffects.remove(type);
@@ -288,9 +347,16 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }*/
     }
 
-    @Override
     public Collection<PotionEffect> getActivePotionEffects() {
         return Collections.unmodifiableCollection(potionEffects.values());
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // New stuff
+
+    @Override
+    public Player getKiller() {
+        return null;
     }
 
     @Override
@@ -356,65 +422,5 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Override
     public boolean setLeashHolder(Entity holder) {
         return false;
-    }
-
-    @Override
-    public void damage(double amount) {
-
-    }
-
-    @Override
-    public void _INVALID_damage(int amount) {
-
-    }
-
-    @Override
-    public void damage(double amount, Entity source) {
-
-    }
-
-    @Override
-    public void _INVALID_damage(int amount, Entity source) {
-
-    }
-
-    @Override
-    public int _INVALID_getHealth() {
-        return 0;
-    }
-
-    @Override
-    public void setHealth(double health) {
-
-    }
-
-    @Override
-    public void _INVALID_setHealth(int health) {
-
-    }
-
-    @Override
-    public double getMaxHealth() {
-        return 0;
-    }
-
-    @Override
-    public int _INVALID_getMaxHealth() {
-        return 0;
-    }
-
-    @Override
-    public void setMaxHealth(double health) {
-
-    }
-
-    @Override
-    public void _INVALID_setMaxHealth(int health) {
-
-    }
-
-    @Override
-    public void resetMaxHealth() {
-
     }
 }

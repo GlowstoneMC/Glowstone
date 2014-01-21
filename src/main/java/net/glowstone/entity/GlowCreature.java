@@ -60,7 +60,4 @@ public final class GlowCreature extends GlowLivingEntity implements Creature {
         return target;
     }
 
-    public double getMaxHealth() {
-        throw new UnsupportedOperationException("Not supported yet!");
-    }
 }

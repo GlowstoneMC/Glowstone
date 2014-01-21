@@ -151,7 +151,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         super(session.getServer(), (GlowWorld) session.getServer().getWorlds().get(0), name);
         this.session = session;
         this.uuid = uuid;
-        health = 20;
 
         chunkLock = world.newChunkLock(getName());
 
@@ -921,13 +920,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
 
     @Override
-    public void setHealth(int health) {
+    public void setHealth(double health) {
         super.setHealth(health);
         session.send(createHealthMessage());
-    }
-
-    public double getMaxHealth() {
-        return 20;
     }
 
     @Override
