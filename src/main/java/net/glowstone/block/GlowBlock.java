@@ -164,7 +164,7 @@ public class GlowBlock implements Block {
         }
         BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, type, data);
         for (GlowPlayer p : getWorld().getRawPlayers()) {
-            p.getSession().send(bcmsg);
+            p.sendBlockChange(bcmsg);
         }
         
         return true;
@@ -195,7 +195,7 @@ public class GlowBlock implements Block {
         }
         BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, getTypeId(), data);
         for (GlowPlayer p : getWorld().getRawPlayers()) {
-            p.getSession().send(bcmsg);
+            p.sendBlockChange(bcmsg);
         }
     }
 

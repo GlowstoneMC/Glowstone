@@ -719,7 +719,15 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
 
     public void sendBlockChange(Location loc, int material, byte data) {
-        session.send(new BlockChangeMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), material, data));
+        sendBlockChange(new BlockChangeMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), material, data));
+    }
+
+    public void sendBlockChange(BlockChangeMessage message) {
+        // only send message if the chunk is within visible range
+        GlowChunk.Key key = new GlowChunk.Key(message.getX() >> 4, message.getZ() >> 4);
+        if (canSee(key)) {
+            session.send(message);
+        }
     }
 
     public boolean sendChunkChange(Location loc, int sx, int sy, int sz, byte[] data) {
