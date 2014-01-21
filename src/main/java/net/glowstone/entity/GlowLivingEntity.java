@@ -33,6 +33,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     protected final List<Parameter<?>> metadata = new ArrayList<Parameter<?>>();
 
     /**
+     * Potion effects on the entity.
+     */
+    private final Map<PotionEffectType, PotionEffect> potionEffects = new HashMap<PotionEffectType, PotionEffect>();
+
+    /**
      * Creates a mob within the specified world.
      * @param world The world.
      */
@@ -197,6 +202,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }
     }
 
+    @Override
+    public void pulse() {
+        super.pulse();
+        // todo: tick down potion effects
+    }
+
     // NEW STUFF
 
     @Override
@@ -226,32 +237,60 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     @Override
     public boolean addPotionEffect(PotionEffect effect) {
-        return false;
+        return addPotionEffect(effect, false);
     }
 
     @Override
     public boolean addPotionEffect(PotionEffect effect, boolean force) {
-        return false;
+        if (potionEffects.containsKey(effect.getType())) {
+            if (force) {
+                removePotionEffect(effect.getType());
+            } else {
+                return false;
+            }
+        }
+
+        potionEffects.put(effect.getType(), effect);
+
+        // todo: this, updated, only players in range
+        /*EntityEffectMessage msg = new EntityEffectMessage(getEntityId(), effect.getType().getId(), effect.getAmplifier(), effect.getDuration());
+        for (Player player : server.getOnlinePlayers()) {
+            ((GlowPlayer) player).getSession().send(msg);
+        }*/
+        return true;
     }
 
     @Override
     public boolean addPotionEffects(Collection<PotionEffect> effects) {
-        return false;
+        boolean result = true;
+        for (PotionEffect effect : effects) {
+            if (!addPotionEffect(effect)) {
+                result = false;
+            }
+        }
+        return result;
     }
 
     @Override
     public boolean hasPotionEffect(PotionEffectType type) {
-        return false;
+        return potionEffects.containsKey(type);
     }
 
     @Override
     public void removePotionEffect(PotionEffectType type) {
+        if (!hasPotionEffect(type)) return;
+        potionEffects.remove(type);
 
+        // todo: this, improved, for players in range
+        /*EntityRemoveEffectMessage msg = new EntityRemoveEffectMessage(getEntityId(), type.getId());
+        for (Player player : server.getOnlinePlayers()) {
+            ((GlowPlayer) player).getSession().send(msg);
+        }*/
     }
 
     @Override
     public Collection<PotionEffect> getActivePotionEffects() {
-        return null;
+        return Collections.unmodifiableCollection(potionEffects.values());
     }
 
     @Override

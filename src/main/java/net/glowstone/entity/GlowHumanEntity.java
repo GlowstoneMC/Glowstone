@@ -1,10 +1,11 @@
 package net.glowstone.entity;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
+import net.glowstone.GlowServer;
+import net.glowstone.GlowWorld;
+import net.glowstone.inventory.GlowPlayerInventory;
+import net.glowstone.msg.Message;
+import net.glowstone.msg.SpawnPlayerMessage;
+import net.glowstone.util.Position;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.HumanEntity;
@@ -15,12 +16,7 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 
-import net.glowstone.GlowServer;
-import net.glowstone.GlowWorld;
-import net.glowstone.msg.Message;
-import net.glowstone.msg.SpawnPlayerMessage;
-import net.glowstone.util.Position;
-import net.glowstone.inventory.GlowPlayerInventory;
+import java.util.Set;
 
 /**
  * Represents a human entity, such as an NPC or a player.
@@ -66,11 +62,6 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
      * The player's active game mode
      */
     private GameMode gameMode;
-
-    /**
-     * The human entity's active effects
-     */
-    private Set<ActiveEntityEffect> activeEffects = Collections.synchronizedSet(new HashSet<ActiveEntityEffect>());
     
     /**
      * Creates a human within the specified world and with the specified name.
@@ -138,9 +129,6 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         } else {
             sleepingTicks = 0;
         }
-        for (ActiveEntityEffect effect : activeEffects) {
-            if (!effect.pulse()) removeEntityEffect(effect);
-        }
     }
 
     // ---- Permissions stuff
@@ -196,18 +184,6 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     public void setOp(boolean value) {
         isOp = value;
         recalculatePermissions();
-    }
-    
-    public void addEntityEffect(ActiveEntityEffect effect) {
-        activeEffects.add(effect);
-    }
-
-    public void addEntityEffect(EntityEffect effect, byte amplitude, short duration) {
-        addEntityEffect(new ActiveEntityEffect(effect, amplitude, duration));
-    }
-
-    public void removeEntityEffect(ActiveEntityEffect effect) {
-        activeEffects.remove(effect);
     }
 
     public Location getBedSpawnLocation() {

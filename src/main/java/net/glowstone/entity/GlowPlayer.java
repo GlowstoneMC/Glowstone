@@ -931,24 +931,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
 
     @Override
-    public void addEntityEffect(ActiveEntityEffect effect) {
-        super.addEntityEffect(effect);
-        EntityEffectMessage msg = new EntityEffectMessage(getEntityId(), effect.getEffect().getId(), effect.getAmplitude(), effect.getDuration());
-        for (Player player : server.getOnlinePlayers()) {
-            ((GlowPlayer) player).getSession().send(msg);
-        }
-    }
-
-    @Override
-    public void removeEntityEffect(ActiveEntityEffect effect) {
-        super.removeEntityEffect(effect);
-        EntityRemoveEffectMessage msg = new EntityRemoveEffectMessage(getEntityId(), effect.getEffect().getId());
-        for (Player player : server.getOnlinePlayers()) {
-            ((GlowPlayer) player).getSession().send(msg);
-        }
-    }
-
-    @Override
     public Message createSpawnMessage() {
         int x = Position.getIntX(location);
         int y = Position.getIntY(location);
