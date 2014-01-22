@@ -1,8 +1,8 @@
 package net.glowstone.generator;
 
 import net.glowstone.GlowChunk;
-import net.glowstone.block.BlockID;
 import net.glowstone.block.BlockProperties;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -17,7 +17,7 @@ import java.util.*;
  */
 public abstract class GlowChunkGenerator extends ChunkGenerator {
 
-    private static final Set<Integer> noSpawnFloors = new HashSet<Integer>(Arrays.asList(BlockID.FIRE, BlockID.CACTUS, BlockID.LEAVES));
+    private static final Set<Material> noSpawnFloors = new HashSet<Material>(Arrays.asList(Material.FIRE, Material.CACTUS, Material.LEAVES));
     private final Map<String, Map<String, OctaveGenerator>> octaveCache = new HashMap<String, Map<String, OctaveGenerator>>();
     private final List<BlockPopulator> populators;
 
@@ -51,12 +51,12 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
      * @param fill The Material to fill with.
      * @return A new filled byte[16 * 16 * 128];
      */
-    protected byte[] start(int fill) {
+    protected byte[] start(Material fill) {
         if (BlockProperties.get(fill) == null) {
             throw new IllegalArgumentException("Invalid block type!");
         }
         byte[] data = new byte[GlowChunk.HEIGHT * GlowChunk.WIDTH * GlowChunk.DEPTH];
-        Arrays.fill(data, (byte) fill);
+        Arrays.fill(data, (byte) fill.getId());
         return data;
     }
 
@@ -68,7 +68,7 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
      * @param z The chunk Z coordinate.
      * @param id The block type.
      */
-    protected void set(byte[] data, int x, int y, int z, int id) {
+    protected void set(byte[] data, int x, int y, int z, Material id) {
         if (data == null) {
             throw new IllegalStateException();
         }
@@ -78,7 +78,7 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
         if (x < 0 || y < 0 || z < 0 || x >= GlowChunk.HEIGHT || y >= GlowChunk.DEPTH || z >= GlowChunk.WIDTH) {
             return;
         }
-        data[(x * 16 + z) * 128 + y] = (byte) id;
+        data[(x * 16 + z) * 128 + y] = (byte) id.getId();
     }
 
     /**
@@ -89,14 +89,14 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
      * @param z The chunk Z coordinate.
      * @return The type of block at the location.
      */
-    protected int get(byte[] data, int x, int y, int z) {
+    protected Material get(byte[] data, int x, int y, int z) {
         if (data == null) {
             throw new IllegalStateException();
         }
         if (x < 0 || y < 0 || z < 0 || x >= GlowChunk.HEIGHT || y >= GlowChunk.DEPTH || z >= GlowChunk.WIDTH) {
-            return BlockID.AIR;
+            return Material.AIR;
         }
-        return data[(x * 16 + z) * 128 + y];
+        return Material.getMaterial(data[(x * 16 + z) * 128 + y]);
     }
 
     @Override
@@ -107,7 +107,7 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
     @Override
     public boolean canSpawn(World world, int x, int z) {
         Block block = world.getHighestBlockAt(x, z).getRelative(BlockFace.DOWN);
-        return !block.isLiquid() && !block.isEmpty() && !noSpawnFloors.contains(block.getTypeId());
+        return !block.isLiquid() && !block.isEmpty() && !noSpawnFloors.contains(block.getType());
     }
     
 }

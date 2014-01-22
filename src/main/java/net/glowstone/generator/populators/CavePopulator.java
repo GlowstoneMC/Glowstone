@@ -1,15 +1,15 @@
 package net.glowstone.generator.populators;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
-
-import net.glowstone.block.BlockID;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.generator.BlockPopulator;
+
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 
 /**
  * BlockPopulator for snake-based caves.
@@ -28,8 +28,8 @@ public class CavePopulator extends BlockPopulator {
         public void run() {
             for (Location loc : snake) {
                 Block block = loc.getBlock();
-                if (!block.isEmpty() && !block.isLiquid() && block.getTypeId() != BlockID.BEDROCK) {
-                    block.setTypeId(BlockID.AIR);
+                if (!block.isEmpty() && !block.isLiquid() && block.getType() != Material.BEDROCK) {
+                    block.setType(Material.AIR);
                 }
             }
 

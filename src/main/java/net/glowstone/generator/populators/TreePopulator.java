@@ -1,14 +1,12 @@
 package net.glowstone.generator.populators;
 
-import net.glowstone.block.BlockID;
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.generator.BlockPopulator;
 
 import java.util.Random;
-
-import static net.glowstone.block.BlockID.LEAVES;
 
 /**
  * BlockPopulator that adds trees based on the biome.
@@ -75,6 +73,8 @@ public class TreePopulator extends BlockPopulator {
                 return;
         }
 
+        final int LEAVES = Material.LEAVES.getId();
+
         for (int i = 0; i < multiplier; i++) {
             centerX = (source.getX() << 4) + random.nextInt(16);
             centerZ = (source.getZ() << 4) + random.nextInt(16);
@@ -82,7 +82,7 @@ public class TreePopulator extends BlockPopulator {
                 int centerY = world.getHighestBlockYAt(centerX, centerZ) - 1;
                 Block sourceBlock = world.getBlockAt(centerX, centerY, centerZ);
 
-                if (sourceBlock.getTypeId() == BlockID.GRASS) {
+                if (sourceBlock.getType() == Material.GRASS) {
                     world.getBlockAt(centerX, centerY + height + 1, centerZ).setTypeIdAndData(LEAVES, data, true);
                     for (int j = 0; j < 4; j++) {
                         world.getBlockAt(centerX, centerY + height + 1 - j, centerZ - 1).setTypeIdAndData(LEAVES, data, true);
@@ -138,7 +138,7 @@ public class TreePopulator extends BlockPopulator {
 
                     // Trunk
                     for (int y = 1; y <= height; y++) {
-                        world.getBlockAt(centerX, centerY + y, centerZ).setTypeIdAndData(BlockID.LOG, data, true);
+                        world.getBlockAt(centerX, centerY + y, centerZ).setTypeIdAndData(Material.LOG.getId(), data, true);
                     }
                 }
             }

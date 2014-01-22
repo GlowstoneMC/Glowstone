@@ -1,8 +1,8 @@
 package net.glowstone.generator.populators;
 
-import net.glowstone.block.BlockID;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Biome;
@@ -37,15 +37,15 @@ public class LakePopulator extends BlockPopulator {
         int ry = 6 + random.nextInt(snapshot.getHighestBlockYAt(rx16, rz16) - 3);
         int radius = 2 + random.nextInt(3);
 
-        int liquidMaterial = BlockID.LAVA;
-        int solidMaterial = BlockID.OBSIDIAN;
+        Material liquidMaterial = Material.LAVA;
+        Material solidMaterial = Material.OBSIDIAN;
 
         if (random.nextInt(10) < 3) {
             ry = snapshot.getHighestBlockYAt(rx16, rz16) - 1;
         }
         if (random.nextInt(96) < ry && world.getEnvironment() != Environment.NETHER) {
-            liquidMaterial = BlockID.WATER;
-            solidMaterial = BlockID.WATER;
+            liquidMaterial = Material.WATER;
+            solidMaterial = Material.WATER;
         } else if (world.getBlockAt(rx, ry, rz).getBiome() == Biome.FOREST) {
             return;
         }
@@ -68,14 +68,14 @@ public class LakePopulator extends BlockPopulator {
             if (!block.isEmpty() && !block.isLiquid()) {
                 if (block.getY() == ry + 1) {
                     if (random.nextBoolean()) {
-                        block.setTypeId(BlockID.AIR);
+                        block.setType(Material.AIR);
                     }
                 } else if (block.getY() == ry) {
-                    block.setTypeId(BlockID.AIR);
+                    block.setType(Material.AIR);
                 } else if (random.nextInt(10) > 1) {
-                    block.setTypeId(liquidMaterial);
+                    block.setType(liquidMaterial);
                 } else {
-                    block.setTypeId(solidMaterial);
+                    block.setType(solidMaterial);
                 }
             }
         }

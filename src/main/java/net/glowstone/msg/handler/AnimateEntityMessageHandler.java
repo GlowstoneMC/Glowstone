@@ -1,7 +1,6 @@
 package net.glowstone.msg.handler;
 
 import net.glowstone.EventFactory;
-import net.glowstone.block.BlockID;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.msg.AnimateEntityMessage;
@@ -17,7 +16,7 @@ public final class AnimateEntityMessageHandler extends MessageHandler<AnimateEnt
     @Override
     public void handle(Session session, GlowPlayer player, AnimateEntityMessage message) {
         Block block = player.getTargetBlock(null, 6);
-        if (block == null || block.getTypeId() == BlockID.AIR) {
+        if (block == null || block.getTypeId() == 0) {
             if (EventFactory.onPlayerInteract(player, Action.LEFT_CLICK_AIR).isCancelled()) return; // TODO: Item interactions
         }
         if (EventFactory.onPlayerAnimate(player).isCancelled()) return;

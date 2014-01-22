@@ -171,11 +171,12 @@ public class GlowBlock implements Block {
     }
 
     public boolean isEmpty() {
-        return getTypeId() == BlockID.AIR;
+        return getTypeId() == 0;
     }
 
     public boolean isLiquid() {
-        return getTypeId() == BlockID.WATER || getTypeId() == BlockID.STATIONARY_WATER || getTypeId() == BlockID.LAVA || getTypeId() == BlockID.STATIONARY_LAVA;
+        Material mat = getType();
+        return mat == Material.WATER || mat == Material.STATIONARY_WATER || mat == Material.LAVA || mat == Material.STATIONARY_LAVA;
     }
 
     // data and light getters/setters

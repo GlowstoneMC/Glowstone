@@ -1,8 +1,11 @@
 package net.glowstone.msg.handler;
 
-import net.glowstone.block.BlockID;
+import net.glowstone.EventFactory;
+import net.glowstone.GlowWorld;
 import net.glowstone.block.BlockProperties;
-import net.glowstone.msg.BlockPlacementMessage;
+import net.glowstone.entity.GlowPlayer;
+import net.glowstone.msg.DiggingMessage;
+import net.glowstone.net.Session;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.block.Block;
@@ -11,13 +14,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
-
-import net.glowstone.EventFactory;
-import net.glowstone.GlowWorld;
-import net.glowstone.entity.GlowPlayer;
-import net.glowstone.msg.DiggingMessage;
-import net.glowstone.net.Session;
 
 /**
  * A {@link MessageHandler} which processes digging messages.
@@ -42,7 +38,7 @@ public final class DiggingMessageHandler extends MessageHandler<DiggingMessage> 
         // Need to have some sort of verification to deal with malicious clients.
         if (message.getState() == DiggingMessage.STATE_START_DIGGING) {
             Action act = Action.LEFT_CLICK_BLOCK;
-            if (player.getLocation().distanceSquared(block.getLocation()) > 36 || block.getTypeId() == BlockID.AIR) {
+            if (player.getLocation().distanceSquared(block.getLocation()) > 36 || block.getTypeId() == 0) {
                 act = Action.LEFT_CLICK_AIR;
             }
             PlayerInteractEvent interactEvent = EventFactory.onPlayerInteract(player, act, block, MessageHandlerUtils.messageToBlockFace(message.getFace()));
@@ -67,7 +63,7 @@ public final class DiggingMessageHandler extends MessageHandler<DiggingMessage> 
                 }
             }
             world.playEffectExceptTo(block.getLocation(), Effect.STEP_SOUND, block.getTypeId(), 64, player);
-            block.setTypeId(BlockID.AIR);
+            block.setTypeId(0);
         }
     }
 

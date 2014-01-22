@@ -1,6 +1,5 @@
 package net.glowstone.block.physics;
 
-import net.glowstone.block.BlockID;
 import net.glowstone.block.GlowBlock;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.FallingSand;
@@ -21,7 +20,7 @@ public class FallingBlockPhysics extends DefaultBlockPhysics {
     }
 
     public boolean checkBelowFree(GlowBlock block) {
-        if (block.getRelative(BlockFace.DOWN).getTypeId() == BlockID.AIR) {
+        if (block.getRelative(BlockFace.DOWN).isEmpty()) {
             block.setTypeId(0);
             block.getWorld().spawn(block.getLocation(), FallingSand.class);
             return true;

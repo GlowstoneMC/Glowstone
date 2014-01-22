@@ -1,12 +1,12 @@
 package net.glowstone.generator.populators;
 
-import java.util.Random;
-
-import net.glowstone.block.BlockID;
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.generator.BlockPopulator;
+
+import java.util.Random;
 
 /**
  * Populates the world with ores.
@@ -15,9 +15,9 @@ public class OrePopulator extends BlockPopulator {
 
     private static final int[] iterations = new int[]{10, 20, 20, 2, 8, 1, 1, 1};
     private static final int[] amount = new int[]{32, 16, 8, 8, 7, 7, 6};
-    private static final int[] type = new int[]{BlockID.GRAVEL, BlockID.COAL_ORE,
-        BlockID.IRON_ORE, BlockID.GOLD_ORE, BlockID.REDSTONE_ORE,
-        BlockID.DIAMOND_ORE, BlockID.LAPIS_ORE};
+    private static final Material[] type = new Material[]{Material.GRAVEL, Material.COAL_ORE,
+        Material.IRON_ORE, Material.GOLD_ORE, Material.REDSTONE_ORE,
+        Material.DIAMOND_ORE, Material.LAPIS_ORE};
     private static final int[] maxHeight = new int[]{128, 128, 128, 128, 128, 64,
         32, 16, 16, 32};
 
@@ -30,7 +30,7 @@ public class OrePopulator extends BlockPopulator {
         }
     }
 
-    private static void makeOres(Chunk source, Random random, int originX, int originY, int originZ, int amount, int type) {
+    private static void makeOres(Chunk source, Random random, int originX, int originY, int originZ, int amount, Material type) {
         for (int i = 0; i < amount; i++) {
             int x = originX + random.nextInt(amount / 2) - amount / 4;
             int y = originY + random.nextInt(amount / 4) - amount / 8;
@@ -41,8 +41,8 @@ public class OrePopulator extends BlockPopulator {
                 continue;
             }
             Block block = source.getBlock(x, y, z);
-            if (block.getTypeId() == BlockID.STONE) {
-                block.setTypeId(type, false);
+            if (block.getType() == Material.STONE) {
+                block.setTypeId(type.getId(), false);
             }
         }
     }

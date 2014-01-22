@@ -24,7 +24,6 @@
 package net.glowstone.util;
 
 import gnu.trove.set.hash.TIntHashSet;
-import net.glowstone.block.BlockID;
 import net.glowstone.entity.GlowLivingEntity;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -114,7 +113,7 @@ public class TargetBlock {
         boolean searchForLastBlock = true;
         Location lastBlock = null;
         while (getNextBlock()) {
-            if (world.getBlockTypeIdAt(getCurrentBlock()) == BlockID.AIR) {
+            if (world.getBlockTypeIdAt(getCurrentBlock()) == 0) {
                 if(searchForLastBlock) {
                     lastBlock = getCurrentBlock();
                     if (lastBlock.getBlockY() <= 0 || lastBlock.getBlockY() >= world.getMaxHeight() - 1) {
@@ -137,7 +136,7 @@ public class TargetBlock {
      */
     public Location getTargetBlock() {
         while (getNextBlock()
-                && (world.getBlockTypeIdAt(getCurrentBlock()) == BlockID.AIR));
+                && (world.getBlockTypeIdAt(getCurrentBlock()) == 0));
         return getCurrentBlock();
     }
 

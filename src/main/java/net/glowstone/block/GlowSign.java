@@ -1,9 +1,10 @@
 package net.glowstone.block;
 
-import org.bukkit.block.Sign;
 import net.glowstone.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.msg.UpdateSignMessage;
+import org.bukkit.Material;
+import org.bukkit.block.Sign;
 
 public class GlowSign extends GlowBlockState implements Sign {
     
@@ -11,7 +12,7 @@ public class GlowSign extends GlowBlockState implements Sign {
 
     public GlowSign(GlowBlock block) {
         super(block);
-        if (block.getTypeId() != BlockID.WALL_SIGN && block.getTypeId() != BlockID.SIGN_POST) {
+        if (block.getType() != Material.WALL_SIGN && block.getType() != Material.SIGN_POST) {
             throw new IllegalArgumentException("GlowSign: expected WALL_SIGN or SIGN_POST, got " + block.getType());
         }
         lines = new String[4];

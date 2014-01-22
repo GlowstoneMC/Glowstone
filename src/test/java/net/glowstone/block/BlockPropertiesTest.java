@@ -2,8 +2,6 @@ package net.glowstone.block;
 
 import org.junit.Before;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,10 +10,10 @@ public class BlockPropertiesTest {
 
     @Before
     public void setUp() throws IllegalAccessException {
-        for (Field field : BlockID.class.getFields()) {
+        /*for (Field field : BlockID.class.getFields()) {
             if (!Modifier.isStatic(field.getModifiers())) continue;
             blockIdKnown.add(field.getInt(null));
-        }
+        }*/
     }
     /*@Test
     public void testIdInclusion() throws IllegalAccessException {

@@ -1,15 +1,14 @@
 package net.glowstone.generator;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Random;
-
-import net.glowstone.block.BlockID;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.util.noise.OctaveGenerator;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
+
+import java.util.Map;
+import java.util.Random;
 
 /**
  * A generator for subterranean worlds, in particular the Nether.
@@ -36,7 +35,7 @@ public class UndergroundGenerator extends GlowChunkGenerator {
         chunkX <<= 4;
         chunkZ <<= 4;
 
-        int stone = world.getEnvironment() == Environment.NETHER ? BlockID.NETHERRACK : BlockID.STONE;
+        Material stone = world.getEnvironment() == Environment.NETHER ? Material.NETHERRACK : Material.STONE;
         int height = world.getMaxHeight();
 
         byte[] buf = start(stone);
@@ -55,13 +54,13 @@ public class UndergroundGenerator extends GlowChunkGenerator {
                 }
 
                 if (min >= max) {
-                    set(buf, x, 0, z, BlockID.BEDROCK);
-                    set(buf, x, height - 1, z, BlockID.BEDROCK);
+                    set(buf, x, 0, z, Material.BEDROCK);
+                    set(buf, x, height - 1, z, Material.BEDROCK);
                     continue;
                 }
 
                 for (int y = min; y <= max; y++) {
-                    set(buf, x, y, z, BlockID.AIR);
+                    set(buf, x, y, z, Material.AIR);
                 }
 
                 int platform = (int) (noisePlatform1.noise(x + chunkX, z + chunkZ, 0.5, 0.5, true) * 20 - 4);
@@ -81,12 +80,12 @@ public class UndergroundGenerator extends GlowChunkGenerator {
                 }
 
                 for (int i = 4; i > 0; i--) {
-                    if (get(buf, x, i, z) == BlockID.AIR) {
-                        set(buf, x, i, z, BlockID.LAVA);
+                    if (get(buf, x, i, z) == Material.AIR) {
+                        set(buf, x, i, z, Material.LAVA);
                     }
                 }
-                set(buf, x, 0, z, BlockID.BEDROCK);
-                set(buf, x, height - 1, z, BlockID.BEDROCK);
+                set(buf, x, 0, z, Material.BEDROCK);
+                set(buf, x, height - 1, z, Material.BEDROCK);
             }
         }
 

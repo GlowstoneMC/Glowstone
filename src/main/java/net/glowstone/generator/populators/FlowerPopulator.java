@@ -1,7 +1,7 @@
 package net.glowstone.generator.populators;
 
-import net.glowstone.block.BlockID;
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -24,29 +24,29 @@ public class FlowerPopulator extends BlockPopulator {
                 int y = world.getHighestBlockYAt(cx, cz);
 
                 Block block = source.getBlock(x, y, z);
-                if (block.getTypeId() == BlockID.AIR
-                        && block.getRelative(BlockFace.DOWN).getTypeId() == BlockID.GRASS) {
+                if (block.getType() == Material.AIR
+                        && block.getRelative(BlockFace.DOWN).getType() == Material.GRASS) {
                     if (block.getBiome() == Biome.PLAINS) {
                         int n = random.nextInt(64);
                         if (n < 1) {
-                            block.setTypeId(BlockID.RED_ROSE);
+                            block.setType(Material.RED_ROSE);
                         } else if (n < 4) {
-                            block.setTypeId(BlockID.YELLOW_FLOWER);
+                            block.setType(Material.YELLOW_FLOWER);
                         }
                     } else if (block.getBiome() == Biome.SAVANNA) {
                         int n = random.nextInt(256);
                         if (n < 2) {
-                            block.setTypeId(BlockID.RED_ROSE);
+                            block.setType(Material.RED_ROSE);
                         } else if (n < 3) {
-                            block.setTypeId(BlockID.YELLOW_FLOWER);
+                            block.setType(Material.YELLOW_FLOWER);
                         } else if (n < 16) {
-                            block.setTypeId(BlockID.LONG_GRASS);
+                            block.setType(Material.LONG_GRASS);
                             block.setData((byte) 1);
                         }
                     } else if (block.getBiome() == Biome.FOREST) {
                         int n = random.nextInt(256);
                         if (n < 16) {
-                            block.setTypeId(BlockID.LONG_GRASS);
+                            block.setType(Material.LONG_GRASS);
                             block.setData((byte) 2);
                         }
                     }

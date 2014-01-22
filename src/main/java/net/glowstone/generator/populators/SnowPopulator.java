@@ -1,8 +1,8 @@
 package net.glowstone.generator.populators;
 
-import net.glowstone.block.BlockID;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -30,7 +30,7 @@ public class SnowPopulator extends BlockPopulator {
                 }
 
                 int y = snapshot.getHighestBlockYAt(x, z);
-                if (source.getBlock(x, y, z).getTypeId() == BlockID.AIR) {
+                if (source.getBlock(x, y, z).getType() == Material.AIR) {
                     y--;
                 }
 
@@ -39,16 +39,16 @@ public class SnowPopulator extends BlockPopulator {
                     case WATER:
                     case STATIONARY_WATER:
                         if (block.getData() == 0) {
-                            block.setTypeId(BlockID.ICE);
+                            block.setType(Material.ICE);
                         }
                         break;
                     case LAVA:
                     case STATIONARY_LAVA:
                         break;
                     case DIRT:
-                        block.setTypeId(BlockID.GRASS);
+                        block.setType(Material.GRASS);
                     default:
-                        block.getRelative(BlockFace.UP).setTypeId(BlockID.SNOW);
+                        block.getRelative(BlockFace.UP).setType(Material.SNOW);
                         break;
                 }
             }

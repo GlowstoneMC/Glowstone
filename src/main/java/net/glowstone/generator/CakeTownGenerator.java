@@ -1,12 +1,12 @@
 package net.glowstone.generator;
 
-import java.util.Random;
-
-import net.glowstone.block.BlockID;
+import net.glowstone.generator.populators.FlowerPopulator;
+import net.glowstone.generator.populators.SnowPopulator;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 
-import net.glowstone.generator.populators.*;
+import java.util.Random;
 
 /**
  * A 'cake town' generator as a temporary Skylands.
@@ -30,7 +30,7 @@ public class CakeTownGenerator extends GlowChunkGenerator {
 
         Location center = new Location(world, 0, base, 0);
 
-        byte[] buf = start(BlockID.AIR);
+        byte[] buf = start(0);
 
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
@@ -40,17 +40,17 @@ public class CakeTownGenerator extends GlowChunkGenerator {
                     double dist = new Location(world, realX, y, realZ).distance(center);
                     if (dist < 100) {
                         if (y <= base + 1 && y >= base) {
-                            set(buf, x, y, z, BlockID.BEDROCK);
+                            set(buf, x, y, z, Material.BEDROCK);
                         } else if (y == top) {
-                            set(buf, x, y, z, BlockID.GRASS);
+                            set(buf, x, y, z, Material.GRASS);
                         } else {
-                            set(buf, x, y, z, BlockID.STONE);
+                            set(buf, x, y, z, Material.STONE);
                         }
                     } else if (dist < 102) {
                         if (y <= base + 1 && y >= base) {
-                            set(buf, x, y, z, BlockID.BEDROCK);
+                            set(buf, x, y, z, Material.BEDROCK);
                         } else {
-                            set(buf, x, y, z, BlockID.GRASS);
+                            set(buf, x, y, z, Material.GRASS);
                         }
                     }
                 }
