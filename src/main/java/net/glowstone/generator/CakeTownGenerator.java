@@ -30,7 +30,7 @@ public class CakeTownGenerator extends GlowChunkGenerator {
 
         Location center = new Location(world, 0, base, 0);
 
-        byte[] buf = start(0);
+        byte[] buf = start(Material.AIR);
 
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {

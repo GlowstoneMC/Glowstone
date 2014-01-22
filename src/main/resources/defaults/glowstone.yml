@@ -1,9 +1,10 @@
+# glowstone.yml is the main configuration file for a Glowstone server
+# It contains everything from server.properties and bukkit.yml in a
+# normal CraftBukkit installation.
+
 server:
-    ip: ''
     port: 25565
     name: Glowstone Server
-    log-file: logs/log-%D.txt
-    fuzzy-commands: false
     online-mode: true
     max-players: 20
     whitelisted: false
@@ -17,22 +18,8 @@ folders:
 
 world:
     name: world
-    level-type: NORMAL
     spawn-radius: 16
     view-distance: 8
     gen-structures: true
     allow-nether: true
     allow-end: true
-
-database:
-    driver: "org.sqlite.JDBC"
-    url: jdbc:sqlite:{DIR}{NAME}.db
-    username: glowstone
-    password: nether
-    isolation: SERIALIZABLE
-
-aliases:
-    "<3glowstone":
-        - version
-        - plugins
-

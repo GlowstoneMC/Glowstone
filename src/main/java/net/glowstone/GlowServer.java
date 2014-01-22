@@ -203,6 +203,16 @@ public final class GlowServer implements Server {
     private boolean isShuttingDown = false;
 
     /**
+     * Whether the whitelist is in effect.
+     */
+    private boolean whitelistEnabled;
+
+    /**
+     * The size of the area to keep protected around the spawn point.
+     */
+    private int spawnRadius;
+
+    /**
      * A cache of existing OfflinePlayers
      */
     private final Map<String, OfflinePlayer> offlineCache = new ConcurrentHashMap<String, OfflinePlayer>();
@@ -228,8 +238,9 @@ public final class GlowServer implements Server {
         } catch (NullPointerException e) {
             defaultGameMode = GameMode.SURVIVAL;
         }
-        config.set(ServerConfig.Key.GAMEMODE, defaultGameMode.name());
-        // config.getString("server.terminal-mode", "jline")
+
+        spawnRadius = config.getInt(ServerConfig.Key.SPAWN_RADIUS);
+        whitelistEnabled = config.getBoolean(ServerConfig.Key.WHITELIST);
     }
 
     /**
@@ -272,7 +283,8 @@ public final class GlowServer implements Server {
 
         // Create worlds
         String name = config.getString(ServerConfig.Key.LEVEL_NAME);
-        long seed = config.getString(ServerConfig.Key.LEVEL_SEED).hashCode();
+        String seedString = config.getString(ServerConfig.Key.LEVEL_SEED);
+        long seed = seedString.isEmpty() ? System.currentTimeMillis() : seedString.hashCode();
         boolean structs = getGenerateStructures();
         WorldType type = WorldType.getByName(getWorldType());
         if (type == null) {
@@ -597,7 +609,7 @@ public final class GlowServer implements Server {
 
     public Map<String, String[]> getCommandAliases() {
         Map<String, String[]> aliases = new HashMap<String, String[]>();
-        ConfigurationSection section = config.getSection("aliases");
+        ConfigurationSection section = config.getAliases();
         if (section == null) return aliases;
         List<String> cmdAliases = new ArrayList<String>();
         for (String key : section.getKeys(false)) {
@@ -795,7 +807,7 @@ public final class GlowServer implements Server {
      */
     private ChunkGenerator getGenerator(String name, Environment environment, WorldType type) {
         // find generator based on configuration
-        ConfigurationSection worlds = config.getSection("worlds");
+        ConfigurationSection worlds = config.getWorlds();
         if (worlds != null) {
             String genName = worlds.getString(name + ".generator", null);
             ChunkGenerator generator = WorldCreator.getGeneratorForName(name, genName, getConsoleSender());
@@ -951,19 +963,19 @@ public final class GlowServer implements Server {
     }
 
     public int getSpawnRadius() {
-        return config.getInt(ServerConfig.Key.SPAWN_RADIUS);
+        return spawnRadius;
     }
 
     public void setSpawnRadius(int value) {
-        config.set(ServerConfig.Key.SPAWN_RADIUS, value);
+        spawnRadius = value;
     }
 
     public boolean hasWhitelist() {
-        return config.getBoolean(ServerConfig.Key.WHITELIST);
+        return whitelistEnabled;
     }
 
     public void setWhitelist(boolean enabled) {
-        config.set(ServerConfig.Key.WHITELIST, enabled);
+        whitelistEnabled = enabled;
     }
 
     public Warning.WarningState getWarningState() {
@@ -972,12 +984,11 @@ public final class GlowServer implements Server {
 
     public void configureDbConfig(com.avaje.ebean.config.ServerConfig dbConfig) {
         com.avaje.ebean.config.DataSourceConfig ds = new com.avaje.ebean.config.DataSourceConfig();
-        ConfigurationSection section = config.getSection("database");
-        ds.setDriver(section.getString("driver", "org.sqlite.JDBC"));
-        ds.setUrl(section.getString("url", "jdbc:sqlite:{DIR}{NAME}.db"));
-        ds.setUsername(section.getString("username", "glow"));
-        ds.setPassword(section.getString("password", "stone"));
-        ds.setIsolationLevel(com.avaje.ebeaninternal.server.lib.sql.TransactionIsolation.getLevel(section.getString("isolation", "SERIALIZABLE")));
+        ds.setDriver(config.getString(ServerConfig.Key.DB_DRIVER));
+        ds.setUrl(config.getString(ServerConfig.Key.DB_URL));
+        ds.setUsername(config.getString(ServerConfig.Key.DB_USERNAME));
+        ds.setPassword(config.getString(ServerConfig.Key.DB_PASSWORD));
+        ds.setIsolationLevel(com.avaje.ebeaninternal.server.lib.sql.TransactionIsolation.getLevel(config.getString(ServerConfig.Key.DB_ISOLATION)));
 
         if (ds.getDriver().contains("sqlite")) {
             dbConfig.setDatabasePlatform(new com.avaje.ebean.config.dbplatform.SQLitePlatform());
