@@ -1,7 +1,11 @@
 package net.glowstone;
 
 import com.grahamedgecombe.jterminal.JTerminal;
-import jline.*;
+import jline.console.ConsoleReader;
+import jline.console.completer.ArgumentCompleter;
+import jline.console.completer.Completer;
+import jline.console.completer.NullCompleter;
+import jline.console.completer.StringsCompleter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.ConsoleCommandSender;
@@ -144,19 +148,19 @@ public final class ConsoleManager {
     }
     
     public void refreshCommands() {
-        for (Object c : new ArrayList(reader.getCompletors())) {
-            reader.removeCompletor((Completor) c);
+        for (Completer c : new ArrayList<Completer>(reader.getCompleters())) {
+            reader.removeCompleter(c);
         }
         
-        Completor[] list = new Completor[] { new SimpleCompletor(server.getAllCommands()), new NullCompletor() };
-        reader.addCompletor(new ArgumentCompletor(list));
+        Completer[] list = new Completer[] { new StringsCompleter(server.getAllCommands()), new NullCompleter() };
+        reader.addCompleter(new ArgumentCompleter(list));
         sender.recalculatePermissions();
     }
     
     public String colorize(String string) {
         if (!string.contains("\u00A7")) {
             return string;
-        } else if ((!jLine || !reader.getTerminal().isANSISupported()) && jTerminal == null) {
+        } else if ((!jLine || !reader.getTerminal().isAnsiSupported()) && jTerminal == null) {
             return ChatColor.stripColor(string);
         } else {
             return string.replace(ChatColor.RED.toString(), "\033[1;31m")
@@ -380,15 +384,15 @@ public final class ConsoleManager {
         public synchronized void flush() {
             try {
                 if (jLine && jTerminal == null) {
-                    reader.printString(ConsoleReader.RESET_LINE + "");
-                    reader.flushConsole();
+                    reader.print(ConsoleReader.RESET_LINE + "");
+                    reader.flush();
                     super.flush();
                     try {
                         reader.drawLine();
                     } catch (Throwable ex) {
-                        reader.getCursorBuffer().clearBuffer();
+                        reader.getCursorBuffer().clear();
                     }
-                    reader.flushConsole();
+                    reader.flush();
                 } else {
                     super.flush();
                 }
