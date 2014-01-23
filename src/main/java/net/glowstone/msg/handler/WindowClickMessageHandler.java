@@ -1,18 +1,15 @@
 package net.glowstone.msg.handler;
 
-import java.util.logging.Level;
-
-import net.glowstone.inventory.GlowItemStack;
-import net.glowstone.msg.CloseWindowMessage;
-import org.bukkit.GameMode;
-import org.bukkit.inventory.ItemStack;
-
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.inventory.CraftingInventory;
+import net.glowstone.inventory.GlowCraftingInventory;
 import net.glowstone.inventory.GlowInventory;
+import net.glowstone.inventory.GlowItemStack;
 import net.glowstone.msg.TransactionMessage;
 import net.glowstone.msg.WindowClickMessage;
 import net.glowstone.net.Session;
+import org.bukkit.GameMode;
+
+import java.util.logging.Level;
 
 public final class WindowClickMessageHandler extends MessageHandler<WindowClickMessage> {
 
@@ -93,7 +90,7 @@ public final class WindowClickMessageHandler extends MessageHandler<WindowClickM
             return;
         }
         
-        if (inv == player.getInventory().getCraftingInventory() && slot == CraftingInventory.RESULT_SLOT && player.getItemOnCursor() != null) {
+        if (inv == player.getInventory().getCraftingInventory() && slot == GlowCraftingInventory.RESULT_SLOT && player.getItemOnCursor() != null) {
             response(session, message, false);
             return;
         }
@@ -102,7 +99,7 @@ public final class WindowClickMessageHandler extends MessageHandler<WindowClickM
         inv.setItem(slot, player.getItemOnCursor());
         player.setItemOnCursor(currentItem);
         
-        if (inv == player.getInventory().getCraftingInventory() && slot == CraftingInventory.RESULT_SLOT && currentItem != null) {
+        if (inv == player.getInventory().getCraftingInventory() && slot == GlowCraftingInventory.RESULT_SLOT && currentItem != null) {
             player.getInventory().getCraftingInventory().craft();
         }
     }

@@ -1,7 +1,10 @@
 package net.glowstone.inventory;
 
+import net.glowstone.entity.GlowPlayer;
 import org.bukkit.entity.HumanEntity;
-import org.bukkit.inventory.*;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 /**
  * An Inventory representing the items a player is holding.
@@ -13,32 +16,22 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     public static final int LEGGINGS_SLOT = 38;
     public static final int BOOTS_SLOT = 39;
     
-    private final CraftingInventory crafting = new CraftingInventory();
+    private final GlowCraftingInventory crafting = new GlowCraftingInventory(this);
     
     private int heldSlot = 0;
 
-    public GlowPlayerInventory() {
+    public GlowPlayerInventory(GlowPlayer owner) {
         // all player inventories are ID 0
         // 36 = 4 rows of 9
         // + 4 = armor, completed inventory
-        super((byte) 0, 40);
-    }
-
-    /**
-     * Return the name of the inventory
-     *
-     * @return The inventory name
-     */
-    @Override
-    public String getName() {
-        return "Player Inventory";
+        super(owner, InventoryType.PLAYER, 40);
     }
     
     /**
      * Get the crafting inventory.
-     * @return The CraftingInventory attached to this player
+     * @return The GlowCraftingInventory attached to this player
      */
-    public CraftingInventory getCraftingInventory() {
+    public GlowCraftingInventory getCraftingInventory() {
         return crafting;
     }
 
@@ -147,13 +140,20 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         return -1;
     }
 
-    @Override
     public int clear(int id, int data) {
-        throw new UnsupportedOperationException();
+        int cleared = 0;
+        for (int i = 0; i < getSize(); ++i) {
+            ItemStack stack = getItem(i);
+            if ((stack.getTypeId() == id || id == -1) && (stack.getDurability() == data || data == -1)) {
+                setItem(i, null);
+                ++cleared;
+            }
+        }
+        return cleared;
     }
 
     @Override
     public HumanEntity getHolder() {
-        throw new UnsupportedOperationException();
+        return (HumanEntity) super.getHolder();
     }
 }
