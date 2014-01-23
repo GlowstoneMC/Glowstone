@@ -1,6 +1,6 @@
 package net.glowstone;
 
-import net.glowstone.command.*;
+import net.glowstone.command.GlowCommandMap;
 import net.glowstone.inventory.CraftingManager;
 import net.glowstone.io.StorageQueue;
 import net.glowstone.map.GlowMapView;
@@ -125,7 +125,7 @@ public final class GlowServer implements Server {
     /**
      * The command map of this server.
      */
-    private final GlowCommandMap commandMap = new GlowCommandMap(this);
+    private final SimpleCommandMap commandMap = new SimpleCommandMap(this);
 
     /**
      * The plugin manager of this server.
@@ -254,31 +254,10 @@ public final class GlowServer implements Server {
         whitelist.load();
         banManager.load();
 
-        // Start loading plugins
-        loadPlugins();
-
-        // Begin registering permissions
         DefaultPermissions.registerCorePermissions();
 
-        // Register these first so they're usable while the worlds are loading
-        GlowCommandMap.initGlowPermissions(this);
-        commandMap.register(new MeCommand(this));
-        commandMap.register(new ColorCommand(this));
-        commandMap.register(new KickCommand(this));
-        commandMap.register(new ListCommand(this));
-        commandMap.register(new TimeCommand(this));
-        commandMap.register(new WhitelistCommand(this));
-        commandMap.register(new BanCommand(this));
-        commandMap.register(new GameModeCommand(this));
-        commandMap.register(new OpCommand(this));
-        commandMap.register(new DeopCommand(this));
-        commandMap.register(new StopCommand(this));
-        commandMap.register(new SaveCommand(this));
-        commandMap.register(new SayCommand(this));
-        commandMap.removeAllOfType(ReloadCommand.class);
-        commandMap.register(new ReloadCommand(this));
-        commandMap.register(new HelpCommand(this, commandMap.getKnownCommands(false)));
-
+        // Start loading plugins
+        loadPlugins();
         enablePlugins(PluginLoadOrder.STARTUP);
 
         // Create worlds
@@ -360,7 +339,7 @@ public final class GlowServer implements Server {
      */
     private void loadPlugins() {
         // clear the map
-        commandMap.removeAllOfType(PluginCommand.class);
+        commandMap.clearCommands();
 
         File folder = new File(config.getString(ServerConfig.Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {
@@ -427,7 +406,6 @@ public final class GlowServer implements Server {
             loadPlugins();
             DefaultPermissions.registerCorePermissions();
             GlowCommandMap.initGlowPermissions(this);
-            commandMap.registerAllPermissions();
             enablePlugins(PluginLoadOrder.STARTUP);
             enablePlugins(PluginLoadOrder.POSTWORLD);
             commandMap.registerServerAliases();
@@ -498,9 +476,17 @@ public final class GlowServer implements Server {
     /**
      * Get a list of all commands the server has available
      */
-    protected String[] getAllCommands() {
-        HashSet<String> knownCommands = new HashSet<String>(commandMap.getKnownCommandNames());
-        return knownCommands.toArray(new String[knownCommands.size()]);
+    protected List<String> getAllCommands() {
+        Collection<Command> commands = commandMap.getCommands();
+        Collection<? extends Command> fallback = commandMap.getFallbackCommands();
+        List<String> result = new ArrayList<String>(commands.size() + fallback.size());
+        for (Command command : commands) {
+            result.add(command.getName());
+        }
+        for (Command command : fallback) {
+            result.add(command.getName());
+        }
+        return result;
     }
 
     /**
@@ -611,40 +597,25 @@ public final class GlowServer implements Server {
         Map<String, String[]> aliases = new HashMap<String, String[]>();
         ConfigurationSection section = config.getAliases();
         if (section == null) return aliases;
-        List<String> cmdAliases = new ArrayList<String>();
         for (String key : section.getKeys(false)) {
-            cmdAliases.clear();
-            cmdAliases.addAll(section.getStringList(key));
-            aliases.put(key, cmdAliases.toArray(new String[cmdAliases.size()]));
+            List<String> list = section.getStringList(key);
+            aliases.put(key, list.toArray(new String[list.size()]));
         }
         return aliases;
     }
 
     public void reloadCommandAliases() {
-        commandMap.removeAllOfType(MultipleCommandAlias.class);
+        //commandMap.removeAllOfType(MultipleCommandAlias.class);
         commandMap.registerServerAliases();
     }
 
-    public boolean dispatchCommand(CommandSender sender, String commandLine) {
-        try {
-            if (commandMap.dispatch(sender, commandLine, false)) {
-                return true;
-            }
+    public boolean dispatchCommand(CommandSender sender, String commandLine) throws CommandException {
+        if (commandMap.dispatch(sender, commandLine)) {
+            return true;
+        }
 
-            if (getFuzzyCommandMatching()) {
-                if (commandMap.dispatch(sender, commandLine, true)) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-        catch (CommandException ex) {
-            throw ex;
-        }
-        catch (Exception ex) {
-            throw new CommandException("Unhandled exception executing command", ex);
-        }
+        sender.sendMessage("Unknown command, try \"help\": " + commandLine);
+        return false;
     }
 
     ////////////////////////////////////////////////////////////////////////////
