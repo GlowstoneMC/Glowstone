@@ -603,6 +603,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         }
     }
 
+    public void sendMessage(String[] messages) {
+        for (String line : messages) {
+            sendMessage(line);
+        }
+    }
+
     public void sendRawMessage(String message) {
         session.send(new ChatMessage(message.length() <= 119 ? message : message.substring(0, 119)));
     }
@@ -1094,11 +1100,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     @Override
     public double getHealthScale() {
         return 0;
-    }
-
-    @Override
-    public void sendMessage(String[] messages) {
-
     }
 
     @Override

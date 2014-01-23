@@ -8,6 +8,7 @@ import net.glowstone.net.MinecraftPipelineFactory;
 import net.glowstone.net.Session;
 import net.glowstone.net.SessionRegistry;
 import net.glowstone.scheduler.GlowScheduler;
+import net.glowstone.util.GlowHelpMap;
 import net.glowstone.util.PlayerListFile;
 import net.glowstone.util.ServerConfig;
 import net.glowstone.util.bans.BanManager;
@@ -145,7 +146,7 @@ public final class GlowServer implements Server {
     /**
      * The help map for the server.
      */
-    private final HelpMap helpMap = null;
+    private final GlowHelpMap helpMap = new GlowHelpMap(this);
 
     /**
      * The scoreboard manager for the server.
@@ -253,8 +254,6 @@ public final class GlowServer implements Server {
         opsList.load();
         whitelist.load();
         banManager.load();
-
-        DefaultPermissions.registerCorePermissions();
 
         // Start loading plugins
         loadPlugins();
@@ -367,6 +366,12 @@ public final class GlowServer implements Server {
      * @param type The type of plugin to enable.
      */
     private void enablePlugins(PluginLoadOrder type) {
+        if (type == PluginLoadOrder.STARTUP) {
+            helpMap.clear();
+            helpMap.initializeGeneralTopics();
+        }
+
+        // load all the plugins
         Plugin[] plugins = pluginManager.getPlugins();
         for (Plugin plugin : plugins) {
             if (!plugin.isEnabled() && plugin.getDescription().getLoad() == type) {
@@ -387,6 +392,13 @@ public final class GlowServer implements Server {
                 }
             }
         }
+
+        if (type == PluginLoadOrder.POSTWORLD) {
+            commandMap.registerServerAliases();
+            // permissions.yml should be loaded here
+            DefaultPermissions.registerCorePermissions();
+            helpMap.initializeCommands();
+        }
     }
 
     /**
@@ -404,7 +416,6 @@ public final class GlowServer implements Server {
             
             // Load plugins
             loadPlugins();
-            DefaultPermissions.registerCorePermissions();
             GlowCommandMap.initGlowPermissions(this);
             enablePlugins(PluginLoadOrder.STARTUP);
             enablePlugins(PluginLoadOrder.POSTWORLD);
@@ -419,6 +430,15 @@ public final class GlowServer implements Server {
 
     ////////////////////////////////////////////////////////////////////////////
     // Access to internals
+
+
+    /**
+     * Gets the command map.
+     * @return The {@link SimpleCommandMap}.
+     */
+    public SimpleCommandMap getCommandMap() {
+        return commandMap;
+    }
 
     /**
      * Gets the channel group.
