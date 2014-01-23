@@ -1,6 +1,6 @@
 package net.glowstone.inventory;
 
-import net.glowstone.entity.GlowPlayer;
+import net.glowstone.entity.GlowHumanEntity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +20,7 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     
     private int heldSlot = 0;
 
-    public GlowPlayerInventory(GlowPlayer owner) {
+    public GlowPlayerInventory(GlowHumanEntity owner) {
         // all player inventories are ID 0
         // 36 = 4 rows of 9
         // + 4 = armor, completed inventory

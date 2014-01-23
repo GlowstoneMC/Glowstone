@@ -31,7 +31,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     /**
      * The inventory of this human.
      */
-    private final GlowPlayerInventory inventory = new GlowPlayerInventory();
+    private final GlowPlayerInventory inventory = new GlowPlayerInventory(this);
     
     /**
      * Whether this human is sleeping or not.
