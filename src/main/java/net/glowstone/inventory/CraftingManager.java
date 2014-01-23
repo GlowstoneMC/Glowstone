@@ -18,10 +18,10 @@ public final class CraftingManager implements Iterable<Recipe> {
     private final ArrayList<ShapelessRecipe> shapelessRecipes = new ArrayList<ShapelessRecipe>();
     private final ArrayList<FurnaceRecipe> furnaceRecipes = new ArrayList<FurnaceRecipe>();
     private final Map<Material, Integer> furnaceFuels = new HashMap<Material, Integer>();
-    
-    public CraftingManager() {
-        //resetRecipes();
-        
+
+    public void initialize() {
+        resetRecipes();
+
         // Report stats
         int shape = shapedRecipes.size(), nshape = shapelessRecipes.size(), furnace = furnaceRecipes.size(), fuel = furnaceFuels.size();
         GlowServer.logger.log(Level.INFO, "Recipes: {0} shaped, {1} shapeless, {2} furnace, {3} fuels.", new Object[] { shape, nshape, furnace, fuel });

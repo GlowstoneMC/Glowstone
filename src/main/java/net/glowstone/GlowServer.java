@@ -2,6 +2,7 @@ package net.glowstone;
 
 import net.glowstone.command.GlowCommandMap;
 import net.glowstone.inventory.CraftingManager;
+import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.io.StorageQueue;
 import net.glowstone.map.GlowMapView;
 import net.glowstone.net.MinecraftPipelineFactory;
@@ -139,11 +140,6 @@ public final class GlowServer implements Server {
     private final Messenger messenger = new StandardMessenger();
 
     /**
-     * The item metadata factory for the server.
-     */
-    private final ItemFactory itemFactory = null;
-
-    /**
      * The help map for the server.
      */
     private final GlowHelpMap helpMap = new GlowHelpMap(this);
@@ -242,6 +238,7 @@ public final class GlowServer implements Server {
 
         spawnRadius = config.getInt(ServerConfig.Key.SPAWN_RADIUS);
         whitelistEnabled = config.getBoolean(ServerConfig.Key.WHITELIST);
+        craftingManager.initialize();
     }
 
     /**
@@ -590,7 +587,7 @@ public final class GlowServer implements Server {
     }
 
     public ItemFactory getItemFactory() {
-        return itemFactory;
+        return GlowItemFactory.instance();
     }
 
     public ScoreboardManager getScoreboardManager() {
