@@ -19,6 +19,7 @@ import net.glowstone.net.query.QueryServer;
 import net.glowstone.net.rcon.RconServer;
 import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.scheduler.WorldScheduler;
+import net.glowstone.scoreboard.GlowScoreboardManager;
 import net.glowstone.util.*;
 import net.glowstone.util.bans.GlowBanList;
 import net.glowstone.util.bans.UuidListFile;
@@ -265,7 +266,7 @@ public final class GlowServer implements Server {
     /**
      * The scoreboard manager for the server.
      */
-    private final ScoreboardManager scoreboardManager = null;
+    private final ScoreboardManager scoreboardManager = new GlowScoreboardManager(this);
 
     /**
      * The crafting manager for this server.
