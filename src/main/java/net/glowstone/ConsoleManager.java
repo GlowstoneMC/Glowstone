@@ -36,129 +36,145 @@ import java.util.logging.*;
  * Portions are heavily based on CraftBukkit.
  */
 public final class ConsoleManager {
-    
-    private GlowServer server;
-    
+
+    private static final String CONSOLE_DATE = "HH:mm:ss";
+    private static final String FILE_DATE = "yyyy/MM/dd HH:mm:ss";
+    private static final Logger logger = Logger.getLogger("");
+
+    private final GlowServer server;
+
     private ConsoleReader reader;
     private ConsoleCommandSender sender;
-    private ConsoleCommandThread thread;
-    private FancyConsoleHandler consoleHandler;
-    private RotatingFileHandler fileHandler;
-    
+    private ConsoleHandler consoleHandler;
+
     private JFrame jFrame = null;
     private JTerminal jTerminal = null;
     private JTextField jInput = null;
-    
+
     private boolean running = true;
     private boolean jLine = false;
-    
-    public ConsoleManager(GlowServer server, String mode) {
-        this.server = server;
-        
-        if (mode.equalsIgnoreCase("gui")) {
-            JTerminalListener listener = new JTerminalListener();
-            
-            jFrame = new JFrame("Glowstone");
-            jTerminal = new JTerminal();
-            jInput = new JTextField(80) {
-                @Override public void setBorder(Border border) {}
-            };
-            jInput.paint(null);
-            jInput.setFont(new Font("Monospaced", Font.PLAIN, 12));
-            jInput.setBackground(Color.BLACK);
-            jInput.setForeground(Color.WHITE);
-            jInput.setMargin(new Insets(0, 0, 0, 0));
-            jInput.addKeyListener(listener);
-            
-            JLabel caret = new JLabel("> ");
-            caret.setFont(new Font("Monospaced", Font.PLAIN, 12));
-            caret.setForeground(Color.WHITE);
-            
-            JPanel ipanel = new JPanel();
-            ipanel.add(caret, BorderLayout.WEST);
-            ipanel.add(jInput, BorderLayout.EAST);
-            ipanel.setBorder(BorderFactory.createEmptyBorder());
-            ipanel.setBackground(Color.BLACK);
-            ipanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-            ipanel.setSize(jTerminal.getWidth(), ipanel.getHeight());
-            
-            jFrame.getContentPane().add(jTerminal, BorderLayout.NORTH);
-            jFrame.getContentPane().add(ipanel, BorderLayout.SOUTH);
-            jFrame.addWindowListener(listener);
-            jFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-            jFrame.setLocationRelativeTo(null);
-            jFrame.pack();
-            jFrame.setVisible(true);
-        } else if (mode.equalsIgnoreCase("jline")) {
-            jLine = true;
-        }
 
-        consoleHandler = new FancyConsoleHandler();
-        
-        String logFile = server.getLogFile();
-        new File(logFile).getParentFile().mkdirs();
-        fileHandler = new RotatingFileHandler(logFile);
-        
-        consoleHandler.setFormatter(new DateOutputFormatter(new SimpleDateFormat("HH:mm:ss")));
-        fileHandler.setFormatter(new DateOutputFormatter(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss")));
-        
-        Logger logger = Logger.getLogger("");
+    public ConsoleManager(GlowServer server) {
+        this.server = server;
+
         for (Handler h : logger.getHandlers()) {
             logger.removeHandler(h);
         }
+
+        // used until/unless gui is created
+        consoleHandler = new FancyConsoleHandler();
+        //consoleHandler.setFormatter(new DateOutputFormatter(CONSOLE_DATE));
         logger.addHandler(consoleHandler);
-        logger.addHandler(fileHandler);
-        
-        try {
-            reader = new ConsoleReader();
-        } catch (IOException ex) {
-            server.getLogger().log(Level.SEVERE, "Exception initializing console reader: {0}", ex.getMessage());
-            ex.printStackTrace();
-        }
-        
+
+        // todo: why is this here?
         Runtime.getRuntime().addShutdownHook(new ServerShutdownThread());
 
-        
+        // reader must be initialized before standard streams are changed
+        try {
+            reader = new ConsoleReader();
+            logger.info("ansi: " + reader.getTerminal().isAnsiSupported());
+        } catch (IOException ex) {
+            logger.log(Level.SEVERE, "Exception initializing console reader", ex);
+        }
+
         System.setOut(new PrintStream(new LoggerOutputStream(Level.INFO), true));
-        System.setErr(new PrintStream(new LoggerOutputStream(Level.SEVERE), true));
+        System.setErr(new PrintStream(new LoggerOutputStream(Level.WARNING), true));
     }
-    
+
     public ConsoleCommandSender getSender() {
         return sender;
     }
-    
+
+    public void startGui() {
+        JTerminalListener listener = new JTerminalListener();
+
+        jFrame = new JFrame("Glowstone");
+        jTerminal = new JTerminal();
+        jInput = new JTextField(80) {
+            @Override public void setBorder(Border border) {}
+        };
+        jInput.paint(null);
+        jInput.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        jInput.setBackground(Color.BLACK);
+        jInput.setForeground(Color.WHITE);
+        jInput.setMargin(new Insets(0, 0, 0, 0));
+        jInput.addKeyListener(listener);
+
+        JLabel caret = new JLabel("> ");
+        caret.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        caret.setForeground(Color.WHITE);
+
+        JPanel ipanel = new JPanel();
+        ipanel.add(caret, BorderLayout.WEST);
+        ipanel.add(jInput, BorderLayout.EAST);
+        ipanel.setBorder(BorderFactory.createEmptyBorder());
+        ipanel.setBackground(Color.BLACK);
+        ipanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        ipanel.setSize(jTerminal.getWidth(), ipanel.getHeight());
+
+        jFrame.getContentPane().add(jTerminal, BorderLayout.NORTH);
+        jFrame.getContentPane().add(ipanel, BorderLayout.SOUTH);
+        jFrame.addWindowListener(listener);
+        jFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        jFrame.setLocationRelativeTo(null);
+        jFrame.pack();
+        jFrame.setVisible(true);
+
+        sender = new ColoredCommandSender();
+        logger.removeHandler(consoleHandler);
+        logger.addHandler(new StreamHandler(new TerminalOutputStream(), new DateOutputFormatter(CONSOLE_DATE)));
+    }
+
+    public void startConsole(boolean jLine) {
+        this.jLine = jLine;
+        sender = new ColoredCommandSender();
+
+        sender = new ColoredCommandSender();
+        Thread thread = new ConsoleCommandThread();
+        thread.setDaemon(true);
+        thread.start();
+
+        /*logger.removeHandler(consoleHandler);
+        consoleHandler = new FancyConsoleHandler();
+        consoleHandler.setFormatter(new DateOutputFormatter(CONSOLE_DATE));
+        logger.addHandler(consoleHandler);*/
+    }
+
+    public void startFile(String logfile) {
+        File parent = new File(logfile).getParentFile();
+        if (!parent.isDirectory() && !parent.mkdirs()) {
+            logger.warning("Could not create log folder: " + parent);
+        }
+        Handler fileHandler = new RotatingFileHandler(logfile);
+        fileHandler.setFormatter(new DateOutputFormatter(FILE_DATE));
+        logger.addHandler(fileHandler);
+    }
+
     public void stop() {
-        consoleHandler.flush();
-        fileHandler.flush();
-        fileHandler.close();
         running = false;
+        for (Handler handler : logger.getHandlers()) {
+            handler.flush();
+            handler.close();
+        }
         if (jFrame != null) {
             jFrame.dispose();
         }
     }
 
-    public void setupConsole() {
-        sender = new ColoredCommandSender();
-        thread = new ConsoleCommandThread();
-
-        if (jTerminal == null) {
-            thread.setDaemon(true);
-            thread.start();
-        }
-    }
-    
     public void refreshCommands() {
+        if (reader == null) return;
+
         for (Completer c : new ArrayList<Completer>(reader.getCompleters())) {
             reader.removeCompleter(c);
         }
-        
+
         Completer[] list = new Completer[] { new StringsCompleter(server.getAllCommands()), new NullCompleter() };
         reader.addCompleter(new ArgumentCompleter(list));
         sender.recalculatePermissions();
     }
-    
-    public String colorize(String string) {
-        if (!string.contains("\u00A7")) {
+
+    private String colorize(String string) {
+        if (!string.contains(ChatColor.COLOR_CHAR + "")) {
             return string;
         } else if ((!jLine || !reader.getTerminal().isAnsiSupported()) && jTerminal == null) {
             return ChatColor.stripColor(string);
@@ -182,11 +198,11 @@ public final class ConsoleManager {
                 "\033[0m";
         }
     }
-    
+
     private class ConsoleCommandThread extends Thread {
         @Override
         public void run() {
-            String command;
+            String command = "";
             while (running) {
                 try {
                     if (jLine) {
@@ -194,73 +210,61 @@ public final class ConsoleManager {
                     } else {
                         command = reader.readLine();
                     }
-                    
+
                     if (command == null || command.trim().length() == 0)
                         continue;
-                    
+
                     server.getScheduler().scheduleSyncDelayedTask(null, new CommandTask(command.trim()));
-                }
-                catch (CommandException ex) {
-                    System.out.println("Exception while executing command: " + ex.getMessage());
-                    ex.printStackTrace();
-                }
-                catch (Exception ex) {
-                    ex.printStackTrace();
+                } catch (CommandException ex) {
+                    logger.log(Level.WARNING, "Exception while executing command: " + command, ex);
+                } catch (Exception ex) {
+                    logger.log(Level.SEVERE, "Error while reading commands", ex);
                 }
             }
         }
     }
-    
+
     private class ServerShutdownThread extends Thread {
         @Override
         public void run() {
             server.shutdown();
         }
     }
-    
+
     private class CommandTask implements Runnable {
-        private String command;
-        
+        private final String command;
+
         public CommandTask(String command) {
             this.command = command;
         }
-        
+
         public void run() {
-            command = EventFactory.onServerCommand(sender, command).getCommand();
-
-            if (!server.dispatchCommand(sender, command)) {
-                String firstword = command;
-                if (command.indexOf(' ') >= 0) {
-                    firstword = command.substring(0, command.indexOf(' '));
-                }
-
-                System.out.println("Command not found: " + firstword);
-            }
+            server.dispatchCommand(sender, EventFactory.onServerCommand(sender, command).getCommand());
         }
     }
-    
+
     private class ColoredCommandSender implements ConsoleCommandSender {
         private final PermissibleBase perm = new PermissibleBase(this);
 
         ////////////////////////////////////////////////////////////////////////
         // CommandSender
-        
+
         public String getName() {
             return "CONSOLE";
         }
-        
+
         public void sendMessage(String text) {
             server.getLogger().info(text);
-        }
-
-        public GlowServer getServer() {
-            return server;
         }
 
         public void sendMessage(String[] strings) {
             for (String line : strings) {
                 sendMessage(line);
             }
+        }
+
+        public GlowServer getServer() {
+            return server;
         }
 
         public boolean isOp() {
@@ -351,8 +355,8 @@ public final class ConsoleManager {
 
         }
     }
-    
-    private class LoggerOutputStream extends ByteArrayOutputStream {
+
+    private static class LoggerOutputStream extends ByteArrayOutputStream {
         private final String separator = System.getProperty("line.separator");
         private final Level level;
 
@@ -368,22 +372,21 @@ public final class ConsoleManager {
             super.reset();
 
             if (record.length() > 0 && !record.equals(separator)) {
-                server.getLogger().logp(level, "LoggerOutputStream", "log" + level, record);
+                logger.logp(level, "LoggerOutputStream", "log" + level, record);
             }
         }
     }
-    
+
     private class FancyConsoleHandler extends ConsoleHandler {
         public FancyConsoleHandler() {
-            if (jTerminal != null) {
-                setOutputStream(new TerminalOutputStream());
-            }
+            setFormatter(new DateOutputFormatter(CONSOLE_DATE));
+            setOutputStream(System.out);
         }
-        
+
         @Override
         public synchronized void flush() {
             try {
-                if (jLine && jTerminal == null) {
+                if (jLine) {
                     reader.print(ConsoleReader.RESET_LINE + "");
                     reader.flush();
                     super.flush();
@@ -397,57 +400,69 @@ public final class ConsoleManager {
                     super.flush();
                 }
             } catch (IOException ex) {
-                server.getLogger().severe("I/O exception flushing console output");
-                ex.printStackTrace();
+                logger.log(Level.SEVERE, "I/O exception flushing console output", ex);
             }
         }
     }
-    
-    private class RotatingFileHandler extends StreamHandler {
-        private SimpleDateFormat date;
-        private String logFile;
+
+    private static class RotatingFileHandler extends StreamHandler {
+        private final SimpleDateFormat dateFormat;
+        private final String template;
+        private final boolean rotate;
         private String filename;
-        
-        public RotatingFileHandler(String logFile) {
-            this.logFile = logFile;
-            date = new SimpleDateFormat("yyyy-MM-dd");
+
+        public RotatingFileHandler(String template) {
+            this.template = template;
+            rotate = template.contains("%D");
+            dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             filename = calculateFilename();
+            updateOutput();
+        }
+
+        private void updateOutput() {
             try {
                 setOutputStream(new FileOutputStream(filename, true));
-            } catch (FileNotFoundException ex) {
-                server.getLogger().log(Level.SEVERE, "Unable to open {0} for writing: {1}", new Object[]{filename, ex.getMessage()});
-                ex.printStackTrace();
+            } catch (IOException ex) {
+                logger.log(Level.SEVERE, "Unable to open " + filename + " for writing", ex);
             }
         }
-        
+
+        private String calculateFilename() {
+            return template.replace("%D", dateFormat.format(new Date()));
+        }
+
+        @Override
+        public synchronized void publish(LogRecord record) {
+            if (!isLoggable(record)) {
+                return;
+            }
+            super.publish(record);
+            flush();
+        }
+
         @Override
         public synchronized void flush() {
-            if (!filename.equals(calculateFilename())) {
-                filename = calculateFilename();
-                server.getLogger().log(Level.INFO, "Log rotating to {0}...", filename);
-                try {
-                    setOutputStream(new FileOutputStream(filename, true));
-                } catch (FileNotFoundException ex) {
-                    server.getLogger().log(Level.SEVERE, "Unable to open {0} for writing: {1}", new Object[]{filename, ex.getMessage()});
-                    ex.printStackTrace();
+            if (rotate) {
+                String newFilename = calculateFilename();
+                if (!filename.equals(newFilename)) {
+                    filename = newFilename;
+                    logger.log(Level.INFO, "Log rotating to {0}...", filename);
+                    updateOutput();
                 }
             }
             super.flush();
         }
-        
-        private String calculateFilename() {
-            return logFile.replace("%D", date.format(new Date()));
-        }
     }
-    
+
     private class DateOutputFormatter extends Formatter {
         private final SimpleDateFormat date;
-        
-        public DateOutputFormatter(SimpleDateFormat date) {
-            this.date = date;
+
+        public DateOutputFormatter(String pattern) {
+            this.date = new SimpleDateFormat(pattern);
         }
-        
+
         @Override
+        @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
         public String format(LogRecord record) {
             StringBuilder builder = new StringBuilder();
 
@@ -463,11 +478,11 @@ public final class ConsoleManager {
                 record.getThrown().printStackTrace(new PrintWriter(writer));
                 builder.append(writer.toString());
             }
-            
+
             return builder.toString();
         }
     }
-    
+
     private class JTerminalListener implements WindowListener, KeyListener {
         public void windowOpened(WindowEvent e) {}
         public void windowIconified(WindowEvent e) {}
@@ -477,7 +492,7 @@ public final class ConsoleManager {
         public void windowClosed(WindowEvent e) {}
         public void keyPressed(KeyEvent e) {}
         public void keyReleased(KeyEvent e) {}
-        
+
         public void windowClosing(WindowEvent e) {
             server.shutdown();
         }
@@ -495,18 +510,18 @@ public final class ConsoleManager {
 
     private class TerminalOutputStream extends ByteArrayOutputStream {
         private final String separator = System.getProperty("line.separator");
-        
+
         @Override
         public synchronized void flush() throws IOException {
             super.flush();
             String record = this.toString();
             super.reset();
-            
+
             if (record.length() > 0 && !record.equals(separator)) {
                 jTerminal.print(record);
                 jFrame.repaint();
             }
         }
     }
-    
+
 }

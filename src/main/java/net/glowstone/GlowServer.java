@@ -117,7 +117,7 @@ public final class GlowServer implements Server {
     /**
      * The console manager of this server.
      */
-    private final ConsoleManager consoleManager = new ConsoleManager(this, "normal");
+    private final ConsoleManager consoleManager = new ConsoleManager(this);
     
     /**
      * The services manager of this server.
@@ -245,7 +245,13 @@ public final class GlowServer implements Server {
      * Starts this server.
      */
     public void start() {
-        consoleManager.setupConsole();
+        String mode = "normal"; // todo: config
+        if (mode.equals("gui")) {
+            consoleManager.startGui();
+        } else {
+            consoleManager.startConsole(mode.equals("jline"));
+        }
+        consoleManager.startFile(config.getString(ServerConfig.Key.LOG_FILE));
         
         // Load player lists
         opsList.load();
@@ -528,15 +534,6 @@ public final class GlowServer implements Server {
      */
     public boolean getFuzzyCommandMatching() {
         return config.getBoolean(ServerConfig.Key.FUZZY_COMMANDS);
-    }
-
-    /**
-     * Get the format for log filenames, where "%D" is replaced by the date.
-     * @return The log filename format.
-     */
-    public String getLogFile() {
-        return "logs/log-%D.txt";
-        //return config.getString(ServerConfig.Key.LOG_FILE);
     }
 
     ////////////////////////////////////////////////////////////////////////////
