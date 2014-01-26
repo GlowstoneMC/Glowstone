@@ -2,10 +2,7 @@ package net.glowstone;
 
 import com.grahamedgecombe.jterminal.JTerminal;
 import jline.console.ConsoleReader;
-import jline.console.completer.ArgumentCompleter;
 import jline.console.completer.Completer;
-import jline.console.completer.NullCompleter;
-import jline.console.completer.StringsCompleter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.ConsoleCommandSender;
@@ -26,8 +23,8 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.*;
 
@@ -72,11 +69,12 @@ public final class ConsoleManager {
         // reader must be initialized before standard streams are changed
         try {
             reader = new ConsoleReader();
-            logger.info("ansi: " + reader.getTerminal().isAnsiSupported());
         } catch (IOException ex) {
             logger.log(Level.SEVERE, "Exception initializing console reader", ex);
         }
+        reader.addCompleter(new CommandCompleter());
 
+        // set system output streams
         System.setOut(new PrintStream(new LoggerOutputStream(Level.INFO), true));
         System.setErr(new PrintStream(new LoggerOutputStream(Level.WARNING), true));
     }
@@ -127,7 +125,6 @@ public final class ConsoleManager {
 
     public void startConsole(boolean jLine) {
         this.jLine = jLine;
-        sender = new ColoredCommandSender();
 
         sender = new ColoredCommandSender();
         Thread thread = new ConsoleCommandThread();
@@ -161,18 +158,6 @@ public final class ConsoleManager {
         }
     }
 
-    public void refreshCommands() {
-        if (reader == null) return;
-
-        for (Completer c : new ArrayList<Completer>(reader.getCompleters())) {
-            reader.removeCompleter(c);
-        }
-
-        Completer[] list = new Completer[] { new StringsCompleter(server.getAllCommands()), new NullCompleter() };
-        reader.addCompleter(new ArgumentCompleter(list));
-        sender.recalculatePermissions();
-    }
-
     private String colorize(String string) {
         if (!string.contains(ChatColor.COLOR_CHAR + "")) {
             return string;
@@ -196,6 +181,25 @@ public final class ConsoleManager {
                 .replace(ChatColor.GRAY.toString(), "\033[0;37m")
                 .replace(ChatColor.WHITE.toString(), "\033[1;37m") +
                 "\033[0m";
+        }
+    }
+
+    private class CommandCompleter implements Completer {
+        public int complete(String buffer, int cursor, List<CharSequence> candidates) {
+            // todo: sync the .tabComplete call w/ main thread
+            try {
+                List<String> completions = server.getCommandMap().tabComplete(sender, buffer);
+                if (completions == null) {
+                    return cursor;  // no completions
+                }
+                candidates.addAll(completions);
+
+                // location to position the cursor at (before autofilling takes place)
+                return buffer.lastIndexOf(' ') + 1;
+            } catch (Throwable t) {
+                logger.log(Level.WARNING, "Error while tab completing", t);
+                return cursor;
+            }
         }
     }
 
@@ -523,5 +527,4 @@ public final class ConsoleManager {
             }
         }
     }
-
 }

@@ -283,7 +283,6 @@ public final class GlowServer implements Server {
         // Finish loading plugins
         enablePlugins(PluginLoadOrder.POSTWORLD);
         commandMap.registerServerAliases();
-        consoleManager.refreshCommands();
     }
 
     /**
@@ -423,7 +422,6 @@ public final class GlowServer implements Server {
             enablePlugins(PluginLoadOrder.STARTUP);
             enablePlugins(PluginLoadOrder.POSTWORLD);
             commandMap.registerServerAliases();
-            consoleManager.refreshCommands();
         }
         catch (Exception ex) {
             logger.log(Level.SEVERE, "Uncaught error while reloading: {0}", ex.getMessage());
