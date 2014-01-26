@@ -13,7 +13,7 @@ import org.bukkit.block.NoteBlock;
  * Represents a noteblock in the world.
  */
 public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
-    
+
     private NoteWrapper wrapper = new NoteWrapper(new Note((byte) 0));
 
     public GlowNoteBlock(GlowBlock block) {
@@ -22,11 +22,11 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
             throw new IllegalArgumentException("GlowNoteBlock: expected NOTE_BLOCK, got " + block.getType());
         }
     }
-    
+
     public Note getNote() {
         return wrapper.note;
     }
-    
+
     public byte getRawNote() {
         return wrapper.note.getId();
     }
@@ -47,22 +47,25 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
         if (getBlock().getType() != Material.NOTE_BLOCK) {
             return false;
         }
-        
+
         Location location = getBlock().getLocation();
-        
+
         for (GlowPlayer player : getWorld().getRawPlayers()) {
             if (player.canSee(new GlowChunk.Key(getX() >> 4, getZ() >> 4)))
                 player.playNote(location, instrument, note);
         }
-        
+
         return true;
     }
 
     public boolean play(Instrument instrument, Note note) {
         return play(instrument.getType(), note.getId());
     }
-    
-    public static Instrument instrumentOf(Material mat) {
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Internals
+
+    private static Instrument instrumentOf(Material mat) {
         // TODO: check more blocks.
         switch (mat) {
             case WOOD:
@@ -87,26 +90,25 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
                 return Instrument.PIANO;
         }
     }
-    
-    // Internal mechanisms
-    
+
     private class NoteWrapper {
         public Note note;
+
         public NoteWrapper(Note note) {
             this.note = note;
         }
     }
-    
+
     @Override
     public GlowNoteBlock shallowClone() {
         GlowNoteBlock result = new GlowNoteBlock(getBlock());
         result.wrapper = wrapper;
         return result;
     }
-    
+
     @Override
     public void destroy() {
         setRawNote((byte) 0);
     }
-    
+
 }

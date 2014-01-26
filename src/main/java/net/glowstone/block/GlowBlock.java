@@ -17,7 +17,9 @@ import org.bukkit.metadata.MetadataStoreBase;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -51,7 +53,8 @@ public class GlowBlock implements Block {
         this.z = z;
     }
 
-    // Basic getters
+    ////////////////////////////////////////////////////////////////////////////
+    // Basics
 
     public GlowWorld getWorld() {
         return chunk.getWorld();
@@ -109,13 +112,14 @@ public class GlowBlock implements Block {
         return getWorld().getHumidity(x, z);
     }
 
+    ////////////////////////////////////////////////////////////////////////////
     // getFace & getRelative
 
     public BlockFace getFace(Block block) {
         for (BlockFace face : BlockFace.values()) {
-            if (    (x + face.getModX() == block.getX()) &&
+            if ((x + face.getModX() == block.getX()) &&
                     (y + face.getModY() == block.getY()) &&
-                    (z + face.getModZ() == block.getZ())    ) {
+                    (z + face.getModZ() == block.getZ())) {
                 return face;
             }
         }
@@ -133,8 +137,9 @@ public class GlowBlock implements Block {
     public GlowBlock getRelative(BlockFace face, int distance) {
         return getRelative(face.getModX() * distance, face.getModY() * distance, face.getModZ() * distance);
     }
-    
-    // type and typeid getters/setters
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Type and typeid getters/setters
 
     public Material getType() {
         return Material.getMaterial(getTypeId());
@@ -166,7 +171,7 @@ public class GlowBlock implements Block {
         for (GlowPlayer p : getWorld().getRawPlayers()) {
             p.sendBlockChange(bcmsg);
         }
-        
+
         return true;
     }
 
@@ -179,7 +184,8 @@ public class GlowBlock implements Block {
         return mat == Material.WATER || mat == Material.STATIONARY_WATER || mat == Material.LAVA || mat == Material.STATIONARY_LAVA;
     }
 
-    // data and light getters/setters
+    ////////////////////////////////////////////////////////////////////////////
+    // Data and light getters/setters
 
     public byte getData() {
         return (byte) chunk.getMetaData(x & 0xf, z & 0xf, y);
@@ -212,8 +218,8 @@ public class GlowBlock implements Block {
         return chunk.getBlockLight(x & 0xf, z & 0xf, y);
     }
 
-    // redstone-related shenanigans
-    // currently not implemented
+    ////////////////////////////////////////////////////////////////////////////
+    // Redstone
 
     public boolean isBlockPowered() {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -252,19 +258,41 @@ public class GlowBlock implements Block {
     // Drops and breaking
 
     public boolean breakNaturally() {
-        return false;
+        if (getType() == Material.AIR) {
+            return false;
+        }
+
+        Location location = getLocation();
+        for (ItemStack stack : getDrops()) {
+            getWorld().dropItemNaturally(location, stack);
+        }
+
+        setType(Material.AIR);
+        return true;
     }
 
     public boolean breakNaturally(ItemStack tool) {
-        return false;
+        if (givesDrops(tool)) {
+            return breakNaturally();
+        } else {
+            return setTypeId(Material.AIR.getId());
+        }
     }
 
     public Collection<ItemStack> getDrops() {
-        return null;
+        return Arrays.asList(BlockProperties.get(getTypeId()).getDrops(getData()));
     }
 
     public Collection<ItemStack> getDrops(ItemStack tool) {
-        return null;
+        if (givesDrops(tool)) {
+            return getDrops();
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    private boolean givesDrops(ItemStack tool) {
+        return true;
     }
 
     ////////////////////////////////////////////////////////////////////////////

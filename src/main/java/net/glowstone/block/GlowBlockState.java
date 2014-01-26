@@ -1,14 +1,13 @@
 package net.glowstone.block;
 
+import net.glowstone.GlowChunk;
+import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.MaterialData;
-
-import net.glowstone.GlowChunk;
-import net.glowstone.GlowWorld;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
@@ -24,9 +23,9 @@ public class GlowBlockState implements BlockState {
     private final int x;
     private final int y;
     private final int z;
+    private final byte light;
     protected int type;
     protected MaterialData data;
-    protected byte light;
 
     public GlowBlockState(GlowBlock block) {
         world = block.getWorld();
@@ -39,7 +38,8 @@ public class GlowBlockState implements BlockState {
         makeData(block.getData());
     }
 
-    // Basic getters
+    ////////////////////////////////////////////////////////////////////////////
+    // Basics
 
     public GlowWorld getWorld() {
         return world;
@@ -65,26 +65,27 @@ public class GlowBlockState implements BlockState {
         return z;
     }
 
+    public Location getLocation() {
+        return getBlock().getLocation();
+    }
+
+    public Location getLocation(Location loc) {
+        return getBlock().getLocation(loc);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
     // Type and data
-
-    public MaterialData getData() {
-        return data;
-    }
-
-    public void setData(MaterialData data) {
-        this.data = data;
-    }
 
     final public Material getType() {
         return Material.getMaterial(type);
     }
 
-    final public int getTypeId() {
-        return type;
-    }
-
     final public void setType(Material type) {
         setTypeId(type.getId());
+    }
+
+    final public int getTypeId() {
+        return type;
     }
 
     final public boolean setTypeId(int type) {
@@ -93,100 +94,86 @@ public class GlowBlockState implements BlockState {
         return true;
     }
 
-    final public byte getLightLevel() {
-        return light;
+    final public MaterialData getData() {
+        return data;
+    }
+
+    final public void setData(MaterialData data) {
+        this.data = data;
     }
 
     final public byte getRawData() {
         return getData().getData();
     }
 
+    final public void setRawData(byte data) {
+        getData().setData(data);
+    }
+
+    final public byte getLightLevel() {
+        return light;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
     // Update
 
     public boolean update() {
-        return update(false);
+        return update(false, true);
     }
 
     public boolean update(boolean force) {
-        Block block = getBlock();
-
-        if (block.getTypeId() != type) {
-            if (force) {
-                block.setTypeId(type);
-            } else {
-                return false;
-            }
-        }
-
-        block.setData(getRawData());
-        return true;
+        return update(force, true);
     }
 
-    public void update(GlowPlayer player) {}
-    
-    // Internal mechanisms
+    public boolean update(boolean force, boolean applyPhysics) {
+        Block block = getBlock();
+
+        return (block.getTypeId() == type || force) && block.setTypeIdAndData(type, getRawData(), applyPhysics);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Internals
 
     private void makeData(byte data) {
         Material mat = Material.getMaterial(type);
-        if (mat == null || mat.getData() == null) {
+        if (mat == null) {
             this.data = new MaterialData(type, data);
         } else {
             this.data = mat.getNewData(data);
         }
     }
-    
+
+    /**
+     * Create a shallow clone which refers to the same underlying tile entity but keeps
+     * a different MaterialData instance.
+     */
     public GlowBlockState shallowClone() {
         return new GlowBlockState(getBlock());
     }
-    
+
     public void destroy() {
         throw new IllegalStateException("Cannot destroy a generic BlockState");
     }
 
-    // NEW STUFF
-
-
-    @Override
-    public Location getLocation() {
-        return getBlock().getLocation();
+    public void update(GlowPlayer player) {
     }
 
-    @Override
-    public Location getLocation(Location loc) {
-        if (loc == null) return null;
-        loc.setX(x);
-        loc.setY(y);
-        loc.setZ(z);
-        return loc;
-    }
+    ////////////////////////////////////////////////////////////////////////////
+    // Metadata
 
-    @Override
-    public boolean update(boolean force, boolean applyPhysics) {
-        return update(force);
-    }
-
-    @Override
-    public void setRawData(byte data) {
-        getData().setData(data);
-    }
-
-    @Override
     public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
-
+        getBlock().setMetadata(metadataKey, newMetadataValue);
     }
 
-    @Override
     public List<MetadataValue> getMetadata(String metadataKey) {
-        return null;
+        return getBlock().getMetadata(metadataKey);
     }
 
-    @Override
     public boolean hasMetadata(String metadataKey) {
-        return false;
+        return getBlock().hasMetadata(metadataKey);
     }
 
-    @Override
     public void removeMetadata(String metadataKey, Plugin owningPlugin) {
-
+        getBlock().removeMetadata(metadataKey, owningPlugin);
     }
 }

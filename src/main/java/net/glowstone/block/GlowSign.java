@@ -6,9 +6,11 @@ import net.glowstone.msg.UpdateSignMessage;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 
+import java.util.Arrays;
+
 public class GlowSign extends GlowBlockState implements Sign {
-    
-    private String[] lines;
+
+    private final String[] lines;
 
     public GlowSign(GlowBlock block) {
         super(block);
@@ -32,7 +34,7 @@ public class GlowSign extends GlowBlockState implements Sign {
         }
         lines[index] = line;
     }
-    
+
     @Override
     public boolean update(boolean force) {
         boolean result = super.update(force);
@@ -48,24 +50,23 @@ public class GlowSign extends GlowBlockState implements Sign {
         return result;
     }
 
-    @Override
-    public void update(GlowPlayer player) {
-        player.getSession().send(new UpdateSignMessage(getX(), getY(), getZ(), getLines()));
-    }
+    ////////////////////////////////////////////////////////////////////////////
+    // Internals
 
-    // Internal mechanisms
-    
     @Override
     public GlowSign shallowClone() {
         GlowSign result = new GlowSign(getBlock());
-        result.lines = lines;
+        System.arraycopy(lines, 0, result.lines, 0, 4);
         return result;
     }
 
     @Override
     public void destroy() {
-        for (String line : lines) {
-            line = "";
-        }
+        Arrays.fill(lines, null);
+    }
+
+    @Override
+    public void update(GlowPlayer player) {
+        player.getSession().send(new UpdateSignMessage(getX(), getY(), getZ(), getLines()));
     }
 }
