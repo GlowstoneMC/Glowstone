@@ -182,6 +182,7 @@ public class ServerConfig {
         WHITELIST("server.whitelisted", false, Migrate.PROPS, "white-list"),
         MOTD("server.motd", "Glowstone Server", Migrate.PROPS, "motd"),
         SHUTDOWN_MESSAGE("server.shutdown-message", "Server shutting down", Migrate.BUKKIT, "settings.shutdown-message"),
+        CONSOLE_MODE("server.console-mode", "jline"),
 
         // folders
         PLUGIN_FOLDER("folders.plugins", "plugins"),

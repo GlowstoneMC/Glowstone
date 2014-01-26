@@ -245,7 +245,8 @@ public final class GlowServer implements Server {
      * Starts this server.
      */
     public void start() {
-        String mode = "normal"; // todo: config
+        // Determine console mode and start reading input
+        String mode = config.getString(ServerConfig.Key.CONSOLE_MODE).toLowerCase();
         if (mode.equals("gui")) {
             consoleManager.startGui();
         } else {

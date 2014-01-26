@@ -13,6 +13,7 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
+import org.fusesource.jansi.AnsiConsole;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -53,6 +54,9 @@ public final class ConsoleManager {
 
     public ConsoleManager(GlowServer server) {
         this.server = server;
+
+        // install Ansi code handler, which makes colors work on Windows
+        AnsiConsole.systemInstall();
 
         for (Handler h : logger.getHandlers()) {
             logger.removeHandler(h);
@@ -159,10 +163,10 @@ public final class ConsoleManager {
     }
 
     private String colorize(String string) {
-        if (!string.contains(ChatColor.COLOR_CHAR + "")) {
-            return string;
+        if (string.indexOf(ChatColor.COLOR_CHAR) < 0) {
+            return string;  // no colors in the message
         } else if ((!jLine || !reader.getTerminal().isAnsiSupported()) && jTerminal == null) {
-            return ChatColor.stripColor(string);
+            return ChatColor.stripColor(string);  // color not supported
         } else {
             return string.replace(ChatColor.RED.toString(), "\033[1;31m")
                 .replace(ChatColor.YELLOW.toString(), "\033[1;33m")
