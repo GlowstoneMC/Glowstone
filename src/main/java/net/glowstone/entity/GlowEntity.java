@@ -86,6 +86,11 @@ public abstract class GlowEntity implements Entity {
     private int ticksLived = 0;
 
     /**
+     * How long the entity has been on fire, or 0 if it is not.
+     */
+    private int fireTicks = 0;
+
+    /**
      * Creates an entity and adds it to the specified world.
      * @param world The world.
      */
@@ -207,6 +212,10 @@ public abstract class GlowEntity implements Entity {
      */
     public void pulse() {
         ticksLived++;
+
+        if (fireTicks > 0) {
+            --fireTicks;
+        }
     }
 
     /**
@@ -267,30 +276,14 @@ public abstract class GlowEntity implements Entity {
     // Various properties
 
     public int getFireTicks() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public int getMaxFireTicks() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return fireTicks;
     }
 
     public void setFireTicks(int ticks) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        fireTicks = ticks;
     }
 
-    public int getRemainingAir() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void setRemainingAir(int ticks) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public int getMaximumAir() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void setMaximumAir(int ticks) {
+    public int getMaxFireTicks() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

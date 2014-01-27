@@ -8,6 +8,7 @@ import net.glowstone.util.Parameter;
 import net.glowstone.util.Position;
 import net.glowstone.util.TargetBlock;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.EntityEquipment;
@@ -21,7 +22,17 @@ import java.util.*;
  * @author Graham Edgecombe.
  */
 public abstract class GlowLivingEntity extends GlowEntity implements LivingEntity {
-    
+
+    /**
+     * The monster's metadata.
+     */
+    protected final List<Parameter<?>> metadata = new ArrayList<Parameter<?>>();
+
+    /**
+     * Potion effects on the entity.
+     */
+    private final Map<PotionEffectType, PotionEffect> potionEffects = new HashMap<PotionEffectType, PotionEffect>();
+
     /**
      * The entity's health.
      */
@@ -38,14 +49,44 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     private double lastDamage;
 
     /**
-     * The monster's metadata.
+     * How long the entity has until it runs out of air.
      */
-    protected final List<Parameter<?>> metadata = new ArrayList<Parameter<?>>();
+    private int airTicks = 300;
 
     /**
-     * Potion effects on the entity.
+     * The maximum amount of air the entity can hold.
      */
-    private final Map<PotionEffectType, PotionEffect> potionEffects = new HashMap<PotionEffectType, PotionEffect>();
+    private int maximumAir = 300;
+
+    /**
+     * The number of ticks remaining in the invincibility period.
+     */
+    private int noDamageTicks = 0;
+
+    /**
+     * The default length of the invincibility period.
+     */
+    private int maxNoDamageTicks = 20;
+
+    /**
+     * A custom overhead name to be shown for non-Players.
+     */
+    private String customName;
+
+    /**
+     * Whether the custom name is shown.
+     */
+    private boolean customNameVisible;
+
+    /**
+     * Whether the entity should be removed if it is too distant from players.
+     */
+    private boolean removeDistance;
+
+    /**
+     * Whether the (non-Player) entity can pick up armor and tools.
+     */
+    private boolean pickupItems;
 
     /**
      * Creates a mob within the specified world.
@@ -63,6 +104,22 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Override
     public void pulse() {
         super.pulse();
+
+        if (noDamageTicks > 0) {
+            --noDamageTicks;
+        }
+
+        Material mat = getEyeLocation().getBlock().getType();
+        if (mat == Material.WATER || mat == Material.STATIONARY_WATER) {
+            --airTicks;
+            if (airTicks <= -20) {
+                airTicks = 0;
+                damage(1);  // be fancier in the future
+            }
+        } else {
+            airTicks = maximumAir;
+        }
+
         // todo: tick down potion effects
     }
 
@@ -125,25 +182,70 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     public Location getEyeLocation() {
-        Location loc = getLocation();
-        loc.setY(loc.getY() + getEyeHeight());
-        return loc;
+        return getLocation().add(0, getEyeHeight(), 0);
     }
 
-    public int getMaximumNoDamageTicks() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Player getKiller() {
+        return null;
     }
 
-    public void setMaximumNoDamageTicks(int ticks) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public boolean hasLineOfSight(Entity other) {
+        return false;
     }
+
+    public EntityEquipment getEquipment() {
+        return null;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Properties
 
     public int getNoDamageTicks() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return noDamageTicks;
     }
 
     public void setNoDamageTicks(int ticks) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        noDamageTicks = ticks;
+    }
+
+    public int getMaximumNoDamageTicks() {
+        return maxNoDamageTicks;
+    }
+
+    public void setMaximumNoDamageTicks(int ticks) {
+        maxNoDamageTicks = ticks;
+    }
+
+    public int getRemainingAir() {
+        return airTicks;
+    }
+
+    public void setRemainingAir(int ticks) {
+        airTicks = Math.min(ticks, maximumAir);
+    }
+
+    public int getMaximumAir() {
+        return maximumAir;
+    }
+
+    public void setMaximumAir(int ticks) {
+        maximumAir = Math.max(0, ticks);
+    }
+
+    public boolean getRemoveWhenFarAway() {
+        return removeDistance;
+    }
+
+    public void setRemoveWhenFarAway(boolean remove) {
+        removeDistance = remove;
+    }
+
+    public boolean getCanPickupItems() {
+        return pickupItems;
+    }
+
+    public void setCanPickupItems(boolean pickup) {
+        pickupItems = pickup;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -236,6 +338,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     public void damage(double amount, Entity source) {
+        // todo: handle noDamageTicks
         lastDamage = amount;
         health -= amount;
         // todo: death, events, so on
@@ -352,74 +455,35 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    // New stuff
+    // Custom name
 
-    @Override
-    public Player getKiller() {
-        return null;
-    }
-
-    @Override
-    public boolean hasLineOfSight(Entity other) {
-        return false;
-    }
-
-    @Override
-    public boolean getRemoveWhenFarAway() {
-        return false;
-    }
-
-    @Override
-    public void setRemoveWhenFarAway(boolean remove) {
-
-    }
-
-    @Override
-    public EntityEquipment getEquipment() {
-        return null;
-    }
-
-    @Override
-    public void setCanPickupItems(boolean pickup) {
-
-    }
-
-    @Override
-    public boolean getCanPickupItems() {
-        return false;
-    }
-
-    @Override
     public void setCustomName(String name) {
-
+        customName = name;
     }
 
-    @Override
     public String getCustomName() {
-        return null;
+        return customName;
     }
 
-    @Override
     public void setCustomNameVisible(boolean flag) {
-
+        customNameVisible = flag;
     }
 
-    @Override
     public boolean isCustomNameVisible() {
-        return false;
+        return customNameVisible;
     }
 
-    @Override
+    ////////////////////////////////////////////////////////////////////////////
+    // Leashes
+
     public boolean isLeashed() {
         return false;
     }
 
-    @Override
     public Entity getLeashHolder() throws IllegalStateException {
         return null;
     }
 
-    @Override
     public boolean setLeashHolder(Entity holder) {
         return false;
     }
