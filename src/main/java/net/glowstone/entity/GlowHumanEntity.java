@@ -2,6 +2,8 @@ package net.glowstone.entity;
 
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
+import net.glowstone.inventory.GlowInventory;
+import net.glowstone.inventory.GlowItemStack;
 import net.glowstone.inventory.GlowPlayerInventory;
 import net.glowstone.msg.Message;
 import net.glowstone.msg.SpawnPlayerMessage;
@@ -9,6 +11,8 @@ import net.glowstone.util.Position;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissibleBase;
 import org.bukkit.permissions.Permission;
@@ -32,6 +36,11 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
      * The inventory of this human.
      */
     private final GlowPlayerInventory inventory = new GlowPlayerInventory(this);
+
+    /**
+     * The item the player has on their cursor.
+     */
+    private GlowItemStack itemOnCursor;
     
     /**
      * Whether this human is sleeping or not.
@@ -75,6 +84,9 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         gameMode = server.getDefaultGameMode();
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Internals
+
     @Override
     public Message createSpawnMessage() {
         int x = Position.getIntX(location);
@@ -85,42 +97,6 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         return new SpawnPlayerMessage(id, name, x, y, z, yaw, pitch, 0);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public GlowPlayerInventory getInventory() {
-        return inventory;
-    }
-
-    public ItemStack getItemInHand() {
-        return getInventory().getItemInHand();
-    }
-
-    public void setItemInHand(ItemStack item) {
-        getInventory().setItemInHand(item);
-    }
-
-    public boolean isSleeping() {
-        return sleeping;
-    }
-
-    public int getSleepTicks() {
-        return sleepingTicks;
-    }
-
-    public GameMode getGameMode() {
-        return gameMode;
-    }
-
-    public void setGameMode(GameMode mode) {
-        gameMode = mode;
-    }
-    
-    protected void setSleepTicks (int ticks) {
-        sleepingTicks = ticks;
-    }
-    
     @Override
     public void pulse() {
         super.pulse();
@@ -131,7 +107,51 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         }
     }
 
-    // ---- Permissions stuff
+    ////////////////////////////////////////////////////////////////////////////
+    // Properties
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isSleeping() {
+        return sleeping;
+    }
+
+    public int getSleepTicks() {
+        return sleepingTicks;
+    }
+
+    protected void setSleepTicks(int ticks) {
+        sleepingTicks = ticks;
+    }
+
+    public GameMode getGameMode() {
+        return gameMode;
+    }
+
+    public void setGameMode(GameMode mode) {
+        gameMode = mode;
+    }
+
+    public Location getBedSpawnLocation() {
+        return bedSpawn;
+    }
+
+    public void setBedSpawnLocation(Location bedSpawn) {
+        this.bedSpawn = bedSpawn;
+    }
+
+    public boolean isBlocking() {
+        return false;
+    }
+
+    public int getExpToLevel() {
+        throw new UnsupportedOperationException("Non-player HumanEntity has no level");
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Permissions
     
     public boolean isPermissionSet(String name) {
         return permissions.isPermissionSet(name);
@@ -186,12 +206,58 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         recalculatePermissions();
     }
 
-    public Location getBedSpawnLocation() {
-        return bedSpawn;
+    ////////////////////////////////////////////////////////////////////////////
+    // Inventory
+
+    public GlowPlayerInventory getInventory() {
+        return inventory;
     }
 
-    public void setBedSpawnLocation(Location bedSpawn) {
-        this.bedSpawn = bedSpawn;
+    public ItemStack getItemInHand() {
+        return getInventory().getItemInHand();
     }
-    
+
+    public void setItemInHand(ItemStack item) {
+        getInventory().setItemInHand(item);
+    }
+
+    public GlowItemStack getItemOnCursor() {
+        return itemOnCursor;
+    }
+
+    public void setItemOnCursor(ItemStack item) {
+        itemOnCursor = GlowInventory.getGlowItemStack(item);
+    }
+
+    public Inventory getEnderChest() {
+        return null;
+    }
+
+    public boolean setWindowProperty(InventoryView.Property prop, int value) {
+        return false;
+    }
+
+    public InventoryView getOpenInventory() {
+        return null;
+    }
+
+    public InventoryView openInventory(Inventory inventory) {
+        return null;
+    }
+
+    public InventoryView openWorkbench(Location location, boolean force) {
+        return null;
+    }
+
+    public InventoryView openEnchanting(Location location, boolean force) {
+        return null;
+    }
+
+    public void openInventory(InventoryView inventory) {
+
+    }
+
+    public void closeInventory() {
+
+    }
 }

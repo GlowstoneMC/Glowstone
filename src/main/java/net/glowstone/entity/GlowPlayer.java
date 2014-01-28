@@ -23,8 +23,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.Plugin;
@@ -110,11 +108,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      * The lock used to prevent chunks from unloading near the player.
      */
     private ChunkManager.ChunkLock chunkLock;
-    
-    /**
-     * The item the player has on their cursor.
-     */
-    private GlowItemStack itemOnCursor;
 
     /**
      * Whether the player is sneaking.
@@ -461,6 +454,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         if (changed) session.send(new StateChangeMessage(3, mode.getValue()));
     }
 
+    // todo: most of the exp stuff is pretty broken
+
     public int getExperience() {
         return experience % ((getLevel() + 1) * 7);
     }
@@ -474,12 +469,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
 
     public void setLevel(int level) {
-        int calcExperience = getExperience();
-        this.level = level;
-        for (int i = 0; i <= level; i++) {
-            calcExperience += (level + 1) * 7;
+        experience = 0;
+        for (this.level = 0; this.level < level; ++this.level) {
+            experience += getExpToLevel();
         }
-        setExperience(calcExperience);
         session.send(createExperienceMessage());
     }
 
@@ -491,14 +484,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         int calcExperience = exp;
         this.experience = exp;
         level = 0;
-        while ((calcExperience -= (getLevel() + 1) * 7) > 0) ++level;
+        while ((calcExperience -= getExpToLevel()) > 0) ++level;
         session.send(createExperienceMessage());
     }
 
-    /**
-     * Add xp to Player.
-     * @param xp to add
-     */
     public void giveExp(int xp) {
         experience += xp;
         while(experience > (getLevel() + 1) * 7){
@@ -508,25 +497,27 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         session.send(createExperienceMessage());
     }
 
-    /**
-     * Get the percent to level for player.
-     * @return value between 0 and 1: percent to next level.
-     */
     public float getExp() {
-        float xpToLevel = (getLevel() + 1) * 7;
-        return (float)experience/xpToLevel;
+        return (float)experience/getExpToLevel();
     }
 
-    /** 
-     * Set the experience progress to next level.
-     * 0 sets to current level, 1 is next level
-     * Values greater than 1 or less that 0 are undefined.
-     * TODO Test boundary conditions.
-     * @param percentToLevel
-     */
     public void setExp(float percentToLevel) {
-        float xpToLevel = (getLevel() + 1) * 7;
-        experience = (int)(percentToLevel * xpToLevel);
+        experience = (int)(percentToLevel * getExpToLevel());
+    }
+
+    @Override
+    public int getExpToLevel() {
+        return getExpToLevel(level);
+    }
+
+    private int getExpToLevel(int level) {
+        if (level >= 30) {
+            return 62 + (level - 30) * 7;
+        } else if (level >= 15) {
+            return 17 + (level - 15) * 3;
+        } else {
+            return 17;
+        }
     }
 
     public float getExhaustion() {
@@ -790,28 +781,17 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     public void updateInventory() {
         getInventory().setContents(getInventory().getContents());
     }
-    
-    /**
-     * Get the current item on the player's cursor, for inventory screen purposes.
-     * @return The ItemStack the player is holding.
-     */
-    public ItemStack getItemOnCursor() {
-        return itemOnCursor;
-    }
-    
-    /**
-     * Set the item on the player's cursor, for inventory screen purposes.
-     * @param item The ItemStack to set the cursor to.
-     */
-    public void setItemOnCursor(GlowItemStack item) {
-        itemOnCursor = item;
+
+    @Override
+    public void setItemOnCursor(ItemStack item) {
+        super.setItemOnCursor(item);
         if (item == null) {
             session.send(new SetWindowSlotMessage(-1, -1));
         } else {
-            session.send(new SetWindowSlotMessage(-1, -1, item.getTypeId(), item.getAmount(), item.getDurability(), item.getNbtData()));
+            session.send(new SetWindowSlotMessage(-1, -1, item.getTypeId(), item.getAmount(), item.getDurability(), getItemOnCursor().getNbtData()));
         }
     }
-    
+
     /**
      * Inform the client that an item has changed.
      * @param inventory The GlowInventory in which a slot has changed.
@@ -854,17 +834,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
     
     // -- Goofy relative time stuff --
-    
-    /**
-     * Sets the current time on the player's client. When relative is true the player's time
-     * will be kept synchronized to its world time with the specified offset.
-     *
-     * When using non relative time the player's time will stay fixed at the specified time parameter. It's up to
-     * the caller to continue updating the player's time. To restore player time to normal use resetPlayerTime().
-     *
-     * @param time The current player's perceived time or the player's time offset from the server time.
-     * @param relative When true the player time is kept relative to its world time.
-     */
+
     public void setPlayerTime(long time, boolean relative) {
         timeOffset = time % 24000;
         timeRelative = relative;
@@ -872,11 +842,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         if (timeOffset < 0) timeOffset += 24000;
     }
 
-    /**
-     * Returns the player's current timestamp.
-     *
-     * @return
-     */
     public long getPlayerTime() {
         if (timeRelative) {
             // add timeOffset ticks to current time
@@ -887,40 +852,18 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         }
     }
 
-    /**
-     * Returns the player's current time offset relative to server time, or the current player's fixed time
-     * if the player's time is absolute.
-     *
-     * @return
-     */
     public long getPlayerTimeOffset() {
         return timeOffset;
     }
 
-    /**
-     * Returns true if the player's time is relative to the server time, otherwise the player's time is absolute and
-     * will not change its current time unless done so with setPlayerTime().
-     *
-     * @return true if the player's time is relative to the server time.
-     */
     public boolean isPlayerTimeRelative() {
         return timeRelative;
     }
 
-    /**
-     * Restores the normal condition where the player's time is synchronized with the server time.
-     * Equivalent to calling setPlayerTime(0, true).
-     */
     public void resetPlayerTime() {
         setPlayerTime(0, true);
     }
 
-    /**
-     * Render a map and send it to the player in its entirety. This may be used
-     * when streaming the map in the normal manner is not desirbale.
-     * 
-     * @param map The map to be sent
-     */
     public void sendMap(MapView map) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -955,7 +898,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
     
     public Message createExperienceMessage() {
-        return new ExperienceMessage((byte)getExperience(), (byte)getLevel(), (short)getTotalExperience());
+        return new ExperienceMessage((byte)getExp(), (byte)getLevel(), (short)getTotalExperience());
     }
 
     public Map<String, Object> serialize() {
@@ -1125,61 +1068,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     @Override
     public void abandonConversation(Conversation conversation, ConversationAbandonedEvent details) {
 
-    }
-
-    @Override
-    public Inventory getEnderChest() {
-        return null;
-    }
-
-    @Override
-    public boolean setWindowProperty(InventoryView.Property prop, int value) {
-        return false;
-    }
-
-    @Override
-    public InventoryView getOpenInventory() {
-        return null;
-    }
-
-    @Override
-    public InventoryView openInventory(Inventory inventory) {
-        return null;
-    }
-
-    @Override
-    public InventoryView openWorkbench(Location location, boolean force) {
-        return null;
-    }
-
-    @Override
-    public InventoryView openEnchanting(Location location, boolean force) {
-        return null;
-    }
-
-    @Override
-    public void openInventory(InventoryView inventory) {
-
-    }
-
-    @Override
-    public void closeInventory() {
-
-    }
-
-    @Override
-    public void setItemOnCursor(ItemStack item) {
-
-    }
-
-    @Override
-    public boolean isBlocking() {
-        return false;
-    }
-
-    @Override
-    public int getExpToLevel() {
-        return 0;
     }
 
     @Override

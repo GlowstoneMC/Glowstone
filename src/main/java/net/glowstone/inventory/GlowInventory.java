@@ -129,7 +129,7 @@ public class GlowInventory implements Inventory {
      * @param stack The ItemStack.
      * @return The GlowItemStack.
      */
-    private GlowItemStack getGlowItemStack(ItemStack stack) {
+    public static GlowItemStack getGlowItemStack(ItemStack stack) {
         if (stack == null) {
             return null;
         } else if (stack instanceof GlowItemStack) {
