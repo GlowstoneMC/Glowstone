@@ -51,7 +51,15 @@ public final class GlowScheduler implements BukkitScheduler {
      */
     private final List<GlowTask> tasks = new ArrayList<GlowTask>();
 
+    /**
+     * A list of active async worker threads.
+     */
     private final List<GlowWorker> activeWorkers = Collections.synchronizedList(new ArrayList<GlowWorker>());
+
+    /**
+     * The primary scheduler thread in which pulse() is called.
+     */
+    private Thread primaryThread;
 
     /**
      * Creates a new task scheduler.
@@ -90,9 +98,21 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     /**
+     * Returns true if the current {@link Thread} is the server's primary thread.
+     */
+    public boolean isPrimaryThread() {
+        return Thread.currentThread() == primaryThread;
+    }
+
+    /**
      * Adds new tasks and updates existing tasks, removing them if necessary.
      */
     private void pulse() {
+        if (primaryThread == null) {
+            primaryThread = Thread.currentThread();
+            primaryThread.setName("SchedulerThread");
+        }
+
         // Perform basic world pulse.
         server.getSessionRegistry().pulse();
         for (World world : server.getWorlds())
@@ -158,35 +178,39 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     public <T> Future<T> callSyncMethod(Plugin plugin, Callable<T> task) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        FutureTask<T> future = new FutureTask<T>(task);
+        runTask(plugin, future);
+        return future;
     }
 
-    @Override
+    public <T> T syncIfNeeded(Callable<T> task) throws Exception {
+        if (isPrimaryThread()) {
+            return task.call();
+        } else {
+            return callSyncMethod(null, task).get();
+        }
+    }
+
     public BukkitTask runTask(Plugin plugin, Runnable task) throws IllegalArgumentException {
         return runTaskLater(plugin, task, 0);
     }
 
-    @Override
     public BukkitTask runTaskAsynchronously(Plugin plugin, Runnable task) throws IllegalArgumentException {
         return runTaskLaterAsynchronously(plugin, task, 0);
     }
 
-    @Override
     public BukkitTask runTaskLater(Plugin plugin, Runnable task, long delay) throws IllegalArgumentException {
         return runTaskTimer(plugin, task, delay, -1);
     }
 
-    @Override
     public BukkitTask runTaskLaterAsynchronously(Plugin plugin, Runnable task, long delay) throws IllegalArgumentException {
         return runTaskTimerAsynchronously(plugin, task, delay, -1);
     }
 
-    @Override
     public BukkitTask runTaskTimer(Plugin plugin, Runnable task, long delay, long period) throws IllegalArgumentException {
         return schedule(new GlowTask(plugin, task, true, delay, period));
     }
 
-    @Override
     public BukkitTask runTaskTimerAsynchronously(Plugin plugin, Runnable task, long delay, long period) throws IllegalArgumentException {
         return schedule(new GlowTask(plugin, task, false, delay, period));
     }

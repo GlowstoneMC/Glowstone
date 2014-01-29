@@ -554,9 +554,8 @@ public final class GlowServer implements Server {
         return logger;
     }
 
-    @Override
     public boolean isPrimaryThread() {
-        return false;
+        return scheduler.isPrimaryThread();
     }
 
     ////////////////////////////////////////////////////////////////////////////

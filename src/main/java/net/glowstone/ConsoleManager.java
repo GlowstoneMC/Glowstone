@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.logging.*;
 
 /**
@@ -132,6 +133,7 @@ public final class ConsoleManager {
 
         sender = new ColoredCommandSender();
         Thread thread = new ConsoleCommandThread();
+        thread.setName("ConsoleCommandThread");
         thread.setDaemon(true);
         thread.start();
 
@@ -189,10 +191,13 @@ public final class ConsoleManager {
     }
 
     private class CommandCompleter implements Completer {
-        public int complete(String buffer, int cursor, List<CharSequence> candidates) {
-            // todo: sync the .tabComplete call w/ main thread
+        public int complete(final String buffer, int cursor, List<CharSequence> candidates) {
             try {
-                List<String> completions = server.getCommandMap().tabComplete(sender, buffer);
+                List<String> completions = server.getScheduler().syncIfNeeded(new Callable<List<String>>() {
+                    public List<String> call() throws Exception {
+                        return server.getCommandMap().tabComplete(sender, buffer);
+                    }
+                });
                 if (completions == null) {
                     return cursor;  // no completions
                 }
@@ -222,7 +227,7 @@ public final class ConsoleManager {
                     if (command == null || command.trim().length() == 0)
                         continue;
 
-                    server.getScheduler().scheduleSyncDelayedTask(null, new CommandTask(command.trim()));
+                    server.getScheduler().runTask(null, new CommandTask(command.trim()));
                 } catch (CommandException ex) {
                     logger.log(Level.WARNING, "Exception while executing command: " + command, ex);
                 } catch (Exception ex) {
