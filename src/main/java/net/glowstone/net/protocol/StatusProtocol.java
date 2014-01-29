@@ -13,7 +13,7 @@ import net.glowstone.net.message.status.StatusResponseMessage;
 public final class StatusProtocol extends GlowProtocol {
 
     public StatusProtocol(GlowServer server) {
-        super(server, "STATUS", 4);
+        super(server, "STATUS", 2);
         System.out.println("Created status protocl");
 
         registerMessage(INBOUND, StatusRequestMessage.class, StatusRequestCodec.class, StatusRequestHandler.class, 0x00);

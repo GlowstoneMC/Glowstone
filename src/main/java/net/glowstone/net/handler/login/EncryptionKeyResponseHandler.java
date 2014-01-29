@@ -3,26 +3,23 @@ package net.glowstone.net.handler.login;
 import com.flowpowered.networking.MessageHandler;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
-//import net.glowstone.net.EncryptionChannelProcessor;
+import net.glowstone.net.EncryptionChannelProcessor;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.login.EncryptionKeyResponseMessage;
-import net.glowstone.util.SecurityUtils;
 import net.glowstone.util.UuidUtils;
-import org.bouncycastle.crypto.BufferedBlockCipher;
-import org.bouncycastle.crypto.CipherParameters;
-import org.bouncycastle.crypto.params.KeyParameter;
-import org.bouncycastle.crypto.params.ParametersWithIV;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import javax.crypto.Cipher;
-import javax.xml.bind.DatatypeConverter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.util.Arrays;
 import java.util.UUID;
@@ -33,7 +30,16 @@ public final class EncryptionKeyResponseHandler implements MessageHandler<GlowSe
     @Override
     public void handle(GlowSession session, EncryptionKeyResponseMessage message) {
         final PrivateKey privateKey = session.getServer().getKeyPair().getPrivate();
-        final Cipher rsaCipher = SecurityUtils.generateRSACipher(Cipher.DECRYPT_MODE, privateKey);
+
+        // create rsaCipher
+        Cipher rsaCipher;
+        try {
+            rsaCipher = Cipher.getInstance("RSA");
+        } catch (GeneralSecurityException ex) {
+            GlowServer.logger.log(Level.SEVERE, "Could not initialize RSA cipher", ex);
+            session.disconnect("Unable to initialize RSA cipher.");
+            return;
+        }
 
         // decrypt shared secret
         byte[] sharedSecret;
@@ -42,7 +48,7 @@ public final class EncryptionKeyResponseHandler implements MessageHandler<GlowSe
             sharedSecret = rsaCipher.doFinal(message.getSharedSecret());
         } catch (Exception ex) {
             GlowServer.logger.log(Level.WARNING, "Could not decrypt shared secret", ex);
-            session.disconnect("Unable to decrypt verify token.");
+            session.disconnect("Unable to decrypt shared secret.");
             return;
         }
 
@@ -57,91 +63,84 @@ public final class EncryptionKeyResponseHandler implements MessageHandler<GlowSe
             return;
         }
 
+        // check verify token
         if(!Arrays.equals(verifyToken, session.getVerifyToken())) {
             session.disconnect("Invalid verify token.");
             return;
         }
 
-//        BufferedBlockCipher encodeCipher = SecurityUtils.generateBouncyCastleAESCipher();
-//        CipherParameters symmetricKey = new ParametersWithIV(new KeyParameter(sharedSecret), sharedSecret);
-//        encodeCipher.init(false, symmetricKey);
-//
-//        BufferedBlockCipher decodeCipher = SecurityUtils.generateBouncyCastleAESCipher();
-//        CipherParameters symmetricKey2 = new ParametersWithIV(new KeyParameter(sharedSecret), sharedSecret);
-//        encodeCipher.init(true, symmetricKey2);
-//
-//        EncryptionChannelProcessor processor = new EncryptionChannelProcessor(encodeCipher, decodeCipher, 32);
-//        session.setProcessor(processor);
+        // initialize stream encryption
+        session.setProcessor(new EncryptionChannelProcessor(sharedSecret, 32));
 
-        // todo: at this point, the stream encryption should be enabled
+        // create hash for auth
+        String hash;
+        try {
+            final MessageDigest digest = MessageDigest.getInstance("SHA-1");
+            digest.update(session.getSessionId().getBytes());
+            digest.update(sharedSecret);
+            digest.update(session.getServer().getKeyPair().getPublic().getEncoded());
 
-        //Create our hash to be used in the authentication post.
-        final MessageDigest digest = SecurityUtils.generateSHA1MessageDigest();
-        digest.update(session.getSessionId().getBytes());
-        digest.update(sharedSecret);
-        digest.update(session.getServer().getKeyPair().getPublic().getEncoded());
+            // BigInteger takes care of sign and leading zeroes
+            hash = new BigInteger(digest.digest()).toString(16);
+        } catch (NoSuchAlgorithmException ex) {
+            GlowServer.logger.log(Level.SEVERE, "Unable to generate SHA-1 digest", ex);
+            session.disconnect("Failed to hash login data.");
+            return;
+        }
 
-        final String hash = DatatypeConverter.printHexBinary(digest.digest());
-
-        ClientAuthentication clientAuth = new ClientAuthentication(session.getVerifyUsername(), hash, session);
-        new Thread(clientAuth).start();
+        // start auth thread
+        new ClientAuthThread(session, session.getVerifyUsername(), hash).start();
     }
 
-    private class ClientAuthentication implements Runnable {
+    private static class ClientAuthThread extends Thread {
 
-        private final String baseURL = "https://sessionserver.mojang.com/session/minecraft/hasJoined";
-        private final String username;
-        private final String hash;
-        private final String postURL;
+        private static final String BASE_URL = "https://sessionserver.mojang.com/session/minecraft/hasJoined";
 
         private final GlowSession session;
+        private final String username;
+        private final String postURL;
 
-        private ClientAuthentication(String username, String hash, GlowSession session) {
-            this.username = username;
-            this.hash = hash;
-            this.postURL = baseURL + "?username=" + username + "&serverId=" + hash;
+        private ClientAuthThread(GlowSession session, String username, String hash) {
             this.session = session;
+            this.username = username;
+            this.postURL = BASE_URL + "?username=" + username + "&serverId=" + hash;
+            setName("ClientAuthThread{" + username + "}");
         }
 
         @Override
         public void run() {
-            URLConnection conn;
-
             try {
-                URL url = new URL(postURL);
-                conn = url.openConnection();
-
+                URLConnection conn = new URL(postURL).openConnection();
                 InputStream is = conn.getInputStream();
                 JSONObject json;
                 try {
                     json = (JSONObject) new JSONParser().parse(new InputStreamReader(is));
                 } catch (ParseException e) {
-                    session.disconnect("Authentication failed.");
+                    session.disconnect("Failed to verify username!");
+                    GlowServer.logger.warning("Username \"" + username + "\" failed to authenticate!");
                     return;
                 }
-                System.out.println(json.toJSONString());
 
-                final String id = (String) json.get("id");
+                String id = (String) json.get("id");
+
+                final UUID uuid;
+                try {
+                    uuid = UuidUtils.fromFlatString(id);
+                } catch (IllegalArgumentException ex) {
+                    GlowServer.logger.log(Level.SEVERE, "Returned authentication UUID invalid: {0}", ex.getMessage());
+                    session.disconnect("Invalid UUID.");
+                    return;
+                }
 
                 session.getServer().getScheduler().runTask(null, new Runnable() {
                     @Override
                     public void run() {
-                        UUID uuid;
-
-                        try {
-                            uuid = UuidUtils.fromFlatString(id);
-                        } catch (IllegalArgumentException ex) {
-                            GlowServer.logger.log(Level.SEVERE, "Returned authentication UUID invalid: {0}", ex.getMessage());
-                            session.disconnect("Invalid UUID.");
-                            return;
-                        }
-
                         session.setPlayer(new GlowPlayer(session, username, uuid));
                     }
                 });
             } catch (Exception e) {
-                session.disconnect("Internal error during authentication.");
                 GlowServer.logger.log(Level.SEVERE, "Error in authentication thread", e);
+                session.disconnect("Internal error during authentication.");
             }
         }
     }

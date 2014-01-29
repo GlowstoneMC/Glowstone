@@ -77,6 +77,7 @@ public abstract class GlowProtocol extends KeyedProtocol {
         ByteBufUtils.writeVarInt(opcodeBuffer, codec.getOpcode());
         ByteBufUtils.writeVarInt(out, length + opcodeBuffer.readableBytes());
         ByteBufUtils.writeVarInt(out, codec.getOpcode());
+        System.out.println("finished writing: " + codec.getOpcode());
     }
 
 

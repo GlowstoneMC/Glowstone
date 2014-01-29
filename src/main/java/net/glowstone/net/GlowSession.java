@@ -1,6 +1,7 @@
 package net.glowstone.net;
 
 import com.flowpowered.networking.Message;
+import com.flowpowered.networking.processor.MessageProcessor;
 import com.flowpowered.networking.session.BasicSession;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -19,6 +20,7 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.json.simple.JSONObject;
 
+import javax.annotation.processing.Processor;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Random;
@@ -88,6 +90,9 @@ public final class GlowSession extends BasicSession {
      * vanilla client where duplicate packets are sent.
      */
     private BlockPlacementMessage previousPlacement;
+
+    private MessageProcessor processor;
+
 
     /**
      * Creates a new session.
@@ -214,7 +219,7 @@ public final class GlowSession extends BasicSession {
     public void send(Message message) {
         writeTimeoutCounter = 0;
         System.out.println("Sending message:"  + message.getClass().getName());
-        getChannel().write(message);
+        super.send(message);
     }
 
     /**
@@ -265,7 +270,7 @@ public final class GlowSession extends BasicSession {
         } else {
             JSONObject json = new JSONObject();
             json.put("text", reason);
-            getChannel().write(new KickMessage(json)).addListener(ChannelFutureListener.CLOSE);
+            super.sendWithFuture(new KickMessage(json)).addListener(ChannelFutureListener.CLOSE);
         }
     }
 
@@ -357,5 +362,14 @@ public final class GlowSession extends BasicSession {
         t.printStackTrace();
     }
 
+
+    public void setProcessor(MessageProcessor processor) {
+        this.processor = processor;
+    }
+
+    @Override
+    public MessageProcessor getProcessor() {
+        return processor;
+    }
 
 }

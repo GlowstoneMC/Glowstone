@@ -19,5 +19,6 @@ public final class JsonCodec implements Codec<JsonMessage> {
     public void encode(ByteBuf buf, JsonMessage message) throws IOException {
         System.out.println("Encoding json: " + message.getJson());
         ByteBufUtils.writeUTF8(buf, message.getJson());
+        System.out.println("Encoding after");
     }
 }
