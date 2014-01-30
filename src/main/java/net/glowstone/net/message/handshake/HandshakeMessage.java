@@ -34,6 +34,6 @@ public final class HandshakeMessage implements Message {
 
     @Override
     public boolean isAsync() {
-        return false;
+        return true;
     }
 }

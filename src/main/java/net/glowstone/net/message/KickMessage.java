@@ -8,12 +8,8 @@ public final class KickMessage extends JsonMessage {
         super(json);
     }
 
-    public KickMessage(String json) {
-        super(json);
+    public KickMessage(String text) {
+        super(toTextJson(text));
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }

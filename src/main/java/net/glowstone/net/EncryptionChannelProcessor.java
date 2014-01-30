@@ -1,5 +1,6 @@
 package net.glowstone.net;
 
+import com.flowpowered.networking.processor.simple.SimpleMessageProcessor;
 import org.bouncycastle.crypto.BufferedBlockCipher;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.engines.AESEngine;
@@ -7,7 +8,7 @@ import org.bouncycastle.crypto.modes.CFBBlockCipher;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.params.ParametersWithIV;
 
-public class EncryptionChannelProcessor extends FixedSimpleMessageProcessor {
+public class EncryptionChannelProcessor extends SimpleMessageProcessor {
 
     private CryptBuf encodeBuf;
     private CryptBuf decodeBuf;

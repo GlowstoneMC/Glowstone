@@ -185,6 +185,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         saveData();
         getInventory().removeViewer(this);
         getInventory().getCraftingInventory().removeViewer(this);
+        permissions.clearPermissions();
         super.remove();
     }
 

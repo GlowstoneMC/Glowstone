@@ -9,12 +9,4 @@ public final class StatusResponseMessage extends JsonMessage {
         super(json);
     }
 
-    public StatusResponseMessage(String json) {
-        super(json);
-    }
-
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }

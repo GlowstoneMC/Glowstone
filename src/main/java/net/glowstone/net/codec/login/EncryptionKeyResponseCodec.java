@@ -7,7 +7,6 @@ import net.glowstone.net.message.login.EncryptionKeyResponseMessage;
 import java.io.IOException;
 
 public final class EncryptionKeyResponseCodec implements Codec<EncryptionKeyResponseMessage> {
-
     @Override
     public EncryptionKeyResponseMessage decode(ByteBuf buffer) throws IOException {
         byte[] sharedSecret = new byte[buffer.readShort()];
@@ -26,7 +25,5 @@ public final class EncryptionKeyResponseCodec implements Codec<EncryptionKeyResp
 
         buf.writeShort(message.getVerifyToken().length);
         buf.writeBytes(message.getVerifyToken());
-
-
     }
 }

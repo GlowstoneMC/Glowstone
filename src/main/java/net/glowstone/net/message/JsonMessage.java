@@ -29,4 +29,11 @@ public class JsonMessage implements Message {
     public boolean isAsync() {
         return false;
     }
+
+    @SuppressWarnings("unchecked")
+    protected static JSONObject toTextJson(String text) {
+        JSONObject json = new JSONObject();
+        json.put("text", text);
+        return json;
+    }
 }

@@ -218,7 +218,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
             outStream.writeTag(new CompoundTag("", out));
             outStream.close();
         } catch (IOException e) {
-            player.getSession().disconnect("Failed to write player.dat", true);
+            player.getSession().disconnect("Failed to write player.dat");
             server.getLogger().severe("Failed to write player.dat for player " + player.getName() + " in world " + world.getName() + "!");
         }
     }

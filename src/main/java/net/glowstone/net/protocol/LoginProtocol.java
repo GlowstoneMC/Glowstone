@@ -15,10 +15,8 @@ import net.glowstone.net.message.login.LoginStartMessage;
 import net.glowstone.net.message.login.LoginSuccessMessage;
 
 public final class LoginProtocol extends GlowProtocol {
-
     public LoginProtocol(GlowServer server) {
         super(server, "LOGIN", 5);
-
 
         registerMessage(INBOUND, LoginStartMessage.class, LoginStartCodec.class, LoginStartHandler.class, 0x00);
         registerMessage(INBOUND, EncryptionKeyResponseMessage.class, EncryptionKeyResponseCodec.class, EncryptionKeyResponseHandler.class, 0x01);

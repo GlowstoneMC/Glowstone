@@ -116,8 +116,8 @@ public final class EncryptionKeyResponseHandler implements MessageHandler<GlowSe
                 try {
                     json = (JSONObject) new JSONParser().parse(new InputStreamReader(is));
                 } catch (ParseException e) {
-                    session.disconnect("Failed to verify username!");
                     GlowServer.logger.warning("Username \"" + username + "\" failed to authenticate!");
+                    session.disconnect("Failed to verify username!");
                     return;
                 }
 

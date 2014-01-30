@@ -3,7 +3,6 @@ package net.glowstone.net;
 import com.flowpowered.networking.NetworkServer;
 import com.flowpowered.networking.session.Session;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelOption;
 import net.glowstone.GlowServer;
 
 public class GlowNetworkServer extends NetworkServer {
@@ -16,10 +15,8 @@ public class GlowNetworkServer extends NetworkServer {
 
     @Override
     public Session newSession(Channel c) {
-        System.out.println("newSession in GlowNetworkServer called");
         GlowSession session = new GlowSession(server, c);
         server.getSessionRegistry().add(session);
-
         return session;
     }
 

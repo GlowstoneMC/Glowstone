@@ -3,7 +3,6 @@ package net.glowstone.net.handler.handshake;
 import com.flowpowered.networking.MessageHandler;
 import net.glowstone.GlowServer;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.Protocols;
 import net.glowstone.net.message.handshake.HandshakeMessage;
 import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.LoginProtocol;
@@ -22,30 +21,32 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
 
         Protocols newProtocol = values[state];
 
-        if (newProtocol != Protocols.LOGIN && newProtocol != Protocols.STATUS) {
+        GlowProtocol protocol;
+        if (newProtocol == Protocols.LOGIN) {
+            protocol = new LoginProtocol(session.getServer());
+        } else if (newProtocol == Protocols.STATUS) {
+            protocol = new StatusProtocol(session.getServer());
+        } else {
             session.disconnect("Invalid state");
             return;
         }
 
         GlowServer.logger.info("Handshake [" + message.getAddress() + ":" + message.getPort() + "], next state " + newProtocol);
-
-        GlowProtocol protocol = null;
-        if(newProtocol == Protocols.LOGIN) {
-            protocol = new LoginProtocol(session.getServer());
-        }
-        if(newProtocol == Protocols.STATUS) {
-            protocol = new StatusProtocol(session.getServer());
-        }
         session.setProtocol(protocol);
 
-        if(newProtocol == Protocols.LOGIN) {
+        if (newProtocol == Protocols.LOGIN) {
             if (message.getVersion() < GlowServer.PROTOCOL_VERSION) {
                 session.disconnect("Outdated client!");
-                return;
             } else if (message.getVersion() > GlowServer.PROTOCOL_VERSION) {
                 session.disconnect("Outdated server!");
-                return;
             }
         }
+    }
+
+    private static enum Protocols {
+        HANDSHAKE,
+        STATUS,
+        LOGIN,
+        PLAY
     }
 }

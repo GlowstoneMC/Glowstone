@@ -32,7 +32,5 @@ public final class EncryptionKeyRequestCodec implements Codec<EncryptionKeyReque
 
         buf.writeShort(message.getVerifyToken().length);
         buf.writeBytes(message.getVerifyToken());
-
-
     }
 }

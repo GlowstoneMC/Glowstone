@@ -10,13 +10,6 @@ public final class ChatMessage extends JsonMessage {
     }
 
     public ChatMessage(String text) {
-        super(makeJson(text));
-    }
-
-    @SuppressWarnings("unchecked")
-    private static JSONObject makeJson(String text) {
-        JSONObject json = new JSONObject();
-        json.put("text", text);
-        return json;
+        super(toTextJson(text));
     }
 }

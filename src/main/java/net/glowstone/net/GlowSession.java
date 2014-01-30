@@ -1,26 +1,26 @@
 package net.glowstone.net;
 
 import com.flowpowered.networking.Message;
+import com.flowpowered.networking.MessageHandler;
+import com.flowpowered.networking.exception.UnknownPacketException;
 import com.flowpowered.networking.processor.MessageProcessor;
 import com.flowpowered.networking.session.BasicSession;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
+import io.netty.handler.codec.DecoderException;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.msg.BlockPlacementMessage;
 import net.glowstone.net.message.KickMessage;
-import net.glowstone.net.message.handshake.HandshakeMessage;
 import net.glowstone.net.message.play.game.PingMessage;
 import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.HandshakeProtocol;
 import net.glowstone.net.protocol.PlayProtocol;
-import net.glowstone.net.protocol.StatusProtocol;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
-import org.json.simple.JSONObject;
 
-import javax.annotation.processing.Processor;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Random;
@@ -91,19 +91,19 @@ public final class GlowSession extends BasicSession {
      */
     private BlockPlacementMessage previousPlacement;
 
+    /**
+     * The MessageProcessor used for encryption, if it has been enabled.
+     */
     private MessageProcessor processor;
-
 
     /**
      * Creates a new session.
-     * @param server The server this session belongs to.
+     * @param server  The server this session belongs to.
      * @param channel The channel associated with this session.
      */
     public GlowSession(GlowServer server, Channel channel) {
-
         super(channel, new HandshakeProtocol(server));
         this.server = server;
-        System.out.println("GlowSession constructor called.");
     }
 
     /**
@@ -185,7 +185,7 @@ public final class GlowSession extends BasicSession {
      * Sets the player associated with this session.
      * @param player The new player.
      * @throws IllegalStateException if there is already a player associated
-     * with this session.
+     *                               with this session.
      */
     public void setPlayer(GlowPlayer player) {
         if (this.player != null)
@@ -199,6 +199,8 @@ public final class GlowSession extends BasicSession {
             return;
         }
         player.getWorld().getRawPlayers().add(player);
+
+        GlowServer.logger.info(player.getName() + " [" + getAddress() + "] connected, UUID: " + player.getUniqueId());
 
         // message and user list
         String message = EventFactory.onPlayerJoin(player).getJoinMessage();
@@ -216,10 +218,14 @@ public final class GlowSession extends BasicSession {
      * Sends a message to the client.
      * @param message The message.
      */
-    public void send(Message message) {
+    @Override
+    public ChannelFuture sendWithFuture(Message message) {
         writeTimeoutCounter = 0;
-        System.out.println("Sending message:"  + message.getClass().getName());
-        super.send(message);
+        if (!getChannel().isActive()) {
+            // discard messages sent if we're closed, since this happens a lot
+            return null;
+        }
+        return super.sendWithFuture(message);
     }
 
     /**
@@ -227,7 +233,12 @@ public final class GlowSession extends BasicSession {
      */
     @Deprecated
     public void send(net.glowstone.msg.Message message) {
-        GlowServer.logger.info("Send [LEGACY] " + message.getClass().getName());
+        GlowServer.logger.info("Send [LEGACY] " + message.getClass().getSimpleName());
+    }
+
+    @Override
+    public void disconnect() {
+        disconnect("No reason specified.");
     }
 
     /**
@@ -239,15 +250,15 @@ public final class GlowSession extends BasicSession {
     public void disconnect(String reason) {
         disconnect(reason, false);
     }
-    
+
     /**
      * Disconnects the session with the specified reason. This causes a
      * KickMessage to be sent. When it has been delivered, the channel
      * is closed.
      * @param reason The reason for disconnection.
-     * @param overrideKick Whether to override the kick event.
+     * @param overrideKick Whether to skip the kick event.
      */
-    public void disconnect(String reason, boolean overrideKick) {
+    private void disconnect(String reason, boolean overrideKick) {
         if (player != null && !overrideKick) {
             PlayerKickEvent event = EventFactory.onPlayerKick(player, reason);
             if (event.isCancelled()) {
@@ -259,24 +270,40 @@ public final class GlowSession extends BasicSession {
             if (event.getLeaveMessage() != null) {
                 server.broadcastMessage(event.getLeaveMessage());
             }
-            
-            GlowServer.logger.log(Level.INFO, "Player {0} kicked: {1}", new Object[]{player.getName(), reason});
-            dispose(false);
         }
 
-        if (getProtocol() instanceof HandshakeProtocol || getProtocol() instanceof StatusProtocol) {
-            // No KickMessage in these states
+        // log that the player was kicked
+        if (player != null) {
+            GlowServer.logger.log(Level.INFO, "Player {0} kicked: {1}", new Object[]{player.getName(), reason});
+        } else {
+            GlowServer.logger.log(Level.INFO, "[{0}] kicked: {1}", new Object[]{getAddress(), reason});
+        }
+
+        // perform the kick, sending a kick message if possible
+        if (getProtocol().getCodecRegistration(KickMessage.class) == null) {
             getChannel().close();
         } else {
-            JSONObject json = new JSONObject();
-            json.put("text", reason);
-            super.sendWithFuture(new KickMessage(json)).addListener(ChannelFutureListener.CLOSE);
+            sendWithFuture(new KickMessage(reason)).addListener(ChannelFutureListener.CLOSE);
         }
     }
 
     @Override
-    public String toString() {
-        return GlowSession.class.getName() + " [address=" + getChannel().remoteAddress() + "]";
+    public void onDisconnect() {
+        if (player != null) {
+            player.remove();
+            /*Message userListMessage = new UserListItemMessage(player.getPlayerListName(), false, (short)0);
+            for (Player player : server.getOnlinePlayers()) {
+                ((GlowPlayer) player).getSession().send(userListMessage);
+            }*/
+
+            GlowServer.logger.info(player.getName() + " [" + getAddress() + "] lost connection");
+
+            String text = EventFactory.onPlayerQuit(player).getQuitMessage();
+            if (text != null) {
+                server.broadcastMessage(text);
+            }
+            player = null; // in case we are disposed twice
+        }
     }
 
     /**
@@ -292,9 +319,6 @@ public final class GlowSession extends BasicSession {
                 // player has been unset, we are just seeing extra messages now
                 continue;
             }
-//            if (!MessageMap.getForState(state).callHandler(this, player, message)) {
-//                GlowServer.logger.warning("Message " + message + " was not handled");
-//            }
 
             super.messageReceived(message);
             readTimeoutCounter = 0;
@@ -321,10 +345,9 @@ public final class GlowSession extends BasicSession {
      * Adds a message to the unprocessed queue.
      * @param message The message.
      */
-     public void messageReceived(Message message) {
-        System.out.println("Received message, name: " + message.getClass().getName());
-        if (message instanceof HandshakeMessage) {
-            // must handle immediately, because network reads are affected (a little hacky)
+    public void messageReceived(Message message) {
+        if (message.isAsync()) {
+            // async messages get their handlers called immediately
             super.messageReceived(message);
         } else {
             messageQueue.add(message);
@@ -332,36 +355,31 @@ public final class GlowSession extends BasicSession {
     }
 
     public void setProtocol(GlowProtocol protocol) {
-        System.out.println("GlowSession#SetProtocol, new protocol name: " + protocol.getClass().getName());
         super.setProtocol(protocol);
     }
 
-    /**
-     * Disposes of this session by destroying the associated player, if there is
-     * one.
-     */
-    void dispose(boolean broadcastQuit) {
-        if (player != null) {            
-            player.remove();
-            /*Message userListMessage = new UserListItemMessage(player.getPlayerListName(), false, (short)0);
-            for (Player player : server.getOnlinePlayers()) {
-                ((GlowPlayer) player).getSession().send(userListMessage);
-            }*/
-
-            String text = EventFactory.onPlayerQuit(player).getQuitMessage();
-            if (broadcastQuit && text != null) {
-                server.broadcastMessage(text);
+    @Override
+    public void onInboundThrowable(Throwable t) {
+        if (t instanceof DecoderException) {
+            Throwable cause = t.getCause();
+            if (cause instanceof UnknownPacketException) {
+                UnknownPacketException ex = (UnknownPacketException) cause;
+                GlowServer.logger.info("Skipped unknown " + getProtocol().getName() + " opcode: " + ex.getOpcode() + ", length: " + ex.getLength());
+                return;
             }
-            player = null; // in case we are disposed twice
         }
+        GlowServer.logger.log(Level.SEVERE, "Error in network input", t);
     }
 
     @Override
-    public void onThrowable(Throwable t) {
-        System.out.println("onthrowable");
-        t.printStackTrace();
+    public void onOutboundThrowable(Throwable t) {
+        GlowServer.logger.log(Level.SEVERE, "Error in network output", t);
     }
 
+    @Override
+    public void onHandlerThrowable(Message message, MessageHandler<?, ?> handle, Throwable t) {
+        GlowServer.logger.log(Level.SEVERE, "Error while handling " + message + " (handler: " + handle.getClass().getSimpleName() + ")", t);
+    }
 
     public void setProcessor(MessageProcessor processor) {
         this.processor = processor;

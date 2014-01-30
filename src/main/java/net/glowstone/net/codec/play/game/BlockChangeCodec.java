@@ -12,7 +12,7 @@ public final class BlockChangeCodec implements Codec<BlockChangeMessage> {
     @Override
     public BlockChangeMessage decode(ByteBuf buffer) throws IOException {
         int x = buffer.readInt();
-        int y = buffer.readInt();
+        int y = buffer.readByte();
         int z = buffer.readInt();
         int type = ByteBufUtils.readVarInt(buffer);
         int metadata = buffer.readByte();
@@ -23,11 +23,9 @@ public final class BlockChangeCodec implements Codec<BlockChangeMessage> {
     @Override
     public void encode(ByteBuf buf, BlockChangeMessage message) throws IOException {
         buf.writeInt(message.getX());
-        buf.writeInt(message.getY());
+        buf.writeByte(message.getY());
         buf.writeInt(message.getZ());
         ByteBufUtils.writeVarInt(buf, message.getType());
         buf.writeByte(message.getMetadata());
-
-
     }
 }
