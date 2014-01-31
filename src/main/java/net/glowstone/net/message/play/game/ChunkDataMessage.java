@@ -6,8 +6,6 @@ import java.util.zip.Deflater;
 
 public final class ChunkDataMessage implements Message {
 
-    static final int COMPRESSION_LEVEL = Deflater.DEFAULT_COMPRESSION;
-
     final int x, z;
     final boolean continuous;
     final int primaryMask, addMask;
@@ -24,10 +22,6 @@ public final class ChunkDataMessage implements Message {
 
     public static ChunkDataMessage empty(int x, int z) {
         return new ChunkDataMessage(x, z, true, 0, 0, new byte[0]);
-    }
-
-    public static int getCompressionLevel() {
-        return COMPRESSION_LEVEL;
     }
 
     public int getX() {

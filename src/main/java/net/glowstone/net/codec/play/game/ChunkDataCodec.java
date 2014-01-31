@@ -9,6 +9,8 @@ import java.util.zip.Deflater;
 
 public final class ChunkDataCodec implements Codec<ChunkDataMessage> {
 
+    static final int COMPRESSION_LEVEL = Deflater.DEFAULT_COMPRESSION;
+
     @Override
     public ChunkDataMessage decode(ByteBuf buffer) throws IOException {
         throw new RuntimeException("the fck client?!");
@@ -29,7 +31,7 @@ public final class ChunkDataCodec implements Codec<ChunkDataMessage> {
 
         byte[] compressedData = new byte[message.getData().length];
 
-        Deflater deflater = new Deflater(ChunkDataMessage.getCompressionLevel());
+        Deflater deflater = new Deflater(COMPRESSION_LEVEL);
         deflater.setInput(message.getData());
         deflater.finish();
 

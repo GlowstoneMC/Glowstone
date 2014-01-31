@@ -9,7 +9,7 @@ import net.glowstone.inventory.InventoryViewer;
 import net.glowstone.io.StorageOperation;
 import net.glowstone.msg.*;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.game.ChunkBulkMessage;
+import net.glowstone.net.message.play.game.ChunkBulkMessage;
 import net.glowstone.net.message.login.LoginSuccessMessage;
 import net.glowstone.net.message.play.game.*;
 import net.glowstone.net.protocol.PlayProtocol;
