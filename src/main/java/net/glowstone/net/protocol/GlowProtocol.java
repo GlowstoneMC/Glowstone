@@ -18,8 +18,8 @@ public abstract class GlowProtocol extends KeyedProtocol {
     /**
      * Keys for codec lookup.
      */
-    protected static final String INBOUND = "INBOUND";
-    protected static final String OUTBOUND = "OUTBOUND";
+    private static final String INBOUND = "INBOUND";
+    private static final String OUTBOUND = "OUTBOUND";
 
     /**
      * Default port for the protocol. Not used anywhere.
@@ -28,6 +28,14 @@ public abstract class GlowProtocol extends KeyedProtocol {
 
     public GlowProtocol(GlowServer server, String name, int highestOpcode) {
         super(name, DEFAULT_PORT, highestOpcode + 1);
+    }
+
+    protected <M extends Message, C extends Codec<? super M>, H extends MessageHandler<?, ? super M>> Codec.CodecRegistration inbound(int opcode, Class<M> message, Class<C> codec, Class<H> handler) {
+        return registerMessage(INBOUND, message, codec, handler, opcode);
+    }
+
+    protected <M extends Message, C extends Codec<? super M>> Codec.CodecRegistration outbound(int opcode, Class<M> message, Class<C> codec) {
+        return registerMessage(OUTBOUND, message, codec, null, opcode);
     }
 
     @Override

@@ -14,10 +14,10 @@ public final class StatusProtocol extends GlowProtocol {
     public StatusProtocol(GlowServer server) {
         super(server, "STATUS", 2);
 
-        registerMessage(INBOUND, StatusRequestMessage.class, StatusRequestCodec.class, StatusRequestHandler.class, 0x00);
-        registerMessage(INBOUND, StatusPingMessage.class, StatusPingCodec.class, StatusPingHandler.class, 0x01);
+        inbound(0x00, StatusRequestMessage.class, StatusRequestCodec.class, StatusRequestHandler.class);
+        inbound(0x01, StatusPingMessage.class, StatusPingCodec.class, StatusPingHandler.class);
 
-        registerMessage(OUTBOUND, StatusResponseMessage.class, JsonCodec.class, null, 0x00);
-        registerMessage(OUTBOUND, StatusPingMessage.class, StatusPingCodec.class, null, 0x01);
+        outbound(0x00, StatusResponseMessage.class, JsonCodec.class);
+        outbound(0x01, StatusPingMessage.class, StatusPingCodec.class);
     }
 }

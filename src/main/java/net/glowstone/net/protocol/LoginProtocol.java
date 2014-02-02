@@ -18,11 +18,11 @@ public final class LoginProtocol extends GlowProtocol {
     public LoginProtocol(GlowServer server) {
         super(server, "LOGIN", 5);
 
-        registerMessage(INBOUND, LoginStartMessage.class, LoginStartCodec.class, LoginStartHandler.class, 0x00);
-        registerMessage(INBOUND, EncryptionKeyResponseMessage.class, EncryptionKeyResponseCodec.class, EncryptionKeyResponseHandler.class, 0x01);
+        inbound(0x00, LoginStartMessage.class, LoginStartCodec.class, LoginStartHandler.class);
+        inbound(0x01, EncryptionKeyResponseMessage.class, EncryptionKeyResponseCodec.class, EncryptionKeyResponseHandler.class);
 
-        registerMessage(OUTBOUND, KickMessage.class, JsonCodec.class, null, 0x00);
-        registerMessage(OUTBOUND, EncryptionKeyRequestMessage.class, EncryptionKeyRequestCodec.class, null, 0x01);
-        registerMessage(OUTBOUND, LoginSuccessMessage.class, LoginSuccessCodec.class, null, 0x02);
+        outbound(0x00, KickMessage.class, JsonCodec.class);
+        outbound(0x01, EncryptionKeyRequestMessage.class, EncryptionKeyRequestCodec.class);
+        outbound(0x02, LoginSuccessMessage.class, LoginSuccessCodec.class);
     }
 }
