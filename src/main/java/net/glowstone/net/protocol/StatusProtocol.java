@@ -12,7 +12,7 @@ import net.glowstone.net.message.status.StatusResponseMessage;
 
 public final class StatusProtocol extends GlowProtocol {
     public StatusProtocol(GlowServer server) {
-        super(server, "STATUS", 2);
+        super(server, "STATUS");
 
         inbound(0x00, StatusRequestMessage.class, StatusRequestCodec.class, StatusRequestHandler.class);
         inbound(0x01, StatusPingMessage.class, StatusPingCodec.class, StatusPingHandler.class);

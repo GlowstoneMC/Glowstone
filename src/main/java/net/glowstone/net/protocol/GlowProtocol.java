@@ -26,8 +26,8 @@ public abstract class GlowProtocol extends KeyedProtocol {
      */
     private static final int DEFAULT_PORT = 25565;
 
-    public GlowProtocol(GlowServer server, String name, int highestOpcode) {
-        super(name, DEFAULT_PORT, highestOpcode + 1);
+    public GlowProtocol(GlowServer server, String name) {
+        super(name, DEFAULT_PORT);
     }
 
     protected <M extends Message, C extends Codec<? super M>, H extends MessageHandler<?, ? super M>> Codec.CodecRegistration inbound(int opcode, Class<M> message, Class<C> codec, Class<H> handler) {
@@ -58,7 +58,7 @@ public abstract class GlowProtocol extends KeyedProtocol {
             buf.markReaderIndex();
 
             opcode = ByteBufUtils.readVarInt(buf);
-            return getCodecLookupService(INBOUND).find(opcode).getCodec();
+            return getCodecLookupService(INBOUND).find(opcode);
         } catch (IOException e) {
             throw new UnknownPacketException("Failed to read packet data (corrupt?)", opcode, length);
         } catch (IllegalOpcodeException e) {
