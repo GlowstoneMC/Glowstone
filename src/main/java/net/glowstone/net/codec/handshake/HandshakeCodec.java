@@ -8,7 +8,6 @@ import net.glowstone.net.message.handshake.HandshakeMessage;
 import java.io.IOException;
 
 public final class HandshakeCodec implements Codec<HandshakeMessage> {
-    @Override
     public HandshakeMessage decode(ByteBuf buffer) throws IOException {
         final int version = ByteBufUtils.readVarInt(buffer);
         final String address = ByteBufUtils.readUTF8(buffer);
@@ -18,11 +17,11 @@ public final class HandshakeCodec implements Codec<HandshakeMessage> {
         return new HandshakeMessage(version, address, port, state);
     }
 
-    @Override
-    public void encode(ByteBuf buf, HandshakeMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, HandshakeMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getVersion());
         ByteBufUtils.writeUTF8(buf, message.getAddress());
         buf.writeShort(message.getPort());
         buf.writeInt(message.getPort());
+        return buf;
     }
 }

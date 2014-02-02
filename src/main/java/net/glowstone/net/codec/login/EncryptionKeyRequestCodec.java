@@ -8,7 +8,6 @@ import net.glowstone.net.message.login.EncryptionKeyRequestMessage;
 import java.io.IOException;
 
 public final class EncryptionKeyRequestCodec implements Codec<EncryptionKeyRequestMessage> {
-    @Override
     public EncryptionKeyRequestMessage decode(ByteBuf buffer) throws IOException {
         String sessionId = ByteBufUtils.readUTF8(buffer);
 
@@ -23,8 +22,7 @@ public final class EncryptionKeyRequestCodec implements Codec<EncryptionKeyReque
         return new EncryptionKeyRequestMessage(sessionId, publicKey, verifyToken);
     }
 
-    @Override
-    public void encode(ByteBuf buf, EncryptionKeyRequestMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, EncryptionKeyRequestMessage message) throws IOException {
         ByteBufUtils.writeUTF8(buf, message.getSessionId());
 
         buf.writeShort(message.getPublicKey().length);
@@ -32,5 +30,6 @@ public final class EncryptionKeyRequestCodec implements Codec<EncryptionKeyReque
 
         buf.writeShort(message.getVerifyToken().length);
         buf.writeBytes(message.getVerifyToken());
+        return buf;
     }
 }

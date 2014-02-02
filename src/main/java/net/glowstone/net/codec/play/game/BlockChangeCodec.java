@@ -8,8 +8,6 @@ import net.glowstone.net.message.play.game.BlockChangeMessage;
 import java.io.IOException;
 
 public final class BlockChangeCodec implements Codec<BlockChangeMessage> {
-
-    @Override
     public BlockChangeMessage decode(ByteBuf buffer) throws IOException {
         int x = buffer.readInt();
         int y = buffer.readByte();
@@ -20,12 +18,12 @@ public final class BlockChangeCodec implements Codec<BlockChangeMessage> {
         return new BlockChangeMessage(x, y, z, type, metadata);
     }
 
-    @Override
-    public void encode(ByteBuf buf, BlockChangeMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, BlockChangeMessage message) throws IOException {
         buf.writeInt(message.getX());
         buf.writeByte(message.getY());
         buf.writeInt(message.getZ());
         ByteBufUtils.writeVarInt(buf, message.getType());
         buf.writeByte(message.getMetadata());
+        return buf;
     }
 }

@@ -14,9 +14,10 @@ public final class ExperienceCodec implements Codec<ExperienceMessage> {
         return new ExperienceMessage(barValue, level, totalExp);
     }
 
-    public void encode(ByteBuf buf, ExperienceMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, ExperienceMessage message) throws IOException {
         buf.writeFloat(message.getBarValue());
         buf.writeShort(message.getLevel());
         buf.writeShort(message.getTotalExp());
+        return buf;
     }
 }

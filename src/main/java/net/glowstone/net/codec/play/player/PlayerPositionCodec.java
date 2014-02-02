@@ -7,8 +7,6 @@ import net.glowstone.net.message.play.player.PlayerPositionMessage;
 import java.io.IOException;
 
 public final class PlayerPositionCodec implements Codec<PlayerPositionMessage> {
-
-    @Override
     public PlayerPositionMessage decode(ByteBuf buffer) throws IOException {
         double x = buffer.readDouble();
         double stance = buffer.readDouble();
@@ -19,13 +17,12 @@ public final class PlayerPositionCodec implements Codec<PlayerPositionMessage> {
         return new PlayerPositionMessage(onGround, x, stance, y, z);
     }
 
-    @Override
-    public void encode(ByteBuf buf, PlayerPositionMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, PlayerPositionMessage message) throws IOException {
         buf.writeDouble(buf.readDouble());
         buf.writeDouble(message.getStance());
         buf.writeDouble(message.getY());
         buf.writeDouble(message.getX());
         buf.writeByte(message.getOnGround() ? 1 : 0);
-
+        return buf;
     }
 }

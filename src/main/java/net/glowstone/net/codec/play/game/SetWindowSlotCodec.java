@@ -13,7 +13,7 @@ public final class SetWindowSlotCodec implements Codec<SetWindowSlotMessage> {
         throw new DecoderException("Cannot decode SetWindowSlotMessage");
     }
 
-    public void encode(ByteBuf buf, SetWindowSlotMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, SetWindowSlotMessage message) throws IOException {
         buf.writeByte(message.getId());
         buf.writeShort(message.getSlot());
         buf.writeShort(message.getItem());
@@ -22,5 +22,6 @@ public final class SetWindowSlotCodec implements Codec<SetWindowSlotMessage> {
             buf.writeShort(message.getDamage());
             TagCompoundUtils.writeCompound(buf, message.getNbtData());
         }
+        return buf;
     }
 }

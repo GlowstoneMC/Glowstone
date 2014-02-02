@@ -15,7 +15,7 @@ public final class ChunkBulkCodec implements Codec<ChunkBulkMessage> {
         throw new DecoderException("Cannot decode ChunkBulkMessages");
     }
 
-    public void encode(ByteBuf buf, ChunkBulkMessage message) {
+    public ByteBuf encode(ByteBuf buf, ChunkBulkMessage message) {
         List<ChunkDataMessage> entries = message.getEntries();
         boolean skyLight = message.getSkyLight();
 
@@ -55,5 +55,7 @@ public final class ChunkBulkCodec implements Codec<ChunkBulkMessage> {
             buf.writeShort(entry.getPrimaryMask());
             buf.writeShort(entry.getAddMask());
         }
+
+        return buf;
     }
 }

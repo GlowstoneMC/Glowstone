@@ -14,9 +14,10 @@ public final class HealthCodec implements Codec<HealthMessage> {
         return new HealthMessage(health, food, saturation);
     }
 
-    public void encode(ByteBuf buf, HealthMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, HealthMessage message) throws IOException {
         buf.writeFloat(message.getHealth());
         buf.writeShort(message.getFood());
         buf.writeFloat(message.getSaturation());
+        return buf;
     }
 }

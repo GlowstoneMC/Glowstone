@@ -7,13 +7,11 @@ import net.glowstone.net.message.status.StatusRequestMessage;
 import java.io.IOException;
 
 public final class StatusRequestCodec implements Codec<StatusRequestMessage>{
-
-    @Override
     public StatusRequestMessage decode(ByteBuf byteBuf) throws IOException {
         return new StatusRequestMessage();
     }
 
-    @Override
-    public void encode(ByteBuf byteBuf, StatusRequestMessage statusRequestMessage) throws IOException {
+    public ByteBuf encode(ByteBuf buf, StatusRequestMessage statusRequestMessage) throws IOException {
+        return buf;
     }
 }

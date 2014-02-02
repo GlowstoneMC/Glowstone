@@ -7,8 +7,6 @@ import net.glowstone.net.message.play.player.PlayerPositionLookMessage;
 import java.io.IOException;
 
 public final class PlayerPositionLookCodec implements Codec<PlayerPositionLookMessage> {
-
-    @Override
     public PlayerPositionLookMessage decode(ByteBuf buffer) throws IOException {
         double x = buffer.readDouble();
         double stance = buffer.readDouble();
@@ -21,8 +19,7 @@ public final class PlayerPositionLookCodec implements Codec<PlayerPositionLookMe
         return new PlayerPositionLookMessage(onGround, x, stance, y, z, yaw, pitch);
     }
 
-    @Override
-    public void encode(ByteBuf buf, PlayerPositionLookMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, PlayerPositionLookMessage message) throws IOException {
         buf.writeDouble(message.getX());
         buf.writeDouble(message.getStance());
         buf.writeDouble(message.getY());
@@ -30,7 +27,6 @@ public final class PlayerPositionLookCodec implements Codec<PlayerPositionLookMe
         buf.writeFloat(message.getYaw());
         buf.writeFloat(message.getPitch());
         buf.writeByte(message.getOnGround() ? 1 : 0);
-
-
+        return buf;
     }
 }

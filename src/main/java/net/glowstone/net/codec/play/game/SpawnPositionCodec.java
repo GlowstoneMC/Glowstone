@@ -7,8 +7,6 @@ import net.glowstone.net.message.play.game.SpawnPositionMessage;
 import java.io.IOException;
 
 public final class SpawnPositionCodec implements Codec<SpawnPositionMessage> {
-
-    @Override
     public SpawnPositionMessage decode(ByteBuf buffer) throws IOException {
         int x = buffer.readInt();
         int y = buffer.readInt();
@@ -17,12 +15,10 @@ public final class SpawnPositionCodec implements Codec<SpawnPositionMessage> {
         return new SpawnPositionMessage(x, y, z);
     }
 
-    @Override
-    public void encode(ByteBuf buf, SpawnPositionMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, SpawnPositionMessage message) throws IOException {
         buf.writeInt(message.getX());
         buf.writeInt(message.getY());
         buf.writeInt(message.getZ());
-
-
+        return buf;
     }
 }
