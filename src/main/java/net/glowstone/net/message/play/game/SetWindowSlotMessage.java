@@ -1,10 +1,11 @@
-package net.glowstone.msg;
+package net.glowstone.net.message.play.game;
 
+import com.flowpowered.networking.Message;
 import net.glowstone.util.nbt.Tag;
 
 import java.util.Map;
 
-public final class SetWindowSlotMessage extends Message {
+public final class SetWindowSlotMessage implements Message {
 
     private final int id, slot, item, count, damage;
     private final Map<String, Tag> nbtData;
@@ -51,4 +52,7 @@ public final class SetWindowSlotMessage extends Message {
         return "SetWindowSlotMessage{id=" + id + ",slot=" + slot + ",item=" + item + ",count=" + count + ",damage=" + damage + ",nbtData=" + nbtData + "}";
     }
 
+    public boolean isAsync() {
+        return false;
+    }
 }

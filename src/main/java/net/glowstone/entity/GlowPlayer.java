@@ -895,12 +895,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         session.send(createHealthMessage());
     }
 
-    public Message createHealthMessage() {
-        return new HealthMessage((int) getHealth(), getFoodLevel(), getSaturation());
+    public HealthMessage createHealthMessage() {
+        return new HealthMessage((float) getHealth(), getFoodLevel(), getSaturation());
     }
     
-    public Message createExperienceMessage() {
-        return new ExperienceMessage((byte)getExp(), (byte)getLevel(), (short)getTotalExperience());
+    public ExperienceMessage createExperienceMessage() {
+        return new ExperienceMessage(getExp(), (byte)getLevel(), (short)getTotalExperience());
     }
 
     public Map<String, Object> serialize() {

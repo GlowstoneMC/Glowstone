@@ -1,11 +1,13 @@
-package net.glowstone.msg;
+package net.glowstone.net.message.play.game;
 
-public class ExperienceMessage extends Message {
+import com.flowpowered.networking.Message;
+
+public final class ExperienceMessage implements Message {
 
     private final float barValue;
-    private final short level, totalExp;
+    private final int level, totalExp;
 
-    public ExperienceMessage(float barValue, short level, short  totalExp) {
+    public ExperienceMessage(float barValue, int level, int totalExp) {
         this.barValue = barValue;
         this.level = level;
         this.totalExp = totalExp;
@@ -15,16 +17,20 @@ public class ExperienceMessage extends Message {
         return barValue;
     }
 
-    public short getLevel() {
+    public int getLevel() {
         return level;
     }
 
-    public short getTotalExp() {
+    public int getTotalExp() {
         return totalExp;
     }
 
     @Override
     public String toString() {
         return "ExperienceMessage{barValue=" + barValue + ",level=" + level + ",totalExp=" + totalExp + "}";
+    }
+
+    public boolean isAsync() {
+        return false;
     }
 }

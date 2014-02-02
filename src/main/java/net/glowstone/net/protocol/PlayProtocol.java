@@ -33,11 +33,14 @@ public final class PlayProtocol extends GlowProtocol {
         registerMessage(OUTBOUND, ChatMessage.class, JsonCodec.class, null, 0x02);
         registerMessage(OUTBOUND, TimeMessage.class, TimeCodec.class, null, 0x03);
         registerMessage(OUTBOUND, SpawnPositionMessage.class, SpawnPositionCodec.class, null, 0x05);
+        registerMessage(OUTBOUND, HealthMessage.class, HealthCodec.class, null, 0x06);
         registerMessage(OUTBOUND, PositionRotationMessage.class, PositionRotationCodec.class, null, 0x08);
+        registerMessage(OUTBOUND, ExperienceMessage.class, ExperienceCodec.class, null, 0x1F);
         registerMessage(OUTBOUND, ChunkDataMessage.class, ChunkDataCodec.class, null, 0x21);
         registerMessage(OUTBOUND, BlockChangeMessage.class, BlockChangeCodec.class, null, 0x23);
         registerMessage(OUTBOUND, ChunkBulkMessage.class, ChunkBulkCodec.class, null, 0x26);
         registerMessage(OUTBOUND, StateChangeMessage.class, StateChangeCodec.class, null, 0x2B);
+        registerMessage(OUTBOUND, SetWindowSlotMessage.class, SetWindowSlotCodec.class, null, 0x2F);
         registerMessage(OUTBOUND, KickMessage.class, JsonCodec.class, null, 0x40);
     }
 }
