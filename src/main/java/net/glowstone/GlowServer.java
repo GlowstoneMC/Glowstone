@@ -1,7 +1,7 @@
 package net.glowstone;
 
 import com.flowpowered.networking.NetworkServer;
-import net.glowstone.command.GlowCommandMap;
+import net.glowstone.command.ColorCommand;
 import net.glowstone.inventory.CraftingManager;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.io.StorageQueue;
@@ -350,6 +350,7 @@ public final class GlowServer implements Server {
     private void loadPlugins() {
         // clear the map
         commandMap.clearCommands();
+        commandMap.register("glowstone", new ColorCommand("colors"));
 
         File folder = new File(config.getString(ServerConfig.Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {
@@ -428,7 +429,6 @@ public final class GlowServer implements Server {
             
             // Load plugins
             loadPlugins();
-            GlowCommandMap.initGlowPermissions(this);
             enablePlugins(PluginLoadOrder.STARTUP);
             enablePlugins(PluginLoadOrder.POSTWORLD);
             commandMap.registerServerAliases();
@@ -496,22 +496,6 @@ public final class GlowServer implements Server {
     }
 
     /**
-     * Get a list of all commands the server has available
-     */
-    protected List<String> getAllCommands() {
-        Collection<Command> commands = commandMap.getCommands();
-        Collection<? extends Command> fallback = commandMap.getFallbackCommands();
-        List<String> result = new ArrayList<String>(commands.size() + fallback.size());
-        for (Command command : commands) {
-            result.add(command.getName());
-        }
-        for (Command command : fallback) {
-            result.add(command.getName());
-        }
-        return result;
-    }
-
-    /**
      * Return the crafting manager.
      * @return The server's crafting manager.
      */
@@ -525,14 +509,6 @@ public final class GlowServer implements Server {
      */
     public StorageQueue getStorageQueue() {
         return storeQueue;
-    }
-
-    /**
-     * Get whether fuzzy command matching is enabled.
-     * @return True if fuzzy command matching is enabled.
-     */
-    public boolean getFuzzyCommandMatching() {
-        return config.getBoolean(ServerConfig.Key.FUZZY_COMMANDS);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -626,7 +602,12 @@ public final class GlowServer implements Server {
             return true;
         }
 
-        sender.sendMessage("Unknown command, try \"help\": " + commandLine);
+        String firstword = commandLine;
+        if (firstword.indexOf(' ') >= 0) {
+            firstword = firstword.substring(0, firstword.indexOf(' '));
+        }
+
+        sender.sendMessage(ChatColor.GRAY + "Unknown command \"" + firstword + "\", try \"help\"");
         return false;
     }
 

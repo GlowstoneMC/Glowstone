@@ -68,6 +68,16 @@ public final class TextWrapper {
                 continue;
             }
 
+            if (ch == '\n') {
+                result.append('\n');
+                lineLength = 0;
+                if (Character.toLowerCase(currentColor) != 'f') {
+                    result.append(COLOR_CHAR).append(currentColor);
+                    lineLength += 2;
+                }
+                lineWidth = 0;
+            }
+
             int index = allowedChars.indexOf(ch);
             if (index < 0) {
                 continue;

@@ -176,7 +176,6 @@ public class ServerConfig {
         SERVER_PORT("server.port", 25565, Migrate.PROPS, "server-port"),
         SERVER_NAME("server.name", "Glowstone Server", Migrate.PROPS, "server-name"),
         LOG_FILE("server.log-file", "logs/log-%D.txt"),
-        FUZZY_COMMANDS("server.fuzzy-commands", false),
         ONLINE_MODE("server.online-mode", true, Migrate.PROPS, "online-mode"),
         MAX_PLAYERS("server.max-players", 20, Migrate.PROPS, "max-players"),
         WHITELIST("server.whitelisted", false, Migrate.PROPS, "white-list"),

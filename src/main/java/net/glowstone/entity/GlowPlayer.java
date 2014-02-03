@@ -22,6 +22,7 @@ import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
@@ -591,9 +592,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
 
     public void sendMessage(String message) {
-        for (String line : TextWrapper.wrapText(message)) {
-            sendRawMessage(line);
-        }
+        sendRawMessage(message);
     }
 
     public void sendMessage(String[] messages) {
@@ -603,7 +602,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
 
     public void sendRawMessage(String message) {
-        session.send(new ChatMessage(message.length() <= 119 ? message : message.substring(0, 119)));
+        // todo: use chat components instead of plain text
+        // textwrapper also does not preserve non-color formatting
+        for (String line : TextWrapper.wrapText(message)) {
+            session.send(new ChatMessage(line));
+        }
     }
 
     public void kickPlayer(String message) {
@@ -622,30 +625,23 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     public void chat(String text) {
         if (text.startsWith("/")) {
             try {
-                if (EventFactory.onPlayerCommand(this, text).isCancelled()) {
+                PlayerCommandPreprocessEvent event = EventFactory.onPlayerCommand(this, text);
+                if (event.isCancelled()) {
                     return;
                 }
-                
-                if (!performCommand(text.substring(1))) {
-                    String firstword = text.substring(1);
-                    if (firstword.indexOf(' ') >= 0) {
-                        firstword = firstword.substring(0, firstword.indexOf(' '));
-                    }
-                    
-                    sendMessage(ChatColor.GRAY + "Command not found: " + firstword);
-                }
-            }
-            catch (Exception ex) {
+
+                server.getLogger().info(event.getPlayer().getName() + " issued command: " + event.getMessage());
+                getServer().dispatchCommand(event.getPlayer(), event.getMessage().substring(1));
+            } catch (Exception ex) {
                 sendMessage(ChatColor.RED + "An internal error occured while executing your command.");
-                getServer().getLogger().log(Level.SEVERE, "Exception while executing command: {0}", ex.getMessage());
-                ex.printStackTrace();
+                getServer().getLogger().log(Level.SEVERE, "Exception while executing command: " + text, ex);
             }
         } else {
             PlayerChatEvent event = EventFactory.onPlayerChat(this, text);
             if (event.isCancelled()) {
                 return;
             }
-            
+
             String message = String.format(event.getFormat(), event.getPlayer().getDisplayName(), event.getMessage());
             getServer().getLogger().info(message);
             for (Player recipient : event.getRecipients()) {
