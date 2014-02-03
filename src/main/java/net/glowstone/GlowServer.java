@@ -9,10 +9,7 @@ import net.glowstone.map.GlowMapView;
 import net.glowstone.net.GlowNetworkServer;
 import net.glowstone.net.SessionRegistry;
 import net.glowstone.scheduler.GlowScheduler;
-import net.glowstone.util.GlowHelpMap;
-import net.glowstone.util.PlayerListFile;
-import net.glowstone.util.SecurityUtils;
-import net.glowstone.util.ServerConfig;
+import net.glowstone.util.*;
 import net.glowstone.util.bans.BanManager;
 import net.glowstone.util.bans.FlatFileBanManager;
 import org.bukkit.*;
@@ -42,8 +39,6 @@ import java.net.SocketAddress;
 import java.security.KeyPair;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,6 +52,11 @@ public final class GlowServer implements Server {
      * The logger for this class.
      */
     public static final Logger logger = Logger.getLogger("Minecraft");
+
+    /**
+     * The game version supported by the server.
+     */
+    public static final String GAME_VERSION = "1.7.2";
 
     /**
      * The protocol version supported by the server.
@@ -88,12 +88,6 @@ public final class GlowServer implements Server {
             System.exit(1);
         }
     }
-
-    /**
-     * The network executor service - Netty dispatches events to this thread
-     * pool.
-     */
-    private final ExecutorService executor = Executors.newCachedThreadPool();
 
     /**
      * A list of all the active {@link net.glowstone.net.GlowSession}s.
@@ -211,24 +205,16 @@ public final class GlowServer implements Server {
     private final NetworkServer networkServer = new GlowNetworkServer(this);
 
     /**
+     * The default icon, usually blank, used for the server list.
+     */
+    private GlowServerIcon defaultIcon;
+
+    /**
      * Creates a new server.
      */
     public GlowServer() {
         Bukkit.setServer(this);
-
-        config.load();
-        warnState = Warning.WarningState.value(config.getString(ServerConfig.Key.WARNING_STATE));
-        try {
-            defaultGameMode = GameMode.valueOf(GameMode.class, config.getString(ServerConfig.Key.GAMEMODE));
-        } catch (IllegalArgumentException e) {
-            defaultGameMode = GameMode.SURVIVAL;
-        } catch (NullPointerException e) {
-            defaultGameMode = GameMode.SURVIVAL;
-        }
-
-        spawnRadius = config.getInt(ServerConfig.Key.SPAWN_RADIUS);
-        whitelistEnabled = config.getBoolean(ServerConfig.Key.WHITELIST);
-        craftingManager.initialize();
+        loadConfig();
     }
 
     /**
@@ -279,7 +265,7 @@ public final class GlowServer implements Server {
     /**
      * Binds this server to the address specified in the configuration.
      */
-    public void bind() {
+    private void bind() {
         String ip = getIp();
         int port = getPort();
 
@@ -323,6 +309,39 @@ public final class GlowServer implements Server {
         
         // And finally kill the console
         consoleManager.stop();
+    }
+
+    /**
+     * Load the server configuration.
+     */
+    private void loadConfig() {
+        config.load();
+
+        // modifiable values
+        spawnRadius = config.getInt(ServerConfig.Key.SPAWN_RADIUS);
+        whitelistEnabled = config.getBoolean(ServerConfig.Key.WHITELIST);
+        craftingManager.initialize();
+
+        // special handling
+        warnState = Warning.WarningState.value(config.getString(ServerConfig.Key.WARNING_STATE));
+        try {
+            defaultGameMode = GameMode.valueOf(GameMode.class, config.getString(ServerConfig.Key.GAMEMODE));
+        } catch (IllegalArgumentException e) {
+            defaultGameMode = GameMode.SURVIVAL;
+        } catch (NullPointerException e) {
+            defaultGameMode = GameMode.SURVIVAL;
+        }
+
+        // server icon
+        defaultIcon = new GlowServerIcon();
+        try {
+            File file = new File(ServerConfig.CONFIG_DIR, "server-icon.png");
+            if (file.isFile()) {
+                defaultIcon = new GlowServerIcon(file);
+            }
+        } catch (Exception e) {
+            logger.log(Level.WARNING, "Failed to load server-icon.png", e);
+        }
     }
     
     /**
@@ -399,9 +418,10 @@ public final class GlowServer implements Server {
     public void reload() {
         try {
             // Reload relevant configuration
-            config.load();
+            loadConfig();
             opsList.load();
             whitelist.load();
+            banManager.load();
             
             // Reset crafting
             craftingManager.resetRecipes();
@@ -421,7 +441,6 @@ public final class GlowServer implements Server {
 
     ////////////////////////////////////////////////////////////////////////////
     // Access to internals
-
 
     /**
      * Gets the command map.
@@ -881,18 +900,18 @@ public final class GlowServer implements Server {
     // Server icons
 
     @Override
-    public CachedServerIcon getServerIcon() {
-        return null;
+    public GlowServerIcon getServerIcon() {
+        return defaultIcon;
     }
 
     @Override
-    public CachedServerIcon loadServerIcon(File file) throws IllegalArgumentException, Exception {
-        return null;
+    public CachedServerIcon loadServerIcon(File file) throws Exception {
+        return new GlowServerIcon(file);
     }
 
     @Override
-    public CachedServerIcon loadServerIcon(BufferedImage image) throws IllegalArgumentException, Exception {
-        return null;
+    public CachedServerIcon loadServerIcon(BufferedImage image) throws Exception {
+        return new GlowServerIcon(image);
     }
 
     ////////////////////////////////////////////////////////////////////////////
