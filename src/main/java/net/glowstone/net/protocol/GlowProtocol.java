@@ -21,13 +21,8 @@ public abstract class GlowProtocol extends KeyedProtocol {
     private static final String INBOUND = "INBOUND";
     private static final String OUTBOUND = "OUTBOUND";
 
-    /**
-     * Default port for the protocol. Not used anywhere.
-     */
-    private static final int DEFAULT_PORT = 25565;
-
-    public GlowProtocol(GlowServer server, String name) {
-        super(name, DEFAULT_PORT);
+    public GlowProtocol(GlowServer server, String name, int highestOpcode) {
+        super(name, highestOpcode + 1);
     }
 
     protected <M extends Message, C extends Codec<? super M>, H extends MessageHandler<?, ? super M>> Codec.CodecRegistration inbound(int opcode, Class<M> message, Class<C> codec, Class<H> handler) {
