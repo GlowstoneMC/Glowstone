@@ -9,6 +9,7 @@ import net.glowstone.map.GlowMapView;
 import net.glowstone.net.GlowNetworkServer;
 import net.glowstone.net.SessionRegistry;
 import net.glowstone.scheduler.GlowScheduler;
+import net.glowstone.scheduler.WorldScheduler;
 import net.glowstone.util.*;
 import net.glowstone.util.bans.BanManager;
 import net.glowstone.util.bans.FlatFileBanManager;
@@ -157,12 +158,12 @@ public final class GlowServer implements Server {
     /**
      * The world this server is managing.
      */
-    private final ArrayList<GlowWorld> worlds = new ArrayList<GlowWorld>();
+    private final WorldScheduler worlds = new WorldScheduler();
 
     /**
      * The task scheduler used by this server.
      */
-    private final GlowScheduler scheduler = new GlowScheduler(this);
+    private final GlowScheduler scheduler = new GlowScheduler(this, worlds);
 
     /**
      * The server's default game mode
@@ -260,6 +261,7 @@ public final class GlowServer implements Server {
         // Finish loading plugins
         enablePlugins(PluginLoadOrder.POSTWORLD);
         commandMap.registerServerAliases();
+        scheduler.start();
     }
 
     /**
@@ -746,23 +748,21 @@ public final class GlowServer implements Server {
     // World management
 
     public GlowWorld getWorld(String name) {
-        for (GlowWorld world : worlds) {
-            if (world.getName().equalsIgnoreCase(name))
-                return world;
-        }
-        return null;
+        return worlds.getWorld(name);
     }
 
     public GlowWorld getWorld(UUID uid) {
-        for (GlowWorld world : worlds) {
+        for (GlowWorld world : worlds.getWorlds()) {
             if (uid.equals(world.getUID()))
                 return world;
         }
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     public List<World> getWorlds() {
-        return new ArrayList<World>(worlds);
+        // Shenanigans needed to cast List<GlowWorld> to List<World>
+        return (List) worlds.getWorlds();
     }
 
     /**
@@ -801,8 +801,7 @@ public final class GlowServer implements Server {
         }
 
         world = new GlowWorld(this, creator);
-        worlds.add(world);
-        return world;
+        return worlds.addWorld(world);
     }
 
     public boolean unloadWorld(String name, boolean save) {
@@ -810,18 +809,18 @@ public final class GlowServer implements Server {
         return world != null && unloadWorld(world, save);
     }
 
-    public boolean unloadWorld(World world, boolean save) {
-        if (!(world instanceof GlowWorld)) {
+    public boolean unloadWorld(World bWorld, boolean save) {
+        if (!(bWorld instanceof GlowWorld)) {
             return false;
         }
+        GlowWorld world = (GlowWorld) bWorld;
         if (save) {
             world.setAutoSave(false);
-            ((GlowWorld) world).save(false);
+            world.save(false);
         }
-        if (worlds.contains(world)) {
-            worlds.remove(world);
-            ((GlowWorld) world).unload();
-            EventFactory.onWorldUnload((GlowWorld)world);
+        if (worlds.removeWorld(world)) {
+            world.unload();
+            EventFactory.onWorldUnload(world);
             return true;
         }
         return false;

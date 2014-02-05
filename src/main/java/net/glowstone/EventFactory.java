@@ -14,6 +14,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.*;
 import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -23,6 +24,9 @@ import org.bukkit.event.world.*;
 import org.bukkit.inventory.ItemStack;
 
 import java.net.InetAddress;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 
 /**
  * Central class for the calling of events.
@@ -37,10 +41,30 @@ public final class EventFactory {
      * @param event The event to throw.
      * @return the called event
      */
-    private static <T extends Event> T callEvent(T event) {
-        Bukkit.getServer().getPluginManager().callEvent(event);
-        return event;
+    private static <T extends Event> T callEvent(final T event) {
+        final GlowServer server = (GlowServer) Bukkit.getServer();
+
+        if (event.isAsynchronous()) {
+            server.getPluginManager().callEvent(event);
+            return event;
+        } else {
+            FutureTask<T> task = new FutureTask<T>(new Runnable() {
+                @Override
+                public void run() {
+                    server.getPluginManager().callEvent(event);
+                }
+            }, event);
+            server.getScheduler().scheduleInTickExecution(task);
+            try {
+                return task.get();
+            } catch (InterruptedException e) {
+                return null;
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e); // No checked exceptions declared for callEvent
+            }
+        }
     }
+
 
     // -- Player Events
 
@@ -65,13 +89,17 @@ public final class EventFactory {
     }
 
     public static PlayerMoveEvent onPlayerMove(Player player, Location from, Location to) {
-        return callEvent(new PlayerMoveEvent(player, from, to));
+        if (PlayerMoveEvent.getHandlerList().getRegisteredListeners().length > 0) {
+            return callEvent(new PlayerMoveEvent(player, from, to));
+        } else {
+            return null;
+        }
     }
-    
+
     public static PlayerInteractEvent onPlayerInteract(Player player, Action action) {
         return callEvent(new PlayerInteractEvent(player, action, player.getItemInHand(), null, null));
     }
-    
+
     public static PlayerInteractEvent onPlayerInteract(Player player, Action action, Block clicked, BlockFace face) {
         return callEvent(new PlayerInteractEvent(player, action, player.getItemInHand(), clicked, face));
     }
@@ -108,7 +136,7 @@ public final class EventFactory {
     public static PlayerAnimationEvent onPlayerAnimate(GlowPlayer player) {
         return callEvent(new PlayerAnimationEvent(player));
     }
-    
+
     // -- Block Events
 
     public static PlayerToggleSneakEvent onPlayerToggleSneak(Player player, boolean isSneaking) {
@@ -126,7 +154,7 @@ public final class EventFactory {
     public static BlockDamageEvent onBlockDamage(Player player, Block block, ItemStack tool, boolean instaBreak) {
         return callEvent(new BlockDamageEvent(player, block, tool, instaBreak));
     }
-    
+
     public static BlockPlaceEvent onBlockPlace(Block block, BlockState newState, Block against, Player player) {
         return callEvent(new BlockPlaceEvent(block, newState, against, player.getItemInHand(), player, true));
     }

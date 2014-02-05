@@ -7,6 +7,7 @@ import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+// Todo ditch this and use a light wrapper class around the scheduler
 public class StorageQueue extends Thread {
     private final BlockingQueue<StorageOperation> pending = new LinkedBlockingQueue<StorageOperation>();
     private final List<ParallelTaskThread> active = new ArrayList<ParallelTaskThread>();

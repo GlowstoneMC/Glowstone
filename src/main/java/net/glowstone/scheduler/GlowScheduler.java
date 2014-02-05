@@ -1,72 +1,107 @@
 package net.glowstone.scheduler;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableList;
 import net.glowstone.GlowServer;
-import net.glowstone.GlowWorld;
-import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scheduler.BukkitWorker;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import javax.annotation.Nullable;
+import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
 /**
  * A class which schedules {@link GlowTask}s.
+ *
  * @author Graham Edgecombe
  */
 public final class GlowScheduler implements BukkitScheduler {
 
+    private static class GlowThreadFactory implements ThreadFactory {
+        public static final GlowThreadFactory INSTANCE = new GlowThreadFactory();
+        private final AtomicInteger threadCounter = new AtomicInteger();
+
+        private GlowThreadFactory() {
+        }
+
+        @Override
+        public Thread newThread(Runnable runnable) {
+            return new Thread(runnable, "Glowstone-scheduler-" + threadCounter.getAndIncrement());
+        }
+    }
+
     /**
      * The number of milliseconds between pulses.
      */
-    private static final int PULSE_EVERY = 50;
-    
+    static final int PULSE_EVERY = 50;
+
     /**
      * The server this scheduler is managing for.
      */
     private final GlowServer server;
 
     /**
-     * The scheduled executor service which backs this scheduler.
+     * The scheduled executor service which backs this worlds.
      */
-    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(GlowThreadFactory.INSTANCE);
 
     /**
-     * A list of new tasks to be added.
+     * Executor to handle execution of async tasks
      */
-    private final List<GlowTask> newTasks = new ArrayList<GlowTask>();
-
-    /**
-     * A list of tasks to be removed.
-     */
-    private final List<GlowTask> oldTasks = new ArrayList<GlowTask>();
+    private final ExecutorService asyncTaskExecutor = Executors.newCachedThreadPool(GlowThreadFactory.INSTANCE);
 
     /**
      * A list of active tasks.
      */
-    private final List<GlowTask> tasks = new ArrayList<GlowTask>();
+    private final ConcurrentMap<Integer, GlowTask> tasks = new ConcurrentHashMap<Integer, GlowTask>();
 
     /**
-     * A list of active async worker threads.
-     */
-    private final List<GlowWorker> activeWorkers = Collections.synchronizedList(new ArrayList<GlowWorker>());
-
-    /**
-     * The primary scheduler thread in which pulse() is called.
+     * The primary worlds thread in which pulse() is called.
      */
     private Thread primaryThread;
 
     /**
+     * World tick scheduler
+     */
+    private final WorldScheduler worlds;
+
+    /**
+     * Tasks to be executed during the tick
+     */
+    private final Deque<Runnable> inTickTasks = new ConcurrentLinkedDeque<Runnable>();
+
+    /**
+     * Condition to wait on when processing in tick tasks
+     */
+    private final Object inTickTaskCondition;
+
+    /**
+     * Runnable to run at end of tick
+     */
+    private final Runnable tickEndRun;
+
+    /**
      * Creates a new task scheduler.
      */
-    public GlowScheduler(GlowServer server) {
+    public GlowScheduler(GlowServer server, WorldScheduler worlds) {
         this.server = server;
+        this.worlds = worlds;
+        inTickTaskCondition = worlds.getAdvanceCondition();
+        tickEndRun = new Runnable() {
+            @Override
+            public void run() {
+                GlowScheduler.this.worlds.doTickEnd();
+            }
+        };
+        primaryThread = Thread.currentThread();
+    }
 
+    public void start() {
         executor.scheduleAtFixedRate(new Runnable() {
             public void run() {
                 try {
@@ -77,23 +112,24 @@ public final class GlowScheduler implements BukkitScheduler {
             }
         }, 0, PULSE_EVERY, TimeUnit.MILLISECONDS);
     }
-    
+
     /**
      * Stops the scheduler and all tasks.
      */
     public void stop() {
         cancelAllTasks();
-        executor.shutdown();
+        worlds.stop();
+        executor.shutdownNow();
+        asyncTaskExecutor.shutdown();
     }
 
     /**
      * Schedules the specified task.
+     *
      * @param task The task.
      */
     private GlowTask schedule(GlowTask task) {
-        synchronized (newTasks) {
-            newTasks.add(task);
-        }
+        tasks.put(task.getTaskId(), task);
         return task;
     }
 
@@ -104,50 +140,65 @@ public final class GlowScheduler implements BukkitScheduler {
         return Thread.currentThread() == primaryThread;
     }
 
+    public void scheduleInTickExecution(Runnable run) {
+        if (isPrimaryThread() || executor.isShutdown()) {
+            run.run();
+        } else {
+            synchronized (inTickTaskCondition) {
+                inTickTasks.addFirst(run);
+                inTickTaskCondition.notifyAll();
+            }
+        }
+    }
+
     /**
      * Adds new tasks and updates existing tasks, removing them if necessary.
+     *
+     * TODO: Add watchdog system to make sure ticks advance
      */
     private void pulse() {
-        if (primaryThread == null) {
-            primaryThread = Thread.currentThread();
-            primaryThread.setName("SchedulerThread");
-        }
+        primaryThread = Thread.currentThread();
 
-        // Perform basic world pulse.
+        // Process player packets
         server.getSessionRegistry().pulse();
-        for (World world : server.getWorlds())
-            ((GlowWorld) world).pulse();
-        
-        // Bring in new tasks this tick.
-        synchronized (newTasks) {
-            for (GlowTask task : newTasks) {
-                tasks.add(task);
-            }
-            newTasks.clear();
+
+         // Run the relevant tasks.
+        for (Iterator<GlowTask> it = tasks.values().iterator(); it.hasNext(); ) {
+            GlowTask task = it.next();
+                switch (task.shouldExecute()) {
+                    case RUN:
+                        if (task.isSync()) {
+                            task.run();
+                        } else {
+                            asyncTaskExecutor.submit(task);
+                        }
+                    case STOP:
+                        it.remove();
+                }
         }
-        
-        // Remove old tasks this tick.
-        synchronized (oldTasks) {
-            for (GlowTask task : oldTasks) {
-                tasks.remove(task);
+        try {
+            int currentTick = worlds.beginTick();
+            try {
+                asyncTaskExecutor.submit(tickEndRun);
+            } catch (RejectedExecutionException ex) {
+                worlds.stop();
+                return;
             }
-            oldTasks.clear();
+
+            Runnable tickTask;
+            synchronized (inTickTaskCondition) {
+                while (!worlds.isTickComplete(currentTick)) {
+                    while ((tickTask = inTickTasks.poll()) != null) {
+                        tickTask.run();
+                    }
+
+                    inTickTaskCondition.wait();
+                }
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
 
-        // Run the relevant tasks.
-        for (Iterator<GlowTask> it = tasks.iterator(); it.hasNext(); ) {
-            GlowTask task = it.next();
-            boolean cont = false;
-            try {
-                if (task.isSync()) {
-                    cont = task.pulse();
-                } else {
-                    activeWorkers.add(new GlowWorker(task, this));
-                }
-            } finally {
-                if (!cont) it.remove();
-            }
-        }
     }
 
     public int scheduleSyncDelayedTask(Plugin plugin, Runnable task, long delay) {
@@ -163,11 +214,13 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     @Deprecated
+    @SuppressWarnings("deprecation")
     public int scheduleAsyncDelayedTask(Plugin plugin, Runnable task, long delay) {
         return scheduleAsyncRepeatingTask(plugin, task, delay, -1);
     }
 
     @Deprecated
+    @SuppressWarnings("deprecation")
     public int scheduleAsyncDelayedTask(Plugin plugin, Runnable task) {
         return scheduleAsyncRepeatingTask(plugin, task, 0, -1);
     }
@@ -216,61 +269,48 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     public void cancelTask(int taskId) {
-        synchronized(oldTasks) {
-            for (GlowTask task : tasks) {
-                if (task.getTaskId() == taskId) {
-                    oldTasks.add(task);
-                    return;
-                }
-            }
-        }
+            tasks.remove(taskId);
     }
 
     public void cancelTasks(Plugin plugin) {
-        synchronized(oldTasks) {
-            for (GlowTask task : tasks) {
-                if (task.getOwner() == plugin) {
-                    oldTasks.add(task);
+            for (Iterator<GlowTask> it = tasks.values().iterator(); it.hasNext();) {
+                if (it.next().getOwner() == plugin) {
+                    it.remove();
                 }
             }
-        }
     }
 
     public void cancelAllTasks() {
-        synchronized(oldTasks) {
-            oldTasks.addAll(tasks);
-        }
+        tasks.clear();
     }
 
     public boolean isCurrentlyRunning(int taskId) {
-        for (GlowWorker worker : activeWorkers) {
-            if (worker.getTaskId() == taskId && worker.getThread().isAlive()) return true;
-        }
-        return false;
+        GlowTask task = tasks.get(taskId);
+        return task != null &&  task.getLastExecutionState() == TaskExecutionState.RUN;
     }
 
     public boolean isQueued(int taskId) {
-        synchronized (tasks) {
-            for (GlowTask task : tasks) {
-                if (task.getTaskId() == taskId) return true;
-            }
-        }
-        return false;
+        return tasks.containsKey(taskId);
     }
 
+    /**
+     * Returns active async tasks
+     * @return active async tasks
+     */
     public List<BukkitWorker> getActiveWorkers() {
-        return new ArrayList<BukkitWorker>(activeWorkers);
+        return ImmutableList.<BukkitWorker>copyOf(Collections2.filter(tasks.values(), new Predicate<GlowTask>() {
+            @Override
+            public boolean apply(@Nullable GlowTask glowTask) {
+                return glowTask != null && !glowTask.isSync() && glowTask.getLastExecutionState() == TaskExecutionState.RUN;
+            }
+        }));
     }
 
+    /**
+     * Returns tasks that still have at least one run remaining
+     * @return the tasks to be run
+     */
     public List<BukkitTask> getPendingTasks() {
-        return new ArrayList<BukkitTask>(tasks);
+        return new ArrayList<BukkitTask>(tasks.values());
     }
-
-    synchronized void workerComplete(GlowWorker worker) {
-        activeWorkers.remove(worker);
-        if (!worker.shouldContinue()) {
-            oldTasks.add(worker.getTask());
-        }
-    }
-
 }
