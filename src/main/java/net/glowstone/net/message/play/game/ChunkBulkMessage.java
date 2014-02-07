@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ChunkBulkMessage implements Message {
+public final class ChunkBulkMessage implements Message {
 
     private final List<ChunkDataMessage> entries = new LinkedList<ChunkDataMessage>();
     private final boolean skyLight;

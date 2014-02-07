@@ -28,6 +28,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.net.InetSocketAddress;
@@ -1085,11 +1086,14 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
 
     @Override
     public void sendPluginMessage(Plugin source, String channel, byte[] message) {
-
+        // todo: send and handle REGISTER, UNREGISTER
+        StandardMessenger.validatePluginMessage(getServer().getMessenger(), source, channel, message);
+        session.send(new PluginMessage(channel, message));
     }
 
     @Override
     public Set<String> getListeningPluginChannels() {
+        // todo: keep track of client's accepted channels
         return null;
     }
 }
