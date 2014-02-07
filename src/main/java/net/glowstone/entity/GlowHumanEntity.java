@@ -1,12 +1,12 @@
 package net.glowstone.entity;
 
+import com.flowpowered.networking.Message;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowItemStack;
 import net.glowstone.inventory.GlowPlayerInventory;
-import net.glowstone.msg.Message;
-import net.glowstone.msg.SpawnPlayerMessage;
+import net.glowstone.net.message.play.entity.SpawnPlayerMessage;
 import net.glowstone.util.Position;
 import org.bukkit.GameMode;
 import org.bukkit.Location;

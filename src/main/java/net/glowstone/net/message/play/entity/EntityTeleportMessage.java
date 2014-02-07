@@ -1,6 +1,8 @@
-package net.glowstone.msg;
+package net.glowstone.net.message.play.entity;
 
-public final class EntityTeleportMessage extends Message {
+import com.flowpowered.networking.Message;
+
+public final class EntityTeleportMessage implements Message {
 
     private final int id, x, y, z, rotation, pitch;
 
@@ -40,5 +42,10 @@ public final class EntityTeleportMessage extends Message {
     @Override
     public String toString() {
         return "EntityTeleportMessage{id=" + id + ",x=" + x + ",y=" + y + ",z=" + z + ",rotation=" + rotation + ",pitch=" + pitch + "}";
+    }
+
+    @Override
+    public boolean isAsync() {
+        return false;
     }
 }

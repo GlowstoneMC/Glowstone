@@ -1,6 +1,8 @@
-package net.glowstone.msg;
+package net.glowstone.net.message.play.entity;
 
-public final class SpawnPlayerMessage extends Message {
+import com.flowpowered.networking.Message;
+
+public final class SpawnPlayerMessage implements Message {
 
     private final int id;
     private final String name;
@@ -54,5 +56,10 @@ public final class SpawnPlayerMessage extends Message {
     @Override
     public String toString() {
         return "SpawnPlayerMessage{id=" + id + ",name=" + name + ",x=" + x + ",y=" + y + ",z=" + z + ",rotation=" + rotation + ",pitch=" + pitch + ",item=" + item + "}";
+    }
+
+    @Override
+    public boolean isAsync() {
+        return false;
     }
 }

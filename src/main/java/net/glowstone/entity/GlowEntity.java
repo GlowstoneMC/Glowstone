@@ -1,9 +1,9 @@
 package net.glowstone.entity;
 
+import com.flowpowered.networking.Message;
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
-import net.glowstone.msg.Message;
 import net.glowstone.util.Position;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;

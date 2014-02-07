@@ -1,6 +1,8 @@
-package net.glowstone.msg;
+package net.glowstone.net.message.play.entity;
 
-public final class DestroyEntityMessage extends Message {
+import com.flowpowered.networking.Message;
+
+public final class DestroyEntityMessage implements Message {
 
     private final int id;
 
@@ -15,5 +17,10 @@ public final class DestroyEntityMessage extends Message {
     @Override
     public String toString() {
         return "DestroyEntityMessage{id=" + id + "}";
+    }
+
+    @Override
+    public boolean isAsync() {
+        return false;
     }
 }

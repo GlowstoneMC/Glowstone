@@ -9,12 +9,12 @@ import net.glowstone.inventory.InventoryViewer;
 import net.glowstone.io.StorageOperation;
 import net.glowstone.msg.*;
 import net.glowstone.net.GlowSession;
+import net.glowstone.net.message.play.entity.DestroyEntityMessage;
 import net.glowstone.net.message.play.game.ChunkBulkMessage;
 import net.glowstone.net.message.login.LoginSuccessMessage;
 import net.glowstone.net.message.play.game.*;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.util.Parameter;
-import net.glowstone.util.Position;
 import net.glowstone.util.TextWrapper;
 import org.bukkit.*;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
@@ -123,11 +123,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     private int food = 20;
 
     /**
-     * Whether to use the display name when sending spawn messages to 
-     */
-    private boolean dispNameAsEntityName = false;
-
-    /**
      * The bed spawn location of a player
      */
     private Location bedSpawn;
@@ -202,7 +197,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
             boolean withinDistance = !entity.isDead() && isWithinDistance(entity);
 
             if (withinDistance) {
-                Message msg = entity.createUpdateMessage();
+                com.flowpowered.networking.Message msg = entity.createUpdateMessage();
                 if (msg != null)
                     session.send(msg);
             } else {
@@ -871,16 +866,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     public void setHealth(double health) {
         super.setHealth(health);
         session.send(createHealthMessage());
-    }
-
-    @Override
-    public Message createSpawnMessage() {
-        int x = Position.getIntX(location);
-        int y = Position.getIntY(location);
-        int z = Position.getIntZ(location);
-        int yaw = Position.getIntYaw(location);
-        int pitch = Position.getIntPitch(location);
-        return new SpawnPlayerMessage(id, dispNameAsEntityName ? displayName : getName(), x, y, z, yaw, pitch, 0);
     }
 
     public int getFoodLevel() {

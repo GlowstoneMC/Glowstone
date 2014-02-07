@@ -1,9 +1,13 @@
 package net.glowstone.entity;
 
+import com.flowpowered.networking.Message;
 import gnu.trove.set.hash.TIntHashSet;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
-import net.glowstone.msg.*;
+import net.glowstone.net.message.play.entity.EntityRotationMessage;
+import net.glowstone.net.message.play.entity.EntityTeleportMessage;
+import net.glowstone.net.message.play.entity.RelativeEntityPositionMessage;
+import net.glowstone.net.message.play.entity.RelativeEntityPositionRotationMessage;
 import net.glowstone.util.Parameter;
 import net.glowstone.util.Position;
 import net.glowstone.util.TargetBlock;

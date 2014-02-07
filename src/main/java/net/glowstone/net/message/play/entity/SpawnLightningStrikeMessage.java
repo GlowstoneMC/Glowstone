@@ -1,6 +1,8 @@
-package net.glowstone.msg;
+package net.glowstone.net.message.play.entity;
 
-public final class SpawnLightningStrikeMessage extends Message {
+import com.flowpowered.networking.Message;
+
+public final class SpawnLightningStrikeMessage implements Message {
 
     private final int id, mode, x, y, z;
 
@@ -39,5 +41,10 @@ public final class SpawnLightningStrikeMessage extends Message {
     @Override
     public String toString() {
         return "SpawnLightningStrikeMessage{id=" + id + ",mode=" + mode + ",x=" + x + ",y=" + y + ",z=" + z + "}";
+    }
+
+    @Override
+    public boolean isAsync() {
+        return false;
     }
 }

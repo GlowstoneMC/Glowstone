@@ -1,6 +1,8 @@
-package net.glowstone.msg;
+package net.glowstone.net.message.play.entity;
 
-public final class RelativeEntityPositionRotationMessage extends Message {
+import com.flowpowered.networking.Message;
+
+public final class RelativeEntityPositionRotationMessage implements Message {
 
     private final int id, deltaX, deltaY, deltaZ, rotation, pitch;
 
@@ -42,5 +44,10 @@ public final class RelativeEntityPositionRotationMessage extends Message {
         return "RelativeEntityPositionRotationMessage{id=" + id + ",deltaX=" +
                 deltaX + ",deltaY=" + deltaY + ",deltaZ=" + deltaZ + "rotation=" +
                 rotation + ",pitch=" + pitch + "}";
+    }
+
+    @Override
+    public boolean isAsync() {
+        return false;
     }
 }

@@ -1,10 +1,11 @@
-package net.glowstone.msg;
+package net.glowstone.net.message.play.entity;
 
 import java.util.List;
 
+import com.flowpowered.networking.Message;
 import net.glowstone.util.Parameter;
 
-public final class SpawnMobMessage extends Message {
+public final class SpawnMobMessage implements Message {
 
     private final int id, type, x, y, z, rotation, pitch;
     private final List<Parameter<?>> parameters;
@@ -63,5 +64,10 @@ public final class SpawnMobMessage extends Message {
         }
         build.append("]}");
         return build.toString();
+    }
+
+    @Override
+    public boolean isAsync() {
+        return false;
     }
 }

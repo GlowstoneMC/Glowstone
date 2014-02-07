@@ -1,6 +1,8 @@
-package net.glowstone.msg;
+package net.glowstone.net.message.play.entity;
 
-public final class EntityRotationMessage extends Message {
+import com.flowpowered.networking.Message;
+
+public final class EntityRotationMessage implements Message {
 
     private final int id, rotation, pitch;
 
@@ -25,5 +27,10 @@ public final class EntityRotationMessage extends Message {
     @Override
     public String toString() {
         return "EntityRotationMessage{id=" + id + ",rotation=" + rotation + ",pitch=" + pitch + "}";
+    }
+
+    @Override
+    public boolean isAsync() {
+        return false;
     }
 }
