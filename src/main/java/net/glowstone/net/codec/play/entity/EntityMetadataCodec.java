@@ -3,8 +3,8 @@ package net.glowstone.net.codec.play.entity;
 import com.flowpowered.networking.Codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
+import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
-import net.glowstone.util.TagCompoundUtils;
 
 import java.io.IOException;
 
@@ -15,7 +15,7 @@ public final class EntityMetadataCodec implements Codec<EntityMetadataMessage> {
 
     public ByteBuf encode(ByteBuf buf, EntityMetadataMessage message) throws IOException {
         buf.writeInt(message.getId());
-        TagCompoundUtils.writeParameters(buf, message.getEntries());
+        GlowBufUtils.writeMetadata(buf, message.getEntries());
         return buf;
     }
 }

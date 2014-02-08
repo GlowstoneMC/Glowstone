@@ -1,14 +1,12 @@
 package net.glowstone.entity.objects;
 
-import net.glowstone.entity.GlowEntity;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.entity.Item;
-
-import net.glowstone.util.Position;
-import net.glowstone.msg.Message;
-import net.glowstone.msg.SpawnItemMessage;
-import net.glowstone.GlowWorld;
+import com.flowpowered.networking.Message;
 import net.glowstone.GlowServer;
+import net.glowstone.GlowWorld;
+import net.glowstone.entity.GlowEntity;
+import net.glowstone.util.Position;
+import org.bukkit.entity.Item;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Represents an item that is also an {@link net.glowstone.entity.GlowEntity} within the world.
@@ -62,13 +60,13 @@ public final class GlowItem extends GlowEntity implements Item {
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
 
-        return new SpawnItemMessage(id, item, x, y, z, yaw, pitch, 0);
+        //return new SpawnItemMessage(id, item, x, y, z, yaw, pitch, 0);
+        return null;
     }
 
     @Override
     public Message createUpdateMessage() {
-        // TODO we can probably use some generic implementation for all of
-        // these
+        // TODO we can probably use some generic implementation for all of these
         return null;
     }
 

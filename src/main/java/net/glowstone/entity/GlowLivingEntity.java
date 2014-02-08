@@ -142,8 +142,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
         boolean teleport = dx > Byte.MAX_VALUE || dy > Byte.MAX_VALUE || dz > Byte.MAX_VALUE || dx < Byte.MIN_VALUE || dy < Byte.MIN_VALUE || dz < Byte.MIN_VALUE;
 
-        int yaw = Position.getIntYaw(previousLocation);
-        int pitch = Position.getIntPitch(previousLocation);
+        int yaw = Position.getIntYaw(location);
+        int pitch = Position.getIntPitch(location);
 
         if (moved && teleport) {
             return new EntityTeleportMessage(id, x, y, z, yaw, pitch);

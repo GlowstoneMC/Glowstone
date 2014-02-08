@@ -49,7 +49,7 @@ public final class GlowCreature extends GlowLivingEntity implements Creature {
         int z = Position.getIntZ(location);
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
-        return new SpawnMobMessage(id, type, x, y, z, yaw, pitch, metadata);
+        return new SpawnMobMessage(id, type, x, y, z, yaw, pitch, pitch, 0, 0, 0, metadata.getEntryList());
     }
 
     public void setTarget(LivingEntity target) {

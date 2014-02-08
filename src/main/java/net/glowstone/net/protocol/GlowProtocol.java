@@ -69,11 +69,12 @@ public abstract class GlowProtocol extends KeyedProtocol {
     }
 
     @Override
-    public void writeHeader(ByteBuf out, Codec.CodecRegistration codec, ByteBuf data) {
+    public ByteBuf writeHeader(ByteBuf out, Codec.CodecRegistration codec, ByteBuf data) {
         final ByteBuf opcodeBuffer = Unpooled.buffer();
         ByteBufUtils.writeVarInt(opcodeBuffer, codec.getOpcode());
         ByteBufUtils.writeVarInt(out, opcodeBuffer.readableBytes() + data.readableBytes());
         ByteBufUtils.writeVarInt(out, codec.getOpcode());
+        return out;
     }
 
 }

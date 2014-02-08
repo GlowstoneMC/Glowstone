@@ -11,7 +11,7 @@ import net.glowstone.io.StorageOperation;
 import net.glowstone.msg.*;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.login.LoginSuccessMessage;
-import net.glowstone.net.message.play.entity.DestroyEntityMessage;
+import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.game.*;
 import net.glowstone.net.protocol.PlayProtocol;
@@ -201,7 +201,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
                 if (msg != null)
                     session.send(msg);
             } else {
-                session.send(new DestroyEntityMessage(entity.getEntityId()));
+                session.send(new DestroyEntitiesMessage(entity.getEntityId()));
                 it.remove();
             }
         }

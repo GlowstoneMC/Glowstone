@@ -1,4 +1,4 @@
-package net.glowstone.util;
+package net.glowstone.net;
 
 import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
@@ -17,17 +17,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
-* Contains several {@link ByteBuf}-related utility methods.
-* @author Graham Edgecombe
-*/
-public final class TagCompoundUtils {
+ * Contains several utility methods for writing special data types to @{link ByteBuf}s.
+ */
+public final class GlowBufUtils {
 
     /**
      * Writes a list of mob metadata entries to the buffer.
      * @param buf The buffer.
      * @param entries The metadata.
      */
-    public static void writeParameters(ByteBuf buf, List<MetadataMap.Entry> entries) throws IOException {
+    public static void writeMetadata(ByteBuf buf, List<MetadataMap.Entry> entries) throws IOException {
         for (MetadataMap.Entry entry : entries) {
             MetadataIndex index = entry.index;
             Object value = entry.value;
@@ -55,7 +54,7 @@ public final class TagCompoundUtils {
                     ByteBufUtils.writeUTF8(buf, (String) value);
                     break;
                 case ITEM:
-                    TagCompoundUtils.writeSlot(buf, (ItemStack) value);
+                    writeSlot(buf, (ItemStack) value);
                     break;
             }
         }
@@ -137,5 +136,5 @@ public final class TagCompoundUtils {
         return new ItemStack(type, amount, durability);
     }
 
-    private TagCompoundUtils() {}
+    private GlowBufUtils() {}
 }

@@ -7,10 +7,10 @@ import java.util.List;
 
 public final class SpawnMobMessage implements Message {
 
-    private final int id, type, x, y, z, rotation, pitch;
+    private final int id, type, x, y, z, rotation, pitch, headPitch, velX, velY, velZ;
     private final List<MetadataMap.Entry> metadata;
 
-    public SpawnMobMessage(int id, int type, int x, int y, int z, int rotation, int pitch, List<MetadataMap.Entry> metadata) {
+    public SpawnMobMessage(int id, int type, int x, int y, int z, int rotation, int pitch, int headPitch, int velX, int velY, int velZ, List<MetadataMap.Entry> metadata) {
         this.id = id;
         this.type = type;
         this.x = x;
@@ -18,6 +18,10 @@ public final class SpawnMobMessage implements Message {
         this.z = z;
         this.rotation = rotation;
         this.pitch = pitch;
+        this.headPitch = pitch;
+        this.velX = velX;
+        this.velY = velY;
+        this.velZ = velZ;
         this.metadata = metadata;
     }
 
@@ -47,6 +51,22 @@ public final class SpawnMobMessage implements Message {
 
     public int getPitch() {
         return pitch;
+    }
+
+    public int getHeadPitch() {
+        return headPitch;
+    }
+
+    public int getVelX() {
+        return velX;
+    }
+
+    public int getVelY() {
+        return velY;
+    }
+
+    public int getVelZ() {
+        return velZ;
     }
 
     public List<MetadataMap.Entry> getMetadata() {
