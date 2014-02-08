@@ -4,13 +4,13 @@ import org.bukkit.Location;
 
 public final class PlayerPositionMessage extends PlayerUpdateMessage {
 
-    private final double x, stance, y, z;
+    private final double x, y, headY, z;
 
-    public PlayerPositionMessage(boolean onGround, double x, double stance, double y, double z) {
+    public PlayerPositionMessage(boolean onGround, double x, double y, double headY, double z) {
         super(onGround);
         this.x = x;
-        this.stance = stance;
         this.y = y;
+        this.headY = headY;
         this.z = z;
     }
 
@@ -18,12 +18,12 @@ public final class PlayerPositionMessage extends PlayerUpdateMessage {
         return x;
     }
 
-    public double getStance() {
-        return stance;
-    }
-
     public double getY() {
         return y;
+    }
+
+    public double getHeadY() {
+        return headY;
     }
 
     public double getZ() {

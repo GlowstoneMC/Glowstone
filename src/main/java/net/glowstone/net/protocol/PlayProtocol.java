@@ -4,22 +4,17 @@ import net.glowstone.GlowServer;
 import net.glowstone.net.codec.JsonCodec;
 import net.glowstone.net.codec.play.entity.*;
 import net.glowstone.net.codec.play.game.*;
-import net.glowstone.net.codec.play.player.PlayerLookCodec;
-import net.glowstone.net.codec.play.player.PlayerPositionCodec;
-import net.glowstone.net.codec.play.player.PlayerPositionLookCodec;
-import net.glowstone.net.codec.play.player.PlayerUpdateCodec;
+import net.glowstone.net.codec.play.player.*;
 import net.glowstone.net.handler.play.game.ChatHandler;
 import net.glowstone.net.handler.play.game.ClientSettingsHandler;
 import net.glowstone.net.handler.play.game.PingHandler;
 import net.glowstone.net.handler.play.game.PluginMessageHandler;
+import net.glowstone.net.handler.play.player.PlayerActionHandler;
 import net.glowstone.net.handler.play.player.PlayerUpdateHandler;
 import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.game.*;
-import net.glowstone.net.message.play.player.PlayerLookMessage;
-import net.glowstone.net.message.play.player.PlayerPositionLookMessage;
-import net.glowstone.net.message.play.player.PlayerPositionMessage;
-import net.glowstone.net.message.play.player.PlayerUpdateMessage;
+import net.glowstone.net.message.play.player.*;
 
 public final class PlayProtocol extends GlowProtocol {
     public PlayProtocol(GlowServer server) {
@@ -31,6 +26,7 @@ public final class PlayProtocol extends GlowProtocol {
         inbound(0x04, PlayerPositionMessage.class, PlayerPositionCodec.class, PlayerUpdateHandler.class);
         inbound(0x05, PlayerLookMessage.class, PlayerLookCodec.class, PlayerUpdateHandler.class);
         inbound(0x06, PlayerPositionLookMessage.class, PlayerPositionLookCodec.class, PlayerUpdateHandler.class);
+        inbound(0x0B, PlayerActionMessage.class, PlayerActionCodec.class, PlayerActionHandler.class);
         inbound(0x15, ClientSettingsMessage.class, ClientSettingsCodec.class, ClientSettingsHandler.class);
         inbound(0x17, PluginMessage.class, PluginMessageCodec.class, PluginMessageHandler.class);
 

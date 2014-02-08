@@ -9,20 +9,20 @@ import java.io.IOException;
 public final class PlayerPositionLookCodec implements Codec<PlayerPositionLookMessage> {
     public PlayerPositionLookMessage decode(ByteBuf buffer) throws IOException {
         double x = buffer.readDouble();
-        double stance = buffer.readDouble();
         double y = buffer.readDouble();
+        double headY = buffer.readDouble();
         double z = buffer.readDouble();
         float yaw = buffer.readFloat();
         float pitch = buffer.readFloat();
         boolean onGround = buffer.readByte() != 0;
 
-        return new PlayerPositionLookMessage(onGround, x, stance, y, z, yaw, pitch);
+        return new PlayerPositionLookMessage(onGround, x, y, headY, z, yaw, pitch);
     }
 
     public ByteBuf encode(ByteBuf buf, PlayerPositionLookMessage message) throws IOException {
         buf.writeDouble(message.getX());
-        buf.writeDouble(message.getStance());
         buf.writeDouble(message.getY());
+        buf.writeDouble(message.getHeadY());
         buf.writeDouble(message.getZ());
         buf.writeFloat(message.getYaw());
         buf.writeFloat(message.getPitch());

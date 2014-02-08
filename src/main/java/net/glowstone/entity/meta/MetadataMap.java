@@ -15,6 +15,7 @@ public class MetadataMap {
 
     public MetadataMap(Class<? extends Entity> entityClass) {
         this.entityClass = entityClass;
+        set(MetadataIndex.STATUS, 0);  // all entities have to have at least this
     }
 
     public boolean containsKey(MetadataIndex index) {
@@ -22,6 +23,25 @@ public class MetadataMap {
     }
 
     public void set(MetadataIndex index, Object value) {
+        // take numbers down to the correct precision
+        if (value instanceof Number) {
+            Number n = (Number) value;
+            switch (index.getType()) {
+                case BYTE:
+                    value = n.byteValue();
+                    break;
+                case SHORT:
+                    value = n.shortValue();
+                    break;
+                case INT:
+                    value = n.intValue();
+                    break;
+                case FLOAT:
+                    value = n.floatValue();
+                    break;
+            }
+        }
+
         if (!index.getType().getDataType().isAssignableFrom(value.getClass())) {
             throw new IllegalArgumentException("Cannot assign " + value + " to " + index + ", expects " + index.getType());
         }
@@ -38,29 +58,26 @@ public class MetadataMap {
     }
 
     public boolean getBit(MetadataIndex index, int bit) {
-        return (((Number) get(index)).intValue() & bit) != 0;
+        return (getNumber(index).intValue() & bit) != 0;
     }
 
     public void setBit(MetadataIndex index, int bit) {
-        switch (index.getType()) {
-            case BYTE:
-                set(index, getByte(index) | bit);
-                break;
-            case INT:
-                set(index, getInt(index) | bit);
-                break;
-        }
+        set(index, getNumber(index).intValue() | bit);
     }
 
     public void clearBit(MetadataIndex index, int bit) {
-        switch (index.getType()) {
-            case BYTE:
-                set(index, getByte(index) & ~bit);
-                break;
-            case INT:
-                set(index, getInt(index) & ~bit);
-                break;
+        set(index, getNumber(index).intValue() & ~bit);
+    }
+
+    public Number getNumber(MetadataIndex index) {
+        if (!containsKey(index)) {
+            return 0;
         }
+        Object o = get(index);
+        if (!(o instanceof Number)) {
+            throw new IllegalArgumentException("Index " + index + " is of non-number type " + index.getType());
+        }
+        return (Number) o;
     }
 
     public byte getByte(MetadataIndex index) {
@@ -128,6 +145,11 @@ public class MetadataMap {
         @Override
         public int compareTo(Entry o) {
             return o.index.getIndex() - index.getIndex();
+        }
+
+        @Override
+        public String toString() {
+            return index + "=" + value;
         }
     }
 }

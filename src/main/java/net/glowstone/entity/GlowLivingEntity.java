@@ -5,10 +5,7 @@ import gnu.trove.set.hash.TIntHashSet;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.entity.meta.MetadataMap;
-import net.glowstone.net.message.play.entity.EntityRotationMessage;
-import net.glowstone.net.message.play.entity.EntityTeleportMessage;
-import net.glowstone.net.message.play.entity.RelativeEntityPositionMessage;
-import net.glowstone.net.message.play.entity.RelativeEntityPositionRotationMessage;
+import net.glowstone.net.message.play.entity.*;
 import net.glowstone.util.Position;
 import net.glowstone.util.TargetBlock;
 import org.bukkit.Location;
@@ -156,6 +153,16 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }
 
         return null;
+    }
+
+    protected final void updateMetadata() {
+        EntityMetadataMessage message = new EntityMetadataMessage(id, metadata.getEntryList());
+        for (GlowPlayer player : world.getRawPlayers()) {
+            if (player != this && player.canSee(this)) {
+                player.getSession().send(message);
+            }
+        }
+        GlowServer.logger.info("Broadcasting: " + message);
     }
 
     ////////////////////////////////////////////////////////////////////////////

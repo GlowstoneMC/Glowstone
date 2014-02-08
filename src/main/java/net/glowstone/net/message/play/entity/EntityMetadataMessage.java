@@ -26,6 +26,7 @@ public final class EntityMetadataMessage implements Message {
     @Override
     public String toString() {
         StringBuilder build = new StringBuilder("EntityMetadataMessage{id=");
+        build.append(id);
         for (MetadataMap.Entry entry : entries) {
             build.append(',').append(entry.index).append('=').append(entry.value);
         }

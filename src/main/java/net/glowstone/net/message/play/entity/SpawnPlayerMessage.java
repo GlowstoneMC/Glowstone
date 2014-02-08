@@ -71,7 +71,18 @@ public final class SpawnPlayerMessage implements Message {
 
     @Override
     public String toString() {
-        return "SpawnPlayerMessage{id=" + id + ",name=" + name + ",x=" + x + ",y=" + y + ",z=" + z + ",rotation=" + rotation + ",pitch=" + pitch + ",item=" + item + "}";
+        return "SpawnPlayerMessage{" +
+                "id=" + id +
+                ", uuid=" + uuid +
+                ", name='" + name + '\'' +
+                ", x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                ", rotation=" + rotation +
+                ", pitch=" + pitch +
+                ", item=" + item +
+                ", metadata=" + metadata +
+                '}';
     }
 
     @Override

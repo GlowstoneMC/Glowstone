@@ -12,7 +12,6 @@ import net.glowstone.msg.*;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.login.LoginSuccessMessage;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
-import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.game.*;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.util.TextWrapper;
@@ -426,20 +425,23 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
             metadata.clearBit(MetadataIndex.STATUS, 0x02);
         }
 
-        EntityMetadataMessage message = new EntityMetadataMessage(id, metadata.getEntryList());
-        for (Player player : world.getPlayers()) {
-            if (player != this && canSee((GlowEntity) player)) {
-                ((GlowPlayer) player).session.send(message);
-            }
-        }
+        updateMetadata();
     }
 
     public boolean isSprinting() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return metadata.getBit(MetadataIndex.STATUS, 0x08);
     }
 
     public void setSprinting(boolean sprinting) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // todo: event
+
+        if (sprinting) {
+            metadata.setBit(MetadataIndex.STATUS, 0x08);
+        } else {
+            metadata.clearBit(MetadataIndex.STATUS, 0x08);
+        }
+
+        updateMetadata();
     }
 
     public boolean isSleepingIgnored() {

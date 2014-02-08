@@ -75,15 +75,20 @@ public final class SpawnMobMessage implements Message {
 
     @Override
     public String toString() {
-        StringBuilder build = new StringBuilder("SpawnMobMessage{id=").append(id).
-                append(",type=").append(type).append(",x=").append(x).append(",y=").
-                append(y).append(",z=").append(z).append(",rotation=").
-                append(rotation).append(",pitch=").append(pitch).append(",metadata=[");
-        for (MetadataMap.Entry entry : metadata) {
-            build.append(entry.index).append('=').append(entry.value).append(",");
-        }
-        build.append("]}");
-        return build.toString();
+        return "SpawnMobMessage{" +
+                "id=" + id +
+                ", type=" + type +
+                ", x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                ", rotation=" + rotation +
+                ", pitch=" + pitch +
+                ", headPitch=" + headPitch +
+                ", velX=" + velX +
+                ", velY=" + velY +
+                ", velZ=" + velZ +
+                ", metadata=" + metadata +
+                '}';
     }
 
     @Override
