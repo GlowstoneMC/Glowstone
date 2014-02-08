@@ -38,7 +38,7 @@ public abstract class GlowEntity implements Entity {
     /**
      * The metadata store for entities.
      */
-    private final static MetadataStore<Entity> metadata = new EntityMetadataStore();
+    private final static MetadataStore<Entity> bukkitMetadata = new EntityMetadataStore();
     
     /**
      * The server this entity belongs to.
@@ -370,18 +370,18 @@ public abstract class GlowEntity implements Entity {
     // Metadata
 
     public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
-        metadata.setMetadata(this, metadataKey, newMetadataValue);
+        bukkitMetadata.setMetadata(this, metadataKey, newMetadataValue);
     }
 
     public List<MetadataValue> getMetadata(String metadataKey) {
-        return metadata.getMetadata(this, metadataKey);
+        return bukkitMetadata.getMetadata(this, metadataKey);
     }
 
     public boolean hasMetadata(String metadataKey) {
-        return metadata.hasMetadata(this, metadataKey);
+        return bukkitMetadata.hasMetadata(this, metadataKey);
     }
 
     public void removeMetadata(String metadataKey, Plugin owningPlugin) {
-        metadata.removeMetadata(this, metadataKey, owningPlugin);
+        bukkitMetadata.removeMetadata(this, metadataKey, owningPlugin);
     }
 }

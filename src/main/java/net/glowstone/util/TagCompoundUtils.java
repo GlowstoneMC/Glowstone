@@ -2,6 +2,8 @@ package net.glowstone.util;
 
 import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import net.glowstone.entity.meta.MetadataIndex;
+import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
@@ -11,8 +13,6 @@ import org.bukkit.inventory.ItemStack;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,90 +23,44 @@ import java.util.Map;
 public final class TagCompoundUtils {
 
     /**
-     * The UTF-8 character set.
-     */
-    private static final Charset CHARSET_UTF8 = Charset.forName("UTF-8");
-
-    /**
-     * Writes a list of parameters (e.g. mob metadata) to the buffer.
+     * Writes a list of mob metadata entries to the buffer.
      * @param buf The buffer.
-     * @param parameters The parameters.
+     * @param entries The metadata.
      */
-    @SuppressWarnings("unchecked")
-    public static void writeParameters(ByteBuf buf, List<Parameter<?>> parameters) throws IOException{
-        for (Parameter<?> parameter : parameters) {
-            int type  = parameter.getType();
-            int index = parameter.getIndex();
+    public static void writeParameters(ByteBuf buf, List<MetadataMap.Entry> entries) throws IOException {
+        for (MetadataMap.Entry entry : entries) {
+            MetadataIndex index = entry.index;
+            Object value = entry.value;
 
-            buf.writeByte((type << 5) | index);
+            if (value == null) continue;
 
-            switch (type) {
-            case Parameter.TYPE_BYTE:
-                buf.writeByte(((Parameter<Byte>) parameter).getValue());
-                break;
-            case Parameter.TYPE_SHORT:
-                buf.writeShort(((Parameter<Short>) parameter).getValue());
-                break;
-            case Parameter.TYPE_INT:
-                buf.writeInt(((Parameter<Integer>) parameter).getValue());
-                break;
-            case Parameter.TYPE_FLOAT:
-                buf.writeFloat(((Parameter<Float>) parameter).getValue());
-                break;
-            case Parameter.TYPE_STRING:
-                ByteBufUtils.writeUTF8(buf, ((Parameter<String>) parameter).getValue());
-                break;
-            case Parameter.TYPE_ITEM:
-                ItemStack item = ((Parameter<ItemStack>) parameter).getValue();
-                buf.writeShort(item.getTypeId());
-                buf.writeByte(item.getAmount());
-                buf.writeShort(item.getDurability());
-                break;
+            int type = index.getType().getId();
+            int id = index.getIndex();
+            buf.writeByte((type << 5) | id);
+
+            switch (index.getType()) {
+                case BYTE:
+                    buf.writeByte((Byte) value);
+                    break;
+                case SHORT:
+                    buf.writeShort((Short) value);
+                    break;
+                case INT:
+                    buf.writeInt((Integer) value);
+                    break;
+                case FLOAT:
+                    buf.writeFloat((Float) value);
+                    break;
+                case STRING:
+                    ByteBufUtils.writeUTF8(buf, (String) value);
+                    break;
+                case ITEM:
+                    TagCompoundUtils.writeSlot(buf, (ItemStack) value);
+                    break;
             }
         }
 
         buf.writeByte(127);
-    }
-
-    /**
-     * Reads a list of parameters from the buffer.
-     * @param buf The buffer.
-     * @return The parameters.
-     */
-    public static List<Parameter<?>> readParameters(ByteBuf buf) throws IOException{
-        List<Parameter<?>> parameters = new ArrayList<Parameter<?>>();
-
-        for (int b = buf.readUnsignedByte(); b != 127; ) {
-            int type  = (b & 0x0E) >> 5;
-            int index = b & 0x1F;
-
-            switch (type) {
-            case Parameter.TYPE_BYTE:
-                parameters.add(new Parameter<Byte>(type, index, buf.readByte()));
-                break;
-            case Parameter.TYPE_SHORT:
-                parameters.add(new Parameter<Short>(type, index, buf.readShort()));
-                break;
-            case Parameter.TYPE_INT:
-                parameters.add(new Parameter<Integer>(type, index, buf.readInt()));
-                break;
-            case Parameter.TYPE_FLOAT:
-                parameters.add(new Parameter<Float>(type, index, buf.readFloat()));
-                break;
-            case Parameter.TYPE_STRING:
-                parameters.add(new Parameter<String>(type, index, ByteBufUtils.readUTF8(buf)));
-                break;
-            case Parameter.TYPE_ITEM:
-                int id = buf.readShort();
-                int count = buf.readByte();
-                short damage = buf.readShort();
-                ItemStack item = new ItemStack(id, count, damage);
-                parameters.add(new Parameter<ItemStack>(type, index, item));
-                break;
-            }
-        }
-
-        return parameters;
     }
 
     public static Map<String, Tag> readCompound(ByteBuf buf) {
@@ -158,10 +112,30 @@ public final class TagCompoundUtils {
 
     }
 
-    /**
-     * Default private constructor to prevent instantiation.
-     */
-    private TagCompoundUtils() {
-
+    public static void writeSlot(ByteBuf buf, ItemStack stack) {
+        if (stack == null || stack.getTypeId() == 0) {
+            buf.writeShort(-1);
+        } else {
+            buf.writeShort(stack.getTypeId());
+            buf.writeByte(stack.getAmount());
+            buf.writeShort(stack.getDurability());
+            writeCompound(buf, null); // todo - build data from stack
+        }
     }
+
+    public static ItemStack readSlot(ByteBuf buf) {
+        short type = buf.readShort();
+        if (type == -1) {
+            return null;
+        }
+
+        int amount = buf.readUnsignedByte();
+        short durability = buf.readShort();
+
+        Map<String, Tag> tags = readCompound(buf); // todo - use this
+
+        return new ItemStack(type, amount, durability);
+    }
+
+    private TagCompoundUtils() {}
 }

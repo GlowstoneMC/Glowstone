@@ -1,16 +1,16 @@
 package net.glowstone.net.message.play.entity;
 
-import java.util.List;
-
 import com.flowpowered.networking.Message;
-import net.glowstone.util.Parameter;
+import net.glowstone.entity.meta.MetadataMap;
+
+import java.util.List;
 
 public final class SpawnMobMessage implements Message {
 
     private final int id, type, x, y, z, rotation, pitch;
-    private final List<Parameter<?>> parameters;
+    private final List<MetadataMap.Entry> metadata;
 
-    public SpawnMobMessage(int id, int type, int x, int y, int z, int rotation, int pitch, List<Parameter<?>> parameters) {
+    public SpawnMobMessage(int id, int type, int x, int y, int z, int rotation, int pitch, List<MetadataMap.Entry> metadata) {
         this.id = id;
         this.type = type;
         this.x = x;
@@ -18,7 +18,7 @@ public final class SpawnMobMessage implements Message {
         this.z = z;
         this.rotation = rotation;
         this.pitch = pitch;
-        this.parameters = parameters;
+        this.metadata = metadata;
     }
 
     public int getId() {
@@ -49,8 +49,8 @@ public final class SpawnMobMessage implements Message {
         return pitch;
     }
 
-    public List<Parameter<?>> getParameters() {
-        return parameters;
+    public List<MetadataMap.Entry> getMetadata() {
+        return metadata;
     }
 
     @Override
@@ -58,9 +58,9 @@ public final class SpawnMobMessage implements Message {
         StringBuilder build = new StringBuilder("SpawnMobMessage{id=").append(id).
                 append(",type=").append(type).append(",x=").append(x).append(",y=").
                 append(y).append(",z=").append(z).append(",rotation=").
-                append(rotation).append(",pitch=").append(pitch).append(",parameters=[");
-        for (Parameter<?> parm : parameters) {
-            build.append(parm).append(",");
+                append(rotation).append(",pitch=").append(pitch).append(",metadata=[");
+        for (MetadataMap.Entry entry : metadata) {
+            build.append(entry.index).append('=').append(entry.value).append(",");
         }
         build.append("]}");
         return build.toString();

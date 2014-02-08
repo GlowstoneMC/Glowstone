@@ -4,11 +4,11 @@ import com.flowpowered.networking.Message;
 import gnu.trove.set.hash.TIntHashSet;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
+import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.net.message.play.entity.EntityRotationMessage;
 import net.glowstone.net.message.play.entity.EntityTeleportMessage;
 import net.glowstone.net.message.play.entity.RelativeEntityPositionMessage;
 import net.glowstone.net.message.play.entity.RelativeEntityPositionRotationMessage;
-import net.glowstone.util.Parameter;
 import net.glowstone.util.Position;
 import net.glowstone.util.TargetBlock;
 import org.bukkit.Location;
@@ -30,7 +30,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     /**
      * The monster's metadata.
      */
-    protected final List<Parameter<?>> metadata = new ArrayList<Parameter<?>>();
+    protected final MetadataMap metadata = new MetadataMap(getClass());
 
     /**
      * Potion effects on the entity.
@@ -156,18 +156,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }
 
         return null;
-    }
-
-    protected Parameter<?> getMetadata(int index) {
-        return metadata.get(index);
-    }
-
-    protected void setMetadata(Parameter<?> data) {
-        if(data.getIndex() < metadata.size()) {
-            metadata.set(data.getIndex(), data);
-        } else {
-            metadata.add(data);
-        }
     }
 
     ////////////////////////////////////////////////////////////////////////////

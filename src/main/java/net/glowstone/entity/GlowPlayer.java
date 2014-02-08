@@ -2,6 +2,7 @@ package net.glowstone.entity;
 
 import net.glowstone.*;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowItemStack;
 import net.glowstone.inventory.GlowPlayerInventory;
@@ -9,12 +10,11 @@ import net.glowstone.inventory.InventoryViewer;
 import net.glowstone.io.StorageOperation;
 import net.glowstone.msg.*;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.play.entity.DestroyEntityMessage;
-import net.glowstone.net.message.play.game.ChunkBulkMessage;
 import net.glowstone.net.message.login.LoginSuccessMessage;
+import net.glowstone.net.message.play.entity.DestroyEntityMessage;
+import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.game.*;
 import net.glowstone.net.protocol.PlayProtocol;
-import net.glowstone.util.Parameter;
 import net.glowstone.util.TextWrapper;
 import org.bukkit.*;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
@@ -412,17 +412,21 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
 
     public boolean isSneaking() {
-        return sneaking;
+        return (metadata.getByte(MetadataIndex.STATUS) & 0x02) != 0;
     }
 
     public void setSneaking(boolean sneak) {
         if (EventFactory.onPlayerToggleSneak(this, sneak).isCancelled()) {
             return;
         }
-        this.sneaking = sneak;
-        setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, 0, (byte) (this.sneaking ? 0x02: 0)));
-        // FIXME: other bits in the bitmask would be wiped out
-        EntityMetadataMessage message = new EntityMetadataMessage(id, metadata);
+
+        if (sneak) {
+            metadata.setBit(MetadataIndex.STATUS, 0x02);
+        } else {
+            metadata.clearBit(MetadataIndex.STATUS, 0x02);
+        }
+
+        EntityMetadataMessage message = new EntityMetadataMessage(id, metadata.getEntryList());
         for (Player player : world.getPlayers()) {
             if (player != this && canSee((GlowEntity) player)) {
                 ((GlowPlayer) player).session.send(message);
