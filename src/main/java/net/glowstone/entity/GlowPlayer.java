@@ -158,15 +158,15 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         }
         session.send(new JoinGameMessage(getEntityId(), gameMode, world.getEnvironment().getId(), world.getDifficulty().getValue(), session.getServer().getMaxPlayers(), type));
 
-        streamBlocks(); // stream the initial set of blocks
-        setCompassTarget(world.getSpawnLocation()); // set our compass target
-        session.send(new StateChangeMessage(getWorld().hasStorm() ? 1 : 2, 0)); // send the world's weather
-
         getInventory().addViewer(this);
         getInventory().getCraftingInventory().addViewer(this);
 
         loadData();
         saveData();
+
+        streamBlocks(); // stream the initial set of blocks
+        setCompassTarget(world.getSpawnLocation()); // set our compass target
+        session.send(new StateChangeMessage(getWorld().hasStorm() ? 1 : 2, 0)); // send the world's weather
     }
     
     // -- Various internal mechanisms
@@ -265,8 +265,15 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
             GlowServer.logger.info("Sending bulk to: " + getName());
         }
 
+        // populate then send chunks to the player
+
+        // done in two steps so that all the new chunks are finalized before any of them are sent
+        // this prevents sending a chunk then immediately sending block changes in it because
+        // one of its neighbors has populated
         for (GlowChunk.Key key : newChunks) {
             world.getChunkManager().forcePopulation(key.getX(), key.getZ());
+        }
+        for (GlowChunk.Key key : newChunks) {
             GlowChunk chunk = world.getChunkAt(key.getX(), key.getZ());
             if (bulkChunks == null) {
                 session.send(chunk.toMessage());
@@ -564,6 +571,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
             if (event.isCancelled()) return false;
             location = event.getTo();
         }
+
+        // account for floating point shenanigans in client physics
+        double y = location.getY() + getEyeHeight() + 0.05;
+        PositionRotationMessage message = new PositionRotationMessage(location.getX(), y, location.getZ(), location.getYaw(), location.getPitch(), true);
+
         if (location.getWorld() != world) {
             GlowWorld oldWorld = world;
             world.getEntityManager().deallocate(this);
@@ -582,13 +594,13 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
             streamBlocks(); // stream blocks
             
             setCompassTarget(world.getSpawnLocation()); // set our compass target
-            this.session.send(new PositionRotationMessage(location, true));
+            this.session.send(message);
             this.location = location; // take us to spawn position
             session.send(new StateChangeMessage((byte)(getWorld().hasStorm() ? 1 : 2), (byte)0)); // send the world's weather
             reset();
             EventFactory.onPlayerChangedWorld(this, oldWorld);
         } else {
-            this.session.send(new PositionRotationMessage(location, true));
+            this.session.send(message);
             this.location = location;
             reset();
         }
@@ -694,8 +706,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
 
     public void loadData() {
-        
-        GlowWorld dataWorld = (GlowWorld)server.getWorlds().get(0);
+        GlowWorld dataWorld = (GlowWorld) server.getWorlds().get(0);
         dataWorld.getMetadataService().readPlayerData(this);
     }
     
