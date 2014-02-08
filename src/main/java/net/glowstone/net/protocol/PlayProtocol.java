@@ -44,6 +44,7 @@ public final class PlayProtocol extends GlowProtocol {
         outbound(0x16, EntityRotationMessage.class, EntityRotationCodec.class);
         outbound(0x17, RelativeEntityPositionRotationMessage.class, RelativeEntityPositionRotationCodec.class);
         outbound(0x18, EntityTeleportMessage.class, EntityTeleportCodec.class);
+        outbound(0x19, EntityHeadRotationMessage.class, EntityHeadRotationCodec.class);
         outbound(0x1C, EntityMetadataMessage.class, EntityMetadataCodec.class);
         outbound(0x1F, ExperienceMessage.class, ExperienceCodec.class);
         outbound(0x21, ChunkDataMessage.class, ChunkDataCodec.class);

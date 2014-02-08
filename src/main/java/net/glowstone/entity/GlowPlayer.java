@@ -1,5 +1,6 @@
 package net.glowstone.entity;
 
+import com.flowpowered.networking.Message;
 import net.glowstone.*;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -196,9 +197,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
             boolean withinDistance = !entity.isDead() && isWithinDistance(entity);
 
             if (withinDistance) {
-                com.flowpowered.networking.Message msg = entity.createUpdateMessage();
-                if (msg != null)
+                for (Message msg : entity.createUpdateMessage()) {
                     session.send(msg);
+                }
             } else {
                 session.send(new DestroyEntitiesMessage(entity.getEntityId()));
                 it.remove();
@@ -212,7 +213,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
 
             if (withinDistance && !knownEntities.contains(entity)) {
                 knownEntities.add(entity);
-                session.send(entity.createSpawnMessage());
+                for (Message msg : entity.createSpawnMessage()) {
+                    session.send(msg);
+                }
             }
         }
     }
@@ -392,9 +395,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         for (Player player : server.getOnlinePlayers()) {
             if (player.getPlayerListName().equals(getPlayerListName())) throw new IllegalArgumentException("The name given, " + name + ", is already used by " + player.getName() + ".");
         }
-        Message removeMessage = new UserListItemMessage(getPlayerListName(), false, (short)0);
+        net.glowstone.msg.Message removeMessage = new UserListItemMessage(getPlayerListName(), false, (short)0);
         playerListName = name;
-        Message reAddMessage = new UserListItemMessage(getPlayerListName(), true, (short)0);
+        net.glowstone.msg.Message reAddMessage = new UserListItemMessage(getPlayerListName(), true, (short)0);
         for (Player player : server.getOnlinePlayers()) {
             ((GlowPlayer) player).getSession().send(removeMessage);
             ((GlowPlayer) player).getSession().send(reAddMessage);

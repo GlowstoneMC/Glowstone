@@ -4,6 +4,8 @@ import com.flowpowered.networking.Message;
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
+import net.glowstone.entity.meta.MetadataMap;
+import net.glowstone.net.message.play.entity.*;
 import net.glowstone.util.Position;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
@@ -17,6 +19,7 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,6 +47,11 @@ public abstract class GlowEntity implements Entity {
      * The server this entity belongs to.
      */
     protected final GlowServer server;
+
+    /**
+     * The entity's metadata.
+     */
+    protected final MetadataMap metadata = new MetadataMap(getClass());
 
     /**
      * The world this entity belongs to.
@@ -247,14 +255,48 @@ public abstract class GlowEntity implements Entity {
      * entity.
      * @return A message which can spawn this entity.
      */
-    public abstract Message createSpawnMessage();
+    public abstract List<Message> createSpawnMessage();
 
     /**
      * Creates a {@link Message} which can be sent to a client to update this
      * entity.
      * @return A message which can update this entity.
      */
-    public abstract Message createUpdateMessage();
+    public List<Message> createUpdateMessage() {
+        boolean moved = hasMoved();
+        boolean rotated = hasRotated();
+
+        int x = Position.getIntX(location);
+        int y = Position.getIntY(location);
+        int z = Position.getIntZ(location);
+
+        int dx = x - Position.getIntX(previousLocation);
+        int dy = y - Position.getIntY(previousLocation);
+        int dz = z - Position.getIntZ(previousLocation);
+
+        boolean teleport = dx > Byte.MAX_VALUE || dy > Byte.MAX_VALUE || dz > Byte.MAX_VALUE || dx < Byte.MIN_VALUE || dy < Byte.MIN_VALUE || dz < Byte.MIN_VALUE;
+
+        int yaw = Position.getIntYaw(location);
+        int pitch = Position.getIntPitch(location);
+
+        List<Message> result = new LinkedList<Message>();
+        if (moved && teleport) {
+            result.add(new EntityTeleportMessage(id, x, y, z, yaw, pitch));
+        } else if (moved && rotated) {
+            result.add(new RelativeEntityPositionRotationMessage(id, dx, dy, dz, yaw, pitch));
+        } else if (moved) {
+            result.add(new RelativeEntityPositionMessage(id, dx, dy, dz));
+        } else if (rotated) {
+            result.add(new EntityRotationMessage(id, yaw, pitch));
+        }
+
+        // todo: handle head rotation as a separate value
+        if (rotated) {
+            result.add(new EntityHeadRotationMessage(id, yaw));
+        }
+
+        return result;
+    }
 
     /**
      * Checks if this entity has moved this cycle.

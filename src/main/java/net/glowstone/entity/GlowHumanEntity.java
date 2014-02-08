@@ -6,6 +6,7 @@ import net.glowstone.GlowWorld;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowItemStack;
 import net.glowstone.inventory.GlowPlayerInventory;
+import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.SpawnPlayerMessage;
 import net.glowstone.util.Position;
 import org.bukkit.GameMode;
@@ -20,6 +21,8 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -88,13 +91,23 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     // Internals
 
     @Override
-    public Message createSpawnMessage() {
+    public List<Message> createSpawnMessage() {
+        List<Message> result = new LinkedList<Message>();
+
+        // spawn player
         int x = Position.getIntX(location);
         int y = Position.getIntY(location);
         int z = Position.getIntZ(location);
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
-        return new SpawnPlayerMessage(id, getUniqueId(), name, x, y, z, yaw, pitch, 0, metadata.getEntryList());
+        result.add(new SpawnPlayerMessage(id, getUniqueId(), name, x, y, z, yaw, pitch, 0, metadata.getEntryList()));
+
+        // head facing
+        result.add(new EntityHeadRotationMessage(id, yaw));
+
+        // todo: equipment
+        //result.add(createEquipmentMessage());
+        return result;
     }
 
     @Override

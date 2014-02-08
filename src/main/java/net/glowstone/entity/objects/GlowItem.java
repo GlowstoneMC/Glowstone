@@ -8,6 +8,9 @@ import net.glowstone.util.Position;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Represents an item that is also an {@link net.glowstone.entity.GlowEntity} within the world.
  * @author Graham Edgecombe
@@ -52,7 +55,7 @@ public final class GlowItem extends GlowEntity implements Item {
     }
 
     @Override
-    public Message createSpawnMessage() {
+    public List<Message> createSpawnMessage() {
         int x = Position.getIntX(location);
         int y = Position.getIntY(location);
         int z = Position.getIntZ(location);
@@ -61,13 +64,7 @@ public final class GlowItem extends GlowEntity implements Item {
         int pitch = Position.getIntPitch(location);
 
         //return new SpawnItemMessage(id, item, x, y, z, yaw, pitch, 0);
-        return null;
-    }
-
-    @Override
-    public Message createUpdateMessage() {
-        // TODO we can probably use some generic implementation for all of these
-        return null;
+        return Arrays.asList();
     }
 
     public int getPickupDelay() {

@@ -2,12 +2,13 @@ package net.glowstone.entity;
 
 import com.flowpowered.networking.Message;
 import net.glowstone.GlowServer;
-
+import net.glowstone.GlowWorld;
+import net.glowstone.net.message.play.entity.SpawnLightningStrikeMessage;
+import net.glowstone.util.Position;
 import org.bukkit.entity.LightningStrike;
 
-import net.glowstone.util.Position;
-import net.glowstone.net.message.play.entity.SpawnLightningStrikeMessage;
-import net.glowstone.GlowWorld;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A GlowLightning strike is an entity produced during thunderstorms.
@@ -43,16 +44,16 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
     }
 
     @Override
-    public Message createSpawnMessage() {
+    public List<Message> createSpawnMessage() {
         int x = Position.getIntX(location);
         int y = Position.getIntY(location);
         int z = Position.getIntZ(location);
-        return new SpawnLightningStrikeMessage(id, x, y, z);
+        return Arrays.<Message>asList(new SpawnLightningStrikeMessage(id, x, y, z));
     }
 
     @Override
-    public Message createUpdateMessage() {
-        return null;
+    public List<Message> createUpdateMessage() {
+        return Arrays.asList();
     }
     
 }

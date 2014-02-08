@@ -1,12 +1,9 @@
 package net.glowstone.entity;
 
-import com.flowpowered.networking.Message;
 import gnu.trove.set.hash.TIntHashSet;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
-import net.glowstone.entity.meta.MetadataMap;
-import net.glowstone.net.message.play.entity.*;
-import net.glowstone.util.Position;
+import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.util.TargetBlock;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,11 +20,6 @@ import java.util.*;
  * @author Graham Edgecombe.
  */
 public abstract class GlowLivingEntity extends GlowEntity implements LivingEntity {
-
-    /**
-     * The monster's metadata.
-     */
-    protected final MetadataMap metadata = new MetadataMap(getClass());
 
     /**
      * Potion effects on the entity.
@@ -124,37 +116,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         // todo: tick down potion effects
     }
 
-    @Override
-    public Message createUpdateMessage() {
-        boolean moved = hasMoved();
-        boolean rotated = hasRotated();
-
-        int x = Position.getIntX(location);
-        int y = Position.getIntY(location);
-        int z = Position.getIntZ(location);
-
-        int dx = x - Position.getIntX(previousLocation);
-        int dy = y - Position.getIntY(previousLocation);
-        int dz = z - Position.getIntZ(previousLocation);
-
-        boolean teleport = dx > Byte.MAX_VALUE || dy > Byte.MAX_VALUE || dz > Byte.MAX_VALUE || dx < Byte.MIN_VALUE || dy < Byte.MIN_VALUE || dz < Byte.MIN_VALUE;
-
-        int yaw = Position.getIntYaw(location);
-        int pitch = Position.getIntPitch(location);
-
-        if (moved && teleport) {
-            return new EntityTeleportMessage(id, x, y, z, yaw, pitch);
-        } else if (moved && rotated) {
-            return new RelativeEntityPositionRotationMessage(id, dx, dy, dz, yaw, pitch);
-        } else if (moved) {
-            return new RelativeEntityPositionMessage(id, dx, dy, dz);
-        } else if (rotated) {
-            return new EntityRotationMessage(id, yaw, pitch);
-        }
-
-        return null;
-    }
-
     protected final void updateMetadata() {
         EntityMetadataMessage message = new EntityMetadataMessage(id, metadata.getEntryList());
         for (GlowPlayer player : world.getRawPlayers()) {
@@ -162,7 +123,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 player.getSession().send(message);
             }
         }
-        GlowServer.logger.info("Broadcasting: " + message);
     }
 
     ////////////////////////////////////////////////////////////////////////////
