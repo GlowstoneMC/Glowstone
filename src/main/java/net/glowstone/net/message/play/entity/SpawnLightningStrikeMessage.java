@@ -43,8 +43,4 @@ public final class SpawnLightningStrikeMessage implements Message {
         return "SpawnLightningStrikeMessage{id=" + id + ",mode=" + mode + ",x=" + x + ",y=" + y + ",z=" + z + "}";
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }

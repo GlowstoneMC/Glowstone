@@ -28,8 +28,4 @@ public final class LoginSuccessMessage implements Message {
                 '}';
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }

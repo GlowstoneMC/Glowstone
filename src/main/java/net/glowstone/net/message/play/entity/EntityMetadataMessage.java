@@ -34,8 +34,4 @@ public final class EntityMetadataMessage implements Message {
         return build.toString();
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }

@@ -25,11 +25,6 @@ public class JsonMessage implements Message {
         return getClass().getSimpleName() + json;
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
-
     @SuppressWarnings("unchecked")
     protected static JSONObject toTextJson(String text) {
         JSONObject json = new JSONObject();

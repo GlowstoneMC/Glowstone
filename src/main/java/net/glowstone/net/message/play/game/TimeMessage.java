@@ -24,8 +24,4 @@ public final class TimeMessage implements Message {
         return "TimeMessage{worldAge=" + worldAge + ",time=" + time + "}";
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }

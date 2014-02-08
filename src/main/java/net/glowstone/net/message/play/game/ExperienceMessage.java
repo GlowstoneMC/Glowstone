@@ -30,7 +30,4 @@ public final class ExperienceMessage implements Message {
         return "ExperienceMessage{barValue=" + barValue + ",level=" + level + ",totalExp=" + totalExp + "}";
     }
 
-    public boolean isAsync() {
-        return false;
-    }
 }

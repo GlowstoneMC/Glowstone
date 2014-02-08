@@ -30,9 +30,5 @@ public final class PluginMessage implements Message {
                 '}';
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }
 

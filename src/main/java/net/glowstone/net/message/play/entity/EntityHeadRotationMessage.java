@@ -20,9 +20,5 @@ public final class EntityHeadRotationMessage implements Message {
         return rotation;
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }
 

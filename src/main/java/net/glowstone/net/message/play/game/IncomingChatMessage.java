@@ -14,8 +14,4 @@ public final class IncomingChatMessage implements Message {
         return text;
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }

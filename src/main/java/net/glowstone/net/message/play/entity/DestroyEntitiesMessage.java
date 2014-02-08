@@ -26,8 +26,4 @@ public final class DestroyEntitiesMessage implements Message {
         return "DestroyEntitiesMessage{ids=" + ids + "}";
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }

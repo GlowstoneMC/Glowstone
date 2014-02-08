@@ -55,8 +55,4 @@ public final class ClientSettingsMessage implements Message {
         return showCape;
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }

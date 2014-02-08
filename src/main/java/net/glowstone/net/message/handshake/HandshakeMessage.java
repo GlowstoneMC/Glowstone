@@ -1,8 +1,8 @@
 package net.glowstone.net.message.handshake;
 
-import com.flowpowered.networking.Message;
+import com.flowpowered.networking.AsyncableMessage;
 
-public final class HandshakeMessage implements Message {
+public final class HandshakeMessage implements AsyncableMessage {
 
     private final int version;
     private final String address;

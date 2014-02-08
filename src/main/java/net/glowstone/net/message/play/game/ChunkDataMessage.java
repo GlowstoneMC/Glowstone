@@ -2,8 +2,6 @@ package net.glowstone.net.message.play.game;
 
 import com.flowpowered.networking.Message;
 
-import java.util.zip.Deflater;
-
 public final class ChunkDataMessage implements Message {
 
     final int x, z;
@@ -60,8 +58,4 @@ public final class ChunkDataMessage implements Message {
                 '}';
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }

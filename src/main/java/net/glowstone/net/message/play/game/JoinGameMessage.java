@@ -53,8 +53,4 @@ public final class JoinGameMessage implements Message {
                 '}';
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }

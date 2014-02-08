@@ -39,8 +39,4 @@ public final class BlockChangeMessage implements Message {
         return "BlockChangeMessage{x=" + x + ",y=" + y +",z=" + z + ",type=" + type + ",metadata=" + metadata + "}";
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }

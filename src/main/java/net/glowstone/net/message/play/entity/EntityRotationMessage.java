@@ -29,8 +29,4 @@ public final class EntityRotationMessage implements Message {
         return "EntityRotationMessage{id=" + id + ",rotation=" + rotation + ",pitch=" + pitch + "}";
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }

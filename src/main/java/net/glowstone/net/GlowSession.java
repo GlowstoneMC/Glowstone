@@ -1,5 +1,6 @@
 package net.glowstone.net;
 
+import com.flowpowered.networking.AsyncableMessage;
 import com.flowpowered.networking.Message;
 import com.flowpowered.networking.MessageHandler;
 import com.flowpowered.networking.exception.UnknownPacketException;
@@ -346,7 +347,7 @@ public final class GlowSession extends BasicSession {
      * @param message The message.
      */
     public void messageReceived(Message message) {
-        if (message.isAsync()) {
+        if (message instanceof AsyncableMessage && ((AsyncableMessage) message).isAsync()) {
             // async messages get their handlers called immediately
             super.messageReceived(message);
         } else {

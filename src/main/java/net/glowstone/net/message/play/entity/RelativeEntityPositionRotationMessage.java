@@ -46,8 +46,4 @@ public final class RelativeEntityPositionRotationMessage implements Message {
                 rotation + ",pitch=" + pitch + "}";
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }

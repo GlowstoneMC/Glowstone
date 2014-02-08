@@ -42,8 +42,4 @@ public final class StateChangeMessage implements Message {
         return "StateChangeMessage{reason=" + reason + ",value=" + value + "}";
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }

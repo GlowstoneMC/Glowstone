@@ -14,8 +14,4 @@ public final class StatusPingMessage implements Message {
         return time;
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }

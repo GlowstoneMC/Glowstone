@@ -91,8 +91,4 @@ public final class SpawnMobMessage implements Message {
                 '}';
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }

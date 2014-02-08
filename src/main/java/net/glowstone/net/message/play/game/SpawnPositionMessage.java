@@ -29,8 +29,4 @@ public final class SpawnPositionMessage implements Message {
         return "SpawnPositionMessage{x=" + x + ",y=" + y + ",z=" + z + "}";
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }

@@ -44,8 +44,4 @@ public final class EntityTeleportMessage implements Message {
         return "EntityTeleportMessage{id=" + id + ",x=" + x + ",y=" + y + ",z=" + z + ",rotation=" + rotation + ",pitch=" + pitch + "}";
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }

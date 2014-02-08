@@ -52,7 +52,4 @@ public final class SetWindowSlotMessage implements Message {
         return "SetWindowSlotMessage{id=" + id + ",slot=" + slot + ",item=" + item + ",count=" + count + ",damage=" + damage + ",nbtData=" + nbtData + "}";
     }
 
-    public boolean isAsync() {
-        return false;
-    }
 }

@@ -20,16 +20,11 @@ public final class ChunkBulkMessage implements Message {
         }
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
+    public boolean getSkyLight() {
+        return skyLight;
     }
 
     public List<ChunkDataMessage> getEntries() {
         return entries;
-    }
-
-    public boolean getSkyLight() {
-        return skyLight;
     }
 }

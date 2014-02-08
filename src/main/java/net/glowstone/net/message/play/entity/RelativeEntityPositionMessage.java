@@ -34,8 +34,4 @@ public final class RelativeEntityPositionMessage implements Message {
         return "RelativeEntityPositionMessage{id=" + id + ",deltaX=" + deltaX + ",deltaY=" + deltaY + ",deltaZ=" + deltaZ + "}";
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }

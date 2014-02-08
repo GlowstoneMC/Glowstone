@@ -53,8 +53,4 @@ public final class PositionRotationMessage implements Message {
                 pitch + ",onGround=" + onGround + "}";
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }

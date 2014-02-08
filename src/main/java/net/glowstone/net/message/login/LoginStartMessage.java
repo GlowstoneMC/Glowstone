@@ -14,8 +14,4 @@ public final class LoginStartMessage implements Message {
         return username;
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }

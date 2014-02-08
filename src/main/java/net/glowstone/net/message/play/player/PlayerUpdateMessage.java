@@ -22,8 +22,4 @@ public class PlayerUpdateMessage implements Message {
         // do nothing
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }

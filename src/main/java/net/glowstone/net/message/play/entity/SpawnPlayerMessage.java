@@ -85,8 +85,4 @@ public final class SpawnPlayerMessage implements Message {
                 '}';
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }

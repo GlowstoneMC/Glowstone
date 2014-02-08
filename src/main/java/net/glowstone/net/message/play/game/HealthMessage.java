@@ -31,7 +31,4 @@ public final class HealthMessage implements Message {
         return "HealthMessage{health=" + health + ",food=" + food + ",saturation=" + saturation + "}";
     }
 
-    public boolean isAsync() {
-        return false;
-    }
 }

@@ -19,8 +19,4 @@ public final class PingMessage implements Message {
         return "PingMessage{id=" + pingId + "}";
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }

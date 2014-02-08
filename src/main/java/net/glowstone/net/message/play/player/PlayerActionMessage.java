@@ -35,9 +35,5 @@ public final class PlayerActionMessage implements Message {
                 '}';
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 }
 

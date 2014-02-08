@@ -21,9 +21,4 @@ public final class EncryptionKeyResponseMessage implements Message {
         return verifyToken;
     }
 
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
-
 }
