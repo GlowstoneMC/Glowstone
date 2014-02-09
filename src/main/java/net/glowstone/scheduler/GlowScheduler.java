@@ -10,15 +10,16 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scheduler.BukkitWorker;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
 /**
- * A class which schedules {@link GlowTask}s.
- *
- * @author Graham Edgecombe
+ * A scheduler for managing server ticks, Bukkit tasks, and other synchronization.
  */
 public final class GlowScheduler implements BukkitScheduler {
 
@@ -125,7 +126,6 @@ public final class GlowScheduler implements BukkitScheduler {
 
     /**
      * Schedules the specified task.
-     *
      * @param task The task.
      */
     private GlowTask schedule(GlowTask task) {
@@ -153,7 +153,7 @@ public final class GlowScheduler implements BukkitScheduler {
 
     /**
      * Adds new tasks and updates existing tasks, removing them if necessary.
-     *
+     * <p/>
      * TODO: Add watchdog system to make sure ticks advance
      */
     private void pulse() {
@@ -162,19 +162,19 @@ public final class GlowScheduler implements BukkitScheduler {
         // Process player packets
         server.getSessionRegistry().pulse();
 
-         // Run the relevant tasks.
+        // Run the relevant tasks.
         for (Iterator<GlowTask> it = tasks.values().iterator(); it.hasNext(); ) {
             GlowTask task = it.next();
-                switch (task.shouldExecute()) {
-                    case RUN:
-                        if (task.isSync()) {
-                            task.run();
-                        } else {
-                            asyncTaskExecutor.submit(task);
-                        }
-                    case STOP:
-                        it.remove();
-                }
+            switch (task.shouldExecute()) {
+                case RUN:
+                    if (task.isSync()) {
+                        task.run();
+                    } else {
+                        asyncTaskExecutor.submit(task);
+                    }
+                case STOP:
+                    it.remove();
+            }
         }
         try {
             int currentTick = worlds.beginTick();
@@ -269,15 +269,15 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     public void cancelTask(int taskId) {
-            tasks.remove(taskId);
+        tasks.remove(taskId);
     }
 
     public void cancelTasks(Plugin plugin) {
-            for (Iterator<GlowTask> it = tasks.values().iterator(); it.hasNext();) {
-                if (it.next().getOwner() == plugin) {
-                    it.remove();
-                }
+        for (Iterator<GlowTask> it = tasks.values().iterator(); it.hasNext(); ) {
+            if (it.next().getOwner() == plugin) {
+                it.remove();
             }
+        }
     }
 
     public void cancelAllTasks() {
@@ -286,7 +286,7 @@ public final class GlowScheduler implements BukkitScheduler {
 
     public boolean isCurrentlyRunning(int taskId) {
         GlowTask task = tasks.get(taskId);
-        return task != null &&  task.getLastExecutionState() == TaskExecutionState.RUN;
+        return task != null && task.getLastExecutionState() == TaskExecutionState.RUN;
     }
 
     public boolean isQueued(int taskId) {

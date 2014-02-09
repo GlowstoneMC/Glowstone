@@ -166,7 +166,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
 
         streamBlocks(); // stream the initial set of blocks
         setCompassTarget(world.getSpawnLocation()); // set our compass target
-        session.send(new StateChangeMessage(getWorld().hasStorm() ? 1 : 2, 0)); // send the world's weather
+        session.send(new StateChangeMessage(getWorld().hasStorm() ? 2 : 1, 0)); // send the world's weather
     }
     
     // -- Various internal mechanisms
@@ -262,7 +262,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         if (newChunks.size() > knownChunks.size() * 2 / 5) {
             // send a bulk message
             bulkChunks = new LinkedList<GlowChunk>();
-            GlowServer.logger.info("Sending bulk to: " + getName());
         }
 
         // populate then send chunks to the player

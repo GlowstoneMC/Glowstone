@@ -4,10 +4,10 @@ import com.google.common.collect.ImmutableList;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Phaser;
 import java.util.logging.Level;
 
 /**

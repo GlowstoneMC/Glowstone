@@ -37,7 +37,7 @@ public abstract class GlowProtocol extends KeyedProtocol {
     public <M extends Message> MessageHandler<?, M> getMessageHandle(Class<M> clazz) {
         MessageHandler<?, M> handler = getHandlerLookupService(INBOUND).find(clazz);
         if (handler == null) {
-            GlowServer.logger.warning("No message handler for: " + clazz.getSimpleName());
+            GlowServer.logger.warning("No message handler for: " + clazz.getSimpleName() + " in " + getName());
         }
         return handler;
     }
@@ -65,7 +65,11 @@ public abstract class GlowProtocol extends KeyedProtocol {
 
     @Override
     public <M extends Message> Codec.CodecRegistration getCodecRegistration(Class<M> clazz) {
-        return getCodecLookupService(OUTBOUND).find(clazz);
+        Codec.CodecRegistration reg = getCodecLookupService(OUTBOUND).find(clazz);
+        if (reg == null) {
+            GlowServer.logger.warning("No codec to write: " + clazz.getSimpleName() + " in " + getName());
+        }
+        return reg;
     }
 
     @Override

@@ -944,7 +944,7 @@ public final class GlowWorld implements World {
         }
         
         for (GlowPlayer player : getRawPlayers()) {
-            player.getSession().send(new StateChangeMessage(currentlyRaining ? 1 : 2, 0));
+            player.getSession().send(new StateChangeMessage(currentlyRaining ? 2 : 1, 0));
         }
     }
 

@@ -16,12 +16,12 @@ import java.util.logging.Logger;
  * @author Graham Edgecombe
  */
 public class GlowTask extends FutureTask<Void> implements BukkitTask, BukkitWorker {
-    
+
     /**
      * The next task ID pending.
      */
     private static final AtomicInteger nextTaskId = new AtomicInteger(0);
-    
+
     /**
      * The ID of this task.
      */
@@ -122,14 +122,14 @@ public class GlowTask extends FutureTask<Void> implements BukkitTask, BukkitWork
     private TaskExecutionState shouldExecuteUpdate() {
         if (isDone()) // Stop running if cancelled, exception, or not repeating
             return TaskExecutionState.STOP;
-        
+
         ++counter;
         if (counter >= delay) {
             if (period == -1 || (counter - delay) % period == 0) {
                 return TaskExecutionState.RUN;
             }
         }
-        
+
         return TaskExecutionState.WAIT;
     }
 

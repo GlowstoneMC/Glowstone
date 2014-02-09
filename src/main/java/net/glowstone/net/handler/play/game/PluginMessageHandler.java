@@ -15,12 +15,21 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
             // todo
         } else if (message.getChannel().equals("UNREGISTER")) {
             // todo
-        } else if (message.getChannel().equals("MC|Brand")) {
+        } else if (message.getChannel().startsWith("MC|")) {
+            // internal Minecraft channels
+            handleInternal(session, message.getChannel(), message.getData());
+        } else {
+            session.getServer().getMessenger().dispatchIncomingMessage(session.getPlayer(), message.getChannel(), message.getData());
+        }
+    }
+
+    private void handleInternal(GlowSession session, String channel, byte[] data) {
+        if (channel.equals("MC|Brand")) {
             // reply with our own brand, this shows up in things like crash reports
             session.send(new PluginMessage("MC|Brand", "Glowstone".getBytes(StandardCharsets.UTF_8)));
+            GlowServer.logger.info("Client brand of " + session.getPlayer().getName() + " is: " + new String(data, StandardCharsets.UTF_8));
+        } else {
+            GlowServer.logger.info("Player " + session.getPlayer().getName() + " used unknown Minecraft channel: " + channel);
         }
-
-        GlowServer.logger.info(session.getPlayer().getName() + " sent plugin message on channel " + message.getChannel());
-        session.getServer().getMessenger().dispatchIncomingMessage(session.getPlayer(), message.getChannel(), message.getData());
     }
 }
