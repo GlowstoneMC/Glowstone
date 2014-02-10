@@ -177,7 +177,7 @@ public enum BlockProperties {
     
     private BlockProperties(Material mat, Property... props) {
         id = mat.getId();
-        drops = new ItemStack[] { new ItemStack(mat, 1) };
+        drops = new ItemStack[] { new ItemStack(mat, 1, (short) -1) };
         
         for (Property p : props) {
             p.apply(this);

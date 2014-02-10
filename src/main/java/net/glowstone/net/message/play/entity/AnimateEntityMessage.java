@@ -1,6 +1,8 @@
-package net.glowstone.msg;
+package net.glowstone.net.message.play.entity;
 
-public final class AnimateEntityMessage extends Message {
+import com.flowpowered.networking.Message;
+
+public final class AnimateEntityMessage implements Message {
 
     public static final int ANIMATION_SWING_ARM = 1;
     public static final int ANIMATION_HURT = 2;

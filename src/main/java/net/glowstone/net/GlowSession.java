@@ -13,7 +13,7 @@ import io.netty.handler.codec.DecoderException;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.msg.BlockPlacementMessage;
+import net.glowstone.net.message.play.player.BlockPlacementMessage;
 import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.play.game.PingMessage;
 import net.glowstone.net.protocol.GlowProtocol;
@@ -391,4 +391,12 @@ public final class GlowSession extends BasicSession {
         return processor;
     }
 
+    @Override
+    public String toString() {
+        if (player != null) {
+            return player.getName() + "[" + getChannel().remoteAddress() + "]";
+        } else {
+            return "Unauthenticated[" + getChannel().remoteAddress() + "]";
+        }
+    }
 }
