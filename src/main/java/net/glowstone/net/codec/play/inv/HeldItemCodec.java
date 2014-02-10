@@ -1,8 +1,8 @@
-package net.glowstone.net.codec.play.player;
+package net.glowstone.net.codec.play.inv;
 
 import com.flowpowered.networking.Codec;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.message.play.player.HeldItemMessage;
+import net.glowstone.net.message.play.inv.HeldItemMessage;
 
 import java.io.IOException;
 

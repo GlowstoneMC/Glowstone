@@ -1,9 +1,9 @@
-package net.glowstone.net.codec.play.player;
+package net.glowstone.net.codec.play.inv;
 
 import com.flowpowered.networking.Codec;
 import io.netty.buffer.ByteBuf;
 import net.glowstone.net.GlowBufUtils;
-import net.glowstone.net.message.play.player.CreativeItemMessage;
+import net.glowstone.net.message.play.inv.CreativeItemMessage;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;

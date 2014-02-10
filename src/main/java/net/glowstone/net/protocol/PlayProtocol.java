@@ -4,16 +4,26 @@ import net.glowstone.GlowServer;
 import net.glowstone.net.codec.JsonCodec;
 import net.glowstone.net.codec.play.entity.*;
 import net.glowstone.net.codec.play.game.*;
+import net.glowstone.net.codec.play.inv.CreativeItemCodec;
+import net.glowstone.net.codec.play.inv.HeldItemCodec;
+import net.glowstone.net.codec.play.inv.SetWindowContentsCodec;
+import net.glowstone.net.codec.play.inv.SetWindowSlotCodec;
 import net.glowstone.net.codec.play.player.*;
 import net.glowstone.net.handler.play.entity.AnimateEntityHandler;
 import net.glowstone.net.handler.play.game.ChatHandler;
 import net.glowstone.net.handler.play.game.ClientSettingsHandler;
 import net.glowstone.net.handler.play.game.PingHandler;
 import net.glowstone.net.handler.play.game.PluginMessageHandler;
+import net.glowstone.net.handler.play.inv.CreativeItemHandler;
+import net.glowstone.net.handler.play.inv.HeldItemHandler;
 import net.glowstone.net.handler.play.player.*;
 import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.game.*;
+import net.glowstone.net.message.play.inv.CreativeItemMessage;
+import net.glowstone.net.message.play.inv.HeldItemMessage;
+import net.glowstone.net.message.play.inv.SetWindowContentsMessage;
+import net.glowstone.net.message.play.inv.SetWindowSlotMessage;
 import net.glowstone.net.message.play.player.*;
 
 public final class PlayProtocol extends GlowProtocol {
@@ -62,6 +72,7 @@ public final class PlayProtocol extends GlowProtocol {
         outbound(0x2B, StateChangeMessage.class, StateChangeCodec.class);
         outbound(0x2C, SpawnLightningStrikeMessage.class, SpawnLightningStrikeCodec.class);
         outbound(0x2F, SetWindowSlotMessage.class, SetWindowSlotCodec.class);
+        outbound(0x30, SetWindowContentsMessage.class, SetWindowContentsCodec.class);
         outbound(0x39, PlayerAbilitiesMessage.class, PlayerAbilitiesCodec.class);
         outbound(0x3F, PluginMessage.class, PluginMessageCodec.class);
         outbound(0x40, KickMessage.class, JsonCodec.class);

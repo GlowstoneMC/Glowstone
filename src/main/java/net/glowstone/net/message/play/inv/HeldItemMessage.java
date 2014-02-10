@@ -1,4 +1,4 @@
-package net.glowstone.net.message.play.player;
+package net.glowstone.net.message.play.inv;
 
 import com.flowpowered.networking.Message;
 

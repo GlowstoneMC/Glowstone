@@ -14,6 +14,7 @@ import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.login.LoginSuccessMessage;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.game.*;
+import net.glowstone.net.message.play.inv.SetWindowSlotMessage;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.util.TextWrapper;
 import org.bukkit.*;
@@ -798,11 +799,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     @Override
     public void setItemOnCursor(ItemStack item) {
         super.setItemOnCursor(item);
-        if (item == null) {
-            session.send(new SetWindowSlotMessage(-1, -1));
-        } else {
-            session.send(new SetWindowSlotMessage(-1, -1, item.getTypeId(), item.getAmount(), item.getDurability(), getItemOnCursor().getNbtData()));
-        }
+        session.send(new SetWindowSlotMessage(-1, -1, item));
     }
 
     /**
@@ -838,12 +835,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
                 }
             }
         }
-        
-        if (item == null) {
-            session.send(new SetWindowSlotMessage(inventory.getId(), inventory.getNetworkSlot(slot)));
-        } else {
-            session.send(new SetWindowSlotMessage(inventory.getId(), inventory.getNetworkSlot(slot), item.getTypeId(), item.getAmount(), item.getDurability(), item.getNbtData()));
-        }
+
+        session.send(new SetWindowSlotMessage(inventory.getId(), inventory.getNetworkSlot(slot), item));
     }
     
     // -- Goofy relative time stuff --

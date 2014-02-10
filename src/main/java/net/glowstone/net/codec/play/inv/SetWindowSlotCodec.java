@@ -1,10 +1,10 @@
-package net.glowstone.net.codec.play.game;
+package net.glowstone.net.codec.play.inv;
 
 import com.flowpowered.networking.Codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import net.glowstone.net.GlowBufUtils;
-import net.glowstone.net.message.play.game.SetWindowSlotMessage;
+import net.glowstone.net.message.play.inv.SetWindowSlotMessage;
 
 import java.io.IOException;
 
@@ -16,12 +16,7 @@ public final class SetWindowSlotCodec implements Codec<SetWindowSlotMessage> {
     public ByteBuf encode(ByteBuf buf, SetWindowSlotMessage message) throws IOException {
         buf.writeByte(message.getId());
         buf.writeShort(message.getSlot());
-        buf.writeShort(message.getItem());
-        if (message.getItem() != -1) {
-            buf.writeByte(message.getCount());
-            buf.writeShort(message.getDamage());
-            GlowBufUtils.writeCompound(buf, message.getNbtData());
-        }
+        GlowBufUtils.writeSlot(buf, message.getItem());
         return buf;
     }
 }

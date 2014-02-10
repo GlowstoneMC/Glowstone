@@ -1,16 +1,21 @@
-package net.glowstone.net.message.play.player;
+package net.glowstone.net.message.play.inv;
 
 import com.flowpowered.networking.Message;
 import org.bukkit.inventory.ItemStack;
 
-public class CreativeItemMessage implements Message {
+public final class SetWindowSlotMessage implements Message {
 
-    private final int slot;
+    private final int id, slot;
     private final ItemStack item;
 
-    public CreativeItemMessage(int slot, ItemStack item) {
+    public SetWindowSlotMessage(int id, int slot, ItemStack item) {
+        this.id = id;
         this.slot = slot;
         this.item = item;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public int getSlot() {
@@ -23,8 +28,9 @@ public class CreativeItemMessage implements Message {
 
     @Override
     public String toString() {
-        return "CreativeItemMessage{" +
-                "slot=" + slot +
+        return "SetWindowSlotMessage{" +
+                "id=" + id +
+                ", slot=" + slot +
                 ", item=" + item +
                 '}';
     }

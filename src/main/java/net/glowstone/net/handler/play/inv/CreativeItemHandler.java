@@ -1,11 +1,11 @@
-package net.glowstone.net.handler.play.player;
+package net.glowstone.net.handler.play.inv;
 
 import com.flowpowered.networking.MessageHandler;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowItemStack;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.play.player.CreativeItemMessage;
+import net.glowstone.net.message.play.inv.CreativeItemMessage;
 import org.bukkit.GameMode;
 import org.bukkit.inventory.ItemStack;
 

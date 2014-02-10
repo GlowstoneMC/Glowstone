@@ -1,15 +1,16 @@
-package net.glowstone.msg;
+package net.glowstone.net.message.play.inv;
 
+import com.flowpowered.networking.Message;
 import net.glowstone.inventory.GlowItemStack;
 
 import java.util.Arrays;
 
-public final class SetWindowSlotsMessage extends Message {
+public final class SetWindowContentsMessage implements Message {
 
     private final int id;
     private final GlowItemStack[] items;
 
-    public SetWindowSlotsMessage(int id, GlowItemStack[] items) {
+    public SetWindowContentsMessage(int id, GlowItemStack[] items) {
         this.id = id;
         this.items = items;
     }
@@ -24,6 +25,6 @@ public final class SetWindowSlotsMessage extends Message {
 
     @Override
     public String toString() {
-        return "SetWindowSlotsMessage{id=" + id + ",slots=" + Arrays.toString(items) + "}";
+        return "SetWindowContentsMessage{id=" + id + ",slots=" + Arrays.toString(items) + "}";
     }
 }
