@@ -4,17 +4,17 @@ package net.glowstone.util.nbt;
  * The {@code TAG_End} tag.
  * @author Graham Edgecombe
  */
-public final class EndTag extends Tag {
+public final class EndTag extends Tag<Void> {
 
     /**
      * Creates the tag.
      */
     public EndTag() {
-        super();
+        super(TagType.END, "");
     }
 
     @Override
-    public Object getValue() {
+    public Void getValue() {
         return null;
     }
 

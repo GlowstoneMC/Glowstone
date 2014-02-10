@@ -4,7 +4,12 @@ package net.glowstone.util.nbt;
  * Represents a single NBT tag.
  * @author Graham Edgecombe
  */
-public abstract class Tag {
+public abstract class Tag<T> {
+
+    /**
+     * The type of this tag.
+     */
+    private final TagType type;
 
     /**
      * The name of this tag.
@@ -12,18 +17,21 @@ public abstract class Tag {
     private final String name;
 
     /**
-     * Creates the tag with no name.
+     * Creates the tag with the specified type and name.
+     * @param type The type.
+     * @param name The name.
      */
-    public Tag() {
-        this("");
+    protected Tag(TagType type, String name) {
+        this.type = type;
+        this.name = name;
     }
 
     /**
-     * Creates the tag with the specified name.
-     * @param name The name.
+     * Gets the type of this tag.
+     * @return The type of this tag.
      */
-    public Tag(String name) {
-        this.name = name;
+    public final TagType getType() {
+        return type;
     }
 
     /**
@@ -38,7 +46,23 @@ public abstract class Tag {
      * Gets the value of this tag.
      * @return The value of this tag.
      */
-    public abstract Object getValue();
+    public abstract T getValue();
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder("TAG_");
+        builder.append(type.getName());
+        String name = getName();
+        if (name != null && !name.equals("")) {
+            builder.append("(\"").append(name).append("\")");
+        }
+        builder.append(": ");
+        valueToString(builder);
+        return builder.toString();
+    }
+
+    protected void valueToString(StringBuilder builder) {
+        builder.append(getValue());
+    }
 }
 

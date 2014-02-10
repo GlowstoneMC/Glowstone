@@ -7,12 +7,12 @@ import java.util.List;
  * The {@code TAG_List} tag.
  * @author Graham Edgecombe
  */
-public final class ListTag<T extends Tag> extends Tag {
+public final class ListTag<T extends Tag> extends Tag<List<T>> {
 
     /**
      * The type of entries within this list.
      */
-    private final Class<T> type;
+    private final TagType type;
 
     /**
      * The value.
@@ -25,8 +25,8 @@ public final class ListTag<T extends Tag> extends Tag {
      * @param type The type of item in the list.
      * @param value The value.
      */
-    public ListTag(String name, Class<T> type, List<T> value) {
-        super(name);
+    public ListTag(String name, TagType type, List<T> value) {
+        super(TagType.LIST, name);
         this.type = type;
         this.value = Collections.unmodifiableList(value);
     }
@@ -35,7 +35,7 @@ public final class ListTag<T extends Tag> extends Tag {
      * Gets the type of item in this list.
      * @return The type of item in this list.
      */
-    public Class<T> getType() {
+    public TagType getChildType() {
         return type;
     }
 
@@ -45,20 +45,12 @@ public final class ListTag<T extends Tag> extends Tag {
     }
 
     @Override
-    public String toString() {
-        String name = getName();
-        String append = "";
-        if (name != null && !name.equals("")) {
-            append = "(\"" + this.getName() + "\")";
-        }
-
-        StringBuilder bldr = new StringBuilder();
-        bldr.append("TAG_List").append(append).append(": ").append(value.size()).append(" entries of type ").append(NBTUtils.getTypeName(type)).append("\r\n{\r\n");
+    protected void valueToString(StringBuilder bldr) {
+        bldr.append(value.size()).append(" entries of type ").append(type.getName()).append("\r\n{\r\n");
         for (Tag t : value) {
-            bldr.append("   ").append(t.toString().replaceAll("\r\n", "\r\n   ")).append("\r\n");
+            bldr.append("    ").append(t.toString().replaceAll("\r\n", "\r\n    ")).append("\r\n");
         }
         bldr.append("}");
-        return bldr.toString();
     }
 
 }

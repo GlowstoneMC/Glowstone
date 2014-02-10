@@ -4,7 +4,7 @@ package net.glowstone.util.nbt;
  * The {@code TAG_Int} tag.
  * @author Graham Edgecombe
  */
-public final class IntTag extends Tag {
+public final class IntTag extends Tag<Integer> {
 
     /**
      * The value.
@@ -17,23 +17,13 @@ public final class IntTag extends Tag {
      * @param value The value.
      */
     public IntTag(String name, int value) {
-        super(name);
+        super(TagType.INT, name);
         this.value = value;
     }
 
     @Override
     public Integer getValue() {
         return value;
-    }
-
-    @Override
-    public String toString() {
-        String name = getName();
-        String append = "";
-        if (name != null && !name.equals("")) {
-            append = "(\"" + this.getName() + "\")";
-        }
-        return "TAG_Int" + append + ": " + value;
     }
 
 }

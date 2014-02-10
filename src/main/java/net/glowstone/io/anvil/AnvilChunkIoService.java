@@ -164,7 +164,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
 
             sectionTags.add(new CompoundTag("", map));
         }
-        levelTags.put("Sections", new ListTag<CompoundTag>("Sections", CompoundTag.class, sectionTags));
+        levelTags.put("Sections", new ListTag<CompoundTag>("Sections", TagType.COMPOUND, sectionTags));
 
         // height map
         levelTags.put("HeightMap", new IntArrayTag("HeightMap", snapshot.getRawHeightmap()));
@@ -186,7 +186,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
                 continue;
             entities.add(new CompoundTag("", store.save(glowEntity)));
         } */
-        levelTags.put("Entities", new ListTag<CompoundTag>("Entities", CompoundTag.class, entities));
+        levelTags.put("Entities", new ListTag<CompoundTag>("Entities", TagType.COMPOUND, entities));
 
         // tile entities
         List<CompoundTag> tileEntities = new ArrayList<CompoundTag>();
@@ -200,7 +200,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
                 }
             }
         }
-        levelTags.put("TileEntities", new ListTag<CompoundTag>("TileEntities", CompoundTag.class, tileEntities));
+        levelTags.put("TileEntities", new ListTag<CompoundTag>("TileEntities", TagType.COMPOUND, tileEntities));
 
         Map<String, Tag> levelOut = new HashMap<String, Tag>();
         levelOut.put("Level", new CompoundTag("Level", levelTags));

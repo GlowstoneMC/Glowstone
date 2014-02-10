@@ -1,12 +1,6 @@
 package net.glowstone.io.nbt;
 
-import net.glowstone.util.nbt.ByteTag;
-import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.DoubleTag;
-import net.glowstone.util.nbt.FloatTag;
-import net.glowstone.util.nbt.ListTag;
-import net.glowstone.util.nbt.ShortTag;
-import net.glowstone.util.nbt.Tag;
+import net.glowstone.util.nbt.*;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
@@ -53,7 +47,7 @@ public class NbtSerialization {
                 out.add(new CompoundTag("", nbtItem));
             }
         }
-        return new ListTag<CompoundTag>("Inventory", CompoundTag.class, out);
+        return new ListTag<CompoundTag>("Inventory", TagType.COMPOUND, out);
     }
 
     public static Location listTagsToLocation(World world, ListTag<DoubleTag> pos, ListTag<FloatTag> rot) {
@@ -72,10 +66,10 @@ public class NbtSerialization {
         posList.add(new DoubleTag("", loc.getX()));
         posList.add(new DoubleTag("", loc.getY()));
         posList.add(new DoubleTag("", loc.getZ()));
-        ret.put("Pos", new ListTag<DoubleTag>("Pos", DoubleTag.class, posList));
+        ret.put("Pos", new ListTag<DoubleTag>("Pos", TagType.DOUBLE, posList));
         rotList.add(new FloatTag("", loc.getYaw()));
         rotList.add(new FloatTag("", loc.getPitch()));
-        ret.put("Rotation", new ListTag<FloatTag>("Rotation", FloatTag.class, rotList));
+        ret.put("Rotation", new ListTag<FloatTag>("Rotation", TagType.FLOAT, rotList));
         return ret;
     }
 
@@ -91,7 +85,7 @@ public class NbtSerialization {
         ret.add(new DoubleTag("", vec.getX()));
         ret.add(new DoubleTag("", vec.getY()));
         ret.add(new DoubleTag("", vec.getZ()));
-        return new ListTag<DoubleTag>("Motion", DoubleTag.class, ret);
+        return new ListTag<DoubleTag>("Motion", TagType.DOUBLE, ret);
     }
 
     public static Map<String, Tag> expandListForCompoundTag(List<Tag> list) {

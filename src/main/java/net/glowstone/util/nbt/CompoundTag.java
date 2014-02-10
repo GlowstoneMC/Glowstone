@@ -7,7 +7,7 @@ import java.util.Map;
  * The {@code TAG_Compound} tag.
  * @author Graham Edgecombe
  */
-public final class CompoundTag extends Tag {
+public final class CompoundTag extends Tag<Map<String, Tag>> {
 
     /**
      * The value.
@@ -20,7 +20,7 @@ public final class CompoundTag extends Tag {
      * @param value The value.
      */
     public CompoundTag(String name, Map<String, Tag> value) {
-        super(name);
+        super(TagType.COMPOUND, name);
         this.value = Collections.unmodifiableMap(value);
     }
 
@@ -30,56 +30,37 @@ public final class CompoundTag extends Tag {
     }
 
     @Override
-    public String toString() {
-        String name = getName();
-        String append = "";
-        if (name != null && !name.equals("")) {
-            append = "(\"" + this.getName() + "\")";
-        }
-
-        StringBuilder bldr = new StringBuilder();
-        bldr.append("TAG_Compound").append(append).append(": ").append(value.size()).append(" entries\r\n{\r\n");
+    protected void valueToString(StringBuilder bldr) {
+        bldr.append(value.size()).append(" entries\r\n{\r\n");
         for (Map.Entry<String, Tag> entry : value.entrySet()) {
-            bldr.append("   ").append(entry.getValue().toString().replaceAll("\r\n", "\r\n   ")).append("\r\n");
+            bldr.append("    ").append(entry.getValue().toString().replaceAll("\r\n", "\r\n    ")).append("\r\n");
         }
         bldr.append("}");
-        return bldr.toString();
     }
 
-    // get helpers
+    ////////////////////////////////////////////////////////////////////////////
+    // Accessor helpers
 
     public boolean containsKey(String key) {
         return value.containsKey(key);
     }
 
-    public byte getByte(String key) {
-        return get(key, (byte) 0);
+    public <T extends Tag<?>> boolean is(String key, Class<T> clazz) {
+        if (!containsKey(key)) return false;
+        final Tag tag = value.get(key);
+        return tag != null && clazz == tag.getClass();
     }
 
-    public short getShort(String key) {
-        return ((ShortTag) value.get(key)).getValue();
-    }
-
-    public int getInt(String key) {
-        return ((IntTag) value.get(key)).getValue();
-    }
-
-    public long getLong(String key) {
-        return get(key, null);
+    public <V, T extends Tag<V>> V get(String key, Class<T> clazz) {
+        return getTag(key, clazz).getValue();
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T get(String key, T def) {
-        if (!containsKey(key)) return def;
-        try {
-            return (T) value.get(key).getValue();
-        } catch (ClassCastException e) {
-            return def;
+    public <T extends Tag<?>> T getTag(String key, Class<T> clazz) {
+        if (!is(key, clazz)) {
+            throw new IllegalArgumentException("Compound \"" + getName() + "\" does not contain " + clazz.getSimpleName() + " \"" + key + "\"");
         }
-    }
-
-    private <T> T get(String key) {
-        return (T) value.get(key).getValue();
+        return (T) value.get(key);
     }
 
 }
