@@ -6,10 +6,7 @@ import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class NbtSerialization {
 
@@ -39,11 +36,11 @@ public class NbtSerialization {
         for (int i = 0; i < items.length; i++) {
             ItemStack stack = items[i];
             if (stack != null) {
-                Map<String, Tag> nbtItem = new HashMap<String, Tag>();
-                nbtItem.put("id", new ShortTag("id", (short)stack.getTypeId()));
-                nbtItem.put("Damage", new ShortTag("Damage", stack.getDurability()));
-                nbtItem.put("Count", new ByteTag("Count", (byte)stack.getAmount()));
-                nbtItem.put("Slot", new ByteTag("Slot", (byte)i));
+                List<Tag> nbtItem = new ArrayList<Tag>(4);
+                nbtItem.add(new ShortTag("id", (short) stack.getTypeId()));
+                nbtItem.add(new ShortTag("Damage", stack.getDurability()));
+                nbtItem.add(new ByteTag("Count", (byte) stack.getAmount()));
+                nbtItem.add(new ByteTag("Slot", (byte) i));
                 out.add(new CompoundTag("", nbtItem));
             }
         }
@@ -88,11 +85,4 @@ public class NbtSerialization {
         return new ListTag<DoubleTag>("Motion", TagType.DOUBLE, ret);
     }
 
-    public static Map<String, Tag> expandListForCompoundTag(List<Tag> list) {
-        Map<String, Tag> ret = new HashMap<String, Tag>();
-        for (Tag tag : list) {
-            ret.put(tag.getName(), tag);
-        }
-        return ret;
-    }
 }

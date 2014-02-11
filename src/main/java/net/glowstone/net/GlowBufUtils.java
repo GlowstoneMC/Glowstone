@@ -2,6 +2,7 @@ package net.glowstone.net;
 
 import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import net.glowstone.GlowServer;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.util.nbt.CompoundTag;
@@ -14,7 +15,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Contains several utility methods for writing special data types to @{link ByteBuf}s.
@@ -62,7 +62,7 @@ public final class GlowBufUtils {
         buf.writeByte(127);
     }
 
-    public static Map<String, Tag> readCompound(ByteBuf buf) {
+    public static CompoundTag readCompound(ByteBuf buf) {
         int len = buf.readShort();
         if (len >= 0) {
             byte[] bytes = new byte[len];
@@ -72,7 +72,7 @@ public final class GlowBufUtils {
                 str = new NBTInputStream(new ByteArrayInputStream(bytes));
                 Tag tag = str.readTag();
                 if (tag instanceof CompoundTag) {
-                    return ((CompoundTag) tag).getValue();
+                    return ((CompoundTag) tag);
                 }
             } catch (IOException e) {
             } finally {
@@ -86,16 +86,17 @@ public final class GlowBufUtils {
         return null;
     }
 
-    public static void writeCompound(ByteBuf buf, Map<String, Tag> data) {
+    public static void writeCompound(ByteBuf buf, CompoundTag data) {
         if (data == null) {
             buf.writeShort(-1);
             return;
         }
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         NBTOutputStream str = null;
         try {
             str = new NBTOutputStream(out);
-            str.writeTag(new CompoundTag("", data));
+            str.writeTag(data);
             str.close();
             str = null;
             buf.writeShort(out.size());
@@ -131,7 +132,8 @@ public final class GlowBufUtils {
         int amount = buf.readUnsignedByte();
         short durability = buf.readShort();
 
-        Map<String, Tag> tags = readCompound(buf); // todo - use this
+        CompoundTag tags = readCompound(buf); // todo - use this
+        GlowServer.logger.info("read slot tags: " + tags);
 
         return new ItemStack(type, amount, durability);
     }

@@ -1,6 +1,8 @@
 package net.glowstone.util.nbt;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,6 +24,23 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     public CompoundTag(String name, Map<String, Tag> value) {
         super(TagType.COMPOUND, name);
         this.value = Collections.unmodifiableMap(value);
+    }
+
+    /**
+     * Creates the tag.
+     * @param name The name.
+     * @param tags A list of child tags.
+     */
+    public CompoundTag(String name, List<Tag> tags) {
+        super(TagType.COMPOUND, name);
+        Map<String, Tag> map = new LinkedHashMap<String, Tag>();
+        for (Tag tag : tags) {
+            if (tag.getName() == null || tag.getName().isEmpty()) {
+                throw new IllegalArgumentException("When creating CompoundTag: tag name cannot be null or empty");
+            }
+            map.put(tag.getName(), tag);
+        }
+        this.value = Collections.unmodifiableMap(map);
     }
 
     @Override
@@ -56,12 +75,20 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     }
 
     @SuppressWarnings("unchecked")
+    public <T extends Tag> List<T> getList(String key, Class<T> childClass) {
+        ListTag tag = getTag(key, ListTag.class);
+        if (tag.getChildType().getTagClass() != childClass) {
+            throw new IllegalArgumentException("List \"" + key + "\" does not contain type " + childClass.getSimpleName());
+        }
+        return tag.getValue();
+    }
+
+    @SuppressWarnings("unchecked")
     public <T extends Tag<?>> T getTag(String key, Class<T> clazz) {
         if (!is(key, clazz)) {
             throw new IllegalArgumentException("Compound \"" + getName() + "\" does not contain " + clazz.getSimpleName() + " \"" + key + "\"");
         }
         return (T) value.get(key);
     }
-
 }
 

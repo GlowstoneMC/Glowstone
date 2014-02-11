@@ -3,11 +3,13 @@ package net.glowstone.io.entity;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.entity.objects.GlowItem;
-import net.glowstone.util.nbt.*;
+import net.glowstone.util.nbt.ByteTag;
+import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.ShortTag;
+import net.glowstone.util.nbt.Tag;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ItemEntityStore extends EntityStore<GlowItem> {
     
@@ -48,10 +50,10 @@ public class ItemEntityStore extends EntityStore<GlowItem> {
     @Override
     public Map<String, Tag> save(GlowItem entity) {
         Map<String, Tag> ret = super.save(entity);
-        Map<String, Tag> itemTag = new HashMap<String, Tag>();
-        itemTag.put("id", new ShortTag("id", (short)entity.getItemStack().getTypeId()));
-        itemTag.put("Damage", new ShortTag("Damage", entity.getItemStack().getDurability()));
-        itemTag.put("Count", new ByteTag("Count", (byte)entity.getItemStack().getAmount()));
+        List<Tag> itemTag = new ArrayList<Tag>(3);
+        itemTag.add(new ShortTag("id", (short) entity.getItemStack().getTypeId()));
+        itemTag.add(new ShortTag("Damage", entity.getItemStack().getDurability()));
+        itemTag.add(new ByteTag("Count", (byte) entity.getItemStack().getAmount()));
         ret.put("Item", new CompoundTag("Item", itemTag));
         // ret.put("Health", new IntTag("Health", entity.getHealth()));
         // ret.put("Age", new IntTag("Age", entity.getAge()));

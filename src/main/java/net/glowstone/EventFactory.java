@@ -14,7 +14,6 @@ import org.bukkit.block.BlockState;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.*;
 import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -24,9 +23,9 @@ import org.bukkit.event.world.*;
 import org.bukkit.inventory.ItemStack;
 
 import java.net.InetAddress;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
+import java.util.logging.Level;
 
 /**
  * Central class for the calling of events.
@@ -58,7 +57,8 @@ public final class EventFactory {
             try {
                 return task.get();
             } catch (InterruptedException e) {
-                return null;
+                GlowServer.logger.log(Level.WARNING, "Not handling event " + event.getClass().getSimpleName() + " due to shutdown");
+                return event;
             } catch (ExecutionException e) {
                 throw new RuntimeException(e); // No checked exceptions declared for callEvent
             }
