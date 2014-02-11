@@ -1,10 +1,13 @@
 package net.glowstone.io.blockstate;
 
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.util.nbt.*;
+import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.IntTag;
+import net.glowstone.util.nbt.StringTag;
+import net.glowstone.util.nbt.Tag;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 
 public abstract class BlockStateStore<T extends GlowBlockState> {
     private final String id;
@@ -16,24 +19,27 @@ public abstract class BlockStateStore<T extends GlowBlockState> {
     }
 
     public void load(T state, CompoundTag compound) {
-        String checkId = ((StringTag) compound.getValue().get("id")).getValue();
+        String checkId = compound.get("id", StringTag.class);
         if (!id.equalsIgnoreCase(checkId)) {
             throw new IllegalArgumentException("Invalid ID loading tile entity, expected " + id + " got " + checkId);
         }
-        int checkX = ((IntTag) compound.getValue().get("x")).getValue(), x = state.getX();
-        int checkY = ((IntTag) compound.getValue().get("y")).getValue(), y = state.getY();
-        int checkZ = ((IntTag) compound.getValue().get("z")).getValue(), z = state.getZ();
+        int checkX = compound.get("x", IntTag.class), x = state.getX();
+        int checkY = compound.get("y", IntTag.class), y = state.getY();
+        int checkZ = compound.get("z", IntTag.class), z = state.getZ();
         if (x != checkX || y != checkY || z != checkZ) {
             throw new IllegalArgumentException("Invalid coords loading tile entity, expected (" + x + "," + y + "," + z + ") got (" + checkX + "," + checkY + "," + checkZ + ")");
         }
     }
 
-    public Map<String, Tag> save(T state) {
-        Map<String, Tag> result = new HashMap<String, Tag>();
-        result.put("id", new StringTag("id", id));
-        result.put("x", new IntTag("x", state.getX()));
-        result.put("y", new IntTag("y", state.getY()));
-        result.put("z", new IntTag("z", state.getZ()));
+    public List<Tag> save(T state) {
+        List<Tag> result = new LinkedList<Tag>();
+        if (!id.equals("Player")) {
+            // players should not have this field
+            result.add(new StringTag("id", id));
+        }
+        result.add(new IntTag("x", state.getX()));
+        result.add(new IntTag("y", state.getY()));
+        result.add(new IntTag("z", state.getZ()));
         return result;
     }
 

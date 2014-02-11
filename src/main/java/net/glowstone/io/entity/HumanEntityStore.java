@@ -8,8 +8,7 @@ import net.glowstone.util.nbt.ListTag;
 import net.glowstone.util.nbt.Tag;
 import org.bukkit.Location;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 
 public abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityStore<T> {
@@ -25,30 +24,31 @@ public abstract class HumanEntityStore<T extends GlowHumanEntity> extends Living
         this.sleeping = nbttagcompound.m("Sleeping");
         this.sleepTicks = nbttagcompound.d("SleepTimer");
         */
-        if (compound.getValue().containsKey("Inventory")) {
-            entity.getInventory().setContents(NbtSerialization.tagToInventory((ListTag<CompoundTag>) compound.getValue().get("Inventory"), entity.getInventory().getSize()));
+        if (compound.is("Inventory", ListTag.class)) {
+            List<CompoundTag> items = compound.getList("Inventory", CompoundTag.class);
+            entity.getInventory().setContents(NbtSerialization.tagToInventory(items, entity.getInventory().getSize()));
         }
-        if (compound.getValue().containsKey("SpawnX") && compound.getValue().containsKey("SpawnY") && compound.getValue().containsKey("SpawnZ")) {
-            IntTag spawnXTag = (IntTag) compound.getValue().get("SpawnX");
-            IntTag spawnYTag = (IntTag) compound.getValue().get("SpawnY");
-            IntTag spawnZTag = (IntTag) compound.getValue().get("SpawnZ");
-            entity.setBedSpawnLocation(new Location(entity.getWorld(), spawnXTag.getValue(), spawnYTag.getValue(), spawnZTag.getValue()));
+        if (compound.is("SpawnX", IntTag.class) && compound.is("SpawnY", IntTag.class) && compound.is("SpawnZ", IntTag.class)) {
+            int x = compound.get("SpawnX", IntTag.class);
+            int y = compound.get("SpawnY", IntTag.class);
+            int z = compound.get("SpawnZ", IntTag.class);
+            entity.setBedSpawnLocation(new Location(entity.getWorld(), x, y, z));
         }
     }
 
     @Override
-    public Map<String, Tag> save(T entity) {
+    public List<Tag> save(T entity) {
         /*
         this.sleeping = nbttagcompound.m("Sleeping");
         this.sleepTicks = nbttagcompound.d("SleepTimer");
         */
-        Map<String, Tag> ret = super.save(entity);
-        ret.put("Inventory", NbtSerialization.inventoryToTag(entity.getInventory().getContents()));
+        List<Tag> ret = super.save(entity);
+        ret.add(NbtSerialization.inventoryToTag(entity.getInventory().getContents()));
         Location bed = entity.getBedSpawnLocation();
         if (bed != null) {
-            ret.put("SpawnX", new IntTag("SpawnX", bed.getBlockX()));
-            ret.put("SpawnY", new IntTag("SpawnY", bed.getBlockY()));
-            ret.put("SpawnZ", new IntTag("SpawnZ", bed.getBlockZ()));
+            ret.add(new IntTag("SpawnX", bed.getBlockX()));
+            ret.add(new IntTag("SpawnY", bed.getBlockY()));
+            ret.add(new IntTag("SpawnZ", bed.getBlockZ()));
         }
         return ret;
     }

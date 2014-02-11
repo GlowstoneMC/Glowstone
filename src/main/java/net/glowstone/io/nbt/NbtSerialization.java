@@ -8,24 +8,20 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class NbtSerialization {
+public final class NbtSerialization {
 
-    public static ItemStack[] tagToInventory(ListTag<CompoundTag> tagList, int size) {
-       ItemStack[] items = new ItemStack[size];
-        for (CompoundTag tag: tagList.getValue()) {
-            Map<String, Tag> tagItems = tag.getValue();
-            Tag idTag = tagItems.get("id");
-            Tag damageTag = tagItems.get("Damage");
-            Tag countTag = tagItems.get("Count");
-            Tag slotTag = tagItems.get("Slot");
-            short id = (idTag == null) ? 0 : ((ShortTag)idTag).getValue();
-            short damage = (damageTag == null) ? 0 : ((ShortTag)damageTag).getValue();
-            byte count = (countTag == null) ? 0 : ((ByteTag)countTag).getValue();
-            byte slot = (slotTag == null) ? -1 : ((ByteTag)slotTag).getValue();
-            if (id != 0 && slot >= 0 && count != 0) {
-                if (items.length > slot) {
-                    items[slot] = new ItemStack(id, count, damage);
-                }
+    private NbtSerialization() {
+    }
+
+    public static ItemStack[] tagToInventory(List<CompoundTag> tagList, int size) {
+        ItemStack[] items = new ItemStack[size];
+        for (CompoundTag tag : tagList) {
+            short id = tag.is("id", ShortTag.class) ? tag.get("id", ShortTag.class) : 0;
+            short damage = tag.is("Damage", ShortTag.class) ? tag.get("Damage", ShortTag.class) : 0;
+            byte count = tag.is("Count", ByteTag.class) ? tag.get("Count", ByteTag.class) : 0;
+            byte slot = tag.is("Slot", ByteTag.class) ? tag.get("Slot", ByteTag.class) : 0;
+            if (id != 0 && count != 0 && slot > 0 && slot < items.length) {
+                items[slot] = new ItemStack(id, count, damage);
             }
         }
         return items;
@@ -47,26 +43,24 @@ public class NbtSerialization {
         return new ListTag<CompoundTag>("Inventory", TagType.COMPOUND, out);
     }
 
-    public static Location listTagsToLocation(World world, ListTag<DoubleTag> pos, ListTag<FloatTag> rot) {
-        List<DoubleTag> posList = pos.getValue();
-        List<FloatTag> rotList = rot.getValue();
-        if (posList.size() == 3 && rotList.size() == 2) {
-            return new Location(world, posList.get(0).getValue(), posList.get(1).getValue(), posList.get(2).getValue(), rotList.get(0).getValue(), rotList.get(1).getValue());
+    public static Location listTagsToLocation(World world, List<DoubleTag> pos, List<FloatTag> rot) {
+        if (pos.size() == 3 && rot.size() == 2) {
+            return new Location(world, pos.get(0).getValue(), pos.get(1).getValue(), pos.get(2).getValue(), rot.get(0).getValue(), rot.get(1).getValue());
         }
         return world.getSpawnLocation();
     }
 
-    public static Map<String, Tag> locationToListTags(Location loc) {
+    public static List<Tag> locationToListTags(Location loc) {
         List<DoubleTag> posList = new ArrayList<DoubleTag>();
         List<FloatTag> rotList = new ArrayList<FloatTag>();
-        Map<String, Tag> ret = new HashMap<String, Tag>();
+        List<Tag> ret = new LinkedList<Tag>();
         posList.add(new DoubleTag("", loc.getX()));
         posList.add(new DoubleTag("", loc.getY()));
         posList.add(new DoubleTag("", loc.getZ()));
-        ret.put("Pos", new ListTag<DoubleTag>("Pos", TagType.DOUBLE, posList));
+        ret.add(new ListTag<DoubleTag>("Pos", TagType.DOUBLE, posList));
         rotList.add(new FloatTag("", loc.getYaw()));
         rotList.add(new FloatTag("", loc.getPitch()));
-        ret.put("Rotation", new ListTag<FloatTag>("Rotation", TagType.FLOAT, rotList));
+        ret.add(new ListTag<FloatTag>("Rotation", TagType.FLOAT, rotList));
         return ret;
     }
 
@@ -77,6 +71,7 @@ public class NbtSerialization {
         }
         return new Vector(0, 0, 0);
     }
+
     public static ListTag<DoubleTag> vectorToListTag(Vector vec) {
         List<DoubleTag> ret = new ArrayList<DoubleTag>();
         ret.add(new DoubleTag("", vec.getX()));

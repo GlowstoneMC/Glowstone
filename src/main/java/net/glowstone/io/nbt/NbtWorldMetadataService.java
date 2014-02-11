@@ -59,8 +59,8 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         } else {
             DataInputStream str = null;
             try {
-            str = new DataInputStream(new FileInputStream(uuidFile));
-            uid = new UUID(str.readLong(), str.readLong());
+                str = new DataInputStream(new FileInputStream(uuidFile));
+                uid = new UUID(str.readLong(), str.readLong());
             } catch (EOFException e) {
             } finally {
                 if (str != null) {
@@ -193,7 +193,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
                 e.printStackTrace();
             }
         }
-        
+
         if (playerTag == null) playerTag = new CompoundTag("", new HashMap<String, Tag>());
         EntityStoreLookupService.find(GlowPlayer.class).load(player, playerTag);
     }
@@ -211,7 +211,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
             server.getLogger().severe("Failed to access player.dat for player " + player.getName() + " in world " + world.getName() + "!");
         }
 
-        Map<String, Tag> out = EntityStoreLookupService.find(GlowPlayer.class).save(player);
+        List<Tag> out = EntityStoreLookupService.find(GlowPlayer.class).save(player);
         try {
             NBTOutputStream outStream = new NBTOutputStream(new FileOutputStream(playerFile));
             outStream.writeTag(new CompoundTag("", out));

@@ -33,8 +33,8 @@ ext.bukkitVersion = '1.7.2-R0.2'
 ext.gitDescribe = "git-" + getVersionName()
 
 // Minimum Java version required
-sourceCompatibility = '1.6'
-targetCompatibility = '1.6'
+sourceCompatibility = '1.7'
+targetCompatibility = '1.7'
 
 // Compile encoding
 compileJava {
@@ -85,14 +85,14 @@ shadow {
 
 // Jar manifest information
 manifest.mainAttributes(
-    'Main-Class': mainClassName,
-    'Implementation-Title': description,
-    'Implementation-Version': ext.gitDescribe,
-    'Implementation-Vendor': 'SpaceManiac',
-    'Specification-Title': 'Bukkit',
-    'Specification-Version': ext.bukkitVersion,
-    'Specification-Vendor': 'Bukkit Team',
-    'Sealed': true
+        'Main-Class': mainClassName,
+        'Implementation-Title': description,
+        'Implementation-Version': ext.gitDescribe,
+        'Implementation-Vendor': 'SpaceManiac',
+        'Specification-Title': 'Bukkit',
+        'Specification-Version': ext.bukkitVersion,
+        'Specification-Vendor': 'Bukkit Team',
+        'Sealed': true
 )
 
 // Exclude jar signatures

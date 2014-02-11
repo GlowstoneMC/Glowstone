@@ -5,7 +5,7 @@ import net.glowstone.util.nbt.ByteTag;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.Tag;
 
-import java.util.Map;
+import java.util.List;
 
 public class NoteBlockStore extends BlockStateStore<GlowNoteBlock> {
     public NoteBlockStore() {
@@ -14,13 +14,13 @@ public class NoteBlockStore extends BlockStateStore<GlowNoteBlock> {
 
     @Override
     public void load(GlowNoteBlock state, CompoundTag compound) {
-        state.setRawNote(((ByteTag) compound.getValue().get("note")).getValue());
+        state.setRawNote(compound.get("note", ByteTag.class));
     }
 
     @Override
-    public Map<String, Tag> save(GlowNoteBlock entity) {
-        Map<String, Tag> map = super.save(entity);
-        map.put("note", new ByteTag("note", entity.getRawNote()));
+    public List<Tag> save(GlowNoteBlock entity) {
+        List<Tag> map = super.save(entity);
+        map.add(new ByteTag("note", entity.getRawNote()));
         return map;
     }
 }

@@ -6,7 +6,7 @@ import net.glowstone.util.nbt.IntTag;
 import net.glowstone.util.nbt.StringTag;
 import net.glowstone.util.nbt.Tag;
 
-import java.util.Map;
+import java.util.List;
 
 public class CreatureSpawnerStore extends BlockStateStore<GlowCreatureSpawner> {
     public CreatureSpawnerStore() {
@@ -17,15 +17,15 @@ public class CreatureSpawnerStore extends BlockStateStore<GlowCreatureSpawner> {
     @Override
     public void load(GlowCreatureSpawner spawner, CompoundTag compound) {
         super.load(spawner, compound);
-        spawner.setCreatureTypeId(compound.getValue().get("EntityId").getValue().toString());
-        spawner.setDelay(((IntTag) compound.getValue().get("Delay")).getValue());
+        spawner.setCreatureTypeByName(compound.get("EntityId", StringTag.class));
+        spawner.setDelay(compound.get("Delay", IntTag.class));
     }
 
     @Override
-    public Map<String, Tag> save(GlowCreatureSpawner spawner) {
-        Map<String, Tag> ret = super.save(spawner);
-        ret.put("EntityId", new StringTag("EntityId", spawner.getCreatureTypeId()));
-        ret.put("Delay", new IntTag("Delay", spawner.getDelay()));
+    public List<Tag> save(GlowCreatureSpawner spawner) {
+        List<Tag> ret = super.save(spawner);
+        ret.add(new StringTag("EntityId", spawner.getCreatureTypeName()));
+        ret.add(new IntTag("Delay", spawner.getDelay()));
         return ret;
     }
 }

@@ -9,7 +9,7 @@ import net.glowstone.util.nbt.IntTag;
 import net.glowstone.util.nbt.Tag;
 import org.bukkit.GameMode;
 
-import java.util.Map;
+import java.util.List;
 
 public class PlayerStore extends HumanEntityStore<GlowPlayer> {
 
@@ -25,42 +25,37 @@ public class PlayerStore extends HumanEntityStore<GlowPlayer> {
     @Override
     public void load(GlowPlayer entity, CompoundTag compound) {
         super.load(entity, compound);
-        /*
-        if (nbttagcompound.hasKey("foodLevel")) {
-            this.foodTickTimer = nbttagcompound.e("foodTickTimer");
-        }*/
-        if (compound.getValue().containsKey("XpTotal")) {
-            entity.setTotalExperience(((IntTag)compound.getValue().get("XpTotal")).getValue());
+        if (compound.is("XpTotal", IntTag.class)) {
+            entity.setTotalExperience(compound.get("XpTotal", IntTag.class));
         }
-        if (compound.getValue().containsKey("foodLevel")) {
-            entity.setFoodLevel(((IntTag)compound.getValue().get("foodLevel")).getValue());
+        if (compound.is("foodLevel", IntTag.class)) {
+            entity.setFoodLevel(compound.get("foodLevel", IntTag.class));
         }
-        if (compound.getValue().containsKey("foodTickTimer")) {
+        if (compound.is("foodTickTimer", IntTag.class)) {
             // entity.set(((IntTag)compound.getValue().get("foodTickTimer")).getValue());
         }
-        if (compound.getValue().containsKey("foodSaturationLevel")) {
-            entity.setSaturation(((FloatTag) compound.getValue().get("foodSaturationLevel")).getValue());
+        if (compound.is("foodSaturationLevel", FloatTag.class)) {
+            entity.setSaturation(compound.get("foodSaturationLevel", FloatTag.class));
         }
-        if (compound.getValue().containsKey("foodExhaustionLevel")) {
-            entity.setExhaustion(((FloatTag) compound.getValue().get("foodExhaustionLevel")).getValue());
+        if (compound.is("foodExhaustionLevel", FloatTag.class)) {
+            entity.setExhaustion(compound.get("foodExhaustionLevel", FloatTag.class));
         }
-        if (compound.getValue().containsKey("playerGameType")) {
-            GameMode mode = GameMode.getByValue(((IntTag)compound.getValue().get("playerGameType")).getValue());
+        if (compound.is("playerGameType", IntTag.class)) {
+            GameMode mode = GameMode.getByValue(compound.get("playerGameType", IntTag.class));
             if (mode != null) entity.setGameMode(mode);
         }
     }
 
     @Override
-    public Map<String, Tag> save(GlowPlayer entity) {
-        Map<String, Tag> ret = super.save(entity);
-        ret.remove("id");
-        ret.put("XpTotal", new IntTag("XpTotal", entity.getTotalExperience()));
-        ret.put("Xp", new IntTag("Xp", entity.getExperience()));
-        ret.put("XpLevel", new IntTag("XpLevel", entity.getLevel()));
+    public List<Tag> save(GlowPlayer entity) {
+        List<Tag> ret = super.save(entity);
+        ret.add(new IntTag("XpTotal", entity.getTotalExperience()));
+        ret.add(new IntTag("Xp", entity.getExperience()));
+        ret.add(new IntTag("XpLevel", entity.getLevel()));
         // ret.put("foodTickTimer", new IntTag("foodTickTimer", entity.get));
-        ret.put("foodSaturationLevel", new FloatTag("foodSaturationLevel", entity.getSaturation()));
-        ret.put("foodExhaustionLevel", new FloatTag("foodExhaustionLevel", entity.getExhaustion()));
-        ret.put("playerGameType", new IntTag("playerGameType", entity.getGameMode().getValue()));
+        ret.add(new FloatTag("foodSaturationLevel", entity.getSaturation()));
+        ret.add(new FloatTag("foodExhaustionLevel", entity.getExhaustion()));
+        ret.add(new IntTag("playerGameType", entity.getGameMode().getValue()));
         return ret;
     }
 }

@@ -8,8 +8,8 @@ import net.glowstone.util.nbt.*;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 public abstract class EntityStore<T extends GlowEntity> {
@@ -24,49 +24,55 @@ public abstract class EntityStore<T extends GlowEntity> {
     public abstract T load(GlowServer server, GlowWorld world, CompoundTag compound);
 
     public void load(T entity, CompoundTag compound) {
-        if (compound.getValue().containsKey("id")) {
-            String checkId = ((StringTag) compound.getValue().get("id")).getValue();
+        if (compound.is("id", StringTag.class)) {
+            String checkId = compound.get("id", StringTag.class);
             if (!id.equalsIgnoreCase(checkId)) {
                 throw new IllegalArgumentException("Invalid ID loading entity, expected " + id + " got " + checkId);
             }
         }
+
+        // determine world
         World world = null;
-        if (compound.getValue().containsKey("WorldUUIDLeast") && compound.getValue().containsKey("WorldUUIDMost")) {
-            long uuidLeast = ((LongTag) compound.getValue().get("WorldUUIDLeast")).getValue();
-            long uuidMost = ((LongTag) compound.getValue().get("WorldUUIDMost")).getValue();
-            world = entity.getServer().getWorld(new UUID(uuidLeast, uuidMost));
+        if (compound.is("WorldUUIDLeast", LongTag.class) && compound.is("WorldUUIDMost", LongTag.class)) {
+            long uuidLeast = compound.get("WorldUUIDLeast", LongTag.class);
+            long uuidMost = compound.get("WorldUUIDMost", LongTag.class);
+            world = entity.getServer().getWorld(new UUID(uuidMost, uuidLeast));
         }
-        if (world == null && compound.getValue().containsKey("World")) {
-            world = entity.getServer().getWorld(((StringTag) compound.getValue().get("World")).getValue());
+        if (world == null && compound.is("World", StringTag.class)) {
+            world = entity.getServer().getWorld(compound.get("World", StringTag.class));
         }
-        if (world == null  && compound.getValue().containsKey("Dimension")) {
-            int dim = ((IntTag) compound.getValue().get("Dimension")).getValue();
+        if (world == null && compound.is("Dimension", IntTag.class)) {
+            int dim = compound.get("Dimension", IntTag.class);
             for (World sWorld : entity.getServer().getWorlds()) {
-                if (sWorld.getEnvironment().getId() == dim)
+                if (sWorld.getEnvironment().getId() == dim) {
                     world = sWorld;
+                    break;
+                }
             }
         }
         if (world == null) {
             world = entity.getWorld();
         }
-        if (compound.getValue().containsKey("Pos") && compound.getValue().containsKey("Rotation")) {
-            ListTag posTag = (ListTag) compound.getValue().get("Pos");
-            ListTag rotTag = (ListTag) compound.getValue().get("Rotation");
+
+        // determine location
+        if (compound.is("Pos", ListTag.class) && compound.is("Rotation", ListTag.class)) {
+            List<DoubleTag> posTag = compound.getList("Pos", DoubleTag.class);
+            List<FloatTag> rotTag = compound.getList("Rotation", FloatTag.class);
             entity.teleport(NbtSerialization.listTagsToLocation(world, posTag, rotTag));
         } else {
             entity.teleport(world.getSpawnLocation());
         }
-        if (compound.getValue().containsKey("Motion")) {
+        if (compound.is("Motion", ListTag.class)) {
             // entity.setVelocity(NbtFormattingUtils.listTagToVector((ListTag<DoubleTag>) compound.getValue().get("Motion")));
         }
-        if (compound.getValue().containsKey("Air")) {
+        if (compound.is("Air", ShortTag.class)) {
             // entity.setRemainingAir(((ShortTag) compound.getValue().get("Air")).getValue());
         }
-        if (compound.getValue().containsKey("Fire")) {
+        if (compound.is("Fire", ShortTag.class)) {
             // entity.setFireTicks(((ShortTag) compound.getValue().get("Fire")).getValue());
         }
-        if (compound.getValue().containsKey("OnGround")) {
-            entity.setOnGround(((ByteTag) compound.getValue().get("OnGround")).getValue() == 1);
+        if (compound.is("OnGround", ByteTag.class)) {
+            entity.setOnGround(compound.get("OnGround", ByteTag.class) == 1);
         }
 
         /* if (playerData.containsKey("HurtTime")) {
@@ -83,23 +89,23 @@ public abstract class EntityStore<T extends GlowEntity> {
         } */
     }
 
-    public Map<String, Tag> save(T entity) {
-        Map<String, Tag> result = new HashMap<String, Tag>();
-        result.put("id", new StringTag("id", id));
+    public List<Tag> save(T entity) {
+        List<Tag> result = new LinkedList<Tag>();
+        result.add(new StringTag("id", id));
         Location loc = entity.getLocation();
         UUID worldUUID = loc.getWorld().getUID();
-        result.put("WorldUUIDLeast", new LongTag("WorldUUIDLeast", worldUUID.getLeastSignificantBits()));
-        result.put("WorldUUIDMost", new LongTag("WorldUUIDMost", worldUUID.getMostSignificantBits()));
-        result.put("World", new StringTag("World", loc.getWorld().getName()));
-        result.put("Dimension", new IntTag("Dimension", loc.getWorld().getEnvironment().getId()));
-        result.putAll(NbtSerialization.locationToListTags(loc));
+        result.add(new LongTag("WorldUUIDLeast", worldUUID.getLeastSignificantBits()));
+        result.add(new LongTag("WorldUUIDMost", worldUUID.getMostSignificantBits()));
+        result.add(new StringTag("World", loc.getWorld().getName()));
+        result.add(new IntTag("Dimension", loc.getWorld().getEnvironment().getId()));
+        result.addAll(NbtSerialization.locationToListTags(loc));
         // result.put("UUIDLeast", new LongTag("UUIDLeast", entity.getUniqueId().getLeastSignificantBits()));
         // result.put("UUIDMost", new LongTag("UUIDMost", entity.getUniqueId().getMostSignificantBits()));
         // result.put("HurtTime", new ShortTag("HurtTime", (short) 0)); // NYI
         // result.put("Air", new ShortTag("Air", (short) entity.getRemainingAir()));
         // result.put("Fire", new ShortTag("Fire", (short) entity.getFireTicks()));
-        result.put("Motion", NbtSerialization.vectorToListTag(entity.getVelocity()));
-        result.put("OnGround", new ByteTag("OnGround", (byte) (entity.isOnGround() ? 1 : 0)));
+        result.add(NbtSerialization.vectorToListTag(entity.getVelocity()));
+        result.add(new ByteTag("OnGround", (byte) (entity.isOnGround() ? 1 : 0)));
         return result;
     }
 

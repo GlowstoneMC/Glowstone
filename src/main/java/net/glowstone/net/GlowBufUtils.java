@@ -15,6 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * Contains several utility methods for writing special data types to @{link ByteBuf}s.
@@ -64,26 +65,22 @@ public final class GlowBufUtils {
 
     public static CompoundTag readCompound(ByteBuf buf) {
         int len = buf.readShort();
-        if (len >= 0) {
-            byte[] bytes = new byte[len];
-            buf.readBytes(bytes);
-            NBTInputStream str = null;
-            try {
-                str = new NBTInputStream(new ByteArrayInputStream(bytes));
-                Tag tag = str.readTag();
-                if (tag instanceof CompoundTag) {
-                    return ((CompoundTag) tag);
-                }
-            } catch (IOException e) {
-            } finally {
-                if (str != null) {
-                    try {
-                        str.close();
-                    } catch (IOException e) {}
-                }
-            }
+        if (len < 0) {
+            return null;
         }
-        return null;
+
+        byte[] bytes = new byte[len];
+        buf.readBytes(bytes);
+
+        try (NBTInputStream str = new NBTInputStream(new ByteArrayInputStream(bytes))) {
+            Tag tag = str.readTag();
+            if (tag instanceof CompoundTag) {
+                return (CompoundTag) tag;
+            }
+            return null;
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     public static void writeCompound(ByteBuf buf, CompoundTag data) {
@@ -93,23 +90,15 @@ public final class GlowBufUtils {
         }
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        NBTOutputStream str = null;
-        try {
-            str = new NBTOutputStream(out);
+        try (NBTOutputStream str = new NBTOutputStream(out)) {
             str.writeTag(data);
-            str.close();
-            str = null;
-            buf.writeShort(out.size());
-            buf.writeBytes(out.toByteArray());
         } catch (IOException e) {
-        } finally {
-            if (str != null) {
-                try {
-                    str.close();
-                } catch (IOException e) {}
-            }
+            GlowServer.logger.log(Level.WARNING, "Error serializing NBT: " + data, e);
+            return;
         }
 
+        buf.writeShort(out.size());
+        buf.writeBytes(out.toByteArray());
     }
 
     public static void writeSlot(ByteBuf buf, ItemStack stack) {
