@@ -1,6 +1,7 @@
 package net.glowstone.inventory;
 
 import com.google.common.base.Strings;
+import net.glowstone.util.nbt.*;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -60,7 +61,66 @@ class GlowMetaItem implements ItemMeta {
     }
 
     public Map<String, Object> serialize() {
-        return null;
+        Map<String, Object> result = new HashMap<>();
+        result.put("meta-type", "UNSPECIFIC");
+
+        if (hasDisplayName()) {
+            result.put("display-name", getDisplayName());
+        }
+        if (hasLore()) {
+            result.put("lore", getLore());
+        }
+        // todo: enchantments
+
+        return result;
+    }
+
+    List<Tag> writeNbt() {
+        List<Tag> tags = new LinkedList<>();
+
+        List<Tag> displayTags = new LinkedList<>();
+        if (hasDisplayName()) {
+            displayTags.add(new StringTag("Name", getDisplayName()));
+        }
+        if (hasLore()) {
+            List<String> lore = getLore();
+            List<StringTag> loreList = new ArrayList<StringTag>(lore.size());
+            for (String line : lore) {
+                loreList.add(new StringTag("", line));
+            }
+            displayTags.add(new ListTag<>("Lore", TagType.STRING, loreList));
+        }
+
+        if (displayTags.size() > 0) {
+            tags.add(new CompoundTag("display", displayTags));
+        }
+
+        // todo: enchantments
+        return tags;
+    }
+
+    void readNbt(CompoundTag tag) {
+        if (tag.is("display", CompoundTag.class)) {
+            CompoundTag display = tag.getTag("display", CompoundTag.class);
+            if (display.is("Name", StringTag.class)) {
+                setDisplayName(display.get("Name", StringTag.class));
+            }
+            if (display.is("Lore", ListTag.class)) {
+                List<StringTag> loreList = display.getList("Lore", StringTag.class);
+                List<String> lore = new ArrayList<>();
+                for (StringTag line : loreList) {
+                    lore.add(line.getValue());
+                }
+                setLore(lore);
+            }
+        }
+        // todo: enchantments
+    }
+
+    @Override
+    public String toString() {
+        Map<String, Object> map = serialize();
+        return map.get("meta-type") + "_META:" + map;
     }
 
     ////////////////////////////////////////////////////////////////////////////

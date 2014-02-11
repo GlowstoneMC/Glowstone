@@ -13,7 +13,7 @@ import java.util.Arrays;
  * Represents the portion of a player's inventory which handles crafting.
  */
 public class GlowCraftingInventory extends GlowInventory implements CraftingInventory {
-    
+
     public static final int RESULT_SLOT = 4;
 
     public GlowCraftingInventory(GlowPlayerInventory parent) {
@@ -23,12 +23,11 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
     /**
      * Stores the ItemStack at the given index.
      * Notifies all attached InventoryViewers of the change.
-     *
      * @param index The index where to put the ItemStack
-     * @param item The ItemStack to set
+     * @param item  The ItemStack to set
      */
     @Override
-    public void setItem(int index, GlowItemStack item) {
+    public void setItem(int index, ItemStack item) {
         super.setItem(index, item);
 
         if (index != RESULT_SLOT) {
@@ -90,7 +89,7 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
     // Slot conversion
 
     private final static int slotConversion[] = {
-        1, 2, 3, 4, 0
+            1, 2, 3, 4, 0
     };
 
     /**

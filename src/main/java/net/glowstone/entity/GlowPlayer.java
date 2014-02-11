@@ -5,7 +5,6 @@ import net.glowstone.*;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.inventory.GlowInventory;
-import net.glowstone.inventory.GlowItemStack;
 import net.glowstone.inventory.GlowPlayerInventory;
 import net.glowstone.inventory.InventoryViewer;
 import net.glowstone.io.StorageOperation;
@@ -62,37 +61,37 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      * Cumulative amount of experience points the player has collected.
      */
     private int experience = 0;
-    
+
     /**
      * The current level (or skill point amount) of the player.
      */
     private int level = 0;
-    
+
     /**
      * The player's current exhaustion level.
      */
     private float exhaustion = 0;
-    
+
     /**
      * The player's current saturation level.
      */
     private float saturation = 0;
-    
+
     /**
      * This player's current time offset.
      */
     private long timeOffset = 0;
-    
+
     /**
      * Whether the time offset is relative.
      */
     private boolean timeRelative = true;
-    
+
     /**
      * The display name of this player, for chat purposes.
      */
     private String displayName;
-    
+
     /**
      * The player's compass target.
      */
@@ -137,7 +136,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     /**
      * Creates a new player and adds it to the world.
      * @param session The player's session.
-     * @param name The player's name.
+     * @param name    The player's name.
      */
     public GlowPlayer(GlowSession session, String name, UUID uuid) {
         super(session.getServer(), (GlowWorld) session.getServer().getWorlds().get(0), name);
@@ -169,7 +168,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         setCompassTarget(world.getSpawnLocation()); // set our compass target
         session.send(new StateChangeMessage(getWorld().hasStorm() ? 2 : 1, 0)); // send the world's weather
     }
-    
+
     // -- Various internal mechanisms
 
     /**
@@ -246,7 +245,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         if (newChunks.size() == 0 && previousChunks.size() == 0) {
             return;
         }
-        
+
         Collections.sort(newChunks, new Comparator<GlowChunk.Key>() {
             public int compare(GlowChunk.Key a, GlowChunk.Key b) {
                 double dx = 16 * a.getX() + 8 - location.getX();
@@ -304,7 +303,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
 
         previousChunks.clear();
     }
-    
+
     /**
      * Checks whether the player can see the given chunk.
      * @return If the chunk is known to the player's client.
@@ -312,7 +311,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     public boolean canSee(GlowChunk.Key chunk) {
         return knownChunks.contains(chunk);
     }
-    
+
     /**
      * Checks whether the player can see the given entity.
      * @return If the entity is known to the player's client.
@@ -320,7 +319,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     public boolean canSee(GlowEntity entity) {
         return knownEntities.contains(entity);
     }
-    
+
     // -- Basic getters
 
     /**
@@ -372,7 +371,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     public boolean isOp() {
         return getServer().getOpsList().contains(getName());
     }
-    
+
     @Override
     public void setOp(boolean value) {
         if (value) {
@@ -382,7 +381,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         }
         permissions.recalculatePermissions();
     }
-    
+
     // -- Malleable properties
 
     public String getDisplayName() {
@@ -398,13 +397,15 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
 
     public void setPlayerListName(String name) {
-        if (name.length() > 15) throw new IllegalArgumentException("The given name was " + name.length() + " chars long, longer than the maximum of 16");
+        if (name.length() > 15)
+            throw new IllegalArgumentException("The given name was " + name.length() + " chars long, longer than the maximum of 16");
         for (Player player : server.getOnlinePlayers()) {
-            if (player.getPlayerListName().equals(getPlayerListName())) throw new IllegalArgumentException("The name given, " + name + ", is already used by " + player.getName() + ".");
+            if (player.getPlayerListName().equals(getPlayerListName()))
+                throw new IllegalArgumentException("The name given, " + name + ", is already used by " + player.getName() + ".");
         }
-        net.glowstone.msg.Message removeMessage = new UserListItemMessage(getPlayerListName(), false, (short)0);
+        net.glowstone.msg.Message removeMessage = new UserListItemMessage(getPlayerListName(), false, (short) 0);
         playerListName = name;
-        net.glowstone.msg.Message reAddMessage = new UserListItemMessage(getPlayerListName(), true, (short)0);
+        net.glowstone.msg.Message reAddMessage = new UserListItemMessage(getPlayerListName(), true, (short) 0);
         for (Player player : server.getOnlinePlayers()) {
             ((GlowPlayer) player).getSession().send(removeMessage);
             ((GlowPlayer) player).getSession().send(reAddMessage);
@@ -505,19 +506,19 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
 
     public void giveExp(int xp) {
         experience += xp;
-        while(experience > (getLevel() + 1) * 7){
+        while (experience > (getLevel() + 1) * 7) {
             experience -= (getLevel() + 1) * 7;
-            ++level;            
+            ++level;
         }
         session.send(createExperienceMessage());
     }
 
     public float getExp() {
-        return (float)experience/getExpToLevel();
+        return (float) experience / getExpToLevel();
     }
 
     public void setExp(float percentToLevel) {
-        experience = (int)(percentToLevel * getExpToLevel());
+        experience = (int) (percentToLevel * getExpToLevel());
     }
 
     @Override
@@ -551,7 +552,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         saturation = value;
         session.send(createHealthMessage());
     }
-    
+
     // -- Actions
 
     /**
@@ -589,14 +590,14 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
             knownChunks.clear();
             chunkLock.clear();
             chunkLock = world.newChunkLock(getName());
-            
-            session.send(new RespawnMessage((byte) world.getEnvironment().getId(), (byte)1, (byte) getGameMode().getValue(), (short) world.getMaxHeight(), world.getSeed()));
+
+            session.send(new RespawnMessage((byte) world.getEnvironment().getId(), (byte) 1, (byte) getGameMode().getValue(), (short) world.getMaxHeight(), world.getSeed()));
             streamBlocks(); // stream blocks
-            
+
             setCompassTarget(world.getSpawnLocation()); // set our compass target
             this.session.send(message);
             this.location = location; // take us to spawn position
-            session.send(new StateChangeMessage((byte)(getWorld().hasStorm() ? 1 : 2), (byte)0)); // send the world's weather
+            session.send(new StateChangeMessage((byte) (getWorld().hasStorm() ? 1 : 2), (byte) 0)); // send the world's weather
             reset();
             EventFactory.onPlayerChangedWorld(this, oldWorld);
         } else {
@@ -604,7 +605,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
             this.location = location;
             reset();
         }
-        
+
         return true;
     }
 
@@ -636,7 +637,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
 
     /**
      * Says a message (or runs a command).
-     *
      * @param text message to print
      */
     public void chat(String text) {
@@ -709,9 +709,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         GlowWorld dataWorld = (GlowWorld) server.getWorlds().get(0);
         dataWorld.getMetadataService().readPlayerData(this);
     }
-    
+
     // -- Data transmission
-    
+
     public void playNote(Location loc, Instrument instrument, Note note) {
         playNote(loc, instrument.getType(), note.getId());
     }
@@ -743,7 +743,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     public boolean sendChunkChange(Location loc, int sx, int sy, int sz, byte[] data) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
+
     // -- Achievements & Statistics [mostly borrowed from CraftBukkit]
 
     public void awardAchievement(Achievement achievement) {
@@ -789,7 +789,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
             session.send(new StatisticMessage(id, (byte) amount));
         }
     }
-    
+
     // -- Inventory
 
     public void updateInventory() {
@@ -805,14 +805,14 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     /**
      * Inform the client that an item has changed.
      * @param inventory The GlowInventory in which a slot has changed.
-     * @param slot The slot number which has changed.
-     * @param item The ItemStack which the slot has changed to.
+     * @param slot      The slot number which has changed.
+     * @param item      The ItemStack which the slot has changed to.
      */
-    public void onSlotSet(GlowInventory inventory, int slot, GlowItemStack item) {
+    public void onSlotSet(GlowInventory inventory, int slot, ItemStack item) {
         if (inventory == getInventory()) {
             int type = item == null ? -1 : item.getTypeId();
             int data = item == null ? 0 : item.getDurability();
-            
+
             int equipSlot = -1;
             if (slot == getInventory().getHeldItemSlot()) {
                 equipSlot = EntityEquipmentMessage.HELD_ITEM;
@@ -825,7 +825,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
             } else if (slot == GlowPlayerInventory.BOOTS_SLOT) {
                 equipSlot = EntityEquipmentMessage.BOOTS_SLOT;
             }
-            
+
             if (equipSlot >= 0) {
                 EntityEquipmentMessage message = new EntityEquipmentMessage(getEntityId(), equipSlot, type, data);
                 for (GlowPlayer player : new ArrayList<GlowPlayer>(getWorld().getRawPlayers())) {
@@ -838,13 +838,13 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
 
         session.send(new SetWindowSlotMessage(inventory.getId(), inventory.getNetworkSlot(slot), item));
     }
-    
+
     // -- Goofy relative time stuff --
 
     public void setPlayerTime(long time, boolean relative) {
         timeOffset = time % 24000;
         timeRelative = relative;
-        
+
         if (timeOffset < 0) timeOffset += 24000;
     }
 
@@ -892,9 +892,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     public HealthMessage createHealthMessage() {
         return new HealthMessage((float) getHealth(), getFoodLevel(), getSaturation());
     }
-    
+
     public ExperienceMessage createExperienceMessage() {
-        return new ExperienceMessage(getExp(), (byte)getLevel(), (short)getTotalExperience());
+        return new ExperienceMessage(getExp(), (byte) getLevel(), (short) getTotalExperience());
     }
 
     public Map<String, Object> serialize() {

@@ -5,10 +5,12 @@ import io.netty.buffer.ByteBuf;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
+import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
 import net.glowstone.util.nbt.Tag;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.ByteArrayInputStream;
@@ -108,7 +110,15 @@ public final class GlowBufUtils {
             buf.writeShort(stack.getTypeId());
             buf.writeByte(stack.getAmount());
             buf.writeShort(stack.getDurability());
-            writeCompound(buf, null); // todo - build data from stack
+
+            if (stack.hasItemMeta()) {
+                //GlowServer.logger.info("Writing item meta: " + stack.getItemMeta());
+                CompoundTag tag = GlowItemFactory.instance().writeNbt(stack.getItemMeta());
+                writeCompound(buf, tag);
+                //GlowServer.logger.info("Wrote item tag: " + tag);
+            } else {
+                writeCompound(buf, null);
+            }
         }
     }
 
@@ -121,10 +131,17 @@ public final class GlowBufUtils {
         int amount = buf.readUnsignedByte();
         short durability = buf.readShort();
 
-        CompoundTag tags = readCompound(buf); // todo - use this
-        GlowServer.logger.info("read slot tags: " + tags);
+        Material material = Material.getMaterial(type);
+        if (material == null) {
+            return null;
+        }
 
-        return new ItemStack(type, amount, durability);
+        CompoundTag tag = readCompound(buf);
+        //GlowServer.logger.info("Reading item tag: " + tag);
+        ItemStack stack = new ItemStack(material, amount, durability);
+        stack.setItemMeta(GlowItemFactory.instance().readNbt(material, tag));
+        //GlowServer.logger.info("Read item meta: " + stack.getItemMeta());
+        return stack;
     }
 
     private GlowBufUtils() {}

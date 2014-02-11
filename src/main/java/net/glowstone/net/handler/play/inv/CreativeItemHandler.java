@@ -3,7 +3,6 @@ package net.glowstone.net.handler.play.inv;
 import com.flowpowered.networking.MessageHandler;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.GlowInventory;
-import net.glowstone.inventory.GlowItemStack;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.inv.CreativeItemMessage;
 import org.bukkit.GameMode;
@@ -24,7 +23,7 @@ public final class CreativeItemHandler implements MessageHandler<GlowSession, Cr
             return;
         }
         ItemStack newItem = message.getItem();
-        GlowItemStack currentItem = inv.getItem(slot);
+        ItemStack currentItem = inv.getItem(slot);
 
         inv.setItem(slot, newItem);
         if (currentItem != null) {

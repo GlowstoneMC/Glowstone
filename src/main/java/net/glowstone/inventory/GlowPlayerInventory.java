@@ -45,8 +45,8 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         setItemInHand(getItemInHand());
     }
 
-    public GlowItemStack[] getArmorContents() {
-        GlowItemStack[] armor = new GlowItemStack[4];
+    public ItemStack[] getArmorContents() {
+        ItemStack[] armor = new ItemStack[4];
         for (int i = 0; i < 4; ++i) {
             armor[i] = getItem(HELMET_SLOT + i);
         }
@@ -62,19 +62,19 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         }
     }
 
-    public GlowItemStack getHelmet() {
+    public ItemStack getHelmet() {
         return getItem(HELMET_SLOT);
     }
 
-    public GlowItemStack getChestplate() {
+    public ItemStack getChestplate() {
         return getItem(CHESTPLATE_SLOT);
     }
 
-    public GlowItemStack getLeggings() {
+    public ItemStack getLeggings() {
         return getItem(LEGGINGS_SLOT);
     }
 
-    public GlowItemStack getBoots() {
+    public ItemStack getBoots() {
         return getItem(BOOTS_SLOT);
     }
 
@@ -94,7 +94,7 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         setItem(BOOTS_SLOT, boots);
     }
 
-    public GlowItemStack getItemInHand() {
+    public ItemStack getItemInHand() {
         return getItem(heldSlot);
     }
 

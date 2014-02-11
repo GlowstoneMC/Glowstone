@@ -13,7 +13,7 @@ import java.util.*;
  * A class which represents an inventory and the items it contains.
  */
 public class GlowInventory implements Inventory {
-    
+
     /**
      * The ID of the inventory.
      * Todo: improve this - only implemented inventory is player which is always 0.
@@ -34,11 +34,11 @@ public class GlowInventory implements Inventory {
      * The type of this inventory.
      */
     private final InventoryType type;
-    
+
     /**
      * This inventory's contents.
      */
-    private final GlowItemStack[] slots;
+    private final ItemStack[] slots;
 
     /**
      * The inventory's name.
@@ -61,13 +61,13 @@ public class GlowInventory implements Inventory {
     protected GlowInventory(InventoryHolder owner, InventoryType type, int size, String title) {
         this.owner = owner;
         this.type = type;
-        this.slots = new GlowItemStack[size];
+        this.slots = new ItemStack[size];
         this.title = title;
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // Internals
-    
+
     /**
      * Add a viewer to the inventory.
      * @param viewer The InventoryViewer to add.
@@ -77,7 +77,7 @@ public class GlowInventory implements Inventory {
             viewers.add(viewer);
         }
     }
-    
+
     /**
      * Remove a viewer from the inventory.
      * @param viewer The InventoryViewer to remove.
@@ -87,7 +87,7 @@ public class GlowInventory implements Inventory {
             viewers.remove(viewer);
         }
     }
-    
+
     /**
      * Get the network index from a slot index.
      * @param itemSlot The index for use with getItem/setItem.
@@ -96,7 +96,7 @@ public class GlowInventory implements Inventory {
     public int getNetworkSlot(int itemSlot) {
         return itemSlot;
     }
-    
+
     /**
      * Get the slot index from a network index.
      * @param networkSlot The index received over the network.
@@ -121,21 +121,6 @@ public class GlowInventory implements Inventory {
     protected void sendUpdate(int index) {
         for (InventoryViewer viewer : viewers) {
             viewer.onSlotSet(this, index, slots[index]);
-        }
-    }
-
-    /**
-     * Get a GlowItemStack from an ItemStack.
-     * @param stack The ItemStack.
-     * @return The GlowItemStack.
-     */
-    public static GlowItemStack getGlowItemStack(ItemStack stack) {
-        if (stack == null) {
-            return null;
-        } else if (stack instanceof GlowItemStack) {
-            return (GlowItemStack) stack;
-        } else {
-            return new GlowItemStack(stack);
         }
     }
 
@@ -195,70 +180,66 @@ public class GlowInventory implements Inventory {
     ////////////////////////////////////////////////////////////////////////////
     // Get, Set, Add, Remove
 
-    public GlowItemStack getItem(int index) {
+    public ItemStack getItem(int index) {
         return slots[index];
     }
 
-    public void setItem(int index, GlowItemStack item) {
+    public void setItem(int index, ItemStack item) {
         slots[index] = item;
         sendUpdate(index);
-    }
-    
-    public final void setItem(int index, ItemStack item) {
-        setItem(index, getGlowItemStack(item));
     }
 
     public HashMap<Integer, ItemStack> addItem(ItemStack... items) {
         HashMap<Integer, ItemStack> result = new HashMap<Integer, ItemStack>();
-        
+
         for (int i = 0; i < items.length; ++i) {
             int maxStackSize = items[i].getType() == null ? 64 : items[i].getType().getMaxStackSize();
             int mat = items[i].getTypeId();
             int toAdd = items[i].getAmount();
             short damage = items[i].getDurability();
-            
+
             for (int j = 0; toAdd > 0 && j < getSize(); ++j) {
                 // Look for existing stacks to add to
                 if (slots[j] != null && slots[j].getTypeId() == mat && slots[j].getDurability() == damage) {
                     int space = maxStackSize - slots[j].getAmount();
                     if (space < 0) continue;
                     if (space > toAdd) space = toAdd;
-                    
+
                     slots[j].setAmount(slots[j].getAmount() + space);
                     toAdd -= space;
                     sendUpdate(j);
                 }
             }
-            
+
             if (toAdd > 0) {
                 // Look for empty slots to add to
                 for (int j = 0; toAdd > 0 && j < getSize(); ++j) {
                     if (slots[j] == null) {
                         int num = toAdd > maxStackSize ? maxStackSize : toAdd;
-                        slots[j] = new GlowItemStack(mat, num, damage);
+                        slots[j] = new ItemStack(mat, num, damage);
                         toAdd -= num;
                         sendUpdate(j);
                     }
                 }
             }
-            
+
             if (toAdd > 0) {
                 // Still couldn't stash them all.
-                result.put(i, new GlowItemStack(mat, toAdd, damage));
+                result.put(i, new ItemStack(mat, toAdd, damage));
             }
         }
-        
+
         return result;
     }
 
     public HashMap<Integer, ItemStack> removeItem(ItemStack... items) {
         HashMap<Integer, ItemStack> result = new HashMap<Integer, ItemStack>();
-        
+
         for (int i = 0; i < items.length; ++i) {
             int mat = items[i].getTypeId();
             int toRemove = items[i].getAmount();
             short damage = items[i].getDurability();
-            
+
             for (int j = 0; j < getSize(); ++j) {
                 // Look for stacks to remove from.
                 if (slots[j] != null && slots[j].getTypeId() == mat && slots[j].getDurability() == damage) {
@@ -271,17 +252,17 @@ public class GlowInventory implements Inventory {
                     sendUpdate(j);
                 }
             }
-            
+
             if (toRemove > 0) {
                 // Couldn't remove them all.
-                result.put(i, new GlowItemStack(mat, toRemove, damage));
+                result.put(i, new ItemStack(mat, toRemove, damage));
             }
         }
-        
+
         return result;
     }
 
-    public GlowItemStack[] getContents() {
+    public ItemStack[] getContents() {
         return slots;
     }
 
@@ -333,8 +314,8 @@ public class GlowInventory implements Inventory {
     ////////////////////////////////////////////////////////////////////////////
     // Find all
 
-    public HashMap<Integer, GlowItemStack> all(int materialId) {
-        HashMap<Integer, GlowItemStack> result = new HashMap<Integer, GlowItemStack>();
+    public HashMap<Integer, ItemStack> all(int materialId) {
+        HashMap<Integer, ItemStack> result = new HashMap<Integer, ItemStack>();
         for (int i = 0; i < slots.length; ++i) {
             if (slots[i].getTypeId() == materialId) {
                 result.put(i, slots[i]);
@@ -343,12 +324,12 @@ public class GlowInventory implements Inventory {
         return result;
     }
 
-    public HashMap<Integer, GlowItemStack> all(Material material) {
+    public HashMap<Integer, ItemStack> all(Material material) {
         return all(material.getId());
     }
 
-    public HashMap<Integer, GlowItemStack> all(ItemStack item) {
-        HashMap<Integer, GlowItemStack> result = new HashMap<Integer, GlowItemStack>();
+    public HashMap<Integer, ItemStack> all(ItemStack item) {
+        HashMap<Integer, ItemStack> result = new HashMap<Integer, ItemStack>();
         for (int i = 0; i < slots.length; ++i) {
             if (slots[i] != null && slots[i].equals(item)) {
                 result.put(i, slots[i]);
@@ -421,5 +402,5 @@ public class GlowInventory implements Inventory {
             clear(i);
         }
     }
-    
+
 }

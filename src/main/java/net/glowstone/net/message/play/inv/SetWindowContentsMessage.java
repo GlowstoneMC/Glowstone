@@ -1,16 +1,16 @@
 package net.glowstone.net.message.play.inv;
 
 import com.flowpowered.networking.Message;
-import net.glowstone.inventory.GlowItemStack;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 
 public final class SetWindowContentsMessage implements Message {
 
     private final int id;
-    private final GlowItemStack[] items;
+    private final ItemStack[] items;
 
-    public SetWindowContentsMessage(int id, GlowItemStack[] items) {
+    public SetWindowContentsMessage(int id, ItemStack[] items) {
         this.id = id;
         this.items = items;
     }
@@ -19,7 +19,7 @@ public final class SetWindowContentsMessage implements Message {
         return id;
     }
 
-    public GlowItemStack[] getItems() {
+    public ItemStack[] getItems() {
         return items;
     }
 

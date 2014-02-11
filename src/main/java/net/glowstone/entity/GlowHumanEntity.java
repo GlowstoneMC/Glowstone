@@ -3,8 +3,6 @@ package net.glowstone.entity;
 import com.flowpowered.networking.Message;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
-import net.glowstone.inventory.GlowInventory;
-import net.glowstone.inventory.GlowItemStack;
 import net.glowstone.inventory.GlowPlayerInventory;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.SpawnPlayerMessage;
@@ -34,7 +32,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
      * The name of this human.
      */
     private final String name;
-    
+
     /**
      * The inventory of this human.
      */
@@ -43,8 +41,8 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     /**
      * The item the player has on their cursor.
      */
-    private GlowItemStack itemOnCursor;
-    
+    private ItemStack itemOnCursor;
+
     /**
      * Whether this human is sleeping or not.
      */
@@ -54,17 +52,17 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
      * The bed spawn location of a player
      */
     private Location bedSpawn;
-    
+
     /**
      * How long this human has been sleeping.
      */
     private int sleepingTicks = 0;
-    
+
     /**
      * This human's PermissibleBase for permissions.
      */
     protected PermissibleBase permissions;
-    
+
     /**
      * Whether this human is considered an op.
      */
@@ -74,11 +72,11 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
      * The player's active game mode
      */
     private GameMode gameMode;
-    
+
     /**
      * Creates a human within the specified world and with the specified name.
      * @param world The world.
-     * @param name The human's name.
+     * @param name  The human's name.
      */
     public GlowHumanEntity(GlowServer server, GlowWorld world, String name) {
         super(server, world);
@@ -165,7 +163,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     ////////////////////////////////////////////////////////////////////////////
     // Permissions
-    
+
     public boolean isPermissionSet(String name) {
         return permissions.isPermissionSet(name);
     }
@@ -234,12 +232,12 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         getInventory().setItemInHand(item);
     }
 
-    public GlowItemStack getItemOnCursor() {
+    public ItemStack getItemOnCursor() {
         return itemOnCursor;
     }
 
     public void setItemOnCursor(ItemStack item) {
-        itemOnCursor = GlowInventory.getGlowItemStack(item);
+        itemOnCursor = item;
     }
 
     public Inventory getEnderChest() {
