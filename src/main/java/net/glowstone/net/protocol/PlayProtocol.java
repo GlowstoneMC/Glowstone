@@ -55,6 +55,7 @@ public final class PlayProtocol extends GlowProtocol {
         outbound(0x05, SpawnPositionMessage.class, SpawnPositionCodec.class);
         outbound(0x06, HealthMessage.class, HealthCodec.class);
         outbound(0x08, PositionRotationMessage.class, PositionRotationCodec.class);
+        outbound(0x09, HeldItemMessage.class, HeldItemCodec.class);
         outbound(0x0B, AnimateEntityMessage.class, AnimateEntityCodec.class);
         outbound(0x0C, SpawnPlayerMessage.class, SpawnPlayerCodec.class);
         outbound(0x0F, SpawnMobMessage.class, SpawnMobCodec.class);

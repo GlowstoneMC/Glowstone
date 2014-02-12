@@ -9,6 +9,6 @@ public final class HeldItemHandler implements MessageHandler<GlowSession, HeldIt
         final int slot = message.getSlot();
         if (slot < 0 || slot > 8) // sanity check
             return;
-        session.getPlayer().getInventory().setHeldItemSlot(slot);
+        session.getPlayer().getInventory().setRawHeldItemSlot(slot);
     }
 }

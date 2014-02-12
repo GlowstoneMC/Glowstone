@@ -13,7 +13,8 @@ public final class HeldItemCodec implements Codec<HeldItemMessage> {
     }
 
     public ByteBuf encode(ByteBuf buf, HeldItemMessage message) throws IOException {
-        buf.writeShort(message.getSlot());
+        // nb: different than decode!
+        buf.writeByte(message.getSlot());
         return buf;
     }
 }

@@ -1,6 +1,8 @@
 package net.glowstone.inventory;
 
 import net.glowstone.entity.GlowHumanEntity;
+import net.glowstone.entity.GlowPlayer;
+import net.glowstone.net.message.play.inv.HeldItemMessage;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
@@ -33,16 +35,6 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
      */
     public GlowCraftingInventory getCraftingInventory() {
         return crafting;
-    }
-
-    /**
-     * Set the slot number of the currently held item
-     */
-    public void setHeldItemSlot(int slot) {
-        if (slot < 0) heldSlot = 0;
-        else if (slot > 8) heldSlot = 8;
-        else heldSlot = slot;
-        setItemInHand(getItemInHand());
     }
 
     public ItemStack[] getArmorContents() {
@@ -105,7 +97,21 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     public int getHeldItemSlot() {
         return heldSlot;
     }
-    
+
+    public void setHeldItemSlot(int slot) {
+        setRawHeldItemSlot(slot);
+
+        if (getHolder() instanceof GlowPlayer) {
+            ((GlowPlayer) getHolder()).getSession().send(new HeldItemMessage(slot));
+        }
+    }
+
+    public void setRawHeldItemSlot(int slot) {
+        if (slot < 0 || slot > 8)
+            throw new IllegalArgumentException(slot + " not in range 0..8");
+        setItemInHand(getItemInHand());
+    }
+
     // Helper stuff
     
     private final static int slotConversion[] = {
