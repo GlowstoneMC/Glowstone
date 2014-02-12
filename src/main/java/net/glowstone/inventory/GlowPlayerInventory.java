@@ -109,7 +109,8 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     public void setRawHeldItemSlot(int slot) {
         if (slot < 0 || slot > 8)
             throw new IllegalArgumentException(slot + " not in range 0..8");
-        setItemInHand(getItemInHand());
+        heldSlot = slot;
+        setItemInHand(getItemInHand());  // send to player again just in case
     }
 
     // Helper stuff
