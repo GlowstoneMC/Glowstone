@@ -4,7 +4,7 @@ import net.glowstone.block.BlockProperties;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
-import net.glowstone.util.bans.BanManager;
+import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -109,19 +109,24 @@ public final class EventFactory {
     }
 
     public static PlayerLoginEvent onPlayerLogin(GlowPlayer player) {
-        BanManager manager = player.getServer().getBanManager();
-        String address = player.getAddress().getAddress().getHostAddress();
-        PlayerLoginEvent event = new PlayerLoginEvent(player);
-        if (player.isBanned()) {
-            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, manager.getBanMessage(player.getName()));
-        } else if (manager.isIpBanned(address)) {
-            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, manager.getIpBanMessage(address));
-        } else if (player.getServer().hasWhitelist() && player.getServer().getWhitelist().contains(player.getName())) {
+        final GlowServer server = player.getServer();
+        final String address = player.getAddress().getAddress().getHostAddress();
+        final PlayerLoginEvent event = new PlayerLoginEvent(player);
+
+        final BanList nameBans = server.getBanList(BanList.Type.NAME);
+        final BanList ipBans = server.getBanList(BanList.Type.IP);
+
+        if (nameBans.isBanned(player.getName())) {
+            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, "Banned: " + nameBans.getBanEntry(player.getName()).getReason());
+        } else if (ipBans.isBanned(address)) {
+            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, "Banned: " + ipBans.getBanEntry(address).getReason());
+        } else if (server.hasWhitelist() && server.getWhitelist().contains(player.getName())) {
             event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, "You are not whitelisted on this server");
-        } else if (player.getServer().getOnlinePlayers().length >= player.getServer().getMaxPlayers()) {
+        } else if (server.getOnlinePlayers().length >= server.getMaxPlayers()) {
             event.disallow(PlayerLoginEvent.Result.KICK_FULL,
                     "The server is full (" + player.getServer().getMaxPlayers() + " players).");
         }
+
         return callEvent(event);
     }
 

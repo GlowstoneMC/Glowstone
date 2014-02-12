@@ -11,8 +11,7 @@ import net.glowstone.net.SessionRegistry;
 import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.scheduler.WorldScheduler;
 import net.glowstone.util.*;
-import net.glowstone.util.bans.BanManager;
-import net.glowstone.util.bans.FlatFileBanManager;
+import net.glowstone.util.bans.GlowBanList;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
 import org.bukkit.command.*;
@@ -151,9 +150,14 @@ public final class GlowServer implements Server {
     private final PlayerListFile whitelist = new PlayerListFile(new File(ServerConfig.CONFIG_DIR, "whitelist.txt"));
 
     /**
-     * The server's ban manager.
+     * The BanList for player names.
      */
-    private BanManager banManager = new FlatFileBanManager(this);
+    private GlowBanList nameBans = new GlowBanList(this, BanList.Type.NAME);
+
+    /**
+     * The BanList for IP addresses.
+     */
+    private GlowBanList ipBans = new GlowBanList(this, BanList.Type.IP);
 
     /**
      * The world this server is managing.
@@ -244,7 +248,8 @@ public final class GlowServer implements Server {
         // Load player lists
         opsList.load();
         whitelist.load();
-        banManager.load();
+        nameBans.load();
+        ipBans.load();
 
         // Start loading plugins
         loadPlugins();
@@ -434,7 +439,8 @@ public final class GlowServer implements Server {
             loadConfig();
             opsList.load();
             whitelist.load();
-            banManager.load();
+            nameBans.load();
+            ipBans.load();
             
             // Reset crafting
             craftingManager.resetRecipes();
@@ -489,22 +495,6 @@ public final class GlowServer implements Server {
      */
     public File getConfigDir() {
         return ServerConfig.CONFIG_DIR;
-    }
-
-    /**
-     * Returns the currently used ban manager for the server
-     */
-    public BanManager getBanManager() {
-        return banManager;
-    }
-
-    /**
-     * Set the ban manager for the server
-     */
-    public void setBanManager(BanManager manager) {
-        this.banManager = manager;
-        manager.load();
-        logger.log(Level.INFO, "Using {0} for ban management", manager.getClass().getName());
     }
 
     /**
@@ -591,7 +581,14 @@ public final class GlowServer implements Server {
     }
 
     public BanList getBanList(BanList.Type type) {
-        return null;
+        switch (type) {
+            case NAME:
+                return nameBans;
+            case IP:
+                return ipBans;
+            default:
+                throw new IllegalArgumentException("Unknown BanList type " + type);
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -752,21 +749,25 @@ public final class GlowServer implements Server {
     }
 
     public Set<String> getIPBans() {
-        return banManager.getIpBans();
+        Set<String> result = new HashSet<>();
+        for (BanEntry entry : ipBans.getBanEntries()) {
+            result.add(entry.getTarget());
+        }
+        return result;
     }
 
     public void banIP(String address) {
-        banManager.setIpBanned(address, true);
+        ipBans.addBan(address, null, null, null);
     }
 
     public void unbanIP(String address) {
-        banManager.setIpBanned(address, false);
+        ipBans.pardon(address);
     }
 
     public Set<OfflinePlayer> getBannedPlayers() {
-        Set<OfflinePlayer> bannedPlayers = new HashSet<OfflinePlayer>();
-        for (String name : banManager.getBans()) {
-            bannedPlayers.add(getOfflinePlayer(name));
+        Set<OfflinePlayer> bannedPlayers = new HashSet<>();
+        for (BanEntry entry : nameBans.getBanEntries()) {
+            bannedPlayers.add(getOfflinePlayer(entry.getTarget()));
         }
         return bannedPlayers;
     }

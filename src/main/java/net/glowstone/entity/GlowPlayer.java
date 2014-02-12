@@ -341,11 +341,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     }
 
     public boolean isBanned() {
-        return server.getBanManager().isBanned(getName());
+        return server.getBanList(BanList.Type.NAME).isBanned(getName());
     }
 
+    @Deprecated
     public void setBanned(boolean banned) {
-        server.getBanManager().setBanned(getName(), banned);
+        server.getBanList(BanList.Type.NAME).addBan(getName(), null, null, null);
     }
 
     public boolean isWhitelisted() {

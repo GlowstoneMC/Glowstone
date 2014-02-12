@@ -1,5 +1,6 @@
 package net.glowstone;
 
+import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -32,11 +33,12 @@ public class GlowOfflinePlayer implements OfflinePlayer {
     }
 
     public boolean isBanned() {
-        return server.getBanManager().isBanned(name);
+        return server.getBanList(BanList.Type.NAME).isBanned(name);
     }
 
+    @Deprecated
     public void setBanned(boolean banned) {
-        server.getBanManager().setBanned(name, banned);
+        server.getBanList(BanList.Type.NAME).addBan(name, null, null, null);
     }
 
     public boolean isWhitelisted() {
