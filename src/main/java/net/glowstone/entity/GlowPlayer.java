@@ -20,6 +20,7 @@ import org.bukkit.*;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -790,6 +791,70 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         }
     }
 
+    public void setStatistic(Statistic statistic, EntityType entityType, int newValue) {
+
+    }
+
+    public void removeAchievement(Achievement achievement) {
+
+    }
+
+    public boolean hasAchievement(Achievement achievement) {
+        return false;
+    }
+
+    public void decrementStatistic(Statistic statistic) throws IllegalArgumentException {
+
+    }
+
+    public void decrementStatistic(Statistic statistic, int amount) throws IllegalArgumentException {
+
+    }
+
+    public void setStatistic(Statistic statistic, int newValue) throws IllegalArgumentException {
+
+    }
+
+    public int getStatistic(Statistic statistic) throws IllegalArgumentException {
+        return 0;
+    }
+
+    public void decrementStatistic(Statistic statistic, Material material) throws IllegalArgumentException {
+
+    }
+
+    public int getStatistic(Statistic statistic, Material material) throws IllegalArgumentException {
+        return 0;
+    }
+
+    public void decrementStatistic(Statistic statistic, Material material, int amount) throws IllegalArgumentException {
+
+    }
+
+    public void setStatistic(Statistic statistic, Material material, int newValue) throws IllegalArgumentException {
+
+    }
+
+    public void incrementStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {
+
+    }
+
+    public void decrementStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {
+
+    }
+
+    public int getStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {
+        return 0;
+    }
+
+    public void incrementStatistic(Statistic statistic, EntityType entityType, int amount) throws IllegalArgumentException {
+
+    }
+
+    public void decrementStatistic(Statistic statistic, EntityType entityType, int amount) {
+
+    }
+
     // -- Inventory
 
     public void updateInventory() {
@@ -1093,4 +1158,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         // todo: keep track of client's accepted channels
         return null;
     }
+
+
 }

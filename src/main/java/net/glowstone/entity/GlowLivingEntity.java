@@ -12,6 +12,7 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
 import java.util.*;
 
@@ -276,6 +277,10 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     public <T extends Projectile> T launchProjectile(Class<? extends T> projectile) {
+        return launchProjectile(projectile, getLocation().getDirection());  // todo: multiply by some speed
+    }
+
+    public <T extends Projectile> T launchProjectile(Class<? extends T> projectile, Vector velocity) {
         return null;
     }
 

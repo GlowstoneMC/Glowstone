@@ -88,7 +88,8 @@ public final class GlowHelpMap implements HelpMap {
         }
 
         // Initialize help topics from the server's command map
-        outer: for (Command command : server.getCommandMap().getCommands()) {
+        outer:
+        for (Command command : server.getCommandMap().getCommands()) {
             if (commandInIgnoredPlugin(command, ignoredPlugins)) {
                 continue;
             }
@@ -100,7 +101,7 @@ public final class GlowHelpMap implements HelpMap {
                     if (t != null) addTopic(t);
                     continue outer;
                 }
-                if (command instanceof PluginCommand && c.isAssignableFrom(((PluginCommand)command).getExecutor().getClass())) {
+                if (command instanceof PluginCommand && c.isAssignableFrom(((PluginCommand) command).getExecutor().getClass())) {
                     HelpTopic t = topicFactoryMap.get(c).createTopic(command);
                     if (t != null) addTopic(t);
                     continue outer;
@@ -111,19 +112,11 @@ public final class GlowHelpMap implements HelpMap {
 
         // todo: help on alias topics
 
-        // Initialize help topics from the server's fallback commands
-        for (VanillaCommand command : server.getCommandMap().getFallbackCommands()) {
-            if (!commandInIgnoredPlugin(command, ignoredPlugins)) {
-                addTopic(new GenericCommandHelpTopic(command));
-            }
-        }
-
         // todo: alias sub-index
 
         // Initialize plugin-level sub-topics
         Map<String, Set<HelpTopic>> pluginIndexes = new HashMap<String, Set<HelpTopic>>();
         fillPluginIndexes(pluginIndexes, server.getCommandMap().getCommands());
-        fillPluginIndexes(pluginIndexes, server.getCommandMap().getFallbackCommands());
 
         for (Map.Entry<String, Set<HelpTopic>> entry : pluginIndexes.entrySet()) {
             addTopic(new IndexHelpTopic(entry.getKey(), "All commands for " + entry.getKey(), null, entry.getValue(), "Below is a list of all " + entry.getKey() + " commands:"));
@@ -152,7 +145,7 @@ public final class GlowHelpMap implements HelpMap {
             return "Bukkit";
         }
         if (command instanceof PluginIdentifiableCommand) {
-            return ((PluginIdentifiableCommand)command).getPlugin().getName();
+            return ((PluginIdentifiableCommand) command).getPlugin().getName();
         }
         return null;
     }
@@ -161,7 +154,7 @@ public final class GlowHelpMap implements HelpMap {
         if ((command instanceof BukkitCommand || command instanceof VanillaCommand) && ignoredPlugins.contains("Bukkit")) {
             return true;
         }
-        if (command instanceof PluginIdentifiableCommand && ignoredPlugins.contains(((PluginIdentifiableCommand)command).getPlugin().getName())) {
+        if (command instanceof PluginIdentifiableCommand && ignoredPlugins.contains(((PluginIdentifiableCommand) command).getPlugin().getName())) {
             return true;
         }
         return false;

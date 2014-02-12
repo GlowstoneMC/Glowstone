@@ -166,6 +166,11 @@ public final class GlowServer implements Server {
     private final GlowScheduler scheduler = new GlowScheduler(this, worlds);
 
     /**
+     * The Bukkit UnsafeValues implementation.
+     */
+    private final UnsafeValues unsafeAccess = new GlowUnsafeValues();
+
+    /**
      * The server's default game mode
      */
     private GameMode defaultGameMode = GameMode.CREATIVE;
@@ -189,6 +194,11 @@ public final class GlowServer implements Server {
      * The size of the area to keep protected around the spawn point.
      */
     private int spawnRadius;
+
+    /**
+     * The ticks until a player who has not played the game has been kicked, or 0.
+     */
+    private int idleTimeout;
 
     /**
      * A cache of existing OfflinePlayers
@@ -322,15 +332,14 @@ public final class GlowServer implements Server {
         // modifiable values
         spawnRadius = config.getInt(ServerConfig.Key.SPAWN_RADIUS);
         whitelistEnabled = config.getBoolean(ServerConfig.Key.WHITELIST);
+        idleTimeout = config.getInt(ServerConfig.Key.PLAYER_IDLE_TIMEOUT);
         craftingManager.initialize();
 
         // special handling
         warnState = Warning.WarningState.value(config.getString(ServerConfig.Key.WARNING_STATE));
         try {
             defaultGameMode = GameMode.valueOf(GameMode.class, config.getString(ServerConfig.Key.GAMEMODE));
-        } catch (IllegalArgumentException e) {
-            defaultGameMode = GameMode.SURVIVAL;
-        } catch (NullPointerException e) {
+        } catch (IllegalArgumentException | NullPointerException e) {
             defaultGameMode = GameMode.SURVIVAL;
         }
 
@@ -352,6 +361,7 @@ public final class GlowServer implements Server {
     private void loadPlugins() {
         // clear the map
         commandMap.clearCommands();
+        commandMap.setFallbackCommands();
         commandMap.register("glowstone", new ColorCommand("colors"));
 
         File folder = new File(config.getString(ServerConfig.Key.PLUGIN_FOLDER));
@@ -513,6 +523,14 @@ public final class GlowServer implements Server {
         return storeQueue;
     }
 
+    /**
+     * The key pair generated at server start up
+     * @return The key pair generated at server start up
+     */
+    public KeyPair getKeyPair() {
+        return keyPair;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Static server properties
 
@@ -565,6 +583,15 @@ public final class GlowServer implements Server {
 
     public ScoreboardManager getScoreboardManager() {
         return scoreboardManager;
+    }
+
+    @Deprecated
+    public UnsafeValues getUnsafe() {
+        return unsafeAccess;
+    }
+
+    public BanList getBanList(BanList.Type type) {
+        return null;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -945,6 +972,14 @@ public final class GlowServer implements Server {
         return warnState;
     }
 
+    public void setIdleTimeout(int timeout) {
+        idleTimeout = timeout;
+    }
+
+    public int getIdleTimeout() {
+        return idleTimeout;
+    }
+
     public void configureDbConfig(com.avaje.ebean.config.ServerConfig dbConfig) {
         com.avaje.ebean.config.DataSourceConfig ds = new com.avaje.ebean.config.DataSourceConfig();
         ds.setDriver(config.getString(ServerConfig.Key.DB_DRIVER));
@@ -967,15 +1002,6 @@ public final class GlowServer implements Server {
     public String getIp() {
         return config.getString(ServerConfig.Key.SERVER_IP);
     }
-
-    /** The key pair generated at server start up
-     * @return The key pair generated at server start up
-     */
-    public KeyPair getKeyPair() {
-        return keyPair;
-    }
-
-    // NEW STUFF
 
     public int getPort() {
         return config.getInt(ServerConfig.Key.SERVER_PORT);

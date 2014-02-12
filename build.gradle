@@ -29,7 +29,7 @@ mainClassName = "net.glowstone.GlowServer"
 
 // Extended project information
 ext.url = 'https://github.com/SpaceManiac/Glowstone'
-ext.bukkitVersion = '1.7.2-R0.2'
+ext.bukkitVersion = '1.7.2-R0.3'
 ext.gitDescribe = "git-" + getVersionName()
 
 // Minimum Java version required
