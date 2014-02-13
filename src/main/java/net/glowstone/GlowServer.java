@@ -301,31 +301,36 @@ public final class GlowServer implements Server {
      * Stops this server.
      */
     public void shutdown() {
-        // This is so we don't run this twice (/stop and actual shutdown)
+        // Just in case this gets called twice
         if (isShuttingDown) return;
         isShuttingDown = true;
         logger.info("The server is shutting down...");
         
-        // Stop scheduler and disable plugins
-        scheduler.stop();
+        // Disable plugins
         pluginManager.clearPlugins();
 
-        // Kick (and save) all players
+        // Kick all players (this saves their data too)
         for (Player player : getOnlinePlayers()) {
             player.kickPlayer("Server shutting down.");
         }
+
+        // Stop the network server - starts the shutdown process
+        // It may take a second or two for Netty to totally clean up
+        networkServer.shutdown();
         
         // Save worlds
         for (World world : getWorlds()) {
+            logger.info("Saving world: " + world.getName());
             unloadWorld(world, true);
         }
+
+        // Stop scheduler, storage queue, and console
         storeQueue.end();
-        
-        // Gracefully stop the network server
-        networkServer.shutdown();
-        
-        // And finally kill the console
+        scheduler.stop();
         consoleManager.stop();
+
+        // Wait for a while and terminate any rogue threads
+        new ShutdownMonitorThread().start();
     }
 
     /**

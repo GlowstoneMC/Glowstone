@@ -2,10 +2,7 @@ package net.glowstone;
 
 import com.grahamedgecombe.jterminal.JTerminal;
 import jline.console.ConsoleReader;
-import jline.console.completer.ArgumentCompleter;
 import jline.console.completer.Completer;
-import jline.console.completer.NullCompleter;
-import jline.console.completer.StringsCompleter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.ConsoleCommandSender;
@@ -70,9 +67,6 @@ public final class ConsoleManager {
         consoleHandler = new FancyConsoleHandler();
         //consoleHandler.setFormatter(new DateOutputFormatter(CONSOLE_DATE));
         logger.addHandler(consoleHandler);
-
-        // todo: why is this here?
-        Runtime.getRuntime().addShutdownHook(new ServerShutdownThread());
 
         // reader must be initialized before standard streams are changed
         try {
@@ -237,13 +231,6 @@ public final class ConsoleManager {
                     logger.log(Level.SEVERE, "Error while reading commands", ex);
                 }
             }
-        }
-    }
-
-    private class ServerShutdownThread extends Thread {
-        @Override
-        public void run() {
-            server.shutdown();
         }
     }
 
