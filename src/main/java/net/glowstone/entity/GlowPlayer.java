@@ -101,12 +101,17 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     /**
      * The entities that the client knows about.
      */
-    private Set<GlowEntity> knownEntities = new HashSet<GlowEntity>();
+    private final Set<GlowEntity> knownEntities = new HashSet<GlowEntity>();
 
     /**
      * The chunks that the client knows about.
      */
     private final Set<GlowChunk.Key> knownChunks = new HashSet<GlowChunk.Key>();
+
+    /**
+     * A queue of BlockChangeMessages to be sent.
+     */
+    private final List<BlockChangeMessage> blockChanges = new LinkedList<>();
 
     /**
      * The lock used to prevent chunks from unloading near the player.
@@ -192,6 +197,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         super.pulse();
 
         streamBlocks();
+        processBlockChanges();
 
         for (Iterator<GlowEntity> it = knownEntities.iterator(); it.hasNext(); ) {
             GlowEntity entity = it.next();
@@ -217,6 +223,39 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
                 for (Message msg : entity.createSpawnMessage()) {
                     session.send(msg);
                 }
+            }
+        }
+    }
+
+    /**
+     * Process and send pending BlockChangeMessages.
+     */
+    private void processBlockChanges() {
+        List<BlockChangeMessage> messages = new ArrayList<>(blockChanges);
+        blockChanges.clear();
+
+        // separate messages by chunk
+        Map<GlowChunk.Key, List<BlockChangeMessage>> chunks = new HashMap<>();
+        for (BlockChangeMessage message : messages) {
+            GlowChunk.Key key = new GlowChunk.Key(message.getX() >> 4, message.getZ() >> 4);
+            List<BlockChangeMessage> list = chunks.get(key);
+            if (list == null) {
+                list = new LinkedList<>();
+                chunks.put(key, list);
+            }
+            list.add(message);
+        }
+
+        // send away
+        for (Map.Entry<GlowChunk.Key, List<BlockChangeMessage>> entry : chunks.entrySet()) {
+            GlowChunk.Key key = entry.getKey();
+            List<BlockChangeMessage> value = entry.getValue();
+
+            if (value.size() == 1) {
+                session.send(value.get(0));
+            } else if (value.size() > 1) {
+                BlockChangeMessage[] records = value.toArray(new BlockChangeMessage[value.size()]);
+                session.send(new MultiBlockChangeMessage(key.getX(), key.getZ(), records));
             }
         }
     }
@@ -738,7 +777,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         // only send message if the chunk is within visible range
         GlowChunk.Key key = new GlowChunk.Key(message.getX() >> 4, message.getZ() >> 4);
         if (canSee(key)) {
-            session.send(message);
+            blockChanges.add(message);
         }
     }
 
