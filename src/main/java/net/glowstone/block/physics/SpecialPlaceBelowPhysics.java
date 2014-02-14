@@ -1,19 +1,21 @@
 package net.glowstone.block.physics;
 
-import gnu.trove.set.hash.TIntHashSet;
 import net.glowstone.block.GlowBlock;
+import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
+
 public class SpecialPlaceBelowPhysics extends DefaultBlockPhysics {
-    private final int type;
-    private final TIntHashSet allowedGround;
-    public SpecialPlaceBelowPhysics(int type, int ... belowTypes) {
-        this.type = type;
-        this.allowedGround = new TIntHashSet(belowTypes);
+    private final Set<Material> allowedGround = EnumSet.noneOf(Material.class);
+
+    public SpecialPlaceBelowPhysics(Material... belowTypes) {
+        Collections.addAll(allowedGround, belowTypes);
     }
 
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
-        int below = block.getWorld().getBlockTypeIdAt(block.getX(), block.getY() - 1, block.getZ());
-        return allowedGround.contains(below);
+        return allowedGround.contains(block.getRelative(BlockFace.DOWN).getType());
     }
 }

@@ -92,7 +92,7 @@ public enum BlockProperties {
     SNOW(Material.SNOW, passthru()),
     ICE(Material.ICE, opaque(2)),
     SNOW_BLOCK(Material.SNOW_BLOCK),
-    CACTUS(Material.CACTUS, place(), physics(new SpecialPlaceBelowPhysics(Material.CACTUS.getId(), Material.SAND.getId()))),
+    CACTUS(Material.CACTUS, place(), physics(new SpecialPlaceBelowPhysics(Material.SAND))),
     CLAY(Material.CLAY, drops(new ItemStack(Material.CLAY_BALL, 4))),
     SUGAR_CANE_BLOCK(Material.SUGAR_CANE_BLOCK, place(), drops(Material.SUGAR_CANE)),
     JUKEBOX(Material.JUKEBOX, interact()),

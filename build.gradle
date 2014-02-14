@@ -71,9 +71,8 @@ dependencies {
     compile 'org.bouncycastle:bcprov-jdk16:1.46'
     compile 'com.grahamedgecombe.jterminal:jterminal:1.0.1'
     compile 'jline:jline:2.11'
-    compile 'mysql:mysql-connector-java:5.1.14'
-    compile 'net.sf.trove4j:trove4j:3.0.1'
-    compile 'org.xerial:sqlite-jdbc:3.7.2'
+    //compile 'mysql:mysql-connector-java:5.1.14'
+    //compile 'org.xerial:sqlite-jdbc:3.7.2'
     compile 'org.slf4j:slf4j-jdk14:1.7.5'
     testCompile 'junit:junit:4.8.1'
 }

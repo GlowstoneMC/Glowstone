@@ -1,10 +1,8 @@
 package net.glowstone.entity;
 
-import gnu.trove.set.hash.TIntHashSet;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
-import net.glowstone.util.TargetBlock;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -12,6 +10,7 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -211,54 +210,44 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     ////////////////////////////////////////////////////////////////////////////
     // Line of Sight
 
+    private List<Block> getLineOfSight(HashSet<Byte> transparent, int maxDistance, int maxLength) {
+        // same limit as CraftBukkit
+        if (maxDistance > 120) {
+            maxDistance = 120;
+        }
+
+        LinkedList<Block> blocks = new LinkedList<>();
+        Iterator<Block> itr = new BlockIterator(this, maxDistance);
+        while (itr.hasNext()) {
+            Block block = itr.next();
+            blocks.add(block);
+            if (maxLength != 0 && blocks.size() > maxLength) {
+                blocks.removeFirst();
+            }
+            int id = block.getTypeId();
+            if (transparent == null) {
+                if (id != 0) {
+                    break;
+                }
+            } else {
+                if (!transparent.contains((byte) id)) {
+                    break;
+                }
+            }
+        }
+        return blocks;
+    }
+
     public List<Block> getLineOfSight(HashSet<Byte> transparent, int maxDistance) {
-        TIntHashSet transparentBlocks = new TIntHashSet();
-        if (transparent != null) {
-            for (byte byt : transparent) {
-                transparentBlocks.add(byt);
-            }
-        } else {
-            transparentBlocks.add(0);
-        }
-        List<Block> ret = new ArrayList<Block>();
-        TargetBlock target = new TargetBlock(this, maxDistance, 0.2, transparentBlocks);
-        while (target.getNextBlock()) {
-            Block block = target.getCurrentBlock().getBlock();
-            if (!transparentBlocks.contains(block.getTypeId())) {
-                ret.add(block);
-            }
-        }
-        return ret;
+        return getLineOfSight(transparent, maxDistance, 0);
     }
 
     public Block getTargetBlock(HashSet<Byte> transparent, int maxDistance) {
-        TIntHashSet transparentBlocks = new TIntHashSet();
-        if (transparent != null) {
-            for (byte byt : transparent) {
-                transparentBlocks.add(byt);
-            }
-        } else {
-            transparentBlocks = null;
-        }
-        Location loc = new TargetBlock(this, maxDistance, 0.2, transparentBlocks).getSolidTargetBlock();
-        return loc == null ? null : loc.getBlock();
+        return getLineOfSight(transparent, maxDistance, 1).get(0);
     }
 
     public List<Block> getLastTwoTargetBlocks(HashSet<Byte> transparent, int maxDistance) {
-        TIntHashSet transparentBlocks = new TIntHashSet();
-        if (transparent != null) {
-            for (byte byt : transparent) {
-                transparentBlocks.add(byt);
-            }
-        } else {
-            transparentBlocks = null;
-        }
-        TargetBlock target = new TargetBlock(this, maxDistance, 0.2, transparentBlocks);
-        Location last = target.getSolidTargetBlock();
-        if (last == null) {
-            return new ArrayList<Block>(Arrays.asList(target.getPreviousBlock().getBlock()));
-        }
-        return new ArrayList<Block>(Arrays.asList(target.getPreviousBlock().getBlock(), last.getBlock()));
+        return getLineOfSight(transparent, maxDistance, 2);
     }
 
     ////////////////////////////////////////////////////////////////////////////
