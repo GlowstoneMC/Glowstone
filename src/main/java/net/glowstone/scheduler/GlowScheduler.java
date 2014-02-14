@@ -122,6 +122,15 @@ public final class GlowScheduler implements BukkitScheduler {
         worlds.stop();
         executor.shutdownNow();
         asyncTaskExecutor.shutdown();
+
+        synchronized (inTickTaskCondition) {
+            for (Runnable task : inTickTasks) {
+                if (task instanceof Future) {
+                    ((Future) task).cancel(false);
+                }
+            }
+            inTickTasks.clear();
+        }
     }
 
     /**

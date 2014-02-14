@@ -14,6 +14,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Objects;
+
 public final class BlockPlacementHandler implements MessageHandler<GlowSession, BlockPlacementMessage> {
     public void handle(GlowSession session, BlockPlacementMessage message) {
         final GlowPlayer player = session.getPlayer();
@@ -50,7 +52,8 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
 
         GlowServer.logger.info(session + ": " + message);
 
-        if (!holding.equals(message.getHeldItem())) {
+        if (!Objects.equals(holding, message.getHeldItem())) {
+            // above handles cases where holding and/or message's item are null
             // todo: inform player their item is wrong
             revert(player, target);
             return;

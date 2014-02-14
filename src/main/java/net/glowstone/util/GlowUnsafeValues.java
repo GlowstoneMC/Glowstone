@@ -19,7 +19,11 @@ import java.util.List;
 public class GlowUnsafeValues implements UnsafeValues {
 
     public Material getMaterialFromInternalName(String name) {
-        return Material.valueOf(name);
+        try {
+            return Material.valueOf(name);
+        } catch (IllegalArgumentException ex) {
+            return null;
+        }
     }
 
     public List<String> tabCompleteInternalMaterialName(String token, List<String> completions) {
@@ -35,11 +39,19 @@ public class GlowUnsafeValues implements UnsafeValues {
     }
 
     public Statistic getStatisticFromInternalName(String name) {
-        return Statistic.valueOf(name);
+        try {
+            return Statistic.valueOf(name);
+        } catch (IllegalArgumentException ex) {
+            return null;
+        }
     }
 
     public Achievement getAchievementFromInternalName(String name) {
-        return Achievement.valueOf(name);
+        try {
+            return Achievement.valueOf(name);
+        } catch (IllegalArgumentException ex) {
+            return null;
+        }
     }
 
     public List<String> tabCompleteInternalStatisticOrAchievementName(String token, List<String> completions) {

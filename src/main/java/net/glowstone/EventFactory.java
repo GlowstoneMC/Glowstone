@@ -23,6 +23,7 @@ import org.bukkit.event.world.*;
 import org.bukkit.inventory.ItemStack;
 
 import java.net.InetAddress;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
@@ -57,6 +58,9 @@ public final class EventFactory {
             try {
                 return task.get();
             } catch (InterruptedException e) {
+                GlowServer.logger.log(Level.WARNING, "Interrupted while handling " + event.getClass().getSimpleName());
+                return event;
+            } catch (CancellationException e) {
                 GlowServer.logger.log(Level.WARNING, "Not handling event " + event.getClass().getSimpleName() + " due to shutdown");
                 return event;
             } catch (ExecutionException e) {
