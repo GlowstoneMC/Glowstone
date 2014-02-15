@@ -271,7 +271,10 @@ public class GlowInventory implements Inventory {
             throw new IllegalArgumentException("Length of items must be " + slots.length);
         }
         for (int i = 0; i < items.length; ++i) {
-            setItem(i, items[i]);
+            slots[i] = items[i];
+        }
+        for (InventoryViewer viewer : viewers) {
+            viewer.onContentsSet(this, slots);
         }
     }
 

@@ -13,6 +13,7 @@ import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.login.LoginSuccessMessage;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.game.*;
+import net.glowstone.net.message.play.inv.SetWindowContentsMessage;
 import net.glowstone.net.message.play.inv.SetWindowSlotMessage;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.util.TextWrapper;
@@ -911,12 +912,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         session.send(new SetWindowSlotMessage(-1, -1, item));
     }
 
-    /**
-     * Inform the client that an item has changed.
-     * @param inventory The GlowInventory in which a slot has changed.
-     * @param slot      The slot number which has changed.
-     * @param item      The ItemStack which the slot has changed to.
-     */
+    // from InventoryViewer
     public void onSlotSet(GlowInventory inventory, int slot, ItemStack item) {
         if (inventory == getInventory()) {
             int type = item == null ? -1 : item.getTypeId();
@@ -946,6 +942,22 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         }
 
         session.send(new SetWindowSlotMessage(inventory.getId(), inventory.getNetworkSlot(slot), item));
+    }
+
+    // from InventoryViewer
+    public void onContentsSet(GlowInventory inventory, ItemStack[] slots) {
+        // todo: the slot conversion logic in GlowInventory is shaky at best
+
+        int maxSlot = 0;
+        for (int i = 0; i < slots.length; ++i) {
+            maxSlot = Math.max(maxSlot, inventory.getNetworkSlot(i));
+        }
+        ItemStack[] convertedSlots = new ItemStack[maxSlot + 1];
+        for (int i = 0; i < slots.length; ++i) {
+            convertedSlots[inventory.getNetworkSlot(i)] = slots[i];
+        }
+
+        session.send(new SetWindowContentsMessage(inventory.getId(), convertedSlots));
     }
 
     // -- Goofy relative time stuff --

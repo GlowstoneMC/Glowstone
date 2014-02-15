@@ -16,6 +16,7 @@ public final class SetWindowContentsCodec implements Codec<SetWindowContentsMess
 
     public ByteBuf encode(ByteBuf buf, SetWindowContentsMessage message) throws IOException {
         buf.writeByte(message.getId());
+        buf.writeShort(message.getItems().length);
         for (ItemStack item : message.getItems()) {
             GlowBufUtils.writeSlot(buf, item);
         }
