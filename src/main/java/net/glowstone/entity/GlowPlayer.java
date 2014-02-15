@@ -173,6 +173,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         streamBlocks(); // stream the initial set of blocks
         setCompassTarget(world.getSpawnLocation()); // set our compass target
         session.send(new StateChangeMessage(getWorld().hasStorm() ? 2 : 1, 0)); // send the world's weather
+
+        // send initial location
+        double y = location.getY() + getEyeHeight() + 0.05;
+        session.send(new PositionRotationMessage(location.getX(), y, location.getZ(), location.getYaw(), location.getPitch(), true));
     }
 
     // -- Various internal mechanisms

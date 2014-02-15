@@ -27,4 +27,12 @@ public final class ChunkBulkMessage implements Message {
     public List<ChunkDataMessage> getEntries() {
         return entries;
     }
+
+    @Override
+    public String toString() {
+        return "ChunkBulkMessage{" +
+                "skyLight=" + skyLight +
+                ", entries=" + entries +
+                '}';
+    }
 }

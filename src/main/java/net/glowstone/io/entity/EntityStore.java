@@ -58,9 +58,9 @@ public abstract class EntityStore<T extends GlowEntity> {
         if (compound.is("Pos", ListTag.class) && compound.is("Rotation", ListTag.class)) {
             List<DoubleTag> posTag = compound.getList("Pos", DoubleTag.class);
             List<FloatTag> rotTag = compound.getList("Rotation", FloatTag.class);
-            entity.teleport(NbtSerialization.listTagsToLocation(world, posTag, rotTag));
+            entity.setRawLocation(NbtSerialization.listTagsToLocation(world, posTag, rotTag));
         } else {
-            entity.teleport(world.getSpawnLocation());
+            entity.setRawLocation(world.getSpawnLocation());
         }
         if (compound.is("Motion", ListTag.class)) {
             // entity.setVelocity(NbtFormattingUtils.listTagToVector((ListTag<DoubleTag>) compound.getValue().get("Motion")));
