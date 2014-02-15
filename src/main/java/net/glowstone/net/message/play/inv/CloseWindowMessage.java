@@ -1,6 +1,8 @@
-package net.glowstone.msg;
+package net.glowstone.net.message.play.inv;
 
-public final class CloseWindowMessage extends Message {
+import com.flowpowered.networking.Message;
+
+public final class CloseWindowMessage implements Message {
 
     private final int id;
 
