@@ -64,6 +64,8 @@ public class GlowInventoryView extends InventoryView {
      * @param slot The slot to check.
      */
     private void checkSlot(int slot) {
+        if (slot == OUTSIDE) return;
+
         int size = countSlots();
         if (isDefault(this)) size += 4; // armor slots
         if (slot < 0 || slot >= size) {
