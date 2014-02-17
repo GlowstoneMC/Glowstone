@@ -1,54 +1,74 @@
 package net.glowstone.net.handler.play.inv;
 
 import com.flowpowered.networking.MessageHandler;
-import com.flowpowered.networking.session.Session;
+import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.GlowCraftingInventory;
-import net.glowstone.inventory.GlowInventory;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.inv.TransactionMessage;
 import net.glowstone.net.message.play.inv.WindowClickMessage;
-import org.bukkit.GameMode;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Objects;
-import java.util.logging.Level;
 
 public final class WindowClickHandler implements MessageHandler<GlowSession, WindowClickMessage> {
     public void handle(GlowSession session, WindowClickMessage message) {
-        final GlowPlayer player = session.getPlayer();
+        GlowServer.logger.info(session + " clicked: " + message);
+        boolean result = process(session.getPlayer(), message);
+        session.send(new TransactionMessage(message.getId(), message.getTransaction(), result));
+    }
 
-        GlowInventory inv = player.getInventory();
-        int slot = inv.getItemSlot(message.getSlot());
-
-        // Modify slot if needed
-        if (slot < 0) {
-            inv = player.getInventory().getCraftingInventory();
-            slot = inv.getItemSlot(message.getSlot());
+    private boolean process(final GlowPlayer player, final WindowClickMessage message) {
+        // Determine inventory and slot clicked
+        InventoryView openView = player.getOpenInventory();
+        Inventory inv;
+        int slot = message.getSlot();
+        if (slot < openView.getTopInventory().getSize()) {
+            inv = openView.getTopInventory();
+        } else {
+            inv = openView.getBottomInventory();
         }
-        if (slot == -1) {
+        slot = openView.convertSlot(slot);
+
+        if (slot < 0) {
+            // todo: drop item
             player.setItemOnCursor(null);
-            response(session, message, true);
-        }
-        if (slot < 0) {
-            response(session, message, false);
-            player.getServer().getLogger().log(Level.WARNING, "Got invalid inventory slot {0} from {1}", new Object[]{message.getSlot(), player.getName()});
-            return;
+            return true;
         }
 
         ItemStack currentItem = inv.getItem(slot);
 
-        if (player.getGameMode() == GameMode.CREATIVE && message.getId() == inv.getId()) {
-            response(session, message, false);
-            player.onSlotSet(inv, slot, currentItem);
+        /*if (player.getGameMode() == GameMode.CREATIVE && message.getId() == inv.getId()) {
+            //player.onSlotSet(inv, slot, currentItem);
             player.getServer().getLogger().log(Level.WARNING, "{0} tried to do an invalid inventory action in Creative mode!", new Object[]{player.getName()});
-            return;
-        }
+            return false;
+        }*/
+
         if (!Objects.equals(message.getItem(), currentItem)) {
-            player.onSlotSet(inv, slot, currentItem);
-            response(session, message, false);
-            return;
+            //player.onSlotSet(inv, slot, currentItem);
+            return false;
         }
+
+        // m b s (* for -999)
+        // 0 0   lmb
+        //   1   rmb
+        // 1 0   shift+lmb
+        //   1   shift+rmb (same as 1/0)
+        // 2 *   number key b+1
+        // 3 2   middle click / duplicate (creative)
+        // 4 0   drop
+        // 4 1   ctrl + drop
+        // 4 0 * lmb with no item (no-op)
+        // 4 1 * rmb with no item (no-op)
+        // 5 0 * start left drag
+        // 5 1   add slot left drag
+        // 5 2 * end left drag
+        // 5 4 * start right drag
+        // 5 5   add slot right drag
+        // 5 6 * end right drag
+        // 6 0   double click
 
         if (message.getMode() == 1) {
             if (false /* inv == player.getInventory().getOpenWindow() */) {
@@ -62,8 +82,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                             // TODO: deal with item stacks
                             inv.setItem(i, currentItem);
                             inv.setItem(slot, null);
-                            response(session, message, true);
-                            return;
+                            return true;
                         }
                     }
                 } else {
@@ -72,31 +91,25 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                             // TODO: deal with item stacks
                             inv.setItem(i, currentItem);
                             inv.setItem(slot, null);
-                            response(session, message, true);
-                            return;
+                            return true;
                         }
                     }
                 }
             }
-            response(session, message, false);
-            return;
+            return false;
         }
 
         if (inv == player.getInventory().getCraftingInventory() && slot == GlowCraftingInventory.RESULT_SLOT && player.getItemOnCursor() != null) {
-            response(session, message, false);
-            return;
+            return false;
         }
 
-        response(session, message, true);
         inv.setItem(slot, player.getItemOnCursor());
         player.setItemOnCursor(currentItem);
 
         if (inv == player.getInventory().getCraftingInventory() && slot == GlowCraftingInventory.RESULT_SLOT && currentItem != null) {
             player.getInventory().getCraftingInventory().craft();
         }
-    }
 
-    private void response(Session session, WindowClickMessage message, boolean success) {
-        session.send(new TransactionMessage(message.getId(), message.getTransaction(), success));
+        return true;
     }
 }

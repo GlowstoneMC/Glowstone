@@ -15,15 +15,9 @@ import java.util.*;
 public class GlowInventory implements Inventory {
 
     /**
-     * The ID of the inventory.
-     * Todo: improve this - only implemented inventory is player which is always 0.
+     * The list of humans viewing this inventory.
      */
-    private final byte id = 0;
-
-    /**
-     * The list of InventoryViewers attached to this inventory.
-     */
-    protected final ArrayList<InventoryViewer> viewers = new ArrayList<InventoryViewer>();
+    protected final Set<HumanEntity> viewers = new HashSet<HumanEntity>();
 
     /**
      * The owner of this inventory.
@@ -50,15 +44,15 @@ public class GlowInventory implements Inventory {
      */
     private int maxStackSize = 64;
 
-    protected GlowInventory(InventoryHolder owner, InventoryType type) {
+    public GlowInventory(InventoryHolder owner, InventoryType type) {
         this(owner, type, type.getDefaultSize(), type.getDefaultTitle());
     }
 
-    protected GlowInventory(InventoryHolder owner, InventoryType type, int size) {
+    public GlowInventory(InventoryHolder owner, InventoryType type, int size) {
         this(owner, type, size, type.getDefaultTitle());
     }
 
-    protected GlowInventory(InventoryHolder owner, InventoryType type, int size, String title) {
+    public GlowInventory(InventoryHolder owner, InventoryType type, int size, String title) {
         this.owner = owner;
         this.type = type;
         this.slots = new ItemStack[size];
@@ -70,9 +64,9 @@ public class GlowInventory implements Inventory {
 
     /**
      * Add a viewer to the inventory.
-     * @param viewer The InventoryViewer to add.
+     * @param viewer The HumanEntity to add.
      */
-    public void addViewer(InventoryViewer viewer) {
+    public void addViewer(HumanEntity viewer) {
         if (!viewers.contains(viewer)) {
             viewers.add(viewer);
         }
@@ -80,30 +74,12 @@ public class GlowInventory implements Inventory {
 
     /**
      * Remove a viewer from the inventory.
-     * @param viewer The InventoryViewer to remove.
+     * @param viewer The HumanEntity to remove.
      */
-    public void removeViewer(InventoryViewer viewer) {
+    public void removeViewer(HumanEntity viewer) {
         if (viewers.contains(viewer)) {
             viewers.remove(viewer);
         }
-    }
-
-    /**
-     * Get the network index from a slot index.
-     * @param itemSlot The index for use with getItem/setItem.
-     * @return The index modified for transfer over the network, or -1 if there is no equivalent.
-     */
-    public int getNetworkSlot(int itemSlot) {
-        return itemSlot;
-    }
-
-    /**
-     * Get the slot index from a network index.
-     * @param networkSlot The index received over the network.
-     * @return The index modified for use with getItem/setItem, or -1 if there is no equivalent.
-     */
-    public int getItemSlot(int networkSlot) {
-        return networkSlot;
     }
 
     /**
@@ -111,17 +87,12 @@ public class GlowInventory implements Inventory {
      * @return The inventory id for wire purposes.
      */
     public int getId() {
-        return id;
-    }
-
-    /**
-     * Updates all attached inventory viewers about a change to index.
-     * @param index The index to update.
+        /*
+      The ID of the inventory.
+      Todo: improve this - only implemented inventory is player which is always 0.
      */
-    protected void sendUpdate(int index) {
-        for (InventoryViewer viewer : viewers) {
-            viewer.onSlotSet(this, index, slots[index]);
-        }
+        byte id = 0;
+        return id;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -156,13 +127,7 @@ public class GlowInventory implements Inventory {
     }
 
     public List<HumanEntity> getViewers() {
-        List<HumanEntity> result = new LinkedList<HumanEntity>();
-        for (InventoryViewer viewer : viewers) {
-            if (viewer instanceof HumanEntity) {
-                result.add((HumanEntity) viewer);
-            }
-        }
-        return result;
+        return new ArrayList<>(viewers);
     }
 
     public ListIterator<ItemStack> iterator() {
@@ -186,7 +151,6 @@ public class GlowInventory implements Inventory {
 
     public void setItem(int index, ItemStack item) {
         slots[index] = item;
-        sendUpdate(index);
     }
 
     public HashMap<Integer, ItemStack> addItem(ItemStack... items) {
@@ -207,7 +171,6 @@ public class GlowInventory implements Inventory {
 
                     slots[j].setAmount(slots[j].getAmount() + space);
                     toAdd -= space;
-                    sendUpdate(j);
                 }
             }
 
@@ -218,7 +181,6 @@ public class GlowInventory implements Inventory {
                         int num = toAdd > maxStackSize ? maxStackSize : toAdd;
                         slots[j] = new ItemStack(mat, num, damage);
                         toAdd -= num;
-                        sendUpdate(j);
                     }
                 }
             }
@@ -249,7 +211,6 @@ public class GlowInventory implements Inventory {
                         toRemove -= slots[j].getAmount();
                         slots[j] = null;
                     }
-                    sendUpdate(j);
                 }
             }
 
@@ -270,12 +231,7 @@ public class GlowInventory implements Inventory {
         if (items.length != slots.length) {
             throw new IllegalArgumentException("Length of items must be " + slots.length);
         }
-        for (int i = 0; i < items.length; ++i) {
-            slots[i] = items[i];
-        }
-        for (InventoryViewer viewer : viewers) {
-            viewer.onContentsSet(this, slots);
-        }
+        System.arraycopy(items, 0, slots, 0, items.length);
     }
 
     ////////////////////////////////////////////////////////////////////////////

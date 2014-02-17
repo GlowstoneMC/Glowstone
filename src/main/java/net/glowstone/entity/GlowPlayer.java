@@ -4,17 +4,14 @@ import com.flowpowered.networking.Message;
 import net.glowstone.*;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.meta.MetadataIndex;
-import net.glowstone.inventory.GlowInventory;
-import net.glowstone.inventory.GlowPlayerInventory;
-import net.glowstone.inventory.InventoryViewer;
+import net.glowstone.inventory.InventoryMonitor;
 import net.glowstone.io.StorageOperation;
 import net.glowstone.msg.*;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.login.LoginSuccessMessage;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.game.*;
-import net.glowstone.net.message.play.inv.SetWindowContentsMessage;
-import net.glowstone.net.message.play.inv.SetWindowSlotMessage;
+import net.glowstone.net.message.play.inv.*;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.util.TextWrapper;
 import org.bukkit.*;
@@ -27,7 +24,9 @@ import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.StandardMessenger;
@@ -42,7 +41,7 @@ import java.util.logging.Level;
  * @author Graham Edgecombe
  */
 @DelegateDeserialization(GlowOfflinePlayer.class)
-public final class GlowPlayer extends GlowHumanEntity implements Player, InventoryViewer {
+public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     /**
      * The normal height of a player's eyes above their feet.
@@ -120,6 +119,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     private ChunkManager.ChunkLock chunkLock;
 
     /**
+     * The tracker for changes to the currently open inventory.
+     */
+    private InventoryMonitor invMonitor;
+
+    /**
      * Whether the player is sneaking.
      */
     private boolean sneaking = false;
@@ -138,7 +142,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
      * The name a player has in the player list
      */
     private String playerListName;
-
 
     /**
      * Creates a new player and adds it to the world.
@@ -165,15 +168,15 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         }
         session.send(new JoinGameMessage(getEntityId(), gameMode, world.getEnvironment().getId(), world.getDifficulty().getValue(), session.getServer().getMaxPlayers(), type));
 
-        getInventory().addViewer(this);
-        getInventory().getCraftingInventory().addViewer(this);
-
         loadData();
         saveData();
 
         streamBlocks(); // stream the initial set of blocks
         setCompassTarget(world.getSpawnLocation()); // set our compass target
         session.send(new StateChangeMessage(getWorld().hasStorm() ? 2 : 1, 0)); // send the world's weather
+
+        invMonitor = new InventoryMonitor(getOpenInventory());
+        updateInventory(); // send inventory contents
 
         // send initial location
         double y = location.getY() + getEyeHeight() + 0.05;
@@ -201,9 +204,16 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
     public void pulse() {
         super.pulse();
 
+        // stream world
         streamBlocks();
         processBlockChanges();
 
+        // update inventory
+        for (InventoryMonitor.Entry entry : invMonitor.getChanges()) {
+            sendItemChange(entry.slot, entry.item);
+        }
+
+        // update or remove entities
         for (Iterator<GlowEntity> it = knownEntities.iterator(); it.hasNext(); ) {
             GlowEntity entity = it.next();
             boolean withinDistance = !entity.isDead() && isWithinDistance(entity);
@@ -218,6 +228,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
             }
         }
 
+        // add entities
         for (GlowEntity entity : world.getEntityManager()) {
             if (entity == this)
                 continue;
@@ -900,10 +911,17 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
 
     }
 
-    // -- Inventory
+    ////////////////////////////////////////////////////////////////////////////
+    // Inventory
 
     public void updateInventory() {
-        getInventory().setContents(getInventory().getContents());
+        GlowServer.logger.info("updateInventory(): " + invMonitor.getId() + " -> " + invMonitor.getSize() + " : " + Arrays.toString(invMonitor.getContents()));
+        session.send(new SetWindowContentsMessage(invMonitor.getId(), invMonitor.getContents()));
+    }
+
+    public void sendItemChange(int slot, ItemStack item) {
+        GlowServer.logger.info("sendItemChange(" + slot + ": " + item + ")");
+        session.send(new SetWindowSlotMessage(invMonitor.getId(), slot, item));
     }
 
     @Override
@@ -912,52 +930,34 @@ public final class GlowPlayer extends GlowHumanEntity implements Player, Invento
         session.send(new SetWindowSlotMessage(-1, -1, item));
     }
 
-    // from InventoryViewer
-    public void onSlotSet(GlowInventory inventory, int slot, ItemStack item) {
-        if (inventory == getInventory()) {
-            int type = item == null ? -1 : item.getTypeId();
-            int data = item == null ? 0 : item.getDurability();
-
-            int equipSlot = -1;
-            if (slot == getInventory().getHeldItemSlot()) {
-                equipSlot = EntityEquipmentMessage.HELD_ITEM;
-            } else if (slot == GlowPlayerInventory.HELMET_SLOT) {
-                equipSlot = EntityEquipmentMessage.HELMET_SLOT;
-            } else if (slot == GlowPlayerInventory.CHESTPLATE_SLOT) {
-                equipSlot = EntityEquipmentMessage.CHESTPLATE_SLOT;
-            } else if (slot == GlowPlayerInventory.LEGGINGS_SLOT) {
-                equipSlot = EntityEquipmentMessage.LEGGINGS_SLOT;
-            } else if (slot == GlowPlayerInventory.BOOTS_SLOT) {
-                equipSlot = EntityEquipmentMessage.BOOTS_SLOT;
-            }
-
-            if (equipSlot >= 0) {
-                EntityEquipmentMessage message = new EntityEquipmentMessage(getEntityId(), equipSlot, type, data);
-                for (GlowPlayer player : new ArrayList<GlowPlayer>(getWorld().getRawPlayers())) {
-                    if (player != this && player.canSee((GlowEntity) this)) {
-                        player.getSession().send(message);
-                    }
-                }
-            }
-        }
-
-        session.send(new SetWindowSlotMessage(inventory.getId(), inventory.getNetworkSlot(slot), item));
+    @Override
+    public boolean setWindowProperty(InventoryView.Property prop, int value) {
+        if (!super.setWindowProperty(prop, value)) return false;
+        session.send(new WindowPropertyMessage(invMonitor.getId(), prop.getId(), value));
+        return true;
     }
 
-    // from InventoryViewer
-    public void onContentsSet(GlowInventory inventory, ItemStack[] slots) {
-        // todo: the slot conversion logic in GlowInventory is shaky at best
+    @Override
+    public void openInventory(InventoryView view) {
+        session.send(new CloseWindowMessage(invMonitor.getId()));
 
-        int maxSlot = 0;
-        for (int i = 0; i < slots.length; ++i) {
-            maxSlot = Math.max(maxSlot, inventory.getNetworkSlot(i));
-        }
-        ItemStack[] convertedSlots = new ItemStack[maxSlot + 1];
-        for (int i = 0; i < slots.length; ++i) {
-            convertedSlots[inventory.getNetworkSlot(i)] = slots[i];
+        super.openInventory(view);
+
+        invMonitor = new InventoryMonitor(getOpenInventory());
+        int viewId = invMonitor.getId();
+        if (viewId != 0) {
+            String title = view.getTitle();
+            boolean useTitle = !view.getType().getDefaultTitle().equals(title);
+            if (view.getTopInventory() instanceof PlayerInventory && !useTitle) {
+                title = ((PlayerInventory) view.getTopInventory()).getHolder().getName();
+                useTitle = true;
+            }
+            Message open = new OpenWindowMessage(viewId, invMonitor.getType(), title, view.getTopInventory().getSize(), useTitle);
+            GlowServer.logger.info("Sending: " + open);
+            session.send(open);
         }
 
-        session.send(new SetWindowContentsMessage(inventory.getId(), convertedSlots));
+        updateInventory();
     }
 
     // -- Goofy relative time stuff --

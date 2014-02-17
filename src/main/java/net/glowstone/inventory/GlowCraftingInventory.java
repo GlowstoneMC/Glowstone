@@ -14,7 +14,8 @@ import java.util.Arrays;
  */
 public class GlowCraftingInventory extends GlowInventory implements CraftingInventory {
 
-    public static final int RESULT_SLOT = 4;
+    public static final int RESULT_SLOT = 0;
+    private static final int MATRIX_START = 1;
 
     public GlowCraftingInventory(GlowPlayerInventory parent) {
         super(parent.getHolder(), InventoryType.CRAFTING);
@@ -31,16 +32,13 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
         super.setItem(index, item);
 
         if (index != RESULT_SLOT) {
-            ItemStack[] items = new ItemStack[4];
-            for (int i = 0; i < 4; ++i) {
-                items[i] = getItem(i);
-            }
+            ItemStack[] items = getMatrix();
 
             Recipe recipe = ((GlowServer) Bukkit.getServer()).getCraftingManager().getCraftingRecipe(items);
             if (recipe == null) {
-                setItem(RESULT_SLOT, null);
+                super.setItem(RESULT_SLOT, null);
             } else {
-                setItem(RESULT_SLOT, recipe.getResult());
+                super.setItem(RESULT_SLOT, recipe.getResult());
             }
         }
     }
@@ -66,7 +64,7 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
     }
 
     public ItemStack[] getMatrix() {
-        return Arrays.copyOf(getContents(), 4);
+        return Arrays.copyOfRange(getContents(), MATRIX_START, getSize());
     }
 
     public void setResult(ItemStack newResult) {
@@ -78,7 +76,7 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
             throw new IllegalArgumentException("Length must be 4");
         }
         for (int i = 0; i < 4; ++i) {
-            setItem(i, contents[i]);
+            setItem(i + 1, contents[i]);
         }
     }
 
@@ -91,29 +89,5 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
     private final static int slotConversion[] = {
             1, 2, 3, 4, 0
     };
-
-    /**
-     * Get the network index from a slot index.
-     * @param itemSlot The index for use with getItem/setItem.
-     * @return The index modified for transfer over the network, or -1 if there is no equivalent.
-     */
-    @Override
-    public int getNetworkSlot(int itemSlot) {
-        if (itemSlot > slotConversion.length) return -1;
-        return slotConversion[itemSlot];
-    }
-
-    /**
-     * Get the slot index from a network index.
-     * @param networkSlot The index received over the network.
-     * @return The index modified for use with getItem/setItem, or -1 if there is no equivalent.
-     */
-    @Override
-    public int getItemSlot(int networkSlot) {
-        for (int i = 0; i < slotConversion.length; ++i) {
-            if (slotConversion[i] == networkSlot) return i;
-        }
-        return -1;
-    }
 
 }

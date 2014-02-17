@@ -10,6 +10,8 @@ public final class CloseWindowHandler implements MessageHandler<GlowSession, Clo
     public void handle(GlowSession session, CloseWindowMessage message) {
         final GlowPlayer player = session.getPlayer();
 
+        player.closeInventory();
+
         if (player.getItemOnCursor() != null) {
             // player.getWorld().dropItem(player.getEyeLocation(), player.getItemInHand());
             if (player.getGameMode() != GameMode.CREATIVE) {

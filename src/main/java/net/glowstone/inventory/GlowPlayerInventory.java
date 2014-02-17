@@ -5,30 +5,47 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.inv.HeldItemMessage;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 /**
  * An Inventory representing the items a player is holding.
  */
-public class GlowPlayerInventory extends GlowInventory implements PlayerInventory {
-    
+public class GlowPlayerInventory extends GlowInventory implements PlayerInventory, EntityEquipment {
+
+    private static final int SIZE = 36;
+
     public static final int HELMET_SLOT = 36;
     public static final int CHESTPLATE_SLOT = 37;
     public static final int LEGGINGS_SLOT = 38;
     public static final int BOOTS_SLOT = 39;
-    
+
+    /**
+     * The armor contents.
+     */
+    private final ItemStack[] armor = new ItemStack[4];
+
+    /**
+     * The crafting inventory.
+     */
     private final GlowCraftingInventory crafting = new GlowCraftingInventory(this);
-    
+
+    /**
+     * The current held item slot.
+     */
     private int heldSlot = 0;
 
     public GlowPlayerInventory(GlowHumanEntity owner) {
         // all player inventories are ID 0
         // 36 = 4 rows of 9
         // + 4 = armor, completed inventory
-        super(owner, InventoryType.PLAYER, 40);
+        super(owner, InventoryType.PLAYER, SIZE);
     }
-    
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Internals
+
     /**
      * Get the crafting inventory.
      * @return The GlowCraftingInventory attached to this player
@@ -37,11 +54,43 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         return crafting;
     }
 
-    public ItemStack[] getArmorContents() {
-        ItemStack[] armor = new ItemStack[4];
-        for (int i = 0; i < 4; ++i) {
-            armor[i] = getItem(HELMET_SLOT + i);
+    public void setRawHeldItemSlot(int slot) {
+        if (slot < 0 || slot > 8)
+            throw new IllegalArgumentException(slot + " not in range 0..8");
+        heldSlot = slot;
+        setItemInHand(getItemInHand());  // send to player again just in case
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Overrides
+
+    @Override
+    public HumanEntity getHolder() {
+        return (HumanEntity) super.getHolder();
+    }
+
+    @Override
+    public void setItem(int index, ItemStack item) {
+        if (index > SIZE) {
+            armor[index - SIZE] = item;
+        } else {
+            super.setItem(index, item);
         }
+    }
+
+    @Override
+    public ItemStack getItem(int index) {
+        if (index >= SIZE) {
+            return armor[index - SIZE];
+        } else {
+            return super.getItem(index);
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Interface implementation
+
+    public ItemStack[] getArmorContents() {
         return armor;
     }
 
@@ -50,7 +99,7 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
             throw new IllegalArgumentException("Length of armor must be 4");
         }
         for (int i = 0; i < 4; ++i) {
-            setItem(HELMET_SLOT + i, items[i]);
+            setItem(SIZE + i, items[i]);
         }
     }
 
@@ -106,52 +155,11 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         }
     }
 
-    public void setRawHeldItemSlot(int slot) {
-        if (slot < 0 || slot > 8)
-            throw new IllegalArgumentException(slot + " not in range 0..8");
-        heldSlot = slot;
-        setItemInHand(getItemInHand());  // send to player again just in case
-    }
-
-    // Helper stuff
-    
-    private final static int slotConversion[] = {
-        36, 37, 38, 39, 40, 41, 42, 43, 44, // quickbar
-        9,  10, 11, 12, 13, 14, 15, 16, 17,
-        18, 19, 20, 21, 22, 23, 24, 25, 26,
-        27, 28, 29, 30, 31, 32, 33, 34, 35,
-        5, 6, 7, 8 // armor
-    };
-    
-    /**
-     * Get the network index from a slot index.
-     * @param itemSlot The index for use with getItem/setItem.
-     * @return The index modified for transfer over the network, or -1 if there is no equivalent.
-     */
-    @Override
-    public int getNetworkSlot(int itemSlot) {
-        if (itemSlot > slotConversion.length) return -1;
-        return slotConversion[itemSlot];
-    }
-    
-    /**
-     * Get the slot index from a network index.
-     * @param networkSlot The index received over the network.
-     * @return The index modified for use with getItem/setItem, or -1 if there is no equivalent.
-     */
-    @Override
-    public int getItemSlot(int networkSlot) {
-        for (int i = 0; i < slotConversion.length; ++i) {
-            if (slotConversion[i] == networkSlot) return i;
-        }
-        return -1;
-    }
-
     public int clear(int id, int data) {
         int cleared = 0;
         for (int i = 0; i < getSize(); ++i) {
             ItemStack stack = getItem(i);
-            if ((stack.getTypeId() == id || id == -1) && (stack.getDurability() == data || data == -1)) {
+            if (stack != null && (stack.getTypeId() == id || id == -1) && (stack.getDurability() == data || data == -1)) {
                 setItem(i, null);
                 ++cleared;
             }
@@ -159,8 +167,46 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         return cleared;
     }
 
-    @Override
-    public HumanEntity getHolder() {
-        return (HumanEntity) super.getHolder();
+    ////////////////////////////////////////////////////////////////////////////
+    // EntityEquipment implementation
+
+    public float getItemInHandDropChance() {
+        return 1;
+    }
+
+    public void setItemInHandDropChance(float chance) {
+        throw new UnsupportedOperationException();
+    }
+
+    public float getHelmetDropChance() {
+        return 1;
+    }
+
+    public void setHelmetDropChance(float chance) {
+        throw new UnsupportedOperationException();
+    }
+
+    public float getChestplateDropChance() {
+        return 1;
+    }
+
+    public void setChestplateDropChance(float chance) {
+        throw new UnsupportedOperationException();
+    }
+
+    public float getLeggingsDropChance() {
+        return 1;
+    }
+
+    public void setLeggingsDropChance(float chance) {
+        throw new UnsupportedOperationException();
+    }
+
+    public float getBootsDropChance() {
+        return 1;
+    }
+
+    public void setBootsDropChance(float chance) {
+        throw new UnsupportedOperationException();
     }
 }

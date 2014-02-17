@@ -3,13 +3,19 @@ package net.glowstone.entity;
 import com.flowpowered.networking.Message;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
+import net.glowstone.inventory.GlowInventory;
+import net.glowstone.inventory.GlowInventoryView;
 import net.glowstone.inventory.GlowPlayerInventory;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.SpawnPlayerMessage;
 import net.glowstone.util.Position;
+import org.apache.commons.lang.Validate;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -37,6 +43,11 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
      * The inventory of this human.
      */
     private final GlowPlayerInventory inventory = new GlowPlayerInventory(this);
+
+    /**
+     * The ender chest inventory of this human.
+     */
+    private final GlowInventory enderChest = new GlowInventory(this, InventoryType.ENDER_CHEST);
 
     /**
      * The item the player has on their cursor.
@@ -74,6 +85,11 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     private GameMode gameMode;
 
     /**
+     * The player's currently open inventory
+     */
+    private InventoryView inventoryView;
+
+    /**
      * Creates a human within the specified world and with the specified name.
      * @param world The world.
      * @param name  The human's name.
@@ -83,6 +99,10 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         this.name = name;
         permissions = new PermissibleBase(this);
         gameMode = server.getDefaultGameMode();
+
+        inventoryView = new GlowInventoryView(this);
+        addViewer(inventoryView.getTopInventory());
+        addViewer(inventoryView.getBottomInventory());
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -133,10 +153,6 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         return sleepingTicks;
     }
 
-    protected void setSleepTicks(int ticks) {
-        sleepingTicks = ticks;
-    }
-
     public GameMode getGameMode() {
         return gameMode;
     }
@@ -159,6 +175,11 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     public int getExpToLevel() {
         throw new UnsupportedOperationException("Non-player HumanEntity has no level");
+    }
+
+    @Override
+    public EntityEquipment getEquipment() {
+        return inventory;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -241,34 +262,72 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     }
 
     public Inventory getEnderChest() {
-        return null;
+        return enderChest;
     }
 
     public boolean setWindowProperty(InventoryView.Property prop, int value) {
-        return false;
+        // nb: does not actually send anything
+        return prop.getType() == inventoryView.getType();
     }
 
     public InventoryView getOpenInventory() {
-        return null;
+        return inventoryView;
     }
 
     public InventoryView openInventory(Inventory inventory) {
-        return null;
+        InventoryView view = new GlowInventoryView(this, inventory.getType(), inventory, getInventory());
+        openInventory(view);
+        return view;
     }
 
     public InventoryView openWorkbench(Location location, boolean force) {
+        if (location == null) {
+            location = getLocation();
+        }
+        if (!force && location.getBlock().getType() != Material.WORKBENCH) {
+            return null;
+        }
+        // todo: actually open
+        /*InventoryView view = new GlowInventoryView(this, new GlowWorkbenchInventory() ...);*/
         return null;
     }
 
     public InventoryView openEnchanting(Location location, boolean force) {
+        if (location == null) {
+            location = getLocation();
+        }
+        if (!force && location.getBlock().getType() != Material.ENCHANTMENT_TABLE) {
+            return null;
+        }
+        // todo: actually open
+        /*InventoryView view = new GlowInventoryView(this, new GlowEnchantInventory() ...);*/
         return null;
     }
 
     public void openInventory(InventoryView inventory) {
+        Validate.notNull(inventory);
 
+        // stop viewing the old inventory and start viewing the new one
+        removeViewer(inventoryView.getTopInventory());
+        removeViewer(inventoryView.getBottomInventory());
+        inventoryView = inventory;
+        addViewer(inventoryView.getTopInventory());
+        addViewer(inventoryView.getBottomInventory());
     }
 
     public void closeInventory() {
+        openInventory(new GlowInventoryView(this));
+    }
 
+    private void addViewer(Inventory inventory) {
+        if (inventory instanceof GlowInventory) {
+            ((GlowInventory) inventory).addViewer(this);
+        }
+    }
+
+    private void removeViewer(Inventory inventory) {
+        if (inventory instanceof GlowInventory) {
+            ((GlowInventory) inventory).removeViewer(this);
+        }
     }
 }
