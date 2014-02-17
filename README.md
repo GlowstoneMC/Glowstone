@@ -4,20 +4,15 @@ Glowstone
 Introduction
 ------------
 
-Glowstone is an open-source implementation of the
-[Minecraft](http://minecraft.net) server software written in Java, originally
-forked from Graham Edgecombe's now-defunct
-[Lightstone](https://github.com/grahamedgecombe/lightstone) project.
+Glowstone is a lightweight, from scratch, open source
+[Minecraft](http://minecraft.net) server written in Java that supports plugins
+written for the [Bukkit](http://bukkit.org) API.
 
-The official server software has some shortcomings such as the use of threaded,
-synchronous I/O along with high CPU and RAM usage. Glowstone aims to be a
-lightweight and high-performance alternative.
-
-Glowstone's main aim as a project independent from Lightstone is to offer a
-higher-performance server while maintaining compatability with the multitude
-of plugins available for the popular [Bukkit](http://bukkit.org) server plugin
-development interface. It does this through implementing Bukkit classes and
-loading Bukkit plugins which interface with these classes.
+The main goals of the project are to provide a lightweight implementation
+of the Bukkit API and Minecraft server where exact vanilla functionality is
+not needed or higher performance is desired than the official software can
+deliver. Glowstone makes use of a thread-per-world model and performs
+synchronization only when necessitated by the Bukkit API.
 
 Building
 --------
@@ -30,16 +25,14 @@ management.
 The command `gradle` will build Glowstone and will put the compiled JAR in 
 `~/build/distributions`, and `gradle install` will copy it to your local Maven 
 repository. Additionally, if you prefer not to install Gradle you can simply 
-use the provided `gradlew` and `gradlew.bat` files in place of `gradle` for 
-commands.
+use the provided `gradlew` or `gradlew.bat` scripts instead of `gradle`.
 
 Running
 -------
 
-Running Glowstone is simple because all dependencies, including Bukkit, are
-shaded into the output jar at compile time thanks to a nifty Gradle plugin.
-Simply execute `java -jar glowstone-0.0.1-SNAPSHOT.jar` along with whatever
-memory-related options to Java you desire, and the server should start.
+Running Glowstone is simple because its dependencies are shaded into the output
+jar at compile time. Simply execute `java -jar glowstone.jar` along with any
+extra JVM options desired.
 
 By default, configuration is stored in the `config/` subdirectory and logs
 are stored in the `logs/` subdirectory. The main configuration file is
@@ -47,8 +40,9 @@ are stored in the `logs/` subdirectory. The main configuration file is
 `bukkit.yml`. Settings from these two files will be copied over to Glowstone's
 configuration during the default configuration generation process.
 
-Glowstone uses a [JLine](http://jline.sf.net)-based server console for command
-input. On non-Windows systems, console output can also be colored. 
+Glowstone uses [JLine](http://jline.sf.net) for console input and colored
+console output. The JLine console can be disabled in the configuration if a
+flat console is desired.
 
 Documentation
 -------------
@@ -72,6 +66,8 @@ Credits
    else who has contributed to Lightstone.
  * All the people behind [Gradle](http://gradle.org) and
    [Java](http://java.oracle.com).
+ * The [Bukkit](http://bukkit.org) team for their outstandingly well-designed
+   plugin API.
  * [Notch](http://mojang.com/notch) and all the other people at
    [Mojang](http://mojang.com) - for making such an awesome game in the first
    place!
@@ -81,4 +77,3 @@ Copyright
 
 Glowstone is open-source software released under the MIT license. Please see
 the `LICENSE` file for details.
-
