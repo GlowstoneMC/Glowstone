@@ -71,7 +71,7 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
 
     @Override
     public void setItem(int index, ItemStack item) {
-        if (index > SIZE) {
+        if (index >= SIZE) {
             armor[index - SIZE] = item;
         } else {
             super.setItem(index, item);

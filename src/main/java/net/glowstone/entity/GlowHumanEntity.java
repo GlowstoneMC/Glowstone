@@ -275,7 +275,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     }
 
     public InventoryView openInventory(Inventory inventory) {
-        InventoryView view = new GlowInventoryView(this, inventory.getType(), inventory, getInventory());
+        InventoryView view = new GlowInventoryView(this, inventory);
         openInventory(view);
         return view;
     }

@@ -22,12 +22,13 @@ public final class InventoryMonitor {
      * @param view The view to monitor.
      */
     public InventoryMonitor(InventoryView view) {
+        boolean isDefault = GlowInventoryView.isDefault(view);
         this.view = view;
-        this.size = view.countSlots();
+        this.size = view.countSlots() + (isDefault ? 4 : 0);
         this.slots = new ItemStack[size];
 
         // determine id and type id
-        if (GlowInventoryView.isDefault(view)) {
+        if (isDefault) {
             id = 0;
         } else {
             // todo: counting or something
