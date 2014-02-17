@@ -10,6 +10,8 @@ public final class CloseWindowHandler implements MessageHandler<GlowSession, Clo
     public void handle(GlowSession session, CloseWindowMessage message) {
         final GlowPlayer player = session.getPlayer();
 
+        // todo: drop items from workbench, enchant inventory, own crafting grid if needed
+
         player.closeInventory();
 
         if (player.getItemOnCursor() != null) {

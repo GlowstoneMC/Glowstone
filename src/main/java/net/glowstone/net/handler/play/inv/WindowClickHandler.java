@@ -1,7 +1,6 @@
 package net.glowstone.net.handler.play.inv;
 
 import com.flowpowered.networking.MessageHandler;
-import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.GlowCraftingInventory;
 import net.glowstone.net.GlowSession;
@@ -15,8 +14,8 @@ import java.util.Objects;
 
 public final class WindowClickHandler implements MessageHandler<GlowSession, WindowClickMessage> {
     public void handle(GlowSession session, WindowClickMessage message) {
-        GlowServer.logger.info(session + " clicked: " + message);
         boolean result = process(session.getPlayer(), message);
+        //GlowServer.logger.info(session + " clicked: " + message + " --> " + result);
         session.send(new TransactionMessage(message.getId(), message.getTransaction(), result));
     }
 

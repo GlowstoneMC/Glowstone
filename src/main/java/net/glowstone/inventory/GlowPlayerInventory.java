@@ -16,10 +16,10 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
 
     private static final int SIZE = 36;
 
-    public static final int HELMET_SLOT = 36;
-    public static final int CHESTPLATE_SLOT = 37;
-    public static final int LEGGINGS_SLOT = 38;
-    public static final int BOOTS_SLOT = 39;
+    private static final int BOOTS_SLOT = 36;
+    private static final int LEGGINGS_SLOT = 37;
+    private static final int CHESTPLATE_SLOT = 38;
+    private static final int HELMET_SLOT = 39;
 
     /**
      * The armor contents.

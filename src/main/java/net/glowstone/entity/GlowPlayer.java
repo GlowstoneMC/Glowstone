@@ -915,12 +915,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     // Inventory
 
     public void updateInventory() {
-        GlowServer.logger.info("updateInventory(): " + invMonitor.getId() + " -> " + invMonitor.getSize() + " : " + Arrays.toString(invMonitor.getContents()));
         session.send(new SetWindowContentsMessage(invMonitor.getId(), invMonitor.getContents()));
     }
 
     public void sendItemChange(int slot, ItemStack item) {
-        GlowServer.logger.info("sendItemChange(" + slot + ": " + item + ")");
         session.send(new SetWindowSlotMessage(invMonitor.getId(), slot, item));
     }
 
@@ -953,7 +951,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
                 useTitle = true;
             }
             Message open = new OpenWindowMessage(viewId, invMonitor.getType(), title, view.getTopInventory().getSize(), useTitle);
-            GlowServer.logger.info("Sending: " + open);
             session.send(open);
         }
 

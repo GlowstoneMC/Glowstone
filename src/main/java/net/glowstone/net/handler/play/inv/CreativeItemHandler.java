@@ -1,7 +1,6 @@
 package net.glowstone.net.handler.play.inv;
 
 import com.flowpowered.networking.MessageHandler;
-import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.GlowInventoryView;
 import net.glowstone.net.GlowSession;
@@ -33,6 +32,5 @@ public final class CreativeItemHandler implements MessageHandler<GlowSession, Cr
 
         // in the creative inventory everything is handled client side
         player.getOpenInventory().setItem(message.getSlot(), message.getItem());
-        GlowServer.logger.info(session + " set creative slot (" + message.getSlot() + ") to " + message.getItem());
     }
 }

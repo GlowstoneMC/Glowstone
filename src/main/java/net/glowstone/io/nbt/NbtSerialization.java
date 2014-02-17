@@ -1,46 +1,72 @@
 package net.glowstone.io.nbt;
 
+import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.util.nbt.*;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public final class NbtSerialization {
 
     private NbtSerialization() {
     }
 
-    public static ItemStack[] tagToInventory(List<CompoundTag> tagList, int size) {
+    public static ItemStack readItem(CompoundTag tag) {
+        short id = tag.is("id", ShortTag.class) ? tag.get("id", ShortTag.class) : 0;
+        short damage = tag.is("Damage", ShortTag.class) ? tag.get("Damage", ShortTag.class) : 0;
+        byte count = tag.is("Count", ByteTag.class) ? tag.get("Count", ByteTag.class) : 0;
+
+        Material material = Material.getMaterial(id);
+        if (material == null || id == 0 || count == 0) {
+            return null;
+        }
+        ItemStack stack = new ItemStack(material, count, damage);
+        if (tag.is("tag", CompoundTag.class)) {
+            stack.setItemMeta(GlowItemFactory.instance().readNbt(material, tag.getTag("tag", CompoundTag.class)));
+        }
+        return stack;
+    }
+
+    public static List<Tag> writeItem(ItemStack stack, int slot) {
+        List<Tag> result = new ArrayList<>(5);
+        result.add(new ShortTag("id", (short) stack.getTypeId()));
+        result.add(new ShortTag("Damage", stack.getDurability()));
+        result.add(new ByteTag("Count", (byte) stack.getAmount()));
+        result.add(new ByteTag("Slot", (byte) slot));
+        CompoundTag meta = GlowItemFactory.instance().writeNbt(stack.getItemMeta());
+        if (meta != null) {
+            // this is a little weird
+            result.add(new CompoundTag("tag", meta.getValue()));
+        }
+        return result;
+    }
+
+    public static ItemStack[] readInventory(List<CompoundTag> tagList, int start, int size) {
         ItemStack[] items = new ItemStack[size];
         for (CompoundTag tag : tagList) {
-            short id = tag.is("id", ShortTag.class) ? tag.get("id", ShortTag.class) : 0;
-            short damage = tag.is("Damage", ShortTag.class) ? tag.get("Damage", ShortTag.class) : 0;
-            byte count = tag.is("Count", ByteTag.class) ? tag.get("Count", ByteTag.class) : 0;
             byte slot = tag.is("Slot", ByteTag.class) ? tag.get("Slot", ByteTag.class) : 0;
-            if (id != 0 && count != 0 && slot > 0 && slot < items.length) {
-                items[slot] = new ItemStack(id, count, damage);
+            if (slot >= start && slot < start + size) {
+                items[slot - start] = readItem(tag);
             }
         }
         return items;
     }
 
-    public static ListTag<CompoundTag> inventoryToTag(ItemStack[] items) {
+    public static List<CompoundTag> writeInventory(ItemStack[] items, int start) {
         List<CompoundTag> out = new ArrayList<CompoundTag>();
         for (int i = 0; i < items.length; i++) {
             ItemStack stack = items[i];
             if (stack != null) {
-                List<Tag> nbtItem = new ArrayList<Tag>(4);
-                nbtItem.add(new ShortTag("id", (short) stack.getTypeId()));
-                nbtItem.add(new ShortTag("Damage", stack.getDurability()));
-                nbtItem.add(new ByteTag("Count", (byte) stack.getAmount()));
-                nbtItem.add(new ByteTag("Slot", (byte) i));
-                out.add(new CompoundTag("", nbtItem));
+                out.add(new CompoundTag("", writeItem(stack, start + i)));
             }
         }
-        return new ListTag<CompoundTag>("Inventory", TagType.COMPOUND, out);
+        return out;
     }
 
     public static Location listTagsToLocation(World world, List<DoubleTag> pos, List<FloatTag> rot) {
