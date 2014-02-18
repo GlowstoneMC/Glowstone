@@ -237,12 +237,7 @@ public final class GlowServer implements Server {
      */
     public void start() {
         // Determine console mode and start reading input
-        String mode = config.getString(ServerConfig.Key.CONSOLE_MODE).toLowerCase();
-        if (mode.equals("gui")) {
-            consoleManager.startGui();
-        } else {
-            consoleManager.startConsole(mode.equals("jline"));
-        }
+        consoleManager.startConsole(config.getBoolean(ServerConfig.Key.USE_JLINE));
         consoleManager.startFile(config.getString(ServerConfig.Key.LOG_FILE));
         
         // Load player lists

@@ -1,6 +1,5 @@
 package net.glowstone;
 
-import com.grahamedgecombe.jterminal.JTerminal;
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
 import org.bukkit.ChatColor;
@@ -16,12 +15,6 @@ import org.bukkit.plugin.Plugin;
 import org.fusesource.jansi.AnsiConsole;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -44,10 +37,8 @@ public final class ConsoleManager {
 
     private ConsoleReader reader;
     private ConsoleCommandSender sender;
-    private ConsoleHandler consoleHandler;
 
     private JFrame jFrame = null;
-    private JTerminal jTerminal = null;
     private JTextField jInput = null;
 
     private boolean running = true;
@@ -63,10 +54,8 @@ public final class ConsoleManager {
             logger.removeHandler(h);
         }
 
-        // used until/unless gui is created
-        consoleHandler = new FancyConsoleHandler();
-        //consoleHandler.setFormatter(new DateOutputFormatter(CONSOLE_DATE));
-        logger.addHandler(consoleHandler);
+        // add log handler which writes to console
+        logger.addHandler(new FancyConsoleHandler());
 
         // reader must be initialized before standard streams are changed
         try {
@@ -85,46 +74,6 @@ public final class ConsoleManager {
         return sender;
     }
 
-    public void startGui() {
-        JTerminalListener listener = new JTerminalListener();
-
-        jFrame = new JFrame("Glowstone");
-        jTerminal = new JTerminal();
-        jInput = new JTextField(80) {
-            @Override public void setBorder(Border border) {}
-        };
-        jInput.paint(null);
-        jInput.setFont(new Font("Monospaced", Font.PLAIN, 12));
-        jInput.setBackground(Color.BLACK);
-        jInput.setForeground(Color.WHITE);
-        jInput.setMargin(new Insets(0, 0, 0, 0));
-        jInput.addKeyListener(listener);
-
-        JLabel caret = new JLabel("> ");
-        caret.setFont(new Font("Monospaced", Font.PLAIN, 12));
-        caret.setForeground(Color.WHITE);
-
-        JPanel ipanel = new JPanel();
-        ipanel.add(caret, BorderLayout.WEST);
-        ipanel.add(jInput, BorderLayout.EAST);
-        ipanel.setBorder(BorderFactory.createEmptyBorder());
-        ipanel.setBackground(Color.BLACK);
-        ipanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        ipanel.setSize(jTerminal.getWidth(), ipanel.getHeight());
-
-        jFrame.getContentPane().add(jTerminal, BorderLayout.NORTH);
-        jFrame.getContentPane().add(ipanel, BorderLayout.SOUTH);
-        jFrame.addWindowListener(listener);
-        jFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        jFrame.setLocationRelativeTo(null);
-        jFrame.pack();
-        jFrame.setVisible(true);
-
-        sender = new ColoredCommandSender();
-        logger.removeHandler(consoleHandler);
-        logger.addHandler(new StreamHandler(new TerminalOutputStream(), new DateOutputFormatter(CONSOLE_DATE)));
-    }
-
     public void startConsole(boolean jLine) {
         this.jLine = jLine;
 
@@ -133,11 +82,6 @@ public final class ConsoleManager {
         thread.setName("ConsoleCommandThread");
         thread.setDaemon(true);
         thread.start();
-
-        /*logger.removeHandler(consoleHandler);
-        consoleHandler = new FancyConsoleHandler();
-        consoleHandler.setFormatter(new DateOutputFormatter(CONSOLE_DATE));
-        logger.addHandler(consoleHandler);*/
     }
 
     public void startFile(String logfile) {
@@ -164,7 +108,7 @@ public final class ConsoleManager {
     private String colorize(String string) {
         if (string.indexOf(ChatColor.COLOR_CHAR) < 0) {
             return string;  // no colors in the message
-        } else if ((!jLine || !reader.getTerminal().isAnsiSupported()) && jTerminal == null) {
+        } else if (!jLine || !reader.getTerminal().isAnsiSupported()) {
             return ChatColor.stripColor(string);  // color not supported
         } else {
             return string.replace(ChatColor.RED.toString(), "\033[1;31m")
@@ -483,47 +427,6 @@ public final class ConsoleManager {
             }
 
             return builder.toString();
-        }
-    }
-
-    private class JTerminalListener implements WindowListener, KeyListener {
-        public void windowOpened(WindowEvent e) {}
-        public void windowIconified(WindowEvent e) {}
-        public void windowDeiconified(WindowEvent e) {}
-        public void windowActivated(WindowEvent e) {}
-        public void windowDeactivated(WindowEvent e) {}
-        public void windowClosed(WindowEvent e) {}
-        public void keyPressed(KeyEvent e) {}
-        public void keyReleased(KeyEvent e) {}
-
-        public void windowClosing(WindowEvent e) {
-            server.shutdown();
-        }
-
-        public void keyTyped(KeyEvent e) {
-            if (e.getKeyChar() == '\n') {
-                String command = jInput.getText().trim();
-                if (command.length() > 0) {
-                    server.getScheduler().scheduleSyncDelayedTask(null, new CommandTask(command));
-                }
-                jInput.setText("");
-            }
-        }
-    }
-
-    private class TerminalOutputStream extends ByteArrayOutputStream {
-        private final String separator = System.getProperty("line.separator");
-
-        @Override
-        public synchronized void flush() throws IOException {
-            super.flush();
-            String record = this.toString();
-            super.reset();
-
-            if (record.length() > 0 && !record.equals(separator)) {
-                jTerminal.print(record);
-                jFrame.repaint();
-            }
         }
     }
 }
