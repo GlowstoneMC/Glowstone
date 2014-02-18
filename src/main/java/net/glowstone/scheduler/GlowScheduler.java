@@ -181,6 +181,7 @@ public final class GlowScheduler implements BukkitScheduler {
                     } else {
                         asyncTaskExecutor.submit(task);
                     }
+                    break;
                 case STOP:
                     it.remove();
             }
