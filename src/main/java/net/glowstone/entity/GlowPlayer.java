@@ -1,6 +1,8 @@
 package net.glowstone.entity;
 
 import com.flowpowered.networking.Message;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import net.glowstone.*;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -33,6 +35,7 @@ import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -101,17 +104,22 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * The entities that the client knows about.
      */
-    private final Set<GlowEntity> knownEntities = new HashSet<GlowEntity>();
+    private final Set<GlowEntity> knownEntities = new HashSet<>();
 
     /**
      * The chunks that the client knows about.
      */
-    private final Set<GlowChunk.Key> knownChunks = new HashSet<GlowChunk.Key>();
+    private final Set<GlowChunk.Key> knownChunks = new HashSet<>();
 
     /**
      * A queue of BlockChangeMessages to be sent.
      */
     private final List<BlockChangeMessage> blockChanges = new LinkedList<>();
+
+    /**
+     * The set of plugin channels this player is listening on
+     */
+    private final Set<String> listeningChannels = new HashSet<>();
 
     /**
      * The lock used to prevent chunks from unloading near the player.
@@ -167,6 +175,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             gameMode |= 0x8;
         }
         session.send(new JoinGameMessage(getEntityId(), gameMode, world.getEnvironment().getId(), world.getDifficulty().getValue(), session.getServer().getMaxPlayers(), type));
+
+        // send server brand and supported plugin channels
+        session.send(new PluginMessage("MC|Brand", server.getName().getBytes(StandardCharsets.UTF_8)));
+        sendSupportedChannels();
 
         loadData();
         saveData();
@@ -1199,18 +1211,57 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         return false;
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Plugin messages
+
     @Override
     public void sendPluginMessage(Plugin source, String channel, byte[] message) {
-        // todo: send and handle REGISTER, UNREGISTER
         StandardMessenger.validatePluginMessage(getServer().getMessenger(), source, channel, message);
-        session.send(new PluginMessage(channel, message));
+        if (listeningChannels.contains(channel)) {
+            // only send if player is listening for it
+            session.send(new PluginMessage(channel, message));
+        }
     }
 
     @Override
     public Set<String> getListeningPluginChannels() {
-        // todo: keep track of client's accepted channels
-        return null;
+        return Collections.unmodifiableSet(listeningChannels);
     }
 
+    /**
+     * Add a listening channel to this player.
+     * @param channel The channel to add.
+     */
+    public void addChannel(String channel) {
+        if (listeningChannels.add(channel)) {
+            // EventFactory.callEvent(new PlayerRegisterChannelEvent(this, channel));
+        }
+    }
 
+    /**
+     * Remove a listening channel from this player.
+     * @param channel The channel to remove.
+     */
+    public void removeChannel(String channel) {
+        if (listeningChannels.remove(channel)) {
+            // EventFactory.callEvent(new PlayerUnregisterChannelEvent(this, channel));
+        }
+    }
+
+    /**
+     * Send the supported plugin channels to the client.
+     */
+    private void sendSupportedChannels() {
+        Set<String> listening = server.getMessenger().getIncomingChannels();
+
+        if (!listening.isEmpty()) {
+            // send NUL-separated list of channels we support
+            ByteBuf buf = Unpooled.buffer(16 * listening.size());
+            for (String channel : listening) {
+                buf.writeBytes(channel.getBytes(StandardCharsets.UTF_8));
+                buf.writeByte(0);
+            }
+            session.send(new PluginMessage("REGISTER", buf.array()));
+        }
+    }
 }
