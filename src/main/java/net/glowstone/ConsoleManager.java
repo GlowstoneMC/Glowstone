@@ -14,7 +14,6 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.fusesource.jansi.AnsiConsole;
 
-import javax.swing.*;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,9 +36,6 @@ public final class ConsoleManager {
 
     private ConsoleReader reader;
     private ConsoleCommandSender sender;
-
-    private JFrame jFrame = null;
-    private JTextField jInput = null;
 
     private boolean running = true;
     private boolean jLine = false;
@@ -99,9 +95,6 @@ public final class ConsoleManager {
         for (Handler handler : logger.getHandlers()) {
             handler.flush();
             handler.close();
-        }
-        if (jFrame != null) {
-            jFrame.dispose();
         }
     }
 
