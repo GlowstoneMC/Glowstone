@@ -7,7 +7,6 @@ import net.glowstone.*;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.inventory.InventoryMonitor;
-import net.glowstone.io.StorageOperation;
 import net.glowstone.msg.*;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.login.LoginSuccessMessage;
@@ -742,31 +741,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     public void saveData(boolean async) {
         final GlowWorld dataWorld = (GlowWorld) server.getWorlds().get(0);
+
         if (async) {
-            final GlowPlayer player = this;
-            server.getStorageQueue().queue(new StorageOperation() {
-                @Override
-                public boolean isParallel() {
-                    return true;
-                }
-
-                @Override
-                public String getGroup() {
-                    return getName() + "_" + getWorld().getName();
-                }
-
-                @Override
-                public boolean queueMultiple() {
-                    return true;
-                }
-
-                @Override
-                public String getOperation() {
-                    return "player-data-save";
-                }
-
+            server.getScheduler().runTaskAsynchronously(null, new Runnable() {
                 public void run() {
-                    dataWorld.getMetadataService().writePlayerData(player);
+                    dataWorld.getMetadataService().writePlayerData(GlowPlayer.this);
                 }
             });
         } else {

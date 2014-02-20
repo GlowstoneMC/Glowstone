@@ -300,8 +300,7 @@ public final class ChunkManager {
                 service.write(x, z, chunk);
                 return true;
             } catch (IOException ex) {
-                GlowServer.logger.log(Level.SEVERE, "Error while saving chunk: {0}", ex.getMessage());
-                ex.printStackTrace();
+                GlowServer.logger.log(Level.SEVERE, "Error while saving chunk (" + x + ", " + z + ")", ex);
                 return false;
             }
         }

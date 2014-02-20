@@ -4,7 +4,6 @@ import com.flowpowered.networking.NetworkServer;
 import net.glowstone.command.ColorCommand;
 import net.glowstone.inventory.CraftingManager;
 import net.glowstone.inventory.GlowItemFactory;
-import net.glowstone.io.StorageQueue;
 import net.glowstone.map.GlowMapView;
 import net.glowstone.net.GlowNetworkServer;
 import net.glowstone.net.SessionRegistry;
@@ -64,19 +63,12 @@ public final class GlowServer implements Server {
     public static final int PROTOCOL_VERSION = 4;
 
     /**
-     * The storage queue for handling I/O operations.
-     */
-    public static final StorageQueue storeQueue = new StorageQueue();
-
-    /**
      * Creates a new server on TCP port 25565 and starts listening for
      * connections.
      * @param args The command-line arguments.
      */
     public static void main(String[] args) {
         try {
-            storeQueue.start();
-
             ConfigurationSerialization.registerClass(GlowOfflinePlayer.class);
 
             GlowServer server = new GlowServer();
@@ -319,8 +311,7 @@ public final class GlowServer implements Server {
             unloadWorld(world, true);
         }
 
-        // Stop scheduler, storage queue, and console
-        storeQueue.end();
+        // Stop scheduler and console
         scheduler.stop();
         consoleManager.stop();
 
@@ -503,14 +494,6 @@ public final class GlowServer implements Server {
      */
     public CraftingManager getCraftingManager() {
         return craftingManager;
-    }
-
-    /**
-     * Get the storage queue used for I/O operations.
-     * @return The {@link StorageQueue}.
-     */
-    public StorageQueue getStorageQueue() {
-        return storeQueue;
     }
 
     /**

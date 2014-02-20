@@ -2,14 +2,13 @@ package net.glowstone;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.*;
-import net.glowstone.io.StorageOperation;
 import net.glowstone.io.WorldMetadataService;
 import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
 import net.glowstone.io.anvil.AnvilWorldStorageProvider;
-import net.glowstone.util.WeakValueMap;
 import net.glowstone.net.message.play.game.StateChangeMessage;
 import net.glowstone.net.message.play.game.TimeMessage;
+import net.glowstone.util.WeakValueMap;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -599,28 +598,9 @@ public final class GlowWorld implements World {
 
     public void save(boolean async) {
         EventFactory.onWorldSave(this);
+
         if (async) {
-            server.getStorageQueue().queue(new StorageOperation() {
-                @Override
-                public boolean isParallel() {
-                    return true;
-                }
-
-                @Override
-                public String getGroup() {
-                    return getName();
-                }
-
-                @Override
-                public String getOperation() {
-                    return "world-save";
-                }
-
-                @Override
-                public boolean queueMultiple() {
-                    return false;
-                }
-
+            server.getScheduler().runTaskAsynchronously(null, new Runnable() {
                 public void run() {
                     for (GlowChunk chunk : chunks.getLoadedChunks()) {
                         chunks.forceSave(chunk.getX(), chunk.getZ());
@@ -1043,41 +1023,21 @@ public final class GlowWorld implements World {
 
     void writeWorldData(boolean async) {
         if (async) {
-        server.getStorageQueue().queue(new StorageOperation() {
-            @Override
-            public boolean isParallel() {
-                return true;
-            }
-
-            @Override
-            public String getGroup() {
-                return getName();
-            }
-
-            @Override
-            public boolean queueMultiple() {
-                return false;
-            }
-
-            @Override
-            public String getOperation() {
-                return "world-metadata-save";
-            }
-
-            public void run() {
-                try {
-                    storageProvider.getMetadataService().writeWorldData();
-                } catch (IOException e) {
-                    server.getLogger().severe("Could not save world metadata file for world" + getName());
-                    e.printStackTrace();
+            server.getScheduler().runTaskAsynchronously(null, new Runnable() {
+                public void run() {
+                    try {
+                        storageProvider.getMetadataService().writeWorldData();
+                    } catch (IOException e) {
+                        server.getLogger().severe("Could not save metadata for world: " + getName());
+                        e.printStackTrace();
+                    }
                 }
-            }
-        });
+            });
         } else {
             try {
                 storageProvider.getMetadataService().writeWorldData();
             } catch (IOException e) {
-                server.getLogger().severe("Could not save world metadata file for world" + getName());
+                server.getLogger().severe("Could not save metadata for world: " + getName());
                 e.printStackTrace();
             }
         }
