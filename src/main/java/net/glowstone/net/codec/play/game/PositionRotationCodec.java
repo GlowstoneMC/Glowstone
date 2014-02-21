@@ -13,7 +13,7 @@ public final class PositionRotationCodec implements Codec<PositionRotationMessag
         double z = buffer.readDouble();
         float rotation = buffer.readFloat();
         float pitch = buffer.readFloat();
-        boolean onGround = buffer.readByte() != 0;
+        boolean onGround = buffer.readBoolean();
 
         return new PositionRotationMessage(x, y, z, rotation, pitch, onGround);
     }
@@ -24,7 +24,7 @@ public final class PositionRotationCodec implements Codec<PositionRotationMessag
         buf.writeDouble(message.getZ());
         buf.writeFloat(message.getRotation());
         buf.writeFloat(message.getPitch());
-        buf.writeByte(message.isOnGround() ? 1 : 0);
+        buf.writeBoolean(message.isOnGround());
         return buf;
     }
 }

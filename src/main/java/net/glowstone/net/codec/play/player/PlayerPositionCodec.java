@@ -12,7 +12,7 @@ public final class PlayerPositionCodec implements Codec<PlayerPositionMessage> {
         double y = buffer.readDouble();
         double headY = buffer.readDouble();
         double z = buffer.readDouble();
-        boolean onGround = buffer.readByte() != 0;
+        boolean onGround = buffer.readBoolean();
 
         return new PlayerPositionMessage(onGround, x, y, headY, z);
     }
@@ -22,7 +22,7 @@ public final class PlayerPositionCodec implements Codec<PlayerPositionMessage> {
         buf.writeDouble(message.getY());
         buf.writeDouble(message.getHeadY());
         buf.writeDouble(message.getZ());
-        buf.writeByte(message.getOnGround() ? 1 : 0);
+        buf.writeBoolean(message.getOnGround());
         return buf;
     }
 }

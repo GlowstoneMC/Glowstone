@@ -10,14 +10,14 @@ public final class PlayerLookCodec implements Codec<PlayerLookMessage> {
     public PlayerLookMessage decode(ByteBuf buffer) throws IOException {
         float yaw = buffer.readFloat();
         float pitch = buffer.readFloat();
-        boolean onGround = onGround = buffer.readByte() != 0;
+        boolean onGround = buffer.readBoolean();
         return new PlayerLookMessage(yaw, pitch, onGround);
     }
 
     public ByteBuf encode(ByteBuf buf, PlayerLookMessage message) throws IOException {
         buf.writeFloat(message.getYaw());
         buf.writeFloat(message.getPitch());
-        buf.writeByte(message.getOnGround() ? 1 : 0);
+        buf.writeBoolean(message.getOnGround());
         return buf;
     }
 }

@@ -18,7 +18,7 @@ public final class ChunkDataCodec implements Codec<ChunkDataMessage> {
     public ByteBuf encode(ByteBuf buf, ChunkDataMessage message) throws IOException {
         buf.writeInt(message.getX());
         buf.writeInt(message.getZ());
-        buf.writeByte(message.isContinuous() ? 1 : 0);
+        buf.writeBoolean(message.isContinuous());
         buf.writeShort(message.getPrimaryMask());
         buf.writeShort(message.getAddMask());
 

@@ -8,11 +8,12 @@ import java.io.IOException;
 
 public final class PlayerUpdateCodec implements Codec<PlayerUpdateMessage> {
     public PlayerUpdateMessage decode(ByteBuf buffer) throws IOException {
-        return new PlayerUpdateMessage(buffer.readByte() != 0);
+        boolean onGround = buffer.readBoolean();
+        return new PlayerUpdateMessage(onGround);
     }
 
     public ByteBuf encode(ByteBuf buf, PlayerUpdateMessage message) throws IOException {
-        buf.writeByte(message.getOnGround() ? 1 : 0);
+        buf.writeBoolean(message.getOnGround());
         return buf;
     }
 }

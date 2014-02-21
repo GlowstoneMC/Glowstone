@@ -14,7 +14,7 @@ public final class PlayerPositionLookCodec implements Codec<PlayerPositionLookMe
         double z = buffer.readDouble();
         float yaw = buffer.readFloat();
         float pitch = buffer.readFloat();
-        boolean onGround = buffer.readByte() != 0;
+        boolean onGround = buffer.readBoolean();
 
         return new PlayerPositionLookMessage(onGround, x, y, headY, z, yaw, pitch);
     }
@@ -26,7 +26,7 @@ public final class PlayerPositionLookCodec implements Codec<PlayerPositionLookMe
         buf.writeDouble(message.getZ());
         buf.writeFloat(message.getYaw());
         buf.writeFloat(message.getPitch());
-        buf.writeByte(message.getOnGround() ? 1 : 0);
+        buf.writeBoolean(message.getOnGround());
         return buf;
     }
 }

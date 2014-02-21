@@ -47,7 +47,7 @@ public final class ChunkBulkCodec implements Codec<ChunkBulkMessage> {
         // write stuff out
         buf.writeShort(entries.size());
         buf.writeInt(compressed);
-        buf.writeByte(skyLight ? 1 : 0);
+        buf.writeBoolean(skyLight);
         buf.writeBytes(compressedData, 0, compressed);
         for (ChunkDataMessage entry : entries) {
             buf.writeInt(entry.getX());

@@ -13,9 +13,9 @@ public final class ClientSettingsCodec implements Codec<ClientSettingsMessage> {
         String locale = ByteBufUtils.readUTF8(buf);
         int viewDistance = buf.readByte();
         int chatFlags = buf.readByte();
-        boolean colors = buf.readByte() != 0;
+        boolean colors = buf.readBoolean();
         int difficulty = buf.readByte();
-        boolean showCape = buf.readByte() != 0;
+        boolean showCape = buf.readBoolean();
         return new ClientSettingsMessage(locale, viewDistance, chatFlags, colors, difficulty, showCape);
     }
 
