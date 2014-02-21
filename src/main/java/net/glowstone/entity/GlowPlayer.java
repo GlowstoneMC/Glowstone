@@ -96,6 +96,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     private boolean timeRelative = true;
 
     /**
+     * The player-specific weather, or null.
+     */
+    private WeatherType playerWeather;
+
+    /**
      * The display name of this player, for chat purposes.
      */
     private String displayName;
@@ -181,7 +186,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(new JoinGameMessage(getEntityId(), gameMode, world.getEnvironment().getId(), world.getDifficulty().getValue(), session.getServer().getMaxPlayers(), type));
 
         // send server brand and supported plugin channels
-        session.send(new PluginMessage("MC|Brand", server.getName().getBytes(StandardCharsets.UTF_8)));
+        session.send(new PluginMessage("MC|Brand", server.getName()));
         sendSupportedChannels();
 
         loadData();
@@ -189,7 +194,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         streamBlocks(); // stream the initial set of blocks
         setCompassTarget(world.getSpawnLocation()); // set our compass target
-        session.send(new StateChangeMessage(getWorld().hasStorm() ? 2 : 1, 0)); // send the world's weather
+        sendWeather();
 
         invMonitor = new InventoryMonitor(getOpenInventory());
         updateInventory(); // send inventory contents
@@ -201,6 +206,14 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     ////////////////////////////////////////////////////////////////////////////
     // Internals
+
+    /**
+     * Get the network session attached to this player.
+     * @return The GlowSession of the player.
+     */
+    public GlowSession getSession() {
+        return session;
+    }
 
     /**
      * Destroys this entity by removing it from the world and marking it as not
@@ -393,24 +406,21 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         return knownEntities.contains(entity);
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Basic getters
+    public Map<String, Object> serialize() {
+        Map<String, Object> ret = new HashMap<>();
+        ret.put("name", getName());
+        return ret;
+    }
 
-    /**
-     * Gets the session.
-     * @return The session.
-     */
-    public GlowSession getSession() {
-        return session;
+    ////////////////////////////////////////////////////////////////////////////
+    // Basic stuff
+
+    public InetSocketAddress getAddress() {
+        return session.getAddress();
     }
 
     public boolean isOnline() {
         return true;
-    }
-
-    @Override
-    public UUID getUniqueId() {
-        return uuid;
     }
 
     public boolean isBanned() {
@@ -438,8 +448,24 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         return this;
     }
 
-    public InetSocketAddress getAddress() {
-        return session.getAddress();
+    public long getFirstPlayed() {
+        return 0;
+    }
+
+    public long getLastPlayed() {
+        return 0;
+    }
+
+    public boolean hasPlayedBefore() {
+        return false;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // HumanEntity overrides
+
+    @Override
+    public UUID getUniqueId() {
+        return uuid;
     }
 
     @Override
@@ -455,6 +481,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             getServer().getOpsList().remove(getName());
         }
         permissions.recalculatePermissions();
+    }
+
+    public void setBedSpawnLocation(Location location, boolean force) {
+
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -497,6 +527,24 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(new SpawnPositionMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
     }
 
+    public boolean isSleepingIgnored() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setSleepingIgnored(boolean isSleeping) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setGameMode(GameMode mode) {
+        boolean changed = getGameMode() != mode;
+        super.setGameMode(mode);
+        if (changed) session.send(new StateChangeMessage(3, mode.getValue()));
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Entity status
+
     public boolean isSneaking() {
         return (metadata.getByte(MetadataIndex.STATUS) & 0x02) != 0;
     }
@@ -531,21 +579,43 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         updateMetadata();
     }
 
-    public boolean isSleepingIgnored() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    ////////////////////////////////////////////////////////////////////////////
+    // Player capabilities
+
+    public boolean getAllowFlight() {
+        return false;
     }
 
-    public void setSleepingIgnored(boolean isSleeping) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void setAllowFlight(boolean flight) {
+
     }
 
-    @Override
-    public void setGameMode(GameMode mode) {
-        boolean changed = getGameMode() != mode;
-        super.setGameMode(mode);
-        if (changed) session.send(new StateChangeMessage(3, mode.getValue()));
+    public boolean isFlying() {
+        return false;
     }
 
+    public void setFlying(boolean value) {
+
+    }
+
+    public float getFlySpeed() {
+        return 0;
+    }
+
+    public void setFlySpeed(float value) throws IllegalArgumentException {
+
+    }
+
+    public float getWalkSpeed() {
+        return 0;
+    }
+
+    public void setWalkSpeed(float value) throws IllegalArgumentException {
+
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Experience and levelling
     // todo: most of the exp stuff is pretty broken
 
     public int getExperience() {
@@ -612,6 +682,48 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
     }
 
+    public void giveExpLevels(int amount) {
+
+    }
+
+    private ExperienceMessage createExperienceMessage() {
+        return new ExperienceMessage(getExp(), (byte) getLevel(), (short) getTotalExperience());
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Health and food handling
+
+    @Override
+    public void setHealth(double health) {
+        super.setHealth(health);
+        session.send(createHealthMessage());
+    }
+
+    public boolean isHealthScaled() {
+        return false;
+    }
+
+    public void setHealthScaled(boolean scale) {
+
+    }
+
+    public double getHealthScale() {
+        return 0;
+    }
+
+    public void setHealthScale(double scale) throws IllegalArgumentException {
+
+    }
+
+    public int getFoodLevel() {
+        return food;
+    }
+
+    public void setFoodLevel(int food) {
+        this.food = Math.min(food, 20);
+        session.send(createHealthMessage());
+    }
+
     public float getExhaustion() {
         return exhaustion;
     }
@@ -627,6 +739,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     public void setSaturation(float value) {
         saturation = value;
         session.send(createHealthMessage());
+    }
+
+    private HealthMessage createHealthMessage() {
+        return new HealthMessage((float) getHealth(), getFoodLevel(), getSaturation());
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -674,7 +790,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             setCompassTarget(world.getSpawnLocation()); // set our compass target
             this.session.send(message);
             this.location = location; // take us to spawn position
-            session.send(new StateChangeMessage((byte) (getWorld().hasStorm() ? 1 : 2), (byte) 0)); // send the world's weather
+            sendWeather();
             reset();
             EventFactory.onPlayerChangedWorld(this, oldWorld);
         } else {
@@ -765,6 +881,15 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     public void loadData() {
         GlowWorld dataWorld = (GlowWorld) server.getWorlds().get(0);
         dataWorld.getMetadataService().readPlayerData(this);
+    }
+
+    @Deprecated
+    public void setTexturePack(String url) {
+        setResourcePack(url);
+    }
+
+    public void setResourcePack(String url) {
+        session.send(new PluginMessage("MC|RPack", url));
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -978,7 +1103,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    // Player time
+    // Player-specific time and weather
 
     public void setPlayerTime(long time, boolean relative) {
         timeOffset = time % 24000;
@@ -1009,203 +1134,77 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         setPlayerTime(0, true);
     }
 
-    @Override
-    public void setHealth(double health) {
-        super.setHealth(health);
-        session.send(createHealthMessage());
-    }
-
-    public int getFoodLevel() {
-        return food;
-    }
-
-    public void setFoodLevel(int food) {
-        this.food = Math.min(food, 20);
-        session.send(createHealthMessage());
-    }
-
-    public HealthMessage createHealthMessage() {
-        return new HealthMessage((float) getHealth(), getFoodLevel(), getSaturation());
-    }
-
-    public ExperienceMessage createExperienceMessage() {
-        return new ExperienceMessage(getExp(), (byte) getLevel(), (short) getTotalExperience());
-    }
-
-    public Map<String, Object> serialize() {
-        Map<String, Object> ret = new HashMap<String, Object>();
-        ret.put("name", getName());
-        return ret;
-    }
-
-    // NEW STUFF
-
-
-
-    @Override
     public void setPlayerWeather(WeatherType type) {
-
+        playerWeather = type;
+        sendWeather();
     }
 
-    @Override
     public WeatherType getPlayerWeather() {
-        return null;
+        return playerWeather;
     }
 
-    @Override
     public void resetPlayerWeather() {
-
+        playerWeather = null;
+        sendWeather();
     }
 
-    @Override
-    public void giveExpLevels(int amount) {
-
+    private void sendWeather() {
+        boolean stormy = playerWeather == null ? getWorld().hasStorm() : playerWeather == WeatherType.DOWNFALL;
+        session.send(new StateChangeMessage(stormy ? 2 : 1, 0));
     }
 
-    @Override
-    public void setBedSpawnLocation(Location location, boolean force) {
+    ////////////////////////////////////////////////////////////////////////////
+    // Player visibility
 
-    }
-
-    @Override
-    public boolean getAllowFlight() {
-        return false;
-    }
-
-    @Override
-    public void setAllowFlight(boolean flight) {
-
-    }
-
-    @Override
     public void hidePlayer(Player player) {
 
     }
 
-    @Override
     public void showPlayer(Player player) {
 
     }
 
-    @Override
     public boolean canSee(Player player) {
         return false;
     }
 
-    @Override
-    public boolean isFlying() {
-        return false;
-    }
+    ////////////////////////////////////////////////////////////////////////////
+    // Scoreboard
 
-    @Override
-    public void setFlying(boolean value) {
-
-    }
-
-    @Override
-    public void setFlySpeed(float value) throws IllegalArgumentException {
-
-    }
-
-    @Override
-    public void setWalkSpeed(float value) throws IllegalArgumentException {
-
-    }
-
-    @Override
-    public float getFlySpeed() {
-        return 0;
-    }
-
-    @Override
-    public float getWalkSpeed() {
-        return 0;
-    }
-
-    @Override
-    public void setTexturePack(String url) {
-
-    }
-
-    @Override
-    public void setResourcePack(String url) {
-
-    }
-
-    @Override
     public Scoreboard getScoreboard() {
         return null;
     }
 
-    @Override
     public void setScoreboard(Scoreboard scoreboard) throws IllegalArgumentException, IllegalStateException {
 
     }
 
-    @Override
-    public boolean isHealthScaled() {
-        return false;
-    }
+    ////////////////////////////////////////////////////////////////////////////
+    // Conversable
 
-    @Override
-    public void setHealthScaled(boolean scale) {
-
-    }
-
-    @Override
-    public void setHealthScale(double scale) throws IllegalArgumentException {
-
-    }
-
-    @Override
-    public double getHealthScale() {
-        return 0;
-    }
-
-    @Override
     public boolean isConversing() {
         return false;
     }
 
-    @Override
     public void acceptConversationInput(String input) {
 
     }
 
-    @Override
     public boolean beginConversation(Conversation conversation) {
         return false;
     }
 
-    @Override
     public void abandonConversation(Conversation conversation) {
 
     }
 
-    @Override
     public void abandonConversation(Conversation conversation, ConversationAbandonedEvent details) {
 
-    }
-
-    @Override
-    public long getFirstPlayed() {
-        return 0;
-    }
-
-    @Override
-    public long getLastPlayed() {
-        return 0;
-    }
-
-    @Override
-    public boolean hasPlayedBefore() {
-        return false;
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // Plugin messages
 
-    @Override
     public void sendPluginMessage(Plugin source, String channel, byte[] message) {
         StandardMessenger.validatePluginMessage(getServer().getMessenger(), source, channel, message);
         if (listeningChannels.contains(channel)) {
@@ -1214,7 +1213,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
     }
 
-    @Override
     public Set<String> getListeningPluginChannels() {
         return Collections.unmodifiableSet(listeningChannels);
     }
