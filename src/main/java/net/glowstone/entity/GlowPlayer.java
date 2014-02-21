@@ -5,9 +5,14 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.glowstone.*;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.constants.GlowEffect;
+import net.glowstone.constants.GlowSound;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.inventory.InventoryMonitor;
-import net.glowstone.msg.*;
+import net.glowstone.msg.PlayNoteMessage;
+import net.glowstone.msg.RespawnMessage;
+import net.glowstone.msg.StatisticMessage;
+import net.glowstone.msg.UserListItemMessage;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.login.LoginSuccessMessage;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
@@ -194,7 +199,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(new PositionRotationMessage(location.getX(), y, location.getZ(), location.getYaw(), location.getPitch(), true));
     }
 
-    // -- Various internal mechanisms
+    ////////////////////////////////////////////////////////////////////////////
+    // Internals
 
     /**
      * Destroys this entity by removing it from the world and marking it as not
@@ -387,7 +393,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         return knownEntities.contains(entity);
     }
 
-    // -- Basic getters
+    ////////////////////////////////////////////////////////////////////////////
+    // Basic getters
 
     /**
      * Gets the session.
@@ -450,7 +457,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         permissions.recalculatePermissions();
     }
 
-    // -- Malleable properties
+    ////////////////////////////////////////////////////////////////////////////
+    // Editable properties
 
     public String getDisplayName() {
         return displayName == null ? getName() : displayName;
@@ -621,7 +629,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(createHealthMessage());
     }
 
-    // -- Actions
+    ////////////////////////////////////////////////////////////////////////////
+    // Actions
 
     /**
      * Teleport the player.
@@ -758,7 +767,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         dataWorld.getMetadataService().readPlayerData(this);
     }
 
-    // -- Data transmission
+    ////////////////////////////////////////////////////////////////////////////
+    // Effect and data transmission
 
     public void playNote(Location loc, Instrument instrument, Note note) {
         playNote(loc, instrument.getType(), note.getId());
@@ -769,7 +779,21 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     public void playEffect(Location loc, Effect effect, int data) {
-        session.send(new PlayEffectMessage(effect.getId(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), data));
+        int id = effect.getId();
+        boolean ignoreDistance = id == 1013; // mob.wither.spawn, not in Bukkit yet
+        session.send(new PlayEffectMessage(id, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), data, ignoreDistance));
+    }
+
+    public <T> void playEffect(Location loc, Effect effect, T data) {
+        playEffect(loc, effect, GlowEffect.getDataValue(effect, data));
+    }
+
+    public void playSound(Location location, Sound sound, float volume, float pitch) {
+        playSound(location, GlowSound.getName(sound), volume, pitch);
+    }
+
+    public void playSound(Location location, String sound, float volume, float pitch) {
+        session.send(new PlaySoundMessage(sound, location.getBlockX(), location.getBlockY(), location.getBlockZ(), volume, pitch));
     }
 
     public void sendBlockChange(Location loc, Material material, byte data) {
@@ -792,7 +816,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    // -- Achievements & Statistics [mostly borrowed from CraftBukkit]
+    public void sendMap(MapView map) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Achievements and statistics
 
     public void awardAchievement(Achievement achievement) {
         //sendStatistic(achievement.getId(), 1);
@@ -948,7 +977,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         updateInventory();
     }
 
-    // -- Goofy relative time stuff --
+    ////////////////////////////////////////////////////////////////////////////
+    // Player time
 
     public void setPlayerTime(long time, boolean relative) {
         timeOffset = time % 24000;
@@ -977,10 +1007,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     public void resetPlayerTime() {
         setPlayerTime(0, true);
-    }
-
-    public void sendMap(MapView map) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -1015,20 +1041,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     // NEW STUFF
 
 
-    @Override
-    public void playSound(Location location, Sound sound, float volume, float pitch) {
-
-    }
-
-    @Override
-    public void playSound(Location location, String sound, float volume, float pitch) {
-
-    }
-
-    @Override
-    public <T> void playEffect(Location loc, Effect effect, T data) {
-
-    }
 
     @Override
     public void setPlayerWeather(WeatherType type) {

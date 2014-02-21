@@ -67,6 +67,9 @@ public final class PlayProtocol extends GlowProtocol {
         outbound(0x22, MultiBlockChangeMessage.class, MultiBlockChangeCodec.class);
         outbound(0x23, BlockChangeMessage.class, BlockChangeCodec.class);
         outbound(0x26, ChunkBulkMessage.class, ChunkBulkCodec.class);
+        outbound(0x28, PlayEffectMessage.class, PlayEffectCodec.class);
+        outbound(0x29, PlaySoundMessage.class, PlaySoundCodec.class);
+        outbound(0x2A, PlayParticleMessage.class, PlayParticleCodec.class);
         outbound(0x2B, StateChangeMessage.class, StateChangeCodec.class);
         outbound(0x2C, SpawnLightningStrikeMessage.class, SpawnLightningStrikeCodec.class);
         outbound(0x2D, OpenWindowMessage.class, OpenWindowCodec.class);

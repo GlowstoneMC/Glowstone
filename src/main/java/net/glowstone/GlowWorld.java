@@ -991,8 +991,9 @@ public final class GlowWorld implements World {
     }
 
     public void playEffect(Location location, Effect effect, int data, int radius) {
-        for (Player player : getPlayers()) {
-            if (player.getLocation().distance(location) <= radius) {
+        radius *= radius;
+        for (Player player : getRawPlayers()) {
+            if (player.getLocation().distanceSquared(location) <= radius) {
                 player.playEffect(location, effect, data);
             }
         }
@@ -1003,19 +1004,28 @@ public final class GlowWorld implements World {
     }
 
     public <T> void playEffect(Location location, Effect effect, T data, int radius) {
-
+        int rawData = 0;
+        playEffect(location, effect, rawData, radius);
     }
 
     public void playEffectExceptTo(Location location, Effect effect, int data, int radius, Player exclude) {
-        for (Player player : getPlayers()) {
-            if (!player.equals(exclude) && player.getLocation().distance(location) <= radius) {
+        radius *= radius;
+        for (Player player : getRawPlayers()) {
+            if (!player.equals(exclude) && player.getLocation().distanceSquared(location) <= radius) {
                 player.playEffect(location, effect, data);
             }
         }
     }
 
     public void playSound(Location location, Sound sound, float volume, float pitch) {
+        if (location == null || sound == null) return;
 
+        final int radiusSquared = 24 * 24; // todo: verify this radius
+        for (Player player : getRawPlayers()) {
+            if (player.getLocation().distanceSquared(location) <= radiusSquared) {
+                player.playSound(location, sound, volume, pitch);
+            }
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
