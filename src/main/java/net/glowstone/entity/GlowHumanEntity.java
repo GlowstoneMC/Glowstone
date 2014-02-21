@@ -60,11 +60,6 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     protected boolean sleeping = false;
 
     /**
-     * The bed spawn location of a player
-     */
-    private Location bedSpawn;
-
-    /**
      * How long this human has been sleeping.
      */
     private int sleepingTicks = 0;
@@ -159,14 +154,6 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     public void setGameMode(GameMode mode) {
         gameMode = mode;
-    }
-
-    public Location getBedSpawnLocation() {
-        return bedSpawn;
-    }
-
-    public void setBedSpawnLocation(Location bedSpawn) {
-        this.bedSpawn = bedSpawn;
     }
 
     public boolean isBlocking() {

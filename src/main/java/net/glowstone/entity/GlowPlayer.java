@@ -18,6 +18,7 @@ import net.glowstone.net.message.login.LoginSuccessMessage;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.game.*;
 import net.glowstone.net.message.play.inv.*;
+import net.glowstone.net.message.play.player.PlayerAbilitiesMessage;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.util.TextWrapper;
 import org.bukkit.*;
@@ -66,51 +67,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     private final UUID uuid;
 
     /**
-     * Cumulative amount of experience points the player has collected.
-     */
-    private int experience = 0;
-
-    /**
-     * The current level (or skill point amount) of the player.
-     */
-    private int level = 0;
-
-    /**
-     * The player's current exhaustion level.
-     */
-    private float exhaustion = 0;
-
-    /**
-     * The player's current saturation level.
-     */
-    private float saturation = 0;
-
-    /**
-     * This player's current time offset.
-     */
-    private long timeOffset = 0;
-
-    /**
-     * Whether the time offset is relative.
-     */
-    private boolean timeRelative = true;
-
-    /**
-     * The player-specific weather, or null.
-     */
-    private WeatherType playerWeather;
-
-    /**
-     * The display name of this player, for chat purposes.
-     */
-    private String displayName;
-
-    /**
-     * The player's compass target.
-     */
-    private Location compassTarget;
-
-    /**
      * The entities that the client knows about.
      */
     private final Set<GlowEntity> knownEntities = new HashSet<>();
@@ -141,9 +97,24 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     private InventoryMonitor invMonitor;
 
     /**
-     * Whether the player is sneaking.
+     * The display name of this player, for chat purposes.
      */
-    private boolean sneaking = false;
+    private String displayName;
+
+    /**
+     * The name a player has in the player list
+     */
+    private String playerListName;
+
+    /**
+     * Cumulative amount of experience points the player has collected.
+     */
+    private int experience = 0;
+
+    /**
+     * The current level (or skill point amount) of the player.
+     */
+    private int level = 0;
 
     /**
      * The human entity's current food level
@@ -151,14 +122,74 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     private int food = 20;
 
     /**
+     * The player's current exhaustion level.
+     */
+    private float exhaustion = 0;
+
+    /**
+     * The player's current saturation level.
+     */
+    private float saturation = 0;
+
+    /**
+     * Whether to perform special scaling of the player's health.
+     */
+    private boolean healthScaled = false;
+
+    /**
+     * The scale at which to display the player's health.
+     */
+    private double healthScale = 20;
+
+    /**
+     * This player's current time offset.
+     */
+    private long timeOffset = 0;
+
+    /**
+     * Whether the time offset is relative.
+     */
+    private boolean timeRelative = true;
+
+    /**
+     * The player-specific weather, or null for normal weather.
+     */
+    private WeatherType playerWeather = null;
+
+    /**
+     * The player's compass target.
+     */
+    private Location compassTarget;
+
+    /**
+     * Whether this player's sleeping state is ignored when changing time.
+     */
+    private boolean sleepingIgnored;
+
+    /**
      * The bed spawn location of a player
      */
     private Location bedSpawn;
 
     /**
-     * The name a player has in the player list
+     * Whether the player is permitted to fly.
      */
-    private String playerListName;
+    private boolean canFly;
+
+    /**
+     * Whether the player is currently flying.
+     */
+    private boolean flying;
+
+    /**
+     * The player's base flight speed.
+     */
+    private float flySpeed = 0.1f;
+
+    /**
+     * The player's base walking speed.
+     */
+    private float walkSpeed = 0.2f;
 
     /**
      * Creates a new player and adds it to the world.
@@ -195,6 +226,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         streamBlocks(); // stream the initial set of blocks
         setCompassTarget(world.getSpawnLocation()); // set our compass target
         sendWeather();
+        sendAbilities();
 
         invMonitor = new InventoryMonitor(getOpenInventory());
         updateInventory(); // send inventory contents
@@ -483,10 +515,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         permissions.recalculatePermissions();
     }
 
-    public void setBedSpawnLocation(Location location, boolean force) {
-
-    }
-
     ////////////////////////////////////////////////////////////////////////////
     // Editable properties
 
@@ -527,12 +555,24 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(new SpawnPositionMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
     }
 
+    public Location getBedSpawnLocation() {
+        return bedSpawn;
+    }
+
+    public void setBedSpawnLocation(Location bedSpawn) {
+        setBedSpawnLocation(bedSpawn, false);
+    }
+
+    public void setBedSpawnLocation(Location location, boolean force) {
+        this.bedSpawn = location;
+    }
+
     public boolean isSleepingIgnored() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return sleepingIgnored;
     }
 
     public void setSleepingIgnored(boolean isSleeping) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        sleepingIgnored = isSleeping;
     }
 
     @Override
@@ -583,35 +623,47 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     // Player capabilities
 
     public boolean getAllowFlight() {
-        return false;
+        return canFly;
     }
 
     public void setAllowFlight(boolean flight) {
-
+        canFly = flight;
+        if (!canFly) flying = false;
+        sendAbilities();
     }
 
     public boolean isFlying() {
-        return false;
+        return flying;
     }
 
     public void setFlying(boolean value) {
-
+        flying = value && canFly;
+        sendAbilities();
     }
 
     public float getFlySpeed() {
-        return 0;
+        return flySpeed;
     }
 
     public void setFlySpeed(float value) throws IllegalArgumentException {
-
+        flySpeed = value;
+        sendAbilities();
     }
 
     public float getWalkSpeed() {
-        return 0;
+        return walkSpeed;
     }
 
     public void setWalkSpeed(float value) throws IllegalArgumentException {
+        walkSpeed = value;
+        sendAbilities();
+    }
 
+    private void sendAbilities() {
+        boolean creative = getGameMode() == GameMode.CREATIVE;
+        int flags = (creative ? 8 : 0) | (canFly ? 4 : 0) | (flying ? 2 : 0) | (creative ? 1 : 0);
+        // division is conversion from Bukkit to MC units
+        session.send(new PlayerAbilitiesMessage(flags, flySpeed / 2f, walkSpeed / 2f));
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -635,7 +687,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         for (this.level = 0; this.level < level; ++this.level) {
             experience += getExpToLevel();
         }
-        session.send(createExperienceMessage());
+        sendExperience();
     }
 
     public int getTotalExperience() {
@@ -647,7 +699,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         this.experience = exp;
         level = 0;
         while ((calcExperience -= getExpToLevel()) > 0) ++level;
-        session.send(createExperienceMessage());
+        sendExperience();
     }
 
     public void giveExp(int xp) {
@@ -656,7 +708,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             experience -= (getLevel() + 1) * 7;
             ++level;
         }
-        session.send(createExperienceMessage());
+        sendExperience();
     }
 
     public float getExp() {
@@ -686,8 +738,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     }
 
-    private ExperienceMessage createExperienceMessage() {
-        return new ExperienceMessage(getExp(), (byte) getLevel(), (short) getTotalExperience());
+    private void sendExperience() {
+        session.send(new ExperienceMessage(getExp(), (byte) getLevel(), (short) getTotalExperience()));
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -696,23 +748,26 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void setHealth(double health) {
         super.setHealth(health);
-        session.send(createHealthMessage());
+        sendHealth();
     }
 
     public boolean isHealthScaled() {
-        return false;
+        return healthScaled;
     }
 
     public void setHealthScaled(boolean scale) {
-
+        healthScaled = scale;
+        sendHealth();
     }
 
     public double getHealthScale() {
-        return 0;
+        return healthScale;
     }
 
     public void setHealthScale(double scale) throws IllegalArgumentException {
-
+        healthScaled = true;
+        healthScale = scale;
+        sendHealth();
     }
 
     public int getFoodLevel() {
@@ -721,7 +776,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     public void setFoodLevel(int food) {
         this.food = Math.min(food, 20);
-        session.send(createHealthMessage());
+        sendHealth();
     }
 
     public float getExhaustion() {
@@ -738,11 +793,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     public void setSaturation(float value) {
         saturation = value;
-        session.send(createHealthMessage());
+        sendHealth();
     }
 
-    private HealthMessage createHealthMessage() {
-        return new HealthMessage((float) getHealth(), getFoodLevel(), getSaturation());
+    private void sendHealth() {
+        float finalHealth = (float) (getHealth() / getMaxHealth() * getHealthScale());
+        session.send(new HealthMessage(finalHealth, getFoodLevel(), getSaturation()));
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -828,10 +884,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         return getServer().dispatchCommand(this, command);
     }
 
-    /**
-     * Says a message (or runs a command).
-     * @param text message to print
-     */
     public void chat(String text) {
         if (text.startsWith("/")) {
             try {
