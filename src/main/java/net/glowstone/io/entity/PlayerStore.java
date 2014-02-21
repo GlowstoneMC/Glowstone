@@ -8,6 +8,7 @@ import net.glowstone.util.nbt.FloatTag;
 import net.glowstone.util.nbt.IntTag;
 import net.glowstone.util.nbt.Tag;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 
 import java.util.List;
 
@@ -44,6 +45,12 @@ public class PlayerStore extends HumanEntityStore<GlowPlayer> {
             GameMode mode = GameMode.getByValue(compound.get("playerGameType", IntTag.class));
             if (mode != null) entity.setGameMode(mode);
         }
+        if (compound.is("SpawnX", IntTag.class) && compound.is("SpawnY", IntTag.class) && compound.is("SpawnZ", IntTag.class)) {
+            int x = compound.get("SpawnX", IntTag.class);
+            int y = compound.get("SpawnY", IntTag.class);
+            int z = compound.get("SpawnZ", IntTag.class);
+            entity.setBedSpawnLocation(new Location(entity.getWorld(), x, y, z));
+        }
     }
 
     @Override
@@ -56,6 +63,14 @@ public class PlayerStore extends HumanEntityStore<GlowPlayer> {
         ret.add(new FloatTag("foodSaturationLevel", entity.getSaturation()));
         ret.add(new FloatTag("foodExhaustionLevel", entity.getExhaustion()));
         ret.add(new IntTag("playerGameType", entity.getGameMode().getValue()));
+
+        // spawn location
+        Location bed = entity.getBedSpawnLocation();
+        if (bed != null) {
+            ret.add(new IntTag("SpawnX", bed.getBlockX()));
+            ret.add(new IntTag("SpawnY", bed.getBlockY()));
+            ret.add(new IntTag("SpawnZ", bed.getBlockZ()));
+        }
         return ret;
     }
 }

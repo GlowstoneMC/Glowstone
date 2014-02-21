@@ -31,12 +31,6 @@ public abstract class HumanEntityStore<T extends GlowHumanEntity> extends Living
             List<CompoundTag> items = compound.getList("EnderItems", CompoundTag.class);
             inventory.setContents(NbtSerialization.readInventory(items, 0, inventory.getSize()));
         }
-        if (compound.is("SpawnX", IntTag.class) && compound.is("SpawnY", IntTag.class) && compound.is("SpawnZ", IntTag.class)) {
-            int x = compound.get("SpawnX", IntTag.class);
-            int y = compound.get("SpawnY", IntTag.class);
-            int z = compound.get("SpawnZ", IntTag.class);
-            entity.setBedSpawnLocation(new Location(entity.getWorld(), x, y, z));
-        }
     }
 
     @Override
@@ -52,14 +46,6 @@ public abstract class HumanEntityStore<T extends GlowHumanEntity> extends Living
         // ender items
         inventory = NbtSerialization.writeInventory(entity.getEnderChest().getContents(), 0);
         ret.add(new ListTag<>("EnderItems", TagType.COMPOUND, inventory));
-
-        // spawn location
-        Location bed = entity.getBedSpawnLocation();
-        if (bed != null) {
-            ret.add(new IntTag("SpawnX", bed.getBlockX()));
-            ret.add(new IntTag("SpawnY", bed.getBlockY()));
-            ret.add(new IntTag("SpawnZ", bed.getBlockZ()));
-        }
         return ret;
     }
 }
