@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public class GlowInventoryView extends InventoryView {
 
-    private final GlowHumanEntity player;
+    private final HumanEntity player;
     private final InventoryType type;
     private final Inventory top, bottom;
 
@@ -27,20 +27,20 @@ public class GlowInventoryView extends InventoryView {
     /**
      * Create an inventory view for this player looking at a given top inventory.
      * @param player The player.
-     * @param top The top inventory.
+     * @param top    The top inventory.
      */
-    public GlowInventoryView(GlowHumanEntity player, Inventory top) {
+    public GlowInventoryView(HumanEntity player, Inventory top) {
         this(player, top.getType(), top, player.getInventory());
     }
 
     /**
      * Create an inventory view for a player.
      * @param player The player.
-     * @param type The inventory type.
-     * @param top The top inventory.
+     * @param type   The inventory type.
+     * @param top    The top inventory.
      * @param bottom The bottom inventory.
      */
-    public GlowInventoryView(GlowHumanEntity player, InventoryType type, Inventory top, Inventory bottom) {
+    public GlowInventoryView(HumanEntity player, InventoryType type, Inventory top, Inventory bottom) {
         this.player = player;
         this.type = type;
         this.top = top;

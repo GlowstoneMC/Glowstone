@@ -3,6 +3,7 @@ package net.glowstone;
 import com.flowpowered.networking.NetworkServer;
 import net.glowstone.command.ColorCommand;
 import net.glowstone.inventory.CraftingManager;
+import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.map.GlowMapView;
 import net.glowstone.net.GlowNetworkServer;
@@ -874,17 +875,17 @@ public final class GlowServer implements Server {
 
     @Override
     public Inventory createInventory(InventoryHolder owner, InventoryType type) {
-        return null;
+        return new GlowInventory(owner, type);
     }
 
     @Override
     public Inventory createInventory(InventoryHolder owner, int size) {
-        return null;
+        return new GlowInventory(owner, InventoryType.CHEST, size);
     }
 
     @Override
     public Inventory createInventory(InventoryHolder owner, int size, String title) {
-        return null;
+        return new GlowInventory(owner, InventoryType.CHEST, size, title);
     }
 
     ////////////////////////////////////////////////////////////////////////////
