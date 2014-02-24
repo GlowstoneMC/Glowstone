@@ -225,6 +225,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         streamBlocks(); // stream the initial set of blocks
         setCompassTarget(world.getSpawnLocation()); // set our compass target
+        sendTime();
         sendWeather();
         sendAbilities();
 
@@ -1158,19 +1159,18 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     // Player-specific time and weather
 
     public void setPlayerTime(long time, boolean relative) {
-        timeOffset = time % 24000;
+        timeOffset = (time % GlowWorld.DAY_LENGTH + GlowWorld.DAY_LENGTH) % GlowWorld.DAY_LENGTH;
         timeRelative = relative;
-
-        if (timeOffset < 0) timeOffset += 24000;
+        sendTime();
     }
 
     public long getPlayerTime() {
         if (timeRelative) {
             // add timeOffset ticks to current time
-            return (world.getTime() + timeOffset) % 24000;
+            return (world.getTime() + timeOffset) % GlowWorld.DAY_LENGTH;
         } else {
             // return time offset
-            return timeOffset % 24000;
+            return timeOffset;
         }
     }
 
@@ -1184,6 +1184,14 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     public void resetPlayerTime() {
         setPlayerTime(0, true);
+    }
+
+    public void sendTime() {
+        long time = getPlayerTime();
+        if (!timeRelative) {
+            time = -time; // negative value indicates fixed time
+        }
+        session.send(new TimeMessage(world.getFullTime(), time));
     }
 
     public void setPlayerWeather(WeatherType type) {
@@ -1200,7 +1208,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         sendWeather();
     }
 
-    private void sendWeather() {
+    public void sendWeather() {
         boolean stormy = playerWeather == null ? getWorld().hasStorm() : playerWeather == WeatherType.DOWNFALL;
         session.send(new StateChangeMessage(stormy ? 2 : 1, 0));
     }

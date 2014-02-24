@@ -6,8 +6,6 @@ import net.glowstone.io.WorldMetadataService;
 import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
 import net.glowstone.io.anvil.AnvilWorldStorageProvider;
-import net.glowstone.net.message.play.game.StateChangeMessage;
-import net.glowstone.net.message.play.game.TimeMessage;
 import net.glowstone.util.WeakValueMap;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
@@ -47,6 +45,11 @@ public final class GlowWorld implements World {
      * The metadata store for world objects.
      */
     private final static MetadataStore<World> metadata = new WorldMetadataStore();
+
+    /**
+     * The length in ticks of one Minecraft day.
+     */
+    public static final long DAY_LENGTH = 24000;
     
     /**
      * The server of this world.
@@ -167,6 +170,11 @@ public final class GlowWorld implements World {
      * How many ticks until the thundering status is expected to change.
      */
     private int thunderingTicks = 0;
+
+    /**
+     * The age of the world, in ticks.
+     */
+    private long worldAge = 0;
     
     /**
      * The current world time.
@@ -322,19 +330,15 @@ public final class GlowWorld implements World {
 
         for (GlowEntity entity : temp)
             entity.reset();
-        
-        // We currently tick at 1/4 the speed of regular MC
-        // Modulus by 12000 to force permanent day.
-        time = (time + 1) % 12000;
-        if (time % (60 * 20) == 0) {
+
+        // Tick the world age and time of day
+        // Modulus by 24000, the tick length of a day
+        worldAge++;
+        time = (time + 1) % DAY_LENGTH;
+        if (worldAge % (30 * 20) == 0) {
             // Only send the time every so often; clients are smart.
-            long age = this.getFullTime();
             for (GlowPlayer player : getRawPlayers()) {
-                long playerTime = player.getPlayerTime();
-                if (!player.isPlayerTimeRelative()) {
-                    playerTime = -playerTime; // negative value indicates fixed time
-                }
-                player.getSession().send(new TimeMessage(age, playerTime));
+                player.sendTime();
             }
         }
         
@@ -893,17 +897,19 @@ public final class GlowWorld implements World {
     }
 
     public void setTime(long time) {
-        if (time < 0) time = (time % 24000) + 24000;
-        if (time > 24000) time %= 24000;
-        this.time = time;
+        this.time = (time % DAY_LENGTH + DAY_LENGTH) % DAY_LENGTH;
+
+        for (GlowPlayer player : getRawPlayers()) {
+            player.sendTime();
+        }
     }
 
     public long getFullTime() {
-        return getTime();
+        return worldAge;
     }
 
     public void setFullTime(long time) {
-        setTime(time);
+        worldAge = time;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -924,7 +930,7 @@ public final class GlowWorld implements World {
         }
         
         for (GlowPlayer player : getRawPlayers()) {
-            player.getSession().send(new StateChangeMessage(currentlyRaining ? 2 : 1, 0));
+            player.sendWeather();
         }
     }
 

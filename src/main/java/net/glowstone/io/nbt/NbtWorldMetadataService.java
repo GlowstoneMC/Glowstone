@@ -88,7 +88,10 @@ public class NbtWorldMetadataService implements WorldMetadataService {
             seed = level.get("RandomSeed", LongTag.class);
         }
         if (checkKnownTag(level, unknown, "Time", LongTag.class)) {
-            world.setTime(level.get("Time", LongTag.class));
+            world.setFullTime(level.get("Time", LongTag.class));
+        }
+        if (checkKnownTag(level, unknown, "DayTime", LongTag.class)) {
+            world.setTime(level.get("DayTime", LongTag.class));
         }
         if (checkKnownTag(level, unknown, "SpawnX", IntTag.class) &&
                 checkKnownTag(level, unknown, "SpawnY", IntTag.class) &&
@@ -97,6 +100,15 @@ public class NbtWorldMetadataService implements WorldMetadataService {
             int y = level.get("SpawnY", IntTag.class);
             int z = level.get("SpawnZ", IntTag.class);
             world.setSpawnLocation(x, y, z);
+        }
+
+        if (checkKnownTag(level, unknown, "GameRules", CompoundTag.class)) {
+            CompoundTag gameRules = level.getTag("GameRules", CompoundTag.class);
+            for (String key : gameRules.getValue().keySet()) {
+                if (gameRules.is(key, StringTag.class)) {
+                    world.setGameRuleValue(key, gameRules.get(key, StringTag.class));
+                }
+            }
         }
 
         unknownTags.addAll(unknown.values());
@@ -141,7 +153,8 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         // Normal level data
         out.add(new ByteTag("thundering", (byte) (world.isThundering() ? 1 : 0)));
         out.add(new LongTag("RandomSeed", world.getSeed()));
-        out.add(new LongTag("Time", world.getTime()));
+        out.add(new LongTag("Time", world.getFullTime()));
+        out.add(new LongTag("DayTime", world.getTime()));
         out.add(new ByteTag("raining", (byte) (world.hasStorm() ? 1 : 0)));
         out.add(new IntTag("thunderTime", world.getThunderDuration()));
         out.add(new IntTag("rainTime", world.getWeatherDuration()));
@@ -153,6 +166,14 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         out.add(new StringTag("LevelName", world.getName()));
         out.add(new LongTag("LastPlayed", Calendar.getInstance().getTimeInMillis()));
         out.add(new IntTag("version", 19132));
+
+        // Game rules
+        String[] gameRuleKeys = world.getGameRules();
+        List<Tag> gameRules = new ArrayList<>();
+        for (String key : gameRuleKeys) {
+            gameRules.add(new StringTag(key, world.getGameRuleValue(key)));
+        }
+        out.add(new CompoundTag("GameRules", gameRules));
 
         // Not sure how to calculate this, so ignoring for now
         out.add(new LongTag("SizeOnDisk", 0));
