@@ -1,6 +1,5 @@
 package net.glowstone;
 
-import com.flowpowered.networking.NetworkServer;
 import net.glowstone.command.ColorCommand;
 import net.glowstone.inventory.CraftingManager;
 import net.glowstone.inventory.GlowInventory;
@@ -210,7 +209,7 @@ public final class GlowServer implements Server {
     /**
      * The network server used for network communication
      */
-    private final NetworkServer networkServer = new GlowNetworkServer(this);
+    private final GlowNetworkServer networkServer = new GlowNetworkServer(this);
 
     /**
      * The default icon, usually blank, used for the server list.
@@ -282,7 +281,9 @@ public final class GlowServer implements Server {
         }
 
         logger.log(Level.INFO, "Binding to address: {0}...", address);
-        networkServer.bind(address);
+        if (!networkServer.bind(address)) {
+            throw new RuntimeException("Failed to bind to address. Maybe it is already in use?");
+        }
     }
     
     /**
