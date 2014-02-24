@@ -2,7 +2,7 @@ package net.glowstone.block;
 
 import net.glowstone.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.msg.UpdateSignMessage;
+import net.glowstone.net.message.play.game.UpdateSignMessage;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 

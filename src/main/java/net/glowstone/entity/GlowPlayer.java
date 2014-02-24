@@ -9,10 +9,6 @@ import net.glowstone.constants.GlowEffect;
 import net.glowstone.constants.GlowSound;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.inventory.InventoryMonitor;
-import net.glowstone.msg.PlayNoteMessage;
-import net.glowstone.msg.RespawnMessage;
-import net.glowstone.msg.StatisticMessage;
-import net.glowstone.msg.UserListItemMessage;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.login.LoginSuccessMessage;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
@@ -209,7 +205,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         // send join game
         // in future, handle hardcore, difficulty, and level type
-        String type = "default";//world.getWorldType().getName().toLowerCase();
+        String type = world.getWorldType().getName().toLowerCase();
         int gameMode = getGameMode().getValue();
         if (server.isHardcore()) {
             gameMode |= 0x8;
@@ -538,9 +534,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             if (player.getPlayerListName().equals(getPlayerListName()))
                 throw new IllegalArgumentException("The name given, " + name + ", is already used by " + player.getName() + ".");
         }
-        net.glowstone.msg.Message removeMessage = new UserListItemMessage(getPlayerListName(), false, (short) 0);
+        Message removeMessage = new UserListItemMessage(getPlayerListName(), false, 0);
         playerListName = name;
-        net.glowstone.msg.Message reAddMessage = new UserListItemMessage(getPlayerListName(), true, (short) 0);
+        Message reAddMessage = new UserListItemMessage(getPlayerListName(), true, 0);
         for (Player player : server.getOnlinePlayers()) {
             ((GlowPlayer) player).getSession().send(removeMessage);
             ((GlowPlayer) player).getSession().send(reAddMessage);
@@ -841,7 +837,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             chunkLock.clear();
             chunkLock = world.newChunkLock(getName());
 
-            session.send(new RespawnMessage((byte) world.getEnvironment().getId(), (byte) 1, (byte) getGameMode().getValue(), (short) world.getMaxHeight(), world.getSeed()));
+            String type = world.getWorldType().getName().toLowerCase();
+            session.send(new RespawnMessage(world.getEnvironment().getId(), world.getDifficulty().getValue(), getGameMode().getValue(), type));
             streamBlocks(); // stream blocks
 
             setCompassTarget(world.getSpawnLocation()); // set our compass target
@@ -953,7 +950,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     public void playNote(Location loc, byte instrument, byte note) {
-        session.send(new PlayNoteMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), instrument, note));
+        session.send(new BlockActionMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), instrument, note, Material.NOTE_BLOCK.getId()));
     }
 
     public void playEffect(Location loc, Effect effect, int data) {
@@ -1032,17 +1029,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         //sendStatistic(statistic.getId() + mat, amount);
-    }
-
-    private void sendStatistic(int id, int amount) {
-        while (amount > Byte.MAX_VALUE) {
-            sendStatistic(id, Byte.MAX_VALUE);
-            amount -= Byte.MAX_VALUE;
-        }
-
-        if (amount > 0) {
-            session.send(new StatisticMessage(id, (byte) amount));
-        }
     }
 
     public void setStatistic(Statistic statistic, EntityType entityType, int newValue) {

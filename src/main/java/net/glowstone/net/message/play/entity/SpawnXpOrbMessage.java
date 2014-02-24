@@ -1,10 +1,12 @@
-package net.glowstone.msg;
+package net.glowstone.net.message.play.entity;
 
-public class ExperienceOrbMessage extends Message {
+import com.flowpowered.networking.Message;
+
+public final class SpawnXpOrbMessage implements Message {
     private final int id, x, y, z;
     private final short count;
 
-    public ExperienceOrbMessage(int id, int x, int y, int z, short count) {
+    public SpawnXpOrbMessage(int id, int x, int y, int z, short count) {
         this.id = id;
         this.x = x;
         this.y = y;
@@ -34,6 +36,6 @@ public class ExperienceOrbMessage extends Message {
 
     @Override
     public String toString() {
-        return "ExperienceOrbMessage{id=" + id + ",x=" + x + ",y=" + y + ",z=" + z + ",count=" + count + "}";
+        return "SpawnXpOrbMessage{id=" + id + ",x=" + x + ",y=" + y + ",z=" + z + ",count=" + count + "}";
     }
 }

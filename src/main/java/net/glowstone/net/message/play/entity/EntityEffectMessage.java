@@ -1,6 +1,8 @@
-package net.glowstone.msg;
+package net.glowstone.net.message.play.entity;
 
-public class EntityEffectMessage extends Message {
+import com.flowpowered.networking.Message;
+
+public final class EntityEffectMessage implements Message {
 
     private final int id;
     private final byte effect, amplifier;

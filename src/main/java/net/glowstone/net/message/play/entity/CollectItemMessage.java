@@ -1,6 +1,8 @@
-package net.glowstone.msg;
+package net.glowstone.net.message.play.entity;
 
-public final class CollectItemMessage extends Message {
+import com.flowpowered.networking.Message;
+
+public final class CollectItemMessage implements Message {
 
     private final int id, collector;
 

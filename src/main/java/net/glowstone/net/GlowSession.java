@@ -229,14 +229,6 @@ public final class GlowSession extends BasicSession {
         return super.sendWithFuture(message);
     }
 
-    /**
-     * Placeholder method to prevent errors in lots of other places.
-     */
-    @Deprecated
-    public void send(net.glowstone.msg.Message message) {
-        GlowServer.logger.info("Send [LEGACY] " + message.getClass().getSimpleName());
-    }
-
     @Override
     public void disconnect() {
         disconnect("No reason specified.");

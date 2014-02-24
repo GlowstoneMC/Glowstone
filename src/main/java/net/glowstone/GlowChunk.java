@@ -3,7 +3,6 @@ package net.glowstone;
 import net.glowstone.block.BlockProperties;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.msg.CompressedChunkMessage;
 import net.glowstone.net.message.play.game.ChunkDataMessage;
 import org.bukkit.Chunk;
 import org.bukkit.World;

@@ -3,7 +3,7 @@ package net.glowstone.net.message.play.inv;
 import com.flowpowered.networking.Message;
 import org.bukkit.inventory.ItemStack;
 
-public class CreativeItemMessage implements Message {
+public final class CreativeItemMessage implements Message {
 
     private final int slot;
     private final ItemStack item;

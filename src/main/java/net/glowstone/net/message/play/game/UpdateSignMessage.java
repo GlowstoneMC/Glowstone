@@ -1,8 +1,10 @@
-package net.glowstone.msg;
+package net.glowstone.net.message.play.game;
+
+import com.flowpowered.networking.Message;
 
 import java.util.Arrays;
 
-public final class UpdateSignMessage extends Message {
+public final class UpdateSignMessage implements Message {
 
     private final int x, y, z;
     private final String[] message;
