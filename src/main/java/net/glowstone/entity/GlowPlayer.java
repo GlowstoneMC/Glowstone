@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.glowstone.*;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.constants.GlowAchievement;
 import net.glowstone.constants.GlowEffect;
 import net.glowstone.constants.GlowSound;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -16,6 +17,7 @@ import net.glowstone.net.message.play.game.*;
 import net.glowstone.net.message.play.inv.*;
 import net.glowstone.net.message.play.player.PlayerAbilitiesMessage;
 import net.glowstone.net.protocol.PlayProtocol;
+import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextWrapper;
 import org.bukkit.*;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
@@ -81,6 +83,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * The set of plugin channels this player is listening on
      */
     private final Set<String> listeningChannels = new HashSet<>();
+
+    /**
+     * The player's statistics, achievements, and related data.
+     */
+    private final StatisticMap stats = new StatisticMap();
 
     /**
      * The lock used to prevent chunks from unloading near the player.
@@ -266,6 +273,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         // stream world
         streamBlocks();
         processBlockChanges();
+
+        // add to playtime
+        incrementStatistic(Statistic.PLAY_ONE_TICK);
 
         // update inventory
         for (InventoryMonitor.Entry entry : invMonitor.getChanges()) {
@@ -998,101 +1008,106 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     ////////////////////////////////////////////////////////////////////////////
     // Achievements and statistics
 
+    public boolean hasAchievement(Achievement achievement) {
+        return stats.hasAchievement(achievement);
+    }
+
     public void awardAchievement(Achievement achievement) {
-        //sendStatistic(achievement.getId(), 1);
-    }
+        if (hasAchievement(achievement)) return;
 
-    public void incrementStatistic(Statistic statistic) {
-        incrementStatistic(statistic, 1);
-    }
+        stats.setAchievement(achievement, true);
+        sendAchievement(achievement, true);
 
-    public void incrementStatistic(Statistic statistic, int amount) {
-        //sendStatistic(statistic.getId(), amount);
-    }
-
-    public void incrementStatistic(Statistic statistic, Material material) {
-        incrementStatistic(statistic, material, 1);
-    }
-
-    public void incrementStatistic(Statistic statistic, Material material, int amount) {
-        if (!statistic.isSubstatistic()) {
-            throw new IllegalArgumentException("Given statistic is not a substatistic");
-        }
-        if (statistic.isBlock() != material.isBlock()) {
-            throw new IllegalArgumentException("Given material is not valid for this substatistic");
-        }
-
-        int mat = material.getId();
-
-        if (!material.isBlock()) {
-            mat -= 255;
-        }
-
-        //sendStatistic(statistic.getId() + mat, amount);
-    }
-
-    public void setStatistic(Statistic statistic, EntityType entityType, int newValue) {
-
+        // todo: make an announcement if that's enabled
     }
 
     public void removeAchievement(Achievement achievement) {
+        if (!hasAchievement(achievement)) return;
 
+        stats.setAchievement(achievement, false);
+        sendAchievement(achievement, false);
     }
 
-    public boolean hasAchievement(Achievement achievement) {
-        return false;
-    }
-
-    public void decrementStatistic(Statistic statistic) throws IllegalArgumentException {
-
-    }
-
-    public void decrementStatistic(Statistic statistic, int amount) throws IllegalArgumentException {
-
-    }
-
-    public void setStatistic(Statistic statistic, int newValue) throws IllegalArgumentException {
-
+    private void sendAchievement(Achievement achievement, boolean has) {
+        Map<String, Integer> values = new HashMap<>();
+        values.put(GlowAchievement.getName(achievement), has ? 1 : 0);
+        session.send(new StatisticMessage(values));
     }
 
     public int getStatistic(Statistic statistic) throws IllegalArgumentException {
-        return 0;
-    }
-
-    public void decrementStatistic(Statistic statistic, Material material) throws IllegalArgumentException {
-
+        return stats.get(statistic);
     }
 
     public int getStatistic(Statistic statistic, Material material) throws IllegalArgumentException {
-        return 0;
-    }
-
-    public void decrementStatistic(Statistic statistic, Material material, int amount) throws IllegalArgumentException {
-
-    }
-
-    public void setStatistic(Statistic statistic, Material material, int newValue) throws IllegalArgumentException {
-
-    }
-
-    public void incrementStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {
-
-    }
-
-    public void decrementStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {
-
+        return stats.get(statistic, material);
     }
 
     public int getStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {
-        return 0;
+        return stats.get(statistic, entityType);
+    }
+
+    public void setStatistic(Statistic statistic, int newValue) throws IllegalArgumentException {
+        stats.set(statistic, newValue);
+    }
+
+    public void setStatistic(Statistic statistic, Material material, int newValue) throws IllegalArgumentException {
+        stats.set(statistic, material, newValue);
+    }
+
+    public void setStatistic(Statistic statistic, EntityType entityType, int newValue) {
+        stats.set(statistic, entityType, newValue);
+    }
+
+    public void incrementStatistic(Statistic statistic) {
+        stats.add(statistic, 1);
+    }
+
+    public void incrementStatistic(Statistic statistic, int amount) {
+        stats.add(statistic, amount);
+    }
+
+    public void incrementStatistic(Statistic statistic, Material material) {
+        stats.add(statistic, material, 1);
+    }
+
+    public void incrementStatistic(Statistic statistic, Material material, int amount) {
+        stats.add(statistic, material, amount);
+    }
+
+    public void incrementStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {
+        stats.add(statistic, entityType, 1);
     }
 
     public void incrementStatistic(Statistic statistic, EntityType entityType, int amount) throws IllegalArgumentException {
+        stats.add(statistic, entityType, amount);
+    }
 
+    public void decrementStatistic(Statistic statistic) throws IllegalArgumentException {
+        stats.add(statistic, -1);
+    }
+
+    public void decrementStatistic(Statistic statistic, int amount) throws IllegalArgumentException {
+        stats.add(statistic, -amount);
+    }
+
+    public void decrementStatistic(Statistic statistic, Material material) throws IllegalArgumentException {
+        stats.add(statistic, material, -1);
+    }
+
+    public void decrementStatistic(Statistic statistic, Material material, int amount) throws IllegalArgumentException {
+        stats.add(statistic, material, -amount);
+    }
+
+    public void decrementStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {
+        stats.add(statistic, entityType, -1);
     }
 
     public void decrementStatistic(Statistic statistic, EntityType entityType, int amount) {
+        stats.add(statistic, entityType, -amount);
+    }
 
+    public void sendStats() {
+        session.send(stats.toMessage());
     }
 
     ////////////////////////////////////////////////////////////////////////////

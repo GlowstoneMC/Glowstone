@@ -32,6 +32,7 @@ public final class PlayProtocol extends GlowProtocol {
         inbound(0x09, HeldItemMessage.class, HeldItemCodec.class, HeldItemHandler.class);
         inbound(0x0A, AnimateEntityMessage.class, AnimateEntityCodec.class, AnimateEntityHandler.class);
         inbound(0x0B, PlayerActionMessage.class, PlayerActionCodec.class, PlayerActionHandler.class);
+        inbound(0x0C, SteerVehicleMessage.class, SteerVehicleCodec.class, SteerVehicleHandler.class);
         inbound(0x0D, CloseWindowMessage.class, CloseWindowCodec.class, CloseWindowHandler.class);
         inbound(0x0E, WindowClickMessage.class, WindowClickCodec.class, WindowClickHandler.class);
         inbound(0x0F, TransactionMessage.class, TransactionCodec.class, TransactionHandler.class);
@@ -41,6 +42,7 @@ public final class PlayProtocol extends GlowProtocol {
         inbound(0x13, PlayerAbilitiesMessage.class, PlayerAbilitiesCodec.class, PlayerAbilitiesHandler.class);
         inbound(0x14, TabCompleteMessage.class, TabCompleteCodec.class, TabCompleteHandler.class);
         inbound(0x15, ClientSettingsMessage.class, ClientSettingsCodec.class, ClientSettingsHandler.class);
+        inbound(0x16, ClientStatusMessage.class, ClientStatusCodec.class, ClientStatusHandler.class);
         inbound(0x17, PluginMessage.class, PluginMessageCodec.class, PluginMessageHandler.class);
 
         outbound(0x00, PingMessage.class, PingCodec.class);
