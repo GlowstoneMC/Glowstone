@@ -1,14 +1,14 @@
 package net.glowstone;
 
-import net.glowstone.block.BlockProperties;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.ItemTable;
+import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.net.message.play.game.ChunkDataMessage;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 
-import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -305,19 +305,16 @@ public final class GlowChunk implements Chunk {
      * If needed, create a new tile entity at the given location.
      */
     private void createEntity(int cx, int cy, int cz, int type) {
-        BlockProperties properties = BlockProperties.get(type);
-        if (properties == null) return;
-
-        Class<? extends GlowBlockState> clazz = properties.getEntityClass();
-        if (clazz == null || clazz == GlowBlockState.class) return;
+        BlockType blockType = ItemTable.instance().getBlock(type);
+        if (blockType == null) return;
 
         try {
-            Constructor<? extends GlowBlockState> constructor = clazz.getConstructor(GlowBlock.class);
-            GlowBlockState state = constructor.newInstance(getBlock(cx, cy, cz));
+            GlowBlockState state = blockType.createTileEntity(getBlock(cx, cy, cz));
+            if (state == null) return;
+
             tileEntities.put(coordToIndex(cx, cz, cy), state);
         } catch (Exception ex) {
-            GlowServer.logger.log(Level.SEVERE, "Unable to initialize tile entity {0}: {1}", new Object[]{clazz.getName(), ex.getMessage()});
-            ex.printStackTrace();
+            GlowServer.logger.log(Level.SEVERE, "Unable to initialize tile entity for " + type, ex);
         }
     }
 

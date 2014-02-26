@@ -1,7 +1,8 @@
 package net.glowstone;
 
-import net.glowstone.block.BlockProperties;
 import net.glowstone.block.GlowBlock;
+import net.glowstone.block.ItemTable;
+import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import org.bukkit.BanList;
@@ -177,7 +178,9 @@ public final class EventFactory {
     }
 
     public static BlockCanBuildEvent onBlockCanBuild(GlowBlock block, int newId, BlockFace against) {
-        return callEvent(new BlockCanBuildEvent(block, newId, BlockProperties.get(newId).getPhysics().canPlaceAt(block, against)));
+        BlockType type = ItemTable.instance().getBlock(newId);
+        boolean canBuild = type == null || type.canPlaceAt(block, against);
+        return callEvent(new BlockCanBuildEvent(block, newId, canBuild));
     }
 
     // -- Server Events

@@ -1,7 +1,6 @@
 package net.glowstone.generator;
 
 import net.glowstone.GlowChunk;
-import net.glowstone.block.BlockProperties;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -52,7 +51,7 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
      * @return A new filled byte[16 * 16 * 128];
      */
     protected byte[] start(Material fill) {
-        if (BlockProperties.get(fill) == null) {
+        if (fill == null) {
             throw new IllegalArgumentException("Invalid block type!");
         }
         byte[] data = new byte[GlowChunk.HEIGHT * GlowChunk.WIDTH * GlowChunk.DEPTH];
@@ -72,7 +71,7 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
         if (data == null) {
             throw new IllegalStateException();
         }
-        if (BlockProperties.get(id) == null) {
+        if (id == null) {
             throw new IllegalArgumentException("Unknown block type!");
         }
         if (x < 0 || y < 0 || z < 0 || x >= GlowChunk.HEIGHT || y >= GlowChunk.DEPTH || z >= GlowChunk.WIDTH) {

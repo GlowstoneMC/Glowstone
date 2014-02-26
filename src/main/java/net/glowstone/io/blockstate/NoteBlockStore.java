@@ -1,6 +1,6 @@
 package net.glowstone.io.blockstate;
 
-import net.glowstone.block.GlowNoteBlock;
+import net.glowstone.block.entity.GlowNoteBlock;
 import net.glowstone.util.nbt.ByteTag;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.Tag;

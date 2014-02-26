@@ -1,6 +1,5 @@
 package net.glowstone.generator.populators;
 
-import net.glowstone.block.BlockProperties;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Material;
@@ -199,7 +198,7 @@ public class DungeonPopulator extends BlockPopulator {
     }
 
     private static void placeBlock(World world, int x, int y, int z, Material mat) {
-        if (canPlaceBlock(world, x, y, z) && BlockProperties.get(mat) != null) {
+        if (canPlaceBlock(world, x, y, z) && mat != null) {
             world.getBlockAt(x, y, z).setType(mat);
         }
     }

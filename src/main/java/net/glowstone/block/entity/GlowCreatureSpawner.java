@@ -1,5 +1,7 @@
-package net.glowstone.block;
+package net.glowstone.block.entity;
 
+import net.glowstone.block.GlowBlock;
+import net.glowstone.block.GlowBlockState;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.EntityType;

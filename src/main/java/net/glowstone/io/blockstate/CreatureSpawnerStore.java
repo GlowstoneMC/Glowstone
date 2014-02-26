@@ -1,6 +1,6 @@
 package net.glowstone.io.blockstate;
 
-import net.glowstone.block.GlowCreatureSpawner;
+import net.glowstone.block.entity.GlowCreatureSpawner;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.IntTag;
 import net.glowstone.util.nbt.StringTag;

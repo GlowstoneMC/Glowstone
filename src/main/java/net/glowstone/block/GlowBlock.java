@@ -2,7 +2,6 @@ package net.glowstone.block;
 
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowWorld;
-import net.glowstone.block.physics.BlockPhysicsEngine;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
 import org.bukkit.Location;
@@ -17,7 +16,6 @@ import org.bukkit.metadata.MetadataStoreBase;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -165,7 +163,7 @@ public class GlowBlock implements Block {
         chunk.setType(x & 0xf, z & 0xf, y, type);
         chunk.setMetaData(x & 0xf, z & 0xf, y, data);
         if (applyPhysics) {
-            BlockPhysicsEngine.doPhysics(this);
+            // todo: physics
         }
         BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, type, data);
         for (GlowPlayer p : getWorld().getRawPlayers()) {
@@ -198,7 +196,7 @@ public class GlowBlock implements Block {
     public void setData(byte data, boolean applyPhyiscs) {
         chunk.setMetaData(x & 0xf, z & 0xf, y & 0x7f, data);
         if (applyPhyiscs) {
-            BlockPhysicsEngine.doPhysics(this);
+            // todo: physics
         }
         BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, getTypeId(), data);
         for (GlowPlayer p : getWorld().getRawPlayers()) {
@@ -280,7 +278,7 @@ public class GlowBlock implements Block {
     }
 
     public Collection<ItemStack> getDrops() {
-        return Arrays.asList(BlockProperties.get(getTypeId()).getDrops(getData()));
+        return ItemTable.instance().getBlock(getType()).getDrops(this);
     }
 
     public Collection<ItemStack> getDrops(ItemStack tool) {
