@@ -4,15 +4,15 @@ import com.flowpowered.networking.MessageHandler;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
-import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.ItemTable;
+import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.BlockPlacementMessage;
-import org.bukkit.GameMode;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 import java.util.Objects;
 
@@ -64,48 +64,25 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
             return;
         }
 
-        // todo: handle items which become blocks when placed
-        if (holding == null || !holding.getType().isBlock()) {
+        if (holding == null) {
             revert(player, target);
             return;
         }
 
-        // todo: handle placing inside grass
-        if (!target.isEmpty() && !target.isLiquid()) {
-            revert(player, target);
-            return;
-        }
+        // call out to the item type to determine the appropriate right-click action
+        ItemType type = ItemTable.instance().getItem(holding.getType());
+        Vector clickedLoc = new Vector(message.getCursorX(), message.getCursorY(), message.getCursorZ()).multiply(1.0 / 16.0);
+        type.rightClicked(player, against, face, holding, clickedLoc);
 
-        // call canBuild event
-        if (!EventFactory.onBlockCanBuild(target, holding.getTypeId(), face).isBuildable()) {
-            revert(player, target);
-            return;
-        }
-
-        // todo: per-block-type handling
-        GlowBlockState newState = target.getState();
-        newState.setType(holding.getType());
-        newState.setRawData((byte) holding.getDurability());  // hacky
-
-        // call blockPlace event
-        BlockPlaceEvent event = EventFactory.onBlockPlace(target, newState, against, player);
-        if (event.isCancelled() || !event.canBuild()) {
-            revert(player, target);
-            return;
-        }
-
-        // perform the block change
-        newState.update(true);
-
-        // deduct from stack if not in creative mode
-        if (player.getGameMode() != GameMode.CREATIVE) {
+        // if there's been a change in the held item, make it valid again
+        if (holding.getDurability() > holding.getType().getMaxDurability()) {
             holding.setAmount(holding.getAmount() - 1);
-            if (holding.getAmount() == 0) {
-                player.setItemInHand(null);
-            } else {
-                player.setItemInHand(holding);
-            }
+            holding.setDurability((short) 0);
         }
+        if (holding.getAmount() <= 0) {
+            holding = null;
+        }
+        player.setItemInHand(holding);
     }
 
     private void revert(GlowPlayer player, GlowBlock target) {

@@ -1,6 +1,10 @@
 package net.glowstone.block;
 
+import net.glowstone.GlowServer;
+import net.glowstone.block.blocktype.BlockSign;
 import net.glowstone.block.blocktype.BlockType;
+import net.glowstone.block.itemtype.ItemSign;
+import net.glowstone.block.itemtype.ItemSugarcane;
 import net.glowstone.block.itemtype.ItemType;
 import org.bukkit.Material;
 
@@ -14,13 +18,8 @@ public final class ItemTable {
 
     private static final ItemTable INSTANCE = new ItemTable();
 
-    private final Map<Integer, ItemType> idToType = new HashMap<>();
-    private final Map<ItemType, Integer> typeToId = new HashMap<>();
-
-    private int nextBlockId, nextItemId;
-
-    private ItemTable() {
-        registerDefaults();
+    static {
+        INSTANCE.registerBuiltins();
     }
 
     public static ItemTable instance() {
@@ -28,15 +27,31 @@ public final class ItemTable {
     }
 
     ////////////////////////////////////////////////////////////////////////////
+    // Data
+
+    private final Map<Integer, ItemType> idToType = new HashMap<>();
+
+    private int nextBlockId, nextItemId;
+
+    ////////////////////////////////////////////////////////////////////////////
     // Registration
 
-    private void registerDefaults() {
-        reg(Material.AIR, null);
+    private void registerBuiltins() {
+        reg(Material.WALL_SIGN, new BlockSign());
+        reg(Material.SIGN_POST, new BlockSign());
+        reg(Material.SIGN, new ItemSign());
+        reg(Material.SUGAR_CANE, new ItemSugarcane());
     }
 
     private void reg(Material material, ItemType type) {
+        if (material.isBlock() != (type instanceof BlockType)) {
+            throw new IllegalArgumentException("Cannot mismatch item and block: " + material + ", " + type);
+        }
+
         idToType.put(material.getId(), type);
-        typeToId.put(type, material.getId());
+        type.setId(material.getId());
+
+        GlowServer.logger.info("Registered built-in: " + type);
 
         if (material.isBlock()) {
             nextBlockId = Math.max(nextBlockId, material.getId() + 1);
@@ -58,7 +73,6 @@ public final class ItemTable {
         }
 
         idToType.put(id, type);
-        typeToId.put(type, id);
 
         if (type instanceof BlockType) {
             nextBlockId = id + 1;
@@ -69,7 +83,7 @@ public final class ItemTable {
 
     private ItemType createDefault(int id) {
         Material material = Material.getMaterial(id);
-        if (material == null) {
+        if (material == null || id == 0) {
             return null;
         }
 
@@ -108,14 +122,6 @@ public final class ItemTable {
 
     public BlockType getBlock(Material mat) {
         return getBlock(mat.getId());
-    }
-
-    public int getId(ItemType type) {
-        if (typeToId.containsKey(type)) {
-            return typeToId.get(type);
-        } else {
-            return 0;
-        }
     }
 
 }
