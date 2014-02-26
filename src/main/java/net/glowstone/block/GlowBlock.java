@@ -2,6 +2,7 @@ package net.glowstone.block;
 
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowWorld;
+import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
 import org.bukkit.Location;
@@ -51,6 +52,8 @@ public class GlowBlock implements Block {
         this.z = z;
     }
 
+
+
     ////////////////////////////////////////////////////////////////////////////
     // Basics
 
@@ -87,9 +90,17 @@ public class GlowBlock implements Block {
         return loc;
     }
 
+    public TileEntity getTileEntity() {
+        return chunk.getEntity(x & 0xf, y, z & 0xf);
+    }
+
     public GlowBlockState getState() {
-        if (chunk.getEntity(x & 0xf, y, z & 0xf) != null) {
-            return chunk.getEntity(x & 0xf, y, z & 0xf).shallowClone();
+        TileEntity entity = getTileEntity();
+        if (entity != null) {
+            GlowBlockState state = entity.getState();
+            if (state != null) {
+                return state;
+            }
         }
         return new GlowBlockState(this);
     }

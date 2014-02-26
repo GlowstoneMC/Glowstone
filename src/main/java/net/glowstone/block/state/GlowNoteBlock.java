@@ -1,4 +1,4 @@
-package net.glowstone.block.entity;
+package net.glowstone.block.state;
 
 import net.glowstone.GlowChunk;
 import net.glowstone.block.GlowBlock;
@@ -13,6 +13,7 @@ import org.bukkit.block.NoteBlock;
 
 /**
  * Represents a noteblock in the world.
+ * todo: update to TileEntity
  */
 public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
 
@@ -99,18 +100,6 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
         public NoteWrapper(Note note) {
             this.note = note;
         }
-    }
-
-    @Override
-    public GlowNoteBlock shallowClone() {
-        GlowNoteBlock result = new GlowNoteBlock(getBlock());
-        result.wrapper = wrapper;
-        return result;
-    }
-
-    @Override
-    public void destroy() {
-        setRawNote((byte) 0);
     }
 
 }

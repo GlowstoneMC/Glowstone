@@ -4,13 +4,13 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
+import net.glowstone.block.entity.TileEntity;
 import net.glowstone.net.message.play.game.ChunkDataMessage;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
@@ -164,7 +164,7 @@ public final class GlowChunk implements Chunk {
     /**
      * The tile entities that reside in this chunk.
      */
-    private final HashMap<Integer, GlowBlockState> tileEntities = new HashMap<Integer, GlowBlockState>();
+    private final HashMap<Integer, TileEntity> tileEntities = new HashMap<>();
     
     /**
      * Whether the chunk has been populated by special features.
@@ -206,7 +206,19 @@ public final class GlowChunk implements Chunk {
     }
 
     public GlowBlockState[] getTileEntities() {
-        return tileEntities.values().toArray(new GlowBlockState[tileEntities.size()]);
+        List<GlowBlockState> states = new ArrayList<>(tileEntities.size());
+        for (TileEntity tileEntity : tileEntities.values()) {
+            GlowBlockState state = tileEntity.getState();
+            if (state != null) {
+                states.add(state);
+            }
+        }
+
+        return states.toArray(new GlowBlockState[states.size()]);
+    }
+
+    public Collection<TileEntity> getRawTileEntities() {
+        return Collections.unmodifiableCollection(tileEntities.values());
     }
 
     public GlowChunkSnapshot getChunkSnapshot() {
@@ -309,10 +321,10 @@ public final class GlowChunk implements Chunk {
         if (blockType == null) return;
 
         try {
-            GlowBlockState state = blockType.createTileEntity(getBlock(cx, cy, cz));
-            if (state == null) return;
+            TileEntity entity = blockType.createTileEntity(getBlock(cx, cy, cz));
+            if (entity == null) return;
 
-            tileEntities.put(coordToIndex(cx, cz, cy), state);
+            tileEntities.put(coordToIndex(cx, cz, cy), entity);
         } catch (Exception ex) {
             GlowServer.logger.log(Level.SEVERE, "Unable to initialize tile entity for " + type, ex);
         }
@@ -340,7 +352,7 @@ public final class GlowChunk implements Chunk {
      * @param y The Y coordinate.
      * @return A GlowBlockState if the entity exists, or null otherwise.
      */
-    public GlowBlockState getEntity(int x, int y, int z) {
+    public TileEntity getEntity(int x, int y, int z) {
         if (y >= world.getMaxHeight() || y < 0) return null;
         load();
         return tileEntities.get(coordToIndex(x, z, y));

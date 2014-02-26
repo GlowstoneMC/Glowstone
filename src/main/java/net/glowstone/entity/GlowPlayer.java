@@ -4,7 +4,7 @@ import com.flowpowered.networking.Message;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.glowstone.*;
-import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.entity.TileEntity;
 import net.glowstone.constants.GlowAchievement;
 import net.glowstone.constants.GlowEffect;
 import net.glowstone.constants.GlowSound;
@@ -173,6 +173,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * The bed spawn location of a player
      */
     private Location bedSpawn;
+
+    /**
+     * The location of the sign the player is currently editing, or null.
+     */
+    private Location signLocation;
 
     /**
      * Whether the player is permitted to fly.
@@ -415,8 +420,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         for (GlowChunk.Key key : newChunks) {
             GlowChunk chunk = world.getChunkAt(key.getX(), key.getZ());
-            for (GlowBlockState state : chunk.getTileEntities()) {
-                state.update(this);
+            for (TileEntity entity : chunk.getRawTileEntities()) {
+                entity.update(this);
             }
         }
 
@@ -443,6 +448,33 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      */
     public boolean canSee(GlowEntity entity) {
         return knownEntities.contains(entity);
+    }
+
+    /**
+     * Open the sign editor interface at the specified location.
+     * @param loc The location to open the editor at
+     */
+    public void openSignEditor(Location loc) {
+        signLocation = loc.clone();
+        signLocation.setX(loc.getBlockX());
+        signLocation.setY(loc.getBlockY());
+        signLocation.setZ(loc.getBlockZ());
+        session.send(new SignEditorMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+    }
+
+    /**
+     * Check that the specified location matches that of the last opened sign
+     * editor, and if so, clears the last opened sign editor.
+     * @param loc The location to check
+     * @return Whether the location matched.
+     */
+    public boolean checkSignLocation(Location loc) {
+        if (loc.equals(signLocation)) {
+            signLocation = null;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public Map<String, Object> serialize() {

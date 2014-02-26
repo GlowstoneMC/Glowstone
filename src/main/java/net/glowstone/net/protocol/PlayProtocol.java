@@ -93,6 +93,7 @@ public final class PlayProtocol extends GlowProtocol {
         outbound(0x32, TransactionMessage.class, TransactionCodec.class);
         outbound(0x33, UpdateSignMessage.class, UpdateSignCodec.class);
         outbound(0x34, MapDataMessage.class, MapDataCodec.class);
+        outbound(0x36, SignEditorMessage.class, SignEditorCodec.class);
         outbound(0x37, StatisticMessage.class, StatisticCodec.class);
         outbound(0x38, UserListItemMessage.class, UserListItemCodec.class);
         outbound(0x39, PlayerAbilitiesMessage.class, PlayerAbilitiesCodec.class);

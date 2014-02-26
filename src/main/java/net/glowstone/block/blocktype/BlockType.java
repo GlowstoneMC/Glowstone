@@ -3,6 +3,7 @@ package net.glowstone.block.blocktype;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.entity.TileEntity;
 import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.GameMode;
@@ -54,9 +55,9 @@ public class BlockType extends ItemType {
     /**
      * Create a new tile entity at the given location.
      * @param block The block to create the tile entity at.
-     * @return The new GlowBlockState, or null if no tile entity is used.
+     * @return The new TileEntity, or null if no tile entity is used.
      */
-    public GlowBlockState createTileEntity(GlowBlock block) {
+    public TileEntity createTileEntity(GlowBlock block) {
         return null;
     }
 
@@ -72,6 +73,7 @@ public class BlockType extends ItemType {
 
     /**
      * Called when a block is placed to calculate what the block will become.
+     * @param player the player who placed the block
      * @param state the BlockState to edit
      * @param holding the ItemStack that was being held
      * @param face the face off which the block is being placed
@@ -80,6 +82,16 @@ public class BlockType extends ItemType {
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
         state.setType(getMaterial());
         state.setRawData((byte) holding.getDurability());
+    }
+
+    /**
+     * Called after a block has been placed by a player.
+     * @param player the player who placed the block
+     * @param block the block that was placed
+     * @param holding the the ItemStack that was being held
+     */
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding) {
+        // do nothing
     }
 
     @Override
@@ -113,6 +125,9 @@ public class BlockType extends ItemType {
 
         // perform the block change
         newState.update(true);
+
+        // do any after-place actions
+        afterPlace(player, target, holding);
 
         // deduct from stack if not in creative mode
         if (player.getGameMode() != GameMode.CREATIVE) {

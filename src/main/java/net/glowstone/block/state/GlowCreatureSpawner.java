@@ -1,4 +1,4 @@
-package net.glowstone.block.entity;
+package net.glowstone.block.state;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -79,16 +79,4 @@ public class GlowCreatureSpawner extends GlowBlockState implements CreatureSpawn
         public int delay = 15000;
     }
 
-    @Override
-    public GlowCreatureSpawner shallowClone() {
-        GlowCreatureSpawner spawner = new GlowCreatureSpawner(getBlock());
-        spawner.wrapper = wrapper;
-        return spawner;
-    }
-
-    @Override
-    public void destroy() {
-        setDelay(-1);
-        setSpawnedType(EntityType.PIG);
-    }
 }

@@ -2,7 +2,6 @@ package net.glowstone.block;
 
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowWorld;
-import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -117,11 +116,11 @@ public class GlowBlockState implements BlockState {
     ////////////////////////////////////////////////////////////////////////////
     // Update
 
-    public boolean update() {
+    public final boolean update() {
         return update(false, true);
     }
 
-    public boolean update(boolean force) {
+    public final boolean update(boolean force) {
         return update(force, true);
     }
 
@@ -141,21 +140,6 @@ public class GlowBlockState implements BlockState {
         } else {
             this.data = mat.getNewData(data);
         }
-    }
-
-    /**
-     * Create a shallow clone which refers to the same underlying tile entity but keeps
-     * a different MaterialData instance.
-     */
-    public GlowBlockState shallowClone() {
-        return new GlowBlockState(getBlock());
-    }
-
-    public void destroy() {
-        throw new IllegalStateException("Cannot destroy a generic BlockState");
-    }
-
-    public void update(GlowPlayer player) {
     }
 
     ////////////////////////////////////////////////////////////////////////////

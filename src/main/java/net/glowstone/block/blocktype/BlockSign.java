@@ -1,6 +1,9 @@
 package net.glowstone.block.blocktype;
 
+import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.entity.TESign;
+import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,6 +19,11 @@ public class BlockSign extends BlockType {
 
     public boolean isWallSign() {
         return getMaterial() == Material.WALL_SIGN;
+    }
+
+    @Override
+    public TileEntity createTileEntity(GlowBlock block) {
+        return new TESign(block);
     }
 
     @Override
@@ -35,6 +43,11 @@ public class BlockSign extends BlockType {
             data = (byte)(Math.round(part + 20) % 16);
         }
         state.setRawData(data);
+    }
+
+    @Override
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding) {
+        player.openSignEditor(block.getLocation());
     }
 
     private byte getFacing(BlockFace face) {

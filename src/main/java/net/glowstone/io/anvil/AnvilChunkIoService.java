@@ -4,10 +4,8 @@ import net.glowstone.GlowChunk;
 import net.glowstone.GlowChunk.ChunkSection;
 import net.glowstone.GlowChunkSnapshot;
 import net.glowstone.GlowServer;
-import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.entity.TileEntity;
 import net.glowstone.io.ChunkIoService;
-import net.glowstone.io.blockstate.BlockStateStore;
-import net.glowstone.io.blockstate.BlockStateStoreLookupService;
 import net.glowstone.util.nbt.*;
 import org.bukkit.block.Biome;
 
@@ -15,7 +13,11 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
 
 /**
  * An implementation of the {@link ChunkIoService} which reads and writes Anvil maps,
@@ -44,7 +46,6 @@ public final class AnvilChunkIoService implements ChunkIoService {
         this.dir = dir;
     }
 
-    @SuppressWarnings("unchecked")
     public boolean read(GlowChunk chunk, int x, int z) throws IOException {
         RegionFile region = cache.getRegionFile(dir, x, z);
         int regionX = x & (REGION_SIZE - 1);
@@ -83,16 +84,15 @@ public final class AnvilChunkIoService implements ChunkIoService {
         // read tile entities
         List<CompoundTag> storedTileEntities = levelTag.getList("TileEntities", CompoundTag.class);
         for (CompoundTag tileEntityTag : storedTileEntities) {
-            GlowBlockState state = chunk.getBlock(
+            TileEntity tileEntity = chunk.getBlock(
                     tileEntityTag.get("x", IntTag.class),
                     tileEntityTag.get("y", IntTag.class),
-                    tileEntityTag.get("z", IntTag.class)).getState();
-            if (state.getClass() != GlowBlockState.class) {
-                BlockStateStore store = BlockStateStoreLookupService.find(tileEntityTag.get("id", StringTag.class));
-                if (store != null) {
-                    store.load(state, tileEntityTag);
-                } else {
-                    GlowServer.logger.severe("Unable to find store for BlockState " + state.getClass());
+                    tileEntityTag.get("z", IntTag.class)).getTileEntity();
+            if (tileEntity != null) {
+                try {
+                    tileEntity.loadNbt(tileEntityTag);
+                } catch (Exception ex) {
+                    GlowServer.logger.log(Level.SEVERE, "Error loading TileEntity at " + tileEntity.getBlock(), ex);
                 }
             }
         }
@@ -187,14 +187,11 @@ public final class AnvilChunkIoService implements ChunkIoService {
 
         // tile entities
         List<CompoundTag> tileEntities = new ArrayList<CompoundTag>();
-        for (GlowBlockState state : chunk.getTileEntities()) {
-            if (state.getClass() != GlowBlockState.class) {
-                BlockStateStore store = BlockStateStoreLookupService.find(state.getClass());
-                if (store != null) {
-                    tileEntities.add(new CompoundTag("", store.save(state)));
-                } else {
-                    GlowServer.logger.severe("Unable to find store for BlockState " + state.getClass());
-                }
+        for (TileEntity entity : chunk.getRawTileEntities()) {
+            try {
+                tileEntities.add(new CompoundTag("", entity.saveNbt()));
+            } catch (Exception ex) {
+                GlowServer.logger.log(Level.SEVERE, "Error saving tile entity at " + entity.getBlock(), ex);
             }
         }
         levelTags.add(new ListTag<CompoundTag>("TileEntities", TagType.COMPOUND, tileEntities));
