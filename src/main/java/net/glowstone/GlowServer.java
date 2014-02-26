@@ -1,5 +1,7 @@
 package net.glowstone;
 
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import net.glowstone.command.ColorCommand;
 import net.glowstone.inventory.CraftingManager;
 import net.glowstone.inventory.GlowInventory;
@@ -281,7 +283,9 @@ public final class GlowServer implements Server {
         }
 
         logger.log(Level.INFO, "Binding to address: {0}...", address);
-        if (!networkServer.bind(address)) {
+        ChannelFuture future = networkServer.bind(address);
+        Channel channel = future.awaitUninterruptibly().channel();
+        if (!channel.isActive()) {
             throw new RuntimeException("Failed to bind to address. Maybe it is already in use?");
         }
     }
