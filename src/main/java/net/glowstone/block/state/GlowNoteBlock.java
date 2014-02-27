@@ -3,6 +3,7 @@ package net.glowstone.block.state;
 import net.glowstone.GlowChunk;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.entity.TENote;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Instrument;
 import org.bukkit.Location;
@@ -11,39 +12,53 @@ import org.bukkit.Note;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.NoteBlock;
 
-/**
- * Represents a noteblock in the world.
- * todo: update to TileEntity
- */
 public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
 
-    private NoteWrapper wrapper = new NoteWrapper(new Note((byte) 0));
+    private Note note;
 
     public GlowNoteBlock(GlowBlock block) {
         super(block);
         if (block.getType() != Material.NOTE_BLOCK) {
             throw new IllegalArgumentException("GlowNoteBlock: expected NOTE_BLOCK, got " + block.getType());
         }
+
+        note = getTileEntity().getNote();
     }
 
+    private TENote getTileEntity() {
+        return (TENote) getBlock().getTileEntity();
+    }
+
+    @Override
+    public boolean update(boolean force, boolean applyPhysics) {
+        boolean result = super.update(force, applyPhysics);
+        if (!result) {
+            getTileEntity().setNote(note);
+        }
+        return result;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Implementation
+
     public Note getNote() {
-        return wrapper.note;
+        return note;
     }
 
     public byte getRawNote() {
-        return wrapper.note.getId();
+        return note.getId();
     }
 
     public void setNote(Note note) {
-        this.wrapper.note = note;
+        this.note = note;
     }
 
     public void setRawNote(byte note) {
-        this.wrapper.note = new Note(note);
+        this.note = new Note(note);
     }
 
     public boolean play() {
-        return play(instrumentOf(getBlock().getRelative(BlockFace.DOWN).getType()), wrapper.note);
+        return play(instrumentOf(getBlock().getRelative(BlockFace.DOWN).getType()), getNote());
     }
 
     public boolean play(byte instrument, byte note) {
@@ -53,9 +68,11 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
 
         Location location = getBlock().getLocation();
 
+        GlowChunk.Key key = new GlowChunk.Key(getX() >> 4, getZ() >> 4);
         for (GlowPlayer player : getWorld().getRawPlayers()) {
-            if (player.canSee(new GlowChunk.Key(getX() >> 4, getZ() >> 4)))
+            if (player.canSee(key)) {
                 player.playNote(location, instrument, note);
+            }
         }
 
         return true;
@@ -91,14 +108,6 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
             case AIR:
             default:
                 return Instrument.PIANO;
-        }
-    }
-
-    private class NoteWrapper {
-        public Note note;
-
-        public NoteWrapper(Note note) {
-            this.note = note;
         }
     }
 

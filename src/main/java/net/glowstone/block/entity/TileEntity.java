@@ -4,7 +4,10 @@ import net.glowstone.GlowChunk;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.util.nbt.*;
+import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.IntTag;
+import net.glowstone.util.nbt.StringTag;
+import net.glowstone.util.nbt.Tag;
 import org.bukkit.block.Block;
 
 import java.util.ArrayList;

@@ -2,47 +2,69 @@ package net.glowstone.block.state;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.entity.TEMobSpawner;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.EntityType;
 
 public class GlowCreatureSpawner extends GlowBlockState implements CreatureSpawner {
 
-    private MobSpawnerWrapper wrapper = new MobSpawnerWrapper();
+    private EntityType spawned;
+    private int delay;
 
     public GlowCreatureSpawner(GlowBlock block) {
         super(block);
+
+        TEMobSpawner spawner = getTileEntity();
+        spawned = spawner.getSpawning();
+        delay = spawner.getDelay();
+    }
+
+    private TEMobSpawner getTileEntity() {
+        return (TEMobSpawner) getBlock().getTileEntity();
+    }
+
+    @Override
+    public boolean update(boolean force, boolean applyPhysics) {
+        boolean result = super.update(force, applyPhysics);
+        if (result) {
+            TEMobSpawner spawner = getTileEntity();
+            spawner.setSpawning(spawned);
+            spawner.setDelay(delay);
+            spawner.updateInRange();
+        }
+        return result;
     }
 
     public int getDelay() {
-        return wrapper.delay;
+        return delay;
     }
 
     public void setDelay(int i) {
         if (i < 0) i = 0;
-        wrapper.delay = i;
+        delay = i;
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // Spawned Type
 
     public EntityType getSpawnedType() {
-        return wrapper.type;
+        return spawned;
     }
 
     public void setSpawnedType(EntityType creatureType) {
-        wrapper.type = creatureType;
+        spawned = creatureType;
     }
 
     public void setCreatureTypeByName(String creatureType) {
         EntityType type = EntityType.fromName(creatureType);
         if (type != null) {
-            wrapper.type = type;
+            spawned = type;
         }
     }
 
     public String getCreatureTypeName() {
-        return wrapper.type.getName();
+        return spawned.getName();
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -50,33 +72,25 @@ public class GlowCreatureSpawner extends GlowBlockState implements CreatureSpawn
 
     @Deprecated
     public CreatureType getCreatureType() {
-        return CreatureType.fromEntityType(wrapper.type);
+        return CreatureType.fromEntityType(spawned);
     }
 
     @Deprecated
     public void setCreatureType(CreatureType creatureType) {
-        wrapper.type = creatureType.toEntityType();
+        spawned = creatureType.toEntityType();
     }
 
     @Deprecated
     public String getCreatureTypeId() {
-        return wrapper.type.getName();
+        return spawned.getName();
     }
 
     @Deprecated
     public void setCreatureTypeId(String s) {
         CreatureType type = CreatureType.fromName(s);
         if (type != null) {
-            wrapper.type = type.toEntityType();
+            spawned = type.toEntityType();
         }
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Internals
-
-    private static class MobSpawnerWrapper {
-        public EntityType type = EntityType.PIG;
-        public int delay = 15000;
     }
 
 }

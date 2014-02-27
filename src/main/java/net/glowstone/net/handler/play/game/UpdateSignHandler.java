@@ -13,8 +13,6 @@ public final class UpdateSignHandler implements MessageHandler<GlowSession, Upda
     public void handle(GlowSession session, UpdateSignMessage message) {
         final GlowPlayer player = session.getPlayer();
 
-        GlowServer.logger.info(session + ": " + message);
-
         Location location = new Location(player.getWorld(), message.getX(), message.getY(), message.getZ());
         if (player.checkSignLocation(location)) {
             // update the sign if it's actually still there

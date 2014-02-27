@@ -1,6 +1,8 @@
 package net.glowstone.block;
 
 import net.glowstone.GlowServer;
+import net.glowstone.block.blocktype.BlockMobSpawner;
+import net.glowstone.block.blocktype.BlockNote;
 import net.glowstone.block.blocktype.BlockSign;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.itemtype.ItemSign;
@@ -37,8 +39,11 @@ public final class ItemTable {
     // Registration
 
     private void registerBuiltins() {
-        reg(Material.WALL_SIGN, new BlockSign());
+        reg(Material.NOTE_BLOCK, new BlockNote());
+        reg(Material.MOB_SPAWNER, new BlockMobSpawner());
         reg(Material.SIGN_POST, new BlockSign());
+        reg(Material.WALL_SIGN, new BlockSign());
+
         reg(Material.SIGN, new ItemSign());
         reg(Material.SUGAR_CANE, new ItemSugarcane());
     }
@@ -73,6 +78,7 @@ public final class ItemTable {
         }
 
         idToType.put(id, type);
+        type.setId(id);
 
         if (type instanceof BlockType) {
             nextBlockId = id + 1;

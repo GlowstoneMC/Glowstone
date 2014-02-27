@@ -13,9 +13,6 @@ import org.bukkit.Material;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * TileEntity class for sign blocks.
- */
 public class TESign extends TileEntity {
 
     private final String[] lines = new String[4];
