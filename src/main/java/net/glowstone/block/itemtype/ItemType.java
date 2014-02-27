@@ -31,6 +31,12 @@ public class ItemType {
             throw new IllegalStateException("Id is already set in " + this);
         }
         this.id = id;
+
+        // pull a few defaults from Material if possible
+        Material mat = getMaterial();
+        if (mat != null) {
+            maxStackSize = mat.getMaxStackSize();
+        }
     }
 
     /**

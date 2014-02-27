@@ -65,6 +65,10 @@ public final class ItemTable {
         }
     }
 
+    /**
+     * Register a new, non-Vanilla ItemType. It will be assigned an ID automatically.
+     * @param type the ItemType to register.
+     */
     public void register(ItemType type) {
         int id;
         if (type instanceof BlockType) {
