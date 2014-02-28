@@ -182,7 +182,12 @@ public final class GlowChunk implements Chunk {
         this.x = x;
         this.z = z;
     }
-    
+
+    @Override
+    public String toString() {
+        return "GlowChunk{world=" + world.getName() + ",x=" + x + ",z=" + z + '}';
+    }
+
     // ======== Basic stuff ========
 
     public GlowWorld getWorld() {

@@ -300,6 +300,13 @@ public final class GlowWorld implements World {
         ambientLimit = server.getAmbientSpawnLimit();
     }
 
+    @Override
+    public String toString() {
+        return "GlowWorld{" +
+                "name='" + name + '\'' +
+                '}';
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Various internal mechanisms
     

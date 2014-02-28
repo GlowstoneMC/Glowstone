@@ -108,6 +108,11 @@ public abstract class GlowEntity implements Entity {
         world.getEntityManager().allocate(this);
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Core properties
 

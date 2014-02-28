@@ -258,7 +258,7 @@ public final class GlowBlock implements Block {
 
     @Override
     public String toString() {
-        return "GlowBlock{loc=" + getLocation().toString() + ",type=" + getTypeId() + ",data=" + getData() + "}";
+        return "GlowBlock{chunk=" + getChunk() + ",x=" + x + ",y=" + y + ",z=" + z + ",type=" + getType() + ",data=" + getData() + "}";
     }
 
     ////////////////////////////////////////////////////////////////////////////

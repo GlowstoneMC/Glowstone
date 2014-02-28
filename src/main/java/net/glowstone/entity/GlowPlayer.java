@@ -245,6 +245,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(new PositionRotationMessage(location.getX(), y, location.getZ(), location.getYaw(), location.getPitch(), true));
     }
 
+    @Override
+    public String toString() {
+        return "GlowPlayer{name=" + getName() + "}";
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Internals
 
@@ -619,6 +624,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         boolean changed = getGameMode() != mode;
         super.setGameMode(mode);
         if (changed) session.send(new StateChangeMessage(3, mode.getValue()));
+
+        setAllowFlight(mode == GameMode.CREATIVE);
     }
 
     ////////////////////////////////////////////////////////////////////////////

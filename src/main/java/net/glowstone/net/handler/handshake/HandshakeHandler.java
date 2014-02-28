@@ -31,7 +31,7 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
             return;
         }
 
-        GlowServer.logger.info("Handshake [" + message.getAddress() + ":" + message.getPort() + "], next state " + newProtocol);
+        //GlowServer.logger.info("Handshake [" + message.getAddress() + ":" + message.getPort() + "], next state " + newProtocol);
         session.setProtocol(protocol);
 
         if (newProtocol == Protocols.LOGIN) {
