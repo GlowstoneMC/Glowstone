@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Represents a single block in a world.
  */
-public class GlowBlock implements Block {
+public final class GlowBlock implements Block {
 
     /**
      * The metadata store class for blocks.
@@ -51,8 +51,6 @@ public class GlowBlock implements Block {
         this.y = y;
         this.z = z;
     }
-
-
 
     ////////////////////////////////////////////////////////////////////////////
     // Basics

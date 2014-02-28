@@ -2,15 +2,17 @@ package net.glowstone.net.handler.play.player;
 
 import com.flowpowered.networking.MessageHandler;
 import net.glowstone.EventFactory;
-import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
+import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.BlockPlacementMessage;
 import org.bukkit.block.BlockFace;
+import org.bukkit.event.Event;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -22,74 +24,127 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         if (player == null)
             return;
 
+        //GlowServer.logger.info(session + ": " + message);
+
         /**
-         * The notch client's packet sending is weird. Here's how it works:
-         * If the client is clicking a block not in range, sends a packet with x=-1,y=255,z=-1
-         * If the client is clicking a block in range with an item in hand (id > 255)
-         * Sends both the normal block placement packet and a (-1,255,-1) one
-         * If the client is placing a block in range with a block in hand, only one normal packet is sent
-         * That is how it usually happens. Sometimes it doesn't happen like that.
-         * Therefore, a hacky workaround.
+         * The client sends this packet for the following cases:
+         * Right click air:
+         * - Send direction=-1 packet for any non-null item
+         * Right click block:
+         * - Send packet with all values filled
+         * - If client DOES NOT expect a block placement to result:
+         *   - Send direction=-1 packet (unless item is null)
+         *
+         * Client will expect a block placement to result from blocks and from
+         * certain items (e.g. sugarcane, sign). We *could* opt to trust the
+         * client on this, but the server's view of events (particularly under
+         * the Bukkit API, or custom ItemTypes) may differ from the client's.
+         *
+         * In order to avoid firing two events for one interact, the two
+         * packet case must be handled here. Care must also be taken that a
+         * right-click air of an expected-place item immediately after is
+         * not considered part of the same action.
          */
-        if (message.getDirection() == 255) {
-            // Right-clicked air. Note that the client doesn't send this if they are holding nothing.
+
+        Action action = Action.RIGHT_CLICK_BLOCK;
+        GlowBlock clicked = player.getWorld().getBlockAt(message.getX(), message.getY(), message.getZ());
+
+        /**
+         * Check if the message is a -1. If we *just* got a message with the
+         * values filled, discard it, otherwise perform right-click-air.
+         */
+        if (message.getDirection() == -1) {
             BlockPlacementMessage previous = session.getPreviousPlacement();
-            if (previous == null
-                    || !previous.getHeldItem().equals(message.getHeldItem())) {
-                EventFactory.onPlayerInteract(player, Action.RIGHT_CLICK_AIR);
+            if (previous == null || !previous.getHeldItem().equals(message.getHeldItem())) {
+                // perform normal right-click-air actions
+                action = Action.RIGHT_CLICK_AIR;
+                clicked = null;
+            } else {
+                // terminate processing of this event
+                session.setPreviousPlacement(null);
+                return;
             }
-            session.setPreviousPlacement(null);
-            return;
         }
+
+        // Set previous placement message
         session.setPreviousPlacement(message);
 
-        GlowBlock against = player.getWorld().getBlockAt(message.getX(), message.getY(), message.getZ());
-        if (message.getDirection() < 0 || message.getDirection() >= faces.length) return;
-        BlockFace face = faces[message.getDirection()];
-
-        GlowBlock target = against.getRelative(face);
+        // Get values from the message
+        Vector clickedLoc = new Vector(message.getCursorX(), message.getCursorY(), message.getCursorZ());
+        BlockFace face = convertFace(message.getDirection());
         ItemStack holding = player.getItemInHand();
 
-        GlowServer.logger.info(session + ": " + message);
-
+        // check that held item matches
         if (!Objects.equals(holding, message.getHeldItem())) {
             // above handles cases where holding and/or message's item are null
             // todo: inform player their item is wrong
-            revert(player, target);
             return;
         }
 
-        if (EventFactory.onPlayerInteract(player, Action.RIGHT_CLICK_BLOCK, against, face).isCancelled()) {
-            revert(player, target);
-            return;
+        // call interact event
+        PlayerInteractEvent event = EventFactory.onPlayerInteract(player, action, clicked, face);
+        //GlowServer.logger.info("Interact: " + action + " " + clicked + " " + face);
+
+        // attempt to use interacted block
+        // DEFAULT is treated as ALLOW, and sneaking is always considered
+        boolean useInteractedBlock = event.useInteractedBlock() != Event.Result.DENY;
+        if (useInteractedBlock && clicked != null && (!player.isSneaking() || holding == null)) {
+            BlockType blockType = ItemTable.instance().getBlock(clicked.getType());
+            useInteractedBlock = blockType.blockInteract(player, clicked, face, clickedLoc);
+        } else {
+            useInteractedBlock = false;
         }
 
-        if (holding == null) {
-            revert(player, target);
-            return;
+        // attempt to use item in hand
+        // follows ALLOW/DENY: default to if no block was interacted with
+        if (selectResult(event.useItemInHand(), !useInteractedBlock) && holding != null) {
+            // call out to the item type to determine the appropriate right-click action
+            ItemType type = ItemTable.instance().getItem(holding.getType());
+            if (clicked == null) {
+                type.rightClickAir(player, holding);
+            } else {
+                type.rightClickBlock(player, clicked, face, holding, clickedLoc);
+            }
         }
 
-        // call out to the item type to determine the appropriate right-click action
-        ItemType type = ItemTable.instance().getItem(holding.getType());
-        Vector clickedLoc = new Vector(message.getCursorX(), message.getCursorY(), message.getCursorZ()).multiply(1.0 / 16.0);
-        type.rightClicked(player, against, face, holding, clickedLoc);
+        // if anything was actually clicked, make sure the player's up to date
+        // in case something is unimplemented or otherwise screwy on our side
+        if (clicked != null) {
+            GlowBlock target = clicked.getRelative(face);
+            revert(player, clicked);
+            revert(player, target);
+        }
 
         // if there's been a change in the held item, make it valid again
-        if (holding.getDurability() > holding.getType().getMaxDurability()) {
-            holding.setAmount(holding.getAmount() - 1);
-            holding.setDurability((short) 0);
-        }
-        if (holding.getAmount() <= 0) {
-            holding = null;
+        if (holding != null) {
+            if (holding.getDurability() > holding.getType().getMaxDurability()) {
+                holding.setAmount(holding.getAmount() - 1);
+                holding.setDurability((short) 0);
+            }
+            if (holding.getAmount() <= 0) {
+                holding = null;
+            }
         }
         player.setItemInHand(holding);
     }
 
-    private void revert(GlowPlayer player, GlowBlock target) {
+    private static boolean selectResult(Event.Result result, boolean def) {
+        return result == Event.Result.DEFAULT ? def : result == Event.Result.ALLOW;
+    }
+
+    private static void revert(GlowPlayer player, GlowBlock target) {
         player.sendBlockChange(target.getLocation(), target.getType(), target.getData());
     }
 
-    static final BlockFace[] faces = {
+    static BlockFace convertFace(int direction) {
+        if (direction >= 0 && direction < faces.length) {
+            return faces[direction];
+        } else {
+            return BlockFace.SELF;
+        }
+    }
+
+    private static final BlockFace[] faces = {
             BlockFace.DOWN, BlockFace.UP, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST
     };
 }

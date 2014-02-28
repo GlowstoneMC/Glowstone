@@ -31,8 +31,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
 
         Block block = world.getBlockAt(x, y, z);
 
-        if (message.getFace() < 0 || message.getFace() >= BlockPlacementHandler.faces.length) return;
-        BlockFace face = BlockPlacementHandler.faces[message.getFace()];
+        BlockFace face = BlockPlacementHandler.convertFace(message.getFace());
 
         // Need to have some sort of verification to deal with malicious clients.
         if (message.getState() == DiggingMessage.STATE_START_DIGGING) {

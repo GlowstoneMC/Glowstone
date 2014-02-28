@@ -104,16 +104,28 @@ public class ItemType {
     // Actions
 
     /**
+     * Called when a player right-clicks in midair while holding this item.
+     * Also called by default if rightClickBlock is not overridden.
+     * @param player The player
+     * @param holding The ItemStack the player was holding
+     */
+    public void rightClickAir(GlowPlayer player, ItemStack holding) {
+        // nothing by default
+    }
+
+    /**
      * Called when a player right-clicks on a block while holding this item.
      * @param player The player
      * @param target The block the player right-clicked
      * @param face The face on which the click occurred
-     * @param holding The full ItemStack the player was holding
+     * @param holding The ItemStack the player was holding
      * @param clickedLoc The coordinates at which the click occurred
      */
-    public void rightClicked(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc) {
         if (placeAs != null) {
-            placeAs.rightClicked(player, target, face, holding, clickedLoc);
+            placeAs.rightClickBlock(player, target, face, holding, clickedLoc);
+        } else {
+            rightClickAir(player, holding);
         }
     }
 

@@ -94,8 +94,21 @@ public class BlockType extends ItemType {
         // do nothing
     }
 
+    /**
+     * Called when a player attempts to interact with (right-click) a block of
+     * this type already in the world.
+     * @param player the player interacting
+     * @param block the block interacted with
+     * @param face the clicked face
+     * @param clickedLoc where in the block the click occurred
+     * @return Whether the interaction occurred.
+     */
+    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
+        return false;
+    }
+
     @Override
-    public final void rightClicked(GlowPlayer player, GlowBlock against, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public final void rightClickBlock(GlowPlayer player, GlowBlock against, BlockFace face, ItemStack holding, Vector clickedLoc) {
         GlowBlock target = against.getRelative(face);
         GlowBlockState newState = target.getState();
 

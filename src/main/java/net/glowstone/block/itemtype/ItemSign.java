@@ -12,7 +12,7 @@ import org.bukkit.util.Vector;
 public class ItemSign extends ItemType {
 
     @Override
-    public void rightClicked(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc) {
         BlockType placeAs;
         if (face == BlockFace.UP) {
             placeAs = ItemTable.instance().getBlock(Material.SIGN_POST);
@@ -21,7 +21,7 @@ public class ItemSign extends ItemType {
         } else {
             placeAs = ItemTable.instance().getBlock(Material.WALL_SIGN);
         }
-        placeAs.rightClicked(player, target, face, holding, clickedLoc);
+        placeAs.rightClickBlock(player, target, face, holding, clickedLoc);
     }
 
 }

@@ -31,7 +31,7 @@ public class TEMobSpawner extends TileEntity {
     @Override
     public List<Tag> saveNbt() {
         List<Tag> result = super.saveNbt();
-        result.add(new StringTag("EntityId", spawning.getName()));
+        result.add(new StringTag("EntityId", spawning == null ? "" : spawning.getName()));
         result.add(new IntTag("Delay", delay));
         return result;
     }

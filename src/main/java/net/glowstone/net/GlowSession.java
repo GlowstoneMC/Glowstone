@@ -87,10 +87,14 @@ public final class GlowSession extends BasicSession {
     private int pingMessageId;
 
     /**
-     * Stores the last block placement message to work around a bug in the
-     * vanilla client where duplicate packets are sent.
+     * Stores the last block placement message sent, see BlockPlacementHandler.
      */
     private BlockPlacementMessage previousPlacement;
+
+    /**
+     * The number of ticks until previousPlacement must be cleared.
+     */
+    private int previousPlacementTicks;
 
     /**
      * The MessageProcessor used for encryption, if it has been enabled.
@@ -171,7 +175,8 @@ public final class GlowSession extends BasicSession {
      * @param message The message.
      */
     public void setPreviousPlacement(BlockPlacementMessage message) {
-        this.previousPlacement = message;
+        previousPlacement = message;
+        previousPlacementTicks = 2;
     }
 
     /**
@@ -306,6 +311,12 @@ public final class GlowSession extends BasicSession {
         readTimeoutCounter++;
         writeTimeoutCounter++;
 
+        // drop the previous placement if needed
+        if (previousPlacementTicks > 0 && --previousPlacementTicks == 0) {
+            previousPlacement = null;
+        }
+
+        // process messages
         Message message;
         while ((message = messageQueue.poll()) != null) {
             if (getProtocol() instanceof PlayProtocol && player == null) {
