@@ -110,9 +110,8 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         // if anything was actually clicked, make sure the player's up to date
         // in case something is unimplemented or otherwise screwy on our side
         if (clicked != null) {
-            GlowBlock target = clicked.getRelative(face);
             revert(player, clicked);
-            revert(player, target);
+            revert(player, clicked.getRelative(face));
         }
 
         // if there's been a change in the held item, make it valid again

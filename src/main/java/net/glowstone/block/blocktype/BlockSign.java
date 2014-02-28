@@ -36,11 +36,9 @@ public class BlockSign extends BlockType {
         } else {
             // calculate the facing of the sign based on the angle between the player and the post
             Location loc = player.getLocation();
-            double dx = state.getX() + 0.5 - loc.getX();
-            double dz = state.getZ() + 0.5 - loc.getZ();
-            double angle = Math.atan2(dz, dx);
-            double part = angle * 8 / Math.PI;
-            data = (byte)(Math.round(part + 20) % 16);
+            // 22.5 = 360 / 16
+            long facing = Math.round(loc.getYaw() / 22.5) + 8;
+            data = (byte)(((facing % 16) + 16) % 16);
         }
         state.setRawData(data);
     }

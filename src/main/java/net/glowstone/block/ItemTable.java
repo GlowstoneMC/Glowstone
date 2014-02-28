@@ -1,12 +1,11 @@
 package net.glowstone.block;
 
-import net.glowstone.GlowServer;
 import net.glowstone.block.blocktype.BlockMobSpawner;
 import net.glowstone.block.blocktype.BlockNote;
 import net.glowstone.block.blocktype.BlockSign;
 import net.glowstone.block.blocktype.BlockType;
+import net.glowstone.block.itemtype.ItemPlaceAs;
 import net.glowstone.block.itemtype.ItemSign;
-import net.glowstone.block.itemtype.ItemSugarcane;
 import net.glowstone.block.itemtype.ItemType;
 import org.bukkit.Material;
 
@@ -45,7 +44,9 @@ public final class ItemTable {
         reg(Material.WALL_SIGN, new BlockSign());
 
         reg(Material.SIGN, new ItemSign());
-        reg(Material.SUGAR_CANE, new ItemSugarcane());
+        reg(Material.SUGAR_CANE, new ItemPlaceAs(Material.SUGAR_CANE_BLOCK));
+        reg(Material.CAULDRON_ITEM, new ItemPlaceAs(Material.CAULDRON));
+        reg(Material.REDSTONE, new ItemPlaceAs(Material.REDSTONE_WIRE));
     }
 
     private void reg(Material material, ItemType type) {
@@ -55,8 +56,6 @@ public final class ItemTable {
 
         idToType.put(material.getId(), type);
         type.setId(material.getId());
-
-        GlowServer.logger.info("Registered built-in: " + type);
 
         if (material.isBlock()) {
             nextBlockId = Math.max(nextBlockId, material.getId() + 1);

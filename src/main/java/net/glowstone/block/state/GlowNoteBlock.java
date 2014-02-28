@@ -5,6 +5,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.TENote;
 import net.glowstone.entity.GlowPlayer;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Instrument;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -50,6 +51,7 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
     }
 
     public void setNote(Note note) {
+        Validate.notNull(note);
         this.note = note;
     }
 

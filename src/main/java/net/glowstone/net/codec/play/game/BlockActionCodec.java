@@ -15,7 +15,7 @@ public final class BlockActionCodec implements Codec<BlockActionMessage> {
 
     public ByteBuf encode(ByteBuf buf, BlockActionMessage message) throws IOException {
         buf.writeInt(message.getX());
-        buf.writeByte(message.getY());
+        buf.writeShort(message.getY());
         buf.writeInt(message.getZ());
         buf.writeByte(message.getData1());
         buf.writeByte(message.getData2());

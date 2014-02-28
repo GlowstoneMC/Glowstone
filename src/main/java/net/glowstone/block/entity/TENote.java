@@ -12,7 +12,7 @@ import java.util.List;
 
 public class TENote extends TileEntity {
 
-    private Note note;
+    private Note note = new Note(0);
 
     public TENote(GlowBlock block) {
         super(block);
