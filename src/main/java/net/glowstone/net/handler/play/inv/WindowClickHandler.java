@@ -5,7 +5,6 @@ import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.GlowInventoryView;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.play.inv.TransactionMessage;
 import net.glowstone.net.message.play.inv.WindowClickMessage;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -23,35 +22,31 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         } catch (IllegalArgumentException ex) {
             GlowServer.logger.warning(session + ": illegal argument while handling click: " + ex);
         }
-        GlowServer.logger.info(session + " clicked: " + message + " --> " + result);
-        session.send(new TransactionMessage(message.getId(), message.getTransaction(), result));
+        GlowServer.logger.info(session + ": " + message + " --> " + result);
+        //session.send(new TransactionMessage(message.getId(), message.getTransaction(), result));
     }
 
     private boolean process(final GlowPlayer player, final WindowClickMessage message) {
-        InventoryView openView = player.getOpenInventory();
-
-        final ItemStack slotItem = openView.getItem(message.getSlot());
+        final InventoryView view = player.getOpenInventory();
+        final ItemStack slotItem = view.getItem(message.getSlot());
         final ItemStack cursor = player.getItemOnCursor();
 
-        // Determine inventory and slot clicked
-        Inventory inv;
-        if (message.getSlot() < openView.getTopInventory().getSize()) {
-            inv = openView.getTopInventory();
+        final int slot = message.getSlot();
+
+        // Determine inventory and slot clicked, used in some places
+        final Inventory inv;
+        if (message.getSlot() < view.getTopInventory().getSize()) {
+            inv = view.getTopInventory();
         } else {
-            inv = openView.getBottomInventory();
+            inv = view.getBottomInventory();
         }
-        final int slot = openView.convertSlot(message.getSlot());
+        final int invSlot = view.convertSlot(message.getSlot());
 
-        if (slot < 0) {
-            // todo: drop item
-            player.setItemOnCursor(null);
-            return true;
-        }
-
+        // check that the player has a correct view of the item
         if (!Objects.equals(message.getItem(), slotItem) && message.getMode() != 3) {
             // reject item change because of desynced inventory
             // in mode 3 (get), client does not send item under cursor
-            player.sendItemChange(message.getSlot(), slotItem);
+            player.sendItemChange(slot, slotItem);
             return false;
         }
 
@@ -81,23 +76,36 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
             case 0: // normal click
                 if (message.getButton() == 0) {
                     // left click
-                    if (cursor == null && slotItem == null) {
-                        // both are empty, do nothing
-                        return false;
-                    } else if (similar(slotItem, cursor) && cursor != null) {
-                        // items are stackable, transfer cursor -> slot
-                        int transfer = Math.min(cursor.getAmount(), maxStack(inv, slotItem.getType()) - slotItem.getAmount());
-                        if (transfer > 0) {
-                            slotItem.setAmount(slotItem.getAmount() + transfer);
-                            player.setItemOnCursor(amountOrNull(cursor, cursor.getAmount() - transfer));
+                    if (cursor == null) {
+                        if (slotItem != null) {
+                            // pick up entire stack
+                            view.setItem(slot, null);
+                            player.setItemOnCursor(slotItem);
+                            return true;
+                        } else {
+                            // nothing happens
                             return true;
                         }
-                        return false;
                     } else {
-                        // swap cursor and slot
-                        player.setItemOnCursor(slotItem);
-                        inv.setItem(slot, cursor);
-                        return true;
+                        if (slotItem == null) {
+                            // put down entire stack
+                            view.setItem(slot, cursor);
+                            player.setItemOnCursor(null);
+                            return true;
+                        } else if (slotItem.isSimilar(cursor)) {
+                            // items are stackable, transfer cursor -> slot
+                            int transfer = Math.min(cursor.getAmount(), maxStack(inv, slotItem.getType()) - slotItem.getAmount());
+                            if (transfer > 0) {
+                                slotItem.setAmount(slotItem.getAmount() + transfer);
+                                player.setItemOnCursor(amountOrNull(cursor, cursor.getAmount() - transfer));
+                                return true;
+                            }
+                        } else {
+                            // swap cursor and slot
+                            player.setItemOnCursor(slotItem);
+                            inv.setItem(invSlot, cursor);
+                            return true;
+                        }
                     }
                 } else {
                     // right click
@@ -108,7 +116,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                             return false;
                         } else {
                             // place down 1 item
-                            inv.setItem(slot, amountOrNull(cursor.clone(), 1));
+                            inv.setItem(invSlot, amountOrNull(cursor.clone(), 1));
                             player.setItemOnCursor(amountOrNull(cursor, cursor.getAmount() - 1));
                             return true;
                         }
@@ -119,7 +127,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                             ItemStack newCursor = slotItem.clone();
                             newCursor.setAmount(slotItem.getAmount() - keepAmount);
 
-                            inv.setItem(slot, amountOrNull(slotItem, keepAmount));
+                            inv.setItem(invSlot, amountOrNull(slotItem, keepAmount));
                             player.setItemOnCursor(newCursor);
                             return true;
                         } else if (cursor.isSimilar(slotItem)) {
@@ -128,24 +136,22 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                                 slotItem.setAmount(slotItem.getAmount() + 1);
                                 player.setItemOnCursor(amountOrNull(cursor, cursor.getAmount() - 1));
                                 return true;
-                            } else {
-                                return false;
                             }
                         } else {
                             // swap non-similar stacks
                             player.setItemOnCursor(slotItem);
-                            inv.setItem(slot, cursor);
+                            inv.setItem(invSlot, cursor);
                             return true;
                         }
                     }
                 }
-                // unreachable
+                return false;
 
             case 1: // shift click
                 // item on cursor is totally ignored, no difference left/right click
 
                 // todo
-                if (GlowInventoryView.isDefault(openView)) {
+                if (GlowInventoryView.isDefault(view)) {
                     // swap between main contents and hotbar
 
                 } else {
@@ -174,7 +180,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                         return false;
                     } else {
                         // move from hotbar to current slot
-                        inv.setItem(slot, destItem);
+                        inv.setItem(invSlot, destItem);
                         inv.setItem(hotbarSlot, null);
                         return true;
                     }
@@ -182,7 +188,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                     if (destItem == null) {
                         // move from current slot to hotbar
                         inv.setItem(hotbarSlot, slotItem);
-                        inv.setItem(slot, null);
+                        inv.setItem(invSlot, null);
                         return true;
                     } else {
                         // both are non-null

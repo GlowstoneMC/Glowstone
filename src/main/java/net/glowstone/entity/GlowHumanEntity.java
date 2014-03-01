@@ -3,6 +3,7 @@ package net.glowstone.entity;
 import com.flowpowered.networking.Message;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
+import net.glowstone.inventory.GlowCraftingInventory;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowInventoryView;
 import net.glowstone.inventory.GlowPlayerInventory;
@@ -274,9 +275,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         if (!force && location.getBlock().getType() != Material.WORKBENCH) {
             return null;
         }
-        // todo: actually open
-        /*InventoryView view = new GlowInventoryView(this, new GlowWorkbenchInventory() ...);*/
-        return null;
+        return openInventory(new GlowCraftingInventory(this, InventoryType.WORKBENCH));
     }
 
     public InventoryView openEnchanting(Location location, boolean force) {
@@ -303,6 +302,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     }
 
     public void closeInventory() {
+        getItemOnCursor();
         openInventory(new GlowInventoryView(this));
     }
 

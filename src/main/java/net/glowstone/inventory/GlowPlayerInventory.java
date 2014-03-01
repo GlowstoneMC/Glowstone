@@ -9,6 +9,8 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import java.util.Arrays;
+
 /**
  * An Inventory representing the items a player is holding.
  */
@@ -29,7 +31,7 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     /**
      * The crafting inventory.
      */
-    private final GlowCraftingInventory crafting = new GlowCraftingInventory(this);
+    private final GlowCraftingInventory crafting;
 
     /**
      * The current held item slot.
@@ -41,6 +43,8 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         // 36 = 4 rows of 9
         // + 4 = armor, completed inventory
         super(owner, InventoryType.PLAYER, SIZE);
+        crafting = new GlowCraftingInventory(owner, InventoryType.CRAFTING);
+        Arrays.fill(slotTypes, 0, 9, InventoryType.SlotType.QUICKBAR);
     }
 
     ////////////////////////////////////////////////////////////////////////////

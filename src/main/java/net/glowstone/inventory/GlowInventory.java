@@ -3,6 +3,7 @@ package net.glowstone.inventory;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -17,7 +18,7 @@ public class GlowInventory implements Inventory {
     /**
      * The list of humans viewing this inventory.
      */
-    protected final Set<HumanEntity> viewers = new HashSet<HumanEntity>();
+    private final Set<HumanEntity> viewers = new HashSet<>();
 
     /**
      * The owner of this inventory.
@@ -33,6 +34,11 @@ public class GlowInventory implements Inventory {
      * This inventory's contents.
      */
     private final ItemStack[] slots;
+
+    /**
+     * This inventory's slot types.
+     */
+    protected final SlotType[] slotTypes;
 
     /**
      * The inventory's name.
@@ -55,8 +61,10 @@ public class GlowInventory implements Inventory {
     public GlowInventory(InventoryHolder owner, InventoryType type, int size, String title) {
         this.owner = owner;
         this.type = type;
-        this.slots = new ItemStack[size];
         this.title = title;
+        slots = new ItemStack[size];
+        slotTypes = new SlotType[size];
+        Arrays.fill(slotTypes, SlotType.CONTAINER);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -83,16 +91,12 @@ public class GlowInventory implements Inventory {
     }
 
     /**
-     * Gets the inventory ID.
-     * @return The inventory id for wire purposes.
+     * Get the type of the specified slot.
+     * @param slot The slot number.
+     * @return The SlotType of the slot.
      */
-    public int getId() {
-        /*
-      The ID of the inventory.
-      Todo: improve this - only implemented inventory is player which is always 0.
-     */
-        byte id = 0;
-        return id;
+    public SlotType getSlotType(int slot) {
+        return slotTypes[slot];
     }
 
     ////////////////////////////////////////////////////////////////////////////

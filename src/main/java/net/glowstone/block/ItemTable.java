@@ -1,9 +1,6 @@
 package net.glowstone.block;
 
-import net.glowstone.block.blocktype.BlockMobSpawner;
-import net.glowstone.block.blocktype.BlockNote;
-import net.glowstone.block.blocktype.BlockSign;
-import net.glowstone.block.blocktype.BlockType;
+import net.glowstone.block.blocktype.*;
 import net.glowstone.block.itemtype.ItemPlaceAs;
 import net.glowstone.block.itemtype.ItemSign;
 import net.glowstone.block.itemtype.ItemType;
@@ -42,6 +39,7 @@ public final class ItemTable {
         reg(Material.MOB_SPAWNER, new BlockMobSpawner());
         reg(Material.SIGN_POST, new BlockSign());
         reg(Material.WALL_SIGN, new BlockSign());
+        reg(Material.WORKBENCH, new BlockWorkbench());
 
         reg(Material.SIGN, new ItemSign());
         reg(Material.SUGAR_CANE, new ItemPlaceAs(Material.SUGAR_CANE_BLOCK));

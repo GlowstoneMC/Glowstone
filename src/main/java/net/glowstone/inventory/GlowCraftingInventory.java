@@ -4,37 +4,36 @@ import net.glowstone.GlowServer;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.CraftingInventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
 import java.util.Arrays;
 
 /**
- * Represents the portion of a player's inventory which handles crafting.
+ * Represents a crafting grid inventory, both workbench and per-player.
  */
 public class GlowCraftingInventory extends GlowInventory implements CraftingInventory {
 
-    public static final int RESULT_SLOT = 0;
+    private static final int RESULT_SLOT = 0;
     private static final int MATRIX_START = 1;
 
-    public GlowCraftingInventory(GlowPlayerInventory parent) {
-        super(parent.getHolder(), InventoryType.CRAFTING);
+    public GlowCraftingInventory(InventoryHolder owner, InventoryType type) {
+        super(owner, type);
+        if (type != InventoryType.CRAFTING && type != InventoryType.WORKBENCH) {
+            throw new IllegalArgumentException("GlowCraftingInventory cannot be " + type + ", only CRAFTING or WORKBENCH.");
+        }
+
+        slotTypes[RESULT_SLOT] = InventoryType.SlotType.RESULT;
+        Arrays.fill(slotTypes, MATRIX_START, getSize(), InventoryType.SlotType.CRAFTING);
     }
 
-    /**
-     * Stores the ItemStack at the given index.
-     * Notifies all attached InventoryViewers of the change.
-     * @param index The index where to put the ItemStack
-     * @param item  The ItemStack to set
-     */
     @Override
     public void setItem(int index, ItemStack item) {
         super.setItem(index, item);
 
         if (index != RESULT_SLOT) {
-            ItemStack[] items = getMatrix();
-
-            Recipe recipe = ((GlowServer) Bukkit.getServer()).getCraftingManager().getCraftingRecipe(items);
+            Recipe recipe = getRecipe();
             if (recipe == null) {
                 super.setItem(RESULT_SLOT, null);
             } else {
@@ -53,9 +52,7 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
 
         if (recipe != null) {
             cm.removeItems(matrix, recipe);
-            for (int i = 0; i < 4; ++i) {
-                setItem(i, matrix[i]);
-            }
+            setMatrix(matrix);
         }
     }
 
@@ -72,22 +69,16 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
     }
 
     public void setMatrix(ItemStack[] contents) {
-        if (contents.length != 4) {
-            throw new IllegalArgumentException("Length must be 4");
+        if (contents.length != getSize() - 1) {
+            throw new IllegalArgumentException("Length must be " + (getSize() - 1));
         }
-        for (int i = 0; i < 4; ++i) {
-            setItem(i + 1, contents[i]);
+        for (int i = 0; i < contents.length; ++i) {
+            setItem(MATRIX_START + i, contents[i]);
         }
     }
 
     public Recipe getRecipe() {
         return ((GlowServer) Bukkit.getServer()).getCraftingManager().getCraftingRecipe(getMatrix());
     }
-
-    // Slot conversion
-
-    private final static int slotConversion[] = {
-            1, 2, 3, 4, 0
-    };
 
 }
