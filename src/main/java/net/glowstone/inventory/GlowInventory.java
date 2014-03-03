@@ -99,6 +99,19 @@ public class GlowInventory implements Inventory {
         return slotTypes[slot];
     }
 
+    /**
+     * Check whether it is allowed for a player to insert the given ItemStack
+     * at the slot, regardless of the slot's current contents. Should return
+     * false for crafting output slots or armor slots which cannot accept
+     * the given item.
+     * @param slot The slot number.
+     * @param stack The stack to add.
+     * @return Whether the stack can be added there.
+     */
+    public boolean slotCanFit(int slot, ItemStack stack) {
+        return getSlotType(slot) != SlotType.RESULT;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Basic Stuff
 

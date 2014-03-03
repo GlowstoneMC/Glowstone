@@ -40,6 +40,7 @@ public final class ItemTable {
         reg(Material.SIGN_POST, new BlockSign());
         reg(Material.WALL_SIGN, new BlockSign());
         reg(Material.WORKBENCH, new BlockWorkbench());
+        reg(Material.ENDER_CHEST, new BlockEnderchest());
 
         reg(Material.SIGN, new ItemSign());
         reg(Material.SUGAR_CANE, new ItemPlaceAs(Material.SUGAR_CANE_BLOCK));

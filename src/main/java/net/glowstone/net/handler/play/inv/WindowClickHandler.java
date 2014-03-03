@@ -3,6 +3,7 @@ package net.glowstone.net.handler.play.inv;
 import com.flowpowered.networking.MessageHandler;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowInventoryView;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.inv.WindowClickMessage;
@@ -34,11 +35,12 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         final int slot = message.getSlot();
 
         // Determine inventory and slot clicked, used in some places
-        final Inventory inv;
+        // todo: whine and complain if users try to implement own inventory
+        final GlowInventory inv;
         if (message.getSlot() < view.getTopInventory().getSize()) {
-            inv = view.getTopInventory();
+            inv = (GlowInventory) view.getTopInventory();
         } else {
-            inv = view.getBottomInventory();
+            inv = (GlowInventory) view.getBottomInventory();
         }
         final int invSlot = view.convertSlot(message.getSlot());
 
@@ -86,12 +88,24 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                             // nothing happens
                             return true;
                         }
-                    } else {
+                    } else if (inv.slotCanFit(invSlot, cursor)) {
+                        // can only do anything if cursor could be placed in that slot
                         if (slotItem == null) {
-                            // put down entire stack
-                            view.setItem(slot, cursor);
-                            player.setItemOnCursor(null);
-                            return true;
+                            // put down stack, up to inventory's max stack size
+                            int transfer = Math.min(cursor.getAmount(), maxStack(inv, cursor.getType()) - cursor.getAmount());
+                            if (transfer == cursor.getAmount()) {
+                                // transfer whole stack
+                                view.setItem(slot, cursor);
+                                player.setItemOnCursor(null);
+                                return true;
+                            } else {
+                                // partial transfer
+                                ItemStack newStack = cursor.clone();
+                                newStack.setAmount(transfer);
+                                view.setItem(slot, newStack);
+                                cursor.setAmount(cursor.getAmount() - transfer);
+                                return true;
+                            }
                         } else if (slotItem.isSimilar(cursor)) {
                             // items are stackable, transfer cursor -> slot
                             int transfer = Math.min(cursor.getAmount(), maxStack(inv, slotItem.getType()) - slotItem.getAmount());
@@ -109,19 +123,11 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                     }
                 } else {
                     // right click
-                    if (slotItem == null) {
-                        // placing down
-                        if (cursor == null) {
+                    if (cursor == null) {
+                        if (slotItem == null) {
                             // do nothing
                             return false;
                         } else {
-                            // place down 1 item
-                            inv.setItem(invSlot, amountOrNull(cursor.clone(), 1));
-                            player.setItemOnCursor(amountOrNull(cursor, cursor.getAmount() - 1));
-                            return true;
-                        }
-                    } else {
-                        if (cursor == null) {
                             // pick up half (favor picking up)
                             int keepAmount = slotItem.getAmount() / 2;
                             ItemStack newCursor = slotItem.clone();
@@ -129,6 +135,14 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
 
                             inv.setItem(invSlot, amountOrNull(slotItem, keepAmount));
                             player.setItemOnCursor(newCursor);
+                            return true;
+                        }
+                    } else if (inv.slotCanFit(invSlot, cursor)) {
+                        // can only do anything if cursor could be placed in that slot
+                        if (slotItem == null) {
+                            // place down 1 item
+                            inv.setItem(invSlot, amountOrNull(cursor.clone(), 1));
+                            player.setItemOnCursor(amountOrNull(cursor, cursor.getAmount() - 1));
                             return true;
                         } else if (cursor.isSimilar(slotItem)) {
                             // place down 1 item if possible
@@ -170,7 +184,6 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                 int hotbarSlot = message.getButton();
                 ItemStack destItem = inv.getItem(hotbarSlot);
 
-                // todo: verify bottom inventory is player's
                 // todo: agree with MC better
 
                 if (slotItem == null) {
@@ -226,10 +239,6 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         }
     }
 
-    private boolean similar(ItemStack a, ItemStack b) {
-        return (a == b) || (a != null && a.isSimilar(b));
-    }
-
     private ItemStack amountOrNull(ItemStack original, int amount) {
         original.setAmount(amount);
         return amount <= 0 ? null : original;
@@ -238,4 +247,5 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
     private int maxStack(Inventory inv, Material mat) {
         return Math.min(inv.getMaxStackSize(), mat.getMaxStackSize());
     }
+
 }
