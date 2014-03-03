@@ -65,6 +65,15 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         setItemInHand(getItemInHand());  // send to player again just in case
     }
 
+    @Override
+    public InventoryType.SlotType getSlotType(int slot) {
+        if (slot >= SIZE && slot - SIZE < 4) {
+            return InventoryType.SlotType.ARMOR;
+        } else {
+            return slotTypes[slot];
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Overrides
 
