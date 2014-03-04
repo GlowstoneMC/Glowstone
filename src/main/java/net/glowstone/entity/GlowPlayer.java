@@ -1265,7 +1265,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     public boolean canSee(Player player) {
-        return false;
+        return true;
     }
 
     ////////////////////////////////////////////////////////////////////////////

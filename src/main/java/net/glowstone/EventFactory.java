@@ -24,6 +24,7 @@ import org.bukkit.event.world.*;
 import org.bukkit.inventory.ItemStack;
 
 import java.net.InetAddress;
+import java.util.Collection;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -145,6 +146,10 @@ public final class EventFactory {
 
     public static PlayerAnimationEvent onPlayerAnimate(GlowPlayer player) {
         return callEvent(new PlayerAnimationEvent(player));
+    }
+
+    public static PlayerChatTabCompleteEvent onPlayerTabComplete(Player who, String message, Collection<String> completions) {
+        return callEvent(new PlayerChatTabCompleteEvent(who, message, completions));
     }
 
     // -- Block Events
