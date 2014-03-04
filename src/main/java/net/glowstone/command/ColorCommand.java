@@ -17,14 +17,9 @@ public class ColorCommand extends BukkitCommand {
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-        String[] names = new String[] {
-            "BLACK", "DARK_BLUE", "DARK_GREEN", "DARK_AQUA",
-            "DARK_RED", "DARK_PURPLE", "GOLD", "GRAY",
-            "DARK_GRAY", "BLUE", "GREEN", "AQUA",
-            "RED", "LIGHT_PURPLE", "YELLOW", "WHITE"
-        };
-        for (int i = 0; i < 16; i += 2) {
-            sender.sendMessage(ChatColor.values()[i] + names[i] + ChatColor.WHITE + " -- " + ChatColor.values()[i + 1] + names[i + 1]);
+        ChatColor[] values = ChatColor.values();
+        for (int i = 0; i < values.length; i += 2) {
+            sender.sendMessage(values[i] + values[i].name() + ChatColor.WHITE + " -- " + values[i + 1] + values[i + 1].name());
         }
         return true;
     }
