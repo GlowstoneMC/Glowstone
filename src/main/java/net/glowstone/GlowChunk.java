@@ -160,6 +160,11 @@ public final class GlowChunk implements Chunk {
      * The array of chunk sections this chunk contains, or null if it is unloaded.
      */
     private ChunkSection[] sections;
+
+    /**
+     * The array of biomes this chunk contains, or null if it is unloaded.
+     */
+    private byte[] biomes;
     
     /**
      * The tile entities that reside in this chunk.
@@ -231,7 +236,7 @@ public final class GlowChunk implements Chunk {
     }
 
     public GlowChunkSnapshot getChunkSnapshot(boolean includeMaxblocky, boolean includeBiome, boolean includeBiomeTempRain) {
-        return new GlowChunkSnapshot(x, z, world, sections, includeMaxblocky, includeBiome, includeBiomeTempRain);
+        return new GlowChunkSnapshot(x, z, world, sections, includeMaxblocky, includeBiome ? biomes.clone() : null, includeBiomeTempRain);
     }
     
     /**
@@ -286,6 +291,7 @@ public final class GlowChunk implements Chunk {
         }
 
         sections = null;
+        biomes = null;
         return true;
     }
 
@@ -302,7 +308,9 @@ public final class GlowChunk implements Chunk {
         //GlowServer.logger.log(Level.INFO, "Initializing chunk ({0},{1})", new Object[]{x, z});
 
         sections = new ChunkSection[DEPTH / SEC_DEPTH];
-        System.arraycopy(initSections, 0, this.sections, 0, Math.min(this.sections.length, initSections.length));
+        System.arraycopy(initSections, 0, sections, 0, Math.min(sections.length, initSections.length));
+
+        biomes = new byte[WIDTH * HEIGHT];
 
         // tile entity initialization
         for (int i = 0; i < sections.length; ++i) {
@@ -491,7 +499,43 @@ public final class GlowChunk implements Chunk {
         if (section == null) return;  // can't set light on an empty section
         section.blockLight[section.index(x, y, z)] = (byte) blockLight;
     }
-    
+
+    /**
+     * Gets the biome of a column within this chunk.
+     * @param x The X coordinate.
+     * @param z The Z coordinate.
+     * @return The biome.
+     */
+    public int getBiome(int x, int z) {
+        if (biomes == null) return -1;
+        return biomes[z * WIDTH + x] & 0xFF;
+    }
+
+    /**
+     * Sets the biome of a column within this chunk,
+     * @param x The X coordinate.
+     * @param z The Z coordinate.
+     * @param biome The biome.
+     */
+    public void setBiome(int x, int z, int biome) {
+        if (biomes == null) return;
+        biomes[z * WIDTH + x] = (byte) biome;
+    }
+
+    /**
+     * Set the entire biome array of this chunk.
+     * @param newBiomes The biome array.
+     */
+    public void setBiomes(byte[] newBiomes) {
+        if (biomes == null) {
+            throw new IllegalStateException("Must initialize chunk first");
+        }
+        if (newBiomes.length != biomes.length) {
+            throw new IllegalArgumentException("Biomes array not of length " + biomes.length);
+        }
+        System.arraycopy(newBiomes, 0, biomes, 0, biomes.length);
+    }
+
     // ======== Helper functions ========
 
     /**

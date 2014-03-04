@@ -7,7 +7,6 @@ import net.glowstone.GlowServer;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.io.ChunkIoService;
 import net.glowstone.util.nbt.*;
-import org.bukkit.block.Biome;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -77,7 +76,11 @@ public final class AnvilChunkIoService implements ChunkIoService {
         chunk.initializeSections(sections);
         chunk.setPopulated(levelTag.get("TerrainPopulated", ByteTag.class) == 1);
 
-        // read "Biomes" eventually
+        // read biomes
+        if (levelTag.is("Biomes", ByteArrayTag.class)) {
+            chunk.setBiomes(levelTag.get("Biomes", ByteArrayTag.class));
+        }
+
         // read "Entities" eventually
         // read "HeightMap" if we need to
 
@@ -163,16 +166,9 @@ public final class AnvilChunkIoService implements ChunkIoService {
         }
         levelTags.add(new ListTag<CompoundTag>("Sections", TagType.COMPOUND, sectionTags));
 
-        // height map
+        // height map and biomes
         levelTags.add(new IntArrayTag("HeightMap", snapshot.getRawHeightmap()));
-
-        // biomes
-        Biome[] biomesArray = snapshot.getRawBiomes();
-        byte[] biomes = new byte[biomesArray.length];
-        for (int i = 0; i < biomes.length; ++i) {
-            biomes[i] = 0; // todo: convert Biome to value
-        }
-        levelTags.add(new ByteArrayTag("Biomes", biomes));
+        levelTags.add(new ByteArrayTag("Biomes", snapshot.getRawBiomes()));
 
         // todo: entities
         List<CompoundTag> entities = new ArrayList<CompoundTag>();

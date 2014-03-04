@@ -1,5 +1,6 @@
 package net.glowstone;
 
+import net.glowstone.constants.GlowBiome;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
@@ -19,9 +20,9 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
 
     private final int[] height;
     private final double[] temp, humid;
-    private final Biome[] biomes;
+    private final byte[] biomes;
 
-    public GlowChunkSnapshot(int x, int z, World world, ChunkSection[] sections, boolean svHeight, boolean svBiome, boolean svTemp) {
+    public GlowChunkSnapshot(int x, int z, World world, ChunkSection[] sections, boolean svHeight, byte[] biomes, boolean svTemp) {
         this.x = x;
         this.z = z;
         this.world = world.getName();
@@ -47,16 +48,7 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
             height = null;
         }
 
-        if (svBiome) {
-            biomes = new Biome[16 * 16];
-            for (int xx = 0; xx < 16; ++xx) {
-                for (int zz = 0; zz < 16; ++zz) {
-                    biomes[coordToIndex(xx, zz)] = world.getBiome(baseX + xx, baseZ + zz);
-                }
-            }
-        } else {
-            biomes = null;
-        }
+        this.biomes = biomes;
 
         if (svTemp) {
             temp = new double[16 * 16];
@@ -92,7 +84,7 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
         return height;
     }
 
-    public Biome[] getRawBiomes() {
+    public byte[] getRawBiomes() {
         return biomes;
     }
 
@@ -141,7 +133,7 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
     }
 
     public Biome getBiome(int x, int z) {
-        return biomes[coordToIndex(x, z)];
+        return GlowBiome.getBiome(biomes[coordToIndex(x, z)]);
     }
 
     public double getRawBiomeTemperature(int x, int z) {
@@ -162,7 +154,7 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
     public static class EmptySnapshot extends GlowChunkSnapshot {
         
         public EmptySnapshot(int x, int z, World world, boolean svBiome, boolean svTemp) {
-            super(x, z, world, null, false, svBiome, svTemp);
+            super(x, z, world, null, false, svBiome ? new byte[256] : null, svTemp);
         }
 
         @Override

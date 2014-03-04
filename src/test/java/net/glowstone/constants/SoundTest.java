@@ -8,7 +8,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Tests for the GlowSound class.
  */
-public class GlowSoundTest {
+public class SoundTest {
 
     @Test
     public void testGetName() {

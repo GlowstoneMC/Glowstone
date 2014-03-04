@@ -1,6 +1,7 @@
 package net.glowstone;
 
 import net.glowstone.block.GlowBlock;
+import net.glowstone.constants.GlowBiome;
 import net.glowstone.entity.*;
 import net.glowstone.io.WorldMetadataService;
 import net.glowstone.io.WorldMetadataService.WorldFinalValues;
@@ -806,12 +807,12 @@ public final class GlowWorld implements World {
         } else if (environment == Environment.NETHER) {
             return Biome.HELL;
         }
-        
-        return Biome.FOREST;
+
+        return GlowBiome.getBiome(getChunkAt(x >> 4, z >> 4).getBiome(x & 0xF, z & 0xF));
     }
 
     public void setBiome(int x, int z, Biome bio) {
-
+        getChunkAt(x >> 4, z >> 4).setBiome(x & 0xF, z & 0xF, GlowBiome.getId(bio));
     }
 
     public double getTemperature(int x, int z) {
