@@ -9,6 +9,7 @@ import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.inv.WindowClickMessage;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -43,6 +44,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
             inv = (GlowInventory) view.getBottomInventory();
         }
         final int invSlot = view.convertSlot(message.getSlot());
+        InventoryType.SlotType slotType = inv.getSlotType(invSlot);
 
         // check that the player has a correct view of the item
         if (!Objects.equals(message.getItem(), slotItem) && message.getMode() != 3) {
@@ -88,7 +90,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                             // nothing happens
                             return true;
                         }
-                    } else if (inv.slotCanFit(invSlot, cursor)) {
+                    } else if (inv.itemPlaceAllowed(invSlot, cursor)) {
                         // can only do anything if cursor could be placed in that slot
                         if (slotItem == null) {
                             // put down stack, up to inventory's max stack size
@@ -137,7 +139,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                             player.setItemOnCursor(newCursor);
                             return true;
                         }
-                    } else if (inv.slotCanFit(invSlot, cursor)) {
+                    } else if (inv.itemPlaceAllowed(invSlot, cursor)) {
                         // can only do anything if cursor could be placed in that slot
                         if (slotItem == null) {
                             // place down 1 item
@@ -164,10 +166,34 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
             case 1: // shift click
                 // item on cursor is totally ignored, no difference left/right click
 
-                // todo
-                if (GlowInventoryView.isDefault(view)) {
-                    // swap between main contents and hotbar
+                /**
+                 * armor slots are considered as top inventory if in crafting mode
+                 *
+                 * if in bottom inventory:
+                 *   try to place in top inventory
+                 *   if default view: try to place in armor slots
+                 *   try
+                 * if in top inventory:
+                 *   try to place in main slots of bottom inventory (9..36)
+                 *   try to place in hotbar slots of bottom inventory (0..9)
+                 */
 
+                // todo
+                // shift-click logic is a disaster
+                if (GlowInventoryView.isDefault(view)) {
+                    // if in main contents, try to flip to hotbar, starting at left
+                    if (slotType == InventoryType.SlotType.CONTAINER) {
+                        ItemStack stack = slotItem.clone();
+                        // first try to flip to armor
+                        stack = shiftClick(stack, player.getInventory(), 36, 40);
+                        // otherwise try to flip to hotbar starting at left
+                        stack = shiftClick(stack, player.getInventory(), 0, 9);
+                        // update the source
+                        inv.setItem(invSlot, stack);
+                    } else {
+                        // otherwise, try to flip to main contents
+                        inv.setItem(invSlot, shiftClick(slotItem, player.getInventory(), 9, 36));
+                    }
                 } else {
                     // swap between two inventories
 
@@ -228,6 +254,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                 return false;
 
             case 5: // drag
+                // this is a real nightmare
                 return false;
 
             case 6: // double click
@@ -237,6 +264,34 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                 GlowServer.logger.info(player + " tried to use invalid click mode " + message.getMode());
                 return false;
         }
+    }
+
+    private ItemStack shiftClick(ItemStack stack, GlowInventory target, int start, int end) {
+        if (stack == null) return null;
+
+        int delta = (end < start) ? -1 : 1;
+
+        // shift-click logic is horrifying
+        for (int i = start; i != end && stack != null; i += delta) {
+            if (target.itemShiftClickAllowed(i, stack)) {
+                ItemStack slot = target.getItem(i);
+                if (slot == null) {
+                    slot = stack.clone();
+                    slot.setAmount(0);
+                }
+                if (slot.isSimilar(stack)) {
+                    int amount = slot.getAmount();
+                    int transfer = Math.min(stack.getAmount(), maxStack(target, stack.getType()) - amount);
+                    if (transfer > 0) {
+                        slot.setAmount(amount + transfer);
+                        stack = amountOrNull(stack, stack.getAmount() - transfer);
+                        target.setItem(i, slot);
+                    }
+                }
+            }
+        }
+
+        return stack;
     }
 
     private ItemStack amountOrNull(ItemStack original, int amount) {

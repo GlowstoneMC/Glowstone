@@ -42,6 +42,12 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
         }
     }
 
+    @Override
+    public boolean itemShiftClickAllowed(int slot, ItemStack stack) {
+        // cannot ever shift-click into a crafting inventory
+        return false;
+    }
+
     /**
      * Remove a layer of items from the inventory according to the current recipe.
      */

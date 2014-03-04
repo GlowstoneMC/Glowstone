@@ -108,8 +108,19 @@ public class GlowInventory implements Inventory {
      * @param stack The stack to add.
      * @return Whether the stack can be added there.
      */
-    public boolean slotCanFit(int slot, ItemStack stack) {
+    public boolean itemPlaceAllowed(int slot, ItemStack stack) {
         return getSlotType(slot) != SlotType.RESULT;
+    }
+
+    /**
+     * Check whether, in a shift-click operation, an item of the specified type
+     * may be placed in the given slot.
+     * @param slot The slot number.
+     * @param stack The stack to add.
+     * @return Whether the stack can be added there.
+     */
+    public boolean itemShiftClickAllowed(int slot, ItemStack stack) {
+        return itemPlaceAllowed(slot, stack);
     }
 
     ////////////////////////////////////////////////////////////////////////////

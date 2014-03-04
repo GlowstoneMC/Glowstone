@@ -75,9 +75,9 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     @Override
-    public boolean slotCanFit(int slot, ItemStack stack) {
+    public boolean itemShiftClickAllowed(int slot, ItemStack stack) {
         // todo: check armor slots
-        return super.slotCanFit(slot, stack);
+        return super.itemPlaceAllowed(slot, stack);
     }
 
     ////////////////////////////////////////////////////////////////////////////
