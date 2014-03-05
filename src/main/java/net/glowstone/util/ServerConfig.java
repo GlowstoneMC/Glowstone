@@ -18,20 +18,43 @@ public class ServerConfig {
     /**
      * The directory configurations are stored in.
      */
-    public static final File CONFIG_DIR = new File("config");
+    private final File configDir;
 
     /**
      * The main configuration file.
      */
-    private static final File CONFIG_FILE = new File(CONFIG_DIR, "glowstone.yml");
+    private final File configFile;
 
     /**
      * The actual configuration data.
      */
     private final YamlConfiguration config = new YamlConfiguration();
 
-    public ServerConfig() {
+    /**
+     * Initialize a new ServerConfig and associated settings.
+     * @param configDir The config directory, or null for default.
+     * @param configFile The config file, or null for default.
+     */
+    public ServerConfig(File configDir, File configFile) {
+        if (configDir == null) {
+            configDir = new File("config");
+        }
+        if (configFile == null) {
+            configFile = new File(configDir, "glowstone.yml");
+        }
+
+        this.configDir = configDir;
+        this.configFile = configFile;
+
         config.options().indent(4);
+    }
+
+    public File getDirectory() {
+        return configDir;
+    }
+
+    public File getFile(String filename) {
+        return new File(configDir, filename);
     }
 
     private void createDefaults() {
@@ -42,7 +65,7 @@ public class ServerConfig {
         }
 
         try {
-            OutputStream out = new FileOutputStream(CONFIG_FILE);
+            OutputStream out = new FileOutputStream(configFile);
             byte[] buf = new byte[2048];
             int len;
             while ((len = in.read(buf)) > 0) {
@@ -60,11 +83,11 @@ public class ServerConfig {
 
     public void load() {
         // create default file if needed
-        boolean exists = CONFIG_FILE.exists();
+        boolean exists = configFile.exists();
         if (!exists) {
             // create config directory
-            if (!CONFIG_DIR.isDirectory() && !CONFIG_DIR.mkdirs()) {
-                GlowServer.logger.severe("Cannot create directory: " + CONFIG_DIR);
+            if (!configDir.isDirectory() && !configDir.mkdirs()) {
+                GlowServer.logger.severe("Cannot create directory: " + configDir);
                 return;
             }
 
@@ -73,20 +96,20 @@ public class ServerConfig {
 
         // load config
         try {
-            config.load(CONFIG_FILE);
+            config.load(configFile);
         } catch (IOException e) {
-            GlowServer.logger.log(Level.SEVERE, "Failed to read config: " + CONFIG_FILE, e);
+            GlowServer.logger.log(Level.SEVERE, "Failed to read config: " + configFile, e);
         } catch (InvalidConfigurationException e) {
             report(e);
         }
 
         // if we just created defaults, attempt to migrate
-        if (migrate()) {
+        if (!exists && migrate()) {
             // save config, including any new defaults
             try {
-                config.save(CONFIG_FILE);
+                config.save(configFile);
             } catch (IOException e) {
-                GlowServer.logger.log(Level.SEVERE, "Failed to write config: " + CONFIG_FILE, e);
+                GlowServer.logger.log(Level.SEVERE, "Failed to write config: " + configFile, e);
                 return;
             }
 
@@ -96,11 +119,11 @@ public class ServerConfig {
 
     private void report(InvalidConfigurationException e) {
         if (e.getCause() instanceof YAMLException) {
-            GlowServer.logger.severe("Config file " + CONFIG_FILE + " isn't valid! " + e.getCause());
+            GlowServer.logger.severe("Config file " + configFile + " isn't valid! " + e.getCause());
         } else if ((e.getCause() == null) || (e.getCause() instanceof ClassCastException)) {
-            GlowServer.logger.severe("Config file " + CONFIG_FILE + " isn't valid!");
+            GlowServer.logger.severe("Config file " + configFile + " isn't valid!");
         } else {
-            GlowServer.logger.log(Level.SEVERE, "Cannot load " + CONFIG_FILE + ": " + e.getCause().getClass(), e);
+            GlowServer.logger.log(Level.SEVERE, "Cannot load " + configFile + ": " + e.getCause().getClass(), e);
         }
     }
 

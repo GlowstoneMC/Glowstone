@@ -73,7 +73,54 @@ public final class GlowServer implements Server {
         try {
             ConfigurationSerialization.registerClass(GlowOfflinePlayer.class);
 
-            GlowServer server = new GlowServer();
+            File configDir = null;
+            File configFile = null;
+
+            // parse args
+            for (int i = 0; i < args.length; i += 2) {
+                String opt = args[i];
+                if (!opt.startsWith("-")) {
+                    System.err.println("Option specified without -: " + opt);
+                    System.exit(1);
+                    return;
+                }
+                while (opt.startsWith("-")) {
+                    opt = opt.substring(1);
+                }
+
+                if (opt.equalsIgnoreCase("version")) {
+                    System.out.println("Glowstone version: " + GlowServer.class.getPackage().getImplementationVersion());
+                    System.out.println("Bukkit version:    " + GlowServer.class.getPackage().getSpecificationVersion());
+                    System.out.println("Minecraft version: " + GAME_VERSION + " protocol " + PROTOCOL_VERSION);
+                    return;
+                } else if (opt.equalsIgnoreCase("help")) {
+                    System.out.println("Available Glowstone command-line options:");
+                    System.out.println("    --configDir <directory>   Set the configuration directory.");
+                    System.out.println("    --configFile <file>       Set the configuration file.");
+                    System.out.println("    --version                 Display version information and exit.");
+                    System.out.println("    --help                    Display this message and exit.");
+                    return;
+                }
+
+                if (i == args.length - 1) {
+                    System.err.println("Option specified without value: " + opt);
+                    System.exit(1);
+                    return;
+                }
+                String arg = args[i + 1];
+
+                if (opt.equalsIgnoreCase("configDir")) {
+                    configDir = new File(arg);
+                } else if (opt.equalsIgnoreCase("configFile")) {
+                    configFile = new File(arg);
+                } else {
+                    System.err.println("Unknown option: " + opt);
+                }
+            }
+
+            // start server
+            ServerConfig config = new ServerConfig(configDir, configFile);
+            GlowServer server = new GlowServer(config);
             server.start();
             server.bind();
             logger.info("Ready for connections.");
@@ -131,27 +178,27 @@ public final class GlowServer implements Server {
     /**
      * The configuration for the server.
      */
-    private final ServerConfig config = new ServerConfig();
+    private final ServerConfig config;
     
     /**
      * The list of OPs on the server.
      */
-    private final PlayerListFile opsList = new PlayerListFile(new File(ServerConfig.CONFIG_DIR, "ops.txt"));
+    private final PlayerListFile opsList;
     
     /**
      * The list of players whitelisted on the server.
      */
-    private final PlayerListFile whitelist = new PlayerListFile(new File(ServerConfig.CONFIG_DIR, "whitelist.txt"));
+    private final PlayerListFile whitelist;
 
     /**
      * The BanList for player names.
      */
-    private GlowBanList nameBans = new GlowBanList(this, BanList.Type.NAME);
+    private final GlowBanList nameBans;
 
     /**
      * The BanList for IP addresses.
      */
-    private GlowBanList ipBans = new GlowBanList(this, BanList.Type.IP);
+    private final GlowBanList ipBans;
 
     /**
      * The world this server is managing.
@@ -221,7 +268,14 @@ public final class GlowServer implements Server {
     /**
      * Creates a new server.
      */
-    public GlowServer() {
+    public GlowServer(ServerConfig config) {
+        this.config = config;
+        // stuff based on selected config directory
+        opsList = new PlayerListFile(config.getFile("ops.txt"));
+        whitelist = new PlayerListFile(config.getFile("whitelist.txt"));
+        nameBans = new GlowBanList(this, BanList.Type.NAME);
+        ipBans = new GlowBanList(this, BanList.Type.IP);
+
         Bukkit.setServer(this);
         loadConfig();
     }
@@ -348,7 +402,7 @@ public final class GlowServer implements Server {
         // server icon
         defaultIcon = new GlowServerIcon();
         try {
-            File file = new File(ServerConfig.CONFIG_DIR, "server-icon.png");
+            File file = config.getFile("server-icon.png");
             if (file.isFile()) {
                 defaultIcon = new GlowServerIcon(file);
             }
@@ -496,7 +550,7 @@ public final class GlowServer implements Server {
      * Returns the folder where configuration files are stored
      */
     public File getConfigDir() {
-        return ServerConfig.CONFIG_DIR;
+        return config.getDirectory();
     }
 
     /**
