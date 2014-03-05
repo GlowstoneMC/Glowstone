@@ -3,9 +3,12 @@ package net.glowstone.inventory;
 import com.google.common.collect.Iterators;
 import net.glowstone.GlowServer;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.*;
 import org.bukkit.material.MaterialData;
 
+import java.io.InputStream;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -280,166 +283,7 @@ public final class CraftingManager implements Iterable<Recipe> {
      */
     public void resetRecipes() {
         clearRecipes();
-        
-        // Crafting sets
-        for (CraftingSet set : CraftingSet.values()) {
-            if (set.getBlock() != null) {
-                makeShaped(set.getBlock(), 1).shape("xxx", "xxx", "xxx").setIngredient('x', set.getInput());
-                makeShaped(set.getInput(), 9).shape("x").setIngredient('x', set.getBlock());
-            }
-            
-            if (set.getArmor() != null) {
-                String xxx = "xxx", x_x = "x x";
-                makeShaped(set.getArmor()[0]).shape(xxx, x_x).setIngredient('x', set.getInput()); // helmet
-                makeShaped(set.getArmor()[1]).shape(x_x, xxx, xxx).setIngredient('x', set.getInput()); // chestplate
-                makeShaped(set.getArmor()[2]).shape(xxx, x_x, x_x).setIngredient('x', set.getInput()); // leggings
-                makeShaped(set.getArmor()[3]).shape(x_x, x_x).setIngredient('x', set.getInput()); // boots
-            }
-            
-            if (set.getTools() != null) {
-                makeShaped(set.getTools()[0]).shape("xx","x|"," |").setIngredient('x', set.getInput()).setIngredient('|', Material.STICK); // axe
-                makeShaped(set.getTools()[1]).shape("xxx"," | "," | ").setIngredient('x', set.getInput()).setIngredient('|', Material.STICK); // pick
-                makeShaped(set.getTools()[2]).shape("x","|","|").setIngredient('x', set.getInput()).setIngredient('|', Material.STICK); // shovel
-                makeShaped(set.getTools()[3]).shape("xx"," |"," |").setIngredient('x', set.getInput()).setIngredient('|', Material.STICK); // hoe
-                makeShaped(set.getTools()[4]).shape("x","x","|").setIngredient('x', set.getInput()).setIngredient('|', Material.STICK); // sword
-            }
-            
-            if (set.getStairMaterial() != null) {
-                makeShaped(set.getStairMaterial(), 4).shape("x  ","xx ","xxx").setIngredient('x', set.getInput());
-            }
-
-            if (set.getSlabData() != -1) {
-                makeShaped(Material.STEP, 3, set.getSlabData()).shape("xxx").setIngredient('x', set.getInput());
-            }
-        }
-        
-        // Basic Recipes
-        makeShaped(Material.WOOD, 4).shape("l").setIngredient('l', Material.LOG, -1); // Wooden Planks
-        makeShaped(Material.STICK, 4).shape("w", "w").setIngredient('w', Material.WOOD); // Sticks
-        makeShaped(Material.TORCH, 4).shape("c", "s").setIngredient('c', Material.COAL).setIngredient('s', Material.STICK); // Torches (coal)
-        makeShaped(Material.TORCH, 4).shape("c", "s").setIngredient('c', Material.COAL, 1).setIngredient('s', Material.STICK); // Torches (charcoal)
-        makeShaped(Material.WORKBENCH).shape("ww", "ww").setIngredient('w', Material.WOOD); // Workbench
-        makeShaped(Material.FURNACE).shape("ccc", "c c", "ccc").setIngredient('c', Material.COBBLESTONE); // Furnace
-        makeShaped(Material.CHEST).shape("www","w w","www").setIngredient('w', Material.WOOD); // Chest
-        
-        // Block Recipes
-        makeShaped(Material.LAPIS_BLOCK).shape("xxx","xxx","xxx").setIngredient('x', Material.INK_SACK, 4); // Lapis
-        makeShaped(Material.INK_SACK, 9, 4).shape("xxx","xxx","xxx").setIngredient('x', Material.LAPIS_BLOCK);
-        makeShaped(Material.GLOWSTONE).shape("xx","xx").setIngredient('x', Material.GLOWSTONE_DUST);
-        makeShaped(Material.WOOL).shape("xx", "xx").setIngredient('x', Material.STRING);
-        makeShaped(Material.TNT).shape("-o-","o-o","-o-").setIngredient('-', Material.SULPHUR).setIngredient('o', Material.SAND);
-        makeShaped(Material.COBBLESTONE_STAIRS, 4).shape("x  ","xx ","xxx").setIngredient('x', Material.COBBLESTONE);
-        makeShaped(Material.WOOD_STAIRS, 4).shape("x  ","xx ","xxx").setIngredient('x', Material.WOOD);
-        makeShaped(Material.SNOW_BLOCK).shape("xx","xx").setIngredient('x', Material.SNOW_BALL);
-        makeShaped(Material.CLAY).shape("xx","xx").setIngredient('x', Material.CLAY_BALL);
-        makeShaped(Material.BRICK).shape("xx","xx").setIngredient('x', Material.CLAY_BRICK);
-        makeShaped(Material.BOOKSHELF).shape("www","bbb","www").setIngredient('w', Material.WOOD).setIngredient('b', Material.BOOK);
-        makeShaped(Material.SANDSTONE).shape("xx","xx").setIngredient('x', Material.SAND);
-        makeShaped(Material.JACK_O_LANTERN).shape("p","t").setIngredient('p', Material.PUMPKIN).setIngredient('t', Material.TORCH);
-        makeShaped(Material.SMOOTH_BRICK, 4).shape("xx", "xx").setIngredient('x', Material.STONE);
-        makeShaped(Material.IRON_FENCE, 16).shape("xxx", "xxx").setIngredient('x', Material.IRON_INGOT);
-        makeShaped(Material.THIN_GLASS, 16).shape("xxx", "xxx").setIngredient('x', Material.GLASS);
-
-        // Tool Recipes
-        makeShaped(Material.FLINT_AND_STEEL).shape("i "," f").setIngredient('i', Material.IRON_INGOT).setIngredient('f', Material.FLINT);
-        makeShaped(Material.BUCKET).shape("i i"," i ").setIngredient('i', Material.IRON_INGOT);
-        makeShaped(Material.COMPASS).shape(" i ","iri"," i ").setIngredient('i', Material.IRON_INGOT).setIngredient('r', Material.REDSTONE);
-        makeShaped(Material.MAP).shape("ppp","pcp","ppp").setIngredient('p', Material.PAPER).setIngredient('c', Material.COMPASS);
-        makeShaped(Material.WATCH).shape(" i ","iri"," i ").setIngredient('i', Material.GOLD_INGOT).setIngredient('r', Material.REDSTONE);
-        makeShaped(Material.FISHING_ROD).shape("  /"," /s","/ s").setIngredient('/', Material.STICK).setIngredient('s', Material.STRING);
-        makeShaped(Material.SHEARS).shape(" i","i ").setIngredient('i', Material.IRON_INGOT);
-        makeShaped(Material.BOW).shape(" /s","/ s"," /s").setIngredient('/', Material.STICK).setIngredient('s', Material.STRING);
-        makeShaped(Material.ARROW, 4).shape("^","/","f").setIngredient('^', Material.FLINT).setIngredient('/', Material.STICK).setIngredient('f', Material.FEATHER);
-        
-        // Transportation Recipes
-        makeShaped(Material.MINECART).shape("i i","iii").setIngredient('i', Material.IRON_INGOT);
-        makeShaped(Material.POWERED_MINECART).shape("f","m").setIngredient('f', Material.FURNACE).setIngredient('m', Material.MINECART);
-        makeShaped(Material.STORAGE_MINECART).shape("c","m").setIngredient('c', Material.CHEST).setIngredient('m', Material.MINECART);
-        makeShaped(Material.RAILS, 16).shape("i i","isi","i i").setIngredient('i', Material.IRON_INGOT).setIngredient('s', Material.STICK);
-        makeShaped(Material.POWERED_RAIL, 6).shape("g g","gsg","grg").setIngredient('g', Material.GOLD_INGOT).setIngredient('s', Material.STICK).setIngredient('r', Material.REDSTONE);
-        makeShaped(Material.DETECTOR_RAIL, 6).shape("i i","ipi","iri").setIngredient('i', Material.IRON_INGOT).setIngredient('p', Material.STONE_PLATE).setIngredient('r', Material.REDSTONE);
-        makeShaped(Material.BOAT).shape("w w","www").setIngredient('w', Material.WOOD);
-        
-        // Mechanism Recipes
-
-        makeShaped(Material.WOOD_DOOR).shape("ww","ww","ww").setIngredient('w', Material.WOOD);
-        makeShaped(Material.IRON_DOOR).shape("ii","ii","ii").setIngredient('i', Material.IRON_INGOT);
-        makeShaped(Material.TRAP_DOOR, 2).shape("www","www").setIngredient('w', Material.WOOD);
-        makeShaped(Material.WOOD_PLATE).shape("ww").setIngredient('w', Material.WOOD);
-        makeShaped(Material.STONE_PLATE).shape("ss").setIngredient('s', Material.STONE);
-        makeShaped(Material.STONE_BUTTON).shape("s","s").setIngredient('s', Material.STONE);
-        makeShaped(Material.REDSTONE_TORCH_ON).shape("r","/").setIngredient('r', Material.REDSTONE).setIngredient('/', Material.STICK);
-        makeShaped(Material.LEVER).shape("/","s").setIngredient('s', Material.COBBLESTONE).setIngredient('/', Material.STICK);
-        makeShaped(Material.NOTE_BLOCK).shape("www","wrw","www").setIngredient('w', Material.WOOD).setIngredient('r', Material.REDSTONE);
-        makeShaped(Material.JUKEBOX).shape("www","wdw","www").setIngredient('w', Material.WOOD).setIngredient('d', Material.DIAMOND);
-        makeShaped(Material.DISPENSER).shape("ccc", "cbc", "crc").setIngredient('c', Material.COBBLESTONE).setIngredient('b', Material.BOW).setIngredient('r', Material.REDSTONE);
-        makeShaped(Material.DIODE).shape("trt","sss").setIngredient('t', Material.REDSTONE_TORCH_ON).setIngredient('r', Material.REDSTONE).setIngredient('s', Material.STONE);
-        makeShaped(Material.PISTON_BASE).shape("www","sis","srs").setIngredient('w', Material.WOOD).setIngredient('s', Material.COBBLESTONE).setIngredient('i', Material.IRON_INGOT).setIngredient('r', Material.REDSTONE);
-        makeShaped(Material.PISTON_STICKY_BASE).shape("s","p").setIngredient('s', Material.SLIME_BALL).setIngredient('p', Material.PISTON_BASE);
-        makeShaped(Material.FENCE_GATE).shape("#W#", "#W#").setIngredient('#', Material.STICK).setIngredient('W', Material.WOOD);
-        
-        // Food Recipes
-
-        makeShaped(Material.BOWL, 4).shape("w w", " w ").setIngredient('w', Material.WOOD);
-        makeShaped(Material.MUSHROOM_SOUP).shape("r","b","u").setIngredient('r', Material.RED_MUSHROOM).setIngredient('b', Material.BROWN_MUSHROOM).setIngredient('u', Material.BOWL);
-        makeShaped(Material.MUSHROOM_SOUP).shape("b","r","u").setIngredient('r', Material.RED_MUSHROOM).setIngredient('b', Material.BROWN_MUSHROOM).setIngredient('u', Material.BOWL);
-        makeShaped(Material.BREAD).shape("www").setIngredient('w', Material.WHEAT);
-        makeShaped(Material.SUGAR).shape("s").setIngredient('s', Material.SUGAR_CANE);
-        makeShaped(Material.CAKE).shape("mmm","ses","www").setIngredient('m', Material.MILK_BUCKET).setIngredient('s', Material.SUGAR).setIngredient('e', Material.EGG).setIngredient('w', Material.WHEAT);
-        makeShaped(Material.COOKIE, 8).shape("wdw").setIngredient('w', Material.WHEAT).setIngredient('d', Material.INK_SACK, 3);
-        makeShaped(Material.GOLDEN_APPLE).shape("ggg","gag","ggg").setIngredient('g', Material.GOLD_BLOCK).setIngredient('a', Material.APPLE);
-        makeShaped(Material.MELON_BLOCK).shape("mmm", "mmm", "mmm").setIngredient('m', Material.MELON);
-        makeShaped(Material.MELON_SEEDS).shape("m").setIngredient('m', Material.MELON);
-
-        // Food Recipes
-
-        
-        // Miscellaneous Recipes
-        makeShaped(Material.PAINTING).shape("///","/w/","///").setIngredient('/', Material.STICK).setIngredient('w', Material.WOOL);
-        makeShaped(Material.SIGN).shape("www", "www", " / ").setIngredient('w', Material.WOOD).setIngredient('/', Material.STICK);
-        makeShaped(Material.LADDER, 2).shape("/ /","///","/ /").setIngredient('/', Material.STICK);
-        makeShaped(Material.PAPER, 3).shape("sss").setIngredient('s', Material.SUGAR_CANE);
-        makeShaped(Material.BOOK).shape("p","p","p").setIngredient('p', Material.PAPER);
-        makeShaped(Material.FENCE, 2).shape("///","///").setIngredient('/', Material.STICK);
-        makeShaped(Material.BED).shape("ccc","www").setIngredient('c', Material.WOOL).setIngredient('w', Material.WOOD);
-
-        // Dye Recipes
-        makeShapeless(Material.INK_SACK, 2, 1).addIngredient(Material.RED_ROSE); // Rose Red
-        // 2 = cactus [smelt], 3 = cocoa [dungeon], 4 = lapis [mine]
-        makeShapeless(Material.INK_SACK, 2, 5).addIngredient(Material.INK_SACK, 4).addIngredient(Material.INK_SACK, 1); // Purple
-        makeShapeless(Material.INK_SACK, 2, 6).addIngredient(Material.INK_SACK, 4).addIngredient(Material.INK_SACK, 2); // Cyan
-        makeShapeless(Material.INK_SACK, 3, 7).addIngredient(Material.INK_SACK).addIngredient(2, Material.INK_SACK, 15); // Light gray
-        makeShapeless(Material.INK_SACK, 2, 7).addIngredient(Material.INK_SACK, 8).addIngredient(Material.INK_SACK, 15); // Light gray
-        makeShapeless(Material.INK_SACK, 2, 8).addIngredient(Material.INK_SACK).addIngredient(Material.INK_SACK, 15); // Gray
-        makeShapeless(Material.INK_SACK, 2, 9).addIngredient(Material.INK_SACK, 1).addIngredient(Material.INK_SACK, 15); // Pink
-        makeShapeless(Material.INK_SACK, 2, 10).addIngredient(Material.INK_SACK, 2).addIngredient(Material.INK_SACK, 15); // Lime
-        makeShapeless(Material.INK_SACK, 2, 11).addIngredient(Material.YELLOW_FLOWER); // Dandelion Yellow
-        makeShapeless(Material.INK_SACK, 2, 12).addIngredient(Material.INK_SACK, 4).addIngredient(Material.INK_SACK, 15); // Light blue
-        makeShapeless(Material.INK_SACK, 2, 13).addIngredient(Material.INK_SACK, 5).addIngredient(Material.INK_SACK, 9); // Magenta
-        makeShapeless(Material.INK_SACK, 3, 13).addIngredient(Material.INK_SACK, 4).addIngredient(Material.INK_SACK, 9).addIngredient(Material.INK_SACK, 1); // Magenta
-        makeShapeless(Material.INK_SACK, 4, 13).addIngredient(Material.INK_SACK, 4).addIngredient(Material.INK_SACK, 15).addIngredient(2, Material.INK_SACK, 1); // Magenta
-        makeShapeless(Material.INK_SACK, 2, 14).addIngredient(Material.INK_SACK, 1).addIngredient(Material.INK_SACK, 11); // Orange
-        makeShapeless(Material.INK_SACK, 3, 15).addIngredient(Material.BONE); // Bonemeal
-        
-        // Wool Recipies
-        for (int i = 0; i < 16; ++i) {
-            makeShapeless(Material.WOOL, 1, i).addIngredient(Material.WOOL).addIngredient(Material.INK_SACK, 15 - i);
-        }
-        
-        // Smelting Recipes
-
-        addRecipe(new FurnaceRecipe(new ItemStack(Material.IRON_INGOT), Material.IRON_ORE));
-        addRecipe(new FurnaceRecipe(new ItemStack(Material.GOLD_INGOT), Material.GOLD_ORE));
-        addRecipe(new FurnaceRecipe(new ItemStack(Material.GLASS), Material.SAND));
-        addRecipe(new FurnaceRecipe(new ItemStack(Material.STONE), Material.COBBLESTONE));
-        addRecipe(new FurnaceRecipe(new ItemStack(Material.GRILLED_PORK), Material.PORK));
-        addRecipe(new FurnaceRecipe(new ItemStack(Material.COOKED_BEEF), Material.RAW_BEEF));
-        addRecipe(new FurnaceRecipe(new ItemStack(Material.COOKED_CHICKEN), Material.RAW_CHICKEN));
-        addRecipe(new FurnaceRecipe(new ItemStack(Material.CLAY_BRICK), Material.CLAY));
-        addRecipe(new FurnaceRecipe(new ItemStack(Material.COOKED_FISH), Material.RAW_FISH));
-        addRecipe(new FurnaceRecipe(new ItemStack(Material.COAL, 1, (byte)1), Material.LOG)); // Charcoal
-        addRecipe(new FurnaceRecipe(new ItemStack(Material.INK_SACK, 1, (byte)2), Material.CACTUS)); // Cactus green
-        addRecipe(new FurnaceRecipe(new ItemStack(Material.DIAMOND), Material.DIAMOND_ORE));
+        loadRecipes();
         
         // Smelting fuels (time is in ticks)
         furnaceFuels.put(Material.COAL, 1600);
@@ -458,7 +302,58 @@ public final class CraftingManager implements Iterable<Recipe> {
         furnaceFuels.put(Material.LOCKED_CHEST, 300);
         furnaceFuels.put(Material.LAVA_BUCKET, 20000);
     }
-    
+
+    /**
+     * Load default recipes from built-in recipes.yml file.
+     */
+    @SuppressWarnings("unchecked")
+    private void loadRecipes() {
+        // Load recipes from recipes.yml file
+        InputStream in = getClass().getClassLoader().getResourceAsStream("defaults/recipes.yml");
+        if (in == null) {
+            GlowServer.logger.warning("Could not find default recipes on classpath");
+            return;
+        }
+
+        ConfigurationSection config = YamlConfiguration.loadConfiguration(in);
+
+        // shaped
+        for (Map<?, ?> data : config.getMapList("shaped")) {
+            ItemStack resultStack = ItemStack.deserialize((Map<String, Object>) data.get("result"));
+            ShapedRecipe recipe = new ShapedRecipe(resultStack);
+            List<String> shape = (List<String>) data.get("shape");
+            recipe.shape(shape.toArray(new String[shape.size()]));
+
+            Map<String, Map<String, Object>> ingreds = (Map<String, Map<String, Object>>) data.get("ingredients");
+            for (Map.Entry<String, Map<String, Object>> entry : ingreds.entrySet()) {
+                ItemStack stack = ItemStack.deserialize(entry.getValue());
+                recipe.setIngredient(entry.getKey().charAt(0), stack.getData());
+            }
+
+            shapedRecipes.add(recipe);
+        }
+
+        // shapeless
+        for (Map<?, ?> data : config.getMapList("shapeless")) {
+            ItemStack resultStack = ItemStack.deserialize((Map<String, Object>) data.get("result"));
+            ShapelessRecipe recipe = new ShapelessRecipe(resultStack);
+
+            List<Map<String, Object>> ingreds = (List<Map<String, Object>>) data.get("ingredients");
+            for (Map<String, Object> entry : ingreds) {
+                recipe.addIngredient(ItemStack.deserialize(entry).getData());
+            }
+
+            shapelessRecipes.add(recipe);
+        }
+
+        // furnace
+        for (Map<?, ?> data : config.getMapList("furnace")) {
+            ItemStack inputStack = ItemStack.deserialize((Map<String, Object>) data.get("input"));
+            ItemStack resultStack = ItemStack.deserialize((Map<String, Object>) data.get("result"));
+            furnaceRecipes.add(new FurnaceRecipe(resultStack, inputStack.getData()));
+        }
+    }
+
     // -- Helper functions
     
     private ShapedRecipe makeShaped(Material mat) {
