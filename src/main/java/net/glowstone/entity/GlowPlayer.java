@@ -575,12 +575,15 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     public void setPlayerListName(String name) {
-        if (name.length() > 15)
+        if (name.length() > 16) {
             throw new IllegalArgumentException("The given name was " + name.length() + " chars long, longer than the maximum of 16");
-        for (Player player : server.getOnlinePlayers()) {
-            if (player.getPlayerListName().equals(getPlayerListName()))
-                throw new IllegalArgumentException("The name given, " + name + ", is already used by " + player.getName() + ".");
         }
+        for (Player player : server.getOnlinePlayers()) {
+            if (player != this && player.getPlayerListName().equals(name)) {
+                throw new IllegalArgumentException("The name given, " + name + ", is already used by " + player.getName() + ".");
+            }
+        }
+
         Message removeMessage = new UserListItemMessage(getPlayerListName(), false, 0);
         playerListName = name;
         Message reAddMessage = new UserListItemMessage(getPlayerListName(), true, 0);

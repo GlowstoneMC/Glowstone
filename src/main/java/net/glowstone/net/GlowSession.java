@@ -13,12 +13,14 @@ import io.netty.handler.codec.DecoderException;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.net.message.play.player.BlockPlacementMessage;
 import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.play.game.PingMessage;
+import net.glowstone.net.message.play.game.UserListItemMessage;
+import net.glowstone.net.message.play.player.BlockPlacementMessage;
 import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.HandshakeProtocol;
 import net.glowstone.net.protocol.PlayProtocol;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
@@ -213,11 +215,13 @@ public final class GlowSession extends BasicSession {
         if (message != null) {
             server.broadcastMessage(message);
         }
-        /*Message userListMessage = new UserListItemMessage(player.getPlayerListName(), true, (short)readTimeoutCounter);
+
+        // todo: in the future, make actual ping measurements?
+        Message userListMessage = new UserListItemMessage(player.getPlayerListName(), true, 0);
         for (Player sendPlayer : server.getOnlinePlayers()) {
             ((GlowPlayer) sendPlayer).getSession().send(userListMessage);
-            send(new UserListItemMessage(sendPlayer.getPlayerListName(), true, (short)((GlowPlayer)sendPlayer).getSession().readTimeoutCounter));
-        }*/
+            send(new UserListItemMessage(sendPlayer.getPlayerListName(), true, 0));
+        }
     }
 
     /**
@@ -289,10 +293,10 @@ public final class GlowSession extends BasicSession {
     public void onDisconnect() {
         if (player != null) {
             player.remove();
-            /*Message userListMessage = new UserListItemMessage(player.getPlayerListName(), false, (short)0);
+            Message userListMessage = new UserListItemMessage(player.getPlayerListName(), false, 0);
             for (Player player : server.getOnlinePlayers()) {
                 ((GlowPlayer) player).getSession().send(userListMessage);
-            }*/
+            }
 
             GlowServer.logger.info(player.getName() + " [" + getAddress() + "] lost connection");
 
