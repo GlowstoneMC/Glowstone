@@ -25,6 +25,7 @@ import org.bukkit.help.HelpMap;
 import org.bukkit.inventory.*;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.*;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.plugin.messaging.Messenger;
@@ -475,9 +476,19 @@ public final class GlowServer implements Server {
 
         if (type == PluginLoadOrder.POSTWORLD) {
             commandMap.registerServerAliases();
-            // permissions.yml should be loaded here
             DefaultPermissions.registerCorePermissions();
             helpMap.initializeCommands();
+
+            // load permissions.yml
+            ConfigurationSection permConfig = config.getConfigFile(ServerConfig.Key.PERMISSIONS_FILE);
+            List<Permission> perms = Permission.loadPermissions(permConfig.getValues(false), "Permission node '%s' in permissions config is invalid", PermissionDefault.OP);
+            for (Permission perm : perms) {
+                try {
+                    pluginManager.addPermission(perm);
+                } catch (IllegalArgumentException ex) {
+                    getLogger().log(Level.WARNING, "Permission config tried to register '" + perm.getName() + "' but it's already registered", ex);
+                }
+            }
         }
     }
 
@@ -500,7 +511,6 @@ public final class GlowServer implements Server {
             loadPlugins();
             enablePlugins(PluginLoadOrder.STARTUP);
             enablePlugins(PluginLoadOrder.POSTWORLD);
-            commandMap.registerServerAliases();
         }
         catch (Exception ex) {
             logger.log(Level.SEVERE, "Uncaught error while reloading: {0}", ex.getMessage());
@@ -657,18 +667,13 @@ public final class GlowServer implements Server {
 
     public Map<String, String[]> getCommandAliases() {
         Map<String, String[]> aliases = new HashMap<String, String[]>();
-        ConfigurationSection section = config.getAliases();
+        ConfigurationSection section = config.getConfigFile(ServerConfig.Key.COMMANDS_FILE).getConfigurationSection("aliases");
         if (section == null) return aliases;
         for (String key : section.getKeys(false)) {
             List<String> list = section.getStringList(key);
             aliases.put(key, list.toArray(new String[list.size()]));
         }
         return aliases;
-    }
-
-    public void reloadCommandAliases() {
-        //commandMap.removeAllOfType(MultipleCommandAlias.class);
-        commandMap.registerServerAliases();
     }
 
     public boolean dispatchCommand(CommandSender sender, String commandLine) throws CommandException {

@@ -4,16 +4,19 @@ import net.glowstone.GlowServer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.util.FileUtil;
 import org.yaml.snakeyaml.error.YAMLException;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
 /**
  * Utilities for handling the server configuration files.
  */
-public class ServerConfig {
+public final class ServerConfig {
 
     /**
      * The directory configurations are stored in.
@@ -29,6 +32,11 @@ public class ServerConfig {
      * The actual configuration data.
      */
     private final YamlConfiguration config = new YamlConfiguration();
+
+    /**
+     * Extra configuration files (help, permissions, commands).
+     */
+    private final Map<String, YamlConfiguration> extraConfig = new HashMap<>();
 
     /**
      * Initialize a new ServerConfig and associated settings.
@@ -49,6 +57,59 @@ public class ServerConfig {
         config.options().indent(4);
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Value getters
+
+    public String getString(Key key) {
+        return config.getString(key.path, key.def.toString());
+    }
+
+    public int getInt(Key key) {
+        return config.getInt(key.path, (Integer) key.def);
+    }
+
+    public boolean getBoolean(Key key) {
+        return config.getBoolean(key.path, (Boolean) key.def);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Fancy stuff
+
+    public ConfigurationSection getConfigFile(Key key) {
+        String filename = getString(key);
+        if (extraConfig.containsKey(filename)) {
+            return extraConfig.get(filename);
+        }
+
+        YamlConfiguration conf = new YamlConfiguration();
+        File file = getFile(filename), migrateFrom = new File(key.def.toString());
+
+        // create file if it doesn't exist
+        if (!file.exists()) {
+            if (migrateFrom.exists()) {
+                FileUtil.copy(migrateFrom, file);
+            } else {
+                copyDefaults(key.def.toString(), file);
+            }
+        }
+
+        // read in config
+        try {
+            conf.load(file);
+        } catch (IOException e) {
+            GlowServer.logger.log(Level.SEVERE, "Failed to read config: " + file, e);
+        } catch (InvalidConfigurationException e) {
+            report(file, e);
+        }
+
+        extraConfig.put(filename, conf);
+        return conf;
+    }
+
+    public ConfigurationSection getWorlds() {
+        return config.getConfigurationSection("worlds");
+    }
+
     public File getDirectory() {
         return configDir;
     }
@@ -57,31 +118,13 @@ public class ServerConfig {
         return new File(configDir, filename);
     }
 
-    private void createDefaults() {
-        InputStream in = getClass().getClassLoader().getResourceAsStream("defaults/glowstone.yml");
-        if (in == null) {
-            GlowServer.logger.warning("Could not find default configuration on classpath");
-            return;
-        }
-
-        try {
-            OutputStream out = new FileOutputStream(configFile);
-            byte[] buf = new byte[2048];
-            int len;
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
-            }
-            out.close();
-            in.close();
-        } catch (IOException e) {
-            GlowServer.logger.log(Level.WARNING, "Could not save default configuration", e);
-            return;
-        }
-
-        GlowServer.logger.info("Created default configuration");
-    }
+    ////////////////////////////////////////////////////////////////////////////
+    // Load and internals
 
     public void load() {
+        // load extra config files again next time they're needed
+        extraConfig.clear();
+
         // create default file if needed
         boolean exists = configFile.exists();
         if (!exists) {
@@ -91,7 +134,7 @@ public class ServerConfig {
                 return;
             }
 
-            createDefaults();
+            copyDefaults("glowstone.yml", configFile);
         }
 
         // load config
@@ -100,7 +143,7 @@ public class ServerConfig {
         } catch (IOException e) {
             GlowServer.logger.log(Level.SEVERE, "Failed to read config: " + configFile, e);
         } catch (InvalidConfigurationException e) {
-            report(e);
+            report(configFile, e);
         }
 
         // if we just created defaults, attempt to migrate
@@ -117,34 +160,38 @@ public class ServerConfig {
         }
     }
 
-    private void report(InvalidConfigurationException e) {
-        if (e.getCause() instanceof YAMLException) {
-            GlowServer.logger.severe("Config file " + configFile + " isn't valid! " + e.getCause());
-        } else if ((e.getCause() == null) || (e.getCause() instanceof ClassCastException)) {
-            GlowServer.logger.severe("Config file " + configFile + " isn't valid!");
-        } else {
-            GlowServer.logger.log(Level.SEVERE, "Cannot load " + configFile + ": " + e.getCause().getClass(), e);
+    private void copyDefaults(String source, File dest) {
+        InputStream in = getClass().getClassLoader().getResourceAsStream("defaults/" + source);
+        if (in == null) {
+            GlowServer.logger.warning("Could not find default " + source + " on classpath");
+            return;
         }
+
+        try {
+            OutputStream out = new FileOutputStream(dest);
+            byte[] buf = new byte[2048];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            out.close();
+            in.close();
+        } catch (IOException e) {
+            GlowServer.logger.log(Level.WARNING, "Could not save default config: " + dest, e);
+            return;
+        }
+
+        GlowServer.logger.info("Created default config: " + dest);
     }
 
-    public String getString(Key key) {
-        return config.getString(key.path, key.def.toString());
-    }
-
-    public int getInt(Key key) {
-        return config.getInt(key.path, (Integer) key.def);
-    }
-
-    public boolean getBoolean(Key key) {
-        return config.getBoolean(key.path, (Boolean) key.def);
-    }
-
-    public ConfigurationSection getAliases() {
-        return config.getConfigurationSection("aliases");
-    }
-
-    public ConfigurationSection getWorlds() {
-        return config.getConfigurationSection("worlds");
+    private void report(File file, InvalidConfigurationException e) {
+        if (e.getCause() instanceof YAMLException) {
+            GlowServer.logger.severe("Config file " + file + " isn't valid! " + e.getCause());
+        } else if ((e.getCause() == null) || (e.getCause() instanceof ClassCastException)) {
+            GlowServer.logger.severe("Config file " + file + " isn't valid!");
+        } else {
+            GlowServer.logger.log(Level.SEVERE, "Cannot load " + file + ": " + e.getCause().getClass(), e);
+        }
     }
 
     private boolean migrate() {
@@ -156,7 +203,7 @@ public class ServerConfig {
             try {
                 bukkit.load(bukkitYml);
             } catch (InvalidConfigurationException e) {
-                report(e);
+                report(bukkitYml, e);
             } catch (IOException ignored) {
             }
 
@@ -211,12 +258,16 @@ public class ServerConfig {
         UPDATE_FOLDER("folders.update", "update", Migrate.BUKKIT, "settings.update-folder"),
         WORLD_FOLDER("folders.worlds", "worlds", Migrate.BUKKIT, "settings.world-container"),
 
+        // files
+        PERMISSIONS_FILE("files.permissions", "permissions.yml", Migrate.BUKKIT, "settings.permissions-file"),
+        COMMANDS_FILE("files.commands", "commands.yml"),
+        HELP_FILE("files.help", "help.yml"),
+
         // advanced
         CONNECTION_THROTTLE("advanced.connection-throttle", 4000, Migrate.BUKKIT, "settings.connection-throttle"),
         //PING_PACKET_LIMIT("advanced.ping-packet-limit", 100, Migrate.BUKKIT, "settings.ping-packet-limit"),
         PLAYER_IDLE_TIMEOUT("advanced.idle-timeout", 0, Migrate.PROPS, "player-idle-timeout"),
         WARN_ON_OVERLOAD("advanced.warn-on-overload", true, Migrate.BUKKIT, "settings.warn-on-overload"),
-        PERMISSIONS_FILE("advanced.permissions-file", "permissions.yml", Migrate.BUKKIT, "settings.permissions-file"),
         EXACT_LOGIN_LOCATION("advanced.exact-login-location", false, Migrate.BUKKIT, "settings.use-exact-login-location"),
         PLUGIN_PROFILING("advanced.plugin-profiling", false, Migrate.BUKKIT, "settings.plugin-profiling"),
         WARNING_STATE("advanced.deprecated-verbose", "false", Migrate.BUKKIT, "settings.deprecated-verbose"),

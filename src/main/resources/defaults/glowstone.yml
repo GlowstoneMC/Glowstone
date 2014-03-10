@@ -1,6 +1,8 @@
 # glowstone.yml is the main configuration file for a Glowstone server
 # It contains everything from server.properties and bukkit.yml in a
 # normal CraftBukkit installation.
+#
+# For help, join us on IRC: #glowstone @ esper.net
 
 server:
     port: 25565

@@ -309,7 +309,7 @@ public final class CraftingManager implements Iterable<Recipe> {
     @SuppressWarnings("unchecked")
     private void loadRecipes() {
         // Load recipes from recipes.yml file
-        InputStream in = getClass().getClassLoader().getResourceAsStream("defaults/recipes.yml");
+        InputStream in = getClass().getClassLoader().getResourceAsStream("builtin/recipes.yml");
         if (in == null) {
             GlowServer.logger.warning("Could not find default recipes on classpath");
             return;
