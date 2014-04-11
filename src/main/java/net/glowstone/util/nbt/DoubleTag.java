@@ -4,7 +4,7 @@ package net.glowstone.util.nbt;
  * The {@code TAG_Double} tag.
  * @author Graham Edgecombe
  */
-public final class DoubleTag extends Tag<Double> {
+final class DoubleTag extends Tag<Double> {
 
     /**
      * The value.
@@ -13,11 +13,10 @@ public final class DoubleTag extends Tag<Double> {
 
     /**
      * Creates the tag.
-     * @param name The name.
      * @param value The value.
      */
-    public DoubleTag(String name, double value) {
-        super(TagType.DOUBLE, name);
+    public DoubleTag(double value) {
+        super(TagType.DOUBLE);
         this.value = value;
     }
 

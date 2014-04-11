@@ -3,7 +3,7 @@ package net.glowstone.util.nbt;
 /**
  * The {@code TAG_Int_Array} tag.
  */
-public final class IntArrayTag extends Tag<int[]> {
+final class IntArrayTag extends Tag<int[]> {
 
     /**
      * The value.
@@ -12,11 +12,10 @@ public final class IntArrayTag extends Tag<int[]> {
 
     /**
      * Creates the tag.
-     * @param name The name.
      * @param value The value.
      */
-    public IntArrayTag(String name, int[] value) {
-        super(TagType.INT_ARRAY, name);
+    public IntArrayTag(int[] value) {
+        super(TagType.INT_ARRAY);
         this.value = value;
     }
 
@@ -28,10 +27,8 @@ public final class IntArrayTag extends Tag<int[]> {
     @Override
     protected void valueToString(StringBuilder hex) {
         for (int b : value) {
-            String hexDigits = Integer.toHexString(b).toUpperCase();
-            if (hexDigits.length() == 1) {
-                hex.append("0");
-            }
+            String hexDigits = Integer.toHexString(b);
+            hex.append("00000000", hexDigits.length(), 8);
             hex.append(hexDigits).append(" ");
         }
     }

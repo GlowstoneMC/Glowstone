@@ -12,18 +12,11 @@ public abstract class Tag<T> {
     private final TagType type;
 
     /**
-     * The name of this tag.
-     */
-    private final String name;
-
-    /**
-     * Creates the tag with the specified type and name.
+     * Creates the tag with the specified type.
      * @param type The type.
-     * @param name The name.
      */
-    protected Tag(TagType type, String name) {
+    protected Tag(TagType type) {
         this.type = type;
-        this.name = name;
     }
 
     /**
@@ -35,14 +28,6 @@ public abstract class Tag<T> {
     }
 
     /**
-     * Gets the name of this tag.
-     * @return The name of this tag.
-     */
-    public final String getName() {
-        return name;
-    }
-
-    /**
      * Gets the value of this tag.
      * @return The value of this tag.
      */
@@ -51,12 +36,7 @@ public abstract class Tag<T> {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("TAG_");
-        builder.append(type.getName());
-        String name = getName();
-        if (name != null && !name.equals("")) {
-            builder.append("(\"").append(name).append("\")");
-        }
-        builder.append(": ");
+        builder.append(type.getName()).append(": ");
         valueToString(builder);
         return builder.toString();
     }

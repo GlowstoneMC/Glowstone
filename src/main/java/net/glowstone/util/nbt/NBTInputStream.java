@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -54,8 +52,37 @@ public final class NBTInputStream implements Closeable {
      * @return The tag that was read.
      * @throws IOException if an I/O error occurs.
      */
-    public Tag readTag() throws IOException {
+    /*public Tag readTag() throws IOException {
         return readTag(0);
+    }*/
+
+    public CompoundTag readCompound() throws IOException {
+        return readCompound(0);
+    }
+
+    private CompoundTag readCompound(int depth) throws IOException {
+        CompoundTag result = new CompoundTag();
+
+        while (true) {
+            // read type
+            TagType type = TagType.byIdOrError(is.readUnsignedByte());
+            if (type == TagType.END) {
+                break;
+            }
+
+            // read name
+            int nameLength = is.readUnsignedShort();
+            byte[] nameBytes = new byte[nameLength];
+            is.readFully(nameBytes);
+            String name = new String(nameBytes, StandardCharsets.UTF_8);
+
+            // read tag
+            Tag tag = readTagPayload(type, depth + 1);
+
+            result.put(name, tag);
+        }
+
+        return result;
     }
 
     /**
@@ -64,93 +91,67 @@ public final class NBTInputStream implements Closeable {
      * @return The tag that was read.
      * @throws IOException if an I/O error occurs.
      */
-    private Tag readTag(int depth) throws IOException {
-        TagType type = TagType.byIdOrError(is.readUnsignedByte());
+    /*private Tag readTag(int depth) throws IOException {
 
-        String name;
-        if (type != TagType.END) {
-            int nameLength = is.readUnsignedShort();
-            byte[] nameBytes = new byte[nameLength];
-            is.readFully(nameBytes);
-            name = new String(nameBytes, StandardCharsets.UTF_8);
-        } else {
-            name = "";
-        }
-
-        return readTagPayload(type, name, depth);
-    }
+        return readTagPayload(type, depth);
+    }*/
 
     /**
      * Reads the payload of a {@link Tag}, given the name and type.
      * @param type The type.
-     * @param name The name.
      * @param depth The depth.
      * @return The tag.
      * @throws IOException if an I/O error occurs.
      */
     @SuppressWarnings("unchecked")
-    private Tag readTagPayload(TagType type, String name, int depth) throws IOException {
+    private Tag readTagPayload(TagType type, int depth) throws IOException {
         switch (type) {
         case END:
-            if (depth == 0) {
-                throw new IOException("TAG_End found without a TAG_Compound/TAG_List tag preceding it.");
-            } else {
-                return new EndTag();
-            }
+            throw new IOException("Cannot read TAG_End payload");
 
         case BYTE:
-            return new ByteTag(name, is.readByte());
+            return new ByteTag(is.readByte());
 
         case SHORT:
-            return new ShortTag(name, is.readShort());
+            return new ShortTag(is.readShort());
 
         case INT:
-            return new IntTag(name, is.readInt());
+            return new IntTag(is.readInt());
 
         case LONG:
-            return new LongTag(name, is.readLong());
+            return new LongTag(is.readLong());
 
         case FLOAT:
-            return new FloatTag(name, is.readFloat());
+            return new FloatTag(is.readFloat());
 
         case DOUBLE:
-            return new DoubleTag(name, is.readDouble());
+            return new DoubleTag(is.readDouble());
 
         case BYTE_ARRAY:
             int length = is.readInt();
             byte[] bytes = new byte[length];
             is.readFully(bytes);
-            return new ByteArrayTag(name, bytes);
+            return new ByteArrayTag(bytes);
 
         case STRING:
             length = is.readShort();
             bytes = new byte[length];
             is.readFully(bytes);
-            return new StringTag(name, new String(bytes, StandardCharsets.UTF_8));
+            return new StringTag(new String(bytes, StandardCharsets.UTF_8));
 
         case LIST:
             TagType childType = TagType.byIdOrError(is.readUnsignedByte());
             length = is.readInt();
 
-            List<Tag> tagList = new ArrayList<Tag>();
+            List<Tag> tagList = new ArrayList<>();
             for (int i = 0; i < length; i++) {
-                tagList.add(readTagPayload(childType, "", depth + 1));
+                tagList.add(readTagPayload(childType, depth + 1));
             }
 
-            return new ListTag(name, childType, tagList);
+            return new ListTag(childType, tagList);
 
         case COMPOUND:
-            Map<String, Tag> tagMap = new LinkedHashMap<String, Tag>();
-            while (true) {
-                Tag tag = readTag(depth + 1);
-                if (tag instanceof EndTag) {
-                    break;
-                } else {
-                    tagMap.put(tag.getName(), tag);
-                }
-            }
-
-            return new CompoundTag(name, tagMap);
+            return readCompound(depth + 1);
 
         case INT_ARRAY:
             length = is.readInt();
@@ -158,7 +159,7 @@ public final class NBTInputStream implements Closeable {
             for (int i = 0; i < length; ++i) {
                 ints[i] = is.readInt();
             }
-            return new IntArrayTag(name, ints);
+            return new IntArrayTag(ints);
 
         default:
             throw new IOException("Invalid tag type: " + type + ".");

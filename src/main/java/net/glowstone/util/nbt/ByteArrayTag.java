@@ -4,7 +4,7 @@ package net.glowstone.util.nbt;
  * The {@code TAG_Byte_Array} tag.
  * @author Graham Edgecombe
  */
-public final class ByteArrayTag extends Tag<byte[]> {
+final class ByteArrayTag extends Tag<byte[]> {
 
     /**
      * The value.
@@ -13,11 +13,10 @@ public final class ByteArrayTag extends Tag<byte[]> {
 
     /**
      * Creates the tag.
-     * @param name The name.
      * @param value The value.
      */
-    public ByteArrayTag(String name, byte[] value) {
-        super(TagType.BYTE_ARRAY, name);
+    public ByteArrayTag(byte[] value) {
+        super(TagType.BYTE_ARRAY);
         this.value = value;
     }
 
@@ -29,7 +28,7 @@ public final class ByteArrayTag extends Tag<byte[]> {
     @Override
     protected void valueToString(StringBuilder hex) {
         for (byte b : value) {
-            String hexDigits = Integer.toHexString(b).toUpperCase();
+            String hexDigits = Integer.toHexString(b);
             if (hexDigits.length() == 1) {
                 hex.append("0");
             }

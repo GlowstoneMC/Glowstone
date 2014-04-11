@@ -4,7 +4,7 @@ package net.glowstone.util.nbt;
  * The {@code TAG_Byte} tag.
  * @author Graham Edgecombe
  */
-public final class ByteTag extends Tag<Byte> {
+final class ByteTag extends Tag<Byte> {
 
     /**
      * The value.
@@ -13,11 +13,10 @@ public final class ByteTag extends Tag<Byte> {
 
     /**
      * Creates the tag.
-     * @param name The name.
      * @param value The value.
      */
-    public ByteTag(String name, byte value) {
-        super(TagType.BYTE, name);
+    public ByteTag(byte value) {
+        super(TagType.BYTE);
         this.value = value;
     }
 

@@ -4,7 +4,7 @@ package net.glowstone.util.nbt;
  * The {@code TAG_Float} tag.
  * @author Graham Edgecombe
  */
-public final class FloatTag extends Tag<Float> {
+final class FloatTag extends Tag<Float> {
 
     /**
      * The value.
@@ -13,11 +13,10 @@ public final class FloatTag extends Tag<Float> {
 
     /**
      * Creates the tag.
-     * @param name The name.
      * @param value The value.
      */
-    public FloatTag(String name, float value) {
-        super(TagType.FLOAT, name);
+    public FloatTag(float value) {
+        super(TagType.FLOAT);
         this.value = value;
     }
 
