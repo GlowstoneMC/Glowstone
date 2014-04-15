@@ -17,7 +17,8 @@ public class NbtWorldMetadataService implements WorldMetadataService {
     private final GlowWorld world;
     private final File dir;
     private final GlowServer server;
-    private final List<Tag> unknownTags = new ArrayList<Tag>();
+
+    private CompoundTag unknownTags;
 
     public NbtWorldMetadataService(GlowWorld world, File dir) {
         this.world = world;
@@ -28,7 +29,9 @@ public class NbtWorldMetadataService implements WorldMetadataService {
     }
 
     public WorldFinalValues readWorldData() throws IOException {
-        CompoundTag level = new CompoundTag("", Collections.<String, Tag>emptyMap());
+        CompoundTag level = new CompoundTag();
+
+        // please fix this mess
 
         File levelFile = new File(dir, "level.dat");
         if (!levelFile.exists()) {
@@ -40,7 +43,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         } else {
             try {
                 NBTInputStream in = new NBTInputStream(new FileInputStream(levelFile));
-                CompoundTag levelTag = (CompoundTag) in.readTag();
+                CompoundTag levelTag = (CompoundTag) in.readCompound();
                 in.close();
                 if (levelTag != null) level = levelTag;
             } catch (EOFException e) {
@@ -69,11 +72,11 @@ public class NbtWorldMetadataService implements WorldMetadataService {
             }
         }
 
-        Map<String, Tag> unknown = new HashMap<String, Tag>(level.getValue());
-
+        // TODO: ugggghhhhhh
         long seed = 0L;
-        if (checkKnownTag(level, unknown, "thundering", ByteTag.class)) {
-            world.setThundering(level.get("thundering", ByteTag.class) == 1);
+        /*if (level.isByte("thundering")) {
+            world.setThundering(level.getByte("thundering") == 1);
+            level.remove("thundering");
         }
         if (checkKnownTag(level, unknown, "raining", ByteTag.class)) {
             world.setStorm(level.get("raining", ByteTag.class) == 1);
@@ -111,18 +114,10 @@ public class NbtWorldMetadataService implements WorldMetadataService {
             }
         }
 
-        unknownTags.addAll(unknown.values());
+        unknownTags.addAll(unknown.values());*/
 
         if (uid == null) uid = UUID.randomUUID();
         return new WorldFinalValues(seed, uid);
-    }
-
-    private boolean checkKnownTag(CompoundTag level, Map<String, Tag> unknown, String key, Class<? extends Tag> clazz) {
-        if (level.is(key, clazz)) {
-            unknown.remove(key);
-            return true;
-        }
-        return false;
     }
 
     private void handleWorldException(String file, IOException e) {
@@ -132,7 +127,6 @@ public class NbtWorldMetadataService implements WorldMetadataService {
     }
 
     public void writeWorldData() throws IOException {
-        List<Tag> out = new LinkedList<Tag>();
         File uuidFile = new File(dir, "uid.dat");
         if (!uuidFile.exists()) {
             try {
@@ -147,40 +141,42 @@ public class NbtWorldMetadataService implements WorldMetadataService {
             str.writeLong(uuid.getMostSignificantBits());
             str.close();
         }
-        out.addAll(unknownTags);
-        unknownTags.clear();
+
+        CompoundTag out = unknownTags;
+        unknownTags = new CompoundTag();
 
         // Normal level data
-        out.add(new ByteTag("thundering", (byte) (world.isThundering() ? 1 : 0)));
-        out.add(new LongTag("RandomSeed", world.getSeed()));
-        out.add(new LongTag("Time", world.getFullTime()));
-        out.add(new LongTag("DayTime", world.getTime()));
-        out.add(new ByteTag("raining", (byte) (world.hasStorm() ? 1 : 0)));
-        out.add(new IntTag("thunderTime", world.getThunderDuration()));
-        out.add(new IntTag("rainTime", world.getWeatherDuration()));
+        out.putLong("RandomSeed", world.getSeed());
+        out.putLong("Time", world.getFullTime());
+        out.putLong("DayTime", world.getTime());
+        out.putBool("thundering", world.isThundering());
+        out.putBool("raining", world.hasStorm());
+        out.putInt("thunderTime", world.getThunderDuration());
+        out.putInt("rainTime", world.getWeatherDuration());
+
         Location loc = world.getSpawnLocation();
-        out.add(new IntTag("SpawnX", loc.getBlockX()));
-        out.add(new IntTag("SpawnY", loc.getBlockY()));
-        out.add(new IntTag("SpawnZ", loc.getBlockZ()));
+        out.putInt("SpawnX", loc.getBlockX());
+        out.putInt("SpawnY", loc.getBlockY());
+        out.putInt("SpawnZ", loc.getBlockZ());
         // Format-specific
-        out.add(new StringTag("LevelName", world.getName()));
-        out.add(new LongTag("LastPlayed", Calendar.getInstance().getTimeInMillis()));
-        out.add(new IntTag("version", 19132));
+        out.putString("LevelName", world.getName());
+        out.putLong("LastPlayed", Calendar.getInstance().getTimeInMillis());
+        out.putInt("version", 19132);
 
         // Game rules
+        CompoundTag gameRules = new CompoundTag();
         String[] gameRuleKeys = world.getGameRules();
-        List<Tag> gameRules = new ArrayList<>();
         for (String key : gameRuleKeys) {
-            gameRules.add(new StringTag(key, world.getGameRuleValue(key)));
+            gameRules.putString(key, world.getGameRuleValue(key));
         }
-        out.add(new CompoundTag("GameRules", gameRules));
+        out.putCompound("GameRules", gameRules);
 
         // Not sure how to calculate this, so ignoring for now
-        out.add(new LongTag("SizeOnDisk", 0));
+        out.putLong("SizeOnDisk", 0);
 
         try {
             NBTOutputStream nbtOut = new NBTOutputStream(new FileOutputStream(new File(dir, "level.dat")));
-            nbtOut.writeTag(new CompoundTag("Data", out));
+            nbtOut.writeTag(out);
             nbtOut.close();
         } catch (IOException e) {
             handleWorldException("level.dat", e);
@@ -205,7 +201,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         } else {
             try {
                 NBTInputStream in = new NBTInputStream(new FileInputStream(playerFile));
-                playerTag = (CompoundTag) in.readTag();
+                playerTag = (CompoundTag) in.readCompound();
                 in.close();
             } catch (EOFException e) {
             } catch (IOException e) {
@@ -215,7 +211,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
             }
         }
 
-        if (playerTag == null) playerTag = new CompoundTag("", new HashMap<String, Tag>());
+        if (playerTag == null) playerTag = new CompoundTag();
         EntityStoreLookupService.find(GlowPlayer.class).load(player, playerTag);
     }
 
@@ -232,10 +228,11 @@ public class NbtWorldMetadataService implements WorldMetadataService {
             server.getLogger().severe("Failed to access player.dat for player " + player.getName() + " in world " + world.getName() + "!");
         }
 
-        List<Tag> out = EntityStoreLookupService.find(GlowPlayer.class).save(player);
+        CompoundTag tag = new CompoundTag();
+        EntityStoreLookupService.find(GlowPlayer.class).save(player, tag);
         try {
             NBTOutputStream outStream = new NBTOutputStream(new FileOutputStream(playerFile));
-            outStream.writeTag(new CompoundTag("", out));
+            outStream.writeTag(tag);
             outStream.close();
         } catch (IOException e) {
             player.getSession().disconnect("Failed to write player.dat");

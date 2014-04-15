@@ -4,12 +4,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.state.GlowCreatureSpawner;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.IntTag;
-import net.glowstone.util.nbt.StringTag;
-import net.glowstone.util.nbt.Tag;
 import org.bukkit.entity.EntityType;
-
-import java.util.List;
 
 public class TEMobSpawner extends TileEntity {
 
@@ -24,16 +19,15 @@ public class TEMobSpawner extends TileEntity {
     public void loadNbt(CompoundTag tag) {
         super.loadNbt(tag);
 
-        spawning = EntityType.fromName(tag.get("EntityId", StringTag.class));
-        delay = tag.get("Delay", IntTag.class);
+        spawning = EntityType.fromName(tag.getString("EntityId"));
+        delay = tag.getInt("Delay");
     }
 
     @Override
-    public List<Tag> saveNbt() {
-        List<Tag> result = super.saveNbt();
-        result.add(new StringTag("EntityId", spawning == null ? "" : spawning.getName()));
-        result.add(new IntTag("Delay", delay));
-        return result;
+    public void saveNbt(CompoundTag tag) {
+        super.saveNbt(tag);
+        tag.putString("EntityId", spawning == null ? "" : spawning.getName());
+        tag.putInt("Delay", delay);
     }
 
     @Override

@@ -33,7 +33,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     protected void valueToString(StringBuilder bldr) {
         bldr.append(value.size()).append(" entries\n{\n");
         for (Map.Entry<String, Tag> entry : value.entrySet()) {
-            bldr.append("    ").append(entry.getValue().toString().replaceAll("\n", "\n    ")).append("\n");
+            bldr.append("    ").append(entry.getKey()).append(": ").append(entry.getValue().toString().replaceAll("\n", "\n    ")).append("\n");
         }
         bldr.append("}");
     }
@@ -54,8 +54,16 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
         return value.containsKey(key);
     }
 
+    public void remove(String key) {
+        value.remove(key);
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Simple gets
+
+    public boolean getBool(String key) {
+        return get(key, ByteTag.class) != 0;
+    }
 
     public byte getByte(String key) {
         return get(key, ByteTag.class);
@@ -108,7 +116,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     public CompoundTag getCompound(String key) {
         return getTag(key, CompoundTag.class);
     }
-    
+
     ////////////////////////////////////////////////////////////////////////////
     // Simple is
 
@@ -163,6 +171,10 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
 
     ////////////////////////////////////////////////////////////////////////////
     // Simple sets
+
+    public void putBool(String key, boolean value) {
+        putByte(key, value ? 1 : 0);
+    }
 
     public void putByte(String key, int value) {
         put(key, new ByteTag((byte) value));

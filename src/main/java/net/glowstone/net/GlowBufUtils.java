@@ -9,7 +9,6 @@ import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
-import net.glowstone.util.nbt.Tag;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -75,11 +74,7 @@ public final class GlowBufUtils {
         buf.readBytes(bytes);
 
         try (NBTInputStream str = new NBTInputStream(new ByteArrayInputStream(bytes))) {
-            Tag tag = str.readTag();
-            if (tag instanceof CompoundTag) {
-                return (CompoundTag) tag;
-            }
-            return null;
+            return str.readCompound();
         } catch (IOException e) {
             return null;
         }

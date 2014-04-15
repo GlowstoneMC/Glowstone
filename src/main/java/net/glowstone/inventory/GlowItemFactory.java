@@ -1,14 +1,11 @@
 package net.glowstone.inventory;
 
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.Tag;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.List;
 
 /**
  * An implementation of {@link ItemFactory} responsible for creating ItemMetas.
@@ -54,12 +51,9 @@ public class GlowItemFactory implements ItemFactory {
     }
 
     public CompoundTag writeNbt(ItemMeta meta) {
-        List<Tag> tags = toGlowMeta(meta).writeNbt();
-        if (tags.size() == 0) {
-            return null;
-        } else {
-            return new CompoundTag("", tags);
-        }
+        CompoundTag result = new CompoundTag();
+        toGlowMeta(meta).writeNbt(result);
+        return result.isEmpty() ? null : result;
     }
 
     public ItemMeta readNbt(Material material, CompoundTag tag) {

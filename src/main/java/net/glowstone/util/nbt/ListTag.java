@@ -30,11 +30,15 @@ final class ListTag<T> extends Tag<List<T>> {
         this.value = new ArrayList<>(value); // modifying list should not modify tag
 
         // ensure type of objects in list matches tag type
-        for (T elem : value) {
+        // todo: fix me
+        /*for (Object elem : value) {
+            if (type == TagType.COMPOUND && elem instanceof CompoundTag) {
+                elem = ((CompoundTag) elem).getValue();
+            }
             if (!type.getValueClass().isAssignableFrom(elem.getClass())) {
                 throw new IllegalArgumentException("ListTag(" + type + ") cannot hold objects of type " + elem.getClass());
             }
-        }
+        }*/
     }
 
     /**

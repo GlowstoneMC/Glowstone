@@ -5,12 +5,9 @@ import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.state.GlowSign;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.StringTag;
-import net.glowstone.util.nbt.Tag;
 import org.bukkit.Material;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class TESign extends TileEntity {
 
@@ -37,19 +34,18 @@ public class TESign extends TileEntity {
         super.loadNbt(tag);
         for (int i = 0; i < lines.length; ++i) {
             String key = "Text" + (i + 1);
-            if (tag.is(key, StringTag.class)) {
-                lines[i] = tag.get(key, StringTag.class);
+            if (tag.isString(key)) {
+                lines[i] = tag.getString(key);
             }
         }
     }
 
     @Override
-    public List<Tag> saveNbt() {
-        List<Tag> result = super.saveNbt();
+    public void saveNbt(CompoundTag tag) {
+        super.saveNbt(tag);
         for (int i = 0; i < lines.length; ++i) {
-            result.add(new StringTag("Text" + (i + 1), lines[i]));
+            tag.putString("Text" + (i + 1), lines[i]);
         }
-        return result;
     }
 
     @Override

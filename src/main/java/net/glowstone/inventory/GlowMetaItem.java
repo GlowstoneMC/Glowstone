@@ -75,45 +75,33 @@ class GlowMetaItem implements ItemMeta {
         return result;
     }
 
-    List<Tag> writeNbt() {
-        List<Tag> tags = new LinkedList<>();
-
-        List<Tag> displayTags = new LinkedList<>();
+    void writeNbt(CompoundTag tag) {
+        CompoundTag displayTags = new CompoundTag();
         if (hasDisplayName()) {
-            displayTags.add(new StringTag("Name", getDisplayName()));
+            displayTags.putString("Name", getDisplayName());
         }
         if (hasLore()) {
-            List<String> lore = getLore();
-            List<StringTag> loreList = new ArrayList<StringTag>(lore.size());
-            for (String line : lore) {
-                loreList.add(new StringTag("", line));
-            }
-            displayTags.add(new ListTag<>("Lore", TagType.STRING, loreList));
+            displayTags.putList("Lore", TagType.STRING, getLore());
         }
 
-        if (displayTags.size() > 0) {
-            tags.add(new CompoundTag("display", displayTags));
+        if (!displayTags.isEmpty()) {
+            tag.putCompound("display", displayTags);
         }
 
         // todo: enchantments
-        return tags;
     }
 
     void readNbt(CompoundTag tag) {
-        if (tag.is("display", CompoundTag.class)) {
-            CompoundTag display = tag.getTag("display", CompoundTag.class);
-            if (display.is("Name", StringTag.class)) {
-                setDisplayName(display.get("Name", StringTag.class));
+        if (tag.isCompound("display")) {
+            CompoundTag display = tag.getCompound("display");
+            if (display.isCompound("Name")) {
+                setDisplayName(display.getString("Name"));
             }
-            if (display.is("Lore", ListTag.class)) {
-                List<StringTag> loreList = display.getList("Lore", StringTag.class);
-                List<String> lore = new ArrayList<>();
-                for (StringTag line : loreList) {
-                    lore.add(line.getValue());
-                }
-                setLore(lore);
+            if (display.isList("Lore", TagType.STRING)) {
+                setLore(display.<String>getList("Lore", TagType.STRING));
             }
         }
+
         // todo: enchantments
     }
 

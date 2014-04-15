@@ -57,7 +57,20 @@ public final class NBTInputStream implements Closeable {
     }*/
 
     public CompoundTag readCompound() throws IOException {
-        return readCompound(0);
+        // read type
+        TagType type = TagType.byIdOrError(is.readUnsignedByte());
+        if (type != TagType.COMPOUND) {
+            throw new IOException("Root of NBTInputStream was " + type + ", not COMPOUND");
+        }
+
+        // read name
+        int nameLength = is.readUnsignedShort();
+        byte[] nameBytes = new byte[nameLength];
+        is.readFully(nameBytes);
+        String name = new String(nameBytes, StandardCharsets.UTF_8);
+
+        // read tag
+        return (CompoundTag) readTagPayload(type, 0);
     }
 
     private CompoundTag readCompound(int depth) throws IOException {

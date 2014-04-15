@@ -3,12 +3,8 @@ package net.glowstone.block.entity;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.state.GlowNoteBlock;
-import net.glowstone.util.nbt.ByteTag;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.Tag;
 import org.bukkit.Note;
-
-import java.util.List;
 
 public class TENote extends TileEntity {
 
@@ -21,14 +17,13 @@ public class TENote extends TileEntity {
     @Override
     public void loadNbt(CompoundTag tag) {
         super.loadNbt(tag);
-        note = new Note(tag.get("note", ByteTag.class));
+        note = new Note(tag.getByte("note"));
     }
 
     @Override
-    public List<Tag> saveNbt() {
-        List<Tag> result = super.saveNbt();
-        result.add(new ByteTag("note", note.getId()));
-        return result;
+    public void saveNbt(CompoundTag tag) {
+        super.saveNbt(tag);
+        tag.putByte("note", note.getId());
     }
 
     @Override

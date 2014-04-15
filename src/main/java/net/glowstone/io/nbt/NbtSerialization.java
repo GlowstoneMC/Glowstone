@@ -1,7 +1,8 @@
 package net.glowstone.io.nbt;
 
 import net.glowstone.inventory.GlowItemFactory;
-import net.glowstone.util.nbt.*;
+import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -9,7 +10,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public final class NbtSerialization {
@@ -18,39 +18,38 @@ public final class NbtSerialization {
     }
 
     public static ItemStack readItem(CompoundTag tag) {
-        short id = tag.is("id", ShortTag.class) ? tag.get("id", ShortTag.class) : 0;
-        short damage = tag.is("Damage", ShortTag.class) ? tag.get("Damage", ShortTag.class) : 0;
-        byte count = tag.is("Count", ByteTag.class) ? tag.get("Count", ByteTag.class) : 0;
+        short id = tag.isShort("id") ? tag.getShort("id") : 0;
+        short damage = tag.isShort("Damage") ? tag.getShort("Damage") : 0;
+        byte count = tag.isByte("Count") ? tag.getByte("Count") : 0;
 
         Material material = Material.getMaterial(id);
         if (material == null || id == 0 || count == 0) {
             return null;
         }
         ItemStack stack = new ItemStack(material, count, damage);
-        if (tag.is("tag", CompoundTag.class)) {
-            stack.setItemMeta(GlowItemFactory.instance().readNbt(material, tag.getTag("tag", CompoundTag.class)));
+        if (tag.isCompound("tag")) {
+            stack.setItemMeta(GlowItemFactory.instance().readNbt(material, tag.getCompound("tag")));
         }
         return stack;
     }
 
-    public static List<Tag> writeItem(ItemStack stack, int slot) {
-        List<Tag> result = new ArrayList<>(5);
-        result.add(new ShortTag("id", (short) stack.getTypeId()));
-        result.add(new ShortTag("Damage", stack.getDurability()));
-        result.add(new ByteTag("Count", (byte) stack.getAmount()));
-        result.add(new ByteTag("Slot", (byte) slot));
+    public static CompoundTag writeItem(ItemStack stack, int slot) {
+        CompoundTag tag = new CompoundTag();
+        tag.putShort("id", stack.getTypeId());
+        tag.putShort("Damage", stack.getDurability());
+        tag.putByte("Count", stack.getAmount());
+        tag.putByte("Slot", slot);
         CompoundTag meta = GlowItemFactory.instance().writeNbt(stack.getItemMeta());
         if (meta != null) {
-            // this is a little weird
-            result.add(new CompoundTag("tag", meta.getValue()));
+            tag.putCompound("tag", meta);
         }
-        return result;
+        return tag;
     }
 
     public static ItemStack[] readInventory(List<CompoundTag> tagList, int start, int size) {
         ItemStack[] items = new ItemStack[size];
         for (CompoundTag tag : tagList) {
-            byte slot = tag.is("Slot", ByteTag.class) ? tag.get("Slot", ByteTag.class) : 0;
+            byte slot = tag.isByte("Slot") ? tag.getByte("Slot") : 0;
             if (slot >= start && slot < start + size) {
                 items[slot - start] = readItem(tag);
             }
@@ -63,47 +62,48 @@ public final class NbtSerialization {
         for (int i = 0; i < items.length; i++) {
             ItemStack stack = items[i];
             if (stack != null) {
-                out.add(new CompoundTag("", writeItem(stack, start + i)));
+                out.add(writeItem(stack, start + i));
             }
         }
         return out;
     }
 
-    public static Location listTagsToLocation(World world, List<DoubleTag> pos, List<FloatTag> rot) {
+    public static Location listTagsToLocation(World world, CompoundTag tag) {
+        List<Double> pos = tag.getList("Pos", TagType.DOUBLE);
+        List<Float> rot = tag.getList("Rotation", TagType.FLOAT);
         if (pos.size() == 3 && rot.size() == 2) {
-            return new Location(world, pos.get(0).getValue(), pos.get(1).getValue(), pos.get(2).getValue(), rot.get(0).getValue(), rot.get(1).getValue());
+            return new Location(world, pos.get(0), pos.get(1), pos.get(2), rot.get(0), rot.get(1));
         }
         return world.getSpawnLocation();
     }
 
-    public static List<Tag> locationToListTags(Location loc) {
-        List<DoubleTag> posList = new ArrayList<DoubleTag>();
-        List<FloatTag> rotList = new ArrayList<FloatTag>();
-        List<Tag> ret = new LinkedList<Tag>();
-        posList.add(new DoubleTag("", loc.getX()));
-        posList.add(new DoubleTag("", loc.getY()));
-        posList.add(new DoubleTag("", loc.getZ()));
-        ret.add(new ListTag<DoubleTag>("Pos", TagType.DOUBLE, posList));
-        rotList.add(new FloatTag("", loc.getYaw()));
-        rotList.add(new FloatTag("", loc.getPitch()));
-        ret.add(new ListTag<FloatTag>("Rotation", TagType.FLOAT, rotList));
-        return ret;
+    public static void locationToListTags(Location loc, CompoundTag tag) {
+        List<Double> posList = new ArrayList<>();
+        posList.add(loc.getX());
+        posList.add(loc.getY());
+        posList.add(loc.getZ());
+
+        List<Float> rotList = new ArrayList<>();
+        rotList.add(loc.getYaw());
+        rotList.add(loc.getPitch());
+
+        tag.putList("Pos", TagType.DOUBLE, posList);
+        tag.putList("Rotation", TagType.FLOAT, rotList);
     }
 
-    public static Vector listTagToVector(ListTag<DoubleTag> tag) {
-        List<DoubleTag> vecList = tag.getValue();
-        if (vecList.size() == 3) {
-            return new Vector(vecList.get(0).getValue(), vecList.get(1).getValue(), vecList.get(2).getValue());
+    public static Vector listTagToVector(List<Double> list) {
+        if (list.size() == 3) {
+            return new Vector(list.get(0), list.get(1), list.get(2));
         }
         return new Vector(0, 0, 0);
     }
 
-    public static ListTag<DoubleTag> vectorToListTag(Vector vec) {
-        List<DoubleTag> ret = new ArrayList<DoubleTag>();
-        ret.add(new DoubleTag("", vec.getX()));
-        ret.add(new DoubleTag("", vec.getY()));
-        ret.add(new DoubleTag("", vec.getZ()));
-        return new ListTag<DoubleTag>("Motion", TagType.DOUBLE, ret);
+    public static List<Double> vectorToList(Vector vec) {
+        List<Double> ret = new ArrayList<>(3);
+        ret.add(vec.getX());
+        ret.add(vec.getY());
+        ret.add(vec.getZ());
+        return ret;
     }
 
 }

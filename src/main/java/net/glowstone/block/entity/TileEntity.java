@@ -5,13 +5,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.IntTag;
-import net.glowstone.util.nbt.StringTag;
-import net.glowstone.util.nbt.Tag;
 import org.bukkit.block.Block;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Base class for tile entities (blocks with NBT data) in the world.
@@ -75,16 +69,16 @@ public class TileEntity {
     public void loadNbt(CompoundTag tag) {
         // verify id and coordinates
         if (saveId != null) {
-            if (!tag.is("id", StringTag.class) || !tag.get("id", StringTag.class).equals(saveId)) {
-                throw new IllegalArgumentException("Expected tile entity id of " + saveId + ", got " + tag.get("id", StringTag.class));
+            if (!tag.isString("id") || !tag.getString("id").equals(saveId)) {
+                throw new IllegalArgumentException("Expected tile entity id of " + saveId + ", got " + tag.getString("id"));
             }
         }
 
         // verify coordinates if provided
-        if (tag.is("x", IntTag.class)) {
-            int x = tag.get("x", IntTag.class);
-            int y = tag.get("y", IntTag.class);
-            int z = tag.get("z", IntTag.class);
+        if (tag.isInt("x")) {
+            int x = tag.getInt("x");
+            int y = tag.getInt("y");
+            int z = tag.getInt("z");
             int rx = block.getX(), ry = block.getY(), rz = block.getZ();
             if (x != rx || y != ry || z != rz) {
                 throw new IllegalArgumentException("Tried to load tile entity with coords (" + x + "," + y + "," + z + ") into (" + rx + "," + ry + "," + rz + ")");
@@ -94,17 +88,15 @@ public class TileEntity {
 
     /**
      * Save this TileEntity's data to NBT.
-     * @return The tag list.
+     * @param tag The tag to save to.
      */
-    public List<Tag> saveNbt() {
-        List<Tag> result = new ArrayList<>();
+    public void saveNbt(CompoundTag tag) {
         if (saveId != null) {
-            result.add(new StringTag("id", saveId));
+            tag.putString("id", saveId);
         }
-        result.add(new IntTag("x", block.getX()));
-        result.add(new IntTag("y", block.getY()));
-        result.add(new IntTag("z", block.getZ()));
-        return result;
+        tag.putInt("x", block.getX());
+        tag.putInt("y", block.getY());
+        tag.putInt("z", block.getZ());
     }
 
     ////////////////////////////////////////////////////////////////////////////

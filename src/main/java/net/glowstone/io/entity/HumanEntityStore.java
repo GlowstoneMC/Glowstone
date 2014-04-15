@@ -17,35 +17,34 @@ public abstract class HumanEntityStore<T extends GlowHumanEntity> extends Living
     }
 
     @Override
-    public void load(T entity, CompoundTag compound) {
-        super.load(entity, compound);
+    public void load(T entity, CompoundTag tag) {
+        super.load(entity, tag);
 
-        if (compound.is("Inventory", ListTag.class)) {
+        if (tag.isList("Inventory", TagType.COMPOUND)) {
             PlayerInventory inventory = entity.getInventory();
-            List<CompoundTag> items = compound.getList("Inventory", CompoundTag.class);
+            List<CompoundTag> items = tag.getList("Inventory", TagType.COMPOUND);
             inventory.setContents(NbtSerialization.readInventory(items, 0, inventory.getSize()));
             inventory.setArmorContents(NbtSerialization.readInventory(items, 100, 4));
         }
-        if (compound.is("EnderItems", ListTag.class)) {
+        if (tag.isList("EnderItems", TagType.COMPOUND)) {
             Inventory inventory = entity.getEnderChest();
-            List<CompoundTag> items = compound.getList("EnderItems", CompoundTag.class);
+            List<CompoundTag> items = tag.getList("EnderItems", TagType.COMPOUND);
             inventory.setContents(NbtSerialization.readInventory(items, 0, inventory.getSize()));
         }
     }
 
     @Override
-    public List<Tag> save(T entity) {
-        List<Tag> ret = super.save(entity);
+    public void save(T entity, CompoundTag tag) {
+        super.save(entity, tag);
 
         // inventory
         List<CompoundTag> inventory;
         inventory = NbtSerialization.writeInventory(entity.getInventory().getContents(), 0);
         inventory.addAll(NbtSerialization.writeInventory(entity.getInventory().getArmorContents(), 100));
-        ret.add(new ListTag<>("Inventory", TagType.COMPOUND, inventory));
+        tag.putList("Inventory", TagType.COMPOUND, inventory);
 
         // ender items
         inventory = NbtSerialization.writeInventory(entity.getEnderChest().getContents(), 0);
-        ret.add(new ListTag<>("EnderItems", TagType.COMPOUND, inventory));
-        return ret;
+        tag.putList("EnderItems", TagType.COMPOUND, inventory);
     }
 }

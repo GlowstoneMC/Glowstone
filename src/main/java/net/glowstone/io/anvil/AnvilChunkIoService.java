@@ -6,15 +6,16 @@ import net.glowstone.GlowChunkSnapshot;
 import net.glowstone.GlowServer;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.io.ChunkIoService;
-import net.glowstone.util.nbt.*;
+import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.NBTInputStream;
+import net.glowstone.util.nbt.NBTOutputStream;
+import net.glowstone.util.nbt.TagType;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -56,41 +57,41 @@ public final class AnvilChunkIoService implements ChunkIoService {
         DataInputStream in = region.getChunkDataInputStream(regionX, regionZ);
 
         NBTInputStream nbt = new NBTInputStream(in, false);
-        CompoundTag root = (CompoundTag) nbt.readTag();
-        CompoundTag levelTag = root.getTag("Level", CompoundTag.class);
+        CompoundTag root = nbt.readCompound();
+        CompoundTag levelTag = root.getCompound("Level");
         nbt.close();
 
         // read the vertical sections
-        List<CompoundTag> sectionList = levelTag.getList("Sections", CompoundTag.class);
+        List<CompoundTag> sectionList = levelTag.getList("Sections", TagType.COMPOUND);
         ChunkSection[] sections = new ChunkSection[16];
         for (CompoundTag sectionTag : sectionList) {
-            int y = (int) sectionTag.get("Y", ByteTag.class);
-            byte[] types = sectionTag.get("Blocks", ByteArrayTag.class);
-            byte[] data = sectionTag.get("Data", ByteArrayTag.class);
-            byte[] blockLight = sectionTag.get("BlockLight", ByteArrayTag.class);
-            byte[] skyLight = sectionTag.get("SkyLight", ByteArrayTag.class);
+            int y = sectionTag.getByte("Y");
+            byte[] types = sectionTag.getByteArray("Blocks");
+            byte[] data = sectionTag.getByteArray("Data");
+            byte[] blockLight = sectionTag.getByteArray("BlockLight");
+            byte[] skyLight = sectionTag.getByteArray("SkyLight");
             sections[y] = new ChunkSection(types, expand(data), expand(skyLight), expand(blockLight));
         }
 
         // initialize the chunk
         chunk.initializeSections(sections);
-        chunk.setPopulated(levelTag.get("TerrainPopulated", ByteTag.class) == 1);
+        chunk.setPopulated(levelTag.getBool("TerrainPopulated"));
 
         // read biomes
-        if (levelTag.is("Biomes", ByteArrayTag.class)) {
-            chunk.setBiomes(levelTag.get("Biomes", ByteArrayTag.class));
+        if (levelTag.isByteArray("Biomes")) {
+            chunk.setBiomes(levelTag.getByteArray("Biomes"));
         }
 
         // read "Entities" eventually
         // read "HeightMap" if we need to
 
         // read tile entities
-        List<CompoundTag> storedTileEntities = levelTag.getList("TileEntities", CompoundTag.class);
+        List<CompoundTag> storedTileEntities = levelTag.getList("TileEntities", TagType.COMPOUND);
         for (CompoundTag tileEntityTag : storedTileEntities) {
             TileEntity tileEntity = chunk.getBlock(
-                    tileEntityTag.get("x", IntTag.class),
-                    tileEntityTag.get("y", IntTag.class),
-                    tileEntityTag.get("z", IntTag.class)).getTileEntity();
+                    tileEntityTag.getInt("x"),
+                    tileEntityTag.getInt("y"),
+                    tileEntityTag.getInt("z")).getTileEntity();
             if (tileEntity != null) {
                 try {
                     tileEntity.loadNbt(tileEntityTag);
@@ -139,13 +140,13 @@ public final class AnvilChunkIoService implements ChunkIoService {
         int regionX = x & (REGION_SIZE - 1);
         int regionZ = z & (REGION_SIZE - 1);
 
-        List<Tag> levelTags = new LinkedList<Tag>();
+        CompoundTag levelTags = new CompoundTag();
 
         // core properties
-        levelTags.add(new IntTag("xPos", chunk.getX()));
-        levelTags.add(new IntTag("zPos", chunk.getZ()));
-        levelTags.add(new ByteTag("TerrainPopulated", (byte) (chunk.isPopulated() ? 1 : 0)));
-        levelTags.add(new LongTag("LastUpdate", 0));
+        levelTags.putInt("xPos", chunk.getX());
+        levelTags.putInt("zPos", chunk.getZ());
+        levelTags.putBool("TerrainPopulated", chunk.isPopulated());
+        levelTags.putLong("LastUpdate", 0);
 
         // chunk sections
         List<CompoundTag> sectionTags = new ArrayList<CompoundTag>();
@@ -155,20 +156,20 @@ public final class AnvilChunkIoService implements ChunkIoService {
             ChunkSection sec = sections[i];
             if (sec == null) continue;
 
-            List<Tag> sectionTag = new LinkedList<Tag>();
-            sectionTag.add(new ByteTag("Y", i));
-            sectionTag.add(new ByteArrayTag("Blocks", sec.types));
-            sectionTag.add(new ByteArrayTag("Data", shrink(sec.metaData)));
-            sectionTag.add(new ByteArrayTag("BlockLight", shrink(sec.blockLight)));
-            sectionTag.add(new ByteArrayTag("SkyLight", shrink(sec.skyLight)));
+            CompoundTag sectionTag = new CompoundTag();
+            sectionTag.putByte("Y", i);
+            sectionTag.putByteArray("Blocks", sec.types);
+            sectionTag.putByteArray("Data", shrink(sec.metaData));
+            sectionTag.putByteArray("BlockLight", shrink(sec.blockLight));
+            sectionTag.putByteArray("SkyLight", shrink(sec.skyLight));
 
-            sectionTags.add(new CompoundTag("", sectionTag));
+            sectionTags.add(sectionTag);
         }
-        levelTags.add(new ListTag<CompoundTag>("Sections", TagType.COMPOUND, sectionTags));
+        levelTags.putList("Sections", TagType.COMPOUND, sectionTags);
 
         // height map and biomes
-        levelTags.add(new IntArrayTag("HeightMap", snapshot.getRawHeightmap()));
-        levelTags.add(new ByteArrayTag("Biomes", snapshot.getRawBiomes()));
+        levelTags.putIntArray("HeightMap", snapshot.getRawHeightmap());
+        levelTags.putByteArray("Biomes", snapshot.getRawBiomes());
 
         // todo: entities
         List<CompoundTag> entities = new ArrayList<CompoundTag>();
@@ -179,24 +180,27 @@ public final class AnvilChunkIoService implements ChunkIoService {
                 continue;
             entities.add(new CompoundTag("", store.save(glowEntity)));
         } */
-        levelTags.add(new ListTag<CompoundTag>("Entities", TagType.COMPOUND, entities));
+        levelTags.putList("Entities", TagType.COMPOUND, entities);
 
         // tile entities
         List<CompoundTag> tileEntities = new ArrayList<CompoundTag>();
         for (TileEntity entity : chunk.getRawTileEntities()) {
             try {
-                tileEntities.add(new CompoundTag("", entity.saveNbt()));
+                CompoundTag tag = new CompoundTag();
+                entity.saveNbt(tag);
+                tileEntities.add(tag);
             } catch (Exception ex) {
                 GlowServer.logger.log(Level.SEVERE, "Error saving tile entity at " + entity.getBlock(), ex);
             }
         }
-        levelTags.add(new ListTag<CompoundTag>("TileEntities", TagType.COMPOUND, tileEntities));
+        levelTags.putList("TileEntities", TagType.COMPOUND, tileEntities);
 
-        List<Tag> levelOut = Arrays.<Tag>asList(new CompoundTag("Level", levelTags));
+        CompoundTag levelOut = new CompoundTag();
+        levelOut.putCompound("Level", levelTags);
 
         DataOutputStream out = region.getChunkDataOutputStream(regionX, regionZ);
         NBTOutputStream nbt = new NBTOutputStream(out, false);
-        nbt.writeTag(new CompoundTag("", levelOut));
+        nbt.writeTag(levelOut);
         nbt.close();
     }
 

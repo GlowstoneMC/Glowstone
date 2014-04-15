@@ -54,7 +54,7 @@ public final class NBTOutputStream implements Closeable {
      */
     public void writeTag(Tag tag) throws IOException {
         TagType type = tag.getType();
-        String name = tag.getName();
+        String name = "TODO"; //tag.getName(); TODO fixme
         byte[] nameBytes = name.getBytes(StandardCharsets.UTF_8);
 
         if (type == TagType.END) {

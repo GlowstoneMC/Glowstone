@@ -4,13 +4,8 @@ import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.FloatTag;
-import net.glowstone.util.nbt.IntTag;
-import net.glowstone.util.nbt.Tag;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-
-import java.util.List;
 
 public class PlayerStore extends HumanEntityStore<GlowPlayer> {
 
@@ -24,53 +19,53 @@ public class PlayerStore extends HumanEntityStore<GlowPlayer> {
     }
 
     @Override
-    public void load(GlowPlayer entity, CompoundTag compound) {
-        super.load(entity, compound);
-        if (compound.is("XpTotal", IntTag.class)) {
-            entity.setTotalExperience(compound.get("XpTotal", IntTag.class));
+    public void load(GlowPlayer entity, CompoundTag tag) {
+        super.load(entity, tag);
+        if (tag.isInt("XpTotal")) {
+            entity.setTotalExperience(tag.getInt("XpTotal"));
         }
-        if (compound.is("foodLevel", IntTag.class)) {
-            entity.setFoodLevel(compound.get("foodLevel", IntTag.class));
+        if (tag.isInt("foodLevel")) {
+            entity.setFoodLevel(tag.getInt("foodLevel"));
         }
-        if (compound.is("foodTickTimer", IntTag.class)) {
+        if (tag.isInt("foodTickTimer")) {
             // entity.set(((IntTag)compound.getValue().get("foodTickTimer")).getValue());
         }
-        if (compound.is("foodSaturationLevel", FloatTag.class)) {
-            entity.setSaturation(compound.get("foodSaturationLevel", FloatTag.class));
+        if (tag.isFloat("foodSaturationLevel")) {
+            entity.setSaturation(tag.getFloat("foodSaturationLevel"));
         }
-        if (compound.is("foodExhaustionLevel", FloatTag.class)) {
-            entity.setExhaustion(compound.get("foodExhaustionLevel", FloatTag.class));
+        if (tag.isFloat("foodExhaustionLevel")) {
+            entity.setExhaustion(tag.getFloat("foodExhaustionLevel"));
         }
-        if (compound.is("playerGameType", IntTag.class)) {
-            GameMode mode = GameMode.getByValue(compound.get("playerGameType", IntTag.class));
+        if (tag.isInt("playerGameType")) {
+            GameMode mode = GameMode.getByValue(tag.getInt("playerGameType"));
             if (mode != null) entity.setGameMode(mode);
         }
-        if (compound.is("SpawnX", IntTag.class) && compound.is("SpawnY", IntTag.class) && compound.is("SpawnZ", IntTag.class)) {
-            int x = compound.get("SpawnX", IntTag.class);
-            int y = compound.get("SpawnY", IntTag.class);
-            int z = compound.get("SpawnZ", IntTag.class);
+        if (tag.isInt("SpawnX") && tag.isInt("SpawnY") && tag.isInt("SpawnZ")) {
+            int x = tag.getInt("SpawnX");
+            int y = tag.getInt("SpawnY");
+            int z = tag.getInt("SpawnZ");
             entity.setBedSpawnLocation(new Location(entity.getWorld(), x, y, z));
         }
     }
 
     @Override
-    public List<Tag> save(GlowPlayer entity) {
-        List<Tag> ret = super.save(entity);
-        ret.add(new IntTag("XpTotal", entity.getTotalExperience()));
-        ret.add(new IntTag("Xp", entity.getExperience()));
-        ret.add(new IntTag("XpLevel", entity.getLevel()));
+    public void save(GlowPlayer entity, CompoundTag tag) {
+        super.save(entity, tag);
+
+        tag.putInt("XpTotal", entity.getTotalExperience());
+        tag.putInt("Xp", entity.getExperience());
+        tag.putInt("XpLevel", entity.getLevel());
         // ret.put("foodTickTimer", new IntTag("foodTickTimer", entity.get));
-        ret.add(new FloatTag("foodSaturationLevel", entity.getSaturation()));
-        ret.add(new FloatTag("foodExhaustionLevel", entity.getExhaustion()));
-        ret.add(new IntTag("playerGameType", entity.getGameMode().getValue()));
+        tag.putFloat("foodSaturationLevel", entity.getSaturation());
+        tag.putFloat("foodExhaustionLevel", entity.getExhaustion());
+        tag.putInt("playerGameType", entity.getGameMode().getValue());
 
         // spawn location
         Location bed = entity.getBedSpawnLocation();
         if (bed != null) {
-            ret.add(new IntTag("SpawnX", bed.getBlockX()));
-            ret.add(new IntTag("SpawnY", bed.getBlockY()));
-            ret.add(new IntTag("SpawnZ", bed.getBlockZ()));
+            tag.putInt("SpawnX", bed.getBlockX());
+            tag.putInt("SpawnY", bed.getBlockY());
+            tag.putInt("SpawnZ", bed.getBlockZ());
         }
-        return ret;
     }
 }
