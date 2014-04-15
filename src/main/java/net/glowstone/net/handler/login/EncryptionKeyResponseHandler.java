@@ -121,6 +121,8 @@ public final class EncryptionKeyResponseHandler implements MessageHandler<GlowSe
                     return;
                 }
 
+                System.out.println(json);
+
                 String id = (String) json.get("id");
 
                 final UUID uuid;

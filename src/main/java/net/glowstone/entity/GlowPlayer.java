@@ -212,7 +212,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         chunkLock = world.newChunkLock(getName());
 
         // send login response
-        session.send(new LoginSuccessMessage(uuid.toString().replace("-", ""), name));
+        session.send(new LoginSuccessMessage(uuid.toString(), name));
         session.setProtocol(new PlayProtocol(session.getServer()));
 
         // send join game
