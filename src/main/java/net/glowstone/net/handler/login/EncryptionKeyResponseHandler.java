@@ -3,10 +3,12 @@ package net.glowstone.net.handler.login;
 import com.flowpowered.networking.MessageHandler;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.entity.meta.PlayerProperty;
 import net.glowstone.net.EncryptionChannelProcessor;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.login.EncryptionKeyResponseMessage;
 import net.glowstone.util.UuidUtils;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -21,7 +23,9 @@ import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -121,10 +125,11 @@ public final class EncryptionKeyResponseHandler implements MessageHandler<GlowSe
                     return;
                 }
 
-                System.out.println(json);
+                final String name = (String) json.get("name");
+                final String id = (String) json.get("id");
+                final JSONArray propsArray = (JSONArray) json.get("properties");
 
-                String id = (String) json.get("id");
-
+                // Parse UUID
                 final UUID uuid;
                 try {
                     uuid = UuidUtils.fromFlatString(id);
@@ -134,10 +139,21 @@ public final class EncryptionKeyResponseHandler implements MessageHandler<GlowSe
                     return;
                 }
 
+                // Parse properties
+                final List<PlayerProperty> properties = new ArrayList<>(propsArray.size());
+                for (Object obj : propsArray) {
+                    JSONObject propJson = (JSONObject) obj;
+                    String propName = (String) propJson.get("name");
+                    String value = (String) propJson.get("value");
+                    String signature = (String) propJson.get("signature");
+                    properties.add(new PlayerProperty(propName, value, signature));
+                }
+
+                // Spawn in player
                 session.getServer().getScheduler().runTask(null, new Runnable() {
                     @Override
                     public void run() {
-                        session.setPlayer(new GlowPlayer(session, username, uuid));
+                        session.setPlayer(new GlowPlayer(session, name, uuid, properties));
                     }
                 });
             } catch (Exception e) {

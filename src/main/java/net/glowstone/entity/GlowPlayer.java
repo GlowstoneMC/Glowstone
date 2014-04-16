@@ -9,6 +9,7 @@ import net.glowstone.constants.GlowAchievement;
 import net.glowstone.constants.GlowEffect;
 import net.glowstone.constants.GlowSound;
 import net.glowstone.entity.meta.MetadataIndex;
+import net.glowstone.entity.meta.PlayerProperty;
 import net.glowstone.inventory.InventoryMonitor;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.login.LoginSuccessMessage;
@@ -204,8 +205,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * @param session The player's session.
      * @param name    The player's name.
      */
-    public GlowPlayer(GlowSession session, String name, UUID uuid) {
-        super(session.getServer(), (GlowWorld) session.getServer().getWorlds().get(0), name);
+    public GlowPlayer(GlowSession session, String name, UUID uuid, List<PlayerProperty> properties) {
+        super(session.getServer(), (GlowWorld) session.getServer().getWorlds().get(0), name, properties);
         this.session = session;
         this.uuid = uuid;
 

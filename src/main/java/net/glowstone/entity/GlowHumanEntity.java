@@ -3,6 +3,7 @@ package net.glowstone.entity;
 import com.flowpowered.networking.Message;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
+import net.glowstone.entity.meta.PlayerProperty;
 import net.glowstone.inventory.GlowCraftingInventory;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowInventoryView;
@@ -51,6 +52,11 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     private final GlowInventory enderChest = new GlowInventory(this, InventoryType.ENDER_CHEST);
 
     /**
+     * Properties (such as textures) provided by the auth server.
+     */
+    private final List<PlayerProperty> properties;
+
+    /**
      * The item the player has on their cursor.
      */
     private ItemStack itemOnCursor;
@@ -88,11 +94,13 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     /**
      * Creates a human within the specified world and with the specified name.
      * @param world The world.
-     * @param name  The human's name.
+     * @param name The human's name.
+     * @param properties Properties from the auth server, or null.
      */
-    public GlowHumanEntity(GlowServer server, GlowWorld world, String name) {
+    public GlowHumanEntity(GlowServer server, GlowWorld world, String name, List<PlayerProperty> properties) {
         super(server, world);
         this.name = name;
+        this.properties = properties;
         permissions = new PermissibleBase(this);
         gameMode = server.getDefaultGameMode();
 
@@ -114,7 +122,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         int z = Position.getIntZ(location);
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
-        result.add(new SpawnPlayerMessage(id, getUniqueId(), name, x, y, z, yaw, pitch, 0, metadata.getEntryList()));
+        result.add(new SpawnPlayerMessage(id, getUniqueId(), name, properties, x, y, z, yaw, pitch, 0, metadata.getEntryList()));
 
         // head facing
         result.add(new EntityHeadRotationMessage(id, yaw));

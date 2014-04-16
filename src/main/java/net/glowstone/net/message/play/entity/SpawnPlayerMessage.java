@@ -2,6 +2,7 @@ package net.glowstone.net.message.play.entity;
 
 import com.flowpowered.networking.Message;
 import net.glowstone.entity.meta.MetadataMap;
+import net.glowstone.entity.meta.PlayerProperty;
 
 import java.util.List;
 import java.util.UUID;
@@ -11,15 +12,17 @@ public final class SpawnPlayerMessage implements Message {
     private final int id;
     private final UUID uuid;
     private final String name;
+    private final List<PlayerProperty> properties;
     private final int x, y, z;
     private final int rotation, pitch;
     private final int item;
     private final List<MetadataMap.Entry> metadata;
 
-    public SpawnPlayerMessage(int id, UUID uuid, String name, int x, int y, int z, int rotation, int pitch, int item, List<MetadataMap.Entry> metadata) {
+    public SpawnPlayerMessage(int id, UUID uuid, String name, List<PlayerProperty> properties, int x, int y, int z, int rotation, int pitch, int item, List<MetadataMap.Entry> metadata) {
         this.id = id;
         this.uuid = uuid;
         this.name = name;
+        this.properties = properties;
         this.x = x;
         this.y = y;
         this.z = z;
@@ -39,6 +42,10 @@ public final class SpawnPlayerMessage implements Message {
 
     public String getName() {
         return name;
+    }
+
+    public List<PlayerProperty> getProperties() {
+        return properties;
     }
 
     public int getX() {
@@ -75,6 +82,7 @@ public final class SpawnPlayerMessage implements Message {
                 "id=" + id +
                 ", uuid=" + uuid +
                 ", name='" + name + '\'' +
+                ", properties=" + properties +
                 ", x=" + x +
                 ", y=" + y +
                 ", z=" + z +
