@@ -249,7 +249,7 @@ public final class GlowServer implements Server {
     /**
      * A cache of existing OfflinePlayers
      */
-    private final Map<String, OfflinePlayer> offlineCache = new ConcurrentHashMap<String, OfflinePlayer>();
+    private final Map<String, OfflinePlayer> offlineCache = new ConcurrentHashMap<>();
 
     /**
      * A RSA key pair used for encryption and authentication
@@ -702,7 +702,7 @@ public final class GlowServer implements Server {
     }
 
     public Player[] getOnlinePlayers() {
-        ArrayList<Player> result = new ArrayList<Player>();
+        ArrayList<Player> result = new ArrayList<>();
         for (World world : getWorlds()) {
             for (Player player : world.getPlayers())
                 result.add(player);
@@ -727,6 +727,14 @@ public final class GlowServer implements Server {
             }
         }
         return bestPlayer;
+    }
+
+    public Player getPlayer(UUID uuid) {
+        for (Player player : getOnlinePlayers()) {
+            if (player.getUniqueId().equals(uuid))
+                return player;
+        }
+        return null;
     }
 
     public Player getPlayerExact(String name) {
@@ -759,12 +767,27 @@ public final class GlowServer implements Server {
         if (player == null) {
             player = offlineCache.get(name);
             if (player == null) {
-                player = new GlowOfflinePlayer(this, name);
+                player = new GlowOfflinePlayer(this, name, null);
                 offlineCache.put(name, player);
                 // Call creation event here?
             }
         } else {
             offlineCache.remove(name);
+        }
+        return player;
+    }
+
+    public OfflinePlayer getOfflinePlayer(UUID uuid) {
+        OfflinePlayer player = getPlayer(uuid);
+        if (player == null) {
+            player = offlineCache.get(uuid.toString());
+            if (player == null) {
+                player = new GlowOfflinePlayer(this, null, uuid);
+                offlineCache.put(uuid.toString(), player);
+                // Call creation event here?
+            }
+        } else {
+            offlineCache.remove(uuid.toString());
         }
         return player;
     }

@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Represents a player which is not connected to the server.
@@ -18,10 +19,16 @@ public class GlowOfflinePlayer implements OfflinePlayer {
 
     private final GlowServer server;
     private final String name;
+    private final UUID uuid;
 
-    public GlowOfflinePlayer(GlowServer server, String name) {
+    public GlowOfflinePlayer(GlowServer server, String name, UUID uuid) {
         this.server = server;
         this.name = name;
+        this.uuid = uuid;
+    }
+
+    public UUID getUniqueId() {
+        return uuid;
     }
 
     public boolean isOnline() {
