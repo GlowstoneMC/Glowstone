@@ -4,7 +4,6 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.state.GlowSign;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.net.message.play.game.UpdateSignMessage;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.StringTag;
 import net.glowstone.util.nbt.Tag;
@@ -30,7 +29,7 @@ public class TESign extends TileEntity {
 
     @Override
     public void update(GlowPlayer player) {
-        player.getSession().send(new UpdateSignMessage(block.getX(), block.getY(), block.getZ(), lines));
+        player.sendSignChange(getBlock().getLocation(), lines);
     }
 
     @Override

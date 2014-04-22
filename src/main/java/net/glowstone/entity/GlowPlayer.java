@@ -1044,6 +1044,14 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public void sendSignChange(Location location, String[] lines) throws IllegalArgumentException {
+        if (lines.length != 4) {
+            throw new IllegalArgumentException("lines.length != 4");
+        }
+        // todo: maybe check for non-null?
+        session.send(new UpdateSignMessage(location.getBlockX(), location.getBlockY(), location.getBlockZ(), lines));
+    }
+
     public void sendMap(MapView map) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
