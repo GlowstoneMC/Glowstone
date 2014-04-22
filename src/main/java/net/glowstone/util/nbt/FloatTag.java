@@ -2,7 +2,6 @@ package net.glowstone.util.nbt;
 
 /**
  * The {@code TAG_Float} tag.
- * @author Graham Edgecombe
  */
 final class FloatTag extends Tag<Float> {
 

@@ -2,7 +2,6 @@ package net.glowstone.util.nbt;
 
 /**
  * Represents a single NBT tag.
- * @author Graham Edgecombe
  */
 public abstract class Tag<T> {
 

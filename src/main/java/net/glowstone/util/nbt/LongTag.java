@@ -2,7 +2,6 @@ package net.glowstone.util.nbt;
 
 /**
  * The {@code TAG_Long} tag.
- * @author Graham Edgecombe
  */
 final class LongTag extends Tag<Long> {
 

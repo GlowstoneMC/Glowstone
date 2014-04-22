@@ -2,7 +2,6 @@ package net.glowstone.util.nbt;
 
 /**
  * The {@code TAG_String} tag.
- * @author Graham Edgecombe
  */
 final class StringTag extends Tag<String> {
 

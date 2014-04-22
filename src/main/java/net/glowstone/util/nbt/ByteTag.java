@@ -2,7 +2,6 @@ package net.glowstone.util.nbt;
 
 /**
  * The {@code TAG_Byte} tag.
- * @author Graham Edgecombe
  */
 final class ByteTag extends Tag<Byte> {
 

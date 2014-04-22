@@ -2,7 +2,6 @@ package net.glowstone.util.nbt;
 
 /**
  * The {@code TAG_Double} tag.
- * @author Graham Edgecombe
  */
 final class DoubleTag extends Tag<Double> {
 

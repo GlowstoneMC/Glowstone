@@ -10,7 +10,6 @@ import java.util.Map;
 
 /**
  * The {@code TAG_Compound} tag.
- * @author Graham Edgecombe
  */
 public final class CompoundTag extends Tag<Map<String, Tag>> {
 

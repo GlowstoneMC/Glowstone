@@ -2,7 +2,6 @@ package net.glowstone.util.nbt;
 
 /**
  * The {@code TAG_Int} tag.
- * @author Graham Edgecombe
  */
 final class IntTag extends Tag<Integer> {
 

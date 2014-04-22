@@ -5,7 +5,6 @@ import java.util.List;
 
 /**
  * The {@code TAG_List} tag.
- * @author Graham Edgecombe
  */
 final class ListTag<T extends Tag> extends Tag<List<T>> {
 

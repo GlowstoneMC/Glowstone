@@ -2,7 +2,6 @@ package net.glowstone.util.nbt;
 
 /**
  * The {@code TAG_Short} tag.
- * @author Graham Edgecombe
  */
 final class ShortTag extends Tag<Short> {
 
