@@ -16,7 +16,6 @@ import java.util.zip.GZIPInputStream;
  * The NBT format was created by Markus Persson, and the specification may
  * be found at <a href="http://www.minecraft.net/docs/NBT.txt">
  * http://www.minecraft.net/docs/NBT.txt</a>.
- * @author Graham Edgecombe
  */
 public final class NBTInputStream implements Closeable {
 
@@ -48,14 +47,10 @@ public final class NBTInputStream implements Closeable {
     }
 
     /**
-     * Reads an NBT {@link Tag} from the stream.
+     * Reads the root NBT {@link CompoundTag} from the stream.
      * @return The tag that was read.
      * @throws IOException if an I/O error occurs.
      */
-    /*public Tag readTag() throws IOException {
-        return readTag(0);
-    }*/
-
     public CompoundTag readCompound() throws IOException {
         // read type
         TagType type = TagType.byIdOrError(is.readUnsignedByte());
@@ -63,11 +58,9 @@ public final class NBTInputStream implements Closeable {
             throw new IOException("Root of NBTInputStream was " + type + ", not COMPOUND");
         }
 
-        // read name
+        // for now, throw away name
         int nameLength = is.readUnsignedShort();
-        byte[] nameBytes = new byte[nameLength];
-        is.readFully(nameBytes);
-        String name = new String(nameBytes, StandardCharsets.UTF_8);
+        is.skipBytes(nameLength);
 
         // read tag
         return (CompoundTag) readTagPayload(type, 0);
@@ -99,17 +92,6 @@ public final class NBTInputStream implements Closeable {
     }
 
     /**
-     * Reads an NBT {@link Tag} from the stream.
-     * @param depth The depth of this tag.
-     * @return The tag that was read.
-     * @throws IOException if an I/O error occurs.
-     */
-    /*private Tag readTag(int depth) throws IOException {
-
-        return readTagPayload(type, depth);
-    }*/
-
-    /**
      * Reads the payload of a {@link Tag}, given the name and type.
      * @param type The type.
      * @param depth The depth.
@@ -119,9 +101,6 @@ public final class NBTInputStream implements Closeable {
     @SuppressWarnings("unchecked")
     private Tag readTagPayload(TagType type, int depth) throws IOException {
         switch (type) {
-        case END:
-            throw new IOException("Cannot read TAG_End payload");
-
         case BYTE:
             return new ByteTag(is.readByte());
 

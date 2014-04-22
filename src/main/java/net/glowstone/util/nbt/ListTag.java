@@ -7,7 +7,7 @@ import java.util.List;
  * The {@code TAG_List} tag.
  * @author Graham Edgecombe
  */
-final class ListTag<T> extends Tag<List<T>> {
+final class ListTag<T extends Tag> extends Tag<List<T>> {
 
     /**
      * The type of entries within this list.
@@ -30,15 +30,11 @@ final class ListTag<T> extends Tag<List<T>> {
         this.value = new ArrayList<>(value); // modifying list should not modify tag
 
         // ensure type of objects in list matches tag type
-        // todo: fix me
-        /*for (Object elem : value) {
-            if (type == TagType.COMPOUND && elem instanceof CompoundTag) {
-                elem = ((CompoundTag) elem).getValue();
+        for (Tag elem : value) {
+            if (type != elem.getType()) {
+                throw new IllegalArgumentException("ListTag(" + type + ") cannot hold tags of type " + elem.getType());
             }
-            if (!type.getValueClass().isAssignableFrom(elem.getClass())) {
-                throw new IllegalArgumentException("ListTag(" + type + ") cannot hold objects of type " + elem.getClass());
-            }
-        }*/
+        }
     }
 
     /**

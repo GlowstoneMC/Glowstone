@@ -2,6 +2,8 @@ package net.glowstone.util.nbt;
 
 import org.apache.commons.lang.Validate;
 
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -106,15 +108,20 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
 
     @SuppressWarnings("unchecked")
     public <V> List<V> getList(String key, TagType type) {
-        ListTag tag = getTag(key, ListTag.class);
-        if (tag.getChildType() != type) {
-            throw new IllegalArgumentException("List \"" + key + "\" contains " + tag.getChildType() + ", not " + type);
+        List<? extends Tag> original = getTagList(key, type);
+        List<V> result = new ArrayList<>(original.size());
+        for (Tag item : original) {
+            result.add((V) item.getValue());
         }
-        return tag.getValue();
+        return result;
     }
 
     public CompoundTag getCompound(String key) {
         return getTag(key, CompoundTag.class);
+    }
+
+    public List<CompoundTag> getCompoundList(String key) {
+        return getTagList(key, TagType.COMPOUND);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -216,11 +223,25 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     // Fancy sets
 
     public <V> void putList(String key, TagType type, List<V> value) {
-        put(key, new ListTag<>(type, value));
+        // the reflection here is really gross but I'm not sure a good way around it
+        try {
+            Constructor<? extends Tag> constructor = type.getConstructor();
+            List<Tag> result = new ArrayList<>(value.size());
+            for (V item : value) {
+                result.add(constructor.newInstance(item));
+            }
+            put(key, new ListTag<>(type, result));
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalArgumentException("Unable to create list of type " + type, e);
+        }
     }
 
     public void putCompound(String key, CompoundTag tag) {
         put(key, tag);
+    }
+
+    public void putCompoundList(String key, List<CompoundTag> list) {
+        put(key, new ListTag<>(TagType.COMPOUND, list));
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -248,6 +269,15 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
             throw new IllegalArgumentException("Compound does not contain " + clazz.getSimpleName() + " \"" + key + "\"");
         }
         return (T) value.get(key);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<CompoundTag> getTagList(String key, TagType type) {
+        ListTag tag = getTag(key, ListTag.class);
+        if (tag.getChildType() != type) {
+            throw new IllegalArgumentException("List \"" + key + "\" contains " + tag.getChildType() + ", not " + type);
+        }
+        return tag.getValue();
     }
 }
 

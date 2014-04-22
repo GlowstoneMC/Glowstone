@@ -1,6 +1,7 @@
 package net.glowstone.util.nbt;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
 
@@ -9,13 +10,13 @@ import java.util.Map;
  */
 public enum TagType {
 
-    END("End", EndTag.class, Void.class),
-    BYTE("Byte", ByteTag.class, Byte.class),
-    SHORT("Short", ShortTag.class, Short.class),
-    INT("Int", IntTag.class, Integer.class),
-    LONG("Long", LongTag.class, Long.class),
-    FLOAT("Float", FloatTag.class, Float.class),
-    DOUBLE("Double", DoubleTag.class, Double.class),
+    END("End", null, Void.class),
+    BYTE("Byte", ByteTag.class, byte.class),
+    SHORT("Short", ShortTag.class, short.class),
+    INT("Int", IntTag.class, int.class),
+    LONG("Long", LongTag.class, long.class),
+    FLOAT("Float", FloatTag.class, float.class),
+    DOUBLE("Double", DoubleTag.class, double.class),
     BYTE_ARRAY("Byte_Array", ByteArrayTag.class, byte[].class),
     STRING("String", StringTag.class, String.class),
     LIST("List", ListTag.class, List.class),
@@ -57,5 +58,9 @@ public enum TagType {
     static TagType byIdOrError(int id) throws IOException {
         if (id < 0 || id >= values().length) throw new IOException("Invalid tag type: " + id);
         return values()[id];
+    }
+
+    public Constructor<? extends Tag> getConstructor() throws NoSuchMethodException {
+        return tagClass.getConstructor(valueClass);
     }
 }
