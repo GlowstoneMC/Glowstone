@@ -9,7 +9,6 @@ import net.glowstone.io.ChunkIoService;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
-import net.glowstone.util.nbt.TagType;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -62,7 +61,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
         nbt.close();
 
         // read the vertical sections
-        List<CompoundTag> sectionList = levelTag.getList("Sections", TagType.COMPOUND);
+        List<CompoundTag> sectionList = levelTag.getCompoundList("Sections");
         ChunkSection[] sections = new ChunkSection[16];
         for (CompoundTag sectionTag : sectionList) {
             int y = sectionTag.getByte("Y");
@@ -86,7 +85,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
         // read "HeightMap" if we need to
 
         // read tile entities
-        List<CompoundTag> storedTileEntities = levelTag.getList("TileEntities", TagType.COMPOUND);
+        List<CompoundTag> storedTileEntities = levelTag.getCompoundList("TileEntities");
         for (CompoundTag tileEntityTag : storedTileEntities) {
             TileEntity tileEntity = chunk.getBlock(
                     tileEntityTag.getInt("x"),
@@ -165,7 +164,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
 
             sectionTags.add(sectionTag);
         }
-        levelTags.putList("Sections", TagType.COMPOUND, sectionTags);
+        levelTags.putCompoundList("Sections", sectionTags);
 
         // height map and biomes
         levelTags.putIntArray("HeightMap", snapshot.getRawHeightmap());
@@ -180,7 +179,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
                 continue;
             entities.add(new CompoundTag("", store.save(glowEntity)));
         } */
-        levelTags.putList("Entities", TagType.COMPOUND, entities);
+        levelTags.putCompoundList("Entities", entities);
 
         // tile entities
         List<CompoundTag> tileEntities = new ArrayList<CompoundTag>();
@@ -193,7 +192,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
                 GlowServer.logger.log(Level.SEVERE, "Error saving tile entity at " + entity.getBlock(), ex);
             }
         }
-        levelTags.putList("TileEntities", TagType.COMPOUND, tileEntities);
+        levelTags.putCompoundList("TileEntities", tileEntities);
 
         CompoundTag levelOut = new CompoundTag();
         levelOut.putCompound("Level", levelTags);
