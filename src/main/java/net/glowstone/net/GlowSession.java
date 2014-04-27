@@ -363,6 +363,7 @@ public final class GlowSession extends BasicSession {
     }
 
     public void setProtocol(GlowProtocol protocol) {
+        getChannel().flush();
         super.setProtocol(protocol);
     }
 
