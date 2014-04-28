@@ -51,12 +51,12 @@ public final class GlowWorld implements World {
      * The length in ticks of one Minecraft day.
      */
     public static final long DAY_LENGTH = 24000;
-    
+
     /**
      * The server of this world.
      */
     private final GlowServer server;
-    
+
     /**
      * The name of this world.
      */
@@ -86,17 +86,17 @@ public final class GlowWorld implements World {
      * The entity manager.
      */
     private final EntityManager entities = new EntityManager();
-    
+
     /**
      * This world's Random instance.
      */
     private final Random random = new Random();
-    
+
     /**
      * A map between locations and cached Block objects.
      */
     private final WeakValueMap<Location, GlowBlock> blockCache = new WeakValueMap<Location, GlowBlock>();
-    
+
     /**
      * The world populators for this world.
      */
@@ -106,7 +106,7 @@ public final class GlowWorld implements World {
      * The game rules used in this world.
      */
     private final Map<String, String> gameRules = new HashMap<String, String>();
-    
+
     /**
      * The environment.
      */
@@ -121,7 +121,7 @@ public final class GlowWorld implements World {
      * Whether structure generation is enabled.
      */
     private final boolean generateStructures;
-    
+
     /**
      * The world seed.
      */
@@ -131,7 +131,7 @@ public final class GlowWorld implements World {
      * The spawn position.
      */
     private Location spawnLocation;
-    
+
     /**
      * Whether to keep the spawn chunks in memory (prevent them from being unloaded)
      */
@@ -141,32 +141,32 @@ public final class GlowWorld implements World {
      * Whether PvP is allowed in this world.
      */
     private boolean pvpAllowed = true;
-    
+
     /**
      * Whether animals can spawn in this world.
      */
     private boolean spawnAnimals = true;
-    
+
     /**
      * Whether monsters can spawn in this world.
      */
     private boolean spawnMonsters = true;
-    
+
     /**
      * Whether it is currently raining/snowing on this world.
      */
     private boolean currentlyRaining = false;
-    
+
     /**
      * How many ticks until the rain/snow status is expected to change.
      */
     private int rainingTicks = 0;
-    
+
     /**
      * Whether it is currently thundering on this world.
      */
     private boolean currentlyThundering = false;
-    
+
     /**
      * How many ticks until the thundering status is expected to change.
      */
@@ -176,12 +176,12 @@ public final class GlowWorld implements World {
      * The age of the world, in ticks.
      */
     private long worldAge = 0;
-    
+
     /**
      * The current world time.
      */
     private long time = 0;
-    
+
     /**
      * The time until the next full-save.
      */
@@ -274,14 +274,14 @@ public final class GlowWorld implements World {
         int radius = 4 * server.getViewDistance() / 3;
 
         long loadTime = System.currentTimeMillis();
-        
+
         int total = (radius * 2 + 1) * (radius * 2 + 1), current = 0;
         for (int x = centerX - radius; x <= centerX + radius; ++x) {
             for (int z = centerZ - radius; z <= centerZ + radius; ++z) {
                 ++current;
                 loadChunk(x, z);
                 spawnChunkLock.acquire(new GlowChunk.Key(x, z));
-            
+
                 if (System.currentTimeMillis() >= loadTime + 1000) {
                     int progress = 100 * current / total;
                     GlowServer.logger.log(Level.INFO, "Preparing spawn for {0}: {1}%", new Object[]{name, progress});
@@ -310,7 +310,7 @@ public final class GlowWorld implements World {
 
     ////////////////////////////////////////////////////////////////////////////
     // Various internal mechanisms
-    
+
     /**
      * Get the world chunk manager.
      * @return The ChunkManager for the world.
@@ -332,7 +332,7 @@ public final class GlowWorld implements World {
      */
     public void pulse() {
         ArrayList<GlowEntity> temp = new ArrayList<GlowEntity>(entities.getAll());
-        
+
         for (GlowEntity entity : temp)
             entity.pulse();
 
@@ -349,28 +349,28 @@ public final class GlowWorld implements World {
                 player.sendTime();
             }
         }
-        
+
         if (--rainingTicks <= 0) {
             setStorm(!currentlyRaining);
         }
-        
+
         if (--thunderingTicks <= 0) {
             setThundering(!currentlyThundering);
         }
-        
+
         if (currentlyRaining && currentlyThundering) {
             if (random.nextDouble() < .01) {
                 GlowChunk[] chunkList = chunks.getLoadedChunks();
                 GlowChunk chunk = chunkList[random.nextInt(chunkList.length)];
-                
+
                 int x = (chunk.getX() << 4) + random.nextInt(16);
                 int z = (chunk.getZ() << 4) + random.nextInt(16);
                 int y = getHighestBlockYAt(x, z);
-                
+
                 strikeLightning(new Location(this, x, y, z));
             }
         }
-        
+
         if (--saveTimer <= 0) {
             saveTimer = 60 * 20;
             chunks.unloadOldChunks();
@@ -394,7 +394,7 @@ public final class GlowWorld implements World {
 
     ////////////////////////////////////////////////////////////////////////////
     // Entity lists
-    
+
     public List<Player> getPlayers() {
         return new ArrayList<Player>(entities.getAll(GlowPlayer.class));
     }
@@ -624,7 +624,7 @@ public final class GlowWorld implements World {
                 chunks.forceSave(chunk.getX(), chunk.getZ());
             }
         }
-        
+
         for (GlowPlayer player : getRawPlayers()) {
             player.saveData(async);
         }
@@ -776,17 +776,17 @@ public final class GlowWorld implements World {
         if (!isChunkLoaded(x, z)) {
             return false;
         }
-        
+
         GlowChunk.Key key = new GlowChunk.Key(x, z);
         boolean result = false;
-        
+
         for (GlowPlayer player : getRawPlayers()) {
             if (player.canSee(key)) {
                 player.getSession().send(getChunkAt(x, z).toMessage());
                 result = true;
             }
         }
-        
+
         return result;
     }
 
@@ -847,18 +847,18 @@ public final class GlowWorld implements World {
 
     public Arrow spawnArrow(Location location, Vector velocity, float speed, float spread) {
         Arrow arrow = spawn(location, Arrow.class);
-        
+
         // Transformative magic
         Vector randVec = new Vector(random.nextGaussian(), random.nextGaussian(), random.nextGaussian());
         randVec.multiply(0.0075 * (double) spread);
-        
+
         velocity.normalize();
         velocity.add(randVec);
         velocity.multiply(speed);
-        
+
         // yaw = Math.atan2(x, z) * 180.0D / 3.1415927410125732D;
         // pitch = Math.atan2(y, Math.sqrt(x * x + z * z)) * 180.0D / 3.1415927410125732D
-        
+
         arrow.setVelocity(velocity);
         return arrow;
     }
@@ -929,14 +929,14 @@ public final class GlowWorld implements World {
 
     public void setStorm(boolean hasStorm) {
         currentlyRaining = hasStorm;
-        
+
         // Numbers borrowed from CraftBukkit.
         if (currentlyRaining) {
             setWeatherDuration(random.nextInt(12000) + 12000);
         } else {
             setWeatherDuration(random.nextInt(168000) + 12000);
         }
-        
+
         for (GlowPlayer player : getRawPlayers()) {
             player.sendWeather();
         }
@@ -956,7 +956,7 @@ public final class GlowWorld implements World {
 
     public void setThundering(boolean thundering) {
         currentlyThundering = thundering;
-        
+
         // Numbers borrowed from CraftBukkit.
         if (currentlyThundering) {
             setThunderDuration(random.nextInt(12000) + 3600);
@@ -1073,7 +1073,6 @@ public final class GlowWorld implements World {
 
     /**
      * Unloads the world
-     * 
      * @return true if successful
      */
     public boolean unload() {
@@ -1085,7 +1084,8 @@ public final class GlowWorld implements World {
         return true;
     }
 
-    /** Get the world folder.
+    /**
+     * Get the world folder.
      * @return world folder
      */
     public File getWorldFolder() {
