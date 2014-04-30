@@ -126,8 +126,8 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         File uuidFile = new File(dir, "uid.dat");
         try (DataOutputStream out = new DataOutputStream(new FileOutputStream(uuidFile))) {
             UUID uuid = world.getUID();
-            out.writeLong(uuid.getLeastSignificantBits());
             out.writeLong(uuid.getMostSignificantBits());
+            out.writeLong(uuid.getLeastSignificantBits());
         }
 
         // start with unknown tags from reading
@@ -136,8 +136,14 @@ public class NbtWorldMetadataService implements WorldMetadataService {
             out.getValue().putAll(unknownTags.getValue());
         }
 
-        // Normal level data
+        // Seed and core information
+        // note: most up-to-date version is 19133
+        out.putString("LevelName", world.getName());
+        out.putInt("version", 19132);
+        out.putLong("LastPlayed", Calendar.getInstance().getTimeInMillis());
         out.putLong("RandomSeed", world.getSeed());
+
+        // Normal level data
         out.putLong("Time", world.getFullTime());
         out.putLong("DayTime", world.getTime());
         out.putBool("thundering", world.isThundering());
@@ -145,14 +151,11 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         out.putInt("thunderTime", world.getThunderDuration());
         out.putInt("rainTime", world.getWeatherDuration());
 
+        // Spawn location
         Location loc = world.getSpawnLocation();
         out.putInt("SpawnX", loc.getBlockX());
         out.putInt("SpawnY", loc.getBlockY());
         out.putInt("SpawnZ", loc.getBlockZ());
-        // Format-specific
-        out.putString("LevelName", world.getName());
-        out.putLong("LastPlayed", Calendar.getInstance().getTimeInMillis());
-        out.putInt("version", 19132);
 
         // Game rules
         CompoundTag gameRules = new CompoundTag();
