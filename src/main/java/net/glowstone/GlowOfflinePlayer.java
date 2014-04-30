@@ -27,17 +27,50 @@ public class GlowOfflinePlayer implements OfflinePlayer {
         this.uuid = uuid;
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Core properties
+
+    public String getName() {
+        return name;
+    }
+
     public UUID getUniqueId() {
         return uuid;
     }
 
     public boolean isOnline() {
-        return false;
+        return getPlayer() != null;
     }
 
-    public String getName() {
-        return name;
+    public Player getPlayer() {
+        if (uuid != null) {
+            return server.getPlayer(uuid);
+        } else {
+            return server.getPlayerExact(name);
+        }
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Player properties
+
+    public long getFirstPlayed() {
+        throw new UnsupportedOperationException();
+    }
+
+    public long getLastPlayed() {
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean hasPlayedBefore() {
+        throw new UnsupportedOperationException();
+    }
+
+    public Location getBedSpawnLocation() {
+        throw new UnsupportedOperationException();
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Ban, op, whitelist
 
     public boolean isBanned() {
         return server.getBanList(BanList.Type.NAME).isBanned(name);
@@ -60,10 +93,6 @@ public class GlowOfflinePlayer implements OfflinePlayer {
         }
     }
 
-    public Player getPlayer() {
-        return server.getPlayerExact(name);
-    }
-
     public boolean isOp() {
         return server.getOpsList().contains(name);
     }
@@ -76,34 +105,30 @@ public class GlowOfflinePlayer implements OfflinePlayer {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Serialization
+
     public Map<String, Object> serialize() {
         Map<String, Object> ret = new HashMap<String, Object>();
-
-        ret.put("name", name);
+        ret.put("UUID", uuid.toString());
         return ret;
     }
 
     public static OfflinePlayer deserialize(Map<String, Object> val) {
-        return Bukkit.getServer().getOfflinePlayer(val.get("name").toString());
+        if (val.get("name") != null) {
+            // use name
+            return Bukkit.getServer().getOfflinePlayer(val.get("name").toString());
+        } else {
+            // use UUID - remove cast when possible
+            return ((GlowServer) Bukkit.getServer()).getOfflinePlayer(UUID.fromString(val.get("UUID").toString()));
+        }
     }
 
     @Override
-    public long getFirstPlayed() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public long getLastPlayed() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean hasPlayedBefore() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Location getBedSpawnLocation() {
-        throw new UnsupportedOperationException();
+    public String toString() {
+        return "GlowOfflinePlayer{" +
+                "name='" + name + '\'' +
+                ", uuid=" + uuid +
+                '}';
     }
 }

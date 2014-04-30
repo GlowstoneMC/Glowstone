@@ -549,7 +549,7 @@ public final class GlowServer implements Server {
     }
 
     /**
-     * Returns the list of OPs on this server.
+     * Returns the list of whitelisted players on this server.
      */
     public PlayerListFile getWhitelist() {
         return whitelist;
