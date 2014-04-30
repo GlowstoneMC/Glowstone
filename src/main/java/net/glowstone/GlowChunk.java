@@ -657,9 +657,6 @@ public final class GlowChunk implements Chunk {
                 byte light1 = blockLight[i];
                 byte light2 = blockLight[i + 1];
                 tileData[pos++] = (byte) ((light2 << 4) | light1);
-                if (tileData[pos - 1] != 0x00) {
-                    System.out.println(this + ": blocklight was really " + tileData[pos - 1]);
-                }
             }
         }
 
@@ -670,9 +667,6 @@ public final class GlowChunk implements Chunk {
                 byte light1 = skyLight[i];
                 byte light2 = skyLight[i + 1];
                 tileData[pos++] = (byte) ((light2 << 4) | light1);
-                if ((tileData[pos - 1] & 0xFF) != 0xFF) {
-                    System.out.println(this + ": skylight was only " + tileData[pos - 1]);
-                }
             }
         }
 

@@ -3,10 +3,7 @@ package net.glowstone.util.nbt;
 import org.apache.commons.lang.Validate;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The {@code TAG_Compound} tag.
@@ -273,6 +270,10 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     @SuppressWarnings("unchecked")
     public List<CompoundTag> getTagList(String key, TagType type) {
         ListTag tag = getTag(key, ListTag.class);
+        if (tag.getChildType() == TagType.END && tag.getValue().size() == 0) {
+            // empty lists are allowed to have "END" tag type
+            return Arrays.asList();
+        }
         if (tag.getChildType() != type) {
             throw new IllegalArgumentException("List \"" + key + "\" contains " + tag.getChildType() + ", not " + type);
         }

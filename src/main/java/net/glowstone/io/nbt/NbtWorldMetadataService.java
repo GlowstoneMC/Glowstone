@@ -50,6 +50,11 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         if (levelFile.exists()) {
             try (NBTInputStream in = new NBTInputStream(new FileInputStream(levelFile))) {
                 level = in.readCompound();
+                if (level.isCompound("Data")) {
+                    level = level.getCompound("Data");
+                } else {
+                    server.getLogger().warning("Loading world \"" + world.getName() + "\": reading from root, not Data");
+                }
             } catch (IOException e) {
                 handleWorldException("level.dat", e);
             }
@@ -107,6 +112,12 @@ public class NbtWorldMetadataService implements WorldMetadataService {
             level.remove("GameRules");
         }
 
+        // strip single-player Player tag if it exists
+        if (level.isCompound("Player")) {
+            server.getLogger().warning("World \"" + world.getName() + "\": removing single-player Player tag");
+            level.remove("Player");
+        }
+
         // save unknown tags for later
         unknownTags = level;
         for (Map.Entry<String, Tag> entry : unknownTags.getValue().entrySet()) {
@@ -136,9 +147,8 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         }
 
         // Seed and core information
-        // note: most up-to-date version is 19133
         out.putString("LevelName", world.getName());
-        out.putInt("version", 19132);
+        out.putInt("version", 19133);
         out.putLong("LastPlayed", Calendar.getInstance().getTimeInMillis());
         out.putLong("RandomSeed", world.getSeed());
 
@@ -167,8 +177,10 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         // Not sure how to calculate this, so ignoring for now
         out.putLong("SizeOnDisk", 0);
 
+        CompoundTag root = new CompoundTag();
+        root.putCompound("Data", out);
         try (NBTOutputStream nbtOut = new NBTOutputStream(new FileOutputStream(new File(dir, "level.dat")))) {
-            nbtOut.writeTag(out);
+            nbtOut.writeTag(root);
         } catch (IOException e) {
             handleWorldException("level.dat", e);
         }
