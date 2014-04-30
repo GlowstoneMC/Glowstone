@@ -301,8 +301,7 @@ public final class GlowChunk implements Chunk {
      */
     public void initializeSections(ChunkSection[] initSections) {
         if (isLoaded()) {
-            GlowServer.logger.log(Level.SEVERE, "Tried to initialize already loaded chunk ({0},{1})", new Object[]{x, z});
-            new Throwable().printStackTrace();
+            GlowServer.logger.log(Level.SEVERE, "Tried to initialize already loaded chunk (" + x + "," + z + ")", new Throwable());
             return;
         }
         //GlowServer.logger.log(Level.INFO, "Initializing chunk ({0},{1})", new Object[]{x, z});

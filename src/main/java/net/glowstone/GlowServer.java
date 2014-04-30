@@ -436,8 +436,7 @@ public final class GlowServer implements Server {
             try {
                 plugin.onLoad();
             } catch (Exception ex) {
-                logger.log(Level.SEVERE, "Error loading {0}: {1}", new Object[]{plugin.getDescription().getName(), ex.getMessage()});
-                ex.printStackTrace();
+                logger.log(Level.SEVERE, "Error loading " + plugin.getDescription().getFullName(), ex);
             }
         }
     }
@@ -468,8 +467,7 @@ public final class GlowServer implements Server {
                 try {
                     pluginManager.enablePlugin(plugin);
                 } catch (Throwable ex) {
-                    logger.log(Level.SEVERE, "Error loading {0}", plugin.getDescription().getFullName());
-                    ex.printStackTrace();
+                    logger.log(Level.SEVERE, "Error loading " + plugin.getDescription().getFullName(), ex);
                 }
             }
         }
@@ -512,8 +510,7 @@ public final class GlowServer implements Server {
             enablePlugins(PluginLoadOrder.STARTUP);
             enablePlugins(PluginLoadOrder.POSTWORLD);
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, "Uncaught error while reloading: {0}", ex.getMessage());
-            ex.printStackTrace();
+            logger.log(Level.SEVERE, "Uncaught error while reloading", ex);
         }
     }
 

@@ -118,8 +118,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
 
     private void handleWorldException(String file, IOException e) {
         server.unloadWorld(world, false);
-        server.getLogger().severe("Unable to access " + file + " for world " + world.getName());
-        e.printStackTrace();
+        server.getLogger().log(Level.SEVERE, "Unable to access " + file + " for world " + world.getName(), e);
     }
 
     public void writeWorldData() throws IOException {

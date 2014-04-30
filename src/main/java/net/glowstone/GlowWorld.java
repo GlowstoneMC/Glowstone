@@ -232,7 +232,7 @@ public final class GlowWorld implements World {
         try {
             values = storageProvider.getMetadataService().readWorldData();
         } catch (IOException e) {
-            e.printStackTrace();
+            server.getLogger().log(Level.SEVERE, "Error reading world for creation", e);
         }
         if (values != null) {
             if (values.getSeed() == 0L) {
