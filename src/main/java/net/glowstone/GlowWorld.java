@@ -285,7 +285,7 @@ public final class GlowWorld implements World {
                 if (System.currentTimeMillis() >= loadTime + 1000) {
                     int progress = 100 * current / total;
                     GlowServer.logger.log(Level.INFO, "Preparing spawn for {0}: {1}%", new Object[]{name, progress});
-                    loadTime += 1000;
+                    loadTime = System.currentTimeMillis();
                 }
             }
         }
