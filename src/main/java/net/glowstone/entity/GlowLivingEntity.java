@@ -24,7 +24,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     /**
      * Potion effects on the entity.
      */
-    private final Map<PotionEffectType, PotionEffect> potionEffects = new HashMap<PotionEffectType, PotionEffect>();
+    private final Map<PotionEffectType, PotionEffect> potionEffects = new HashMap<>();
 
     /**
      * The entity's health.

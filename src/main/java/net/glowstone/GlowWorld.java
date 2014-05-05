@@ -95,7 +95,7 @@ public final class GlowWorld implements World {
     /**
      * A map between locations and cached Block objects.
      */
-    private final WeakValueMap<Location, GlowBlock> blockCache = new WeakValueMap<Location, GlowBlock>();
+    private final WeakValueMap<Location, GlowBlock> blockCache = new WeakValueMap<>();
 
     /**
      * The world populators for this world.
@@ -105,7 +105,7 @@ public final class GlowWorld implements World {
     /**
      * The game rules used in this world.
      */
-    private final Map<String, String> gameRules = new HashMap<String, String>();
+    private final Map<String, String> gameRules = new HashMap<>();
 
     /**
      * The environment.
@@ -415,7 +415,7 @@ public final class GlowWorld implements World {
     }
 
     public List<LivingEntity> getLivingEntities() {
-        List<LivingEntity> result = new LinkedList<LivingEntity>();
+        List<LivingEntity> result = new LinkedList<>();
         for (Entity e : entities.getAll()) {
             if (e instanceof GlowLivingEntity) result.add((GlowLivingEntity) e);
         }
@@ -430,7 +430,7 @@ public final class GlowWorld implements World {
 
     @SuppressWarnings("unchecked")
     public <T extends Entity> Collection<T> getEntitiesByClass(Class<T> cls) {
-        ArrayList<T> result = new ArrayList<T>();
+        ArrayList<T> result = new ArrayList<>();
         for (Entity e : entities.getAll()) {
             if (cls.isAssignableFrom(e.getClass())) {
                 result.add((T) e);
@@ -440,7 +440,7 @@ public final class GlowWorld implements World {
     }
 
     public Collection<Entity> getEntitiesByClasses(Class<?>... classes) {
-        ArrayList<Entity> result = new ArrayList<Entity>();
+        ArrayList<Entity> result = new ArrayList<>();
         for (Entity e : entities.getAll()) {
             for (Class<?> cls : classes) {
                 if (cls.isAssignableFrom(e.getClass())) {
@@ -1170,7 +1170,7 @@ public final class GlowWorld implements World {
 
     @Override
     public Set<String> getListeningPluginChannels() {
-        HashSet<String> result = new HashSet<String>();
+        HashSet<String> result = new HashSet<>();
         for (Player player : getRawPlayers()) {
             result.addAll(player.getListeningPluginChannels());
         }

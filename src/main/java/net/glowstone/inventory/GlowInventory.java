@@ -182,7 +182,7 @@ public class GlowInventory implements Inventory {
     }
 
     public HashMap<Integer, ItemStack> addItem(ItemStack... items) {
-        HashMap<Integer, ItemStack> result = new HashMap<Integer, ItemStack>();
+        HashMap<Integer, ItemStack> result = new HashMap<>();
 
         for (int i = 0; i < items.length; ++i) {
             int maxStackSize = items[i].getType() == null ? 64 : items[i].getType().getMaxStackSize();
@@ -223,7 +223,7 @@ public class GlowInventory implements Inventory {
     }
 
     public HashMap<Integer, ItemStack> removeItem(ItemStack... items) {
-        HashMap<Integer, ItemStack> result = new HashMap<Integer, ItemStack>();
+        HashMap<Integer, ItemStack> result = new HashMap<>();
 
         for (int i = 0; i < items.length; ++i) {
             int mat = items[i].getTypeId();
@@ -302,7 +302,7 @@ public class GlowInventory implements Inventory {
     // Find all
 
     public HashMap<Integer, ItemStack> all(int materialId) {
-        HashMap<Integer, ItemStack> result = new HashMap<Integer, ItemStack>();
+        HashMap<Integer, ItemStack> result = new HashMap<>();
         for (int i = 0; i < slots.length; ++i) {
             if (slots[i].getTypeId() == materialId) {
                 result.put(i, slots[i]);
@@ -316,7 +316,7 @@ public class GlowInventory implements Inventory {
     }
 
     public HashMap<Integer, ItemStack> all(ItemStack item) {
-        HashMap<Integer, ItemStack> result = new HashMap<Integer, ItemStack>();
+        HashMap<Integer, ItemStack> result = new HashMap<>();
         for (int i = 0; i < slots.length; ++i) {
             if (slots[i] != null && slots[i].equals(item)) {
                 result.put(i, slots[i]);

@@ -50,7 +50,7 @@ public class LakePopulator extends BlockPopulator {
             return;
         }
 
-        ArrayList<Block> lakeBlocks = new ArrayList<Block>();
+        ArrayList<Block> lakeBlocks = new ArrayList<>();
         for (int i = -1; i < 4; i++) {
             Vector center = new BlockVector(rx, ry - i, rz);
             for (int x = -radius; x <= radius; x++) {

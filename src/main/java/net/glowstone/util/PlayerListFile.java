@@ -17,7 +17,7 @@ public final class PlayerListFile {
     /**
      * The list as we currently know it.
      */
-    private final ArrayList<String> list = new ArrayList<String>();
+    private final ArrayList<String> list = new ArrayList<>();
 
     /**
      * The file the list is associated with.

@@ -23,8 +23,8 @@ public final class GlowHelpMap implements HelpMap {
 
     public GlowHelpMap(GlowServer server) {
         this.server = server;
-        helpTopics = new TreeMap<String, HelpTopic>(HelpTopicComparator.topicNameComparatorInstance());
-        topicFactoryMap = new HashMap<Class, HelpTopicFactory<Command>>();
+        helpTopics = new TreeMap<>(HelpTopicComparator.topicNameComparatorInstance());
+        topicFactoryMap = new HashMap<>();
 
         // in the future, filter the index topic removing aliases and optionally commands
         this.defaultTopic = new IndexHelpTopic("Index", null, null, helpTopics.values(), "Use /help [n] to get page n of help.");
@@ -115,7 +115,7 @@ public final class GlowHelpMap implements HelpMap {
         // todo: alias sub-index
 
         // Initialize plugin-level sub-topics
-        Map<String, Set<HelpTopic>> pluginIndexes = new HashMap<String, Set<HelpTopic>>();
+        Map<String, Set<HelpTopic>> pluginIndexes = new HashMap<>();
         fillPluginIndexes(pluginIndexes, server.getCommandMap().getCommands());
 
         for (Map.Entry<String, Set<HelpTopic>> entry : pluginIndexes.entrySet()) {
@@ -132,7 +132,7 @@ public final class GlowHelpMap implements HelpMap {
                 HelpTopic topic = getHelpTopic("/" + command.getLabel());
                 if (topic != null) {
                     if (!pluginIndexes.containsKey(pluginName)) {
-                        pluginIndexes.put(pluginName, new TreeSet<HelpTopic>(HelpTopicComparator.helpTopicComparatorInstance())); //keep things in topic order
+                        pluginIndexes.put(pluginName, new TreeSet<>(HelpTopicComparator.helpTopicComparatorInstance())); //keep things in topic order
                     }
                     pluginIndexes.get(pluginName).add(topic);
                 }

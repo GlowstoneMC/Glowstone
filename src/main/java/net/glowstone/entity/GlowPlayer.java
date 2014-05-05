@@ -360,8 +360,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * Streams chunks to the player's client.
      */
     private void streamBlocks() {
-        Set<GlowChunk.Key> previousChunks = new HashSet<GlowChunk.Key>(knownChunks);
-        ArrayList<GlowChunk.Key> newChunks = new ArrayList<GlowChunk.Key>();
+        Set<GlowChunk.Key> previousChunks = new HashSet<>(knownChunks);
+        ArrayList<GlowChunk.Key> newChunks = new ArrayList<>();
 
         int centralX = location.getBlockX() >> 4;
         int centralZ = location.getBlockZ() >> 4;
@@ -397,7 +397,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         List<GlowChunk> bulkChunks = null;
         if (newChunks.size() > knownChunks.size() * 2 / 5) {
             // send a bulk message
-            bulkChunks = new LinkedList<GlowChunk>();
+            bulkChunks = new LinkedList<>();
         }
 
         // populate then send chunks to the player

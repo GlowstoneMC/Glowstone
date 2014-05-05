@@ -58,7 +58,7 @@ public final class NbtSerialization {
     }
 
     public static List<CompoundTag> writeInventory(ItemStack[] items, int start) {
-        List<CompoundTag> out = new ArrayList<CompoundTag>();
+        List<CompoundTag> out = new ArrayList<>();
         for (int i = 0; i < items.length; i++) {
             ItemStack stack = items[i];
             if (stack != null) {

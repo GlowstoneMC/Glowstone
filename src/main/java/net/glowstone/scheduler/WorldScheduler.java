@@ -28,7 +28,7 @@ public class WorldScheduler {
     private final Object advanceCondition = new Object();
     private final Phaser tickBegin = new Phaser(1);
     private final Phaser tickEnd = new Phaser(1);
-    private final List<WorldEntry> worlds = new CopyOnWriteArrayList<WorldEntry>();
+    private final List<WorldEntry> worlds = new CopyOnWriteArrayList<>();
     private volatile int currentTick = -1;
 
     private class WorldThread extends Thread {

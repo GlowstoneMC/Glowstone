@@ -9,7 +9,7 @@ import java.util.List;
 
 public final class ChunkBulkMessage implements Message {
 
-    private final List<ChunkDataMessage> entries = new LinkedList<ChunkDataMessage>();
+    private final List<ChunkDataMessage> entries = new LinkedList<>();
     private final boolean skyLight;
 
     public ChunkBulkMessage(boolean skyLight, Collection<GlowChunk> chunks) {

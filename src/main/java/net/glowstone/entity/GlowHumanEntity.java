@@ -114,7 +114,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     @Override
     public List<Message> createSpawnMessage() {
-        List<Message> result = new LinkedList<Message>();
+        List<Message> result = new LinkedList<>();
 
         // spawn player
         int x = Position.getIntX(location);

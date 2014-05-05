@@ -109,7 +109,7 @@ public class GlowOfflinePlayer implements OfflinePlayer {
     // Serialization
 
     public Map<String, Object> serialize() {
-        Map<String, Object> ret = new HashMap<String, Object>();
+        Map<String, Object> ret = new HashMap<>();
         ret.put("UUID", uuid.toString());
         return ret;
     }

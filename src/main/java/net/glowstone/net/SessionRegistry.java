@@ -13,7 +13,7 @@ public final class SessionRegistry {
     /**
      * A list of the sessions.
      */
-    private final ConcurrentMap<GlowSession,Boolean> sessions = new ConcurrentHashMap<GlowSession, Boolean>();
+    private final ConcurrentMap<GlowSession,Boolean> sessions = new ConcurrentHashMap<>();
 
     /**
      * Pulses all the sessions.

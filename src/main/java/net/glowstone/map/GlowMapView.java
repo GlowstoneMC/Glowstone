@@ -15,9 +15,9 @@ import org.bukkit.map.MapView;
  */
 public final class GlowMapView implements MapView {
     
-    //private final Map<GlowPlayer, RenderData> renderCache = new HashMap<GlowPlayer, RenderData>();
-    private final List<MapRenderer> renderers = new ArrayList<MapRenderer>();
-    private final Map<MapRenderer, Map<GlowPlayer, GlowMapCanvas>> canvases = new HashMap<MapRenderer, Map<GlowPlayer, GlowMapCanvas>>();
+    //private final Map<GlowPlayer, RenderData> renderCache = new HashMap<GlowPlayer, RenderData<>();
+    private final List<MapRenderer> renderers = new ArrayList<>();
+    private final Map<MapRenderer, Map<GlowPlayer, GlowMapCanvas>> canvases = new HashMap<>();
     private final short id;
     private Scale scale;
     private int x, z;

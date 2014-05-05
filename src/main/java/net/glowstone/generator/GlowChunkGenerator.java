@@ -16,8 +16,8 @@ import java.util.*;
  */
 public abstract class GlowChunkGenerator extends ChunkGenerator {
 
-    private static final Set<Material> noSpawnFloors = new HashSet<Material>(Arrays.asList(Material.FIRE, Material.CACTUS, Material.LEAVES));
-    private final Map<String, Map<String, OctaveGenerator>> octaveCache = new HashMap<String, Map<String, OctaveGenerator>>();
+    private static final Set<Material> noSpawnFloors = new HashSet<>(Arrays.asList(Material.FIRE, Material.CACTUS, Material.LEAVES));
+    private final Map<String, Map<String, OctaveGenerator>> octaveCache = new HashMap<>();
     private final List<BlockPopulator> populators;
 
     protected GlowChunkGenerator(BlockPopulator... args) {
@@ -37,7 +37,7 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
      */
     protected final Map<String, OctaveGenerator> getWorldOctaves(World world) {
         if (octaveCache.get(world.getName()) == null) {
-            Map<String, OctaveGenerator> octaves = new HashMap<String, OctaveGenerator>();
+            Map<String, OctaveGenerator> octaves = new HashMap<>();
             createWorldOctaves(world, octaves);
             octaveCache.put(world.getName(), octaves);
             return octaves;

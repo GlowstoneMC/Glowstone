@@ -38,7 +38,7 @@ public class RegionFileCache {
 
     private static final int MAX_CACHE_SIZE = 256;
 
-    private final Map<File, Reference<RegionFile>> cache = new HashMap<File, Reference<RegionFile>>();
+    private final Map<File, Reference<RegionFile>> cache = new HashMap<>();
 
     private final String extension;
 

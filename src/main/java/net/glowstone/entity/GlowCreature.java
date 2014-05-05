@@ -48,7 +48,7 @@ public final class GlowCreature extends GlowLivingEntity implements Creature {
 
     @Override
     public List<Message> createSpawnMessage() {
-        List<Message> result = new LinkedList<Message>();
+        List<Message> result = new LinkedList<>();
 
         // spawn mob
         int x = Position.getIntX(location);

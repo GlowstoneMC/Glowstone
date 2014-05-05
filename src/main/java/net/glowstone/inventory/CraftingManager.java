@@ -17,10 +17,10 @@ import java.util.logging.Level;
  */
 public final class CraftingManager implements Iterable<Recipe> {
     
-    private final ArrayList<ShapedRecipe> shapedRecipes = new ArrayList<ShapedRecipe>();
-    private final ArrayList<ShapelessRecipe> shapelessRecipes = new ArrayList<ShapelessRecipe>();
-    private final ArrayList<FurnaceRecipe> furnaceRecipes = new ArrayList<FurnaceRecipe>();
-    private final Map<Material, Integer> furnaceFuels = new HashMap<Material, Integer>();
+    private final ArrayList<ShapedRecipe> shapedRecipes = new ArrayList<>();
+    private final ArrayList<ShapelessRecipe> shapelessRecipes = new ArrayList<>();
+    private final ArrayList<FurnaceRecipe> furnaceRecipes = new ArrayList<>();
+    private final Map<Material, Integer> furnaceFuels = new HashMap<>();
 
     public void initialize() {
         resetRecipes();
@@ -258,7 +258,7 @@ public final class CraftingManager implements Iterable<Recipe> {
      * @return The list of recipes
      */
     public List<Recipe> getRecipesFor(ItemStack result) {
-        List<Recipe> recipes = new LinkedList<Recipe>();
+        List<Recipe> recipes = new LinkedList<>();
         for (Recipe recipe : this) {
             ItemStack stack = recipe.getResult();
             if (stack.getType() == result.getType() && (result.getDurability() == -1 || result.getDurability() == stack.getDurability())) {

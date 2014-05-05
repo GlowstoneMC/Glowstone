@@ -148,7 +148,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
         levelTags.putLong("LastUpdate", 0);
 
         // chunk sections
-        List<CompoundTag> sectionTags = new ArrayList<CompoundTag>();
+        List<CompoundTag> sectionTags = new ArrayList<>();
         GlowChunkSnapshot snapshot = chunk.getChunkSnapshot(true, true, false);
         ChunkSection[] sections = snapshot.getRawSections();
         for (byte i = 0; i < sections.length; ++i) {
@@ -171,7 +171,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
         levelTags.putByteArray("Biomes", snapshot.getRawBiomes());
 
         // todo: entities
-        List<CompoundTag> entities = new ArrayList<CompoundTag>();
+        List<CompoundTag> entities = new ArrayList<>();
         /* for (Entity entity : chunk.getEntities()) {
             GlowEntity glowEntity = (GlowEntity) entity;
             EntityStore store = EntityStoreLookupService.find(glowEntity.getClass());
@@ -182,7 +182,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
         levelTags.putCompoundList("Entities", entities);
 
         // tile entities
-        List<CompoundTag> tileEntities = new ArrayList<CompoundTag>();
+        List<CompoundTag> tileEntities = new ArrayList<>();
         for (TileEntity entity : chunk.getRawTileEntities()) {
             try {
                 CompoundTag tag = new CompoundTag();

@@ -55,7 +55,7 @@ public final class GlowSession extends BasicSession {
     /**
      * A queue of incoming and unprocessed messages.
      */
-    private final Queue<Message> messageQueue = new ArrayDeque<Message>();
+    private final Queue<Message> messageQueue = new ArrayDeque<>();
 
     /**
      * The verify token used in authentication

@@ -59,7 +59,7 @@ public final class GlowScheduler implements BukkitScheduler {
     /**
      * A list of active tasks.
      */
-    private final ConcurrentMap<Integer, GlowTask> tasks = new ConcurrentHashMap<Integer, GlowTask>();
+    private final ConcurrentMap<Integer, GlowTask> tasks = new ConcurrentHashMap<>();
 
     /**
      * The primary worlds thread in which pulse() is called.
@@ -74,7 +74,7 @@ public final class GlowScheduler implements BukkitScheduler {
     /**
      * Tasks to be executed during the tick
      */
-    private final Deque<Runnable> inTickTasks = new ConcurrentLinkedDeque<Runnable>();
+    private final Deque<Runnable> inTickTasks = new ConcurrentLinkedDeque<>();
 
     /**
      * Condition to wait on when processing in tick tasks

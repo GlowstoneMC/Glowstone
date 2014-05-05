@@ -72,7 +72,7 @@ public class CavePopulator extends BlockPopulator {
     }
 
     private static Set<Location> startSnake(World world, Random random, int blockX, int blockY, int blockZ) {
-        Set<Location> snakeBlocks = new HashSet<Location>();
+        Set<Location> snakeBlocks = new HashSet<>();
 
         int airHits = 0;
         while (true) {

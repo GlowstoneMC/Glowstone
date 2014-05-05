@@ -16,12 +16,12 @@ public final class EntityManager implements Iterable<GlowEntity> {
     /**
      * A map of all the entity ids to the corresponding entities.
      */
-    private final Map<Integer, GlowEntity> entities = new HashMap<Integer, GlowEntity>();
+    private final Map<Integer, GlowEntity> entities = new HashMap<>();
 
     /**
      * A map of entity types to a set containing all entities of that type.
      */
-    private final Map<Class<? extends GlowEntity>, Set<? extends GlowEntity>> groupedEntities = new HashMap<Class<? extends GlowEntity>, Set<? extends GlowEntity>>();
+    private final Map<Class<? extends GlowEntity>, Set<? extends GlowEntity>> groupedEntities = new HashMap<>();
 
     /**
      * The next id to check.
@@ -38,7 +38,7 @@ public final class EntityManager implements Iterable<GlowEntity> {
     public <T extends GlowEntity> Collection<T> getAll(Class<T> type) {
         Set<T> set = (Set<T>) groupedEntities.get(type);
         if (set == null) {
-            set = new HashSet<T>();
+            set = new HashSet<>();
             groupedEntities.put(type, set);
         }
         return set;

@@ -662,7 +662,7 @@ public final class GlowServer implements Server {
     }
 
     public Map<String, String[]> getCommandAliases() {
-        Map<String, String[]> aliases = new HashMap<String, String[]>();
+        Map<String, String[]> aliases = new HashMap<>();
         ConfigurationSection section = config.getConfigFile(ServerConfig.Key.COMMANDS_FILE).getConfigurationSection("aliases");
         if (section == null) return aliases;
         for (String key : section.getKeys(false)) {
@@ -690,7 +690,7 @@ public final class GlowServer implements Server {
     // Player management
 
     public Set<OfflinePlayer> getOperators() {
-        Set<OfflinePlayer> offlinePlayers = new HashSet<OfflinePlayer>();
+        Set<OfflinePlayer> offlinePlayers = new HashSet<>();
         for (String name : opsList.getContents()) {
             offlinePlayers.add(getOfflinePlayer(name));
         }
@@ -744,7 +744,7 @@ public final class GlowServer implements Server {
     public List<Player> matchPlayer(String name) {
         name = name.toLowerCase();
 
-        ArrayList<Player> result = new ArrayList<Player>();
+        ArrayList<Player> result = new ArrayList<>();
         for (Player player : getOnlinePlayers()) {
             String lower = player.getName().toLowerCase();
             if (lower.equals(name)) {
@@ -809,7 +809,7 @@ public final class GlowServer implements Server {
     }
 
     public Set<OfflinePlayer> getWhitelistedPlayers() {
-        Set<OfflinePlayer> players = new HashSet<OfflinePlayer>();
+        Set<OfflinePlayer> players = new HashSet<>();
         for (String name : whitelist.getContents()) {
             players.add(getOfflinePlayer(name));
         }
@@ -1007,7 +1007,7 @@ public final class GlowServer implements Server {
 
     @Override
     public Set<String> getListeningPluginChannels() {
-        HashSet<String> result = new HashSet<String>();
+        HashSet<String> result = new HashSet<>();
         for (Player player : getOnlinePlayers()) {
             result.addAll(player.getListeningPluginChannels());
         }

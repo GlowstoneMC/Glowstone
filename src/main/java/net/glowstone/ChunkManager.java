@@ -36,12 +36,12 @@ public final class ChunkManager {
     /**
      * A map of chunks currently loaded in memory.
      */
-    private final ConcurrentMap<GlowChunk.Key, GlowChunk> chunks = new ConcurrentHashMap<GlowChunk.Key, GlowChunk>();
+    private final ConcurrentMap<GlowChunk.Key, GlowChunk> chunks = new ConcurrentHashMap<>();
 
     /**
      * A map of chunks which are being kept loaded by players or other factors.
      */
-    private final ConcurrentMap<GlowChunk.Key, Set<ChunkLock>> locks = new ConcurrentHashMap<GlowChunk.Key, Set<ChunkLock>>();
+    private final ConcurrentMap<GlowChunk.Key, Set<ChunkLock>> locks = new ConcurrentHashMap<>();
 
     /**
      * A Random object to be used to generate chunks.
@@ -279,7 +279,7 @@ public final class ChunkManager {
      * @return The currently loaded chunks.
      */
     public GlowChunk[] getLoadedChunks() {
-        ArrayList<GlowChunk> result = new ArrayList<GlowChunk>();
+        ArrayList<GlowChunk> result = new ArrayList<>();
         for (GlowChunk chunk : chunks.values()) {
             if (chunk.isLoaded()) {
                 result.add(chunk);
@@ -344,7 +344,7 @@ public final class ChunkManager {
     public static class ChunkLock implements Iterable<GlowChunk.Key> {
         private final ChunkManager cm;
         private final String desc;
-        private final Set<GlowChunk.Key> keys = new HashSet<GlowChunk.Key>();
+        private final Set<GlowChunk.Key> keys = new HashSet<>();
 
         public ChunkLock(ChunkManager cm, String desc) {
             this.cm = cm;

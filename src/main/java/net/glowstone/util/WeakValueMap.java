@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class WeakValueMap<K, V> {
 
-    private final ConcurrentMap<K, Reference<V>> map = new ConcurrentHashMap<K, Reference<V>>();
+    private final ConcurrentMap<K, Reference<V>> map = new ConcurrentHashMap<>();
 
     private final boolean soft;
 

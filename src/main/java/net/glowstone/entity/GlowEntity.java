@@ -284,7 +284,7 @@ public abstract class GlowEntity implements Entity {
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
 
-        List<Message> result = new LinkedList<Message>();
+        List<Message> result = new LinkedList<>();
         if (moved && teleport) {
             result.add(new EntityTeleportMessage(id, x, y, z, yaw, pitch));
         } else if (moved && rotated) {
