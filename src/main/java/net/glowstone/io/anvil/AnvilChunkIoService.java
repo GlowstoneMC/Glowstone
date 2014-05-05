@@ -11,7 +11,6 @@ import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
 
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,10 +54,11 @@ public final class AnvilChunkIoService implements ChunkIoService {
 
         DataInputStream in = region.getChunkDataInputStream(regionX, regionZ);
 
-        NBTInputStream nbt = new NBTInputStream(in, false);
-        CompoundTag root = nbt.readCompound();
-        CompoundTag levelTag = root.getCompound("Level");
-        nbt.close();
+        CompoundTag levelTag;
+        try (NBTInputStream nbt = new NBTInputStream(in, false)) {
+            CompoundTag root = nbt.readCompound();
+            levelTag = root.getCompound("Level");
+        }
 
         // read the vertical sections
         List<CompoundTag> sectionList = levelTag.getCompoundList("Sections");
@@ -197,10 +197,9 @@ public final class AnvilChunkIoService implements ChunkIoService {
         CompoundTag levelOut = new CompoundTag();
         levelOut.putCompound("Level", levelTags);
 
-        DataOutputStream out = region.getChunkDataOutputStream(regionX, regionZ);
-        NBTOutputStream nbt = new NBTOutputStream(out, false);
-        nbt.writeTag(levelOut);
-        nbt.close();
+        try (NBTOutputStream nbt = new NBTOutputStream(region.getChunkDataOutputStream(regionX, regionZ), false)) {
+            nbt.writeTag(levelOut);
+        }
     }
 
     public void unload() throws IOException {

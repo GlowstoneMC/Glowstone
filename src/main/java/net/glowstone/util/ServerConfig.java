@@ -8,6 +8,7 @@ import org.bukkit.util.FileUtil;
 import org.yaml.snakeyaml.error.YAMLException;
 
 import java.io.*;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -161,21 +162,19 @@ public final class ServerConfig {
     }
 
     private void copyDefaults(String source, File dest) {
-        InputStream in = getClass().getClassLoader().getResourceAsStream("defaults/" + source);
-        if (in == null) {
+        URL resource = getClass().getClassLoader().getResource("defaults/" + source);
+        if (resource == null) {
             GlowServer.logger.warning("Could not find default " + source + " on classpath");
             return;
         }
 
-        try {
-            OutputStream out = new FileOutputStream(dest);
+        try (InputStream in = resource.openStream();
+             OutputStream out = new FileOutputStream(dest)) {
             byte[] buf = new byte[2048];
             int len;
             while ((len = in.read(buf)) > 0) {
                 out.write(buf, 0, len);
             }
-            out.close();
-            in.close();
         } catch (IOException e) {
             GlowServer.logger.log(Level.WARNING, "Could not save default config: " + dest, e);
             return;

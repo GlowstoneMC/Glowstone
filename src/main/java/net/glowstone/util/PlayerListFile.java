@@ -56,13 +56,11 @@ public final class PlayerListFile {
      * Saves to the file.
      */
     private void save() {
-        try {
-            PrintWriter out = new PrintWriter(new FileWriter(file));
+        try (PrintWriter out = new PrintWriter(new FileWriter(file))) {
             for (String str : list) {
                 out.println(str);
             }
             out.flush();
-            out.close();
         } catch (IOException ex) {
             GlowServer.logger.log(Level.SEVERE, "Error saving to " + file, ex);
         }
