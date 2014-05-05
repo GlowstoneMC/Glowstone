@@ -350,24 +350,29 @@ public final class GlowWorld implements World {
             }
         }
 
-        if (--rainingTicks <= 0) {
-            setStorm(!currentlyRaining);
-        }
+        // only tick weather in a NORMAL world
+        if (environment == Environment.NORMAL) {
+            if (--rainingTicks <= 0) {
+                setStorm(!currentlyRaining);
+            }
 
-        if (--thunderingTicks <= 0) {
-            setThundering(!currentlyThundering);
-        }
+            if (--thunderingTicks <= 0) {
+                setThundering(!currentlyThundering);
+            }
 
-        if (currentlyRaining && currentlyThundering) {
-            if (random.nextDouble() < .01) {
-                GlowChunk[] chunkList = chunks.getLoadedChunks();
-                GlowChunk chunk = chunkList[random.nextInt(chunkList.length)];
+            if (currentlyRaining && currentlyThundering) {
+                if (random.nextDouble() < .01) {
+                    GlowChunk[] chunkList = chunks.getLoadedChunks();
+                    if (chunkList.length > 0) {
+                        GlowChunk chunk = chunkList[random.nextInt(chunkList.length)];
 
-                int x = (chunk.getX() << 4) + random.nextInt(16);
-                int z = (chunk.getZ() << 4) + random.nextInt(16);
-                int y = getHighestBlockYAt(x, z);
+                        int x = (chunk.getX() << 4) + random.nextInt(16);
+                        int z = (chunk.getZ() << 4) + random.nextInt(16);
+                        int y = getHighestBlockYAt(x, z);
 
-                strikeLightning(new Location(this, x, y, z));
+                        strikeLightning(new Location(this, x, y, z));
+                    }
+                }
             }
         }
 
