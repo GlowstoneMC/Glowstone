@@ -214,18 +214,26 @@ public final class GlowWorld implements World {
      */
     public GlowWorld(GlowServer server, WorldCreator creator) {
         this.server = server;
+
+        // set up values from WorldCreator
         name = creator.name();
         environment = creator.environment();
+        worldType = creator.type();
+        generateStructures = creator.generateStructures();
 
         final ChunkGenerator generator = creator.generator();
         storageProvider = new AnvilWorldStorageProvider(new File(server.getWorldContainer(), name));
         storageProvider.setWorld(this);
         chunks = new ChunkManager(this, storageProvider.getChunkIoService(), generator);
         populators = generator.getDefaultPopulators(this);
-        EventFactory.onWorldInit(this);
 
-        worldType = creator.type();
-        generateStructures = creator.generateStructures();
+        // set up values from server defaults
+        ticksPerAnimal = server.getTicksPerAnimalSpawns();
+        ticksPerMonster = server.getTicksPerMonsterSpawns();
+        monsterLimit = server.getMonsterSpawnLimit();
+        animalLimit = server.getAnimalSpawnLimit();
+        waterAnimalLimit = server.getWaterAnimalSpawnLimit();
+        ambientLimit = server.getAmbientSpawnLimit();
 
         // read in world data
         WorldFinalValues values = null;
@@ -246,6 +254,9 @@ public final class GlowWorld implements World {
             this.uid = UUID.randomUUID();
         }
 
+        // begin loading spawn area
+        spawnChunkLock = newChunkLock("spawn");
+        EventFactory.onWorldInit(this);
         server.getLogger().log(Level.INFO, "Preparing spawn for {0}...", name);
 
         // determine the spawn location if we need to
@@ -268,37 +279,32 @@ public final class GlowWorld implements World {
         }
 
         // load up chunks around the spawn location
-        spawnChunkLock = newChunkLock("spawn");
-        int centerX = spawnLocation.getBlockX() >> 4;
-        int centerZ = spawnLocation.getBlockZ() >> 4;
-        int radius = 4 * server.getViewDistance() / 3;
+        spawnChunkLock.clear();
+        if (keepSpawnLoaded) {
+            int centerX = spawnLocation.getBlockX() >> 4;
+            int centerZ = spawnLocation.getBlockZ() >> 4;
+            int radius = 4 * server.getViewDistance() / 3;
 
-        long loadTime = System.currentTimeMillis();
+            long loadTime = System.currentTimeMillis();
 
-        int total = (radius * 2 + 1) * (radius * 2 + 1), current = 0;
-        for (int x = centerX - radius; x <= centerX + radius; ++x) {
-            for (int z = centerZ - radius; z <= centerZ + radius; ++z) {
-                ++current;
-                loadChunk(x, z);
-                spawnChunkLock.acquire(new GlowChunk.Key(x, z));
+            int total = (radius * 2 + 1) * (radius * 2 + 1), current = 0;
+            for (int x = centerX - radius; x <= centerX + radius; ++x) {
+                for (int z = centerZ - radius; z <= centerZ + radius; ++z) {
+                    ++current;
+                    loadChunk(x, z);
+                    spawnChunkLock.acquire(new GlowChunk.Key(x, z));
 
-                if (System.currentTimeMillis() >= loadTime + 1000) {
-                    int progress = 100 * current / total;
-                    GlowServer.logger.log(Level.INFO, "Preparing spawn for {0}: {1}%", new Object[]{name, progress});
-                    loadTime = System.currentTimeMillis();
+                    if (System.currentTimeMillis() >= loadTime + 1000) {
+                        int progress = 100 * current / total;
+                        GlowServer.logger.log(Level.INFO, "Preparing spawn for {0}: {1}%", new Object[]{name, progress});
+                        loadTime = System.currentTimeMillis();
+                    }
                 }
             }
         }
         server.getLogger().log(Level.INFO, "Preparing spawn for {0}: done", name);
         EventFactory.onWorldLoad(this);
         save();
-
-        ticksPerAnimal = server.getTicksPerAnimalSpawns();
-        ticksPerMonster = server.getTicksPerMonsterSpawns();
-        monsterLimit = server.getMonsterSpawnLimit();
-        animalLimit = server.getAnimalSpawnLimit();
-        waterAnimalLimit = server.getWaterAnimalSpawnLimit();
-        ambientLimit = server.getAmbientSpawnLimit();
     }
 
     @Override
@@ -488,6 +494,9 @@ public final class GlowWorld implements World {
                     spawnChunkLock.acquire(new GlowChunk.Key(x, z));
                 }
             }
+        } else {
+            // attempt to immediately unload the spawn
+            chunks.unloadOldChunks();
         }
     }
 
