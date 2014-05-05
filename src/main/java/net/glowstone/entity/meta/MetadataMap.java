@@ -10,7 +10,7 @@ import java.util.*;
  */
 public class MetadataMap {
 
-    private final Map<MetadataIndex, Object> map = new EnumMap<MetadataIndex, Object>(MetadataIndex.class);
+    private final Map<MetadataIndex, Object> map = new EnumMap<>(MetadataIndex.class);
     private final Class<? extends Entity> entityClass;
 
     public MetadataMap(Class<? extends Entity> entityClass) {
@@ -117,7 +117,7 @@ public class MetadataMap {
     }
 
     public List<Entry> getEntryList() {
-        List<Entry> result = new ArrayList<Entry>(map.size());
+        List<Entry> result = new ArrayList<>(map.size());
         for (Map.Entry<MetadataIndex, Object> entry : map.entrySet()) {
             result.add(new Entry(entry.getKey(), entry.getValue()));
         }

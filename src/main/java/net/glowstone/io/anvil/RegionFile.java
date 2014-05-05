@@ -114,7 +114,7 @@ public class RegionFile {
 
         /* set up the available sector map */
         int nSectors = (int) file.length() / SECTOR_BYTES;
-        sectorFree = new ArrayList<Boolean>(nSectors);
+        sectorFree = new ArrayList<>(nSectors);
 
         for (int i = 0; i < nSectors; ++i) {
             sectorFree.add(true);

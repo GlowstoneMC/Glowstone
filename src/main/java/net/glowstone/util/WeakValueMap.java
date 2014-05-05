@@ -29,7 +29,7 @@ public class WeakValueMap<K, V> {
     }
 
     private Reference<V> wrap(V value) {
-        return soft ? new SoftReference<V>(value) : new WeakReference<V>(value);
+        return soft ? new SoftReference<>(value) : new WeakReference<>(value);
     }
 
     public V get(K key) {

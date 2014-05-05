@@ -65,7 +65,7 @@ public class RegionFileCache {
         }
 
         RegionFile reg = new RegionFile(file);
-        cache.put(file, new SoftReference<RegionFile>(reg));
+        cache.put(file, new SoftReference<>(reg));
         return reg;
     }
 

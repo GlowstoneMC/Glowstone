@@ -241,7 +241,7 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     public <T> Future<T> callSyncMethod(Plugin plugin, Callable<T> task) {
-        FutureTask<T> future = new FutureTask<T>(task);
+        FutureTask<T> future = new FutureTask<>(task);
         runTask(plugin, future);
         return future;
     }

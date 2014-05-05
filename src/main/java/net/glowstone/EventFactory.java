@@ -50,7 +50,7 @@ public final class EventFactory {
             server.getPluginManager().callEvent(event);
             return event;
         } else {
-            FutureTask<T> task = new FutureTask<T>(new Runnable() {
+            FutureTask<T> task = new FutureTask<>(new Runnable() {
                 @Override
                 public void run() {
                     server.getPluginManager().callEvent(event);

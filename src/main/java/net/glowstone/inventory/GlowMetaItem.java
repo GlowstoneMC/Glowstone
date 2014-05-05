@@ -29,10 +29,10 @@ class GlowMetaItem implements ItemMeta {
         displayName = meta.displayName;
 
         if (meta.hasLore()) {
-            this.lore = new ArrayList<String>(meta.lore);
+            this.lore = new ArrayList<>(meta.lore);
         }
         if (meta.hasEnchants()) {
-            this.enchants = new HashMap<Enchantment, Integer>(meta.enchants);
+            this.enchants = new HashMap<>(meta.enchants);
         }
     }
 
@@ -49,10 +49,10 @@ class GlowMetaItem implements ItemMeta {
         try {
             GlowMetaItem clone = (GlowMetaItem) super.clone();
             if (this.lore != null) {
-                clone.lore = new ArrayList<String>(this.lore);
+                clone.lore = new ArrayList<>(this.lore);
             }
             if (this.enchants != null) {
-                clone.enchants = new HashMap<Enchantment, Integer>(this.enchants);
+                clone.enchants = new HashMap<>(this.enchants);
             }
             return clone;
         } catch (CloneNotSupportedException e) {
@@ -160,7 +160,7 @@ class GlowMetaItem implements ItemMeta {
 
     public boolean addEnchant(Enchantment ench, int level, boolean ignoreLevelRestriction) {
         if (enchants == null) {
-            enchants = new HashMap<Enchantment, Integer>(4);
+            enchants = new HashMap<>(4);
         }
 
         if (ignoreLevelRestriction || level >= ench.getStartLevel() && level <= ench.getMaxLevel()) {
