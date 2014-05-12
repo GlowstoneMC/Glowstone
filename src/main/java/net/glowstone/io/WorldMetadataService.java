@@ -3,32 +3,38 @@ package net.glowstone.io;
 import net.glowstone.entity.GlowPlayer;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.UUID;
 
-
+/**
+ * Provider of I/O for world metadata.
+ */
 public interface WorldMetadataService {
 
     /**
-     * Reads the data from a chunk's world
-     * @return a map with world information
-     * @throws IOException if an I/O error occurs
+     * Reads the world's metadata from storage, including final values such as
+     * seed and UUID that are only set on first load.
+     * @return A {@link WorldFinalValues} with the seed and UUID.
+     * @throws IOException if an I/O error occurs.
      */
     public WorldFinalValues readWorldData() throws IOException;
 
     /**
-     * Writes data for a chunk's world
-     * @throws IOException in the event of unanticipated error
+     * Write the world's metadata to storage.
+     * @throws IOException if an I/O error occurs.
      */
     public void writeWorldData() throws IOException;
 
+    /**
+     * A structure representing properties stored about a world that cannot be
+     * changed after its initialization, namely seed and UUID.
+     */
     public class WorldFinalValues {
         private final long seed;
-        private final UUID uid;
+        private final UUID uuid;
 
-        public WorldFinalValues(long seed, UUID uid) {
+        public WorldFinalValues(long seed, UUID uuid) {
             this.seed = seed;
-            this.uid = uid;
+            this.uuid = uuid;
         }
 
         public long getSeed() {
@@ -36,21 +42,19 @@ public interface WorldMetadataService {
         }
 
         public UUID getUuid() {
-            return uid;
+            return uuid;
         }
     }
 
     /**
-     * Read  player's data from their storage file
-     * @param player The player to fetch data for
-     * @return a Map with the player's data
-     * @throws IOException in the event of unanticipated error
+     * Read a player's data from storage.
+     * @param player The player to read into.
      */
     public void readPlayerData(GlowPlayer player);
 
     /**
-     * Write a player's data to their storage file
-     * @param player The player to save data for
+     * Write a player's data to storage.
+     * @param player The player to write from.
      */
     public void writePlayerData(GlowPlayer player);
 }

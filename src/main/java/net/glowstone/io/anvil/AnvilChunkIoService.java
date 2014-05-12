@@ -44,7 +44,14 @@ public final class AnvilChunkIoService implements ChunkIoService {
         this.dir = dir;
     }
 
-    public boolean read(GlowChunk chunk, int x, int z) throws IOException {
+    /**
+     * Reads a chunk from its region file.
+     * @param chunk The GlowChunk to read into.
+     * @return Whether the
+     * @throws IOException if an I/O error occurs.
+     */
+    public boolean read(GlowChunk chunk) throws IOException {
+        int x = chunk.getX(), z = chunk.getZ();
         RegionFile region = cache.getRegionFile(dir, x, z);
         int regionX = x & (REGION_SIZE - 1);
         int regionZ = z & (REGION_SIZE - 1);
@@ -127,14 +134,12 @@ public final class AnvilChunkIoService implements ChunkIoService {
     }
 
     /**
-     * Writes a chunk. Currently not compatible with the vanilla server.
-     *
-     * @param x     The X coordinate.
-     * @param z     The Z coordinate.
-     * @param chunk The {@link net.glowstone.GlowChunk}.
-     * @throws java.io.IOException
+     * Writes a chunk to its region file.
+     * @param chunk The {@link GlowChunk} to write from.
+     * @throws IOException if an I/O error occurs.
      */
-    public void write(int x, int z, GlowChunk chunk) throws IOException {
+    public void write(GlowChunk chunk) throws IOException {
+        int x = chunk.getX(), z = chunk.getZ();
         RegionFile region = cache.getRegionFile(dir, x, z);
         int regionX = x & (REGION_SIZE - 1);
         int regionZ = z & (REGION_SIZE - 1);

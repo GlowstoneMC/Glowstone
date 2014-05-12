@@ -1,7 +1,8 @@
 package net.glowstone.inventory;
 
 import com.google.common.base.Strings;
-import net.glowstone.util.nbt.*;
+import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.TagType;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -94,7 +95,7 @@ class GlowMetaItem implements ItemMeta {
     void readNbt(CompoundTag tag) {
         if (tag.isCompound("display")) {
             CompoundTag display = tag.getCompound("display");
-            if (display.isCompound("Name")) {
+            if (display.isString("Name")) {
                 setDisplayName(display.getString("Name"));
             }
             if (display.isList("Lore", TagType.STRING)) {

@@ -97,7 +97,7 @@ public final class ChunkManager {
 
         // try to load chunk
         try {
-            if (service.read(chunk, x, z)) {
+            if (service.read(chunk)) {
                 EventFactory.onChunkLoad(chunk, false);
                 return true;
             }
@@ -297,7 +297,7 @@ public final class ChunkManager {
         GlowChunk chunk = getChunk(x, z);
         if (chunk.isLoaded()) {
             try {
-                service.write(x, z, chunk);
+                service.write(chunk);
                 return true;
             } catch (IOException ex) {
                 GlowServer.logger.log(Level.SEVERE, "Error while saving chunk (" + x + ", " + z + ")", ex);

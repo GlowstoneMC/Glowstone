@@ -5,35 +5,28 @@ import net.glowstone.GlowChunk;
 import java.io.IOException;
 
 /**
- * This interface should be implemented by classes which wish to provide some
- * way of performing chunk I/O e.g. the {@link net.glowstone.io.anvil.AnvilChunkIoService}. This
- * interface is abstracted away from the implementation because a new format is
- * due to arrive soon (McRegion).
- * @author Graham Edgecombe
+ * Provider of chunk I/O services. Implemented by classes to provide a way of
+ * saving and loading chunks to external storage.
  */
 public interface ChunkIoService {
 
     /**
-     * Reads a single chunk.
+     * Reads a single chunk. The provided chunk must not yet be initialized.
      * @param chunk The GlowChunk to read into.
-     * @param x The X coordinate.
-     * @param z The Z coordinate.
      * @throws IOException if an I/O error occurs.
      */
-    public boolean read(GlowChunk chunk, int x, int z) throws IOException;
+    public boolean read(GlowChunk chunk) throws IOException;
 
     /**
      * Writes a single chunk.
-     * @param x The X coordinate.
-     * @param z The Z coordinate.
-     * @param chunk The {@link GlowChunk}.
+     * @param chunk The {@link GlowChunk} to write from.
      * @throws IOException if an I/O error occurs.
      */
-    public void write(int x, int z, GlowChunk chunk) throws IOException;
+    public void write(GlowChunk chunk) throws IOException;
 
     /**
-     * Unloads the service, to clean up excess stuff.
-     * @throws IOException
+     * Unload the service, performing any cleanup necessary.
+     * @throws IOException if an I/O error occurs.
      */
     public void unload() throws IOException;
 

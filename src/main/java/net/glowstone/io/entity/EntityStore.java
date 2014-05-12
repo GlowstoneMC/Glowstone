@@ -64,12 +64,15 @@ public abstract class EntityStore<T extends GlowEntity> {
         }
         if (compound.is("Air", ShortTag.class)) {
             // entity.setRemainingAir(((ShortTag) compound.getValue().get("Air")).getValue());
-        }
-        if (compound.is("Fire", ShortTag.class)) {
-            // entity.setFireTicks(((ShortTag) compound.getValue().get("Fire")).getValue());
         }*/
+        if (compound.isFloat("FallDistance")) {
+            entity.setFallDistance(compound.getFloat("FallDistance"));
+        }
+        if (compound.isShort("Fire")) {
+            entity.setFireTicks(compound.getShort("Fire"));
+        }
         if (compound.isByte("OnGround")) {
-            entity.setOnGround(compound.getByte("OnGround") != 0);
+            entity.setOnGround(compound.getBool("OnGround"));
         }
 
         /* if (playerData.containsKey("HurtTime")) {
@@ -103,7 +106,7 @@ public abstract class EntityStore<T extends GlowEntity> {
         // result.put("Fire", new ShortTag("Fire", (short) entity.getFireTicks()));
         // "Motion"
         tag.putList("Motion", TagType.DOUBLE, NbtSerialization.vectorToList(entity.getVelocity()));
-        tag.putByte("OnGround", entity.isOnGround() ? 1 : 0);
+        tag.putBool("OnGround", entity.isOnGround());
     }
 
     public String getId() {
