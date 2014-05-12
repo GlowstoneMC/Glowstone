@@ -334,7 +334,7 @@ public final class GlowSession extends BasicSession {
 
         // let us know if the client has timed out yet
         if (readTimeoutCounter >= TIMEOUT_TICKS)
-            if (pingMessageId == 0) {
+            if (pingMessageId == 0 && getProtocol() instanceof PlayProtocol) {
                 pingMessageId = random.nextInt();
                 send(new PingMessage(pingMessageId));
                 readTimeoutCounter = 0;
