@@ -11,7 +11,7 @@ import org.bukkit.block.Block;
  * Base class for tile entities (blocks with NBT data) in the world.
  * Most access to tile entities should occur through the Bukkit BlockState API.
  */
-public class TileEntity {
+public abstract class TileEntity {
 
     protected final GlowBlock block;
     private String saveId;

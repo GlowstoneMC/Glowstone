@@ -43,7 +43,7 @@ public class GlowInventory implements Inventory {
     /**
      * The inventory's name.
      */
-    private final String title;
+    private String title;
 
     /**
      * The inventory's maximum stack size.
@@ -121,6 +121,18 @@ public class GlowInventory implements Inventory {
      */
     public boolean itemShiftClickAllowed(int slot, ItemStack stack) {
         return itemPlaceAllowed(slot, stack);
+    }
+
+    /**
+     * Set the custom title of this inventory or reset it to the default.
+     * @param title The new title, or null to reset.
+     */
+    public void setTitle(String title) {
+        if (title == null) {
+            this.title = type.getDefaultTitle();
+        } else {
+            this.title = title;
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
