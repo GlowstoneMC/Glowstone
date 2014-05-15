@@ -58,7 +58,7 @@ public final class GlowServer implements Server {
     /**
      * The game version supported by the server.
      */
-    public static final String GAME_VERSION = "1.7.8";
+    public static final String GAME_VERSION = "1.7.9";
 
     /**
      * The protocol version supported by the server.
@@ -937,12 +937,10 @@ public final class GlowServer implements Server {
     ////////////////////////////////////////////////////////////////////////////
     // Inventory and crafting
 
-    @Override
     public List<Recipe> getRecipesFor(ItemStack result) {
         return craftingManager.getRecipesFor(result);
     }
 
-    @Override
     public Iterator<Recipe> recipeIterator() {
         return craftingManager.iterator();
     }
@@ -951,29 +949,28 @@ public final class GlowServer implements Server {
         return craftingManager.addRecipe(recipe);
     }
 
-    @Override
     public void clearRecipes() {
         craftingManager.clearRecipes();
     }
 
-    @Override
     public void resetRecipes() {
         craftingManager.resetRecipes();
     }
 
-    @Override
     public Inventory createInventory(InventoryHolder owner, InventoryType type) {
         return new GlowInventory(owner, type);
     }
 
-    @Override
     public Inventory createInventory(InventoryHolder owner, int size) {
         return new GlowInventory(owner, InventoryType.CHEST, size);
     }
 
-    @Override
     public Inventory createInventory(InventoryHolder owner, int size, String title) {
         return new GlowInventory(owner, InventoryType.CHEST, size, title);
+    }
+
+    public Inventory createInventory(InventoryHolder owner, InventoryType type, String title) {
+        return new GlowInventory(owner, type, type.getDefaultSize(), title);
     }
 
     ////////////////////////////////////////////////////////////////////////////

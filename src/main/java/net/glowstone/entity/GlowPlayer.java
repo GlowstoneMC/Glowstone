@@ -937,19 +937,19 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     public void chat(String text) {
         if (text.startsWith("/")) {
+            server.getLogger().info(getName() + " issued command: " + text);
             try {
                 PlayerCommandPreprocessEvent event = EventFactory.onPlayerCommand(this, text);
                 if (event.isCancelled()) {
                     return;
                 }
-
-                server.getLogger().info(event.getPlayer().getName() + " issued command: " + event.getMessage());
                 getServer().dispatchCommand(event.getPlayer(), event.getMessage().substring(1));
             } catch (Exception ex) {
                 sendMessage(ChatColor.RED + "An internal error occured while executing your command.");
                 getServer().getLogger().log(Level.SEVERE, "Exception while executing command: " + text, ex);
             }
         } else {
+            // todo: async this
             PlayerChatEvent event = EventFactory.onPlayerChat(this, text);
             if (event.isCancelled()) {
                 return;
