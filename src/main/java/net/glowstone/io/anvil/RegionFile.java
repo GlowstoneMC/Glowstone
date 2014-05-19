@@ -21,6 +21,10 @@ package net.glowstone.io.anvil;
  *
  */
 
+/*
+ * Later changes made by the Glowstone project.
+ */
+
 // Interfaces with region files on the disk
 
 /*
@@ -58,9 +62,13 @@ package net.glowstone.io.anvil;
 
  */
 
+import net.glowstone.GlowServer;
+
 import java.io.*;
 import java.util.ArrayList;
-import java.util.zip.*;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.InflaterInputStream;
 
 public class RegionFile {
 
@@ -71,7 +79,7 @@ public class RegionFile {
     private static final int SECTOR_INTS = SECTOR_BYTES / 4;
 
     static final int CHUNK_HEADER_SIZE = 5;
-    private static final byte emptySector[] = new byte[4096];
+    private static final byte emptySector[] = new byte[SECTOR_BYTES];
 
     private RandomAccessFile file;
     private final int offsets[];
@@ -92,30 +100,32 @@ public class RegionFile {
 
         file = new RandomAccessFile(path, "rw");
 
-        if (file.length() < SECTOR_BYTES) {
-            /* we need to write the chunk offset table */
-            for (int i = 0; i < SECTOR_INTS; ++i) {
-                file.writeInt(0);
-            }
-            // write another sector for the timestamp info
-            for (int i = 0; i < SECTOR_INTS; ++i) {
-                file.writeInt(0);
-            }
+        // seek to the end to prepare size checking
+        file.seek(file.length());
 
-            sizeDelta += SECTOR_BYTES * 2;
+        // if the file size is under 8KB, grow it (4K chunk offset table, 4K timestamp table)
+        if (file.length() < 2 * SECTOR_BYTES) {
+            sizeDelta += 2 * SECTOR_BYTES - file.length();
+            GlowServer.logger.warning("Region \"" + path + "\" under 8K: " + file.length() + " increasing by " + (2 * SECTOR_BYTES - file.length()));
+
+            for (long i = file.length(); i < 2 * SECTOR_BYTES; ++i) {
+                file.write(0);
+            }
         }
 
+        // if the file size is not a multiple of 4KB, grow it
         if ((file.length() & 0xfff) != 0) {
-            /* the file size is not a multiple of 4KB, grow it */
-            for (int i = 0; i < (file.length() & 0xfff); ++i) {
-                file.write((byte) 0);
+            sizeDelta += SECTOR_BYTES - (file.length() & 0xfff);
+            GlowServer.logger.warning("Region \"" + path + "\" not aligned: " + file.length() + " increasing by " + (SECTOR_BYTES - (file.length() & 0xfff)));
+
+            for (long i = file.length() & 0xfff; i < SECTOR_BYTES; ++i) {
+                file.write(0);
             }
         }
 
-        /* set up the available sector map */
-        int nSectors = (int) file.length() / SECTOR_BYTES;
+        // set up the available sector map
+        int nSectors = (int) (file.length() / SECTOR_BYTES);
         sectorFree = new ArrayList<>(nSectors);
-
         for (int i = 0; i < nSectors; ++i) {
             sectorFree.add(true);
         }
@@ -123,19 +133,26 @@ public class RegionFile {
         sectorFree.set(0, false); // chunk offset table
         sectorFree.set(1, false); // for the last modified info
 
+        // read offsets from offset table
         file.seek(0);
         for (int i = 0; i < SECTOR_INTS; ++i) {
             int offset = file.readInt();
             offsets[i] = offset;
-            if (offset != 0 && (offset >> 8) + (offset & 0xFF) <= sectorFree.size()) {
-                for (int sectorNum = 0; sectorNum < (offset & 0xFF); ++sectorNum) {
-                    sectorFree.set((offset >> 8) + sectorNum, false);
+
+            int startSector = (offset >> 8);
+            int numSectors = (offset & 0xff);
+
+            if (offset != 0 && startSector >= 0 && startSector + numSectors <= sectorFree.size()) {
+                for (int sectorNum = 0; sectorNum < numSectors; ++sectorNum) {
+                    sectorFree.set(startSector + sectorNum, false);
                 }
+            } else if (offset != 0) {
+                GlowServer.logger.warning("Region \"" + path + "\": offsets[" + i + "] = " + offset + " -> " + startSector + "," + numSectors + " does not fit");
             }
         }
+        // read timestamps from timestamp table
         for (int i = 0; i < SECTOR_INTS; ++i) {
-            int lastModValue = file.readInt();
-            chunkTimestamps[i] = lastModValue;
+            chunkTimestamps[i] = file.readInt();
         }
     }
 
@@ -292,6 +309,7 @@ public class RegionFile {
             }
         }
         setTimestamp(x, z, (int) (System.currentTimeMillis() / 1000L));
+        file.getChannel().force(true);
     }
 
     /* write a chunk data to the region file at specified sector number */
@@ -328,6 +346,7 @@ public class RegionFile {
     }
 
     public void close() throws IOException {
+        file.getChannel().force(true);
         file.close();
     }
 }
