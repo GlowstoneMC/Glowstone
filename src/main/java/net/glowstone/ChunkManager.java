@@ -44,16 +44,6 @@ public final class ChunkManager {
     private final ConcurrentMap<GlowChunk.Key, Set<ChunkLock>> locks = new ConcurrentHashMap<>();
 
     /**
-     * A Random object to be used to generate chunks.
-     */
-    private final Random chunkRandom = new Random();
-
-    /**
-     * A Random object to be used to populate chunks.
-     */
-    private final Random popRandom = new Random();
-
-    /**
      * Creates a new chunk manager with the specified I/O service and world
      * generator.
      * @param service The I/O service.
@@ -73,8 +63,8 @@ public final class ChunkManager {
     }
 
     /**
-     * Gets the chunk at the specified X and Z coordinates, loading it from the
-     * disk or generating it if necessary.
+     * Gets a chunk object representing the specified coordinates, which might
+     * not yet be loaded.
      * @param x The X coordinate.
      * @param z The Z coordinate.
      * @return The chunk.
@@ -83,6 +73,29 @@ public final class ChunkManager {
         GlowChunk.Key key = new GlowChunk.Key(x, z);
         // a simple new GlowChunk() does not allocate significant memory
         return getOrCreate(chunks, key, new GlowChunk(world, x, z));
+    }
+
+    /**
+     * Checks if the Chunk at the specified coordinates is loaded.
+     * @param x The X coordinate.
+     * @param z The Z coordinate.
+     * @return true if the chunk is loaded, otherwise false.
+     */
+    public boolean isChunkLoaded(int x, int z) {
+        GlowChunk.Key key = new GlowChunk.Key(x, z);
+        return chunks.containsKey(key) && chunks.get(key).isLoaded();
+    }
+
+    /**
+     * Check whether a chunk has locks on it preventing it from being unloaded.
+     * @param x The X coordinate.
+     * @param z The Z coordinate.
+     * @return Whether the chunk is in use.
+     */
+    public boolean isChunkInUse(int x, int z) {
+        GlowChunk.Key key = new GlowChunk.Key(x, z);
+        Set<ChunkLock> lockSet = locks.get(key);
+        return lockSet != null && lockSet.size() != 0;
     }
 
     /**
@@ -127,18 +140,6 @@ public final class ChunkManager {
             }
         }*/
         return true;
-    }
-
-    /**
-     * Check whether a chunk has locks on it preventing it from being unloaded.
-     * @param x The X coordinate.
-     * @param z The Z coordinate.
-     * @return Whether the chunk is in use.
-     */
-    public boolean isChunkInUse(int x, int z) {
-        GlowChunk.Key key = new GlowChunk.Key(x, z);
-        Set<ChunkLock> lockSet = locks.get(key);
-        return lockSet != null && lockSet.size() != 0;
     }
 
     /**
@@ -187,13 +188,13 @@ public final class ChunkManager {
         }
         chunk.setPopulated(true);
 
-        popRandom.setSeed(world.getSeed());
-        long xRand = popRandom.nextLong() / 2 * 2 + 1;
-        long zRand = popRandom.nextLong() / 2 * 2 + 1;
-        popRandom.setSeed((long) x * xRand + (long) z * zRand ^ world.getSeed());
+        Random random = new Random(world.getSeed());
+        long xRand = random.nextLong() / 2 * 2 + 1;
+        long zRand = random.nextLong() / 2 * 2 + 1;
+        random.setSeed((long) x * xRand + (long) z * zRand ^ world.getSeed());
 
         for (BlockPopulator p : world.getPopulators()) {
-            p.populate(world, popRandom, chunk);
+            p.populate(world, random, chunk);
         }
 
         EventFactory.onChunkPopulate(chunk);
@@ -213,17 +214,17 @@ public final class ChunkManager {
      * Initialize a single chunk from the chunk generator.
      */
     private void generateChunk(GlowChunk chunk, int x, int z) {
-        chunkRandom.setSeed((long) x * 341873128712L + (long) z * 132897987541L);
+        Random random = new Random((long) x * 341873128712L + (long) z * 132897987541L);
         ChunkGenerator.BiomeGrid biomes = new BiomeGrid(x, z);
 
         // try for extended sections
-        short[][] extSections = generator.generateExtBlockSections(world, chunkRandom, x, z, biomes);
+        short[][] extSections = generator.generateExtBlockSections(world, random, x, z, biomes);
         if (extSections != null) {
             throw new UnsupportedOperationException("Extended chunk sections not yet supported");
         }
 
         // normal sections
-        byte[][] blockSections = generator.generateBlockSections(world, chunkRandom, x, z, biomes);
+        byte[][] blockSections = generator.generateBlockSections(world, random, x, z, biomes);
         if (blockSections != null) {
             GlowChunk.ChunkSection[] sections = new GlowChunk.ChunkSection[blockSections.length];
             for (int i = 0; i < blockSections.length; ++i) {
@@ -236,7 +237,7 @@ public final class ChunkManager {
         }
 
         // deprecated flat generation
-        byte[] types = generator.generate(world, chunkRandom, x, z);
+        byte[] types = generator.generate(world, random, x, z);
         //GlowServer.logger.warning("Using deprecated generate() in generator: " + generator.getClass().getName());
 
         GlowChunk.ChunkSection[] sections = new GlowChunk.ChunkSection[8];
@@ -289,18 +290,16 @@ public final class ChunkManager {
     }
 
     /**
-     * Force-saves the given chunk.
-     * @param x The X coordinate.
-     * @param z The Z coordinate.
+     * Performs the save for the given chunk using the storage provider.
+     * @param chunk The chunk to save.
      */
-    public boolean forceSave(int x, int z) {
-        GlowChunk chunk = getChunk(x, z);
+    public boolean performSave(GlowChunk chunk) {
         if (chunk.isLoaded()) {
             try {
                 service.write(chunk);
                 return true;
             } catch (IOException ex) {
-                GlowServer.logger.log(Level.SEVERE, "Error while saving chunk (" + x + ", " + z + ")", ex);
+                GlowServer.logger.log(Level.SEVERE, "Error while saving " + chunk, ex);
                 return false;
             }
         }

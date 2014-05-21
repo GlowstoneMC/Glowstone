@@ -106,7 +106,10 @@ public class RegionFile {
         // if the file size is under 8KB, grow it (4K chunk offset table, 4K timestamp table)
         if (file.length() < 2 * SECTOR_BYTES) {
             sizeDelta += 2 * SECTOR_BYTES - file.length();
-            GlowServer.logger.warning("Region \"" + path + "\" under 8K: " + file.length() + " increasing by " + (2 * SECTOR_BYTES - file.length()));
+            if (lastModified != 0) {
+                // only give a warning if the region file existed beforehand
+                GlowServer.logger.warning("Region \"" + path + "\" under 8K: " + file.length() + " increasing by " + (2 * SECTOR_BYTES - file.length()));
+            }
 
             for (long i = file.length(); i < 2 * SECTOR_BYTES; ++i) {
                 file.write(0);

@@ -286,12 +286,13 @@ public final class GlowChunk implements Chunk {
             return false;
         }
         
-        if (save && !world.getChunkManager().forceSave(x, z)) {
+        if (save && !world.getChunkManager().performSave(this)) {
             return false;
         }
 
         sections = null;
         biomes = null;
+        tileEntities.clear();
         return true;
     }
 

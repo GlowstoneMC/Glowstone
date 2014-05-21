@@ -53,6 +53,11 @@ public final class GlowWorld implements World {
     public static final long DAY_LENGTH = 24000;
 
     /**
+     * The length in ticks between autosaves (5 minutes).
+     */
+    private static final int AUTOSAVE_TIME = 20 * 60 * 5;
+
+    /**
      * The server of this world.
      */
     private final GlowServer server;
@@ -185,7 +190,7 @@ public final class GlowWorld implements World {
     /**
      * The time until the next full-save.
      */
-    private int saveTimer = 0;
+    private int saveTimer = AUTOSAVE_TIME;
 
     /**
      * The check to autosave
@@ -304,7 +309,6 @@ public final class GlowWorld implements World {
         }
         server.getLogger().log(Level.INFO, "Preparing spawn for {0}: done", name);
         EventFactory.onWorldLoad(this);
-        save();
     }
 
     @Override
@@ -383,7 +387,7 @@ public final class GlowWorld implements World {
         }
 
         if (--saveTimer <= 0) {
-            saveTimer = 60 * 20;
+            saveTimer = AUTOSAVE_TIME;
             chunks.unloadOldChunks();
             if (autosave) {
                 save();
@@ -625,25 +629,22 @@ public final class GlowWorld implements World {
     public void save(boolean async) {
         EventFactory.onWorldSave(this);
 
-        if (async) {
-            server.getScheduler().runTaskAsynchronously(null, new Runnable() {
-                public void run() {
-                    for (GlowChunk chunk : chunks.getLoadedChunks()) {
-                        chunks.forceSave(chunk.getX(), chunk.getZ());
-                    }
-                }
-            });
-        } else {
-            for (GlowChunk chunk : chunks.getLoadedChunks()) {
-                chunks.forceSave(chunk.getX(), chunk.getZ());
-            }
-        }
+        // save metadata
+        writeWorldData(async);
 
+        // save chunks
+        maybeAsync(async, new Runnable() {
+            public void run() {
+                for (GlowChunk chunk : chunks.getLoadedChunks()) {
+                    chunks.performSave(chunk);
+                }
+            }
+        });
+
+        // save players
         for (GlowPlayer player : getRawPlayers()) {
             player.saveData(async);
         }
-
-        writeWorldData(async);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -718,7 +719,7 @@ public final class GlowWorld implements World {
     }
 
     public Chunk getChunkAt(Block block) {
-        return block.getChunk();
+        return getChunkAt(block.getX() >> 4, block.getZ() >> 4);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -729,7 +730,11 @@ public final class GlowWorld implements World {
     }
 
     public boolean isChunkLoaded(int x, int z) {
-        return getChunkAt(x, z).isLoaded();
+        return chunks.isChunkLoaded(x, z);
+    }
+
+    public boolean isChunkInUse(int x, int z) {
+        return chunks.isChunkInUse(x, z);
     }
 
     public Chunk[] getLoadedChunks() {
@@ -761,7 +766,7 @@ public final class GlowWorld implements World {
     }
 
     public boolean unloadChunk(int x, int z, boolean save, boolean safe) {
-        return getChunkAt(x, z).unload(save, safe);
+        return !isChunkLoaded(x, z) || getChunkAt(x, z).unload(save, safe);
     }
 
     public boolean unloadChunkRequest(int x, int z) {
@@ -806,10 +811,6 @@ public final class GlowWorld implements World {
 
     public ChunkSnapshot getEmptyChunkSnapshot(int x, int z, boolean includeBiome, boolean includeBiomeTempRain) {
         return new GlowChunkSnapshot.EmptySnapshot(x, z, this, includeBiome, includeBiomeTempRain);
-    }
-
-    public boolean isChunkInUse(int x, int z) {
-        return chunks.isChunkInUse(x, z);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1059,25 +1060,33 @@ public final class GlowWorld implements World {
     ////////////////////////////////////////////////////////////////////////////
     // Level data write
 
-    void writeWorldData(boolean async) {
-        if (async) {
-            server.getScheduler().runTaskAsynchronously(null, new Runnable() {
-                public void run() {
-                    try {
-                        storageProvider.getMetadataService().writeWorldData();
-                    } catch (IOException e) {
-                        server.getLogger().severe("Could not save metadata for world: " + getName());
-                        e.printStackTrace();
-                    }
+    /**
+     * Save the world data using the metadata service.
+     * @param async Whether to write asynchronously.
+     */
+    private void writeWorldData(boolean async) {
+        maybeAsync(async, new Runnable() {
+            public void run() {
+                try {
+                    storageProvider.getMetadataService().writeWorldData();
+                } catch (IOException e) {
+                    server.getLogger().severe("Could not save metadata for world: " + getName());
+                    e.printStackTrace();
                 }
-            });
-        } else {
-            try {
-                storageProvider.getMetadataService().writeWorldData();
-            } catch (IOException e) {
-                server.getLogger().severe("Could not save metadata for world: " + getName());
-                e.printStackTrace();
             }
+        });
+    }
+
+    /**
+     * Execute a runnable, optionally asynchronously.
+     * @param async Whether to run the runnable in an asynchronous task.
+     * @param runnable The runnable to run.
+     */
+    private void maybeAsync(boolean async, Runnable runnable) {
+        if (async) {
+            server.getScheduler().runTaskAsynchronously(null, runnable);
+        } else {
+            runnable.run();
         }
     }
 
