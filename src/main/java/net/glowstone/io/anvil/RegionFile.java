@@ -312,7 +312,7 @@ public class RegionFile {
             }
         }
         setTimestamp(x, z, (int) (System.currentTimeMillis() / 1000L));
-        file.getChannel().force(true);
+        //file.getChannel().force(true);
     }
 
     /* write a chunk data to the region file at specified sector number */

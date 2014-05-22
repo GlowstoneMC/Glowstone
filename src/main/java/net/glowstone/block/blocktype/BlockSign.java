@@ -1,5 +1,6 @@
 package net.glowstone.block.blocktype;
 
+import net.glowstone.GlowChunk;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.TESign;
@@ -22,8 +23,8 @@ public class BlockSign extends BlockType {
     }
 
     @Override
-    public TileEntity createTileEntity(GlowBlock block) {
-        return new TESign(block);
+    public TileEntity createTileEntity(GlowChunk chunk, int cx, int cy, int cz) {
+        return new TESign(chunk.getBlock(cx, cy, cz));
     }
 
     @Override

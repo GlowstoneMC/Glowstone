@@ -334,7 +334,7 @@ public final class GlowChunk implements Chunk {
         if (blockType == null) return;
 
         try {
-            TileEntity entity = blockType.createTileEntity(getBlock(cx, cy, cz));
+            TileEntity entity = blockType.createTileEntity(this, cx, cy, cz);
             if (entity == null) return;
 
             tileEntities.put(coordToIndex(cx, cz, cy), entity);

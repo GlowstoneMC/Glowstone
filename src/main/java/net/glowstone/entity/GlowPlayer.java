@@ -350,8 +350,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             if (value.size() == 1) {
                 session.send(value.get(0));
             } else if (value.size() > 1) {
-                BlockChangeMessage[] records = value.toArray(new BlockChangeMessage[value.size()]);
-                session.send(new MultiBlockChangeMessage(key.getX(), key.getZ(), records));
+                session.send(new MultiBlockChangeMessage(key.getX(), key.getZ(), value));
             }
         }
     }

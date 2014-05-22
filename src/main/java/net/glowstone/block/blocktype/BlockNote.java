@@ -1,5 +1,6 @@
 package net.glowstone.block.blocktype;
 
+import net.glowstone.GlowChunk;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.TENote;
 import net.glowstone.block.entity.TileEntity;
@@ -10,8 +11,8 @@ import org.bukkit.util.Vector;
 
 public class BlockNote extends BlockType {
     @Override
-    public TileEntity createTileEntity(GlowBlock block) {
-        return new TENote(block);
+    public TileEntity createTileEntity(GlowChunk chunk, int cx, int cy, int cz) {
+        return new TENote(chunk.getBlock(cx, cy, cz));
     }
 
     @Override

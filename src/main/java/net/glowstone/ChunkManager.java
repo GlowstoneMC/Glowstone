@@ -71,8 +71,15 @@ public final class ChunkManager {
      */
     public GlowChunk getChunk(int x, int z) {
         GlowChunk.Key key = new GlowChunk.Key(x, z);
-        // a simple new GlowChunk() does not allocate significant memory
-        return getOrCreate(chunks, key, new GlowChunk(world, x, z));
+        if (chunks.containsKey(key)) {
+            return chunks.get(key);
+        } else {
+            // only create chunk if it's not in the map already
+            GlowChunk chunk = new GlowChunk(world, x, z);
+            GlowChunk prev = chunks.putIfAbsent(key, chunk);
+            // if it was created in the intervening time, the earlier one wins
+            return prev == null ? chunk : prev;
+        }
     }
 
     /**
@@ -116,6 +123,9 @@ public final class ChunkManager {
             }
         } catch (Exception e) {
             GlowServer.logger.log(Level.SEVERE, "Error while loading chunk (" + x + "," + z + ")", e);
+            // an error in chunk reading may have left the chunk in an invalid state
+            // (i.e. double initialization errors), so it's forcibly unloaded here
+            chunk.unload(false, false);
         }
 
         // stop here if we can't generate

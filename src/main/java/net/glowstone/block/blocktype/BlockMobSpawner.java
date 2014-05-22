@@ -1,12 +1,12 @@
 package net.glowstone.block.blocktype;
 
-import net.glowstone.block.GlowBlock;
+import net.glowstone.GlowChunk;
 import net.glowstone.block.entity.TEMobSpawner;
 import net.glowstone.block.entity.TileEntity;
 
 public class BlockMobSpawner extends BlockType {
     @Override
-    public TileEntity createTileEntity(GlowBlock block) {
-        return new TEMobSpawner(block);
+    public TileEntity createTileEntity(GlowChunk chunk, int cx, int cy, int cz) {
+        return new TEMobSpawner(chunk.getBlock(cx, cy, cz));
     }
 }

@@ -94,16 +94,18 @@ public final class AnvilChunkIoService implements ChunkIoService {
         // read tile entities
         List<CompoundTag> storedTileEntities = levelTag.getCompoundList("TileEntities");
         for (CompoundTag tileEntityTag : storedTileEntities) {
-            TileEntity tileEntity = chunk.getBlock(
-                    tileEntityTag.getInt("x"),
-                    tileEntityTag.getInt("y"),
-                    tileEntityTag.getInt("z")).getTileEntity();
+            int tx = tileEntityTag.getInt("x");
+            int ty = tileEntityTag.getInt("y");
+            int tz = tileEntityTag.getInt("z");
+            TileEntity tileEntity = chunk.getEntity(tx & 0xf, ty, tz & 0xf);
             if (tileEntity != null) {
                 try {
                     tileEntity.loadNbt(tileEntityTag);
                 } catch (Exception ex) {
                     GlowServer.logger.log(Level.SEVERE, "Error loading TileEntity at " + tileEntity.getBlock(), ex);
                 }
+            } else {
+                GlowServer.logger.warning("No tile entity at " + chunk.getWorld() + "," + tx + "," + ty + "," + tz);
             }
         }
 

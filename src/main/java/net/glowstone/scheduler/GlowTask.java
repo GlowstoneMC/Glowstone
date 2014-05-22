@@ -62,6 +62,10 @@ public class GlowTask extends FutureTask<Void> implements BukkitTask, BukkitWork
      */
     private volatile TaskExecutionState lastExecutionState = TaskExecutionState.WAIT;
 
+    /**
+     * A description of the runnable assigned to this task.
+     */
+    private final String description;
 
     /**
      * Creates a new task with the specified number of ticks between
@@ -70,11 +74,22 @@ public class GlowTask extends FutureTask<Void> implements BukkitTask, BukkitWork
     public GlowTask(Plugin owner, Runnable task, boolean sync, long delay, long period) {
         super(task, null);
         this.taskId = nextTaskId.getAndIncrement();
+        this.description = task.toString();
         this.owner = owner;
         this.delay = delay;
         this.period = period;
         this.counter = 0;
         this.sync = sync;
+    }
+
+    @Override
+    public String toString() {
+        return "GlowTask{" +
+                "id=" + taskId +
+                ", plugin=" + owner +
+                ", sync=" + sync +
+                ": " + description +
+                '}';
     }
 
     /**
@@ -162,7 +177,7 @@ public class GlowTask extends FutureTask<Void> implements BukkitTask, BukkitWork
             get();
         } catch (ExecutionException ex) {
             Logger log = owner == null ? GlowServer.logger : owner.getLogger();
-            log.log(Level.SEVERE, "Error occurred while executing " + (isSync() ? "sync" : "async") + " task " + getTaskId(), ex.getCause());
+            log.log(Level.SEVERE, "Error while executing " + this, ex.getCause());
         } catch (InterruptedException e) {
             // Task is already done, see the fact that we're in done() method
         }

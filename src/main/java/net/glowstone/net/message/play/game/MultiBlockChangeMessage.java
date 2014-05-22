@@ -3,13 +3,14 @@ package net.glowstone.net.message.play.game;
 import com.flowpowered.networking.Message;
 
 import java.util.Arrays;
+import java.util.List;
 
 public final class MultiBlockChangeMessage implements Message {
 
     private final int chunkX, chunkZ;
-    private final BlockChangeMessage[] records;
+    private final List<BlockChangeMessage> records;
 
-    public MultiBlockChangeMessage(int chunkX, int chunkZ, BlockChangeMessage[] records) {
+    public MultiBlockChangeMessage(int chunkX, int chunkZ, List<BlockChangeMessage> records) {
         this.chunkX = chunkX;
         this.chunkZ = chunkZ;
         this.records = records;
@@ -23,7 +24,7 @@ public final class MultiBlockChangeMessage implements Message {
         return chunkZ;
     }
 
-    public BlockChangeMessage[] getRecords() {
+    public List<BlockChangeMessage> getRecords() {
         return records;
     }
 
@@ -32,7 +33,7 @@ public final class MultiBlockChangeMessage implements Message {
         return "MultiBlockChangeMessage{" +
                 "chunkX=" + chunkX +
                 ", chunkZ=" + chunkZ +
-                ", records=" + Arrays.toString(records) +
+                ", records=" + records +
                 '}';
     }
 }
