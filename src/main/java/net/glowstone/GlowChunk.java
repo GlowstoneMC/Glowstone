@@ -400,7 +400,13 @@ public final class GlowChunk implements Chunk {
                 // don't need to create chunk for air
                 return;
             } else {
-                section = new ChunkSection();
+                // create new ChunkSection for this y coordinate
+                int idx = y >> 4;
+                if (y < 0 || y >= DEPTH || idx >= sections.length) {
+                    // y is out of range somehow
+                    return;
+                }
+                sections[idx] = section = new ChunkSection();
             }
         }
 

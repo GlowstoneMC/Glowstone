@@ -9,6 +9,7 @@ import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.BlockPlacementMessage;
+import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.Action;
@@ -78,6 +79,13 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         if (!Objects.equals(holding, message.getHeldItem())) {
             // above handles cases where holding and/or message's item are null
             // todo: inform player their item is wrong
+            return;
+        }
+
+        // check that a block-click wasn't against air
+        if (clicked != null && clicked.getType() == Material.AIR) {
+            // inform the player their perception of reality is wrong
+            player.sendBlockChange(clicked.getLocation(), Material.AIR, (byte) 0);
             return;
         }
 
