@@ -6,6 +6,7 @@ import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.net.message.play.game.ChunkDataMessage;
+import net.glowstone.util.NibbleArray;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -95,38 +96,39 @@ public final class GlowChunk implements Chunk {
 
         // these probably should be made non-public
         public final byte[] types;
-        public final byte[] metaData;
-        public final byte[] skyLight;
-        public final byte[] blockLight;
+        public final NibbleArray metaData;
+        public final NibbleArray skyLight;
+        public final NibbleArray blockLight;
 
         /**
          * Create a new, empty ChunkSection.
          */
         public ChunkSection() {
             types = new byte[ARRAY_SIZE];
-            metaData = new byte[ARRAY_SIZE];
-            skyLight = new byte[ARRAY_SIZE];
-            blockLight = new byte[ARRAY_SIZE];
-            Arrays.fill(skyLight, (byte) 0xf);
+            metaData = new NibbleArray(ARRAY_SIZE);
+            skyLight = new NibbleArray(ARRAY_SIZE);
+            blockLight = new NibbleArray(ARRAY_SIZE);
+            skyLight.fill((byte) 0xf);
         }
 
         /**
-         * Create a ChunkSection with the specified chunk data.
+         * Create a ChunkSection with the specified chunk data. This
+         * ChunkSection assumes ownership of the arrays passed in, and they
+         * should not be further modified.
          */
-        public ChunkSection(byte[] types, byte[] metaData, byte[] skyLight, byte[] blockLight) {
-            if (types.length != ARRAY_SIZE || metaData.length != ARRAY_SIZE || skyLight.length != ARRAY_SIZE || blockLight.length != ARRAY_SIZE) {
-                throw new IllegalArgumentException("An array length was not " + ARRAY_SIZE + ": " + types.length + " " + metaData.length + " " + skyLight.length + " " + blockLight.length);
+        public ChunkSection(byte[] types, NibbleArray metaData, NibbleArray skyLight, NibbleArray blockLight) {
+            if (types.length != ARRAY_SIZE || metaData.size() != ARRAY_SIZE || skyLight.size() != ARRAY_SIZE || blockLight.size() != ARRAY_SIZE) {
+                throw new IllegalArgumentException("An array length was not " + ARRAY_SIZE + ": " + types.length + " " + metaData.size() + " " + skyLight.size() + " " + blockLight.size());
             }
             this.types = types;
             this.metaData = metaData;
             this.skyLight = skyLight;
             this.blockLight = blockLight;
-            /*System.arraycopy(types, 0, this.types, 0, ARRAY_SIZE);
-            System.arraycopy(metaData, 0, this.metaData, 0, ARRAY_SIZE);
-            System.arraycopy(skyLight, 0, this.skyLight, 0, ARRAY_SIZE);
-            System.arraycopy(blockLight, 0, this.blockLight, 0, ARRAY_SIZE);*/
         }
 
+        /**
+         * Calculate the index into internal arrays for the given coordinates.
+         */
         public int index(int x, int y, int z) {
             if (x < 0 || z < 0 || x >= WIDTH || z >= HEIGHT) {
                 throw new IndexOutOfBoundsException("Coords (x=" + x + ",z=" + z + ") out of section bounds");
@@ -134,6 +136,9 @@ public final class GlowChunk implements Chunk {
             return ((y & 0xf) << 8) | (z << 4) | x;
         }
 
+        /**
+         * Check whether the section is empty (all blocks are air).
+         */
         public boolean isEmpty() {
             for (byte type : types) {
                 if (type != 0) return false;
@@ -141,8 +146,11 @@ public final class GlowChunk implements Chunk {
             return true;
         }
 
+        /**
+         * Take a snapshot of this section which will not reflect future changes.
+         */
         public ChunkSection snapshot() {
-            return new ChunkSection(types.clone(), metaData.clone(), skyLight.clone(), blockLight.clone());
+            return new ChunkSection(types.clone(), metaData.snapshot(), skyLight.snapshot(), blockLight.snapshot());
         }
     }
     
@@ -438,7 +446,7 @@ public final class GlowChunk implements Chunk {
      */
     public int getMetaData(int x, int z, int y) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : section.metaData[section.index(x, y, z)];
+        return section == null ? 0 : section.metaData.get(section.index(x, y, z));
     }
 
     /**
@@ -453,7 +461,7 @@ public final class GlowChunk implements Chunk {
             throw new IllegalArgumentException("Metadata out of range: " + metaData);
         ChunkSection section = getSection(y);
         if (section == null) return;  // can't set metadata on an empty section
-        section.metaData[section.index(x, y, z)] = (byte) metaData;
+        section.metaData.set(section.index(x, y, z), (byte) metaData);
     }
 
     /**
@@ -465,7 +473,7 @@ public final class GlowChunk implements Chunk {
      */
     public byte getSkyLight(int x, int z, int y) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : section.skyLight[section.index(x, y, z)];
+        return section == null ? 0 : section.skyLight.get(section.index(x, y, z));
     }
 
     /**
@@ -478,7 +486,7 @@ public final class GlowChunk implements Chunk {
     public void setSkyLight(int x, int z, int y, int skyLight) {
         ChunkSection section = getSection(y);
         if (section == null) return;  // can't set light on an empty section
-        section.skyLight[section.index(x, y, z)] = (byte) skyLight;
+        section.skyLight.set(section.index(x, y, z), (byte) skyLight);
     }
 
     /**
@@ -490,7 +498,7 @@ public final class GlowChunk implements Chunk {
      */
     public byte getBlockLight(int x, int z, int y) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : section.blockLight[section.index(x, y, z)];
+        return section == null ? 0 : section.blockLight.get(section.index(x, y, z));
     }
 
     /**
@@ -503,7 +511,7 @@ public final class GlowChunk implements Chunk {
     public void setBlockLight(int x, int z, int y, int blockLight) {
         ChunkSection section = getSection(y);
         if (section == null) return;  // can't set light on an empty section
-        section.blockLight[section.index(x, y, z)] = (byte) blockLight;
+        section.blockLight.set(section.index(x, y, z), (byte) blockLight);
     }
 
     /**
@@ -650,31 +658,22 @@ public final class GlowChunk implements Chunk {
         }
 
         for (ChunkSection sec : sendSections) {
-            byte[] metaData = sec.metaData;
-            for (int i = 0; i < metaData.length; i += 2) {
-                byte meta1 = metaData[i];
-                byte meta2 = metaData[i + 1];
-                tileData[pos++] = (byte) ((meta2 << 4) | meta1);
-            }
+            byte[] metaData = sec.metaData.getRawData();
+            System.arraycopy(metaData, 0, tileData, pos, metaData.length);
+            pos += metaData.length;
         }
 
         for (ChunkSection sec : sendSections) {
-            byte[] blockLight = sec.blockLight;
-            for (int i = 0; i < blockLight.length; i += 2) {
-                byte light1 = blockLight[i];
-                byte light2 = blockLight[i + 1];
-                tileData[pos++] = (byte) ((light2 << 4) | light1);
-            }
+            byte[] blockLight = sec.blockLight.getRawData();
+            System.arraycopy(blockLight, 0, tileData, pos, blockLight.length);
+            pos += blockLight.length;
         }
 
         for (ChunkSection sec : sendSections) {
             if (!skylight) break;
-            byte[] skyLight = sec.skyLight;
-            for (int i = 0; i < skyLight.length; i += 2) {
-                byte light1 = skyLight[i];
-                byte light2 = skyLight[i + 1];
-                tileData[pos++] = (byte) ((light2 << 4) | light1);
-            }
+            byte[] skyLight = sec.skyLight.getRawData();
+            System.arraycopy(skyLight, 0, tileData, pos, skyLight.length);
+            pos += skyLight.length;
         }
 
         // additional data goes here using additionalBitmask

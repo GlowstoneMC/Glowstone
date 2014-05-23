@@ -115,17 +115,17 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
 
     public int getBlockData(int x, int y, int z) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : section.metaData[section.index(x, y, z)];
+        return section == null ? 0 : section.metaData.get(section.index(x, y, z));
     }
 
     public int getBlockSkyLight(int x, int y, int z) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : section.skyLight[section.index(x, y, z)];
+        return section == null ? 0 : section.skyLight.get(section.index(x, y, z));
     }
 
     public int getBlockEmittedLight(int x, int y, int z) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : section.blockLight[section.index(x, y, z)];
+        return section == null ? 0 : section.blockLight.get(section.index(x, y, z));
     }
 
     public int getHighestBlockYAt(int x, int z) {

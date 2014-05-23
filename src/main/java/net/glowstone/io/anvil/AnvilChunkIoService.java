@@ -6,6 +6,7 @@ import net.glowstone.GlowChunkSnapshot;
 import net.glowstone.GlowServer;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.io.ChunkIoService;
+import net.glowstone.util.NibbleArray;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
@@ -73,10 +74,10 @@ public final class AnvilChunkIoService implements ChunkIoService {
         for (CompoundTag sectionTag : sectionList) {
             int y = sectionTag.getByte("Y");
             byte[] types = sectionTag.getByteArray("Blocks");
-            byte[] data = sectionTag.getByteArray("Data");
-            byte[] blockLight = sectionTag.getByteArray("BlockLight");
-            byte[] skyLight = sectionTag.getByteArray("SkyLight");
-            sections[y] = new ChunkSection(types, expand(data), expand(skyLight), expand(blockLight));
+            NibbleArray data = new NibbleArray(sectionTag.getByteArray("Data"));
+            NibbleArray blockLight = new NibbleArray(sectionTag.getByteArray("BlockLight"));
+            NibbleArray skyLight = new NibbleArray(sectionTag.getByteArray("SkyLight"));
+            sections[y] = new ChunkSection(types, data, skyLight, blockLight);
         }
 
         // initialize the chunk
@@ -113,29 +114,6 @@ public final class AnvilChunkIoService implements ChunkIoService {
     }
 
     /**
-     * Expand a half-length array into a full-length array.
-     */
-    private byte[] expand(byte[] data) {
-        byte[] result = new byte[data.length * 2];
-        for (int i = 0; i < data.length; ++i) {
-            result[i * 2] = (byte) (data[i] & 0x0f);
-            result[i * 2 + 1] = (byte) ((data[i] & 0xf0) >> 4);
-        }
-        return result;
-    }
-
-    /**
-     * Shrink a full-length array into a half-length array.
-     */
-    private byte[] shrink(byte[] data) {
-        byte[] result = new byte[data.length / 2];
-        for (int i = 0; i < data.length; i += 2) {
-            result[i / 2] = (byte) ((data[i + 1] << 4) | data[i]);
-        }
-        return result;
-    }
-
-    /**
      * Writes a chunk to its region file.
      * @param chunk The {@link GlowChunk} to write from.
      * @throws IOException if an I/O error occurs.
@@ -165,9 +143,9 @@ public final class AnvilChunkIoService implements ChunkIoService {
             CompoundTag sectionTag = new CompoundTag();
             sectionTag.putByte("Y", i);
             sectionTag.putByteArray("Blocks", sec.types);
-            sectionTag.putByteArray("Data", shrink(sec.metaData));
-            sectionTag.putByteArray("BlockLight", shrink(sec.blockLight));
-            sectionTag.putByteArray("SkyLight", shrink(sec.skyLight));
+            sectionTag.putByteArray("Data", sec.metaData.getRawData());
+            sectionTag.putByteArray("BlockLight", sec.blockLight.getRawData());
+            sectionTag.putByteArray("SkyLight", sec.skyLight.getRawData());
 
             sectionTags.add(sectionTag);
         }
