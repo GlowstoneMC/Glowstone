@@ -24,6 +24,8 @@ public final class ItemTable {
         return INSTANCE;
     }
 
+    private ItemTable() {}
+
     ////////////////////////////////////////////////////////////////////////////
     // Data
 
@@ -44,9 +46,14 @@ public final class ItemTable {
         reg(Material.CHEST, new BlockChest());
 
         reg(Material.SIGN, new ItemSign());
-        reg(Material.SUGAR_CANE, new ItemPlaceAs(Material.SUGAR_CANE_BLOCK));
-        reg(Material.CAULDRON_ITEM, new ItemPlaceAs(Material.CAULDRON));
         reg(Material.REDSTONE, new ItemPlaceAs(Material.REDSTONE_WIRE));
+        reg(Material.SUGAR_CANE, new ItemPlaceAs(Material.SUGAR_CANE_BLOCK));
+        reg(Material.DIODE, new ItemPlaceAs(Material.DIODE_BLOCK_OFF));
+        reg(Material.BREWING_STAND_ITEM, new ItemPlaceAs(Material.BREWING_STAND));
+        reg(Material.CAULDRON_ITEM, new ItemPlaceAs(Material.CAULDRON));
+        reg(Material.FLOWER_POT_ITEM, new ItemPlaceAs(Material.FLOWER_POT));
+        reg(Material.SKULL_ITEM, new ItemPlaceAs(Material.SKULL));
+        reg(Material.REDSTONE_COMPARATOR, new ItemPlaceAs(Material.REDSTONE_COMPARATOR_OFF));
     }
 
     private void reg(Material material, ItemType type) {

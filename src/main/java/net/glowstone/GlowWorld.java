@@ -984,23 +984,22 @@ public final class GlowWorld implements World {
     ////////////////////////////////////////////////////////////////////////////
     // Explosions
 
-    public boolean createExplosion(Location loc, float power, boolean setFire) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     public boolean createExplosion(Location loc, float power) {
         return createExplosion(loc, power, false);
     }
 
-    public boolean createExplosion(double x, double y, double z, float power, boolean setFire) {
-        return createExplosion(new Location(this, x, y, z), power, setFire);
+    public boolean createExplosion(Location loc, float power, boolean setFire) {
+        return createExplosion(loc.getX(), loc.getY(), loc.getZ(), power, setFire, true);
     }
 
     public boolean createExplosion(double x, double y, double z, float power) {
-        return createExplosion(new Location(this, x, y, z), power, false);
+        return createExplosion(x, y, z, power, false, true);
     }
 
-    @Override
+    public boolean createExplosion(double x, double y, double z, float power, boolean setFire) {
+        return createExplosion(x, y, z, power, setFire, true);
+    }
+
     public boolean createExplosion(double x, double y, double z, float power, boolean setFire, boolean breakBlocks) {
         return false;
     }
