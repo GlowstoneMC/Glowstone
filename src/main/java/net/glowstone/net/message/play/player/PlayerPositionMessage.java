@@ -36,4 +36,15 @@ public final class PlayerPositionMessage extends PlayerUpdateMessage {
         location.setY(y);
         location.setZ(z);
     }
+
+    @Override
+    public String toString() {
+        return "PlayerPositionMessage{" +
+                "onGround=" + getOnGround() +
+                ", x=" + x +
+                ", y=" + y +
+                ", headY=" + headY +
+                ", z=" + z +
+                '}';
+    }
 }

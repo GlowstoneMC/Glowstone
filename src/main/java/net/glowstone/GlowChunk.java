@@ -208,7 +208,7 @@ public final class GlowChunk implements Chunk {
     }
 
     public GlowBlock getBlock(int x, int y, int z) {
-        return getWorld().getBlockAt(this.x << 4 | x, y, this.z << 4 | z);
+        return new GlowBlock(this, (this.x << 4) | (x & 0xf), y & 0xff, (this.z << 4) | (z & 0xf));
     }
 
     public Entity[] getEntities() {

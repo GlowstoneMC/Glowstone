@@ -7,7 +7,6 @@ import net.glowstone.io.WorldMetadataService;
 import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
 import net.glowstone.io.anvil.AnvilWorldStorageProvider;
-import net.glowstone.util.WeakValueMap;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -96,11 +95,6 @@ public final class GlowWorld implements World {
      * This world's Random instance.
      */
     private final Random random = new Random();
-
-    /**
-     * A map between locations and cached Block objects.
-     */
-    private final WeakValueMap<Location, GlowBlock> blockCache = new WeakValueMap<>();
 
     /**
      * The world populators for this world.
@@ -670,8 +664,7 @@ public final class GlowWorld implements World {
     // get block, chunk, id, highest methods with coords
 
     public GlowBlock getBlockAt(int x, int y, int z) {
-        Location blockLoc = new Location(this, x, y, z);
-        return blockCache.getOrCreate(blockLoc, new GlowBlock(getChunkAt(x >> 4, z >> 4), x, y, z));
+        return new GlowBlock(getChunkAt(x >> 4, z >> 4), x, y & 0xff, z);
     }
 
     public int getBlockTypeIdAt(int x, int y, int z) {

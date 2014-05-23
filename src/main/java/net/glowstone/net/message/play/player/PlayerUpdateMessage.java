@@ -22,4 +22,10 @@ public class PlayerUpdateMessage implements Message {
         // do nothing
     }
 
+    @Override
+    public String toString() {
+        return "PlayerUpdateMessage{" +
+                "onGround=" + onGround +
+                '}';
+    }
 }

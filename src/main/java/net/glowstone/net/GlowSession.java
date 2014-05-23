@@ -220,7 +220,9 @@ public final class GlowSession extends BasicSession {
         Message userListMessage = new UserListItemMessage(player.getPlayerListName(), true, 0);
         for (Player sendPlayer : server.getOnlinePlayers()) {
             ((GlowPlayer) sendPlayer).getSession().send(userListMessage);
-            send(new UserListItemMessage(sendPlayer.getPlayerListName(), true, 0));
+            if (sendPlayer != player) {
+                send(new UserListItemMessage(sendPlayer.getPlayerListName(), true, 0));
+            }
         }
     }
 

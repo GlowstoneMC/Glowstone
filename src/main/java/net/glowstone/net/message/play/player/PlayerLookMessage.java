@@ -25,4 +25,13 @@ public final class PlayerLookMessage extends PlayerUpdateMessage {
         location.setYaw(yaw);
         location.setPitch(pitch);
     }
+
+    @Override
+    public String toString() {
+        return "PlayerLookMessage{" +
+                "onGround=" + getOnGround() +
+                ", yaw=" + yaw +
+                ", pitch=" + pitch +
+                '}';
+    }
 }

@@ -335,16 +335,21 @@ public final class ChunkManager {
         }
     }
 
-    private Set<ChunkLock> getLockSet(GlowChunk.Key key) {
-        return getOrCreate(locks, key, new HashSet<ChunkLock>());
-    }
-
     /**
-     * Helper method for getting or creating a value in ConcurrentMap.
+     * Look up the set of locks on a given chunk.
+     * @param key The chunk key.
+     * @return The set of locks for that chunk.
      */
-    private <K, V> V getOrCreate(ConcurrentMap<K, V> map, K key, V def) {
-        V prev = map.putIfAbsent(key, def);
-        return prev == null ? def : prev;
+    private Set<ChunkLock> getLockSet(GlowChunk.Key key) {
+        if (locks.containsKey(key)) {
+            return locks.get(key);
+        } else {
+            // only create chunk if it's not in the map already
+            Set<ChunkLock> set = new HashSet<>();
+            Set<ChunkLock> prev = locks.putIfAbsent(key, set);
+            // if it was created in the intervening time, the earlier one wins
+            return prev == null ? set : prev;
+        }
     }
 
     /**
