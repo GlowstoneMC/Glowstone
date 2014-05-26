@@ -19,11 +19,13 @@ import net.glowstone.net.message.play.game.UserListItemMessage;
 import net.glowstone.net.message.play.player.BlockPlacementMessage;
 import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.HandshakeProtocol;
+import net.glowstone.net.protocol.LoginProtocol;
 import net.glowstone.net.protocol.PlayProtocol;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
+import java.net.InetSocketAddress;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Random;
@@ -58,6 +60,11 @@ public final class GlowSession extends BasicSession {
     private final Queue<Message> messageQueue = new ArrayDeque<>();
 
     /**
+     * The remote address of the connection.
+     */
+    private final InetSocketAddress address;
+
+    /**
      * The verify token used in authentication
      */
     private byte[] verifyToken;
@@ -84,7 +91,7 @@ public final class GlowSession extends BasicSession {
     private GlowPlayer player;
 
     /**
-     * Handling ping messages
+     * The ID of the last ping message sent, used to ensure the client responded correctly.
      */
     private int pingMessageId;
 
@@ -111,6 +118,7 @@ public final class GlowSession extends BasicSession {
     public GlowSession(GlowServer server, Channel channel) {
         super(channel, new HandshakeProtocol(server));
         this.server = server;
+        address = super.getAddress();
     }
 
     /**
@@ -181,6 +189,11 @@ public final class GlowSession extends BasicSession {
         previousPlacementTicks = 2;
     }
 
+    @Override
+    public InetSocketAddress getAddress() {
+        return address;
+    }
+
     /**
      * Gets the player associated with this session.
      * @return The player, or {@code null} if no player is associated with it.
@@ -208,7 +221,7 @@ public final class GlowSession extends BasicSession {
         }
         player.getWorld().getRawPlayers().add(player);
 
-        GlowServer.logger.info(player.getName() + " [" + getAddress() + "] connected, UUID: " + player.getUniqueId());
+        GlowServer.logger.info(player.getName() + " [" + address + "] connected, UUID: " + player.getUniqueId());
 
         // message and user list
         String message = EventFactory.onPlayerJoin(player).getJoinMessage();
@@ -233,7 +246,7 @@ public final class GlowSession extends BasicSession {
     @Override
     public ChannelFuture sendWithFuture(Message message) {
         writeTimeoutCounter = 0;
-        if (!getChannel().isActive()) {
+        if (!isActive()) {
             // discard messages sent if we're closed, since this happens a lot
             return null;
         }
@@ -280,14 +293,15 @@ public final class GlowSession extends BasicSession {
         if (player != null) {
             GlowServer.logger.log(Level.INFO, "Player {0} kicked: {1}", new Object[]{player.getName(), reason});
         } else {
-            GlowServer.logger.log(Level.INFO, "[{0}] kicked: {1}", new Object[]{getAddress(), reason});
+            GlowServer.logger.log(Level.INFO, "[{0}] kicked: {1}", new Object[]{address, reason});
         }
 
         // perform the kick, sending a kick message if possible
-        if (getProtocol().getCodecRegistration(KickMessage.class) == null) {
-            getChannel().close();
-        } else {
+        if (isActive() && (getProtocol() instanceof LoginProtocol || getProtocol() instanceof PlayProtocol)) {
+            // channel is both currently connected and in a protocol state allowing kicks
             sendWithFuture(new KickMessage(reason)).addListener(ChannelFutureListener.CLOSE);
+        } else {
+            getChannel().close();
         }
     }
 
@@ -300,7 +314,7 @@ public final class GlowSession extends BasicSession {
                 ((GlowPlayer) player).getSession().send(userListMessage);
             }
 
-            GlowServer.logger.info(player.getName() + " [" + getAddress() + "] lost connection");
+            GlowServer.logger.info(player.getName() + " [" + address + "] lost connection");
 
             String text = EventFactory.onPlayerQuit(player).getQuitMessage();
             if (text != null) {
@@ -404,9 +418,9 @@ public final class GlowSession extends BasicSession {
     @Override
     public String toString() {
         if (player != null) {
-            return player.getName() + "[" + getChannel().remoteAddress() + "]";
+            return player.getName() + "[" + address + "]";
         } else {
-            return "Unauthenticated[" + getChannel().remoteAddress() + "]";
+            return "[" + address + "]";
         }
     }
 }

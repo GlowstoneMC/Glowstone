@@ -384,7 +384,7 @@ public final class GlowWorld implements World {
             saveTimer = AUTOSAVE_TIME;
             chunks.unloadOldChunks();
             if (autosave) {
-                save();
+                save(true);
             }
         }
     }
@@ -617,7 +617,7 @@ public final class GlowWorld implements World {
     // force-save
 
     public void save() {
-        save(true);
+        save(false);
     }
 
     public void save(boolean async) {

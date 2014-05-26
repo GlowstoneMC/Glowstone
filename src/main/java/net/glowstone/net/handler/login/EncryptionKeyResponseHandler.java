@@ -153,7 +153,9 @@ public final class EncryptionKeyResponseHandler implements MessageHandler<GlowSe
                 session.getServer().getScheduler().runTask(null, new Runnable() {
                     @Override
                     public void run() {
-                        session.setPlayer(new GlowPlayer(session, name, uuid, properties));
+                        if (session.isActive()) {
+                            session.setPlayer(new GlowPlayer(session, name, uuid, properties));
+                        }
                     }
                 });
             } catch (Exception e) {
