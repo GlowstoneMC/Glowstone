@@ -6,6 +6,7 @@ import com.flowpowered.networking.MessageHandler;
 import com.flowpowered.networking.exception.IllegalOpcodeException;
 import com.flowpowered.networking.exception.UnknownPacketException;
 import com.flowpowered.networking.protocol.keyed.KeyedProtocol;
+import com.flowpowered.networking.service.CodecLookupService;
 import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -65,11 +66,15 @@ public abstract class GlowProtocol extends KeyedProtocol {
 
     @Override
     public <M extends Message> Codec.CodecRegistration getCodecRegistration(Class<M> clazz) {
-        Codec.CodecRegistration reg = getCodecLookupService(OUTBOUND).find(clazz);
-        if (reg == null) {
-            GlowServer.logger.warning("No codec to write: " + clazz.getSimpleName() + " in " + getName());
+        CodecLookupService service = getCodecLookupService(OUTBOUND);
+        if (service != null) {
+            Codec.CodecRegistration reg = service.find(clazz);
+            if (reg != null) {
+                return reg;
+            }
         }
-        return reg;
+        GlowServer.logger.warning("No codec to write: " + clazz.getSimpleName() + " in " + getName());
+        return null;
     }
 
     @Override

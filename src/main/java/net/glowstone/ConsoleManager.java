@@ -112,7 +112,7 @@ public final class ConsoleManager {
             logger.warning("Could not create log folder: " + parent);
         }
         Handler fileHandler = new RotatingFileHandler(logfile);
-        fileHandler.setFormatter(new DateOutputFormatter(FILE_DATE));
+        fileHandler.setFormatter(new DateOutputFormatter(FILE_DATE, false));
         logger.addHandler(fileHandler);
     }
 
@@ -337,7 +337,7 @@ public final class ConsoleManager {
 
     private class FancyConsoleHandler extends ConsoleHandler {
         public FancyConsoleHandler() {
-            setFormatter(new DateOutputFormatter(CONSOLE_DATE));
+            setFormatter(new DateOutputFormatter(CONSOLE_DATE, true));
             setOutputStream(System.out);
         }
 
@@ -385,6 +385,17 @@ public final class ConsoleManager {
             }
         }
 
+        private void checkRotate() {
+            if (rotate) {
+                String newFilename = calculateFilename();
+                if (!filename.equals(newFilename)) {
+                    filename = newFilename;
+                    logger.log(Level.INFO, "Log rotating to {0}...", filename);
+                    updateOutput();
+                }
+            }
+        }
+
         private String calculateFilename() {
             return template.replace("%D", dateFormat.format(new Date()));
         }
@@ -394,29 +405,25 @@ public final class ConsoleManager {
             if (!isLoggable(record)) {
                 return;
             }
+            checkRotate();
             super.publish(record);
             flush();
         }
 
         @Override
         public synchronized void flush() {
-            if (rotate) {
-                String newFilename = calculateFilename();
-                if (!filename.equals(newFilename)) {
-                    filename = newFilename;
-                    logger.log(Level.INFO, "Log rotating to {0}...", filename);
-                    updateOutput();
-                }
-            }
+            checkRotate();
             super.flush();
         }
     }
 
     private class DateOutputFormatter extends Formatter {
         private final SimpleDateFormat date;
+        private final boolean color;
 
-        public DateOutputFormatter(String pattern) {
+        public DateOutputFormatter(String pattern, boolean color) {
             this.date = new SimpleDateFormat(pattern);
+            this.color = color;
         }
 
         @Override
@@ -428,7 +435,11 @@ public final class ConsoleManager {
             builder.append(" [");
             builder.append(record.getLevel().getLocalizedName().toUpperCase());
             builder.append("] ");
-            builder.append(colorize(formatMessage(record)));
+            if (color) {
+                builder.append(colorize(formatMessage(record)));
+            } else {
+                builder.append(formatMessage(record));
+            }
             builder.append('\n');
 
             if (record.getThrown() != null) {

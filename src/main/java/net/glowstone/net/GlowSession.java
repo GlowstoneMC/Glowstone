@@ -25,7 +25,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.channels.ClosedChannelException;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Random;
@@ -349,17 +351,18 @@ public final class GlowSession extends BasicSession {
         }
 
         // let us know if the client has timed out yet
-        if (readTimeoutCounter >= TIMEOUT_TICKS)
+        if (readTimeoutCounter >= TIMEOUT_TICKS) {
             if (pingMessageId == 0 && getProtocol() instanceof PlayProtocol) {
                 pingMessageId = random.nextInt();
                 send(new PingMessage(pingMessageId));
-                readTimeoutCounter = 0;
             } else {
                 disconnect("Timed out");
             }
+            readTimeoutCounter = 0;
+        }
 
         // let the client know we haven't timed out yet
-        if (writeTimeoutCounter >= TIMEOUT_TICKS) {
+        if (writeTimeoutCounter >= TIMEOUT_TICKS && getProtocol() instanceof PlayProtocol) {
             pingMessageId = random.nextInt();
             send(new PingMessage(pingMessageId));
         }
@@ -398,7 +401,13 @@ public final class GlowSession extends BasicSession {
 
     @Override
     public void onOutboundThrowable(Throwable t) {
-        GlowServer.logger.log(Level.SEVERE, "Error in network output", t);
+        if (t.getClass() == IOException.class && "Broken pipe".equals(t.getMessage())) {
+            GlowServer.logger.log(Level.WARNING, "Error in network output: Broken pipe");
+        } else if (t.getClass() == ClosedChannelException.class) {
+            GlowServer.logger.log(Level.WARNING, "Error in network output: Closed channel");
+        } else {
+            GlowServer.logger.log(Level.SEVERE, "Error in network output", t);
+        }
     }
 
     @Override

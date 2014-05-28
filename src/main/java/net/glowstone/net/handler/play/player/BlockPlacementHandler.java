@@ -124,7 +124,7 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
 
         // if there's been a change in the held item, make it valid again
         if (holding != null) {
-            if (holding.getDurability() > holding.getType().getMaxDurability()) {
+            if (holding.getType().getMaxDurability() > 0 && holding.getDurability() > holding.getType().getMaxDurability()) {
                 holding.setAmount(holding.getAmount() - 1);
                 holding.setDurability((short) 0);
             }
