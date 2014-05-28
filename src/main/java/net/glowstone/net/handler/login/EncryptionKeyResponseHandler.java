@@ -153,6 +153,8 @@ public final class EncryptionKeyResponseHandler implements MessageHandler<GlowSe
                 session.getServer().getScheduler().runTask(null, new Runnable() {
                     @Override
                     public void run() {
+                        // isActive check here to break out early if player has disconnected
+                        // while waiting to be logged in
                         if (session.isActive()) {
                             session.setPlayer(new GlowPlayer(session, name, uuid, properties));
                         }

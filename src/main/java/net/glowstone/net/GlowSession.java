@@ -216,6 +216,15 @@ public final class GlowSession extends BasicSession {
 
         // login event
         this.player = player;
+        // isActive check here in case player disconnected after authentication,
+        // but before the GlowPlayer initialization was completed
+        if (!isActive()) {
+            // todo: we might be racing with the network thread here,
+            // could cause onDisconnect() logic to happen twice
+            onDisconnect();
+            return;
+        }
+
         PlayerLoginEvent event = EventFactory.onPlayerLogin(player);
         if (event.getResult() != PlayerLoginEvent.Result.ALLOWED) {
             disconnect(event.getKickMessage(), true);
@@ -401,10 +410,8 @@ public final class GlowSession extends BasicSession {
 
     @Override
     public void onOutboundThrowable(Throwable t) {
-        if (t.getClass() == IOException.class && "Broken pipe".equals(t.getMessage())) {
-            GlowServer.logger.log(Level.WARNING, "Error in network output: Broken pipe");
-        } else if (t.getClass() == ClosedChannelException.class) {
-            GlowServer.logger.log(Level.WARNING, "Error in network output: Closed channel");
+        if (t instanceof IOException && !isActive()) {
+            GlowServer.logger.log(Level.WARNING, "Error in output for inactive session: " + t);
         } else {
             GlowServer.logger.log(Level.SEVERE, "Error in network output", t);
         }

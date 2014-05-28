@@ -390,7 +390,8 @@ public final class ConsoleManager {
                 String newFilename = calculateFilename();
                 if (!filename.equals(newFilename)) {
                     filename = newFilename;
-                    logger.log(Level.INFO, "Log rotating to {0}...", filename);
+                    // note that the console handler doesn't see this message
+                    super.publish(new LogRecord(Level.INFO, "Log rotating to: " + filename));
                     updateOutput();
                 }
             }
@@ -407,7 +408,7 @@ public final class ConsoleManager {
             }
             checkRotate();
             super.publish(record);
-            flush();
+            super.flush();
         }
 
         @Override
