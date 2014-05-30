@@ -129,15 +129,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     // Properties
 
     public double getEyeHeight() {
-       return getEyeHeight(false);
+       return 0;
     }
 
     public double getEyeHeight(boolean ignoreSneaking) {
-        if (false /* TODO: sneaking */ || !ignoreSneaking) {
-            return 1.6;
-        } else {
-            return 1.4;
-        }
+        return getEyeHeight();
     }
 
     public Location getEyeLocation() {

@@ -43,7 +43,7 @@ public final class EventFactory {
      * @param event The event to throw.
      * @return the called event
      */
-    private static <T extends Event> T callEvent(final T event) {
+    public static <T extends Event> T callEvent(final T event) {
         final GlowServer server = (GlowServer) Bukkit.getServer();
 
         if (event.isAsynchronous()) {

@@ -26,9 +26,7 @@ import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -666,6 +664,19 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         updateMetadata();
+    }
+
+    public double getEyeHeight() {
+        return getEyeHeight(false);
+    }
+
+    public double getEyeHeight(boolean ignoreSneaking) {
+        // Height of player's eyes above feet. Matches CraftBukkit.
+        if (ignoreSneaking || !isSneaking()) {
+            return 1.62;
+        } else {
+            return 1.54;
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1334,7 +1345,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      */
     public void addChannel(String channel) {
         if (listeningChannels.add(channel)) {
-            // EventFactory.callEvent(new PlayerRegisterChannelEvent(this, channel));
+            EventFactory.callEvent(new PlayerRegisterChannelEvent(this, channel));
         }
     }
 
@@ -1344,7 +1355,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      */
     public void removeChannel(String channel) {
         if (listeningChannels.remove(channel)) {
-            // EventFactory.callEvent(new PlayerUnregisterChannelEvent(this, channel));
+            EventFactory.callEvent(new PlayerUnregisterChannelEvent(this, channel));
         }
     }
 

@@ -25,7 +25,7 @@ public final class NBTInputStream implements Closeable {
     private final DataInputStream is;
 
     /**
-     * Creates a new {@link NBTInputStream}, which will source its data
+     * Creates a new NBTInputStream, which will source its data
      * from the specified input stream. This assumes the stream is compressed.
      * @param is The input stream.
      * @throws IOException if an I/O error occurs.
@@ -35,7 +35,7 @@ public final class NBTInputStream implements Closeable {
     }
 
     /**
-     * Creates a new {@link NBTInputStream}, which sources its data from the
+     * Creates a new NBTInputStream, which sources its data from the
      * specified input stream. A flag must be passed which indicates if the
      * stream is compressed with GZIP or not.
      * @param is The input stream.

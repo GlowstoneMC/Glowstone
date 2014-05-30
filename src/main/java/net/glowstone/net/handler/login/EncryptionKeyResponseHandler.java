@@ -115,14 +115,15 @@ public final class EncryptionKeyResponseHandler implements MessageHandler<GlowSe
         public void run() {
             try {
                 URLConnection conn = new URL(postURL).openConnection();
-                InputStream is = conn.getInputStream();
                 JSONObject json;
-                try {
-                    json = (JSONObject) new JSONParser().parse(new InputStreamReader(is));
-                } catch (ParseException e) {
-                    GlowServer.logger.warning("Username \"" + username + "\" failed to authenticate!");
-                    session.disconnect("Failed to verify username!");
-                    return;
+                try (InputStream is = conn.getInputStream()) {
+                    try {
+                        json = (JSONObject) new JSONParser().parse(new InputStreamReader(is));
+                    } catch (ParseException e) {
+                        GlowServer.logger.warning("Username \"" + username + "\" failed to authenticate!");
+                        session.disconnect("Failed to verify username!");
+                        return;
+                    }
                 }
 
                 final String name = (String) json.get("name");

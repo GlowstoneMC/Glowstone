@@ -18,6 +18,9 @@ public class SecurityUtils {
         Security.addProvider(new BouncyCastleProvider());
     }
 
+    private SecurityUtils() {
+    }
+
     /**
      * Generate a RSA key pair
      */

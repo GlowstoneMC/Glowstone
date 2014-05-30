@@ -3,7 +3,7 @@ package net.glowstone.util;
 import java.util.UUID;
 
 /**
- * Todo: Javadocs for UuidUtils.
+ * Todo: Javadoc for UuidUtils.
  */
 public final class UuidUtils {
 

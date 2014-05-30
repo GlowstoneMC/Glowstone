@@ -12,7 +12,6 @@ final class LongTag extends Tag<Long> {
 
     /**
      * Creates the tag.
-     * @param name The name.
      * @param value The value.
      */
     public LongTag(long value) {

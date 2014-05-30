@@ -65,7 +65,6 @@ public final class CraftingManager implements Iterable<Recipe> {
                 return recipe;
             }
         }
-        
         return null;
     }
     
@@ -74,7 +73,7 @@ public final class CraftingManager implements Iterable<Recipe> {
      * @param material The fuel material.
      * @return The time in ticks, or 0 if that material does not burn.
      */
-    public int getFuelTime(int material) {
+    public int getFuelTime(Material material) {
         if (furnaceFuels.containsKey(material)) {
             return furnaceFuels.get(material);
         } else {
@@ -130,9 +129,9 @@ public final class CraftingManager implements Iterable<Recipe> {
             String[] shape = recipe.getShape();
             
             int rows = shape.length, cols = 0;
-            for (int row = 0; row < rows; ++row) {
-                if (shape[row].length() > cols) {
-                    cols = shape[row].length();
+            for (String row : shape) {
+                if (row.length() > cols) {
+                    cols = row.length();
                 }
             }
             
@@ -179,9 +178,9 @@ public final class CraftingManager implements Iterable<Recipe> {
                             break;
                         }
                     }
-                    
-                    for (int i = 0; i < accountedFor.length; ++i) {
-                        if (!accountedFor[i]) {
+
+                    for (boolean item : accountedFor) {
+                        if (!item) {
                             failed = true;
                             break;
                         }
@@ -210,7 +209,6 @@ public final class CraftingManager implements Iterable<Recipe> {
                     if (!accountedFor[i]) {
                         if (items[i] == null) {
                             accountedFor[i] = true;
-                            continue;
                         } else if (ingredient.getItemType() != items[i].getType()) {
                             failed = true;
                             break;

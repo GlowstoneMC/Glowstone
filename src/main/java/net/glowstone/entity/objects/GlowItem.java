@@ -39,7 +39,7 @@ public final class GlowItem extends GlowEntity implements Item {
     }
 
     /**
-     * Gets the item that this {@link GlowItem} represents.
+     * Gets the item that this GlowItem represents.
      * @return The item.
      */
     public ItemStack getItemStack() {

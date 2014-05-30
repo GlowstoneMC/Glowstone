@@ -7,7 +7,7 @@ import java.util.Date;
 /**
  * Implementation of BanEntry.
  */
-class GlowBanEntry implements BanEntry, Cloneable {
+final class GlowBanEntry implements BanEntry, Cloneable {
 
     private final GlowBanList list;
     private final String target;

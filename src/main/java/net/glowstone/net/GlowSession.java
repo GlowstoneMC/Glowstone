@@ -27,7 +27,6 @@ import org.bukkit.event.player.PlayerLoginEvent;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.nio.channels.ClosedChannelException;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Random;

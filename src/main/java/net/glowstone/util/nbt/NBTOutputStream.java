@@ -25,7 +25,7 @@ public final class NBTOutputStream implements Closeable {
     private final DataOutputStream os;
 
     /**
-     * Creates a new {@link NBTOutputStream}, which will write data to the
+     * Creates a new NBTOutputStream, which will write data to the
      * specified underlying output stream. This assumes the output stream
      * should be compressed with GZIP.
      * @param os The output stream.
@@ -36,7 +36,7 @@ public final class NBTOutputStream implements Closeable {
     }
 
     /**
-     * Creates a new {@link NBTOutputStream}, which will write data to the
+     * Creates a new NBTOutputStream, which will write data to the
      * specified underlying output stream. A flag indicates if the output
      * should be compressed with GZIP or not.
      * @param os The output stream.

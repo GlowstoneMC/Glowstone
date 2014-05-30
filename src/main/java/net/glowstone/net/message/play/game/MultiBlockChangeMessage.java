@@ -2,7 +2,6 @@ package net.glowstone.net.message.play.game;
 
 import com.flowpowered.networking.Message;
 
-import java.util.Arrays;
 import java.util.List;
 
 public final class MultiBlockChangeMessage implements Message {

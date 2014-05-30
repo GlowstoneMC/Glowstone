@@ -27,10 +27,7 @@ public class GlowItemFactory implements ItemFactory {
     }
 
     public boolean isApplicable(ItemMeta meta, Material material) throws IllegalArgumentException {
-        if (meta == null || material == null) {
-            return false;
-        }
-        return toGlowMeta(meta).isApplicable(material);
+        return meta != null && material != null && toGlowMeta(meta).isApplicable(material);
     }
 
     public boolean equals(ItemMeta meta1, ItemMeta meta2) throws IllegalArgumentException {

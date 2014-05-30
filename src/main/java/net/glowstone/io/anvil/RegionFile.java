@@ -204,13 +204,11 @@ public class RegionFile {
         if (version == VERSION_GZIP) {
             byte[] data = new byte[length - 1];
             file.read(data);
-            DataInputStream ret = new DataInputStream(new GZIPInputStream(new ByteArrayInputStream(data)));
-            return ret;
+            return new DataInputStream(new GZIPInputStream(new ByteArrayInputStream(data)));
         } else if (version == VERSION_DEFLATE) {
             byte[] data = new byte[length - 1];
             file.read(data);
-            DataInputStream ret = new DataInputStream(new InflaterInputStream(new ByteArrayInputStream(data)));
-            return ret;
+            return new DataInputStream(new InflaterInputStream(new ByteArrayInputStream(data)));
         }
 
         throw new IOException("Unknown version");

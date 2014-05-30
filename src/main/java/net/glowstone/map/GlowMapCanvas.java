@@ -1,15 +1,14 @@
 package net.glowstone.map;
 
-import java.awt.Image;
-import java.util.Map;
-
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapCursorCollection;
 import org.bukkit.map.MapFont;
 
+import java.awt.*;
+
 /**
  * Represents a canvas for drawing to a map. Each canvas is associated with a
- * specific {@link MapRenderer} and represents that renderer's layer on the map.
+ * specific {@link org.bukkit.map.MapRenderer} and represents that renderer's layer on the map.
  */
 public final class GlowMapCanvas implements MapCanvas {
 

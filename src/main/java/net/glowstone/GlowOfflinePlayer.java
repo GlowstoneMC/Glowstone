@@ -119,8 +119,8 @@ public class GlowOfflinePlayer implements OfflinePlayer {
             // use name
             return Bukkit.getServer().getOfflinePlayer(val.get("name").toString());
         } else {
-            // use UUID - remove cast when possible
-            return ((GlowServer) Bukkit.getServer()).getOfflinePlayer(UUID.fromString(val.get("UUID").toString()));
+            // use UUID
+            return Bukkit.getServer().getOfflinePlayer(UUID.fromString(val.get("UUID").toString()));
         }
     }
 

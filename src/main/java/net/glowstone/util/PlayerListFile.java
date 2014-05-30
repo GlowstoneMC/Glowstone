@@ -38,11 +38,12 @@ public final class PlayerListFile {
     public void load() {
         list.clear();
         try {
-            Scanner input = new Scanner(file);
-            while (input.hasNextLine()) {
-                String line = input.nextLine().trim().toLowerCase();
-                if (line.length() > 0 && !list.contains(line)) {
-                    list.add(line);
+            try (Scanner input = new Scanner(file)) {
+                while (input.hasNextLine()) {
+                    String line = input.nextLine().trim().toLowerCase();
+                    if (line.length() > 0 && !list.contains(line)) {
+                        list.add(line);
+                    }
                 }
             }
             Collections.sort(list);

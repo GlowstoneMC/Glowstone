@@ -27,9 +27,16 @@ package net.glowstone.io.anvil;
  * Some changes have been made as part of the Glowstone project.
  */
 
-import java.io.*;
-import java.lang.ref.*;
-import java.util.*;
+import net.glowstone.GlowServer;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple cache and wrapper for efficiently accessing multiple RegionFiles simultaneously.
@@ -56,8 +63,8 @@ public class RegionFileCache {
             return ref.get();
         }
 
-        if (!regionDir.exists()) {
-            regionDir.mkdirs();
+        if (!regionDir.isDirectory() && !regionDir.mkdirs()) {
+            GlowServer.logger.warning("Failed to create directory: " + regionDir);
         }
 
         if (cache.size() >= MAX_CACHE_SIZE) {

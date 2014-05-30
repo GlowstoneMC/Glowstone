@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.UnsafeValues;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class GlowUnsafeValues implements UnsafeValues {
         for (Material mat : Material.values()) {
             materialNames.add(mat.name());
         }
-        return org.bukkit.util.StringUtil.copyPartialMatches(token, materialNames, completions);
+        return StringUtil.copyPartialMatches(token, materialNames, completions);
     }
 
     public ItemStack modifyItemStack(ItemStack stack, String arguments) {
@@ -64,6 +65,6 @@ public class GlowUnsafeValues implements UnsafeValues {
         for (Achievement achievement : achievements) {
             names.add(achievement.name());
         }
-        return org.bukkit.util.StringUtil.copyPartialMatches(token, names, completions);
+        return StringUtil.copyPartialMatches(token, names, completions);
     }
 }

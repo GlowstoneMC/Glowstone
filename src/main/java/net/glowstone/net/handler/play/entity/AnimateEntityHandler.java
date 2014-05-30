@@ -33,7 +33,7 @@ public final class AnimateEntityHandler implements MessageHandler<GlowSession, A
                 break;
             default:
                 // TODO: other things?
-                return;
+                break;
         }
     }
 }
