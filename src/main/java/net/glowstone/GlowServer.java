@@ -289,6 +289,10 @@ public final class GlowServer implements Server {
         consoleManager.startConsole(config.getBoolean(ServerConfig.Key.USE_JLINE));
         consoleManager.startFile(config.getString(ServerConfig.Key.LOG_FILE));
 
+        if (!getOnlineMode()) {
+            logger.log(Level.WARNING, "The server is running in offline mode! Only do this if you know what you're doing.");
+        }
+
         // Load player lists
         opsList.load();
         whitelist.load();
