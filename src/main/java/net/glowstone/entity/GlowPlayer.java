@@ -20,6 +20,7 @@ import net.glowstone.net.message.play.player.PlayerAbilitiesMessage;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextWrapper;
+import org.apache.commons.lang.Validate;
 import org.bukkit.*;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
 import org.bukkit.conversations.Conversation;
@@ -77,6 +78,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * A queue of BlockChangeMessages to be sent.
      */
     private final List<BlockChangeMessage> blockChanges = new LinkedList<>();
+
+    /**
+     * A queue of messages that should be sent after block changes are processed.
+     * Used for sign updates and other situations where the block must be sent first.
+     */
+    private final List<Message> afterBlockChanges = new LinkedList<>();
 
     /**
      * The set of plugin channels this player is listening on
@@ -351,6 +358,13 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             } else if (value.size() > 1) {
                 session.send(new MultiBlockChangeMessage(key.getX(), key.getZ(), value));
             }
+        }
+
+        // now send post-block-change messages
+        List<Message> postMessages = new ArrayList<>(afterBlockChanges);
+        afterBlockChanges.clear();
+        for (Message message : postMessages) {
+            session.send(message);
         }
     }
 
@@ -1056,11 +1070,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     public void sendSignChange(Location location, String[] lines) throws IllegalArgumentException {
-        if (lines.length != 4) {
-            throw new IllegalArgumentException("lines.length != 4");
-        }
-        // todo: maybe check for non-null?
-        session.send(new UpdateSignMessage(location.getBlockX(), location.getBlockY(), location.getBlockZ(), lines));
+        Validate.notNull(location, "location cannot be null");
+        Validate.notNull(lines, "lines cannot be null");
+        Validate.isTrue(lines.length == 4, "lines.length must equal 4");
+
+        afterBlockChanges.add(new UpdateSignMessage(location.getBlockX(), location.getBlockY(), location.getBlockZ(), lines));
     }
 
     public void sendMap(MapView map) {
