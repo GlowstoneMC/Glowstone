@@ -13,27 +13,27 @@ public final class AnimateEntityHandler implements MessageHandler<GlowSession, A
     public void handle(GlowSession session, AnimateEntityMessage message) {
         final GlowPlayer player = session.getPlayer();
 
+        // todo: handle more animation types
+        if (message.getAnimation() != AnimateEntityMessage.IN_SWING_ARM) {
+            player.getServer().getLogger().info("Unhandled animation " + message.getAnimation() + " from " + player.getName());
+            return;
+        }
+
         Block block = player.getTargetBlock(null, 6);
         if (block == null || block.getTypeId() == 0) {
             if (EventFactory.onPlayerInteract(player, Action.LEFT_CLICK_AIR).isCancelled())
-                return; // TODO: Item interactions
+                return;
+            // todo: item interactions with air
         }
 
-        if (EventFactory.onPlayerAnimate(player).isCancelled())
-            return;
-
-        switch (message.getAnimation()) {
-            case AnimateEntityMessage.ANIMATION_SWING_ARM:
-                AnimateEntityMessage toSend = new AnimateEntityMessage(player.getEntityId(), AnimateEntityMessage.ANIMATION_SWING_ARM);
-                for (GlowPlayer observer : player.getWorld().getRawPlayers()) {
-                    if (observer != player && observer.canSee((GlowEntity) player)) {
-                        observer.getSession().send(toSend);
-                    }
+        if (!EventFactory.onPlayerAnimate(player).isCancelled()) {
+            // play the animation to others
+            AnimateEntityMessage toSend = new AnimateEntityMessage(player.getEntityId(), AnimateEntityMessage.OUT_SWING_ARM);
+            for (GlowPlayer observer : player.getWorld().getRawPlayers()) {
+                if (observer != player && observer.canSee((GlowEntity) player)) {
+                    observer.getSession().send(toSend);
                 }
-                break;
-            default:
-                // TODO: other things?
-                break;
+            }
         }
     }
 }

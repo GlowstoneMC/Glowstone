@@ -222,6 +222,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             gameMode |= 0x8;
         }
         session.send(new JoinGameMessage(getEntityId(), gameMode, world.getEnvironment().getId(), world.getDifficulty().getValue(), session.getServer().getMaxPlayers(), type));
+        setAllowFlight(getGameMode() == GameMode.CREATIVE);
 
         // send server brand and supported plugin channels
         session.send(new PluginMessage("MC|Brand", server.getName()));
