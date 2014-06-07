@@ -5,10 +5,7 @@ import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
-import org.bukkit.BanList;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -163,7 +160,7 @@ public final class EventFactory {
     }
 
     public static BlockDamageEvent onBlockDamage(Player player, Block block) {
-        return onBlockDamage(player, block, player.getItemInHand(), false);
+        return onBlockDamage(player, block, player.getItemInHand(), player.getGameMode() == GameMode.CREATIVE);
     }
 
     public static BlockDamageEvent onBlockDamage(Player player, Block block, ItemStack tool, boolean instaBreak) {

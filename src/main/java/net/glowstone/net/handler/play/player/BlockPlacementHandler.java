@@ -5,6 +5,7 @@ import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
+import net.glowstone.block.entity.TileEntity;
 import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
@@ -135,12 +136,16 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         player.setItemInHand(holding);
     }
 
-    private static boolean selectResult(Event.Result result, boolean def) {
+    static boolean selectResult(Event.Result result, boolean def) {
         return result == Event.Result.DEFAULT ? def : result == Event.Result.ALLOW;
     }
 
-    private static void revert(GlowPlayer player, GlowBlock target) {
+    static void revert(GlowPlayer player, GlowBlock target) {
         player.sendBlockChange(target.getLocation(), target.getType(), target.getData());
+        TileEntity entity = target.getTileEntity();
+        if (entity != null) {
+            entity.update(player);
+        }
     }
 
     static BlockFace convertFace(int direction) {
