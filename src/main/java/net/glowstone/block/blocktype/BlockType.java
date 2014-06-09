@@ -9,6 +9,7 @@ import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
@@ -142,6 +143,10 @@ public class BlockType extends ItemType {
 
         // perform the block change
         newState.update(true);
+
+        // play a sound effect
+        // todo: vary sound effect based on block type
+        target.getWorld().playSound(target.getLocation(), Sound.DIG_WOOD, 1, 1);
 
         // do any after-place actions
         afterPlace(player, target, holding);

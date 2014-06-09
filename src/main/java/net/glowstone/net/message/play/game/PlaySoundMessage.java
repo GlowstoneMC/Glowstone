@@ -5,10 +5,10 @@ import com.flowpowered.networking.Message;
 public final class PlaySoundMessage implements Message {
 
     private final String sound;
-    private final int x, y, z;
+    private final double x, y, z;
     private final float volume, pitch;
 
-    public PlaySoundMessage(String sound, int x, int y, int z, float volume, float pitch) {
+    public PlaySoundMessage(String sound, double x, double y, double z, float volume, float pitch) {
         this.sound = sound;
         this.x = x;
         this.y = y;
@@ -21,15 +21,15 @@ public final class PlaySoundMessage implements Message {
         return sound;
     }
 
-    public int getX() {
+    public double getX() {
         return x;
     }
 
-    public int getY() {
+    public double getY() {
         return y;
     }
 
-    public int getZ() {
+    public double getZ() {
         return z;
     }
 
