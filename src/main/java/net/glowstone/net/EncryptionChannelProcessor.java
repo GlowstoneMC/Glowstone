@@ -1,29 +1,36 @@
 package net.glowstone.net;
 
 import com.flowpowered.networking.processor.simple.SimpleMessageProcessor;
-import org.bouncycastle.crypto.BufferedBlockCipher;
-import org.bouncycastle.crypto.CipherParameters;
-import org.bouncycastle.crypto.engines.AESEngine;
-import org.bouncycastle.crypto.modes.CFBBlockCipher;
-import org.bouncycastle.crypto.params.KeyParameter;
-import org.bouncycastle.crypto.params.ParametersWithIV;
+import net.glowstone.GlowServer;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.ShortBufferException;
+import javax.crypto.spec.IvParameterSpec;
+import java.security.GeneralSecurityException;
+import java.util.logging.Level;
 
 public class EncryptionChannelProcessor extends SimpleMessageProcessor {
 
     private CryptBuf encodeBuf;
     private CryptBuf decodeBuf;
 
-    public EncryptionChannelProcessor(byte[] sharedSecret, int capacity) {
+    public EncryptionChannelProcessor(SecretKey sharedSecret, int capacity) {
         super(capacity);
 
-        CipherParameters parameters = new ParametersWithIV(new KeyParameter(sharedSecret), sharedSecret);
-        BufferedBlockCipher encode = new BufferedBlockCipher(new CFBBlockCipher(new AESEngine(), 8));
-        BufferedBlockCipher decode = new BufferedBlockCipher(new CFBBlockCipher(new AESEngine(), 8));
-        encode.init(true, parameters);
-        decode.init(false, parameters);
+        try {
+            Cipher encode = Cipher.getInstance("AES/CFB8/NoPadding");
+            Cipher decode = Cipher.getInstance("AES/CFB8/NoPadding");
+            encode.init(Cipher.ENCRYPT_MODE, sharedSecret, new IvParameterSpec(sharedSecret.getEncoded()));
+            decode.init(Cipher.DECRYPT_MODE, sharedSecret, new IvParameterSpec(sharedSecret.getEncoded()));
 
-        this.encodeBuf = new CryptBuf(encode, capacity * 2);
-        this.decodeBuf = new CryptBuf(decode, capacity * 2);
+            this.encodeBuf = new CryptBuf(encode, capacity * 2);
+            this.decodeBuf = new CryptBuf(decode, capacity * 2);
+        } catch (GeneralSecurityException e) {
+            // should never happen
+            GlowServer.logger.log(Level.SEVERE, "Failed to initialize encrypted channel", e);
+            throw new AssertionError(e);
+        }
     }
 
     @Override
@@ -47,12 +54,12 @@ public class EncryptionChannelProcessor extends SimpleMessageProcessor {
     }
 
     private static class CryptBuf {
-        private final BufferedBlockCipher cipher;
+        private final Cipher cipher;
         private final byte[] buffer;
         private int writePosition;
         private int readPosition;
 
-        private CryptBuf(BufferedBlockCipher cipher, int bufSize) {
+        private CryptBuf(Cipher cipher, int bufSize) {
             this.cipher = cipher;
             this.buffer = new byte[bufSize];
         }
@@ -72,7 +79,12 @@ public class EncryptionChannelProcessor extends SimpleMessageProcessor {
             if (readPosition < writePosition) {
                 throw new IllegalStateException("Stored data must be completely read before writing more data");
             }
-            writePosition = cipher.processBytes(src, 0, length, buffer, 0);
+            try {
+                writePosition = cipher.update(src, 0, length, buffer, 0);
+            } catch (ShortBufferException e) {
+                // should never happen
+                GlowServer.logger.log(Level.SEVERE, "Encryption buffer was too short", e);
+            }
             readPosition = 0;
         }
     }

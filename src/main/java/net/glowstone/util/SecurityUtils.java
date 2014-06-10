@@ -1,7 +1,6 @@
 package net.glowstone.util;
 
 import net.glowstone.GlowServer;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.security.*;
 import java.security.spec.X509EncodedKeySpec;
@@ -13,10 +12,6 @@ import java.util.logging.Level;
 public class SecurityUtils {
 
     private static SecureRandom random = new SecureRandom();
-
-    static {
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     private SecurityUtils() {
     }
