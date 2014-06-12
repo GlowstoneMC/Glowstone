@@ -19,6 +19,8 @@ public enum TagType {
     DOUBLE("Double", DoubleTag.class, double.class),
     BYTE_ARRAY("Byte_Array", ByteArrayTag.class, byte[].class),
     STRING("String", StringTag.class, String.class),
+    // javac complains about this because ListTag is generic
+    @SuppressWarnings("unchecked")
     LIST("List", ListTag.class, List.class),
     COMPOUND("Compound", CompoundTag.class, Map.class),
     INT_ARRAY("Int_Array", IntArrayTag.class, int[].class);
