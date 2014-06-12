@@ -29,7 +29,7 @@ public final class ItemTable {
     ////////////////////////////////////////////////////////////////////////////
     // Data
 
-    private final Map<Integer, ItemType> idToType = new HashMap<>();
+    private final Map<Integer, ItemType> idToType = new HashMap<>(512);
 
     private int nextBlockId, nextItemId;
 
