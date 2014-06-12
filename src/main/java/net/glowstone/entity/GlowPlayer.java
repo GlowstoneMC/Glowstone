@@ -248,8 +248,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         updateInventory(); // send inventory contents
 
         // send initial location
-        double y = location.getY() + getEyeHeight() + 0.05;
-        session.send(new PositionRotationMessage(location.getX(), y, location.getZ(), location.getYaw(), location.getPitch(), true));
+        session.send(new PositionRotationMessage(location, getEyeHeight() + 0.05, true));
     }
 
     @Override
@@ -450,6 +449,64 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         previousChunks.clear();
+    }
+
+    /**
+     * Spawn the player at the given location after they have already joined.
+     * Used for changing worlds and respawning after death.
+     * @param location The location to place the player.
+     */
+    private void spawnAt(Location location) {
+        // switch worlds
+        GlowWorld oldWorld = world;
+        world.getEntityManager().deallocate(this);
+        world = (GlowWorld) location.getWorld();
+        world.getEntityManager().allocate(this);
+
+        // switch chunk set
+        // no need to send chunk unload messages - respawn unloads all chunks
+        knownChunks.clear();
+        chunkLock.clear();
+        chunkLock = world.newChunkLock(getName());
+
+        // spawn into world
+        String type = world.getWorldType().getName().toLowerCase();
+        session.send(new RespawnMessage(world.getEnvironment().getId(), world.getDifficulty().getValue(), getGameMode().getValue(), type));
+        setRawLocation(location); // take us to spawn position
+        streamBlocks(); // stream blocks
+        setCompassTarget(world.getSpawnLocation()); // set our compass target
+        session.send(new PositionRotationMessage(location, getEyeHeight() + 0.05, true));
+        sendWeather();
+        reset();
+
+        // fire world change if needed
+        if (oldWorld != world) {
+            EventFactory.callEvent(new PlayerChangedWorldEvent(this, oldWorld));
+        }
+    }
+
+    /**
+     * Respawn the player after they have died.
+     */
+    public void respawn() {
+        // restore health
+        setHealth(getMaxHealth());
+
+        // determine spawn destination
+        boolean spawnAtBed = false;
+        Location dest = world.getSpawnLocation();
+        if (bedSpawn != null) {
+            if (bedSpawn.getBlock().getType() == Material.BED_BLOCK) {
+                // todo: spawn next to the bed instead of inside it
+                dest = bedSpawn.clone();
+                spawnAtBed = true;
+            }
+        }
+
+        // fire event and perform spawn
+        PlayerRespawnEvent event = new PlayerRespawnEvent(this, dest, spawnAtBed);
+        EventFactory.callEvent(event);
+        spawnAt(event.getRespawnLocation());
     }
 
     /**
@@ -897,37 +954,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             location = event.getTo();
         }
 
-        // account for floating point shenanigans in client physics
-        double y = location.getY() + getEyeHeight() + 0.05;
-        PositionRotationMessage message = new PositionRotationMessage(location.getX(), y, location.getZ(), location.getYaw(), location.getPitch(), true);
-
         if (location.getWorld() != world) {
-            GlowWorld oldWorld = world;
-            world.getEntityManager().deallocate(this);
-
-            world = (GlowWorld) location.getWorld();
-            world.getEntityManager().allocate(this);
-
-            for (GlowChunk.Key key : knownChunks) {
-                session.send(ChunkDataMessage.empty(key.getX(), key.getZ()));
-            }
-            knownChunks.clear();
-            chunkLock.clear();
-            chunkLock = world.newChunkLock(getName());
-
-            String type = world.getWorldType().getName().toLowerCase();
-            session.send(new RespawnMessage(world.getEnvironment().getId(), world.getDifficulty().getValue(), getGameMode().getValue(), type));
-            streamBlocks(); // stream blocks
-
-            setCompassTarget(world.getSpawnLocation()); // set our compass target
-            this.session.send(message);
-            this.location = location; // take us to spawn position
-            sendWeather();
-            reset();
-            EventFactory.onPlayerChangedWorld(this, oldWorld);
+            spawnAt(location);
         } else {
-            this.session.send(message);
-            this.location = location;
+            // y offset accounts for floating point shenanigans in client physics
+            session.send(new PositionRotationMessage(location, getEyeHeight() + 0.05, true));
+            setRawLocation(location);
             reset();
         }
 

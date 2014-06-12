@@ -12,7 +12,9 @@ public final class ClientStatusHandler implements MessageHandler<GlowSession, Cl
         final GlowPlayer player = session.getPlayer();
 
         switch (message.getAction()) {
-            // todo: handle RESPAWN
+            case ClientStatusMessage.RESPAWN:
+                player.respawn();
+                break;
 
             case ClientStatusMessage.REQUEST_STATS:
                 player.sendStats();

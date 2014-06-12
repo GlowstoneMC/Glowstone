@@ -137,10 +137,6 @@ public final class EventFactory {
         return callEvent(new PlayerPreLoginEvent(name, session.getAddress().getAddress()));
     }
 
-    public static PlayerChangedWorldEvent onPlayerChangedWorld(GlowPlayer player, GlowWorld fromWorld) {
-        return callEvent(new PlayerChangedWorldEvent(player, fromWorld));
-    }
-
     public static PlayerAnimationEvent onPlayerAnimate(GlowPlayer player) {
         return callEvent(new PlayerAnimationEvent(player));
     }
