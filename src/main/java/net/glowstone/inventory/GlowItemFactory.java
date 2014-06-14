@@ -31,7 +31,7 @@ public class GlowItemFactory implements ItemFactory {
     }
 
     public boolean equals(ItemMeta meta1, ItemMeta meta2) throws IllegalArgumentException {
-        // in the future, do fancy comparisons
+        // todo: do fancy comparisons
         return meta1 == meta2;
     }
 
@@ -85,7 +85,7 @@ public class GlowItemFactory implements ItemFactory {
      * Get a suitable ItemMeta for the material, reusing the provided meta if non-null and possible.
      */
     private GlowMetaItem makeMeta(Material material, GlowMetaItem meta) {
-        // in the future, more specific metas
+        // todo: more specific metas
         switch (material) {
             case AIR:
                 return null;

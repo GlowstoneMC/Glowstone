@@ -239,7 +239,7 @@ public final class GlowSession extends BasicSession {
             server.broadcastMessage(message);
         }
 
-        // todo: in the future, make actual ping measurements?
+        // todo: make actual ping measurements?
         Message userListMessage = new UserListItemMessage(player.getPlayerListName(), true, 0);
         for (Player sendPlayer : server.getOnlinePlayers()) {
             ((GlowPlayer) sendPlayer).getSession().send(userListMessage);

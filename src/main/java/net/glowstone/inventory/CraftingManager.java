@@ -87,7 +87,7 @@ public final class CraftingManager implements Iterable<Recipe> {
      * @param recipe A recipe known to match the items.
      */
     public void removeItems(ItemStack[] items, Recipe recipe) {
-        // TODO
+        // todo
     }
     
     /**

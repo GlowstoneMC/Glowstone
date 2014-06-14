@@ -839,7 +839,7 @@ public final class GlowWorld implements World {
     }
 
     public Item dropItem(Location location, ItemStack item) {
-        // TODO: maybe spawn special due to item-ness?
+        // todo: maybe spawn special due to item-ness?
         Item itemEntity = spawn(location, Item.class);
         itemEntity.setItemStack(item);
         return itemEntity;

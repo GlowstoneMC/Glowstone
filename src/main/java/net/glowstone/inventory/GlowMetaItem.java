@@ -136,7 +136,7 @@ class GlowMetaItem implements ItemMeta {
     }
 
     public void setLore(List<String> lore) {
-        // in the future, fancy validation things
+        // todo: fancy validation things
         this.lore = lore;
     }
 

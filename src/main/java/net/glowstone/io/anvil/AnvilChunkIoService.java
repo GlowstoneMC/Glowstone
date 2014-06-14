@@ -39,7 +39,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
      */
     private final RegionFileCache cache = new RegionFileCache(".mca");
 
-    // TODO: consider the session.lock file
+    // todo: consider the session.lock file
 
     public AnvilChunkIoService(File dir) {
         this.dir = dir;

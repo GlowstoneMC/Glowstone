@@ -107,7 +107,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             --airTicks;
             if (airTicks <= -20) {
                 airTicks = 0;
-                damage(1);  // be fancier in the future
+                // todo: indicate that the damage was caused by drowning
+                damage(1);
             }
         } else {
             airTicks = maximumAir;

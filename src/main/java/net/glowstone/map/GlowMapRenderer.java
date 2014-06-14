@@ -19,7 +19,7 @@ public final class GlowMapRenderer extends MapRenderer {
 
     @Override
     public void render(MapView map, MapCanvas canvas, Player player) {
-        // TODO
+        // todo
     }
     
 }

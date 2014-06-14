@@ -26,7 +26,7 @@ public final class GlowHelpMap implements HelpMap {
         helpTopics = new TreeMap<>(HelpTopicComparator.topicNameComparatorInstance());
         topicFactoryMap = new HashMap<>();
 
-        // in the future, filter the index topic removing aliases and optionally commands
+        // todo: filter the index topic removing aliases and optionally commands
         this.defaultTopic = new IndexHelpTopic("Index", null, null, helpTopics.values(), "Use /help [n] to get page n of help.");
     }
 

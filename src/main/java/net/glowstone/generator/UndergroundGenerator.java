@@ -16,7 +16,7 @@ import java.util.Random;
 public class UndergroundGenerator extends GlowChunkGenerator {
 
     public UndergroundGenerator() {
-        // TODO: populators
+        // todo: populators
         super();
     }
 

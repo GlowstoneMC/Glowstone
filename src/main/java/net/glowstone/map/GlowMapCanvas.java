@@ -39,7 +39,7 @@ public final class GlowMapCanvas implements MapCanvas {
         if (x < 0 || y < 0 || x >= MAP_SIZE || y >= MAP_SIZE) return;
         if (buffer[y * MAP_SIZE + x] != color) {
             buffer[y * MAP_SIZE + x] = color;
-            // TODO: mark dirty.
+            // todo: mark dirty
         }
     }
 

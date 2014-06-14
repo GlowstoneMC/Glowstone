@@ -88,7 +88,7 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
     // Internals
 
     private static Instrument instrumentOf(Material mat) {
-        // TODO: check more blocks.
+        // todo: check more blocks.
         switch (mat) {
             case WOOD:
             case NOTE_BLOCK:

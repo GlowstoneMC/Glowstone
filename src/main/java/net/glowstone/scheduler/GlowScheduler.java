@@ -163,7 +163,7 @@ public final class GlowScheduler implements BukkitScheduler {
     /**
      * Adds new tasks and updates existing tasks, removing them if necessary.
      * <p/>
-     * TODO: Add watchdog system to make sure ticks advance
+     * todo: Add watchdog system to make sure ticks advance
      */
     private void pulse() {
         primaryThread = Thread.currentThread();
