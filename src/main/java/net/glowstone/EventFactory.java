@@ -16,11 +16,9 @@ import org.bukkit.event.block.*;
 import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.server.ServerCommandEvent;
-import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.event.world.*;
 import org.bukkit.inventory.ItemStack;
 
-import java.net.InetAddress;
 import java.util.Collection;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -145,11 +143,11 @@ public final class EventFactory {
         return callEvent(new PlayerChatTabCompleteEvent(who, message, completions));
     }
 
-    // -- Block Events
-
     public static PlayerToggleSneakEvent onPlayerToggleSneak(Player player, boolean isSneaking) {
         return callEvent(new PlayerToggleSneakEvent(player, isSneaking));
     }
+
+    // -- Block Events
 
     public static BlockBreakEvent onBlockBreak(Block block, Player player) {
         return callEvent(new BlockBreakEvent(block, player));
@@ -182,10 +180,6 @@ public final class EventFactory {
     }
 
     // -- Server Events
-
-    public static ServerListPingEvent onServerListPing(InetAddress address, String message, int online, int max) {
-        return callEvent(new ServerListPingEvent(address, message, online, max));
-    }
 
     public static ServerCommandEvent onServerCommand(ConsoleCommandSender sender, String command) {
         return callEvent(new ServerCommandEvent(sender, command));

@@ -1,6 +1,7 @@
 package net.glowstone.net.handler.status;
 
 import com.flowpowered.networking.MessageHandler;
+import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.status.StatusRequestMessage;
@@ -24,7 +25,7 @@ public final class StatusRequestHandler implements MessageHandler<GlowSession, S
 
         StatusEvent event = new StatusEvent(address, server.getMotd(), online, server.getMaxPlayers());
         event.icon = server.getServerIcon();
-        server.getPluginManager().callEvent(event);
+        EventFactory.callEvent(event);
 
         // build the json
         JSONObject json = new JSONObject();
