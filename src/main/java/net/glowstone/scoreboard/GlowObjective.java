@@ -74,10 +74,15 @@ public final class GlowObjective implements Objective {
         scoreboard = null;
     }
 
-    public Score getScore(OfflinePlayer player) throws IllegalArgumentException, IllegalStateException {
+    public Score getScore(String entry) throws IllegalArgumentException, IllegalStateException {
         checkValid();
         // todo
         return null;
+    }
+
+    @Deprecated
+    public Score getScore(OfflinePlayer player) throws IllegalArgumentException, IllegalStateException {
+        return getScore(player.getName());
     }
 
     private void checkValid() {

@@ -120,18 +120,39 @@ public final class GlowScoreboard implements Scoreboard {
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    // Players/scores
+    // Scores
 
+    public Set<String> getEntries() {
+        return null;
+    }
+
+    public Set<Score> getScores(String entry) throws IllegalArgumentException {
+        Validate.notNull(entry, "Entry cannot be null");
+        return null;
+    }
+
+    public void resetScores(String entry) throws IllegalArgumentException {
+
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // OfflinePlayer methods
+
+    @Deprecated
+    public Set<OfflinePlayer> getPlayers() {
+        // should return Bukkit.getOfflinePlayer(name) for each name in getEntries()
+        return null;
+    }
+
+    @Deprecated
     public Set<Score> getScores(OfflinePlayer player) throws IllegalArgumentException {
         Validate.notNull(player, "Player cannot be null");
-        return null;
+        return getScores(player.getName());
     }
 
+    @Deprecated
     public void resetScores(OfflinePlayer player) throws IllegalArgumentException {
         Validate.notNull(player, "Player cannot be null");
-    }
-
-    public Set<OfflinePlayer> getPlayers() {
-        return null;
+        resetScores(player.getName());
     }
 }
