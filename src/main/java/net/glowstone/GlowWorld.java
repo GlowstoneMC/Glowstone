@@ -11,6 +11,8 @@ import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
+import org.bukkit.event.weather.ThunderChangeEvent;
+import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemStack;
@@ -936,6 +938,13 @@ public final class GlowWorld implements World {
     }
 
     public void setStorm(boolean hasStorm) {
+        // call event
+        WeatherChangeEvent event = new WeatherChangeEvent(this, hasStorm);
+        if (EventFactory.callEvent(event).isCancelled()) {
+            return;
+        }
+
+        // change weather
         currentlyRaining = hasStorm;
 
         // Numbers borrowed from CraftBukkit.
@@ -945,6 +954,7 @@ public final class GlowWorld implements World {
             setWeatherDuration(random.nextInt(168000) + 12000);
         }
 
+        // update players
         for (GlowPlayer player : getRawPlayers()) {
             player.sendWeather();
         }
@@ -963,6 +973,13 @@ public final class GlowWorld implements World {
     }
 
     public void setThundering(boolean thundering) {
+        // call event
+        ThunderChangeEvent event = new ThunderChangeEvent(this, thundering);
+        if (EventFactory.callEvent(event).isCancelled()) {
+            return;
+        }
+
+        // change weather
         currentlyThundering = thundering;
 
         // Numbers borrowed from CraftBukkit.
