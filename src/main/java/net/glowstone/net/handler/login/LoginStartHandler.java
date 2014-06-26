@@ -30,7 +30,7 @@ public final class LoginStartHandler implements MessageHandler<GlowSession, Logi
             //Send created request message and wait for the response
             session.send(new EncryptionKeyRequestMessage(sessionId, publicKey, verifyToken));
         } else {
-            UUID uid = UUID.nameUUIDFromBytes(username.getBytes(StandardCharsets.UTF_8));
+            UUID uid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + username).getBytes(StandardCharsets.UTF_8));
             session.setPlayer(new GlowPlayer(session, username, uid, null));
         }
     }
