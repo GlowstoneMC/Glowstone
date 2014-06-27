@@ -21,6 +21,12 @@ public class PlayerStore extends HumanEntityStore<GlowPlayer> {
     @Override
     public void load(GlowPlayer entity, CompoundTag tag) {
         super.load(entity, tag);
+        if (tag.isInt("XpLevel")) {
+            entity.setLevel(tag.getInt("XpLevel"));
+        }
+        if (tag.isFloat("XpP")) {
+            entity.setExp(tag.getFloat("XpP"));
+        }
         if (tag.isInt("XpTotal")) {
             entity.setTotalExperience(tag.getInt("XpTotal"));
         }
@@ -52,9 +58,10 @@ public class PlayerStore extends HumanEntityStore<GlowPlayer> {
     public void save(GlowPlayer entity, CompoundTag tag) {
         super.save(entity, tag);
 
-        tag.putInt("XpTotal", entity.getTotalExperience());
-        tag.putInt("Xp", entity.getExperience());
         tag.putInt("XpLevel", entity.getLevel());
+        tag.putFloat("XpP", entity.getExp());
+        tag.putInt("XpTotal", entity.getTotalExperience());
+
         // ret.put("foodTickTimer", new IntTag("foodTickTimer", entity.get));
         tag.putFloat("foodSaturationLevel", entity.getSaturation());
         tag.putFloat("foodExhaustionLevel", entity.getExhaustion());

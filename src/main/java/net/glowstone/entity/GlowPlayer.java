@@ -118,12 +118,17 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * Cumulative amount of experience points the player has collected.
      */
-    private int experience = 0;
+    private int totalExperience = 0;
 
     /**
      * The current level (or skill point amount) of the player.
      */
     private int level = 0;
+
+    /**
+     * The progress made to the next level, from 0 to 1.
+     */
+    private float experience = 0;
 
     /**
      * The human entity's current food level
@@ -800,55 +805,47 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     ////////////////////////////////////////////////////////////////////////////
     // Experience and levelling
-    // todo: most of the exp stuff is pretty broken
-
-    public int getExperience() {
-        return experience % ((getLevel() + 1) * 7);
-    }
-
-    public void setExperience(int exp) {
-        setTotalExperience(experience - getExperience() + exp);
-    }
 
     public int getLevel() {
         return level;
     }
 
     public void setLevel(int level) {
-        experience = 0;
-        for (this.level = 0; this.level < level; ++this.level) {
-            experience += getExpToLevel();
-        }
+        this.level = Math.max(level, 0);
         sendExperience();
     }
 
     public int getTotalExperience() {
-        return experience;
+        return totalExperience;
     }
 
     public void setTotalExperience(int exp) {
-        int calcExperience = exp;
-        this.experience = exp;
-        level = 0;
-        while ((calcExperience -= getExpToLevel()) > 0) ++level;
+        this.totalExperience = Math.max(exp, 0);
         sendExperience();
     }
 
     public void giveExp(int xp) {
-        experience += xp;
-        while (experience > (getLevel() + 1) * 7) {
-            experience -= (getLevel() + 1) * 7;
-            ++level;
+        totalExperience += xp;
+
+        // gradually award levels based on xp points
+        float value = 1.0f / getExpToLevel();
+        for (int i = 0; i < xp; ++i) {
+            experience += value;
+            if (experience >= 1) {
+                experience -= 1;
+                value = 1.0f / getExpToLevel(++level);
+            }
         }
         sendExperience();
     }
 
     public float getExp() {
-        return (float) experience / getExpToLevel();
+        return experience;
     }
 
     public void setExp(float percentToLevel) {
-        experience = (int) (percentToLevel * getExpToLevel());
+        experience = Math.min(Math.max(percentToLevel, 0), 1);
+        sendExperience();
     }
 
     @Override
@@ -867,11 +864,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     public void giveExpLevels(int amount) {
-
+        setLevel(getLevel() + amount);
     }
 
     private void sendExperience() {
-        session.send(new ExperienceMessage(getExp(), (byte) getLevel(), (short) getTotalExperience()));
+        session.send(new ExperienceMessage(getExp(), getLevel(), getTotalExperience()));
     }
 
     ////////////////////////////////////////////////////////////////////////////
