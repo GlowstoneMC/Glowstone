@@ -5,6 +5,7 @@ import net.glowstone.GlowWorld;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.Location;
 
 public class ItemEntityStore extends EntityStore<GlowItem> {
 
@@ -14,7 +15,7 @@ public class ItemEntityStore extends EntityStore<GlowItem> {
 
     @Override
     public GlowItem load(GlowServer server, GlowWorld world, CompoundTag compound) {
-        GlowItem item = new GlowItem(server, world, null);
+        GlowItem item = new GlowItem(new Location(world, 0, 0, 0), null);
         load(item, compound);
         return item;
     }

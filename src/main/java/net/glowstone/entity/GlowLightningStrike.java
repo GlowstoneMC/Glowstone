@@ -1,10 +1,9 @@
 package net.glowstone.entity;
 
 import com.flowpowered.networking.Message;
-import net.glowstone.GlowServer;
-import net.glowstone.GlowWorld;
 import net.glowstone.net.message.play.entity.SpawnLightningStrikeMessage;
 import net.glowstone.util.Position;
+import org.bukkit.Location;
 import org.bukkit.entity.LightningStrike;
 
 import java.util.Arrays;
@@ -25,8 +24,8 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
      */
     private final int ticksToLive;
 
-    public GlowLightningStrike(GlowServer server, GlowWorld world, boolean effect) {
-        super(server, world);
+    public GlowLightningStrike(Location location, boolean effect) {
+        super(location);
         this.effect = effect;
         this.ticksToLive = 30;
     }

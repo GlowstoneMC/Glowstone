@@ -18,12 +18,6 @@ public final class Position {
     public static final int GRANULARITY = 32;
 
     /**
-     * A position where all the coordinates are set to zero, and there is no
-     * world associated.
-     */
-    public static final Location ZERO = new Location(null, 0, 0, 0);
-
-    /**
      * Gets the X coordinate multiplied the granularity and rounded to an
      * integer.
      * @return An integer approximation of the X coordinate.

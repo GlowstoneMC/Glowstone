@@ -326,6 +326,14 @@ public final class GlowWorld implements World {
     }
 
     /**
+     * Get the world's parent server.
+     * @return The GlowServer for the world.
+     */
+    public GlowServer getServer() {
+        return server;
+    }
+
+    /**
      * Get a new chunk lock object a player or other party can use to keep chunks loaded.
      * @return The ChunkLock.
      */
@@ -896,15 +904,11 @@ public final class GlowWorld implements World {
     }
 
     public GlowLightningStrike strikeLightning(Location loc) {
-        GlowLightningStrike strike = new GlowLightningStrike(server, this, false);
-        strike.teleport(loc);
-        return strike;
+        return new GlowLightningStrike(loc, false);
     }
 
     public GlowLightningStrike strikeLightningEffect(Location loc) {
-        GlowLightningStrike strike = new GlowLightningStrike(server, this, true);
-        strike.teleport(loc);
-        return strike;
+        return new GlowLightningStrike(loc, true);
     }
 
     ////////////////////////////////////////////////////////////////////////////

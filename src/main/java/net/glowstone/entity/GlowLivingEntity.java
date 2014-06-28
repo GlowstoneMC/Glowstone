@@ -1,7 +1,5 @@
 package net.glowstone.entity;
 
-import net.glowstone.GlowServer;
-import net.glowstone.GlowWorld;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -83,10 +81,10 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     /**
      * Creates a mob within the specified world.
-     * @param world The world.
+     * @param location The location.
      */
-    public GlowLivingEntity(GlowServer server, GlowWorld world) {
-        super(server, world);
+    public GlowLivingEntity(Location location) {
+        super(location);
         resetMaxHealth();
         health = maxHealth;
     }

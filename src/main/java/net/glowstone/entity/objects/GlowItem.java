@@ -1,10 +1,9 @@
 package net.glowstone.entity.objects;
 
 import com.flowpowered.networking.Message;
-import net.glowstone.GlowServer;
-import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.util.Position;
+import org.bukkit.Location;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
@@ -29,11 +28,11 @@ public final class GlowItem extends GlowEntity implements Item {
 
     /**
      * Creates a new item entity.
-     * @param world The world.
-     * @param item The item.
+     * @param location The location of the entity.
+     * @param item The item stack the entity is carrying.
      */
-    public GlowItem(GlowServer server, GlowWorld world, ItemStack item) {
-        super(server, world);
+    public GlowItem(Location location, ItemStack item) {
+        super(location);
         this.item = item;
         pickupDelay = 20;
     }

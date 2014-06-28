@@ -216,7 +216,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * @param name    The player's name.
      */
     public GlowPlayer(GlowSession session, String name, UUID uuid, List<PlayerProperty> properties) {
-        super(session.getServer(), (GlowWorld) session.getServer().getWorlds().get(0), name, properties);
+        super(session.getServer().getWorlds().get(0).getSpawnLocation(), name, properties);
         this.session = session;
         this.uuid = uuid;
 
@@ -565,6 +565,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     ////////////////////////////////////////////////////////////////////////////
     // Basic stuff
+
+    public EntityType getType() {
+        return EntityType.PLAYER;
+    }
 
     public InetSocketAddress getAddress() {
         return session.getAddress();

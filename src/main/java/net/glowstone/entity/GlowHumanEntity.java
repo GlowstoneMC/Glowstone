@@ -97,8 +97,8 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
      * @param name The human's name.
      * @param properties Properties from the auth server, or null.
      */
-    public GlowHumanEntity(GlowServer server, GlowWorld world, String name, List<PlayerProperty> properties) {
-        super(server, world);
+    public GlowHumanEntity(Location location, String name, List<PlayerProperty> properties) {
+        super(location);
         this.name = name;
         this.properties = properties;
         permissions = new PermissibleBase(this);

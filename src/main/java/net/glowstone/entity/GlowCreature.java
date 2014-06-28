@@ -1,11 +1,10 @@
 package net.glowstone.entity;
 
 import com.flowpowered.networking.Message;
-import net.glowstone.GlowServer;
-import net.glowstone.GlowWorld;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.SpawnMobMessage;
 import net.glowstone.util.Position;
+import org.bukkit.Location;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.LivingEntity;
 
@@ -30,11 +29,11 @@ public final class GlowCreature extends GlowLivingEntity implements Creature {
 
     /**
      * Creates a new monster.
-     * @param world The world this monster is in.
+     * @param location The location of the monster.
      * @param type The type of monster.
      */
-    public GlowCreature(GlowServer server, GlowWorld world, int type) {
-        super(server, world);
+    public GlowCreature(Location location, int type) {
+        super(location);
         this.type = type;
     }
 

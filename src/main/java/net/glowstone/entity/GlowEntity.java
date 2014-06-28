@@ -71,12 +71,12 @@ public abstract class GlowEntity implements Entity {
     /**
      * The current position.
      */
-    protected Location location = Position.ZERO;
+    protected Location location;
 
     /**
      * The position in the last cycle.
      */
-    protected Location previousLocation = Position.ZERO;
+    protected Location previousLocation;
     
     /**
      * An EntityDamageEvent representing the last damage cause on this entity.
@@ -100,11 +100,12 @@ public abstract class GlowEntity implements Entity {
 
     /**
      * Creates an entity and adds it to the specified world.
-     * @param world The world.
+     * @param location The location of the entity.
      */
-    public GlowEntity(GlowServer server, GlowWorld world) {
-        this.server = server;
-        this.world = world;
+    public GlowEntity(Location location) {
+        this.location = location.clone();
+        this.world = (GlowWorld) location.getWorld();
+        this.server = world.getServer();
         world.getEntityManager().allocate(this);
     }
 
@@ -141,7 +142,7 @@ public abstract class GlowEntity implements Entity {
     }
 
     public EntityType getType() {
-        return null;
+        throw new UnsupportedOperationException("Unknown entity type for " + getClass().getSimpleName());
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -202,9 +203,7 @@ public abstract class GlowEntity implements Entity {
      * not.
      */
     public boolean isWithinDistance(GlowEntity other) {
-        double dx = Math.abs(location.getX() - other.location.getX());
-        double dz = Math.abs(location.getZ() - other.location.getZ());
-        return other.getWorld() == getWorld() && dx <= (server.getViewDistance() * GlowChunk.WIDTH) && dz <= (server.getViewDistance() * GlowChunk.HEIGHT);
+        return isWithinDistance(other.location);
     }
 
     /**
@@ -386,7 +385,7 @@ public abstract class GlowEntity implements Entity {
     // Entity stacking
 
     public boolean isInsideVehicle() {
-        return getVehicle() == null;
+        return getVehicle() != null;
     }
 
     public boolean leaveVehicle() {
