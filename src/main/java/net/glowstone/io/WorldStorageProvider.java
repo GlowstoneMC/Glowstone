@@ -36,4 +36,11 @@ public interface WorldStorageProvider {
      */
     public WorldMetadataService getMetadataService();
 
+    /**
+     * Get the {@link PlayerDataService} for this world, to be used for
+     * reading and writing data for online and offline players.
+     * @return The {@link PlayerDataService}.
+     */
+    public PlayerDataService getPlayerDataService();
+
 }

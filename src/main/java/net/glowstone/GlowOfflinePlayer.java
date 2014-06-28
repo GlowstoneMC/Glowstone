@@ -1,5 +1,6 @@
 package net.glowstone;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -15,13 +16,30 @@ import java.util.UUID;
  * Represents a player which is not connected to the server.
  */
 @SerializableAs("Player")
-public class GlowOfflinePlayer implements OfflinePlayer {
+public final class GlowOfflinePlayer implements OfflinePlayer {
 
     private final GlowServer server;
-    private final String name;
-    private final UUID uuid;
+    private String name;
+    private UUID uuid;
 
+    private boolean hasPlayed = false;
+    private long firstPlayed;
+    private long lastPlayed;
+    private Location bedSpawn;
+
+    /**
+     * Create a new offline player for the given name, UUID, or both. The
+     * caller is responsible for filling in the other data after construction.
+     * At most one of name and uuid may be null.
+     * @param server The server of the offline player. Must not be null.
+     * @param name The name of the player.
+     * @param uuid The UUID of the player.
+     * @throws IllegalArgumentException if server is null or both of name and
+     * uuid are null.
+     */
     public GlowOfflinePlayer(GlowServer server, String name, UUID uuid) {
+        Validate.notNull(server, "server == null");
+        Validate.isTrue(name != null || uuid != null, "name == null && uuid == null");
         this.server = server;
         this.name = name;
         this.uuid = uuid;
@@ -53,20 +71,20 @@ public class GlowOfflinePlayer implements OfflinePlayer {
     ////////////////////////////////////////////////////////////////////////////
     // Player properties
 
+    public boolean hasPlayedBefore() {
+        return hasPlayed;
+    }
+
     public long getFirstPlayed() {
-        throw new UnsupportedOperationException();
+        return firstPlayed;
     }
 
     public long getLastPlayed() {
-        throw new UnsupportedOperationException();
-    }
-
-    public boolean hasPlayedBefore() {
-        throw new UnsupportedOperationException();
+        return lastPlayed;
     }
 
     public Location getBedSpawnLocation() {
-        throw new UnsupportedOperationException();
+        return bedSpawn;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -122,6 +140,19 @@ public class GlowOfflinePlayer implements OfflinePlayer {
             // use UUID
             return Bukkit.getServer().getOfflinePlayer(UUID.fromString(val.get("UUID").toString()));
         }
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GlowOfflinePlayer that = (GlowOfflinePlayer) o;
+
+        return !(uuid != null ? !uuid.equals(that.uuid) : that.uuid != null);
+    }
+
+    public int hashCode() {
+        return uuid != null ? uuid.hashCode() : 0;
     }
 
     @Override

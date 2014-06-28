@@ -7,6 +7,7 @@ import net.glowstone.command.TellrawCommand;
 import net.glowstone.inventory.CraftingManager;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowItemFactory;
+import net.glowstone.io.PlayerDataService;
 import net.glowstone.map.GlowMapView;
 import net.glowstone.net.GlowNetworkServer;
 import net.glowstone.net.SessionRegistry;
@@ -41,7 +42,6 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.security.KeyPair;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -246,11 +246,6 @@ public final class GlowServer implements Server {
      * The ticks until a player who has not played the game has been kicked, or 0.
      */
     private int idleTimeout;
-
-    /**
-     * A cache of existing OfflinePlayers
-     */
-    private final Map<String, OfflinePlayer> offlineCache = new ConcurrentHashMap<>();
 
     /**
      * A RSA key pair used for encryption and authentication
@@ -581,6 +576,14 @@ public final class GlowServer implements Server {
         return keyPair;
     }
 
+    /**
+     * Returns the player data service attached to the first world.
+     * @return The server's player data service.
+     */
+    public PlayerDataService getPlayerDataService() {
+        return worlds.getWorlds().get(0).getStorage().getPlayerDataService();
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Static server properties
 
@@ -713,7 +716,26 @@ public final class GlowServer implements Server {
     }
 
     public OfflinePlayer[] getOfflinePlayers() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Set<OfflinePlayer> result = new HashSet<>();
+        Set<UUID> uuids = new HashSet<>();
+
+        // add the currently online players
+        for (World world : getWorlds()) {
+            for (Player player : world.getPlayers()) {
+                result.add(player);
+                uuids.add(player.getUniqueId());
+            }
+        }
+
+        // add all offline players that aren't already online
+        for (OfflinePlayer offline : getPlayerDataService().getOfflinePlayers()) {
+            if (!uuids.contains(offline.getUniqueId())) {
+                result.add(offline);
+                uuids.add(offline.getUniqueId());
+            }
+        }
+
+        return result.toArray(new OfflinePlayer[result.size()]);
     }
 
     public Player getPlayer(String name) {
@@ -764,33 +786,26 @@ public final class GlowServer implements Server {
         return result;
     }
 
+    @Deprecated
     public OfflinePlayer getOfflinePlayer(String name) {
-        OfflinePlayer player = getPlayerExact(name);
-        if (player == null) {
-            player = offlineCache.get(name);
-            if (player == null) {
-                player = new GlowOfflinePlayer(this, name, null);
-                offlineCache.put(name, player);
-                // Call creation event here?
-            }
-        } else {
-            offlineCache.remove(name);
+        Player onlinePlayer = getPlayerExact(name);
+        if (onlinePlayer != null) {
+            return onlinePlayer;
         }
+
+        GlowOfflinePlayer player = new GlowOfflinePlayer(this, name, null);
+        getPlayerDataService().readOfflineData(player);
         return player;
     }
 
     public OfflinePlayer getOfflinePlayer(UUID uuid) {
-        OfflinePlayer player = getPlayer(uuid);
-        if (player == null) {
-            player = offlineCache.get(uuid.toString());
-            if (player == null) {
-                player = new GlowOfflinePlayer(this, null, uuid);
-                offlineCache.put(uuid.toString(), player);
-                // Call creation event here?
-            }
-        } else {
-            offlineCache.remove(uuid.toString());
+        Player onlinePlayer = getPlayer(uuid);
+        if (onlinePlayer != null) {
+            return onlinePlayer;
         }
+
+        GlowOfflinePlayer player = new GlowOfflinePlayer(this, null, uuid);
+        getPlayerDataService().readOfflineData(player);
         return player;
     }
 

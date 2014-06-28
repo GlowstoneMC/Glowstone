@@ -3,7 +3,6 @@ package net.glowstone;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.constants.GlowBiome;
 import net.glowstone.entity.*;
-import net.glowstone.io.WorldMetadataService;
 import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
 import net.glowstone.io.anvil.AnvilWorldStorageProvider;
@@ -1103,10 +1102,6 @@ public final class GlowWorld implements World {
         }
     }
 
-    public WorldMetadataService getMetadataService() {
-        return storageProvider.getMetadataService();
-    }
-
     /**
      * Unloads the world
      * @return true if successful
@@ -1118,6 +1113,14 @@ public final class GlowWorld implements World {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Get the storage provider for the world.
+     * @return The {@link WorldStorageProvider}.
+     */
+    public WorldStorageProvider getStorage() {
+        return storageProvider;
     }
 
     /**

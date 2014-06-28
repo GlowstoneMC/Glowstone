@@ -1,7 +1,5 @@
 package net.glowstone.io;
 
-import net.glowstone.entity.GlowPlayer;
-
 import java.io.IOException;
 import java.util.UUID;
 
@@ -45,16 +43,4 @@ public interface WorldMetadataService {
             return uuid;
         }
     }
-
-    /**
-     * Read a player's data from storage.
-     * @param player The player to read into.
-     */
-    public void readPlayerData(GlowPlayer player);
-
-    /**
-     * Write a player's data to storage.
-     * @param player The player to write from.
-     */
-    public void writePlayerData(GlowPlayer player);
 }

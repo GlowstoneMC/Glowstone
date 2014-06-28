@@ -1026,22 +1026,19 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     public void saveData(boolean async) {
-        final GlowWorld dataWorld = (GlowWorld) server.getWorlds().get(0);
-
         if (async) {
             server.getScheduler().runTaskAsynchronously(null, new Runnable() {
                 public void run() {
-                    dataWorld.getMetadataService().writePlayerData(GlowPlayer.this);
+                    server.getPlayerDataService().writeData(GlowPlayer.this);
                 }
             });
         } else {
-            dataWorld.getMetadataService().writePlayerData(this);
+            server.getPlayerDataService().writeData(this);
         }
     }
 
     public void loadData() {
-        GlowWorld dataWorld = (GlowWorld) server.getWorlds().get(0);
-        dataWorld.getMetadataService().readPlayerData(this);
+        server.getPlayerDataService().readData(this);
     }
 
     @Deprecated
