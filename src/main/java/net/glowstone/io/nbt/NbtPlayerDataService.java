@@ -10,16 +10,21 @@ import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 /**
- * Standard NBT-based player data storage
+ * Standard NBT-based player data storage.
  */
 public class NbtPlayerDataService implements PlayerDataService {
 
@@ -38,39 +43,9 @@ public class NbtPlayerDataService implements PlayerDataService {
         return new File(playerDir, uuid + ".dat");
     }
 
-    private static Location readLocation(CompoundTag tag) {
-        // todo: copy code from or move this method to EntityStore
-        return null;
-    }
-
     private void readDataImpl(GlowPlayer player, CompoundTag playerTag) {
         // todo: move GlowPlayer entity stuff to here
         EntityStoreLookupService.find(GlowPlayer.class).load(player, playerTag);
-    }
-
-    private void readOfflineDataImpl(GlowOfflinePlayer player, File file) {
-        CompoundTag playerTag;
-        try (NBTInputStream in = new NBTInputStream(new FileInputStream(file))) {
-            playerTag = in.readCompound();
-        } catch (IOException e) {
-            server.getLogger().log(Level.WARNING, "Failed to read OfflinePlayer from " + file, e);
-            return;
-        }
-
-        // todo: the stuff
-        player.getName();
-    }
-
-    public void readOfflineData(GlowOfflinePlayer player) {
-        if (player.getUniqueId() == null) {
-            // todo: perform local name -> uuid lookup
-            return;
-        }
-
-        File file = getPlayerFile(player.getUniqueId());
-        if (file.exists()) {
-            readOfflineDataImpl(player, file);
-        }
     }
 
     public List<OfflinePlayer> getOfflinePlayers() {
@@ -96,13 +71,21 @@ public class NbtPlayerDataService implements PlayerDataService {
                 continue;
             }
 
-            // start reading
-            GlowOfflinePlayer player = new GlowOfflinePlayer(server, null, uuid);
-            readOfflineDataImpl(player, file);
-            result.add(player);
+            // creating the OfflinePlayer will read the data
+            result.add(new GlowOfflinePlayer(server, uuid));
         }
 
         return result;
+    }
+
+    public UUID lookupUUID(String name) {
+        // todo: caching or something
+        for (OfflinePlayer player : getOfflinePlayers()) {
+            if (player.getName().equalsIgnoreCase(name)) {
+                return player.getUniqueId();
+            }
+        }
+        return UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8));
     }
 
     public PlayerReader beginReadingData(UUID uuid) {
@@ -130,7 +113,7 @@ public class NbtPlayerDataService implements PlayerDataService {
         try (NBTOutputStream out = new NBTOutputStream(new FileOutputStream(playerFile))) {
             out.writeTag(tag);
         } catch (IOException e) {
-            player.getSession().disconnect("Failed to save player data!");
+            player.kickPlayer("Failed to save player data!");
             server.getLogger().log(Level.SEVERE, "Failed to write data for " + player.getName() + ": " + playerFile, e);
         }
     }
@@ -138,22 +121,21 @@ public class NbtPlayerDataService implements PlayerDataService {
     private class NbtPlayerReader implements PlayerReader {
         private CompoundTag tag = new CompoundTag();
         private boolean hasPlayed = false;
-        private Location location = null;
 
         public NbtPlayerReader(File playerFile) {
             if (playerFile.exists()) {
                 try (NBTInputStream in = new NBTInputStream(new FileInputStream(playerFile))) {
                     tag = in.readCompound();
-
                     hasPlayed = true;
-                    location = readLocation(tag);
                 } catch (IOException e) {
                     server.getLogger().log(Level.SEVERE, "Failed to read data for player: " + playerFile, e);
                 }
             }
+        }
 
-            if (location == null) {
-                location = server.getWorlds().get(0).getSpawnLocation();
+        private void checkOpen() {
+            if (tag == null) {
+                throw new IllegalStateException("cannot access fields after close");
             }
         }
 
@@ -162,11 +144,68 @@ public class NbtPlayerDataService implements PlayerDataService {
         }
 
         public Location getLocation() {
-            return location;
+            World world = NbtSerialization.findWorld(server, tag);
+            if (world != null) {
+                return NbtSerialization.listTagsToLocation(world, tag);
+            }
+            return null;
+        }
+
+        public Location getBedSpawnLocation() {
+            checkOpen();
+            // check that all fields are present
+            if (!tag.isString("SpawnWorld") || !tag.isInt("SpawnX") || !tag.isInt("SpawnY") || !tag.isInt("SpawnZ")) {
+                return null;
+            }
+            // look up world
+            World world = server.getWorld(tag.getString("SpawnWorld"));
+            if (world == null) {
+                return null;
+            }
+            // return location
+            return new Location(world, tag.getInt("SpawnX"), tag.getInt("SpawnY"), tag.getInt("SpawnZ"));
+        }
+
+        public long getFirstPlayed() {
+            checkOpen();
+            if (tag.isCompound("bukkit")) {
+                CompoundTag bukkit = tag.getCompound("bukkit");
+                if (bukkit.isLong("firstPlayed")) {
+                    return bukkit.getLong("firstPlayed");
+                }
+            }
+            return 0;
+        }
+
+        public long getLastPlayed() {
+            checkOpen();
+            if (tag.isCompound("bukkit")) {
+                CompoundTag bukkit = tag.getCompound("bukkit");
+                if (bukkit.isLong("lastPlayed")) {
+                    return bukkit.getLong("lastPlayed");
+                }
+            }
+            return 0;
+        }
+
+        public String getLastKnownName() {
+            checkOpen();
+            if (tag.isCompound("bukkit")) {
+                CompoundTag bukkit = tag.getCompound("bukkit");
+                if (bukkit.isString("lastKnownName")) {
+                    return bukkit.getString("lastKnownName");
+                }
+            }
+            return null;
         }
 
         public void readData(GlowPlayer player) {
+            checkOpen();
             readDataImpl(player, tag);
+        }
+
+        public void close() {
+            tag = null;
         }
     }
 }

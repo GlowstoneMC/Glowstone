@@ -1,7 +1,6 @@
 package net.glowstone.net.handler.login;
 
 import com.flowpowered.networking.MessageHandler;
-import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.login.EncryptionKeyRequestMessage;
 import net.glowstone.net.message.login.LoginStartMessage;
@@ -31,7 +30,7 @@ public final class LoginStartHandler implements MessageHandler<GlowSession, Logi
             session.send(new EncryptionKeyRequestMessage(sessionId, publicKey, verifyToken));
         } else {
             UUID uid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + username).getBytes(StandardCharsets.UTF_8));
-            session.setPlayer(new GlowPlayer(session, username, uid, null));
+            session.setPlayer(username, uid, null);
         }
     }
 }

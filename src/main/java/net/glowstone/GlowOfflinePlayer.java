@@ -1,5 +1,6 @@
 package net.glowstone;
 
+import net.glowstone.io.PlayerDataService;
 import org.apache.commons.lang.Validate;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
@@ -28,21 +29,47 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     private Location bedSpawn;
 
     /**
-     * Create a new offline player for the given name, UUID, or both. The
-     * caller is responsible for filling in the other data after construction.
-     * At most one of name and uuid may be null.
+     * Create a new offline player for the given name. If possible, the
+     * player's UUID will be found and then their data.
      * @param server The server of the offline player. Must not be null.
-     * @param name The name of the player.
-     * @param uuid The UUID of the player.
-     * @throws IllegalArgumentException if server is null or both of name and
-     * uuid are null.
+     * @param name The name of the player. Must not be null.
      */
-    public GlowOfflinePlayer(GlowServer server, String name, UUID uuid) {
-        Validate.notNull(server, "server == null");
-        Validate.isTrue(name != null || uuid != null, "name == null && uuid == null");
+    public GlowOfflinePlayer(GlowServer server, String name) {
+        Validate.notNull(server, "server must not be null");
+        Validate.notNull(name, "name must not be null");
         this.server = server;
         this.name = name;
+        this.uuid = server.getPlayerDataService().lookupUUID(name);
+        loadData();
+    }
+
+    /**
+     * Create a new offline player for the given UUID. If possible, the
+     * player's data (including name) will be loaded based on the UUID.
+     * @param server The server of the offline player. Must not be null.
+     * @param uuid The UUID of the player. Must not be null.
+     */
+    public GlowOfflinePlayer(GlowServer server, UUID uuid) {
+        Validate.notNull(server, "server must not be null");
+        Validate.notNull(uuid, "uuid must not be null");
+        this.server = server;
         this.uuid = uuid;
+        loadData();
+    }
+
+    private void loadData() {
+        PlayerDataService.PlayerReader reader = server.getPlayerDataService().beginReadingData(uuid);
+        hasPlayed = reader.hasPlayedBefore();
+        if (hasPlayed) {
+            firstPlayed = reader.getFirstPlayed();
+            lastPlayed = reader.getLastPlayed();
+            bedSpawn = reader.getBedSpawnLocation();
+
+            String lastName = reader.getLastKnownName();
+            if (lastName != null) {
+                name = lastName;
+            }
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////

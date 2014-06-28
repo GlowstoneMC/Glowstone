@@ -31,34 +31,17 @@ public abstract class EntityStore<T extends GlowEntity> {
         }
 
         // determine world
-        World world = null;
-        if (compound.isLong("WorldUUIDLeast") && compound.isLong("WorldUUIDMost")) {
-            long uuidLeast = compound.getLong("WorldUUIDLeast");
-            long uuidMost = compound.getLong("WorldUUIDMost");
-            world = entity.getServer().getWorld(new UUID(uuidMost, uuidLeast));
-        }
-        if (world == null && compound.isString("World")) {
-            world = entity.getServer().getWorld(compound.getString("World"));
-        }
-        if (world == null && compound.isInt("Dimension")) {
-            int dim = compound.getInt("Dimension");
-            for (World sWorld : entity.getServer().getWorlds()) {
-                if (sWorld.getEnvironment().getId() == dim) {
-                    world = sWorld;
-                    break;
-                }
-            }
-        }
+        World world = NbtSerialization.findWorld(entity.getServer(), compound);
         if (world == null) {
             world = entity.getWorld();
         }
 
         // determine location
-        if (compound.isList("Pos", TagType.DOUBLE) && compound.isList("Rotation", TagType.FLOAT)) {
-            entity.setRawLocation(NbtSerialization.listTagsToLocation(world, compound));
-        } else {
-            entity.setRawLocation(world.getSpawnLocation());
+        Location dest = NbtSerialization.listTagsToLocation(world, compound);
+        if (dest == null) {
+            dest = world.getSpawnLocation();
         }
+        entity.setRawLocation(dest);
         /*if (compound.isList("Motion", ListTag.class)) {
             // entity.setVelocity(NbtFormattingUtils.listTagToVector((ListTag<DoubleTag>) compound.getValue().get("Motion")));
         }

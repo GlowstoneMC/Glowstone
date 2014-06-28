@@ -13,6 +13,8 @@ import io.netty.handler.codec.DecoderException;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.entity.meta.PlayerProperty;
+import net.glowstone.io.PlayerDataService;
 import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.play.game.PingMessage;
 import net.glowstone.net.message.play.game.UserListItemMessage;
@@ -27,9 +29,7 @@ import org.bukkit.event.player.PlayerLoginEvent;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.ArrayDeque;
-import java.util.Queue;
-import java.util.Random;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
@@ -205,16 +205,18 @@ public final class GlowSession extends BasicSession {
 
     /**
      * Sets the player associated with this session.
-     * @param player The new player.
+     * @param name The new player's name.
+     * @param uuid The new player's UUID.
+     * @param properties The new player's attached properties, or null.
      * @throws IllegalStateException if there is already a player associated
      *                               with this session.
      */
-    public void setPlayer(GlowPlayer player) {
+    public void setPlayer(String name, UUID uuid, List<PlayerProperty> properties) {
         if (this.player != null)
             throw new IllegalStateException();
 
         // login event
-        this.player = player;
+        this.player = new GlowPlayer(this, name, uuid, properties);
         // isActive check here in case player disconnected after authentication,
         // but before the GlowPlayer initialization was completed
         if (!isActive()) {

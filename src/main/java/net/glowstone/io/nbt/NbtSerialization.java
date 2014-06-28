@@ -1,5 +1,6 @@
 package net.glowstone.io.nbt;
 
+import net.glowstone.GlowServer;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
@@ -11,6 +12,7 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public final class NbtSerialization {
 
@@ -68,13 +70,49 @@ public final class NbtSerialization {
         return out;
     }
 
-    public static Location listTagsToLocation(World world, CompoundTag tag) {
-        List<Double> pos = tag.getList("Pos", TagType.DOUBLE);
-        List<Float> rot = tag.getList("Rotation", TagType.FLOAT);
-        if (pos.size() == 3 && rot.size() == 2) {
-            return new Location(world, pos.get(0), pos.get(1), pos.get(2), rot.get(0), rot.get(1));
+    public static World findWorld(GlowServer server, CompoundTag compound) {
+        World world = null;
+        if (compound.isLong("WorldUUIDLeast") && compound.isLong("WorldUUIDMost")) {
+            long uuidLeast = compound.getLong("WorldUUIDLeast");
+            long uuidMost = compound.getLong("WorldUUIDMost");
+            world = server.getWorld(new UUID(uuidMost, uuidLeast));
         }
-        return world.getSpawnLocation();
+        if (world == null && compound.isString("World")) {
+            world = server.getWorld(compound.getString("World"));
+        }
+        if (world == null && compound.isInt("Dimension")) {
+            int dim = compound.getInt("Dimension");
+            for (World sWorld : server.getWorlds()) {
+                if (sWorld.getEnvironment().getId() == dim) {
+                    world = sWorld;
+                    break;
+                }
+            }
+        }
+        return world;
+    }
+
+    public static Location listTagsToLocation(World world, CompoundTag tag) {
+        // check for position list
+        if (tag.isList("Pos", TagType.DOUBLE)) {
+            List<Double> pos = tag.getList("Pos", TagType.DOUBLE);
+            if (pos.size() == 3) {
+                Location location = new Location(world, pos.get(0), pos.get(1), pos.get(2));
+
+                // check for rotation
+                if (tag.isList("Rotation", TagType.FLOAT)) {
+                    List<Float> rot = tag.getList("Rotation", TagType.FLOAT);
+                    if (rot.size() == 2) {
+                        location.setYaw(rot.get(0));
+                        location.setPitch(rot.get(1));
+                    }
+                }
+
+                return location;
+            }
+        }
+
+        return null;
     }
 
     public static void locationToListTags(Location loc, CompoundTag tag) {

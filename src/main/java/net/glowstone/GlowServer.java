@@ -792,10 +792,7 @@ public final class GlowServer implements Server {
         if (onlinePlayer != null) {
             return onlinePlayer;
         }
-
-        GlowOfflinePlayer player = new GlowOfflinePlayer(this, name, null);
-        getPlayerDataService().readOfflineData(player);
-        return player;
+        return new GlowOfflinePlayer(this, name);
     }
 
     public OfflinePlayer getOfflinePlayer(UUID uuid) {
@@ -803,10 +800,7 @@ public final class GlowServer implements Server {
         if (onlinePlayer != null) {
             return onlinePlayer;
         }
-
-        GlowOfflinePlayer player = new GlowOfflinePlayer(this, null, uuid);
-        getPlayerDataService().readOfflineData(player);
-        return player;
+        return new GlowOfflinePlayer(this, uuid);
     }
 
     public void savePlayers() {
