@@ -7,6 +7,7 @@ import net.glowstone.GlowWorld;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.net.message.play.entity.*;
 import net.glowstone.util.Position;
+import org.apache.commons.lang.Validate;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -66,6 +67,11 @@ public abstract class GlowEntity implements Entity {
     /**
      * This entity's unique id.
      */
+    private UUID uuid;
+
+    /**
+     * This entity's current identifier for its world.
+     */
     protected int id;
 
     /**
@@ -77,6 +83,11 @@ public abstract class GlowEntity implements Entity {
      * The position in the last cycle.
      */
     protected Location previousLocation;
+
+    /**
+     * The entity's velocity, applied each tick.
+     */
+    private Vector velocity = new Vector();
     
     /**
      * An EntityDamageEvent representing the last damage cause on this entity.
@@ -87,6 +98,11 @@ public abstract class GlowEntity implements Entity {
      * A flag indicting if the entity is on the ground
      */
     private boolean onGround = true;
+
+    /**
+     * The distance the entity is currently falling without touching the ground.
+     */
+    private float fallDistance;
 
     /**
      * A counter of how long this entity has existed
@@ -131,7 +147,10 @@ public abstract class GlowEntity implements Entity {
     }
 
     public UUID getUniqueId() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (uuid == null) {
+            uuid = UUID.randomUUID();
+        }
+        return uuid;
     }
 
     public boolean isDead() {
@@ -164,11 +183,11 @@ public abstract class GlowEntity implements Entity {
     }
 
     public void setVelocity(Vector velocity) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.velocity = velocity.clone();
     }
 
     public Vector getVelocity() {
-        return location.toVector().subtract(previousLocation.toVector());
+        return velocity.clone();
     }
 
     public boolean teleport(Location location) {
@@ -256,6 +275,23 @@ public abstract class GlowEntity implements Entity {
     }
 
     /**
+     * Sets this entity's unique identifier if possible.
+     * @param uuid The new UUID. Must not be null.
+     * @throws IllegalArgumentException if the passed UUID is null.
+     * @throws IllegalStateException if a UUID has already been set.
+     */
+    public void setUniqueId(UUID uuid) {
+        Validate.notNull(uuid, "uuid must not be null");
+        if (this.uuid == null) {
+            this.uuid = uuid;
+        } else if (!this.uuid.equals(uuid)) {
+            // silently allow setting the same UUID, since
+            // it can't be checked with getUniqueId()
+            throw new IllegalStateException("UUID of " + this + " is already " + this.uuid);
+        }
+    }
+
+    /**
      * Creates a {@link Message} which can be sent to a client to spawn this
      * entity.
      * @return A message which can spawn this entity.
@@ -331,15 +367,15 @@ public abstract class GlowEntity implements Entity {
     }
 
     public int getMaxFireTicks() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return 160;  // this appears to be Minecraft's default value
     }
 
     public float getFallDistance() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return fallDistance;
     }
 
     public void setFallDistance(float distance) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        fallDistance = Math.max(distance, 0);
     }
 
     public void setLastDamageCause(EntityDamageEvent event) {

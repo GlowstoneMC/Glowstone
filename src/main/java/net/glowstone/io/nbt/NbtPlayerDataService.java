@@ -4,7 +4,7 @@ import net.glowstone.GlowOfflinePlayer;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.io.PlayerDataService;
-import net.glowstone.io.entity.EntityStoreLookupService;
+import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
@@ -44,8 +44,7 @@ public class NbtPlayerDataService implements PlayerDataService {
     }
 
     private void readDataImpl(GlowPlayer player, CompoundTag playerTag) {
-        // todo: move GlowPlayer entity stuff to here
-        EntityStoreLookupService.find(GlowPlayer.class).load(player, playerTag);
+        EntityStorage.load(player, playerTag);
     }
 
     public List<OfflinePlayer> getOfflinePlayers() {
@@ -109,7 +108,7 @@ public class NbtPlayerDataService implements PlayerDataService {
     public void writeData(GlowPlayer player) {
         File playerFile = getPlayerFile(player.getUniqueId());
         CompoundTag tag = new CompoundTag();
-        EntityStoreLookupService.find(GlowPlayer.class).save(player, tag);
+        EntityStorage.save(player, tag);
         try (NBTOutputStream out = new NBTOutputStream(new FileOutputStream(playerFile))) {
             out.writeTag(tag);
         } catch (IOException e) {

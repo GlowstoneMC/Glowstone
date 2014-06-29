@@ -1,17 +1,18 @@
 package net.glowstone.io.entity;
 
-import net.glowstone.GlowServer;
-import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
-import org.bukkit.World;
 
 import java.util.UUID;
 
-public abstract class EntityStore<T extends GlowEntity> {
+/**
+ * The base for entity store classes.
+ * @param <T> The type of entity being stored.
+ */
+abstract class EntityStore<T extends GlowEntity> {
     private final String id;
     private final Class<T> clazz;
 
@@ -20,83 +21,92 @@ public abstract class EntityStore<T extends GlowEntity> {
         this.clazz = clazz;
     }
 
-    public abstract T load(GlowServer server, GlowWorld world, CompoundTag compound);
-
-    public void load(T entity, CompoundTag compound) {
-        if (compound.isString("id")) {
-            String checkId = compound.getString("id");
-            if (!id.equalsIgnoreCase(checkId)) {
-                throw new IllegalArgumentException("Invalid ID loading entity, expected " + id + " got " + checkId);
-            }
-        }
-
-        // determine world
-        World world = NbtSerialization.findWorld(entity.getServer(), compound);
-        if (world == null) {
-            world = entity.getWorld();
-        }
-
-        // determine location
-        Location dest = NbtSerialization.listTagsToLocation(world, compound);
-        if (dest == null) {
-            dest = world.getSpawnLocation();
-        }
-        entity.setRawLocation(dest);
-        /*if (compound.isList("Motion", ListTag.class)) {
-            // entity.setVelocity(NbtFormattingUtils.listTagToVector((ListTag<DoubleTag>) compound.getValue().get("Motion")));
-        }
-        if (compound.is("Air", ShortTag.class)) {
-            // entity.setRemainingAir(((ShortTag) compound.getValue().get("Air")).getValue());
-        }*/
-        if (compound.isFloat("FallDistance")) {
-            entity.setFallDistance(compound.getFloat("FallDistance"));
-        }
-        if (compound.isShort("Fire")) {
-            entity.setFireTicks(compound.getShort("Fire"));
-        }
-        if (compound.isByte("OnGround")) {
-            entity.setOnGround(compound.getBool("OnGround"));
-        }
-
-        /* if (playerData.containsKey("HurtTime")) {
-            ShortTag hurtTimeTag = (ShortTag) playerData.get("HurtTime");
-            ret.put(PlayerData.HURT_TICKS, hurtTimeTag.getValue());
-        }
-        if (playerData.containsKey("AttackTime")) {
-            ShortTag attackTimeTag = (ShortTag) playerData.get("AttackTime");
-            ret.put(PlayerData.ATTACK_TICKS, attackTimeTag.getValue());
-        }
-        if (playerData.containsKey("DeathTime")) {
-            ShortTag deathTimeTag = (ShortTag) playerData.get("DeathTime");
-            ret.put(PlayerData.DEATH_TICKS, deathTimeTag.getValue());
-        } */
+    public final String getId() {
+        return id;
     }
 
+    public final Class<T> getType() {
+        return clazz;
+    }
+
+    /**
+     * Create a new entity of this store's type at the given location. The
+     * load method will be called separately.
+     * @param location The location.
+     * @param compound The entity's tag, if extra data is needed.
+     * @return The new entity.
+     */
+    public abstract T createEntity(Location location, CompoundTag compound);
+
+    // For information on the NBT tags loaded here and elsewhere:
+    // http://minecraft.gamepedia.com/Chunk_format#Entity_Format
+
+    // todo: the following tags
+    // - bool "Invulnerable"
+    // - int "PortalCooldown"
+    // - compound "Riding"
+
+    /**
+     * Load data into an existing entity of the appropriate type from the
+     * given compound tag.
+     * @param entity The target entity.
+     * @param tag The entity's tag.
+     */
+    public void load(T entity, CompoundTag tag) {
+        // id, world, and location are handled by EntityStore
+        // base stuff for all entities is here:
+
+        if (tag.isList("Motion", TagType.DOUBLE)) {
+            entity.setVelocity(NbtSerialization.listTagToVector(tag.<Double>getList("Motion", TagType.DOUBLE)));
+        }
+        if (tag.isFloat("FallDistance")) {
+            entity.setFallDistance(tag.getFloat("FallDistance"));
+        }
+        if (tag.isShort("Fire")) {
+            entity.setFireTicks(tag.getShort("Fire"));
+        }
+        if (tag.isByte("OnGround")) {
+            entity.setOnGround(tag.getBool("OnGround"));
+        }
+
+        if (tag.isLong("UUIDMost") && tag.isLong("UUIDLeast")) {
+            UUID uuid = new UUID(tag.getLong("UUIDMost"), tag.getLong("UUIDLeast"));
+            entity.setUniqueId(uuid);
+        } else if (tag.isString("UUID")) {
+            // deprecated string format
+            UUID uuid = UUID.fromString(tag.getString("UUID"));
+            entity.setUniqueId(uuid);
+        }
+    }
+
+    /**
+     * Save information about this entity to the given tag.
+     * @param entity The entity to save.
+     * @param tag The target tag.
+     */
     public void save(T entity, CompoundTag tag) {
         tag.putString("id", id);
 
         Location loc = entity.getLocation();
         UUID worldUUID = loc.getWorld().getUID();
-        tag.putLong("WorldUUIDLeast", worldUUID.getLeastSignificantBits());
+        // world UUID used by Bukkit
         tag.putLong("WorldUUIDMost", worldUUID.getMostSignificantBits());
-        tag.putString("World", loc.getWorld().getName());
+        tag.putLong("WorldUUIDLeast", worldUUID.getLeastSignificantBits());
+        // leave a Dimension value for possible Vanilla use
         tag.putInt("Dimension", loc.getWorld().getEnvironment().getId());
+
+        // write Pos, Rotation, and Motion
         NbtSerialization.locationToListTags(loc, tag);
-        // result.put("UUIDLeast", new LongTag("UUIDLeast", entity.getUniqueId().getLeastSignificantBits()));
-        // result.put("UUIDMost", new LongTag("UUIDMost", entity.getUniqueId().getMostSignificantBits()));
-        // result.put("HurtTime", new ShortTag("HurtTime", (short) 0)); // NYI
-        // result.put("Air", new ShortTag("Air", (short) entity.getRemainingAir()));
-        // result.put("Fire", new ShortTag("Fire", (short) entity.getFireTicks()));
-        // "Motion"
         tag.putList("Motion", TagType.DOUBLE, NbtSerialization.vectorToList(entity.getVelocity()));
+
+        tag.putFloat("FallDistance", entity.getFallDistance());
+        tag.putShort("Fire", entity.getFireTicks());
         tag.putBool("OnGround", entity.isOnGround());
-    }
 
-    public String getId() {
-        return id;
-    }
+        tag.putLong("UUIDMost", entity.getUniqueId().getMostSignificantBits());
+        tag.putLong("UUIDLeast", entity.getUniqueId().getLeastSignificantBits());
 
-    public Class<T> getType() {
-        return clazz;
+        // in case Vanilla or CraftBukkit expects non-living entities to have this tag
+        tag.putInt("Air", 300);
     }
 }

@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,10 +38,15 @@ public final class NbtSerialization {
 
     public static CompoundTag writeItem(ItemStack stack, int slot) {
         CompoundTag tag = new CompoundTag();
+        if (stack == null || stack.getType() == Material.AIR) {
+            return tag;
+        }
         tag.putShort("id", stack.getTypeId());
         tag.putShort("Damage", stack.getDurability());
         tag.putByte("Count", stack.getAmount());
-        tag.putByte("Slot", slot);
+        if (slot >= 0) {
+            tag.putByte("Slot", slot);
+        }
         CompoundTag meta = GlowItemFactory.instance().writeNbt(stack.getItemMeta());
         if (meta != null) {
             tag.putCompound("tag", meta);
@@ -116,17 +122,8 @@ public final class NbtSerialization {
     }
 
     public static void locationToListTags(Location loc, CompoundTag tag) {
-        List<Double> posList = new ArrayList<>();
-        posList.add(loc.getX());
-        posList.add(loc.getY());
-        posList.add(loc.getZ());
-
-        List<Float> rotList = new ArrayList<>();
-        rotList.add(loc.getYaw());
-        rotList.add(loc.getPitch());
-
-        tag.putList("Pos", TagType.DOUBLE, posList);
-        tag.putList("Rotation", TagType.FLOAT, rotList);
+        tag.putList("Pos", TagType.DOUBLE, Arrays.asList(loc.getX(), loc.getY(), loc.getZ()));
+        tag.putList("Rotation", TagType.FLOAT, Arrays.asList(loc.getYaw(), loc.getPitch()));
     }
 
     public static Vector listTagToVector(List<Double> list) {

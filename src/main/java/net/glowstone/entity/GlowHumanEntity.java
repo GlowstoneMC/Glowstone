@@ -105,6 +105,14 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     // Internals
 
     @Override
+    public void setUniqueId(UUID uuid) {
+        // silently allow setting the same UUID again
+        if (!profile.getUniqueId().equals(uuid)) {
+            throw new IllegalStateException("UUID of " + this + " is already " + profile.getUniqueId());
+        }
+    }
+
+    @Override
     public List<Message> createSpawnMessage() {
         List<Message> result = new LinkedList<>();
 

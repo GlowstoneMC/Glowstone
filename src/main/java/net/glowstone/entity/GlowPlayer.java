@@ -102,6 +102,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     private final long lastPlayed;
 
     /**
+     * The time the player joined.
+     */
+    private final long joinTime;
+
+    /**
      * The lock used to prevent chunks from unloading near the player.
      */
     private ChunkManager.ChunkLock chunkLock;
@@ -256,6 +261,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             firstPlayed = 0;
             lastPlayed = 0;
         }
+        joinTime = System.currentTimeMillis();
         reader.readData(this);
         reader.close();
 
@@ -306,6 +312,14 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      */
     public GlowSession getSession() {
         return session;
+    }
+
+    /**
+     * Get the join time in milliseconds, to be saved as last played time.
+     * @return The player's join time.
+     */
+    public long getJoinTime() {
+        return joinTime;
     }
 
     /**

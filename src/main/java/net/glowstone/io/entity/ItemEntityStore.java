@@ -1,43 +1,48 @@
 package net.glowstone.io.entity;
 
-import net.glowstone.GlowServer;
-import net.glowstone.GlowWorld;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 
-public class ItemEntityStore extends EntityStore<GlowItem> {
+class ItemEntityStore extends EntityStore<GlowItem> {
 
     public ItemEntityStore() {
         super(GlowItem.class, "Item");
     }
 
-    @Override
-    public GlowItem load(GlowServer server, GlowWorld world, CompoundTag compound) {
-        GlowItem item = new GlowItem(new Location(world, 0, 0, 0), null);
-        load(item, compound);
-        return item;
+    public GlowItem createEntity(Location location, CompoundTag compound) {
+        // item will be set by loading code below
+        return new GlowItem(location, null);
     }
 
+    // todo: the following tags
+    // - "Health"
+    // - "Owner"
+    // - "Thrower"
+
     @Override
-    public void load(GlowItem entity, CompoundTag compound) {
-        if (compound.isCompound("Item")) {
-            entity.setItemStack(NbtSerialization.readItem(compound.getCompound("Item")));
+    public void load(GlowItem entity, CompoundTag tag) {
+        super.load(entity, tag);
+
+        if (tag.isCompound("Item")) {
+            entity.setItemStack(NbtSerialization.readItem(tag.getCompound("Item")));
         }
-        if (compound.isInt("Health")) {
-            // entity.setHealth(((IntTag)compound.getValue().get("Health")).getValue());
+        if (tag.isShort("Age")) {
+            entity.setTicksLived(tag.getShort("Age"));
         }
-        if (compound.isInt("Age")) {
-            entity.setTicksLived(compound.getInt("Age"));
+        if (tag.isShort("PickupDelay")) {
+            entity.setPickupDelay(tag.getShort("PickupDelay"));
         }
     }
 
     @Override
     public void save(GlowItem entity, CompoundTag tag) {
         super.save(entity, tag);
-        CompoundTag item = NbtSerialization.writeItem(entity.getItemStack(), 0);
-        item.remove("Slot");
-        tag.putCompound("Item", item);
+
+        tag.putCompound("Item", NbtSerialization.writeItem(entity.getItemStack(), -1));
+        tag.putShort("Age", entity.getTicksLived());
+        tag.putShort("Health", 5);
+        tag.putShort("PickupDelay", entity.getPickupDelay());
     }
 }
