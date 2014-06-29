@@ -13,7 +13,7 @@ import io.netty.handler.codec.DecoderException;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.entity.meta.PlayerProperty;
+import net.glowstone.entity.meta.PlayerProfile;
 import net.glowstone.io.PlayerDataService;
 import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.play.game.PingMessage;
@@ -29,7 +29,9 @@ import org.bukkit.event.player.PlayerLoginEvent;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.Random;
 import java.util.logging.Level;
 
 /**
@@ -205,18 +207,24 @@ public final class GlowSession extends BasicSession {
 
     /**
      * Sets the player associated with this session.
-     * @param name The new player's name.
-     * @param uuid The new player's UUID.
-     * @param properties The new player's attached properties, or null.
+     * @param profile The player's profile with name and UUID information.
      * @throws IllegalStateException if there is already a player associated
      *                               with this session.
      */
-    public void setPlayer(String name, UUID uuid, List<PlayerProperty> properties) {
+    public void setPlayer(PlayerProfile profile) {
         if (this.player != null)
             throw new IllegalStateException();
 
-        // login event
-        this.player = new GlowPlayer(this, name, uuid, properties);
+        // isActive check here in case player disconnected during authentication
+        if (!isActive()) {
+            // no need to call onDisconnect() since it only does anything if there's a player set
+            return;
+        }
+
+        // initialize the player
+        PlayerDataService.PlayerReader reader = server.getPlayerDataService().beginReadingData(profile.getUniqueId());
+        player = new GlowPlayer(this, profile, reader);
+
         // isActive check here in case player disconnected after authentication,
         // but before the GlowPlayer initialization was completed
         if (!isActive()) {
@@ -226,6 +234,7 @@ public final class GlowSession extends BasicSession {
             return;
         }
 
+        // login event
         PlayerLoginEvent event = EventFactory.onPlayerLogin(player);
         if (event.getResult() != PlayerLoginEvent.Result.ALLOWED) {
             disconnect(event.getKickMessage(), true);

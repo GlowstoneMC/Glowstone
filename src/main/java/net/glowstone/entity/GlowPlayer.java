@@ -9,8 +9,9 @@ import net.glowstone.constants.GlowAchievement;
 import net.glowstone.constants.GlowEffect;
 import net.glowstone.constants.GlowSound;
 import net.glowstone.entity.meta.MetadataIndex;
-import net.glowstone.entity.meta.PlayerProperty;
+import net.glowstone.entity.meta.PlayerProfile;
 import net.glowstone.inventory.InventoryMonitor;
+import net.glowstone.io.PlayerDataService;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.login.LoginSuccessMessage;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
@@ -50,19 +51,9 @@ import java.util.logging.Level;
 public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     /**
-     * The normal height of a player's eyes above their feet.
-     */
-    public static final double EYE_HEIGHT = 1.62D;
-
-    /**
      * This player's session.
      */
     private final GlowSession session;
-
-    /**
-     * This player's unique id.
-     */
-    private final UUID uuid;
 
     /**
      * The entities that the client knows about.
@@ -94,6 +85,21 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * The player's statistics, achievements, and related data.
      */
     private final StatisticMap stats = new StatisticMap();
+
+    /**
+     * Whether the player has played before (will be false on first join).
+     */
+    private final boolean hasPlayedBefore;
+
+    /**
+     * The time the player first played, or 0 if unknown.
+     */
+    private final long firstPlayed;
+
+    /**
+     * The time the player last played, or 0 if unknown.
+     */
+    private final long lastPlayed;
 
     /**
      * The lock used to prevent chunks from unloading near the player.
@@ -213,17 +219,17 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * Creates a new player and adds it to the world.
      * @param session The player's session.
-     * @param name    The player's name.
+     * @param profile The player's profile with name and UUID information.
+     * @param reader The PlayerReader to be used to initialize the player.
      */
-    public GlowPlayer(GlowSession session, String name, UUID uuid, List<PlayerProperty> properties) {
-        super(session.getServer().getWorlds().get(0).getSpawnLocation(), name, properties);
+    public GlowPlayer(GlowSession session, PlayerProfile profile, PlayerDataService.PlayerReader reader) {
+        super(initLocation(session, reader), profile);
         this.session = session;
-        this.uuid = uuid;
 
         chunkLock = world.newChunkLock(getName());
 
         // send login response
-        session.send(new LoginSuccessMessage(uuid.toString(), name));
+        session.send(new LoginSuccessMessage(profile.getUniqueId().toString(), profile.getName()));
         session.setProtocol(new PlayProtocol(session.getServer()));
 
         // send join game
@@ -240,7 +246,20 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(new PluginMessage("MC|Brand", server.getName()));
         sendSupportedChannels();
 
-        loadData();
+        // read data from player reader
+        hasPlayedBefore = reader.hasPlayedBefore();
+        if (hasPlayedBefore) {
+            firstPlayed = reader.getFirstPlayed();
+            lastPlayed = reader.getLastPlayed();
+            bedSpawn = reader.getBedSpawnLocation();
+        } else {
+            firstPlayed = 0;
+            lastPlayed = 0;
+        }
+        reader.readData(this);
+        reader.close();
+
+        // save data back out
         saveData();
 
         streamBlocks(); // stream the initial set of blocks
@@ -254,6 +273,23 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         // send initial location
         session.send(new PositionRotationMessage(location, getEyeHeight() + 0.05, true));
+    }
+
+    /**
+     * Read the location from a PlayerReader for entity initialization. Will
+     * fall back to a reasonable default rather than returning null.
+     * @param session The player's session.
+     * @param reader The PlayerReader to get the location from.
+     * @return The location to spawn the player.
+     */
+    private static Location initLocation(GlowSession session, PlayerDataService.PlayerReader reader) {
+        if (reader.hasPlayedBefore()) {
+            Location loc = reader.getLocation();
+            if (loc != null) {
+                return loc;
+            }
+        }
+        return session.getServer().getWorlds().get(0).getSpawnLocation();
     }
 
     @Override
@@ -575,7 +611,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     public boolean isOnline() {
-        return true;
+        return session.isActive();
     }
 
     public boolean isBanned() {
@@ -603,25 +639,20 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         return this;
     }
 
+    public boolean hasPlayedBefore() {
+        return hasPlayedBefore;
+    }
+
     public long getFirstPlayed() {
-        return 0;
+        return firstPlayed;
     }
 
     public long getLastPlayed() {
-        return 0;
-    }
-
-    public boolean hasPlayedBefore() {
-        return false;
+        return lastPlayed;
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // HumanEntity overrides
-
-    @Override
-    public UUID getUniqueId() {
-        return uuid;
-    }
 
     @Override
     public boolean isOp() {

@@ -2,6 +2,7 @@ package net.glowstone.net.handler.login;
 
 import com.flowpowered.networking.MessageHandler;
 import net.glowstone.GlowServer;
+import net.glowstone.entity.meta.PlayerProfile;
 import net.glowstone.entity.meta.PlayerProperty;
 import net.glowstone.net.EncryptionChannelProcessor;
 import net.glowstone.net.GlowSession;
@@ -155,11 +156,7 @@ public final class EncryptionKeyResponseHandler implements MessageHandler<GlowSe
                 session.getServer().getScheduler().runTask(null, new Runnable() {
                     @Override
                     public void run() {
-                        // isActive check here to break out early if player has disconnected
-                        // while waiting to be logged in
-                        if (session.isActive()) {
-                            session.setPlayer(name, uuid, properties);
-                        }
+                        session.setPlayer(new PlayerProfile(name, uuid, properties));
                     }
                 });
             } catch (Exception e) {

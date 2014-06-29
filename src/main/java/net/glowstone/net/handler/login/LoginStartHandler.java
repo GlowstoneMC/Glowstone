@@ -1,6 +1,7 @@
 package net.glowstone.net.handler.login;
 
 import com.flowpowered.networking.MessageHandler;
+import net.glowstone.entity.meta.PlayerProfile;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.login.EncryptionKeyRequestMessage;
 import net.glowstone.net.message.login.LoginStartMessage;
@@ -13,10 +14,9 @@ public final class LoginStartHandler implements MessageHandler<GlowSession, Logi
 
     @Override
     public void handle(GlowSession session, LoginStartMessage message) {
-        boolean onlineMode = session.getServer().getOnlineMode();
-        String username = message.getUsername();
+        final String name = message.getUsername();
 
-        if (onlineMode) {
+        if (session.getServer().getOnlineMode()) {
             //Get necessary information to create our request message
             final String sessionId = session.getSessionId();
             final byte[] publicKey = SecurityUtils.generateX509Key(session.getServer().getKeyPair().getPublic()).getEncoded(); //Convert to X509 format
@@ -24,13 +24,13 @@ public final class LoginStartHandler implements MessageHandler<GlowSession, Logi
 
             //Set verify data on session for use in the response handler
             session.setVerifyToken(verifyToken);
-            session.setVerifyUsername(message.getUsername());
+            session.setVerifyUsername(name);
 
             //Send created request message and wait for the response
             session.send(new EncryptionKeyRequestMessage(sessionId, publicKey, verifyToken));
         } else {
-            UUID uid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + username).getBytes(StandardCharsets.UTF_8));
-            session.setPlayer(username, uid, null);
+            UUID uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8));
+            session.setPlayer(new PlayerProfile(name, uuid));
         }
     }
 }

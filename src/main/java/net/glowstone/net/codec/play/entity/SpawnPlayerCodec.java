@@ -4,6 +4,7 @@ import com.flowpowered.networking.Codec;
 import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
+import net.glowstone.entity.meta.PlayerProfile;
 import net.glowstone.entity.meta.PlayerProperty;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.entity.SpawnPlayerMessage;
@@ -17,21 +18,18 @@ public final class SpawnPlayerCodec implements Codec<SpawnPlayerMessage> {
     }
 
     public ByteBuf encode(ByteBuf buf, SpawnPlayerMessage message) throws IOException {
-        final List<PlayerProperty> properties = message.getProperties();
+        final PlayerProfile profile = message.getProfile();
 
         ByteBufUtils.writeVarInt(buf, message.getId());
-        ByteBufUtils.writeUTF8(buf, message.getUuid().toString());
-        ByteBufUtils.writeUTF8(buf, message.getName());
+        ByteBufUtils.writeUTF8(buf, profile.getUniqueId().toString());
+        ByteBufUtils.writeUTF8(buf, profile.getName());
 
-        if (properties == null) {
-            ByteBufUtils.writeVarInt(buf, 0);
-        } else {
-            ByteBufUtils.writeVarInt(buf, properties.size());
-            for (PlayerProperty property : properties) {
-                ByteBufUtils.writeUTF8(buf, property.getName());
-                ByteBufUtils.writeUTF8(buf, property.getValue());
-                ByteBufUtils.writeUTF8(buf, property.getSignature());
-            }
+        final List<PlayerProperty> properties = profile.getProperties();
+        ByteBufUtils.writeVarInt(buf, properties.size());
+        for (PlayerProperty property : properties) {
+            ByteBufUtils.writeUTF8(buf, property.getName());
+            ByteBufUtils.writeUTF8(buf, property.getValue());
+            ByteBufUtils.writeUTF8(buf, property.getSignature());
         }
 
         buf.writeInt(message.getX());

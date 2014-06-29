@@ -58,16 +58,17 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     }
 
     private void loadData() {
-        PlayerDataService.PlayerReader reader = server.getPlayerDataService().beginReadingData(uuid);
-        hasPlayed = reader.hasPlayedBefore();
-        if (hasPlayed) {
-            firstPlayed = reader.getFirstPlayed();
-            lastPlayed = reader.getLastPlayed();
-            bedSpawn = reader.getBedSpawnLocation();
+        try (PlayerDataService.PlayerReader reader = server.getPlayerDataService().beginReadingData(uuid)) {
+            hasPlayed = reader.hasPlayedBefore();
+            if (hasPlayed) {
+                firstPlayed = reader.getFirstPlayed();
+                lastPlayed = reader.getLastPlayed();
+                bedSpawn = reader.getBedSpawnLocation();
 
-            String lastName = reader.getLastKnownName();
-            if (lastName != null) {
-                name = lastName;
+                String lastName = reader.getLastKnownName();
+                if (lastName != null) {
+                    name = lastName;
+                }
             }
         }
     }

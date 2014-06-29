@@ -107,6 +107,7 @@ public abstract class GlowEntity implements Entity {
         this.world = (GlowWorld) location.getWorld();
         this.server = world.getServer();
         world.getEntityManager().allocate(this);
+        reset();
     }
 
     @Override
