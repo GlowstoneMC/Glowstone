@@ -1,6 +1,7 @@
 package net.glowstone.entity.meta;
 
 import org.bukkit.entity.*;
+import org.bukkit.entity.minecart.PoweredMinecart;
 
 import static net.glowstone.entity.meta.MetadataType.*;
 
@@ -29,24 +30,82 @@ public enum MetadataIndex {
 
     BAT_HANGING(16, BYTE, Bat.class),
 
-    TAME_FLAGS(16, BYTE, Tameable.class),
-    TAME_OWNER(17, STRING, Tameable.class),
-
+    OCELOT_FLAGS(16, BYTE, Ocelot.class),
+    OCELOT_OWNER(17, STRING, Ocelot.class),
     OCELOT_TYPE(18, BYTE, Ocelot.class),
 
     WOLF_FLAGS(16, BYTE, Wolf.class),
+    WOLF_OWNER(17, STRING, Wolf.class),
     WOLF_HEALTH(18, FLOAT, Wolf.class),
     WOLF_BEGGING(19, BYTE, Wolf.class),
     WOLF_COLOR(20, BYTE, Wolf.class),
 
-    // todo: more
+    PIG_SADDLE(16, BYTE, Pig.class),
+
+    SHEEP_DATA(16, BYTE, Sheep.class),
+
+    VILLAGER_TYPE(16, INT, Villager.class),
+
+    ENDERMAN_BLOCK(16, SHORT, Enderman.class),
+    ENDERMAN_BLOCK_DATA(17, BYTE, Enderman.class),
+    ENDERMAN_ALERTED(18, BYTE, Enderman.class),
+
+    ZOMBIE_IS_CHILD(12, BYTE, Zombie.class),
+    ZOMBIE_IS_VILLAGER(13, BYTE, Zombie.class),
+    ZOMBIE_IS_CONVERTING(14, BYTE, Zombie.class),
+
+    BLAZE_ON_FIRE(16, BYTE, Blaze.class),
+
+    SPIDER_CLIMBING(16, BYTE, Spider.class),
+
+    CREEPER_STATE(16, BYTE, Creeper.class),
+    CREEPER_POWERED(17, BYTE, Creeper.class),
+
+    GHAST_ATTACKING(16, BYTE, Ghast.class),
+
+    SLIME_SIZE(16, BYTE, Slime.class),
+
+    SKELETON_TYPE(13, BYTE, Skeleton.class),
+
+    WITCH_AGGRESSIVE(21, BYTE, Witch.class),
+
+    GOLEM_PLAYER_BUILT(16, BYTE, IronGolem.class),
+
+    WITHER_TARGET_1(17, INT, Wither.class),
+    WITHER_TARGET_2(18, INT, Wither.class),
+    WITHER_TARGET_3(19, INT, Wither.class),
+    WITHER_INVULN_TIME(20, INT, Wither.class),
+
+    BOAT_HIT_TIME(17, INT, Boat.class),
+    BOAT_DIRECTION(18, INT, Boat.class),
+    BOAT_DAMAGE_TAKEN(19, FLOAT, Boat.class),
+
+    MINECART_SHAKE_POWER(17, INT, Minecart.class),
+    MINECART_SHAKE_DIRECTION(18, INT, Minecart.class),
+    MINECART_DAMAGE_TAKEN(19, INT, Minecart.class),
+    MINECART_BLOCK(20, INT, Minecart.class),
+    MINECART_BLOCK_OFFSET(21, INT, Minecart.class),
+    MINECART_BLOCK_SHOWN(22, BYTE, Minecart.class),
+
+    FURNACE_MINECART_POWERED(16, BYTE, PoweredMinecart.class),
+
+    ITEM_ITEM(10, ITEM, Item.class),
+
+    ARROW_CRITICAL(16, BYTE, Arrow.class),
+
+    FIREWORK_INFO(8, ITEM, Firework.class),
+
+    ITEM_FRAME_ITEM(2, ITEM, ItemFrame.class),
+    ITEM_FRAME_ROTATION(3, BYTE, ItemFrame.class),
+
+    ENDER_CRYSTAL_HEALTH(8, INT, EnderCrystal.class),
     ;
 
     private final int index;
     private final MetadataType type;
-    private final Class<?> appliesTo;
+    private final Class<? extends Entity> appliesTo;
 
-    private MetadataIndex(int index, MetadataType type, Class<?> appliesTo) {
+    private MetadataIndex(int index, MetadataType type, Class<? extends Entity> appliesTo) {
         this.index = index;
         this.type = type;
         this.appliesTo = appliesTo;
