@@ -532,7 +532,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         setCompassTarget(world.getSpawnLocation()); // set our compass target
         session.send(new PositionRotationMessage(location, getEyeHeight() + 0.05, true));
         sendWeather();
-        reset();
 
         // fire world change if needed
         if (oldWorld != world) {
@@ -1006,7 +1005,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             // y offset accounts for floating point shenanigans in client physics
             session.send(new PositionRotationMessage(location, getEyeHeight() + 0.05, true));
             setRawLocation(location);
-            reset();
         }
 
         return true;

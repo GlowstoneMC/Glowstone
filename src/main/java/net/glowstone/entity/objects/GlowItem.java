@@ -2,8 +2,12 @@ package net.glowstone.entity.objects;
 
 import com.flowpowered.networking.Message;
 import net.glowstone.entity.GlowEntity;
+import net.glowstone.entity.meta.MetadataIndex;
+import net.glowstone.net.message.play.entity.EntityMetadataMessage;
+import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
@@ -15,6 +19,11 @@ import java.util.List;
  * @author Graham Edgecombe
  */
 public final class GlowItem extends GlowEntity implements Item {
+
+    /**
+     * The number of ticks (equal to 5 minutes) that item entities should live for.
+     */
+    private static final int LIFETIME = 5 * 60 * 20;
 
     /**
      * The item.
@@ -33,24 +42,31 @@ public final class GlowItem extends GlowEntity implements Item {
      */
     public GlowItem(Location location, ItemStack item) {
         super(location);
-        this.item = item;
+        setItemStack(item);
         pickupDelay = 20;
     }
 
-    /**
-     * Gets the item that this GlowItem represents.
-     * @return The item.
-     */
-    public ItemStack getItemStack() {
-        return item;
+    ////////////////////////////////////////////////////////////////////////////
+    // Overrides
+
+    @Override
+    public EntityType getType() {
+        return EntityType.DROPPED_ITEM;
     }
 
-    /**
-     * Sets the item that this item represents.
-     * @param stack The new ItemStack to use.
-     */
-    public void setItemStack(ItemStack stack) {
-        item = stack.clone();
+    @Override
+    public void pulse() {
+        super.pulse();
+
+        // decrement pickupDelay if it's less than the NBT maximum
+        if (pickupDelay > 0) {
+            --pickupDelay;
+        }
+
+        // disappear if we've lived too long
+        if (getTicksLived() >= LIFETIME) {
+            // todo: remove();
+        }
     }
 
     @Override
@@ -62,9 +78,14 @@ public final class GlowItem extends GlowEntity implements Item {
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
 
-        //return new SpawnItemMessage(id, item, x, y, z, yaw, pitch, 0);
-        return Arrays.asList();
+        return Arrays.asList(
+                new SpawnObjectMessage(id, 2, x, y, z, pitch, yaw),
+                new EntityMetadataMessage(id, metadata.getEntryList())
+        );
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Item stuff
 
     public int getPickupDelay() {
         return pickupDelay;
@@ -72,6 +93,14 @@ public final class GlowItem extends GlowEntity implements Item {
 
     public void setPickupDelay(int delay) {
         pickupDelay = delay;
+    }
+
+    public ItemStack getItemStack() {
+        return metadata.getItem(MetadataIndex.ITEM_ITEM);
+    }
+
+    public void setItemStack(ItemStack stack) {
+        metadata.set(MetadataIndex.ITEM_ITEM, stack.clone());
     }
 
 }

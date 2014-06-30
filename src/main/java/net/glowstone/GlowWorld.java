@@ -3,6 +3,7 @@ package net.glowstone;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.constants.GlowBiome;
 import net.glowstone.entity.*;
+import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
 import net.glowstone.io.anvil.AnvilWorldStorageProvider;
@@ -344,13 +345,26 @@ public final class GlowWorld implements World {
      * Updates all the entities within this world.
      */
     public void pulse() {
-        ArrayList<GlowEntity> temp = new ArrayList<>(entities.getAll());
+        List<GlowEntity> temp = new ArrayList<>(entities.getAll());
+        List<GlowEntity> players = new LinkedList<>();
 
-        for (GlowEntity entity : temp)
+        // pulse players last so they actually see that other entities have
+        // moved. unfortunately pretty hacky. not a problem for players b/c
+        // their position is modified by session ticking.
+        for (GlowEntity entity : temp) {
+            if (entity instanceof GlowPlayer) {
+                players.add(entity);
+            } else {
+                entity.pulse();
+            }
+        }
+        for (GlowEntity entity : players) {
             entity.pulse();
+        }
 
-        for (GlowEntity entity : temp)
+        for (GlowEntity entity : temp) {
             entity.reset();
+        }
 
         // Tick the world age and time of day
         // Modulus by 24000, the tick length of a day
@@ -848,10 +862,7 @@ public final class GlowWorld implements World {
     }
 
     public Item dropItem(Location location, ItemStack item) {
-        // todo: maybe spawn special due to item-ness?
-        Item itemEntity = spawn(location, Item.class);
-        itemEntity.setItemStack(item);
-        return itemEntity;
+        return new GlowItem(location, item);
     }
 
     public Item dropItemNaturally(Location location, ItemStack item) {

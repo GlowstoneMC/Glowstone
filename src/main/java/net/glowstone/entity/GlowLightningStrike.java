@@ -4,6 +4,7 @@ import com.flowpowered.networking.Message;
 import net.glowstone.net.message.play.entity.SpawnLightningStrikeMessage;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LightningStrike;
 
 import java.util.Arrays;
@@ -28,6 +29,10 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
         super(location);
         this.effect = effect;
         this.ticksToLive = 30;
+    }
+
+    public EntityType getType() {
+        return EntityType.LIGHTNING;
     }
 
     public boolean isEffect() {

@@ -76,4 +76,23 @@ public final class Position {
         return first.getPitch() != second.getPitch() || first.getYaw() != second.getYaw();
     }
 
+    /**
+     * Copy the contents of one Location to another.
+     * @param source The Location to read from.
+     * @param dest The Location to modify. May be null.
+     * @return The dest parameter, modified if not null.
+     */
+    public static Location copyLocation(Location source, Location dest) {
+        if (dest == null) {
+            return null;
+        }
+        dest.setWorld(source.getWorld());
+        dest.setX(source.getX());
+        dest.setY(source.getY());
+        dest.setZ(source.getZ());
+        dest.setPitch(source.getPitch());
+        dest.setYaw(source.getYaw());
+        return dest;
+    }
+
 }

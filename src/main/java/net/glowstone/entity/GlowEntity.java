@@ -11,7 +11,6 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.metadata.MetadataStore;
@@ -77,12 +76,12 @@ public abstract class GlowEntity implements Entity {
     /**
      * The current position.
      */
-    protected Location location;
+    protected final Location location;
 
     /**
      * The position in the last cycle.
      */
-    protected Location previousLocation;
+    protected final Location previousLocation;
 
     /**
      * The entity's velocity, applied each tick.
@@ -123,7 +122,7 @@ public abstract class GlowEntity implements Entity {
         this.world = (GlowWorld) location.getWorld();
         this.server = world.getServer();
         world.getEntityManager().allocate(this);
-        reset();
+        previousLocation = location.clone();
     }
 
     @Override
@@ -161,10 +160,6 @@ public abstract class GlowEntity implements Entity {
         return world.getEntityManager().getEntity(id) == this;
     }
 
-    public EntityType getType() {
-        throw new UnsupportedOperationException("Unknown entity type for " + getClass().getSimpleName());
-    }
-
     ////////////////////////////////////////////////////////////////////////////
     // Location stuff
 
@@ -173,13 +168,7 @@ public abstract class GlowEntity implements Entity {
     }
 
     public Location getLocation(Location loc) {
-        if (loc == null) return null;
-        loc.setX(location.getX());
-        loc.setY(location.getY());
-        loc.setZ(location.getZ());
-        loc.setPitch(location.getPitch());
-        loc.setYaw(location.getYaw());
-        return loc;
+        return Position.copyLocation(location, loc);
     }
 
     public void setVelocity(Vector velocity) {
@@ -196,8 +185,7 @@ public abstract class GlowEntity implements Entity {
             world = (GlowWorld) location.getWorld();
             world.getEntityManager().allocate(this);
         }
-        this.location = location;
-        reset();
+        setRawLocation(location);
         return true;
     }
 
@@ -255,7 +243,7 @@ public abstract class GlowEntity implements Entity {
      * position and rotation.
      */
     public void reset() {
-        previousLocation = location;
+        Position.copyLocation(location, previousLocation);
     }
 
     /**
@@ -271,7 +259,11 @@ public abstract class GlowEntity implements Entity {
      * @param location The new location.
      */
     public void setRawLocation(Location location) {
-        this.location = location;
+        if (location.getWorld() != world) {
+            throw new IllegalArgumentException("Cannot setRawLocation to a different world (got " + location.getWorld() + ", expected " + world + ")");
+        }
+        world.getEntityManager().move(this, location);
+        Position.copyLocation(location, this.location);
     }
 
     /**

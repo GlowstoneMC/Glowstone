@@ -5,11 +5,15 @@ import net.glowstone.GlowChunk.ChunkSection;
 import net.glowstone.GlowChunkSnapshot;
 import net.glowstone.GlowServer;
 import net.glowstone.block.entity.TileEntity;
+import net.glowstone.entity.GlowEntity;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.io.ChunkIoService;
+import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.util.NibbleArray;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
+import net.glowstone.util.nbt.TagType;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -89,7 +93,19 @@ public final class AnvilChunkIoService implements ChunkIoService {
             chunk.setBiomes(levelTag.getByteArray("Biomes"));
         }
 
-        // read "Entities" eventually
+        // read entities
+        if (levelTag.isList("Entities", TagType.COMPOUND)) {
+            for (CompoundTag entityTag : levelTag.getCompoundList("Entities")) {
+                try {
+                    // note that creating the entity is sufficient to add it to the world
+                    GlowEntity entity = EntityStorage.loadEntity(chunk.getWorld(), entityTag);
+                    int i = 5;
+                } catch (IllegalArgumentException e) {
+                    GlowServer.logger.log(Level.WARNING, "Error loading entity in " + chunk, e);
+                }
+            }
+        }
+
         // read "HeightMap" if we need to
 
         // read tile entities
@@ -155,15 +171,21 @@ public final class AnvilChunkIoService implements ChunkIoService {
         levelTags.putIntArray("HeightMap", snapshot.getRawHeightmap());
         levelTags.putByteArray("Biomes", snapshot.getRawBiomes());
 
-        // todo: entities
+        // entities
         List<CompoundTag> entities = new ArrayList<>();
-        /* for (Entity entity : chunk.getEntities()) {
-            GlowEntity glowEntity = (GlowEntity) entity;
-            EntityStore store = EntityStoreLookupService.find(glowEntity.getClass());
-            if (store == null)
+        for (GlowEntity entity : chunk.getRawEntities()) {
+            if (entity instanceof GlowPlayer) {
+                // not saved
                 continue;
-            entities.add(new CompoundTag("", store.save(glowEntity)));
-        } */
+            }
+            try {
+                CompoundTag tag = new CompoundTag();
+                EntityStorage.save(entity, tag);
+                entities.add(tag);
+            } catch (IllegalArgumentException e) {
+                GlowServer.logger.log(Level.WARNING, "Error saving " + entity + " in " + chunk, e);
+            }
+        }
         levelTags.putCompoundList("Entities", entities);
 
         // tile entities

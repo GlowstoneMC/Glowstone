@@ -4,6 +4,8 @@ import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 class ItemStore extends EntityStore<GlowItem> {
 
@@ -13,7 +15,7 @@ class ItemStore extends EntityStore<GlowItem> {
 
     public GlowItem createEntity(Location location, CompoundTag compound) {
         // item will be set by loading code below
-        return new GlowItem(location, null);
+        return new GlowItem(location, new ItemStack(Material.STONE));
     }
 
     // todo: the following tags

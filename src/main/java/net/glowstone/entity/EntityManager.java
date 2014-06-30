@@ -1,11 +1,10 @@
 package net.glowstone.entity;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import net.glowstone.GlowChunk;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
+
+import java.util.*;
 
 /**
  * A class which manages all of the entities within a world.
@@ -24,9 +23,9 @@ public final class EntityManager implements Iterable<GlowEntity> {
     private final Map<Class<? extends GlowEntity>, Set<? extends GlowEntity>> groupedEntities = new HashMap<>();
 
     /**
-     * The next id to check.
+     * The last assigned id value.
      */
-    private int nextId = 1;
+    private int lastId = 0;
 
     /**
      * Gets all entities with the specified type.
@@ -66,23 +65,15 @@ public final class EntityManager implements Iterable<GlowEntity> {
      * @param entity The entity.
      * @return The id.
      */
-    @SuppressWarnings("unchecked")
     int allocate(GlowEntity entity) {
-        for (int id = nextId; id < Integer.MAX_VALUE; id++) {
-            if (!entities.containsKey(id)) {
-                entities.put(id, entity);
-                entity.id = id;
-                ((Collection<GlowEntity>) getAll(entity.getClass())).add(entity);
-                nextId = id + 1;
-                return id;
-            }
-        }
+        int startedAt = lastId;
+        // intentionally wraps around integer boundaries
+        for (int id = lastId + 1; id != startedAt; ++id) {
+            // skip special values
+            if (id == -1 || id == 0) continue;
 
-        for (int id = Integer.MIN_VALUE; id < -1; id++) { // as -1 is used as a special value
             if (!entities.containsKey(id)) {
-                entities.put(id, entity);
-                ((Collection<GlowEntity>) getAll(entity.getClass())).add(entity);
-                nextId = id + 1;
+                allocate(entity, id);
                 return id;
             }
         }
@@ -90,13 +81,39 @@ public final class EntityManager implements Iterable<GlowEntity> {
         throw new IllegalStateException("No free entity ids");
     }
 
+    @SuppressWarnings("unchecked")
+    private void allocate(GlowEntity entity, int id) {
+        entity.id = id;
+        entities.put(id, entity);
+        ((Collection<GlowEntity>) getAll(entity.getClass())).add(entity);
+        ((GlowChunk) entity.location.getChunk()).getRawEntities().add(entity);
+        lastId = id;
+    }
+
     /**
      * Deallocates the id for an entity.
      * @param entity The entity.
      */
     void deallocate(GlowEntity entity) {
-        entities.remove(entity.getEntityId());
+        entities.remove(entity.id);
         getAll(entity.getClass()).remove(entity);
+        ((GlowChunk) entity.location.getChunk()).getRawEntities().remove(entity);
+        entity.id = -1;
+    }
+
+    /**
+     * Notes that an entity has moved from one location to another for
+     * physics and storage purposes.
+     * @param entity The entity.
+     * @param newLocation The new location.
+     */
+    void move(GlowEntity entity, Location newLocation) {
+        Chunk prevChunk = entity.location.getChunk();
+        Chunk newChunk = newLocation.getChunk();
+        if (prevChunk != newChunk) {
+            ((GlowChunk) prevChunk).getRawEntities().remove(entity);
+            ((GlowChunk) newChunk).getRawEntities().add(entity);
+        }
     }
 
     @Override

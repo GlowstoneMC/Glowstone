@@ -1,6 +1,7 @@
 package net.glowstone.entity;
 
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Weather;
 
 /**
@@ -11,5 +12,8 @@ public abstract class GlowWeather extends GlowEntity implements Weather {
     public GlowWeather(Location location) {
         super(location);
     }
-    
+
+    public EntityType getType() {
+        return EntityType.WEATHER;
+    }
 }

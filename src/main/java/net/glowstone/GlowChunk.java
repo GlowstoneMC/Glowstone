@@ -5,6 +5,7 @@ import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.TileEntity;
+import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.game.ChunkDataMessage;
 import net.glowstone.util.NibbleArray;
 import org.bukkit.Chunk;
@@ -178,7 +179,12 @@ public final class GlowChunk implements Chunk {
      * The tile entities that reside in this chunk.
      */
     private final HashMap<Integer, TileEntity> tileEntities = new HashMap<>();
-    
+
+    /**
+     * The entities that reside in this chunk.
+     */
+    private final Set<GlowEntity> entities = new HashSet<>(4);
+
     /**
      * Whether the chunk has been populated by special features.
      * Used in map generation.
@@ -220,7 +226,11 @@ public final class GlowChunk implements Chunk {
     }
 
     public Entity[] getEntities() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return entities.toArray(new Entity[entities.size()]);
+    }
+
+    public Collection<GlowEntity> getRawEntities() {
+        return entities;
     }
 
     public GlowBlockState[] getTileEntities() {
