@@ -47,18 +47,7 @@ class GlowMetaItem implements ItemMeta {
     }
 
     public ItemMeta clone() {
-        try {
-            GlowMetaItem clone = (GlowMetaItem) super.clone();
-            if (this.lore != null) {
-                clone.lore = new ArrayList<>(this.lore);
-            }
-            if (this.enchants != null) {
-                clone.enchants = new HashMap<>(this.enchants);
-            }
-            return clone;
-        } catch (CloneNotSupportedException e) {
-            throw new Error(e);
-        }
+        return new GlowMetaItem(this);
     }
 
     public Map<String, Object> serialize() {

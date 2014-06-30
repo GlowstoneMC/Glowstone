@@ -31,12 +31,24 @@ public class GlowItemFactory implements ItemFactory {
     }
 
     public boolean equals(ItemMeta meta1, ItemMeta meta2) throws IllegalArgumentException {
-        // todo: do fancy comparisons
-        return meta1 == meta2;
+        // todo: be nicer about comparisons without involving serialization
+        // and the extra new objects for null arguments
+        GlowMetaItem glow1, glow2;
+        if (meta1 == null) {
+            glow1 = new GlowMetaItem(null);
+        } else {
+            glow1 = toGlowMeta(meta1);
+        }
+        if (meta2 == null) {
+            glow2 = new GlowMetaItem(null);
+        } else {
+            glow2 = toGlowMeta(meta2);
+        }
+        return glow1.serialize().equals(glow2.serialize());
     }
 
     public ItemMeta asMetaFor(ItemMeta meta, ItemStack stack) throws IllegalArgumentException {
-        return asMetaFor(meta, stack.getType());
+        return makeMeta(stack.getType(), toGlowMeta(meta));
     }
 
     public ItemMeta asMetaFor(ItemMeta meta, Material material) throws IllegalArgumentException {
@@ -89,6 +101,9 @@ public class GlowItemFactory implements ItemFactory {
         switch (material) {
             case AIR:
                 return null;
+            case BOOK_AND_QUILL:
+            case WRITTEN_BOOK:
+                return new GlowMetaBook(meta);
             default:
                 return new GlowMetaItem(meta);
         }

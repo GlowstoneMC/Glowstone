@@ -1,9 +1,16 @@
 package net.glowstone.net.handler.play.game;
 
 import com.flowpowered.networking.MessageHandler;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import net.glowstone.GlowServer;
+import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.game.PluginMessage;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.nio.charset.StandardCharsets;
 
@@ -32,7 +39,6 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
     }
 
     private void handleInternal(GlowSession session, String channel, byte[] data) {
-        //ByteBuf buf = Unpooled.wrappedBuffer(data);
         /*
         MC|Brand
             entire data: string of client's brand (e.g. "vanilla")
@@ -55,11 +61,84 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
             entire data: name to apply to item in anvil
          */
 
-        if (channel.equals("MC|Brand")) {
-            // vanilla server doesn't handle this, for now just log it
-            GlowServer.logger.info("Client brand of " + session.getPlayer().getName() + " is: " + string(data));
-        } else {
-            GlowServer.logger.info(session + " used unknown Minecraft channel: " + channel);
+        ByteBuf buf = Unpooled.wrappedBuffer(data);
+        switch (channel) {
+            case "MC|Brand":
+                // vanilla server doesn't handle this, for now just log it
+                GlowServer.logger.info("Client brand of " + session.getPlayer().getName() + " is: " + string(data));
+                break;
+            case "MC|BEdit": {
+                // read and verify stack
+                ItemStack item = GlowBufUtils.readSlot(buf);
+                //GlowServer.logger.info("BookEdit [" + session.getPlayer().getName() + "]: " + item);
+                if (item == null || item.getType() != Material.BOOK_AND_QUILL) {
+                    return;
+                }
+                ItemMeta meta = item.getItemMeta();
+                if (!(meta instanceof BookMeta)) {
+                    return;
+                }
+                BookMeta book = (BookMeta) meta;
+                if (!book.hasPages()) {
+                    return;
+                }
+
+                // verify item in hand
+                ItemStack inHand = session.getPlayer().getItemInHand();
+                if (inHand == null || inHand.getType() != Material.BOOK_AND_QUILL) {
+                    return;
+                }
+                ItemMeta handMeta = inHand.getItemMeta();
+                if (!(handMeta instanceof BookMeta)) {
+                    return;
+                }
+                BookMeta handBook = (BookMeta) handMeta;
+
+                // apply pages to book
+                handBook.setPages(book.getPages());
+                inHand.setItemMeta(handBook);
+                session.getPlayer().setItemInHand(inHand);
+                break;
+            }
+            case "MC|BSign": {
+                // read and verify stack
+                ItemStack item = GlowBufUtils.readSlot(buf);
+                //GlowServer.logger.info("BookSign [" + session.getPlayer().getName() + "]: " + item);
+                if (item == null || item.getType() != Material.WRITTEN_BOOK) {
+                    return;
+                }
+                ItemMeta meta = item.getItemMeta();
+                if (!(meta instanceof BookMeta)) {
+                    return;
+                }
+                BookMeta book = (BookMeta) meta;
+                if (!book.hasPages() || !book.hasTitle()) {
+                    return;
+                }
+
+                // verify item in hand
+                ItemStack inHand = session.getPlayer().getItemInHand();
+                if (inHand == null || inHand.getType() != Material.BOOK_AND_QUILL) {
+                    return;
+                }
+                ItemMeta handMeta = inHand.getItemMeta();
+                if (!(handMeta instanceof BookMeta)) {
+                    return;
+                }
+                BookMeta handBook = (BookMeta) handMeta;
+
+                // apply pages, title, and author to book
+                handBook.setAuthor(session.getPlayer().getName());
+                handBook.setTitle(book.getTitle());
+                handBook.setPages(book.getPages());
+                inHand.setType(Material.WRITTEN_BOOK);
+                inHand.setItemMeta(handBook);
+                session.getPlayer().setItemInHand(inHand);
+                break;
+            }
+            default:
+                GlowServer.logger.info(session + " used unknown Minecraft channel: " + channel);
+                break;
         }
     }
 
