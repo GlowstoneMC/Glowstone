@@ -57,7 +57,7 @@ abstract class EntityStore<T extends GlowEntity> {
         // base stuff for all entities is here:
 
         if (tag.isList("Motion", TagType.DOUBLE)) {
-            entity.setVelocity(NbtSerialization.listTagToVector(tag.<Double>getList("Motion", TagType.DOUBLE)));
+            entity.setVelocity(NbtSerialization.listToVector(tag.<Double>getList("Motion", TagType.DOUBLE)));
         }
         if (tag.isFloat("FallDistance")) {
             entity.setFallDistance(tag.getFloat("FallDistance"));
@@ -87,15 +87,9 @@ abstract class EntityStore<T extends GlowEntity> {
     public void save(T entity, CompoundTag tag) {
         tag.putString("id", id);
 
+        // write world info, Pos, Rotation, and Motion
         Location loc = entity.getLocation();
-        UUID worldUUID = loc.getWorld().getUID();
-        // world UUID used by Bukkit
-        tag.putLong("WorldUUIDMost", worldUUID.getMostSignificantBits());
-        tag.putLong("WorldUUIDLeast", worldUUID.getLeastSignificantBits());
-        // leave a Dimension value for possible Vanilla use
-        tag.putInt("Dimension", loc.getWorld().getEnvironment().getId());
-
-        // write Pos, Rotation, and Motion
+        NbtSerialization.writeWorld(loc.getWorld(), tag);
         NbtSerialization.locationToListTags(loc, tag);
         tag.putList("Motion", TagType.DOUBLE, NbtSerialization.vectorToList(entity.getVelocity()));
 

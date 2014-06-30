@@ -36,6 +36,7 @@ public final class EntityStorage {
      */
     static {
         bind(new PlayerStore());
+        bind(new ItemStore());
     }
 
     /**
@@ -66,7 +67,7 @@ public final class EntityStorage {
         }
 
         // verify that, if the tag contains a world, it's correct
-        World checkWorld = NbtSerialization.findWorld(world.getServer(), compound);
+        World checkWorld = NbtSerialization.readWorld(world.getServer(), compound);
         if (checkWorld != null && checkWorld != world) {
             throw new IllegalArgumentException("Entity in wrong world: stored in " + world + " but data says " + checkWorld);
         }
@@ -133,7 +134,7 @@ public final class EntityStorage {
         EntityStore<?> store = find(entity.getClass(), "load");
 
         // work out the entity's location, using its current location if unavailable
-        World world = NbtSerialization.findWorld(entity.getServer(), compound);
+        World world = NbtSerialization.readWorld(entity.getServer(), compound);
         if (world == null) {
             world = entity.getWorld();
         }

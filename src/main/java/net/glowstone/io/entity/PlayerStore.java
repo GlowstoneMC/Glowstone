@@ -92,6 +92,9 @@ class PlayerStore extends HumanEntityStore<GlowPlayer> {
     public void save(GlowPlayer entity, CompoundTag tag) {
         super.save(entity, tag);
 
+        // players have no id tag
+        tag.remove("id");
+
         // experience
         tag.putInt("XpLevel", entity.getLevel());
         tag.putFloat("XpP", entity.getExp());

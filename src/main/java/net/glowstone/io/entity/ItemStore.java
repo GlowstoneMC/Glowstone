@@ -5,9 +5,9 @@ import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 
-class ItemEntityStore extends EntityStore<GlowItem> {
+class ItemStore extends EntityStore<GlowItem> {
 
-    public ItemEntityStore() {
+    public ItemStore() {
         super(GlowItem.class, "Item");
     }
 
