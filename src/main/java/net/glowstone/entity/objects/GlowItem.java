@@ -9,6 +9,7 @@ import net.glowstone.net.message.play.entity.EntityVelocityMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
@@ -100,7 +101,8 @@ public final class GlowItem extends GlowEntity implements Item {
     }
 
     public void setItemStack(ItemStack stack) {
-        metadata.set(MetadataIndex.ITEM_ITEM, stack.clone());
+        // stone is the "default state" for the item stack according to the client
+        metadata.set(MetadataIndex.ITEM_ITEM, stack == null ? new ItemStack(Material.STONE) : stack.clone());
     }
 
 }

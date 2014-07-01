@@ -4,6 +4,7 @@ import com.flowpowered.networking.Message;
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
+import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.net.message.play.entity.*;
 import net.glowstone.util.Position;
@@ -248,6 +249,7 @@ public abstract class GlowEntity implements Entity {
         if (fireTicks > 0) {
             --fireTicks;
         }
+        metadata.setBit(MetadataIndex.STATUS, MetadataIndex.StatusFlags.ON_FIRE, fireTicks > 0);
 
         // resend position if it's been a while
         if (ticksLived % (30 * 20) == 0) {
@@ -256,11 +258,11 @@ public abstract class GlowEntity implements Entity {
     }
 
     /**
-     * Resets the previous position and rotations of the entity to the current
-     * position and rotation.
+     * Resets the previous location and other properties to their current value.
      */
     public void reset() {
         Position.copyLocation(location, previousLocation);
+        metadata.resetChanges();
         teleported = false;
         velocityChanged = false;
     }

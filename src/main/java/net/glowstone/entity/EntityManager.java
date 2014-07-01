@@ -98,7 +98,6 @@ public final class EntityManager implements Iterable<GlowEntity> {
         entities.remove(entity.id);
         getAll(entity.getClass()).remove(entity);
         ((GlowChunk) entity.location.getChunk()).getRawEntities().remove(entity);
-        entity.id = -1;
     }
 
     /**

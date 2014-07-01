@@ -1,5 +1,6 @@
 package net.glowstone.entity.meta;
 
+import com.google.common.collect.ImmutableList;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
@@ -11,7 +12,7 @@ import java.util.*;
 public class MetadataMap {
 
     private final Map<MetadataIndex, Object> map = new EnumMap<>(MetadataIndex.class);
-    private final List<Entry> changes = new LinkedList<>();
+    private final List<Entry> changes = new ArrayList<>(4);
     private final Class<? extends Entity> entityClass;
 
     public MetadataMap(Class<? extends Entity> entityClass) {
@@ -65,12 +66,12 @@ public class MetadataMap {
         return (getNumber(index).intValue() & bit) != 0;
     }
 
-    public void setBit(MetadataIndex index, int bit) {
-        set(index, getNumber(index).intValue() | bit);
-    }
-
-    public void clearBit(MetadataIndex index, int bit) {
-        set(index, getNumber(index).intValue() & ~bit);
+    public void setBit(MetadataIndex index, int bit, boolean status) {
+        if (status) {
+            set(index, getNumber(index).intValue() | bit);
+        } else {
+            set(index, getNumber(index).intValue() & ~bit);
+        }
     }
 
     public Number getNumber(MetadataIndex index) {
@@ -130,10 +131,12 @@ public class MetadataMap {
     }
 
     public List<Entry> getChanges() {
-        List<Entry> result = new ArrayList<>(changes);
+        Collections.sort(changes);
+        return ImmutableList.copyOf(changes);
+    }
+
+    public void resetChanges() {
         changes.clear();
-        Collections.sort(result);
-        return result;
     }
 
     @Override

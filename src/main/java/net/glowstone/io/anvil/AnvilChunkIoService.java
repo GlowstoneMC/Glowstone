@@ -98,9 +98,8 @@ public final class AnvilChunkIoService implements ChunkIoService {
             for (CompoundTag entityTag : levelTag.getCompoundList("Entities")) {
                 try {
                     // note that creating the entity is sufficient to add it to the world
-                    GlowEntity entity = EntityStorage.loadEntity(chunk.getWorld(), entityTag);
-                    int i = 5;
-                } catch (IllegalArgumentException e) {
+                    EntityStorage.loadEntity(chunk.getWorld(), entityTag);
+                } catch (Exception e) {
                     GlowServer.logger.log(Level.WARNING, "Error loading entity in " + chunk, e);
                 }
             }
@@ -182,7 +181,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
                 CompoundTag tag = new CompoundTag();
                 EntityStorage.save(entity, tag);
                 entities.add(tag);
-            } catch (IllegalArgumentException e) {
+            } catch (Exception e) {
                 GlowServer.logger.log(Level.WARNING, "Error saving " + entity + " in " + chunk, e);
             }
         }

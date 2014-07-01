@@ -9,12 +9,14 @@ import net.glowstone.constants.GlowAchievement;
 import net.glowstone.constants.GlowEffect;
 import net.glowstone.constants.GlowSound;
 import net.glowstone.entity.meta.MetadataIndex;
+import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.entity.meta.PlayerProfile;
 import net.glowstone.inventory.InventoryMonitor;
 import net.glowstone.io.PlayerDataService;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.login.LoginSuccessMessage;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
+import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityVelocityMessage;
 import net.glowstone.net.message.play.game.*;
 import net.glowstone.net.message.play.inv.*;
@@ -51,6 +53,11 @@ import java.util.logging.Level;
  */
 @DelegateDeserialization(GlowOfflinePlayer.class)
 public final class GlowPlayer extends GlowHumanEntity implements Player {
+
+    /**
+     * A static entity id to use when telling the client about itself.
+     */
+    private static final int SELF_ID = 0;
 
     /**
      * This player's session.
@@ -246,7 +253,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         if (server.isHardcore()) {
             gameMode |= 0x8;
         }
-        session.send(new JoinGameMessage(getEntityId(), gameMode, world.getEnvironment().getId(), world.getDifficulty().getValue(), session.getServer().getMaxPlayers(), type));
+        session.send(new JoinGameMessage(SELF_ID, gameMode, world.getEnvironment().getId(), world.getDifficulty().getValue(), session.getServer().getMaxPlayers(), type));
         setAllowFlight(getGameMode() == GameMode.CREATIVE);
 
         // send server brand and supported plugin channels
@@ -353,6 +360,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         // update inventory
         for (InventoryMonitor.Entry entry : invMonitor.getChanges()) {
             sendItemChange(entry.slot, entry.item);
+        }
+
+        // send changed metadata
+        List<MetadataMap.Entry> changes = metadata.getChanges();
+        if (changes.size() > 0) {
+            session.send(new EntityMetadataMessage(SELF_ID, changes));
         }
 
         // update or remove entities
@@ -616,7 +629,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     public void setVelocity(Vector velocity) {
         velocity = EventFactory.callEvent(new PlayerVelocityEvent(this, velocity)).getVelocity();
         super.setVelocity(velocity);
-        session.send(new EntityVelocityMessage(id, velocity));
+        session.send(new EntityVelocityMessage(SELF_ID, velocity));
     }
 
     public Map<String, Object> serialize() {
@@ -771,7 +784,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     // Entity status
 
     public boolean isSneaking() {
-        return (metadata.getByte(MetadataIndex.STATUS) & 0x02) != 0;
+        return metadata.getBit(MetadataIndex.STATUS, MetadataIndex.StatusFlags.SNEAKING);
     }
 
     public void setSneaking(boolean sneak) {
@@ -779,25 +792,19 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             return;
         }
 
-        if (sneak) {
-            metadata.setBit(MetadataIndex.STATUS, 0x02);
-        } else {
-            metadata.clearBit(MetadataIndex.STATUS, 0x02);
-        }
+        metadata.setBit(MetadataIndex.STATUS, MetadataIndex.StatusFlags.SNEAKING, sneak);
     }
 
     public boolean isSprinting() {
-        return metadata.getBit(MetadataIndex.STATUS, 0x08);
+        return metadata.getBit(MetadataIndex.STATUS, MetadataIndex.StatusFlags.SPRINTING);
     }
 
     public void setSprinting(boolean sprinting) {
-        // todo: event
-
-        if (sprinting) {
-            metadata.setBit(MetadataIndex.STATUS, 0x08);
-        } else {
-            metadata.clearBit(MetadataIndex.STATUS, 0x08);
+        if (EventFactory.callEvent(new PlayerToggleSprintEvent(this, sprinting)).isCancelled()) {
+            return;
         }
+
+        metadata.setBit(MetadataIndex.STATUS, MetadataIndex.StatusFlags.SPRINTING, sprinting);
     }
 
     public double getEyeHeight() {
