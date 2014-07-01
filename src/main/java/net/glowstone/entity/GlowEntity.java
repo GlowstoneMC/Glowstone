@@ -42,7 +42,7 @@ public abstract class GlowEntity implements Entity {
      * The metadata store for entities.
      */
     private final static MetadataStore<Entity> bukkitMetadata = new EntityMetadataStore();
-    
+
     /**
      * The server this entity belongs to.
      */
@@ -86,8 +86,18 @@ public abstract class GlowEntity implements Entity {
     /**
      * The entity's velocity, applied each tick.
      */
-    private Vector velocity = new Vector();
-    
+    protected final Vector velocity = new Vector();
+
+    /**
+     * Whether the entity should have its position resent as if teleported.
+     */
+    protected boolean teleported = false;
+
+    /**
+     * Whether the entity should have its velocity resent.
+     */
+    protected boolean velocityChanged = false;
+
     /**
      * An EntityDamageEvent representing the last damage cause on this entity.
      */
@@ -172,7 +182,8 @@ public abstract class GlowEntity implements Entity {
     }
 
     public void setVelocity(Vector velocity) {
-        this.velocity = velocity.clone();
+        this.velocity.copy(velocity);
+        velocityChanged = true;
     }
 
     public Vector getVelocity() {
@@ -186,6 +197,7 @@ public abstract class GlowEntity implements Entity {
             world.getEntityManager().allocate(this);
         }
         setRawLocation(location);
+        teleported = true;
         return true;
     }
 
@@ -236,6 +248,11 @@ public abstract class GlowEntity implements Entity {
         if (fireTicks > 0) {
             --fireTicks;
         }
+
+        // resend position if it's been a while
+        if (ticksLived % (30 * 20) == 0) {
+            teleported = true;
+        }
     }
 
     /**
@@ -244,6 +261,8 @@ public abstract class GlowEntity implements Entity {
      */
     public void reset() {
         Position.copyLocation(location, previousLocation);
+        teleported = false;
+        velocityChanged = false;
     }
 
     /**
@@ -313,7 +332,7 @@ public abstract class GlowEntity implements Entity {
         int pitch = Position.getIntPitch(location);
 
         List<Message> result = new LinkedList<>();
-        if (moved && teleport) {
+        if (teleported || (moved && teleport)) {
             result.add(new EntityTeleportMessage(id, x, y, z, yaw, pitch));
         } else if (moved && rotated) {
             result.add(new RelativeEntityPositionRotationMessage(id, dx, dy, dz, yaw, pitch));
@@ -326,6 +345,17 @@ public abstract class GlowEntity implements Entity {
         // todo: handle head rotation as a separate value
         if (rotated) {
             result.add(new EntityHeadRotationMessage(id, yaw));
+        }
+
+        // send changed metadata
+        List<MetadataMap.Entry> changes = metadata.getChanges();
+        if (changes.size() > 0) {
+            result.add(new EntityMetadataMessage(id, changes));
+        }
+
+        // send velocity if needed
+        if (velocityChanged) {
+            result.add(new EntityVelocityMessage(id, velocity));
         }
 
         return result;

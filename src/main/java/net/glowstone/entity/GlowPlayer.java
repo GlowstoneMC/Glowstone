@@ -15,6 +15,7 @@ import net.glowstone.io.PlayerDataService;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.login.LoginSuccessMessage;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
+import net.glowstone.net.message.play.entity.EntityVelocityMessage;
 import net.glowstone.net.message.play.game.*;
 import net.glowstone.net.message.play.inv.*;
 import net.glowstone.net.message.play.player.PlayerAbilitiesMessage;
@@ -37,6 +38,7 @@ import org.bukkit.map.MapView;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.util.Vector;
 
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
@@ -354,6 +356,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         // update or remove entities
+        List<Integer> destroyIds = new LinkedList<>();
         for (Iterator<GlowEntity> it = knownEntities.iterator(); it.hasNext(); ) {
             GlowEntity entity = it.next();
             boolean withinDistance = !entity.isDead() && isWithinDistance(entity);
@@ -363,9 +366,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
                     session.send(msg);
                 }
             } else {
-                session.send(new DestroyEntitiesMessage(entity.getEntityId()));
+                destroyIds.add(entity.getEntityId());
                 it.remove();
             }
+        }
+        if (destroyIds.size() > 0) {
+            session.send(new DestroyEntitiesMessage(destroyIds));
         }
 
         // add entities
@@ -606,6 +612,13 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
     }
 
+    @Override
+    public void setVelocity(Vector velocity) {
+        velocity = EventFactory.callEvent(new PlayerVelocityEvent(this, velocity)).getVelocity();
+        super.setVelocity(velocity);
+        session.send(new EntityVelocityMessage(id, velocity));
+    }
+
     public Map<String, Object> serialize() {
         Map<String, Object> ret = new HashMap<>();
         ret.put("name", getName());
@@ -771,8 +784,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         } else {
             metadata.clearBit(MetadataIndex.STATUS, 0x02);
         }
-
-        updateMetadata();
     }
 
     public boolean isSprinting() {
@@ -787,8 +798,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         } else {
             metadata.clearBit(MetadataIndex.STATUS, 0x08);
         }
-
-        updateMetadata();
     }
 
     public double getEyeHeight() {
@@ -1007,6 +1016,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             setRawLocation(location);
         }
 
+        teleported = true;
         return true;
     }
 

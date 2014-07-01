@@ -11,6 +11,7 @@ import java.util.*;
 public class MetadataMap {
 
     private final Map<MetadataIndex, Object> map = new EnumMap<>(MetadataIndex.class);
+    private final List<Entry> changes = new LinkedList<>();
     private final Class<? extends Entity> entityClass;
 
     public MetadataMap(Class<? extends Entity> entityClass) {
@@ -50,7 +51,10 @@ public class MetadataMap {
             throw new IllegalArgumentException("Index " + index + " does not apply to " + entityClass.getSimpleName() + ", only " + index.getAppliesTo().getSimpleName());
         }
 
-        map.put(index, value);
+        Object prev = map.put(index, value);
+        if (!Objects.equals(prev, value)) {
+            changes.add(new Entry(index, value));
+        }
     }
 
     public Object get(MetadataIndex index) {
@@ -121,6 +125,13 @@ public class MetadataMap {
         for (Map.Entry<MetadataIndex, Object> entry : map.entrySet()) {
             result.add(new Entry(entry.getKey(), entry.getValue()));
         }
+        Collections.sort(result);
+        return result;
+    }
+
+    public List<Entry> getChanges() {
+        List<Entry> result = new ArrayList<>(changes);
+        changes.clear();
         Collections.sort(result);
         return result;
     }

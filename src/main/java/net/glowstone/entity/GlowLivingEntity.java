@@ -1,6 +1,5 @@
 package net.glowstone.entity;
 
-import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -113,15 +112,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }
 
         // todo: tick down potion effects
-    }
-
-    protected final void updateMetadata() {
-        EntityMetadataMessage message = new EntityMetadataMessage(id, metadata.getEntryList());
-        for (GlowPlayer player : world.getRawPlayers()) {
-            if (player != this && player.canSee(this)) {
-                player.getSession().send(message);
-            }
-        }
     }
 
     ////////////////////////////////////////////////////////////////////////////

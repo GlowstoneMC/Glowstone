@@ -4,6 +4,8 @@ import com.flowpowered.networking.Message;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
+import net.glowstone.net.message.play.entity.EntityTeleportMessage;
+import net.glowstone.net.message.play.entity.EntityVelocityMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
@@ -25,11 +27,6 @@ public final class GlowItem extends GlowEntity implements Item {
      */
     private static final int LIFETIME = 5 * 60 * 20;
 
-    /**
-     * The item.
-     */
-    private ItemStack item;
-    
     /**
      * The remaining delay until this item may be picked up.
      */
@@ -80,7 +77,10 @@ public final class GlowItem extends GlowEntity implements Item {
 
         return Arrays.asList(
                 new SpawnObjectMessage(id, 2, x, y, z, pitch, yaw),
-                new EntityMetadataMessage(id, metadata.getEntryList())
+                new EntityMetadataMessage(id, metadata.getEntryList()),
+                // these keep the client from assigning a random velocity
+                new EntityTeleportMessage(id, x, y, z, yaw, pitch),
+                new EntityVelocityMessage(id, getVelocity())
         );
     }
 
