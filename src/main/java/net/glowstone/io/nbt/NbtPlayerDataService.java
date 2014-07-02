@@ -143,6 +143,7 @@ public class NbtPlayerDataService implements PlayerDataService {
         }
 
         public Location getLocation() {
+            checkOpen();
             World world = NbtSerialization.readWorld(server, tag);
             if (world != null) {
                 return NbtSerialization.listTagsToLocation(world, tag);

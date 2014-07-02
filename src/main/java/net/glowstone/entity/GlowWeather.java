@@ -16,4 +16,9 @@ public abstract class GlowWeather extends GlowEntity implements Weather {
     public EntityType getType() {
         return EntityType.WEATHER;
     }
+
+    @Override
+    public boolean shouldSave() {
+        return false;
+    }
 }

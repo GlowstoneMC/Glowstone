@@ -347,6 +347,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public boolean shouldSave() {
+        return false;
+    }
+
+    @Override
     public void pulse() {
         super.pulse();
 

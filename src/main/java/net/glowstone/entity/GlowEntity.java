@@ -240,6 +240,14 @@ public abstract class GlowEntity implements Entity {
     }
 
     /**
+     * Checks whether this entity should be saved as part of the world.
+     * @return True if the entity should be saved.
+     */
+    public boolean shouldSave() {
+        return true;
+    }
+
+    /**
      * Called every game cycle. Subclasses should implement this to implement
      * periodic functionality e.g. mob AI.
      */

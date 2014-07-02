@@ -6,7 +6,6 @@ import net.glowstone.GlowChunkSnapshot;
 import net.glowstone.GlowServer;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowEntity;
-import net.glowstone.entity.GlowPlayer;
 import net.glowstone.io.ChunkIoService;
 import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.util.NibbleArray;
@@ -173,8 +172,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
         // entities
         List<CompoundTag> entities = new ArrayList<>();
         for (GlowEntity entity : chunk.getRawEntities()) {
-            if (entity instanceof GlowPlayer) {
-                // not saved
+            if (!entity.shouldSave()) {
                 continue;
             }
             try {
