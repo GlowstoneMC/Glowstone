@@ -76,7 +76,9 @@ flat console is desired.
 Docs and Support
 -------------
 All support inquiries should be directed to the IRC channel `#glowstone`
-on EsperNet (`irc.esper.net`).
+on EsperNet (`irc.esper.net`). You can access that using the button below.
+
+[![Visit our IRC channel](https://kiwiirc.com/buttons/irc.esper.net/glowstone.png)](https://kiwiirc.com/client/irc.esper.net/?nick=glowstone|?#glowstone)
 
 User and contributor documentation and other articles can be found on the
 [GitHub wiki](https://github.com/SpaceManiac/Glowstone/wiki).
