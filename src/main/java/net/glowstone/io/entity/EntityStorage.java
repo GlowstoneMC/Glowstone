@@ -143,7 +143,7 @@ public final class EntityStorage {
             entity.teleport(location);
         }
 
-        // EntityStore knows how to save world and location information
+        // read the rest of the entity's information
         getBaseStore(store).load(entity, compound);
     }
 

@@ -149,6 +149,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         return profile.getName();
     }
 
+    @Override
     public UUID getUniqueId() {
         return profile.getUniqueId();
     }
