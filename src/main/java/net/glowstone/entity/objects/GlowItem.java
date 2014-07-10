@@ -41,6 +41,7 @@ public final class GlowItem extends GlowEntity implements Item {
     public GlowItem(Location location, ItemStack item) {
         super(location);
         setItemStack(item);
+        setBoundingBox(0.25, 0.25);
         pickupDelay = 20;
     }
 
@@ -77,7 +78,7 @@ public final class GlowItem extends GlowEntity implements Item {
         int pitch = Position.getIntPitch(location);
 
         return Arrays.asList(
-                new SpawnObjectMessage(id, 2, x, y, z, pitch, yaw),
+                new SpawnObjectMessage(id, SpawnObjectMessage.ITEM, x, y, z, pitch, yaw),
                 new EntityMetadataMessage(id, metadata.getEntryList()),
                 // these keep the client from assigning a random velocity
                 new EntityTeleportMessage(id, x, y, z, yaw, pitch),

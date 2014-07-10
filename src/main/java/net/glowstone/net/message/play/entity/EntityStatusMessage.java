@@ -3,35 +3,36 @@ package net.glowstone.net.message.play.entity;
 import com.flowpowered.networking.Message;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.EntityEffect;
 
 @Data
 @RequiredArgsConstructor
 public final class EntityStatusMessage implements Message {
 
+    // statuses not included in Bukkit's EntityEffect
+    public final int MYSTERY_LIVING = 0;
+    public final int MYSTERY_PLAYER = 1;
+    public final int GOLEM_FLING_ARMS = 4;
+    public final int EATING_ACCEPTED = 9;
+    public final int ANIMAL_HEARTS = 18;
+
     private final int id, status;
 
-    public EntityStatusMessage(int id, Status status) {
-        this(id, status.ordinal());
+    public EntityStatusMessage(int id, EntityEffect effect) {
+        this(id, effect.getData());
     }
 
-    public enum Status {
-        UNKNOWN_0,
-        HURT,
-        UNKNOWN_2,
-        DEAD,
-        GOLEM_FLAIL,
-        WOLF_TAMING,
-        WOLF_TAMED,
-        WOLF_SHAKE,
-        EATING_ACCEPTED,
-        SHEEP_EAT,
-        GOLEM_ROSE,
-        VILLAGER_HEARTS,
-        VILLAGER_ANGRY,
-        VILLAGER_HAPPY,
-        WITCH_MAGIC,
-        VILLAGER_DEZOMBIE,
-        FIREWORK_EXPLODE,
-        FALL_IN_LOVE
+    public int getId() {
+        return id;
     }
+
+    public int getStatus() {
+        return status;
+    }
+
+    @Override
+    public String toString() {
+        return "EntityStatusMessage{id=" + id + ",status=" + status + "}";
+    }
+
 }
