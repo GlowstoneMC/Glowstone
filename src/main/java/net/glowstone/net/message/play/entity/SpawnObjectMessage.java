@@ -4,6 +4,8 @@ import com.flowpowered.networking.Message;
 
 public final class SpawnObjectMessage implements Message {
 
+    public static final int ITEM = 2;
+
     private final int id, type, x, y, z, pitch, yaw, data, velX, velY, velZ;
 
     public SpawnObjectMessage(int id, int type, int x, int y, int z, int pitch, int yaw) {

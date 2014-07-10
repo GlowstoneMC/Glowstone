@@ -238,6 +238,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      */
     public GlowPlayer(GlowSession session, PlayerProfile profile, PlayerDataService.PlayerReader reader) {
         super(initLocation(session, reader), profile);
+        setBoundingBox(0.6, 1.8);
         this.session = session;
 
         chunkLock = world.newChunkLock(getName());

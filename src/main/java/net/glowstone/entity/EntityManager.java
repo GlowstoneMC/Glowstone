@@ -1,8 +1,10 @@
 package net.glowstone.entity;
 
 import net.glowstone.GlowChunk;
+import net.glowstone.entity.physics.BoundingBox;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 
 import java.util.*;
 
@@ -120,4 +122,14 @@ public final class EntityManager implements Iterable<GlowEntity> {
         return entities.values().iterator();
     }
 
+    public List<Entity> getEntitiesInside(BoundingBox searchBox, GlowEntity except) {
+        // todo: narrow search based on the box's corners
+        List<Entity> result = new LinkedList<>();
+        for (GlowEntity entity : entities.values()) {
+            if (entity != except && entity.intersects(searchBox)) {
+                result.add(entity);
+            }
+        }
+        return result;
+    }
 }
