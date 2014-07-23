@@ -2,10 +2,7 @@ package net.glowstone.scoreboard;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
-import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +31,24 @@ public final class GlowObjective implements Objective {
     public Scoreboard getScoreboard() {
         return scoreboard;
     }
+
+    public void unregister() throws IllegalStateException {
+        checkValid();
+        for (Map.Entry<String, GlowScore> entry : scores.entrySet()) {
+            scoreboard.getScoresForName(entry.getKey()).remove(entry.getValue());
+        }
+        scoreboard.removeObjective(this);
+        scoreboard = null;
+    }
+
+    void checkValid() {
+        if (scoreboard == null) {
+            throw new IllegalStateException("Cannot manipulate unregistered objective");
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Properties
 
     public String getName() throws IllegalStateException {
         checkValid();
@@ -70,17 +85,11 @@ public final class GlowObjective implements Objective {
 
     public boolean isModifiable() throws IllegalStateException {
         checkValid();
-        return false;
+        return !criteria.equalsIgnoreCase(Criterias.HEALTH);
     }
 
-    public void unregister() throws IllegalStateException {
-        checkValid();
-        scoreboard.remove(this);
-        for (Map.Entry<String, GlowScore> entry : scores.entrySet()) {
-            scoreboard.getScoresForName(entry.getKey()).remove(entry.getValue());
-        }
-        scoreboard = null;
-    }
+    ////////////////////////////////////////////////////////////////////////////
+    // Score management
 
     public Score getScore(String entry) throws IllegalArgumentException, IllegalStateException {
         Validate.notNull(entry, "Entry cannot be null");
@@ -107,11 +116,5 @@ public final class GlowObjective implements Objective {
     public Score getScore(OfflinePlayer player) throws IllegalArgumentException, IllegalStateException {
         Validate.notNull(player, "Player cannot be null");
         return getScore(player.getName());
-    }
-
-    void checkValid() {
-        if (scoreboard == null) {
-            throw new IllegalStateException("Cannot manipulate unregistered objective");
-        }
     }
 }

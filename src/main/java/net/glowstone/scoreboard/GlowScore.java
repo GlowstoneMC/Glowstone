@@ -9,7 +9,7 @@ import org.bukkit.scoreboard.Scoreboard;
 /**
  * Implementation/data holder for Scores.
  */
-public class GlowScore implements Score {
+public final class GlowScore implements Score {
 
     private final GlowObjective objective;
     private final String entry;

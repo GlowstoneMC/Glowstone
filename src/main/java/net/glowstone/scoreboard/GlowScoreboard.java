@@ -24,6 +24,10 @@ public final class GlowScoreboard implements Scoreboard {
     // Score map - kept up to date by each objective
     private final HashMap<String, Set<GlowScore>> scoreMap = new HashMap<>();
 
+    // Teams
+    private final HashMap<String, GlowTeam> teams = new HashMap<>();
+    private final HashMap<OfflinePlayer, GlowTeam> playerTeamMap = new HashMap<>();
+
     public GlowScoreboard(GlowServer server) {
         this.server = server;
     }
@@ -43,12 +47,20 @@ public final class GlowScoreboard implements Scoreboard {
         }
     }
 
-    void remove(GlowObjective objective) {
+    void removeObjective(GlowObjective objective) {
         if (objective.displaySlot != null) {
             setDisplaySlot(objective.displaySlot, null);
         }
 
         getForCriteria(objective.getCriteria()).remove(objective);
+        objectives.remove(objective.getName());
+    }
+
+    void removeTeam(GlowTeam team) {
+        for (OfflinePlayer player : team.getPlayers()) {
+            playerTeamMap.remove(player);
+        }
+        teams.remove(team.getName());
     }
 
     Set<GlowObjective> getForCriteria(String criteria) {
@@ -67,6 +79,13 @@ public final class GlowScoreboard implements Scoreboard {
             scoreMap.put(entry, result);
         }
         return result;
+    }
+
+    void setPlayerTeam(OfflinePlayer player, GlowTeam team) {
+        GlowTeam previous = playerTeamMap.put(player, team);
+        if (previous != null && previous.hasPlayer(player)) {
+            previous.rawRemovePlayer(player);
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -110,21 +129,26 @@ public final class GlowScoreboard implements Scoreboard {
     // Teams
 
     public Team registerNewTeam(String name) throws IllegalArgumentException {
-        return null;
+        Validate.notNull(name, "Name cannot be null");
+        Validate.isTrue(!teams.containsKey(name), "Team \"" + name + "\" already exists");
+
+        GlowTeam team = new GlowTeam(this, name);
+        teams.put(name, team);
+        return team;
     }
 
     public Team getPlayerTeam(OfflinePlayer player) throws IllegalArgumentException {
         Validate.notNull(player, "Player cannot be null");
-        return null;
+        return playerTeamMap.get(player);
     }
 
     public Team getTeam(String teamName) throws IllegalArgumentException {
-        Validate.notNull(teamName, "Player cannot be null");
-        return null;
+        Validate.notNull(teamName, "Team name cannot be null");
+        return teams.get(teamName);
     }
 
     public Set<Team> getTeams() {
-        return null;
+        return ImmutableSet.<Team>copyOf(teams.values());
     }
 
     ////////////////////////////////////////////////////////////////////////////
