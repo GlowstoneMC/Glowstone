@@ -7,6 +7,9 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Scoreboard objective and associated data.
  */
@@ -15,6 +18,8 @@ public final class GlowObjective implements Objective {
     private GlowScoreboard scoreboard;
     private final String name;
     private final String criteria;
+
+    private final HashMap<String, GlowScore> scores = new HashMap<>();
 
     private String displayName;
     public DisplaySlot displaySlot;
@@ -71,21 +76,40 @@ public final class GlowObjective implements Objective {
     public void unregister() throws IllegalStateException {
         checkValid();
         scoreboard.remove(this);
+        for (Map.Entry<String, GlowScore> entry : scores.entrySet()) {
+            scoreboard.getScoresForName(entry.getKey()).remove(entry.getValue());
+        }
         scoreboard = null;
     }
 
     public Score getScore(String entry) throws IllegalArgumentException, IllegalStateException {
+        Validate.notNull(entry, "Entry cannot be null");
         checkValid();
-        // todo
-        return null;
+
+        GlowScore score = scores.get(entry);
+        if (score == null) {
+            score = new GlowScore(this, entry);
+            scores.put(entry, score);
+            scoreboard.getScoresForName(entry).add(score);
+        }
+        return score;
+    }
+
+    /**
+     * Deletes a score directly.
+     * @param entry The key to delete.
+     */
+    void deleteScore(String entry) {
+        scores.remove(entry);
     }
 
     @Deprecated
     public Score getScore(OfflinePlayer player) throws IllegalArgumentException, IllegalStateException {
+        Validate.notNull(player, "Player cannot be null");
         return getScore(player.getName());
     }
 
-    private void checkValid() {
+    void checkValid() {
         if (scoreboard == null) {
             throw new IllegalStateException("Cannot manipulate unregistered objective");
         }

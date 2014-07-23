@@ -3,13 +3,11 @@ package net.glowstone.scoreboard;
 import com.google.common.collect.ImmutableSet;
 import net.glowstone.GlowServer;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.*;
 
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Scoreboard implementation.
@@ -23,7 +21,8 @@ public final class GlowScoreboard implements Scoreboard {
     private final HashMap<String, GlowObjective> objectives = new HashMap<>();
     private final HashMap<String, Set<GlowObjective>> criteriaMap = new HashMap<>();
 
-    // Scores
+    // Score map - kept up to date by each objective
+    private final HashMap<String, Set<GlowScore>> scoreMap = new HashMap<>();
 
     public GlowScoreboard(GlowServer server) {
         this.server = server;
@@ -57,6 +56,15 @@ public final class GlowScoreboard implements Scoreboard {
         if (result == null) {
             result = new HashSet<>();
             criteriaMap.put(criteria, result);
+        }
+        return result;
+    }
+
+    Set<GlowScore> getScoresForName(String entry) {
+        Set<GlowScore> result = scoreMap.get(entry);
+        if (result == null) {
+            result = new HashSet<>();
+            scoreMap.put(entry, result);
         }
         return result;
     }
@@ -123,16 +131,27 @@ public final class GlowScoreboard implements Scoreboard {
     // Scores
 
     public Set<String> getEntries() {
-        return null;
+        return ImmutableSet.copyOf(scoreMap.keySet());
     }
 
     public Set<Score> getScores(String entry) throws IllegalArgumentException {
         Validate.notNull(entry, "Entry cannot be null");
-        return null;
+
+        Set<GlowScore> scoreSet = scoreMap.get(entry);
+        if (scoreSet == null) {
+            return ImmutableSet.of();
+        } else {
+            return ImmutableSet.<Score>copyOf(scoreSet);
+        }
     }
 
     public void resetScores(String entry) throws IllegalArgumentException {
+        Validate.notNull(entry, "Entry cannot be null");
 
+        for (GlowObjective objective : objectives.values()) {
+            objective.deleteScore(entry);
+        }
+        scoreMap.remove(entry);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -140,8 +159,11 @@ public final class GlowScoreboard implements Scoreboard {
 
     @Deprecated
     public Set<OfflinePlayer> getPlayers() {
-        // should return Bukkit.getOfflinePlayer(name) for each name in getEntries()
-        return null;
+        Set<OfflinePlayer> result = new HashSet<>();
+        for (String name : getEntries()) {
+            result.add(Bukkit.getOfflinePlayer(name));
+        }
+        return Collections.unmodifiableSet(result);
     }
 
     @Deprecated
