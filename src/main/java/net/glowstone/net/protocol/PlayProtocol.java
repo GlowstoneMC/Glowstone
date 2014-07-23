@@ -6,6 +6,7 @@ import net.glowstone.net.codec.play.entity.*;
 import net.glowstone.net.codec.play.game.*;
 import net.glowstone.net.codec.play.inv.*;
 import net.glowstone.net.codec.play.player.*;
+import net.glowstone.net.codec.play.scoreboard.*;
 import net.glowstone.net.handler.play.game.*;
 import net.glowstone.net.handler.play.inv.*;
 import net.glowstone.net.handler.play.player.*;
@@ -15,6 +16,7 @@ import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.game.*;
 import net.glowstone.net.message.play.inv.*;
 import net.glowstone.net.message.play.player.*;
+import net.glowstone.net.message.play.scoreboard.*;
 
 public final class PlayProtocol extends GlowProtocol {
     public PlayProtocol() {
@@ -102,6 +104,10 @@ public final class PlayProtocol extends GlowProtocol {
         outbound(0x38, UserListItemMessage.class, UserListItemCodec.class);
         outbound(0x39, PlayerAbilitiesMessage.class, PlayerAbilitiesCodec.class);
         outbound(0x3A, TabCompleteResponseMessage.class, TabCompleteResponseCodec.class);
+        outbound(0x3B, ScoreboardObjectiveMessage.class, ScoreboardObjectiveCodec.class);
+        outbound(0x3C, ScoreboardScoreMessage.class, ScoreboardScoreCodec.class);
+        outbound(0x3D, ScoreboardDisplayMessage.class, ScoreboardDisplayCodec.class);
+        outbound(0x3E, ScoreboardTeamMessage.class, ScoreboardTeamCodec.class);
         outbound(0x3F, PluginMessage.class, PluginMessageCodec.class);
         outbound(0x40, KickMessage.class, KickCodec.class);
         outbound(0x41, ServerDifficultyMessage.class, ServerDifficultyCodec.class);
