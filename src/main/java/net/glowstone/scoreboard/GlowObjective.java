@@ -1,5 +1,6 @@
 package net.glowstone.scoreboard;
 
+import net.glowstone.net.message.play.scoreboard.ScoreboardObjectiveMessage;
 import org.apache.commons.lang.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.*;
@@ -19,7 +20,7 @@ public final class GlowObjective implements Objective {
     private final HashMap<String, GlowScore> scores = new HashMap<>();
 
     private String displayName;
-    public DisplaySlot displaySlot;
+    DisplaySlot displaySlot;
 
     public GlowObjective(GlowScoreboard scoreboard, String name, String criteria) {
         this.scoreboard = scoreboard;
@@ -28,7 +29,7 @@ public final class GlowObjective implements Objective {
         displayName = name;
     }
 
-    public Scoreboard getScoreboard() {
+    public GlowScoreboard getScoreboard() {
         return scoreboard;
     }
 
@@ -71,6 +72,7 @@ public final class GlowObjective implements Objective {
         Validate.isTrue(displayName.length() <= 32, "displayName cannot be longer than 32 characters");
 
         this.displayName = displayName;
+        scoreboard.broadcast(ScoreboardObjectiveMessage.update(name, displayName));
     }
 
     public DisplaySlot getDisplaySlot() throws IllegalStateException {
@@ -80,7 +82,14 @@ public final class GlowObjective implements Objective {
 
     public void setDisplaySlot(DisplaySlot slot) throws IllegalStateException {
         checkValid();
-        scoreboard.setDisplaySlot(slot, this);
+        if (slot != displaySlot) {
+            if (displaySlot != null) {
+                scoreboard.setDisplaySlot(displaySlot, null);
+            }
+            if (slot != null) {
+                scoreboard.setDisplaySlot(slot, this);
+            }
+        }
     }
 
     public boolean isModifiable() throws IllegalStateException {

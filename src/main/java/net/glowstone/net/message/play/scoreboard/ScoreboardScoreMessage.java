@@ -39,5 +39,15 @@ public final class ScoreboardScoreMessage implements Message {
     public int getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return "ScoreboardScoreMessage{" +
+                "target='" + target + '\'' +
+                ", remove=" + remove +
+                ", objective='" + objective + '\'' +
+                ", value=" + value +
+                '}';
+    }
 }
 

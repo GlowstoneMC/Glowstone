@@ -1,5 +1,6 @@
 package net.glowstone.scoreboard;
 
+import net.glowstone.net.message.play.scoreboard.ScoreboardScoreMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.Objective;
@@ -45,5 +46,6 @@ public final class GlowScore implements Score {
     public void setScore(int score) throws IllegalStateException {
         objective.checkValid();
         this.score = score;
+        objective.getScoreboard().broadcast(new ScoreboardScoreMessage(entry, objective.getName(), score));
     }
 }

@@ -83,5 +83,18 @@ public final class ScoreboardTeamMessage implements Message {
     public List<String> getEntries() {
         return entries;
     }
+
+    @Override
+    public String toString() {
+        return "ScoreboardTeamMessage{" +
+                "teamName='" + teamName + '\'' +
+                ", action=" + action +
+                ", displayName='" + displayName + '\'' +
+                ", prefix='" + prefix + '\'' +
+                ", suffix='" + suffix + '\'' +
+                ", flags=" + flags +
+                ", entries=" + entries +
+                '}';
+    }
 }
 

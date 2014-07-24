@@ -1,7 +1,6 @@
 package net.glowstone.scoreboard;
 
 import net.glowstone.GlowServer;
-import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 
 /**
@@ -17,11 +16,11 @@ public final class GlowScoreboardManager implements ScoreboardManager {
         mainScoreboard = new GlowScoreboard(server);
     }
 
-    public Scoreboard getMainScoreboard() {
+    public GlowScoreboard getMainScoreboard() {
         return mainScoreboard;
     }
 
-    public Scoreboard getNewScoreboard() {
+    public GlowScoreboard getNewScoreboard() {
         return new GlowScoreboard(server);
     }
 }

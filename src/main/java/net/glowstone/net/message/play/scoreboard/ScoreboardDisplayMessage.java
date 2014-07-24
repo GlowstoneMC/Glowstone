@@ -19,5 +19,13 @@ public final class ScoreboardDisplayMessage implements Message {
     public String getObjective() {
         return objective;
     }
+
+    @Override
+    public String toString() {
+        return "ScoreboardDisplayMessage{" +
+                "position=" + position +
+                ", objective='" + objective + '\'' +
+                '}';
+    }
 }
 

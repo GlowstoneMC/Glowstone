@@ -1,12 +1,16 @@
 package net.glowstone.scoreboard;
 
+import com.flowpowered.networking.Message;
 import com.google.common.collect.ImmutableSet;
+import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
 import org.apache.commons.lang.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -48,6 +52,18 @@ public final class GlowTeam implements Team {
         }
     }
 
+    Message getCreateMessage() {
+        List<String> playerNames = new ArrayList<>(players.size());
+        for (OfflinePlayer player : players) {
+            playerNames.add(player.getName());
+        }
+        return ScoreboardTeamMessage.create(name, displayName, prefix, suffix, friendlyFire, seeInvisible, playerNames);
+    }
+
+    private void update() {
+        scoreboard.broadcast(ScoreboardTeamMessage.update(name, displayName, prefix, suffix, friendlyFire, seeInvisible));
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Properties
 
@@ -65,6 +81,7 @@ public final class GlowTeam implements Team {
         Validate.notNull(displayName, "Display name cannot be null");
         checkValid();
         this.displayName = displayName;
+        update();
     }
 
     public String getPrefix() throws IllegalStateException {
@@ -76,6 +93,7 @@ public final class GlowTeam implements Team {
         Validate.notNull(prefix, "Prefix cannot be null");
         checkValid();
         this.prefix = prefix;
+        update();
     }
 
     public String getSuffix() throws IllegalStateException {
@@ -87,6 +105,7 @@ public final class GlowTeam implements Team {
         Validate.notNull(suffix, "Suffix cannot be null");
         checkValid();
         this.suffix = suffix;
+        update();
     }
 
     public boolean allowFriendlyFire() throws IllegalStateException {
@@ -97,6 +116,7 @@ public final class GlowTeam implements Team {
     public void setAllowFriendlyFire(boolean enabled) throws IllegalStateException {
         checkValid();
         friendlyFire = enabled;
+        update();
     }
 
     public boolean canSeeFriendlyInvisibles() throws IllegalStateException {
@@ -107,6 +127,7 @@ public final class GlowTeam implements Team {
     public void setCanSeeFriendlyInvisibles(boolean enabled) throws IllegalStateException {
         checkValid();
         seeInvisible = enabled;
+        update();
     }
 
     ////////////////////////////////////////////////////////////////////////////
