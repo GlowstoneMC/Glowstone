@@ -96,6 +96,7 @@ public class GlowInventory implements Inventory {
      * @return The SlotType of the slot.
      */
     public SlotType getSlotType(int slot) {
+        if (slot < 0) return SlotType.OUTSIDE;
         return slotTypes[slot];
     }
 

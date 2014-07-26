@@ -6,6 +6,7 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowInventoryView;
 import net.glowstone.net.GlowSession;
+import net.glowstone.net.message.play.inv.TransactionMessage;
 import net.glowstone.net.message.play.inv.WindowClickMessage;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -24,37 +25,39 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         } catch (IllegalArgumentException ex) {
             GlowServer.logger.warning(session + ": illegal argument while handling click: " + ex);
         }
-        GlowServer.logger.info(session + ": " + message + " --> " + result);
-        //session.send(new TransactionMessage(message.getId(), message.getTransaction(), result));
+        GlowServer.logger.info(session + ": [" + result + "] " + message);
+        session.send(new TransactionMessage(message.getId(), message.getTransaction(), result));
     }
 
     private boolean process(final GlowPlayer player, final WindowClickMessage message) {
+        final int viewSlot = message.getSlot();
         final InventoryView view = player.getOpenInventory();
-        final ItemStack slotItem = view.getItem(message.getSlot());
+        final ItemStack slotItem = view.getItem(viewSlot);
         final ItemStack cursor = player.getItemOnCursor();
-
-        final int slot = message.getSlot();
 
         // Determine inventory and slot clicked, used in some places
         // todo: whine and complain if users try to implement own inventory
         final GlowInventory inv;
-        if (message.getSlot() < view.getTopInventory().getSize()) {
+        if (viewSlot < view.getTopInventory().getSize()) {
             inv = (GlowInventory) view.getTopInventory();
         } else {
             inv = (GlowInventory) view.getBottomInventory();
         }
-        final int invSlot = view.convertSlot(message.getSlot());
-        InventoryType.SlotType slotType = inv.getSlotType(invSlot);
+        final int invSlot = view.convertSlot(viewSlot);
+        final InventoryType.SlotType slotType = inv.getSlotType(invSlot);
+
+        //final ClickType clickType = resolveClickType(message);
 
         // check that the player has a correct view of the item
         if (!Objects.equals(message.getItem(), slotItem) && message.getMode() != 3) {
             // reject item change because of desynced inventory
             // in mode 3 (get), client does not send item under cursor
-            player.sendItemChange(slot, slotItem);
+            player.sendItemChange(viewSlot, slotItem);
             return false;
         }
 
-        // m b s (* for -999)
+        // mode ; button ; slot (* = -999)
+        // m b s
         // 0 0   lmb
         //   1   rmb
         // 1 0   shift+lmb
@@ -83,7 +86,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                     if (cursor == null) {
                         if (slotItem != null) {
                             // pick up entire stack
-                            view.setItem(slot, null);
+                            view.setItem(viewSlot, null);
                             player.setItemOnCursor(slotItem);
                             return true;
                         } else {
@@ -97,14 +100,14 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                             int transfer = Math.min(cursor.getAmount(), maxStack(inv, cursor.getType()) - cursor.getAmount());
                             if (transfer == cursor.getAmount()) {
                                 // transfer whole stack
-                                view.setItem(slot, cursor);
+                                view.setItem(viewSlot, cursor);
                                 player.setItemOnCursor(null);
                                 return true;
                             } else {
                                 // partial transfer
                                 ItemStack newStack = cursor.clone();
                                 newStack.setAmount(transfer);
-                                view.setItem(slot, newStack);
+                                view.setItem(viewSlot, newStack);
                                 cursor.setAmount(cursor.getAmount() - transfer);
                                 return true;
                             }

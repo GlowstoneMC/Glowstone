@@ -8,7 +8,7 @@ import java.util.ListIterator;
 /**
  * ListIterator for the contents of an inventory.
  */
-public class InventoryIterator implements ListIterator<ItemStack> {
+public final class InventoryIterator implements ListIterator<ItemStack> {
 
     private final Inventory inventory;
     private int nextIndex;

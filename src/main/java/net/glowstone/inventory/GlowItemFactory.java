@@ -10,7 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 /**
  * An implementation of {@link ItemFactory} responsible for creating ItemMetas.
  */
-public class GlowItemFactory implements ItemFactory {
+public final class GlowItemFactory implements ItemFactory {
 
     private static final GlowItemFactory instance = new GlowItemFactory();
     private static final Color LEATHER_COLOR = Color.fromRGB(0xA06540);
