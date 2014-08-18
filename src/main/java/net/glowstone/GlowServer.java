@@ -14,6 +14,7 @@ import net.glowstone.net.SessionRegistry;
 import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.scheduler.WorldScheduler;
 import net.glowstone.util.*;
+import net.glowstone.util.bans.UuidListFile;
 import net.glowstone.util.bans.GlowBanList;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
@@ -185,12 +186,12 @@ public final class GlowServer implements Server {
     /**
      * The list of OPs on the server.
      */
-    private final PlayerListFile opsList;
+    private final UuidListFile opsList;
 
     /**
      * The list of players whitelisted on the server.
      */
-    private final PlayerListFile whitelist;
+    private final UuidListFile whitelist;
 
     /**
      * The BanList for player names.
@@ -268,8 +269,8 @@ public final class GlowServer implements Server {
     public GlowServer(ServerConfig config) {
         this.config = config;
         // stuff based on selected config directory
-        opsList = new PlayerListFile(config.getFile("ops.txt"));
-        whitelist = new PlayerListFile(config.getFile("whitelist.txt"));
+        opsList = new UuidListFile(config.getFile("ops.json"));
+        whitelist = new UuidListFile(config.getFile("whitelist.json"));
         nameBans = new GlowBanList(this, BanList.Type.NAME);
         ipBans = new GlowBanList(this, BanList.Type.IP);
 
@@ -542,14 +543,14 @@ public final class GlowServer implements Server {
     /**
      * Returns the list of OPs on this server.
      */
-    public PlayerListFile getOpsList() {
+    public UuidListFile getOpsList() {
         return opsList;
     }
 
     /**
      * Returns the list of whitelisted players on this server.
      */
-    public PlayerListFile getWhitelist() {
+    public UuidListFile getWhitelist() {
         return whitelist;
     }
 
@@ -700,8 +701,8 @@ public final class GlowServer implements Server {
 
     public Set<OfflinePlayer> getOperators() {
         Set<OfflinePlayer> offlinePlayers = new HashSet<>();
-        for (String name : opsList.getContents()) {
-            offlinePlayers.add(getOfflinePlayer(name));
+        for (UUID uuid : opsList.getUUIDs()) {
+            offlinePlayers.add(getOfflinePlayer(uuid));
         }
         return offlinePlayers;
     }
@@ -825,8 +826,8 @@ public final class GlowServer implements Server {
 
     public Set<OfflinePlayer> getWhitelistedPlayers() {
         Set<OfflinePlayer> players = new HashSet<>();
-        for (String name : whitelist.getContents()) {
-            players.add(getOfflinePlayer(name));
+        for (UUID uuid : whitelist.getUUIDs()) {
+            players.add(getOfflinePlayer(uuid));
         }
         return players;
     }

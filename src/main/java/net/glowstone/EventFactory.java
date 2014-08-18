@@ -121,8 +121,8 @@ public final class EventFactory {
             event.disallow(PlayerLoginEvent.Result.KICK_BANNED, "Banned: " + nameBans.getBanEntry(player.getName()).getReason());
         } else if (ipBans.isBanned(address)) {
             event.disallow(PlayerLoginEvent.Result.KICK_BANNED, "Banned: " + ipBans.getBanEntry(address).getReason());
-        } else if (server.hasWhitelist() && server.getWhitelist().contains(player.getName())) {
-            event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, "You are not whitelisted on this server");
+        } else if (server.hasWhitelist() && !player.isWhitelisted()) {
+            event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, "You are not whitelisted on this server.");
         } else if (server.getOnlinePlayers().length >= server.getMaxPlayers()) {
             event.disallow(PlayerLoginEvent.Result.KICK_FULL,
                     "The server is full (" + player.getServer().getMaxPlayers() + " players).");

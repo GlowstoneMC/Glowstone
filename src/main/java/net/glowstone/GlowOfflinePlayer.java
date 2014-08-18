@@ -128,26 +128,26 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     }
 
     public boolean isWhitelisted() {
-        return server.hasWhitelist() && server.getWhitelist().contains(name);
+        return server.getWhitelist().containsUUID(uuid);
     }
 
     public void setWhitelisted(boolean value) {
         if (value) {
-            server.getWhitelist().add(name);
+            server.getWhitelist().add(this);
         } else {
-            server.getWhitelist().remove(name);
+            server.getWhitelist().remove(uuid);
         }
     }
 
     public boolean isOp() {
-        return server.getOpsList().contains(name);
+        return server.getOpsList().containsUUID(uuid);
     }
 
     public void setOp(boolean value) {
         if (value) {
-            server.getOpsList().add(name);
+            server.getOpsList().add(this);
         } else {
-            server.getOpsList().remove(name);
+            server.getOpsList().remove(uuid);
         }
     }
 
