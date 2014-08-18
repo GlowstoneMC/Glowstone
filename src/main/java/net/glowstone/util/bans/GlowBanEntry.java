@@ -1,13 +1,18 @@
 package net.glowstone.util.bans;
 
 import org.bukkit.BanEntry;
+import org.bukkit.BanList;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Implementation of BanEntry.
  */
-final class GlowBanEntry implements BanEntry, Cloneable {
+final class GlowBanEntry implements JsonListFile.BaseEntry, BanEntry, Cloneable {
 
     private final GlowBanList list;
     private final String target;
@@ -28,6 +33,27 @@ final class GlowBanEntry implements BanEntry, Cloneable {
         this.source = source;
         this.created = created;
         this.expires = expires;
+    }
+
+    @Override
+    public Map<String, String> write() {
+        Map<String, String> result = new LinkedHashMap<>();
+
+        // target
+        if (list.type == BanList.Type.NAME) {
+            OfflinePlayer player = Bukkit.getOfflinePlayer(target);
+            result.put("uuid", player.getUniqueId().toString());
+            result.put("name", player.getName());
+        } else if (list.type == BanList.Type.IP) {
+            result.put("ip", target);
+        }
+
+        // other data
+        result.put("created", GlowBanList.DATE_FORMAT.format(created));
+        result.put("source", source);
+        result.put("expires", expires == null ? GlowBanList.FOREVER : GlowBanList.DATE_FORMAT.format(expires));
+        result.put("reason", reason);
+        return result;
     }
 
     public String getTarget() {
@@ -87,5 +113,17 @@ final class GlowBanEntry implements BanEntry, Cloneable {
 
     boolean isExpired() {
         return expires != null && expires.before(new Date());
+    }
+
+    @Override
+    public String toString() {
+        return "GlowBanEntry{" +
+                "type=" + list.type +
+                ", target='" + target + '\'' +
+                ", created=" + created +
+                ", expires=" + expires +
+                ", source='" + source + '\'' +
+                ", reason='" + reason + '\'' +
+                '}';
     }
 }

@@ -5,25 +5,22 @@ import org.bukkit.BanEntry;
 import org.bukkit.BanList;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.Level;
 
 /**
  * Ban list implementation.
  */
-public class GlowBanList implements BanList {
+public class GlowBanList extends JsonListFile implements BanList {
 
     // 2014-02-12 02:27:08 -0600
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
-    private static final String FOREVER = "Forever";
+    static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
+    static final String FOREVER = "Forever";
 
-    private final Type type;
-    private final File file;
-    private final Map<String, GlowBanEntry> entries = new HashMap<>();
+    final Type type;
+    private final Map<String, GlowBanEntry> entryMap = new HashMap<>();
 
     /**
      * Creates a new BanList of the given type.
@@ -31,104 +28,68 @@ public class GlowBanList implements BanList {
      * @param type The type of BanList.
      */
     public GlowBanList(GlowServer server, Type type) {
+        super(getFile(server, type));
         this.type = type;
-
-        String filename;
-        if (type == Type.NAME) {
-            filename = "banned-names.txt";
-        } else if (type == Type.IP) {
-            filename = "banned-ips.txt";
-        } else {
-            throw new IllegalArgumentException("Unknown BanList type " + type);
-        }
-
-        file = new File(server.getConfigDir(), filename);
     }
 
-    /**
-     * Load the bans from file.
-     */
+    private static File getFile(GlowServer server, Type type) {
+        switch (type) {
+            case NAME:
+                return new File(server.getConfigDir(), "banned-players.json");
+            case IP:
+                return new File(server.getConfigDir(), "banned-ips.json");
+            default:
+                throw new IllegalArgumentException("Unknown BanList type " + type);
+        }
+    }
+
+    @Override
     public void load() {
-        entries.clear();
+        super.load();
 
-        if (!file.exists()) return;
-
-        int lineNumber = -1;
-        try (Scanner scan = new Scanner(file)) {
-            lineNumber = 0;
-            while (scan.hasNextLine()) {
-                String line = scan.nextLine().trim();
-                ++lineNumber;
-                if (line.startsWith("#") || line.isEmpty()) {
-                    continue;
-                }
-
-                //# victim name | ban date | banned by | banned until | reason
-                String[] split = line.split("\\|");
-                String target = split[0];
-                String dateString = split[1];
-                String source = split[2];
-                String expiresString = split[3];
-                // if the reason is empty it is not included in split()
-                String reason = split.length > 4 ? split[4] : null;
-
-                Date created = DATE_FORMAT.parse(dateString);
-                Date expires = null;
-                if (!expiresString.equalsIgnoreCase(FOREVER)) {
-                    expires = DATE_FORMAT.parse(expiresString);
-                }
-
-                GlowBanEntry entry = new GlowBanEntry(this, target, reason, created, expires, source);
-                if (!entry.isExpired()) {
-                    entries.put(target, entry);
-                }
-            }
-        } catch (Exception e) {
-            String lineNumberText = lineNumber < 0 ? "" : " (line " + lineNumber + ")";
-            GlowServer.logger.log(Level.SEVERE, "Failed to read bans from " + file + lineNumberText, e);
+        entryMap.clear();
+        for (BaseEntry entry : entries) {
+            GlowBanEntry banEntry = ((GlowBanEntry) entry);
+            entryMap.put(banEntry.getTarget(), banEntry);
         }
-
-        save();
     }
 
-    /**
-     * Saves the bans to file.
-     */
-    private void save() {
-        //# victim name | ban date | banned by | banned until | reason
-
-        File parent = file.getParentFile();
-        if (!parent.isDirectory() && !parent.mkdirs()) {
-            GlowServer.logger.log(Level.SEVERE, "Failed to create directory to save bans: " + parent);
-            return;
+    @Override
+    protected BaseEntry readEntry(Map<String, String> object) {
+        // target
+        String target;
+        if (type == Type.NAME) {
+            target = object.get("name");
+        } else if (type == Type.IP) {
+            target = object.get("ip");
+        } else {
+            throw new RuntimeException("Invalid type in readEntry");
         }
 
-        try (FileWriter out = new FileWriter(file)) {
-            out.write("# Updated " + DATE_FORMAT.format(new Date()) + " by Glowstone " + GlowServer.GAME_VERSION + "\n");
-            out.write("# victim name | ban date | banned by | banned until | reason\n");
-            out.write("\n");
+        // other data
+        try {
+            String dateString = object.get("created");
+            String source = object.get("source");
+            String expiresString = object.get("expires");
+            String reason = object.get("reason");
 
-            for (GlowBanEntry entry : entries.values()) {
-                if (entry.isExpired()) continue;
-
-                out.write(entry.getTarget());
-                out.write('|');
-                out.write(DATE_FORMAT.format(entry.getCreated()));
-                out.write('|');
-                out.write(entry.getSource());
-                out.write('|');
-                if (entry.getExpiration() == null) {
-                    out.write(FOREVER);
-                } else {
-                    out.write(DATE_FORMAT.format(entry.getExpiration()));
-                }
-                out.write('|');
-                out.write(entry.getReason());
-                out.write('\n');
+            Date created = DATE_FORMAT.parse(dateString);
+            Date expires = null;
+            if (!expiresString.equalsIgnoreCase(FOREVER)) {
+                expires = DATE_FORMAT.parse(expiresString);
             }
-        } catch (IOException e) {
-            GlowServer.logger.log(Level.SEVERE, "Failed to save bans to " + file, e);
+
+            return new GlowBanEntry(this, target, reason, created, expires, source);
+        } catch (ParseException e) {
+            throw new RuntimeException("Error reading ban entry", e);
         }
+    }
+
+    @Override
+    protected void save() {
+        entries.clear();
+        entries.addAll(entryMap.values());
+        super.save();
     }
 
     /**
@@ -136,7 +97,7 @@ public class GlowBanList implements BanList {
      */
     private void expungeBans() {
         boolean changed = false;
-        Iterator<GlowBanEntry> iter = entries.values().iterator();
+        Iterator<GlowBanEntry> iter = entryMap.values().iterator();
         while (iter.hasNext()) {
             if (iter.next().isExpired()) {
                 iter.remove();
@@ -153,26 +114,26 @@ public class GlowBanList implements BanList {
      * @param entry The ban entry
      */
     void putEntry(GlowBanEntry entry) {
-        entries.put(entry.getTarget(), entry.clone());
+        entryMap.put(entry.getTarget(), entry.clone());
         save();
     }
 
     public BanEntry getBanEntry(String target) {
         expungeBans();
-        return entries.get(target).clone();
+        return entryMap.get(target).clone();
     }
 
     public BanEntry addBan(String target, String reason, Date expires, String source) {
         GlowBanEntry entry = new GlowBanEntry(this, target, reason, new Date(), expires, source);
-        entries.put(target, entry);
+        entryMap.put(target, entry);
         save();
         return entry.clone();
     }
 
     public Set<BanEntry> getBanEntries() {
         expungeBans();
-        Set<BanEntry> result = new HashSet<>(entries.size());
-        for (GlowBanEntry entry : entries.values()) {
+        Set<BanEntry> result = new HashSet<>(entryMap.size());
+        for (GlowBanEntry entry : entryMap.values()) {
             result.add(entry.clone());
         }
         return result;
@@ -180,11 +141,11 @@ public class GlowBanList implements BanList {
 
     public boolean isBanned(String target) {
         expungeBans();
-        return entries.containsKey(target);
+        return entryMap.containsKey(target);
     }
 
     public void pardon(String target) {
-        entries.remove(target);
+        entryMap.remove(target);
         save();
     }
 }

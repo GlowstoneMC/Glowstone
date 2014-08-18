@@ -56,8 +56,8 @@ public abstract class JsonListFile {
             }
         } else {
             //importLegacy();
+            save();
         }
-        save();
     }
 
     /**
