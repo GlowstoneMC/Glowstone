@@ -6,17 +6,15 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.*;
-import org.bukkit.material.MaterialData;
 
 import java.io.InputStream;
 import java.util.*;
-import java.util.logging.Level;
 
 /**
  * Manager for crafting and smelting recipes
  */
 public final class CraftingManager implements Iterable<Recipe> {
-    
+
     private final ArrayList<ShapedRecipe> shapedRecipes = new ArrayList<>();
     private final ArrayList<ShapelessRecipe> shapelessRecipes = new ArrayList<>();
     private final ArrayList<FurnaceRecipe> furnaceRecipes = new ArrayList<>();
@@ -26,10 +24,13 @@ public final class CraftingManager implements Iterable<Recipe> {
         resetRecipes();
 
         // Report stats
-        int shape = shapedRecipes.size(), nshape = shapelessRecipes.size(), furnace = furnaceRecipes.size(), fuel = furnaceFuels.size();
-        GlowServer.logger.log(Level.INFO, "Recipes: {0} shaped, {1} shapeless, {2} furnace, {3} fuels.", new Object[] { shape, nshape, furnace, fuel });
+        GlowServer.logger.info("Recipes: " +
+                shapedRecipes.size() + " shaped, " +
+                shapelessRecipes.size() + " shapeless, " +
+                furnaceRecipes.size() + " furnace, " +
+                furnaceFuels.size() + " fuels.");
     }
-    
+
     /**
      * Adds a recipe to the crafting manager.
      * @param recipe The recipe to add.
@@ -49,7 +50,7 @@ public final class CraftingManager implements Iterable<Recipe> {
             return false;
         }
     }
-    
+
     /**
      * Get a furnace recipe from the crafting manager.
      * @param input The furnace input.
@@ -57,17 +58,13 @@ public final class CraftingManager implements Iterable<Recipe> {
      */
     public FurnaceRecipe getFurnaceRecipe(ItemStack input) {
         for (FurnaceRecipe recipe : furnaceRecipes) {
-            if (recipe.getInput().getType() != input.getType()) {
-                continue;
-            } else if (recipe.getInput().getDurability() >= 0 && recipe.getInput().getDurability() != input.getDurability()) {
-                continue;
-            } else {
+            if (matchesWildcard(recipe.getInput(), input)) {
                 return recipe;
             }
         }
         return null;
     }
-    
+
     /**
      * Get how long a given fuel material will burn for.
      * @param material The fuel material.
@@ -80,7 +77,7 @@ public final class CraftingManager implements Iterable<Recipe> {
             return 0;
         }
     }
-    
+
     /**
      * Remove enough items from the given item list to form the given recipe.
      * @param items The items to remove the ingredients from.
@@ -89,7 +86,7 @@ public final class CraftingManager implements Iterable<Recipe> {
     public void removeItems(ItemStack[] items, Recipe recipe) {
         // todo
     }
-    
+
     /**
      * Get a shaped or shapeless recipe from the crafting manager.
      * @param items An array of items with null being empty slots. Length should be a perfect square.
@@ -97,11 +94,16 @@ public final class CraftingManager implements Iterable<Recipe> {
      */
     public Recipe getCraftingRecipe(ItemStack[] items) {
         int size = (int) Math.sqrt(items.length);
-        
-        if (size != Math.sqrt(items.length)) {
+
+        if (size * size != items.length) {
             throw new IllegalArgumentException("ItemStack list was not square (was " + items.length + ")");
         }
-        
+
+        ShapedRecipe result = getShapedRecipe(size, items);
+        if (result != null) {
+            return result;
+        }
+
         ItemStack[] reversedItems = new ItemStack[items.length];
         for (int row = 0; row < size; ++row) {
             for (int col = 0; col < size; ++col) {
@@ -109,138 +111,104 @@ public final class CraftingManager implements Iterable<Recipe> {
                 reversedItems[row * size + col] = items[row * size + col2];
             }
         }
-        
-        ShapedRecipe result = getShapedRecipe(size, items);
-        if (result != null) {
-            return result;
+
+        // this check saves the trouble of iterating through all the recipes again
+        if (!Arrays.equals(items, reversedItems)) {
+            result = getShapedRecipe(size, reversedItems);
+            if (result != null) {
+                return result;
+            }
         }
-        
-        result = getShapedRecipe(size, reversedItems);
-        if (result != null) {
-            return result;
-        }
-        
+
         return getShapelessRecipe(items);
     }
-    
+
     private ShapedRecipe getShapedRecipe(int size, ItemStack[] items) {
         for (ShapedRecipe recipe : shapedRecipes) {
             Map<Character, ItemStack> ingredients = recipe.getIngredientMap();
             String[] shape = recipe.getShape();
-            
+
             int rows = shape.length, cols = 0;
             for (String row : shape) {
                 if (row.length() > cols) {
                     cols = row.length();
                 }
             }
-            
+
             if (rows == 0 || cols == 0) continue;
-            
+
+            // outer loop: try at each possible starting position
+            position:
             for (int rStart = 0; rStart <= size - rows; ++rStart) {
                 for (int cStart = 0; cStart <= size - cols; ++cStart) {
-                    boolean failed = false;
-                    boolean[] accountedFor = new boolean[items.length];
-                    
-                    for (int i = 0; i < items.length; ++i) {
-                        accountedFor[i] = items[i] == null;
-                    }
-                    
+                    // inner loop: verify recipe against this position
                     for (int row = 0; row < rows; ++row) {
                         for (int col = 0; col < cols; ++col) {
                             ItemStack given = items[(rStart + row) * size + cStart + col];
                             char ingredientChar = shape[row].length() >= col - 1 ? shape[row].charAt(col) : ' ';
-                            
-                            if (given == null) {
-                                if (ingredients.containsKey(ingredientChar)) {
-                                    failed = true;
-                                    break;
+                            ItemStack expected = ingredients.get(ingredientChar);
+
+                            // check for mismatch in presence of an item in that slot at all
+                            if (expected == null) {
+                                if (given != null) {
+                                    continue position;
                                 } else {
-                                    accountedFor[(rStart + row) * size + cStart + col] = true;
+                                    continue; // good match
                                 }
-                            } else if (ingredients.get(ingredientChar) == null) {
-                                failed = true;
-                                break;
-                            } else {
-                                MaterialData data = ingredients.get(ingredientChar).getData();
-                                if (data.getItemType() != given.getType()) {
-                                    failed = true;
-                                    break;
-                                } else if (data.getData() >= 0 && data.getData() != given.getDurability()) {
-                                    failed = true;
-                                    break;
-                                } else {
-                                    accountedFor[(rStart + row) * size + cStart + col] = true;
-                                }
+                            } else if (given == null) {
+                                continue position;
+                            }
+
+                            // check for type and data match
+                            if (!matchesWildcard(expected, given)) {
+                                continue position;
                             }
                         }
-                        if (failed) {
-                            break;
-                        }
                     }
-
-                    for (boolean item : accountedFor) {
-                        if (!item) {
-                            failed = true;
-                            break;
-                        }
-                    }
-                    
-                    if (!failed) {
-                        return recipe;
-                    }
+                    // no mismatches at this position
+                    return recipe;
                 }
-            }
-        }
-    
+            } // end position loop
+        } // end recipe loop
+
         return null;
     }
-    
+
     private ShapelessRecipe getShapelessRecipe(ItemStack[] items) {
+        recipe:
         for (ShapelessRecipe recipe : shapelessRecipes) {
-            boolean failed = false;
             boolean[] accountedFor = new boolean[items.length];
-            
+
+            // Mark empty item slots accounted for
+            for (int i = 0; i < items.length; ++i) {
+                accountedFor[i] = items[i] == null;
+            }
+
             // Make sure each ingredient in the recipe exists in the inventory
-            for (ItemStack stack : recipe.getIngredientList()) {
-                MaterialData ingredient = stack.getData();
-                boolean found = false;
+            ingredient:
+            for (ItemStack ingredient : recipe.getIngredientList()) {
                 for (int i = 0; i < items.length; ++i) {
-                    if (!accountedFor[i]) {
-                        if (items[i] == null) {
-                            accountedFor[i] = true;
-                        } else if (ingredient.getItemType() != items[i].getType()) {
-                            failed = true;
-                            break;
-                        } else if (ingredient.getData() >= 0 && ingredient.getData() != items[i].getDurability()) {
-                            failed = true;
-                            break;
-                        } else {
-                            found = true;
-                            accountedFor[i] = true;
-                            break;
-                        }
+                    // if this item is not already used and it matches this ingredient...
+                    if (!accountedFor[i] && matchesWildcard(ingredient, items[i])) {
+                        // ... this item is accounted for and this ingredient is found.
+                        accountedFor[i] = true;
+                        continue ingredient;
                     }
                 }
-                if (!found) {
-                    failed = true;
-                    break;
-                }
+                // no item matched this ingredient, so the recipe fails
+                continue recipe;
             }
-            
+
             // Make sure inventory has no leftover items
             for (int i = 0; i < items.length; ++i) {
                 if (!accountedFor[i]) {
-                    failed = true;
-                    break;
+                    continue recipe;
                 }
             }
-            
-            if (!failed) {
-                return recipe;
-            }
+
+            return recipe;
         }
-        
+
         return null;
     }
 
@@ -248,18 +216,31 @@ public final class CraftingManager implements Iterable<Recipe> {
         return Iterators.concat(shapedRecipes.iterator(), shapelessRecipes.iterator(), furnaceRecipes.iterator());
     }
 
+    private boolean isWildcard(short data) {
+        // old-style wildcards (byte -1) not supported
+        return data == Short.MAX_VALUE;
+    }
+
+    private boolean matchesWildcard(ItemStack expected, ItemStack actual) {
+        return expected.getType() == actual.getType() && (isWildcard(expected.getDurability()) || expected.getDurability() == actual.getDurability());
+    }
+
     /**
      * Get a list of all recipes for a given item. The stack size is ignored
      * in comparisons. If the durability is -1, it will match any data value.
-     *
      * @param result The item whose recipes you want
      * @return The list of recipes
      */
     public List<Recipe> getRecipesFor(ItemStack result) {
+        // handling for old-style wildcards
+        if (result.getDurability() == -1) {
+            result = result.clone();
+            result.setDurability(Short.MAX_VALUE);
+        }
+
         List<Recipe> recipes = new LinkedList<>();
         for (Recipe recipe : this) {
-            ItemStack stack = recipe.getResult();
-            if (stack.getType() == result.getType() && (result.getDurability() == -1 || result.getDurability() == stack.getDurability())) {
+            if (matchesWildcard(result, recipe.getResult())) {
                 recipes.add(recipe);
             }
         }
@@ -275,14 +256,14 @@ public final class CraftingManager implements Iterable<Recipe> {
         furnaceRecipes.clear();
         furnaceFuels.clear();
     }
-    
+
     /**
      * Reset the crafting recipe lists to their default states.
      */
     public void resetRecipes() {
         clearRecipes();
         loadRecipes();
-        
+
         // Smelting fuels (time is in ticks)
         furnaceFuels.put(Material.COAL, 1600);
         furnaceFuels.put(Material.WOOD, 300);
@@ -352,121 +333,4 @@ public final class CraftingManager implements Iterable<Recipe> {
         }
     }
 
-    // -- Helper functions
-    
-    private ShapedRecipe makeShaped(Material mat) {
-        return makeShaped(mat, 1, 0);
-    }
-    
-    private ShapedRecipe makeShaped(Material mat, int amount) {
-        return makeShaped(mat, amount, 0);
-    }
-    
-    private ShapedRecipe makeShaped(Material mat, int amount, int data) {
-        ShapedRecipe result = new ShapedRecipe(new ItemStack(mat, amount, (byte) data));
-        addRecipe(result);
-        return result;
-    }
-    
-    private ShapelessRecipe makeShapeless(Material mat, int amount, int data) {
-        ShapelessRecipe result = new ShapelessRecipe(new ItemStack(mat, amount, (byte) data));
-        addRecipe(result);
-        return result;
-    }
-
-    private enum CraftingSet {        
-        WOOD(Material.WOOD,
-                tools(Material.WOOD_AXE, Material.WOOD_PICKAXE, Material.WOOD_SPADE, Material.WOOD_HOE, Material.WOOD_SWORD), stairs(2, Material.WOOD_STAIRS)),
-        COBBLESTONE(Material.COBBLESTONE,
-                tools(Material.STONE_AXE, Material.STONE_PICKAXE, Material.STONE_SPADE, Material.STONE_HOE, Material.STONE_SWORD), stairs(3, Material.COBBLESTONE_STAIRS)),
-        GOLD(Material.GOLD_INGOT, block(Material.GOLD_BLOCK),
-                tools(Material.GOLD_AXE, Material.GOLD_PICKAXE, Material.GOLD_SPADE, Material.GOLD_HOE, Material.GOLD_SWORD),
-                armor(Material.GOLD_HELMET, Material.GOLD_CHESTPLATE, Material.GOLD_LEGGINGS, Material.GOLD_BOOTS)),
-        IRON(Material.IRON_INGOT, block(Material.IRON_BLOCK),
-                tools(Material.IRON_AXE, Material.IRON_PICKAXE, Material.IRON_SPADE, Material.IRON_HOE, Material.IRON_SWORD),
-                armor(Material.IRON_HELMET, Material.IRON_CHESTPLATE, Material.IRON_LEGGINGS, Material.IRON_BOOTS)),
-        DIAMOND(Material.DIAMOND, block(Material.DIAMOND_BLOCK),
-                tools(Material.DIAMOND_AXE, Material.DIAMOND_PICKAXE, Material.DIAMOND_SPADE, Material.DIAMOND_HOE, Material.DIAMOND_SWORD),
-                armor(Material.DIAMOND_HELMET, Material.DIAMOND_CHESTPLATE, Material.DIAMOND_LEGGINGS, Material.DIAMOND_BOOTS)),
-        LEATHER(Material.LEATHER,
-                armor(Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS)),
-        CHAINMAIL(Material.FIRE,
-               armor(Material.CHAINMAIL_HELMET, Material.CHAINMAIL_CHESTPLATE, Material.CHAINMAIL_LEGGINGS, Material.CHAINMAIL_BOOTS)),
-        BRICK(Material.BRICK, stairs(4, Material.BRICK_STAIRS)),
-        SMOOTH_BRICK(Material.SMOOTH_BRICK, stairs(5, Material.SMOOTH_STAIRS)),
-        SANDSTONE(Material.SANDSTONE, stairs(1, null)),
-        STONE(Material.STONE, stairs(0, null));
-        
-        
-        private final Material material;
-        private Material block;
-
-        private Material[] armor;
-        private Material[] tools;
-        private Material stairs;
-        private int slabData = -1;
-        
-        private CraftingSet(Material mat, Property... props) {
-            material = mat;
-            for (Property p : props)
-                p.apply(this);
-        }
-        
-        public Material getInput() {
-            return material;
-        }
-        
-        public Material getBlock() {
-            return block;
-        }
-        
-        public Material[] getArmor() {
-            return armor;
-        }
-        
-        public Material[] getTools() {
-            return tools;
-        }
-
-        public Material getStairMaterial() {
-            return stairs;
-        }
-
-        public int getSlabData() {
-            return slabData;
-        }
-        
-        // -----------------
-    
-        private interface Property {
-            void apply(CraftingSet set);
-        }
-        
-        private static Property block(final Material mat) {
-            return new Property() { public void apply(CraftingSet s) {
-                s.block = mat;
-            }};
-        }
-        
-        private static Property tools(final Material axe, final Material pick, final Material shovel, final Material hoe, final Material sword) {
-            return new Property() { public void apply(CraftingSet s) {
-                s.tools = new Material[] { axe, pick, shovel, hoe, sword };
-            }};
-        }
-        
-        private static Property armor(final Material helmet, final Material chestplate, final Material leggings, final Material boots) {
-            return new Property() { public void apply(CraftingSet s) {
-                s.armor = new Material[] { helmet, chestplate, leggings, boots };
-            }};
-        }
-
-        private static Property stairs(final int slabData, final Material stairs) {
-            return new Property() { public void apply(CraftingSet set) {
-                set.stairs = stairs;
-                set.slabData = slabData;
-            }};
-        }
-        
-    }
-    
 }
