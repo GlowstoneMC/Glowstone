@@ -1,19 +1,25 @@
 package net.glowstone.net.handler.play.inv;
 
 import com.flowpowered.networking.MessageHandler;
+import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowInventoryView;
+import net.glowstone.inventory.WindowClickLogic;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.inv.TransactionMessage;
 import net.glowstone.net.message.play.inv.WindowClickMessage;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 import java.util.Objects;
 
@@ -25,7 +31,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         } catch (IllegalArgumentException ex) {
             GlowServer.logger.warning(session + ": illegal argument while handling click: " + ex);
         }
-        GlowServer.logger.info(session + ": [" + result + "] " + message);
+        //GlowServer.logger.info(session + ": [" + result + "] " + message);
         session.send(new TransactionMessage(message.getId(), message.getTransaction(), result));
     }
 
@@ -35,8 +41,18 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         final ItemStack slotItem = view.getItem(viewSlot);
         final ItemStack cursor = player.getItemOnCursor();
 
-        // Determine inventory and slot clicked, used in some places
-        // todo: whine and complain if users try to implement own inventory
+        // check that the player has a correct view of the item
+        if (!Objects.equals(message.getItem(), slotItem) && message.getMode() != 3) {
+            // reject item change because of desynced inventory
+            // in mode 3 (get), client does not send item under cursor
+            player.sendItemChange(viewSlot, slotItem);
+            return false;
+        }
+
+        // determine inventory and slot clicked, used in some places
+        // todo: attempt to allow for users to implement their own inventory?
+        // CraftBukkit does not allow this but it may be worth the trouble for
+        // the extensibility.
         final GlowInventory inv;
         if (viewSlot < view.getTopInventory().getSize()) {
             inv = (GlowInventory) view.getTopInventory();
@@ -46,143 +62,120 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         final int invSlot = view.convertSlot(viewSlot);
         final InventoryType.SlotType slotType = inv.getSlotType(invSlot);
 
-        //final ClickType clickType = resolveClickType(message);
+        // todo: drag needs to be checked for here, before everything else
 
-        // check that the player has a correct view of the item
-        if (!Objects.equals(message.getItem(), slotItem) && message.getMode() != 3) {
-            // reject item change because of desynced inventory
-            // in mode 3 (get), client does not send item under cursor
-            player.sendItemChange(viewSlot, slotItem);
+        // determine what action will be taken and fire event
+        final ClickType clickType = WindowClickLogic.getClickType(message.getMode(), message.getButton(), viewSlot);
+        InventoryAction action = WindowClickLogic.getAction(clickType, slotType, cursor, slotItem);
+
+        if (clickType == ClickType.UNKNOWN || action == InventoryAction.UNKNOWN) {
+            // show a warning for unknown click type
+            GlowServer.logger.warning(player.getName() + ": mystery window click " + clickType + "/" + action + ": " + message);
+        }
+
+        // deny CLONE_STACK for non-creative mode players
+        if (action == InventoryAction.CLONE_STACK && player.getGameMode() != GameMode.CREATIVE) {
+            action = InventoryAction.NOTHING;
+        }
+
+        final InventoryClickEvent event;
+        if (clickType == ClickType.NUMBER_KEY) {
+            event = new InventoryClickEvent(view, slotType, viewSlot, clickType, action, message.getButton());
+        } else {
+            event = new InventoryClickEvent(view, slotType, viewSlot, clickType, action, message.getButton());
+        }
+
+        EventFactory.callEvent(event);
+        if (event.isCancelled()) {
             return false;
         }
 
-        // mode ; button ; slot (* = -999)
-        // m b s
-        // 0 0   lmb
-        //   1   rmb
-        // 1 0   shift+lmb
-        //   1   shift+rmb (same as 1/0)
-        // 2 *   number key b+1
-        // 3 2   middle click / duplicate (creative)
-        // 4 0   drop
-        // 4 1   ctrl + drop
-        // 4 0 * lmb with no item (no-op)
-        // 4 1 * rmb with no item (no-op)
-        // 5 0 * start left drag
-        // 5 1   add slot left drag
-        // 5 2 * end left drag
-        // 5 4 * start right drag
-        // 5 5   add slot right drag
-        // 5 6 * end right drag
-        // 6 0   double click
+        // todo: restrict sets to certain slots and do crafting as needed
 
-        // todo: restrict sets to armor slots, crafting slots, so on
-        // player.getInventory().getCraftingInventory().craft();
-
-        switch (message.getMode()) {
-            case 0: // normal click
-                if (message.getButton() == 0) {
-                    // left click
-                    if (cursor == null) {
-                        if (slotItem != null) {
-                            // pick up entire stack
-                            view.setItem(viewSlot, null);
-                            player.setItemOnCursor(slotItem);
-                            return true;
-                        } else {
-                            // nothing happens
-                            return true;
-                        }
-                    } else if (inv.itemPlaceAllowed(invSlot, cursor)) {
-                        // can only do anything if cursor could be placed in that slot
-                        if (slotItem == null) {
-                            // put down stack, up to inventory's max stack size
-                            int transfer = Math.min(cursor.getAmount(), maxStack(inv, cursor.getType()) - cursor.getAmount());
-                            if (transfer == cursor.getAmount()) {
-                                // transfer whole stack
-                                view.setItem(viewSlot, cursor);
-                                player.setItemOnCursor(null);
-                                return true;
-                            } else {
-                                // partial transfer
-                                ItemStack newStack = cursor.clone();
-                                newStack.setAmount(transfer);
-                                view.setItem(viewSlot, newStack);
-                                cursor.setAmount(cursor.getAmount() - transfer);
-                                return true;
-                            }
-                        } else if (slotItem.isSimilar(cursor)) {
-                            // items are stackable, transfer cursor -> slot
-                            int transfer = Math.min(cursor.getAmount(), maxStack(inv, slotItem.getType()) - slotItem.getAmount());
-                            if (transfer > 0) {
-                                slotItem.setAmount(slotItem.getAmount() + transfer);
-                                player.setItemOnCursor(amountOrNull(cursor, cursor.getAmount() - transfer));
-                                return true;
-                            }
-                        } else {
-                            // swap cursor and slot
-                            player.setItemOnCursor(slotItem);
-                            inv.setItem(invSlot, cursor);
-                            return true;
-                        }
-                    }
-                } else {
-                    // right click
-                    if (cursor == null) {
-                        if (slotItem == null) {
-                            // do nothing
-                            return false;
-                        } else {
-                            // pick up half (favor picking up)
-                            int keepAmount = slotItem.getAmount() / 2;
-                            ItemStack newCursor = slotItem.clone();
-                            newCursor.setAmount(slotItem.getAmount() - keepAmount);
-
-                            inv.setItem(invSlot, amountOrNull(slotItem, keepAmount));
-                            player.setItemOnCursor(newCursor);
-                            return true;
-                        }
-                    } else if (inv.itemPlaceAllowed(invSlot, cursor)) {
-                        // can only do anything if cursor could be placed in that slot
-                        if (slotItem == null) {
-                            // place down 1 item
-                            inv.setItem(invSlot, amountOrNull(cursor.clone(), 1));
-                            player.setItemOnCursor(amountOrNull(cursor, cursor.getAmount() - 1));
-                            return true;
-                        } else if (cursor.isSimilar(slotItem)) {
-                            // place down 1 item if possible
-                            if (slotItem.getAmount() + 1 <= maxStack(inv, slotItem.getType())) {
-                                slotItem.setAmount(slotItem.getAmount() + 1);
-                                player.setItemOnCursor(amountOrNull(cursor, cursor.getAmount() - 1));
-                                return true;
-                            }
-                        } else {
-                            // swap non-similar stacks
-                            player.setItemOnCursor(slotItem);
-                            inv.setItem(invSlot, cursor);
-                            return true;
-                        }
-                    }
-                }
+        boolean handled = true;
+        switch (action) {
+            case NOTHING:
+            case UNKNOWN:
+                // return false rather than break - this case is "handled" but
+                // any action the client tried to take should be denied
                 return false;
 
-            case 1: // shift click
-                // item on cursor is totally ignored, no difference left/right click
+            // PICKUP_*
+            case PICKUP_ALL:
+                view.setItem(viewSlot, null);
+                player.setItemOnCursor(slotItem);
+                break;
+            case PICKUP_HALF: {
+                // pick up half (favor picking up)
+                int keepAmount = slotItem.getAmount() / 2;
+                ItemStack newCursor = slotItem.clone();
+                newCursor.setAmount(slotItem.getAmount() - keepAmount);
 
-                /**
+                inv.setItem(invSlot, amountOrNull(slotItem, keepAmount));
+                player.setItemOnCursor(newCursor);
+                break;
+            }
+            case PICKUP_SOME:
+            case PICKUP_ONE:
+                // nb: only happens when the item on the cursor cannot go in
+                // the slot, so the item is tried to be picked up instead
+                handled = false;
+                break;
+
+            // PLACE_*
+            case PLACE_ALL:
+                view.setItem(viewSlot, combine(slotItem, cursor, cursor.getAmount()));
+                player.setItemOnCursor(null);
+                break;
+            case PLACE_SOME: {
+                // slotItem *should* never be null in this situation?
+                int transfer = Math.min(cursor.getAmount(), maxStack(inv, slotItem.getType()) - slotItem.getAmount());
+                view.setItem(viewSlot, combine(slotItem, cursor, transfer));
+                player.setItemOnCursor(amountOrNull(cursor, cursor.getAmount() - transfer));
+                break;
+            }
+            case PLACE_ONE:
+                view.setItem(viewSlot, combine(slotItem, cursor, 1));
+                player.setItemOnCursor(amountOrNull(cursor, cursor.getAmount() - 1));
+                break;
+
+            case SWAP_WITH_CURSOR:
+                view.setItem(viewSlot, cursor);
+                player.setItemOnCursor(slotItem);
+                break;
+
+            // DROP_*
+            case DROP_ALL_CURSOR:
+                drop(player, cursor);
+                player.setItemOnCursor(null);
+                break;
+            case DROP_ONE_CURSOR:
+                drop(player, amountOrNull(cursor.clone(), 1));
+                player.setItemOnCursor(amountOrNull(cursor, cursor.getAmount() - 1));
+                break;
+            case DROP_ALL_SLOT:
+                drop(player, slotItem);
+                view.setItem(viewSlot, null);
+                break;
+            case DROP_ONE_SLOT:
+                drop(player, amountOrNull(cursor.clone(), 1));
+                player.setItemOnCursor(amountOrNull(cursor, cursor.getAmount() - 1));
+                break;
+
+            // shift-click
+            case MOVE_TO_OTHER_INVENTORY:
+                /*
                  * armor slots are considered as top inventory if in crafting mode
                  *
                  * if in bottom inventory:
                  *   try to place in top inventory
                  *   if default view: try to place in armor slots
-                 *   try
+                 *   try ???
                  * if in top inventory:
                  *   try to place in main slots of bottom inventory (9..36)
                  *   try to place in hotbar slots of bottom inventory (0..9)
                  */
-
-                // todo
-                // shift-click logic is a disaster
+                // todo: shift-click logic is a disaster
                 if (GlowInventoryView.isDefault(view)) {
                     // if in main contents, try to flip to hotbar, starting at left
                     if (slotType == InventoryType.SlotType.CONTAINER) {
@@ -199,16 +192,15 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                     }
                 } else {
                     // swap between two inventories
-
+                    handled = false;
                 }
+                break;
 
-                return false;
-
-            case 2: // number key
-                if (cursor != null) {
-                    // only if no item on cursor
-                    return false;
-                }
+            case HOTBAR_MOVE_AND_READD:
+            case HOTBAR_SWAP:
+                // nb: difference between swap and move/readd is whether the
+                // item in the hotbar is allowed to be placed in the slot.
+                // this difference is currently unhandled.
 
                 int hotbarSlot = message.getButton();
                 ItemStack destItem = inv.getItem(hotbarSlot);
@@ -241,31 +233,43 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                     }
                 }
 
-            case 3: // get
-                // only in creative and with no item on cursor
-                if (cursor != null || player.getGameMode() != GameMode.CREATIVE) {
-                    return false;
-                }
-
+            case CLONE_STACK:
+                // only in creative and with no item on cursor handled earlier
                 // copy and maximize item
                 ItemStack stack = slotItem.clone();
                 stack.setAmount(stack.getType().getMaxStackSize());
                 player.setItemOnCursor(stack);
-                return true;
+                break;
 
-            case 4: // drop
-                return false;
+            case COLLECT_TO_CURSOR:
+                handled = false;
+                break;
+        }
 
-            case 5: // drag
-                // this is a real nightmare
-                return false;
+        if (!handled) {
+            GlowServer.logger.warning(player.getName() + ": unhandled click action " + action + " for " + message);
+        }
 
-            case 6: // double click
-                return false;
+        return handled;
+    }
 
-            default: // unknown
-                GlowServer.logger.info(player + " tried to use invalid click mode " + message.getMode());
-                return false;
+    private void drop(GlowPlayer player, ItemStack stack) {
+        // drop item with the given contents and throw it the way the player is facing
+        // this 0.2 number has been pulled out of thin air
+        Vector vel = player.getLocation().getDirection().multiply(0.2);
+        player.getWorld().dropItem(player.getEyeLocation(), stack).setVelocity(vel);
+    }
+
+    private ItemStack combine(ItemStack slotItem, ItemStack cursor, int amount) {
+        if (slotItem == null) {
+            ItemStack stack = cursor.clone();
+            stack.setAmount(amount);
+            return stack;
+        } else if (slotItem.isSimilar(cursor)) {
+            slotItem.setAmount(slotItem.getAmount() + amount);
+            return slotItem;
+        } else {
+            throw new IllegalArgumentException("Trying to combine dissimilar " + slotItem + " and " + cursor);
         }
     }
 

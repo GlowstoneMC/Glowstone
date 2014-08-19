@@ -3,6 +3,7 @@ package net.glowstone.inventory;
 import net.glowstone.testutils.ServerShim;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -42,7 +43,9 @@ public class WindowClickLogicTest {
             ItemStack slotItem = parseItemStack(testCase[3]);
             String expected = testCase[4];
 
-            String actual = String.valueOf(WindowClickLogic.getAction(clickType, slot, cursor, slotItem));
+            InventoryType.SlotType slotType = (slot < 0) ? InventoryType.SlotType.OUTSIDE : InventoryType.SlotType.CONTAINER;
+
+            String actual = String.valueOf(WindowClickLogic.getAction(clickType, slotType, cursor, slotItem));
             Assert.assertEquals("Failure for click=" + clickType + ", slot=" + slot + ", cursor=" + testCase[2] + ", slotItem=" + testCase[3], expected, actual);
         }
     }

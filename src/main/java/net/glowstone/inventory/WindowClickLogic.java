@@ -2,6 +2,7 @@ package net.glowstone.inventory;
 
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -93,19 +94,20 @@ public final class WindowClickLogic {
      * @param slotItem The item in the slot.
      * @return The InventoryAction to perform, or UNKNOWN.
      */
-    public static InventoryAction getAction(ClickType clickType, int slot, ItemStack cursor, ItemStack slotItem) {
+    public static InventoryAction getAction(ClickType clickType, InventoryType.SlotType slot, ItemStack cursor, ItemStack slotItem) {
+        final boolean outside = (slot == InventoryType.SlotType.OUTSIDE);
         switch (clickType) {
             case LEFT:
                 // "SWAP_WITH_CURSOR", "PLACE_ONE", "DROP_ALL_CURSOR", "PLACE_ALL", "PLACE_SOME", "NOTHING", "PICKUP_ALL"
 
                 if (cursor == null) {
-                    if (slot < 0 || slotItem == null) {
+                    if (outside || slotItem == null) {
                         return InventoryAction.NOTHING;
                     }
                     return InventoryAction.PICKUP_ALL;
                 }
 
-                if (slot < 0) {
+                if (outside) {
                     return InventoryAction.DROP_ALL_CURSOR;
                 }
 
@@ -131,13 +133,13 @@ public final class WindowClickLogic {
             case RIGHT:
                 // "NOTHING", "PLACE_ONE", "PICKUP_HALF", "DROP_ONE_CURSOR", "SWAP_WITH_CURSOR"
                 if (cursor == null) {
-                    if (slot < 0 || slotItem == null) {
+                    if (outside || slotItem == null) {
                         return InventoryAction.NOTHING;
                     }
                     return InventoryAction.PICKUP_HALF;
                 }
 
-                if (slot < 0) {
+                if (outside) {
                     return InventoryAction.DROP_ONE_CURSOR;
                 }
 
@@ -168,7 +170,11 @@ public final class WindowClickLogic {
 
             case MIDDLE:
                 // not supported yet
-                return InventoryAction.UNKNOWN;
+                if (cursor == null) {
+                    return InventoryAction.CLONE_STACK;
+                } else {
+                    return InventoryAction.NOTHING;
+                }
 
             case NUMBER_KEY:
                 // {"NUMBER_KEY", "NOTHING", "HOTBAR_SWAP"},
