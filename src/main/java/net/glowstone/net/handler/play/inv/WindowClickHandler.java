@@ -4,6 +4,7 @@ import com.flowpowered.networking.MessageHandler;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.inventory.DragTracker;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowInventoryView;
 import net.glowstone.inventory.WindowClickLogic;
@@ -12,15 +13,15 @@ import net.glowstone.net.message.play.inv.TransactionMessage;
 import net.glowstone.net.message.play.inv.WindowClickMessage;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public final class WindowClickHandler implements MessageHandler<GlowSession, WindowClickMessage> {
@@ -29,9 +30,11 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         try {
             result = process(session.getPlayer(), message);
         } catch (IllegalArgumentException ex) {
-            GlowServer.logger.warning(session + ": illegal argument while handling click: " + ex);
+            GlowServer.logger.warning(session.getPlayer().getName() + ": illegal argument while handling click: " + ex);
         }
-        //GlowServer.logger.info(session + ": [" + result + "] " + message);
+        if (!result) {
+            GlowServer.logger.info(session.getPlayer().getName() + ": [rejected] " + message);
+        }
         session.send(new TransactionMessage(message.getId(), message.getTransaction(), result));
     }
 
@@ -42,9 +45,9 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         final ItemStack cursor = player.getItemOnCursor();
 
         // check that the player has a correct view of the item
-        if (!Objects.equals(message.getItem(), slotItem) && message.getMode() != 3) {
+        if (!Objects.equals(message.getItem(), slotItem) && (message.getMode() == 0 || message.getMode() == 1)) {
             // reject item change because of desynced inventory
-            // in mode 3 (get), client does not send item under cursor
+            // in mode 3 (get) and 4 (drop), client does not send item under cursor
             player.sendItemChange(viewSlot, slotItem);
             return false;
         }
@@ -62,7 +65,64 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         final int invSlot = view.convertSlot(viewSlot);
         final InventoryType.SlotType slotType = inv.getSlotType(invSlot);
 
-        // todo: drag needs to be checked for here, before everything else
+        // handle dragging
+        if (message.getMode() == 5) {
+            // 5 0 * start left drag
+            // 5 1   add slot left drag
+            // 5 2 * end left drag
+            // 5 4 * start right drag
+            // 5 5   add slot right drag
+            // 5 6 * end right drag
+
+            DragTracker drag = player.getInventory().getDragTracker();
+            boolean right = (message.getButton() >= 4);
+
+            switch (message.getButton()) {
+                case 0: // start left drag
+                case 4: // start right drag
+                    return drag.start(right);
+
+                case 1: // add slot left
+                case 5: // add slot right
+                    return drag.addSlot(right, message.getSlot());
+
+                case 2: // end left drag
+                case 6: // end right drag
+                    List<Integer> slots = drag.finish(right);
+                    if (slots == null) {
+                        return false;
+                    }
+
+                    ItemStack newCursor = cursor.clone();
+                    Map<Integer, ItemStack> newSlots = new HashMap<>();
+
+                    int perSlot = right ? 1 : cursor.getAmount() / slots.size();
+                    for (int dragSlot : slots) {
+                        ItemStack oldItem = view.getItem(dragSlot);
+                        if (oldItem == null || cursor.isSimilar(oldItem)) {
+                            ItemStack newItem = combine(oldItem, cursor, perSlot);
+                            newSlots.put(dragSlot, newItem);
+                            newCursor = amountOrNull(newCursor, newCursor.getAmount() - perSlot);
+                            if (newCursor == null) {
+                                break;
+                            }
+                        }
+                    }
+
+                    InventoryDragEvent event = new InventoryDragEvent(view, newCursor, cursor, right, newSlots);
+                    if (event.isCancelled()) {
+                        return false;
+                    }
+
+                    for (Map.Entry<Integer, ItemStack> entry : newSlots.entrySet()) {
+                        view.setItem(entry.getKey(), entry.getValue());
+                    }
+                    player.setItemOnCursor(newCursor);
+                    return true;
+            }
+
+            return false;
+        }
 
         // determine what action will be taken and fire event
         final ClickType clickType = WindowClickLogic.getClickType(message.getMode(), message.getButton(), viewSlot);
@@ -95,6 +155,8 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         boolean handled = true;
         switch (action) {
             case NOTHING:
+                break;
+
             case UNKNOWN:
                 // return false rather than break - this case is "handled" but
                 // any action the client tried to take should be denied
@@ -146,20 +208,28 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
 
             // DROP_*
             case DROP_ALL_CURSOR:
-                drop(player, cursor);
-                player.setItemOnCursor(null);
+                if (cursor != null) {
+                    drop(player, cursor);
+                    player.setItemOnCursor(null);
+                }
                 break;
             case DROP_ONE_CURSOR:
-                drop(player, amountOrNull(cursor.clone(), 1));
-                player.setItemOnCursor(amountOrNull(cursor, cursor.getAmount() - 1));
+                if (cursor != null) {
+                    drop(player, amountOrNull(cursor.clone(), 1));
+                    player.setItemOnCursor(amountOrNull(cursor, cursor.getAmount() - 1));
+                }
                 break;
             case DROP_ALL_SLOT:
-                drop(player, slotItem);
-                view.setItem(viewSlot, null);
+                if (slotItem != null) {
+                    drop(player, slotItem);
+                    view.setItem(viewSlot, null);
+                }
                 break;
             case DROP_ONE_SLOT:
-                drop(player, amountOrNull(cursor.clone(), 1));
-                player.setItemOnCursor(amountOrNull(cursor, cursor.getAmount() - 1));
+                if (slotItem != null) {
+                    drop(player, amountOrNull(slotItem.clone(), 1));
+                    view.setItem(viewSlot, amountOrNull(slotItem, slotItem.getAmount() - 1));
+                }
                 break;
 
             // shift-click
@@ -242,7 +312,21 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                 break;
 
             case COLLECT_TO_CURSOR:
-                handled = false;
+                if (cursor == null) {
+                    return false;
+                }
+
+                // todo: double-check if this is the correct order to check slots in
+                for (int i = 0; i < view.countSlots() && cursor.getAmount() < maxStack(inv, cursor.getType()); ++i) {
+                    ItemStack item = view.getItem(i);
+                    if (item == null || !cursor.isSimilar(item)) {
+                        continue;
+                    }
+
+                    int transfer = Math.min(item.getAmount(), maxStack(inv, cursor.getType()) - cursor.getAmount());
+                    cursor.setAmount(cursor.getAmount() + transfer);
+                    view.setItem(i, amountOrNull(item, item.getAmount() - transfer));
+                }
                 break;
         }
 
@@ -254,6 +338,9 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
     }
 
     private void drop(GlowPlayer player, ItemStack stack) {
+        if (stack == null || stack.getAmount() <= 0) {
+            return;
+        }
         // drop item with the given contents and throw it the way the player is facing
         // this 0.2 number has been pulled out of thin air
         Vector vel = player.getLocation().getDirection().multiply(0.2);

@@ -38,6 +38,11 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
      */
     private int heldSlot = 0;
 
+    /**
+     * Tracker for inventory drags.
+     */
+    private final DragTracker tracker = new DragTracker();
+
     public GlowPlayerInventory(GlowHumanEntity owner) {
         // all player inventories are ID 0
         // 36 = 4 rows of 9
@@ -78,6 +83,14 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     public boolean itemShiftClickAllowed(int slot, ItemStack stack) {
         // todo: check armor slots
         return super.itemPlaceAllowed(slot, stack);
+    }
+
+    /**
+     * Get the DragTracker associated with this player.
+     * @return The DragTracker.
+     */
+    public DragTracker getDragTracker() {
+        return tracker;
     }
 
     ////////////////////////////////////////////////////////////////////////////
