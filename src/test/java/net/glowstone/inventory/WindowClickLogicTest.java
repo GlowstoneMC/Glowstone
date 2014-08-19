@@ -28,7 +28,7 @@ public class WindowClickLogicTest {
             int slot = Integer.parseInt(testCase[2]);
             String expected = testCase[3];
 
-            String actual = String.valueOf(WindowClickLogic.getClickType(mode, button, slot).name());
+            String actual = String.valueOf(WindowClickLogic.getClickType(mode, button, slot));
             Assert.assertEquals("Failure for mode=" + mode + ", button=" + button + ", slot=" + slot, expected, actual);
         }
     }
@@ -80,7 +80,7 @@ public class WindowClickLogicTest {
             {"2", "6", "0", "NUMBER_KEY"},
             {"2", "7", "0", "NUMBER_KEY"},
             {"2", "8", "0", "NUMBER_KEY"},
-            //{"3", "0", "0", "UNKNOWN"},
+            {"3", "0", "0", "UNKNOWN"},
             {"4", "0", "0", "DROP"},
             {"4", "1", "0", "CONTROL_DROP"},
             {"6", "0", "0", "DOUBLE_CLICK"},

@@ -13,6 +13,14 @@ public final class WindowClickLogic {
     private WindowClickLogic() {
     }
 
+    /**
+     * Determine the ClickType of a window click message based on the raw
+     * mode, button, and slot values if possible.
+     * @param mode The raw mode number.
+     * @param button The raw button number.
+     * @param slot The raw slot number.
+     * @return The ClickType of the window click, or UNKNOWN.
+     */
     public static ClickType getClickType(final int mode, final int button, final int slot) {
         // mode ; button ; slot (* = -999)
         // m b s
@@ -73,9 +81,18 @@ public final class WindowClickLogic {
             case 6:
                 return ClickType.DOUBLE_CLICK;
         }
-        return null;
+        return ClickType.UNKNOWN;
     }
 
+    /**
+     * Determine the InventoryAction to be performed for a window click based
+     * on the click type, slot type, and items involved.
+     * @param clickType The click type.
+     * @param slot The slot clicked.
+     * @param cursor The item on the cursor.
+     * @param slotItem The item in the slot.
+     * @return The InventoryAction to perform, or UNKNOWN.
+     */
     public static InventoryAction getAction(ClickType clickType, int slot, ItemStack cursor, ItemStack slotItem) {
         switch (clickType) {
             case LEFT:
@@ -150,7 +167,8 @@ public final class WindowClickLogic {
                 return InventoryAction.NOTHING;
 
             case MIDDLE:
-                throw new UnsupportedOperationException("MIDDLE not supported yet");
+                // not supported yet
+                return InventoryAction.UNKNOWN;
 
             case NUMBER_KEY:
                 // {"NUMBER_KEY", "NOTHING", "HOTBAR_SWAP"},
@@ -172,7 +190,8 @@ public final class WindowClickLogic {
                 return InventoryAction.DROP_ALL_SLOT;
 
             case CREATIVE:
-                throw new UnsupportedOperationException("CREATIVE not supported yet");
+                // not supported yet
+                return InventoryAction.UNKNOWN;
 
             case UNKNOWN:
             default:
@@ -180,6 +199,11 @@ public final class WindowClickLogic {
         }
     }
 
+    /**
+     * Check if a given InventoryAction involves placing items into the slot.
+     * @param action The InventoryAction.
+     * @return True if the cursor is to be added to the slot.
+     */
     public static boolean isPlaceAction(InventoryAction action) {
         switch (action) {
             case SWAP_WITH_CURSOR:
