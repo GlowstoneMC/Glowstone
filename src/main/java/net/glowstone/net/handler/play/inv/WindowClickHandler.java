@@ -89,7 +89,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                 case 2: // end left drag
                 case 6: // end right drag
                     List<Integer> slots = drag.finish(right);
-                    if (slots == null) {
+                    if (slots == null || cursor == null) {
                         return false;
                     }
 

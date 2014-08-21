@@ -305,6 +305,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     public void openInventory(InventoryView inventory) {
         Validate.notNull(inventory);
+        this.inventory.getDragTracker().reset();
 
         // stop viewing the old inventory and start viewing the new one
         removeViewer(inventoryView.getTopInventory());
@@ -315,7 +316,8 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     }
 
     public void closeInventory() {
-        getItemOnCursor();
+        // todo: drop item on cursor to ground
+        setItemOnCursor(null);
         openInventory(new GlowInventoryView(this));
     }
 
