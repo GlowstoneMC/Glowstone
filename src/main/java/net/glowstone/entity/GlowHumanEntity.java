@@ -122,7 +122,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         int z = Position.getIntZ(location);
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
-        result.add(new SpawnPlayerMessage(id, profile, x, y, z, yaw, pitch, 0, metadata.getEntryList()));
+        result.add(new SpawnPlayerMessage(id, profile.getUniqueId(), x, y, z, yaw, pitch, 0, metadata.getEntryList()));
 
         // head facing
         result.add(new EntityHeadRotationMessage(id, yaw));

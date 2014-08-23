@@ -17,7 +17,7 @@ public final class EntityRotationCodec implements Codec<EntityRotationMessage> {
         ByteBufUtils.writeVarInt(buf, message.getId());
         buf.writeByte(message.getRotation());
         buf.writeByte(message.getPitch());
-        buf.writeBoolean(true); // todo: on ground flag
+        buf.writeBoolean(message.getOnGround());
         return buf;
     }
 }

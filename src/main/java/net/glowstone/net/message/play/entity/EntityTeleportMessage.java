@@ -5,14 +5,20 @@ import com.flowpowered.networking.Message;
 public final class EntityTeleportMessage implements Message {
 
     private final int id, x, y, z, rotation, pitch;
+    private final boolean onGround;
 
     public EntityTeleportMessage(int id, int x, int y, int z, int rotation, int pitch) {
+        this(id, x, y, z, rotation, pitch, true);
+    }
+
+    public EntityTeleportMessage(int id, int x, int y, int z, int rotation, int pitch, boolean onGround) {
         this.id = id;
         this.x = x;
         this.y = y;
         this.z = z;
         this.rotation = rotation;
         this.pitch = pitch;
+        this.onGround = onGround;
     }
 
     public int getId() {
@@ -37,6 +43,10 @@ public final class EntityTeleportMessage implements Message {
 
     public int getPitch() {
         return pitch;
+    }
+
+    public boolean getOnGround() {
+        return onGround;
     }
 
     @Override

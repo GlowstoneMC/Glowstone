@@ -4,7 +4,6 @@ import com.flowpowered.networking.Codec;
 import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
-import net.glowstone.entity.meta.PlayerProfile;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.entity.SpawnPlayerMessage;
 
@@ -16,10 +15,8 @@ public final class SpawnPlayerCodec implements Codec<SpawnPlayerMessage> {
     }
 
     public ByteBuf encode(ByteBuf buf, SpawnPlayerMessage message) throws IOException {
-        final PlayerProfile profile = message.getProfile();
-
         ByteBufUtils.writeVarInt(buf, message.getId());
-        ByteBufUtils.writeUTF8(buf, profile.getUniqueId().toString());
+        ByteBufUtils.writeUTF8(buf, message.getUuid().toString());
         buf.writeInt(message.getX());
         buf.writeInt(message.getY());
         buf.writeInt(message.getZ());

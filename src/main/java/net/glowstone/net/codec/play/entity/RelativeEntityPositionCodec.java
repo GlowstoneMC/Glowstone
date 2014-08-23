@@ -18,7 +18,7 @@ public final class RelativeEntityPositionCodec implements Codec<RelativeEntityPo
         buf.writeByte(message.getDeltaX());
         buf.writeByte(message.getDeltaY());
         buf.writeByte(message.getDeltaZ());
-        buf.writeBoolean(true); // todo: on ground flag
+        buf.writeBoolean(message.getOnGround());
         return buf;
     }
 }

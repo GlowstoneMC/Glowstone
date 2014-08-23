@@ -20,7 +20,7 @@ public final class RelativeEntityPositionRotationCodec implements Codec<Relative
         buf.writeByte(message.getDeltaZ());
         buf.writeByte(message.getRotation());
         buf.writeByte(message.getPitch());
-        buf.writeBoolean(true); // todo: on ground flag
+        buf.writeBoolean(message.getOnGround());
         return buf;
     }
 }

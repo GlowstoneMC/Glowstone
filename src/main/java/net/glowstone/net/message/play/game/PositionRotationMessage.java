@@ -7,7 +7,7 @@ public final class PositionRotationMessage implements Message {
 
     private final double x, y, z;
     private final float rotation, pitch;
-    private int flags;
+    private final int flags;
 
     public PositionRotationMessage(double x, double y, double z, float rotation, float pitch) {
         this(x, y, z, rotation, pitch, 0);
