@@ -182,7 +182,17 @@ public final class GlowBufUtils {
      * @param vector The vector to write.
      */
     public static void writeBlockPosition(ByteBuf buf, Vector vector) {
-        long x = vector.getBlockX(), y = vector.getBlockY(), z = vector.getBlockZ();
+        writeBlockPosition(buf, vector.getBlockX(), vector.getBlockY(), vector.getBlockZ());
+    }
+
+    /**
+     * Write an encoded block vector (position) to the buffer.
+     * @param buf The buffer.
+     * @param x The x value.
+     * @param y The y value.
+     * @param z The z value.
+     */
+    public static void writeBlockPosition(ByteBuf buf, long x, long y, long z) {
         buf.writeLong(((x & 0x3ffffff) << 38) | ((y & 0xfff) << 26) | (z & 0x3ffffff));
     }
 

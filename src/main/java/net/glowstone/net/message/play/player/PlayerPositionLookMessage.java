@@ -4,14 +4,13 @@ import org.bukkit.Location;
 
 public final class PlayerPositionLookMessage extends PlayerUpdateMessage {
 
-    private final double x, y, headY,  z;
+    private final double x, y, z;
     private final float yaw, pitch;
 
-    public PlayerPositionLookMessage(boolean onGround, double x, double y,double headY,  double z, float yaw, float pitch) {
+    public PlayerPositionLookMessage(boolean onGround, double x, double y, double z, float yaw, float pitch) {
         super(onGround);
         this.x = x;
         this.y = y;
-        this.headY = headY;
         this.z = z;
         this.yaw = yaw;
         this.pitch = pitch;
@@ -23,10 +22,6 @@ public final class PlayerPositionLookMessage extends PlayerUpdateMessage {
 
     public double getY() {
         return y;
-    }
-
-    public double getHeadY() {
-        return headY;
     }
 
     public double getZ() {
@@ -56,7 +51,6 @@ public final class PlayerPositionLookMessage extends PlayerUpdateMessage {
                 "onGround=" + getOnGround() +
                 ", x=" + x +
                 ", y=" + y +
-                ", headY=" + headY +
                 ", z=" + z +
                 ", yaw=" + yaw +
                 ", pitch=" + pitch +

@@ -10,19 +10,17 @@ public final class PlayerPositionLookCodec implements Codec<PlayerPositionLookMe
     public PlayerPositionLookMessage decode(ByteBuf buffer) throws IOException {
         double x = buffer.readDouble();
         double y = buffer.readDouble();
-        double headY = buffer.readDouble();
         double z = buffer.readDouble();
         float yaw = buffer.readFloat();
         float pitch = buffer.readFloat();
         boolean onGround = buffer.readBoolean();
 
-        return new PlayerPositionLookMessage(onGround, x, y, headY, z, yaw, pitch);
+        return new PlayerPositionLookMessage(onGround, x, y, z, yaw, pitch);
     }
 
     public ByteBuf encode(ByteBuf buf, PlayerPositionLookMessage message) throws IOException {
         buf.writeDouble(message.getX());
         buf.writeDouble(message.getY());
-        buf.writeDouble(message.getHeadY());
         buf.writeDouble(message.getZ());
         buf.writeFloat(message.getYaw());
         buf.writeFloat(message.getPitch());

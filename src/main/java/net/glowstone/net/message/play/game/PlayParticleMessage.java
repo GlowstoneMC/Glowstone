@@ -5,13 +5,15 @@ import com.flowpowered.networking.Message;
 public final class PlayParticleMessage implements Message {
 
     private final String particle;
+    private final boolean longDistance;
     private final float x, y, z;
     private final float ofsX, ofsY, ofsZ;
     private final float data;
     private final int count;
 
-    public PlayParticleMessage(String particle, float x, float y, float z, float ofsX, float ofsY, float ofsZ, float data, int count) {
+    public PlayParticleMessage(String particle, boolean longDistance, float x, float y, float z, float ofsX, float ofsY, float ofsZ, float data, int count) {
         this.particle = particle;
+        this.longDistance = longDistance;
         this.x = x;
         this.y = y;
         this.z = z;
@@ -24,6 +26,10 @@ public final class PlayParticleMessage implements Message {
 
     public String getParticle() {
         return particle;
+    }
+
+    public boolean getLongDistance() {
+        return longDistance;
     }
 
     public float getX() {

@@ -2,25 +2,23 @@ package net.glowstone.net.codec.play.player;
 
 import com.flowpowered.networking.Codec;
 import io.netty.buffer.ByteBuf;
+import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.player.DiggingMessage;
+import org.bukkit.util.BlockVector;
 
 import java.io.IOException;
 
 public final class DiggingCodec implements Codec<DiggingMessage> {
     public DiggingMessage decode(ByteBuf buf) throws IOException {
         int state = buf.readByte();
-        int x = buf.readInt();
-        int y = buf.readUnsignedByte();
-        int z = buf.readInt();
+        BlockVector pos = GlowBufUtils.readBlockPosition(buf);
         int face = buf.readByte();
-        return new DiggingMessage(state, x, y, z, face);
+        return new DiggingMessage(state, pos.getBlockX(), pos.getBlockY(), pos.getBlockZ(), face);
     }
 
     public ByteBuf encode(ByteBuf buf, DiggingMessage message) throws IOException {
         buf.writeByte(message.getState());
-        buf.writeInt(message.getX());
-        buf.writeByte(message.getY());
-        buf.writeInt(message.getZ());
+        GlowBufUtils.writeBlockPosition(buf, message.getX(), message.getY(), message.getZ());
         buf.writeByte(message.getFace());
         return buf;
     }

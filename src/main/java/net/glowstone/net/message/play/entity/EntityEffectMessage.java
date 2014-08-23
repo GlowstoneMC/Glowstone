@@ -6,13 +6,15 @@ public final class EntityEffectMessage implements Message {
 
     private final int id;
     private final byte effect, amplifier;
-    private final short duration;
+    private final int duration;
+    private final boolean hideParticles;
 
-    public EntityEffectMessage(int id, byte effect, byte amplifier, short duration) {
+    public EntityEffectMessage(int id, byte effect, byte amplifier, int duration, boolean hideParticles) {
         this.id = id;
         this.effect = effect;
         this.amplifier = amplifier;
         this.duration = duration;
+        this.hideParticles = hideParticles;
     }
 
     public int getId() {
@@ -27,8 +29,12 @@ public final class EntityEffectMessage implements Message {
         return amplifier;
     }
 
-    public short getDuration() {
+    public int getDuration() {
         return duration;
+    }
+
+    public boolean getHideParticles() {
+        return hideParticles;
     }
 
     @Override

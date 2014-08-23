@@ -4,6 +4,7 @@ import com.flowpowered.networking.Codec;
 import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
+import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.entity.SpawnPaintingMessage;
 
 import java.io.IOException;
@@ -16,10 +17,8 @@ public final class SpawnPaintingCodec implements Codec<SpawnPaintingMessage> {
     public ByteBuf encode(ByteBuf buf, SpawnPaintingMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         ByteBufUtils.writeUTF8(buf, message.getTitle());
-        buf.writeInt(message.getX());
-        buf.writeInt(message.getY());
-        buf.writeInt(message.getZ());
-        buf.writeInt(message.getFacing());
+        GlowBufUtils.writeBlockPosition(buf, message.getX(), message.getY(), message.getZ());
+        buf.writeByte(message.getFacing());
         return buf;
     }
 }

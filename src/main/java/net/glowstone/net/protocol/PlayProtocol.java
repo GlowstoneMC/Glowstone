@@ -47,7 +47,7 @@ public final class PlayProtocol extends GlowProtocol {
 
         outbound(0x00, PingMessage.class, PingCodec.class);
         outbound(0x01, JoinGameMessage.class, JoinGameCodec.class);
-        outbound(0x02, ChatMessage.class, JsonCodec.class);
+        outbound(0x02, ChatMessage.class, ChatCodec.class);
         outbound(0x03, TimeMessage.class, TimeCodec.class);
         outbound(0x04, EntityEquipmentMessage.class, EntityEquipmentCodec.class);
         outbound(0x05, SpawnPositionMessage.class, SpawnPositionCodec.class);

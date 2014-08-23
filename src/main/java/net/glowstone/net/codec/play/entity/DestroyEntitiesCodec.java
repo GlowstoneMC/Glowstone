@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.entity;
 
 import com.flowpowered.networking.Codec;
+import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
@@ -13,9 +14,9 @@ public final class DestroyEntitiesCodec implements Codec<DestroyEntitiesMessage>
     }
 
     public ByteBuf encode(ByteBuf buf, DestroyEntitiesMessage message) throws IOException {
-        buf.writeByte(message.getIds().size());
+        ByteBufUtils.writeVarInt(buf, message.getIds().size());
         for (int id : message.getIds()) {
-            buf.writeInt(id);
+            ByteBufUtils.writeVarInt(buf, id);
         }
         return buf;
     }

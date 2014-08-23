@@ -7,19 +7,23 @@ public final class PositionRotationMessage implements Message {
 
     private final double x, y, z;
     private final float rotation, pitch;
-    private final boolean onGround;
+    private int flags;
 
-    public PositionRotationMessage(double x, double y, double z, float rotation, float pitch, boolean onGround) {
+    public PositionRotationMessage(double x, double y, double z, float rotation, float pitch) {
+        this(x, y, z, rotation, pitch, 0);
+    }
+
+    public PositionRotationMessage(double x, double y, double z, float rotation, float pitch, int flags) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.rotation = rotation;
         this.pitch = pitch;
-        this.onGround = onGround;
+        this.flags = flags;
     }
 
-    public PositionRotationMessage(Location location, double yOffset, boolean onGround) {
-        this(location.getX(), location.getY() + yOffset, location.getZ(), location.getYaw(), location.getPitch(), onGround);
+    public PositionRotationMessage(Location location, double yOffset) {
+        this(location.getX(), location.getY() + yOffset, location.getZ(), location.getYaw(), location.getPitch());
     }
 
     public double getX() {
@@ -42,15 +46,14 @@ public final class PositionRotationMessage implements Message {
         return pitch;
     }
 
-    public boolean isOnGround() {
-        return onGround;
+    public int getFlags() {
+        return flags;
     }
 
     @Override
     public String toString() {
         return "PositionRotationMessage{x=" + x + ",y=" + y + ",z=" + z +
                 ",rotation=" + rotation + ",pitch=" +
-                pitch + ",onGround=" + onGround + "}";
+                pitch + ",flags=" + flags + "}";
     }
-
 }

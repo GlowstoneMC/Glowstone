@@ -26,7 +26,7 @@ public class JsonMessage implements Message {
     }
 
     @SuppressWarnings("unchecked")
-    protected static JSONObject toTextJson(String text) {
+    public static JSONObject toTextJson(String text) {
         JSONObject json = new JSONObject();
         json.put("text", text);
         return json;

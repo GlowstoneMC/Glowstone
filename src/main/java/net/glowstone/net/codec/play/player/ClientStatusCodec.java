@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public final class ClientStatusCodec implements Codec<ClientStatusMessage> {
     public ClientStatusMessage decode(ByteBuf buf) throws IOException {
-        int action = buf.readByte();
+        int action = buf.readUnsignedByte();
         return new ClientStatusMessage(action);
     }
 

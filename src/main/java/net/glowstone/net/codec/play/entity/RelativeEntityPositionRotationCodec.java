@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.entity;
 
 import com.flowpowered.networking.Codec;
+import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import net.glowstone.net.message.play.entity.RelativeEntityPositionRotationMessage;
@@ -13,12 +14,13 @@ public final class RelativeEntityPositionRotationCodec implements Codec<Relative
     }
 
     public ByteBuf encode(ByteBuf buf, RelativeEntityPositionRotationMessage message) throws IOException {
-        buf.writeInt(message.getId());
+        ByteBufUtils.writeVarInt(buf, message.getId());
         buf.writeByte(message.getDeltaX());
         buf.writeByte(message.getDeltaY());
         buf.writeByte(message.getDeltaZ());
         buf.writeByte(message.getRotation());
         buf.writeByte(message.getPitch());
+        buf.writeBoolean(true); // todo: on ground flag
         return buf;
     }
 }

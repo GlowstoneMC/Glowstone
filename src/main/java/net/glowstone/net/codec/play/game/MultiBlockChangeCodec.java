@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.game;
 
 import com.flowpowered.networking.Codec;
+import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
@@ -19,11 +20,12 @@ public final class MultiBlockChangeCodec implements Codec<MultiBlockChangeMessag
 
         buf.writeInt(message.getChunkX());
         buf.writeInt(message.getChunkZ());
-        buf.writeShort(records.size());
+        ByteBufUtils.writeVarInt(buf, records.size());
         buf.writeInt(records.size() * 4);
 
         for (BlockChangeMessage record : records) {
             // XZYYTTTM
+            // todo: this needs to be updated but the documentation is not clear
             int value = (record.getMetadata() & 0xF) |
                     ((record.getType() & 0xFFF) << 4) |
                     ((record.getY() & 0xFF) << 16) |

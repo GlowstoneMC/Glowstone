@@ -15,7 +15,8 @@ public final class JoinGameCodec implements Codec<JoinGameMessage> {
         byte difficulty = buffer.readByte();
         byte maxPlayers = buffer.readByte();
         String levelType = ByteBufUtils.readUTF8(buffer);
-        return new JoinGameMessage(id, gameMode, dimension, difficulty, maxPlayers, levelType);
+        boolean reducedDebug = buffer.readBoolean();
+        return new JoinGameMessage(id, gameMode, dimension, difficulty, maxPlayers, levelType, reducedDebug);
     }
 
     public ByteBuf encode(ByteBuf buf, JoinGameMessage message) throws IOException {
@@ -25,6 +26,7 @@ public final class JoinGameCodec implements Codec<JoinGameMessage> {
         buf.writeByte(message.getDifficulty());
         buf.writeByte(message.getMaxPlayers());
         ByteBufUtils.writeUTF8(buf, message.getLevelType());
+        buf.writeBoolean(message.getReducedDebugInfo());
         return buf;
     }
 }

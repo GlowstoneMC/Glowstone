@@ -1,24 +1,25 @@
 package net.glowstone.net.message.play.inv;
 
 import com.flowpowered.networking.Message;
+import net.glowstone.net.message.JsonMessage;
+import org.json.simple.JSONObject;
 
 public final class OpenWindowMessage implements Message {
 
-    private final int id, type, slots;
-    private final String title;
-    private final boolean useTitle;
-    private final int entityId;
+    private final int id;
+    private final String type, title;
+    private final int slots, entityId;
 
-    public OpenWindowMessage(int id, int type, String title, int slots, boolean useTitle) {
-        this(id, type, title, slots, useTitle, 0);
+    public OpenWindowMessage(int id, int type, String title, int slots) {
+        // todo: int type -> String type change
+        this(id, "Container", JsonMessage.toTextJson(title), slots, 0);
     }
 
-    public OpenWindowMessage(int id, int type, String title, int slots, boolean useTitle, int entityId) {
+    public OpenWindowMessage(int id, String type, JSONObject titleJson, int slots, int entityId) {
         this.id = id;
         this.type = type;
-        this.title = title;
+        this.title = titleJson.toJSONString();
         this.slots = slots;
-        this.useTitle = useTitle;
         this.entityId = entityId;
     }
 
@@ -26,20 +27,16 @@ public final class OpenWindowMessage implements Message {
         return id;
     }
 
-    public int getType() {
+    public String getType() {
         return type;
     }
 
-    public String getTitle() {
+    public String getTitleJson() {
         return title;
     }
 
     public int getSlots() {
         return slots;
-    }
-
-    public boolean getUseTitle() {
-        return useTitle;
     }
 
     public int getEntityId() {
@@ -50,10 +47,9 @@ public final class OpenWindowMessage implements Message {
     public String toString() {
         return "OpenWindowMessage{" +
                 "id=" + id +
-                ", type=" + type +
-                ", title='" + title + '\'' +
+                ", type='" + type + '\'' +
+                ", title=" + title +
                 ", slots=" + slots +
-                ", useTitle=" + useTitle +
                 ", entityId=" + entityId +
                 '}';
     }

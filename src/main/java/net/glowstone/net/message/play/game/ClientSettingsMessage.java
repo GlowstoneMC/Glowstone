@@ -7,16 +7,14 @@ public final class ClientSettingsMessage implements Message {
     private final String locale;
     private final int viewDistance, chatFlags;
     private final boolean chatColors;
-    private final int difficulty;
-    private final boolean showCape;
+    private final int skinFlags;
 
-    public ClientSettingsMessage(String locale, int viewDistance, int chatFlags, boolean chatColors, int difficulty, boolean showCape) {
+    public ClientSettingsMessage(String locale, int viewDistance, int chatFlags, boolean chatColors, int skinFlags) {
         this.locale = locale;
         this.viewDistance = viewDistance;
         this.chatFlags = chatFlags;
         this.chatColors = chatColors;
-        this.difficulty = difficulty;
-        this.showCape = showCape;
+        this.skinFlags = skinFlags;
     }
 
     @Override
@@ -26,8 +24,7 @@ public final class ClientSettingsMessage implements Message {
                 ", viewDistance=" + viewDistance +
                 ", chatFlags=" + chatFlags +
                 ", chatColors=" + chatColors +
-                ", difficulty=" + difficulty +
-                ", showCape=" + showCape +
+                ", skinFlags=" + skinFlags +
                 '}';
     }
 
@@ -47,12 +44,8 @@ public final class ClientSettingsMessage implements Message {
         return chatColors;
     }
 
-    public int getDifficulty() {
-        return difficulty;
-    }
-
-    public boolean getShowCape() {
-        return showCape;
+    public int getSkinFlags() {
+        return skinFlags;
     }
 
 }

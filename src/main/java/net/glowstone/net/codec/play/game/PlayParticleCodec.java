@@ -15,6 +15,7 @@ public final class PlayParticleCodec implements Codec<PlayParticleMessage> {
 
     public ByteBuf encode(ByteBuf buf, PlayParticleMessage message) throws IOException {
         ByteBufUtils.writeUTF8(buf, message.getParticle());
+        buf.writeBoolean(message.getLongDistance());
         buf.writeFloat(message.getX());
         buf.writeFloat(message.getY());
         buf.writeFloat(message.getZ());
@@ -23,6 +24,7 @@ public final class PlayParticleCodec implements Codec<PlayParticleMessage> {
         buf.writeFloat(message.getOfsZ());
         buf.writeFloat(message.getData());
         buf.writeInt(message.getCount());
+        // todo: send varint array of particle data (for ICON_CRACK, BLOCK_CRACK, and BLOCK_DUST)
         return buf;
     }
 }

@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.entity;
 
 import com.flowpowered.networking.Codec;
+import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import net.glowstone.net.message.play.entity.CollectItemMessage;
@@ -13,8 +14,8 @@ public final class CollectItemCodec implements Codec<CollectItemMessage> {
     }
 
     public ByteBuf encode(ByteBuf buf, CollectItemMessage message) throws IOException {
-        buf.writeInt(message.getId());
-        buf.writeInt(message.getCollector());
+        ByteBufUtils.writeVarInt(buf, message.getId());
+        ByteBufUtils.writeVarInt(buf, message.getCollector());
         return buf;
     }
 }

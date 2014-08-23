@@ -253,7 +253,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         if (server.isHardcore()) {
             gameMode |= 0x8;
         }
-        session.send(new JoinGameMessage(SELF_ID, gameMode, world.getEnvironment().getId(), world.getDifficulty().getValue(), session.getServer().getMaxPlayers(), type));
+        session.send(new JoinGameMessage(SELF_ID, gameMode, world.getEnvironment().getId(), world.getDifficulty().getValue(), session.getServer().getMaxPlayers(), type, false));
         setAllowFlight(getGameMode() == GameMode.CREATIVE);
 
         // send server brand and supported plugin channels
@@ -287,7 +287,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         updateInventory(); // send inventory contents
 
         // send initial location
-        session.send(new PositionRotationMessage(location, getEyeHeight() + 0.05, true));
+        session.send(new PositionRotationMessage(location, getEyeHeight() + 0.05));
     }
 
     /**
@@ -554,7 +554,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         setRawLocation(location); // take us to spawn position
         streamBlocks(); // stream blocks
         setCompassTarget(world.getSpawnLocation()); // set our compass target
-        session.send(new PositionRotationMessage(location, getEyeHeight() + 0.05, true));
+        session.send(new PositionRotationMessage(location, getEyeHeight() + 0.05));
         sendWeather();
 
         // fire world change if needed
@@ -1024,7 +1024,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             spawnAt(location);
         } else {
             // y offset accounts for floating point shenanigans in client physics
-            session.send(new PositionRotationMessage(location, getEyeHeight() + 0.05, true));
+            session.send(new PositionRotationMessage(location, getEyeHeight() + 0.05));
             setRawLocation(location);
         }
 
@@ -1320,12 +1320,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         int viewId = invMonitor.getId();
         if (viewId != 0) {
             String title = view.getTitle();
-            boolean useTitle = !view.getType().getDefaultTitle().equals(title);
-            if (view.getTopInventory() instanceof PlayerInventory && !useTitle) {
+            boolean defaultTitle = view.getType().getDefaultTitle().equals(title);
+            if (view.getTopInventory() instanceof PlayerInventory && defaultTitle) {
                 title = ((PlayerInventory) view.getTopInventory()).getHolder().getName();
-                useTitle = true;
             }
-            Message open = new OpenWindowMessage(viewId, invMonitor.getType(), title, view.getTopInventory().getSize(), useTitle);
+            Message open = new OpenWindowMessage(viewId, invMonitor.getType(), title, view.getTopInventory().getSize());
             session.send(open);
         }
 

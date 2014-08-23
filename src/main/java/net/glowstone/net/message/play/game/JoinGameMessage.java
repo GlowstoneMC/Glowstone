@@ -6,15 +6,17 @@ public final class JoinGameMessage implements Message {
 
     private final int id, dimension, mode, difficulty, maxPlayers;
     private final String levelType;
+    private final boolean reducedDebugInfo;
 
-    public JoinGameMessage(int id, int mode, int dimension, int difficulty, int maxPlayers, String levelType) {
+    public JoinGameMessage(int id, int mode, int dimension, int difficulty, int maxPlayers, String levelType, boolean reducedDebug) {
         this.id = id;
         this.mode = mode;
         this.dimension = dimension;
         this.difficulty = difficulty;
         this.maxPlayers = maxPlayers;
-        this.levelType = levelType;
         // default, flat, largeBiomes, amplified, default_1_1
+        this.levelType = levelType;
+        this.reducedDebugInfo = reducedDebug;
     }
 
     public int getId() {
@@ -39,6 +41,10 @@ public final class JoinGameMessage implements Message {
 
     public String getLevelType() {
         return levelType;
+    }
+
+    public boolean getReducedDebugInfo() {
+        return reducedDebugInfo;
     }
 
     @Override
