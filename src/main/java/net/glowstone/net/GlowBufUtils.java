@@ -11,6 +11,8 @@ import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.BlockVector;
+import org.bukkit.util.Vector;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -22,6 +24,8 @@ import java.util.logging.Level;
  * Contains several utility methods for writing special data types to @{link ByteBuf}s.
  */
 public final class GlowBufUtils {
+
+    private GlowBufUtils() {}
 
     /**
      * Writes a list of mob metadata entries to the buffer.
@@ -64,6 +68,11 @@ public final class GlowBufUtils {
         buf.writeByte(127);
     }
 
+    /**
+     * Read a length-prefixed, compressed compound NBT tag from the buffer.
+     * @param buf The buffer.
+     * @return The tag read, or null.
+     */
     public static CompoundTag readCompound(ByteBuf buf) {
         int len = buf.readShort();
         if (len < 0) {
@@ -80,6 +89,11 @@ public final class GlowBufUtils {
         }
     }
 
+    /**
+     * Write a length-prefixed, compressed compound NBT tag to the buffer.
+     * @param buf The buffer.
+     * @param data The tag to write, or null.
+     */
     public static void writeCompound(ByteBuf buf, CompoundTag data) {
         if (data == null) {
             buf.writeShort(-1);
@@ -98,6 +112,11 @@ public final class GlowBufUtils {
         buf.writeBytes(out.toByteArray());
     }
 
+    /**
+     * Write an item stack to the buffer.
+     * @param buf The buffer.
+     * @param stack The stack to write, or null.
+     */
     public static void writeSlot(ByteBuf buf, ItemStack stack) {
         if (stack == null || stack.getTypeId() == 0) {
             buf.writeShort(-1);
@@ -117,6 +136,11 @@ public final class GlowBufUtils {
         }
     }
 
+    /**
+     * Read an item stack from the buffer.
+     * @param buf The buffer.
+     * @return The stack read, or null.
+     */
     public static ItemStack readSlot(ByteBuf buf) {
         short type = buf.readShort();
         if (type == -1) {
@@ -139,5 +163,27 @@ public final class GlowBufUtils {
         return stack;
     }
 
-    private GlowBufUtils() {}
+    /**
+     * Read an encoded block vector (position) from the buffer.
+     * @param buf The buffer.
+     * @return The vector read.
+     */
+    public static BlockVector readBlockPosition(ByteBuf buf) {
+        long val = buf.readLong();
+        long x = (val >> 38) & 0x3ffffff;
+        long y = (val >> 26) & 0xfff;
+        long z = val & 0x3ffffff;
+        return new BlockVector((double) x, y, z);
+    }
+
+    /**
+     * Write an encoded block vector (position) to the buffer.
+     * @param buf The buffer.
+     * @param vector The vector to write.
+     */
+    public static void writeBlockPosition(ByteBuf buf, Vector vector) {
+        long x = vector.getBlockX(), y = vector.getBlockY(), z = vector.getBlockZ();
+        buf.writeLong(((x & 0x3ffffff) << 38) | ((y & 0xfff) << 26) | (z & 0x3ffffff));
+    }
+
 }
