@@ -6,20 +6,19 @@ public final class ChunkDataMessage implements Message {
 
     final int x, z;
     final boolean continuous;
-    final int primaryMask, addMask;
+    final int primaryMask;
     final byte[] data;
 
-    public ChunkDataMessage(int x, int z, boolean continuous, int primaryMask, int addMask, byte[] data) {
+    public ChunkDataMessage(int x, int z, boolean continuous, int primaryMask, byte[] data) {
         this.x = x;
         this.z = z;
         this.continuous = continuous;
         this.primaryMask = primaryMask;
-        this.addMask = addMask;
         this.data = data;
     }
 
     public static ChunkDataMessage empty(int x, int z) {
-        return new ChunkDataMessage(x, z, true, 0, 0, new byte[0]);
+        return new ChunkDataMessage(x, z, true, 0, new byte[0]);
     }
 
     public int getX() {
@@ -38,10 +37,6 @@ public final class ChunkDataMessage implements Message {
         return primaryMask;
     }
 
-    public int getAddMask() {
-        return addMask;
-    }
-
     public byte[] getData() {
         return data;
     }
@@ -53,7 +48,6 @@ public final class ChunkDataMessage implements Message {
                 ", z=" + z +
                 ", continuous=" + continuous +
                 ", primaryMask=" + primaryMask +
-                ", addMask=" + addMask +
                 ", data[" + data.length + ']' +
                 '}';
     }

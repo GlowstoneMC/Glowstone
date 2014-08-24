@@ -738,13 +738,14 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             }
         }
 
-        Message removeMessage = new UserListItemMessage(getPlayerListName(), false, 0);
+        // todo: reimplement display name changing
+        /*
+        Message updateMessage = UserListItemMessage.displayName( args );
         playerListName = name;
-        Message reAddMessage = new UserListItemMessage(getPlayerListName(), true, 0);
         for (Player player : server.getOnlinePlayers()) {
-            ((GlowPlayer) player).getSession().send(removeMessage);
-            ((GlowPlayer) player).getSession().send(reAddMessage);
+            ((GlowPlayer) player).getSession().send(updateMessage);
         }
+        */
     }
 
     public Location getCompassTarget() {

@@ -142,6 +142,14 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         }
     }
 
+    /**
+     * Get this human entity's PlayerProfile with associated data.
+     * @return The PlayerProfile.
+     */
+    public final PlayerProfile getProfile() {
+        return profile;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Properties
 

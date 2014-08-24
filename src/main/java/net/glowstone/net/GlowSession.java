@@ -29,9 +29,7 @@ import org.bukkit.event.player.PlayerLoginEvent;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.ArrayDeque;
-import java.util.Queue;
-import java.util.Random;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
@@ -251,13 +249,16 @@ public final class GlowSession extends BasicSession {
         }
 
         // todo: make actual ping measurements?
-        Message userListMessage = new UserListItemMessage(player.getPlayerListName(), true, 0);
+        List<PlayerProfile> profiles = new ArrayList<>();
+        Message addMessage = UserListItemMessage.add(profile);
         for (Player sendPlayer : server.getOnlinePlayers()) {
-            ((GlowPlayer) sendPlayer).getSession().send(userListMessage);
+            ((GlowPlayer) sendPlayer).getSession().send(addMessage);
             if (sendPlayer != player) {
-                send(new UserListItemMessage(sendPlayer.getPlayerListName(), true, 0));
+                profiles.add(((GlowPlayer) sendPlayer).getProfile());
             }
         }
+        profiles.add(profile);
+        send(UserListItemMessage.add(profiles));
     }
 
     /**
@@ -330,7 +331,7 @@ public final class GlowSession extends BasicSession {
     public void onDisconnect() {
         if (player != null) {
             player.remove();
-            Message userListMessage = new UserListItemMessage(player.getPlayerListName(), false, 0);
+            Message userListMessage = UserListItemMessage.remove(player.getUniqueId());
             for (Player player : server.getOnlinePlayers()) {
                 ((GlowPlayer) player).getSession().send(userListMessage);
             }

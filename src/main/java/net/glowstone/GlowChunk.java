@@ -154,7 +154,7 @@ public final class GlowChunk implements Chunk {
             return new ChunkSection(types.clone(), metaData.snapshot(), skyLight.snapshot(), blockLight.snapshot());
         }
     }
-    
+
     /**
      * The world of this chunk.
      */
@@ -174,7 +174,7 @@ public final class GlowChunk implements Chunk {
      * The array of biomes this chunk contains, or null if it is unloaded.
      */
     private byte[] biomes;
-    
+
     /**
      * The tile entities that reside in this chunk.
      */
@@ -256,7 +256,7 @@ public final class GlowChunk implements Chunk {
     public GlowChunkSnapshot getChunkSnapshot(boolean includeMaxblocky, boolean includeBiome, boolean includeBiomeTempRain) {
         return new GlowChunkSnapshot(x, z, world, sections, includeMaxblocky, includeBiome ? biomes.clone() : null, includeBiomeTempRain);
     }
-    
+
     /**
      * Gets whether this chunk has been populated by special features.
      * @return Population status.
@@ -264,7 +264,7 @@ public final class GlowChunk implements Chunk {
     public boolean isPopulated() {
         return populated;
     }
-    
+
     /**
      * Sets the population status of this chunk.
      * @param populated Population status.
@@ -272,7 +272,7 @@ public final class GlowChunk implements Chunk {
     public void setPopulated(boolean populated) {
         this.populated = populated;
     }
-    
+
     // ======== Helper Functions ========
 
     public boolean isLoaded() {
@@ -303,7 +303,7 @@ public final class GlowChunk implements Chunk {
         if (safe && world.isChunkInUse(x, z)) {
             return false;
         }
-        
+
         if (save && !world.getChunkManager().performSave(this)) {
             return false;
         }
@@ -375,7 +375,7 @@ public final class GlowChunk implements Chunk {
         }
         return sections[idx];
     }
-    
+
     /**
      * Attempt to get the tile entity located at the given coordinates.
      * @param x The X coordinate.
@@ -635,16 +635,13 @@ public final class GlowChunk implements Chunk {
             return ChunkDataMessage.empty(x, z);
         }
 
-        // in future, take care of additional data
-        int additionalBitmask = 0, additionalCount = 0;
-
         // calculate how big the data will need to be
-        int numBlocks = WIDTH * HEIGHT * SEC_DEPTH;
-        int sectionSize = numBlocks * 2;  // data + metaData/2 + blockLight/2
+        final int numBlocks = WIDTH * HEIGHT * SEC_DEPTH;
+        int sectionSize = numBlocks * 5 / 2;  // (data and metadata combo) * 2 + blockLight/2
         if (skylight) {
             sectionSize += numBlocks / 2;  // + skyLight/2
         }
-        int byteSize = sectionCount * sectionSize + additionalCount * (numBlocks / 2);  // + additional/2
+        int byteSize = sectionCount * sectionSize;
         if (entireChunk) {
             byteSize += 256;  // + biomes
         }
@@ -662,15 +659,14 @@ public final class GlowChunk implements Chunk {
         byte[] tileData = new byte[byteSize];
         pos = 0;
 
+        // todo: this probably isn't very efficient
         for (ChunkSection sec : sendSections) {
-            System.arraycopy(sec.types, 0, tileData, pos, sec.types.length);
-            pos += sec.types.length;
-        }
-
-        for (ChunkSection sec : sendSections) {
-            byte[] metaData = sec.metaData.getRawData();
-            System.arraycopy(metaData, 0, tileData, pos, metaData.length);
-            pos += metaData.length;
+            byte[] types = sec.types;
+            for (int i = 0; i < types.length; ++i) {
+                int blockId = (types[i] << 4) | sec.metaData.get(i);
+                tileData[pos++] = (byte) (types[i] >> 4);
+                tileData[pos++] = (byte) (blockId);
+            }
         }
 
         for (ChunkSection sec : sendSections) {
@@ -686,8 +682,6 @@ public final class GlowChunk implements Chunk {
             pos += skyLight.length;
         }
 
-        // additional data goes here using additionalBitmask
-
         // biomes
         if (entireChunk) {
             for (int i = 0; i < 256; ++i) {
@@ -699,7 +693,7 @@ public final class GlowChunk implements Chunk {
             throw new IllegalStateException("only wrote " + pos + " out of expected " + byteSize + " bytes");
         }
 
-        return new ChunkDataMessage(x, z, entireChunk, sectionBitmask, additionalBitmask, tileData);
+        return new ChunkDataMessage(x, z, entireChunk, sectionBitmask, tileData);
     }
 
     private int countBits(int v) {

@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.game;
 
 import com.flowpowered.networking.Codec;
+import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import net.glowstone.net.message.play.game.ChunkDataMessage;
 
@@ -20,13 +21,12 @@ public final class ChunkDataCodec implements Codec<ChunkDataMessage> {
         buf.writeInt(message.getZ());
         buf.writeBoolean(message.isContinuous());
         buf.writeShort(message.getPrimaryMask());
-        buf.writeShort(message.getAddMask());
 
-        if (message.getData().length == 0) {
-            buf.writeInt(0);
-            return buf;
-        }
+        ByteBufUtils.writeVarInt(buf, message.getData().length);
+        buf.writeBytes(message.getData());
+        return buf;
 
+        /*
         byte[] compressedData = new byte[message.getData().length];
 
         Deflater deflater = new Deflater(COMPRESSION_LEVEL);
@@ -41,7 +41,6 @@ public final class ChunkDataCodec implements Codec<ChunkDataMessage> {
 
         buf.writeInt(compressed);
         buf.writeBytes(compressedData, 0, compressed);
-
-        return buf;
+        */
     }
 }
