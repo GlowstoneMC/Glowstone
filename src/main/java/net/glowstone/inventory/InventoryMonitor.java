@@ -15,7 +15,8 @@ public final class InventoryMonitor {
 
     private final InventoryView view;
     private final ItemStack[] slots;
-    private final int size, id, type;
+    private final int size, id;
+    private final String type;
 
     /**
      * Create a new monitor for the given inventory view.
@@ -94,7 +95,7 @@ public final class InventoryMonitor {
      * Get the network type ID of this inventory view.
      * @return The type id.
      */
-    public int getType() {
+    public String getType() {
         return type;
     }
 
@@ -116,27 +117,28 @@ public final class InventoryMonitor {
      * @param type The type.
      * @return The id.
      */
-    private static int getTypeId(InventoryType type) {
+    private static String getTypeId(InventoryType type) {
         switch (type) {
             case WORKBENCH:
-                return 1;
+                return "minecraft:crafting_table";
             case FURNACE:
-                return 2;
+                return "minecraft:furnace";
             case DROPPER:
+                return "minecraft:dropper";
             case DISPENSER:
-                return 3;
+                return "minecraft:dispenser";
             case ENCHANTING:
-                return 4;
+                return "minecraft:enchanting_table";
             case BREWING:
-                return 5;
+                return "minecraft:brewing_stand";
             case MERCHANT:
-                return 6;
+                return "minecraft:villager";
             case BEACON:
-                return 7;
+                return "minecraft:beacon";
             case ANVIL:
-                return 8;
+                return "minecraft:anvil";
             case HOPPER:
-                return 9;
+                return "minecraft:hopper";
             case CRAFTING:
             case CREATIVE:
                 // todo: check whether CRAFTING or CREATIVE are even legal
@@ -144,7 +146,7 @@ public final class InventoryMonitor {
             case CHEST:
             case ENDER_CHEST:
             default:
-                return 0;
+                return "minecraft:chest";
         }
     }
 }

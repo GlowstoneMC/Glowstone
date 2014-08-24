@@ -10,9 +10,8 @@ public final class OpenWindowMessage implements Message {
     private final String type, title;
     private final int slots, entityId;
 
-    public OpenWindowMessage(int id, int type, String title, int slots) {
-        // todo: int type -> String type change
-        this(id, "Container", JsonMessage.toTextJson(title), slots, 0);
+    public OpenWindowMessage(int id, String type, String title, int slots) {
+        this(id, type, JsonMessage.toTextJson(title), slots, 0);
     }
 
     public OpenWindowMessage(int id, String type, JSONObject titleJson, int slots, int entityId) {

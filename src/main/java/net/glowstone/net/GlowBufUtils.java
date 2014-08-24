@@ -2,6 +2,7 @@ package net.glowstone.net;
 
 import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
@@ -14,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -69,20 +69,18 @@ public final class GlowBufUtils {
     }
 
     /**
-     * Read a length-prefixed, compressed compound NBT tag from the buffer.
+     * Read an uncompressed compound NBT tag from the buffer.
      * @param buf The buffer.
      * @return The tag read, or null.
      */
     public static CompoundTag readCompound(ByteBuf buf) {
-        int len = buf.readShort();
-        if (len < 0) {
+        int idx = buf.readerIndex();
+        if (buf.readByte() == 0) {
             return null;
         }
 
-        byte[] bytes = new byte[len];
-        buf.readBytes(bytes);
-
-        try (NBTInputStream str = new NBTInputStream(new ByteArrayInputStream(bytes))) {
+        buf.readerIndex(idx);
+        try (NBTInputStream str = new NBTInputStream(new ByteBufInputStream(buf), false)) {
             return str.readCompound();
         } catch (IOException e) {
             return null;
@@ -90,25 +88,24 @@ public final class GlowBufUtils {
     }
 
     /**
-     * Write a length-prefixed, compressed compound NBT tag to the buffer.
+     * Write an uncompressed compound NBT tag to the buffer.
      * @param buf The buffer.
      * @param data The tag to write, or null.
      */
     public static void writeCompound(ByteBuf buf, CompoundTag data) {
         if (data == null) {
-            buf.writeShort(-1);
+            buf.writeByte(0);
             return;
         }
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        try (NBTOutputStream str = new NBTOutputStream(out)) {
+        try (NBTOutputStream str = new NBTOutputStream(out, false)) {
             str.writeTag(data);
         } catch (IOException e) {
             GlowServer.logger.log(Level.WARNING, "Error serializing NBT: " + data, e);
             return;
         }
 
-        buf.writeShort(out.size());
         buf.writeBytes(out.toByteArray());
     }
 
@@ -126,10 +123,8 @@ public final class GlowBufUtils {
             buf.writeShort(stack.getDurability());
 
             if (stack.hasItemMeta()) {
-                //GlowServer.logger.info("Writing item meta: " + stack.getItemMeta());
                 CompoundTag tag = GlowItemFactory.instance().writeNbt(stack.getItemMeta());
                 writeCompound(buf, tag);
-                //GlowServer.logger.info("Wrote item tag: " + tag);
             } else {
                 writeCompound(buf, null);
             }
@@ -156,10 +151,8 @@ public final class GlowBufUtils {
         }
 
         CompoundTag tag = readCompound(buf);
-        //GlowServer.logger.info("Reading item tag: " + tag);
         ItemStack stack = new ItemStack(material, amount, durability);
         stack.setItemMeta(GlowItemFactory.instance().readNbt(material, tag));
-        //GlowServer.logger.info("Read item meta: " + stack.getItemMeta());
         return stack;
     }
 
