@@ -22,7 +22,9 @@ public final class UserListItemCodec implements Codec<UserListItemMessage> {
         ByteBufUtils.writeVarInt(buf, entries.size());
 
         for (UserListItemMessage.Entry entry : entries) {
-            ByteBufUtils.writeUTF8(buf, entry.uuid.toString());
+            // todo: add writeUUID utility method
+            buf.writeLong(entry.uuid.getMostSignificantBits());
+            buf.writeLong(entry.uuid.getLeastSignificantBits());
 
             // todo: implement the rest of the actions
             switch (action) {

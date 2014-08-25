@@ -251,8 +251,8 @@ public final class GlowSession extends BasicSession {
         List<PlayerProfile> profiles = new ArrayList<>();
         Message addMessage = UserListItemMessage.add(profile);
         for (Player sendPlayer : server.getOnlinePlayers()) {
-            ((GlowPlayer) sendPlayer).getSession().send(addMessage);
             if (sendPlayer != player) {
+                ((GlowPlayer) sendPlayer).getSession().send(addMessage);
                 profiles.add(((GlowPlayer) sendPlayer).getProfile());
             }
         }

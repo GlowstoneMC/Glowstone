@@ -84,5 +84,15 @@ public final class UserListItemMessage implements Message {
             this.ping = 0;
             this.displayName = null;
         }
+
+        @Override
+        public String toString() {
+            return "AddEntry{" +
+                    "profile=" + profile +
+                    ", gameMode=" + gameMode +
+                    ", ping=" + ping +
+                    ", displayName=" + displayName +
+                    '}';
+        }
     }
 }

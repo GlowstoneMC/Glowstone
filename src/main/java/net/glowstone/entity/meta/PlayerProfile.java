@@ -68,6 +68,7 @@ public final class PlayerProfile {
         return "PlayerProfile{" +
                 "name='" + name + '\'' +
                 ", uuid=" + uuid +
+                ", " + properties.size() + " properties" +
                 '}';
     }
 
