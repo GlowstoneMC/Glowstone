@@ -94,4 +94,8 @@ public abstract class GlowProtocol extends AbstractProtocol {
         return out;
     }
 
+    public Codec<?> newReadHeader(ByteBuf in) throws Exception {
+        int opcode = ByteBufUtils.readVarInt(in);
+        return inboundCodecs.find(opcode);
+    }
 }
