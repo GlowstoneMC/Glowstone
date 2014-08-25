@@ -1,6 +1,7 @@
 package net.glowstone.net.protocol;
 
 import net.glowstone.net.codec.JsonCodec;
+import net.glowstone.net.codec.SetCompressionCodec;
 import net.glowstone.net.codec.play.entity.*;
 import net.glowstone.net.codec.play.game.*;
 import net.glowstone.net.codec.play.inv.*;
@@ -10,6 +11,7 @@ import net.glowstone.net.handler.play.game.*;
 import net.glowstone.net.handler.play.inv.*;
 import net.glowstone.net.handler.play.player.*;
 import net.glowstone.net.message.KickMessage;
+import net.glowstone.net.message.SetCompressionMessage;
 import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.game.*;
 import net.glowstone.net.message.play.inv.*;
@@ -17,7 +19,7 @@ import net.glowstone.net.message.play.player.*;
 
 public final class PlayProtocol extends GlowProtocol {
     public PlayProtocol() {
-        super("PLAY", 0x43);
+        super("PLAY", 0x49);
 
         inbound(0x00, PingMessage.class, PingCodec.class, PingHandler.class);
         inbound(0x01, IncomingChatMessage.class, IncomingChatCodec.class, ChatHandler.class);
@@ -99,5 +101,6 @@ public final class PlayProtocol extends GlowProtocol {
         outbound(0x3A, TabCompleteResponseMessage.class, TabCompleteResponseCodec.class);
         outbound(0x3F, PluginMessage.class, PluginMessageCodec.class);
         outbound(0x40, KickMessage.class, JsonCodec.class);
+        outbound(0x46, SetCompressionMessage.class, SetCompressionCodec.class);
     }
 }

@@ -17,12 +17,15 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.PlayerProfile;
 import net.glowstone.io.PlayerDataService;
 import net.glowstone.net.message.KickMessage;
+import net.glowstone.net.message.SetCompressionMessage;
 import net.glowstone.net.message.play.game.PingMessage;
 import net.glowstone.net.message.play.game.UserListItemMessage;
 import net.glowstone.net.message.play.player.BlockPlacementMessage;
+import net.glowstone.net.pipeline.CodecsHandler;
 import net.glowstone.net.pipeline.CompressionHandler;
 import net.glowstone.net.pipeline.EncryptionHandler;
 import net.glowstone.net.pipeline.NoopHandler;
+import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.LoginProtocol;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.ProtocolType;
@@ -405,11 +408,6 @@ public final class GlowSession extends BasicSession {
         }
     }
 
-    public void setProtocol(ProtocolType protocol) {
-        getChannel().flush();
-        super.setProtocol(protocol.getProtocol());
-    }
-
     @Override
     public void onInboundThrowable(Throwable t) {
         if (t instanceof DecoderException) {
@@ -437,8 +435,26 @@ public final class GlowSession extends BasicSession {
         GlowServer.logger.log(Level.SEVERE, "Error while handling " + message + " (handler: " + handle.getClass().getSimpleName() + ")", t);
     }
 
+    public void setProtocol(ProtocolType protocol) {
+        getChannel().flush();
+
+        GlowProtocol proto = protocol.getProtocol();
+        updatePipeline("codecs", new CodecsHandler(protocol.getProtocol()));
+        super.setProtocol(proto);
+    }
+
     public void enableEncryption(SecretKey sharedSecret) {
         updatePipeline("encryption", new EncryptionHandler(sharedSecret));
+    }
+
+    public void setCompression(int threshold) {
+        send(new SetCompressionMessage(threshold));
+        updatePipeline("compression", new CompressionHandler(threshold));
+    }
+
+    public void unsetCompression() {
+        send(new SetCompressionMessage(-1));
+        updatePipeline("compression", NoopHandler.instance);
     }
 
     private void updatePipeline(String key, ChannelHandler handler) {

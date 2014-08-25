@@ -3,6 +3,7 @@ package net.glowstone.net.pipeline;
 import com.flowpowered.networking.ConnectionManager;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
+import net.glowstone.net.protocol.ProtocolType;
 
 /**
  * Used to initialize the channels.
@@ -17,10 +18,8 @@ public class GlowChannelInitializer extends ChannelInitializer<SocketChannel> {
     @Override
     protected final void initChannel(SocketChannel c) {
         MessageHandler handler = new MessageHandler(connectionManager);
-        CodecsHandler codecs = new CodecsHandler(handler);
-        //CompressionHandler compression = new CompressionHandler(handler);
-        FramingHandler framing = new FramingHandler(handler);
-        //EncryptionHandler encryption = new EncryptionHandler(handler);
+        CodecsHandler codecs = new CodecsHandler(ProtocolType.HANDSHAKE.getProtocol());
+        FramingHandler framing = new FramingHandler();
 
         c.pipeline()
                 .addLast("encryption", NoopHandler.instance)

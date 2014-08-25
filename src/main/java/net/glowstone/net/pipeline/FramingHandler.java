@@ -13,12 +13,6 @@ import java.util.List;
  */
 public class FramingHandler extends ByteToMessageCodec<ByteBuf> {
 
-    private final MessageHandler handler;
-
-    public FramingHandler(MessageHandler handler) {
-        this.handler = handler;
-    }
-
     @Override
     protected void encode(ChannelHandlerContext ctx, ByteBuf msg, ByteBuf out) throws Exception {
         ByteBufUtils.writeVarInt(out, msg.readableBytes());

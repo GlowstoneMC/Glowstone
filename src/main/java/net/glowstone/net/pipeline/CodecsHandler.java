@@ -2,7 +2,6 @@ package net.glowstone.net.pipeline;
 
 import com.flowpowered.networking.Codec;
 import com.flowpowered.networking.Message;
-import com.flowpowered.networking.protocol.Protocol;
 import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -19,16 +18,15 @@ import java.util.List;
  */
 public class CodecsHandler extends MessageToMessageCodec<ByteBuf, Message> {
 
-    private final MessageHandler handler;
+    private final GlowProtocol protocol;
 
-    public CodecsHandler(MessageHandler handler) {
-        this.handler = handler;
+    public CodecsHandler(GlowProtocol protocol) {
+        this.protocol = protocol;
     }
 
     @Override
     protected void encode(ChannelHandlerContext ctx, Message msg, List<Object> out) throws Exception {
         // find codec
-        final Protocol protocol = handler.getSession().getProtocol();
         final Class<? extends Message> clazz = msg.getClass();
         Codec.CodecRegistration reg = protocol.getCodecRegistration(clazz);
         if (reg == null) {
@@ -49,8 +47,7 @@ public class CodecsHandler extends MessageToMessageCodec<ByteBuf, Message> {
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
         // find codec and read header
-        final Protocol protocol = handler.getSession().getProtocol();
-        final Codec<?> codec = ((GlowProtocol) protocol).newReadHeader(msg);
+        final Codec<?> codec = protocol.newReadHeader(msg);
 
         // read body
         Message decoded = codec.decode(msg);

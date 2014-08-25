@@ -20,9 +20,13 @@ public class CompressionHandler extends MessageToMessageCodec<ByteBuf, ByteBuf> 
     private static final int COMPRESSION_LEVEL = Deflater.DEFAULT_COMPRESSION;
 
     private final int threshold;
+    private final Inflater inflater;
+    private final Deflater deflater;
 
     public CompressionHandler(int threshold) {
         this.threshold = threshold;
+        inflater = new Inflater();
+        deflater = new Deflater(COMPRESSION_LEVEL);
     }
 
     @Override
@@ -32,28 +36,37 @@ public class CompressionHandler extends MessageToMessageCodec<ByteBuf, ByteBuf> 
 
         if (msg.readableBytes() >= threshold) {
             // message should be compressed
+            int index = msg.readerIndex();
             int length = msg.readableBytes();
-            ByteBufUtils.writeVarInt(prefixBuf, length);
 
             byte[] sourceData = new byte[length];
             msg.readBytes(sourceData);
-
-            Deflater deflater = new Deflater(COMPRESSION_LEVEL);
             deflater.setInput(sourceData);
             deflater.finish();
 
             byte[] compressedData = new byte[length];
             int compressedLength = deflater.deflate(compressedData);
-            deflater.end();
+            deflater.reset();
 
             if (compressedLength == 0) {
+                // compression failed in some weird way
                 throw new EncoderException("Failed to compress message of size " + length);
+            } else if (compressedLength >= length) {
+                // compression increased the size. threshold is probably too low
+                // send as an uncompressed packet
+                ByteBufUtils.writeVarInt(prefixBuf, 0);
+                msg.readerIndex(index);
+                msg.retain();
+                contentsBuf = msg;
+            } else {
+                // all is well
+                ByteBufUtils.writeVarInt(prefixBuf, length);
+                contentsBuf = Unpooled.wrappedBuffer(compressedData, 0, compressedLength);
             }
-
-            contentsBuf = Unpooled.wrappedBuffer(compressedData, 0, compressedLength);
         } else {
             // message should be sent through
             ByteBufUtils.writeVarInt(prefixBuf, 0);
+            msg.retain();
             contentsBuf = msg;
         }
 
@@ -62,6 +75,7 @@ public class CompressionHandler extends MessageToMessageCodec<ByteBuf, ByteBuf> 
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
+        int index = msg.readerIndex();
         int uncompressedSize = ByteBufUtils.readVarInt(msg);
         if (uncompressedSize == 0) {
             // message is uncompressed
@@ -78,19 +92,23 @@ public class CompressionHandler extends MessageToMessageCodec<ByteBuf, ByteBuf> 
             // message is compressed
             byte[] sourceData = new byte[msg.readableBytes()];
             msg.readBytes(sourceData);
-
-            Inflater inflater = new Inflater();
             inflater.setInput(sourceData);
 
             byte[] destData = new byte[uncompressedSize];
             int resultLength = inflater.inflate(destData);
-            inflater.end();
+            inflater.reset();
 
-            if (resultLength != uncompressedSize) {
+            if (resultLength == 0) {
+                // might be a leftover from before compression was enabled (no compression header)
+                // uncompressedSize is likely to be < threshold
+                msg.readerIndex(index);
+                msg.retain();
+                out.add(msg);
+            } else if (resultLength != uncompressedSize) {
                 throw new DecoderException("Received compressed message claiming to be of size " + uncompressedSize + " but actually " + resultLength);
+            } else {
+                out.add(Unpooled.wrappedBuffer(destData));
             }
-
-            out.add(Unpooled.wrappedBuffer(destData));
         }
     }
 
