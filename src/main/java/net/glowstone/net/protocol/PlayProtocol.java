@@ -1,6 +1,5 @@
 package net.glowstone.net.protocol;
 
-import net.glowstone.GlowServer;
 import net.glowstone.net.codec.JsonCodec;
 import net.glowstone.net.codec.play.entity.*;
 import net.glowstone.net.codec.play.game.*;
@@ -17,8 +16,8 @@ import net.glowstone.net.message.play.inv.*;
 import net.glowstone.net.message.play.player.*;
 
 public final class PlayProtocol extends GlowProtocol {
-    public PlayProtocol(GlowServer server) {
-        super(server, "PLAY", 0x43);
+    public PlayProtocol() {
+        super("PLAY", 0x43);
 
         inbound(0x00, PingMessage.class, PingCodec.class, PingHandler.class);
         inbound(0x01, IncomingChatMessage.class, IncomingChatCodec.class, ChatHandler.class);

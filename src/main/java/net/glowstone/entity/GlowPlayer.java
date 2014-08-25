@@ -21,7 +21,7 @@ import net.glowstone.net.message.play.entity.EntityVelocityMessage;
 import net.glowstone.net.message.play.game.*;
 import net.glowstone.net.message.play.inv.*;
 import net.glowstone.net.message.play.player.PlayerAbilitiesMessage;
-import net.glowstone.net.protocol.PlayProtocol;
+import net.glowstone.net.protocol.ProtocolType;
 import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextWrapper;
 import org.apache.commons.lang.Validate;
@@ -244,7 +244,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         // send login response
         session.send(new LoginSuccessMessage(profile.getUniqueId().toString(), profile.getName()));
-        session.setProtocol(new PlayProtocol(session.getServer()));
+        session.setProtocol(ProtocolType.PLAY);
 
         // send join game
         // in future, handle hardcore, difficulty, and level type

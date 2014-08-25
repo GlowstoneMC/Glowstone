@@ -10,7 +10,10 @@ import java.io.IOException;
 public final class PluginMessageCodec implements Codec<PluginMessage> {
     public PluginMessage decode(ByteBuf buf) throws IOException {
         String channel = ByteBufUtils.readUTF8(buf);
-        int length = buf.readableBytes();
+
+        // todo: ReplayingDecoderBuffer basically makes this impossible to handle
+        // need to probably switch to proper frame-based decoding.
+        int length = buf.writerIndex() - buf.readerIndex();
         byte[] data = new byte[length];
         buf.readBytes(data);
         return new PluginMessage(channel, data);

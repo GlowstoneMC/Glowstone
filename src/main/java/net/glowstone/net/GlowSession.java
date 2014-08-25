@@ -19,10 +19,9 @@ import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.play.game.PingMessage;
 import net.glowstone.net.message.play.game.UserListItemMessage;
 import net.glowstone.net.message.play.player.BlockPlacementMessage;
-import net.glowstone.net.protocol.GlowProtocol;
-import net.glowstone.net.protocol.HandshakeProtocol;
 import net.glowstone.net.protocol.LoginProtocol;
 import net.glowstone.net.protocol.PlayProtocol;
+import net.glowstone.net.protocol.ProtocolType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -113,11 +112,11 @@ public final class GlowSession extends BasicSession {
 
     /**
      * Creates a new session.
-     * @param server  The server this session belongs to.
+     * @param server The server this session belongs to.
      * @param channel The channel associated with this session.
      */
     public GlowSession(GlowServer server, Channel channel) {
-        super(channel, new HandshakeProtocol(server));
+        super(channel, ProtocolType.HANDSHAKE.getProtocol());
         this.server = server;
         address = super.getAddress();
     }
@@ -207,7 +206,7 @@ public final class GlowSession extends BasicSession {
      * Sets the player associated with this session.
      * @param profile The player's profile with name and UUID information.
      * @throws IllegalStateException if there is already a player associated
-     *                               with this session.
+     * with this session.
      */
     public void setPlayer(PlayerProfile profile) {
         if (this.player != null)
@@ -401,9 +400,9 @@ public final class GlowSession extends BasicSession {
         }
     }
 
-    public void setProtocol(GlowProtocol protocol) {
+    public void setProtocol(ProtocolType protocol) {
         getChannel().flush();
-        super.setProtocol(protocol);
+        super.setProtocol(protocol.getProtocol());
     }
 
     @Override

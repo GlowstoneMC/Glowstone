@@ -5,38 +5,50 @@ import com.flowpowered.networking.Message;
 import com.flowpowered.networking.MessageHandler;
 import com.flowpowered.networking.exception.IllegalOpcodeException;
 import com.flowpowered.networking.exception.UnknownPacketException;
-import com.flowpowered.networking.protocol.keyed.KeyedProtocol;
+import com.flowpowered.networking.protocol.AbstractProtocol;
 import com.flowpowered.networking.service.CodecLookupService;
+import com.flowpowered.networking.service.HandlerLookupService;
 import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.glowstone.GlowServer;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
-public abstract class GlowProtocol extends KeyedProtocol {
+public abstract class GlowProtocol extends AbstractProtocol {
 
-    /**
-     * Keys for codec lookup.
-     */
-    private static final String INBOUND = "INBOUND";
-    private static final String OUTBOUND = "OUTBOUND";
+    private final CodecLookupService inboundCodecs;
+    private final CodecLookupService outboundCodecs;
+    private final HandlerLookupService handlers;
 
-    public GlowProtocol(GlowServer server, String name, int highestOpcode) {
-        super(name, highestOpcode + 1);
+    public GlowProtocol(String name, int highestOpcode) {
+        super(name);
+        inboundCodecs = new CodecLookupService(highestOpcode);
+        outboundCodecs = new CodecLookupService(highestOpcode);
+        handlers = new HandlerLookupService();
     }
 
-    protected <M extends Message, C extends Codec<? super M>, H extends MessageHandler<?, ? super M>> Codec.CodecRegistration inbound(int opcode, Class<M> message, Class<C> codec, Class<H> handler) {
-        return registerMessage(INBOUND, message, codec, handler, opcode);
+    protected <M extends Message, C extends Codec<? super M>, H extends MessageHandler<?, ? super M>> void inbound(int opcode, Class<M> message, Class<C> codec, Class<H> handler) {
+        try {
+            inboundCodecs.bind(message, codec, opcode);
+            handlers.bind(message, handler);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            getLogger().error("Error registering inbound " + opcode + " in " + getName(), e);
+        }
     }
 
-    protected <M extends Message, C extends Codec<? super M>> Codec.CodecRegistration outbound(int opcode, Class<M> message, Class<C> codec) {
-        return registerMessage(OUTBOUND, message, codec, null, opcode);
+    protected <M extends Message, C extends Codec<? super M>> void outbound(int opcode, Class<M> message, Class<C> codec) {
+        try {
+            outboundCodecs.bind(message, codec, opcode);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            getLogger().error("Error registering outbound " + opcode + " in " + getName(), e);
+        }
     }
 
     @Override
     public <M extends Message> MessageHandler<?, M> getMessageHandle(Class<M> clazz) {
-        MessageHandler<?, M> handler = getHandlerLookupService(INBOUND).find(clazz);
+        MessageHandler<?, M> handler = handlers.find(clazz);
         if (handler == null) {
             GlowServer.logger.warning("No message handler for: " + clazz.getSimpleName() + " in " + getName());
         }
@@ -54,7 +66,7 @@ public abstract class GlowProtocol extends KeyedProtocol {
             buf.markReaderIndex();
 
             opcode = ByteBufUtils.readVarInt(buf);
-            return getCodecLookupService(INBOUND).find(opcode);
+            return inboundCodecs.find(opcode);
         } catch (IOException e) {
             throw new UnknownPacketException("Failed to read packet data (corrupt?)", opcode, length);
         } catch (IllegalOpcodeException e) {
@@ -66,20 +78,16 @@ public abstract class GlowProtocol extends KeyedProtocol {
 
     @Override
     public <M extends Message> Codec.CodecRegistration getCodecRegistration(Class<M> clazz) {
-        CodecLookupService service = getCodecLookupService(OUTBOUND);
-        if (service != null) {
-            Codec.CodecRegistration reg = service.find(clazz);
-            if (reg != null) {
-                return reg;
-            }
+        Codec.CodecRegistration reg = outboundCodecs.find(clazz);
+        if (reg == null) {
+            GlowServer.logger.warning("No codec to write: " + clazz.getSimpleName() + " in " + getName());
         }
-        GlowServer.logger.warning("No codec to write: " + clazz.getSimpleName() + " in " + getName());
-        return null;
+        return reg;
     }
 
     @Override
     public ByteBuf writeHeader(ByteBuf out, Codec.CodecRegistration codec, ByteBuf data) {
-        final ByteBuf opcodeBuffer = Unpooled.buffer();
+        final ByteBuf opcodeBuffer = Unpooled.buffer(5);
         ByteBufUtils.writeVarInt(opcodeBuffer, codec.getOpcode());
         ByteBufUtils.writeVarInt(out, opcodeBuffer.readableBytes() + data.readableBytes());
         ByteBufUtils.writeVarInt(out, codec.getOpcode());
