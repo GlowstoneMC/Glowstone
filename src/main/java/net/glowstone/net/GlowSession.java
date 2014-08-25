@@ -9,6 +9,7 @@ import com.flowpowered.networking.session.BasicSession;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandler;
 import io.netty.handler.codec.DecoderException;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
@@ -19,6 +20,9 @@ import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.play.game.PingMessage;
 import net.glowstone.net.message.play.game.UserListItemMessage;
 import net.glowstone.net.message.play.player.BlockPlacementMessage;
+import net.glowstone.net.pipeline.CompressionHandler;
+import net.glowstone.net.pipeline.EncryptionHandler;
+import net.glowstone.net.pipeline.NoopHandler;
 import net.glowstone.net.protocol.LoginProtocol;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.ProtocolType;
@@ -26,6 +30,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
+import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.*;
@@ -432,8 +437,12 @@ public final class GlowSession extends BasicSession {
         GlowServer.logger.log(Level.SEVERE, "Error while handling " + message + " (handler: " + handle.getClass().getSimpleName() + ")", t);
     }
 
-    public void setProcessor(MessageProcessor processor) {
-        this.processor = processor;
+    public void enableEncryption(SecretKey sharedSecret) {
+        updatePipeline("encryption", new EncryptionHandler(sharedSecret));
+    }
+
+    private void updatePipeline(String key, ChannelHandler handler) {
+        getChannel().pipeline().replace(key, key, handler);
     }
 
     @Override

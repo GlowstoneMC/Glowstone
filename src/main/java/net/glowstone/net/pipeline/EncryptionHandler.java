@@ -1,54 +1,70 @@
 package net.glowstone.net.pipeline;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.DecoderException;
-import io.netty.handler.codec.EncoderException;
 import io.netty.handler.codec.MessageToMessageCodec;
+import net.glowstone.GlowServer;
 
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.ShortBufferException;
+import javax.crypto.spec.IvParameterSpec;
+import java.nio.ByteBuffer;
+import java.security.GeneralSecurityException;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * Experimental pipeline component.
  */
 public class EncryptionHandler extends MessageToMessageCodec<ByteBuf, ByteBuf> {
 
-    private final MessageHandler handler;
+    private final CryptBuf encodeBuf;
+    private final CryptBuf decodeBuf;
 
-    private boolean enabled;
-
-    public EncryptionHandler(MessageHandler handler) {
-        this.handler = handler;
-        enabled = false;
-    }
-
-    public void enable() {
-        enabled = true;
-        // todo
+    public EncryptionHandler(SecretKey sharedSecret) {
+        try {
+            encodeBuf = new CryptBuf(Cipher.ENCRYPT_MODE, sharedSecret);
+            decodeBuf = new CryptBuf(Cipher.DECRYPT_MODE, sharedSecret);
+        } catch (GeneralSecurityException e) {
+            // should never happen
+            GlowServer.logger.log(Level.SEVERE, "Failed to initialize encrypted channel", e);
+            throw new AssertionError(e);
+        }
     }
 
     @Override
     protected void encode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
-        if (!enabled) {
-            // encryption disabled, pass through
-            msg.retain();
-            out.add(msg);
-            return;
-        }
-
-        throw new EncoderException("Encryption not yet implemented");
+        out.add(encodeBuf.crypt(msg));
     }
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
-        if (!enabled) {
-            // encryption disabled, pass through
-            msg.retain();
-            out.add(msg);
-            return;
+        out.add(decodeBuf.crypt(msg));
+    }
+
+    private static class CryptBuf {
+        private final Cipher cipher;
+        private final int mode;
+
+        private CryptBuf(int mode, SecretKey sharedSecret) throws GeneralSecurityException {
+            this.mode = mode;
+            cipher = Cipher.getInstance("AES/CFB8/NoPadding");
+            cipher.init(mode, sharedSecret, new IvParameterSpec(sharedSecret.getEncoded()));
         }
 
-        throw new DecoderException("Decryption not yet implemented");
+        public ByteBuf crypt(ByteBuf msg) {
+            ByteBuffer outBuffer = ByteBuffer.allocate(msg.readableBytes());
+
+            try {
+                cipher.update(msg.nioBuffer(), outBuffer);
+            } catch (ShortBufferException e) {
+                throw new AssertionError("Encryption buffer was too short", e);
+            }
+
+            return Unpooled.wrappedBuffer(outBuffer);
+        }
     }
 
 }

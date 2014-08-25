@@ -19,28 +19,14 @@ public class CompressionHandler extends MessageToMessageCodec<ByteBuf, ByteBuf> 
 
     private static final int COMPRESSION_LEVEL = Deflater.DEFAULT_COMPRESSION;
 
-    private final MessageHandler handler;
+    private final int threshold;
 
-    private int threshold;
-
-    public CompressionHandler(MessageHandler handler) {
-        this.handler = handler;
-        setThreshold(-1);
-    }
-
-    public void setThreshold(int threshold) {
+    public CompressionHandler(int threshold) {
         this.threshold = threshold;
     }
 
     @Override
     protected void encode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
-        if (threshold <= 0) {
-            // compression disabled, pass through
-            msg.retain();
-            out.add(msg);
-            return;
-        }
-
         ByteBuf prefixBuf = ctx.alloc().buffer(5);
         ByteBuf contentsBuf;
 
@@ -76,13 +62,6 @@ public class CompressionHandler extends MessageToMessageCodec<ByteBuf, ByteBuf> 
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
-        if (threshold <= 0) {
-            // compression disabled, pass through
-            msg.retain();
-            out.add(msg);
-            return;
-        }
-
         int uncompressedSize = ByteBufUtils.readVarInt(msg);
         if (uncompressedSize == 0) {
             // message is uncompressed

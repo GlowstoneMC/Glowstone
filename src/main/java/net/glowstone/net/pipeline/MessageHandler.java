@@ -31,25 +31,22 @@ public class MessageHandler extends SimpleChannelInboundHandler<Message> {
     public void channelActive(ChannelHandlerContext ctx) {
         final Channel c = ctx.channel();
         Session s = connectionManager.newSession(c);
-        setSession(s);
+        if (!session.compareAndSet(null, s)) {
+            throw new IllegalStateException("Session may not be set more than once");
+        }
         s.onReady();
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        Channel c = ctx.channel();
         Session session = this.session.get();
-        // TODO needed?
-        session.validate(c);
         session.onDisconnect();
         connectionManager.sessionInactivated(session);
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Message i) {
-        Session session = this.session.get();
-        session.validate(ctx.channel());
-        session.messageReceived(i);
+        session.get().messageReceived(i);
     }
 
     @Override
@@ -59,12 +56,6 @@ public class MessageHandler extends SimpleChannelInboundHandler<Message> {
 
     public Session getSession() {
         return session.get();
-    }
-
-    public void setSession(Session session) {
-        if (!this.session.compareAndSet(null, session)) {
-            throw new IllegalStateException("Session may not be set more than once");
-        }
     }
 
 }

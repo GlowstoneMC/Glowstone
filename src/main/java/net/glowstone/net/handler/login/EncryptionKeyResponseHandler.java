@@ -4,7 +4,6 @@ import com.flowpowered.networking.MessageHandler;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.meta.PlayerProfile;
 import net.glowstone.entity.meta.PlayerProperty;
-import net.glowstone.net.EncryptionChannelProcessor;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.login.EncryptionKeyResponseMessage;
 import net.glowstone.util.UuidUtils;
@@ -76,7 +75,7 @@ public final class EncryptionKeyResponseHandler implements MessageHandler<GlowSe
         }
 
         // initialize stream encryption
-        session.setProcessor(new EncryptionChannelProcessor(sharedSecret, 32));
+        session.enableEncryption(sharedSecret);
 
         // create hash for auth
         String hash;
