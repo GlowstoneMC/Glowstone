@@ -48,10 +48,9 @@ public class CodecsHandler extends MessageToMessageCodec<ByteBuf, Message> {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
-        // find codec
-        Protocol protocol = handler.getSession().getProtocol();
-        // read header
-        Codec<?> codec = ((GlowProtocol) protocol).newReadHeader(msg);
+        // find codec and read header
+        final Protocol protocol = handler.getSession().getProtocol();
+        final Codec<?> codec = ((GlowProtocol) protocol).newReadHeader(msg);
 
         // read body
         Message decoded = codec.decode(msg);

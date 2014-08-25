@@ -11,10 +11,8 @@ public final class PluginMessageCodec implements Codec<PluginMessage> {
     public PluginMessage decode(ByteBuf buf) throws IOException {
         String channel = ByteBufUtils.readUTF8(buf);
 
-        // todo: ReplayingDecoderBuffer basically makes this impossible to handle
-        // need to probably switch to proper frame-based decoding.
-        int length = buf.writerIndex() - buf.readerIndex();
-        byte[] data = new byte[length];
+        // todo: maybe store a ByteBuf in the message instead?
+        byte[] data = new byte[buf.readableBytes()];
         buf.readBytes(data);
         return new PluginMessage(channel, data);
     }

@@ -18,12 +18,14 @@ public class GlowChannelInitializer extends ChannelInitializer<SocketChannel> {
     protected final void initChannel(SocketChannel c) {
         MessageHandler handler = new MessageHandler(connectionManager);
         CodecsHandler codecs = new CodecsHandler(handler);
+        CompressionHandler compression = new CompressionHandler(handler);
         FramingHandler framing = new FramingHandler(handler);
+        EncryptionHandler encryption = new EncryptionHandler(handler);
 
         c.pipeline()
-                //.addLast("encryption", encryption)
+                .addLast("encryption", encryption)
                 .addLast("framing", framing)
-                //.addLast("compression", compression)
+                .addLast("compression", compression)
                 .addLast("codecs", codecs)
                 .addLast("handler", handler);
     }
