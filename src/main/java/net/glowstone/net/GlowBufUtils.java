@@ -25,7 +25,8 @@ import java.util.logging.Level;
  */
 public final class GlowBufUtils {
 
-    private GlowBufUtils() {}
+    private GlowBufUtils() {
+    }
 
     /**
      * Writes a list of mob metadata entries to the buffer.

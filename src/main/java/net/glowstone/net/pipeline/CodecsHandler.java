@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Experimental pipeline component.
  */
-public class CodecsHandler extends MessageToMessageCodec<ByteBuf, Message> {
+public final class CodecsHandler extends MessageToMessageCodec<ByteBuf, Message> {
 
     private final GlowProtocol protocol;
 

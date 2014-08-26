@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Experimental pipeline component, based on flow-net's MessageHandler.
  */
-public class MessageHandler extends SimpleChannelInboundHandler<Message> {
+public final class MessageHandler extends SimpleChannelInboundHandler<Message> {
 
     /**
      * The associated session

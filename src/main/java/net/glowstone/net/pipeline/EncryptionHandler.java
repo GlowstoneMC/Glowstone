@@ -18,7 +18,7 @@ import java.util.logging.Level;
 /**
  * Experimental pipeline component.
  */
-public class EncryptionHandler extends MessageToMessageCodec<ByteBuf, ByteBuf> {
+public final class EncryptionHandler extends MessageToMessageCodec<ByteBuf, ByteBuf> {
 
     private final CryptBuf encodeBuf;
     private final CryptBuf decodeBuf;

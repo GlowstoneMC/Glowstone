@@ -33,7 +33,7 @@ public final class PlayEffectMessage implements Message {
     public int getZ() {
         return z;
     }
-    
+
     public int getData() {
         return data;
     }

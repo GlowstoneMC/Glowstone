@@ -30,7 +30,7 @@ public final class JoinGameMessage implements Message {
     public int getDimension() {
         return dimension;
     }
-    
+
     public int getDifficulty() {
         return difficulty;
     }

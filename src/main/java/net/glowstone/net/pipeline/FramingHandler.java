@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Experimental pipeline component.
  */
-public class FramingHandler extends ByteToMessageCodec<ByteBuf> {
+public final class FramingHandler extends ByteToMessageCodec<ByteBuf> {
 
     @Override
     protected void encode(ChannelHandlerContext ctx, ByteBuf msg, ByteBuf out) throws Exception {

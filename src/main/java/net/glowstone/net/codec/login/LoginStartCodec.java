@@ -1,7 +1,7 @@
 package net.glowstone.net.codec.login;
 
-import com.flowpowered.networking.util.ByteBufUtils;
 import com.flowpowered.networking.Codec;
+import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import net.glowstone.net.message.login.LoginStartMessage;
 

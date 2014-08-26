@@ -36,7 +36,7 @@ public final class BlockChangeMessage implements Message {
 
     @Override
     public String toString() {
-        return "BlockChangeMessage{x=" + x + ",y=" + y +",z=" + z + ",type=" + type + ",metadata=" + metadata + "}";
+        return "BlockChangeMessage{x=" + x + ",y=" + y + ",z=" + z + ",type=" + type + ",metadata=" + metadata + "}";
     }
 
 }

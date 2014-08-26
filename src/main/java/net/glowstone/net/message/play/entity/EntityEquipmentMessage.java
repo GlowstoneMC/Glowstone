@@ -4,7 +4,7 @@ import com.flowpowered.networking.Message;
 import org.bukkit.inventory.ItemStack;
 
 public final class EntityEquipmentMessage implements Message {
-    
+
     public static final int HELD_ITEM = 0;
     public static final int BOOTS_SLOT = 1;
     public static final int LEGGINGS_SLOT = 2;

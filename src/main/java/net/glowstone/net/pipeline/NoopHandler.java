@@ -9,7 +9,8 @@ import io.netty.channel.ChannelHandlerAdapter;
 @ChannelHandler.Sharable
 public final class NoopHandler extends ChannelHandlerAdapter {
 
-    private NoopHandler() {}
+    private NoopHandler() {
+    }
 
     public static NoopHandler instance = new NoopHandler();
 

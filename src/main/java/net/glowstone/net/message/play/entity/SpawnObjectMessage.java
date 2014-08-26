@@ -9,6 +9,7 @@ public final class SpawnObjectMessage implements Message {
     public SpawnObjectMessage(int id, int type, int x, int y, int z, int pitch, int yaw) {
         this(id, type, x, y, z, pitch, yaw, 0, 0, 0, 0);
     }
+
     public SpawnObjectMessage(int id, int type, int x, int y, int z, int pitch, int yaw, int data, int velX, int velY, int velZ) {
         this.id = id;
         this.type = type;

@@ -6,18 +6,18 @@ import org.apache.commons.lang.Validate;
 import java.util.List;
 
 public final class MapDataMessage implements Message {
-    
+
     private final int id, scale;
     private final List<Icon> icons;
     private final Section section;
-    
+
     public MapDataMessage(int id, int scale, List<Icon> icons, Section section) {
         this.id = id;
         this.scale = scale;
         this.icons = icons;
         this.section = section;
     }
-    
+
     public int getId() {
         return id;
     }

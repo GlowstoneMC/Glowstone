@@ -15,7 +15,7 @@ import java.util.zip.Inflater;
 /**
  * Experimental pipeline component.
  */
-public class CompressionHandler extends MessageToMessageCodec<ByteBuf, ByteBuf> {
+public final class CompressionHandler extends MessageToMessageCodec<ByteBuf, ByteBuf> {
 
     private static final int COMPRESSION_LEVEL = Deflater.DEFAULT_COMPRESSION;
 

@@ -5,7 +5,7 @@ import com.flowpowered.networking.Message;
 public final class EnchantItemMessage implements Message {
 
     private final int window, enchantment;
-    
+
     public EnchantItemMessage(int window, int enchantment) {
         this.window = window;
         this.enchantment = enchantment;

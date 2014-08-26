@@ -19,7 +19,7 @@ public final class EntityVelocityMessage implements Message {
     }
 
     private static int convert(double val) {
-        return (int)(val * 8000);
+        return (int) (val * 8000);
     }
 
     public int getId() {
