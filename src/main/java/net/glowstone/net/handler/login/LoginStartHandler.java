@@ -17,16 +17,16 @@ public final class LoginStartHandler implements MessageHandler<GlowSession, Logi
         final String name = message.getUsername();
 
         if (session.getServer().getOnlineMode()) {
-            //Get necessary information to create our request message
+            // Get necessary information to create our request message
             final String sessionId = session.getSessionId();
             final byte[] publicKey = SecurityUtils.generateX509Key(session.getServer().getKeyPair().getPublic()).getEncoded(); //Convert to X509 format
             final byte[] verifyToken = SecurityUtils.generateVerifyToken();
 
-            //Set verify data on session for use in the response handler
+            // Set verify data on session for use in the response handler
             session.setVerifyToken(verifyToken);
             session.setVerifyUsername(name);
 
-            //Send created request message and wait for the response
+            // Send created request message and wait for the response
             session.send(new EncryptionKeyRequestMessage(sessionId, publicKey, verifyToken));
         } else {
             UUID uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8));

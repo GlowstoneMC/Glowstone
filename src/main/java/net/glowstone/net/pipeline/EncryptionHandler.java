@@ -30,7 +30,7 @@ public class EncryptionHandler extends MessageToMessageCodec<ByteBuf, ByteBuf> {
         } catch (GeneralSecurityException e) {
             // should never happen
             GlowServer.logger.log(Level.SEVERE, "Failed to initialize encrypted channel", e);
-            throw new AssertionError(e);
+            throw new AssertionError("Failed to initialize encrypted channel", e);
         }
     }
 
@@ -63,6 +63,7 @@ public class EncryptionHandler extends MessageToMessageCodec<ByteBuf, ByteBuf> {
                 throw new AssertionError("Encryption buffer was too short", e);
             }
 
+            outBuffer.flip();
             return Unpooled.wrappedBuffer(outBuffer);
         }
     }
