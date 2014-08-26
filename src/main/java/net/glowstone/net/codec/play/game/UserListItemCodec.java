@@ -5,6 +5,7 @@ import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import net.glowstone.entity.meta.PlayerProperty;
+import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.game.UserListItemMessage;
 
 import java.io.IOException;
@@ -22,9 +23,7 @@ public final class UserListItemCodec implements Codec<UserListItemMessage> {
         ByteBufUtils.writeVarInt(buf, entries.size());
 
         for (UserListItemMessage.Entry entry : entries) {
-            // todo: add writeUUID utility method
-            buf.writeLong(entry.uuid.getMostSignificantBits());
-            buf.writeLong(entry.uuid.getLeastSignificantBits());
+            GlowBufUtils.writeUuid(buf, entry.uuid);
 
             // todo: implement the rest of the actions
             switch (action) {
@@ -58,7 +57,7 @@ public final class UserListItemCodec implements Codec<UserListItemMessage> {
                     break;
 
                 default:
-                    throw new UnsupportedOperationException("not yet implemented");
+                    throw new UnsupportedOperationException("not yet implemented: " + action);
             }
         }
         return buf;

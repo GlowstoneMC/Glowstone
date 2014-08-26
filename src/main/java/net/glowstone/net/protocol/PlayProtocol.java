@@ -44,6 +44,8 @@ public final class PlayProtocol extends GlowProtocol {
         inbound(0x15, ClientSettingsMessage.class, ClientSettingsCodec.class, ClientSettingsHandler.class);
         inbound(0x16, ClientStatusMessage.class, ClientStatusCodec.class, ClientStatusHandler.class);
         inbound(0x17, PluginMessage.class, PluginMessageCodec.class, PluginMessageHandler.class);
+        inbound(0x18, SpectateMessage.class, SpectateCodec.class, SpectateHandler.class);
+        inbound(0x19, ResourcePackStatusMessage.class, ResourcePackStatusCodec.class, ResourcePackStatusHandler.class);
 
         outbound(0x00, PingMessage.class, PingCodec.class);
         outbound(0x01, JoinGameMessage.class, JoinGameCodec.class);

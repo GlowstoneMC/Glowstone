@@ -18,6 +18,7 @@ import org.bukkit.util.Vector;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 /**
@@ -188,6 +189,25 @@ public final class GlowBufUtils {
      */
     public static void writeBlockPosition(ByteBuf buf, long x, long y, long z) {
         buf.writeLong(((x & 0x3ffffff) << 38) | ((y & 0xfff) << 26) | (z & 0x3ffffff));
+    }
+
+    /**
+     * Read a UUID encoded as two longs from the buffer.
+     * @param buf The buffer.
+     * @return The UUID read.
+     */
+    public static UUID readUuid(ByteBuf buf) {
+        return new UUID(buf.readLong(), buf.readLong());
+    }
+
+    /**
+     * Write a UUID encoded as two longs to the buffer.
+     * @param buf The buffer.
+     * @param uuid The UUID to write.
+     */
+    public static void writeUuid(ByteBuf buf, UUID uuid) {
+        buf.writeLong(uuid.getMostSignificantBits());
+        buf.writeLong(uuid.getLeastSignificantBits());
     }
 
 }
