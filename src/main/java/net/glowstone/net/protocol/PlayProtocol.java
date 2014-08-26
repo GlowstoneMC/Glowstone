@@ -6,7 +6,6 @@ import net.glowstone.net.codec.play.entity.*;
 import net.glowstone.net.codec.play.game.*;
 import net.glowstone.net.codec.play.inv.*;
 import net.glowstone.net.codec.play.player.*;
-import net.glowstone.net.handler.play.entity.AnimateEntityHandler;
 import net.glowstone.net.handler.play.game.*;
 import net.glowstone.net.handler.play.inv.*;
 import net.glowstone.net.handler.play.player.*;
@@ -31,7 +30,7 @@ public final class PlayProtocol extends GlowProtocol {
         inbound(0x07, DiggingMessage.class, DiggingCodec.class, DiggingHandler.class);
         inbound(0x08, BlockPlacementMessage.class, BlockPlacementCodec.class, BlockPlacementHandler.class);
         inbound(0x09, HeldItemMessage.class, HeldItemCodec.class, HeldItemHandler.class);
-        inbound(0x0A, AnimateEntityMessage.class, AnimateEntityCodec.class, AnimateEntityHandler.class);
+        inbound(0x0A, PlayerSwingArmMessage.class, PlayerSwingArmCodec.class, PlayerSwingArmHandler.class);
         inbound(0x0B, PlayerActionMessage.class, PlayerActionCodec.class, PlayerActionHandler.class);
         inbound(0x0C, SteerVehicleMessage.class, SteerVehicleCodec.class, SteerVehicleHandler.class);
         inbound(0x0D, CloseWindowMessage.class, CloseWindowCodec.class, CloseWindowHandler.class);

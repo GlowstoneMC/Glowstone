@@ -389,12 +389,12 @@ public final class GlowSession extends BasicSession {
         updatePipeline("encryption", new EncryptionHandler(sharedSecret));
     }
 
-    public void setCompression(int threshold) {
+    public void enableCompression(int threshold) {
         send(new SetCompressionMessage(threshold));
         updatePipeline("compression", new CompressionHandler(threshold));
     }
 
-    public void unsetCompression() {
+    public void disableCompression() {
         send(new SetCompressionMessage(-1));
         updatePipeline("compression", NoopHandler.instance);
     }

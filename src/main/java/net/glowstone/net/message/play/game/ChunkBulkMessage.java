@@ -32,7 +32,7 @@ public final class ChunkBulkMessage implements Message {
     public String toString() {
         return "ChunkBulkMessage{" +
                 "skyLight=" + skyLight +
-                ", entries=" + entries +
+                ", entries=(" + entries.size() + ")" + entries +
                 '}';
     }
 }

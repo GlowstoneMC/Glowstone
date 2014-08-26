@@ -622,7 +622,7 @@ public final class GlowChunk implements Chunk {
             }
 
             for (int i = 0; i < sections.length; ++i) {
-                if (sections[i] == null) {
+                if (sections[i] == null || sections[i].isEmpty()) {
                     // remove empty sections from bitmask
                     sectionBitmask &= ~(1 << i);
                     sectionCount--;
@@ -649,8 +649,8 @@ public final class GlowChunk implements Chunk {
         // get the list of sections
         ChunkSection[] sendSections = new ChunkSection[sectionCount];
         int pos = 0;
-        for (int i = 0; i < sections.length; ++i) {
-            if ((sectionBitmask & (1 << i)) != 0) {
+        for (int i = 0, mask = 1; i < sections.length; ++i, mask <<= 1) {
+            if ((sectionBitmask & mask) != 0) {
                 sendSections[pos++] = sections[i];
             }
         }
@@ -663,9 +663,9 @@ public final class GlowChunk implements Chunk {
         for (ChunkSection sec : sendSections) {
             byte[] types = sec.types;
             for (int i = 0; i < types.length; ++i) {
-                int blockId = (types[i] << 4) | sec.metaData.get(i);
-                tileData[pos++] = (byte) (types[i] >> 4);
-                tileData[pos++] = (byte) (blockId);
+                byte t = types[i];
+                tileData[pos++] = (byte) ((t << 4) | sec.metaData.get(i));
+                tileData[pos++] = (byte) (t >> 4);
             }
         }
 
@@ -675,11 +675,12 @@ public final class GlowChunk implements Chunk {
             pos += blockLight.length;
         }
 
-        for (ChunkSection sec : sendSections) {
-            if (!skylight) break;
-            byte[] skyLight = sec.skyLight.getRawData();
-            System.arraycopy(skyLight, 0, tileData, pos, skyLight.length);
-            pos += skyLight.length;
+        if (skylight) {
+            for (ChunkSection sec : sendSections) {
+                byte[] skyLight = sec.skyLight.getRawData();
+                System.arraycopy(skyLight, 0, tileData, pos, skyLight.length);
+                pos += skyLight.length;
+            }
         }
 
         // biomes

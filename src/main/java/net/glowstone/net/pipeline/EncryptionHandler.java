@@ -36,25 +36,23 @@ public final class EncryptionHandler extends MessageToMessageCodec<ByteBuf, Byte
 
     @Override
     protected void encode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
-        out.add(encodeBuf.crypt(msg));
+        encodeBuf.crypt(msg, out);
     }
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
-        out.add(decodeBuf.crypt(msg));
+        decodeBuf.crypt(msg, out);
     }
 
     private static class CryptBuf {
         private final Cipher cipher;
-        private final int mode;
 
         private CryptBuf(int mode, SecretKey sharedSecret) throws GeneralSecurityException {
-            this.mode = mode;
             cipher = Cipher.getInstance("AES/CFB8/NoPadding");
             cipher.init(mode, sharedSecret, new IvParameterSpec(sharedSecret.getEncoded()));
         }
 
-        public ByteBuf crypt(ByteBuf msg) {
+        public void crypt(ByteBuf msg, List<Object> out) {
             ByteBuffer outBuffer = ByteBuffer.allocate(msg.readableBytes());
 
             try {
@@ -64,7 +62,7 @@ public final class EncryptionHandler extends MessageToMessageCodec<ByteBuf, Byte
             }
 
             outBuffer.flip();
-            return Unpooled.wrappedBuffer(outBuffer);
+            out.add(Unpooled.wrappedBuffer(outBuffer));
         }
     }
 

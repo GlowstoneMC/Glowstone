@@ -1,4 +1,4 @@
-package net.glowstone.net.handler.play.entity;
+package net.glowstone.net.handler.play.player;
 
 import com.flowpowered.networking.MessageHandler;
 import net.glowstone.EventFactory;
@@ -6,18 +6,13 @@ import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.AnimateEntityMessage;
+import net.glowstone.net.message.play.player.PlayerSwingArmMessage;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.Action;
 
-public final class AnimateEntityHandler implements MessageHandler<GlowSession, AnimateEntityMessage> {
-    public void handle(GlowSession session, AnimateEntityMessage message) {
+public final class PlayerSwingArmHandler implements MessageHandler<GlowSession, PlayerSwingArmMessage> {
+    public void handle(GlowSession session, PlayerSwingArmMessage message) {
         final GlowPlayer player = session.getPlayer();
-
-        // todo: handle more animation types
-        if (message.getAnimation() != AnimateEntityMessage.IN_SWING_ARM) {
-            player.getServer().getLogger().info("Unhandled animation " + message.getAnimation() + " from " + player.getName());
-            return;
-        }
 
         Block block = player.getTargetBlock(null, 6);
         if (block == null || block.getTypeId() == 0) {

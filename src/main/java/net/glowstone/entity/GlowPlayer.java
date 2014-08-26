@@ -243,6 +243,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         chunkLock = world.newChunkLock(getName());
 
         // send login response
+        // todo: use threshold from server config
+        session.enableCompression(1024);
         session.send(new LoginSuccessMessage(profile.getUniqueId().toString(), profile.getName()));
         session.setProtocol(ProtocolType.PLAY);
 
@@ -510,8 +512,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         if (bulkChunks != null) {
-            boolean skylight = world.getEnvironment() == World.Environment.NORMAL;
-            session.send(new ChunkBulkMessage(skylight, bulkChunks));
+            final boolean skylight = world.getEnvironment() == World.Environment.NORMAL;
+            final int chunksPerBulk = 25; // guesstimated number to keep packet size under client maximum
+            for (int i = 0; i <= bulkChunks.size(); i += chunksPerBulk) {
+                List<GlowChunk> sub = bulkChunks.subList(i, Math.min(i + chunksPerBulk, bulkChunks.size()));
+                session.send(new ChunkBulkMessage(skylight, sub));
+            }
         }
 
         for (GlowChunk.Key key : newChunks) {
