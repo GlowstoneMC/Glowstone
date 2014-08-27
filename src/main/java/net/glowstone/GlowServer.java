@@ -585,6 +585,14 @@ public final class GlowServer implements Server {
         return worlds.getWorlds().get(0).getStorage().getPlayerDataService();
     }
 
+    /**
+     * Get the threshold to use for network compression defined in the config.
+     * @return The compression threshold, or -1 for no compression.
+     */
+    public int getCompressionThreshold() {
+        return config.getInt(ServerConfig.Key.COMPRESSION_THRESHOLD);
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Static server properties
 

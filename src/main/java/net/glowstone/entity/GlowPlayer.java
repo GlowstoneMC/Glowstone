@@ -242,9 +242,13 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         chunkLock = world.newChunkLock(getName());
 
+        // enable compression if needed
+        int compression = session.getServer().getCompressionThreshold();
+        if (compression > 0) {
+            session.enableCompression(compression);
+        }
+
         // send login response
-        // todo: use threshold from server config
-        session.enableCompression(1024);
         session.send(new LoginSuccessMessage(profile.getUniqueId().toString(), profile.getName()));
         session.setProtocol(ProtocolType.PLAY);
 
@@ -638,9 +642,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void setVelocity(Vector velocity) {
-        velocity = EventFactory.callEvent(new PlayerVelocityEvent(this, velocity)).getVelocity();
-        super.setVelocity(velocity);
-        session.send(new EntityVelocityMessage(SELF_ID, velocity));
+        PlayerVelocityEvent event = EventFactory.callEvent(new PlayerVelocityEvent(this, velocity));
+        if (!event.isCancelled()) {
+            velocity = event.getVelocity();
+            super.setVelocity(velocity);
+            session.send(new EntityVelocityMessage(SELF_ID, velocity));
+        }
     }
 
     public Map<String, Object> serialize() {

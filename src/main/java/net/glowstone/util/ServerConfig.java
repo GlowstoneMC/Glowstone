@@ -270,6 +270,7 @@ public final class ServerConfig {
         EXACT_LOGIN_LOCATION("advanced.exact-login-location", false, Migrate.BUKKIT, "settings.use-exact-login-location"),
         PLUGIN_PROFILING("advanced.plugin-profiling", false, Migrate.BUKKIT, "settings.plugin-profiling"),
         WARNING_STATE("advanced.deprecated-verbose", "false", Migrate.BUKKIT, "settings.deprecated-verbose"),
+        COMPRESSION_THRESHOLD("advanced.compression-threshold", 256, Migrate.PROPS, "network-compression-threshold"),
 
         // query rcon etc
         QUERY_ENABLED("extras.query-enabled", false, Migrate.PROPS, "enable-query"),
