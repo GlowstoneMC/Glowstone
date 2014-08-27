@@ -1188,7 +1188,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         Validate.notNull(lines, "lines cannot be null");
         Validate.isTrue(lines.length == 4, "lines.length must equal 4");
 
-        afterBlockChanges.add(new UpdateSignMessage(location.getBlockX(), location.getBlockY(), location.getBlockZ(), lines));
+        afterBlockChanges.add(UpdateSignMessage.fromPlainText(location.getBlockX(), location.getBlockY(), location.getBlockZ(), lines));
     }
 
     public void sendMap(MapView map) {

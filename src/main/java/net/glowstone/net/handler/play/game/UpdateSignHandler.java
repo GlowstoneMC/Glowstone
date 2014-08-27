@@ -8,10 +8,23 @@ import net.glowstone.net.message.play.game.UpdateSignMessage;
 import org.bukkit.Location;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public final class UpdateSignHandler implements MessageHandler<GlowSession, UpdateSignMessage> {
     public void handle(GlowSession session, UpdateSignMessage message) {
         final GlowPlayer player = session.getPlayer();
+
+        // filter out json messages that aren't plaintext
+        JSONParser parser = new JSONParser();
+        String[] lines = message.getMessage().clone();
+        for (int i = 0; i < lines.length; ++i) {
+            try {
+                lines[i] = (String) parser.parse(lines[i]);
+            } catch (ClassCastException | ParseException e) {
+                lines[i] = "";
+            }
+        }
 
         Location location = new Location(player.getWorld(), message.getX(), message.getY(), message.getZ());
         if (player.checkSignLocation(location)) {
@@ -19,8 +32,8 @@ public final class UpdateSignHandler implements MessageHandler<GlowSession, Upda
             BlockState state = location.getBlock().getState();
             if (state instanceof Sign) {
                 Sign sign = (Sign) state;
-                for (int i = 0; i < message.getMessage().length; ++i) {
-                    sign.setLine(i, message.getMessage()[i]);
+                for (int i = 0; i < lines.length; ++i) {
+                    sign.setLine(i, lines[i]);
                 }
                 sign.update();
             }
