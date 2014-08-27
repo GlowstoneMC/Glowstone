@@ -4,14 +4,17 @@ import com.flowpowered.networking.Message;
 
 public final class BlockChangeMessage implements Message {
 
-    private final int x, y, z, type, metadata;
+    private final int x, y, z, type;
 
     public BlockChangeMessage(int x, int y, int z, int type, int metadata) {
+        this(x, y, z, (type << 4) | (metadata & 0xf));
+    }
+
+    public BlockChangeMessage(int x, int y, int z, int fullType) {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.type = type;
-        this.metadata = metadata;
+        this.type = fullType;
     }
 
     public int getX() {
@@ -30,13 +33,9 @@ public final class BlockChangeMessage implements Message {
         return type;
     }
 
-    public int getMetadata() {
-        return metadata;
-    }
-
     @Override
     public String toString() {
-        return "BlockChangeMessage{x=" + x + ",y=" + y + ",z=" + z + ",type=" + type + ",metadata=" + metadata + "}";
+        return "BlockChangeMessage{x=" + x + ",y=" + y + ",z=" + z + ",type=" + type + "}";
     }
 
 }
