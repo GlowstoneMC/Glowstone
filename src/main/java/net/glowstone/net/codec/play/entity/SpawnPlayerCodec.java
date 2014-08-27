@@ -16,7 +16,7 @@ public final class SpawnPlayerCodec implements Codec<SpawnPlayerMessage> {
 
     public ByteBuf encode(ByteBuf buf, SpawnPlayerMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
-        ByteBufUtils.writeUTF8(buf, message.getUuid().toString());
+        GlowBufUtils.writeUuid(buf, message.getUuid());
         buf.writeInt(message.getX());
         buf.writeInt(message.getY());
         buf.writeInt(message.getZ());
