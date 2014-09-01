@@ -249,7 +249,7 @@ public final class ServerConfig {
         MAX_PLAYERS("server.max-players", 20, Migrate.PROPS, "max-players"),
         WHITELIST("server.whitelisted", false, Migrate.PROPS, "white-list"),
         MOTD("server.motd", "Glowstone Server", Migrate.PROPS, "motd"),
-        SHUTDOWN_MESSAGE("server.shutdown-message", "Server shutting down", Migrate.BUKKIT, "settings.shutdown-message"),
+        SHUTDOWN_MESSAGE("server.shutdown-message", "Server shutting down.", Migrate.BUKKIT, "settings.shutdown-message"),
         USE_JLINE("server.use-jline", true),
 
         // folders

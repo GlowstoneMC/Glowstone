@@ -360,7 +360,7 @@ public final class GlowServer implements Server {
 
         // Kick all players (this saves their data too)
         for (Player player : getOnlinePlayers()) {
-            player.kickPlayer("Server shutting down.");
+            player.kickPlayer(getShutdownMessage());
         }
 
         // Stop the network server - starts the shutdown process
