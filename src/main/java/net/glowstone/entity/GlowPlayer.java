@@ -14,6 +14,7 @@ import net.glowstone.entity.meta.PlayerProfile;
 import net.glowstone.inventory.InventoryMonitor;
 import net.glowstone.io.PlayerDataService;
 import net.glowstone.net.GlowSession;
+import net.glowstone.net.message.JsonMessage;
 import net.glowstone.net.message.login.LoginSuccessMessage;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
@@ -41,6 +42,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
+import org.json.simple.JSONObject;
 
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
@@ -640,6 +642,18 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
     }
 
+    /**
+     * Get a UserListItemMessage entry representing adding this player.
+     * @return The entry (action ADD_PLAYER) with this player's information.
+     */
+    public UserListItemMessage.Entry getUserListEntry() {
+        JSONObject displayName = null;
+        if (playerListName != null && !playerListName.isEmpty()) {
+            displayName = JsonMessage.toTextJson(playerListName);
+        }
+        return UserListItemMessage.add(getProfile(), getGameMode().getValue(), 0, displayName);
+    }
+
     @Override
     public void setVelocity(Vector velocity) {
         PlayerVelocityEvent event = EventFactory.callEvent(new PlayerVelocityEvent(this, velocity));
@@ -738,27 +752,22 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     public String getPlayerListName() {
-        return playerListName == null || "".equals(playerListName) ? getName() : playerListName;
+        return playerListName == null || playerListName.isEmpty() ? getName() : playerListName;
     }
 
     public void setPlayerListName(String name) {
-        if (name.length() > 16) {
-            throw new IllegalArgumentException("The given name was " + name.length() + " chars long, longer than the maximum of 16");
-        }
-        for (Player player : server.getOnlinePlayers()) {
-            if (player != this && player.getPlayerListName().equals(name)) {
-                throw new IllegalArgumentException("The name given, " + name + ", is already used by " + player.getName() + ".");
-            }
-        }
-
-        // todo: reimplement display name changing
-        /*
-        Message updateMessage = UserListItemMessage.displayName( args );
+        // update state
         playerListName = name;
+
+        // send update message
+        JSONObject displayName = null;
+        if (playerListName != null && !playerListName.isEmpty()) {
+            displayName = JsonMessage.toTextJson(playerListName);
+        }
+        Message updateMessage = UserListItemMessage.displayNameOne(getUniqueId(), displayName);
         for (Player player : server.getOnlinePlayers()) {
             ((GlowPlayer) player).getSession().send(updateMessage);
         }
-        */
     }
 
     public Location getCompassTarget() {

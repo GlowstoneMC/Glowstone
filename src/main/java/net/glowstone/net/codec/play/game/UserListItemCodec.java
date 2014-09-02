@@ -29,10 +29,9 @@ public final class UserListItemCodec implements Codec<UserListItemMessage> {
             switch (action) {
                 case ADD_PLAYER:
                     // this code is somewhat saddening
-                    UserListItemMessage.AddEntry addEntry = (UserListItemMessage.AddEntry) entry;
-                    ByteBufUtils.writeUTF8(buf, addEntry.profile.getName());
-                    ByteBufUtils.writeVarInt(buf, addEntry.profile.getProperties().size());
-                    for (PlayerProperty property : addEntry.profile.getProperties()) {
+                    ByteBufUtils.writeUTF8(buf, entry.profile.getName());
+                    ByteBufUtils.writeVarInt(buf, entry.profile.getProperties().size());
+                    for (PlayerProperty property : entry.profile.getProperties()) {
                         ByteBufUtils.writeUTF8(buf, property.getName());
                         ByteBufUtils.writeUTF8(buf, property.getValue());
                         if (property.getSignature() != null) {
@@ -42,11 +41,28 @@ public final class UserListItemCodec implements Codec<UserListItemMessage> {
                             buf.writeBoolean(false);
                         }
                     }
-                    ByteBufUtils.writeVarInt(buf, addEntry.gameMode);
-                    ByteBufUtils.writeVarInt(buf, addEntry.ping);
-                    if (addEntry.displayName != null) {
+                    ByteBufUtils.writeVarInt(buf, entry.gameMode);
+                    ByteBufUtils.writeVarInt(buf, entry.ping);
+                    if (entry.displayName != null) {
                         buf.writeBoolean(true);
-                        ByteBufUtils.writeUTF8(buf, addEntry.displayName.toJSONString());
+                        ByteBufUtils.writeUTF8(buf, entry.displayName.toJSONString());
+                    } else {
+                        buf.writeBoolean(false);
+                    }
+                    break;
+
+                case UPDATE_GAMEMODE:
+                    ByteBufUtils.writeVarInt(buf, entry.gameMode);
+                    break;
+
+                case UPDATE_LATENCY:
+                    ByteBufUtils.writeVarInt(buf, entry.ping);
+                    break;
+
+                case UPDATE_DISPLAY_NAME:
+                    if (entry.displayName != null) {
+                        buf.writeBoolean(true);
+                        ByteBufUtils.writeUTF8(buf, entry.displayName.toJSONString());
                     } else {
                         buf.writeBoolean(false);
                     }

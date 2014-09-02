@@ -256,17 +256,18 @@ public final class GlowSession extends BasicSession {
             server.broadcastMessage(message);
         }
 
-        // todo: make actual ping measurements?
-        List<PlayerProfile> profiles = new ArrayList<>();
-        Message addMessage = UserListItemMessage.add(profile);
-        for (Player sendPlayer : server.getOnlinePlayers()) {
-            if (sendPlayer != player) {
-                ((GlowPlayer) sendPlayer).getSession().send(addMessage);
-                profiles.add(((GlowPlayer) sendPlayer).getProfile());
+        // todo: display names are included in the outgoing messages here, but
+        // don't show up on the client. A workaround or proper fix is needed.
+        Message addMessage = new UserListItemMessage(UserListItemMessage.Action.ADD_PLAYER, player.getUserListEntry());
+        List<UserListItemMessage.Entry> entries = new ArrayList<>();
+        for (Player rawPlayer : server.getOnlinePlayers()) {
+            GlowPlayer sendPlayer = (GlowPlayer) rawPlayer;
+            if (rawPlayer != player) {
+                sendPlayer.getSession().send(addMessage);
             }
+            entries.add(sendPlayer.getUserListEntry());
         }
-        profiles.add(profile);
-        send(UserListItemMessage.add(profiles));
+        send(new UserListItemMessage(UserListItemMessage.Action.ADD_PLAYER, entries));
     }
 
     @Override
@@ -410,7 +411,7 @@ public final class GlowSession extends BasicSession {
     public void onDisconnect() {
         if (player != null) {
             player.remove();
-            Message userListMessage = UserListItemMessage.remove(player.getUniqueId());
+            Message userListMessage = UserListItemMessage.removeOne(player.getUniqueId());
             for (Player player : server.getOnlinePlayers()) {
                 ((GlowPlayer) player).getSession().send(userListMessage);
             }
