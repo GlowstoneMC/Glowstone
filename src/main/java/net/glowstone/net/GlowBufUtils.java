@@ -165,9 +165,10 @@ public final class GlowBufUtils {
      */
     public static BlockVector readBlockPosition(ByteBuf buf) {
         long val = buf.readLong();
-        long x = (val >> 38) & 0x3ffffff;
-        long y = (val >> 26) & 0xfff;
-        long z = val & 0x3ffffff;
+        long x = (val >> 38); // signed
+        long y = (val >> 26) & 0xfff; // unsigned
+        // this shifting madness is used to preserve sign
+        long z = (val << 38) >> 38; // signed
         return new BlockVector((double) x, y, z);
     }
 
