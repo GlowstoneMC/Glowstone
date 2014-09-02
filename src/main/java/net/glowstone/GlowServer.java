@@ -60,12 +60,12 @@ public final class GlowServer implements Server {
     /**
      * The game version supported by the server.
      */
-    public static final String GAME_VERSION = "1.8-pre3";
+    public static final String GAME_VERSION = "1.8";
 
     /**
      * The protocol version supported by the server.
      */
-    public static final int PROTOCOL_VERSION = 46;
+    public static final int PROTOCOL_VERSION = 47;
 
     /**
      * Creates a new server on TCP port 25565 and starts listening for
