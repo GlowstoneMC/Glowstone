@@ -15,7 +15,7 @@ public final class PlayerSwingArmHandler implements MessageHandler<GlowSession, 
         final GlowPlayer player = session.getPlayer();
 
         Block block = player.getTargetBlock(null, 6);
-        if (block == null || block.getTypeId() == 0) {
+        if (block == null || block.isEmpty()) {
             if (EventFactory.onPlayerInteract(player, Action.LEFT_CLICK_AIR).isCancelled())
                 return;
             // todo: item interactions with air

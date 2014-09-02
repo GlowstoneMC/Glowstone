@@ -22,9 +22,9 @@ public final class GlowChannelInitializer extends ChannelInitializer<SocketChann
         FramingHandler framing = new FramingHandler();
 
         c.pipeline()
-                .addLast("encryption", NoopHandler.instance)
+                .addLast("encryption", NoopHandler.INSTANCE)
                 .addLast("framing", framing)
-                .addLast("compression", NoopHandler.instance)
+                .addLast("compression", NoopHandler.INSTANCE)
                 .addLast("codecs", codecs)
                 .addLast("handler", handler);
     }

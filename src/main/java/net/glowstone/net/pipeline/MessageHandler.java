@@ -54,8 +54,4 @@ public final class MessageHandler extends SimpleChannelInboundHandler<Message> {
         session.get().onInboundThrowable(cause);
     }
 
-    public Session getSession() {
-        return session.get();
-    }
-
 }

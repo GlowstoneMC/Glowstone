@@ -397,7 +397,7 @@ public final class GlowSession extends BasicSession {
 
     public void disableCompression() {
         send(new SetCompressionMessage(-1));
-        updatePipeline("compression", NoopHandler.instance);
+        updatePipeline("compression", NoopHandler.INSTANCE);
     }
 
     private void updatePipeline(String key, ChannelHandler handler) {

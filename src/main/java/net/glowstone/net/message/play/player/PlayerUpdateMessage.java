@@ -8,7 +8,7 @@ import org.bukkit.Location;
  */
 public class PlayerUpdateMessage implements Message {
 
-    private boolean onGround;
+    private final boolean onGround;
 
     public PlayerUpdateMessage(boolean onGround) {
         this.onGround = onGround;

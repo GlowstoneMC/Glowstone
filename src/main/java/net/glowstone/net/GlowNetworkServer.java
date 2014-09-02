@@ -9,8 +9,6 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
 import net.glowstone.GlowServer;
 import net.glowstone.net.pipeline.GlowChannelInitializer;
 
@@ -52,31 +50,7 @@ public final class GlowNetworkServer implements ConnectionManager {
     }
 
     public ChannelFuture bind(final SocketAddress address) {
-        return bootstrap.bind(address).addListener(new GenericFutureListener<Future<? super Void>>() {
-            @Override
-            public void operationComplete(Future<? super Void> f) throws Exception {
-                if (f.isSuccess()) {
-                    onBindSuccess(address);
-                } else {
-                    onBindFailure(address, f.cause());
-                }
-            }
-        });
-    }
-
-    /**
-     * Called when a bind is successfully made.
-     * @param address The address we are now bound too.
-     */
-    public void onBindSuccess(SocketAddress address) {
-    }
-
-    /**
-     * Called when a bind fails.
-     * @param address The address we attempted to bind too.
-     * @param t The cause of why the binding failed. This can be null.
-     */
-    public void onBindFailure(SocketAddress address, Throwable t) {
+        return bootstrap.bind(address);
     }
 
     @Override

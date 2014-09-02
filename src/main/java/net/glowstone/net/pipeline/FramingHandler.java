@@ -5,7 +5,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -40,7 +39,7 @@ public final class FramingHandler extends ByteToMessageCodec<ByteBuf> {
         out.add(buf);
     }
 
-    private static boolean readableVarInt(ByteBuf buf) throws IOException {
+    private static boolean readableVarInt(ByteBuf buf) {
         if (buf.readableBytes() > 5) {
             // maximum varint size
             return true;

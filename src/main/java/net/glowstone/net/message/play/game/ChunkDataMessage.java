@@ -4,10 +4,10 @@ import com.flowpowered.networking.Message;
 
 public final class ChunkDataMessage implements Message {
 
-    final int x, z;
-    final boolean continuous;
-    final int primaryMask;
-    final byte[] data;
+    private final int x, z;
+    private final boolean continuous;
+    private final int primaryMask;
+    private final byte[] data;
 
     public ChunkDataMessage(int x, int z, boolean continuous, int primaryMask, byte[] data) {
         this.x = x;

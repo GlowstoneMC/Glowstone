@@ -18,7 +18,7 @@ public final class SpawnMobMessage implements Message {
         this.z = z;
         this.rotation = rotation;
         this.pitch = pitch;
-        this.headPitch = pitch;
+        this.headPitch = headPitch;
         this.velX = velX;
         this.velY = velY;
         this.velZ = velZ;
