@@ -24,8 +24,8 @@ public abstract class GlowProtocol extends AbstractProtocol {
 
     public GlowProtocol(String name, int highestOpcode) {
         super(name);
-        inboundCodecs = new CodecLookupService(highestOpcode);
-        outboundCodecs = new CodecLookupService(highestOpcode);
+        inboundCodecs = new CodecLookupService(highestOpcode + 1);
+        outboundCodecs = new CodecLookupService(highestOpcode + 1);
         handlers = new HandlerLookupService();
     }
 
