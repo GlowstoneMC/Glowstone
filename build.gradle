@@ -88,7 +88,7 @@ repositories {
 
 // Dependencies used by our project
 dependencies {
-    compile group: 'org.bukkit', name: 'bukkit', version: ext.bukkitVersion
+    compile group: 'org.bukkit', name: 'bukkit', version: project.ext.bukkitVersion
     compile 'com.flowpowered:flow-networking:1.0.0-SNAPSHOT'
     compile 'jline:jline:2.11'
     //compile 'mysql:mysql-connector-java:5.1.14'
@@ -109,7 +109,7 @@ manifest.mainAttributes(
         'Implementation-Version': ext.gitDescribe,
         'Implementation-Vendor': 'SpaceManiac',
         'Specification-Title': 'Bukkit',
-        'Specification-Version': ext.bukkitVersion,
+        'Specification-Version': project.ext.bukkitVersion,
         'Specification-Vendor': 'Bukkit Team',
         'Sealed': true
 )
