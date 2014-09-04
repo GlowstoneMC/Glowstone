@@ -521,7 +521,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         if (bulkChunks != null) {
             final boolean skylight = world.getEnvironment() == World.Environment.NORMAL;
-            final int chunksPerBulk = 22; // guesstimated number to keep packet size under client maximum
+            final int chunksPerBulk = 20; // guesstimated number to keep packet size under client maximum
             for (int i = 0; i <= bulkChunks.size(); i += chunksPerBulk) {
                 List<GlowChunk> sub = bulkChunks.subList(i, Math.min(i + chunksPerBulk, bulkChunks.size()));
                 session.send(new ChunkBulkMessage(skylight, sub));
