@@ -36,7 +36,7 @@ public class UndergroundGenerator extends GlowChunkGenerator {
         chunkZ <<= 4;
 
         Material stone = world.getEnvironment() == Environment.NETHER ? Material.NETHERRACK : Material.STONE;
-        int height = world.getMaxHeight();
+        int height = WORLD_DEPTH;
 
         byte[] buf = start(stone);
 
@@ -99,9 +99,9 @@ public class UndergroundGenerator extends GlowChunkGenerator {
     @Override
     public Location getFixedSpawnLocation(World world, Random random) {
         while (true) {
-            int x = random.nextInt(world.getMaxHeight()) - 64;
-            int y = world.getMaxHeight() * 3 / 4;
-            int z = random.nextInt(world.getMaxHeight()) - 64;
+            int x = random.nextInt(WORLD_DEPTH) - 64;
+            int y = WORLD_DEPTH * 3 / 4;
+            int z = random.nextInt(WORLD_DEPTH) - 64;
 
             if (world.getBlockAt(x, y, z).isEmpty()) {
                 while (world.getBlockAt(x, y - 1, z).isEmpty() && y > 0) {

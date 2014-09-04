@@ -120,7 +120,7 @@ public class CavePopulator extends BlockPopulator {
                 for (int x = -radius; x <= radius; x++) {
                     for (int y = -radius; y <= radius; y++) {
                         for (int z = -radius; z <= radius; z++) {
-                            if (x * x + y * y + z * z <= radius2 && y >= 0 && y < world.getMaxHeight()) {
+                            if (x * x + y * y + z * z <= radius2 && y >= 0 && y < 128) {
                                 if (world.getBlockTypeIdAt(blockX + x, blockY + y, blockZ + z) == 0) {
                                     airHits++;
                                 } else {

@@ -384,7 +384,7 @@ public final class GlowChunk implements Chunk {
      * @return A GlowBlockState if the entity exists, or null otherwise.
      */
     public TileEntity getEntity(int x, int y, int z) {
-        if (y >= world.getMaxHeight() || y < 0) return null;
+        if (y >= DEPTH || y < 0) return null;
         load();
         return tileEntities.get(coordToIndex(x, z, y));
     }

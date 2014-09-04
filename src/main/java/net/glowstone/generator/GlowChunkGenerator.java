@@ -16,6 +16,9 @@ import java.util.*;
  */
 public abstract class GlowChunkGenerator extends ChunkGenerator {
 
+    // distinct from GlowChunk.DEPTH, only used in the wgen
+    protected static final int WORLD_DEPTH = 128;
+
     private static final Set<Material> noSpawnFloors = new HashSet<>(Arrays.asList(Material.FIRE, Material.CACTUS, Material.LEAVES));
     private final Map<String, Map<String, OctaveGenerator>> octaveCache = new HashMap<>();
     private final List<BlockPopulator> populators;
@@ -54,7 +57,7 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
         if (fill == null) {
             throw new IllegalArgumentException("Invalid block type!");
         }
-        byte[] data = new byte[GlowChunk.HEIGHT * GlowChunk.WIDTH * GlowChunk.DEPTH];
+        byte[] data = new byte[GlowChunk.HEIGHT * GlowChunk.WIDTH * WORLD_DEPTH];
         Arrays.fill(data, (byte) fill.getId());
         return data;
     }
