@@ -4,7 +4,6 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.net.GlowSession;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -19,7 +18,9 @@ import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.event.world.*;
 import org.bukkit.inventory.ItemStack;
 
+import java.net.InetSocketAddress;
 import java.util.Collection;
+import java.util.UUID;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -131,8 +132,25 @@ public final class EventFactory {
         return callEvent(event);
     }
 
-    public static PlayerPreLoginEvent onPlayerPreLogin(String name, GlowSession session) {
-        return callEvent(new PlayerPreLoginEvent(name, session.getAddress().getAddress()));
+    public static AsyncPlayerPreLoginEvent onPlayerPreLogin(String name, InetSocketAddress address, UUID uuid) {
+        // call async event
+        final AsyncPlayerPreLoginEvent asyncEvent = new AsyncPlayerPreLoginEvent(name, address.getAddress(), uuid);
+        callEvent(asyncEvent);
+
+        // call sync event only if needed
+        if (PlayerPreLoginEvent.getHandlerList().getRegisteredListeners().length > 0) {
+            // initialize event to match current state from async event
+            final PlayerPreLoginEvent event = new PlayerPreLoginEvent(name, address.getAddress(), uuid);
+            if (asyncEvent.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) {
+                event.disallow(asyncEvent.getResult(), asyncEvent.getKickMessage());
+            }
+
+            // call event synchronously and copy data back to original event
+            callEvent(event);
+            asyncEvent.disallow(event.getResult(), event.getKickMessage());
+        }
+
+        return asyncEvent;
     }
 
     public static PlayerAnimationEvent onPlayerAnimate(GlowPlayer player) {
