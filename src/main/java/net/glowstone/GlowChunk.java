@@ -82,7 +82,7 @@ public final class GlowChunk implements Chunk {
     /**
      * The dimensions of a chunk (width: x, height: z, depth: y).
      */
-    public static final int WIDTH = 16, HEIGHT = 16, DEPTH = 128;
+    public static final int WIDTH = 16, HEIGHT = 16, DEPTH = 256;
 
     /**
      * The Y depth of a single chunk section.
@@ -571,7 +571,7 @@ public final class GlowChunk implements Chunk {
      * @return The index within the arrays.
      */
     private int coordToIndex(int x, int z, int y) {
-        if (x < 0 || z < 0 || y < 0 || x >= WIDTH || z >= HEIGHT || y >= world.getMaxHeight())
+        if (x < 0 || z < 0 || y < 0 || x >= WIDTH || z >= HEIGHT || y >= DEPTH)
             throw new IndexOutOfBoundsException("Coords (x=" + x + ",y=" + y + ",z=" + z + ") invalid");
 
         return (y * HEIGHT + z) * WIDTH + x;
@@ -663,7 +663,7 @@ public final class GlowChunk implements Chunk {
         for (ChunkSection sec : sendSections) {
             byte[] types = sec.types;
             for (int i = 0; i < types.length; ++i) {
-                byte t = types[i];
+                int t = types[i] & 0xff;
                 tileData[pos++] = (byte) ((t << 4) | sec.metaData.get(i));
                 tileData[pos++] = (byte) (t >> 4);
             }

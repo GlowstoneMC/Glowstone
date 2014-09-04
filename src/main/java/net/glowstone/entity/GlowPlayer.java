@@ -41,6 +41,7 @@ import org.bukkit.map.MapView;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 import org.json.simple.JSONObject;
 
@@ -423,21 +424,22 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         blockChanges.clear();
 
         // separate messages by chunk
-        Map<GlowChunk.Key, List<BlockChangeMessage>> chunks = new HashMap<>();
+        // inner map is used to only send one entry for same coordinates
+        Map<GlowChunk.Key, Map<BlockVector, BlockChangeMessage>> chunks = new HashMap<>();
         for (BlockChangeMessage message : messages) {
             GlowChunk.Key key = new GlowChunk.Key(message.getX() >> 4, message.getZ() >> 4);
-            List<BlockChangeMessage> list = chunks.get(key);
-            if (list == null) {
-                list = new LinkedList<>();
-                chunks.put(key, list);
+            Map<BlockVector, BlockChangeMessage> map = chunks.get(key);
+            if (map == null) {
+                map = new HashMap<>();
+                chunks.put(key, map);
             }
-            list.add(message);
+            map.put(new BlockVector(message.getX(), message.getY(), message.getZ()), message);
         }
 
         // send away
-        for (Map.Entry<GlowChunk.Key, List<BlockChangeMessage>> entry : chunks.entrySet()) {
+        for (Map.Entry<GlowChunk.Key, Map<BlockVector, BlockChangeMessage>> entry : chunks.entrySet()) {
             GlowChunk.Key key = entry.getKey();
-            List<BlockChangeMessage> value = entry.getValue();
+            List<BlockChangeMessage> value = new ArrayList<>(entry.getValue().values());
 
             if (value.size() == 1) {
                 session.send(value.get(0));
@@ -519,7 +521,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         if (bulkChunks != null) {
             final boolean skylight = world.getEnvironment() == World.Environment.NORMAL;
-            final int chunksPerBulk = 25; // guesstimated number to keep packet size under client maximum
+            final int chunksPerBulk = 22; // guesstimated number to keep packet size under client maximum
             for (int i = 0; i <= bulkChunks.size(); i += chunksPerBulk) {
                 List<GlowChunk> sub = bulkChunks.subList(i, Math.min(i + chunksPerBulk, bulkChunks.size()));
                 session.send(new ChunkBulkMessage(skylight, sub));
