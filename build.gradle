@@ -103,7 +103,7 @@ shadow {
 }
 
 // Jar manifest information
-manifest.mainAttributes(
+jar.manifest.mainAttributes(
         'Main-Class': mainClassName,
         'Implementation-Title': description,
         'Implementation-Version': ext.gitDescribe,
