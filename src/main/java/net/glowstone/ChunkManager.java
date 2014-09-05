@@ -136,7 +136,7 @@ public final class ChunkManager {
         // get generating
         try {
             generateChunk(chunk, x, z);
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             GlowServer.logger.log(Level.SEVERE, "Error while generating chunk (" + x + "," + z + ")", ex);
             return false;
         }
@@ -217,7 +217,11 @@ public final class ChunkManager {
      * @param z The Z coordinate.
      */
     public void forcePopulation(int x, int z) {
-        populateChunk(x, z, true);
+        try {
+            populateChunk(x, z, true);
+        } catch (Throwable ex) {
+            GlowServer.logger.log(Level.SEVERE, "Error while populating chunk (" + x + "," + z + ")", ex);
+        }
     }
 
     /**
@@ -230,7 +234,20 @@ public final class ChunkManager {
         // try for extended sections
         short[][] extSections = generator.generateExtBlockSections(world, random, x, z, biomes);
         if (extSections != null) {
-            throw new UnsupportedOperationException("Extended chunk sections not yet supported");
+            GlowChunk.ChunkSection[] sections = new GlowChunk.ChunkSection[extSections.length];
+            for (int i = 0; i < extSections.length; ++i) {
+                // this is sort of messy.
+                if (extSections[i] != null) {
+                    sections[i] = new GlowChunk.ChunkSection();
+                    // truncate shorts down to bytes
+                    // todo: when chunk structure is updated for 1.8+, include lower 0xfff
+                    for (int j = 0; j < extSections[i].length; ++j) {
+                        sections[i].types[j] = (byte) extSections[i][j];
+                    }
+                }
+            }
+            chunk.initializeSections(sections);
+            return;
         }
 
         // normal sections
@@ -239,8 +256,10 @@ public final class ChunkManager {
             GlowChunk.ChunkSection[] sections = new GlowChunk.ChunkSection[blockSections.length];
             for (int i = 0; i < blockSections.length; ++i) {
                 // this is sort of messy.
-                sections[i] = new GlowChunk.ChunkSection();
-                System.arraycopy(blockSections[i], 0, sections[i].types, 0, sections[i].types.length);
+                if (blockSections[i] != null) {
+                    sections[i] = new GlowChunk.ChunkSection();
+                    System.arraycopy(blockSections[i], 0, sections[i].types, 0, sections[i].types.length);
+                }
             }
             chunk.initializeSections(sections);
             return;
@@ -280,8 +299,13 @@ public final class ChunkManager {
         }
 
         chunk.setPopulated(false);
-        generateChunk(chunk, x, z);
-        populateChunk(x, z, false);  // should this be forced?
+        try {
+            generateChunk(chunk, x, z);
+            populateChunk(x, z, false);  // should this be forced?
+        } catch (Throwable ex) {
+            GlowServer.logger.log(Level.SEVERE, "Error while regenerating chunk (" + x + "," + z + ")", ex);
+            return false;
+        }
         return true;
     }
 
