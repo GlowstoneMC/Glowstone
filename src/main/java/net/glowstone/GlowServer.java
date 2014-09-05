@@ -460,7 +460,6 @@ public final class GlowServer implements Server {
     private void loadPlugins() {
         // clear the map
         commandMap.clearCommands();
-        commandMap.setFallbackCommands();
         commandMap.register("glowstone", new ColorCommand("colors"));
         commandMap.register("glowstone", new TellrawCommand());
 
@@ -516,6 +515,7 @@ public final class GlowServer implements Server {
         }
 
         if (type == PluginLoadOrder.POSTWORLD) {
+            commandMap.setFallbackCommands();
             commandMap.registerServerAliases();
             DefaultPermissions.registerCorePermissions();
             helpMap.initializeCommands();
