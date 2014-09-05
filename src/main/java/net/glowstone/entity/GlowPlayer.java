@@ -478,10 +478,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             }
         }
 
+        // early end if there's no changes
         if (newChunks.size() == 0 && previousChunks.size() == 0) {
             return;
         }
 
+        // sort chunks by distance from player - closer chunks sent first
         Collections.sort(newChunks, new Comparator<GlowChunk.Key>() {
             public int compare(GlowChunk.Key a, GlowChunk.Key b) {
                 double dx = 16 * a.getX() + 8 - location.getX();
@@ -494,40 +496,50 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             }
         });
 
-        List<GlowChunk> bulkChunks = null;
-        if (newChunks.size() > knownChunks.size() * 2 / 5) {
-            // send a bulk message
-            bulkChunks = new LinkedList<>();
-        }
-
         // populate then send chunks to the player
-
         // done in two steps so that all the new chunks are finalized before any of them are sent
         // this prevents sending a chunk then immediately sending block changes in it because
         // one of its neighbors has populated
+
+        // first step: force population then acquire lock on each chunk
         for (GlowChunk.Key key : newChunks) {
             world.getChunkManager().forcePopulation(key.getX(), key.getZ());
-        }
-        for (GlowChunk.Key key : newChunks) {
-            GlowChunk chunk = world.getChunkAt(key.getX(), key.getZ());
-            if (bulkChunks == null) {
-                session.send(chunk.toMessage());
-            } else {
-                bulkChunks.add(chunk);
-            }
             knownChunks.add(key);
             chunkLock.acquire(key);
         }
 
-        if (bulkChunks != null) {
-            final boolean skylight = world.getEnvironment() == World.Environment.NORMAL;
-            final int chunksPerBulk = 20; // guesstimated number to keep packet size under client maximum
-            for (int i = 0; i <= bulkChunks.size(); i += chunksPerBulk) {
-                List<GlowChunk> sub = bulkChunks.subList(i, Math.min(i + chunksPerBulk, bulkChunks.size()));
-                session.send(new ChunkBulkMessage(skylight, sub));
+        // second step: package chunks into bulk packets
+        final int maxSize = 0x1fff00;  // slightly under protocol max size of 0x200000
+        final boolean skylight = world.getEnvironment() == World.Environment.NORMAL;
+        final List<ChunkDataMessage> messages = new LinkedList<>();
+        int bulkSize = 6; // size of bulk header
+
+        // split the chunks into bulk packets based on how many fit
+        for (GlowChunk.Key key : newChunks) {
+            GlowChunk chunk = world.getChunkAt(key.getX(), key.getZ());
+            ChunkDataMessage message = chunk.toMessage(skylight);
+            // 10 bytes of header in bulk packet, plus data length
+            int messageSize = 10 + message.getData().length;
+
+            // if this chunk would make the message too big,
+            if (bulkSize + messageSize > maxSize) {
+                // send out what we have so far
+                session.send(new ChunkBulkMessage(skylight, messages));
+                messages.clear();
+                bulkSize = 6;
             }
+
+            bulkSize += messageSize;
+            messages.add(message);
         }
 
+        // send the leftovers
+        if (!messages.isEmpty()) {
+            session.send(new ChunkBulkMessage(skylight, messages));
+            messages.clear();
+        }
+
+        // send visible tile entity data
         for (GlowChunk.Key key : newChunks) {
             GlowChunk chunk = world.getChunkAt(key.getX(), key.getZ());
             for (TileEntity entity : chunk.getRawTileEntities()) {
@@ -535,6 +547,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             }
         }
 
+        // and remove old chunks
         for (GlowChunk.Key key : previousChunks) {
             session.send(ChunkDataMessage.empty(key.getX(), key.getZ()));
             knownChunks.remove(key);

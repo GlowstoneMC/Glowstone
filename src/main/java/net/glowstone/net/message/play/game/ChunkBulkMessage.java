@@ -1,23 +1,18 @@
 package net.glowstone.net.message.play.game;
 
 import com.flowpowered.networking.Message;
-import net.glowstone.GlowChunk;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 public final class ChunkBulkMessage implements Message {
 
-    private final List<ChunkDataMessage> entries = new LinkedList<>();
     private final boolean skyLight;
+    private final List<ChunkDataMessage> entries = new LinkedList<>();
 
-    public ChunkBulkMessage(boolean skyLight, Collection<GlowChunk> chunks) {
+    public ChunkBulkMessage(boolean skyLight, List<ChunkDataMessage> messages) {
         this.skyLight = skyLight;
-
-        for (GlowChunk chunk : chunks) {
-            entries.add(chunk.toMessage(skyLight, true, 0));
-        }
+        this.entries.addAll(messages);
     }
 
     public boolean getSkyLight() {
