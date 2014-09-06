@@ -11,18 +11,23 @@ public final class InteractEntityCodec implements Codec<InteractEntityMessage> {
     public InteractEntityMessage decode(ByteBuf buf) throws IOException {
         int id = ByteBufUtils.readVarInt(buf);
         int action = ByteBufUtils.readVarInt(buf);
-        float targetX = buf.readFloat();
-        float targetY = buf.readFloat();
-        float targetZ = buf.readFloat();
-        return new InteractEntityMessage(id, action, targetX, targetY, targetZ);
+        if (action == InteractEntityMessage.Action.ATTACK_AT.ordinal()) {
+            float targetX = buf.readFloat();
+            float targetY = buf.readFloat();
+            float targetZ = buf.readFloat();
+            return new InteractEntityMessage(id, action, targetX, targetY, targetZ);
+        }
+        return new InteractEntityMessage(id, action);
     }
 
     public ByteBuf encode(ByteBuf buf, InteractEntityMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         ByteBufUtils.writeVarInt(buf, message.getAction());
-        buf.writeFloat(message.getTargetX());
-        buf.writeFloat(message.getTargetY());
-        buf.writeFloat(message.getTargetZ());
+        if (message.getAction() == InteractEntityMessage.Action.ATTACK_AT.ordinal()) {
+            buf.writeFloat(message.getTargetX());
+            buf.writeFloat(message.getTargetY());
+            buf.writeFloat(message.getTargetZ());
+        }
         return buf;
     }
 }

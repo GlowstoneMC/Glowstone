@@ -7,6 +7,10 @@ public final class InteractEntityMessage implements Message {
     private final int id, action;
     private final float targetX, targetY, targetZ;
 
+    public InteractEntityMessage(int id, int action) {
+        this(id, action, 0, 0, 0);
+    }
+
     public InteractEntityMessage(int id, int action, float targetX, float targetY, float targetZ) {
         this.id = id;
         this.action = action;
@@ -40,7 +44,16 @@ public final class InteractEntityMessage implements Message {
         return "InteractEntityMessage{" +
                 "id=" + id +
                 ", action=" + action +
+                ", targetX=" + targetX +
+                ", targetY=" + targetY +
+                ", targetZ=" + targetZ +
                 '}';
+    }
+
+    public enum Action {
+        INTERACT,
+        ATTACK,
+        ATTACK_AT
     }
 }
 
