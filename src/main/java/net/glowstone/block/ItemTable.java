@@ -89,6 +89,24 @@ public final class ItemTable {
         reg(Material.FURNACE, new BlockFurnace());
         reg(Material.LEVER, new BlockLever());
         reg(Material.HOPPER, new BlockHopper());
+        reg(Material.ACACIA_STAIRS, new BlockStairs());
+        reg(Material.BIRCH_WOOD_STAIRS, new BlockStairs());
+        reg(Material.BRICK_STAIRS, new BlockStairs());
+        reg(Material.COBBLESTONE_STAIRS, new BlockStairs());
+        reg(Material.DARK_OAK_STAIRS, new BlockStairs());
+        reg(Material.JUNGLE_WOOD_STAIRS, new BlockStairs());
+        reg(Material.NETHER_BRICK_STAIRS, new BlockStairs());
+        reg(Material.QUARTZ_STAIRS, new BlockStairs());
+        reg(Material.SANDSTONE_STAIRS, new BlockStairs());
+        reg(Material.SPRUCE_WOOD_STAIRS, new BlockStairs());
+        reg(Material.SMOOTH_STAIRS, new BlockStairs());
+        reg(Material.WOOD_STAIRS, new BlockStairs());
+        reg(Material.STEP, new BlockSlab());
+        reg(Material.WOOD_STEP, new BlockSlab());
+        reg(Material.HAY_BLOCK, new BlockHay());
+        reg(Material.QUARTZ_BLOCK, new BlockQuartz());
+        reg(Material.LOG, new BlockLog());
+        reg(Material.LOG_2, new BlockLog2());
 
         reg(Material.SIGN, new ItemSign());
         reg(Material.REDSTONE, new ItemPlaceAs(Material.REDSTONE_WIRE));

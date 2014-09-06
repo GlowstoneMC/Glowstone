@@ -9,7 +9,6 @@ import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -113,17 +112,33 @@ public class BlockType extends ItemType {
         return false;
     }
 
+    /**
+     * Called when a player attempts to place a block on an existing block of this type
+     * @param block the block to absorb
+     * @param face the face we are trying to absorb on
+     * @param item the item we are trying to get absorbed
+     * @param ignoreFace Whether we ignore the face argument, used for slabs for second check
+     * @return Whether the item be can absorbed by block
+     */
+    public boolean canAbsorb(GlowBlock block, BlockFace face, ItemStack item, boolean ignoreFace) {
+        return false;
+    }
+
     @Override
     public final void rightClickBlock(GlowPlayer player, GlowBlock against, BlockFace face, ItemStack holding, Vector clickedLoc) {
         GlowBlock target = against.getRelative(face);
         GlowBlockState newState = target.getState();
 
-        // only allow placement inside tall-grass, air, or liquid
-        if (against.getType() == Material.LONG_GRASS) {
+        // todo: change the way canAbsorb is structured, it's not quite right yet
+        // only allow placement inside absorbable blocks, air, or liquid
+        if (canAbsorb(against, face, holding, false)) {
             target = against;
+            newState = target.getState();
         } else if (!target.isEmpty() && !target.isLiquid()) {
-            //revert(player, target);
-            return;
+            if (!canAbsorb(target, face.getOppositeFace(), holding, true)) {
+                //revert(player, target);
+                return;
+            }
         }
 
         // call canBuild event
@@ -164,7 +179,6 @@ public class BlockType extends ItemType {
     /**
      * Gets the BlockFace opposite of the direction the location is facing. Usually used to set the way container blocks
      * face when being placed.
-     *
      * @param location Location to get opposite of
      * @param inverted If up/down should be used
      * @return Opposite BlockFace or EAST if pitch is invalid

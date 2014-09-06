@@ -39,7 +39,7 @@ public class BlockSign extends BlockType {
             Location loc = player.getLocation();
             // 22.5 = 360 / 16
             long facing = Math.round(loc.getYaw() / 22.5) + 8;
-            data = (byte)(((facing % 16) + 16) % 16);
+            data = (byte) (((facing % 16) + 16) % 16);
         }
         state.setRawData(data);
     }
