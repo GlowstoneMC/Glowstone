@@ -8,7 +8,7 @@ public final class PlayerLookMessage extends PlayerUpdateMessage {
 
     public PlayerLookMessage(float yaw, float pitch, boolean onGround) {
         super(onGround);
-        this.yaw = yaw;
+        this.yaw = (yaw % 360 + 360) % 360;
         this.pitch = pitch;
     }
 

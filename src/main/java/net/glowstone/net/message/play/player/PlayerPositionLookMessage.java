@@ -12,7 +12,7 @@ public final class PlayerPositionLookMessage extends PlayerUpdateMessage {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.yaw = yaw;
+        this.yaw = (yaw % 360 + 360) % 360;
         this.pitch = pitch;
     }
 
