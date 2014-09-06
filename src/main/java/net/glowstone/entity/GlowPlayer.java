@@ -266,7 +266,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         setAllowFlight(getGameMode() == GameMode.CREATIVE);
 
         // send server brand and supported plugin channels
-        session.send(new PluginMessage("MC|Brand", server.getName()));
+        session.send(PluginMessage.fromString("MC|Brand", server.getName()));
         sendSupportedChannels();
 
         // read data from player reader
@@ -1150,7 +1150,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     public void setResourcePack(String url) {
-        session.send(new PluginMessage("MC|RPack", url));
+        // todo: update for 1.8 if needed
+        session.send(PluginMessage.fromString("MC|RPack", url));
     }
 
     ////////////////////////////////////////////////////////////////////////////

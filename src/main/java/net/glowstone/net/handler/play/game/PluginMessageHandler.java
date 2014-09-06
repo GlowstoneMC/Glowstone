@@ -1,6 +1,7 @@
 package net.glowstone.net.handler.play.game;
 
 import com.flowpowered.networking.MessageHandler;
+import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.glowstone.GlowServer;
@@ -12,7 +13,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
 
 public final class PluginMessageHandler implements MessageHandler<GlowSession, PluginMessage> {
     public void handle(GlowSession session, PluginMessage message) {
@@ -63,10 +66,19 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
 
         ByteBuf buf = Unpooled.wrappedBuffer(data);
         switch (channel) {
-            case "MC|Brand":
+            case "MC|Brand": {
                 // vanilla server doesn't handle this, for now just log it
-                GlowServer.logger.info("Client brand of " + session.getPlayer().getName() + " is: " + string(data));
+                String brand = null;
+                try {
+                    brand = ByteBufUtils.readUTF8(buf);
+                } catch (IOException e) {
+                    GlowServer.logger.log(Level.WARNING, "Error reading client brand of " + session, e);
+                }
+                if (brand != null && !brand.equals("vanilla")) {
+                    GlowServer.logger.info("Client brand of " + session.getPlayer().getName() + " is: " + brand);
+                }
                 break;
+            }
             case "MC|BEdit": {
                 // read and verify stack
                 ItemStack item = GlowBufUtils.readSlot(buf);
