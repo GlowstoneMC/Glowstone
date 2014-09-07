@@ -231,7 +231,7 @@ public final class ChunkManager {
         Random random = new Random((long) x * 341873128712L + (long) z * 132897987541L);
         ChunkGenerator.BiomeGrid biomes = new BiomeGrid(x, z);
 
-        // try for extended sections
+        // extended sections
         short[][] extSections = generator.generateExtBlockSections(world, random, x, z, biomes);
         if (extSections != null) {
             GlowChunk.ChunkSection[] sections = new GlowChunk.ChunkSection[extSections.length];
@@ -239,10 +239,8 @@ public final class ChunkManager {
                 // this is sort of messy.
                 if (extSections[i] != null) {
                     sections[i] = new GlowChunk.ChunkSection();
-                    // truncate shorts down to bytes
-                    // todo: when chunk structure is updated for 1.8+, include lower 0xfff
                     for (int j = 0; j < extSections[i].length; ++j) {
-                        sections[i].types[j] = (byte) extSections[i][j];
+                        sections[i].types[j] = (char) (extSections[i][j] << 4);
                     }
                 }
             }
@@ -258,7 +256,9 @@ public final class ChunkManager {
                 // this is sort of messy.
                 if (blockSections[i] != null) {
                     sections[i] = new GlowChunk.ChunkSection();
-                    System.arraycopy(blockSections[i], 0, sections[i].types, 0, sections[i].types.length);
+                    for (int j = 0; j < blockSections[i].length; ++j) {
+                        sections[i].types[j] = (char) (blockSections[i][j] << 4);
+                    }
                 }
             }
             chunk.initializeSections(sections);
@@ -267,8 +267,6 @@ public final class ChunkManager {
 
         // deprecated flat generation
         byte[] types = generator.generate(world, random, x, z);
-        //GlowServer.logger.warning("Using deprecated generate() in generator: " + generator.getClass().getName());
-
         GlowChunk.ChunkSection[] sections = new GlowChunk.ChunkSection[8];
         for (int sy = 0; sy < sections.length; ++sy) {
             GlowChunk.ChunkSection sec = new GlowChunk.ChunkSection();
@@ -276,7 +274,8 @@ public final class ChunkManager {
             for (int cx = 0; cx < 16; ++cx) {
                 for (int cz = 0; cz < 16; ++cz) {
                     for (int cy = by; cy < by + 16; ++cy) {
-                        sec.types[sec.index(cx, cy, cz)] = types[(cx * 16 + cz) * 128 + cy];
+                        char type = (char) types[(cx * 16 + cz) * 128 + cy];
+                        sec.types[sec.index(cx, cy, cz)] = (char) (type << 4);
                     }
                 }
             }
@@ -345,6 +344,7 @@ public final class ChunkManager {
      */
     private class BiomeGrid implements ChunkGenerator.BiomeGrid {
         private final int cx, cz;
+
         public BiomeGrid(int x, int z) {
             cx = x;
             cz = z;

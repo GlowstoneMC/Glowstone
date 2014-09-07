@@ -96,17 +96,16 @@ public final class GlowChunk implements Chunk {
         private static final int ARRAY_SIZE = WIDTH * HEIGHT * SEC_DEPTH;
 
         // these probably should be made non-public
-        public final byte[] types;
-        public final NibbleArray metaData;
+        public final char[] types;
         public final NibbleArray skyLight;
         public final NibbleArray blockLight;
+        public int count; // amount of non-air blocks
 
         /**
          * Create a new, empty ChunkSection.
          */
         public ChunkSection() {
-            types = new byte[ARRAY_SIZE];
-            metaData = new NibbleArray(ARRAY_SIZE);
+            types = new char[ARRAY_SIZE];
             skyLight = new NibbleArray(ARRAY_SIZE);
             blockLight = new NibbleArray(ARRAY_SIZE);
             skyLight.fill((byte) 0xf);
@@ -117,14 +116,14 @@ public final class GlowChunk implements Chunk {
          * ChunkSection assumes ownership of the arrays passed in, and they
          * should not be further modified.
          */
-        public ChunkSection(byte[] types, NibbleArray metaData, NibbleArray skyLight, NibbleArray blockLight) {
-            if (types.length != ARRAY_SIZE || metaData.size() != ARRAY_SIZE || skyLight.size() != ARRAY_SIZE || blockLight.size() != ARRAY_SIZE) {
-                throw new IllegalArgumentException("An array length was not " + ARRAY_SIZE + ": " + types.length + " " + metaData.size() + " " + skyLight.size() + " " + blockLight.size());
+        public ChunkSection(char[] types, NibbleArray skyLight, NibbleArray blockLight) {
+            if (types.length != ARRAY_SIZE || skyLight.size() != ARRAY_SIZE || blockLight.size() != ARRAY_SIZE) {
+                throw new IllegalArgumentException("An array length was not " + ARRAY_SIZE + ": " + types.length + " " + skyLight.size() + " " + blockLight.size());
             }
             this.types = types;
-            this.metaData = metaData;
             this.skyLight = skyLight;
             this.blockLight = blockLight;
+            recount();
         }
 
         /**
@@ -138,20 +137,22 @@ public final class GlowChunk implements Chunk {
         }
 
         /**
-         * Check whether the section is empty (all blocks are air).
+         * Recount the amount of non-air blocks in the chunk section.
          */
-        public boolean isEmpty() {
-            for (byte type : types) {
-                if (type != 0) return false;
+        public void recount() {
+            count = 0;
+            for (char type : types) {
+                if (type != 0) {
+                    count++;
+                }
             }
-            return true;
         }
 
         /**
          * Take a snapshot of this section which will not reflect future changes.
          */
         public ChunkSection snapshot() {
-            return new ChunkSection(types.clone(), metaData.snapshot(), skyLight.snapshot(), blockLight.snapshot());
+            return new ChunkSection(types.clone(), skyLight.snapshot(), blockLight.snapshot());
         }
     }
 
@@ -398,7 +399,7 @@ public final class GlowChunk implements Chunk {
      */
     public int getType(int x, int z, int y) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : (section.types[section.index(x, y, z)] & 0xff);
+        return section == null ? 0 : (section.types[section.index(x, y, z)] >> 4);
     }
 
     /**
@@ -434,10 +435,21 @@ public final class GlowChunk implements Chunk {
             tileEntities.remove(tileEntityIndex).destroy();
         }
 
-        // update the type
-        section.types[section.index(x, y, z)] = (byte) type;
+        // update the air count
+        int index = section.index(x, y, z);
+        if (type == 0) {
+            if (section.types[index] != 0) {
+                section.count--;
+            }
+        } else {
+            if (section.types[index] == 0) {
+                section.count++;
+            }
+        }
+        // update the type - also sets metadata to 0
+        section.types[index] = (char) (type << 4);
 
-        if (type == 0 && section.isEmpty()) {
+        if (type == 0 && section.count == 0) {
             // destroy the empty section
             sections[y / SEC_DEPTH] = null;
             return;
@@ -456,7 +468,7 @@ public final class GlowChunk implements Chunk {
      */
     public int getMetaData(int x, int z, int y) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : section.metaData.get(section.index(x, y, z));
+        return section == null ? 0 : section.types[section.index(x, y, z)] & 0xF;
     }
 
     /**
@@ -471,7 +483,10 @@ public final class GlowChunk implements Chunk {
             throw new IllegalArgumentException("Metadata out of range: " + metaData);
         ChunkSection section = getSection(y);
         if (section == null) return;  // can't set metadata on an empty section
-        section.metaData.set(section.index(x, y, z), (byte) metaData);
+        int index = section.index(x, y, z);
+        int type = section.types[index];
+        if (type == 0) return;  // can't set metadata on air
+        section.types[index] = (char) ((type & 0xfff0) | metaData);
     }
 
     /**
@@ -622,7 +637,7 @@ public final class GlowChunk implements Chunk {
             }
 
             for (int i = 0; i < sections.length; ++i) {
-                if (sections[i] == null || sections[i].isEmpty()) {
+                if (sections[i] == null || sections[i].count == 0) {
                     // remove empty sections from bitmask
                     sectionBitmask &= ~(1 << i);
                     sectionCount--;
@@ -659,13 +674,10 @@ public final class GlowChunk implements Chunk {
         byte[] tileData = new byte[byteSize];
         pos = 0;
 
-        // todo: this probably isn't very efficient
         for (ChunkSection sec : sendSections) {
-            byte[] types = sec.types;
-            for (int i = 0; i < types.length; ++i) {
-                int t = types[i] & 0xff;
-                tileData[pos++] = (byte) ((t << 4) | sec.metaData.get(i));
-                tileData[pos++] = (byte) (t >> 4);
+            for (char t : sec.types) {
+                tileData[pos++] = (byte) (t & 0xff);
+                tileData[pos++] = (byte) (t >> 8);
             }
         }
 

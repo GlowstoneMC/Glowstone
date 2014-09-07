@@ -1,17 +1,16 @@
 package net.glowstone;
 
+import net.glowstone.GlowChunk.ChunkSection;
 import net.glowstone.constants.GlowBiome;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 
-import net.glowstone.GlowChunk.ChunkSection;
-
 /**
  * Class representing a snapshot of a chunk.
  */
 public class GlowChunkSnapshot implements ChunkSnapshot {
-    
+
     private final int x, z;
     private final String world;
     private final long time;
@@ -110,12 +109,12 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
 
     public int getBlockTypeId(int x, int y, int z) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : (section.types[section.index(x, y, z)] & 0xff);
+        return section == null ? 0 : section.types[section.index(x, y, z)] >> 4;
     }
 
     public int getBlockData(int x, int y, int z) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : section.metaData.get(section.index(x, y, z));
+        return section == null ? 0 : section.types[section.index(x, y, z)] & 0xF;
     }
 
     public int getBlockSkyLight(int x, int y, int z) {
@@ -152,7 +151,7 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
     }
 
     public static class EmptySnapshot extends GlowChunkSnapshot {
-        
+
         public EmptySnapshot(int x, int z, World world, boolean svBiome, boolean svTemp) {
             super(x, z, world, null, false, svBiome ? new byte[256] : null, svTemp);
         }
@@ -181,7 +180,7 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
         public int getHighestBlockYAt(int x, int z) {
             return 0;
         }
-        
+
     }
-    
+
 }

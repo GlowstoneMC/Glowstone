@@ -76,11 +76,17 @@ public final class AnvilChunkIoService implements ChunkIoService {
         ChunkSection[] sections = new ChunkSection[16];
         for (CompoundTag sectionTag : sectionList) {
             int y = sectionTag.getByte("Y");
-            byte[] types = sectionTag.getByteArray("Blocks");
+            byte[] rawTypes = sectionTag.getByteArray("Blocks");
+            NibbleArray extTypes = sectionTag.containsKey("Add") ? new NibbleArray(sectionTag.getByteArray("Add")) : null;
             NibbleArray data = new NibbleArray(sectionTag.getByteArray("Data"));
             NibbleArray blockLight = new NibbleArray(sectionTag.getByteArray("BlockLight"));
             NibbleArray skyLight = new NibbleArray(sectionTag.getByteArray("SkyLight"));
-            sections[y] = new ChunkSection(types, data, skyLight, blockLight);
+
+            char[] types = new char[rawTypes.length];
+            for (int i = 0; i < rawTypes.length; i++) {
+                types[i] = (char) (((extTypes == null ? 0 : extTypes.get(i)) << 12) | (rawTypes[i] << 4) | data.get(i));
+            }
+            sections[y] = new ChunkSection(types, skyLight, blockLight);
         }
 
         // initialize the chunk
@@ -156,8 +162,26 @@ public final class AnvilChunkIoService implements ChunkIoService {
 
             CompoundTag sectionTag = new CompoundTag();
             sectionTag.putByte("Y", i);
-            sectionTag.putByteArray("Blocks", sec.types);
-            sectionTag.putByteArray("Data", sec.metaData.getRawData());
+
+            byte[] rawTypes = new byte[sec.types.length];
+            NibbleArray extTypes = null;
+            NibbleArray data = new NibbleArray(sec.types.length);
+            for (int j = 0; j < sec.types.length; j++) {
+                rawTypes[j] = (byte) ((sec.types[j] >> 4) & 0xFF);
+                byte extType = (byte) (sec.types[j] >> 12);
+                if (extType > 0) {
+                    if (extTypes == null) {
+                        extTypes = new NibbleArray(sec.types.length);
+                    }
+                    extTypes.set(j, extType);
+                }
+                data.set(j, (byte) (sec.types[j] & 0xF));
+            }
+            sectionTag.putByteArray("Blocks", rawTypes);
+            if (extTypes != null) {
+                sectionTag.putByteArray("Add", extTypes.getRawData());
+            }
+            sectionTag.putByteArray("Data", data.getRawData());
             sectionTag.putByteArray("BlockLight", sec.blockLight.getRawData());
             sectionTag.putByteArray("SkyLight", sec.skyLight.getRawData());
 
