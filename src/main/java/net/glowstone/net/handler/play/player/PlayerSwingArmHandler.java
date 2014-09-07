@@ -15,7 +15,14 @@ public final class PlayerSwingArmHandler implements MessageHandler<GlowSession, 
     public void handle(GlowSession session, PlayerSwingArmMessage message) {
         final GlowPlayer player = session.getPlayer();
 
-        Block block = player.getTargetBlock(null, 6);
+        Block block;
+        try {
+            block = player.getTargetBlock(null, 6);
+        } catch (IllegalStateException ex) {
+            // getTargetBlock failed to find any block at all
+            block = null;
+        }
+
         if (block == null || block.isEmpty()) {
             if (EventFactory.onPlayerInteract(player, Action.LEFT_CLICK_AIR).isCancelled())
                 return;
