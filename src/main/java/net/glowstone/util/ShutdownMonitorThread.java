@@ -3,6 +3,7 @@ package net.glowstone.util;
 import net.glowstone.GlowServer;
 
 import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * Thread started on shutdown that monitors for and kills rogue non-daemon threads.
@@ -24,11 +25,12 @@ public class ShutdownMonitorThread extends Thread {
         try {
             Thread.sleep(DELAY);
         } catch (InterruptedException e) {
-            GlowServer.logger.severe("ShutdownMonitor interrupted");
+            GlowServer.logger.log(Level.SEVERE, "Shutdown monitor interrupted", e);
+            System.exit(0);
             return;
         }
 
-        GlowServer.logger.warning("Still running after shutdown, finding rouge threads...");
+        GlowServer.logger.warning("Still running after shutdown, finding rogue threads...");
 
         final Map<Thread, StackTraceElement[]> traces = Thread.getAllStackTraces();
         for (Map.Entry<Thread, StackTraceElement[]> entry : traces.entrySet()) {
@@ -42,13 +44,24 @@ public class ShutdownMonitorThread extends Thread {
 
             GlowServer.logger.warning("Rogue thread: " + thread);
             for (StackTraceElement trace : stack) {
-                GlowServer.logger.warning("\tat " + trace);
+                GlowServer.logger.warning("    at " + trace);
             }
 
-            // really get it out of there
+            // ask nicely to kill them
             thread.interrupt();
-            thread.stop();
+            // wait for them to die on their own
+            if (thread.isAlive()) {
+                try {
+                    thread.join(1000);
+                } catch (InterruptedException ex) {
+                    GlowServer.logger.log(Level.SEVERE, "Shutdown monitor interrupted", ex);
+                    System.exit(0);
+                    return;
+                }
+            }
         }
+        // kill them forcefully
+        System.exit(0);
     }
 
 }
