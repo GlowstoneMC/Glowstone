@@ -72,6 +72,12 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             // also, if the block dig was denied, this break might still happen
             // because a player's digging status isn't yet tracked. this is bad.
             blockBroken = true;
+        } else if (message.getState() == DiggingMessage.STATE_DROP_ITEM) {
+            player.dropItemInHand(false);
+            return;
+        } else if (message.getState() == DiggingMessage.STATE_DROP_ITEMSTACK) {
+            player.dropItemInHand(true);
+            return;
         } else {
             return;
         }

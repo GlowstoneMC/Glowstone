@@ -9,6 +9,7 @@ import net.glowstone.constants.*;
 import net.glowstone.entity.meta.ClientSettings;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
+import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.InventoryMonitor;
@@ -1683,6 +1684,20 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         updateInventory();
+    }
+
+    @Override
+    public GlowItem drop(ItemStack stack) {
+        GlowItem dropping = super.drop(stack);
+        if (dropping != null) {
+            PlayerDropItemEvent event = new PlayerDropItemEvent(this, dropping);
+            EventFactory.callEvent(event);
+            if (event.isCancelled()) {
+                dropping.remove();
+                dropping = null;
+            }
+        }
+        return dropping;
     }
 
     ////////////////////////////////////////////////////////////////////////////
