@@ -109,6 +109,8 @@ public final class ItemTable {
         reg(Material.LOG_2, new BlockLog2());
         reg(Material.LADDER, new BlockLadder());
         reg(Material.VINE, new BlockVine());
+        reg(Material.STONE_BUTTON, new BlockButton(Material.STONE_BUTTON));
+        reg(Material.WOOD_BUTTON, new BlockButton(Material.WOOD_BUTTON));
 
         reg(Material.SIGN, new ItemSign());
         reg(Material.REDSTONE, new ItemPlaceAs(Material.REDSTONE_WIRE));

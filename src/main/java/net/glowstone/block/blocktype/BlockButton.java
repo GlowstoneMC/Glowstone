@@ -6,14 +6,15 @@ import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.Lever;
+import org.bukkit.material.Button;
 import org.bukkit.material.MaterialData;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-public class BlockLever extends BlockAttachable {
+public class BlockButton extends BlockAttachable {
 
-    public BlockLever() {
-        setDrops(new ItemStack(Material.LEVER));
+    public BlockButton(Material material) {
+        setDrops(new ItemStack(material));
     }
 
     @Override
@@ -21,14 +22,29 @@ public class BlockLever extends BlockAttachable {
         final GlowBlockState state = block.getState();
         final MaterialData data = state.getData();
 
-        if (!(data instanceof Lever)) {
-            warnMaterialData(Lever.class, data);
+        if (!(data instanceof Button)) {
+            warnMaterialData(Button.class, data);
             return false;
         }
 
-        final Lever lever = (Lever) data;
-        lever.setPowered(!lever.isPowered());
+        final Button button = (Button) data;
+
+        if (button.isPowered()) {
+            return true;
+        }
+
+        button.setPowered(true);
         state.update();
+
+        // todo: switch to block scheduling system when one is available
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                button.setPowered(false);
+                state.update();
+            }
+        }.runTaskLater(null, 20);
+
         return true;
     }
 
@@ -36,16 +52,13 @@ public class BlockLever extends BlockAttachable {
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
 
-        final MaterialData data = state.getData();
+        MaterialData data = state.getData();
 
-        if (!(data instanceof Lever)) {
-            warnMaterialData(Lever.class, data);
+        if (!(data instanceof Button)) {
+            warnMaterialData(Button.class, data);
             return;
         }
 
-        final Lever lever = (Lever) data;
         setAttachedFace(state, face.getOppositeFace());
-        lever.setFacingDirection(face == BlockFace.UP || face == BlockFace.DOWN ? player.getDirection() : face);
-
     }
 }
