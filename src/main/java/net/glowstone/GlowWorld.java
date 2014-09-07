@@ -11,6 +11,7 @@ import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
+import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.generator.BlockPopulator;
@@ -1000,14 +1001,23 @@ public final class GlowWorld implements World {
         return (LivingEntity) spawn(loc, type.getEntityClass());
     }
 
+    private GlowLightningStrike strikeLightningFireEvent(final Location loc, final boolean effect) {
+        final GlowLightningStrike strike = new GlowLightningStrike(loc, effect);
+        final LightningStrikeEvent event = new LightningStrikeEvent(this, strike);
+        if (EventFactory.callEvent(event).isCancelled()) {
+            return null;
+        }
+        return strike;
+    }
+
     @Override
     public GlowLightningStrike strikeLightning(Location loc) {
-        return new GlowLightningStrike(loc, false);
+        return strikeLightningFireEvent(loc, false);
     }
 
     @Override
     public GlowLightningStrike strikeLightningEffect(Location loc) {
-        return new GlowLightningStrike(loc, true);
+        return strikeLightningFireEvent(loc, true);
     }
 
     ////////////////////////////////////////////////////////////////////////////
