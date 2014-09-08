@@ -24,7 +24,8 @@ public final class ItemTable {
         return INSTANCE;
     }
 
-    private ItemTable() {}
+    private ItemTable() {
+    }
 
     ////////////////////////////////////////////////////////////////////////////
     // Data
@@ -59,7 +60,7 @@ public final class ItemTable {
         reg(Material.GRAVEL, new BlockGravel());
         reg(Material.ICE, new BlockDropless());
         reg(Material.PACKED_ICE, new BlockDropless());
-        reg(Material.SNOW, new BlockDropless());
+        reg(Material.SNOW, new BlockSnow());
         reg(Material.SNOW_BLOCK, new BlockDropless());
         reg(Material.STONE, new BlockDirectDrops(Material.COBBLESTONE));
         reg(Material.COAL_ORE, new BlockDirectDrops(Material.COAL));
