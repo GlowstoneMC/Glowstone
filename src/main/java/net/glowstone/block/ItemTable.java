@@ -1,9 +1,7 @@
 package net.glowstone.block;
 
 import net.glowstone.block.blocktype.*;
-import net.glowstone.block.itemtype.ItemPlaceAs;
-import net.glowstone.block.itemtype.ItemSign;
-import net.glowstone.block.itemtype.ItemType;
+import net.glowstone.block.itemtype.*;
 import org.bukkit.Material;
 
 import java.util.HashMap;
@@ -120,7 +118,10 @@ public final class ItemTable {
         reg(Material.ENCHANTMENT_TABLE, new BlockEnchantmentTable());
         reg(Material.ANVIL, new BlockAnvil());
         reg(Material.BREWING_STAND, new BlockBrewingStand());
-
+        reg(Material.WATER, new BlockWater());
+        reg(Material.STATIONARY_WATER, new BlockWater());
+        reg(Material.LAVA, new BlockLava());
+        reg(Material.STATIONARY_LAVA, new BlockLava());
         reg(Material.SIGN, new ItemSign());
         reg(Material.REDSTONE, new ItemPlaceAs(Material.REDSTONE_WIRE));
         reg(Material.SUGAR_CANE, new ItemPlaceAs(Material.SUGAR_CANE_BLOCK));
@@ -131,6 +132,9 @@ public final class ItemTable {
         reg(Material.SKULL_ITEM, new ItemPlaceAs(Material.SKULL));
         reg(Material.REDSTONE_COMPARATOR, new ItemPlaceAs(Material.REDSTONE_COMPARATOR_OFF));
         reg(Material.BED, new ItemPlaceAs(Material.BED_BLOCK));
+        reg(Material.BUCKET, new ItemBucket());
+        reg(Material.WATER_BUCKET, new ItemFilledBucket(Material.WATER));
+        reg(Material.LAVA_BUCKET, new ItemFilledBucket(Material.LAVA));
     }
 
     private void reg(Material material, ItemType type) {
