@@ -242,6 +242,7 @@ public final class ChunkManager {
                     for (int j = 0; j < extSections[i].length; ++j) {
                         sections[i].types[j] = (char) (extSections[i][j] << 4);
                     }
+                    sections[i].recount();
                 }
             }
             chunk.initializeSections(sections);
@@ -259,6 +260,7 @@ public final class ChunkManager {
                     for (int j = 0; j < blockSections[i].length; ++j) {
                         sections[i].types[j] = (char) (blockSections[i][j] << 4);
                     }
+                    sections[i].recount();
                 }
             }
             chunk.initializeSections(sections);
@@ -279,6 +281,7 @@ public final class ChunkManager {
                     }
                 }
             }
+            sec.recount();
             sections[sy] = sec;
         }
         chunk.initializeSections(sections);
