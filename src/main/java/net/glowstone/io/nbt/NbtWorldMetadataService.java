@@ -6,13 +6,11 @@ import net.glowstone.io.WorldMetadataService;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
-import net.glowstone.util.nbt.Tag;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.io.*;
 import java.util.Calendar;
-import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -124,9 +122,6 @@ public class NbtWorldMetadataService implements WorldMetadataService {
 
         // save unknown tags for later
         unknownTags = level;
-        for (Map.Entry<String, Tag> entry : unknownTags.getValue().entrySet()) {
-            server.getLogger().info("Unknown world tag: " + entry.getKey() + " = " + entry.getValue());
-        }
 
         return new WorldFinalValues(seed, uid);
     }
