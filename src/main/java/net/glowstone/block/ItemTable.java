@@ -84,7 +84,7 @@ public final class ItemTable {
         reg(Material.CROPS, new BlockDirectDrops(Material.SEEDS));
         reg(Material.CAKE_BLOCK, new BlockDropless());
         reg(Material.WEB, new BlockDirectDrops(Material.STRING));
-        reg(Material.FIRE, new BlockDropless());
+        reg(Material.FIRE, new BlockFire());
         reg(Material.MONSTER_EGGS, new BlockDropless());
         reg(Material.FURNACE, new BlockFurnace());
         reg(Material.LEVER, new BlockLever());
@@ -122,6 +122,10 @@ public final class ItemTable {
     private void reg(Material material, ItemType type) {
         if (material.isBlock() != (type instanceof BlockType)) {
             throw new IllegalArgumentException("Cannot mismatch item and block: " + material + ", " + type);
+        }
+
+        if (idToType.containsKey(material.getId())) {
+            throw new IllegalArgumentException("Cannot use " + type + " for " + material + ", is already " + idToType.get(material.getId()));
         }
 
         idToType.put(material.getId(), type);

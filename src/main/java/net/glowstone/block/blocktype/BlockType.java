@@ -4,6 +4,7 @@ import net.glowstone.EventFactory;
 import net.glowstone.GlowChunk;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.ItemTable;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowPlayer;
@@ -113,33 +114,48 @@ public class BlockType extends ItemType {
     }
 
     /**
-     * Called when a player attempts to place a block on an existing block of this type
-     * @param block the block to absorb
-     * @param face the face we are trying to absorb on
-     * @param item the item we are trying to get absorbed
-     * @param ignoreFace Whether we ignore the face argument, used for slabs for second check
-     * @return Whether the item be can absorbed by block
+     * Called when a player attempts to place a block on an existing block of
+     * this type. Used to determine if the placement should occur into the air
+     * adjacent to the block (normal behavior), or absorbed into the block
+     * clicked on.
+     * @param block The block the player right-clicked
+     * @param face The face on which the click occurred
+     * @param holding The ItemStack the player was holding
+     * @return Whether the place should occur into the block given.
      */
-    public boolean canAbsorb(GlowBlock block, BlockFace face, ItemStack item, boolean ignoreFace) {
+    public boolean canAbsorb(GlowBlock block, BlockFace face, ItemStack holding) {
         return false;
+    }
+
+    /**
+     * Called to check if this block can be overridden by a block place
+     * which would occur inside it.
+     * @param block The block being targeted by the placement
+     * @param face The face on which the click occurred
+     * @param holding The ItemStack the player was holding
+     * @return Whether this block can be overridden.
+     */
+    public boolean canOverride(GlowBlock block, BlockFace face, ItemStack holding) {
+        return block.isLiquid();
     }
 
     @Override
     public final void rightClickBlock(GlowPlayer player, GlowBlock against, BlockFace face, ItemStack holding, Vector clickedLoc) {
         GlowBlock target = against.getRelative(face);
-        GlowBlockState newState = target.getState();
 
-        // todo: change the way canAbsorb is structured, it's not quite right yet
-        // only allow placement inside absorbable blocks, air, or liquid
-        if (canAbsorb(against, face, holding, false)) {
+        // check whether the block clicked against should absorb the placement
+        BlockType againstType = ItemTable.instance().getBlock(against.getTypeId());
+        if (againstType.canAbsorb(against, face, holding)) {
             target = against;
-            newState = target.getState();
-        } else if (!target.isEmpty() && !target.isLiquid()) {
-            if (!canAbsorb(target, face.getOppositeFace(), holding, true)) {
-                //revert(player, target);
+        } else if (!target.isEmpty()) {
+            // air can always be overridden
+            BlockType targetType = ItemTable.instance().getBlock(target.getTypeId());
+            if (!targetType.canOverride(target, face, holding)) {
                 return;
             }
         }
+
+        GlowBlockState newState = target.getState();
 
         // call canBuild event
         if (!EventFactory.onBlockCanBuild(target, getId(), face).isBuildable()) {

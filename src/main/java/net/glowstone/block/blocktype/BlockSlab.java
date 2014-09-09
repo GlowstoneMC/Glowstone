@@ -19,8 +19,7 @@ public class BlockSlab extends BlockType {
             state.setType(Material.DOUBLE_STEP);
             state.setRawData((byte) holding.getDurability());
             return;
-        }
-        if (state.getBlock().getType() == Material.WOOD_STEP) {
+        } else if (state.getBlock().getType() == Material.WOOD_STEP) {
             state.setType(Material.WOOD_DOUBLE_STEP);
             state.setRawData((byte) holding.getDurability());
             return;
@@ -28,7 +27,7 @@ public class BlockSlab extends BlockType {
 
         super.placeBlock(player, state, face, holding, clickedLoc);
 
-        if ((face == BlockFace.DOWN) || ((face != BlockFace.UP) && (clickedLoc.getY() >= 8.0D))) {
+        if (face == BlockFace.DOWN || (face != BlockFace.UP && clickedLoc.getY() >= 8.0D)) {
             MaterialData data = state.getData();
             if ((data instanceof Step)) {
                 ((Step) data).setInverted(true);
@@ -39,17 +38,23 @@ public class BlockSlab extends BlockType {
         }
     }
 
-    @Override
-    public boolean canAbsorb(GlowBlock block, BlockFace face, ItemStack item, boolean ignoreFace) {
-        if ((item.getType() == Material.STEP) || (item.getType() == Material.WOOD_STEP)) {
-            byte blockData = block.getData();
-            byte holdingData = (byte) item.getDurability();
+    private boolean matchingType(GlowBlock block, BlockFace face, ItemStack holding, boolean ignoreFace) {
+        byte blockData = block.getData();
+        byte holdingData = (byte) holding.getDurability();
+        return (block.getType() == Material.STEP || block.getType() == Material.WOOD_STEP) &&
+                block.getType() == holding.getType() &&
+                ((face == BlockFace.UP && blockData == holdingData) ||
+                        (face == BlockFace.DOWN && blockData - 8 == holdingData) ||
+                        (ignoreFace && blockData % 8 == holdingData));
+    }
 
-            if ((block.getType() == item.getType() && (face == BlockFace.UP && blockData == holdingData || face == BlockFace.DOWN && blockData - 8 == holdingData)) ||
-                    (ignoreFace && block.getType() == item.getType() && blockData % 8 == holdingData)) {
-                return true;
-            }
-        }
-        return false;
+    @Override
+    public boolean canOverride(GlowBlock block, BlockFace face, ItemStack holding) {
+        return matchingType(block, face, holding, true);
+    }
+
+    @Override
+    public boolean canAbsorb(GlowBlock block, BlockFace face, ItemStack holding) {
+        return matchingType(block, face, holding, false);
     }
 }
