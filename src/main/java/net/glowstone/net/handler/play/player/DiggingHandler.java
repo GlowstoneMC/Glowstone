@@ -97,6 +97,9 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             }
             // STEP_SOUND actually is the block break particles
             world.playEffectExceptTo(block.getLocation(), Effect.STEP_SOUND, block.getTypeId(), 64, player);
+            BlockType type = ItemTable.instance().getBlock(block.getType());
+            if (type != null)
+                type.onBreak(block, player, player.getItemInHand());
             block.setType(Material.AIR);
         } else if (revert) {
             // replace the block that wasn't really dug

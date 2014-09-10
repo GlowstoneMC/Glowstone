@@ -2,6 +2,7 @@ package net.glowstone.block;
 
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowWorld;
+import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
@@ -25,6 +26,14 @@ import java.util.Random;
  * Represents a single block in a world.
  */
 public final class GlowBlock implements Block {
+
+    /**
+     * The BlockFaces of a single-layer 3x3 area.
+     */
+    private static final BlockFace[] LAYER = new BlockFace[]{
+            BlockFace.NORTH_WEST, BlockFace.NORTH, BlockFace.NORTH_EAST,
+            BlockFace.EAST, BlockFace.SELF, BlockFace.WEST,
+            BlockFace.SOUTH_WEST, BlockFace.SOUTH, BlockFace.SOUTH_EAST};
 
     /**
      * The metadata store class for blocks.
@@ -192,11 +201,16 @@ public final class GlowBlock implements Block {
 
     @Override
     public boolean setTypeIdAndData(int type, byte data, boolean applyPhysics) {
+        Material oldTypeId = getType();
+        byte oldData = getData();
+
         chunk.setType(x & 0xf, z & 0xf, y, type);
         chunk.setMetaData(x & 0xf, z & 0xf, y, data);
+
         if (applyPhysics) {
-            // todo: physics
+            applyPhysics(oldTypeId, type, oldData, data);
         }
+
         BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, type, data);
         for (GlowPlayer p : getWorld().getRawPlayers()) {
             p.sendBlockChange(bcmsg);
@@ -230,10 +244,11 @@ public final class GlowBlock implements Block {
     }
 
     @Override
-    public void setData(byte data, boolean applyPhyiscs) {
+    public void setData(byte data, boolean applyPhysics) {
+        byte oldData = getData();
         chunk.setMetaData(x & 0xf, z & 0xf, y & 0x7f, data);
-        if (applyPhyiscs) {
-            // todo: physics
+        if (applyPhysics) {
+            applyPhysics(getType(), getTypeId(), oldData, data);
         }
         BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, getTypeId(), data);
         for (GlowPlayer p : getWorld().getRawPlayers()) {
@@ -370,5 +385,50 @@ public final class GlowBlock implements Block {
     @Override
     public void removeMetadata(String metadataKey, Plugin owningPlugin) {
         metadata.removeMetadata(this, metadataKey, owningPlugin);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////
+    // Physics
+
+    /**
+     * Notify this block and its surrounding blocks that this block has changed type and data.
+     * @param oldType the old block type
+     * @param newTypeId the new block type
+     * @param oldData the old data
+     * @param newData the new data
+     */
+    public void applyPhysics(Material oldType, int newTypeId, byte oldData, byte newData) {
+        // notify the surrounding blocks that this block has changed
+        ItemTable itemTable = ItemTable.instance();
+        Material newType = Material.getMaterial(newTypeId);
+
+        for (int y = -1; y <= 1; y++) {
+            for (BlockFace face : LAYER) {
+                if (y == 0 && face == BlockFace.SELF) continue;
+
+                GlowBlock notify = this.getRelative(face.getModX(), face.getModY() + y, face.getModZ());
+
+                BlockFace blockFace;
+                if (y == 0) {
+                    blockFace = face.getOppositeFace();
+                } else if (y == -1 && face == BlockFace.SELF) {
+                    blockFace = BlockFace.UP;
+                } else if (y == 1 && face == BlockFace.SELF) {
+                    blockFace = BlockFace.DOWN;
+                } else {
+                    blockFace = null;
+                }
+
+                BlockType notifyType = itemTable.getBlock(notify.getTypeId());
+                if (notifyType != null) {
+                    notifyType.onNearBlockChanged(notify, blockFace, this, oldType, oldData, newType, newData);
+                }
+            }
+        }
+
+        BlockType type = itemTable.getBlock(oldType);
+        if (type != null) {
+            type.onBlockChanged(this, oldType, oldData, newType, newData);
+        }
     }
 }
