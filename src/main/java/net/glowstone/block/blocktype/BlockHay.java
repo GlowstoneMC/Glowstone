@@ -13,18 +13,18 @@ public class BlockHay extends BlockType {
         super.placeBlock(player, state, face, holding, clickedLoc);
 
         switch (face) {
-        case NORTH:
-        case SOUTH:
-            state.setRawData((byte) 8);
-            break;
-        case WEST:
-        case EAST:
-            state.setRawData((byte) 4);
-            break;
-        case UP:
-        case DOWN:
-            state.setRawData((byte) 0);
-            break;
+            case NORTH:
+            case SOUTH:
+                state.setRawData((byte) 8);
+                break;
+            case WEST:
+            case EAST:
+                state.setRawData((byte) 4);
+                break;
+            case UP:
+            case DOWN:
+                state.setRawData((byte) 0);
+                break;
         }
     }
 }

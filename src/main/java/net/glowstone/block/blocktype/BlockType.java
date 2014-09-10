@@ -2,6 +2,7 @@ package net.glowstone.block.blocktype;
 
 import net.glowstone.EventFactory;
 import net.glowstone.GlowChunk;
+import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
@@ -14,6 +15,7 @@ import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
 import java.util.Arrays;
@@ -193,8 +195,17 @@ public class BlockType extends ItemType {
     // Helper methods
 
     /**
-     * Gets the BlockFace opposite of the direction the location is facing. Usually used to set the way container blocks
-     * face when being placed.
+     * Display the warning for finding the wrong MaterialData subclass.
+     * @param clazz The expected subclass of MaterialData.
+     * @param data The actual MaterialData found.
+     */
+    protected void warnMaterialData(Class<? extends MaterialData> clazz, MaterialData data) {
+        GlowServer.logger.warning("Wrong MaterialData for " + getMaterial() + " (" + getClass().getSimpleName() + "): expected " + clazz.getSimpleName() + ", got " + data);
+    }
+
+    /**
+     * Gets the BlockFace opposite of the direction the location is facing.
+     * Usually used to set the way container blocks face when being placed.
      * @param location Location to get opposite of
      * @param inverted If up/down should be used
      * @return Opposite BlockFace or EAST if pitch is invalid

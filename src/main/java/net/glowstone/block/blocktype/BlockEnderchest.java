@@ -1,6 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
@@ -33,8 +32,7 @@ public class BlockEnderchest extends BlockType {
             ((EnderChest) data).setFacingDirection(getOppositeBlockFace(player.getLocation(), false));
             state.setData(data);
         } else {
-            // complain?
-            GlowServer.logger.warning("Placing EnderChest: MaterialData was of wrong type");
+            warnMaterialData(EnderChest.class, data);
         }
     }
 }

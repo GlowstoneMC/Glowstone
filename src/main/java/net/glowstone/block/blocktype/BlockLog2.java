@@ -23,22 +23,22 @@ public class BlockLog2 extends BlockType {
 
     public byte setTree(BlockFace dir, byte data) {
         switch (dir) {
-        case UP:
-        case DOWN:
-        default:
-            data += 0;
-            break;
-        case WEST:
-        case EAST:
-            data += 4;
-            break;
-        case NORTH:
-        case SOUTH:
-            data += 8;
-            break;
-        case SELF:
-            data += 12;
-            break;
+            case UP:
+            case DOWN:
+            default:
+                data += 0;
+                break;
+            case WEST:
+            case EAST:
+                data += 4;
+                break;
+            case NORTH:
+            case SOUTH:
+                data += 8;
+                break;
+            case SELF:
+                data += 12;
+                break;
         }
         return data;
     }

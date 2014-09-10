@@ -1,6 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.TreeSpecies;
@@ -21,8 +20,7 @@ public class BlockLog extends BlockType {
             ((Tree) data).setDirection(face);
             ((Tree) data).setSpecies(TreeSpecies.getByData((byte) holding.getDurability()));
         } else {
-            // complain?
-            GlowServer.logger.warning("Placing Tree: MaterialData was of wrong type");
+            warnMaterialData(Tree.class, data);
         }
         state.setData(data);
     }

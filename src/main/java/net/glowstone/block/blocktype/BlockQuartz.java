@@ -16,18 +16,18 @@ public class BlockQuartz extends BlockType {
             return;
         } else {
             switch (face) {
-            case NORTH:
-            case SOUTH:
-                state.setRawData((byte) 4);
-                break;
-            case WEST:
-            case EAST:
-                state.setRawData((byte) 3);
-                break;
-            case UP:
-            case DOWN:
-                state.setRawData((byte) 2);
-                break;
+                case NORTH:
+                case SOUTH:
+                    state.setRawData((byte) 4);
+                    break;
+                case WEST:
+                case EAST:
+                    state.setRawData((byte) 3);
+                    break;
+                case UP:
+                case DOWN:
+                    state.setRawData((byte) 2);
+                    break;
             }
         }
     }

@@ -1,6 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.block.BlockFace;
@@ -25,8 +24,7 @@ public class BlockStairs extends BlockType {
 
             state.setData(data);
         } else {
-            // complain?
-            GlowServer.logger.warning("Placing Stairs: MaterialData was of wrong type");
+            warnMaterialData(Stairs.class, data);
         }
     }
 }
