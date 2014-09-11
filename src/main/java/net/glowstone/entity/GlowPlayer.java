@@ -797,8 +797,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             displayName = JsonMessage.toTextJson(playerListName);
         }
         Message updateMessage = UserListItemMessage.displayNameOne(getUniqueId(), displayName);
-        for (Player player : server.getOnlinePlayers()) {
-            ((GlowPlayer) player).getSession().send(updateMessage);
+        for (GlowPlayer player : server.getOnlinePlayers()) {
+            player.getSession().send(updateMessage);
         }
     }
 

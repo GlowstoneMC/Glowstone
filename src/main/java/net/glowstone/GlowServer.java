@@ -4,6 +4,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import net.glowstone.command.ColorCommand;
 import net.glowstone.command.TellrawCommand;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.CraftingManager;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowItemFactory;
@@ -14,8 +15,8 @@ import net.glowstone.net.SessionRegistry;
 import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.scheduler.WorldScheduler;
 import net.glowstone.util.*;
-import net.glowstone.util.bans.UuidListFile;
 import net.glowstone.util.bans.GlowBanList;
+import net.glowstone.util.bans.UuidListFile;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
 import org.bukkit.command.*;
@@ -256,6 +257,11 @@ public final class GlowServer implements Server {
      * The Bukkit UnsafeValues implementation.
      */
     private final UnsafeValues unsafeAccess = new GlowUnsafeValues();
+
+    /**
+     * An empty player array used for deprecated getOnlinePlayers.
+     */
+    private final Player[] EMPTY_PLAYER_ARRAY = new Player[0];
 
     /**
      * The server's default game mode
@@ -780,14 +786,21 @@ public final class GlowServer implements Server {
     }
 
     @Override
-    public Player[] getOnlinePlayers() {
-        ArrayList<Player> result = new ArrayList<>();
-        for (World world : getWorlds()) {
-            for (Player player : world.getPlayers()) {
+    @Deprecated
+    public Player[] _INVALID_getOnlinePlayers() {
+        return getOnlinePlayers().toArray(EMPTY_PLAYER_ARRAY);
+    }
+
+    @Override
+    public Collection<GlowPlayer> getOnlinePlayers() {
+        // todo: provide a view instead of reassembling the list each time
+        ArrayList<GlowPlayer> result = new ArrayList<>();
+        for (GlowWorld world : worlds.getWorlds()) {
+            for (GlowPlayer player : world.getRawPlayers()) {
                 result.add(player);
             }
         }
-        return result.toArray(new Player[result.size()]);
+        return result;
     }
 
     @Override

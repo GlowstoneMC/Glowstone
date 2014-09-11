@@ -60,8 +60,13 @@ public class ServerShim implements Server {
 
     // do nothing stubs
 
-    public Player[] getOnlinePlayers() {
+    @Override
+    public Player[] _INVALID_getOnlinePlayers() {
         return new Player[0];
+    }
+
+    public Collection<? extends Player> getOnlinePlayers() {
+        return Arrays.asList();
     }
 
     public int getMaxPlayers() {

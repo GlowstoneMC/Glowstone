@@ -54,7 +54,7 @@ mainClassName = "net.glowstone.GlowServer"
 
 // Extended project information
 ext.url = 'https://github.com/GlowstoneMC/Glowstone'
-ext.bukkitVersion = '1.7.9-R0.1'
+ext.bukkitVersion = '1.8-R1-SNAPSHOT'
 ext.gitDescribe = getVersionName()
 
 // Minimum Java version required
@@ -88,14 +88,13 @@ configurations.all {
 repositories {
     mavenLocal()
     mavenCentral()
-    maven { url "http://repo.bukkit.org/content/groups/public/" }
     maven { url "https://oss.sonatype.org/content/repositories/public/" }
     maven { url "http://repo.glowstone.net/content/groups/public/" }
 }
 
 // Dependencies used by our project
 dependencies {
-    compile group: 'org.bukkit', name: 'bukkit', version: project.ext.bukkitVersion
+    compile group: 'net.glowstone', name: 'glowkit', version: project.ext.bukkitVersion
     compile 'com.flowpowered:flow-networking:1.0.0-SNAPSHOT'
     compile 'jline:jline:2.11'
     //compile 'mysql:mysql-connector-java:5.1.14'
@@ -115,9 +114,9 @@ jar.manifest.mainAttributes(
         'Main-Class': mainClassName,
         'Implementation-Title': description,
         'Implementation-Version': ext.gitDescribe,
-        'Implementation-Vendor': 'SpaceManiac',
-        'Specification-Title': 'Bukkit',
+        'Implementation-Vendor': 'Glowstone Project',
+        'Specification-Title': 'Bukkit/Glowkit',
         'Specification-Version': ext.bukkitVersion,
-        'Specification-Vendor': 'Bukkit Team',
+        'Specification-Vendor': 'Glowstone Project',
         'Sealed': true
 )

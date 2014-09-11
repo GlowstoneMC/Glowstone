@@ -16,5 +16,5 @@ org/bukkit/entity/Minecart _INVALID_getDamage ()I getDamage
 org/bukkit/entity/Minecart _INVALID_setDamage (I)V setDamage
 org/bukkit/entity/Projectile _INVALID_getShooter ()Lorg/bukkit/entity/LivingEntity; getShooter
 org/bukkit/entity/Projectile _INVALID_setShooter (Lorg/bukkit/entity/LivingEntity;)V setShooter
-# org/bukkit/Bukkit _INVALID_getOnlinePlayers ()[Lorg/bukkit/entity/Player; getOnlinePlayers
-# org/bukkit/Server _INVALID_getOnlinePlayers ()[Lorg/bukkit/entity/Player; getOnlinePlayers
+org/bukkit/Bukkit _INVALID_getOnlinePlayers ()[Lorg/bukkit/entity/Player; getOnlinePlayers
+org/bukkit/Server _INVALID_getOnlinePlayers ()[Lorg/bukkit/entity/Player; getOnlinePlayers

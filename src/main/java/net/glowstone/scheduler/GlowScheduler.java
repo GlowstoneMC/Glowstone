@@ -5,6 +5,7 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import net.glowstone.GlowServer;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scheduler.BukkitWorker;
@@ -245,6 +246,60 @@ public final class GlowScheduler implements BukkitScheduler {
     @Deprecated
     public int scheduleAsyncRepeatingTask(Plugin plugin, Runnable task, long delay, long period) {
         return schedule(new GlowTask(plugin, task, false, delay, period)).getTaskId();
+    }
+
+    @Override
+    @Deprecated
+    public int scheduleSyncDelayedTask(Plugin plugin, BukkitRunnable task, long delay) {
+        return 0;
+    }
+
+    @Override
+    @Deprecated
+    public int scheduleSyncDelayedTask(Plugin plugin, BukkitRunnable task) {
+        return 0;
+    }
+
+    @Override
+    @Deprecated
+    public int scheduleSyncRepeatingTask(Plugin plugin, BukkitRunnable task, long delay, long period) {
+        return 0;
+    }
+
+    @Override
+    @Deprecated
+    public BukkitTask runTask(Plugin plugin, BukkitRunnable task) throws IllegalArgumentException {
+        return task.runTask(plugin);
+    }
+
+    @Override
+    @Deprecated
+    public BukkitTask runTaskAsynchronously(Plugin plugin, BukkitRunnable task) throws IllegalArgumentException {
+        return task.runTaskAsynchronously(plugin);
+    }
+
+    @Override
+    @Deprecated
+    public BukkitTask runTaskLater(Plugin plugin, BukkitRunnable task, long delay) throws IllegalArgumentException {
+        return task.runTaskLater(plugin, delay);
+    }
+
+    @Override
+    @Deprecated
+    public BukkitTask runTaskLaterAsynchronously(Plugin plugin, BukkitRunnable task, long delay) throws IllegalArgumentException {
+        return task.runTaskLater(plugin, delay);
+    }
+
+    @Override
+    @Deprecated
+    public BukkitTask runTaskTimer(Plugin plugin, BukkitRunnable task, long delay, long period) throws IllegalArgumentException {
+        return task.runTaskTimer(plugin, delay, period);
+    }
+
+    @Override
+    @Deprecated
+    public BukkitTask runTaskTimerAsynchronously(Plugin plugin, BukkitRunnable task, long delay, long period) throws IllegalArgumentException {
+        return task.runTaskTimerAsynchronously(plugin, delay, period);
     }
 
     @Override

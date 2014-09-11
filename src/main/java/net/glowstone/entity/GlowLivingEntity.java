@@ -342,42 +342,42 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     @Override
     public void _INVALID_damage(int amount) {
-        throw new UnsupportedOperationException("Invalid/deprecated method");
+        damage(amount);
     }
 
     @Override
     public int _INVALID_getLastDamage() {
-        throw new UnsupportedOperationException("Invalid/deprecated method");
+        return (int) getLastDamage();
     }
 
     @Override
     public void _INVALID_setLastDamage(int damage) {
-        throw new UnsupportedOperationException("Invalid/deprecated method");
+        setLastDamage(damage);
     }
 
     @Override
     public void _INVALID_setMaxHealth(int health) {
-        throw new UnsupportedOperationException("Invalid/deprecated method");
+        setMaxHealth(health);
     }
 
     @Override
     public int _INVALID_getMaxHealth() {
-        throw new UnsupportedOperationException("Invalid/deprecated method");
+        return (int) getMaxHealth();
     }
 
     @Override
     public void _INVALID_damage(int amount, Entity source) {
-        throw new UnsupportedOperationException("Invalid/deprecated method");
+        damage(amount, source);
     }
 
     @Override
     public int _INVALID_getHealth() {
-        throw new UnsupportedOperationException("Invalid/deprecated method");
+        return (int) getHealth();
     }
 
     @Override
     public void _INVALID_setHealth(int health) {
-        throw new UnsupportedOperationException("Invalid/deprecated method");
+        setHealth(health);
     }
 
     ////////////////////////////////////////////////////////////////////////////
