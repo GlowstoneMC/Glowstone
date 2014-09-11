@@ -25,22 +25,21 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 publishing {
     publications {
         maven(MavenPublication) {
-            from components.shadow
+            artifact remap.outputJar
             artifact sourcesJar
             artifact javadocJar
 
             repositories {
                 maven {
+                    // credentials
                     credentials {
                         username System.getenv("sonatypeUsername")
                         password System.getenv("sonatypePassword")
                     }
-                    // Tasks and variables based on if release or snapshot
+                    // url depends on version
                     if (version.endsWith('-SNAPSHOT')) {
-                        // Set variable to snapshots repository URL
                         url = 'http://repo.glowstone.net/content/repositories/snapshots/'
                     } else {
-                        // Set variable to releases repository URL
                         url = 'http://repo.glowstone.net/content/repositories/releases/'
                     }
                 }

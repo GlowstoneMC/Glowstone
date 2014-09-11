@@ -1,11 +1,12 @@
 // Tasks to perform when no task is specified
-defaultTasks 'clean', 'build', 'shadowJar'
+defaultTasks 'clean', 'build', 'remap'
 
 // Plugins used
-apply plugin: 'java' // Specifies a java project, allows for javadoc generation etc.
-apply plugin: 'application' // Adds the 'gradle run' task
+apply plugin: 'java' // Specifies a java project
+apply plugin: 'application' // Adds the 'run' task
 apply plugin: 'project-report' // Adds project report tasks
-apply plugin: 'com.github.johnrengelman.shadow' // Allows for dependency shading
+apply plugin: 'com.github.johnrengelman.shadow' // Provides dependency shading
+apply plugin: 'net.glowstone.remapper' // Provides method remapping
 apply from: 'etc/publish.gradle'
 
 // Methods to determine detailed version string
@@ -69,9 +70,12 @@ compileJava {
 buildscript {
     repositories {
         jcenter()
+        maven { url "http://repo.glowstone.net/content/groups/public/" }
     }
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:1.1.1'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.1.2'
+        classpath 'net.glowstone:remapper:1.0'
+        classpath 'org.ow2.asm:asm:5.0.3'
     }
 }
 
@@ -96,8 +100,14 @@ dependencies {
     compile 'jline:jline:2.11'
     //compile 'mysql:mysql-connector-java:5.1.14'
     //compile 'org.xerial:sqlite-jdbc:3.7.2'
-    compile 'org.slf4j:slf4j-jdk14:1.7.5'
+    compile 'org.slf4j:slf4j-jdk14:1.7.7'
     testCompile 'junit:junit:4.8.1'
+}
+
+// Remap plugin settings
+remap {
+    mappingFile = file('etc/remapper.txt')
+    inputTask = shadowJar
 }
 
 // Jar manifest information
@@ -107,7 +117,7 @@ jar.manifest.mainAttributes(
         'Implementation-Version': ext.gitDescribe,
         'Implementation-Vendor': 'SpaceManiac',
         'Specification-Title': 'Bukkit',
-        'Specification-Version': project.ext.bukkitVersion,
+        'Specification-Version': ext.bukkitVersion,
         'Specification-Vendor': 'Bukkit Team',
         'Sealed': true
 )
