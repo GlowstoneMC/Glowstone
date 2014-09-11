@@ -118,11 +118,13 @@ public class GlowBanList extends JsonListFile implements BanList {
         save();
     }
 
+    @Override
     public BanEntry getBanEntry(String target) {
         expungeBans();
         return entryMap.get(target).clone();
     }
 
+    @Override
     public BanEntry addBan(String target, String reason, Date expires, String source) {
         GlowBanEntry entry = new GlowBanEntry(this, target, reason, new Date(), expires, source);
         entryMap.put(target, entry);
@@ -130,6 +132,7 @@ public class GlowBanList extends JsonListFile implements BanList {
         return entry.clone();
     }
 
+    @Override
     public Set<BanEntry> getBanEntries() {
         expungeBans();
         Set<BanEntry> result = new HashSet<>(entryMap.size());
@@ -139,11 +142,13 @@ public class GlowBanList extends JsonListFile implements BanList {
         return result;
     }
 
+    @Override
     public boolean isBanned(String target) {
         expungeBans();
         return entryMap.containsKey(target);
     }
 
+    @Override
     public void pardon(String target) {
         entryMap.remove(target);
         save();

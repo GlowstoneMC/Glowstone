@@ -10,10 +10,12 @@ import net.glowstone.net.message.play.entity.SpawnMobMessage;
 import java.io.IOException;
 
 public final class SpawnMobCodec implements Codec<SpawnMobMessage> {
+    @Override
     public SpawnMobMessage decode(ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode SpawnMobMessage");
     }
 
+    @Override
     public ByteBuf encode(ByteBuf buf, SpawnMobMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         buf.writeByte(message.getType());

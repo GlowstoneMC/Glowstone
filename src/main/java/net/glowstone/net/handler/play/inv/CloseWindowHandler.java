@@ -7,6 +7,7 @@ import net.glowstone.net.message.play.inv.CloseWindowMessage;
 import org.bukkit.GameMode;
 
 public final class CloseWindowHandler implements MessageHandler<GlowSession, CloseWindowMessage> {
+    @Override
     public void handle(GlowSession session, CloseWindowMessage message) {
         final GlowPlayer player = session.getPlayer();
 

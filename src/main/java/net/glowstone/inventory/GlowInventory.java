@@ -139,42 +139,52 @@ public class GlowInventory implements Inventory {
     ////////////////////////////////////////////////////////////////////////////
     // Basic Stuff
 
+    @Override
     public final int getSize() {
         return slots.length;
     }
 
+    @Override
     public final InventoryType getType() {
         return type;
     }
 
+    @Override
     public InventoryHolder getHolder() {
         return owner;
     }
 
+    @Override
     public final String getName() {
         return title;
     }
 
+    @Override
     public final String getTitle() {
         return title;
     }
 
+    @Override
     public int getMaxStackSize() {
         return maxStackSize;
     }
 
+    @Override
     public void setMaxStackSize(int size) {
         this.maxStackSize = size;
     }
 
+    @Override
     public List<HumanEntity> getViewers() {
         return new ArrayList<>(viewers);
     }
 
+    @Override
     public ListIterator<ItemStack> iterator() {
         return new InventoryIterator(this);
     }
 
+    @Override
     public ListIterator<ItemStack> iterator(int index) {
         if (index < 0) {
             // negative indices go from back
@@ -186,14 +196,17 @@ public class GlowInventory implements Inventory {
     ////////////////////////////////////////////////////////////////////////////
     // Get, Set, Add, Remove
 
+    @Override
     public ItemStack getItem(int index) {
         return slots[index];
     }
 
+    @Override
     public void setItem(int index, ItemStack item) {
         slots[index] = item;
     }
 
+    @Override
     public HashMap<Integer, ItemStack> addItem(ItemStack... items) {
         HashMap<Integer, ItemStack> result = new HashMap<>();
 
@@ -235,6 +248,7 @@ public class GlowInventory implements Inventory {
         return result;
     }
 
+    @Override
     public HashMap<Integer, ItemStack> removeItem(ItemStack... items) {
         HashMap<Integer, ItemStack> result = new HashMap<>();
 
@@ -264,10 +278,12 @@ public class GlowInventory implements Inventory {
         return result;
     }
 
+    @Override
     public ItemStack[] getContents() {
         return slots;
     }
 
+    @Override
     public void setContents(ItemStack[] items) {
         if (items.length != slots.length) {
             throw new IllegalArgumentException("Length of items must be " + slots.length);
@@ -278,18 +294,22 @@ public class GlowInventory implements Inventory {
     ////////////////////////////////////////////////////////////////////////////
     // Contains
 
+    @Override
     public boolean contains(int materialId) {
         return first(materialId) >= 0;
     }
 
+    @Override
     public boolean contains(Material material) {
         return first(material) >= 0;
     }
 
+    @Override
     public boolean contains(ItemStack item) {
         return first(item) >= 0;
     }
 
+    @Override
     public boolean contains(int materialId, int amount) {
         HashMap<Integer, ? extends ItemStack> found = all(materialId);
         int total = 0;
@@ -299,14 +319,17 @@ public class GlowInventory implements Inventory {
         return total >= amount;
     }
 
+    @Override
     public boolean contains(Material material, int amount) {
         return contains(material.getId(), amount);
     }
 
+    @Override
     public boolean contains(ItemStack item, int amount) {
         return contains(item.getTypeId(), amount);
     }
 
+    @Override
     public boolean containsAtLeast(ItemStack item, int amount) {
         return false;  // todo
     }
@@ -314,6 +337,7 @@ public class GlowInventory implements Inventory {
     ////////////////////////////////////////////////////////////////////////////
     // Find all
 
+    @Override
     public HashMap<Integer, ItemStack> all(int materialId) {
         HashMap<Integer, ItemStack> result = new HashMap<>();
         for (int i = 0; i < slots.length; ++i) {
@@ -324,10 +348,12 @@ public class GlowInventory implements Inventory {
         return result;
     }
 
+    @Override
     public HashMap<Integer, ItemStack> all(Material material) {
         return all(material.getId());
     }
 
+    @Override
     public HashMap<Integer, ItemStack> all(ItemStack item) {
         HashMap<Integer, ItemStack> result = new HashMap<>();
         for (int i = 0; i < slots.length; ++i) {
@@ -341,6 +367,7 @@ public class GlowInventory implements Inventory {
     ////////////////////////////////////////////////////////////////////////////
     // Find first
 
+    @Override
     public int first(int materialId) {
         for (int i = 0; i < slots.length; ++i) {
             if (slots[i] != null && slots[i].getTypeId() == materialId) return i;
@@ -348,10 +375,12 @@ public class GlowInventory implements Inventory {
         return -1;
     }
 
+    @Override
     public int first(Material material) {
         return first(material.getId());
     }
 
+    @Override
     public int first(ItemStack item) {
         for (int i = 0; i < slots.length; ++i) {
             if (slots[i] != null && slots[i].equals(item)) return i;
@@ -359,6 +388,7 @@ public class GlowInventory implements Inventory {
         return -1;
     }
 
+    @Override
     public int firstEmpty() {
         for (int i = 0; i < slots.length; ++i) {
             if (slots[i] == null) return i;
@@ -369,6 +399,7 @@ public class GlowInventory implements Inventory {
     ////////////////////////////////////////////////////////////////////////////
     // Remove
 
+    @Override
     public void remove(int materialId) {
         HashMap<Integer, ? extends ItemStack> stacks = all(materialId);
         for (Integer slot : stacks.keySet()) {
@@ -376,6 +407,7 @@ public class GlowInventory implements Inventory {
         }
     }
 
+    @Override
     public void remove(Material material) {
         HashMap<Integer, ? extends ItemStack> stacks = all(material);
         for (Integer slot : stacks.keySet()) {
@@ -383,6 +415,7 @@ public class GlowInventory implements Inventory {
         }
     }
 
+    @Override
     public void remove(ItemStack item) {
         HashMap<Integer, ? extends ItemStack> stacks = all(item);
         for (Integer slot : stacks.keySet()) {
@@ -393,10 +426,12 @@ public class GlowInventory implements Inventory {
     ////////////////////////////////////////////////////////////////////////////
     // Clear
 
+    @Override
     public void clear(int index) {
         setItem(index, null);
     }
 
+    @Override
     public void clear() {
         for (int i = 0; i < slots.length; ++i) {
             clear(i);

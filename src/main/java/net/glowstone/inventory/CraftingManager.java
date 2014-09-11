@@ -212,6 +212,7 @@ public final class CraftingManager implements Iterable<Recipe> {
         return null;
     }
 
+    @Override
     public Iterator<Recipe> iterator() {
         return Iterators.concat(shapedRecipes.iterator(), shapelessRecipes.iterator(), furnaceRecipes.iterator());
     }

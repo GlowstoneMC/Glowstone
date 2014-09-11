@@ -38,6 +38,7 @@ public final class GlowCreature extends GlowLivingEntity implements Creature {
         this.type = type;
     }
 
+    @Override
     public EntityType getType() {
         return type;
     }
@@ -62,10 +63,12 @@ public final class GlowCreature extends GlowLivingEntity implements Creature {
         return result;
     }
 
+    @Override
     public void setTarget(LivingEntity target) {
         this.target = target;
     }
 
+    @Override
     public LivingEntity getTarget() {
         return target;
     }

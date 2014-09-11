@@ -353,10 +353,12 @@ public final class ChunkManager {
             cz = z;
         }
 
+        @Override
         public Biome getBiome(int x, int z) {
             return world.getBiome((cx << 4) | x, (cz << 4) | z);
         }
 
+        @Override
         public void setBiome(int x, int z, Biome bio) {
             world.setBiome((cx << 4) | x, (cz << 4) | z, bio);
         }
@@ -419,6 +421,7 @@ public final class ChunkManager {
             return "ChunkLock{" + desc + "}";
         }
 
+        @Override
         public Iterator<GlowChunk.Key> iterator() {
             return keys.iterator();
         }

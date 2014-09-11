@@ -11,10 +11,12 @@ import java.io.IOException;
 import java.util.List;
 
 public final class MultiBlockChangeCodec implements Codec<MultiBlockChangeMessage> {
+    @Override
     public MultiBlockChangeMessage decode(ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode MultiBlockChangeMessage");
     }
 
+    @Override
     public ByteBuf encode(ByteBuf buf, MultiBlockChangeMessage message) throws IOException {
         final List<BlockChangeMessage> records = message.getRecords();
 

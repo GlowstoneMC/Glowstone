@@ -56,42 +56,52 @@ final class GlowBanEntry implements JsonListFile.BaseEntry, BanEntry, Cloneable 
         return result;
     }
 
+    @Override
     public String getTarget() {
         return target;
     }
 
+    @Override
     public Date getCreated() {
         return copy(created);
     }
 
+    @Override
     public void setCreated(Date created) {
         this.created = copy(created);
     }
 
+    @Override
     public String getSource() {
         return source;
     }
 
+    @Override
     public void setSource(String source) {
         this.source = source;
     }
 
+    @Override
     public Date getExpiration() {
         return copy(expires);
     }
 
+    @Override
     public void setExpiration(Date expiration) {
         expires = copy(expiration);
     }
 
+    @Override
     public String getReason() {
         return reason;
     }
 
+    @Override
     public void setReason(String reason) {
         this.reason = reason;
     }
 
+    @Override
     public void save() {
         list.putEntry(this);
     }
@@ -100,6 +110,7 @@ final class GlowBanEntry implements JsonListFile.BaseEntry, BanEntry, Cloneable 
         return d == null ? null : (Date) d.clone();
     }
 
+    @Override
     protected GlowBanEntry clone() {
         try {
             GlowBanEntry result = (GlowBanEntry) super.clone();

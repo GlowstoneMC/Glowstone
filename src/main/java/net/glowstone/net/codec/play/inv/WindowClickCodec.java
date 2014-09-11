@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import java.io.IOException;
 
 public final class WindowClickCodec implements Codec<WindowClickMessage> {
+    @Override
     public WindowClickMessage decode(ByteBuf buf) throws IOException {
         int id = buf.readUnsignedByte();
         int slot = buf.readShort();
@@ -19,6 +20,7 @@ public final class WindowClickCodec implements Codec<WindowClickMessage> {
         return new WindowClickMessage(id, slot, button, action, mode, item);
     }
 
+    @Override
     public ByteBuf encode(ByteBuf buf, WindowClickMessage message) throws IOException {
         buf.writeByte(message.getId());
         buf.writeShort(message.getSlot());

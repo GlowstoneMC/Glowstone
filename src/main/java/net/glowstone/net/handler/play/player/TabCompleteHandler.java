@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 public final class TabCompleteHandler implements MessageHandler<GlowSession, TabCompleteMessage> {
+    @Override
     public void handle(GlowSession session, TabCompleteMessage message) {
         final Player sender = session.getPlayer();
         final String buffer = message.getText();

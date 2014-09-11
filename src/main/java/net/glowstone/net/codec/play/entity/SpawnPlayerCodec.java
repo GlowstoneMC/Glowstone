@@ -10,10 +10,12 @@ import net.glowstone.net.message.play.entity.SpawnPlayerMessage;
 import java.io.IOException;
 
 public final class SpawnPlayerCodec implements Codec<SpawnPlayerMessage> {
+    @Override
     public SpawnPlayerMessage decode(ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode SpawnPlayerMessage");
     }
 
+    @Override
     public ByteBuf encode(ByteBuf buf, SpawnPlayerMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         GlowBufUtils.writeUuid(buf, message.getUuid());

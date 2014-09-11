@@ -46,10 +46,12 @@ class GlowMetaItem implements ItemMeta {
         return material != Material.AIR;
     }
 
+    @Override
     public ItemMeta clone() {
         return new GlowMetaItem(this);
     }
 
+    @Override
     public Map<String, Object> serialize() {
         Map<String, Object> result = new HashMap<>();
         result.put("meta-type", "UNSPECIFIC");
@@ -104,26 +106,32 @@ class GlowMetaItem implements ItemMeta {
     ////////////////////////////////////////////////////////////////////////////
     // Basic properties
 
+    @Override
     public boolean hasDisplayName() {
         return !Strings.isNullOrEmpty(displayName);
     }
 
+    @Override
     public String getDisplayName() {
         return displayName;
     }
 
+    @Override
     public void setDisplayName(String name) {
         displayName = name;
     }
 
+    @Override
     public boolean hasLore() {
         return lore != null && !lore.isEmpty();
     }
 
+    @Override
     public List<String> getLore() {
         return lore;
     }
 
+    @Override
     public void setLore(List<String> lore) {
         // todo: fancy validation things
         this.lore = lore;
@@ -132,22 +140,27 @@ class GlowMetaItem implements ItemMeta {
     ////////////////////////////////////////////////////////////////////////////
     // Enchants
 
+    @Override
     public boolean hasEnchants() {
         return enchants != null && !enchants.isEmpty();
     }
 
+    @Override
     public boolean hasEnchant(Enchantment ench) {
         return hasEnchants() && enchants.containsKey(ench);
     }
 
+    @Override
     public int getEnchantLevel(Enchantment ench) {
         return hasEnchant(ench) ? enchants.get(ench) : 0;
     }
 
+    @Override
     public Map<Enchantment, Integer> getEnchants() {
         return hasEnchants() ? Collections.unmodifiableMap(enchants) : Collections.<Enchantment, Integer>emptyMap();
     }
 
+    @Override
     public boolean addEnchant(Enchantment ench, int level, boolean ignoreLevelRestriction) {
         if (enchants == null) {
             enchants = new HashMap<>(4);
@@ -160,10 +173,12 @@ class GlowMetaItem implements ItemMeta {
         return false;
     }
 
+    @Override
     public boolean removeEnchant(Enchantment ench) {
         return hasEnchants() && enchants.remove(ench) != null;
     }
 
+    @Override
     public boolean hasConflictingEnchant(Enchantment ench) {
         return false;
     }

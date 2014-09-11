@@ -7,6 +7,7 @@ import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.PlayerActionMessage;
 
 public final class PlayerActionHandler implements MessageHandler<GlowSession, PlayerActionMessage> {
+    @Override
     public void handle(GlowSession session, PlayerActionMessage message) {
         final GlowPlayer player = session.getPlayer();
 

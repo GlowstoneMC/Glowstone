@@ -9,10 +9,12 @@ import net.glowstone.net.message.play.game.PlayParticleMessage;
 import java.io.IOException;
 
 public final class PlayParticleCodec implements Codec<PlayParticleMessage> {
+    @Override
     public PlayParticleMessage decode(ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode PlayParticleMessage");
     }
 
+    @Override
     public ByteBuf encode(ByteBuf buf, PlayParticleMessage message) throws IOException {
         ByteBufUtils.writeUTF8(buf, message.getParticle());
         buf.writeBoolean(message.getLongDistance());

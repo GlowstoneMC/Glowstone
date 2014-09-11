@@ -122,10 +122,12 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     ////////////////////////////////////////////////////////////////////////////
     // Interface implementation
 
+    @Override
     public ItemStack[] getArmorContents() {
         return armor;
     }
 
+    @Override
     public void setArmorContents(ItemStack[] items) {
         if (items.length != 4) {
             throw new IllegalArgumentException("Length of armor must be 4");
@@ -135,50 +137,62 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         }
     }
 
+    @Override
     public ItemStack getHelmet() {
         return getItem(HELMET_SLOT);
     }
 
+    @Override
     public ItemStack getChestplate() {
         return getItem(CHESTPLATE_SLOT);
     }
 
+    @Override
     public ItemStack getLeggings() {
         return getItem(LEGGINGS_SLOT);
     }
 
+    @Override
     public ItemStack getBoots() {
         return getItem(BOOTS_SLOT);
     }
 
+    @Override
     public void setHelmet(ItemStack helmet) {
         setItem(HELMET_SLOT, helmet);
     }
 
+    @Override
     public void setChestplate(ItemStack chestplate) {
         setItem(CHESTPLATE_SLOT, chestplate);
     }
 
+    @Override
     public void setLeggings(ItemStack leggings) {
         setItem(LEGGINGS_SLOT, leggings);
     }
 
+    @Override
     public void setBoots(ItemStack boots) {
         setItem(BOOTS_SLOT, boots);
     }
 
+    @Override
     public ItemStack getItemInHand() {
         return getItem(heldSlot);
     }
 
+    @Override
     public void setItemInHand(ItemStack stack) {
         setItem(heldSlot, stack);
     }
 
+    @Override
     public int getHeldItemSlot() {
         return heldSlot;
     }
 
+    @Override
     public void setHeldItemSlot(int slot) {
         setRawHeldItemSlot(slot);
 
@@ -187,6 +201,7 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         }
     }
 
+    @Override
     public int clear(int id, int data) {
         int cleared = 0;
         for (int i = 0; i < getSize(); ++i) {
@@ -202,42 +217,52 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     ////////////////////////////////////////////////////////////////////////////
     // EntityEquipment implementation
 
+    @Override
     public float getItemInHandDropChance() {
         return 1;
     }
 
+    @Override
     public void setItemInHandDropChance(float chance) {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public float getHelmetDropChance() {
         return 1;
     }
 
+    @Override
     public void setHelmetDropChance(float chance) {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public float getChestplateDropChance() {
         return 1;
     }
 
+    @Override
     public void setChestplateDropChance(float chance) {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public float getLeggingsDropChance() {
         return 1;
     }
 
+    @Override
     public void setLeggingsDropChance(float chance) {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public float getBootsDropChance() {
         return 1;
     }
 
+    @Override
     public void setBootsDropChance(float chance) {
         throw new UnsupportedOperationException();
     }

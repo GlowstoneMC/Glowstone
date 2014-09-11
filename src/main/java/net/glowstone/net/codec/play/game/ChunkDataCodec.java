@@ -9,10 +9,12 @@ import java.io.IOException;
 
 public final class ChunkDataCodec implements Codec<ChunkDataMessage> {
 
+    @Override
     public ChunkDataMessage decode(ByteBuf buffer) throws IOException {
         throw new RuntimeException("Cannot decode ChunkDataMessage");
     }
 
+    @Override
     public ByteBuf encode(ByteBuf buf, ChunkDataMessage message) throws IOException {
         buf.writeInt(message.getX());
         buf.writeInt(message.getZ());

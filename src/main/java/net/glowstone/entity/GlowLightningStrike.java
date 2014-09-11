@@ -31,10 +31,12 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
         this.ticksToLive = 30;
     }
 
+    @Override
     public EntityType getType() {
         return EntityType.LIGHTNING;
     }
 
+    @Override
     public boolean isEffect() {
         return effect;
     }

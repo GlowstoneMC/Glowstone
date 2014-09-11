@@ -9,10 +9,12 @@ import net.glowstone.net.message.play.player.TabCompleteResponseMessage;
 import java.io.IOException;
 
 public final class TabCompleteResponseCodec implements Codec<TabCompleteResponseMessage> {
+    @Override
     public TabCompleteResponseMessage decode(ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode TabCompleteResponseMessage");
     }
 
+    @Override
     public ByteBuf encode(ByteBuf buf, TabCompleteResponseMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getCompletions().size());
         for (String completion : message.getCompletions()) {

@@ -19,6 +19,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 public final class DiggingHandler implements MessageHandler<GlowSession, DiggingMessage> {
+    @Override
     public void handle(GlowSession session, DiggingMessage message) {
         final GlowPlayer player = session.getPlayer();
         GlowWorld world = player.getWorld();

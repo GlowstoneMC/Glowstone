@@ -76,18 +76,22 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     ////////////////////////////////////////////////////////////////////////////
     // Core properties
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public UUID getUniqueId() {
         return uuid;
     }
 
+    @Override
     public boolean isOnline() {
         return getPlayer() != null;
     }
 
+    @Override
     public Player getPlayer() {
         if (uuid != null) {
             return server.getPlayer(uuid);
@@ -99,18 +103,22 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     ////////////////////////////////////////////////////////////////////////////
     // Player properties
 
+    @Override
     public boolean hasPlayedBefore() {
         return hasPlayed;
     }
 
+    @Override
     public long getFirstPlayed() {
         return firstPlayed;
     }
 
+    @Override
     public long getLastPlayed() {
         return lastPlayed;
     }
 
+    @Override
     public Location getBedSpawnLocation() {
         return bedSpawn;
     }
@@ -118,19 +126,23 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     ////////////////////////////////////////////////////////////////////////////
     // Ban, op, whitelist
 
+    @Override
     public boolean isBanned() {
         return server.getBanList(BanList.Type.NAME).isBanned(name);
     }
 
+    @Override
     @Deprecated
     public void setBanned(boolean banned) {
         server.getBanList(BanList.Type.NAME).addBan(name, null, null, null);
     }
 
+    @Override
     public boolean isWhitelisted() {
         return server.getWhitelist().containsUUID(uuid);
     }
 
+    @Override
     public void setWhitelisted(boolean value) {
         if (value) {
             server.getWhitelist().add(this);
@@ -139,10 +151,12 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
         }
     }
 
+    @Override
     public boolean isOp() {
         return server.getOpsList().containsUUID(uuid);
     }
 
+    @Override
     public void setOp(boolean value) {
         if (value) {
             server.getOpsList().add(this);
@@ -154,6 +168,7 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     ////////////////////////////////////////////////////////////////////////////
     // Serialization
 
+    @Override
     public Map<String, Object> serialize() {
         Map<String, Object> ret = new HashMap<>();
         ret.put("UUID", uuid.toString());

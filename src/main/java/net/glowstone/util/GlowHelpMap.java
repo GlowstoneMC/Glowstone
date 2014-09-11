@@ -30,6 +30,7 @@ public final class GlowHelpMap implements HelpMap {
         this.defaultTopic = new IndexHelpTopic("Index", null, null, helpTopics.values(), "Use /help [n] to get page n of help.");
     }
 
+    @Override
     public synchronized HelpTopic getHelpTopic(String topicName) {
         if (topicName.equals("")) {
             return defaultTopic;
@@ -38,20 +39,24 @@ public final class GlowHelpMap implements HelpMap {
         return helpTopics.get(topicName);
     }
 
+    @Override
     public Collection<HelpTopic> getHelpTopics() {
         return helpTopics.values();
     }
 
+    @Override
     public synchronized void addTopic(HelpTopic topic) {
         if (!helpTopics.containsKey(topic.getName())) {
             helpTopics.put(topic.getName(), topic);
         }
     }
 
+    @Override
     public void clear() {
         helpTopics.clear();
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public void registerHelpTopicFactory(Class commandClass, HelpTopicFactory factory) {
         if (!Command.class.isAssignableFrom(commandClass) && !CommandExecutor.class.isAssignableFrom(commandClass)) {
@@ -60,6 +65,7 @@ public final class GlowHelpMap implements HelpMap {
         topicFactoryMap.put(commandClass, factory);
     }
 
+    @Override
     public List<String> getIgnoredPlugins() {
         return Arrays.asList();
     }

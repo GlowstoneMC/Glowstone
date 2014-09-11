@@ -11,6 +11,7 @@ import org.bukkit.block.Block;
 import org.bukkit.event.block.Action;
 
 public final class PlayerSwingArmHandler implements MessageHandler<GlowSession, PlayerSwingArmMessage> {
+    @Override
     public void handle(GlowSession session, PlayerSwingArmMessage message) {
         final GlowPlayer player = session.getPlayer();
 

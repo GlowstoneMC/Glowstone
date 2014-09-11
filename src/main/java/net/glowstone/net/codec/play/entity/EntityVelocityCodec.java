@@ -9,10 +9,12 @@ import net.glowstone.net.message.play.entity.EntityVelocityMessage;
 import java.io.IOException;
 
 public final class EntityVelocityCodec implements Codec<EntityVelocityMessage> {
+    @Override
     public EntityVelocityMessage decode(ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode EntityVelocityMessage");
     }
 
+    @Override
     public ByteBuf encode(ByteBuf buf, EntityVelocityMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         buf.writeShort(message.getVelocityX());

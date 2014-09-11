@@ -88,18 +88,22 @@ public final class GlowItem extends GlowEntity implements Item {
     ////////////////////////////////////////////////////////////////////////////
     // Item stuff
 
+    @Override
     public int getPickupDelay() {
         return pickupDelay;
     }
 
+    @Override
     public void setPickupDelay(int delay) {
         pickupDelay = delay;
     }
 
+    @Override
     public ItemStack getItemStack() {
         return metadata.getItem(MetadataIndex.ITEM_ITEM);
     }
 
+    @Override
     public void setItemStack(ItemStack stack) {
         // stone is the "default state" for the item stack according to the client
         metadata.set(MetadataIndex.ITEM_ITEM, stack == null ? new ItemStack(Material.STONE) : stack.clone());

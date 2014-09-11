@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public final class WindowClickHandler implements MessageHandler<GlowSession, WindowClickMessage> {
+    @Override
     public void handle(GlowSession session, WindowClickMessage message) {
         boolean result = false;
         try {

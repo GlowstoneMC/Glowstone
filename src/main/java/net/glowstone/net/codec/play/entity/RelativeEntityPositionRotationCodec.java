@@ -9,10 +9,12 @@ import net.glowstone.net.message.play.entity.RelativeEntityPositionRotationMessa
 import java.io.IOException;
 
 public final class RelativeEntityPositionRotationCodec implements Codec<RelativeEntityPositionRotationMessage> {
+    @Override
     public RelativeEntityPositionRotationMessage decode(ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode RelativeEntityPositionRotationMessage");
     }
 
+    @Override
     public ByteBuf encode(ByteBuf buf, RelativeEntityPositionRotationMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         buf.writeByte(message.getDeltaX());

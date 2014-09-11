@@ -42,27 +42,33 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
     ////////////////////////////////////////////////////////////////////////////
     // Implementation
 
+    @Override
     public Note getNote() {
         return note;
     }
 
+    @Override
     public byte getRawNote() {
         return note.getId();
     }
 
+    @Override
     public void setNote(Note note) {
         Validate.notNull(note);
         this.note = note;
     }
 
+    @Override
     public void setRawNote(byte note) {
         this.note = new Note(note);
     }
 
+    @Override
     public boolean play() {
         return play(instrumentOf(getBlock().getRelative(BlockFace.DOWN).getType()), getNote());
     }
 
+    @Override
     public boolean play(byte instrument, byte note) {
         if (getBlock().getType() != Material.NOTE_BLOCK) {
             return false;
@@ -80,6 +86,7 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
         return true;
     }
 
+    @Override
     public boolean play(Instrument instrument, Note note) {
         return play(instrument.getType(), note.getId());
     }

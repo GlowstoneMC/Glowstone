@@ -32,18 +32,22 @@ public final class GlowMapView implements MapView {
         addRenderer(new GlowMapRenderer(this));
     }
 
+    @Override
     public short getId() {
         return id;
     }
 
+    @Override
     public boolean isVirtual() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public Scale getScale() {
         return scale;
     }
 
+    @Override
     public void setScale(Scale scale) {
         if (scale == null) {
             throw new NullPointerException();
@@ -51,34 +55,42 @@ public final class GlowMapView implements MapView {
         this.scale = scale;
     }
 
+    @Override
     public int getCenterX() {
         return x;
     }
 
+    @Override
     public int getCenterZ() {
         return z;
     }
 
+    @Override
     public void setCenterX(int x) {
         this.x = x;
     }
 
+    @Override
     public void setCenterZ(int z) {
         this.z = z;
     }
 
+    @Override
     public GlowWorld getWorld() {
         return world;
     }
 
+    @Override
     public void setWorld(World world) {
         this.world = (GlowWorld) world;
     }
 
+    @Override
     public List<MapRenderer> getRenderers() {
         return renderers;
     }
 
+    @Override
     public void addRenderer(MapRenderer renderer) {
         if (!renderers.contains(renderer)) {
             renderers.add(renderer);
@@ -87,6 +99,7 @@ public final class GlowMapView implements MapView {
         }
     }
 
+    @Override
     public boolean removeRenderer(MapRenderer renderer) {
         if (renderers.contains(renderer)) {
             renderers.remove(renderer);

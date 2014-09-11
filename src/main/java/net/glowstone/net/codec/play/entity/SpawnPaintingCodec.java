@@ -10,10 +10,12 @@ import net.glowstone.net.message.play.entity.SpawnPaintingMessage;
 import java.io.IOException;
 
 public final class SpawnPaintingCodec implements Codec<SpawnPaintingMessage> {
+    @Override
     public SpawnPaintingMessage decode(ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode SpawnPaintingMessage");
     }
 
+    @Override
     public ByteBuf encode(ByteBuf buf, SpawnPaintingMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         ByteBufUtils.writeUTF8(buf, message.getTitle());

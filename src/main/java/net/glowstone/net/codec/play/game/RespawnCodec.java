@@ -9,10 +9,12 @@ import net.glowstone.net.message.play.game.RespawnMessage;
 import java.io.IOException;
 
 public final class RespawnCodec implements Codec<RespawnMessage> {
+    @Override
     public RespawnMessage decode(ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode RespawnMessage");
     }
 
+    @Override
     public ByteBuf encode(ByteBuf buf, RespawnMessage message) throws IOException {
         buf.writeInt(message.getDimension());
         buf.writeByte(message.getDifficulty());

@@ -47,6 +47,7 @@ public class NbtPlayerDataService implements PlayerDataService {
         EntityStorage.load(player, playerTag);
     }
 
+    @Override
     public List<OfflinePlayer> getOfflinePlayers() {
         // list files in directory
         File[] files = playerDir.listFiles();
@@ -77,6 +78,7 @@ public class NbtPlayerDataService implements PlayerDataService {
         return result;
     }
 
+    @Override
     public UUID lookupUUID(String name) {
         // todo: caching or something
         for (OfflinePlayer player : getOfflinePlayers()) {
@@ -87,10 +89,12 @@ public class NbtPlayerDataService implements PlayerDataService {
         return UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8));
     }
 
+    @Override
     public PlayerReader beginReadingData(UUID uuid) {
         return new NbtPlayerReader(getPlayerFile(uuid));
     }
 
+    @Override
     public void readData(GlowPlayer player) {
         File playerFile = getPlayerFile(player.getUniqueId());
         CompoundTag playerTag = new CompoundTag();
@@ -105,6 +109,7 @@ public class NbtPlayerDataService implements PlayerDataService {
         readDataImpl(player, playerTag);
     }
 
+    @Override
     public void writeData(GlowPlayer player) {
         File playerFile = getPlayerFile(player.getUniqueId());
         CompoundTag tag = new CompoundTag();
@@ -138,10 +143,12 @@ public class NbtPlayerDataService implements PlayerDataService {
             }
         }
 
+        @Override
         public boolean hasPlayedBefore() {
             return hasPlayed;
         }
 
+        @Override
         public Location getLocation() {
             checkOpen();
             World world = NbtSerialization.readWorld(server, tag);
@@ -151,6 +158,7 @@ public class NbtPlayerDataService implements PlayerDataService {
             return null;
         }
 
+        @Override
         public Location getBedSpawnLocation() {
             checkOpen();
             // check that all fields are present
@@ -166,6 +174,7 @@ public class NbtPlayerDataService implements PlayerDataService {
             return new Location(world, tag.getInt("SpawnX"), tag.getInt("SpawnY"), tag.getInt("SpawnZ"));
         }
 
+        @Override
         public long getFirstPlayed() {
             checkOpen();
             if (tag.isCompound("bukkit")) {
@@ -177,6 +186,7 @@ public class NbtPlayerDataService implements PlayerDataService {
             return 0;
         }
 
+        @Override
         public long getLastPlayed() {
             checkOpen();
             if (tag.isCompound("bukkit")) {
@@ -188,6 +198,7 @@ public class NbtPlayerDataService implements PlayerDataService {
             return 0;
         }
 
+        @Override
         public String getLastKnownName() {
             checkOpen();
             if (tag.isCompound("bukkit")) {
@@ -199,11 +210,13 @@ public class NbtPlayerDataService implements PlayerDataService {
             return null;
         }
 
+        @Override
         public void readData(GlowPlayer player) {
             checkOpen();
             readDataImpl(player, tag);
         }
 
+        @Override
         public void close() {
             tag = null;
         }

@@ -210,22 +210,27 @@ public final class GlowChunk implements Chunk {
 
     // ======== Basic stuff ========
 
+    @Override
     public GlowWorld getWorld() {
         return world;
     }
 
+    @Override
     public int getX() {
         return x;
     }
 
+    @Override
     public int getZ() {
         return z;
     }
 
+    @Override
     public GlowBlock getBlock(int x, int y, int z) {
         return new GlowBlock(this, (this.x << 4) | (x & 0xf), y & 0xff, (this.z << 4) | (z & 0xf));
     }
 
+    @Override
     public Entity[] getEntities() {
         return entities.toArray(new Entity[entities.size()]);
     }
@@ -234,6 +239,7 @@ public final class GlowChunk implements Chunk {
         return entities;
     }
 
+    @Override
     public GlowBlockState[] getTileEntities() {
         List<GlowBlockState> states = new ArrayList<>(tileEntities.size());
         for (TileEntity tileEntity : tileEntities.values()) {
@@ -250,10 +256,12 @@ public final class GlowChunk implements Chunk {
         return Collections.unmodifiableCollection(tileEntities.values());
     }
 
+    @Override
     public GlowChunkSnapshot getChunkSnapshot() {
         return getChunkSnapshot(true, false, false);
     }
 
+    @Override
     public GlowChunkSnapshot getChunkSnapshot(boolean includeMaxblocky, boolean includeBiome, boolean includeBiomeTempRain) {
         return new GlowChunkSnapshot(x, z, world, sections, includeMaxblocky, includeBiome ? biomes.clone() : null, includeBiomeTempRain);
     }
@@ -276,26 +284,32 @@ public final class GlowChunk implements Chunk {
 
     // ======== Helper Functions ========
 
+    @Override
     public boolean isLoaded() {
         return sections != null;
     }
 
+    @Override
     public boolean load() {
         return load(true);
     }
 
+    @Override
     public boolean load(boolean generate) {
         return isLoaded() || world.getChunkManager().loadChunk(x, z, generate);
     }
 
+    @Override
     public boolean unload() {
         return unload(true, true);
     }
 
+    @Override
     public boolean unload(boolean save) {
         return unload(save, true);
     }
 
+    @Override
     public boolean unload(boolean save, boolean safe) {
         if (!isLoaded()) {
             return true;

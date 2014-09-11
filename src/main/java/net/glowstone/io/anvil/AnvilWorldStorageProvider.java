@@ -25,6 +25,7 @@ public class AnvilWorldStorageProvider implements WorldStorageProvider {
         this.dir = dir;
     }
 
+    @Override
     public void setWorld(GlowWorld world) {
         if (this.world != null)
             throw new IllegalArgumentException("World is already set");
@@ -33,18 +34,22 @@ public class AnvilWorldStorageProvider implements WorldStorageProvider {
         meta = new NbtWorldMetadataService(world, dir);
     }
 
+    @Override
     public File getFolder() {
         return dir;
     }
 
+    @Override
     public ChunkIoService getChunkIoService() {
         return service;
     }
 
+    @Override
     public WorldMetadataService getMetadataService() {
         return meta;
     }
 
+    @Override
     public PlayerDataService getPlayerDataService() {
         if (players == null) {
             players = new NbtPlayerDataService(world.getServer(), new File(dir, "playerdata"));

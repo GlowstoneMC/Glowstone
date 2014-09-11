@@ -9,10 +9,12 @@ import net.glowstone.net.message.play.entity.SpawnXpOrbMessage;
 import java.io.IOException;
 
 public final class SpawnXpOrbCodec implements Codec<SpawnXpOrbMessage> {
+    @Override
     public SpawnXpOrbMessage decode(ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode SpawnXpOrbMessage");
     }
 
+    @Override
     public ByteBuf encode(ByteBuf buf, SpawnXpOrbMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         buf.writeInt(message.getX());

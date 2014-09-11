@@ -10,10 +10,12 @@ import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import java.io.IOException;
 
 public final class EntityEquipmentCodec implements Codec<EntityEquipmentMessage> {
+    @Override
     public EntityEquipmentMessage decode(ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode EntityEquipmentMessage");
     }
 
+    @Override
     public ByteBuf encode(ByteBuf buf, EntityEquipmentMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         buf.writeShort(message.getSlot());

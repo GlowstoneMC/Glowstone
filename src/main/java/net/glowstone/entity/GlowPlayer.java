@@ -485,6 +485,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         // sort chunks by distance from player - closer chunks sent first
         Collections.sort(newChunks, new Comparator<GlowChunk.Key>() {
+            @Override
             public int compare(GlowChunk.Key a, GlowChunk.Key b) {
                 double dx = 16 * a.getX() + 8 - location.getX();
                 double dz = 16 * a.getZ() + 8 - location.getZ();
@@ -679,6 +680,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
     }
 
+    @Override
     public Map<String, Object> serialize() {
         Map<String, Object> ret = new HashMap<>();
         ret.put("name", getName());
@@ -688,31 +690,38 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     ////////////////////////////////////////////////////////////////////////////
     // Basic stuff
 
+    @Override
     public EntityType getType() {
         return EntityType.PLAYER;
     }
 
+    @Override
     public InetSocketAddress getAddress() {
         return session.getAddress();
     }
 
+    @Override
     public boolean isOnline() {
         return session.isActive();
     }
 
+    @Override
     public boolean isBanned() {
         return server.getBanList(BanList.Type.NAME).isBanned(getName());
     }
 
+    @Override
     @Deprecated
     public void setBanned(boolean banned) {
         server.getBanList(BanList.Type.NAME).addBan(getName(), null, null, null);
     }
 
+    @Override
     public boolean isWhitelisted() {
         return server.getWhitelist().containsUUID(getUniqueId());
     }
 
+    @Override
     public void setWhitelisted(boolean value) {
         if (value) {
             server.getWhitelist().add(this);
@@ -721,18 +730,22 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
     }
 
+    @Override
     public Player getPlayer() {
         return this;
     }
 
+    @Override
     public boolean hasPlayedBefore() {
         return hasPlayedBefore;
     }
 
+    @Override
     public long getFirstPlayed() {
         return firstPlayed;
     }
 
+    @Override
     public long getLastPlayed() {
         return lastPlayed;
     }
@@ -758,18 +771,22 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     ////////////////////////////////////////////////////////////////////////////
     // Editable properties
 
+    @Override
     public String getDisplayName() {
         return displayName == null ? getName() : displayName;
     }
 
+    @Override
     public void setDisplayName(String name) {
         displayName = name;
     }
 
+    @Override
     public String getPlayerListName() {
         return playerListName == null || playerListName.isEmpty() ? getName() : playerListName;
     }
 
+    @Override
     public void setPlayerListName(String name) {
         // update state
         playerListName = name;
@@ -785,31 +802,38 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
     }
 
+    @Override
     public Location getCompassTarget() {
         return compassTarget;
     }
 
+    @Override
     public void setCompassTarget(Location loc) {
         compassTarget = loc;
         session.send(new SpawnPositionMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
     }
 
+    @Override
     public Location getBedSpawnLocation() {
         return bedSpawn;
     }
 
+    @Override
     public void setBedSpawnLocation(Location bedSpawn) {
         setBedSpawnLocation(bedSpawn, false);
     }
 
+    @Override
     public void setBedSpawnLocation(Location location, boolean force) {
         this.bedSpawn = location;
     }
 
+    @Override
     public boolean isSleepingIgnored() {
         return sleepingIgnored;
     }
 
+    @Override
     public void setSleepingIgnored(boolean isSleeping) {
         sleepingIgnored = isSleeping;
     }
@@ -826,10 +850,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     ////////////////////////////////////////////////////////////////////////////
     // Entity status
 
+    @Override
     public boolean isSneaking() {
         return metadata.getBit(MetadataIndex.STATUS, MetadataIndex.StatusFlags.SNEAKING);
     }
 
+    @Override
     public void setSneaking(boolean sneak) {
         if (EventFactory.onPlayerToggleSneak(this, sneak).isCancelled()) {
             return;
@@ -838,10 +864,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         metadata.setBit(MetadataIndex.STATUS, MetadataIndex.StatusFlags.SNEAKING, sneak);
     }
 
+    @Override
     public boolean isSprinting() {
         return metadata.getBit(MetadataIndex.STATUS, MetadataIndex.StatusFlags.SPRINTING);
     }
 
+    @Override
     public void setSprinting(boolean sprinting) {
         if (EventFactory.callEvent(new PlayerToggleSprintEvent(this, sprinting)).isCancelled()) {
             return;
@@ -850,10 +878,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         metadata.setBit(MetadataIndex.STATUS, MetadataIndex.StatusFlags.SPRINTING, sprinting);
     }
 
+    @Override
     public double getEyeHeight() {
         return getEyeHeight(false);
     }
 
+    @Override
     public double getEyeHeight(boolean ignoreSneaking) {
         // Height of player's eyes above feet. Matches CraftBukkit.
         if (ignoreSneaking || !isSneaking()) {
@@ -866,38 +896,46 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     ////////////////////////////////////////////////////////////////////////////
     // Player capabilities
 
+    @Override
     public boolean getAllowFlight() {
         return canFly;
     }
 
+    @Override
     public void setAllowFlight(boolean flight) {
         canFly = flight;
         if (!canFly) flying = false;
         sendAbilities();
     }
 
+    @Override
     public boolean isFlying() {
         return flying;
     }
 
+    @Override
     public void setFlying(boolean value) {
         flying = value && canFly;
         sendAbilities();
     }
 
+    @Override
     public float getFlySpeed() {
         return flySpeed;
     }
 
+    @Override
     public void setFlySpeed(float value) throws IllegalArgumentException {
         flySpeed = value;
         sendAbilities();
     }
 
+    @Override
     public float getWalkSpeed() {
         return walkSpeed;
     }
 
+    @Override
     public void setWalkSpeed(float value) throws IllegalArgumentException {
         walkSpeed = value;
         sendAbilities();
@@ -913,24 +951,29 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     ////////////////////////////////////////////////////////////////////////////
     // Experience and levelling
 
+    @Override
     public int getLevel() {
         return level;
     }
 
+    @Override
     public void setLevel(int level) {
         this.level = Math.max(level, 0);
         sendExperience();
     }
 
+    @Override
     public int getTotalExperience() {
         return totalExperience;
     }
 
+    @Override
     public void setTotalExperience(int exp) {
         this.totalExperience = Math.max(exp, 0);
         sendExperience();
     }
 
+    @Override
     public void giveExp(int xp) {
         totalExperience += xp;
 
@@ -946,10 +989,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         sendExperience();
     }
 
+    @Override
     public float getExp() {
         return experience;
     }
 
+    @Override
     public void setExp(float percentToLevel) {
         experience = Math.min(Math.max(percentToLevel, 0), 1);
         sendExperience();
@@ -970,6 +1015,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
     }
 
+    @Override
     public void giveExpLevels(int amount) {
         setLevel(getLevel() + amount);
     }
@@ -987,46 +1033,56 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         sendHealth();
     }
 
+    @Override
     public boolean isHealthScaled() {
         return healthScaled;
     }
 
+    @Override
     public void setHealthScaled(boolean scale) {
         healthScaled = scale;
         sendHealth();
     }
 
+    @Override
     public double getHealthScale() {
         return healthScale;
     }
 
+    @Override
     public void setHealthScale(double scale) throws IllegalArgumentException {
         healthScaled = true;
         healthScale = scale;
         sendHealth();
     }
 
+    @Override
     public int getFoodLevel() {
         return food;
     }
 
+    @Override
     public void setFoodLevel(int food) {
         this.food = Math.min(food, 20);
         sendHealth();
     }
 
+    @Override
     public float getExhaustion() {
         return exhaustion;
     }
 
+    @Override
     public void setExhaustion(float value) {
         exhaustion = value;
     }
 
+    @Override
     public float getSaturation() {
         return saturation;
     }
 
+    @Override
     public void setSaturation(float value) {
         saturation = value;
         sendHealth();
@@ -1070,16 +1126,19 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         return true;
     }
 
+    @Override
     public void sendMessage(String message) {
         sendRawMessage(message);
     }
 
+    @Override
     public void sendMessage(String[] messages) {
         for (String line : messages) {
             sendMessage(line);
         }
     }
 
+    @Override
     public void sendRawMessage(String message) {
         // todo: use chat components instead of plain text
         // textwrapper also does not preserve non-color formatting
@@ -1088,14 +1147,17 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
     }
 
+    @Override
     public void kickPlayer(String message) {
         session.disconnect(message == null ? "" : message);
     }
 
+    @Override
     public boolean performCommand(String command) {
         return getServer().dispatchCommand(this, command);
     }
 
+    @Override
     public void chat(String text) {
         if (text.startsWith("/")) {
             server.getLogger().info(getName() + " issued command: " + text);
@@ -1124,6 +1186,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
     }
 
+    @Override
     public void saveData() {
         saveData(true);
     }
@@ -1131,6 +1194,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     public void saveData(boolean async) {
         if (async) {
             server.getScheduler().runTaskAsynchronously(null, new Runnable() {
+                @Override
                 public void run() {
                     server.getPlayerDataService().writeData(GlowPlayer.this);
                 }
@@ -1140,15 +1204,18 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
     }
 
+    @Override
     public void loadData() {
         server.getPlayerDataService().readData(this);
     }
 
+    @Override
     @Deprecated
     public void setTexturePack(String url) {
         setResourcePack(url);
     }
 
+    @Override
     public void setResourcePack(String url) {
         // todo: update for 1.8 if needed
         session.send(PluginMessage.fromString("MC|RPack", url));
@@ -1157,28 +1224,34 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     ////////////////////////////////////////////////////////////////////////////
     // Effect and data transmission
 
+    @Override
     public void playNote(Location loc, Instrument instrument, Note note) {
         playNote(loc, instrument.getType(), note.getId());
     }
 
+    @Override
     public void playNote(Location loc, byte instrument, byte note) {
         session.send(new BlockActionMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), instrument, note, Material.NOTE_BLOCK.getId()));
     }
 
+    @Override
     public void playEffect(Location loc, Effect effect, int data) {
         int id = effect.getId();
         boolean ignoreDistance = id == 1013; // mob.wither.spawn, not in Bukkit yet
         session.send(new PlayEffectMessage(id, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), data, ignoreDistance));
     }
 
+    @Override
     public <T> void playEffect(Location loc, Effect effect, T data) {
         playEffect(loc, effect, GlowEffect.getDataValue(effect, data));
     }
 
+    @Override
     public void playSound(Location location, Sound sound, float volume, float pitch) {
         playSound(location, GlowSound.getName(sound), volume, pitch);
     }
 
+    @Override
     public void playSound(Location location, String sound, float volume, float pitch) {
         if (location == null || sound == null) return;
         // the loss of precision here is a bit unfortunate but it's what CraftBukkit does
@@ -1188,10 +1261,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(new PlaySoundMessage(sound, x, y, z, volume, pitch));
     }
 
+    @Override
     public void sendBlockChange(Location loc, Material material, byte data) {
         sendBlockChange(loc, material.getId(), data);
     }
 
+    @Override
     public void sendBlockChange(Location loc, int material, byte data) {
         sendBlockChange(new BlockChangeMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), material, data));
     }
@@ -1204,10 +1279,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
     }
 
+    @Override
     public boolean sendChunkChange(Location loc, int sx, int sy, int sz, byte[] data) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public void sendSignChange(Location location, String[] lines) throws IllegalArgumentException {
         Validate.notNull(location, "location cannot be null");
         Validate.notNull(lines, "lines cannot be null");
@@ -1216,6 +1293,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         afterBlockChanges.add(UpdateSignMessage.fromPlainText(location.getBlockX(), location.getBlockY(), location.getBlockZ(), lines));
     }
 
+    @Override
     public void sendMap(MapView map) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -1223,10 +1301,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     ////////////////////////////////////////////////////////////////////////////
     // Achievements and statistics
 
+    @Override
     public boolean hasAchievement(Achievement achievement) {
         return stats.hasAchievement(achievement);
     }
 
+    @Override
     public void awardAchievement(Achievement achievement) {
         if (hasAchievement(achievement)) return;
 
@@ -1236,6 +1316,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         // todo: make an announcement if that's enabled
     }
 
+    @Override
     public void removeAchievement(Achievement achievement) {
         if (!hasAchievement(achievement)) return;
 
@@ -1249,74 +1330,92 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(new StatisticMessage(values));
     }
 
+    @Override
     public int getStatistic(Statistic statistic) throws IllegalArgumentException {
         return stats.get(statistic);
     }
 
+    @Override
     public int getStatistic(Statistic statistic, Material material) throws IllegalArgumentException {
         return stats.get(statistic, material);
     }
 
+    @Override
     public int getStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {
         return stats.get(statistic, entityType);
     }
 
+    @Override
     public void setStatistic(Statistic statistic, int newValue) throws IllegalArgumentException {
         stats.set(statistic, newValue);
     }
 
+    @Override
     public void setStatistic(Statistic statistic, Material material, int newValue) throws IllegalArgumentException {
         stats.set(statistic, material, newValue);
     }
 
+    @Override
     public void setStatistic(Statistic statistic, EntityType entityType, int newValue) {
         stats.set(statistic, entityType, newValue);
     }
 
+    @Override
     public void incrementStatistic(Statistic statistic) {
         stats.add(statistic, 1);
     }
 
+    @Override
     public void incrementStatistic(Statistic statistic, int amount) {
         stats.add(statistic, amount);
     }
 
+    @Override
     public void incrementStatistic(Statistic statistic, Material material) {
         stats.add(statistic, material, 1);
     }
 
+    @Override
     public void incrementStatistic(Statistic statistic, Material material, int amount) {
         stats.add(statistic, material, amount);
     }
 
+    @Override
     public void incrementStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {
         stats.add(statistic, entityType, 1);
     }
 
+    @Override
     public void incrementStatistic(Statistic statistic, EntityType entityType, int amount) throws IllegalArgumentException {
         stats.add(statistic, entityType, amount);
     }
 
+    @Override
     public void decrementStatistic(Statistic statistic) throws IllegalArgumentException {
         stats.add(statistic, -1);
     }
 
+    @Override
     public void decrementStatistic(Statistic statistic, int amount) throws IllegalArgumentException {
         stats.add(statistic, -amount);
     }
 
+    @Override
     public void decrementStatistic(Statistic statistic, Material material) throws IllegalArgumentException {
         stats.add(statistic, material, -1);
     }
 
+    @Override
     public void decrementStatistic(Statistic statistic, Material material, int amount) throws IllegalArgumentException {
         stats.add(statistic, material, -amount);
     }
 
+    @Override
     public void decrementStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {
         stats.add(statistic, entityType, -1);
     }
 
+    @Override
     public void decrementStatistic(Statistic statistic, EntityType entityType, int amount) {
         stats.add(statistic, entityType, -amount);
     }
@@ -1328,6 +1427,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     ////////////////////////////////////////////////////////////////////////////
     // Inventory
 
+    @Override
     public void updateInventory() {
         session.send(new SetWindowContentsMessage(invMonitor.getId(), invMonitor.getContents()));
     }
@@ -1373,12 +1473,14 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     ////////////////////////////////////////////////////////////////////////////
     // Player-specific time and weather
 
+    @Override
     public void setPlayerTime(long time, boolean relative) {
         timeOffset = (time % GlowWorld.DAY_LENGTH + GlowWorld.DAY_LENGTH) % GlowWorld.DAY_LENGTH;
         timeRelative = relative;
         sendTime();
     }
 
+    @Override
     public long getPlayerTime() {
         if (timeRelative) {
             // add timeOffset ticks to current time
@@ -1389,14 +1491,17 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
     }
 
+    @Override
     public long getPlayerTimeOffset() {
         return timeOffset;
     }
 
+    @Override
     public boolean isPlayerTimeRelative() {
         return timeRelative;
     }
 
+    @Override
     public void resetPlayerTime() {
         setPlayerTime(0, true);
     }
@@ -1409,15 +1514,18 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(new TimeMessage(world.getFullTime(), time));
     }
 
+    @Override
     public void setPlayerWeather(WeatherType type) {
         playerWeather = type;
         sendWeather();
     }
 
+    @Override
     public WeatherType getPlayerWeather() {
         return playerWeather;
     }
 
+    @Override
     public void resetPlayerWeather() {
         playerWeather = null;
         sendWeather();
@@ -1431,14 +1539,17 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     ////////////////////////////////////////////////////////////////////////////
     // Player visibility
 
+    @Override
     public void hidePlayer(Player player) {
 
     }
 
+    @Override
     public void showPlayer(Player player) {
 
     }
 
+    @Override
     public boolean canSee(Player player) {
         return true;
     }
@@ -1446,10 +1557,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     ////////////////////////////////////////////////////////////////////////////
     // Scoreboard
 
+    @Override
     public Scoreboard getScoreboard() {
         return null;
     }
 
+    @Override
     public void setScoreboard(Scoreboard scoreboard) throws IllegalArgumentException, IllegalStateException {
 
     }
@@ -1457,22 +1570,27 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     ////////////////////////////////////////////////////////////////////////////
     // Conversable
 
+    @Override
     public boolean isConversing() {
         return false;
     }
 
+    @Override
     public void acceptConversationInput(String input) {
 
     }
 
+    @Override
     public boolean beginConversation(Conversation conversation) {
         return false;
     }
 
+    @Override
     public void abandonConversation(Conversation conversation) {
 
     }
 
+    @Override
     public void abandonConversation(Conversation conversation, ConversationAbandonedEvent details) {
 
     }
@@ -1480,6 +1598,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     ////////////////////////////////////////////////////////////////////////////
     // Plugin messages
 
+    @Override
     public void sendPluginMessage(Plugin source, String channel, byte[] message) {
         StandardMessenger.validatePluginMessage(getServer().getMessenger(), source, channel, message);
         if (listeningChannels.contains(channel)) {
@@ -1488,6 +1607,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
     }
 
+    @Override
     public Set<String> getListeningPluginChannels() {
         return Collections.unmodifiableSet(listeningChannels);
     }

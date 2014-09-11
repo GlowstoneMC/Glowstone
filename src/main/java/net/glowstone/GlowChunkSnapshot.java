@@ -87,58 +87,71 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
         return biomes;
     }
 
+    @Override
     public int getX() {
         return x;
     }
 
+    @Override
     public int getZ() {
         return z;
     }
 
+    @Override
     public String getWorldName() {
         return world;
     }
 
+    @Override
     public long getCaptureFullTime() {
         return time;
     }
 
+    @Override
     public boolean isSectionEmpty(int sy) {
         return sy < 0 || sy >= sections.length || (sections[sy] == null);
     }
 
+    @Override
     public int getBlockTypeId(int x, int y, int z) {
         ChunkSection section = getSection(y);
         return section == null ? 0 : section.types[section.index(x, y, z)] >> 4;
     }
 
+    @Override
     public int getBlockData(int x, int y, int z) {
         ChunkSection section = getSection(y);
         return section == null ? 0 : section.types[section.index(x, y, z)] & 0xF;
     }
 
+    @Override
     public int getBlockSkyLight(int x, int y, int z) {
         ChunkSection section = getSection(y);
         return section == null ? 15 : section.skyLight.get(section.index(x, y, z));
     }
 
+    @Override
     public int getBlockEmittedLight(int x, int y, int z) {
         ChunkSection section = getSection(y);
         return section == null ? 0 : section.blockLight.get(section.index(x, y, z));
     }
 
+    @Override
     public int getHighestBlockYAt(int x, int z) {
         return height[coordToIndex(x, z)];
     }
 
+    @Override
     public Biome getBiome(int x, int z) {
         return GlowBiome.getBiome(biomes[coordToIndex(x, z)]);
     }
 
+    @Override
     public double getRawBiomeTemperature(int x, int z) {
         return temp[coordToIndex(x, z)];
     }
 
+    @Override
     public double getRawBiomeRainfall(int x, int z) {
         return humid[coordToIndex(x, z)];
     }

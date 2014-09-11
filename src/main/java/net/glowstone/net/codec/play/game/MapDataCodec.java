@@ -10,10 +10,12 @@ import java.io.IOException;
 import java.util.List;
 
 public final class MapDataCodec implements Codec<MapDataMessage> {
+    @Override
     public MapDataMessage decode(ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode MapDataMessage");
     }
 
+    @Override
     public ByteBuf encode(ByteBuf buf, MapDataMessage message) throws IOException {
         final List<MapDataMessage.Icon> icons = message.getIcons();
         final MapDataMessage.Section section = message.getSection();

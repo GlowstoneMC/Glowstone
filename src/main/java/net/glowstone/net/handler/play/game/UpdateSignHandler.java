@@ -12,6 +12,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public final class UpdateSignHandler implements MessageHandler<GlowSession, UpdateSignMessage> {
+    @Override
     public void handle(GlowSession session, UpdateSignMessage message) {
         final GlowPlayer player = session.getPlayer();
 

@@ -24,32 +24,39 @@ public final class InventoryIterator implements ListIterator<ItemStack> {
         this.nextIndex = position;
     }
 
+    @Override
     public boolean hasNext() {
         return nextIndex < inventory.getSize();
     }
 
+    @Override
     public ItemStack next() {
         direction = 1;
         return inventory.getItem(nextIndex++);
     }
 
+    @Override
     public boolean hasPrevious() {
         return nextIndex > 0;
     }
 
+    @Override
     public ItemStack previous() {
         direction = -1;
         return inventory.getItem(--nextIndex);
     }
 
+    @Override
     public int nextIndex() {
         return nextIndex;
     }
 
+    @Override
     public int previousIndex() {
         return nextIndex - 1;
     }
 
+    @Override
     public void set(ItemStack itemStack) {
         if (direction == 0) {
             throw new IllegalStateException("Must call next or previous first");
@@ -58,10 +65,12 @@ public final class InventoryIterator implements ListIterator<ItemStack> {
         inventory.setItem(i, itemStack);
     }
 
+    @Override
     public void add(ItemStack itemStack) {
         throw new UnsupportedOperationException("Cannot add or remove from inventory");
     }
 
+    @Override
     public void remove() {
         throw new UnsupportedOperationException("Cannot add or remove from inventory");
     }

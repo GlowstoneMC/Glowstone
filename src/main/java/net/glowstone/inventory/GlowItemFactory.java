@@ -18,18 +18,22 @@ public final class GlowItemFactory implements ItemFactory {
     private GlowItemFactory() {
     }
 
+    @Override
     public ItemMeta getItemMeta(Material material) {
         return makeMeta(material, null);
     }
 
+    @Override
     public boolean isApplicable(ItemMeta meta, ItemStack stack) throws IllegalArgumentException {
         return isApplicable(meta, stack.getType());
     }
 
+    @Override
     public boolean isApplicable(ItemMeta meta, Material material) throws IllegalArgumentException {
         return meta != null && material != null && toGlowMeta(meta).isApplicable(material);
     }
 
+    @Override
     public boolean equals(ItemMeta meta1, ItemMeta meta2) throws IllegalArgumentException {
         // todo: be nicer about comparisons without involving serialization
         // and the extra new objects for null arguments
@@ -47,14 +51,17 @@ public final class GlowItemFactory implements ItemFactory {
         return glow1.serialize().equals(glow2.serialize());
     }
 
+    @Override
     public ItemMeta asMetaFor(ItemMeta meta, ItemStack stack) throws IllegalArgumentException {
         return makeMeta(stack.getType(), toGlowMeta(meta));
     }
 
+    @Override
     public ItemMeta asMetaFor(ItemMeta meta, Material material) throws IllegalArgumentException {
         return makeMeta(material, toGlowMeta(meta));
     }
 
+    @Override
     public Color getDefaultLeatherColor() {
         return LEATHER_COLOR;
     }

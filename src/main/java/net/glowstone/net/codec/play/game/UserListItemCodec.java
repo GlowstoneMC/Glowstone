@@ -12,10 +12,12 @@ import java.io.IOException;
 import java.util.List;
 
 public final class UserListItemCodec implements Codec<UserListItemMessage> {
+    @Override
     public UserListItemMessage decode(ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode UserListItemMessage");
     }
 
+    @Override
     public ByteBuf encode(ByteBuf buf, UserListItemMessage message) throws IOException {
         final UserListItemMessage.Action action = message.getAction();
         final List<UserListItemMessage.Entry> entries = message.getEntries();

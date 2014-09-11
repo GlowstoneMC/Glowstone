@@ -7,6 +7,7 @@ import net.glowstone.net.message.play.player.SteerVehicleMessage;
 import java.io.IOException;
 
 public final class SteerVehicleCodec implements Codec<SteerVehicleMessage> {
+    @Override
     public SteerVehicleMessage decode(ByteBuf buf) throws IOException {
         float sideways = buf.readFloat();
         float forward = buf.readFloat();
@@ -17,6 +18,7 @@ public final class SteerVehicleCodec implements Codec<SteerVehicleMessage> {
         return new SteerVehicleMessage(sideways, forward, jump, unmount);
     }
 
+    @Override
     public ByteBuf encode(ByteBuf buf, SteerVehicleMessage message) throws IOException {
         buf.writeFloat(message.getSideways());
         buf.writeFloat(message.getForward());

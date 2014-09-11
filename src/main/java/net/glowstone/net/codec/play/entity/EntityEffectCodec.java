@@ -9,10 +9,12 @@ import net.glowstone.net.message.play.entity.EntityEffectMessage;
 import java.io.IOException;
 
 public final class EntityEffectCodec implements Codec<EntityEffectMessage> {
+    @Override
     public EntityEffectMessage decode(ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode EntityEffectMessage");
     }
 
+    @Override
     public ByteBuf encode(ByteBuf buf, EntityEffectMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         buf.writeByte(message.getEffect());

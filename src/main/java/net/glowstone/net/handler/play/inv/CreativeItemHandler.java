@@ -8,6 +8,7 @@ import net.glowstone.net.message.play.inv.CreativeItemMessage;
 import org.bukkit.GameMode;
 
 public final class CreativeItemHandler implements MessageHandler<GlowSession, CreativeItemMessage> {
+    @Override
     public void handle(GlowSession session, CreativeItemMessage message) {
         final GlowPlayer player = session.getPlayer();
 

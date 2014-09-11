@@ -9,10 +9,12 @@ import net.glowstone.net.message.play.inv.OpenWindowMessage;
 import java.io.IOException;
 
 public final class OpenWindowCodec implements Codec<OpenWindowMessage> {
+    @Override
     public OpenWindowMessage decode(ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode OpenWindowMessage");
     }
 
+    @Override
     public ByteBuf encode(ByteBuf buf, OpenWindowMessage message) throws IOException {
         buf.writeByte(message.getId());
         ByteBufUtils.writeUTF8(buf, message.getType());

@@ -62,18 +62,22 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
         }
     }
 
+    @Override
     public ItemStack getResult() {
         return getItem(RESULT_SLOT);
     }
 
+    @Override
     public ItemStack[] getMatrix() {
         return Arrays.copyOfRange(getContents(), MATRIX_START, getSize());
     }
 
+    @Override
     public void setResult(ItemStack newResult) {
         setItem(RESULT_SLOT, newResult);
     }
 
+    @Override
     public void setMatrix(ItemStack[] contents) {
         if (contents.length != getSize() - 1) {
             throw new IllegalArgumentException("Length must be " + (getSize() - 1));
@@ -83,6 +87,7 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
         }
     }
 
+    @Override
     public Recipe getRecipe() {
         return ((GlowServer) Bukkit.getServer()).getCraftingManager().getCraftingRecipe(getMatrix());
     }

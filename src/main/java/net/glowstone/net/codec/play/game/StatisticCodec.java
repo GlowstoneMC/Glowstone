@@ -10,10 +10,12 @@ import java.io.IOException;
 import java.util.Map;
 
 public final class StatisticCodec implements Codec<StatisticMessage> {
+    @Override
     public StatisticMessage decode(ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode StatisticMessage");
     }
 
+    @Override
     public ByteBuf encode(ByteBuf buf, StatisticMessage message) throws IOException {
         Map<String, Integer> map = message.getValues();
         ByteBufUtils.writeVarInt(buf, map.size());

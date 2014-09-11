@@ -31,6 +31,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         }
     }
 
+    @Override
     public WorldFinalValues readWorldData() throws IOException {
         // determine UUID of world
         UUID uid = null;
@@ -131,6 +132,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         server.getLogger().log(Level.SEVERE, "Unable to access " + file + " for world " + world.getName(), e);
     }
 
+    @Override
     public void writeWorldData() throws IOException {
         File uuidFile = new File(dir, "uid.dat");
         try (DataOutputStream out = new DataOutputStream(new FileOutputStream(uuidFile))) {
