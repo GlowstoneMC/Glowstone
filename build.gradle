@@ -5,7 +5,8 @@ defaultTasks 'clean', 'build', 'shadowJar'
 apply plugin: 'java' // Specifies a java project, allows for javadoc generation etc.
 apply plugin: 'application' // Adds the 'gradle run' task
 apply plugin: 'project-report' // Adds project report tasks
-apply plugin: 'shadow' // Allows for dependency shading
+apply plugin: 'com.github.johnrengelman.shadow' // Allows for dependency shading
+apply from: 'etc/publish.gradle'
 
 // Methods to determine detailed version string
 def gitDescribe() {
@@ -21,6 +22,7 @@ def gitDescribe() {
         return "unknown"
     }
 }
+
 def getVersionName() {
     try {
         // determine git-describe output
@@ -50,7 +52,7 @@ description = "Glowstone"
 mainClassName = "net.glowstone.GlowServer"
 
 // Extended project information
-ext.url = 'https://github.com/SpaceManiac/Glowstone'
+ext.url = 'https://github.com/GlowstoneMC/Glowstone'
 ext.bukkitVersion = '1.7.9-R0.1'
 ext.gitDescribe = getVersionName()
 
@@ -66,10 +68,10 @@ compileJava {
 // Simple build script information
 buildscript {
     repositories {
-        maven { url "http://jcenter.bintray.com" }
+        jcenter()
     }
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:0.8'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.1.1'
     }
 }
 
@@ -84,6 +86,7 @@ repositories {
     mavenCentral()
     maven { url "http://repo.bukkit.org/content/groups/public/" }
     maven { url "https://oss.sonatype.org/content/repositories/public/" }
+    maven { url "http://repo.glowstone.net/content/groups/public/" }
 }
 
 // Dependencies used by our project
@@ -97,11 +100,6 @@ dependencies {
     testCompile 'junit:junit:4.8.1'
 }
 
-// Shadow plugin settings
-shadow {
-    artifactAttached = false
-}
-
 // Jar manifest information
 jar.manifest.mainAttributes(
         'Main-Class': mainClassName,
@@ -113,9 +111,3 @@ jar.manifest.mainAttributes(
         'Specification-Vendor': 'Bukkit Team',
         'Sealed': true
 )
-
-// Exclude jar signatures
-shadow {
-    exclude 'META-INF/*.DSA'
-    exclude 'META-INF/*.RSA'
-}

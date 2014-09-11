@@ -1,0 +1,50 @@
+// child script to publish to a maven repo
+apply plugin: 'maven-publish'
+
+// allow javadoc archive on Java 8 even if the javadoc isn't complete
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
+    }
+}
+
+// source jar
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.java.srcDirs
+}
+
+// javadoc jar
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.shadow
+            artifact sourcesJar
+            artifact javadocJar
+
+            repositories {
+                maven {
+                    credentials {
+                        username System.getenv("sonatypeUsername")
+                        password System.getenv("sonatypePassword")
+                    }
+                    // Tasks and variables based on if release or snapshot
+                    if (version.endsWith('-SNAPSHOT')) {
+                        // Set variable to snapshots repository URL
+                        url = 'http://repo.glowstone.net/content/repositories/snapshots/'
+                    } else {
+                        // Set variable to releases repository URL
+                        url = 'http://repo.glowstone.net/content/repositories/releases/'
+                    }
+                }
+            }
+        }
+    }
+}
