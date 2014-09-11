@@ -85,7 +85,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
 
             char[] types = new char[rawTypes.length];
             for (int i = 0; i < rawTypes.length; i++) {
-                types[i] = (char) (((extTypes == null ? 0 : extTypes.get(i)) << 12) | (rawTypes[i] << 4) | data.get(i));
+                types[i] = (char) (((extTypes == null ? 0 : extTypes.get(i)) << 12) | ((rawTypes[i] & 0xff) << 4) | data.get(i));
             }
             sections[y] = new ChunkSection(types, skyLight, blockLight);
         }
