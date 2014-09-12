@@ -3,7 +3,6 @@ package net.glowstone.net.codec.play.entity;
 import com.flowpowered.networking.Codec;
 import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.DecoderException;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 
 import java.io.IOException;
@@ -11,7 +10,21 @@ import java.io.IOException;
 public final class SpawnObjectCodec implements Codec<SpawnObjectMessage> {
     @Override
     public SpawnObjectMessage decode(ByteBuf buf) throws IOException {
-        throw new DecoderException("Cannot decode SpawnObjectMessage");
+        int id = ByteBufUtils.readVarInt(buf);
+        int type = buf.readByte();
+        int x = buf.readInt();
+        int y = buf.readInt();
+        int z = buf.readInt();
+        int pitch = buf.readByte();
+        int yaw = buf.readByte();
+        int data = buf.readInt();
+        if (data != 0) {
+            int velX = buf.readShort();
+            int velY = buf.readShort();
+            int velZ = buf.readShort();
+            return new SpawnObjectMessage(id, type, x, y, z, pitch, yaw, data, velX, velY, velZ);
+        }
+        return new SpawnObjectMessage(id, type, x, y, z, pitch, yaw);
     }
 
     @Override

@@ -6,6 +6,7 @@ import io.netty.buffer.ByteBufInputStream;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
+import net.glowstone.entity.meta.MetadataType;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
@@ -18,6 +19,7 @@ import org.bukkit.util.Vector;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -71,6 +73,42 @@ public final class GlowBufUtils {
         buf.writeByte(127);
     }
 
+    /**
+     * Read Metadata. Mostly used for unit tests.
+     * @param buf The decode buffer
+     * @return A list of Metadata entry
+     */
+    public static List<MetadataMap.Entry> readMetadata(ByteBuf buf) throws IOException {
+        List<MetadataMap.Entry> entries = new ArrayList<>();
+        byte item;
+        while ((item = buf.readByte()) != 0x7F) {
+            MetadataType type = MetadataType.byId(item >> 5);
+            int id = item & 0x1f;
+            MetadataIndex index = MetadataIndex.getIndex(id, type);
+
+            switch (type) {
+                case BYTE:
+                    entries.add(new MetadataMap.Entry(index, buf.readByte()));
+                    break;
+                case SHORT:
+                    entries.add(new MetadataMap.Entry(index, buf.readShort()));
+                    break;
+                case INT:
+                    entries.add(new MetadataMap.Entry(index, buf.readInt()));
+                    break;
+                case FLOAT:
+                    entries.add(new MetadataMap.Entry(index, buf.readFloat()));
+                    break;
+                case STRING:
+                    entries.add(new MetadataMap.Entry(index, ByteBufUtils.readUTF8(buf)));
+                    break;
+                case ITEM:
+                    entries.add(new MetadataMap.Entry(index, readSlot(buf)));
+                    break;
+            }
+        }
+        return entries;
+    }
     /**
      * Read an uncompressed compound NBT tag from the buffer.
      * @param buf The buffer.

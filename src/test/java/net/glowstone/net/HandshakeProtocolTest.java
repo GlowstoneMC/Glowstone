@@ -1,0 +1,16 @@
+package net.glowstone.net;
+
+import com.flowpowered.networking.Message;
+import net.glowstone.net.message.handshake.HandshakeMessage;
+import net.glowstone.net.protocol.HandshakeProtocol;
+
+public class HandshakeProtocolTest extends BaseProtocolTest {
+
+    private static final Message[] TEST_MESSAGES = new Message[]{
+            new HandshakeMessage(1, "127.0.0.1", 25565, 1)
+    };
+
+    public HandshakeProtocolTest() throws NoSuchFieldException, IllegalAccessException {
+        super(new HandshakeProtocol(), TEST_MESSAGES);
+    }
+}

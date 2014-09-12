@@ -76,4 +76,21 @@ public final class TextMessage {
             return new TextMessage("parse error");
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TextMessage that = (TextMessage) o;
+
+        if (object != null ? !object.equals(that.object) : that.object != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return object != null ? object.hashCode() : 0;
+    }
 }

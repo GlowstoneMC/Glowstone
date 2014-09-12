@@ -3,15 +3,17 @@ package net.glowstone.net.codec.status;
 import com.flowpowered.networking.Codec;
 import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.DecoderException;
 import net.glowstone.net.message.status.StatusResponseMessage;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import java.io.IOException;
 
 public final class StatusResponseCodec implements Codec<StatusResponseMessage> {
     @Override
     public StatusResponseMessage decode(ByteBuf buf) throws IOException {
-        throw new DecoderException("Cannot decode StatusResponseMessage");
+        String json = ByteBufUtils.readUTF8(buf);
+        return new StatusResponseMessage((JSONObject) JSONValue.parse(json));
     }
 
     @Override

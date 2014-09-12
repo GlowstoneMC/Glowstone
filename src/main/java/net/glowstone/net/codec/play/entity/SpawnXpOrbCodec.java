@@ -3,7 +3,6 @@ package net.glowstone.net.codec.play.entity;
 import com.flowpowered.networking.Codec;
 import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.DecoderException;
 import net.glowstone.net.message.play.entity.SpawnXpOrbMessage;
 
 import java.io.IOException;
@@ -11,7 +10,12 @@ import java.io.IOException;
 public final class SpawnXpOrbCodec implements Codec<SpawnXpOrbMessage> {
     @Override
     public SpawnXpOrbMessage decode(ByteBuf buf) throws IOException {
-        throw new DecoderException("Cannot decode SpawnXpOrbMessage");
+        int id = ByteBufUtils.readVarInt(buf);
+        int x = buf.readInt();
+        int y = buf.readInt();
+        int z = buf.readInt();
+        short count = buf.readShort();
+        return new SpawnXpOrbMessage(id, x, y, z, count);
     }
 
     @Override

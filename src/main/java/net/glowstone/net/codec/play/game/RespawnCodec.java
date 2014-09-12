@@ -3,7 +3,6 @@ package net.glowstone.net.codec.play.game;
 import com.flowpowered.networking.Codec;
 import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.DecoderException;
 import net.glowstone.net.message.play.game.RespawnMessage;
 
 import java.io.IOException;
@@ -11,7 +10,11 @@ import java.io.IOException;
 public final class RespawnCodec implements Codec<RespawnMessage> {
     @Override
     public RespawnMessage decode(ByteBuf buf) throws IOException {
-        throw new DecoderException("Cannot decode RespawnMessage");
+        int dimension = buf.readInt();
+        int difficulty = buf.readByte();
+        int mode = buf.readByte();
+        String levelType = ByteBufUtils.readUTF8(buf);
+        return new RespawnMessage(dimension, difficulty, mode, levelType);
     }
 
     @Override

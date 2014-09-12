@@ -1,17 +1,19 @@
 package net.glowstone.net.codec;
 
 import com.flowpowered.networking.Codec;
+import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.DecoderException;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.KickMessage;
+import net.glowstone.util.TextMessage;
 
 import java.io.IOException;
 
 public final class KickCodec implements Codec<KickMessage> {
     @Override
     public KickMessage decode(ByteBuf buf) throws IOException {
-        throw new DecoderException("Cannot decode KickMessage.");
+        String value = ByteBufUtils.readUTF8(buf);
+        return new KickMessage(TextMessage.decode(value));
     }
 
     @Override

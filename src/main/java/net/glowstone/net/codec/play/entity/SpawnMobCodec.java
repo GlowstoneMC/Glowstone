@@ -3,16 +3,29 @@ package net.glowstone.net.codec.play.entity;
 import com.flowpowered.networking.Codec;
 import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.DecoderException;
+import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.entity.SpawnMobMessage;
 
 import java.io.IOException;
+import java.util.List;
 
 public final class SpawnMobCodec implements Codec<SpawnMobMessage> {
     @Override
     public SpawnMobMessage decode(ByteBuf buf) throws IOException {
-        throw new DecoderException("Cannot decode SpawnMobMessage");
+        int id = ByteBufUtils.readVarInt(buf);
+        int type = buf.readByte();
+        int x = buf.readInt();
+        int y = buf.readInt();
+        int z = buf.readInt();
+        int headPitch = buf.readByte();
+        int pitch = buf.readByte();
+        int rotation = buf.readByte();
+        int velX = buf.readShort();
+        int velY = buf.readShort();
+        int velZ = buf.readShort();
+        List<MetadataMap.Entry> list = GlowBufUtils.readMetadata(buf);
+        return new SpawnMobMessage(id, type, x, y, z, rotation, pitch, headPitch, velX, velY, velZ, list);
     }
 
     @Override

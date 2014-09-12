@@ -3,16 +3,27 @@ package net.glowstone.net.codec.play.entity;
 import com.flowpowered.networking.Codec;
 import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.DecoderException;
+import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.entity.SpawnPlayerMessage;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
 
 public final class SpawnPlayerCodec implements Codec<SpawnPlayerMessage> {
     @Override
     public SpawnPlayerMessage decode(ByteBuf buf) throws IOException {
-        throw new DecoderException("Cannot decode SpawnPlayerMessage");
+        int id = ByteBufUtils.readVarInt(buf);
+        UUID uuid = GlowBufUtils.readUuid(buf);
+        int x = buf.readInt();
+        int y = buf.readInt();
+        int z = buf.readInt();
+        int rotation = buf.readByte();
+        int pitch = buf.readByte();
+        int item = buf.readShort();
+        List<MetadataMap.Entry> list = GlowBufUtils.readMetadata(buf);
+        return new SpawnPlayerMessage(id, uuid, x, y, z, rotation, pitch, item, list);
     }
 
     @Override

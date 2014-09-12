@@ -162,6 +162,26 @@ public class MetadataMap {
         }
 
         @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Entry entry = (Entry) o;
+
+            if (index != entry.index) return false;
+            if (value != null ? !value.equals(entry.value) : entry.value != null) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = index != null ? index.hashCode() : 0;
+            result = 31 * result + (value != null ? value.hashCode() : 0);
+            return result;
+        }
+
+        @Override
         public String toString() {
             return index + "=" + value;
         }

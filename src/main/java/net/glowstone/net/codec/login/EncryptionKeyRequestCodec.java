@@ -16,7 +16,7 @@ public final class EncryptionKeyRequestCodec implements Codec<EncryptionKeyReque
         buffer.readBytes(publicKey);
 
         byte[] verifyToken = new byte[ByteBufUtils.readVarInt(buffer)];
-        buffer.readBytes(publicKey);
+        buffer.readBytes(verifyToken);
 
         return new EncryptionKeyRequestMessage(sessionId, publicKey, verifyToken);
     }

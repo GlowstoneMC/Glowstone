@@ -23,7 +23,7 @@ public final class HandshakeCodec implements Codec<HandshakeMessage> {
         ByteBufUtils.writeVarInt(buf, message.getVersion());
         ByteBufUtils.writeUTF8(buf, message.getAddress());
         buf.writeShort(message.getPort());
-        buf.writeInt(message.getPort());
+        ByteBufUtils.writeVarInt(buf, message.getState());
         return buf;
     }
 }

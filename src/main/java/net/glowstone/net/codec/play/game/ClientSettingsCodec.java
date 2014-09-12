@@ -3,7 +3,6 @@ package net.glowstone.net.codec.play.game;
 import com.flowpowered.networking.Codec;
 import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.EncoderException;
 import net.glowstone.net.message.play.game.ClientSettingsMessage;
 
 import java.io.IOException;
@@ -21,6 +20,11 @@ public final class ClientSettingsCodec implements Codec<ClientSettingsMessage> {
 
     @Override
     public ByteBuf encode(ByteBuf buf, ClientSettingsMessage message) throws IOException {
-        throw new EncoderException("Cannot encode ClientSettingsMessage");
+        ByteBufUtils.writeUTF8(buf, message.getLocale());
+        buf.writeByte(message.getViewDistance());
+        buf.writeByte(message.getChatFlags());
+        buf.writeBoolean(message.getChatColors());
+        buf.writeByte(message.getSkinFlags());
+        return buf;
     }
 }

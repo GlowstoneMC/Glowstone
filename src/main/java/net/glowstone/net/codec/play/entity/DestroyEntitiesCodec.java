@@ -3,15 +3,21 @@ package net.glowstone.net.codec.play.entity;
 import com.flowpowered.networking.Codec;
 import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.DecoderException;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class DestroyEntitiesCodec implements Codec<DestroyEntitiesMessage> {
     @Override
     public DestroyEntitiesMessage decode(ByteBuf buf) throws IOException {
-        throw new DecoderException("Cannot decode DestroyEntitiesMessage");
+        int size = ByteBufUtils.readVarInt(buf);
+        List<Integer> ids = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            ids.add(ByteBufUtils.readVarInt(buf));
+        }
+        return new DestroyEntitiesMessage(ids);
     }
 
     @Override
