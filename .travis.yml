@@ -3,11 +3,11 @@ language: java
 jdk: oraclejdk7
 
 # Compile and package JAR and set build properties
-install: ./gradlew build shadowJar
+install: ./gradlew clean build remap
 
 after_success:
   # Check if commit is not a pull request, if repo is official, and branch is master, generate and deploy artifacts and reports
-  - "[[ $TRAVIS_PULL_REQUEST == false ]] && [[ $TRAVIS_REPO_SLUG == GlowstoneMC/Glowstone ]] && [[ $TRAVIS_BRANCH == master ]] && ./gradlew clean build shadowJar publish"
+  - "[[ $TRAVIS_PULL_REQUEST == false ]] && [[ $TRAVIS_REPO_SLUG == GlowstoneMC/Glowstone ]] && [[ $TRAVIS_BRANCH == master ]] && ./gradlew publish"
 
 # Notification services
 notifications:
