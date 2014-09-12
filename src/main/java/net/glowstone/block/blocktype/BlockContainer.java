@@ -5,7 +5,11 @@ import net.glowstone.block.entity.TEContainer;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.block.BlockFace;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
+import java.util.Collection;
+import java.util.LinkedList;
 
 /**
  * Base BlockType for containers.
@@ -21,6 +25,20 @@ public class BlockContainer extends BlockType {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public Collection<ItemStack> getDrops(GlowBlock block) {
+        LinkedList<ItemStack> list = new LinkedList<ItemStack>();
+
+        list.add(new ItemStack(block.getType(), 1));
+
+        for (ItemStack i : ((TEContainer) block.getTileEntity()).getInventory().getContents()) {
+            if (i != null) {
+                list.add(i);
+            }
+        }
+        return list;
     }
 
 }
