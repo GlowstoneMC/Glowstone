@@ -136,7 +136,7 @@ public final class EncryptionKeyResponseHandler implements MessageHandler<GlowSe
                 try {
                     uuid = UuidUtils.fromFlatString(id);
                 } catch (IllegalArgumentException ex) {
-                    GlowServer.logger.log(Level.SEVERE, "Returned authentication UUID invalid: {0}", ex.getMessage());
+                    GlowServer.logger.log(Level.SEVERE, "Returned authentication UUID invalid: " + id, ex);
                     session.disconnect("Invalid UUID.");
                     return;
                 }

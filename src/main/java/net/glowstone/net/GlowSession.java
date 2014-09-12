@@ -321,9 +321,9 @@ public final class GlowSession extends BasicSession {
 
         // log that the player was kicked
         if (player != null) {
-            GlowServer.logger.log(Level.INFO, "{0} kicked: {1}", new Object[]{player.getName(), reason});
+            GlowServer.logger.info(player.getName() + " kicked: " + reason);
         } else {
-            GlowServer.logger.log(Level.INFO, "[{0}] kicked: {1}", new Object[]{address, reason});
+            GlowServer.logger.info("[" + address + "] kicked: " + reason);
         }
 
         if (quitReason == null) {

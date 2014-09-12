@@ -383,7 +383,7 @@ public final class GlowServer implements Server {
             address = new InetSocketAddress(ip, port);
         }
 
-        logger.log(Level.INFO, "Binding to address: {0}...", address);
+        logger.info("Binding to address: " + address + "...");
         ChannelFuture future = networkServer.bind(address);
         Channel channel = future.awaitUninterruptibly().channel();
         if (!channel.isActive()) {
