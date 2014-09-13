@@ -157,26 +157,23 @@ public class BlockType extends ItemType {
             }
         }
 
-        GlowBlockState newState = target.getState();
-
         // call canBuild event
         if (!EventFactory.onBlockCanBuild(target, getId(), face).isBuildable()) {
             //revert(player, target);
             return;
         }
 
-        // calculate new block
+        // grab states and update block
+        GlowBlockState oldState = target.getState(), newState = target.getState();
         placeBlock(player, newState, face, holding, clickedLoc);
+        newState.update(true);
 
         // call blockPlace event
-        BlockPlaceEvent event = EventFactory.onBlockPlace(target, newState, against, player);
+        BlockPlaceEvent event = EventFactory.onBlockPlace(target, oldState, against, player);
         if (event.isCancelled() || !event.canBuild()) {
-            //revert(player, target);
+            oldState.update(true);
             return;
         }
-
-        // perform the block change
-        newState.update(true);
 
         // play a sound effect
         // todo: vary sound effect based on block type

@@ -12,6 +12,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
@@ -23,13 +24,9 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
     public void handle(GlowSession session, DiggingMessage message) {
         final GlowPlayer player = session.getPlayer();
         GlowWorld world = player.getWorld();
-        int x = message.getX();
-        int y = message.getY();
-        int z = message.getZ();
-        GlowBlock block = world.getBlockAt(x, y, z);
+        GlowBlock block = world.getBlockAt(message.getX(), message.getY(), message.getZ());
         BlockFace face = BlockPlacementHandler.convertFace(message.getFace());
         ItemStack holding = player.getItemInHand();
-
 
         boolean blockBroken = false;
         boolean revert = false;
@@ -41,11 +38,11 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                 action = Action.LEFT_CLICK_AIR;
                 eventBlock = null;
             }
-            PlayerInteractEvent event = EventFactory.onPlayerInteract(player, action, eventBlock, face);
+            PlayerInteractEvent interactEvent = EventFactory.onPlayerInteract(player, action, eventBlock, face);
 
             // blocks don't get interacted with on left click, so ignore that
             // attempt to use item in hand, that is, dig up the block
-            if (!BlockPlacementHandler.selectResult(event.useItemInHand(), true)) {
+            if (!BlockPlacementHandler.selectResult(interactEvent.useItemInHand(), true)) {
                 // the event was cancelled, get out of here
                 revert = true;
             } else {
@@ -57,12 +54,30 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                     blockBroken = damageEvent.getInstaBreak();
                 }
             }
+
+            if (player.getGameMode() == GameMode.CREATIVE) {
+                if (player.getItemInHand() != null && EnchantmentTarget.WEAPON.includes(player.getItemInHand().getType())) {return;}
+
+                // todo: verification against malicious clients
+                // also, if the block dig was denied, this break might still happen
+                // because a player's digging status isn't yet tracked. this is bad.
+                BlockBreakEvent breakEvent = EventFactory.callEvent(new BlockBreakEvent(block, player));
+                if (breakEvent.isCancelled()) {
+                    revert = true;
+                } else {
+                    blockBroken = true;
+                }
+            }
         } else if (message.getState() == DiggingMessage.STATE_DONE_DIGGING) {
+            if (player.getGameMode() == GameMode.CREATIVE) {
+                if (player.getItemInHand() != null && EnchantmentTarget.WEAPON.includes(player.getItemInHand().getType())) {return;}
+            }
+
             // todo: verification against malicious clients
             // also, if the block dig was denied, this break might still happen
             // because a player's digging status isn't yet tracked. this is bad.
-            BlockBreakEvent event = EventFactory.callEvent(new BlockBreakEvent(block, player));
-            if (event.isCancelled()) {
+            BlockBreakEvent breakEvent = EventFactory.callEvent(new BlockBreakEvent(block, player));
+            if (breakEvent.isCancelled()) {
                 revert = true;
             } else {
                 blockBroken = true;
