@@ -112,7 +112,7 @@ public final class GlowServer implements Server {
             }
 
             // Help
-            if ("--help".equals(opt) || "-h".equals(opt) || "-?".endsWith(opt)) {
+            if ("--help".equals(opt) || "-h".equals(opt) || "-?".equals(opt)) {
                 System.out.println("Available command-line options:");
                 System.out.println("  --help, -h, -?                 Shows this help message and exits.");
                 System.out.println("  --version, -v                  Displays version information and exits.");
@@ -121,6 +121,13 @@ public final class GlowServer implements Server {
                 System.out.println("  --port, -p <port>              Sets the server listening port.");
                 System.out.println("  --host, -H <ip | hostname>     Sets the server listening address.");
                 System.out.println("  --onlinemode, -o <onlinemode>  Sets the server's online-mode.");
+                System.out.println("  --nojline                      Disables JLine console.");
+                System.out.println("  --plugins-dir, -P <directory>  Sets the plugin directory to use.");
+                System.out.println("  --worlds-dir, -W <directory>   Sets the world directory to use.");
+                System.out.println("  --update-dir, -U <directory>   Sets the plugin update folder to use.");
+                System.out.println("  --max-players, -M <director>   Sets the maximum amount of players.");
+                System.out.println("  --world-name, -N <name>        Sets the world name.");
+                System.out.println("  --log-pattern, -L <pattern>    Sets the log file pattern. (default: logs/log-%D.txt)");
                 return null;
             }
 
@@ -130,6 +137,11 @@ public final class GlowServer implements Server {
                 System.out.println("Bukkit version:    " + GlowServer.class.getPackage().getSpecificationVersion());
                 System.out.println("Minecraft version: " + GAME_VERSION + " protocol " + PROTOCOL_VERSION);
                 return null;
+            }
+
+            if ("--nojline".equals(opt)) {
+                parameters.put(ServerConfig.Key.USE_JLINE, false);
+                continue;
             }
 
             // Below this point, options require parameters
@@ -161,6 +173,36 @@ public final class GlowServer implements Server {
 
             if ("--onlinemode".equals(opt) || "-o".equals(opt)) {
                 parameters.put(ServerConfig.Key.ONLINE_MODE, Boolean.valueOf(args[++i]));
+                continue;
+            }
+
+            if ("--plugins-dir".equals(opt) || "-P".equals(opt)) {
+                parameters.put(ServerConfig.Key.PLUGIN_FOLDER, args[++i]);
+                continue;
+            }
+
+            if ("--worlds-dir".equals(opt) || "-W".equals(opt)) {
+                parameters.put(ServerConfig.Key.WORLD_FOLDER, args[++i]);
+                continue;
+            }
+
+            if ("--update-dir".equals(opt) || "-U".equals(opt)) {
+                parameters.put(ServerConfig.Key.UPDATE_FOLDER, args[++i]);
+                continue;
+            }
+
+            if ("--max-players".equals(opt) || "-M".equals(opt)) {
+                parameters.put(ServerConfig.Key.MAX_PLAYERS, Integer.valueOf(args[++i]));
+                continue;
+            }
+
+            if ("--world-name".equals(opt) || "-N".equals(opt)) {
+                parameters.put(ServerConfig.Key.LEVEL_NAME, args[++i]);
+                continue;
+            }
+
+            if ("--log-pattern".equals(opt) || "-L".equals(opt)) {
+                parameters.put(ServerConfig.Key.LOG_FILE, args[++i]);
                 continue;
             }
 
