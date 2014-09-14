@@ -1,0 +1,31 @@
+// Tasks to perform when no task is specified
+defaultTasks 'clean', 'build', 'jar'
+
+// Plugins used
+apply plugin: 'java' // Specifies a java project
+
+// Basic project information
+group = 'net.glowstone'
+version = '0.0.1-SNAPSHOT'
+description = "ShinySponge"
+
+// Minimum Java version required
+
+// Compile encoding
+compileJava {
+    sourceCompatibility = '1.7'
+    targetCompatibility = '1.7'
+    options.encoding = 'UTF-8'
+}
+
+// Repositories storing our dependencies
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+// Dependencies used by our project
+dependencies {
+	compile 'org.spongepowered:spongeapi:1.0.0-SNAPSHOT'
+    testCompile 'junit:junit:4.8.1'
+}
