@@ -9,9 +9,7 @@ group = 'net.glowstone'
 version = '0.0.1-SNAPSHOT'
 description = "ShinySponge"
 
-// Minimum Java version required
-
-// Compile encoding
+// Compiler settings
 compileJava {
     sourceCompatibility = '1.7'
     targetCompatibility = '1.7'
