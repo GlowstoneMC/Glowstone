@@ -49,7 +49,7 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
         }
     }
 
-    public void SetItemInFrame(ItemStack is) {
+    public void SetIteminFrame(ItemStack is) {
         if (is == null) {
             is = new ItemStack(Material.AIR, 1);
         }
@@ -76,7 +76,7 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
             if (iteminframe == Material.AIR) {
                 ItemStack isinhand = player.getItemInHand();
                 int amount = player.getItemInHand().getAmount();
-                SetItemInFrame(isinhand);
+                SetIteminFrame(isinhand);
                 isinhand.setAmount(amount - 1);
                 if (isinhand.getAmount() <= 0) {
                     isinhand = null;
@@ -94,7 +94,7 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
             if (isEmpty()) {
                 remove();
             } else {
-                SetItemInFrame(new ItemStack(Material.AIR));
+                SetIteminFrame(new ItemStack(Material.AIR));
                 rot = 0;
             }
         }
@@ -302,7 +302,7 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
 
     @Override
     public void setItem(ItemStack is) {
-        SetItemInFrame(is);
+        SetIteminFrame(is);
     }
 
     /**
