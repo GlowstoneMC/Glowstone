@@ -1349,7 +1349,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void playEffect(Location loc, Effect effect, int data) {
         int id = effect.getId();
-        boolean ignoreDistance = id == 1013; // mob.wither.spawn, not in Bukkit yet
+        boolean ignoreDistance = effect.isDistanceIgnored();
         session.send(new PlayEffectMessage(id, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), data, ignoreDistance));
     }
 
