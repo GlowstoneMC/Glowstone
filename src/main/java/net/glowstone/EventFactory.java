@@ -21,6 +21,8 @@ import org.bukkit.inventory.ItemStack;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -68,11 +70,28 @@ public final class EventFactory {
         }
     }
 
-
     // -- Player Events
 
-    public static PlayerChatEvent onPlayerChat(Player player, String message) {
-        return callEvent(new PlayerChatEvent(player, message));
+    public static AsyncPlayerChatEvent onPlayerChat(boolean async, Player player, String message) {
+        // call async event
+        final Set<Player> recipients = new HashSet<>(player.getServer().getOnlinePlayers());
+        final AsyncPlayerChatEvent event = new AsyncPlayerChatEvent(async, player, message, recipients);
+        callEvent(event);
+
+        // call sync event only if needed
+        if (PlayerChatEvent.getHandlerList().getRegisteredListeners().length > 0) {
+            // initialize event to match current state from async event
+            final PlayerChatEvent syncEvent = new PlayerChatEvent(player, event.getMessage(), event.getFormat(), recipients);
+            syncEvent.setCancelled(event.isCancelled());
+
+            // call event synchronously and copy data back to original event
+            callEvent(syncEvent);
+            event.setMessage(syncEvent.getMessage());
+            event.setFormat(syncEvent.getFormat());
+            event.setCancelled(syncEvent.isCancelled());
+        }
+
+        return event;
     }
 
     public static PlayerCommandPreprocessEvent onPlayerCommand(Player player, String message) {

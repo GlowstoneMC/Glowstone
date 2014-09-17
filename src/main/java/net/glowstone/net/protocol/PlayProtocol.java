@@ -21,7 +21,7 @@ public final class PlayProtocol extends GlowProtocol {
         super("PLAY", 0x49);
 
         inbound(0x00, PingMessage.class, PingCodec.class, PingHandler.class);
-        inbound(0x01, IncomingChatMessage.class, IncomingChatCodec.class, ChatHandler.class);
+        inbound(0x01, IncomingChatMessage.class, IncomingChatCodec.class, IncomingChatHandler.class);
         inbound(0x02, InteractEntityMessage.class, InteractEntityCodec.class, InteractEntityHandler.class);
         inbound(0x03, PlayerUpdateMessage.class, PlayerUpdateCodec.class, PlayerUpdateHandler.class);
         inbound(0x04, PlayerPositionMessage.class, PlayerPositionCodec.class, PlayerUpdateHandler.class);
