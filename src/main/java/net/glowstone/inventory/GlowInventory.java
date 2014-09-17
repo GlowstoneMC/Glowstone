@@ -45,6 +45,8 @@ public class GlowInventory implements Inventory {
      */
     private int maxStackSize = 64;
 
+    protected GlowInventory() { }
+
     public GlowInventory(InventoryHolder owner, InventoryType type) {
         this(owner, type, type.getDefaultSize(), type.getDefaultTitle());
     }
@@ -54,10 +56,14 @@ public class GlowInventory implements Inventory {
     }
 
     public GlowInventory(InventoryHolder owner, InventoryType type, int size, String title) {
+        initialize(owner, type, GlowInventorySlot.createList(size), title);
+    }
+
+    protected void initialize(InventoryHolder owner, InventoryType type, List<GlowInventorySlot> slots, String title) {
         this.owner = owner;
         this.type = type;
+        this.slots = slots;
         this.title = title;
-        slots = GlowInventorySlot.createList(size);
     }
 
     ////////////////////////////////////////////////////////////////////////////
