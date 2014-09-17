@@ -31,14 +31,9 @@ public class GlowInventory implements Inventory {
     private final InventoryType type;
 
     /**
-     * This inventory's contents.
+     * This inventory's slots.
      */
-    private final ItemStack[] slots;
-
-    /**
-     * This inventory's slot types.
-     */
-    protected final SlotType[] slotTypes;
+    private final List<GlowInventorySlot> slots;
 
     /**
      * The inventory's name.
@@ -62,9 +57,7 @@ public class GlowInventory implements Inventory {
         this.owner = owner;
         this.type = type;
         this.title = title;
-        slots = new ItemStack[size];
-        slotTypes = new SlotType[size];
-        Arrays.fill(slotTypes, SlotType.CONTAINER);
+        slots = GlowInventorySlot.createList(size);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -91,13 +84,30 @@ public class GlowInventory implements Inventory {
     }
 
     /**
+     * Returns the list of all slots contained in this inventory.
+     * @return Slot list.
+     */
+    public List<GlowInventorySlot> getSlots() {
+        return slots;
+    }
+
+    /**
+     * Returns a certain slot.
+     * @param Slot index.
+     * @return The requested slot.
+     */
+    public GlowInventorySlot getSlot(int slot) {
+        return slots.get(slot);
+    }
+
+    /**
      * Get the type of the specified slot.
      * @param slot The slot number.
      * @return The SlotType of the slot.
      */
     public SlotType getSlotType(int slot) {
         if (slot < 0) return SlotType.OUTSIDE;
-        return slotTypes[slot];
+        return getSlot(slot).getType();
     }
 
     /**
@@ -150,7 +160,7 @@ public class GlowInventory implements Inventory {
 
     @Override
     public final int getSize() {
-        return slots.length;
+        return slots.size();
     }
 
     @Override
@@ -207,20 +217,21 @@ public class GlowInventory implements Inventory {
 
     @Override
     public ItemStack getItem(int index) {
-        if (slots[index] == null) {
-            return null;
+        ItemStack item = getSlot(index).getItem();
+        if (item != null) {
+            // Defensive copy
+            item = item.clone();
         }
-        // Defensive copy
-        return slots[index].clone();
+        return item;
     }
 
     @Override
     public void setItem(int index, ItemStack item) {
-        if (item == null) {
-            slots[index] = null;
+        if (item != null) {
+            // Defensive copy
+            item = item.clone();
         }
-        // Defensive copy
-        slots[index] = new ItemStack(item);
+        getSlot(index).setItem(item);
     }
 
     @Override
