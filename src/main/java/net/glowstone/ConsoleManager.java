@@ -7,6 +7,7 @@ import org.bukkit.command.CommandException;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
+import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.permissions.PermissibleBase;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
@@ -200,7 +201,8 @@ public final class ConsoleManager {
 
         @Override
         public void run() {
-            server.dispatchCommand(sender, EventFactory.onServerCommand(sender, command).getCommand());
+            ServerCommandEvent event = EventFactory.callEvent(new ServerCommandEvent(sender, command));
+            server.dispatchCommand(sender, event.getCommand());
         }
     }
 

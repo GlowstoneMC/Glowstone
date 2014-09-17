@@ -61,7 +61,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             // todo: verification against malicious clients
             // also, if the block dig was denied, this break might still happen
             // because a player's digging status isn't yet tracked. this is bad.
-            BlockBreakEvent event = EventFactory.onBlockBreak(block, player);
+            BlockBreakEvent event = EventFactory.callEvent(new BlockBreakEvent(block, player));
             if (event.isCancelled()) {
                 revert = true;
             } else {

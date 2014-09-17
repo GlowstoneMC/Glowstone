@@ -857,7 +857,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void setSneaking(boolean sneak) {
-        if (EventFactory.onPlayerToggleSneak(this, sneak).isCancelled()) {
+        if (EventFactory.callEvent(new PlayerToggleSneakEvent(this, sneak)).isCancelled()) {
             return;
         }
 
@@ -1109,8 +1109,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public boolean teleport(Location location, TeleportCause cause) {
         if (this.location != null && this.location.getWorld() != null) {
-            PlayerTeleportEvent event = EventFactory.onPlayerTeleport(this, getLocation(), location, cause);
-            if (event.isCancelled()) return false;
+            PlayerTeleportEvent event = new PlayerTeleportEvent(this, this.location, location, cause);
+            if (EventFactory.callEvent(event).isCancelled()) {
+                return false;
+            }
             location = event.getTo();
         }
 
@@ -1174,9 +1176,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
                 public void run() {
                     server.getLogger().info(getName() + " issued command: " + text);
                     try {
-                        PlayerCommandPreprocessEvent event = EventFactory.onPlayerCommand(GlowPlayer.this, text);
-                        if (!event.isCancelled()) {
-                            server.dispatchCommand(event.getPlayer(), event.getMessage().substring(1));
+                        PlayerCommandPreprocessEvent event = new PlayerCommandPreprocessEvent(GlowPlayer.this, text);
+                        if (!EventFactory.callEvent(event).isCancelled()) {
+                            server.dispatchCommand(GlowPlayer.this, event.getMessage().substring(1));
                         }
                     } catch (Exception ex) {
                         sendMessage(ChatColor.RED + "An internal error occurred while executing your command.");

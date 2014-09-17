@@ -1049,7 +1049,6 @@ public final class GlowServer implements Server {
         }
         if (worlds.removeWorld(world)) {
             world.unload();
-            EventFactory.onWorldUnload(world);
             return true;
         }
         return false;

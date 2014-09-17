@@ -6,6 +6,7 @@ import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.TabCompleteMessage;
 import net.glowstone.net.message.play.player.TabCompleteResponseMessage;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerChatTabCompleteEvent;
 import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public final class TabCompleteHandler implements MessageHandler<GlowSession, Tab
         }
 
         // call event and send response
-        EventFactory.onPlayerTabComplete(sender, buffer, completions);
+        EventFactory.callEvent(new PlayerChatTabCompleteEvent(sender, buffer, completions));
         session.send(new TabCompleteResponseMessage(completions));
     }
 }

@@ -2,6 +2,8 @@ package net.glowstone;
 
 import net.glowstone.io.ChunkIoService;
 import org.bukkit.block.Biome;
+import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.event.world.ChunkPopulateEvent;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 
@@ -118,7 +120,7 @@ public final class ChunkManager {
         // try to load chunk
         try {
             if (service.read(chunk)) {
-                EventFactory.onChunkLoad(chunk, false);
+                EventFactory.callEvent(new ChunkLoadEvent(chunk, false));
                 return true;
             }
         } catch (Exception e) {
@@ -141,7 +143,7 @@ public final class ChunkManager {
             return false;
         }
 
-        EventFactory.onChunkLoad(chunk, true);
+        EventFactory.callEvent(new ChunkLoadEvent(chunk, true));
 
         // right now, forcePopulate takes care of populating chunks that players actually see.
         /*for (int x2 = x - 1; x2 <= x + 1; ++x2) {
@@ -207,7 +209,7 @@ public final class ChunkManager {
             p.populate(world, random, chunk);
         }
 
-        EventFactory.onChunkPopulate(chunk);
+        EventFactory.callEvent(new ChunkPopulateEvent(chunk));
     }
 
     /**
