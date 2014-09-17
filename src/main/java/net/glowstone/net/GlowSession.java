@@ -84,6 +84,11 @@ public final class GlowSession extends BasicSession {
     private String quitReason;
 
     /**
+     * The hostname used to connect.
+     */
+    private String hostname;
+
+    /**
      * A timeout counter. This is increment once every tick and if it goes above
      * a certain value the session is disconnected.
      */
@@ -169,6 +174,14 @@ public final class GlowSession extends BasicSession {
     }
 
     /**
+     * Set the hostname the player used to connect to the server.
+     * @param hostname Hostname in "addr:port" format.
+     */
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
+    }
+
+    /**
      * Note that the client has responded to a keep-alive.
      * @param pingId The pingId to check for validity.
      */
@@ -241,7 +254,7 @@ public final class GlowSession extends BasicSession {
         }
 
         // login event
-        PlayerLoginEvent event = EventFactory.onPlayerLogin(player);
+        PlayerLoginEvent event = EventFactory.onPlayerLogin(player, hostname);
         if (event.getResult() != PlayerLoginEvent.Result.ALLOWED) {
             disconnect(event.getKickMessage(), true);
             return;

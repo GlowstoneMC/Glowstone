@@ -16,6 +16,7 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
             return;
         }
 
+        session.setHostname(message.getAddress() + ":" + message.getPort());
         session.setProtocol(protocol);
 
         if (protocol == ProtocolType.LOGIN) {

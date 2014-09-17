@@ -18,6 +18,7 @@ import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.event.world.*;
 import org.bukkit.inventory.ItemStack;
 
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.UUID;
@@ -110,18 +111,19 @@ public final class EventFactory {
         return callEvent(new PlayerTeleportEvent(player, from, to, cause));
     }
 
-    public static PlayerLoginEvent onPlayerLogin(GlowPlayer player) {
+    public static PlayerLoginEvent onPlayerLogin(GlowPlayer player, String hostname) {
         final GlowServer server = player.getServer();
-        final String address = player.getAddress().getAddress().getHostAddress();
-        final PlayerLoginEvent event = new PlayerLoginEvent(player);
+        final InetAddress address = player.getAddress().getAddress();
+        final String addressString = address.getHostAddress();
+        final PlayerLoginEvent event = new PlayerLoginEvent(player, hostname, address);
 
         final BanList nameBans = server.getBanList(BanList.Type.NAME);
         final BanList ipBans = server.getBanList(BanList.Type.IP);
 
         if (nameBans.isBanned(player.getName())) {
             event.disallow(PlayerLoginEvent.Result.KICK_BANNED, "Banned: " + nameBans.getBanEntry(player.getName()).getReason());
-        } else if (ipBans.isBanned(address)) {
-            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, "Banned: " + ipBans.getBanEntry(address).getReason());
+        } else if (ipBans.isBanned(addressString)) {
+            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, "Banned: " + ipBans.getBanEntry(addressString).getReason());
         } else if (server.hasWhitelist() && !player.isWhitelisted()) {
             event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, "You are not whitelisted on this server.");
         } else if (server.getOnlinePlayers().size() >= server.getMaxPlayers()) {
