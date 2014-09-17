@@ -17,7 +17,7 @@ import java.util.List;
  * behavior of this class isn't strictly specified.
  */
 @Deprecated
-public class GlowUnsafeValues implements UnsafeValues {
+public final class GlowUnsafeValues implements UnsafeValues {
 
     @Override
     public Material getMaterialFromInternalName(String name) {

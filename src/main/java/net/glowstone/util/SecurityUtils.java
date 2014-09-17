@@ -9,7 +9,7 @@ import java.util.logging.Level;
 /**
  * Utility class for performing encrypted authentication
  */
-public class SecurityUtils {
+public final class SecurityUtils {
 
     private static SecureRandom random = new SecureRandom();
 

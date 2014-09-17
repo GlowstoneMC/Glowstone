@@ -15,7 +15,7 @@ import java.io.File;
 /**
  * A {@link CachedServerIcon} implementation.
  */
-public class GlowServerIcon implements CachedServerIcon {
+public final class GlowServerIcon implements CachedServerIcon {
 
     /**
      * The image data to be sent to the client, or null.
