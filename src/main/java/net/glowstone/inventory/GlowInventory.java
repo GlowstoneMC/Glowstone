@@ -207,12 +207,20 @@ public class GlowInventory implements Inventory {
 
     @Override
     public ItemStack getItem(int index) {
-        return slots[index];
+        if (slots[index] == null) {
+            return null;
+        }
+        // Defensive copy
+        return slots[index].clone();
     }
 
     @Override
     public void setItem(int index, ItemStack item) {
-        slots[index] = item;
+        if (item == null) {
+            slots[index] = null;
+        }
+        // Defensive copy
+        slots[index] = new ItemStack(item);
     }
 
     @Override
@@ -227,12 +235,15 @@ public class GlowInventory implements Inventory {
 
             for (int j = 0; toAdd > 0 && j < getSize(); ++j) {
                 // Look for existing stacks to add to
-                if (slots[j] != null && slots[j].getTypeId() == mat && slots[j].getDurability() == damage) {
-                    int space = maxStackSize - slots[j].getAmount();
+                ItemStack slotItem = getItem(j);
+                if (slotItem != null && slotItem.getTypeId() == mat && slotItem.getDurability() == damage) {
+                    int space = maxStackSize - slotItem.getAmount();
                     if (space < 0) continue;
                     if (space > toAdd) space = toAdd;
 
-                    slots[j].setAmount(slots[j].getAmount() + space);
+                    slotItem.setAmount(slotItem.getAmount() + space);
+                    setItem(j, slotItem);
+
                     toAdd -= space;
                 }
             }
@@ -240,9 +251,13 @@ public class GlowInventory implements Inventory {
             if (toAdd > 0) {
                 // Look for empty slots to add to
                 for (int j = 0; toAdd > 0 && j < getSize(); ++j) {
-                    if (slots[j] == null) {
+                    ItemStack slotItem = getItem(j);
+                    if (slotItem == null) {
                         int num = toAdd > maxStackSize ? maxStackSize : toAdd;
-                        slots[j] = new ItemStack(mat, num, damage);
+
+                        slotItem.setAmount(num);
+                        setItem(j, slotItem);
+
                         toAdd -= num;
                     }
                 }
@@ -267,13 +282,15 @@ public class GlowInventory implements Inventory {
             short damage = items[i].getDurability();
 
             for (int j = 0; j < getSize(); ++j) {
+                ItemStack slotItem = getItem(j);
                 // Look for stacks to remove from.
-                if (slots[j] != null && slots[j].getTypeId() == mat && slots[j].getDurability() == damage) {
-                    if (slots[j].getAmount() > toRemove) {
-                        slots[j].setAmount(slots[j].getAmount() - toRemove);
+                if (slotItem != null && slotItem.getTypeId() == mat && slotItem.getDurability() == damage) {
+                    if (slotItem.getAmount() > toRemove) {
+                        slotItem.setAmount(slotItem.getAmount() - toRemove);
+                        setItem(j, slotItem);
                     } else {
-                        toRemove -= slots[j].getAmount();
-                        slots[j] = null;
+                        toRemove -= slotItem.getAmount();
+                        slotItem = null;
                     }
                 }
             }
@@ -289,15 +306,24 @@ public class GlowInventory implements Inventory {
 
     @Override
     public ItemStack[] getContents() {
-        return slots;
+        ItemStack[] contents = new ItemStack[getSize()];
+
+        for (int i = 0; i < getSize(); i++) {
+            contents[i] = getItem(i);
+        }
+
+        return contents;
     }
 
     @Override
     public void setContents(ItemStack[] items) {
-        if (items.length != slots.length) {
-            throw new IllegalArgumentException("Length of items must be " + slots.length);
+        if (items.length != getSize()) {
+            throw new IllegalArgumentException("Length of items must be " + getSize());
         }
-        System.arraycopy(items, 0, slots, 0, items.length);
+
+        for (int i = 0; i < getSize(); i++) {
+            setItem(i, items[i]);
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -349,9 +375,10 @@ public class GlowInventory implements Inventory {
     @Override
     public HashMap<Integer, ItemStack> all(int materialId) {
         HashMap<Integer, ItemStack> result = new HashMap<>();
-        for (int i = 0; i < slots.length; ++i) {
-            if (slots[i].getTypeId() == materialId) {
-                result.put(i, slots[i]);
+        for (int i = 0; i < getSize(); ++i) {
+            ItemStack slotItem = getItem(i);
+            if (slotItem.getTypeId() == materialId) {
+                result.put(i, slotItem);
             }
         }
         return result;
@@ -365,9 +392,10 @@ public class GlowInventory implements Inventory {
     @Override
     public HashMap<Integer, ItemStack> all(ItemStack item) {
         HashMap<Integer, ItemStack> result = new HashMap<>();
-        for (int i = 0; i < slots.length; ++i) {
-            if (slots[i] != null && slots[i].equals(item)) {
-                result.put(i, slots[i]);
+        for (int i = 0; i < getSize(); ++i) {
+            ItemStack slotItem = getItem(i);
+            if (slotItem != null && slotItem.equals(item)) {
+                result.put(i, slotItem);
             }
         }
         return result;
@@ -378,8 +406,9 @@ public class GlowInventory implements Inventory {
 
     @Override
     public int first(int materialId) {
-        for (int i = 0; i < slots.length; ++i) {
-            if (slots[i] != null && slots[i].getTypeId() == materialId) return i;
+        for (int i = 0; i < getSize(); ++i) {
+            ItemStack slotItem = getItem(i);
+            if (slotItem != null && slotItem.getTypeId() == materialId) return i;
         }
         return -1;
     }
@@ -391,16 +420,17 @@ public class GlowInventory implements Inventory {
 
     @Override
     public int first(ItemStack item) {
-        for (int i = 0; i < slots.length; ++i) {
-            if (slots[i] != null && slots[i].equals(item)) return i;
+        for (int i = 0; i < getSize(); ++i) {
+            ItemStack slotItem = getItem(i);
+            if (slotItem != null && slotItem.equals(item)) return i;
         }
         return -1;
     }
 
     @Override
     public int firstEmpty() {
-        for (int i = 0; i < slots.length; ++i) {
-            if (slots[i] == null) return i;
+        for (int i = 0; i < getSize(); ++i) {
+            if (getItem(i) == null) return i;
         }
         return -1;
     }
@@ -412,7 +442,7 @@ public class GlowInventory implements Inventory {
     public void remove(int materialId) {
         HashMap<Integer, ? extends ItemStack> stacks = all(materialId);
         for (Integer slot : stacks.keySet()) {
-            setItem(slot, null);
+            clear(slot);
         }
     }
 
@@ -420,7 +450,7 @@ public class GlowInventory implements Inventory {
     public void remove(Material material) {
         HashMap<Integer, ? extends ItemStack> stacks = all(material);
         for (Integer slot : stacks.keySet()) {
-            setItem(slot, null);
+            clear(slot);
         }
     }
 
@@ -428,7 +458,7 @@ public class GlowInventory implements Inventory {
     public void remove(ItemStack item) {
         HashMap<Integer, ? extends ItemStack> stacks = all(item);
         for (Integer slot : stacks.keySet()) {
-            setItem(slot, null);
+            clear(slot);
         }
     }
 
@@ -442,7 +472,7 @@ public class GlowInventory implements Inventory {
 
     @Override
     public void clear() {
-        for (int i = 0; i < slots.length; ++i) {
+        for (int i = 0; i < getSize(); ++i) {
             clear(i);
         }
     }
