@@ -13,6 +13,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;
+import org.bukkit.event.block.BlockCanBuildEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
@@ -158,7 +159,9 @@ public class BlockType extends ItemType {
         }
 
         // call canBuild event
-        if (!EventFactory.onBlockCanBuild(target, getId(), face).isBuildable()) {
+        boolean canBuild = canPlaceAt(target, face);
+        BlockCanBuildEvent canBuildEvent = new BlockCanBuildEvent(target, getId(), canBuild);
+        if (!EventFactory.callEvent(canBuildEvent).isBuildable()) {
             //revert(player, target);
             return;
         }
@@ -169,7 +172,8 @@ public class BlockType extends ItemType {
         newState.update(true);
 
         // call blockPlace event
-        BlockPlaceEvent event = EventFactory.onBlockPlace(target, oldState, against, player);
+        BlockPlaceEvent event = new BlockPlaceEvent(target, oldState, against, holding, player, canBuild);
+        EventFactory.callEvent(event);
         if (event.isCancelled() || !event.canBuild()) {
             oldState.update(true);
             return;

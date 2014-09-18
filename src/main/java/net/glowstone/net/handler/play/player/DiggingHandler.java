@@ -30,7 +30,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
 
         boolean blockBroken = false;
         boolean revert = false;
-        if (message.getState() == DiggingMessage.STATE_START_DIGGING) {
+        if (message.getState() == DiggingMessage.START_DIGGING) {
             // call interact event
             Action action = Action.LEFT_CLICK_BLOCK;
             Block eventBlock = block;
@@ -46,53 +46,46 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                 // the event was cancelled, get out of here
                 revert = true;
             } else {
-                // emit a damage event to determine if we're going to instabreak
-                BlockDamageEvent damageEvent = EventFactory.onBlockDamage(player, block);
+                // emit damage event - cancel by default if holding a sword
+                boolean instaBreak = player.getGameMode() == GameMode.CREATIVE;
+                BlockDamageEvent damageEvent = new BlockDamageEvent(player, block, player.getItemInHand(), instaBreak);
+                if (holding != null && EnchantmentTarget.WEAPON.includes(holding.getType())) {
+                    damageEvent.setCancelled(true);
+                }
+                EventFactory.callEvent(damageEvent);
+
+                // follow orders
                 if (damageEvent.isCancelled()) {
                     revert = true;
                 } else {
-                    blockBroken = damageEvent.getInstaBreak();
+                    // in creative, break even if denied in the event, or the block
+                    // can never be broken (client does not send DONE_DIGGING).
+                    blockBroken = damageEvent.getInstaBreak() || instaBreak;
                 }
             }
-
-            if (player.getGameMode() == GameMode.CREATIVE) {
-                if (player.getItemInHand() != null && EnchantmentTarget.WEAPON.includes(player.getItemInHand().getType())) {return;}
-
-                // todo: verification against malicious clients
-                // also, if the block dig was denied, this break might still happen
-                // because a player's digging status isn't yet tracked. this is bad.
-                BlockBreakEvent breakEvent = EventFactory.callEvent(new BlockBreakEvent(block, player));
-                if (breakEvent.isCancelled()) {
-                    revert = true;
-                } else {
-                    blockBroken = true;
-                }
-            }
-        } else if (message.getState() == DiggingMessage.STATE_DONE_DIGGING) {
-            if (player.getGameMode() == GameMode.CREATIVE) {
-                if (player.getItemInHand() != null && EnchantmentTarget.WEAPON.includes(player.getItemInHand().getType())) {return;}
-            }
+        } else if (message.getState() == DiggingMessage.FINISH_DIGGING) {
+            // shouldn't happen in creative mode
 
             // todo: verification against malicious clients
             // also, if the block dig was denied, this break might still happen
             // because a player's digging status isn't yet tracked. this is bad.
-            BlockBreakEvent breakEvent = EventFactory.callEvent(new BlockBreakEvent(block, player));
-            if (breakEvent.isCancelled()) {
-                revert = true;
-            } else {
-                blockBroken = true;
-            }
+            blockBroken = true;
         } else {
             return;
         }
 
         if (blockBroken) {
+            // fire the block break event
+            BlockBreakEvent breakEvent = EventFactory.callEvent(new BlockBreakEvent(block, player));
+            if (breakEvent.isCancelled()) {
+                BlockPlacementHandler.revert(player, block);
+                return;
+            }
+
             // destroy the block
-            if (!block.isEmpty() && !block.isLiquid()) {
-                if (player.getGameMode() != GameMode.CREATIVE) {
-                    for (ItemStack drop : block.getDrops(holding)) {
-                        player.getInventory().addItem(drop);
-                    }
+            if (!block.isEmpty() && !block.isLiquid() && player.getGameMode() != GameMode.CREATIVE) {
+                for (ItemStack drop : block.getDrops(holding)) {
+                    player.getInventory().addItem(drop);
                 }
             }
             // STEP_SOUND actually is the block break particles

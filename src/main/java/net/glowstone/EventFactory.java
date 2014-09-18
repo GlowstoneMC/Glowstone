@@ -1,19 +1,15 @@
 package net.glowstone;
 
-import net.glowstone.block.GlowBlock;
-import net.glowstone.block.ItemTable;
-import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.entity.GlowPlayer;
-import org.bukkit.*;
+import org.bukkit.BanList;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockCanBuildEvent;
-import org.bukkit.event.block.BlockDamageEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.*;
 
 import java.net.InetAddress;
@@ -165,23 +161,6 @@ public final class EventFactory {
 
     public static PlayerInteractEvent onPlayerInteract(Player player, Action action, Block clicked, BlockFace face) {
         return callEvent(new PlayerInteractEvent(player, action, player.getItemInHand(), clicked, face));
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Block Events
-
-    public static BlockDamageEvent onBlockDamage(Player player, Block block) {
-        return callEvent(new BlockDamageEvent(player, block, player.getItemInHand(), player.getGameMode() == GameMode.CREATIVE));
-    }
-
-    public static BlockPlaceEvent onBlockPlace(Block block, BlockState newState, Block against, Player player) {
-        return callEvent(new BlockPlaceEvent(block, newState, against, player.getItemInHand(), player, true));
-    }
-
-    public static BlockCanBuildEvent onBlockCanBuild(GlowBlock block, int newId, BlockFace against) {
-        BlockType type = ItemTable.instance().getBlock(newId);
-        boolean canBuild = type == null || type.canPlaceAt(block, against);
-        return callEvent(new BlockCanBuildEvent(block, newId, canBuild));
     }
 
 }
