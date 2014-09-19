@@ -172,4 +172,3 @@ the `LICENSE` file for details.
 
 Glowkit is open-source software released under the GPL license. Please see
 the `LICENSE.txt` file in the Glowkit repository for details.
-
