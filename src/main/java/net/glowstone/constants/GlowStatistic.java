@@ -12,7 +12,7 @@ public final class GlowStatistic {
 
     private GlowStatistic() {}
 
-    private final static String[] names = new String[Statistic.values().length];
+    private static final String[] names = new String[Statistic.values().length];
 
     /**
      * Get the statistic name for a specified Statistic.

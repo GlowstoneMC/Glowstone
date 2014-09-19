@@ -86,31 +86,31 @@ public class MetadataMap {
     }
 
     public byte getByte(MetadataIndex index) {
-        return _get(index, MetadataType.BYTE, (byte) 0);
+        return get(index, MetadataType.BYTE, (byte) 0);
     }
 
     public short getShort(MetadataIndex index) {
-        return _get(index, MetadataType.SHORT, (short) 0);
+        return get(index, MetadataType.SHORT, (short) 0);
     }
 
     public int getInt(MetadataIndex index) {
-        return _get(index, MetadataType.INT, 0);
+        return get(index, MetadataType.INT, 0);
     }
 
     public float getFloat(MetadataIndex index) {
-        return _get(index, MetadataType.FLOAT, 0f);
+        return get(index, MetadataType.FLOAT, 0f);
     }
 
     public String getString(MetadataIndex index) {
-        return _get(index, MetadataType.STRING, null);
+        return get(index, MetadataType.STRING, null);
     }
 
     public ItemStack getItem(MetadataIndex index) {
-        return _get(index, MetadataType.ITEM, null);
+        return get(index, MetadataType.ITEM, null);
     }
 
     @SuppressWarnings("unchecked")
-    private <T> T _get(MetadataIndex index, MetadataType expected, T def) {
+    private <T> T get(MetadataIndex index, MetadataType expected, T def) {
         if (index.getType() != expected) {
             throw new IllegalArgumentException("Cannot get " + index + ": is " + index.getType() + ", not " + expected);
         }

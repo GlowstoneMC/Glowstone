@@ -7,6 +7,7 @@ apply plugin: 'application' // Adds the 'run' task
 apply plugin: 'project-report' // Adds project report tasks
 apply plugin: 'com.github.johnrengelman.shadow' // Provides dependency shading
 apply plugin: 'net.glowstone.remapper' // Provides method remapping
+apply plugin: 'checkstyle' // Checks code style
 apply from: 'etc/publish.gradle'
 
 // Methods to determine detailed version string
@@ -107,6 +108,11 @@ dependencies {
 remap {
     mappingFile = file('etc/remapper.txt')
     inputTask = shadowJar
+}
+
+// Checkstyle plugin settings
+checkstyle {
+    configFile = file('etc/checkstyle.xml')
 }
 
 // Jar manifest information

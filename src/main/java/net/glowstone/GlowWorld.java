@@ -39,7 +39,7 @@ public final class GlowWorld implements World {
     /**
      * The metadata store class for worlds.
      */
-    private final static class WorldMetadataStore extends MetadataStoreBase<World> implements MetadataStore<World> {
+    private static final class WorldMetadataStore extends MetadataStoreBase<World> implements MetadataStore<World> {
         @Override
         protected String disambiguate(World subject, String metadataKey) {
             return subject.getName() + ":" + metadataKey;
@@ -49,7 +49,7 @@ public final class GlowWorld implements World {
     /**
      * The metadata store for world objects.
      */
-    private final static MetadataStore<World> metadata = new WorldMetadataStore();
+    private static final MetadataStore<World> metadata = new WorldMetadataStore();
 
     /**
      * The length in ticks of one Minecraft day.

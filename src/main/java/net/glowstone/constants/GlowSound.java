@@ -12,7 +12,7 @@ public final class GlowSound {
 
     private GlowSound() {}
 
-    private final static String[] names = new String[Sound.values().length];
+    private static final String[] names = new String[Sound.values().length];
 
     /**
      * Get the sound name for a specified Sound.

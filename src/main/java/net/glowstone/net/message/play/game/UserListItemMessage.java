@@ -106,7 +106,7 @@ public final class UserListItemMessage implements Message {
         REMOVE_PLAYER
     }
 
-    public final static class Entry {
+    public static final class Entry {
         private final Action action;
         public final UUID uuid;
         public final PlayerProfile profile;

@@ -14,8 +14,8 @@ public final class GlowBiome {
 
     private GlowBiome() {}
 
-    private final static int[] ids = new int[Biome.values().length];
-    private final static Biome[] biomes = new Biome[256];
+    private static final int[] ids = new int[Biome.values().length];
+    private static final Biome[] biomes = new Biome[256];
 
     /**
      * Get the biome ID for a specified Biome.

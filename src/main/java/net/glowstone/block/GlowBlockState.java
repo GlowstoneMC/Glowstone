@@ -84,49 +84,49 @@ public class GlowBlockState implements BlockState {
     // Type and data
 
     @Override
-    final public Material getType() {
+    public final Material getType() {
         return Material.getMaterial(type);
     }
 
     @Override
-    final public void setType(Material type) {
+    public final void setType(Material type) {
         setTypeId(type.getId());
     }
 
     @Override
-    final public int getTypeId() {
+    public final int getTypeId() {
         return type;
     }
 
     @Override
-    final public boolean setTypeId(int type) {
+    public final boolean setTypeId(int type) {
         this.type = type;
         makeData((byte) 0);
         return true;
     }
 
     @Override
-    final public MaterialData getData() {
+    public final MaterialData getData() {
         return data;
     }
 
     @Override
-    final public void setData(MaterialData data) {
+    public final void setData(MaterialData data) {
         this.data = data;
     }
 
     @Override
-    final public byte getRawData() {
+    public final byte getRawData() {
         return getData().getData();
     }
 
     @Override
-    final public void setRawData(byte data) {
+    public final void setRawData(byte data) {
         getData().setData(data);
     }
 
     @Override
-    final public byte getLightLevel() {
+    public final byte getLightLevel() {
         return light;
     }
 

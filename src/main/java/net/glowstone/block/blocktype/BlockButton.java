@@ -37,13 +37,13 @@ public class BlockButton extends BlockAttachable {
         state.update();
 
         // todo: switch to block scheduling system when one is available
-        new BukkitRunnable() {
+        (new BukkitRunnable() {
             @Override
             public void run() {
                 button.setPowered(false);
                 state.update();
             }
-        }.runTaskLater(null, 20);
+        }).runTaskLater(null, 20);
 
         return true;
     }

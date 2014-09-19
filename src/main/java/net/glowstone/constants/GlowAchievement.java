@@ -12,7 +12,7 @@ public final class GlowAchievement {
 
     private GlowAchievement() {}
 
-    private final static String[] names = new String[Achievement.values().length];
+    private static final String[] names = new String[Achievement.values().length];
 
     /**
      * Get the achievement name for a specified Achievement.

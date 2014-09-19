@@ -50,8 +50,7 @@ public class CavePopulator extends BlockPopulator {
             }
 
             final int y = random.nextInt(maxY);
-            new Thread() {
-
+            new Thread(new Runnable() {
                 @Override
                 public void run() {
                     Set<Location> snake = startSnake(world, random, x, y, z);
@@ -67,7 +66,7 @@ public class CavePopulator extends BlockPopulator {
                         }
                     }
                 }
-            }.start();
+            }).start();
         }
     }
 
@@ -137,5 +136,4 @@ public class CavePopulator extends BlockPopulator {
 
         return snakeBlocks;
     }
-    
 }

@@ -263,7 +263,7 @@ public final class GlowServer implements Server {
     /**
      * An empty player array used for deprecated getOnlinePlayers.
      */
-    private final Player[] EMPTY_PLAYER_ARRAY = new Player[0];
+    private final Player[] emptyPlayerArray = new Player[0];
 
     /**
      * The server's default game mode
@@ -790,7 +790,7 @@ public final class GlowServer implements Server {
     @Override
     @Deprecated
     public Player[] _INVALID_getOnlinePlayers() {
-        return getOnlinePlayers().toArray(EMPTY_PLAYER_ARRAY);
+        return getOnlinePlayers().toArray(emptyPlayerArray);
     }
 
     @Override

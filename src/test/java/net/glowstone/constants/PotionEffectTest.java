@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class PotionEffectTest {
 
-    private final static int STATIC_FINAL = Modifier.STATIC | Modifier.FINAL;
+    private static final int STATIC_FINAL = Modifier.STATIC | Modifier.FINAL;
 
     private final Field field;
 

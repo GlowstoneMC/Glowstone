@@ -47,6 +47,8 @@ public class SnowPopulator extends BlockPopulator {
                         break;
                     case DIRT:
                         block.setType(Material.GRASS);
+                        block.getRelative(BlockFace.UP).setType(Material.SNOW);
+                        break;
                     default:
                         block.getRelative(BlockFace.UP).setType(Material.SNOW);
                         break;

@@ -37,7 +37,7 @@ public class NbtOutputTest {
         // byte array
         byte[] array = new byte[1000];
         for (int i = 0; i < 1000; ++i) {
-            array[i] = (byte)((i * i * 255 + i * 7) % 100);
+            array[i] = (byte) ((i * i * 255 + i * 7) % 100);
         }
         compound.putByteArray(Checks.BYTE_ARRAY_NAME, array);
 
@@ -56,7 +56,7 @@ public class NbtOutputTest {
         // simple list
         List<Long> longList = new ArrayList<>(5);
         for (int i = 0; i < 5; ++i) {
-            longList.add((long)(11 + i));
+            longList.add((long) (11 + i));
         }
         compound.putList("listTest (long)", TagType.LONG, longList);
 

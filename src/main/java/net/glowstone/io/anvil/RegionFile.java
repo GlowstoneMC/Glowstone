@@ -79,11 +79,11 @@ public class RegionFile {
     private static final int SECTOR_INTS = SECTOR_BYTES / 4;
 
     static final int CHUNK_HEADER_SIZE = 5;
-    private static final byte emptySector[] = new byte[SECTOR_BYTES];
+    private static final byte[] emptySector = new byte[SECTOR_BYTES];
 
     private RandomAccessFile file;
-    private final int offsets[];
-    private final int chunkTimestamps[];
+    private final int[] offsets;
+    private final int[] chunkTimestamps;
     private ArrayList<Boolean> sectorFree;
     private int sizeDelta;
     private long lastModified = 0;

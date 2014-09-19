@@ -8,30 +8,24 @@ public class BlockAttachable extends BlockType {
     public void setAttachedFace(BlockState state, BlockFace attachedFace) {
         byte data = state.getRawData();
         switch (attachedFace) {
-            case UP: {
+            case UP:
                 data |= 0;
                 break;
-            }
-            case WEST: {
+            case WEST:
                 data |= 1;
                 break;
-            }
-            case EAST: {
+            case EAST:
                 data |= 2;
                 break;
-            }
-            case NORTH: {
+            case NORTH:
                 data |= 3;
                 break;
-            }
-            case SOUTH: {
+            case SOUTH:
                 data |= 4;
                 break;
-            }
-            case DOWN: {
+            case DOWN:
                 data |= 5;
                 break;
-            }
         }
         state.setRawData(data);
     }

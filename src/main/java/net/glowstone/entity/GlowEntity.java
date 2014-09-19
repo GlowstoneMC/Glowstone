@@ -34,7 +34,7 @@ public abstract class GlowEntity implements Entity {
     /**
      * The metadata store class for entities.
      */
-    private final static class EntityMetadataStore extends MetadataStoreBase<Entity> implements MetadataStore<Entity> {
+    private static final class EntityMetadataStore extends MetadataStoreBase<Entity> implements MetadataStore<Entity> {
         @Override
         protected String disambiguate(Entity subject, String metadataKey) {
             return subject.getUniqueId() + ":" + metadataKey;
@@ -44,7 +44,7 @@ public abstract class GlowEntity implements Entity {
     /**
      * The metadata store for entities.
      */
-    private final static MetadataStore<Entity> bukkitMetadata = new EntityMetadataStore();
+    private static final MetadataStore<Entity> bukkitMetadata = new EntityMetadataStore();
 
     /**
      * The server this entity belongs to.

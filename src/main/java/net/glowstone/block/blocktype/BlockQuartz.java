@@ -12,9 +12,7 @@ public class BlockQuartz extends BlockType {
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
 
-        if (holding.getDurability() <= 1) {
-            return;
-        } else {
+        if (holding.getDurability() > 1) {
             switch (face) {
                 case NORTH:
                 case SOUTH:

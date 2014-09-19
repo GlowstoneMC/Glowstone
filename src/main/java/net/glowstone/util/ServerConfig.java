@@ -220,7 +220,8 @@ public final class ServerConfig {
                 bukkit.load(bukkitYml);
             } catch (InvalidConfigurationException e) {
                 report(bukkitYml, e);
-            } catch (IOException ignored) {
+            } catch (IOException e) {
+                GlowServer.logger.log(Level.WARNING, "Could not migrate from " + bukkitYml, e);
             }
 
             for (Key key : Key.values()) {
@@ -239,7 +240,8 @@ public final class ServerConfig {
             Properties props = new Properties();
             try {
                 props.load(new FileInputStream(serverProps));
-            } catch (IOException ignored) {
+            } catch (IOException e) {
+                GlowServer.logger.log(Level.WARNING, "Could not migrate from " + serverProps, e);
             }
 
             for (Key key : Key.values()) {
