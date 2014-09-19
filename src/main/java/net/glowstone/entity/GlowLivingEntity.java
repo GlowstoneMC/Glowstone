@@ -1,5 +1,6 @@
 package net.glowstone.entity;
 
+import net.glowstone.constants.GlowPotionEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -95,10 +96,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     public void pulse() {
         super.pulse();
 
+        // invulnerability
         if (noDamageTicks > 0) {
             --noDamageTicks;
         }
 
+        // breathing
         Material mat = getEyeLocation().getBlock().getType();
         if (mat == Material.WATER || mat == Material.STATIONARY_WATER) {
             --airTicks;
@@ -111,7 +114,21 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             airTicks = maximumAir;
         }
 
-        // todo: tick down potion effects
+        // potion effects
+        List<PotionEffect> effects = new ArrayList<>(potionEffects.values());
+        for (PotionEffect effect : effects) {
+            // pulse effect
+            GlowPotionEffect type = (GlowPotionEffect) effect.getType();
+            type.pulse(this, effect);
+
+            if (effect.getDuration() > 0) {
+                // reduce duration and re-add
+                addPotionEffect(new PotionEffect(type, effect.getDuration() - 1, effect.getAmplifier(), effect.isAmbient()), true);
+            } else {
+                // remove
+                removePotionEffect(type);
+            }
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -281,7 +298,9 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     @Override
     public <T extends Projectile> T launchProjectile(Class<? extends T> projectile, Vector velocity) {
-        return null;
+        T entity = world.spawn(getEyeLocation(), projectile);
+        entity.setVelocity(velocity);
+        return entity;
     }
 
     ////////////////////////////////////////////////////////////////////////////

@@ -4,6 +4,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import net.glowstone.command.ColorCommand;
 import net.glowstone.command.TellrawCommand;
+import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.CraftingManager;
 import net.glowstone.inventory.GlowInventory;
@@ -76,6 +77,7 @@ public final class GlowServer implements Server {
     public static void main(String[] args) {
         try {
             ConfigurationSerialization.registerClass(GlowOfflinePlayer.class);
+            GlowPotionEffect.register();
 
             // parse arguments and read config
             final ServerConfig config = parseArguments(args);
