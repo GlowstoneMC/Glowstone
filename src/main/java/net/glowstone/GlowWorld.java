@@ -238,6 +238,7 @@ public final class GlowWorld implements World {
         animalLimit = server.getAnimalSpawnLimit();
         waterAnimalLimit = server.getWaterAnimalSpawnLimit();
         ambientLimit = server.getAmbientSpawnLimit();
+        keepSpawnLoaded = server.keepSpawnLoaded();
         difficulty = server.getDifficulty();
 
         // read in world data

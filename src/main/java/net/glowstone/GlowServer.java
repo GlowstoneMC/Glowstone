@@ -469,7 +469,7 @@ public final class GlowServer implements Server {
         // special handling
         warnState = Warning.WarningState.value(config.getString(ServerConfig.Key.WARNING_STATE));
         try {
-            defaultGameMode = GameMode.valueOf(GameMode.class, config.getString(ServerConfig.Key.GAMEMODE));
+            defaultGameMode = GameMode.valueOf(config.getString(ServerConfig.Key.GAMEMODE));
         } catch (IllegalArgumentException | NullPointerException e) {
             defaultGameMode = GameMode.SURVIVAL;
         }
@@ -674,9 +674,17 @@ public final class GlowServer implements Server {
     public Difficulty getDifficulty() {
         try {
             return Difficulty.valueOf(config.getString(ServerConfig.Key.DIFFICULTY));
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | NullPointerException e) {
             return Difficulty.NORMAL;
         }
+    }
+
+    /**
+     * Get whether worlds should keep their spawns loaded by default.
+     * @return Whether to keep spawns loaded by default.
+     */
+    public boolean keepSpawnLoaded() {
+        return config.getBoolean(ServerConfig.Key.PERSIST_SPAWN);
     }
 
     ////////////////////////////////////////////////////////////////////////////
