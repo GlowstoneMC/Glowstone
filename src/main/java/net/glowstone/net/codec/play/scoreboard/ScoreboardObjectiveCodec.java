@@ -14,8 +14,13 @@ public final class ScoreboardObjectiveCodec implements Codec<ScoreboardObjective
 
     public ByteBuf encode(ByteBuf buf, ScoreboardObjectiveMessage message) throws IOException {
         ByteBufUtils.writeUTF8(buf, message.getName());
-        ByteBufUtils.writeUTF8(buf, message.getDisplayName());
         buf.writeByte(message.getAction());
+        if (message.getDisplayName() != null) {
+            ByteBufUtils.writeUTF8(buf, message.getDisplayName());
+        }
+        if (message.getType() != null) {
+            ByteBufUtils.writeUTF8(buf, message.getType());
+        }
         return buf;
     }
 }

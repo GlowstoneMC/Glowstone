@@ -91,17 +91,13 @@ public final class GlowScoreboard implements Scoreboard {
         for (GlowTeam team : teams.values()) {
             player.getSession().send(ScoreboardTeamMessage.remove(team.getName()));
         }
-        // scores
-        for (Map.Entry<String, Set<GlowScore>> entry : scoreMap.entrySet()) {
-            player.getSession().send(ScoreboardScoreMessage.remove(entry.getKey()));
-        }
         // display slots
         for (DisplaySlot slot : DisplaySlot.values()) {
             player.getSession().send(new ScoreboardDisplayMessage(GlowDisplaySlot.getId(slot), ""));
         }
         // objectives
         for (GlowObjective objective : objectives.values()) {
-            player.getSession().send(ScoreboardObjectiveMessage.remove(objective.getName(), objective.getDisplayName()));
+            player.getSession().send(ScoreboardObjectiveMessage.remove(objective.getName()));
         }
     }
 
@@ -150,7 +146,7 @@ public final class GlowScoreboard implements Scoreboard {
 
         getForCriteria(objective.getCriteria()).remove(objective);
         objectives.remove(objective.getName());
-        broadcast(ScoreboardObjectiveMessage.remove(objective.getName(), objective.getDisplayName()));
+        broadcast(ScoreboardObjectiveMessage.remove(objective.getName()));
     }
 
     /**
@@ -221,7 +217,7 @@ public final class GlowScoreboard implements Scoreboard {
         objectives.put(name, objective);
         getForCriteria(criteria).add(objective);
 
-        broadcast(ScoreboardObjectiveMessage.create(name, objective.getDisplayName()));
+        broadcast(ScoreboardObjectiveMessage.create(name, objective.getDisplayName(), true));
 
         return objective;
     }
@@ -297,10 +293,10 @@ public final class GlowScoreboard implements Scoreboard {
         Validate.notNull(entry, "Entry cannot be null");
 
         for (GlowObjective objective : objectives.values()) {
+            broadcast(ScoreboardScoreMessage.remove(entry, objective.getName()));
             objective.deleteScore(entry);
         }
         scoreMap.remove(entry);
-        broadcast(ScoreboardScoreMessage.remove(entry));
     }
 
     ////////////////////////////////////////////////////////////////////////////

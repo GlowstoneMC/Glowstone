@@ -27,6 +27,8 @@ public final class GlowTeam implements Team {
     private String displayName;
     private String prefix = "";
     private String suffix = "";
+    private String nameTagVisibility = "all";
+    private byte color;
     private boolean friendlyFire = false;
     private boolean seeInvisible = true;
 
@@ -57,11 +59,11 @@ public final class GlowTeam implements Team {
         for (OfflinePlayer player : players) {
             playerNames.add(player.getName());
         }
-        return ScoreboardTeamMessage.create(name, displayName, prefix, suffix, friendlyFire, seeInvisible, playerNames);
+        return ScoreboardTeamMessage.create(name, displayName, prefix, suffix, friendlyFire, seeInvisible, nameTagVisibility, color, playerNames);
     }
 
     private void update() {
-        scoreboard.broadcast(ScoreboardTeamMessage.update(name, displayName, prefix, suffix, friendlyFire, seeInvisible));
+        scoreboard.broadcast(ScoreboardTeamMessage.update(name, displayName, prefix, suffix, friendlyFire, seeInvisible, nameTagVisibility, color));
     }
 
     ////////////////////////////////////////////////////////////////////////////

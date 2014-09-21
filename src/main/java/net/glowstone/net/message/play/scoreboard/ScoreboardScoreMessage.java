@@ -20,8 +20,8 @@ public final class ScoreboardScoreMessage implements Message {
         this(target, false, objective, value);
     }
 
-    public static ScoreboardScoreMessage remove(String target) {
-        return new ScoreboardScoreMessage(target, true, null, 0);
+    public static ScoreboardScoreMessage remove(String target, String objective) {
+        return new ScoreboardScoreMessage(target, true, objective, 0);
     }
 
     public String getTarget() {

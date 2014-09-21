@@ -14,6 +14,8 @@ public final class ScoreboardTeamMessage implements Message {
     private final String prefix;
     private final String suffix;
     private final int flags;
+    private final String nameTagVisibility;
+    private final byte color;
 
     // CREATE, ADD_, and REMOVE_PLAYERS only
     private final List<String> entries;
@@ -26,34 +28,53 @@ public final class ScoreboardTeamMessage implements Message {
         REMOVE_PLAYERS
     }
 
-    private ScoreboardTeamMessage(String teamName, Action action, String displayName, String prefix, String suffix, boolean friendlyFire, boolean seeInvisible, List<String> entries) {
+    public enum NameTagVisibility {
+        ALWAYS("always"),
+        HIDE_FOR_OTHER_TEAMS("hideForOtherTeams"),
+        HIDE_FOR_OWN_TEAM("hideForOwnTeam"),
+        HIDE_FOR_ALL_TEAMS("never");
+
+        private final String value;
+
+        private NameTagVisibility(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    private ScoreboardTeamMessage(String teamName, Action action, String displayName, String prefix, String suffix, boolean friendlyFire, boolean seeInvisible, String nameTagVisibility, byte color, List<String> entries) {
         this.teamName = teamName;
         this.action = action;
         this.displayName = displayName;
         this.prefix = prefix;
         this.suffix = suffix;
         this.flags = (friendlyFire ? 1 : 0) | (seeInvisible ? 2 : 0);
+        this.nameTagVisibility = nameTagVisibility;
+        this.color = color;
         this.entries = entries;
     }
 
-    public static ScoreboardTeamMessage create(String teamName, String displayName, String prefix, String suffix, boolean friendlyFire, boolean seeInvisible, List<String> players) {
-        return new ScoreboardTeamMessage(teamName, Action.CREATE, displayName, prefix, suffix, friendlyFire, seeInvisible, players);
+    public static ScoreboardTeamMessage create(String teamName, String displayName, String prefix, String suffix, boolean friendlyFire, boolean seeInvisible, String nameTagVisibility, byte color, List<String> players) {
+        return new ScoreboardTeamMessage(teamName, Action.CREATE, displayName, prefix, suffix, friendlyFire, seeInvisible, nameTagVisibility, color, players);
     }
 
     public static ScoreboardTeamMessage remove(String teamName) {
-        return new ScoreboardTeamMessage(teamName, Action.REMOVE, null, null, null, false, false, null);
+        return new ScoreboardTeamMessage(teamName, Action.REMOVE, null, null, null, false, false, null, (byte) 0, null);
     }
 
-    public static ScoreboardTeamMessage update(String teamName, String displayName, String prefix, String suffix, boolean friendlyFire, boolean seeInvisible) {
-        return new ScoreboardTeamMessage(teamName, Action.UPDATE, displayName, prefix, suffix, friendlyFire, seeInvisible, null);
+    public static ScoreboardTeamMessage update(String teamName, String displayName, String prefix, String suffix, boolean friendlyFire, boolean seeInvisible, String nameTagVisibility, byte color) {
+        return new ScoreboardTeamMessage(teamName, Action.UPDATE, displayName, prefix, suffix, friendlyFire, seeInvisible, nameTagVisibility, color, null);
     }
 
     public static ScoreboardTeamMessage addPlayers(String teamName, List<String> entries) {
-        return new ScoreboardTeamMessage(teamName, Action.ADD_PLAYERS, null, null, null, false, false, entries);
+        return new ScoreboardTeamMessage(teamName, Action.ADD_PLAYERS, null, null, null, false, false, null, (byte) 0, entries);
     }
 
     public static ScoreboardTeamMessage removePlayers(String teamName, List<String> entries) {
-        return new ScoreboardTeamMessage(teamName, Action.REMOVE_PLAYERS, null, null, null, false, false, entries);
+        return new ScoreboardTeamMessage(teamName, Action.REMOVE_PLAYERS, null, null, null, false, false, null, (byte) 0, entries);
     }
 
     public String getTeamName() {
@@ -78,6 +99,14 @@ public final class ScoreboardTeamMessage implements Message {
 
     public int getFlags() {
         return flags;
+    }
+
+    public byte getColor() {
+        return color;
+    }
+
+    public String getNameTagVisibility() {
+        return nameTagVisibility;
     }
 
     public List<String> getEntries() {

@@ -26,12 +26,14 @@ public final class ScoreboardTeamCodec implements Codec<ScoreboardTeamMessage> {
             ByteBufUtils.writeUTF8(buf, message.getPrefix());
             ByteBufUtils.writeUTF8(buf, message.getSuffix());
             buf.writeByte(message.getFlags());
+	    ByteBufUtils.writeUTF8(buf, message.getNameTagVisibility());
+	    buf.writeByte(message.getColor());
         }
 
         // CREATE, ADD_, and REMOVE_PLAYERS
         if (action == Action.CREATE || action == Action.ADD_PLAYERS || action == Action.REMOVE_PLAYERS) {
             final List<String> entries = message.getEntries();
-            buf.writeShort(entries.size());
+            ByteBufUtils.writeVarInt(buf, entries.size());
             for (String entry : entries) {
                 ByteBufUtils.writeUTF8(buf, entry);
             }

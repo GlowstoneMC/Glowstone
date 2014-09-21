@@ -15,10 +15,10 @@ public final class ScoreboardScoreCodec implements Codec<ScoreboardScoreMessage>
     public ByteBuf encode(ByteBuf buf, ScoreboardScoreMessage message) throws IOException {
         final boolean remove = message.isRemove();
         ByteBufUtils.writeUTF8(buf, message.getTarget());
-        buf.writeBoolean(remove);
+        buf.writeByte(remove ? 1 : 0);
+        ByteBufUtils.writeUTF8(buf, message.getObjective());
         if (!remove) {
-            ByteBufUtils.writeUTF8(buf, message.getObjective());
-            buf.writeInt(message.getValue());
+            ByteBufUtils.writeVarInt(buf, message.getValue());
         }
         return buf;
     }
