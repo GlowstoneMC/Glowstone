@@ -28,6 +28,7 @@ public final class GlowTeam implements Team {
     private String prefix = "";
     private String suffix = "";
     private String nameTagVisibility = "all";
+    private String deathMessageVisibility = "all";
     private byte color;
     private boolean friendlyFire = false;
     private boolean seeInvisible = true;
@@ -132,6 +133,28 @@ public final class GlowTeam implements Team {
         update();
     }
 
+    public String nameTagVisibility() throws IllegalStateException {
+        checkValid();
+        return nameTagVisibility;
+    }
+
+    public void setNameTagVisibility(String visibility) throws IllegalStateException {
+        checkValid();
+        nameTagVisibility = visibility;
+        update();
+    }
+
+    public String deathMessageVisibility() throws IllegalStateException {
+        checkValid();
+        return deathMessageVisibility;
+    }
+
+    public void setDeathMessageVisibility(String visibility) throws IllegalStateException {
+        checkValid();
+        deathMessageVisibility = visibility;
+        update();
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Player management
 
@@ -150,6 +173,14 @@ public final class GlowTeam implements Team {
         checkValid();
         players.add(player);
         scoreboard.setPlayerTeam(player, this);
+    }
+
+    public byte getColor() {
+        return color;
+    }
+
+    public String setColor(String color) {
+        this.color =  ChatColor.valueOf(color).getChar();
     }
 
     public boolean removePlayer(OfflinePlayer player) throws IllegalStateException, IllegalArgumentException {

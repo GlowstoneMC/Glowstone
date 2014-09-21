@@ -126,4 +126,7 @@ public final class GlowObjective implements Objective {
         Validate.notNull(player, "Player cannot be null");
         return getScore(player.getName());
     }
+
+    public void setRenderType(String renderType) {
+    }
 }

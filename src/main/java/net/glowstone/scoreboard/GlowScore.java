@@ -48,4 +48,7 @@ public final class GlowScore implements Score {
         this.score = score;
         objective.getScoreboard().broadcast(new ScoreboardScoreMessage(entry, objective.getName(), score));
     }
+
+    public void setLocked(boolean locked) {
+    }
 }
