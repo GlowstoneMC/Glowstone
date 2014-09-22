@@ -28,4 +28,6 @@ public interface ScoreboardIoService {
      * @throws IOException if an I/O error occurs.
      */
     public void unload() throws IOException;
+
+    void save() throws IOException;
 }

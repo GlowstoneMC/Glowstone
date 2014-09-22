@@ -4,7 +4,9 @@ import com.flowpowered.networking.Message;
 import com.google.common.collect.ImmutableSet;
 import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
 import org.apache.commons.lang.Validate;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.scoreboard.NametagVisibility;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -27,9 +29,9 @@ public final class GlowTeam implements Team {
     private String displayName;
     private String prefix = "";
     private String suffix = "";
-    private String nameTagVisibility = "all";
-    private String deathMessageVisibility = "all";
-    private byte color;
+    private NametagVisibility nameTagVisibility = NametagVisibility.ALWAYS;
+    private NametagVisibility deathMessageVisibility = NametagVisibility.ALWAYS;
+    private ChatColor color = ChatColor.RESET;
     private boolean friendlyFire = false;
     private boolean seeInvisible = true;
 
@@ -133,26 +135,25 @@ public final class GlowTeam implements Team {
         update();
     }
 
-    public String nameTagVisibility() throws IllegalStateException {
+    public NametagVisibility getNametagVisibility() throws IllegalStateException {
         checkValid();
         return nameTagVisibility;
     }
 
-    public void setNameTagVisibility(String visibility) throws IllegalStateException {
+    public void setNametagVisibility(NametagVisibility visibility) throws IllegalStateException {
         checkValid();
         nameTagVisibility = visibility;
         update();
     }
 
-    public String deathMessageVisibility() throws IllegalStateException {
-        checkValid();
+    public NametagVisibility getDeathMessageVisibility() throws IllegalStateException {
         return deathMessageVisibility;
     }
 
-    public void setDeathMessageVisibility(String visibility) throws IllegalStateException {
+    public void setDeathMessageVisibility(NametagVisibility deathMessageVisibility) throws IllegalStateException, IllegalArgumentException {
+        Validate.notNull(deathMessageVisibility, "NameTagVisibility cannot be null!");
         checkValid();
-        deathMessageVisibility = visibility;
-        update();
+        this.deathMessageVisibility = deathMessageVisibility;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -175,12 +176,12 @@ public final class GlowTeam implements Team {
         scoreboard.setPlayerTeam(player, this);
     }
 
-    public byte getColor() {
+    public ChatColor getColor() {
         return color;
     }
 
-    public String setColor(String color) {
-        this.color =  ChatColor.valueOf(color).getChar();
+    public void setColor(ChatColor color) {
+        this.color = color;
     }
 
     public boolean removePlayer(OfflinePlayer player) throws IllegalStateException, IllegalArgumentException {

@@ -12,6 +12,8 @@ import net.glowstone.inventory.CraftingManager;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.io.PlayerDataService;
+import net.glowstone.io.ScoreboardIoService;
+import net.glowstone.io.nbt.NbtScoreboardIoService;
 import net.glowstone.map.GlowMapView;
 import net.glowstone.net.GlowNetworkServer;
 import net.glowstone.net.SessionRegistry;
@@ -266,7 +268,7 @@ public final class GlowServer implements Server {
     /**
      * The scoreboard manager for the server.
      */
-    private final GlowScoreboardManager scoreboardManager = new GlowScoreboardManager(this);
+    private final GlowScoreboardManager scoreboardManager =   new GlowScoreboardManager(this);
 
     /**
      * The crafting manager for this server.
@@ -403,7 +405,6 @@ public final class GlowServer implements Server {
         whitelist = new UuidListFile(config.getFile("whitelist.json"));
         nameBans = new GlowBanList(this, BanList.Type.NAME);
         ipBans = new GlowBanList(this, BanList.Type.IP);
-
         Bukkit.setServer(this);
         loadConfig();
     }
@@ -845,6 +846,14 @@ public final class GlowServer implements Server {
      */
     public PlayerDataService getPlayerDataService() {
         return worlds.getWorlds().get(0).getStorage().getPlayerDataService();
+    }
+
+    /**
+     * Returns the scoreboard I/O service attached to the first world.
+     * @return The server's scoreboard I/O service
+     */
+    public ScoreboardIoService getScoreboardIoService() {
+        return worlds.getWorlds().get(0).getStorage().getScoreboardIoService();
     }
 
     /**

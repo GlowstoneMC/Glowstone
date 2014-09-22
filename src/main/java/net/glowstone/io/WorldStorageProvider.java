@@ -43,4 +43,5 @@ public interface WorldStorageProvider {
      */
     PlayerDataService getPlayerDataService();
 
+    ScoreboardIoService getScoreboardIoService();
 }

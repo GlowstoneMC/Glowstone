@@ -27,10 +27,12 @@ public final class NbtScoreboardIoService implements ScoreboardIoService {
      * The root directory of the scoreboard
      */
     private final File dir;
+    private final GlowServer server;
 
     private final String SCOREBOARD_SAVE_FILE = "scoreboard.dat";
     
-    public NbtScoreboardIoService(File dir) {
+    public NbtScoreboardIoService(GlowServer server, File dir) {
+        this.server = server;
         this.dir = dir;
     }
 
@@ -41,11 +43,16 @@ public final class NbtScoreboardIoService implements ScoreboardIoService {
 
     @Override
     public void writeMainScoreboard(GlowScoreboard scoreboard) throws IOException {
-        return
+        NbtScoreboardIoWriter.writeMainScoreboard(new File(dir, SCOREBOARD_SAVE_FILE), scoreboard);
     }
 
     @Override
     public void unload() throws IOException {
+        save();
+    }
 
+    @Override
+    public void save() throws IOException{
+        writeMainScoreboard(server.getScoreboardManager().getMainScoreboard());
     }
 }

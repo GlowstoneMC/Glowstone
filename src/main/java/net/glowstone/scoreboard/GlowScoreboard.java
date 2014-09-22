@@ -217,7 +217,7 @@ public final class GlowScoreboard implements Scoreboard {
         objectives.put(name, objective);
         getForCriteria(criteria).add(objective);
 
-        broadcast(ScoreboardObjectiveMessage.create(name, objective.getDisplayName(), true));
+        broadcast(ScoreboardObjectiveMessage.create(name, objective.getDisplayName(), RenderType.INTEGER));
 
         return objective;
     }

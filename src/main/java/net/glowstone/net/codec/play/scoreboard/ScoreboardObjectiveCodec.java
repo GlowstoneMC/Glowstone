@@ -18,8 +18,8 @@ public final class ScoreboardObjectiveCodec implements Codec<ScoreboardObjective
         if (message.getDisplayName() != null) {
             ByteBufUtils.writeUTF8(buf, message.getDisplayName());
         }
-        if (message.getType() != null) {
-            ByteBufUtils.writeUTF8(buf, message.getType());
+        if (message.getRenderType() != null) {
+            ByteBufUtils.writeUTF8(buf, message.getRenderType().name());
         }
         return buf;
     }
