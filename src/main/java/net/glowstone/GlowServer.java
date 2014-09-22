@@ -106,9 +106,8 @@ public final class GlowServer implements Server {
             final String opt = args[i];
 
             if (!opt.startsWith("-")) {
-                System.err.println("Invalid Option: " + opt);
-                System.exit(1);
-                return null;
+                System.err.println("Ignored invalid Option: " + opt);
+                continue;
             }
 
             // Help
@@ -146,9 +145,8 @@ public final class GlowServer implements Server {
 
             // Below this point, options require parameters
             if (i == args.length - 1) {
-                System.err.println("Option specified without value: " + opt);
-                System.exit(1);
-                return null;
+                System.err.println("Ignored option specified without value: " + opt);
+                continue;
             }
 
             if ("--configdir".equals(opt)) {
@@ -211,9 +209,7 @@ public final class GlowServer implements Server {
                 continue;
             }
 
-            System.err.println("Unknown option: " + opt);
-            System.exit(1);
-            return null;
+            System.err.println("Ignored unknown option: " + opt);
         }
 
         final File configDir = new File(configDirName);
