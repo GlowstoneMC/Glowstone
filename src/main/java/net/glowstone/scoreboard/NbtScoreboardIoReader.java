@@ -8,6 +8,7 @@ import net.glowstone.util.nbt.TagType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.NametagVisibility;
 import org.bukkit.scoreboard.Score;
@@ -49,7 +50,7 @@ public class NbtScoreboardIoReader {
     }
 
     private static void registerObjective(CompoundTag data, GlowScoreboard scoreboard) {
-        String criteria = data.getString("Criteria");
+        Criteria criteria = Criteria.get(data.getString("Criteria"));
         String displayName = data.getString("DisplayName");
         String name = data.getString("Name");
         String renderType = data.getString("RenderType");

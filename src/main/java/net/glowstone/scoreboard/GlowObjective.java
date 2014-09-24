@@ -15,7 +15,7 @@ public final class GlowObjective implements Objective {
 
     private GlowScoreboard scoreboard;
     private final String name;
-    private final String criteria;
+    private final Criteria criteria;
 
     private final HashMap<String, GlowScore> scores = new HashMap<>();
 
@@ -23,7 +23,7 @@ public final class GlowObjective implements Objective {
     private RenderType renderType;
     DisplaySlot displaySlot;
 
-    public GlowObjective(GlowScoreboard scoreboard, String name, String criteria) {
+    public GlowObjective(GlowScoreboard scoreboard, String name, Criteria criteria) {
         this.scoreboard = scoreboard;
         this.name = name;
         this.criteria = criteria;
@@ -58,7 +58,7 @@ public final class GlowObjective implements Objective {
         return name;
     }
 
-    public String getCriteria() throws IllegalStateException {
+    public Criteria getCriteria() throws IllegalStateException {
         checkValid();
         return criteria;
     }
@@ -110,7 +110,7 @@ public final class GlowObjective implements Objective {
 
     public boolean isModifiable() throws IllegalStateException {
         checkValid();
-        return !criteria.equalsIgnoreCase(Criterias.HEALTH);
+        return !(criteria == Criteria.HEALTH);
     }
 
     ////////////////////////////////////////////////////////////////////////////
