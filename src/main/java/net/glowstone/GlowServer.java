@@ -106,41 +106,33 @@ public final class GlowServer implements Server {
             final String opt = args[i];
 
             if (!opt.startsWith("-")) {
-                System.err.println("Ignored invalid Option: " + opt);
+                System.err.println("Ignored invalid option: " + opt);
                 continue;
             }
 
-            // Help
+            // Help and version
             if ("--help".equals(opt) || "-h".equals(opt) || "-?".equals(opt)) {
                 System.out.println("Available command-line options:");
                 System.out.println("  --help, -h, -?                 Shows this help message and exits.");
-                System.out.println("  --version, -v                  Displays version information and exits.");
+                System.out.println("  --version, -v                  Shows version information and exits.");
                 System.out.println("  --configdir <directory>        Sets the configuration directory.");
                 System.out.println("  --configfile <file>            Sets the configuration file.");
                 System.out.println("  --port, -p <port>              Sets the server listening port.");
                 System.out.println("  --host, -H <ip | hostname>     Sets the server listening address.");
                 System.out.println("  --onlinemode, -o <onlinemode>  Sets the server's online-mode.");
-                System.out.println("  --nojline                      Disables JLine console.");
+                System.out.println("  --jline <true/false>           Enables or disables JLine console.");
                 System.out.println("  --plugins-dir, -P <directory>  Sets the plugin directory to use.");
                 System.out.println("  --worlds-dir, -W <directory>   Sets the world directory to use.");
                 System.out.println("  --update-dir, -U <directory>   Sets the plugin update folder to use.");
                 System.out.println("  --max-players, -M <director>   Sets the maximum amount of players.");
-                System.out.println("  --world-name, -N <name>        Sets the world name.");
-                System.out.println("  --log-pattern, -L <pattern>    Sets the log file pattern. (default: logs/log-%D.txt)");
+                System.out.println("  --world-name, -N <name>        Sets the main world name.");
+                System.out.println("  --log-pattern, -L <pattern>    Sets the log file pattern (%D for date).");
                 return null;
-            }
-
-            // Version
-            if ("--version".equals(opt) || "-v".equals(opt)) {
+            } else if ("--version".equals(opt) || "-v".equals(opt)) {
                 System.out.println("Glowstone version: " + GlowServer.class.getPackage().getImplementationVersion());
                 System.out.println("Bukkit version:    " + GlowServer.class.getPackage().getSpecificationVersion());
                 System.out.println("Minecraft version: " + GAME_VERSION + " protocol " + PROTOCOL_VERSION);
                 return null;
-            }
-
-            if ("--nojline".equals(opt)) {
-                parameters.put(ServerConfig.Key.USE_JLINE, false);
-                continue;
             }
 
             // Below this point, options require parameters
@@ -149,67 +141,55 @@ public final class GlowServer implements Server {
                 continue;
             }
 
-            if ("--configdir".equals(opt)) {
-                configDirName = args[++i];
-                continue;
+            switch (opt) {
+                case "--configdir":
+                    configDirName = args[++i];
+                    break;
+                case "--configfile":
+                    configFileName = args[++i];
+                    break;
+                case "--port":
+                case "-p":
+                    parameters.put(ServerConfig.Key.SERVER_PORT, Integer.valueOf(args[++i]));
+                    break;
+                case "--host":
+                case "-H":
+                    parameters.put(ServerConfig.Key.SERVER_IP, args[++i]);
+                    break;
+                case "--onlinemode":
+                case "-o":
+                    parameters.put(ServerConfig.Key.ONLINE_MODE, Boolean.valueOf(args[++i]));
+                    break;
+                case "--jline":
+                    parameters.put(ServerConfig.Key.USE_JLINE, Boolean.valueOf(args[++i]));
+                    break;
+                case "--plugins-dir":
+                case "-P":
+                    parameters.put(ServerConfig.Key.PLUGIN_FOLDER, args[++i]);
+                    break;
+                case "--worlds-dir":
+                case "-W":
+                    parameters.put(ServerConfig.Key.WORLD_FOLDER, args[++i]);
+                    break;
+                case "--update-dir":
+                case "-U":
+                    parameters.put(ServerConfig.Key.UPDATE_FOLDER, args[++i]);
+                    break;
+                case "--max-players":
+                case "-M":
+                    parameters.put(ServerConfig.Key.MAX_PLAYERS, Integer.valueOf(args[++i]));
+                    break;
+                case "--world-name":
+                case "-N":
+                    parameters.put(ServerConfig.Key.LEVEL_NAME, args[++i]);
+                    break;
+                case "--log-pattern":
+                case "-L":
+                    parameters.put(ServerConfig.Key.LOG_FILE, args[++i]);
+                    break;
+                default:
+                    System.err.println("Ignored invalid option: " + opt);
             }
-
-            if ("--configfile".equals(opt)) {
-                configFileName = args[++i];
-                continue;
-            }
-
-            if ("--port".equals(opt) || "-p".equals(opt)) {
-                parameters.put(ServerConfig.Key.SERVER_PORT, Integer.valueOf(args[++i]));
-                continue;
-            }
-
-            if ("--host".equals(opt) || "-H".equals(opt)) {
-                parameters.put(ServerConfig.Key.SERVER_IP, args[++i]);
-                continue;
-            }
-
-            if ("--onlinemode".equals(opt) || "-o".equals(opt)) {
-                parameters.put(ServerConfig.Key.ONLINE_MODE, Boolean.valueOf(args[++i]));
-                continue;
-            }
-            
-            if ("--usejline".equals(opt) || "--jline".equals(opt)) {
-                parameters.put(ServerConfig.Key.USE_JLINE, Boolean.valueOf(args[++i]));
-                continue;
-            }
-
-            if ("--plugins-dir".equals(opt) || "-P".equals(opt)) {
-                parameters.put(ServerConfig.Key.PLUGIN_FOLDER, args[++i]);
-                continue;
-            }
-
-            if ("--worlds-dir".equals(opt) || "-W".equals(opt)) {
-                parameters.put(ServerConfig.Key.WORLD_FOLDER, args[++i]);
-                continue;
-            }
-
-            if ("--update-dir".equals(opt) || "-U".equals(opt)) {
-                parameters.put(ServerConfig.Key.UPDATE_FOLDER, args[++i]);
-                continue;
-            }
-
-            if ("--max-players".equals(opt) || "-M".equals(opt)) {
-                parameters.put(ServerConfig.Key.MAX_PLAYERS, Integer.valueOf(args[++i]));
-                continue;
-            }
-
-            if ("--world-name".equals(opt) || "-N".equals(opt)) {
-                parameters.put(ServerConfig.Key.LEVEL_NAME, args[++i]);
-                continue;
-            }
-
-            if ("--log-pattern".equals(opt) || "-L".equals(opt)) {
-                parameters.put(ServerConfig.Key.LOG_FILE, args[++i]);
-                continue;
-            }
-
-            System.err.println("Ignored unknown option: " + opt);
         }
 
         final File configDir = new File(configDirName);
