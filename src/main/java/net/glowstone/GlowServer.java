@@ -667,6 +667,18 @@ public final class GlowServer implements Server {
         return config.getInt(ServerConfig.Key.COMPRESSION_THRESHOLD);
     }
 
+    /**
+     * Get the default game difficulty defined in the config.
+     * @return The default difficulty.
+     */
+    public Difficulty getDifficulty() {
+        try {
+            return Difficulty.valueOf(config.getString(ServerConfig.Key.DIFFICULTY));
+        } catch (IllegalArgumentException e) {
+            return Difficulty.NORMAL;
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Static server properties
 
