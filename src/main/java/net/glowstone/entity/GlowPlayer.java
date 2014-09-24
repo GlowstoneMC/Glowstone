@@ -8,6 +8,7 @@ import net.glowstone.block.entity.TileEntity;
 import net.glowstone.constants.GlowAchievement;
 import net.glowstone.constants.GlowEffect;
 import net.glowstone.constants.GlowSound;
+import net.glowstone.entity.meta.ClientSettings;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.entity.meta.PlayerProfile;
@@ -117,6 +118,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * The time the player joined.
      */
     private final long joinTime;
+
+    /**
+     * The settings sent by the client.
+     */
+    private ClientSettings settings = ClientSettings.DEFAULT;
 
     /**
      * The lock used to prevent chunks from unloading near the player.
@@ -466,7 +472,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         int centralX = location.getBlockX() >> 4;
         int centralZ = location.getBlockZ() >> 4;
 
-        int radius = server.getViewDistance();
+        int radius = Math.min(server.getViewDistance(), 1 + settings.getViewDistance());
         for (int x = (centralX - radius); x <= (centralX + radius); x++) {
             for (int z = (centralZ - radius); z <= (centralZ + radius); z++) {
                 GlowChunk.Key key = new GlowChunk.Key(x, z);
@@ -678,6 +684,22 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             super.setVelocity(velocity);
             session.send(new EntityVelocityMessage(SELF_ID, velocity));
         }
+    }
+
+    /**
+     * Set the client settings for this player.
+     * @param settings The new client settings.
+     */
+    public void setSettings(ClientSettings settings) {
+        this.settings = settings;
+    }
+
+    /**
+     * Get this player's client settings.
+     * @return The player's client settings.
+     */
+    public ClientSettings getSettings() {
+        return settings;
     }
 
     @Override
