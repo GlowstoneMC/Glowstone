@@ -5,6 +5,8 @@ defaultTasks 'clean', 'build', 'remap'
 apply plugin: 'java' // Specifies a java project
 apply plugin: 'application' // Adds the 'run' task
 apply plugin: 'project-report' // Adds project report tasks
+apply plugin: 'eclipse' // Adds eclipse project tasks
+apply plugin: 'idea' // Adds idea project tasks
 apply plugin: 'com.github.johnrengelman.shadow' // Provides dependency shading
 apply plugin: 'net.glowstone.remapper' // Provides method remapping
 apply plugin: 'checkstyle' // Checks code style
