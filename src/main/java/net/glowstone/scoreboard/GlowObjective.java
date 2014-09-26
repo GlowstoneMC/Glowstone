@@ -7,6 +7,7 @@ import org.bukkit.scoreboard.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Scoreboard objective and associated data.
@@ -15,7 +16,7 @@ public final class GlowObjective implements Objective {
 
     private GlowScoreboard scoreboard;
     private final String name;
-    private final Criteria criteria;
+    private final String criteria;
 
     private final HashMap<String, GlowScore> scores = new HashMap<>();
 
@@ -23,7 +24,7 @@ public final class GlowObjective implements Objective {
     private RenderType renderType;
     DisplaySlot displaySlot;
 
-    public GlowObjective(GlowScoreboard scoreboard, String name, Criteria criteria) {
+    public GlowObjective(GlowScoreboard scoreboard, String name, String criteria) {
         this.scoreboard = scoreboard;
         this.name = name;
         this.criteria = criteria;
@@ -58,7 +59,7 @@ public final class GlowObjective implements Objective {
         return name;
     }
 
-    public Criteria getCriteria() throws IllegalStateException {
+    public String getCriteria() throws IllegalStateException {
         checkValid();
         return criteria;
     }
@@ -144,5 +145,16 @@ public final class GlowObjective implements Objective {
     }
 
     public void setRenderType(String renderType) {
+    }
+
+    public boolean hasScore(String entry) throws IllegalArgumentException, IllegalStateException {
+        Validate.notNull(entry, "Entry cannot be null");
+        checkValid();
+
+        return scores.containsKey(entry);
+    }
+
+    public Set<String> getEntries() throws IllegalStateException {
+        return scores.keySet();
     }
 }

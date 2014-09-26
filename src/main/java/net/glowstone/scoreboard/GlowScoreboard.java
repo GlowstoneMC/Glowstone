@@ -26,7 +26,7 @@ public final class GlowScoreboard implements Scoreboard {
     // Objectives
     private final EnumMap<DisplaySlot, GlowObjective> displaySlots = new EnumMap<>(DisplaySlot.class);
     private final HashMap<String, GlowObjective> objectives = new HashMap<>();
-    private final HashMap<Criteria, Set<GlowObjective>> criteriaMap = new HashMap<>();
+    private final HashMap<String, Set<GlowObjective>> criteriaMap = new HashMap<>();
 
     // Score map - kept up to date by each objective
     private final HashMap<String, Set<GlowScore>> scoreMap = new HashMap<>();
@@ -166,7 +166,7 @@ public final class GlowScoreboard implements Scoreboard {
      * @param criteria The criteria to look up.
      * @return The set of objectives.
      */
-    Set<GlowObjective> getForCriteria(Criteria criteria) {
+    Set<GlowObjective> getForCriteria(String criteria) {
         Set<GlowObjective> result = criteriaMap.get(criteria);
         if (result == null) {
             result = new HashSet<>();
@@ -208,7 +208,7 @@ public final class GlowScoreboard implements Scoreboard {
     ////////////////////////////////////////////////////////////////////////////
     // Objectives
 
-    public Objective registerNewObjective(String name, Criteria criteria) throws IllegalArgumentException {
+    public Objective registerNewObjective(String name, String criteria) throws IllegalArgumentException {
         Validate.notNull(name, "Name cannot be null");
         Validate.notNull(criteria, "Criteria cannot be null");
         Validate.isTrue(!objectives.containsKey(name), "Objective \"" + name + "\" already exists");
@@ -226,7 +226,7 @@ public final class GlowScoreboard implements Scoreboard {
         return objectives.get(name);
     }
 
-    public Set<Objective> getObjectivesByCriteria(Criteria criteria) throws IllegalArgumentException {
+    public Set<Objective> getObjectivesByCriteria(String criteria) throws IllegalArgumentException {
         return ImmutableSet.<Objective>copyOf(getForCriteria(criteria));
     }
 
