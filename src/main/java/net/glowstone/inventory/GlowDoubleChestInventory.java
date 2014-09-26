@@ -7,29 +7,26 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.DoubleChestInventory;
 
-import java.util.Arrays;
-
-public class GlowDoubleChestInventory extends SuperInventory implements DoubleChestInventory {
+public class GlowDoubleChestInventory extends GlowSuperInventory implements DoubleChestInventory {
     public GlowDoubleChestInventory(GlowChest left, GlowChest right) {
         super.initialize(
             new DoubleChest(this), // Holder
             InventoryType.CHEST, // Type
             ImmutableList.of( // Inventories
-                left.getBlockInventory(),
-                right.getBlockInventory()
-            ),
-            InventoryType.CHEST.getDefaultTitle() // Title
+                (GlowBaseInventory) left.getBlockInventory(),
+                (GlowBaseInventory) right.getBlockInventory()
+            )
         );
     }
 
     @Override
     public Inventory getLeftSide() {
-        return getSubInventory(0);
+        return getParents().get(0);
     }
 
     @Override
     public Inventory getRightSide() {
-        return getSubInventory(1);
+        return getParents().get(1);
     }
 
     @Override
