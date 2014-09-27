@@ -12,7 +12,9 @@ import org.bukkit.inventory.Inventory;
 
 public class GlowChest extends GlowBlockState implements Chest {
 
-    private static final BlockFace[] ADJACENT_CHEST_FACES = { BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST };
+    private static final BlockFace[] ADJACENT_CHEST_FACES = {
+            BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST
+    };
 
     public GlowChest(GlowBlock block) {
         super(block);

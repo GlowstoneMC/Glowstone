@@ -9,8 +9,6 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import java.util.Arrays;
-
 /**
  * An Inventory representing the items a player is holding.
  */
