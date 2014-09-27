@@ -117,6 +117,13 @@ checkstyle {
     configFile = file('etc/checkstyle.xml')
 }
 
+// Eclipse project name
+eclipse {
+    project {
+        name = 'Glowstone'
+    }
+}
+
 // Jar manifest information
 jar.manifest.mainAttributes(
         'Main-Class': mainClassName,
