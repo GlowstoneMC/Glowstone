@@ -30,7 +30,7 @@ public class GlowChest extends GlowBlockState implements Chest {
     @Override
     public Inventory getInventory() {
         for (BlockFace face : ADJACENT_CHEST_FACES) {
-            Block nearbyBlock = getRelative(face);
+            Block nearbyBlock = getBlock().getRelative(face);
             if (nearbyBlock.getType() == Material.CHEST) {
                 GlowChest nearbyChest = (GlowChest) nearbyBlock.getState();
                 return new GlowDoubleChestInventory(this, nearbyChest);
