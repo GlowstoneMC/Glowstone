@@ -725,12 +725,156 @@ public final class GlowWorld implements World {
 
     @Override
     public boolean generateTree(Location location, TreeType type) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return generateTree(location, type, new SimpleBlockChangeDelegate());
     }
 
     @Override
     public boolean generateTree(Location loc, TreeType type, BlockChangeDelegate delegate) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // simple tree generation, always the same shape
+        // determine species variant
+        TreeSpecies species = getSpecies(type);
+        int wood = Material.LOG.getId();
+        int leaves = Material.LEAVES.getId();
+        final int data = species.getData() & 0x3;
+        if (species.getData() >= 4) {
+            wood = Material.LOG_2.getId();
+            leaves = Material.LEAVES_2.getId();
+        }
+
+        final int height = 4 + random.nextInt(3);
+        // -1 here is a hack for implicit +1 in rest of code
+        final int centerX = loc.getBlockX(), centerY = loc.getBlockY() - 1, centerZ = loc.getBlockZ();
+
+        // top leaf layer
+        delegate.setRawTypeIdAndData(centerX, centerY + height + 1, centerZ, leaves, data);
+        for (int j = 0; j < 4; j++) {
+            delegate.setRawTypeIdAndData(centerX, centerY + height + 1 - j, centerZ - 1, leaves, data);
+            delegate.setRawTypeIdAndData(centerX, centerY + height + 1 - j, centerZ + 1, leaves, data);
+            delegate.setRawTypeIdAndData(centerX - 1, centerY + height + 1 - j, centerZ, leaves, data);
+            delegate.setRawTypeIdAndData(centerX + 1, centerY + height + 1 - j, centerZ, leaves, data);
+        }
+
+        // layer below top
+        if (random.nextBoolean()) {
+            delegate.setRawTypeIdAndData(centerX + 1, centerY + height, centerZ + 1, leaves, data);
+        }
+        if (random.nextBoolean()) {
+            delegate.setRawTypeIdAndData(centerX + 1, centerY + height, centerZ - 1, leaves, data);
+        }
+        if (random.nextBoolean()) {
+            delegate.setRawTypeIdAndData(centerX - 1, centerY + height, centerZ + 1, leaves, data);
+        }
+        if (random.nextBoolean()) {
+            delegate.setRawTypeIdAndData(centerX - 1, centerY + height, centerZ - 1, leaves, data);
+        }
+
+        // two layers below that
+        delegate.setRawTypeIdAndData(centerX + 1, centerY + height - 1, centerZ + 1, leaves, data);
+        delegate.setRawTypeIdAndData(centerX + 1, centerY + height - 1, centerZ - 1, leaves, data);
+        delegate.setRawTypeIdAndData(centerX - 1, centerY + height - 1, centerZ + 1, leaves, data);
+        delegate.setRawTypeIdAndData(centerX - 1, centerY + height - 1, centerZ - 1, leaves, data);
+        delegate.setRawTypeIdAndData(centerX + 1, centerY + height - 2, centerZ + 1, leaves, data);
+        delegate.setRawTypeIdAndData(centerX + 1, centerY + height - 2, centerZ - 1, leaves, data);
+        delegate.setRawTypeIdAndData(centerX - 1, centerY + height - 2, centerZ + 1, leaves, data);
+        delegate.setRawTypeIdAndData(centerX - 1, centerY + height - 2, centerZ - 1, leaves, data);
+
+        // outer leaves
+        for (int j = 0; j < 2; j++) {
+            for (int k = -2; k <= 2; k++) {
+                for (int l = -2; l <= 2; l++) {
+                    delegate.setRawTypeIdAndData(centerX + k, centerY + height - 1 - j, centerZ + l, leaves, data);
+                }
+            }
+        }
+
+        for (int j = 0; j < 2; j++) {
+            if (random.nextBoolean()) {
+                delegate.setRawTypeId(centerX + 2, centerY + height - 1 - j, centerZ + 2, 0);
+            }
+            if (random.nextBoolean()) {
+                delegate.setRawTypeId(centerX + 2, centerY + height - 1 - j, centerZ - 2, 0);
+            }
+            if (random.nextBoolean()) {
+                delegate.setRawTypeId(centerX - 2, centerY + height - 1 - j, centerZ + 2, 0);
+            }
+            if (random.nextBoolean()) {
+                delegate.setRawTypeId(centerX - 2, centerY + height - 1 - j, centerZ - 2, 0);
+            }
+        }
+
+        // Trunk
+        for (int y = 1; y <= height; y++) {
+            delegate.setRawTypeIdAndData(centerX, centerY + y, centerZ, wood, data);
+        }
+
+        return true;
+    }
+
+    private TreeSpecies getSpecies(TreeType type) {
+        switch (type) {
+            case TREE:
+            case BIG_TREE:
+            case SWAMP:
+                return TreeSpecies.GENERIC;
+            case REDWOOD:
+            case TALL_REDWOOD:
+            case MEGA_REDWOOD:
+                return TreeSpecies.REDWOOD;
+            case BIRCH:
+            case TALL_BIRCH:
+                return TreeSpecies.BIRCH;
+            case JUNGLE:
+            case SMALL_JUNGLE:
+            case COCOA_TREE:
+            case JUNGLE_BUSH:
+                return TreeSpecies.JUNGLE;
+            case ACACIA:
+                return TreeSpecies.ACACIA;
+            case DARK_OAK:
+                return TreeSpecies.DARK_OAK;
+            // unhandled
+            case RED_MUSHROOM:
+            case BROWN_MUSHROOM:
+            default:
+                return TreeSpecies.GENERIC;
+        }
+    }
+
+    private class SimpleBlockChangeDelegate implements BlockChangeDelegate {
+        @Override
+        public boolean setRawTypeId(int x, int y, int z, int typeId) {
+            return setRawTypeIdAndData(x, y, z, typeId, 0);
+        }
+
+        @Override
+        public boolean setRawTypeIdAndData(int x, int y, int z, int typeId, int data) {
+            return getBlockAt(x, y, z).setTypeIdAndData(typeId, (byte) data, false);
+        }
+
+        @Override
+        public boolean setTypeId(int x, int y, int z, int typeId) {
+            return setTypeIdAndData(x, y, z, typeId, 0);
+        }
+
+        @Override
+        public boolean setTypeIdAndData(int x, int y, int z, int typeId, int data) {
+            return getBlockAt(x, y, z).setTypeIdAndData(typeId, (byte) data, true);
+        }
+
+        @Override
+        public int getTypeId(int x, int y, int z) {
+            return getBlockTypeIdAt(x, y, z);
+        }
+
+        @Override
+        public int getHeight() {
+            return getMaxHeight();
+        }
+
+        @Override
+        public boolean isEmpty(int x, int y, int z) {
+            return getBlockTypeIdAt(x, y, z) == 0;
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////

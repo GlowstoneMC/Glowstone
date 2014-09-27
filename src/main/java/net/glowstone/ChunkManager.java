@@ -1,5 +1,6 @@
 package net.glowstone;
 
+import net.glowstone.constants.GlowBiome;
 import net.glowstone.io.ChunkIoService;
 import org.bukkit.block.Biome;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -231,7 +232,7 @@ public final class ChunkManager {
      */
     private void generateChunk(GlowChunk chunk, int x, int z) {
         Random random = new Random((long) x * 341873128712L + (long) z * 132897987541L);
-        ChunkGenerator.BiomeGrid biomes = new BiomeGrid(x, z);
+        BiomeGrid biomes = new BiomeGrid();
 
         // extended sections
         short[][] extSections = generator.generateExtBlockSections(world, random, x, z, biomes);
@@ -248,6 +249,7 @@ public final class ChunkManager {
                 }
             }
             chunk.initializeSections(sections);
+            chunk.setBiomes(biomes.biomes);
             return;
         }
 
@@ -266,6 +268,7 @@ public final class ChunkManager {
                 }
             }
             chunk.initializeSections(sections);
+            chunk.setBiomes(biomes.biomes);
             return;
         }
 
@@ -287,6 +290,7 @@ public final class ChunkManager {
             sections[sy] = sec;
         }
         chunk.initializeSections(sections);
+        chunk.setBiomes(biomes.biomes);
     }
 
     /**
@@ -348,21 +352,16 @@ public final class ChunkManager {
      * A BiomeGrid implementation for chunk generation.
      */
     private class BiomeGrid implements ChunkGenerator.BiomeGrid {
-        private final int cx, cz;
-
-        public BiomeGrid(int x, int z) {
-            cx = x;
-            cz = z;
-        }
+        private final byte[] biomes = new byte[256];
 
         @Override
         public Biome getBiome(int x, int z) {
-            return world.getBiome((cx << 4) | x, (cz << 4) | z);
+            return GlowBiome.getBiome(biomes[z * 16 + x]);
         }
 
         @Override
         public void setBiome(int x, int z, Biome bio) {
-            world.setBiome((cx << 4) | x, (cz << 4) | z, bio);
+            biomes[z * 16 + x] = (byte) GlowBiome.getId(bio);
         }
     }
 

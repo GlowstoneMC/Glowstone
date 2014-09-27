@@ -2,6 +2,7 @@ package net.glowstone.generator.populators;
 
 import org.bukkit.Chunk;
 import org.bukkit.Material;
+import org.bukkit.TreeType;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.generator.BlockPopulator;
@@ -18,17 +19,17 @@ public class TreePopulator extends BlockPopulator {
         int centerX = (source.getX() << 4) + random.nextInt(16);
         int centerZ = (source.getZ() << 4) + random.nextInt(16);
 
-        byte data = 0;
+        TreeType type = TreeType.TREE;
         int chance = 0;
-        int height = 4 + random.nextInt(3);
         int multiplier = 1;
 
         if (random.nextBoolean()) {
-            data = 2;
-            height = 5 + random.nextInt(3);
+            type = TreeType.BIRCH;
         }
 
         switch (world.getBlockAt(centerX, 0, centerZ).getBiome()) {
+            case OCEAN:
+                // workaround for lack of biome generation
             case FOREST:
                 chance = 160;
                 multiplier = 10;
@@ -36,44 +37,26 @@ public class TreePopulator extends BlockPopulator {
             case PLAINS:
                 chance = 40;
                 break;
-//            case RAINFOREST:
-//                chance = 160;
-//                multiplier = 10;
-//                break;
             case SAVANNA:
                 chance = 20;
+                type = TreeType.ACACIA;
                 break;
-//            case SEASONAL_FOREST:
-//                chance = 140;
-//                multiplier = 8;
-//                break;
-//            case SHRUBLAND:
-//                chance = 60;
-//                break;
             case SWAMPLAND:
                 chance = 120;
+                type = TreeType.SWAMP;
                 break;
             case TAIGA:
                 chance = 120;
-                data = 1;
-                height = 8 + random.nextInt(3);
                 multiplier = 3;
+                type = TreeType.REDWOOD;
                 break;
-//            case TUNDRA:
-//                chance = 5;
-//                data = 1;
-//                height = 7 + random.nextInt(3);
-//                break;
             case SKY:
                 chance = 1;
                 break;
             case DESERT:
             case HELL:
-//            case ICE_DESERT:
                 return;
         }
-
-        final int leaves = Material.LEAVES.getId();
 
         for (int i = 0; i < multiplier; i++) {
             centerX = (source.getX() << 4) + random.nextInt(16);
@@ -83,63 +66,7 @@ public class TreePopulator extends BlockPopulator {
                 Block sourceBlock = world.getBlockAt(centerX, centerY, centerZ);
 
                 if (sourceBlock.getType() == Material.GRASS) {
-                    world.getBlockAt(centerX, centerY + height + 1, centerZ).setTypeIdAndData(leaves, data, true);
-                    for (int j = 0; j < 4; j++) {
-                        world.getBlockAt(centerX, centerY + height + 1 - j, centerZ - 1).setTypeIdAndData(leaves, data, true);
-                        world.getBlockAt(centerX, centerY + height + 1 - j, centerZ + 1).setTypeIdAndData(leaves, data, true);
-                        world.getBlockAt(centerX - 1, centerY + height + 1 - j, centerZ).setTypeIdAndData(leaves, data, true);
-                        world.getBlockAt(centerX + 1, centerY + height + 1 - j, centerZ).setTypeIdAndData(leaves, data, true);
-                    }
-
-                    if (random.nextBoolean()) {
-                        world.getBlockAt(centerX + 1, centerY + height, centerZ + 1).setTypeIdAndData(leaves, data, true);
-                    }
-                    if (random.nextBoolean()) {
-                        world.getBlockAt(centerX + 1, centerY + height, centerZ - 1).setTypeIdAndData(leaves, data, true);
-                    }
-                    if (random.nextBoolean()) {
-                        world.getBlockAt(centerX - 1, centerY + height, centerZ + 1).setTypeIdAndData(leaves, data, true);
-                    }
-                    if (random.nextBoolean()) {
-                        world.getBlockAt(centerX - 1, centerY + height, centerZ - 1).setTypeIdAndData(leaves, data, true);
-                    }
-
-                    world.getBlockAt(centerX + 1, centerY + height - 1, centerZ + 1).setTypeIdAndData(leaves, data, true);
-                    world.getBlockAt(centerX + 1, centerY + height - 1, centerZ - 1).setTypeIdAndData(leaves, data, true);
-                    world.getBlockAt(centerX - 1, centerY + height - 1, centerZ + 1).setTypeIdAndData(leaves, data, true);
-                    world.getBlockAt(centerX - 1, centerY + height - 1, centerZ - 1).setTypeIdAndData(leaves, data, true);
-                    world.getBlockAt(centerX + 1, centerY + height - 2, centerZ + 1).setTypeIdAndData(leaves, data, true);
-                    world.getBlockAt(centerX + 1, centerY + height - 2, centerZ - 1).setTypeIdAndData(leaves, data, true);
-                    world.getBlockAt(centerX - 1, centerY + height - 2, centerZ + 1).setTypeIdAndData(leaves, data, true);
-                    world.getBlockAt(centerX - 1, centerY + height - 2, centerZ - 1).setTypeIdAndData(leaves, data, true);
-
-                    for (int j = 0; j < 2; j++) {
-                        for (int k = -2; k <= 2; k++) {
-                            for (int l = -2; l <= 2; l++) {
-                                world.getBlockAt(centerX + k, centerY + height - 1 - j, centerZ + l).setTypeIdAndData(leaves, data, true);
-                            }
-                        }
-                    }
-
-                    for (int j = 0; j < 2; j++) {
-                        if (random.nextBoolean()) {
-                            world.getBlockAt(centerX + 2, centerY + height - 1 - j, centerZ + 2).setTypeIdAndData(0, (byte) 0, true);
-                        }
-                        if (random.nextBoolean()) {
-                            world.getBlockAt(centerX + 2, centerY + height - 1 - j, centerZ - 2).setTypeIdAndData(0, (byte) 0, true);
-                        }
-                        if (random.nextBoolean()) {
-                            world.getBlockAt(centerX - 2, centerY + height - 1 - j, centerZ + 2).setTypeIdAndData(0, (byte) 0, true);
-                        }
-                        if (random.nextBoolean()) {
-                            world.getBlockAt(centerX - 2, centerY + height - 1 - j, centerZ - 2).setTypeIdAndData(0, (byte) 0, true);
-                        }
-                    }
-
-                    // Trunk
-                    for (int y = 1; y <= height; y++) {
-                        world.getBlockAt(centerX, centerY + y, centerZ).setTypeIdAndData(Material.LOG.getId(), data, true);
-                    }
+                    world.generateTree(sourceBlock.getLocation().add(0, 1, 0), type);
                 }
             }
         }
