@@ -4,10 +4,7 @@ import com.flowpowered.networking.MessageHandler;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.inventory.DragTracker;
-import net.glowstone.inventory.GlowInventory;
-import net.glowstone.inventory.GlowInventoryView;
-import net.glowstone.inventory.WindowClickLogic;
+import net.glowstone.inventory.*;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.inv.TransactionMessage;
 import net.glowstone.net.message.play.inv.WindowClickMessage;
@@ -57,11 +54,11 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         // todo: attempt to allow for users to implement their own inventory?
         // CraftBukkit does not allow this but it may be worth the trouble for
         // the extensibility.
-        final GlowInventory inv;
+        final GlowBaseInventory inv;
         if (viewSlot < view.getTopInventory().getSize()) {
-            inv = (GlowInventory) view.getTopInventory();
+            inv = (GlowBaseInventory) view.getTopInventory();
         } else {
-            inv = (GlowInventory) view.getBottomInventory();
+            inv = (GlowBaseInventory) view.getBottomInventory();
         }
         final int invSlot = view.convertSlot(viewSlot);
         final InventoryType.SlotType slotType = inv.getSlotType(invSlot);
