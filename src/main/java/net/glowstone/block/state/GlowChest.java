@@ -10,6 +10,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 public class GlowChest extends GlowBlockState implements Chest {
 
@@ -39,5 +40,19 @@ public class GlowChest extends GlowBlockState implements Chest {
         }
 
         return getBlockInventory();
+    }
+
+    @Override
+    public boolean update(boolean force, boolean applyPhysics) {
+        ItemStack[] contents = getBlockInventory().getContents();
+
+        boolean result = super.update(force, applyPhysics);
+
+        if (result) {
+            getTileEntity().setContents(contents);
+            getTileEntity().updateInRange();
+        }
+
+        return result;
     }
 }

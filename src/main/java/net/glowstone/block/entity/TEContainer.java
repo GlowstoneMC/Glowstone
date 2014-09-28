@@ -6,6 +6,7 @@ import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Base class for container tile entities (those with inventories).
@@ -21,6 +22,10 @@ public abstract class TEContainer extends TileEntity {
 
     public Inventory getInventory() {
         return inventory;
+    }
+
+    public void setContents(ItemStack[] contents) {
+        this.inventory.setContents(contents);
     }
 
     @Override
