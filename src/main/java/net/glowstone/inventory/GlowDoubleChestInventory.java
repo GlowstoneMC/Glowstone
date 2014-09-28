@@ -4,18 +4,19 @@ import com.google.common.collect.ImmutableList;
 import net.glowstone.block.state.GlowChest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.DoubleChestInventory;
+import org.bukkit.inventory.Inventory;
 
 public class GlowDoubleChestInventory extends GlowSuperInventory implements DoubleChestInventory {
-    public GlowDoubleChestInventory(GlowChest left, GlowChest right) {
+
+    public GlowDoubleChestInventory(GlowChest first, GlowChest second) {
         super.initialize(
-            new DoubleChest(this), // Holder
-            InventoryType.CHEST, // Type
-            ImmutableList.of( // Inventories
-                (GlowBaseInventory) left.getBlockInventory(),
-                (GlowBaseInventory) right.getBlockInventory()
-            )
+                new DoubleChest(this), // Holder
+                InventoryType.CHEST, // Type
+                ImmutableList.of( // Inventories
+                        (GlowBaseInventory) first.getBlockInventory(),
+                        (GlowBaseInventory) second.getBlockInventory()
+                )
         );
     }
 

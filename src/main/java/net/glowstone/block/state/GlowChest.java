@@ -1,5 +1,6 @@
 package net.glowstone.block.state;
 
+import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
@@ -36,7 +37,19 @@ public class GlowChest extends GlowBlockState implements Chest {
         if (attachedChest != null) {
             Block nearbyBlock = me.getRelative(attachedChest);
             GlowChest nearbyChest = (GlowChest) nearbyBlock.getState();
-            return new GlowDoubleChestInventory(this, nearbyChest);
+
+            switch (attachedChest) {
+                case SOUTH:
+                case WEST:
+                    return new GlowDoubleChestInventory(this, nearbyChest);
+                case EAST:
+                case NORTH:
+                    return new GlowDoubleChestInventory(nearbyChest, this);
+
+                default:
+                    GlowServer.logger.warning("GlowChest#getInventory() can only handle N/O/S/W BlockFaces, got " + attachedChest);
+                    return getBlockInventory();
+            }
         }
 
         return getBlockInventory();
