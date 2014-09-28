@@ -47,6 +47,11 @@ public class MetadataIndexTest {
         for (MetadataIndex index : MetadataIndex.values()) {
             Class<?> clazz = index.getAppliesTo();
 
+            if (index == MetadataIndex.PLAYER_SKIN_FLAGS) {
+                // this index is permitted to override others
+                continue;
+            }
+
             // check for duplication
             for (Map.Entry<Class<?>, HashMap<Integer, MetadataIndex>> entry : map.entrySet()) {
                 // check that class is a parent

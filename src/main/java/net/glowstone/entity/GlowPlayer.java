@@ -692,6 +692,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      */
     public void setSettings(ClientSettings settings) {
         this.settings = settings;
+        metadata.set(MetadataIndex.PLAYER_SKIN_FLAGS, settings.getSkinFlags());
     }
 
     /**

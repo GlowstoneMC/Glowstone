@@ -20,6 +20,9 @@ public enum MetadataIndex {
     NAME_TAG(10, STRING, LivingEntity.class),
     SHOW_NAME_TAG(11, BYTE, LivingEntity.class),
 
+    // allowed to override NAME_TAG from LivingEntity
+    PLAYER_SKIN_FLAGS(10, BYTE, HumanEntity.class),
+
     AGE(12, INT, Ageable.class),
 
     HORSE_FLAGS(16, INT, Horse.class),
