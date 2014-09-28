@@ -262,7 +262,8 @@ public abstract class GlowBaseInventory implements Inventory {
                 if (slotItem == null) {
                     int num = toAdd > maxStackSize ? maxStackSize : toAdd;
 
-                    slotItem = new ItemStack(item.getType(), num);
+                    slotItem = item.clone();
+                    slotItem.setAmount(num);
                     setItem(i, slotItem);
 
                     toAdd -= num;
