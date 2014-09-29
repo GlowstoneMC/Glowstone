@@ -1072,8 +1072,16 @@ public final class GlowServer implements Server {
             creator.generator(getGenerator(creator.name(), creator.environment(), creator.type()));
         }
 
-        world = new GlowWorld(this, creator);
-        return worlds.addWorld(world);
+        // GlowWorld's constructor calls addWorld below.
+        return new GlowWorld(this, creator);
+    }
+
+    /**
+     * Add a world to the internal world collection.
+     * @param world The world to add.
+     */
+    void addWorld(GlowWorld world) {
+        worlds.addWorld(world);
     }
 
     @Override

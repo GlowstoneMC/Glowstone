@@ -262,8 +262,9 @@ public final class GlowWorld implements World {
 
         // begin loading spawn area
         spawnChunkLock = newChunkLock("spawn");
-        EventFactory.callEvent(new WorldInitEvent(this));
+        server.addWorld(this);
         server.getLogger().info("Preparing spawn for " + name + "...");
+        EventFactory.callEvent(new WorldInitEvent(this));
 
         // determine the spawn location if we need to
         if (spawnLocation == null) {
