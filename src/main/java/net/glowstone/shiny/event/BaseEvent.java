@@ -1,6 +1,6 @@
 package net.glowstone.shiny.event;
 
-import org.spongepowered.api.Game;
+import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.Result;
 
@@ -9,53 +9,13 @@ import org.spongepowered.api.event.Result;
  */
 public class BaseEvent implements Event {
 
-    private final Game game;
-    private String simpleName;
-
-    private boolean cancelled = false;
     private Result result = Result.DEFAULT;
 
-    public BaseEvent(Game game) {
-        this.game = game;
-    }
-
-    @Override
-    public final Game getGame() {
-        return game;
-    }
-
-    @Override
-    public final String getSimpleName() {
-        if (simpleName == null) {
-            simpleName = calculateName();
-        }
-        return simpleName;
-    }
-
-    private String calculateName() {
-        Class<?>[] intfaces = getClass().getInterfaces();
-        if (intfaces.length == 1) {
-            return intfaces[0].getSimpleName();
-        }
-        return getClass().getSimpleName();
-    }
+    public BaseEvent() {}
 
     @Override
     public boolean isCancellable() {
-        return false;
-    }
-
-    @Override
-    public final boolean isCancelled() {
-        return cancelled;
-    }
-
-    @Override
-    public final void setCancelled(boolean cancel) {
-        if (cancel && !isCancellable()) {
-            throw new IllegalArgumentException("Cannot cancel " + getSimpleName());
-        }
-        cancelled = cancel;
+        return (this instanceof Cancellable);
     }
 
     @Override
@@ -71,16 +31,4 @@ public class BaseEvent implements Event {
         return result;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder r = new StringBuilder(getSimpleName());
-        r.append('{');
-        if (isCancellable()) {
-            r.append("cancelled=").append(cancelled);
-        } else {
-            r.append("nocancel");
-        }
-        r.append(", result=").append(result).append('}');
-        return r.toString();
-    }
 }

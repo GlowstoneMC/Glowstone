@@ -19,8 +19,8 @@ public class ShinyGameRegistry implements GameRegistry {
     private final Map<Object, String> idMap = new IdentityHashMap<>();
 
     private void register(Block block) {
-        blocks.put(block.getID(), block);
-        idMap.put(block, block.getID());
+        blocks.put(block.getId(), block);
+        idMap.put(block, block.getId());
     }
 
     private void register(Item item) {

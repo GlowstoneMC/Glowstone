@@ -2,7 +2,6 @@ package net.glowstone.shiny;
 
 import net.glowstone.shiny.event.ShinyEventManager;
 import net.glowstone.shiny.plugin.ShinyPluginManager;
-import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.Platform;
@@ -23,11 +22,6 @@ public class ShinyGame implements Game {
     private final ShinyPluginManager pluginManager = new ShinyPluginManager();
     private final ShinyEventManager eventManager = new ShinyEventManager();
     private final ShinyGameRegistry registry = new ShinyGameRegistry();
-
-    @Override
-    public Logger getLogger() {
-        return null;
-    }
 
     @Override
     public Platform getPlatform() {

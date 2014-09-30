@@ -1,5 +1,6 @@
 package net.glowstone.shiny.event;
 
+import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
 
 import java.lang.reflect.InvocationTargetException;
@@ -27,7 +28,7 @@ public final class EventRegistration {
     }
 
     public void call(Event event) {
-        if (ignoreCancelled && event.isCancelled()) {
+        if (ignoreCancelled && (event instanceof Cancellable) && ((Cancellable) event).isCancelled()) {
             return;
         }
 

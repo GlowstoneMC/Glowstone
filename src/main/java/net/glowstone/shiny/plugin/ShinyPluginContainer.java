@@ -20,7 +20,7 @@ public final class ShinyPluginContainer implements PluginContainer {
     }
 
     @Override
-    public String getID() {
+    public String getId() {
         return id;
     }
 

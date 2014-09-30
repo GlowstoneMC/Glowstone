@@ -1,9 +1,6 @@
 package net.glowstone.shiny.event;
 
-import org.spongepowered.api.event.Event;
-import org.spongepowered.api.event.EventManager;
-import org.spongepowered.api.event.Order;
-import org.spongepowered.api.event.SpongeEventHandler;
+import org.spongepowered.api.event.*;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -51,6 +48,6 @@ public class ShinyEventManager implements EventManager {
                 reg.call(event);
             }
         }
-        return event.isCancelled();
+        return !(event instanceof Cancellable) || ((Cancellable) event).isCancelled();
     }
 }
