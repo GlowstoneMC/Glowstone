@@ -5,24 +5,26 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryHolder;
 import net.glowstone.util.collection.SuperIterator;
 import net.glowstone.util.collection.SuperSet;
+import net.glowstone.util.collection.SuperList;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Inventory which delegate to other Inventory objects.
  */
-public class GlowSuperInventory extends GlowBaseInventory {
-    private List<GlowBaseInventory> parents;
+public class GlowSuperInventory extends GlowInventory {
+    private List<GlowInventory> parents;
 
     protected GlowSuperInventory() { }
 
-    public GlowSuperInventory(InventoryHolder owner, InventoryType type, List<GlowBaseInventory> parents) {
-        initialize(owner, type, parents);
+    public GlowSuperInventory(List<GlowInventory> parents, InventoryHolder owner, InventoryType type) {
+        initialize(parents, owner, type);
     }
 
-    public GlowSuperInventory(InventoryHolder owner, InventoryType type, String title, List<GlowBaseInventory> parents) {
-        initialize(owner, type, title, parents);
+    public GlowSuperInventory(List<GlowInventory> parents, InventoryHolder owner, InventoryType type, String title) {
+        initialize(parents, owner, type, title);
     }
 
     // Why these weird initialize methods, instead of handling everything
@@ -36,53 +38,24 @@ public class GlowSuperInventory extends GlowBaseInventory {
     //
     // Using "this" after the super call inside the constructor is possible,
     // so I'm using these pseudo-constructors.
-    protected void initialize(InventoryHolder owner, InventoryType type, List<GlowBaseInventory> parents) {
-        initialize(owner, type, type.getDefaultTitle(), parents);
+    protected void initialize(List<GlowInventory> parents, InventoryHolder owner, InventoryType type) {
+        initialize(parents, owner, type, type.getDefaultTitle());
     }
     
-    protected void initialize(InventoryHolder owner, InventoryType type, String title, List<GlowBaseInventory> parents) {
-        super.initialize(owner, type, title, new SuperSet<HumanEntity>());
+    protected void initialize(List<GlowInventory> parents, InventoryHolder owner, InventoryType type, String title) {
+        SuperList<GlowInventorySlot> slots = new SuperList<>();
+        SuperSet<HumanEntity> viewers = new SuperSet<>();
+
+        for (GlowInventory parent : parents) {
+            slots.getParents().add(parent.getSlots());
+            viewers.getParents().add(parent.getViewersSet());
+        }
+
+        super.initialize(slots, viewers, owner, type, title);
         this.parents = parents;
-
-        for (GlowBaseInventory parent : parents) {
-            ((SuperSet<HumanEntity>) getViewersSet()).getParents().add(parent.getViewersSet());
-        }
     }
 
-    @Override
-    public GlowInventorySlot getSlot(int slot) {
-        int relativeSlot = slot;
-
-        for (GlowBaseInventory parent : parents) {
-            int parentSize = parent.getSize();
-
-            if (relativeSlot < parentSize) {
-                return parent.getSlot(relativeSlot);
-            }
-
-            relativeSlot -= parentSize;
-        }
-
-        throw new IndexOutOfBoundsException("Inventory does not contain slot " + slot);
-    }
-
-    @Override
-    public int getSize() {
-        int size = 0;
-
-        for (GlowBaseInventory parent : parents) {
-            size += parent.getSize();
-        }
-
-        return size;
-    }
-
-    @Override
-    public Iterator<GlowInventorySlot> slotIterator() {
-        return new SuperIterator<GlowInventorySlot>(parents, InventorySlotIteratorAdapter.INSTANCE);
-    }
-
-    public List<GlowBaseInventory> getParents() {
+    public List<GlowInventory> getParents() {
         return parents;
     }
 }

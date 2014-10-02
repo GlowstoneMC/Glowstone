@@ -10,13 +10,13 @@ import org.bukkit.inventory.Inventory;
 public class GlowDoubleChestInventory extends GlowSuperInventory implements DoubleChestInventory {
 
     public GlowDoubleChestInventory(GlowChest first, GlowChest second) {
-        super.initialize(
-                new DoubleChest(this), // Holder
-                InventoryType.CHEST, // Type
+        initialize(
                 ImmutableList.of( // Inventories
-                        (GlowBaseInventory) first.getBlockInventory(),
-                        (GlowBaseInventory) second.getBlockInventory()
-                )
+                        (GlowInventory) first.getBlockInventory(),
+                        (GlowInventory) second.getBlockInventory()
+                ),
+                new DoubleChest(this), // Holder
+                InventoryType.CHEST // Type
         );
     }
 

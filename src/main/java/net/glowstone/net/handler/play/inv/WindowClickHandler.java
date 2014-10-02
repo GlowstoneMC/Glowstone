@@ -54,11 +54,11 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         // todo: attempt to allow for users to implement their own inventory?
         // CraftBukkit does not allow this but it may be worth the trouble for
         // the extensibility.
-        final GlowBaseInventory inv;
+        final GlowInventory inv;
         if (viewSlot < view.getTopInventory().getSize()) {
-            inv = (GlowBaseInventory) view.getTopInventory();
+            inv = (GlowInventory) view.getTopInventory();
         } else {
-            inv = (GlowBaseInventory) view.getBottomInventory();
+            inv = (GlowInventory) view.getBottomInventory();
         }
         final int invSlot = view.convertSlot(viewSlot);
         final InventoryType.SlotType slotType = inv.getSlotType(invSlot);
