@@ -116,7 +116,7 @@ public abstract class SuperCollection<E> implements Collection<E> {
     public boolean addAll(Collection<? extends E> objects) {
         switch (additionMode) {
 
-            case ALL: {
+            case ALL:
                 int modified = 0;
 
                 for (Collection<E> parent : parents) {
@@ -124,11 +124,10 @@ public abstract class SuperCollection<E> implements Collection<E> {
                         modified++;
                     }
                 }
-            }
+                break;
 
-            case LAST: {
+            case LAST:
                 return parents.get(parents.size() - 1).addAll(objects);
-            }
         }
 
         throw new IllegalStateException("This SuperCollection has an invalid addition mode!");

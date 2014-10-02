@@ -3,13 +3,10 @@ package net.glowstone.inventory;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryHolder;
-import net.glowstone.util.collection.SuperIterator;
 import net.glowstone.util.collection.SuperSet;
 import net.glowstone.util.collection.SuperList;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Inventory which delegate to other Inventory objects.
