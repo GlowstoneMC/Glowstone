@@ -116,6 +116,9 @@ public final class ItemTable {
         reg(Material.TORCH, new BlockTorch());
         reg(Material.DAYLIGHT_DETECTOR, new BlockDaylightDetector());
         reg(Material.DAYLIGHT_DETECTOR_INVERTED, new BlockDaylightDetector());
+        reg(Material.ENCHANTMENT_TABLE, new BlockEnchantmentTable());
+        reg(Material.ANVIL, new BlockAnvil());
+        reg(Material.BREWING_STAND, new BlockBrewingStand());
 
         reg(Material.SIGN, new ItemSign());
         reg(Material.REDSTONE, new ItemPlaceAs(Material.REDSTONE_WIRE));

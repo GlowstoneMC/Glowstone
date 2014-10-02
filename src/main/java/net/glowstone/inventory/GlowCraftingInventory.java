@@ -48,6 +48,11 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
         return false;
     }
 
+    @Override
+    public int getRawSlots() {
+        return 0;
+    }
+
     /**
      * Remove a layer of items from the inventory according to the current recipe.
      */

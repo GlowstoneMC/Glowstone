@@ -2,10 +2,7 @@ package net.glowstone.entity;
 
 import com.flowpowered.networking.Message;
 import net.glowstone.entity.meta.PlayerProfile;
-import net.glowstone.inventory.GlowCraftingInventory;
-import net.glowstone.inventory.GlowInventory;
-import net.glowstone.inventory.GlowInventoryView;
-import net.glowstone.inventory.GlowPlayerInventory;
+import net.glowstone.inventory.*;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.SpawnPlayerMessage;
@@ -342,9 +339,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         if (!force && location.getBlock().getType() != Material.ENCHANTMENT_TABLE) {
             return null;
         }
-        // todo: actually open
-        /*InventoryView view = new GlowInventoryView(this, new GlowEnchantInventory() ...);*/
-        return null;
+        return openInventory(new GlowEnchantingInventory(this));
     }
 
     @Override
