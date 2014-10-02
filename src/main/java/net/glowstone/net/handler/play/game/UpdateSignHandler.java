@@ -8,7 +8,6 @@ import net.glowstone.net.message.play.game.UpdateSignMessage;
 import org.bukkit.Location;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
-import org.json.simple.parser.JSONParser;
 
 public final class UpdateSignHandler implements MessageHandler<GlowSession, UpdateSignMessage> {
     @Override
@@ -16,7 +15,6 @@ public final class UpdateSignHandler implements MessageHandler<GlowSession, Upda
         final GlowPlayer player = session.getPlayer();
 
         // filter out json messages that aren't plaintext
-        JSONParser parser = new JSONParser();
         String[] lines = new String[4];
         for (int i = 0; i < lines.length; ++i) {
             lines[i] = message.getMessage()[i].asPlaintext();

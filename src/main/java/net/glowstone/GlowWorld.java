@@ -1309,9 +1309,9 @@ public final class GlowWorld implements World {
 
     @Override
     public void playEffect(Location location, Effect effect, int data, int radius) {
-        radius *= radius;
+        final int radiusSquared = radius * radius;
         for (Player player : getRawPlayers()) {
-            if (player.getLocation().distanceSquared(location) <= radius) {
+            if (player.getLocation().distanceSquared(location) <= radiusSquared) {
                 player.playEffect(location, effect, data);
             }
         }
@@ -1329,9 +1329,9 @@ public final class GlowWorld implements World {
     }
 
     public void playEffectExceptTo(Location location, Effect effect, int data, int radius, Player exclude) {
-        radius *= radius;
+        final int radiusSquared = radius * radius;
         for (Player player : getRawPlayers()) {
-            if (!player.equals(exclude) && player.getLocation().distanceSquared(location) <= radius) {
+            if (!player.equals(exclude) && player.getLocation().distanceSquared(location) <= radiusSquared) {
                 player.playEffect(location, effect, data);
             }
         }

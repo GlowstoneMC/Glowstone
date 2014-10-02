@@ -144,7 +144,7 @@ abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore
                 NbtSerialization.writeItem(equip.getChestplate(), -1),
                 NbtSerialization.writeItem(equip.getHelmet(), -1)
         ));
-        tag.putList("DropChances", TagType.FLOAT, Arrays.<Float>asList(
+        tag.putList("DropChances", TagType.FLOAT, Arrays.asList(
                 equip.getItemInHandDropChance(),
                 equip.getBootsDropChance(),
                 equip.getLeggingsDropChance(),
