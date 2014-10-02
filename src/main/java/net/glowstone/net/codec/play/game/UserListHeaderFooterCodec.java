@@ -1,9 +1,9 @@
 package net.glowstone.net.codec.play.game;
 
 import com.flowpowered.networking.Codec;
-import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
+import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.game.UserListHeaderFooterMessage;
 
 import java.io.IOException;
@@ -17,8 +17,8 @@ public final class UserListHeaderFooterCodec implements Codec<UserListHeaderFoot
 
     @Override
     public ByteBuf encode(ByteBuf buf, UserListHeaderFooterMessage message) throws IOException {
-        ByteBufUtils.writeUTF8(buf, message.getHeader().toJSONString());
-        ByteBufUtils.writeUTF8(buf, message.getFooter().toJSONString());
+        GlowBufUtils.writeChat(buf, message.getHeader());
+        GlowBufUtils.writeChat(buf, message.getFooter());
         return buf;
     }
 }

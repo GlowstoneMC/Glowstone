@@ -47,7 +47,7 @@ public final class UserListItemCodec implements Codec<UserListItemMessage> {
                     ByteBufUtils.writeVarInt(buf, entry.ping);
                     if (entry.displayName != null) {
                         buf.writeBoolean(true);
-                        ByteBufUtils.writeUTF8(buf, entry.displayName.toJSONString());
+                        GlowBufUtils.writeChat(buf, entry.displayName);
                     } else {
                         buf.writeBoolean(false);
                     }
@@ -64,7 +64,7 @@ public final class UserListItemCodec implements Codec<UserListItemMessage> {
                 case UPDATE_DISPLAY_NAME:
                     if (entry.displayName != null) {
                         buf.writeBoolean(true);
-                        ByteBufUtils.writeUTF8(buf, entry.displayName.toJSONString());
+                        GlowBufUtils.writeChat(buf, entry.displayName);
                     } else {
                         buf.writeBoolean(false);
                     }

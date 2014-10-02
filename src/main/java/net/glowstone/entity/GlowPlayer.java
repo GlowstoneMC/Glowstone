@@ -15,7 +15,6 @@ import net.glowstone.entity.meta.PlayerProfile;
 import net.glowstone.inventory.InventoryMonitor;
 import net.glowstone.io.PlayerDataService;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.JsonMessage;
 import net.glowstone.net.message.login.LoginSuccessMessage;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
@@ -25,6 +24,7 @@ import net.glowstone.net.message.play.inv.*;
 import net.glowstone.net.message.play.player.PlayerAbilitiesMessage;
 import net.glowstone.net.protocol.ProtocolType;
 import net.glowstone.util.StatisticMap;
+import net.glowstone.util.TextMessage;
 import net.glowstone.util.TextWrapper;
 import org.apache.commons.lang.Validate;
 import org.bukkit.*;
@@ -44,7 +44,6 @@ import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
-import org.json.simple.JSONObject;
 
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
@@ -669,9 +668,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * @return The entry (action ADD_PLAYER) with this player's information.
      */
     public UserListItemMessage.Entry getUserListEntry() {
-        JSONObject displayName = null;
+        TextMessage displayName = null;
         if (playerListName != null && !playerListName.isEmpty()) {
-            displayName = JsonMessage.toTextJson(playerListName);
+            displayName = new TextMessage(playerListName);
         }
         return UserListItemMessage.add(getProfile(), getGameMode().getValue(), 0, displayName);
     }
@@ -815,9 +814,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         playerListName = name;
 
         // send update message
-        JSONObject displayName = null;
+        TextMessage displayName = null;
         if (playerListName != null && !playerListName.isEmpty()) {
-            displayName = JsonMessage.toTextJson(playerListName);
+            displayName = new TextMessage(playerListName);
         }
         Message updateMessage = UserListItemMessage.displayNameOne(getUniqueId(), displayName);
         for (GlowPlayer player : server.getOnlinePlayers()) {

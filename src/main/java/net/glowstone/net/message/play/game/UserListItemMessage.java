@@ -2,7 +2,7 @@ package net.glowstone.net.message.play.game;
 
 import com.flowpowered.networking.Message;
 import net.glowstone.entity.meta.PlayerProfile;
-import org.json.simple.JSONObject;
+import net.glowstone.util.TextMessage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -42,7 +42,7 @@ public final class UserListItemMessage implements Message {
         return add(profile, 0, 0, null);
     }
 
-    public static Entry add(PlayerProfile profile, int gameMode, int ping, JSONObject displayName) {
+    public static Entry add(PlayerProfile profile, int gameMode, int ping, TextMessage displayName) {
         return new Entry(Action.ADD_PLAYER, profile.getUniqueId(), profile, gameMode, ping, displayName);
     }
 
@@ -72,11 +72,11 @@ public final class UserListItemMessage implements Message {
 
     // display name
 
-    public static Entry displayName(UUID uuid, JSONObject displayName) {
+    public static Entry displayName(UUID uuid, TextMessage displayName) {
         return new Entry(Action.UPDATE_DISPLAY_NAME, uuid, null, 0, 0, displayName);
     }
 
-    public static UserListItemMessage displayNameOne(UUID uuid, JSONObject displayName) {
+    public static UserListItemMessage displayNameOne(UUID uuid, TextMessage displayName) {
         return new UserListItemMessage(Action.UPDATE_DISPLAY_NAME, displayName(uuid, displayName));
     }
 
@@ -112,9 +112,9 @@ public final class UserListItemMessage implements Message {
         public final PlayerProfile profile;
         public final int gameMode;
         public final int ping;
-        public final JSONObject displayName;
+        public final TextMessage displayName;
 
-        private Entry(Action action, UUID uuid, PlayerProfile profile, int gameMode, int ping, JSONObject displayName) {
+        private Entry(Action action, UUID uuid, PlayerProfile profile, int gameMode, int ping, TextMessage displayName) {
             this.action = action;
             this.uuid = uuid;
             this.profile = profile;

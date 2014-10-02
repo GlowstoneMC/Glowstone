@@ -1,23 +1,23 @@
 package net.glowstone.net.message.play.inv;
 
 import com.flowpowered.networking.Message;
-import net.glowstone.net.message.JsonMessage;
-import org.json.simple.JSONObject;
+import net.glowstone.util.TextMessage;
 
 public final class OpenWindowMessage implements Message {
 
     private final int id;
-    private final String type, title;
+    private final String type;
+    private final TextMessage title;
     private final int slots, entityId;
 
     public OpenWindowMessage(int id, String type, String title, int slots) {
-        this(id, type, JsonMessage.toTextJson(title), slots, 0);
+        this(id, type, new TextMessage(title), slots, 0);
     }
 
-    public OpenWindowMessage(int id, String type, JSONObject titleJson, int slots, int entityId) {
+    public OpenWindowMessage(int id, String type, TextMessage title, int slots, int entityId) {
         this.id = id;
         this.type = type;
-        this.title = titleJson.toJSONString();
+        this.title = title;
         this.slots = slots;
         this.entityId = entityId;
     }
@@ -30,7 +30,7 @@ public final class OpenWindowMessage implements Message {
         return type;
     }
 
-    public String getTitleJson() {
+    public TextMessage getTitle() {
         return title;
     }
 

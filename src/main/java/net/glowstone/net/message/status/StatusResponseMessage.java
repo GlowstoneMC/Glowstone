@@ -1,12 +1,22 @@
 package net.glowstone.net.message.status;
 
-import net.glowstone.net.message.JsonMessage;
+import com.flowpowered.networking.Message;
 import org.json.simple.JSONObject;
 
-public final class StatusResponseMessage extends JsonMessage {
+public final class StatusResponseMessage implements Message {
+
+    private final String json;
 
     public StatusResponseMessage(JSONObject json) {
-        super(json);
+        this.json = json.toJSONString();
     }
 
+    public String getJson() {
+        return json;
+    }
+
+    @Override
+    public String toString() {
+        return "StatusResponseMessage" + json;
+    }
 }

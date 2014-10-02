@@ -7,6 +7,7 @@ import net.glowstone.GlowServer;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.inventory.GlowItemFactory;
+import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
@@ -211,4 +212,7 @@ public final class GlowBufUtils {
         buf.writeLong(uuid.getLeastSignificantBits());
     }
 
+    public static void writeChat(ByteBuf buf, TextMessage text) throws IOException {
+        ByteBufUtils.writeUTF8(buf, text.encode());
+    }
 }
