@@ -3,7 +3,6 @@ package net.glowstone.net.codec.play.entity;
 import com.flowpowered.networking.Codec;
 import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.DecoderException;
 import net.glowstone.net.message.play.entity.EntityEffectMessage;
 
 import java.io.IOException;
@@ -11,7 +10,12 @@ import java.io.IOException;
 public final class EntityEffectCodec implements Codec<EntityEffectMessage> {
     @Override
     public EntityEffectMessage decode(ByteBuf buf) throws IOException {
-        throw new DecoderException("Cannot decode EntityEffectMessage");
+        int id = ByteBufUtils.readVarInt(buf);
+        byte effect = buf.readByte();
+        byte amplifier = buf.readByte();
+        int duration = ByteBufUtils.readVarInt(buf);
+        boolean hideParticles = buf.readBoolean();
+        return new EntityEffectMessage(id, effect, amplifier, duration, hideParticles);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package net.glowstone.net.codec.play.game;
 
 import com.flowpowered.networking.Codec;
-import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.game.ChatMessage;
@@ -12,9 +11,9 @@ import java.io.IOException;
 public final class ChatCodec implements Codec<ChatMessage> {
     @Override
     public ChatMessage decode(ByteBuf buf) throws IOException {
-        String message = ByteBufUtils.readUTF8(buf);
+        TextMessage message = GlowBufUtils.readChat(buf);
         int mode = buf.readByte();
-        return new ChatMessage(TextMessage.decode(message), mode);
+        return new ChatMessage(message, mode);
     }
 
     @Override

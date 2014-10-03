@@ -2,7 +2,6 @@ package net.glowstone.net.codec.play.entity;
 
 import com.flowpowered.networking.Codec;
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.DecoderException;
 import net.glowstone.net.message.play.entity.AttachEntityMessage;
 
 import java.io.IOException;
@@ -10,7 +9,10 @@ import java.io.IOException;
 public final class AttachEntityCodec implements Codec<AttachEntityMessage> {
     @Override
     public AttachEntityMessage decode(ByteBuf buf) throws IOException {
-        throw new DecoderException("Cannot decode AttachEntityMessage");
+        int id = buf.readInt();
+        int vehicle = buf.readInt();
+        boolean leash = buf.readBoolean();
+        return new AttachEntityMessage(id, vehicle, leash);
     }
 
     @Override

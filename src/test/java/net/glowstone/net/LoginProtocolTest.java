@@ -9,8 +9,10 @@ import net.glowstone.net.message.login.LoginStartMessage;
 import net.glowstone.net.message.login.LoginSuccessMessage;
 import net.glowstone.net.protocol.LoginProtocol;
 
+/**
+ * Test cases for {@link LoginProtocol}.
+ */
 public class LoginProtocolTest extends BaseProtocolTest {
-
 
     private static final Message[] TEST_MESSAGES = new Message[]{
             new LoginStartMessage("glowstone"),
@@ -22,7 +24,7 @@ public class LoginProtocolTest extends BaseProtocolTest {
             new SetCompressionMessage(5)
     };
 
-    public LoginProtocolTest() throws NoSuchFieldException, IllegalAccessException {
+    public LoginProtocolTest() {
         super(new LoginProtocol(), TEST_MESSAGES);
     }
 }

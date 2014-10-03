@@ -33,7 +33,44 @@ public final class GlowBufUtils {
     }
 
     /**
-     * Writes a list of mob metadata entries to the buffer.
+     * Read a list of mob metadata entries from the buffer.
+     * @param buf The buffer.
+     * @return The metadata.
+     */
+    public static List<MetadataMap.Entry> readMetadata(ByteBuf buf) throws IOException {
+        List<MetadataMap.Entry> entries = new ArrayList<>();
+        byte item;
+        while ((item = buf.readByte()) != 0x7F) {
+            MetadataType type = MetadataType.byId(item >> 5);
+            int id = item & 0x1f;
+            MetadataIndex index = MetadataIndex.getIndex(id, type);
+
+            switch (type) {
+                case BYTE:
+                    entries.add(new MetadataMap.Entry(index, buf.readByte()));
+                    break;
+                case SHORT:
+                    entries.add(new MetadataMap.Entry(index, buf.readShort()));
+                    break;
+                case INT:
+                    entries.add(new MetadataMap.Entry(index, buf.readInt()));
+                    break;
+                case FLOAT:
+                    entries.add(new MetadataMap.Entry(index, buf.readFloat()));
+                    break;
+                case STRING:
+                    entries.add(new MetadataMap.Entry(index, ByteBufUtils.readUTF8(buf)));
+                    break;
+                case ITEM:
+                    entries.add(new MetadataMap.Entry(index, readSlot(buf)));
+                    break;
+            }
+        }
+        return entries;
+    }
+
+    /**
+     * Write a list of mob metadata entries to the buffer.
      * @param buf The buffer.
      * @param entries The metadata.
      */
@@ -73,42 +110,6 @@ public final class GlowBufUtils {
         buf.writeByte(127);
     }
 
-    /**
-     * Read Metadata. Mostly used for unit tests.
-     * @param buf The decode buffer
-     * @return A list of Metadata entry
-     */
-    public static List<MetadataMap.Entry> readMetadata(ByteBuf buf) throws IOException {
-        List<MetadataMap.Entry> entries = new ArrayList<>();
-        byte item;
-        while ((item = buf.readByte()) != 0x7F) {
-            MetadataType type = MetadataType.byId(item >> 5);
-            int id = item & 0x1f;
-            MetadataIndex index = MetadataIndex.getIndex(id, type);
-
-            switch (type) {
-                case BYTE:
-                    entries.add(new MetadataMap.Entry(index, buf.readByte()));
-                    break;
-                case SHORT:
-                    entries.add(new MetadataMap.Entry(index, buf.readShort()));
-                    break;
-                case INT:
-                    entries.add(new MetadataMap.Entry(index, buf.readInt()));
-                    break;
-                case FLOAT:
-                    entries.add(new MetadataMap.Entry(index, buf.readFloat()));
-                    break;
-                case STRING:
-                    entries.add(new MetadataMap.Entry(index, ByteBufUtils.readUTF8(buf)));
-                    break;
-                case ITEM:
-                    entries.add(new MetadataMap.Entry(index, readSlot(buf)));
-                    break;
-            }
-        }
-        return entries;
-    }
     /**
      * Read an uncompressed compound NBT tag from the buffer.
      * @param buf The buffer.
@@ -151,28 +152,6 @@ public final class GlowBufUtils {
     }
 
     /**
-     * Write an item stack to the buffer.
-     * @param buf The buffer.
-     * @param stack The stack to write, or null.
-     */
-    public static void writeSlot(ByteBuf buf, ItemStack stack) {
-        if (stack == null || stack.getTypeId() == 0) {
-            buf.writeShort(-1);
-        } else {
-            buf.writeShort(stack.getTypeId());
-            buf.writeByte(stack.getAmount());
-            buf.writeShort(stack.getDurability());
-
-            if (stack.hasItemMeta()) {
-                CompoundTag tag = GlowItemFactory.instance().writeNbt(stack.getItemMeta());
-                writeCompound(buf, tag);
-            } else {
-                writeCompound(buf, null);
-            }
-        }
-    }
-
-    /**
      * Read an item stack from the buffer.
      * @param buf The buffer.
      * @return The stack read, or null.
@@ -195,6 +174,28 @@ public final class GlowBufUtils {
         ItemStack stack = new ItemStack(material, amount, durability);
         stack.setItemMeta(GlowItemFactory.instance().readNbt(material, tag));
         return stack;
+    }
+
+    /**
+     * Write an item stack to the buffer.
+     * @param buf The buffer.
+     * @param stack The stack to write, or null.
+     */
+    public static void writeSlot(ByteBuf buf, ItemStack stack) {
+        if (stack == null || stack.getTypeId() == 0) {
+            buf.writeShort(-1);
+        } else {
+            buf.writeShort(stack.getTypeId());
+            buf.writeByte(stack.getAmount());
+            buf.writeShort(stack.getDurability());
+
+            if (stack.hasItemMeta()) {
+                CompoundTag tag = GlowItemFactory.instance().writeNbt(stack.getItemMeta());
+                writeCompound(buf, tag);
+            } else {
+                writeCompound(buf, null);
+            }
+        }
     }
 
     /**
@@ -250,7 +251,24 @@ public final class GlowBufUtils {
         buf.writeLong(uuid.getLeastSignificantBits());
     }
 
+    /**
+     * Read an encoded chat message from the buffer.
+     * @param buf The buffer.
+     * @return The chat message read.
+     * @throws IOException on read failure.
+     */
+    public static TextMessage readChat(ByteBuf buf) throws IOException {
+        return TextMessage.decode(ByteBufUtils.readUTF8(buf));
+    }
+
+    /**
+     * Write an encoded chat message to the buffer.
+     * @param buf The buffer.
+     * @param text The chat message to write.
+     * @throws IOException on write failure.
+     */
     public static void writeChat(ByteBuf buf, TextMessage text) throws IOException {
         ByteBufUtils.writeUTF8(buf, text.encode());
     }
+
 }

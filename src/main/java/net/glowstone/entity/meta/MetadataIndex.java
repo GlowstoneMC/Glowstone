@@ -114,18 +114,6 @@ public enum MetadataIndex {
         this.appliesTo = appliesTo;
     }
 
-    //TODO Ugly hack so unit tests can read metadata
-    public static MetadataIndex getIndex(int index, MetadataType type) {
-        MetadataIndex output = null;
-        for (MetadataIndex entry : values()) {
-            if (entry.getIndex() == index && entry.getType().equals(type)) {
-                output = entry;
-                break;
-            }
-        }
-        return output;
-    }
-
     public int getIndex() {
         return index;
     }
@@ -140,6 +128,17 @@ public enum MetadataIndex {
 
     public boolean appliesTo(Class<? extends Entity> clazz) {
         return appliesTo.isAssignableFrom(clazz);
+    }
+
+    public static MetadataIndex getIndex(int index, MetadataType type) {
+        MetadataIndex output = null;
+        for (MetadataIndex entry : values()) {
+            if (entry.getIndex() == index && entry.getType().equals(type)) {
+                output = entry;
+                break;
+            }
+        }
+        return output;
     }
 
     public static interface StatusFlags {

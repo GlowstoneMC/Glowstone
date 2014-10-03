@@ -1,7 +1,6 @@
 package net.glowstone.net.codec.play.game;
 
 import com.flowpowered.networking.Codec;
-import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.game.UpdateSignMessage;
@@ -16,7 +15,7 @@ public final class UpdateSignCodec implements Codec<UpdateSignMessage> {
         BlockVector pos = GlowBufUtils.readBlockPosition(buf);
         TextMessage[] message = new TextMessage[4];
         for (int i = 0; i < message.length; ++i) {
-            message[i] = TextMessage.decode(ByteBufUtils.readUTF8(buf));
+            message[i] = GlowBufUtils.readChat(buf);
         }
         return new UpdateSignMessage(pos.getBlockX(), pos.getBlockY(), pos.getBlockZ(), message);
     }

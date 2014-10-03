@@ -6,6 +6,9 @@ import net.glowstone.net.message.status.StatusRequestMessage;
 import net.glowstone.net.message.status.StatusResponseMessage;
 import net.glowstone.net.protocol.StatusProtocol;
 
+/**
+ * Test cases for {@link StatusProtocol}.
+ */
 public class StatusProtocolTest extends BaseProtocolTest {
 
     private static final Message[] TEST_MESSAGES = new Message[]{
@@ -14,7 +17,7 @@ public class StatusProtocolTest extends BaseProtocolTest {
             new StatusRequestMessage(),
     };
 
-    public StatusProtocolTest() throws NoSuchFieldException, IllegalAccessException {
+    public StatusProtocolTest() {
         super(new StatusProtocol(), TEST_MESSAGES);
     }
 }

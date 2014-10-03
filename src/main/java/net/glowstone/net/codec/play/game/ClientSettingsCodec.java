@@ -23,7 +23,7 @@ public final class ClientSettingsCodec implements Codec<ClientSettingsMessage> {
         ByteBufUtils.writeUTF8(buf, message.getLocale());
         buf.writeByte(message.getViewDistance());
         buf.writeByte(message.getChatFlags());
-        buf.writeBoolean(message.getChatColors());
+        buf.writeBoolean(message.isChatColors());
         buf.writeByte(message.getSkinFlags());
         return buf;
     }

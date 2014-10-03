@@ -3,16 +3,20 @@ package net.glowstone.net.codec.play.game;
 import com.flowpowered.networking.Codec;
 import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.DecoderException;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.game.BlockActionMessage;
+import org.bukkit.util.BlockVector;
 
 import java.io.IOException;
 
 public final class BlockActionCodec implements Codec<BlockActionMessage> {
     @Override
     public BlockActionMessage decode(ByteBuf buf) throws IOException {
-        throw new DecoderException("Cannot decode BlockActionMessage");
+        BlockVector vector = GlowBufUtils.readBlockPosition(buf);
+        int data1 = buf.readByte();
+        int data2 = buf.readByte();
+        int blockType = ByteBufUtils.readVarInt(buf);
+        return new BlockActionMessage(vector.getBlockX(), vector.getBlockY(), vector.getBlockZ(), data1, data2, blockType);
     }
 
     @Override

@@ -2,7 +2,6 @@ package net.glowstone.net.codec.play.entity;
 
 import com.flowpowered.networking.Codec;
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.DecoderException;
 import net.glowstone.net.message.play.entity.EntityStatusMessage;
 
 import java.io.IOException;
@@ -10,7 +9,9 @@ import java.io.IOException;
 public final class EntityStatusCodec implements Codec<EntityStatusMessage> {
     @Override
     public EntityStatusMessage decode(ByteBuf buf) throws IOException {
-        throw new DecoderException("Cannot decode EntityStatusMessage");
+        int id = buf.readInt();
+        int status = buf.readByte();
+        return new EntityStatusMessage(id, status);
     }
 
     @Override
