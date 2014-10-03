@@ -17,7 +17,7 @@ public final class CameraCodec implements Codec<CameraMessage> {
 
     @Override
     public ByteBuf encode(ByteBuf buf, CameraMessage message) throws IOException {
-        ByteBufUtils.writeVarInt(buf, message.getCameraID());
+        ByteBufUtils.writeVarInt(buf, message.getCameraId());
         return buf;
     }
 }

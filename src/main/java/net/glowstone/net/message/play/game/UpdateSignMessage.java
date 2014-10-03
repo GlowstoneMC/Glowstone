@@ -1,10 +1,10 @@
 package net.glowstone.net.message.play.game;
 
 import com.flowpowered.networking.Message;
+import lombok.Data;
 import net.glowstone.util.TextMessage;
 
-import java.util.Arrays;
-
+@Data
 public final class UpdateSignMessage implements Message {
 
     private final int x, y, z;
@@ -33,24 +33,4 @@ public final class UpdateSignMessage implements Message {
         return new UpdateSignMessage(x, y, z, encoded);
     }
 
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public int getZ() {
-        return z;
-    }
-
-    public TextMessage[] getMessage() {
-        return message;
-    }
-
-    @Override
-    public String toString() {
-        return "UpdateSignMessage{x=" + x + ",y=" + y + ",z=" + z + ",message=" + Arrays.toString(message) + "}";
-    }
 }

@@ -1,21 +1,10 @@
 package net.glowstone.net.message.play.game;
 
 import com.flowpowered.networking.Message;
+import lombok.Data;
 
+@Data
 public final class TitleMessage implements Message {
-
-    public enum Action {
-        TITLE,
-        SUBTITLE,
-        TIMES,
-        CLEAR,
-        RESET;
-
-        public static Action getAction(int id) {
-            Action[] values = values();
-            return id < 0 || id >= values.length ? null : values[id];
-        }
-    }
 
     private final Action action;
     private final String text;
@@ -48,35 +37,17 @@ public final class TitleMessage implements Message {
         this.fadeOut = 0;
     }
 
-    public Action getAction() {
-        return action;
-    }
+    public enum Action {
+        TITLE,
+        SUBTITLE,
+        TIMES,
+        CLEAR,
+        RESET;
 
-    public String getText() {
-        return text;
-    }
-
-    public int getFadeIn() {
-        return fadeIn;
-    }
-
-    public int getStay() {
-        return stay;
-    }
-
-    public int getFadeOut() {
-        return fadeOut;
-    }
-
-    @Override
-    public String toString() {
-        return "TitleMessage{" +
-                "action=" + action +
-                ", text='" + text + '\'' +
-                ", fadeIn=" + fadeIn +
-                ", stay=" + stay +
-                ", fadeOut=" + fadeOut +
-                '}';
+        public static Action getAction(int id) {
+            Action[] values = values();
+            return id < 0 || id >= values.length ? null : values[id];
+        }
     }
 
 }

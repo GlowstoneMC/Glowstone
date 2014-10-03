@@ -26,7 +26,7 @@ public final class PlayerPositionLookCodec implements Codec<PlayerPositionLookMe
         buf.writeDouble(message.getZ());
         buf.writeFloat(message.getYaw());
         buf.writeFloat(message.getPitch());
-        buf.writeBoolean(message.getOnGround());
+        buf.writeBoolean(message.isOnGround());
         return buf;
     }
 }

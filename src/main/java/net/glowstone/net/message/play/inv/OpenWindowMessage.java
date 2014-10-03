@@ -1,8 +1,12 @@
 package net.glowstone.net.message.play.inv;
 
 import com.flowpowered.networking.Message;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import net.glowstone.util.TextMessage;
 
+@Data
+@RequiredArgsConstructor
 public final class OpenWindowMessage implements Message {
 
     private final int id;
@@ -14,42 +18,4 @@ public final class OpenWindowMessage implements Message {
         this(id, type, new TextMessage(title), slots, 0);
     }
 
-    public OpenWindowMessage(int id, String type, TextMessage title, int slots, int entityId) {
-        this.id = id;
-        this.type = type;
-        this.title = title;
-        this.slots = slots;
-        this.entityId = entityId;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public TextMessage getTitle() {
-        return title;
-    }
-
-    public int getSlots() {
-        return slots;
-    }
-
-    public int getEntityId() {
-        return entityId;
-    }
-
-    @Override
-    public String toString() {
-        return "OpenWindowMessage{" +
-                "id=" + id +
-                ", type='" + type + '\'' +
-                ", title=" + title +
-                ", slots=" + slots +
-                ", entityId=" + entityId +
-                '}';
-    }
 }

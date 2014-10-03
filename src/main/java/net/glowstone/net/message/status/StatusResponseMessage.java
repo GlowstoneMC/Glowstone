@@ -1,8 +1,10 @@
 package net.glowstone.net.message.status;
 
 import com.flowpowered.networking.Message;
+import lombok.Data;
 import org.json.simple.JSONObject;
 
+@Data
 public final class StatusResponseMessage implements Message {
 
     private final String json;
@@ -11,12 +13,4 @@ public final class StatusResponseMessage implements Message {
         this.json = json.toJSONString();
     }
 
-    public String getJson() {
-        return json;
-    }
-
-    @Override
-    public String toString() {
-        return "StatusResponseMessage" + json;
-    }
 }

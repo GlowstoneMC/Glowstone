@@ -1,8 +1,10 @@
 package net.glowstone.net.message.play.entity;
 
 import com.flowpowered.networking.Message;
+import lombok.Data;
 import org.bukkit.inventory.ItemStack;
 
+@Data
 public final class EntityEquipmentMessage implements Message {
 
     public static final int HELD_ITEM = 0;
@@ -14,30 +16,4 @@ public final class EntityEquipmentMessage implements Message {
     private final int id, slot;
     private final ItemStack stack;
 
-    public EntityEquipmentMessage(int id, int slot, ItemStack stack) {
-        this.id = id;
-        this.slot = slot;
-        this.stack = stack;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public int getSlot() {
-        return slot;
-    }
-
-    public ItemStack getStack() {
-        return stack;
-    }
-
-    @Override
-    public String toString() {
-        return "EntityEquipmentMessage{" +
-                "id=" + id +
-                ", slot=" + slot +
-                ", stack=" + stack +
-                '}';
-    }
 }

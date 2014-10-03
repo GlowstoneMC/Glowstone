@@ -13,14 +13,14 @@ public final class UpdateEntityNBTCodec implements Codec<UpdateEntityNBTMessage>
 
     @Override
     public UpdateEntityNBTMessage decode(ByteBuf buffer) throws IOException {
-        int entityID = ByteBufUtils.readVarInt(buffer);
+        int entityId = ByteBufUtils.readVarInt(buffer);
         CompoundTag tag = GlowBufUtils.readCompound(buffer);
-        return new UpdateEntityNBTMessage(entityID, tag);
+        return new UpdateEntityNBTMessage(entityId, tag);
     }
 
     @Override
     public ByteBuf encode(ByteBuf buf, UpdateEntityNBTMessage message) throws IOException {
-        ByteBufUtils.writeVarInt(buf, message.getEntityID());
+        ByteBufUtils.writeVarInt(buf, message.getEntityId());
         GlowBufUtils.writeCompound(buf, message.getTag());
         return buf;
     }

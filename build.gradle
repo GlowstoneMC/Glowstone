@@ -59,6 +59,7 @@ mainClassName = "net.glowstone.GlowServer"
 ext.url = 'https://github.com/GlowstoneMC/Glowstone'
 ext.bukkitVersion = '1.8-R1-SNAPSHOT'
 ext.gitDescribe = getVersionName()
+ext.lombok = 'org.projectlombok:lombok:1.14.8'
 
 // Minimum Java version required
 sourceCompatibility = '1.7'
@@ -103,18 +104,26 @@ dependencies {
     //compile 'mysql:mysql-connector-java:5.1.14'
     //compile 'org.xerial:sqlite-jdbc:3.7.2'
     compile 'org.slf4j:slf4j-jdk14:1.7.7'
+    compile lombok
     testCompile 'junit:junit:4.8.1'
+}
+
+// Checkstyle plugin settings
+checkstyle {
+    configFile = file('etc/checkstyle.xml')
+}
+
+// Shadow plugin settings
+shadowJar {
+    dependencies {
+        exclude(dependency(lombok))
+    }
 }
 
 // Remap plugin settings
 remap {
     mappingFile = file('etc/remapper.txt')
     inputTask = shadowJar
-}
-
-// Checkstyle plugin settings
-checkstyle {
-    configFile = file('etc/checkstyle.xml')
 }
 
 // Eclipse project name

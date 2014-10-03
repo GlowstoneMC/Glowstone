@@ -1,29 +1,13 @@
 package net.glowstone.net.message.play.entity;
 
 import com.flowpowered.networking.Message;
+import lombok.Data;
 
-import java.util.Arrays;
 import java.util.List;
 
+@Data
 public final class DestroyEntitiesMessage implements Message {
 
     private final List<Integer> ids;
-
-    public DestroyEntitiesMessage(Integer... ids) {
-        this.ids = Arrays.asList(ids);
-    }
-
-    public DestroyEntitiesMessage(List<Integer> ids) {
-        this.ids = ids;
-    }
-
-    public List<Integer> getIds() {
-        return ids;
-    }
-
-    @Override
-    public String toString() {
-        return "DestroyEntitiesMessage{ids=" + ids + "}";
-    }
 
 }

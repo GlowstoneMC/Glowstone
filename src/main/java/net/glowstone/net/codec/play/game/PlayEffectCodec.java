@@ -19,7 +19,7 @@ public final class PlayEffectCodec implements Codec<PlayEffectMessage> {
         buf.writeInt(message.getId());
         GlowBufUtils.writeBlockPosition(buf, message.getX(), message.getY(), message.getZ());
         buf.writeInt(message.getData());
-        buf.writeBoolean(message.getIgnoreDistance());
+        buf.writeBoolean(message.isIgnoreDistance());
         return buf;
     }
 }

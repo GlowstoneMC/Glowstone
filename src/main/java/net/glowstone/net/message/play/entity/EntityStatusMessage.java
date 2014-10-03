@@ -1,31 +1,17 @@
 package net.glowstone.net.message.play.entity;
 
 import com.flowpowered.networking.Message;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
+@Data
+@RequiredArgsConstructor
 public final class EntityStatusMessage implements Message {
 
     private final int id, status;
 
-    public EntityStatusMessage(int id, int status) {
-        this.id = id;
-        this.status = status;
-    }
-
     public EntityStatusMessage(int id, Status status) {
         this(id, status.ordinal());
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    @Override
-    public String toString() {
-        return "EntityStatusMessage{id=" + id + ",status=" + status + "}";
     }
 
     public enum Status {

@@ -19,7 +19,7 @@ public final class PlayerLookCodec implements Codec<PlayerLookMessage> {
     public ByteBuf encode(ByteBuf buf, PlayerLookMessage message) throws IOException {
         buf.writeFloat(message.getYaw());
         buf.writeFloat(message.getPitch());
-        buf.writeBoolean(message.getOnGround());
+        buf.writeBoolean(message.isOnGround());
         return buf;
     }
 }

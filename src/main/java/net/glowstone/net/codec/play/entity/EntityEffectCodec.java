@@ -20,7 +20,7 @@ public final class EntityEffectCodec implements Codec<EntityEffectMessage> {
         buf.writeByte(message.getEffect());
         buf.writeByte(message.getAmplifier());
         ByteBufUtils.writeVarInt(buf, message.getDuration());
-        buf.writeBoolean(message.getHideParticles());
+        buf.writeBoolean(message.isHideParticles());
         return buf;
     }
 }

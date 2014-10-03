@@ -1,10 +1,12 @@
 package net.glowstone.net.message.play.game;
 
 import com.flowpowered.networking.Message;
+import lombok.Data;
 
 import java.util.LinkedList;
 import java.util.List;
 
+@Data
 public final class ChunkBulkMessage implements Message {
 
     private final boolean skyLight;
@@ -15,19 +17,4 @@ public final class ChunkBulkMessage implements Message {
         this.entries.addAll(messages);
     }
 
-    public boolean getSkyLight() {
-        return skyLight;
-    }
-
-    public List<ChunkDataMessage> getEntries() {
-        return entries;
-    }
-
-    @Override
-    public String toString() {
-        return "ChunkBulkMessage{" +
-                "skyLight=" + skyLight +
-                ", entries=(" + entries.size() + ")" + entries +
-                '}';
-    }
 }

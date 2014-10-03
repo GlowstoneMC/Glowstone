@@ -31,7 +31,7 @@ public final class ClientSettings {
      * @param msg The message sent by the client.
      */
     public ClientSettings(ClientSettingsMessage msg) {
-        this(msg.getLocale(), msg.getViewDistance(), msg.getChatFlags(), msg.getChatColors(), msg.getSkinFlags());
+        this(msg.getLocale(), msg.getViewDistance(), msg.getChatFlags(), msg.isChatColors(), msg.getSkinFlags());
     }
 
     /**

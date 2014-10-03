@@ -20,7 +20,7 @@ public final class ChunkBulkCodec implements Codec<ChunkBulkMessage> {
     public ByteBuf encode(ByteBuf buf, ChunkBulkMessage message) {
         final List<ChunkDataMessage> entries = message.getEntries();
 
-        buf.writeBoolean(message.getSkyLight());
+        buf.writeBoolean(message.isSkyLight());
         ByteBufUtils.writeVarInt(buf, entries.size());
         for (ChunkDataMessage entry : entries) {
             buf.writeInt(entry.getX());

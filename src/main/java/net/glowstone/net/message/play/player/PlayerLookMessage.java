@@ -1,7 +1,11 @@
 package net.glowstone.net.message.play.player;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.bukkit.Location;
 
+@Getter
+@EqualsAndHashCode(callSuper = true)
 public final class PlayerLookMessage extends PlayerUpdateMessage {
 
     private final float yaw, pitch;
@@ -12,14 +16,6 @@ public final class PlayerLookMessage extends PlayerUpdateMessage {
         this.pitch = pitch;
     }
 
-    public float getYaw() {
-        return yaw;
-    }
-
-    public float getPitch() {
-        return pitch;
-    }
-
     @Override
     public void update(Location location) {
         location.setYaw(yaw);
@@ -28,10 +24,11 @@ public final class PlayerLookMessage extends PlayerUpdateMessage {
 
     @Override
     public String toString() {
-        return "PlayerLookMessage{" +
-                "onGround=" + getOnGround() +
-                ", yaw=" + yaw +
+        return "PlayerLookMessage(" +
+                "yaw=" + yaw +
                 ", pitch=" + pitch +
-                '}';
+                ", onGround=" + isOnGround() +
+                ')';
     }
+
 }

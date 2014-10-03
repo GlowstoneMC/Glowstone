@@ -1,7 +1,9 @@
 package net.glowstone.net.message.play.entity;
 
 import com.flowpowered.networking.Message;
+import lombok.Data;
 
+@Data
 public final class AnimateEntityMessage implements Message {
 
     public static final int IN_SWING_ARM = 1;
@@ -14,21 +16,4 @@ public final class AnimateEntityMessage implements Message {
 
     private final int id, animation;
 
-    public AnimateEntityMessage(int id, int animation) {
-        this.id = id;
-        this.animation = animation;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public int getAnimation() {
-        return animation;
-    }
-
-    @Override
-    public String toString() {
-        return "AnimateEntityMessage{id=" + id + ",animation=" + animation + "}";
-    }
 }

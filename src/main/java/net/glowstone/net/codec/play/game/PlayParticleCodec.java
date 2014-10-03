@@ -17,7 +17,7 @@ public final class PlayParticleCodec implements Codec<PlayParticleMessage> {
     @Override
     public ByteBuf encode(ByteBuf buf, PlayParticleMessage message) throws IOException {
         buf.writeInt(message.getParticle());
-        buf.writeBoolean(message.getLongDistance());
+        buf.writeBoolean(message.isLongDistance());
         buf.writeFloat(message.getX());
         buf.writeFloat(message.getY());
         buf.writeFloat(message.getZ());

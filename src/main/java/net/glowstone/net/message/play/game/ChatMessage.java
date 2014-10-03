@@ -1,18 +1,17 @@
 package net.glowstone.net.message.play.game;
 
 import com.flowpowered.networking.Message;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import net.glowstone.util.TextMessage;
 import org.json.simple.JSONObject;
 
+@Data
+@RequiredArgsConstructor
 public final class ChatMessage implements Message {
 
     private final TextMessage text;
     private final int mode;
-
-    public ChatMessage(TextMessage text, int mode) {
-        this.text = text;
-        this.mode = mode;
-    }
 
     public ChatMessage(JSONObject json) {
         this(new TextMessage(json), 0);
@@ -22,11 +21,4 @@ public final class ChatMessage implements Message {
         this(new TextMessage(text), 0);
     }
 
-    public TextMessage getText() {
-        return text;
-    }
-
-    public int getMode() {
-        return mode;
-    }
 }

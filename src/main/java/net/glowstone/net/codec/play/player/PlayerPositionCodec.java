@@ -22,7 +22,7 @@ public final class PlayerPositionCodec implements Codec<PlayerPositionMessage> {
         buf.writeDouble(message.getX());
         buf.writeDouble(message.getY());
         buf.writeDouble(message.getZ());
-        buf.writeBoolean(message.getOnGround());
+        buf.writeBoolean(message.isOnGround());
         return buf;
     }
 }
