@@ -26,7 +26,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 /**
- * Todo: Javadoc for ServerShim.
+ * Simple mocked Server implementation.
  */
 public class ServerShim implements Server {
 

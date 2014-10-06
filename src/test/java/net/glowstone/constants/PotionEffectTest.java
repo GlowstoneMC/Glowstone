@@ -35,7 +35,7 @@ public class PotionEffectTest {
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> getCases() {
+    public static Collection<Object[]> data() {
         Field[] fields = PotionEffectType.class.getFields();
         List<Object[]> result = new ArrayList<>(fields.length);
         for (Field field : PotionEffectType.class.getFields()) {

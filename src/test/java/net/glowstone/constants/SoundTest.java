@@ -1,20 +1,35 @@
 package net.glowstone.constants;
 
+import net.glowstone.testutils.ParameterUtils;
 import org.bukkit.Sound;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
-import static org.junit.Assert.assertTrue;
+import java.util.Collection;
+
+import static org.junit.Assert.*;
 
 /**
- * Tests for the GlowSound class.
+ * Tests for {@link GlowSound}.
  */
+@RunWith(Parameterized.class)
 public class SoundTest {
+
+    private final Sound sound;
+
+    public SoundTest(Sound sound) {
+        this.sound = sound;
+    }
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return ParameterUtils.enumCases(Sound.values());
+    }
 
     @Test
     public void testGetName() {
-        for (Sound sound : Sound.values()) {
-            assertTrue("Name missing for sound " + sound, GlowSound.getName(sound) != null);
-        }
+        assertTrue("Name missing for sound " + sound, GlowSound.getName(sound) != null);
     }
 
 }

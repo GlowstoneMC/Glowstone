@@ -1,29 +1,39 @@
 package net.glowstone.constants;
 
-import org.bukkit.Achievement;
+import net.glowstone.testutils.ParameterUtils;
 import org.bukkit.Statistic;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
-import static org.junit.Assert.assertTrue;
+import java.util.Collection;
+
+import static org.junit.Assert.*;
 
 /**
- * Tests for the GlowStatistic and GlowAchievement classes.
+ * Tests for {@link GlowStatistic}.
  */
+@RunWith(Parameterized.class)
 public class StatisticTest {
 
-    @Test
-    public void testAchievements() {
-        for (Achievement achievement : Achievement.values()) {
-            assertTrue("Name missing for achievement " + achievement, GlowAchievement.getName(achievement) != null);
-        }
+    private final Statistic statistic;
+
+    public StatisticTest(Statistic statistic) {
+        this.statistic = statistic;
+    }
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return ParameterUtils.enumCases(Statistic.values());
     }
 
     @Test
-    public void testUntypedStatistics() {
-        for (Statistic stat : Statistic.values()) {
-            if (stat.getType() != Statistic.Type.UNTYPED) continue;
-            assertTrue("Name missing for untyped statistic " + stat, GlowStatistic.getName(stat) != null);
+    public void testNameAvailable() {
+        if (statistic.getType() != Statistic.Type.UNTYPED) {
+            // typed statistics not yet tested
+            return;
         }
+        assertTrue("Name missing for untyped statistic " + statistic, GlowStatistic.getName(statistic) != null);
     }
 
 }
