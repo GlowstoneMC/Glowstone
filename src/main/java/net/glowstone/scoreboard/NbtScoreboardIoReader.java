@@ -8,7 +8,6 @@ import net.glowstone.util.nbt.TagType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.scoreboard.Criterias;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.NametagVisibility;
 import org.bukkit.scoreboard.Score;
@@ -19,7 +18,7 @@ import java.util.List;
 
 public class NbtScoreboardIoReader {
 
-    public static GlowScoreboard readMainScoreboard(File path) throws IOException{
+    public static GlowScoreboard readMainScoreboard(File path) throws IOException {
         CompoundTag root;
 
         try (NBTInputStream nbt = new NBTInputStream(getDataInputStream(path), true)) {
@@ -72,13 +71,13 @@ public class NbtScoreboardIoReader {
     }
 
     private static void registerScore(CompoundTag data, GlowScoreboard scoreboard) {
-        int score_num = data.getInt("Score");
+        int scoreNum = data.getInt("Score");
         String name = data.getString("Name");
         String objective = data.getString("Objective");
         boolean locked = data.getByte("Locked") == 1  ? true : false;
 
         Score score = scoreboard.getObjective(objective).getScore(name);
-        score.setScore(score_num);
+        score.setScore(scoreNum);
         score.setLocked(locked);
     }
 
@@ -92,8 +91,8 @@ public class NbtScoreboardIoReader {
     }
 
     private static void registerTeam(CompoundTag data, GlowScoreboard scoreboard) {
-        boolean allowFriendlyFire = data.getByte("AllowFriendlyFire") == 1 ? true: false;
-        boolean seeFriendlyInvisibles = data.getByte("SeeFriendlyInvisibles") == 1 ? true: false;
+        boolean allowFriendlyFire = data.getByte("AllowFriendlyFire") == 1 ? true : false;
+        boolean seeFriendlyInvisibles = data.getByte("SeeFriendlyInvisibles") == 1 ? true : false;
         NametagVisibility nameTagVisibility = NametagVisibility.get(data.getString("NameTagVisibility"));
         NametagVisibility deathMessageVisibility = NametagVisibility.get(data.getString("NameTagVisibility"));
         String displayName = data.getString("DisplayName");
@@ -151,22 +150,22 @@ public class NbtScoreboardIoReader {
             }
 
 
-            String slot_3 = getOrNull("slot_3", data);
-            String slot_4 = getOrNull("slot_4", data);
-            String slot_5 = getOrNull("slot_5", data);
-            String slot_6 = getOrNull("slot_6", data);
-            String slot_7 = getOrNull("slot_7", data);
-            String slot_8 = getOrNull("slot_8", data);
-            String slot_9 = getOrNull("slot_9", data);
-            String slot_10 = getOrNull("slot_10", data);
-            String slot_11 = getOrNull("slot_11", data);
-            String slot_12 = getOrNull("slot_12", data);
-            String slot_13 = getOrNull("slot_13", data);
-            String slot_14 = getOrNull("slot_14", data);
-            String slot_15 = getOrNull("slot_15", data);
-            String slot_16 = getOrNull("slot_16", data);
-            String slot_17 = getOrNull("slot_17", data);
-            String slot_18 = getOrNull("slot_18", data);
+            String slot3 = getOrNull("slot_3", data);
+            String slot4 = getOrNull("slot_4", data);
+            String slot5 = getOrNull("slot_5", data);
+            String slot6 = getOrNull("slot_6", data);
+            String slot7 = getOrNull("slot_7", data);
+            String slot8 = getOrNull("slot_8", data);
+            String slot9 = getOrNull("slot_9", data);
+            String slot10 = getOrNull("slot_10", data);
+            String slot11 = getOrNull("slot_11", data);
+            String slot12 = getOrNull("slot_12", data);
+            String slot13 = getOrNull("slot_13", data);
+            String slot14 = getOrNull("slot_14", data);
+            String slot15 = getOrNull("slot_15", data);
+            String slot16 = getOrNull("slot_16", data);
+            String slot17 = getOrNull("slot_17", data);
+            String slot18 = getOrNull("slot_18", data);
         }
     }
 }

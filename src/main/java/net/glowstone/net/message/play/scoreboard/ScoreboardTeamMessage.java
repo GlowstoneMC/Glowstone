@@ -4,7 +4,6 @@ import com.flowpowered.networking.Message;
 import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.NametagVisibility;
 
-import javax.lang.model.element.Name;
 import java.util.List;
 
 public final class ScoreboardTeamMessage implements Message {

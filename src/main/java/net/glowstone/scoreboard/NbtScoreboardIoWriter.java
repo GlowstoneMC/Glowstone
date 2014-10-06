@@ -1,7 +1,6 @@
 package net.glowstone.scoreboard;
 
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.OfflinePlayer;
@@ -13,12 +12,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class NbtScoreboardIoWriter {
-    public static void writeMainScoreboard(File path, GlowScoreboard scoreboard) throws IOException{
+    public static void writeMainScoreboard(File path, GlowScoreboard scoreboard) throws IOException {
         CompoundTag root = new CompoundTag();
-        CompoundTag data  = new CompoundTag();
+        CompoundTag data = new CompoundTag();
         root.putCompound("data", data);
         NBTOutputStream nbt = new NBTOutputStream(getDataOutputStream(path), true);
 
@@ -42,13 +40,13 @@ public class NbtScoreboardIoWriter {
     private static void writeObjectives(CompoundTag root, GlowScoreboard scoreboard) {
         List<CompoundTag> objectives = new ArrayList<>();
         for (Objective objective: scoreboard.getObjectives()) {
-            CompoundTag objective_nbt = new CompoundTag();
-            objective_nbt.putString("Criteria", objective.getCriteria());
-            objective_nbt.putString("DisplayName", objective.getDisplayName());
-            objective_nbt.putString("Name", objective.getName());
-            objective_nbt.putString("RenderType", objective.getType().name());
+            CompoundTag objectiveNbt = new CompoundTag();
+            objectiveNbt.putString("Criteria", objective.getCriteria());
+            objectiveNbt.putString("DisplayName", objective.getDisplayName());
+            objectiveNbt.putString("Name", objective.getName());
+            objectiveNbt.putString("RenderType", objective.getType().name());
 
-            objectives.add(objective_nbt);
+            objectives.add(objectiveNbt);
         }
         root.putCompoundList("Objectives", objectives);
     }
@@ -57,13 +55,13 @@ public class NbtScoreboardIoWriter {
         List<CompoundTag> scores = new ArrayList<>();
         for (String objective: scoreboard.getEntries()) {
             for (Score score: scoreboard.getScores(objective)) {
-                CompoundTag score_nbt = new CompoundTag();
-                score_nbt.putInt("Score", score.getScore());
-                score_nbt.putString("Name", score.getEntry());
-                score_nbt.putString("Objective", score.getObjective().getName());
-                score_nbt.putByte("Locked", score.getLocked() ? 1: 0);
+                CompoundTag scoreNbt = new CompoundTag();
+                scoreNbt.putInt("Score", score.getScore());
+                scoreNbt.putString("Name", score.getEntry());
+                scoreNbt.putString("Objective", score.getObjective().getName());
+                scoreNbt.putByte("Locked", score.getLocked() ? 1 : 0);
 
-                scores.add(score_nbt);
+                scores.add(scoreNbt);
             }
         }
         root.putCompoundList("PlayerScores", scores);
@@ -72,16 +70,16 @@ public class NbtScoreboardIoWriter {
     private static void writeTeams(CompoundTag root, GlowScoreboard scoreboard) {
         List<CompoundTag> teams = new ArrayList<>();
         for (Team team: scoreboard.getTeams()) {
-            CompoundTag team_nbt = new CompoundTag();
-            team_nbt.putByte("AllowFriendlyFire", team.allowFriendlyFire() ? 1 : 0);
-            team_nbt.putByte("SeeFriendlyInvisibles", team.canSeeFriendlyInvisibles() ? 1 : 0);
-            team_nbt.putString("NameTagVisibility", team.getNametagVisibility().getValue());
-            team_nbt.putString("DeathMessageVisibility", team.getDeathMessageVisibility().getValue());
-            team_nbt.putString("DisplayName", team.getDisplayName());
-            team_nbt.putString("Name", team.getName());
-            team_nbt.putString("Prefix", team.getPrefix());
-            team_nbt.putString("Suffix", team.getSuffix());
-            team_nbt.putString("TeamColor", team.getColor().name().toLowerCase());
+            CompoundTag teamNbt = new CompoundTag();
+            teamNbt.putByte("AllowFriendlyFire", team.allowFriendlyFire() ? 1 : 0);
+            teamNbt.putByte("SeeFriendlyInvisibles", team.canSeeFriendlyInvisibles() ? 1 : 0);
+            teamNbt.putString("NameTagVisibility", team.getNametagVisibility().getValue());
+            teamNbt.putString("DeathMessageVisibility", team.getDeathMessageVisibility().getValue());
+            teamNbt.putString("DisplayName", team.getDisplayName());
+            teamNbt.putString("Name", team.getName());
+            teamNbt.putString("Prefix", team.getPrefix());
+            teamNbt.putString("Suffix", team.getSuffix());
+            teamNbt.putString("TeamColor", team.getColor().name().toLowerCase());
 
 
             List<String> players = new ArrayList<>();
@@ -89,8 +87,8 @@ public class NbtScoreboardIoWriter {
                 players.add(player.getName());
             }
 
-            team_nbt.putList("Players", TagType.STRING, players);
-            teams.add(team_nbt);
+            teamNbt.putList("Players", TagType.STRING, players);
+            teams.add(teamNbt);
         }
         root.putCompoundList("Teams", teams);
     }

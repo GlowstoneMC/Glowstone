@@ -5,8 +5,6 @@ import org.bukkit.scoreboard.DisplaySlot;
 
 import java.util.Arrays;
 
-import static org.bukkit.scoreboard.DisplaySlot.*;
-
 /**
  * ID number mappings for {@link DisplaySlot}s.
  */
@@ -14,7 +12,7 @@ public final class GlowDisplaySlot {
 
     private GlowDisplaySlot() {}
 
-    private final static int[] ids = new int[DisplaySlot.values().length];
+    private static final int[] ids = new int[DisplaySlot.values().length];
 
     /**
      * Get the id for a specified DisplaySlot.
@@ -32,9 +30,9 @@ public final class GlowDisplaySlot {
 
     static {
         Arrays.fill(ids, -1);
-        set(PLAYER_LIST, 0);
-        set(SIDEBAR, 1);
-        set(BELOW_NAME, 2);
+        set(DisplaySlot.PLAYER_LIST, 0);
+        set(DisplaySlot.SIDEBAR, 1);
+        set(DisplaySlot.BELOW_NAME, 2);
     }
 
 }

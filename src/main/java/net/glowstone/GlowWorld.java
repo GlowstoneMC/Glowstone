@@ -18,7 +18,6 @@ import net.glowstone.io.ScoreboardIoService;
 import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
 import net.glowstone.io.anvil.AnvilWorldStorageProvider;
-import net.glowstone.io.nbt.NbtScoreboardIoService;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -99,11 +98,6 @@ public final class GlowWorld implements World {
      * The world metadata service used.
      */
     private final WorldStorageProvider storageProvider;
-
-    /**
-     * The world scoreboard server
-     */
-    //private final ScoreboardIoService scoreboardIoService;
 
     /**
      * The world's UUID
@@ -259,7 +253,6 @@ public final class GlowWorld implements World {
         storageProvider.setWorld(this);
         chunks = new ChunkManager(this, storageProvider.getChunkIoService(), generator);
         populators = generator.getDefaultPopulators(this);
-        //scoreboardIoService = new NbtScoreboardIoService(new File(server.getWorldContainer(), "data"));
 
         // set up values from server defaults
         ticksPerAnimal = server.getTicksPerAnimalSpawns();
