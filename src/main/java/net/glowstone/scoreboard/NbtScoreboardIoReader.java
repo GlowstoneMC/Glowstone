@@ -8,7 +8,7 @@ import net.glowstone.util.nbt.TagType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.scoreboard.Criteria;
+import org.bukkit.scoreboard.Criterias;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.NametagVisibility;
 import org.bukkit.scoreboard.Score;

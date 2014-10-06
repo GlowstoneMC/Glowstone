@@ -111,7 +111,7 @@ public final class GlowObjective implements Objective {
 
     public boolean isModifiable() throws IllegalStateException {
         checkValid();
-        return !(criteria == Criteria.HEALTH);
+        return !(criteria.equalsIgnoreCase(Criterias.HEALTH));
     }
 
     ////////////////////////////////////////////////////////////////////////////
