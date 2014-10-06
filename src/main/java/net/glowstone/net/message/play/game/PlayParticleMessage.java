@@ -2,16 +2,19 @@ package net.glowstone.net.message.play.game;
 
 import com.flowpowered.networking.Message;
 
+import java.util.Arrays;
+
 public final class PlayParticleMessage implements Message {
 
-    private final String particle;
+    private final int particle;
     private final boolean longDistance;
     private final float x, y, z;
     private final float ofsX, ofsY, ofsZ;
     private final float data;
     private final int count;
+    private final int[] extData;
 
-    public PlayParticleMessage(String particle, boolean longDistance, float x, float y, float z, float ofsX, float ofsY, float ofsZ, float data, int count) {
+    public PlayParticleMessage(int particle, boolean longDistance, float x, float y, float z, float ofsX, float ofsY, float ofsZ, float data, int count, int... extData) {
         this.particle = particle;
         this.longDistance = longDistance;
         this.x = x;
@@ -22,9 +25,10 @@ public final class PlayParticleMessage implements Message {
         this.ofsZ = ofsZ;
         this.data = data;
         this.count = count;
+        this.extData = extData;
     }
 
-    public String getParticle() {
+    public int getParticle() {
         return particle;
     }
 
@@ -64,10 +68,15 @@ public final class PlayParticleMessage implements Message {
         return count;
     }
 
+    public int[] getExtData() {
+        return extData;
+    }
+
     @Override
     public String toString() {
         return "PlayParticleMessage{" +
-                "particle='" + particle + '\'' +
+                "particle=" + particle +
+                ", longDistance=" + longDistance +
                 ", x=" + x +
                 ", y=" + y +
                 ", z=" + z +
@@ -76,6 +85,7 @@ public final class PlayParticleMessage implements Message {
                 ", ofsZ=" + ofsZ +
                 ", data=" + data +
                 ", count=" + count +
+                ", extData=" + Arrays.toString(extData) +
                 '}';
     }
 }

@@ -7,6 +7,7 @@ import net.glowstone.*;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.constants.GlowAchievement;
 import net.glowstone.constants.GlowEffect;
+import net.glowstone.constants.GlowParticle;
 import net.glowstone.constants.GlowSound;
 import net.glowstone.entity.meta.ClientSettings;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -39,6 +40,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.map.MapView;
+import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.scoreboard.Scoreboard;
@@ -1303,6 +1305,24 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         double y = location.getBlockY() + 0.5;
         double z = location.getBlockZ() + 0.5;
         session.send(new PlaySoundMessage(sound, x, y, z, volume, pitch));
+    }
+
+    @Override
+    public void showParticle(Location loc, Particle particle, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+        showParticle(loc, particle, null, offsetX, offsetY, offsetZ, speed, amount);
+    }
+
+    @Override
+    public void showParticle(Location loc, Particle particle, MaterialData material, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+        if (location == null || particle == null) return;
+
+        int id = GlowParticle.getId(particle);
+        boolean longDistance = GlowParticle.isLongDistance(particle);
+        float x = (float) loc.getX();
+        float y = (float) loc.getY();
+        float z = (float) loc.getZ();
+        int[] extData = GlowParticle.getData(particle, material);
+        session.send(new PlayParticleMessage(id, longDistance, x, y, z, offsetX, offsetY, offsetZ, speed, amount, extData));
     }
 
     @Override

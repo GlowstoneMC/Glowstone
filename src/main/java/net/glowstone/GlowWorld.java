@@ -2,6 +2,8 @@ package net.glowstone;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.constants.GlowBiome;
+import net.glowstone.constants.GlowEffect;
+import net.glowstone.constants.GlowParticle;
 import net.glowstone.entity.*;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.io.WorldMetadataService.WorldFinalValues;
@@ -18,6 +20,7 @@ import org.bukkit.event.world.*;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 import org.bukkit.metadata.MetadataStore;
 import org.bukkit.metadata.MetadataStoreBase;
 import org.bukkit.metadata.MetadataValue;
@@ -1324,8 +1327,7 @@ public final class GlowWorld implements World {
 
     @Override
     public <T> void playEffect(Location location, Effect effect, T data, int radius) {
-        int rawData = 0;
-        playEffect(location, effect, rawData, radius);
+        playEffect(location, effect, GlowEffect.getDataValue(effect, data), radius);
     }
 
     public void playEffectExceptTo(Location location, Effect effect, int data, int radius, Player exclude) {
@@ -1345,6 +1347,29 @@ public final class GlowWorld implements World {
         for (Player player : getRawPlayers()) {
             if (player.getLocation().distanceSquared(location) <= radiusSquared) {
                 player.playSound(location, sound, volume, pitch);
+            }
+        }
+    }
+
+    @Override
+    public void showParticle(Location loc, Particle particle, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+        showParticle(loc, particle, null, offsetX, offsetY, offsetZ, speed, amount);
+    }
+
+    @Override
+    public void showParticle(Location loc, Particle particle, MaterialData material, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+        if (loc == null || particle == null) return;
+
+        final double radiusSquared;
+        if (GlowParticle.isLongDistance(particle)) {
+            radiusSquared = 48 * 48;
+        } else {
+            radiusSquared = 16 * 16;
+        }
+
+        for (Player player : getRawPlayers()) {
+            if (player.getLocation().distanceSquared(loc) <= radiusSquared) {
+                player.showParticle(loc, particle, material, offsetX, offsetY, offsetZ, speed, amount);
             }
         }
     }
