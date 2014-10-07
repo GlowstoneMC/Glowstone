@@ -1,20 +1,18 @@
 package net.glowstone.net.message.play.scoreboard;
 
 import com.flowpowered.networking.Message;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
+@Data
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ScoreboardScoreMessage implements Message {
 
     private final String target;
     private final boolean remove;
     private final String objective;
     private final int value;
-
-    private ScoreboardScoreMessage(String target, boolean remove, String objective, int value) {
-        this.target = target;
-        this.remove = remove;
-        this.objective = objective;
-        this.value = value;
-    }
 
     public ScoreboardScoreMessage(String target, String objective, int value) {
         this(target, false, objective, value);
@@ -23,31 +21,4 @@ public final class ScoreboardScoreMessage implements Message {
     public static ScoreboardScoreMessage remove(String target, String objective) {
         return new ScoreboardScoreMessage(target, true, objective, 0);
     }
-
-    public String getTarget() {
-        return target;
-    }
-
-    public boolean isRemove() {
-        return remove;
-    }
-
-    public String getObjective() {
-        return objective;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    @Override
-    public String toString() {
-        return "ScoreboardScoreMessage{" +
-                "target='" + target + '\'' +
-                ", remove=" + remove +
-                ", objective='" + objective + '\'' +
-                ", value=" + value +
-                '}';
-    }
 }
-

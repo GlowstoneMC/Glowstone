@@ -6,6 +6,9 @@ import org.bukkit.scoreboard.NametagVisibility;
 
 import java.util.List;
 
+import lombok.Data;
+
+@Data
 public final class ScoreboardTeamMessage implements Message {
 
     private final String teamName;
@@ -61,54 +64,4 @@ public final class ScoreboardTeamMessage implements Message {
     public static ScoreboardTeamMessage removePlayers(String teamName, List<String> entries) {
         return new ScoreboardTeamMessage(teamName, Action.REMOVE_PLAYERS, null, null, null, false, false, null, ChatColor.RESET, entries);
     }
-
-    public String getTeamName() {
-        return teamName;
-    }
-
-    public Action getAction() {
-        return action;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public String getPrefix() {
-        return prefix;
-    }
-
-    public String getSuffix() {
-        return suffix;
-    }
-
-    public int getFlags() {
-        return flags;
-    }
-
-    public ChatColor getColor() {
-        return color;
-    }
-
-    public NametagVisibility getNameTagVisibility() {
-        return nametagVisibility;
-    }
-
-    public List<String> getEntries() {
-        return entries;
-    }
-
-    @Override
-    public String toString() {
-        return "ScoreboardTeamMessage{" +
-                "teamName='" + teamName + '\'' +
-                ", action=" + action +
-                ", displayName='" + displayName + '\'' +
-                ", prefix='" + prefix + '\'' +
-                ", suffix='" + suffix + '\'' +
-                ", flags=" + flags +
-                ", entries=" + entries +
-                '}';
-    }
 }
-
