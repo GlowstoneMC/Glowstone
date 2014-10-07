@@ -75,6 +75,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     private final Set<GlowEntity> knownEntities = new HashSet<>();
 
     /**
+     * The entities that are hidden from the client.
+     */
+    private final Set<UUID> hiddenEntities = new HashSet<>();
+
+    /**
      * The chunks that the client knows about.
      */
     private final Set<GlowChunk.Key> knownChunks = new HashSet<>();
@@ -414,7 +419,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
                 continue;
             boolean withinDistance = !entity.isDead() && isWithinDistance(entity);
 
-            if (withinDistance && !knownEntities.contains(entity)) {
+            if (withinDistance && !knownEntities.contains(entity) && !hiddenEntities.contains(entity.getUniqueId())) {
                 knownEntities.add(entity);
                 for (Message msg : entity.createSpawnMessage()) {
                     session.send(msg);
@@ -626,7 +631,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * Checks whether the player can see the given chunk.
      * @return If the chunk is known to the player's client.
      */
-    public boolean canSee(GlowChunk.Key chunk) {
+    public boolean canSeeChunk(GlowChunk.Key chunk) {
         return knownChunks.contains(chunk);
     }
 
@@ -634,7 +639,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * Checks whether the player can see the given entity.
      * @return If the entity is known to the player's client.
      */
-    public boolean canSee(GlowEntity entity) {
+    public boolean canSeeEntity(GlowEntity entity) {
         return knownEntities.contains(entity);
     }
 
@@ -822,7 +827,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
         Message updateMessage = UserListItemMessage.displayNameOne(getUniqueId(), displayName);
         for (GlowPlayer player : server.getOnlinePlayers()) {
-            player.getSession().send(updateMessage);
+            if (player.canSee(this)) {
+                player.getSession().send(updateMessage);
+            }
         }
     }
 
@@ -1338,7 +1345,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     public void sendBlockChange(BlockChangeMessage message) {
         // only send message if the chunk is within visible range
         GlowChunk.Key key = new GlowChunk.Key(message.getX() >> 4, message.getZ() >> 4);
-        if (canSee(key)) {
+        if (canSeeChunk(key)) {
             blockChanges.add(message);
         }
     }
@@ -1605,17 +1612,39 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void hidePlayer(Player player) {
+        Validate.notNull(player, "player cannot be null");
+        if (equals(player) || !player.isOnline() || !session.isActive()) return;
+        if (hiddenEntities.contains(player.getUniqueId())) return;
 
+        hiddenEntities.add(player.getUniqueId());
+        if (knownEntities.remove(player)) {
+            session.send(new DestroyEntitiesMessage(Arrays.asList(player.getEntityId())));
+        }
+        session.send(UserListItemMessage.removeOne(player.getUniqueId()));
     }
 
     @Override
     public void showPlayer(Player player) {
+        Validate.notNull(player, "player cannot be null");
+        if (equals(player) || !player.isOnline() || !session.isActive()) return;
+        if (!hiddenEntities.contains(player.getUniqueId())) return;
 
+        hiddenEntities.remove(player.getUniqueId());
+        session.send(new UserListItemMessage(UserListItemMessage.Action.ADD_PLAYER, ((GlowPlayer) player).getUserListEntry()));
     }
 
     @Override
     public boolean canSee(Player player) {
-        return true;
+        return !hiddenEntities.contains(player.getUniqueId());
+    }
+
+    /**
+     * Called when a player hidden to this player disconnects.
+     * This is necessary so the player is visible again after they reconnected.
+     * @param player The disconnected player
+     */
+    public void stopHidingDisconnectedPlayer(Player player) {
+        hiddenEntities.remove(player.getUniqueId());
     }
 
     ////////////////////////////////////////////////////////////////////////////

@@ -308,10 +308,12 @@ public final class GlowSession extends BasicSession {
         Message addMessage = new UserListItemMessage(UserListItemMessage.Action.ADD_PLAYER, player.getUserListEntry());
         List<UserListItemMessage.Entry> entries = new ArrayList<>();
         for (GlowPlayer other : server.getOnlinePlayers()) {
-            if (other != player) {
+            if (other != player && other.canSee(player)) {
                 other.getSession().send(addMessage);
             }
-            entries.add(other.getUserListEntry());
+            if (player.canSee(other)) {
+                entries.add(other.getUserListEntry());
+            }
         }
         send(new UserListItemMessage(UserListItemMessage.Action.ADD_PLAYER, entries));
     }
@@ -467,7 +469,11 @@ public final class GlowSession extends BasicSession {
 
         Message userListMessage = UserListItemMessage.removeOne(player.getUniqueId());
         for (GlowPlayer player : server.getOnlinePlayers()) {
-            player.getSession().send(userListMessage);
+            if (player.canSee(this.player)) {
+                player.getSession().send(userListMessage);
+            } else {
+                player.stopHidingDisconnectedPlayer(this.player);
+            }
         }
 
         GlowServer.logger.info(player.getName() + " [" + address + "] lost connection");

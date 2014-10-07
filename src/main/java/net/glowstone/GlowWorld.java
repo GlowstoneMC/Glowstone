@@ -1041,7 +1041,7 @@ public final class GlowWorld implements World {
         boolean result = false;
 
         for (GlowPlayer player : getRawPlayers()) {
-            if (player.canSee(key)) {
+            if (player.canSeeChunk(key)) {
                 player.getSession().send(getChunkAt(x, z).toMessage());
                 result = true;
             }

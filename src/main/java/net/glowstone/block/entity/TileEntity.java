@@ -41,7 +41,7 @@ public abstract class TileEntity {
     public final void updateInRange() {
         GlowChunk.Key key = new GlowChunk.Key(block.getChunk().getX(), block.getChunk().getZ());
         for (GlowPlayer player : block.getWorld().getRawPlayers()) {
-            if (player.canSee(key)) {
+            if (player.canSeeChunk(key)) {
                 update(player);
             }
         }

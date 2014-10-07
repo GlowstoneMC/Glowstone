@@ -78,7 +78,7 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
 
         GlowChunk.Key key = new GlowChunk.Key(getX() >> 4, getZ() >> 4);
         for (GlowPlayer player : getWorld().getRawPlayers()) {
-            if (player.canSee(key)) {
+            if (player.canSeeChunk(key)) {
                 player.playNote(location, instrument, note);
             }
         }
