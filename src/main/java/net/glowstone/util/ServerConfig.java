@@ -246,7 +246,19 @@ public final class ServerConfig {
 
             for (Key key : Key.values()) {
                 if (key.migrate == Migrate.PROPS && props.containsKey(key.migratePath)) {
-                    config.set(key.path, props.get(key.migratePath));
+                    String value = props.getProperty(key.migratePath);
+                    if (key.def instanceof Integer) {
+                        try {
+                            config.set(key.path, Integer.parseInt(value));
+                        } catch (NumberFormatException e) {
+                            GlowServer.logger.log(Level.WARNING, "Could not migrate " + key.migratePath + " from " + serverProps, e);
+                            continue;
+                        }
+                    } else if (key.def instanceof Boolean) {
+                        config.set(key.path, Boolean.parseBoolean(value));
+                    } else {
+                        config.set(key.path, value);
+                    }
                     migrateStatus = true;
                 }
             }
