@@ -12,7 +12,7 @@ import java.util.zip.GZIPInputStream;
 /**
  * This class reads NBT, or Named Binary Tag streams, and produces an object
  * graph of subclasses of the {@link Tag} object.
- * <p />
+ * <p/>
  * The NBT format was created by Markus Persson, and the specification may
  * be found at <a href="http://www.minecraft.net/docs/NBT.txt">
  * http://www.minecraft.net/docs/NBT.txt</a>.
@@ -101,60 +101,60 @@ public final class NBTInputStream implements Closeable {
     @SuppressWarnings("unchecked")
     private Tag readTagPayload(TagType type, int depth) throws IOException {
         switch (type) {
-        case BYTE:
-            return new ByteTag(is.readByte());
+            case BYTE:
+                return new ByteTag(is.readByte());
 
-        case SHORT:
-            return new ShortTag(is.readShort());
+            case SHORT:
+                return new ShortTag(is.readShort());
 
-        case INT:
-            return new IntTag(is.readInt());
+            case INT:
+                return new IntTag(is.readInt());
 
-        case LONG:
-            return new LongTag(is.readLong());
+            case LONG:
+                return new LongTag(is.readLong());
 
-        case FLOAT:
-            return new FloatTag(is.readFloat());
+            case FLOAT:
+                return new FloatTag(is.readFloat());
 
-        case DOUBLE:
-            return new DoubleTag(is.readDouble());
+            case DOUBLE:
+                return new DoubleTag(is.readDouble());
 
-        case BYTE_ARRAY:
-            int length = is.readInt();
-            byte[] bytes = new byte[length];
-            is.readFully(bytes);
-            return new ByteArrayTag(bytes);
+            case BYTE_ARRAY:
+                int length = is.readInt();
+                byte[] bytes = new byte[length];
+                is.readFully(bytes);
+                return new ByteArrayTag(bytes);
 
-        case STRING:
-            length = is.readShort();
-            bytes = new byte[length];
-            is.readFully(bytes);
-            return new StringTag(new String(bytes, StandardCharsets.UTF_8));
+            case STRING:
+                length = is.readShort();
+                bytes = new byte[length];
+                is.readFully(bytes);
+                return new StringTag(new String(bytes, StandardCharsets.UTF_8));
 
-        case LIST:
-            TagType childType = TagType.byIdOrError(is.readUnsignedByte());
-            length = is.readInt();
+            case LIST:
+                TagType childType = TagType.byIdOrError(is.readUnsignedByte());
+                length = is.readInt();
 
-            List<Tag> tagList = new ArrayList<>();
-            for (int i = 0; i < length; i++) {
-                tagList.add(readTagPayload(childType, depth + 1));
-            }
+                List<Tag> tagList = new ArrayList<>();
+                for (int i = 0; i < length; i++) {
+                    tagList.add(readTagPayload(childType, depth + 1));
+                }
 
-            return new ListTag(childType, tagList);
+                return new ListTag(childType, tagList);
 
-        case COMPOUND:
-            return readCompound(depth + 1);
+            case COMPOUND:
+                return readCompound(depth + 1);
 
-        case INT_ARRAY:
-            length = is.readInt();
-            int[] ints = new int[length];
-            for (int i = 0; i < length; ++i) {
-                ints[i] = is.readInt();
-            }
-            return new IntArrayTag(ints);
+            case INT_ARRAY:
+                length = is.readInt();
+                int[] ints = new int[length];
+                for (int i = 0; i < length; ++i) {
+                    ints[i] = is.readInt();
+                }
+                return new IntArrayTag(ints);
 
-        default:
-            throw new IOException("Invalid tag type: " + type + ".");
+            default:
+                throw new IOException("Invalid tag type: " + type + ".");
         }
     }
 

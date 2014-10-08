@@ -12,7 +12,7 @@ import java.util.zip.GZIPOutputStream;
 /**
  * This class writes NBT, or Named Binary Tag, {@link Tag} objects to an
  * underlying {@link OutputStream}.
- * <p />
+ * <p/>
  * The NBT format was created by Markus Persson, and the specification may
  * be found at <a href="http://www.minecraft.net/docs/NBT.txt">
  * http://www.minecraft.net/docs/NBT.txt</a>.
@@ -88,71 +88,71 @@ public final class NBTOutputStream implements Closeable {
         byte[] bytes;
 
         switch (type) {
-        case BYTE:
-            os.writeByte((byte) tag.getValue());
-            break;
+            case BYTE:
+                os.writeByte((byte) tag.getValue());
+                break;
 
-        case SHORT:
-            os.writeShort((short) tag.getValue());
-            break;
+            case SHORT:
+                os.writeShort((short) tag.getValue());
+                break;
 
-        case INT:
-            os.writeInt((int) tag.getValue());
-            break;
+            case INT:
+                os.writeInt((int) tag.getValue());
+                break;
 
-        case LONG:
-            os.writeLong((long) tag.getValue());
-            break;
+            case LONG:
+                os.writeLong((long) tag.getValue());
+                break;
 
-        case FLOAT:
-            os.writeFloat((float) tag.getValue());
-            break;
+            case FLOAT:
+                os.writeFloat((float) tag.getValue());
+                break;
 
-        case DOUBLE:
-            os.writeDouble((double) tag.getValue());
-            break;
+            case DOUBLE:
+                os.writeDouble((double) tag.getValue());
+                break;
 
-        case BYTE_ARRAY:
-            bytes = (byte[]) tag.getValue();
-            os.writeInt(bytes.length);
-            os.write(bytes);
-            break;
+            case BYTE_ARRAY:
+                bytes = (byte[]) tag.getValue();
+                os.writeInt(bytes.length);
+                os.write(bytes);
+                break;
 
-        case STRING:
-            bytes = ((StringTag) tag).getValue().getBytes(StandardCharsets.UTF_8);
-            os.writeShort(bytes.length);
-            os.write(bytes);
-            break;
+            case STRING:
+                bytes = ((StringTag) tag).getValue().getBytes(StandardCharsets.UTF_8);
+                os.writeShort(bytes.length);
+                os.write(bytes);
+                break;
 
-        case LIST:
-            ListTag<Tag> listTag = (ListTag<Tag>) tag;
-            List<Tag> tags = listTag.getValue();
+            case LIST:
+                ListTag<Tag> listTag = (ListTag<Tag>) tag;
+                List<Tag> tags = listTag.getValue();
 
-            os.writeByte(listTag.getChildType().getId());
-            os.writeInt(tags.size());
-            for (Tag child : tags) {
-                writeTagPayload(child);
-            }
-            break;
+                os.writeByte(listTag.getChildType().getId());
+                os.writeInt(tags.size());
+                for (Tag child : tags) {
+                    writeTagPayload(child);
+                }
+                break;
 
-        case COMPOUND:
-            Map<String, Tag> map = ((CompoundTag) tag).getValue();
-            for (Map.Entry<String, Tag> entry : map.entrySet()) {
-                writeTag(entry.getKey(), entry.getValue());
-            }
-            os.writeByte((byte) 0); // end tag
-            break;
+            case COMPOUND:
+                Map<String, Tag> map = ((CompoundTag) tag).getValue();
+                for (Map.Entry<String, Tag> entry : map.entrySet()) {
+                    writeTag(entry.getKey(), entry.getValue());
+                }
+                os.writeByte((byte) 0); // end tag
+                break;
 
-        case INT_ARRAY:
-            int[] ints = (int[]) tag.getValue();
-            os.writeInt(ints.length);
-            for (int value : ints) {
-                os.writeInt(value);
-            }
-            break;
+            case INT_ARRAY:
+                int[] ints = (int[]) tag.getValue();
+                os.writeInt(ints.length);
+                for (int value : ints) {
+                    os.writeInt(value);
+                }
+                break;
 
-        default:
-            throw new IOException("Invalid tag type: " + type + ".");
+            default:
+                throw new IOException("Invalid tag type: " + type + ".");
         }
     }
 
