@@ -2,6 +2,7 @@ package net.glowstone.net.handler.login;
 
 import com.flowpowered.networking.MessageHandler;
 import net.glowstone.entity.meta.PlayerProfile;
+import net.glowstone.net.ProxyData;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.login.EncryptionKeyRequestMessage;
 import net.glowstone.net.message.login.LoginStartMessage;
@@ -29,8 +30,13 @@ public final class LoginStartHandler implements MessageHandler<GlowSession, Logi
             // Send created request message and wait for the response
             session.send(new EncryptionKeyRequestMessage(sessionId, publicKey, verifyToken));
         } else {
-            UUID uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8));
-            session.setPlayer(new PlayerProfile(name, uuid));
+            ProxyData proxy = session.getProxyData();
+            if (proxy == null) {
+                UUID uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8));
+                session.setPlayer(new PlayerProfile(name, uuid));
+            } else {
+                session.setPlayer(proxy.getProfile(name));
+            }
         }
     }
 }

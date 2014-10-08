@@ -356,8 +356,14 @@ public final class GlowServer implements Server {
         consoleManager.startConsole(config.getBoolean(ServerConfig.Key.USE_JLINE));
         consoleManager.startFile(config.getString(ServerConfig.Key.LOG_FILE));
 
-        if (!getOnlineMode()) {
-            logger.log(Level.WARNING, "The server is running in offline mode! Only do this if you know what you're doing.");
+        if (getProxySupport()) {
+            if (getOnlineMode()) {
+                logger.warning("Proxy support is enabled, but online mode is enabled.");
+            } else {
+                logger.info("Proxy support is enabled.");
+            }
+        } else if (!getOnlineMode()) {
+            logger.warning("The server is running in offline mode! Only do this if you know what you're doing.");
         }
 
         // Load player lists
@@ -685,6 +691,14 @@ public final class GlowServer implements Server {
      */
     public boolean keepSpawnLoaded() {
         return config.getBoolean(ServerConfig.Key.PERSIST_SPAWN);
+    }
+
+    /**
+     * Get whether parsing of data provided by a proxy is enabled.
+     * @return True if a proxy is providing data to use.
+     */
+    public boolean getProxySupport() {
+        return config.getBoolean(ServerConfig.Key.PROXY_SUPPORT);
     }
 
     ////////////////////////////////////////////////////////////////////////////
