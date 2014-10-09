@@ -1,6 +1,7 @@
 package net.glowstone.io.nbt;
 
 import net.glowstone.GlowServer;
+import net.glowstone.constants.ItemIds;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
@@ -29,12 +30,18 @@ public final class NbtSerialization {
      * @return The resulting ItemStack, or null.
      */
     public static ItemStack readItem(CompoundTag tag) {
-        short id = tag.isShort("id") ? tag.getShort("id") : 0;
-        short damage = tag.isShort("Damage") ? tag.getShort("Damage") : 0;
-        byte count = tag.isByte("Count") ? tag.getByte("Count") : 0;
+        final Material material;
+        if (tag.isString("id")) {
+            material = ItemIds.getMaterial(tag.getString("id"));
+        } else if (tag.isShort("id")) {
+            material = Material.getMaterial(tag.getShort("id"));
+        } else {
+            return null;
+        }
+        final short damage = tag.isShort("Damage") ? tag.getShort("Damage") : 0;
+        final byte count = tag.isByte("Count") ? tag.getByte("Count") : 0;
 
-        Material material = Material.getMaterial(id);
-        if (material == null || id == 0 || count == 0) {
+        if (material == null || material == Material.AIR || count == 0) {
             return null;
         }
         ItemStack stack = new ItemStack(material, count, damage);
@@ -56,7 +63,7 @@ public final class NbtSerialization {
         if (stack == null || stack.getType() == Material.AIR) {
             return tag;
         }
-        tag.putShort("id", stack.getTypeId());
+        tag.putString("id", ItemIds.getName(stack.getType()));
         tag.putShort("Damage", stack.getDurability());
         tag.putByte("Count", stack.getAmount());
         if (slot >= 0) {
