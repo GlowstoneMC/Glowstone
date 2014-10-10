@@ -1,6 +1,7 @@
 package net.glowstone.entity;
 
 import com.flowpowered.networking.Message;
+import net.glowstone.EventFactory;
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
@@ -11,9 +12,15 @@ import net.glowstone.util.Position;
 import org.apache.commons.lang.Validate;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityPortalEnterEvent;
+import org.bukkit.event.entity.EntityPortalEvent;
+import org.bukkit.event.entity.EntityPortalExitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.metadata.MetadataStore;
 import org.bukkit.metadata.MetadataStoreBase;
@@ -303,6 +310,28 @@ public abstract class GlowEntity implements Entity {
         if (ticksLived % (30 * 20) == 0) {
             teleported = true;
         }
+
+        if (hasMoved()) {
+            Block currentBlock = location.getBlock();
+            if (currentBlock.getType() == Material.ENDER_PORTAL) {
+                EventFactory.callEvent(new EntityPortalEnterEvent(this, currentBlock.getLocation()));
+                if (server.getAllowEnd()) {
+                    Location previousLocation = location.clone();
+                    boolean success;
+                    if (getWorld().getEnvironment() == World.Environment.THE_END) {
+                        success = teleportToSpawn();
+                    } else {
+                        success = teleportToEnd();
+                    }
+                    if (success) {
+                        EntityPortalExitEvent e = EventFactory.callEvent(new EntityPortalExitEvent(this, previousLocation, location.clone(), velocity.clone(), new Vector()));
+                        if (!e.getAfter().equals(velocity)) {
+                            setVelocity(e.getAfter());
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -425,6 +454,54 @@ public abstract class GlowEntity implements Entity {
      */
     public boolean hasRotated() {
         return Position.hasRotated(location, previousLocation);
+    }
+
+    /**
+     * Teleport this entity to the spawn point of the main world.
+     * This is used to teleport out of the End.
+     * @return {@code true} if the teleport was successful.
+     */
+    protected boolean teleportToSpawn() {
+        Location target = server.getWorlds().get(0).getSpawnLocation();
+
+        EntityPortalEvent event = EventFactory.callEvent(new EntityPortalEvent(this, location.clone(), target, null));
+        if (event.isCancelled()) {
+            return false;
+        }
+        target = event.getTo();
+
+        teleport(target);
+        return true;
+    }
+
+    /**
+     * Teleport this entity to the End.
+     * If no End world is loaded this does nothing.
+     * @return {@code true} if the teleport was successful.
+     */
+    protected boolean teleportToEnd() {
+        if (!server.getAllowEnd()) {
+            return false;
+        }
+        Location target = null;
+        for (World world : server.getWorlds()) {
+            if (world.getEnvironment() == World.Environment.THE_END) {
+                target = world.getSpawnLocation();
+                break;
+            }
+        }
+        if (target == null) {
+            return false;
+        }
+
+        EntityPortalEvent event = EventFactory.callEvent(new EntityPortalEvent(this, location.clone(), target, null));
+        if (event.isCancelled()) {
+            return false;
+        }
+        target = event.getTo();
+
+        teleport(target);
+        return true;
     }
 
     ////////////////////////////////////////////////////////////////////////////
