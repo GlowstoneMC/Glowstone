@@ -26,7 +26,6 @@ import net.glowstone.net.message.play.player.PlayerAbilitiesMessage;
 import net.glowstone.net.protocol.ProtocolType;
 import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextMessage;
-import net.glowstone.util.TextWrapper;
 import org.apache.commons.lang.Validate;
 import org.bukkit.*;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
@@ -1173,11 +1172,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void sendRawMessage(String message) {
-        // todo: use chat components instead of plain text
-        // textwrapper also does not preserve non-color formatting
-        for (String line : TextWrapper.wrapText(message)) {
-            session.send(new ChatMessage(line));
-        }
+        // todo: convert old-style formatting to json
+        session.send(new ChatMessage(message));
     }
 
     @Override
