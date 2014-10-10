@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
- * Set which delegates to other sets.
+ * List which delegates to other lists.
  */
 public class SuperList<E> extends SuperCollection<E> implements List<E> {
 
@@ -171,7 +171,7 @@ public class SuperList<E> extends SuperCollection<E> implements List<E> {
         int index = -1;
 
         while (iterator.hasPrevious()) {
-            List<E> parent = iterator.next();
+            List<E> parent = iterator.previous();
 
             if (index < 0) {
                 index = parent.lastIndexOf(object);
