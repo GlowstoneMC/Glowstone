@@ -11,7 +11,8 @@ public class GlowDoubleChestInventory extends GlowSuperInventory implements Doub
 
     public GlowDoubleChestInventory(GlowChest first, GlowChest second) {
         initialize(
-                ImmutableList.of( // Inventories
+                // Inventories
+                ImmutableList.of(
                         (GlowInventory) first.getBlockInventory(),
                         (GlowInventory) second.getBlockInventory()
                 ),
