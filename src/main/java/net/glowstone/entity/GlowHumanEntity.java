@@ -6,6 +6,7 @@ import net.glowstone.inventory.GlowCraftingInventory;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowInventoryView;
 import net.glowstone.inventory.GlowPlayerInventory;
+import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.SpawnPlayerMessage;
 import net.glowstone.util.Position;
@@ -127,8 +128,12 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         // head facing
         result.add(new EntityHeadRotationMessage(id, yaw));
 
-        // todo: equipment
-        //result.add(createEquipmentMessage());
+        // equipment
+        EntityEquipment equipment = getEquipment();
+        result.add(new EntityEquipmentMessage(id, 0, equipment.getItemInHand()));
+        for (int i = 0; i < 4; i++) {
+            result.add(new EntityEquipmentMessage(id, i + 1, equipment.getArmorContents()[i]));
+        }
         return result;
     }
 
