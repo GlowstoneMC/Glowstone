@@ -1509,4 +1509,8 @@ public final class GlowWorld implements World {
         }
         return result;
     }
+
+    public long getWorldAge() {
+        return this.worldAge;
+    }
 }
