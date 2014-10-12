@@ -1,7 +1,6 @@
 package net.glowstone.entity;
 
 import net.glowstone.constants.GlowPotionEffect;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;

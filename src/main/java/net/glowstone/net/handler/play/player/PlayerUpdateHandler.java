@@ -21,8 +21,8 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
         }
 
         // do stuff with onGround if we need to
-        if (session.getPlayer().isOnGround() != message.getOnGround()) {
-            session.getPlayer().setOnGround(message.getOnGround());
+        if (session.getPlayer().isOnGround() != message.isOnGround()) {
+            session.getPlayer().setOnGround(message.isOnGround());
         }
 
         session.getPlayer().setRawLocation(newLoc);
