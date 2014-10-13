@@ -223,6 +223,15 @@ public abstract class GlowEntity implements Entity {
         }
     }
 
+    /**
+     * Gets the full direction (including SOUTH_SOUTH_EAST etc) this entity is facing.
+     * @return The intercardinal BlockFace of this entity
+     */
+    public BlockFace getFacing() {
+        long facing = Math.round(getLocation().getYaw() / 22.5) + 8;
+        return Position.getDirection((byte) (facing % 16));
+    }
+
     @Override
     public void setVelocity(Vector velocity) {
         this.velocity.copy(velocity);
