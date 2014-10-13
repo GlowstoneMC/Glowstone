@@ -270,6 +270,14 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     }
 
     ////////////////////////////////////////////////////////////////////////////
+    // Health
+
+    @Override
+    protected boolean canDrown() {
+        return gameMode == GameMode.SURVIVAL || gameMode == GameMode.ADVENTURE;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
     // Inventory
 
     @Override
