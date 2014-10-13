@@ -22,6 +22,10 @@
         <module name="OuterTypeFilename"/>
         <module name="UpperEll"/>
         <module name="ModifierOrder"/>
+        <module name="SimplifyBooleanReturn"/>
+        <module name="SimplifyBooleanExpression"/>
+        <module name="StringLiteralEquality"/>
+        <module name="DefaultComesLast"/>
 
         <!-- Imports -->
         <module name="RedundantImport"/>

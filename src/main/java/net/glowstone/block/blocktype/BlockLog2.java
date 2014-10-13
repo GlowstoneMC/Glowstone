@@ -25,7 +25,6 @@ public class BlockLog2 extends BlockType {
         switch (dir) {
             case UP:
             case DOWN:
-            default:
                 data += 0;
                 break;
             case WEST:
