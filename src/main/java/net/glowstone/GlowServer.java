@@ -386,11 +386,22 @@ public final class GlowServer implements Server {
         // Create worlds
         String name = config.getString(ServerConfig.Key.LEVEL_NAME);
         String seedString = config.getString(ServerConfig.Key.LEVEL_SEED);
-        long seed = seedString.isEmpty() ? System.currentTimeMillis() : seedString.hashCode();
         boolean structs = getGenerateStructures();
         WorldType type = WorldType.getByName(getWorldType());
         if (type == null) {
             type = WorldType.NORMAL;
+        }
+
+        long seed = new Random().nextLong();
+        if (!seedString.isEmpty()) {
+            try {
+                long parsed = Long.parseLong(seedString);
+                if (parsed != 0) {
+                    seed = parsed;
+                }
+            } catch (NumberFormatException ex) {
+                seed = seedString.hashCode();
+            }
         }
 
         createWorld(WorldCreator.name(name).environment(Environment.NORMAL).seed(seed).type(type).generateStructures(structs));
