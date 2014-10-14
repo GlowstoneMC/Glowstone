@@ -14,9 +14,9 @@ public class GlowFurnaceInventory extends GlowInventory implements FurnaceInvent
     public GlowFurnaceInventory(Furnace owner) {
         super(owner, InventoryType.FURNACE);
 
-        slotTypes[INPUT_SLOT] = InventoryType.SlotType.CRAFTING;
-        slotTypes[FUEL_SLOT] = InventoryType.SlotType.FUEL;
-        slotTypes[RESULT_SLOT] = InventoryType.SlotType.RESULT;
+        getSlot(INPUT_SLOT).setType(InventoryType.SlotType.CRAFTING);
+        getSlot(FUEL_SLOT).setType(InventoryType.SlotType.FUEL);
+        getSlot(RESULT_SLOT).setType(InventoryType.SlotType.RESULT);
     }
 
     @Override

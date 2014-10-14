@@ -102,52 +102,6 @@ public class GlowInventory implements Inventory {
         return viewers;
     }
 
-    /**
-     * Get the type of the specified slot.
-     * @param slot The slot number.
-     * @return The SlotType of the slot.
-     */
-    public SlotType getSlotType(int slot) {
-        if (slot < 0) return SlotType.OUTSIDE;
-        return getSlot(slot).getType();
-    }
-
-    /**
-     * Check whether it is allowed for a player to insert the given ItemStack
-     * at the slot, regardless of the slot's current contents. Should return
-     * false for crafting output slots or armor slots which cannot accept
-     * the given item.
-     * @param slot The slot number.
-     * @param stack The stack to add.
-     * @return Whether the stack can be added there.
-     */
-    public boolean itemPlaceAllowed(int slot, ItemStack stack) {
-        return getSlotType(slot) != SlotType.RESULT;
-    }
-
-    /**
-     * Check whether, in a shift-click operation, an item of the specified type
-     * may be placed in the given slot.
-     * @param slot The slot number.
-     * @param stack The stack to add.
-     * @return Whether the stack can be added there.
-     */
-    public boolean itemShiftClickAllowed(int slot, ItemStack stack) {
-        return itemPlaceAllowed(slot, stack);
-    }
-
-    /**
-     * Set the custom title of this inventory or reset it to the default.
-     * @param title The new title, or null to reset.
-     */
-    public void setTitle(String title) {
-        if (title == null) {
-            this.title = type.getDefaultTitle();
-        } else {
-            this.title = title;
-        }
-    }
-
     ////////////////////////////////////////////////////////////////////////////
     // Basic Stuff
 
