@@ -1,11 +1,13 @@
 package net.glowstone.block;
 
 import net.glowstone.GlowChunk;
+import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
@@ -228,6 +230,10 @@ public final class GlowBlock implements Block {
     public boolean isLiquid() {
         Material mat = getType();
         return mat == Material.WATER || mat == Material.STATIONARY_WATER || mat == Material.LAVA || mat == Material.STATIONARY_LAVA;
+    }
+
+    public MaterialValueManager.Value getMaterialValues() {
+        return ((GlowServer) Bukkit.getServer()).getMaterialValueManager().getValue(getType());
     }
 
     ////////////////////////////////////////////////////////////////////////////
