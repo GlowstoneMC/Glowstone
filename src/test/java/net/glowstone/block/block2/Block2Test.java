@@ -3,7 +3,7 @@ package net.glowstone.block.block2;
 import org.junit.Test;
 
 /**
- * Todo: Javadoc for Block2Test.
+ * Simple tests for the new block type system.
  */
 public class Block2Test {
 
@@ -19,10 +19,6 @@ public class Block2Test {
         System.out.println(t.isBaseType() + " " + (t2 == t3));
         System.out.println(t2.getBaseType() + " " + (t2.getBaseType() == t));
         t.withProperty(BlockStone.VARIANT, 5);
-
-        int z = new Object() {
-            int x = 5;
-        }.x;
     }
 
 }

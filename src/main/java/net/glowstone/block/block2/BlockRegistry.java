@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Todo: Javadoc for BlockRegistry.
+ * The registry and lookup table for block types.
  */
 public class BlockRegistry {
 

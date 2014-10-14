@@ -3,7 +3,7 @@ package net.glowstone.block.block2;
 import java.util.*;
 
 /**
- * Todo: Javadoc for GlowBlockType.
+ * Implementation of {@link BlockType}.
  */
 public class GlowBlockType implements BlockType, Cloneable {
 

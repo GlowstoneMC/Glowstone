@@ -1,8 +1,5 @@
 package net.glowstone.block.block2;
 
-/**
- * Todo: Javadoc for BlockStone.
- */
 public class BlockStone extends GlowBlockType {
 
     public static final String ID = "minecraft:stone";

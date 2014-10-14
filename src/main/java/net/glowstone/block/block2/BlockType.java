@@ -3,7 +3,7 @@ package net.glowstone.block.block2;
 import java.util.Collection;
 
 /**
- * Todo: Javadoc for BlockType.
+ * One of the possible types a block could take on.
  */
 public interface BlockType {
 
