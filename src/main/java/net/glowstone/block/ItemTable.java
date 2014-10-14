@@ -135,6 +135,18 @@ public final class ItemTable {
         reg(Material.BUCKET, new ItemBucket());
         reg(Material.WATER_BUCKET, new ItemFilledBucket(Material.WATER));
         reg(Material.LAVA_BUCKET, new ItemFilledBucket(Material.LAVA));
+        reg(Material.WOOD_HOE, new ItemHoe());
+        reg(Material.STONE_HOE, new ItemHoe());
+        reg(Material.IRON_HOE, new ItemHoe());
+        reg(Material.GOLD_HOE, new ItemHoe());
+        reg(Material.DIAMOND_HOE, new ItemHoe());
+        reg(Material.SEEDS, new ItemSeeds(Material.CROPS, Material.SOIL));
+        reg(Material.MELON_SEEDS, new ItemSeeds(Material.MELON_STEM, Material.SOIL));
+        reg(Material.PUMPKIN_SEEDS, new ItemSeeds(Material.PUMPKIN_STEM, Material.SOIL));
+        reg(Material.NETHER_STALK, new ItemSeeds(Material.NETHER_WARTS, Material.SOUL_SAND));
+        reg(Material.CARROT_ITEM, new ItemFoodSeeds(Material.CARROT, Material.SOIL));
+        reg(Material.POTATO_ITEM, new ItemFoodSeeds(Material.POTATO, Material.SOIL));
+        reg(Material.INK_SACK, new ItemDye());
     }
 
     private void reg(Material material, ItemType type) {
