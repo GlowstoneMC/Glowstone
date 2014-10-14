@@ -183,6 +183,7 @@ public final class ItemTable {
         reg(Material.WALL_BANNER, new BlockBanner());
         reg(Material.SPONGE, new BlockSponge());
         reg(Material.TNT, new BlockTNT());
+        reg(Material.DOUBLE_PLANT, new BlockDoublePlant());
 
         reg(Material.FLINT_AND_STEEL, new ItemFlintAndSteel());
         reg(Material.SIGN, new ItemSign());
@@ -195,7 +196,6 @@ public final class ItemTable {
         reg(Material.SKULL_ITEM, new ItemPlaceAs(Material.SKULL));
         reg(Material.REDSTONE_COMPARATOR, new ItemPlaceAs(Material.REDSTONE_COMPARATOR_OFF));
         reg(Material.BED, new ItemPlaceAs(Material.BED_BLOCK));
-
         reg(Material.BUCKET, new ItemBucket());
         reg(Material.WATER_BUCKET, new ItemFilledBucket(Material.WATER));
         reg(Material.LAVA_BUCKET, new ItemFilledBucket(Material.LAVA));
