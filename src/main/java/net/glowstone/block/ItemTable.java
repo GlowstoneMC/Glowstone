@@ -111,7 +111,7 @@ public final class ItemTable {
         reg(Material.NETHER_WARTS, new BlockDirectDrops(Material.NETHER_STALK));
         reg(Material.POTATO, new BlockDirectDrops(Material.POTATO_ITEM));
         reg(Material.PUMPKIN_STEM, new BlockPumpkinStem());
-        reg(Material.CROPS, new BlockDirectDrops(Material.SEEDS));
+        reg(Material.CROPS, new BlockCrops());
         reg(Material.CAKE_BLOCK, new BlockDropless());
         reg(Material.WEB, new BlockWeb());
         reg(Material.FIRE, new BlockFire());
