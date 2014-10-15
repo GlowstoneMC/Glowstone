@@ -4,9 +4,12 @@ import java.util.Arrays;
 
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.event.block.BlockFadeEvent;
 
+import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
+import net.glowstone.block.GlowBlockState;
 
 public class BlockSoil extends BlockType {
 
@@ -25,8 +28,14 @@ public class BlockSoil extends BlockType {
             block.setData((byte) (block.getData() - 1)); // if this block is wet, it becomes less wet
         } else if (!Arrays.asList(possibleCrops).contains(block.getRelative(BlockFace.UP).getType())) {
             // turns block back to dirt if nothing is planted on
-            block.setType(Material.DIRT);
-            block.setData((byte) 0);
+            final GlowBlockState state = block.getState();
+            state.setType(Material.DIRT);
+            state.setRawData((byte) 0);
+            BlockFadeEvent fadeEvent = new BlockFadeEvent(block, state);
+            EventFactory.callEvent(fadeEvent);
+            if (!fadeEvent.isCancelled()) {
+                state.update(true);
+            }
         }
     }
 
