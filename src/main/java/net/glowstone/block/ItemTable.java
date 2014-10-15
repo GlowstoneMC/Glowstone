@@ -61,7 +61,7 @@ public final class ItemTable {
         reg(Material.DOUBLE_STEP, new BlockDoubleSlab());
         reg(Material.DOUBLE_STEP_2, new BlockDoubleSlab());
         reg(Material.WOOD_DOUBLE_STEP, new BlockDoubleSlab());
-        reg(Material.SOIL, new BlockDirectDrops(Material.DIRT));
+        reg(Material.SOIL, new BlockSoil());
         reg(Material.GLASS, new BlockDropless());
         reg(Material.THIN_GLASS, new BlockDropless());
         reg(Material.GLOWSTONE, new BlockRandomDrops(Material.GLOWSTONE_DUST, 2, 4));
