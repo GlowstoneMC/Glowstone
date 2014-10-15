@@ -66,7 +66,7 @@ public final class ItemTable {
         reg(Material.THIN_GLASS, new BlockDropless());
         reg(Material.GLOWSTONE, new BlockRandomDrops(Material.GLOWSTONE_DUST, 2, 4));
         reg(Material.MYCEL, new BlockDirectDrops(Material.DIRT));
-        reg(Material.GRASS, new BlockDirectDrops(Material.DIRT));
+        reg(Material.GRASS, new BlockGrass());
         reg(Material.DIRT, new BlockDirectDrops(Material.DIRT));
         reg(Material.GRAVEL, new BlockGravel());
         reg(Material.SAND, new BlockFalling(Material.SAND));
