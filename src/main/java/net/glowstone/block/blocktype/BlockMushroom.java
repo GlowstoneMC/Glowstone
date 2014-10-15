@@ -30,7 +30,7 @@ public class BlockMushroom extends BlockType {
             int i = 0;
             for (x = block.getX() - 4; x <= block.getX() + 4; x++) {
                 for (z = block.getZ() - 4; z <= block.getZ() + 4; z++) {
-                    for (y = block.getZ() - 1; y <= block.getZ() + 1; y++) {
+                    for (y = block.getY() - 1; y <= block.getY() + 1; y++) {
                         if (world.getBlockAt(x, y, z).getType().equals(mushroomType)) {
                             if (++i > 4) {
                                 return;
