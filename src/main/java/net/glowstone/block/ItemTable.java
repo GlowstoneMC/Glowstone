@@ -190,6 +190,8 @@ public final class ItemTable {
         reg(Material.WALL_BANNER, new BlockBanner());
         reg(Material.SPONGE, new BlockSponge());
         reg(Material.TNT, new BlockTNT());
+        reg(Material.BROWN_MUSHROOM, new BlockMushroom(Material.BROWN_MUSHROOM));
+        reg(Material.RED_MUSHROOM, new BlockMushroom(Material.RED_MUSHROOM));
 
         reg(Material.FLINT_AND_STEEL, new ItemFlintAndSteel());
         reg(Material.SIGN, new ItemSign());
