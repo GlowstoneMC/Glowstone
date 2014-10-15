@@ -1,7 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.Random;
-
 import org.bukkit.CropState;
 import org.bukkit.Material;
 import org.bukkit.event.block.BlockGrowEvent;
@@ -14,7 +12,6 @@ import net.glowstone.entity.GlowPlayer;
 public class BlockStem extends BlockPlant implements IBlockGrowable {
     private Material fruitType;
     private Material seedsType;
-    private final Random random = new Random();
 
     public BlockStem(Material plantType) {
         if (plantType.equals(Material.MELON_STEM)) {

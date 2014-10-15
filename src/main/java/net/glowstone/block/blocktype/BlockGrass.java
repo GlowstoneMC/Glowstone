@@ -1,7 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.Random;
-
 import org.bukkit.GrassSpecies;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -17,10 +15,8 @@ import net.glowstone.entity.GlowPlayer;
 
 public class BlockGrass extends BlockDirectDrops implements IBlockGrowable {
 
-    private final Random random = new Random();
-
-    public BlockGrass(Material dropType) {
-        super(dropType);
+    public BlockGrass() {
+        super(Material.DIRT);
     }
 
     @Override

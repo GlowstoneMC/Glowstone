@@ -9,6 +9,7 @@ import net.glowstone.block.ItemTable;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowPlayer;
+
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -24,12 +25,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Base class for specific types of blocks.
  */
 public class BlockType extends ItemType {
 
+    protected static final Random random = new Random();
     protected List<ItemStack> drops = null;
 
     ////////////////////////////////////////////////////////////////////////////

@@ -1,7 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.Random;
-
 import org.bukkit.CropState;
 import org.bukkit.event.block.BlockGrowEvent;
 
@@ -11,8 +9,6 @@ import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
 
 public class BlockCrops extends BlockPlant implements IBlockGrowable {
-
-    private final Random random = new Random();
 
     @Override
     public boolean isFertilizable(GlowBlock block) {
