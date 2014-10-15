@@ -24,12 +24,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Base class for specific types of blocks.
  */
 public class BlockType extends ItemType {
 
+    protected static final Random random = new Random();
     protected List<ItemStack> drops = null;
 
     ////////////////////////////////////////////////////////////////////////////
