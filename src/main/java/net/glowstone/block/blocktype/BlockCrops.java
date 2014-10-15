@@ -8,7 +8,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
 
-public class BlockCrops extends BlockPlant implements IBlockGrowable {
+public class BlockCrops extends BlockType implements IBlockGrowable {
 
     @Override
     public boolean isFertilizable(GlowBlock block) {

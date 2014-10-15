@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
 
-public class BlockDoublePlant extends BlockPlant implements IBlockGrowable {
+public class BlockDoublePlant extends BlockType implements IBlockGrowable {
 
     @Override
     public boolean isFertilizable(GlowBlock block) {

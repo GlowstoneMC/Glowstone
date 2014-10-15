@@ -3,7 +3,7 @@ package net.glowstone.block.blocktype;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
 
-public class BlockSapling extends BlockPlant implements IBlockGrowable {
+public class BlockSapling extends BlockType implements IBlockGrowable {
 
     @Override
     public boolean isFertilizable(GlowBlock block) {
