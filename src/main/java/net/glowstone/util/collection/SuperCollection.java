@@ -6,7 +6,13 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Generic super collection.
+ * Generic super collection. This is an abstract collection which delegates (ie redirects operations) to other collections (its children). This class is employed to reduce the overhead of copying objects from several collections to create a new larger one.
+ *
+ * This class is a generic collection which serves as a base for other super collections. It handles non-indexed accesses to collections like additions, removals, contains...
+ *
+ * Note that because this collection holds references to other collections, modifications to children will be reflected here. Also, modifications to this collection will affect its children. If you need a collection that has the very same contents but isn't affected by operations to childrens, you can employ the {@link #asClone()} method, which returns a new collection with the same contents.
+ *
+ * Since there are several children and not all may return the same return value for certain operations, you can control how this class behaves by means of the {@link #setResultMode(ResultMode)} method. It defaults to ANY, so operations that return booleans will return true as long as at least one children succeeded.
  */
 public abstract class SuperCollection<E> implements Collection<E> {
 
@@ -93,7 +99,7 @@ public abstract class SuperCollection<E> implements Collection<E> {
     public boolean add(E object) {
         switch (additionMode) {
 
-            case ALL: {
+            case ALL:
                 int modified = 0;
                 for (Collection<E> parent : parents) {
                     if (parent.add(object)) {
@@ -102,11 +108,9 @@ public abstract class SuperCollection<E> implements Collection<E> {
                 }
 
                 return resultBoolean(modified);
-            }
 
-            case LAST: {
+            case LAST:
                 return parents.get(parents.size() - 1).add(object);
-            }
         }
 
         throw new IllegalStateException("This SuperCollection has an invalid addition mode!");
