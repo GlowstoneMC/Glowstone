@@ -136,6 +136,15 @@ public class GlowInventory implements Inventory {
         }
     }
 
+    /**
+     * Gets the number of slots in this inventory according to the protocol.
+     * Some inventories have 0 slots in the protocol, despite having slots.
+     * @return The numbers of slots
+     */
+    public int getRawSlots() {
+        return getSize();
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Basic Stuff
 

@@ -5,9 +5,7 @@ import net.glowstone.inventory.GlowInventory;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 
 /**
  * Base class for container tile entities (those with inventories).
@@ -16,9 +14,9 @@ public abstract class TEContainer extends TileEntity {
 
     private final GlowInventory inventory;
 
-    public TEContainer(GlowBlock block, InventoryType type) {
+    public TEContainer(GlowBlock block, GlowInventory inventory) {
         super(block);
-        this.inventory = new GlowInventory((InventoryHolder) getState(), type);
+        this.inventory = inventory;
     }
 
     public Inventory getInventory() {

@@ -13,6 +13,7 @@ import net.glowstone.io.PlayerDataService;
 import net.glowstone.map.GlowMapView;
 import net.glowstone.net.GlowNetworkServer;
 import net.glowstone.net.SessionRegistry;
+import net.glowstone.net.query.QueryServer;
 import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.scheduler.WorldScheduler;
 import net.glowstone.util.*;
@@ -89,6 +90,7 @@ public final class GlowServer implements Server {
             final GlowServer server = new GlowServer(config);
             server.start();
             server.bind();
+            server.bindQuery();
             logger.info("Ready for connections.");
         } catch (Throwable t) {
             logger.log(Level.SEVERE, "Error during server startup.", t);
@@ -329,6 +331,11 @@ public final class GlowServer implements Server {
     private final GlowNetworkServer networkServer = new GlowNetworkServer(this);
 
     /**
+     * The query server for this server, or null if disabled.
+     */
+    private QueryServer queryServer;
+
+    /**
      * The default icon, usually blank, used for the server list.
      */
     private GlowServerIcon defaultIcon;
@@ -379,11 +386,22 @@ public final class GlowServer implements Server {
         // Create worlds
         String name = config.getString(ServerConfig.Key.LEVEL_NAME);
         String seedString = config.getString(ServerConfig.Key.LEVEL_SEED);
-        long seed = seedString.isEmpty() ? System.currentTimeMillis() : seedString.hashCode();
         boolean structs = getGenerateStructures();
         WorldType type = WorldType.getByName(getWorldType());
         if (type == null) {
             type = WorldType.NORMAL;
+        }
+
+        long seed = new Random().nextLong();
+        if (!seedString.isEmpty()) {
+            try {
+                long parsed = Long.parseLong(seedString);
+                if (parsed != 0) {
+                    seed = parsed;
+                }
+            } catch (NumberFormatException ex) {
+                seed = seedString.hashCode();
+            }
         }
 
         createWorld(WorldCreator.name(name).environment(Environment.NORMAL).seed(seed).type(type).generateStructures(structs));
@@ -404,21 +422,47 @@ public final class GlowServer implements Server {
      * Binds this server to the address specified in the configuration.
      */
     private void bind() {
-        String ip = getIp();
-        int port = getPort();
-
-        SocketAddress address;
-        if (ip.length() == 0) {
-            address = new InetSocketAddress(port);
-        } else {
-            address = new InetSocketAddress(ip, port);
-        }
+        SocketAddress address = getBindAddress(ServerConfig.Key.SERVER_PORT);
 
         logger.info("Binding to address: " + address + "...");
         ChannelFuture future = networkServer.bind(address);
         Channel channel = future.awaitUninterruptibly().channel();
         if (!channel.isActive()) {
             throw new RuntimeException("Failed to bind to address. Maybe it is already in use?");
+        }
+    }
+
+    /**
+     * Binds the query server to the address specified in the configuration.
+     */
+    private void bindQuery() {
+        if (!config.getBoolean(ServerConfig.Key.QUERY_ENABLED)) {
+            return;
+        }
+
+        SocketAddress address = getBindAddress(ServerConfig.Key.QUERY_PORT);
+        queryServer = new QueryServer(this, config.getBoolean(ServerConfig.Key.QUERY_PLUGINS));
+
+        logger.info("Binding query to address: " + address + "...");
+        ChannelFuture future = queryServer.bind(address);
+        Channel channel = future.awaitUninterruptibly().channel();
+        if (!channel.isActive()) {
+            logger.warning("Failed to bind query. Address already in use?");
+        }
+    }
+
+    /**
+     * Get the SocketAddress to bind to for a specified service.
+     * @param portKey The configuration key for the port to use.
+     * @return The SocketAddress
+     */
+    private SocketAddress getBindAddress(ServerConfig.Key portKey) {
+        String ip = getIp();
+        int port = config.getInt(portKey);
+        if (ip.length() == 0) {
+            return new InetSocketAddress(port);
+        } else {
+            return new InetSocketAddress(ip, port);
         }
     }
 
@@ -445,6 +489,11 @@ public final class GlowServer implements Server {
         // Stop the network server - starts the shutdown process
         // It may take a second or two for Netty to totally clean up
         networkServer.shutdown();
+
+        // Stop query server
+        if (queryServer != null) {
+            queryServer.shutdown();
+        }
 
         // Save worlds
         for (World world : getWorlds()) {

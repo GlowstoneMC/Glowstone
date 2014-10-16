@@ -32,6 +32,7 @@ import net.glowstone.entity.meta.ClientSettings;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.entity.meta.PlayerProfile;
+import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.InventoryMonitor;
 import net.glowstone.io.PlayerDataService;
 import net.glowstone.net.GlowSession;
@@ -70,20 +71,8 @@ import net.glowstone.net.protocol.ProtocolType;
 import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextMessage;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Achievement;
-import org.bukkit.BanList;
-import org.bukkit.ChatColor;
-import org.bukkit.Effect;
-import org.bukkit.GameMode;
-import org.bukkit.Instrument;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Note;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
-import org.bukkit.Statistic;
-import org.bukkit.WeatherType;
-import org.bukkit.World;
+import org.bukkit.*;
+import org.bukkit.World.Environment;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
@@ -92,6 +81,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerRegisterChannelEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -661,6 +651,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         setCompassTarget(world.getSpawnLocation()); // set our compass target
         session.send(new PositionRotationMessage(location, getEyeHeight() + 0.05));
         sendWeather();
+        sendTime();
+        updateInventory();
 
         // fire world change if needed
         if (oldWorld != world) {
@@ -690,6 +682,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         PlayerRespawnEvent event = new PlayerRespawnEvent(this, dest, spawnAtBed);
         EventFactory.callEvent(event);
         spawnAt(event.getRespawnLocation());
+
+        // just in case any items are left in their inventory after they respawn
+        updateInventory();
     }
 
     /**
@@ -1233,6 +1228,55 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    protected boolean teleportToSpawn() {
+        Location target = getBedSpawnLocation();
+        if (target == null) {
+            target = server.getWorlds().get(0).getSpawnLocation();
+        }
+
+        PlayerPortalEvent event = EventFactory.callEvent(new PlayerPortalEvent(this, location.clone(), target, null));
+        if (event.isCancelled()) {
+            return false;
+        }
+        target = event.getTo();
+
+        spawnAt(target);
+        teleported = true;
+
+        awardAchievement(Achievement.THE_END, false);
+        return true;
+    }
+
+    @Override
+    protected boolean teleportToEnd() {
+        if (!server.getAllowEnd()) {
+            return false;
+        }
+        Location target = null;
+        for (World world : server.getWorlds()) {
+            if (world.getEnvironment() == Environment.THE_END) {
+                target = world.getSpawnLocation();
+                break;
+            }
+        }
+        if (target == null) {
+            return false;
+        }
+
+        PlayerPortalEvent event = EventFactory.callEvent(new PlayerPortalEvent(this, location.clone(), target, null));
+        if (event.isCancelled()) {
+            return false;
+        }
+        target = event.getTo();
+
+        spawnAt(target);
+        teleported = true;
+
+        awardAchievement(Achievement.END_PORTAL, false);
+        return true;
+    }
+
+    @Override
     public void sendMessage(String message) {
         sendRawMessage(message);
     }
@@ -1470,12 +1514,35 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void awardAchievement(Achievement achievement) {
-        if (hasAchievement(achievement)) return;
+        awardAchievement(achievement, true);
+    }
+
+    /**
+     * Awards the given achievement if the player already has the parent achievement,
+     * otherwise does nothing. If {@code awardParents} is true, award the player all
+     * parent achievements and the given achievement, making this method equivalent
+     * to {@link #awardAchievement(Achievement)}.
+     * @param achievement
+     * @param awardParents
+     * @return {@code true} if the achievement was awarded, {@code false} otherwise
+     */
+    public boolean awardAchievement(Achievement achievement, boolean awardParents) {
+        if (hasAchievement(achievement)) return false;
+
+        Achievement parent = achievement.getParent();
+        if (parent != null && !hasAchievement(parent)) {
+            if (awardParents) {
+                awardAchievement(parent, awardParents);
+            } else {
+                return false; // player does not have the required parent achievement
+            }
+        }
 
         stats.setAchievement(achievement, true);
         sendAchievement(achievement, true);
 
         // todo: make an announcement if that's enabled
+        return true;
     }
 
     @Override
@@ -1625,7 +1692,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             if (view.getTopInventory() instanceof PlayerInventory && defaultTitle) {
                 title = ((PlayerInventory) view.getTopInventory()).getHolder().getName();
             }
-            Message open = new OpenWindowMessage(viewId, invMonitor.getType(), title, view.getTopInventory().getSize());
+            Message open = new OpenWindowMessage(viewId, invMonitor.getType(), title, ((GlowInventory) view.getTopInventory()).getRawSlots());
             session.send(open);
         }
 

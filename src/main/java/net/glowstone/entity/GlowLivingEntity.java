@@ -1,10 +1,18 @@
 package net.glowstone.entity;
 
+import com.flowpowered.networking.Message;
+import net.glowstone.EventFactory;
 import net.glowstone.constants.GlowPotionEffect;
+import net.glowstone.inventory.EquipmentMonitor;
+import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
+import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -15,6 +23,7 @@ import java.util.*;
 
 /**
  * A GlowLivingEntity is a {@link org.bukkit.entity.Player} or {@link org.bukkit.entity.Monster}.
+ *
  * @author Graham Edgecombe.
  */
 public abstract class GlowLivingEntity extends GlowEntity implements LivingEntity {
@@ -80,7 +89,13 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     private boolean pickupItems;
 
     /**
+     * Monitor for the equipment of this entity.
+     */
+    private EquipmentMonitor equipmentMonitor = new EquipmentMonitor(this);
+
+    /**
      * Creates a mob within the specified world.
+     *
      * @param location The location.
      */
     public GlowLivingEntity(Location location) {
@@ -101,14 +116,15 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             --noDamageTicks;
         }
 
-        // breathing
         Material mat = getEyeLocation().getBlock().getType();
+        // breathing
         if (mat == Material.WATER || mat == Material.STATIONARY_WATER) {
-            --airTicks;
-            if (airTicks <= -20) {
-                airTicks = 0;
-                // todo: indicate that the damage was caused by drowning
-                damage(1);
+            if (canDrown()) {
+                --airTicks;
+                if (airTicks <= -20) {
+                    airTicks = 0;
+                    damage(1, EntityDamageEvent.DamageCause.DROWNING);
+                }
             }
         } else {
             airTicks = maximumAir;
@@ -129,6 +145,23 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 removePotionEffect(type);
             }
         }
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        equipmentMonitor.resetChanges();
+    }
+
+    @Override
+    public List<Message> createUpdateMessage() {
+        List<Message> messages = super.createUpdateMessage();
+
+        for (EquipmentMonitor.Entry change : equipmentMonitor.getChanges()) {
+            messages.add(new EntityEquipmentMessage(id, change.slot, change.item));
+        }
+
+        return messages;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -227,6 +260,30 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         pickupItems = pickup;
     }
 
+    /**
+     * Get the hurt sound of this entity, or null for silence.
+     * @return the hurt sound if available
+     */
+    protected Sound getHurtSound() {
+        return null;
+    }
+
+    /**
+     * Get the death sound of this entity, or null for silence.
+     * @return the death sound if available
+     */
+    protected Sound getDeathSound() {
+        return null;
+    }
+
+    /**
+     * Get whether this entity should take drowning damage.
+     * @return whether this entity can drown
+     */
+    protected boolean canDrown() {
+        return true;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Line of Sight
 
@@ -320,15 +377,72 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     @Override
     public void damage(double amount) {
-        damage(amount, null);
+        damage(amount, null, EntityDamageEvent.DamageCause.CUSTOM);
     }
 
     @Override
     public void damage(double amount, Entity source) {
-        // todo: handle noDamageTicks
+        damage(amount, source, EntityDamageEvent.DamageCause.CUSTOM);
+    }
+
+    @Override
+    public void damage(double amount, EntityDamageEvent.DamageCause cause) {
+        damage(amount, null, cause);
+    }
+
+    @Override
+    public void damage(double amount, Entity source, EntityDamageEvent.DamageCause cause) {
+        // invincibility timer
+        if (noDamageTicks > 0 || health <= 0) {
+            return;
+        }
+
+        // fire resistance
+        if (cause != null && hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
+            switch (cause) {
+                case PROJECTILE:
+                    if (source == null || !(source instanceof Fireball)) {
+                        break;
+                    }
+                case FIRE:
+                case FIRE_TICK:
+                case LAVA:
+                    return;
+            }
+        }
+
+        // fire event
+        // todo: use damage modifier system
+        EntityDamageEvent event;
+        if (source == null) {
+            event = new EntityDamageEvent(this, cause, amount);
+        } else {
+            event = new EntityDamageByEntityEvent(source, this, cause, amount);
+        }
+        EventFactory.callEvent(event);
+        if (event.isCancelled()) {
+            return;
+        }
+
+        // apply damage
+        amount = event.getFinalDamage();
         lastDamage = amount;
-        health -= amount;
-        // todo: death, events, so on
+        setHealth(health - amount);
+        playEffect(EntityEffect.HURT);
+
+        // play sounds, handle death
+        if (health <= 0.0) {
+            Sound deathSound = getDeathSound();
+            if (deathSound != null) {
+                world.playSound(location, deathSound, 1.0f, 1.0f);
+            }
+            // todo: drop items
+        } else {
+            Sound hurtSound = getHurtSound();
+            if (hurtSound != null) {
+                world.playSound(location, hurtSound, 1.0f, 1.0f);
+            }
+        }
     }
 
     @Override
