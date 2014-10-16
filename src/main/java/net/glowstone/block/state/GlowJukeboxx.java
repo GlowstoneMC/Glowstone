@@ -10,11 +10,11 @@ import org.bukkit.Material;
 import org.bukkit.block.Jukebox;
 import org.bukkit.inventory.ItemStack;
 
-public class GlowJukebox extends GlowBlockState implements Jukebox {
+public class GlowJukeboxx extends GlowBlockState implements Jukebox {
 
     private ItemStack playing;
 
-    public GlowJukebox(GlowBlock block) {
+    public GlowJukeboxx(GlowBlock block) {
         super(block);
         if (block.getType() != Material.JUKEBOX) {
             throw new IllegalArgumentException("GlowNoteBlock: expected JUKEBOX, got " + block.getType());
