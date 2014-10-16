@@ -38,6 +38,7 @@ public final class ItemTable {
     // Registration
 
     private void registerBuiltins() {
+        reg(Material.JUKEBOX, new BlockJukebox());
         reg(Material.NOTE_BLOCK, new BlockNote());
         reg(Material.MOB_SPAWNER, new BlockMobSpawner());
         reg(Material.SIGN_POST, new BlockSign());

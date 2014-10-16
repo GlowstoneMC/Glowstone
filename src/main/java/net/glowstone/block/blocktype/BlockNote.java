@@ -21,16 +21,13 @@ public class BlockNote extends BlockType {
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
         NoteBlock noteBlock = (NoteBlock) block.getState();
         Note note = noteBlock.getNote();
-        System.out.println("Note: " + noteBlock.getNote());
         noteBlock.setNote(new Note(note.getId() == 24 ? 0 : note.getId() + 1));
         noteBlock.update();
-        System.out.println("Note: " + noteBlock.getNote());
         return noteBlock.play();
     }
 
     @Override
     public void leftClickBlock(GlowPlayer player, GlowBlock block, ItemStack holding) {
-        System.out.println("Note: " + ((NoteBlock) block.getState()).getNote());
         ((NoteBlock) block.getState()).play();
     }
 }

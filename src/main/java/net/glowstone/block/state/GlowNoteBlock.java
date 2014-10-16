@@ -35,7 +35,7 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
     @Override
     public boolean update(boolean force, boolean applyPhysics) {
         boolean result = super.update(force, applyPhysics);
-        if (!result) {
+        if (result) {
             getTileEntity().setNote(note);
         }
         return result;
