@@ -1,9 +1,12 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
 import net.glowstone.GlowChunk;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.TEJukebox;
 import net.glowstone.block.entity.TileEntity;
+import net.glowstone.block.state.GlowJukebox;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.GameMode;
 import org.bukkit.block.BlockFace;
@@ -22,8 +25,9 @@ public class BlockJukebox extends BlockType {
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
         Jukebox jukebox = (Jukebox) block.getState();
         if (jukebox.isPlaying()) {
+            jukebox.eject();
             jukebox.update();
-            return jukebox.eject();
+            return true;
         }
         ItemStack handItem = player.getItemInHand();
         if (handItem != null && handItem.getType().isRecord()) {
@@ -36,5 +40,15 @@ public class BlockJukebox extends BlockType {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public Collection<ItemStack> getDrops(GlowBlock block) {
+        ItemStack disk = ((GlowJukebox) block.getState()).getPlayingItem();
+        if (disk == null) {
+            return Arrays.asList(new ItemStack(block.getType()));
+        } else {
+            return Arrays.asList(new ItemStack(block.getType()), disk);
+        }
     }
 }

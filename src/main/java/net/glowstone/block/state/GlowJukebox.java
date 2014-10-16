@@ -35,6 +35,10 @@ public class GlowJukebox extends GlowBlockState implements Jukebox {
         return result;
     }
 
+    public ItemStack getPlayingItem() {
+        return this.playing;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Implementation
 
@@ -45,17 +49,18 @@ public class GlowJukebox extends GlowBlockState implements Jukebox {
 
     @Override
     public void setPlaying(Material record) {
+        int id = 0;
         if (record == null || record == Material.AIR) {
             this.playing = null;
-            this.setRawData((byte) 0);
         } else {
             this.playing = new ItemStack(record);
-            Collection<GlowPlayer> players = getWorld().getRawPlayers();
-            for (GlowPlayer player : players) {
-                player.playEffect(getLocation(), Effect.RECORD_PLAY, record.getId());
-            }
-            this.setRawData((byte) 1);
+            id = record.getId();
         }
+        Collection<GlowPlayer> players = getWorld().getRawPlayers();
+        for (GlowPlayer player : players) {
+            player.playEffect(getLocation(), Effect.RECORD_PLAY, id);
+        }
+        this.setRawData((byte) (id > 0 ? 1 : 0));
     }
 
     @Override
@@ -67,8 +72,7 @@ public class GlowJukebox extends GlowBlockState implements Jukebox {
     public boolean eject() {
         if (isPlaying()) {
             getWorld().dropItemNaturally(getLocation(), this.playing);
-            this.playing = null;
-            this.setRawData((byte) 0);
+            setPlaying(null);
             return true;
         }
         return false;
