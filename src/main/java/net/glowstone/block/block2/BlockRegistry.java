@@ -33,7 +33,7 @@ public class BlockRegistry {
         }
     }
 
-    BlockType modify(GlowBlockType type, BlockProperty prop, Object value) {
+    <T> BlockType modify(GlowBlockType type, BlockProperty<T> prop, T value) {
         if (!type.getProperties().contains(prop)) {
             throw new IllegalArgumentException();
         }

@@ -9,16 +9,16 @@ import java.util.Map;
  */
 public final class PropertyContainer {
 
-    private final HashMap<BlockProperty, Object> values;
+    private final HashMap<BlockProperty<?>, Object> values;
 
-    public PropertyContainer(BlockProperty[] properties) {
+    public PropertyContainer(BlockProperty<?>[] properties) {
         this.values = new HashMap<>();
         for (BlockProperty property : properties) {
             values.put(property, property.getDefault());
         }
     }
 
-    private PropertyContainer(Map<BlockProperty, Object> values) {
+    private PropertyContainer(Map<BlockProperty<?>, Object> values) {
         this.values = new HashMap<>(values);
     }
 
@@ -26,13 +26,13 @@ public final class PropertyContainer {
         return values.get(property);
     }
 
-    public PropertyContainer with(BlockProperty property, Object value) {
+    public <T> PropertyContainer with(BlockProperty<T> property, T value) {
         PropertyContainer result = new PropertyContainer(values);
         result.values.put(property, property.validate(value));
         return result;
     }
 
-    public Collection<BlockProperty> keySet() {
+    public Collection<BlockProperty<?>> keySet() {
         return values.keySet();
     }
 

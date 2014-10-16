@@ -5,7 +5,7 @@ import java.util.Collection;
 /**
  * A property key that a block can associate a value with.
  */
-public interface BlockProperty {
+public interface BlockProperty<T> {
 
     /**
      * Get the name of this property.
@@ -14,16 +14,10 @@ public interface BlockProperty {
     String getName();
 
     /**
-     * Get the type of this property.
-     * @return the type
-     */
-    Type getType();
-
-    /**
      * Get the default value of this property.
      * @return the default value
      */
-    Object getDefault();
+    T getDefault();
 
     /**
      * Validate and filter a value for this property.
@@ -31,12 +25,12 @@ public interface BlockProperty {
      * @return the filtered value
      * @throws IllegalArgumentException if the value is invalid
      */
-    Object validate(Object value);
+    T validate(T value);
 
     /**
      * A property composed of a continuous range of integers.
      */
-    interface IntegerProperty extends BlockProperty {
+    interface IntegerProperty extends BlockProperty<Integer> {
 
         /**
          * Get the minimum value of this property.
@@ -50,15 +44,12 @@ public interface BlockProperty {
          */
         int getMaximum();
 
-        @Override
-        Integer getDefault();
-
     }
 
     /**
      * A property composed of a set of possible strings.
      */
-    interface StringProperty extends BlockProperty {
+    interface StringProperty extends BlockProperty<String> {
 
         /**
          * Get the possible values this property can take.
@@ -66,14 +57,6 @@ public interface BlockProperty {
          */
         Collection<String> getValues();
 
-        @Override
-        String getDefault();
-
     }
 
-    enum Type {
-        BOOLEAN,
-        INTEGER,
-        STRING
-    }
 }

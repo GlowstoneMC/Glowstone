@@ -8,24 +8,17 @@ import java.util.List;
 /**
  * Implementation of {@link BlockProperty}.
  */
-public abstract class GlowBlockProperty implements BlockProperty {
+public abstract class GlowBlockProperty<T> implements BlockProperty<T> {
 
     private final String name;
-    private final Type type;
 
-    public GlowBlockProperty(String name, Type type) {
+    public GlowBlockProperty(String name) {
         this.name = name;
-        this.type = type;
     }
 
     @Override
     public final String getName() {
         return name;
-    }
-
-    @Override
-    public final Type getType() {
-        return type;
     }
 
     @Override
@@ -38,7 +31,7 @@ public abstract class GlowBlockProperty implements BlockProperty {
      * @param name The name of the property
      * @return A new boolean property
      */
-    public static BlockProperty ofBoolean(String name) {
+    public static BlockProperty<Boolean> ofBoolean(String name) {
         return new BooleanProp(name);
     }
 
@@ -49,7 +42,7 @@ public abstract class GlowBlockProperty implements BlockProperty {
      * @param max The maximum value, inclusive
      * @return A new integer property
      */
-    public static BlockProperty ofRange(String name, int min, int max) {
+    public static IntegerProperty ofRange(String name, int min, int max) {
         return new IntegerProp(name, min, max);
     }
 
@@ -60,7 +53,7 @@ public abstract class GlowBlockProperty implements BlockProperty {
      * @return A new string property
      * @throws IllegalArgumentException if no values are provided
      */
-    public static BlockProperty ofStrings(String name, String... values) {
+    public static StringProperty ofStrings(String name, String... values) {
         if (values.length == 0) {
             throw new IllegalArgumentException("values.length must be > 0");
         }
@@ -74,7 +67,7 @@ public abstract class GlowBlockProperty implements BlockProperty {
      * @return A new string property
      * @throws IllegalArgumentException if the class contains no values
      */
-    public static BlockProperty ofEnum(String name, Class<? extends Enum> clazz) {
+    public static StringProperty ofEnum(String name, Class<? extends Enum> clazz) {
         Enum[] values = clazz.getEnumConstants();
         if (values == null) {
             throw new IllegalArgumentException(clazz + " is not an enumeration");
@@ -89,30 +82,27 @@ public abstract class GlowBlockProperty implements BlockProperty {
         return new StringProp(name, names);
     }
 
-    private static class BooleanProp extends GlowBlockProperty {
+    private static class BooleanProp extends GlowBlockProperty<Boolean> {
         private BooleanProp(String name) {
-            super(name, Type.BOOLEAN);
+            super(name);
         }
 
         @Override
-        public Object getDefault() {
+        public Boolean getDefault() {
             return false;
         }
 
         @Override
-        public Object validate(Object value) {
-            if (!(value instanceof Boolean)) {
-                throw new IllegalArgumentException("Expected boolean, got " + value);
-            }
+        public Boolean validate(Boolean value) {
             return value;
         }
     }
 
-    private static class IntegerProp extends GlowBlockProperty implements IntegerProperty {
+    private static class IntegerProp extends GlowBlockProperty<Integer> implements IntegerProperty {
         private final int min, max;
 
         private IntegerProp(String name, int min, int max) {
-            super(name, Type.INTEGER);
+            super(name);
             this.min = min;
             this.max = max;
         }
@@ -133,23 +123,19 @@ public abstract class GlowBlockProperty implements BlockProperty {
         }
 
         @Override
-        public Object validate(Object value) {
-            if (!(value instanceof Number)) {
-                throw new IllegalArgumentException("Expected number, got " + value);
-            }
-            int num = ((Number) value).intValue();
-            if (num < min || num > max) {
+        public Integer validate(Integer value) {
+            if (value < min || value > max) {
                 throw new IllegalArgumentException("Number " + value + " outside range [" + min + "," + max + "]");
             }
-            return num;
+            return value;
         }
     }
 
-    private static class StringProp extends GlowBlockProperty implements StringProperty {
+    private static class StringProp extends GlowBlockProperty<String> implements StringProperty {
         private final List<String> values = new ArrayList<>();
 
         private StringProp(String name, String... values) {
-            super(name, Type.STRING);
+            super(name);
             Collections.addAll(this.values, values);
         }
 
@@ -164,8 +150,8 @@ public abstract class GlowBlockProperty implements BlockProperty {
         }
 
         @Override
-        public Object validate(Object value) {
-            String str = value.toString().toLowerCase();
+        public String validate(String value) {
+            String str = value.toLowerCase();
             if (!values.contains(str)) {
                 throw new IllegalArgumentException("String " + str + " not in set " + values);
             }

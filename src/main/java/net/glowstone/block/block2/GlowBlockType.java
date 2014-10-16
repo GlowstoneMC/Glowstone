@@ -36,18 +36,19 @@ public class GlowBlockType implements BlockType, Cloneable {
     }
 
     @Override
-    public final BlockType withProperty(BlockProperty prop, Object value) {
+    public final <T> BlockType withProperty(BlockProperty<T> prop, T value) {
         return BlockRegistry.instance.modify(this, prop, value);
     }
 
     @Override
-    public final Collection<BlockProperty> getProperties() {
+    public final Collection<BlockProperty<?>> getProperties() {
         return Collections.unmodifiableCollection(properties.keySet());
     }
 
     @Override
-    public final Object getProperty(BlockProperty prop) {
-        return properties.get(prop);
+    @SuppressWarnings("unchecked")
+    public final <T> T getProperty(BlockProperty<T> prop) {
+        return (T) properties.get(prop);
     }
 
     @Override

@@ -15,10 +15,10 @@ public interface BlockType {
 
     BlockType getBaseType();
 
-    BlockType withProperty(BlockProperty prop, Object value);
+    <T> BlockType withProperty(BlockProperty<T> prop, T value);
 
-    Collection<BlockProperty> getProperties();
+    Collection<BlockProperty<?>> getProperties();
 
-    Object getProperty(BlockProperty prop);
+    <T> T getProperty(BlockProperty<T> prop);
 
 }
