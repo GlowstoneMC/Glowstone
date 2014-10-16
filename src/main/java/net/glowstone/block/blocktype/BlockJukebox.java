@@ -23,7 +23,6 @@ public class BlockJukebox extends BlockType {
         Jukebox jukebox = (Jukebox) block.getState();
         if (jukebox.isPlaying()) {
             jukebox.update();
-            System.out.println("Ejected");
             return jukebox.eject();
         }
         ItemStack handItem = player.getItemInHand();
