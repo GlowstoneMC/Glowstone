@@ -30,7 +30,7 @@ public class BlockBanner extends BlockType {
     }
 
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block) {
+    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         GlowBanner state = (GlowBanner) block.getState();
         ItemStack drop = new ItemStack(Material.BANNER, 1);
         BannerMeta meta = (BannerMeta) drop.getItemMeta();

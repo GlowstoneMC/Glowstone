@@ -44,9 +44,10 @@ public class BlockType extends ItemType {
     /**
      * Get the items that will be dropped by digging the block.
      * @param block The block being dug.
+     * @param tool The tool used or {@code null} if fists or no tool was used.
      * @return The drops that should be returned.
      */
-    public Collection<ItemStack> getDrops(GlowBlock block) {
+    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (drops == null) {
             // default calculation
             return Arrays.asList(new ItemStack(block.getType(), 1, block.getData()));

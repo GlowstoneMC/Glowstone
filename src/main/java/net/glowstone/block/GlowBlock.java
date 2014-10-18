@@ -18,7 +18,6 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -304,12 +303,17 @@ public final class GlowBlock implements Block {
 
     @Override
     public boolean breakNaturally() {
+        return breakNaturally(null);
+    }
+
+    @Override
+    public boolean breakNaturally(ItemStack tool) {
         if (getType() == Material.AIR) {
             return false;
         }
 
         Location location = getLocation();
-        for (ItemStack stack : getDrops()) {
+        for (ItemStack stack : getDrops(tool)) {
             getWorld().dropItemNaturally(location, stack);
         }
 
@@ -318,30 +322,13 @@ public final class GlowBlock implements Block {
     }
 
     @Override
-    public boolean breakNaturally(ItemStack tool) {
-        if (givesDrops(tool)) {
-            return breakNaturally();
-        } else {
-            return setTypeId(Material.AIR.getId());
-        }
-    }
-
-    @Override
     public Collection<ItemStack> getDrops() {
-        return ItemTable.instance().getBlock(getType()).getDrops(this);
+        return getDrops(null);
     }
 
     @Override
     public Collection<ItemStack> getDrops(ItemStack tool) {
-        if (givesDrops(tool)) {
-            return getDrops();
-        } else {
-            return Collections.emptyList();
-        }
-    }
-
-    private boolean givesDrops(ItemStack tool) {
-        return true;
+        return ItemTable.instance().getBlock(getType()).getDrops(this, tool);
     }
 
     ////////////////////////////////////////////////////////////////////////////
