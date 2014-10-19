@@ -14,6 +14,7 @@ import net.glowstone.map.GlowMapView;
 import net.glowstone.net.GlowNetworkServer;
 import net.glowstone.net.SessionRegistry;
 import net.glowstone.net.query.QueryServer;
+import net.glowstone.net.rcon.RconServer;
 import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.scheduler.WorldScheduler;
 import net.glowstone.util.*;
@@ -91,6 +92,7 @@ public final class GlowServer implements Server {
             server.start();
             server.bind();
             server.bindQuery();
+            server.bindRcon();
             logger.info("Ready for connections.");
         } catch (Throwable t) {
             logger.log(Level.SEVERE, "Error during server startup.", t);
@@ -336,6 +338,11 @@ public final class GlowServer implements Server {
     private QueryServer queryServer;
 
     /**
+     * The Rcon server for this server, or null if disabled.
+     */
+    private RconServer rconServer;
+
+    /**
      * The default icon, usually blank, used for the server list.
      */
     private GlowServerIcon defaultIcon;
@@ -452,6 +459,25 @@ public final class GlowServer implements Server {
     }
 
     /**
+     * Binds the rcon server to the address specified in the configuration.
+     */
+    private void bindRcon() {
+        if (!config.getBoolean(ServerConfig.Key.RCON_ENABLED)) {
+            return;
+        }
+
+        SocketAddress address = getBindAddress(ServerConfig.Key.RCON_PORT);
+        rconServer = new RconServer(this, config.getString(ServerConfig.Key.RCON_PASSWORD));
+
+        logger.info("Binding rcon to address: " + address + "...");
+        ChannelFuture future = rconServer.bind(address);
+        Channel channel = future.awaitUninterruptibly().channel();
+        if (!channel.isActive()) {
+            logger.warning("Failed to bind rcon. Address already in use?");
+        }
+    }
+
+    /**
      * Get the SocketAddress to bind to for a specified service.
      * @param portKey The configuration key for the port to use.
      * @return The SocketAddress
@@ -486,13 +512,14 @@ public final class GlowServer implements Server {
             player.kickPlayer(getShutdownMessage());
         }
 
-        // Stop the network server - starts the shutdown process
+        // Stop the network servers - starts the shutdown process
         // It may take a second or two for Netty to totally clean up
         networkServer.shutdown();
-
-        // Stop query server
         if (queryServer != null) {
             queryServer.shutdown();
+        }
+        if (rconServer != null) {
+            rconServer.shutdown();
         }
 
         // Save worlds
@@ -748,6 +775,14 @@ public final class GlowServer implements Server {
      */
     public boolean getProxySupport() {
         return config.getBoolean(ServerConfig.Key.PROXY_SUPPORT);
+    }
+
+    /**
+     * Get whether to use color codes in Rcon responses
+     * @return True if color codes will be present in Rcon responses
+     */
+    public boolean useRconColors() {
+        return config.getBoolean(ServerConfig.Key.RCON_COLORS);
     }
 
     ////////////////////////////////////////////////////////////////////////////
