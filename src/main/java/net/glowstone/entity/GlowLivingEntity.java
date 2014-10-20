@@ -286,7 +286,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * @param damageCause the damage source to check
      * @return whether this entity can take damage from the source
      */
-    protected boolean canTakeDamage(EntityDamageEvent.DamageCause damageCause) {
+    public boolean canTakeDamage(EntityDamageEvent.DamageCause damageCause) {
         return true;
     }
 
