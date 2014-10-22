@@ -31,7 +31,7 @@ public class BlockMushroom extends BlockType {
             for (x = block.getX() - 4; x <= block.getX() + 4; x++) {
                 for (z = block.getZ() - 4; z <= block.getZ() + 4; z++) {
                     for (y = block.getY() - 1; y <= block.getY() + 1; y++) {
-                        if (world.getBlockAt(x, y, z).getType().equals(mushroomType)) {
+                        if (world.getBlockAt(x, y, z).getType() == mushroomType) {
                             if (++i > 4) {
                                 return;
                             }
@@ -47,7 +47,7 @@ public class BlockMushroom extends BlockType {
 
             x = block.getX(); y = block.getY(); z = block.getZ();
             for (i = 0; i < 4; i++) {
-                if (world.getBlockAt(nX, nY, nZ).getType().equals(Material.AIR)
+                if (world.getBlockAt(nX, nY, nZ).getType() == Material.AIR
                         && canPlaceAt(world.getBlockAt(nX, nY, nZ), BlockFace.DOWN)) {
                     x = nX; y = nY; z = nZ;
                 }
@@ -56,7 +56,7 @@ public class BlockMushroom extends BlockType {
                 nZ = z + random.nextInt(3) - 1;
             }
 
-            if (world.getBlockAt(nX, nY, nZ).getType().equals(Material.AIR)
+            if (world.getBlockAt(nX, nY, nZ).getType() == Material.AIR
                     && canPlaceAt(world.getBlockAt(nX, nY, nZ), BlockFace.DOWN)) {
                 final GlowBlockState state = world.getBlockAt(nX, nY, nZ).getState();
                 state.setType(mushroomType);
