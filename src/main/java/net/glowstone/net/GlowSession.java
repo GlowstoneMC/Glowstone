@@ -125,6 +125,11 @@ public final class GlowSession extends BasicSession {
      * The number of ticks until previousPlacement must be cleared.
      */
     private int previousPlacementTicks;
+    
+    /**
+     * If the connection has been disconnected
+     */
+    private boolean disconnected;
 
     /**
      * Creates a new session.
@@ -400,8 +405,8 @@ public final class GlowSession extends BasicSession {
         // process messages
         Message message;
         while ((message = messageQueue.poll()) != null) {
-            if (getProtocol() instanceof PlayProtocol && player == null) {
-                // player has been unset, we are just seeing extra messages now
+            if (disconnected) {
+                // disconnected, we are just seeing extra messages now
                 continue;
             }
 
@@ -424,6 +429,33 @@ public final class GlowSession extends BasicSession {
         if (writeTimeoutCounter >= TIMEOUT_TICKS && getProtocol() instanceof PlayProtocol) {
             pingMessageId = random.nextInt();
             send(new PingMessage(pingMessageId));
+        }
+
+        // check if the client is disconnected
+        if (disconnected) {
+            if (player == null) {
+                return;
+            }
+
+            player.remove();
+
+            Message userListMessage = UserListItemMessage.removeOne(player.getUniqueId());
+            for (GlowPlayer player : server.getOnlinePlayers()) {
+                if (player.canSee(this.player)) {
+                    player.getSession().send(userListMessage);
+                } else {
+                    player.stopHidingDisconnectedPlayer(this.player);
+                }
+            }
+
+            GlowServer.logger.info(player.getName() + " [" + address + "] lost connection");
+
+            final String text = EventFactory.onPlayerQuit(player).getQuitMessage();
+            if (text != null && !text.isEmpty()) {
+                server.broadcastMessage(text);
+            }
+
+            player = null; // in case we are disposed twice
         }
     }
 
@@ -461,29 +493,7 @@ public final class GlowSession extends BasicSession {
 
     @Override
     public void onDisconnect() {
-        if (player == null) {
-            return;
-        }
-
-        player.remove();
-
-        Message userListMessage = UserListItemMessage.removeOne(player.getUniqueId());
-        for (GlowPlayer player : server.getOnlinePlayers()) {
-            if (player.canSee(this.player)) {
-                player.getSession().send(userListMessage);
-            } else {
-                player.stopHidingDisconnectedPlayer(this.player);
-            }
-        }
-
-        GlowServer.logger.info(player.getName() + " [" + address + "] lost connection");
-
-        final String text = EventFactory.onPlayerQuit(player).getQuitMessage();
-        if (text != null && !text.isEmpty()) {
-            server.broadcastMessage(text);
-        }
-
-        player = null; // in case we are disposed twice
+        disconnected = true;
     }
 
     @Override
