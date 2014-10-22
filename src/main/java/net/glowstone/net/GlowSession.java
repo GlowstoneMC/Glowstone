@@ -43,12 +43,6 @@ import java.util.logging.Level;
 public final class GlowSession extends BasicSession {
 
     /**
-     * The number of ticks which are elapsed before a client is disconnected due
-     * to a timeout.
-     */
-    private static final int TIMEOUT_TICKS = 300;
-
-    /**
      * The server this session belongs to.
      */
     private final GlowServer server;
@@ -89,22 +83,11 @@ public final class GlowSession extends BasicSession {
     private String hostname;
 
     /**
-     * A timeout counter. This is increment once every tick and if it goes above
-     * a certain value the session is disconnected.
-     */
-    private int readTimeoutCounter = 0;
-
-    /**
      * Data regarding a user who has connected through a proxy, used to
      * provide online-mode UUID and properties and other data even if the
      * server is running in offline mode. Null for non-proxied sessions.
      */
     private ProxyData proxyData;
-
-    /**
-     * Similar to readTimeoutCounter but for writes.
-     */
-    private int writeTimeoutCounter = 0;
 
     /**
      * The player associated with this session (if there is one).
@@ -207,12 +190,26 @@ public final class GlowSession extends BasicSession {
     }
 
     /**
+     * Notify that the session is currently idle.
+     */
+    public void idle() {
+        if (pingMessageId == 0 && getProtocol() instanceof PlayProtocol) {
+            pingMessageId = random.nextInt();
+            if (pingMessageId == 0) {
+                pingMessageId++;
+            }
+            send(new PingMessage(pingMessageId));
+        } else {
+            disconnect("Timed out");
+        }
+    }
+
+    /**
      * Note that the client has responded to a keep-alive.
      * @param pingId The pingId to check for validity.
      */
     public void pong(long pingId) {
         if (pingId == pingMessageId) {
-            readTimeoutCounter = 0;
             pingMessageId = 0;
         }
     }
@@ -320,7 +317,6 @@ public final class GlowSession extends BasicSession {
 
     @Override
     public ChannelFuture sendWithFuture(Message message) {
-        writeTimeoutCounter = 0;
         if (!isActive()) {
             // discard messages sent if we're closed, since this happens a lot
             return null;
@@ -389,9 +385,6 @@ public final class GlowSession extends BasicSession {
      * Pulse this session, performing any updates needed.
      */
     void pulse() {
-        readTimeoutCounter++;
-        writeTimeoutCounter++;
-
         // drop the previous placement if needed
         if (previousPlacementTicks > 0 && --previousPlacementTicks == 0) {
             previousPlacement = null;
@@ -406,24 +399,6 @@ public final class GlowSession extends BasicSession {
             }
 
             super.messageReceived(message);
-            readTimeoutCounter = 0;
-        }
-
-        // let us know if the client has timed out yet
-        if (readTimeoutCounter >= TIMEOUT_TICKS) {
-            if (pingMessageId == 0 && getProtocol() instanceof PlayProtocol) {
-                pingMessageId = random.nextInt();
-                send(new PingMessage(pingMessageId));
-            } else {
-                disconnect("Timed out");
-            }
-            readTimeoutCounter = 0;
-        }
-
-        // let the client know we haven't timed out yet
-        if (writeTimeoutCounter >= TIMEOUT_TICKS && getProtocol() instanceof PlayProtocol) {
-            pingMessageId = random.nextInt();
-            send(new PingMessage(pingMessageId));
         }
     }
 
