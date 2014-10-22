@@ -36,9 +36,9 @@ public class BlockCocoa extends BlockAttachable implements IBlockGrowable {
         if (data instanceof CocoaPlant) {
             final CocoaPlant cocoa = (CocoaPlant) data;
             CocoaPlantSize size = cocoa.getSize();
-            if (size.equals(CocoaPlantSize.SMALL)) {
+            if (size == CocoaPlantSize.SMALL) {
                 cocoa.setSize(CocoaPlantSize.MEDIUM);
-            } else if (size.equals(CocoaPlantSize.MEDIUM)) {
+            } else if (size == CocoaPlantSize.MEDIUM) {
                 cocoa.setSize(CocoaPlantSize.LARGE);
             } else {
                 return;

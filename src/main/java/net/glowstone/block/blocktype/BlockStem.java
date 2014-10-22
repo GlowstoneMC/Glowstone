@@ -14,10 +14,10 @@ public class BlockStem extends BlockType implements IBlockGrowable {
     private Material seedsType;
 
     public BlockStem(Material plantType) {
-        if (plantType.equals(Material.MELON_STEM)) {
+        if (plantType == Material.MELON_STEM) {
             fruitType = Material.MELON_BLOCK;
             seedsType = Material.MELON_SEEDS;
-        } else if (plantType.equals(Material.PUMPKIN_STEM)) {
+        } else if (plantType == Material.PUMPKIN_STEM) {
             fruitType = Material.PUMPKIN;
             seedsType = Material.PUMPKIN_SEEDS;
         }

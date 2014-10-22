@@ -42,7 +42,7 @@ public class BlockGrass extends BlockDirectDrops implements IBlockGrowable {
 
             while (true) {
                 // if there's available space
-                if (world.getBlockAt(x, y, z).getType().equals(Material.AIR)) {
+                if (world.getBlockAt(x, y, z).getType() == Material.AIR) {
                     final GlowBlock b = world.getBlockAt(x, y, z);
                     final GlowBlockState blockState = b.getState();
                     if (random.nextFloat() < 0.125D) {
@@ -75,7 +75,7 @@ public class BlockGrass extends BlockDirectDrops implements IBlockGrowable {
                     x += random.nextInt(3) - 1;
                     y += (random.nextInt(3) - 1) * random.nextInt(3) / 2;
                     z += random.nextInt(3) - 1;
-                    if (world.getBlockAt(x, y - 1, z).getType().equals(Material.GRASS)) {
+                    if (world.getBlockAt(x, y - 1, z).getType() == Material.GRASS) {
                         j++;
                         continue;
                     }
