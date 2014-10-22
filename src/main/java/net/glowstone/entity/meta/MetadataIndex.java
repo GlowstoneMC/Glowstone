@@ -141,27 +141,27 @@ public enum MetadataIndex {
         return output;
     }
 
-    public static interface StatusFlags {
-        final int ON_FIRE = 0x01;
-        final int SNEAKING = 0x02;
-        final int SPRINTING = 0x08;
-        final int ARM_UP = 0x10; // eating, drinking, blocking
-        final int INVISIBLE = 0x20;
+    public interface StatusFlags {
+        int ON_FIRE = 0x01;
+        int SNEAKING = 0x02;
+        int SPRINTING = 0x08;
+        int ARM_UP = 0x10; // eating, drinking, blocking
+        int INVISIBLE = 0x20;
     }
 
-    public static interface HorseFlags {
-        final int IS_TAME = 0x02;
-        final int HAS_SADDLE = 0x04;
-        final int HAS_CHEST = 0x08;
-        final int IS_BRED = 0x10;
-        final int IS_EATING = 0x20;
-        final int IS_REARING = 0x40;
-        final int MOUTH_OPEN = 0x80;
+    public interface HorseFlags {
+        int IS_TAME = 0x02;
+        int HAS_SADDLE = 0x04;
+        int HAS_CHEST = 0x08;
+        int IS_BRED = 0x10;
+        int IS_EATING = 0x20;
+        int IS_REARING = 0x40;
+        int MOUTH_OPEN = 0x80;
     }
 
-    public static interface TameableFlags {
-        final int IS_SITTING = 0x01;
-        final int WOLF_IS_ANGRY = 0x02;
-        final int IS_TAME = 0x04;
+    public interface TameableFlags {
+        int IS_SITTING = 0x01;
+        int WOLF_IS_ANGRY = 0x02;
+        int IS_TAME = 0x04;
     }
 }

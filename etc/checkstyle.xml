@@ -26,6 +26,7 @@
         <module name="SimplifyBooleanExpression"/>
         <module name="StringLiteralEquality"/>
         <module name="DefaultComesLast"/>
+        <module name="RedundantModifier"/>
 
         <!-- Imports -->
         <module name="RedundantImport"/>
@@ -122,7 +123,6 @@
         <!--<module name="MissingSwitchDefault"/>-->
         <!--<module name="OneStatementPerLine"/>-->
         <!--<module name="Indentation"/>-->
-        <!--<module name="RedundantModifier"/>-->
 
         <!-- Checks in future checkstyle versions -->
         <!--<module name="OneTopLevelClass"/>-->

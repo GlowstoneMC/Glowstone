@@ -20,19 +20,19 @@ public interface PlayerDataService {
      * @param uuid The UUID of the player to read data for.
      * @return The {@link PlayerReader} to use.
      */
-    public PlayerReader beginReadingData(UUID uuid);
+    PlayerReader beginReadingData(UUID uuid);
 
     /**
      * Shorthand method to read data into an existing player entity.
      * @param player The target player.
      */
-    public void readData(GlowPlayer player);
+    void readData(GlowPlayer player);
 
     /**
      * Save all data for an online player.
      * @param player The source player.
      */
-    public void writeData(GlowPlayer player);
+    void writeData(GlowPlayer player);
 
     /**
      * Get a collection of all known offline players. Currently online
@@ -40,7 +40,7 @@ public interface PlayerDataService {
      * included in OfflinePlayer form.
      * @return All known offline players.
      */
-    public Collection<OfflinePlayer> getOfflinePlayers();
+    Collection<OfflinePlayer> getOfflinePlayers();
 
     /**
      * Locally look up the UUID of an offline player based on their name. If
@@ -49,13 +49,13 @@ public interface PlayerDataService {
      * @param name The name to look up.
      * @return The UUID of the player.
      */
-    public UUID lookupUUID(String name);
+    UUID lookupUUID(String name);
 
     /**
      * A piecewise reader for initializing new players.
      * See {@link PlayerDataService#beginReadingData}.
      */
-    public static interface PlayerReader extends AutoCloseable {
+    interface PlayerReader extends AutoCloseable {
 
         /**
          * Check whether the player has played before. If the player has
@@ -64,50 +64,50 @@ public interface PlayerDataService {
          * still not have meaningful values, depending on the data.
          * @return True if the player has played before.
          */
-        public boolean hasPlayedBefore();
+        boolean hasPlayedBefore();
 
         /**
          * Get the last saved location of the player if available.
          * @return The location, or null.
          */
-        public Location getLocation();
+        Location getLocation();
 
         /**
          * Get the player's bed spawn location if available.
          * @return The location, or null.
          */
-        public Location getBedSpawnLocation();
+        Location getBedSpawnLocation();
 
         /**
          * Get the first-played time if available.
          * @return Time in milliseconds since epoch, or 0.
          */
-        public long getFirstPlayed();
+        long getFirstPlayed();
 
         /**
          * Get the last-played time if available.
          * @return Time in milliseconds since epoch, or 0.
          */
-        public long getLastPlayed();
+        long getLastPlayed();
 
         /**
          * Get the player's last known username if available.
          * @return The name, or null.
          */
-        public String getLastKnownName();
+        String getLastKnownName();
 
         /**
          * Finish reading the rest of the player's entity data into the
          * specified player entity.
          * @param player The target player.
          */
-        public void readData(GlowPlayer player);
+        void readData(GlowPlayer player);
 
         /**
          * Close any resources involved in reading the player data.
          */
         @Override
-        public void close();
+        void close();
     }
 
 }
