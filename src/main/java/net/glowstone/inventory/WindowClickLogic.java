@@ -3,6 +3,7 @@ package net.glowstone.inventory;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -111,6 +112,10 @@ public final class WindowClickLogic {
                     return InventoryAction.DROP_ALL_CURSOR;
                 }
 
+                if (slot == SlotType.ARMOR) {
+                    return InventoryAction.PLACE_ONE;
+                }
+
                 if (slotItem == null) {
                     return InventoryAction.PLACE_ALL;
                 }
@@ -216,6 +221,22 @@ public final class WindowClickLogic {
             case PLACE_ONE:
             case PLACE_ALL:
             case PLACE_SOME:
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * Check if a given InventoryAction involves taking items from the slot.
+     * @param action The InventoryAction.
+     * @return True if the slot is to be added to the cursor.
+     */
+    public static boolean isPickupAction(InventoryAction action) {
+        switch (action) {
+            case PICKUP_ALL:
+            case PICKUP_HALF:
+            case PICKUP_ONE:
+            case PICKUP_SOME:
                 return true;
         }
         return false;

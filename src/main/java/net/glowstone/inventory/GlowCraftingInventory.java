@@ -1,10 +1,13 @@
 package net.glowstone.inventory;
 
 import net.glowstone.GlowServer;
+import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
@@ -49,6 +52,47 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
     }
 
     @Override
+    public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot, ItemStack clickedItem) {
+        GlowInventory playerInv = player.getInventory();
+        if (getSlotType(view.convertSlot(clickedSlot)) == SlotType.RESULT) {
+            // If the player clicked on the result give it to them
+            Recipe recipe = getRecipe();
+            if (recipe == null) {
+                return; // No complete recipe in crafting grid
+            }
+            clickedItem = recipe.getResult();
+
+            // First calculate how many crafted items could fit in the player's inventory
+            int freeSpace = 0;
+            int maxStackSize = Math.min(clickedItem.getMaxStackSize(), playerInv.getMaxStackSize());
+            for (ItemStack stack : playerInv.getContents()) {
+                if (stack == null) {
+                    freeSpace += maxStackSize;
+                } else if (stack.isSimilar(clickedItem)) {
+                    freeSpace += maxStackSize - stack.getAmount();
+                }
+            }
+
+            // Then try to craft as many as possible
+            CraftingManager cm = ((GlowServer) Bukkit.getServer()).getCraftingManager();
+            while (freeSpace >= clickedItem.getAmount() && getRecipe() == recipe) {
+                clickedItem = recipe.getResult().clone();
+                freeSpace -= clickedItem.getAmount();
+
+                // Place the items in the player's inventory (right to left)
+                player.getInventory().tryToFillSlots(clickedItem, 8, -1, 35, 8);
+
+                // Craft the items, removing the ingredients from the crafting matrix
+                craft(cm, recipe);
+            }
+        } else {
+            // Clicked in the crafting grid, no special handling required (just place them left to right)
+            clickedItem = player.getInventory().tryToFillSlots(clickedItem, 9, 36, 0, 9);
+            view.setItem(clickedSlot, clickedItem);
+        }
+    }
+
+    @Override
     public int getRawSlots() {
         return 0;
     }
@@ -62,9 +106,19 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
         Recipe recipe = cm.getCraftingRecipe(matrix);
 
         if (recipe != null) {
-            cm.removeItems(matrix, recipe);
-            setMatrix(matrix);
+            craft(cm, recipe);
         }
+    }
+
+    /**
+     * Remove a layer of items from the inventory according to the current recipe.
+     * This makes no check for whether the supplied recipe is valid for the
+     * current crafting matrix. These checks must be performed beforehand.
+     */
+    protected void craft(CraftingManager cm, Recipe recipe) {
+        ItemStack[] matrix = getMatrix();
+        cm.removeItems(matrix, recipe);
+        setMatrix(matrix);
     }
 
     @Override
@@ -88,7 +142,15 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
             throw new IllegalArgumentException("Length must be " + (getSize() - 1));
         }
         for (int i = 0; i < contents.length; ++i) {
-            setItem(MATRIX_START + i, contents[i]);
+            // Call super method, so we only calculate the result once
+            super.setItem(MATRIX_START + i, contents[i]);
+        }
+        // Update result
+        Recipe recipe = getRecipe();
+        if (recipe == null) {
+            super.setItem(RESULT_SLOT, null);
+        } else {
+            super.setItem(RESULT_SLOT, recipe.getResult());
         }
     }
 
