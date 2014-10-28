@@ -291,6 +291,7 @@ public final class CraftingManager implements Iterable<Recipe> {
 
         // Dynamic recipes
         dynamicRecipes.add(new GlowBannerRecipe());
+        dynamicRecipes.add(new GlowBannerCopyRecipe());
 
         // Smelting fuels (time is in ticks)
         furnaceFuels.put(Material.COAL, 1600);
