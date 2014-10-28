@@ -1,4 +1,4 @@
-package net.glowstone.inventory;
+package net.glowstone.inventory.crafting;
 
 import org.bukkit.BannerPattern;
 import org.bukkit.DyeColor;

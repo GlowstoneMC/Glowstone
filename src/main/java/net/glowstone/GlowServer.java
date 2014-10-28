@@ -6,7 +6,7 @@ import net.glowstone.command.ColorCommand;
 import net.glowstone.command.TellrawCommand;
 import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.inventory.CraftingManager;
+import net.glowstone.inventory.crafting.CraftingManager;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.io.PlayerDataService;

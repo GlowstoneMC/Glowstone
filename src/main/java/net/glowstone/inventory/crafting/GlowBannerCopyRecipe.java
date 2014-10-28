@@ -1,4 +1,4 @@
-package net.glowstone.inventory;
+package net.glowstone.inventory.crafting;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.DynamicRecipe;

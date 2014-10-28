@@ -1,4 +1,4 @@
-package net.glowstone.inventory;
+package net.glowstone.inventory.crafting;
 
 import com.google.common.collect.Iterators;
 import net.glowstone.GlowServer;
