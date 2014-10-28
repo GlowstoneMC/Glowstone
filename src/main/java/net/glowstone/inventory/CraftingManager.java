@@ -17,6 +17,7 @@ public final class CraftingManager implements Iterable<Recipe> {
 
     private final ArrayList<ShapedRecipe> shapedRecipes = new ArrayList<>();
     private final ArrayList<ShapelessRecipe> shapelessRecipes = new ArrayList<>();
+    private final ArrayList<DynamicRecipe> dynamicRecipes = new ArrayList<>();
     private final ArrayList<FurnaceRecipe> furnaceRecipes = new ArrayList<>();
     private final Map<Material, Integer> furnaceFuels = new HashMap<>();
 
@@ -28,6 +29,7 @@ public final class CraftingManager implements Iterable<Recipe> {
                 shapedRecipes.size() + " shaped, " +
                 shapelessRecipes.size() + " shapeless, " +
                 furnaceRecipes.size() + " furnace, " +
+                dynamicRecipes.size() + " dynamic, " +
                 furnaceFuels.size() + " fuels.");
     }
 
@@ -42,6 +44,9 @@ public final class CraftingManager implements Iterable<Recipe> {
             return true;
         } else if (recipe instanceof ShapelessRecipe) {
             shapelessRecipes.add((ShapelessRecipe) recipe);
+            return true;
+        } else if (recipe instanceof DynamicRecipe) {
+            dynamicRecipes.add((DynamicRecipe) recipe);
             return true;
         } else if (recipe instanceof FurnaceRecipe) {
             furnaceRecipes.add((FurnaceRecipe) recipe);
@@ -88,9 +93,9 @@ public final class CraftingManager implements Iterable<Recipe> {
     }
 
     /**
-     * Get a shaped or shapeless recipe from the crafting manager.
+     * Get a crafting recipe from the crafting manager.
      * @param items An array of items with null being empty slots. Length should be a perfect square.
-     * @return The ShapedRecipe or ShapelessRecipe that matches the input, or null if none match.
+     * @return The Recipe that matches the input, or null if none match.
      */
     public Recipe getCraftingRecipe(ItemStack[] items) {
         int size = (int) Math.sqrt(items.length);
@@ -117,6 +122,12 @@ public final class CraftingManager implements Iterable<Recipe> {
             result = getShapedRecipe(size, reversedItems);
             if (result != null) {
                 return result;
+            }
+        }
+
+        for(DynamicRecipe dynamicRecipe : dynamicRecipes) {
+            if(dynamicRecipe.match(items)) {
+                return dynamicRecipe;
             }
         }
 
@@ -226,7 +237,7 @@ public final class CraftingManager implements Iterable<Recipe> {
 
     @Override
     public Iterator<Recipe> iterator() {
-        return Iterators.concat(shapedRecipes.iterator(), shapelessRecipes.iterator(), furnaceRecipes.iterator());
+        return Iterators.concat(shapedRecipes.iterator(), shapelessRecipes.iterator(), dynamicRecipes.iterator(), furnaceRecipes.iterator());
     }
 
     private boolean isWildcard(short data) {
@@ -266,6 +277,7 @@ public final class CraftingManager implements Iterable<Recipe> {
     public void clearRecipes() {
         shapedRecipes.clear();
         shapelessRecipes.clear();
+        dynamicRecipes.clear();
         furnaceRecipes.clear();
         furnaceFuels.clear();
     }
@@ -276,6 +288,9 @@ public final class CraftingManager implements Iterable<Recipe> {
     public void resetRecipes() {
         clearRecipes();
         loadRecipes();
+
+        // Dynamic recipes
+        dynamicRecipes.add(new GlowBannerRecipe());
 
         // Smelting fuels (time is in ticks)
         furnaceFuels.put(Material.COAL, 1600);
