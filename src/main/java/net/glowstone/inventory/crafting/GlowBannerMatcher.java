@@ -4,6 +4,7 @@ import org.bukkit.BannerPattern;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.DynamicRecipe;
+import org.bukkit.inventory.ItemMatcher;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.material.Dye;
@@ -13,12 +14,12 @@ import java.util.List;
 /**
  * Recipe for adding patterns to a banner item.
  */
-public class GlowBannerRecipe implements DynamicRecipe {
+public class GlowBannerMatcher extends ItemMatcher {
 
     ItemStack result = new ItemStack(Material.BANNER); // Default result
 
     @Override
-    public boolean match(ItemStack[] matrix) {
+    public ItemStack getResult(ItemStack[] matrix) {
         DyeColor color = null;
         BannerPattern.LayerTexture texture = null;
         ItemStack banner = null;
@@ -27,7 +28,7 @@ public class GlowBannerRecipe implements DynamicRecipe {
             if(item == null) continue;
             if(item.getType() == Material.BANNER) {
                 if(banner != null) {
-                    return false; // Multiple banners found
+                    return null; // Multiple banners found
                 }
                 banner = item;
                 continue;
@@ -35,13 +36,13 @@ public class GlowBannerRecipe implements DynamicRecipe {
             if(item.getType() == Material.INK_SACK) {
                 DyeColor itemColor = ((Dye) item.getData()).getColor();
                 if(color != null && itemColor != color) {
-                    return false; // Can't have multiple colors
+                    return null; // Can't have multiple colors
                 }
                 color = itemColor;
             }
         }
         if(banner == null) {
-            return false; // Couldn't found a banner to alter
+            return null; // Couldn't found a banner to alter
         }
 
         recipe:
@@ -60,7 +61,7 @@ public class GlowBannerRecipe implements DynamicRecipe {
                     }
 
                     if(item.getType() == recipe.getType() && item.getDurability() == recipe.getData()) {
-                        if(texture != null) return false; // Can't have multiple of same item
+                        if(texture != null) return null; // Can't have multiple of same item
                         texture = recipe.getPattern(); // Matches texture type
                         continue;
                     }
@@ -74,7 +75,7 @@ public class GlowBannerRecipe implements DynamicRecipe {
                 }
                 break; // Recipe matches
             } else {
-                if(matrix.length != 9) return false; // Non-item recipes only work on 3x3
+                if(matrix.length != 9) return null; // Non-item recipes only work on 3x3
 
                 for(int i = 0; i < 9; i++) {
                     boolean hasValue = recipe.getValues()[i] == '#';
@@ -92,7 +93,7 @@ public class GlowBannerRecipe implements DynamicRecipe {
             }
         }
 
-        if(texture == null) return false; // No texture found
+        if(texture == null) return null; // No texture found
 
         // Create result banner
         BannerMeta meta = (BannerMeta) banner.getItemMeta();
@@ -105,11 +106,6 @@ public class GlowBannerRecipe implements DynamicRecipe {
         meta.setPattern(builder.build());
         result = banner.clone();
         result.setItemMeta(meta);
-        return true;
-    }
-
-    @Override
-    public ItemStack getResult() {
         return result;
     }
 

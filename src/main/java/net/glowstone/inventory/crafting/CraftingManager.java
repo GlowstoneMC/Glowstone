@@ -126,7 +126,7 @@ public final class CraftingManager implements Iterable<Recipe> {
         }
 
         for(DynamicRecipe dynamicRecipe : dynamicRecipes) {
-            if(dynamicRecipe.match(items)) {
+            if(dynamicRecipe.matches(items)) {
                 return dynamicRecipe;
             }
         }
@@ -290,8 +290,8 @@ public final class CraftingManager implements Iterable<Recipe> {
         loadRecipes();
 
         // Dynamic recipes
-        dynamicRecipes.add(new GlowBannerRecipe());
-        dynamicRecipes.add(new GlowBannerCopyRecipe());
+        dynamicRecipes.add(new DynamicRecipe(new GlowBannerMatcher()));
+        dynamicRecipes.add(new DynamicRecipe(new GlowBannerCopyMatcher()));
 
         // Smelting fuels (time is in ticks)
         furnaceFuels.put(Material.COAL, 1600);
