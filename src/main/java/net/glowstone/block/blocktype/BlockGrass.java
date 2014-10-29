@@ -37,7 +37,7 @@ public class BlockGrass extends BlockType {
                 int y = sourceY + random.nextInt(5) - 3;
 
                 final GlowBlock targetBlock = world.getBlockAt(x, y, z);
-                if (targetBlock.getType() == Material.DIRT
+                if (targetBlock.getType() == Material.DIRT && targetBlock.getData() == 0
                         && targetBlock.getData() == 0 // only spread on normal dirt
                         && targetBlock.getRelative(BlockFace.UP).getLightLevel() >= 4) {
                     final GlowBlockState state = targetBlock.getState();

@@ -45,7 +45,8 @@ public class BlockSoil extends BlockType {
         for (int x = block.getX() - 4; x <= block.getX() + 4; x++) {
             for (int z = block.getZ() - 4; z <= block.getZ() + 4; z++) {
                 for (int y = block.getY(); y <= block.getY() + 1; y++) {
-                    if (world.getBlockAt(x, y, z).getType() == Material.WATER) {
+                    final Material type = world.getBlockAt(x, y, z).getType();
+                    if (type == Material.WATER || type == Material.STATIONARY_WATER) {
                         return true;
                     }
                 }
