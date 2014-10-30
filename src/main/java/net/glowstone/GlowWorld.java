@@ -415,8 +415,8 @@ public final class GlowWorld implements World {
                         currentlyRaining && currentlyThundering) {
                     if (random.nextDouble() < .00001) {
                         final int n = random.nextInt();
-                        final int x = (chunk.getX() << 4) + (n & 0xF);
-                        final int z = (chunk.getZ() << 4) + (n >> 8 & 0xF);
+                        final int x = cx + (n & 0xF);
+                        final int z = cz + (n >> 8 & 0xF);
                         final int y = getHighestBlockYAt(x, z);
 
                         strikeLightning(new Location(this, x, y, z));
