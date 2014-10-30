@@ -93,17 +93,21 @@ public class BlockSapling extends BlockType implements IBlockGrowable {
         final Location loc = block.getLocation();
         final BlockStateDelegate blockStateDelegate = new BlockStateDelegate();
         final TreeGenerator generator = new TreeGenerator(blockStateDelegate);
+        boolean canGrow = false;
         if (generator.generate(random, loc, type)) {
             final List<BlockState> blockStates = new ArrayList<BlockState>(blockStateDelegate.getBlockStates());
             StructureGrowEvent growEvent =
                     new StructureGrowEvent(loc, type, player == null ? false : true, player, blockStates);
             EventFactory.callEvent(growEvent);
             if (!growEvent.isCancelled()) {
+                canGrow = true;
                 for (BlockState state : blockStates) {
                     state.update(true);
                 }
             }
-        } else {
+        }
+
+        if (!canGrow) {
             // places the sapling block(s) back if the tree was not generated
             // the sapling ages are overwritten but this is an expected
             // vanilla behavior
