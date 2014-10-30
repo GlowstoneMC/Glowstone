@@ -309,7 +309,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         updateInventory(); // send inventory contents
 
         // send initial location
-        session.send(new PositionRotationMessage(location, getEyeHeight() + 0.05));
+        session.send(new PositionRotationMessage(location));
     }
 
     /**
@@ -595,7 +595,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         setRawLocation(location); // take us to spawn position
         streamBlocks(); // stream blocks
         setCompassTarget(world.getSpawnLocation()); // set our compass target
-        session.send(new PositionRotationMessage(location, getEyeHeight() + 0.05));
+        session.send(new PositionRotationMessage(location));
         sendWeather();
         sendTime();
         updateInventory();
@@ -1156,8 +1156,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         if (location.getWorld() != world) {
             spawnAt(location);
         } else {
-            // y offset accounts for floating point shenanigans in client physics
-            session.send(new PositionRotationMessage(location, getEyeHeight() + 0.05));
+            session.send(new PositionRotationMessage(location));
             setRawLocation(location);
         }
 

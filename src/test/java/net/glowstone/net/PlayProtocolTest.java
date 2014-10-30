@@ -64,7 +64,7 @@ public class PlayProtocolTest extends BaseProtocolTest {
             new RespawnMessage(1, 2, 3, "world"),
             new PositionRotationMessage(1.0, 2.0, 3.0, 1f, 2f),
             new PositionRotationMessage(1.0, 2.0, 3.0, 4f, 5f, 6),
-            new PositionRotationMessage(new Location(null, 1.0, 2.0, 3.0, 4f, 5f), 1.6f),
+            new PositionRotationMessage(new Location(null, 1.0, 2.0, 3.0, 4f, 5f)),
             new AnimateEntityMessage(1, 2),
             new SpawnPlayerMessage(1, UUID.randomUUID(), 2, 3, 4, 5, 6, 7, ProtocolTestUtils.getMetadataEntry()),
             new CollectItemMessage(1, 2),
