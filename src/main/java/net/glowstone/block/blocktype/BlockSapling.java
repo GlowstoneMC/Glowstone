@@ -1,5 +1,6 @@
 package net.glowstone.block.blocktype;
 
+import org.bukkit.Material;
 import org.bukkit.TreeSpecies;
 import org.bukkit.TreeType;
 import org.bukkit.block.BlockFace;
@@ -26,7 +27,12 @@ public class BlockSapling extends BlockType {
                 if (data instanceof Tree) {
                     final Tree tree = (Tree) data;
                     final TreeType type = getTreeType(tree.getSpecies());
-                    block.getWorld().generateTree(block.getLocation(), type);
+                    block.setType(Material.AIR);
+                    final int saplingData = block.getData() & 0x7;
+                    if (!block.getWorld().generateTree(block.getLocation(), type)) {
+                        block.setType(Material.SAPLING);
+                        block.setData((byte) saplingData);
+                    }
                 } else {
                     warnMaterialData(Tree.class, data);
                 }

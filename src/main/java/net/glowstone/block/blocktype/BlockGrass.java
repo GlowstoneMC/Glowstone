@@ -24,7 +24,17 @@ public class BlockGrass extends BlockType {
 
     @Override
     public void updateBlock(GlowBlock block) {
-        if (block.getLightLevel() >= 9) {
+        if (block.getLightLevel() < 4 ||
+                block.getRelative(BlockFace.UP).getType() != Material.AIR) { // temp fix
+            // grass block turns into dirt block
+            final GlowBlockState state = block.getState();
+            state.setType(Material.DIRT);
+            BlockFadeEvent fadeEvent = new BlockFadeEvent(block, state);
+            EventFactory.callEvent(fadeEvent);
+            if (!fadeEvent.isCancelled()) {
+                state.update(true);
+            }
+        } else if (block.getLightLevel() >= 9) {
             final GlowWorld world = block.getWorld();
             int sourceX = block.getX();
             int sourceY = block.getY();
@@ -37,9 +47,10 @@ public class BlockGrass extends BlockType {
                 int y = sourceY + random.nextInt(5) - 3;
 
                 final GlowBlock targetBlock = world.getBlockAt(x, y, z);
-                if (targetBlock.getType() == Material.DIRT && targetBlock.getData() == 0
-                        && targetBlock.getData() == 0 // only spread on normal dirt
-                        && targetBlock.getRelative(BlockFace.UP).getLightLevel() >= 4) {
+                if (targetBlock.getType() == Material.DIRT &&
+                        targetBlock.getData() == 0 && // only spread on normal dirt
+                        targetBlock.getRelative(BlockFace.UP).getType() == Material.AIR && // temp fix
+                        targetBlock.getRelative(BlockFace.UP).getLightLevel() >= 4) {
                     final GlowBlockState state = targetBlock.getState();
                     state.setType(Material.GRASS);
                     state.setRawData((byte) 0);
@@ -49,15 +60,6 @@ public class BlockGrass extends BlockType {
                         state.update(true);
                     }
                 }
-            }
-        } else if (block.getLightLevel() < 4) {
-            // grass block turns into dirt block
-            final GlowBlockState state = block.getState();
-            state.setType(Material.DIRT);
-            BlockFadeEvent fadeEvent = new BlockFadeEvent(block, state);
-            EventFactory.callEvent(fadeEvent);
-            if (!fadeEvent.isCancelled()) {
-                state.update(true);
             }
         }
     }
