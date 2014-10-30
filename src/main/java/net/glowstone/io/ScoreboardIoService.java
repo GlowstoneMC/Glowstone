@@ -14,20 +14,20 @@ public interface ScoreboardIoService {
      * @throws IOException if an I/O error occurs.
      * @return {@link GlowScoreboard} The {@link GlowScoreboard} read from storage
      */
-    public GlowScoreboard readMainScoreboard() throws IOException;
+    GlowScoreboard readMainScoreboard() throws IOException;
 
     /**
      * Writes the main scoreboard.
      * @param scoreboard The {@link GlowScoreboard} to write.
      * @throws IOException if an I/O error occurs.
      */
-    public void writeMainScoreboard(GlowScoreboard scoreboard) throws IOException;
+    void writeMainScoreboard(GlowScoreboard scoreboard) throws IOException;
 
     /**
      * Unload the service, performing any cleanup necessary.
      * @throws IOException if an I/O error occurs.
      */
-    public void unload() throws IOException;
+    void unload() throws IOException;
 
     void save() throws IOException;
 }
