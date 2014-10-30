@@ -4,6 +4,7 @@ import org.bukkit.GrassSpecies;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockGrowEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.LongGrass;
 
 import net.glowstone.EventFactory;
@@ -13,10 +14,10 @@ import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.entity.GlowPlayer;
 
-public class BlockGrass extends BlockDirectDrops implements IBlockGrowable {
+public class BlockGrass extends BlockType implements IBlockGrowable {
 
     public BlockGrass() {
-        super(Material.DIRT);
+        setDrops(new ItemStack(Material.DIRT, 1));
     }
 
     @Override

@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.event.world.StructureGrowEvent;
 
@@ -24,6 +25,23 @@ public class BlockMushroom extends BlockType implements IBlockGrowable {
     }
 
     @Override
+    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+        final GlowBlock belowBlock = block.getRelative(BlockFace.DOWN);
+        final Material type = belowBlock.getType();
+        if (type == Material.GRASS ||
+                (type == Material.DIRT && belowBlock.getData() != 2)) {
+            if (block.getLightLevel() < 13) { // checking light level for dirt, coarse dirt and grass
+                return true;
+            }
+        } else if (type == Material.MYCEL ||
+                (type == Material.DIRT && belowBlock.getData() == 2)) {
+            // not checking light level if mycel or podzol
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public boolean isFertilizable(GlowBlock block) {
         return true;
     }
@@ -36,9 +54,9 @@ public class BlockMushroom extends BlockType implements IBlockGrowable {
     @Override
     public void grow(GlowPlayer player, GlowBlock block) {
         TreeType type;
-        if (mushroomType.equals(Material.BROWN_MUSHROOM)) {
+        if (mushroomType == Material.BROWN_MUSHROOM) {
             type = TreeType.BROWN_MUSHROOM;
-        } else if (mushroomType.equals(Material.RED_MUSHROOM)) {
+        } else if (mushroomType == Material.RED_MUSHROOM) {
             type = TreeType.RED_MUSHROOM;
         } else {
             return;

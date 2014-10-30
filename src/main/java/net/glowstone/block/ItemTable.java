@@ -98,7 +98,7 @@ public final class ItemTable {
         reg(Material.QUARTZ_ORE, new BlockDirectDrops(Material.QUARTZ, ToolType.PICKAXE));
         reg(Material.REDSTONE_ORE, new BlockRandomDrops(Material.REDSTONE, 0, 3, 4, ToolType.IRON_PICKAXE));
         reg(Material.REDSTONE_BLOCK, new BlockDirectDrops(ToolType.PICKAXE));
-        reg(Material.CARROT, new BlockDirectDrops(Material.CARROT_ITEM));
+        reg(Material.CARROT, new BlockCarrot());
         reg(Material.COCOA, new BlockCocoa());
         reg(Material.DEAD_BUSH, new BlockDeadBush());
         reg(Material.LONG_GRASS, new BlockTallGrass());
@@ -109,7 +109,7 @@ public final class ItemTable {
         reg(Material.MELON_BLOCK, new BlockMelon());
         reg(Material.MELON_STEM, new BlockStem(Material.MELON_STEM));
         reg(Material.NETHER_WARTS, new BlockDirectDrops(Material.NETHER_STALK));
-        reg(Material.POTATO, new BlockDirectDrops(Material.POTATO_ITEM));
+        reg(Material.POTATO, new BlockPotato());
         reg(Material.PUMPKIN_STEM, new BlockStem(Material.PUMPKIN_STEM));
         reg(Material.CROPS, new BlockCrops());
         reg(Material.CAKE_BLOCK, new BlockDropless());
