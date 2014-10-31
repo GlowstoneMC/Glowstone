@@ -15,15 +15,15 @@ import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 
-public class BlockStem extends BlockNeedsAttached {
+public class BlockStem extends BlockCrops {
     private Material fruitType;
     private Material seedsType;
 
-    public BlockStem(Material plantType) {
-        if (plantType == Material.MELON_STEM) {
+    public BlockStem(Material stemType) {
+        if (stemType == Material.MELON_STEM) {
             fruitType = Material.MELON_BLOCK;
             seedsType = Material.MELON_SEEDS;
-        } else if (plantType == Material.PUMPKIN_STEM) {
+        } else if (stemType == Material.PUMPKIN_STEM) {
             fruitType = Material.PUMPKIN;
             seedsType = Material.PUMPKIN_SEEDS;
         }
@@ -45,52 +45,56 @@ public class BlockStem extends BlockNeedsAttached {
 
     @Override
     public void updateBlock(GlowBlock block) {
-        int cropState = block.getData();
-        if (cropState >= CropState.RIPE.ordinal()) {
-            // check around there's not already a fruit
-            if (block.getRelative(BlockFace.EAST).getType() == fruitType
-                    || block.getRelative(BlockFace.WEST).getType() == fruitType
-                    || block.getRelative(BlockFace.NORTH).getType() == fruitType
-                    || block.getRelative(BlockFace.SOUTH).getType() == fruitType) {
-                return;
-            }
-            // produce a fruit if possible
-            int n = random.nextInt(4);
-            BlockFace face;
-            switch (n) {
-                case 1:
-                    face = BlockFace.WEST;
-                    break;
-                case 2:
-                    face = BlockFace.NORTH;
-                    break;
-                case 3:
-                    face = BlockFace.SOUTH;
-                    break;
-                default:
-                    face = BlockFace.EAST;
-            }
-            final GlowBlock targetBlock = block.getRelative(face);
-            final GlowBlockState targetBlockState = targetBlock.getState();
-            final GlowBlock belowTargetBlock = targetBlock.getRelative(BlockFace.DOWN);
-            if (targetBlock.getType() == Material.AIR
-                    && (belowTargetBlock.getType() == Material.SOIL
-                    || belowTargetBlock.getType() == Material.DIRT
-                    || belowTargetBlock.getType() == Material.GRASS)) {
-                targetBlockState.setType(fruitType);
-                if (fruitType == Material.PUMPKIN) {
-                    targetBlockState.setData(new Pumpkin(face.getOppositeFace()));
+        if (block.getRelative(BlockFace.UP).getLightLevel() >= 9 &&
+                random.nextInt((int) (25.0F / getGrowthRateModifier(block)) + 1) == 0) {
+
+            int cropState = block.getData();
+            if (cropState >= CropState.RIPE.ordinal()) {
+                // check around there's not already a fruit
+                if (block.getRelative(BlockFace.EAST).getType() == fruitType
+                        || block.getRelative(BlockFace.WEST).getType() == fruitType
+                        || block.getRelative(BlockFace.NORTH).getType() == fruitType
+                        || block.getRelative(BlockFace.SOUTH).getType() == fruitType) {
+                    return;
                 }
-                targetBlockState.update(true);
-            }
-        } else {
-            cropState++;
-            final GlowBlockState state = block.getState();
-            state.setRawData((byte) cropState);
-            BlockGrowEvent growEvent = new BlockGrowEvent(block, state);
-            EventFactory.callEvent(growEvent);
-            if (!growEvent.isCancelled()) {
-                state.update(true);
+                // produce a fruit if possible
+                int n = random.nextInt(4);
+                BlockFace face;
+                switch (n) {
+                    case 1:
+                        face = BlockFace.WEST;
+                        break;
+                    case 2:
+                        face = BlockFace.NORTH;
+                        break;
+                    case 3:
+                        face = BlockFace.SOUTH;
+                        break;
+                    default:
+                       face = BlockFace.EAST;
+                }
+                final GlowBlock targetBlock = block.getRelative(face);
+                final GlowBlockState targetBlockState = targetBlock.getState();
+                final GlowBlock belowTargetBlock = targetBlock.getRelative(BlockFace.DOWN);
+                if (targetBlock.getType() == Material.AIR
+                        && (belowTargetBlock.getType() == Material.SOIL
+                        || belowTargetBlock.getType() == Material.DIRT
+                        || belowTargetBlock.getType() == Material.GRASS)) {
+                    targetBlockState.setType(fruitType);
+                    if (fruitType == Material.PUMPKIN) {
+                        targetBlockState.setData(new Pumpkin(face.getOppositeFace()));
+                    }
+                    targetBlockState.update(true);
+                }
+            } else {
+                cropState++;
+                final GlowBlockState state = block.getState();
+                state.setRawData((byte) cropState);
+                BlockGrowEvent growEvent = new BlockGrowEvent(block, state);
+                EventFactory.callEvent(growEvent);
+                if (!growEvent.isCancelled()) {
+                    state.update(true);
+                }
             }
         }
     }

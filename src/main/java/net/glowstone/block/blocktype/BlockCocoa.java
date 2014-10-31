@@ -18,11 +18,11 @@ public class BlockCocoa extends BlockAttachable {
 
     @Override
     public void updateBlock(GlowBlock block) {
-        if (random.nextInt(5) == 0) {
-            final MaterialData data = block.getState().getData();
-            if (data instanceof CocoaPlant) {
-                final CocoaPlant cocoa = (CocoaPlant) data;
-                CocoaPlantSize size = cocoa.getSize();
+        final MaterialData data = block.getState().getData();
+        if (data instanceof CocoaPlant) {
+            final CocoaPlant cocoa = (CocoaPlant) data;
+            final CocoaPlantSize size = cocoa.getSize();
+            if (size != CocoaPlantSize.LARGE && random.nextInt(5) == 0) {
                 if (size == CocoaPlantSize.SMALL) {
                     cocoa.setSize(CocoaPlantSize.MEDIUM);
                 } else if (size == CocoaPlantSize.MEDIUM) {
@@ -37,9 +37,9 @@ public class BlockCocoa extends BlockAttachable {
                 if (!growEvent.isCancelled()) {
                     state.update(true);
                 }
-            } else {
-                warnMaterialData(CocoaPlant.class, data);
             }
+        } else {
+            warnMaterialData(CocoaPlant.class, data);
         }
     }
 }

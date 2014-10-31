@@ -1,13 +1,15 @@
 package net.glowstone.block.blocktype;
 
 import org.bukkit.CropState;
+import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockGrowEvent;
 
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 
-public class BlockCrops extends BlockType {
+public class BlockCrops extends BlockNeedsAttached {
 
     @Override
     public boolean canTickRandomly() {
@@ -18,19 +20,71 @@ public class BlockCrops extends BlockType {
     public void updateBlock(GlowBlock block) {
         final GlowBlockState state = block.getState();
         int cropState = block.getData();
-        if (cropState < CropState.RIPE.ordinal()) {
-            if (random.nextInt(3) == 0) {
-               cropState++;
-               if (cropState > CropState.RIPE.ordinal()) {
-                   cropState = CropState.RIPE.ordinal();
-               }
-               state.setRawData((byte) cropState);
-               BlockGrowEvent growEvent = new BlockGrowEvent(block, state);
-               EventFactory.callEvent(growEvent);
-               if (!growEvent.isCancelled()) {
-                   state.update(true);
-               }
+        if (cropState < CropState.RIPE.ordinal() && block.getRelative(BlockFace.UP).getLightLevel() >= 9 &&
+                random.nextInt((int) (25.0F / getGrowthRateModifier(block)) + 1) == 0) {
+            cropState++;
+            if (cropState > CropState.RIPE.ordinal()) {
+                cropState = CropState.RIPE.ordinal();
+            }
+            state.setRawData((byte) cropState);
+            BlockGrowEvent growEvent = new BlockGrowEvent(block, state);
+            EventFactory.callEvent(growEvent);
+            if (!growEvent.isCancelled()) {
+                state.update(true);
             }
         }
     }
+
+    protected float getGrowthRateModifier(GlowBlock block) {
+        float modifier = 1;
+
+        // check for soil around (increase the chance modifier to 10 in the best conditions)
+        for (int x = -1; x <= 1; x++) {
+            for (int z = -1; z <= 1; z++) {
+                final GlowBlock b = block.getWorld().getBlockAt(block.getX() + x, block.getY() - 1, block.getZ() + z);
+                float soilBonus = 0;
+                if (b.getType() == Material.SOIL) {
+                    soilBonus = 1;
+                    // check if soil is wet for more bonus
+                    if (b.getData() > 0) {
+                        soilBonus = 3;
+                    }
+                    // more chances if the soil the crop is planted on is wet
+                    if (x != 0 || z != 0) {
+                        soilBonus /= 4.0F;
+                    }
+                }
+                // this will add 0.25 points for dry soil around, 0.75 points for wet soil around
+                // and 1 point for dry soil under the stem, 3 points for wet soil under stem
+                modifier += soilBonus;
+            }
+        }
+
+        // check for crops around, decrease chances by 50% if a crop of the same type is found on
+        // both NS and EW axis, or a crop is found on a diagonal block
+        boolean cropOnDiagonalBlock = false;
+        boolean cropOnNorthOrSouth = false;
+        boolean cropOnEastOrWest = false;
+        for (int x = -1; x <= 1; x++) {
+            for (int z = -1; z <= 1; z++) {
+                if (x != 0 || z != 0) {
+                    if (block.getWorld().getBlockAt(block.getX() + x, block.getY(), block.getZ() + z).getType() == getMaterial()) {
+                        if (x != 0 && z != 0) {
+                            cropOnDiagonalBlock = true;
+                        } else if (x == 0 && z != 0) {
+                            cropOnNorthOrSouth = true;
+                        } else if (x != 0 && z == 0) {
+                            cropOnEastOrWest = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        if ((cropOnNorthOrSouth && cropOnEastOrWest) || cropOnDiagonalBlock) {
+            return modifier / 2.0F;
+        }
+
+        return modifier;
+     }
 }

@@ -17,7 +17,7 @@ public class BlockNetherWart extends BlockType {
     @Override
     public void updateBlock(GlowBlock block) {
         int cropState = block.getData();
-        if (cropState < NetherWartsState.RIPE.ordinal()) {
+        if (cropState < NetherWartsState.RIPE.ordinal() && random.nextInt(10) == 0) {
             cropState++;
             final GlowBlockState state = block.getState();
             state.setRawData((byte) cropState);
