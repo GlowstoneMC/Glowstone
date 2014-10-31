@@ -1,6 +1,7 @@
 package net.glowstone.inventory.crafting;
 
 import com.google.common.collect.ImmutableList;
+import net.glowstone.inventory.GlowItemFactory;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemMatcher;
@@ -42,11 +43,19 @@ public class GlowArmorDyeMatcher extends ItemMatcher {
         if(armor == null) return null; // No armor
         if(colors.isEmpty()) return null; // No colors
 
-        LeatherArmorMeta meta = (LeatherArmorMeta) armor.getData();
-        Color newColor = meta.getColor().mixColors(colors.toArray(new Color[colors.size()]));
+        LeatherArmorMeta meta = (LeatherArmorMeta) armor.getItemMeta();
+        Color base = meta.getColor();
+        if(meta.getColor() == GlowItemFactory.instance().getDefaultLeatherColor()) {
+            base = colors.remove(0);
+        }
+
+        Color newColor = base.mixColors(colors.toArray(new Color[colors.size()]));
 
         ItemStack ret = armor.clone();
-        ((LeatherArmorMeta) ret.getData()).setColor(newColor);
+        LeatherArmorMeta retMeta = ((LeatherArmorMeta) ret.getItemMeta());
+        retMeta.setColor(newColor);
+        ret.setItemMeta(retMeta);
+
         return ret;
     }
 }
