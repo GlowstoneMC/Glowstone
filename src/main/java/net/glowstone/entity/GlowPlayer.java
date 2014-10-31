@@ -301,6 +301,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         setCompassTarget(world.getSpawnLocation()); // set our compass target
         sendTime();
         sendWeather();
+        sendRainDensity();
+        sendSkyDarkness();
         sendAbilities();
 
         invMonitor = new InventoryMonitor(getOpenInventory());
@@ -397,9 +399,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         List<Integer> destroyIds = new LinkedList<>();
         for (Iterator<GlowEntity> it = knownEntities.iterator(); it.hasNext(); ) {
             GlowEntity entity = it.next();
-            boolean withinDistance = !entity.isDead() && isWithinDistance(entity);
-
-            if (withinDistance) {
+            if (isWithinDistance(entity)) {
                 for (Message msg : entity.createUpdateMessage()) {
                     session.send(msg);
                 }
@@ -414,11 +414,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         // add entities
         for (GlowEntity entity : world.getEntityManager()) {
-            if (entity == this)
-                continue;
-            boolean withinDistance = !entity.isDead() && isWithinDistance(entity);
-
-            if (withinDistance && !knownEntities.contains(entity) && !hiddenEntities.contains(entity.getUniqueId())) {
+            if (entity != this && isWithinDistance(entity) &&
+                    !knownEntities.contains(entity) && !hiddenEntities.contains(entity.getUniqueId())) {
                 knownEntities.add(entity);
                 for (Message msg : entity.createSpawnMessage()) {
                     session.send(msg);
@@ -595,6 +592,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         setCompassTarget(world.getSpawnLocation()); // set our compass target
         session.send(new PositionRotationMessage(location));
         sendWeather();
+        sendRainDensity();
+        sendSkyDarkness();
         sendTime();
         updateInventory();
 
@@ -877,7 +876,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     public void setGameMode(GameMode mode) {
         boolean changed = getGameMode() != mode;
         super.setGameMode(mode);
-        if (changed) session.send(new StateChangeMessage(3, mode.getValue()));
+        if (changed) {
+            session.send(new StateChangeMessage(StateChangeMessage.Reason.GAMEMODE, mode.getValue()));
+        }
 
         setAllowFlight(mode == GameMode.CREATIVE);
     }
@@ -1686,11 +1687,21 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     public void resetPlayerWeather() {
         playerWeather = null;
         sendWeather();
+        sendRainDensity();
+        sendSkyDarkness();
     }
 
     public void sendWeather() {
         boolean stormy = playerWeather == null ? getWorld().hasStorm() : playerWeather == WeatherType.DOWNFALL;
-        session.send(new StateChangeMessage(stormy ? 2 : 1, 0));
+        session.send(new StateChangeMessage(stormy ? StateChangeMessage.Reason.START_RAIN : StateChangeMessage.Reason.STOP_RAIN, 0));
+    }
+
+    public void sendRainDensity() {
+        session.send(new StateChangeMessage(StateChangeMessage.Reason.RAIN_DENSITY, getWorld().getRainDensity()));
+    }
+
+    public void sendSkyDarkness() {
+        session.send(new StateChangeMessage(StateChangeMessage.Reason.SKY_DARKNESS, getWorld().getSkyDarkness()));
     }
 
     ////////////////////////////////////////////////////////////////////////////

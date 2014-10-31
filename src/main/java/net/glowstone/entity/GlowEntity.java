@@ -280,7 +280,7 @@ public abstract class GlowEntity implements Entity {
      * not.
      */
     public boolean isWithinDistance(GlowEntity other) {
-        return isWithinDistance(other.location);
+        return !other.isDead() && (isWithinDistance(other.location) || other instanceof GlowLightningStrike);
     }
 
     /**
