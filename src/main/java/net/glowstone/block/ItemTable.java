@@ -220,19 +220,19 @@ public final class ItemTable {
         reg(Material.IRON_HOE, new ItemHoe(250));
         reg(Material.GOLD_HOE, new ItemHoe(33));
         reg(Material.DIAMOND_HOE, new ItemHoe(1561));
-        for(Material mat : Arrays.asList(Material.GOLD_PICKAXE, Material.GOLD_AXE, Material.GOLD_SPADE, Material.GOLD_SWORD)) {
+        for (Material mat : Arrays.asList(Material.GOLD_PICKAXE, Material.GOLD_AXE, Material.GOLD_SPADE, Material.GOLD_SWORD)) {
             reg(mat, new ItemDamageable(33));
         }
-        for(Material mat : Arrays.asList(Material.WOOD_PICKAXE, Material.WOOD_AXE, Material.WOOD_SPADE, Material.WOOD_SWORD)) {
+        for (Material mat : Arrays.asList(Material.WOOD_PICKAXE, Material.WOOD_AXE, Material.WOOD_SPADE, Material.WOOD_SWORD)) {
             reg(mat, new ItemDamageable(59));
         }
-        for(Material mat : Arrays.asList(Material.STONE_PICKAXE, Material.STONE_AXE, Material.STONE_SPADE, Material.STONE_SWORD)) {
+        for (Material mat : Arrays.asList(Material.STONE_PICKAXE, Material.STONE_AXE, Material.STONE_SPADE, Material.STONE_SWORD)) {
             reg(mat, new ItemDamageable(131));
         }
-        for(Material mat : Arrays.asList(Material.IRON_PICKAXE, Material.IRON_AXE, Material.IRON_SPADE, Material.IRON_SWORD)) {
+        for (Material mat : Arrays.asList(Material.IRON_PICKAXE, Material.IRON_AXE, Material.IRON_SPADE, Material.IRON_SWORD)) {
             reg(mat, new ItemDamageable(250));
         }
-        for(Material mat : Arrays.asList(Material.DIAMOND_PICKAXE, Material.DIAMOND_AXE, Material.DIAMOND_SPADE, Material.DIAMOND_SWORD)) {
+        for (Material mat : Arrays.asList(Material.DIAMOND_PICKAXE, Material.DIAMOND_AXE, Material.DIAMOND_SPADE, Material.DIAMOND_SWORD)) {
             reg(mat, new ItemDamageable(1561));
         }
     }

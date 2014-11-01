@@ -3,7 +3,6 @@ package net.glowstone.inventory.crafting;
 import org.bukkit.BannerPattern;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
-import org.bukkit.inventory.DynamicRecipe;
 import org.bukkit.inventory.ItemMatcher;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
@@ -24,66 +23,66 @@ public class GlowBannerMatcher extends ItemMatcher {
         BannerPattern.LayerTexture texture = null;
         ItemStack banner = null;
 
-        for(ItemStack item : matrix) {
-            if(item == null) continue;
-            if(item.getType() == Material.BANNER) {
-                if(banner != null) {
+        for (ItemStack item : matrix) {
+            if (item == null) continue;
+            if (item.getType() == Material.BANNER) {
+                if (banner != null) {
                     return null; // Multiple banners found
                 }
                 banner = item;
                 continue;
             }
-            if(item.getType() == Material.INK_SACK) {
+            if (item.getType() == Material.INK_SACK) {
                 DyeColor itemColor = ((Dye) item.getData()).getColor();
-                if(color != null && itemColor != color) {
+                if (color != null && itemColor != color) {
                     return null; // Can't have multiple colors
                 }
                 color = itemColor;
             }
         }
-        if(banner == null) {
+        if  (banner == null) {
             return null; // Couldn't found a banner to alter
         }
 
         recipe:
-        for(LayerRecipe recipe : LayerRecipe.values()) {
-            if(recipe.hasItem()) {
+        for (LayerRecipe recipe : LayerRecipe.values()) {
+            if (recipe.hasItem()) {
                 boolean foundDye = false;
-                for(ItemStack item : matrix) {
-                    if(item == null) continue; // Ignore blanks
+                for (ItemStack item : matrix) {
+                    if (item == null) continue; // Ignore blanks
 
-                    if(item.getType() == Material.BANNER) continue; // Banner is already checked
+                    if (item.getType() == Material.BANNER) continue; // Banner is already checked
 
-                    if(item.getType() == Material.INK_SACK) {
-                        if(foundDye) continue recipe; // Can't have multiple dyes
+                    if (item.getType() == Material.INK_SACK) {
+                        if (foundDye) continue recipe; // Can't have multiple dyes
                         foundDye = true;
                         continue;
                     }
 
-                    if(item.getType() == recipe.getType() && item.getDurability() == recipe.getData()) {
-                        if(texture != null) return null; // Can't have multiple of same item
+                    if (item.getType() == recipe.getType() && item.getDurability() == recipe.getData()) {
+                        if (texture != null) return null; // Can't have multiple of same item
                         texture = recipe.getPattern(); // Matches texture type
                         continue;
                     }
                     continue recipe; // Non-recipe item in grid
                 }
-                if(texture == null) {
+                if (texture == null) {
                     continue; // No item type for this recipe found
                 }
-                if(color == null) {
+                if (color == null) {
                     color = DyeColor.BLACK;
                 }
                 break; // Recipe matches
             } else {
-                if(matrix.length != 9) return null; // Non-item recipes only work on 3x3
+                if (matrix.length != 9) return null; // Non-item recipes only work on 3x3
 
-                for(int i = 0; i < 9; i++) {
+                for (int i = 0; i < 9; i++) {
                     boolean hasValue = recipe.getValues()[i] == '#';
                     ItemStack item = matrix[i];
-                    if(hasValue && item != null && item.getType() == Material.INK_SACK) {
+                    if (hasValue && item != null && item.getType() == Material.INK_SACK) {
                         continue;
                     }
-                    if(!hasValue && (item == null || item.getType() == Material.BANNER)) {
+                    if (!hasValue && (item == null || item.getType() == Material.BANNER)) {
                         continue; // Allow banner and blanks
                     }
                     continue recipe; // Non-recipe item found or no dye where dye should be
@@ -93,13 +92,13 @@ public class GlowBannerMatcher extends ItemMatcher {
             }
         }
 
-        if(texture == null) return null; // No texture found
+        if (texture == null) return null; // No texture found
 
         // Create result banner
         BannerMeta meta = (BannerMeta) banner.getItemMeta();
         List<BannerPattern.BannerLayer> layers = meta.getPattern().getLayers();
         BannerPattern.Builder builder = BannerPattern.builder();
-        for(BannerPattern.BannerLayer layer : layers) {
+        for (BannerPattern.BannerLayer layer : layers) {
             builder.layer(layer.getTexture(), layer.getColor());
         }
         builder.layer(texture, color);
@@ -156,8 +155,8 @@ public class GlowBannerMatcher extends ItemMatcher {
         private LayerRecipe(String... rows) {
             values = new char[9];
             int index = 0;
-            for(String row : rows) {
-                for(char c : row.toCharArray()) {
+            for (String row : rows) {
+                for (char c : row.toCharArray()) {
                     values[index++] = c;
                 }
             }

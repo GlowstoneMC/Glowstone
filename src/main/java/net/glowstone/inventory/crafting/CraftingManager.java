@@ -125,8 +125,8 @@ public final class CraftingManager implements Iterable<Recipe> {
             }
         }
 
-        for(DynamicRecipe dynamicRecipe : dynamicRecipes) {
-            if(dynamicRecipe.matches(items)) {
+        for (DynamicRecipe dynamicRecipe : dynamicRecipes) {
+            if (dynamicRecipe.matches(items)) {
                 return dynamicRecipe;
             }
         }

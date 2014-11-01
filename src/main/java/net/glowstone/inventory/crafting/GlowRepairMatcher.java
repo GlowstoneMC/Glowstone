@@ -15,21 +15,21 @@ public class GlowRepairMatcher extends ItemMatcher {
     public ItemStack getResult(ItemStack[] matrix) {
         List<ItemStack> items = new ArrayList<>();
 
-        for(ItemStack item : matrix) {
-            if(item == null) continue;
+        for (ItemStack item : matrix) {
+            if (item == null) continue;
 
             ItemType type = ItemTable.instance().getItem(item.getType());
-            if(!(type instanceof ItemDamageable)) return null; // Non-repairable item in matrix
+            if (!(type instanceof ItemDamageable)) return null; // Non-repairable item in matrix
 
             items.add(item);
         }
 
-        if(items.size() != 2) return null; // Can only have 2 tools
+        if (items.size() != 2) return null; // Can only have 2 tools
 
         ItemStack itemA = items.get(0);
         ItemStack itemB = items.get(1);
 
-        if(itemA.getType() != itemB.getType()) return null; // Not same item type
+        if (itemA.getType() != itemB.getType()) return null; // Not same item type
 
         ItemDamageable type = (ItemDamageable) ItemTable.instance().getItem(itemA.getType());
 
