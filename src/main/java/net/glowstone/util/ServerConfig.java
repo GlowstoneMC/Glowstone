@@ -60,7 +60,11 @@ public final class ServerConfig {
         this.configFile = configFile;
         this.parameters = parameters;
 
-        config.options().indent(4);
+        config.options().indent(4).copyHeader(true).header(
+            "glowstone.yml is the main configuration file for a Glowstone server\n" +
+            "It contains everything from server.properties and bukkit.yml in a\n" +
+            "normal CraftBukkit installation.\n\n" +
+            "For help, join us on IRC: #glowstone @ esper.net");
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -176,20 +180,27 @@ public final class ServerConfig {
                 return;
             }
 
-            copyDefaults("glowstone.yml", configFile);
+            for (Key key : Key.values()) {
+                config.set(key.path, key.def);
+            }
+        } else {
+            // load config
+            try {
+                config.load(configFile);
+            } catch (IOException e) {
+                GlowServer.logger.log(Level.SEVERE, "Failed to read config: " + configFile, e);
+            } catch (InvalidConfigurationException e) {
+                report(configFile, e);
+            }
         }
 
-        // load config
-        try {
-            config.load(configFile);
-        } catch (IOException e) {
-            GlowServer.logger.log(Level.SEVERE, "Failed to read config: " + configFile, e);
-        } catch (InvalidConfigurationException e) {
-            report(configFile, e);
-        }
-
+        boolean migrated = false;
         // if we just created defaults, attempt to migrate
-        if (!exists && migrate()) {
+        if (!exists) {
+            migrated = migrate();
+        }
+
+        if (!exists) {
             // save config, including any new defaults
             try {
                 config.save(configFile);
@@ -198,7 +209,11 @@ public final class ServerConfig {
                 return;
             }
 
-            GlowServer.logger.info("Migrated configuration from CraftBukkit");
+            if (migrated) {
+                GlowServer.logger.info("Migrated configuration from CraftBukkit");
+            } else {
+                GlowServer.logger.info("Created default config: " + configFile);
+            }
         }
     }
 
