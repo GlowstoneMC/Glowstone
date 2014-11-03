@@ -23,6 +23,10 @@ public class BlockSlab extends BlockType {
             state.setType(Material.WOOD_DOUBLE_STEP);
             state.setRawData((byte) holding.getDurability());
             return;
+        } else if (state.getBlock().getType() == Material.STEP_2) {
+            state.setType(Material.DOUBLE_STEP_2);
+            state.setRawData((byte) holding.getDurability());
+            return;
         }
 
         super.placeBlock(player, state, face, holding, clickedLoc);
@@ -41,7 +45,7 @@ public class BlockSlab extends BlockType {
     private boolean matchingType(GlowBlock block, BlockFace face, ItemStack holding, boolean ignoreFace) {
         byte blockData = block.getData();
         byte holdingData = (byte) holding.getDurability();
-        return (block.getType() == Material.STEP || block.getType() == Material.WOOD_STEP) &&
+        return (block.getType() == Material.STEP || block.getType() == Material.WOOD_STEP || block.getType() == Material.STEP_2) &&
                 block.getType() == holding.getType() &&
                 ((face == BlockFace.UP && blockData == holdingData) ||
                         (face == BlockFace.DOWN && blockData - 8 == holdingData) ||

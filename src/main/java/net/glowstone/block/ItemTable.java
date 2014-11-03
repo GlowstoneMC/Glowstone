@@ -48,6 +48,7 @@ public final class ItemTable {
         reg(Material.BOOKSHELF, new BlockDirectDrops(Material.BOOK, 3));
         reg(Material.CLAY, new BlockDirectDrops(Material.CLAY_BALL, 4));
         reg(Material.DOUBLE_STEP, new BlockDoubleSlab());
+        reg(Material.DOUBLE_STEP_2, new BlockDoubleSlab());
         reg(Material.SOIL, new BlockDirectDrops(Material.DIRT));
         reg(Material.GLASS, new BlockDropless());
         reg(Material.THIN_GLASS, new BlockDropless());
@@ -109,8 +110,10 @@ public final class ItemTable {
         reg(Material.SPRUCE_WOOD_STAIRS, new BlockStairs());
         reg(Material.SMOOTH_STAIRS, new BlockStairs());
         reg(Material.WOOD_STAIRS, new BlockStairs());
+        reg(Material.RED_SANDSTONE_STAIRS, new BlockStairs());
         reg(Material.STEP, new BlockSlab());
         reg(Material.WOOD_STEP, new BlockSlab());
+        reg(Material.STEP_2, new BlockSlab());
         reg(Material.HAY_BLOCK, new BlockHay());
         reg(Material.QUARTZ_BLOCK, new BlockQuartz());
         reg(Material.LOG, new BlockLog());
