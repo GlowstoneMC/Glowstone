@@ -185,7 +185,7 @@ public final class ServerConfig {
             }
 
             // attempt to migrate
-            if(migrate()) {
+            if (migrate()) {
                 GlowServer.logger.info("Migrated configuration from previous installation");
             }
 
