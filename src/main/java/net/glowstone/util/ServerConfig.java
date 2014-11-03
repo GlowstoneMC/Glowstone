@@ -194,13 +194,10 @@ public final class ServerConfig {
             }
         }
 
-        boolean migrated = false;
-        // if we just created defaults, attempt to migrate
         if (!exists) {
-            migrated = migrate();
-        }
+            // if we just created defaults, attempt to migrate
+            final boolean migrated = migrate();
 
-        if (!exists) {
             // save config, including any new defaults
             try {
                 config.save(configFile);
