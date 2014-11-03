@@ -172,31 +172,22 @@ public final class ServerConfig {
         extraConfig.clear();
 
         // create default file if needed
-        final boolean exists = configFile.exists();
-        if (!exists) {
+        if (!configFile.exists()) {
             // create config directory
             if (!configDir.isDirectory() && !configDir.mkdirs()) {
                 GlowServer.logger.severe("Cannot create directory: " + configDir);
                 return;
             }
 
+            // load default config
             for (Key key : Key.values()) {
                 config.set(key.path, key.def);
             }
-        } else {
-            // load config
-            try {
-                config.load(configFile);
-            } catch (IOException e) {
-                GlowServer.logger.log(Level.SEVERE, "Failed to read config: " + configFile, e);
-            } catch (InvalidConfigurationException e) {
-                report(configFile, e);
-            }
-        }
 
-        if (!exists) {
-            // if we just created defaults, attempt to migrate
-            final boolean migrated = migrate();
+            // attempt to migrate
+            if(migrate()) {
+                GlowServer.logger.info("Migrated configuration from previous installation");
+            }
 
             // save config, including any new defaults
             try {
@@ -205,11 +196,15 @@ public final class ServerConfig {
                 GlowServer.logger.log(Level.SEVERE, "Failed to write config: " + configFile, e);
                 return;
             }
-
-            if (migrated) {
-                GlowServer.logger.info("Migrated configuration from CraftBukkit");
-            } else {
-                GlowServer.logger.info("Created default config: " + configFile);
+            GlowServer.logger.info("Created default config: " + configFile);
+        } else {
+            // load config
+            try {
+                config.load(configFile);
+            } catch (IOException e) {
+                GlowServer.logger.log(Level.SEVERE, "Failed to read config: " + configFile, e);
+            } catch (InvalidConfigurationException e) {
+                report(configFile, e);
             }
         }
     }
