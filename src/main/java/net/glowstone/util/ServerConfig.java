@@ -203,6 +203,7 @@ public final class ServerConfig {
                 report(configFile, e);
             }
 
+            // add missing keys to the current config
             for (Key key : Key.values()) {
                 if (!config.contains(key.path)) {
                     config.set(key.path, key.def);
