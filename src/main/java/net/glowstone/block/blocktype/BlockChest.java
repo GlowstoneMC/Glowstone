@@ -21,6 +21,8 @@ import java.util.Collection;
 public class BlockChest extends BlockContainer {
 
     private final boolean isTrapped;
+    private static final BlockFace[] NEAR_CHESTS = new BlockFace[] { BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST };
+
 
     public BlockChest() {
         this(false);
@@ -108,7 +110,7 @@ public class BlockChest extends BlockContainer {
     private Collection<BlockFace> searchChests(GlowBlock block) {
         Collection<BlockFace> chests = new ArrayList<>();
 
-        for (BlockFace face : nearChests) {
+        for (BlockFace face : NEAR_CHESTS) {
             GlowBlock possibleChest = block.getRelative(face);
             if (possibleChest.getType() == (isTrapped ? Material.TRAPPED_CHEST : Material.CHEST)) {
                 chests.add(face);
@@ -129,8 +131,6 @@ public class BlockChest extends BlockContainer {
 
         return attachedChests.iterator().next();
     }
-
-    private static final BlockFace[] nearChests = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
 
     private static BlockFace getFacingDirection(BlockFace myFacing, BlockFace otherFacing, BlockFace connection, GlowPlayer player) {
         if (connection != myFacing && connection != myFacing.getOppositeFace()) {
