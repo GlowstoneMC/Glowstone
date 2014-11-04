@@ -21,8 +21,9 @@ import java.util.Collection;
 public class BlockChest extends BlockContainer {
 
     private final boolean isTrapped;
-    private static final BlockFace[] NEAR_CHESTS = new BlockFace[] { BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST };
-
+    private static final BlockFace[] NEAR_CHESTS = new BlockFace[] {
+        BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST
+    };
 
     public BlockChest() {
         this(false);
@@ -143,7 +144,6 @@ public class BlockChest extends BlockContainer {
 
         float yaw = player.getLocation().getYaw() % 360;
         yaw = yaw < 0 ? yaw + 360 : yaw;
-
 
         switch (connection) {
             case NORTH:
