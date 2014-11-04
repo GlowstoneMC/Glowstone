@@ -38,9 +38,13 @@ public class GlowFireworkMatcher extends ItemMatcher {
 
         if (gunpowder < 1 || gunpowder > 3) return null; // Must have 1-3 gunpowder
         if (!hasPaper) return null; // Paper needed
-        if (charges.isEmpty()) return null; // Charge(s) needed
 
         ItemStack ret = new ItemStack(Material.FIREWORK, 1);
+
+        if (charges.isEmpty()) { // This makes no sense Mojang, but whatever
+            return ret;
+        }
+
         FireworkMeta firework = (FireworkMeta) ret.getItemMeta();
 
         firework.setPower(gunpowder);
