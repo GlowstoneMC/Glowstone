@@ -64,6 +64,30 @@ public final class ServerConfig {
     }
 
     ////////////////////////////////////////////////////////////////////////////
+    // Modification
+
+    /**
+     * Save the configuration back to file.
+     */
+    public void save() {
+        try {
+            config.save(configFile);
+        } catch (IOException e) {
+            GlowServer.logger.log(Level.SEVERE, "Failed to write config: " + configFile, e);
+        }
+    }
+
+    /**
+     * Change a configuration value at runtime.
+     * @see ServerConfig#save()
+     * @param key the config key to write the value to
+     * @param value value to write to config key
+     */
+    public void set(Key key, Object value) {
+        config.set(key.path, value);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
     // Value getters
 
     public String getString(Key key) {
