@@ -171,8 +171,12 @@ public final class ServerConfig {
         // load extra config files again next time they're needed
         extraConfig.clear();
 
+        boolean changed = false;
+
         // create default file if needed
         if (!configFile.exists()) {
+            GlowServer.logger.info("Creating default config: " + configFile);
+
             // create config directory
             if (!configDir.isDirectory() && !configDir.mkdirs()) {
                 GlowServer.logger.severe("Cannot create directory: " + configDir);
@@ -188,15 +192,7 @@ public final class ServerConfig {
             if (migrate()) {
                 GlowServer.logger.info("Migrated configuration from previous installation");
             }
-
-            // save config, including any new defaults
-            try {
-                config.save(configFile);
-            } catch (IOException e) {
-                GlowServer.logger.log(Level.SEVERE, "Failed to write config: " + configFile, e);
-                return;
-            }
-            GlowServer.logger.info("Created default config: " + configFile);
+            changed = true;
         } else {
             // load config
             try {
@@ -205,6 +201,21 @@ public final class ServerConfig {
                 GlowServer.logger.log(Level.SEVERE, "Failed to read config: " + configFile, e);
             } catch (InvalidConfigurationException e) {
                 report(configFile, e);
+            }
+
+            for (Key key : Key.values()) {
+                if (!config.contains(key.path)) {
+                    config.set(key.path, key.def);
+                    changed = true;
+                }
+            }
+        }
+
+        if (changed) {
+            try {
+                config.save(configFile);
+            } catch (IOException e) {
+                GlowServer.logger.log(Level.SEVERE, "Failed to write config: " + configFile, e);
             }
         }
     }
