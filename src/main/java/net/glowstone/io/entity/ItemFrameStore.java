@@ -25,7 +25,7 @@ class ItemFrameStore extends EntityStore<GlowItemFrame> {
             entity.setFacingDirectionNumber((tag.getInt("Facing")));
         }
         if (tag.isCompound("Item")) {
-            entity.SetIteminFrame(NbtSerialization.readItem(tag.getCompound("Item")));
+            entity.setIteminFrame(NbtSerialization.readItem(tag.getCompound("Item")));
         }
 
         if (tag.isInt("Rotation")) {

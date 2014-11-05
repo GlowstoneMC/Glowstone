@@ -10,6 +10,7 @@ import net.glowstone.net.message.play.entity.EntityTeleportMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.Position;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Rotation;
@@ -25,7 +26,7 @@ import java.util.List;
 public final class GlowItemFrame extends GlowEntity implements ItemFrame {
 
     BlockFace face;
-    Material iteminframe;
+    Material itemInFrame;
     int rot = 0;
 
 
@@ -34,32 +35,34 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
         super(location);
         this.face = clickedface;
         if (player != null) { // could be Anvil loading....
-            ItemStack is = player.getItemInHand();
-            int amount = is.getAmount();
-            is.setAmount(amount - 1);
-            if (is.getAmount() <= 0) {
-                is = null;
+            if (player.getGameMode() != GameMode.CREATIVE) {
+                ItemStack is = player.getItemInHand();
+                int amount = is.getAmount();
+                is.setAmount(amount - 1);
+                if (is.getAmount() <= 0) {
+                    is = null;
+                }
+                player.setItemInHand(is);
             }
-            player.setItemInHand(is);
 
             metadata.set(MetadataIndex.ITEM_FRAME_ROTATION, 0);
             metadata.set(MetadataIndex.ITEM_FRAME_ITEM, new ItemStack(Material.AIR));
             metadata.set(MetadataIndex.AIR_TIME, 300);
-            iteminframe = Material.AIR;
+            itemInFrame = Material.AIR;
         }
     }
 
-    public void SetIteminFrame(ItemStack is) {
+    public void setIteminFrame(ItemStack is) {
         if (is == null) {
             is = new ItemStack(Material.AIR, 1);
         }
         is.setAmount(1);
-        iteminframe = is.getType();
+        itemInFrame = is.getType();
         metadata.set(MetadataIndex.ITEM_FRAME_ITEM, is);
         metadata.set(MetadataIndex.ITEM_FRAME_ROTATION, 0);
     }
 
-    public void SetItemFrameRotation(int rotation) {
+    public void setItemFrameRotation(int rotation) {
         metadata.set(MetadataIndex.ITEM_FRAME_ROTATION, (rotation));
     }
 
@@ -73,28 +76,32 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         if (message.getAction() == 2) {
-            if (iteminframe == Material.AIR) {
-                ItemStack isinhand = player.getItemInHand();
-                int amount = player.getItemInHand().getAmount();
-                SetIteminFrame(isinhand);
-                isinhand.setAmount(amount - 1);
-                if (isinhand.getAmount() <= 0) {
-                    isinhand = null;
+            if (itemInFrame == Material.AIR) {
+                ItemStack isInHand = player.getItemInHand();
+                if (isInHand != null) {
+                    setIteminFrame(isInHand);
+                    if (player.getGameMode() != GameMode.CREATIVE) {
+                        int amount = player.getItemInHand().getAmount();
+                        isInHand.setAmount(amount - 1);
+                        if (isInHand.getAmount() <= 0) {
+                            isInHand = null;
+                        }
+                        player.setItemInHand(isInHand);
+                    }
                 }
-                player.setItemInHand(isinhand);
             } else {
                 rot++;
                 if (rot > 7) {
                     rot = 0;
                 }
-                SetItemFrameRotation(rot);
+                setItemFrameRotation(rot);
             }
         }
         if (message.getAction() == 1) {
             if (isEmpty()) {
                 remove();
             } else {
-                SetIteminFrame(new ItemStack(Material.AIR));
+                setIteminFrame(new ItemStack(Material.AIR));
                 rot = 0;
             }
         }
@@ -107,10 +114,11 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
 
         if (ticksLived % (11) == 0) {
             if ((world.getBlockAt(new Location(getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ()))).getType() == Material.AIR) {
-                world.dropItemNaturally(location, new ItemStack(Material.ITEM_FRAME));
+                //TODO: Uncomment once Glowstone supports entities/dropped items
+                /*world.dropItemNaturally(location, new ItemStack(Material.ITEM_FRAME));
                 if (!isEmpty()) {
-                    world.dropItemNaturally(location, new ItemStack(iteminframe));
-                }
+                    world.dropItemNaturally(location, new ItemStack(itemInFrame));
+                }*/
                 remove();
             }
         }
@@ -191,10 +199,10 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
 
     @Override
     public boolean isEmpty() {
-        return iteminframe == null || iteminframe == Material.AIR;
+        return itemInFrame == null || itemInFrame == Material.AIR;
     }
 
-    void GenerateTeleportMessage(BlockFace face) {
+    void generateTeleportMessage(BlockFace face) {
         int xoffset = 0;
         int zoffset = 0;
         int yaw = 0;
@@ -219,7 +227,7 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
         Location itemframelocation = location;
         GlowChunk.Key key = new GlowChunk.Key(itemframelocation.getBlockX() >> 4, itemframelocation.getBlockZ() >> 4);
         for (GlowPlayer player : getWorld().getRawPlayers()) {
-            if (player.canSee(key)) {
+            if (player.canSeeChunk(key)) {
                 player.getSession().send(new EntityTeleportMessage(id, Position.getIntX(location) + xoffset, Position.getIntY(location), Position.getIntZ(location) + zoffset, yaw, 0));
             }
         }
@@ -227,13 +235,13 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
 
     @Override
     public boolean setFacingDirection(BlockFace blockface, boolean force) {
-        GenerateTeleportMessage(blockface);
+        generateTeleportMessage(blockface);
         return true;
     }
 
     @Override
     public void setFacingDirection(BlockFace blockface) {
-        GenerateTeleportMessage(blockface);
+        generateTeleportMessage(blockface);
     }
 
     @Override
@@ -261,7 +269,7 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
 
     @Override
     public ItemStack getItem() {
-        return new ItemStack(iteminframe, 1);
+        return new ItemStack(itemInFrame, 1);
     }
 
     /**
@@ -297,12 +305,12 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
     }
 
     public void setRotationNumber(int rotation) {
-        SetItemFrameRotation(rotation);
+        setItemFrameRotation(rotation);
     }
 
     @Override
     public void setItem(ItemStack is) {
-        SetIteminFrame(is);
+        setIteminFrame(is);
     }
 
     /**
@@ -313,16 +321,16 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
     public void setRotation(Rotation rotation) throws IllegalArgumentException {
         switch (rotation) {
             case NONE:
-                SetItemFrameRotation(0);
+                setItemFrameRotation(0);
                 break;
             case CLOCKWISE:
-                SetItemFrameRotation(2);
+                setItemFrameRotation(2);
                 break;
             case FLIPPED:
-                SetItemFrameRotation(4);
+                setItemFrameRotation(4);
                 break;
             case COUNTER_CLOCKWISE:
-                SetItemFrameRotation(6);
+                setItemFrameRotation(6);
                 break;
         }
     }

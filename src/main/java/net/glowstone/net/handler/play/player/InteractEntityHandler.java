@@ -3,6 +3,7 @@ package net.glowstone.net.handler.play.player;
 import com.flowpowered.networking.MessageHandler;
 import net.glowstone.GlowServer;
 import net.glowstone.constants.AttackDamage;
+import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;

@@ -329,9 +329,9 @@ public abstract class GlowEntity implements Entity {
 
         // resend position if it's been a while, causes item_frames to disspear.
         if (ticksLived % (30 * 20) == 0) {
-        	if (!(this instanceof GlowItemFrame)){
-        	    teleported = true;
-        	}
+            if (!(this instanceof GlowItemFrame)) {
+                teleported = true;
+            }
         }
 
         pulsePhysics();
@@ -731,8 +731,8 @@ public abstract class GlowEntity implements Entity {
         bukkitMetadata.removeMetadata(this, metadataKey, owningPlugin);
     }
 
-	public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

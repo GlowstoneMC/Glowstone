@@ -22,7 +22,7 @@ import org.bukkit.util.Vector;
 import java.util.Objects;
 
 public final class BlockPlacementHandler implements MessageHandler<GlowSession, BlockPlacementMessage> {
-	
+
     private enum ItemPlaceResult {
         BLOCK, ITEM_FRAME
     }
@@ -119,14 +119,14 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
             if (clicked == null) {
                 type.rightClickAir(player, holding);
             } else {
-            	switch (TypeonPlaceItem(holding.getType())){
-                case ITEM_FRAME:
-        	        new GlowItemFrame(player, clicked.getLocation(), face);
-        	        break;
-                case BLOCK:
-                type.rightClickBlock(player, clicked, face, holding, clickedLoc);
-        	        break;
-            	}
+                switch (typeonPlaceItem(holding.getType())) {
+                    case ITEM_FRAME:
+                        new GlowItemFrame(player, clicked.getLocation(), face);
+                        break;
+                    case BLOCK:
+                        type.rightClickBlock(player, clicked, face, holding, clickedLoc);
+                        break;
+                }
             }
         }
 
@@ -150,13 +150,13 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         player.setItemInHand(holding);
     }
 
-    static ItemPlaceResult TypeonPlaceItem(Material material){
-    	if (material == Material.ITEM_FRAME){
+    static ItemPlaceResult typeonPlaceItem(Material material) {
+        if (material == Material.ITEM_FRAME) {
             return ItemPlaceResult.ITEM_FRAME;
-    	}
-    	return ItemPlaceResult.BLOCK;
+        }
+        return ItemPlaceResult.BLOCK;
     }
-    
+
     static boolean selectResult(Event.Result result, boolean def) {
         return result == Event.Result.DEFAULT ? def : result == Event.Result.ALLOW;
     }
