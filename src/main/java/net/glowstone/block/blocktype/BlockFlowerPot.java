@@ -5,10 +5,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.bukkit.GrassSpecies;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.FlowerPot;
+import org.bukkit.material.LongGrass;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
@@ -53,14 +55,36 @@ public class BlockFlowerPot extends BlockType {
         }
         if (state instanceof GlowFlowerPot) {
             GlowFlowerPot pot = (GlowFlowerPot) state;
-            // Only change contents if there is none.
-            if (pot.getContents() == null) {
-                // Todo: check if the item is valid (null-check too) as flower pot contents.
-                pot.setContents(player.getItemInHand().getData().clone());
+            ItemStack heldItem = player.getItemInHand();
+            // Only change contents if there is none and if the held item is valid pot contents.
+            if (pot.getContents() == null && heldItem != null && isValidContents(heldItem.getData())) {
+                pot.setContents(heldItem.getData().clone()); // Null-check in isValidContents.
                 pot.update();
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean isValidContents(MaterialData contents) {
+        if (contents == null) {
+            return false;
+        }
+
+        switch (contents.getItemType()) {
+        case DEAD_BUSH:
+        case RED_ROSE:
+        case YELLOW_FLOWER:
+        case RED_MUSHROOM:
+        case BROWN_MUSHROOM:
+        case CACTUS:
+        case SAPLING:
+            return true;
+        case LONG_GRASS:
+            // The only allowed tall grass type is the fern.
+            return ((LongGrass) contents).getSpecies() == GrassSpecies.FERN_LIKE;
+        default:
+            return false;
+        }
     }
 }
