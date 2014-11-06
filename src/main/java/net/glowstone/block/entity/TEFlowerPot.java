@@ -5,7 +5,9 @@ import org.bukkit.material.MaterialData;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.state.GlowFlowerPot;
+import net.glowstone.constants.GlowBlockEntity;
 import net.glowstone.constants.ItemIds;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.nbt.CompoundTag;
 
 public class TEFlowerPot extends TileEntity {
@@ -51,5 +53,15 @@ public class TEFlowerPot extends TileEntity {
     @Override
     public GlowBlockState getState() {
         return new GlowFlowerPot(block);
+    }
+
+    @Override
+    public void update(GlowPlayer player) {
+        super.update(player);
+
+        CompoundTag nbt = new CompoundTag();
+
+        saveNbt(nbt);
+        player.sendBlockEntityChange(getBlock().getLocation(), GlowBlockEntity.FLOWER_POT, nbt);
     }
 }
