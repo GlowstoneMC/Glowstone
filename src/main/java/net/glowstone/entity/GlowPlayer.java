@@ -123,7 +123,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * The time the player joined.
      */
-    private final long joinTime;
+    private long joinTime;
 
     /**
      * The settings sent by the client.
@@ -267,6 +267,23 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(new LoginSuccessMessage(profile.getUniqueId().toString(), profile.getName()));
         session.setProtocol(ProtocolType.PLAY);
 
+        // read data from player reader
+        hasPlayedBefore = reader.hasPlayedBefore();
+        if (hasPlayedBefore) {
+            firstPlayed = reader.getFirstPlayed();
+            lastPlayed = reader.getLastPlayed();
+            bedSpawn = reader.getBedSpawnLocation();
+        } else {
+            firstPlayed = 0;
+            lastPlayed = 0;
+        }
+
+        //creates InventoryMonitor to avoid NullPointerException
+        invMonitor = new InventoryMonitor(getOpenInventory());
+        updateInventory(); // send inventory contents
+    }
+
+    public void join(GlowSession session, PlayerDataService.PlayerReader reader) {
         // send join game
         // in future, handle hardcore, difficulty, and level type
         String type = world.getWorldType().getName().toLowerCase();
@@ -281,16 +298,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(PluginMessage.fromString("MC|Brand", server.getName()));
         sendSupportedChannels();
 
-        // read data from player reader
-        hasPlayedBefore = reader.hasPlayedBefore();
-        if (hasPlayedBefore) {
-            firstPlayed = reader.getFirstPlayed();
-            lastPlayed = reader.getLastPlayed();
-            bedSpawn = reader.getBedSpawnLocation();
-        } else {
-            firstPlayed = 0;
-            lastPlayed = 0;
-        }
         joinTime = System.currentTimeMillis();
         reader.readData(this);
         reader.close();
@@ -305,9 +312,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         sendRainDensity();
         sendSkyDarkness();
         sendAbilities();
-
-        invMonitor = new InventoryMonitor(getOpenInventory());
-        updateInventory(); // send inventory contents
 
         // send initial location
         session.send(new PositionRotationMessage(location));

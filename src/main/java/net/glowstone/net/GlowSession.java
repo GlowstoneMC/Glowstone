@@ -285,6 +285,9 @@ public final class GlowSession extends BasicSession {
             return;
         }
 
+        //joins the player
+        player.join(this, reader);
+
         // Kick other players with the same UUID
         for (GlowPlayer other : getServer().getOnlinePlayers()) {
             if (other != player && other.getUniqueId().equals(player.getUniqueId())) {
@@ -479,8 +482,10 @@ public final class GlowSession extends BasicSession {
         GlowServer.logger.info(player.getName() + " [" + address + "] lost connection");
 
         final String text = EventFactory.onPlayerQuit(player).getQuitMessage();
-        if (text != null && !text.isEmpty()) {
-            server.broadcastMessage(text);
+        if (player.isOnline()) {
+            if (text != null && !text.isEmpty()) {
+                server.broadcastMessage(text);
+            }
         }
 
         player = null; // in case we are disposed twice
