@@ -7,7 +7,7 @@ import java.util.UUID;
 /**
  * Cached methods for accessing Mojang servers to find UUIDs and player profiles.
  */
-final class ProfileCache {
+public final class ProfileCache {
     private static Map<String, UUID> uuidCache = new HashMap<>();
     private static Map<UUID, PlayerProfile> profileCache = new HashMap<>();
 
