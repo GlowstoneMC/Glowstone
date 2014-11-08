@@ -180,7 +180,10 @@ public final class GlowTeam implements Team {
         return color;
     }
 
-    public void setColor(ChatColor color) {
+    public void setColor(ChatColor color) throws IllegalArgumentException {
+        if (color.isFormat()) {
+            throw new IllegalArgumentException("Formatting codes cannot be used as a team color!");
+        }
         this.color = color;
     }
 
