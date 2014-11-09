@@ -327,7 +327,7 @@ public abstract class GlowEntity implements Entity {
         }
         metadata.setBit(MetadataIndex.STATUS, MetadataIndex.StatusFlags.ON_FIRE, fireTicks > 0);
 
-        // resend position if it's been a while, causes item_frames to disspear.
+        // resend position if it's been a while, causes ItemFrames to disappear.
         if (ticksLived % (30 * 20) == 0) {
             if (!(this instanceof GlowItemFrame)) {
                 teleported = true;
