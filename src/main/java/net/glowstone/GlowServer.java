@@ -4,6 +4,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import net.glowstone.command.ColorCommand;
 import net.glowstone.command.TellrawCommand;
+import net.glowstone.command.TitleCommand;
 import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.CraftingManager;
@@ -576,6 +577,7 @@ public final class GlowServer implements Server {
         commandMap.clearCommands();
         commandMap.register("glowstone", new ColorCommand("colors"));
         commandMap.register("glowstone", new TellrawCommand());
+        commandMap.register("glowstone", new TitleCommand());
 
         File folder = new File(config.getString(ServerConfig.Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {

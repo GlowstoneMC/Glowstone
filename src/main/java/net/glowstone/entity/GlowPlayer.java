@@ -25,6 +25,7 @@ import net.glowstone.net.protocol.ProtocolType;
 import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
@@ -43,6 +44,8 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.title.Title;
+import org.bukkit.title.TitleOptions;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 
@@ -243,6 +246,16 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * The player's base walking speed.
      */
     private float walkSpeed = 0.2f;
+
+    /**
+     * The player's current title, if any
+     */
+    private Title currentTitle = new Title();
+
+    /**
+     * The player's current title options
+     */
+    private TitleOptions titleOptions = new TitleOptions();
 
     /**
      * Creates a new player and adds it to the world.
@@ -1826,5 +1839,57 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             }
             session.send(new PluginMessage("REGISTER", buf.array()));
         }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Titles
+
+    @Override
+    public Title getTitle() {
+        return currentTitle.clone();
+    }
+
+    @Override
+    public TitleOptions getTitleOptions() {
+        return titleOptions.clone();
+    }
+
+    @Override
+    public void setTitle(Title title) {
+        setTitle(title, false);
+    }
+
+    @Override
+    public void setTitle(Title title, boolean forceUpdate) {
+        Validate.notNull(title, "Title cannot be null");
+
+        String oldHeading = currentTitle.getHeading();
+        currentTitle = title;
+
+        if (forceUpdate || !StringUtils.equals(oldHeading, currentTitle.getHeading())) {
+            session.sendAll(TitleMessage.fromTitle(currentTitle));
+        }
+    }
+
+    @Override
+    public void setTitleOptions(TitleOptions options) {
+        if (options == null) {
+            options = new TitleOptions();
+        }
+        titleOptions = options;
+        session.send(TitleMessage.fromOptions(titleOptions));
+    }
+
+    @Override
+    public void clearTitle() {
+        currentTitle = new Title();
+        session.send(new TitleMessage(TitleMessage.Action.CLEAR));
+    }
+
+    @Override
+    public void resetTitle() {
+        currentTitle = new Title(currentTitle.getHeading());
+        titleOptions = new TitleOptions();
+        session.send(new TitleMessage(TitleMessage.Action.RESET));
     }
 }
