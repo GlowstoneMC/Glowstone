@@ -226,6 +226,7 @@ public final class ItemTable {
         reg(Material.ACACIA_DOOR_ITEM, new ItemPlaceAs(Material.ACACIA_DOOR));
         reg(Material.DARK_OAK_DOOR_ITEM, new ItemPlaceAs(Material.DARK_OAK_DOOR));
         reg(Material.WRITTEN_BOOK, new ItemWrittenBook());
+        reg(Material.ITEM_FRAME, new ItemItemFrame());
     }
 
     private void reg(Material material, ItemType type) {

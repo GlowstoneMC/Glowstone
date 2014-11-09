@@ -3,6 +3,7 @@ package net.glowstone.net.handler.play.player;
 import com.flowpowered.networking.MessageHandler;
 import net.glowstone.GlowServer;
 import net.glowstone.constants.AttackDamage;
+import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowLivingEntity;
@@ -13,6 +14,8 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
+
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 public final class InteractEntityHandler implements MessageHandler<GlowSession, InteractEntityMessage> {
 

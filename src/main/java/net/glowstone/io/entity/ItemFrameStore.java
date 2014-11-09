@@ -29,7 +29,7 @@ class ItemFrameStore extends EntityStore<GlowItemFrame> {
         }
 
         if (tag.isInt("Rotation")) {
-            entity.setRotationNumber((tag.getInt("Rotation")));
+            entity.setRotationAngle((tag.getInt("Rotation") * 45));
         }
     }
 
@@ -38,6 +38,6 @@ class ItemFrameStore extends EntityStore<GlowItemFrame> {
         super.save(entity, tag);
         tag.putInt("Facing", entity.getFacingNumber());
         tag.putCompound("Item", NbtSerialization.writeItem(entity.getItem(), -1));
-        tag.putInt("Rotation", entity.getRotationNumber());
+        tag.putInt("Rotation", (int) entity.getRotationAngle() / 45);
     }
 }

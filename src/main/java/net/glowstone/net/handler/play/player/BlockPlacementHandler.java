@@ -8,7 +8,6 @@ import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.entity.objects.GlowItemFrame;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.BlockPlacementMessage;
 import org.bukkit.Material;
@@ -22,10 +21,6 @@ import org.bukkit.util.Vector;
 import java.util.Objects;
 
 public final class BlockPlacementHandler implements MessageHandler<GlowSession, BlockPlacementMessage> {
-
-    private enum ItemPlaceResult {
-        BLOCK, ITEM_FRAME
-    }
 
     @Override
     public void handle(GlowSession session, BlockPlacementMessage message) {
@@ -119,14 +114,7 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
             if (clicked == null) {
                 type.rightClickAir(player, holding);
             } else {
-                switch (typeonPlaceItem(holding.getType())) {
-                    case ITEM_FRAME:
-                        new GlowItemFrame(player, clicked.getLocation(), face);
-                        break;
-                    case BLOCK:
-                        type.rightClickBlock(player, clicked, face, holding, clickedLoc);
-                        break;
-                }
+                type.rightClickBlock(player, clicked, face, holding, clickedLoc);
             }
         }
 
@@ -148,13 +136,6 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
             }
         }
         player.setItemInHand(holding);
-    }
-
-    static ItemPlaceResult typeonPlaceItem(Material material) {
-        if (material == Material.ITEM_FRAME) {
-            return ItemPlaceResult.ITEM_FRAME;
-        }
-        return ItemPlaceResult.BLOCK;
     }
 
     static boolean selectResult(Event.Result result, boolean def) {
