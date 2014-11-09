@@ -121,7 +121,7 @@ public class GlowInventory implements Inventory {
      */
     public SlotType getSlotType(int slot) {
         if (slot < 0) return SlotType.OUTSIDE;
-        return getSlot(slot).getType();
+        return slots.get(slot).getType();
     }
 
     /**
@@ -239,12 +239,12 @@ public class GlowInventory implements Inventory {
 
     @Override
     public ItemStack getItem(int index) {
-        return getSlot(index).getItem();
+        return slots.get(index).getItem();
     }
 
     @Override
     public void setItem(int index, ItemStack item) {
-        getSlot(index).setItem(item);
+        slots.get(index).setItem(item);
     }
 
     @Override
