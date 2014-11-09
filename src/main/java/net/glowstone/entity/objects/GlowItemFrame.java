@@ -282,19 +282,19 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
             case 0:
                 return Rotation.NONE;
             case 1:
-                return Rotation.CLOCKWISE;
+                return Rotation.DEGREES_45;
             case 2:
                 return Rotation.CLOCKWISE;
             case 3:
-                return Rotation.CLOCKWISE;
+                return Rotation.DEGREES_135;
             case 4:
                 return Rotation.FLIPPED;
             case 5:
-                return Rotation.COUNTER_CLOCKWISE;
+                return Rotation.DEGREES_225;
             case 6:
                 return Rotation.COUNTER_CLOCKWISE;
             case 7:
-                return Rotation.COUNTER_CLOCKWISE;
+                return Rotation.DEGREES_315;
         }
 
         return Rotation.NONE;
@@ -313,25 +313,32 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
         setIteminFrame(is);
     }
 
-    /**
-     * [Bukkit Missing] 1.8 has 8 directions now not 4. Bukkit does not support
-     * this apparently.
-     */
     @Override
     public void setRotation(Rotation rotation) throws IllegalArgumentException {
         switch (rotation) {
             case NONE:
                 setItemFrameRotation(0);
                 break;
+            case DEGREES_45:
+                setItemFrameRotation(1);
+                break;
             case CLOCKWISE:
                 setItemFrameRotation(2);
+                break;
+            case DEGREES_135:
+                setItemFrameRotation(3);
                 break;
             case FLIPPED:
                 setItemFrameRotation(4);
                 break;
+            case DEGREES_225:
+                setItemFrameRotation(5);
+                break;
             case COUNTER_CLOCKWISE:
                 setItemFrameRotation(6);
                 break;
+            case DEGREES_315:
+                setItemFrameRotation(7);
         }
     }
 }
