@@ -21,7 +21,6 @@ import org.bukkit.util.Vector;
 import java.util.Objects;
 
 public final class BlockPlacementHandler implements MessageHandler<GlowSession, BlockPlacementMessage> {
-
     @Override
     public void handle(GlowSession session, BlockPlacementMessage message) {
         final GlowPlayer player = session.getPlayer();
