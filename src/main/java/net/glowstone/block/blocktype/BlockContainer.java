@@ -53,7 +53,11 @@ public class BlockContainer extends BlockType {
      * @return the drops
      */
     protected Collection<ItemStack> getBlockDrops(GlowBlock block) {
-        return Arrays.asList(new ItemStack(block.getType()));
+        if (drops == null) {
+            return Arrays.asList(new ItemStack(block.getType()));
+        } else {
+            return drops;
+        }
     }
 
     protected MaterialMatcher getNeededMiningTool(GlowBlock block) {

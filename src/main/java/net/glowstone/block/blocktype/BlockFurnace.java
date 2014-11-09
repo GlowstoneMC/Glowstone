@@ -8,6 +8,7 @@ import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.MaterialMatcher;
 import net.glowstone.inventory.ToolType;
+import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Furnace;
@@ -15,6 +16,10 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
 public class BlockFurnace extends BlockContainer {
+
+    public BlockFurnace() {
+        setDrops(new ItemStack(Material.FURNACE));
+    }
 
     @Override
     public TileEntity createTileEntity(GlowChunk chunk, int cx, int cy, int cz) {
