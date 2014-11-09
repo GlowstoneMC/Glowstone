@@ -4,7 +4,7 @@ import com.flowpowered.networking.Codec;
 import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
-import net.glowstone.entity.meta.PlayerProperty;
+import net.glowstone.entity.meta.profile.PlayerProperty;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.game.UserListItemMessage;
 

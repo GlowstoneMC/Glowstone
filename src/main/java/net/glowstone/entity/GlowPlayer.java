@@ -5,14 +5,11 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.glowstone.*;
 import net.glowstone.block.entity.TileEntity;
-import net.glowstone.constants.GlowAchievement;
-import net.glowstone.constants.GlowEffect;
-import net.glowstone.constants.GlowParticle;
-import net.glowstone.constants.GlowSound;
+import net.glowstone.constants.*;
 import net.glowstone.entity.meta.ClientSettings;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
-import net.glowstone.entity.meta.PlayerProfile;
+import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.InventoryMonitor;
 import net.glowstone.io.PlayerDataService;
@@ -27,8 +24,10 @@ import net.glowstone.net.message.play.player.PlayerAbilitiesMessage;
 import net.glowstone.net.protocol.ProtocolType;
 import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextMessage;
+import net.glowstone.util.nbt.CompoundTag;
 import org.apache.commons.lang.Validate;
 import org.bukkit.*;
+import org.bukkit.World.Environment;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
@@ -308,7 +307,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         updateInventory(); // send inventory contents
 
         // send initial location
-        session.send(new PositionRotationMessage(location, getEyeHeight() + 0.05));
+        session.send(new PositionRotationMessage(location));
     }
 
     /**
@@ -594,8 +593,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         setRawLocation(location); // take us to spawn position
         streamBlocks(); // stream blocks
         setCompassTarget(world.getSpawnLocation()); // set our compass target
-        session.send(new PositionRotationMessage(location, getEyeHeight() + 0.05));
+        session.send(new PositionRotationMessage(location));
         sendWeather();
+        sendTime();
+        updateInventory();
 
         // fire world change if needed
         if (oldWorld != world) {
@@ -625,6 +626,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         PlayerRespawnEvent event = new PlayerRespawnEvent(this, dest, spawnAtBed);
         EventFactory.callEvent(event);
         spawnAt(event.getRespawnLocation());
+
+        // just in case any items are left in their inventory after they respawn
+        updateInventory();
     }
 
     /**
@@ -1150,12 +1154,60 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         if (location.getWorld() != world) {
             spawnAt(location);
         } else {
-            // y offset accounts for floating point shenanigans in client physics
-            session.send(new PositionRotationMessage(location, getEyeHeight() + 0.05));
+            session.send(new PositionRotationMessage(location));
             setRawLocation(location);
         }
 
         teleported = true;
+        return true;
+    }
+
+    @Override
+    protected boolean teleportToSpawn() {
+        Location target = getBedSpawnLocation();
+        if (target == null) {
+            target = server.getWorlds().get(0).getSpawnLocation();
+        }
+
+        PlayerPortalEvent event = EventFactory.callEvent(new PlayerPortalEvent(this, location.clone(), target, null));
+        if (event.isCancelled()) {
+            return false;
+        }
+        target = event.getTo();
+
+        spawnAt(target);
+        teleported = true;
+
+        awardAchievement(Achievement.THE_END, false);
+        return true;
+    }
+
+    @Override
+    protected boolean teleportToEnd() {
+        if (!server.getAllowEnd()) {
+            return false;
+        }
+        Location target = null;
+        for (World world : server.getWorlds()) {
+            if (world.getEnvironment() == Environment.THE_END) {
+                target = world.getSpawnLocation();
+                break;
+            }
+        }
+        if (target == null) {
+            return false;
+        }
+
+        PlayerPortalEvent event = EventFactory.callEvent(new PlayerPortalEvent(this, location.clone(), target, null));
+        if (event.isCancelled()) {
+            return false;
+        }
+        target = event.getTo();
+
+        spawnAt(target);
+        teleported = true;
+
+        awardAchievement(Achievement.END_PORTAL, false);
         return true;
     }
 
@@ -1361,6 +1413,20 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         afterBlockChanges.add(UpdateSignMessage.fromPlainText(location.getBlockX(), location.getBlockY(), location.getBlockZ(), lines));
     }
 
+    /**
+     * Send a block entity change to the given location.
+     * @param location The location of the block entity.
+     * @param type The type of block entity being sent.
+     * @param nbt The NBT structure to send to the client.
+     */
+    public void sendBlockEntityChange(Location location, GlowBlockEntity type, CompoundTag nbt) {
+        Validate.notNull(location, "Location cannot be null");
+        Validate.notNull(type, "Type cannot be null");
+        Validate.notNull(nbt, "NBT cannot be null");
+
+        afterBlockChanges.add(new UpdateBlockEntityMessage(location.getBlockX(), location.getBlockY(), location.getBlockZ(), type.getValue(), nbt));
+    }
+
     @Override
     public void sendMap(MapView map) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -1376,12 +1442,35 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void awardAchievement(Achievement achievement) {
-        if (hasAchievement(achievement)) return;
+        awardAchievement(achievement, true);
+    }
+
+    /**
+     * Awards the given achievement if the player already has the parent achievement,
+     * otherwise does nothing. If {@code awardParents} is true, award the player all
+     * parent achievements and the given achievement, making this method equivalent
+     * to {@link #awardAchievement(Achievement)}.
+     * @param achievement
+     * @param awardParents
+     * @return {@code true} if the achievement was awarded, {@code false} otherwise
+     */
+    public boolean awardAchievement(Achievement achievement, boolean awardParents) {
+        if (hasAchievement(achievement)) return false;
+
+        Achievement parent = achievement.getParent();
+        if (parent != null && !hasAchievement(parent)) {
+            if (awardParents) {
+                awardAchievement(parent, awardParents);
+            } else {
+                return false; // player does not have the required parent achievement
+            }
+        }
 
         stats.setAchievement(achievement, true);
         sendAchievement(achievement, true);
 
         // todo: make an announcement if that's enabled
+        return true;
     }
 
     @Override

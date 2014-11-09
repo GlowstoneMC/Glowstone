@@ -5,6 +5,7 @@
 # For help, join us on IRC: #glowstone @ esper.net
 
 server:
+    ip: ''
     port: 25565
     name: Glowstone Server
     online-mode: true

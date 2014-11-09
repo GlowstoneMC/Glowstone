@@ -14,19 +14,19 @@ public interface WorldMetadataService {
      * @return A {@link WorldFinalValues} with the seed and UUID.
      * @throws IOException if an I/O error occurs.
      */
-    public WorldFinalValues readWorldData() throws IOException;
+    WorldFinalValues readWorldData() throws IOException;
 
     /**
      * Write the world's metadata to storage.
      * @throws IOException if an I/O error occurs.
      */
-    public void writeWorldData() throws IOException;
+    void writeWorldData() throws IOException;
 
     /**
      * A structure representing properties stored about a world that cannot be
      * changed after its initialization, namely seed and UUID.
      */
-    public class WorldFinalValues {
+    class WorldFinalValues {
         private final long seed;
         private final UUID uuid;
 

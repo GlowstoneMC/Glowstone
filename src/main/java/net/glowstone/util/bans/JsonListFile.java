@@ -99,12 +99,12 @@ public abstract class JsonListFile {
     /**
      * Base interface for entries in JSON list files.
      */
-    protected static interface BaseEntry {
+    protected interface BaseEntry {
         /**
          * Serialize this entry to JSON format.
          * @return The resulting JSON object.
          */
-        public Map<String, String> write();
+        Map<String, String> write();
     }
 
 }

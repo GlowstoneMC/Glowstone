@@ -12,13 +12,14 @@ public class BlockSnow extends BlockType {
 
     @Override
     public boolean canAbsorb(GlowBlock block, BlockFace face, ItemStack holding) {
-        // can absorb only snow layers if not already full
-        return holding.getType() == Material.SNOW && block.getData() < 7;
+        // can absorb snow layers if non-full, or all blocks if single layer
+        return (holding.getType() == Material.SNOW && block.getData() < 7) || block.getData() == 0;
     }
 
     @Override
     public boolean canOverride(GlowBlock block, BlockFace face, ItemStack holding) {
-        return holding.getType() == Material.SNOW;
+        // can always be overridden by more snow or any other block
+        return true;
     }
 
     @Override

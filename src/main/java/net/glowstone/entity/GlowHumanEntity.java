@@ -1,8 +1,8 @@
 package net.glowstone.entity;
 
 import com.flowpowered.networking.Message;
-import net.glowstone.entity.meta.PlayerProfile;
 import net.glowstone.inventory.*;
+import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.SpawnPlayerMessage;
@@ -267,6 +267,14 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     public void setOp(boolean value) {
         isOp = value;
         recalculatePermissions();
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Health
+
+    @Override
+    protected boolean canDrown() {
+        return gameMode == GameMode.SURVIVAL || gameMode == GameMode.ADVENTURE;
     }
 
     ////////////////////////////////////////////////////////////////////////////

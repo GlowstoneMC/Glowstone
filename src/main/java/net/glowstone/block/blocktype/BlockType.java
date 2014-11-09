@@ -200,7 +200,7 @@ public class BlockType extends ItemType {
      * @param clazz The expected subclass of MaterialData.
      * @param data The actual MaterialData found.
      */
-    protected void warnMaterialData(Class<? extends MaterialData> clazz, MaterialData data) {
+    protected void warnMaterialData(Class<?> clazz, MaterialData data) {
         GlowServer.logger.warning("Wrong MaterialData for " + getMaterial() + " (" + getClass().getSimpleName() + "): expected " + clazz.getSimpleName() + ", got " + data);
     }
 
@@ -209,7 +209,7 @@ public class BlockType extends ItemType {
      * Usually used to set the way container blocks face when being placed.
      * @param location Location to get opposite of
      * @param inverted If up/down should be used
-     * @return Opposite BlockFace or EAST if pitch is invalid
+     * @return Opposite BlockFace or EAST if yaw is invalid
      */
     protected static BlockFace getOppositeBlockFace(Location location, boolean inverted) {
         double rot = location.getYaw() % 360;

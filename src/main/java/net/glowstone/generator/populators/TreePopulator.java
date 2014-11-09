@@ -1,5 +1,6 @@
 package net.glowstone.generator.populators;
 
+import net.glowstone.generator.TreeGenerator;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
@@ -58,6 +59,7 @@ public class TreePopulator extends BlockPopulator {
                 return;
         }
 
+        final TreeGenerator generator = new TreeGenerator();
         for (int i = 0; i < multiplier; i++) {
             centerX = (source.getX() << 4) + random.nextInt(16);
             centerZ = (source.getZ() << 4) + random.nextInt(16);
@@ -66,7 +68,7 @@ public class TreePopulator extends BlockPopulator {
                 Block sourceBlock = world.getBlockAt(centerX, centerY, centerZ);
 
                 if (sourceBlock.getType() == Material.GRASS) {
-                    world.generateTree(sourceBlock.getLocation().add(0, 1, 0), type);
+                    generator.generate(random, sourceBlock.getLocation().add(0, 1, 0), type);
                 }
             }
         }
