@@ -40,9 +40,9 @@ public class GlowChest extends GlowBlockState implements Chest {
 
             switch (attachedChest) {
                 case SOUTH:
-                case WEST:
-                    return new GlowDoubleChestInventory(this, nearbyChest);
                 case EAST:
+                    return new GlowDoubleChestInventory(this, nearbyChest);
+                case WEST:
                 case NORTH:
                     return new GlowDoubleChestInventory(nearbyChest, this);
 
