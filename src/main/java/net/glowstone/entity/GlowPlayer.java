@@ -25,6 +25,7 @@ import net.glowstone.net.message.play.player.PlayerAbilitiesMessage;
 import net.glowstone.net.message.play.player.ResourcePackSendMessage;
 import net.glowstone.net.protocol.ProtocolType;
 import net.glowstone.scoreboard.GlowScoreboard;
+import net.glowstone.scoreboard.GlowTeam;
 import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
@@ -851,7 +852,14 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public String getDisplayName() {
-        return displayName == null ? getName() : displayName;
+        if (displayName != null) {
+            return displayName;
+        }
+        GlowTeam team = (GlowTeam) getScoreboard().getPlayerTeam(this);
+        if (team != null) {
+            return team.getPlayerDisplayName(getName());
+        }
+        return getName();
     }
 
     @Override

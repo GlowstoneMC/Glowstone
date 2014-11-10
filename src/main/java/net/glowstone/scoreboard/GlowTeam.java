@@ -203,6 +203,10 @@ public final class GlowTeam implements Team {
         return players.contains(player);
     }
 
+    public String getPlayerDisplayName(String name) {
+        return getPrefix() + name + getSuffix();
+    }
+
     /**
      * Remove a player without propagating the change to the scoreboard.
      * @param player The player to remove.
