@@ -20,6 +20,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Criterias;
 
 import java.util.*;
 
@@ -387,6 +389,16 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         if (health < 0) health = 0;
         if (health > maxHealth) health = maxHealth;
         this.health = health;
+
+        //TODO: Once Glowstone has proper entity support, entities can have UUID names on the scoreboard
+        if (this instanceof GlowPlayer) {
+            GlowPlayer player = (GlowPlayer) this;
+            for (Objective objective: getServer().getScoreboardManager().getMainScoreboard().getObjectivesByCriteria(Criterias.HEALTH)) {
+                if (objective.hasScore(player.getName())) {
+                    objective.getScore(player.getName()).setScore((int) health);
+                }
+            }
+        }
     }
 
     @Override
