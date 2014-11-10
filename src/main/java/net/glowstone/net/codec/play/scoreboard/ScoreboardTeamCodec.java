@@ -5,6 +5,7 @@ import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
 import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage.Action;
+import org.bukkit.ChatColor;
 
 import java.io.IOException;
 import java.util.List;
@@ -27,7 +28,7 @@ public final class ScoreboardTeamCodec implements Codec<ScoreboardTeamMessage> {
             ByteBufUtils.writeUTF8(buf, message.getSuffix());
             buf.writeByte(message.getFlags());
             ByteBufUtils.writeUTF8(buf, message.getNametagVisibility().getValue());
-            buf.writeByte(message.getColor().getInteger());
+            buf.writeByte(message.getColor() == ChatColor.RESET ? -1 : message.getColor().ordinal());
         }
 
         // CREATE, ADD_, and REMOVE_PLAYERS
