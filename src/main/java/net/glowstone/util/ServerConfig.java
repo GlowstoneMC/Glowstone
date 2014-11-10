@@ -363,6 +363,7 @@ public final class ServerConfig {
         ENABLE_COMMAND_BLOCK("game.command-blocks", false, Migrate.PROPS, "enable-command-block"),
         //OP_PERMISSION_LEVEL(null, Migrate.PROPS, "op-permission-level"),
         RESOURCE_PACK("game.resource-pack", "", Migrate.PROPS, "resource-pack"),
+        RESOURCE_PACK_HASH("game.resource-pack-hash", "", Migrate.PROPS, "resource-pack-hash"),
         SNOOPER_ENABLED("server.snooper-enabled", false, Migrate.PROPS, "snooper-enabled"),
 
         // critters
