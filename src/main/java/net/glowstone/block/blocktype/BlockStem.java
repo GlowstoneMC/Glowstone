@@ -38,7 +38,7 @@ public class BlockStem extends BlockType implements IBlockGrowable {
     }
 
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block) {
+    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (block.getState().getRawData() >= CropState.RIPE.ordinal()) {
             return Collections.unmodifiableList(Arrays.asList(new ItemStack(seedsType, random.nextInt(4))));
         } else {

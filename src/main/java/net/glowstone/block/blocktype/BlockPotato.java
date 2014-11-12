@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 public class BlockPotato extends BlockCrops {
 
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block) {
+    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (block.getData() >= CropState.RIPE.ordinal()) {
             if (random.nextInt(100) < 2) {
                 return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.POTATO_ITEM, random.nextInt(4) + 1), 

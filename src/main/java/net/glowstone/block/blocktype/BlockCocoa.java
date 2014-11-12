@@ -52,7 +52,7 @@ public class BlockCocoa extends BlockAttachable implements IBlockGrowable {
     }
 
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block) {
+    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         final MaterialData data = block.getState().getData();
         if (data instanceof CocoaPlant) {
             int amount = 1;

@@ -26,7 +26,7 @@ public class BlockCrops extends BlockType implements IBlockGrowable {
     }
 
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block) {
+    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (block.getData() >= CropState.RIPE.ordinal()) {
             return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.SEEDS, random.nextInt(4)),
                 new ItemStack(Material.WHEAT, 1)));
