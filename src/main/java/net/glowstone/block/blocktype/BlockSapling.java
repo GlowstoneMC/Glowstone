@@ -18,7 +18,7 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.generator.TreeGenerator;
 import net.glowstone.util.BlockStateDelegate;
 
-public class BlockSapling extends BlockType implements IBlockGrowable {
+public class BlockSapling extends BlockAttachable implements IBlockGrowable {
 
     @Override
     public boolean isFertilizable(GlowBlock block) {

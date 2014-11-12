@@ -16,7 +16,7 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.generator.TreeGenerator;
 import net.glowstone.util.BlockStateDelegate;
 
-public class BlockMushroom extends BlockType implements IBlockGrowable {
+public class BlockMushroom extends BlockAttachable implements IBlockGrowable {
 
     private final Material mushroomType;
 

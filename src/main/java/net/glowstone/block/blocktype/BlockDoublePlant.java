@@ -12,7 +12,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
 
-public class BlockDoublePlant extends BlockType implements IBlockGrowable {
+public class BlockDoublePlant extends BlockAttachable implements IBlockGrowable {
 
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {

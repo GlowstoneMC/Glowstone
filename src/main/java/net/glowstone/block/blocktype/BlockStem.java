@@ -15,7 +15,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
 
-public class BlockStem extends BlockType implements IBlockGrowable {
+public class BlockStem extends BlockAttachable implements IBlockGrowable {
     private Material fruitType;
     private Material seedsType;
 
