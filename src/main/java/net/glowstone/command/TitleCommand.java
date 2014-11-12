@@ -35,6 +35,7 @@ public class TitleCommand extends BukkitCommand {
 
         if (player == null || (sender instanceof Player && !((Player) sender).canSee(player))) {
             sender.sendMessage("There's no player by that name online.");
+            return false;
         } else {
             if (args[1].equalsIgnoreCase("clear")) {
                 player.clearTitle();
