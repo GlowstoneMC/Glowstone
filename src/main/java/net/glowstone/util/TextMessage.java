@@ -89,7 +89,7 @@ public final class TextMessage {
      * @return The converted JSON structure.
      */
     @SuppressWarnings("unchecked")
-    private static JSONObject convert(String text) {
+    public static JSONObject convert(String text) {
         // state
         final List<JSONObject> items = new LinkedList<>();
         final Set<ChatColor> formatting = EnumSet.noneOf(ChatColor.class);
