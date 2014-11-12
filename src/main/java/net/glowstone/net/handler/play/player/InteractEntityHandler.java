@@ -32,7 +32,7 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
         GlowEntity possibleTarget = player.getWorld().getEntityManager().getEntity(message.getId());
         GlowLivingEntity target = possibleTarget instanceof GlowLivingEntity ? (GlowLivingEntity) possibleTarget : null;
 
-        possibleTarget.entityInteract(player, message)
+        
 
         if (message.getAction() == InteractEntityMessage.Action.ATTACK.ordinal()) {
             if (target == null) {
@@ -59,7 +59,7 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
             // todo: Interaction with entity at a specified location (X, Y, and Z are present in the message)
             // used for adjusting specific portions of armor stands
         } else if (message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
-            // todo: Interaction with something (X, Y, and Z are NOT present in the message)
+            possibleTarget.entityInteract(player, message)
         } else {
             GlowServer.logger.info("Player " + player.getName() + " sent unknown interact action: " + message.getAction());
         }
