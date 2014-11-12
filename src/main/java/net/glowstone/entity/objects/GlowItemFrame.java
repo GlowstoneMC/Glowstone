@@ -113,11 +113,10 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
 
         if (ticksLived % (11) == 0) {
             if ((world.getBlockAt(new Location(getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ()))).getType() == Material.AIR) {
-                //TODO: Uncomment once Glowstone supports entities/dropped items
-                /*world.dropItemNaturally(location, new ItemStack(Material.ITEM_FRAME));
+                world.dropItemNaturally(location, new ItemStack(Material.ITEM_FRAME));
                 if (!isEmpty()) {
                     world.dropItemNaturally(location, new ItemStack(itemInFrame));
-                }*/
+                }
                 remove();
             }
         }
