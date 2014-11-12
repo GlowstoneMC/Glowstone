@@ -394,9 +394,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         if (this instanceof GlowPlayer) {
             GlowPlayer player = (GlowPlayer) this;
             for (Objective objective: getServer().getScoreboardManager().getMainScoreboard().getObjectivesByCriteria(Criterias.HEALTH)) {
-                if (objective.hasScore(player.getName())) {
-                    objective.getScore(player.getName()).setScore((int) health);
-                }
+                objective.getScore(player.getName()).setScore((int) health);
             }
         }
     }
