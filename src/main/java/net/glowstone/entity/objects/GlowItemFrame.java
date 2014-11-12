@@ -27,8 +27,7 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
 
     BlockFace face;
     Material itemInFrame;
-    int rot = 0;
-
+    private int rot = 0;
 
     public GlowItemFrame(GlowPlayer player, Location location, BlockFace clickedface) {
 
