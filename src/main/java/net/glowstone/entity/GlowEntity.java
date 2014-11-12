@@ -732,7 +732,7 @@ public abstract class GlowEntity implements Entity {
     }
 
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
-        // TODO Auto-generated method stub
+        // Override in subclasses to implement behavior
         return false;
     }
 }
