@@ -31,8 +31,8 @@ public class TEFlowerPot extends TileEntity {
     public void loadNbt(CompoundTag tag) {
         super.loadNbt(tag);
 
-        if (tag.isString("Item") && !tag.getString("Item").isEmpty() && tag.isByte("Data")) {
-            contents = ItemIds.getMaterial(tag.getString("Item")).getNewData(tag.getByte("Data"));
+        if (tag.isString("Item") && !tag.getString("Item").isEmpty() && tag.isInt("Data")) {
+            contents = ItemIds.getMaterial(tag.getString("Item")).getNewData((byte) tag.getInt("Data"));
         }
     }
 
@@ -42,11 +42,11 @@ public class TEFlowerPot extends TileEntity {
 
         if (contents != null) {
             tag.putString("Item", ItemIds.getName(contents.getItemType()));
-            tag.putByte("Data", contents.getData());
+            tag.putInt("Data", contents.getData());
         } else {
             // Mimics how Minecraft does it.
             tag.putString("Item", "");
-            tag.putByte("Data", 0);
+            tag.putInt("Data", 0);
         }
     }
 
