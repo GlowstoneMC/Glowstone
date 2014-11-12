@@ -403,6 +403,7 @@ public final class GlowServer implements Server {
         whitelist = new UuidListFile(config.getFile("whitelist.json"));
         nameBans = new GlowBanList(this, BanList.Type.NAME);
         ipBans = new GlowBanList(this, BanList.Type.IP);
+
         Bukkit.setServer(this);
         loadConfig();
     }
