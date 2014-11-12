@@ -1,5 +1,9 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
@@ -26,6 +30,28 @@ public class BlockDoublePlant extends BlockType implements IBlockGrowable {
         headBlockState.setType(Material.DOUBLE_PLANT);
         headBlockState.setRawData((byte) 8);
         headBlockState.update(true);
+    }
+
+    @Override
+    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+        int data = block.getData();
+        if (data == 8) { // above part
+            data = block.getData();
+        }
+        return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.DOUBLE_PLANT, 1, (short) data)));
+    }
+
+    @Override
+    public void blockDestroy(GlowPlayer player, GlowBlock block, BlockFace face) {
+        int data = block.getData();
+        if (data == 8) { // above part
+            block = block.getRelative(BlockFace.DOWN);
+            data = block.getData();
+        } else {
+            block = block.getRelative(BlockFace.UP);
+        }
+        block.setType(Material.AIR);
+        block.setData((byte) 0);
     }
 
     @Override
