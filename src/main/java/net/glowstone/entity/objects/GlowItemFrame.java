@@ -276,19 +276,15 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
     public Rotation getRotation() {
         switch (rot) {
             case 0:
-                return Rotation.NONE;
             case 1:
                 return Rotation.NONE;
             case 2:
-                return Rotation.CLOCKWISE;
             case 3:
                 return Rotation.CLOCKWISE;
             case 4:
-                return Rotation.FLIPPED;
             case 5:
                 return Rotation.FLIPPED;
             case 6:
-                return Rotation.COUNTER_CLOCKWISE;
             case 7:
                 return Rotation.COUNTER_CLOCKWISE;
         }
