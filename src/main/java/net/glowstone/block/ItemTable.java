@@ -39,6 +39,7 @@ public final class ItemTable {
     private void registerBuiltins() {
         reg(Material.NOTE_BLOCK, new BlockNote());
         reg(Material.MOB_SPAWNER, new BlockMobSpawner());
+        reg(Material.MONSTER_EGGS, new BlockMonsterEggs());
         reg(Material.DRAGON_EGG, new BlockFalling(Material.DRAGON_EGG));
         reg(Material.SIGN_POST, new BlockSign());
         reg(Material.WALL_SIGN, new BlockSign());
@@ -117,7 +118,6 @@ public final class ItemTable {
         reg(Material.CAKE_BLOCK, new BlockDropless());
         reg(Material.WEB, new BlockWeb());
         reg(Material.FIRE, new BlockFire());
-        reg(Material.MONSTER_EGGS, new BlockDropless());
         reg(Material.ENDER_PORTAL_FRAME, new BlockEnderPortalFrame());
         reg(Material.FENCE_GATE, new BlockFenceGate());
         reg(Material.ACACIA_FENCE_GATE, new BlockFenceGate());
