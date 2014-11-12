@@ -56,8 +56,6 @@ public class GlowBannerCopyMatcher extends ItemMatcher {
         return original.clone();
     }
 
-    @Override
-    public void cleanup(ItemStack[] matrix, ItemStack result) {
-        //TODO: Cleanup
-    }
+    //TODO: Keep banner in matrix after crafting
+
 }
