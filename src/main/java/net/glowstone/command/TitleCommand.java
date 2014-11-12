@@ -36,73 +36,73 @@ public class TitleCommand extends BukkitCommand {
         if (player == null || (sender instanceof Player && !((Player) sender).canSee(player))) {
             sender.sendMessage("There's no player by that name online.");
             return false;
-        } else {
-            if (args[1].equalsIgnoreCase("clear")) {
-                player.clearTitle();
-                sender.sendMessage("Cleared " + player.getName() + "'s title");
-            } else if (args[1].equalsIgnoreCase("reset")) {
-                player.resetTitle();
-                sender.sendMessage("Reset " + player.getName() + "'s title");
-            } else if (args[1].equalsIgnoreCase("times")) {
-                if (args.length < 5) {
-                    sender.sendMessage(ChatColor.RED + "Usage: /title <player> times <fadeIn> <stay> <fadeOut>");
-                    return false;
-                }
+        }
 
-                TitleOptions options = player.getTitleOptions();
-
-                int in = tryParseInt(sender, args[2], 0);
-                int stay = tryParseInt(sender, args[3], in);
-                int out = tryParseInt(sender, args[4], stay);
-
-                if (out == -1) {
-                    return false;
-                }
-
-                options.setFadeInTime(in);
-                options.setFadeOutTime(out);
-                options.setVisibleTime(stay);
-                player.setTitleOptions(options);
-
-                sender.sendMessage("Updated " + player.getName() + "'s title times");
-            } else if (args[1].equalsIgnoreCase("title") || args[1].equalsIgnoreCase("subtitle")) {
-                if (args.length < 3) {
-                    sender.sendMessage(ChatColor.RED + "Usage: /title <player> " + args[1] + " <raw json>");
-                    return false;
-                }
-
-                StringBuilder message = new StringBuilder();
-
-                for (int i = 2; i < args.length; i++) {
-                    if (i > 2) message.append(" ");
-                    message.append(args[i]);
-                }
-
-                String raw = message.toString().trim();
-                if (!validJson(raw)) {
-                    sender.sendMessage(ChatColor.RED + "Invalid JSON: Could not parse, invalid format?");
-                    return false;
-                }
-
-                String component = raw;
-                Object parsed = JSONValue.parse(raw);
-                if (parsed != null && parsed instanceof JSONObject)
-                    component = convertJson((JSONObject) parsed);
-
-
-                Title currentTitle = player.getTitle();
-                if (args[1].equalsIgnoreCase("title")) {
-                    currentTitle.setHeading(component);
-                } else {
-                    currentTitle.setSubtitle(component);
-                }
-                player.setTitle(currentTitle, args[1].equalsIgnoreCase("title"));
-
-                sender.sendMessage("Updated " + player.getName() + "'s title");
-            } else {
-                sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+        if (args[1].equalsIgnoreCase("clear")) {
+            player.clearTitle();
+            sender.sendMessage("Cleared " + player.getName() + "'s title");
+        } else if (args[1].equalsIgnoreCase("reset")) {
+            player.resetTitle();
+            sender.sendMessage("Reset " + player.getName() + "'s title");
+        } else if (args[1].equalsIgnoreCase("times")) {
+            if (args.length < 5) {
+                sender.sendMessage(ChatColor.RED + "Usage: /title <player> times <fadeIn> <stay> <fadeOut>");
                 return false;
             }
+
+            TitleOptions options = player.getTitleOptions();
+
+            int in = tryParseInt(sender, args[2], 0);
+            int stay = tryParseInt(sender, args[3], in);
+            int out = tryParseInt(sender, args[4], stay);
+
+            if (out == -1) {
+                return false;
+            }
+
+            options.setFadeInTime(in);
+            options.setFadeOutTime(out);
+            options.setVisibleTime(stay);
+            player.setTitleOptions(options);
+
+            sender.sendMessage("Updated " + player.getName() + "'s title times");
+        } else if (args[1].equalsIgnoreCase("title") || args[1].equalsIgnoreCase("subtitle")) {
+            if (args.length < 3) {
+                sender.sendMessage(ChatColor.RED + "Usage: /title <player> " + args[1] + " <raw json>");
+                return false;
+            }
+
+            StringBuilder message = new StringBuilder();
+
+            for (int i = 2; i < args.length; i++) {
+                if (i > 2) message.append(" ");
+                message.append(args[i]);
+            }
+
+            String raw = message.toString().trim();
+            if (!validJson(raw)) {
+                sender.sendMessage(ChatColor.RED + "Invalid JSON: Could not parse, invalid format?");
+                return false;
+            }
+
+            String component = raw;
+            Object parsed = JSONValue.parse(raw);
+            if (parsed != null && parsed instanceof JSONObject)
+                component = convertJson((JSONObject) parsed);
+
+
+            Title currentTitle = player.getTitle();
+            if (args[1].equalsIgnoreCase("title")) {
+                currentTitle.setHeading(component);
+            } else {
+                currentTitle.setSubtitle(component);
+            }
+            player.setTitle(currentTitle, args[1].equalsIgnoreCase("title"));
+
+            sender.sendMessage("Updated " + player.getName() + "'s title");
+        } else {
+            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            return false;
         }
 
         return true;
