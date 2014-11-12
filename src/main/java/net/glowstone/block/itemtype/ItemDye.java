@@ -52,14 +52,23 @@ public class ItemDye extends ItemType {
                 if (data instanceof Tree &&
                         ((Tree) data).getSpecies() == TreeSpecies.JUNGLE &&
                         target.getRelative(face).getType() == Material.AIR) {
-                    final GlowBlockState state = target.getRelative(face).getState();
-                    state.setType(Material.COCOA);
-                    state.setData(new CocoaPlant(CocoaPlantSize.SMALL, face.getOppositeFace()));
-                    state.update(true);
+                    switch (face) {
+                        case NORTH:
+                        case EAST:
+                        case SOUTH:
+                        case WEST:
+                            final GlowBlockState state = target.getRelative(face).getState();
+                            state.setType(Material.COCOA);
+                            state.setData(new CocoaPlant(CocoaPlantSize.SMALL, face.getOppositeFace()));
+                            state.update(true);
 
-                    // deduct from stack if not in creative mode
-                    if (player.getGameMode() != GameMode.CREATIVE) {
-                        holding.setAmount(holding.getAmount() - 1);
+                            // deduct from stack if not in creative mode
+                            if (player.getGameMode() != GameMode.CREATIVE) {
+                                holding.setAmount(holding.getAmount() - 1);
+                            }
+                            break;
+                        default:
+                            break;
                     }
                 }
             }
