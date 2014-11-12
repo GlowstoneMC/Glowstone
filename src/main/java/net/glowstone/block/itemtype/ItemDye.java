@@ -8,9 +8,9 @@ import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.blocktype.IBlockGrowable;
 
 import org.bukkit.DyeColor;
+import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.TreeSpecies;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
@@ -35,8 +35,7 @@ public class ItemDye extends ItemType {
                     IBlockGrowable growable = (IBlockGrowable) blockType;
                     if (growable.isFertilizable(target)) {
                         // spawn some green particles
-                        target.getWorld().showParticle(target.getLocation().add(0.5D, 0.5D, 0.5D),
-                                Particle.VILLAGER_HAPPY, 0.25F, 0.25F, 0.25F, 0.4F, 12);
+                        target.getWorld().playEffect(target.getLocation(), Effect.BONEMEAL_USE, 0);
 
                         if (growable.canGrowWithChance(target)) {
                             growable.grow(player, target);
