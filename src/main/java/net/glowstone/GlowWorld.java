@@ -413,7 +413,7 @@ public final class GlowWorld implements World {
                 // thunder
                 if (environment == Environment.NORMAL &&
                         currentlyRaining && currentlyThundering) {
-                    if (random.nextDouble() < .00001F) {
+                    if (random.nextInt(25000) == 0) {
                         final int n = random.nextInt();
                         final int x = (cx << 4) + (n & 0xF);
                         final int z = (cz << 4) + (n >> 8 & 0xF);
@@ -480,30 +480,6 @@ public final class GlowWorld implements World {
             }
 
             updateWeather();
-        }
-
-        // basic blocks tick
-        final GlowChunk[] chunkList = chunks.getLoadedChunks();
-        for (GlowChunk chunk : chunkList) {
-            // we will choose 3 blocks per chunk's section
-            final ChunkSection[] sections = chunk.getSections();
-            for (int i = 0; i < sections.length; i++) {
-                ChunkSection section = sections[i];
-                if (section != null) {
-                    for (int j = 0; j < 3; j++) {
-                        int x = random.nextInt(16);
-                        int z = random.nextInt(16);
-                        int y = random.nextInt(16);
-                        int type = section.types[(y << 8) | (z << 4) | x] >> 4;
-                        if (type != 0) {
-                            final BlockType blockType = ItemTable.instance().getBlock(type);
-                            if (blockType != null && blockType.canTickRandomly()) {
-                                blockType.updateBlock(chunk.getBlock(x, y + (i << 4), z));
-                            }
-                        }
-                    }
-                }
-            }
         }
 
         if (--saveTimer <= 0) {

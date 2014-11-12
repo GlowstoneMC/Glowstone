@@ -25,7 +25,7 @@ public class BlockGrass extends BlockType {
     @Override
     public void updateBlock(GlowBlock block) {
         if (block.getLightLevel() < 4 ||
-                block.getRelative(BlockFace.UP).getType() != Material.AIR) { // temp fix
+                block.getRelative(BlockFace.UP).getType().isOccluding()) { // temp fix for light level
             // grass block turns into dirt block
             final GlowBlockState state = block.getState();
             state.setType(Material.DIRT);
@@ -49,7 +49,9 @@ public class BlockGrass extends BlockType {
                 final GlowBlock targetBlock = world.getBlockAt(x, y, z);
                 if (targetBlock.getType() == Material.DIRT &&
                         targetBlock.getData() == 0 && // only spread on normal dirt
-                        targetBlock.getRelative(BlockFace.UP).getType() == Material.AIR && // temp fix
+                        !targetBlock.getRelative(BlockFace.UP).getType().isOccluding() && // temp fix for light level
+                        targetBlock.getRelative(BlockFace.UP).getType() != Material.WATER && // temp fix for light level
+                        targetBlock.getRelative(BlockFace.UP).getType() != Material.STATIONARY_WATER && // temp fix for light level
                         targetBlock.getRelative(BlockFace.UP).getLightLevel() >= 4) {
                     final GlowBlockState state = targetBlock.getState();
                     state.setType(Material.GRASS);
