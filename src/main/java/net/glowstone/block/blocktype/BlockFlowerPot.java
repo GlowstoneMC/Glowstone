@@ -25,7 +25,7 @@ import net.glowstone.entity.GlowPlayer;
 public class BlockFlowerPot extends BlockType {
 
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block) {
+    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         List<ItemStack> drops = Arrays.asList(new ItemStack(Material.FLOWER_POT));
         GlowBlockState state = block.getState();
 
