@@ -3,7 +3,7 @@ package net.glowstone.block;
 import org.bukkit.Material;
 
 /**
- * BlockValueManager provides easily access to Block/Material related values (e.g. block hardness).
+ * MaterialValueManager provides easily access to {@link Material} related values (e.g. block hardness).
  */
 public interface MaterialValueManager {
     /**
