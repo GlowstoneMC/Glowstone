@@ -1,5 +1,6 @@
 package net.glowstone.block.entity;
 
+import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
 
 import net.glowstone.block.GlowBlock;
@@ -31,8 +32,14 @@ public class TEFlowerPot extends TileEntity {
     public void loadNbt(CompoundTag tag) {
         super.loadNbt(tag);
 
-        if (tag.isString("Item") && !tag.getString("Item").isEmpty() && tag.isInt("Data")) {
-            contents = ItemIds.getMaterial(tag.getString("Item")).getNewData((byte) tag.getInt("Data"));
+        int contentsData = tag.isInt("Data") ? tag.getInt("Data") : 0;
+
+        if (tag.isString("Item") && !tag.getString("Item").isEmpty()) {
+            // NBT data uses material ID names (post-1.8).
+            contents = ItemIds.getMaterial(tag.getString("Item")).getNewData((byte) contentsData);
+        } else if (tag.isInt("Item")) {
+            // NBT data uses material IDs (pre-1.8).
+            contents = Material.getMaterial(tag.getInt("Item")).getNewData((byte) contentsData);
         }
     }
 
