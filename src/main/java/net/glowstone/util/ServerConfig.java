@@ -213,11 +213,7 @@ public final class ServerConfig {
         }
 
         if (changed) {
-            try {
-                config.save(configFile);
-            } catch (IOException e) {
-                GlowServer.logger.log(Level.SEVERE, "Failed to write config: " + configFile, e);
-            }
+            save();
         }
     }
 
