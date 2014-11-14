@@ -275,7 +275,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             gameMode |= 0x8;
         }
         session.send(new JoinGameMessage(SELF_ID, gameMode, world.getEnvironment().getId(), world.getDifficulty().getValue(), session.getServer().getMaxPlayers(), type, false));
-        setAllowFlight(getGameMode() == GameMode.CREATIVE);
+        setGameModeDefaults();
 
         // send server brand and supported plugin channels
         session.send(PluginMessage.fromString("MC|Brand", server.getName()));
@@ -690,6 +690,18 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         return UserListItemMessage.add(getProfile(), getGameMode().getValue(), 0, displayName);
     }
 
+    /**
+     * Send a UserListItemMessage to every player that can see this player.
+     * @param updateMessage The message to send.
+     */
+    private void updateUserListEntries(UserListItemMessage updateMessage) {
+        for (GlowPlayer player : server.getOnlinePlayers()) {
+            if (player.canSee(this)) {
+                player.getSession().send(updateMessage);
+            }
+        }
+    }
+
     @Override
     public void setVelocity(Vector velocity) {
         PlayerVelocityEvent event = EventFactory.callEvent(new PlayerVelocityEvent(this, velocity));
@@ -833,12 +845,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         if (playerListName != null && !playerListName.isEmpty()) {
             displayName = new TextMessage(playerListName);
         }
-        Message updateMessage = UserListItemMessage.displayNameOne(getUniqueId(), displayName);
-        for (GlowPlayer player : server.getOnlinePlayers()) {
-            if (player.canSee(this)) {
-                player.getSession().send(updateMessage);
-            }
-        }
+        updateUserListEntries(UserListItemMessage.displayNameOne(getUniqueId(), displayName));
     }
 
     @Override
@@ -879,13 +886,23 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void setGameMode(GameMode mode) {
-        boolean changed = getGameMode() != mode;
-        super.setGameMode(mode);
-        if (changed) {
+        if (getGameMode() != mode) {
+            PlayerGameModeChangeEvent event = new PlayerGameModeChangeEvent(this, mode);
+            if (EventFactory.callEvent(event).isCancelled()) {
+                return;
+            }
+
+            super.setGameMode(mode);
+            updateUserListEntries(UserListItemMessage.gameModeOne(getUniqueId(), mode.getValue()));
             session.send(new StateChangeMessage(StateChangeMessage.Reason.GAMEMODE, mode.getValue()));
         }
+        setGameModeDefaults();
+    }
 
-        setAllowFlight(mode == GameMode.CREATIVE);
+    private void setGameModeDefaults() {
+        GameMode mode = getGameMode();
+        setAllowFlight(mode == GameMode.CREATIVE || mode == GameMode.SPECTATOR);
+        metadata.setBit(MetadataIndex.STATUS, MetadataIndex.StatusFlags.INVISIBLE, mode == GameMode.SPECTATOR);
     }
 
     ////////////////////////////////////////////////////////////////////////////
