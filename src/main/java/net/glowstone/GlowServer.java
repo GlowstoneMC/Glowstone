@@ -789,13 +789,17 @@ public final class GlowServer implements Server {
      * Get the resource pack url for this server, or {@code null} if not set
      * @return url The url of the resource pack to use, or {@code null}
      */
-    public String getResourcePackURL() { return config.getString(ServerConfig.Key.RESOURCE_PACK); }
+    public String getResourcePackURL() {
+        return config.getString(ServerConfig.Key.RESOURCE_PACK);
+    }
 
     /**
      * Get the resource pack hash for this server, or the empty string if not set
      * @return hash The hash of the resource pack, or the empty string
      */
-    public String getResourcePackHash() { return config.getString(ServerConfig.Key.RESOURCE_PACK_HASH); }
+    public String getResourcePackHash() {
+        return config.getString(ServerConfig.Key.RESOURCE_PACK_HASH);
+    }
 
     ////////////////////////////////////////////////////////////////////////////
     // Static server properties
