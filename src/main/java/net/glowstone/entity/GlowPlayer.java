@@ -1460,8 +1460,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * otherwise does nothing. If {@code awardParents} is true, award the player all
      * parent achievements and the given achievement, making this method equivalent
      * to {@link #awardAchievement(Achievement)}.
-     * @param achievement
-     * @param awardParents
+     * @param achievement the achievement to award.
+     * @param awardParents whether parent achievements should be awarded.
      * @return {@code true} if the achievement was awarded, {@code false} otherwise
      */
     public boolean awardAchievement(Achievement achievement, boolean awardParents) {
@@ -1469,17 +1469,24 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         Achievement parent = achievement.getParent();
         if (parent != null && !hasAchievement(parent)) {
-            if (awardParents) {
-                awardAchievement(parent, awardParents);
-            } else {
-                return false; // player does not have the required parent achievement
+            if (!awardParents || !awardAchievement(parent, true)) {
+                // does not have or failed to award required parent achievement
+                return false;
             }
+        }
+
+        PlayerAchievementAwardedEvent event = new PlayerAchievementAwardedEvent(this, achievement);
+        if (EventFactory.callEvent(event).isCancelled()) {
+            return false; // event was cancelled
         }
 
         stats.setAchievement(achievement, true);
         sendAchievement(achievement, true);
 
-        // todo: make an announcement if that's enabled
+        if (server.getAnnounceAchievements()) {
+            // todo: make message fancier (hover, translated names)
+            server.broadcastMessage(getName() + " earned achievement " + ChatColor.GREEN + "[" + achievement.name() + "]");
+        }
         return true;
     }
 

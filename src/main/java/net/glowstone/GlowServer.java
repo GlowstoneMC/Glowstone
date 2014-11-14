@@ -778,7 +778,7 @@ public final class GlowServer implements Server {
     }
 
     /**
-     * Get whether to use color codes in Rcon responses
+     * Get whether to use color codes in Rcon responses.
      * @return True if color codes will be present in Rcon responses
      */
     public boolean useRconColors() {
@@ -786,19 +786,27 @@ public final class GlowServer implements Server {
     }
 
     /**
-     * Get the resource pack url for this server, or {@code null} if not set
-     * @return url The url of the resource pack to use, or {@code null}
+     * Get the resource pack url for this server, or {@code null} if not set.
+     * @return The url of the resource pack to use, or {@code null}
      */
     public String getResourcePackURL() {
         return config.getString(ServerConfig.Key.RESOURCE_PACK);
     }
 
     /**
-     * Get the resource pack hash for this server, or the empty string if not set
-     * @return hash The hash of the resource pack, or the empty string
+     * Get the resource pack hash for this server, or the empty string if not set.
+     * @return The hash of the resource pack, or the empty string
      */
     public String getResourcePackHash() {
         return config.getString(ServerConfig.Key.RESOURCE_PACK_HASH);
+    }
+
+    /**
+     * Get whether achievements should be announced.
+     * @return True if achievements should be announced in chat.
+     */
+    public boolean getAnnounceAchievements() {
+        return config.getBoolean(ServerConfig.Key.ANNOUNCE_ACHIEVEMENTS);
     }
 
     ////////////////////////////////////////////////////////////////////////////
