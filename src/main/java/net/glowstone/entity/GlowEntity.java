@@ -518,6 +518,38 @@ public abstract class GlowEntity implements Entity {
         return true;
     }
 
+    /**
+     * Determine if this entity is intersecting a block of the specified type.
+     * If the entity has a defined bounding box, that is used to check for
+     * intersection. Otherwise,
+     * @param material The material to check for.
+     * @return True if the entity is intersecting
+     */
+    public boolean isTouchingMaterial(Material material) {
+        if (boundingBox == null) {
+            // less accurate calculation if no bounding box is present
+            for (BlockFace face : new BlockFace[]{BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH, BlockFace.NORTH, BlockFace.DOWN, BlockFace.SELF,
+                    BlockFace.NORTH_EAST, BlockFace.NORTH_WEST, BlockFace.SOUTH_EAST, BlockFace.SOUTH_WEST}) {
+                if (getLocation().getBlock().getRelative(face).getType() == material) {
+                    return true;
+                }
+            }
+        } else {
+            // bounding box-based calculation
+            Vector min = boundingBox.minCorner, max = boundingBox.maxCorner;
+            for (int x = min.getBlockX(); x <= max.getBlockX(); ++x) {
+                for (int y = min.getBlockY(); y <= max.getBlockY(); ++y) {
+                    for (int z = min.getBlockZ(); z <= max.getBlockZ(); ++z) {
+                        if (world.getBlockTypeIdAt(x, y, z) == material.getId()) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Physics stuff
 
