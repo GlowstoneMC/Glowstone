@@ -180,7 +180,7 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
         }
     }
 
-    private static BlockFace inversegetFace(int face) {
+    private static BlockFace inverseGetFace(int face) {
         switch (face) {
             case 0:
                 return BlockFace.NORTH;
@@ -249,7 +249,7 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
 
     @Override
     public BlockFace getAttachedFace() {
-        return inversegetFace(getFacingNumber());
+        return inverseGetFace(getFacingNumber());
     }
 
     @Override
