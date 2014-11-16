@@ -30,7 +30,7 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     private String lastName;
     private Location bedSpawn;
 
-        /**
+    /**
      * Create a new offline player for the given name. If possible, the
      * player's UUID will be found and then their data.
      * @param server The server of the offline player. Must not be null.
