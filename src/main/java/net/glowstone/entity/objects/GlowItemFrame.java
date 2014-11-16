@@ -43,12 +43,11 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
                 }
                 player.setItemInHand(is);
             }
-
-            metadata.set(MetadataIndex.ITEM_FRAME_ROTATION, 0);
-            metadata.set(MetadataIndex.ITEM_FRAME_ITEM, new ItemStack(Material.AIR));
-            metadata.set(MetadataIndex.AIR_TIME, 300);
-            itemInFrame = Material.AIR;
         }
+        metadata.set(MetadataIndex.ITEM_FRAME_ROTATION, 0);
+        metadata.set(MetadataIndex.ITEM_FRAME_ITEM, new ItemStack(Material.AIR));
+        metadata.set(MetadataIndex.AIR_TIME, 300);
+        itemInFrame = Material.AIR;
     }
 
     public void setItemInFrame(ItemStack is) {
