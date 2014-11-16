@@ -322,6 +322,34 @@ public final class ServerConfig {
         SHUTDOWN_MESSAGE("server.shutdown-message", "Server shutting down.", Migrate.BUKKIT, "settings.shutdown-message"),
         USE_JLINE("server.use-jline", true),
 
+        // game props
+        GAMEMODE("game.gamemode", "SURVIVAL", Migrate.PROPS, "gamemode"),
+        FORCE_GAMEMODE("game.gamemode-force", "false", Migrate.PROPS, "force-gamemode"),
+        DIFFICULTY("game.difficulty", "NORMAL", Migrate.PROPS, "difficulty"),
+        HARDCORE("game.hardcore", false, Migrate.PROPS, "hardcore"),
+        PVP_ENABLED("game.pvp", true, Migrate.PROPS, "pvp"),
+        MAX_BUILD_HEIGHT("game.max-build-height", 256, Migrate.PROPS, "max-build-height"),
+        ANNOUNCE_ACHIEVEMENTS("game.announce-achievements", true, Migrate.PROPS, "announce-player-achievements"),
+
+        // server.properties keys
+        ALLOW_FLIGHT("game.allow-flight", false, Migrate.PROPS, "allow-flight"),
+        ENABLE_COMMAND_BLOCK("game.command-blocks", false, Migrate.PROPS, "enable-command-block"),
+        //OP_PERMISSION_LEVEL(null, Migrate.PROPS, "op-permission-level"),
+        RESOURCE_PACK("game.resource-pack", "", Migrate.PROPS, "resource-pack"),
+        RESOURCE_PACK_HASH("game.resource-pack-hash", "", Migrate.PROPS, "resource-pack-hash"),
+        SNOOPER_ENABLED("server.snooper-enabled", false, Migrate.PROPS, "snooper-enabled"),
+
+        // critters
+        SPAWN_MONSTERS("creatures.enable.monsters", true, Migrate.PROPS, "spawn-monsters"),
+        SPAWN_ANIMALS("creatures.enable.animals", true, Migrate.PROPS, "spawn-animals"),
+        SPAWN_NPCS("creatures.enable.npcs", true, Migrate.PROPS, "spawn-npcs"),
+        MONSTER_LIMIT("creatures.limit.monsters", 70, Migrate.BUKKIT, "spawn-limits.monsters"),
+        ANIMAL_LIMIT("creatures.limit.animals", 15, Migrate.BUKKIT, "spawn-limits.animals"),
+        WATER_ANIMAL_LIMIT("creatures.limit.water", 5, Migrate.BUKKIT, "spawn-limits.water-animals"),
+        AMBIENT_LIMIT("creatures.limit.ambient", 15, Migrate.BUKKIT, "spawn-limits.ambient"),
+        MONSTER_TICKS("creatures.ticks.monsters", 1, Migrate.BUKKIT, "ticks-per.monster-spawns"),
+        ANIMAL_TICKS("creatures.ticks.animal", 400, Migrate.BUKKIT, "ticks-per.animal-spawns"),
+
         // folders
         PLUGIN_FOLDER("folders.plugins", "plugins"),
         UPDATE_FOLDER("folders.update", "update", Migrate.BUKKIT, "settings.update-folder"),
@@ -363,34 +391,6 @@ public final class ServerConfig {
         ALLOW_NETHER("world.allow-nether", true, Migrate.PROPS, "allow-nether"),
         ALLOW_END("world.allow-end", true, Migrate.BUKKIT, "settings.allow-end"),
         PERSIST_SPAWN("world.keep-spawn-loaded", true),
-
-        // game props
-        GAMEMODE("game.gamemode", "SURVIVAL", Migrate.PROPS, "gamemode"),
-        FORCE_GAMEMODE("game.gamemode-force", "false", Migrate.PROPS, "force-gamemode"),
-        DIFFICULTY("game.difficulty", "NORMAL", Migrate.PROPS, "difficulty"),
-        HARDCORE("game.hardcore", false, Migrate.PROPS, "hardcore"),
-        PVP_ENABLED("game.pvp", true, Migrate.PROPS, "pvp"),
-        MAX_BUILD_HEIGHT("game.max-build-height", 256, Migrate.PROPS, "max-build-height"),
-        ANNOUNCE_ACHIEVEMENTS("game.announce-achievements", true, Migrate.PROPS, "announce-player-achievements"),
-
-        // server.properties keys
-        ALLOW_FLIGHT("game.allow-flight", false, Migrate.PROPS, "allow-flight"),
-        ENABLE_COMMAND_BLOCK("game.command-blocks", false, Migrate.PROPS, "enable-command-block"),
-        //OP_PERMISSION_LEVEL(null, Migrate.PROPS, "op-permission-level"),
-        RESOURCE_PACK("game.resource-pack", "", Migrate.PROPS, "resource-pack"),
-        RESOURCE_PACK_HASH("game.resource-pack-hash", "", Migrate.PROPS, "resource-pack-hash"),
-        SNOOPER_ENABLED("server.snooper-enabled", false, Migrate.PROPS, "snooper-enabled"),
-
-        // critters
-        SPAWN_MONSTERS("creatures.enable.monsters", true, Migrate.PROPS, "spawn-monsters"),
-        SPAWN_ANIMALS("creatures.enable.animals", true, Migrate.PROPS, "spawn-animals"),
-        SPAWN_NPCS("creatures.enable.npcs", true, Migrate.PROPS, "spawn-npcs"),
-        MONSTER_LIMIT("creatures.limit.monsters", 70, Migrate.BUKKIT, "spawn-limits.monsters"),
-        ANIMAL_LIMIT("creatures.limit.animals", 15, Migrate.BUKKIT, "spawn-limits.animals"),
-        WATER_ANIMAL_LIMIT("creatures.limit.water", 5, Migrate.BUKKIT, "spawn-limits.water-animals"),
-        AMBIENT_LIMIT("creatures.limit.ambient", 15, Migrate.BUKKIT, "spawn-limits.ambient"),
-        MONSTER_TICKS("creatures.ticks.monsters", 1, Migrate.BUKKIT, "ticks-per.monster-spawns"),
-        ANIMAL_TICKS("creatures.ticks.animal", 400, Migrate.BUKKIT, "ticks-per.animal-spawns"),
 
         // database
         DB_DRIVER("database.driver", "org.sqlite.JDBC", Migrate.BUKKIT, "database.driver"),
