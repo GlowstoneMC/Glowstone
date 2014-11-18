@@ -130,7 +130,7 @@ public class GlowMetaFireworkEffect extends GlowMetaItem implements FireworkEffe
         List<Color> fade = effect.getFadeColors();
         if (!fade.isEmpty()) {
             List<Integer> fadeInts = new ArrayList<>();
-            for (Color color : colors) {
+            for (Color color : fade) {
                 fadeInts.add(color.asRGB());
             }
             explosion.putIntArray("FadeColors", Ints.toArray(fadeInts));
