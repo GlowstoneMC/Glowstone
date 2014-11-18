@@ -14,9 +14,13 @@ public interface MaterialValueManager {
      */
     Value getValue(Material material);
 
-    @lombok.Value
-    public static class Value {
-        private final float hardness;
-        private final float blastResistance;
+    public interface Value {
+        /**
+         * Returns the hardness-component of this value.
+         * @return returns the hardness (or Float.MAX_VALUE for infinity hardness)
+         */
+        float getHardness();
+
+        float getBlastResistance();
     }
 }
