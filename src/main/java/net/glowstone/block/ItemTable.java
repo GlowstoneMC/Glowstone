@@ -167,6 +167,7 @@ public final class ItemTable {
         reg(Material.CAULDRON, new BlockDirectDrops(Material.CAULDRON_ITEM, ToolType.PICKAXE));
         reg(Material.STANDING_BANNER, new BlockBanner());
         reg(Material.WALL_BANNER, new BlockBanner());
+        reg(Material.SPONGE, new BlockSponge());
 
         reg(Material.SIGN, new ItemSign());
         reg(Material.REDSTONE, new ItemPlaceAs(Material.REDSTONE_WIRE));
