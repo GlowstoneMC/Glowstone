@@ -67,10 +67,11 @@ public class SuperListIterator<E> implements ListIterator<E> {
     @Override
     public E next() {
         checkNext();
+        E obj = childIterator.next();
         index++;
-        return childIterator.next();
+        return obj;
     }
-    
+
     @Override
     public boolean hasPrevious() {
         while (childIterator == null || !childIterator.hasPrevious()) {
@@ -100,13 +101,19 @@ public class SuperListIterator<E> implements ListIterator<E> {
     @Override
     public E previous() {
         checkPrevious();
+        E obj = childIterator.previous();
         index--;
-        return childIterator.previous();
+        return obj;
     }
 
     @Override
     public void add(E object) {
-        throw new UnsupportedOperationException("TODO - NOT YET IMPLEMENTED");
+        if (childIterator == null) {
+            throw new IllegalStateException("next() must be called before using add()");
+        }
+
+        childIterator.add(object);
+        index++;
     }
 
     @Override

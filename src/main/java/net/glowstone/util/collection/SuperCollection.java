@@ -128,7 +128,8 @@ public abstract class SuperCollection<E> implements Collection<E> {
                         modified++;
                     }
                 }
-                break;
+
+                return resultBoolean(modified);
 
             case LAST:
                 return parents.get(parents.size() - 1).addAll(objects);
