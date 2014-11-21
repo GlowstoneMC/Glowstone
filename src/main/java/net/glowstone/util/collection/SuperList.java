@@ -126,7 +126,6 @@ public class SuperList<E> extends SuperCollection<E> implements List<E> {
 
     @Override
     public Iterator<E> iterator() {
-        // Override if possible, because this is *really* slow
         return new SuperIterator(getParents());
     }
 
@@ -212,6 +211,7 @@ public class SuperList<E> extends SuperCollection<E> implements List<E> {
 
     @Override
     public List<E> subList(int fromIndex, int toIndex) {
-        throw new UnsupportedOperationException("TODO - NOT YET IMPLEMENTED");
+        // Kinda slow. If this is ever going to be used heavily, you'll probably want to implement a "SubList" class, since neither Java nor Guava provides a public implementation.
+        asClone().subList(fromIndex, toIndex);
     }
 }
