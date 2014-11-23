@@ -1424,6 +1424,23 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     /**
+     * Send a sign change, similar to {@link #sendSignChange(Location, String[])},
+     * but using complete TextMessages instead of strings.
+     *
+     * @param location the location of the sign
+     * @param lines the new text on the sign or null to clear it
+     * @throws IllegalArgumentException if location is null
+     * @throws IllegalArgumentException if lines is non-null and has a length less than 4
+     */
+    public void sendSignChange(Location location, TextMessage[] lines) {
+        Validate.notNull(location, "location cannot be null");
+        Validate.notNull(lines, "lines cannot be null");
+        Validate.isTrue(lines.length == 4, "lines.length must equal 4");
+
+        afterBlockChanges.add(new UpdateSignMessage(location.getBlockX(), location.getBlockY(), location.getBlockZ(), lines));
+    }
+
+    /**
      * Send a block entity change to the given location.
      * @param location The location of the block entity.
      * @param type The type of block entity being sent.
