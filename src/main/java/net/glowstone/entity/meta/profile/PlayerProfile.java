@@ -124,6 +124,7 @@ public final class PlayerProfile {
         return profileTag;
     }
 
+    @SuppressWarnings("unchecked")
     public static PlayerProfile fromNBT(CompoundTag tag) {
         // NBT: {Id: "", Name: "", Properties: {textures: [{Signature: "", Value: {}}]}}
         String uuidStr = tag.getString("Id");

@@ -13,7 +13,7 @@ public class BlockGravel extends BlockType {
     private final Random random = new Random();
 
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block) {
+    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         return Collections.unmodifiableList(Arrays.asList(new ItemStack(random.nextInt(10) == 1 ? Material.FLINT : Material.GRAVEL, 1)));
     }
 }

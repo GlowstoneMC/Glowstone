@@ -13,10 +13,10 @@ public class BlockLadder extends BlockClimbable {
 
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
-        return super.canPlaceAt(block, against) || 
-                isTargetOccluding(block, BlockFace.SOUTH) || 
-                isTargetOccluding(block, BlockFace.WEST) || 
-                isTargetOccluding(block, BlockFace.NORTH) || 
+        return super.canPlaceAt(block, against) ||
+                isTargetOccluding(block, BlockFace.SOUTH) ||
+                isTargetOccluding(block, BlockFace.WEST) ||
+                isTargetOccluding(block, BlockFace.NORTH) ||
                 isTargetOccluding(block, BlockFace.EAST);
     }
 

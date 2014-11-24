@@ -21,6 +21,7 @@ import net.glowstone.net.message.play.entity.EntityVelocityMessage;
 import net.glowstone.net.message.play.game.*;
 import net.glowstone.net.message.play.inv.*;
 import net.glowstone.net.message.play.player.PlayerAbilitiesMessage;
+import net.glowstone.net.message.play.player.ResourcePackSendMessage;
 import net.glowstone.net.protocol.ProtocolType;
 import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextMessage;
@@ -301,6 +302,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         setCompassTarget(world.getSpawnLocation()); // set our compass target
         sendTime();
         sendWeather();
+        sendRainDensity();
+        sendSkyDarkness();
         sendAbilities();
 
         invMonitor = new InventoryMonitor(getOpenInventory());
@@ -308,6 +311,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         // send initial location
         session.send(new PositionRotationMessage(location));
+
+        if (!server.getResourcePackURL().isEmpty()) {
+            setResourcePack(server.getResourcePackURL(), server.getResourcePackHash());
+        }
     }
 
     /**
@@ -397,9 +404,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         List<Integer> destroyIds = new LinkedList<>();
         for (Iterator<GlowEntity> it = knownEntities.iterator(); it.hasNext(); ) {
             GlowEntity entity = it.next();
-            boolean withinDistance = !entity.isDead() && isWithinDistance(entity);
-
-            if (withinDistance) {
+            if (isWithinDistance(entity)) {
                 for (Message msg : entity.createUpdateMessage()) {
                     session.send(msg);
                 }
@@ -414,11 +419,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         // add entities
         for (GlowEntity entity : world.getEntityManager()) {
-            if (entity == this)
-                continue;
-            boolean withinDistance = !entity.isDead() && isWithinDistance(entity);
-
-            if (withinDistance && !knownEntities.contains(entity) && !hiddenEntities.contains(entity.getUniqueId())) {
+            if (entity != this && isWithinDistance(entity) &&
+                    !knownEntities.contains(entity) && !hiddenEntities.contains(entity.getUniqueId())) {
                 knownEntities.add(entity);
                 for (Message msg : entity.createSpawnMessage()) {
                     session.send(msg);
@@ -595,6 +597,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         setCompassTarget(world.getSpawnLocation()); // set our compass target
         session.send(new PositionRotationMessage(location));
         sendWeather();
+        sendRainDensity();
+        sendSkyDarkness();
         sendTime();
         updateInventory();
 
@@ -877,7 +881,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     public void setGameMode(GameMode mode) {
         boolean changed = getGameMode() != mode;
         super.setGameMode(mode);
-        if (changed) session.send(new StateChangeMessage(3, mode.getValue()));
+        if (changed) {
+            session.send(new StateChangeMessage(StateChangeMessage.Reason.GAMEMODE, mode.getValue()));
+        }
 
         setAllowFlight(mode == GameMode.CREATIVE);
     }
@@ -1131,11 +1137,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     ////////////////////////////////////////////////////////////////////////////
     // Actions
 
-    /**
-     * Teleport the player.
-     * @param location The destination to teleport to.
-     * @return Whether the teleport was a success.
-     */
     @Override
     public boolean teleport(Location location) {
         return teleport(location, TeleportCause.UNKNOWN);
@@ -1143,6 +1144,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public boolean teleport(Location location, TeleportCause cause) {
+        Validate.notNull(location, "location cannot be null");
+        Validate.notNull(location.getWorld(), "location's world cannot be null");
+        Validate.notNull(cause, "cause cannot be null");
+
         if (this.location != null && this.location.getWorld() != null) {
             PlayerTeleportEvent event = new PlayerTeleportEvent(this, this.location, location, cause);
             if (EventFactory.callEvent(event).isCancelled()) {
@@ -1319,8 +1324,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void setResourcePack(String url) {
-        // todo: update for 1.8 if needed
-        session.send(PluginMessage.fromString("MC|RPack", url));
+        setResourcePack(url, "");
+    }
+
+    @Override
+    public void setResourcePack(String url, String hash) {
+        session.send(new ResourcePackSendMessage(url, hash));
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1339,7 +1348,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void playEffect(Location loc, Effect effect, int data) {
         int id = effect.getId();
-        boolean ignoreDistance = id == 1013; // mob.wither.spawn, not in Bukkit yet
+        boolean ignoreDistance = effect.isDistanceIgnored();
         session.send(new PlayEffectMessage(id, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), data, ignoreDistance));
     }
 
@@ -1414,6 +1423,22 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     /**
+     * Send a sign change, similar to {@link #sendSignChange(Location, String[])},
+     * but using complete TextMessages instead of strings.
+     * @param location the location of the sign
+     * @param lines the new text on the sign or null to clear it
+     * @throws IllegalArgumentException if location is null
+     * @throws IllegalArgumentException if lines is non-null and has a length less than 4
+     */
+    public void sendSignChange(Location location, TextMessage[] lines) {
+        Validate.notNull(location, "location cannot be null");
+        Validate.notNull(lines, "lines cannot be null");
+        Validate.isTrue(lines.length == 4, "lines.length must equal 4");
+
+        afterBlockChanges.add(new UpdateSignMessage(location.getBlockX(), location.getBlockY(), location.getBlockZ(), lines));
+    }
+
+    /**
      * Send a block entity change to the given location.
      * @param location The location of the block entity.
      * @param type The type of block entity being sent.
@@ -1450,8 +1475,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * otherwise does nothing. If {@code awardParents} is true, award the player all
      * parent achievements and the given achievement, making this method equivalent
      * to {@link #awardAchievement(Achievement)}.
-     * @param achievement
-     * @param awardParents
+     * @param achievement the achievement to award.
+     * @param awardParents whether parent achievements should be awarded.
      * @return {@code true} if the achievement was awarded, {@code false} otherwise
      */
     public boolean awardAchievement(Achievement achievement, boolean awardParents) {
@@ -1459,17 +1484,24 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         Achievement parent = achievement.getParent();
         if (parent != null && !hasAchievement(parent)) {
-            if (awardParents) {
-                awardAchievement(parent, awardParents);
-            } else {
-                return false; // player does not have the required parent achievement
+            if (!awardParents || !awardAchievement(parent, true)) {
+                // does not have or failed to award required parent achievement
+                return false;
             }
+        }
+
+        PlayerAchievementAwardedEvent event = new PlayerAchievementAwardedEvent(this, achievement);
+        if (EventFactory.callEvent(event).isCancelled()) {
+            return false; // event was cancelled
         }
 
         stats.setAchievement(achievement, true);
         sendAchievement(achievement, true);
 
-        // todo: make an announcement if that's enabled
+        if (server.getAnnounceAchievements()) {
+            // todo: make message fancier (hover, translated names)
+            server.broadcastMessage(getName() + " earned achievement " + ChatColor.GREEN + "[" + achievement.name() + "]");
+        }
         return true;
     }
 
@@ -1686,11 +1718,21 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     public void resetPlayerWeather() {
         playerWeather = null;
         sendWeather();
+        sendRainDensity();
+        sendSkyDarkness();
     }
 
     public void sendWeather() {
         boolean stormy = playerWeather == null ? getWorld().hasStorm() : playerWeather == WeatherType.DOWNFALL;
-        session.send(new StateChangeMessage(stormy ? 2 : 1, 0));
+        session.send(new StateChangeMessage(stormy ? StateChangeMessage.Reason.START_RAIN : StateChangeMessage.Reason.STOP_RAIN, 0));
+    }
+
+    public void sendRainDensity() {
+        session.send(new StateChangeMessage(StateChangeMessage.Reason.RAIN_DENSITY, getWorld().getRainDensity()));
+    }
+
+    public void sendSkyDarkness() {
+        session.send(new StateChangeMessage(StateChangeMessage.Reason.SKY_DARKNESS, getWorld().getSkyDarkness()));
     }
 
     ////////////////////////////////////////////////////////////////////////////

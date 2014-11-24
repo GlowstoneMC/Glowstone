@@ -3,13 +3,16 @@ package net.glowstone.block.blocktype;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-public class BlockSnow extends BlockType {
+import java.util.Arrays;
+import java.util.Collection;
 
+public class BlockSnow extends BlockType {
     @Override
     public boolean canAbsorb(GlowBlock block, BlockFace face, ItemStack holding) {
         // can absorb snow layers if non-full, or all blocks if single layer
@@ -36,6 +39,15 @@ public class BlockSnow extends BlockType {
         } else {
             // place first snow layer
             state.setType(Material.SNOW);
+        }
+    }
+
+    @Override
+    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+        if (tool != null && ToolType.SPADE.matches(tool.getType())) {
+            return Arrays.asList(new ItemStack(Material.SNOW_BALL, block.getData() + 1));
+        } else {
+            return BlockDropless.EMPTY_STACK;
         }
     }
 }

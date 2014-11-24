@@ -4,6 +4,8 @@ import com.flowpowered.networking.MessageHandler;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
+import net.glowstone.block.ItemTable;
+import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.DiggingMessage;
@@ -80,6 +82,11 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             if (breakEvent.isCancelled()) {
                 BlockPlacementHandler.revert(player, block);
                 return;
+            }
+
+            BlockType blockType = ItemTable.instance().getBlock(block.getType());
+            if (blockType != null) {
+                blockType.blockDestroy(player, block, face);
             }
 
             // destroy the block

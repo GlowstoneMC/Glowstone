@@ -44,9 +44,10 @@ public class BlockType extends ItemType {
     /**
      * Get the items that will be dropped by digging the block.
      * @param block The block being dug.
+     * @param tool The tool used or {@code null} if fists or no tool was used.
      * @return The drops that should be returned.
      */
-    public Collection<ItemStack> getDrops(GlowBlock block) {
+    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (drops == null) {
             // default calculation
             return Arrays.asList(new ItemStack(block.getType(), 1, block.getData()));
@@ -114,6 +115,16 @@ public class BlockType extends ItemType {
      */
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
         return false;
+    }
+
+    /**
+     * Called when a player attempts to destroy a block.
+     * @param player The player interacting
+     * @param block The block the player destroyed
+     * @param face The block face
+     */
+    public void blockDestroy(GlowPlayer player, GlowBlock block, BlockFace face) {
+        // do nothing
     }
 
     /**
