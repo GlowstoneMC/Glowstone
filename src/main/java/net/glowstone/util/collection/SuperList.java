@@ -210,8 +210,19 @@ public class SuperList<E> extends SuperCollection<E> implements List<E> {
     }
 
     @Override
+    public int size() {
+        int size = 0;
+
+        for (List<E> parent : getParents()) {
+            size += parent.size();
+        }
+
+        return size;
+    }
+
+    @Override
     public List<E> subList(int fromIndex, int toIndex) {
         // Kinda slow. If this is ever going to be used heavily, you'll probably want to implement a "SubList" class, since neither Java nor Guava provides a public implementation.
-        asClone().subList(fromIndex, toIndex);
+        return asClone().subList(fromIndex, toIndex);
     }
 }

@@ -271,6 +271,12 @@ public abstract class SuperCollection<E> implements Collection<E> {
         return asClone().<T>toArray(array);
     }
 
+    @Override
+    public String toString() {
+        // This is as other methods that call the asClone method, but since it's only used for eventual debugging, its performance doesn't really matter, so don't lose your time overriding and implementing it in subclasses.
+        return asClone().toString();
+    }
+
     public static enum ResultMode {
         NEVER,
         ALL,
