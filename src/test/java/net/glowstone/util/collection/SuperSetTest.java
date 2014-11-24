@@ -7,7 +7,7 @@ import org.junit.Test;
 import java.util.*;
 
 /**
- * Tests for {@link SuperIterator}.
+ * Tests for {@link SuperSet}.
  */
 public class SuperSetTest {
 
