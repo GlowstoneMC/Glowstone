@@ -1,5 +1,6 @@
 package net.glowstone.shiny.event;
 
+import com.google.common.base.Preconditions;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.Result;
@@ -20,9 +21,7 @@ public class BaseEvent implements Event {
 
     @Override
     public void setResult(Result result) {
-        if (result == null) {
-            throw new IllegalArgumentException("result must not be null");
-        }
+        Preconditions.checkNotNull(result, "result must not be null");
         this.result = result;
     }
 

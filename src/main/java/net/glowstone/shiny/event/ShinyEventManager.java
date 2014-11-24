@@ -21,7 +21,7 @@ public class ShinyEventManager implements EventManager {
     @Override
     public void register(Object obj) {
         for (Method method : obj.getClass().getMethods()) {
-            SpongeEventHandler annotation = method.getAnnotation(SpongeEventHandler.class);
+            Subscribe annotation = method.getAnnotation(Subscribe.class);
             if (annotation != null && method.getParameterTypes().length == 1) {
                 EventRegistration reg = new EventRegistration(obj, method, annotation.ignoreCancelled());
                 registrations.get(annotation.order()).add(reg);

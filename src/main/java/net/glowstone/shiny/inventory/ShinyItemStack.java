@@ -1,7 +1,7 @@
 package net.glowstone.shiny.inventory;
 
-import org.spongepowered.api.inventory.ItemStack;
-import org.spongepowered.api.item.Item;
+import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.ItemType;
 
 import javax.annotation.Nonnull;
 
@@ -10,21 +10,21 @@ import javax.annotation.Nonnull;
  */
 public class ShinyItemStack implements ItemStack {
 
-    private final Item item;
+    private final ItemType item;
     private int quantity;
     private short damage;
 
     private int maxQuantity;
 
-    public ShinyItemStack(Item item) {
+    public ShinyItemStack(ItemType item) {
         this(item, 1, (short) 0);
     }
 
-    public ShinyItemStack(Item item, int quantity) {
+    public ShinyItemStack(ItemType item, int quantity) {
         this(item, quantity, (short) 0);
     }
 
-    public ShinyItemStack(Item item, int quantity, short damage) {
+    public ShinyItemStack(ItemType item, int quantity, short damage) {
         this.item = item;
         this.quantity = quantity;
         this.damage = damage;
@@ -32,7 +32,7 @@ public class ShinyItemStack implements ItemStack {
     }
 
     @Override
-    public Item getItem() {
+    public ItemType getItem() {
         return item;
     }
 

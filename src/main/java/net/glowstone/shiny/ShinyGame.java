@@ -1,5 +1,6 @@
 package net.glowstone.shiny;
 
+import com.google.common.base.Optional;
 import net.glowstone.shiny.event.ShinyEventManager;
 import net.glowstone.shiny.plugin.ShinyPluginManager;
 import org.spongepowered.api.Game;
@@ -8,9 +9,12 @@ import org.spongepowered.api.Platform;
 import org.spongepowered.api.entity.Player;
 import org.spongepowered.api.event.EventManager;
 import org.spongepowered.api.plugin.PluginManager;
+import org.spongepowered.api.service.ServiceManager;
+import org.spongepowered.api.service.command.CommandDispatcher;
+import org.spongepowered.api.service.scheduler.Scheduler;
+import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.world.World;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -53,9 +57,8 @@ public class ShinyGame implements Game {
         return 0;
     }
 
-    @Nullable
     @Override
-    public Player getPlayer(UUID uniqueId) {
+    public Optional<Player> getPlayer(UUID uniqueId) {
         return null;
     }
 
@@ -75,11 +78,6 @@ public class ShinyGame implements Game {
     }
 
     @Override
-    public void broadcastMessage(String message) {
-
-    }
-
-    @Override
     public String getAPIVersion() {
         return null;
     }
@@ -89,4 +87,28 @@ public class ShinyGame implements Game {
         return null;
     }
 
+    @Override
+    public ServiceManager getServiceManager() {
+        return null;
+    }
+
+    @Override
+    public Scheduler getScheduler() {
+        return null;
+    }
+
+    @Override
+    public CommandDispatcher getCommandDispatcher() {
+        return null;
+    }
+
+    @Override
+    public Optional<Player> getPlayer(String name) {
+        return null;
+    }
+
+    @Override
+    public void broadcastMessage(Message<?> message) {
+
+    }
 }

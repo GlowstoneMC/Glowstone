@@ -1,10 +1,10 @@
 package net.glowstone.shiny;
 
+import com.google.common.base.Optional;
 import org.spongepowered.api.GameRegistry;
-import org.spongepowered.api.block.Block;
-import org.spongepowered.api.item.Item;
+import org.spongepowered.api.block.BlockType;
+import org.spongepowered.api.item.ItemType;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -14,35 +14,32 @@ import java.util.Map;
  */
 public class ShinyGameRegistry implements GameRegistry {
 
-    private final Map<String, Block> blocks = new HashMap<>();
-    private final Map<String, Item> items = new HashMap<>();
+    private final Map<String, BlockType> blocks = new HashMap<>();
+    private final Map<String, ItemType> items = new HashMap<>();
     private final Map<Object, String> idMap = new IdentityHashMap<>();
 
-    private void register(Block block) {
+    private void register(BlockType block) {
         blocks.put(block.getId(), block);
         idMap.put(block, block.getId());
     }
 
-    private void register(Item item) {
-        items.put(item.getID(), item);
-        idMap.put(item, item.getID());
+    private void register(ItemType item) {
+        items.put(item.getId(), item);
+        idMap.put(item, item.getId());
     }
 
-    @Nullable
     @Override
-    public Block getBlock(String id) {
-        return blocks.get(id);
+    public Optional<BlockType> getBlock(String id) {
+        return Optional.fromNullable(blocks.get(id));
     }
 
-    @Nullable
     @Override
-    public Item getItem(String id) {
-        return items.get(id);
+    public Optional<ItemType> getItem(String id) {
+        return Optional.fromNullable(items.get(id));
     }
 
-    @Nullable
     @Override
-    public String getID(Object obj) {
-        return idMap.get(obj);
+    public Optional<String> getId(Object obj) {
+        return Optional.fromNullable(idMap.get(obj));
     }
 }

@@ -1,12 +1,10 @@
 package net.glowstone.shiny.event;
 
 import org.junit.Test;
-import org.spongepowered.api.Game;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.EventManager;
-import org.spongepowered.api.event.SpongeEventHandler;
+import org.spongepowered.api.event.Subscribe;
 import org.spongepowered.api.event.state.PostInitializationEvent;
-import org.spongepowered.api.event.state.PreInitializationEvent;
 
 /**
  * Tests for an {@link EventManager} implementation.
@@ -18,30 +16,30 @@ public class EventManagerTest {
     @Test
     public void whatup() {
         Object x = new Object() {
-            @SpongeEventHandler
+            @Subscribe
             public void catchAll(Event evt) {
                 System.out.println("all: " + evt);
             }
 
-            @SpongeEventHandler
-            public void idkLol(PreInitializationEvent evt) {
+            @Subscribe
+            public void idkLol(Stuff evt) {
                 System.out.println("idk: " + evt);
             }
 
-            @SpongeEventHandler
+            @Subscribe
             public void other(PostInitializationEvent evt) {
                 System.out.println("other: " + evt);
             }
         };
 
         events.register(x);
-        events.call(new Stuff(null));
-        events.call(new BaseEvent(null));
+        events.call(new Stuff());
+        events.call(new BaseEvent());
     }
 
-    private class Stuff extends BaseEvent implements PreInitializationEvent {
-        private Stuff(Game game) {
-            super(game);
+    private class Stuff extends BaseEvent implements Event {
+        private Stuff() {
+            super();
         }
     }
 }
