@@ -1137,11 +1137,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     ////////////////////////////////////////////////////////////////////////////
     // Actions
 
-    /**
-     * Teleport the player.
-     * @param location The destination to teleport to.
-     * @return Whether the teleport was a success.
-     */
     @Override
     public boolean teleport(Location location) {
         return teleport(location, TeleportCause.UNKNOWN);
@@ -1149,6 +1144,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public boolean teleport(Location location, TeleportCause cause) {
+        Validate.notNull(location, "location cannot be null");
+        Validate.notNull(location.getWorld(), "location's world cannot be null");
+        Validate.notNull(cause, "cause cannot be null");
+
         if (this.location != null && this.location.getWorld() != null) {
             PlayerTeleportEvent event = new PlayerTeleportEvent(this, this.location, location, cause);
             if (EventFactory.callEvent(event).isCancelled()) {
@@ -1426,7 +1425,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * Send a sign change, similar to {@link #sendSignChange(Location, String[])},
      * but using complete TextMessages instead of strings.
-     *
      * @param location the location of the sign
      * @param lines the new text on the sign or null to clear it
      * @throws IllegalArgumentException if location is null

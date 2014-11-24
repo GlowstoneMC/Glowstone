@@ -245,6 +245,9 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public boolean teleport(Location location) {
+        Validate.notNull(location, "location cannot be null");
+        Validate.notNull(location.getWorld(), "location's world cannot be null");
+
         if (location.getWorld() != world) {
             world.getEntityManager().deallocate(this);
             world = (GlowWorld) location.getWorld();
