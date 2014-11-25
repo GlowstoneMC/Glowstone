@@ -10,7 +10,7 @@ import org.spongepowered.api.entity.Player;
 import org.spongepowered.api.event.EventManager;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.ServiceManager;
-import org.spongepowered.api.service.command.CommandDispatcher;
+import org.spongepowered.api.service.command.CommandService;
 import org.spongepowered.api.service.scheduler.Scheduler;
 import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.world.World;
@@ -98,7 +98,7 @@ public class ShinyGame implements Game {
     }
 
     @Override
-    public CommandDispatcher getCommandDispatcher() {
+    public CommandService getCommandDispatcher() {
         return null;
     }
 

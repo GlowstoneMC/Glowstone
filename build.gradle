@@ -1,13 +1,29 @@
 // Tasks to perform when no task is specified
-defaultTasks 'clean', 'build', 'jar'
+defaultTasks 'clean', 'build', 'mixin'
 
 // Plugins used
-apply plugin: 'java' // Specifies a java project
+apply plugin: 'java'
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'net.glowstone.mixins'
 
 // Basic project information
 group = 'net.glowstone'
 version = '0.0.1-SNAPSHOT'
 description = "ShinySponge"
+
+// Buildscript settings
+buildscript {
+    repositories {
+        jcenter()
+        //maven { url "http://repo.glowstone.net/content/groups/public/" }
+        mavenCentral()
+        mavenLocal()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.1.2'
+        classpath 'net.glowstone:mixins:0.1-SNAPSHOT'
+    }
+}
 
 // Compiler settings
 compileJava {
@@ -27,4 +43,9 @@ dependencies {
 	compile 'org.spongepowered:spongeapi:1.0.0-SNAPSHOT'
     compile 'org.slf4j:slf4j-jdk14:1.7.7'
     testCompile 'junit:junit:4.8.1'
+}
+
+mixin {
+    mappingFile = file('mixins.txt')
+    inputTask = shadowJar
 }
