@@ -1,6 +1,14 @@
 package net.glowstone.generator.populators;
 
 import net.glowstone.generator.decorators.*;
+import net.glowstone.generator.decorators.overworld.CactusDecorator;
+import net.glowstone.generator.decorators.overworld.DeadBushDecorator;
+import net.glowstone.generator.decorators.overworld.FlowerDecorator;
+import net.glowstone.generator.decorators.overworld.MelonDecorator;
+import net.glowstone.generator.decorators.overworld.PumpkinDecorator;
+import net.glowstone.generator.decorators.overworld.SugarCaneDecorator;
+import net.glowstone.generator.decorators.overworld.TallGrassDecorator;
+import net.glowstone.generator.decorators.overworld.WaterLilyDecorator;
 
 import org.bukkit.Chunk;
 import org.bukkit.World;

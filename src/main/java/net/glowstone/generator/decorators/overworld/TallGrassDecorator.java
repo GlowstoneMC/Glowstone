@@ -1,8 +1,10 @@
-package net.glowstone.generator.decorators;
+package net.glowstone.generator.decorators.overworld;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+
+import net.glowstone.generator.decorators.BlockDecorator;
 
 import org.bukkit.Chunk;
 import org.bukkit.GrassSpecies;
