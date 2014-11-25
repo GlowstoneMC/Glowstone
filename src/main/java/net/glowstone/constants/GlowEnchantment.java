@@ -9,11 +9,11 @@ import org.bukkit.inventory.ItemStack;
 /**
  * Definitions of enchantment types.
  */
-public class GlowEnchantment extends Enchantment {
+public final class GlowEnchantment extends Enchantment {
 
     private final Impl impl;
 
-    public GlowEnchantment(Impl impl) {
+    private GlowEnchantment(Impl impl) {
         super(impl.id);
         this.impl = impl;
     }
@@ -50,7 +50,7 @@ public class GlowEnchantment extends Enchantment {
     }
 
     /**
-     * Register all potion effect types with PotionEffectType.
+     * Register all enchantment types with Enchantment.
      */
     public static void register() {
         for (Impl impl : Impl.values()) {
