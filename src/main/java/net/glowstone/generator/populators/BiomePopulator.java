@@ -1,16 +1,9 @@
 package net.glowstone.generator.populators;
 
-import net.glowstone.generator.decorators.*;
-import net.glowstone.generator.decorators.overworld.CactusDecorator;
-import net.glowstone.generator.decorators.overworld.DeadBushDecorator;
-import net.glowstone.generator.decorators.overworld.FlowerDecorator;
-import net.glowstone.generator.decorators.overworld.MelonDecorator;
-import net.glowstone.generator.decorators.overworld.PumpkinDecorator;
-import net.glowstone.generator.decorators.overworld.SugarCaneDecorator;
-import net.glowstone.generator.decorators.overworld.TallGrassDecorator;
-import net.glowstone.generator.decorators.overworld.WaterLilyDecorator;
+import net.glowstone.generator.decorators.overworld.*;
 
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.generator.BlockPopulator;
@@ -26,6 +19,17 @@ public class BiomePopulator extends BlockPopulator {
     public BiomePopulator() {
 
         // the order is important
+
+        addDecorator(new UnderwaterDecorator(Material.SAND, 7, 2)
+                .setDefaultAmount(3)
+                .setBiomeAmount(0, Biome.SWAMPLAND, Biome.SWAMPLAND_MOUNTAINS));
+
+        addDecorator(new UnderwaterDecorator(Material.CLAY, 4, 1, false)
+                .setDefaultAmount(1));
+
+        addDecorator(new UnderwaterDecorator(Material.GRAVEL, 6, 2)
+                .setDefaultAmount(1)
+                .setBiomeAmount(0, Biome.SWAMPLAND, Biome.SWAMPLAND_MOUNTAINS));
 
         addDecorator(new FlowerDecorator()
                 .setDefaultFlowerWeight(2, FlowerDecorator.Flower.DANDELION)
