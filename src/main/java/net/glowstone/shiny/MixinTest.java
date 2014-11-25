@@ -8,13 +8,18 @@ import org.spongepowered.api.text.translation.Translations;
  */
 public class MixinTest {
 
-    public static void main(String[] args) {
-        System.out.println("In main()");
-        System.out.println("> Sponge Constants");
-        System.out.println("Shovel: " + ItemTypes.IRON_SHOVEL);
-        System.out.println("Pickaxe: " + ItemTypes.IRON_PICKAXE);
-        System.out.println("> Sponge Factory");
-        System.out.println("Translate: " + Translations.of("test"));
+    public static void main(String[] args) throws Exception {
+        System.out.println("=== Mixin Test ===");
+        System.out.println("Sponge Constants");
+        System.out.println("  Shovel: " + ItemTypes.IRON_SHOVEL);
+        System.out.println("  Pickaxe: " + ItemTypes.IRON_PICKAXE);
+        System.out.println("  Stone: " + ItemTypes.STONE);
+        System.out.println("Sponge Factory");
+        System.out.println("  Translate: " + Translations.of("test"));
+
+        // ---
+        System.out.println("=== Plugin Load ===");
+        new ShinyGame();
     }
 
 }

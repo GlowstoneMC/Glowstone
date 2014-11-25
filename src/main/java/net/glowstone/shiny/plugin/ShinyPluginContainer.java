@@ -1,37 +1,33 @@
 package net.glowstone.shiny.plugin;
 
+import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 
 /**
  * Implementation of {@link PluginContainer}.
  */
-public final class ShinyPluginContainer implements PluginContainer {
+final class ShinyPluginContainer implements PluginContainer {
 
-    private final String id;
-    private final String name;
-    private final String version;
-    private final Object instance;
+    private final Plugin annotation;
+    Object instance;
 
-    public ShinyPluginContainer(String id, String name, String version, Object instance) {
-        this.id = id;
-        this.name = name;
-        this.version = version;
-        this.instance = instance;
+    public ShinyPluginContainer(Plugin annotation) {
+        this.annotation = annotation;
     }
 
     @Override
     public String getId() {
-        return id;
+        return annotation.id();
     }
 
     @Override
     public String getName() {
-        return name;
+        return annotation.name();
     }
 
     @Override
     public String getVersion() {
-        return version;
+        return annotation.version();
     }
 
     @Override

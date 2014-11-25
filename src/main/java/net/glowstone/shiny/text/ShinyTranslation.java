@@ -26,4 +26,9 @@ public class ShinyTranslation implements Translation {
     public String get(Object... args) {
         return id;
     }
+
+    @Override
+    public String toString() {
+        return "Translation(" + id + ")";
+    }
 }

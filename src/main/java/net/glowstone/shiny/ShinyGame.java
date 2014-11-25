@@ -15,6 +15,7 @@ import org.spongepowered.api.service.scheduler.Scheduler;
 import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.world.World;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -23,9 +24,14 @@ import java.util.UUID;
  */
 public class ShinyGame implements Game {
 
-    private final ShinyPluginManager pluginManager = new ShinyPluginManager();
+    private final ShinyPluginManager pluginManager = new ShinyPluginManager(this);
     private final ShinyEventManager eventManager = new ShinyEventManager();
     private final ShinyGameRegistry registry = new ShinyGameRegistry();
+
+    public ShinyGame() {
+        File jar = new File("D:\\projects\\Bukkit\\Notes\\spongetest.jar");
+        pluginManager.loadPlugin(jar);
+    }
 
     @Override
     public Platform getPlatform() {
