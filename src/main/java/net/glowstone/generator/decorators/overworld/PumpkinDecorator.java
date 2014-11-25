@@ -1,4 +1,4 @@
-package net.glowstone.generator.decorators;
+package net.glowstone.generator.decorators.overworld;
 
 import java.util.Random;
 
