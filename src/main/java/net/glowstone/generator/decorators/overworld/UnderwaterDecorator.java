@@ -40,8 +40,12 @@ public class UnderwaterDecorator extends BlockDecorator {
         int sourceX = (source.getX() << 4) + random.nextInt(16);
         int sourceZ = (source.getZ() << 4) + random.nextInt(16);
         int sourceY = world.getHighestBlockYAt(sourceX, sourceZ) - 1;
+        while (world.getBlockAt(sourceX, sourceY - 1, sourceZ).getType() == Material.STATIONARY_WATER ||
+                world.getBlockAt(sourceX, sourceY - 1, sourceZ).getType() == Material.WATER && sourceY > 1) {
+            sourceY--;
+        }
         final Material material = world.getBlockAt(sourceX, sourceY, sourceZ).getType();
-        if (material == Material.WATER || material == Material.STATIONARY_WATER) {
+        if (material == Material.STATIONARY_WATER || material == Material.WATER) {
             int n = random.nextInt(horizontalRadius - MIN_RADIUS) + MIN_RADIUS;
             for (int x = sourceX - n; x <= sourceX + n; x++) {
                 for (int z = sourceZ - n; z <= sourceZ + n; z++) {
