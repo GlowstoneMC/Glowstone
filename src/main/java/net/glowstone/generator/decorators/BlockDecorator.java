@@ -9,7 +9,7 @@ import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.generator.BlockPopulator;
 
-public class BlockDecorator extends BlockPopulator {
+public abstract class BlockDecorator extends BlockPopulator {
 
     private int defaultAmount;
     private final Map<Biome, Integer> biomesDecorations = new HashMap<Biome, Integer>();
@@ -26,9 +26,7 @@ public class BlockDecorator extends BlockPopulator {
         return this;
     }
 
-    public void decorate(World world, Random random, Chunk chunk) {
-        // do nothing
-    }
+    public abstract void decorate(World world, Random random, Chunk chunk);
 
     @Override
     public void populate(World world, Random random, Chunk chunk) {
