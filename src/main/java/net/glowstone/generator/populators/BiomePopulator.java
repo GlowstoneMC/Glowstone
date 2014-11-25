@@ -89,6 +89,12 @@ public class BiomePopulator extends BlockPopulator {
                 .setBiomeAmount(5, Biome.OCEAN) // fix for lack of biomes
                 .setBiomeAmount(10, Biome.DESERT, Biome.DESERT_HILLS)
                 .setBiomeAmount(5, Biome.MESA, Biome.MESA_PLATEAU, Biome.MESA_PLATEAU_FOREST));
+
+        addDecorator(new FlowingLiquidDecorator(Material.WATER)
+                .setDefaultAmount(50));
+
+        addDecorator(new FlowingLiquidDecorator(Material.LAVA)
+                .setDefaultAmount(20));
     }
 
     @Override
