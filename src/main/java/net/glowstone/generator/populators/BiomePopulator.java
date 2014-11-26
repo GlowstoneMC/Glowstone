@@ -14,7 +14,7 @@ import java.util.Random;
 
 public class BiomePopulator extends BlockPopulator {
 
-    private final List<BlockPopulator> decorators = new ArrayList<BlockPopulator>();
+    private final List<BlockPopulator> decorators = new ArrayList<>();
 
     public BiomePopulator() {
 
