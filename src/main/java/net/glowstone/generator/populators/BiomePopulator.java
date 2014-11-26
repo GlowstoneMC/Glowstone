@@ -20,14 +20,21 @@ public class BiomePopulator extends BlockPopulator {
 
         // the order is important
 
-        addDecorator(new UnderwaterDecorator(Material.SAND, 7, 2)
+        addDecorator(new UnderwaterDecorator(Material.SAND)
+                .setRadiuses(7, 2)
+
                 .setDefaultAmount(3)
                 .setBiomeAmount(0, Biome.SWAMPLAND, Biome.SWAMPLAND_MOUNTAINS));
 
-        addDecorator(new UnderwaterDecorator(Material.CLAY, 4, 1, false)
+        addDecorator(new UnderwaterDecorator(Material.CLAY)
+                .setRadiuses(4, 1)
+                .setPreservesShoreBlocks()
+
                 .setDefaultAmount(1));
 
-        addDecorator(new UnderwaterDecorator(Material.GRAVEL, 6, 2)
+        addDecorator(new UnderwaterDecorator(Material.GRAVEL)
+                .setRadiuses(6, 2)
+
                 .setDefaultAmount(1)
                 .setBiomeAmount(0, Biome.SWAMPLAND, Biome.SWAMPLAND_MOUNTAINS));
 
