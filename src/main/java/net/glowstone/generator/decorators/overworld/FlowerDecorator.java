@@ -16,8 +16,8 @@ import org.bukkit.block.Block;
 
 public class FlowerDecorator extends BlockDecorator {
 
-    private final List<FlowerDecoration> defaultFlowers = new ArrayList<FlowerDecoration>();
-    private final Map<Biome, List<FlowerDecoration>> biomesFlowers = new HashMap<Biome, List<FlowerDecoration>>();
+    private final List<FlowerDecoration> defaultFlowers = new ArrayList<>();
+    private final Map<Biome, List<FlowerDecoration>> biomesFlowers = new HashMap<>();
 
     public final FlowerDecorator setDefaultFlowerWeight(int weight, Flower flower) {
         defaultFlowers.add(new FlowerDecoration(flower, weight));

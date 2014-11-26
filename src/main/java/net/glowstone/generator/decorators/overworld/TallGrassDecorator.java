@@ -16,7 +16,7 @@ import org.bukkit.material.LongGrass;
 
 public class TallGrassDecorator extends BlockDecorator {
 
-    private final Map<Biome, Double> biomesFernDensity = new HashMap<Biome, Double>();
+    private final Map<Biome, Double> biomesFernDensity = new HashMap<>();
 
     public final TallGrassDecorator setFernDensity(double fernDensity, Biome... biomes) {
         for (Biome biome : biomes) {
