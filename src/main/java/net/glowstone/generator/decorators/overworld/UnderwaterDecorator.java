@@ -52,6 +52,7 @@ public class UnderwaterDecorator extends BlockDecorator {
                             final Block block = world.getBlockAt(x, y, z);
                             if (block.getType() == Material.DIRT || (replaceShoreBlocks && block.getType() == Material.GRASS)) {
                                 block.setType(type);
+                                block.setData((byte) 0);
                             }
                         }
                     }

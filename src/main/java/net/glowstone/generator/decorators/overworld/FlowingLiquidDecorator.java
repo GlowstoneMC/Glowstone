@@ -17,7 +17,7 @@ public class FlowingLiquidDecorator extends BlockDecorator {
 
     public FlowingLiquidDecorator(Material type) {
         this.type = type;
-        if (type !=  Material.WATER && type != Material.LAVA) {
+        if (type != Material.WATER && type != Material.LAVA) {
             throw new IllegalArgumentException("Flowing liquid must be WATER or LAVA");
         }
     }
