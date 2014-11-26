@@ -22,19 +22,16 @@ public class BiomePopulator extends BlockPopulator {
 
         addDecorator(new UnderwaterDecorator(Material.SAND)
                 .setRadiuses(7, 2)
-
                 .setDefaultAmount(3)
                 .setBiomeAmount(0, Biome.SWAMPLAND, Biome.SWAMPLAND_MOUNTAINS));
 
         addDecorator(new UnderwaterDecorator(Material.CLAY)
                 .setRadiuses(4, 1)
                 .setPreservesShoreBlocks()
-
                 .setDefaultAmount(1));
 
         addDecorator(new UnderwaterDecorator(Material.GRAVEL)
                 .setRadiuses(6, 2)
-
                 .setDefaultAmount(1)
                 .setBiomeAmount(0, Biome.SWAMPLAND, Biome.SWAMPLAND_MOUNTAINS));
 
@@ -77,6 +74,29 @@ public class BiomePopulator extends BlockPopulator {
         addDecorator(new WaterLilyDecorator()
                 .setDefaultAmount(0)
                 .setBiomeAmount(4, Biome.SWAMPLAND));
+
+        addDecorator(new MushroomDecorator(Material.BROWN_MUSHROOM)
+                .setFixedHeightRange()
+                .setDensity(0.25D)
+                .setDefaultAmount(0)
+                .setBiomeAmount(1, Biome.MUSHROOM_ISLAND, Biome.MUSHROOM_SHORE)
+                .setBiomeAmount(3, Biome.TAIGA, Biome.TAIGA_MOUNTAINS, Biome.TAIGA_MOUNTAINS)
+                .setBiomeAmount(8, Biome.SWAMPLAND, Biome.SWAMPLAND_MOUNTAINS));               
+
+        addDecorator(new MushroomDecorator(Material.RED_MUSHROOM)
+                .setDensity(0.125D)
+                .setDefaultAmount(0)
+                .setBiomeAmount(1, Biome.MUSHROOM_ISLAND, Biome.MUSHROOM_SHORE)
+                .setBiomeAmount(3, Biome.TAIGA, Biome.TAIGA_MOUNTAINS, Biome.TAIGA_MOUNTAINS)
+                .setBiomeAmount(8, Biome.SWAMPLAND, Biome.SWAMPLAND_MOUNTAINS));               
+
+        addDecorator(new MushroomDecorator(Material.BROWN_MUSHROOM)
+                .setDensity(0.25D)
+                .setDefaultAmount(1));
+
+        addDecorator(new MushroomDecorator(Material.RED_MUSHROOM)
+                .setDensity(0.125D)
+                .setDefaultAmount(1));
 
         addDecorator(new SugarCaneDecorator()
                 .setDefaultAmount(10)
