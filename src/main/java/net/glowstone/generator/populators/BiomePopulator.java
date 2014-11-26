@@ -1,9 +1,11 @@
 package net.glowstone.generator.populators;
 
 import net.glowstone.generator.decorators.overworld.*;
+import net.glowstone.generator.decorators.overworld.FlowerDecorator.Flower;
 
 import org.bukkit.Chunk;
 import org.bukkit.Material;
+import org.bukkit.TreeType;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.generator.BlockPopulator;
@@ -35,15 +37,22 @@ public class BiomePopulator extends BlockPopulator {
                 .setDefaultAmount(1)
                 .setBiomeAmount(0, Biome.SWAMPLAND, Biome.SWAMPLAND_MOUNTAINS));
 
-        addDecorator(new FlowerDecorator()
-                .setDefaultFlowerWeight(2, FlowerDecorator.Flower.DANDELION)
-                .setDefaultFlowerWeight(1, FlowerDecorator.Flower.POPPY)
+        addDecorator(new TreeDecorator()
+                .setTreeWeight(3, TreeType.TREE, Biome.OCEAN) // fix for lack of biomes
+                .setTreeWeight(2, TreeType.BIRCH, Biome.OCEAN) // fix for lack of biomes
 
-                .setFlowerWeight(4, FlowerDecorator.Flower.DANDELION, Biome.OCEAN) // fix for lack of biomes
-                .setFlowerWeight(2, FlowerDecorator.Flower.POPPY, Biome.OCEAN) // fix for lack of biomes
-                .setFlowerWeight(1, FlowerDecorator.Flower.LILAC, Biome.OCEAN) // fix for lack of biomes
-                .setFlowerWeight(1, FlowerDecorator.Flower.ROSE_BUSH, Biome.OCEAN) // fix for lack of biomes
-                .setFlowerWeight(1, FlowerDecorator.Flower.PEONIA, Biome.OCEAN) // fix for lack of biomes
+                .setDefaultAmount(0)
+                .setBiomeAmount(5, Biome.OCEAN)); // fix for lack of biomes
+
+        addDecorator(new FlowerDecorator()
+                .setDefaultFlowerWeight(2, Flower.DANDELION)
+                .setDefaultFlowerWeight(1, Flower.POPPY)
+
+                .setFlowerWeight(4, Flower.DANDELION, Biome.OCEAN) // fix for lack of biomes
+                .setFlowerWeight(2, Flower.POPPY, Biome.OCEAN) // fix for lack of biomes
+                .setFlowerWeight(1, Flower.LILAC, Biome.OCEAN) // fix for lack of biomes
+                .setFlowerWeight(1, Flower.ROSE_BUSH, Biome.OCEAN) // fix for lack of biomes
+                .setFlowerWeight(1, Flower.PEONIA, Biome.OCEAN) // fix for lack of biomes
 
                 .setDefaultAmount(2));
 

@@ -29,7 +29,7 @@ public class FlowerDecorator extends BlockDecorator {
             if (biomesFlowers.containsKey(biome)) {
                 biomesFlowers.get(biome).add(new FlowerDecoration(flower, weight));
             } else {
-                final List<FlowerDecoration> decorations = new ArrayList<FlowerDecoration>();
+                final List<FlowerDecoration> decorations = new ArrayList<>();
                 decorations.add(new FlowerDecoration(flower, weight));
                 biomesFlowers.put(biome, decorations);
             }
