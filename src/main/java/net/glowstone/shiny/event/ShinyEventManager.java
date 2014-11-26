@@ -50,4 +50,14 @@ public class ShinyEventManager implements EventManager {
         }
         return !(event instanceof Cancellable) || ((Cancellable) event).isCancelled();
     }
+
+    public void callSpecial(Object target, Event event) {
+        for (List<EventRegistration> list : registrations.values()) {
+            for (EventRegistration reg : list) {
+                if (reg.getObject() == target) {
+                    reg.call(event);
+                }
+            }
+        }
+    }
 }

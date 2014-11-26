@@ -3,14 +3,16 @@ package net.glowstone.shiny;
 import com.google.common.base.Optional;
 import net.glowstone.shiny.event.ShinyEventManager;
 import net.glowstone.shiny.plugin.ShinyPluginManager;
+import net.glowstone.shiny.service.ShinyServiceManager;
+import net.glowstone.shiny.util.Unsupported;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.entity.Player;
-import org.spongepowered.api.event.EventManager;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.service.command.CommandService;
+import org.spongepowered.api.service.command.SimpleCommandService;
 import org.spongepowered.api.service.scheduler.Scheduler;
 import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.world.World;
@@ -24,14 +26,44 @@ import java.util.UUID;
  */
 public class ShinyGame implements Game {
 
+    private static final String API_VERSION;
+    private static final String IMPL_VERSION;
+
+    static {
+        Package pkg = ShinyGame.class.getPackage();
+        String apiVersion = pkg.getSpecificationVersion();
+        API_VERSION = (apiVersion == null) ? "unknown" : apiVersion;
+        String implVersion = pkg.getImplementationVersion();
+        IMPL_VERSION = (implVersion == null) ? "unknown" : implVersion;
+    }
+
     private final ShinyPluginManager pluginManager = new ShinyPluginManager(this);
     private final ShinyEventManager eventManager = new ShinyEventManager();
     private final ShinyGameRegistry registry = new ShinyGameRegistry();
+    private final ShinyServiceManager serviceManager = new ShinyServiceManager();
+    private final SimpleCommandService commands = new SimpleCommandService();
 
     public ShinyGame() {
-        File jar = new File("D:\\projects\\Bukkit\\Notes\\spongetest.jar");
-        pluginManager.loadPlugin(jar);
+        System.out.println("API_VERSION:  " + API_VERSION);
+        System.out.println("IMPL_VERSION: " + IMPL_VERSION);
+        System.out.println(getClass().getClassLoader().getParent().getParent());
+        /*
+         CONSTRUCTION,
+         LOAD_COMPLETE,
+         PRE_INITIALIZATION,
+         INITIALIZATION,
+         POST_INITIALIZATION,
+         SERVER_ABOUT_TO_START,
+         SERVER_STARTING,
+         SERVER_STARTED,
+         SERVER_STOPPING,
+         SERVER_STOPPED
+         */
+        File directory = new File("D:\\projects\\Bukkit\\SpongePlugins");
+        pluginManager.loadPlugins(directory);
     }
+
+    // platform information
 
     @Override
     public Platform getPlatform() {
@@ -39,12 +71,24 @@ public class ShinyGame implements Game {
     }
 
     @Override
+    public String getAPIVersion() {
+        return API_VERSION;
+    }
+
+    @Override
+    public String getImplementationVersion() {
+        return IMPL_VERSION;
+    }
+
+    // service access
+
+    @Override
     public PluginManager getPluginManager() {
         return pluginManager;
     }
 
     @Override
-    public EventManager getEventManager() {
+    public ShinyEventManager getEventManager() {
         return eventManager;
     }
 
@@ -54,67 +98,61 @@ public class ShinyGame implements Game {
     }
 
     @Override
-    public Collection<Player> getOnlinePlayers() {
-        return null;
-    }
-
-    @Override
-    public int getMaxPlayers() {
-        return 0;
-    }
-
-    @Override
-    public Optional<Player> getPlayer(UUID uniqueId) {
-        return null;
-    }
-
-    @Override
-    public Collection<World> getWorlds() {
-        return null;
-    }
-
-    @Override
-    public World getWorld(UUID uniqueId) {
-        return null;
-    }
-
-    @Override
-    public World getWorld(String worldName) {
-        return null;
-    }
-
-    @Override
-    public String getAPIVersion() {
-        return null;
-    }
-
-    @Override
-    public String getImplementationVersion() {
-        return null;
-    }
-
-    @Override
     public ServiceManager getServiceManager() {
-        return null;
+        return serviceManager;
     }
 
     @Override
     public Scheduler getScheduler() {
-        return null;
+        throw Unsupported.missing();
     }
 
     @Override
     public CommandService getCommandDispatcher() {
-        return null;
+        return commands;
+    }
+
+    // worlds
+
+    @Override
+    public Collection<World> getWorlds() {
+        throw Unsupported.missing();
+    }
+
+    @Override
+    public World getWorld(UUID uniqueId) {
+        throw Unsupported.missing();
+    }
+
+    @Override
+    public World getWorld(String worldName) {
+        throw Unsupported.missing();
+    }
+
+    // players
+
+    @Override
+    public Collection<Player> getOnlinePlayers() {
+        throw Unsupported.missing();
+    }
+
+    @Override
+    public int getMaxPlayers() {
+        throw Unsupported.missing();
+    }
+
+    @Override
+    public Optional<Player> getPlayer(UUID uniqueId) {
+        throw Unsupported.missing();
     }
 
     @Override
     public Optional<Player> getPlayer(String name) {
-        return null;
+        throw Unsupported.missing();
     }
 
     @Override
     public void broadcastMessage(Message<?> message) {
-
+        System.out.println("[broadcast] " + message);
     }
 }

@@ -49,3 +49,15 @@ mixin {
     mappingFile = file('mixins.txt')
     inputTask = shadowJar
 }
+
+// Jar manifest information
+jar.manifest.mainAttributes(
+        'Main-Class': 'net.glowstone.shiny.Main',
+        'Implementation-Title': description,
+        'Implementation-Version': version,
+        'Implementation-Vendor': 'http://www.glowstone.net',
+        'Specification-Title': 'SpongeAPI',
+        'Specification-Version': '1.0.0-SNAPSHOT',
+        'Specification-Vendor': 'http://spongepowered.org',
+        'Sealed': true
+)

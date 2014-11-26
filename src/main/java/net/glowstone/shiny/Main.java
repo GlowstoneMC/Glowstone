@@ -6,7 +6,7 @@ import org.spongepowered.api.text.translation.Translations;
 /**
  * Todo: Javadoc for TestMain.
  */
-public class MixinTest {
+public class Main {
 
     public static void main(String[] args) throws Exception {
         System.out.println("=== Mixin Test ===");

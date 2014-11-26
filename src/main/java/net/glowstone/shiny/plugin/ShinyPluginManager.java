@@ -1,6 +1,7 @@
 package net.glowstone.shiny.plugin;
 
 import com.google.common.base.Optional;
+import com.google.common.io.PatternFilenameFilter;
 import net.glowstone.shiny.ShinyGame;
 import net.glowstone.shiny.event.ShinyPreInitEvent;
 import org.slf4j.Logger;
@@ -9,7 +10,6 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -42,16 +42,17 @@ public class ShinyPluginManager implements PluginManager {
         return plugins.values();
     }
 
-    public void loadPlugin(File jar) {
-        try {
-            PluginContainer container = loader.loadPlugin(jar);
-            System.out.println("!! Loaded " + container.getId());
-            plugins.put(container.getId(), container);
+    public void loadPlugins(File directory) {
+        File[] files = directory.listFiles(new PatternFilenameFilter(".+\\.jar"));
+        if (files == null || files.length == 0) {
+            return;
+        }
 
-            System.out.println("=== PreInit ===");
-            game.getEventManager().call(new ShinyPreInitEvent(game, container));
-        } catch (IOException e) {
-            e.printStackTrace();
+        Collection<PluginContainer> containers = loader.loadPlugins(files);
+        for (PluginContainer container : containers) {
+            plugins.put(container.getId(), container);
+            game.getEventManager().register(container.getInstance());
+            game.getEventManager().callSpecial(container.getInstance(), new ShinyPreInitEvent(game, container));
         }
     }
 }
