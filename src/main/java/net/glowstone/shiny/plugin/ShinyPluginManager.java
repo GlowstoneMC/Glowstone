@@ -34,7 +34,7 @@ public class ShinyPluginManager implements PluginManager {
 
     @Override
     public Logger getLogger(PluginContainer plugin) {
-        return LoggerFactory.getLogger("Plugin/" + plugin.getName());
+        return LoggerFactory.getLogger(plugin.getName());
     }
 
     @Override
@@ -50,6 +50,10 @@ public class ShinyPluginManager implements PluginManager {
 
         Collection<PluginContainer> containers = loader.loadPlugins(files);
         for (PluginContainer container : containers) {
+            if (plugins.containsKey(container.getId())) {
+                ShinyGame.logger.warn("Skipped loading duplicate of \"" + container.getId() + "\"");
+                continue;
+            }
             plugins.put(container.getId(), container);
             game.getEventManager().register(container.getInstance());
             game.getEventManager().callSpecial(container.getInstance(), new ShinyPreInitEvent(game, container));

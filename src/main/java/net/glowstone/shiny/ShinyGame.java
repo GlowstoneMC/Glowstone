@@ -4,7 +4,9 @@ import com.google.common.base.Optional;
 import net.glowstone.shiny.event.ShinyEventManager;
 import net.glowstone.shiny.plugin.ShinyPluginManager;
 import net.glowstone.shiny.service.ShinyServiceManager;
+import net.glowstone.shiny.util.ConsoleManager;
 import net.glowstone.shiny.util.Unsupported;
+import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.Platform;
@@ -26,6 +28,8 @@ import java.util.UUID;
  */
 public class ShinyGame implements Game {
 
+    public static final Logger logger = ConsoleManager.getLogger();
+
     private static final String API_VERSION;
     private static final String IMPL_VERSION;
 
@@ -40,13 +44,12 @@ public class ShinyGame implements Game {
     private final ShinyPluginManager pluginManager = new ShinyPluginManager(this);
     private final ShinyEventManager eventManager = new ShinyEventManager();
     private final ShinyGameRegistry registry = new ShinyGameRegistry();
-    private final ShinyServiceManager serviceManager = new ShinyServiceManager();
+    private final ShinyServiceManager services = new ShinyServiceManager();
     private final SimpleCommandService commands = new SimpleCommandService();
 
     public ShinyGame() {
-        System.out.println("API_VERSION:  " + API_VERSION);
-        System.out.println("IMPL_VERSION: " + IMPL_VERSION);
-        System.out.println(getClass().getClassLoader().getParent().getParent());
+        logger.info("Glowstone " + IMPL_VERSION + " is starting...");
+        logger.info("API version: " + API_VERSION);
         /*
          CONSTRUCTION,
          LOAD_COMPLETE,
@@ -99,7 +102,7 @@ public class ShinyGame implements Game {
 
     @Override
     public ServiceManager getServiceManager() {
-        return serviceManager;
+        return services;
     }
 
     @Override
@@ -153,6 +156,6 @@ public class ShinyGame implements Game {
 
     @Override
     public void broadcastMessage(Message<?> message) {
-        System.out.println("[broadcast] " + message);
+        logger.info("{}", message);
     }
 }
