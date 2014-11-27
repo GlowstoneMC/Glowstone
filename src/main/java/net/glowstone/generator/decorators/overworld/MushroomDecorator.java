@@ -13,7 +13,7 @@ public class MushroomDecorator extends BlockDecorator {
 
     private final Material type;
     private boolean fixedHeightRange;
-    private double density = 0.5D;
+    private double density;
 
     public MushroomDecorator(Material type) {
         if (type != Material.BROWN_MUSHROOM && type != Material.RED_MUSHROOM) {
