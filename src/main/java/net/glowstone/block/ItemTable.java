@@ -100,6 +100,7 @@ public final class ItemTable {
         reg(Material.LAPIS_BLOCK, new BlockDirectDrops(ToolType.STONE_PICKAXE));
         reg(Material.QUARTZ_ORE, new BlockDirectDrops(Material.QUARTZ, ToolType.PICKAXE));
         reg(Material.REDSTONE_ORE, new BlockRandomDrops(Material.REDSTONE, 0, 3, 4, ToolType.IRON_PICKAXE));
+        reg(Material.GLOWING_REDSTONE_ORE, new BlockRandomDrops(Material.REDSTONE, 0, 3, 4, ToolType.PICKAXE));
         reg(Material.REDSTONE_BLOCK, new BlockDirectDrops(ToolType.PICKAXE));
         reg(Material.CARROT, new BlockDirectDrops(Material.CARROT_ITEM));
         reg(Material.COCOA, new BlockDirectDrops(Material.INK_SACK, 3, 1));
@@ -199,6 +200,8 @@ public final class ItemTable {
         reg(Material.PUMPKIN, new BlockDirectDrops(Material.PUMPKIN));
         reg(Material.JACK_O_LANTERN, new BlockDirectDrops(Material.JACK_O_LANTERN));
         reg(Material.SEA_LANTERN, new BlockRandomDrops(Material.PRISMARINE_CRYSTALS, 2, 3));
+        reg(Material.SAPLING, new BlockSapling());
+
 
         reg(Material.FLINT_AND_STEEL, new ItemFlintAndSteel());
         reg(Material.SIGN, new ItemSign());
