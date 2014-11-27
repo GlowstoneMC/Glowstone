@@ -13,6 +13,7 @@ import net.glowstone.generator.decorators.BlockDecorator;
 
 public class FlowingLiquidDecorator extends BlockDecorator {
 
+    private static final BlockFace[] SIDES = new BlockFace[] {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST}; 
     private final Material type;
 
     public FlowingLiquidDecorator(Material type) {
@@ -33,31 +34,17 @@ public class FlowingLiquidDecorator extends BlockDecorator {
                 block.getRelative(BlockFace.DOWN).getType() == Material.STONE &&
                 block.getRelative(BlockFace.UP).getType() == Material.STONE) {
             int stoneBlockCount = 0;
-            if (block.getRelative(BlockFace.EAST).getType() == Material.STONE) {
-                stoneBlockCount++;
+            for (BlockFace face : SIDES) {
+                if (block.getRelative(face).getType() == Material.STONE) {
+                    stoneBlockCount++;
+                }
             }
-            if (block.getRelative(BlockFace.WEST).getType() == Material.STONE) {
-                stoneBlockCount++;
-            }
-            if (block.getRelative(BlockFace.NORTH).getType() == Material.STONE) {
-                stoneBlockCount++;
-            }
-            if (block.getRelative(BlockFace.SOUTH).getType() == Material.STONE) {
-                stoneBlockCount++;
-            }            
             if (stoneBlockCount == 3) {
                 int airBlockCount = 0;
-                if (block.getRelative(BlockFace.EAST).isEmpty()) {
-                    airBlockCount++;
-                }
-                if (block.getRelative(BlockFace.WEST).isEmpty()) {
-                    airBlockCount++;
-                }
-                if (block.getRelative(BlockFace.NORTH).isEmpty()) {
-                    airBlockCount++;
-                }
-                if (block.getRelative(BlockFace.SOUTH).isEmpty()) {
-                    airBlockCount++;
+                for (BlockFace face : SIDES) {
+                    if (block.getRelative(face).isEmpty()) {
+                        airBlockCount++;
+                    }
                 }
                 if (airBlockCount == 1) {
                     final BlockState state = block.getState();
