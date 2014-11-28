@@ -28,7 +28,11 @@ public final class UuidListFile extends JsonListFile {
         List<PlayerProfile> result = new ArrayList<>(entries.size());
         for (BaseEntry baseEntry : entries) {
             Entry entry = (Entry) baseEntry;
-            result.add(new PlayerProfile(entry.fallbackName, entry.uuid));
+            PlayerProfile profile = ProfileCache.getProfile(entry.uuid);
+            if (profile == null) {
+                profile = new PlayerProfile(entry.fallbackName, entry.uuid);
+            }
+            result.add(profile);
         }
         return result;
     }

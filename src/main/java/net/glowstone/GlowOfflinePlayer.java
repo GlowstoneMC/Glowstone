@@ -1,6 +1,7 @@
 package net.glowstone;
 
 import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.entity.meta.profile.ProfileCache;
 import net.glowstone.io.PlayerDataService;
 import org.apache.commons.lang.Validate;
 import org.bukkit.BanList;
@@ -21,7 +22,7 @@ import java.util.UUID;
 public final class GlowOfflinePlayer implements OfflinePlayer {
 
     private final GlowServer server;
-    PlayerProfile profile;
+    private PlayerProfile profile;
 
 
     private boolean hasPlayed = false;
@@ -41,6 +42,22 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
         Validate.notNull(profile, "profile must not be null");
         this.server = server;
         this.profile = profile;
+        loadData();
+    }
+
+    public GlowOfflinePlayer(GlowServer server, String name) {
+        Validate.notNull(server, "server must not be null");
+        Validate.notNull(name, "name cannot be null");
+        this.server = server;
+        profile = PlayerProfile.getProfile(name);
+        loadData();
+    }
+
+    public GlowOfflinePlayer(GlowServer server, UUID uuid) {
+        Validate.notNull(server, "server must not be null");
+        Validate.notNull(uuid, "UUID must not be null");
+        this.server = server;
+        profile = ProfileCache.getProfile(uuid);
         loadData();
     }
 

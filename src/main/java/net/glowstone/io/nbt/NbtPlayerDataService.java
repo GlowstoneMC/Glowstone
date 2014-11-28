@@ -3,7 +3,6 @@ package net.glowstone.io.nbt;
 import net.glowstone.GlowOfflinePlayer;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.entity.meta.profile.ProfileCache;
 import net.glowstone.io.PlayerDataService;
 import net.glowstone.io.entity.EntityStorage;
@@ -75,7 +74,7 @@ public class NbtPlayerDataService implements PlayerDataService {
             }
 
             // creating the OfflinePlayer will read the data
-            result.add(new GlowOfflinePlayer(server, new PlayerProfile(null, uuid)));
+            result.add(new GlowOfflinePlayer(server, uuid));
         }
 
         return result;

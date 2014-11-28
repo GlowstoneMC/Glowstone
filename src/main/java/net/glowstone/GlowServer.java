@@ -1084,7 +1084,7 @@ public final class GlowServer implements Server {
         }
         OfflinePlayer result = getPlayer(uuid);
         if (result == null) {
-            result = new GlowOfflinePlayer(this, new PlayerProfile(null, uuid));
+            result = new GlowOfflinePlayer(this, uuid);
         }
         return result;
     }
