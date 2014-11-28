@@ -1,8 +1,8 @@
 package net.glowstone.entity;
 
 import com.flowpowered.networking.Message;
-import net.glowstone.inventory.*;
 import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.inventory.*;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.SpawnPlayerMessage;
@@ -23,10 +23,7 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Represents a human entity, such as an NPC or a player.
@@ -84,6 +81,11 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     private InventoryView inventoryView;
 
     /**
+     *  The player's xpSeed. Used for calculation of enchantments.
+     */
+    private int xpSeed;
+
+    /**
      * Creates a human within the specified world and with the specified name.
      * @param location The location.
      * @param profile The human's profile with name and UUID information.
@@ -91,6 +93,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     public GlowHumanEntity(Location location, PlayerProfile profile) {
         super(location);
         this.profile = profile;
+        this.xpSeed = new Random().nextInt();
         permissions = new PermissibleBase(this);
         gameMode = server.getDefaultGameMode();
 
@@ -150,6 +153,14 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
      */
     public final PlayerProfile getProfile() {
         return profile;
+    }
+
+    public void setXpSeed(int xpSeed) {
+        this.xpSeed = xpSeed;
+    }
+
+    public int getXpSeed() {
+        return xpSeed;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -347,7 +358,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         if (!force && location.getBlock().getType() != Material.ENCHANTMENT_TABLE) {
             return null;
         }
-        return openInventory(new GlowEnchantingInventory(this));
+        return openInventory(new GlowEnchantingInventory(location, (GlowPlayer) this));
     }
 
     @Override

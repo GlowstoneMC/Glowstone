@@ -23,6 +23,10 @@ abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityS
     public void load(T entity, CompoundTag tag) {
         super.load(entity, tag);
 
+        if (tag.isInt("XpSeed")) {
+            entity.setXpSeed(tag.getInt("XpSeed"));
+        }
+
         if (tag.isInt("playerGameType")) {
             GameMode mode = GameMode.getByValue(tag.getInt("playerGameType"));
             if (mode != null) {
@@ -65,6 +69,7 @@ abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityS
         tag.putInt("SelectedItemSlot", entity.getInventory().getHeldItemSlot());
         tag.putBool("Sleeping", entity.isSleeping());
         tag.putShort("SleepTimer", entity.getSleepTicks());
+        tag.putInt("XpSeed", entity.getXpSeed());
 
         // inventory
         List<CompoundTag> inventory;

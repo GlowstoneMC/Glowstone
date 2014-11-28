@@ -111,6 +111,22 @@ public final class Position {
     }
 
     /**
+     * Copy the position contents (x,y,z) of one Location to another.
+     * @param source The Location to read the x, y and z values from.
+     * @param dest The Location to modify the x, y and z values. May be null.
+     * @return The dest parameter, modified if not null.
+     */
+    public static Location copyPosition(Location source, Location dest) {
+        if (dest == null) {
+            return null;
+        }
+        dest.setX(source.getX());
+        dest.setY(source.getY());
+        dest.setZ(source.getZ());
+        return dest;
+    }
+
+    /**
      * Get an intercardinal BlockFace from a rotation value, where NORTH is 0.
      * @param rotation byte value rotation to get
      * @return intercardinal BlockFace

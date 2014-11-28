@@ -1886,4 +1886,15 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             session.send(new PluginMessage("REGISTER", buf.array()));
         }
     }
+
+    public void enchanted(int clicked) {
+        this.level -= clicked + 1;
+        if (level < 0) {
+            this.level = 0;
+            this.experience = 0;
+            this.totalExperience = 0;
+        }
+        setLevel(level);
+        setXpSeed(new Random().nextInt()); //TODO
+    }
 }
