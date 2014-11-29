@@ -113,11 +113,6 @@ public class BiomePopulator extends BlockPopulator {
                 .setBiomeAmount(13, Biome.MESA, Biome.MESA_PLATEAU, Biome.MESA_PLATEAU_FOREST)
                 .setBiomeAmount(20, Biome.SWAMPLAND));
 
-        addDecorator(new MelonDecorator()
-                .setDefaultAmount(0)
-                .setBiomeAmount(1, Biome.OCEAN) // fix for lack of biomes
-                .setBiomeAmount(1, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_EDGE));
-
         addDecorator(new PumpkinDecorator());
 
         addDecorator(new CactusDecorator()
@@ -131,6 +126,16 @@ public class BiomePopulator extends BlockPopulator {
 
         addDecorator(new FlowingLiquidDecorator(Material.LAVA)
                 .setDefaultAmount(20));
+
+        addDecorator(new MelonDecorator()
+                .setDefaultAmount(0)
+                .setBiomeAmount(1, Biome.OCEAN) // fix for lack of biomes
+                .setBiomeAmount(1, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_EDGE));
+
+        addDecorator(new EmeraldOreDecorator()
+                .setDefaultAmount(0)
+                .setBiomeAmount(1, Biome.OCEAN) // fix for lack of biomes
+                .setBiomeAmount(1, Biome.EXTREME_HILLS, Biome.EXTREME_HILLS_MOUNTAINS, Biome.EXTREME_HILLS_PLUS, Biome.EXTREME_HILLS_PLUS_MOUNTAINS));
     }
 
     @Override
