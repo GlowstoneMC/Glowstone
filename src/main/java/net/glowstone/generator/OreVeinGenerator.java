@@ -58,7 +58,7 @@ public class OreVeinGenerator {
                     double hRadius = (Math.sin(i * (float) Math.PI / amount) + 1 * q + 1) / 2;
                     double vRadius = (Math.sin(i * (float) Math.PI / amount) + 1 * q + 1) / 2;
 
-                    for (int x = (int) (originX - hRadius); x <= (int) (originY - vRadius); x++) {
+                    for (int x = (int) (originX - hRadius); x <= (int) (originX - hRadius); x++) {
                         double pX = (x + 0.5F - originX) / hRadius;
                         pX *= pX;
                         if (pX < 1) {
