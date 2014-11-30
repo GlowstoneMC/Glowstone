@@ -136,6 +136,11 @@ public class BiomePopulator extends BlockPopulator {
                 .setDefaultAmount(0)
                 .setBiomeAmount(1, Biome.OCEAN) // fix for lack of biomes
                 .setBiomeAmount(1, Biome.EXTREME_HILLS, Biome.EXTREME_HILLS_MOUNTAINS, Biome.EXTREME_HILLS_PLUS, Biome.EXTREME_HILLS_PLUS_MOUNTAINS));
+
+        addDecorator(new InfestedStoneDecorator()
+                .setDefaultAmount(0)
+                .setBiomeAmount(1, Biome.OCEAN) // fix for lack of biomes
+                .setBiomeAmount(1, Biome.EXTREME_HILLS, Biome.EXTREME_HILLS_MOUNTAINS, Biome.EXTREME_HILLS_PLUS, Biome.EXTREME_HILLS_PLUS_MOUNTAINS));
     }
 
     @Override
