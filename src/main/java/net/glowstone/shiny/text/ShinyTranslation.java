@@ -3,8 +3,8 @@ package net.glowstone.shiny.text;
 import org.spongepowered.api.text.translation.Translation;
 
 /**
-* Todo: Javadoc for ShinyTranslation.
-*/
+ * Todo: Javadoc for ShinyTranslation.
+ */
 public class ShinyTranslation implements Translation {
     private final String id;
 

@@ -15,13 +15,12 @@ description = "ShinySponge"
 buildscript {
     repositories {
         jcenter()
-        //maven { url "http://repo.glowstone.net/content/groups/public/" }
-        mavenCentral()
-        mavenLocal()
+        maven { url "http://repo.glowstone.net/content/groups/public/" }
     }
     dependencies {
         classpath 'com.github.jengelman.gradle.plugins:shadow:1.1.2'
-        classpath 'net.glowstone:mixins:0.1-SNAPSHOT'
+        classpath 'net.glowstone:mixins:1.0'
+        classpath 'org.ow2.asm:asm:5.0.3'
     }
 }
 
@@ -36,11 +35,12 @@ compileJava {
 repositories {
     mavenLocal()
     mavenCentral()
+    maven { url "http://repo.spongepowered.org/Sponge/maven/" }
 }
 
 // Dependencies used by our project
 dependencies {
-	compile 'org.spongepowered:spongeapi:1.0.0-SNAPSHOT'
+	compile 'org.spongepowered:spongeapi:1.0'
     compile 'org.slf4j:slf4j-jdk14:1.7.7'
     testCompile 'junit:junit:4.8.1'
 }

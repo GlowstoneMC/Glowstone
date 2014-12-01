@@ -1,7 +1,7 @@
 package net.glowstone.shiny.inventory;
 
-import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.item.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
 

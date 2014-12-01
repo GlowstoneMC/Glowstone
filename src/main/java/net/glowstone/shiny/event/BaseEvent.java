@@ -10,7 +10,8 @@ public class BaseEvent implements Event {
 
     private final CallbackList callbacks = new CallbackList();
 
-    public BaseEvent() {}
+    public BaseEvent() {
+    }
 
     @Override
     public CallbackList getCallbacks() {

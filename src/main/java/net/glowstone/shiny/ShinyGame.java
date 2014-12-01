@@ -135,7 +135,7 @@ public class ShinyGame implements Game {
     // players
 
     @Override
-    public Collection<org.spongepowered.api.entity.player.Player> getOnlinePlayers() {
+    public Collection<Player> getOnlinePlayers() {
         throw Unsupported.missing();
     }
 
