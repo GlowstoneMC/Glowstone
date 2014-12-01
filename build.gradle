@@ -18,7 +18,7 @@ buildscript {
         maven { url "http://repo.glowstone.net/content/groups/public/" }
     }
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:1.1.2'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.0'
         classpath 'net.glowstone:mixins:1.0'
         classpath 'org.ow2.asm:asm:5.0.3'
     }

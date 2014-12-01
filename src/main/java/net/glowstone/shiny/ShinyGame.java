@@ -62,7 +62,7 @@ public class ShinyGame implements Game {
          SERVER_STOPPING,
          SERVER_STOPPED
          */
-        File directory = new File("D:\\projects\\Bukkit\\SpongePlugins");
+        File directory = new File("plugins");
         pluginManager.loadPlugins(directory);
     }
 
