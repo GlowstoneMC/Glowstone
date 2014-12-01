@@ -1,6 +1,10 @@
 package net.glowstone.shiny.event;
 
-import org.spongepowered.api.event.*;
+import org.spongepowered.api.service.event.EventManager;
+import org.spongepowered.api.util.event.Cancellable;
+import org.spongepowered.api.util.event.Event;
+import org.spongepowered.api.util.event.Order;
+import org.spongepowered.api.util.event.Subscribe;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -19,7 +23,7 @@ public class ShinyEventManager implements EventManager {
     }
 
     @Override
-    public void register(Object obj) {
+    public void register(Object plugin, Object obj) {
         for (Method method : obj.getClass().getMethods()) {
             Subscribe annotation = method.getAnnotation(Subscribe.class);
             if (annotation != null && method.getParameterTypes().length == 1) {
@@ -42,7 +46,7 @@ public class ShinyEventManager implements EventManager {
     }
 
     @Override
-    public boolean call(Event event) {
+    public boolean post(Event event) {
         for (List<EventRegistration> list : registrations.values()) {
             for (EventRegistration reg : list) {
                 reg.call(event);

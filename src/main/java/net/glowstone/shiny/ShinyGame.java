@@ -3,16 +3,16 @@ package net.glowstone.shiny;
 import com.google.common.base.Optional;
 import net.glowstone.shiny.event.ShinyEventManager;
 import net.glowstone.shiny.plugin.ShinyPluginManager;
-import net.glowstone.shiny.service.ShinyServiceManager;
 import net.glowstone.shiny.util.ConsoleManager;
 import net.glowstone.shiny.util.Unsupported;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.Platform;
-import org.spongepowered.api.entity.Player;
+import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.ServiceManager;
+import org.spongepowered.api.service.SimpleServiceManager;
 import org.spongepowered.api.service.command.CommandService;
 import org.spongepowered.api.service.command.SimpleCommandService;
 import org.spongepowered.api.service.scheduler.Scheduler;
@@ -44,8 +44,8 @@ public class ShinyGame implements Game {
     private final ShinyPluginManager pluginManager = new ShinyPluginManager(this);
     private final ShinyEventManager eventManager = new ShinyEventManager();
     private final ShinyGameRegistry registry = new ShinyGameRegistry();
-    private final ShinyServiceManager services = new ShinyServiceManager();
-    private final SimpleCommandService commands = new SimpleCommandService();
+    private final SimpleServiceManager services = new SimpleServiceManager(pluginManager);
+    private final SimpleCommandService commands = new SimpleCommandService(pluginManager);
 
     public ShinyGame() {
         logger.info("Glowstone " + IMPL_VERSION + " is starting...");
@@ -135,7 +135,7 @@ public class ShinyGame implements Game {
     // players
 
     @Override
-    public Collection<Player> getOnlinePlayers() {
+    public Collection<org.spongepowered.api.entity.player.Player> getOnlinePlayers() {
         throw Unsupported.missing();
     }
 

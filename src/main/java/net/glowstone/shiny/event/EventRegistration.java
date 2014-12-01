@@ -1,7 +1,7 @@
 package net.glowstone.shiny.event;
 
-import org.spongepowered.api.event.Cancellable;
-import org.spongepowered.api.event.Event;
+import org.spongepowered.api.util.event.Cancellable;
+import org.spongepowered.api.util.event.Event;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

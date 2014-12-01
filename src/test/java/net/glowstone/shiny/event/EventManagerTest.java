@@ -1,10 +1,10 @@
 package net.glowstone.shiny.event;
 
 import org.junit.Test;
-import org.spongepowered.api.event.Event;
-import org.spongepowered.api.event.EventManager;
-import org.spongepowered.api.event.Subscribe;
 import org.spongepowered.api.event.state.PostInitializationEvent;
+import org.spongepowered.api.service.event.EventManager;
+import org.spongepowered.api.util.event.Event;
+import org.spongepowered.api.util.event.Subscribe;
 
 /**
  * Tests for an {@link EventManager} implementation.
@@ -32,9 +32,9 @@ public class EventManagerTest {
             }
         };
 
-        events.register(x);
-        events.call(new Stuff());
-        events.call(new BaseEvent());
+        events.register(x, x);
+        events.post(new Stuff());
+        events.post(new BaseEvent());
     }
 
     private class Stuff extends BaseEvent implements Event {

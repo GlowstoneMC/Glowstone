@@ -1,5 +1,6 @@
 package net.glowstone.shiny.plugin;
 
+import com.google.common.base.Optional;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -14,7 +15,9 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -70,18 +73,27 @@ final class PluginLoader {
                         return;
                     }
 
-                    Plugin annotation = clazz.getAnnotation(Plugin.class);
-                    if (annotation != null) {
-                        ShinyPluginContainer container = new ShinyPluginContainer(annotation);
-                        Injector injector = Guice.createInjector(new PluginModule(container));
-                        container.instance = injector.getInstance(clazz);
-                        result.add(container);
-                    }
+                    result.addAll(fromClass(clazz).asSet());
                 }
             }
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    private Optional<PluginContainer> fromClass(Class<?> clazz) {
+        Plugin annotation = clazz.getAnnotation(Plugin.class);
+        if (annotation != null) {
+            try {
+                ShinyPluginContainer container = new ShinyPluginContainer(annotation);
+                Injector injector = Guice.createInjector(new PluginModule(container));
+                container.instance = injector.getInstance(clazz);
+                return Optional.<PluginContainer>of(container);
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+        }
+        return Optional.absent();
     }
 
     private class PluginModule extends AbstractModule {

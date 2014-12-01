@@ -1,33 +1,19 @@
 package net.glowstone.shiny.event;
 
-import com.google.common.base.Preconditions;
-import org.spongepowered.api.event.Cancellable;
-import org.spongepowered.api.event.Event;
-import org.spongepowered.api.event.Result;
+import org.spongepowered.api.util.event.Event;
+import org.spongepowered.api.util.event.callback.CallbackList;
 
 /**
  * A base class for defining events.
  */
 public class BaseEvent implements Event {
 
-    private Result result = Result.DEFAULT;
+    private final CallbackList callbacks = new CallbackList();
 
     public BaseEvent() {}
 
     @Override
-    public boolean isCancellable() {
-        return (this instanceof Cancellable);
+    public CallbackList getCallbacks() {
+        return callbacks;
     }
-
-    @Override
-    public void setResult(Result result) {
-        Preconditions.checkNotNull(result, "result must not be null");
-        this.result = result;
-    }
-
-    @Override
-    public final Result getResult() {
-        return result;
-    }
-
 }

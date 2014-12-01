@@ -12,6 +12,8 @@ import org.spongepowered.api.plugin.PluginManager;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Map;
 
 /**
  * Implementation of {@link PluginManager}.
@@ -19,12 +21,19 @@ import java.util.HashMap;
 public class ShinyPluginManager implements PluginManager {
 
     private final ShinyGame game;
-    private final HashMap<String, PluginContainer> plugins = new HashMap<>();
     private final PluginLoader loader;
+
+    private final Map<String, PluginContainer> plugins = new HashMap<>();
+    private final Map<Object, PluginContainer> instanceMap = new IdentityHashMap<>();
 
     public ShinyPluginManager(ShinyGame game) {
         this.game = game;
         loader = new PluginLoader(game);
+    }
+
+    @Override
+    public Optional<PluginContainer> fromInstance(Object instance) {
+        return Optional.fromNullable(instanceMap.get(instance));
     }
 
     @Override
@@ -55,7 +64,8 @@ public class ShinyPluginManager implements PluginManager {
                 continue;
             }
             plugins.put(container.getId(), container);
-            game.getEventManager().register(container.getInstance());
+            instanceMap.put(container.getInstance(), container);
+            game.getEventManager().register(container.getInstance(), container.getInstance());
             game.getEventManager().callSpecial(container.getInstance(), new ShinyPreInitEvent(game, container));
         }
     }
