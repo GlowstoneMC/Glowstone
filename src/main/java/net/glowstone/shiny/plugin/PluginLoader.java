@@ -1,11 +1,9 @@
 package net.glowstone.shiny.plugin;
 
 import com.google.common.base.Optional;
-import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import net.glowstone.shiny.ShinyGame;
-import org.spongepowered.api.Game;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 
@@ -16,7 +14,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -27,7 +24,6 @@ import java.util.zip.ZipInputStream;
 final class PluginLoader {
 
     private final ShinyGame game;
-    private final List<URL> classpath = new LinkedList<>();
 
     public PluginLoader(ShinyGame game) {
         this.game = game;
@@ -39,7 +35,7 @@ final class PluginLoader {
             try {
                 urls.add(jar.toURI().toURL());
             } catch (MalformedURLException e) {
-                // skip this
+                ShinyGame.logger.warn("Malformed URL: " + jar, e);
             }
         }
 
@@ -69,15 +65,15 @@ final class PluginLoader {
                     try {
                         clazz = classLoader.loadClass(name);
                     } catch (Throwable t) {
-                        t.printStackTrace();
-                        return;
+                        ShinyGame.logger.error("Error loading " + url.getFile() + "/" + name, t);
+                        continue;
                     }
 
                     result.addAll(fromClass(clazz).asSet());
                 }
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
+            ShinyGame.logger.error("Error reading " + url, ex);
         }
     }
 
@@ -86,27 +82,14 @@ final class PluginLoader {
         if (annotation != null) {
             try {
                 ShinyPluginContainer container = new ShinyPluginContainer(annotation);
-                Injector injector = Guice.createInjector(new PluginModule(container));
+                Injector injector = Guice.createInjector(new PluginModule(game, container));
                 container.instance = injector.getInstance(clazz);
                 return Optional.<PluginContainer>of(container);
             } catch (Throwable t) {
-                t.printStackTrace();
+                ShinyGame.logger.error("Error initializing " + annotation.id() + " (" + clazz + ")", t);
             }
         }
         return Optional.absent();
     }
 
-    private class PluginModule extends AbstractModule {
-        private final ShinyPluginContainer container;
-
-        public PluginModule(ShinyPluginContainer container) {
-            this.container = container;
-        }
-
-        @Override
-        protected void configure() {
-            bind(Game.class).toInstance(game);
-            bind(PluginContainer.class).toInstance(container);
-        }
-    }
 }

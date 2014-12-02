@@ -1,5 +1,6 @@
 package net.glowstone.shiny.event;
 
+import net.glowstone.shiny.ShinyGame;
 import org.spongepowered.api.util.event.Cancellable;
 import org.spongepowered.api.util.event.Event;
 
@@ -35,8 +36,10 @@ public final class EventRegistration {
         if (clazz.isAssignableFrom(event.getClass())) {
             try {
                 method.invoke(object, event);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                ShinyGame.logger.error("Event error", e.getTargetException());
+            } catch (IllegalAccessException e) {
+                ShinyGame.logger.error("Event error", e);
             }
         }
     }
