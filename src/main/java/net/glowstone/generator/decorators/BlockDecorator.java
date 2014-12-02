@@ -26,16 +26,20 @@ public abstract class BlockDecorator extends BlockPopulator {
         return this;
     }
 
-    public abstract void decorate(World world, Random random, Chunk chunk);
-
-    @Override
-    public void populate(World world, Random random, Chunk chunk) {
+    protected int getBiomeAmount(World world, Chunk chunk) {
         int amount = defaultAmount;
         final Biome biome = world.getBiome(chunk.getX() << 4, chunk.getZ() << 4);
         if (biomesDecorations.containsKey(biome)) {
             amount = biomesDecorations.get(biome);
         }
-        for (int i = 0; i < amount; i++) {
+        return amount;
+    }
+
+    public abstract void decorate(World world, Random random, Chunk chunk);
+
+    @Override
+    public void populate(World world, Random random, Chunk chunk) {
+        for (int i = 0; i < getBiomeAmount(world, chunk); i++) {
             decorate(world, random, chunk);
         }
     }

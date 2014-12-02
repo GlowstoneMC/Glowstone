@@ -63,9 +63,8 @@ public class SwampTree extends CocoaTree {
 
     @Override
     public boolean generate() {
-        Location l = loc.clone();
-        while ((l.getBlock().getRelative(BlockFace.DOWN).getType() == Material.WATER || l.getBlock().getRelative(BlockFace.DOWN).getType() == Material.STATIONARY_WATER)) {
-            l.subtract(0, 1, 0);
+        while ((loc.getBlock().getRelative(BlockFace.DOWN).getType() == Material.WATER || loc.getBlock().getRelative(BlockFace.DOWN).getType() == Material.STATIONARY_WATER)) {
+            loc.subtract(0, 1, 0);
         }
 
         if (!canHeightFit() || !canPlaceOn() || !canPlace()) {
@@ -73,16 +72,16 @@ public class SwampTree extends CocoaTree {
         }
 
         // generate the leaves
-        for (int y = l.getBlockY() + height - 3; y <= l.getBlockY() + height; y++) {
-            int n = y - (l.getBlockY() + height);
+        for (int y = loc.getBlockY() + height - 3; y <= loc.getBlockY() + height; y++) {
+            int n = y - (loc.getBlockY() + height);
             int radius = 2 - n / 2;
-            for (int x = l.getBlockX() - radius; x <= l.getBlockX() + radius; x++) {
-                for (int z = l.getBlockZ() - radius; z <= l.getBlockZ() + radius; z++) {
-                    if (Math.abs(x - l.getBlockX()) != radius || Math.abs(z - l.getBlockZ()) != radius
+            for (int x = loc.getBlockX() - radius; x <= loc.getBlockX() + radius; x++) {
+                for (int z = loc.getBlockZ() - radius; z <= loc.getBlockZ() + radius; z++) {
+                    if (Math.abs(x - loc.getBlockX()) != radius || Math.abs(z - loc.getBlockZ()) != radius
                             || (random.nextBoolean() && n != 0)) {
-                        final Material material = delegate.getBlockState(l.getWorld(), x, y, z).getType();
+                        final Material material = delegate.getBlockState(loc.getWorld(), x, y, z).getType();
                         if (material == Material.AIR || material == Material.LEAVES) {
-                            delegate.setTypeAndRawData(l.getWorld(), x, y, z, Material.LEAVES, leavesType);
+                            delegate.setTypeAndRawData(loc.getWorld(), x, y, z, Material.LEAVES, leavesType);
                         }
                     }
                 }
@@ -91,10 +90,10 @@ public class SwampTree extends CocoaTree {
 
         // generate the trunk
         for (int y = 0; y < height; y++) {
-            final Material material = delegate.getBlockState(l.getWorld(), l.getBlockX(), l.getBlockY() + y, l.getBlockZ()).getType();
+            final Material material = delegate.getBlockState(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + y, loc.getBlockZ()).getType();
             if (material == Material.AIR || material == Material.LEAVES ||
                     material == Material.WATER || material == Material.STATIONARY_WATER) {
-                delegate.setTypeAndRawData(l.getWorld(), l.getBlockX(), l.getBlockY() + y, l.getBlockZ(), Material.LOG, logType);
+                delegate.setTypeAndRawData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + y, loc.getBlockZ(), Material.LOG, logType);
             }
         }
 
@@ -102,7 +101,7 @@ public class SwampTree extends CocoaTree {
         addVinesOnLeaves();
 
         // block below trunk is always dirt
-        delegate.setTypeAndRawData(l.getWorld(), l.getBlockX(), l.getBlockY() - 1, l.getBlockZ(), Material.DIRT, 0);
+        delegate.setTypeAndRawData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ(), Material.DIRT, 0);
 
         return true;
     }

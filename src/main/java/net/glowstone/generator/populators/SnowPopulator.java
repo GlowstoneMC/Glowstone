@@ -25,7 +25,9 @@ public class SnowPopulator extends BlockPopulator {
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 Biome biome = world.getBiome(x + chunkX, z + chunkZ);
-                if (biome != Biome.TAIGA) {
+                if (biome != Biome.COLD_TAIGA && biome != Biome.COLD_TAIGA_HILLS && biome != Biome.COLD_TAIGA_MOUNTAINS &&
+                        biome != Biome.ICE_PLAINS && biome != Biome.ICE_MOUNTAINS && biome != Biome.ICE_PLAINS_SPIKES &&
+                        biome != Biome.FROZEN_OCEAN && biome != Biome.FROZEN_RIVER && biome != Biome.COLD_BEACH) {
                     continue;
                 }
 
@@ -42,15 +44,22 @@ public class SnowPopulator extends BlockPopulator {
                             block.setType(Material.ICE);
                         }
                         break;
+                    case YELLOW_FLOWER:
+                    case RED_ROSE:
+                    case LONG_GRASS:
                     case LAVA:
                     case STATIONARY_LAVA:
                         break;
                     case DIRT:
                         block.setType(Material.GRASS);
-                        block.getRelative(BlockFace.UP).setType(Material.SNOW);
+                        if (block.getRelative(BlockFace.UP).isEmpty()) {
+                            block.getRelative(BlockFace.UP).setType(Material.SNOW);
+                        }
                         break;
                     default:
-                        block.getRelative(BlockFace.UP).setType(Material.SNOW);
+                        if (block.getRelative(BlockFace.UP).isEmpty()) {
+                            block.getRelative(BlockFace.UP).setType(Material.SNOW);
+                        }
                         break;
                 }
             }
