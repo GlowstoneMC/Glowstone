@@ -26,8 +26,13 @@ class PluginModule extends AbstractModule {
         bind(Game.class).toInstance(game);
         bind(PluginContainer.class).toInstance(container);
         bind(Logger.class).toInstance(game.getPluginManager().getLogger(container));
-        // temporary
-        bind(File.class).annotatedWith(Names.named("PluginConfigFile"))
-                .toInstance(new File("config", container.getId() + ".cfg"));
+
+        namedFile("GeneralConfigDir", new File("config"));
+        namedFile("PluginConfigFile", new File("config", container.getId() + ".cfg"));
+        namedFile("PluginConfigDir", new File("config", container.getId()));
+    }
+
+    private void namedFile(String name, File file) {
+        bind(File.class).annotatedWith(Names.named(name)).toInstance(file);
     }
 }
