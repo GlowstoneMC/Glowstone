@@ -19,7 +19,7 @@ public class SurfaceGenerator extends GlowChunkGenerator {
     public SurfaceGenerator() {
         super(
                 // In-ground
-                new LakePopulator(),
+                //new LakePopulator(),
                 // Below-ground
                 new DungeonPopulator(),
                 new OrePopulator(),

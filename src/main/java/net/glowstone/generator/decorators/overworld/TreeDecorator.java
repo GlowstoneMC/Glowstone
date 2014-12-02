@@ -33,16 +33,27 @@ public class TreeDecorator extends BlockDecorator {
     }
 
     @Override
+    public void populate(World world, Random random, Chunk chunk) {
+        int amount = getBiomeAmount(world, chunk);
+        if (random.nextInt(10) == 0) {
+            amount++;
+        }
+        for (int i = 0; i < amount; i++) {
+            decorate(world, random, chunk);
+        }
+    }
+
+    @Override
     public void decorate(World world, Random random, Chunk source) {
         int sourceX = (source.getX() << 4) + random.nextInt(16);
         int sourceZ = (source.getZ() << 4) + random.nextInt(16);
-        final Block sourceBlock = world.getBlockAt(sourceX, world.getHighestBlockYAt(sourceX, sourceZ) - 1, sourceZ);
+        final Block sourceBlock = world.getBlockAt(sourceX, world.getHighestBlockYAt(sourceX, sourceZ), sourceZ);
 
         final Biome biome = world.getBiome(sourceX, sourceZ);
         if (biomesTrees.containsKey(biome)) {
             final TreeType type = getRandomTree(random, biomesTrees.get(biome));
             if (type != null) {
-                new TreeGenerator().generate(random, sourceBlock.getLocation().add(0, 1, 0), type);
+                new TreeGenerator().generate(random, sourceBlock.getLocation(), type);
             }
         }
     }

@@ -43,10 +43,10 @@ public class OreVeinGenerator {
                 final int amount = vein.getAmount();
 
                 float angle = random.nextFloat() * (float) Math.PI;
-                double dx1 = sourceX + 8 + Math.sin(angle) * (float) (amount / 8);
-                double dx2 = sourceX + 8 - Math.sin(angle) * (float) (amount / 8);
-                double dz1 = sourceZ + 8 + Math.cos(angle) * (float) (amount / 8);
-                double dz2 = sourceZ + 8 - Math.cos(angle) * (float) (amount / 8);
+                double dx1 = sourceX + 8 + Math.sin(angle) * (float) (amount / 8.0F);
+                double dx2 = sourceX + 8 - Math.sin(angle) * (float) (amount / 8.0F);
+                double dz1 = sourceZ + 8 + Math.cos(angle) * (float) (amount / 8.0F);
+                double dz2 = sourceZ + 8 - Math.cos(angle) * (float) (amount / 8.0F);
                 double dy1 = sourceY + random.nextInt(3) - 2;
                 double dy2 = sourceY + random.nextInt(3) - 2;
 
@@ -54,20 +54,20 @@ public class OreVeinGenerator {
                     double originX = dx1 + (dx2 - dx1) * i / amount;
                     double originY = dy1 + (dy2 - dy1) * i / amount;
                     double originZ = dz1 + (dz2 - dz1) * i / amount;
-                    double q = random.nextDouble() * amount / 16;
-                    double hRadius = (Math.sin(i * (float) Math.PI / amount) + 1 * q + 1) / 2;
-                    double vRadius = (Math.sin(i * (float) Math.PI / amount) + 1 * q + 1) / 2;
+                    double q = random.nextDouble() * amount / 16.0D;
+                    double hRadius = (Math.sin(i * (float) Math.PI / amount) + 1 * q + 1) / 2.0D;
+                    double vRadius = (Math.sin(i * (float) Math.PI / amount) + 1 * q + 1) / 2.0D;
 
                     for (int x = (int) (originX - hRadius); x <= (int) (originX - hRadius); x++) {
-                        double pX = (x + 0.5F - originX) / hRadius;
+                        double pX = (x + 0.5D - originX) / hRadius;
                         pX *= pX;
                         if (pX < 1) {
                             for (int y = (int) (originY - vRadius); y <= (int) (originY + vRadius); y++) {
-                                double pY = (y + 0.5F - originY) / vRadius;
+                                double pY = (y + 0.5D - originY) / vRadius;
                                 pY *= pY;
                                 if (pX + pY < 1) {
                                     for (int z = (int) (originZ - hRadius); z <= (int) (originZ + hRadius); z++) {
-                                        double pZ = (z + 0.5F - originZ) / hRadius;
+                                        double pZ = (z + 0.5D - originZ) / hRadius;
                                         pZ *= pZ;
                                         if (pX + pY + pZ < 1 && world.getBlockAt(x, y, z).getType() == Material.STONE) {
                                             final Block block = world.getBlockAt(x, y, z);
