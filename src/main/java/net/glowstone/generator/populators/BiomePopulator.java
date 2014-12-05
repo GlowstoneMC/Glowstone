@@ -253,6 +253,11 @@ public class BiomePopulator extends BlockPopulator {
                 .setBiomeAmount(1, Biome.OCEAN) // fix for lack of biomes
                 .setBiomeAmount(1, Biome.EXTREME_HILLS, Biome.EXTREME_HILLS_MOUNTAINS,
                         Biome.EXTREME_HILLS_PLUS, Biome.EXTREME_HILLS_PLUS_MOUNTAINS));
+
+        addDecorator(new SnowDecorator()
+                .setDefaultAmount(0)
+                .setBiomeAmount(1, Biome.COLD_TAIGA, Biome.COLD_TAIGA_HILLS, Biome.COLD_TAIGA_MOUNTAINS, Biome.ICE_PLAINS,
+                        Biome.ICE_MOUNTAINS, Biome.ICE_PLAINS_SPIKES, Biome.FROZEN_OCEAN, Biome.FROZEN_RIVER, Biome.COLD_BEACH));
     }
 
     @Override

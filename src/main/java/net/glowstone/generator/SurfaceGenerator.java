@@ -18,16 +18,12 @@ public class SurfaceGenerator extends GlowChunkGenerator {
 
     public SurfaceGenerator() {
         super(
-                // In-ground
-                //new LakePopulator(),
                 // Below-ground
                 new DungeonPopulator(),
                 new OrePopulator(),
                 //new CavePopulator(),
                 // On-ground
-                new BiomePopulator(),
-                // snow is after so trees have snow on top
-                new SnowPopulator()
+                new BiomePopulator()
         );
     }
 

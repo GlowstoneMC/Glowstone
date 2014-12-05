@@ -1,6 +1,5 @@
 package net.glowstone.generator;
 
-import net.glowstone.generator.populators.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -16,8 +15,6 @@ public class CakeTownGenerator extends GlowChunkGenerator {
         super(
                 // In-ground
                 //new LakePopulator(),
-                // On-ground
-                new SnowPopulator() // Belowground
                 //new CavePopulator()
         );
     }
