@@ -6,19 +6,32 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 
-import net.glowstone.generator.OreVeinGenerator;
 import net.glowstone.generator.decorators.BlockDecorator;
+import net.glowstone.generator.objects.OreType;
+import net.glowstone.generator.objects.OreVein;
 
 public class InfestedStoneDecorator extends BlockDecorator {
 
-    private final OreVeinGenerator generator = new OreVeinGenerator();
+    private final OreType oreType;
 
     public InfestedStoneDecorator() {
-        generator.addOre(7, Material.MONSTER_EGGS, 0, 64, 8);
+        oreType = new OreType(Material.MONSTER_EGGS, 0, 0, 64, 8);
     }
 
     @Override
     public void decorate(World world, Random random, Chunk chunk) {
-        generator.generate(world, random, chunk);
+        final int cx = (chunk.getX() << 4);
+        final int cz = (chunk.getZ() << 4);
+
+        for (int n = 0; n < 7; n++) {
+
+            int sourceX = cx + random.nextInt(16);
+            int sourceZ = cz + random.nextInt(16);
+            int sourceY = oreType.getMinY() == oreType.getMaxY() ?
+                    random.nextInt(oreType.getMinY()) + random.nextInt(oreType.getMinY()) :
+                        random.nextInt(oreType.getMaxY() - oreType.getMinY()) + oreType.getMinY();
+
+            new OreVein(oreType).generate(world, random, sourceX, sourceY, sourceZ);
+        }
     }
 }

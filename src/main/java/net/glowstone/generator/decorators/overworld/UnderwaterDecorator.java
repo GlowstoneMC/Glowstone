@@ -5,13 +5,12 @@ import java.util.Random;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 
 import net.glowstone.generator.decorators.BlockDecorator;
+import net.glowstone.generator.objects.BlockPatch;
 
 public class UnderwaterDecorator extends BlockDecorator {
 
-    private static final int MIN_RADIUS = 2;
     private final Material type;
     private int hRadius;
     private int vRadius;
@@ -44,20 +43,7 @@ public class UnderwaterDecorator extends BlockDecorator {
         }
         final Material material = world.getBlockAt(sourceX, sourceY, sourceZ).getType();
         if (material == Material.STATIONARY_WATER || material == Material.WATER) {
-            int n = random.nextInt(hRadius - MIN_RADIUS) + MIN_RADIUS;
-            for (int x = sourceX - n; x <= sourceX + n; x++) {
-                for (int z = sourceZ - n; z <= sourceZ + n; z++) {
-                    if ((x - sourceX) * (x - sourceX) + (z - sourceZ) * (z - sourceZ) <= n * n) {
-                        for (int y = sourceY - vRadius; y <= sourceY + vRadius; y++) {
-                            final Block block = world.getBlockAt(x, y, z);
-                            if (block.getType() == Material.DIRT || (replaceShoreBlocks && block.getType() == Material.GRASS)) {
-                                block.setType(type);
-                                block.setData((byte) 0);
-                            }
-                        }
-                    }
-                }
-            }
+            new BlockPatch(type, hRadius, vRadius, replaceShoreBlocks).generate(world, random, sourceX, sourceY, sourceZ);
         }
     }
 }
