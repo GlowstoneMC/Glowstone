@@ -1,22 +1,20 @@
 package net.glowstone.generator.objects.trees;
 
+import java.util.Random;
+
 import net.glowstone.util.BlockStateDelegate;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 
-import java.util.Random;
+public class BrownMushroomTree extends GenericTree {
+    protected Material type;
 
-public class HugeMushroom extends GenericTree {
-    private Material type;
-
-    public HugeMushroom(Random random, Location location, Material type, BlockStateDelegate delegate) {
+    public BrownMushroomTree(Random random, Location location, BlockStateDelegate delegate) {
         super(random, location, delegate);
-        if (type != Material.HUGE_MUSHROOM_1 && type != Material.HUGE_MUSHROOM_2) {
-            throw new IllegalArgumentException("Invalid huge mushroom type");
-        }
-        this.type = type;
+        this.type = Material.HUGE_MUSHROOM_1;
         setOverridables(
                 Material.AIR,
                 Material.LEAVES,

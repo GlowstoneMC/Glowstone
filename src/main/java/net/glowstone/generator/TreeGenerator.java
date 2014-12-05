@@ -5,7 +5,6 @@ import java.util.Random;
 import net.glowstone.generator.objects.trees.*;
 import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.TreeType;
 
 public class TreeGenerator {
@@ -67,10 +66,10 @@ public class TreeGenerator {
                 tree = new DarkOakTree(random, loc, delegate);
                 break;
             case BROWN_MUSHROOM:
-                tree = new HugeMushroom(random, loc, Material.HUGE_MUSHROOM_1, delegate);
+                tree = new BrownMushroomTree(random, loc, delegate);
                 break;
             case RED_MUSHROOM:
-                tree = new HugeMushroom(random, loc, Material.HUGE_MUSHROOM_2, delegate);
+                tree = new RedMushroomTree(random, loc, delegate);
                 break;
             default:
                 return false;
