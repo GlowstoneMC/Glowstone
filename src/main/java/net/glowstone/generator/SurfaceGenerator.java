@@ -23,7 +23,7 @@ public class SurfaceGenerator extends GlowChunkGenerator {
                 new OrePopulator(),
                 //new CavePopulator(),
                 // On-ground
-                new BiomePopulator()
+                new OverworldPopulator()
         );
     }
 

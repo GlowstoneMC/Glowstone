@@ -14,11 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class BiomePopulator extends BlockPopulator {
+public class OverworldPopulator extends BlockPopulator {
 
     private final List<BlockPopulator> decorators = new ArrayList<>();
 
-    public BiomePopulator() {
+    public OverworldPopulator() {
 
         // the order is important
 
