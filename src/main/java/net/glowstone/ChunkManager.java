@@ -236,7 +236,7 @@ public final class ChunkManager {
         // hackish way to force biome
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
-                biomes.setBiome(i, j, Biome.PLAINS);
+                biomes.setBiome(i, j, Biome.MEGA_TAIGA);
             }
         }
 
