@@ -2,6 +2,7 @@ package net.glowstone.generator.populators;
 
 import net.glowstone.generator.decorators.overworld.*;
 import net.glowstone.generator.decorators.overworld.FlowerDecorator.Flower;
+import net.glowstone.generator.objects.DoublePlantType;
 import net.glowstone.generator.objects.trees.*;
 
 import org.bukkit.Chunk;
@@ -44,6 +45,30 @@ public class OverworldPopulator extends BlockPopulator {
                 .setRadiuses(6, 2)
                 .setDefaultAmount(1)
                 .setBiomeAmount(0, Biome.SWAMPLAND, Biome.SWAMPLAND_MOUNTAINS));
+
+        addDecorator(new ForestDecorator()
+                .setBiomeMinAmount(3, Biome.FOREST, Biome.FOREST_HILLS, Biome.BIRCH_FOREST,
+                        Biome.BIRCH_FOREST_MOUNTAINS, Biome.BIRCH_FOREST_HILLS, Biome.BIRCH_FOREST_HILLS_MOUNTAINS,
+                        Biome.ROOFED_FOREST, Biome.ROOFED_FOREST_MOUNTAINS)
+                .setBiomeMinAmount(1, Biome.FLOWER_FOREST)
+                .setDefaultAmount(0)
+                .setBiomeAmount(1, Biome.FOREST, Biome.FOREST_HILLS, Biome.BIRCH_FOREST, Biome.BIRCH_FOREST_MOUNTAINS,
+                        Biome.BIRCH_FOREST_HILLS, Biome.BIRCH_FOREST_HILLS_MOUNTAINS, Biome.ROOFED_FOREST,
+                        Biome.ROOFED_FOREST_MOUNTAINS, Biome.FLOWER_FOREST));
+
+        addDecorator(new DoublePlantDecorator()
+                .setDoublePlantWeight(1, DoublePlantType.LARGE_FERN, Biome.TAIGA, Biome.TAIGA_HILLS, Biome.TAIGA_MOUNTAINS,
+                        Biome.COLD_TAIGA, Biome.COLD_TAIGA_HILLS, Biome.COLD_TAIGA_MOUNTAINS, Biome.MEGA_TAIGA,
+                        Biome.MEGA_TAIGA_HILLS, Biome.MEGA_SPRUCE_TAIGA, Biome.MEGA_SPRUCE_TAIGA_HILLS)
+                .setDoublePlantWeight(1, DoublePlantType.DOUBLE_TALLGRASS, Biome.SAVANNA, Biome.SAVANNA_MOUNTAINS,
+                        Biome.SAVANNA_PLATEAU, Biome.SAVANNA_PLATEAU_MOUNTAINS)
+                .setDoublePlantWeight(1, DoublePlantType.SUNFLOWER, Biome.SUNFLOWER_PLAINS)
+                .setDefaultAmount(0)
+                .setBiomeAmount(7, Biome.TAIGA, Biome.TAIGA_HILLS, Biome.TAIGA_MOUNTAINS,
+                        Biome.COLD_TAIGA, Biome.COLD_TAIGA_HILLS, Biome.COLD_TAIGA_MOUNTAINS, Biome.MEGA_TAIGA,
+                        Biome.MEGA_TAIGA_HILLS, Biome.MEGA_SPRUCE_TAIGA, Biome.MEGA_SPRUCE_TAIGA_HILLS, Biome.SAVANNA,
+                        Biome.SAVANNA_MOUNTAINS, Biome.SAVANNA_PLATEAU, Biome.SAVANNA_PLATEAU_MOUNTAINS)
+                .setBiomeAmount(10, Biome.SUNFLOWER_PLAINS));
 
         addDecorator(new TreeDecorator()
                 .setTreeWeight(3, GenericTree.class, Biome.OCEAN) // fix for lack of biomes
@@ -119,12 +144,6 @@ public class OverworldPopulator extends BlockPopulator {
                 .setDefaultFlowerWeight(2, Flower.DANDELION)
                 .setDefaultFlowerWeight(1, Flower.POPPY)
 
-                .setFlowerWeight(4, Flower.DANDELION, Biome.OCEAN) // fix for lack of biomes
-                .setFlowerWeight(2, Flower.POPPY, Biome.OCEAN) // fix for lack of biomes
-                .setFlowerWeight(1, Flower.LILAC, Biome.OCEAN) // fix for lack of biomes
-                .setFlowerWeight(1, Flower.ROSE_BUSH, Biome.OCEAN) // fix for lack of biomes
-                .setFlowerWeight(1, Flower.PEONIA, Biome.OCEAN) // fix for lack of biomes
-
                 .setFlowerWeight(27, Flower.DANDELION, Biome.PLAINS)
                 .setFlowerWeight(17, Flower.POPPY, Biome.PLAINS)
                 .setFlowerWeight(17, Flower.HOUSTONIA, Biome.PLAINS)
@@ -136,17 +155,14 @@ public class OverworldPopulator extends BlockPopulator {
 
                 .setFlowerWeight(1, Flower.BLUE_ORCHID, Biome.SWAMPLAND, Biome.SWAMPLAND_MOUNTAINS)
 
-                .setFlowerWeight(4, Flower.POPPY, Biome.FLOWER_FOREST)
-                .setFlowerWeight(2, Flower.ALLIUM, Biome.FLOWER_FOREST)
-                .setFlowerWeight(2, Flower.HOUSTONIA, Biome.FLOWER_FOREST)
-                .setFlowerWeight(2, Flower.TULIP_RED, Biome.FLOWER_FOREST)
-                .setFlowerWeight(2, Flower.TULIP_ORANGE, Biome.FLOWER_FOREST)
-                .setFlowerWeight(2, Flower.TULIP_WHITE, Biome.FLOWER_FOREST)
-                .setFlowerWeight(2, Flower.TULIP_PINK, Biome.FLOWER_FOREST)
-                .setFlowerWeight(2, Flower.OXEYE_DAISY, Biome.FLOWER_FOREST)
-                .setFlowerWeight(1, Flower.LILAC, Biome.FLOWER_FOREST)
-                .setFlowerWeight(1, Flower.ROSE_BUSH, Biome.FLOWER_FOREST)
-                .setFlowerWeight(1, Flower.PEONIA, Biome.FLOWER_FOREST)
+                .setFlowerWeight(2, Flower.POPPY, Biome.FLOWER_FOREST)
+                .setFlowerWeight(1, Flower.ALLIUM, Biome.FLOWER_FOREST)
+                .setFlowerWeight(1, Flower.HOUSTONIA, Biome.FLOWER_FOREST)
+                .setFlowerWeight(1, Flower.TULIP_RED, Biome.FLOWER_FOREST)
+                .setFlowerWeight(1, Flower.TULIP_ORANGE, Biome.FLOWER_FOREST)
+                .setFlowerWeight(1, Flower.TULIP_WHITE, Biome.FLOWER_FOREST)
+                .setFlowerWeight(1, Flower.TULIP_PINK, Biome.FLOWER_FOREST)
+                .setFlowerWeight(1, Flower.OXEYE_DAISY, Biome.FLOWER_FOREST)
 
                 .setDefaultAmount(2)
                 .setBiomeAmount(0, Biome.ICE_PLAINS, Biome.ICE_MOUNTAINS, Biome.ICE_PLAINS_SPIKES, Biome.MESA,
@@ -155,7 +171,7 @@ public class OverworldPopulator extends BlockPopulator {
                 .setBiomeAmount(1, Biome.SWAMPLAND, Biome.SWAMPLAND_MOUNTAINS)
                 .setBiomeAmount(4, Biome.PLAINS, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_MOUNTAINS,
                         Biome.JUNGLE_EDGE, Biome.JUNGLE_EDGE_MOUNTAINS, Biome.SAVANNA, Biome.SAVANNA_PLATEAU)
-                .setBiomeAmount(80, Biome.FLOWER_FOREST));
+                .setBiomeAmount(100, Biome.FLOWER_FOREST));
 
         addDecorator(new TallGrassDecorator()
                 .setFernDensity(0.8D, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_MOUNTAINS,
