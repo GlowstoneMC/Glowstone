@@ -28,7 +28,7 @@ public abstract class BlockDecorator extends BlockPopulator {
 
     protected int getBiomeAmount(World world, Chunk chunk) {
         int amount = defaultAmount;
-        final Biome biome = world.getBiome(chunk.getX() << 4, chunk.getZ() << 4);
+        final Biome biome = world.getBiome((chunk.getX() << 4) + 8, (chunk.getZ() << 4) + 8);
         if (biomesDecorations.containsKey(biome)) {
             amount = biomesDecorations.get(biome);
         }
