@@ -2,10 +2,10 @@ package net.glowstone.generator.populators;
 
 import net.glowstone.generator.decorators.overworld.*;
 import net.glowstone.generator.decorators.overworld.FlowerDecorator.Flower;
+import net.glowstone.generator.objects.trees.*;
 
 import org.bukkit.Chunk;
 import org.bukkit.Material;
-import org.bukkit.TreeType;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.generator.BlockPopulator;
@@ -46,57 +46,57 @@ public class OverworldPopulator extends BlockPopulator {
                 .setBiomeAmount(0, Biome.SWAMPLAND, Biome.SWAMPLAND_MOUNTAINS));
 
         addDecorator(new TreeDecorator()
-                .setTreeWeight(3, TreeType.TREE, Biome.OCEAN) // fix for lack of biomes
-                .setTreeWeight(2, TreeType.BIRCH, Biome.OCEAN) // fix for lack of biomes
+                .setTreeWeight(3, GenericTree.class, Biome.OCEAN) // fix for lack of biomes
+                .setTreeWeight(2, BirchTree.class, Biome.OCEAN) // fix for lack of biomes
 
-                .setTreeWeight(20, TreeType.REDWOOD, Biome.EXTREME_HILLS, Biome.EXTREME_HILLS_MOUNTAINS)
-                .setTreeWeight(1, TreeType.BIG_TREE, Biome.EXTREME_HILLS, Biome.EXTREME_HILLS_MOUNTAINS)
-                .setTreeWeight(9, TreeType.TREE, Biome.EXTREME_HILLS, Biome.EXTREME_HILLS_MOUNTAINS)
+                .setTreeWeight(20, RedwoodTree.class, Biome.EXTREME_HILLS, Biome.EXTREME_HILLS_MOUNTAINS)
+                .setTreeWeight(1, GenericTree.class, Biome.EXTREME_HILLS, Biome.EXTREME_HILLS_MOUNTAINS) // BIG_TREE
+                .setTreeWeight(9, GenericTree.class, Biome.EXTREME_HILLS, Biome.EXTREME_HILLS_MOUNTAINS)
 
-                .setTreeWeight(4, TreeType.TREE, Biome.FOREST, Biome.FOREST_HILLS, Biome.FLOWER_FOREST,
+                .setTreeWeight(4, GenericTree.class, Biome.FOREST, Biome.FOREST_HILLS, Biome.FLOWER_FOREST,
                         Biome.ROOFED_FOREST, Biome.ROOFED_FOREST_MOUNTAINS)
-                .setTreeWeight(1, TreeType.BIRCH, Biome.FOREST, Biome.FOREST_HILLS, Biome.FLOWER_FOREST,
+                .setTreeWeight(1, BirchTree.class, Biome.FOREST, Biome.FOREST_HILLS, Biome.FLOWER_FOREST,
                         Biome.BIRCH_FOREST, Biome.BIRCH_FOREST_MOUNTAINS, Biome.BIRCH_FOREST_HILLS,
                         Biome.BIRCH_FOREST_HILLS_MOUNTAINS, Biome.ROOFED_FOREST, Biome.ROOFED_FOREST_MOUNTAINS)
-                .setTreeWeight(2, TreeType.RED_MUSHROOM, Biome.ROOFED_FOREST, Biome.ROOFED_FOREST_MOUNTAINS)
-                .setTreeWeight(2, TreeType.BROWN_MUSHROOM, Biome.ROOFED_FOREST, Biome.ROOFED_FOREST_MOUNTAINS)
-                .setTreeWeight(76, TreeType.DARK_OAK, Biome.ROOFED_FOREST, Biome.ROOFED_FOREST_MOUNTAINS)
-                .setTreeWeight(1, TreeType.TALL_BIRCH, Biome.BIRCH_FOREST, Biome.BIRCH_FOREST_MOUNTAINS,
+                .setTreeWeight(2, RedMushroomTree.class, Biome.ROOFED_FOREST, Biome.ROOFED_FOREST_MOUNTAINS)
+                .setTreeWeight(2, BrownMushroomTree.class, Biome.ROOFED_FOREST, Biome.ROOFED_FOREST_MOUNTAINS)
+                .setTreeWeight(76, DarkOakTree.class, Biome.ROOFED_FOREST, Biome.ROOFED_FOREST_MOUNTAINS)
+                .setTreeWeight(1, TallBirchTree.class, Biome.BIRCH_FOREST, Biome.BIRCH_FOREST_MOUNTAINS,
                         Biome.BIRCH_FOREST_HILLS, Biome.BIRCH_FOREST_HILLS_MOUNTAINS)
 
-                .setTreeWeight(2, TreeType.REDWOOD, Biome.TAIGA, Biome.TAIGA_HILLS, Biome.TAIGA_MOUNTAINS,
+                .setTreeWeight(2, RedwoodTree.class, Biome.TAIGA, Biome.TAIGA_HILLS, Biome.TAIGA_MOUNTAINS,
                         Biome.COLD_TAIGA, Biome.COLD_TAIGA_HILLS, Biome.COLD_TAIGA_MOUNTAINS)
-                .setTreeWeight(1, TreeType.TALL_REDWOOD, Biome.TAIGA, Biome.TAIGA_HILLS, Biome.TAIGA_MOUNTAINS,
+                .setTreeWeight(1, TallRedwoodTree.class, Biome.TAIGA, Biome.TAIGA_HILLS, Biome.TAIGA_MOUNTAINS,
                         Biome.COLD_TAIGA, Biome.COLD_TAIGA_HILLS, Biome.COLD_TAIGA_MOUNTAINS)
 
-                .setTreeWeight(52, TreeType.REDWOOD, Biome.MEGA_TAIGA, Biome.MEGA_TAIGA_HILLS)
-                .setTreeWeight(36, TreeType.MEGA_REDWOOD, Biome.MEGA_TAIGA, Biome.MEGA_TAIGA_HILLS) // big spruce, those with less leaves height
-                .setTreeWeight(26, TreeType.TALL_REDWOOD, Biome.MEGA_TAIGA, Biome.MEGA_TAIGA_HILLS)
-                .setTreeWeight(3, TreeType.MEGA_REDWOOD, Biome.MEGA_TAIGA, Biome.MEGA_TAIGA_HILLS)
+                .setTreeWeight(52, RedwoodTree.class, Biome.MEGA_TAIGA, Biome.MEGA_TAIGA_HILLS)
+                .setTreeWeight(36, MegaPineTree.class, Biome.MEGA_TAIGA, Biome.MEGA_TAIGA_HILLS)
+                .setTreeWeight(26, TallRedwoodTree.class, Biome.MEGA_TAIGA, Biome.MEGA_TAIGA_HILLS)
+                .setTreeWeight(3, MegaSpruceTree.class, Biome.MEGA_TAIGA, Biome.MEGA_TAIGA_HILLS)
 
-                .setTreeWeight(44, TreeType.REDWOOD, Biome.MEGA_TAIGA, Biome.MEGA_TAIGA_HILLS)
-                .setTreeWeight(33, TreeType.MEGA_REDWOOD, Biome.MEGA_SPRUCE_TAIGA, Biome.MEGA_SPRUCE_TAIGA_HILLS)
-                .setTreeWeight(22, TreeType.TALL_REDWOOD, Biome.MEGA_TAIGA, Biome.MEGA_TAIGA_HILLS)
+                .setTreeWeight(44, RedwoodTree.class, Biome.MEGA_SPRUCE_TAIGA, Biome.MEGA_SPRUCE_TAIGA_HILLS)
+                .setTreeWeight(33, MegaSpruceTree.class, Biome.MEGA_SPRUCE_TAIGA, Biome.MEGA_SPRUCE_TAIGA_HILLS)
+                .setTreeWeight(22, TallRedwoodTree.class, Biome.MEGA_SPRUCE_TAIGA, Biome.MEGA_SPRUCE_TAIGA_HILLS)
 
-                .setTreeWeight(1, TreeType.SWAMP, Biome.SWAMPLAND, Biome.SWAMPLAND_MOUNTAINS)
+                .setTreeWeight(1, SwampTree.class, Biome.SWAMPLAND, Biome.SWAMPLAND_MOUNTAINS)
 
-                .setTreeWeight(1, TreeType.REDWOOD, Biome.ICE_PLAINS, Biome.ICE_MOUNTAINS, Biome.ICE_PLAINS_SPIKES)
+                .setTreeWeight(1, RedwoodTree.class, Biome.ICE_PLAINS, Biome.ICE_MOUNTAINS, Biome.ICE_PLAINS_SPIKES)
 
-                .setTreeWeight(10, TreeType.BIG_TREE, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_MOUNTAINS,
+                .setTreeWeight(10, GenericTree.class, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_MOUNTAINS, // BIG_TREE
                         Biome.JUNGLE_EDGE, Biome.JUNGLE_EDGE_MOUNTAINS)
-                .setTreeWeight(45, TreeType.JUNGLE_BUSH, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_MOUNTAINS,
+                .setTreeWeight(45, JungleBush.class, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_MOUNTAINS,
                         Biome.JUNGLE_EDGE, Biome.JUNGLE_EDGE_MOUNTAINS)
-                .setTreeWeight(15, TreeType.JUNGLE, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_MOUNTAINS)
-                .setTreeWeight(30, TreeType.COCOA_TREE, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_MOUNTAINS)
-                .setTreeWeight(45, TreeType.COCOA_TREE, Biome.JUNGLE_EDGE, Biome.JUNGLE_EDGE_MOUNTAINS)
+                .setTreeWeight(15, MegaJungleTree.class, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_MOUNTAINS)
+                .setTreeWeight(30, CocoaTree.class, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_MOUNTAINS)
+                .setTreeWeight(45, CocoaTree.class, Biome.JUNGLE_EDGE, Biome.JUNGLE_EDGE_MOUNTAINS)
 
-                .setTreeWeight(1, TreeType.TREE, Biome.MESA_PLATEAU_FOREST, Biome.MESA_PLATEAU_FOREST_MOUNTAINS)
+                .setTreeWeight(1, GenericTree.class, Biome.MESA_PLATEAU_FOREST, Biome.MESA_PLATEAU_FOREST_MOUNTAINS)
 
-                .setTreeWeight(1, TreeType.TREE, Biome.SAVANNA, Biome.SAVANNA_PLATEAU, Biome.SAVANNA_MOUNTAINS, Biome.SAVANNA_PLATEAU_MOUNTAINS)
-                .setTreeWeight(4, TreeType.ACACIA, Biome.SAVANNA, Biome.SAVANNA_PLATEAU, Biome.SAVANNA_MOUNTAINS, Biome.SAVANNA_PLATEAU_MOUNTAINS)
+                .setTreeWeight(1, GenericTree.class, Biome.SAVANNA, Biome.SAVANNA_PLATEAU, Biome.SAVANNA_MOUNTAINS, Biome.SAVANNA_PLATEAU_MOUNTAINS)
+                .setTreeWeight(4, AcaciaTree.class, Biome.SAVANNA, Biome.SAVANNA_PLATEAU, Biome.SAVANNA_MOUNTAINS, Biome.SAVANNA_PLATEAU_MOUNTAINS)
 
-                .setTreeWeight(1, TreeType.RED_MUSHROOM, Biome.MUSHROOM_ISLAND, Biome.MUSHROOM_SHORE)
-                .setTreeWeight(1, TreeType.BROWN_MUSHROOM, Biome.MUSHROOM_ISLAND, Biome.MUSHROOM_SHORE)
+                .setTreeWeight(1, RedMushroomTree.class, Biome.MUSHROOM_ISLAND, Biome.MUSHROOM_SHORE)
+                .setTreeWeight(1, BrownMushroomTree.class, Biome.MUSHROOM_ISLAND, Biome.MUSHROOM_SHORE)
 
                 .setDefaultAmount(Integer.MIN_VALUE)
                 .setBiomeAmount(5, Biome.OCEAN) // fix for lack of biomes
