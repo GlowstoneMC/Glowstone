@@ -12,8 +12,9 @@ import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 
-import net.glowstone.generator.TreeGenerator;
+import net.glowstone.constants.GlowTree;
 import net.glowstone.generator.decorators.BlockDecorator;
+import net.glowstone.util.BlockStateDelegate;
 
 public class TreeDecorator extends BlockDecorator {
 
@@ -53,7 +54,10 @@ public class TreeDecorator extends BlockDecorator {
         if (biomesTrees.containsKey(biome)) {
             final TreeType type = getRandomTree(random, biomesTrees.get(biome));
             if (type != null) {
-                new TreeGenerator().generate(random, sourceBlock.getLocation(), type);
+                final BlockStateDelegate delegate = new BlockStateDelegate();
+                if (GlowTree.newInstance(type, random, sourceBlock.getLocation(), delegate).generate()) {
+                    delegate.updateBlockStates();
+                }
             }
         }
     }
