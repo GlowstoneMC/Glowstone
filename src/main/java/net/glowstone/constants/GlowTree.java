@@ -20,10 +20,9 @@ public final class GlowTree {
 
     private static final Map<TreeType, Class<? extends GenericTree>> classTable = new HashMap<>();
 
-    public static GenericTree getTree(TreeType type, Random random, Location loc, BlockStateDelegate delegate) {
+    public static GenericTree newInstance(TreeType type, Random random, Location loc, BlockStateDelegate delegate) {
         try {
             Constructor<? extends GenericTree> c = classTable.get(type).getConstructor(Random.class, Location.class, BlockStateDelegate.class);
-            //c.setAccessible(true);
             return c.newInstance(random, loc, delegate);
         } catch (Exception ex) {
             return new GenericTree(random, loc, delegate);
