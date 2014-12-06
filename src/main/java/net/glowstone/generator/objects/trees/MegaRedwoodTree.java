@@ -7,10 +7,17 @@ import java.util.Random;
 
 public class MegaRedwoodTree extends MegaJungleTree {
 
+    private int leavesHeight;
+
     public MegaRedwoodTree(Random random, Location location, BlockStateDelegate delegate) {
         super(random, location, delegate);
         setHeight(random.nextInt(15) + random.nextInt(3) + 13);
         setTypes(1, 1);
+        setLeavesHeight(random.nextInt(5) + (random.nextBoolean() ? 3 : 13));
+    }
+
+    protected final void setLeavesHeight(int leavesHeight) {
+        this.leavesHeight = leavesHeight;
     }
 
     @Override
@@ -20,12 +27,6 @@ public class MegaRedwoodTree extends MegaJungleTree {
         }
 
         // generates the leaves
-        int leavesHeight = random.nextInt(5);
-        if (random.nextBoolean())
-            leavesHeight += 3;
-        else {
-            leavesHeight += 13;
-        }
         int previousRadius = 0;
         for (int y = loc.getBlockY() + height - leavesHeight; y <= loc.getBlockY() + height; y++) {
             int n = loc.getBlockY() + height - y;
