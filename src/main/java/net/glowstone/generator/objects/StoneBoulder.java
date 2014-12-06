@@ -15,7 +15,7 @@ public class StoneBoulder {
                 world.getBlockAt(sourceX, sourceY - 1, sourceZ).getType() != Material.STONE)) && sourceY > 3) {
             sourceY--;
         }
-        if (sourceY > 3) {
+        if (sourceY > 3 && world.getBlockAt(sourceX, sourceY + 1, sourceZ).isEmpty()) {
             for (int i = 0; i < 3; i++) {
                 int radiusX = random.nextInt(2);
                 int radiusZ = random.nextInt(2);

@@ -6,10 +6,10 @@ import net.glowstone.util.BlockStateDelegate;
 
 import org.bukkit.Location;
 
-public class MegaSpruceTree extends MegaRedwoodTree {
+public class MegaSpruceTree extends MegaPineTree {
 
     public MegaSpruceTree(Random random, Location location, BlockStateDelegate delegate) {
         super(random, location, delegate);
-        setLeavesHeight(random.nextInt(5) + 13);
+        setLeavesHeight(leavesHeight + 10);
     }
 }
