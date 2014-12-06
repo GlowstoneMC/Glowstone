@@ -54,6 +54,7 @@ public class OverworldPopulator extends BlockPopulator {
                         Biome.BIRCH_FOREST_MOUNTAINS, Biome.BIRCH_FOREST_HILLS, Biome.BIRCH_FOREST_HILLS_MOUNTAINS,
                         Biome.ROOFED_FOREST, Biome.ROOFED_FOREST_MOUNTAINS)
                 .setBiomeLoweringAmount(1, Biome.FLOWER_FOREST)
+                .setBiomeFlowerAmount(100, Biome.FLOWER_FOREST)
                 .setDefaultAmount(0)
                 .setBiomeAmount(1, Biome.FOREST, Biome.FOREST_HILLS, Biome.BIRCH_FOREST, Biome.BIRCH_FOREST_MOUNTAINS,
                         Biome.BIRCH_FOREST_HILLS, Biome.BIRCH_FOREST_HILLS_MOUNTAINS, Biome.ROOFED_FOREST,
@@ -93,8 +94,7 @@ public class OverworldPopulator extends BlockPopulator {
                 .setTreeWeight(2, RedMushroomTree.class, Biome.ROOFED_FOREST, Biome.ROOFED_FOREST_MOUNTAINS)
                 .setTreeWeight(2, BrownMushroomTree.class, Biome.ROOFED_FOREST, Biome.ROOFED_FOREST_MOUNTAINS)
                 .setTreeWeight(76, DarkOakTree.class, Biome.ROOFED_FOREST, Biome.ROOFED_FOREST_MOUNTAINS)
-                .setTreeWeight(1, TallBirchTree.class, Biome.BIRCH_FOREST, Biome.BIRCH_FOREST_MOUNTAINS,
-                        Biome.BIRCH_FOREST_HILLS, Biome.BIRCH_FOREST_HILLS_MOUNTAINS)
+                .setTreeWeight(1, TallBirchTree.class, Biome.BIRCH_FOREST_MOUNTAINS, Biome.BIRCH_FOREST_HILLS_MOUNTAINS)
 
                 .setTreeWeight(2, RedwoodTree.class, Biome.TAIGA, Biome.TAIGA_HILLS, Biome.TAIGA_MOUNTAINS,
                         Biome.COLD_TAIGA, Biome.COLD_TAIGA_HILLS, Biome.COLD_TAIGA_MOUNTAINS)

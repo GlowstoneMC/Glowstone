@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class MegaRedwoodTree extends MegaJungleTree {
 
-    private int leavesHeight;
+    protected int leavesHeight;
 
     public MegaRedwoodTree(Random random, Location location, BlockStateDelegate delegate) {
         super(random, location, delegate);
