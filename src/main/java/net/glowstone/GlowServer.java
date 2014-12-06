@@ -80,10 +80,10 @@ public final class GlowServer implements Server {
     public static void main(String[] args) {
         try {
             // check for console
-            if (System.console() == null) {
+            /*if (System.console() == null) {
                 ConsoleMissing.display();
                 return;
-            }
+            }*/
 
             ConfigurationSerialization.registerClass(GlowOfflinePlayer.class);
             GlowPotionEffect.register();
