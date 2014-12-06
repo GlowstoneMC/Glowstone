@@ -1,5 +1,6 @@
 package net.glowstone.generator.decorators.overworld;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,20 +8,20 @@ import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Chunk;
-import org.bukkit.TreeType;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 
-import net.glowstone.constants.GlowTree;
 import net.glowstone.generator.decorators.BlockDecorator;
+import net.glowstone.generator.objects.trees.GenericTree;
 import net.glowstone.util.BlockStateDelegate;
 
 public class TreeDecorator extends BlockDecorator {
 
     private final Map<Biome, List<TreeDecoration>> biomesTrees = new HashMap<>();
 
-    public final TreeDecorator setTreeWeight(int weight, TreeType tree, Biome... biomes) {
+    public final TreeDecorator setTreeWeight(int weight, Class<? extends GenericTree> tree, Biome... biomes) {
         for (Biome biome : biomes) {
             if (biomesTrees.containsKey(biome)) {
                 biomesTrees.get(biome).add(new TreeDecoration(tree, weight));
@@ -52,17 +53,24 @@ public class TreeDecorator extends BlockDecorator {
 
         final Biome biome = world.getBiome(sourceX, sourceZ);
         if (biomesTrees.containsKey(biome)) {
-            final TreeType type = getRandomTree(random, biomesTrees.get(biome));
-            if (type != null) {
+            final Class<? extends GenericTree> clazz = getRandomTree(random, biomesTrees.get(biome));
+            if (clazz != null) {
                 final BlockStateDelegate delegate = new BlockStateDelegate();
-                if (GlowTree.newInstance(type, random, sourceBlock.getLocation(), delegate).generate()) {
+                GenericTree tree;
+                try {
+                    final Constructor<? extends GenericTree> c = clazz.getConstructor(Random.class, Location.class, BlockStateDelegate.class);
+                    tree = c.newInstance(random, sourceBlock.getLocation(), delegate);
+                } catch (Exception ex) {
+                    tree = new GenericTree(random, sourceBlock.getLocation(), delegate);
+                }
+                if (tree.generate()) {
                     delegate.updateBlockStates();
                 }
             }
         }
     }
 
-    private TreeType getRandomTree(Random random, List<TreeDecoration> decorations) {
+    private Class<? extends GenericTree> getRandomTree(Random random, List<TreeDecoration> decorations) {
         int totalWeight = 0;
         for (TreeDecoration decoration : decorations) {
             totalWeight += decoration.getWeigth();
@@ -71,7 +79,7 @@ public class TreeDecorator extends BlockDecorator {
         for (TreeDecoration decoration : decorations) {
             weight -= decoration.getWeigth();
             if (weight < 0) {
-                return decoration.getTreeType();
+                return decoration.getTree();
             }
         }
         return null;
@@ -79,15 +87,15 @@ public class TreeDecorator extends BlockDecorator {
 
     public static class TreeDecoration {
 
-        private final TreeType tree;
+        private final Class<? extends GenericTree> tree;
         private final int weight;
 
-        public TreeDecoration(TreeType tree, int weight) {
+        public TreeDecoration(Class<? extends GenericTree> tree, int weight) {
             this.tree = tree;
             this.weight = weight;
         }
 
-        public TreeType getTreeType() {
+        public Class<? extends GenericTree> getTree() {
             return tree;
         }
 
