@@ -59,6 +59,10 @@ public class OverworldPopulator extends BlockPopulator {
                         Biome.BIRCH_FOREST_HILLS, Biome.BIRCH_FOREST_HILLS_MOUNTAINS, Biome.ROOFED_FOREST,
                         Biome.ROOFED_FOREST_MOUNTAINS, Biome.FLOWER_FOREST));
 
+        addDecorator(new StoneBoulderDecorator()
+                .setDefaultAmount(0)
+                .setBiomeAmount(1, Biome.MEGA_TAIGA, Biome.MEGA_TAIGA_HILLS, Biome.MEGA_SPRUCE_TAIGA, Biome.MEGA_SPRUCE_TAIGA_HILLS));
+
         addDecorator(new DoublePlantDecorator()
                 .setDoublePlantWeight(1, DoublePlantType.LARGE_FERN, Biome.TAIGA, Biome.TAIGA_HILLS, Biome.TAIGA_MOUNTAINS,
                         Biome.COLD_TAIGA, Biome.COLD_TAIGA_HILLS, Biome.COLD_TAIGA_MOUNTAINS, Biome.MEGA_TAIGA,
@@ -149,15 +153,6 @@ public class OverworldPopulator extends BlockPopulator {
 
                 .setFlowerWeight(1, FlowerType.BLUE_ORCHID, Biome.SWAMPLAND, Biome.SWAMPLAND_MOUNTAINS)
 
-                /*.setFlowerWeight(2, FlowerType.POPPY, Biome.FLOWER_FOREST)
-                .setFlowerWeight(1, FlowerType.ALLIUM, Biome.FLOWER_FOREST)
-                .setFlowerWeight(1, FlowerType.HOUSTONIA, Biome.FLOWER_FOREST)
-                .setFlowerWeight(1, FlowerType.TULIP_RED, Biome.FLOWER_FOREST)
-                .setFlowerWeight(1, FlowerType.TULIP_ORANGE, Biome.FLOWER_FOREST)
-                .setFlowerWeight(1, FlowerType.TULIP_WHITE, Biome.FLOWER_FOREST)
-                .setFlowerWeight(1, FlowerType.TULIP_PINK, Biome.FLOWER_FOREST)
-                .setFlowerWeight(1, FlowerType.OXEYE_DAISY, Biome.FLOWER_FOREST)*/
-
                 .setDefaultAmount(2)
                 .setBiomeAmount(0, Biome.ICE_PLAINS, Biome.ICE_MOUNTAINS, Biome.ICE_PLAINS_SPIKES, Biome.MESA,
                         Biome.MESA_PLATEAU, Biome.MESA_PLATEAU_MOUNTAINS, Biome.MESA_PLATEAU_FOREST,
@@ -167,12 +162,11 @@ public class OverworldPopulator extends BlockPopulator {
                 .setBiomeAmount(1, Biome.SWAMPLAND, Biome.SWAMPLAND_MOUNTAINS)
                 .setBiomeAmount(4, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_MOUNTAINS,
                         Biome.JUNGLE_EDGE, Biome.JUNGLE_EDGE_MOUNTAINS, Biome.SAVANNA, Biome.SAVANNA_PLATEAU));
-                //.setBiomeAmount(100, Biome.FLOWER_FOREST));
 
         addDecorator(new TallGrassDecorator()
-                .setFernDensity(0.8D, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_MOUNTAINS,
+                .setFernDensity(0.25D, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_MOUNTAINS,
                         Biome.JUNGLE_EDGE, Biome.JUNGLE_EDGE_MOUNTAINS)
-                .setFernDensity(0.25D, Biome.TAIGA, Biome.TAIGA_HILLS, Biome.TAIGA_MOUNTAINS, Biome.COLD_TAIGA,
+                .setFernDensity(0.8D, Biome.TAIGA, Biome.TAIGA_HILLS, Biome.TAIGA_MOUNTAINS, Biome.COLD_TAIGA,
                         Biome.COLD_TAIGA_HILLS, Biome.COLD_TAIGA_MOUNTAINS, Biome.MEGA_TAIGA, Biome.MEGA_TAIGA_HILLS,
                         Biome.MEGA_SPRUCE_TAIGA, Biome.MEGA_SPRUCE_TAIGA_HILLS)
 
