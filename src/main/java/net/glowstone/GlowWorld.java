@@ -712,7 +712,7 @@ public final class GlowWorld implements World {
 
     @Override
     public int getSeaLevel() {
-        return getMaxHeight() / 2;
+        return 64;
     }
 
     @Override

@@ -12,7 +12,7 @@ import org.bukkit.generator.BlockPopulator;
 public abstract class BlockDecorator extends BlockPopulator {
 
     private int defaultAmount;
-    private final Map<Biome, Integer> biomesDecorations = new HashMap<Biome, Integer>();
+    private final Map<Biome, Integer> biomesDecorations = new HashMap<>();
 
     public final BlockDecorator setDefaultAmount(int amount) {
         defaultAmount = amount;
