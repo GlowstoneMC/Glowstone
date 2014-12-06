@@ -1,8 +1,7 @@
 package net.glowstone.generator.populators;
 
 import net.glowstone.generator.decorators.overworld.*;
-import net.glowstone.generator.decorators.overworld.FlowerDecorator.Flower;
-import net.glowstone.generator.objects.DoublePlantType;
+import net.glowstone.generator.objects.*;
 import net.glowstone.generator.objects.trees.*;
 
 import org.bukkit.Chunk;
@@ -46,11 +45,15 @@ public class OverworldPopulator extends BlockPopulator {
                 .setDefaultAmount(1)
                 .setBiomeAmount(0, Biome.SWAMPLAND, Biome.SWAMPLAND_MOUNTAINS));
 
+        addDecorator(new PlainsDecorator()
+                .setDefaultAmount(0)
+                .setBiomeAmount(1, Biome.PLAINS, Biome.SUNFLOWER_PLAINS));
+
         addDecorator(new ForestDecorator()
-                .setBiomeMinAmount(3, Biome.FOREST, Biome.FOREST_HILLS, Biome.BIRCH_FOREST,
+                .setBiomeLoweringAmount(3, Biome.FOREST, Biome.FOREST_HILLS, Biome.BIRCH_FOREST,
                         Biome.BIRCH_FOREST_MOUNTAINS, Biome.BIRCH_FOREST_HILLS, Biome.BIRCH_FOREST_HILLS_MOUNTAINS,
                         Biome.ROOFED_FOREST, Biome.ROOFED_FOREST_MOUNTAINS)
-                .setBiomeMinAmount(1, Biome.FLOWER_FOREST)
+                .setBiomeLoweringAmount(1, Biome.FLOWER_FOREST)
                 .setDefaultAmount(0)
                 .setBiomeAmount(1, Biome.FOREST, Biome.FOREST_HILLS, Biome.BIRCH_FOREST, Biome.BIRCH_FOREST_MOUNTAINS,
                         Biome.BIRCH_FOREST_HILLS, Biome.BIRCH_FOREST_HILLS_MOUNTAINS, Biome.ROOFED_FOREST,
@@ -141,37 +144,30 @@ public class OverworldPopulator extends BlockPopulator {
                 .setBiomeAmount(50, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_MOUNTAINS));
 
         addDecorator(new FlowerDecorator()
-                .setDefaultFlowerWeight(2, Flower.DANDELION)
-                .setDefaultFlowerWeight(1, Flower.POPPY)
+                .setDefaultFlowerWeight(2, FlowerType.DANDELION)
+                .setDefaultFlowerWeight(1, FlowerType.POPPY)
 
-                .setFlowerWeight(27, Flower.DANDELION, Biome.PLAINS)
-                .setFlowerWeight(17, Flower.POPPY, Biome.PLAINS)
-                .setFlowerWeight(17, Flower.HOUSTONIA, Biome.PLAINS)
-                .setFlowerWeight(17, Flower.OXEYE_DAISY, Biome.PLAINS)
-                .setFlowerWeight(5, Flower.TULIP_RED, Biome.PLAINS)
-                .setFlowerWeight(5, Flower.TULIP_ORANGE, Biome.PLAINS)
-                .setFlowerWeight(5, Flower.TULIP_WHITE, Biome.PLAINS)
-                .setFlowerWeight(5, Flower.TULIP_PINK, Biome.PLAINS)
+                .setFlowerWeight(1, FlowerType.BLUE_ORCHID, Biome.SWAMPLAND, Biome.SWAMPLAND_MOUNTAINS)
 
-                .setFlowerWeight(1, Flower.BLUE_ORCHID, Biome.SWAMPLAND, Biome.SWAMPLAND_MOUNTAINS)
-
-                .setFlowerWeight(2, Flower.POPPY, Biome.FLOWER_FOREST)
-                .setFlowerWeight(1, Flower.ALLIUM, Biome.FLOWER_FOREST)
-                .setFlowerWeight(1, Flower.HOUSTONIA, Biome.FLOWER_FOREST)
-                .setFlowerWeight(1, Flower.TULIP_RED, Biome.FLOWER_FOREST)
-                .setFlowerWeight(1, Flower.TULIP_ORANGE, Biome.FLOWER_FOREST)
-                .setFlowerWeight(1, Flower.TULIP_WHITE, Biome.FLOWER_FOREST)
-                .setFlowerWeight(1, Flower.TULIP_PINK, Biome.FLOWER_FOREST)
-                .setFlowerWeight(1, Flower.OXEYE_DAISY, Biome.FLOWER_FOREST)
+                /*.setFlowerWeight(2, FlowerType.POPPY, Biome.FLOWER_FOREST)
+                .setFlowerWeight(1, FlowerType.ALLIUM, Biome.FLOWER_FOREST)
+                .setFlowerWeight(1, FlowerType.HOUSTONIA, Biome.FLOWER_FOREST)
+                .setFlowerWeight(1, FlowerType.TULIP_RED, Biome.FLOWER_FOREST)
+                .setFlowerWeight(1, FlowerType.TULIP_ORANGE, Biome.FLOWER_FOREST)
+                .setFlowerWeight(1, FlowerType.TULIP_WHITE, Biome.FLOWER_FOREST)
+                .setFlowerWeight(1, FlowerType.TULIP_PINK, Biome.FLOWER_FOREST)
+                .setFlowerWeight(1, FlowerType.OXEYE_DAISY, Biome.FLOWER_FOREST)*/
 
                 .setDefaultAmount(2)
                 .setBiomeAmount(0, Biome.ICE_PLAINS, Biome.ICE_MOUNTAINS, Biome.ICE_PLAINS_SPIKES, Biome.MESA,
                         Biome.MESA_PLATEAU, Biome.MESA_PLATEAU_MOUNTAINS, Biome.MESA_PLATEAU_FOREST,
-                        Biome.MESA_PLATEAU_FOREST_MOUNTAINS, Biome.MESA_BRYCE, Biome.MUSHROOM_ISLAND, Biome.MUSHROOM_SHORE)
+                        Biome.MESA_PLATEAU_FOREST_MOUNTAINS, Biome.MESA_BRYCE, Biome.MUSHROOM_ISLAND, Biome.MUSHROOM_SHORE,
+                        Biome.PLAINS, Biome.SUNFLOWER_PLAINS)
+                .setBiomeAmount(0, Biome.FLOWER_FOREST)
                 .setBiomeAmount(1, Biome.SWAMPLAND, Biome.SWAMPLAND_MOUNTAINS)
-                .setBiomeAmount(4, Biome.PLAINS, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_MOUNTAINS,
-                        Biome.JUNGLE_EDGE, Biome.JUNGLE_EDGE_MOUNTAINS, Biome.SAVANNA, Biome.SAVANNA_PLATEAU)
-                .setBiomeAmount(100, Biome.FLOWER_FOREST));
+                .setBiomeAmount(4, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_MOUNTAINS,
+                        Biome.JUNGLE_EDGE, Biome.JUNGLE_EDGE_MOUNTAINS, Biome.SAVANNA, Biome.SAVANNA_PLATEAU));
+                //.setBiomeAmount(100, Biome.FLOWER_FOREST));
 
         addDecorator(new TallGrassDecorator()
                 .setFernDensity(0.8D, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_MOUNTAINS,
@@ -182,13 +178,12 @@ public class OverworldPopulator extends BlockPopulator {
 
                 .setDefaultAmount(1)
                 .setBiomeAmount(2, Biome.OCEAN) // fix for lack of biomes
-                .setBiomeAmount(0, Biome.MUSHROOM_ISLAND, Biome.MUSHROOM_SHORE)
+                .setBiomeAmount(0, Biome.MUSHROOM_ISLAND, Biome.MUSHROOM_SHORE, Biome.PLAINS, Biome.SUNFLOWER_PLAINS)
                 .setBiomeAmount(2, Biome.FOREST, Biome.FOREST_HILLS, Biome.BIRCH_FOREST, Biome.BIRCH_FOREST_MOUNTAINS, 
                         Biome.BIRCH_FOREST_HILLS, Biome.BIRCH_FOREST_HILLS_MOUNTAINS, Biome.ROOFED_FOREST,
                         Biome.ROOFED_FOREST_MOUNTAINS)
                 .setBiomeAmount(5, Biome.SWAMPLAND, Biome.SWAMPLAND_MOUNTAINS, Biome.SAVANNA_MOUNTAINS, Biome.SAVANNA_PLATEAU_MOUNTAINS)
                 .setBiomeAmount(7, Biome.MEGA_TAIGA, Biome.MEGA_TAIGA_HILLS, Biome.MEGA_SPRUCE_TAIGA, Biome.MEGA_SPRUCE_TAIGA_HILLS)
-                .setBiomeAmount(10, Biome.PLAINS)
                 .setBiomeAmount(20, Biome.SAVANNA, Biome.SAVANNA_PLATEAU)
                 .setBiomeAmount(25, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_EDGE));
 

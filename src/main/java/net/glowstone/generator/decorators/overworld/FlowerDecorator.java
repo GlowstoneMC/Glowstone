@@ -7,24 +7,24 @@ import java.util.Map;
 import java.util.Random;
 
 import net.glowstone.generator.decorators.BlockDecorator;
+import net.glowstone.generator.objects.Flower;
+import net.glowstone.generator.objects.FlowerType;
 
 import org.bukkit.Chunk;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
-import org.bukkit.block.Block;
 
 public class FlowerDecorator extends BlockDecorator {
 
     private final List<FlowerDecoration> defaultFlowers = new ArrayList<>();
     private final Map<Biome, List<FlowerDecoration>> biomesFlowers = new HashMap<>();
 
-    public final FlowerDecorator setDefaultFlowerWeight(int weight, Flower flower) {
+    public final FlowerDecorator setDefaultFlowerWeight(int weight, FlowerType flower) {
         defaultFlowers.add(new FlowerDecoration(flower, weight));
         return this;
     }
 
-    public final FlowerDecorator setFlowerWeight(int weight, Flower flower, Biome... biomes) {
+    public final FlowerDecorator setFlowerWeight(int weight, FlowerType flower, Biome... biomes) {
         for (Biome biome : biomes) {
             if (biomesFlowers.containsKey(biome)) {
                 biomesFlowers.get(biome).add(new FlowerDecoration(flower, weight));
@@ -44,7 +44,7 @@ public class FlowerDecorator extends BlockDecorator {
         int sourceY = random.nextInt(world.getHighestBlockYAt(sourceX, sourceZ) + 32);
 
         // the flower can change on each decoration pass
-        Flower flower = null;
+        FlowerType flower = null;
         final Biome biome = world.getBiome(sourceX, sourceZ);
         if (biomesFlowers.containsKey(biome)) {
             flower = getRandomFlower(random, biomesFlowers.get(biome));
@@ -54,22 +54,10 @@ public class FlowerDecorator extends BlockDecorator {
         if (flower == null) {
             return;
         }
-
-        for (int i = 0; i < 64; i++) {
-            int x = sourceX + random.nextInt(8) - random.nextInt(8);
-            int z = sourceZ + random.nextInt(8) - random.nextInt(8);
-            int y = sourceY + random.nextInt(4) - random.nextInt(4);
-
-            if (y < 255 && world.getBlockAt(x, y, z).getType() == Material.AIR &&
-                    world.getBlockAt(x, y - 1, z).getType() == Material.GRASS) {
-                final Block block = world.getBlockAt(x, y, z);
-                block.setType(flower.getType());
-                block.setData((byte) flower.getData());
-            }
-        }
+        new Flower(flower).generate(world, random, sourceX, sourceY, sourceZ);
     }
 
-    private Flower getRandomFlower(Random random, List<FlowerDecoration> decorations) {
+    private FlowerType getRandomFlower(Random random, List<FlowerDecoration> decorations) {
         int totalWeight = 0;
         for (FlowerDecoration decoration : decorations) {
             totalWeight += decoration.getWeigth();
@@ -84,47 +72,17 @@ public class FlowerDecorator extends BlockDecorator {
         return null;
     }
 
-    public static enum Flower {
-
-        DANDELION(Material.YELLOW_FLOWER, 0),
-        POPPY(Material.RED_ROSE, 0),
-        BLUE_ORCHID(Material.RED_ROSE, 1),
-        ALLIUM(Material.RED_ROSE, 2),
-        HOUSTONIA(Material.RED_ROSE, 3),
-        TULIP_RED(Material.RED_ROSE, 4),
-        TULIP_ORANGE(Material.RED_ROSE, 5),
-        TULIP_WHITE(Material.RED_ROSE, 6),
-        TULIP_PINK(Material.RED_ROSE, 7),
-        OXEYE_DAISY(Material.RED_ROSE, 8);
-
-        private final Material type;
-        private final int data;
-
-        private Flower(Material type, int data) {
-            this.type = type;
-            this.data = data;
-        }
-
-        public Material getType() {
-            return type;
-        }
-
-        public int getData() {
-            return data;
-        }
-    }
-
     static class FlowerDecoration {
 
-        private final Flower flower;
+        private final FlowerType flower;
         private final int weight;
 
-        public FlowerDecoration(Flower flower, int weight) {
+        public FlowerDecoration(FlowerType flower, int weight) {
             this.flower = flower;
             this.weight = weight;
         }
 
-        public Flower getFlower() {
+        public FlowerType getFlower() {
             return flower;
         }
 
