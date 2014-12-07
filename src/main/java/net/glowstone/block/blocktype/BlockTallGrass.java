@@ -5,11 +5,13 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
 
+import org.bukkit.DoublePlantSpecies;
 import org.bukkit.GrassSpecies;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.DoublePlant;
 import org.bukkit.material.LongGrass;
 import org.bukkit.material.MaterialData;
 
@@ -63,11 +65,13 @@ public class BlockTallGrass extends BlockNeedsAttached implements IBlockGrowable
             if (species == GrassSpecies.NORMAL || species == GrassSpecies.FERN_LIKE) {
                 final GlowBlockState headBlockState = block.getRelative(BlockFace.UP).getState();
                 if (headBlockState.getType() == Material.AIR) {
+                    final DoublePlantSpecies doublePlantSpecies = species == GrassSpecies.FERN_LIKE ?
+                            DoublePlantSpecies.LARGE_FERN : DoublePlantSpecies.DOUBLE_TALLGRASS; 
                     final GlowBlockState blockState = block.getState();
                     blockState.setType(Material.DOUBLE_PLANT);
-                    blockState.setRawData((byte) (species.ordinal() + 1));
+                    blockState.setData(new DoublePlant(doublePlantSpecies));
                     headBlockState.setType(Material.DOUBLE_PLANT);
-                    headBlockState.setRawData((byte) 8);
+                    headBlockState.setData(new DoublePlant(DoublePlantSpecies.PLANT_APEX));
                     BlockGrowEvent growEvent = new BlockGrowEvent(block, blockState);
                     EventFactory.callEvent(growEvent);
                     if (!growEvent.isCancelled()) {
