@@ -2,20 +2,37 @@ package net.glowstone.generator.objects;
 
 import java.util.Random;
 
+import org.bukkit.DoublePlantSpecies;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
+import org.bukkit.material.DoublePlant;
+import org.bukkit.material.MaterialData;
 
 public class StoneBoulder {
 
+    private static final Material[] GROUND_TYPES = {Material.GRASS, Material.DIRT, Material.STONE};
+    private static final Material[] PLANT_TYPES = {Material.LONG_GRASS, Material.YELLOW_FLOWER, Material.RED_ROSE,
+            Material.DOUBLE_PLANT, Material.BROWN_MUSHROOM, Material.RED_MUSHROOM};
+
     public void generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
-        while ((world.getBlockAt(sourceX, sourceY - 1, sourceZ).isEmpty() ||
-                (world.getBlockAt(sourceX, sourceY - 1, sourceZ).getType() != Material.GRASS &&
-                world.getBlockAt(sourceX, sourceY - 1, sourceZ).getType() != Material.DIRT &&
-                world.getBlockAt(sourceX, sourceY - 1, sourceZ).getType() != Material.STONE)) && sourceY > 3) {
+        boolean groundReached = false;
+        while (!groundReached && sourceY > 3) {
+            final Block block = world.getBlockAt(sourceX, sourceY - 1, sourceZ);
+            if (!block.isEmpty()) {
+                for (Material mat : GROUND_TYPES) {
+                    if (mat == block.getType()) {
+                        groundReached = true;
+                        sourceY++;
+                        break;
+                    }
+                }
+            }
             sourceY--;
         }
-        if (sourceY > 3 && world.getBlockAt(sourceX, sourceY + 1, sourceZ).isEmpty()) {
+        if (groundReached && world.getBlockAt(sourceX, sourceY, sourceZ).isEmpty()) {
             for (int i = 0; i < 3; i++) {
                 int radiusX = random.nextInt(2);
                 int radiusZ = random.nextInt(2);
@@ -25,9 +42,21 @@ public class StoneBoulder {
                     for (int z = -radiusZ; z <= radiusZ; z++) {
                         for (int y = -radiusY; y <= radiusY; y++) {
                             if (x * x + z * z + y * y <= f * f) {
-                                final Block block = world.getBlockAt(sourceX + x, sourceY + y, sourceZ + z);
-                                block.setType(Material.MOSSY_COBBLESTONE);
-                                block.setData((byte) 0);
+                                final BlockState state = world.getBlockAt(sourceX + x, sourceY + y, sourceZ + z).getState();
+                                final Block blockAbove = state.getBlock().getRelative(BlockFace.UP);
+                                for (Material mat : PLANT_TYPES) {
+                                    if (blockAbove.getType() == mat) {
+                                        if (mat == Material.DOUBLE_PLANT && blockAbove.getState().getData() instanceof DoublePlant &&
+                                                ((DoublePlant) blockAbove.getState().getData()).getSpecies() == DoublePlantSpecies.PLANT_APEX) {
+                                            blockAbove.getRelative(BlockFace.UP).setType(Material.AIR);
+                                        }
+                                        blockAbove.setType(Material.AIR);
+                                        break;
+                                    }
+                                }
+                                state.setType(Material.MOSSY_COBBLESTONE);
+                                state.setData(new MaterialData(Material.MOSSY_COBBLESTONE));
+                                state.update(true);
                             }
                         }
                     }

@@ -5,6 +5,7 @@ import java.util.Random;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.material.MonsterEggs;
 
 import net.glowstone.generator.decorators.BlockDecorator;
 import net.glowstone.generator.objects.OreType;
@@ -15,7 +16,7 @@ public class InfestedStoneDecorator extends BlockDecorator {
     private final OreType oreType;
 
     public InfestedStoneDecorator() {
-        oreType = new OreType(Material.MONSTER_EGGS, 0, 0, 64, 8);
+        oreType = new OreType(Material.MONSTER_EGGS, new MonsterEggs(), 0, 64, 8);
     }
 
     @Override
@@ -24,7 +25,6 @@ public class InfestedStoneDecorator extends BlockDecorator {
         final int cz = (chunk.getZ() << 4);
 
         for (int n = 0; n < 7; n++) {
-
             int sourceX = cx + random.nextInt(16);
             int sourceZ = cz + random.nextInt(16);
             int sourceY = oreType.getMinY() == oreType.getMaxY() ?

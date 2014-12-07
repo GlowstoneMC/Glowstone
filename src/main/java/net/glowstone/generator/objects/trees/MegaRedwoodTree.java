@@ -46,4 +46,9 @@ public class MegaRedwoodTree extends MegaJungleTree {
 
         return true;
     }
+
+    @Override
+    protected void generateDirtBelowTrunk() {
+        // mega redwood tree does not replaces blocks below (surely to preserves podzol)
+    }
 }

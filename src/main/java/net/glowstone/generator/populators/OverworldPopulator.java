@@ -5,6 +5,7 @@ import net.glowstone.generator.objects.*;
 import net.glowstone.generator.objects.trees.*;
 
 import org.bukkit.Chunk;
+import org.bukkit.DoublePlantSpecies;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
@@ -24,24 +25,26 @@ public class OverworldPopulator extends BlockPopulator {
 
         addDecorator(new LakeDecorator(Material.STATIONARY_WATER)
                 .setDefaultAmount(1)
-                .setBiomeAmount(0, Biome.DESERT, Biome.DESERT_HILLS, Biome.DESERT_MOUNTAINS));
+                .setBiomeAmount(0, Biome.DESERT, Biome.DESERT_HILLS));
 
         addDecorator(new LakeDecorator(Material.STATIONARY_LAVA)
                 .setDefaultAmount(1)
-                .setBiomeAmount(0, Biome.DESERT, Biome.DESERT_HILLS, Biome.DESERT_MOUNTAINS));
+                .setBiomeAmount(0, Biome.DESERT, Biome.DESERT_HILLS));
 
         addDecorator(new UnderwaterDecorator(Material.SAND)
                 .setRadiuses(7, 2)
+                .setOverridableBlocks(Material.DIRT, Material.GRASS)
                 .setDefaultAmount(3)
                 .setBiomeAmount(0, Biome.SWAMPLAND, Biome.SWAMPLAND_MOUNTAINS));
 
         addDecorator(new UnderwaterDecorator(Material.CLAY)
                 .setRadiuses(4, 1)
-                .setPreservesShoreBlocks()
+                .setOverridableBlocks(Material.DIRT)
                 .setDefaultAmount(1));
 
         addDecorator(new UnderwaterDecorator(Material.GRAVEL)
                 .setRadiuses(6, 2)
+                .setOverridableBlocks(Material.DIRT, Material.GRASS)
                 .setDefaultAmount(1)
                 .setBiomeAmount(0, Biome.SWAMPLAND, Biome.SWAMPLAND_MOUNTAINS));
 
@@ -65,12 +68,12 @@ public class OverworldPopulator extends BlockPopulator {
                 .setBiomeAmount(1, Biome.MEGA_TAIGA, Biome.MEGA_TAIGA_HILLS, Biome.MEGA_SPRUCE_TAIGA, Biome.MEGA_SPRUCE_TAIGA_HILLS));
 
         addDecorator(new DoublePlantDecorator()
-                .setDoublePlantWeight(1, DoublePlantType.LARGE_FERN, Biome.TAIGA, Biome.TAIGA_HILLS, Biome.TAIGA_MOUNTAINS,
+                .setDoublePlantWeight(1, DoublePlantSpecies.LARGE_FERN, Biome.TAIGA, Biome.TAIGA_HILLS, Biome.TAIGA_MOUNTAINS,
                         Biome.COLD_TAIGA, Biome.COLD_TAIGA_HILLS, Biome.COLD_TAIGA_MOUNTAINS, Biome.MEGA_TAIGA,
                         Biome.MEGA_TAIGA_HILLS, Biome.MEGA_SPRUCE_TAIGA, Biome.MEGA_SPRUCE_TAIGA_HILLS)
-                .setDoublePlantWeight(1, DoublePlantType.DOUBLE_TALLGRASS, Biome.SAVANNA, Biome.SAVANNA_MOUNTAINS,
+                .setDoublePlantWeight(1, DoublePlantSpecies.DOUBLE_TALLGRASS, Biome.SAVANNA, Biome.SAVANNA_MOUNTAINS,
                         Biome.SAVANNA_PLATEAU, Biome.SAVANNA_PLATEAU_MOUNTAINS)
-                .setDoublePlantWeight(1, DoublePlantType.SUNFLOWER, Biome.SUNFLOWER_PLAINS)
+                .setDoublePlantWeight(1, DoublePlantSpecies.SUNFLOWER, Biome.SUNFLOWER_PLAINS)
                 .setDefaultAmount(0)
                 .setBiomeAmount(7, Biome.TAIGA, Biome.TAIGA_HILLS, Biome.TAIGA_MOUNTAINS,
                         Biome.COLD_TAIGA, Biome.COLD_TAIGA_HILLS, Biome.COLD_TAIGA_MOUNTAINS, Biome.MEGA_TAIGA,

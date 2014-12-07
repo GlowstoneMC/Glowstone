@@ -14,11 +14,10 @@ public class UnderwaterDecorator extends BlockDecorator {
     private final Material type;
     private int hRadius;
     private int vRadius;
-    private boolean replaceShoreBlocks;
+    private Material[] overridables;
 
     public UnderwaterDecorator(Material type) {
         this.type = type;
-        replaceShoreBlocks = true;
     }
 
     public final UnderwaterDecorator setRadiuses(int hRadius, int vRadius) {
@@ -27,8 +26,8 @@ public class UnderwaterDecorator extends BlockDecorator {
         return this;
     }
 
-    public final UnderwaterDecorator setPreservesShoreBlocks() {
-        replaceShoreBlocks = false;
+    public final UnderwaterDecorator setOverridableBlocks(Material... overridables) {
+        this.overridables = overridables;
         return this;
     }
 
@@ -43,7 +42,7 @@ public class UnderwaterDecorator extends BlockDecorator {
         }
         final Material material = world.getBlockAt(sourceX, sourceY, sourceZ).getType();
         if (material == Material.STATIONARY_WATER || material == Material.WATER) {
-            new BlockPatch(type, hRadius, vRadius, replaceShoreBlocks).generate(world, random, sourceX, sourceY, sourceZ);
+            new BlockPatch(type, hRadius, vRadius, overridables).generate(world, random, sourceX, sourceY, sourceZ);
         }
     }
 }

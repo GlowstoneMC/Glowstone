@@ -6,10 +6,12 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
+import org.bukkit.material.MaterialData;
 
 public class Cactus {
 
-    private BlockFace[] faces = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
+    private static final BlockFace[] FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
 
     public void generate(World world, Random random, int x, int y, int z) {
         if (world.getBlockAt(x, y, z).isEmpty()) {
@@ -19,13 +21,15 @@ public class Cactus {
                 if ((block.getRelative(BlockFace.DOWN).getType() == Material.SAND ||
                         block.getRelative(BlockFace.DOWN).getType() == Material.CACTUS) &&
                         block.getRelative(BlockFace.UP).isEmpty()) {
-                    for (BlockFace face : faces) {
+                    for (BlockFace face : FACES) {
                         if (block.getRelative(face).getType().isSolid()) {
                             return;
                         }
                     }
-                    block.setType(Material.CACTUS);
-                    block.setData((byte) 0);
+                    final BlockState state = block.getState();
+                    state.setType(Material.CACTUS);
+                    state.setData(new MaterialData(Material.CACTUS));
+                    state.update(true);
                 }
             }
         }

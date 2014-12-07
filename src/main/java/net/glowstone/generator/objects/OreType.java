@@ -1,15 +1,20 @@
 package net.glowstone.generator.objects;
 
 import org.bukkit.Material;
+import org.bukkit.material.MaterialData;
 
 public class OreType {
     private final Material type;
-    private final int data;
+    private final MaterialData data;
     private final int minY;
     private final int maxY;
     private final int amount;
 
-    public OreType(Material type, int data, int minY, int maxY, int amount) {
+    public OreType(Material type, int minY, int maxY, int amount) {
+        this(type, new MaterialData(type), minY, maxY, amount);
+    }
+
+    public OreType(Material type, MaterialData data, int minY, int maxY, int amount) {
         this.type = type;
         this.data = data;
         this.minY = minY;
@@ -21,7 +26,7 @@ public class OreType {
         return type;
     }
 
-    public int getData() {
+    public MaterialData getData() {
         return data;
     }
 

@@ -23,13 +23,15 @@ public class SnowDecorator extends BlockDecorator {
                 switch (block.getType()) {
                     case WATER:
                     case STATIONARY_WATER:
-                        if (block.getData() == 0) {
-                            block.setType(Material.ICE);
-                        }
+                        block.setType(Material.ICE);
                         break;
+                    case SNOW:
+                    case ICE:
                     case YELLOW_FLOWER:
                     case RED_ROSE:
                     case LONG_GRASS:
+                    case DOUBLE_PLANT:
+                    case SUGAR_CANE:
                     case LAVA:
                     case STATIONARY_LAVA:
                         break;

@@ -1,15 +1,25 @@
 package net.glowstone.generator.objects;
 
+import java.util.Arrays;
 import java.util.Random;
 
+import org.bukkit.DoublePlantSpecies;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.material.DoublePlant;
 
 public class Lake {
     private static final double MAX_DIAMETER = 16.0D;
     private static final double MAX_HEIGHT = 8.0D;
     private static final int MAX_BLOCKS = (int) (MAX_DIAMETER * MAX_DIAMETER * MAX_HEIGHT);
+    private static final Material[] PLANT_TYPES = {Material.LONG_GRASS, Material.YELLOW_FLOWER, Material.RED_ROSE,
+            Material.DOUBLE_PLANT, Material.BROWN_MUSHROOM, Material.RED_MUSHROOM};
+    private static final Biome[] FROZEN_BIOMES = {Biome.COLD_TAIGA, Biome.COLD_TAIGA_HILLS, Biome.COLD_TAIGA_MOUNTAINS, Biome.ICE_PLAINS,
+            Biome.ICE_MOUNTAINS, Biome.ICE_PLAINS_SPIKES, Biome.FROZEN_OCEAN, Biome.FROZEN_RIVER, Biome.COLD_BEACH};
+    private static final Biome[] MYCEL_BIOMES = {Biome.MUSHROOM_ISLAND, Biome.MUSHROOM_SHORE};
     private final Material type;
 
     public Lake(Material type) {
@@ -17,7 +27,7 @@ public class Lake {
     }
 
     public void generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
-        sourceY -= MAX_HEIGHT / 2;
+        sourceY -= (int) MAX_HEIGHT / 2;
 
         final byte[] lakeMap = new byte[MAX_BLOCKS];
         for (int n = 0; n < random.nextInt(4) + 4; n++) {
@@ -27,9 +37,9 @@ public class Lake {
             double dX = random.nextDouble() * (MAX_DIAMETER - sizeX - 2) + 1 + sizeX / 2.0D;
             double dY = random.nextDouble() * (MAX_HEIGHT - sizeY - 4) + 2 + sizeY / 2.0D;
             double dZ = random.nextDouble() * (MAX_DIAMETER - sizeZ - 2) + 1 + sizeZ / 2.0D;
-            for (int x = 1; x < MAX_DIAMETER - 1; x++) {
-                for (int z = 1; z < MAX_DIAMETER - 1; z++) {
-                    for (int y = 1; y < MAX_HEIGHT - 1; y++) {
+            for (int x = 1; x < (int) MAX_DIAMETER - 1; x++) {
+                for (int z = 1; z < (int) MAX_DIAMETER - 1; z++) {
+                    for (int y = 1; y < (int) MAX_HEIGHT - 1; y++) {
                         double nX = (x - dX) / (sizeX / 2.0D);
                         nX *= nX;
                         double nY = (y - dY) / (sizeY / 2.0D);
@@ -48,15 +58,63 @@ public class Lake {
             return;
         }
 
-        for (int x = 0; x < MAX_DIAMETER; x++) {
-            for (int z = 0; z < MAX_DIAMETER; z++) {
-                for (int y = 0; y < MAX_HEIGHT; y++) {
+        boolean frozenSurface = false;
+        final Biome biome = world.getBiome(sourceX + 8 + (int) MAX_DIAMETER / 2, sourceZ + 8 + (int) MAX_DIAMETER / 2);
+        boolean mycelBiome = Arrays.asList(MYCEL_BIOMES).contains(biome) ? true : false;
+        if (type == Material.STATIONARY_WATER) {
+            if (Arrays.asList(FROZEN_BIOMES).contains(biome)) {
+                frozenSurface = true;
+            }
+        }
+
+        for (int x = 0; x < (int) MAX_DIAMETER; x++) {
+            for (int z = 0; z < (int) MAX_DIAMETER; z++) {
+                for (int y = 0; y < (int) MAX_HEIGHT; y++) {
                     if (isLakeBlock(lakeMap, x, y, z)) {
                         Material type = this.type;
-                        if (y >= MAX_HEIGHT / 2) {
-                            type = Material.AIR;
+                        final Block block = world.getBlockAt(sourceX + x, sourceY + y, sourceZ + z);
+                        final Block blockAbove = block.getRelative(BlockFace.UP);
+                        if ((block.getType() == Material.DIRT &&
+                                (blockAbove.getType() == Material.LOG || blockAbove.getType() == Material.LOG_2)) ||
+                                (block.getType() == Material.LOG || block.getType() == Material.LOG_2)) {
+                            continue;
                         }
-                        world.getBlockAt(sourceX + x, sourceY + y, sourceZ + z).setType(type);
+                        if (y >= (int) MAX_HEIGHT / 2) {
+                            type = Material.AIR;
+                            for (Material mat : PLANT_TYPES) {
+                                if (blockAbove.getType() == mat) {
+                                    if (mat == Material.DOUBLE_PLANT) {
+                                        final Block blockAboveBlock = blockAbove.getRelative(BlockFace.UP);
+                                        if (blockAboveBlock.getState().getData() instanceof DoublePlant &&
+                                                ((DoublePlant) blockAboveBlock.getState().getData()).getSpecies() == DoublePlantSpecies.PLANT_APEX) {   
+                                            blockAboveBlock.setType(Material.AIR);
+                                        }
+                                    }
+                                    blockAbove.setType(Material.AIR);
+                                    break;
+                                }
+                            }
+                            if (frozenSurface && (block.getType() == Material.ICE || block.getType() == Material.PACKED_ICE)) {
+                                type = block.getType();
+                            }
+                        } else if (y == MAX_HEIGHT / 2 - 1 && frozenSurface) {
+                            type = Material.ICE;
+                        }
+                        block.setType(type);
+                    }
+                }
+            }
+        }
+
+        for (int x = 0; x < (int) MAX_DIAMETER; x++) {
+            for (int z = 0; z < (int) MAX_DIAMETER; z++) {
+                for (int y = (int) MAX_HEIGHT / 2; y < (int) MAX_HEIGHT; y++) {
+                    if (isLakeBlock(lakeMap, x, y, z)) {
+                        final Block block = world.getBlockAt(sourceX + x, sourceY + y - 1, sourceZ + z);
+                        if (block.getType() == Material.DIRT && !block.getRelative(BlockFace.UP).getType().isOccluding() &&
+                                block.getRelative(BlockFace.UP).getLightLevel() > 0) {
+                            block.setType(mycelBiome ? Material.MYCEL : Material.GRASS);
+                        }
                     }
                 }
             }

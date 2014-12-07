@@ -5,9 +5,13 @@ import java.util.Random;
 import net.glowstone.generator.decorators.BlockDecorator;
 
 import org.bukkit.Chunk;
+import org.bukkit.DirtType;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.material.Dirt;
+import org.bukkit.material.MaterialData;
 
 public class MushroomDecorator extends BlockDecorator {
 
@@ -49,11 +53,14 @@ public class MushroomDecorator extends BlockDecorator {
                 final Block block = world.getBlockAt(x, y, z);
                 final Block blockBelow = world.getBlockAt(x, y - 1, z);
                 if (y < 255 && block.getType() == Material.AIR &&
-                        (((blockBelow.getType() == Material.GRASS || (blockBelow.getType() == Material.DIRT && blockBelow.getData() != 2)) &&
-                        block.getLightLevel() < 13) ||
-                        blockBelow.getType() == Material.MYCEL || (blockBelow.getType() == Material.DIRT && blockBelow.getData() == 2))) {
-                    block.setType(type);
-                    block.setData((byte) 0);
+                        (((blockBelow.getType() == Material.GRASS || (blockBelow.getState().getData() instanceof Dirt &&
+                        ((Dirt) blockBelow.getState().getData()).getType() != DirtType.PODZOL)) && block.getLightLevel() < 13) ||
+                        blockBelow.getType() == Material.MYCEL || (blockBelow.getState().getData() instanceof Dirt &&
+                        ((Dirt) blockBelow.getState().getData()).getType() == DirtType.PODZOL))) {
+                    final BlockState state = block.getState();
+                    state.setType(type);
+                    state.setData(new MaterialData(type));
+                    state.update(true);
                 }
             }
         }

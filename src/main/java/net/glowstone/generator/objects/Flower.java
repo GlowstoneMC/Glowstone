@@ -9,8 +9,8 @@ import org.bukkit.block.BlockFace;
 
 public class Flower {
 
-    final Material type;
-    final int data;
+    private final Material type;
+    private final int data;
 
     public Flower(FlowerType plantType) {
         type = plantType.getType();
