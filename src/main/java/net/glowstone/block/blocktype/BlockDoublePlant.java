@@ -4,9 +4,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.bukkit.DoublePlantSpecies;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.DoublePlant;
+import org.bukkit.material.MaterialData;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -28,41 +31,62 @@ public class BlockDoublePlant extends BlockAttachable implements IBlockGrowable 
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding) {
         final GlowBlockState headBlockState = block.getRelative(BlockFace.UP).getState();
         headBlockState.setType(Material.DOUBLE_PLANT);
-        headBlockState.setRawData((byte) 8);
+        headBlockState.setData(new DoublePlant(DoublePlantSpecies.PLANT_APEX));
         headBlockState.update(true);
     }
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        int data = block.getData();
-        if (data == 8) { // above part
-            data = block.getData();
+        MaterialData data = block.getState().getData();
+        if (data instanceof DoublePlant) {
+            if (((DoublePlant) data).getSpecies() == DoublePlantSpecies.PLANT_APEX) {
+                data = block.getRelative(BlockFace.DOWN).getState().getData();
+                if (data instanceof DoublePlant) {
+                    return Collections.unmodifiableList(Arrays.asList(data.toItemStack(1)));
+                }
+            }
+            return Collections.unmodifiableList(Arrays.asList(data.toItemStack(1)));
+        } else {
+            warnMaterialData(DoublePlant.class, data);
         }
-        return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.DOUBLE_PLANT, 1, (short) data)));
+        return Collections.unmodifiableList(Arrays.asList(new ItemStack[0]));
     }
 
     @Override
     public void blockDestroy(GlowPlayer player, GlowBlock block, BlockFace face) {
-        int data = block.getData();
-        if (data == 8) { // above part
-            block = block.getRelative(BlockFace.DOWN);
-            data = block.getData();
+        final MaterialData data = block.getState().getData();
+        if (data instanceof DoublePlant) {
+            if (((DoublePlant) data).getSpecies() == DoublePlantSpecies.PLANT_APEX) {
+                block = block.getRelative(BlockFace.DOWN);
+                if (!(block.getState().getData() instanceof DoublePlant)) {
+                    return;
+                }
+            } else {
+                block = block.getRelative(BlockFace.UP);
+            }
+            block.setType(Material.AIR);
+            block.setData((byte) 0);
         } else {
-            block = block.getRelative(BlockFace.UP);
+            warnMaterialData(DoublePlant.class, data);
         }
-        block.setType(Material.AIR);
-        block.setData((byte) 0);
     }
 
     @Override
     public boolean isFertilizable(GlowBlock block) {
-        int data = block.getData();
-        if (data == 8) { // above part
-            data = block.getRelative(BlockFace.DOWN).getState().getRawData();
-        }
-        if (data != 2 && // double tall grass
-            data != 3) { // large fern
-            return true;
+        MaterialData data = block.getState().getData();
+        if (data instanceof DoublePlant) {
+            if (((DoublePlant) data).getSpecies() == DoublePlantSpecies.PLANT_APEX) {
+                data = block.getRelative(BlockFace.DOWN).getState().getData();
+                if (!(data instanceof DoublePlant)) {
+                    return false;
+                }
+            }
+            final DoublePlantSpecies species = ((DoublePlant) data).getSpecies(); 
+            if (species != DoublePlantSpecies.DOUBLE_TALLGRASS && species != DoublePlantSpecies.LARGE_FERN) {
+                return true;
+            }
+        } else {
+            warnMaterialData(DoublePlant.class, data);
         }
         return false;
     }
@@ -74,16 +98,27 @@ public class BlockDoublePlant extends BlockAttachable implements IBlockGrowable 
 
     @Override
     public void grow(GlowPlayer player, GlowBlock block) {
-        int data = block.getData();
-        if (data == 8) { // above part
-            data = block.getRelative(BlockFace.DOWN).getState().getRawData();
-        }
-        if (data == 0 ||     // sunflower
-                data == 1 || // lilac
-                data == 4 || // rose
-                data == 5) { // peony
-            block.getWorld().dropItemNaturally(block.getLocation(),
-                    new ItemStack(Material.DOUBLE_PLANT, 1, (short) data));
+        MaterialData data = block.getState().getData();
+        if (data instanceof DoublePlant) {
+            if (((DoublePlant) data).getSpecies() == DoublePlantSpecies.PLANT_APEX) {
+                data = block.getRelative(BlockFace.DOWN).getState().getData();
+                if (!(data instanceof DoublePlant)) {
+                    return;
+                }
+            }
+            final DoublePlantSpecies species = ((DoublePlant) data).getSpecies();
+            switch (species) {
+                case SUNFLOWER:
+                case LILAC:
+                case ROSE_BUSH:
+                case PEONY:
+                    block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(data.toItemStack(1)));
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            warnMaterialData(DoublePlant.class, data);
         }
     }
 }
