@@ -2,23 +2,30 @@ package net.glowstone.generator.objects;
 
 import java.util.Random;
 
+import org.bukkit.DoublePlantSpecies;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
+import org.bukkit.material.DoublePlant;
+import org.bukkit.material.MaterialData;
 
 public class BlockPatch {
 
     private static final int MIN_RADIUS = 2;
+    private static final Material[] PLANT_TYPES = {Material.LONG_GRASS, Material.YELLOW_FLOWER, Material.RED_ROSE,
+            Material.DOUBLE_PLANT, Material.BROWN_MUSHROOM, Material.RED_MUSHROOM};
     private final Material type;
     private final int hRadius;
     private final int vRadius;
-    private final boolean replaceShoreBlocks;
+    private final Material[] overridables;
 
-    public BlockPatch(Material type, int hRadius, int vRadius, boolean replaceShoreBlocks) {
+    public BlockPatch(Material type, int hRadius, int vRadius, Material... overridables) {
         this.type = type;
         this.hRadius = hRadius;
         this.vRadius = vRadius;
-        this.replaceShoreBlocks = replaceShoreBlocks;
+        this.overridables = overridables;
     }
 
     public void generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
@@ -28,9 +35,25 @@ public class BlockPatch {
                 if ((x - sourceX) * (x - sourceX) + (z - sourceZ) * (z - sourceZ) <= n * n) {
                     for (int y = sourceY - vRadius; y <= sourceY + vRadius; y++) {
                         final Block block = world.getBlockAt(x, y, z);
-                        if (block.getType() == Material.DIRT || (replaceShoreBlocks && block.getType() == Material.GRASS)) {
-                            block.setType(type);
-                            block.setData((byte) 0);
+                        for (Material overridable : overridables) {
+                            if (block.getType() == overridable) {
+                                final Block blockAbove = block.getRelative(BlockFace.UP);
+                                for (Material mat : PLANT_TYPES) {
+                                    if (blockAbove.getType() == mat) {
+                                        if (mat == Material.DOUBLE_PLANT && blockAbove.getState().getData() instanceof DoublePlant &&
+                                                ((DoublePlant) blockAbove.getState().getData()).getSpecies() == DoublePlantSpecies.PLANT_APEX) {
+                                            blockAbove.getRelative(BlockFace.UP).setType(Material.AIR);
+                                        }
+                                        blockAbove.setType(Material.AIR);
+                                        break;
+                                    }
+                                }
+                                final BlockState state = block.getState();
+                                state.setType(type);
+                                state.setData(new MaterialData(type));
+                                state.update(true);
+                                break;
+                            }
                         }
                     }
                 }

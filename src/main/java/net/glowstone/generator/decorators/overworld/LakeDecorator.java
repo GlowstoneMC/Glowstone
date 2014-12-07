@@ -26,16 +26,15 @@ public class LakeDecorator extends BlockDecorator {
             int sourceX = (source.getX() << 4) + random.nextInt(16);
             int sourceZ = (source.getZ() << 4) + random.nextInt(16);
             int sourceY = random.nextInt(type == Material.STATIONARY_WATER ? 256 : random.nextInt(248) + 8);
-            if (type == Material.STATIONARY_LAVA && sourceY >= world.getSeaLevel() && random.nextInt(10) > 0) {
+            if (type == Material.STATIONARY_LAVA && (sourceY >= world.getSeaLevel() || random.nextInt(10) > 0)) {
                 return;
             }
-            while (world.getBlockAt(sourceX, sourceY, sourceZ).getType() == Material.AIR && sourceY > 5) {
+            while (world.getBlockAt(sourceX, sourceY, sourceZ).isEmpty() && sourceY > 5) {
                 sourceY--;
             }
-            if (sourceY < 5) {
-                return;
+            if (sourceY >= 5) {
+                new Lake(type).generate(world, random, sourceX, sourceY, sourceZ);
             }
-            new Lake(type).generate(world, random, sourceX, sourceY, sourceZ);
         }
     }
 }

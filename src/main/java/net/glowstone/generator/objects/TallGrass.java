@@ -29,9 +29,7 @@ public class TallGrass {
             int y = sourceY + random.nextInt(4) - random.nextInt(4);
 
             final Block block = world.getBlockAt(x, y, z);
-            if (y < 255 && block.getType() == Material.AIR &&
-                    (block.getRelative(BlockFace.DOWN).getType() == Material.GRASS ||
-                            block.getRelative(BlockFace.DOWN).getType() == Material.DIRT)) {
+            if (y < 255 && block.getType() == Material.AIR && block.getRelative(BlockFace.DOWN).getType() == Material.GRASS) {
                 final BlockState state = block.getState();
                 state.setType(Material.LONG_GRASS);
                 state.setData(grassType);

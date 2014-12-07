@@ -2,19 +2,20 @@ package net.glowstone.generator.objects;
 
 import java.util.Random;
 
+import org.bukkit.DoublePlantSpecies;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
+import org.bukkit.material.DoublePlant;
 
-public class DoublePlant {
+public class DoubleTallPlant {
 
-    final Material type;
-    final int data;
+    private final DoublePlantSpecies species;
 
-    public DoublePlant(DoublePlantType plantType) {
-        type = plantType.getType();
-        data = plantType.getData();
+    public DoubleTallPlant(DoublePlantSpecies species) {
+        this.species = species;
     }
 
     public boolean generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
@@ -27,10 +28,14 @@ public class DoublePlant {
             final Block block = world.getBlockAt(x, y, z);
             if (y < 255 && block.isEmpty() && block.getRelative(BlockFace.UP).isEmpty() &&
                     block.getRelative(BlockFace.DOWN).getType() == Material.GRASS) {
-                block.setType(type);
-                block.setData((byte) data);
-                block.getRelative(BlockFace.UP).setType(type);
-                block.getRelative(BlockFace.UP).setData((byte) 8);
+                BlockState state = block.getState();
+                state.setType(Material.DOUBLE_PLANT);
+                state.setData(new DoublePlant(species));
+                state.update(true);
+                state = block.getRelative(BlockFace.UP).getState();
+                state.setType(Material.DOUBLE_PLANT);
+                state.setData(new DoublePlant(DoublePlantSpecies.PLANT_APEX));
+                state.update(true);
                 placed = true;
             }
         }

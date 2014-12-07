@@ -1,10 +1,13 @@
 package net.glowstone.generator.objects.trees;
 
 import net.glowstone.util.BlockStateDelegate;
+
+import org.bukkit.DirtType;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.material.Dirt;
 
 import java.util.Random;
 
@@ -125,10 +128,11 @@ public class DarkOakTree extends GenericTree {
         }
 
         // block below trunk is always dirt (SELF, SOUTH, EAST, SOUTH EAST)
-        delegate.setTypeAndRawData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ(), Material.DIRT, 0);
-        delegate.setTypeAndRawData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ() + 1, Material.DIRT, 0);
-        delegate.setTypeAndRawData(loc.getWorld(), loc.getBlockX() + 1, loc.getBlockY() - 1, loc.getBlockZ(), Material.DIRT, 0);
-        delegate.setTypeAndRawData(loc.getWorld(), loc.getBlockX() + 1, loc.getBlockY() - 1, loc.getBlockZ() + 1, Material.DIRT, 0);
+        final Dirt dirt = new Dirt(DirtType.NORMAL);
+        delegate.setTypeAndData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ(), Material.DIRT, dirt);
+        delegate.setTypeAndData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ() + 1, Material.DIRT, dirt);
+        delegate.setTypeAndData(loc.getWorld(), loc.getBlockX() + 1, loc.getBlockY() - 1, loc.getBlockZ(), Material.DIRT, dirt);
+        delegate.setTypeAndData(loc.getWorld(), loc.getBlockX() + 1, loc.getBlockY() - 1, loc.getBlockZ() + 1, Material.DIRT, dirt);
 
         return true;
     }

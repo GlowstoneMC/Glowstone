@@ -4,13 +4,14 @@ import java.util.Random;
 
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.material.MaterialData;
 
 public class OreVein {
 
-    final Material type;
-    final int data;
-    final int amount;
+    private final Material type;
+    private final MaterialData data;
+    private final int amount;
 
     public OreVein(OreType oreType) {
         type = oreType.getType();
@@ -47,9 +48,10 @@ public class OreVein {
                                 double pZ = (z + 0.5D - originZ) / hRadius;
                                 pZ *= pZ;
                                 if (pX + pY + pZ < 1 && world.getBlockAt(x, y, z).getType() == Material.STONE) {
-                                    final Block block = world.getBlockAt(x, y, z);
-                                    block.setType(type);
-                                    block.setData((byte) data);
+                                    final BlockState state = world.getBlockAt(x, y, z).getState();
+                                    state.setType(type);
+                                    state.setData(data);
+                                    state.update(true);
                                 }
                             }
                         }

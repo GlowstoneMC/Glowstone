@@ -1,10 +1,13 @@
 package net.glowstone.generator.objects.trees;
 
 import net.glowstone.util.BlockStateDelegate;
+
+import org.bukkit.DirtType;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.material.Dirt;
 
 import java.util.Random;
 
@@ -125,7 +128,8 @@ public class AcaciaTree extends GenericTree {
         }
 
         // block below trunk is always dirt
-        delegate.setTypeAndRawData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ(), Material.DIRT, 0);
+        final Dirt dirt = new Dirt(DirtType.NORMAL);
+        delegate.setTypeAndData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ(), Material.DIRT, dirt);
 
         return true;
     }
