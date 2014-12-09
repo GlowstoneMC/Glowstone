@@ -20,6 +20,7 @@ public class SnowDecorator extends BlockDecorator {
             for (int z = sourceZ; z < sourceZ + 16; z++) {
                 int y = world.getHighestBlockYAt(x, z) - 1;
                 final Block block = world.getBlockAt(x, y, z);
+                final Block blockAbove = block.getRelative(BlockFace.UP);
                 switch (block.getType()) {
                     case WATER:
                     case STATIONARY_WATER:
@@ -27,6 +28,7 @@ public class SnowDecorator extends BlockDecorator {
                         break;
                     case SNOW:
                     case ICE:
+                    case PACKED_ICE:
                     case YELLOW_FLOWER:
                     case RED_ROSE:
                     case LONG_GRASS:
@@ -37,13 +39,13 @@ public class SnowDecorator extends BlockDecorator {
                         break;
                     case DIRT:
                         block.setType(Material.GRASS);
-                        if (block.getRelative(BlockFace.UP).isEmpty()) {
-                            block.getRelative(BlockFace.UP).setType(Material.SNOW);
+                        if (blockAbove.isEmpty()) {
+                            blockAbove.setType(Material.SNOW);
                         }
                         break;
                     default:
-                        if (block.getRelative(BlockFace.UP).isEmpty()) {
-                            block.getRelative(BlockFace.UP).setType(Material.SNOW);
+                        if (blockAbove.isEmpty()) {
+                            blockAbove.setType(Material.SNOW);
                         }
                         break;
                 }
