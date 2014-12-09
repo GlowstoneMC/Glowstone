@@ -67,6 +67,10 @@ public class OverworldPopulator extends BlockPopulator {
                 .setDefaultAmount(0)
                 .setBiomeAmount(1, Biome.MEGA_TAIGA, Biome.MEGA_TAIGA_HILLS, Biome.MEGA_SPRUCE_TAIGA, Biome.MEGA_SPRUCE_TAIGA_HILLS));
 
+        addDecorator(new IceDecorator()
+                .setDefaultAmount(0)
+                .setBiomeAmount(1, Biome.ICE_PLAINS_SPIKES));
+
         addDecorator(new DoublePlantDecorator()
                 .setDoublePlantWeight(1, DoublePlantSpecies.LARGE_FERN, Biome.TAIGA, Biome.TAIGA_HILLS, Biome.TAIGA_MOUNTAINS,
                         Biome.COLD_TAIGA, Biome.COLD_TAIGA_HILLS, Biome.COLD_TAIGA_MOUNTAINS, Biome.MEGA_TAIGA,
@@ -135,8 +139,7 @@ public class OverworldPopulator extends BlockPopulator {
 
                 .setDefaultAmount(Integer.MIN_VALUE)
                 .setBiomeAmount(5, Biome.OCEAN) // fix for lack of biomes
-                .setBiomeAmount(0, Biome.EXTREME_HILLS, Biome.EXTREME_HILLS_MOUNTAINS, Biome.ICE_PLAINS, Biome.ICE_MOUNTAINS,
-                        Biome.ICE_PLAINS_SPIKES)
+                .setBiomeAmount(0, Biome.EXTREME_HILLS, Biome.EXTREME_HILLS_MOUNTAINS, Biome.ICE_PLAINS, Biome.ICE_MOUNTAINS)
                 .setBiomeAmount(1, Biome.SAVANNA, Biome.SAVANNA_PLATEAU, Biome.MUSHROOM_ISLAND, Biome.MUSHROOM_SHORE)
                 .setBiomeAmount(2, Biome.SWAMPLAND, Biome.SWAMPLAND_MOUNTAINS, Biome.JUNGLE_EDGE, Biome.JUNGLE_EDGE_MOUNTAINS,
                         Biome.SAVANNA_MOUNTAINS, Biome.SAVANNA_PLATEAU_MOUNTAINS)
@@ -175,7 +178,7 @@ public class OverworldPopulator extends BlockPopulator {
 
                 .setDefaultAmount(1)
                 .setBiomeAmount(2, Biome.OCEAN) // fix for lack of biomes
-                .setBiomeAmount(0, Biome.MUSHROOM_ISLAND, Biome.MUSHROOM_SHORE, Biome.PLAINS, Biome.SUNFLOWER_PLAINS)
+                .setBiomeAmount(0, Biome.MUSHROOM_ISLAND, Biome.MUSHROOM_SHORE, Biome.PLAINS, Biome.SUNFLOWER_PLAINS, Biome.ICE_PLAINS_SPIKES)
                 .setBiomeAmount(2, Biome.FOREST, Biome.FOREST_HILLS, Biome.BIRCH_FOREST, Biome.BIRCH_FOREST_MOUNTAINS, 
                         Biome.BIRCH_FOREST_HILLS, Biome.BIRCH_FOREST_HILLS_MOUNTAINS, Biome.ROOFED_FOREST,
                         Biome.ROOFED_FOREST_MOUNTAINS)
