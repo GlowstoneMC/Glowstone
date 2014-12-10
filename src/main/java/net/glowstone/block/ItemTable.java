@@ -5,7 +5,6 @@ import net.glowstone.block.itemtype.*;
 import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -190,51 +189,11 @@ public final class ItemTable {
         reg(Material.POTATO_ITEM, new ItemFoodSeeds(Material.POTATO, Material.SOIL));
         reg(Material.INK_SACK, new ItemDye());
         reg(Material.BANNER, new ItemBanner());
-        reg(Material.LEATHER_HELMET, new ItemDamageable(56));
-        reg(Material.LEATHER_CHESTPLATE, new ItemDamageable(81));
-        reg(Material.LEATHER_LEGGINGS, new ItemDamageable(76));
-        reg(Material.LEATHER_BOOTS, new ItemDamageable(66));
-        reg(Material.GOLD_HELMET, new ItemDamageable(78));
-        reg(Material.GOLD_CHESTPLATE, new ItemDamageable(113));
-        reg(Material.GOLD_LEGGINGS, new ItemDamageable(106));
-        reg(Material.GOLD_BOOTS, new ItemDamageable(92));
-        reg(Material.CHAINMAIL_HELMET, new ItemDamageable(166));
-        reg(Material.CHAINMAIL_CHESTPLATE, new ItemDamageable(241));
-        reg(Material.CHAINMAIL_LEGGINGS, new ItemDamageable(226));
-        reg(Material.CHAINMAIL_BOOTS, new ItemDamageable(196));
-        reg(Material.IRON_HELMET, new ItemDamageable(166));
-        reg(Material.IRON_CHESTPLATE, new ItemDamageable(241));
-        reg(Material.IRON_LEGGINGS, new ItemDamageable(226));
-        reg(Material.IRON_BOOTS, new ItemDamageable(196));
-        reg(Material.DIAMOND_HELMET, new ItemDamageable(364));
-        reg(Material.DIAMOND_CHESTPLATE, new ItemDamageable(529));
-        reg(Material.DIAMOND_LEGGINGS, new ItemDamageable(496));
-        reg(Material.DIAMOND_BOOTS, new ItemDamageable(430));
-        reg(Material.CARROT_STICK, new ItemDamageable(26));
-        reg(Material.FLINT_AND_STEEL, new ItemDamageable(65));
-        reg(Material.FISHING_ROD, new ItemDamageable(65));
-        reg(Material.SHEARS, new ItemDamageable(239));
-        reg(Material.BOW, new ItemDamageable(385));
-        reg(Material.WOOD_HOE, new ItemHoe(59));
-        reg(Material.STONE_HOE, new ItemHoe(131));
-        reg(Material.IRON_HOE, new ItemHoe(250));
-        reg(Material.GOLD_HOE, new ItemHoe(33));
-        reg(Material.DIAMOND_HOE, new ItemHoe(1561));
-        for (Material mat : Arrays.asList(Material.GOLD_PICKAXE, Material.GOLD_AXE, Material.GOLD_SPADE, Material.GOLD_SWORD)) {
-            reg(mat, new ItemDamageable(33));
-        }
-        for (Material mat : Arrays.asList(Material.WOOD_PICKAXE, Material.WOOD_AXE, Material.WOOD_SPADE, Material.WOOD_SWORD)) {
-            reg(mat, new ItemDamageable(59));
-        }
-        for (Material mat : Arrays.asList(Material.STONE_PICKAXE, Material.STONE_AXE, Material.STONE_SPADE, Material.STONE_SWORD)) {
-            reg(mat, new ItemDamageable(131));
-        }
-        for (Material mat : Arrays.asList(Material.IRON_PICKAXE, Material.IRON_AXE, Material.IRON_SPADE, Material.IRON_SWORD)) {
-            reg(mat, new ItemDamageable(250));
-        }
-        for (Material mat : Arrays.asList(Material.DIAMOND_PICKAXE, Material.DIAMOND_AXE, Material.DIAMOND_SPADE, Material.DIAMOND_SWORD)) {
-            reg(mat, new ItemDamageable(1561));
-        }
+        reg(Material.WOOD_HOE, new ItemHoe());
+        reg(Material.STONE_HOE, new ItemHoe());
+        reg(Material.IRON_HOE, new ItemHoe());
+        reg(Material.DIAMOND_HOE, new ItemHoe());
+        reg(Material.GOLD_HOE, new ItemHoe());
     }
 
     private void reg(Material material, ItemType type) {

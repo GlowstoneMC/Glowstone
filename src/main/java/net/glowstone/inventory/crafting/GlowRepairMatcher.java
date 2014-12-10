@@ -1,8 +1,7 @@
 package net.glowstone.inventory.crafting;
 
-import net.glowstone.block.ItemTable;
-import net.glowstone.block.itemtype.ItemDamageable;
-import net.glowstone.block.itemtype.ItemType;
+import org.bukkit.Material;
+import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.inventory.ItemMatcher;
 import org.bukkit.inventory.ItemStack;
 
@@ -18,8 +17,7 @@ public class GlowRepairMatcher extends ItemMatcher {
         for (ItemStack item : matrix) {
             if (item == null) continue;
 
-            ItemType type = ItemTable.instance().getItem(item.getType());
-            if (!(type instanceof ItemDamageable)) return null; // Non-repairable item in matrix
+            if (!isRepairable(item)) return null; // Non-repairable item in matrix
 
             items.add(item);
         }
@@ -31,13 +29,21 @@ public class GlowRepairMatcher extends ItemMatcher {
 
         if (itemA.getType() != itemB.getType()) return null; // Not same item type
 
-        ItemDamageable type = (ItemDamageable) ItemTable.instance().getItem(itemA.getType());
+        Material type = itemA.getType();
 
-        int usesA = type.getMaxUses() - itemA.getDurability();
-        int usesB = type.getMaxUses() - itemB.getDurability();
-        int totalUses = (int) (usesA + usesB + (type.getMaxUses() * 0.05));
-        int damage = type.getMaxUses() - totalUses;
+        int usesA = type.getMaxDurability() - itemA.getDurability();
+        int usesB = type.getMaxDurability() - itemB.getDurability();
+        int totalUses = (int) (usesA + usesB + (type.getMaxDurability() * 0.05));
+        int damage = type.getMaxDurability() - totalUses;
 
-        return new ItemStack(type.getMaterial(), 1, (short) Math.max(damage, 0));
+        return new ItemStack(type, 1, (short) Math.max(damage, 0));
+    }
+
+    private static boolean isRepairable(ItemStack item) {
+        return EnchantmentTarget.ARMOR.includes(item)
+                || EnchantmentTarget.TOOL.includes(item)
+                || EnchantmentTarget.WEAPON.includes(item)
+                || EnchantmentTarget.BOW.includes(item)
+                || EnchantmentTarget.FISHING_ROD.includes(item);
     }
 }

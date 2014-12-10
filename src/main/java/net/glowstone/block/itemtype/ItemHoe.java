@@ -8,11 +8,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-public class ItemHoe extends ItemDamageable {
-
-    public ItemHoe(int maxUses) {
-        super(maxUses);
-    }
+public class ItemHoe extends ItemType {
 
     @Override
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc) {
