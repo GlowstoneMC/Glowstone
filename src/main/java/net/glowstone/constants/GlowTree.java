@@ -35,7 +35,7 @@ public final class GlowTree {
 
     static {
         set(TREE, GenericTree.class);
-        set(BIG_TREE, GenericTree.class);
+        set(BIG_TREE, BigTree.class);
         set(REDWOOD, RedwoodTree.class);
         set(TALL_REDWOOD, TallRedwoodTree.class);
         set(BIRCH, BirchTree.class);
