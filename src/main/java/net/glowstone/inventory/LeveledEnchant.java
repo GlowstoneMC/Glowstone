@@ -1,7 +1,7 @@
 package net.glowstone.inventory;
 
 import lombok.Data;
-import net.glowstone.constants.GlowEnchantment;
+import net.glowstone.constants.enchantments.GlowEnchantment;
 import net.glowstone.util.WeightedRandom;
 import org.bukkit.enchantments.Enchantment;
 
