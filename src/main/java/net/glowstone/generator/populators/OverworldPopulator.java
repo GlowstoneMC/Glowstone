@@ -90,7 +90,7 @@ public class OverworldPopulator extends BlockPopulator {
                 .setTreeWeight(2, BirchTree.class, Biome.OCEAN) // fix for lack of biomes
 
                 .setTreeWeight(20, RedwoodTree.class, Biome.EXTREME_HILLS, Biome.EXTREME_HILLS_MOUNTAINS)
-                .setTreeWeight(1, GenericTree.class, Biome.EXTREME_HILLS, Biome.EXTREME_HILLS_MOUNTAINS) // BIG_TREE
+                .setTreeWeight(1, BigOakTree.class, Biome.EXTREME_HILLS, Biome.EXTREME_HILLS_MOUNTAINS)
                 .setTreeWeight(9, GenericTree.class, Biome.EXTREME_HILLS, Biome.EXTREME_HILLS_MOUNTAINS)
 
                 .setTreeWeight(4, GenericTree.class, Biome.FOREST, Biome.FOREST_HILLS, Biome.FLOWER_FOREST,
@@ -121,9 +121,9 @@ public class OverworldPopulator extends BlockPopulator {
 
                 .setTreeWeight(1, RedwoodTree.class, Biome.ICE_PLAINS, Biome.ICE_MOUNTAINS, Biome.ICE_PLAINS_SPIKES)
 
-                .setTreeWeight(10, GenericTree.class, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_MOUNTAINS, // BIG_TREE
+                .setTreeWeight(10, BigOakTree.class, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_MOUNTAINS,
                         Biome.JUNGLE_EDGE, Biome.JUNGLE_EDGE_MOUNTAINS)
-                .setTreeWeight(45, JungleBush.class, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_MOUNTAINS,
+                .setTreeWeight(50, JungleBush.class, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_MOUNTAINS,
                         Biome.JUNGLE_EDGE, Biome.JUNGLE_EDGE_MOUNTAINS)
                 .setTreeWeight(15, MegaJungleTree.class, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_MOUNTAINS)
                 .setTreeWeight(30, CocoaTree.class, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_MOUNTAINS)
@@ -151,7 +151,7 @@ public class OverworldPopulator extends BlockPopulator {
                         Biome.TAIGA_MOUNTAINS, Biome.COLD_TAIGA, Biome.COLD_TAIGA_HILLS, Biome.COLD_TAIGA_MOUNTAINS,
                         Biome.MEGA_TAIGA, Biome.MEGA_TAIGA_HILLS, Biome.MEGA_SPRUCE_TAIGA, Biome.MEGA_SPRUCE_TAIGA_HILLS)
                 .setBiomeAmount(50, Biome.ROOFED_FOREST, Biome.ROOFED_FOREST_MOUNTAINS)
-                .setBiomeAmount(50, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_MOUNTAINS));
+                .setBiomeAmount(65, Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_MOUNTAINS));
 
         addDecorator(new FlowerDecorator()
                 .setDefaultFlowerWeight(2, FlowerType.DANDELION)
