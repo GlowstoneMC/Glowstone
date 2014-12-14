@@ -1,4 +1,4 @@
-package net.glowstone.generator.populators;
+package net.glowstone.generator.populators.overworld;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

@@ -1,9 +1,7 @@
 package net.glowstone.generator.decorators.overworld;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import net.glowstone.generator.decorators.BlockDecorator;
@@ -12,29 +10,13 @@ import net.glowstone.generator.objects.FlowerType;
 
 import org.bukkit.Chunk;
 import org.bukkit.World;
-import org.bukkit.block.Biome;
 
 public class FlowerDecorator extends BlockDecorator {
 
-    private final List<FlowerDecoration> defaultFlowers = new ArrayList<>();
-    private final Map<Biome, List<FlowerDecoration>> biomesFlowers = new HashMap<>();
+    private List<FlowerDecoration> flowers;
 
-    public final FlowerDecorator setDefaultFlowerWeight(int weight, FlowerType flower) {
-        defaultFlowers.add(new FlowerDecoration(flower, weight));
-        return this;
-    }
-
-    public final FlowerDecorator setFlowerWeight(int weight, FlowerType flower, Biome... biomes) {
-        for (Biome biome : biomes) {
-            if (biomesFlowers.containsKey(biome)) {
-                biomesFlowers.get(biome).add(new FlowerDecoration(flower, weight));
-            } else {
-                final List<FlowerDecoration> decorations = new ArrayList<>();
-                decorations.add(new FlowerDecoration(flower, weight));
-                biomesFlowers.put(biome, decorations);
-            }
-        }
-        return this;
+    public final void setFlowers(FlowerDecoration... flowers) {
+        this.flowers = Arrays.asList(flowers);
     }
 
     @Override
@@ -44,17 +26,10 @@ public class FlowerDecorator extends BlockDecorator {
         int sourceY = random.nextInt(world.getHighestBlockYAt(sourceX, sourceZ) + 32);
 
         // the flower can change on each decoration pass
-        FlowerType flower = null;
-        final Biome biome = world.getBiome(sourceX, sourceZ);
-        if (biomesFlowers.containsKey(biome)) {
-            flower = getRandomFlower(random, biomesFlowers.get(biome));
-        } else {
-            flower = getRandomFlower(random, defaultFlowers);
+        FlowerType flower = getRandomFlower(random, flowers);
+        if (flower != null) {
+            new Flower(flower).generate(world, random, sourceX, sourceY, sourceZ);
         }
-        if (flower == null) {
-            return;
-        }
-        new Flower(flower).generate(world, random, sourceX, sourceY, sourceZ);
     }
 
     private FlowerType getRandomFlower(Random random, List<FlowerDecoration> decorations) {
@@ -72,7 +47,7 @@ public class FlowerDecorator extends BlockDecorator {
         return null;
     }
 
-    static class FlowerDecoration {
+    public static class FlowerDecoration {
 
         private final FlowerType flower;
         private final int weight;

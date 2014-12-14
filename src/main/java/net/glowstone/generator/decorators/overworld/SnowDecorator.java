@@ -7,13 +7,12 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.generator.BlockPopulator;
 
-import net.glowstone.generator.decorators.BlockDecorator;
-
-public class SnowDecorator extends BlockDecorator {
+public class SnowDecorator extends BlockPopulator {
 
     @Override
-    public void decorate(World world, Random random, Chunk source) {
+    public void populate(World world, Random random, Chunk source) {
         int sourceX = source.getX() << 4;
         int sourceZ = source.getZ() << 4;
         for (int x = sourceX; x < sourceX + 16; x++) {
