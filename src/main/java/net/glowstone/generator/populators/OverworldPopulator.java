@@ -1,35 +1,58 @@
 package net.glowstone.generator.populators;
 
-import net.glowstone.generator.decorators.overworld.*;
-import net.glowstone.generator.objects.*;
-import net.glowstone.generator.objects.trees.*;
+import net.glowstone.generator.populators.overworld.*;
 
 import org.bukkit.Chunk;
-import org.bukkit.DoublePlantSpecies;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.generator.BlockPopulator;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class OverworldPopulator extends BlockPopulator {
 
-    private final List<BlockPopulator> decorators = new ArrayList<>();
+    private final Map<Biome, BiomePopulator> biomePopulators = new HashMap<>();
+    //private final List<BlockPopulator> decorators = new ArrayList<>();
 
     public OverworldPopulator() {
 
-        // the order is important
+        registerBiomePopulator(new BiomePopulator()); // defaults applied to all biomes
+        registerBiomePopulator(new PlainsPopulator());
+        registerBiomePopulator(new SunflowerPlainsPopulator());
+        registerBiomePopulator(new ForestPopulator());
+        registerBiomePopulator(new BirchForestPopulator());
+        registerBiomePopulator(new BirchForestMountainsPopulator());
+        registerBiomePopulator(new RoofedForestPopulator());
+        registerBiomePopulator(new FlowerForestPopulator());
+        registerBiomePopulator(new DesertPopulator());
+        registerBiomePopulator(new DesertMountainsPopulator());
+        registerBiomePopulator(new JunglePopulator());
+        registerBiomePopulator(new JungleEdgePopulator());
+        registerBiomePopulator(new SwamplandPopulator());
+        registerBiomePopulator(new TaigaPopulator());
+        registerBiomePopulator(new ColdTaigaPopulator());
+        registerBiomePopulator(new MegaTaigaPopulator());
+        registerBiomePopulator(new MegaSpruceTaigaPopulator());
+        registerBiomePopulator(new IcePlainsPopulator());
+        registerBiomePopulator(new IcePlainsSpikesPopulator());
+        registerBiomePopulator(new SavannaPopulator());
+        registerBiomePopulator(new SavannaMountainsPopulator());
+        registerBiomePopulator(new ExtremeHillsPopulator());
+        registerBiomePopulator(new ExtremeHillsPlusPopulator());
+        registerBiomePopulator(new MesaPopulator());
+        registerBiomePopulator(new MesaForestPopulator());
+        registerBiomePopulator(new MushroomIslandPopulator());
 
+        // the order is important
+/*
         addDecorator(new LakeDecorator(Material.STATIONARY_WATER)
                 .setDefaultAmount(1)
                 .setBiomeAmount(0, Biome.DESERT, Biome.DESERT_HILLS));
 
         addDecorator(new LakeDecorator(Material.STATIONARY_LAVA)
-                .setDefaultAmount(1)
-                .setBiomeAmount(0, Biome.DESERT, Biome.DESERT_HILLS));
+                .setDefaultAmount(1));
 
         addDecorator(new UnderwaterDecorator(Material.SAND)
                 .setRadiuses(7, 2)
@@ -269,16 +292,25 @@ public class OverworldPopulator extends BlockPopulator {
                 .setDefaultAmount(0)
                 .setBiomeAmount(1, Biome.COLD_TAIGA, Biome.COLD_TAIGA_HILLS, Biome.COLD_TAIGA_MOUNTAINS, Biome.ICE_PLAINS,
                         Biome.ICE_MOUNTAINS, Biome.ICE_PLAINS_SPIKES, Biome.FROZEN_OCEAN, Biome.FROZEN_RIVER, Biome.COLD_BEACH));
+*/
     }
 
     @Override
-    public void populate(World world, Random random, Chunk source) {
-        for (BlockPopulator decorator : decorators) {
-            decorator.populate(world, random, source);
+    public void populate(World world, Random random, Chunk chunk) {
+        final Biome biome = world.getBiome((chunk.getX() << 4) + 8, (chunk.getZ() << 4) + 8);
+        if (biomePopulators.containsKey(biome)) {
+            biomePopulators.get(biome).populate(world, random, chunk);
         }
     }
 
+    /*
     private void addDecorator(BlockPopulator decorator) {
         decorators.add(decorator);
+    }*/
+
+    private void registerBiomePopulator(BiomePopulator populator) {
+        for (Biome biome : populator.getBiomes()) {
+            biomePopulators.put(biome, populator);
+        }
     }
 }

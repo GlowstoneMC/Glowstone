@@ -1,4 +1,4 @@
-package net.glowstone.generator.populators;
+package net.glowstone.generator.populators.overworld;
 
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
@@ -208,5 +208,5 @@ public class DungeonPopulator extends BlockPopulator {
         return !block.isLiquid() && block.getType() != Material.MOB_SPAWNER
                 && block.getType() != Material.CHEST;
     }
-    
+
 }

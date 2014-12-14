@@ -27,7 +27,7 @@ public class MushroomDecorator extends BlockDecorator {
         fixedHeightRange = false;
     }
 
-    public MushroomDecorator setFixedHeightRange() {
+    public MushroomDecorator setUseFixedHeightRange() {
         fixedHeightRange = true;
         return this;
     }

@@ -17,14 +17,7 @@ import java.util.Random;
 public class SurfaceGenerator extends GlowChunkGenerator {
 
     public SurfaceGenerator() {
-        super(
-                // Below-ground
-                new DungeonPopulator(),
-                new OrePopulator(),
-                //new CavePopulator(),
-                // On-ground
-                new OverworldPopulator()
-        );
+        super(new OverworldPopulator());
     }
 
     @Override

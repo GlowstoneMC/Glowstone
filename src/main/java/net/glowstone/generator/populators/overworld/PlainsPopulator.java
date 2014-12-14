@@ -1,31 +1,44 @@
-package net.glowstone.generator.decorators.overworld;
+package net.glowstone.generator.populators.overworld;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Random;
 
-import org.bukkit.Chunk;
-import org.bukkit.DoublePlantSpecies;
-import org.bukkit.GrassSpecies;
-import org.bukkit.World;
-import org.bukkit.material.LongGrass;
-import org.bukkit.util.noise.PerlinNoiseGenerator;
-
-import net.glowstone.generator.decorators.BlockDecorator;
 import net.glowstone.generator.objects.DoubleTallPlant;
 import net.glowstone.generator.objects.Flower;
 import net.glowstone.generator.objects.FlowerType;
 import net.glowstone.generator.objects.TallGrass;
 
-public class PlainsDecorator extends BlockDecorator {
+import org.bukkit.Chunk;
+import org.bukkit.DoublePlantSpecies;
+import org.bukkit.GrassSpecies;
+import org.bukkit.World;
+import org.bukkit.block.Biome;
+import org.bukkit.material.LongGrass;
+import org.bukkit.util.noise.PerlinNoiseGenerator;
+
+public class PlainsPopulator extends BiomePopulator {
 
     private static final FlowerType[] FLOWERS = {FlowerType.POPPY, FlowerType.HOUSTONIA, FlowerType.OXEYE_DAISY};
     private static final FlowerType[] TULIPS = {FlowerType.TULIP_RED, FlowerType.TULIP_ORANGE, FlowerType.TULIP_WHITE, FlowerType.TULIP_PINK}; 
     private final PerlinNoiseGenerator noiseGen = new PerlinNoiseGenerator(new Random(2345));
 
-    @Override
-    public void decorate(World world, Random random, Chunk source) {
+    public PlainsPopulator() {
+        super();
+        flowerDecorator.setAmount(0);
+        tallGrassDecorator.setAmount(0);
+    }
 
-        int sourceX = (source.getX() << 4);
-        int sourceZ = (source.getZ() << 4);
+    @Override
+    public Collection<Biome> getBiomes() {
+        return Collections.unmodifiableList(Arrays.asList(new Biome[] {Biome.PLAINS}));
+    }
+
+    @Override
+    public void populateOnGround(World world, Random random, Chunk chunk) {
+        int sourceX = (chunk.getX() << 4);
+        int sourceZ = (chunk.getZ() << 4);
 
         int flowerAmount = 15;
         int tallGrassAmount = 5;
@@ -59,5 +72,7 @@ public class PlainsDecorator extends BlockDecorator {
             int y = random.nextInt(world.getHighestBlockYAt(x, z) << 1);
             new TallGrass(new LongGrass(GrassSpecies.NORMAL)).generate(world, random, x, y, z);
         }
+
+        super.populateOnGround(world, random, chunk);
     }
 }

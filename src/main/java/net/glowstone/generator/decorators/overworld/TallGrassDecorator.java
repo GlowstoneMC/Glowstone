@@ -1,7 +1,5 @@
 package net.glowstone.generator.decorators.overworld;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 import net.glowstone.generator.decorators.BlockDecorator;
@@ -10,18 +8,14 @@ import net.glowstone.generator.objects.TallGrass;
 import org.bukkit.Chunk;
 import org.bukkit.GrassSpecies;
 import org.bukkit.World;
-import org.bukkit.block.Biome;
 import org.bukkit.material.LongGrass;
 
 public class TallGrassDecorator extends BlockDecorator {
 
-    private final Map<Biome, Double> biomesFernDensity = new HashMap<>();
+    private double fernDensity;
 
-    public final TallGrassDecorator setFernDensity(double fernDensity, Biome... biomes) {
-        for (Biome biome : biomes) {
-            biomesFernDensity.put(biome, fernDensity);
-        }
-        return this;
+    public final void setFernDensity(double fernDensity) {
+        this.fernDensity = fernDensity;
     }
 
     @Override
@@ -32,12 +26,8 @@ public class TallGrassDecorator extends BlockDecorator {
 
         // the grass species can change on each decoration pass
         GrassSpecies species = GrassSpecies.NORMAL;
-        final Biome biome = world.getBiome(sourceX, sourceZ);
-        if (biomesFernDensity.containsKey(biome)) {
-            double density = biomesFernDensity.get(biome);
-            if (random.nextFloat() < density) {
-                species = GrassSpecies.FERN_LIKE;
-            }
+        if (fernDensity > 0 && random.nextFloat() < fernDensity) {
+            species = GrassSpecies.FERN_LIKE;
         }
         new TallGrass(new LongGrass(species)).generate(world, random, sourceX, sourceY, sourceZ);
     }

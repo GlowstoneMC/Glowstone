@@ -1,16 +1,13 @@
 package net.glowstone.generator.decorators.overworld;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 
 import net.glowstone.generator.decorators.BlockDecorator;
@@ -19,28 +16,19 @@ import net.glowstone.util.BlockStateDelegate;
 
 public class TreeDecorator extends BlockDecorator {
 
-    private final Map<Biome, List<TreeDecoration>> biomesTrees = new HashMap<>();
+    private List<TreeDecoration> trees;
 
-    public final TreeDecorator setTreeWeight(int weight, Class<? extends GenericTree> tree, Biome... biomes) {
-        for (Biome biome : biomes) {
-            if (biomesTrees.containsKey(biome)) {
-                biomesTrees.get(biome).add(new TreeDecoration(tree, weight));
-            } else {
-                final List<TreeDecoration> decorations = new ArrayList<>();
-                decorations.add(new TreeDecoration(tree, weight));
-                biomesTrees.put(biome, decorations);
-            }
-        }
-        return this;
+    public final void setTrees(TreeDecoration... trees) {
+        this.trees = Arrays.asList(trees);
     }
 
     @Override
     public void populate(World world, Random random, Chunk chunk) {
-        int amount = getBiomeAmount(world, chunk);
+        int treeAmount = amount;
         if (random.nextInt(10) == 0) {
-            amount++;
+            treeAmount++;
         }
-        for (int i = 0; i < amount; i++) {
+        for (int i = 0; i < treeAmount; i++) {
             decorate(world, random, chunk);
         }
     }
@@ -51,21 +39,18 @@ public class TreeDecorator extends BlockDecorator {
         int sourceZ = (source.getZ() << 4) + random.nextInt(16);
         final Block sourceBlock = world.getBlockAt(sourceX, world.getHighestBlockYAt(sourceX, sourceZ), sourceZ);
 
-        final Biome biome = world.getBiome(sourceX, sourceZ);
-        if (biomesTrees.containsKey(biome)) {
-            final Class<? extends GenericTree> clazz = getRandomTree(random, biomesTrees.get(biome));
-            if (clazz != null) {
-                final BlockStateDelegate delegate = new BlockStateDelegate();
-                GenericTree tree;
-                try {
-                    final Constructor<? extends GenericTree> c = clazz.getConstructor(Random.class, Location.class, BlockStateDelegate.class);
-                    tree = c.newInstance(random, sourceBlock.getLocation(), delegate);
-                } catch (Exception ex) {
-                    tree = new GenericTree(random, sourceBlock.getLocation(), delegate);
-                }
-                if (tree.generate()) {
-                    delegate.updateBlockStates();
-                }
+        final Class<? extends GenericTree> clazz = getRandomTree(random, trees);
+        if (clazz != null) {
+            final BlockStateDelegate delegate = new BlockStateDelegate();
+            GenericTree tree;
+            try {
+                final Constructor<? extends GenericTree> c = clazz.getConstructor(Random.class, Location.class, BlockStateDelegate.class);
+                tree = c.newInstance(random, sourceBlock.getLocation(), delegate);
+            } catch (Exception ex) {
+                tree = new GenericTree(random, sourceBlock.getLocation(), delegate);
+            }
+            if (tree.generate()) {
+                delegate.updateBlockStates();
             }
         }
     }
