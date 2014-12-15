@@ -1,5 +1,6 @@
 package net.glowstone.constants;
 
+import lombok.RequiredArgsConstructor;
 import net.glowstone.inventory.MaterialMatcher;
 import net.glowstone.util.WeightedRandom;
 import org.bukkit.Material;
@@ -127,203 +128,32 @@ public final class GlowEnchantment extends Enchantment implements WeightedRandom
     private static final int GROUP_ATTACK = 2;
     private static final int GROUP_DIG = 3;
 
-    //TODO Protection, Weapon Damage
     public static enum Impl {
         PROTECTION_ENVIRONMENTAL(0, "Protection", 4, 10, EnchantmentTarget.ARMOR, GROUP_PROTECT),
         PROTECTION_FIRE(1, "Fire Protection", 4, 5, EnchantmentTarget.ARMOR, GROUP_PROTECT),
         PROTECTION_FALL(2, "Feather Falling", 4, 5, EnchantmentTarget.ARMOR_FEET, GROUP_PROTECT),
         PROTECTION_EXPLOSIONS(3, "Blast Protection", 4, 2, EnchantmentTarget.ARMOR),
         PROTECTION_PROJECTILE(4, "Projectile Protection", 4, 5, EnchantmentTarget.ARMOR, GROUP_PROTECT),
-        OXYGEN(5, "Respiration", 3, 2, EnchantmentTarget.ARMOR_HEAD) {
-            @Override
-            public int getMinRange(int modifier) {
-                return 10 * modifier;
-            }
-
-            @Override
-            public int getMaxRange(int modifier) {
-                return getMinRange(modifier) + 30;
-            }
-        },
-        WATER_WORKER(6, "Aqua Affinity", 1, 2, EnchantmentTarget.ARMOR_HEAD) {
-            @Override
-            public int getMinRange(int modifier) {
-                return 1;
-            }
-
-            @Override
-            public int getMaxRange(int modifier) {
-                return 41;
-            }
-        },
-        THORNS(7, "Thorns", 3, 1, EnchantmentTarget.ARMOR_TORSO, new MatcherAdapter(EnchantmentTarget.ARMOR)) {
-            @Override
-            public int getMinRange(int modifier) {
-                return 10 + 20 * (modifier - 1);
-            }
-
-            @Override
-            public int getMaxRange(int modifier) {
-                return super.getMinRange(modifier) + 50;
-            }
-        },
-        DEPTH_STRIDER(8, "Depth Strider", 3, 2, EnchantmentTarget.ARMOR_FEET) {
-            @Override
-            public int getMinRange(int modifier) {
-                return modifier * 10;
-            }
-
-            @Override
-            public int getMaxRange(int modifier) {
-                return getMinRange(modifier) + 15;
-            }
-        },
+        OXYGEN(5, "Respiration", 3, 2, new Mul(10), new Range(30), EnchantmentTarget.ARMOR_HEAD),
+        WATER_WORKER(6, "Aqua Affinity", 1, 2, new Const(1), new Const(41), EnchantmentTarget.ARMOR_HEAD),
+        THORNS(7, "Thorns", 3, 1, new Form(10, 20), new Range2(50), EnchantmentTarget.ARMOR_TORSO, new MatcherAdapter(EnchantmentTarget.ARMOR)),
+        DEPTH_STRIDER(8, "Depth Strider", 3, 2, new Mul(10), new Range(15), EnchantmentTarget.ARMOR_FEET),
         DAMAGE_ALL(16, "Sharpness", 5, 10, EnchantmentTarget.WEAPON, SWORD_OR_AXE, GROUP_ATTACK),
         DAMAGE_UNDEAD(17, "Smite", 5, 5, EnchantmentTarget.WEAPON, SWORD_OR_AXE, GROUP_ATTACK),
         DAMAGE_ARTHROPODS(18, "Bane of Arthropods", 5, 5, EnchantmentTarget.WEAPON, SWORD_OR_AXE, GROUP_ATTACK),
-        KNOCKBACK(19, "Knockback", 2, 5, EnchantmentTarget.WEAPON) {
-            @Override
-            public int getMinRange(int modifier) {
-                return 5 + 20 * (modifier - 1);
-            }
-
-            @Override
-            public int getMaxRange(int modifier) {
-                return super.getMinRange(modifier) + 50;
-            }
-        },
-        FIRE_ASPECT(20, "Fire Aspect", 2, 2, EnchantmentTarget.WEAPON) {
-            @Override
-            public int getMinRange(int modifier) {
-                return 10 + 20 * (modifier - 1);
-            }
-
-            @Override
-            public int getMaxRange(int modifier) {
-                return super.getMinRange(modifier) + 50;
-            }
-        },
-        LOOT_BONUS_MOBS(21, "Looting", 3, 2, EnchantmentTarget.WEAPON) {
-            @Override
-            public int getMinRange(int modifier) {
-                return 15 + (modifier - 1) * 9;
-            }
-
-            @Override
-            public int getMaxRange(int modifier) {
-                return super.getMinRange(modifier) + 50;
-            }
-        },
-        DIG_SPEED(32, "Efficiency", 5, 10, EnchantmentTarget.TOOL, DIGGING_TOOLS) {
-            @Override
-            public int getMinRange(int modifier) {
-                return 1 + 10 * (modifier - 1);
-            }
-
-            @Override
-            public int getMaxRange(int modifier) {
-                return super.getMinRange(modifier) + 50;
-            }
-        },
-        SILK_TOUCH(33, "Silk Touch", 1, 1, EnchantmentTarget.TOOL, DIGGING_TOOLS, GROUP_DIG) {
-            @Override
-            public int getMinRange(int modifier) {
-                return 15;
-            }
-
-            @Override
-            public int getMaxRange(int modifier) {
-                return super.getMinRange(modifier) + 50;
-            }
-        },
-        DURABILITY(34, "Unbreaking", 3, 5, EnchantmentTarget.TOOL, ALL_THINGS) {
-            @Override
-            public int getMinRange(int modifier) {
-                return 5 + (modifier - 1) * 8;
-            }
-
-            @Override
-            public int getMaxRange(int modifier) {
-                return super.getMaxRange(modifier) + 50;
-            }
-        },
-        LOOT_BONUS_BLOCKS(35, "Fortune", 3, 2, EnchantmentTarget.TOOL, BASE_TOOLS, GROUP_DIG) {
-            @Override
-            public int getMinRange(int modifier) {
-                return 15 + (modifier - 1) * 9;
-            }
-
-            @Override
-            public int getMaxRange(int modifier) {
-                return super.getMinRange(modifier) + 50;
-            }
-        },
-        ARROW_DAMAGE(48, "Power", 5, 10, EnchantmentTarget.BOW) {
-            @Override
-            public int getMinRange(int modifier) {
-                return 1 + (modifier - 1) * 10;
-            }
-
-            @Override
-            public int getMaxRange(int modifier) {
-                return getMinRange(modifier) + 15;
-            }
-        },
-        ARROW_KNOCKBACK(49, "Punch", 2, 2, EnchantmentTarget.BOW) {
-            @Override
-            public int getMinRange(int modifier) {
-                return 12 + (modifier - 1) * 20;
-            }
-
-            @Override
-            public int getMaxRange(int modifier) {
-                return getMinRange(modifier) + 25;
-            }
-        },
-        ARROW_FIRE(50, "Flame", 1, 2, EnchantmentTarget.BOW) {
-            @Override
-            public int getMinRange(int modifier) {
-                return 20;
-            }
-
-            @Override
-            public int getMaxRange(int modifier) {
-                return 50;
-            }
-        },
-        ARROW_INFINITE(51, "Infinity", 1, 1, EnchantmentTarget.BOW) {
-            @Override
-            public int getMinRange(int modifier) {
-                return 20;
-            }
-
-            @Override
-            public int getMaxRange(int modifier) {
-                return 50;
-            }
-        },
-        LUCK(61, "Luck of the Sea", 3, 2, EnchantmentTarget.FISHING_ROD) {
-            @Override
-            public int getMinRange(int modifier) {
-                return 15 + (modifier - 1) * 9;
-            }
-
-            @Override
-            public int getMaxRange(int modifier) {
-                return super.getMinRange(modifier) + 50;
-            }
-        },
-        LURE(62, "Lure", 3, 2, EnchantmentTarget.FISHING_ROD) {
-            @Override
-            public int getMinRange(int modifier) {
-                return 15 + (modifier - 1) * 9;
-            }
-
-            @Override
-            public int getMaxRange(int modifier) {
-                return super.getMinRange(modifier) + 50;
-            }
-        };
+        KNOCKBACK(19, "Knockback", 2, 5, new Form(5, 20), new Range2(50), EnchantmentTarget.WEAPON),
+        FIRE_ASPECT(20, "Fire Aspect", 2, 2, new Form(10, 20), new Range2(50), EnchantmentTarget.WEAPON),
+        LOOT_BONUS_MOBS(21, "Looting", 3, 2, new Form(15, 9), new Range2(50), EnchantmentTarget.WEAPON),
+        DIG_SPEED(32, "Efficiency", 5, 10, new Form(1, 10), new Range2(50), EnchantmentTarget.TOOL, DIGGING_TOOLS),
+        SILK_TOUCH(33, "Silk Touch", 1, 1, new Const(15), new Range2(50), EnchantmentTarget.TOOL, DIGGING_TOOLS, GROUP_DIG),
+        DURABILITY(34, "Unbreaking", 3, 5, new Form(5, 8), new Range2(50), EnchantmentTarget.TOOL, ALL_THINGS),
+        LOOT_BONUS_BLOCKS(35, "Fortune", 3, 2, new Form(15, 9), new Range2(50), EnchantmentTarget.TOOL, BASE_TOOLS, GROUP_DIG),
+        ARROW_DAMAGE(48, "Power", 5, 10, new Form(1, 10), new Range(15), EnchantmentTarget.BOW),
+        ARROW_KNOCKBACK(49, "Punch", 2, 2, new Form(12, 20), new Range(25), EnchantmentTarget.BOW),
+        ARROW_FIRE(50, "Flame", 1, 2, new Const(20), new Const(50), EnchantmentTarget.BOW),
+        ARROW_INFINITE(51, "Infinity", 1, 1, new Const(20), new Const(50), EnchantmentTarget.BOW),
+        LUCK(61, "Luck of the Sea", 3, 2, new Form(15, 9), new Range2(50), EnchantmentTarget.FISHING_ROD),
+        LURE(62, "Lure", 3, 2, new Form(15, 9), new Range2(50), EnchantmentTarget.FISHING_ROD);
 
         private final int id;
         private final String name;
@@ -331,21 +161,22 @@ public final class GlowEnchantment extends Enchantment implements WeightedRandom
         private final EnchantmentTarget target;
         private final MaterialMatcher matcher;
         private final int group;
-        public final int weight;
+        private final int weight;
+        private final RangeGetter maxRange, minRange;
 
-        Impl(int id, String name, int max, int weight, EnchantmentTarget target) {
-            this(id, name, max, weight, target, new MatcherAdapter(target), GROUP_NONE);
+        Impl(int id, String name, int max, int weight, RangeGetter minRange, RangeGetter maxRange, EnchantmentTarget target) {
+            this(id, name, max, weight, minRange, maxRange, target, new MatcherAdapter(target), GROUP_NONE);
         }
 
-        Impl(int id, String name, int max, int weight, EnchantmentTarget target, int group) {
-            this(id, name, max, weight, target, new MatcherAdapter(target), group);
+        Impl(int id, String name, int max, int weight, RangeGetter minRange, RangeGetter maxRange, EnchantmentTarget target, int group) {
+            this(id, name, max, weight, minRange, maxRange, target, new MatcherAdapter(target), group);
         }
 
-        Impl(int id, String name, int max, int weight, EnchantmentTarget target, MaterialMatcher matcher) {
-            this(id, name, max, weight, target, matcher, GROUP_NONE);
+        Impl(int id, String name, int max, int weight, RangeGetter minRange, RangeGetter maxRange, EnchantmentTarget target, MaterialMatcher matcher) {
+            this(id, name, max, weight, minRange, maxRange, target, matcher, GROUP_NONE);
         }
 
-        Impl(int id, String name, int max, int weight, EnchantmentTarget target, MaterialMatcher matcher, int group) {
+        Impl(int id, String name, int max, int weight, RangeGetter minRange, RangeGetter maxRange, EnchantmentTarget target, MaterialMatcher matcher, int group) {
             this.id = id;
             this.name = name;
             this.maxLevel = max;
@@ -353,14 +184,66 @@ public final class GlowEnchantment extends Enchantment implements WeightedRandom
             this.target = target;
             this.matcher = matcher;
             this.group = group;
+            this.maxRange = maxRange;
+            this.minRange = minRange;
         }
 
         public int getMinRange(int modifier) {
-            return 1 + modifier * 10;
+            return minRange.get(this, modifier); //
         }
 
         public int getMaxRange(int modifier) {
-            return getMinRange(modifier) + 5;
+            return maxRange.get(this, modifier); //getMinRange(modifier) + 5;
+        }
+    }
+
+    private static interface RangeGetter {
+        int get(Impl me, int modifier);
+    }
+
+    @RequiredArgsConstructor
+    private static final class Mul implements RangeGetter {
+        private final int value;
+
+        @Override
+        public int get(Impl me, int modifier) {
+            return modifier * value;
+        }
+    }
+
+    private static final class Const extends Form {
+        Const(int value) {
+            super(value, 0);
+        }
+    }
+
+    @RequiredArgsConstructor
+    private static class Form implements RangeGetter {
+        private final int add, mul;
+
+        @Override
+        public int get(Impl me, int modifier) {
+            return add + (modifier - 1) * mul;
+        }
+    }
+
+    @RequiredArgsConstructor
+    private static final class Range implements RangeGetter {
+        private final int value;
+
+        @Override
+        public int get(Impl me, int modifier) {
+            return me.getMinRange(modifier) + value;
+        }
+    }
+
+    @RequiredArgsConstructor
+    private static final class Range2 implements RangeGetter {
+        private final int value;
+
+        @Override
+        public int get(Impl me, int modifier) {
+            return 1 + modifier * 10 + value;
         }
     }
 
