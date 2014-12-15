@@ -25,7 +25,7 @@ public class GlowMetaEnchantedBook extends GlowMetaItem implements EnchantmentSt
 
     @Override
     public boolean isApplicable(Material material) {
-        return material == Material.WRITTEN_BOOK;
+        return material == Material.ENCHANTED_BOOK;
     }
 
     @Override
@@ -114,6 +114,6 @@ public class GlowMetaEnchantedBook extends GlowMetaItem implements EnchantmentSt
 
     @Override
     public GlowMetaEnchantedBook clone() {
-        return (GlowMetaEnchantedBook) super.clone();
+        return new GlowMetaEnchantedBook(this);
     }
 }

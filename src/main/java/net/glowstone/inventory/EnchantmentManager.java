@@ -18,6 +18,8 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import java.util.*;
 
 public class EnchantmentManager {
+    private static final MaterialMatcher[] ENCHANTABLE_TOOLS = new MaterialMatcher[]{ToolType.AXE, ToolType.PICKAXE, ToolType.SPADE};
+
     private final Random random = new Random();
     private final GlowPlayer player;
     private final GlowEnchantingInventory inventory;
@@ -39,7 +41,7 @@ public class EnchantmentManager {
         ItemStack item = inventory.getItem();
         ItemStack resource = inventory.getResource();
 
-        if (item == null || (player.getGameMode() != GameMode.CREATIVE && (resource == null || resource.getType() != Material.INK_SACK || resource.getDurability() != 4))) {
+        if (item == null || !canEnchant(item) || player.getGameMode() != GameMode.CREATIVE && (resource == null || resource.getType() != Material.INK_SACK || resource.getDurability() != 4)) {
             clearEnch();
         } else {
             calculateNewEnchantsAndLevels();
@@ -72,7 +74,7 @@ public class EnchantmentManager {
             try {
                 if (isBook) {
                     EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
-                    meta.addStoredEnchant(enchantment.getKey(), enchantment.getValue(), true); //TODO validate true
+                    meta.addStoredEnchant(enchantment.getKey(), enchantment.getValue(), true); //TODO is true correct here?
                     item.setItemMeta(meta);
                 } else {
                     item.addUnsafeEnchantment(enchantment.getKey(), enchantment.getValue());
@@ -111,8 +113,9 @@ public class EnchantmentManager {
             enchLevel[i] = -1;
         }
 
-        PrepareItemEnchantEvent event = new PrepareItemEnchantEvent(player, player.getOpenInventory(), inventory.getLocation().getBlock(), inventory.getItem(), enchLevelCosts, realBookshelfs);
-        event.setCancelled(inventory.getItem().getEnchantments().size() > 0); //TODO only tools (expect books)
+        ItemStack item = inventory.getItem();
+        PrepareItemEnchantEvent event = new PrepareItemEnchantEvent(player, player.getOpenInventory(), inventory.getLocation().getBlock(), item, enchLevelCosts, realBookshelfs);
+        event.setCancelled(!canEnchant(item));
         EventFactory.callEvent(event);
         if (event.isCancelled()) {
             for (int i = 0; i < enchLevelCosts.length; i++)
@@ -120,7 +123,7 @@ public class EnchantmentManager {
         } else {
             for (int i = 0; i < enchLevelCosts.length; i++) {
                 if (enchLevelCosts[i] == 0) continue;
-                List<LeveledEnchant> enchants = calculateCurrentEnchants(inventory.getItem(), i, enchLevelCosts[i]);
+                List<LeveledEnchant> enchants = calculateCurrentEnchants(item, i, enchLevelCosts[i]);
                 if (enchants != null && !enchants.isEmpty()) {
                     LeveledEnchant chosen = WeightedRandom.getRandom(random, enchants);
                     this.enchId[i] = chosen.getEnchantment().getId();
@@ -283,6 +286,39 @@ public class EnchantmentManager {
         return false;
     }
 
+    private static boolean canEnchant(ItemStack item) {
+        Material type = item.getType();
+
+        switch (type) {
+            case ENCHANTED_BOOK:
+                return false;
+            case BOOK:
+                return item.getAmount() == 1;
+            case FISHING_ROD:
+            case BOW:
+                return item.getEnchantments().isEmpty();
+            default:
+                return (isEnchantableTool(type) || isCloth(type) || ToolType.SWORD.matches(type)) && item.getEnchantments().isEmpty();
+
+        }
+    }
+
+    private static boolean isCloth(Material type) {
+        for (MaterialMatcher mm : ClothType.values())
+            if (mm.matches(type))
+                return true;
+
+        return false;
+    }
+
+    private static boolean isEnchantableTool(Material type) {
+        for (MaterialMatcher mm : ENCHANTABLE_TOOLS)
+            if (mm.matches(type))
+                return true;
+
+        return false;
+    }
+
     private static Map<Enchantment, Integer> toMap(List<LeveledEnchant> list) {
         Map<Enchantment, Integer> map = new HashMap<>(list.size());
         for (LeveledEnchant enchant : list)
@@ -296,7 +332,7 @@ public class EnchantmentManager {
         boolean isBook = item.getType() == Material.BOOK;
 
         for (Enchantment enchantment : Enchantment.values()) {
-            if (enchantment.canEnchantItem(item) || isBook) {
+            if (isBook || enchantment.canEnchantItem(item)) {
                 for (int level = enchantment.getStartLevel(); level <= enchantment.getMaxLevel(); level++) {
                     if (((GlowEnchantment) enchantment).isInRange(level, modifier)) {
                         enchantments.add(new LeveledEnchant(enchantment, level));
