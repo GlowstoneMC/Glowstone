@@ -3,7 +3,7 @@ package net.glowstone.inventory;
 
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
-import net.glowstone.constants.enchantments.GlowEnchantment;
+import net.glowstone.constants.GlowEnchantment;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.WeightedRandom;
 import org.bukkit.GameMode;
@@ -195,10 +195,14 @@ public class EnchantmentManager {
         int modifier = calculateModifier(itemStack);
         if (modifier <= 0) return -1;
 
-        modifier /= 2;
-        modifier = cost + 1 + random.nextInt((modifier / 2) + 1) + random.nextInt((modifier / 2) + 1);
-
         float randomValue = 1 + (random.nextFloat() + random.nextFloat() - 1.0F) * 0.15F;
+
+
+        modifier /= 4;
+        modifier += 1;
+        modifier = random.nextInt(modifier) + random.nextInt(modifier);
+        modifier += 1 + cost;
+
         modifier = Math.round(modifier * randomValue);
         modifier = Math.max(1, modifier);
 
