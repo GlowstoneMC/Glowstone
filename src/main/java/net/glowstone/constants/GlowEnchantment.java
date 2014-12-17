@@ -129,31 +129,31 @@ public final class GlowEnchantment extends Enchantment implements WeightedRandom
     private static final int GROUP_DIG = 3;
 
     public static enum Impl {
-        PROTECTION_ENVIRONMENTAL(0, "Protection", 4, 10, EnchantmentTarget.ARMOR, GROUP_PROTECT),
-        PROTECTION_FIRE(1, "Fire Protection", 4, 5, EnchantmentTarget.ARMOR, GROUP_PROTECT),
-        PROTECTION_FALL(2, "Feather Falling", 4, 5, EnchantmentTarget.ARMOR_FEET, GROUP_PROTECT),
-        PROTECTION_EXPLOSIONS(3, "Blast Protection", 4, 2, EnchantmentTarget.ARMOR),
-        PROTECTION_PROJECTILE(4, "Projectile Protection", 4, 5, EnchantmentTarget.ARMOR, GROUP_PROTECT),
-        OXYGEN(5, "Respiration", 3, 2, new Mul(10), new Range(30), EnchantmentTarget.ARMOR_HEAD),
-        WATER_WORKER(6, "Aqua Affinity", 1, 2, new Const(1), new Const(41), EnchantmentTarget.ARMOR_HEAD),
-        THORNS(7, "Thorns", 3, 1, new Form(10, 20), new Range2(50), EnchantmentTarget.ARMOR_TORSO, new MatcherAdapter(EnchantmentTarget.ARMOR)),
-        DEPTH_STRIDER(8, "Depth Strider", 3, 2, new Mul(10), new Range(15), EnchantmentTarget.ARMOR_FEET),
-        DAMAGE_ALL(16, "Sharpness", 5, 10, EnchantmentTarget.WEAPON, SWORD_OR_AXE, GROUP_ATTACK),
-        DAMAGE_UNDEAD(17, "Smite", 5, 5, EnchantmentTarget.WEAPON, SWORD_OR_AXE, GROUP_ATTACK),
-        DAMAGE_ARTHROPODS(18, "Bane of Arthropods", 5, 5, EnchantmentTarget.WEAPON, SWORD_OR_AXE, GROUP_ATTACK),
-        KNOCKBACK(19, "Knockback", 2, 5, new Form(5, 20), new Range2(50), EnchantmentTarget.WEAPON),
-        FIRE_ASPECT(20, "Fire Aspect", 2, 2, new Form(10, 20), new Range2(50), EnchantmentTarget.WEAPON),
-        LOOT_BONUS_MOBS(21, "Looting", 3, 2, new Form(15, 9), new Range2(50), EnchantmentTarget.WEAPON),
-        DIG_SPEED(32, "Efficiency", 5, 10, new Form(1, 10), new Range2(50), EnchantmentTarget.TOOL, DIGGING_TOOLS),
-        SILK_TOUCH(33, "Silk Touch", 1, 1, new Const(15), new Range2(50), EnchantmentTarget.TOOL, DIGGING_TOOLS, GROUP_DIG),
-        DURABILITY(34, "Unbreaking", 3, 5, new Form(5, 8), new Range2(50), EnchantmentTarget.TOOL, ALL_THINGS),
-        LOOT_BONUS_BLOCKS(35, "Fortune", 3, 2, new Form(15, 9), new Range2(50), EnchantmentTarget.TOOL, BASE_TOOLS, GROUP_DIG),
-        ARROW_DAMAGE(48, "Power", 5, 10, new Form(1, 10), new Range(15), EnchantmentTarget.BOW),
-        ARROW_KNOCKBACK(49, "Punch", 2, 2, new Form(12, 20), new Range(25), EnchantmentTarget.BOW),
-        ARROW_FIRE(50, "Flame", 1, 2, new Const(20), new Const(50), EnchantmentTarget.BOW),
-        ARROW_INFINITE(51, "Infinity", 1, 1, new Const(20), new Const(50), EnchantmentTarget.BOW),
-        LUCK(61, "Luck of the Sea", 3, 2, new Form(15, 9), new Range2(50), EnchantmentTarget.FISHING_ROD),
-        LURE(62, "Lure", 3, 2, new Form(15, 9), new Range2(50), EnchantmentTarget.FISHING_ROD);
+        PROTECTION_ENVIRONMENTAL(0, "Protection", 4, 10, new Formula(1, 11), new Range(20), EnchantmentTarget.ARMOR, GROUP_PROTECT),
+        PROTECTION_FIRE(1, "Fire Protection", 4, 5, new Formula(10, 8), new Range(12), EnchantmentTarget.ARMOR, GROUP_PROTECT),
+        PROTECTION_FALL(2, "Feather Falling", 4, 5, new Formula(5, 6), new Range(10), EnchantmentTarget.ARMOR_FEET, GROUP_PROTECT),
+        PROTECTION_EXPLOSIONS(3, "Blast Protection", 4, 2, new Formula(5, 8), new Range(12), EnchantmentTarget.ARMOR),
+        PROTECTION_PROJECTILE(4, "Projectile Protection", 4, 5, new Formula(3, 6), new Range(15), EnchantmentTarget.ARMOR, GROUP_PROTECT),
+        OXYGEN(5, "Respiration", 3, 2, new Formula(0, 10, 0), new Range(30), EnchantmentTarget.ARMOR_HEAD),
+        WATER_WORKER(6, "Aqua Affinity", 1, 2, new Formula(1), new Formula(41), EnchantmentTarget.ARMOR_HEAD),
+        THORNS(7, "Thorns", 3, 1, new Formula(10, 20), new Formula(51, 10, 0), EnchantmentTarget.ARMOR_TORSO, new MatcherAdapter(EnchantmentTarget.ARMOR)),
+        DEPTH_STRIDER(8, "Depth Strider", 3, 2, new Formula(0, 10, 0), new Range(15), EnchantmentTarget.ARMOR_FEET),
+        DAMAGE_ALL(16, "Sharpness", 5, 10, new Formula(1, 11), new Range(20), EnchantmentTarget.WEAPON, SWORD_OR_AXE, GROUP_ATTACK),
+        DAMAGE_UNDEAD(17, "Smite", 5, 5, new Formula(5, 8), new Range(20), EnchantmentTarget.WEAPON, SWORD_OR_AXE, GROUP_ATTACK),
+        DAMAGE_ARTHROPODS(18, "Bane of Arthropods", 5, 5, new Formula(5, 8), new Range(20), EnchantmentTarget.WEAPON, SWORD_OR_AXE, GROUP_ATTACK),
+        KNOCKBACK(19, "Knockback", 2, 5, new Formula(5, 20), new Formula(51, 10, 0), EnchantmentTarget.WEAPON),
+        FIRE_ASPECT(20, "Fire Aspect", 2, 2, new Formula(10, 20), new Formula(51, 10, 0), EnchantmentTarget.WEAPON),
+        LOOT_BONUS_MOBS(21, "Looting", 3, 2, new Formula(15, 9), new Formula(51, 10, 0), EnchantmentTarget.WEAPON),
+        DIG_SPEED(32, "Efficiency", 5, 10, new Formula(1, 10), new Formula(51, 10, 0), EnchantmentTarget.TOOL, DIGGING_TOOLS),
+        SILK_TOUCH(33, "Silk Touch", 1, 1, new Formula(15), new Formula(51, 10, 0), EnchantmentTarget.TOOL, DIGGING_TOOLS, GROUP_DIG),
+        DURABILITY(34, "Unbreaking", 3, 5, new Formula(5, 8), new Formula(51, 10, 0), EnchantmentTarget.TOOL, ALL_THINGS),
+        LOOT_BONUS_BLOCKS(35, "Fortune", 3, 2, new Formula(15, 9), new Formula(51, 10, 0), EnchantmentTarget.TOOL, BASE_TOOLS, GROUP_DIG),
+        ARROW_DAMAGE(48, "Power", 5, 10, new Formula(1, 10), new Range(15), EnchantmentTarget.BOW),
+        ARROW_KNOCKBACK(49, "Punch", 2, 2, new Formula(12, 20), new Range(25), EnchantmentTarget.BOW),
+        ARROW_FIRE(50, "Flame", 1, 2, new Formula(20), new Formula(50), EnchantmentTarget.BOW),
+        ARROW_INFINITE(51, "Infinity", 1, 1, new Formula(20), new Formula(50), EnchantmentTarget.BOW),
+        LUCK(61, "Luck of the Sea", 3, 2, new Formula(15, 9), new Formula(10, 10, 10), EnchantmentTarget.FISHING_ROD),
+        LURE(62, "Lure", 3, 2, new Formula(15, 9), new Formula(51, 10, 0), EnchantmentTarget.FISHING_ROD);
 
         private final int id;
         private final String name;
@@ -202,28 +202,20 @@ public final class GlowEnchantment extends Enchantment implements WeightedRandom
     }
 
     @RequiredArgsConstructor
-    private static final class Mul implements RangeGetter {
-        private final int value;
+    private static class Formula implements RangeGetter {
+        private final int n, m, a;
+
+        Formula(int n) {
+            this(n, 0);
+        }
+
+        Formula(int n, int m) {
+            this(n, m, 1);
+        }
 
         @Override
         public int get(Impl me, int modifier) {
-            return modifier * value;
-        }
-    }
-
-    private static final class Const extends Form {
-        Const(int value) {
-            super(value, 0);
-        }
-    }
-
-    @RequiredArgsConstructor
-    private static class Form implements RangeGetter {
-        private final int add, mul;
-
-        @Override
-        public int get(Impl me, int modifier) {
-            return add + (modifier - 1) * mul;
+            return n + (modifier - a) * m;
         }
     }
 
@@ -234,16 +226,6 @@ public final class GlowEnchantment extends Enchantment implements WeightedRandom
         @Override
         public int get(Impl me, int modifier) {
             return me.getMinRange(modifier) + value;
-        }
-    }
-
-    @RequiredArgsConstructor
-    private static final class Range2 implements RangeGetter {
-        private final int value;
-
-        @Override
-        public int get(Impl me, int modifier) {
-            return 1 + modifier * 10 + value;
         }
     }
 
