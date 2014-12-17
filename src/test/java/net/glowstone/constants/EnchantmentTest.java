@@ -1,6 +1,5 @@
 package net.glowstone.constants;
 
-import net.glowstone.constants.enchantments.GlowEnchantment;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentWrapper;
 import org.junit.BeforeClass;
@@ -17,7 +16,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 /**
- * Tests for {@link net.glowstone.constants.enchantments.GlowEnchantment}.
+ * Tests for {@link GlowEnchantment}.
  */
 @RunWith(Parameterized.class)
 public class EnchantmentTest {
