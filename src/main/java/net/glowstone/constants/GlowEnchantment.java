@@ -128,7 +128,7 @@ public final class GlowEnchantment extends Enchantment implements WeightedRandom
     private static final int GROUP_ATTACK = 2;
     private static final int GROUP_DIG = 3;
 
-    public static enum Impl {
+    private static enum Impl {
         PROTECTION_ENVIRONMENTAL(0, "Protection", 4, 10, new Formula(1, 11), new Range(20), EnchantmentTarget.ARMOR, GROUP_PROTECT),
         PROTECTION_FIRE(1, "Fire Protection", 4, 5, new Formula(10, 8), new Range(12), EnchantmentTarget.ARMOR, GROUP_PROTECT),
         PROTECTION_FALL(2, "Feather Falling", 4, 5, new Formula(5, 6), new Range(10), EnchantmentTarget.ARMOR_FEET, GROUP_PROTECT),
@@ -188,21 +188,21 @@ public final class GlowEnchantment extends Enchantment implements WeightedRandom
             this.minRange = minRange;
         }
 
-        public int getMinRange(int modifier) {
-            return minRange.get(this, modifier); //
+        int getMinRange(int modifier) {
+            return minRange.get(this, modifier);
         }
 
-        public int getMaxRange(int modifier) {
-            return maxRange.get(this, modifier); //getMinRange(modifier) + 5;
+        int getMaxRange(int modifier) {
+            return maxRange.get(this, modifier);
         }
     }
 
-    private static interface RangeGetter {
+    private interface RangeGetter {
         int get(Impl me, int modifier);
     }
 
     @RequiredArgsConstructor
-    private static class Formula implements RangeGetter {
+    private static final class Formula implements RangeGetter {
         private final int n, m, a;
 
         Formula(int n) {
