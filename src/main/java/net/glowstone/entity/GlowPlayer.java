@@ -1895,6 +1895,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             this.totalExperience = 0;
         }
         setLevel(level);
-        setXpSeed(new Random().nextInt()); //TODO
+        setXpSeed(new Random().nextInt()); //TODO use entity's random instance?
     }
 }

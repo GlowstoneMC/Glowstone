@@ -93,7 +93,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     public GlowHumanEntity(Location location, PlayerProfile profile) {
         super(location);
         this.profile = profile;
-        this.xpSeed = new Random().nextInt();
+        this.xpSeed = new Random().nextInt(); //TODO use entity's random instance?
         permissions = new PermissibleBase(this);
         gameMode = server.getDefaultGameMode();
 
