@@ -59,8 +59,7 @@ public class BlockFlowerPot extends BlockType {
             // Only change contents if there is none and if the held item is valid pot contents.
             if (pot.getContents() == null && heldItem != null && isValidContents(heldItem.getData())) {
                 pot.setContents(heldItem.getData().clone()); // Null-check in isValidContents.
-                pot.update();
-                return true;
+                return pot.update();
             }
         }
         return false;
