@@ -2,6 +2,7 @@ package net.glowstone.block.block2;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
+import net.glowstone.block.block2.behavior.BlockBehavior;
 import net.glowstone.block.block2.sponge.BlockProperty;
 import net.glowstone.block.block2.sponge.BlockState;
 import net.glowstone.block.block2.sponge.BlockType;
@@ -14,14 +15,18 @@ import java.util.*;
 public class GlowBlockType implements BlockType {
 
     private final String id;
+    private final BlockBehavior behavior;
+
     private final List<GlowBlockState> states;
     private final GlowBlockState[] byData = new GlowBlockState[16];
     private final Map<String, BlockProperty<?>> properties;
 
     private boolean tickRandomly;
 
-    public GlowBlockType(String id, List<BlockProperty<?>> propertyList) {
+    public GlowBlockType(String id, BlockBehavior behavior, List<BlockProperty<?>> propertyList) {
         this.id = id;
+        this.behavior = behavior;
+
         if (propertyList.isEmpty()) {
             properties = new HashMap<>();
             states = new ArrayList<>();
@@ -68,6 +73,10 @@ public class GlowBlockType implements BlockType {
 
     public int getOldId() {
         return -1;
+    }
+
+    public BlockBehavior getBehavior() {
+        return behavior;
     }
 
     @Override

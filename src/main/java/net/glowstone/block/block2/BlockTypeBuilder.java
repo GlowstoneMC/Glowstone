@@ -1,7 +1,11 @@
 package net.glowstone.block.block2;
 
+import net.glowstone.block.block2.behavior.BlockBehavior;
+import net.glowstone.block.block2.types.DefaultBlockBehavior;
+import net.glowstone.block.block2.behavior.ListBlockBehavior;
 import net.glowstone.block.block2.sponge.BlockProperty;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,6 +16,7 @@ public final class BlockTypeBuilder {
 
     private final String id;
     private final List<BlockProperty<?>> propertyList = new LinkedList<>();
+    private final List<BlockBehavior> behaviors = new LinkedList<>();
 
     public BlockTypeBuilder(String id) {
         this.id = id;
@@ -22,6 +27,17 @@ public final class BlockTypeBuilder {
 
     public BlockTypeBuilder oldId(int i) {
         // todo
+        return this;
+    }
+
+    public BlockTypeBuilder behavior(BlockBehavior behavior) {
+        behaviors.add(behavior);
+        return this;
+    }
+
+    public BlockTypeBuilder behavior(BlockBehavior first, BlockBehavior... rest) {
+        behaviors.add(first);
+        Collections.addAll(behaviors, rest);
         return this;
     }
 
@@ -49,7 +65,13 @@ public final class BlockTypeBuilder {
     // Completion
 
     public GlowBlockType build() {
-        return new GlowBlockType(id, propertyList);
+        BlockBehavior behavior;
+        if (behaviors.isEmpty()) {
+            behavior = DefaultBlockBehavior.instance;
+        } else {
+            behavior = new ListBlockBehavior(behaviors);
+        }
+        return new GlowBlockType(id, behavior, propertyList);
     }
 
     GlowBlockType register() {
