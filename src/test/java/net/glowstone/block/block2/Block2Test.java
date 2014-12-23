@@ -1,5 +1,8 @@
 package net.glowstone.block.block2;
 
+import net.glowstone.block.block2.sponge.BlockState;
+import net.glowstone.block.block2.sponge.BlockType;
+import net.glowstone.block.block2.types.StoneVariant;
 import org.junit.Test;
 
 /**
@@ -7,18 +10,29 @@ import org.junit.Test;
  */
 public class Block2Test {
 
+    static {
+        BlockType t;
+        //t = BlockRegistry.instance.getBlock("minecraft:stone");
+        //t = Blocks.STONE;
+    }
+
     @Test
     public void stuff() {
-        BlockRegistry r = BlockRegistry.instance;
-        BlockType t = r.getBlock("minecraft:stone");
-        System.out.println(r);
+        BlockRegistry reg = BlockRegistry.instance;
+        System.out.println(reg);
+
+        BlockType t = reg.getBlock("minecraft:stone");
         System.out.println(t);
-        BlockType t2 = t.withProperty(BlockStone.VARIANT, BlockStone.Variant.ANDESITE);
-        System.out.println(t2);
-        BlockType t3 = t.withProperty(BlockStone.VARIANT, BlockStone.Variant.ANDESITE);
-        System.out.println(t.isBaseType() + " " + (t2 == t3));
-        System.out.println(t2.getBaseType() + " " + (t2.getBaseType() == t));
-        t.withProperty(BlockStone.VARIANT, 5);
+
+        BlockState s = t.getDefaultState();
+        System.out.println(s);
+
+        BlockState s2 = s.cycleProperty(s.getPropertyByName("variant").get());
+        System.out.println(s2);
+
+        BlockState s3 = s.withProperty(s.getPropertyByName("variant").get(), StoneVariant.ANDESITE);
+        System.out.println(s3);
+        System.out.println(s3.getType());
     }
 
 }
