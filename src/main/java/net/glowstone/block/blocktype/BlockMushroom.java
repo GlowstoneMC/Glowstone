@@ -67,7 +67,7 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
         final BlockStateDelegate blockStateDelegate = new BlockStateDelegate();
         final TreeGenerator generator = new TreeGenerator(blockStateDelegate);
         if (generator.generate(random, loc, type)) {
-            final List<BlockState> blockStates = new ArrayList<BlockState>(blockStateDelegate.getBlockStates());
+            final List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
             StructureGrowEvent growEvent = new StructureGrowEvent(loc, type, true, player, blockStates);
             EventFactory.callEvent(growEvent);
             if (!growEvent.isCancelled()) {

@@ -95,7 +95,7 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
         final TreeGenerator generator = new TreeGenerator(blockStateDelegate);
         boolean canGrow = false;
         if (generator.generate(random, loc, type)) {
-            final List<BlockState> blockStates = new ArrayList<BlockState>(blockStateDelegate.getBlockStates());
+            final List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
             StructureGrowEvent growEvent =
                     new StructureGrowEvent(loc, type, player == null ? false : true, player, blockStates);
             EventFactory.callEvent(growEvent);
