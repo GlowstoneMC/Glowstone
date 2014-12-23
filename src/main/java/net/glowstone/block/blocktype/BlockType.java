@@ -185,18 +185,6 @@ public class BlockType extends ItemType {
     }
 
     /**
-     * Called when a player breaks this block. Called before {@link #onBlockChanged}
-     * is called, and only if a player has actually broken a block. For general-case
-     * block changes, use {@link #onBlockChanged} instead.
-     * @param block The block being dug
-     * @param player The player digging
-     * @param itemInHand The ItemStack the player was holding
-     */
-    public void onBreak(GlowBlock block, GlowPlayer player, ItemStack itemInHand) {
-        // do nothing
-    }
-
-    /**
      * Called when the BlockType should calculate the current physics.
      * @param me The block
      */
