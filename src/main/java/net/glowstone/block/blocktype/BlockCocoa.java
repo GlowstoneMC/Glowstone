@@ -63,7 +63,7 @@ public class BlockCocoa extends BlockAttachable implements IBlockGrowable {
         } else {
             warnMaterialData(CocoaPlant.class, data);
         }
-        return Collections.unmodifiableList(Arrays.asList(new ItemStack[0]));
+        return BlockDropless.EMPTY_STACK;
     }
 
     @Override

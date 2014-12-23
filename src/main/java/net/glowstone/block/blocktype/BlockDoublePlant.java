@@ -15,7 +15,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
 
-public class BlockDoublePlant extends BlockAttachable implements IBlockGrowable {
+public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowable {
 
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
@@ -49,7 +49,7 @@ public class BlockDoublePlant extends BlockAttachable implements IBlockGrowable 
         } else {
             warnMaterialData(DoublePlant.class, data);
         }
-        return Collections.unmodifiableList(Arrays.asList(new ItemStack[0]));
+        return BlockDropless.EMPTY_STACK;
     }
 
     @Override

@@ -162,10 +162,10 @@ public final class ItemTable {
         reg(Material.DAYLIGHT_DETECTOR_INVERTED, new BlockDaylightDetector());
         reg(Material.YELLOW_FLOWER, new BlockNeedsAttached());
         reg(Material.RED_ROSE, new BlockNeedsAttached());
-        reg(Material.BROWN_MUSHROOM, new BlockNeedsAttached());
-        reg(Material.RED_MUSHROOM, new BlockNeedsAttached());
+        reg(Material.BROWN_MUSHROOM, new BlockMushroom(Material.BROWN_MUSHROOM));
+        reg(Material.RED_MUSHROOM, new BlockMushroom(Material.RED_MUSHROOM));
         reg(Material.SUGAR_CANE_BLOCK, new BlockSugarCane());
-        reg(Material.SAPLING, new BlockNeedsAttached());
+        reg(Material.SAPLING, new BlockSapling());
         reg(Material.RAILS, new BlockNeedsAttached());
         reg(Material.ACTIVATOR_RAIL, new BlockNeedsAttached());
         reg(Material.DETECTOR_RAIL, new BlockNeedsAttached());
@@ -184,9 +184,6 @@ public final class ItemTable {
         reg(Material.SPONGE, new BlockSponge());
         reg(Material.TNT, new BlockTNT());
         reg(Material.DOUBLE_PLANT, new BlockDoublePlant());
-        reg(Material.BROWN_MUSHROOM, new BlockMushroom(Material.BROWN_MUSHROOM));
-        reg(Material.RED_MUSHROOM, new BlockMushroom(Material.RED_MUSHROOM));
-        reg(Material.SAPLING, new BlockSapling());
 
         reg(Material.FLINT_AND_STEEL, new ItemFlintAndSteel());
         reg(Material.SIGN, new ItemSign());

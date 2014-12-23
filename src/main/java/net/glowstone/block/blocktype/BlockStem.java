@@ -15,7 +15,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
 
-public class BlockStem extends BlockAttachable implements IBlockGrowable {
+public class BlockStem extends BlockNeedsAttached implements IBlockGrowable {
     private Material fruitType;
     private Material seedsType;
 
@@ -42,7 +42,7 @@ public class BlockStem extends BlockAttachable implements IBlockGrowable {
         if (block.getState().getRawData() >= CropState.RIPE.ordinal()) {
             return Collections.unmodifiableList(Arrays.asList(new ItemStack(seedsType, random.nextInt(4))));
         } else {
-            return Collections.unmodifiableList(Arrays.asList(new ItemStack[0]));
+            return BlockDropless.EMPTY_STACK;
         }
     }
 
