@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockFadeEvent;
+import org.bukkit.inventory.ItemStack;
 
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
@@ -14,6 +15,10 @@ import net.glowstone.block.GlowBlockState;
 public class BlockSoil extends BlockType {
 
     private Material[] possibleCrops = {Material.CROPS, Material.CARROT, Material.POTATO, Material.MELON_STEM, Material.PUMPKIN_STEM};
+
+    public BlockSoil() {
+        setDrops(new ItemStack(Material.DIRT, 1));
+    }
 
     @Override
     public boolean canTickRandomly() {

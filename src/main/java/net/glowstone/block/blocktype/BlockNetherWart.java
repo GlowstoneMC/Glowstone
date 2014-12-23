@@ -1,13 +1,19 @@
 package net.glowstone.block.blocktype;
 
+import org.bukkit.Material;
 import org.bukkit.NetherWartsState;
 import org.bukkit.event.block.BlockGrowEvent;
+import org.bukkit.inventory.ItemStack;
 
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 
-public class BlockNetherWart extends BlockType {
+public class BlockNetherWart extends BlockNeedsAttached {
+
+    public BlockNetherWart() {
+        setDrops(new ItemStack(Material.NETHER_STALK, 1));
+    }
 
     @Override
     public boolean canTickRandomly() {

@@ -9,7 +9,7 @@ import org.bukkit.material.Tree;
 
 import net.glowstone.block.GlowBlock;
 
-public class BlockSapling extends BlockType {
+public class BlockSapling extends BlockNeedsAttached {
 
     @Override
     public boolean canTickRandomly() {

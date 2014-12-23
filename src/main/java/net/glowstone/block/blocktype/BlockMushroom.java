@@ -9,7 +9,7 @@ import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 
-public class BlockMushroom extends BlockType {
+public class BlockMushroom extends BlockNeedsAttached {
 
     private final Material mushroomType;
 

@@ -4,12 +4,18 @@ import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 
+import org.bukkit.Material;
 import org.bukkit.event.block.BlockGrowEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.CocoaPlant;
 import org.bukkit.material.CocoaPlant.CocoaPlantSize;
 import org.bukkit.material.MaterialData;
 
 public class BlockCocoa extends BlockAttachable {
+
+    public BlockCocoa() {
+        setDrops(new ItemStack(Material.INK_SACK, 1, (short) 3));
+    }
 
     @Override
     public boolean canTickRandomly() {
