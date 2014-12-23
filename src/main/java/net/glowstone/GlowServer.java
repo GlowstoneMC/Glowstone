@@ -406,6 +406,7 @@ public final class GlowServer implements Server {
         ipBans.load();
 
         // Start loading plugins
+        new LibraryManager(this).run();
         loadPlugins();
         enablePlugins(PluginLoadOrder.STARTUP);
 
