@@ -1,8 +1,8 @@
 package net.glowstone.block.block2;
 
-import net.glowstone.block.block2.behavior.BlockBehavior;
-import net.glowstone.block.block2.types.DefaultBlockBehavior;
+import net.glowstone.block.block2.sponge.BlockState;
 import net.glowstone.block.block2.sponge.BlockType;
+import net.glowstone.block.block2.details.DefaultBlockBehavior;
 import org.bukkit.Material;
 
 import java.util.HashMap;
@@ -26,13 +26,14 @@ public final class BlockRegistry {
     }
 
     public void register(BlockType type) {
-        types.put(type.getId(), type);
-        if (type instanceof GlowBlockType) {
-            GlowBlockType glowType = (GlowBlockType) type;
-            if (glowType.getOldId() != -1) {
-                oldIds.put(glowType.getOldId(), type);
-            }
+        if (types.containsKey(type.getId())) {
+            throw new IllegalArgumentException("Cannot register duplicate '" + type.getId() + "'");
         }
+        types.put(type.getId(), type);
+    }
+
+    void registerOldId(int oldId, GlowBlockType type) {
+        oldIds.put(oldId, type);
     }
 
     public BlockType getBlock(String id) {
@@ -40,8 +41,16 @@ public final class BlockRegistry {
     }
 
     @Deprecated
-    public BlockType getByOldId(int id) {
+    public BlockType getByTypeId(int id) {
         return oldIds.get(id);
+    }
+
+    public BlockState getByFullId(int id) {
+        BlockType type = getByTypeId(id >> 4);
+        if (type != null) {
+            return type.getStateFromDataValue((byte)(id & 0xf));
+        }
+        return null;
     }
 
     public BlockBehavior getBehavior(BlockType type) {
@@ -57,6 +66,6 @@ public final class BlockRegistry {
     }
 
     public BlockBehavior getBehavior(Material material) {
-        return getBehavior(getByOldId(material.getId()));
+        return getBehavior(getByTypeId(material.getId()));
     }
 }

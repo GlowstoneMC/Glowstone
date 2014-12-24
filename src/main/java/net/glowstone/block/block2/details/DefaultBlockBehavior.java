@@ -1,7 +1,7 @@
-package net.glowstone.block.block2.types;
+package net.glowstone.block.block2.details;
 
 import net.glowstone.block.GlowBlock;
-import net.glowstone.block.block2.behavior.BlockBehavior;
+import net.glowstone.block.block2.BlockBehavior;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;

@@ -2,19 +2,13 @@ package net.glowstone.block.block2;
 
 import net.glowstone.block.block2.sponge.BlockState;
 import net.glowstone.block.block2.sponge.BlockType;
-import net.glowstone.block.block2.types.StoneVariant;
+import net.glowstone.block.block2.details.StoneVariant;
 import org.junit.Test;
 
 /**
  * Simple tests for the new block type system.
  */
 public class Block2Test {
-
-    static {
-        BlockType t;
-        //t = BlockRegistry.instance.getBlock("minecraft:stone");
-        //t = Blocks.STONE;
-    }
 
     @Test
     public void stuff() {
@@ -32,7 +26,22 @@ public class Block2Test {
 
         BlockState s3 = s.withProperty(s.getPropertyByName("variant").get(), StoneVariant.ANDESITE);
         System.out.println(s3);
-        System.out.println(s3.getType());
+
+        int i = 0;
+        while (true) {
+            BlockType type = reg.getByTypeId(i);
+            if (type == null) break;
+            System.out.println(type);
+            System.out.println("  0> " + type.getDefaultState());
+
+            for (byte j = 1; j < 16; ++j) {
+                BlockState state = type.getStateFromDataValue(j);
+                if (state != null) {
+                    System.out.println("  " + j + ": " + state);
+                }
+            }
+            ++i;
+        }
     }
 
 }

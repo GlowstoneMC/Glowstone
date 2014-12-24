@@ -2,7 +2,6 @@ package net.glowstone.block.block2;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
-import net.glowstone.block.block2.behavior.BlockBehavior;
 import net.glowstone.block.block2.sponge.BlockProperty;
 import net.glowstone.block.block2.sponge.BlockState;
 import net.glowstone.block.block2.sponge.BlockType;
@@ -23,14 +22,16 @@ public class GlowBlockType implements BlockType {
 
     private boolean tickRandomly;
 
-    public GlowBlockType(String id, BlockBehavior behavior, List<BlockProperty<?>> propertyList) {
+    public GlowBlockType(String id, BlockBehavior behavior, List<BlockProperty<?>> propertyList, IdResolver idResolver) {
         this.id = id;
         this.behavior = behavior;
 
         if (propertyList.isEmpty()) {
             properties = new HashMap<>();
-            states = new ArrayList<>();
-            states.add(new GlowBlockState(this, ImmutableMap.<BlockProperty<?>, Comparable<?>>of()));
+            GlowBlockState onlyState = new GlowBlockState(this, ImmutableMap.<BlockProperty<?>, Comparable<?>>of());
+            states = Arrays.asList(onlyState);
+            byData[0] = onlyState;
+            onlyState.setIndex((byte) 0);
             return;
         }
 
@@ -44,7 +45,8 @@ public class GlowBlockType implements BlockType {
         }
 
         // generate all possible states from list of properties
-        for (int i = 0; ; ++i) {
+        int i = 0;
+        while (true) {
             ImmutableMap.Builder<BlockProperty<?>, Comparable<?>> builder = ImmutableMap.builder();
             int j = i;
             for (Pair<BlockProperty<?>, List<Comparable<?>>> pair : allValues) {
@@ -56,23 +58,16 @@ public class GlowBlockType implements BlockType {
                 // end when we hit indexes not covered by the above
                 break;
             }
-            states.add(new GlowBlockState(this, builder.build()));
+
+            GlowBlockState state = new GlowBlockState(this, builder.build());
+            int stateId = idResolver.getId(state, i);
+            states.add(state);
+            if (stateId >= 0 && stateId < byData.length) {
+                byData[stateId] = state;
+                state.setIndex((byte) stateId);
+            }
+            ++i;
         }
-    }
-
-    void autoIndex() {
-        for (int i = 0; i < states.size() && i < 16; ++i) {
-            setIndex(i, states.get(i));
-        }
-    }
-
-    void setIndex(int i, GlowBlockState state) {
-        byData[i] = state;
-        byData[i].setIndex((byte) i);
-    }
-
-    public int getOldId() {
-        return -1;
     }
 
     public BlockBehavior getBehavior() {
@@ -141,6 +136,7 @@ public class GlowBlockType implements BlockType {
     private static class Pair<A, B> {
         final A first;
         final B second;
+
         public Pair(A first, B second) {
             this.first = first;
             this.second = second;

@@ -1,4 +1,4 @@
-package net.glowstone.block.block2.behavior;
+package net.glowstone.block.block2;
 
 import net.glowstone.block.GlowBlock;
 import org.bukkit.inventory.ItemStack;

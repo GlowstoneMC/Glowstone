@@ -1,4 +1,4 @@
-package net.glowstone.block.block2.types;
+package net.glowstone.block.block2.details;
 
 /**
  * Available variants for "dirt".

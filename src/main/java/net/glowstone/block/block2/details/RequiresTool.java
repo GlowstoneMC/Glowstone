@@ -1,7 +1,6 @@
-package net.glowstone.block.block2.types;
+package net.glowstone.block.block2.details;
 
 import net.glowstone.block.GlowBlock;
-import net.glowstone.block.block2.behavior.BaseBlockBehavior;
 import net.glowstone.inventory.MaterialMatcher;
 import org.bukkit.inventory.ItemStack;
 

@@ -1,6 +1,6 @@
 package net.glowstone.block.block2;
 
-import net.glowstone.block.block2.types.*;
+import net.glowstone.block.block2.details.*;
 import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
 
@@ -15,13 +15,13 @@ public final class Blocks {
     public static final GlowBlockType DIRT = of("dirt", 3).enumProperty("variant", DirtVariant.class).behavior(new DirtDrops()).register();
     public static final GlowBlockType COBBLESTONE = of("cobblestone", 4).register();
     public static final GlowBlockType WOOD = of("planks", 5).enumProperty("variant", TreeVariant.class).register();
-    public static final GlowBlockType SAPLING = of("sapling", 6).rangeProperty("stage", 0, 1).enumProperty("type", TreeVariant.class).register();
+    public static final GlowBlockType SAPLING = of("sapling", 6).rangeProperty("stage", 0, 1).enumProperty("type", TreeVariant.class).idResolver(new SaplingIdResolver()).register();
 
     private Blocks() {
     }
 
     static void init() {
-        // nothing, just used to make sure <clinit> is called
+        // nothing, just used to make sure blocks above are registered
     }
 
     private static BlockTypeBuilder of(String id, int oldId) {
