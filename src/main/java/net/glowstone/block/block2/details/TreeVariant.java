@@ -13,7 +13,10 @@ public enum TreeVariant {
     ACACIA,
     DARK_OAK;
 
-    public TreeSpecies getSpecies() {
+    public static final TreeVariant[] FIRST_HALF = {OAK, SPRUCE, BIRCH, JUNGLE};
+    public static final TreeVariant[] SECOND_HALF = {ACACIA, DARK_OAK};
+
+    public TreeSpecies toSpecies() {
         return TreeSpecies.values()[ordinal()];
     }
 

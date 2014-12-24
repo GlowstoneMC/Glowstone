@@ -132,6 +132,27 @@ public abstract class GlowBlockProperty<T extends Comparable<T>> implements Bloc
         return new EnumProp<>(name, clazz, values);
     }
 
+    /**
+     * Create a new string property from only some of the values of the given enumeration.
+     * @param name The name of the property
+     * @param clazz The enumeration class to use the values of
+     * @param values The specific values to use
+     * @return A new string property
+     * @throws IllegalArgumentException if the class contains no values
+     */
+    @SafeVarargs
+    public static <E extends Enum<E>> EnumProperty<E> ofPartialEnum(String name, Class<E> clazz, E... values) {
+        if (values == null || values.length == 0) {
+            throw new IllegalArgumentException("null or no values provided");
+        }
+        for (E val : values) {
+            if (!clazz.isInstance(val)) {
+                throw new IllegalArgumentException("value " + val + " is not instanceof " + clazz.getName());
+            }
+        }
+        return new EnumProp<>(name, clazz, values);
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Implementation subclasses
 

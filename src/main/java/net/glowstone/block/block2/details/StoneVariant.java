@@ -1,5 +1,7 @@
 package net.glowstone.block.block2.details;
 
+import org.bukkit.StoneType;
+
 /**
  * Available variants for "stone".
  */
@@ -10,5 +12,13 @@ public enum StoneVariant {
     DIORITE,
     SMOOTH_DIORITE,
     ANDESITE,
-    SMOOTH_ANDESITE
+    SMOOTH_ANDESITE;
+
+    public StoneType toStoneType() {
+        return StoneType.values()[ordinal()];
+    }
+
+    public static StoneVariant fromStoneType(StoneType type) {
+        return values()[type.ordinal()];
+    }
 }
