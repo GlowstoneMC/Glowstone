@@ -45,8 +45,11 @@ import org.bukkit.util.permissions.DefaultPermissions;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.security.KeyPair;
 import java.util.*;
 import java.util.logging.Level;
@@ -433,9 +436,11 @@ public final class GlowServer implements Server {
 
         createWorld(WorldCreator.name(name).environment(Environment.NORMAL).seed(seed).type(type).generateStructures(structs));
         if (getAllowNether()) {
+            checkTransfer(name, "_nether", Environment.NETHER);
             createWorld(WorldCreator.name(name + "_nether").environment(Environment.NETHER).seed(seed).type(type).generateStructures(structs));
         }
         if (getAllowEnd()) {
+            checkTransfer(name, "_the_end", Environment.THE_END);
             createWorld(WorldCreator.name(name + "_the_end").environment(Environment.THE_END).seed(seed).type(type).generateStructures(structs));
         }
 
@@ -443,6 +448,47 @@ public final class GlowServer implements Server {
         enablePlugins(PluginLoadOrder.POSTWORLD);
         commandMap.registerServerAliases();
         scheduler.start();
+    }
+
+    private void checkTransfer(String name, String suffix, Environment environment) {
+        // todo: import things like per-dimension villages.dat when those are implemented
+        final Path srcPath = new File(new File(getWorldContainer(), name), "DIM" + environment.getId()).toPath();
+        final Path destPath = new File(getWorldContainer(), name + suffix).toPath();
+        if (Files.exists(srcPath) && !Files.exists(destPath)) {
+            logger.info("Importing " + destPath + " from " + srcPath);
+            try {
+                Files.walkFileTree(srcPath, new FileVisitor<Path>() {
+                    @Override
+                    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                        Path target = destPath.resolve(srcPath.relativize(dir));
+                        if (!Files.exists(target)) {
+                            Files.createDirectory(target);
+                        }
+                        return FileVisitResult.CONTINUE;
+                    }
+
+                    @Override
+                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                        Files.copy(file, destPath.resolve(srcPath.relativize(file)), StandardCopyOption.COPY_ATTRIBUTES);
+                        return FileVisitResult.CONTINUE;
+                    }
+
+                    @Override
+                    public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+                        logger.warning("Importing file " + srcPath.relativize(file) + " + failed: " + exc);
+                        return FileVisitResult.CONTINUE;
+                    }
+
+                    @Override
+                    public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                        return FileVisitResult.CONTINUE;
+                    }
+                });
+                Files.copy(srcPath.resolve("../level.dat"), destPath.resolve("level.dat"));
+            } catch (IOException e) {
+                logger.log(Level.WARNING, "Import of " + srcPath + " failed", e);
+            }
+        }
     }
 
     /**

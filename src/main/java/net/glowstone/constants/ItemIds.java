@@ -33,6 +33,9 @@ public final class ItemIds {
      * @return the Material, or null.
      */
     public static Material getMaterial(String name) {
+        if (!nameToId.containsKey(name)) {
+            throw new IllegalArgumentException("No such material with id \"" + name + "\"");
+        }
         return Material.getMaterial(nameToId.get(name));
     }
 
@@ -40,6 +43,10 @@ public final class ItemIds {
         key = "minecraft:" + key;
         idToName.put(id, key);
         nameToId.put(key, id);
+    }
+
+    private static void other(int id, String key) {
+        nameToId.put("minecraft:" + key, id);
     }
 
     static {
@@ -120,7 +127,8 @@ public final class ItemIds {
         set(73, "redstone_ore");
         set(74, "lit_redstone_ore");
         set(75, "unlit_redstone_torch");
-        set(76, "redstone_torch_(active)");
+        set(76, "redstone_torch");
+        other(76, "redstone_torch_(active)");
         set(77, "stone_button");
         set(78, "snow_layer");
         set(79, "ice");
@@ -167,7 +175,8 @@ public final class ItemIds {
         set(120, "end_portal_frame");
         set(121, "end_stone");
         set(122, "dragon_egg");
-        set(123, "redstone_lamp_(inactive)");
+        set(123, "redstone_lamp");
+        other(123, "redstone_lamp_(inactive)");
         set(124, "lit_redstone_lamp");
         set(125, "double_wooden_slab");
         set(126, "wooden_slab");
@@ -219,7 +228,8 @@ public final class ItemIds {
         set(172, "hardened_clay");
         set(173, "coal_block");
         set(174, "packed_ice");
-        set(175, "large_flowers");
+        set(175, "double_plant");
+        other(175, "large_flowers");
         set(176, "standing_banner");
         set(177, "wall_banner");
         set(178, "daylight_detector_inverted");
