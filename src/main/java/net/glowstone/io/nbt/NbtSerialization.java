@@ -32,7 +32,7 @@ public final class NbtSerialization {
     public static ItemStack readItem(CompoundTag tag) {
         final Material material;
         if (tag.isString("id")) {
-            material = ItemIds.getMaterial(tag.getString("id"));
+            material = ItemIds.getItem(tag.getString("id"));
         } else if (tag.isShort("id")) {
             material = Material.getMaterial(tag.getShort("id"));
         } else {
