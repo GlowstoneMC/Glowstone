@@ -1256,7 +1256,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void sendRawMessage(String message) {
-        // todo: convert old-style formatting to json
+        // old-style formatting to json conversion is in TextMessage
         session.send(new ChatMessage(message));
     }
 
