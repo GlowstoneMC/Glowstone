@@ -29,7 +29,7 @@ public class DesertPopulator extends BlockPopulator {
                 int y = world.getHighestBlockYAt(tx, tz);
 
                 Block block = chunk.getBlock(x, y, z).getRelative(BlockFace.DOWN);
-                if (block.getBiome() != Biome.DESERT) {
+                if (block.getBiome() != Biome.DESERT && block.getBiome() != Biome.DESERT_HILLS && block.getBiome() != Biome.DESERT_MOUNTAINS) {
                     continue;
                 }
 

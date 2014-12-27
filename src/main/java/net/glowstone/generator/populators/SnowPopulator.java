@@ -25,7 +25,7 @@ public class SnowPopulator extends BlockPopulator {
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 Biome biome = world.getBiome(x + chunkX, z + chunkZ);
-                if (biome != Biome.TAIGA) {
+                if (biome != Biome.COLD_TAIGA) {
                     continue;
                 }
 
