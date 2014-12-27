@@ -62,7 +62,7 @@ public final class ChunkManager {
         this.world = world;
         this.service = service;
         this.generator = generator;
-        biomeMap = MapLayer.initialize(world.getSeed());
+        biomeMap = MapLayer.initialize(world.getSeed(), world.getWorldType());
     }
 
     /**
