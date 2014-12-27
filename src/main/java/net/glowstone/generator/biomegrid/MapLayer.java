@@ -2,12 +2,14 @@ package net.glowstone.generator.biomegrid;
 
 import java.util.Random;
 
+import org.bukkit.WorldType;
+
 import net.glowstone.generator.biomegrid.WhittakerMapLayer.ClimateType;
 import net.glowstone.generator.biomegrid.ZoomMapLayer.ZoomType;
 
 public abstract class MapLayer {
 
-    private static final int ZOOM = 2;
+    private static int zoom = 2;
     private final Random random = new Random();
     private long seed;
 
@@ -26,7 +28,11 @@ public abstract class MapLayer {
 
     public abstract int[] generateValues(int x, int z, int sizeX, int sizeZ);
 
-    public static MapLayer initialize(long seed) {
+    public static MapLayer initialize(long seed, WorldType worldType) {
+        if (worldType == WorldType.LARGE_BIOMES) {
+            zoom = 4;
+        }
+
         MapLayer layer = new NoiseMapLayer(seed); // this is initial land spread layer
         layer = new WhittakerMapLayer(seed + 1, layer, ClimateType.WARM_WET);
         layer = new WhittakerMapLayer(seed + 1, layer, ClimateType.COLD_DRY);
@@ -57,14 +63,14 @@ public abstract class MapLayer {
         layer = new ZoomMapLayer(seed + 400, layer);
         layer = new BiomeThinEdgeMapLayer(seed + 400, layer);
         layer = new ShoreMapLayer(seed + 7, layer);
-        for (int i = 0; i < ZOOM; i++) {
+        for (int i = 0; i < zoom; i++) {
             layer = new ZoomMapLayer(seed + 500 + i, layer);
         }
 
         MapLayer layerRiver = layerMountains;
         layerRiver = new ZoomMapLayer(seed + 300, layerRiver);
         layerRiver = new ZoomMapLayer(seed + 400, layerRiver);
-        for (int i = 0; i < ZOOM; i++) {
+        for (int i = 0; i < zoom; i++) {
             layerRiver = new ZoomMapLayer(seed + 500 + i, layerRiver);
         }
         layerRiver = new RiverMapLayer(seed + 10, layerRiver);
