@@ -1,6 +1,8 @@
 package net.glowstone.generator;
 
 import net.glowstone.generator.populators.*;
+import net.glowstone.generator.populators.overworld.*;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -17,7 +19,8 @@ import java.util.Random;
 public class SurfaceGenerator extends GlowChunkGenerator {
 
     public SurfaceGenerator() {
-        super(new OverworldPopulator());
+        super(new OverworldPopulator(),
+              new SnowPopulator());
     }
 
     @Override
