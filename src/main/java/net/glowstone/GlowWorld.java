@@ -247,7 +247,6 @@ public final class GlowWorld implements World {
         final ChunkGenerator generator = creator.generator();
         storageProvider = new AnvilWorldStorageProvider(new File(server.getWorldContainer(), name));
         storageProvider.setWorld(this);
-        chunks = new ChunkManager(this, storageProvider.getChunkIoService(), generator);
         populators = generator.getDefaultPopulators(this);
 
         // set up values from server defaults
@@ -278,6 +277,8 @@ public final class GlowWorld implements World {
             this.seed = creator.seed();
             this.uid = UUID.randomUUID();
         }
+
+        chunks = new ChunkManager(this, storageProvider.getChunkIoService(), generator);
 
         // begin loading spawn area
         spawnChunkLock = newChunkLock("spawn");
