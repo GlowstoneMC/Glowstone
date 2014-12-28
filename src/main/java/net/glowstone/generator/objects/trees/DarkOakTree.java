@@ -15,6 +15,17 @@ public class DarkOakTree extends GenericTree {
 
     public DarkOakTree(Random random, Location location, BlockStateDelegate delegate) {
         super(random, location, delegate);
+        setOverridables(
+                Material.AIR,
+                Material.LEAVES,
+                Material.LEAVES_2,
+                Material.GRASS,
+                Material.DIRT,
+                Material.LOG,
+                Material.LOG_2,
+                Material.SAPLING,
+                Material.VINE
+        );
         setHeight(random.nextInt(2) + random.nextInt(3) + 6);
     }
 
