@@ -70,7 +70,6 @@ public class ShoreMapLayer extends MapLayer {
         SPECIAL_SHORES.put(GlowBiome.getId(COLD_TAIGA), GlowBiome.getId(COLD_BEACH));
         SPECIAL_SHORES.put(GlowBiome.getId(COLD_TAIGA_HILLS), GlowBiome.getId(COLD_BEACH));
         SPECIAL_SHORES.put(GlowBiome.getId(COLD_TAIGA_MOUNTAINS), GlowBiome.getId(COLD_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(ICE_MOUNTAINS), GlowBiome.getId(COLD_BEACH));
         SPECIAL_SHORES.put(GlowBiome.getId(MUSHROOM_ISLAND), GlowBiome.getId(MUSHROOM_SHORE));
         SPECIAL_SHORES.put(GlowBiome.getId(SWAMPLAND), GlowBiome.getId(SWAMPLAND));
         SPECIAL_SHORES.put(GlowBiome.getId(MESA), GlowBiome.getId(MESA));
