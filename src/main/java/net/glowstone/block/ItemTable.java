@@ -39,6 +39,7 @@ public final class ItemTable {
     private void registerBuiltins() {
         reg(Material.NOTE_BLOCK, new BlockNote());
         reg(Material.MOB_SPAWNER, new BlockMobSpawner());
+        reg(Material.DRAGON_EGG, new BlockFalling(Material.DRAGON_EGG));
         reg(Material.SIGN_POST, new BlockSign());
         reg(Material.WALL_SIGN, new BlockSign());
         reg(Material.WORKBENCH, new BlockWorkbench());
@@ -61,6 +62,8 @@ public final class ItemTable {
         reg(Material.GRASS, new BlockDirectDrops(Material.DIRT));
         reg(Material.DIRT, new BlockDirectDrops(Material.DIRT));
         reg(Material.GRAVEL, new BlockGravel());
+        reg(Material.SAND, new BlockFalling(Material.SAND));
+        reg(Material.ANVIL, new BlockAnvil());
         reg(Material.ICE, new BlockDropless());
         reg(Material.PACKED_ICE, new BlockDropless());
         reg(Material.SNOW, new BlockSnow());
@@ -97,7 +100,7 @@ public final class ItemTable {
         reg(Material.REDSTONE_BLOCK, new BlockDirectDrops(ToolType.PICKAXE));
         reg(Material.CARROT, new BlockDirectDrops(Material.CARROT_ITEM));
         reg(Material.COCOA, new BlockDirectDrops(Material.INK_SACK, 3, 1));
-        reg(Material.DEAD_BUSH, new BlockDropless());
+        reg(Material.DEAD_BUSH, new BlockDeadBush());
         reg(Material.LONG_GRASS, new BlockTallGrass());
         reg(Material.HUGE_MUSHROOM_1, new BlockHugeMushroom(true));
         reg(Material.HUGE_MUSHROOM_2, new BlockHugeMushroom(false));
@@ -157,9 +160,20 @@ public final class ItemTable {
         reg(Material.STONE_PLATE, new BlockDirectDrops(Material.STONE_PLATE, ToolType.PICKAXE));
         reg(Material.DAYLIGHT_DETECTOR, new BlockDaylightDetector());
         reg(Material.DAYLIGHT_DETECTOR_INVERTED, new BlockDaylightDetector());
+        reg(Material.YELLOW_FLOWER, new BlockNeedsAttached());
+        reg(Material.RED_ROSE, new BlockNeedsAttached());
+        reg(Material.BROWN_MUSHROOM, new BlockNeedsAttached());
+        reg(Material.RED_MUSHROOM, new BlockNeedsAttached());
+        reg(Material.SUGAR_CANE_BLOCK, new BlockSugarCane());
+        reg(Material.SAPLING, new BlockNeedsAttached());
+        reg(Material.RAILS, new BlockNeedsAttached());
+        reg(Material.ACTIVATOR_RAIL, new BlockNeedsAttached());
+        reg(Material.DETECTOR_RAIL, new BlockNeedsAttached());
+        reg(Material.POWERED_RAIL, new BlockNeedsAttached());
+        reg(Material.CARPET, new BlockCarpet());
         reg(Material.ENCHANTMENT_TABLE, new BlockEnchantmentTable());
-        reg(Material.ANVIL, new BlockAnvil());
         reg(Material.BREWING_STAND, new BlockBrewingStand());
+        reg(Material.CACTUS, new BlockCactus());
         reg(Material.WATER, new BlockWater());
         reg(Material.STATIONARY_WATER, new BlockWater());
         reg(Material.LAVA, new BlockLava());
@@ -167,7 +181,10 @@ public final class ItemTable {
         reg(Material.CAULDRON, new BlockDirectDrops(Material.CAULDRON_ITEM, ToolType.PICKAXE));
         reg(Material.STANDING_BANNER, new BlockBanner());
         reg(Material.WALL_BANNER, new BlockBanner());
+        reg(Material.SPONGE, new BlockSponge());
+        reg(Material.TNT, new BlockTNT());
 
+        reg(Material.FLINT_AND_STEEL, new ItemFlintAndSteel());
         reg(Material.SIGN, new ItemSign());
         reg(Material.REDSTONE, new ItemPlaceAs(Material.REDSTONE_WIRE));
         reg(Material.SUGAR_CANE, new ItemPlaceAs(Material.SUGAR_CANE_BLOCK));
@@ -217,6 +234,7 @@ public final class ItemTable {
 
     /**
      * Register a new, non-Vanilla ItemType. It will be assigned an ID automatically.
+     *
      * @param type the ItemType to register.
      */
     public void register(ItemType type) {

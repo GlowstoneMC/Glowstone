@@ -11,6 +11,7 @@ import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockCanBuildEvent;
@@ -151,6 +152,44 @@ public class BlockType extends ItemType {
      */
     public boolean canOverride(GlowBlock block, BlockFace face, ItemStack holding) {
         return block.isLiquid();
+    }
+
+    /**
+     * Called when a neighboring block (within a 3x3x3 cube) has changed its
+     * type or data and physics checks should occur.
+     * @param block The block to perform physics checks for
+     * @param face The BlockFace to the changed block, or null if unavailable
+     * @param changedBlock The neighboring block that has changed
+     * @param oldType The old type of the changed block
+     * @param oldData The old data of the changed block
+     * @param newType The new type of the changed block
+     * @param newData The new data of the changed block
+     */
+    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
+
+    }
+
+    /**
+     * Called when this block has just changed to some other type. This is
+     * called whenever {@link GlowBlock#setTypeIdAndData}, {@link GlowBlock#setType}
+     * or {@link GlowBlock#setData} is called with physics enabled, and might
+     * be called from plugins or other means of changing the block.
+     * @param block The block that was changed
+     * @param oldType The old Material
+     * @param oldData The old data
+     * @param newType The new Material
+     * @param data The new data
+     */
+    public void onBlockChanged(GlowBlock block, Material oldType, byte oldData, Material newType, byte data) {
+        // do nothing
+    }
+
+    /**
+     * Called when the BlockType should calculate the current physics.
+     * @param me The block
+     */
+    public void updatePhysics(GlowBlock me) {
+        // do nothing
     }
 
     @Override

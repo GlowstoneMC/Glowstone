@@ -39,12 +39,21 @@ public class ItemIdsTest {
             fail("Identifier '" + nameid + "' does not start with 'minecraft:'");
         }
 
-        Material canonical = ItemIds.getMaterial(nameid);
-        assertNotNull("Reverse mapping missing for " + material + "/" + nameid, canonical);
-
-        // mismatch here is allowed, but log it
-        if (canonical != material) {
-            System.out.println(material + "(" + material.getId() + ")\t-> " + nameid + "\t-> " + canonical + "(" + canonical.getId() + ")");
+        Material item = ItemIds.getItem(nameid);
+        Material block = ItemIds.getBlock(nameid);
+        String base = "Material " + material + "\t-> \"" + nameid + "\"\t-> ";
+        if (material.isBlock()) {
+            assertNotNull(base + "block, has no block entry", block);
+            assertEquals("wrong block material", material, block);
+            if (item != material) {
+                System.out.println(base + "item: " + item);
+            }
+        } else {
+            assertNotNull(base + "item, has no item entry", item);
+            assertEquals("wrong item material", material, item);
+            if (block == material) {
+                fail(base + "not block, but maps to block: " + block);
+            }
         }
     }
 

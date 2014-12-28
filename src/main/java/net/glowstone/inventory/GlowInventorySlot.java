@@ -3,6 +3,7 @@ package net.glowstone.inventory;
 import java.util.Arrays;
 import java.util.List;
 
+import net.glowstone.constants.ItemIds;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.ItemStack;
 
@@ -35,7 +36,7 @@ public class GlowInventorySlot {
     }
 
     public void setItem(ItemStack item) {
-        this.item = item;
+        this.item = ItemIds.sanitize(item);
     }
 
     public SlotType getType() {

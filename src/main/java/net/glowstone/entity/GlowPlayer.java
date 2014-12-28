@@ -275,7 +275,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             gameMode |= 0x8;
         }
         session.send(new JoinGameMessage(SELF_ID, gameMode, world.getEnvironment().getId(), world.getDifficulty().getValue(), session.getServer().getMaxPlayers(), type, false));
-        setAllowFlight(getGameMode() == GameMode.CREATIVE);
+        setGameModeDefaults();
 
         // send server brand and supported plugin channels
         session.send(PluginMessage.fromString("MC|Brand", server.getName()));
@@ -579,9 +579,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     private void spawnAt(Location location) {
         // switch worlds
         GlowWorld oldWorld = world;
-        world.getEntityManager().deallocate(this);
+        world.getEntityManager().unregister(this);
         world = (GlowWorld) location.getWorld();
-        world.getEntityManager().allocate(this);
+        world.getEntityManager().register(this);
 
         // switch chunk set
         // no need to send chunk unload messages - respawn unloads all chunks
@@ -629,6 +629,15 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         // fire event and perform spawn
         PlayerRespawnEvent event = new PlayerRespawnEvent(this, dest, spawnAtBed);
         EventFactory.callEvent(event);
+        if (event.getRespawnLocation().getWorld().equals(getWorld()) && knownEntities.size() > 0) {
+            // we need to manually reset all known entities if the player respawns in the same world
+            List<Integer> entityIds = new ArrayList<>(knownEntities.size());
+            for (GlowEntity e : knownEntities) {
+                entityIds.add(e.getEntityId());
+            }
+            session.send(new DestroyEntitiesMessage(entityIds));
+            knownEntities.clear();
+        }
         spawnAt(event.getRespawnLocation());
 
         // just in case any items are left in their inventory after they respawn
@@ -688,6 +697,18 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             displayName = new TextMessage(playerListName);
         }
         return UserListItemMessage.add(getProfile(), getGameMode().getValue(), 0, displayName);
+    }
+
+    /**
+     * Send a UserListItemMessage to every player that can see this player.
+     * @param updateMessage The message to send.
+     */
+    private void updateUserListEntries(UserListItemMessage updateMessage) {
+        for (GlowPlayer player : server.getOnlinePlayers()) {
+            if (player.canSee(this)) {
+                player.getSession().send(updateMessage);
+            }
+        }
     }
 
     @Override
@@ -833,12 +854,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         if (playerListName != null && !playerListName.isEmpty()) {
             displayName = new TextMessage(playerListName);
         }
-        Message updateMessage = UserListItemMessage.displayNameOne(getUniqueId(), displayName);
-        for (GlowPlayer player : server.getOnlinePlayers()) {
-            if (player.canSee(this)) {
-                player.getSession().send(updateMessage);
-            }
-        }
+        updateUserListEntries(UserListItemMessage.displayNameOne(getUniqueId(), displayName));
     }
 
     @Override
@@ -879,13 +895,23 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void setGameMode(GameMode mode) {
-        boolean changed = getGameMode() != mode;
-        super.setGameMode(mode);
-        if (changed) {
+        if (getGameMode() != mode) {
+            PlayerGameModeChangeEvent event = new PlayerGameModeChangeEvent(this, mode);
+            if (EventFactory.callEvent(event).isCancelled()) {
+                return;
+            }
+
+            super.setGameMode(mode);
+            updateUserListEntries(UserListItemMessage.gameModeOne(getUniqueId(), mode.getValue()));
             session.send(new StateChangeMessage(StateChangeMessage.Reason.GAMEMODE, mode.getValue()));
         }
+        setGameModeDefaults();
+    }
 
-        setAllowFlight(mode == GameMode.CREATIVE);
+    private void setGameModeDefaults() {
+        GameMode mode = getGameMode();
+        setAllowFlight(mode == GameMode.CREATIVE || mode == GameMode.SPECTATOR);
+        metadata.setBit(MetadataIndex.STATUS, MetadataIndex.StatusFlags.INVISIBLE, mode == GameMode.SPECTATOR);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1230,7 +1256,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void sendRawMessage(String message) {
-        // todo: convert old-style formatting to json
+        // old-style formatting to json conversion is in TextMessage
         session.send(new ChatMessage(message));
     }
 
