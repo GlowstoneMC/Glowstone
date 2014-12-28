@@ -1,21 +1,19 @@
 package net.glowstone.block.blocktype;
 
 import net.glowstone.GlowChunk;
+import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.TEHopper;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowPlayer;
-import org.bukkit.Material;
+import net.glowstone.inventory.MaterialMatcher;
+import net.glowstone.inventory.ToolType;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 public class BlockHopper extends BlockContainer {
-
-    public BlockHopper() {
-        setDrops(new ItemStack(Material.HOPPER));
-    }
 
     public void setFacingDirection(final BlockState bs, final BlockFace face) {
         byte data;
@@ -54,4 +52,8 @@ public class BlockHopper extends BlockContainer {
         setFacingDirection(state, face.getOppositeFace());
     }
 
+    @Override
+    protected MaterialMatcher getNeededMiningTool(GlowBlock block) {
+        return ToolType.PICKAXE;
+    }
 }

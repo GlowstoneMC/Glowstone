@@ -1,9 +1,9 @@
 package net.glowstone.net.handler.login;
 
 import com.flowpowered.networking.MessageHandler;
-import net.glowstone.entity.meta.PlayerProfile;
-import net.glowstone.net.ProxyData;
+import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.net.GlowSession;
+import net.glowstone.net.ProxyData;
 import net.glowstone.net.message.login.EncryptionKeyRequestMessage;
 import net.glowstone.net.message.login.LoginStartMessage;
 import net.glowstone.util.SecurityUtils;

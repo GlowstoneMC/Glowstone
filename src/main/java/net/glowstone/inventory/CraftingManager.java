@@ -138,14 +138,14 @@ public final class CraftingManager implements Iterable<Recipe> {
             if (rows == 0 || cols == 0) continue;
 
             // outer loop: try at each possible starting position
-            position:
             for (int rStart = 0; rStart <= size - rows; ++rStart) {
+                position:
                 for (int cStart = 0; cStart <= size - cols; ++cStart) {
                     // inner loop: verify recipe against this position
                     for (int row = 0; row < rows; ++row) {
                         for (int col = 0; col < cols; ++col) {
                             ItemStack given = items[(rStart + row) * size + cStart + col];
-                            char ingredientChar = shape[row].length() >= col - 1 ? shape[row].charAt(col) : ' ';
+                            char ingredientChar = shape[row].length() > col ? shape[row].charAt(col) : ' ';
                             ItemStack expected = ingredients.get(ingredientChar);
 
                             // check for mismatch in presence of an item in that slot at all
@@ -165,7 +165,19 @@ public final class CraftingManager implements Iterable<Recipe> {
                             }
                         }
                     }
-                    // no mismatches at this position
+
+                    // also check that no items outside the recipe size are present
+                    for (int row = 0; row < size; row++) {
+                        for (int col = 0; col < size; col++) {
+                            // if this position is outside the recipe and non-null, fail
+                            if ((row < rStart || row >= rStart + rows || col < cStart || col >= cStart + cols) &&
+                                    items[row * size + col] != null) {
+                                continue position;
+                            }
+                        }
+                    }
+
+                    // recipe matches and zero items outside the recipe part.
                     return recipe;
                 }
             } // end position loop

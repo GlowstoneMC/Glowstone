@@ -1,7 +1,7 @@
 package net.glowstone.net;
 
-import net.glowstone.entity.meta.PlayerProfile;
-import net.glowstone.entity.meta.PlayerProperty;
+import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.entity.meta.profile.PlayerProperty;
 import net.glowstone.util.UuidUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

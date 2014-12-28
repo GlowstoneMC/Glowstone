@@ -84,6 +84,11 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                 return;
             }
 
+            BlockType blockType = ItemTable.instance().getBlock(block.getType());
+            if (blockType != null) {
+                blockType.blockDestroy(player, block, face);
+            }
+
             // destroy the block
             if (!block.isEmpty() && !block.isLiquid() && player.getGameMode() != GameMode.CREATIVE) {
                 for (ItemStack drop : block.getDrops(holding)) {

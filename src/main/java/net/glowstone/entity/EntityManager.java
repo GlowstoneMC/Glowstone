@@ -23,11 +23,6 @@ public final class EntityManager implements Iterable<GlowEntity> {
     private final Map<Class<? extends GlowEntity>, Set<? extends GlowEntity>> groupedEntities = new HashMap<>();
 
     /**
-     * The last assigned id value.
-     */
-    private int lastId = 0;
-
-    /**
      * Gets all entities with the specified type.
      * @param type The {@link Class} for the type.
      * @param <T> The type of entity.
@@ -61,40 +56,24 @@ public final class EntityManager implements Iterable<GlowEntity> {
     }
 
     /**
-     * Allocates the id for an entity.
+     * Registers the entity to this world.
      * @param entity The entity.
-     * @return The id.
      */
-    int allocate(GlowEntity entity) {
-        int startedAt = lastId;
-        // intentionally wraps around integer boundaries
-        for (int id = lastId + 1; id != startedAt; ++id) {
-            // skip special values
-            if (id == -1 || id == 0) continue;
-
-            if (!entities.containsKey(id)) {
-                allocate(entity, id);
-                return id;
-            }
-        }
-
-        throw new IllegalStateException("No free entity ids");
-    }
-
     @SuppressWarnings("unchecked")
-    private void allocate(GlowEntity entity, int id) {
-        entity.id = id;
-        entities.put(id, entity);
+    void register(GlowEntity entity) {
+        if (entity.id == 0) {
+            throw new IllegalStateException("Entity has not been assigned an id.");
+        }
+        entities.put(entity.id, entity);
         ((Collection<GlowEntity>) getAll(entity.getClass())).add(entity);
         ((GlowChunk) entity.location.getChunk()).getRawEntities().add(entity);
-        lastId = id;
     }
 
     /**
-     * Deallocates the id for an entity.
+     * Unregister the entity to this world.
      * @param entity The entity.
      */
-    void deallocate(GlowEntity entity) {
+    void unregister(GlowEntity entity) {
         entities.remove(entity.id);
         getAll(entity.getClass()).remove(entity);
         ((GlowChunk) entity.location.getChunk()).getRawEntities().remove(entity);

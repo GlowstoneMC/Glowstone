@@ -1,4 +1,4 @@
-package net.glowstone.entity.meta;
+package net.glowstone.entity.meta.profile;
 
 /**
  * Container for global player properties (such as textures) returned by the auth servers.

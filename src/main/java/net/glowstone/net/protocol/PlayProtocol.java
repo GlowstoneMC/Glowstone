@@ -82,6 +82,7 @@ public final class PlayProtocol extends GlowProtocol {
         outbound(0x23, BlockChangeMessage.class, BlockChangeCodec.class);
         outbound(0x24, BlockActionMessage.class, BlockActionCodec.class);
         outbound(0x26, ChunkBulkMessage.class, ChunkBulkCodec.class);
+        outbound(0x27, ExplosionMessage.class, ExplosionCodec.class);
         outbound(0x28, PlayEffectMessage.class, PlayEffectCodec.class);
         outbound(0x29, PlaySoundMessage.class, PlaySoundCodec.class);
         outbound(0x2A, PlayParticleMessage.class, PlayParticleCodec.class);
@@ -95,6 +96,7 @@ public final class PlayProtocol extends GlowProtocol {
         outbound(0x32, TransactionMessage.class, TransactionCodec.class);
         outbound(0x33, UpdateSignMessage.class, UpdateSignCodec.class);
         outbound(0x34, MapDataMessage.class, MapDataCodec.class);
+        outbound(0x35, UpdateBlockEntityMessage.class, UpdateBlockEntityCodec.class);
         outbound(0x36, SignEditorMessage.class, SignEditorCodec.class);
         outbound(0x37, StatisticMessage.class, StatisticCodec.class);
         outbound(0x38, UserListItemMessage.class, UserListItemCodec.class);

@@ -1,5 +1,6 @@
 package net.glowstone.inventory;
 
+import net.glowstone.constants.ItemIds;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
@@ -212,7 +213,7 @@ public class GlowInventory implements Inventory {
 
     @Override
     public void setItem(int index, ItemStack item) {
-        slots[index] = item;
+        slots[index] = ItemIds.sanitize(item);
     }
 
     @Override
@@ -220,14 +221,14 @@ public class GlowInventory implements Inventory {
         HashMap<Integer, ItemStack> result = new HashMap<>();
 
         for (int i = 0; i < items.length; ++i) {
-            int maxStackSize = items[i].getType() == null ? 64 : items[i].getType().getMaxStackSize();
-            int mat = items[i].getTypeId();
-            int toAdd = items[i].getAmount();
-            short damage = items[i].getDurability();
+            ItemStack item = ItemIds.sanitize(items[i]);
+            if (item == null) continue; // invalid items fail silently
+            int maxStackSize = item.getType() == null ? 64 : item.getType().getMaxStackSize();
+            int toAdd = item.getAmount();
 
             for (int j = 0; toAdd > 0 && j < getSize(); ++j) {
                 // Look for existing stacks to add to
-                if (slots[j] != null && slots[j].getTypeId() == mat && slots[j].getDurability() == damage) {
+                if (slots[j] != null && slots[j].isSimilar(item)) {
                     int space = maxStackSize - slots[j].getAmount();
                     if (space < 0) continue;
                     if (space > toAdd) space = toAdd;
@@ -242,7 +243,8 @@ public class GlowInventory implements Inventory {
                 for (int j = 0; toAdd > 0 && j < getSize(); ++j) {
                     if (slots[j] == null) {
                         int num = toAdd > maxStackSize ? maxStackSize : toAdd;
-                        slots[j] = new ItemStack(mat, num, damage);
+                        slots[j] = item.clone();
+                        slots[j].setAmount(num);
                         toAdd -= num;
                     }
                 }
@@ -250,7 +252,7 @@ public class GlowInventory implements Inventory {
 
             if (toAdd > 0) {
                 // Still couldn't stash them all.
-                result.put(i, new ItemStack(mat, toAdd, damage));
+                result.put(i, item.clone());
             }
         }
 
@@ -297,7 +299,9 @@ public class GlowInventory implements Inventory {
         if (items.length != slots.length) {
             throw new IllegalArgumentException("Length of items must be " + slots.length);
         }
-        System.arraycopy(items, 0, slots, 0, items.length);
+        for (int i = 0; i < slots.length; ++i) {
+            slots[i] = ItemIds.sanitize(items[i]);
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////

@@ -2,6 +2,7 @@ package net.glowstone.block.blocktype;
 
 import java.util.Arrays;
 import java.util.Collection;
+
 import net.glowstone.GlowChunk;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.TEJukebox;
@@ -43,7 +44,12 @@ public class BlockJukebox extends BlockType {
     }
 
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block) {
+    public void blockDestroy(GlowPlayer player, GlowBlock block, BlockFace face) {
+        block.setData((byte) 0, false);
+    }
+
+    @Override
+    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         ItemStack disk = ((GlowJukebox) block.getState()).getPlayingItem();
         if (disk == null) {
             return Arrays.asList(new ItemStack(block.getType()));

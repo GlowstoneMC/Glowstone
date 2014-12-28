@@ -3,8 +3,8 @@ package net.glowstone.net.handler.login;
 import com.flowpowered.networking.MessageHandler;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
-import net.glowstone.entity.meta.PlayerProfile;
-import net.glowstone.entity.meta.PlayerProperty;
+import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.entity.meta.profile.PlayerProperty;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.login.EncryptionKeyResponseMessage;
 import net.glowstone.util.UuidUtils;
@@ -169,7 +169,6 @@ public final class EncryptionKeyResponseHandler implements MessageHandler<GlowSe
                         session.setPlayer(new PlayerProfile(name, uuid, properties));
                     }
                 });
-
             } catch (Exception e) {
                 GlowServer.logger.log(Level.SEVERE, "Error in authentication thread", e);
                 session.disconnect("Internal error during authentication.", true);

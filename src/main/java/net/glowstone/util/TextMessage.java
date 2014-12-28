@@ -2,6 +2,7 @@ package net.glowstone.util;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -17,6 +18,16 @@ import java.util.Set;
  */
 public final class TextMessage {
 
+    /**
+     * The formatting ChatColors.
+     */
+    private static final ChatColor[] FORMATTING = {
+            ChatColor.MAGIC, ChatColor.BOLD, ChatColor.STRIKETHROUGH, ChatColor.UNDERLINE, ChatColor.ITALIC
+    };
+
+    /**
+     * The JSON structure of this text message.
+     */
     private final JSONObject object;
 
     /**
@@ -59,6 +70,45 @@ public final class TextMessage {
         return "";
     }
 
+    /**
+     * Flatten this message to an approximate old-style string representation.
+     * @return The best old-style string representation for this message.
+     */
+    public String flatten() {
+        StringBuilder builder = new StringBuilder();
+        flatten(builder, object);
+        return builder.toString();
+    }
+
+    private static void flatten(StringBuilder dest, JSONObject obj) {
+        if (obj.containsKey("color")) {
+            try {
+                dest.append(ChatColor.valueOf(obj.get("color").toString().toUpperCase()));
+            } catch (IllegalArgumentException ex) {
+                // invalid color, ignore
+            }
+        }
+        for (ChatColor format : FORMATTING) {
+            String name = format == ChatColor.MAGIC ? "obfuscated" : format.name().toLowerCase();
+            if (obj.containsKey(name) && obj.get(name).equals(true)) {
+                dest.append(format);
+            }
+        }
+        if (obj.containsKey("text")) {
+            dest.append(obj.get("text").toString());
+        }
+        if (obj.containsKey("extra")) {
+            JSONArray array = (JSONArray) obj.get("extra");
+            for (Object o : array) {
+                if (o instanceof JSONObject) {
+                    flatten(dest, (JSONObject) o);
+                } else {
+                    dest.append(o);
+                }
+            }
+        }
+    }
+
     @Override
     public String toString() {
         return "Message" + encode();
@@ -79,7 +129,7 @@ public final class TextMessage {
                 return new TextMessage(o.toString());
             }
         } catch (ParseException e) {
-            return new TextMessage("parse error");
+            return new TextMessage(json);
         }
     }
 

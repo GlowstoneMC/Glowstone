@@ -1,6 +1,7 @@
 package net.glowstone.block.state;
 
 import java.util.Collection;
+
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.TEJukebox;
@@ -77,4 +78,5 @@ public class GlowJukebox extends GlowBlockState implements Jukebox {
         }
         return false;
     }
+
 }

@@ -113,6 +113,16 @@ furnace:
   input:
     type: CACTUS
     damage: 32767
+- result:
+    type: SMOOTH_BRICK
+    damage: 2
+  input:
+    type: SMOOTH_BRICK
+    damage: 0
+- result:
+    type: COOKED_RABBIT
+  input:
+    type: RABBIT
 shapeless:
 - result:
     type: LEATHER_HELMET
@@ -519,6 +529,37 @@ shapeless:
   ingredients:
   - type: DOUBLE_PLANT
     damage: 5
+- result:
+    type: SMOOTH_BRICK
+    damage: 1
+  ingredients:
+  - type: SMOOTH_BRICK
+    damage: 0
+  - type: VINE
+- result:
+    type: MOSSY_COBBLESTONE
+  ingredients:
+  - type: COBBLESTONE
+  - type: VINE
+- result:
+    type: STONE
+    damage: 1       # granite
+  ingredients:
+  - type: STONE
+    damage: 3       # diorite
+  - type: QUARTZ
+- result:
+    type: STONE
+    damage: 5       # andesite
+  ingredients:
+  - type: STONE
+    damage: 3       # diorite
+  - type: COBBLESTONE
+- result:
+    type: SLIME_BALL
+    amount: 9
+  ingredients:
+  - type: SLIME_BLOCK
 shaped:
 - result:
     type: WOOD_PICKAXE
@@ -675,6 +716,15 @@ shaped:
   ingredients:
     e:
       type: MELON
+  shape:
+  - eee
+  - eee
+  - eee
+- result:
+    type: SLIME_BLOCK
+  ingredients:
+    e:
+      type: SLIME_BALL
   shape:
   - eee
   - eee
@@ -1580,7 +1630,18 @@ shaped:
   shape:
   - 'e  '
   - 'ee '
-  - eee
+  - 'eee'
+- result:
+    type: RED_SANDSTONE_STAIRS
+    amount: 4
+  ingredients:
+    e:
+      type: RED_SANDSTONE
+      damage: 32767
+  shape:
+  - 'e  '
+  - 'ee '
+  - 'eee'
 - result:
     type: QUARTZ_STAIRS
     amount: 4
@@ -1668,7 +1729,7 @@ shaped:
       type: QUARTZ
     g:
       type: STONE
-      damage: 32767
+      damage: 0
     b:
       type: REDSTONE_TORCH_ON
       damage: 32767
@@ -2196,13 +2257,76 @@ shaped:
   - eee
 - result:
     type: FENCE
-    amount: 2
+    amount: 3
   ingredients:
     e:
       type: STICK
+    w:
+      type: WOOD
+      damage: 0
   shape:
-  - eee
-  - eee
+  - wew
+  - wew
+- result:
+    type: SPRUCE_FENCE
+    amount: 3
+  ingredients:
+    e:
+      type: STICK
+    w:
+      type: WOOD
+      damage: 1
+  shape:
+  - wew
+  - wew
+- result:
+    type: BIRCH_FENCE
+    amount: 3
+  ingredients:
+    e:
+      type: STICK
+    w:
+      type: WOOD
+      damage: 2
+  shape:
+  - wew
+  - wew
+- result:
+    type: JUNGLE_FENCE
+    amount: 3
+  ingredients:
+    e:
+      type: STICK
+    w:
+      type: WOOD
+      damage: 3
+  shape:
+  - wew
+  - wew
+- result:
+    type: ACACIA_FENCE
+    amount: 3
+  ingredients:
+    e:
+      type: STICK
+    w:
+      type: WOOD
+      damage: 4
+  shape:
+  - wew
+  - wew
+- result:
+    type: DARK_OAK_FENCE
+    amount: 3
+  ingredients:
+    e:
+      type: STICK
+    w:
+      type: WOOD
+      damage: 5
+  shape:
+  - wew
+  - wew
 - result:
     type: COBBLE_WALL
     amount: 6
@@ -2237,20 +2361,131 @@ shaped:
 - result:
     type: FENCE_GATE
   ingredients:
-    e:
+    w:
       type: WOOD
-      damage: 32767
+      damage: 0
     c:
       type: STICK
   shape:
-  - cec
-  - cec
+  - cwc
+  - cwc
+- result:
+    type: SPRUCE_FENCE_GATE
+  ingredients:
+    w:
+      type: WOOD
+      damage: 1
+    c:
+      type: STICK
+  shape:
+  - cwc
+  - cwc
+- result:
+    type: BIRCH_FENCE_GATE
+  ingredients:
+    w:
+      type: WOOD
+      damage: 2
+    c:
+      type: STICK
+  shape:
+  - cwc
+  - cwc
+- result:
+    type: JUNGLE_FENCE_GATE
+  ingredients:
+    w:
+      type: WOOD
+      damage: 3
+    c:
+      type: STICK
+  shape:
+  - cwc
+  - cwc
+- result:
+    type: ACACIA_FENCE_GATE
+  ingredients:
+    w:
+      type: WOOD
+      damage: 4
+    c:
+      type: STICK
+  shape:
+  - cwc
+  - cwc
+- result:
+    type: DARK_OAK_FENCE_GATE
+  ingredients:
+    w:
+      type: WOOD
+      damage: 5
+    c:
+      type: STICK
+  shape:
+  - cwc
+  - cwc
 - result:
     type: WOOD_DOOR
+    amount: 3
   ingredients:
     e:
       type: WOOD
-      damage: 32767
+      damage: 0
+  shape:
+  - ee
+  - ee
+  - ee
+- result:
+    type: SPRUCE_DOOR
+    amount: 3
+  ingredients:
+    e:
+      type: WOOD
+      damage: 1
+  shape:
+  - ee
+  - ee
+  - ee
+- result:
+    type: BIRCH_DOOR
+    amount: 3
+  ingredients:
+    e:
+      type: WOOD
+      damage: 2
+  shape:
+  - ee
+  - ee
+  - ee
+- result:
+    type: JUNGLE_DOOR
+    amount: 3
+  ingredients:
+    e:
+      type: WOOD
+      damage: 3
+  shape:
+  - ee
+  - ee
+  - ee
+- result:
+    type: ACACIA_DOOR
+    amount: 3
+  ingredients:
+    e:
+      type: WOOD
+      damage: 4
+  shape:
+  - ee
+  - ee
+  - ee
+- result:
+    type: DARK_OAK_DOOR
+    amount: 3
+  ingredients:
+    e:
+      type: WOOD
+      damage: 5
   shape:
   - ee
   - ee
@@ -2267,11 +2502,20 @@ shaped:
   - eee
 - result:
     type: IRON_DOOR
+    amount: 3
   ingredients:
     e:
       type: IRON_INGOT
   shape:
   - ee
+  - ee
+  - ee
+- result:
+    type: IRON_TRAP_DOOR
+  ingredients:
+    e:
+      type: IRON_INGOT
+  shape:
   - ee
   - ee
 - result:
@@ -2343,7 +2587,7 @@ shaped:
   ingredients:
     e:
       type: STONE
-      damage: 32767
+      damage: 0
     c:
       type: REDSTONE_TORCH_ON
       damage: 32767
@@ -2390,12 +2634,32 @@ shaped:
   - cc
   - cc
 - result:
+    type: RED_SANDSTONE
+  ingredients:
+    c:
+      type: SAND
+      damage: 1
+  shape:
+  - cc
+  - cc
+- result:
     type: SANDSTONE
     damage: 2
     amount: 4
   ingredients:
     c:
       type: SANDSTONE
+      damage: 32767
+  shape:
+  - cc
+  - cc
+- result:
+    type: RED_SANDSTONE
+    damage: 2
+    amount: 4
+  ingredients:
+    c:
+      type: RED_SANDSTONE
       damage: 32767
   shape:
   - cc
@@ -2648,7 +2912,7 @@ shaped:
   ingredients:
     c:
       type: STONE
-      damage: 32767
+      damage: 0
   shape:
   - ccc
 - result:
@@ -2803,6 +3067,16 @@ shaped:
   - b
   - b
 - result:
+    type: RED_SANDSTONE
+    damage: 1
+  ingredients:
+    b:
+      type: STEP_2
+      damage: 0
+  shape:
+  - b
+  - b
+- result:
     type: QUARTZ_BLOCK
     damage: 1
   ingredients:
@@ -2812,6 +3086,16 @@ shaped:
   shape:
   - b
   - b
+- result:
+    type: SMOOTH_BRICK
+    damage: 3
+  ingredients:
+    c:
+      type: STEP
+      damage: 5
+  shape:
+  - c
+  - c
 - result:
     type: QUARTZ_BLOCK
     damage: 2
@@ -3095,7 +3379,7 @@ shaped:
   ingredients:
     b:
       type: STONE
-      damage: 32767
+      damage: 0
   shape:
   - bb
 - result:
@@ -3297,7 +3581,7 @@ shaped:
   ingredients:
     a:
       type: STONE
-      damage: 32767
+      damage: 0
   shape:
   - a
 - result:
@@ -3308,3 +3592,167 @@ shaped:
       damage: 32767
   shape:
   - a
+- result:
+    type: STONE
+    damage: 3       # diorite
+    amount: 2
+  ingredients:
+    a:
+      type: COBBLESTONE
+    b:
+      type: QUARTZ
+  shape:
+  - ab
+  - ba
+- result:
+    type: STONE
+    damage: 4       # polished diorite
+    amount: 4
+  ingredients:
+    a:
+      type: STONE
+      damage: 3     # diorite
+  shape:
+  - aa
+  - aa
+- result:
+    type: STONE
+    damage: 2       # polished granite
+    amount: 4
+  ingredients:
+    a:
+      type: STONE
+      damage: 1     # granite
+  shape:
+  - aa
+  - aa
+- result:
+    type: STONE
+    damage: 6       # polished andesite
+    amount: 4
+  ingredients:
+    a:
+      type: STONE
+      damage: 5     # andesite
+  shape:
+  - aa
+  - aa
+- result:
+    type: DIRT
+    damage: 1       # coarse dirt
+    amount: 4
+  ingredients:
+    a:
+      type: DIRT
+      damage: 0
+    b:
+      type: GRAVEL
+  shape:
+  - ab
+  - ba
+- result:
+    type: STEP_2
+    damage: 0
+    amount: 6
+  ingredients:
+    a:
+      type: RED_SANDSTONE
+  shape:
+  - aaa
+- result:
+    type: RABBIT_STEW
+  ingredients:
+    r:
+      type: COOKED_RABBIT
+    c:
+      type: CARROT_ITEM
+    p:
+      type: BAKED_POTATO
+    m:
+      type: BROWN_MUSHROOM
+    b:
+      type: BOWL
+  shape:
+  - ' r '
+  - 'cpm'
+  - ' b '
+- result:
+    type: RABBIT_STEW
+  ingredients:
+    r:
+      type: COOKED_RABBIT
+    c:
+      type: CARROT_ITEM
+    p:
+      type: BAKED_POTATO
+    m:
+      type: RED_MUSHROOM
+    b:
+      type: BOWL
+  shape:
+  - ' r '
+  - 'cpm'
+  - ' b '
+- result:
+    type: LEATHER
+  ingredients:
+    a:
+      type: RABBIT_HIDE
+  shape:
+  - aa
+  - aa
+- result:
+    type: ARMOR_STAND
+  ingredients:
+    a:
+      type: STICK
+    b:
+      type: STEP
+      damage: 0
+  shape:
+  - 'aaa'
+  - ' a '
+  - 'aba'
+- result:
+    type: PRISMARINE
+    damage: 0
+  ingredients:
+    a:
+      type: PRISMARINE_SHARD
+  shape:
+  - aa
+  - aa
+- result:
+    type: PRISMARINE
+    damage: 1
+  ingredients:
+    a:
+      type: PRISMARINE_SHARD
+  shape:
+  - aaa
+  - aaa
+  - aaa
+- result:
+    type: PRISMARINE_SHARD
+    damage: 2
+  ingredients:
+    a:
+      type: PRISMARINE_SHARD
+    b:
+      type: INK_SACK
+      damage: 0
+  shape:
+  - aaa
+  - aba
+  - aaa
+- result:
+    type: SEA_LANTERN
+  ingredients:
+    a:
+      type: PRISMARINE_SHARD
+    b:
+      type: PRISMARINE_CRYSTALS
+  shape:
+  - aba
+  - bbb
+  - aba

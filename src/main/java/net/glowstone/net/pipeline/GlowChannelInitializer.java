@@ -16,7 +16,7 @@ public final class GlowChannelInitializer extends ChannelInitializer<SocketChann
     }
 
     @Override
-    protected final void initChannel(SocketChannel c) {
+    protected void initChannel(SocketChannel c) {
         MessageHandler handler = new MessageHandler(connectionManager);
         CodecsHandler codecs = new CodecsHandler(ProtocolType.HANDSHAKE.getProtocol());
         FramingHandler framing = new FramingHandler();

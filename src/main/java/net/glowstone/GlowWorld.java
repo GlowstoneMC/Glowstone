@@ -6,12 +6,15 @@ import net.glowstone.constants.GlowEffect;
 import net.glowstone.constants.GlowParticle;
 import net.glowstone.entity.*;
 import net.glowstone.entity.objects.GlowItem;
+import net.glowstone.generator.TreeGenerator;
 import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
 import net.glowstone.io.anvil.AnvilWorldStorageProvider;
+import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
 import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
@@ -178,6 +181,16 @@ public final class GlowWorld implements World {
      * How many ticks until the thundering status is expected to change.
      */
     private int thunderingTicks = 0;
+
+    /**
+     * The rain density on the current world tick.
+     */
+    private float currentRainDensity = 0;
+
+    /**
+     * The sky darkness on the current world tick.
+     */
+    private float currentSkyDarkness = 0;
 
     /**
      * The age of the world, in ticks.
@@ -396,6 +409,8 @@ public final class GlowWorld implements World {
                 setThundering(!currentlyThundering);
             }
 
+            updateWeather();
+
             if (currentlyRaining && currentlyThundering) {
                 if (random.nextDouble() < .01) {
                     GlowChunk[] chunkList = chunks.getLoadedChunks();
@@ -419,6 +434,23 @@ public final class GlowWorld implements World {
                 save(true);
             }
         }
+    }
+
+    /**
+     * Calculates how much the rays from the location to the entity's bounding box is blocked.
+     * @param location The location for the rays to start
+     * @param entity The entity that's bounding box is the ray's end point
+     * @return a value between 0 and 1, where 0 = all rays blocked and 1 = all rays unblocked
+     */
+    public float rayTrace(Location location, GlowEntity entity) {
+        // TODO: calculate how much of the entity is visible (not blocked by blocks) from the location
+        /*
+         * To calculate this step through the entity's bounding box and check whether the ray to the point
+         * in the bounding box is blocked.
+         *
+         * Return (unblockedRays / allRays)
+         */
+        return 1;
     }
 
     /**
@@ -729,156 +761,28 @@ public final class GlowWorld implements World {
 
     @Override
     public boolean generateTree(Location location, TreeType type) {
-        return generateTree(location, type, new SimpleBlockChangeDelegate());
+        return generateTree(location, type, null);
     }
 
     @Override
     public boolean generateTree(Location loc, TreeType type, BlockChangeDelegate delegate) {
-        // simple tree generation, always the same shape
-        // determine species variant
-        TreeSpecies species = getSpecies(type);
-        int wood = Material.LOG.getId();
-        int leaves = Material.LEAVES.getId();
-        final int data = species.getData() & 0x3;
-        if (species.getData() >= 4) {
-            wood = Material.LOG_2.getId();
-            leaves = Material.LEAVES_2.getId();
-        }
-
-        final int height = 4 + random.nextInt(3);
-        // -1 here is a hack for implicit +1 in rest of code
-        final int centerX = loc.getBlockX(), centerY = loc.getBlockY() - 1, centerZ = loc.getBlockZ();
-
-        // top leaf layer
-        delegate.setRawTypeIdAndData(centerX, centerY + height + 1, centerZ, leaves, data);
-        for (int j = 0; j < 4; j++) {
-            delegate.setRawTypeIdAndData(centerX, centerY + height + 1 - j, centerZ - 1, leaves, data);
-            delegate.setRawTypeIdAndData(centerX, centerY + height + 1 - j, centerZ + 1, leaves, data);
-            delegate.setRawTypeIdAndData(centerX - 1, centerY + height + 1 - j, centerZ, leaves, data);
-            delegate.setRawTypeIdAndData(centerX + 1, centerY + height + 1 - j, centerZ, leaves, data);
-        }
-
-        // layer below top
-        if (random.nextBoolean()) {
-            delegate.setRawTypeIdAndData(centerX + 1, centerY + height, centerZ + 1, leaves, data);
-        }
-        if (random.nextBoolean()) {
-            delegate.setRawTypeIdAndData(centerX + 1, centerY + height, centerZ - 1, leaves, data);
-        }
-        if (random.nextBoolean()) {
-            delegate.setRawTypeIdAndData(centerX - 1, centerY + height, centerZ + 1, leaves, data);
-        }
-        if (random.nextBoolean()) {
-            delegate.setRawTypeIdAndData(centerX - 1, centerY + height, centerZ - 1, leaves, data);
-        }
-
-        // two layers below that
-        delegate.setRawTypeIdAndData(centerX + 1, centerY + height - 1, centerZ + 1, leaves, data);
-        delegate.setRawTypeIdAndData(centerX + 1, centerY + height - 1, centerZ - 1, leaves, data);
-        delegate.setRawTypeIdAndData(centerX - 1, centerY + height - 1, centerZ + 1, leaves, data);
-        delegate.setRawTypeIdAndData(centerX - 1, centerY + height - 1, centerZ - 1, leaves, data);
-        delegate.setRawTypeIdAndData(centerX + 1, centerY + height - 2, centerZ + 1, leaves, data);
-        delegate.setRawTypeIdAndData(centerX + 1, centerY + height - 2, centerZ - 1, leaves, data);
-        delegate.setRawTypeIdAndData(centerX - 1, centerY + height - 2, centerZ + 1, leaves, data);
-        delegate.setRawTypeIdAndData(centerX - 1, centerY + height - 2, centerZ - 1, leaves, data);
-
-        // outer leaves
-        for (int j = 0; j < 2; j++) {
-            for (int k = -2; k <= 2; k++) {
-                for (int l = -2; l <= 2; l++) {
-                    delegate.setRawTypeIdAndData(centerX + k, centerY + height - 1 - j, centerZ + l, leaves, data);
+        final BlockStateDelegate blockStateDelegate = new BlockStateDelegate();
+        final TreeGenerator generator = new TreeGenerator(blockStateDelegate);
+        if (generator.generate(random, loc, type)) {
+            final List<BlockState> blockStates = new ArrayList<BlockState>(blockStateDelegate.getBlockStates());
+            StructureGrowEvent growEvent = new StructureGrowEvent(loc, type, false, null, blockStates);
+            EventFactory.callEvent(growEvent);
+            if (!growEvent.isCancelled()) {
+                for (BlockState state : blockStates) {
+                    state.update(true);
+                    if (delegate != null) {
+                        delegate.setTypeIdAndData(state.getX(), state.getY(), state.getZ(), state.getTypeId(), state.getRawData());
+                    }
                 }
+                return true;
             }
         }
-
-        for (int j = 0; j < 2; j++) {
-            if (random.nextBoolean()) {
-                delegate.setRawTypeId(centerX + 2, centerY + height - 1 - j, centerZ + 2, 0);
-            }
-            if (random.nextBoolean()) {
-                delegate.setRawTypeId(centerX + 2, centerY + height - 1 - j, centerZ - 2, 0);
-            }
-            if (random.nextBoolean()) {
-                delegate.setRawTypeId(centerX - 2, centerY + height - 1 - j, centerZ + 2, 0);
-            }
-            if (random.nextBoolean()) {
-                delegate.setRawTypeId(centerX - 2, centerY + height - 1 - j, centerZ - 2, 0);
-            }
-        }
-
-        // Trunk
-        for (int y = 1; y <= height; y++) {
-            delegate.setRawTypeIdAndData(centerX, centerY + y, centerZ, wood, data);
-        }
-
-        return true;
-    }
-
-    private TreeSpecies getSpecies(TreeType type) {
-        switch (type) {
-            case TREE:
-            case BIG_TREE:
-            case SWAMP:
-                return TreeSpecies.GENERIC;
-            case REDWOOD:
-            case TALL_REDWOOD:
-            case MEGA_REDWOOD:
-                return TreeSpecies.REDWOOD;
-            case BIRCH:
-            case TALL_BIRCH:
-                return TreeSpecies.BIRCH;
-            case JUNGLE:
-            case SMALL_JUNGLE:
-            case COCOA_TREE:
-            case JUNGLE_BUSH:
-                return TreeSpecies.JUNGLE;
-            case ACACIA:
-                return TreeSpecies.ACACIA;
-            case DARK_OAK:
-                return TreeSpecies.DARK_OAK;
-            // unhandled
-            case RED_MUSHROOM:
-            case BROWN_MUSHROOM:
-            default:
-                return TreeSpecies.GENERIC;
-        }
-    }
-
-    private class SimpleBlockChangeDelegate implements BlockChangeDelegate {
-        @Override
-        public boolean setRawTypeId(int x, int y, int z, int typeId) {
-            return setRawTypeIdAndData(x, y, z, typeId, 0);
-        }
-
-        @Override
-        public boolean setRawTypeIdAndData(int x, int y, int z, int typeId, int data) {
-            return getBlockAt(x, y, z).setTypeIdAndData(typeId, (byte) data, false);
-        }
-
-        @Override
-        public boolean setTypeId(int x, int y, int z, int typeId) {
-            return setTypeIdAndData(x, y, z, typeId, 0);
-        }
-
-        @Override
-        public boolean setTypeIdAndData(int x, int y, int z, int typeId, int data) {
-            return getBlockAt(x, y, z).setTypeIdAndData(typeId, (byte) data, true);
-        }
-
-        @Override
-        public int getTypeId(int x, int y, int z) {
-            return getBlockTypeIdAt(x, y, z);
-        }
-
-        @Override
-        public int getHeight() {
-            return getMaxHeight();
-        }
-
-        @Override
-        public boolean isEmpty(int x, int y, int z) {
-            return getBlockTypeIdAt(x, y, z) == 0;
-        }
+        return false;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1089,6 +993,18 @@ public final class GlowWorld implements World {
 
     @Override
     public <T extends Entity> T spawn(Location location, Class<T> clazz) throws IllegalArgumentException {
+        GlowEntity entity = null;
+
+        if (TNTPrimed.class.isAssignableFrom(clazz)) {
+            entity = new GlowTNTPrimed(location, null);
+        }
+
+        if (entity != null) {
+            @SuppressWarnings("unchecked")
+            T result = (T) entity;
+            return result;
+        }
+
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -1153,7 +1069,7 @@ public final class GlowWorld implements World {
     }
 
     private GlowLightningStrike strikeLightningFireEvent(final Location loc, final boolean effect) {
-        final GlowLightningStrike strike = new GlowLightningStrike(loc, effect);
+        final GlowLightningStrike strike = new GlowLightningStrike(loc, effect, random);
         final LightningStrikeEvent event = new LightningStrikeEvent(this, strike);
         if (EventFactory.callEvent(event).isCancelled()) {
             return null;
@@ -1215,6 +1131,7 @@ public final class GlowWorld implements World {
         }
 
         // change weather
+        boolean previouslyRaining = currentlyRaining;
         currentlyRaining = hasStorm;
 
         // Numbers borrowed from CraftBukkit.
@@ -1225,8 +1142,10 @@ public final class GlowWorld implements World {
         }
 
         // update players
-        for (GlowPlayer player : getRawPlayers()) {
-            player.sendWeather();
+        if (previouslyRaining != currentlyRaining) {
+            for (GlowPlayer player : getRawPlayers()) {
+                player.sendWeather();
+            }
         }
     }
 
@@ -1274,6 +1193,35 @@ public final class GlowWorld implements World {
         thunderingTicks = duration;
     }
 
+    public float getRainDensity() {
+        return currentRainDensity;
+    }
+
+    public float getSkyDarkness() {
+        return currentSkyDarkness;
+    }
+
+    private void updateWeather() {
+        final float previousRainDensity = currentRainDensity;
+        final float previousSkyDarkness = currentSkyDarkness;
+        final float rainDensityModifier = currentlyRaining ? .01F : -.01F;
+        final float skyDarknessModifier = currentlyThundering ? .01F : -.01F;
+        currentRainDensity = Math.max(0, Math.min(1, previousRainDensity + rainDensityModifier));
+        currentSkyDarkness = Math.max(0, Math.min(1, previousSkyDarkness + skyDarknessModifier));
+
+        if (previousRainDensity != currentRainDensity) {
+            for (GlowPlayer player : getRawPlayers()) {
+                player.sendRainDensity();
+            }
+        }
+
+        if (previousSkyDarkness != currentSkyDarkness) {
+            for (GlowPlayer player : getRawPlayers()) {
+                player.sendSkyDarkness();
+            }
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Explosions
 
@@ -1299,7 +1247,23 @@ public final class GlowWorld implements World {
 
     @Override
     public boolean createExplosion(double x, double y, double z, float power, boolean setFire, boolean breakBlocks) {
-        return false;
+        return createExplosion(null, x, y, z, power, setFire, breakBlocks);
+    }
+
+    /**
+     * Create an explosion with a specific entity as the source.
+     * @param source The entity to treat as the source, or null.
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @param z Z coordinate
+     * @param power The power of explosion, where 4F is TNT
+     * @param incendiary Whether or not to set blocks on fire
+     * @param breakBlocks Whether or not to have blocks be destroyed
+     * @return false if explosion was canceled, otherwise true
+     */
+    public boolean createExplosion(Entity source, double x, double y, double z, float power, boolean incendiary, boolean breakBlocks) {
+        Explosion explosion = new Explosion(source, this, x, y, z, power, incendiary, breakBlocks);
+        return explosion.explodeWithEvent();
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1343,7 +1307,7 @@ public final class GlowWorld implements World {
     public void playSound(Location location, Sound sound, float volume, float pitch) {
         if (location == null || sound == null) return;
 
-        final double radiusSquared = Math.pow(Math.min(volume * 16, 16), 2);
+        final double radiusSquared = Math.pow(volume * 16, 2);
         for (Player player : getRawPlayers()) {
             if (player.getLocation().distanceSquared(location) <= radiusSquared) {
                 player.playSound(location, sound, volume, pitch);

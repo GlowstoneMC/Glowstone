@@ -15,19 +15,19 @@ public interface ChunkIoService {
      * @param chunk The GlowChunk to read into.
      * @throws IOException if an I/O error occurs.
      */
-    public boolean read(GlowChunk chunk) throws IOException;
+    boolean read(GlowChunk chunk) throws IOException;
 
     /**
      * Writes a single chunk.
      * @param chunk The {@link GlowChunk} to write from.
      * @throws IOException if an I/O error occurs.
      */
-    public void write(GlowChunk chunk) throws IOException;
+    void write(GlowChunk chunk) throws IOException;
 
     /**
      * Unload the service, performing any cleanup necessary.
      * @throws IOException if an I/O error occurs.
      */
-    public void unload() throws IOException;
+    void unload() throws IOException;
 
 }

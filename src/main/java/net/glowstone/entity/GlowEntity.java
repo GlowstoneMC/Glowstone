@@ -141,7 +141,8 @@ public abstract class GlowEntity implements Entity {
         this.location = location.clone();
         this.world = (GlowWorld) location.getWorld();
         this.server = world.getServer();
-        world.getEntityManager().allocate(this);
+        server.getEntityIdManager().allocate(this);
+        world.getEntityManager().register(this);
         previousLocation = location.clone();
     }
 
@@ -223,6 +224,15 @@ public abstract class GlowEntity implements Entity {
         }
     }
 
+    /**
+     * Gets the full direction (including SOUTH_SOUTH_EAST etc) this entity is facing.
+     * @return The intercardinal BlockFace of this entity
+     */
+    public BlockFace getFacing() {
+        long facing = Math.round(getLocation().getYaw() / 22.5) + 8;
+        return Position.getDirection((byte) (facing % 16));
+    }
+
     @Override
     public void setVelocity(Vector velocity) {
         this.velocity.copy(velocity);
@@ -236,10 +246,13 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public boolean teleport(Location location) {
+        Validate.notNull(location, "location cannot be null");
+        Validate.notNull(location.getWorld(), "location's world cannot be null");
+
         if (location.getWorld() != world) {
-            world.getEntityManager().deallocate(this);
+            world.getEntityManager().unregister(this);
             world = (GlowWorld) location.getWorld();
-            world.getEntityManager().allocate(this);
+            world.getEntityManager().register(this);
         }
         setRawLocation(location);
         teleported = true;
@@ -271,7 +284,7 @@ public abstract class GlowEntity implements Entity {
      * not.
      */
     public boolean isWithinDistance(GlowEntity other) {
-        return isWithinDistance(other.location);
+        return !other.isDead() && (isWithinDistance(other.location) || other instanceof GlowLightningStrike);
     }
 
     /**
@@ -567,7 +580,8 @@ public abstract class GlowEntity implements Entity {
     @Override
     public void remove() {
         active = false;
-        world.getEntityManager().deallocate(this);
+        world.getEntityManager().unregister(this);
+        server.getEntityIdManager().deallocate(this);
     }
 
     @Override
