@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class WhittakerMapLayer extends MapLayer {
 
-    private static final Map<ClimateType, Climate> MAP = new HashMap<ClimateType, Climate>();
+    private static final Map<ClimateType, Climate> MAP = new HashMap<>();
     private final MapLayer belowLayer;
     private final ClimateType type;
 

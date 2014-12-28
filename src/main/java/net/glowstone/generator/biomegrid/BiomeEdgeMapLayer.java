@@ -12,12 +12,12 @@ import static org.bukkit.block.Biome.*;
 
 public class BiomeEdgeMapLayer extends MapLayer {
 
-    private static final Map<Integer, Integer> MESA_EDGES = new HashMap<Integer, Integer>();
-    private static final Map<Integer, Integer> MEGA_TAIGA_EDGES = new HashMap<Integer, Integer>();
-    private static final Map<Integer, Integer> DESERT_EDGES = new HashMap<Integer, Integer>();
-    private static final Map<Integer, Integer> SWAMP1_EDGES = new HashMap<Integer, Integer>();
-    private static final Map<Integer, Integer> SWAMP2_EDGES = new HashMap<Integer, Integer>();
-    private static final Map<Map<Integer, Integer>, List<Integer>> EDGES = new HashMap<Map<Integer, Integer>, List<Integer>>();
+    private static final Map<Integer, Integer> MESA_EDGES = new HashMap<>();
+    private static final Map<Integer, Integer> MEGA_TAIGA_EDGES = new HashMap<>();
+    private static final Map<Integer, Integer> DESERT_EDGES = new HashMap<>();
+    private static final Map<Integer, Integer> SWAMP1_EDGES = new HashMap<>();
+    private static final Map<Integer, Integer> SWAMP2_EDGES = new HashMap<>();
+    private static final Map<Map<Integer, Integer>, List<Integer>> EDGES = new HashMap<>();
 
     private final MapLayer belowLayer;
 

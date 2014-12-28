@@ -14,10 +14,10 @@ import static org.bukkit.block.Biome.*;
 
 public class BiomeThinEdgeMapLayer extends MapLayer {
 
-    private static final Set<Integer> OCEANS = new HashSet<Integer>();
-    private static final Map<Integer, Integer> MESA_EDGES = new HashMap<Integer, Integer>();
-    private static final Map<Integer, Integer> JUNGLE_EDGES = new HashMap<Integer, Integer>();
-    private static final Map<Map<Integer, Integer>, List<Integer>> EDGES = new HashMap<Map<Integer, Integer>, List<Integer>>();
+    private static final Set<Integer> OCEANS = new HashSet<>();
+    private static final Map<Integer, Integer> MESA_EDGES = new HashMap<>();
+    private static final Map<Integer, Integer> JUNGLE_EDGES = new HashMap<>();
+    private static final Map<Map<Integer, Integer>, List<Integer>> EDGES = new HashMap<>();
 
     private final MapLayer belowLayer;
 

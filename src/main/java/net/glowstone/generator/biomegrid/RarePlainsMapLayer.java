@@ -9,7 +9,7 @@ import static org.bukkit.block.Biome.*;
 
 public class RarePlainsMapLayer extends MapLayer {
 
-    private static final Map<Integer, Integer> RARE_PLAINS = new HashMap<Integer, Integer>();
+    private static final Map<Integer, Integer> RARE_PLAINS = new HashMap<>();
 
     private final MapLayer belowLayer;
 
