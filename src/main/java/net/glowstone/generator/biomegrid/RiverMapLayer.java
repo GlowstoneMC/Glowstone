@@ -11,8 +11,8 @@ import static org.bukkit.block.Biome.*;
 
 public class RiverMapLayer extends MapLayer {
 
-    private static final Set<Integer> OCEANS = new HashSet<Integer>();
-    private static final Map<Integer, Integer> SPECIAL_RIVERS = new HashMap<Integer, Integer>();
+    private static final Set<Integer> OCEANS = new HashSet<>();
+    private static final Map<Integer, Integer> SPECIAL_RIVERS = new HashMap<>();
     private static final int CLEAR_VALUE = 0;
     private static final int RIVER_VALUE = 1;
 

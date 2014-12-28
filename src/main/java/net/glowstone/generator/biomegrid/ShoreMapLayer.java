@@ -11,8 +11,8 @@ import static org.bukkit.block.Biome.*;
 
 public class ShoreMapLayer extends MapLayer {
 
-    private static final Set<Integer> OCEANS = new HashSet<Integer>();
-    private static final Map<Integer, Integer> SPECIAL_SHORES = new HashMap<Integer, Integer>();
+    private static final Set<Integer> OCEANS = new HashSet<>();
+    private static final Map<Integer, Integer> SPECIAL_SHORES = new HashMap<>();
     private final MapLayer belowLayer;
 
     public ShoreMapLayer(long seed, MapLayer belowLayer) {
