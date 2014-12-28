@@ -31,7 +31,7 @@ public class BlockHugeMushroom extends BlockType {
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         int rnd = random.nextInt(100);
         if (rnd < 80) {
-            return Collections.unmodifiableList(Arrays.asList(new ItemStack[0]));
+            return BlockDropless.EMPTY_STACK;
         } else {
             return Collections.unmodifiableList(Arrays.asList(new ItemStack(mushroomType, rnd > 90 ? 2 : 1, data)));
         }

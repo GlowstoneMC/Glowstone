@@ -1,5 +1,6 @@
 package net.glowstone.block.blocktype;
 
+import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
@@ -9,7 +10,7 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.material.Torch;
 import org.bukkit.util.Vector;
 
-public class BlockTorch extends BlockType {
+public class BlockTorch extends BlockNeedsAttached {
 
     public BlockTorch() {
         setDrops(new ItemStack(Material.TORCH));
@@ -24,5 +25,10 @@ public class BlockTorch extends BlockType {
         } else {
             warnMaterialData(Torch.class, data);
         }
+    }
+
+    @Override
+    protected BlockFace getAttachedFace(GlowBlock me) {
+        return ((Torch) me.getState().getData()).getAttachedFace();
     }
 }

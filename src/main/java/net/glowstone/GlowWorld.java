@@ -437,6 +437,23 @@ public final class GlowWorld implements World {
     }
 
     /**
+     * Calculates how much the rays from the location to the entity's bounding box is blocked.
+     * @param location The location for the rays to start
+     * @param entity The entity that's bounding box is the ray's end point
+     * @return a value between 0 and 1, where 0 = all rays blocked and 1 = all rays unblocked
+     */
+    public float rayTrace(Location location, GlowEntity entity) {
+        // TODO: calculate how much of the entity is visible (not blocked by blocks) from the location
+        /*
+         * To calculate this step through the entity's bounding box and check whether the ray to the point
+         * in the bounding box is blocked.
+         *
+         * Return (unblockedRays / allRays)
+         */
+        return 1;
+    }
+
+    /**
      * Gets the entity manager.
      * @return The entity manager.
      */
@@ -976,6 +993,18 @@ public final class GlowWorld implements World {
 
     @Override
     public <T extends Entity> T spawn(Location location, Class<T> clazz) throws IllegalArgumentException {
+        GlowEntity entity = null;
+
+        if (TNTPrimed.class.isAssignableFrom(clazz)) {
+            entity = new GlowTNTPrimed(location, null);
+        }
+
+        if (entity != null) {
+            @SuppressWarnings("unchecked")
+            T result = (T) entity;
+            return result;
+        }
+
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -1218,7 +1247,23 @@ public final class GlowWorld implements World {
 
     @Override
     public boolean createExplosion(double x, double y, double z, float power, boolean setFire, boolean breakBlocks) {
-        return false;
+        return createExplosion(null, x, y, z, power, setFire, breakBlocks);
+    }
+
+    /**
+     * Create an explosion with a specific entity as the source.
+     * @param source The entity to treat as the source, or null.
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @param z Z coordinate
+     * @param power The power of explosion, where 4F is TNT
+     * @param incendiary Whether or not to set blocks on fire
+     * @param breakBlocks Whether or not to have blocks be destroyed
+     * @return false if explosion was canceled, otherwise true
+     */
+    public boolean createExplosion(Entity source, double x, double y, double z, float power, boolean incendiary, boolean breakBlocks) {
+        Explosion explosion = new Explosion(source, this, x, y, z, power, incendiary, breakBlocks);
+        return explosion.explodeWithEvent();
     }
 
     ////////////////////////////////////////////////////////////////////////////

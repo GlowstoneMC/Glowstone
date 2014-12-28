@@ -579,9 +579,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     private void spawnAt(Location location) {
         // switch worlds
         GlowWorld oldWorld = world;
-        world.getEntityManager().deallocate(this);
+        world.getEntityManager().unregister(this);
         world = (GlowWorld) location.getWorld();
-        world.getEntityManager().allocate(this);
+        world.getEntityManager().register(this);
 
         // switch chunk set
         // no need to send chunk unload messages - respawn unloads all chunks
@@ -629,6 +629,15 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         // fire event and perform spawn
         PlayerRespawnEvent event = new PlayerRespawnEvent(this, dest, spawnAtBed);
         EventFactory.callEvent(event);
+        if (event.getRespawnLocation().getWorld().equals(getWorld()) && knownEntities.size() > 0) {
+            // we need to manually reset all known entities if the player respawns in the same world
+            List<Integer> entityIds = new ArrayList<>(knownEntities.size());
+            for (GlowEntity e : knownEntities) {
+                entityIds.add(e.getEntityId());
+            }
+            session.send(new DestroyEntitiesMessage(entityIds));
+            knownEntities.clear();
+        }
         spawnAt(event.getRespawnLocation());
 
         // just in case any items are left in their inventory after they respawn
@@ -1247,7 +1256,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void sendRawMessage(String message) {
-        // todo: convert old-style formatting to json
+        // old-style formatting to json conversion is in TextMessage
         session.send(new ChatMessage(message));
     }
 

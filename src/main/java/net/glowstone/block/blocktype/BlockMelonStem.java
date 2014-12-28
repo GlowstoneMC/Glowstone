@@ -9,11 +9,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Random;
 
-public class BlockMelonStem extends BlockType {
+public class BlockMelonStem extends BlockNeedsAttached {
     private final Random random = new Random();
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.MELON_SEEDS, random.nextInt(4))));
+        int amount = random.nextInt(4);
+        if (amount == 0) {
+            return BlockDropless.EMPTY_STACK;
+        }
+        return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.MELON_SEEDS, amount)));
     }
 }
