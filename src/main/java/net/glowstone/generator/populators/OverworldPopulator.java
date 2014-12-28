@@ -32,7 +32,6 @@ public class OverworldPopulator extends BlockPopulator {
         registerBiomePopulator(new JungleEdgePopulator());
         registerBiomePopulator(new SwamplandPopulator());
         registerBiomePopulator(new TaigaPopulator());
-        registerBiomePopulator(new ColdTaigaPopulator());
         registerBiomePopulator(new MegaTaigaPopulator());
         registerBiomePopulator(new MegaSpruceTaigaPopulator());
         registerBiomePopulator(new IcePlainsPopulator());
