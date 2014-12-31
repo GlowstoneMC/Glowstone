@@ -45,7 +45,10 @@ public class BlockJukebox extends BlockType {
 
     @Override
     public void blockDestroy(GlowPlayer player, GlowBlock block, BlockFace face) {
-        block.setData((byte) 0, false);
+        Jukebox jukebox = (Jukebox) block.getState();
+        if (jukebox.eject()) {
+            jukebox.update();
+        }
     }
 
     @Override
