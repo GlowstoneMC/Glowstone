@@ -1,9 +1,12 @@
 package net.glowstone.block.blocktype;
 
+import net.glowstone.block.GlowBlock;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.material.MaterialData;
+import org.bukkit.material.SimpleAttachableMaterialData;
 
-public class BlockAttachable extends BlockType {
+public class BlockAttachable extends BlockNeedsAttached {
 
     public void setAttachedFace(BlockState state, BlockFace attachedFace) {
         byte data = state.getRawData();
@@ -30,4 +33,14 @@ public class BlockAttachable extends BlockType {
         state.setRawData(data);
     }
 
+    @Override
+    protected BlockFace getAttachedFace(GlowBlock me) {
+        MaterialData data = me.getState().getData();
+        if (data instanceof SimpleAttachableMaterialData) {
+            return ((SimpleAttachableMaterialData) data).getAttachedFace();
+        } else {
+            warnMaterialData(SimpleAttachableMaterialData.class, data);
+            return BlockFace.DOWN;
+        }
+    }
 }

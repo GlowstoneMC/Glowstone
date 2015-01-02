@@ -1,5 +1,6 @@
 package net.glowstone.inventory;
 
+import net.glowstone.constants.ItemIds;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -50,8 +51,10 @@ public final class InventoryMonitor {
      * @param slot The slot to update.
      */
     private void updateItem(int slot) {
+        // sanitize() used as a last line of defense to prevent client crashes
+        // GlowInventory should generally be able to keep its contents safe
         ItemStack source = view.getItem(slot);
-        slots[slot] = source == null ? null : source.clone();
+        slots[slot] = source == null ? null : ItemIds.sanitize(source.clone());
     }
 
     /**

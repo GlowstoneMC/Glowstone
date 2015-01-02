@@ -8,10 +8,10 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class BlockDropless extends BlockType {
-    private final Collection<ItemStack> emptyStack = Collections.unmodifiableList(Arrays.asList(new ItemStack[0]));
+    public static final Collection<ItemStack> EMPTY_STACK = Collections.unmodifiableList(Arrays.asList(new ItemStack[0]));
 
     @Override
-    public final Collection<ItemStack> getDrops(GlowBlock block) {
-        return emptyStack;
+    public final Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+        return EMPTY_STACK;
     }
 }

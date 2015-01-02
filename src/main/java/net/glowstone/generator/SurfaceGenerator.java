@@ -27,6 +27,7 @@ public class SurfaceGenerator extends GlowChunkGenerator {
                 new MushroomPopulator(),
                 new SnowPopulator(),
                 new FlowerPopulator(),
+                new BiomePopulator(),
                 // Below-ground
                 new DungeonPopulator(),
                 //new CavePopulator(),

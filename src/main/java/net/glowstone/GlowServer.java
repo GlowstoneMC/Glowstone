@@ -5,7 +5,9 @@ import io.netty.channel.ChannelFuture;
 import net.glowstone.command.ColorCommand;
 import net.glowstone.command.TellrawCommand;
 import net.glowstone.command.TitleCommand;
+import net.glowstone.constants.GlowEnchantment;
 import net.glowstone.constants.GlowPotionEffect;
+import net.glowstone.entity.EntityIdManager;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.CraftingManager;
 import net.glowstone.inventory.GlowInventory;
@@ -44,8 +46,11 @@ import org.bukkit.util.permissions.DefaultPermissions;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.security.KeyPair;
 import java.util.*;
 import java.util.logging.Level;
@@ -79,8 +84,15 @@ public final class GlowServer implements Server {
      */
     public static void main(String[] args) {
         try {
+            // check for console
+            /*if (System.console() == null) {
+                ConsoleMissing.display();
+                return;
+            }*/
+
             ConfigurationSerialization.registerClass(GlowOfflinePlayer.class);
             GlowPotionEffect.register();
+            GlowEnchantment.register();
 
             // parse arguments and read config
             final ServerConfig config = parseArguments(args);
@@ -274,6 +286,11 @@ public final class GlowServer implements Server {
     private final GlowBanList ipBans;
 
     /**
+     * The EntityIdManager for this server.
+     */
+    private final EntityIdManager entityIdManager = new EntityIdManager();
+
+    /**
      * The world this server is managing.
      */
     private final WorldScheduler worlds = new WorldScheduler();
@@ -349,6 +366,11 @@ public final class GlowServer implements Server {
     private GlowServerIcon defaultIcon;
 
     /**
+     * The server port.
+     */
+    private int port;
+
+    /**
      * Creates a new server.
      */
     public GlowServer(ServerConfig config) {
@@ -388,6 +410,7 @@ public final class GlowServer implements Server {
         ipBans.load();
 
         // Start loading plugins
+        new LibraryManager(this).run();
         loadPlugins();
         enablePlugins(PluginLoadOrder.STARTUP);
 
@@ -414,9 +437,11 @@ public final class GlowServer implements Server {
 
         createWorld(WorldCreator.name(name).environment(Environment.NORMAL).seed(seed).type(type).generateStructures(structs));
         if (getAllowNether()) {
+            checkTransfer(name, "_nether", Environment.NETHER);
             createWorld(WorldCreator.name(name + "_nether").environment(Environment.NETHER).seed(seed).type(type).generateStructures(structs));
         }
         if (getAllowEnd()) {
+            checkTransfer(name, "_the_end", Environment.THE_END);
             createWorld(WorldCreator.name(name + "_the_end").environment(Environment.THE_END).seed(seed).type(type).generateStructures(structs));
         }
 
@@ -424,6 +449,47 @@ public final class GlowServer implements Server {
         enablePlugins(PluginLoadOrder.POSTWORLD);
         commandMap.registerServerAliases();
         scheduler.start();
+    }
+
+    private void checkTransfer(String name, String suffix, Environment environment) {
+        // todo: import things like per-dimension villages.dat when those are implemented
+        final Path srcPath = new File(new File(getWorldContainer(), name), "DIM" + environment.getId()).toPath();
+        final Path destPath = new File(getWorldContainer(), name + suffix).toPath();
+        if (Files.exists(srcPath) && !Files.exists(destPath)) {
+            logger.info("Importing " + destPath + " from " + srcPath);
+            try {
+                Files.walkFileTree(srcPath, new FileVisitor<Path>() {
+                    @Override
+                    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                        Path target = destPath.resolve(srcPath.relativize(dir));
+                        if (!Files.exists(target)) {
+                            Files.createDirectory(target);
+                        }
+                        return FileVisitResult.CONTINUE;
+                    }
+
+                    @Override
+                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                        Files.copy(file, destPath.resolve(srcPath.relativize(file)), StandardCopyOption.COPY_ATTRIBUTES);
+                        return FileVisitResult.CONTINUE;
+                    }
+
+                    @Override
+                    public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+                        logger.warning("Importing file " + srcPath.relativize(file) + " + failed: " + exc);
+                        return FileVisitResult.CONTINUE;
+                    }
+
+                    @Override
+                    public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                        return FileVisitResult.CONTINUE;
+                    }
+                });
+                Files.copy(srcPath.resolve("../level.dat"), destPath.resolve("level.dat"));
+            } catch (IOException e) {
+                logger.log(Level.WARNING, "Import of " + srcPath + " failed", e);
+            }
+        }
     }
 
     /**
@@ -438,6 +504,9 @@ public final class GlowServer implements Server {
         if (!channel.isActive()) {
             throw new RuntimeException("Failed to bind to address. Maybe it is already in use?");
         }
+
+        logger.info("Successfully bound to: " + channel.localAddress());
+        port = ((InetSocketAddress) channel.localAddress()).getPort();
     }
 
     /**
@@ -699,6 +768,14 @@ public final class GlowServer implements Server {
     }
 
     /**
+     * Gets the entity id manager.
+     * @return The {@link EntityIdManager}.
+     */
+    public EntityIdManager getEntityIdManager() {
+        return entityIdManager;
+    }
+
+    /**
      * Returns the list of OPs on this server.
      */
     public UuidListFile getOpsList() {
@@ -780,11 +857,35 @@ public final class GlowServer implements Server {
     }
 
     /**
-     * Get whether to use color codes in Rcon responses
+     * Get whether to use color codes in Rcon responses.
      * @return True if color codes will be present in Rcon responses
      */
     public boolean useRconColors() {
         return config.getBoolean(ServerConfig.Key.RCON_COLORS);
+    }
+
+    /**
+     * Get the resource pack url for this server, or {@code null} if not set.
+     * @return The url of the resource pack to use, or {@code null}
+     */
+    public String getResourcePackURL() {
+        return config.getString(ServerConfig.Key.RESOURCE_PACK);
+    }
+
+    /**
+     * Get the resource pack hash for this server, or the empty string if not set.
+     * @return The hash of the resource pack, or the empty string
+     */
+    public String getResourcePackHash() {
+        return config.getString(ServerConfig.Key.RESOURCE_PACK_HASH);
+    }
+
+    /**
+     * Get whether achievements should be announced.
+     * @return True if achievements should be announced in chat.
+     */
+    public boolean getAnnounceAchievements() {
+        return config.getBoolean(ServerConfig.Key.ANNOUNCE_ACHIEVEMENTS);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1334,6 +1435,8 @@ public final class GlowServer implements Server {
     @Override
     public void setWhitelist(boolean enabled) {
         whitelistEnabled = enabled;
+        config.set(ServerConfig.Key.WHITELIST, whitelistEnabled);
+        config.save();
     }
 
     @Override
@@ -1378,7 +1481,7 @@ public final class GlowServer implements Server {
 
     @Override
     public int getPort() {
-        return config.getInt(ServerConfig.Key.SERVER_PORT);
+        return port;
     }
 
     @Override

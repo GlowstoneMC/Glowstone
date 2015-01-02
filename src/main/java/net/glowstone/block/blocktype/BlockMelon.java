@@ -13,7 +13,7 @@ public class BlockMelon extends BlockType {
     private final Random random = new Random();
 
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block) {
+    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.MELON, random.nextInt(5) + 3)));
     }
 }

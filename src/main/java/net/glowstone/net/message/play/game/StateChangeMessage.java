@@ -24,8 +24,8 @@ public final class StateChangeMessage implements Message {
         CREDITS,
         DEMO_MESSAGE,
         ARROW,
-        FADE_VALUE,
-        FADE_TIME
+        RAIN_DENSITY,
+        SKY_DARKNESS
     }
 
 }

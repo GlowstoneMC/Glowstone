@@ -95,7 +95,20 @@ public class BlockStateDelegate {
         if (blockStateMap.containsKey(loc)) {
             return blockStateMap.get(loc);
         } else {
-            return world.getBlockAt(loc).getState();
+            return loc.getBlock().getState();
         }
     }
+
+    /**
+     * Returns the {@link BlockState} of a block at the given location
+     * @param loc the location which contains the block
+     * @return The {@link BlockState} state.
+     */
+    public BlockState getBlockState(Location loc) {
+        if (blockStateMap.containsKey(loc)) {
+            return blockStateMap.get(loc);
+        } else {
+            return loc.getBlock().getState();
+        }
+    }    
 }

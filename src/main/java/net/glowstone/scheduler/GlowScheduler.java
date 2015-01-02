@@ -251,19 +251,19 @@ public final class GlowScheduler implements BukkitScheduler {
     @Override
     @Deprecated
     public int scheduleSyncDelayedTask(Plugin plugin, BukkitRunnable task, long delay) {
-        return 0;
+        return task.runTaskLater(plugin, delay).getTaskId();
     }
 
     @Override
     @Deprecated
     public int scheduleSyncDelayedTask(Plugin plugin, BukkitRunnable task) {
-        return 0;
+        return task.runTask(plugin).getTaskId();
     }
 
     @Override
     @Deprecated
     public int scheduleSyncRepeatingTask(Plugin plugin, BukkitRunnable task, long delay, long period) {
-        return 0;
+        return task.runTaskTimer(plugin, delay, period).getTaskId();
     }
 
     @Override

@@ -10,15 +10,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Random;
 
-public class BlockTallGrass extends BlockType {
+public class BlockTallGrass extends BlockNeedsAttached {
     private final Random random = new Random();
 
     @Override
-    public Collection<ItemStack> getDrops(GlowBlock block) {
+    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (random.nextFloat() < .125) {
             return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.SEEDS, 1)));
         }
-        return Collections.unmodifiableList(Arrays.asList(new ItemStack[0]));
+        return BlockDropless.EMPTY_STACK;
     }
 
     @Override

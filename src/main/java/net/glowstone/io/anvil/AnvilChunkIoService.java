@@ -106,7 +106,12 @@ public final class AnvilChunkIoService implements ChunkIoService {
                     // note that creating the entity is sufficient to add it to the world
                     EntityStorage.loadEntity(chunk.getWorld(), entityTag);
                 } catch (Exception e) {
-                    GlowServer.logger.log(Level.WARNING, "Error loading entity in " + chunk, e);
+                    String id = entityTag.isString("id") ? entityTag.getString("id") : "<missing>";
+                    if (e.getMessage() != null && e.getMessage().startsWith("Unknown entity type to load:")) {
+                        GlowServer.logger.warning("Unknown entity in " + chunk + ": " + id);
+                    } else {
+                        GlowServer.logger.log(Level.WARNING, "Error loading entity in " + chunk + ": " + id, e);
+                    }
                 }
             }
         }
@@ -124,10 +129,12 @@ public final class AnvilChunkIoService implements ChunkIoService {
                 try {
                     tileEntity.loadNbt(tileEntityTag);
                 } catch (Exception ex) {
-                    GlowServer.logger.log(Level.SEVERE, "Error loading TileEntity at " + tileEntity.getBlock(), ex);
+                    String id = tileEntityTag.isString("id") ? tileEntityTag.getString("id") : "<missing>";
+                    GlowServer.logger.log(Level.SEVERE, "Error loading tile entity at " + tileEntity.getBlock() + ": " + id, ex);
                 }
             } else {
-                GlowServer.logger.warning("No tile entity at " + chunk.getWorld() + "," + tx + "," + ty + "," + tz);
+                String id = tileEntityTag.isString("id") ? tileEntityTag.getString("id") : "<missing>";
+                GlowServer.logger.warning("Unknown tile entity at " + chunk.getWorld().getName() + "," + tx + "," + ty + "," + tz + ": " + id);
             }
         }
 

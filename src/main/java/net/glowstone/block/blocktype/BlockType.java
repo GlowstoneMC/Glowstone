@@ -11,6 +11,7 @@ import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockCanBuildEvent;
@@ -44,9 +45,10 @@ public class BlockType extends ItemType {
     /**
      * Get the items that will be dropped by digging the block.
      * @param block The block being dug.
+     * @param tool The tool used or {@code null} if fists or no tool was used.
      * @return The drops that should be returned.
      */
-    public Collection<ItemStack> getDrops(GlowBlock block) {
+    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (drops == null) {
             // default calculation
             return Arrays.asList(new ItemStack(block.getType(), 1, block.getData()));
@@ -117,6 +119,16 @@ public class BlockType extends ItemType {
     }
 
     /**
+     * Called when a player attempts to destroy a block.
+     * @param player The player interacting
+     * @param block The block the player destroyed
+     * @param face The block face
+     */
+    public void blockDestroy(GlowPlayer player, GlowBlock block, BlockFace face) {
+        // do nothing
+    }
+
+    /**
      * Called when a player attempts to place a block on an existing block of
      * this type. Used to determine if the placement should occur into the air
      * adjacent to the block (normal behavior), or absorbed into the block
@@ -140,6 +152,44 @@ public class BlockType extends ItemType {
      */
     public boolean canOverride(GlowBlock block, BlockFace face, ItemStack holding) {
         return block.isLiquid();
+    }
+
+    /**
+     * Called when a neighboring block (within a 3x3x3 cube) has changed its
+     * type or data and physics checks should occur.
+     * @param block The block to perform physics checks for
+     * @param face The BlockFace to the changed block, or null if unavailable
+     * @param changedBlock The neighboring block that has changed
+     * @param oldType The old type of the changed block
+     * @param oldData The old data of the changed block
+     * @param newType The new type of the changed block
+     * @param newData The new data of the changed block
+     */
+    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
+
+    }
+
+    /**
+     * Called when this block has just changed to some other type. This is
+     * called whenever {@link GlowBlock#setTypeIdAndData}, {@link GlowBlock#setType}
+     * or {@link GlowBlock#setData} is called with physics enabled, and might
+     * be called from plugins or other means of changing the block.
+     * @param block The block that was changed
+     * @param oldType The old Material
+     * @param oldData The old data
+     * @param newType The new Material
+     * @param data The new data
+     */
+    public void onBlockChanged(GlowBlock block, Material oldType, byte oldData, Material newType, byte data) {
+        // do nothing
+    }
+
+    /**
+     * Called when the BlockType should calculate the current physics.
+     * @param me The block
+     */
+    public void updatePhysics(GlowBlock me) {
+        // do nothing
     }
 
     @Override
