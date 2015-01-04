@@ -7,6 +7,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.DiggingMessage;
 import org.bukkit.Effect;
@@ -98,7 +99,9 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             // destroy the block
             if (!block.isEmpty() && !block.isLiquid() && player.getGameMode() != GameMode.CREATIVE) {
                 for (ItemStack drop : block.getDrops(holding)) {
-                    player.getInventory().addItem(drop);
+                    GlowItem item = world.dropItemNaturally(block.getLocation(), drop);
+                    item.setPickupDelay(30);
+                    item.setBias(player);
                 }
             }
             // STEP_SOUND actually is the block break particles

@@ -430,7 +430,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
         Location dropLocation = location.clone();
         dropLocation.add(0, getEyeHeight(true) - 0.3, 0);
-        GlowItem dropItem = new GlowItem(dropLocation, stack);
+        GlowItem dropItem = world.dropItem(dropLocation, stack);
         Vector vel = location.getDirection().multiply(0.3f);
         vel.setY(vel.getY() + 0.1F);
         dropItem.setVelocity(vel);
