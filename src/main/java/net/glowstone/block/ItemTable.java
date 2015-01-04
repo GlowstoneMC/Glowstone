@@ -171,11 +171,11 @@ public final class ItemTable {
         reg(Material.BROWN_MUSHROOM, new BlockNeedsAttached());
         reg(Material.RED_MUSHROOM, new BlockNeedsAttached());
         reg(Material.SUGAR_CANE_BLOCK, new BlockSugarCane());
-        reg(Material.SAPLING, new BlockNeedsAttached());
-        reg(Material.RAILS, new BlockNeedsAttached());
-        reg(Material.ACTIVATOR_RAIL, new BlockNeedsAttached());
-        reg(Material.DETECTOR_RAIL, new BlockNeedsAttached());
-        reg(Material.POWERED_RAIL, new BlockNeedsAttached());
+        reg(Material.SAPLING, new BlockSapling());
+        reg(Material.RAILS, new BlockRails());
+        reg(Material.ACTIVATOR_RAIL, new BlockRails());
+        reg(Material.DETECTOR_RAIL, new BlockRails());
+        reg(Material.POWERED_RAIL, new BlockRails());
         reg(Material.CARPET, new BlockCarpet());
         reg(Material.ENCHANTMENT_TABLE, new BlockEnchantmentTable());
         reg(Material.BREWING_STAND, new BlockBrewingStand());
@@ -189,10 +189,6 @@ public final class ItemTable {
         reg(Material.WALL_BANNER, new BlockBanner());
         reg(Material.SPONGE, new BlockSponge());
         reg(Material.TNT, new BlockTNT());
-        reg(Material.RAILS, new BlockDirectDrops(Material.RAILS));
-        reg(Material.POWERED_RAIL, new BlockDirectDrops(Material.POWERED_RAIL));
-        reg(Material.ACTIVATOR_RAIL, new BlockDirectDrops(Material.ACTIVATOR_RAIL));
-        reg(Material.DETECTOR_RAIL, new BlockDirectDrops(Material.DETECTOR_RAIL));
         reg(Material.REDSTONE_WIRE, new BlockDirectDrops(Material.REDSTONE));
         reg(Material.REDSTONE_LAMP_ON, new BlockDirectDrops(Material.REDSTONE_LAMP_OFF));
         reg(Material.REDSTONE_TORCH_OFF, new BlockDirectDrops(Material.REDSTONE_TORCH_ON));
@@ -200,7 +196,6 @@ public final class ItemTable {
         reg(Material.PUMPKIN, new BlockDirectDrops(Material.PUMPKIN));
         reg(Material.JACK_O_LANTERN, new BlockDirectDrops(Material.JACK_O_LANTERN));
         reg(Material.SEA_LANTERN, new BlockRandomDrops(Material.PRISMARINE_CRYSTALS, 2, 3));
-        reg(Material.SAPLING, new BlockSapling());
 
 
         reg(Material.FLINT_AND_STEEL, new ItemFlintAndSteel());
