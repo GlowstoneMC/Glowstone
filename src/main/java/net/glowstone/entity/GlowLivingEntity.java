@@ -133,6 +133,9 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         if (isTouchingMaterial(Material.CACTUS) && canTakeDamage(EntityDamageEvent.DamageCause.CONTACT)) {
             damage(1, EntityDamageEvent.DamageCause.CONTACT);
         }
+        if (location.getY() < -64) { // no canTakeDamage call - pierces through game modes
+            damage(4, EntityDamageEvent.DamageCause.VOID);
+        }
 
         // potion effects
         List<PotionEffect> effects = new ArrayList<>(potionEffects.values());
