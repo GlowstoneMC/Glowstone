@@ -37,15 +37,12 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        MaterialData data = block.getState().getData();
+        final MaterialData data = block.getState().getData();
         if (data instanceof DoublePlant) {
-            if (((DoublePlant) data).getSpecies() == DoublePlantSpecies.PLANT_APEX) {
-                data = block.getRelative(BlockFace.DOWN).getState().getData();
-                if (data instanceof DoublePlant) {
-                    return Collections.unmodifiableList(Arrays.asList(data.toItemStack(1)));
-                }
+            final DoublePlantSpecies species = ((DoublePlant) data).getSpecies();
+            if (species != DoublePlantSpecies.DOUBLE_TALLGRASS && species != DoublePlantSpecies.LARGE_FERN && species != DoublePlantSpecies.PLANT_APEX) {
+                return Collections.unmodifiableList(Arrays.asList(data.toItemStack(1)));
             }
-            return Collections.unmodifiableList(Arrays.asList(data.toItemStack(1)));
         } else {
             warnMaterialData(DoublePlant.class, data);
         }
