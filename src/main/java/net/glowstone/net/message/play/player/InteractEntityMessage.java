@@ -18,7 +18,7 @@ public final class InteractEntityMessage implements Message {
     public enum Action {
         INTERACT,
         ATTACK,
-        ATTACK_AT
+        INTERACT_AT
     }
 }
 

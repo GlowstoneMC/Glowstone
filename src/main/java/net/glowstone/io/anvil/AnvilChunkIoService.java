@@ -98,6 +98,12 @@ public final class AnvilChunkIoService implements ChunkIoService {
         if (levelTag.isByteArray("Biomes")) {
             chunk.setBiomes(levelTag.getByteArray("Biomes"));
         }
+        // read height map
+        if (levelTag.isIntArray("HeightMap")) {
+            chunk.setHeightMap(levelTag.getIntArray("HeightMap"));
+        } else {
+            chunk.automaticHeightMap();
+        }
 
         // read entities
         if (levelTag.isList("Entities", TagType.COMPOUND)) {
@@ -115,8 +121,6 @@ public final class AnvilChunkIoService implements ChunkIoService {
                 }
             }
         }
-
-        // read "HeightMap" if we need to
 
         // read tile entities
         List<CompoundTag> storedTileEntities = levelTag.getCompoundList("TileEntities");

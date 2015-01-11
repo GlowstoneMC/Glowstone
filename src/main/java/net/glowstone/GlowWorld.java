@@ -800,12 +800,7 @@ public final class GlowWorld implements World {
 
     @Override
     public int getHighestBlockYAt(int x, int z) {
-        for (int y = getMaxHeight() - 1; y >= 0; --y) {
-            if (getBlockTypeIdAt(x, y, z) != 0) {
-                return y + 1;
-            }
-        }
-        return 0;
+        return getChunkAt(x >> 4, z >> 4).getHeight(x & 0xf, z & 0xf);
     }
 
     @Override
@@ -1009,12 +1004,12 @@ public final class GlowWorld implements World {
     }
 
     @Override
-    public Item dropItem(Location location, ItemStack item) {
+    public GlowItem dropItem(Location location, ItemStack item) {
         return new GlowItem(location, item);
     }
 
     @Override
-    public Item dropItemNaturally(Location location, ItemStack item) {
+    public GlowItem dropItemNaturally(Location location, ItemStack item) {
         double xs = random.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
         double ys = random.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
         double zs = random.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;

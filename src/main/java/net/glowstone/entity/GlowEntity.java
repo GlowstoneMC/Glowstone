@@ -7,6 +7,8 @@ import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
+import net.glowstone.entity.physics.BoundingBox;
+import net.glowstone.entity.physics.EntityBoundingBox;
 import net.glowstone.net.message.play.entity.*;
 import net.glowstone.util.Position;
 import org.apache.commons.lang.Validate;
@@ -97,6 +99,11 @@ public abstract class GlowEntity implements Entity {
      * The entity's velocity, applied each tick.
      */
     protected final Vector velocity = new Vector();
+
+    /**
+     * The entity's bounding box, or null if it has no physical presence.
+     */
+    private EntityBoundingBox boundingBox;
 
     /**
      * Whether the entity should have its position resent as if teleported.
@@ -324,6 +331,8 @@ public abstract class GlowEntity implements Entity {
             teleported = true;
         }
 
+        pulsePhysics();
+
         if (hasMoved()) {
             Block currentBlock = location.getBlock();
             if (currentBlock.getType() == Material.ENDER_PORTAL) {
@@ -355,14 +364,6 @@ public abstract class GlowEntity implements Entity {
         metadata.resetChanges();
         teleported = false;
         velocityChanged = false;
-    }
-
-    /**
-     * Gets the entity's previous position.
-     * @return The previous position of this entity.
-     */
-    public Location getPreviousLocation() {
-        return previousLocation;
     }
 
     /**
@@ -517,6 +518,59 @@ public abstract class GlowEntity implements Entity {
         return true;
     }
 
+    /**
+     * Determine if this entity is intersecting a block of the specified type.
+     * If the entity has a defined bounding box, that is used to check for
+     * intersection. Otherwise,
+     * @param material The material to check for.
+     * @return True if the entity is intersecting
+     */
+    public boolean isTouchingMaterial(Material material) {
+        if (boundingBox == null) {
+            // less accurate calculation if no bounding box is present
+            for (BlockFace face : new BlockFace[]{BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH, BlockFace.NORTH, BlockFace.DOWN, BlockFace.SELF,
+                    BlockFace.NORTH_EAST, BlockFace.NORTH_WEST, BlockFace.SOUTH_EAST, BlockFace.SOUTH_WEST}) {
+                if (getLocation().getBlock().getRelative(face).getType() == material) {
+                    return true;
+                }
+            }
+        } else {
+            // bounding box-based calculation
+            Vector min = boundingBox.minCorner, max = boundingBox.maxCorner;
+            for (int x = min.getBlockX(); x <= max.getBlockX(); ++x) {
+                for (int y = min.getBlockY(); y <= max.getBlockY(); ++y) {
+                    for (int z = min.getBlockZ(); z <= max.getBlockZ(); ++z) {
+                        if (world.getBlockTypeIdAt(x, y, z) == material.getId()) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Physics stuff
+
+    protected final void setBoundingBox(double xz, double y) {
+        boundingBox = new EntityBoundingBox(xz, y);
+    }
+
+    public boolean intersects(BoundingBox box) {
+        return boundingBox != null && boundingBox.intersects(box);
+    }
+
+    protected void pulsePhysics() {
+        // todo: update location based on velocity,
+        // do gravity, all that other good stuff
+
+        // make sure bounding box is up to date
+        if (boundingBox != null) {
+            boundingBox.setCenter(location.getX(), location.getY(), location.getZ());
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Various properties
 
@@ -586,12 +640,31 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public List<Entity> getNearbyEntities(double x, double y, double z) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // This behavior is similar to CraftBukkit, where a call with args
+        // (0, 0, 0) finds any entities whose bounding boxes intersect that of
+        // this entity.
+
+        BoundingBox searchBox;
+        if (boundingBox == null) {
+            searchBox = BoundingBox.fromPositionAndSize(location.toVector(), new Vector(0, 0, 0));
+        } else {
+            searchBox = BoundingBox.copyOf(boundingBox);
+        }
+        Vector vec = new Vector(x, y, z);
+        searchBox.minCorner.subtract(vec);
+        searchBox.maxCorner.add(vec);
+
+        return world.getEntityManager().getEntitiesInside(searchBox, this);
     }
 
     @Override
     public void playEffect(EntityEffect type) {
-
+        EntityStatusMessage message = new EntityStatusMessage(id, type);
+        for (GlowPlayer player : world.getRawPlayers()) {
+            if (player.canSeeEntity(this)) {
+                player.getSession().send(message);
+            }
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////

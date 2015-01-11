@@ -66,7 +66,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     /**
      * The default length of the invincibility period.
      */
-    private int maxNoDamageTicks = 20;
+    private int maxNoDamageTicks = 10;
 
     /**
      * A custom overhead name to be shown for non-Players.
@@ -119,7 +119,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         Material mat = getEyeLocation().getBlock().getType();
         // breathing
         if (mat == Material.WATER || mat == Material.STATIONARY_WATER) {
-            if (canDrown()) {
+            if (canTakeDamage(EntityDamageEvent.DamageCause.DROWNING)) {
                 --airTicks;
                 if (airTicks <= -20) {
                     airTicks = 0;
@@ -128,6 +128,13 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             }
         } else {
             airTicks = maximumAir;
+        }
+
+        if (isTouchingMaterial(Material.CACTUS) && canTakeDamage(EntityDamageEvent.DamageCause.CONTACT)) {
+            damage(1, EntityDamageEvent.DamageCause.CONTACT);
+        }
+        if (location.getY() < -64) { // no canTakeDamage call - pierces through game modes
+            damage(4, EntityDamageEvent.DamageCause.VOID);
         }
 
         // potion effects
@@ -277,10 +284,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     /**
-     * Get whether this entity should take drowning damage.
-     * @return whether this entity can drown
+     * Get whether this entity should take damage from the specified source.
+     * Usually used to check environmental sources such as drowning.
+     * @param damageCause the damage source to check
+     * @return whether this entity can take damage from the source
      */
-    protected boolean canDrown() {
+    public boolean canTakeDamage(EntityDamageEvent.DamageCause damageCause) {
         return true;
     }
 
@@ -395,6 +404,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         // invincibility timer
         if (noDamageTicks > 0 || health <= 0) {
             return;
+        } else {
+            noDamageTicks = maxNoDamageTicks;
         }
 
         // fire resistance

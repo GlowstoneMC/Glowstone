@@ -70,7 +70,7 @@ public final class ItemIds {
      * @return The sanitized stack, or null.
      */
     public static ItemStack sanitize(ItemStack stack) {
-        if (stack == null || stack.getType() == null) {
+        if (stack == null || stack.getType() == null || stack.getType() == Material.AIR) {
             return null;
         }
         Material item = getItem(getName(stack.getType()));
