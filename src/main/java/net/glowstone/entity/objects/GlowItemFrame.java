@@ -67,13 +67,9 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
     // //////////////////////////////////////////////////////////////////////////
     // Overrides
 
-    /**
-     * Represents an item frame that is also an 0 = INTERACT, 1 = ATTACK, 2 =
-     * INTERACT_AT (2 - Right/1- Left Click), 0 is always called with 1 or 2.
-     */
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
-        if (message.getAction() == 2) {
+        if (message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
             if (itemInFrame == Material.AIR) {
                 ItemStack isInHand = player.getItemInHand();
                 if (isInHand != null) {
@@ -95,7 +91,7 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
                 setItemFrameRotation(rot);
             }
         }
-        if (message.getAction() == 1) {
+        if (message.getAction() == InteractEntityMessage.Action.ATTACK.ordinal()) {
             if (isEmpty()) {
                 remove();
             } else {
