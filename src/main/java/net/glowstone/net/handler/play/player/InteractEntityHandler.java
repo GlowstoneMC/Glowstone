@@ -59,7 +59,7 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
             // todo: Interaction with entity at a specified location (X, Y, and Z are present in the message)
             // used for adjusting specific portions of armor stands
         } else if (message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
-            possibleTarget.entityInteract(player, message)
+            possibleTarget.entityInteract(player, message);
         } else {
             GlowServer.logger.info("Player " + player.getName() + " sent unknown interact action: " + message.getAction());
         }
