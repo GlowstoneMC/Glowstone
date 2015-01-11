@@ -20,26 +20,33 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.material.Tree;
 import org.bukkit.util.Vector;
 
-public class BlockCocoa extends BlockAttachable implements IBlockGrowable {
+public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
+
+    private static final BlockFace[] FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
-        super.placeBlock(player, state, face, holding, clickedLoc);
-
+        state.setType(getMaterial());
         final MaterialData data = state.getData();
         if (data instanceof CocoaPlant) {
-            setAttachedFace(state, face.getOppositeFace());
             final CocoaPlant cocoa = (CocoaPlant) data;
-            cocoa.setFacingDirection(face);
+            cocoa.setFacingDirection(face.getOppositeFace());
+            cocoa.setSize(CocoaPlantSize.SMALL);
         } else {
             warnMaterialData(CocoaPlant.class, data);
         }
     }
 
     @Override
+    protected BlockFace getAttachedFace(GlowBlock me) {
+        return ((CocoaPlant) me.getState().getData()).getFacing();
+    }
+
+    @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
-        if (block.getRelative(against.getOppositeFace()).getType() == Material.LOG) {
-            final MaterialData data = block.getState().getData();
+        final BlockFace face = against.getOppositeFace();
+        if (Arrays.asList(FACES).contains(face) && block.getRelative(face).getType() == Material.LOG) {
+            final MaterialData data = block.getRelative(face).getState().getData();
             if (data instanceof Tree) {
                 if (((Tree) data).getSpecies() == TreeSpecies.JUNGLE) {
                     return true;
