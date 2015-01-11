@@ -800,12 +800,7 @@ public final class GlowWorld implements World {
 
     @Override
     public int getHighestBlockYAt(int x, int z) {
-        for (int y = getMaxHeight() - 1; y >= 0; --y) {
-            if (getBlockTypeIdAt(x, y, z) != 0) {
-                return y + 1;
-            }
-        }
-        return 0;
+        return getChunkAt(x >> 4, z >> 4).getHeight(x & 0xf, z & 0xf);
     }
 
     @Override
