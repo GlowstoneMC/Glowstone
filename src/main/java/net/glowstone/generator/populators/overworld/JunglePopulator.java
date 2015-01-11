@@ -11,10 +11,12 @@ import net.glowstone.generator.objects.trees.BigOakTree;
 import net.glowstone.generator.objects.trees.CocoaTree;
 import net.glowstone.generator.objects.trees.JungleBush;
 import net.glowstone.generator.objects.trees.MegaJungleTree;
+import net.glowstone.util.BlockStateDelegate;
 
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
 
 public class JunglePopulator extends BiomePopulator {
 
@@ -40,8 +42,24 @@ public class JunglePopulator extends BiomePopulator {
     }
 
     @Override
-    public void populate(World world, Random random, Chunk chunk) {
-        super.populate(world, random, chunk);
+    public void populateOnGround(World world, Random random, Chunk chunk) {
+
+        int sourceX = (chunk.getX() << 4);
+        int sourceZ = (chunk.getZ() << 4);
+
+        for (int i = 0; i < 7; i++) {
+            int x = sourceX + random.nextInt(16);
+            int z = sourceZ + random.nextInt(16);
+            int y = world.getHighestBlockYAt(x, z);
+            final Block sourceBlock = world.getBlockAt(x, y, z);
+            final BlockStateDelegate delegate = new BlockStateDelegate();
+            final JungleBush bush = new JungleBush(random, sourceBlock.getLocation(), delegate);
+            if (bush.generate()) {
+                delegate.updateBlockStates();
+            }
+        }
+
+        super.populateOnGround(world, random, chunk);
         melonDecorator.populate(world, random, chunk);
     }
 }

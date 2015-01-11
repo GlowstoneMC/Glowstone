@@ -111,5 +111,8 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
         Block block = world.getHighestBlockAt(x, z).getRelative(BlockFace.DOWN);
         return !block.isLiquid() && !block.isEmpty() && !noSpawnFloors.contains(block.getType());
     }
-    
+
+    public short[][] generateExtBlockSectionsWithData(World world, Random random, int x, int z, BiomeGrid biomes) {
+        return null;
+    }
 }

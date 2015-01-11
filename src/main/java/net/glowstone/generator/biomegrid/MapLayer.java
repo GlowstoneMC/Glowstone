@@ -9,7 +9,6 @@ import net.glowstone.generator.biomegrid.ZoomMapLayer.ZoomType;
 
 public abstract class MapLayer {
 
-    private static int zoom = 2;
     private final Random random = new Random();
     private long seed;
 
@@ -28,7 +27,8 @@ public abstract class MapLayer {
 
     public abstract int[] generateValues(int x, int z, int sizeX, int sizeZ);
 
-    public static MapLayer initialize(long seed, WorldType worldType) {
+    public static MapLayer[] initialize(long seed, WorldType worldType) {
+        int zoom = 2;
         if (worldType == WorldType.LARGE_BIOMES) {
             zoom = 4;
         }
@@ -76,12 +76,13 @@ public abstract class MapLayer {
         layerRiver = new RiverMapLayer(seed + 10, layerRiver);
         layer = new RiverMapLayer(seed + 1000, layerRiver, layer);
 
+        MapLayer layerLowerRes = layer;
         for (int i = 0; i < 2; i++) {
             layer = new ZoomMapLayer(seed + 2000 + i, layer);
         }
 
         layer = new SmoothMapLayer(seed + 1001, layer);
 
-        return layer;
+        return new MapLayer[] {layer, layerLowerRes};
     }
 }

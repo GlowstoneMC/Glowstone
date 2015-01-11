@@ -3,6 +3,8 @@ package net.glowstone.generator.objects;
 import java.util.Arrays;
 import java.util.Random;
 
+import net.glowstone.constants.GlowBiomeTemperature;
+
 import org.bukkit.DoublePlantSpecies;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -17,8 +19,6 @@ public class Lake {
     private static final int MAX_BLOCKS = (int) (MAX_DIAMETER * MAX_DIAMETER * MAX_HEIGHT);
     private static final Material[] PLANT_TYPES = {Material.LONG_GRASS, Material.YELLOW_FLOWER, Material.RED_ROSE,
             Material.DOUBLE_PLANT, Material.BROWN_MUSHROOM, Material.RED_MUSHROOM};
-    private static final Biome[] FROZEN_BIOMES = {Biome.COLD_TAIGA, Biome.COLD_TAIGA_HILLS, Biome.COLD_TAIGA_MOUNTAINS, Biome.ICE_PLAINS,
-            Biome.ICE_MOUNTAINS, Biome.ICE_PLAINS_SPIKES, Biome.FROZEN_OCEAN, Biome.FROZEN_RIVER, Biome.COLD_BEACH};
     private static final Biome[] MYCEL_BIOMES = {Biome.MUSHROOM_ISLAND, Biome.MUSHROOM_SHORE};
     private final Material type;
 
@@ -58,14 +58,8 @@ public class Lake {
             return;
         }
 
-        boolean frozenSurface = false;
         final Biome biome = world.getBiome(sourceX + 8 + (int) MAX_DIAMETER / 2, sourceZ + 8 + (int) MAX_DIAMETER / 2);
         boolean mycelBiome = Arrays.asList(MYCEL_BIOMES).contains(biome) ? true : false;
-        if (type == Material.STATIONARY_WATER) {
-            if (Arrays.asList(FROZEN_BIOMES).contains(biome)) {
-                frozenSurface = true;
-            }
-        }
 
         for (int x = 0; x < (int) MAX_DIAMETER; x++) {
             for (int z = 0; z < (int) MAX_DIAMETER; z++) {
@@ -94,11 +88,14 @@ public class Lake {
                                     break;
                                 }
                             }
-                            if (frozenSurface && (block.getType() == Material.ICE || block.getType() == Material.PACKED_ICE)) {
+                            if (type == Material.STATIONARY_WATER && (block.getType() == Material.ICE || block.getType() == Material.PACKED_ICE)) {
                                 type = block.getType();
                             }
-                        } else if (y == MAX_HEIGHT / 2 - 1 && frozenSurface) {
-                            type = Material.ICE;
+                        } else if (y == MAX_HEIGHT / 2 - 1) {
+                            if (type == Material.STATIONARY_WATER && GlowBiomeTemperature.getVariatedTemperature(world.getBiome(sourceX + x, sourceZ + z),
+                                    sourceX + x, y, sourceZ + z) < 0.15D) {
+                                type = Material.ICE;
+                            }
                         }
                         block.setType(type);
                     }
@@ -133,7 +130,7 @@ public class Lake {
                             (z < MAX_HEIGHT - 1 && isLakeBlock(lakeMap, x, y + 1, z)) ||
                             (z > 0 && isLakeBlock(lakeMap, x, y - 1, z)))) {
                         final Block block = world.getBlockAt(sourceX + x, sourceY + y, sourceZ + z);
-                        if (y >= MAX_HEIGHT / 2 && block.isLiquid()) {
+                        if (y >= MAX_HEIGHT / 2 && (block.isLiquid() || block.getType() == Material.ICE)) {
                             return false; // there's already some liquids above
                         } else if (y < MAX_HEIGHT / 2 && !block.getType().isSolid() && block.getType() != type) {
                             return false; // bottom must be solid and do not overlap with another liquid type
