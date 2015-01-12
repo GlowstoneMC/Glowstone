@@ -128,7 +128,7 @@ public class SuperListIterator<E> implements ListIterator<E> {
     @Override
     public void set(E object) {
         if (childIterator == null) {
-            throw new IllegalStateException("next() must be called before using remove()");
+            throw new IllegalStateException("next() must be called before using set(E)");
         }
 
         childIterator.set(object);
