@@ -24,7 +24,7 @@ public class ItemDye extends ItemType {
         if (data instanceof Dye) {
             final Dye dye = (Dye) data;
 
-            if (dye.getColor() == DyeColor.WHITE) { // player interacts with bone meal in hand
+            if (dye.getColor() == DyeColor.WHITE && player.getGameMode() != GameMode.ADVENTURE) { // player interacts with bone meal in hand
                 BlockType blockType = ItemTable.instance().getBlock(target.getType());
                 if (blockType instanceof IBlockGrowable) {
                     IBlockGrowable growable = (IBlockGrowable) blockType;
