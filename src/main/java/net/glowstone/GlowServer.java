@@ -673,7 +673,7 @@ public final class GlowServer implements Server {
     private void enablePlugins(PluginLoadOrder type) {
         if (type == PluginLoadOrder.STARTUP) {
             helpMap.clear();
-            helpMap.initializeGeneralTopics();
+            helpMap.loadConfig(config.getConfigFile(ServerConfig.Key.HELP_FILE));
         }
 
         // load all the plugins
@@ -702,6 +702,7 @@ public final class GlowServer implements Server {
             commandMap.registerServerAliases();
             DefaultPermissions.registerCorePermissions();
             helpMap.initializeCommands();
+            helpMap.amendTopics(config.getConfigFile(ServerConfig.Key.HELP_FILE));
 
             // load permissions.yml
             ConfigurationSection permConfig = config.getConfigFile(ServerConfig.Key.PERMISSIONS_FILE);
