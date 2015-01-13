@@ -4,7 +4,9 @@ import com.flowpowered.networking.Message;
 import net.glowstone.EventFactory;
 import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.inventory.EquipmentMonitor;
+import net.glowstone.net.message.play.entity.EntityEffectMessage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
+import net.glowstone.net.message.play.entity.EntityRemoveEffectMessage;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -141,8 +143,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         List<PotionEffect> effects = new ArrayList<>(potionEffects.values());
         for (PotionEffect effect : effects) {
             // pulse effect
-            GlowPotionEffect type = (GlowPotionEffect) effect.getType();
-            type.pulse(this, effect);
+            PotionEffectType type = effect.getType();
+            GlowPotionEffect glowType = GlowPotionEffect.getEffect(type);
+            if (glowType != null) {
+                glowType.pulse(this, effect);
+            }
 
             if (effect.getDuration() > 0) {
                 // reduce duration and re-add
@@ -544,11 +549,15 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
         potionEffects.put(effect.getType(), effect);
 
-        // todo: this, updated, only players in range
-        /*EntityEffectMessage msg = new EntityEffectMessage(getEntityId(), effect.getType().getId(), effect.getAmplifier(), effect.getDuration());
-        for (Player player : server.getOnlinePlayers()) {
-            ((GlowPlayer) player).getSession().send(msg);
-        }*/
+        EntityEffectMessage msg = new EntityEffectMessage(getEntityId(), effect.getType().getId(), effect.getAmplifier(), effect.getDuration(), effect.isAmbient());
+        for (GlowPlayer player : world.getRawPlayers()) {
+            if (player == this) {
+                // special handling for players having a different view of themselves
+                player.getSession().send(new EntityEffectMessage(0, effect.getType().getId(), effect.getAmplifier(), effect.getDuration(), effect.isAmbient()));
+            } else if (player.canSeeEntity(this)) {
+                player.getSession().send(msg);
+            }
+        }
         return true;
     }
 
@@ -573,11 +582,15 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         if (!hasPotionEffect(type)) return;
         potionEffects.remove(type);
 
-        // todo: this, improved, for players in range
-        /*EntityRemoveEffectMessage msg = new EntityRemoveEffectMessage(getEntityId(), type.getId());
-        for (Player player : server.getOnlinePlayers()) {
-            ((GlowPlayer) player).getSession().send(msg);
-        }*/
+        EntityRemoveEffectMessage msg = new EntityRemoveEffectMessage(getEntityId(), type.getId());
+        for (GlowPlayer player : world.getRawPlayers()) {
+            if (player == this) {
+                // special handling for players having a different view of themselves
+                player.getSession().send(new EntityRemoveEffectMessage(0, type.getId()));
+            } else if (player.canSeeEntity(this)) {
+                player.getSession().send(msg);
+            }
+        }
     }
 
     @Override
