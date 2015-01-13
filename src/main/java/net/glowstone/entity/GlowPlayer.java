@@ -276,7 +276,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         if (server.isHardcore()) {
             gameMode |= 0x8;
         }
-        session.send(new JoinGameMessage(SELF_ID, gameMode, world.getEnvironment().getId(), world.getDifficulty().getValue(), session.getServer().getMaxPlayers(), type, false));
+        session.send(new JoinGameMessage(SELF_ID, gameMode, world.getEnvironment().getId(), world.getDifficulty().getValue(), session.getServer().getMaxPlayers(), type, world.getGameRuleMap().getBoolean("reducedDebugInfo")));
         setGameModeDefaults();
 
         // send server brand and supported plugin channels
@@ -1739,7 +1739,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     public void sendTime() {
         long time = getPlayerTime();
-        if (!timeRelative) {
+        if (!timeRelative || !world.getGameRuleMap().getBoolean("doDaylightCycle")) {
             time = -time; // negative value indicates fixed time
         }
         session.send(new TimeMessage(world.getFullTime(), time));

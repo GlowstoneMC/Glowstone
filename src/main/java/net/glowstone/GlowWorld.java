@@ -10,6 +10,7 @@ import net.glowstone.generator.TreeGenerator;
 import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
 import net.glowstone.io.anvil.AnvilWorldStorageProvider;
+import net.glowstone.net.message.play.entity.EntityStatusMessage;
 import net.glowstone.util.BlockStateDelegate;
 import net.glowstone.util.GameRuleManager;
 import org.bukkit.*;
@@ -1416,12 +1417,31 @@ public final class GlowWorld implements World {
 
     @Override
     public boolean setGameRuleValue(String rule, String value) {
-        return gameRules.setValue(rule, value);
+        if (!gameRules.setValue(rule, value)) {
+            return false;
+        }
+        if (rule.equals("doDaylightCycle")) {
+            // inform clients about the daylight cycle change
+            for (GlowPlayer player : getRawPlayers()) {
+                player.sendTime();
+            }
+        } else if (rule.equals("reducedDebugInfo")) {
+            // inform clients about the debug info change
+            EntityStatusMessage message = new EntityStatusMessage(0, gameRules.getBoolean("reducedDebugInfo") ? EntityStatusMessage.ENABLE_REDUCED_DEBUG_INFO : EntityStatusMessage.DISABLE_REDUCED_DEBUG_INFO);
+            for (GlowPlayer player : getRawPlayers()) {
+                player.getSession().send(message);
+            }
+        }
+        return true;
     }
 
     @Override
     public boolean isGameRule(String rule) {
         return gameRules.isGameRule(rule);
+    }
+
+    public GameRuleManager getGameRuleMap() {
+        return gameRules;
     }
 
     ////////////////////////////////////////////////////////////////////////////

@@ -97,7 +97,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             }
 
             // destroy the block
-            if (!block.isEmpty() && !block.isLiquid() && player.getGameMode() != GameMode.CREATIVE) {
+            if (!block.isEmpty() && !block.isLiquid() && player.getGameMode() != GameMode.CREATIVE && world.getGameRuleMap().getBoolean("doTileDrops")) {
                 for (ItemStack drop : block.getDrops(holding)) {
                     GlowItem item = world.dropItemNaturally(block.getLocation(), drop);
                     item.setPickupDelay(30);

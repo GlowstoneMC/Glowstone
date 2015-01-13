@@ -12,18 +12,18 @@ public final class GameRuleManager {
 
     public GameRuleManager() {
         setValue("commandBlockOutput", true);
-        setValue("doDaylightCycle", true);
+        setValue("doDaylightCycle", true); // implemented
         setValue("doEntityDrops", true);
         setValue("doFireTick", true);
         setValue("doMobLoot", true);
         setValue("doMobSpawning", true);
-        setValue("doTileDrops", true);
+        setValue("doTileDrops", true); // implemented
         setValue("keepInventory", false);
         setValue("logAdminCommands", true);
         setValue("mobGriefing", true);
         setValue("naturalRegeneration", true);
         setValue("randomTickSpeed", 3);
-        setValue("reducedDebugInfo", false);
+        setValue("reducedDebugInfo", false); // implemented
         setValue("sendCommandFeedback", true);
         setValue("showDeathMessages", true);
     }
