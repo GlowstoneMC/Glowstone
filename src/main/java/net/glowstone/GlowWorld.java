@@ -11,6 +11,7 @@ import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
 import net.glowstone.io.anvil.AnvilWorldStorageProvider;
 import net.glowstone.net.message.play.entity.EntityStatusMessage;
+import net.glowstone.net.message.play.player.ServerDifficultyMessage;
 import net.glowstone.util.BlockStateDelegate;
 import net.glowstone.util.GameRuleManager;
 import org.bukkit.*;
@@ -596,6 +597,10 @@ public final class GlowWorld implements World {
     @Override
     public void setDifficulty(Difficulty difficulty) {
         this.difficulty = difficulty;
+        ServerDifficultyMessage message = new ServerDifficultyMessage(difficulty.getValue());
+        for (GlowPlayer player : getRawPlayers()) {
+            player.getSession().send(message);
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
