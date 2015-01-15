@@ -92,12 +92,8 @@ public final class UuidListFile extends JsonListFile {
 
         @Override
         public Map<String, String> write() {
-            String name;
-            try {
-                name = ProfileCache.getProfile(uuid).getName();
-            } catch (NullPointerException e) {
-                name = fallbackName;
-            }
+            PlayerProfile profile = ProfileCache.getProfile(uuid);
+            String name = profile != null ? profile.getName() : fallbackName;
             Map<String, String> result = new HashMap<>(2);
             result.put("uuid", uuid.toString());
             result.put("name", name);
