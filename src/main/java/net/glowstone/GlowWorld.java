@@ -778,7 +778,7 @@ public final class GlowWorld implements World {
         final BlockStateDelegate blockStateDelegate = new BlockStateDelegate();
         final TreeGenerator generator = new TreeGenerator(blockStateDelegate);
         if (generator.generate(random, loc, type)) {
-            final List<BlockState> blockStates = new ArrayList<BlockState>(blockStateDelegate.getBlockStates());
+            final List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
             StructureGrowEvent growEvent = new StructureGrowEvent(loc, type, false, null, blockStates);
             EventFactory.callEvent(growEvent);
             if (!growEvent.isCancelled()) {

@@ -1,7 +1,6 @@
 package net.glowstone;
 
 import net.glowstone.block.GlowBlock;
-import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockTNT;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowHumanEntity;
@@ -42,7 +41,6 @@ public final class Explosion {
     private float yield = 0.3f;
 
     private static final Random random = new Random();
-    private final ItemTable itemTable;
 
     /**
      * Creates a new explosion
@@ -78,7 +76,6 @@ public final class Explosion {
         this.incendiary = incendiary;
         this.breakBlocks = breakBlocks;
         this.world = (GlowWorld) location.getWorld();
-        itemTable = ItemTable.instance();
     }
 
     public boolean explodeWithEvent() {
