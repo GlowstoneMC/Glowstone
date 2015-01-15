@@ -47,6 +47,7 @@ import org.bukkit.util.permissions.DefaultPermissions;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.file.*;
@@ -84,21 +85,15 @@ public final class GlowServer implements Server {
      */
     public static void main(String[] args) {
         try {
-            // check for console
-            /*if (System.console() == null) {
-                ConsoleMissing.display();
-                return;
-            }*/
-
-            ConfigurationSerialization.registerClass(GlowOfflinePlayer.class);
-            GlowPotionEffect.register();
-            GlowEnchantment.register();
-
             // parse arguments and read config
             final ServerConfig config = parseArguments(args);
             if (config == null) {
                 return;
             }
+
+            ConfigurationSerialization.registerClass(GlowOfflinePlayer.class);
+            GlowPotionEffect.register();
+            GlowEnchantment.register();
 
             // start server
             final GlowServer server = new GlowServer(config);
@@ -107,7 +102,24 @@ public final class GlowServer implements Server {
             server.bindQuery();
             server.bindRcon();
             logger.info("Ready for connections.");
+        } catch (BindException ex) {
+            // descriptive bind error messages
+            logger.severe("The server could not bind to the requested address.");
+            if (ex.getMessage().startsWith("Cannot assign requested address")) {
+                logger.severe("The 'server.ip' in your configuration may not be valid.");
+                logger.severe("Unless you are sure you need it, try removing it.");
+                logger.severe(ex.toString());
+            } else if (ex.getMessage().startsWith("Address already in use")) {
+                logger.severe("The address was already in use. Check that no server is");
+                logger.severe("already running on that port. If needed, try killing all");
+                logger.severe("Java processes using Task Manager or similar.");
+                logger.severe(ex.toString());
+            } else {
+                logger.log(Level.SEVERE, "An unknown bind error has occurred.", ex);
+            }
+            System.exit(1);
         } catch (Throwable t) {
+            // general server startup crash
             logger.log(Level.SEVERE, "Error during server startup.", t);
             System.exit(1);
         }
@@ -505,14 +517,18 @@ public final class GlowServer implements Server {
     /**
      * Binds this server to the address specified in the configuration.
      */
-    private void bind() {
+    private void bind() throws BindException {
         SocketAddress address = getBindAddress(ServerConfig.Key.SERVER_PORT);
 
         logger.info("Binding to address: " + address + "...");
         ChannelFuture future = networkServer.bind(address);
         Channel channel = future.awaitUninterruptibly().channel();
         if (!channel.isActive()) {
-            throw new RuntimeException("Failed to bind to address. Maybe it is already in use?");
+            Throwable cause = future.cause();
+            if (cause instanceof BindException) {
+                throw (BindException) cause;
+            }
+            throw new RuntimeException("Failed to bind to address", cause);
         }
 
         logger.info("Successfully bound to: " + channel.localAddress());
