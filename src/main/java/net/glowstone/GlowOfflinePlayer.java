@@ -45,6 +45,12 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
         loadData();
     }
 
+    /**
+     * Create a new offline player for the given UUID. If possible, the
+     * player's data (including name) will be loaded based on the UUID.
+     * @param server The server of the offline player. Must not be null.
+     * @param name The name of the player. Must not be null.
+     */
     public GlowOfflinePlayer(GlowServer server, String name) {
         Validate.notNull(server, "server must not be null");
         Validate.notNull(name, "name cannot be null");
@@ -53,6 +59,12 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
         loadData();
     }
 
+    /**
+     * Create a new offline player for the given UUID. If possible, the
+     * player's data (including name) will be loaded based on the UUID.
+     * @param server The server of the offline player. Must not be null.
+     * @param uuid The UUID of the player. Must not be null.
+     */
     public GlowOfflinePlayer(GlowServer server, UUID uuid) {
         Validate.notNull(server, "server must not be null");
         Validate.notNull(uuid, "UUID must not be null");
