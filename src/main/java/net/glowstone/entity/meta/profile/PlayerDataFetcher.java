@@ -46,7 +46,7 @@ final class PlayerDataFetcher {
             //potentially blocking
             is = conn.getInputStream();
         } catch (IOException e) {
-            GlowServer.logger.log(Level.WARNING, "Failed to look up profile", e);
+            GlowServer.logger.log(Level.WARNING, "Failed to look up profile");
             return null;
         }
 
