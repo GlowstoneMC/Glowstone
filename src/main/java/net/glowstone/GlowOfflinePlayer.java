@@ -165,7 +165,7 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
 
     @Override
     public boolean isWhitelisted() {
-        return server.getWhitelist().contains(profile);
+        return server.getWhitelist().containsProfile(profile);
     }
 
     @Override

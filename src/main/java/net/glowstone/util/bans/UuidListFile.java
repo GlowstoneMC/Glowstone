@@ -46,7 +46,7 @@ public final class UuidListFile extends JsonListFile {
         return false;
     }
 
-    public boolean contains(PlayerProfile profile) {
+    public boolean containsProfile(PlayerProfile profile) {
         for (BaseEntry baseEntry : entries) {
             if (profile.getUniqueId().equals(((Entry) baseEntry).uuid)) {
                 return true;
