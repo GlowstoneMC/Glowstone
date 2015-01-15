@@ -23,6 +23,7 @@ import net.glowstone.scheduler.WorldScheduler;
 import net.glowstone.util.*;
 import net.glowstone.util.bans.GlowBanList;
 import net.glowstone.util.bans.UuidListFile;
+import org.apache.commons.lang.Validate;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
 import org.bukkit.command.*;
@@ -47,6 +48,7 @@ import org.bukkit.util.permissions.DefaultPermissions;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.file.*;
@@ -84,21 +86,15 @@ public final class GlowServer implements Server {
      */
     public static void main(String[] args) {
         try {
-            // check for console
-            /*if (System.console() == null) {
-                ConsoleMissing.display();
-                return;
-            }*/
-
-            ConfigurationSerialization.registerClass(GlowOfflinePlayer.class);
-            GlowPotionEffect.register();
-            GlowEnchantment.register();
-
             // parse arguments and read config
             final ServerConfig config = parseArguments(args);
             if (config == null) {
                 return;
             }
+
+            ConfigurationSerialization.registerClass(GlowOfflinePlayer.class);
+            GlowPotionEffect.register();
+            GlowEnchantment.register();
 
             // start server
             final GlowServer server = new GlowServer(config);
@@ -107,7 +103,24 @@ public final class GlowServer implements Server {
             server.bindQuery();
             server.bindRcon();
             logger.info("Ready for connections.");
+        } catch (BindException ex) {
+            // descriptive bind error messages
+            logger.severe("The server could not bind to the requested address.");
+            if (ex.getMessage().startsWith("Cannot assign requested address")) {
+                logger.severe("The 'server.ip' in your configuration may not be valid.");
+                logger.severe("Unless you are sure you need it, try removing it.");
+                logger.severe(ex.toString());
+            } else if (ex.getMessage().startsWith("Address already in use")) {
+                logger.severe("The address was already in use. Check that no server is");
+                logger.severe("already running on that port. If needed, try killing all");
+                logger.severe("Java processes using Task Manager or similar.");
+                logger.severe(ex.toString());
+            } else {
+                logger.log(Level.SEVERE, "An unknown bind error has occurred.", ex);
+            }
+            System.exit(1);
         } catch (Throwable t) {
+            // general server startup crash
             logger.log(Level.SEVERE, "Error during server startup.", t);
             System.exit(1);
         }
@@ -371,6 +384,16 @@ public final class GlowServer implements Server {
     private int port;
 
     /**
+     * A set of all online players.
+     */
+    private final Set<GlowPlayer> onlinePlayers = new HashSet<>();
+
+    /**
+     * A view of all online players.
+     */
+    private final Set<GlowPlayer> onlineView = Collections.unmodifiableSet(onlinePlayers);
+
+    /**
      * Creates a new server.
      */
     public GlowServer(ServerConfig config) {
@@ -495,14 +518,18 @@ public final class GlowServer implements Server {
     /**
      * Binds this server to the address specified in the configuration.
      */
-    private void bind() {
+    private void bind() throws BindException {
         SocketAddress address = getBindAddress(ServerConfig.Key.SERVER_PORT);
 
         logger.info("Binding to address: " + address + "...");
         ChannelFuture future = networkServer.bind(address);
         Channel channel = future.awaitUninterruptibly().channel();
         if (!channel.isActive()) {
-            throw new RuntimeException("Failed to bind to address. Maybe it is already in use?");
+            Throwable cause = future.cause();
+            if (cause instanceof BindException) {
+                throw (BindException) cause;
+            }
+            throw new RuntimeException("Failed to bind to address", cause);
         }
 
         logger.info("Successfully bound to: " + channel.localAddress());
@@ -674,7 +701,7 @@ public final class GlowServer implements Server {
     private void enablePlugins(PluginLoadOrder type) {
         if (type == PluginLoadOrder.STARTUP) {
             helpMap.clear();
-            helpMap.initializeGeneralTopics();
+            helpMap.loadConfig(config.getConfigFile(ServerConfig.Key.HELP_FILE));
         }
 
         // load all the plugins
@@ -703,6 +730,7 @@ public final class GlowServer implements Server {
             commandMap.registerServerAliases();
             DefaultPermissions.registerCorePermissions();
             helpMap.initializeCommands();
+            helpMap.amendTopics(config.getConfigFile(ServerConfig.Key.HELP_FILE));
 
             // load permissions.yml
             ConfigurationSection permConfig = config.getConfigFile(ServerConfig.Key.PERMISSIONS_FILE);
@@ -887,6 +915,20 @@ public final class GlowServer implements Server {
         return config.getBoolean(ServerConfig.Key.ANNOUNCE_ACHIEVEMENTS);
     }
 
+    /**
+     * Sets a player as being online internally.
+     * @param player player to set online/offline
+     * @param online whether the player is online or offline
+     */
+    public void setPlayerOnline(GlowPlayer player, boolean online) {
+        Validate.notNull(player);
+        if (online) {
+            onlinePlayers.add(player);
+        } else {
+            onlinePlayers.remove(player);
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Static server properties
 
@@ -1038,14 +1080,7 @@ public final class GlowServer implements Server {
 
     @Override
     public Collection<GlowPlayer> getOnlinePlayers() {
-        // todo: provide a view instead of reassembling the list each time
-        ArrayList<GlowPlayer> result = new ArrayList<>();
-        for (GlowWorld world : worlds.getWorlds()) {
-            for (GlowPlayer player : world.getRawPlayers()) {
-                result.add(player);
-            }
-        }
-        return result;
+        return onlineView;
     }
 
     @Override

@@ -252,7 +252,9 @@ public class GlowInventory implements Inventory {
 
             if (toAdd > 0) {
                 // Still couldn't stash them all.
-                result.put(i, item.clone());
+                ItemStack remaining = item.clone();
+                remaining.setAmount(toAdd);
+                result.put(i, remaining);
             }
         }
 

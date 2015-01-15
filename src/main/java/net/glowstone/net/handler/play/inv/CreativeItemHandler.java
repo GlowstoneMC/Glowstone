@@ -24,8 +24,9 @@ public final class CreativeItemHandler implements MessageHandler<GlowSession, Cr
             return;
         }
 
+        // clicking outside drops the item
         if (message.getSlot() < 0) {
-            // todo: drop outside
+            player.drop(message.getItem());
             return;
         }
 

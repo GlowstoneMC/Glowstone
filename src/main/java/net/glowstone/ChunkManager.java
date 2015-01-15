@@ -250,6 +250,7 @@ public final class ChunkManager {
             }
             chunk.initializeSections(sections);
             chunk.setBiomes(biomes.biomes);
+            chunk.automaticHeightMap();
             return;
         }
 
@@ -269,6 +270,7 @@ public final class ChunkManager {
             }
             chunk.initializeSections(sections);
             chunk.setBiomes(biomes.biomes);
+            chunk.automaticHeightMap();
             return;
         }
 
@@ -291,6 +293,7 @@ public final class ChunkManager {
         }
         chunk.initializeSections(sections);
         chunk.setBiomes(biomes.biomes);
+        chunk.automaticHeightMap();
     }
 
     /**
