@@ -2,13 +2,17 @@ default:
   hardness: 1
   blastResistance: 0
 values:
-  AIR:
   STONE:
+    blastResistance: 30
   GRASS:
+    blastResistance: 3
   DIRT:
+    blastResistance: 2.5
   COBBLESTONE:
+    blastResistance: 30
   WOOD:
   SAPLING:
+    hardness: 0
   BEDROCK:
     hardness: -1
     blastResistance: 18000000
@@ -36,21 +40,28 @@ values:
   PISTON_STICKY_BASE:
   WEB:
   LONG_GRASS:
+    hardness: 0
   DEAD_BUSH:
+    hardness: 0
   PISTON_BASE:
   PISTON_EXTENSION:
   WOOL:
   PISTON_MOVING_PIECE:
   YELLOW_FLOWER:
+    hardness: 0
   RED_ROSE:
+    hardness: 0
   BROWN_MUSHROOM:
+    hardness: 0
   RED_MUSHROOM:
+    hardness: 0
   GOLD_BLOCK:
   IRON_BLOCK:
   DOUBLE_STEP:
   STEP:
   BRICK:
   TNT:
+    hardness: 0
   BOOKSHELF:
   MOSSY_COBBLESTONE:
   OBSIDIAN:
@@ -63,10 +74,12 @@ values:
   WOOD_STAIRS:
   CHEST:
   REDSTONE_WIRE:
+    hardness: 0
   DIAMOND_ORE:
   DIAMOND_BLOCK:
   WORKBENCH:
   CROPS:
+    hardness: 0
   SOIL:
   FURNACE:
   BURNING_FURNACE:
@@ -83,7 +96,9 @@ values:
   REDSTONE_ORE:
   GLOWING_REDSTONE_ORE:
   REDSTONE_TORCH_OFF:
+    hardness: 0
   REDSTONE_TORCH_ON:
+    hardness: 0
   STONE_BUTTON:
   SNOW:
   ICE:
@@ -91,6 +106,7 @@ values:
   CACTUS:
   CLAY:
   SUGAR_CANE_BLOCK:
+    hardness: 0
   JUKEBOX:
   FENCE:
   PUMPKIN:
@@ -101,7 +117,9 @@ values:
   JACK_O_LANTERN:
   CAKE_BLOCK:
   DIODE_BLOCK_OFF:
+    hardness: 0
   DIODE_BLOCK_ON:
+    hardness: 0
   STAINED_GLASS:
   TRAP_DOOR:
   MONSTER_EGGS:
@@ -112,7 +130,9 @@ values:
   THIN_GLASS:
   MELON_BLOCK:
   PUMPKIN_STEM:
+    hardness: 0
   MELON_STEM:
+    hardness: 0
   VINE:
   FENCE_GATE:
   BRICK_STAIRS:
@@ -123,6 +143,7 @@ values:
   NETHER_FENCE:
   NETHER_BRICK_STAIRS:
   NETHER_WARTS:
+    hardness: 0
   ENCHANTMENT_TABLE:
   BREWING_STAND:
   CAULDRON:
@@ -139,7 +160,9 @@ values:
   EMERALD_ORE:
   ENDER_CHEST:
   TRIPWIRE_HOOK:
+    hardness: 0
   TRIPWIRE:
+    hardness: 0
   EMERALD_BLOCK:
   SPRUCE_WOOD_STAIRS:
   BIRCH_WOOD_STAIRS:
@@ -148,8 +171,11 @@ values:
   BEACON:
   COBBLE_WALL:
   FLOWER_POT:
+    hardness: 0
   CARROT:
+    hardness: 0
   POTATO:
+    hardness: 0
   WOOD_BUTTON:
   SKULL:
   ANVIL:
@@ -157,7 +183,9 @@ values:
   GOLD_PLATE:
   IRON_PLATE:
   REDSTONE_COMPARATOR_OFF:
+    hardness: 0
   REDSTONE_COMPARATOR_ON:
+    hardness: 0
   DAYLIGHT_DETECTOR:
   REDSTONE_BLOCK:
   QUARTZ_ORE:
