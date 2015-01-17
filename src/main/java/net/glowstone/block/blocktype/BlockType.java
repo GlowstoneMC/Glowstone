@@ -9,10 +9,7 @@ import net.glowstone.block.ItemTable;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowPlayer;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockCanBuildEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -195,6 +192,12 @@ public class BlockType extends ItemType {
     @Override
     public final void rightClickBlock(GlowPlayer player, GlowBlock against, BlockFace face, ItemStack holding, Vector clickedLoc) {
         GlowBlock target = against.getRelative(face);
+
+        // prevent building above the height limit
+        if (target.getLocation().getY() >= target.getWorld().getMaxHeight()) {
+            player.sendMessage(ChatColor.RED + "The height limit for this world is " + target.getWorld().getMaxHeight() + " blocks");
+            return;
+        }
 
         // check whether the block clicked against should absorb the placement
         BlockType againstType = ItemTable.instance().getBlock(against.getTypeId());

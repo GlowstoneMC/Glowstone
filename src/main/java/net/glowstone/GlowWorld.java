@@ -71,6 +71,11 @@ public final class GlowWorld implements World {
     private static final int AUTOSAVE_TIME = 20 * 60 * 5;
 
     /**
+     * The maximum height of ocean water.
+     */
+    private static final int SEA_LEVEL = 64;
+
+    /**
      * The server of this world.
      */
     private final GlowServer server;
@@ -231,6 +236,11 @@ public final class GlowWorld implements World {
     private int monsterLimit, animalLimit, waterAnimalLimit, ambientLimit;
 
     /**
+     * The maximum height at which players may place blocks.
+     */
+    private int maxBuildHeight;
+
+    /**
      * Creates a new world from the options in the given WorldCreator.
      * @param server The server for the world.
      * @param creator The WorldCreator to use.
@@ -259,6 +269,7 @@ public final class GlowWorld implements World {
         ambientLimit = server.getAmbientSpawnLimit();
         keepSpawnLoaded = server.keepSpawnLoaded();
         difficulty = server.getDifficulty();
+        maxBuildHeight = server.getMaxBuildHeight();
 
         // read in world data
         WorldFinalValues values = null;
@@ -707,12 +718,12 @@ public final class GlowWorld implements World {
 
     @Override
     public int getMaxHeight() {
-        return GlowChunk.DEPTH;
+        return maxBuildHeight;
     }
 
     @Override
     public int getSeaLevel() {
-        return getMaxHeight() / 2;
+        return SEA_LEVEL;
     }
 
     @Override
