@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class BuiltinMaterialValueManager implements MaterialValueManager {
-    private final Map<Material, Value> values;
-    private Value defaultValue;
+    private final Map<Material, BuiltinValueCollection> values;
+    private BuiltinValueCollection defaultValue;
 
     public BuiltinMaterialValueManager() {
         values = new EnumMap<>(Material.class);
@@ -19,7 +19,7 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
         YamlConfiguration builtinValues = YamlConfiguration.loadConfiguration(
                 new InputStreamReader(getClass().getClassLoader().getResourceAsStream("builtin/materialValues.yml")));
 
-        this.defaultValue = new Value(builtinValues.getConfigurationSection("default"));
+        this.defaultValue = new BuiltinValueCollection(builtinValues.getConfigurationSection("default"));
         registerBuiltins(builtinValues);
     }
 
@@ -32,21 +32,21 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
                 throw new RuntimeException("Invalid builtin/materialValues.yml: Couldn't found material: " + strMaterial);
             }
             ConfigurationSection materialSection = valuesSection.getConfigurationSection(strMaterial);
-            values.put(material, new Value(materialSection));
+            values.put(material, new BuiltinValueCollection(materialSection));
         }
     }
 
     @Override
-    public MaterialValueManager.Value getValue(Material material) {
+    public ValueCollection getValues(Material material) {
         if (values.containsKey(material))
             return values.get(material);
         return defaultValue;
     }
 
-    private final class Value implements MaterialValueManager.Value {
+    private final class BuiltinValueCollection implements ValueCollection {
         private final ConfigurationSection section;
 
-        Value(ConfigurationSection section) {
+        BuiltinValueCollection(ConfigurationSection section) {
             this.section = section;
         }
 

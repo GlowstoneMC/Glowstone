@@ -7,20 +7,24 @@ import org.bukkit.Material;
  */
 public interface MaterialValueManager {
     /**
-     * Gets the {@link Value} for the given material.
-     * If there aren't concrete values for this material, a {@link Value} with default values will be returned.
+     * Returns the {@link ValueCollection} for the given material.
+     * If there aren't concrete values for this material, a {@link ValueCollection} with default values will be returned.
      * @param material The material to look for
-     * @return A {@link Value} object with values for the given material or default values
+     * @return a {@link ValueCollection} object with values for the given material or default values
      */
-    Value getValue(Material material);
+    ValueCollection getValues(Material material);
 
-    public interface Value {
+    public interface ValueCollection {
         /**
          * Returns the hardness-component of this value.
-         * @return returns the hardness (or Float.MAX_VALUE for infinity hardness)
+         * @return the hardness (or Float.MAX_VALUE for infinity hardness)
          */
         float getHardness();
 
+        /**
+         * Returns the blast resistance-component of this value.
+         * @return the blast resistance
+         */
         float getBlastResistance();
     }
 }

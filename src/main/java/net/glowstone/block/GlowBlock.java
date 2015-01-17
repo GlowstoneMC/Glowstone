@@ -232,8 +232,8 @@ public final class GlowBlock implements Block {
         return mat == Material.WATER || mat == Material.STATIONARY_WATER || mat == Material.LAVA || mat == Material.STATIONARY_LAVA;
     }
 
-    public MaterialValueManager.Value getMaterialValues() {
-        return ((GlowServer) Bukkit.getServer()).getMaterialValueManager().getValue(getType());
+    public MaterialValueManager.ValueCollection getMaterialValues() {
+        return ((GlowServer) Bukkit.getServer()).getMaterialValueManager().getValues(getType());
     }
 
     ////////////////////////////////////////////////////////////////////////////
