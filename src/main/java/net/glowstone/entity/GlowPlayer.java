@@ -47,6 +47,7 @@ import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
+import org.json.simple.JSONObject;
 
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
@@ -1264,6 +1265,15 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     public void sendRawMessage(String message) {
         // old-style formatting to json conversion is in TextMessage
         session.send(new ChatMessage(message));
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void sendActionBarMessage(String message) {
+        // "old" formatting workaround because apparently "new" styling doesn't work as of 01/18/2015
+        JSONObject json = new JSONObject();
+        json.put("text", message);
+        session.send(new ChatMessage(new TextMessage(json), 2));
     }
 
     @Override
