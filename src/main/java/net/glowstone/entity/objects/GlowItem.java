@@ -2,19 +2,21 @@ package net.glowstone.entity.objects;
 
 import com.flowpowered.networking.Message;
 import net.glowstone.entity.GlowEntity;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
-import net.glowstone.net.message.play.entity.EntityMetadataMessage;
-import net.glowstone.net.message.play.entity.EntityTeleportMessage;
-import net.glowstone.net.message.play.entity.EntityVelocityMessage;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.net.message.play.entity.*;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -34,6 +36,11 @@ public final class GlowItem extends GlowEntity implements Item {
     private int pickupDelay;
 
     /**
+     * A player to bias this item's pickup selection towards.
+     */
+    private GlowPlayer biasPlayer;
+
+    /**
      * Creates a new item entity.
      * @param location The location of the entity.
      * @param item The item stack the entity is carrying.
@@ -41,7 +48,33 @@ public final class GlowItem extends GlowEntity implements Item {
     public GlowItem(Location location, ItemStack item) {
         super(location);
         setItemStack(item);
-        pickupDelay = 20;
+        setBoundingBox(0.25, 0.25);
+        pickupDelay = 40;
+    }
+
+    private boolean getPickedUp(GlowPlayer player) {
+        // todo: fire PlayerPickupItemEvent in a way that allows for 'remaining' calculations
+
+        HashMap<Integer, ItemStack> map = player.getInventory().addItem(getItemStack());
+        player.updateInventory(); // workaround for player editing slot & it immediately being filled again
+        if (!map.isEmpty()) {
+            setItemStack(map.values().iterator().next());
+            return false;
+        } else {
+            CollectItemMessage message = new CollectItemMessage(getEntityId(), player.getEntityId());
+            world.playSound(location, Sound.ITEM_PICKUP, 0.3f, (float) (1 + Math.random()));
+            for (GlowPlayer other : world.getRawPlayers()) {
+                if (other.canSeeEntity(this)) {
+                    other.getSession().send(message);
+                }
+            }
+            remove();
+            return true;
+        }
+    }
+
+    public void setBias(GlowPlayer player) {
+        biasPlayer = player;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -58,13 +91,58 @@ public final class GlowItem extends GlowEntity implements Item {
 
         // decrement pickupDelay if it's less than the NBT maximum
         if (pickupDelay > 0) {
-            --pickupDelay;
+            if (pickupDelay < Short.MAX_VALUE) {
+                --pickupDelay;
+            }
+            if (pickupDelay < 20 && biasPlayer != null) {
+                // check for the bias player
+                for (Entity entity : getNearbyEntities(1, 0.5, 1)) {
+                    if (entity == biasPlayer && getPickedUp((GlowPlayer) entity)) {
+                        break;
+                    }
+                }
+            }
+        } else {
+            // check for nearby players
+            for (Entity entity : getNearbyEntities(1, 0.5, 1)) {
+                if (entity instanceof GlowPlayer && getPickedUp((GlowPlayer) entity)) {
+                    break;
+                }
+            }
+        }
+
+        // teleport to actual position fairly frequently in order to account
+        // for missing/incorrect physics simulation
+        if (getTicksLived() % (2 * 20) == 0) {
+            teleported = true;
         }
 
         // disappear if we've lived too long
         if (getTicksLived() >= LIFETIME) {
-            // todo: remove();
+            remove();
         }
+    }
+
+    @Override
+    protected void pulsePhysics() {
+        // simple temporary gravity - should eventually be improved to be real
+        // physics and moved up to GlowEntity
+
+        // continuously set velocity to 0 to make things look more normal
+        setVelocity(new Vector(0, 0, 0));
+
+        if (location.getBlock().getType().isSolid()) {
+            // float up out of solid blocks
+            setRawLocation(location.clone().add(0, 0.2, 0));
+        } else {
+            // fall down on top of solid blocks
+            Location down = location.clone().add(0, -0.1, 0);
+            if (!down.getBlock().getType().isSolid()) {
+                setRawLocation(down);
+            }
+        }
+
+        super.pulsePhysics();
     }
 
     @Override
@@ -77,7 +155,7 @@ public final class GlowItem extends GlowEntity implements Item {
         int pitch = Position.getIntPitch(location);
 
         return Arrays.asList(
-                new SpawnObjectMessage(id, 2, x, y, z, pitch, yaw),
+                new SpawnObjectMessage(id, SpawnObjectMessage.ITEM, x, y, z, pitch, yaw),
                 new EntityMetadataMessage(id, metadata.getEntryList()),
                 // these keep the client from assigning a random velocity
                 new EntityTeleportMessage(id, x, y, z, yaw, pitch),
@@ -108,5 +186,4 @@ public final class GlowItem extends GlowEntity implements Item {
         // stone is the "default state" for the item stack according to the client
         metadata.set(MetadataIndex.ITEM_ITEM, stack == null ? new ItemStack(Material.STONE) : stack.clone());
     }
-
 }

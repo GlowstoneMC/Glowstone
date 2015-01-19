@@ -1,5 +1,6 @@
 package net.glowstone.inventory;
 
+import net.glowstone.constants.ItemIds;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
@@ -212,7 +213,7 @@ public class GlowInventory implements Inventory {
 
     @Override
     public void setItem(int index, ItemStack item) {
-        slots[index] = item;
+        slots[index] = ItemIds.sanitize(item);
     }
 
     @Override
@@ -220,7 +221,8 @@ public class GlowInventory implements Inventory {
         HashMap<Integer, ItemStack> result = new HashMap<>();
 
         for (int i = 0; i < items.length; ++i) {
-            ItemStack item = items[i];
+            ItemStack item = ItemIds.sanitize(items[i]);
+            if (item == null) continue; // invalid items fail silently
             int maxStackSize = item.getType() == null ? 64 : item.getType().getMaxStackSize();
             int toAdd = item.getAmount();
 
@@ -250,7 +252,9 @@ public class GlowInventory implements Inventory {
 
             if (toAdd > 0) {
                 // Still couldn't stash them all.
-                result.put(i, item.clone());
+                ItemStack remaining = item.clone();
+                remaining.setAmount(toAdd);
+                result.put(i, remaining);
             }
         }
 
@@ -297,7 +301,9 @@ public class GlowInventory implements Inventory {
         if (items.length != slots.length) {
             throw new IllegalArgumentException("Length of items must be " + slots.length);
         }
-        System.arraycopy(items, 0, slots, 0, items.length);
+        for (int i = 0; i < slots.length; ++i) {
+            slots[i] = ItemIds.sanitize(items[i]);
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////

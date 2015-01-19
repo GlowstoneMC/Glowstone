@@ -17,11 +17,11 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
 
     private final ChunkSection[] sections;
 
-    private final int[] height;
+    private final byte[] height;
     private final double[] temp, humid;
     private final byte[] biomes;
 
-    public GlowChunkSnapshot(int x, int z, World world, ChunkSection[] sections, boolean svHeight, byte[] biomes, boolean svTemp) {
+    public GlowChunkSnapshot(int x, int z, World world, ChunkSection[] sections, byte[] height, byte[] biomes, boolean svTemp) {
         this.x = x;
         this.z = z;
         this.world = world.getName();
@@ -35,21 +35,11 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
             }
         }
 
-        final int baseX = x << 4, baseZ = z << 4;
-        if (svHeight) {
-            height = new int[16 * 16];
-            for (int xx = 0; xx < 16; ++xx) {
-                for (int zz = 0; zz < 16; ++zz) {
-                    height[coordToIndex(xx, zz)] = world.getHighestBlockYAt(baseX + xx, baseZ + zz);
-                }
-            }
-        } else {
-            height = null;
-        }
-
+        this.height = height;
         this.biomes = biomes;
 
         if (svTemp) {
+            final int baseX = x << 4, baseZ = z << 4;
             temp = new double[16 * 16];
             humid = new double[16 * 16];
             for (int xx = 0; xx < 16; ++xx) {
@@ -80,7 +70,11 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
     }
 
     public int[] getRawHeightmap() {
-        return height;
+        int[] result = new int[height.length];
+        for (int i = 0; i < result.length; ++i) {
+            result[i] = height[i];
+        }
+        return result;
     }
 
     public byte[] getRawBiomes() {
@@ -166,7 +160,7 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
     public static class EmptySnapshot extends GlowChunkSnapshot {
 
         public EmptySnapshot(int x, int z, World world, boolean svBiome, boolean svTemp) {
-            super(x, z, world, null, false, svBiome ? new byte[256] : null, svTemp);
+            super(x, z, world, null, null, svBiome ? new byte[256] : null, svTemp);
         }
 
         @Override
