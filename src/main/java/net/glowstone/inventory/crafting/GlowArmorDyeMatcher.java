@@ -1,7 +1,7 @@
 package net.glowstone.inventory.crafting;
 
-import com.google.common.collect.ImmutableList;
 import net.glowstone.inventory.GlowItemFactory;
+import net.glowstone.inventory.MaterialMatcher;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemMatcher;
@@ -14,8 +14,15 @@ import java.util.List;
 
 public class GlowArmorDyeMatcher extends ItemMatcher {
 
-    private static final List<Material> LEATHERS = ImmutableList.of(Material.LEATHER_HELMET,
-            Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS);
+    public static final MaterialMatcher LEATHERS = new MaterialMatcher() {
+        @Override
+        public boolean matches(Material material) {
+            return material.equals(Material.LEATHER_HELMET)
+                    || material.equals(Material.LEATHER_CHESTPLATE)
+                    || material.equals(Material.LEATHER_LEGGINGS)
+                    || material.equals(Material.LEATHER_BOOTS);
+        }
+    };
 
     @Override
     public ItemStack getResult(ItemStack[] matrix) {
@@ -31,7 +38,7 @@ public class GlowArmorDyeMatcher extends ItemMatcher {
                 continue;
             }
 
-            if (LEATHERS.contains(item.getType())) {
+            if (LEATHERS.matches(item.getType())) {
                 if (armor != null) return null; // Can't dye more than one item
                 armor = item;
                 continue;
