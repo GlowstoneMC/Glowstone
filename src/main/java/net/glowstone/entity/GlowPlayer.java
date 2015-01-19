@@ -10,6 +10,7 @@ import net.glowstone.entity.meta.ClientSettings;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.InventoryMonitor;
 import net.glowstone.io.PlayerDataService;
@@ -266,6 +267,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      */
     public GlowPlayer(GlowSession session, PlayerProfile profile, PlayerDataService.PlayerReader reader) {
         super(initLocation(session, reader), profile);
+        setBoundingBox(0.6, 1.8);
         this.session = session;
 
         chunkLock = world.newChunkLock(getName());
@@ -287,7 +289,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         if (server.isHardcore()) {
             gameMode |= 0x8;
         }
-        session.send(new JoinGameMessage(SELF_ID, gameMode, world.getEnvironment().getId(), world.getDifficulty().getValue(), session.getServer().getMaxPlayers(), type, false));
+        session.send(new JoinGameMessage(SELF_ID, gameMode, world.getEnvironment().getId(), world.getDifficulty().getValue(), session.getServer().getMaxPlayers(), type, world.getGameRuleMap().getBoolean("reducedDebugInfo")));
         setGameModeDefaults();
 
         // send server brand and supported plugin channels
@@ -307,6 +309,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         joinTime = System.currentTimeMillis();
         reader.readData(this);
         reader.close();
+
+        // Add player to list of online players
+        getServer().setPlayerOnline(this, true);
 
         // save data back out
         saveData();
@@ -383,6 +388,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         getInventory().removeViewer(this);
         getInventory().getCraftingInventory().removeViewer(this);
         permissions.clearPermissions();
+        getServer().setPlayerOnline(this, false);
         super.remove();
     }
 
@@ -1698,6 +1704,20 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         updateInventory();
     }
 
+    @Override
+    public GlowItem drop(ItemStack stack) {
+        GlowItem dropping = super.drop(stack);
+        if (dropping != null) {
+            PlayerDropItemEvent event = new PlayerDropItemEvent(this, dropping);
+            EventFactory.callEvent(event);
+            if (event.isCancelled()) {
+                dropping.remove();
+                dropping = null;
+            }
+        }
+        return dropping;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Player-specific time and weather
 
@@ -1736,7 +1756,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     public void sendTime() {
         long time = getPlayerTime();
-        if (!timeRelative) {
+        if (!timeRelative || !world.getGameRuleMap().getBoolean("doDaylightCycle")) {
             time = -time; // negative value indicates fixed time
         }
         session.send(new TimeMessage(world.getFullTime(), time));

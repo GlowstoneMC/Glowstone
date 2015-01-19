@@ -47,6 +47,7 @@ public class BlockSlab extends BlockType {
     }
 
     private boolean matchingType(GlowBlock block, BlockFace face, ItemStack holding, boolean ignoreFace) {
+        if (holding == null) return false;
         byte blockData = block.getData();
         byte holdingData = (byte) holding.getDurability();
         Material blockType = block.getType();

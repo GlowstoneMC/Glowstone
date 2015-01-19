@@ -101,7 +101,7 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
         }
     }
 
-    private void sendResponse(ChannelHandlerContext ctx, int requestId, int type, String payload) throws IOException {
+    private void sendResponse(ChannelHandlerContext ctx, int requestId, int type, String payload) {
         ByteBuf buf = ctx.alloc().buffer().order(ByteOrder.LITTLE_ENDIAN);
         buf.writeInt(requestId);
         buf.writeInt(type);
@@ -111,7 +111,7 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
         ctx.write(buf);
     }
 
-    private void sendLargeResponse(ChannelHandlerContext ctx, int requestId, String payload) throws IOException {
+    private void sendLargeResponse(ChannelHandlerContext ctx, int requestId, String payload) {
         if (payload.length() == 0) {
             sendResponse(ctx, requestId, TYPE_RESPONSE, "");
             return;

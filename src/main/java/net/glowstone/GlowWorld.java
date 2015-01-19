@@ -10,7 +10,10 @@ import net.glowstone.generator.TreeGenerator;
 import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
 import net.glowstone.io.anvil.AnvilWorldStorageProvider;
+import net.glowstone.net.message.play.entity.EntityStatusMessage;
+import net.glowstone.net.message.play.player.ServerDifficultyMessage;
 import net.glowstone.util.BlockStateDelegate;
+import net.glowstone.util.GameRuleManager;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -115,7 +118,7 @@ public final class GlowWorld implements World {
     /**
      * The game rules used in this world.
      */
-    private final Map<String, String> gameRules = new HashMap<>();
+    private final GameRuleManager gameRules = new GameRuleManager();
 
     /**
      * The environment.
@@ -391,7 +394,9 @@ public final class GlowWorld implements World {
         // Tick the world age and time of day
         // Modulus by 24000, the tick length of a day
         worldAge++;
-        time = (time + 1) % DAY_LENGTH;
+        if (gameRules.getBoolean("doDaylightCycle")) {
+            time = (time + 1) % DAY_LENGTH;
+        }
         if (worldAge % (30 * 20) == 0) {
             // Only send the time every so often; clients are smart.
             for (GlowPlayer player : getRawPlayers()) {
@@ -592,6 +597,10 @@ public final class GlowWorld implements World {
     @Override
     public void setDifficulty(Difficulty difficulty) {
         this.difficulty = difficulty;
+        ServerDifficultyMessage message = new ServerDifficultyMessage(difficulty.getValue());
+        for (GlowPlayer player : getRawPlayers()) {
+            player.getSession().send(message);
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -769,7 +778,7 @@ public final class GlowWorld implements World {
         final BlockStateDelegate blockStateDelegate = new BlockStateDelegate();
         final TreeGenerator generator = new TreeGenerator(blockStateDelegate);
         if (generator.generate(random, loc, type)) {
-            final List<BlockState> blockStates = new ArrayList<BlockState>(blockStateDelegate.getBlockStates());
+            final List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
             StructureGrowEvent growEvent = new StructureGrowEvent(loc, type, false, null, blockStates);
             EventFactory.callEvent(growEvent);
             if (!growEvent.isCancelled()) {
@@ -800,12 +809,7 @@ public final class GlowWorld implements World {
 
     @Override
     public int getHighestBlockYAt(int x, int z) {
-        for (int y = getMaxHeight() - 1; y >= 0; --y) {
-            if (getBlockTypeIdAt(x, y, z) != 0) {
-                return y + 1;
-            }
-        }
-        return 0;
+        return getChunkAt(x >> 4, z >> 4).getHeight(x & 0xf, z & 0xf);
     }
 
     @Override
@@ -1009,12 +1013,12 @@ public final class GlowWorld implements World {
     }
 
     @Override
-    public Item dropItem(Location location, ItemStack item) {
+    public GlowItem dropItem(Location location, ItemStack item) {
         return new GlowItem(location, item);
     }
 
     @Override
-    public Item dropItemNaturally(Location location, ItemStack item) {
+    public GlowItem dropItemNaturally(Location location, ItemStack item) {
         double xs = random.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
         double ys = random.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
         double zs = random.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
@@ -1408,27 +1412,41 @@ public final class GlowWorld implements World {
 
     @Override
     public String[] getGameRules() {
-        return gameRules.keySet().toArray(new String[gameRules.size()]);
+        return gameRules.getKeys();
     }
 
     @Override
     public String getGameRuleValue(String rule) {
-        return gameRules.get(rule);
+        return gameRules.getString(rule);
     }
 
     @Override
     public boolean setGameRuleValue(String rule, String value) {
-        if (value == null || !gameRules.containsKey(rule)) {
+        if (!gameRules.setValue(rule, value)) {
             return false;
-        } else {
-            gameRules.put(rule, value);
-            return true;
         }
+        if (rule.equals("doDaylightCycle")) {
+            // inform clients about the daylight cycle change
+            for (GlowPlayer player : getRawPlayers()) {
+                player.sendTime();
+            }
+        } else if (rule.equals("reducedDebugInfo")) {
+            // inform clients about the debug info change
+            EntityStatusMessage message = new EntityStatusMessage(0, gameRules.getBoolean("reducedDebugInfo") ? EntityStatusMessage.ENABLE_REDUCED_DEBUG_INFO : EntityStatusMessage.DISABLE_REDUCED_DEBUG_INFO);
+            for (GlowPlayer player : getRawPlayers()) {
+                player.getSession().send(message);
+            }
+        }
+        return true;
     }
 
     @Override
     public boolean isGameRule(String rule) {
-        return gameRules.containsKey(rule);
+        return gameRules.isGameRule(rule);
+    }
+
+    public GameRuleManager getGameRuleMap() {
+        return gameRules;
     }
 
     ////////////////////////////////////////////////////////////////////////////

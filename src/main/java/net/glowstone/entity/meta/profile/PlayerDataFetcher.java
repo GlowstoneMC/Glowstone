@@ -80,7 +80,7 @@ final class PlayerDataFetcher {
             return null;
         }
 
-        List<String> playerList = new ArrayList<String>();
+        List<String> playerList = new ArrayList<>();
         playerList.add(playerName);
 
         JSONArray json;

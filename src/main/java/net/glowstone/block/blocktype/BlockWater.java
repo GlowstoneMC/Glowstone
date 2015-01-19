@@ -11,7 +11,8 @@ public class BlockWater extends BlockLiquid {
 
     @Override
     public boolean isCollectible(GlowBlockState target) {
-        return target.getType() == Material.STATIONARY_WATER || (target.getType() == Material.WATER && target.getRawData() == 8);
+        return (target.getType() == Material.WATER || target.getType() == Material.STATIONARY_WATER) &&
+                (target.getRawData() == 0 || target.getRawData() == 8); // 8 for backwards compatibility
     }
 
 }

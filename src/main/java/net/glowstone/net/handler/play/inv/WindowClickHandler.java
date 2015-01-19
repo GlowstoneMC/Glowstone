@@ -17,7 +17,6 @@ import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.List;
@@ -339,13 +338,10 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
     }
 
     private void drop(GlowPlayer player, ItemStack stack) {
-        if (stack == null || stack.getAmount() <= 0) {
-            return;
+        // drop the stack if it's valid
+        if (stack != null && stack.getAmount() > 0) {
+            player.drop(stack);
         }
-        // drop item with the given contents and throw it the way the player is facing
-        // this 0.2 number has been pulled out of thin air
-        Vector vel = player.getLocation().getDirection().multiply(0.2);
-        player.getWorld().dropItem(player.getEyeLocation(), stack).setVelocity(vel);
     }
 
     private ItemStack combine(ItemStack slotItem, ItemStack cursor, int amount) {
