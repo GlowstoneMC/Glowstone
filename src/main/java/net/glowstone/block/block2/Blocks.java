@@ -29,6 +29,7 @@ public final class Blocks {
     public static final GlowBlockType GLASS = of("glass", 20).behavior(new NoDrops()).register();
     public static final GlowBlockType LAPIS_ORE = of("lapis_ore", 21).behavior(new RequiresTool(ToolType.STONE_PICKAXE), new RandomDrops(Material.INK_SACK, 4, 8, 4)).register();
     public static final GlowBlockType LAPIS_BLOCK = of("lapis_block", 22).behavior(new RequiresTool(ToolType.STONE_PICKAXE)).register();
+    public static final GlowBlockType DISPENSER = of("dispenser", 23).booleanProperty("triggered").enumProperty("facing", BlockFacing.class)/*.behavior(new DispenserPlacement())*/.register();
 
     private Blocks() {
     }
