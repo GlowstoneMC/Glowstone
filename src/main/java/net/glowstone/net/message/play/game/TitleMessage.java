@@ -5,17 +5,16 @@ import lombok.Data;
 import net.glowstone.util.TextMessage;
 import org.bukkit.title.Title;
 import org.bukkit.title.TitleOptions;
-import org.json.simple.JSONObject;
 
 @Data
 public final class TitleMessage implements Message {
 
     private final Action action;
-    private final String text; // TODO: Replace with chat components when possible
+    private final TextMessage text;
     private final int fadeIn, stay, fadeOut;
 
     // TITLE, SUBTITLE
-    public TitleMessage(Action action, String text) {
+    public TitleMessage(Action action, TextMessage text) {
         this.action = action;
         this.text = text;
         this.fadeIn = 0;
@@ -43,8 +42,8 @@ public final class TitleMessage implements Message {
 
     public static TitleMessage[] fromTitle(Title title) {
         return new TitleMessage[] {
-                new TitleMessage(Action.TITLE, toValidString(title.getHeading())),
-                new TitleMessage(Action.SUBTITLE, toValidString(title.getSubtitle()))
+                new TitleMessage(Action.TITLE, asTextMessage(title.getHeading())),
+                new TitleMessage(Action.SUBTITLE, asTextMessage(title.getSubtitle()))
         };
     }
 
@@ -52,13 +51,9 @@ public final class TitleMessage implements Message {
         return new TitleMessage(Action.TIMES, options.getFadeInTime(), options.getVisibleTime(), options.getFadeOutTime());
     }
 
-    private static String toValidString(String s) {
-        if (s == null) return "";
-
-        JSONObject parsed = TextMessage.convert(s);
-        if (parsed == null) return "";
-
-        return parsed.toJSONString();
+    private static TextMessage asTextMessage(String rawString) {
+        if (rawString == null) rawString = "";
+        return new TextMessage(rawString);
     }
 
     public enum Action {
