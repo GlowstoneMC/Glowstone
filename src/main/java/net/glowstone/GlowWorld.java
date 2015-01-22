@@ -371,19 +371,19 @@ public final class GlowWorld implements World {
      */
     public void pulse() {
         List<GlowEntity> temp = new ArrayList<>(entities.getAll());
-        List<GlowEntity> players = new LinkedList<>();
+        List<GlowPlayer> players = new LinkedList<>();
 
         // pulse players last so they actually see that other entities have
         // moved. unfortunately pretty hacky. not a problem for players b/c
         // their position is modified by session ticking.
         for (GlowEntity entity : temp) {
             if (entity instanceof GlowPlayer) {
-                players.add(entity);
+                players.add((GlowPlayer) entity);
             } else {
                 entity.pulse();
             }
         }
-        for (GlowEntity entity : players) {
+        for (GlowPlayer entity : players) {
             entity.pulse();
         }
 
@@ -428,6 +428,37 @@ public final class GlowWorld implements World {
 
                         strikeLightning(new Location(this, x, y, z));
                     }
+                }
+            }
+        }
+
+        // Skip checking for sleeping players if no one is online
+        if (!players.isEmpty()) {
+            // If the night is over, wake up all players
+            // Tick values for day/night time taken from the minecraft wiki
+            if (getTime() < 12541 || getTime() > 23458) {
+                for (GlowPlayer player : players) {
+                    if (player.isSleeping()) {
+                        player.leaveBed(true);
+                    }
+                }
+            } else { // otherwise check whether everyone is asleep
+                boolean allSleeping = true;
+                for (GlowPlayer player : players) {
+                    if (!(player.isSleeping() && player.getSleepTicks() >= 100) && !player.isSleepingIgnored()) {
+                        allSleeping = false;
+                        break;
+                    }
+                }
+                if (allSleeping && gameRules.getBoolean("doDaylightCycle")) {
+                    worldAge = (worldAge / DAY_LENGTH + 1) * DAY_LENGTH;
+                    time = 0;
+                    for (GlowPlayer player : players) {
+                        player.sendTime();
+                        player.leaveBed(true);
+                    }
+                    setStorm(false);
+                    setThundering(false);
                 }
             }
         }

@@ -127,6 +127,7 @@ public class PlayProtocolTest extends BaseProtocolTest {
             //CombatEvent
             new ResourcePackSendMessage("url", "hash"),
             new ServerDifficultyMessage(1),
+            new UseBedMessage(1, 2, 3, 4),
             //TabCompleteResponse
     };
 
