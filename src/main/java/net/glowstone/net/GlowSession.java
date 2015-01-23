@@ -478,6 +478,10 @@ public final class GlowSession extends BasicSession {
 
         GlowServer.logger.info(player.getName() + " [" + address + "] lost connection");
 
+        if (player.isSleeping()) {
+            player.leaveBed(false);
+        }
+
         final String text = EventFactory.onPlayerQuit(player).getQuitMessage();
         if (text != null && !text.isEmpty()) {
             server.broadcastMessage(text);
