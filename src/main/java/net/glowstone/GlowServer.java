@@ -1644,6 +1644,7 @@ public final class GlowServer implements Server {
     }
 
     public int getMaxBuildHeight() {
-        return config.getInt(ServerConfig.Key.MAX_BUILD_HEIGHT);
+        return Math.max(64, Math.min(256, config.getInt(ServerConfig.Key
+                .MAX_BUILD_HEIGHT)));
     }
 }
