@@ -1175,7 +1175,7 @@ public final class GlowServer implements Server {
         }
         OfflinePlayer result = getPlayerExact(name);
         if (result == null) {
-            //probably blocking (1 per player per minute)
+            //probably blocking (same player once per minute)
             PlayerProfile profile = PlayerProfile.getProfile(name);
             if (profile == null) {
                 result = getOfflinePlayer(new PlayerProfile(name, UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes())));
