@@ -39,10 +39,9 @@ public abstract class BlockLiquid extends BlockType {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+        // 0 = full liquid block
         state.setType(getMaterial());
-
-        // 8 = Full liquid block
-        state.setRawData((byte) 8);
+        state.setRawData((byte) 0);
     }
 
 }

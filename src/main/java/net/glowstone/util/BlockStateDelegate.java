@@ -17,7 +17,7 @@ import java.util.HashMap;
  */
 public class BlockStateDelegate {
 
-    private final HashMap<Location, BlockState> blockStateMap = new HashMap<Location, BlockState>();
+    private final HashMap<Location, BlockState> blockStateMap = new HashMap<>();
 
     /**
      * Sets a block type and add it to the BlockState list.

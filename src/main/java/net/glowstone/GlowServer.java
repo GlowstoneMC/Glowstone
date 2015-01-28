@@ -1,5 +1,8 @@
 package net.glowstone;
 
+import com.avaje.ebean.config.DataSourceConfig;
+import com.avaje.ebean.config.dbplatform.SQLitePlatform;
+import com.avaje.ebeaninternal.server.lib.sql.TransactionIsolation;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import net.glowstone.command.ColorCommand;
@@ -9,6 +12,9 @@ import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.EntityIdManager;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.generator.CakeTownGenerator;
+import net.glowstone.generator.SurfaceGenerator;
+import net.glowstone.generator.UndergroundGenerator;
 import net.glowstone.inventory.CraftingManager;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowItemFactory;
@@ -1307,11 +1313,11 @@ public final class GlowServer implements Server {
 
         // find generator based on environment and world type
         if (environment == Environment.NETHER) {
-            return new net.glowstone.generator.UndergroundGenerator();
+            return new UndergroundGenerator();
         } else if (environment == Environment.THE_END) {
-            return new net.glowstone.generator.CakeTownGenerator();
+            return new CakeTownGenerator();
         } else {
-            return new net.glowstone.generator.SurfaceGenerator();
+            return new SurfaceGenerator();
         }
     }
 
@@ -1509,15 +1515,15 @@ public final class GlowServer implements Server {
 
     @Override
     public void configureDbConfig(com.avaje.ebean.config.ServerConfig dbConfig) {
-        com.avaje.ebean.config.DataSourceConfig ds = new com.avaje.ebean.config.DataSourceConfig();
+        DataSourceConfig ds = new DataSourceConfig();
         ds.setDriver(config.getString(ServerConfig.Key.DB_DRIVER));
         ds.setUrl(config.getString(ServerConfig.Key.DB_URL));
         ds.setUsername(config.getString(ServerConfig.Key.DB_USERNAME));
         ds.setPassword(config.getString(ServerConfig.Key.DB_PASSWORD));
-        ds.setIsolationLevel(com.avaje.ebeaninternal.server.lib.sql.TransactionIsolation.getLevel(config.getString(ServerConfig.Key.DB_ISOLATION)));
+        ds.setIsolationLevel(TransactionIsolation.getLevel(config.getString(ServerConfig.Key.DB_ISOLATION)));
 
         if (ds.getDriver().contains("sqlite")) {
-            dbConfig.setDatabasePlatform(new com.avaje.ebean.config.dbplatform.SQLitePlatform());
+            dbConfig.setDatabasePlatform(new SQLitePlatform());
             dbConfig.getDatabasePlatform().getDbDdlSyntax().setIdentity("");
         }
 
