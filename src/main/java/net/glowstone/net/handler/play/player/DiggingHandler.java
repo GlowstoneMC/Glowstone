@@ -31,6 +31,11 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
         BlockFace face = BlockPlacementHandler.convertFace(message.getFace());
         ItemStack holding = player.getItemInHand();
 
+        if (block.getRelative(face).getType() == Material.FIRE) {
+            block.getRelative(face).breakNaturally();
+            return; // returns to avoid breaking block in creative
+        }
+
         boolean blockBroken = false;
         boolean revert = false;
         if (message.getState() == DiggingMessage.START_DIGGING) {

@@ -53,7 +53,7 @@ public class ItemFlintAndSteel extends ItemTool {
         }
 
         // clone holding to avoid decreasing of the item's amount
-        ItemTable.instance().getBlock(Material.FIRE).rightClickBlock(player, clicked, BlockFace.UP, holding.clone(), clickedLoc);
+        ItemTable.instance().getBlock(Material.FIRE).rightClickBlock(player, clicked, face, holding.clone(), clickedLoc);
 
         return true;
     }
