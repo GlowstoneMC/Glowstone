@@ -1,13 +1,14 @@
 package net.glowstone.block.block2;
 
+import net.glowstone.block.block2.details.DefaultBlockBehavior;
 import net.glowstone.block.block2.details.ListBlockBehavior;
 import net.glowstone.block.block2.sponge.BlockProperty;
 import net.glowstone.block.block2.sponge.BlockState;
-import net.glowstone.block.block2.details.DefaultBlockBehavior;
 
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Builder for defining {@link GlowBlockType}s.
@@ -68,9 +69,18 @@ public final class BlockTypeBuilder {
         return property(GlowBlockProperty.ofEnum(name, clazz));
     }
 
+    public <E extends Enum> BlockTypeBuilder enumProperty(String name, Class<E> clazz, Map<E, String> names) {
+        return property(GlowBlockProperty.ofNamedEnum(name, clazz, names));
+    }
+
     @SuppressWarnings("unchecked")
     public <E extends Enum> BlockTypeBuilder partialProperty(String name, Class<E> clazz, E... vals) {
         return property(GlowBlockProperty.ofPartialEnum(name, clazz, vals));
+    }
+
+    @SuppressWarnings("unchecked")
+    public <E extends Enum> BlockTypeBuilder partialProperty(String name, Class<E> clazz, Map<E, String> names, E... vals) {
+        return property(GlowBlockProperty.ofNamedPartialEnum(name, clazz, names, vals));
     }
 
     ////////////////////////////////////////////////////////////////////////////

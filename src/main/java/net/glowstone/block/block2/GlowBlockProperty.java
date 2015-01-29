@@ -1,6 +1,7 @@
 package net.glowstone.block.block2;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.EnumHashBiMap;
 import net.glowstone.block.block2.sponge.BlockProperty;
 
 import java.util.*;
@@ -15,8 +16,9 @@ public abstract class GlowBlockProperty<T extends Comparable<T>> implements Bloc
 
     public GlowBlockProperty(String name, Collection<T> values) {
         this.name = name;
-        this.values = new ArrayList<>(values);
-        Collections.sort(this.values);
+        ArrayList<T> sorted = new ArrayList<>(values);
+        Collections.sort(sorted);
+        this.values = Collections.unmodifiableList(sorted);
     }
 
     @Override
@@ -133,6 +135,24 @@ public abstract class GlowBlockProperty<T extends Comparable<T>> implements Bloc
     }
 
     /**
+     * Create a new string property from the values of the given enumeration.
+     * @param name The name of the property
+     * @param clazz The enumeration class to use the values of
+     * @return A new string property
+     * @throws IllegalArgumentException if the class contains no values
+     */
+    public static <E extends Enum<E>> EnumProperty<E> ofNamedEnum(String name, Class<E> clazz, Map<E, String> names) {
+        E[] values = clazz.getEnumConstants();
+        if (values == null) {
+            throw new IllegalArgumentException(clazz + " is not an enumeration");
+        }
+        if (values.length == 0) {
+            throw new IllegalArgumentException(clazz + " has no values");
+        }
+        return new NamedEnumProp<>(name, values, names);
+    }
+
+    /**
      * Create a new string property from only some of the values of the given enumeration.
      * @param name The name of the property
      * @param clazz The enumeration class to use the values of
@@ -151,6 +171,27 @@ public abstract class GlowBlockProperty<T extends Comparable<T>> implements Bloc
             }
         }
         return new EnumProp<>(name, clazz, values);
+    }
+
+    /**
+     * Create a new string property from only some of the values of the given enumeration.
+     * @param name The name of the property
+     * @param clazz The enumeration class to use the values of
+     * @param values The specific values to use
+     * @return A new string property
+     * @throws IllegalArgumentException if the class contains no values
+     */
+    @SafeVarargs
+    public static <E extends Enum<E>> EnumProperty<E> ofNamedPartialEnum(String name, Class<E> clazz, Map<E, String> names, E... values) {
+        if (values == null || values.length == 0) {
+            throw new IllegalArgumentException("null or no values provided");
+        }
+        for (E val : values) {
+            if (!clazz.isInstance(val)) {
+                throw new IllegalArgumentException("value " + val + " is not instanceof " + clazz.getName());
+            }
+        }
+        return new NamedEnumProp<>(name, values, names);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -226,6 +267,34 @@ public abstract class GlowBlockProperty<T extends Comparable<T>> implements Bloc
             } catch (IllegalArgumentException e) {
                 return Optional.absent();
             }
+        }
+    }
+
+    private static class NamedEnumProp<E extends Enum<E>> extends GlowBlockProperty<E> implements EnumProperty<E> {
+        private final EnumHashBiMap<E, String> names;
+
+        public NamedEnumProp(String name, E[] values, Map<E, String> srcNames) {
+            super(name, Arrays.asList(values));
+            names = EnumHashBiMap.create(srcNames);
+            for (E val : values) {
+                if (!names.containsKey(val)) {
+                    throw new IllegalArgumentException("Name missing for: " + val);
+                }
+            }
+            names.keySet().retainAll(getValidValues());
+        }
+
+        @Override
+        public String getNameForValue(E value) {
+            if (!names.containsKey(value)) {
+                throw new IllegalArgumentException("Invalid value: " + value);
+            }
+            return names.get(value);
+        }
+
+        @Override
+        public Optional<E> getValueForName(String name) {
+            return Optional.fromNullable(names.inverse().get(name));
         }
     }
 }

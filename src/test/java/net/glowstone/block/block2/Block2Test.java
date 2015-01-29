@@ -2,7 +2,7 @@ package net.glowstone.block.block2;
 
 import net.glowstone.block.block2.sponge.BlockState;
 import net.glowstone.block.block2.sponge.BlockType;
-import net.glowstone.block.block2.details.StoneVariant;
+import org.bukkit.StoneType;
 import org.junit.Test;
 
 /**
@@ -24,7 +24,7 @@ public class Block2Test {
         BlockState s2 = s.cycleProperty(s.getPropertyByName("variant").get());
         System.out.println(s2);
 
-        BlockState s3 = s.withProperty(s.getPropertyByName("variant").get(), StoneVariant.ANDESITE);
+        BlockState s3 = s.withProperty(s.getPropertyByName("variant").get(), StoneType.POLISHED_ANDESITE);
         System.out.println(s3);
 
         int i = 0;
