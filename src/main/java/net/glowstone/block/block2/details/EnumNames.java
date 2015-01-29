@@ -13,9 +13,6 @@ public final class EnumNames {
     private EnumNames() {
     }
 
-    public static final TreeSpecies[] TREES_FIRST = {TreeSpecies.GENERIC, TreeSpecies.REDWOOD, TreeSpecies.BIRCH, TreeSpecies.JUNGLE};
-    public static final TreeSpecies[] TREES_SECOND = {TreeSpecies.ACACIA, TreeSpecies.DARK_OAK};
-
     public static Map<DirtType, String> dirt() {
         return ImmutableMap.of(
                 DirtType.NORMAL, "dirt",
