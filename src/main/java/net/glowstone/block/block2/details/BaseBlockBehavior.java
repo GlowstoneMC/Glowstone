@@ -28,6 +28,11 @@ public class BaseBlockBehavior implements BlockBehavior {
     }
 
     @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
+
+    @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         throw NEXT;
     }

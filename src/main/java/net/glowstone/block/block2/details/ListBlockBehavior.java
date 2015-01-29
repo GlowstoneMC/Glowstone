@@ -24,10 +24,15 @@ public final class ListBlockBehavior implements BlockBehavior {
     private static final Signal NEXT = BaseBlockBehavior.NEXT;
     private static final BlockBehavior fallback = DefaultBlockBehavior.instance;
 
-    private final List<BlockBehavior> children = new ArrayList<>();
+    private final List<BlockBehavior> children;
 
     public ListBlockBehavior(List<BlockBehavior> children) {
-        this.children.addAll(children);
+        this.children = new ArrayList<>(children);
+    }
+
+    @Override
+    public String toString() {
+        return children.toString();
     }
 
     @Override

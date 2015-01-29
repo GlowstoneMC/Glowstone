@@ -25,6 +25,11 @@ public final class DefaultBlockBehavior implements BlockBehavior {
     }
 
     @Override
+    public String toString() {
+        return "DefaultBlockBehavior";
+    }
+
+    @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         return Arrays.asList(new ItemStack(block.getType(), 1, block.getData()));
     }

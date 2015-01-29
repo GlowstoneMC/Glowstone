@@ -42,6 +42,8 @@ public class Block2Test {
             }
             ++i;
         }
+
+        System.out.println(BlockRegistry.instance.getBehavior(t));
     }
 
 }

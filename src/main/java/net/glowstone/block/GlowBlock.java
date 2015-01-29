@@ -2,6 +2,8 @@ package net.glowstone.block;
 
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowWorld;
+import net.glowstone.block.block2.BlockRegistry;
+import net.glowstone.block.block2.sponge.BlockState;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowPlayer;
@@ -173,6 +175,14 @@ public final class GlowBlock implements Block {
 
     ////////////////////////////////////////////////////////////////////////////
     // Type and typeid getters/setters
+
+    public net.glowstone.block.block2.sponge.BlockType getNewType() {
+        return BlockRegistry.instance.getByTypeId(getTypeId());
+    }
+
+    public BlockState getNewState() {
+        return getNewType().getStateFromDataValue(getData());
+    }
 
     @Override
     public Material getType() {
