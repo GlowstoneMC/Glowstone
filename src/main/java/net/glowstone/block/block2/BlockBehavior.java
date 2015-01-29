@@ -40,7 +40,7 @@ public interface BlockBehavior {
      * @param against The face the block is being placed against.
      * @return Whether the placement is valid.
      */
-    public boolean canPlaceAt(GlowBlock block, BlockFace against);
+    boolean canPlaceAt(GlowBlock block, BlockFace against);
 
     /**
      * Called when a block is placed to calculate what the block will become.
@@ -50,7 +50,7 @@ public interface BlockBehavior {
      * @param face the face off which the block is being placed
      * @param clickedLoc where in the block the click occurred
      */
-    public void placeBlock(GlowPlayer player, net.glowstone.block.GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc);
+    void placeBlock(GlowPlayer player, net.glowstone.block.GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc);
 
     /**
      * Called after a block has been placed by a player.
@@ -112,7 +112,7 @@ public interface BlockBehavior {
      * @param newType The new type of the changed block
      * @param newData The new data of the changed block
      */
-    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData);
+    void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData);
 
     /**
      * Called when this block has just changed to some other type. This is
@@ -125,11 +125,11 @@ public interface BlockBehavior {
      * @param newType The new Material
      * @param data The new data
      */
-    public void onBlockChanged(GlowBlock block, Material oldType, byte oldData, Material newType, byte data);
+    void onBlockChanged(GlowBlock block, Material oldType, byte oldData, Material newType, byte data);
 
     /**
      * Called when the BlockType should calculate the current physics.
      * @param me The block
      */
-    public void updatePhysics(GlowBlock me);
+    void updatePhysics(GlowBlock me);
 }

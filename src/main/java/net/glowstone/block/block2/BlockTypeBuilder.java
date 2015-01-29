@@ -68,8 +68,8 @@ public final class BlockTypeBuilder {
         return property(GlowBlockProperty.ofEnum(name, clazz));
     }
 
-    @SafeVarargs
-    public final <E extends Enum> BlockTypeBuilder partialProperty(String name, Class<E> clazz, E... vals) {
+    @SuppressWarnings("unchecked")
+    public <E extends Enum> BlockTypeBuilder partialProperty(String name, Class<E> clazz, E... vals) {
         return property(GlowBlockProperty.ofPartialEnum(name, clazz, vals));
     }
 

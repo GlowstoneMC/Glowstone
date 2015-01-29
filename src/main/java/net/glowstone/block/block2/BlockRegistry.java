@@ -1,8 +1,8 @@
 package net.glowstone.block.block2;
 
+import net.glowstone.block.block2.details.DefaultBlockBehavior;
 import net.glowstone.block.block2.sponge.BlockState;
 import net.glowstone.block.block2.sponge.BlockType;
-import net.glowstone.block.block2.details.DefaultBlockBehavior;
 import org.bukkit.Material;
 
 import java.util.HashMap;
@@ -48,7 +48,7 @@ public final class BlockRegistry {
     public BlockState getByFullId(int id) {
         BlockType type = getByTypeId(id >> 4);
         if (type != null) {
-            return type.getStateFromDataValue((byte)(id & 0xf));
+            return type.getStateFromDataValue((byte) (id & 0xf));
         }
         return null;
     }
