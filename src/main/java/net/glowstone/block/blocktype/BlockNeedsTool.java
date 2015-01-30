@@ -14,11 +14,7 @@ public abstract class BlockNeedsTool extends BlockType {
                 (tool == null || !neededTool.matches(tool.getType())))
             return BlockDropless.EMPTY_STACK;
 
-        return getMinedDrops(block, tool);
-    }
-
-    protected Collection<ItemStack> getMinedDrops(GlowBlock block, ItemStack tool) {
-        return super.getDrops(block, tool);
+        return getMinedDrops(block);
     }
 
     protected abstract MaterialMatcher getNeededMiningTool(GlowBlock block);

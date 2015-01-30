@@ -38,9 +38,14 @@ public class BlockStairs extends BlockType {
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (isWoodenStair(block.getType()) ||
                 (tool != null && ToolType.PICKAXE.matches(tool.getType()))) {
-            return Arrays.asList(new ItemStack(block.getType()));
+            return getMinedDrops(block);
         }
         return BlockDropless.EMPTY_STACK;
+    }
+
+    @Override
+    public Collection<ItemStack> getMinedDrops(GlowBlock block) {
+        return Arrays.asList(new ItemStack(block.getType()));
     }
 
     private boolean isWoodenStair(Material type) {

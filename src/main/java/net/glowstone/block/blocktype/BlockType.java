@@ -57,6 +57,16 @@ public class BlockType extends ItemType {
         }
     }
 
+    /**
+     * Get the items that will be dropped as if the block would be successfully mined.
+     * This is used f.e. to calculate TNT drops.
+     * @param block The block.
+     * @return The drops from that block.
+     */
+    public Collection<ItemStack> getMinedDrops(GlowBlock block) {
+        return getDrops(block, null);
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Actions
 

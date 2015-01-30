@@ -330,7 +330,8 @@ public final class GlowBlock implements Block {
         }
 
         Location location = getLocation();
-        for (ItemStack stack : getDrops()) {
+        Collection<ItemStack> toDrop = ItemTable.instance().getBlock(getType()).getMinedDrops(this);
+        for (ItemStack stack : toDrop) {
             if (r.nextFloat() < yield) {
                 getWorld().dropItemNaturally(location, stack);
             }
@@ -356,7 +357,7 @@ public final class GlowBlock implements Block {
 
     @Override
     public Collection<ItemStack> getDrops() {
-        return getDrops(null);
+        return ItemTable.instance().getBlock(getType()).getMinedDrops(this);
     }
 
     @Override
