@@ -135,24 +135,24 @@ public final class GlowEnchantment extends Enchantment implements WeightedRandom
         PROTECTION_PROJECTILE(4, "Projectile Protection", 4, 5, 3, 6, 15, EnchantmentTarget.ARMOR, GROUP_PROTECT),
         OXYGEN(5, "Respiration", 3, 2, 10, 10, 30, EnchantmentTarget.ARMOR_HEAD),
         WATER_WORKER(6, "Aqua Affinity", 1, 2, 1, 0, 40, EnchantmentTarget.ARMOR_HEAD),
-        THORNS(7, "Thorns", 3, 1, 10, 20, 50, EnchantmentTarget.ARMOR_TORSO, new MatcherAdapter(EnchantmentTarget.ARMOR)),
+        THORNS(7, "Thorns", 3, 1, 10, 20, 50, false, EnchantmentTarget.ARMOR_TORSO, new MatcherAdapter(EnchantmentTarget.ARMOR)),
         DEPTH_STRIDER(8, "Depth Strider", 3, 2, 10, 10, 15, EnchantmentTarget.ARMOR_FEET),
         DAMAGE_ALL(16, "Sharpness", 5, 10, 1, 11, 20, EnchantmentTarget.WEAPON, SWORD_OR_AXE, GROUP_ATTACK),
         DAMAGE_UNDEAD(17, "Smite", 5, 5, 5, 8, 20, EnchantmentTarget.WEAPON, SWORD_OR_AXE, GROUP_ATTACK),
         DAMAGE_ARTHROPODS(18, "Bane of Arthropods", 5, 5, 5, 8, 20, EnchantmentTarget.WEAPON, SWORD_OR_AXE, GROUP_ATTACK),
-        KNOCKBACK(19, "Knockback", 2, 5, 5, 20, 50, EnchantmentTarget.WEAPON),
-        FIRE_ASPECT(20, "Fire Aspect", 2, 2, 10, 20, 50, EnchantmentTarget.WEAPON),
-        LOOT_BONUS_MOBS(21, "Looting", 3, 2, 15, 9, 50, EnchantmentTarget.WEAPON),
-        DIG_SPEED(32, "Efficiency", 5, 10, 1, 10, 50, EnchantmentTarget.TOOL, DIGGING_TOOLS),
-        SILK_TOUCH(33, "Silk Touch", 1, 1, 15, 0, 50, EnchantmentTarget.TOOL, DIGGING_TOOLS, GROUP_DIG),
-        DURABILITY(34, "Unbreaking", 3, 5, 5, 8, 50, EnchantmentTarget.TOOL, ALL_THINGS),
+        KNOCKBACK(19, "Knockback", 2, 5, 5, 20, 50, false, EnchantmentTarget.WEAPON),
+        FIRE_ASPECT(20, "Fire Aspect", 2, 2, 10, 20, 50, false, EnchantmentTarget.WEAPON),
+        LOOT_BONUS_MOBS(21, "Looting", 3, 2, 15, 9, 50, false, EnchantmentTarget.WEAPON),
+        DIG_SPEED(32, "Efficiency", 5, 10, 1, 10, 50, false, EnchantmentTarget.TOOL, DIGGING_TOOLS),
+        SILK_TOUCH(33, "Silk Touch", 1, 1, 15, 0, 50, false, EnchantmentTarget.TOOL, DIGGING_TOOLS, GROUP_DIG),
+        DURABILITY(34, "Unbreaking", 3, 5, 5, 8, 50, false, EnchantmentTarget.TOOL, ALL_THINGS),
         LOOT_BONUS_BLOCKS(35, "Fortune", 3, 2, 15, 9, 50, EnchantmentTarget.TOOL, BASE_TOOLS, GROUP_DIG),
         ARROW_DAMAGE(48, "Power", 5, 10, 1, 10, 15, EnchantmentTarget.BOW),
         ARROW_KNOCKBACK(49, "Punch", 2, 2, 12, 20, 25, EnchantmentTarget.BOW),
         ARROW_FIRE(50, "Flame", 1, 2, 20, 0, 30, EnchantmentTarget.BOW),
         ARROW_INFINITE(51, "Infinity", 1, 1, 20, 0, 30, EnchantmentTarget.BOW),
-        LUCK(61, "Luck of the Sea", 3, 2, 15, 9, 50, EnchantmentTarget.FISHING_ROD),
-        LURE(62, "Lure", 3, 2, 15, 9, 50, EnchantmentTarget.FISHING_ROD);
+        LUCK(61, "Luck of the Sea", 3, 2, 15, 9, 50, false, EnchantmentTarget.FISHING_ROD),
+        LURE(62, "Lure", 3, 2, 15, 9, 50, false, EnchantmentTarget.FISHING_ROD);
 
         private final int id;
         private final String name;
@@ -163,20 +163,33 @@ public final class GlowEnchantment extends Enchantment implements WeightedRandom
         private final int weight;
         private final int minValue, minIncrement;
         private final int maxIncrement;
+        private final boolean simpleRange;
 
         Impl(int id, String name, int max, int weight, int minValue, int minInc, int maxInc, EnchantmentTarget target) {
-            this(id, name, max, weight, minValue, minInc, maxInc, target, new MatcherAdapter(target), GROUP_NONE);
+            this(id, name, max, weight, minValue, minInc, maxInc, true, target);
+        }
+
+        Impl(int id, String name, int max, int weight, int minValue, int minInc, int maxInc, boolean simpleRange, EnchantmentTarget target) {
+            this(id, name, max, weight, minValue, minInc, maxInc, simpleRange, target, new MatcherAdapter(target), GROUP_NONE);
         }
 
         Impl(int id, String name, int max, int weight, int minValue, int minInc, int maxInc, EnchantmentTarget target, int group) {
-            this(id, name, max, weight, minValue, minInc, maxInc, target, new MatcherAdapter(target), group);
+            this(id, name, max, weight, minValue, minInc, maxInc, true, target, new MatcherAdapter(target), group);
         }
 
-        Impl(int id, String name, int max, int weight, int minValue, int minInc, int maxInc, EnchantmentTarget target, MaterialMatcher matcher) {
-            this(id, name, max, weight, minValue, minInc, maxInc, target, matcher, GROUP_NONE);
+        Impl(int id, String name, int max, int weight, int minValue, int minInc, int maxInc, boolean simpleRange, EnchantmentTarget target, MaterialMatcher matcher) {
+            this(id, name, max, weight, minValue, minInc, maxInc, simpleRange, target, matcher, GROUP_NONE);
+        }
+
+        Impl(int id, String name, int max, int weight, int minValue, int minInc, int maxInc, boolean simpleRange, EnchantmentTarget target, MatcherAdapter matcher) {
+            this(id, name, max, weight, minValue, minInc, maxInc, simpleRange, target, matcher, GROUP_NONE);
         }
 
         Impl(int id, String name, int max, int weight, int minValue, int minInc, int maxInc, EnchantmentTarget target, MaterialMatcher matcher, int group) {
+            this(id, name, max, weight, minValue, minInc, maxInc, true, target, matcher, group);
+        }
+
+        Impl(int id, String name, int max, int weight, int minValue, int minInc, int maxInc, boolean simpleRange, EnchantmentTarget target, MaterialMatcher matcher, int group) {
             this.id = id;
             this.name = name;
             this.maxLevel = max;
@@ -187,6 +200,7 @@ public final class GlowEnchantment extends Enchantment implements WeightedRandom
             this.minValue = minValue;
             this.minIncrement = minInc;
             this.maxIncrement = maxInc;
+            this.simpleRange = simpleRange;
         }
 
         int getMinRange(int modifier) {
@@ -195,7 +209,7 @@ public final class GlowEnchantment extends Enchantment implements WeightedRandom
         }
 
         int getMaxRange(int modifier) {
-            return getMinRange(modifier) + maxIncrement;
+            return (simpleRange ? getMinRange(modifier) : 1 + modifier * 10) + maxIncrement;
         }
     }
 
