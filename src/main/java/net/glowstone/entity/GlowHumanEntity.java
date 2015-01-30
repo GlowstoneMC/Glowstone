@@ -369,7 +369,6 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         this.inventory.getDragTracker().reset();
 
         // stop viewing the old inventory and start viewing the new one
-        // todo: drop items if the old inventory is being destroyed
         removeViewer(inventoryView.getTopInventory());
         removeViewer(inventoryView.getBottomInventory());
         inventoryView = inventory;
