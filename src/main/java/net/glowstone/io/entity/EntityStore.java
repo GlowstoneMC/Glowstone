@@ -13,8 +13,8 @@ import java.util.UUID;
  * @param <T> The type of entity being stored.
  */
 abstract class EntityStore<T extends GlowEntity> {
+    protected final Class<T> clazz;
     private final String id;
-    private final Class<T> clazz;
 
     public EntityStore(Class<T> clazz, String id) {
         this.id = id;

@@ -23,7 +23,7 @@ public enum MetadataIndex {
     // allowed to override NAME_TAG from LivingEntity
     PLAYER_SKIN_FLAGS(10, BYTE, HumanEntity.class),
 
-    AGE(12, INT, Ageable.class),
+    AGE(12, BYTE, Ageable.class),
 
     HORSE_FLAGS(16, INT, Horse.class),
     HORSE_TYPE(19, BYTE, Horse.class),
@@ -102,6 +102,8 @@ public enum MetadataIndex {
     ITEM_FRAME_ROTATION(3, BYTE, ItemFrame.class),
 
     ENDER_CRYSTAL_HEALTH(8, INT, EnderCrystal.class),
+
+    RABBIT_TYPE(18, BYTE, Rabbit.class),
     ;
 
     private final int index;
