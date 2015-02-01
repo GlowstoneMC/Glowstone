@@ -433,6 +433,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
                 }
             }
         }
+
+        getAttributeManager().sendMessages(session);
     }
 
     /**
@@ -1103,6 +1105,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void setHealth(double health) {
         super.setHealth(health);
+        sendHealth();
+    }
+
+    @Override
+    public void setMaxHealth(double health) {
+        super.setMaxHealth(health);
         sendHealth();
     }
 
