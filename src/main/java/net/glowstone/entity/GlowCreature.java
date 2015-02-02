@@ -22,7 +22,7 @@ public final class GlowCreature extends GlowLivingEntity implements Creature {
      * The type of monster.
      */
     private final EntityType type;
-
+   
     /**
      * The monster's target.
      */

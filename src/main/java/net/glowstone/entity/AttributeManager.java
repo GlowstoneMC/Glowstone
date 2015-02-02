@@ -49,9 +49,6 @@ public class AttributeManager {
         return key.def;
     }
 
-    //////////////////////////////////
-    // Internals
-
     public void setProperty(String key, double value, List<Modifier> modifiers) {
         if (properties.containsKey(key)) {
             properties.get(key).value = value;
@@ -95,8 +92,7 @@ public class AttributeManager {
         KEY_MOVEMENT_SPEED("generic.movementSpeed", 0.699999988079071, Double.MAX_VALUE),
         KEY_ATTACK_DAMAGE("generic.attackDamage", 2, Double.MAX_VALUE),
         KEY_HORSE_JUMP_STRENGTH("horse.jumpStrength", 0.7, 2),
-        KEY_ZOMBIE_SPAWN_REINFORCEMENTS("zombie.spawnReinforcements", 0, 1),
-        ;
+        KEY_ZOMBIE_SPAWN_REINFORCEMENTS("zombie.spawnReinforcements", 0, 1),;
 
 
         private final String name;
