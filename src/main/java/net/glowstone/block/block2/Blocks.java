@@ -50,8 +50,54 @@ public final class Blocks {
     public static final GlowBlockType RED_FLOWER = of("red_flower", 38).enumProperty("type", FlowerType.RED_FLOWER).register();
     public static final GlowBlockType BROWN_MUSHROOM = of("brown_mushroom", 39).register();
     public static final GlowBlockType RED_MUSHROOM = of("red_mushroom", 40).register();
-    public static final GlowBlockType GOLD_BLOCK = of("brown_mushroom", 41).register();
-    public static final GlowBlockType IRON_BLOCK = of("red_mushroom", 42).register();
+    public static final GlowBlockType GOLD_BLOCK = of("gold_block", 41).register();
+    public static final GlowBlockType IRON_BLOCK = of("iron_block", 42).register();
+    // double_stone_slab, stone_slab
+    public static final GlowBlockType BRICK_BLOCK = of("red_mushroom", 45).register();
+    public static final GlowBlockType TNT = of("tnt", 46).register();
+    public static final GlowBlockType BOOKSHELF = of("bookshelf", 47).register();
+    public static final GlowBlockType MOSSY_COBBLESTONE = of("mossy_cobblestone", 48).register();
+    public static final GlowBlockType OBSIDIAN = of("obsidian", 49).register();
+    public static final GlowBlockType TORCH = of("torch", 50).enumProperty("facing", BlockFacing.NOT_DOWN).register();
+    public static final GlowBlockType FIRE = of("fire", 51).rangeProperty(/*???*/"lifetime", 0, 15).register();
+    public static final GlowBlockType MOB_SPAWNER = of("mob_spawner", 52).register();
+    public static final GlowBlockType OAK_STAIRS = of("oak_stairs", 53).stairs().register();
+    public static final GlowBlockType CHEST = of("chest", 54).enumProperty("facing", BlockFacing.CARDINAL).register();
+    public static final GlowBlockType REDSTONE_WIRE = of("redstone_wire", 55).rangeProperty("power", 0, 15).register();
+    public static final GlowBlockType DIAMOND_ORE = of("diamond_ore", 56).register();
+    public static final GlowBlockType DIAMOND_BLOCK = of("diamond_block", 57).register();
+    public static final GlowBlockType CRAFTING_TABLE = of("crafting_table", 58).register();
+    public static final GlowBlockType WHEAT = of("wheat", 59).rangeProperty("age", 0, 7).register();
+    public static final GlowBlockType FARMLAND = of("farmland", 60).rangeProperty("moisture", 0, 7).register();
+    public static final GlowBlockType FURNACE = of("furnace", 61).enumProperty("facing", BlockFacing.CARDINAL).register();
+    public static final GlowBlockType LIT_FURNACE = of("lit_furnace", 62).enumProperty("facing", BlockFacing.CARDINAL).register();
+    public static final GlowBlockType STANDING_SIGN = of("standing_sign", 63).rangeProperty("rotation", 0, 15).register();
+    public static final GlowBlockType WOODEN_DOOR = of("wooden_door", 64).door().register();
+    public static final GlowBlockType LADDER = of("ladder", 65).enumProperty("facing", BlockFacing.CARDINAL).register();
+    public static final GlowBlockType RAIL = of("rail", 66).enumProperty("shape", RailShape.values()).register();
+    public static final GlowBlockType STONE_STAIRS = of("stone_stairs", 67).stairs().register();
+    public static final GlowBlockType WALL_SIGN = of("wall_sign", 68).enumProperty("facing", BlockFacing.CARDINAL).register();
+    public static final GlowBlockType LEVER = of("lever", 69).enumProperty("facing", LeverFacing.values()).booleanProperty("powered").register();
+    public static final GlowBlockType STONE_PRESSURE_PLATE = of("stone_pressure_plate", 70).booleanProperty("powered").register();
+    public static final GlowBlockType IRON_DOOR = of("iron_door", 71).door().register();
+    public static final GlowBlockType WOODEN_PRESSURE_PLATE = of("wooden_pressure_plate", 72).booleanProperty("powered").register();
+    public static final GlowBlockType REDSTONE_ORE = of("redstone_ore", 73).register();
+    public static final GlowBlockType LIT_REDSTONE_OR = of("lit_redstone_ore", 74).register();
+    public static final GlowBlockType UNLIT_REDSTONE_TORCH = of("unlit_redstone_torch", 75).enumProperty("facing", BlockFacing.NOT_DOWN).register();
+    public static final GlowBlockType REDSTONE_TORCH = of("redstone_torch", 76).enumProperty("facing", BlockFacing.NOT_DOWN).register();
+    public static final GlowBlockType STONE_BUTTON = of("stone_button", 77).enumProperty("facing", BlockFacing.values()).booleanProperty("powered").register();
+    public static final GlowBlockType SNOW_LAYER = of("snow_layer", 78).rangeProperty("layers", 1, 8).register();
+    public static final GlowBlockType ICE = of("ice", 79).register();
+    public static final GlowBlockType SNOW = of("snow", 80).register();
+    public static final GlowBlockType CACTUS = of("cactus", 81).rangeProperty("age", 0, 15).register();
+    public static final GlowBlockType CLAY = of("clay", 82).register();
+    public static final GlowBlockType REEDS = of("reeds", 83).rangeProperty("age", 0, 15).register();
+    public static final GlowBlockType JUKEBOX = of("jukebox", 84).booleanProperty("has_record").register();
+    public static final GlowBlockType FENCE = of("fence", 85).register();
+    public static final GlowBlockType PUMPKIN = of("pumpkin", 86).enumProperty("facing", BlockFacing.CARDINAL).register();
+    public static final GlowBlockType NETHERRACK = of("netherrack", 87).register();
+    public static final GlowBlockType SOUL_SAND = of("soul_sand", 88).register();
+    public static final GlowBlockType GLOWSTONE = of("glowstone", 89).register();
 
     private Blocks() {
     }

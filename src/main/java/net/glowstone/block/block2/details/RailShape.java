@@ -9,7 +9,11 @@ public enum RailShape {
     ASCENDING_EAST,
     ASCENDING_WEST,
     ASCENDING_NORTH,
-    ASCENDING_SOUTH;
+    ASCENDING_SOUTH,
+    SOUTH_EAST,
+    SOUTH_WEST,
+    NORTH_WEST,
+    NORTH_EAST;
 
     public static final RailShape[] NO_CORNERS = {
             NORTH_SOUTH,

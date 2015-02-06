@@ -9,4 +9,5 @@ public enum BlockFacing {
     EAST;
 
     public static final BlockFacing[] CARDINAL = {NORTH, SOUTH, WEST, EAST};
+    public static final BlockFacing[] NOT_DOWN = {UP, NORTH, SOUTH, WEST, EAST};
 }

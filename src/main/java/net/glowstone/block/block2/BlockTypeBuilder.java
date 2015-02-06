@@ -1,7 +1,9 @@
 package net.glowstone.block.block2;
 
+import net.glowstone.block.block2.details.BlockFacing;
 import net.glowstone.block.block2.details.DefaultBlockBehavior;
 import net.glowstone.block.block2.details.ListBlockBehavior;
+import net.glowstone.block.block2.details.SlabHalf;
 import net.glowstone.block.block2.sponge.BlockProperty;
 import net.glowstone.block.block2.sponge.BlockState;
 
@@ -71,6 +73,17 @@ public final class BlockTypeBuilder {
 
     public <E extends Enum> BlockTypeBuilder enumProperty(String name, E[] vals, Map<E, String> names) {
         return property(GlowBlockProperty.ofNamedEnum(name, vals, names));
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Common block archetypes
+
+    public BlockTypeBuilder stairs() {
+        return enumProperty("facing", BlockFacing.CARDINAL).enumProperty("half", SlabHalf.values());
+    }
+
+    public BlockTypeBuilder door() {
+        return this; // todo
     }
 
     ////////////////////////////////////////////////////////////////////////////
