@@ -1,10 +1,12 @@
 package net.glowstone.entity.meta;
 
+import lombok.Data;
 import net.glowstone.net.message.play.game.ClientSettingsMessage;
 
 /**
  * Container for settings which the client communicates to the server.
  */
+@Data
 public final class ClientSettings {
 
     public static final ClientSettings DEFAULT = new ClientSettings("en_US", 8, 0, true, 127);
@@ -51,30 +53,6 @@ public final class ClientSettings {
     }
 
     /**
-     * Get the locale, in a form like "en_US".
-     * @return The locale.
-     */
-    public String getLocale() {
-        return locale;
-    }
-
-    /**
-     * Get the client's view distance, in chunks.
-     * @return The view distance.
-     */
-    public int getViewDistance() {
-        return viewDistance;
-    }
-
-    /**
-     * Get the client's chat flags.
-     * @return The chat flags.
-     */
-    public int getChatFlags() {
-        return chatFlags;
-    }
-
-    /**
      * Get whether player chat should be shown based on chat flags.
      * @return Whether player chat is shown.
      */
@@ -98,22 +76,4 @@ public final class ClientSettings {
         return chatColors;
     }
 
-    /**
-     * Get the client's skin flags.
-     * @return The skin flags.
-     */
-    public int getSkinFlags() {
-        return skinFlags;
-    }
-
-    @Override
-    public String toString() {
-        return "ClientSettings{" +
-                "locale='" + locale + '\'' +
-                ", viewDistance=" + viewDistance +
-                ", chatFlags=" + chatFlags +
-                ", chatColors=" + chatColors +
-                ", skinFlags=" + skinFlags +
-                '}';
-    }
 }

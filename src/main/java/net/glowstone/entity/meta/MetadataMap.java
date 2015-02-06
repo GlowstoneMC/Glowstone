@@ -1,6 +1,9 @@
 package net.glowstone.entity.meta;
 
 import com.google.common.collect.ImmutableList;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
@@ -9,6 +12,7 @@ import java.util.*;
 /**
  * A map for entity metadata.
  */
+@ToString(of = {"entityClass", "map"})
 public class MetadataMap {
 
     private final Map<MetadataIndex, Object> map = new EnumMap<>(MetadataIndex.class);
@@ -139,46 +143,15 @@ public class MetadataMap {
         changes.clear();
     }
 
-    @Override
-    public String toString() {
-        return "MetadataMap{" +
-                "map=" + map +
-                ", entityClass=" + entityClass +
-                '}';
-    }
-
-    public static class Entry implements Comparable<Entry> {
+    @RequiredArgsConstructor
+    @EqualsAndHashCode
+    public static final class Entry implements Comparable<Entry> {
         public final MetadataIndex index;
         public final Object value;
-
-        public Entry(MetadataIndex index, Object value) {
-            this.index = index;
-            this.value = value;
-        }
 
         @Override
         public int compareTo(Entry o) {
             return o.index.getIndex() - index.getIndex();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            Entry entry = (Entry) o;
-
-            if (index != entry.index) return false;
-            if (value != null ? !value.equals(entry.value) : entry.value != null) return false;
-
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = index != null ? index.hashCode() : 0;
-            result = 31 * result + (value != null ? value.hashCode() : 0);
-            return result;
         }
 
         @Override

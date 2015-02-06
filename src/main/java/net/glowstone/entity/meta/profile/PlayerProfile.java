@@ -1,13 +1,14 @@
 package net.glowstone.entity.meta.profile;
 
+import lombok.Data;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.UuidUtils;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.Tag;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.apache.commons.lang.Validate;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -17,10 +18,11 @@ import java.util.logging.Level;
 /**
  * Information about a player's name, UUID, and other properties.
  */
+@Data
 public final class PlayerProfile {
 
     private final String name;
-    private final UUID uuid;
+    private final UUID uniqueId;
     private final List<PlayerProperty> properties;
 
     public static final int MAX_USERNAME_LENGTH = 16;
@@ -31,7 +33,7 @@ public final class PlayerProfile {
      * @param uuid The player's UUID.
      */
     public PlayerProfile(String name, UUID uuid) {
-        this(name, uuid, new ArrayList<PlayerProperty>(0));
+        this(name, uuid, Collections.<PlayerProperty>emptyList());
     }
 
     /**
@@ -46,7 +48,7 @@ public final class PlayerProfile {
         Validate.notNull(uuid, "uuid must not be null");
         Validate.notNull(properties, "properties must not be null");
         this.name = name;
-        this.uuid = uuid;
+        this.uniqueId = uuid;
         this.properties = properties;
     }
 
@@ -73,41 +75,9 @@ public final class PlayerProfile {
         return null;
     }
 
-    /**
-     * Get the profile's name.
-     * @return The name.
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Get the profile's unique identifier.
-     * @return The UUID.
-     */
-    public UUID getUniqueId() {
-        return uuid;
-    }
-
-    /**
-     * Get a list of the profile's extra properties. May be empty.
-     * @return The property list.
-     */
-    public List<PlayerProperty> getProperties() {
-        return properties;
-    }
-
-    public String toString() {
-        return "PlayerProfile{" +
-                "name='" + name + '\'' +
-                ", uuid=" + uuid +
-                ", " + properties.size() + " properties" +
-                '}';
-    }
-
     public CompoundTag toNBT() {
         CompoundTag profileTag = new CompoundTag();
-        profileTag.putString("Id", uuid.toString());
+        profileTag.putString("Id", uniqueId.toString());
         profileTag.putString("Name", name);
 
         CompoundTag propertiesTag = new CompoundTag();
@@ -124,7 +94,6 @@ public final class PlayerProfile {
         return profileTag;
     }
 
-    @SuppressWarnings("unchecked")
     public static PlayerProfile fromNBT(CompoundTag tag) {
         // NBT: {Id: "", Name: "", Properties: {textures: [{Signature: "", Value: {}}]}}
         String uuidStr = tag.getString("Id");
@@ -133,6 +102,7 @@ public final class PlayerProfile {
         List<PlayerProperty> properties = new ArrayList<>();
         if (tag.containsKey("Properties")) {
             for (Map.Entry<String, Tag> property : tag.getCompound("Properties").getValue().entrySet()) {
+                @SuppressWarnings("unchecked")
                 CompoundTag propertyValueTag = ((List<CompoundTag>) property.getValue().getValue()).get(0);
                 properties.add(new PlayerProperty(property.getKey(), propertyValueTag.getString("Value"), propertyValueTag.getString("Signature")));
             }
@@ -140,7 +110,7 @@ public final class PlayerProfile {
         return new PlayerProfile(name, UUID.fromString(uuidStr), properties);
     }
 
-    public static PlayerProfile parseProfile(JSONObject json) {
+    public static PlayerProfile fromJson(JSONObject json) {
         final String name = (String) json.get("name");
         final String id = (String) json.get("id");
         final JSONArray propsArray = (JSONArray) json.get("properties");
@@ -167,23 +137,4 @@ public final class PlayerProfile {
         return new PlayerProfile(name, uuid, properties);
     }
 
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        PlayerProfile that = (PlayerProfile) o;
-
-        if (!name.equals(that.name)) return false;
-        if (!properties.equals(that.properties)) return false;
-        if (!uuid.equals(that.uuid)) return false;
-
-        return true;
-    }
-
-    public int hashCode() {
-        int result = name.hashCode();
-        result = 31 * result + uuid.hashCode();
-        result = 31 * result + properties.hashCode();
-        return result;
-    }
 }

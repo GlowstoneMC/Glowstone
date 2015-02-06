@@ -2,7 +2,9 @@ package net.glowstone.net.message.play.game;
 
 import com.flowpowered.networking.Message;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.apache.commons.lang.Validate;
 
 import java.util.List;
@@ -15,10 +17,14 @@ public final class MapDataMessage implements Message {
     private final Section section;
 
     @RequiredArgsConstructor
+    @ToString
+    @EqualsAndHashCode
     public static class Icon {
         public final int type, facing, x, y;
     }
 
+    @ToString
+    @EqualsAndHashCode
     public static class Section {
         public final int width, height, x, y;
         public final byte[] data;

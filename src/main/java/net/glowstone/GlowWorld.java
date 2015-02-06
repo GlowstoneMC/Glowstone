@@ -1,5 +1,6 @@
 package net.glowstone;
 
+import lombok.ToString;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.constants.GlowBiome;
 import net.glowstone.constants.GlowEffect;
@@ -43,6 +44,7 @@ import java.util.logging.Level;
  * A class which represents the in-game world.
  * @author Graham Edgecombe
  */
+@ToString(of = "name")
 public final class GlowWorld implements World {
 
     /**
@@ -330,13 +332,6 @@ public final class GlowWorld implements World {
         }
         server.getLogger().info("Preparing spawn for " + name + ": done");
         EventFactory.callEvent(new WorldLoadEvent(this));
-    }
-
-    @Override
-    public String toString() {
-        return "GlowWorld{" +
-                "name='" + name + '\'' +
-                '}';
     }
 
     ////////////////////////////////////////////////////////////////////////////

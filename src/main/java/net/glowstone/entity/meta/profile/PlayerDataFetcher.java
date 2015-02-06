@@ -59,7 +59,7 @@ final class PlayerDataFetcher {
             GlowServer.logger.log(Level.WARNING, "Failed to look up profile", e);
             return null;
         }
-        return PlayerProfile.parseProfile(json);
+        return PlayerProfile.fromJson(json);
     }
 
     /**

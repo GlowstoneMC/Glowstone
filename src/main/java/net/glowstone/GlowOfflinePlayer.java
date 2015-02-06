@@ -1,5 +1,7 @@
 package net.glowstone;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import net.glowstone.io.PlayerDataService;
 import org.apache.commons.lang.Validate;
 import org.bukkit.BanList;
@@ -17,11 +19,13 @@ import java.util.UUID;
  * Represents a player which is not connected to the server.
  */
 @SerializableAs("Player")
+@ToString(of = {"name", "uuid"})
+@EqualsAndHashCode(of = "uuid")
 public final class GlowOfflinePlayer implements OfflinePlayer {
 
     private final GlowServer server;
-    private String name;
-    private UUID uuid;
+    private final String name;
+    private final UUID uuid;
 
     private boolean hasPlayed = false;
     private long firstPlayed;
@@ -29,8 +33,8 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     private Location bedSpawn;
 
     /**
-     * Create a new offline player for the given name. If possible, the
-     * player's UUID will be found and then their data.
+     * Create a new offline player for the given name. If possible, the player's
+     * UUID will be found and then their data.
      * @param server The server of the offline player. Must not be null.
      * @param name The name of the player. Must not be null.
      */
@@ -38,14 +42,14 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
         Validate.notNull(server, "server must not be null");
         Validate.notNull(name, "name must not be null");
         this.server = server;
-        this.name = name;
         this.uuid = server.getPlayerDataService().lookupUUID(name);
-        loadData();
+        String loadedName = loadData();
+        this.name = loadedName != null ? loadedName : name;
     }
 
     /**
-     * Create a new offline player for the given UUID. If possible, the
-     * player's data (including name) will be loaded based on the UUID.
+     * Create a new offline player for the given UUID. If possible, the player's
+     * data (including name) will be loaded based on the UUID.
      * @param server The server of the offline player. Must not be null.
      * @param uuid The UUID of the player. Must not be null.
      */
@@ -54,10 +58,10 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
         Validate.notNull(uuid, "uuid must not be null");
         this.server = server;
         this.uuid = uuid;
-        loadData();
+        this.name = loadData();
     }
 
-    private void loadData() {
+    private String loadData() {
         try (PlayerDataService.PlayerReader reader = server.getPlayerDataService().beginReadingData(uuid)) {
             hasPlayed = reader.hasPlayedBefore();
             if (hasPlayed) {
@@ -67,10 +71,11 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
 
                 String lastName = reader.getLastKnownName();
                 if (lastName != null) {
-                    name = lastName;
+                    return lastName;
                 }
             }
         }
+        return null;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -184,26 +189,5 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
             // use UUID
             return Bukkit.getServer().getOfflinePlayer(UUID.fromString(val.get("UUID").toString()));
         }
-    }
-
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        GlowOfflinePlayer that = (GlowOfflinePlayer) o;
-
-        return !(uuid != null ? !uuid.equals(that.uuid) : that.uuid != null);
-    }
-
-    public int hashCode() {
-        return uuid != null ? uuid.hashCode() : 0;
-    }
-
-    @Override
-    public String toString() {
-        return "GlowOfflinePlayer{" +
-                "name='" + name + '\'' +
-                ", uuid=" + uuid +
-                '}';
     }
 }

@@ -1,5 +1,6 @@
 package net.glowstone.util;
 
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.json.simple.JSONArray;
@@ -16,6 +17,7 @@ import java.util.Set;
  * Simple container for chat message structures until more advanced chat
  * formatting is implemented.
  */
+@EqualsAndHashCode
 public final class TextMessage {
 
     /**
@@ -221,18 +223,4 @@ public final class TextMessage {
         items.add(object);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        TextMessage that = (TextMessage) o;
-
-        return object.equals(that.object);
-    }
-
-    @Override
-    public int hashCode() {
-        return object.hashCode();
-    }
 }
