@@ -117,81 +117,50 @@ public abstract class GlowBlockProperty<T extends Comparable<T>> implements Bloc
     }
 
     /**
-     * Create a new string property from the values of the given enumeration.
+     * Create a new enum property from the given enumeration values. To use an
+     * entire enum, pass {@code EnumClass.values()}.
      * @param name The name of the property
-     * @param clazz The enumeration class to use the values of
-     * @return A new string property
-     * @throws IllegalArgumentException if the class contains no values
+     * @param values The specific values to use
+     * @return A new enum property
+     * @throws IllegalArgumentException if invalid values are specified
      */
-    public static <E extends Enum<E>> EnumProperty<E> ofEnum(String name, Class<E> clazz) {
-        E[] values = clazz.getEnumConstants();
-        if (values == null) {
-            throw new IllegalArgumentException(clazz + " is not an enumeration");
-        }
-        if (values.length == 0) {
-            throw new IllegalArgumentException(clazz + " has no values");
-        }
-        return new EnumProp<>(name, clazz, values);
+    public static <E extends Enum<E>> EnumProperty<E> ofEnum(String name, E[] values) {
+        return new EnumProp<>(name, checkClass(values), values);
     }
 
     /**
-     * Create a new string property from the values of the given enumeration.
+     * Create a new enum property from the given enumeration values, with
+     * modified name mappings. To use an entire enum, pass {@code
+     * EnumClass.values()}. The name mappings should cover at least all the
+     * values passed.
      * @param name The name of the property
-     * @param clazz The enumeration class to use the values of
-     * @return A new string property
+     * @param values The specific values to use
+     * @param names The name mappings to use
+     * @return A new enum property
      * @throws IllegalArgumentException if the class contains no values
      */
-    public static <E extends Enum<E>> EnumProperty<E> ofNamedEnum(String name, Class<E> clazz, Map<E, String> names) {
-        E[] values = clazz.getEnumConstants();
-        if (values == null) {
-            throw new IllegalArgumentException(clazz + " is not an enumeration");
-        }
-        if (values.length == 0) {
-            throw new IllegalArgumentException(clazz + " has no values");
-        }
+    public static <E extends Enum<E>> EnumProperty<E> ofNamedEnum(String name, E[] values, Map<E, String> names) {
+        checkClass(values);
         return new NamedEnumProp<>(name, values, names);
     }
 
     /**
-     * Create a new string property from only some of the values of the given enumeration.
-     * @param name The name of the property
-     * @param clazz The enumeration class to use the values of
-     * @param values The specific values to use
-     * @return A new string property
-     * @throws IllegalArgumentException if the class contains no values
+     * Reusable checks for the validity of a values array.
      */
-    @SafeVarargs
-    public static <E extends Enum<E>> EnumProperty<E> ofPartialEnum(String name, Class<E> clazz, E... values) {
+    private static <E extends Enum<E>> Class<E> checkClass(E[] values) {
         if (values == null || values.length == 0) {
-            throw new IllegalArgumentException("null or no values provided");
+            throw new IllegalArgumentException("null or empty values provided");
+        }
+        Class<E> clazz = values[0].getDeclaringClass();
+        if (clazz.getEnumConstants() == null) {
+            throw new IllegalArgumentException(clazz + " is not an enumeration");
         }
         for (E val : values) {
-            if (!clazz.isInstance(val)) {
-                throw new IllegalArgumentException("value " + val + " is not instanceof " + clazz.getName());
+            if (val.getDeclaringClass() != clazz) {
+                throw new IllegalArgumentException("value " + val + " is not member of " + clazz.getName());
             }
         }
-        return new EnumProp<>(name, clazz, values);
-    }
-
-    /**
-     * Create a new string property from only some of the values of the given enumeration.
-     * @param name The name of the property
-     * @param clazz The enumeration class to use the values of
-     * @param values The specific values to use
-     * @return A new string property
-     * @throws IllegalArgumentException if the class contains no values
-     */
-    @SafeVarargs
-    public static <E extends Enum<E>> EnumProperty<E> ofNamedPartialEnum(String name, Class<E> clazz, Map<E, String> names, E... values) {
-        if (values == null || values.length == 0) {
-            throw new IllegalArgumentException("null or no values provided");
-        }
-        for (E val : values) {
-            if (!clazz.isInstance(val)) {
-                throw new IllegalArgumentException("value " + val + " is not instanceof " + clazz.getName());
-            }
-        }
-        return new NamedEnumProp<>(name, values, names);
+        return clazz;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -257,6 +226,9 @@ public abstract class GlowBlockProperty<T extends Comparable<T>> implements Bloc
 
         @Override
         public String getNameForValue(E value) {
+            if (!getValidValues().contains(value)) {
+                throw new IllegalArgumentException("Invalid value: " + value);
+            }
             return value.name().toLowerCase();
         }
 

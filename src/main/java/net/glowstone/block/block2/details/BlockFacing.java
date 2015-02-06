@@ -6,5 +6,7 @@ public enum BlockFacing {
     NORTH,
     SOUTH,
     WEST,
-    EAST
+    EAST;
+
+    public static final BlockFacing[] CARDINAL = {NORTH, SOUTH, WEST, EAST};
 }

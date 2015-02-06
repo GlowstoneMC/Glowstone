@@ -56,4 +56,22 @@ public final class EnumNames {
                 .build();
     }
 
+    public static Map<GrassSpecies, String> grass() {
+        return ImmutableMap.of(
+                GrassSpecies.DEAD, "dead_bush",
+                GrassSpecies.NORMAL, "tall_grass",
+                GrassSpecies.FERN_LIKE, "fern");
+    }
+
+    public static Map<DyeColor, String> color() {
+        ImmutableMap.Builder<DyeColor, String> builder = ImmutableMap.builder();
+        for (DyeColor value : DyeColor.values()) {
+            if (value == DyeColor.LIGHT_BLUE) {
+                builder.put(value, "lightBlue");
+            } else {
+                builder.put(value, value.name().toLowerCase());
+            }
+        }
+        return builder.build();
+    }
 }

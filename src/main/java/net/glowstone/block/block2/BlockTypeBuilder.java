@@ -65,22 +65,12 @@ public final class BlockTypeBuilder {
         return property(GlowBlockProperty.ofRange(name, min, max));
     }
 
-    public BlockTypeBuilder enumProperty(String name, Class<? extends Enum> clazz) {
-        return property(GlowBlockProperty.ofEnum(name, clazz));
+    public <E extends Enum> BlockTypeBuilder enumProperty(String name, E[] vals) {
+        return property(GlowBlockProperty.ofEnum(name, vals));
     }
 
-    public <E extends Enum> BlockTypeBuilder enumProperty(String name, Class<E> clazz, Map<E, String> names) {
-        return property(GlowBlockProperty.ofNamedEnum(name, clazz, names));
-    }
-
-    @SuppressWarnings("unchecked")
-    public <E extends Enum> BlockTypeBuilder partialProperty(String name, Class<E> clazz, E... vals) {
-        return property(GlowBlockProperty.ofPartialEnum(name, clazz, vals));
-    }
-
-    @SuppressWarnings("unchecked")
-    public <E extends Enum> BlockTypeBuilder partialProperty(String name, Class<E> clazz, Map<E, String> names, E... vals) {
-        return property(GlowBlockProperty.ofNamedPartialEnum(name, clazz, names, vals));
+    public <E extends Enum> BlockTypeBuilder enumProperty(String name, E[] vals, Map<E, String> names) {
+        return property(GlowBlockProperty.ofNamedEnum(name, vals, names));
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -110,6 +100,7 @@ public final class BlockTypeBuilder {
 
     private static class DefaultIdResolver implements IdResolver {
         private static final DefaultIdResolver instance = new DefaultIdResolver();
+
         @Override
         public int getId(BlockState state, int suggested) {
             return suggested;
