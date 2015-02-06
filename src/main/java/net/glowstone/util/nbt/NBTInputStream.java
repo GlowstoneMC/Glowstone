@@ -42,6 +42,7 @@ public final class NBTInputStream implements Closeable {
      * @param compressed A flag indicating if the stream is compressed.
      * @throws IOException if an I/O error occurs.
      */
+    @SuppressWarnings("resource")
     public NBTInputStream(InputStream is, boolean compressed) throws IOException {
         this.is = new DataInputStream(compressed ? new GZIPInputStream(is) : is);
     }

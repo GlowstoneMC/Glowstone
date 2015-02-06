@@ -43,6 +43,7 @@ public final class NBTOutputStream implements Closeable {
      * @param compressed A flag that indicates if the output should be compressed.
      * @throws IOException if an I/O error occurs.
      */
+    @SuppressWarnings("resource")
     public NBTOutputStream(OutputStream os, boolean compressed) throws IOException {
         this.os = new DataOutputStream(compressed ? new GZIPOutputStream(os) : os);
     }

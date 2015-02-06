@@ -676,7 +676,7 @@ public final class GlowServer implements Server {
     private void loadPlugins() {
         // clear the map
         commandMap.clearCommands();
-        commandMap.register("glowstone", new ColorCommand("colors"));
+        commandMap.register("glowstone", new ColorCommand());
         commandMap.register("glowstone", new TellrawCommand());
 
         File folder = new File(config.getString(ServerConfig.Key.PLUGIN_FOLDER));

@@ -175,6 +175,7 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
         return ret;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public static OfflinePlayer deserialize(Map<String, Object> val) {
         if (val.get("name") != null) {
             // use name

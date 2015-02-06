@@ -4,7 +4,6 @@ import net.glowstone.entity.GlowPlayer;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -66,6 +65,7 @@ public final class EventFactory {
     ////////////////////////////////////////////////////////////////////////////
     // Player Events
 
+    @SuppressWarnings("deprecation")
     public static AsyncPlayerPreLoginEvent onPlayerPreLogin(String name, InetSocketAddress address, UUID uuid) {
         // call async event
         final AsyncPlayerPreLoginEvent event = new AsyncPlayerPreLoginEvent(name, address.getAddress(), uuid);
@@ -113,6 +113,7 @@ public final class EventFactory {
         return callEvent(event);
     }
 
+    @SuppressWarnings("deprecation")
     public static AsyncPlayerChatEvent onPlayerChat(boolean async, Player player, String message) {
         // call async event
         final Set<Player> recipients = new HashSet<>(player.getServer().getOnlinePlayers());
@@ -145,14 +146,6 @@ public final class EventFactory {
 
     public static PlayerQuitEvent onPlayerQuit(Player player) {
         return callEvent(new PlayerQuitEvent(player, ChatColor.YELLOW + player.getName() + " left the game"));
-    }
-
-    public static PlayerMoveEvent onPlayerMove(Player player, Location from, Location to) {
-        if (PlayerMoveEvent.getHandlerList().getRegisteredListeners().length > 0) {
-            return callEvent(new PlayerMoveEvent(player, from, to));
-        } else {
-            return null;
-        }
     }
 
     public static PlayerInteractEvent onPlayerInteract(Player player, Action action) {

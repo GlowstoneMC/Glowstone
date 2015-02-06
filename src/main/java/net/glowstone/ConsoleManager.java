@@ -466,6 +466,8 @@ public final class ConsoleManager {
             builder.append('\n');
 
             if (record.getThrown() != null) {
+                // StringWriter's close() is trivial
+                @SuppressWarnings("resource")
                 StringWriter writer = new StringWriter();
                 record.getThrown().printStackTrace(new PrintWriter(writer));
                 builder.append(writer.toString());

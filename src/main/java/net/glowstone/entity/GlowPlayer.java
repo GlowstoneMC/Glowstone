@@ -531,7 +531,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         // second step: package chunks into bulk packets
         final int maxSize = 0x1fff00;  // slightly under protocol max size of 0x200000
         final boolean skylight = world.getEnvironment() == World.Environment.NORMAL;
-        final List<ChunkDataMessage> messages = new LinkedList<>();
+        List<ChunkDataMessage> messages = new LinkedList<>();
         int bulkSize = 6; // size of bulk header
 
         // split the chunks into bulk packets based on how many fit
@@ -545,7 +545,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             if (bulkSize + messageSize > maxSize) {
                 // send out what we have so far
                 session.send(new ChunkBulkMessage(skylight, messages));
-                messages.clear();
+                messages = new LinkedList<>();
                 bulkSize = 6;
             }
 
@@ -556,7 +556,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         // send the leftovers
         if (!messages.isEmpty()) {
             session.send(new ChunkBulkMessage(skylight, messages));
-            messages.clear();
         }
 
         // send visible tile entity data
@@ -1791,7 +1790,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         if (hiddenEntities.contains(player.getUniqueId())) return;
 
         hiddenEntities.add(player.getUniqueId());
-        if (knownEntities.remove(player)) {
+        if (knownEntities.remove((GlowEntity) player)) {
             session.send(new DestroyEntitiesMessage(Arrays.asList(player.getEntityId())));
         }
         session.send(UserListItemMessage.removeOne(player.getUniqueId()));
