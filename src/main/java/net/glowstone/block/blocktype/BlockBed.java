@@ -9,7 +9,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -79,7 +78,7 @@ public class BlockBed extends BlockType {
             return true;
         }
 
-        if (((Bed) data).isOccupied()) {
+        if (isOccupied(block)) {
             player.sendMessage("This bed is occupied.");
             return true;
         }
@@ -106,16 +105,19 @@ public class BlockBed extends BlockType {
      * @param foot foot of the bed
      */
     public static void setOccupied(GlowBlock head, GlowBlock foot, boolean occupied) {
-        BlockState headState = head.getState();
-        BlockState footState = foot.getState();
-        Bed headData = (Bed) headState.getData();
-        Bed footData = (Bed) footState.getData();
-        headData.setOccupied(occupied);
-        footData.setOccupied(occupied);
-        headState.setData(headData);
-        footState.setData(footData);
-        headState.update();
-        footState.update();
+        byte headData = head.getData();
+        byte footData = foot.getData();
+        head.setData((byte) (occupied ? (headData | 0x4) : (headData & ~0x4)));
+        foot.setData((byte) (occupied ? (footData | 0x4) : (footData & ~0x4)));
+    }
+
+    /**
+     * Return whether the specified bed block is occupied.
+     * @param block part of the bed
+     * @return true if this bed is occupied, false if it is not
+     */
+    public static boolean isOccupied(GlowBlock block) {
+        return (block.getData() & 0x4) == 0x4;
     }
 
     /**
