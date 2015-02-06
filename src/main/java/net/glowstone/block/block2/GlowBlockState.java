@@ -15,15 +15,10 @@ public final class GlowBlockState implements BlockState {
 
     private final GlowBlockType type;
     private final ImmutableMap<BlockProperty<?>, Comparable<?>> properties;
-    private byte index = -1;
 
     public GlowBlockState(GlowBlockType type, ImmutableMap<BlockProperty<?>, Comparable<?>> properties) {
         this.type = type;
         this.properties = properties;
-    }
-
-    void setIndex(byte index) {
-        this.index = index;
     }
 
     @Override
@@ -68,16 +63,16 @@ public final class GlowBlockState implements BlockState {
     @Override
     @Deprecated
     public byte getDataValue() {
-        return index;
+        return (byte) DefaultIdTable.INSTANCE.getChildId(this);
     }
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder("GlowBlockState{");
+        StringBuilder builder = new StringBuilder("GlowBlockState[");
         builder.append(type.getId());
         for (Map.Entry<BlockProperty<?>, Comparable<?>> entry : properties.entrySet()) {
             builder.append(',').append(entry.getKey().getName()).append('=').append(entry.getValue());
         }
-        return builder.append('}').toString();
+        return builder.append(']').toString();
     }
 }

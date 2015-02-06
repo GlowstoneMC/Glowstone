@@ -17,21 +17,15 @@ public class GlowBlockType implements BlockType {
     private final BlockBehavior behavior;
 
     private final List<GlowBlockState> states;
-    private final GlowBlockState[] byData = new GlowBlockState[16];
     private final Map<String, BlockProperty<?>> properties;
 
-    private boolean tickRandomly;
-
-    public GlowBlockType(String id, BlockBehavior behavior, List<BlockProperty<?>> propertyList, IdResolver idResolver) {
+    public GlowBlockType(String id, BlockBehavior behavior, List<BlockProperty<?>> propertyList) {
         this.id = id;
         this.behavior = behavior;
 
         if (propertyList.isEmpty()) {
             properties = new HashMap<>();
-            GlowBlockState onlyState = new GlowBlockState(this, ImmutableMap.<BlockProperty<?>, Comparable<?>>of());
-            states = Arrays.asList(onlyState);
-            byData[0] = onlyState;
-            onlyState.setIndex((byte) 0);
+            states = Arrays.asList(new GlowBlockState(this, ImmutableMap.<BlockProperty<?>, Comparable<?>>of()));
             return;
         }
 
@@ -59,13 +53,7 @@ public class GlowBlockType implements BlockType {
                 break;
             }
 
-            GlowBlockState state = new GlowBlockState(this, builder.build());
-            int stateId = idResolver.getId(state, i);
-            states.add(state);
-            if (stateId >= 0 && stateId < byData.length) {
-                byData[stateId] = state;
-                state.setIndex((byte) stateId);
-            }
+            states.add(new GlowBlockState(this, builder.build()));
             ++i;
         }
     }
@@ -81,29 +69,33 @@ public class GlowBlockType implements BlockType {
 
     @Override
     public BlockState getDefaultState() {
-        return byData[0] == null ? states.get(0) : byData[0];
+        return DefaultIdTable.INSTANCE.getChildType(this, 0);
     }
 
     @Override
     public BlockState getStateFromDataValue(byte data) {
         // nb: according to Sponge, always returns a value, but may
         // return null here if that value is invalid
-        return byData[data & 0xf];
+        return DefaultIdTable.INSTANCE.getChildType(this, data & 0xf);
     }
 
     @Override
     public boolean getTickRandomly() {
-        return tickRandomly;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setTickRandomly(boolean tickRandomly) {
-        this.tickRandomly = tickRandomly;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public final String toString() {
-        return "GlowBlockType{" + id + "}";
+        return "GlowBlockType[" + id + "]";
+    }
+
+    List<GlowBlockState> getAllStates() {
+        return states;
     }
 
     Collection<String> getPropertyNames() {

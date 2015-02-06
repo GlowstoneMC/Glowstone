@@ -5,7 +5,6 @@ import net.glowstone.block.block2.details.DefaultBlockBehavior;
 import net.glowstone.block.block2.details.ListBlockBehavior;
 import net.glowstone.block.block2.details.SlabHalf;
 import net.glowstone.block.block2.sponge.BlockProperty;
-import net.glowstone.block.block2.sponge.BlockState;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -20,8 +19,6 @@ public final class BlockTypeBuilder {
     private final String id;
     private final List<BlockProperty<?>> propertyList = new LinkedList<>();
     private final List<BlockBehavior> behaviors = new LinkedList<>();
-    private IdResolver idResolver;
-    private int oldId = -1;
 
     public BlockTypeBuilder(String id) {
         this.id = id;
@@ -29,11 +26,6 @@ public final class BlockTypeBuilder {
 
     ////////////////////////////////////////////////////////////////////////////
     // Attributes
-
-    public BlockTypeBuilder oldId(int oldId) {
-        this.oldId = oldId;
-        return this;
-    }
 
     public BlockTypeBuilder behavior(BlockBehavior behavior) {
         behaviors.add(behavior);
@@ -43,11 +35,6 @@ public final class BlockTypeBuilder {
     public BlockTypeBuilder behavior(BlockBehavior first, BlockBehavior... rest) {
         behaviors.add(first);
         Collections.addAll(behaviors, rest);
-        return this;
-    }
-
-    public BlockTypeBuilder idResolver(IdResolver resolver) {
-        this.idResolver = resolver;
         return this;
     }
 
@@ -96,27 +83,12 @@ public final class BlockTypeBuilder {
         } else {
             behavior = new ListBlockBehavior(behaviors);
         }
-        if (idResolver == null) {
-            idResolver = DefaultIdResolver.instance;
-        }
-        return new GlowBlockType(id, behavior, propertyList, idResolver);
+        return new GlowBlockType(id, behavior, propertyList);
     }
 
     GlowBlockType register() {
         GlowBlockType type = build();
         BlockRegistry.instance.register(type);
-        if (oldId >= 0) {
-            BlockRegistry.instance.registerOldId(oldId, type);
-        }
         return type;
-    }
-
-    private static class DefaultIdResolver implements IdResolver {
-        private static final DefaultIdResolver instance = new DefaultIdResolver();
-
-        @Override
-        public int getId(BlockState state, int suggested) {
-            return suggested;
-        }
     }
 }
