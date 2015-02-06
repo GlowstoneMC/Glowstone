@@ -55,13 +55,15 @@ Building and Running
 --------------------
 Glowstone can be built with the
 [Java Development Kit](http://oracle.com/technetwork/java/javase/downloads) and
-[Gradle](http://gradle.org). The command `gradlew` will build Glowstone and put the
-final jar in `build/distributions/`. Other tasks are listed under `gradlew tasks`.
-A local installation of Gradle can be used instead if desired.
+[Gradle](http://gradle.org). The command `./gradlew` will build Glowstone and
+place the final jar in `build/libs/` with a filename ending in `-remapped.jar`.
+Other tasks are listed under `./gradlew tasks`. A local installation of Gradle
+can be used instead if desired.
 
 Running Glowstone is simple because its dependencies are shaded into the output
 jar at compile time. Simply execute `java -jar glowstone.jar` along with any
-extra JVM options desired.
+extra JVM options desired. A variety of command-line options are also available -
+run `java -jar glowstone.jar --help` for more information.
 
 By default, configuration is stored in the `config/` subdirectory and logs
 are stored in the `logs/` subdirectory. The main configuration file is
