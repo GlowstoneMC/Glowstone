@@ -80,7 +80,7 @@ public class IdTable {
     /**
      * Function used to provide old block metadata values for BlockStates.
      */
-    public static interface IdResolver {
+    public interface IdResolver {
         /**
          * Get the index for a specific BlockState.
          * @param state The state to determine the index for

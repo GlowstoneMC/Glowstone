@@ -53,7 +53,7 @@ public final class Blocks {
     public static final GlowBlockType GOLD_BLOCK = of("gold_block").register();
     public static final GlowBlockType IRON_BLOCK = of("iron_block").register();
     // double_stone_slab, stone_slab
-    public static final GlowBlockType BRICK_BLOCK = of("red_mushroom").register();
+    public static final GlowBlockType BRICK_BLOCK = of("brick_block").register();
     public static final GlowBlockType TNT = of("tnt").register();
     public static final GlowBlockType BOOKSHELF = of("bookshelf").register();
     public static final GlowBlockType MOSSY_COBBLESTONE = of("mossy_cobblestone").register();

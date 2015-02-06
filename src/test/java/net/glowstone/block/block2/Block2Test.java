@@ -15,7 +15,7 @@ public class Block2Test {
         BlockRegistry reg = BlockRegistry.instance;
         System.out.println(reg);
 
-        BlockType t = reg.getBlock("minecraft:stone");
+        GlowBlockType t = reg.getBlock("minecraft:stone");
         System.out.println(t);
 
         BlockState s = t.getDefaultState();
@@ -29,7 +29,7 @@ public class Block2Test {
 
         int i = 0;
         while (true) {
-            BlockType type = reg.getByTypeId(i);
+            BlockType type = DefaultIdTable.INSTANCE.getBaseType(i);
             if (type == null) break;
             System.out.println(type);
             System.out.println("  0> " + type.getDefaultState());
@@ -43,7 +43,7 @@ public class Block2Test {
             ++i;
         }
 
-        System.out.println(BlockRegistry.instance.getBehavior(t));
+        System.out.println(t.getBehavior());
     }
 
 }

@@ -2,7 +2,7 @@ package net.glowstone.block;
 
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowWorld;
-import net.glowstone.block.block2.BlockRegistry;
+import net.glowstone.block.block2.DefaultIdTable;
 import net.glowstone.block.block2.sponge.BlockState;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.TileEntity;
@@ -177,7 +177,7 @@ public final class GlowBlock implements Block {
     // Type and typeid getters/setters
 
     public net.glowstone.block.block2.sponge.BlockType getNewType() {
-        return BlockRegistry.instance.getByTypeId(getTypeId());
+        return DefaultIdTable.INSTANCE.getBaseType(getTypeId());
     }
 
     public BlockState getNewState() {
@@ -401,7 +401,8 @@ public final class GlowBlock implements Block {
     // Physics
 
     /**
-     * Notify this block and its surrounding blocks that this block has changed type and data.
+     * Notify this block and its surrounding blocks that this block has changed
+     * type and data.
      * @param oldType the old block type
      * @param newTypeId the new block type
      * @param oldData the old data
