@@ -33,19 +33,14 @@ public final class AnvilChunkIoService implements ChunkIoService {
     private static final int REGION_SIZE = 32;
 
     /**
-     * The root directory of the map.
-     */
-    private final File dir;
-
-    /**
      * The region file cache.
      */
-    private final RegionFileCache cache = new RegionFileCache(".mca");
+    private final RegionFileCache cache;
 
     // todo: consider the session.lock file
 
     public AnvilChunkIoService(File dir) {
-        this.dir = dir;
+        cache = new RegionFileCache(dir, ".mca");
     }
 
     /**
@@ -57,7 +52,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
     @Override
     public boolean read(GlowChunk chunk) throws IOException {
         int x = chunk.getX(), z = chunk.getZ();
-        RegionFile region = cache.getRegionFile(dir, x, z);
+        RegionFile region = cache.getRegionFile(x, z);
         int regionX = x & (REGION_SIZE - 1);
         int regionZ = z & (REGION_SIZE - 1);
         if (!region.hasChunk(regionX, regionZ)) {
@@ -153,7 +148,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
     @Override
     public void write(GlowChunk chunk) throws IOException {
         int x = chunk.getX(), z = chunk.getZ();
-        RegionFile region = cache.getRegionFile(dir, x, z);
+        RegionFile region = cache.getRegionFile(x, z);
         int regionX = x & (REGION_SIZE - 1);
         int regionZ = z & (REGION_SIZE - 1);
 
