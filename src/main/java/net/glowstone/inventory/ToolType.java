@@ -16,7 +16,7 @@ public enum ToolType implements MaterialMatcher {
     // Spades
     DIAMOND_SPADE(Material.DIAMOND_SPADE, null),
     IRON_SPADE(Material.IRON_SPADE, DIAMOND_SPADE),
-    STONE_SPADE(Material.STONE_SPADE, IRON_PICKAXE),
+    STONE_SPADE(Material.STONE_SPADE, IRON_SPADE),
     GOLD_SPADE(Material.GOLD_SPADE, STONE_SPADE),
     SPADE(Material.WOOD_SPADE, GOLD_SPADE),
 
