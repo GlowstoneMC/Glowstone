@@ -1,7 +1,6 @@
 package net.glowstone;
 
 import lombok.ToString;
-import net.glowstone.GlowChunk.ChunkSection;
 import net.glowstone.GlowChunk.*;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
