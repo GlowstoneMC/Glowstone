@@ -5,15 +5,18 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.inventory.MaterialMatcher;
 import net.glowstone.inventory.ToolType;
+import org.bukkit.BannerPattern;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.util.Vector;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public class BlockCauldron extends BlockNeedsTool {
@@ -74,8 +77,32 @@ public class BlockCauldron extends BlockNeedsTool {
     }
 
     private boolean bleachBanner(GlowPlayer player, GlowBlock block) {
-        //TODO: bleaching banners with cauldron
-        return false;
+        if (player.getGameMode() == GameMode.CREATIVE)
+            return false;
+
+        if (block.getData() > 0) {
+            ItemStack inHand = player.getItemInHand();
+            BannerMeta meta = (BannerMeta) inHand.getItemMeta();
+            BannerPattern pattern = meta.getPattern();
+            List<BannerPattern.BannerLayer> layers = pattern.getLayers();
+            if (layers == null || layers.isEmpty()) {
+                return false;
+            }
+
+            BannerPattern.Builder builder = BannerPattern.builder();
+            for (int i = 0; i < layers.size() - 1; i++) {
+                BannerPattern.BannerLayer layer = layers.get(i);
+                builder.layer(layer.getTexture(), layer.getColor());
+            }
+
+            meta.setPattern(builder.build());
+            inHand.setItemMeta(meta);
+
+            block.setData((byte) (block.getData() - 1));
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private boolean bleachLeatherArmor(GlowPlayer player, GlowBlock block) {
