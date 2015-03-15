@@ -139,6 +139,9 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             damage(4, EntityDamageEvent.DamageCause.VOID);
         }
 
+        if (isWithinSolidBlock())
+                damage(1, EntityDamageEvent.DamageCause.SUFFOCATION);
+
         // potion effects
         List<PotionEffect> effects = new ArrayList<>(potionEffects.values());
         for (PotionEffect effect : effects) {
@@ -342,6 +345,13 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Override
     public List<Block> getLastTwoTargetBlocks(HashSet<Byte> transparent, int maxDistance) {
         return getLineOfSight(transparent, maxDistance, 2);
+    }
+
+    /**
+     * Checks if the entities head is stuck in a block.
+     */
+    public boolean isWithinBlock() {
+        return getEyeLocation().getBlock().getType().isSolid();
     }
 
     ////////////////////////////////////////////////////////////////////////////
