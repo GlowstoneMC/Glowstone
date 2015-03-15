@@ -348,7 +348,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     /**
-     * Checks if the entitie's head is stuck in a block.
+     * Returns whether the entity's eye location is within a solid block
      */
     public boolean isWithinSolidBlock() {
         return getEyeLocation().getBlock().getType().isSolid();
