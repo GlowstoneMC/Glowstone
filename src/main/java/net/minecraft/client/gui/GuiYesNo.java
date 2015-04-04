@@ -37,6 +37,10 @@ public class GuiYesNo extends GuiScreen {
 
     }
 
+    public GuiYesNo(String dirName, String saveName, GuiScreen screen) {
+
+    }
+
     /** callback */
     public void func_73878_a(boolean choice, int p) {
 

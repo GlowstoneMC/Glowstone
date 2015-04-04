@@ -31,7 +31,10 @@ package net.minecraft.client;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.network.INetHandler;
+import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.storage.SaveFormatOld;
@@ -180,5 +183,31 @@ public class Minecraft implements IThreadListener {
     @Override
     public void addScheduledTask(Runnable runnable) {
         //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public RenderEngine renderEngine;
+
+    public RenderEngine getRenderManager() {
+        return renderEngine;
+    }
+
+    public LanguageManager getLanguageManager() {
+        return null;
+    }
+
+    public class LanguageManager {
+        public Language getCurrentLanguage() {
+            return null;
+        }
+
+        public class Language {
+            public String getLanguageCode() {
+                return "en";
+            }
+        }
+    }
+
+    public NetHandlerPlayClient getNetHandler() {
+        return null;
     }
 }

@@ -29,6 +29,7 @@
 package net.minecraft.nbt;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 public class CompressedStreamTools {
 
@@ -40,5 +41,9 @@ public class CompressedStreamTools {
     /* deserialize */
     public static NBTTagCompound func_74792_a(byte[] bytes) throws IOException {
         throw new IOException();
+    }
+
+    public static NBTTagCompound readCompressed(InputStream inputStream) throws IOException {
+
     }
 }

@@ -9,6 +9,7 @@ public class Gui {
     public int bottom;
     public int left;
     public int right;
+    public static String optionsBackground;
 
     public void handleMouseInput() throws IOException {
 
@@ -73,6 +74,10 @@ public class Gui {
     }
 
     public void setSelected(int a, int b, int c) {
+
+    }
+
+    public static void drawModalRectWithCustomSizedTexture(int x, int y, int z, float idx, int sixteen1, int sixteen2, float f1, float f2) {
 
     }
 }

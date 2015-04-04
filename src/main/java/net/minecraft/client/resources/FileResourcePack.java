@@ -23,12 +23,10 @@ public class FileResourcePack implements IResourcePack {
         return "default";
     }
 
-    @Override
     protected InputStream getInputStreamByName(String resourceName) throws IOException {
         return null;
     }
 
-    @Override
     protected boolean hasResourceName(String p_110593_1_) {
         return true;
     }

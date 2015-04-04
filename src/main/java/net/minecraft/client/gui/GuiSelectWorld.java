@@ -1,4 +1,4 @@
 package net.minecraft.client.gui;
 
-public class GuiSelectWorld {
+public class GuiSelectWorld extends GuiScreen {
 }

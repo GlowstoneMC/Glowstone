@@ -28,9 +28,17 @@
  */
 package net.minecraft.client.multiplayer;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
 
 public class GuiConnecting extends GuiScreen {
+
+    public GuiConnecting(GuiMainMenu mainMenu, Minecraft client, String host, int port) {
+    }
+
+    public GuiConnecting(GuiScreen screen, Minecraft client, ServerData serverData) {
+    }
 
     public static void forceTermination(GuiConnecting guiConnecting) {
 

@@ -28,6 +28,11 @@
  */
 package net.minecraft.client.renderer;
 
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.entity.Entity;
+
+import java.util.Map;
+
 public class RenderEngine {
 
     public void func_78352_b() {
@@ -35,7 +40,9 @@ public class RenderEngine {
     }
 
     /** render /gui/background.png */
-    public void func_98187_b(String path) {
+    public void bindTexture(String path) {
 
     }
+
+    public Map<Class<? extends Entity>, Render> entityRenderMap;
 }

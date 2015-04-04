@@ -37,6 +37,8 @@ public class EntityPlayer extends Entity {
 
     public int dimension;
 
+    public int currentWindowId;
+
     /** open container */
     public Container openContainer;
 
