@@ -21,11 +21,11 @@ public class YggdrasilUserAuthentication {
     }
 
     public String getAuthenticatedToken() {
-
+        return null;
     }
 
     public Object getUserProperties() {
-
+        return null;
     }
 
     public class Profile {
