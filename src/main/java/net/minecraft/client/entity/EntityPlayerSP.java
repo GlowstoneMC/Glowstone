@@ -1,4 +1,6 @@
 package net.minecraft.client.entity;
 
-public class EntityPlayerSP {
+import net.minecraft.entity.player.EntityPlayer;
+
+public class EntityPlayerSP extends EntityPlayer {
 }

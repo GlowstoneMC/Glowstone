@@ -39,4 +39,12 @@ public class GameSettings {
     public void func_74300_a() {
 
     }
+
+    public void loadOptions() {
+
+    }
+
+    public void saveOptions() {
+
+    }
 }

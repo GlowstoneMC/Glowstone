@@ -50,4 +50,12 @@ public class GuiTextField extends Gui {
     public int getCursorPosition() {
         return 0;
     }
+
+    public void setFocused(boolean b) {
+
+    }
+
+    public void setCanLoseFocus(boolean b) {
+
+    }
 }

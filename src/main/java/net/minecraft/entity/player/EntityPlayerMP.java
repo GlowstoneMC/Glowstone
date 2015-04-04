@@ -33,17 +33,5 @@ import net.minecraft.network.INetHandler;
 
 public class EntityPlayerMP extends EntityPlayer {
 
-    public int dimension;
 
-    public Container openContainer;
-
-    public void getNextWindowId() {
-
-    }
-
-    public void closeContainer() {
-
-    }
-
-    public INetHandler playerNetServerHandler;
 }

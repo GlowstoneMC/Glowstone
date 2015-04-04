@@ -32,6 +32,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.util.IThreadListener;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.storage.SaveFormatOld;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -49,7 +50,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Minecraft {
+public class Minecraft implements IThreadListener {
 
 
     public RenderEngine field_71446_o = new RenderEngine();
@@ -169,5 +170,15 @@ public class Minecraft {
 
     public Object getSoundHandler() { // TODO: what class is this?
         return null;
+    }
+
+    @Override
+    public boolean isCallingFromMinecraftThread() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void addScheduledTask(Runnable runnable) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 }

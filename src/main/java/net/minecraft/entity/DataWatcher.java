@@ -47,4 +47,8 @@ public class DataWatcher {
     public static List<DataWatcher> readWatchedListFromPacketBuffer(PacketBuffer packetBuffer) throws IOException {
         return null;
     }
+
+    public void updateWatchedObjectsFromList(List<?> list) {
+
+    }
 }

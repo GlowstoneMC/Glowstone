@@ -30,14 +30,17 @@ package net.minecraft.entity.player;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.Container;
+import net.minecraft.network.INetHandler;
+import net.minecraft.world.World;
 
 public class EntityPlayer extends Entity {
 
-    /** something with GUIs TODO: type */
-    public int field_70170_p;
+    public int dimension;
 
     /** open container */
-    public Container field_71070_bA;
+    public Container openContainer;
+
+    public World worldObj;
 
     /** get username */
     public String func_70005_c_() {
@@ -49,5 +52,19 @@ public class EntityPlayer extends Entity {
 
     }
 
+    public void openGui(Object mod, int id, World world, int x, int y, int z) {
+
+    }
+
+
+    public void getNextWindowId() {
+
+    }
+
+    public void closeContainer() {
+
+    }
+
+    public INetHandler playerNetServerHandler;
 
 }

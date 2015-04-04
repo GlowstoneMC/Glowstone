@@ -36,4 +36,8 @@ public class WorldClient extends World {
     public Entity getEntityByID(int id) {
         return null;
     }
+
+    public void addEntityToWorld(int id, Entity entity) {
+
+    }
 }

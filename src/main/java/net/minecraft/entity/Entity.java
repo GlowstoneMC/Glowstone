@@ -49,6 +49,7 @@ public class Entity {
 
     /** entity yaw */
     public float rotationYaw;
+    public float rotationYawHead;
 
     /** entity pitch */
     public float rotationPitch;
@@ -70,12 +71,12 @@ public class Entity {
         throw new IOException();
     }
 
-    public void func_70012_b(double scaledX, double scaledY, double scaledZ, double scaledYaw, double scaledPitch) {
+    public void setLocationAndAngles(double scaledX, double scaledY, double scaledZ, double scaledYaw, double scaledPitch) {
 
     }
 
     /** get parts for multi-part entities */
-    public Entity[] func_70021_al() {
+    public Entity[] getParts() {
         return null;
     }
 
@@ -83,7 +84,7 @@ public class Entity {
 
     }
 
-    public void func_70016_h(double scaledSpeedX, double scaledSpeedY, double scaledSpeedZ) {
+    public void setVelocity(double scaledSpeedX, double scaledSpeedY, double scaledSpeedZ) {
 
     }
 
@@ -93,5 +94,9 @@ public class Entity {
 
     public DataWatcher getDataWatcher() {
         return null;
+    }
+
+    public void setEntityId(int id) {
+
     }
 }

@@ -6,7 +6,15 @@ public class WorldRenderer {
 
     }
 
-    public void addVertexWithUV(int offset, int top, float zLevel, float a, float b) {
+    public void addVertexWithUV(double offset, double top, double zLevel, double a, double b) {
+
+    }
+
+    public void setColorOpaque_I(int i) {
+
+    }
+
+    public void setColorRGBA_I(int i, int j) {
 
     }
 }

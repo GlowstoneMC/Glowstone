@@ -60,7 +60,7 @@ public class FontRenderer {
         this.func_78261_a(text, offset, shifty, color);
     }
 
-    public Collection listFormattedStringToWidth(String s, int width) {
+    public List listFormattedStringToWidth(String s, int width) {
         return null;
     }
 }
