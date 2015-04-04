@@ -103,7 +103,7 @@
         </dependency>
         <dependency>
             <groupId>org.ow2.asm</groupId>
-            <artifactId>asm-all</artifactId>
+            <artifactId>asm-debug-all</artifactId>
             <version>5.0.3</version>
         </dependency>
         <dependency>
