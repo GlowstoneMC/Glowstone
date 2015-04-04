@@ -52,11 +52,11 @@ public class FontRenderer {
     }
 
     /** render text */
-    public void func_78261_a(String text, int offset, int shifty, int color) {
+    public void drawStringWithShadow(String text, int offset, int shifty, int color) {
         System.out.println("FontRenderer: " + text);
     }
 
-    public void func_78279_b(String text, int offset, int shifty, int rightSide, int color) {
+    public void drawSplitString(String text, int offset, int shifty, int rightSide, int color) {
         this.func_78261_a(text, offset, shifty, color);
     }
 

@@ -33,7 +33,8 @@ public class GuiListExtended extends Gui {
         return 0;
     }
 
-    public GuiConfigEntries.IConfigEntry getListEntry(int index) {
+    //public GuiConfigEntries.IConfigEntry getListEntry(int index) {
+    public Object getListEntry(int index) {
         return null;
     }
 
@@ -41,4 +42,11 @@ public class GuiListExtended extends Gui {
         return 0;
     }
 
+    protected void elementClicked(int index, boolean doubleClick, int mouseX, int mouseY) {
+
+    }
+
+    protected boolean isSelected(int index) {
+
+    }
 }

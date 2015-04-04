@@ -1,5 +1,7 @@
 package net.minecraft.client.resources;
 
+import net.minecraftforge.fml.client.config.IConfigElement;
+
 public class I18n {
 
     public static String format(String s) {
@@ -15,6 +17,10 @@ public class I18n {
     }
 
     public static String format(String s, Object[] obj) {
+        return s;
+    }
+
+    public static String format(String s, Object configElement) {
         return s;
     }
 }

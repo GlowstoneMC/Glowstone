@@ -39,8 +39,8 @@ public class GuiScreen extends Gui {
     public int width;
     public int height;
     protected FontRenderer fontRendererObj;
-    protected Minecraft mc;
-    public List<Object> buttonList = new ArrayList<Object>();
+    public Minecraft mc;
+    public List<GuiButton> buttonList = new ArrayList<>();
     public List<Object> labelList = new ArrayList<>();
     public double field_73735_i;
     public int zLevel;
@@ -98,6 +98,10 @@ public class GuiScreen extends Gui {
 
 
     public void drawHoveringText(List stringList, int x, int y) {
+
+    }
+
+    public void mouseClicked(int x, int y, int mouseEvent) throws IOException {
 
     }
 }

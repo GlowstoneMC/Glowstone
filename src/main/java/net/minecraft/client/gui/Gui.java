@@ -15,19 +15,6 @@ public class Gui {
 
     }
 
-
-    public void mouseReleased(int index, int x, int y, int mouseEvent, int relativeX, int relativeY) {
-
-    }
-
-    protected boolean mouseClicked(int a, int b, int c) {
-        return false;
-    }
-
-    protected void mouseReleased(int a, int b, int c) {
-
-    }
-
     public void drawScreen(int a, int b, float f) {
 
     }

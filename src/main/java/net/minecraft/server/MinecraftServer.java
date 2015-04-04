@@ -80,4 +80,9 @@ public class MinecraftServer implements IThreadListener {
     public boolean isCallingFromMinecraftThread() {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
+
+    @Override
+    public void addScheduledTask(Runnable runnable) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

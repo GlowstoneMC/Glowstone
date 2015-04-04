@@ -30,6 +30,7 @@ package net.minecraft.client.renderer;
 
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.Map;
 
@@ -41,6 +42,10 @@ public class RenderEngine {
 
     /** render /gui/background.png */
     public void bindTexture(String path) {
+
+    }
+
+    public void bindTexture(ResourceLocation location) {
 
     }
 
