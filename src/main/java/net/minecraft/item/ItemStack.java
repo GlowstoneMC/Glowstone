@@ -47,7 +47,7 @@ public class ItemStack {
     }
 
     /** get Item corresponding to this ItemStack */
-    public Item func_77973_b() {
+    public Item getItem() {
         return null;
     }
 

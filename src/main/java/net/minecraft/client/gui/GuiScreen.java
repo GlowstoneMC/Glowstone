@@ -33,13 +33,14 @@ import net.minecraft.client.Minecraft;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuiScreen {
+public class GuiScreen extends Gui {
 
     public int width;
     public int height;
     protected FontRenderer fontRendererObj;
     protected Minecraft mc;
     public List<Object> buttonList = new ArrayList<Object>();
+    public List<Object> labelList = new ArrayList<>();
     public double field_73735_i;
     public int zLevel;
 
@@ -77,17 +78,10 @@ public class GuiScreen {
 
     }
 
-    public void displayLoadingString(String s) {
-        this.drawCenteredString(s);
+    public void handleMouseInput() {
+
     }
 
-    public void drawCenteredString(String s) {
-        System.out.println("Drawing string on screen: "+s);
-    }
-
-    public void drawCenteredString(FontRenderer fontRenderer, String s, int w, int offset, int color) {
-        this.drawCenteredString(s);
-    }
 
     public void updateScreen() {
 
@@ -98,6 +92,11 @@ public class GuiScreen {
     }
 
     protected void actionPerformed(GuiButton guiButton) {
+
+    }
+
+
+    public void drawHoveringText(List stringList, int x, int y) {
 
     }
 }

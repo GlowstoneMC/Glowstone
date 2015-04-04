@@ -28,7 +28,11 @@
  */
 package net.minecraft.client.gui;
 
+import java.util.List;
+
 public class FontRenderer {
+
+    public static final int FONT_HEIGHT = 1;
 
     /** draw line */
     public int drawString(String line, int offset, int shifty, int color) {
@@ -53,5 +57,9 @@ public class FontRenderer {
 
     public void func_78279_b(String text, int offset, int shifty, int rightSide, int color) {
         this.func_78261_a(text, offset, shifty, color);
+    }
+
+    public List<?> listFormattedStringToWidth(String s, int width) {
+        return null;
     }
 }

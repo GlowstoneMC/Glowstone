@@ -1,10 +1,15 @@
 package net.minecraft.client.gui;
 
-public class GuiTextField {
+public class GuiTextField extends Gui {
 
     private String text;
     public int xPosition;
     public int yPosition;
+    public int width;
+
+    public GuiTextField(int a, FontRenderer fontRenderer, int b, int c, int d, int e) {
+
+    }
 
     public void setMaxStringLength(int length) {
 
@@ -19,6 +24,10 @@ public class GuiTextField {
     }
 
     public void setVisible(boolean visible) {
+
+    }
+
+    public void setEnabled(boolean enabled) {
 
     }
 

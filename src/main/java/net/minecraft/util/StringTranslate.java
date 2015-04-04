@@ -30,12 +30,21 @@ package net.minecraft.util;
 
 import net.minecraft.client.gui.GuiSmallButton;
 
+import java.io.InputStream;
 import java.util.*;
 
 public class StringTranslate {
     private final static StringTranslate instance = new StringTranslate();
 
     public List<GuiSmallButton> field_73887_h = new ArrayList<GuiSmallButton>();
+
+    public static HashMap<String, String> parseLangFile(InputStream inputStream) {
+        return null;
+    }
+
+    public static void inject(InputStream inputStream) {
+
+    }
 
     /** get shared instance */
     public static StringTranslate func_74808_a() {

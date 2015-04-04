@@ -45,7 +45,7 @@ public class NBTTagCompound extends NBTBase {
     }
 
     /** get int */
-    public int func_74762_e(String key) {
+    public int getInteger(String key) {
         return 0;
     }
 

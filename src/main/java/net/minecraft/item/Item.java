@@ -45,11 +45,11 @@ public class Item {
     public int field_77779_bT;
 
     /** get item name */
-    public String func_77658_a() {
+    public String getUnlocalizedName() {
         return null;
     }
 
-    public String func_77667_c(ItemStack itemStack) {
+    public String getUnlocalizedName(ItemStack itemStack) {
         return null;
     }
 

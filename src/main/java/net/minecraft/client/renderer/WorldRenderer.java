@@ -6,7 +6,7 @@ public class WorldRenderer {
 
     }
 
-    public void addVertexWithUV(int offset, int top, int zLevel, int a, int b) {
+    public void addVertexWithUV(int offset, int top, float zLevel, float a, float b) {
 
     }
 }

@@ -1,6 +1,7 @@
 package net.minecraft.network;
 
 import io.netty.channel.Channel;
+import io.netty.util.concurrent.GenericFutureListener;
 import net.minecraft.util.ChatComponentText;
 
 public class NetworkManager {
@@ -27,5 +28,13 @@ public class NetworkManager {
 
     public void sendPacket(Packet packet) {
 
+    }
+
+    public void sendPacket(Packet packet, GenericFutureListener futureListener) {
+
+    }
+
+    public EnumPacketDirection getDirection() {
+        return EnumPacketDirection.SERVERBOUND;
     }
 }

@@ -9,7 +9,8 @@ public interface Packet {
 
     void processPacket(INetHandler inethandler);
 
-    String getChannelName();
+    // these cannot be part of the interface because FMLProxyPacket does not override it
+    //String getChannelName();
 
-    PacketBuffer getBufferData();
+    //PacketBuffer getBufferData();
 }

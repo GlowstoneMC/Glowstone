@@ -5,4 +5,8 @@ public class RegistryNamespacedDefaultedByKey extends RegistryNamespaced {
     public RegistryNamespacedDefaultedByKey(Object defaultKey) {
         super();
     }
+
+    public void validateKey() {
+
+    }
 }

@@ -28,7 +28,11 @@
  */
 package net.minecraft.entity.player;
 
+import net.minecraft.network.INetHandler;
+
 public class EntityPlayerMP extends EntityPlayer {
+
+    public int dimension;
 
     /** window ID */
     public int field_71139_cq;
@@ -40,4 +44,6 @@ public class EntityPlayerMP extends EntityPlayer {
     public void func_71128_l() {
 
     }
+
+    public INetHandler playerNetServerHandler;
 }

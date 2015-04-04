@@ -1,6 +1,6 @@
 package net.minecraft.util;
 
-public class ChatComponentText {
+public class ChatComponentText implements IChatComponent {
 
     private String string;
 

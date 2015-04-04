@@ -42,7 +42,7 @@ public class Block {
     public int field_71990_ca;
 
     /** get block name */
-    public String func_71917_a() {
+    public String getUnlocalizedName() {
         return "block";
     }
 

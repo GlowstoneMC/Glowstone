@@ -21,4 +21,8 @@ public class S01PacketJoinGame implements Packet {
     public void processPacket(INetHandler inethandler) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
+
+    public int getDimension() {
+        return 0;
+    }
 }

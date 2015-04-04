@@ -32,6 +32,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.world.WorldSettings;
 import net.minecraft.world.storage.SaveFormatOld;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraft.client.gui.GuiScreen;
@@ -115,7 +116,7 @@ public class Minecraft {
         System.out.println("entered fmlReentry");
 
         System.out.println("MLIA loading...");
-        FMLClientHandler.instance().beginMinecraftLoading(new Minecraft(), new ArrayList());
+        FMLClientHandler.instance().beginMinecraftLoading(new Minecraft(), new ArrayList(), null);
         System.out.println("Finishing loading");
         FMLClientHandler.instance().finishMinecraftLoading();
         System.out.println("Initialization completing");
@@ -156,5 +157,17 @@ public class Minecraft {
 
     public TextureManager getTextureManager() {
         return null;
+    }
+
+    public GameSettings gameSettings;
+
+    public File mcDataDir;
+
+    public void launchIntegratedServer(String dirName, String saveName, WorldSettings worldSettings) {
+
+    }
+
+    public void getSoundHandler() {
+        return;
     }
 }

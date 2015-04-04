@@ -28,9 +28,15 @@
  */
 package net.minecraft.server.management;
 
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
+import net.minecraft.server.MinecraftServer;
 
 import java.net.SocketAddress;
+import java.util.List;
 
 public class ServerConfigurationManager {
 
@@ -53,4 +59,18 @@ public class ServerConfigurationManager {
     public void func_72384_a(Packet packet) {
 
     }
+
+    public MinecraftServer getServerInstance() {
+        return null;
+    }
+
+    public NBTTagCompound getPlayerNBT(EntityPlayerMP entityPlayerMP) {
+        return null;
+    }
+
+    public void initializeConnectionToPlayer(NetworkManager networkManager, EntityPlayerMP entityPlayerMP, NetHandlerPlayServer netHandlerPlayServer) {
+
+    }
+
+    public List<EntityPlayerMP> playerEntityList;
 }

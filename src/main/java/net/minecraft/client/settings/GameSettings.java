@@ -33,7 +33,7 @@ import java.util.ArrayList;
 public class GameSettings {
 
     /** key bindings */
-    public Object[] field_74324_K = new Object[0];
+    public Object[] keyBindings = new Object[0];
 
     /** upload bindings to game */
     public void func_74300_a() {

@@ -75,4 +75,9 @@ public class GuiButton extends Gui {
 
     public void drawTexturedModalRect(int x, int y, int a, int b, int c, int d) {
     }
+
+    public void drawButton(Minecraft minecraft, int x, int y) {
+
+    }
+
 }

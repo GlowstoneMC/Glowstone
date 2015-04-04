@@ -70,4 +70,8 @@ public class MinecraftServer {
         System.out.println("Shutting down");
         System.exit(0);
     }
+
+    public ServerConfigurationManager getConfigurationManager() {
+        return null;
+    }
 }
