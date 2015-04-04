@@ -38,9 +38,9 @@ public class Entity {
     public int field_70157_k;
 
     /** entity position x,y,z */
-    public double motionX;
-    public double motionY;
-    public double motionZ;
+    public double serverPosX;
+    public double serverPosY;
+    public double serverPosZ;
 
     /** entity raw x,y,z */
     public int posX;
@@ -57,9 +57,9 @@ public class Entity {
     public float field_70759_as;
 
     /** velocity mX, mY, mZ */
-    public double field_70159_w;
-    public double field_70181_x;
-    public double field_70179_y;
+    public double motionX;
+    public double motionY;
+    public double motionZ;
 
     public Entity func_70096_w() { /** TODO return type */
         return null;
@@ -89,5 +89,9 @@ public class Entity {
 
     public int getEntityId() {
         return 0;
+    }
+
+    public DataWatcher getDataWatcher() {
+        return null;
     }
 }

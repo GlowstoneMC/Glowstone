@@ -28,20 +28,20 @@
  */
 package net.minecraft.entity.player;
 
+import net.minecraft.inventory.Container;
 import net.minecraft.network.INetHandler;
 
 public class EntityPlayerMP extends EntityPlayer {
 
     public int dimension;
 
-    /** window ID */
-    public int field_71139_cq;
+    public Container openContainer;
 
-    public void func_71117_bO() {
+    public void getNextWindowId() {
 
     }
 
-    public void func_71128_l() {
+    public void closeContainer() {
 
     }
 

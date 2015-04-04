@@ -30,6 +30,7 @@ package net.minecraft.client.gui;
 
 import net.minecraft.client.Minecraft;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,7 +79,7 @@ public class GuiScreen extends Gui {
 
     }
 
-    public void handleMouseInput() {
+    public void handleMouseInput() throws IOException {
 
     }
 

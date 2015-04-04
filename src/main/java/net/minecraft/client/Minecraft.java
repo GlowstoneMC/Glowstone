@@ -167,7 +167,7 @@ public class Minecraft {
 
     }
 
-    public void getSoundHandler() {
-        return;
+    public Object getSoundHandler() { // TODO: what class is this?
+        return null;
     }
 }

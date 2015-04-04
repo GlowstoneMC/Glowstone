@@ -7,6 +7,11 @@ import net.minecraft.network.PacketBuffer;
 import java.io.IOException;
 
 public class S3FPacketCustomPayload implements Packet {
+
+    public S3FPacketCustomPayload() {
+
+    }
+
     public S3FPacketCustomPayload(String channel, PacketBuffer payload) {
 
     }

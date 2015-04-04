@@ -1,5 +1,6 @@
 package net.minecraft.client.gui;
 
+import java.io.IOException;
 import java.util.List;
 
 public class Gui {
@@ -9,7 +10,7 @@ public class Gui {
     public int left;
     public int right;
 
-    public void handleMouseInput() {
+    public void handleMouseInput() throws IOException {
 
     }
 
@@ -18,7 +19,7 @@ public class Gui {
 
     }
 
-    public boolean mouseClicked(int a, int b, int c) {
+    protected boolean mouseClicked(int a, int b, int c) {
         return false;
     }
 
@@ -61,6 +62,18 @@ public class Gui {
 
     public void drawString(FontRenderer fontRenderer, String s, int w, int offset, int color) {
         this.drawString(s);
+    }
+
+    public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected) {
+
+    }
+
+    public boolean mousePressed(int index, int x, int y, int mouseEvent, int relativeX, int relativeY) {
+        return false;
+    }
+
+    public void setSelected(int a, int b, int c) {
+
     }
 }
 

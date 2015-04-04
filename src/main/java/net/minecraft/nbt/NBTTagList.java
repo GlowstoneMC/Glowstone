@@ -30,17 +30,17 @@ package net.minecraft.nbt;
 
 public class NBTTagList extends NBTBase {
 
-    public void func_74742_a(NBTTagCompound nbtTagCompound) {
+    public void appendTag(NBTTagCompound nbtTagCompound) {
 
     }
 
     /** get count */
-    public int func_74745_c() {
+    public int tagCount() {
         return 0;
     }
 
     /** get tag at index */
-    public NBTBase func_74743_b(int index) {
+    public NBTTagCompound getCompoundTagAt(int index) {
         return null;
     }
 }

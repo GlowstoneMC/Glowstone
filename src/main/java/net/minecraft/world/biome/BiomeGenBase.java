@@ -48,9 +48,13 @@ public class BiomeGenBase {
 
         }
 
-        public Class<? extends EntityLiving> field_76300_b;
+        public Class<? extends EntityLiving> entityClass;
         public int itemWeight;
         public int minGroupCount;
         public int maxGroupCount;
+    }
+
+    public List<SpawnListEntry> getSpawnableList(EnumCreatureType enumCreatureType) {
+        return null;
     }
 }

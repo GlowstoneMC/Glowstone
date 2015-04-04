@@ -30,11 +30,12 @@ package net.minecraft.server;
 
 import net.minecraft.command.CommandHandler;
 import net.minecraft.server.management.ServerConfigurationManager;
+import net.minecraft.util.IThreadListener;
 import net.minecraft.world.storage.SaveFormatOld;
 
 import java.util.List;
 
-public class MinecraftServer {
+public class MinecraftServer implements IThreadListener {
 
     public List<String> pendingCommandList;
 
@@ -73,5 +74,10 @@ public class MinecraftServer {
 
     public ServerConfigurationManager getConfigurationManager() {
         return null;
+    }
+
+    @Override
+    public boolean isCallingFromMinecraftThread() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

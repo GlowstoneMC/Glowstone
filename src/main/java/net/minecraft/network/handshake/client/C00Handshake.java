@@ -23,12 +23,10 @@ public class C00Handshake implements Packet {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override
     public String getChannelName() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override
     public PacketBuffer getBufferData() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -39,6 +37,6 @@ public class C00Handshake implements Packet {
     }
 
     public EnumConnectionState getRequestedState() {
-        return PLAY;
+        return EnumConnectionState.PLAY;
     }
 }

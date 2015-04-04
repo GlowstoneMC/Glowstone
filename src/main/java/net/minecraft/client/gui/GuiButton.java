@@ -69,7 +69,7 @@ public class GuiButton extends Gui {
     public void mouseReleased(int x, int y) {
     }
 
-    public void playPressSound(/*soundhandler*/) {
+    public void playPressSound(Object soundhandler) {
 
     }
 

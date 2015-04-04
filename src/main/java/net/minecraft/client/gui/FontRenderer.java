@@ -28,6 +28,7 @@
  */
 package net.minecraft.client.gui;
 
+import java.util.Collection;
 import java.util.List;
 
 public class FontRenderer {
@@ -59,7 +60,7 @@ public class FontRenderer {
         this.func_78261_a(text, offset, shifty, color);
     }
 
-    public List<?> listFormattedStringToWidth(String s, int width) {
+    public Collection listFormattedStringToWidth(String s, int width) {
         return null;
     }
 }

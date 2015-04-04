@@ -37,4 +37,8 @@ public class WorldInfo {
     public void setAdditionalProperties(Map<String, NBTBase> additionalProperties) {
 
     }
+
+    public String getWorldName() {
+        return "world";
+    }
 }

@@ -31,7 +31,7 @@ package net.minecraft.util;
 public class MathHelper {
 
     /** round double to integer */
-    public static int func_76128_c(double x) {
-        return 0;
+    public static int floor_double(double x) {
+        return (int)Math.floor(x); // TODO: why?
     }
 }

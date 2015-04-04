@@ -28,6 +28,8 @@
  */
 package net.minecraft.nbt;
 
+import java.util.Set;
+
 public class NBTTagCompound extends NBTBase {
 
     public void func_74782_a(String key, NBTTagList list) {
@@ -35,12 +37,16 @@ public class NBTTagCompound extends NBTBase {
     }
 
     /** get tag list */
-    public NBTTagList func_74761_m(String key) {
+    public NBTTagList getTagList(String key) {
+        return null;
+    }
+
+    public NBTTagList getTagList(String key, int b) {
         return null;
     }
 
     /** get string */
-    public String func_74779_i(String key) {
+    public String getString(String key) {
         return null;
     }
 
@@ -50,27 +56,48 @@ public class NBTTagCompound extends NBTBase {
     }
 
     /** get compound tag */
-    public NBTTagCompound getCompond(String key) {
+    public NBTTagCompound getCompoundTag(String key) {
+        return null;
+    }
+
+    public Set<String> getKeySet() {
         return null;
     }
 
     /** get whether a key exists */
-    public boolean func_74764_b(String key) {
+    public boolean hasKey(String key) {
         return true;
     }
 
+    public boolean hasKey(String key, int i) {
+        return true;
+    }
+
+
     /** set string */
-    public void func_74778_a(String key, String value) {
+    public void setString(String key, String value) {
 
     }
 
     /** set int */
-    public void func_74768_a(String key, int value) {
+    public void setInteger(String key, int value) {
 
     }
 
     /** set compound tag */
     public void setTag(String key, NBTTagCompound tagCompound) {
 
+    }
+
+    public void setTag(String key, NBTTagList tagList) {
+
+    }
+
+    public void setIntArray(String key, int[] array) {
+
+    }
+
+    public int[] getIntArray(String key) {
+        return null;
     }
 }

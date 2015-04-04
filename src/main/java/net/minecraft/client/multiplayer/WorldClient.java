@@ -28,7 +28,12 @@
  */
 package net.minecraft.client.multiplayer;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
 public class WorldClient extends World {
+
+    public Entity getEntityByID(int id) {
+        return null;
+    }
 }
