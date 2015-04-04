@@ -70,6 +70,10 @@ public class ShinyGameRegistry implements GameRegistry {
 
     private final Map<String, BlockType> blocks = new HashMap<>();
     private final Map<String, ItemType> items = new HashMap<>();
+    private final Map<String, TileEntityType> tileEntities = new HashMap<>();
+    private final Map<String, BiomeType> biomes = new HashMap<>();
+    private final Map<String, SoundType> sounds = new HashMap<>();
+    private final Map<String, EntityType> entities = new HashMap<>();
     private final Map<Object, String> idMap = new IdentityHashMap<>();
 
     private void register(BlockType block) {
@@ -89,7 +93,7 @@ public class ShinyGameRegistry implements GameRegistry {
 
     @Override
     public Collection<BlockType> getBlocks() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return blocks.values();
     }
 
     @Override
@@ -99,27 +103,27 @@ public class ShinyGameRegistry implements GameRegistry {
 
     @Override
     public Collection<ItemType> getItems() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return items.values();
     }
 
     @Override
     public Optional<TileEntityType> getTileEntityType(String id) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return Optional.fromNullable(tileEntities.get(id));
     }
 
     @Override
     public Collection<TileEntityType> getTileEntityTypes() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return tileEntities.values();
     }
 
     @Override
     public Optional<BiomeType> getBiome(String id) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return Optional.fromNullable(biomes.get(id));
     }
 
     @Override
     public Collection<BiomeType> getBiomes() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return biomes.values();
     }
 
     @Override
@@ -169,22 +173,22 @@ public class ShinyGameRegistry implements GameRegistry {
 
     @Override
     public Optional<SoundType> getSound(String name) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return Optional.fromNullable(sounds.get(name));
     }
 
     @Override
     public Collection<SoundType> getSounds() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return sounds.values();
     }
 
     @Override
     public Optional<EntityType> getEntity(String id) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return Optional.fromNullable(entities.get(id));
     }
 
     @Override
     public Collection<EntityType> getEntities() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return entities.values();
     }
 
     @Override
