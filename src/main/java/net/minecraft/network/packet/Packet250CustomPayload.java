@@ -28,7 +28,7 @@
  */
 package net.minecraft.network.packet;
 
-import cpw.mods.fml.common.network.FMLPacket;
+import net.minecraftforge.fml.common.network.FMLPacket;
 
 public class Packet250CustomPayload extends Packet {
 
