@@ -5,3 +5,6 @@
 [submodule "FlowNetworking"]
 	path = FlowNetworking
 	url = https://github.com/GlowstonePlusPlus/network.git
+[submodule "FML"]
+	path = FML
+	url = https://github.com/MinecraftForge/FML
