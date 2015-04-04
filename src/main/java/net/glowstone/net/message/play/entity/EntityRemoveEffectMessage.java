@@ -9,7 +9,4 @@ public final class EntityRemoveEffectMessage implements Message {
     private final int id;
     private final int effect;
 
-    public EntityRemoveEffectMessage(int id, int effect) {
-
-    }
 }

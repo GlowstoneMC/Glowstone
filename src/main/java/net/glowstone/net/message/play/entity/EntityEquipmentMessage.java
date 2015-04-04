@@ -16,8 +16,4 @@ public final class EntityEquipmentMessage implements Message {
     private final int id, slot;
     private final ItemStack stack;
 
-    public EntityEquipmentMessage(int id, int slot, ItemStack slot) {
-
-    }
-
 }

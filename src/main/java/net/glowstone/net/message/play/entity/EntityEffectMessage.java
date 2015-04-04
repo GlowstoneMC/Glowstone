@@ -11,7 +11,4 @@ public final class EntityEffectMessage implements Message {
     private final int duration;
     private final boolean hideParticles;
 
-    public EntityEffectMessage(int id, int type, int amplifier, int duration, boolean ambient)  {
-
-    }
 }
