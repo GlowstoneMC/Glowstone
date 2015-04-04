@@ -32,23 +32,43 @@ import net.minecraft.client.Minecraft;
 
 public class GuiButton {
 
-    public GuiButton(int a, int b, int c, String label) {
+    public boolean visible;
+    public boolean hovered;
+    public boolean enabled;
+    public int xPosition;
+    public int yPosition;
+    public int zLevel;
+    public int width;
+    public int height;
+    public ResourceLocation buttonTextures;
+    public int packedFGColour;
+    public String displayString;
+
+    public GuiButton(int id, int xPos, int yPos, int width, int height, String displayString) {
 
     }
 
-    /** pressed? */
-    public boolean field_73742_g;
+    public GuiButton(int id, int xPos, int yPos, String displayString) {
 
-    /** action */
-    public int field_73741_f;
+    }
 
-    public int field_73743_d;
-    public int field_73746_c;
+    public int getHoverState(boolean b) {
+        return 0;
+    }
 
-    /** label */
-    public String field_73744_e;
+    public void mouseDragged(Minecraft client, int x, int y) {
 
-    public void func_73737_a(Minecraft client, int a, int b) {
+    }
+
+    public boolean mousePressed(Minecraft client, int x, int y) {
+        return false;
+    }
+
+    public boolean mouseReleased(int x, int y) {
+        return false;
+    }
+
+    public void playPressSound(/*soundhandler*/) {
 
     }
 }
