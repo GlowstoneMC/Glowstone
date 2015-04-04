@@ -29,6 +29,8 @@
 package net.minecraft.entity.passive;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Tuple;
 import net.minecraft.village.MerchantRecipeList;
 
@@ -64,5 +66,47 @@ public class EntityVillager extends Entity {
 
     public interface ITradeList {
 
+    }
+
+    public static class EmeraldForItems implements ITradeList {
+
+        public EmeraldForItems(Item item, PriceInfo priceInfo) {
+
+        }
+    }
+
+    public static class ItemAndEmeraldToItem implements ITradeList {
+
+        public ItemAndEmeraldToItem(Item item1, PriceInfo priceInfo1, Item item2, PriceInfo priceInfo2) {
+
+        }
+    }
+
+    public static class ListEnchantedBookForEmeralds implements ITradeList {
+    }
+
+    public static class ListEnchantedItemForEmeralds implements ITradeList {
+
+        public ListEnchantedItemForEmeralds(Item item, PriceInfo priceInfo) {
+
+        }
+    }
+
+    public static class ListItemForEmeralds implements ITradeList {
+
+        public ListItemForEmeralds(Item item, PriceInfo priceInfo) {
+
+        }
+
+        public ListItemForEmeralds(ItemStack itemStack, PriceInfo priceInfo) {
+
+        }
+    }
+
+    public static class PriceInfo {
+
+        public PriceInfo(int a, int b) {
+
+        }
     }
 }

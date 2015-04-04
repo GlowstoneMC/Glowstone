@@ -28,6 +28,7 @@
  */
 package net.minecraft.item;
 
+import net.minecraft.block.Block;
 import net.minecraftforge.fml.common.registry.RegistryDelegate;
 
 public class Item {
@@ -55,5 +56,9 @@ public class Item {
     /** something with villager emerald buy/sell recipes */
     public int func_77612_l() {
         return 0;
+    }
+
+    public static Item getItemFromBlock(Block block) {
+        return null;
     }
 }

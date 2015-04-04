@@ -27,7 +27,8 @@ public class Items {
     public static Item book;
     public static Item written_book;
     public static Item coal;
-
+    public static Item dye;
+    public static Item flint;
 
     public static Item shears;
     public static Item fishing_rod;
@@ -43,6 +44,7 @@ public class Items {
     public static Item experience_bottle;
 
     public static Item iron_helmet;
+    public static Item iron_chestplate;
     public static Item iron_axe;
     public static Item iron_sword;
     public static Item iron_ingot;
@@ -52,6 +54,7 @@ public class Items {
     public static Item diamond_pickaxe;
     public static Item diamond_sword;
     public static Item diamond_axe;
+    public static Item diamond_chestplate;
     public static Item chainmail_boots;
     public static Item chainmail_leggings;
     public static Item chainmail_helmet;
