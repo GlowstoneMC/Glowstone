@@ -15,7 +15,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <bukkit.version>1.8-R1-SNAPSHOT</bukkit.version>
+        <bukkit.version>1.8.3-R0.1-SNAPSHOT</bukkit.version>
     </properties>
 
     <repositories>
@@ -31,12 +31,20 @@
             <layout>default</layout>
             <url>https://oss.sonatype.org/content/repositories/public/</url>
         </repository>
+        <repository>
+            <id>spigotmc-releases</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/releases/</url>
+        </repository>
+        <repository>
+            <id>spigotmc-releases-snapshots</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
     </repositories>
     
     <dependencies>
         <dependency>
-            <groupId>net.glowstone</groupId>
-            <artifactId>glowkit</artifactId>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
             <version>${bukkit.version}</version>
             <type>jar</type>
             <scope>compile</scope>
