@@ -92,7 +92,7 @@ public class GuiScreen extends Gui {
 
     }
 
-    protected void actionPerformed(GuiButton guiButton) {
+    protected void actionPerformed(GuiButton guiButton) throws IOException {
 
     }
 
@@ -101,7 +101,11 @@ public class GuiScreen extends Gui {
 
     }
 
-    public void mouseClicked(int x, int y, int mouseEvent) throws IOException {
+    protected void mouseClicked(int x, int y, int mouseEvent) throws IOException {
+
+    }
+
+    protected void mouseReleased(int x, int y, int mouseEvent) {
 
     }
 }

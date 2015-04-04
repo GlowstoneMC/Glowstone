@@ -57,7 +57,7 @@ public class FontRenderer {
     }
 
     public void drawSplitString(String text, int offset, int shifty, int rightSide, int color) {
-        this.func_78261_a(text, offset, shifty, color);
+        System.out.println("FontRenderer: " + text);
     }
 
     public List listFormattedStringToWidth(String s, int width) {

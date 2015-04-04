@@ -27,7 +27,7 @@ public class Gui {
 
     }
 
-    protected void keyTyped(char eventChar, int eventKey) {
+    protected void keyTyped(char eventChar, int eventKey) throws IOException {
 
     }
 

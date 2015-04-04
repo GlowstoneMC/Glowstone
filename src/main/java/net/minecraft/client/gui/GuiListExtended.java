@@ -47,6 +47,14 @@ public class GuiListExtended extends Gui {
     }
 
     protected boolean isSelected(int index) {
+        return false;
+    }
 
+    public boolean mouseReleased(int x, int y, int mouseEvent) {
+        return false;
+    }
+
+    public boolean mouseClicked(int x, int y, int mouseEvent) {
+        return true;
     }
 }
