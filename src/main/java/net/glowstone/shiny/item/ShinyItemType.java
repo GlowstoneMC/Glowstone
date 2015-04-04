@@ -1,8 +1,10 @@
 package net.glowstone.shiny.item;
 
+import com.google.common.base.Optional;
 import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.item.properties.ItemProperty;
 import org.spongepowered.api.text.translation.Translation;
-import org.spongepowered.api.text.translation.Translations;
+import org.spongepowered.api.text.Texts;
 
 /**
  * Todo: Javadoc for ShinyItemType.
@@ -26,8 +28,13 @@ public class ShinyItemType implements ItemType {
     }
 
     @Override
+    public <T extends ItemProperty<?, ?>> Optional<T> getDefaultProperty(Class<T> propertyClass) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
     public Translation getTranslation() {
-        return Translations.of("item." + id + ".name").get();
+        return null; //Texts.of("item." + id + ".name").get(); // TODO
     }
 
     @Override

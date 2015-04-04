@@ -51,6 +51,11 @@ public class ShinyPluginManager implements PluginManager {
         return plugins.values();
     }
 
+    @Override
+    public boolean isLoaded(String id) {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     public void loadPlugins(File directory) {
         File[] files = directory.listFiles(new PatternFilenameFilter(".+\\.jar"));
         if (files == null || files.length == 0) {

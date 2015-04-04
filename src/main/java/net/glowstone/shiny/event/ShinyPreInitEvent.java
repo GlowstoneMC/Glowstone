@@ -27,26 +27,6 @@ public class ShinyPreInitEvent extends BaseEvent implements PreInitializationEve
     }
 
     @Override
-    public Logger getPluginLog() {
-        return logger;
-    }
-
-    @Override
-    public File getRecommendedConfigurationFile() {
-        return recConfigFile;
-    }
-
-    @Override
-    public File getRecommendedConfigurationDirectory() {
-        return recConfigDir;
-    }
-
-    @Override
-    public File getConfigurationDirectory() {
-        return configDir;
-    }
-
-    @Override
     public Game getGame() {
         return game;
     }

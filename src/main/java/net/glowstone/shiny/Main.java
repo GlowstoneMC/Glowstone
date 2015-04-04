@@ -1,7 +1,7 @@
 package net.glowstone.shiny;
 
 import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.text.translation.Translations;
+import org.spongepowered.api.text.Texts;
 
 /**
  * Todo: Javadoc for TestMain.
@@ -15,7 +15,7 @@ public class Main {
         System.out.println("  Pickaxe: " + ItemTypes.IRON_PICKAXE);
         System.out.println("  Stone: " + ItemTypes.STONE);
         System.out.println("Sponge Factory");
-        System.out.println("  Translate: " + Translations.of("test"));
+        System.out.println("  Translate: " + Texts.of("test"));
 
         // ---
         System.out.println("=== Plugin Load ===");

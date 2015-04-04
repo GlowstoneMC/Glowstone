@@ -1,9 +1,17 @@
 package net.glowstone.shiny.inventory;
 
+import com.google.common.base.Optional;
+import org.spongepowered.api.attribute.AttributeModifier;
+import org.spongepowered.api.item.ItemDataTransactionResult;
 import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.item.data.ItemData;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.properties.ItemProperty;
+import org.spongepowered.api.service.persistence.InvalidDataException;
+import org.spongepowered.api.service.persistence.data.DataContainer;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
 
 /**
  * Implementation of {@link ItemStack}.
@@ -37,16 +45,6 @@ public class ShinyItemStack implements ItemStack {
     }
 
     @Override
-    public void setDamage(short damage) {
-        this.damage = damage;
-    }
-
-    @Override
-    public short getDamage() {
-        return damage;
-    }
-
-    @Override
     public int getQuantity() {
         return quantity;
     }
@@ -70,8 +68,47 @@ public class ShinyItemStack implements ItemStack {
     }
 
     @Override
-    public int compareTo(@Nonnull ItemStack other) {
-        return 0;
+    public <T extends ItemData<T>> ItemDataTransactionResult setItemData(T itemData) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    @Override
+    public <T extends ItemData<T>> Optional<T> getOrCreateItemData(Class<T> dataClass) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Collection<ItemProperty<?, ?>> getProperties() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Collection<ItemData<?>> getItemData() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean validateData(DataContainer container) {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void setRawData(DataContainer container) throws InvalidDataException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Collection<AttributeModifier> getAttributeModifiers() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public <T> Optional<T> getData(Class<T> dataClass) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public DataContainer toContainer() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }
