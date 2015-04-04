@@ -57,4 +57,17 @@ public class MinecraftServer {
     public boolean serverIsInRunLoop() {
         return true;
     }
+
+    public String getFolderName() {
+        return ".";
+    }
+
+    public CommandHandler getCommandManager() {
+        return null;
+    }
+
+    public void initiateShutdown() {
+        System.out.println("Shutting down");
+        System.exit(0);
+    }
 }

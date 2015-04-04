@@ -31,12 +31,13 @@ package net.minecraft.client.gui;
 public class FontRenderer {
 
     /** draw line */
-    public int func_78276_b(String line, int offset, int shifty, int color) {
+    public int drawString(String line, int offset, int shifty, int color) {
+        System.out.println("FontRenderer drawString: "+line);
         return 0;
     }
 
     /** truncate text to width */
-    public String func_78269_a(String text, int width) {
+    public String trimStringToWidth(String text, int width) {
         return text;
     }
 

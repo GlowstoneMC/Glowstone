@@ -29,4 +29,12 @@ public class LaunchClassLoader extends ClassLoader {
     public byte[] getClassBytes(String className) {
         return null;
     }
+
+    public void addTransformerExclusion(String name) {
+
+    }
+
+    public void addClassLoaderExclusion(String name) {
+
+    }
 }

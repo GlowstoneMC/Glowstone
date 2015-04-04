@@ -50,7 +50,7 @@ public class NBTTagCompound extends NBTBase {
     }
 
     /** get compound tag */
-    public NBTTagCompound func_74775_l(String key) {
+    public NBTTagCompound getCompond(String key) {
         return null;
     }
 
@@ -70,7 +70,7 @@ public class NBTTagCompound extends NBTBase {
     }
 
     /** set compound tag */
-    public void func_74766_a(String key, NBTTagCompound tagCompound) {
+    public void setTag(String key, NBTTagCompound tagCompound) {
 
     }
 }

@@ -6,6 +6,7 @@ public class Blocks {
 
     // required by VillagerRegistry
 
+    public static Block air;
     public static Block pumpkin;
     public static Block melon_block;
     public static Block wool;

@@ -11,4 +11,8 @@ public class ChatComponentText {
     public String toString() {
         return string;
     }
+
+    public String getUnformattedText() {
+        return string;
+    }
 }

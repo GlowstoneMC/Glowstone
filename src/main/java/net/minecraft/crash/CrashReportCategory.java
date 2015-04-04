@@ -32,7 +32,7 @@ import net.minecraftforge.fml.common.ICrashCallable;
 
 public class CrashReportCategory {
 
-    public void func_71500_a(String label, ICrashCallable callable) {
+    public void addCrashSectionCallable(String label, ICrashCallable callable) {
 
     }
 }

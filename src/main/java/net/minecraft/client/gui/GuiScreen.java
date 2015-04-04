@@ -47,6 +47,9 @@ public class GuiScreen {
 
     }
 
+    public void initGui() {
+
+    }
 
     public void func_73866_w_() {
 
@@ -75,11 +78,15 @@ public class GuiScreen {
     }
 
     public void displayLoadingString(String s) {
-        System.out.println("Loading screen: "+s);
+        this.drawCenteredString(s);
     }
 
     public void drawCenteredString(String s) {
+        System.out.println("Drawing string on screen: "+s);
+    }
 
+    public void drawCenteredString(FontRenderer fontRenderer, String s, int w, int offset, int color) {
+        this.drawCenteredString(s);
     }
 
     public void updateScreen() {
@@ -87,6 +94,10 @@ public class GuiScreen {
     }
 
     public void drawDefaultBackground() {
+
+    }
+
+    protected void actionPerformed(GuiButton guiButton) {
 
     }
 }

@@ -31,7 +31,7 @@ package net.minecraft.client.gui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiButton {
+public class GuiButton extends Gui {
 
     public boolean visible;
     public boolean hovered;
@@ -58,7 +58,7 @@ public class GuiButton {
         return 0;
     }
 
-    public void mouseDragged(Minecraft client, int x, int y) {
+    protected void mouseDragged(Minecraft client, int x, int y) {
 
     }
 
@@ -66,11 +66,13 @@ public class GuiButton {
         return false;
     }
 
-    public boolean mouseReleased(int x, int y) {
-        return false;
+    public void mouseReleased(int x, int y) {
     }
 
     public void playPressSound(/*soundhandler*/) {
 
+    }
+
+    public void drawTexturedModalRect(int x, int y, int a, int b, int c, int d) {
     }
 }

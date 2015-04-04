@@ -6,9 +6,11 @@ import java.io.InputStream;
 
 public interface IResourcePack {
 
-    BufferedImage getPackImage();
+    BufferedImage getPackImage() throws IOException;
 
     String getPackName();
 
-    InputStream getInputStreamByName(String name) throws IOException;
+    //InputStream getInputStreamByName(String name) throws IOException;
+
+    //boolean hasResourceName(String p_110593_1_);
 }
