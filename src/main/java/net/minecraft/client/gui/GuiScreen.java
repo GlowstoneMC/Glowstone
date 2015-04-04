@@ -41,6 +41,7 @@ public class GuiScreen {
     protected Minecraft mc;
     public List<Object> buttonList = new ArrayList<Object>();
     public double field_73735_i;
+    public int zLevel;
 
     public GuiScreen() {
 
@@ -75,5 +76,17 @@ public class GuiScreen {
 
     public void displayLoadingString(String s) {
         System.out.println("Loading screen: "+s);
+    }
+
+    public void drawCenteredString(String s) {
+
+    }
+
+    public void updateScreen() {
+
+    }
+
+    public void drawDefaultBackground() {
+
     }
 }

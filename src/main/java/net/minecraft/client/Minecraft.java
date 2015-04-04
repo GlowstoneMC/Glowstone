@@ -31,6 +31,7 @@ package net.minecraft.client;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.world.storage.SaveFormatOld;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraft.client.gui.GuiScreen;
@@ -153,5 +154,7 @@ public class Minecraft {
         return null;
     }
 
-
+    public TextureManager getTextureManager() {
+        return null;
+    }
 }

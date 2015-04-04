@@ -41,7 +41,7 @@ public class FontRenderer {
     }
 
     /** get width of text */
-    public int func_78256_a(String text) {
+    public int getStringWidth(String text) {
         return 0;
     }
 
