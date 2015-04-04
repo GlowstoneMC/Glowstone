@@ -35,8 +35,8 @@ import java.util.List;
 
 public class GuiScreen {
 
-    public int field_73880_f;
-    public int field_73881_g;
+    public int width;
+    public int height;
     protected FontRenderer field_73886_k;
     protected Minecraft field_73882_e;
     public List<Object> field_73887_h = new ArrayList<Object>();
@@ -61,11 +61,19 @@ public class GuiScreen {
     }
 
     /** draw the whole screen */
-    public void func_73863_a(int a, int b, float c) {
+    public void drawScreen(int a, int b, float c) {
 
     }
 
     protected void func_73875_a(GuiButton button) {
 
+    }
+
+    public void handleInput() {
+
+    }
+
+    public void displayLoadingString(String s) {
+        System.out.println("Loading screen: "+s);
     }
 }

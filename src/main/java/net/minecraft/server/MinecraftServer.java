@@ -30,8 +30,13 @@ package net.minecraft.server;
 
 import net.minecraft.command.CommandHandler;
 import net.minecraft.server.management.ServerConfigurationManager;
+import net.minecraft.world.storage.SaveFormatOld;
+
+import java.util.List;
 
 public class MinecraftServer {
+
+    public List<String> pendingCommandList;
 
     public CommandHandler func_71187_D() {
         return null;
@@ -39,5 +44,17 @@ public class MinecraftServer {
 
     public ServerConfigurationManager func_71203_ab() {
         return null;
+    }
+
+    public SaveFormatOld getActiveAnvilConverter() {
+        return null;
+    }
+
+    public boolean isServerRunning() {
+        return true;
+    }
+
+    public boolean serverIsInRunLoop() {
+        return true;
     }
 }

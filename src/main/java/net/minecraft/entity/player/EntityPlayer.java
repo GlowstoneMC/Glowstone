@@ -28,7 +28,6 @@
  */
 package net.minecraft.entity.player;
 
-import net.minecraft.client.multiplayer.NetClientHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.Container;
 
@@ -39,8 +38,6 @@ public class EntityPlayer extends Entity {
 
     /** open container */
     public Container field_71070_bA;
-
-    public NetClientHandler field_71174_a;
 
     /** get username */
     public String func_70005_c_() {

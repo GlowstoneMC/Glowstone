@@ -29,6 +29,7 @@
 package net.minecraft.client.gui;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.ResourceLocation;
 
 public class GuiButton {
 
@@ -43,6 +44,7 @@ public class GuiButton {
     public ResourceLocation buttonTextures;
     public int packedFGColour;
     public String displayString;
+    public int id;
 
     public GuiButton(int id, int xPos, int yPos, int width, int height, String displayString) {
 

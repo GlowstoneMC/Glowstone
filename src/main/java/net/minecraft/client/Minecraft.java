@@ -28,8 +28,11 @@
  */
 package net.minecraft.client;
 
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.world.storage.SaveFormatOld;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.relauncher.ArgsWrapper;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.RenderEngine;
@@ -41,6 +44,8 @@ import net.minecraft.world.World;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Minecraft {
 
@@ -71,6 +76,12 @@ public class Minecraft {
 
     }
 
+    public static Minecraft getMinecraft() {
+        return null; // TODO: singleton instance
+    }
+
+    public FontRenderer fontRendererObj;
+
     /** are in we in demo mode? */
     public boolean func_71355_q() {
         return false;
@@ -99,15 +110,48 @@ public class Minecraft {
         return ".";
     }
 
-    public static void fmlReentry(ArgsWrapper wrapper) {
+    public static void fmlReentry(/*ArgsWrapper wrapper*/) {
         System.out.println("entered fmlReentry");
 
         System.out.println("MLIA loading...");
-        FMLClientHandler.instance().beginMinecraftLoading(new Minecraft());
+        FMLClientHandler.instance().beginMinecraftLoading(new Minecraft(), new ArrayList());
         System.out.println("Finishing loading");
         FMLClientHandler.instance().finishMinecraftLoading();
         System.out.println("Initialization completing");
         FMLClientHandler.instance().onInitializationComplete();
         System.out.println("Done");
     }
+
+    public boolean isDemo() {
+        return false;
+    }
+
+    public void refreshResources() {
+
+    }
+
+    public void displayCrashReport(CrashReport crashReport) {
+        System.out.println("We crashed: "+crashReport);
+    }
+
+    public void displayGuiScreen(GuiScreen gui) {
+
+    }
+
+    public GuiScreen currentScreen;
+    public GuiScreen loadingScreen;
+    public int displayWidth;
+    public int displayHeight;
+    public WorldClient theWorld;
+    public EntityPlayerSP thePlayer;
+
+    public SaveFormatOld getSaveLoader() {
+        return null;
+    }
+
+    public MinecraftServer getIntegratedServer() {
+        return null;
+    }
+
+
 }

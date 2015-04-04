@@ -1,6 +1,6 @@
 package net.minecraft.network;
 
-public class NetHandlerPlayServer {
+public class NetHandlerPlayServer implements INetHandler {
 
     public NetworkManager getNetworkManager() {
         return null;

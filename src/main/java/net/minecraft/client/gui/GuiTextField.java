@@ -37,4 +37,8 @@ public class GuiTextField {
     public void mouseClicked(int x, int y, int mouseEvent) {
 
     }
+
+    public int getCursorPosition() {
+        return 0;
+    }
 }

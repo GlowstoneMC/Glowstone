@@ -31,7 +31,19 @@ package net.minecraft.client.renderer;
 public class Tessellator {
 
     /** shared instance */
-    public static final Tessellator field_78398_a = new Tessellator();
+    public static final Tessellator instance = new Tessellator();
+
+    public static Tessellator getInstance() {
+        return instance;
+    }
+
+    public WorldRenderer getWorldRenderer() {
+        return null;
+    }
+
+    public void draw() {
+
+    }
 
     /** start */
     public void func_78382_b() {
