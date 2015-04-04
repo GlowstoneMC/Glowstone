@@ -38,20 +38,20 @@ public class Entity {
     public int field_70157_k;
 
     /** entity position x,y,z */
-    public double field_70165_t;
-    public double field_70163_u;
-    public double field_70161_v;
+    public double motionX;
+    public double motionY;
+    public double motionZ;
 
     /** entity raw x,y,z */
-    public int field_70118_ct;
-    public int field_70117_cu;
-    public int field_70116_cv;
+    public int posX;
+    public int posY;
+    public int posZ;
 
     /** entity yaw */
-    public float field_70177_z;
+    public float rotationYaw;
 
     /** entity pitch */
-    public float field_70125_A;
+    public float rotationPitch;
 
     /** head yaw */
     public float field_70759_as;
@@ -85,5 +85,9 @@ public class Entity {
 
     public void func_70016_h(double scaledSpeedX, double scaledSpeedY, double scaledSpeedZ) {
 
+    }
+
+    public int getEntityId() {
+        return 0;
     }
 }

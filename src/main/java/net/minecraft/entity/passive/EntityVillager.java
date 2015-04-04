@@ -57,4 +57,12 @@ public class EntityVillager extends Entity {
     public void func_70938_b(int n) {
 
     }
+
+    public void setProfession(int profession) {
+
+    }
+
+    public interface ITradeList {
+
+    }
 }

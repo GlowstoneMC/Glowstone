@@ -28,6 +28,7 @@
  */
 package net.minecraft.world.biome;
 
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
 
 import java.util.ArrayList;
@@ -36,5 +37,20 @@ import java.util.List;
 public class BiomeGenBase {
     public List<SpawnListEntry> func_76747_a(EnumCreatureType creatureType) {
         return new ArrayList<SpawnListEntry>();
+    }
+
+    public static class SpawnListEntry {
+        public SpawnListEntry(Class<? extends EntityLiving> entityClass, int weightedProb, int min, int max) {
+            this.entityClass = entityClass;
+            this.itemWeight = weightedProb;
+            this.minGroupCount = min;
+            this.maxGroupCount = max;
+
+        }
+
+        public Class<? extends EntityLiving> field_76300_b;
+        public int itemWeight;
+        public int minGroupCount;
+        public int maxGroupCount;
     }
 }

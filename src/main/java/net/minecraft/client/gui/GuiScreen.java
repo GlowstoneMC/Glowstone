@@ -37,7 +37,7 @@ public class GuiScreen {
 
     public int width;
     public int height;
-    protected FontRenderer field_73886_k;
+    protected FontRenderer fontRendererObj;
     protected Minecraft field_73882_e;
     public List<Object> field_73887_h = new ArrayList<Object>();
     public double field_73735_i;

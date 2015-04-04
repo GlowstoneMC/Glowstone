@@ -25,4 +25,8 @@ public class LaunchClassLoader extends ClassLoader {
     public List<IClassTransformer> getTransformers() {
         return null;
     }
+
+    public byte[] getClassBytes(String className) {
+        return null;
+    }
 }
