@@ -6,7 +6,7 @@ import net.minecraft.network.PacketBuffer;
 
 import java.io.IOException;
 
-public class S3FPacketCustomPayload extends Packet {
+public class S3FPacketCustomPayload implements Packet {
     @Override
     public void readPacketData(PacketBuffer packetbuffer) throws IOException {
         //To change body of implemented methods use File | Settings | File Templates.
@@ -20,6 +20,16 @@ public class S3FPacketCustomPayload extends Packet {
     @Override
     public void processPacket(INetHandler inethandler) {
         //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String getChannelName() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public PacketBuffer getBufferData() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
 

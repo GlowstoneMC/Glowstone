@@ -28,7 +28,11 @@
  */
 package net.minecraft.item;
 
+import net.minecraftforge.fml.common.registry.RegistryDelegate;
+
 public class Item {
+
+    public RegistryDelegate<Item> delegate;
 
     /** list of all items by id */
     public static Item[] field_77698_e;

@@ -5,6 +5,10 @@ import net.minecraft.util.ChatComponentText;
 
 public class NetworkManager {
 
+    public INetHandler getNetHandler() {
+        return null;
+    }
+
     public void setConnectionState(EnumConnectionState state) {
 
     }

@@ -28,7 +28,7 @@
  */
 package net.minecraft.server.management;
 
-import net.minecraft.network.packet.Packet;
+import net.minecraft.network.Packet;
 
 import java.net.SocketAddress;
 

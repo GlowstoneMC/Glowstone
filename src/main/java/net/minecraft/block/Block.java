@@ -28,7 +28,12 @@
  */
 package net.minecraft.block;
 
+import net.minecraft.block.state.IBlockState;
+import net.minecraftforge.fml.common.registry.RegistryDelegate;
+
 public class Block {
+
+    public RegistryDelegate<Block> delegate;
 
     /** all blocks by ID */
     public static Block[] field_71973_m;
@@ -39,5 +44,13 @@ public class Block {
     /** get block name */
     public String func_71917_a() {
         return "block";
+    }
+
+    public IBlockState getBlockState() {
+        return null;
+    }
+
+    public int getMetaFromState(IBlockState state) {
+        return 0;
     }
 }

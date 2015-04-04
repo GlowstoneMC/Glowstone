@@ -28,7 +28,6 @@
  */
 package net.minecraft.entity.player;
 
-import net.minecraftforge.fml.common.modloader.ModLoaderGuiHelper;
 import net.minecraft.client.multiplayer.NetClientHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.Container;

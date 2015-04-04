@@ -6,7 +6,7 @@ import net.minecraft.network.PacketBuffer;
 
 import java.io.IOException;
 
-public class C17PacketCustomPayload extends Packet {
+public class C17PacketCustomPayload implements Packet {
     @Override
     public void readPacketData(PacketBuffer packetbuffer) throws IOException {
         //To change body of implemented methods use File | Settings | File Templates.
@@ -20,5 +20,15 @@ public class C17PacketCustomPayload extends Packet {
     @Override
     public void processPacket(INetHandler inethandler) {
         //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String getChannelName() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public PacketBuffer getBufferData() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }
