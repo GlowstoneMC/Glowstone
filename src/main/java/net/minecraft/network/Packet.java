@@ -2,29 +2,10 @@ package net.minecraft.network;
 
 import java.io.IOException;
 
-public class Packet {
+public interface Packet {
+    void readPacketData(PacketBuffer packetbuffer) throws IOException;
 
-    public Packet(String string, PacketBuffer buffer)
-    {
-    }
+    void writePacketData(PacketBuffer packetbuffer) throws IOException;
 
-    public PacketBuffer getBufferData() {
-        return null;
-    }
-
-    public String getChannelName() {
-        return null;
-    }
-
-    public void readPacketData(PacketBuffer packetbuffer) throws IOException
-    {
-    }
-
-    public void writePacketData(PacketBuffer packetbuffer) throws IOException
-    {
-    }
-
-    public void processPacket(INetHandler inethandler)
-    {
-    }
+    void processPacket(INetHandler inethandler);
 }
