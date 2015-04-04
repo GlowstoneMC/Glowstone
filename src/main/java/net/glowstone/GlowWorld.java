@@ -231,6 +231,11 @@ public final class GlowWorld implements World {
      * Per-chunk spawn limits on various types of entities.
      */
     private int monsterLimit, animalLimit, waterAnimalLimit, ambientLimit;
+    
+    /**
+     * Contains how regular blocks should be pulsed.
+     */
+     private final Map tickMap = new HashMap<>();
 
     /**
      * Creates a new world from the options in the given WorldCreator.
@@ -1485,5 +1490,42 @@ public final class GlowWorld implements World {
             result.addAll(player.getListeningPluginChannels());
         }
         return result;
+    }
+    
+    private void pulseTickMap() {
+        ItemTable itemTable = ItemTable.instance();
+        Map map = getTickMap();
+        for (Map.Entry entry : map.entrySet()) {
+        if (worldAge % entry.getValue() == 0) {
+        GlowBlock block = this.getBlockAt(entry.getKey());
+        BlockType notifyType = itemTable.getBlock(block.getTypeId());
+        if (notifyType != null)
+        notifyType.recievePulse(block);
+    }
+    
+    private Map<Location, Integer> getTickMap() {
+        return new HashMap<>(tickMap);
+    }
+
+    public void requestPulse(GlowBlock block, int tickRate) {
+        Map<Location, Integer> map = getTickMap();
+        Location target = block.getLocation();
+    
+        for (Location location : map.keySet()) {
+            if (target.equals(location)) {
+                if (tickRate > 0)
+                    tickMap.put(location, tickRate);
+                else
+                    tickMap.remove(location);
+                return;
+            }
+        }
+    
+            if (tickRate > 0)
+                tickMap.put(target, tickRate);
+    }
+    
+    public void cancelPulse(GlowBlock block) {
+        requestPulse(block, 0);
     }
 }
