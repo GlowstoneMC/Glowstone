@@ -9,6 +9,6 @@ public class YggdrasilAuthenticationService {
     }
 
     public YggdrasilUserAuthentication createUserAuthentication(Object object) {
-
+        return null;
     }
 }

@@ -1,5 +1,6 @@
 package net.minecraft.launchwrapper;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Set;
@@ -26,7 +27,7 @@ public class LaunchClassLoader extends ClassLoader {
         return null;
     }
 
-    public byte[] getClassBytes(String className) {
+    public byte[] getClassBytes(String className) throws IOException {
         return null;
     }
 

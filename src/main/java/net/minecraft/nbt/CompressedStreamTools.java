@@ -44,6 +44,6 @@ public class CompressedStreamTools {
     }
 
     public static NBTTagCompound readCompressed(InputStream inputStream) throws IOException {
-
+        return null;
     }
 }
