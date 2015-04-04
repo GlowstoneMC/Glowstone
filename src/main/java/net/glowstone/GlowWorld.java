@@ -373,6 +373,9 @@ public final class GlowWorld implements World {
         List<GlowEntity> temp = new ArrayList<>(entities.getAll());
         List<GlowEntity> players = new LinkedList<>();
 
+        // We should pulse our tickmap, so blocks get updated.
+        this.pulseTickMap();
+
         // pulse players last so they actually see that other entities have
         // moved. unfortunately pretty hacky. not a problem for players b/c
         // their position is modified by session ticking.
