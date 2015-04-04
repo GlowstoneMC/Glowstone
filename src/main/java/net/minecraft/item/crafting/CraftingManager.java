@@ -38,21 +38,21 @@ public class CraftingManager {
     private List<Object> recipes;
 
     /** get shared instance */
-    public static CraftingManager func_77594_a() {
+    public static CraftingManager getInstance() {
         return instance;
     }
 
-    public List<Object> func_77592_b() {
+    public List<Object> getRecipeList() {
         return recipes;
     }
 
     /** add shaped recipe */
-    public IRecipe func_92103_a(ItemStack output, Object... params) {
+    public IRecipe addRecipe(ItemStack output, Object... params) {
         return null;
     }
 
     /** add shapeless recipe */
-    public void func_77596_b(ItemStack output, Object... params) {
+    public void addShapelessRecipe(ItemStack output, Object... params) {
 
     }
 }

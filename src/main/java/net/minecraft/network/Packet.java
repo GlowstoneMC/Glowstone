@@ -8,4 +8,8 @@ public interface Packet {
     void writePacketData(PacketBuffer packetbuffer) throws IOException;
 
     void processPacket(INetHandler inethandler);
+
+    String getChannelName();
+
+    PacketBuffer getBufferData();
 }

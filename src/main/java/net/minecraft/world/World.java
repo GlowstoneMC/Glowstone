@@ -33,7 +33,7 @@ import net.minecraft.entity.Entity;
 public class World {
 
     /** get world seed */
-    public long func_72905_C() {
+    public long getSeed() {
         return 0;
     }
 

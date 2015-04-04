@@ -28,6 +28,8 @@
  */
 package net.minecraft.item.crafting;
 
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class FurnaceRecipes {
@@ -35,12 +37,20 @@ public class FurnaceRecipes {
     private static final FurnaceRecipes instance = new FurnaceRecipes();
 
     /** get shared instance */
-    public static FurnaceRecipes func_77602_a() {
+    public static FurnaceRecipes instance() {
         return instance;
     }
 
     /** add smelting recipe */
-    public void func_77600_a(int input, ItemStack output, float xp) {
+    public void addSmeltingRecipe(ItemStack input, ItemStack output, float xp) {
+
+    }
+
+    public void addSmelting(Item input, ItemStack output, float xp) {
+
+    }
+
+    public void addSmeltingRecipeForBlock(Block input, ItemStack output, float xp) {
 
     }
 }

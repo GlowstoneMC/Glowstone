@@ -1,4 +1,4 @@
-package net.minecraft.network.play.client;
+package net.minecraft.network.play.server;
 
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.Packet;
@@ -6,7 +6,7 @@ import net.minecraft.network.PacketBuffer;
 
 import java.io.IOException;
 
-public class C17PacketCustomPayload extends Packet {
+public class S01PacketJoinGame implements Packet {
     @Override
     public void readPacketData(PacketBuffer packetbuffer) throws IOException {
         //To change body of implemented methods use File | Settings | File Templates.
