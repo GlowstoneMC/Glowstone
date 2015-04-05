@@ -1,5 +1,9 @@
-Glowstone
-==========
+Glowstone++
+===========
+
+Glowstone++ is an experimental fork of [Glowstone](https://github.com/GlowstoneMC/Glowstone)
+
+---
 
 Introduction
 ------------
@@ -61,7 +65,7 @@ Other tasks are listed under `./gradlew tasks`. A local installation of Gradle
 can be used instead if desired.
 
 Running Glowstone is simple because its dependencies are shaded into the output
-jar at compile time. Simply execute `java -jar glowstone.jar` along with any
+jar at compile time. Simply execute `java -jar glowstone++.jar` along with any
 extra JVM options desired. A variety of command-line options are also available -
 run `java -jar glowstone.jar --help` for more information.
 

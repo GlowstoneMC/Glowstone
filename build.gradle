@@ -52,7 +52,7 @@ def getVersionName() {
 // Basic project information
 group = 'net.glowstone'
 version = '0.0.1-SNAPSHOT'
-description = "Glowstone"
+description = "Glowstone++"
 mainClassName = "net.glowstone.GlowServer"
 
 // Extended project information
@@ -129,7 +129,7 @@ remap {
 // Eclipse project name
 eclipse {
     project {
-        name = 'Glowstone'
+        name = 'Glowstone++'
     }
 }
 
@@ -138,9 +138,9 @@ jar.manifest.mainAttributes(
         'Main-Class': mainClassName,
         'Implementation-Title': description,
         'Implementation-Version': ext.gitDescribe,
-        'Implementation-Vendor': 'Glowstone Project',
+        'Implementation-Vendor': 'Glowstone++ Project',
         'Specification-Title': 'Bukkit/Glowkit',
         'Specification-Version': ext.bukkitVersion,
-        'Specification-Vendor': 'Glowstone Project',
+        'Specification-Vendor': 'Glowstone++ Project',
         'Sealed': true
 )
