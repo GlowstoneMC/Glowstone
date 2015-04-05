@@ -32,6 +32,8 @@ import net.minecraft.command.CommandHandler;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.world.storage.SaveFormatOld;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.server.FMLServerHandler;
 
 import java.util.List;
@@ -49,7 +51,14 @@ public class MinecraftServer implements IThreadListener {
         FMLServerHandler.instance().beginServerLoading(this);
         System.out.println("Finished loading");
         FMLServerHandler.instance().finishServerLoading();
-        System.out.println("Initialization completing");
+        System.out.println("Initialization completed");
+
+        List<ModContainer> mods = Loader.instance().getModList();
+        for (ModContainer mod : mods) {
+            System.out.println("Modification loaded: " + mod.getName() + " " + mod.getVersion());
+        }
+
+
         //FMLServerHandler.instance().
         //net.minecraftforge.fml.common.FMLCommonHandler.instance().handleServerStarted();
         //net.minecraftforge.fml.common.FMLCommonHandler.instance().handleServerStopping();
