@@ -40,7 +40,12 @@ public class MinecraftServer implements IThreadListener {
     public List<String> pendingCommandList;
 
     public static void main(String[] args) {
+        new MinecraftServer().main2(args);
+    }
+
+    public void main2(String[] args) {
         System.out.println("about to invoke FML handleServerStarted()");
+        System.out.println("getClass="+getClass()+", cl="+getClass().getClassLoader());
         net.minecraftforge.fml.common.FMLCommonHandler.instance().handleServerStarted();
         //net.minecraftforge.fml.common.FMLCommonHandler.instance().handleServerStopping();
         //net.minecraftforge.fml.common.FMLCommonHandler.instance().handleServerStopped();

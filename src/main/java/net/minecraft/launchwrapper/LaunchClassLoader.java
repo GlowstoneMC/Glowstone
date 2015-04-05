@@ -2,10 +2,15 @@ package net.minecraft.launchwrapper;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.List;
 import java.util.Set;
 
-public class LaunchClassLoader extends ClassLoader {
+public class LaunchClassLoader extends URLClassLoader {
+
+    public LaunchClassLoader(URL[] urls, ClassLoader parent) {
+        super(urls, parent);
+    }
 
     public void addURL(URL url) {
 
