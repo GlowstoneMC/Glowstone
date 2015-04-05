@@ -45,9 +45,6 @@ public class TestItemTypes {
         if (material == Material.AIR) {
             assertNull("ItemType exists for air: " + type, type);
             return;
-        } else if (material == Material.LOCKED_CHEST) {
-            // LOCKED_CHEST was superseded by STAINED_GLASS
-            return;
         }
 
         // check that it exists
