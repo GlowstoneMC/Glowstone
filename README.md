@@ -1,9 +1,21 @@
 Glowstone++
 ===========
 
-Glowstone++ is an experimental fork of [Glowstone](https://github.com/GlowstoneMC/Glowstone)
+An experimental fork of [Glowstone](https://github.com/GlowstoneMC/Glowstone) focused on additional compatibility
 
-https://img.shields.io/circleci/project/deathcap/GlowstonePlusPlus.svg
+[![Build Status](https://circleci.com/gh/deathcap/GlowstonePlusPlus.png?style=shield)](https://circleci.com/gh/deathcap/GlowstonePlusPlus)
+
+(Warning: may be unstable, this is only an experiment, use at your own risk)
+
+
+Currently the major changes from Glowstone include:
+
+* Tracks the [Spigot 1.8.3 update of the Bukkit API](https://hub.spigotmc.org/javadocs/bukkit/)
+* Builds using Maven
+
+Downloads available from [CircleCI](https://circleci.com/gh/deathcap/GlowstonePlusPlus) (click the latest build then expand "Artifacts")
+
+
 
 ---
 
@@ -102,10 +114,14 @@ Credits
    protocol and file formats research.
  * [The Bukkit team](http://bukkit.org) for their outstandingly well-designed
    plugin API.
+ * [The SpigotMC team](https://github.com/SpigotMC) for updating and enhancing
+   the Bukkit plugin API.
  * [Trustin Lee](http://gleamynode.net) - author of the
    [Netty](http://netty.io/) library.
  * [Graham Edgecombe](https://github.com/grahamedgecombe/) - author of the
    original [Lightstone](https://github.com/grahamedgecombe/lightstone).
+ * [Tad Hardesty](https://github.com/SpaceManiac) and all the contributors to
+   [Glowstone](https://github.com/GlowstoneMC/Glowstone).
  * All the people behind [Maven](https://maven.apache.org) and
    [Java](http://java.oracle.com).
  * [Notch](http://mojang.com/notch) and the rest of
