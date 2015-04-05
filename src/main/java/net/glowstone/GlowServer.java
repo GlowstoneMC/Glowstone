@@ -715,6 +715,10 @@ public final class GlowServer implements Server {
         commandMap.register("glowstone", new TellrawCommand());
         commandMap.register("glowstone", new TitleCommand());
 
+        // load Forge Mod Loader plugins
+        net.minecraft.client.Minecraft.fmlReentry();
+
+        // load Bukkit plugins
         File folder = new File(config.getString(ServerConfig.Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {
             logger.log(Level.SEVERE, "Could not create plugins directory: " + folder);
