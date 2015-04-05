@@ -90,24 +90,4 @@ public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
     public final EntityType getType() {
         return EntityType.PRIMED_TNT;
     }
-
-    @Override
-    public void setCustomName(String s) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public String getCustomName() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void setCustomNameVisible(boolean b) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public boolean isCustomNameVisible() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
 }

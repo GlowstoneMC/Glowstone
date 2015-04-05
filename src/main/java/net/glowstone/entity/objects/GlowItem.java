@@ -86,21 +86,6 @@ public final class GlowItem extends GlowEntity implements Item {
     }
 
     @Override
-    public void setCustomName(String s) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public String getCustomName() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void setCustomNameVisible(boolean b) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
     public void pulse() {
         super.pulse();
 
@@ -176,11 +161,6 @@ public final class GlowItem extends GlowEntity implements Item {
                 new EntityTeleportMessage(id, x, y, z, yaw, pitch),
                 new EntityVelocityMessage(id, getVelocity())
         );
-    }
-
-    @Override
-    public boolean isCustomNameVisible() {
-        return false;
     }
 
     ////////////////////////////////////////////////////////////////////////////

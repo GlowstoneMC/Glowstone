@@ -42,26 +42,6 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
     }
 
     @Override
-    public void setCustomName(String s) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public String getCustomName() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void setCustomNameVisible(boolean b) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public boolean isCustomNameVisible() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
     public boolean isEffect() {
         return effect;
     }
