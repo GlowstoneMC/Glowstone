@@ -173,6 +173,9 @@
             <resource>
                 <directory>${project.basedir}/src/main/resources</directory>
             </resource>
+            <resource>
+                <directory>FML/src/main/resources</directory>
+            </resource>
         </resources>
 
         <defaultGoal>clean install</defaultGoal>
