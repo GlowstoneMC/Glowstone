@@ -101,7 +101,7 @@ public class BlockType extends ItemType {
      * @param block the block that was placed
      * @param holding the the ItemStack that was being held
      */
-    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding) {
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
         block.applyPhysics(oldState.getType(), block.getTypeId(), oldState.getRawData(), block.getData());
     }
 
@@ -252,7 +252,7 @@ public class BlockType extends ItemType {
         target.getWorld().playSound(target.getLocation(), Sound.DIG_WOOD, 1, 1);
 
         // do any after-place actions
-        afterPlace(player, target, holding);
+        afterPlace(player, target, holding, oldState);
 
         // deduct from stack if not in creative mode
         if (player.getGameMode() != GameMode.CREATIVE) {
