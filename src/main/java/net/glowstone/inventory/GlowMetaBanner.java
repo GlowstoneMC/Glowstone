@@ -1,7 +1,5 @@
 package net.glowstone.inventory;
 
-import com.google.common.collect.ImmutableMap;
-import net.glowstone.block.blocktype.BlockBanner;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.apache.commons.lang.Validate;
@@ -31,25 +29,23 @@ public class GlowMetaBanner extends GlowMetaItem implements BannerMeta {
         this.pattern = banner.pattern;
     }
 
-    /* TODO
-    @Override
+    //TODO @Override
     public void setPattern(PatternType pattern) {
         Validate.notNull(pattern, "Pattern cannot be null!");
         this.pattern = pattern;
     }
 
-    @Override
+    //TODO @Override
     public PatternType getPattern() {
         return pattern;
     }
-    */
 
     @Override
     void writeNbt(CompoundTag tag) {
         super.writeNbt(tag);
         CompoundTag blockEntityTag = new CompoundTag();
 
-        blockEntityTag.putCompoundList("Patterns", BlockBanner.toNBT(pattern));
+        //blockEntityTag.putCompoundList("Patterns", BlockBanner.toNBT(pattern)); // TODO
         tag.putCompound("BlockEntityTag", blockEntityTag);
     }
 

@@ -1440,6 +1440,11 @@ public final class GlowWorld implements World {
         return gameRules.isGameRule(rule);
     }
 
+    @Override
+    public WorldBorder getWorldBorder() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     public GameRuleManager getGameRuleMap() {
         return gameRules;
     }

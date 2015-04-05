@@ -71,7 +71,7 @@ public class GlowBanner extends GlowBlockState implements Banner {
 
     @Override
     public Pattern removePattern(int i) {
-        patterns.remove(i);
+        return patterns.remove(i);
     }
 
     @Override

@@ -18,7 +18,7 @@ public final class PlayerSwingArmHandler implements MessageHandler<GlowSession, 
 
         Block block;
         try {
-            block = player.getTargetBlock(null, 6);
+            block = null; //block = player.getTargetBlock(null, 6); // TODO: fix ambiguous deprecated method
         } catch (IllegalStateException ex) {
             // getTargetBlock failed to find any block at all
             block = null;

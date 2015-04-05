@@ -30,6 +30,7 @@ import net.glowstone.util.nbt.CompoundTag;
 import org.apache.commons.lang.Validate;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
@@ -965,6 +966,21 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
     }
 
+    @Override
+    public List<Block> getLineOfSight(Set<Material> materials, int i) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Block getTargetBlock(Set<Material> materials, int i) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public List<Block> getLastTwoTargetBlocks(Set<Material> materials, int i) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Player capabilities
 
@@ -1379,7 +1395,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void playEffect(Location loc, Effect effect, int data) {
         int id = effect.getId();
-        boolean ignoreDistance = effect.isDistanceIgnored();
+        boolean ignoreDistance = false; // TODO: effect.isDistanceIgnored();
         session.send(new PlayEffectMessage(id, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), data, ignoreDistance));
     }
 

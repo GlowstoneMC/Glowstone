@@ -126,6 +126,11 @@ public class GlowBlockState implements BlockState {
     }
 
     @Override
+    public boolean isPlaced() {
+        return world != null; // TODO: is this sufficient?
+    }
+
+    @Override
     public final byte getLightLevel() {
         return light;
     }
