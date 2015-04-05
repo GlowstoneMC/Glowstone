@@ -190,8 +190,8 @@ public final class GlowBlock implements Block {
     }
 
     @Override
-    public void setType(Material material, boolean b) {
-        setType(material); // TODO: lets figure out what boolean 'b' is for. is it important?
+    public void setType(Material material, boolean applyPhysics) {
+        setTypeId(material.getId(), applyPhysics);
     }
 
     @Override
