@@ -2511,7 +2511,7 @@ shaped:
   - ee
   - ee
 - result:
-    type: IRON_TRAP_DOOR
+    type: IRON_TRAPDOOR
   ingredients:
     e:
       type: IRON_INGOT
@@ -3071,7 +3071,7 @@ shaped:
     damage: 1
   ingredients:
     b:
-      type: STEP_2
+      type: STONE_SLAB2
       damage: 0
   shape:
   - b
@@ -3651,7 +3651,7 @@ shaped:
   - ab
   - ba
 - result:
-    type: STEP_2
+    type: STONE_SLAB2
     damage: 0
     amount: 6
   ingredients:
