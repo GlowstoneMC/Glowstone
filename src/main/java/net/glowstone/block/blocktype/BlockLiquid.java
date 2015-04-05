@@ -158,7 +158,7 @@ private void calculateFlow(GlowBlock block) {
                 // No mixes, just spread normally!
                 down.setType(newState.getType(), STRENGTH_MAX, false);
                 down.getWorld().requestPulse(down, isWater ? TICK_RATE_WATER : TICK_RATE_LAVA);
-            } else if (!down.isLiquid() && newData <= (isWater ? STRENGTH_MIN_WATER : STRENGTH_MIN_LAVA)) {// No downwards? Check outwards.
+            } else if (!down.isLiquid() && newData <= (isWater ? STRENGTH_MIN_WATER : STRENGTH_MIN_LAVA)) { // No downwards? Check outwards.
 
                 for (BlockFace face : dirNESW) {
                     GlowBlock target = block.getRelative(face);
