@@ -106,7 +106,11 @@ public final class GlowServer implements Server {
                 return;
             }
 
+            // Load Forge Mod Loader TODO: move into loadPlugins? but needs args[] TODO 2: after start?
+            net.minecraftforge.fml.relauncher.ServerLaunchWrapper.main(args);
+
             server.run();
+
         } catch (BindException ex) {
             // descriptive bind error messages
             logger.severe("The server could not bind to the requested address.");
@@ -715,10 +719,6 @@ public final class GlowServer implements Server {
         commandMap.register("glowstone", new TellrawCommand());
         commandMap.register("glowstone", new TitleCommand());
 
-        // load Forge Mod Loader plugins
-        net.minecraft.client.Minecraft.fmlReentry();
-
-        // load Bukkit plugins
         File folder = new File(config.getString(ServerConfig.Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {
             logger.log(Level.SEVERE, "Could not create plugins directory: " + folder);
