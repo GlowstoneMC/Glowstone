@@ -4,6 +4,7 @@ import com.flowpowered.networking.MessageHandler;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
+import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.entity.GlowPlayer;
