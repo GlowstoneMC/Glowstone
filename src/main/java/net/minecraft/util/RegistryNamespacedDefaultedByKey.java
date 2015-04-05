@@ -1,5 +1,6 @@
 package net.minecraft.util;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class RegistryNamespacedDefaultedByKey extends RegistryNamespaced {
@@ -13,6 +14,6 @@ public class RegistryNamespacedDefaultedByKey extends RegistryNamespaced {
     }
 
     public Set<String> getKeys() {
-        return null;
+        return new HashSet<String>();
     }
 }

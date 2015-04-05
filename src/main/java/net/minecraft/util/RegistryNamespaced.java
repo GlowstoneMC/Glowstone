@@ -1,15 +1,12 @@
 package net.minecraft.util;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class RegistryNamespaced {
 
     public ObjectIntIdentityMap underlyingIntegerMap;
-    public List<Object> registryObjects;
-    public HashMap<Object, Object> field_148758_b;
+    public List<Object> registryObjects = new ArrayList<>();
+    public HashMap<Object, Object> field_148758_b = new HashMap<>();
 
     public Object getNameForObject(Object object) {
         return null;
@@ -40,6 +37,6 @@ public class RegistryNamespaced {
     }
 
     public Iterator<?> iterator() {
-        return null;
+        return registryObjects.iterator();
     }
 }
