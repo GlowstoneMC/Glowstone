@@ -2,6 +2,7 @@ package net.glowstone;
 
 import lombok.ToString;
 import net.glowstone.block.GlowBlock;
+import net.glowstone.block.ItemTable;
 import net.glowstone.constants.GlowBiome;
 import net.glowstone.constants.GlowEffect;
 import net.glowstone.constants.GlowParticle;
