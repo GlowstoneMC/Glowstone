@@ -1512,6 +1512,10 @@ public final class GlowWorld implements World {
         return new HashMap<>(tickMap);
     }
 
+    /**
+     * Calling this method will request that the block is ticked on the next iteration
+     * that applies to the specified tick rate.
+     */
     public void requestPulse(GlowBlock block, int tickRate) {
         Map<Location, Integer> map = getTickMap();
         Location target = block.getLocation();
