@@ -14,12 +14,12 @@ import java.util.List;
 public class GlowBanner extends GlowBlockState implements Banner {
 
     private DyeColor base;
-    private List<Pattern> patterns = new ArrayList<Pattern>();
+    private List<Pattern> patterns = new ArrayList<>();
 
     public GlowBanner(GlowBlock block) {
         super(block);
         base = getTileEntity().getBase();
-        //TODO pattern = getTileEntity().getPattern();
+        patterns = getTileEntity().getPatterns();
     }
 
     private TEBanner getTileEntity() {
@@ -80,7 +80,7 @@ public class GlowBanner extends GlowBlockState implements Banner {
         if (result) {
             TEBanner banner = getTileEntity();
             banner.setBase(base);
-            //TODO banner.setPattern(pattern);
+            banner.setPatterns(patterns);
             getTileEntity().updateInRange();
         }
         return result;

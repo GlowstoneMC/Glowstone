@@ -12,6 +12,7 @@ import org.bukkit.block.banner.Pattern;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.banner.PatternType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.material.Banner;
@@ -34,7 +35,7 @@ public class BlockBanner extends BlockType {
         GlowBanner state = (GlowBanner) block.getState();
         ItemStack drop = new ItemStack(Material.BANNER, 1);
         BannerMeta meta = (BannerMeta) drop.getItemMeta();
-        //meta.setPattern(state.getPattern()); //  TODO
+        meta.setPatterns(state.getPatterns());
         drop.setItemMeta(meta);
         drop.setDurability(state.getBaseColor().getDyeData());
 
@@ -67,34 +68,30 @@ public class BlockBanner extends BlockType {
         GlowBanner banner = (GlowBanner) block.getState();
         banner.setBaseColor(DyeColor.getByDyeData((byte) holding.getDurability()));
         BannerMeta meta = (BannerMeta) holding.getItemMeta();
-        //TODO banner.setPattern(meta.getPattern());
+        meta.setPatterns(meta.getPatterns());
         banner.update();
     }
 
-    public static List<CompoundTag> toNBT(Pattern pattern) {
+    public static List<CompoundTag> toNBT(List<Pattern> banner) {
         List<CompoundTag> patterns = new ArrayList<>();
-        /*
-        for (PatternType layer : pattern.getPattern()) {
+        for (Pattern pattern : banner) {
             CompoundTag layerTag = new CompoundTag();
-            layerTag.putString("Pattern", layer.getIdentifier());
-            //layerTag.putInt("Color", layer.getColor().getDyeData()); // TODO
+            layerTag.putString("Pattern", pattern.getPattern().getIdentifier());
+            layerTag.putInt("Color", pattern.getColor().getDyeData());
             patterns.add(layerTag);
         }
-        */
         return patterns;
     }
 
-    public static Pattern fromNBT(List<CompoundTag> tag) {
-        /* TODO
-        BannerPattern.Builder builder = BannerPattern.builder();
+    public static List<Pattern> fromNBT(List<CompoundTag> tag) {
+        List<Pattern> banner = new ArrayList<>();
         for (CompoundTag layer : tag) {
-            BannerPattern.LayerTexture type = BannerPattern.LayerTexture.getByCode(layer.getString("Pattern"));
+            PatternType patternType = PatternType.getByIdentifier(layer.getString("Pattern"));
             DyeColor color = DyeColor.getByDyeData((byte) layer.getInt("Color"));
-            builder.layer(type, color);
+
+            banner.add(new Pattern(color, patternType));
         }
-        return builder.build();
-        */
-        return null;
+        return banner;
     }
 
 }
