@@ -14,6 +14,11 @@ import org.bukkit.util.Vector;
 public abstract class BlockLiquid extends BlockType {
     
     private final Material bucketType;
+    
+    private static BlockFace[] NESW = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
+    private static BlockFace[] NESWU = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP};
+    private static BlockFace[] NESWD = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.DOWN};
+    private static BlockFace[] NESWUD = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
 
 protected BlockLiquid(Material bucketType) {
     this.bucketType = bucketType;
@@ -74,7 +79,7 @@ private void calculateFlow(GlowBlock block) {
     if (isSource(isWater, newState.getRawData())) {
         // We are a source block, lets spread.
 
-        for (BlockFace face : Util.NESWD) {
+        for (BlockFace face : NESWD) {
             GlowBlock target = block.getRelative(face);
 
             // Check mixing liquid types.
@@ -99,7 +104,7 @@ private void calculateFlow(GlowBlock block) {
         int sourceBlocks = 0;
         boolean sourceAbove = false, fluidAbove = false;
         byte strength = isWater ? STRENGTH_MIN_WATER : STRENGTH_MIN_LAVA;
-        for (BlockFace face : Util.NESWU) {
+        for (BlockFace face : NESWU) {
             GlowBlock target = block.getRelative(face);
 
             // Check that we are touching liquid.
@@ -154,7 +159,7 @@ private void calculateFlow(GlowBlock block) {
                 down.getWorld().requestPulse(down, isWater ? TICK_RATE_WATER : TICK_RATE_LAVA);
             } else if (!down.isLiquid() && newData <= (isWater ? STRENGTH_MIN_WATER : STRENGTH_MIN_LAVA)) {// No downwards? Check outwards.
 
-                for (BlockFace face : Util.NESW) {
+                for (BlockFace face : NESW) {
                     GlowBlock target = block.getRelative(face);
 
                     // Check mixing liquid types.
@@ -182,7 +187,7 @@ private void calculateFlow(GlowBlock block) {
         newState.setData(oldState.getData());
         block.getWorld().cancelPulse(block);
     } else {
-        for (BlockFace face : Util.NESWUD) {
+        for (BlockFace face : NESWUD) {
             GlowBlock target = block.getRelative(face);
             if (target.isLiquid())
                 block.getWorld().requestPulse(target, isWater ? TICK_RATE_WATER : TICK_RATE_LAVA);
