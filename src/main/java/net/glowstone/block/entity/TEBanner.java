@@ -8,15 +8,16 @@ import net.glowstone.constants.GlowBlockEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
-import org.bukkit.BannerPattern;
 import org.bukkit.DyeColor;
+import org.bukkit.block.banner.Pattern;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TEBanner extends TileEntity {
 
     private DyeColor base = DyeColor.WHITE;
-    private BannerPattern pattern = BannerPattern.builder().build();
+    private List<Pattern> patterns = new ArrayList<>();
 
     public TEBanner(GlowBlock block) {
         super(block);
@@ -28,7 +29,7 @@ public class TEBanner extends TileEntity {
         super.loadNbt(tag);
         if (tag.isList("Patterns", TagType.COMPOUND)) {
             List<CompoundTag> pattern = tag.getCompoundList("Patterns");
-            this.pattern = BlockBanner.fromNBT(pattern);
+            this.patterns = BlockBanner.fromNBT(pattern);
         }
 
         if (tag.isInt("Base")) {
@@ -39,7 +40,7 @@ public class TEBanner extends TileEntity {
     @Override
     public void saveNbt(CompoundTag tag) {
         super.saveNbt(tag);
-        tag.putCompoundList("Patterns", BlockBanner.toNBT(pattern));
+        tag.putCompoundList("Patterns", BlockBanner.toNBT(patterns));
         tag.putInt("Base", base.getDyeData());
     }
 
@@ -56,8 +57,8 @@ public class TEBanner extends TileEntity {
         player.sendBlockEntityChange(getBlock().getLocation(), GlowBlockEntity.BANNER, nbt);
     }
 
-    public void setPattern(BannerPattern pattern) {
-        this.pattern = pattern;
+    public void setPatterns(List<Pattern> patterns) {
+        this.patterns = patterns;
     }
 
     public void setBase(DyeColor base) {
@@ -68,7 +69,7 @@ public class TEBanner extends TileEntity {
         return base;
     }
 
-    public BannerPattern getPattern() {
-        return pattern;
+    public List<Pattern> getPatterns() {
+        return patterns;
     }
 }

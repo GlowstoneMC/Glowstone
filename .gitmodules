@@ -1,0 +1,4 @@
+[submodule "Glowkit"]
+	path = Glowkit
+	url = https://github.com/deathcap/Glowkit
+	branch = bukkit+glowkit

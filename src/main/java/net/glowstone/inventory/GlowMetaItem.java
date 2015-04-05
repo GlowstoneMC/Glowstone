@@ -5,6 +5,7 @@ import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
@@ -181,5 +182,25 @@ class GlowMetaItem implements ItemMeta {
     @Override
     public boolean hasConflictingEnchant(Enchantment ench) {
         return false;
+    }
+
+    @Override
+    public void addItemFlags(ItemFlag... itemFlags) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void removeItemFlags(ItemFlag... itemFlags) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Set<ItemFlag> getItemFlags() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean hasItemFlag(ItemFlag itemFlag) {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

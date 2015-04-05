@@ -62,6 +62,12 @@ public final class GlowAchievement {
         set(KILL_WITHER, "killWither");
         set(FULL_BEACON, "fullBeacon");
         set(EXPLORE_ALL_BIOMES, "exploreAllBiomes");
+        set(SPAWN_WITHER, "spawnWither");
+        set(KILL_WITHER, "killWither");
+        set(FULL_BEACON, "fullBeacon");
+        set(BREED_COW, "breedCow");
+        set(DIAMONDS_TO_YOU, "diamondsToYou");
+        set(OVERPOWERED, "overpowered");
     }
 
 }

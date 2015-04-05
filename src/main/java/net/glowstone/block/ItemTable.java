@@ -59,7 +59,7 @@ public final class ItemTable {
         reg(Material.ACACIA_DOOR, new BlockDoor(Material.ACACIA_DOOR_ITEM));
         reg(Material.DARK_OAK_DOOR, new BlockDoor(Material.DARK_OAK_DOOR_ITEM));
         reg(Material.DOUBLE_STEP, new BlockDoubleSlab());
-        reg(Material.DOUBLE_STEP_2, new BlockDoubleSlab());
+        reg(Material.DOUBLE_STONE_SLAB2, new BlockDoubleSlab());
         reg(Material.WOOD_DOUBLE_STEP, new BlockDoubleSlab());
         reg(Material.SOIL, new BlockDirectDrops(Material.DIRT));
         reg(Material.GLASS, new BlockDropless());
@@ -131,7 +131,7 @@ public final class ItemTable {
         reg(Material.JUNGLE_FENCE_GATE, new BlockFenceGate());
         reg(Material.SPRUCE_FENCE_GATE, new BlockFenceGate());
         reg(Material.TRAP_DOOR, new BlockWoodenTrapDoor());
-        reg(Material.IRON_TRAP_DOOR, new BlockIronTrapDoor());
+        reg(Material.IRON_TRAPDOOR, new BlockIronTrapDoor());
         reg(Material.FURNACE, new BlockFurnace());
         reg(Material.LEVER, new BlockLever());
         reg(Material.HOPPER, new BlockHopper());
@@ -150,7 +150,7 @@ public final class ItemTable {
         reg(Material.WOOD_STAIRS, new BlockStairs());
         reg(Material.STEP, new BlockSlab());
         reg(Material.WOOD_STEP, new BlockSlab());
-        reg(Material.STEP_2, new BlockSlab());
+        reg(Material.STONE_SLAB2, new BlockSlab());
         reg(Material.HAY_BLOCK, new BlockHay());
         reg(Material.QUARTZ_BLOCK, new BlockQuartz());
         reg(Material.LOG, new BlockLog());

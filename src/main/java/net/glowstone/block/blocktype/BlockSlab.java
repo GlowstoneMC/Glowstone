@@ -28,8 +28,8 @@ public class BlockSlab extends BlockType {
             state.setType(Material.WOOD_DOUBLE_STEP);
             state.setRawData((byte) holding.getDurability());
             return;
-        } else if (blockType == Material.STEP_2) {
-            state.setType(Material.DOUBLE_STEP_2);
+        } else if (blockType == Material.STONE_SLAB2) {
+            state.setType(Material.DOUBLE_STONE_SLAB2);
             return;
         }
 
@@ -51,7 +51,7 @@ public class BlockSlab extends BlockType {
         byte blockData = block.getData();
         byte holdingData = (byte) holding.getDurability();
         Material blockType = block.getType();
-        return (blockType == Material.STEP || blockType == Material.WOOD_STEP || blockType == Material.STEP_2) &&
+        return (blockType == Material.STEP || blockType == Material.WOOD_STEP || blockType == Material.STONE_SLAB2) &&
                 blockType == holding.getType() &&
                 ((face == BlockFace.UP && blockData == holdingData) ||
                         (face == BlockFace.DOWN && blockData - 8 == holdingData) ||

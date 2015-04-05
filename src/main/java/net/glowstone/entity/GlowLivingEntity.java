@@ -301,7 +301,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     ////////////////////////////////////////////////////////////////////////////
     // Line of Sight
 
-    private List<Block> getLineOfSight(HashSet<Byte> transparent, int maxDistance, int maxLength) {
+    private List<Block> getLineOfSight(Set<Material> transparent, int maxDistance, int maxLength) {
         // same limit as CraftBukkit
         if (maxDistance > 120) {
             maxDistance = 120;
@@ -315,13 +315,13 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             if (maxLength != 0 && blocks.size() > maxLength) {
                 blocks.removeFirst();
             }
-            int id = block.getTypeId();
+            Material material = block.getType();
             if (transparent == null) {
-                if (id != 0) {
+                if (material != Material.AIR) {
                     break;
                 }
             } else {
-                if (!transparent.contains((byte) id)) {
+                if (!transparent.contains(material)) {
                     break;
                 }
             }
@@ -329,19 +329,50 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return blocks;
     }
 
+    private List<Block> getLineOfSight(HashSet<Byte> transparent, int maxDistance, int maxLength) {
+        Set<Material> materials = new HashSet<Material>();
+        Iterator<Byte> itr = transparent.iterator();
+
+        while (itr.hasNext()) {
+            byte b = itr.next().byteValue();
+            materials.add(Material.getMaterial((int) b));
+        }
+
+        return getLineOfSight(materials, maxDistance, maxLength);
+    }
+
+    @Override
+    public List<Block> getLineOfSight(Set<Material> transparent, int maxDistance) {
+        return getLineOfSight(transparent, maxDistance, 0);
+    }
+
+    @Deprecated
     @Override
     public List<Block> getLineOfSight(HashSet<Byte> transparent, int maxDistance) {
         return getLineOfSight(transparent, maxDistance, 0);
     }
 
+
+    @Deprecated
     @Override
     public Block getTargetBlock(HashSet<Byte> transparent, int maxDistance) {
-        return getLineOfSight(transparent, maxDistance, 1).get(0);
+        return getLineOfSight(transparent, maxDistance).get(0);
     }
 
     @Override
+    public Block getTargetBlock(Set<Material> materials, int maxDistance) {
+        return getLineOfSight(materials, maxDistance).get(0);
+    }
+
+    @Deprecated
+    @Override
     public List<Block> getLastTwoTargetBlocks(HashSet<Byte> transparent, int maxDistance) {
         return getLineOfSight(transparent, maxDistance, 2);
+    }
+
+    @Override
+    public List<Block> getLastTwoTargetBlocks(Set<Material> materials, int maxDistance) {
+        return getLineOfSight(materials, maxDistance, 2);
     }
 
     ////////////////////////////////////////////////////////////////////////////

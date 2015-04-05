@@ -52,6 +52,31 @@ public final class GlowStatistic {
         set(FISH_CAUGHT, "fishCaught");
         set(JUNK_FISHED, "junkFished");
         set(TREASURE_FISHED, "treasureFished");
+        set(SPRINT_ONE_CM, "sprintOneCm");
+        set(CROUCH_ONE_CM, "crouchOneCm");
+        set(TIME_SINCE_DEATH, "timeSinceDeath");
+        set(TALKED_TO_VILLAGER, "talkedToVillager");
+        set(TRADED_WITH_VILLAGER, "tradedWithVillager");
+        set(CAKE_SLICES_EATEN, "cakeSlices_eaten");
+        set(CAULDRON_FILLED, "cauldronFilled");
+        set(CAULDRON_USED, "cauldronUsed");
+        set(ARMOR_CLEANED, "armorCleaned");
+        set(BANNER_CLEANED, "bannerCleaned");
+        set(BREWINGSTAND_INTERACTION, "brewingstandInteraction");
+        set(BEACON_INTERACTION, "beaconInteraction");
+        set(DROPPER_INSPECTED, "dropperInspected");
+        set(HOPPER_INSPECTED, "hopperInspected");
+        set(DISPENSER_INSPECTED, "dispenserInspected");
+        set(NOTEBLOCK_PLAYED, "noteblockPlayed");
+        set(NOTEBLOCK_TUNED, "noteblockTuned");
+        set(FLOWER_POTTED, "flowerPotted");
+        set(TRAPPED_CHEST_TRIGGERED, "trappedChestTriggered");
+        set(ENDERCHEST_OPENED, "enderchestOpened");
+        set(ITEM_ENCHANTED, "itemEnchanted");
+        set(RECORD_PLAYED, "recordPlayed");
+        set(FURNACE_INTERACTION, "furnaceInteraction");
+        set(CRAFTING_TABLE_INTERACTION, "craftingTableInteraction");
+        set(CHEST_OPENED, "chestOpened");
 
         // todo: statistics with substatistics
     }

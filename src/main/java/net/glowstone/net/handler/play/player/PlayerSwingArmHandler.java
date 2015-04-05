@@ -6,10 +6,13 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.AnimateEntityMessage;
 import net.glowstone.net.message.play.player.PlayerSwingArmMessage;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerAnimationEvent;
+
+import java.util.Set;
 
 public final class PlayerSwingArmHandler implements MessageHandler<GlowSession, PlayerSwingArmMessage> {
     @Override
@@ -18,7 +21,7 @@ public final class PlayerSwingArmHandler implements MessageHandler<GlowSession, 
 
         Block block;
         try {
-            block = player.getTargetBlock(null, 6);
+            block = player.getTargetBlock((Set<Material>) null, 6);
         } catch (IllegalStateException ex) {
             // getTargetBlock failed to find any block at all
             block = null;

@@ -72,5 +72,4 @@ public final class GlowCreature extends GlowLivingEntity implements Creature {
     public LivingEntity getTarget() {
         return target;
     }
-
 }

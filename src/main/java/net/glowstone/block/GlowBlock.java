@@ -190,6 +190,11 @@ public final class GlowBlock implements Block {
     }
 
     @Override
+    public void setType(Material material, boolean applyPhysics) {
+        setTypeId(material.getId(), applyPhysics);
+    }
+
+    @Override
     public boolean setTypeId(int type) {
         return setTypeId(type, true);
     }
