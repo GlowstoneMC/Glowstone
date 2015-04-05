@@ -115,7 +115,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             GlowBlockState state = block.getState();
             block.setType(Material.AIR);
             if (blockType != null)
-                blockType.afterDestroy(player, block, state);
+                blockType.afterDestroy(player, block, face, state);
         } else if (revert) {
             // replace the block that wasn't really dug
             BlockPlacementHandler.revert(player, block);
