@@ -8,15 +8,15 @@ import net.glowstone.constants.GlowBlockEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
-import org.bukkit.BannerPattern;
 import org.bukkit.DyeColor;
+import org.bukkit.block.banner.Pattern;
 
 import java.util.List;
 
 public class TEBanner extends TileEntity {
 
     private DyeColor base = DyeColor.WHITE;
-    private BannerPattern pattern = BannerPattern.builder().build();
+    private Pattern pattern = null;
 
     public TEBanner(GlowBlock block) {
         super(block);
@@ -56,7 +56,7 @@ public class TEBanner extends TileEntity {
         player.sendBlockEntityChange(getBlock().getLocation(), GlowBlockEntity.BANNER, nbt);
     }
 
-    public void setPattern(BannerPattern pattern) {
+    public void setPattern(Pattern pattern) {
         this.pattern = pattern;
     }
 
@@ -68,7 +68,7 @@ public class TEBanner extends TileEntity {
         return base;
     }
 
-    public BannerPattern getPattern() {
+    public Pattern getPattern() {
         return pattern;
     }
 }

@@ -8,7 +8,8 @@ import net.glowstone.block.entity.TileEntity;
 import net.glowstone.block.state.GlowBanner;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.nbt.CompoundTag;
-import org.bukkit.BannerPattern;
+import org.bukkit.block.banner.PatternType;
+import org.bukkit.block.banner.Pattern;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -34,9 +35,9 @@ public class BlockBanner extends BlockType {
         GlowBanner state = (GlowBanner) block.getState();
         ItemStack drop = new ItemStack(Material.BANNER, 1);
         BannerMeta meta = (BannerMeta) drop.getItemMeta();
-        meta.setPattern(state.getPattern());
+        //meta.setPattern(state.getPattern()); //  TODO
         drop.setItemMeta(meta);
-        drop.setDurability(state.getBase().getDyeData());
+        drop.setDurability(state.getBaseColor().getDyeData());
 
         return Arrays.asList(drop);
     }
@@ -65,24 +66,27 @@ public class BlockBanner extends BlockType {
     @Override
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding) {
         GlowBanner banner = (GlowBanner) block.getState();
-        banner.setBase(DyeColor.getByDyeData((byte) holding.getDurability()));
+        banner.setBaseColor(DyeColor.getByDyeData((byte) holding.getDurability()));
         BannerMeta meta = (BannerMeta) holding.getItemMeta();
-        banner.setPattern(meta.getPattern());
+        //TODO banner.setPattern(meta.getPattern());
         banner.update();
     }
 
-    public static List<CompoundTag> toNBT(BannerPattern pattern) {
+    public static List<CompoundTag> toNBT(Pattern pattern) {
         List<CompoundTag> patterns = new ArrayList<>();
-        for (BannerPattern.BannerLayer layer : pattern.getLayers()) {
+        /*
+        for (PatternType layer : pattern.getPattern()) {
             CompoundTag layerTag = new CompoundTag();
-            layerTag.putString("Pattern", layer.getTexture().getCode());
-            layerTag.putInt("Color", layer.getColor().getDyeData());
+            layerTag.putString("Pattern", layer.getIdentifier());
+            //layerTag.putInt("Color", layer.getColor().getDyeData()); // TODO
             patterns.add(layerTag);
         }
+        */
         return patterns;
     }
 
-    public static BannerPattern fromNBT(List<CompoundTag> tag) {
+    public static Pattern fromNBT(List<CompoundTag> tag) {
+        /* TODO
         BannerPattern.Builder builder = BannerPattern.builder();
         for (CompoundTag layer : tag) {
             BannerPattern.LayerTexture type = BannerPattern.LayerTexture.getByCode(layer.getString("Pattern"));
@@ -90,6 +94,8 @@ public class BlockBanner extends BlockType {
             builder.layer(type, color);
         }
         return builder.build();
+        */
+        return null;
     }
 
 }

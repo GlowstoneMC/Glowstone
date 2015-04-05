@@ -4,19 +4,22 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.TEBanner;
 import org.apache.commons.lang.Validate;
-import org.bukkit.BannerPattern;
+import org.bukkit.block.banner.Pattern;
 import org.bukkit.DyeColor;
 import org.bukkit.block.Banner;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GlowBanner extends GlowBlockState implements Banner {
 
     private DyeColor base;
-    private BannerPattern pattern;
+    private List<Pattern> patterns = new ArrayList<Pattern>();
 
     public GlowBanner(GlowBlock block) {
         super(block);
         base = getTileEntity().getBase();
-        pattern = getTileEntity().getPattern();
+        //TODO pattern = getTileEntity().getPattern();
     }
 
     private TEBanner getTileEntity() {
@@ -24,25 +27,51 @@ public class GlowBanner extends GlowBlockState implements Banner {
     }
 
     @Override
-    public void setBase(DyeColor base) {
+    public void setPattern(int i, Pattern pattern) {
+        Validate.notNull(pattern, "Pattern cannot be null");
+        patterns.set(i, pattern);
+    }
+
+    @Override
+    public int numberOfPatterns() {
+        return patterns.size();
+    }
+
+    @Override
+    public DyeColor getBaseColor() {
+        return base;
+    }
+
+    @Override
+    public void setBaseColor(DyeColor dyeColor) {
         Validate.notNull(base, "Base cannot be null");
         this.base = base;
     }
 
     @Override
-    public DyeColor getBase() {
-        return base;
+    public List<Pattern> getPatterns() {
+        return patterns;
     }
 
     @Override
-    public void setPattern(BannerPattern pattern) {
+    public void setPatterns(List<Pattern> patterns) {
+        this.patterns = patterns;
+    }
+
+    @Override
+    public void addPattern(Pattern pattern) {
         Validate.notNull(pattern, "Pattern cannot be null");
-        this.pattern = pattern;
+        patterns.add(pattern);
     }
 
     @Override
-    public BannerPattern getPattern() {
-        return pattern;
+    public Pattern getPattern(int i) {
+        return patterns.get(i);
+    }
+
+    @Override
+    public Pattern removePattern(int i) {
+        patterns.remove(i);
     }
 
     @Override
@@ -51,9 +80,14 @@ public class GlowBanner extends GlowBlockState implements Banner {
         if (result) {
             TEBanner banner = getTileEntity();
             banner.setBase(base);
-            banner.setPattern(pattern);
+            //TODO banner.setPattern(pattern);
             getTileEntity().updateInRange();
         }
         return result;
+    }
+
+    @Override
+    public boolean isPlaced() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }
