@@ -1498,8 +1498,8 @@ public final class GlowWorld implements World {
     
     private void pulseTickMap() {
         ItemTable itemTable = ItemTable.instance();
-        Map map = getTickMap();
-        for (Map.Entry entry : map.entrySet()) {
+        Map<Location, Integer> map = getTickMap();
+        for (Map.Entry<Location, Integer> entry : map.entrySet()) {
             if (worldAge % entry.getValue() == 0) {
                 GlowBlock block = this.getBlockAt(entry.getKey());
                 BlockType notifyType = itemTable.getBlock(block.getTypeId());
