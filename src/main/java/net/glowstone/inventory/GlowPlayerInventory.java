@@ -9,8 +9,6 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import java.util.Arrays;
-
 /**
  * An Inventory representing the items a player is holding.
  */
@@ -49,7 +47,9 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         // + 4 = armor, completed inventory
         super(owner, InventoryType.PLAYER, SIZE);
         crafting = new GlowCraftingInventory(owner, InventoryType.CRAFTING);
-        Arrays.fill(slotTypes, 0, 9, InventoryType.SlotType.QUICKBAR);
+        for (int i = 0; i < 9; i++) {
+            getSlot(i).setType(InventoryType.SlotType.QUICKBAR);
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -75,7 +75,7 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         if (slot >= SIZE && slot - SIZE < 4) {
             return InventoryType.SlotType.ARMOR;
         } else {
-            return slotTypes[slot];
+            return super.getSlotType(slot);
         }
     }
 

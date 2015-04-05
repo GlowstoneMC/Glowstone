@@ -13,9 +13,9 @@ public class GlowAnvilInventory extends GlowInventory implements AnvilInventory 
     public GlowAnvilInventory(InventoryHolder holder) {
         super(holder, InventoryType.ANVIL);
 
-        slotTypes[FIRST_ITEM_SLOT] = InventoryType.SlotType.CRAFTING;
-        slotTypes[SECOND_ITEM_SLOT] = InventoryType.SlotType.CRAFTING;
-        slotTypes[RESULT_SLOT] = InventoryType.SlotType.RESULT;
+        getSlot(FIRST_ITEM_SLOT).setType(InventoryType.SlotType.CRAFTING);
+        getSlot(SECOND_ITEM_SLOT).setType(InventoryType.SlotType.CRAFTING);
+        getSlot(RESULT_SLOT).setType(InventoryType.SlotType.RESULT);
     }
 
     @Override

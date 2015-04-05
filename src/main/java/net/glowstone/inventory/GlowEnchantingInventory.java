@@ -13,8 +13,8 @@ public class GlowEnchantingInventory extends GlowInventory implements Enchanting
     public GlowEnchantingInventory(InventoryHolder holder) {
         super(holder, InventoryType.ENCHANTING);
 
-        slotTypes[ITEM_SLOT] = InventoryType.SlotType.CRAFTING;
-        slotTypes[LAPIS_SLOT] = InventoryType.SlotType.CRAFTING;
+        getSlot(ITEM_SLOT).setType(InventoryType.SlotType.CRAFTING);
+        getSlot(LAPIS_SLOT).setType(InventoryType.SlotType.CRAFTING);
     }
 
     @Override
