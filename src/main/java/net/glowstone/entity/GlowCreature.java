@@ -5,8 +5,6 @@ import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.SpawnMobMessage;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -78,21 +76,6 @@ public final class GlowCreature extends GlowLivingEntity implements Creature {
     @Override
     public LivingEntity getTarget() {
         return target;
-    }
-
-    @Override
-    public List<Block> getLineOfSight(Set<Material> materials, int i) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Block getTargetBlock(Set<Material> materials, int i) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public List<Block> getLastTwoTargetBlocks(Set<Material> materials, int i) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
