@@ -240,6 +240,34 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Main-Class>net.glowstone.GlowServer</Main-Class>
+                            <Implementation-Title>${project.name}</Implementation-Title>
+                            <Implementation-Version>${describe}</Implementation-Version>
+                            <Implementation-Vendor>Glowstone Project</Implementation-Vendor>
+                            <Specification-Title>Bukkit/Glowkit</Specification-Title>
+                            <Specification-Version>${bukkit.version}</Specification-Version>
+                            <Specification-Vendor>Glowstone Project</Specification-Vendor>
+                            <Sealed>false</Sealed>
+                        </manifestEntries>
+                        <manifestSections>
+                            <manifestSection>
+                                <name>net/glowstone/</name>
+                                <manifestEntries>
+                                    <Sealed>false</Sealed>
+                                </manifestEntries>
+                            </manifestSection>
+                        </manifestSections>
+                    </archive>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>2.4.1</version>
                 <executions>
