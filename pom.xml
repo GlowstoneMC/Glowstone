@@ -89,6 +89,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- LegacyLauncher -->
+       <dependency>
+            <groupId>net.sf.jopt-simple</groupId>
+            <artifactId>jopt-simple</artifactId>
+            <version>4.5</version>
+        </dependency>
+
         <!-- FML/MLIA -->
        <dependency>
             <groupId>net.sf.trove4j</groupId>
@@ -221,6 +228,7 @@
                             <sources>
                                 <source>${project.basedir}/src/main/java</source>
                                 <source>${project.basedir}/FML/src/main/java</source>
+                                <source>${project.basedir}/LegacyLauncher/src/main/java</source>
                             </sources>
                         </configuration>
                     </execution>

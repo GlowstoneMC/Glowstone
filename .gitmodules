@@ -8,3 +8,6 @@
 [submodule "FML"]
 	path = FML
 	url = https://github.com/MinecraftForge/FML
+[submodule "LegacyLauncher"]
+	path = LegacyLauncher
+	url = https://github.com/Mojang/LegacyLauncher
