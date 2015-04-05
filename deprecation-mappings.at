@@ -1,0 +1,27 @@
+public+synthetic org/bukkit/Bukkit/getOnlinePlayers()[Lorg/bukkit/entity/Player;
+public+synthetic org/bukkit/Server/getOnlinePlayers()[Lorg/bukkit/entity/Player;
+
+public+synthetic org/bukkit/entity/Damageable/damage(I)V
+public+synthetic org/bukkit/entity/Damageable/damage(ILorg/bukkit/entity/Entity;)V
+public+synthetic org/bukkit/entity/Damageable/getHealth()I
+public+synthetic org/bukkit/entity/Damageable/getMaxHealth()I
+public+synthetic org/bukkit/entity/Damageable/setHealth(I)V
+public+synthetic org/bukkit/entity/Damageable/setMaxHealth(I)V
+
+public+synthetic org/bukkit/entity/LivingEntity/getLastDamage()I
+public+synthetic org/bukkit/entity/LivingEntity/setLastDamage(I)V
+
+public+synthetic org/bukkit/entity/Minecart/getDamage()I
+public+synthetic org/bukkit/entity/Minecart/setDamage(I)V
+
+public+synthetic org/bukkit/entity/Projectile/getShooter()Lorg/bukkit/entity/LivingEntity;
+public+synthetic org/bukkit/entity/Projectile/setShooter(Lorg/bukkit/entity/LivingEntity;)V
+
+public+synthetic org/bukkit/event/entity/EntityDamageEvent/getDamage()I
+public+synthetic org/bukkit/event/entity/EntityDamageEvent/setDamage(I)V
+
+public+synthetic org/bukkit/event/entity/EntityRegainHealthEvent/getAmount()I
+public+synthetic org/bukkit/event/entity/EntityRegainHealthEvent/setAmount(I)V
+
+public+synthetic org/bukkit/event/vehicle/VehicleDamageEvent/getDamage()I
+public+synthetic org/bukkit/event/vehicle/VehicleDamageEvent/setDamage(I)V

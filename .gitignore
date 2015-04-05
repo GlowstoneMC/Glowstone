@@ -15,3 +15,7 @@ target
 !.gitmodules
 !.mailmap
 !.gitattributes
+worlds
+logs
+config
+dependency-reduced-pom.xml
