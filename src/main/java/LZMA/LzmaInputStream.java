@@ -11,6 +11,6 @@ public class LzmaInputStream extends InputStream { // TODO: what is the mvn depe
 
     @Override
     public int read() throws IOException {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return -1; // end of file
     }
 }
