@@ -26,8 +26,8 @@ public class BlockDoubleSlab extends BlockType {
                 return new ItemStack(Material.WOOD_STEP, 2, (short) (block.getData() % 8));
             case DOUBLE_STEP:
                 return new ItemStack(Material.STEP, 2, (short) (block.getData() % 8));
-            case DOUBLE_STEP_2:
-                return new ItemStack(Material.STEP_2, 2);
+            case DOUBLE_STONE_SLAB2:
+                return new ItemStack(Material.STONE_SLAB2, 2);
         }
         GlowServer.logger.warning("BlockDoubleSlab got wrong material: " + block.getType());
         return new ItemStack(Material.STEP, 2);

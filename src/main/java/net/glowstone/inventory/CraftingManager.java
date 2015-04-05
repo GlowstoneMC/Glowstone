@@ -291,7 +291,6 @@ public final class CraftingManager implements Iterable<Recipe> {
         furnaceFuels.put(Material.CHEST, 300);
         furnaceFuels.put(Material.JUKEBOX, 300);
         furnaceFuels.put(Material.NOTE_BLOCK, 300);
-        furnaceFuels.put(Material.LOCKED_CHEST, 300);
         furnaceFuels.put(Material.LAVA_BUCKET, 20000);
     }
 

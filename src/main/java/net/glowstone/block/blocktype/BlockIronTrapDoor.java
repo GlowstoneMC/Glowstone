@@ -12,7 +12,7 @@ public class BlockIronTrapDoor extends BlockDirectDrops {
     private BlockTrapDoor trapDoor;
 
     public BlockIronTrapDoor() {
-        super(Material.IRON_TRAP_DOOR, ToolType.PICKAXE);
+        super(Material.IRON_TRAPDOOR, ToolType.PICKAXE);
         trapDoor = new BlockTrapDoor(this);
     }
 
