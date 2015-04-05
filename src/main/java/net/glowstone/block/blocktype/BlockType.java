@@ -134,7 +134,7 @@ public class BlockType extends ItemType {
      * @param block The block the player destroyed
      * @param face The block face
      */
-    public void afterDestroy(GlowPlayer player, GlowBlock block, BlockFace face) {
+    public void afterDestroy(GlowPlayer player, GlowBlock block, BlockFace face, GlowBlockState oldState) {
         block.applyPhysics(oldState.getType(), block.getTypeId(), oldState.getRawData(), block.getData());
     }
     
