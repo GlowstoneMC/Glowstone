@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.glowstone</groupId>
     <artifactId>glowstone-parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.8.3-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Glowstone++</name>
     <url>https://github.com/GlowstoneMC/Glowstone</url>
