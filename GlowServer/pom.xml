@@ -298,7 +298,7 @@
                 <version>2.15</version>
                 <configuration>
                     <configLocation>${project.basedir}/../etc/checkstyle.xml</configLocation>
-                    <headerLocation>LICENSE</headerLocation>
+                    <headerLocation>${project.basedir}/../LICENSE</headerLocation>
                 </configuration>
             </plugin>
         </plugins>
