@@ -19,6 +19,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPortalEnterEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
@@ -27,11 +28,15 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.metadata.MetadataStore;
 import org.bukkit.metadata.MetadataStoreBase;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionAttachment;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -158,13 +163,32 @@ public abstract class GlowEntity implements Entity {
         return getClass().getSimpleName();
     }
 
+
     ////////////////////////////////////////////////////////////////////////////
-    // Core properties
+    // Command sender
+
+    @Override
+    public void sendMessage(String s) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void sendMessage(String[] strings) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 
     @Override
     public final GlowServer getServer() {
         return server;
     }
+
+    @Override
+    public String getName() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Core properties
 
     @Override
     public final GlowWorld getWorld() {
@@ -667,6 +691,11 @@ public abstract class GlowEntity implements Entity {
         }
     }
 
+    @Override
+    public EntityType getType() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Entity stacking
 
@@ -683,6 +712,26 @@ public abstract class GlowEntity implements Entity {
     @Override
     public Entity getVehicle() {
         return null;
+    }
+
+    @Override
+    public void setCustomName(String s) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String getCustomName() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void setCustomNameVisible(boolean b) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean isCustomNameVisible() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -726,5 +775,74 @@ public abstract class GlowEntity implements Entity {
     @Override
     public void removeMetadata(String metadataKey, Plugin owningPlugin) {
         bukkitMetadata.removeMetadata(this, metadataKey, owningPlugin);
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Permissions
+
+    @Override
+    public boolean isPermissionSet(String s) {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean isPermissionSet(Permission permission) {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean hasPermission(String s) {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean hasPermission(Permission permission) {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public PermissionAttachment addAttachment(Plugin plugin, String s, boolean b) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public PermissionAttachment addAttachment(Plugin plugin) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public PermissionAttachment addAttachment(Plugin plugin, String s, boolean b, int i) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public PermissionAttachment addAttachment(Plugin plugin, int i) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void removeAttachment(PermissionAttachment permissionAttachment) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void recalculatePermissions() {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Set<PermissionAttachmentInfo> getEffectivePermissions() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean isOp() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void setOp(boolean b) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 }
