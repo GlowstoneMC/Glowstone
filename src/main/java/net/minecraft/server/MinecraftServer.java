@@ -32,6 +32,7 @@ import net.minecraft.command.CommandHandler;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.world.storage.SaveFormatOld;
+import net.minecraftforge.fml.server.FMLServerHandler;
 
 import java.util.List;
 
@@ -44,9 +45,13 @@ public class MinecraftServer implements IThreadListener {
     }
 
     public void main2(String[] args) {
-        System.out.println("about to invoke FML handleServerStarted()");
-        System.out.println("getClass="+getClass()+", cl="+getClass().getClassLoader());
-        net.minecraftforge.fml.common.FMLCommonHandler.instance().handleServerStarted();
+        System.out.println("about to invoke FML beginServerLoading()");
+        FMLServerHandler.instance().beginServerLoading(this);
+        System.out.println("Finished loading");
+        FMLServerHandler.instance().finishServerLoading();
+        System.out.println("Initialization completing");
+        //FMLServerHandler.instance().
+        //net.minecraftforge.fml.common.FMLCommonHandler.instance().handleServerStarted();
         //net.minecraftforge.fml.common.FMLCommonHandler.instance().handleServerStopping();
         //net.minecraftforge.fml.common.FMLCommonHandler.instance().handleServerStopped();
     }
