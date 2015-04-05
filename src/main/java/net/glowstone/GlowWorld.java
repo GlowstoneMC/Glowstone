@@ -1499,11 +1499,13 @@ public final class GlowWorld implements World {
         ItemTable itemTable = ItemTable.instance();
         Map map = getTickMap();
         for (Map.Entry entry : map.entrySet()) {
-        if (worldAge % entry.getValue() == 0) {
-        GlowBlock block = this.getBlockAt(entry.getKey());
-        BlockType notifyType = itemTable.getBlock(block.getTypeId());
-        if (notifyType != null)
-        notifyType.recievePulse(block);
+            if (worldAge % entry.getValue() == 0) {
+                GlowBlock block = this.getBlockAt(entry.getKey());
+                BlockType notifyType = itemTable.getBlock(block.getTypeId());
+                if (notifyType != null)
+                    notifyType.recievePulse(block);
+            }
+        }
     }
     
     private Map<Location, Integer> getTickMap() {
