@@ -1,16 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     
     <modelVersion>4.0.0</modelVersion>
-    <groupId>net.glowstone</groupId>
+    <groupId>io.deathcap.glowstone</groupId>
     <artifactId>glowstone</artifactId>
     <version>1.8.3-SNAPSHOT</version>
     <name>Glowstone</name>
-    <url>https://github.com/GlowstoneMC/Glowstone</url>
+    <url>https://github.com/deathcap/GlowstonePlusPlus</url>
     
     <scm>
-        <connection>scm:git:git://github.com/GlowstoneMC/Glowstone.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/GlowstoneMC/Glowstone.git</developerConnection>
-        <url>https://github.com/GlowstoneMC/Glowstone</url>
+        <connection>scm:git:git://github.com/deathcap/GlowstonePlusPlus.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/deathcap/GlowstonePlusPlus.git</developerConnection>
+        <url>https://github.com/deathcap/GlowstonePlusPlus</url>
     </scm>
 
     <properties>
@@ -26,27 +26,11 @@
 
     <repositories>
         <repository>
-            <id>glowstone</id>
-            <name>Glowstone Artifactory</name>
-            <layout>default</layout>
-            <url>http://repo.glowstone.net/content/groups/public/</url>
-        </repository>
-        <repository>
             <id>sonatype</id>
             <name>Sonatype Nexus</name>
             <layout>default</layout>
             <url>https://oss.sonatype.org/content/repositories/public/</url>
         </repository>
-        <!--
-        <repository>
-            <id>spigotmc-releases</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/releases/</url>
-        </repository>
-        <repository>
-            <id>spigotmc-releases-snapshots</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-        </repository>
-        -->
     </repositories>
     
     <dependencies>
