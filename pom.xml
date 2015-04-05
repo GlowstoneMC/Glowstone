@@ -45,7 +45,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>${bukkit.version}</version>
+            <version>${bukkit.version}</version> <!-- Use https://github.com/deathcap/Glowkit/tree/bukkit+glowkit -->
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
