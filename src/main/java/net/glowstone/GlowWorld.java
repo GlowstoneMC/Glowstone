@@ -1519,21 +1519,13 @@ public final class GlowWorld implements World {
      * that applies to the specified tick rate.
      */
     public void requestPulse(GlowBlock block, int tickRate) {
-        Map<Location, Integer> map = getTickMap();
         Location target = block.getLocation();
     
-        for (Location location : map.keySet()) {
-            if (target.equals(location)) {
-                if (tickRate > 0)
-                    tickMap.put(location, tickRate);
-                else
-                    tickMap.remove(location);
-                return;
-            }
-        }
     
             if (tickRate > 0)
                 tickMap.put(target, tickRate);
+            else if(tickMap.containsKey(target))
+                tickMap.remove(target);
     }
     
     public void cancelPulse(GlowBlock block) {
