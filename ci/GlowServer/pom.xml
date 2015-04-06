@@ -98,11 +98,11 @@
     <build>
         <finalName>glowstone++-${project.version}</finalName>
 
-        <directory>${project.basedir}/../target</directory>
+        <directory>${project.basedir}/../../target</directory>
 
         <resources>
             <resource>
-                <directory>${project.basedir}/../src/main/resources</directory>
+                <directory>${project.basedir}/../../src/main/resources</directory>
             </resource>
         </resources>
 
@@ -139,8 +139,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <configLocation>${project.basedir}/../etc/checkstyle.xml</configLocation>
-                    <headerLocation>${project.basedir}/../LICENSE</headerLocation>
+                    <configLocation>${project.basedir}/../../etc/checkstyle.xml</configLocation>
+                    <headerLocation>${project.basedir}/../../LICENSE</headerLocation>
                 </configuration>
             </plugin>
            
@@ -154,7 +154,7 @@
                         <goals><goal>add-source</goal></goals>
                         <configuration>
                             <sources>
-                                <source>${project.basedir}/../src/main/java</source>
+                                <source>${project.basedir}/../../src/main/java</source>
                             </sources>
                         </configuration>
                     </execution>
@@ -221,8 +221,8 @@
                             <goal>remap</goal>
                         </goals>
                         <configuration>
-                            <srgIn>${project.basedir}/../deprecation-mappings.csrg</srgIn>
-                            <accessIn>${project.basedir}/../deprecation-mappings.at</accessIn>
+                            <srgIn>${project.basedir}/../../deprecation-mappings.csrg</srgIn>
+                            <accessIn>${project.basedir}/../../deprecation-mappings.at</accessIn>
                         </configuration>
                     </execution>
                 </executions>
@@ -282,8 +282,8 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>2.15</version>
                 <configuration>
-                    <configLocation>${project.basedir}/../etc/checkstyle.xml</configLocation>
-                    <headerLocation>${project.basedir}/../LICENSE</headerLocation>
+                    <configLocation>${project.basedir}/../../etc/checkstyle.xml</configLocation>
+                    <headerLocation>${project.basedir}/../../LICENSE</headerLocation>
                 </configuration>
             </plugin>
         </plugins>
