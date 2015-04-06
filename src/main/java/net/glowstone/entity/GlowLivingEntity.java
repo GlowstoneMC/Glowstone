@@ -139,6 +139,9 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             damage(4, EntityDamageEvent.DamageCause.VOID);
         }
 
+        if (isWithinSolidBlock())
+                damage(1, EntityDamageEvent.DamageCause.SUFFOCATION);
+
         // potion effects
         List<PotionEffect> effects = new ArrayList<>(potionEffects.values());
         for (PotionEffect effect : effects) {
@@ -373,6 +376,13 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Override
     public List<Block> getLastTwoTargetBlocks(Set<Material> materials, int maxDistance) {
         return getLineOfSight(materials, maxDistance, 2);
+    }
+
+    /**
+     * Returns whether the entity's eye location is within a solid block
+     */
+    public boolean isWithinSolidBlock() {
+        return getEyeLocation().getBlock().getType().isSolid();
     }
 
     ////////////////////////////////////////////////////////////////////////////
