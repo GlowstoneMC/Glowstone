@@ -66,7 +66,7 @@ public final class ItemTable {
         reg(Material.THIN_GLASS, new BlockDropless());
         reg(Material.GLOWSTONE, new BlockRandomDrops(Material.GLOWSTONE_DUST, 2, 4));
         reg(Material.MYCEL, new BlockDirectDrops(Material.DIRT));
-        reg(Material.GRASS, new BlockDirectDrops(Material.DIRT));
+        reg(Material.GRASS, new BlockGrass());
         reg(Material.DIRT, new BlockDirectDrops(Material.DIRT));
         reg(Material.GRAVEL, new BlockGravel());
         reg(Material.SAND, new BlockFalling(Material.SAND));
@@ -105,8 +105,8 @@ public final class ItemTable {
         reg(Material.QUARTZ_ORE, new BlockDirectDrops(Material.QUARTZ, ToolType.PICKAXE));
         reg(Material.REDSTONE_ORE, new BlockRandomDrops(Material.REDSTONE, 0, 3, 4, ToolType.IRON_PICKAXE));
         reg(Material.REDSTONE_BLOCK, new BlockDirectDrops(ToolType.PICKAXE));
-        reg(Material.CARROT, new BlockDirectDrops(Material.CARROT_ITEM));
-        reg(Material.COCOA, new BlockDirectDrops(Material.INK_SACK, 3, 1));
+        reg(Material.CARROT, new BlockCarrot());
+        reg(Material.COCOA, new BlockCocoa());
         reg(Material.DEAD_BUSH, new BlockDeadBush());
         reg(Material.LONG_GRASS, new BlockTallGrass());
         reg(Material.HUGE_MUSHROOM_1, new BlockHugeMushroom(true));
@@ -114,11 +114,11 @@ public final class ItemTable {
         reg(Material.LEAVES, new BlockLeaves());
         reg(Material.LEAVES_2, new BlockLeaves());
         reg(Material.MELON_BLOCK, new BlockMelon());
-        reg(Material.MELON_STEM, new BlockMelonStem());
+        reg(Material.MELON_STEM, new BlockStem(Material.MELON_STEM));
         reg(Material.NETHER_WARTS, new BlockDirectDrops(Material.NETHER_STALK));
-        reg(Material.POTATO, new BlockDirectDrops(Material.POTATO_ITEM));
-        reg(Material.PUMPKIN_STEM, new BlockPumpkinStem());
-        reg(Material.CROPS, new BlockDirectDrops(Material.SEEDS));
+        reg(Material.POTATO, new BlockPotato());
+        reg(Material.PUMPKIN_STEM, new BlockStem(Material.PUMPKIN_STEM));
+        reg(Material.CROPS, new BlockCrops());
         reg(Material.CAKE_BLOCK, new BlockDropless());
         reg(Material.WEB, new BlockWeb());
         reg(Material.FIRE, new BlockFire());
@@ -169,10 +169,10 @@ public final class ItemTable {
         reg(Material.DAYLIGHT_DETECTOR_INVERTED, new BlockDaylightDetector());
         reg(Material.YELLOW_FLOWER, new BlockNeedsAttached());
         reg(Material.RED_ROSE, new BlockNeedsAttached());
-        reg(Material.BROWN_MUSHROOM, new BlockNeedsAttached());
-        reg(Material.RED_MUSHROOM, new BlockNeedsAttached());
+        reg(Material.BROWN_MUSHROOM, new BlockMushroom(Material.BROWN_MUSHROOM));
+        reg(Material.RED_MUSHROOM, new BlockMushroom(Material.RED_MUSHROOM));
         reg(Material.SUGAR_CANE_BLOCK, new BlockSugarCane());
-        reg(Material.SAPLING, new BlockNeedsAttached());
+        reg(Material.SAPLING, new BlockSapling());
         reg(Material.RAILS, new BlockNeedsAttached());
         reg(Material.ACTIVATOR_RAIL, new BlockNeedsAttached());
         reg(Material.DETECTOR_RAIL, new BlockNeedsAttached());
@@ -190,6 +190,7 @@ public final class ItemTable {
         reg(Material.WALL_BANNER, new BlockBanner());
         reg(Material.SPONGE, new BlockSponge());
         reg(Material.TNT, new BlockTNT());
+        reg(Material.DOUBLE_PLANT, new BlockDoublePlant());
 
         reg(Material.FLINT_AND_STEEL, new ItemFlintAndSteel());
         reg(Material.SIGN, new ItemSign());
