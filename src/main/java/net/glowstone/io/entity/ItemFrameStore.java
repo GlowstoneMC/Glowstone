@@ -5,6 +5,7 @@ import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 
 import org.bukkit.Location;
+import org.bukkit.Rotation;
 
 class ItemFrameStore extends EntityStore<GlowItemFrame> {
 
@@ -29,7 +30,7 @@ class ItemFrameStore extends EntityStore<GlowItemFrame> {
         }
 
         if (tag.isInt("Rotation")) {
-            entity.setRotationAngle((tag.getInt("Rotation") * 45));
+            entity.setRotation(Rotation.values()[tag.getInt("Rotation")]);
         }
     }
 
@@ -38,6 +39,6 @@ class ItemFrameStore extends EntityStore<GlowItemFrame> {
         super.save(entity, tag);
         tag.putInt("Facing", entity.getFacingNumber());
         tag.putCompound("Item", NbtSerialization.writeItem(entity.getItem(), -1));
-        tag.putInt("Rotation", (int) entity.getRotationAngle() / 45);
+        tag.putInt("Rotation", entity.getRotation().ordinal());
     }
 }

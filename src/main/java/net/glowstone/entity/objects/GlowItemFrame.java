@@ -265,29 +265,27 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
     }
 
     @Override
-    @Deprecated
     public Rotation getRotation() {
         switch (rot) {
             case 0:
-            case 1:
                 return Rotation.NONE;
+            case 1:
+                return Rotation.CLOCKWISE_45;
             case 2:
-            case 3:
                 return Rotation.CLOCKWISE;
+            case 3:
+                return Rotation.CLOCKWISE_135;
             case 4:
-            case 5:
                 return Rotation.FLIPPED;
+            case 5:
+                return Rotation.FLIPPED_45;
             case 6:
-            case 7:
                 return Rotation.COUNTER_CLOCKWISE;
+            case 7:
+                return Rotation.COUNTER_CLOCKWISE_45;
         }
 
         return Rotation.NONE;
-    }
-
-    @Override
-    public double getRotationAngle() {
-        return rot * 45;
     }
 
     @Override
@@ -296,14 +294,8 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
     }
 
     @Override
-    @Deprecated
     public void setRotation(Rotation rotation) {
-        setRotationAngle(rotation.getRotation()); 
-    }
-
-    @Override
-    public void setRotationAngle(double rotation) {
-        rot = (int) Math.ceil((rotation % 360) / 45);
+        rot = rotation.ordinal();
         setItemFrameRotation(rot);
     }
 }
