@@ -1655,4 +1655,9 @@ public final class GlowServer implements Server {
     public boolean getAllowFlight() {
         return config.getBoolean(ServerConfig.Key.ALLOW_FLIGHT);
     }
+
+    public int getMaxBuildHeight() {
+        return Math.max(64, Math.min(256, config.getInt(ServerConfig.Key
+                .MAX_BUILD_HEIGHT)));
+    }
 }
