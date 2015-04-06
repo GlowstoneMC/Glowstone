@@ -1,6 +1,7 @@
 package net.glowstone;
 
 import net.glowstone.constants.GlowBiome;
+import net.glowstone.generator.GlowChunkGenerator;
 import net.glowstone.generator.biomegrid.MapLayer;
 import net.glowstone.io.ChunkIoService;
 import org.bukkit.block.Biome;
@@ -38,9 +39,9 @@ public final class ChunkManager {
     private final ChunkGenerator generator;
 
     /**
-     * The biome map used to fill chunks biome grid.
+     * The biome maps used to fill chunks biome grid and terrain generation.
      */
-    private final MapLayer biomeMap;
+    private final MapLayer[] biomeGrid;
 
     /**
      * A map of chunks currently loaded in memory.
@@ -62,7 +63,7 @@ public final class ChunkManager {
         this.world = world;
         this.service = service;
         this.generator = generator;
-        biomeMap = MapLayer.initialize(world.getSeed(), world.getWorldType());
+        biomeGrid = MapLayer.initialize(world.getSeed(), world.getWorldType());
     }
 
     /**
@@ -248,9 +249,31 @@ public final class ChunkManager {
             }
         }
         */
-        int[] biomeValues = biomeMap.generateValues(x * GlowChunk.WIDTH, z * GlowChunk.HEIGHT, GlowChunk.WIDTH, GlowChunk.HEIGHT);
+        int[] biomeValues = biomeGrid[0].generateValues(x * GlowChunk.WIDTH, z * GlowChunk.HEIGHT, GlowChunk.WIDTH, GlowChunk.HEIGHT);
         for (int i = 0;  i < biomeValues.length; i++) {
             biomes.biomes[i] = (byte) biomeValues[i];
+        }
+
+        // extended sections with data
+        if (generator instanceof GlowChunkGenerator) {
+            short[][] extSections = ((GlowChunkGenerator) generator).generateExtBlockSectionsWithData(world, random, x, z, biomes);
+            if (extSections != null) {
+                GlowChunk.ChunkSection[] sections = new GlowChunk.ChunkSection[extSections.length];
+                for (int i = 0; i < extSections.length; ++i) {
+                    // this is sort of messy.
+                    if (extSections[i] != null) {
+                        sections[i] = new GlowChunk.ChunkSection();
+                        for (int j = 0; j < extSections[i].length; ++j) {
+                            sections[i].types[j] = (char) extSections[i][j];
+                        }
+                        sections[i].recount();
+                    }
+                }
+                chunk.initializeSections(sections);
+                chunk.setBiomes(biomes.biomes);
+                chunk.automaticHeightMap();
+                return;
+            }
         }
 
         // extended sections
@@ -370,6 +393,10 @@ public final class ChunkManager {
         return false;
     }
 
+    public int[] getBiomeGridAtLowerRes(int x, int z, int sizeX, int sizeZ) {
+        return biomeGrid[1].generateValues(x, z, sizeX, sizeZ);
+    }
+
     /**
      * A BiomeGrid implementation for chunk generation.
      */
@@ -378,12 +405,12 @@ public final class ChunkManager {
 
         @Override
         public Biome getBiome(int x, int z) {
-            return GlowBiome.getBiome(biomes[z * 16 + x]);
+            return GlowBiome.getBiome(biomes[x | (z << 4)] & 0xFF); // upcasting is very important to get extended biomes
         }
 
         @Override
         public void setBiome(int x, int z, Biome bio) {
-            biomes[z * 16 + x] = (byte) GlowBiome.getId(bio);
+            biomes[x | (z << 4)] = (byte) GlowBiome.getId(bio);
         }
     }
 

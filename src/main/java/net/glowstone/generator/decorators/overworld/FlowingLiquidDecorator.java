@@ -30,7 +30,7 @@ public class FlowingLiquidDecorator extends BlockDecorator {
         int sourceY = random.nextInt(random.nextInt(type == Material.LAVA ? random.nextInt(240) + 8 : 248) + 8);
 
         final Block block = world.getBlockAt(sourceX, sourceY, sourceZ);
-        if (block.getType() != Material.STONE && block.getType() != Material.AIR &&
+        if ((block.getType() == Material.STONE || block.getType() == Material.AIR) &&
                 block.getRelative(BlockFace.DOWN).getType() == Material.STONE &&
                 block.getRelative(BlockFace.UP).getType() == Material.STONE) {
             int stoneBlockCount = 0;

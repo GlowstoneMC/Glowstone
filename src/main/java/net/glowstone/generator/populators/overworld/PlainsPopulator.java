@@ -9,6 +9,7 @@ import net.glowstone.generator.objects.DoubleTallPlant;
 import net.glowstone.generator.objects.Flower;
 import net.glowstone.generator.objects.FlowerType;
 import net.glowstone.generator.objects.TallGrass;
+import net.glowstone.util.noise.SimplexOctaveGenerator;
 
 import org.bukkit.Chunk;
 import org.bukkit.DoublePlantSpecies;
@@ -16,18 +17,20 @@ import org.bukkit.GrassSpecies;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.material.LongGrass;
-import org.bukkit.util.noise.PerlinNoiseGenerator;
+import org.bukkit.util.noise.OctaveGenerator;
 
 public class PlainsPopulator extends BiomePopulator {
 
     private static final FlowerType[] FLOWERS = {FlowerType.POPPY, FlowerType.HOUSTONIA, FlowerType.OXEYE_DAISY};
     private static final FlowerType[] TULIPS = {FlowerType.TULIP_RED, FlowerType.TULIP_ORANGE, FlowerType.TULIP_WHITE, FlowerType.TULIP_PINK}; 
-    private final PerlinNoiseGenerator noiseGen = new PerlinNoiseGenerator(new Random(2345));
+    private final OctaveGenerator noiseGen;
 
     public PlainsPopulator() {
         super();
         flowerDecorator.setAmount(0);
         tallGrassDecorator.setAmount(0);
+        noiseGen = new SimplexOctaveGenerator(new Random(2345), 1);
+        noiseGen.setScale(1 / 200.0D);
     }
 
     @Override
@@ -42,7 +45,7 @@ public class PlainsPopulator extends BiomePopulator {
 
         int flowerAmount = 15;
         int tallGrassAmount = 5;
-        if (noiseGen.noise((double) (sourceX + 8) / 200.0D, (double) (sourceZ + 8) / 200.0D) >= -0.8D) {
+        if (noiseGen.noise(sourceX + 8, sourceZ + 8, 0.5D, 2.0D) >= -0.8D) {
             flowerAmount = 4;
             tallGrassAmount = 10;
             for (int i = 0; i < 7; i++) {
@@ -54,10 +57,10 @@ public class PlainsPopulator extends BiomePopulator {
         }
 
         FlowerType flower = FlowerType.DANDELION;
-        if (random.nextInt(3) > 0 && noiseGen.noise((double) (sourceX + 8) / 200.0D, (double) (sourceZ + 8) / 200.0D) >= -0.8D) {
-            flower = FLOWERS[random.nextInt(FLOWERS.length)];
-        } else {
+        if (noiseGen.noise(sourceX + 8, sourceZ + 8, 0.5D, 2.0D) < -0.8D) {
             flower = TULIPS[random.nextInt(TULIPS.length)];
+        } else if (random.nextInt(3) > 0) {
+            flower = FLOWERS[random.nextInt(FLOWERS.length)];
         }
         for (int i = 0; i < flowerAmount; i++) {
             int x = sourceX + random.nextInt(16);

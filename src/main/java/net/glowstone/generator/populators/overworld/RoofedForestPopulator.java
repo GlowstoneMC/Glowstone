@@ -23,6 +23,7 @@ public class RoofedForestPopulator extends ForestPopulator {
         super();
         treeDecorator.setAmount(50);
         treeDecorator.setTrees(TREES);
+        tallGrassDecorator.setAmount(4);
     }
 
     @Override
