@@ -1,9 +1,12 @@
 package net.glowstone.entity;
 
 import com.flowpowered.networking.Message;
+import com.google.common.base.Preconditions;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.glowstone.*;
+import net.glowstone.block.GlowBlock;
+import net.glowstone.block.blocktype.BlockBed;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.constants.*;
 import net.glowstone.entity.meta.ClientSettings;
@@ -16,6 +19,7 @@ import net.glowstone.inventory.InventoryMonitor;
 import net.glowstone.io.PlayerDataService;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.login.LoginSuccessMessage;
+import net.glowstone.net.message.play.entity.AnimateEntityMessage;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityVelocityMessage;
@@ -23,6 +27,7 @@ import net.glowstone.net.message.play.game.*;
 import net.glowstone.net.message.play.inv.*;
 import net.glowstone.net.message.play.player.PlayerAbilitiesMessage;
 import net.glowstone.net.message.play.player.ResourcePackSendMessage;
+import net.glowstone.net.message.play.player.UseBedMessage;
 import net.glowstone.net.protocol.ProtocolType;
 import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextMessage;
@@ -30,6 +35,8 @@ import net.glowstone.util.nbt.CompoundTag;
 import org.apache.commons.lang.Validate;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
@@ -217,9 +224,19 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     private boolean sleepingIgnored;
 
     /**
+     * The bed in which the player currently lies
+     */
+    private GlowBlock bed;
+
+    /**
      * The bed spawn location of a player
      */
     private Location bedSpawn;
+
+    /**
+     * Whether to use the bed spawn even if there is no bed block.
+     */
+    private boolean bedSpawnForced;
 
     /**
      * The location of the sign the player is currently editing, or null.
@@ -629,13 +646,14 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         setHealth(getMaxHealth());
 
         // determine spawn destination
-        boolean spawnAtBed = false;
-        Location dest = world.getSpawnLocation();
-        if (bedSpawn != null) {
-            if (bedSpawn.getBlock().getType() == Material.BED_BLOCK) {
-                // todo: spawn next to the bed instead of inside it
-                dest = bedSpawn.clone();
-                spawnAtBed = true;
+        boolean spawnAtBed = true;
+        Location dest = getBedSpawnLocation();
+        if (dest == null) {
+            dest = world.getSpawnLocation();
+            spawnAtBed = false;
+            if (bedSpawn != null) {
+                setBedSpawnLocation(null);
+                sendMessage("Your home bed was missing or obstructed");
             }
         }
 
@@ -839,6 +857,15 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         permissions.recalculatePermissions();
     }
 
+    @Override
+    public List<Message> createSpawnMessage() {
+        List<Message> result = super.createSpawnMessage();
+        if (bed != null) {
+            result.add(new UseBedMessage(getEntityId(), bed.getX(), bed.getY(), bed.getZ()));
+        }
+        return result;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Editable properties
 
@@ -881,9 +908,40 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(new SpawnPositionMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
     }
 
+    /**
+     * Returns whether the player spawns at their bed even if there is no bed block.
+     * @return Whether the player is forced to spawn at their bed.
+     */
+    public boolean isBedSpawnForced() {
+        return bedSpawnForced;
+    }
+
     @Override
     public Location getBedSpawnLocation() {
-        return bedSpawn;
+        if (bedSpawn == null) {
+            return null;
+        }
+
+        // Find head of bed
+        GlowBlock block = (GlowBlock) bedSpawn.getBlock();
+        GlowBlock head = BlockBed.getHead(block);
+        GlowBlock foot = BlockBed.getFoot(block);
+        // If there is a bed, try to find an empty spot next to the bed
+        if (head != null && head.getType() == Material.BED_BLOCK) {
+            Block spawn = BlockBed.getExitLocation(head, foot);
+            return spawn == null ? null : spawn.getLocation().add(0.5, 0.1, 0.5);
+        } else {
+            // If there is no bed and spawning is forced and there is space to spawn
+            if (bedSpawnForced) {
+                Material bottom = head.getType();
+                Material top = head.getRelative(BlockFace.UP).getType();
+                // Do not check floor when forcing spawn
+                if (BlockBed.isValidSpawn(bottom) && BlockBed.isValidSpawn(top)) {
+                    return bedSpawn.clone().add(0.5, 0.1, 0.5); // No blocks are blocking the spawn
+                }
+            }
+            return null;
+        }
     }
 
     @Override
@@ -894,6 +952,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void setBedSpawnLocation(Location location, boolean force) {
         this.bedSpawn = location;
+        this.bedSpawnForced = force;
     }
 
     @Override
@@ -1259,6 +1318,77 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         awardAchievement(Achievement.END_PORTAL, false);
         return true;
+    }
+
+    /**
+     * This player enters the specified bed and is marked as sleeping.
+     * @param block the bed
+     */
+    public void enterBed(GlowBlock block) {
+        Validate.notNull(block, "Bed block cannot be null");
+        Preconditions.checkState(bed == null, "Player already in bed");
+
+        GlowBlock head = BlockBed.getHead(block);
+        GlowBlock foot = BlockBed.getFoot(block);
+        if (EventFactory.callEvent(new PlayerBedEnterEvent(this, head)).isCancelled()) {
+            return;
+        }
+
+        // Occupy the bed
+        BlockBed.setOccupied(head, foot, true);
+        bed = head;
+        sleeping = true;
+        setRawLocation(head.getLocation());
+
+        getSession().send(new UseBedMessage(SELF_ID, head.getX(), head.getY(), head.getZ()));
+        UseBedMessage msg = new UseBedMessage(getEntityId(), head.getX(), head.getY(), head.getZ());
+        for (GlowPlayer p : world.getRawPlayers()) {
+            if (p != this && p.canSeeEntity(this)) {
+                p.getSession().send(msg);
+            }
+        }
+    }
+
+    /**
+     * This player leaves their bed causing them to quit sleeping.
+     * @param setSpawn Whether to set the bed spawn of the player
+     */
+    public void leaveBed(boolean setSpawn) {
+        Preconditions.checkState(bed != null, "Player is not in bed");
+        GlowBlock head = BlockBed.getHead(bed);;
+        GlowBlock foot = BlockBed.getFoot(bed);
+
+        // Determine exit location
+        Block exitBlock = BlockBed.getExitLocation(head, foot);
+        if (exitBlock == null) { // If no empty blocks were found fallback to block above bed
+            exitBlock = head.getRelative(BlockFace.UP);
+        }
+        Location exitLocation = exitBlock.getLocation().add(0.5, 0.1, 0.5); // Use center of block
+
+        // Set their spawn (normally omitted if their bed gets destroyed instead of them leaving it)
+        if (setSpawn) {
+            setBedSpawnLocation(head.getLocation());
+        }
+
+        // Empty the bed
+        BlockBed.setOccupied(head, foot, false);
+        bed = null;
+        sleeping = false;
+
+        // And eject the player
+        setRawLocation(exitLocation);
+        teleported = true;
+
+        // Call event
+        EventFactory.callEvent(new PlayerBedLeaveEvent(this, head));
+
+        getSession().send(new AnimateEntityMessage(SELF_ID, AnimateEntityMessage.OUT_LEAVE_BED));
+        AnimateEntityMessage msg = new AnimateEntityMessage(getEntityId(), AnimateEntityMessage.OUT_LEAVE_BED);
+        for (GlowPlayer p : world.getRawPlayers()) {
+            if (p != this && p.canSeeEntity(this)) {
+                p.getSession().send(msg);
+            }
+        }
     }
 
     @Override

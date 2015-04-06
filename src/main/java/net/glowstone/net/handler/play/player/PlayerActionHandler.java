@@ -19,7 +19,9 @@ public final class PlayerActionHandler implements MessageHandler<GlowSession, Pl
                 player.setSneaking(false);
                 break;
             case 2: // leave bed
-                // todo
+                if (player.isSleeping()) {
+                    player.leaveBed(true);
+                }
                 break;
             case 3: // start sprinting
                 player.setSprinting(true);
