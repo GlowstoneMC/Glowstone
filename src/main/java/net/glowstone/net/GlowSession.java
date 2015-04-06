@@ -69,6 +69,10 @@ public final class GlowSession extends BasicSession {
     private InetSocketAddress address;
 
     /**
+     * The state of the connection
+     */
+    private boolean online = false;
+    /**
      * The verify token used in authentication
      */
     private byte[] verifyToken;
@@ -243,6 +247,14 @@ public final class GlowSession extends BasicSession {
     // Player and state management
 
     /**
+     * Get session online state
+     * @return true if this session's state is online
+     */
+    public boolean isOnline() {
+        return online;
+    }
+
+    /**
      * Gets the player associated with this session.
      * @return The player, or {@code null} if no player is associated with it.
      */
@@ -285,6 +297,9 @@ public final class GlowSession extends BasicSession {
             return;
         }
 
+        //joins the player
+        player.join(this, reader);
+
         // Kick other players with the same UUID
         for (GlowPlayer other : getServer().getOnlinePlayers()) {
             if (other != player && other.getUniqueId().equals(player.getUniqueId())) {
@@ -294,6 +309,8 @@ public final class GlowSession extends BasicSession {
         }
 
         player.getWorld().getRawPlayers().add(player);
+
+        online = true;
 
         GlowServer.logger.info(player.getName() + " [" + address + "] connected, UUID: " + player.getUniqueId());
 
@@ -360,7 +377,7 @@ public final class GlowSession extends BasicSession {
 
             reason = event.getReason();
 
-            if (event.getLeaveMessage() != null) {
+            if (player.isOnline() && event.getLeaveMessage() != null) {
                 server.broadcastMessage(event.getLeaveMessage());
             }
         }
@@ -479,7 +496,7 @@ public final class GlowSession extends BasicSession {
         GlowServer.logger.info(player.getName() + " [" + address + "] lost connection");
 
         final String text = EventFactory.onPlayerQuit(player).getQuitMessage();
-        if (text != null && !text.isEmpty()) {
+        if (online && text != null && !text.isEmpty()) {
             server.broadcastMessage(text);
         }
 
