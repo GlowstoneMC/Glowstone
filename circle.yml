@@ -9,7 +9,4 @@ checkout:
 
 test:
     post:
-        # release artifacts for API jar and server
-        - rm Glowkit/target/*shaded*
-        - cp Glowkit/target/*.jar $CIRCLE_ARTIFACTS/
         - cp -r target/glowstone*.jar $CIRCLE_ARTIFACTS/
