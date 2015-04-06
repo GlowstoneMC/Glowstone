@@ -39,7 +39,7 @@ public class EnchantmentManager {
 
     public void invalidate() {
         ItemStack item = inventory.getItem();
-        ItemStack resource = inventory.getResource();
+        ItemStack resource = inventory.getSecondary();
 
         if (item == null || !canEnchant(item) || player.getGameMode() != GameMode.CREATIVE && (resource == null || resource.getType() != Material.INK_SACK || resource.getDurability() != 4)) {
             clearEnch();
@@ -87,10 +87,10 @@ public class EnchantmentManager {
         player.enchanted(clicked);
 
         if (player.getGameMode() != GameMode.CREATIVE) {
-            ItemStack res = inventory.getResource();
+            ItemStack res = inventory.getSecondary();
             res.setAmount(res.getAmount() - clicked + 1);
             if (res.getAmount() <= 0)
-                inventory.setResource(null);
+                inventory.setSecondary(null);
         }
 
         this.xpSeed = player.getXpSeed();
@@ -280,7 +280,7 @@ public class EnchantmentManager {
 
         int level = enchLevelCosts[clicked];
         if (player.getGameMode() != GameMode.CREATIVE) {
-            if (player.getLevel() < level || inventory.getResource() == null || inventory.getResource().getAmount() < clicked) {
+            if (player.getLevel() < level || inventory.getSecondary() == null || inventory.getSecondary().getAmount() < clicked) {
                 GlowServer.logger.info("Malicious client, player has not enough levels / enough resources to enchant item!");
                 update();
                 return true;
