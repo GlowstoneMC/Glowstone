@@ -1,5 +1,6 @@
 package net.glowstone.io.entity;
 
+import net.glowstone.entity.AttributeManager;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
@@ -8,9 +9,7 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore<T> {
 
@@ -28,7 +27,6 @@ abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore
     // - short "HurtTime"
     // - int "HurtByTimestamp"
     // - short "DeathTime"
-    // - compound "Attributes"
     // - bool "PersistenceRequired"
     // - bool "Leashed"
     // - compound "Leash"
@@ -110,6 +108,33 @@ abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore
         if (compound.isByte("CanPickUpLoot")) {
             entity.setCanPickupItems(compound.getBool("CanPickUpLoot"));
         }
+
+        if (compound.isList("Attributes", TagType.COMPOUND)) {
+            List<CompoundTag> attributes = compound.getCompoundList("Attributes");
+            AttributeManager am = entity.getAttributeManager();
+
+            for (CompoundTag tag : attributes) {
+                if (tag.isString("Name") && tag.isDouble("Base")) {
+                    List<AttributeManager.Modifier> modifiers = null;
+                    if (tag.isList("Modifiers", TagType.COMPOUND)) {
+                        modifiers = new ArrayList<>();
+
+                        List<CompoundTag> modifierTags = tag.getCompoundList("Modifiers");
+                        for (CompoundTag modifierTag : modifierTags) {
+                            if (modifierTag.isDouble("Amount") && modifierTag.isString("Name") &&
+                                    modifierTag.isInt("Operation") && modifierTag.isLong("UUIDLeast") &&
+                                    modifierTag.isLong("UUIDMost")) {
+                                modifiers.add(new AttributeManager.Modifier(
+                                        modifierTag.getString("Name"), new UUID(modifierTag.getLong("UUIDLeast"), modifierTag.getLong("UUIDMost")),
+                                        modifierTag.getDouble("Amount"), (byte) modifierTag.getInt("Operation")));
+                            }
+                        }
+                    }
+
+                    am.setProperty(tag.getString("Name"), tag.getDouble("Base"), modifiers);
+                }
+            }
+        }
     }
 
     @Override
@@ -125,6 +150,37 @@ abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore
         tag.putFloat("HealF", entity.getHealth());
         tag.putShort("Health", (int) entity.getHealth());
         tag.putShort("AttackTime", entity.getNoDamageTicks());
+
+        AttributeManager am = entity.getAttributeManager();
+        Map<String, AttributeManager.Property> properties = am.getAllProperties();
+        if (!properties.isEmpty()) {
+            List<CompoundTag> attributes = new ArrayList<>();
+
+            for (Map.Entry<String, AttributeManager.Property> property : properties.entrySet()) {
+                CompoundTag attribute = new CompoundTag();
+                attribute.putString("Name", property.getKey());
+
+                AttributeManager.Property p = property.getValue();
+                attribute.putDouble("Base", p.getValue());
+                if (p.getModifiers() != null && !p.getModifiers().isEmpty()) {
+                    List<CompoundTag> modifiers = new ArrayList<>();
+                    for (AttributeManager.Modifier modifier : p.getModifiers()) {
+                        CompoundTag modifierTag = new CompoundTag();
+                        modifierTag.putDouble("Amount", modifier.getAmount());
+                        modifierTag.putString("Name", modifier.getName());
+                        modifierTag.putInt("Operation", modifier.getOperation());
+                        modifierTag.putLong("UUIDLeast", modifier.getUuid().getLeastSignificantBits());
+                        modifierTag.putLong("UUIDMost", modifier.getUuid().getMostSignificantBits());
+                        modifiers.add(modifierTag);
+                    }
+                    attribute.putCompoundList("Modifiers", modifiers);
+                }
+
+                attributes.add(attribute);
+            }
+
+            tag.putCompoundList("Attributes", attributes);
+        }
 
         List<CompoundTag> effects = new LinkedList<>();
         for (PotionEffect effect : entity.getActivePotionEffects()) {

@@ -41,11 +41,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     protected double health;
 
     /**
-     * The entity's maximum health.
-     */
-    protected double maxHealth;
-
-    /**
      * The magnitude of the last damage the entity took.
      */
     private double lastDamage;
@@ -96,14 +91,20 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     private EquipmentMonitor equipmentMonitor = new EquipmentMonitor(this);
 
     /**
+     * The LivingEntity's AttributeManager.
+     */
+    private final AttributeManager attributeManager;
+
+    /**
      * Creates a mob within the specified world.
      *
      * @param location The location.
      */
     public GlowLivingEntity(Location location) {
         super(location);
-        resetMaxHealth();
-        health = maxHealth;
+        attributeManager = new AttributeManager(this);
+        attributeManager.setProperty(AttributeManager.Key.KEY_MAX_HEALTH, 20);
+        health = AttributeManager.Key.KEY_MAX_HEALTH.getDef();
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -176,7 +177,13 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             messages.add(new EntityEquipmentMessage(id, change.slot, change.item));
         }
 
+        attributeManager.applyMessages(messages);
+
         return messages;
+    }
+
+    public AttributeManager getAttributeManager() {
+        return attributeManager;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -426,7 +433,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Override
     public void setHealth(double health) {
         if (health < 0) health = 0;
-        if (health > maxHealth) health = maxHealth;
+        if (health > getMaxHealth()) health = getMaxHealth();
         this.health = health;
     }
 
@@ -504,17 +511,17 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     @Override
     public double getMaxHealth() {
-        return maxHealth;
+        return attributeManager.getPropertyValue(AttributeManager.Key.KEY_MAX_HEALTH);
     }
 
     @Override
     public void setMaxHealth(double health) {
-        maxHealth = health;
+        attributeManager.setProperty(AttributeManager.Key.KEY_MAX_HEALTH, health);
     }
 
     @Override
     public void resetMaxHealth() {
-        maxHealth = 20;
+        setMaxHealth(20);
     }
 
     @Override

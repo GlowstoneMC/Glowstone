@@ -77,6 +77,7 @@ public final class PlayProtocol extends GlowProtocol {
         outbound(0x1D, EntityEffectMessage.class, EntityEffectCodec.class);
         outbound(0x1E, EntityRemoveEffectMessage.class, EntityRemoveEffectCodec.class);
         outbound(0x1F, ExperienceMessage.class, ExperienceCodec.class);
+        outbound(0x20, EntityPropertyMessage.class, EntityPropertyCodec.class);
         outbound(0x21, ChunkDataMessage.class, ChunkDataCodec.class);
         outbound(0x22, MultiBlockChangeMessage.class, MultiBlockChangeCodec.class);
         outbound(0x23, BlockChangeMessage.class, BlockChangeCodec.class);
