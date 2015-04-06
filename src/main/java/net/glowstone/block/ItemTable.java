@@ -39,6 +39,7 @@ public final class ItemTable {
     private void registerBuiltins() {
         reg(Material.NOTE_BLOCK, new BlockNote());
         reg(Material.MOB_SPAWNER, new BlockMobSpawner());
+        reg(Material.MONSTER_EGGS, new BlockMonsterEggs());
         reg(Material.DRAGON_EGG, new BlockFalling(Material.DRAGON_EGG));
         reg(Material.SIGN_POST, new BlockSign());
         reg(Material.WALL_SIGN, new BlockSign());
@@ -64,10 +65,12 @@ public final class ItemTable {
         reg(Material.SOIL, new BlockDirectDrops(Material.DIRT));
         reg(Material.GLASS, new BlockDropless());
         reg(Material.THIN_GLASS, new BlockDropless());
+        reg(Material.STAINED_GLASS, new BlockDropless());
+        reg(Material.STAINED_GLASS_PANE, new BlockDropless());
         reg(Material.GLOWSTONE, new BlockRandomDrops(Material.GLOWSTONE_DUST, 2, 4));
         reg(Material.MYCEL, new BlockDirectDrops(Material.DIRT));
-        reg(Material.GRASS, new BlockGrass());
-        reg(Material.DIRT, new BlockDirectDrops(Material.DIRT));
+        reg(Material.GRASS, new BlockDirectDrops(Material.DIRT));
+        reg(Material.DIRT, new BlockDirt());
         reg(Material.GRAVEL, new BlockGravel());
         reg(Material.SAND, new BlockFalling(Material.SAND));
         reg(Material.ANVIL, new BlockAnvil());
@@ -104,6 +107,7 @@ public final class ItemTable {
         reg(Material.LAPIS_BLOCK, new BlockDirectDrops(ToolType.STONE_PICKAXE));
         reg(Material.QUARTZ_ORE, new BlockDirectDrops(Material.QUARTZ, ToolType.PICKAXE));
         reg(Material.REDSTONE_ORE, new BlockRandomDrops(Material.REDSTONE, 0, 3, 4, ToolType.IRON_PICKAXE));
+        reg(Material.GLOWING_REDSTONE_ORE, new BlockRandomDrops(Material.REDSTONE, 0, 3, 4, ToolType.PICKAXE));
         reg(Material.REDSTONE_BLOCK, new BlockDirectDrops(ToolType.PICKAXE));
         reg(Material.CARROT, new BlockCarrot());
         reg(Material.COCOA, new BlockCocoa());
@@ -122,7 +126,6 @@ public final class ItemTable {
         reg(Material.CAKE_BLOCK, new BlockDropless());
         reg(Material.WEB, new BlockWeb());
         reg(Material.FIRE, new BlockFire());
-        reg(Material.MONSTER_EGGS, new BlockDropless());
         reg(Material.ENDER_PORTAL_FRAME, new BlockEnderPortalFrame());
         reg(Material.FENCE_GATE, new BlockFenceGate());
         reg(Material.ACACIA_FENCE_GATE, new BlockFenceGate());
@@ -133,8 +136,11 @@ public final class ItemTable {
         reg(Material.TRAP_DOOR, new BlockWoodenTrapDoor());
         reg(Material.IRON_TRAPDOOR, new BlockIronTrapDoor());
         reg(Material.FURNACE, new BlockFurnace());
+        reg(Material.BURNING_FURNACE, new BlockFurnace());
         reg(Material.LEVER, new BlockLever());
         reg(Material.HOPPER, new BlockHopper());
+        reg(Material.PISTON_BASE, new BlockDirectDrops(Material.PISTON_BASE));
+        reg(Material.PISTON_STICKY_BASE, new BlockDirectDrops(Material.PISTON_STICKY_BASE));
         reg(Material.ACACIA_STAIRS, new BlockStairs());
         reg(Material.BIRCH_WOOD_STAIRS, new BlockStairs());
         reg(Material.BRICK_STAIRS, new BlockStairs());
@@ -173,10 +179,10 @@ public final class ItemTable {
         reg(Material.RED_MUSHROOM, new BlockMushroom(Material.RED_MUSHROOM));
         reg(Material.SUGAR_CANE_BLOCK, new BlockSugarCane());
         reg(Material.SAPLING, new BlockSapling());
-        reg(Material.RAILS, new BlockNeedsAttached());
-        reg(Material.ACTIVATOR_RAIL, new BlockNeedsAttached());
-        reg(Material.DETECTOR_RAIL, new BlockNeedsAttached());
-        reg(Material.POWERED_RAIL, new BlockNeedsAttached());
+        reg(Material.RAILS, new BlockRails());
+        reg(Material.ACTIVATOR_RAIL, new BlockRails());
+        reg(Material.DETECTOR_RAIL, new BlockRails());
+        reg(Material.POWERED_RAIL, new BlockRails());
         reg(Material.CARPET, new BlockCarpet());
         reg(Material.ENCHANTMENT_TABLE, new BlockEnchantmentTable());
         reg(Material.BREWING_STAND, new BlockBrewingStand());
@@ -191,6 +197,13 @@ public final class ItemTable {
         reg(Material.SPONGE, new BlockSponge());
         reg(Material.TNT, new BlockTNT());
         reg(Material.DOUBLE_PLANT, new BlockDoublePlant());
+        reg(Material.REDSTONE_WIRE, new BlockDirectDrops(Material.REDSTONE));
+        reg(Material.REDSTONE_LAMP_ON, new BlockDirectDrops(Material.REDSTONE_LAMP_OFF));
+        reg(Material.REDSTONE_TORCH_OFF, new BlockDirectDrops(Material.REDSTONE_TORCH_ON));
+        reg(Material.REDSTONE_TORCH_ON, new BlockDirectDrops(Material.REDSTONE_TORCH_ON));
+        reg(Material.PUMPKIN, new BlockDirectDrops(Material.PUMPKIN));
+        reg(Material.JACK_O_LANTERN, new BlockDirectDrops(Material.JACK_O_LANTERN));
+        reg(Material.SEA_LANTERN, new BlockRandomDrops(Material.PRISMARINE_CRYSTALS, 2, 3));
 
         reg(Material.FLINT_AND_STEEL, new ItemFlintAndSteel());
         reg(Material.SIGN, new ItemSign());

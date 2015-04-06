@@ -9,6 +9,9 @@ import org.bukkit.material.Gate;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 public class BlockFenceGate extends BlockOpenable {
 
     @Override
@@ -55,6 +58,11 @@ public class BlockFenceGate extends BlockOpenable {
         } else {
             warnMaterialData(Gate.class, materialData);
         }
+    }
+
+    @Override
+    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+        return Arrays.asList(new ItemStack(block.getType()));
     }
 
     private static BlockFace getOpenDirection(float yaw, BlockFace oldFacing) {

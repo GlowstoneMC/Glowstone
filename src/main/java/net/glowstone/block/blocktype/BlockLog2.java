@@ -1,11 +1,16 @@
 package net.glowstone.block.blocktype;
 
+import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
+import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 public class BlockLog2 extends BlockType {
 
@@ -40,5 +45,10 @@ public class BlockLog2 extends BlockType {
                 break;
         }
         return data;
+    }
+
+    @Override
+    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+        return Arrays.asList(new ItemStack(Material.LOG_2, 1, (short) (block.getData() % 4)));
     }
 }

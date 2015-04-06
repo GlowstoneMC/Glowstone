@@ -1,6 +1,8 @@
 package net.glowstone.block.blocktype;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.bukkit.Location;
@@ -17,6 +19,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.generator.TreeGenerator;
 import net.glowstone.util.BlockStateDelegate;
+import org.bukkit.inventory.ItemStack;
 
 public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
 
@@ -148,5 +151,10 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
         }
 
         return null;
+    }
+
+    @Override
+    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+        return Arrays.asList(new ItemStack(Material.SAPLING, 1, (short) (block.getData() % 8)));
     }
 }
