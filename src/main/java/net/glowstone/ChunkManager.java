@@ -233,6 +233,12 @@ public final class ChunkManager {
     private void generateChunk(GlowChunk chunk, int x, int z) {
         Random random = new Random((long) x * 341873128712L + (long) z * 132897987541L);
         BiomeGrid biomes = new BiomeGrid();
+        // hackish way to force biome
+        for (int i = 0; i < 16; i++) {
+            for (int j = 0; j < 16; j++) {
+                biomes.setBiome(i, j, Biome.MEGA_TAIGA);
+            }
+        }
 
         // extended sections
         short[][] extSections = generator.generateExtBlockSections(world, random, x, z, biomes);

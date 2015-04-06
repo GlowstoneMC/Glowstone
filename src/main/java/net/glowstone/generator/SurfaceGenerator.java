@@ -1,6 +1,8 @@
 package net.glowstone.generator;
 
 import net.glowstone.generator.populators.*;
+import net.glowstone.generator.populators.overworld.*;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -17,22 +19,8 @@ import java.util.Random;
 public class SurfaceGenerator extends GlowChunkGenerator {
 
     public SurfaceGenerator() {
-        super(
-                // In-ground
-                new LakePopulator(),
-                // On-ground
-                // Desert is before tree and mushroom but snow is after so trees have snow on top
-                new DesertPopulator(),
-                new TreePopulator(),
-                new MushroomPopulator(),
-                new SnowPopulator(),
-                new FlowerPopulator(),
-                new BiomePopulator(),
-                // Below-ground
-                new DungeonPopulator(),
-                //new CavePopulator(),
-                new OrePopulator()
-        );
+        super(new OverworldPopulator(),
+              new SnowPopulator());
     }
 
     @Override
@@ -67,33 +55,36 @@ public class SurfaceGenerator extends GlowChunkGenerator {
                         + noiseHeight.noise(x + chunkX, z + chunkZ, 0.7, 0.6, true)
                         * terrainHeight
                         + noiseJitter.noise(x + chunkX, z + chunkZ, 0.5, 0.5)
-                        * 1.5, WORLD_DEPTH - 1); y > 0; y--) {
-                    double terrainType = noiseType.noise(x + chunkX, y, z + chunkZ, 0.5, 0.5);
-                    Material ground = matTop;
-                    if (Math.abs(terrainType) < random.nextDouble() / 3 && !noDirt) {
-                        ground = matMain;
-                    } else if (deep != 0 || y < waterLevel) {
-                        ground = matMain;
-                    }
+                        * 1.5, WORLD_DEPTH - 1); y >= 0; y--) {
+                    if (y <= random.nextInt(5)) {
+                        set(buf, x, y, z, Material.BEDROCK);
+                    } else {
+                        double terrainType = noiseType.noise(x + chunkX, y, z + chunkZ, 0.5, 0.5);
+                        Material ground = matTop;
+                        if (Math.abs(terrainType) < random.nextDouble() / 3 && !noDirt) {
+                            ground = matMain;
+                        } else if (deep != 0 || y < waterLevel) {
+                            ground = matMain;
+                        }
 
-                    if (Math.abs(y - waterLevel) < 5 - random.nextInt(2) && deep < 7) {
-                        if (terrainType < random.nextDouble() / 2) {
-                            if (terrainType < random.nextDouble() / 4) {
-                                ground = matShore;
-                            } else {
-                                ground = matShore2;
+                        if (Math.abs(y - waterLevel) < 5 - random.nextInt(2) && deep < 7) {
+                            if (terrainType < random.nextDouble() / 2) {
+                                if (terrainType < random.nextDouble() / 4) {
+                                    ground = matShore;
+                                } else {
+                                    ground = matShore2;
+                                }
                             }
                         }
-                    }
 
-                    if (deep > random.nextInt(3) + 6) {
-                        ground = matUnder;
-                    }
+                        if (deep > random.nextInt(3) + 6) {
+                            ground = matUnder;
+                        }
 
-                    set(buf, x, y, z, ground);
-                    deep++;
+                        set(buf, x, y, z, ground);
+                        deep++;
+                    }
                 }
-                set(buf, x, 0, z, Material.BEDROCK);
             }
         }
 

@@ -750,7 +750,7 @@ public final class GlowChunk implements Chunk {
         // biomes
         if (entireChunk) {
             for (int i = 0; i < 256; ++i) {
-                tileData[pos++] = 0;
+                tileData[pos++] = biomes[i];
             }
         }
 

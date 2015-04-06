@@ -5,9 +5,9 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.constants.GlowBiome;
 import net.glowstone.constants.GlowEffect;
 import net.glowstone.constants.GlowParticle;
+import net.glowstone.constants.GlowTree;
 import net.glowstone.entity.*;
 import net.glowstone.entity.objects.GlowItem;
-import net.glowstone.generator.TreeGenerator;
 import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
 import net.glowstone.io.anvil.AnvilWorldStorageProvider;
@@ -707,7 +707,7 @@ public final class GlowWorld implements World {
 
     @Override
     public int getSeaLevel() {
-        return getMaxHeight() / 2;
+        return 64;
     }
 
     @Override
@@ -771,9 +771,8 @@ public final class GlowWorld implements World {
     @Override
     public boolean generateTree(Location loc, TreeType type, BlockChangeDelegate delegate) {
         final BlockStateDelegate blockStateDelegate = new BlockStateDelegate();
-        final TreeGenerator generator = new TreeGenerator(blockStateDelegate);
-        if (generator.generate(random, loc, type)) {
-            final List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
+        if (GlowTree.newInstance(type, random, loc, blockStateDelegate).generate()) {
+            final List<BlockState> blockStates = new ArrayList<BlockState>(blockStateDelegate.getBlockStates());
             StructureGrowEvent growEvent = new StructureGrowEvent(loc, type, false, null, blockStates);
             EventFactory.callEvent(growEvent);
             if (!growEvent.isCancelled()) {
