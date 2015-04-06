@@ -15,17 +15,17 @@ import java.util.List;
 
 public class GlowRabbit extends GlowAnimal implements Rabbit {
 
-    private static final ImmutableBiMap<RabbitType, Integer> rabbitTypeIntegerMap = ImmutableBiMap.<RabbitType, Integer>builder()
-            .put(Rabbit.RabbitType.BROWN, 0)
-            .put(Rabbit.RabbitType.WHITE, 1)
-            .put(Rabbit.RabbitType.BLACK, 2)
-            .put(Rabbit.RabbitType.BLACK_AND_WHITE, 3)
-            .put(Rabbit.RabbitType.GOLD, 4)
-            .put(Rabbit.RabbitType.SALT_PEPPER, 5)
-            .put(Rabbit.RabbitType.KILLER, 99)
+    private static final ImmutableBiMap<Rabbit.Type, Integer> rabbitTypeIntegerMap = ImmutableBiMap.<Rabbit.Type, Integer>builder()
+            .put(Rabbit.Type.BROWN, 0)
+            .put(Rabbit.Type.WHITE, 1)
+            .put(Rabbit.Type.BLACK, 2)
+            .put(Rabbit.Type.BLACK_AND_WHITE, 3)
+            .put(Rabbit.Type.GOLD, 4)
+            .put(Rabbit.Type.SALT_AND_PEPPER, 5)
+            .put(Type.THE_KILLER_BUNNY, 99)
             .build();
 
-    private RabbitType rabbitType = RabbitType.BROWN;
+    private Rabbit.Type rabbitType = Rabbit.Type.BROWN;
 
     public GlowRabbit(Location location) {
         super(location, EntityType.RABBIT);
@@ -33,12 +33,12 @@ public class GlowRabbit extends GlowAnimal implements Rabbit {
     }
 
     @Override
-    public RabbitType getRabbitType() {
+    public Rabbit.Type getRabbitType() {
         return rabbitType;
     }
 
     @Override
-    public void setRabbitType(RabbitType type) {
+    public void setRabbitType(Rabbit.Type type) {
         Validate.notNull(type, "Cannot set a null rabbit type!");
         this.rabbitType = type;
     }
