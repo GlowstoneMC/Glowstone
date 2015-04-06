@@ -17,7 +17,7 @@ import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.generator.TreeGenerator;
+import net.glowstone.constants.GlowTree;
 import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.inventory.ItemStack;
 
@@ -95,10 +95,9 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
         // try to generate a tree
         final Location loc = block.getLocation();
         final BlockStateDelegate blockStateDelegate = new BlockStateDelegate();
-        final TreeGenerator generator = new TreeGenerator(blockStateDelegate);
         boolean canGrow = false;
-        if (generator.generate(random, loc, type)) {
-            final List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
+        if (GlowTree.newInstance(type, random, loc, blockStateDelegate).generate()) {
+            final List<BlockState> blockStates = new ArrayList<BlockState>(blockStateDelegate.getBlockStates());
             StructureGrowEvent growEvent =
                     new StructureGrowEvent(loc, type, player == null ? false : true, player, blockStates);
             EventFactory.callEvent(growEvent);

@@ -3,6 +3,7 @@ package net.glowstone.block.blocktype;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.glowstone.constants.GlowTree;
 import org.bukkit.DirtType;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,7 +17,6 @@ import org.bukkit.material.Dirt;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.generator.TreeGenerator;
 import net.glowstone.util.BlockStateDelegate;
 
 public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable {
@@ -65,9 +65,8 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
         }
         final Location loc = block.getLocation();
         final BlockStateDelegate blockStateDelegate = new BlockStateDelegate();
-        final TreeGenerator generator = new TreeGenerator(blockStateDelegate);
-        if (generator.generate(random, loc, type)) {
-            final List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
+        if (GlowTree.newInstance(type, random, loc, blockStateDelegate).generate()) {
+            final List<BlockState> blockStates = new ArrayList<BlockState>(blockStateDelegate.getBlockStates());
             StructureGrowEvent growEvent = new StructureGrowEvent(loc, type, true, player, blockStates);
             EventFactory.callEvent(growEvent);
             if (!growEvent.isCancelled()) {
