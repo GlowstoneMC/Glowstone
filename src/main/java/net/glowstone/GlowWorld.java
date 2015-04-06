@@ -1524,7 +1524,7 @@ public final class GlowWorld implements World {
     
             if (tickRate > 0)
                 tickMap.put(target, tickRate);
-            else if(tickMap.containsKey(target))
+            else if (tickMap.containsKey(target))
                 tickMap.remove(target);
     }
     
