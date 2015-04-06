@@ -5,10 +5,10 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.inventory.MaterialMatcher;
 import net.glowstone.inventory.ToolType;
-import org.bukkit.BannerPattern;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.banner.Pattern;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -83,19 +83,12 @@ public class BlockCauldron extends BlockNeedsTool {
         if (block.getData() > 0) {
             ItemStack inHand = player.getItemInHand();
             BannerMeta meta = (BannerMeta) inHand.getItemMeta();
-            BannerPattern pattern = meta.getPattern();
-            List<BannerPattern.BannerLayer> layers = pattern.getLayers();
+            List<Pattern> layers = meta.getPatterns();
             if (layers == null || layers.isEmpty()) {
                 return false;
             }
 
-            BannerPattern.Builder builder = BannerPattern.builder();
-            for (int i = 0; i < layers.size() - 1; i++) {
-                BannerPattern.BannerLayer layer = layers.get(i);
-                builder.layer(layer.getTexture(), layer.getColor());
-            }
-
-            meta.setPattern(builder.build());
+            meta.setPatterns(layers);
             inHand.setItemMeta(meta);
 
             block.setData((byte) (block.getData() - 1));
