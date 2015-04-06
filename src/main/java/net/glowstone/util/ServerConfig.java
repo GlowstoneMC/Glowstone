@@ -60,7 +60,11 @@ public final class ServerConfig {
         this.configFile = configFile;
         this.parameters = parameters;
 
-        config.options().indent(4);
+        config.options().indent(4).copyHeader(true).header(
+            "glowstone.yml is the main configuration file for a Glowstone server\n" +
+            "It contains everything from server.properties and bukkit.yml in a\n" +
+            "normal CraftBukkit installation.\n\n" +
+            "For help, join us on IRC: #glowstone @ esper.net");
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -167,38 +171,49 @@ public final class ServerConfig {
         // load extra config files again next time they're needed
         extraConfig.clear();
 
+        boolean changed = false;
+
         // create default file if needed
-        final boolean exists = configFile.exists();
-        if (!exists) {
+        if (!configFile.exists()) {
+            GlowServer.logger.info("Creating default config: " + configFile);
+
             // create config directory
             if (!configDir.isDirectory() && !configDir.mkdirs()) {
                 GlowServer.logger.severe("Cannot create directory: " + configDir);
                 return;
             }
 
-            copyDefaults("glowstone.yml", configFile);
-        }
-
-        // load config
-        try {
-            config.load(configFile);
-        } catch (IOException e) {
-            GlowServer.logger.log(Level.SEVERE, "Failed to read config: " + configFile, e);
-        } catch (InvalidConfigurationException e) {
-            report(configFile, e);
-        }
-
-        // if we just created defaults, attempt to migrate
-        if (!exists && migrate()) {
-            // save config, including any new defaults
-            try {
-                config.save(configFile);
-            } catch (IOException e) {
-                GlowServer.logger.log(Level.SEVERE, "Failed to write config: " + configFile, e);
-                return;
+            // load default config
+            for (Key key : Key.values()) {
+                config.set(key.path, key.def);
             }
 
-            GlowServer.logger.info("Migrated configuration from CraftBukkit");
+            // attempt to migrate
+            if (migrate()) {
+                GlowServer.logger.info("Migrated configuration from previous installation");
+            }
+            changed = true;
+        } else {
+            // load config
+            try {
+                config.load(configFile);
+            } catch (IOException e) {
+                GlowServer.logger.log(Level.SEVERE, "Failed to read config: " + configFile, e);
+            } catch (InvalidConfigurationException e) {
+                report(configFile, e);
+            }
+
+            // add missing keys to the current config
+            for (Key key : Key.values()) {
+                if (!config.contains(key.path)) {
+                    config.set(key.path, key.def);
+                    changed = true;
+                }
+            }
+        }
+
+        if (changed) {
+            save();
         }
     }
 
@@ -307,6 +322,34 @@ public final class ServerConfig {
         SHUTDOWN_MESSAGE("server.shutdown-message", "Server shutting down.", Migrate.BUKKIT, "settings.shutdown-message"),
         USE_JLINE("server.use-jline", true),
 
+        // game props
+        GAMEMODE("game.gamemode", "SURVIVAL", Migrate.PROPS, "gamemode"),
+        FORCE_GAMEMODE("game.gamemode-force", "false", Migrate.PROPS, "force-gamemode"),
+        DIFFICULTY("game.difficulty", "NORMAL", Migrate.PROPS, "difficulty"),
+        HARDCORE("game.hardcore", false, Migrate.PROPS, "hardcore"),
+        PVP_ENABLED("game.pvp", true, Migrate.PROPS, "pvp"),
+        MAX_BUILD_HEIGHT("game.max-build-height", 256, Migrate.PROPS, "max-build-height"),
+        ANNOUNCE_ACHIEVEMENTS("game.announce-achievements", true, Migrate.PROPS, "announce-player-achievements"),
+
+        // server.properties keys
+        ALLOW_FLIGHT("game.allow-flight", false, Migrate.PROPS, "allow-flight"),
+        ENABLE_COMMAND_BLOCK("game.command-blocks", false, Migrate.PROPS, "enable-command-block"),
+        //OP_PERMISSION_LEVEL(null, Migrate.PROPS, "op-permission-level"),
+        RESOURCE_PACK("game.resource-pack", "", Migrate.PROPS, "resource-pack"),
+        RESOURCE_PACK_HASH("game.resource-pack-hash", "", Migrate.PROPS, "resource-pack-hash"),
+        SNOOPER_ENABLED("server.snooper-enabled", false, Migrate.PROPS, "snooper-enabled"),
+
+        // critters
+        SPAWN_MONSTERS("creatures.enable.monsters", true, Migrate.PROPS, "spawn-monsters"),
+        SPAWN_ANIMALS("creatures.enable.animals", true, Migrate.PROPS, "spawn-animals"),
+        SPAWN_NPCS("creatures.enable.npcs", true, Migrate.PROPS, "spawn-npcs"),
+        MONSTER_LIMIT("creatures.limit.monsters", 70, Migrate.BUKKIT, "spawn-limits.monsters"),
+        ANIMAL_LIMIT("creatures.limit.animals", 15, Migrate.BUKKIT, "spawn-limits.animals"),
+        WATER_ANIMAL_LIMIT("creatures.limit.water", 5, Migrate.BUKKIT, "spawn-limits.water-animals"),
+        AMBIENT_LIMIT("creatures.limit.ambient", 15, Migrate.BUKKIT, "spawn-limits.ambient"),
+        MONSTER_TICKS("creatures.ticks.monsters", 1, Migrate.BUKKIT, "ticks-per.monster-spawns"),
+        ANIMAL_TICKS("creatures.ticks.animal", 400, Migrate.BUKKIT, "ticks-per.animal-spawns"),
+
         // folders
         PLUGIN_FOLDER("folders.plugins", "plugins"),
         UPDATE_FOLDER("folders.update", "update", Migrate.BUKKIT, "settings.update-folder"),
@@ -348,34 +391,6 @@ public final class ServerConfig {
         ALLOW_NETHER("world.allow-nether", true, Migrate.PROPS, "allow-nether"),
         ALLOW_END("world.allow-end", true, Migrate.BUKKIT, "settings.allow-end"),
         PERSIST_SPAWN("world.keep-spawn-loaded", true),
-
-        // game props
-        GAMEMODE("game.gamemode", "SURVIVAL", Migrate.PROPS, "gamemode"),
-        FORCE_GAMEMODE("game.gamemode-force", "false", Migrate.PROPS, "force-gamemode"),
-        DIFFICULTY("game.difficulty", "NORMAL", Migrate.PROPS, "difficulty"),
-        HARDCORE("game.hardcore", false, Migrate.PROPS, "hardcore"),
-        PVP_ENABLED("game.pvp", true, Migrate.PROPS, "pvp"),
-        MAX_BUILD_HEIGHT("game.max-build-height", 256, Migrate.PROPS, "max-build-height"),
-        ANNOUNCE_ACHIEVEMENTS("game.announce-achievements", true, Migrate.PROPS, "announce-player-achievements"),
-
-        // server.properties keys
-        ALLOW_FLIGHT("game.allow-flight", false, Migrate.PROPS, "allow-flight"),
-        ENABLE_COMMAND_BLOCK("game.command-blocks", false, Migrate.PROPS, "enable-command-block"),
-        //OP_PERMISSION_LEVEL(null, Migrate.PROPS, "op-permission-level"),
-        RESOURCE_PACK("game.resource-pack", "", Migrate.PROPS, "resource-pack"),
-        RESOURCE_PACK_HASH("game.resource-pack-hash", "", Migrate.PROPS, "resource-pack-hash"),
-        SNOOPER_ENABLED("server.snooper-enabled", false, Migrate.PROPS, "snooper-enabled"),
-
-        // critters
-        SPAWN_MONSTERS("creatures.enable.monsters", true, Migrate.PROPS, "spawn-monsters"),
-        SPAWN_ANIMALS("creatures.enable.animals", true, Migrate.PROPS, "spawn-animals"),
-        SPAWN_NPCS("creatures.enable.npcs", true, Migrate.PROPS, "spawn-npcs"),
-        MONSTER_LIMIT("creatures.limit.monsters", 70, Migrate.BUKKIT, "spawn-limits.monsters"),
-        ANIMAL_LIMIT("creatures.limit.animals", 15, Migrate.BUKKIT, "spawn-limits.animals"),
-        WATER_ANIMAL_LIMIT("creatures.limit.water", 5, Migrate.BUKKIT, "spawn-limits.water-animals"),
-        AMBIENT_LIMIT("creatures.limit.ambient", 15, Migrate.BUKKIT, "spawn-limits.ambient"),
-        MONSTER_TICKS("creatures.ticks.monsters", 1, Migrate.BUKKIT, "ticks-per.monster-spawns"),
-        ANIMAL_TICKS("creatures.ticks.animal", 400, Migrate.BUKKIT, "ticks-per.animal-spawns"),
 
         // database
         DB_DRIVER("database.driver", "org.sqlite.JDBC", Migrate.BUKKIT, "database.driver"),
