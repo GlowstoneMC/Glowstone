@@ -18,7 +18,6 @@ class PlayerStore extends HumanEntityStore<GlowPlayer> {
 
     // todo: the following tags
     // - int "Score"
-    // - int "XpSeed"
     // - int "foodTickTimer"
     // in "abilities":
     // - bool "invulnerable"

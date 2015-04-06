@@ -13,6 +13,13 @@ public enum ToolType implements MaterialMatcher {
     GOLD_PICKAXE(Material.GOLD_PICKAXE, STONE_PICKAXE),
     PICKAXE(Material.WOOD_PICKAXE, GOLD_PICKAXE),
 
+    //Axes
+    DIAMOND_AXE(Material.DIAMOND_AXE, null),
+    IRON_AXE(Material.IRON_AXE, DIAMOND_AXE),
+    STONE_AXE(Material.STONE_AXE, IRON_AXE),
+    GOLD_AXE(Material.GOLD_AXE, STONE_AXE),
+    AXE(Material.WOOD_AXE, GOLD_AXE),
+
     // Spades
     DIAMOND_SPADE(Material.DIAMOND_SPADE, null),
     IRON_SPADE(Material.IRON_SPADE, DIAMOND_SPADE),
