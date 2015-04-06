@@ -38,7 +38,7 @@ public class BlockQuartz extends BlockNeedsTool {
     }
 
     @Override
-    protected Collection<ItemStack> getMinedDrops(GlowBlock block, ItemStack tool) {
+    public Collection<ItemStack> getMinedDrops(GlowBlock block) {
         //TODO use MaterialData instead of magic value if possible
         byte data = (byte) Math.min(2, block.getData());
         return Arrays.asList(new ItemStack(Material.QUARTZ_BLOCK, 1, data));

@@ -77,7 +77,7 @@ public final class ItemTable {
         reg(Material.ICE, new BlockDropless());
         reg(Material.PACKED_ICE, new BlockDropless());
         reg(Material.SNOW, new BlockSnow());
-        reg(Material.SNOW_BLOCK, new BlockDropless());
+        reg(Material.SNOW_BLOCK, new BlockDirectDrops(Material.SNOW_BALL, ToolType.SPADE));
         reg(Material.PRISMARINE, new BlockDirectDrops(ToolType.PICKAXE));
         reg(Material.RED_SANDSTONE, new BlockDirectDrops(ToolType.PICKAXE));
         reg(Material.SANDSTONE, new BlockDirectDrops(ToolType.PICKAXE));

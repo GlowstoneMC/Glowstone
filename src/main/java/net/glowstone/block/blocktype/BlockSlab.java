@@ -72,8 +72,13 @@ public class BlockSlab extends BlockType {
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (block.getType() == Material.WOOD_STEP ||
                 (tool != null && ToolType.PICKAXE.matches(tool.getType()))) {
-            return Arrays.asList(new ItemStack(block.getType(), 1, (short) (block.getData() % 8)));
+            return getMinedDrops(block);
         }
         return BlockDropless.EMPTY_STACK;
+    }
+
+    @Override
+    public Collection<ItemStack> getMinedDrops(GlowBlock block) {
+        return Arrays.asList(new ItemStack(block.getType(), 1, (short) (block.getData() % 8)));
     }
 }

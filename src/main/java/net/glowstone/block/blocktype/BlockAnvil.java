@@ -30,8 +30,12 @@ public class BlockAnvil extends BlockFalling {
         if (tool == null || !neededTool.matches(tool.getType()))
             return BlockDropless.EMPTY_STACK;
 
+        return getMinedDrops(block);
+    }
+
+    @Override
+    public Collection<ItemStack> getMinedDrops(GlowBlock block) {
         ItemStack drop = new ItemStack(Material.ANVIL, 1, (short) (block.getData() / 4));
         return Arrays.asList(drop);
     }
-
 }

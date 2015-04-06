@@ -31,7 +31,9 @@ public class BlockDoor extends BlockType {
     }
 
     @Override
-    public void blockDestroy(GlowPlayer player, GlowBlock block, BlockFace face) {
+    public void onBlockChanged(GlowBlock block, Material oldType, byte oldData, Material newType, byte newData) {
+        if (newType != Material.AIR) return;
+
         // remove the other half of the door
         GlowBlockState state = block.getState();
         MaterialData data = state.getData();

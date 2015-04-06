@@ -18,4 +18,9 @@ public class BlockWeb extends BlockType {
         }
         return BlockDropless.EMPTY_STACK;
     }
+
+    @Override
+    public Collection<ItemStack> getMinedDrops(GlowBlock block) {
+        return DROP_STRING;
+    }
 }

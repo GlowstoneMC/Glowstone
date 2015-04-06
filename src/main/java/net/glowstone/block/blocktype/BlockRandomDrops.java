@@ -39,7 +39,7 @@ public class BlockRandomDrops extends BlockNeedsTool {
     }
 
     @Override
-    public Collection<ItemStack> getMinedDrops(GlowBlock block, ItemStack tool) {
+    public Collection<ItemStack> getMinedDrops(GlowBlock block) {
         return Collections.unmodifiableList(Arrays.asList(new ItemStack(dropType, random.nextInt(maxDrops - minDrops + 1) + minDrops, data)));
     }
 
