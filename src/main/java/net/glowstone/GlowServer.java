@@ -5,6 +5,8 @@ import com.avaje.ebean.config.dbplatform.SQLitePlatform;
 import com.avaje.ebeaninternal.server.lib.sql.TransactionIsolation;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import net.glowstone.block.BuiltinMaterialValueManager;
+import net.glowstone.block.MaterialValueManager;
 import net.glowstone.command.ColorCommand;
 import net.glowstone.command.TellrawCommand;
 import net.glowstone.constants.GlowEnchantment;
@@ -399,9 +401,16 @@ public final class GlowServer implements Server {
     private final Set<GlowPlayer> onlineView = Collections.unmodifiableSet(onlinePlayers);
 
     /**
+     * The {@link net.glowstone.block.MaterialValueManager} of this server.
+     */
+    private MaterialValueManager materialValueManager;
+
+    /**
      * Creates a new server.
      */
     public GlowServer(ServerConfig config) {
+        this.materialValueManager = new BuiltinMaterialValueManager();
+
         this.config = config;
         // stuff based on selected config directory
         opsList = new UuidListFile(config.getFile("ops.json"));
@@ -894,6 +903,10 @@ public final class GlowServer implements Server {
      */
     public boolean useRconColors() {
         return config.getBoolean(ServerConfig.Key.RCON_COLORS);
+    }
+
+    public MaterialValueManager getMaterialValueManager() {
+        return materialValueManager;
     }
 
     /**

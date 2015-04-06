@@ -186,8 +186,7 @@ public final class Explosion {
     }
 
     private double getBlastDurability(GlowBlock block) {
-        // TODO: return the block's blast durability
-        return 2.5;
+        return block.getMaterialValues().getBlastResistance();
     }
 
     private List<Block> toBlockList(Collection<BlockVector> locs) {
