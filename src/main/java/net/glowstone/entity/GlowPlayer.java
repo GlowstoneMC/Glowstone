@@ -1385,7 +1385,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void playEffect(Location loc, Effect effect, int data) {
         int id = effect.getId();
-        boolean ignoreDistance = false; // TODO: effect.isDistanceIgnored();
+        boolean ignoreDistance = effect.isDistanceIgnored();
         session.send(new PlayEffectMessage(id, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), data, ignoreDistance));
     }
 
