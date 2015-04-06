@@ -1,6 +1,7 @@
 package net.glowstone;
 
 import net.glowstone.constants.GlowBiome;
+import net.glowstone.generator.biomegrid.MapLayer;
 import net.glowstone.io.ChunkIoService;
 import org.bukkit.block.Biome;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -37,6 +38,11 @@ public final class ChunkManager {
     private final ChunkGenerator generator;
 
     /**
+     * The biome map used to fill chunks biome grid.
+     */
+    private final MapLayer biomeMap;
+
+    /**
      * A map of chunks currently loaded in memory.
      */
     private final ConcurrentMap<GlowChunk.Key, GlowChunk> chunks = new ConcurrentHashMap<>();
@@ -56,6 +62,7 @@ public final class ChunkManager {
         this.world = world;
         this.service = service;
         this.generator = generator;
+        biomeMap = MapLayer.initialize(world.getSeed(), world.getWorldType());
     }
 
     /**
@@ -234,10 +241,16 @@ public final class ChunkManager {
         Random random = new Random((long) x * 341873128712L + (long) z * 132897987541L);
         BiomeGrid biomes = new BiomeGrid();
         // hackish way to force biome
+        /*
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
                 biomes.setBiome(i, j, Biome.MEGA_TAIGA);
             }
+        }
+        */
+        int[] biomeValues = biomeMap.generateValues(x * GlowChunk.WIDTH, z * GlowChunk.HEIGHT, GlowChunk.WIDTH, GlowChunk.HEIGHT);
+        for (int i = 0;  i < biomeValues.length; i++) {
+            biomes.biomes[i] = (byte) biomeValues[i];
         }
 
         // extended sections
