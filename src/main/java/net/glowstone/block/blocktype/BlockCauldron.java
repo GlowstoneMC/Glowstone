@@ -119,7 +119,7 @@ public class BlockCauldron extends BlockNeedsTool {
     }
 
     @Override
-    public Collection<ItemStack> getMinedDrops(GlowBlock block, ItemStack tool) {
+    public Collection<ItemStack> getMinedDrops(GlowBlock block) {
         return DROP;
     }
 
