@@ -38,6 +38,7 @@ public final class EntityStorage {
         bind(new PlayerStore());
         bind(new ItemStore());
         bind(new TNTPrimedStorage());
+        bind(new ItemFrameStore());
     }
 
     /**

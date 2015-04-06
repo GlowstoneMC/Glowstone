@@ -9,7 +9,9 @@ import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.entity.physics.EntityBoundingBox;
+import net.glowstone.entity.objects.GlowItemFrame;
 import net.glowstone.net.message.play.entity.*;
+import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.Position;
 import org.apache.commons.lang.Validate;
 import org.bukkit.EntityEffect;
@@ -33,7 +35,6 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -138,7 +139,7 @@ public abstract class GlowEntity implements Entity {
     /**
      * A counter of how long this entity has existed
      */
-    private int ticksLived = 0;
+    protected int ticksLived = 0;
 
     /**
      * How long the entity has been on fire, or 0 if it is not.
@@ -350,9 +351,11 @@ public abstract class GlowEntity implements Entity {
         }
         metadata.setBit(MetadataIndex.STATUS, MetadataIndex.StatusFlags.ON_FIRE, fireTicks > 0);
 
-        // resend position if it's been a while
+        // resend position if it's been a while, causes ItemFrames to disappear.
         if (ticksLived % (30 * 20) == 0) {
-            teleported = true;
+            if (!(this instanceof GlowItemFrame)) {
+                teleported = true;
+            }
         }
 
         pulsePhysics();
@@ -777,7 +780,6 @@ public abstract class GlowEntity implements Entity {
         bukkitMetadata.removeMetadata(this, metadataKey, owningPlugin);
     }
 
-
     ////////////////////////////////////////////////////////////////////////////
     // Permissions
 
@@ -844,5 +846,10 @@ public abstract class GlowEntity implements Entity {
     @Override
     public void setOp(boolean b) {
         //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
+        // Override in subclasses to implement behavior
+        return false;
     }
 }

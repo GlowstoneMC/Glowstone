@@ -3,6 +3,7 @@ package net.glowstone.net.handler.play.player;
 import com.flowpowered.networking.MessageHandler;
 import net.glowstone.GlowServer;
 import net.glowstone.constants.AttackDamage;
+import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
@@ -12,6 +13,8 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
+
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 public final class InteractEntityHandler implements MessageHandler<GlowSession, InteractEntityMessage> {
 
@@ -28,9 +31,15 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
         GlowEntity possibleTarget = player.getWorld().getEntityManager().getEntity(message.getId());
         GlowLivingEntity target = possibleTarget instanceof GlowLivingEntity ? (GlowLivingEntity) possibleTarget : null;
 
+        
+
         if (message.getAction() == InteractEntityMessage.Action.ATTACK.ordinal()) {
             if (target == null) {
-                GlowServer.logger.info("Player " + player.getName() + " tried to attack an entity that does not exist");
+                if (possibleTarget != null) {
+                    possibleTarget.entityInteract(player, message);
+                } else {
+                    GlowServer.logger.info("Player " + player.getName() + " tried to attack an entity that does not exist");
+                }
             } else if (!target.isDead() && target.canTakeDamage(EntityDamageEvent.DamageCause.ENTITY_ATTACK)) {
                 // Calculate damage amount
                 ItemStack hand = player.getItemInHand();
@@ -53,7 +62,12 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
             // todo: Interaction with entity at a specified location (X, Y, and Z are present in the message)
             // used for adjusting specific portions of armor stands
         } else if (message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
-            // todo: Interaction with something (X, Y, and Z are NOT present in the message)
+            PlayerInteractEntityEvent event = new PlayerInteractEntityEvent(player, possibleTarget);
+            EventFactory.callEvent(event);
+
+            if (!event.isCancelled()) {
+                possibleTarget.entityInteract(player, message);
+            }
         } else {
             GlowServer.logger.info("Player " + player.getName() + " sent unknown interact action: " + message.getAction());
         }
