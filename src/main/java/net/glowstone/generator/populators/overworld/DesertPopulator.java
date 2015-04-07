@@ -16,6 +16,7 @@ public class DesertPopulator extends BiomePopulator {
         deadBushDecorator.setAmount(2);
         sugarCaneDecorator.setAmount(60);
         cactusDecorator.setAmount(10);
+        desertWellDecorator.setAmount(1);
     }
 
     @Override

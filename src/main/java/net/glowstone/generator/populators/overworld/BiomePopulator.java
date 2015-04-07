@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import net.glowstone.generator.decorators.DesertWellDecorator;
 import net.glowstone.generator.decorators.overworld.*;
 import net.glowstone.generator.decorators.overworld.FlowerDecorator.FlowerDecoration;
 import net.glowstone.generator.decorators.overworld.TreeDecorator.TreeDecoration;
@@ -38,6 +39,7 @@ public class BiomePopulator extends BlockPopulator {
 
     protected final DoublePlantDecorator doublePlantDecorator = new DoublePlantDecorator();
     protected final TreeDecorator treeDecorator = new TreeDecorator();
+    protected final DesertWellDecorator desertWellDecorator = new DesertWellDecorator();
     protected final FlowerDecorator flowerDecorator = new FlowerDecorator();
     protected final TallGrassDecorator tallGrassDecorator = new TallGrassDecorator();
     protected final DeadBushDecorator deadBushDecorator = new DeadBushDecorator();
@@ -60,6 +62,7 @@ public class BiomePopulator extends BlockPopulator {
 
         onGroundPopulators.add(doublePlantDecorator);
         onGroundPopulators.add(treeDecorator);
+        onGroundPopulators.add(desertWellDecorator);
         onGroundPopulators.add(flowerDecorator);
         onGroundPopulators.add(tallGrassDecorator);
         onGroundPopulators.add(deadBushDecorator);
@@ -86,6 +89,7 @@ public class BiomePopulator extends BlockPopulator {
         doublePlantDecorator.setAmount(0);
         treeDecorator.setAmount(Integer.MIN_VALUE);
         treeDecorator.setTrees(TREES);
+        desertWellDecorator.setAmount(0);
         flowerDecorator.setAmount(2);
         flowerDecorator.setFlowers(FLOWERS);
         tallGrassDecorator.setAmount(1);

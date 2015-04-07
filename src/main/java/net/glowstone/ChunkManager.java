@@ -212,9 +212,9 @@ public final class ChunkManager {
         Random random = new Random(world.getSeed());
         long xRand = random.nextLong() / 2 * 2 + 1;
         long zRand = random.nextLong() / 2 * 2 + 1;
-        random.setSeed((long) x * xRand + (long) z * zRand ^ world.getSeed());
 
         for (BlockPopulator p : world.getPopulators()) {
+            random.setSeed((long) x * xRand + (long) z * zRand ^ world.getSeed());
             p.populate(world, random, chunk);
         }
 
@@ -241,6 +241,12 @@ public final class ChunkManager {
     private void generateChunk(GlowChunk chunk, int x, int z) {
         Random random = new Random((long) x * 341873128712L + (long) z * 132897987541L);
         BiomeGrid biomes = new BiomeGrid();
+
+        int[] biomeValues = biomeGrid[0].generateValues(x * GlowChunk.WIDTH, z * GlowChunk.HEIGHT, GlowChunk.WIDTH, GlowChunk.HEIGHT);
+        for (int i = 0;  i < biomeValues.length; i++) {
+            biomes.biomes[i] = (byte) biomeValues[i];
+        }
+
         // hackish way to force biome
         /*
         for (int i = 0; i < 16; i++) {
@@ -249,10 +255,7 @@ public final class ChunkManager {
             }
         }
         */
-        int[] biomeValues = biomeGrid[0].generateValues(x * GlowChunk.WIDTH, z * GlowChunk.HEIGHT, GlowChunk.WIDTH, GlowChunk.HEIGHT);
-        for (int i = 0;  i < biomeValues.length; i++) {
-            biomes.biomes[i] = (byte) biomeValues[i];
-        }
+
 
         // extended sections with data
         if (generator instanceof GlowChunkGenerator) {

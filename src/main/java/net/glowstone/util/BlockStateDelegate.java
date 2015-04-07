@@ -1,9 +1,12 @@
 package net.glowstone.util;
 
+import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.MaterialData;
 
@@ -18,6 +21,7 @@ import java.util.HashMap;
 public class BlockStateDelegate {
 
     private final HashMap<Location, BlockState> blockStateMap = new HashMap<>();
+    private final HashMap<Location, BlockState> blockStateBackupMap = new HashMap<>();
 
     /**
      * Sets a block type and add it to the BlockState list.
@@ -66,6 +70,25 @@ public class BlockStateDelegate {
     }
 
     /**
+     * Backups a block state.
+     * @param block the block which state should be backup
+     */
+    public void backupBlockState(Block block) {
+        blockStateMap.remove(block.getLocation());
+        blockStateBackupMap.put(block.getLocation(), new GlowBlockState((GlowBlock) block));
+    }
+
+    /**
+     * Roll-back previously backed-up block states.
+     */
+    public void rollbackBlockStates() {
+        for (BlockState state : blockStateBackupMap.values()) {
+            state.update(true);
+        }
+        blockStateBackupMap.clear();
+    }
+
+    /**
      * Returns the BlockState list
      * @return A list with all {@link BlockState}.
      */
@@ -80,6 +103,7 @@ public class BlockStateDelegate {
         for (BlockState state : blockStateMap.values()) {
             state.update(true);
         }
+        blockStateMap.clear();
     }
 
     /**

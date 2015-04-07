@@ -43,4 +43,6 @@ public interface WorldStorageProvider {
      */
     PlayerDataService getPlayerDataService();
 
+    StructureDataService getStructureDataService();
+
 }
