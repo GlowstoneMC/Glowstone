@@ -262,6 +262,22 @@ public class BlockType extends ItemType {
         }
     }
 
+    /**
+     * Called to check if this block can perform random tick updates.
+     * @return Whether this block updates on tick.
+     */
+    public boolean canTickRandomly() {
+        return false;
+    }
+
+    /**
+     * Called when this block needs to be updated.
+     * @param block The block that needs an update
+     */
+    public void updateBlock(GlowBlock block) {
+        // do nothing
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Helper methods
 

@@ -3,6 +3,8 @@ package net.glowstone.block.blocktype;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.glowstone.GlowWorld;
+import net.glowstone.block.GlowBlockState;
 import net.glowstone.constants.GlowTree;
 import org.bukkit.DirtType;
 import org.bukkit.Location;
@@ -10,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Dirt;
@@ -49,6 +52,11 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
     }
 
     @Override
+    public boolean canTickRandomly() {
+        return true;
+    }
+
+    @Override
     public boolean canGrowWithChance(GlowBlock block) {
         return (double) random.nextFloat() < 0.4D;
     }
@@ -71,6 +79,53 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
             EventFactory.callEvent(growEvent);
             if (!growEvent.isCancelled()) {
                 for (BlockState state : blockStates) {
+                    state.update(true);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void updateBlock(GlowBlock block) {
+        if (random.nextInt(25) == 0) {
+            final GlowWorld world = block.getWorld();
+            int x, y, z;
+            int i = 0;
+            for (x = block.getX() - 4; x <= block.getX() + 4; x++) {
+                for (z = block.getZ() - 4; z <= block.getZ() + 4; z++) {
+                    for (y = block.getY() - 1; y <= block.getY() + 1; y++) {
+                        if (world.getBlockAt(x, y, z).getType() == mushroomType) {
+                            if (++i > 4) {
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+
+            int nX, nY, nZ;
+            nX = block.getX() + random.nextInt(3) - 1;
+            nY = block.getY() + random.nextInt(2) - random.nextInt(2);
+            nZ = block.getZ() + random.nextInt(3) - 1;
+
+            x = block.getX(); y = block.getY(); z = block.getZ();
+            for (i = 0; i < 4; i++) {
+                if (world.getBlockAt(nX, nY, nZ).getType() == Material.AIR
+                        && canPlaceAt(world.getBlockAt(nX, nY, nZ), BlockFace.DOWN)) {
+                    x = nX; y = nY; z = nZ;
+                }
+                nX = x + random.nextInt(3) - 1;
+                nY = y + random.nextInt(2) - random.nextInt(2);
+                nZ = z + random.nextInt(3) - 1;
+            }
+
+            if (world.getBlockAt(nX, nY, nZ).getType() == Material.AIR
+                    && canPlaceAt(world.getBlockAt(nX, nY, nZ), BlockFace.DOWN)) {
+                final GlowBlockState state = world.getBlockAt(nX, nY, nZ).getState();
+                state.setType(mushroomType);
+                BlockSpreadEvent spreadEvent = new BlockSpreadEvent(state.getBlock(), block, state);
+                EventFactory.callEvent(spreadEvent);
+                if (!spreadEvent.isCancelled()) {
                     state.update(true);
                 }
             }

@@ -20,11 +20,18 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.constants.GlowTree;
 import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
+import org.bukkit.material.Tree;
 
 public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
 
     @Override
     public boolean isFertilizable(GlowBlock block) {
+        return true;
+    }
+
+    @Override
+    public boolean canTickRandomly() {
         return true;
     }
 
@@ -155,5 +162,48 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         return Arrays.asList(new ItemStack(Material.SAPLING, 1, (short) (block.getData() % 8)));
+    }
+
+    @Override
+    public void updateBlock(GlowBlock block) {
+        if (block.getRelative(BlockFace.UP).getLightLevel() >= 9 && random.nextInt(7) == 0) {
+            int dataValue = block.getData();
+            if ((dataValue & 8) == 0) {
+                block.setData((byte) (dataValue | 8));
+            } else {
+                final MaterialData data = block.getState().getData();
+                if (data instanceof Tree) {
+                    final Tree tree = (Tree) data;
+                    final TreeType type = getTreeType(tree.getSpecies());
+                    block.setType(Material.AIR);
+                    final int saplingData = block.getData() & 0x7;
+                    if (!block.getWorld().generateTree(block.getLocation(), type)) {
+                        block.setType(Material.SAPLING);
+                        block.setData((byte) saplingData);
+                    }
+                } else {
+                    warnMaterialData(Tree.class, data);
+                }
+            }
+        }
+    }
+
+    private TreeType getTreeType(TreeSpecies species) {
+        switch (species) {
+            case GENERIC:
+                return TreeType.TREE;
+            case REDWOOD:
+                return TreeType.REDWOOD;
+            case BIRCH:
+                return TreeType.BIRCH;
+            case JUNGLE:
+                return TreeType.JUNGLE;
+            case ACACIA:
+                return TreeType.ACACIA;
+            case DARK_OAK:
+                return TreeType.DARK_OAK;
+            default:
+                return TreeType.TREE;
+        }
     }
 }

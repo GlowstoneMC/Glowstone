@@ -62,7 +62,7 @@ public final class ItemTable {
         reg(Material.DOUBLE_STEP, new BlockDoubleSlab());
         reg(Material.DOUBLE_STONE_SLAB2, new BlockDoubleSlab());
         reg(Material.WOOD_DOUBLE_STEP, new BlockDoubleSlab());
-        reg(Material.SOIL, new BlockDirectDrops(Material.DIRT));
+        reg(Material.SOIL, new BlockSoil());
         reg(Material.GLASS, new BlockDropless());
         reg(Material.THIN_GLASS, new BlockDropless());
         reg(Material.STAINED_GLASS, new BlockDropless());
@@ -119,7 +119,7 @@ public final class ItemTable {
         reg(Material.LEAVES_2, new BlockLeaves());
         reg(Material.MELON_BLOCK, new BlockMelon());
         reg(Material.MELON_STEM, new BlockStem(Material.MELON_STEM));
-        reg(Material.NETHER_WARTS, new BlockDirectDrops(Material.NETHER_STALK));
+        reg(Material.NETHER_WARTS, new BlockNetherWart());
         reg(Material.POTATO, new BlockPotato());
         reg(Material.PUMPKIN_STEM, new BlockStem(Material.PUMPKIN_STEM));
         reg(Material.CROPS, new BlockCrops());

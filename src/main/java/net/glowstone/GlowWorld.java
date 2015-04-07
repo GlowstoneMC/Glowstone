@@ -1,7 +1,10 @@
 package net.glowstone;
 
 import lombok.ToString;
+import net.glowstone.GlowChunk.*;
 import net.glowstone.block.GlowBlock;
+import net.glowstone.block.ItemTable;
+import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.constants.GlowBiome;
 import net.glowstone.constants.GlowBiomeTemperature;
 import net.glowstone.constants.GlowEffect;
@@ -247,6 +250,8 @@ public final class GlowWorld implements World {
      */
     private int maxBuildHeight;
 
+    private Set<GlowChunk.Key> activeChunksSet = new HashSet<GlowChunk.Key>();
+
     /**
      * Creates a new world from the options in the given WorldCreator.
      * @param server The server for the world.
@@ -390,17 +395,81 @@ public final class GlowWorld implements World {
         List<GlowEntity> temp = new ArrayList<>(entities.getAll());
         List<GlowPlayer> players = new LinkedList<>();
 
+        activeChunksSet.clear();
+
         // pulse players last so they actually see that other entities have
         // moved. unfortunately pretty hacky. not a problem for players b/c
         // their position is modified by session ticking.
         for (GlowEntity entity : temp) {
             if (entity instanceof GlowPlayer) {
                 players.add((GlowPlayer) entity);
+
+                // build a set of chunks around each player in this world, the
+                // server view distance is taken here
+                final int radius = server.getViewDistance();
+                final Location playerLocation = entity.getLocation();
+                if (playerLocation.getWorld() == this) {
+                    final int cx = playerLocation.getBlockX() >> 4;
+                    final int cz = playerLocation.getBlockZ() >> 4;
+                    for (int x = cx - radius; x <= cx + radius; x++) {
+                        for (int z = cz - radius; z <= cz + radius; z++) {
+                            if (isChunkLoaded(cx, cz)) {
+                                activeChunksSet.add(new GlowChunk.Key(x, z));
+                            }
+                        }
+                    }
+                }
             } else {
                 entity.pulse();
             }
         }
-        for (GlowPlayer entity : players) {
+
+        for (GlowChunk.Key key : activeChunksSet) {
+            final int cx = key.getX();
+            final int cz = key.getZ();
+            // check the chunk is loaded
+            if (isChunkLoaded(cx, cz)) {
+                final GlowChunk chunk = getChunkAt(cx, cz);
+
+                // thunder
+                if (environment == Environment.NORMAL &&
+                        currentlyRaining && currentlyThundering) {
+                    if (random.nextInt(25000) == 0) {
+                        final int n = random.nextInt();
+                        final int x = (cx << 4) + (n & 0xF);
+                        final int z = (cz << 4) + (n >> 8 & 0xF);
+                        final int y = getHighestBlockYAt(x, z);
+
+                        strikeLightning(new Location(this, x, y, z));
+                    }
+                }
+
+                // block ticking
+                // we will choose 3 blocks per chunk's section
+                final ChunkSection[] sections = chunk.getSections();
+                for (int i = 0; i < sections.length; i++) {
+                    final ChunkSection section = sections[i];
+                    if (section != null) {
+                        for (int j = 0; j < 3; j++) {
+                            final int n = random.nextInt();
+                            final int x = n & 0xF;
+                            final int z = n >> 8 & 0xF;
+                            final int y = n >> 16 & 0xF;
+                            final int type = section.types[(y << 8) | (z << 4) | x] >> 4;
+                            if (type != 0) { // filter air blocks
+                                final BlockType blockType = ItemTable.instance().getBlock(type);
+                                // does this block needs random tick ?
+                                if (blockType != null && blockType.canTickRandomly()) {
+                                    blockType.updateBlock(chunk.getBlock(x, y + (i << 4), z));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        for (GlowEntity entity : players) {
             entity.pulse();
         }
 
@@ -432,21 +501,6 @@ public final class GlowWorld implements World {
             }
 
             updateWeather();
-
-            if (currentlyRaining && currentlyThundering) {
-                if (random.nextDouble() < .01) {
-                    GlowChunk[] chunkList = chunks.getLoadedChunks();
-                    if (chunkList.length > 0) {
-                        GlowChunk chunk = chunkList[random.nextInt(chunkList.length)];
-
-                        int x = (chunk.getX() << 4) + random.nextInt(16);
-                        int z = (chunk.getZ() << 4) + random.nextInt(16);
-                        int y = getHighestBlockYAt(x, z);
-
-                        strikeLightning(new Location(this, x, y, z));
-                    }
-                }
-            }
         }
 
         // Skip checking for sleeping players if no one is online
