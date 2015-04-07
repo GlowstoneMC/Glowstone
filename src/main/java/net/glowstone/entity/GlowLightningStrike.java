@@ -23,7 +23,7 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
      * Whether the lightning strike is just for effect.
      */
     private boolean effect;
-    
+
     /**
      * How long this lightning strike has to remain in the world.
      */
@@ -35,9 +35,19 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
     private final float distanceToDamage;
 
     /**
+     * Calculated value for distance squared to improve performance over Location#distance()
+     */
+    private final float distanceToDamageSquared;
+
+    /**
      * How far a living entity must be from the lightning strike to set it on fire
      */
     private final float distanceToIgnition;
+
+    /**
+     * Calculated value for distance squared to improve performance over Location#distance()
+     */
+    private final float distanceToIgnitionSquared;
 
     /**
      * For how long the living entity will burn if struck directly
@@ -50,9 +60,11 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
         super(location);
         this.effect = effect;
         this.ticksToLive = 30;
-        distanceToDamage = 5;
-        distanceToIgnition = 1;
-        burnTicks = 75;
+        this.distanceToDamage = 5;
+        this.distanceToDamageSquared = this.distanceToDamage * this.distanceToDamage;
+        this.distanceToIgnition = 1;
+        this.distanceToIgnitionSquared = this.distanceToIgnition * this.distanceToIgnition;
+        this.burnTicks = 75;
         this.random = random;
     }
 
@@ -73,22 +85,22 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
             remove();
         }
         if (getTicksLived() == 1) {
-                // Play Sound
-                location.getWorld().playSound(location, Sound.AMBIENCE_THUNDER, 10000, 0.8F + random.nextFloat() * 0.2F);
-                location.getWorld().playSound(location, Sound.EXPLODE, 2, 0.5F + random.nextFloat() * 0.2F);
-                // Deal Damage to nearby enemies
-                if (effect) {
-                    return; // It's just a visual, don't deal damage
-                } else {
-                    for (LivingEntity livingEntity : location.getWorld().getLivingEntities()) {
-                        if (location.distanceSquared(livingEntity.getLocation()) <= distanceToDamage) {
-                            int damage = 5; // Calculate damage here in the future based off of armor and enchantments
-                            livingEntity.damage(damage, this, EntityDamageEvent.DamageCause.LIGHTNING);
-                        }
-                        if (location.distanceSquared(livingEntity.getLocation()) <= distanceToIgnition) {
-                            livingEntity.setFireTicks(burnTicks);
-                        }
+            // Play Sound
+            location.getWorld().playSound(location, Sound.AMBIENCE_THUNDER, 10000, 0.8F + random.nextFloat() * 0.2F);
+            location.getWorld().playSound(location, Sound.EXPLODE, 2, 0.5F + random.nextFloat() * 0.2F);
+            // Deal Damage to nearby enemies
+            if (effect) {
+                return; // It's just a visual, don't deal damage
+            } else {
+                for (LivingEntity livingEntity : location.getWorld().getLivingEntities()) {
+                    if (location.distanceSquared(livingEntity.getLocation()) <= distanceToDamageSquared) {
+                        int damage = 5; // Calculate damage here in the future based off of armor and enchantments
+                        livingEntity.damage(damage, this, EntityDamageEvent.DamageCause.LIGHTNING);
                     }
+                    if (location.distanceSquared(livingEntity.getLocation()) <= distanceToIgnitionSquared) {
+                        livingEntity.setFireTicks(burnTicks);
+                    }
+                }
             }
         }
     }
