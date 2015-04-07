@@ -1,9 +1,11 @@
 package net.glowstone.net;
 
 import com.flowpowered.networking.AsyncableMessage;
+import com.flowpowered.networking.ConnectionManager;
 import com.flowpowered.networking.Message;
 import com.flowpowered.networking.MessageHandler;
 import com.flowpowered.networking.session.BasicSession;
+
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -27,10 +29,12 @@ import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.LoginProtocol;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.ProtocolType;
+
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
 import javax.crypto.SecretKey;
+
 import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.logging.Level;
@@ -46,6 +50,11 @@ public final class GlowSession extends BasicSession {
      * The server this session belongs to.
      */
     private final GlowServer server;
+
+    /**
+     * The connection manager this session belongs to.
+     */
+    private final ConnectionManager connectionManager;
 
     /**
      * The Random for this session
@@ -112,15 +121,21 @@ public final class GlowSession extends BasicSession {
      * The number of ticks until previousPlacement must be cleared.
      */
     private int previousPlacementTicks;
+    
+    /**
+     * If the connection has been disconnected
+     */
+    private boolean disconnected;
 
     /**
      * Creates a new session.
      * @param server The server this session belongs to.
      * @param channel The channel associated with this session.
      */
-    public GlowSession(GlowServer server, Channel channel) {
+    public GlowSession(GlowServer server, Channel channel, ConnectionManager connectionManager) {
         super(channel, ProtocolType.HANDSHAKE.getProtocol());
         this.server = server;
+        this.connectionManager = connectionManager;
         address = super.getAddress();
     }
 
@@ -410,12 +425,45 @@ public final class GlowSession extends BasicSession {
         // process messages
         Message message;
         while ((message = messageQueue.poll()) != null) {
-            if (getProtocol() instanceof PlayProtocol && player == null) {
-                // player has been unset, we are just seeing extra messages now
+            if (disconnected) {
+                // disconnected, we are just seeing extra messages now
                 continue;
             }
 
             super.messageReceived(message);
+        }
+
+        // check if the client is disconnected
+        if (disconnected) {
+            connectionManager.sessionInactivated(this);
+
+            if (player == null) {
+                return;
+            }
+
+            player.remove();
+
+            Message userListMessage = UserListItemMessage.removeOne(player.getUniqueId());
+            for (GlowPlayer player : server.getOnlinePlayers()) {
+                if (player.canSee(this.player)) {
+                    player.getSession().send(userListMessage);
+                } else {
+                    player.stopHidingDisconnectedPlayer(this.player);
+                }
+            }
+
+            GlowServer.logger.info(player.getName() + " [" + address + "] lost connection");
+
+            if (player.isSleeping()) {
+                player.leaveBed(false);
+            }
+
+            final String text = EventFactory.onPlayerQuit(player).getQuitMessage();
+            if (online && text != null && !text.isEmpty()) {
+                server.broadcastMessage(text);
+            }
+
+            player = null; // in case we are disposed twice
         }
     }
 
@@ -453,33 +501,7 @@ public final class GlowSession extends BasicSession {
 
     @Override
     public void onDisconnect() {
-        if (player == null) {
-            return;
-        }
-
-        player.remove();
-
-        Message userListMessage = UserListItemMessage.removeOne(player.getUniqueId());
-        for (GlowPlayer player : server.getOnlinePlayers()) {
-            if (player.canSee(this.player)) {
-                player.getSession().send(userListMessage);
-            } else {
-                player.stopHidingDisconnectedPlayer(this.player);
-            }
-        }
-
-        GlowServer.logger.info(player.getName() + " [" + address + "] lost connection");
-
-        if (player.isSleeping()) {
-            player.leaveBed(false);
-        }
-
-        final String text = EventFactory.onPlayerQuit(player).getQuitMessage();
-        if (online && text != null && !text.isEmpty()) {
-            server.broadcastMessage(text);
-        }
-
-        player = null; // in case we are disposed twice
+        disconnected = true;
     }
 
     @Override

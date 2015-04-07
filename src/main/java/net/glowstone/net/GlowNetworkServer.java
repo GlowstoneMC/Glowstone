@@ -39,7 +39,7 @@ public final class GlowNetworkServer implements ConnectionManager {
 
     @Override
     public Session newSession(Channel c) {
-        GlowSession session = new GlowSession(server, c);
+        GlowSession session = new GlowSession(server, c, this);
         server.getSessionRegistry().add(session);
         return session;
     }

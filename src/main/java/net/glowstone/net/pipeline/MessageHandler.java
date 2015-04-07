@@ -45,7 +45,6 @@ public final class MessageHandler extends SimpleChannelInboundHandler<Message> {
     public void channelInactive(ChannelHandlerContext ctx) {
         Session session = this.session.get();
         session.onDisconnect();
-        connectionManager.sessionInactivated(session);
     }
 
     @Override
