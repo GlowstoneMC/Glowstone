@@ -30,22 +30,14 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
     private final int ticksToLive;
 
     /**
-     * How far a living entity must be from the lightning strike to damage it
-     */
-    private final float distanceToDamage;
-
-    /**
-     * Calculated value for distance squared to improve performance over Location#distance()
+     * How far a living entity must be from the lightning strike to damage it.
+     * The distance you want must be the distance in blocks squared.
      */
     private final float distanceToDamageSquared;
 
     /**
-     * How far a living entity must be from the lightning strike to set it on fire
-     */
-    private final float distanceToIgnition;
-
-    /**
-     * Calculated value for distance squared to improve performance over Location#distance()
+     * How far a living entity must be from the lightning strike to set it on fire.
+     * The distance you want must be the distance in blocks squared.
      */
     private final float distanceToIgnitionSquared;
 
@@ -60,10 +52,8 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
         super(location);
         this.effect = effect;
         this.ticksToLive = 30;
-        this.distanceToDamage = 5;
-        this.distanceToDamageSquared = this.distanceToDamage * this.distanceToDamage;
-        this.distanceToIgnition = 1;
-        this.distanceToIgnitionSquared = this.distanceToIgnition * this.distanceToIgnition;
+        this.distanceToDamageSquared = 25;
+        this.distanceToIgnitionSquared = 1;
         this.burnTicks = 75;
         this.random = random;
     }
