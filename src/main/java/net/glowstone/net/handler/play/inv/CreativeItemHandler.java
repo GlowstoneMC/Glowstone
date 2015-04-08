@@ -69,7 +69,6 @@ public final class CreativeItemHandler implements MessageHandler<GlowSession, Cr
             return;
         }
 
-        // in the creative inventory everything is handled client side
-        view.setItem(viewSlot, event.getCursor());
+        player.getOpenInventory().setItem(message.getSlot(), message.getItem());
     }
 }
