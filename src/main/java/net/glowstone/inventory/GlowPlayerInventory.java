@@ -3,9 +3,12 @@ package net.glowstone.inventory;
 import net.glowstone.entity.GlowHumanEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.inv.HeldItemMessage;
+import org.bukkit.Material;
+import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -80,9 +83,55 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     @Override
-    public boolean itemShiftClickAllowed(int slot, ItemStack stack) {
-        // todo: check armor slots
+    public boolean itemPlaceAllowed(int slot, ItemStack stack) {
+        if (slot == BOOTS_SLOT) {
+            return EnchantmentTarget.ARMOR_FEET.includes(stack);
+        }
+        if (slot == LEGGINGS_SLOT) {
+            return EnchantmentTarget.ARMOR_LEGS.includes(stack);
+        }
+        if (slot == CHESTPLATE_SLOT) {
+            return EnchantmentTarget.ARMOR_TORSO.includes(stack);
+        }
+        if (slot == HELMET_SLOT) {
+            return canEquipInHelmetSlot(stack.getType());
+        }
         return super.itemPlaceAllowed(slot, stack);
+    }
+
+    @Override
+    public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot, ItemStack clickedItem) {
+        GlowInventory top = (GlowInventory) view.getTopInventory();
+
+        // If this is the default inventory try to equip the item as armor first
+        if (GlowInventoryView.isDefault(view)) {
+            clickedItem = tryToFillSlots(clickedItem, 36, 40);
+        }
+
+        // Check whether the top inventory allows shift clicking in any of it's slots
+        boolean topAllowsShiftClick = false;
+        for (int i = 0; i < top.getSize(); i++) {
+            if (top.itemShiftClickAllowed(i, clickedItem)) {
+                topAllowsShiftClick = true;
+                break;
+            }
+        }
+
+        if (topAllowsShiftClick) {
+            // move items to the top inventory
+            clickedItem = top.tryToFillSlots(clickedItem, 0, top.getSize());
+        } else {
+            // switch them between hotbar and main inventory depending on where they are now
+            if (view.convertSlot(clickedSlot) < 9 || view.convertSlot(clickedSlot) >= 36) {
+                // move from hotbar and armor to main inventory
+                clickedItem = tryToFillSlots(clickedItem, 9, 36);
+            } else {
+                // move from main inventory to hotbar
+                clickedItem = tryToFillSlots(clickedItem, 0, 9);
+            }
+        }
+
+        view.setItem(clickedSlot, clickedItem);
     }
 
     /**
@@ -265,5 +314,9 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     @Override
     public void setBootsDropChance(float chance) {
         throw new UnsupportedOperationException();
+    }
+
+    public static boolean canEquipInHelmetSlot(Material material) {
+        return EnchantmentTarget.ARMOR_HEAD.includes(material) || material == Material.PUMPKIN || material == Material.SKULL_ITEM;
     }
 }

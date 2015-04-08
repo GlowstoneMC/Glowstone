@@ -1,11 +1,13 @@
 package net.glowstone.inventory;
 
+import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -146,6 +148,79 @@ public class GlowInventory implements Inventory {
      */
     public boolean itemShiftClickAllowed(int slot, ItemStack stack) {
         return itemPlaceAllowed(slot, stack);
+    }
+
+    /**
+     * Handle a shift click in this inventory by the specified player.
+     * The default implementation distributes items from the right to the left
+     * and from the bottom to the top.
+     * @param player The player who clicked
+     * @param view The inventory view in which was clicked
+     * @param clickedSlot The slot in the view
+     * @param clickedItem The item at which was clicked
+     */
+    public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot, ItemStack clickedItem) {
+        clickedItem = player.getInventory().tryToFillSlots(clickedItem, 8, -1, 35, 8);
+        view.setItem(clickedSlot, clickedItem);
+    }
+
+    /**
+     * Tries to put the given items into the specified slots of this inventory
+     * from the start slot (inclusive) to the end slot (exclusive).
+     * The slots are supplied in pairs, first the start then the end slots.
+     * This will first try to fill up all partial slots and if items are still
+     * left after doing so, it places them into the first empty slot.
+     * If no empty slot was found and there are still items left, their returned
+     * from this method.
+     * @param stack The items to place down
+     * @param slots Pairs of start/end slots
+     * @return The remaining items or {@code null} if non are remaining
+     */
+    public ItemStack tryToFillSlots(ItemStack stack, int...slots) {
+        if (slots.length % 2 != 0) {
+            throw new IllegalArgumentException("Slots must be pairs.");
+        }
+        // First empty slot, -1 if no empty slot was found yet
+        int firstEmpty = -1;
+        for (int s = 0; s < slots.length && stack.getAmount() > 0; s += 2) {
+            // Iterate through all pairs of start and end slots
+            int start = slots[s];
+            int end = slots[s + 1];
+            int delta = start < end ? 1 : -1;
+            for (int i = start; i != end && stack.getAmount() > 0; i += delta) {
+                // Check whether shift clicking is allowed in that slot of the inventory
+                if (!itemShiftClickAllowed(i, stack)) {
+                    continue;
+                }
+
+                ItemStack currentStack = getItem(i);
+                if (currentStack == null) {
+                    if (firstEmpty == -1) {
+                        firstEmpty = i; // Found first empty slot
+                    }
+                } else if (currentStack.isSimilar(stack)) { // Non empty slot of similar items, try to fill stack
+                    // Calculate the amount of transferable items
+                    int amount = currentStack.getAmount();
+                    int maxStackSize = Math.min(currentStack.getMaxStackSize(), getMaxStackSize());
+                    int transfer = Math.min(stack.getAmount(), maxStackSize - amount);
+                    if (transfer > 0) {
+                        // And if there are any, transfer them
+                        currentStack.setAmount(amount + transfer);
+                        stack.setAmount(stack.getAmount() - transfer);
+                    }
+                    setItem(i, currentStack);
+                }
+            }
+        }
+        if (stack.getAmount() <= 0) {
+            stack = null;
+        }
+        // If there are still items left, place them in the first empty slot (if any)
+        if (stack != null && firstEmpty != -1) {
+            setItem(firstEmpty, stack);
+            stack = null;
+        }
+        return stack;
     }
 
     /**

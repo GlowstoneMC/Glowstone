@@ -1,8 +1,10 @@
 package net.glowstone.inventory;
 
+import net.glowstone.entity.GlowPlayer;
 import org.bukkit.block.Furnace;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.FurnaceInventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 public class GlowFurnaceInventory extends GlowInventory implements FurnaceInventory {
@@ -52,5 +54,11 @@ public class GlowFurnaceInventory extends GlowInventory implements FurnaceInvent
     @Override
     public Furnace getHolder() {
         return (Furnace) super.getHolder();
+    }
+
+    @Override
+    public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot, ItemStack clickedItem) {
+        clickedItem = player.getInventory().tryToFillSlots(clickedItem, 9, 36, 0, 9);
+        view.setItem(clickedSlot, clickedItem);
     }
 }
