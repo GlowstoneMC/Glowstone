@@ -33,7 +33,6 @@ import org.bukkit.event.world.*;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 import org.bukkit.metadata.MetadataStore;
 import org.bukkit.metadata.MetadataStoreBase;
 import org.bukkit.metadata.MetadataValue;
@@ -1424,25 +1423,49 @@ public final class GlowWorld implements World {
         }
     }
 
-    @Override
-    public void showParticle(Location loc, Particle particle, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
-        showParticle(loc, particle, null, offsetX, offsetY, offsetZ, speed, amount);
+    private void playEffect_(Location location, Effect effect, int data) { // fix name collision
+        playEffect(location, effect, data);
     }
 
+    private final Spigot spigot = new Spigot() {
+        @Override
+        public void playEffect(Location location, Effect effect) {
+            playEffect_(location, effect, 0);
+        }
+
+        @Override
+        public void playEffect(Location location, Effect effect, int id, int data, float offsetX, float offsetY, float offsetZ, float speed, int particleCount, int radius) {
+            showParticle(location, effect, id, data, offsetX, offsetY, offsetZ, speed, particleCount, radius);
+        }
+    };
+
     @Override
-    public void showParticle(Location loc, Particle particle, MaterialData material, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+    public Spigot spigot() {
+        return spigot;
+    }
+
+    //@Override
+    public void showParticle(Location loc, Effect particle, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+        final int radius;
+        if (GlowParticle.isLongDistance(particle)) {
+            radius = 48;
+        } else {
+            radius = 16;
+        }
+
+        showParticle(loc, particle, particle.getId(), 0, offsetX, offsetY, offsetZ, speed, amount, radius);
+    }
+
+    //@Override
+    public void showParticle(Location loc, Effect particle, int id, int data, float offsetX, float offsetY, float offsetZ, float speed, int amount, int radius) {
         if (loc == null || particle == null) return;
 
-        final double radiusSquared;
-        if (GlowParticle.isLongDistance(particle)) {
-            radiusSquared = 48 * 48;
-        } else {
-            radiusSquared = 16 * 16;
-        }
+        final double radiusSquared = radius * radius;
+
 
         for (Player player : getRawPlayers()) {
             if (player.getLocation().distanceSquared(loc) <= radiusSquared) {
-                player.showParticle(loc, particle, material, offsetX, offsetY, offsetZ, speed, amount);
+                player.spigot().playEffect(loc, particle, id, data, offsetX, offsetY, offsetZ, speed, amount, radius);
             }
         }
     }
@@ -1608,4 +1631,6 @@ public final class GlowWorld implements World {
         }
         return result;
     }
+
+
 }

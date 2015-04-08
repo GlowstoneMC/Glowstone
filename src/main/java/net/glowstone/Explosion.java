@@ -308,10 +308,10 @@ public final class Explosion {
 
         if (this.power >= 2.0F && this.breakBlocks) {
             // send huge explosion
-            world.showParticle(location, Particle.EXPLOSION_HUGE, 0, 0, 0, 0, 0);
+            world.spigot().playEffect(location, Effect.EXPLOSION_HUGE);
         } else {
             // send large explosion
-            world.showParticle(location, Particle.EXPLOSION_LARGE, 0, 0, 0, 0, 0);
+            world.spigot().playEffect(location, Effect.EXPLOSION_LARGE);
         }
     }
 
