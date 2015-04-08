@@ -107,7 +107,7 @@ public final class GlowServer implements Server {
             }
 
             // Load Forge Mod Loader TODO: move into loadPlugins? but needs args[] TODO 2: after start?
-            net.minecraftforge.fml.relauncher.ServerLaunchWrapper.main(args);
+            loadFML(args);
 
             server.run();
 
@@ -156,6 +156,12 @@ public final class GlowServer implements Server {
         GlowDispenser.register();
 
         return new GlowServer(config);
+    }
+
+    private static void loadFML(String[] args) {
+        String coreMods = System.getProperty("fml.coreMods.load");
+        System.setProperty("fml.coreMods.load", (coreMods != null ? (coreMods + ",") : "") + "net.glowstone.GSFMLCoreMod");
+        net.minecraftforge.fml.relauncher.ServerLaunchWrapper.main(args);
     }
 
     private static ServerConfig parseArguments(String[] args) {
