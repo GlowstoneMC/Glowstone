@@ -6,8 +6,6 @@ import org.bukkit.material.MaterialData;
 
 import java.util.Arrays;
 
-import static org.bukkit.Particle.*;
-
 /**
  * Id mappings for particles.
  */
