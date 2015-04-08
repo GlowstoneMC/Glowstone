@@ -64,8 +64,8 @@ public final class GlowParticle {
     public static boolean isLongDistance(Effect particle) {
         return particle == Effect.EXPLOSION ||
                 particle == Effect.EXPLOSION_LARGE ||
-                particle == Effect.EXPLOSION_HUGE;
-                //particle == MOB_APPEARANCE; // TODO
+                particle == Effect.EXPLOSION_HUGE ||
+                particle == Effect.MOB_APPEARANCE;
     }
 
     private static void set(Effect particle, int id) {
@@ -79,10 +79,10 @@ public final class GlowParticle {
         set(Effect.EXPLOSION_LARGE, 1); // largeexplosion
         set(Effect.EXPLOSION_HUGE, 2);  // hugeexplosion
         set(Effect.FIREWORKS_SPARK, 3); // fireworksSpark
-        //set(Effect., 4); // bubble
-        //set(Effect., 5); // wake
+        set(Effect.BUBBLE, 4); // bubble
+        set(Effect.WAKE, 5); // wake
         set(Effect.SPLASH, 6); // splash
-        //set(Effect., 7); // suspended
+        set(Effect.SUSPENDED, 7); // suspended
         set(Effect.SMALL_SMOKE, 8); // townaura
         set(Effect.CRIT, 9); // crit
         set(Effect.MAGIC_CRIT, 10); // magicCrit
@@ -110,13 +110,13 @@ public final class GlowParticle {
         set(Effect.SNOW_SHOVEL, 32); // snowshovel
         set(Effect.SLIME, 33); // slime
         set(Effect.HEART, 34); // heart
-        //set(Effect., 35); // barrier
+        set(Effect.BARRIER, 35); // barrier
         // below missing from wiki.vg
         set(Effect.ITEM_BREAK, 36); // iconcrack
         set(Effect.TILE_BREAK, 37); // blockcrack
         set(Effect.TILE_DUST, 38); // blockdust
-        //set(WATER_DROPLET, 39); // ?
-        //set(ITEM_TAKE, 40); // ?
-        //set(MOB_APPEARANCE, 41); // ?
+        set(Effect.WATER_DROPLET, 39); // ?
+        set(Effect.ITEM_TAKE, 40); // ?
+        set(Effect.MOB_APPEARANCE, 41); // ?
     }
 }
