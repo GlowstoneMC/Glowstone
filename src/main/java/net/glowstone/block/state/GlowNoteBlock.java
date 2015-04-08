@@ -1,5 +1,6 @@
 package net.glowstone.block.state;
 
+import net.glowstone.EventFactory;
 import net.glowstone.GlowChunk;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -12,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.Note;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.NoteBlock;
+import org.bukkit.event.block.NotePlayEvent;
 
 public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
 
@@ -33,7 +35,7 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
     @Override
     public boolean update(boolean force, boolean applyPhysics) {
         boolean result = super.update(force, applyPhysics);
-        if (!result) {
+        if (result) {
             getTileEntity().setNote(note);
         }
         return result;
@@ -70,7 +72,16 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
 
     @Override
     public boolean play(byte instrument, byte note) {
+        return play(Instrument.getByType(instrument), new Note(note));
+    }
+
+    @Override
+    public boolean play(Instrument instrument, Note note) {
         if (getBlock().getType() != Material.NOTE_BLOCK) {
+            return false;
+        }
+        NotePlayEvent event = EventFactory.callEvent(new NotePlayEvent(getBlock(), instrument, note));
+        if (event.isCancelled()) {
             return false;
         }
 
@@ -84,11 +95,6 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
         }
 
         return true;
-    }
-
-    @Override
-    public boolean play(Instrument instrument, Note note) {
-        return play(instrument.getType(), note.getId());
     }
 
     ////////////////////////////////////////////////////////////////////////////

@@ -278,6 +278,16 @@ public class BlockType extends ItemType {
         // do nothing
     }
 
+    /*
+     * Called when a player left clicks a block
+     * @param player the player who clicked the block
+     * @param block the block that was clicked
+     * @param holding the ItemStack that was being held
+     */
+    public void leftClickBlock(GlowPlayer player, GlowBlock block, ItemStack holding) {
+        // do nothing
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Helper methods
 

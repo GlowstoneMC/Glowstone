@@ -7,6 +7,10 @@ import io.netty.buffer.Unpooled;
 import net.glowstone.*;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.blocktype.BlockBed;
+import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.logging.Level;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.constants.*;
 import net.glowstone.entity.meta.ClientSettings;
@@ -24,7 +28,11 @@ import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityVelocityMessage;
 import net.glowstone.net.message.play.game.*;
-import net.glowstone.net.message.play.inv.*;
+import net.glowstone.net.message.play.inv.CloseWindowMessage;
+import net.glowstone.net.message.play.inv.OpenWindowMessage;
+import net.glowstone.net.message.play.inv.SetWindowContentsMessage;
+import net.glowstone.net.message.play.inv.SetWindowSlotMessage;
+import net.glowstone.net.message.play.inv.WindowPropertyMessage;
 import net.glowstone.net.message.play.player.PlayerAbilitiesMessage;
 import net.glowstone.net.message.play.player.ResourcePackSendMessage;
 import net.glowstone.net.message.play.player.UseBedMessage;
@@ -55,13 +63,9 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 
-import java.net.InetSocketAddress;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.logging.Level;
-
 /**
  * Represents an in-game player.
+ *
  * @author Graham Edgecombe
  */
 @DelegateDeserialization(GlowOfflinePlayer.class)
@@ -265,9 +269,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     /**
      * Creates a new player and adds it to the world.
+     *
      * @param session The player's session.
      * @param profile The player's profile with name and UUID information.
-     * @param reader The PlayerReader to be used to initialize the player.
+     * @param reader  The PlayerReader to be used to initialize the player.
      */
     public GlowPlayer(GlowSession session, PlayerProfile profile, PlayerDataService.PlayerReader reader) {
         super(initLocation(session, reader), profile);
@@ -346,8 +351,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * Read the location from a PlayerReader for entity initialization. Will
      * fall back to a reasonable default rather than returning null.
+     *
      * @param session The player's session.
-     * @param reader The PlayerReader to get the location from.
+     * @param reader  The PlayerReader to get the location from.
      * @return The location to spawn the player.
      */
     private static Location initLocation(GlowSession session, PlayerDataService.PlayerReader reader) {
@@ -370,6 +376,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     /**
      * Get the network session attached to this player.
+     *
      * @return The GlowSession of the player.
      */
     public GlowSession getSession() {
@@ -378,6 +385,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     /**
      * Get the join time in milliseconds, to be saved as last played time.
+     *
      * @return The player's join time.
      */
     public long getJoinTime() {
@@ -604,6 +612,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * Spawn the player at the given location after they have already joined.
      * Used for changing worlds and respawning after death.
+     *
      * @param location The location to place the player.
      */
     private void spawnAt(Location location) {
@@ -677,6 +686,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     /**
      * Checks whether the player can see the given chunk.
+     *
      * @return If the chunk is known to the player's client.
      */
     public boolean canSeeChunk(GlowChunk.Key chunk) {
@@ -685,6 +695,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     /**
      * Checks whether the player can see the given entity.
+     *
      * @return If the entity is known to the player's client.
      */
     public boolean canSeeEntity(GlowEntity entity) {
@@ -693,6 +704,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     /**
      * Open the sign editor interface at the specified location.
+     *
      * @param loc The location to open the editor at
      */
     public void openSignEditor(Location loc) {
@@ -706,6 +718,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * Check that the specified location matches that of the last opened sign
      * editor, and if so, clears the last opened sign editor.
+     *
      * @param loc The location to check
      * @return Whether the location matched.
      */
@@ -720,6 +733,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     /**
      * Get a UserListItemMessage entry representing adding this player.
+     *
      * @return The entry (action ADD_PLAYER) with this player's information.
      */
     public UserListItemMessage.Entry getUserListEntry() {
@@ -754,6 +768,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     /**
      * Set the client settings for this player.
+     *
      * @param settings The new client settings.
      */
     public void setSettings(ClientSettings settings) {
@@ -763,6 +778,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     /**
      * Get this player's client settings.
+     *
      * @return The player's client settings.
      */
     public ClientSettings getSettings() {
@@ -1241,6 +1257,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     ////////////////////////////////////////////////////////////////////////////
     // Actions
 
+    /**
+     * Teleport the player.
+     *
+     * @param location The destination to teleport to.
+     * @return Whether the teleport was a success.
+     */
     @Override
     public boolean teleport(Location location) {
         return teleport(location, TeleportCause.UNKNOWN);
@@ -1426,7 +1448,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     /**
      * Says a message (or runs a command).
-     * @param text message sent by the player.
+     *
+     * @param text  message sent by the player.
      * @param async whether the message was received asynchronously.
      */
     public void chat(final String text, boolean async) {
@@ -1512,12 +1535,32 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void playNote(Location loc, Instrument instrument, Note note) {
-        playNote(loc, instrument.getType(), note.getId());
+        Sound sound;
+        switch (instrument) {
+            case PIANO:
+                sound = Sound.NOTE_PIANO;
+                break;
+            case BASS_DRUM:
+                sound = Sound.NOTE_BASS_DRUM;
+                break;
+            case SNARE_DRUM:
+                sound = Sound.NOTE_SNARE_DRUM;
+                break;
+            case STICKS:
+                sound = Sound.NOTE_STICKS;
+                break;
+            case BASS_GUITAR:
+                sound = Sound.NOTE_BASS_GUITAR;
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid instrument");
+        }
+        playSound(loc, sound, 3.0f, note.getId());
     }
 
     @Override
     public void playNote(Location loc, byte instrument, byte note) {
-        session.send(new BlockActionMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), instrument, note, Material.NOTE_BLOCK.getId()));
+        playNote(loc, Instrument.getByType(instrument), new Note(note));
     }
 
     @Override
@@ -1958,6 +2001,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * Called when a player hidden to this player disconnects.
      * This is necessary so the player is visible again after they reconnected.
+     *
      * @param player The disconnected player
      */
     public void stopHidingDisconnectedPlayer(Player player) {
@@ -2024,6 +2068,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     /**
      * Add a listening channel to this player.
+     *
      * @param channel The channel to add.
      */
     public void addChannel(String channel) {
@@ -2034,6 +2079,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     /**
      * Remove a listening channel from this player.
+     *
      * @param channel The channel to remove.
      */
     public void removeChannel(String channel) {

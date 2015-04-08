@@ -38,6 +38,7 @@ public final class ItemTable {
 
     private void registerBuiltins() {
         reg(Material.FLOWER_POT, new BlockFlowerPot());
+        reg(Material.JUKEBOX, new BlockJukebox());
         reg(Material.NOTE_BLOCK, new BlockNote());
         reg(Material.MOB_SPAWNER, new BlockMobSpawner());
         reg(Material.MONSTER_EGGS, new BlockMonsterEggs());
