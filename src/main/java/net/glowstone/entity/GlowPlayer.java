@@ -1,5 +1,8 @@
 package net.glowstone.entity;
 
+import net.glowstone.ChunkManager;
+import net.glowstone.GlowChunk;
+import net.glowstone.GlowWorld;
 import com.flowpowered.networking.Message;
 import com.google.common.base.Preconditions;
 import io.netty.buffer.ByteBuf;

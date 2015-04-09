@@ -16,7 +16,7 @@ import java.util.logging.Level;
 /**
  * Simple library manager which downloads external dependencies.
  */
-public final class LibraryManager {
+public final class LibraryManager extends Thread {
 
     /**
      * The Maven repository to download from.
@@ -28,12 +28,13 @@ public final class LibraryManager {
      */
     private final File directory;
 
-    public LibraryManager(GlowServer server) {
+    public LibraryManager() {
         // todo: allow configuration of repository, libraries, and directory
         repository = "http://repo.glowstone.net/content/groups/public/";
         directory = new File("lib");
     }
 
+    @Override
     public void run() {
         if (!directory.isDirectory() && !directory.mkdirs()) {
             GlowServer.logger.log(Level.SEVERE, "Could not create libraries directory: " + directory);
