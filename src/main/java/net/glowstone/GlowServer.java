@@ -476,8 +476,6 @@ public final class GlowServer implements Server {
             }
         }
 
-        logger.info(String.valueOf(loadWorldLatch.getCount()) + "479");
-
         createWorld(WorldCreator.name(name).environment(Environment.NORMAL).seed(seed).type(type).generateStructures(structs));
         if (getAllowNether()) {
             checkTransfer(name, "_nether", Environment.NETHER);
@@ -487,8 +485,6 @@ public final class GlowServer implements Server {
             checkTransfer(name, "_the_end", Environment.THE_END);
             createWorld(WorldCreator.name(name + "_the_end").environment(Environment.THE_END).seed(seed).type(type).generateStructures(structs));
         }
-        
-        logger.info(String.valueOf(loadWorldLatch.getCount()) + "491");
         
         if (keepSpawnLoaded() && loadWorldLatch.getCount() == 0) {
             for (GlowWorld world : worlds.getWorlds()) {
@@ -521,9 +517,7 @@ public final class GlowServer implements Server {
     }
     
     public void worldLoaded() {
-        logger.info(String.valueOf(loadWorldLatch.getCount()) + "518");
         loadWorldLatch.countDown();
-        logger.info(String.valueOf(loadWorldLatch.getCount()) + "520");
     }
 
     private void checkTransfer(String name, String suffix, Environment environment) {
