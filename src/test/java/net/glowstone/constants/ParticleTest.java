@@ -38,22 +38,22 @@ public class ParticleTest {
 
     @Test
     public void testGetData() {
-        /* TODO
+        if (particle.getType() != Effect.Type.PARTICLE) return; // this only tests particle effects
+
         switch (particle) {
             case ITEM_BREAK:
-                //TODO assertEquals("Wrong usesMaterial for " + particle, true, particle.usesMaterial());
+                assertEquals("Wrong getData for " + particle, true, particle.getData() != null);
                 assertArrayEquals("Wrong extData for " + particle, new int[]{Material.STONE.getId(), 1}, GlowParticle.getData(particle, STONE));
                 break;
             case TILE_BREAK:
             case TILE_DUST:
-                //TODO assertEquals("Wrong usesMaterial for " + particle, true, particle.usesMaterial());
+                assertEquals("Wrong getData for " + particle, true, particle.getData() != null);
                 assertArrayEquals("Wrong extData for " + particle, new int[]{Material.STONE.getId()}, GlowParticle.getData(particle, STONE));
                 break;
             default:
-                //TODO assertEquals("Wrong usesMaterial for " + particle, false, particle.usesMaterial());
+                assertEquals("Wrong getData for " + particle, false, particle.getData() != null);
                 assertArrayEquals("Wrong extData for " + particle, new int[0], GlowParticle.getData(particle, null));
         }
-        */
     }
 
 }

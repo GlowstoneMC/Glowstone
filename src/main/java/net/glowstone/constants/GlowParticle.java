@@ -43,7 +43,11 @@ public final class GlowParticle {
                 if (material == null) {
                     throw new IllegalArgumentException("Particle " + particle + " requires material, null provided");
                 }
-                if (particle == Effect.TILE_BREAK) {
+                if (particle == Effect.ITEM_BREAK) {
+                    // http://wiki.vg/Protocol#Particle
+                    // data "Length depends on particle. "iconcrack" [Effect.ITEM_BREAK] has length of 2, "blockcrack",
+                    // and "blockdust" have lengths of 1, the rest have 0"
+                    // iconcrack_(id)_(data) 36
                     return new int[]{material.getItemTypeId(), material.getData()};
                 }
                 return new int[]{material.getItemTypeId()};
