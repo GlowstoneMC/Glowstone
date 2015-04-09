@@ -1555,7 +1555,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         @Override
         public void playEffect(Location location, Effect effect, int id, int data, float offsetX, float offsetY, float offsetZ, float speed, int particleCount, int radius)  {
             if (effect.getType() == Effect.Type.PARTICLE) {
-                showParticle(location, effect, offsetX, offsetY, offsetZ, speed, particleCount);
+                MaterialData material = new MaterialData(id, (byte) data);
+                showParticle(location, effect, material, offsetX, offsetY, offsetZ, speed, particleCount);
             } else {
                 playEffect_(location, effect, data);
             }
@@ -1568,10 +1569,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         return spigot;
     }
 
-    //@Override
-    public void showParticle(Location loc, Effect particle, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
-        showParticle(loc, particle, null, offsetX, offsetY, offsetZ, speed, amount);
-    }
 
     //@Override
     public void showParticle(Location loc, Effect particle, MaterialData material, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
