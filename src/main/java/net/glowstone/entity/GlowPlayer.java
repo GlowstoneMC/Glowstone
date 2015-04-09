@@ -1570,6 +1570,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(new PlayEffectMessage(id, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), data, ignoreDistance));
     }
 
+    private void playEffect_(Location loc, Effect effect, int data) { // fix name collision with Spigot below
+        this.playEffect(loc, effect, data);
+    }
+
     @Override
     public <T> void playEffect(Location loc, Effect effect, T data) {
         playEffect(loc, effect, GlowEffect.getDataValue(effect, data));
@@ -1590,14 +1594,28 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(new PlaySoundMessage(sound, x, y, z, volume, pitch));
     }
 
-    @Override
-    public void showParticle(Location loc, Particle particle, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
-        showParticle(loc, particle, null, offsetX, offsetY, offsetZ, speed, amount);
-    }
+    private final Player.Spigot spigot = new Player.Spigot() {
+        @Override
+        public void playEffect(Location location, Effect effect, int id, int data, float offsetX, float offsetY, float offsetZ, float speed, int particleCount, int radius)  {
+            if (effect.getType() == Effect.Type.PARTICLE) {
+                MaterialData material = new MaterialData(id, (byte) data);
+                showParticle(location, effect, material, offsetX, offsetY, offsetZ, speed, particleCount);
+            } else {
+                playEffect_(location, effect, data);
+            }
+        }
+
+    };
 
     @Override
-    public void showParticle(Location loc, Particle particle, MaterialData material, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
-        if (location == null || particle == null) return;
+    public Player.Spigot spigot() {
+        return spigot;
+    }
+
+
+    //@Override
+    public void showParticle(Location loc, Effect particle, MaterialData material, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+        if (location == null || particle == null || particle.getType() != Effect.Type.PARTICLE) return;
 
         int id = GlowParticle.getId(particle);
         boolean longDistance = GlowParticle.isLongDistance(particle);

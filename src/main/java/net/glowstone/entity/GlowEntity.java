@@ -856,4 +856,8 @@ public abstract class GlowEntity implements Entity {
         // Override in subclasses to implement behavior
         return false;
     }
+
+    public Entity.Spigot spigot() {
+        return null; // TODO: support entity isInvulnerable() API
+    }
 }

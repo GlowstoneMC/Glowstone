@@ -1,12 +1,10 @@
 package net.glowstone.constants;
 
 import org.apache.commons.lang.Validate;
-import org.bukkit.Particle;
+import org.bukkit.Effect;
 import org.bukkit.material.MaterialData;
 
 import java.util.Arrays;
-
-import static org.bukkit.Particle.*;
 
 /**
  * Id mappings for particles.
@@ -18,14 +16,14 @@ public final class GlowParticle {
     private GlowParticle() {
     }
 
-    private static final int[] ids = new int[Particle.values().length];
+    private static final int[] ids = new int[Effect.values().length];
 
     /**
      * Get the particle id for a specified Particle.
      * @param particle the Particle.
      * @return the particle id.
      */
-    public static int getId(Particle particle) {
+    public static int getId(Effect particle) {
         Validate.notNull(particle, "particle cannot be null");
         return ids[particle.ordinal()];
     }
@@ -37,15 +35,19 @@ public final class GlowParticle {
      * @return The extData array for the particle effect.
      * @throws IllegalArgumentException if data is provided incorrectly
      */
-    public static int[] getData(Particle particle, MaterialData material) {
+    public static int[] getData(Effect particle, MaterialData material) {
         switch (particle) {
             case ITEM_BREAK:
-            case BLOCK_BREAK:
-            case BLOCK_DUST:
+            case TILE_BREAK:
+            case TILE_DUST:
                 if (material == null) {
                     throw new IllegalArgumentException("Particle " + particle + " requires material, null provided");
                 }
-                if (particle == ITEM_BREAK) {
+                if (particle == Effect.ITEM_BREAK) {
+                    // http://wiki.vg/Protocol#Particle
+                    // data "Length depends on particle. "iconcrack" [Effect.ITEM_BREAK] has length of 2, "blockcrack",
+                    // and "blockdust" have lengths of 1, the rest have 0"
+                    // iconcrack_(id)_(data) 36
                     return new int[]{material.getItemTypeId(), material.getData()};
                 }
                 return new int[]{material.getItemTypeId()};
@@ -63,60 +65,61 @@ public final class GlowParticle {
      * @param particle the Particle.
      * @return True if the particle is long distance.
      */
-    public static boolean isLongDistance(Particle particle) {
-        return particle == SMOKE_SMALL ||
-                particle == EXPLOSION_LARGE ||
-                particle == EXPLOSION_HUGE ||
-                particle == MOB_APPEARANCE;
+    public static boolean isLongDistance(Effect particle) {
+        return particle == Effect.EXPLOSION ||
+                particle == Effect.EXPLOSION_LARGE ||
+                particle == Effect.EXPLOSION_HUGE ||
+                particle == Effect.MOB_APPEARANCE;
     }
 
-    private static void set(Particle particle, int id) {
+    private static void set(Effect particle, int id) {
         ids[particle.ordinal()] = id;
     }
 
     static {
         Arrays.fill(ids, -1);
-        set(SMOKE_SMALL, 0); // explosion normal
-        set(EXPLOSION_LARGE, 1);
-        set(EXPLOSION_HUGE, 2);
-        set(FIREWORKS_SPARK, 3);
-        set(BUBBLES, 4);
-        set(WATER_SPLASH, 5);
-        set(WATER_WAKE, 6);
-        set(UNDERWATER, 7); // suspend
-        set(VOID_FOG, 8); // depth suspend
-        set(CRITICAL, 9);
-        set(CRITICAL_MAGIC, 10);
-        set(SMOKE, 11);
-        set(SMOKE_LARGE, 12);
-        set(SPELL, 13);
-        set(SPELL_INSTANT, 14);
-        set(SPELL_MOB, 15);
-        set(SPELL_AMBIENT, 16);
-        set(SPELL_WITCH, 17);
-        set(DRIP_WATER, 18);
-        set(DRIP_LAVA, 19);
-        set(VILLAGER_ANGRY, 20);
-        set(VILLAGER_HAPPY, 21);
-        set(TOWN_AURA, 22);
-        set(NOTE, 23);
-        set(PORTAL, 24);
-        set(ENCHANTMENT_TABLE, 25);
-        set(FLAME, 26);
-        set(LAVA_POP, 27);
-        set(FOOTSTEP, 28);
-        set(CLOUD, 29);
-        set(REDSTONE, 30);
-        set(SNOWBALL, 31);
-        set(SNOW_SHOVEL, 32);
-        set(SLIME, 33);
-        set(HEART, 34);
-        set(BARRIER, 35);
-        set(ITEM_BREAK, 36);
-        set(BLOCK_BREAK, 37);
-        set(BLOCK_DUST, 38);
-        set(WATER_DROPLET, 39);
-        set(ITEM_TAKE, 40);
-        set(MOB_APPEARANCE, 41);
+        // http://wiki.vg/Protocol#Particle IDs, but keyed by API enum
+        set(Effect.EXPLOSION, 0);       // explode
+        set(Effect.EXPLOSION_LARGE, 1); // largeexplode
+        set(Effect.EXPLOSION_HUGE, 2);  // hugeexplosion
+        set(Effect.FIREWORKS_SPARK, 3); // fireworksSpark
+        set(Effect.BUBBLE, 4); // bubble
+        set(Effect.SPLASH, 5); // splash
+        set(Effect.WAKE, 6); // wake
+        set(Effect.SUSPENDED, 7); // suspended
+        set(Effect.VOID_FOG, 8); // depthsuspend
+        set(Effect.CRIT, 9); // crit
+        set(Effect.MAGIC_CRIT, 10); // magicCrit
+        set(Effect.PARTICLE_SMOKE, 11); // smoke
+        set(Effect.LARGE_SMOKE, 12); // largesmoke
+        set(Effect.POTION_SWIRL, 13); // spell
+        set(Effect.INSTANT_SPELL, 14); // instantSpell
+        set(Effect.SPELL, 15); // spell
+        set(Effect.POTION_SWIRL_TRANSPARENT, 16); // mobSpellAmbient
+        set(Effect.WITCH_MAGIC, 17); // witchMagic
+        set(Effect.WATERDRIP, 18); // dripWater
+        set(Effect.LAVADRIP, 19); // dripLava
+        set(Effect.VILLAGER_THUNDERCLOUD, 20); // angryVillager
+        set(Effect.HAPPY_VILLAGER, 21); // happyVillager
+        set(Effect.SMALL_SMOKE, 22); // townaura
+        set(Effect.NOTE, 23); // note
+        set(Effect.PORTAL, 24); // portal
+        set(Effect.FLYING_GLYPH, 25); // enchantmenttable
+        set(Effect.FLAME, 26); // flame
+        set(Effect.LAVA_POP, 27); // lava
+        set(Effect.FOOTSTEP, 28); // footstep
+        set(Effect.CLOUD, 29); // cloud
+        set(Effect.COLOURED_DUST, 30); // reddust
+        set(Effect.SNOWBALL_BREAK, 31); // snowballpoof
+        set(Effect.SNOW_SHOVEL, 32); // snowshovel
+        set(Effect.SLIME, 33); // slime
+        set(Effect.HEART, 34); // heart
+        set(Effect.BARRIER, 35); // barrier
+        set(Effect.ITEM_BREAK, 36); // iconcrack_(id)_(data)
+        set(Effect.TILE_BREAK, 37); // blockcrack_(id+(data<<12))
+        set(Effect.TILE_DUST, 38); // blockdust_(id)
+        set(Effect.WATER_DROPLET, 39); // droplet
+        set(Effect.ITEM_TAKE, 40); // take
+        set(Effect.MOB_APPEARANCE, 41); // mobappearance
     }
 }
