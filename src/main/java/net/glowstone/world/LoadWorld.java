@@ -26,6 +26,7 @@ public class LoadWorld extends Thread {
         }
 
         this.world = new GlowWorld(server, creator);
+        interrupt();
     }
     
     public GlowWorld createWorld() {

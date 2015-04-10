@@ -44,7 +44,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
-import net.glowstone.world.LoadChunk;
 
 /**
  * A class which represents the in-game world.
@@ -101,7 +100,7 @@ public final class GlowWorld implements World {
     /**
      * A lock kept on the spawn chunks.
      */
-    private ChunkManager.ChunkLock spawnChunkLock;
+    public final ChunkManager.ChunkLock spawnChunkLock;
 
     /**
      * The world metadata service used.
@@ -340,14 +339,15 @@ public final class GlowWorld implements World {
 
             for (int x = centerX - radius; x <= centerX + radius; ++x) {
                 for (int z = centerZ - radius; z <= centerZ + radius; ++z) {
-                    new LoadChunk(this, x, z).start();
-                    spawnChunkLock.acquire(new GlowChunk.Key(x, z)); 
+                    getServer().chunksLoader.addChunk(getChunkAt(x, z));
                 }
             }
-            server.getLogger().info("Spawn loaded for world: " + name);
+            getServer().chunksLoader.worldLoad.countDown();
         } else {
-            server.getLogger().info("Loaded world: " + name);
+            spawnChunkLock = null;
+            getChunkManager().unloadOldChunks();
         }
+        server.getLogger().info("Loaded world: " + name);
 
         EventFactory.callEvent(new WorldLoadEvent(this));
     }

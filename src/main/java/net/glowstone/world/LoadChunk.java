@@ -1,25 +1,19 @@
 package net.glowstone.world;
 
-import net.glowstone.GlowWorld;
+import net.glowstone.GlowChunk;
 
 public class LoadChunk extends Thread {
     
-    private final GlowWorld world;
-    private final int x;
-    private final int z;
+    private final GlowChunk chunk;
     
-    public LoadChunk(GlowWorld world, int x, int z) {
-        this.world = world;
-        this.x = x;
-        this.z = z;
+    public LoadChunk(GlowChunk chunk) {
+        this.chunk = chunk;
     }
     
     @Override
     public void run() {
-        world.getChunkManager().loadChunk(x, z, true);
-        if (!world.isChunkLoaded(x, z)) {
-            world.getServer().chunksLoader.addChunk(world, x, z);
-        }
+        chunk.load();
+        chunk.getWorld().getChunkManager().forcePopulation(chunk.getX(), chunk.getZ());
+        chunk.getWorld().spawnChunkLock.acquire(new GlowChunk.Key(chunk.getX(), chunk.getZ()));
     }
-    
 }

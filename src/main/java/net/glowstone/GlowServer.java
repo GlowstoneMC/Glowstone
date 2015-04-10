@@ -487,6 +487,8 @@ public final class GlowServer implements Server {
             checkTransfer(name, "_the_end", Environment.THE_END);
             createWorld(WorldCreator.name(name + "_the_end").environment(Environment.THE_END).seed(seed).type(type).generateStructures(structs));
         }
+        
+        chunksLoader.worldLoad.countDown();
 
         // Finish loading plugins
         enablePlugins(PluginLoadOrder.POSTWORLD);
