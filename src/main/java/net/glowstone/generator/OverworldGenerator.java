@@ -51,6 +51,7 @@ public class OverworldGenerator extends GlowChunkGenerator {
 
     public OverworldGenerator() {
         super(new OverworldPopulator(),
+              new StructurePopulator(),
               new SnowPopulator());
     }
 
