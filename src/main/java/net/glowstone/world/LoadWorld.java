@@ -4,7 +4,7 @@ import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import org.bukkit.WorldCreator;
 
-public class LoadWorld implements Runnable {
+public class LoadWorld extends Thread {
 
     private final GlowServer server;
     private final WorldCreator creator;
@@ -29,7 +29,7 @@ public class LoadWorld implements Runnable {
     }
     
     public GlowWorld createWorld() {
-        run();
+        start();
         return world;
     }
     

@@ -62,11 +62,10 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.KeyPair;
 import java.util.*;
-import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.glowstone.world.ChunksLoader;
 import net.glowstone.world.LoadWorld;
-import net.glowstone.world.SpawnLoader;
 import net.glowstone.world.UnloadWorld;
 
 /**
@@ -408,6 +407,8 @@ public final class GlowServer implements Server {
      * The {@link net.glowstone.block.MaterialValueManager} of this server.
      */
     private MaterialValueManager materialValueManager;
+    
+    public ChunksLoader chunksLoader;
 
     /**
      * Creates a new server.
@@ -421,6 +422,7 @@ public final class GlowServer implements Server {
         whitelist = new UuidListFile(config.getFile("whitelist.json"));
         nameBans = new GlowBanList(this, BanList.Type.NAME);
         ipBans = new GlowBanList(this, BanList.Type.IP);
+        chunksLoader = new ChunksLoader();
 
         Bukkit.setServer(this);
         loadConfig();
@@ -485,39 +487,11 @@ public final class GlowServer implements Server {
             checkTransfer(name, "_the_end", Environment.THE_END);
             createWorld(WorldCreator.name(name + "_the_end").environment(Environment.THE_END).seed(seed).type(type).generateStructures(structs));
         }
-        
-        if (keepSpawnLoaded() && loadWorldLatch.getCount() == 0) {
-            for (GlowWorld world : worlds.getWorlds()) {
-                if (world != null) {
-                    world.loadSpawn();
-                    loadSpawnLatch.countDown();
-                }
-            }
-            if (loadSpawnLatch.getCount() == 0) {
-                new SpawnLoader(this).run();
-            }
-        }
 
         // Finish loading plugins
         enablePlugins(PluginLoadOrder.POSTWORLD);
         commandMap.registerServerAliases();
         scheduler.start();
-    }
-    
-    public List<GlowWorld> spawnWorlds = null;
-    public List<int[]> spawnChunks = null;
-    public int spawnChunkCount = 0;
-    public CountDownLatch loadWorldLatch = new CountDownLatch(3);
-    public CountDownLatch loadSpawnLatch = new CountDownLatch(3);
-    
-    public void addSpawnChunk(GlowWorld world, int x, int z) {
-        spawnWorlds.add(world);
-        spawnChunks.add(new int[]{x, z});
-        spawnChunkCount++;
-    }
-    
-    public void worldLoaded() {
-        loadWorldLatch.countDown();
     }
 
     private void checkTransfer(String name, String suffix, Environment environment) {

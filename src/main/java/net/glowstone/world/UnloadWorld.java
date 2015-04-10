@@ -5,7 +5,7 @@ import static net.glowstone.GlowServer.logger;
 import net.glowstone.GlowWorld;
 import org.bukkit.World;
 
-public class UnloadWorld implements Runnable {
+public class UnloadWorld extends Thread {
     
     private final GlowServer server;
     private final World bWorld;
@@ -37,7 +37,7 @@ public class UnloadWorld implements Runnable {
     }
     
     public boolean unloadWorld() {
-        run();
+        start();
         return unloaded;
     }
 }

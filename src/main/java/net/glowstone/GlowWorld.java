@@ -44,6 +44,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
+import net.glowstone.world.LoadChunk;
 
 /**
  * A class which represents the in-game world.
@@ -249,9 +250,7 @@ public final class GlowWorld implements World {
      */
     private int maxBuildHeight;
 
-    private Set<GlowChunk.Key> activeChunksSet = new HashSet<GlowChunk.Key>();
-    
-    private boolean loaded;
+    private Set<GlowChunk.Key> activeChunksSet = new HashSet<>();
 
     /**
      * Creates a new world from the options in the given WorldCreator.
@@ -330,13 +329,27 @@ public final class GlowWorld implements World {
             }
         }
         
-        spawnChunkLock = null;
+        if (keepSpawnLoaded) {
+            // begin loading spawn area
+            spawnChunkLock = newChunkLock("spawn");
+            // load up chunks around the spawn location
+            spawnChunkLock.clear();
+            int centerX = spawnLocation.getBlockX() >> 4;
+            int centerZ = spawnLocation.getBlockZ() >> 4;
+            int radius = 4 * server.getViewDistance() / 3;
 
-        if (!keepSpawnLoaded) {
-            EventFactory.callEvent(new WorldLoadEvent(this));
+            for (int x = centerX - radius; x <= centerX + radius; ++x) {
+                for (int z = centerZ - radius; z <= centerZ + radius; ++z) {
+                    new LoadChunk(this, x, z).start();
+                    spawnChunkLock.acquire(new GlowChunk.Key(x, z)); 
+                }
+            }
+            server.getLogger().info("Spawn loaded for world: " + name);
         } else {
-            server.worldLoaded();
+            server.getLogger().info("Loaded world: " + name);
         }
+
+        EventFactory.callEvent(new WorldLoadEvent(this));
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -349,28 +362,6 @@ public final class GlowWorld implements World {
     public ChunkManager getChunkManager() {
         return chunks;
     }
-    
-    public void loadSpawn() {
-        if (keepSpawnLoaded) {
-            // begin loading spawn area
-            spawnChunkLock = newChunkLock("spawn");
-            // load up chunks around the spawn location
-            spawnChunkLock.clear();
-            int centerX = spawnLocation.getBlockX() >> 4;
-            int centerZ = spawnLocation.getBlockZ() >> 4;
-            int radius = 4 * server.getViewDistance() / 3;
-
-            for (int x = centerX - radius; x <= centerX + radius; ++x) {
-                for (int z = centerZ - radius; z <= centerZ + radius; ++z) {
-                    server.addSpawnChunk(this, x, z);
-                    spawnChunkLock.acquire(new GlowChunk.Key(x, z)); 
-                }
-            }
-            server.getLogger().info("Spawn loaded for world: " + name);
-        } else {
-            server.getLogger().info("Loaded world: " + name);
-        }
-    }
 
     /**
      * Get the world's parent server.
@@ -378,10 +369,6 @@ public final class GlowWorld implements World {
      */
     public GlowServer getServer() {
         return server;
-    }
-    
-    public boolean isLoaded() {
-        return loaded;
     }
 
     /**
