@@ -23,6 +23,11 @@ public class ShinyItemType implements ItemType {
     }
 
     @Override
+    public String getName() {
+        return toString();
+    }
+
+    @Override
     public int getMaxStackQuantity() {
         return 64;
     }

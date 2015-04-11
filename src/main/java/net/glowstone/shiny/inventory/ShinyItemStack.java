@@ -2,13 +2,10 @@ package net.glowstone.shiny.inventory;
 
 import com.google.common.base.Optional;
 import org.spongepowered.api.attribute.AttributeModifier;
-import org.spongepowered.api.data.DataManipulator;
-import org.spongepowered.api.data.DataTransactionResult;
-import org.spongepowered.api.data.Property;
+import org.spongepowered.api.data.*;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.service.persistence.InvalidDataException;
-import org.spongepowered.api.data.DataContainer;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -63,8 +60,53 @@ public class ShinyItemStack implements ItemStack {
     }
 
     @Override
+    public <T extends DataManipulator<T>> Optional<T> getData(Class<T> tClass) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public <T extends DataManipulator<T>> Optional<T> getOrCreate(Class<T> tClass) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public <T extends DataManipulator<T>> boolean remove(Class<T> tClass) {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public <T extends DataManipulator<T>> boolean isCompatible(Class<T> tClass) {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public <T extends DataManipulator<T>> DataTransactionResult offer(T t) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public <T extends DataManipulator<T>> DataTransactionResult offer(T t, DataPriority dataPriority) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Collection<? extends DataManipulator<?>> getManipulators() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public <T extends Property<?, ?>> Optional<T> getProperty(Class<T> tClass) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
     public Collection<Property<?, ?>> getProperties() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean validateRawData(DataContainer dataContainer) {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

@@ -18,6 +18,11 @@ public class ShinyTranslation implements Translation {
     }
 
     @Override
+    public String getName() {
+        return toString();
+    }
+
+    @Override
     public String get() {
         return id;
     }
