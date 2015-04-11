@@ -31,9 +31,19 @@
             <layout>default</layout>
             <url>https://oss.sonatype.org/content/repositories/public/</url>
         </repository>
+        <repository>
+            <id>sponge-repo</id>
+            <url>https://repo.spongepowered.org/maven</url>
+        </repository>
     </repositories>
     
     <dependencies>
+        <dependency>
+            <groupId>org.spongepowered</groupId>
+            <artifactId>spongeapi</artifactId>
+            <version>1.1-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
