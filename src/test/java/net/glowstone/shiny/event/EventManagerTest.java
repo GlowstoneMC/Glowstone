@@ -3,8 +3,8 @@ package net.glowstone.shiny.event;
 import org.junit.Test;
 import org.spongepowered.api.event.state.PostInitializationEvent;
 import org.spongepowered.api.service.event.EventManager;
-import org.spongepowered.api.util.event.Event;
-import org.spongepowered.api.util.event.Subscribe;
+import org.spongepowered.api.event.Event;
+import org.spongepowered.api.event.Subscribe;
 
 /**
  * Tests for an {@link EventManager} implementation.

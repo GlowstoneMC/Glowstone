@@ -1,6 +1,6 @@
 package net.glowstone.shiny.event;
 
-import org.spongepowered.api.util.event.Event;
+import org.spongepowered.api.event.Event;
 import org.spongepowered.api.util.event.callback.CallbackList;
 
 /**

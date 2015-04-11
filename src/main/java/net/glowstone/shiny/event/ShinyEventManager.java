@@ -1,10 +1,10 @@
 package net.glowstone.shiny.event;
 
 import org.spongepowered.api.service.event.EventManager;
-import org.spongepowered.api.util.event.Cancellable;
-import org.spongepowered.api.util.event.Event;
-import org.spongepowered.api.util.event.Order;
-import org.spongepowered.api.util.event.Subscribe;
+import org.spongepowered.api.event.Cancellable;
+import org.spongepowered.api.event.Event;
+import org.spongepowered.api.event.Order;
+import org.spongepowered.api.event.Subscribe;
 
 import java.lang.reflect.Method;
 import java.util.*;
