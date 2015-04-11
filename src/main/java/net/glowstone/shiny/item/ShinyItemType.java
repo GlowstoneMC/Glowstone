@@ -2,7 +2,7 @@ package net.glowstone.shiny.item;
 
 import com.google.common.base.Optional;
 import org.spongepowered.api.item.ItemType;
-import org.spongepowered.api.item.properties.ItemProperty;
+import org.spongepowered.api.data.Property;
 import org.spongepowered.api.text.translation.Translation;
 import org.spongepowered.api.text.Texts;
 
@@ -28,7 +28,7 @@ public class ShinyItemType implements ItemType {
     }
 
     @Override
-    public <T extends ItemProperty<?, ?>> Optional<T> getDefaultProperty(Class<T> propertyClass) {
+    public <T extends Property<?, ?>> Optional<T> getDefaultProperty(Class<T> propertyClass) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

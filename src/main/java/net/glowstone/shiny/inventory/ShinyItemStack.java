@@ -2,13 +2,13 @@ package net.glowstone.shiny.inventory;
 
 import com.google.common.base.Optional;
 import org.spongepowered.api.attribute.AttributeModifier;
-import org.spongepowered.api.item.ItemDataTransactionResult;
+import org.spongepowered.api.data.DataManipulator;
+import org.spongepowered.api.data.DataTransactionResult;
+import org.spongepowered.api.data.Property;
 import org.spongepowered.api.item.ItemType;
-import org.spongepowered.api.item.data.ItemData;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.properties.ItemProperty;
 import org.spongepowered.api.service.persistence.InvalidDataException;
-import org.spongepowered.api.service.persistence.data.DataContainer;
+import org.spongepowered.api.data.DataContainer;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -68,22 +68,22 @@ public class ShinyItemStack implements ItemStack {
     }
 
     @Override
-    public <T extends ItemData<T>> ItemDataTransactionResult setItemData(T itemData) {
+    public <T extends DataManipulator<T>> DataTransactionResult setItemData(T itemData) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public <T extends ItemData<T>> Optional<T> getOrCreateItemData(Class<T> dataClass) {
+    public <T extends DataManipulator<T>> Optional<T> getOrCreateItemData(Class<T> dataClass) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Collection<ItemProperty<?, ?>> getProperties() {
+    public Collection<Property<?, ?>> getProperties() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Collection<ItemData<?>> getItemData() {
+    public Collection<DataManipulator<?>> getItemData() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
