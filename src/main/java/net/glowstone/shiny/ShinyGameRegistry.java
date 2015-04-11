@@ -1,6 +1,7 @@
 package net.glowstone.shiny;
 
 import com.google.common.base.Optional;
+import org.spongepowered.api.CatalogType;
 import org.spongepowered.api.GameDictionary;
 import org.spongepowered.api.GameProfile;
 import org.spongepowered.api.GameRegistry;
@@ -47,6 +48,7 @@ import org.spongepowered.api.world.WorldBuilder;
 import org.spongepowered.api.world.WorldCreationSettings;
 import org.spongepowered.api.world.biome.BiomeType;
 import org.spongepowered.api.world.difficulty.Difficulty;
+import org.spongepowered.api.world.gen.PopulatorFactory;
 import org.spongepowered.api.world.gen.WorldGeneratorModifier;
 import org.spongepowered.api.world.storage.WorldProperties;
 
@@ -122,44 +124,20 @@ public class ShinyGameRegistry implements GameRegistry {
         idMap.put(item, item.getId());
     }
 
+
     @Override
-    public Optional<BlockType> getBlock(String id) {
-        return Optional.fromNullable(blocks.get(id));
+    public <T extends CatalogType> Optional<T> getType(Class<T> tClass, String s) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Collection<BlockType> getBlocks() {
-        return blocks.values();
+    public <T extends CatalogType> Collection<? extends T> getAllOf(Class<T> tClass) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Optional<ItemType> getItem(String id) {
-        return Optional.fromNullable(items.get(id));
-    }
-
-    @Override
-    public Collection<ItemType> getItems() {
-        return items.values();
-    }
-
-    @Override
-    public Optional<TileEntityType> getTileEntityType(String id) {
-        return Optional.fromNullable(tileEntities.get(id));
-    }
-
-    @Override
-    public Collection<TileEntityType> getTileEntityTypes() {
-        return tileEntities.values();
-    }
-
-    @Override
-    public Optional<BiomeType> getBiome(String id) {
-        return Optional.fromNullable(biomes.get(id));
-    }
-
-    @Override
-    public Collection<BiomeType> getBiomes() {
-        return biomes.values();
+    public <T> Optional<T> getBuilderOf(Class<T> tClass) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -193,195 +171,14 @@ public class ShinyGameRegistry implements GameRegistry {
     }
 
     @Override
-    public Optional<ParticleType> getParticleType(String name) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Collection<ParticleType> getParticleTypes() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
     public ParticleEffectBuilder getParticleEffectBuilder(ParticleType particle) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override
-    public Optional<SoundType> getSound(String name) {
-        return Optional.fromNullable(sounds.get(name));
-    }
-
-    @Override
-    public Collection<SoundType> getSounds() {
-        return sounds.values();
-    }
-
-    @Override
-    public Optional<EntityType> getEntity(String id) {
-        return Optional.fromNullable(entities.get(id));
-    }
-
-    @Override
-    public Collection<EntityType> getEntities() {
-        return entities.values();
-    }
-
-
-
-    @Override
-    public Optional<Art> getArt(String id) {
-        return Optional.fromNullable(arts.get(id));
-    }
-
-    @Override
-    public Collection<Art> getArts() {
-        return arts.values();
-    }
-
-    @Override
-    public Optional<DyeColor> getDye(String id) {
-        return Optional.fromNullable(dyeColors.get(id));
-    }
-
-    @Override
-    public Collection<DyeColor> getDyes() {
-        return dyeColors.values();
-    }
-
-    @Override
-    public Optional<HorseColor> getHorseColor(String id) {
-        return Optional.fromNullable(horseColors.get(id));
-    }
-
-    @Override
-    public Collection<HorseColor> getHorseColors() {
-        return horseColors.values();
-    }
-
-    @Override
-    public Optional<HorseStyle> getHorseStyle(String id) {
-        return Optional.fromNullable(horseStyles.get(id));
-    }
-
-    @Override
-    public Collection<HorseStyle> getHorseStyles() {
-        return horseStyles.values();
-    }
-
-    @Override
-    public Optional<HorseVariant> getHorseVariant(String id) {
-        return Optional.fromNullable(horseVariants.get(id));
-    }
-
-    @Override
-    public Collection<HorseVariant> getHorseVariants() {
-        return horseVariants.values();
-    }
-
-    @Override
-    public Optional<OcelotType> getOcelotType(String id) {
-        return Optional.fromNullable(ocelotTypes.get(id));
-    }
-
-    @Override
-    public Collection<OcelotType> getOcelotTypes() {
-        return ocelotTypes.values();
-    }
-
-    @Override
-    public Optional<RabbitType> getRabbitType(String id) {
-        return Optional.fromNullable(rabbitTypes.get(id));
-    }
-
-    @Override
-    public Collection<RabbitType> getRabbitTypes() {
-        return rabbitTypes.values();
-    }
-
-    @Override
-    public Optional<SkeletonType> getSkeletonType(String id) {
-        return Optional.fromNullable(skeletonTypes.get(id));
-    }
-
-    @Override
-    public Collection<SkeletonType> getSkeletonTypes() {
-        return skeletonTypes.values();
-    }
-
-    @Override
-    public Optional<Career> getCareer(String id) {
-        return Optional.fromNullable(careers.get(id));
-    }
-
-    @Override
-    public Collection<Career> getCareers() {
-        return careers.values();
-    }
 
     @Override
     public Collection<Career> getCareers(Profession profession) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Optional<Profession> getProfession(String id) {
-        return Optional.fromNullable(professions.get(id));
-    }
-
-    @Override
-    public Collection<Profession> getProfessions() {
-        return professions.values();
-    }
-
-    @Override
-    public Collection<GameMode> getGameModes() {
-        return gameModes.values();
-    }
-
-    @Override
-    public Collection<PotionEffectType> getPotionEffects() {
-        return potionEffectTypes.values();
-    }
-
-    @Override
-    public Optional<Enchantment> getEnchantment(String id) {
-        return Optional.fromNullable(enchantments.get(id));
-    }
-
-    @Override
-    public Collection<Enchantment> getEnchantments() {
-        return enchantments.values();
-    }
-
-    @Override
-    public Optional<Statistic> getStatistic(String id) {
-        return Optional.fromNullable(statistics.get(id));
-    }
-
-    @Override
-    public Collection<Statistic> getStatistics() {
-        return statistics.values();
-    }
-
-    @Override
-    public Optional<StatisticFormat> getStatisticFormat(String id) {
-        return Optional.fromNullable(statisticFormats.get(id));
-    }
-
-    @Override
-    public Collection<StatisticFormat> getStatisticFormats() {
-        return statisticFormats.values();
-    }
-
-    @Override
-    public Optional<Achievement> getAchievement(String id) {
-        return Optional.fromNullable(achievements.get(id));
-    }
-
-    @Override
-    public Collection<Achievement> getAchievements() {
-        return achievements.values();
     }
 
     @Override
@@ -390,243 +187,8 @@ public class ShinyGameRegistry implements GameRegistry {
     }
 
     @Override
-    public Optional<DimensionType> getDimensionType(String id) {
-        return Optional.fromNullable(dimensionTypes.get(id));
-    }
-
-    @Override
-    public Collection<DimensionType> getDimensionTypes() {
-        return dimensionTypes.values();
-    }
-
-    @Override
     public Optional<Rotation> getRotationFromDegree(int degrees) {
         return Optional.fromNullable(rotations.get(degrees)); // TODO: int -> Rotation
-    }
-
-    @Override
-    public Collection<Rotation> getRotations() {
-        return rotations.values();
-    }
-
-    @Override
-    public Optional<NotePitch> getNotePitch(String id) {
-        return Optional.fromNullable(notePitchs.get(id));
-    }
-
-    @Override
-    public Collection<NotePitch> getNotePitches() {
-        return notePitchs.values();
-    }
-
-    @Override
-    public Optional<SkullType> getSkullType(String id) {
-        return Optional.fromNullable(skullTypes.get(id));
-    }
-
-    @Override
-    public Collection<SkullType> getSkullTypes() {
-        return skullTypes.values();
-    }
-
-    @Override
-    public Optional<BannerPatternShape> getBannerPatternShape(String id) {
-        return Optional.fromNullable(bannerPatternShapes.get(id));
-    }
-
-    @Override
-    public Collection<BannerPatternShape> getBannerPatternShapes() {
-        return bannerPatternShapes.values();
-    }
-
-    @Override
-    public Optional<Difficulty> getDifficulty(String id) {
-        return Optional.fromNullable(difficulties.get(id));
-    }
-
-    @Override
-    public Collection<Difficulty> getDifficulties() {
-        return difficulties.values();
-    }
-
-    @Override
-    public Optional<EntityInteractionType> getEntityInteractionType(String id) {
-        return Optional.fromNullable(entityInteractionTypes.get(id));
-    }
-
-    @Override
-    public Collection<EntityInteractionType> getEntityInteractionTypes() {
-        return entityInteractionTypes.values();
-    }
-
-    @Override
-    public Optional<Attribute> getAttribute(String id) {
-        return Optional.fromNullable(attributes.get(id));
-    }
-
-    @Override
-    public Collection<Attribute> getAttributes() {
-        return attributes.values();
-    }
-
-    @Override
-    public Optional<Operation> getOperation(String id) {
-        return Optional.fromNullable(operations.get(id));
-    }
-
-    @Override
-    public Collection<Operation> getOperations() {
-        return operations.values();
-    }
-
-    @Override
-    public Optional<CoalType> getCoalType(String id) {
-        return Optional.fromNullable(coalTypes.get(id));
-    }
-
-    @Override
-    public Collection<CoalType> getCoalTypes() {
-        return coalTypes.values();
-    }
-
-    @Override
-    public Optional<Fish> getFishType(String id) {
-        return Optional.fromNullable(fishs.get(id));
-    }
-
-    @Override
-    public Collection<Fish> getFishTypes() {
-        return fishs.values();
-    }
-
-    @Override
-    public Optional<CookedFish> getCookedFishType(String id) {
-        return Optional.fromNullable(cookedFishs.get(id));
-    }
-
-    @Override
-    public Collection<CookedFish> getCookedFishTypes() {
-        return cookedFishs.values();
-    }
-
-    @Override
-    public Optional<GoldenApple> getGoldenAppleType(String id) {
-        return Optional.fromNullable(goldenApples.get(id));
-    }
-
-    @Override
-    public Collection<GoldenApple> getGoldenAppleTypes() {
-        return goldenApples.values();
-    }
-
-    @Override
-    public Optional<TextColor> getTextColor(String id) {
-        return Optional.fromNullable(textColors.get(id));
-    }
-
-    @Override
-    public Collection<TextColor> getTextColors() {
-        return textColors.values();
-    }
-
-    @Override
-    public Optional<TextStyle> getTextStyle(String id) {
-        return Optional.fromNullable(textStyles.get(id));
-    }
-
-    @Override
-    public Collection<TextStyle> getTextStyles() {
-        return textStyles.values();
-    }
-
-    @Override
-    public Optional<ChatType> getChatType(String id) {
-        return Optional.fromNullable(chatTypes.get(id));
-    }
-
-    @Override
-    public Collection<ChatType> getChatTypes() {
-        return chatTypes.values();
-    }
-
-    @Override
-    public Optional<SelectorType> getSelectorType(String id) {
-        return Optional.fromNullable(selectorTypes.get(id));
-    }
-
-    @Override
-    public Collection<SelectorType> getSelectorTypes() {
-        return selectorTypes.values();
-    }
-
-    @Override
-    public Optional<Locale> getLocale(String id) {
-        return Optional.fromNullable(locales.get(id));
-    }
-
-    @Override
-    public Collection<Locale> getLocales() {
-        return locales.values();
-    }
-
-    @Override
-    public Optional<DisplaySlot> getDisplaySlot(String id) {
-        return Optional.fromNullable(displaySlots.get(id));
-    }
-
-    @Override
-    public Collection<DisplaySlot> getDisplaySlots() {
-        return displaySlots.values();
-    }
-
-    @Override
-    public Optional<Visibility> getVisibility(String id) {
-        return Optional.fromNullable(visibilities.get(id));
-    }
-
-    @Override
-    public Collection<Visibility> getVisibilities() {
-        return visibilities.values();
-    }
-
-    @Override
-    public Optional<Criterion> getCriterion(String id) {
-        return Optional.fromNullable(criteria.get(id));
-    }
-
-    @Override
-    public Collection<Criterion> getCriteria() {
-        return criteria.values();
-    }
-
-    @Override
-    public Optional<ObjectiveDisplayMode> getObjectiveDisplayMode(String id) {
-        return Optional.fromNullable(objectiveDisplayModes.get(id));
-    }
-
-    @Override
-    public Collection<ObjectiveDisplayMode> getObjectiveDisplayModes() {
-        return objectiveDisplayModes.values();
-    }
-
-    @Override
-    public Optional<GeneratorType> getGeneratorType(String id) {
-        return Optional.fromNullable(generatorTypes.get(id));
-    }
-
-    @Override
-    public Collection<GeneratorType> getGeneratorTypes() {
-        return generatorTypes.values();
-    }
-
-    @Override
-    public Optional<WorldGeneratorModifier> getWorldGeneratorModifier(String id) {
-        return Optional.fromNullable(worldGeneratorModifiers.get(id));
-    }
-
-    @Override
-    public Collection<WorldGeneratorModifier> getWorldGeneratorModifiers() {
-        return worldGeneratorModifiers.values();
     }
 
     @Override
@@ -720,11 +282,6 @@ public class ShinyGameRegistry implements GameRegistry {
     }
 
     @Override
-    public Optional<BannerPatternShape> getBannerPatternShapeById(String id) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
     public GameDictionary getGameDictionary() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -755,26 +312,6 @@ public class ShinyGameRegistry implements GameRegistry {
     }
 
     @Override
-    public Optional<ArgumentType<?>> getArgumentType(String name) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Collection<ArgumentType<?>> getArgumentTypes() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Optional<Locale> getLocaleById(String id) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Optional<Translation> getTranslationById(String id) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
     public Optional<ResourcePack> getById(String id) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -790,17 +327,12 @@ public class ShinyGameRegistry implements GameRegistry {
     }
 
     @Override
-    public WorldBuilder getWorldBuilder(WorldCreationSettings settings) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public WorldBuilder getWorldBuilder(WorldProperties properties) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
     public void registerWorldGeneratorModifier(PluginContainer plugin, String genId, WorldGeneratorModifier modifier) {
         //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public PopulatorFactory getPopulatorFactory() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

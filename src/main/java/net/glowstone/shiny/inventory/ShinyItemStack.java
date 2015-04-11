@@ -63,48 +63,13 @@ public class ShinyItemStack implements ItemStack {
     }
 
     @Override
-    public void setMaxStackQuantity(int quantity) {
-        maxQuantity = quantity;
-    }
-
-    @Override
-    public <T extends DataManipulator<T>> DataTransactionResult setItemData(T itemData) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public <T extends DataManipulator<T>> Optional<T> getOrCreateItemData(Class<T> dataClass) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
     public Collection<Property<?, ?>> getProperties() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Collection<DataManipulator<?>> getItemData() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public boolean validateData(DataContainer container) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
     public void setRawData(DataContainer container) throws InvalidDataException {
         //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Collection<AttributeModifier> getAttributeModifiers() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public <T> Optional<T> getData(Class<T> dataClass) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

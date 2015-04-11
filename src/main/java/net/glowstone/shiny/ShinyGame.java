@@ -17,6 +17,7 @@ import org.spongepowered.api.service.scheduler.AsynchronousScheduler;
 import org.spongepowered.api.service.scheduler.Scheduler;
 import org.spongepowered.api.service.scheduler.SynchronousScheduler;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.world.TeleportHelper;
 import org.spongepowered.api.world.World;
 
 import java.io.File;
@@ -85,6 +86,11 @@ public class ShinyGame implements Game {
 
     @Override
     public MinecraftVersion getMinecraftVersion() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public TeleportHelper getTeleportHelper() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
