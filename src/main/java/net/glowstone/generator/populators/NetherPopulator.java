@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import net.glowstone.generator.decorators.nether.FireDecorator;
+import net.glowstone.generator.decorators.nether.GlowstoneDecorator;
 import net.glowstone.generator.decorators.nether.LavaDecorator;
 import net.glowstone.generator.decorators.nether.MushroomDecorator;
 import net.glowstone.generator.populators.nether.OrePopulator;
@@ -23,6 +24,8 @@ public class NetherPopulator extends BlockPopulator {
 
     private final LavaDecorator flowingLavaDecorator = new LavaDecorator(true);
     private final FireDecorator fireDecorator = new FireDecorator();
+    private final GlowstoneDecorator glowstoneDecorator1 = new GlowstoneDecorator(true);
+    private final GlowstoneDecorator glowstoneDecorator2 = new GlowstoneDecorator();
     private final MushroomDecorator brownMushroomDecorator = new MushroomDecorator(Material.BROWN_MUSHROOM);
     private final MushroomDecorator redMushroomDecorator = new MushroomDecorator(Material.RED_MUSHROOM);
     private final LavaDecorator lavaDecorator = new LavaDecorator();
@@ -32,12 +35,17 @@ public class NetherPopulator extends BlockPopulator {
 
         onGroundPopulators.add(flowingLavaDecorator);
         onGroundPopulators.add(fireDecorator);
+        onGroundPopulators.add(glowstoneDecorator1);
+        onGroundPopulators.add(glowstoneDecorator2);
+        onGroundPopulators.add(fireDecorator);
         onGroundPopulators.add(brownMushroomDecorator);
         onGroundPopulators.add(redMushroomDecorator);
         onGroundPopulators.add(lavaDecorator);
 
         flowingLavaDecorator.setAmount(8);
         fireDecorator.setAmount(1);
+        glowstoneDecorator1.setAmount(1);
+        glowstoneDecorator2.setAmount(1);
         brownMushroomDecorator.setAmount(1);
         redMushroomDecorator.setAmount(1);
         lavaDecorator.setAmount(16);

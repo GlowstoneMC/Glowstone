@@ -15,14 +15,14 @@ public class LavaDecorator extends BlockDecorator {
 
     private static final BlockFace[] SIDES = new BlockFace[] {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.DOWN};
 
-    private boolean flowing = true;
+    private boolean flowing;
 
     public LavaDecorator() {
         this(false);
     }
 
     public LavaDecorator(boolean flowing) {
-        this.flowing = true;
+        this.flowing = flowing;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class LavaDecorator extends BlockDecorator {
         int sourceY = flowing ? 4 + random.nextInt(120) : 10 + random.nextInt(108);
 
         final Block block = world.getBlockAt(sourceX, sourceY, sourceZ);
-        if ((block.getType() == Material.NETHERRACK || block.getType() == Material.AIR) &&
+        if ((block.getType() == Material.NETHERRACK || block.isEmpty()) &&
                 block.getRelative(BlockFace.UP).getType() == Material.NETHERRACK) {
             int netherrackBlockCount = 0;
             for (BlockFace face : SIDES) {
