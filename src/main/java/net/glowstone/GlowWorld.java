@@ -1594,16 +1594,6 @@ public final class GlowWorld implements World {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override
-    public void showParticle(Location location, Particle particle, float v, float v1, float v2, float v3, int i) {
-
-    }
-
-    @Override
-    public void showParticle(Location location, Particle particle, MaterialData materialData, float v, float v1, float v2, float v3, int i) {
-
-    }
-
     public GameRuleManager getGameRuleMap() {
         return gameRules;
     }

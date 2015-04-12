@@ -141,7 +141,7 @@ public class BlockType extends ItemType {
     public void blockDestroy(GlowPlayer player, GlowBlock block, BlockFace face) {
         // do nothing
     }
-    
+
     /**
      * Called after a player succesfully destroys a block.
      * @param player The player interacting
@@ -151,15 +151,16 @@ public class BlockType extends ItemType {
     public void afterDestroy(GlowPlayer player, GlowBlock block, BlockFace face, GlowBlockState oldState) {
         block.applyPhysics(oldState.getType(), block.getTypeId(), oldState.getRawData(), block.getData());
     }
-    
+
     /**
-     * Called when the BlockType gets pulsed as requested..
-     * @param me The block
+     * Called when the BlockType gets pulsed as requested.
+     * @param block The block that was pulsed pulsed
      */
-     public void recievePulse(GlowBlock me) {
+     public void recievePulse(GlowBlock block) {
         // Cancel if pulse sent to empty block data (caused when updated and not removed).
-        me.getWorld().cancelPulse(me);
+        block.getWorld().cancelPulse(block);
     }
+
     /**
      * Called when a player attempts to place a block on an existing block of
      * this type. Used to determine if the placement should occur into the air
@@ -218,9 +219,9 @@ public class BlockType extends ItemType {
 
     /**
      * Called when the BlockType should calculate the current physics.
-     * @param me The block
+     * @param block The block
      */
-    public void updatePhysics(GlowBlock me) {
+    public void updatePhysics(GlowBlock block) {
         // do nothing
     }
 
