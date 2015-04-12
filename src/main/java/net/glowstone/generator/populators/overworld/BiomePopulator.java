@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import net.glowstone.generator.decorators.DesertWellDecorator;
 import net.glowstone.generator.decorators.overworld.*;
 import net.glowstone.generator.decorators.overworld.FlowerDecorator.FlowerDecoration;
 import net.glowstone.generator.decorators.overworld.TreeDecorator.TreeDecoration;

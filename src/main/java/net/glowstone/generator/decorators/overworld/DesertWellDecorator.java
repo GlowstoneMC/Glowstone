@@ -1,7 +1,8 @@
-package net.glowstone.generator.decorators;
+package net.glowstone.generator.decorators.overworld;
 
 import java.util.Random;
 
+import net.glowstone.generator.decorators.BlockDecorator;
 import net.glowstone.generator.structures.GlowDesertWell;
 import net.glowstone.generator.structures.util.StructureBoundingBox;
 import net.glowstone.util.BlockStateDelegate;
