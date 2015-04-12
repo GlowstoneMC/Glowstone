@@ -1,7 +1,6 @@
 package net.glowstone.block.blocktype;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -12,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 public abstract class BlockLiquid extends BlockType {
-    
+
     private final Material bucketType;
 
     private static final BlockFace[] dirNESW = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
@@ -23,7 +22,7 @@ public abstract class BlockLiquid extends BlockType {
     protected BlockLiquid(Material bucketType) {
         this.bucketType = bucketType;
     }
-    
+
     ////////////////////////////////////////////////////////////////////////////
     // Public accessors
     /**
