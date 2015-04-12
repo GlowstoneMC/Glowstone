@@ -26,8 +26,6 @@ public class GlowTemple extends GlowStructure {
     public GlowTemple(World world, Random random, int chunkX, int chunkZ) {
         this(world, chunkX, chunkZ);
 
-        types.put(Biome.OCEAN, TempleType.values()[random.nextInt(3)]); // fix for lack of biomes
-
         final int x = chunkX << 4;
         final int z = chunkZ << 4;
         final Biome biome = world.getBiome(x + 8, z + 8);
