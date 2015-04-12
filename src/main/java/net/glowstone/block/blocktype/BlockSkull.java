@@ -48,7 +48,7 @@ public class BlockSkull extends BlockType {
     }
 
     @Override
-    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding) {
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
         GlowSkull skull = (GlowSkull) block.getState();
         skull.setSkullType(getType(holding.getDurability()));
         if (skull.getSkullType() == SkullType.PLAYER) {

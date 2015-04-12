@@ -33,6 +33,7 @@ import org.bukkit.event.world.*;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 import org.bukkit.metadata.MetadataStore;
 import org.bukkit.metadata.MetadataStoreBase;
 import org.bukkit.metadata.MetadataValue;
@@ -241,6 +242,11 @@ public final class GlowWorld implements World {
      * Per-chunk spawn limits on various types of entities.
      */
     private int monsterLimit, animalLimit, waterAnimalLimit, ambientLimit;
+    
+    /**
+     * Contains how regular blocks should be pulsed.
+     */
+     private final Map tickMap = new HashMap<>();
 
     private Map<Integer, GlowStructure> structures;
 
@@ -395,6 +401,9 @@ public final class GlowWorld implements World {
         List<GlowPlayer> players = new LinkedList<>();
 
         activeChunksSet.clear();
+
+        // We should pulse our tickmap, so blocks get updated.
+        this.pulseTickMap();
 
         // pulse players last so they actually see that other entities have
         // moved. unfortunately pretty hacky. not a problem for players b/c
@@ -1585,6 +1594,16 @@ public final class GlowWorld implements World {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    @Override
+    public void showParticle(Location location, Particle particle, float v, float v1, float v2, float v3, int i) {
+
+    }
+
+    @Override
+    public void showParticle(Location location, Particle particle, MaterialData materialData, float v, float v1, float v2, float v3, int i) {
+
+    }
+
     public GameRuleManager getGameRuleMap() {
         return gameRules;
     }
@@ -1631,6 +1650,39 @@ public final class GlowWorld implements World {
         }
         return result;
     }
+    
+    private void pulseTickMap() {
+        ItemTable itemTable = ItemTable.instance();
+        Map<Location, Integer> map = getTickMap();
+        for (Map.Entry<Location, Integer> entry : map.entrySet()) {
+            if (worldAge % entry.getValue() == 0) {
+                GlowBlock block = this.getBlockAt(entry.getKey());
+                BlockType notifyType = itemTable.getBlock(block.getTypeId());
+                if (notifyType != null)
+                    notifyType.recievePulse(block);
+            }
+        }
+    }
+    
+    private Map<Location, Integer> getTickMap() {
+        return new HashMap<>(tickMap);
+    }
 
-
+    /**
+     * Calling this method will request that the block is ticked on the next iteration
+     * that applies to the specified tick rate.
+     */
+    public void requestPulse(GlowBlock block, int tickRate) {
+        Location target = block.getLocation();
+    
+    
+            if (tickRate > 0)
+                tickMap.put(target, tickRate);
+            else if (tickMap.containsKey(target))
+                tickMap.remove(target);
+    }
+    
+    public void cancelPulse(GlowBlock block) {
+        requestPulse(block, 0);
+    }
 }

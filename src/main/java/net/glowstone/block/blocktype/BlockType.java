@@ -115,8 +115,8 @@ public class BlockType extends ItemType {
      * @param block the block that was placed
      * @param holding the the ItemStack that was being held
      */
-    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding) {
-        // do nothing
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
+        block.applyPhysics(oldState.getType(), block.getTypeId(), oldState.getRawData(), block.getData());
     }
 
     /**
@@ -141,7 +141,25 @@ public class BlockType extends ItemType {
     public void blockDestroy(GlowPlayer player, GlowBlock block, BlockFace face) {
         // do nothing
     }
-
+    
+    /**
+     * Called after a player succesfully destroys a block.
+     * @param player The player interacting
+     * @param block The block the player destroyed
+     * @param face The block face
+     */
+    public void afterDestroy(GlowPlayer player, GlowBlock block, BlockFace face, GlowBlockState oldState) {
+        block.applyPhysics(oldState.getType(), block.getTypeId(), oldState.getRawData(), block.getData());
+    }
+    
+    /**
+     * Called when the BlockType gets pulsed as requested..
+     * @param me The block
+     */
+     public void recievePulse(GlowBlock me) {
+        // Cancel if pulse sent to empty block data (caused when updated and not removed).
+        me.getWorld().cancelPulse(me);
+    }
     /**
      * Called when a player attempts to place a block on an existing block of
      * this type. Used to determine if the placement should occur into the air
@@ -254,7 +272,7 @@ public class BlockType extends ItemType {
         target.getWorld().playSound(target.getLocation(), Sound.DIG_WOOD, 1, 1);
 
         // do any after-place actions
-        afterPlace(player, target, holding);
+        afterPlace(player, target, holding, oldState);
 
         // deduct from stack if not in creative mode
         if (player.getGameMode() != GameMode.CREATIVE) {
