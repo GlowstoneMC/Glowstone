@@ -1648,7 +1648,7 @@ public final class GlowWorld implements World {
                 GlowBlock block = this.getBlockAt(entry.getKey());
                 BlockType notifyType = itemTable.getBlock(block.getTypeId());
                 if (notifyType != null)
-                    notifyType.recievePulse(block);
+                    notifyType.receivePulse(block);
             }
         }
     }
