@@ -190,10 +190,20 @@ public final class GlowBlock implements Block {
     public void setType(Material type) {
         setTypeId(type.getId());
     }
-
+    
+    /**
+     * Set the Material type of a block and optionally apply physics.
+     */
     @Override
-    public void setType(Material material, boolean applyPhysics) {
-        setTypeId(material.getId(), applyPhysics);
+    public void setType(Material type, boolean applyPhysics) {
+        setTypeId(type.getId(), applyPhysics);
+    }
+    
+    /**
+     * Set the Material type of a block with metadata? and optionally apply physics.
+     */
+    public void setType(Material type, byte data, boolean applyPhysics) {
+        setTypeIdAndData(type.getId(), data, applyPhysics);
     }
 
     @Override

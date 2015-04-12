@@ -35,7 +35,7 @@ public class BlockSign extends BlockType {
     }
 
     @Override
-    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding) {
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
         player.openSignEditor(block.getLocation());
     }
 }

@@ -115,8 +115,8 @@ public class BlockType extends ItemType {
      * @param block the block that was placed
      * @param holding the the ItemStack that was being held
      */
-    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding) {
-        // do nothing
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
+        block.applyPhysics(oldState.getType(), block.getTypeId(), oldState.getRawData(), block.getData());
     }
 
     /**
@@ -140,6 +140,25 @@ public class BlockType extends ItemType {
      */
     public void blockDestroy(GlowPlayer player, GlowBlock block, BlockFace face) {
         // do nothing
+    }
+
+    /**
+     * Called after a player succesfully destroys a block.
+     * @param player The player interacting
+     * @param block The block the player destroyed
+     * @param face The block face
+     */
+    public void afterDestroy(GlowPlayer player, GlowBlock block, BlockFace face, GlowBlockState oldState) {
+        block.applyPhysics(oldState.getType(), block.getTypeId(), oldState.getRawData(), block.getData());
+    }
+
+    /**
+     * Called when the BlockType gets pulsed as requested.
+     * @param block The block that was pulsed pulsed
+     */
+     public void receivePulse(GlowBlock block) {
+        // Cancel if pulse sent to empty block data (caused when updated and not removed).
+        block.getWorld().cancelPulse(block);
     }
 
     /**
@@ -200,9 +219,9 @@ public class BlockType extends ItemType {
 
     /**
      * Called when the BlockType should calculate the current physics.
-     * @param me The block
+     * @param block The block
      */
-    public void updatePhysics(GlowBlock me) {
+    public void updatePhysics(GlowBlock block) {
         // do nothing
     }
 
@@ -254,7 +273,7 @@ public class BlockType extends ItemType {
         target.getWorld().playSound(target.getLocation(), Sound.DIG_WOOD, 1, 1);
 
         // do any after-place actions
-        afterPlace(player, target, holding);
+        afterPlace(player, target, holding, oldState);
 
         // deduct from stack if not in creative mode
         if (player.getGameMode() != GameMode.CREATIVE) {
