@@ -156,7 +156,7 @@ public class BlockType extends ItemType {
      * Called when the BlockType gets pulsed as requested.
      * @param block The block that was pulsed pulsed
      */
-     public void recievePulse(GlowBlock block) {
+     public void receivePulse(GlowBlock block) {
         // Cancel if pulse sent to empty block data (caused when updated and not removed).
         block.getWorld().cancelPulse(block);
     }

@@ -14,10 +14,10 @@ public abstract class BlockLiquid extends BlockType {
 
     private final Material bucketType;
 
-    private static final BlockFace[] dirNESW = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
-    private static final BlockFace[] dirNESWU = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP};
-    private static final BlockFace[] dirNESWD = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.DOWN};
-    private static final BlockFace[] dirNESWUD = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
+    private static final BlockFace[] dirNESW = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
+    private static final BlockFace[] dirNESWU = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP};
+    private static final BlockFace[] dirNESWD = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.DOWN};
+    private static final BlockFace[] dirNESWUD = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
 
     protected BlockLiquid(Material bucketType) {
         this.bucketType = bucketType;
@@ -32,7 +32,7 @@ public abstract class BlockLiquid extends BlockType {
      * @return The associated bucket types material
      */
     public Material getBucketType() {
-        return this.bucketType;
+        return bucketType;
     }
 
     /**
@@ -59,9 +59,13 @@ public abstract class BlockLiquid extends BlockType {
         updatePhysics(block);
     }
 
+    /**
+     * Pulse the block to calculate its flow.
+     * @param block The block to calculate flow of.
+     */
     @Override
-    public void recievePulse(GlowBlock me) {
-        calculateFlow(me);
+    public void receivePulse(GlowBlock block) {
+        calculateFlow(block);
     }
 
     private static final byte STRENGTH_SOURCE = 0;
@@ -76,7 +80,7 @@ public abstract class BlockLiquid extends BlockType {
         GlowBlockState oldState = block.getState();
         GlowBlockState newState = block.getState();
         boolean isWater = isWater(newState.getType());
-        List<GlowBlock> updates = new ArrayList<>();
+        List<GlowBlock> updates = new ArrayList<>(6);
 
         if (isSource(isWater, newState.getRawData())) {
             // We are a source block, let's spread.
@@ -91,7 +95,7 @@ public abstract class BlockLiquid extends BlockType {
                 } else if (target.isLiquid() && isWater(target.getType()) && !isWater) {
                     target.setType(face == BlockFace.DOWN ? Material.STONE : Material.COBBLESTONE, true);
                     updates.add(target);
-                } else if ((target.isLiquid() && target.getData() > STRENGTH_MAX) || target.getType().isTransparent()) {
+                } else if (target.isLiquid() && target.getData() > STRENGTH_MAX || target.getType().isTransparent()) {
                     // No mixes, just spread normally!
                     target.setType(newState.getType(), STRENGTH_MAX, false);
                     target.getWorld().requestPulse(target, isWater ? TICK_RATE_WATER : TICK_RATE_LAVA);
@@ -103,7 +107,8 @@ public abstract class BlockLiquid extends BlockType {
 
             // Let's check that we can still stand.
             int sourceBlocks = 0;
-            boolean sourceAbove = false, fluidAbove = false;
+            boolean sourceAbove = false;
+            boolean fluidAbove = false;
             byte strength = isWater ? STRENGTH_MIN_WATER : STRENGTH_MIN_LAVA;
             for (BlockFace face : dirNESWU) {
                 GlowBlock target = block.getRelative(face);
@@ -134,7 +139,7 @@ public abstract class BlockLiquid extends BlockType {
                 // We can now become a source.
                 newState.setRawData(STRENGTH_SOURCE);
             } else if (sourceBlocks > 0 && newState.getRawData() != STRENGTH_MAX) {
-                // We are attatched to the source, max strength.
+                // We are attached to the source, max strength.
                 newState.setRawData(STRENGTH_MAX);
             } else if (sourceBlocks < 1 && strength == (isWater ? STRENGTH_MIN_WATER : STRENGTH_MIN_LAVA)) {
                 // Water is now too weak to continue!
@@ -155,7 +160,7 @@ public abstract class BlockLiquid extends BlockType {
                 } else if (down.isLiquid() && isWater(down.getType()) && !isWater) {
                     down.setType(Material.STONE, true);
                     updates.add(down);
-                } else if ((down.isLiquid() && down.getData() > STRENGTH_MAX) || down.getType().isTransparent()) {
+                } else if (down.isLiquid() && down.getData() > STRENGTH_MAX || down.getType().isTransparent()) {
                     // No mixes, just spread normally!
                     down.setType(newState.getType(), STRENGTH_MAX, false);
                     down.getWorld().requestPulse(down, isWater ? TICK_RATE_WATER : TICK_RATE_LAVA);
@@ -171,7 +176,7 @@ public abstract class BlockLiquid extends BlockType {
                         } else if (target.isLiquid() && isWater(target.getType()) && !isWater) {
                             target.setType(Material.COBBLESTONE, true);
                             updates.add(target);
-                        } else if ((target.isLiquid() && target.getData() > newData) || target.getType().isTransparent()) {
+                        } else if (target.isLiquid() && target.getData() > newData || target.getType().isTransparent()) {
                             // No mixes, just spread normally!
                             target.setType(newState.getType(), newData, false);
                             target.getWorld().requestPulse(target, isWater ? TICK_RATE_WATER : TICK_RATE_LAVA);
@@ -205,7 +210,7 @@ public abstract class BlockLiquid extends BlockType {
         }
     }
 
-    private boolean isSource(boolean isWater, byte data) {
+    private static boolean isSource(boolean isWater, byte data) {
         return data < STRENGTH_MAX || data > (isWater ? STRENGTH_MIN_WATER : STRENGTH_MIN_LAVA);
     }
 
@@ -218,7 +223,7 @@ public abstract class BlockLiquid extends BlockType {
     
     }
 
-    private boolean isStationary(Material material) {
+    private static boolean isStationary(Material material) {
         switch (material) {
             case STATIONARY_WATER:
             case STATIONARY_LAVA:
@@ -228,7 +233,7 @@ public abstract class BlockLiquid extends BlockType {
         }
     }
 
-    private boolean isWater(Material material) {
+    private static boolean isWater(Material material) {
         switch (material) {
             case STATIONARY_WATER:
             case WATER:
@@ -238,7 +243,7 @@ public abstract class BlockLiquid extends BlockType {
         }
     }
 
-    private Material getOpposite(Material material) {
+    private static Material getOpposite(Material material) {
         switch (material) {
             case STATIONARY_WATER:
                 return Material.WATER;
