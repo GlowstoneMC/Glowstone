@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import net.glowstone.generator.decorators.nether.FireDecorator;
+import net.glowstone.generator.decorators.nether.LavaDecorator;
 import net.glowstone.generator.decorators.nether.MushroomDecorator;
 import net.glowstone.generator.populators.nether.OrePopulator;
 
@@ -20,20 +21,26 @@ public class NetherPopulator extends BlockPopulator {
 
     private final OrePopulator orePopulator = new OrePopulator();
 
+    private final LavaDecorator flowingLavaDecorator = new LavaDecorator(true);
     private final FireDecorator fireDecorator = new FireDecorator();
     private final MushroomDecorator brownMushroomDecorator = new MushroomDecorator(Material.BROWN_MUSHROOM);
     private final MushroomDecorator redMushroomDecorator = new MushroomDecorator(Material.RED_MUSHROOM);
+    private final LavaDecorator lavaDecorator = new LavaDecorator();
 
     public NetherPopulator() {
         inGroundPopulators.add(orePopulator);
 
+        onGroundPopulators.add(flowingLavaDecorator);
         onGroundPopulators.add(fireDecorator);
         onGroundPopulators.add(brownMushroomDecorator);
         onGroundPopulators.add(redMushroomDecorator);
+        onGroundPopulators.add(lavaDecorator);
 
+        flowingLavaDecorator.setAmount(8);
         fireDecorator.setAmount(1);
         brownMushroomDecorator.setAmount(1);
         redMushroomDecorator.setAmount(1);
+        lavaDecorator.setAmount(16);
     }
 
     @Override
