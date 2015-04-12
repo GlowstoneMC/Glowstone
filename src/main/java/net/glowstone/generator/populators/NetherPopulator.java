@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import net.glowstone.generator.decorators.nether.FireDecorator;
-import net.glowstone.generator.decorators.nether.GlowstoneDecorator;
-import net.glowstone.generator.decorators.nether.LavaDecorator;
-import net.glowstone.generator.decorators.nether.MushroomDecorator;
+import net.glowstone.generator.decorators.nether.*;
 import net.glowstone.generator.populators.nether.OrePopulator;
 
 import org.bukkit.Chunk;
