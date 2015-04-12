@@ -13,7 +13,6 @@ public class LoadChunk extends Thread {
     @Override
     public void run() {
         chunk.load();
-        chunk.getWorld().getChunkManager().forcePopulation(chunk.getX(), chunk.getZ());
         chunk.getWorld().spawnChunkLock.acquire(new GlowChunk.Key(chunk.getX(), chunk.getZ()));
     }
 }

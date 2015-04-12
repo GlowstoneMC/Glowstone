@@ -487,8 +487,8 @@ public final class GlowServer implements Server {
             checkTransfer(name, "_the_end", Environment.THE_END);
             createWorld(WorldCreator.name(name + "_the_end").environment(Environment.THE_END).seed(seed).type(type).generateStructures(structs));
         }
-        
-        chunksLoader.worldLoad.countDown();
+
+        chunksLoader.start();
 
         // Finish loading plugins
         enablePlugins(PluginLoadOrder.POSTWORLD);
@@ -1372,7 +1372,7 @@ public final class GlowServer implements Server {
     @Override
     public boolean unloadWorld(String name, boolean save) {
         GlowWorld world = getWorld(name);
-        return world != null && new UnloadWorld(this, world, save).unloadWorld();
+        return world != null && unloadWorld(world, save);
     }
 
     @Override
