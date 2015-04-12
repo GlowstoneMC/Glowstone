@@ -27,7 +27,8 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
         return false;
     }
 
-    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding) {
+    @Override
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
         final GlowBlockState headBlockState = block.getRelative(BlockFace.UP).getState();
         headBlockState.setType(Material.DOUBLE_PLANT);
         headBlockState.setData(new DoublePlant(DoublePlantSpecies.PLANT_APEX));

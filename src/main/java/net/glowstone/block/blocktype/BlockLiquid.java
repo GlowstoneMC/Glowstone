@@ -25,6 +25,7 @@ public abstract class BlockLiquid extends BlockType {
 
     ////////////////////////////////////////////////////////////////////////////
     // Public accessors
+
     /**
      * Get the bucket type to replace the empty bucket when the liquid has
      * been collected.
