@@ -65,10 +65,7 @@ public class GlowDungeon extends GlowStructurePiece {
                             && y == 1 && type == Material.AIR
                             && builder.getBlockState(new Vector(x, y + 1, z)).getType() == Material.AIR) {
                         i++;
-                        // TODO
-                        // change min to 1 when caves will be generated !
-                        // this will be required so that dungeons are minimally
-                        // exposed to air
+                        // TODO change min to 1 when caves will be generated ! this will be required so that dungeons are minimally exposed to air
                         if (i < 0 || i > 5) {
                             return false;
                         }
