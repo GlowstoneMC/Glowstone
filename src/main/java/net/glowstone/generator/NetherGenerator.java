@@ -3,6 +3,7 @@ package net.glowstone.generator;
 import java.util.Map;
 import java.util.Random;
 
+import net.glowstone.generator.populators.NetherPopulator;
 import net.glowstone.util.noise.PerlinOctaveGenerator;
 
 import org.bukkit.Location;
@@ -26,8 +27,7 @@ public class NetherGenerator extends GlowChunkGenerator {
     private final double[] density = new double[5 * 17 * 5];
 
     public NetherGenerator() {
-        // TODO populators
-        super();
+        super(new NetherPopulator());
     }
 
     @Override
