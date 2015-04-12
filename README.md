@@ -47,7 +47,7 @@ Downloads
 
 If you don't want to build from source, prebuilt jar files are available to download from:
 
-* **[CircleCI downloads](https://circleci.com/gh/deathcap/GlowstonePlusPlus)** (preferred) - click the latest build then expand "Artifacts" (if it does not show, try logging in with GitHub)
+* **[CircleCI downloads](https://circleci.com/gh/deathcap/GlowstonePlusPlus/tree/master)** (preferred) - click the latest build then expand "Artifacts" (if it does not show, try logging in with GitHub)
 [![Build Status](https://circleci.com/gh/deathcap/GlowstonePlusPlus.png?style=shield)](https://circleci.com/gh/deathcap/GlowstonePlusPlus)
 
 * [drone.io downloads](https://drone.io/github.com/deathcap/GlowstonePlusPlus/files) - alternative
