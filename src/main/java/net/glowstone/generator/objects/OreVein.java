@@ -12,11 +12,13 @@ public class OreVein {
     private final Material type;
     private final MaterialData data;
     private final int amount;
+    private final Material targetType;
 
     public OreVein(OreType oreType) {
         type = oreType.getType();
         data = oreType.getData();
         amount = oreType.getAmount();
+        targetType = oreType.getTargetType();
     }
 
     public void generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
@@ -47,7 +49,7 @@ public class OreVein {
                             for (int z = (int) (originZ - hRadius); z <= (int) (originZ + hRadius); z++) {
                                 double pZ = (z + 0.5D - originZ) / hRadius;
                                 pZ *= pZ;
-                                if (pX + pY + pZ < 1 && world.getBlockAt(x, y, z).getType() == Material.STONE) {
+                                if (pX + pY + pZ < 1 && world.getBlockAt(x, y, z).getType() == targetType) {
                                     final BlockState state = world.getBlockAt(x, y, z).getState();
                                     state.setType(type);
                                     state.setData(data);
