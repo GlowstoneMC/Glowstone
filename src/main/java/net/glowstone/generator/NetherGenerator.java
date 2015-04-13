@@ -270,17 +270,17 @@ public class NetherGenerator extends GlowChunkGenerator {
                                 groundMat = Material.SOUL_SAND;
                             }
                         }
-                    }
 
-                    deep = surfaceHeight;
-                    if (y >= 63) {
-                        set(buf, x, y, z, topMat);
-                    } else {
+                        deep = surfaceHeight;
+                        if (y >= 63) {
+                            set(buf, x, y, z, topMat);
+                        } else {
+                            set(buf, x, y, z, groundMat);
+                        }
+                    } else if (deep > 0) {
+                        deep--;
                         set(buf, x, y, z, groundMat);
                     }
-                } else if (deep > 0) {
-                    deep--;
-                    set(buf, x, y, z, groundMat);
                 }
             }
         }
