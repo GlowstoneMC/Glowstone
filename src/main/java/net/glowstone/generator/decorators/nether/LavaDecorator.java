@@ -52,7 +52,7 @@ public class LavaDecorator extends BlockDecorator {
             if (netherrackBlockCount == 5 || (flowing && airBlockCount == 1 && netherrackBlockCount == 4)) {
                 final BlockState state = block.getState();
                 state.setType(Material.LAVA);
-                state.update(true);
+                state.update(true, true);
             }
         }
     }

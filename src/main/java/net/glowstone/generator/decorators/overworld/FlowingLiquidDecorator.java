@@ -51,7 +51,7 @@ public class FlowingLiquidDecorator extends BlockDecorator {
                 if (airBlockCount == 1) {
                     final BlockState state = block.getState();
                     state.setType(type);
-                    state.update(true);
+                    state.update(true, true);
                 }
             }
         }
