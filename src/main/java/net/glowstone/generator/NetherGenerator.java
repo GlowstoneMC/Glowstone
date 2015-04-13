@@ -258,15 +258,13 @@ public class NetherGenerator extends GlowChunkGenerator {
                         if (surfaceHeight <= 0) {
                             topMat = Material.AIR;
                             groundMat = Material.NETHERRACK;
-                        } else if (y >=32 && y <=96) {
+                        } else if (y >= 32 && y <= 96) {
                             topMat = Material.NETHERRACK;
                             groundMat = Material.NETHERRACK;
                             if (gravel) {
                                 topMat = Material.GRAVEL;
                                 groundMat = Material.NETHERRACK;
                             }
-                            topMat = Material.NETHERRACK;
-                            groundMat = Material.NETHERRACK;
                             if (soulSand) {
                                 topMat = Material.SOUL_SAND;
                                 groundMat = Material.SOUL_SAND;
@@ -274,12 +272,12 @@ public class NetherGenerator extends GlowChunkGenerator {
                         }
                     }
 
-                deep = surfaceHeight;
-                if (y >= 63) {
-                    set(buf, x, y, z, topMat);
-                } else {
-                    set(buf, x, y, z, groundMat);
-                }
+                    deep = surfaceHeight;
+                    if (y >= 63) {
+                        set(buf, x, y, z, topMat);
+                    } else {
+                        set(buf, x, y, z, groundMat);
+                    }
                 } else if (deep > 0) {
                     deep--;
                     set(buf, x, y, z, groundMat);
