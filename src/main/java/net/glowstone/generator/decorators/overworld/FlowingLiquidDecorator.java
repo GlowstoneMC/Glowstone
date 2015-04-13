@@ -9,6 +9,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 
+import net.glowstone.block.GlowBlock;
+import net.glowstone.block.ItemTable;
 import net.glowstone.generator.decorators.BlockDecorator;
 
 public class FlowingLiquidDecorator extends BlockDecorator {
@@ -49,7 +51,8 @@ public class FlowingLiquidDecorator extends BlockDecorator {
                 if (airBlockCount == 1) {
                     final BlockState state = block.getState();
                     state.setType(type);
-                    state.update(true, true);
+                    state.update(true);
+                    ItemTable.instance().getBlock(block.getType()).receivePulse((GlowBlock) block);
                 }
             }
         }
