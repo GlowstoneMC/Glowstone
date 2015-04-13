@@ -2,8 +2,6 @@ package net.glowstone.generator.decorators.nether;
 
 import java.util.Random;
 
-import net.glowstone.block.GlowBlock;
-import net.glowstone.block.ItemTable;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
