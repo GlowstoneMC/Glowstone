@@ -2,7 +2,9 @@ package net.glowstone.generator.biomegrid;
 
 import java.util.Random;
 
+import org.bukkit.World.Environment;
 import org.bukkit.WorldType;
+import org.bukkit.block.Biome;
 
 import net.glowstone.generator.biomegrid.WhittakerMapLayer.ClimateType;
 import net.glowstone.generator.biomegrid.ZoomMapLayer.ZoomType;
@@ -27,7 +29,13 @@ public abstract class MapLayer {
 
     public abstract int[] generateValues(int x, int z, int sizeX, int sizeZ);
 
-    public static MapLayer[] initialize(long seed, WorldType worldType) {
+    public static MapLayer[] initialize(long seed, Environment environment, WorldType worldType) {
+        if (environment == Environment.NETHER) {
+            return new MapLayer[] {new ConstantBiomeMapLayer(seed, Biome.HELL), null};
+        } else if (environment == Environment.THE_END) {
+            return new MapLayer[] {new ConstantBiomeMapLayer(seed, Biome.SKY), null};
+        }
+
         int zoom = 2;
         if (worldType == WorldType.LARGE_BIOMES) {
             zoom = 4;
