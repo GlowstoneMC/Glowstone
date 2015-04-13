@@ -461,5 +461,6 @@ public final class GlowBlock implements Block {
         if (type != null) {
             type.onBlockChanged(this, oldType, oldData, newType, newData);
         }
+        type.receivePulse(this);
     }
 }

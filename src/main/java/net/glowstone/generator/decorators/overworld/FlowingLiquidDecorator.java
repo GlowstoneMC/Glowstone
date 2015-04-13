@@ -52,7 +52,6 @@ public class FlowingLiquidDecorator extends BlockDecorator {
                     final BlockState state = block.getState();
                     state.setType(type);
                     state.update(true);
-                    ItemTable.instance().getBlock(block.getType()).receivePulse((GlowBlock) block);
                 }
             }
         }

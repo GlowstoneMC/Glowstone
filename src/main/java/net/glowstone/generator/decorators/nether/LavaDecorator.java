@@ -53,7 +53,6 @@ public class LavaDecorator extends BlockDecorator {
                 final BlockState state = block.getState();
                 state.setType(Material.LAVA);
                 state.update(true);
-                ItemTable.instance().getBlock(block.getType()).receivePulse((GlowBlock) block);
             }
         }
     }
