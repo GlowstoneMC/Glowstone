@@ -453,6 +453,7 @@ public final class GlowBlock implements Block {
                 BlockType notifyType = itemTable.getBlock(notify.getTypeId());
                 if (notifyType != null) {
                     notifyType.onNearBlockChanged(notify, blockFace, this, oldType, oldData, newType, newData);
+                    type.receivePulse(this);
                 }
             }
         }
@@ -460,7 +461,8 @@ public final class GlowBlock implements Block {
         BlockType type = itemTable.getBlock(oldType);
         if (type != null) {
             type.onBlockChanged(this, oldType, oldData, newType, newData);
+            type.receivePulse(this);
         }
-        type.receivePulse(this);
+
     }
 }
