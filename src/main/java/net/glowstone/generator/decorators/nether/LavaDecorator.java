@@ -2,6 +2,8 @@ package net.glowstone.generator.decorators.nether;
 
 import java.util.Random;
 
+import net.glowstone.block.GlowBlock;
+import net.glowstone.block.ItemTable;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -50,7 +52,8 @@ public class LavaDecorator extends BlockDecorator {
             if (netherrackBlockCount == 5 || (flowing && airBlockCount == 1 && netherrackBlockCount == 4)) {
                 final BlockState state = block.getState();
                 state.setType(Material.LAVA);
-                state.update(true, true);
+                state.update(true);
+                ItemTable.instance().getBlock(block.getType()).receivePulse((GlowBlock) block);
             }
         }
     }
