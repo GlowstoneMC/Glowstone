@@ -2,6 +2,8 @@ package net.glowstone.generator.decorators.overworld;
 
 import java.util.Random;
 
+import net.glowstone.block.GlowBlock;
+import net.glowstone.block.ItemTable;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -49,7 +51,8 @@ public class FlowingLiquidDecorator extends BlockDecorator {
                 if (airBlockCount == 1) {
                     final BlockState state = block.getState();
                     state.setType(type);
-                    state.update(true, true);
+                    state.update(true);
+                    ItemTable.instance().getBlock(block.getType()).receivePulse((GlowBlock) block);
                 }
             }
         }
