@@ -63,7 +63,7 @@ public final class ChunkManager {
         this.world = world;
         this.service = service;
         this.generator = generator;
-        biomeGrid = MapLayer.initialize(world.getSeed(), world.getWorldType());
+        biomeGrid = MapLayer.initialize(world.getSeed(), world.getEnvironment(), world.getWorldType());
     }
 
     /**
@@ -246,16 +246,6 @@ public final class ChunkManager {
         for (int i = 0;  i < biomeValues.length; i++) {
             biomes.biomes[i] = (byte) biomeValues[i];
         }
-
-        // hackish way to force biome
-        /*
-        for (int i = 0; i < 16; i++) {
-            for (int j = 0; j < 16; j++) {
-                biomes.setBiome(i, j, Biome.MEGA_TAIGA);
-            }
-        }
-        */
-
 
         // extended sections with data
         if (generator instanceof GlowChunkGenerator) {
