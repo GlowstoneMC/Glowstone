@@ -224,6 +224,15 @@ public final class GlowBlock implements Block {
         chunk.setType(x & 0xf, z & 0xf, y, type);
         chunk.setMetaData(x & 0xf, z & 0xf, y, data);
 
+        if (oldTypeId == Material.DOUBLE_PLANT && this.getRelative(BlockFace.UP).getType() == Material.DOUBLE_PLANT) {
+            chunk.setType(x & 0xf, z & 0xf, y + 1, 0);
+            chunk.setMetaData(x & 0xf, z & 0xf, y, 0);
+            BlockChangeMessage bcmsg = new BlockChangeMessage(x, y + 1, z, 0, 0);
+            for (GlowPlayer p : getWorld().getRawPlayers()) {
+                p.sendBlockChange(bcmsg);
+            }
+        }
+
         if (applyPhysics) {
             applyPhysics(oldTypeId, type, oldData, data);
         }
