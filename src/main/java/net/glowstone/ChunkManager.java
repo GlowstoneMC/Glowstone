@@ -212,9 +212,9 @@ public final class ChunkManager {
         Random random = new Random(world.getSeed());
         long xRand = random.nextLong() / 2 * 2 + 1;
         long zRand = random.nextLong() / 2 * 2 + 1;
+        random.setSeed((long) x * xRand + (long) z * zRand ^ world.getSeed());
 
         for (BlockPopulator p : world.getPopulators()) {
-            random.setSeed((long) x * xRand + (long) z * zRand ^ world.getSeed());
             p.populate(world, random, chunk);
         }
 
