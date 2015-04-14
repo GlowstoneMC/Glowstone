@@ -452,7 +452,6 @@ public final class GlowServer implements Server {
         enablePlugins(PluginLoadOrder.STARTUP);
 
         // Load SpongeAPI plugins TODO: where?
-        System.out.println("LOAD1");
         net.glowstone.shiny.Shiny.instance.load();
 
         // Create worlds

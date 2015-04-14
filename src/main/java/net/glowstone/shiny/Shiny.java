@@ -3,8 +3,8 @@ package net.glowstone.shiny;
 import com.google.common.base.Throwables;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import net.glowstone.shiny.util.ConsoleManager;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -12,17 +12,15 @@ public class Shiny {
 
     public static final Shiny instance = new Shiny();
 
-    private Injector injector = Guice.createInjector(new ShinyGuiceModule());
-    public final Logger logger = ConsoleManager.getLogger();
+    private Injector injector;
+    public Logger logger;
 
     private ShinyGame game;
 
-    public static Injector getInjector() {
-        return instance.injector;
-    }
-
     public void load() {
-        System.out.println("LOAD2");
+        logger = LoggerFactory.getLogger("Shiny");
+        injector = Guice.createInjector(new ShinyGuiceModule());
+
         /*
          CONSTRUCTION,
          LOAD_COMPLETE,
