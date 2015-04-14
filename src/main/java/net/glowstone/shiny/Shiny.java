@@ -3,8 +3,12 @@ package net.glowstone.shiny;
 import com.google.common.base.Throwables;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import net.glowstone.shiny.event.GraniteEventFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongepowered.api.event.state.ConstructionEvent;
+import org.spongepowered.api.event.state.PreInitializationEvent;
+import org.spongepowered.api.event.state.StateEvent;
 
 import java.io.IOException;
 
@@ -12,40 +16,50 @@ public class Shiny {
 
     public static final Shiny instance = new Shiny();
 
+    public static Logger getLogger() {
+        return instance.logger;
+    }
+
     private Injector injector;
     public Logger logger;
 
     private ShinyGame game;
 
     public void load() {
-        logger = LoggerFactory.getLogger("Shiny");
-        injector = Guice.createInjector(new ShinyGuiceModule());
-
-        /*
-         CONSTRUCTION,
-         LOAD_COMPLETE,
-         PRE_INITIALIZATION,
-         INITIALIZATION,
-         POST_INITIALIZATION,
-         SERVER_ABOUT_TO_START,
-         SERVER_STARTING,
-         SERVER_STARTED,
-         SERVER_STOPPING,
-         SERVER_STOPPED
-         */
-
-        logger.info("Loading Shiny...");
-        this.game = injector.getInstance(ShinyGame.class);
-
-        logger.info("Glowstone " + this.game.getImplementationVersion() + " is starting...");
-        logger.info("SpongeAPI version: " + this.game.getApiVersion());
-
-        logger.info("Loading plugins...");
         try {
+            logger = LoggerFactory.getLogger("Shiny");
+            injector = Guice.createInjector(new ShinyGuiceModule());
+
+            /*
+             CONSTRUCTION,
+             LOAD_COMPLETE,
+             PRE_INITIALIZATION,
+             INITIALIZATION,
+             POST_INITIALIZATION,
+             SERVER_ABOUT_TO_START,
+             SERVER_STARTING,
+             SERVER_STARTED,
+             SERVER_STOPPING,
+             SERVER_STOPPED
+             */
+
+            getLogger().info("Loading Shiny...");
+            this.game = injector.getInstance(ShinyGame.class);
+
+            getLogger().info("Glowstone " + this.game.getImplementationVersion() + " is starting...");
+            getLogger().info("SpongeAPI version: " + this.game.getApiVersion());
+
+            getLogger().info("Loading plugins...");
             this.game.getPluginManager().loadPlugins();
+            postState(ConstructionEvent.class);
+            getLogger().info("Initializing plugins...");
+            postState(PreInitializationEvent.class);
         } catch (IOException e) {
-            Throwables.propagate(e);
+            throw Throwables.propagate(e);
         }
-        // TODO: postState
+    }
+
+    public void postState(Class<? extends StateEvent> type) {
+        this.game.getEventManager().post(GraniteEventFactory.createStateEvent(type, this.game));
     }
 }
