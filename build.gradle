@@ -9,7 +9,7 @@ apply plugin: 'net.glowstone.mixins'
 // Basic project information
 group = 'net.glowstone'
 version = '0.0.1-SNAPSHOT'
-description = "ShinySponge"
+description = "Shiny"
 
 // Buildscript settings
 buildscript {

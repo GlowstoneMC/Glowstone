@@ -1,6 +1,8 @@
 package net.glowstone.shiny;
 
 import com.google.common.base.Optional;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import net.glowstone.shiny.event.ShinyEventManager;
 import net.glowstone.shiny.plugin.ShinyPluginManager;
 import net.glowstone.shiny.util.ConsoleManager;
@@ -27,6 +29,8 @@ import java.util.UUID;
 /**
  * Implementation of {@link Game}.
  */
+
+@Singleton
 public class ShinyGame implements Game {
 
     public static final Logger logger = ConsoleManager.getLogger();
@@ -48,6 +52,7 @@ public class ShinyGame implements Game {
     private final SimpleServiceManager services = new SimpleServiceManager(pluginManager);
     private final SimpleCommandService commands = new SimpleCommandService(pluginManager);
 
+    @Inject
     public ShinyGame() {
         logger.info("Glowstone " + IMPL_VERSION + " is starting...");
         logger.info("API version: " + API_VERSION);

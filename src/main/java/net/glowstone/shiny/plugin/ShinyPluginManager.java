@@ -2,6 +2,7 @@ package net.glowstone.shiny.plugin;
 
 import com.google.common.base.Optional;
 import com.google.common.io.PatternFilenameFilter;
+import com.google.inject.Singleton;
 import net.glowstone.shiny.ShinyGame;
 import net.glowstone.shiny.event.ShinyPreInitEvent;
 import org.slf4j.Logger;
@@ -18,6 +19,8 @@ import java.util.Map;
 /**
  * Implementation of {@link PluginManager}.
  */
+
+@Singleton
 public class ShinyPluginManager implements PluginManager {
 
     private final ShinyGame game;
