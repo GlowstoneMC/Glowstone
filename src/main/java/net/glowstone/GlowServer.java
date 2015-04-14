@@ -621,6 +621,9 @@ public final class GlowServer implements Server {
         // Disable plugins
         pluginManager.clearPlugins();
 
+        // Disable SpongeAPI plugins TODO: also ServerStoppedEvent
+        net.glowstone.shiny.Shiny.instance.postState(org.spongepowered.api.event.state.ServerStoppingEvent.class);
+
         // Kick all players (this saves their data too)
         for (Player player : getOnlinePlayers()) {
             player.kickPlayer(getShutdownMessage());
