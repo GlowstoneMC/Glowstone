@@ -46,12 +46,10 @@ import org.spongepowered.api.util.rotation.Rotation;
 import org.spongepowered.api.world.DimensionType;
 import org.spongepowered.api.world.GeneratorType;
 import org.spongepowered.api.world.WorldBuilder;
-import org.spongepowered.api.world.WorldCreationSettings;
 import org.spongepowered.api.world.biome.BiomeType;
 import org.spongepowered.api.world.difficulty.Difficulty;
 import org.spongepowered.api.world.gen.PopulatorFactory;
 import org.spongepowered.api.world.gen.WorldGeneratorModifier;
-import org.spongepowered.api.world.storage.WorldProperties;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

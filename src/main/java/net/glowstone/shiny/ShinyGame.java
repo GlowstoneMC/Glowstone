@@ -1,30 +1,17 @@
 package net.glowstone.shiny;
 
-import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.glowstone.shiny.event.ShinyEventManager;
 import net.glowstone.shiny.plugin.ShinyPluginManager;
-import net.glowstone.shiny.util.ConsoleManager;
-import net.glowstone.shiny.util.Unsupported;
-import org.slf4j.Logger;
 import org.spongepowered.api.*;
-import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.service.SimpleServiceManager;
 import org.spongepowered.api.service.command.CommandService;
 import org.spongepowered.api.service.command.SimpleCommandService;
 import org.spongepowered.api.service.scheduler.AsynchronousScheduler;
-import org.spongepowered.api.service.scheduler.Scheduler;
 import org.spongepowered.api.service.scheduler.SynchronousScheduler;
-import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.TeleportHelper;
-import org.spongepowered.api.world.World;
-
-import java.io.File;
-import java.util.Collection;
-import java.util.UUID;
 
 /**
  * Implementation of {@link Game}.
@@ -33,7 +20,12 @@ import java.util.UUID;
 @Singleton
 public class ShinyGame implements Game {
 
-    public static final Logger logger = ConsoleManager.getLogger();
+
+    private final ShinyPluginManager pluginManager = new ShinyPluginManager(this);
+    private final ShinyEventManager eventManager = new ShinyEventManager();
+    private final ShinyGameRegistry registry = new ShinyGameRegistry();
+    private final SimpleServiceManager services = new SimpleServiceManager(pluginManager);
+    private final SimpleCommandService commands = new SimpleCommandService(pluginManager);
 
     private static final String API_VERSION;
     private static final String IMPL_VERSION;
@@ -46,30 +38,9 @@ public class ShinyGame implements Game {
         IMPL_VERSION = (implVersion == null) ? "unknown" : implVersion;
     }
 
-    private final ShinyPluginManager pluginManager = new ShinyPluginManager(this);
-    private final ShinyEventManager eventManager = new ShinyEventManager();
-    private final ShinyGameRegistry registry = new ShinyGameRegistry();
-    private final SimpleServiceManager services = new SimpleServiceManager(pluginManager);
-    private final SimpleCommandService commands = new SimpleCommandService(pluginManager);
-
     @Inject
     public ShinyGame() {
-        logger.info("Glowstone " + IMPL_VERSION + " is starting...");
-        logger.info("API version: " + API_VERSION);
-        /*
-         CONSTRUCTION,
-         LOAD_COMPLETE,
-         PRE_INITIALIZATION,
-         INITIALIZATION,
-         POST_INITIALIZATION,
-         SERVER_ABOUT_TO_START,
-         SERVER_STARTING,
-         SERVER_STARTED,
-         SERVER_STOPPING,
-         SERVER_STOPPED
-         */
-        File directory = new File("plugins");
-        pluginManager.loadPlugins(directory);
+
     }
 
     // platform information
@@ -102,7 +73,7 @@ public class ShinyGame implements Game {
     // service access
 
     @Override
-    public PluginManager getPluginManager() {
+    public ShinyPluginManager getPluginManager() {
         return pluginManager;
     }
 

@@ -2,7 +2,9 @@ package net.glowstone.shiny.plugin;
 
 import com.google.common.base.Optional;
 import com.google.common.io.PatternFilenameFilter;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.glowstone.shiny.Shiny;
 import net.glowstone.shiny.ShinyGame;
 import net.glowstone.shiny.event.ShinyPreInitEvent;
 import org.slf4j.Logger;
@@ -11,6 +13,7 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -29,6 +32,7 @@ public class ShinyPluginManager implements PluginManager {
     private final Map<String, PluginContainer> plugins = new HashMap<>();
     private final Map<Object, PluginContainer> instanceMap = new IdentityHashMap<>();
 
+    @Inject
     public ShinyPluginManager(ShinyGame game) {
         this.game = game;
         loader = new PluginLoader(game);
@@ -56,10 +60,11 @@ public class ShinyPluginManager implements PluginManager {
 
     @Override
     public boolean isLoaded(String id) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return plugins.containsKey(id);
     }
 
-    public void loadPlugins(File directory) {
+    public void loadPlugins() throws IOException {
+        File directory = new File("plugins"); // TODO: pass plugin directory
         File[] files = directory.listFiles(new PatternFilenameFilter(".+\\.jar"));
         if (files == null || files.length == 0) {
             return;
@@ -68,7 +73,7 @@ public class ShinyPluginManager implements PluginManager {
         Collection<PluginContainer> containers = loader.loadPlugins(files);
         for (PluginContainer container : containers) {
             if (plugins.containsKey(container.getId())) {
-                ShinyGame.logger.warn("Skipped loading duplicate of \"" + container.getId() + "\"");
+                Shiny.logger.warn("Skipped loading duplicate of \"" + container.getId() + "\"");
                 continue;
             }
             plugins.put(container.getId(), container);

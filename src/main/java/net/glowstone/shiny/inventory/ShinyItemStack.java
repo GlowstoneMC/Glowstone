@@ -1,13 +1,11 @@
 package net.glowstone.shiny.inventory;
 
 import com.google.common.base.Optional;
-import org.spongepowered.api.attribute.AttributeModifier;
 import org.spongepowered.api.data.*;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.service.persistence.InvalidDataException;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 
 /**

@@ -3,6 +3,7 @@ package net.glowstone.shiny.plugin;
 import com.google.common.base.Optional;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import net.glowstone.shiny.Shiny;
 import net.glowstone.shiny.ShinyGame;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
@@ -35,7 +36,7 @@ final class PluginLoader {
             try {
                 urls.add(jar.toURI().toURL());
             } catch (MalformedURLException e) {
-                ShinyGame.logger.warn("Malformed URL: " + jar, e);
+                Shiny.logger.warn("Malformed URL: " + jar, e);
             }
         }
 
@@ -65,7 +66,7 @@ final class PluginLoader {
                     try {
                         clazz = classLoader.loadClass(name);
                     } catch (Throwable t) {
-                        ShinyGame.logger.error("Error loading " + url.getFile() + "/" + name, t);
+                        Shiny.logger.error("Error loading " + url.getFile() + "/" + name, t);
                         continue;
                     }
 
@@ -73,7 +74,7 @@ final class PluginLoader {
                 }
             }
         } catch (IOException ex) {
-            ShinyGame.logger.error("Error reading " + url, ex);
+            Shiny.logger.error("Error reading " + url, ex);
         }
     }
 
@@ -86,7 +87,7 @@ final class PluginLoader {
                 container.instance = injector.getInstance(clazz);
                 return Optional.<PluginContainer>of(container);
             } catch (Throwable t) {
-                ShinyGame.logger.error("Error initializing " + annotation.id() + " (" + clazz + ")", t);
+                Shiny.logger.error("Error initializing " + annotation.id() + " (" + clazz + ")", t);
             }
         }
         return Optional.absent();
