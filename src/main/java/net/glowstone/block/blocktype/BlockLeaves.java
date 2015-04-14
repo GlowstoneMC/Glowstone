@@ -4,10 +4,13 @@ import net.glowstone.block.GlowBlock;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class BlockLeaves extends BlockType {
-    private final Random random = new Random();
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
