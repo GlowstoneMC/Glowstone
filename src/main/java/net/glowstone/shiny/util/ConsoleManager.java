@@ -15,7 +15,7 @@ public final class ConsoleManager {
     private static final String CONSOLE_DATE = "HH:mm:ss";
 
     static {
-        Logger logger = Logger.getLogger("");
+        Logger logger = Logger.getLogger("Shiny");
         for (Handler handler : logger.getHandlers()) {
             logger.removeHandler(handler);
         }
@@ -23,7 +23,7 @@ public final class ConsoleManager {
     }
 
     public static org.slf4j.Logger getLogger() {
-        return LoggerFactory.getLogger("");
+        return LoggerFactory.getLogger("Shiny");
     }
 
     private static class FancyConsoleHandler extends ConsoleHandler {
