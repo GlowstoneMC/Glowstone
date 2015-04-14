@@ -37,9 +37,9 @@ public final class EventRegistration {
             try {
                 method.invoke(object, event);
             } catch (InvocationTargetException e) {
-                Shiny.logger.error("Event error", e.getTargetException());
+                Shiny.instance.logger.error("Event error", e.getTargetException());
             } catch (IllegalAccessException e) {
-                Shiny.logger.error("Event error", e);
+                Shiny.instance.logger.error("Event error", e);
             }
         }
     }

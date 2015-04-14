@@ -73,7 +73,7 @@ public class ShinyPluginManager implements PluginManager {
         Collection<PluginContainer> containers = loader.loadPlugins(files);
         for (PluginContainer container : containers) {
             if (plugins.containsKey(container.getId())) {
-                Shiny.logger.warn("Skipped loading duplicate of \"" + container.getId() + "\"");
+                Shiny.instance.logger.warn("Skipped loading duplicate of \"" + container.getId() + "\"");
                 continue;
             }
             plugins.put(container.getId(), container);

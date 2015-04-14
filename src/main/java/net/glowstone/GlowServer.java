@@ -451,6 +451,10 @@ public final class GlowServer implements Server {
         loadPlugins();
         enablePlugins(PluginLoadOrder.STARTUP);
 
+        // Load SpongeAPI plugins TODO: where?
+        System.out.println("LOAD1");
+        net.glowstone.shiny.Shiny.instance.load();
+
         // Create worlds
         String name = config.getString(ServerConfig.Key.LEVEL_NAME);
         String seedString = config.getString(ServerConfig.Key.LEVEL_SEED);

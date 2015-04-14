@@ -36,7 +36,7 @@ final class PluginLoader {
             try {
                 urls.add(jar.toURI().toURL());
             } catch (MalformedURLException e) {
-                Shiny.logger.warn("Malformed URL: " + jar, e);
+                Shiny.instance.logger.warn("Malformed URL: " + jar, e);
             }
         }
 
@@ -66,7 +66,7 @@ final class PluginLoader {
                     try {
                         clazz = classLoader.loadClass(name);
                     } catch (Throwable t) {
-                        Shiny.logger.error("Error loading " + url.getFile() + "/" + name, t);
+                        Shiny.instance.logger.error("Error loading " + url.getFile() + "/" + name, t);
                         continue;
                     }
 
@@ -74,7 +74,7 @@ final class PluginLoader {
                 }
             }
         } catch (IOException ex) {
-            Shiny.logger.error("Error reading " + url, ex);
+            Shiny.instance.logger.error("Error reading " + url, ex);
         }
     }
 
@@ -87,7 +87,7 @@ final class PluginLoader {
                 container.instance = injector.getInstance(clazz);
                 return Optional.<PluginContainer>of(container);
             } catch (Throwable t) {
-                Shiny.logger.error("Error initializing " + annotation.id() + " (" + clazz + ")", t);
+                Shiny.instance.logger.error("Error initializing " + annotation.id() + " (" + clazz + ")", t);
             }
         }
         return Optional.absent();
