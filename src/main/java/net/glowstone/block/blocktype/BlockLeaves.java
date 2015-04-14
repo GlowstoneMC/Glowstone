@@ -1,8 +1,12 @@
 package net.glowstone.block.blocktype;
 
 import net.glowstone.block.GlowBlock;
+import net.glowstone.block.GlowBlockState;
+import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +15,12 @@ import java.util.Collections;
 import java.util.List;
 
 public class BlockLeaves extends BlockType {
+
+    @Override
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+        super.placeBlock(player, state, face, holding, clickedLoc);
+        state.setRawData((byte) (state.getRawData() | 0x04));
+    }
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
