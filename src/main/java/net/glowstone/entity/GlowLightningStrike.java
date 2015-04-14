@@ -1,14 +1,17 @@
 package net.glowstone.entity;
 
 import com.flowpowered.networking.Message;
+import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.net.message.play.entity.SpawnLightningStrikeMessage;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.entity.Damageable;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LightningStrike;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.util.Vector;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,18 +33,6 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
     private final int ticksToLive;
 
     /**
-     * How far a living entity must be from the lightning strike to damage it.
-     * The distance you want must be the distance in blocks squared.
-     */
-    private final float distanceToDamageSquared;
-
-    /**
-     * How far a living entity must be from the lightning strike to set it on fire.
-     * The distance you want must be the distance in blocks squared.
-     */
-    private final float distanceToIgnitionSquared;
-
-    /**
      * For how long the living entity will burn if struck directly
      */
     private final int burnTicks;
@@ -52,8 +43,6 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
         super(location);
         this.effect = effect;
         this.ticksToLive = 30;
-        this.distanceToDamageSquared = 25;
-        this.distanceToIgnitionSquared = 1;
         this.burnTicks = 75;
         this.random = random;
     }
@@ -78,18 +67,12 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
             // Play Sound
             location.getWorld().playSound(location, Sound.AMBIENCE_THUNDER, 10000, 0.8F + random.nextFloat() * 0.2F);
             location.getWorld().playSound(location, Sound.EXPLODE, 2, 0.5F + random.nextFloat() * 0.2F);
-            // Deal Damage to nearby enemies
-            if (effect) {
-                return; // It's just a visual, don't deal damage
-            } else {
-                for (LivingEntity livingEntity : location.getWorld().getLivingEntities()) {
-                    if (location.distanceSquared(livingEntity.getLocation()) <= distanceToDamageSquared) {
-                        int damage = 5; // Calculate damage here in the future based off of armor and enchantments
-                        livingEntity.damage(damage, this, EntityDamageEvent.DamageCause.LIGHTNING);
+            if (!effect) { // Deal damage to nearby entities if it's not just a visual effect
+                for (Entity entity : getNearbyEntities(3, 6, 3)) {
+                    if (entity instanceof Damageable) {
+                        ((Damageable) entity).damage(5, this, EntityDamageEvent.DamageCause.LIGHTNING);
                     }
-                    if (location.distanceSquared(livingEntity.getLocation()) <= distanceToIgnitionSquared) {
-                        livingEntity.setFireTicks(burnTicks);
-                    }
+                    entity.setFireTicks(burnTicks);
                 }
             }
         }
@@ -106,5 +89,20 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
     @Override
     public List<Message> createUpdateMessage() {
         return Arrays.asList();
+    }
+
+    @Override
+    public List<Entity> getNearbyEntities(double x, double y, double z) {
+        // This behavior is similar to CraftBukkit, where a call with args
+        // (0, 0, 0) finds any entities whose bounding boxes intersect that of
+        // this entity.
+
+        final BoundingBox searchBox = BoundingBox.fromPositionAndSize(location.toVector(), new Vector(0, 0, 0));
+        final Vector vec = new Vector(x, y, z);
+        final Vector vec2 = new Vector(0, 0.5 * y, 0);
+        searchBox.minCorner.subtract(vec).add(vec2);
+        searchBox.maxCorner.add(vec).add(vec2);
+
+        return world.getEntityManager().getEntitiesInside(searchBox, this);
     }
 }
