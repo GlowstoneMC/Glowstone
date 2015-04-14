@@ -8,6 +8,7 @@ import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.attribute.*;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.tile.TileEntityType;
+import org.spongepowered.api.data.DataManipulatorRegistry;
 import org.spongepowered.api.data.types.*;
 import org.spongepowered.api.effect.particle.ParticleEffectBuilder;
 import org.spongepowered.api.effect.particle.ParticleType;
@@ -292,6 +293,11 @@ public class ShinyGameRegistry implements GameRegistry {
     }
 
     @Override
+    public DataManipulatorRegistry getManipulatorRegistry() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
     public AttributeModifierBuilder getAttributeModifierBuilder() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -333,6 +339,11 @@ public class ShinyGameRegistry implements GameRegistry {
 
     @Override
     public PopulatorFactory getPopulatorFactory() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Optional<Translation> getTranslationById(String s) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }
