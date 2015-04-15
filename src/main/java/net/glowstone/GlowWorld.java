@@ -6,7 +6,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.constants.GlowBiome;
-import net.glowstone.constants.GlowBiomeTemperature;
+import net.glowstone.constants.GlowBiomeClimate;
 import net.glowstone.constants.GlowEffect;
 import net.glowstone.constants.GlowParticle;
 import net.glowstone.constants.GlowTree;
@@ -1096,12 +1096,12 @@ public final class GlowWorld implements World {
 
     @Override
     public double getTemperature(int x, int z) {
-        return GlowBiomeTemperature.getBiomeTemperature(getBiome(x, z));
+        return GlowBiomeClimate.getBiomeTemperature(getBiome(x, z));
     }
 
     @Override
     public double getHumidity(int x, int z) {
-        return GlowBiomeTemperature.getBiomeHumidity(getBiome(x, z));
+        return GlowBiomeClimate.getBiomeHumidity(getBiome(x, z));
     }
 
     ////////////////////////////////////////////////////////////////////////////
