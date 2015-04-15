@@ -449,20 +449,21 @@ public final class GlowWorld implements World {
                         int z = (cz << 4) + (n >> 8 & 0xF);
                         int y = getHighestBlockYAt(x, z);
 
-                        // search for living entities in a 3×3×h region from 3 below the target block up to the world height
+                        // search for living entities in a 6×6×h (there's an error in the wiki!) region from 3 below the
+                        // target block up to the world height
                         final BoundingBox searchBox = BoundingBox.fromPositionAndSize(new Vector(x, y, z), new Vector(0, 0, 0));
                         final Vector vec = new Vector(3, 3, 3);
                         final Vector vec2 = new Vector(0, getMaxHeight(), 0);
-                        searchBox.minCorner.subtract(vec).add(vec2);
+                        searchBox.minCorner.subtract(vec);
                         searchBox.maxCorner.add(vec).add(vec2);
                         final List<LivingEntity> livingEntities = new LinkedList<>();
-                        for (LivingEntity entity : getEntityManager().getAll(GlowLivingEntity.class)) {
-                            if (((GlowEntity) entity).intersects(searchBox) && !entity.isDead()) {
+                        for (Entity entity : getEntityManager().getEntitiesInside(searchBox, null)) {
+                            if (entity instanceof LivingEntity && !entity.isDead()) {
                                 // make sure entity can see sky
                                 final Vector pos = entity.getLocation().toVector();
                                 int minY = getHighestBlockYAt(pos.getBlockX(), pos.getBlockZ());
                                 if (pos.getBlockY() >= minY) {
-                                    livingEntities.add(entity);
+                                    livingEntities.add((LivingEntity) entity);
                                 }
                             }
                         }

@@ -32,18 +32,12 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
      */
     private final int ticksToLive;
 
-    /**
-     * For how long the living entity will burn if struck directly
-     */
-    private final int burnTicks;
-
     private final Random random;
 
     public GlowLightningStrike(Location location, boolean effect, Random random) {
         super(location);
         this.effect = effect;
         this.ticksToLive = 30;
-        this.burnTicks = 75;
         this.random = random;
     }
 
@@ -72,7 +66,7 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
                     if (entity instanceof Damageable) {
                         ((Damageable) entity).damage(5, this, EntityDamageEvent.DamageCause.LIGHTNING);
                     }
-                    entity.setFireTicks(burnTicks);
+                    entity.setFireTicks(entity.getMaxFireTicks());
                 }
             }
         }
