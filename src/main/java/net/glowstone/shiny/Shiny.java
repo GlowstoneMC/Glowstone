@@ -4,12 +4,14 @@ import com.google.common.base.Throwables;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import net.glowstone.shiny.event.GraniteEventFactory;
+import net.glowstone.shiny.guice.ShinyGuiceModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.api.event.state.ConstructionEvent;
 import org.spongepowered.api.event.state.PreInitializationEvent;
 import org.spongepowered.api.event.state.StateEvent;
 
+import java.io.File;
 import java.io.IOException;
 
 public class Shiny {
@@ -18,6 +20,10 @@ public class Shiny {
 
     public static Logger getLogger() {
         return instance.logger;
+    }
+
+    public Injector getInjector() {
+        return injector;
     }
 
     private Injector injector;
@@ -61,5 +67,13 @@ public class Shiny {
 
     public void postState(Class<? extends StateEvent> type) {
         this.game.getEventManager().post(GraniteEventFactory.createStateEvent(type, this.game));
+    }
+
+    public File getPluginsDirectory() {
+        return new File("plugins"); // TODO
+    }
+
+    public File getConfigDirectory() {
+        return new File("config"); // TODO
     }
 }

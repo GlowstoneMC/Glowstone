@@ -1,8 +1,6 @@
 package net.glowstone.shiny.plugin;
 
 import com.google.common.base.Optional;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import net.glowstone.shiny.Shiny;
 import net.glowstone.shiny.ShinyGame;
 import org.spongepowered.api.plugin.Plugin;
@@ -82,9 +80,7 @@ final class PluginLoader {
         Plugin annotation = clazz.getAnnotation(Plugin.class);
         if (annotation != null) {
             try {
-                ShinyPluginContainer container = new ShinyPluginContainer(annotation);
-                Injector injector = Guice.createInjector(new PluginModule(game, container));
-                container.instance = injector.getInstance(clazz);
+                ShinyPluginContainer container = new ShinyPluginContainer(clazz);
                 return Optional.<PluginContainer>of(container);
             } catch (Throwable t) {
                 Shiny.instance.logger.error("Error initializing " + annotation.id() + " (" + clazz + ")", t);

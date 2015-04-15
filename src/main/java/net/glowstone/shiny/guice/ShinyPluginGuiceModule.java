@@ -1,11 +1,11 @@
 package net.glowstone.shiny.guice;
 
-// based on https://github.com/SpongePowered/Sponge/blob/master/src/main/java/org/spongepowered/mod/guice/SpongePluginGuiceModule.java
+// based on https://github.com/SpongePowered/SpongeVanilla/blob/master/src/main/java/org/spongepowered/granite/guice/GranitePluginGuiceModule.java
 
 /*
- * This file is part of Sponge, licensed under the MIT License (MIT).
+ * This file is part of Granite, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <https://www.spongepowered.org>
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -38,20 +38,19 @@ import org.slf4j.LoggerFactory;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.config.ConfigDir;
 import org.spongepowered.api.service.config.DefaultConfig;
-
+import net.glowstone.shiny.plugin.ShinyPluginContainer;
 import java.io.File;
-import java.lang.annotation.Annotation;
-
 import javax.inject.Inject;
 
-/**
- * Guice module that contains injections for a single plugin.
- */
-public class SpongePluginGuiceModule extends AbstractModule {
+public class ShinyPluginGuiceModule extends AbstractModule {
 
-    private final PluginContainer container;
+    private static final ConfigDir privateConfigDir = new ConfigDirAnnotation(false);
+    private static final DefaultConfig sharedConfigFile = new ConfigFileAnnotation(true);
+    private static final DefaultConfig privateConfigFile = new ConfigFileAnnotation(false);
 
-    public SpongePluginGuiceModule(PluginContainer container) {
+    private final ShinyPluginContainer container;
+
+    public ShinyPluginGuiceModule(ShinyPluginContainer container) {
         this.container = container;
     }
 
@@ -73,53 +72,6 @@ public class SpongePluginGuiceModule extends AbstractModule {
         bind(new TypeLiteral<ConfigurationLoader<CommentedConfigurationNode>>() {
         }).annotatedWith(pluginConfigPrivate)
                 .toProvider(PluginPrivateHoconConfigProvider.class); // loader for plugin-private directory config file
-    }
-
-    // This is strange, but required for Guice and annotations with values.
-    private static class ConfigFileAnnotation implements DefaultConfig {
-
-        boolean shared;
-
-        ConfigFileAnnotation(boolean isShared) {
-            this.shared = isShared;
-        }
-
-        @Override
-        public boolean sharedRoot() {
-            return this.shared;
-        }
-
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return DefaultConfig.class;
-        }
-
-        // See Javadocs for java.lang.annotation.Annotation for specification of equals, hashCode, toString
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || !(o instanceof DefaultConfig)) {
-                return false;
-            }
-
-            DefaultConfig that = (DefaultConfig) o;
-
-            return sharedRoot() == that.sharedRoot();
-        }
-
-        @Override
-        public int hashCode() {
-            return (127 * "sharedRoot".hashCode()) ^ Boolean.valueOf(sharedRoot()).hashCode();
-        }
-
-        @Override
-        public String toString() {
-            return "@org.spongepowered.api.service.config.Config("
-                    + "sharedRoot=" + this.shared
-                    + ')';
-        }
     }
 
     private static class PluginSharedConfigFileProvider implements Provider<File> {
