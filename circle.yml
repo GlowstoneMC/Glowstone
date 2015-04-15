@@ -6,6 +6,7 @@ checkout:
         - git submodule update --init
         # setup for mvn dependency:resolve (see http://stackoverflow.com/questions/7772556/maven-fails-to-resolve-dependency)
         - (cd Glowkit && mvn install)
+        - (cd SpongeAPI && ./gradlew install)
 
 test:
     post:
