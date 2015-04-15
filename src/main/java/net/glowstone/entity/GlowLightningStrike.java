@@ -5,10 +5,10 @@ import net.glowstone.EventFactory;
 import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.net.message.play.entity.SpawnLightningStrikeMessage;
 import net.glowstone.util.Position;
+import net.glowstone.GlowWorld;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -66,21 +66,23 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
             remove();
         }
         if (getTicksLived() == 1) {
-            final World world = location.getWorld();
+            final GlowWorld world = (GlowWorld) location.getWorld();
             // Play Sound
             world.playSound(location, Sound.AMBIENCE_THUNDER, 10000, 0.8F + random.nextFloat() * 0.2F);
             world.playSound(location, Sound.EXPLODE, 2, 0.5F + random.nextFloat() * 0.2F);
 
             if (!effect) { // if it's not just a visual effect
                 // set target block on fire if required
-                Block block = world.getBlockAt(location);
-                setBlockOnFire(block);
-                for (int i = 0; i < 4; i++) {
-                    int x = location.getBlockX() - 1 + random.nextInt(3);
-                    int z = location.getBlockZ() - 1 + random.nextInt(3);
-                    int y = location.getBlockY() - 1 + random.nextInt(3);
-                    block = world.getBlockAt(x, y, z);
+                if (world.getGameRuleMap().getBoolean("doFireTick")) {
+                    Block block = world.getBlockAt(location);
                     setBlockOnFire(block);
+                    for (int i = 0; i < 4; i++) {
+                        int x = location.getBlockX() - 1 + random.nextInt(3);
+                        int z = location.getBlockZ() - 1 + random.nextInt(3);
+                        int y = location.getBlockY() - 1 + random.nextInt(3);
+                        block = world.getBlockAt(x, y, z);
+                        setBlockOnFire(block);
+                    }
                 }
 
                 // deal damage to nearby entities

@@ -452,7 +452,7 @@ public final class GlowWorld implements World {
                         // search for living entities in a 6×6×h (there's an error in the wiki!) region from 3 below the
                         // target block up to the world height
                         final BoundingBox searchBox = BoundingBox.fromPositionAndSize(new Vector(x, y, z), new Vector(0, 0, 0));
-                        final Vector vec = new Vector(3, 3, 3);
+                        final Vector vec = new Vector(300, 3, 300);
                         final Vector vec2 = new Vector(0, getMaxHeight(), 0);
                         searchBox.minCorner.subtract(vec);
                         searchBox.maxCorner.add(vec).add(vec2);
