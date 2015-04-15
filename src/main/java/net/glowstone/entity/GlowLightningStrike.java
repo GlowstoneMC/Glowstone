@@ -1,15 +1,23 @@
 package net.glowstone.entity;
 
 import com.flowpowered.networking.Message;
+import net.glowstone.EventFactory;
 import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.net.message.play.entity.SpawnLightningStrikeMessage;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LightningStrike;
+import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.util.Vector;
 
@@ -58,10 +66,24 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
             remove();
         }
         if (getTicksLived() == 1) {
+            final World world = location.getWorld();
             // Play Sound
-            location.getWorld().playSound(location, Sound.AMBIENCE_THUNDER, 10000, 0.8F + random.nextFloat() * 0.2F);
-            location.getWorld().playSound(location, Sound.EXPLODE, 2, 0.5F + random.nextFloat() * 0.2F);
-            if (!effect) { // Deal damage to nearby entities if it's not just a visual effect
+            world.playSound(location, Sound.AMBIENCE_THUNDER, 10000, 0.8F + random.nextFloat() * 0.2F);
+            world.playSound(location, Sound.EXPLODE, 2, 0.5F + random.nextFloat() * 0.2F);
+
+            if (!effect) { // if it's not just a visual effect
+                // set target block on fire if required
+                Block block = world.getBlockAt(location);
+                setBlockOnFire(block);
+                for (int i = 0; i < 4; i++) {
+                    int x = location.getBlockX() - 1 + random.nextInt(3);
+                    int z = location.getBlockZ() - 1 + random.nextInt(3);
+                    int y = location.getBlockY() - 1 + random.nextInt(3);
+                    block = world.getBlockAt(x, y, z);
+                    setBlockOnFire(block);
+                }
+
+                // deal damage to nearby entities
                 for (Entity entity : getNearbyEntities(3, 6, 3)) {
                     if (entity instanceof Damageable) {
                         ((Damageable) entity).damage(5, this, EntityDamageEvent.DamageCause.LIGHTNING);
@@ -98,5 +120,17 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
         searchBox.maxCorner.add(vec).add(vec2);
 
         return world.getEntityManager().getEntitiesInside(searchBox, this);
+    }
+
+    private void setBlockOnFire(Block block) {
+        if (block.isEmpty() && block.getRelative(BlockFace.DOWN).getType().isFlammable()) {
+            BlockIgniteEvent igniteEvent = new BlockIgniteEvent(block, IgniteCause.LIGHTNING, this);
+            EventFactory.callEvent(igniteEvent);
+            if (!igniteEvent.isCancelled()) {
+                final BlockState state = block.getState();
+                state.setType(Material.FIRE);
+                state.update(true);
+            }
+        }
     }
 }
