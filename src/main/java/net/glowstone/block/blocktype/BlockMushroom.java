@@ -87,6 +87,7 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
 
     @Override
     public void updateBlock(GlowBlock block) {
+        // mushroom does not uproot on too bright light level as stated on the wiki.
         if (random.nextInt(25) == 0) {
             final GlowWorld world = block.getWorld();
             int x, y, z;
