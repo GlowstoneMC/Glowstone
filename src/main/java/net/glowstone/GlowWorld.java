@@ -12,6 +12,7 @@ import net.glowstone.constants.GlowParticle;
 import net.glowstone.constants.GlowTree;
 import net.glowstone.entity.*;
 import net.glowstone.entity.objects.GlowItem;
+import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.generator.structures.GlowStructure;
 import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
@@ -443,10 +444,41 @@ public final class GlowWorld implements World {
                         currentlyRaining && currentlyThundering) {
                     if (random.nextInt(25000) == 0) {
                         final int n = random.nextInt();
-                        final int x = (cx << 4) + (n & 0xF);
-                        final int z = (cz << 4) + (n >> 8 & 0xF);
-                        final int y = getHighestBlockYAt(x, z);
+                        // get lightning target block
+                        int x = (cx << 4) + (n & 0xF);
+                        int z = (cz << 4) + (n >> 8 & 0xF);
+                        int y = getHighestBlockYAt(x, z);
 
+                        // search for living entities in a 3×3×h region from 3 below the target block up to the world height
+                        final BoundingBox searchBox = BoundingBox.fromPositionAndSize(new Vector(x, y, z), new Vector(0, 0, 0));
+                        final Vector vec = new Vector(3, 3, 3);
+                        final Vector vec2 = new Vector(0, getMaxHeight(), 0);
+                        searchBox.minCorner.subtract(vec).add(vec2);
+                        searchBox.maxCorner.add(vec).add(vec2);
+                        final List<LivingEntity> livingEntities = new LinkedList<>();
+                        for (LivingEntity entity : getEntityManager().getAll(GlowLivingEntity.class)) {
+                            if (((GlowEntity) entity).intersects(searchBox) && !entity.isDead()) {
+                                // make sure entity can see sky
+                                final Vector pos = entity.getLocation().toVector();
+                                int minY = getHighestBlockYAt(pos.getBlockX(), pos.getBlockZ());
+                                if (pos.getBlockY() >= minY) {
+                                    livingEntities.add(entity);
+                                }
+                            }
+                        }
+
+                        // re-target lightning if required
+                        if (!livingEntities.isEmpty()) {
+                            // randomly choose an entity
+                            final LivingEntity entity = livingEntities.get(random.nextInt(livingEntities.size()));
+                            // re-target lightning on this living entity
+                            final Vector newTarget = entity.getLocation().toVector();
+                            x = newTarget.getBlockX();
+                            z = newTarget.getBlockZ();
+                            y = newTarget.getBlockY();
+                        }
+
+                        // lightning strike if the target block is under rain
                         if (GlowBiomeClimate.isRainy(getBiome(x, z), x, y, z)) {
                             strikeLightning(new Location(this, x, y, z));
                         }
