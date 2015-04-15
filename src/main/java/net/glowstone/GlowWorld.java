@@ -447,7 +447,9 @@ public final class GlowWorld implements World {
                         final int z = (cz << 4) + (n >> 8 & 0xF);
                         final int y = getHighestBlockYAt(x, z);
 
-                        strikeLightning(new Location(this, x, y, z));
+                        if (GlowBiomeClimate.isRainy(getBiome(x, z), x, y, z)) {
+                            strikeLightning(new Location(this, x, y, z));
+                        }
                     }
                 }
 
