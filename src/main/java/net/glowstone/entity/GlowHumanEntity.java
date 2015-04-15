@@ -214,7 +214,14 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         return inventory;
     }
 
-    ////////////////////////////////////////////////////////////////////////////
+    @Override
+    public void setFireTicks(int ticks) {
+        if (gameMode == GameMode.SURVIVAL || gameMode == GameMode.ADVENTURE) {
+            super.setFireTicks(ticks);
+        }
+    }
+
+     ////////////////////////////////////////////////////////////////////////////
     // Permissions
 
     @Override

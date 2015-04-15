@@ -2,7 +2,7 @@ package net.glowstone.generator.ground;
 
 import java.util.Random;
 
-import net.glowstone.constants.GlowBiomeTemperature;
+import net.glowstone.constants.GlowBiomeClimate;
 
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -74,7 +74,7 @@ public class GroundGenerator {
                         }
                     }
                 } else if (mat == Material.STATIONARY_WATER && y == seaLevel - 2 &&
-                        GlowBiomeTemperature.getVariatedTemperature(biome, chunkX, y, chunkZ) < 0.15D) {
+                        GlowBiomeClimate.isCold(biome, chunkX, y, chunkZ)) {
                     set(buf, x, y, z, Material.ICE);
                 }
             }

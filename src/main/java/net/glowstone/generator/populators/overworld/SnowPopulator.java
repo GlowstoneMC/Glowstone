@@ -2,7 +2,7 @@ package net.glowstone.generator.populators.overworld;
 
 import java.util.Random;
 
-import net.glowstone.constants.GlowBiomeTemperature;
+import net.glowstone.constants.GlowBiomeClimate;
 
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -20,7 +20,7 @@ public class SnowPopulator extends BlockPopulator {
         for (int x = sourceX; x < sourceX + 16; x++) {
             for (int z = sourceZ; z < sourceZ + 16; z++) {
                 int y = world.getHighestBlockYAt(x, z) - 1;
-                if (GlowBiomeTemperature.getVariatedTemperature(world.getBiome(x, z), sourceX + x, y, sourceZ + z) < 0.15D) {
+                if (GlowBiomeClimate.isSnowy(world.getBiome(x, z), sourceX + x, y, sourceZ + z)) {
                     final Block block = world.getBlockAt(x, y, z);
                     final Block blockAbove = block.getRelative(BlockFace.UP);
                     switch (block.getType()) {

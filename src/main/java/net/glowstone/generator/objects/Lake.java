@@ -3,7 +3,7 @@ package net.glowstone.generator.objects;
 import java.util.Arrays;
 import java.util.Random;
 
-import net.glowstone.constants.GlowBiomeTemperature;
+import net.glowstone.constants.GlowBiomeClimate;
 
 import org.bukkit.DoublePlantSpecies;
 import org.bukkit.Material;
@@ -92,8 +92,8 @@ public class Lake {
                                 type = block.getType();
                             }
                         } else if (y == MAX_HEIGHT / 2 - 1) {
-                            if (type == Material.STATIONARY_WATER && GlowBiomeTemperature.getVariatedTemperature(world.getBiome(sourceX + x, sourceZ + z),
-                                    sourceX + x, y, sourceZ + z) < 0.15D) {
+                            if (type == Material.STATIONARY_WATER && GlowBiomeClimate.isCold(world.getBiome(sourceX + x, sourceZ + z),
+                                    sourceX + x, y, sourceZ + z)) {
                                 type = Material.ICE;
                             }
                         }

@@ -234,7 +234,7 @@ public final class Explosion {
             double basicDamage = calculateDamage(entity, disDivPower);
             int explosionDamage = (int) ((basicDamage * basicDamage + basicDamage) * 4 * (double) power + 1.0D);
 
-            if (!(entity instanceof GlowHumanEntity && ((GlowHumanEntity) entity).getGameMode() == GameMode.CREATIVE)) {
+            if (!(entity instanceof GlowHumanEntity)) {
                 EntityDamageEvent.DamageCause damageCause;
                 if (source == null || source.getType() == EntityType.PRIMED_TNT) {
                     damageCause = EntityDamageEvent.DamageCause.BLOCK_EXPLOSION;
