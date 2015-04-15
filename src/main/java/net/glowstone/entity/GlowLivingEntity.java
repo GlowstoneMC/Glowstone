@@ -455,7 +455,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Override
     public void damage(double amount, Entity source, EntityDamageEvent.DamageCause cause) {
         // invincibility timer
-        if (noDamageTicks > 0 || health <= 0) {
+        if (noDamageTicks > 0 || health <= 0 || !canTakeDamage(cause)) {
             return;
         } else {
             noDamageTicks = maxNoDamageTicks;
