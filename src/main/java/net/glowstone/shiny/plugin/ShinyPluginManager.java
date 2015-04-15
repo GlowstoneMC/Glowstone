@@ -6,7 +6,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.glowstone.shiny.Shiny;
 import net.glowstone.shiny.ShinyGame;
-import net.glowstone.shiny.event.ShinyPreInitEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.api.plugin.PluginContainer;
@@ -79,7 +78,6 @@ public class ShinyPluginManager implements PluginManager {
             plugins.put(container.getId(), container);
             instanceMap.put(container.getInstance(), container);
             game.getEventManager().register(container.getInstance(), container.getInstance());
-            game.getEventManager().callSpecial(container.getInstance(), new ShinyPreInitEvent(game, container));
         }
     }
 }
