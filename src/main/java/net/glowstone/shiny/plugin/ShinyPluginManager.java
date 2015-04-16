@@ -62,7 +62,7 @@ public class ShinyPluginManager implements PluginManager {
     }
 
     public void loadPlugins() throws IOException {
-        File directory = new File("plugins"); // TODO: pass plugin directory
+        File directory = Shiny.instance.getPluginsDirectory();
         File[] files = directory.listFiles(new PatternFilenameFilter(".+\\.jar"));
         if (files == null || files.length == 0) {
             return;
