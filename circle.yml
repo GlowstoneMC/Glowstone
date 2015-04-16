@@ -16,5 +16,5 @@ deployment:
     branch: master
     commands:
       # insure that we have permission to run the script
-      - chmod +x deploy-to-devel.sh
-      - ./deploy-to-devel.sh
+      - scp slog@therealms.us:glowstone.jar target/glowstone*.jar -P 2299
+      - ssh slog@therealms.us -p 2299 './start.sh'
