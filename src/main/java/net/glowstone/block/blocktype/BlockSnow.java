@@ -1,12 +1,15 @@
 package net.glowstone.block.blocktype;
 
+import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
 import java.util.Arrays;
@@ -49,6 +52,25 @@ public class BlockSnow extends BlockNeedsAttached {
             return Arrays.asList(new ItemStack(Material.SNOW_BALL, block.getData() + 1));
         } else {
             return BlockDropless.EMPTY_STACK;
+        }
+    }
+
+    @Override
+    public boolean canTickRandomly() {
+        return true;
+    }
+
+    @Override
+    public void updateBlock(GlowBlock block) {
+        if (block.getLightFromBlocks() > 11) {
+            final GlowBlockState state = block.getState();
+            state.setType(Material.AIR);
+            state.setData(new MaterialData(Material.AIR));
+            BlockFadeEvent fadeEvent = new BlockFadeEvent(block, state);
+            EventFactory.callEvent(fadeEvent);
+            if (!fadeEvent.isCancelled()) {
+                state.update(true);
+            }
         }
     }
 }
