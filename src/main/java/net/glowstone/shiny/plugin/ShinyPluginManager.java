@@ -13,10 +13,9 @@ import org.spongepowered.api.plugin.PluginManager;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Map;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
 
 /**
  * Implementation of {@link PluginManager}.
@@ -69,7 +68,16 @@ public class ShinyPluginManager implements PluginManager {
             return;
         }
 
-        Collection<PluginContainer> containers = loader.loadPlugins(files);
+        List<URL> urls = new ArrayList<>(files.length);
+        for (File jar : files) {
+            try {
+                urls.add(jar.toURI().toURL());
+            } catch (MalformedURLException e) {
+                Shiny.instance.logger.warn("Malformed URL: " + jar, e);
+            }
+        }
+
+        Collection<PluginContainer> containers = loader.loadPlugins(urls);
         for (PluginContainer container : containers) {
             if (plugins.containsKey(container.getId())) {
                 Shiny.instance.logger.warn("Skipped loading duplicate of \"" + container.getId() + "\"");
@@ -78,6 +86,10 @@ public class ShinyPluginManager implements PluginManager {
             plugins.put(container.getId(), container);
             instanceMap.put(container.getInstance(), container);
             game.getEventManager().register(container.getInstance(), container.getInstance());
+        }
+
+        for (URL url : urls) {
+            Shiny.instance.logger.info("Non-SpongeAPI plugin: " + url); // TODO: pass to Bukkit
         }
     }
 }
