@@ -15,4 +15,6 @@ deployment:
   devel:
     branch: master
     commands:
+      # insure that we have permission to run the script
+      - chmod +x deploy-to-devel.sh
       - ./deploy-to-devel.sh
