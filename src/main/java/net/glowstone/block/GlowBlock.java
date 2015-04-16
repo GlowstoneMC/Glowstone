@@ -256,6 +256,20 @@ public final class GlowBlock implements Block {
         return mat == Material.WATER || mat == Material.STATIONARY_WATER || mat == Material.LAVA || mat == Material.STATIONARY_LAVA;
     }
 
+    /**
+     * Get block material's flammable ability.
+     */
+    public boolean isFlammable() {
+        return getMaterialValues().getFlameResistance() >= 0;
+    }
+
+    /**
+     * Get block material's burn ability.
+     */
+    public boolean isBurnable() {
+        return getMaterialValues().getFireResistance() >= 0;
+    }
+
     public MaterialValueManager.ValueCollection getMaterialValues() {
         return ((GlowServer) Bukkit.getServer()).getMaterialValueManager().getValues(getType());
     }

@@ -2,6 +2,7 @@ package net.glowstone.entity;
 
 import com.flowpowered.networking.Message;
 import net.glowstone.EventFactory;
+import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.net.message.play.entity.SpawnLightningStrikeMessage;
 import net.glowstone.util.Position;
@@ -9,7 +10,6 @@ import net.glowstone.GlowWorld;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Damageable;
@@ -74,7 +74,7 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
             if (!effect) { // if it's not just a visual effect
                 // set target block on fire if required
                 if (world.getGameRuleMap().getBoolean("doFireTick")) {
-                    Block block = world.getBlockAt(location);
+                    GlowBlock block = world.getBlockAt(location);
                     setBlockOnFire(block);
                     for (int i = 0; i < 4; i++) {
                         int x = location.getBlockX() - 1 + random.nextInt(3);
@@ -124,8 +124,8 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
         return world.getEntityManager().getEntitiesInside(searchBox, this);
     }
 
-    private void setBlockOnFire(Block block) {
-        if (block.isEmpty() && block.getRelative(BlockFace.DOWN).getType().isFlammable()) {
+    private void setBlockOnFire(GlowBlock block) {
+        if (block.isEmpty() && block.getRelative(BlockFace.DOWN).isFlammable()) {
             BlockIgniteEvent igniteEvent = new BlockIgniteEvent(block, IgniteCause.LIGHTNING, this);
             EventFactory.callEvent(igniteEvent);
             if (!igniteEvent.isCancelled()) {
