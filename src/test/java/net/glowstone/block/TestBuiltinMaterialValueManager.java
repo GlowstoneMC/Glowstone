@@ -17,6 +17,7 @@ public class TestBuiltinMaterialValueManager {
         //test some fixed values
         assertEquals(6000, bvm.getValues(Material.OBSIDIAN).getBlastResistance(), 0);
         assertEquals(50, bvm.getValues(Material.OBSIDIAN).getHardness(), 0);
+        assertEquals(255, bvm.getValues(Material.OBSIDIAN).getLightOpacity(), 0);
 
         //test defaults
         assertEquals(1, bvm.getValues(Material.CAULDRON_ITEM).getHardness(), 0); //item doesn't exist at all

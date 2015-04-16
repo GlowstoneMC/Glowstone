@@ -76,7 +76,7 @@ public final class ItemTable {
         reg(Material.GRAVEL, new BlockGravel());
         reg(Material.SAND, new BlockFalling(Material.SAND));
         reg(Material.ANVIL, new BlockAnvil());
-        reg(Material.ICE, new BlockDropless());
+        reg(Material.ICE, new BlockIce());
         reg(Material.PACKED_ICE, new BlockDropless());
         reg(Material.SNOW, new BlockSnow());
         reg(Material.SNOW_BLOCK, new BlockSnowBlock());

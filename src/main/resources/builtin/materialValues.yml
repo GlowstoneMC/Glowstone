@@ -1,6 +1,7 @@
 default:
   hardness: 1
   blastResistance: 0
+  lightOpacity: 255
 values:
   STONE:
     blastResistance: 30
@@ -102,6 +103,7 @@ values:
   STONE_BUTTON:
   SNOW:
   ICE:
+    lightOpacity: 3
   SNOW_BLOCK:
   CACTUS:
   CLAY:

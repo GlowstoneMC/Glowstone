@@ -67,5 +67,10 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
         public float getBlastResistance() {
             return ((Number) get("blastResistance")).floatValue();
         }
+
+        @Override
+        public int getLightOpacity() {
+            return ((Number) get("lightOpacity")).intValue();
+        }
     }
 }
