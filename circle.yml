@@ -16,4 +16,4 @@ deployment:
     branch: master
     commands:
       - scp -P 2299 $CIRCLE_ARTIFACTS/glowstone++-1.8.3-SNAPSHOT.jar slog@therealms.us:glowstone.jar
-      - ssh slog@therealms.us -p 2299 'start.sh'
+      - ssh slog@therealms.us -p 2299 './start.sh'
