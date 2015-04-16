@@ -11,6 +11,7 @@ import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.constants.GlowBiomeClimate;
 
 public class BlockSoil extends BlockType {
 
@@ -27,7 +28,7 @@ public class BlockSoil extends BlockType {
 
     @Override
     public void updateBlock(GlowBlock block) {
-        if (isNearWater(block) || block.getWorld().hasStorm()) { // better to ensure that rain is falling on block later
+        if (isNearWater(block) || GlowBiomeClimate.isRainy(block)) {
             block.setData((byte) 7); // set this block as fully wet
         } else if (block.getData() > 0) {
             block.setData((byte) (block.getData() - 1)); // if this block is wet, it becomes less wet
