@@ -29,8 +29,8 @@ final class PluginLoader {
     /**
      * Load a list of SpongeAPI plugins
      *
-     * @param urls URLs of potential plugins jars to load. This list is mutated, on return non-Sponge plugins
-     *             are removed.
+     * @param urls URLs of potential plugins jars to load. This list is mutated, on return it will only
+     *             contain recognized SpongeAPI plugins.
      * @return Loaded plugin containers
      */
     public List<PluginContainer> loadPlugins(List<URL> urls) {
@@ -41,7 +41,7 @@ final class PluginLoader {
         while (iterator.hasNext()) {
             URL url = iterator.next();
 
-            if (loadJar(result, root, url))
+            if (!loadJar(result, root, url))
                 iterator.remove();
         }
 

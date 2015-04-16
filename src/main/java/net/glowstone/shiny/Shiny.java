@@ -13,6 +13,8 @@ import org.spongepowered.api.event.state.StateEvent;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.util.Collection;
 
 public class Shiny {
 
@@ -31,7 +33,9 @@ public class Shiny {
 
     private ShinyGame game;
 
-    public void load() {
+    public Collection<URL> load() {
+        Collection<URL> loadedPluginURLs = null;
+
         try {
             logger = LoggerFactory.getLogger("Shiny");
             injector = Guice.createInjector(new ShinyGuiceModule());
@@ -56,13 +60,15 @@ public class Shiny {
             getLogger().info("SpongeAPI version: " + this.game.getApiVersion());
 
             getLogger().info("Loading plugins...");
-            this.game.getPluginManager().loadPlugins();
+            loadedPluginURLs = this.game.getPluginManager().loadPlugins();
             postState(ConstructionEvent.class);
-            getLogger().info("Initializing plugins...");
+            getLogger().info("Initializing " + loadedPluginURLs.size() + " SpongeAPI plugins...");
             postState(PreInitializationEvent.class);
         } catch (IOException e) {
             throw Throwables.propagate(e);
         }
+
+        return loadedPluginURLs;
     }
 
     public void postState(Class<? extends StateEvent> type) {

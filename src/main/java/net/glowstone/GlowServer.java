@@ -58,6 +58,7 @@ import java.io.IOException;
 import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.net.URL;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.KeyPair;
@@ -258,7 +259,7 @@ public final class GlowServer implements Server {
     /**
      * The plugin manager of this server.
      */
-    private final PluginManager pluginManager = new SimplePluginManager(this, commandMap);
+    private final SimplePluginManager pluginManager = new SimplePluginManager(this, commandMap);
 
     /**
      * The plugin channel messenger for the server.
@@ -446,13 +447,14 @@ public final class GlowServer implements Server {
         nameBans.load();
         ipBans.load();
 
-        // Start loading plugins
+        // Load SpongeAPI plugins first
+        Collection<URL> spongePluginURLs = net.glowstone.shiny.Shiny.instance.load();
+        pluginManager.setIgnoreURLs(spongePluginURLs);
+
+        // Start loading (Bukkit) plugins
         new LibraryManager(this).run();
         loadPlugins();
         enablePlugins(PluginLoadOrder.STARTUP);
-
-        // Load SpongeAPI plugins TODO: where?
-        net.glowstone.shiny.Shiny.instance.load();
 
         // Create worlds
         String name = config.getString(ServerConfig.Key.LEVEL_NAME);

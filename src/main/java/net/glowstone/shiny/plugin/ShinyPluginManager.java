@@ -61,11 +61,17 @@ public class ShinyPluginManager implements PluginManager {
         return plugins.containsKey(id);
     }
 
-    public void loadPlugins() throws IOException {
+    /**
+     * Load a directory full of plugins
+     *
+     * @return List of recognized SpongeAPI plugin URLs
+     * @throws IOException
+     */
+    public Collection<URL> loadPlugins() throws IOException {
         File directory = Shiny.instance.getPluginsDirectory();
         File[] files = directory.listFiles(new PatternFilenameFilter(".+\\.jar"));
         if (files == null || files.length == 0) {
-            return;
+            return new ArrayList<>();
         }
 
         List<URL> urls = new ArrayList<>(files.length);
@@ -88,8 +94,6 @@ public class ShinyPluginManager implements PluginManager {
             game.getEventManager().register(container.getInstance(), container.getInstance());
         }
 
-        for (URL url : urls) {
-            Shiny.instance.logger.info("Non-SpongeAPI plugin: " + url); // TODO: pass to Bukkit
-        }
+        return urls;
     }
 }
