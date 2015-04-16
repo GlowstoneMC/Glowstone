@@ -32,5 +32,17 @@ public interface MaterialValueManager {
          * @return the light opacity
          */
         int getLightOpacity();
+
+        /**
+         * Returns the flame resistance-component of this value.
+         * @return the flame resistance
+         */
+        int getFlameResistance();
+
+        /**
+         * Returns the fire resistance-component of this value.
+         * @return the fire resistance
+         */
+        int getFireResistance();
     }
 }

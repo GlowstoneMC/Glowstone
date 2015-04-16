@@ -2,6 +2,8 @@ default:
   hardness: 1
   blastResistance: 0
   lightOpacity: 255
+  flameResistance: -1
+  fireResistance: -1
 values:
   AIR:
     lightOpacity: 0
@@ -14,6 +16,8 @@ values:
   COBBLESTONE:
     blastResistance: 30
   WOOD:
+    flameResistance: 5
+    fireResistance: 20
   SAPLING:
     hardness: 0
     lightOpacity: 0
@@ -34,8 +38,12 @@ values:
   IRON_ORE:
   COAL_ORE:
   LOG:
+    flameResistance: 5
+    fireResistance: 5
   LEAVES:
     lightOpacity: 1
+    flameResistance: 30
+    fireResistance: 60
   SPONGE:
   GLASS:
     lightOpacity: 0
@@ -57,22 +65,32 @@ values:
   LONG_GRASS:
     hardness: 0
     lightOpacity: 0
+    flameResistance: 60
+    fireResistance: 100
   DEAD_BUSH:
     hardness: 0
     lightOpacity: 0
+    flameResistance: 60
+    fireResistance: 100
   PISTON_BASE:
     lightOpacity: 0
   PISTON_EXTENSION:
     lightOpacity: 0
   WOOL:
+    flameResistance: 30
+    fireResistance: 60
   PISTON_MOVING_PIECE:
     lightOpacity: 0
   YELLOW_FLOWER:
     hardness: 0
     lightOpacity: 0
+    flameResistance: 60
+    fireResistance: 100
   RED_ROSE:
     hardness: 0
     lightOpacity: 0
+    flameResistance: 60
+    fireResistance: 100
   BROWN_MUSHROOM:
     hardness: 0
     lightOpacity: 0
@@ -87,7 +105,11 @@ values:
   BRICK:
   TNT:
     hardness: 0
+    flameResistance: 15
+    fireResistance: 100
   BOOKSHELF:
+    flameResistance: 30
+    fireResistance: 20
   MOSSY_COBBLESTONE:
   OBSIDIAN:
     hardness: 50
@@ -101,6 +123,8 @@ values:
     lightOpacity: 0
   WOOD_STAIRS:
     lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
   CHEST:
     lightOpacity: 0
   REDSTONE_WIRE:
@@ -196,6 +220,8 @@ values:
     lightOpacity: 0
   VINE:
     lightOpacity: 0
+    flameResistance: 15
+    fireResistance: 100
   FENCE_GATE:
     lightOpacity: 0
   BRICK_STAIRS:
@@ -229,8 +255,12 @@ values:
   REDSTONE_LAMP_OFF:
   REDSTONE_LAMP_ON:
   WOOD_DOUBLE_STEP:
+    flameResistance: 5
+    fireResistance: 20
   WOOD_STEP:
     lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
   COCOA:
     lightOpacity: 0
   SANDSTONE_STAIRS:
@@ -247,10 +277,16 @@ values:
   EMERALD_BLOCK:
   SPRUCE_WOOD_STAIRS:
     lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
   BIRCH_WOOD_STAIRS:
     lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
   JUNGLE_WOOD_STAIRS:
     lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
   COMMAND:
   BEACON:
     lightOpacity: 0
@@ -300,11 +336,19 @@ values:
     lightOpacity: 0
   LEAVES_2:
     lightOpacity: 1
+    flameResistance: 30
+    fireResistance: 60
   LOG_2:
+    flameResistance: 5
+    fireResistance: 5
   ACACIA_STAIRS:
     lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
   DARK_OAK_STAIRS:
     lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
   SLIME_BLOCK:
   BARRIER:
   IRON_TRAPDOOR:
@@ -312,13 +356,21 @@ values:
   PRISMARINE:
   SEA_LANTERN:
   HAY_BLOCK:
+    flameResistance: 60
+    fireResistance: 20
   CARPET:
     lightOpacity: 0
+    flameResistance: 60
+    fireResistance: 20
   HARD_CLAY:
   COAL_BLOCK:
+    flameResistance: 5
+    fireResistance: 5
   PACKED_ICE:
   DOUBLE_PLANT:
     lightOpacity: 0
+    flameResistance: 60
+    fireResistance: 100
   STANDING_BANNER:
   WALL_BANNER:
   DAYLIGHT_DETECTOR_INVERTED:
@@ -328,24 +380,44 @@ values:
     lightOpacity: 0
   SPRUCE_FENCE_GATE:
     lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
   BIRCH_FENCE_GATE:
     lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
   JUNGLE_FENCE_GATE:
     lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
   DARK_OAK_FENCE_GATE:
     lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
   ACACIA_FENCE_GATE:
     lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
   SPRUCE_FENCE:
     lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
   BIRCH_FENCE:
     lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
   JUNGLE_FENCE:
     lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
   DARK_OAK_FENCE:
     lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
   ACACIA_FENCE:
     lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
   SPRUCE_DOOR:
     lightOpacity: 0
   BIRCH_DOOR:

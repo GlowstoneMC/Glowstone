@@ -72,5 +72,15 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
         public int getLightOpacity() {
             return ((Number) get("lightOpacity")).intValue();
         }
+
+        @Override
+        public int getFlameResistance() {
+            return ((Number) get("flameResistance")).intValue();
+        }
+
+        @Override
+        public int getFireResistance() {
+            return ((Number) get("fireResistance")).intValue();
+        }
     }
 }

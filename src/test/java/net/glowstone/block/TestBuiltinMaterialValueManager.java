@@ -20,6 +20,10 @@ public class TestBuiltinMaterialValueManager {
         assertEquals(255, bvm.getValues(Material.OBSIDIAN).getLightOpacity(), 0);
         assertEquals(3, bvm.getValues(Material.WATER).getLightOpacity(), 0);
         assertEquals(0, bvm.getValues(Material.AIR).getLightOpacity(), 0);
+        assertEquals(-1, bvm.getValues(Material.STONE).getFlameResistance(), 0);
+        assertEquals(-1, bvm.getValues(Material.COBBLESTONE).getFireResistance(), 0);
+        assertEquals(5, bvm.getValues(Material.WOOD).getFlameResistance(), 0);
+        assertEquals(100, bvm.getValues(Material.TNT).getFireResistance(), 0);
 
         //test defaults
         assertEquals(1, bvm.getValues(Material.CAULDRON_ITEM).getHardness(), 0); //item doesn't exist at all
