@@ -81,6 +81,8 @@ public class BlockStem extends BlockCrops implements IBlockGrowable {
 
     @Override
     public void updateBlock(GlowBlock block) {
+        // we check light level on the above block, meaning stems needs at least one free block above it
+        // in order to grow naturally (vanilla behavior)
         if (block.getRelative(BlockFace.UP).getLightLevel() >= 9 &&
                 random.nextInt((int) (25.0F / getGrowthRateModifier(block)) + 1) == 0) {
 
