@@ -10,3 +10,9 @@ checkout:
 test:
     post:
         - cp -r target/glowstone*.jar $CIRCLE_ARTIFACTS/
+# deploy to test server
+deployment:
+  devel:
+    branch: master
+    commands:
+      - ./deploy-to-devel.sh
