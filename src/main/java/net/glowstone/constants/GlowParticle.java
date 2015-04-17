@@ -52,7 +52,7 @@ public final class GlowParticle {
                 }
                 return new int[]{material.getItemTypeId()};
             default:
-                if (material != null) {
+                if (material != null && material.getItemTypeId() != 0) {
                     throw new IllegalArgumentException("Particle " + particle + " does not use material, " + material + " provided");
                 }
                 return EMPTY;
