@@ -11,8 +11,9 @@ An experimental fork of [Glowstone](https://github.com/GlowstoneMC/Glowstone) fo
 Currently the major changes from Glowstone include:
 
 * Tracks the [Spigot 1.8.3 update of the Bukkit API](https://hub.spigotmc.org/javadocs/bukkit/)
-* Builds using Maven
 * New features merged in, adapted for Spigot's update of the Bukkit API (see [commits](https://github.com/deathcap/GlowstonePlusPlus/commits/master) for details)
+* Preliminary support for loading [SpongeAPI](https://github.com/SpongePowered/SpongeAPI) plugins
+* Builds using Maven
 
 Building from source
 --------------------
@@ -26,11 +27,14 @@ git clone --recursive https://github.com/deathcap/GlowstonePlusPlus
 cd GlowstonePlusPlus
 ```
 
-2. Build and install the API:
+2. Build and install the APIs:
 
 ```
 cd Glowkit
 mvn install
+cd ..
+cd SpongeAPI
+./gradlew
 cd ..
 ```
 
@@ -153,6 +157,8 @@ Credits
    plugin API.
  * [The SpigotMC team](https://github.com/SpigotMC) for updating and enhancing
    the Bukkit plugin API.
+ * [The SpongePowered Team](https://github.com/SpongePowered) for
+   creating [SpongeAPI](https://github.com/SpongePowered/SpongeAPI).
  * [Trustin Lee](http://gleamynode.net) - author of the
    [Netty](http://netty.io/) library.
  * [Graham Edgecombe](https://github.com/grahamedgecombe/) - author of the
