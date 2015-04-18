@@ -21,7 +21,6 @@ import org.spongepowered.api.item.*;
 import org.spongepowered.api.item.inventory.ItemStackBuilder;
 import org.spongepowered.api.item.merchant.TradeOfferBuilder;
 import org.spongepowered.api.item.recipe.RecipeRegistry;
-import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.potion.PotionEffectBuilder;
 import org.spongepowered.api.potion.PotionEffectType;
 import org.spongepowered.api.resourcepack.ResourcePack;
@@ -326,13 +325,13 @@ public class ShinyGameRegistry implements GameRegistry {
     }
 
     @Override
-    public WorldBuilder getWorldBuilder() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public void registerWorldGeneratorModifier(WorldGeneratorModifier worldGeneratorModifier) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void registerWorldGeneratorModifier(PluginContainer plugin, String genId, WorldGeneratorModifier modifier) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public WorldBuilder getWorldBuilder() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

@@ -25,7 +25,7 @@ public class ShinyGame implements Game {
     private final ShinyEventManager eventManager = new ShinyEventManager();
     private final ShinyGameRegistry registry = new ShinyGameRegistry();
     private final SimpleServiceManager services = new SimpleServiceManager(pluginManager);
-    private final SimpleCommandService commands = new SimpleCommandService(pluginManager);
+    private final SimpleCommandService commands = new SimpleCommandService(this);
 
     private static final String API_VERSION;
     private static final String IMPL_VERSION;
