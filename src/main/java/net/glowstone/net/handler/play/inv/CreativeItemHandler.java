@@ -69,6 +69,7 @@ public final class CreativeItemHandler implements MessageHandler<GlowSession, Cr
             return;
         }
 
+        view.setItem(viewSlot, event.getCursor());
         player.getOpenInventory().setItem(message.getSlot(), message.getItem());
     }
 }
