@@ -71,6 +71,10 @@ public class Shiny {
         return loadedPluginURLs;
     }
 
+    public ShinyGame getGame() {
+        return this.game;
+    }
+
     public void postState(Class<? extends StateEvent> type) {
         this.game.getEventManager().post(GraniteEventFactory.createStateEvent(type, this.game));
     }
@@ -82,4 +86,5 @@ public class Shiny {
     public File getConfigDirectory() {
         return new File("config"); // TODO
     }
+
 }
