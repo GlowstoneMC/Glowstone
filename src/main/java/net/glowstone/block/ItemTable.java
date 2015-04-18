@@ -108,8 +108,8 @@ public final class ItemTable {
         reg(Material.LAPIS_ORE, new BlockRandomDrops(Material.INK_SACK, 4, 4, 8, ToolType.STONE_PICKAXE));
         reg(Material.LAPIS_BLOCK, new BlockDirectDrops(ToolType.STONE_PICKAXE));
         reg(Material.QUARTZ_ORE, new BlockDirectDrops(Material.QUARTZ, ToolType.PICKAXE));
-        reg(Material.REDSTONE_ORE, new BlockRandomDrops(Material.REDSTONE, 0, 3, 4, ToolType.IRON_PICKAXE));
-        reg(Material.GLOWING_REDSTONE_ORE, new BlockRandomDrops(Material.REDSTONE, 0, 3, 4, ToolType.PICKAXE));
+        reg(Material.REDSTONE_ORE, new BlockRedstoneOre());
+        reg(Material.GLOWING_REDSTONE_ORE, new BlockLitRedstoneOre());
         reg(Material.REDSTONE_BLOCK, new BlockDirectDrops(ToolType.PICKAXE));
         reg(Material.CARROT, new BlockCarrot());
         reg(Material.COCOA, new BlockCocoa());
