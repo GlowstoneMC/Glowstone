@@ -1,9 +1,17 @@
 package net.glowstone.block.blocktype;
 
+import net.glowstone.EventFactory;
+import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.constants.GlowBiomeClimate;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
+import org.bukkit.event.block.BlockSpreadEvent;
+import org.bukkit.material.MaterialData;
 
 public class BlockWater extends BlockLiquid {
+
+    private static final BlockFace[] SOLID_FACES = {BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
 
     public BlockWater() {
         super(Material.WATER_BUCKET);
@@ -15,4 +23,34 @@ public class BlockWater extends BlockLiquid {
                 (target.getRawData() == 0 || target.getRawData() == 8); // 8 for backwards compatibility
     }
 
+    @Override
+    public boolean canTickRandomly() {
+        return true;
+    }
+
+    @Override
+    public void updateBlock(GlowBlock block) {
+        if (block.getLightFromBlocks() <= 11 - block.getMaterialValues().getLightOpacity()) {
+            if (block.getRelative(BlockFace.UP).isEmpty() && hasNearSolidBlock(block) && GlowBiomeClimate.isCold(block)) {
+                final GlowBlockState state = block.getState();
+                state.setType(Material.ICE);
+                state.setData(new MaterialData(Material.ICE));
+                BlockSpreadEvent spreadEvent = new BlockSpreadEvent(state.getBlock(), block, state);
+                EventFactory.callEvent(spreadEvent);
+                if (!spreadEvent.isCancelled()) {
+                    state.update(true);
+                }
+            }
+        }
+    }
+
+    private boolean hasNearSolidBlock(GlowBlock block) {
+        // check there's at least a solid block around
+        for (BlockFace face : SOLID_FACES) {
+            if (block.getRelative(face).getType().isSolid()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
