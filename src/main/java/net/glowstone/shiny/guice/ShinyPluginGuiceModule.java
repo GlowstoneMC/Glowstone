@@ -44,10 +44,6 @@ import javax.inject.Inject;
 
 public class ShinyPluginGuiceModule extends AbstractModule {
 
-    private static final ConfigDir privateConfigDir = new ConfigDirAnnotation(false);
-    private static final DefaultConfig sharedConfigFile = new ConfigFileAnnotation(true);
-    private static final DefaultConfig privateConfigFile = new ConfigFileAnnotation(false);
-
     private final ShinyPluginContainer container;
 
     public ShinyPluginGuiceModule(ShinyPluginContainer container) {
