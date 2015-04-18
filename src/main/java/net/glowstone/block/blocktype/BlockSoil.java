@@ -1,17 +1,16 @@
 package net.glowstone.block.blocktype;
 
-import java.util.Arrays;
-
-import org.bukkit.Material;
-import org.bukkit.block.BlockFace;
-import org.bukkit.event.block.BlockFadeEvent;
-import org.bukkit.inventory.ItemStack;
-
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.constants.GlowBiomeClimate;
+import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
+import org.bukkit.event.block.BlockFadeEvent;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.Arrays;
 
 public class BlockSoil extends BlockType {
 

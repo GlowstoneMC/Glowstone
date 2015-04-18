@@ -1,14 +1,14 @@
 package net.glowstone.block.blocktype;
 
+import net.glowstone.EventFactory;
+import net.glowstone.block.GlowBlock;
+import net.glowstone.block.GlowBlockState;
+import net.glowstone.entity.GlowPlayer;
 import org.bukkit.CropState;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.inventory.ItemStack;
-import net.glowstone.EventFactory;
-import net.glowstone.block.GlowBlock;
-import net.glowstone.block.GlowBlockState;
-import net.glowstone.entity.GlowPlayer;
 
 import java.util.Arrays;
 import java.util.Collection;
