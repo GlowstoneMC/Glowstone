@@ -1,5 +1,6 @@
 package net.glowstone.block.blocktype;
 
+import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
@@ -32,6 +33,27 @@ public class BlockLog extends BlockType {
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        return Arrays.asList(new ItemStack(Material.LOG, 1, (short) (block.getData() % 4)));
+        return Arrays.asList(new ItemStack(Material.LOG, 1, (short) (block.getData() & 0x03)));
+    }
+
+    @Override
+    public void blockDestroy(GlowPlayer player, GlowBlock block, BlockFace face) {
+        // vanilla set leaf decay check in a 9x9x9 neighboring when a log block is removed
+        final GlowWorld world = block.getWorld();
+        for (int x = 0; x < 9; x++) {
+            for (int z = 0; z < 9; z++) {
+                for (int y = 0; y < 9; y++) {
+                    final GlowBlock b = world.getBlockAt(block.getLocation().add(x - 4, y - 4, z - 4));
+                    if (b.getType() == Material.LEAVES || b.getType() == Material.LEAVES_2) {
+                        final GlowBlockState state = b.getState();
+                        if ((state.getRawData() & 0x08) == 0 && (state.getRawData() & 0x04) == 0) { // check decay is off and decay is on
+                            // set decay check on for this leaves block
+                            state.setRawData((byte) (state.getRawData() | 0x08));
+                            state.update(true);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
