@@ -1,6 +1,8 @@
-package net.glowstone.shiny.text;
+package io.github.deathcap.bukkit2sponge.text;
 
 import org.spongepowered.api.text.translation.Translation;
+
+import java.util.Locale;
 
 /**
  * Todo: Javadoc for ShinyTranslation.
@@ -17,14 +19,13 @@ public class ShinyTranslation implements Translation {
         return id;
     }
 
-
     @Override
-    public String get() {
+    public String get(Locale locale) {
         return id;
     }
 
     @Override
-    public String get(Object... args) {
+    public String get(Locale locale, Object... args) {
         return id;
     }
 
