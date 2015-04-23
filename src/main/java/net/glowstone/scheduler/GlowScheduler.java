@@ -10,7 +10,6 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scheduler.BukkitWorker;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.Iterator;
@@ -385,7 +384,7 @@ public final class GlowScheduler implements BukkitScheduler {
     public List<BukkitWorker> getActiveWorkers() {
         return ImmutableList.<BukkitWorker>copyOf(Collections2.filter(tasks.values(), new Predicate<GlowTask>() {
             @Override
-            public boolean apply(@Nullable GlowTask glowTask) {
+            public boolean apply(GlowTask glowTask) {
                 return glowTask != null && !glowTask.isSync() && glowTask.getLastExecutionState() == TaskExecutionState.RUN;
             }
         }));
