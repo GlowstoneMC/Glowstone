@@ -1,9 +1,9 @@
 package net.glowstone.block.blocktype;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-
+import net.glowstone.EventFactory;
+import net.glowstone.block.GlowBlock;
+import net.glowstone.block.GlowBlockState;
+import net.glowstone.entity.GlowPlayer;
 import org.bukkit.CropState;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -11,10 +11,9 @@ import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Pumpkin;
 
-import net.glowstone.EventFactory;
-import net.glowstone.block.GlowBlock;
-import net.glowstone.block.GlowBlockState;
-import net.glowstone.entity.GlowPlayer;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 public class BlockStem extends BlockCrops implements IBlockGrowable {
     private Material fruitType;
@@ -81,6 +80,8 @@ public class BlockStem extends BlockCrops implements IBlockGrowable {
 
     @Override
     public void updateBlock(GlowBlock block) {
+        // we check light level on the above block, meaning stems needs at least one free block above it
+        // in order to grow naturally (vanilla behavior)
         if (block.getRelative(BlockFace.UP).getLightLevel() >= 9 &&
                 random.nextInt((int) (25.0F / getGrowthRateModifier(block)) + 1) == 0) {
 
@@ -132,6 +133,11 @@ public class BlockStem extends BlockCrops implements IBlockGrowable {
                     state.update(true);
                 }
             }
+        }
+
+        // we check for insufficient light on the block itself, then drop
+        if (block.getLightLevel() < 8) {
+            block.breakNaturally();
         }
     }
 }

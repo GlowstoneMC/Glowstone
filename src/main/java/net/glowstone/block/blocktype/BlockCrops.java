@@ -1,19 +1,18 @@
 package net.glowstone.block.blocktype;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-
+import net.glowstone.EventFactory;
+import net.glowstone.block.GlowBlock;
+import net.glowstone.block.GlowBlockState;
+import net.glowstone.entity.GlowPlayer;
 import org.bukkit.CropState;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.inventory.ItemStack;
 
-import net.glowstone.EventFactory;
-import net.glowstone.block.GlowBlock;
-import net.glowstone.block.GlowBlockState;
-import net.glowstone.entity.GlowPlayer;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
 
@@ -71,6 +70,8 @@ public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
     public void updateBlock(GlowBlock block) {
         final GlowBlockState state = block.getState();
         int cropState = block.getData();
+        // we check light level on the above block, meaning crops needs at least one free block above it
+        // in order to grow naturally (vanilla behavior)
         if (cropState < CropState.RIPE.ordinal() && block.getRelative(BlockFace.UP).getLightLevel() >= 9 &&
                 random.nextInt((int) (25.0F / getGrowthRateModifier(block)) + 1) == 0) {
             cropState++;
@@ -83,6 +84,10 @@ public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
             if (!growEvent.isCancelled()) {
                 state.update(true);
             }
+        }
+        // we check for insufficient light on the block itself, then drop
+        if (block.getLightLevel() < 8) {
+            block.breakNaturally();
         }
     }
 

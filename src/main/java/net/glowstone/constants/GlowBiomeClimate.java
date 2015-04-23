@@ -1,12 +1,12 @@
 package net.glowstone.constants;
 
+import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
+import net.glowstone.util.noise.SimplexOctaveGenerator;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-
-import org.bukkit.block.Biome;
-
-import net.glowstone.util.noise.SimplexOctaveGenerator;
 
 import static org.bukkit.block.Biome.*;
 
@@ -22,8 +22,24 @@ public class GlowBiomeClimate {
         return CLIMATE_MAP.get(biome).getHumidity();
     }
 
+    public static double getTemperature(Block block) {
+        return getBiomeTemperature(block.getBiome());
+    }
+
+    public static double getHumidity(Block block) {
+        return getBiomeHumidity(block.getBiome());
+    }
+
+    public static boolean isWet(Block block) {
+        return getBiomeHumidity(block.getBiome()) > 0.85D;
+    }
+
     public static boolean isCold(Biome biome, int x, int y, int z) {
         return getVariatedTemperature(biome, x, y , z) < 0.15D;
+    }
+
+    public static boolean isCold(Block block) {
+        return isCold(block.getBiome(), block.getX(), block.getY(), block.getZ());
     }
 
     public static boolean isRainy(Biome biome, int x, int y, int z) {
@@ -31,8 +47,16 @@ public class GlowBiomeClimate {
         return rainy && !isCold(biome, x, y, z);
     }
 
+    public static boolean isRainy(Block block) {
+        return isRainy(block.getBiome(), block.getX(), block.getY(), block.getZ());
+    }
+
     public static boolean isSnowy(Biome biome, int x, int y, int z) {
         return isRainy(biome, x, y, z) && isCold(biome, x, y, z);
+    }
+
+    public static boolean isSnowy(Block block) {
+        return isSnowy(block.getBiome(), block.getX(), block.getY(), block.getZ());
     }
 
     private static double getVariatedTemperature(Biome biome, int x, int y, int z) {

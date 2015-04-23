@@ -297,7 +297,7 @@ public class BlockType extends ItemType {
         // do nothing
     }
 
-    /*
+    /**
      * Called when a player left clicks a block
      * @param player the player who clicked the block
      * @param block the block that was clicked

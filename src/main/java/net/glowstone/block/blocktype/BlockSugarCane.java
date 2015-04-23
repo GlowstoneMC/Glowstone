@@ -1,9 +1,12 @@
 package net.glowstone.block.blocktype;
 
+import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
+import net.glowstone.block.GlowBlockState;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
@@ -30,10 +33,56 @@ public class BlockSugarCane extends BlockNeedsAttached {
             case GRASS:
             case SAND:
                 return isNearWater(below);
+            default:
+                return false;
         }
-        return false;
     }
 
+    @Override
+    public boolean canTickRandomly() {
+        return true;
+    }
+
+    @Override
+    public void updateBlock(GlowBlock block) {
+        if (!canPlaceAt(block, BlockFace.DOWN)) {
+            block.breakNaturally();
+            return;
+        }
+
+        final GlowBlock blockAbove = block.getRelative(BlockFace.UP);
+        // check it's the highest block of cactus
+        if (blockAbove.isEmpty()) {
+            // check the current cane height
+            Block blockBelow = block.getRelative(BlockFace.DOWN);
+            int height = 1;
+            while (blockBelow.getType() == Material.SUGAR_CANE_BLOCK) {
+                height++;
+                blockBelow = blockBelow.getRelative(BlockFace.DOWN);
+            }
+            if (height < 3) {
+                GlowBlockState state = block.getState();
+                if (state.getRawData() < 15) {
+                    // increase age
+                    state.setRawData((byte) (state.getRawData() + 1));
+                    state.update(true);
+                } else {
+                    // grow the sugar cane on the above block
+                    state.setRawData((byte) 0);
+                    state.update(true);
+                    state = blockAbove.getState();
+                    state.setType(Material.SUGAR_CANE_BLOCK);
+                    state.setRawData((byte) 0);
+                    BlockGrowEvent growEvent = new BlockGrowEvent(blockAbove, state);
+                    EventFactory.callEvent(growEvent);
+                    if (!growEvent.isCancelled()) {
+                        state.update(true);
+                    }
+                    updatePhysics(blockAbove);
+                }
+            }
+        }
+    }
 
     private boolean isNearWater(Block block) {
         for (BlockFace face : DIRECT_FACES) {
@@ -41,6 +90,8 @@ public class BlockSugarCane extends BlockNeedsAttached {
                 case WATER:
                 case STATIONARY_WATER:
                     return true;
+                default:
+                    break;
             }
         }
 

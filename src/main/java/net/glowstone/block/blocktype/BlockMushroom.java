@@ -1,11 +1,12 @@
 package net.glowstone.block.blocktype;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.constants.GlowTree;
+import net.glowstone.EventFactory;
+import net.glowstone.block.GlowBlock;
+import net.glowstone.entity.GlowPlayer;
+import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.DirtType;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,10 +18,8 @@ import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Dirt;
 
-import net.glowstone.EventFactory;
-import net.glowstone.block.GlowBlock;
-import net.glowstone.entity.GlowPlayer;
-import net.glowstone.util.BlockStateDelegate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable {
 
@@ -129,6 +128,12 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
                     state.update(true);
                 }
             }
+        }
+
+        // mushroom does not uproot in vanilla due to a bug, but it should uproot as
+        // it is stated in the wiki
+        if (!canPlaceAt(block, BlockFace.DOWN)) {
+            block.breakNaturally();
         }
     }
 }

@@ -1,13 +1,12 @@
 package net.glowstone.block.blocktype;
 
+import net.glowstone.EventFactory;
+import net.glowstone.block.GlowBlock;
+import net.glowstone.block.GlowBlockState;
 import org.bukkit.Material;
 import org.bukkit.NetherWartsState;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.inventory.ItemStack;
-
-import net.glowstone.EventFactory;
-import net.glowstone.block.GlowBlock;
-import net.glowstone.block.GlowBlockState;
 
 public class BlockNetherWart extends BlockNeedsAttached {
 
