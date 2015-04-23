@@ -53,7 +53,7 @@ public class BlockMycel extends BlockType {
                     final GlowBlockState state = targetBlock.getState();
                     state.setType(Material.MYCEL);
                     state.setRawData((byte) 0);
-                    BlockSpreadEvent spreadEvent = new BlockSpreadEvent(state.getBlock(), block, state);
+                    BlockSpreadEvent spreadEvent = new BlockSpreadEvent(targetBlock, block, state);
                     EventFactory.callEvent(spreadEvent);
                     if (!spreadEvent.isCancelled()) {
                         state.update(true);

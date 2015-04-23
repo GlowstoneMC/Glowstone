@@ -7,7 +7,6 @@ import net.glowstone.entity.GlowPlayer;
 import org.bukkit.CropState;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
-import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Pumpkin;
@@ -138,12 +137,7 @@ public class BlockStem extends BlockCrops implements IBlockGrowable {
 
         // we check for insufficient light on the block itself, then drop
         if (block.getLightLevel() < 8) {
-            final GlowBlockState state = block.getState();
-            BlockFadeEvent fadeEvent = new BlockFadeEvent(block, state);
-            EventFactory.callEvent(fadeEvent);
-            if (!fadeEvent.isCancelled()) {
-                block.breakNaturally();
-            }
+            block.breakNaturally();
         }
     }
 }

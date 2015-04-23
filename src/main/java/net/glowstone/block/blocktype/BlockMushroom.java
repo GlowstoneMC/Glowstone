@@ -13,7 +13,6 @@ import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
-import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.material.MaterialData;
@@ -134,12 +133,7 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
         // mushroom does not uproot in vanilla due to a bug, but it should uproot as
         // it is stated in the wiki
         if (!canPlaceAt(block, BlockFace.DOWN)) {
-            final GlowBlockState state = block.getState();
-            BlockFadeEvent fadeEvent = new BlockFadeEvent(block, state);
-            EventFactory.callEvent(fadeEvent);
-            if (!fadeEvent.isCancelled()) {
-                block.breakNaturally();
-            }
+            block.breakNaturally();
         }
     }
 }
