@@ -701,6 +701,10 @@ public final class GlowServer implements Server {
             logger.log(Level.SEVERE, "Could not create plugins directory: " + folder);
         }
 
+        GlowPluginTypeDetector detector = new GlowPluginTypeDetector(folder, logger);
+        detector.scan();
+        // TODO: only load recognized Bukkit plugins
+
         // clear plugins and prepare to load
         pluginManager.clearPlugins();
         pluginManager.registerInterface(JavaPluginLoader.class);
