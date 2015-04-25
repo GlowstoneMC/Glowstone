@@ -37,6 +37,7 @@ public class GlowPluginTypeDetector {
     }
 
     public void scan() {
+        logger.info("Scanning plugins...");
         File[] files = directory.listFiles(new PatternFilenameFilter(".+\\.jar"));
         if (files == null || files.length == 0) {
             return;

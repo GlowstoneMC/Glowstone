@@ -733,6 +733,26 @@ public final class GlowServer implements Server {
                 logger.log(Level.WARNING, "Suggestion: install https://github.com/deathcap/Bukkit2Sponge to load these plugins");
             }
         }
+
+        if (pluginTypeDetector.canaryPlugins.size() != 0 ||
+                pluginTypeDetector.forgefPlugins.size() != 0 ||
+                pluginTypeDetector.forgenPlugins.size() != 0 ||
+                pluginTypeDetector.unrecognizedPlugins.size() != 0) {
+            logger.log(Level.WARNING, "Unsupported plugin types found, will be ignored:");
+
+            for (File file : pluginTypeDetector.canaryPlugins)
+                logger.log(Level.WARNING, "Canary plugin not supported: " + file.getPath());
+
+            for (File file : pluginTypeDetector.forgefPlugins)
+                logger.log(Level.WARNING, "Forge plugin not supported: " + file.getPath());
+
+            for (File file : pluginTypeDetector.forgenPlugins)
+                logger.log(Level.WARNING, "Forge plugin not supported: " + file.getPath());
+
+            for (File file : pluginTypeDetector.unrecognizedPlugins)
+                logger.log(Level.WARNING, "Unrecognized plugin not supported: " + file.getPath());
+       }
+
     }
 
     // API for Bukkit2Sponge
