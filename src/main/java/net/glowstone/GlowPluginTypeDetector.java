@@ -1,14 +1,17 @@
 package net.glowstone;
 
 import com.google.common.io.PatternFilenameFilter;
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.Opcodes;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -67,9 +70,6 @@ public class GlowPluginTypeDetector {
             return;
         }
 
-        URLClassLoader root = new URLClassLoader(new URL[]{url}, GlowPluginTypeDetector.class.getClassLoader());
-        URLClassLoader classLoader = new URLClassLoader(new URL[]{url}, root);
-
         try (InputStream fileIn = url.openStream();
              ZipInputStream zipIn = new ZipInputStream(fileIn)
         ) {
@@ -86,23 +86,20 @@ public class GlowPluginTypeDetector {
                 }
 
                 if (name.endsWith(".class") && !entryIn.isDirectory()) {
-                    name = name.substring(0, name.length() - 6).replace("/", ".");
+                    // Read class file TODO: buffer
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    int b;
+                    do {
+                        b = zipIn.read();
+                        byteArrayOutputStream.write(b);
+                    } while (b != -1);
 
-                    Class<?> clazz;
-                    try {
-                        clazz = classLoader.loadClass(name); // TODO: possible to check annotation with 'loading'?
-                    } catch (Throwable t) {
-                        logger.log(Level.WARNING, "PluginTypeDetector: Error loading " + url.getFile() + "/" + name, t);
-                        continue;
-                    }
+                    ClassReader classReader = new ClassReader(byteArrayOutputStream.toByteArray());
+                    GlowVisitor visitor = new GlowVisitor();
+                    classReader.accept(visitor, 0);
 
-                    Annotation[] annotations = clazz.getAnnotations();
-                    for (Annotation annotation : annotations) {
-                        if (annotation.toString().startsWith("@org.spongepowered.api.plugin.Plugin")) {
-                            isSponge = true;
-                        }
-                        // TODO: net.minecraftforge.fml.common.Mod, cpw.mods.fml.common.Mod for isForge/FML
-                        //System.out.println("ann: " + annotation.toString());
+                    if (visitor.isSponge) {
+                        isSponge = true;
                     }
                 }
             }
@@ -115,5 +112,22 @@ public class GlowPluginTypeDetector {
         if (isCanary) canaryPlugins.add(file);
 
         if (!isBukkit && !isSponge && !isCanary) unrecognizedPlugins.add(file);
+    }
+
+    private class GlowVisitor extends ClassVisitor {
+        public boolean isSponge;
+
+        public GlowVisitor() {
+            super(Opcodes.ASM5);
+        }
+
+        @Override
+        public AnnotationVisitor visitAnnotation(String name, boolean visible) {
+            if (name.equals("Lorg/spongepowered/api/plugin/Plugin;")) {
+                isSponge = true;
+            }
+
+            return null;
+        }
     }
 }
