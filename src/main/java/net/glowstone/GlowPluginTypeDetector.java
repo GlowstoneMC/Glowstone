@@ -24,6 +24,8 @@ public class GlowPluginTypeDetector {
     public List<File> bukkitPlugins = new ArrayList<>();
     public List<File> spongePlugins = new ArrayList<>();
     public List<File> canaryPlugins = new ArrayList<>();
+    public List<File> forgefPlugins = new ArrayList<>();
+    public List<File> forgenPlugins = new ArrayList<>();
     public List<File> unrecognizedPlugins = new ArrayList<>();
 
     private File directory;
@@ -47,6 +49,7 @@ public class GlowPluginTypeDetector {
         logger.info("PluginTypeDetector: found " +
                 bukkitPlugins.size() + " Bukkit, " +
                 spongePlugins.size() + " Sponge, " +
+                (forgefPlugins.size() + forgenPlugins.size()) + " Forge, " +
                 canaryPlugins.size() + " Canary, " +
                 unrecognizedPlugins.size() + " unknown plugins (total " + files.length + ")");
 
@@ -61,6 +64,8 @@ public class GlowPluginTypeDetector {
         boolean isBukkit = false;
         boolean isSponge = false;
         boolean isCanary = false;
+        boolean isForgeF = false;
+        boolean isForgeN = false;
         URL url;
 
         try {
@@ -101,6 +106,14 @@ public class GlowPluginTypeDetector {
                     if (visitor.isSponge) {
                         isSponge = true;
                     }
+
+                    if (visitor.isForgeF) {
+                        isForgeF = true;
+                    }
+
+                    if (visitor.isForgeN) {
+                        isForgeN = true;
+                    }
                 }
             }
         } catch (IOException ex) {
@@ -110,12 +123,16 @@ public class GlowPluginTypeDetector {
         if (isBukkit) bukkitPlugins.add(file);
         if (isSponge) spongePlugins.add(file);
         if (isCanary) canaryPlugins.add(file);
+        if (isForgeF) forgefPlugins.add(file);
+        if (isForgeN) forgenPlugins.add(file);
 
-        if (!isBukkit && !isSponge && !isCanary) unrecognizedPlugins.add(file);
+        if (!isBukkit && !isSponge && !isCanary && !isForgeF && !isForgeN) unrecognizedPlugins.add(file);
     }
 
     private class GlowVisitor extends ClassVisitor {
         public boolean isSponge;
+        public boolean isForgeF;
+        public boolean isForgeN;
 
         public GlowVisitor() {
             super(Opcodes.ASM5);
@@ -125,6 +142,10 @@ public class GlowPluginTypeDetector {
         public AnnotationVisitor visitAnnotation(String name, boolean visible) {
             if (name.equals("Lorg/spongepowered/api/plugin/Plugin;")) {
                 isSponge = true;
+            } else if (name.equals("Lcpw/mods/fml/common/Mod;")) { // older versions
+                isForgeF = true;
+            } else if (name.equals("Lnet/minecraftforge/fml/common/Mod;")) { // newer
+                isForgeN = true;
             }
 
             return null;
