@@ -703,12 +703,11 @@ public final class GlowServer implements Server {
 
         GlowPluginTypeDetector detector = new GlowPluginTypeDetector(folder, logger);
         detector.scan();
-        // TODO: only load recognized Bukkit plugins
 
         // clear plugins and prepare to load
         pluginManager.clearPlugins();
         pluginManager.registerInterface(JavaPluginLoader.class);
-        Plugin[] plugins = pluginManager.loadPlugins(folder);
+        Plugin[] plugins = pluginManager.loadPlugins(detector.bukkitPlugins.toArray(new File[0]), folder.getPath());
 
         // call onLoad methods
         for (Plugin plugin : plugins) {
