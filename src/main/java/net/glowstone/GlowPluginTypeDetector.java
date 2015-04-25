@@ -18,10 +18,10 @@ import java.util.zip.ZipInputStream;
 
 public class GlowPluginTypeDetector {
 
-    public List<URL> bukkitPluginURLs = new ArrayList<>();
-    public List<URL> spongePluginURLs = new ArrayList<>();
-    public List<URL> canaryPluginURLs = new ArrayList<>();
-    public List<URL> unrecognizedPluginURLs = new ArrayList<>();
+    public List<File> bukkitPlugins = new ArrayList<>();
+    public List<File> spongePlugins = new ArrayList<>();
+    public List<File> canaryPlugins = new ArrayList<>();
+    public List<File> unrecognizedPlugins = new ArrayList<>();
 
     private File directory;
     private Logger logger;
@@ -37,35 +37,35 @@ public class GlowPluginTypeDetector {
             return;
         }
 
-        List<URL> urls = new ArrayList<>(files.length);
-        for (File jar : files) {
-            try {
-                urls.add(jar.toURI().toURL());
-            } catch (MalformedURLException e) {
-                logger.log(Level.WARNING, "PluginTypeDetector: Malformed URL: " + jar, e);
-            }
-        }
-
-        for (URL url : urls) {
-            scanURL(url);
+        for (File file : files) {
+            scanFile(file);
         }
 
         logger.info("PluginTypeDetector: found " +
-                bukkitPluginURLs.size() + " Bukkit, " +
-                spongePluginURLs.size() + " Sponge, " +
-                canaryPluginURLs.size() + " Canary, " +
-                unrecognizedPluginURLs.size() + " unknown plugins (scanned " + urls.size() + ")");
-        if (unrecognizedPluginURLs.size() != 0) {
-            for (URL url : unrecognizedPluginURLs) {
-                logger.warning("Unrecognized plugin: " + url);
+                bukkitPlugins.size() + " Bukkit, " +
+                spongePlugins.size() + " Sponge, " +
+                canaryPlugins.size() + " Canary, " +
+                unrecognizedPlugins.size() + " unknown plugins (total " + files.length + ")");
+
+        if (unrecognizedPlugins.size() != 0) {
+            for (File file : unrecognizedPlugins) {
+                logger.warning("Unrecognized plugin: " + file.getPath());
             }
         }
     }
 
-    private void scanURL(URL url) {
+    private void scanFile(File file) {
         boolean isBukkit = false;
         boolean isSponge = false;
         boolean isCanary = false;
+        URL url;
+
+        try {
+            url = file.toURI().toURL();
+        } catch (MalformedURLException e) {
+            logger.log(Level.WARNING, "PluginTypeDetector: Malformed URL: " + file, e);
+            return;
+        }
 
         URLClassLoader root = new URLClassLoader(new URL[]{url}, GlowPluginTypeDetector.class.getClassLoader());
         URLClassLoader classLoader = new URLClassLoader(new URL[]{url}, root);
@@ -110,10 +110,10 @@ public class GlowPluginTypeDetector {
             logger.log(Level.WARNING, "PluginTypeDetector: Error reading " + url, ex);
         }
 
-        if (isBukkit) bukkitPluginURLs.add(url);
-        if (isSponge) spongePluginURLs.add(url);
-        if (isCanary) canaryPluginURLs.add(url);
+        if (isBukkit) bukkitPlugins.add(file);
+        if (isSponge) spongePlugins.add(file);
+        if (isCanary) canaryPlugins.add(file);
 
-        if (!isBukkit && !isSponge && !isCanary) unrecognizedPluginURLs.add(url);
+        if (!isBukkit && !isSponge && !isCanary) unrecognizedPlugins.add(file);
     }
 }
