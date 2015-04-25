@@ -1,7 +1,6 @@
 package net.glowstone.shiny.plugin;
 
 import com.google.common.base.Optional;
-import com.google.common.io.PatternFilenameFilter;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.glowstone.shiny.Shiny;
@@ -67,9 +66,7 @@ public class ShinyPluginManager implements PluginManager {
      * @return List of recognized SpongeAPI plugin URLs
      * @throws IOException
      */
-    public Collection<URL> loadPlugins() throws IOException {
-        File directory = Shiny.instance.getPluginsDirectory();
-        File[] files = directory.listFiles(new PatternFilenameFilter(".+\\.jar"));
+    public Collection<URL> loadPlugins(File[] files) throws IOException {
         if (files == null || files.length == 0) {
             return new ArrayList<>();
         }

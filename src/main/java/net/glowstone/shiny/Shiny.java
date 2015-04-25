@@ -33,7 +33,7 @@ public class Shiny {
 
     private ShinyGame game;
 
-    public Collection<URL> load() {
+    public Collection<URL> load(File[] files) {
         Collection<URL> loadedPluginURLs = null;
 
         try {
@@ -60,7 +60,7 @@ public class Shiny {
             getLogger().info("SpongeAPI version: " + this.game.getApiVersion());
 
             getLogger().info("Loading plugins...");
-            loadedPluginURLs = this.game.getPluginManager().loadPlugins();
+            loadedPluginURLs = this.game.getPluginManager().loadPlugins(files);
             postState(ConstructionEvent.class);
             getLogger().info("Initializing " + loadedPluginURLs.size() + " SpongeAPI plugins...");
             postState(PreInitializationEvent.class);

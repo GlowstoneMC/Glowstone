@@ -58,7 +58,6 @@ import java.io.IOException;
 import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.net.URL;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.KeyPair;
@@ -447,11 +446,7 @@ public final class GlowServer implements Server {
         nameBans.load();
         ipBans.load();
 
-        // Load SpongeAPI plugins first
-        Collection<URL> spongePluginURLs = net.glowstone.shiny.Shiny.instance.load();
-        pluginManager.setIgnoreURLs(spongePluginURLs);
-
-        // Start loading (Bukkit) plugins
+        // Start loading plugins
         new LibraryManager(this).run();
         loadPlugins();
         enablePlugins(PluginLoadOrder.STARTUP);
@@ -701,10 +696,14 @@ public final class GlowServer implements Server {
             logger.log(Level.SEVERE, "Could not create plugins directory: " + folder);
         }
 
+        // detect plugin types
         GlowPluginTypeDetector detector = new GlowPluginTypeDetector(folder, logger);
         detector.scan();
 
-        // clear plugins and prepare to load
+        // load SpongeAPI plugins first
+        net.glowstone.shiny.Shiny.instance.load(detector.spongePlugins.toArray(new File[0]));
+
+        // clear plugins and prepare to load (Bukkit) (Bukkit)
         pluginManager.clearPlugins();
         pluginManager.registerInterface(JavaPluginLoader.class);
         Plugin[] plugins = pluginManager.loadPlugins(detector.bukkitPlugins.toArray(new File[0]), folder.getPath());
