@@ -63,7 +63,7 @@
             <artifactId>lombok</artifactId>
             <version>1.14.8</version>
             <type>jar</type>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <!--
         <dependency>
