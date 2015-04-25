@@ -11,8 +11,8 @@ An experimental fork of [Glowstone](https://github.com/GlowstoneMC/Glowstone) fo
 Currently the major changes from Glowstone include:
 
 * Tracks the [Spigot 1.8.3 update of the Bukkit API](https://hub.spigotmc.org/javadocs/bukkit/)
-* New features merged in, adapted for Spigot's update of the Bukkit API (see [commits](https://github.com/deathcap/GlowstonePlusPlus/commits/master) for details)
-* Preliminary support for loading [SpongeAPI](https://github.com/SpongePowered/SpongeAPI) plugins
+* New features merged in, adapted for Spigot's update of the Bukkit API (see [features](#features) below for details)
+* Multi-API plugin support, integrates with [Bukkit2Sponge](https://github.com/deathcap/Bukkit2Sponge) for [SpongeAPI](https://github.com/SpongePowered/SpongeAPI) plugin loading
 * Builds using Maven
 
 Building from source
@@ -102,10 +102,18 @@ Some of the key features that have been implemented are:
  * World loading, saving, and streaming to players.
  * Player interaction with the world (building, digging).
  * Somewhat-complete inventory support.
- * A sophisticated world generator (support for others through Bukkit).
  * World weather (rain, thunder/lightning).
  * Op, ban, IP ban, and whitelist support.
  * Many of the advanced API features of Bukkit.
+ * Sophisticated overworld generation (support for others through Bukkit).
+ * Structure spawning and saving.
+ * Biome grid generation and decoration.
+ * Crop growth, bone meal, and flower pots.
+ * Noteblocks and jukeboxes.
+ * Double chests and item frames.
+ * Enchantments, beds, cauldrons.
+ * Liquid physics (water and lava).
+ * Particle effects Spigot API.
 
 Building and Running
 --------------------
