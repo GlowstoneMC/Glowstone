@@ -6,18 +6,17 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Opcodes;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.zip.ZipFile;
 
 public class GlowPluginTypeDetector {
 
@@ -76,11 +75,11 @@ public class GlowPluginTypeDetector {
             return;
         }
 
-        try (InputStream fileIn = url.openStream();
-             ZipInputStream zipIn = new ZipInputStream(fileIn)
+        try (ZipFile zip = new ZipFile(file);
         ) {
-            ZipEntry entryIn;
-            while ((entryIn = zipIn.getNextEntry()) != null) {
+            Enumeration<? extends ZipEntry> entries = zip.entries();
+            while (entries.hasMoreElements()) {
+                ZipEntry entryIn = entries.nextElement();
                 String name = entryIn.getName();
 
                 if (name.equals("plugin.yml")) {
@@ -92,15 +91,8 @@ public class GlowPluginTypeDetector {
                 }
 
                 if (name.endsWith(".class") && !entryIn.isDirectory()) {
-                    // Read class file TODO: buffer
-                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    int b;
-                    do {
-                        b = zipIn.read();
-                        byteArrayOutputStream.write(b);
-                    } while (b != -1);
-
-                    ClassReader classReader = new ClassReader(byteArrayOutputStream.toByteArray());
+                    // Analyze class file
+                    ClassReader classReader = new ClassReader(zip.getInputStream(entryIn));
                     GlowVisitor visitor = new GlowVisitor();
                     classReader.accept(visitor, 0);
 
