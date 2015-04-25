@@ -11,7 +11,6 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.DiggingMessage;
-import net.glowstone.shiny.event.ShinyBlockBreakEvent;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -93,9 +92,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
         if (blockBroken) {
             // fire the block break event
             BlockBreakEvent breakEvent = EventFactory.callEvent(new BlockBreakEvent(block, player));
-            org.spongepowered.api.event.block.BlockBreakEvent breakEvent2 = new ShinyBlockBreakEvent(block.getLocation());
-            net.glowstone.shiny.Shiny.instance.getGame().getEventManager().post(breakEvent2);
-            if (breakEvent.isCancelled() || breakEvent2.isCancelled()) {
+            if (breakEvent.isCancelled()) {
                 BlockPlacementHandler.revert(player, block);
                 return;
             }
