@@ -58,7 +58,6 @@ import java.io.IOException;
 import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.net.URL;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.KeyPair;
@@ -262,6 +261,11 @@ public final class GlowServer implements Server {
     private final SimplePluginManager pluginManager = new SimplePluginManager(this, commandMap);
 
     /**
+     * The plugin type detector of thi server.
+     */
+    private GlowPluginTypeDetector pluginTypeDetector;
+
+    /**
      * The plugin channel messenger for the server.
      */
     private final Messenger messenger = new StandardMessenger();
@@ -447,11 +451,7 @@ public final class GlowServer implements Server {
         nameBans.load();
         ipBans.load();
 
-        // Load SpongeAPI plugins first
-        Collection<URL> spongePluginURLs = net.glowstone.shiny.Shiny.instance.load();
-        pluginManager.setIgnoreURLs(spongePluginURLs);
-
-        // Start loading (Bukkit) plugins
+        // Start loading plugins
         new LibraryManager(this).run();
         loadPlugins();
         enablePlugins(PluginLoadOrder.STARTUP);
@@ -623,9 +623,6 @@ public final class GlowServer implements Server {
         // Disable plugins
         pluginManager.clearPlugins();
 
-        // Disable SpongeAPI plugins TODO: also ServerStoppedEvent
-        net.glowstone.shiny.Shiny.instance.postState(org.spongepowered.api.event.state.ServerStoppingEvent.class);
-
         // Kick all players (this saves their data too)
         for (Player player : getOnlinePlayers()) {
             player.kickPlayer(getShutdownMessage());
@@ -701,10 +698,14 @@ public final class GlowServer implements Server {
             logger.log(Level.SEVERE, "Could not create plugins directory: " + folder);
         }
 
-        // clear plugins and prepare to load
+        // detect plugin types
+        pluginTypeDetector = new GlowPluginTypeDetector(folder, logger);
+        pluginTypeDetector.scan();
+
+        // clear plugins and prepare to load (Bukkit)
         pluginManager.clearPlugins();
         pluginManager.registerInterface(JavaPluginLoader.class);
-        Plugin[] plugins = pluginManager.loadPlugins(folder);
+        Plugin[] plugins = pluginManager.loadPlugins(pluginTypeDetector.bukkitPlugins.toArray(new File[0]), folder.getPath());
 
         // call onLoad methods
         for (Plugin plugin : plugins) {
@@ -714,6 +715,49 @@ public final class GlowServer implements Server {
                 logger.log(Level.SEVERE, "Error loading " + plugin.getDescription().getFullName(), ex);
             }
         }
+
+        if (pluginTypeDetector.spongePlugins.size() != 0) {
+            boolean hasSponge = false;
+            for (Plugin plugin : plugins) {
+                if (plugin.getName().equals("Bukkit2Sponge")) {
+                    hasSponge = true; // TODO: better detection method, plugin description file annotation APIs?
+                    break;
+                }
+            }
+
+            if (!hasSponge) {
+                logger.log(Level.WARNING, "SpongeAPI plugins found, but no Sponge bridge present! They will be ignored.");
+                for (File file : pluginTypeDetector.spongePlugins) {
+                    logger.log(Level.WARNING, "Ignored SpongeAPI plugin: " + file.getPath());
+                }
+                logger.log(Level.WARNING, "Suggestion: install https://github.com/deathcap/Bukkit2Sponge to load these plugins");
+            }
+        }
+
+        if (pluginTypeDetector.canaryPlugins.size() != 0 ||
+                pluginTypeDetector.forgefPlugins.size() != 0 ||
+                pluginTypeDetector.forgenPlugins.size() != 0 ||
+                pluginTypeDetector.unrecognizedPlugins.size() != 0) {
+            logger.log(Level.WARNING, "Unsupported plugin types found, will be ignored:");
+
+            for (File file : pluginTypeDetector.canaryPlugins)
+                logger.log(Level.WARNING, "Canary plugin not supported: " + file.getPath());
+
+            for (File file : pluginTypeDetector.forgefPlugins)
+                logger.log(Level.WARNING, "Forge plugin not supported: " + file.getPath());
+
+            for (File file : pluginTypeDetector.forgenPlugins)
+                logger.log(Level.WARNING, "Forge plugin not supported: " + file.getPath());
+
+            for (File file : pluginTypeDetector.unrecognizedPlugins)
+                logger.log(Level.WARNING, "Unrecognized plugin not supported: " + file.getPath());
+       }
+
+    }
+
+    // API for Bukkit2Sponge
+    public List<File> getSpongePlugins() {
+        return pluginTypeDetector.spongePlugins;
     }
 
     /**

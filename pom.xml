@@ -31,28 +31,13 @@
             <layout>default</layout>
             <url>https://oss.sonatype.org/content/repositories/public/</url>
         </repository>
-        <repository>
-            <id>sponge-repo</id>
-            <url>https://repo.spongepowered.org/maven</url>
-        </repository>
     </repositories>
     
     <dependencies>
         <dependency>
-            <groupId>org.spongepowered</groupId>
-            <artifactId>spongeapi</artifactId>
-            <version>2.0</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-            <version>4.0-beta5</version>
-        </dependency>
-        <dependency>
-            <groupId>ninja.leaping.configurate</groupId>
-            <artifactId>configurate-hocon</artifactId>
-            <version>1.1</version>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-debug-all</artifactId>
+            <version>5.0.3</version>
         </dependency>
         <dependency>
             <groupId>org.bukkit</groupId>
