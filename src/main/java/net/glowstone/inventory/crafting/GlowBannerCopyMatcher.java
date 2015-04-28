@@ -38,7 +38,7 @@ public class GlowBannerCopyMatcher extends ItemMatcher {
 
         for (ItemStack banner : banners) {
             BannerMeta meta = (BannerMeta) banner.getItemMeta();
-            if (meta.getPattern().getLayers().isEmpty()) {
+            if (meta.getPatterns().isEmpty()) {
                 if (blank != null) {
                     return null; // More than 1 blank
                 }

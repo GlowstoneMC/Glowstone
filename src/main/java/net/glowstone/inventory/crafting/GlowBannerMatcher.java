@@ -1,8 +1,9 @@
 package net.glowstone.inventory.crafting;
 
-import org.bukkit.BannerPattern;
+import org.bukkit.block.banner.Pattern;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.block.banner.PatternType;
 import org.bukkit.inventory.ItemMatcher;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
@@ -20,7 +21,7 @@ public class GlowBannerMatcher extends ItemMatcher {
     @Override
     public ItemStack getResult(ItemStack[] matrix) {
         DyeColor color = null;
-        BannerPattern.LayerTexture texture = null;
+        Pattern texture = null;
         ItemStack banner = null;
 
         for (ItemStack item : matrix) {
@@ -96,13 +97,8 @@ public class GlowBannerMatcher extends ItemMatcher {
 
         // Create result banner
         BannerMeta meta = (BannerMeta) banner.getItemMeta();
-        List<BannerPattern.BannerLayer> layers = meta.getPattern().getLayers();
-        BannerPattern.Builder builder = BannerPattern.builder();
-        for (BannerPattern.BannerLayer layer : layers) {
-            builder.layer(layer.getTexture(), layer.getColor());
-        }
-        builder.layer(texture, color);
-        meta.setPattern(builder.build());
+        List<Pattern> layers = meta.getPatterns();
+        meta.setPatterns(layers);
         result = banner.clone();
         result.setItemMeta(meta);
         return result;
@@ -187,8 +183,10 @@ public class GlowBannerMatcher extends ItemMatcher {
             return data;
         }
 
-        public BannerPattern.LayerTexture getPattern() {
-            return BannerPattern.LayerTexture.valueOf(name());
+        public Pattern getPattern() {
+            DyeColor dyeColor = DyeColor.getByDyeData((byte) data);
+            PatternType patternType = PatternType.getByIdentifier(this.toString());
+            return new Pattern(dyeColor, patternType);
         }
     }
 }
