@@ -1,9 +1,9 @@
 Glowstone++
 ===========
 
-An experimental fork of [Glowstone](https://github.com/GlowstoneMC/Glowstone) focused on additional compatibility
+The enhanced Glowstone fork with an emphasis on performance, control and compatibility.
 
-[![Build Status](https://circleci.com/gh/deathcap/GlowstonePlusPlus/tree/master.png)](https://circleci.com/gh/deathcap/GlowstonePlusPlus/tree/master)
+[![Build Status](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus/tree/master.png)](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus/tree/master)
 
 (Warning: may be unstable, this is only an experiment, use at your own risk)
 
