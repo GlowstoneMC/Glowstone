@@ -64,6 +64,9 @@ import java.security.KeyPair;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.glowstone.world.ChunksLoader;
+import net.glowstone.world.LoadWorld;
+import net.glowstone.world.UnloadWorld;
 
 /**
  * The core class of the Glowstone server.
@@ -318,7 +321,7 @@ public final class GlowServer implements Server {
     /**
      * The world this server is managing.
      */
-    private final WorldScheduler worlds = new WorldScheduler();
+    public final WorldScheduler worlds = new WorldScheduler();
 
     /**
      * The task scheduler used by this server.
@@ -409,6 +412,8 @@ public final class GlowServer implements Server {
      * The {@link net.glowstone.block.MaterialValueManager} of this server.
      */
     private MaterialValueManager materialValueManager;
+    
+    public ChunksLoader chunksLoader;
 
     /**
      * Creates a new server.
@@ -422,6 +427,7 @@ public final class GlowServer implements Server {
         whitelist = new UuidListFile(config.getFile("whitelist.json"));
         nameBans = new GlowBanList(this, BanList.Type.NAME);
         ipBans = new GlowBanList(this, BanList.Type.IP);
+        chunksLoader = new ChunksLoader();
 
         Bukkit.setServer(this);
         loadConfig();
@@ -452,7 +458,7 @@ public final class GlowServer implements Server {
         ipBans.load();
 
         // Start loading plugins
-        new LibraryManager(this).run();
+        new LibraryManager().start();
         loadPlugins();
         enablePlugins(PluginLoadOrder.STARTUP);
 
@@ -486,6 +492,8 @@ public final class GlowServer implements Server {
             checkTransfer(name, "_the_end", Environment.THE_END);
             createWorld(WorldCreator.name(name + "_the_end").environment(Environment.THE_END).seed(seed).type(type).generateStructures(structs));
         }
+
+        chunksLoader.start();
 
         // Finish loading plugins
         enablePlugins(PluginLoadOrder.POSTWORLD);
@@ -627,6 +635,11 @@ public final class GlowServer implements Server {
         for (Player player : getOnlinePlayers()) {
             player.kickPlayer(getShutdownMessage());
         }
+        
+        // Save worlds
+        for (World world : getWorlds()) {
+            unloadWorld(world, true);
+        }
 
         // Stop the network servers - starts the shutdown process
         // It may take a second or two for Netty to totally clean up
@@ -636,12 +649,6 @@ public final class GlowServer implements Server {
         }
         if (rconServer != null) {
             rconServer.shutdown();
-        }
-
-        // Save worlds
-        for (World world : getWorlds()) {
-            logger.info("Saving world: " + world.getName());
-            unloadWorld(world, true);
         }
 
         // Stop scheduler and console
@@ -1345,7 +1352,7 @@ public final class GlowServer implements Server {
      * Gets the default ChunkGenerator for the given environment and type.
      * @return The ChunkGenerator.
      */
-    private ChunkGenerator getGenerator(String name, Environment environment, WorldType type) {
+    public ChunkGenerator getGenerator(String name, Environment environment, WorldType type) {
         // find generator based on configuration
         ConfigurationSection worlds = config.getWorlds();
         if (worlds != null) {
@@ -1368,25 +1375,50 @@ public final class GlowServer implements Server {
 
     @Override
     public GlowWorld createWorld(WorldCreator creator) {
-        GlowWorld world = getWorld(creator.name());
-        if (world != null) {
-            return world;
-        }
-
-        if (creator.generator() == null) {
-            creator.generator(getGenerator(creator.name(), creator.environment(), creator.type()));
-        }
-
-        // GlowWorld's constructor calls addWorld below.
-        return new GlowWorld(this, creator);
+        return new LoadWorld(this, creator).createWorld();
     }
+
+    GlowWorld normal = null;
+    GlowWorld nether = null;
+    GlowWorld end = null;
 
     /**
      * Add a world to the internal world collection.
      * @param world The world to add.
      */
     void addWorld(GlowWorld world) {
-        worlds.addWorld(world);
+        int worldIndex = 0;
+        if (worldIndex == 0 && world.getEnvironment() == Environment.NORMAL) {
+            worlds.addWorld(world);
+            worldIndex++;
+        } else if (worldIndex == 0 && world.getEnvironment() == Environment.NETHER) {
+            nether = world;
+        } else if (worldIndex == 0 && world.getEnvironment() == Environment.THE_END) {
+            end = world;
+        }
+        if (worldIndex == 1 && world.getEnvironment() == Environment.NETHER) {
+            worlds.addWorld(world);
+            worldIndex++;
+        } else if (worldIndex == 1 && world.getEnvironment() == Environment.NORMAL) {
+            normal = world;
+        } else if (worldIndex == 1 && world.getEnvironment() == Environment.THE_END) {
+            end = world;
+        }
+        if (worldIndex == 2 && world.getEnvironment() == Environment.THE_END) {
+            worlds.addWorld(world);
+            worldIndex++;
+        } else if (worldIndex == 2 && world.getEnvironment() == Environment.NORMAL) {
+            normal = world;
+        } else if (worldIndex == 2 && world.getEnvironment() == Environment.NETHER) {
+            nether = world;
+        }
+        if (worldIndex == 1 && nether != null) {
+            worlds.addWorld(nether);
+        }
+        if (worldIndex == 2 && end != null) {
+            worlds.addWorld(end);
+        }
+        
     }
 
     @Override
@@ -1397,19 +1429,7 @@ public final class GlowServer implements Server {
 
     @Override
     public boolean unloadWorld(World bWorld, boolean save) {
-        if (!(bWorld instanceof GlowWorld)) {
-            return false;
-        }
-        GlowWorld world = (GlowWorld) bWorld;
-        if (save) {
-            world.setAutoSave(false);
-            world.save(false);
-        }
-        if (worlds.removeWorld(world)) {
-            world.unload();
-            return true;
-        }
-        return false;
+        return new UnloadWorld(this, bWorld, save).unloadWorld();
     }
 
     @Override

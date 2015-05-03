@@ -101,7 +101,7 @@ public final class GlowWorld implements World {
     /**
      * A lock kept on the spawn chunks.
      */
-    private final ChunkManager.ChunkLock spawnChunkLock;
+    public final ChunkManager.ChunkLock spawnChunkLock;
 
     /**
      * The world metadata service used.
@@ -255,7 +255,7 @@ public final class GlowWorld implements World {
      */
     private int maxBuildHeight;
 
-    private Set<GlowChunk.Key> activeChunksSet = new HashSet<GlowChunk.Key>();
+    private Set<GlowChunk.Key> activeChunksSet = new HashSet<>();
 
     /**
      * Creates a new world from the options in the given WorldCreator.
@@ -286,7 +286,6 @@ public final class GlowWorld implements World {
         keepSpawnLoaded = server.keepSpawnLoaded();
         difficulty = server.getDifficulty();
         maxBuildHeight = server.getMaxBuildHeight();
-
         // read in world data
         WorldFinalValues values = null;
         try {
@@ -313,10 +312,7 @@ public final class GlowWorld implements World {
             server.getLogger().log(Level.SEVERE, "Error reading structure data for world " + getName(), e);
         }
 
-        // begin loading spawn area
-        spawnChunkLock = newChunkLock("spawn");
         server.addWorld(this);
-        server.getLogger().info("Preparing spawn for " + name + "...");
         EventFactory.callEvent(new WorldInitEvent(this));
 
         // determine the spawn location if we need to
@@ -337,32 +333,28 @@ public final class GlowWorld implements World {
                 setSpawnLocation(spawnX, getHighestBlockYAt(spawnX, spawnZ), spawnZ);
             }
         }
-
-        // load up chunks around the spawn location
-        spawnChunkLock.clear();
+        
         if (keepSpawnLoaded) {
+            // begin loading spawn area
+            spawnChunkLock = newChunkLock("spawn");
+            // load up chunks around the spawn location
+            spawnChunkLock.clear();
             int centerX = spawnLocation.getBlockX() >> 4;
             int centerZ = spawnLocation.getBlockZ() >> 4;
             int radius = 4 * server.getViewDistance() / 3;
 
-            long loadTime = System.currentTimeMillis();
-
-            int total = (radius * 2 + 1) * (radius * 2 + 1), current = 0;
             for (int x = centerX - radius; x <= centerX + radius; ++x) {
                 for (int z = centerZ - radius; z <= centerZ + radius; ++z) {
-                    ++current;
-                    loadChunk(x, z);
-                    spawnChunkLock.acquire(new GlowChunk.Key(x, z));
-
-                    if (System.currentTimeMillis() >= loadTime + 1000) {
-                        int progress = 100 * current / total;
-                        GlowServer.logger.info("Preparing spawn for " + name + ": " + progress + "%");
-                        loadTime = System.currentTimeMillis();
-                    }
+                    getServer().chunksLoader.addChunk(getChunkAt(x, z));
                 }
             }
+            getServer().chunksLoader.worldLoad.countDown();
+        } else {
+            spawnChunkLock = null;
+            getChunkManager().unloadOldChunks();
         }
-        server.getLogger().info("Preparing spawn for " + name + ": done");
+        server.getLogger().info("Loaded world: " + name);
+
         EventFactory.callEvent(new WorldLoadEvent(this));
     }
 
