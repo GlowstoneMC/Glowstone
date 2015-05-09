@@ -35,7 +35,8 @@ public final class LoginStartHandler implements MessageHandler<GlowSession, Logi
                 UUID uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8));
                 session.setPlayer(new PlayerProfile(name, uuid));
             } else {
-                session.setPlayer(proxy.getProfile(name));
+                PlayerProfile profile = proxy.getProfile();
+                session.setPlayer(profile == null ? proxy.getProfile(name) : profile);
             }
         }
     }
