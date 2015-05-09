@@ -21,10 +21,6 @@ import net.glowstone.net.message.play.entity.EntityStatusMessage;
 import net.glowstone.net.message.play.player.ServerDifficultyMessage;
 import net.glowstone.util.BlockStateDelegate;
 import net.glowstone.util.GameRuleManager;
-import net.glowstone.io.ScoreboardIoService;
-import net.glowstone.io.WorldMetadataService.WorldFinalValues;
-import net.glowstone.io.WorldStorageProvider;
-import net.glowstone.io.anvil.AnvilWorldStorageProvider;
 
 import org.bukkit.*;
 import org.bukkit.block.Biome;
