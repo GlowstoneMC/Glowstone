@@ -113,7 +113,7 @@ public class PlayProtocolTest extends BaseProtocolTest {
             new StateChangeMessage(1, 2f),
             new StateChangeMessage(StateChangeMessage.Reason.GAMEMODE, 2f),
             //Statistic
-            new TitleMessage(TitleMessage.Action.TITLE, "Title"),
+            new TitleMessage(TitleMessage.Action.TITLE, new TextMessage("Title")),
             new TitleMessage(TitleMessage.Action.TIMES, 1, 3, 4),
             new TitleMessage(TitleMessage.Action.RESET),
             //new UserListHeaderFooterMessage(new TextMessage("head"), new TextMessage("foot")),

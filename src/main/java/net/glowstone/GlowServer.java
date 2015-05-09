@@ -9,6 +9,7 @@ import net.glowstone.block.BuiltinMaterialValueManager;
 import net.glowstone.block.MaterialValueManager;
 import net.glowstone.command.ColorCommand;
 import net.glowstone.command.TellrawCommand;
+import net.glowstone.command.TitleCommand;
 import net.glowstone.constants.GlowEnchantment;
 import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.EntityIdManager;
@@ -693,6 +694,7 @@ public final class GlowServer implements Server {
         commandMap.clearCommands();
         commandMap.register("glowstone", new ColorCommand());
         commandMap.register("glowstone", new TellrawCommand());
+        commandMap.register("glowstone", new TitleCommand());
 
         File folder = new File(config.getString(ServerConfig.Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {
