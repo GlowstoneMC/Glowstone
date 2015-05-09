@@ -54,6 +54,7 @@ public class PlayProtocolTest extends BaseProtocolTest {
             new SpectateMessage(UUID.randomUUID()),
             new ResourcePackStatusMessage("glowstonehash", 1),
             new JoinGameMessage(1, 2, 3, 4, 5, "normal", true),
+            new ChatMessage(ProtocolTestUtils.getTextMessage(), 2),
             new ChatMessage(ProtocolTestUtils.getTextMessage(), 1),
             new ChatMessage(ProtocolTestUtils.getJson()),
             new ChatMessage("glowstone"),
