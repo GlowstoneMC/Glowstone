@@ -73,7 +73,7 @@ public class NbtScoreboardIoWriter {
             CompoundTag teamNbt = new CompoundTag();
             teamNbt.putByte("AllowFriendlyFire", team.allowFriendlyFire() ? 1 : 0);
             teamNbt.putByte("SeeFriendlyInvisibles", team.canSeeFriendlyInvisibles() ? 1 : 0);
-            teamNbt.putString("NameTagVisibility", team.getNametagVisibility().getValue());
+            teamNbt.putString("NameTagVisibility", team.getNameTagVisibility().getValue());
             teamNbt.putString("DeathMessageVisibility", team.getDeathMessageVisibility().getValue());
             teamNbt.putString("DisplayName", team.getDisplayName());
             teamNbt.putString("Name", team.getName());

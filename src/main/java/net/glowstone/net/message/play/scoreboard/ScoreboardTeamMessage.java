@@ -2,7 +2,7 @@ package net.glowstone.net.message.play.scoreboard;
 
 import com.flowpowered.networking.Message;
 import org.bukkit.ChatColor;
-import org.bukkit.scoreboard.NametagVisibility;
+import org.bukkit.scoreboard.NameTagVisibility;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public final class ScoreboardTeamMessage implements Message {
     private final String prefix;
     private final String suffix;
     private final int flags;
-    private final NametagVisibility nametagVisibility;
+    private final NameTagVisibility nametagVisibility;
     private final ChatColor color;
 
     // CREATE, ADD_, and REMOVE_PLAYERS only
@@ -33,7 +33,7 @@ public final class ScoreboardTeamMessage implements Message {
         REMOVE_PLAYERS
     }
 
-    private ScoreboardTeamMessage(String teamName, Action action, String displayName, String prefix, String suffix, boolean friendlyFire, boolean seeInvisible, NametagVisibility nametagVisibility, ChatColor color, List<String> entries) {
+    private ScoreboardTeamMessage(String teamName, Action action, String displayName, String prefix, String suffix, boolean friendlyFire, boolean seeInvisible, NameTagVisibility nametagVisibility, ChatColor color, List<String> entries) {
         this.teamName = teamName;
         this.action = action;
         this.displayName = displayName;
@@ -45,7 +45,7 @@ public final class ScoreboardTeamMessage implements Message {
         this.entries = entries;
     }
 
-    public static ScoreboardTeamMessage create(String teamName, String displayName, String prefix, String suffix, boolean friendlyFire, boolean seeInvisible, NametagVisibility nametagVisibility, ChatColor color, List<String> players) {
+    public static ScoreboardTeamMessage create(String teamName, String displayName, String prefix, String suffix, boolean friendlyFire, boolean seeInvisible, NameTagVisibility nametagVisibility, ChatColor color, List<String> players) {
         return new ScoreboardTeamMessage(teamName, Action.CREATE, displayName, prefix, suffix, friendlyFire, seeInvisible, nametagVisibility, color, players);
     }
 
@@ -53,7 +53,7 @@ public final class ScoreboardTeamMessage implements Message {
         return new ScoreboardTeamMessage(teamName, Action.REMOVE, null, null, null, false, false, null, ChatColor.RESET, null);
     }
 
-    public static ScoreboardTeamMessage update(String teamName, String displayName, String prefix, String suffix, boolean friendlyFire, boolean seeInvisible, NametagVisibility nametagVisibility, ChatColor color) {
+    public static ScoreboardTeamMessage update(String teamName, String displayName, String prefix, String suffix, boolean friendlyFire, boolean seeInvisible, NameTagVisibility nametagVisibility, ChatColor color) {
         return new ScoreboardTeamMessage(teamName, Action.UPDATE, displayName, prefix, suffix, friendlyFire, seeInvisible, nametagVisibility, color, null);
     }
 

@@ -9,7 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.NametagVisibility;
+import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Score;
 
 import java.io.*;
@@ -93,8 +93,8 @@ public class NbtScoreboardIoReader {
     private static void registerTeam(CompoundTag data, GlowScoreboard scoreboard) {
         boolean allowFriendlyFire = data.getByte("AllowFriendlyFire") == 1 ? true : false;
         boolean seeFriendlyInvisibles = data.getByte("SeeFriendlyInvisibles") == 1 ? true : false;
-        NametagVisibility nameTagVisibility = NametagVisibility.get(data.getString("NameTagVisibility"));
-        NametagVisibility deathMessageVisibility = NametagVisibility.get(data.getString("NameTagVisibility"));
+        NameTagVisibility nameTagVisibility = NameTagVisibility.get(data.getString("NameTagVisibility"));
+        NameTagVisibility deathMessageVisibility = NameTagVisibility.get(data.getString("NameTagVisibility"));
         String displayName = data.getString("DisplayName");
         String name = data.getString("Name");
         String prefix = data.getString("Prefix");
@@ -113,7 +113,7 @@ public class NbtScoreboardIoReader {
         team.setSuffix(suffix);
         team.setAllowFriendlyFire(allowFriendlyFire);
         team.setCanSeeFriendlyInvisibles(seeFriendlyInvisibles);
-        team.setNametagVisibility(nameTagVisibility);
+        team.setNameTagVisibility(nameTagVisibility);
         team.setDeathMessageVisibility(deathMessageVisibility);
         team.setColor(teamColor);
 

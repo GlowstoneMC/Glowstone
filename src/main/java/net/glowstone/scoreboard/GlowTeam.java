@@ -6,7 +6,7 @@ import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.scoreboard.NametagVisibility;
+import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -29,8 +29,8 @@ public final class GlowTeam implements Team {
     private String displayName;
     private String prefix = "";
     private String suffix = "";
-    private NametagVisibility nameTagVisibility = NametagVisibility.ALWAYS;
-    private NametagVisibility deathMessageVisibility = NametagVisibility.ALWAYS;
+    private NameTagVisibility nameTagVisibility = NameTagVisibility.ALWAYS;
+    private NameTagVisibility deathMessageVisibility = NameTagVisibility.ALWAYS;
     private ChatColor color = ChatColor.RESET;
     private boolean friendlyFire = false;
     private boolean seeInvisible = true;
@@ -135,22 +135,22 @@ public final class GlowTeam implements Team {
         update();
     }
 
-    public NametagVisibility getNametagVisibility() throws IllegalStateException {
+    public NameTagVisibility getNameTagVisibility() throws IllegalStateException {
         checkValid();
         return nameTagVisibility;
     }
 
-    public void setNametagVisibility(NametagVisibility visibility) throws IllegalStateException {
+    public void setNameTagVisibility(NameTagVisibility visibility) throws IllegalStateException {
         checkValid();
         nameTagVisibility = visibility;
         update();
     }
 
-    public NametagVisibility getDeathMessageVisibility() throws IllegalStateException {
+    public NameTagVisibility getDeathMessageVisibility() throws IllegalStateException {
         return deathMessageVisibility;
     }
 
-    public void setDeathMessageVisibility(NametagVisibility deathMessageVisibility) throws IllegalStateException, IllegalArgumentException {
+    public void setDeathMessageVisibility(NameTagVisibility deathMessageVisibility) throws IllegalStateException, IllegalArgumentException {
         Validate.notNull(deathMessageVisibility, "NameTagVisibility cannot be null!");
         checkValid();
         this.deathMessageVisibility = deathMessageVisibility;
