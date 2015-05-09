@@ -43,15 +43,21 @@ final class PlayerDataFetcher {
         try {
             URL url = new URL(PROFILE_URL + UuidUtils.toFlatString(uuid) + PROFILE_URL_SUFFIX);
             URLConnection conn = url.openConnection();
+            //potentially blocking
             is = conn.getInputStream();
         } catch (IOException e) {
-            GlowServer.logger.log(Level.WARNING, "Failed to look up profile", e);
+            GlowServer.logger.log(Level.WARNING, "Failed to look up profile");
             return null;
         }
 
         JSONObject json;
         try {
-            json = (JSONObject) new JSONParser().parse(new InputStreamReader(is));
+            InputStreamReader isr = new InputStreamReader(is);
+            if (isr.ready()) {
+                json = (JSONObject) new JSONParser().parse(isr);
+            } else {
+                return new PlayerProfile(null, uuid);
+            }
         } catch (ParseException e) {
             GlowServer.logger.log(Level.WARNING, "Failed to parse profile response", e);
             return null;

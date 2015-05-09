@@ -855,7 +855,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public boolean isWhitelisted() {
-        return server.getWhitelist().containsUUID(getUniqueId());
+        return server.getWhitelist().containsProfile(new PlayerProfile(getName(), getUniqueId()));
     }
 
     @Override
@@ -863,7 +863,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         if (value) {
             server.getWhitelist().add(this);
         } else {
-            server.getWhitelist().remove(getUniqueId());
+            server.getWhitelist().remove(new PlayerProfile(getName(), getUniqueId()));
         }
     }
 
@@ -900,7 +900,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         if (value) {
             getServer().getOpsList().add(this);
         } else {
-            getServer().getOpsList().remove(getUniqueId());
+            getServer().getOpsList().remove(new PlayerProfile(getName(), getUniqueId()));
         }
         permissions.recalculatePermissions();
     }

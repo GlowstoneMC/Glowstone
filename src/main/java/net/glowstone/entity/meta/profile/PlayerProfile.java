@@ -44,9 +44,14 @@ public final class PlayerProfile {
      * @throws IllegalArgumentException if any arguments are null.
      */
     public PlayerProfile(String name, UUID uuid, List<PlayerProperty> properties) {
-        Validate.notNull(name, "name must not be null");
         Validate.notNull(uuid, "uuid must not be null");
         Validate.notNull(properties, "properties must not be null");
+
+        if (null == name) {
+            PlayerProfile profile = ProfileCache.getProfile(uuid);
+            name = profile != null ? profile.getName() : null;
+        }
+
         this.name = name;
         this.uniqueId = uuid;
         this.properties = properties;
