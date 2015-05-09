@@ -37,6 +37,8 @@ import net.glowstone.net.message.play.player.PlayerAbilitiesMessage;
 import net.glowstone.net.message.play.player.ResourcePackSendMessage;
 import net.glowstone.net.message.play.player.UseBedMessage;
 import net.glowstone.net.protocol.ProtocolType;
+import net.glowstone.scoreboard.GlowScoreboard;
+import net.glowstone.scoreboard.GlowTeam;
 import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
@@ -268,6 +270,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     private float walkSpeed = 0.2f;
 
     /**
+     * The scoreboard the player is currently subscribed to.
+     */
+    private GlowScoreboard scoreboard;
+
+    /**
      * Creates a new player and adds it to the world.
      *
      * @param session The player's session.
@@ -340,6 +347,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         sendSkyDarkness();
         sendAbilities();
 
+        scoreboard = server.getScoreboardManager().getMainScoreboard();
+        scoreboard.subscribe(this);
+
+        invMonitor = new InventoryMonitor(getOpenInventory());
+        updateInventory(); // send inventory contents
+
         // send initial location
         session.send(new PositionRotationMessage(location));
 
@@ -405,6 +418,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         getInventory().getCraftingInventory().removeViewer(this);
         permissions.clearPermissions();
         getServer().setPlayerOnline(this, false);
+
+        if (scoreboard != null) {
+            scoreboard.unsubscribe(this);
+            scoreboard = null;
+        }
         super.remove();
     }
 
@@ -887,7 +905,14 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public String getDisplayName() {
-        return displayName == null ? getName() : displayName;
+        if (displayName != null) {
+            return displayName;
+        }
+        GlowTeam team = (GlowTeam) getScoreboard().getPlayerTeam(this);
+        if (team != null) {
+            return team.getPlayerDisplayName(getName());
+        }
+        return getName();
     }
 
     @Override
@@ -2031,12 +2056,21 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public Scoreboard getScoreboard() {
-        return null;
+        return scoreboard;
     }
 
     @Override
     public void setScoreboard(Scoreboard scoreboard) throws IllegalArgumentException, IllegalStateException {
-
+        Validate.notNull(scoreboard, "Scoreboard must not be null");
+        if (!(scoreboard instanceof GlowScoreboard)) {
+            throw new IllegalArgumentException("Scoreboard must be GlowScoreboard");
+        }
+        if (this.scoreboard == null) {
+            throw new IllegalStateException("Player has not loaded or is already offline");
+        }
+        this.scoreboard.unsubscribe(this);
+        this.scoreboard = (GlowScoreboard) scoreboard;
+        this.scoreboard.subscribe(this);
     }
 
     ////////////////////////////////////////////////////////////////////////////

@@ -21,6 +21,10 @@ import net.glowstone.net.message.play.entity.EntityStatusMessage;
 import net.glowstone.net.message.play.player.ServerDifficultyMessage;
 import net.glowstone.util.BlockStateDelegate;
 import net.glowstone.util.GameRuleManager;
+import net.glowstone.io.ScoreboardIoService;
+import net.glowstone.io.WorldMetadataService.WorldFinalValues;
+import net.glowstone.io.WorldStorageProvider;
+import net.glowstone.io.anvil.AnvilWorldStorageProvider;
 
 import org.bukkit.*;
 import org.bukkit.block.Biome;
@@ -1526,6 +1530,7 @@ public final class GlowWorld implements World {
             public void run() {
                 try {
                     storageProvider.getMetadataService().writeWorldData();
+                    storageProvider.getScoreboardIoService().save();
                 } catch (IOException e) {
                     server.getLogger().severe("Could not save metadata for world: " + getName());
                     e.printStackTrace();
@@ -1562,6 +1567,7 @@ public final class GlowWorld implements World {
         EventFactory.callEvent(new WorldUnloadEvent(this));
         try {
             storageProvider.getChunkIoService().unload();
+            storageProvider.getScoreboardIoService().unload();
         } catch (IOException e) {
             return false;
         }

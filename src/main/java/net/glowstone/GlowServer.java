@@ -20,6 +20,7 @@ import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.inventory.crafting.CraftingManager;
 import net.glowstone.io.PlayerDataService;
+import net.glowstone.io.ScoreboardIoService;
 import net.glowstone.map.GlowMapView;
 import net.glowstone.net.GlowNetworkServer;
 import net.glowstone.net.SessionRegistry;
@@ -27,6 +28,7 @@ import net.glowstone.net.query.QueryServer;
 import net.glowstone.net.rcon.RconServer;
 import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.scheduler.WorldScheduler;
+import net.glowstone.scoreboard.GlowScoreboardManager;
 import net.glowstone.util.*;
 import net.glowstone.util.bans.GlowBanList;
 import net.glowstone.util.bans.UuidListFile;
@@ -48,7 +50,6 @@ import org.bukkit.plugin.*;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.StandardMessenger;
-import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.util.CachedServerIcon;
 import org.bukkit.util.permissions.DefaultPermissions;
 
@@ -278,7 +279,7 @@ public final class GlowServer implements Server {
     /**
      * The scoreboard manager for the server.
      */
-    private final ScoreboardManager scoreboardManager = null;
+    private final GlowScoreboardManager scoreboardManager =   new GlowScoreboardManager(this);
 
     /**
      * The crafting manager for this server.
@@ -914,6 +915,14 @@ public final class GlowServer implements Server {
     }
 
     /**
+     * Returns the scoreboard I/O service attached to the first world.
+     * @return The server's scoreboard I/O service
+     */
+    public ScoreboardIoService getScoreboardIoService() {
+        return worlds.getWorlds().get(0).getStorage().getScoreboardIoService();
+    }
+
+    /**
      * Get the threshold to use for network compression defined in the config.
      * @return The compression threshold, or -1 for no compression.
      */
@@ -1061,7 +1070,7 @@ public final class GlowServer implements Server {
     }
 
     @Override
-    public ScoreboardManager getScoreboardManager() {
+    public GlowScoreboardManager getScoreboardManager() {
         return scoreboardManager;
     }
 

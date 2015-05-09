@@ -45,4 +45,5 @@ public interface WorldStorageProvider {
 
     StructureDataService getStructureDataService();
 
+    ScoreboardIoService getScoreboardIoService();
 }
