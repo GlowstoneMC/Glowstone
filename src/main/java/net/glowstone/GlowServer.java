@@ -9,10 +9,12 @@ import net.glowstone.block.BuiltinMaterialValueManager;
 import net.glowstone.block.MaterialValueManager;
 import net.glowstone.command.ColorCommand;
 import net.glowstone.command.TellrawCommand;
+import net.glowstone.command.TitleCommand;
 import net.glowstone.constants.GlowEnchantment;
 import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.EntityIdManager;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.generator.CakeTownGenerator;
 import net.glowstone.generator.NetherGenerator;
 import net.glowstone.generator.OverworldGenerator;
@@ -20,6 +22,7 @@ import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.inventory.crafting.CraftingManager;
 import net.glowstone.io.PlayerDataService;
+import net.glowstone.io.ScoreboardIoService;
 import net.glowstone.map.GlowMapView;
 import net.glowstone.net.GlowNetworkServer;
 import net.glowstone.net.SessionRegistry;
@@ -27,6 +30,7 @@ import net.glowstone.net.query.QueryServer;
 import net.glowstone.net.rcon.RconServer;
 import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.scheduler.WorldScheduler;
+import net.glowstone.scoreboard.GlowScoreboardManager;
 import net.glowstone.util.*;
 import net.glowstone.util.bans.GlowBanList;
 import net.glowstone.util.bans.UuidListFile;
@@ -48,7 +52,6 @@ import org.bukkit.plugin.*;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.StandardMessenger;
-import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.util.CachedServerIcon;
 import org.bukkit.util.permissions.DefaultPermissions;
 
@@ -278,7 +281,7 @@ public final class GlowServer implements Server {
     /**
      * The scoreboard manager for the server.
      */
-    private final ScoreboardManager scoreboardManager = null;
+    private final GlowScoreboardManager scoreboardManager =   new GlowScoreboardManager(this);
 
     /**
      * The crafting manager for this server.
@@ -692,6 +695,7 @@ public final class GlowServer implements Server {
         commandMap.clearCommands();
         commandMap.register("glowstone", new ColorCommand());
         commandMap.register("glowstone", new TellrawCommand());
+        commandMap.register("glowstone", new TitleCommand());
 
         File folder = new File(config.getString(ServerConfig.Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {
@@ -914,6 +918,14 @@ public final class GlowServer implements Server {
     }
 
     /**
+     * Returns the scoreboard I/O service attached to the first world.
+     * @return The server's scoreboard I/O service
+     */
+    public ScoreboardIoService getScoreboardIoService() {
+        return worlds.getWorlds().get(0).getStorage().getScoreboardIoService();
+    }
+
+    /**
      * Get the threshold to use for network compression defined in the config.
      * @return The compression threshold, or -1 for no compression.
      */
@@ -1061,7 +1073,7 @@ public final class GlowServer implements Server {
     }
 
     @Override
-    public ScoreboardManager getScoreboardManager() {
+    public GlowScoreboardManager getScoreboardManager() {
         return scoreboardManager;
     }
 
@@ -1231,6 +1243,11 @@ public final class GlowServer implements Server {
         return result;
     }
 
+    public OfflinePlayer getOfflinePlayer(PlayerProfile profile) {
+        OfflinePlayer player = new GlowOfflinePlayer(this, profile);
+        return player;
+    }
+
     @Override
     @Deprecated
     public OfflinePlayer getOfflinePlayer(String name) {
@@ -1238,7 +1255,17 @@ public final class GlowServer implements Server {
         if (onlinePlayer != null) {
             return onlinePlayer;
         }
-        return new GlowOfflinePlayer(this, name);
+        OfflinePlayer result = getPlayerExact(name);
+        if (result == null) {
+            //probably blocking (same player once per minute)
+            PlayerProfile profile = PlayerProfile.getProfile(name);
+            if (profile == null) {
+                result = getOfflinePlayer(new PlayerProfile(name, UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes())));
+            } else {
+                result = getOfflinePlayer(profile);
+            }
+        }
+        return result;
     }
 
     @Override
@@ -1247,7 +1274,11 @@ public final class GlowServer implements Server {
         if (onlinePlayer != null) {
             return onlinePlayer;
         }
-        return new GlowOfflinePlayer(this, uuid);
+        OfflinePlayer result = getPlayer(uuid);
+        if (result == null) {
+            result = new GlowOfflinePlayer(this, uuid);
+        }
+        return result;
     }
 
     @Override
@@ -1277,8 +1308,8 @@ public final class GlowServer implements Server {
     @Override
     public Set<OfflinePlayer> getWhitelistedPlayers() {
         Set<OfflinePlayer> players = new HashSet<>();
-        for (UUID uuid : whitelist.getUUIDs()) {
-            players.add(getOfflinePlayer(uuid));
+        for (PlayerProfile profile : whitelist.getProfiles()) {
+            players.add(getOfflinePlayer(profile));
         }
         return players;
     }

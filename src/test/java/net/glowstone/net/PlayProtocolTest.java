@@ -54,6 +54,7 @@ public class PlayProtocolTest extends BaseProtocolTest {
             new SpectateMessage(UUID.randomUUID()),
             new ResourcePackStatusMessage("glowstonehash", 1),
             new JoinGameMessage(1, 2, 3, 4, 5, "normal", true),
+            new ChatMessage(ProtocolTestUtils.getTextMessage(), 2),
             new ChatMessage(ProtocolTestUtils.getTextMessage(), 1),
             new ChatMessage(ProtocolTestUtils.getJson()),
             new ChatMessage("glowstone"),
@@ -113,7 +114,7 @@ public class PlayProtocolTest extends BaseProtocolTest {
             new StateChangeMessage(1, 2f),
             new StateChangeMessage(StateChangeMessage.Reason.GAMEMODE, 2f),
             //Statistic
-            new TitleMessage(TitleMessage.Action.TITLE, "Title"),
+            new TitleMessage(TitleMessage.Action.TITLE, new TextMessage("Title")),
             new TitleMessage(TitleMessage.Action.TIMES, 1, 3, 4),
             new TitleMessage(TitleMessage.Action.RESET),
             //new UserListHeaderFooterMessage(new TextMessage("head"), new TextMessage("foot")),

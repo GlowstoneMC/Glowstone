@@ -1526,6 +1526,7 @@ public final class GlowWorld implements World {
             public void run() {
                 try {
                     storageProvider.getMetadataService().writeWorldData();
+                    storageProvider.getScoreboardIoService().save();
                 } catch (IOException e) {
                     server.getLogger().severe("Could not save metadata for world: " + getName());
                     e.printStackTrace();
@@ -1562,6 +1563,7 @@ public final class GlowWorld implements World {
         EventFactory.callEvent(new WorldUnloadEvent(this));
         try {
             storageProvider.getChunkIoService().unload();
+            storageProvider.getScoreboardIoService().unload();
         } catch (IOException e) {
             return false;
         }

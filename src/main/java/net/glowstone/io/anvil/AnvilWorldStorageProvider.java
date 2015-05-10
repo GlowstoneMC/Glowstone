@@ -8,6 +8,8 @@ import net.glowstone.io.WorldMetadataService;
 import net.glowstone.io.WorldStorageProvider;
 import net.glowstone.io.nbt.NbtPlayerDataService;
 import net.glowstone.io.nbt.NbtStructureDataService;
+import net.glowstone.io.*;
+import net.glowstone.io.nbt.NbtScoreboardIoService;
 import net.glowstone.io.nbt.NbtWorldMetadataService;
 
 import java.io.File;
@@ -23,6 +25,7 @@ public class AnvilWorldStorageProvider implements WorldStorageProvider {
     private NbtWorldMetadataService meta;
     private StructureDataService structures;
     private PlayerDataService players;
+    private ScoreboardIoService scoreboard;
 
     public AnvilWorldStorageProvider(File dir) {
         this.dir = dir;
@@ -64,5 +67,13 @@ public class AnvilWorldStorageProvider implements WorldStorageProvider {
             players = new NbtPlayerDataService(world.getServer(), new File(dir, "playerdata"));
         }
         return players;
+    }
+
+    @Override
+    public ScoreboardIoService getScoreboardIoService() {
+        if (scoreboard == null) {
+            this.scoreboard = new NbtScoreboardIoService(world.getServer(), new File(dir, "data"));
+        }
+        return scoreboard;
     }
 }
