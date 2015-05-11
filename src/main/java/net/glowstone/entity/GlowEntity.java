@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+// Fall Damage code will be added here probably.
 /**
  * Represents some entity in the world such as an item on the floor or a player.
  * @author Graham Edgecombe
