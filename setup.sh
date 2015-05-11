@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 # Setup script for Glowstone++
 cd Glowkit
 mvn install
