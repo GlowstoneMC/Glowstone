@@ -231,7 +231,7 @@ public abstract class BlockLiquid extends BlockType {
     }
     
     @Override
-    public void canTickRandomly() {
+    public boolean canTickRandomly() {
         return true;
     }
 
