@@ -224,10 +224,7 @@ public abstract class BlockLiquid extends BlockType {
     
     @Override
     public void updateBlock(GlowBlock block) {
-        if (isStationary(block.getType())) {
-            block.setType(getOpposite(block.getType()), block.getData(), false);
-        }
-        block.getWorld().requestPulse(block, isWater(block.getType()) ? TICK_RATE_WATER : TICK_RATE_LAVA);
+        updatePhysics(block);
     }
     
     @Override
