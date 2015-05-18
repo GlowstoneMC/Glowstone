@@ -19,17 +19,17 @@ Building from source
 --------------------
 
 1.  After installing the
-[Java Development Kit](http://oracle.com/technetwork/java/javase/downloads) and
+[Oracle JDK](http://oracle.com/technetwork/java/javase/downloads) or [OpenJDK](http://openjdk.java.net/), and
 [Maven](https://maven.apache.org), checkout the source:
 
-```
+```sh
 git clone --recursive https://github.com/GlowstonePlusPlus/GlowstonePlusPlus
 cd GlowstonePlusPlus
 ```
 
-2. Build everything:
+2. Build:
 
-```
+```sh
 setup.sh
 ```
 
