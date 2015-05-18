@@ -26,7 +26,7 @@ git clone --recursive https://github.com/GlowstonePlusPlus/GlowstonePlusPlus
 cd GlowstonePlusPlus
 ```
 
-###2. Build:
+###2. Build
 
 ```sh
 setup.sh
