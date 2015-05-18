@@ -220,7 +220,16 @@ public abstract class BlockLiquid extends BlockType {
             block.setType(getOpposite(block.getType()), block.getData(), false);
         }
         block.getWorld().requestPulse(block, isWater(block.getType()) ? TICK_RATE_WATER : TICK_RATE_LAVA);
+    }
     
+    @Override
+    public void updateBlock(GlowBlock block) {
+        updatePhysics(block);
+    }
+    
+    @Override
+    public boolean canTickRandomly() {
+        return true;
     }
 
     private static boolean isStationary(Material material) {
