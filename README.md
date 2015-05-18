@@ -27,21 +27,10 @@ git clone --recursive https://github.com/GlowstonePlusPlus/GlowstonePlusPlus
 cd GlowstonePlusPlus
 ```
 
-2. Build and install the APIs:
+2. Build everything:
 
 ```
-cd Glowkit
-mvn install
-cd ..
-cd SpongeAPI
-./gradlew
-cd ..
-```
-
-3. Build the server:
-
-```
-mvn package
+setup.sh
 ```
 
 The final jar will be placed in `target/` named `glowstone++-1.8.3-SNAPSHOT.jar`.
