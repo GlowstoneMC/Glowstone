@@ -1,6 +1,6 @@
 [submodule "Glowkit"]
 	path = Glowkit
-	url = https://github.com/deathcap/Glowkit
+	url = https://github.com/GlowstonePlusPlus/Glowkit
 	branch = bukkit+glowkit
 [submodule "SpongeAPI"]
 	path = SpongeAPI

@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.deathcap.glowstone</groupId>
     <artifactId>glowstone</artifactId>
-    <version>1.8.3-SNAPSHOT</version>
+    <version>1.8.4-SNAPSHOT</version>
     <name>Glowstone</name>
     <url>https://github.com/deathcap/GlowstonePlusPlus</url>
     
@@ -15,7 +15,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <bukkit.version>1.8.3-R0.1-SNAPSHOT</bukkit.version>
+        <bukkit.version>1.8.4-R0.1-SNAPSHOT</bukkit.version>
     </properties>
 
     <parent>
