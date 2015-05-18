@@ -17,8 +17,8 @@ Currently the major changes from Glowstone include:
 ##Building
 
 
-###1.  After installing the
-[Oracle JDK](http://oracle.com/technetwork/java/javase/downloads) or [OpenJDK](http://openjdk.java.net/), and
+###1. Setup
+After installing [Oracle JDK](http://oracle.com/technetwork/java/javase/downloads) or [OpenJDK](http://openjdk.java.net/), and
 [Maven](https://maven.apache.org), checkout the source:
 
 ```sh
