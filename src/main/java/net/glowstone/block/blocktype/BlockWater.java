@@ -24,11 +24,6 @@ public class BlockWater extends BlockLiquid {
     }
 
     @Override
-    public boolean canTickRandomly() {
-        return true;
-    }
-
-    @Override
     public void updateBlock(GlowBlock block) {
         super.updateBlock(block);
         if (block.getLightFromBlocks() <= 11 - block.getMaterialValues().getLightOpacity()) {
