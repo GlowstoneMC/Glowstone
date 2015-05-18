@@ -23,6 +23,8 @@ import org.bukkit.plugin.Plugin;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+import net.glowstone.block.blocktype.BlockRedstone;
+import net.glowstone.block.blocktype.BlockRedstoneTorch;
 
 /**
  * Represents a single block in a world.
@@ -36,6 +38,12 @@ public final class GlowBlock implements Block {
             BlockFace.NORTH_WEST, BlockFace.NORTH, BlockFace.NORTH_EAST,
             BlockFace.EAST, BlockFace.SELF, BlockFace.WEST,
             BlockFace.SOUTH_WEST, BlockFace.SOUTH, BlockFace.SOUTH_EAST};
+    
+    /**
+     * The BlockFaces of all directly adjacent.
+     */
+    private static final BlockFace[] ADJACENT = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
+    
 
     /**
      * The metadata store class for blocks.
@@ -317,15 +325,60 @@ public final class GlowBlock implements Block {
 
     ////////////////////////////////////////////////////////////////////////////
     // Redstone
-
     @Override
     public boolean isBlockPowered() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // Strong powered?
+
+        if (!getType().isSolid()) {
+            return false;
+        }
+
+        if (getType() == Material.REDSTONE_BLOCK) {
+            return true;
+        }
+
+        for (BlockFace face : ADJACENT) {
+            GlowBlock target = getRelative(face);
+            switch (target.getType()) {
+                case REDSTONE_TORCH_ON:
+                    if (face == BlockFace.DOWN) {
+                        return true;
+                    }
+                    break;
+                case REDSTONE_WIRE:
+                    if (target.getData() > 0 && BlockRedstone.calculateConnections(target).contains(target.getFace(this))) {
+                        return true;
+                    }
+                    break;
+            }
+        }
+
+        return false;
     }
 
     @Override
     public boolean isBlockIndirectlyPowered() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // Is a nearby block directly powered?
+        for (BlockFace face : ADJACENT) {
+            GlowBlock block = getRelative(face);
+            if (block.isBlockPowered()) {
+                return true;
+            }
+
+            switch (block.getType()) {
+                case REDSTONE_TORCH_ON:
+                    if (face != BlockRedstoneTorch.getAttachedBlockFace(block).getOppositeFace()) {
+                        return true;
+                    }
+                    break;
+                case REDSTONE_WIRE:
+                    if (block.getData() > 0 && BlockRedstone.calculateConnections(block).contains(block.getFace(this))) {
+                        return true;
+                    }
+                    break;
+            }
+        }
+        return false;
     }
 
     @Override

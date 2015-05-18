@@ -199,13 +199,14 @@ public final class ItemTable {
         reg(Material.SPONGE, new BlockSponge());
         reg(Material.TNT, new BlockTNT());
         reg(Material.DOUBLE_PLANT, new BlockDoublePlant());
-        reg(Material.REDSTONE_WIRE, new BlockDirectDrops(Material.REDSTONE));
-        reg(Material.REDSTONE_LAMP_ON, new BlockDirectDrops(Material.REDSTONE_LAMP_OFF));
-        reg(Material.REDSTONE_TORCH_OFF, new BlockDirectDrops(Material.REDSTONE_TORCH_ON));
-        reg(Material.REDSTONE_TORCH_ON, new BlockDirectDrops(Material.REDSTONE_TORCH_ON));
         reg(Material.PUMPKIN, new BlockDirectDrops(Material.PUMPKIN));
         reg(Material.JACK_O_LANTERN, new BlockDirectDrops(Material.JACK_O_LANTERN));
         reg(Material.SEA_LANTERN, new BlockRandomDrops(Material.PRISMARINE_CRYSTALS, 2, 3));
+        reg(Material.REDSTONE_LAMP_ON, new BlockLamp());
+        reg(Material.REDSTONE_LAMP_OFF, new BlockLamp());
+        reg(Material.REDSTONE_WIRE, new BlockRedstone());
+        reg(Material.REDSTONE_TORCH_ON, new BlockRedstoneTorch());
+        reg(Material.REDSTONE_TORCH_OFF, new BlockRedstoneTorch());
 
         reg(Material.FLINT_AND_STEEL, new ItemFlintAndSteel());
         reg(Material.SIGN, new ItemSign());
