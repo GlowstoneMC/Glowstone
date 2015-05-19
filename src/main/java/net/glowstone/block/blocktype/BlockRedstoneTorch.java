@@ -57,25 +57,26 @@ public class BlockRedstoneTorch extends BlockNeedsAttached {
     @Override
     public void receivePulse(GlowBlock me) {
         boolean powered = me.getRelative(getAttachedFace(me)).isBlockPowered();
-        boolean burnout = false;
 
         // If below is powered, are we turned off?
         if (powered != (me.getType() == Material.REDSTONE_TORCH_OFF)) {
 
             // Are we burnt out?
-            if (me.getCounter() > 8) {
+            if (!powered && me.getCounter() > 8) {
                 powered = true;
-                burnout = true;
+                if (me.getCounter() == 9) {
+                    me.getWorld().playSound(me.getLocation(), Sound.FIZZ, 1, 1);
+                    me.getWorld().playEffect(me.getLocation().add(0.5, 0.75, 0.5), Effect.SMOKE, BlockFace.UP);
+                }
             }
 
             // If below is powered or burnt out, are we turned off?
             if (powered != (me.getType() == Material.REDSTONE_TORCH_OFF)) {
-                me.count(60);
-                me.setTypeIdAndData((powered ? Material.REDSTONE_TORCH_OFF : Material.REDSTONE_TORCH_ON).getId(), me.getData(), true);
-                if (burnout) {
-                    me.getWorld().playSound(me.getLocation(), Sound.FIZZ, 1, 1);
-                    me.getWorld().playEffect(me.getLocation().add(0.5, 0.75, 0.5), Effect.SMOKE, BlockFace.UP);
+                if (!powered) {
+                    me.count(60);
                 }
+                
+                me.setTypeIdAndData((powered ? Material.REDSTONE_TORCH_OFF : Material.REDSTONE_TORCH_ON).getId(), me.getData(), true);
                 return;
             }
         }

@@ -5,18 +5,21 @@ import java.util.Arrays;
 import java.util.List;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.ItemTable;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Diode;
+import org.bukkit.material.Stairs;
+import org.bukkit.material.Step;
 
 /**
  *
  * @author Sam
  */
-public class BlockRedstone extends BlockType {
+public class BlockRedstone extends BlockNeedsAttached {
 
     public BlockRedstone() {
         setDrops(new ItemStack(Material.REDSTONE));
@@ -24,7 +27,33 @@ public class BlockRedstone extends BlockType {
 
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
-        return block.getRelative(BlockFace.DOWN).getType().isOccluding();
+        if (block.getRelative(BlockFace.DOWN).getType().isSolid()) {
+            return true;
+        }
+
+        GlowBlock target = block.getRelative(BlockFace.DOWN);
+        switch (target.getType()) {
+            case WOOD_STAIRS:
+            case COBBLESTONE_STAIRS:
+            case BRICK_STAIRS:
+            case SMOOTH_STAIRS:
+            case NETHER_BRICK_STAIRS:
+            case SANDSTONE_STAIRS:
+            case SPRUCE_WOOD_STAIRS:
+            case BIRCH_WOOD_STAIRS:
+            case JUNGLE_WOOD_STAIRS:
+            case QUARTZ_STAIRS:
+            case ACACIA_STAIRS:
+            case DARK_OAK_STAIRS:
+                return ((Stairs) target.getState().getData()).isInverted();
+            case STEP:
+            case WOOD_STEP:
+                return ((Step) target.getState().getData()).isInverted();
+            case GLOWSTONE:
+                return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -50,6 +79,7 @@ public class BlockRedstone extends BlockType {
                     if (face == diode.getFacing().getOppositeFace()) {
                         if (me.getData() != 15) {
                             me.setData((byte) 15);
+                            extraUpdate(me);
                         }
                         return;
                     }
@@ -58,12 +88,14 @@ public class BlockRedstone extends BlockType {
                 case REDSTONE_TORCH_ON:
                     if (me.getData() != 15) {
                         me.setData((byte) 15);
+                        extraUpdate(me);
                     }
                     return;
                 default:
                     if (target.getType().isSolid() && target.getRelative(BlockFace.DOWN).getType() == Material.REDSTONE_TORCH_ON) {
                         if (me.getData() != 15) {
                             me.setData((byte) 15);
+                            extraUpdate(me);
                         }
                         return;
                     }
@@ -74,6 +106,7 @@ public class BlockRedstone extends BlockType {
                                     && ((Diode) target2.getState().getData()).getFacing() == target2.getFace(target)) {
                                 if (me.getData() != 15) {
                                     me.setData((byte) 15);
+                                    extraUpdate(me);
                                 }
                                 return;
                             }
@@ -111,7 +144,26 @@ public class BlockRedstone extends BlockType {
 
         if (power != me.getData()) {
             me.setData(power);
+            extraUpdate(me);
             me.getWorld().requestPulse(me, 1);
+        }
+    }
+
+    private void extraUpdate(GlowBlock block) {
+        ItemTable itemTable = ItemTable.instance();
+        for (BlockFace face : calculateConnections(block)) {
+            GlowBlock target = block.getRelative(face);
+            if (target.getType().isSolid()) {
+                for (BlockFace face2 : ADJACENT) {
+                    GlowBlock target2 = target.getRelative(face2);
+                    if (target2.getFace(block) == null) {
+                        BlockType notifyType = itemTable.getBlock(target2.getTypeId());
+                        if (notifyType != null) {
+                            notifyType.onNearBlockChanged(target2, BlockFace.SELF, block, block.getType(), block.getData(), block.getType(), block.getData());
+                        }
+                    }
+                }
+            }
         }
     }
 
