@@ -1,5 +1,6 @@
 package net.glowstone.block;
 
+import java.util.ArrayList;
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
@@ -21,10 +22,14 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import net.glowstone.block.blocktype.BlockRedstone;
 import net.glowstone.block.blocktype.BlockRedstoneTorch;
+import org.bukkit.material.Diode;
 
 /**
  * Represents a single block in a world.
@@ -332,14 +337,19 @@ public final class GlowBlock implements Block {
         if (!getType().isSolid()) {
             return false;
         }
-
+        
         if (getType() == Material.REDSTONE_BLOCK) {
             return true;
         }
-
+        
         for (BlockFace face : ADJACENT) {
             GlowBlock target = getRelative(face);
             switch (target.getType()) {
+                case DIODE_BLOCK_ON:
+                    if (((Diode) target.getState().getData()).getFacing() == target.getFace(this)) {
+                        return true;
+                    }
+                    break;
                 case REDSTONE_TORCH_ON:
                     if (face == BlockFace.DOWN) {
                         return true;
@@ -352,10 +362,10 @@ public final class GlowBlock implements Block {
                     break;
             }
         }
-
+        
         return false;
     }
-
+    
     @Override
     public boolean isBlockIndirectlyPowered() {
         // Is a nearby block directly powered?
@@ -364,7 +374,7 @@ public final class GlowBlock implements Block {
             if (block.isBlockPowered()) {
                 return true;
             }
-
+            
             switch (block.getType()) {
                 case REDSTONE_TORCH_ON:
                     if (face != BlockRedstoneTorch.getAttachedBlockFace(block).getOppositeFace()) {
@@ -528,5 +538,48 @@ public final class GlowBlock implements Block {
         if (type != null) {
             type.onBlockChanged(this, oldType, oldData, newType, newData);
         }
+    }
+    
+    private static final Map<GlowBlock, List<Long>> counterMap = new HashMap<>();
+    
+    public void count(int timeout) {
+        GlowBlock target = this;
+        List<Long> gameTicks = new ArrayList<>();
+        for (GlowBlock block : counterMap.keySet()) {
+            if (block.getLocation().equals(this.getLocation())) {
+                gameTicks = counterMap.get(block);
+                target = block;
+                break;
+            }
+        }
+        
+        long time = getWorld().getFullTime();
+        gameTicks.add(time + timeout);
+        
+        counterMap.put(target, gameTicks);
+    }
+    
+    public int getCounter() {
+        GlowBlock target = this;
+        List<Long> gameTicks = new ArrayList<>();
+        for (GlowBlock block : counterMap.keySet()) {
+            if (block.getLocation().equals(this.getLocation())) {
+                gameTicks = counterMap.get(block);
+                target = block;
+                break;
+            }
+        }
+        
+        long time = getWorld().getFullTime();
+        
+        for (Iterator<Long> it = gameTicks.iterator(); it.hasNext();) {
+            long rate = it.next();
+            if (rate < time) {
+                it.remove();
+            }
+        }
+        
+        counterMap.put(target, gameTicks);
+        return gameTicks.size();
     }
 }

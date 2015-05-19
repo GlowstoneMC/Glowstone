@@ -6,9 +6,11 @@ import java.util.List;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.net.message.play.game.BlockChangeMessage;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Diode;
 
 /**
  *
@@ -18,6 +20,11 @@ public class BlockRedstone extends BlockType {
 
     public BlockRedstone() {
         setDrops(new ItemStack(Material.REDSTONE));
+    }
+
+    @Override
+    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+        return block.getRelative(BlockFace.DOWN).getType().isOccluding();
     }
 
     @Override
@@ -32,9 +39,21 @@ public class BlockRedstone extends BlockType {
 
     @Override
     public void updatePhysics(GlowBlock me) {
+        super.updatePhysics(me);
+
         for (BlockFace face : ADJACENT) {
             GlowBlock target = me.getRelative(face);
+
             switch (target.getType()) {
+                case DIODE_BLOCK_ON:
+                    Diode diode = (Diode) target.getState().getData();
+                    if (face == diode.getFacing().getOppositeFace()) {
+                        if (me.getData() != 15) {
+                            me.setData((byte) 15);
+                        }
+                        return;
+                    }
+                    break;
                 case REDSTONE_BLOCK:
                 case REDSTONE_TORCH_ON:
                     if (me.getData() != 15) {
@@ -48,12 +67,29 @@ public class BlockRedstone extends BlockType {
                         }
                         return;
                     }
+                    if (target.getType().isSolid()) {
+                        for (BlockFace face2 : SIDES) {
+                            GlowBlock target2 = target.getRelative(face2);
+                            if (target2.getType() == Material.DIODE_BLOCK_ON
+                                    && ((Diode) target2.getState().getData()).getFacing() == target2.getFace(target)) {
+                                if (me.getData() != 15) {
+                                    me.setData((byte) 15);
+                                }
+                                return;
+                            }
+                        }
+                    }
             }
         }
 
         byte power = 0;
 
         for (BlockFace face : calculateConnections(me)) {
+
+            if (face == BlockFace.DOWN) {
+                continue;
+            }
+
             GlowBlock target = me.getRelative(face);
             if (target.getType() != Material.REDSTONE_WIRE) {
                 if (!target.getType().isSolid()) {
@@ -75,6 +111,15 @@ public class BlockRedstone extends BlockType {
 
         if (power != me.getData()) {
             me.setData(power);
+            me.getWorld().requestPulse(me, 1);
+        }
+    }
+
+    @Override
+    public void receivePulse(GlowBlock me) {
+        BlockChangeMessage bcmsg = new BlockChangeMessage(me.getX(), me.getY(), me.getZ(), me.getTypeId(), me.getData());
+        for (GlowPlayer p : me.getWorld().getRawPlayers()) {
+            p.sendBlockChange(bcmsg);
         }
     }
 
@@ -88,6 +133,13 @@ public class BlockRedstone extends BlockType {
         for (BlockFace face : SIDES) {
             GlowBlock target = block.getRelative(face);
             switch (target.getType()) {
+                case DIODE_BLOCK_ON:
+                case DIODE_BLOCK_OFF:
+                    Diode diode = (Diode) target.getState().getData();
+                    if (face == diode.getFacing() || face == diode.getFacing().getOppositeFace()) {
+                        connections.add(face);
+                    }
+                    break;
                 case REDSTONE_BLOCK:
                 case REDSTONE_TORCH_ON:
                 case REDSTONE_TORCH_OFF:
