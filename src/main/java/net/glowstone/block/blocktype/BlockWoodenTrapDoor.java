@@ -32,17 +32,7 @@ public class BlockWoodenTrapDoor extends BlockOpenable {
     }
 
     @Override
-    public void updatePhysics(GlowBlock me) {
-        trapDoor.updatePhysics(me);
-    }
-
-    @Override
-    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
-        trapDoor.updatePhysics(block);
-    }
-
-    @Override
-    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
-        trapDoor.onNearBlockChanged(block, face, changedBlock, oldType, oldData, newType, newData);
+    public void onRedstoneUpdate(GlowBlock block) {
+        trapDoor.onRedstoneUpdate(block);
     }
 }

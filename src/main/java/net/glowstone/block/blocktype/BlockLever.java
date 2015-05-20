@@ -60,11 +60,12 @@ public class BlockLever extends BlockAttachable {
         if (target.getType().isSolid()) {
             for (BlockFace face2 : ADJACENT) {
                 GlowBlock target2 = target.getRelative(face2);
-                if (target2.getFace(block) == null) {
-                    BlockType notifyType = itemTable.getBlock(target2.getTypeId());
-                    if (notifyType != null) {
+                BlockType notifyType = itemTable.getBlock(target2.getTypeId());
+                if (notifyType != null) {
+                    if (target2.getFace(block) == null) {
                         notifyType.onNearBlockChanged(target2, BlockFace.SELF, block, block.getType(), block.getData(), block.getType(), block.getData());
                     }
+                    notifyType.onRedstoneUpdate(target2);
                 }
             }
         }

@@ -3,7 +3,6 @@ package net.glowstone.block.blocktype;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
-import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
@@ -36,18 +35,10 @@ public class BlockTrapDoor {
         }
     }
 
-    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
-        updatePhysics(block);
-    }
-
-    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
-        updatePhysics(block);
-    }
-
-    public void updatePhysics(GlowBlock me) {
-        GlowBlockState state = me.getState();
+    public void onRedstoneUpdate(GlowBlock block) {
+        GlowBlockState state = block.getState();
         TrapDoor trapdoor = (TrapDoor) state.getData();
-        boolean powered = me.isBlockIndirectlyPowered();
+        boolean powered = block.isBlockIndirectlyPowered();
         if (powered != trapdoor.isOpen()) {
             trapdoor.setOpen(powered);
             state.update();
