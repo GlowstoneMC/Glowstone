@@ -2,6 +2,7 @@ package net.glowstone.block.blocktype;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.ItemTable;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -75,12 +76,31 @@ public class BlockRedstoneTorch extends BlockNeedsAttached {
                 if (!powered) {
                     me.count(60);
                 }
-                
+
                 me.setTypeIdAndData((powered ? Material.REDSTONE_TORCH_OFF : Material.REDSTONE_TORCH_ON).getId(), me.getData(), true);
+                extraUpdate(me);
                 return;
             }
         }
 
         me.getWorld().cancelPulse(me);
+    }
+    
+    private static final BlockFace[] ADJACENT = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
+
+    private void extraUpdate(GlowBlock block) {
+        ItemTable itemTable = ItemTable.instance();
+        GlowBlock target = block.getRelative(BlockFace.UP);
+        if (target.getType().isSolid()) {
+            for (BlockFace face2 : ADJACENT) {
+                GlowBlock target2 = target.getRelative(face2);
+                if (target2.getFace(block) == null) {
+                    BlockType notifyType = itemTable.getBlock(target2.getTypeId());
+                    if (notifyType != null) {
+                        notifyType.onNearBlockChanged(target2, BlockFace.SELF, block, block.getType(), block.getData(), block.getType(), block.getData());
+                    }
+                }
+            }
+        }
     }
 }

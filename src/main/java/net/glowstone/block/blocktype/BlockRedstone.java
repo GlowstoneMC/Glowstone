@@ -149,8 +149,8 @@ public class BlockRedstone extends BlockNeedsAttached {
                                         me.setData((byte) 15);
                                         extraUpdate(me);
                                     }
+                                    return;
                                 }
-                                return;
                             }
                         }
                     }

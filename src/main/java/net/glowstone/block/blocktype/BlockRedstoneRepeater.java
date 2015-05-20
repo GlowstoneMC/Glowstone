@@ -2,6 +2,7 @@ package net.glowstone.block.blocktype;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.ItemTable;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -64,11 +65,32 @@ public class BlockRedstoneRepeater extends BlockNeedsAttached {
                 public void run() {
                     if (!powered && me.getType() == Material.DIODE_BLOCK_ON) {
                         me.setTypeIdAndData(Material.DIODE_BLOCK_OFF.getId(), me.getData(), true);
+                        extraUpdate(me);
                     } else if (powered && me.getType() == Material.DIODE_BLOCK_OFF) {
                         me.setTypeIdAndData(Material.DIODE_BLOCK_ON.getId(), me.getData(), true);
+                        extraUpdate(me);
                     }
                 }
             }).runTaskLater(null, diode.getDelay() * 2);
+        }
+    }
+
+    private static final BlockFace[] ADJACENT = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
+
+    private void extraUpdate(GlowBlock block) {
+        Diode diode = (Diode) block.getState().getData();
+        ItemTable itemTable = ItemTable.instance();
+        GlowBlock target = block.getRelative(diode.getFacing());
+        if (target.getType().isSolid()) {
+            for (BlockFace face2 : ADJACENT) {
+                GlowBlock target2 = target.getRelative(face2);
+                if (target2.getFace(block) == null) {
+                    BlockType notifyType = itemTable.getBlock(target2.getTypeId());
+                    if (notifyType != null) {
+                        notifyType.onNearBlockChanged(target2, BlockFace.SELF, block, block.getType(), block.getData(), block.getType(), block.getData());
+                    }
+                }
+            }
         }
     }
 }

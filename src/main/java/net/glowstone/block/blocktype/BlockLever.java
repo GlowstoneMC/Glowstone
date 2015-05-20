@@ -2,6 +2,7 @@ package net.glowstone.block.blocktype;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.ItemTable;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -29,6 +30,7 @@ public class BlockLever extends BlockAttachable {
         final Lever lever = (Lever) data;
         lever.setPowered(!lever.isPowered());
         state.update();
+        extraUpdate(block);
         return true;
     }
 
@@ -47,5 +49,24 @@ public class BlockLever extends BlockAttachable {
         setAttachedFace(state, face.getOppositeFace());
         lever.setFacingDirection(face == BlockFace.UP || face == BlockFace.DOWN ? player.getDirection() : face);
 
+    }
+    
+    private static final BlockFace[] ADJACENT = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
+
+    private void extraUpdate(GlowBlock block) {
+        Lever lever = (Lever) block.getState().getData();
+        ItemTable itemTable = ItemTable.instance();
+        GlowBlock target = block.getRelative(lever.getAttachedFace());
+        if (target.getType().isSolid()) {
+            for (BlockFace face2 : ADJACENT) {
+                GlowBlock target2 = target.getRelative(face2);
+                if (target2.getFace(block) == null) {
+                    BlockType notifyType = itemTable.getBlock(target2.getTypeId());
+                    if (notifyType != null) {
+                        notifyType.onNearBlockChanged(target2, BlockFace.SELF, block, block.getType(), block.getData(), block.getType(), block.getData());
+                    }
+                }
+            }
+        }
     }
 }
