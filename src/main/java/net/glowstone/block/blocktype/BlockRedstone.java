@@ -11,7 +11,9 @@ import net.glowstone.net.message.play.game.BlockChangeMessage;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Button;
 import org.bukkit.material.Diode;
+import org.bukkit.material.Lever;
 import org.bukkit.material.Stairs;
 import org.bukkit.material.Step;
 
@@ -74,6 +76,27 @@ public class BlockRedstone extends BlockNeedsAttached {
             GlowBlock target = me.getRelative(face);
 
             switch (target.getType()) {
+                case LEVER:
+                    Lever lever = (Lever) target.getState().getData();
+                    if (lever.isPowered()) {
+                        if (me.getData() != 15) {
+                            me.setData((byte) 15);
+                            extraUpdate(me);
+                        }
+                        return;
+                    }
+                    break;
+                case STONE_BUTTON:
+                case WOOD_BUTTON:
+                    Button button = (Button) target.getState().getData();
+                    if (button.isPowered()) {
+                        if (me.getData() != 15) {
+                            me.setData((byte) 15);
+                            extraUpdate(me);
+                        }
+                        return;
+                    }
+                    break;
                 case DIODE_BLOCK_ON:
                     Diode diode = (Diode) target.getState().getData();
                     if (face == diode.getFacing().getOppositeFace()) {
@@ -100,13 +123,32 @@ public class BlockRedstone extends BlockNeedsAttached {
                         return;
                     }
                     if (target.getType().isSolid()) {
-                        for (BlockFace face2 : SIDES) {
+                        for (BlockFace face2 : ADJACENT) {
                             GlowBlock target2 = target.getRelative(face2);
                             if (target2.getType() == Material.DIODE_BLOCK_ON
                                     && ((Diode) target2.getState().getData()).getFacing() == target2.getFace(target)) {
                                 if (me.getData() != 15) {
                                     me.setData((byte) 15);
                                     extraUpdate(me);
+                                }
+                                return;
+                            } else if (target2.getType() == Material.STONE_BUTTON
+                                    || target2.getType() == Material.WOOD_BUTTON) {
+                                Button button2 = (Button) target2.getState().getData();
+                                if (button2.isPowered() && button2.getAttachedFace() == target2.getFace(target)) {
+                                    if (me.getData() != 15) {
+                                        me.setData((byte) 15);
+                                        extraUpdate(me);
+                                    }
+                                    return;
+                                }
+                            } else if (target2.getType() == Material.LEVER) {
+                                Lever lever2 = (Lever) target2.getState().getData();
+                                if (lever2.isPowered() && lever2.getAttachedFace() == target2.getFace(target)) {
+                                    if (me.getData() != 15) {
+                                        me.setData((byte) 15);
+                                        extraUpdate(me);
+                                    }
                                 }
                                 return;
                             }
@@ -196,6 +238,9 @@ public class BlockRedstone extends BlockNeedsAttached {
                 case REDSTONE_TORCH_ON:
                 case REDSTONE_TORCH_OFF:
                 case REDSTONE_WIRE:
+                case WOOD_BUTTON:
+                case STONE_BUTTON:
+                case LEVER:
                     connections.add(face);
                     break;
                 default:
