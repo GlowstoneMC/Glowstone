@@ -8,6 +8,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Diode;
 import org.bukkit.material.MaterialData;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 public class BlockRedstoneRepeater extends BlockNeedsAttached {
@@ -47,24 +48,27 @@ public class BlockRedstoneRepeater extends BlockNeedsAttached {
     }
 
     @Override
-    public void updatePhysics(GlowBlock me) {
+    public void updatePhysics(final GlowBlock me) {
         super.updatePhysics(me);
-        me.getWorld().requestPulse(me, me.getWorld().getFullTime() + ((Diode) me.getState().getData()).getDelay() * 2);
-    }
 
-    @Override
-    public void receivePulse(GlowBlock me) {
         Diode diode = (Diode) me.getState().getData();
         GlowBlock target = me.getRelative(diode.getFacing().getOppositeFace());
-        
-        boolean powered = target.getType() == Material.REDSTONE_TORCH_ON || target.isBlockPowered() || (target.getType() == Material.REDSTONE_WIRE
+
+        final boolean powered = target.getType() == Material.REDSTONE_TORCH_ON || target.isBlockPowered() || (target.getType() == Material.REDSTONE_WIRE
                 && target.getData() > 0 && BlockRedstone.calculateConnections(target).contains(diode.getFacing()))
                 || (target.getType() == Material.DIODE_BLOCK_ON && ((Diode) target.getState().getData()).getFacing() == diode.getFacing());
-        
+
         if (powered != (me.getType() == Material.DIODE_BLOCK_ON)) {
-            me.setTypeIdAndData((powered ? Material.DIODE_BLOCK_ON : Material.DIODE_BLOCK_OFF).getId(), me.getData(), true);
+            (new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (!powered && me.getType() == Material.DIODE_BLOCK_ON) {
+                        me.setTypeIdAndData(Material.DIODE_BLOCK_OFF.getId(), me.getData(), true);
+                    } else if (powered && me.getType() == Material.DIODE_BLOCK_OFF) {
+                        me.setTypeIdAndData(Material.DIODE_BLOCK_ON.getId(), me.getData(), true);
+                    }
+                }
+            }).runTaskLater(null, diode.getDelay() * 2);
         }
-        
-        me.getWorld().cancelPulse(me);
     }
 }
