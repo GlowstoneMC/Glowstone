@@ -11,6 +11,7 @@ import org.bukkit.util.Vector;
 
 import java.util.Arrays;
 import java.util.Collection;
+import org.bukkit.Material;
 
 public class BlockFenceGate extends BlockOpenable {
 
@@ -72,6 +73,28 @@ public class BlockFenceGate extends BlockOpenable {
             return facingDirection;
         } else {
             return oldFacing;
+        }
+    }
+
+    @Override
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
+        updatePhysics(block);
+    }
+
+    @Override
+    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
+        updatePhysics(block);
+    }
+
+    @Override
+    public void updatePhysics(GlowBlock me) {
+        GlowBlockState state = me.getState();
+        Gate gate = (Gate) state.getData();
+
+        boolean powered = me.isBlockIndirectlyPowered();
+        if (powered != gate.isOpen()) {
+            gate.setOpen(powered);
+            state.update();
         }
     }
 }

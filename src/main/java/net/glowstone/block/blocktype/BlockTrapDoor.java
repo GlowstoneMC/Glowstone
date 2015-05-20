@@ -1,7 +1,9 @@
 package net.glowstone.block.blocktype;
 
+import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
+import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
@@ -31,6 +33,24 @@ public class BlockTrapDoor {
             state.update(true);
         } else {
             parent.warnMaterialData(TrapDoor.class, materialData);
+        }
+    }
+
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
+        updatePhysics(block);
+    }
+
+    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
+        updatePhysics(block);
+    }
+
+    public void updatePhysics(GlowBlock me) {
+        GlowBlockState state = me.getState();
+        TrapDoor trapdoor = (TrapDoor) state.getData();
+        boolean powered = me.isBlockIndirectlyPowered();
+        if (powered != trapdoor.isOpen()) {
+            trapdoor.setOpen(powered);
+            state.update();
         }
     }
 }

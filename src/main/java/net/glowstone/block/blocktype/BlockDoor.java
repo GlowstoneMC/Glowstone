@@ -144,4 +144,28 @@ public class BlockDoor extends BlockType {
         return true;
     }
 
+    @Override
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
+        updatePhysics(block);
+    }
+
+    @Override
+    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
+        updatePhysics(block);
+    }
+    
+    @Override
+    public void updatePhysics(GlowBlock me) {
+        GlowBlockState state = me.getState();
+        Door door = (Door) state.getData();
+        if (!door.isTopHalf()) {
+            
+            boolean powered = me.isBlockIndirectlyPowered();
+            if (powered != door.isOpen()) {
+                door.setOpen(powered);
+                state.update();
+            }
+        }
+    }
+
 }
