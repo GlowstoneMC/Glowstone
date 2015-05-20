@@ -32,7 +32,9 @@ public class BlockDoor extends BlockType {
 
     @Override
     public void onBlockChanged(GlowBlock block, Material oldType, byte oldData, Material newType, byte newData) {
-        if (newType != Material.AIR) return;
+        if (newType != Material.AIR) {
+            return;
+        }
 
         // remove the other half of the door
         GlowBlockState state = block.getState();
@@ -42,12 +44,14 @@ public class BlockDoor extends BlockType {
             Door door = (Door) data;
             if (door.isTopHalf()) {
                 Block b = block.getRelative(BlockFace.DOWN);
-                if (b.getType() == block.getType())
+                if (b.getType() == block.getType()) {
                     b.setType(Material.AIR);
+                }
             } else {
                 Block b = block.getRelative(BlockFace.UP);
-                if (b.getType() == block.getType())
+                if (b.getType() == block.getType()) {
                     b.setType(Material.AIR);
+                }
             }
         }
     }
@@ -117,8 +121,9 @@ public class BlockDoor extends BlockType {
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
         // handles opening and closing the door
-        if (block.getType() == Material.IRON_DOOR_BLOCK)
+        if (block.getType() == Material.IRON_DOOR_BLOCK) {
             return false;
+        }
 
         GlowBlockState state = block.getState();
         MaterialData data = state.getData();
@@ -135,8 +140,9 @@ public class BlockDoor extends BlockType {
                 }
             }
 
-            if (door != null)
+            if (door != null) {
                 door.setOpen(!door.isOpen());
+            }
 
             state.update(true);
         }
@@ -153,13 +159,13 @@ public class BlockDoor extends BlockType {
     public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
         updatePhysics(block);
     }
-    
+
     @Override
     public void updatePhysics(GlowBlock me) {
         GlowBlockState state = me.getState();
         Door door = (Door) state.getData();
         if (!door.isTopHalf()) {
-            
+
             boolean powered = me.isBlockIndirectlyPowered();
             if (powered != door.isOpen()) {
                 door.setOpen(powered);

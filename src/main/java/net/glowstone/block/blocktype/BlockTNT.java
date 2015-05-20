@@ -9,7 +9,6 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class BlockTNT extends BlockType {
