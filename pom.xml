@@ -1,16 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     
     <modelVersion>4.0.0</modelVersion>
-    <groupId>io.deathcap.glowstone</groupId>
-    <artifactId>glowstone</artifactId>
+    <groupId>net.glowstoneplusplus</groupId>
+    <artifactId>glowstoneplusplus</artifactId>
     <version>1.8.4-SNAPSHOT</version>
-    <name>Glowstone</name>
-    <url>https://github.com/deathcap/GlowstonePlusPlus</url>
+    <name>GlowstonePlusPlus</name>
+    <url>https://github.com/GlowstonePlusPlus/GlowstonePlusPlus</url>
     
     <scm>
-        <connection>scm:git:git://github.com/deathcap/GlowstonePlusPlus.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/deathcap/GlowstonePlusPlus.git</developerConnection>
-        <url>https://github.com/deathcap/GlowstonePlusPlus</url>
+        <connection>scm:git:git://github.com/GlowstonePlusPlus/GlowstonePlusPlus.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/GlowstonePlusPlus/GlowstonePlusPlus.git</developerConnection>
+        <url>https://github.com/GlowstonePlusPlus/GlowstonePlusPlus</url>
     </scm>
 
     <properties>
