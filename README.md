@@ -1,9 +1,10 @@
-Glowstone++
-===========
+#Glowstone++
 
 The enhanced Glowstone fork with an emphasis on performance, control and compatibility.
 
 [![Build Status](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus/tree/master.png)](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus/tree/master)
+
+[![Join the chat at https://gitter.im/GlowstonePlusPlus/GlowstonePlusPlus](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GlowstonePlusPlus/GlowstonePlusPlus?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 (Warning: may be unstable, this is only an experiment, use at your own risk)
 
@@ -12,53 +13,56 @@ Currently the major changes from Glowstone include:
 
 * Tracks the [Spigot 1.8.3 update of the Bukkit API](https://hub.spigotmc.org/javadocs/bukkit/)
 * New features merged in, adapted for Spigot's update of the Bukkit API (see [features](#features) below for details)
-* Multi-API plugin support, integrates with [Bukkit2Sponge](https://github.com/deathcap/Bukkit2Sponge) for [SpongeAPI](https://github.com/SpongePowered/SpongeAPI) plugin loading
+* Multi-API plugin support, integrates with [Bukkit2Sponge](https://github.com/GlowstonePlusPlus/Bukkit2Sponge) for [SpongeAPI](https://github.com/SpongePowered/SpongeAPI) plugin loading
 * Builds using Maven
 
-Building from source
---------------------
+##Building
 
-1.  After installing the
-[Java Development Kit](http://oracle.com/technetwork/java/javase/downloads) and
+
+###1. Setup
+After installing [Oracle JDK](http://oracle.com/technetwork/java/javase/downloads) or [OpenJDK](http://openjdk.java.net/), and
 [Maven](https://maven.apache.org), checkout the source:
 
-```
-git clone --recursive https://github.com/deathcap/GlowstonePlusPlus
+```sh
+git clone --recursive https://github.com/GlowstonePlusPlus/GlowstonePlusPlus
 cd GlowstonePlusPlus
 ```
 
-2. Build and install the APIs:
+###2. Build
 
-```
-cd Glowkit
-mvn install
-cd ..
-cd SpongeAPI
-./gradlew
-cd ..
+```sh
+setup.sh
 ```
 
-3. Build the server:
+The final jar will be placed in `target/` named `glowstone++-1.8.4-SNAPSHOT.jar`.
 
-```
-mvn package
-```
+##Downloads
 
-The final jar will be placed in `target/` named `glowstone++-1.8.3-SNAPSHOT.jar`.
-
-Downloads
----------
 
 If you don't want to build from source, prebuilt jar files are available to download from:
 
-* **[CircleCI downloads](https://circleci.com/gh/deathcap/GlowstonePlusPlus/tree/master)** - click the latest build then expand "Artifacts" (if it does not show, try logging in with GitHub)
-[![Build Status](https://circleci.com/gh/deathcap/GlowstonePlusPlus/tree/master.png)](https://circleci.com/gh/deathcap/GlowstonePlusPlus/tree/master)
+* **[CircleCI downloads](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus/tree/master)** - click the latest build then expand "Artifacts" (if it does not show, try logging in with GitHub)
+[![Build Status](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus/tree/master.png)](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus/tree/master)
 
+##Running
 
----
+Running Glowstone is simple because its dependencies are shaded into the output
+jar at compile time. Simply execute `java -jar glowstone++.jar` along with any
+extra JVM options desired. A variety of command-line options are also available -
+run `java -jar glowstone++.jar --help` for more information.
 
-Introduction
-------------
+By default, configuration is stored in the `config/` subdirectory and logs
+are stored in the `logs/` subdirectory. The main configuration file is
+`config/glowstone.yml`, which replaces CraftBukkit's `server.properties` and
+`bukkit.yml`. Settings from these two files will be copied over to Glowstone's
+configuration during the default configuration generation process.
+
+Glowstone uses [JLine](http://jline.sf.net) for console input and colored
+console output. The JLine console can be disabled in the configuration if a
+flat console is desired.
+
+##Introduction
+
 Glowstone is a lightweight, from scratch, open source
 [Minecraft](http://minecraft.net) server written in Java that supports plugins
 written for the [Bukkit](http://bukkit.org) API.
@@ -69,8 +73,8 @@ not needed or higher performance is desired than the official software can
 deliver. Glowstone makes use of a thread-per-world model and performs
 synchronization only when necessitated by the Bukkit API.
 
-Features
---------
+##Features
+
 Glowstone has a few key advantages over CraftBukkit:
  * It is **100% open source**. While CraftBukkit and most other mods are open
    source, they rely on decompiled Minecraft source code. Glowstone's code is
@@ -115,34 +119,12 @@ Some of the key features that have been implemented are:
  * Liquid physics (water and lava).
  * Particle effects Spigot API.
 
-Building and Running
---------------------
-Glowstone can be built with the
-[Java Development Kit](http://oracle.com/technetwork/java/javase/downloads) and
-[Maven](https://maven.apache.org) The command `mvn package` will build Glowstone and
-place the final jar in `target/` named `glowstone++-1.8.3-SNAPSHOT.jar`.
+##Docs and Support
 
-Running Glowstone is simple because its dependencies are shaded into the output
-jar at compile time. Simply execute `java -jar glowstone++.jar` along with any
-extra JVM options desired. A variety of command-line options are also available -
-run `java -jar glowstone++.jar --help` for more information.
-
-By default, configuration is stored in the `config/` subdirectory and logs
-are stored in the `logs/` subdirectory. The main configuration file is
-`config/glowstone.yml`, which replaces CraftBukkit's `server.properties` and
-`bukkit.yml`. Settings from these two files will be copied over to Glowstone's
-configuration during the default configuration generation process.
-
-Glowstone uses [JLine](http://jline.sf.net) for console input and colored
-console output. The JLine console can be disabled in the configuration if a
-flat console is desired.
-
-Docs and Support
--------------
-The best place to receive support is on [GitHub issues](https://github.com/deathcap/GlowstonePlusPlus/issues).
+The best place to receive support is on [GitHub issues](https://github.com/GlowstonePlusPlus/GlowstonePlusPlus/issues).
 When reporting bugs, please retest and include whether the problem reproduces on:
 
-* Earlier [builds](https://circleci.com/gh/deathcap/GlowstonePlusPlus) of Glowstone++
+* Earlier [builds](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus) of Glowstone++
 * [Glowstone](https://github.com/GlowstoneMC/Glowstone), if applicable
 
 Javadocs can be generated by using the `mvn javadoc:javadoc` command and are
@@ -153,8 +135,8 @@ For documentation on the Glowkit API (an updated Bukkit which is used to
 write plugins), see the Glowkit Javadocs
 or visit Spigot's [Bukkit Javadocs](https://hub.spigotmc.org/javadocs/bukkit/).
 
-Credits
--------
+##Credits
+
  * [The Minecraft Coalition](http://wiki.vg/) and [`#mcdevs`](http://mcdevs.org/) -
    protocol and file formats research.
  * [The Bukkit team](http://bukkit.org) for their outstandingly well-designed
@@ -175,8 +157,8 @@ Credits
    [Mojang](http://mojang.com) - for making such an awesome game in the first
    place!
 
-Copyright
----------
+##Copyright
+
 Glowstone is open-source software released under the MIT license. Please see
 the `LICENSE` file for details.
 

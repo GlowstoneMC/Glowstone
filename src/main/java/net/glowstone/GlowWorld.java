@@ -622,6 +622,27 @@ public final class GlowWorld implements World {
         return new ArrayList<Player>(entities.getAll(GlowPlayer.class));
     }
 
+    /**
+     * Returns a list of entities within a bounding box centered around a Location.
+     *
+     * Some implementations may impose artificial restrictions on the size of the search bounding box.
+     *
+     * @param location The center of the bounding box
+     * @param x 1/2 the size of the box along x axis
+     * @param y 1/2 the size of the box along y axis
+     * @param z 1/2 the size of the box along z axis
+     * @return the collection of entities near location. This will always be a non-null collection.
+     */
+    @Override
+    public Collection<Entity> getNearbyEntities(Location location, double x, double y, double z)
+    {
+        Vector minCorner = new Vector(location.getX() - x, location.getY() - y, location.getZ() - z);
+        Vector maxCorner = new Vector(location.getX() + x, location.getY() + y, location.getZ() + z);
+        BoundingBox searchBox = BoundingBox.fromCorners(minCorner, maxCorner); // TODO: test
+        GlowEntity except = null;
+        return entities.getEntitiesInside(searchBox, except);
+    }
+
     @Override
     public List<Entity> getEntities() {
         return new ArrayList<Entity>(entities.getAll());

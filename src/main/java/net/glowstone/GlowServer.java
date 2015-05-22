@@ -82,7 +82,7 @@ public final class GlowServer implements Server {
     /**
      * The game version supported by the server.
      */
-    public static final String GAME_VERSION = "1.8.3";
+    public static final String GAME_VERSION = "1.8.4";
 
     /**
      * The protocol version supported by the server.
