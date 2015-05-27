@@ -1,5 +1,6 @@
 package net.glowstone.block;
 
+import java.util.ArrayList;
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
@@ -21,8 +22,16 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import net.glowstone.block.blocktype.BlockRedstone;
+import net.glowstone.block.blocktype.BlockRedstoneTorch;
+import org.bukkit.material.Button;
+import org.bukkit.material.Diode;
+import org.bukkit.material.Lever;
 
 /**
  * Represents a single block in a world.
@@ -33,14 +42,20 @@ public final class GlowBlock implements Block {
      * The BlockFaces of a single-layer 3x3 area.
      */
     private static final BlockFace[] LAYER = new BlockFace[]{
-            BlockFace.NORTH_WEST, BlockFace.NORTH, BlockFace.NORTH_EAST,
-            BlockFace.EAST, BlockFace.SELF, BlockFace.WEST,
-            BlockFace.SOUTH_WEST, BlockFace.SOUTH, BlockFace.SOUTH_EAST};
+        BlockFace.NORTH_WEST, BlockFace.NORTH, BlockFace.NORTH_EAST,
+        BlockFace.EAST, BlockFace.SELF, BlockFace.WEST,
+        BlockFace.SOUTH_WEST, BlockFace.SOUTH, BlockFace.SOUTH_EAST};
+
+    /**
+     * The BlockFaces of all directly adjacent.
+     */
+    private static final BlockFace[] ADJACENT = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
 
     /**
      * The metadata store class for blocks.
      */
     private static final class BlockMetadataStore extends MetadataStoreBase<Block> implements MetadataStore<Block> {
+
         @Override
         protected String disambiguate(Block subject, String metadataKey) {
             return subject.getWorld() + "," + subject.getX() + "," + subject.getY() + "," + subject.getZ() + ":" + metadataKey;
@@ -66,7 +81,6 @@ public final class GlowBlock implements Block {
 
     ////////////////////////////////////////////////////////////////////////////
     // Basics
-
     @Override
     public GlowWorld getWorld() {
         return chunk.getWorld();
@@ -99,7 +113,9 @@ public final class GlowBlock implements Block {
 
     @Override
     public Location getLocation(Location loc) {
-        if (loc == null) return null;
+        if (loc == null) {
+            return null;
+        }
         loc.setWorld(getWorld());
         loc.setX(x);
         loc.setY(y);
@@ -145,13 +161,12 @@ public final class GlowBlock implements Block {
 
     ////////////////////////////////////////////////////////////////////////////
     // getFace & getRelative
-
     @Override
     public BlockFace getFace(Block block) {
         for (BlockFace face : BlockFace.values()) {
-            if ((x + face.getModX() == block.getX()) &&
-                    (y + face.getModY() == block.getY()) &&
-                    (z + face.getModZ() == block.getZ())) {
+            if ((x + face.getModX() == block.getX())
+                    && (y + face.getModY() == block.getY())
+                    && (z + face.getModZ() == block.getZ())) {
                 return face;
             }
         }
@@ -175,7 +190,6 @@ public final class GlowBlock implements Block {
 
     ////////////////////////////////////////////////////////////////////////////
     // Type and typeid getters/setters
-
     @Override
     public Material getType() {
         return Material.getMaterial(getTypeId());
@@ -190,7 +204,7 @@ public final class GlowBlock implements Block {
     public void setType(Material type) {
         setTypeId(type.getId());
     }
-    
+
     /**
      * Set the Material type of a block and optionally apply physics.
      */
@@ -198,9 +212,10 @@ public final class GlowBlock implements Block {
     public void setType(Material type, boolean applyPhysics) {
         setTypeId(type.getId(), applyPhysics);
     }
-    
+
     /**
-     * Set the Material type of a block with metadata? and optionally apply physics.
+     * Set the Material type of a block with metadata? and optionally apply
+     * physics.
      */
     public void setType(Material type, byte data, boolean applyPhysics) {
         setTypeIdAndData(type.getId(), data, applyPhysics);
@@ -276,7 +291,6 @@ public final class GlowBlock implements Block {
 
     ////////////////////////////////////////////////////////////////////////////
     // Data and light getters/setters
-
     @Override
     public byte getData() {
         return (byte) chunk.getMetaData(x & 0xf, z & 0xf, y);
@@ -317,15 +331,88 @@ public final class GlowBlock implements Block {
 
     ////////////////////////////////////////////////////////////////////////////
     // Redstone
-
     @Override
     public boolean isBlockPowered() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // Strong powered?
+
+        if (getType() == Material.REDSTONE_BLOCK) {
+            return true;
+        }
+
+        if (getType() == Material.LEVER && ((Lever) getState().getData()).isPowered()) {
+            return true;
+        }
+
+        if ((getType() == Material.WOOD_BUTTON || getType() == Material.STONE_BUTTON)
+                && ((Button) getState().getData()).isPowered()) {
+            return true;
+        }
+
+        // Now checking for power attached, only solid blocks transmit this..
+        if (!getType().isSolid()) {
+            return false;
+        }
+
+        for (BlockFace face : ADJACENT) {
+            GlowBlock target = getRelative(face);
+            switch (target.getType()) {
+                case LEVER:
+                    Lever lever = (Lever) target.getState().getData();
+                    if (lever.isPowered() && lever.getAttachedFace() == target.getFace(this)) {
+                        return true;
+                    }
+                    break;
+                case STONE_BUTTON:
+                case WOOD_BUTTON:
+                    Button button = (Button) target.getState().getData();
+                    if (button.isPowered() && button.getAttachedFace() == target.getFace(this)) {
+                        return true;
+                    }
+                    break;
+                case DIODE_BLOCK_ON:
+                    if (((Diode) target.getState().getData()).getFacing() == target.getFace(this)) {
+                        return true;
+                    }
+                    break;
+                case REDSTONE_TORCH_ON:
+                    if (face == BlockFace.DOWN) {
+                        return true;
+                    }
+                    break;
+                case REDSTONE_WIRE:
+                    if (target.getData() > 0 && BlockRedstone.calculateConnections(target).contains(target.getFace(this))) {
+                        return true;
+                    }
+                    break;
+            }
+        }
+
+        return false;
     }
 
     @Override
     public boolean isBlockIndirectlyPowered() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // Is a nearby block directly powered?
+        for (BlockFace face : ADJACENT) {
+            GlowBlock block = getRelative(face);
+            if (block.isBlockPowered()) {
+                return true;
+            }
+
+            switch (block.getType()) {
+                case REDSTONE_TORCH_ON:
+                    if (face != BlockRedstoneTorch.getAttachedBlockFace(block).getOppositeFace()) {
+                        return true;
+                    }
+                    break;
+                case REDSTONE_WIRE:
+                    if (block.getData() > 0 && BlockRedstone.calculateConnections(block).contains(block.getFace(this))) {
+                        return true;
+                    }
+                    break;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -360,9 +447,9 @@ public final class GlowBlock implements Block {
 
     ////////////////////////////////////////////////////////////////////////////
     // Drops and breaking
-
     /**
      * Break the block naturally, randomly dropping only some of the drops.
+     *
      * @param yield The approximate portion of the drops to actually drop.
      * @return true if the block was destroyed
      */
@@ -411,7 +498,6 @@ public final class GlowBlock implements Block {
 
     ////////////////////////////////////////////////////////////////////////////
     // Metadata
-
     @Override
     public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
         metadata.setMetadata(this, metadataKey, newMetadataValue);
@@ -434,9 +520,10 @@ public final class GlowBlock implements Block {
 
     /////////////////////////////////////////////////////////////////////////////
     // Physics
-
     /**
-     * Notify this block and its surrounding blocks that this block has changed type and data.
+     * Notify this block and its surrounding blocks that this block has changed
+     * type and data.
+     *
      * @param oldType the old block type
      * @param newTypeId the new block type
      * @param oldData the old data
@@ -449,7 +536,9 @@ public final class GlowBlock implements Block {
 
         for (int y = -1; y <= 1; y++) {
             for (BlockFace face : LAYER) {
-                if (y == 0 && face == BlockFace.SELF) continue;
+                if (y == 0 && face == BlockFace.SELF) {
+                    continue;
+                }
 
                 GlowBlock notify = this.getRelative(face.getModX(), face.getModY() + y, face.getModZ());
 
@@ -475,5 +564,48 @@ public final class GlowBlock implements Block {
         if (type != null) {
             type.onBlockChanged(this, oldType, oldData, newType, newData);
         }
+    }
+
+    private static final Map<GlowBlock, List<Long>> counterMap = new HashMap<>();
+
+    public void count(int timeout) {
+        GlowBlock target = this;
+        List<Long> gameTicks = new ArrayList<>();
+        for (GlowBlock block : counterMap.keySet()) {
+            if (block.getLocation().equals(this.getLocation())) {
+                gameTicks = counterMap.get(block);
+                target = block;
+                break;
+            }
+        }
+
+        long time = getWorld().getFullTime();
+        gameTicks.add(time + timeout);
+
+        counterMap.put(target, gameTicks);
+    }
+
+    public int getCounter() {
+        GlowBlock target = this;
+        List<Long> gameTicks = new ArrayList<>();
+        for (GlowBlock block : counterMap.keySet()) {
+            if (block.getLocation().equals(this.getLocation())) {
+                gameTicks = counterMap.get(block);
+                target = block;
+                break;
+            }
+        }
+
+        long time = getWorld().getFullTime();
+
+        for (Iterator<Long> it = gameTicks.iterator(); it.hasNext();) {
+            long rate = it.next();
+            if (rate < time) {
+                it.remove();
+            }
+        }
+
+        counterMap.put(target, gameTicks);
+        return gameTicks.size();
     }
 }

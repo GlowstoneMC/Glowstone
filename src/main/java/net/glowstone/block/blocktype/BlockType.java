@@ -354,4 +354,8 @@ public class BlockType extends ItemType {
             return BlockFace.EAST;
         }
     }
+    
+    public void onRedstoneUpdate(GlowBlock block) {
+        // do nothing
+    }
 }

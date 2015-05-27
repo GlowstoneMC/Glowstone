@@ -30,4 +30,9 @@ public class BlockWoodenTrapDoor extends BlockOpenable {
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         return DROP;
     }
+
+    @Override
+    public void onRedstoneUpdate(GlowBlock block) {
+        trapDoor.onRedstoneUpdate(block);
+    }
 }

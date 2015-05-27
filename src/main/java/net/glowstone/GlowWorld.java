@@ -1700,8 +1700,8 @@ public final class GlowWorld implements World {
     
     private void pulseTickMap() {
         ItemTable itemTable = ItemTable.instance();
-        Map<Location, Integer> map = getTickMap();
-        for (Map.Entry<Location, Integer> entry : map.entrySet()) {
+        Map<Location, Long> map = getTickMap();
+        for (Map.Entry<Location, Long> entry : map.entrySet()) {
             if (worldAge % entry.getValue() == 0) {
                 GlowBlock block = this.getBlockAt(entry.getKey());
                 BlockType notifyType = itemTable.getBlock(block.getTypeId());
@@ -1711,7 +1711,7 @@ public final class GlowWorld implements World {
         }
     }
     
-    private Map<Location, Integer> getTickMap() {
+    private Map<Location, Long> getTickMap() {
         return new HashMap<>(tickMap);
     }
 
@@ -1719,7 +1719,7 @@ public final class GlowWorld implements World {
      * Calling this method will request that the block is ticked on the next iteration
      * that applies to the specified tick rate.
      */
-    public void requestPulse(GlowBlock block, int tickRate) {
+    public void requestPulse(GlowBlock block, long tickRate) {
         Location target = block.getLocation();
     
     
