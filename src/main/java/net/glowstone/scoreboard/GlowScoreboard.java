@@ -262,6 +262,11 @@ public final class GlowScoreboard implements Scoreboard {
         return playerTeamMap.get(player);
     }
 
+    @Override
+    public Team getEntryTeam(String teamName) throws IllegalArgumentException {
+        return getTeam(teamName); // TODO: is this the same as getTeam?
+    }
+
     public Team getTeam(String teamName) throws IllegalArgumentException {
         Validate.notNull(teamName, "Team name cannot be null");
         return teams.get(teamName);
