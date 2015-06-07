@@ -11,7 +11,7 @@ The enhanced Glowstone fork with an emphasis on performance, control and compati
 
 Currently the major changes from Glowstone include:
 
-* Tracks the [Spigot 1.8.3 update of the Bukkit API](https://hub.spigotmc.org/javadocs/bukkit/)
+* Tracks the [Spigot 1.8.7 update of the Bukkit API](https://hub.spigotmc.org/javadocs/bukkit/)
 * New features merged in, adapted for Spigot's update of the Bukkit API (see [features](#features) below for details)
 * Multi-API plugin support, integrates with [Bukkit2Sponge](https://github.com/GlowstonePlusPlus/Bukkit2Sponge) for [SpongeAPI](https://github.com/SpongePowered/SpongeAPI) plugin loading
 * Builds using Maven
@@ -34,7 +34,7 @@ cd GlowstonePlusPlus
 setup.sh
 ```
 
-The final jar will be placed in `target/` named `glowstone++-1.8.4-SNAPSHOT.jar`.
+The final jar will be placed in `target/` named `glowstone++-1.8.7-SNAPSHOT.jar`.
 
 ##Downloads
 
