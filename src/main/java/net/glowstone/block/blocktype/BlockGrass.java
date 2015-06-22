@@ -1,6 +1,11 @@
 package net.glowstone.block.blocktype;
 
-import net.glowstone.generator.decorators.overworld.FlowerDecorator;
+import net.glowstone.EventFactory;
+import net.glowstone.GlowWorld;
+import net.glowstone.block.GlowBlock;
+import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.ItemTable;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.generator.populators.overworld.FlowerForestPopulator;
 import org.bukkit.GrassSpecies;
 import org.bukkit.Material;
@@ -10,12 +15,6 @@ import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.LongGrass;
-import net.glowstone.EventFactory;
-import net.glowstone.GlowWorld;
-import net.glowstone.block.GlowBlock;
-import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.ItemTable;
-import net.glowstone.entity.GlowPlayer;
 
 public class BlockGrass extends BlockType implements IBlockGrowable {
 

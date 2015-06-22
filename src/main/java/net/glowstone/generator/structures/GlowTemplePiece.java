@@ -1,14 +1,13 @@
 package net.glowstone.generator.structures;
 
-import java.util.Random;
-
 import net.glowstone.generator.objects.RandomItemsContent;
 import net.glowstone.generator.objects.RandomItemsContent.RandomAmountItem;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
+
+import java.util.Random;
 
 public abstract class GlowTemplePiece extends GlowStructurePiece {
 

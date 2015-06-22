@@ -14,7 +14,6 @@ import org.bukkit.material.DoublePlant;
 import org.bukkit.material.LongGrass;
 import org.bukkit.material.MaterialData;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 

@@ -16,7 +16,6 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.material.Skull;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 

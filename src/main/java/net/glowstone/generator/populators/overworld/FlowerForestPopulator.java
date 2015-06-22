@@ -1,18 +1,17 @@
 package net.glowstone.generator.populators.overworld;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
-
 import net.glowstone.generator.objects.Flower;
 import net.glowstone.generator.objects.FlowerType;
 import net.glowstone.util.noise.SimplexOctaveGenerator;
-
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.util.noise.OctaveGenerator;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Random;
 
 public class FlowerForestPopulator extends ForestPopulator {
 

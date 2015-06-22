@@ -8,7 +8,6 @@ import org.bukkit.StoneType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Stone;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 

@@ -1,9 +1,12 @@
 package net.glowstone.block.blocktype;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
+import net.glowstone.GlowChunk;
+import net.glowstone.block.GlowBlock;
+import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.entity.TEFlowerPot;
+import net.glowstone.block.entity.TileEntity;
+import net.glowstone.block.state.GlowFlowerPot;
+import net.glowstone.entity.GlowPlayer;
 import org.bukkit.GrassSpecies;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -13,13 +16,9 @@ import org.bukkit.material.LongGrass;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
-import net.glowstone.GlowChunk;
-import net.glowstone.block.GlowBlock;
-import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.entity.TEFlowerPot;
-import net.glowstone.block.entity.TileEntity;
-import net.glowstone.block.state.GlowFlowerPot;
-import net.glowstone.entity.GlowPlayer;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class BlockFlowerPot extends BlockType {
 

@@ -5,7 +5,6 @@ import lombok.Data;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.util.TextMessage;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;

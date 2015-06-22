@@ -1,8 +1,7 @@
 package net.glowstone.generator.biomegrid;
 
-import org.bukkit.block.Biome;
-
 import net.glowstone.constants.GlowBiome;
+import org.bukkit.block.Biome;
 
 public class ConstantBiomeMapLayer extends MapLayer {
 

@@ -2,8 +2,8 @@ package net.glowstone.net.handler.handshake;
 
 import com.flowpowered.networking.MessageHandler;
 import net.glowstone.GlowServer;
-import net.glowstone.net.ProxyData;
 import net.glowstone.net.GlowSession;
+import net.glowstone.net.ProxyData;
 import net.glowstone.net.message.handshake.HandshakeMessage;
 import net.glowstone.net.protocol.ProtocolType;
 

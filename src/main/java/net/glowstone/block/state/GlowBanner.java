@@ -4,9 +4,9 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.TEBanner;
 import org.apache.commons.lang.Validate;
-import org.bukkit.block.banner.Pattern;
 import org.bukkit.DyeColor;
 import org.bukkit.block.Banner;
+import org.bukkit.block.banner.Pattern;
 
 import java.util.ArrayList;
 import java.util.List;

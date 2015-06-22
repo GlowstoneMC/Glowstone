@@ -1,15 +1,10 @@
 package net.glowstone.io.anvil;
 
 import net.glowstone.GlowWorld;
-import net.glowstone.io.ChunkIoService;
-import net.glowstone.io.PlayerDataService;
-import net.glowstone.io.StructureDataService;
-import net.glowstone.io.WorldMetadataService;
-import net.glowstone.io.WorldStorageProvider;
-import net.glowstone.io.nbt.NbtPlayerDataService;
-import net.glowstone.io.nbt.NbtStructureDataService;
 import net.glowstone.io.*;
+import net.glowstone.io.nbt.NbtPlayerDataService;
 import net.glowstone.io.nbt.NbtScoreboardIoService;
+import net.glowstone.io.nbt.NbtStructureDataService;
 import net.glowstone.io.nbt.NbtWorldMetadataService;
 
 import java.io.File;

@@ -1,12 +1,11 @@
 package net.glowstone.generator.decorators.overworld;
 
-import java.util.Random;
-
+import net.glowstone.generator.objects.StoneBoulder;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.generator.BlockPopulator;
 
-import net.glowstone.generator.objects.StoneBoulder;
+import java.util.Random;
 
 public class StoneBoulderDecorator extends BlockPopulator {
 

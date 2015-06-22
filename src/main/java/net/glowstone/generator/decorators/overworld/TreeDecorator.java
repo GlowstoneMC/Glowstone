@@ -1,18 +1,17 @@
 package net.glowstone.generator.decorators.overworld;
 
-import java.lang.reflect.Constructor;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
+import net.glowstone.generator.decorators.BlockDecorator;
+import net.glowstone.generator.objects.trees.GenericTree;
+import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
-import net.glowstone.generator.decorators.BlockDecorator;
-import net.glowstone.generator.objects.trees.GenericTree;
-import net.glowstone.util.BlockStateDelegate;
+import java.lang.reflect.Constructor;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 public class TreeDecorator extends BlockDecorator {
 

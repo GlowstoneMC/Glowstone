@@ -1,8 +1,5 @@
 package net.glowstone.block.entity;
 
-import org.bukkit.Material;
-import org.bukkit.material.MaterialData;
-
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.state.GlowFlowerPot;
@@ -10,6 +7,8 @@ import net.glowstone.constants.GlowBlockEntity;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.Material;
+import org.bukkit.material.MaterialData;
 
 public class TEFlowerPot extends TileEntity {
 

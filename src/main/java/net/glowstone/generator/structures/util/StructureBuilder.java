@@ -1,9 +1,8 @@
 package net.glowstone.generator.structures.util;
 
-import java.util.Map;
-import java.util.Random;
-import java.util.Map.Entry;
-
+import net.glowstone.generator.objects.RandomItemsContent;
+import net.glowstone.generator.structures.GlowStructurePiece;
+import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -14,9 +13,9 @@ import org.bukkit.material.DirectionalContainer;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
-import net.glowstone.generator.objects.RandomItemsContent;
-import net.glowstone.generator.structures.GlowStructurePiece;
-import net.glowstone.util.BlockStateDelegate;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
 
 public class StructureBuilder {
 

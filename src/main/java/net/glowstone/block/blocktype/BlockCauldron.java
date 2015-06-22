@@ -14,7 +14,10 @@ import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class BlockCauldron extends BlockNeedsTool {
     private static final Collection<ItemStack> DROP = Collections.singletonList(new ItemStack(Material.CAULDRON_ITEM));

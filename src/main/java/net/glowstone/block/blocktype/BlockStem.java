@@ -11,7 +11,6 @@ import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Pumpkin;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 

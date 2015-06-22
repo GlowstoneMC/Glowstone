@@ -2,7 +2,6 @@ package net.glowstone.constants;
 
 import net.glowstone.generator.objects.trees.*;
 import net.glowstone.util.BlockStateDelegate;
-
 import org.bukkit.Location;
 import org.bukkit.TreeType;
 

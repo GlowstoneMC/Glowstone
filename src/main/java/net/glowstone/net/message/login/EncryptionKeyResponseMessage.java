@@ -1,7 +1,6 @@
 package net.glowstone.net.message.login;
 
 import com.flowpowered.networking.AsyncableMessage;
-
 import lombok.Data;
 
 @Data

@@ -1,10 +1,10 @@
 package net.glowstone.block.blocktype;
 
+import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
+import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.constants.GlowTree;
-import net.glowstone.EventFactory;
-import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.DirtType;
@@ -15,8 +15,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
-import org.bukkit.material.MaterialData;
 import org.bukkit.material.Dirt;
+import org.bukkit.material.MaterialData;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,5 +1,17 @@
 package net.glowstone.io.nbt;
 
+import net.glowstone.GlowChunk;
+import net.glowstone.GlowServer;
+import net.glowstone.GlowWorld;
+import net.glowstone.generator.structures.GlowStructure;
+import net.glowstone.io.StructureDataService;
+import net.glowstone.io.structure.StructureStorage;
+import net.glowstone.io.structure.StructureStore;
+import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.NBTInputStream;
+import net.glowstone.util.nbt.NBTOutputStream;
+import org.bukkit.Bukkit;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -7,19 +19,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-
-import org.bukkit.Bukkit;
-
-import net.glowstone.GlowChunk;
-import net.glowstone.GlowServer;
-import net.glowstone.GlowWorld;
-import net.glowstone.generator.structures.*;
-import net.glowstone.io.StructureDataService;
-import net.glowstone.io.structure.StructureStorage;
-import net.glowstone.io.structure.StructureStore;
-import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.NBTInputStream;
-import net.glowstone.util.nbt.NBTOutputStream;
 
 public class NbtStructureDataService implements StructureDataService {
 

@@ -1,7 +1,8 @@
 package net.glowstone.generator.decorators.nether;
 
-import java.util.Random;
-
+import net.glowstone.block.GlowBlock;
+import net.glowstone.block.ItemTable;
+import net.glowstone.generator.decorators.BlockDecorator;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -9,9 +10,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 
-import net.glowstone.block.GlowBlock;
-import net.glowstone.block.ItemTable;
-import net.glowstone.generator.decorators.BlockDecorator;
+import java.util.Random;
 
 public class LavaDecorator extends BlockDecorator {
 

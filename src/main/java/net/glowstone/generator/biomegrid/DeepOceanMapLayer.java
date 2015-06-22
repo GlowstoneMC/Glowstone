@@ -2,7 +2,8 @@ package net.glowstone.generator.biomegrid;
 
 import net.glowstone.constants.GlowBiome;
 
-import static org.bukkit.block.Biome.*;
+import static org.bukkit.block.Biome.DEEP_OCEAN;
+import static org.bukkit.block.Biome.MUSHROOM_ISLAND;
 
 public class DeepOceanMapLayer extends MapLayer {
 

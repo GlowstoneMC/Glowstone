@@ -1,7 +1,6 @@
 package net.glowstone.generator.populators;
 
 import net.glowstone.generator.populators.overworld.*;
-
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Biome;

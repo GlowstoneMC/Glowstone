@@ -1,17 +1,16 @@
 package net.glowstone.generator.structures;
 
-import java.util.Random;
-
 import net.glowstone.generator.structures.util.StructureBoundingBox;
 import net.glowstone.generator.structures.util.StructureBuilder;
 import net.glowstone.util.BlockStateDelegate;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.material.Stairs;
 import org.bukkit.util.Vector;
+
+import java.util.Random;
 
 public class GlowWitchHut extends GlowTemplePiece {
 

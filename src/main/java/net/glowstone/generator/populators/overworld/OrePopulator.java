@@ -1,19 +1,18 @@
 package net.glowstone.generator.populators.overworld;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.Map.Entry;
-
 import net.glowstone.generator.objects.OreType;
 import net.glowstone.generator.objects.OreVein;
-
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.StoneType;
 import org.bukkit.World;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.material.Stone;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
 
 /**
  * Populates the world with ores.
