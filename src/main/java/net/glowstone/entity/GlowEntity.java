@@ -7,9 +7,9 @@ import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
+import net.glowstone.entity.objects.GlowItemFrame;
 import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.entity.physics.EntityBoundingBox;
-import net.glowstone.entity.objects.GlowItemFrame;
 import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.Position;
@@ -35,6 +35,7 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;

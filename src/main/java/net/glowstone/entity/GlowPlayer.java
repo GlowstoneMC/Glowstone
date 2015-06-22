@@ -7,10 +7,6 @@ import io.netty.buffer.Unpooled;
 import net.glowstone.*;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.blocktype.BlockBed;
-import java.net.InetSocketAddress;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.logging.Level;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.constants.*;
 import net.glowstone.entity.meta.ClientSettings;
@@ -28,11 +24,7 @@ import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityVelocityMessage;
 import net.glowstone.net.message.play.game.*;
-import net.glowstone.net.message.play.inv.CloseWindowMessage;
-import net.glowstone.net.message.play.inv.OpenWindowMessage;
-import net.glowstone.net.message.play.inv.SetWindowContentsMessage;
-import net.glowstone.net.message.play.inv.SetWindowSlotMessage;
-import net.glowstone.net.message.play.inv.WindowPropertyMessage;
+import net.glowstone.net.message.play.inv.*;
 import net.glowstone.net.message.play.player.PlayerAbilitiesMessage;
 import net.glowstone.net.message.play.player.ResourcePackSendMessage;
 import net.glowstone.net.message.play.player.UseBedMessage;
@@ -68,6 +60,11 @@ import org.bukkit.title.TitleOptions;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 import org.json.simple.JSONObject;
+
+import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.logging.Level;
 
 /**
  * Represents an in-game player.
