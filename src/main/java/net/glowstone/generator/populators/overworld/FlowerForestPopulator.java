@@ -16,7 +16,7 @@ import org.bukkit.util.noise.OctaveGenerator;
 
 public class FlowerForestPopulator extends ForestPopulator {
 
-    private static final FlowerType[] FLOWERS = {FlowerType.POPPY, FlowerType.POPPY, FlowerType.DANDELION, FlowerType.ALLIUM,
+    public static final FlowerType[] FLOWERS = {FlowerType.POPPY, FlowerType.POPPY, FlowerType.DANDELION, FlowerType.ALLIUM,
         FlowerType.HOUSTONIA, FlowerType.TULIP_RED, FlowerType.TULIP_ORANGE, FlowerType.TULIP_WHITE, FlowerType.TULIP_PINK,
         FlowerType.OXEYE_DAISY};
     private final OctaveGenerator noiseGen;
