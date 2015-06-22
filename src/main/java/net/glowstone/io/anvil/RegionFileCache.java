@@ -55,7 +55,7 @@ public class RegionFileCache {
     }
 
     public RegionFile getRegionFile(int chunkX, int chunkZ) throws IOException {
-        File file = new File(regionDir, "r." + (chunkX >> 5) + "." + (chunkZ >> 5) + extension);
+        File file = new File(regionDir, "r." + (chunkX >> 5) + '.' + (chunkZ >> 5) + extension);
 
         Reference<RegionFile> ref = cache.get(file);
 

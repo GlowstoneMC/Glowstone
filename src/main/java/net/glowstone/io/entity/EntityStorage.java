@@ -75,7 +75,7 @@ public final class EntityStorage {
         }
         EntityStore<?> store = idTable.get(compound.getString("id"));
         if (store == null) {
-            throw new IllegalArgumentException("Unknown entity type to load: \"" + compound.getString("id") + "\"");
+            throw new IllegalArgumentException("Unknown entity type to load: \"" + compound.getString("id") + '"');
         }
 
         // verify that, if the tag contains a world, it's correct

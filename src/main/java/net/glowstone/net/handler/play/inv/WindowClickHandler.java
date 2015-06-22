@@ -144,7 +144,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
 
         if (clickType == ClickType.UNKNOWN || action == InventoryAction.UNKNOWN) {
             // show a warning for unknown click type
-            GlowServer.logger.warning(player.getName() + ": mystery window click " + clickType + "/" + action + ": " + message);
+            GlowServer.logger.warning(player.getName() + ": mystery window click " + clickType + '/' + action + ": " + message);
         }
 
         // deny CLONE_STACK for non-creative mode players

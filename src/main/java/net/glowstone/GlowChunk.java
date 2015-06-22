@@ -74,7 +74,7 @@ public final class GlowChunk implements Chunk {
          */
         public ChunkSection(char[] types, NibbleArray skyLight, NibbleArray blockLight) {
             if (types.length != ARRAY_SIZE || skyLight.size() != ARRAY_SIZE || blockLight.size() != ARRAY_SIZE) {
-                throw new IllegalArgumentException("An array length was not " + ARRAY_SIZE + ": " + types.length + " " + skyLight.size() + " " + blockLight.size());
+                throw new IllegalArgumentException("An array length was not " + ARRAY_SIZE + ": " + types.length + ' ' + skyLight.size() + ' ' + blockLight.size());
             }
             this.types = types;
             this.skyLight = skyLight;
@@ -305,7 +305,7 @@ public final class GlowChunk implements Chunk {
      */
     public void initializeSections(ChunkSection[] initSections) {
         if (isLoaded()) {
-            GlowServer.logger.log(Level.SEVERE, "Tried to initialize already loaded chunk (" + x + "," + z + ")", new Throwable());
+            GlowServer.logger.log(Level.SEVERE, "Tried to initialize already loaded chunk (" + x + ',' + z + ')', new Throwable());
             return;
         }
         //GlowServer.logger.log(Level.INFO, "Initializing chunk ({0},{1})", new Object[]{x, z});

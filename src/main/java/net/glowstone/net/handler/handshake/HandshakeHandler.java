@@ -19,7 +19,7 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
             return;
         }
 
-        session.setHostname(message.getAddress() + ":" + message.getPort());
+        session.setHostname(message.getAddress() + ':' + message.getPort());
 
         // Proxies modify the hostname in the HandshakeMessage to contain
         // the client's UUID and (optionally) properties

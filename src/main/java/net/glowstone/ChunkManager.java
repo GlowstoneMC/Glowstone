@@ -133,7 +133,7 @@ public final class ChunkManager {
                 return true;
             }
         } catch (Exception e) {
-            GlowServer.logger.log(Level.SEVERE, "Error while loading chunk (" + x + "," + z + ")", e);
+            GlowServer.logger.log(Level.SEVERE, "Error while loading chunk (" + x + ',' + z + ')', e);
             // an error in chunk reading may have left the chunk in an invalid state
             // (i.e. double initialization errors), so it's forcibly unloaded here
             chunk.unload(false, false);
@@ -148,7 +148,7 @@ public final class ChunkManager {
         try {
             generateChunk(chunk, x, z);
         } catch (Throwable ex) {
-            GlowServer.logger.log(Level.SEVERE, "Error while generating chunk (" + x + "," + z + ")", ex);
+            GlowServer.logger.log(Level.SEVERE, "Error while generating chunk (" + x + ',' + z + ')', ex);
             return false;
         }
 
@@ -171,7 +171,7 @@ public final class ChunkManager {
             Set<ChunkLock> lockSet = locks.get(entry.getKey());
             if (lockSet == null || lockSet.size() == 0) {
                 if (!entry.getValue().unload(true, true)) {
-                    GlowServer.logger.warning("Failed to unload chunk " + world.getName() + ":" + entry.getKey());
+                    GlowServer.logger.warning("Failed to unload chunk " + world.getName() + ':' + entry.getKey());
                 }
             }
             // cannot remove old chunks from cache - GlowBlock and GlowBlockState keep references.
@@ -231,7 +231,7 @@ public final class ChunkManager {
         try {
             populateChunk(x, z, true);
         } catch (Throwable ex) {
-            GlowServer.logger.log(Level.SEVERE, "Error while populating chunk (" + x + "," + z + ")", ex);
+            GlowServer.logger.log(Level.SEVERE, "Error while populating chunk (" + x + ',' + z + ')', ex);
         }
     }
 
@@ -349,7 +349,7 @@ public final class ChunkManager {
             generateChunk(chunk, x, z);
             populateChunk(x, z, false);  // should this be forced?
         } catch (Throwable ex) {
-            GlowServer.logger.log(Level.SEVERE, "Error while regenerating chunk (" + x + "," + z + ")", ex);
+            GlowServer.logger.log(Level.SEVERE, "Error while regenerating chunk (" + x + ',' + z + ')', ex);
             return false;
         }
         return true;
@@ -461,7 +461,7 @@ public final class ChunkManager {
 
         @Override
         public String toString() {
-            return "ChunkLock{" + desc + "}";
+            return "ChunkLock{" + desc + '}';
         }
 
         @Override

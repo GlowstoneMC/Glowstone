@@ -417,7 +417,7 @@ public final class ServerConfig {
 
         @Override
         public String toString() {
-            return name() + "(" + path + ", " + def + ")";
+            return name() + '(' + path + ", " + def + ')';
         }
     }
 

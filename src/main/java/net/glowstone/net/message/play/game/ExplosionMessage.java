@@ -21,7 +21,7 @@ public class ExplosionMessage implements Message {
         return "ExplosionMessage{x=" + x + ",y=" + y + ",z=" + z +
                 ",radius=" + radius +
                 ",motX=" + playerMotionX + ",motY=" + playerMotionY + ",motZ=" + playerMotionZ +
-                ",recordCount=" + records.size() + "}";
+                ",recordCount=" + records.size() + '}';
     }
 
     @Data

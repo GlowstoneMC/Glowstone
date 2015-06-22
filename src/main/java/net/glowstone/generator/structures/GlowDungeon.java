@@ -168,7 +168,7 @@ public class GlowDungeon extends GlowStructurePiece {
 
         builder.createMobSpawner(new Vector(radiusX, 1, radiusZ), mobTypes[random.nextInt(mobTypes.length)]);
 
-        GlowServer.logger.info("dungeon generated: " + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ());
+        GlowServer.logger.info("dungeon generated: " + loc.getBlockX() + ',' + loc.getBlockY() + ',' + loc.getBlockZ());
 
         return true;
     }

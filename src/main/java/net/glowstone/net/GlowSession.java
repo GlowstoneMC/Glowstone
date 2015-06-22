@@ -545,15 +545,15 @@ public final class GlowSession extends BasicSession {
     @Override
     public void onHandlerThrowable(Message message, MessageHandler<?, ?> handle, Throwable t) {
         // can be safely logged and the connection maintained
-        GlowServer.logger.log(Level.SEVERE, "Error while handling " + message + " (handler: " + handle.getClass().getSimpleName() + ")", t);
+        GlowServer.logger.log(Level.SEVERE, "Error while handling " + message + " (handler: " + handle.getClass().getSimpleName() + ')', t);
     }
 
     @Override
     public String toString() {
         if (player != null) {
-            return player.getName() + "[" + address + "]";
+            return player.getName() + '[' + address + ']';
         } else {
-            return "[" + address + "]";
+            return "[" + address + ']';
         }
     }
 }

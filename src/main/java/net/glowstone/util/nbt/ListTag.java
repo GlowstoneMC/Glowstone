@@ -53,9 +53,9 @@ final class ListTag<T extends Tag> extends Tag<List<T>> {
     protected void valueToString(StringBuilder bldr) {
         bldr.append(value.size()).append(" entries of type ").append(type.getName()).append("\n{\n");
         for (T elem : value) {
-            bldr.append("    ").append(elem.toString().replaceAll("\n", "\n    ")).append("\n");
+            bldr.append("    ").append(elem.toString().replaceAll("\n", "\n    ")).append('\n');
         }
-        bldr.append("}");
+        bldr.append('}');
     }
 
 }

@@ -29,7 +29,7 @@ final class IntArrayTag extends Tag<int[]> {
         for (int b : value) {
             String hexDigits = Integer.toHexString(b);
             hex.append("00000000", hexDigits.length(), 8);
-            hex.append(hexDigits).append(" ");
+            hex.append(hexDigits).append(' ');
         }
     }
 }

@@ -115,7 +115,7 @@ public final class GlowHelpMap implements HelpMap {
                         if (fullText.isEmpty()) {
                             fullText = shortText;
                         } else {
-                            fullText = shortText + "\n" + ChatColor.RESET + fullText;
+                            fullText = shortText + '\n' + ChatColor.RESET + fullText;
                         }
                     }
                     addTopic(new GeneralHelpTopic(key, color(shortText), color(fullText), topic.getString("permission", null)));
@@ -186,10 +186,10 @@ public final class GlowHelpMap implements HelpMap {
             if (commandInIgnoredPlugin(command)) {
                 continue;
             }
-            HelpTopic original = getHelpTopic("/" + command.getLabel());
+            HelpTopic original = getHelpTopic('/' + command.getLabel());
             if (original != null) {
                 for (String alias : command.getAliases()) {
-                    HelpTopic aliasTopic = new AliasTopic("/" + alias, original);
+                    HelpTopic aliasTopic = new AliasTopic('/' + alias, original);
                     if (!helpTopics.containsKey(aliasTopic.getName())) {
                         aliases.add(aliasTopic);
                         addPrivateTopic(aliasTopic);
@@ -208,7 +208,7 @@ public final class GlowHelpMap implements HelpMap {
         for (Command command : commands) {
             String pluginName = getCommandPluginName(command);
             if (pluginName != null) {
-                HelpTopic topic = getHelpTopic("/" + command.getLabel());
+                HelpTopic topic = getHelpTopic('/' + command.getLabel());
                 if (topic != null) {
                     if (!pluginIndexes.containsKey(pluginName)) {
                         pluginIndexes.put(pluginName, new TreeSet<>(TOPIC_COMPARE));
@@ -323,7 +323,7 @@ public final class GlowHelpMap implements HelpMap {
 
         @Override
         public String getFullText(CommandSender sender) {
-            return shortText + "\n" + original.getFullText(sender);
+            return shortText + '\n' + original.getFullText(sender);
         }
     }
 }

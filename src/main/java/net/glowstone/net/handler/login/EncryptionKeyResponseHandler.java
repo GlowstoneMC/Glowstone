@@ -97,7 +97,7 @@ public final class EncryptionKeyResponseHandler implements MessageHandler<GlowSe
 
         // start auth thread
         Thread clientAuthThread = new Thread(new ClientAuthRunnable(session, session.getVerifyUsername(), hash));
-        clientAuthThread.setName("ClientAuthThread{" + session.getVerifyUsername() + "}");
+        clientAuthThread.setName("ClientAuthThread{" + session.getVerifyUsername() + '}');
         clientAuthThread.start();
     }
 

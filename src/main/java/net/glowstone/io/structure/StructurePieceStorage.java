@@ -59,7 +59,7 @@ public final class StructurePieceStorage {
         }
         StructurePieceStore<?> store = idTable.get(compound.getString("id"));
         if (store == null) {
-            throw new IllegalArgumentException("Unknown structure piece type to load: \"" + compound.getString("id") + "\"");
+            throw new IllegalArgumentException("Unknown structure piece type to load: \"" + compound.getString("id") + '"');
         }
 
         return createStructurePiece(store, compound);
@@ -74,7 +74,7 @@ public final class StructurePieceStorage {
         // look up the store for the structure piece
         StructurePieceStore<?> store = classTable.get(structurePiece.getClass());
         if (store == null) {
-            throw new IllegalArgumentException("Unknown structure piece type to save: \"" + structurePiece.getClass() + "\"");
+            throw new IllegalArgumentException("Unknown structure piece type to save: \"" + structurePiece.getClass() + '"');
         }
 
         compound.putString("id", store.getId());

@@ -395,7 +395,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public String toString() {
-        return "GlowPlayer{name=" + getName() + "}";
+        return "GlowPlayer{name=" + getName() + '}';
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1784,7 +1784,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         if (server.getAnnounceAchievements()) {
             // todo: make message fancier (hover, translated names)
-            server.broadcastMessage(getName() + " earned achievement " + ChatColor.GREEN + "[" + achievement.name() + "]");
+            server.broadcastMessage(getName() + " earned achievement " + ChatColor.GREEN + '[' + achievement.name() + ']');
         }
         return true;
     }

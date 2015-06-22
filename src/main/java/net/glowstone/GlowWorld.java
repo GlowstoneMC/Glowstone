@@ -59,7 +59,7 @@ public final class GlowWorld implements World {
     private static final class WorldMetadataStore extends MetadataStoreBase<World> implements MetadataStore<World> {
         @Override
         protected String disambiguate(World subject, String metadataKey) {
-            return subject.getName() + ":" + metadataKey;
+            return subject.getName() + ':' + metadataKey;
         }
     }
 
@@ -356,7 +356,7 @@ public final class GlowWorld implements World {
 
                     if (System.currentTimeMillis() >= loadTime + 1000) {
                         int progress = 100 * current / total;
-                        GlowServer.logger.info("Preparing spawn for " + name + ": " + progress + "%");
+                        GlowServer.logger.info("Preparing spawn for " + name + ": " + progress + '%');
                         loadTime = System.currentTimeMillis();
                     }
                 }

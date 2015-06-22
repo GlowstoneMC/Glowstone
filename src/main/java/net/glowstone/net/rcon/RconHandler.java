@@ -71,7 +71,7 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
         if (password.equals(payload)) {
             loggedIn = true;
             sendResponse(ctx, requestId, TYPE_COMMAND, "");
-            GlowServer.logger.info("Rcon connection from [" + ctx.channel().remoteAddress() + "]");
+            GlowServer.logger.info("Rcon connection from [" + ctx.channel().remoteAddress() + ']');
         } else {
             loggedIn = false;
             sendResponse(ctx, FAILURE, TYPE_COMMAND, "");

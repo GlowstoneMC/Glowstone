@@ -101,7 +101,7 @@ public final class CraftingManager implements Iterable<Recipe> {
         int size = (int) Math.sqrt(items.length);
 
         if (size * size != items.length) {
-            throw new IllegalArgumentException("ItemStack list was not square (was " + items.length + ")");
+            throw new IllegalArgumentException("ItemStack list was not square (was " + items.length + ')');
         }
 
         ShapedRecipe result = getShapedRecipe(size, items);

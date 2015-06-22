@@ -134,6 +134,6 @@ public class ItemType {
 
     @Override
     public final String toString() {
-        return getClass().getSimpleName() + "{" + id + " -> " + getMaterial() + "}";
+        return getClass().getSimpleName() + '{' + id + " -> " + getMaterial() + '}';
     }
 }

@@ -58,7 +58,7 @@ public final class GlowBlock implements Block {
 
         @Override
         protected String disambiguate(Block subject, String metadataKey) {
-            return subject.getWorld() + "," + subject.getX() + "," + subject.getY() + "," + subject.getZ() + ":" + metadataKey;
+            return subject.getWorld() + "," + subject.getX() + ',' + subject.getY() + ',' + subject.getZ() + ':' + metadataKey;
         }
     }
 
@@ -442,7 +442,7 @@ public final class GlowBlock implements Block {
 
     @Override
     public String toString() {
-        return "GlowBlock{chunk=" + chunk + ",x=" + x + ",y=" + y + ",z=" + z + ",type=" + getType() + ",data=" + getData() + "}";
+        return "GlowBlock{chunk=" + chunk + ",x=" + x + ",y=" + y + ",z=" + z + ",type=" + getType() + ",data=" + getData() + '}';
     }
 
     ////////////////////////////////////////////////////////////////////////////

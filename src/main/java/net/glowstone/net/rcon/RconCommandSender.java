@@ -39,7 +39,7 @@ public class RconCommandSender implements RemoteConsoleCommandSender {
 
     @Override
     public void sendMessage(String message) {
-        buffer.append(message).append("\n");
+        buffer.append(message).append('\n');
     }
 
     @Override

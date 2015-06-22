@@ -842,7 +842,7 @@ public final class GlowServer implements Server {
 
     @Override
     public String toString() {
-        return "GlowServer{name=" + getName() + ",version=" + getVersion() + ",minecraftVersion=" + GAME_VERSION + "}";
+        return "GlowServer{name=" + getName() + ",version=" + getVersion() + ",minecraftVersion=" + GAME_VERSION + '}';
     }
 
     ////////////////////////////////////////////////////////////////////////////

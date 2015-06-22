@@ -81,7 +81,7 @@ public abstract class TileEntity {
             int z = tag.getInt("z");
             int rx = block.getX(), ry = block.getY(), rz = block.getZ();
             if (x != rx || y != ry || z != rz) {
-                throw new IllegalArgumentException("Tried to load tile entity with coords (" + x + "," + y + "," + z + ") into (" + rx + "," + ry + "," + rz + ")");
+                throw new IllegalArgumentException("Tried to load tile entity with coords (" + x + ',' + y + ',' + z + ") into (" + rx + ',' + ry + ',' + rz + ')');
             }
         }
     }

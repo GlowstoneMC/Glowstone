@@ -399,7 +399,7 @@ public abstract class GlowEntity implements Entity {
      */
     public void setRawLocation(Location location) {
         if (location.getWorld() != world) {
-            throw new IllegalArgumentException("Cannot setRawLocation to a different world (got " + location.getWorld() + ", expected " + world + ")");
+            throw new IllegalArgumentException("Cannot setRawLocation to a different world (got " + location.getWorld() + ", expected " + world + ')');
         }
         world.getEntityManager().move(this, location);
         Position.copyLocation(location, this.location);
