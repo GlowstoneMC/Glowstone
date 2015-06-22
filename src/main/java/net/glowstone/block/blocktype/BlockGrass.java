@@ -51,14 +51,9 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
                     final GlowBlockState blockState = b.getState();
                     if (random.nextFloat() < 0.125D) {
                         // sometimes grow random flower
-                        // would be better to call a method that choose a random 
+                        // would be better to call a method that choose a random
                         // flower depending on the biome
-                        Material flower;
-                        if (random.nextInt(2) == 0) {
-                            flower = Material.RED_ROSE;
-                        } else {
-                            flower = Material.YELLOW_FLOWER;
-                        }
+                        Material flower =
                         if (ItemTable.instance().getBlock(flower).canPlaceAt(b, BlockFace.DOWN)) {
                             blockState.setType(flower);
                         }

@@ -35,11 +35,11 @@ public class FlowerDecorator extends BlockDecorator {
     private static FlowerType getRandomFlower(Random random, List<FlowerDecoration> decorations) {
         int totalWeight = 0;
         for (FlowerDecoration decoration : decorations) {
-            totalWeight += decoration.getWeigth();
+            totalWeight += decoration.getWeight();
         }
         int weight = random.nextInt(totalWeight);
         for (FlowerDecoration decoration : decorations) {
-            weight -= decoration.getWeigth();
+            weight -= decoration.getWeight();
             if (weight < 0) {
                 return decoration.getFlower();
             }
@@ -61,7 +61,7 @@ public class FlowerDecorator extends BlockDecorator {
             return flower;
         }
 
-        public int getWeigth() {
+        public int getWeight() {
             return weight;
         }
     }
