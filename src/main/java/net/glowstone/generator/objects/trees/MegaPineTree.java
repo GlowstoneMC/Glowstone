@@ -1,15 +1,14 @@
 package net.glowstone.generator.objects.trees;
 
-import java.util.Random;
-
 import net.glowstone.util.BlockStateDelegate;
-
 import org.bukkit.DirtType;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.Dirt;
+
+import java.util.Random;
 
 public class MegaPineTree extends MegaRedwoodTree {
 

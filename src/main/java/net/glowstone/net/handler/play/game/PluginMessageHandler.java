@@ -42,7 +42,7 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
         }
     }
 
-    private void handleInternal(GlowSession session, String channel, byte[] data) {
+    private static void handleInternal(GlowSession session, String channel, byte[] data) {
         /*
         MC|Brand
             entire data: string of client's brand (e.g. "vanilla")
@@ -155,7 +155,7 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
         }
     }
 
-    private String string(byte[] data) {
+    private static String string(byte[] data) {
         return new String(data, StandardCharsets.UTF_8);
     }
 }

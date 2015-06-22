@@ -47,7 +47,7 @@ public class GlowRabbit extends GlowAnimal implements Rabbit {
     public List<Message> createSpawnMessage() {
         List<Message> messages = super.createSpawnMessage();
         MetadataMap map = new MetadataMap(GlowRabbit.class);
-        map.set(MetadataIndex.RABBIT_TYPE, rabbitTypeIntegerMap.get(this.getRabbitType()).byteValue());
+        map.set(MetadataIndex.RABBIT_TYPE, rabbitTypeIntegerMap.get(rabbitType).byteValue());
         messages.add(new EntityMetadataMessage(id, map.getEntryList()));
         return messages;
     }

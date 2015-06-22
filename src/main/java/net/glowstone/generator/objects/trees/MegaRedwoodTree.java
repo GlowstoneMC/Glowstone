@@ -13,7 +13,8 @@ public class MegaRedwoodTree extends MegaJungleTree {
         super(random, location, delegate);
         setHeight(random.nextInt(15) + random.nextInt(3) + 13);
         setTypes(1, 1);
-        setLeavesHeight(random.nextInt(5) + (random.nextBoolean() ? 3 : 13));
+        int leavesHeight1 = random.nextInt(5) + (random.nextBoolean() ? 3 : 13);
+        this.leavesHeight = leavesHeight1;
     }
 
     protected final void setLeavesHeight(int leavesHeight) {

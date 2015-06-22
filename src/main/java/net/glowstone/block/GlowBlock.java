@@ -1,9 +1,10 @@
 package net.glowstone.block;
 
-import java.util.ArrayList;
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
+import net.glowstone.block.blocktype.BlockRedstone;
+import net.glowstone.block.blocktype.BlockRedstoneTorch;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowPlayer;
@@ -16,22 +17,15 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Button;
+import org.bukkit.material.Diode;
+import org.bukkit.material.Lever;
 import org.bukkit.metadata.MetadataStore;
 import org.bukkit.metadata.MetadataStoreBase;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import net.glowstone.block.blocktype.BlockRedstone;
-import net.glowstone.block.blocktype.BlockRedstoneTorch;
-import org.bukkit.material.Button;
-import org.bukkit.material.Diode;
-import org.bukkit.material.Lever;
+import java.util.*;
 
 /**
  * Represents a single block in a world.
@@ -58,7 +52,7 @@ public final class GlowBlock implements Block {
 
         @Override
         protected String disambiguate(Block subject, String metadataKey) {
-            return subject.getWorld() + "," + subject.getX() + "," + subject.getY() + "," + subject.getZ() + ":" + metadataKey;
+            return subject.getWorld() + "," + subject.getX() + ',' + subject.getY() + ',' + subject.getZ() + ':' + metadataKey;
         }
     }
 
@@ -442,7 +436,7 @@ public final class GlowBlock implements Block {
 
     @Override
     public String toString() {
-        return "GlowBlock{chunk=" + getChunk() + ",x=" + x + ",y=" + y + ",z=" + z + ",type=" + getType() + ",data=" + getData() + "}";
+        return "GlowBlock{chunk=" + chunk + ",x=" + x + ",y=" + y + ",z=" + z + ",type=" + getType() + ",data=" + getData() + '}';
     }
 
     ////////////////////////////////////////////////////////////////////////////

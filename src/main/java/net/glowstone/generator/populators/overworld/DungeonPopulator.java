@@ -3,7 +3,6 @@ package net.glowstone.generator.populators.overworld;
 import net.glowstone.generator.structures.GlowDungeon;
 import net.glowstone.generator.structures.util.StructureBoundingBox;
 import net.glowstone.util.BlockStateDelegate;
-
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;

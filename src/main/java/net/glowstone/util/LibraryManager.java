@@ -45,18 +45,18 @@ public final class LibraryManager {
 
     private void download(String group, String library, String version) {
         // check if we already have it
-        File file = new File(directory, library + "-" + version + ".jar");
+        File file = new File(directory, library + '-' + version + ".jar");
         if (!file.exists()) {
             // download it
-            GlowServer.logger.info("Downloading " + library + " " + version + "...");
+            GlowServer.logger.info("Downloading " + library + ' ' + version + "...");
             try {
-                URL downloadUrl = new URL(repository + group.replace('.', '/') + "/" + library + "/" + version + "/" + library + "-" + version + ".jar");
+                URL downloadUrl = new URL(repository + group.replace('.', '/') + '/' + library + '/' + version + '/' + library + '-' + version + ".jar");
                 try (ReadableByteChannel input = Channels.newChannel(downloadUrl.openStream());
                      FileOutputStream output = new FileOutputStream(file)) {
                     output.getChannel().transferFrom(input, 0, Long.MAX_VALUE);
                 }
             } catch (IOException e) {
-                GlowServer.logger.log(Level.WARNING, "Failed to download: " + library + " " + version, e);
+                GlowServer.logger.log(Level.WARNING, "Failed to download: " + library + ' ' + version, e);
                 return;
             }
         }
@@ -68,7 +68,7 @@ public final class LibraryManager {
             method.setAccessible(true);
             method.invoke(sysLoader, file.toURI().toURL());
         } catch (ReflectiveOperationException | MalformedURLException e) {
-            GlowServer.logger.log(Level.WARNING, "Failed to add to classpath: " + library + " " + version, e);
+            GlowServer.logger.log(Level.WARNING, "Failed to add to classpath: " + library + ' ' + version, e);
         }
     }
 }

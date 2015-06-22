@@ -5,7 +5,6 @@ import com.flowpowered.networking.ConnectionManager;
 import com.flowpowered.networking.Message;
 import com.flowpowered.networking.MessageHandler;
 import com.flowpowered.networking.session.BasicSession;
-
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -29,12 +28,10 @@ import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.LoginProtocol;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.ProtocolType;
-
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
 import javax.crypto.SecretKey;
-
 import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.logging.Level;
@@ -313,7 +310,7 @@ public final class GlowSession extends BasicSession {
         player.join(this, reader);
 
         // Kick other players with the same UUID
-        for (GlowPlayer other : getServer().getOnlinePlayers()) {
+        for (GlowPlayer other : server.getOnlinePlayers()) {
             if (other != player && other.getUniqueId().equals(player.getUniqueId())) {
                 other.getSession().disconnect("You logged in from another location.", true);
                 break;
@@ -545,15 +542,15 @@ public final class GlowSession extends BasicSession {
     @Override
     public void onHandlerThrowable(Message message, MessageHandler<?, ?> handle, Throwable t) {
         // can be safely logged and the connection maintained
-        GlowServer.logger.log(Level.SEVERE, "Error while handling " + message + " (handler: " + handle.getClass().getSimpleName() + ")", t);
+        GlowServer.logger.log(Level.SEVERE, "Error while handling " + message + " (handler: " + handle.getClass().getSimpleName() + ')', t);
     }
 
     @Override
     public String toString() {
         if (player != null) {
-            return player.getName() + "[" + address + "]";
+            return player.getName() + '[' + address + ']';
         } else {
-            return "[" + address + "]";
+            return "[" + address + ']';
         }
     }
 }

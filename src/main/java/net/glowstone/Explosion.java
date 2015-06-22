@@ -7,7 +7,10 @@ import net.glowstone.entity.GlowHumanEntity;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.ExplosionMessage;
-import org.bukkit.*;
+import org.bukkit.Effect;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
@@ -185,7 +188,7 @@ public final class Explosion {
         return rand * power;
     }
 
-    private double getBlastDurability(GlowBlock block) {
+    private static double getBlastDurability(GlowBlock block) {
         return block.getMaterialValues().getBlastResistance();
     }
 
@@ -261,7 +264,7 @@ public final class Explosion {
         return affectedPlayers;
     }
 
-    private double calculateEnchantedDamage(double basicDamage, GlowLivingEntity entity) {
+    private static double calculateEnchantedDamage(double basicDamage, GlowLivingEntity entity) {
         int level = 0; // TODO: calculate explosion protection level of entity's equipment
 
         if (level > 0) {
@@ -275,7 +278,7 @@ public final class Explosion {
     }
 
     private double calculateDamage(GlowEntity entity, double disDivPower) {
-        double damage = world.rayTrace(location, entity);
+        double damage = GlowWorld.rayTrace(location, entity);
         return (damage * (1D - disDivPower));
     }
 

@@ -1,21 +1,20 @@
 package net.glowstone.generator.populators.overworld;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
-
-import net.glowstone.generator.decorators.overworld.MushroomDecorator;
-import net.glowstone.generator.decorators.overworld.WaterLilyDecorator;
 import net.glowstone.generator.decorators.overworld.FlowerDecorator.FlowerDecoration;
+import net.glowstone.generator.decorators.overworld.MushroomDecorator;
 import net.glowstone.generator.decorators.overworld.TreeDecorator.TreeDecoration;
+import net.glowstone.generator.decorators.overworld.WaterLilyDecorator;
 import net.glowstone.generator.objects.FlowerType;
 import net.glowstone.generator.objects.trees.SwampTree;
-
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Random;
 
 public class SwamplandPopulator extends BiomePopulator {
 

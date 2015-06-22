@@ -31,9 +31,9 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     protected void valueToString(StringBuilder bldr) {
         bldr.append(value.size()).append(" entries\n{\n");
         for (Map.Entry<String, Tag> entry : value.entrySet()) {
-            bldr.append("    ").append(entry.getKey()).append(": ").append(entry.getValue().toString().replaceAll("\n", "\n    ")).append("\n");
+            bldr.append("    ").append(entry.getKey()).append(": ").append(entry.getValue().toString().replaceAll("\n", "\n    ")).append('\n');
         }
-        bldr.append("}");
+        bldr.append('}');
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -263,7 +263,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     @SuppressWarnings("unchecked")
     private <T extends Tag<?>> T getTag(String key, Class<T> clazz) {
         if (!is(key, clazz)) {
-            throw new IllegalArgumentException("Compound does not contain " + clazz.getSimpleName() + " \"" + key + "\"");
+            throw new IllegalArgumentException("Compound does not contain " + clazz.getSimpleName() + " \"" + key + '"');
         }
         return (T) value.get(key);
     }
@@ -272,7 +272,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
         ListTag<?> tag = getTag(key, ListTag.class);
         if (tag.getValue().size() == 0) {
             // empty lists are allowed to be the wrong type
-            return Arrays.asList();
+            return Collections.emptyList();
         }
         if (tag.getChildType() != type) {
             throw new IllegalArgumentException("List \"" + key + "\" contains " + tag.getChildType() + ", not " + type);

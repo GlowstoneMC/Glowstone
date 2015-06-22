@@ -239,7 +239,7 @@ public final class ServerConfig {
         GlowServer.logger.info("Created default config: " + dest);
     }
 
-    private void report(File file, InvalidConfigurationException e) {
+    private static void report(File file, InvalidConfigurationException e) {
         if (e.getCause() instanceof YAMLException) {
             GlowServer.logger.severe("Config file " + file + " isn't valid! " + e.getCause());
         } else if ((e.getCause() == null) || (e.getCause() instanceof ClassCastException)) {
@@ -417,7 +417,7 @@ public final class ServerConfig {
 
         @Override
         public String toString() {
-            return name() + "(" + path + ", " + def + ")";
+            return name() + '(' + path + ", " + def + ')';
         }
     }
 

@@ -1,15 +1,14 @@
 package net.glowstone.generator.decorators.overworld;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
+import net.glowstone.generator.decorators.BlockDecorator;
+import net.glowstone.generator.objects.DoubleTallPlant;
 import org.bukkit.Chunk;
 import org.bukkit.DoublePlantSpecies;
 import org.bukkit.World;
 
-import net.glowstone.generator.decorators.BlockDecorator;
-import net.glowstone.generator.objects.DoubleTallPlant;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 public class DoublePlantDecorator extends BlockDecorator {
 
@@ -29,7 +28,7 @@ public class DoublePlantDecorator extends BlockDecorator {
         new DoubleTallPlant(species).generate(world, random, sourceX, sourceY, sourceZ);
     }
 
-    private DoublePlantSpecies getRandomDoublePlant(Random random, List<DoublePlantDecoration> decorations) {
+    private static DoublePlantSpecies getRandomDoublePlant(Random random, List<DoublePlantDecoration> decorations) {
         int totalWeight = 0;
         for (DoublePlantDecoration decoration : decorations) {
             totalWeight += decoration.getWeigth();

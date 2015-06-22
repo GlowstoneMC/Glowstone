@@ -42,11 +42,11 @@ public final class StatisticMap {
         values.put(key, value < 0 ? 0 : value);
     }
 
-    private String name(Statistic stat) {
+    private static String name(Statistic stat) {
         return GlowStatistic.getName(stat);
     }
 
-    private String name(Statistic stat, Material mat) {
+    private static String name(Statistic stat, Material mat) {
         if (mat.isBlock()) {
             Validate.isTrue(stat.getType() == Statistic.Type.BLOCK, "Statistic " + stat + " is not a block statistic");
         } else {
@@ -55,7 +55,7 @@ public final class StatisticMap {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    private String name(Statistic stat, EntityType type) {
+    private static String name(Statistic stat, EntityType type) {
         Validate.isTrue(stat.getType() == Statistic.Type.ENTITY, "Statistic " + stat + " is not an entity statistic");
         throw new UnsupportedOperationException("Not yet implemented");
     }

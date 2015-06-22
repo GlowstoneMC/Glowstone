@@ -8,8 +8,8 @@ import org.bukkit.StoneType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Stone;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 public class BlockStone extends BlockNeedsTool {
     @Override
@@ -20,9 +20,9 @@ public class BlockStone extends BlockNeedsTool {
     @Override
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
         if (((Stone) block.getState().getData()).getType() == StoneType.NORMAL) {
-            return Arrays.asList(new ItemStack(Material.COBBLESTONE));
+            return Collections.singletonList(new ItemStack(Material.COBBLESTONE));
         } else {
-            return Arrays.asList(new ItemStack(Material.STONE, 1, block.getData()));
+            return Collections.singletonList(new ItemStack(Material.STONE, 1, block.getData()));
         }
     }
 }

@@ -156,7 +156,7 @@ public class BlockFire extends BlockNeedsAttached {
         updateBlock(block);
     }
 
-    private boolean hasNearFlammableBlock(GlowBlock block) {
+    private static boolean hasNearFlammableBlock(GlowBlock block) {
         // check there's at least a flammable block around
         for (BlockFace face : FLAMMABLE_FACES) {
             if (block.getRelative(face).isFlammable()) {
@@ -166,7 +166,7 @@ public class BlockFire extends BlockNeedsAttached {
         return false;
     }
 
-    private boolean isRainingAround(GlowBlock block) {
+    private static boolean isRainingAround(GlowBlock block) {
         // check if it's raining on the block itself or on one of it's 4 faces
         for (BlockFace face: RAIN_FACES) {
             if (GlowBiomeClimate.isRainy(block.getRelative(face))) {

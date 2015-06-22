@@ -106,7 +106,7 @@ final class GlowBanEntry implements JsonListFile.BaseEntry, BanEntry, Cloneable 
         list.putEntry(this);
     }
 
-    private Date copy(Date d) {
+    private static Date copy(Date d) {
         return d == null ? null : (Date) d.clone();
     }
 

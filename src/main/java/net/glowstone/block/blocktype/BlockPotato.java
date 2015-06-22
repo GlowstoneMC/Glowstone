@@ -18,10 +18,10 @@ public class BlockPotato extends BlockCrops {
                 return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.POTATO_ITEM, random.nextInt(4) + 1), 
                         new ItemStack(Material.POISONOUS_POTATO, 1)));
             } else {
-                return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.POTATO_ITEM, random.nextInt(4) + 1)));
+                return Collections.unmodifiableList(Collections.singletonList(new ItemStack(Material.POTATO_ITEM, random.nextInt(4) + 1)));
             }
         } else {
-            return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.POTATO_ITEM, 1)));
+            return Collections.unmodifiableList(Collections.singletonList(new ItemStack(Material.POTATO_ITEM, 1)));
         }
     }
 }

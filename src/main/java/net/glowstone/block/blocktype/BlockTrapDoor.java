@@ -35,7 +35,7 @@ public class BlockTrapDoor {
         }
     }
 
-    public void onRedstoneUpdate(GlowBlock block) {
+    public static void onRedstoneUpdate(GlowBlock block) {
         GlowBlockState state = block.getState();
         TrapDoor trapdoor = (TrapDoor) state.getData();
         boolean powered = block.isBlockIndirectlyPowered();

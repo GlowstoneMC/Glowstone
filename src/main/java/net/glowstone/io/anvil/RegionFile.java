@@ -151,7 +151,7 @@ public class RegionFile {
                     sectorFree.set(startSector + sectorNum, false);
                 }
             } else if (offset != 0) {
-                GlowServer.logger.warning("Region \"" + path + "\": offsets[" + i + "] = " + offset + " -> " + startSector + "," + numSectors + " does not fit");
+                GlowServer.logger.warning("Region \"" + path + "\": offsets[" + i + "] = " + offset + " -> " + startSector + ',' + numSectors + " does not fit");
             }
         }
         // read timestamps from timestamp table
@@ -188,7 +188,7 @@ public class RegionFile {
         int sectorNumber = offset >> 8;
         int numSectors = offset & 0xFF;
         if (sectorNumber + numSectors > sectorFree.size()) {
-            throw new IOException("Invalid sector: " + sectorNumber + "+" + numSectors + " > " + sectorFree.size());
+            throw new IOException("Invalid sector: " + sectorNumber + '+' + numSectors + " > " + sectorFree.size());
         }
 
         file.seek(sectorNumber * SECTOR_BYTES);
@@ -318,9 +318,9 @@ public class RegionFile {
     }
 
     /* is this an invalid chunk coordinate? */
-    private void checkBounds(int x, int z) {
+    private static void checkBounds(int x, int z) {
         if (x < 0 || x >= 32 || z < 0 || z >= 32) {
-            throw new IllegalArgumentException("Chunk out of bounds: (" + x + ", " + z + ")");
+            throw new IllegalArgumentException("Chunk out of bounds: (" + x + ", " + z + ')');
         }
     }
 

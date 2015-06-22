@@ -42,7 +42,7 @@ public final class WorldBorderCodec implements Codec<WorldBorderMessage> {
                 warningTime = ByteBufUtils.readVarInt(buffer);
                 return new WorldBorderMessage(action, warningTime);
             default:
-                throw new DecoderException("Invalid WorldBorderMessage action " + actionId + "/" + action);
+                throw new DecoderException("Invalid WorldBorderMessage action " + actionId + '/' + action);
         }
     }
 

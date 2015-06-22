@@ -1,9 +1,5 @@
 package net.glowstone.generator.structures;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-
 import net.glowstone.GlowServer;
 import net.glowstone.generator.objects.RandomItemsContent;
 import net.glowstone.generator.objects.RandomItemsContent.RandomAmountItem;
@@ -11,7 +7,6 @@ import net.glowstone.generator.structures.util.StructureBoundingBox;
 import net.glowstone.generator.structures.util.StructureBuilder;
 import net.glowstone.generator.structures.util.StructureBuilder.StructureMaterial;
 import net.glowstone.util.BlockStateDelegate;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -20,6 +15,10 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.EntityType;
 import org.bukkit.material.Chest;
 import org.bukkit.util.Vector;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 public class GlowDungeon extends GlowStructurePiece {
 
@@ -168,7 +167,7 @@ public class GlowDungeon extends GlowStructurePiece {
 
         builder.createMobSpawner(new Vector(radiusX, 1, radiusZ), mobTypes[random.nextInt(mobTypes.length)]);
 
-        GlowServer.logger.info("dungeon generated: " + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ());
+        GlowServer.logger.info("dungeon generated: " + loc.getBlockX() + ',' + loc.getBlockY() + ',' + loc.getBlockZ());
 
         return true;
     }

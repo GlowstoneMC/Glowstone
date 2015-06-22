@@ -2,7 +2,6 @@ package net.glowstone.util;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;

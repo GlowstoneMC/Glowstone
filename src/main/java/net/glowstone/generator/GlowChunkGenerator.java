@@ -53,7 +53,7 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
      * @param fill The Material to fill with.
      * @return A new filled byte[16 * 16 * 128];
      */
-    protected byte[] start(Material fill) {
+    protected static byte[] start(Material fill) {
         if (fill == null) {
             throw new IllegalArgumentException("Invalid block type!");
         }
@@ -70,7 +70,7 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
      * @param z The chunk Z coordinate.
      * @param id The block type.
      */
-    protected void set(byte[] data, int x, int y, int z, Material id) {
+    protected static void set(byte[] data, int x, int y, int z, Material id) {
         if (data == null) {
             throw new IllegalStateException();
         }
@@ -91,7 +91,7 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
      * @param z The chunk Z coordinate.
      * @return The type of block at the location.
      */
-    protected Material get(byte[] data, int x, int y, int z) {
+    protected static Material get(byte[] data, int x, int y, int z) {
         if (data == null) {
             throw new IllegalStateException();
         }

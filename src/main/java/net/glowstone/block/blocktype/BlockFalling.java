@@ -60,7 +60,7 @@ public class BlockFalling extends BlockType {
         });
     }
 
-    private boolean supportingBlock(Material material) {
+    private static boolean supportingBlock(Material material) {
         switch (material) {
             case AIR:
             case FIRE:

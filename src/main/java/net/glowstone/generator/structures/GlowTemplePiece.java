@@ -1,14 +1,13 @@
 package net.glowstone.generator.structures;
 
-import java.util.Random;
-
 import net.glowstone.generator.objects.RandomItemsContent;
 import net.glowstone.generator.objects.RandomItemsContent.RandomAmountItem;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
+
+import java.util.Random;
 
 public abstract class GlowTemplePiece extends GlowStructurePiece {
 
@@ -83,7 +82,7 @@ public abstract class GlowTemplePiece extends GlowStructurePiece {
         boundingBox.offset(new Vector(0, hPos - boundingBox.getMin().getBlockY(), 0));
     }
 
-    protected RandomItemsContent getChestContent() {
+    protected static RandomItemsContent getChestContent() {
         final RandomItemsContent chestContent = new RandomItemsContent();
         chestContent.addItem(new RandomAmountItem(Material.DIAMOND, 1, 3), 3);
         chestContent.addItem(new RandomAmountItem(Material.IRON_INGOT, 1, 5), 10);

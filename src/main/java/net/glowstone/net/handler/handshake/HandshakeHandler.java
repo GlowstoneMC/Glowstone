@@ -2,8 +2,8 @@ package net.glowstone.net.handler.handshake;
 
 import com.flowpowered.networking.MessageHandler;
 import net.glowstone.GlowServer;
-import net.glowstone.net.ProxyData;
 import net.glowstone.net.GlowSession;
+import net.glowstone.net.ProxyData;
 import net.glowstone.net.message.handshake.HandshakeMessage;
 import net.glowstone.net.protocol.ProtocolType;
 
@@ -19,7 +19,7 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
             return;
         }
 
-        session.setHostname(message.getAddress() + ":" + message.getPort());
+        session.setHostname(message.getAddress() + ':' + message.getPort());
 
         // Proxies modify the hostname in the HandshakeMessage to contain
         // the client's UUID and (optionally) properties

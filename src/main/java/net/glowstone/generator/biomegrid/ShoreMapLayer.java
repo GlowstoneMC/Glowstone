@@ -1,11 +1,11 @@
 package net.glowstone.generator.biomegrid;
 
+import net.glowstone.constants.GlowBiome;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import net.glowstone.constants.GlowBiome;
 
 import static org.bukkit.block.Biome.*;
 

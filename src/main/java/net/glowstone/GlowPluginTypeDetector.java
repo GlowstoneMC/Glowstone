@@ -51,7 +51,7 @@ public class GlowPluginTypeDetector {
                 spongePlugins.size() + " Sponge, " +
                 (forgefPlugins.size() + forgenPlugins.size()) + " Forge, " +
                 canaryPlugins.size() + " Canary, " +
-                unrecognizedPlugins.size() + " unknown plugins (total " + files.length + ")");
+                unrecognizedPlugins.size() + " unknown plugins (total " + files.length + ')');
 
         if (unrecognizedPlugins.size() != 0) {
             for (File file : unrecognizedPlugins) {

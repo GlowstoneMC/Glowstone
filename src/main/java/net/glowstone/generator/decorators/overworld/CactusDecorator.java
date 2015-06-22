@@ -1,12 +1,11 @@
 package net.glowstone.generator.decorators.overworld;
 
-import java.util.Random;
-
 import net.glowstone.generator.decorators.BlockDecorator;
 import net.glowstone.generator.objects.Cactus;
-
 import org.bukkit.Chunk;
 import org.bukkit.World;
+
+import java.util.Random;
 
 public class CactusDecorator extends BlockDecorator {
 
@@ -20,7 +19,7 @@ public class CactusDecorator extends BlockDecorator {
             int x = sourceX + random.nextInt(8) - random.nextInt(8);
             int z = sourceZ + random.nextInt(8) - random.nextInt(8);
             int y = sourceY + random.nextInt(4) - random.nextInt(4);
-            new Cactus().generate(world, random, x, y, z);
+            Cactus.generate(world, random, x, y, z);
         }
     }
 }

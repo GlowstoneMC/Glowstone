@@ -91,7 +91,7 @@ public final class PlayerProfile {
             propertyValueTag.putString("Signature", property.getSignature());
             propertyValueTag.putString("Value", property.getValue());
 
-            propertiesTag.putCompoundList(property.getName(), Arrays.asList(propertyValueTag));
+            propertiesTag.putCompoundList(property.getName(), Collections.singletonList(propertyValueTag));
         }
         if (!propertiesTag.isEmpty()) { // Only add properties if not empty
             profileTag.putCompound("Properties", propertiesTag);

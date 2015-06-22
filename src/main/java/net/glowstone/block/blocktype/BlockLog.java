@@ -12,8 +12,8 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.material.Tree;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 public class BlockLog extends BlockType {
 
@@ -33,7 +33,7 @@ public class BlockLog extends BlockType {
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        return Arrays.asList(new ItemStack(Material.LOG, 1, (short) (block.getData() & 0x03)));
+        return Collections.singletonList(new ItemStack(Material.LOG, 1, (short) (block.getData() & 0x03)));
     }
 
     @Override

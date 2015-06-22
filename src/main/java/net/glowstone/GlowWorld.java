@@ -1,15 +1,11 @@
 package net.glowstone;
 
 import lombok.ToString;
-import net.glowstone.GlowChunk.*;
+import net.glowstone.GlowChunk.ChunkSection;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
-import net.glowstone.constants.GlowBiome;
-import net.glowstone.constants.GlowBiomeClimate;
-import net.glowstone.constants.GlowEffect;
-import net.glowstone.constants.GlowParticle;
-import net.glowstone.constants.GlowTree;
+import net.glowstone.constants.*;
 import net.glowstone.entity.*;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.entity.physics.BoundingBox;
@@ -21,7 +17,6 @@ import net.glowstone.net.message.play.entity.EntityStatusMessage;
 import net.glowstone.net.message.play.player.ServerDifficultyMessage;
 import net.glowstone.util.BlockStateDelegate;
 import net.glowstone.util.GameRuleManager;
-
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -59,7 +54,7 @@ public final class GlowWorld implements World {
     private static final class WorldMetadataStore extends MetadataStoreBase<World> implements MetadataStore<World> {
         @Override
         protected String disambiguate(World subject, String metadataKey) {
-            return subject.getName() + ":" + metadataKey;
+            return subject.getName() + ':' + metadataKey;
         }
     }
 
@@ -310,7 +305,7 @@ public final class GlowWorld implements World {
         try {
             structures = storageProvider.getStructureDataService().readStructuresData();
         } catch (IOException e) {
-            server.getLogger().log(Level.SEVERE, "Error reading structure data for world " + getName(), e);
+            server.getLogger().log(Level.SEVERE, "Error reading structure data for world " + name, e);
         }
 
         // begin loading spawn area
@@ -356,7 +351,7 @@ public final class GlowWorld implements World {
 
                     if (System.currentTimeMillis() >= loadTime + 1000) {
                         int progress = 100 * current / total;
-                        GlowServer.logger.info("Preparing spawn for " + name + ": " + progress + "%");
+                        GlowServer.logger.info("Preparing spawn for " + name + ": " + progress + '%');
                         loadTime = System.currentTimeMillis();
                     }
                 }
@@ -453,11 +448,11 @@ public final class GlowWorld implements World {
                         // target block up to the world height
                         final BoundingBox searchBox = BoundingBox.fromPositionAndSize(new Vector(x, y, z), new Vector(0, 0, 0));
                         final Vector vec = new Vector(3, 3, 3);
-                        final Vector vec2 = new Vector(0, getMaxHeight(), 0);
+                        final Vector vec2 = new Vector(0, maxBuildHeight, 0);
                         searchBox.minCorner.subtract(vec);
                         searchBox.maxCorner.add(vec).add(vec2);
                         final List<LivingEntity> livingEntities = new LinkedList<>();
-                        for (Entity entity : getEntityManager().getEntitiesInside(searchBox, null)) {
+                        for (Entity entity : entities.getEntitiesInside(searchBox, null)) {
                             if (entity instanceof LivingEntity && !entity.isDead()) {
                                 // make sure entity can see sky
                                 final Vector pos = entity.getLocation().toVector();
@@ -549,7 +544,7 @@ public final class GlowWorld implements World {
         if (!players.isEmpty()) {
             // If the night is over, wake up all players
             // Tick values for day/night time taken from the minecraft wiki
-            if (getTime() < 12541 || getTime() > 23458) {
+            if (time < 12541 || time > 23458) {
                 for (GlowPlayer player : players) {
                     if (player.isSleeping()) {
                         player.leaveBed(true);
@@ -591,7 +586,7 @@ public final class GlowWorld implements World {
      * @param entity The entity that's bounding box is the ray's end point
      * @return a value between 0 and 1, where 0 = all rays blocked and 1 = all rays unblocked
      */
-    public float rayTrace(Location location, GlowEntity entity) {
+    public static float rayTrace(Location location, GlowEntity entity) {
         // TODO: calculate how much of the entity is visible (not blocked by blocks) from the location
         /*
          * To calculate this step through the entity's bounding box and check whether the ray to the point
@@ -1308,9 +1303,9 @@ public final class GlowWorld implements World {
 
         // Numbers borrowed from CraftBukkit.
         if (currentlyRaining) {
-            setWeatherDuration(random.nextInt(12000) + 12000);
+            rainingTicks = random.nextInt(12000) + 12000;
         } else {
-            setWeatherDuration(random.nextInt(168000) + 12000);
+            rainingTicks = random.nextInt(168000) + 12000;
         }
 
         // update players
@@ -1349,9 +1344,9 @@ public final class GlowWorld implements World {
 
         // Numbers borrowed from CraftBukkit.
         if (currentlyThundering) {
-            setThunderDuration(random.nextInt(12000) + 3600);
+            thunderingTicks = random.nextInt(12000) + 3600;
         } else {
-            setThunderDuration(random.nextInt(168000) + 12000);
+            thunderingTicks = random.nextInt(168000) + 12000;
         }
     }
 

@@ -1,11 +1,11 @@
 package net.glowstone.generator.objects;
 
-import java.util.Arrays;
-import java.util.Random;
-
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+
+import java.util.Arrays;
+import java.util.Random;
 
 public class IceSpike {
 
@@ -13,7 +13,7 @@ public class IceSpike {
     private static final int MAX_STEM_RADIUS = 1;
     private static final int MAX_STEM_HEIGHT = 50;
 
-    public void generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
+    public static void generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
         int tipHeight = random.nextInt(4) + 7;
         int tipRadius = tipHeight / 4 + random.nextInt(2);
         int tipOffset = random.nextInt(4);

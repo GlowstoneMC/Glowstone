@@ -25,7 +25,7 @@ public class NbtScoreboardIoReader {
             root = nbt.readCompound().getCompound("data");
         }
 
-        GlowScoreboard scoreboard = new GlowScoreboard((GlowServer) Bukkit.getServer());
+        GlowScoreboard scoreboard = new GlowScoreboard();
 
         registerObjectives(root, scoreboard);
         registerScores(root, scoreboard);

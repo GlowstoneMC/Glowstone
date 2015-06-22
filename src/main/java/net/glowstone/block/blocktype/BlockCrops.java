@@ -30,7 +30,7 @@ public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
             return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.SEEDS, random.nextInt(4)),
                 new ItemStack(Material.WHEAT, 1)));
         } else {
-            return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.SEEDS, 1)));
+            return Collections.unmodifiableList(Collections.singletonList(new ItemStack(Material.SEEDS, 1)));
         }
     }
 

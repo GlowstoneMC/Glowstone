@@ -7,7 +7,6 @@ import net.glowstone.generator.structures.GlowStructure;
 import net.glowstone.io.structure.StructureStorage;
 import net.glowstone.io.structure.StructureStore;
 import net.glowstone.util.BlockStateDelegate;
-
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.generator.BlockPopulator;
@@ -44,7 +43,7 @@ public class StructurePopulator extends BlockPopulator {
                                 if (structure.shouldGenerate(random)) {
                                     structure.setDirty(true);
                                     structures.put(key, structure);
-                                    GlowServer.logger.info("structure in chunk " + x + "," + z);
+                                    GlowServer.logger.info("structure in chunk " + x + ',' + z);
                                     placed = true;
                                     break;
                                 }

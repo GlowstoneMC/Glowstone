@@ -1,15 +1,14 @@
 package net.glowstone.generator.decorators.overworld;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
 import net.glowstone.generator.decorators.BlockDecorator;
 import net.glowstone.generator.objects.Flower;
 import net.glowstone.generator.objects.FlowerType;
-
 import org.bukkit.Chunk;
 import org.bukkit.World;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 public class FlowerDecorator extends BlockDecorator {
 
@@ -32,14 +31,14 @@ public class FlowerDecorator extends BlockDecorator {
         }
     }
 
-    private FlowerType getRandomFlower(Random random, List<FlowerDecoration> decorations) {
+    private static FlowerType getRandomFlower(Random random, List<FlowerDecoration> decorations) {
         int totalWeight = 0;
         for (FlowerDecoration decoration : decorations) {
-            totalWeight += decoration.getWeigth();
+            totalWeight += decoration.getWeight();
         }
         int weight = random.nextInt(totalWeight);
         for (FlowerDecoration decoration : decorations) {
-            weight -= decoration.getWeigth();
+            weight -= decoration.getWeight();
             if (weight < 0) {
                 return decoration.getFlower();
             }
@@ -61,7 +60,7 @@ public class FlowerDecorator extends BlockDecorator {
             return flower;
         }
 
-        public int getWeigth() {
+        public int getWeight() {
             return weight;
         }
     }

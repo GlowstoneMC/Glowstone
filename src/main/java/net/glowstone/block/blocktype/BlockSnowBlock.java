@@ -9,15 +9,15 @@ import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 public class BlockSnowBlock extends BlockType {
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (tool != null && ToolType.SPADE.matches(tool.getType())) {
-            return Arrays.asList(new ItemStack(Material.SNOW_BALL, 4));
+            return Collections.singletonList(new ItemStack(Material.SNOW_BALL, 4));
         } else {
             return BlockDropless.EMPTY_STACK;
         }

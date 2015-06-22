@@ -2,7 +2,6 @@ package net.glowstone.scoreboard;
 
 import com.flowpowered.networking.Message;
 import com.google.common.collect.ImmutableSet;
-import net.glowstone.GlowServer;
 import net.glowstone.constants.GlowDisplaySlot;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.scoreboard.ScoreboardDisplayMessage;
@@ -21,8 +20,6 @@ import java.util.*;
  */
 public final class GlowScoreboard implements Scoreboard {
 
-    private final GlowServer server;
-
     // Objectives
     private final EnumMap<DisplaySlot, GlowObjective> displaySlots = new EnumMap<>(DisplaySlot.class);
     private final HashMap<String, GlowObjective> objectives = new HashMap<>();
@@ -37,10 +34,6 @@ public final class GlowScoreboard implements Scoreboard {
 
     // Players who are watching this scoreboard
     private final HashSet<GlowPlayer> players = new HashSet<>();
-
-    public GlowScoreboard(GlowServer server) {
-        this.server = server;
-    }
 
     ////////////////////////////////////////////////////////////////////////////
     // Internals
@@ -198,10 +191,10 @@ public final class GlowScoreboard implements Scoreboard {
         GlowTeam previous = playerTeamMap.put(player, team);
         if (previous != null && previous.hasPlayer(player)) {
             previous.rawRemovePlayer(player);
-            broadcast(ScoreboardTeamMessage.removePlayers(previous.getName(), Arrays.asList(player.getName())));
+            broadcast(ScoreboardTeamMessage.removePlayers(previous.getName(), Collections.singletonList(player.getName())));
         }
         if (team != null) {
-            broadcast(ScoreboardTeamMessage.addPlayers(team.getName(), Arrays.asList(player.getName())));
+            broadcast(ScoreboardTeamMessage.addPlayers(team.getName(), Collections.singletonList(player.getName())));
         }
     }
 

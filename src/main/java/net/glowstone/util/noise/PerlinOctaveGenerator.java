@@ -1,9 +1,9 @@
 package net.glowstone.util.noise;
 
-import java.util.Random;
-
 import org.bukkit.util.noise.NoiseGenerator;
 import org.bukkit.util.noise.OctaveGenerator;
+
+import java.util.Random;
 
 public class PerlinOctaveGenerator extends OctaveGenerator {
     protected final int xSize;

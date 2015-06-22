@@ -12,8 +12,8 @@ import org.bukkit.material.Step;
 import org.bukkit.material.WoodenStep;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 public class BlockSlab extends BlockType {
 
@@ -46,7 +46,7 @@ public class BlockSlab extends BlockType {
         }
     }
 
-    private boolean matchingType(GlowBlock block, BlockFace face, ItemStack holding, boolean ignoreFace) {
+    private static boolean matchingType(GlowBlock block, BlockFace face, ItemStack holding, boolean ignoreFace) {
         if (holding == null) return false;
         byte blockData = block.getData();
         byte holdingData = (byte) holding.getDurability();
@@ -79,6 +79,6 @@ public class BlockSlab extends BlockType {
 
     @Override
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
-        return Arrays.asList(new ItemStack(block.getType(), 1, (short) (block.getData() % 8)));
+        return Collections.singletonList(new ItemStack(block.getType(), 1, (short) (block.getData() % 8)));
     }
 }

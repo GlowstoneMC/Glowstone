@@ -74,7 +74,7 @@ public final class GlowChunk implements Chunk {
          */
         public ChunkSection(char[] types, NibbleArray skyLight, NibbleArray blockLight) {
             if (types.length != ARRAY_SIZE || skyLight.size() != ARRAY_SIZE || blockLight.size() != ARRAY_SIZE) {
-                throw new IllegalArgumentException("An array length was not " + ARRAY_SIZE + ": " + types.length + " " + skyLight.size() + " " + blockLight.size());
+                throw new IllegalArgumentException("An array length was not " + ARRAY_SIZE + ": " + types.length + ' ' + skyLight.size() + ' ' + blockLight.size());
             }
             this.types = types;
             this.skyLight = skyLight;
@@ -85,7 +85,7 @@ public final class GlowChunk implements Chunk {
         /**
          * Calculate the index into internal arrays for the given coordinates.
          */
-        public int index(int x, int y, int z) {
+        public static int index(int x, int y, int z) {
             if (x < 0 || z < 0 || x >= WIDTH || z >= HEIGHT) {
                 throw new IndexOutOfBoundsException("Coords (x=" + x + ",z=" + z + ") out of section bounds");
             }
@@ -305,7 +305,7 @@ public final class GlowChunk implements Chunk {
      */
     public void initializeSections(ChunkSection[] initSections) {
         if (isLoaded()) {
-            GlowServer.logger.log(Level.SEVERE, "Tried to initialize already loaded chunk (" + x + "," + z + ")", new Throwable());
+            GlowServer.logger.log(Level.SEVERE, "Tried to initialize already loaded chunk (" + x + ',' + z + ')', new Throwable());
             return;
         }
         //GlowServer.logger.log(Level.INFO, "Initializing chunk ({0},{1})", new Object[]{x, z});
@@ -392,7 +392,7 @@ public final class GlowChunk implements Chunk {
      */
     public int getType(int x, int z, int y) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : (section.types[section.index(x, y, z)] >> 4);
+        return section == null ? 0 : (section.types[ChunkSection.index(x, y, z)] >> 4);
     }
 
     /**
@@ -429,7 +429,7 @@ public final class GlowChunk implements Chunk {
         }
 
         // update the air count and height map
-        int index = section.index(x, y, z);
+        int index = ChunkSection.index(x, y, z);
         int heightIndex = z * WIDTH + x;
         if (type == 0) {
             if (section.types[index] != 0) {
@@ -482,7 +482,7 @@ public final class GlowChunk implements Chunk {
      */
     public int getMetaData(int x, int z, int y) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : section.types[section.index(x, y, z)] & 0xF;
+        return section == null ? 0 : section.types[ChunkSection.index(x, y, z)] & 0xF;
     }
 
     /**
@@ -497,7 +497,7 @@ public final class GlowChunk implements Chunk {
             throw new IllegalArgumentException("Metadata out of range: " + metaData);
         ChunkSection section = getSection(y);
         if (section == null) return;  // can't set metadata on an empty section
-        int index = section.index(x, y, z);
+        int index = ChunkSection.index(x, y, z);
         int type = section.types[index];
         if (type == 0) return;  // can't set metadata on air
         section.types[index] = (char) ((type & 0xfff0) | metaData);
@@ -512,7 +512,7 @@ public final class GlowChunk implements Chunk {
      */
     public byte getSkyLight(int x, int z, int y) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : section.skyLight.get(section.index(x, y, z));
+        return section == null ? 0 : section.skyLight.get(ChunkSection.index(x, y, z));
     }
 
     /**
@@ -525,7 +525,7 @@ public final class GlowChunk implements Chunk {
     public void setSkyLight(int x, int z, int y, int skyLight) {
         ChunkSection section = getSection(y);
         if (section == null) return;  // can't set light on an empty section
-        section.skyLight.set(section.index(x, y, z), (byte) skyLight);
+        section.skyLight.set(ChunkSection.index(x, y, z), (byte) skyLight);
     }
 
     /**
@@ -537,7 +537,7 @@ public final class GlowChunk implements Chunk {
      */
     public byte getBlockLight(int x, int z, int y) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : section.blockLight.get(section.index(x, y, z));
+        return section == null ? 0 : section.blockLight.get(ChunkSection.index(x, y, z));
     }
 
     /**
@@ -550,7 +550,7 @@ public final class GlowChunk implements Chunk {
     public void setBlockLight(int x, int z, int y, int blockLight) {
         ChunkSection section = getSection(y);
         if (section == null) return;  // can't set light on an empty section
-        section.blockLight.set(section.index(x, y, z), (byte) blockLight);
+        section.blockLight.set(ChunkSection.index(x, y, z), (byte) blockLight);
     }
 
     /**
@@ -645,7 +645,7 @@ public final class GlowChunk implements Chunk {
      * @param y The Y coordinate.
      * @return The index within the arrays.
      */
-    private int coordToIndex(int x, int z, int y) {
+    private static int coordToIndex(int x, int z, int y) {
         if (x < 0 || z < 0 || y < 0 || x >= WIDTH || z >= HEIGHT || y >= DEPTH)
             throw new IndexOutOfBoundsException("Coords (x=" + x + ",y=" + y + ",z=" + z + ") invalid");
 
@@ -769,7 +769,7 @@ public final class GlowChunk implements Chunk {
         return new ChunkDataMessage(x, z, entireChunk, sectionBitmask, tileData);
     }
 
-    private int countBits(int v) {
+    private static int countBits(int v) {
         // http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetKernighan
         int c;
         for (c = 0; v > 0; c++) {

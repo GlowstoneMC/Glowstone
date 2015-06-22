@@ -1,13 +1,12 @@
 package net.glowstone.generator.populators.overworld;
 
+import net.glowstone.generator.decorators.overworld.DoublePlantDecorator.DoublePlantDecoration;
+import org.bukkit.DoublePlantSpecies;
+import org.bukkit.block.Biome;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-
-import net.glowstone.generator.decorators.overworld.DoublePlantDecorator.DoublePlantDecoration;
-
-import org.bukkit.DoublePlantSpecies;
-import org.bukkit.block.Biome;
 
 public class SunflowerPlainsPopulator extends PlainsPopulator {
 

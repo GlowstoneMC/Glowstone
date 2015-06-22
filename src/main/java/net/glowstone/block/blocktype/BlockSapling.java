@@ -3,23 +3,23 @@ package net.glowstone.block.blocktype;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
-import net.glowstone.entity.GlowPlayer;
 import net.glowstone.constants.GlowTree;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.BlockStateDelegate;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.TreeSpecies;
 import org.bukkit.TreeType;
-import org.bukkit.material.MaterialData;
-import org.bukkit.material.Tree;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.event.world.StructureGrowEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
+import org.bukkit.material.Tree;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
@@ -132,7 +132,7 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
         }
     }
 
-    private GlowBlock searchSourceBlockForHugeTree(GlowBlock block) {
+    private static GlowBlock searchSourceBlockForHugeTree(GlowBlock block) {
 
         final GlowWorld world = block.getWorld();
         final int sourceX = block.getX();
@@ -160,7 +160,7 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        return Arrays.asList(new ItemStack(Material.SAPLING, 1, (short) (block.getData() % 8)));
+        return Collections.singletonList(new ItemStack(Material.SAPLING, 1, (short) (block.getData() % 8)));
     }
 
     @Override
@@ -187,7 +187,7 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
         }
     }
 
-    private TreeType getTreeType(TreeSpecies species) {
+    private static TreeType getTreeType(TreeSpecies species) {
         switch (species) {
             case GENERIC:
                 return TreeType.TREE;

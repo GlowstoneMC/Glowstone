@@ -8,10 +8,10 @@ import net.glowstone.block.entity.TileEntity;
 import net.glowstone.block.state.GlowBanner;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.nbt.CompoundTag;
-import org.bukkit.block.banner.Pattern;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
@@ -20,8 +20,8 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class BlockBanner extends BlockType {
@@ -39,7 +39,7 @@ public class BlockBanner extends BlockType {
         drop.setItemMeta(meta);
         drop.setDurability(state.getBaseColor().getDyeData());
 
-        return Arrays.asList(drop);
+        return Collections.singletonList(drop);
     }
 
     @Override

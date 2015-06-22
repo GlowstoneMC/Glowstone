@@ -1,12 +1,11 @@
 package net.glowstone.generator.decorators.overworld;
 
-import java.util.Random;
-
 import net.glowstone.generator.decorators.BlockDecorator;
 import net.glowstone.generator.objects.SugarCane;
-
 import org.bukkit.Chunk;
 import org.bukkit.World;
+
+import java.util.Random;
 
 public class SugarCaneDecorator extends BlockDecorator {
 
@@ -18,7 +17,7 @@ public class SugarCaneDecorator extends BlockDecorator {
         for (int j = 0; j < 20; j++) {
             int x = sourceX + random.nextInt(4) - random.nextInt(4);
             int z = sourceZ + random.nextInt(4) - random.nextInt(4);
-            new SugarCane().generate(world, random, x, sourceY, z);
+            SugarCane.generate(world, random, x, sourceY, z);
         }
     }
 }

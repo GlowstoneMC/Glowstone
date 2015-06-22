@@ -21,7 +21,7 @@ public final class PluginMessage implements Message {
         try {
             ByteBufUtils.writeUTF8(buf, text);
         } catch (IOException e) {
-            GlowServer.logger.log(Level.WARNING, "Error converting to PluginMessage: \"" + channel + "\", \"" + text + "\"", e);
+            GlowServer.logger.log(Level.WARNING, "Error converting to PluginMessage: \"" + channel + "\", \"" + text + '"', e);
         }
         return new PluginMessage(channel, buf.array());
     }

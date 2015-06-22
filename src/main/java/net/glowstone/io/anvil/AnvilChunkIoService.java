@@ -133,7 +133,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
                 }
             } else {
                 String id = tileEntityTag.isString("id") ? tileEntityTag.getString("id") : "<missing>";
-                GlowServer.logger.warning("Unknown tile entity at " + chunk.getWorld().getName() + "," + tx + "," + ty + "," + tz + ": " + id);
+                GlowServer.logger.warning("Unknown tile entity at " + chunk.getWorld().getName() + ',' + tx + ',' + ty + ',' + tz + ": " + id);
             }
         }
 

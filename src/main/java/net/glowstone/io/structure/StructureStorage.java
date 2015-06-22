@@ -1,13 +1,13 @@
 package net.glowstone.io.structure;
 
+import net.glowstone.GlowWorld;
+import net.glowstone.generator.structures.GlowStructure;
+import net.glowstone.util.nbt.CompoundTag;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import net.glowstone.GlowWorld;
-import net.glowstone.generator.structures.GlowStructure;
-import net.glowstone.util.nbt.CompoundTag;
 
 /**
  * The class responsible for mapping structure types to their storage methods
@@ -72,7 +72,7 @@ public final class StructureStorage {
         }
         StructureStore<?> store = idTable.get(compound.getString("id"));
         if (store == null) {
-            throw new IllegalArgumentException("Unknown structure type: \"" + compound.getString("id") + "\"");
+            throw new IllegalArgumentException("Unknown structure type: \"" + compound.getString("id") + '"');
         }
 
         int x = 0, z = 0;
@@ -95,7 +95,7 @@ public final class StructureStorage {
         // look up the store for the structure
         StructureStore<?> store = classTable.get(structure.getClass());
         if (store == null) {
-            throw new IllegalArgumentException("Unknown structure type to save: \"" + structure.getClass() + "\"");
+            throw new IllegalArgumentException("Unknown structure type to save: \"" + structure.getClass() + '"');
         }
 
         compound.putString("id", store.getId());

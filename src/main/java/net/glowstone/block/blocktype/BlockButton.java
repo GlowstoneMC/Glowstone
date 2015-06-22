@@ -55,7 +55,7 @@ public class BlockButton extends BlockAttachable {
         return true;
     }
 
-    private void extraUpdate(GlowBlock block) {
+    private static void extraUpdate(GlowBlock block) {
         Button button = (Button) block.getState().getData();
         ItemTable itemTable = ItemTable.instance();
         GlowBlock target = block.getRelative(button.getAttachedFace());

@@ -5,7 +5,6 @@ import net.glowstone.inventory.MaterialMatcher;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -45,7 +44,7 @@ public class BlockDirectDrops extends BlockNeedsTool {
 
     @Override
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
-        return Collections.unmodifiableList(Arrays.asList(getDrops(block)));
+        return Collections.unmodifiableList(Collections.singletonList(getDrops(block)));
     }
 
     @Override

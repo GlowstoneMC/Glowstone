@@ -1,20 +1,19 @@
 package net.glowstone.generator.populators.overworld;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
-
 import net.glowstone.generator.decorators.overworld.StoneBoulderDecorator;
 import net.glowstone.generator.decorators.overworld.TreeDecorator.TreeDecoration;
 import net.glowstone.generator.objects.trees.MegaPineTree;
 import net.glowstone.generator.objects.trees.MegaSpruceTree;
 import net.glowstone.generator.objects.trees.RedwoodTree;
 import net.glowstone.generator.objects.trees.TallRedwoodTree;
-
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Random;
 
 public class MegaTaigaPopulator extends TaigaPopulator {
 

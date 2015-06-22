@@ -1,7 +1,5 @@
 package net.glowstone.generator.objects;
 
-import java.util.Random;
-
 import org.bukkit.DoublePlantSpecies;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -11,13 +9,15 @@ import org.bukkit.block.BlockState;
 import org.bukkit.material.DoublePlant;
 import org.bukkit.material.MaterialData;
 
+import java.util.Random;
+
 public class StoneBoulder {
 
     private static final Material[] GROUND_TYPES = {Material.GRASS, Material.DIRT, Material.STONE};
     private static final Material[] PLANT_TYPES = {Material.LONG_GRASS, Material.YELLOW_FLOWER, Material.RED_ROSE,
             Material.DOUBLE_PLANT, Material.BROWN_MUSHROOM, Material.RED_MUSHROOM};
 
-    public void generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
+    public static void generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
         boolean groundReached = false;
         while (!groundReached && sourceY > 3) {
             final Block block = world.getBlockAt(sourceX, sourceY - 1, sourceZ);

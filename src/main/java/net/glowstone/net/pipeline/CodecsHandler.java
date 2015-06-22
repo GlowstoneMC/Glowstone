@@ -30,7 +30,7 @@ public final class CodecsHandler extends MessageToMessageCodec<ByteBuf, Message>
         final Class<? extends Message> clazz = msg.getClass();
         Codec.CodecRegistration reg = protocol.getCodecRegistration(clazz);
         if (reg == null) {
-            throw new EncoderException("Unknown message type: " + clazz + ".");
+            throw new EncoderException("Unknown message type: " + clazz + '.');
         }
 
         // write header

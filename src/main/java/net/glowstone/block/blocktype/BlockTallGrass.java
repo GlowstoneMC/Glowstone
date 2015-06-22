@@ -14,7 +14,6 @@ import org.bukkit.material.DoublePlant;
 import org.bukkit.material.LongGrass;
 import org.bukkit.material.MaterialData;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -23,7 +22,7 @@ public class BlockTallGrass extends BlockNeedsAttached implements IBlockGrowable
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (random.nextFloat() < .125) {
-            return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.SEEDS, 1)));
+            return Collections.unmodifiableList(Collections.singletonList(new ItemStack(Material.SEEDS, 1)));
         }
         return BlockDropless.EMPTY_STACK;
     }

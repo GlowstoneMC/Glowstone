@@ -1,14 +1,13 @@
 package net.glowstone.generator.structures;
 
-import java.util.Random;
-
 import net.glowstone.generator.structures.util.StructureBoundingBox;
 import net.glowstone.util.BlockStateDelegate;
-
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.Vector;
+
+import java.util.Random;
 
 public abstract class GlowStructurePiece {
 
@@ -97,7 +96,7 @@ public abstract class GlowStructurePiece {
         boundingBox = new StructureBoundingBox(min, max);
     }
 
-    private BlockFace getOrientationFromOrdinal(int n) {
+    private static BlockFace getOrientationFromOrdinal(int n) {
         switch (n) {
             case 1:
                 return BlockFace.EAST;

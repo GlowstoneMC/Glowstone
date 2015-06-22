@@ -1,10 +1,6 @@
 package net.glowstone.generator.objects;
 
-import java.util.Arrays;
-import java.util.Random;
-
 import net.glowstone.constants.GlowBiomeClimate;
-
 import org.bukkit.DoublePlantSpecies;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -12,6 +8,9 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.material.DoublePlant;
+
+import java.util.Arrays;
+import java.util.Random;
 
 public class Lake {
     private static final double MAX_DIAMETER = 16.0D;
@@ -142,11 +141,11 @@ public class Lake {
         return true;
     }
 
-    private boolean isLakeBlock(byte[] lakeMap, int x, int y, int z) {
+    private static boolean isLakeBlock(byte[] lakeMap, int x, int y, int z) {
         return lakeMap[(x * (int) MAX_DIAMETER + z) * (int) MAX_HEIGHT + y] != 0;
     }
 
-    private void setLakeBlock(byte[] lakeMap, int x, int y, int z) {
+    private static void setLakeBlock(byte[] lakeMap, int x, int y, int z) {
         lakeMap[(int) ((x * (int) MAX_DIAMETER + z) * (int) MAX_HEIGHT + y)] = 1;
     }
 }

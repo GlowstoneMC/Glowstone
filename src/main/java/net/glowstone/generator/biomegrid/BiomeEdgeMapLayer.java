@@ -1,12 +1,9 @@
 package net.glowstone.generator.biomegrid;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import net.glowstone.constants.GlowBiome;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 import static org.bukkit.block.Biome.*;
 
@@ -78,8 +75,8 @@ public class BiomeEdgeMapLayer extends MapLayer {
 
         EDGES.put(MESA_EDGES, null);
         EDGES.put(MEGA_TAIGA_EDGES, null);
-        EDGES.put(DESERT_EDGES, Arrays.asList(GlowBiome.getId(ICE_PLAINS)));
+        EDGES.put(DESERT_EDGES, Collections.singletonList(GlowBiome.getId(ICE_PLAINS)));
         EDGES.put(SWAMP1_EDGES, Arrays.asList(GlowBiome.getId(DESERT), GlowBiome.getId(COLD_TAIGA), GlowBiome.getId(ICE_PLAINS)));
-        EDGES.put(SWAMP2_EDGES, Arrays.asList(GlowBiome.getId(JUNGLE)));
+        EDGES.put(SWAMP2_EDGES, Collections.singletonList(GlowBiome.getId(JUNGLE)));
     }
 }

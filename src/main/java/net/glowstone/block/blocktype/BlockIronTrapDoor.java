@@ -25,6 +25,6 @@ public class BlockIronTrapDoor extends BlockDirectDrops {
 
     @Override
     public void onRedstoneUpdate(GlowBlock block) {
-        trapDoor.onRedstoneUpdate(block);
+        BlockTrapDoor.onRedstoneUpdate(block);
     }
 }

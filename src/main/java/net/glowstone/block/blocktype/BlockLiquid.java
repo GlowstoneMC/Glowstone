@@ -1,7 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
@@ -9,6 +7,9 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class BlockLiquid extends BlockType {
 
@@ -75,7 +76,7 @@ public abstract class BlockLiquid extends BlockType {
     private static final int TICK_RATE_WATER = 5;
     private static final int TICK_RATE_LAVA = 20;
 
-    private void calculateFlow(GlowBlock block) {
+    private static void calculateFlow(GlowBlock block) {
 
         GlowBlockState oldState = block.getState();
         GlowBlockState newState = block.getState();

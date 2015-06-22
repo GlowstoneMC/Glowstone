@@ -4,12 +4,7 @@ import com.flowpowered.networking.MessageHandler;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.inventory.DragTracker;
-import net.glowstone.inventory.GlowCraftingInventory;
-import net.glowstone.inventory.GlowInventory;
-import net.glowstone.inventory.GlowInventoryView;
-import net.glowstone.inventory.GlowPlayerInventory;
-import net.glowstone.inventory.WindowClickLogic;
+import net.glowstone.inventory.*;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.inv.TransactionMessage;
 import net.glowstone.net.message.play.inv.WindowClickMessage;
@@ -144,7 +139,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
 
         if (clickType == ClickType.UNKNOWN || action == InventoryAction.UNKNOWN) {
             // show a warning for unknown click type
-            GlowServer.logger.warning(player.getName() + ": mystery window click " + clickType + "/" + action + ": " + message);
+            GlowServer.logger.warning(player.getName() + ": mystery window click " + clickType + '/' + action + ": " + message);
         }
 
         // deny CLONE_STACK for non-creative mode players
@@ -421,7 +416,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         }
     }
 
-    private ItemStack combine(ItemStack slotItem, ItemStack cursor, int amount) {
+    private static ItemStack combine(ItemStack slotItem, ItemStack cursor, int amount) {
         if (slotItem == null) {
             ItemStack stack = cursor.clone();
             stack.setAmount(amount);
@@ -434,12 +429,12 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         }
     }
 
-    private ItemStack amountOrNull(ItemStack original, int amount) {
+    private static ItemStack amountOrNull(ItemStack original, int amount) {
         original.setAmount(amount);
         return amount <= 0 ? null : original;
     }
 
-    private int maxStack(Inventory inv, Material mat) {
+    private static int maxStack(Inventory inv, Material mat) {
         return Math.min(inv.getMaxStackSize(), mat.getMaxStackSize());
     }
 

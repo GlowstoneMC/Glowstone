@@ -64,7 +64,7 @@ public class BlockLava extends BlockLiquid {
         }
     }
 
-    private boolean hasNearFlammableBlock(GlowBlock block) {
+    private static boolean hasNearFlammableBlock(GlowBlock block) {
         // check there's at least a flammable block around
         for (BlockFace face : FLAMMABLE_FACES) {
             if (block.getRelative(face).isFlammable()) {

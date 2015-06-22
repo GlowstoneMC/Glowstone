@@ -9,7 +9,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -84,7 +83,7 @@ public class BlockSugarCane extends BlockNeedsAttached {
         }
     }
 
-    private boolean isNearWater(Block block) {
+    private static boolean isNearWater(Block block) {
         for (BlockFace face : DIRECT_FACES) {
             switch (block.getRelative(face).getType()) {
                 case WATER:
@@ -100,6 +99,6 @@ public class BlockSugarCane extends BlockNeedsAttached {
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock me, ItemStack tool) {
-        return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.SUGAR_CANE)));
+        return Collections.unmodifiableList(Collections.singletonList(new ItemStack(Material.SUGAR_CANE)));
     }
 }

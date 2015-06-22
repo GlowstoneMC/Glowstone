@@ -7,9 +7,9 @@ import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
+import net.glowstone.entity.objects.GlowItemFrame;
 import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.entity.physics.EntityBoundingBox;
-import net.glowstone.entity.objects.GlowItemFrame;
 import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.Position;
@@ -35,6 +35,7 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -328,7 +329,7 @@ public abstract class GlowEntity implements Entity {
     public boolean isWithinDistance(Location loc) {
         double dx = Math.abs(location.getX() - loc.getX());
         double dz = Math.abs(location.getZ() - loc.getZ());
-        return loc.getWorld() == getWorld() && dx <= (server.getViewDistance() * GlowChunk.WIDTH) && dz <= (server.getViewDistance() * GlowChunk.HEIGHT);
+        return loc.getWorld() == world && dx <= (server.getViewDistance() * GlowChunk.WIDTH) && dz <= (server.getViewDistance() * GlowChunk.HEIGHT);
     }
 
     /**
@@ -367,7 +368,7 @@ public abstract class GlowEntity implements Entity {
                 if (server.getAllowEnd()) {
                     Location previousLocation = location.clone();
                     boolean success;
-                    if (getWorld().getEnvironment() == World.Environment.THE_END) {
+                    if (world.getEnvironment() == World.Environment.THE_END) {
                         success = teleportToSpawn();
                     } else {
                         success = teleportToEnd();
@@ -399,7 +400,7 @@ public abstract class GlowEntity implements Entity {
      */
     public void setRawLocation(Location location) {
         if (location.getWorld() != world) {
-            throw new IllegalArgumentException("Cannot setRawLocation to a different world (got " + location.getWorld() + ", expected " + world + ")");
+            throw new IllegalArgumentException("Cannot setRawLocation to a different world (got " + location.getWorld() + ", expected " + world + ')');
         }
         world.getEntityManager().move(this, location);
         Position.copyLocation(location, this.location);

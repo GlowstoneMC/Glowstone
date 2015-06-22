@@ -1,8 +1,8 @@
 package net.glowstone.constants;
 
+import net.glowstone.util.noise.SimplexOctaveGenerator;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
-import net.glowstone.util.noise.SimplexOctaveGenerator;
 
 import java.util.HashMap;
 import java.util.Map;

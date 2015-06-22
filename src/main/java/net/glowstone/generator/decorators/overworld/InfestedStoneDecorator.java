@@ -1,15 +1,14 @@
 package net.glowstone.generator.decorators.overworld;
 
-import java.util.Random;
-
+import net.glowstone.generator.decorators.BlockDecorator;
+import net.glowstone.generator.objects.OreType;
+import net.glowstone.generator.objects.OreVein;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.material.MonsterEggs;
 
-import net.glowstone.generator.decorators.BlockDecorator;
-import net.glowstone.generator.objects.OreType;
-import net.glowstone.generator.objects.OreVein;
+import java.util.Random;
 
 public class InfestedStoneDecorator extends BlockDecorator {
 

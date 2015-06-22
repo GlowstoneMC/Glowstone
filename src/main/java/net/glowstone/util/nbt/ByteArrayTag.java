@@ -29,9 +29,9 @@ final class ByteArrayTag extends Tag<byte[]> {
         for (byte b : value) {
             String hexDigits = Integer.toHexString(b & 0xff);
             if (hexDigits.length() == 1) {
-                hex.append("0");
+                hex.append('0');
             }
-            hex.append(hexDigits).append(" ");
+            hex.append(hexDigits).append(' ');
         }
     }
 

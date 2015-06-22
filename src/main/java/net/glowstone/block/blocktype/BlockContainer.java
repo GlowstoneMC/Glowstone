@@ -9,8 +9,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 
 /**
@@ -49,7 +49,7 @@ public class BlockContainer extends BlockType {
         return drops;
     }
 
-    private Collection<ItemStack> getContentDrops(GlowBlock block) {
+    private static Collection<ItemStack> getContentDrops(GlowBlock block) {
         LinkedList<ItemStack> drops = new LinkedList<>();
         for (ItemStack i : ((TEContainer) block.getTileEntity()).getInventory().getContents()) {
             if (i != null) {
@@ -66,7 +66,7 @@ public class BlockContainer extends BlockType {
      */
     protected Collection<ItemStack> getBlockDrops(GlowBlock block) {
         if (drops == null) {
-            return Arrays.asList(new ItemStack(block.getType()));
+            return Collections.singletonList(new ItemStack(block.getType()));
         } else {
             return drops;
         }

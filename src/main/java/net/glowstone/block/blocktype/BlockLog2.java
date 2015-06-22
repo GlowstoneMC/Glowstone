@@ -10,8 +10,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 public class BlockLog2 extends BlockType {
 
@@ -27,7 +27,7 @@ public class BlockLog2 extends BlockType {
         state.setData(data);
     }
 
-    public byte setTree(BlockFace dir, byte data) {
+    public static byte setTree(BlockFace dir, byte data) {
         switch (dir) {
             case UP:
             case DOWN:
@@ -51,7 +51,7 @@ public class BlockLog2 extends BlockType {
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        return Arrays.asList(new ItemStack(Material.LOG_2, 1, (short) (block.getData() & 0x03)));
+        return Collections.singletonList(new ItemStack(Material.LOG_2, 1, (short) (block.getData() & 0x03)));
     }
 
     @Override

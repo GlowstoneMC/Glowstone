@@ -5,7 +5,6 @@ import net.glowstone.inventory.MaterialMatcher;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -38,7 +37,7 @@ public class BlockRandomDrops extends BlockNeedsTool {
 
     @Override
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
-        return Collections.unmodifiableList(Arrays.asList(new ItemStack(dropType, random.nextInt(maxDrops - minDrops + 1) + minDrops, data)));
+        return Collections.unmodifiableList(Collections.singletonList(new ItemStack(dropType, random.nextInt(maxDrops - minDrops + 1) + minDrops, data)));
     }
 
     @Override

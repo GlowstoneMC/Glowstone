@@ -155,7 +155,7 @@ public final class NBTInputStream implements Closeable {
                 return new IntArrayTag(ints);
 
             default:
-                throw new IOException("Invalid tag type: " + type + ".");
+                throw new IOException("Invalid tag type: " + type + '.');
         }
     }
 

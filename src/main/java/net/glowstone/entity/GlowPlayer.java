@@ -7,10 +7,6 @@ import io.netty.buffer.Unpooled;
 import net.glowstone.*;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.blocktype.BlockBed;
-import java.net.InetSocketAddress;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.logging.Level;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.constants.*;
 import net.glowstone.entity.meta.ClientSettings;
@@ -28,11 +24,7 @@ import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityVelocityMessage;
 import net.glowstone.net.message.play.game.*;
-import net.glowstone.net.message.play.inv.CloseWindowMessage;
-import net.glowstone.net.message.play.inv.OpenWindowMessage;
-import net.glowstone.net.message.play.inv.SetWindowContentsMessage;
-import net.glowstone.net.message.play.inv.SetWindowSlotMessage;
-import net.glowstone.net.message.play.inv.WindowPropertyMessage;
+import net.glowstone.net.message.play.inv.*;
 import net.glowstone.net.message.play.player.PlayerAbilitiesMessage;
 import net.glowstone.net.message.play.player.ResourcePackSendMessage;
 import net.glowstone.net.message.play.player.UseBedMessage;
@@ -68,6 +60,11 @@ import org.bukkit.title.TitleOptions;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 import org.json.simple.JSONObject;
+
+import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.logging.Level;
 
 /**
  * Represents an in-game player.
@@ -395,7 +392,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public String toString() {
-        return "GlowPlayer{name=" + getName() + "}";
+        return "GlowPlayer{name=" + getName() + '}';
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -783,7 +780,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     private void updateUserListEntries(UserListItemMessage updateMessage) {
         for (GlowPlayer player : server.getOnlinePlayers()) {
             if (player.canSee(this)) {
-                player.getSession().send(updateMessage);
+                player.session.send(updateMessage);
             }
         }
     }
@@ -1199,7 +1196,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         return getExpToLevel(level);
     }
 
-    private int getExpToLevel(int level) {
+    private static int getExpToLevel(int level) {
         if (level >= 30) {
             return 62 + (level - 30) * 7;
         } else if (level >= 15) {
@@ -1211,11 +1208,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void giveExpLevels(int amount) {
-        setLevel(getLevel() + amount);
+        setLevel(level + amount);
     }
 
     private void sendExperience() {
-        session.send(new ExperienceMessage(getExp(), getLevel(), getTotalExperience()));
+        session.send(new ExperienceMessage(experience, level, totalExperience));
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1289,8 +1286,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     private void sendHealth() {
-        float finalHealth = (float) (getHealth() / getMaxHealth() * getHealthScale());
-        session.send(new HealthMessage(finalHealth, getFoodLevel(), getSaturation()));
+        float finalHealth = (float) (getHealth() / getMaxHealth() * healthScale);
+        session.send(new HealthMessage(finalHealth, food, saturation));
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1401,11 +1398,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         sleeping = true;
         setRawLocation(head.getLocation());
 
-        getSession().send(new UseBedMessage(SELF_ID, head.getX(), head.getY(), head.getZ()));
+        session.send(new UseBedMessage(SELF_ID, head.getX(), head.getY(), head.getZ()));
         UseBedMessage msg = new UseBedMessage(getEntityId(), head.getX(), head.getY(), head.getZ());
         for (GlowPlayer p : world.getRawPlayers()) {
             if (p != this && p.canSeeEntity(this)) {
-                p.getSession().send(msg);
+                p.session.send(msg);
             }
         }
     }
@@ -1443,11 +1440,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         // Call event
         EventFactory.callEvent(new PlayerBedLeaveEvent(this, head));
 
-        getSession().send(new AnimateEntityMessage(SELF_ID, AnimateEntityMessage.OUT_LEAVE_BED));
+        session.send(new AnimateEntityMessage(SELF_ID, AnimateEntityMessage.OUT_LEAVE_BED));
         AnimateEntityMessage msg = new AnimateEntityMessage(getEntityId(), AnimateEntityMessage.OUT_LEAVE_BED);
         for (GlowPlayer p : world.getRawPlayers()) {
             if (p != this && p.canSeeEntity(this)) {
-                p.getSession().send(msg);
+                p.session.send(msg);
             }
         }
     }
@@ -1784,7 +1781,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         if (server.getAnnounceAchievements()) {
             // todo: make message fancier (hover, translated names)
-            server.broadcastMessage(getName() + " earned achievement " + ChatColor.GREEN + "[" + achievement.name() + "]");
+            server.broadcastMessage(getName() + " earned achievement " + ChatColor.GREEN + '[' + achievement.name() + ']');
         }
         return true;
     }
@@ -2044,7 +2041,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         hiddenEntities.add(player.getUniqueId());
         if (knownEntities.remove((GlowEntity) player)) {
-            session.send(new DestroyEntitiesMessage(Arrays.asList(player.getEntityId())));
+            session.send(new DestroyEntitiesMessage(Collections.singletonList(player.getEntityId())));
         }
         session.send(UserListItemMessage.removeOne(player.getUniqueId()));
     }

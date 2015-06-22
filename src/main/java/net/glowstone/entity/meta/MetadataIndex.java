@@ -135,7 +135,7 @@ public enum MetadataIndex {
     public static MetadataIndex getIndex(int index, MetadataType type) {
         MetadataIndex output = null;
         for (MetadataIndex entry : values()) {
-            if (entry.getIndex() == index && entry.getType().equals(type)) {
+            if (entry.index == index && entry.type.equals(type)) {
                 output = entry;
                 break;
             }

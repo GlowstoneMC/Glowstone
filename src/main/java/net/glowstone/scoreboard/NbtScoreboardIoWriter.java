@@ -4,7 +4,10 @@ import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTOutputStream;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.scoreboard.*;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Team;
 
 import java.io.DataOutputStream;
 import java.io.File;

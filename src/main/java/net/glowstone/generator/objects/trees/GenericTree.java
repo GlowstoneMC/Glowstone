@@ -1,7 +1,6 @@
 package net.glowstone.generator.objects.trees;
 
 import net.glowstone.util.BlockStateDelegate;
-
 import org.bukkit.DirtType;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -37,7 +36,7 @@ public class GenericTree {
                 Material.SAPLING,
                 Material.VINE
         );
-        setHeight(random.nextInt(3) + 4);
+        this.height = random.nextInt(3) + 4;
         setTypes(0, 0);
     }
 

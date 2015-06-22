@@ -6,7 +6,10 @@ import net.glowstone.net.codec.play.entity.*;
 import net.glowstone.net.codec.play.game.*;
 import net.glowstone.net.codec.play.inv.*;
 import net.glowstone.net.codec.play.player.*;
-import net.glowstone.net.codec.play.scoreboard.*;
+import net.glowstone.net.codec.play.scoreboard.ScoreboardDisplayCodec;
+import net.glowstone.net.codec.play.scoreboard.ScoreboardObjectiveCodec;
+import net.glowstone.net.codec.play.scoreboard.ScoreboardScoreCodec;
+import net.glowstone.net.codec.play.scoreboard.ScoreboardTeamCodec;
 import net.glowstone.net.handler.play.game.*;
 import net.glowstone.net.handler.play.inv.*;
 import net.glowstone.net.handler.play.player.*;
@@ -16,7 +19,10 @@ import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.game.*;
 import net.glowstone.net.message.play.inv.*;
 import net.glowstone.net.message.play.player.*;
-import net.glowstone.net.message.play.scoreboard.*;
+import net.glowstone.net.message.play.scoreboard.ScoreboardDisplayMessage;
+import net.glowstone.net.message.play.scoreboard.ScoreboardObjectiveMessage;
+import net.glowstone.net.message.play.scoreboard.ScoreboardScoreMessage;
+import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
 
 public final class PlayProtocol extends GlowProtocol {
     public PlayProtocol() {

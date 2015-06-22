@@ -14,13 +14,13 @@ import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 public class BlockCauldron extends BlockNeedsTool {
-    private static final Collection<ItemStack> DROP = Arrays.asList(new ItemStack(Material.CAULDRON_ITEM));
+    private static final Collection<ItemStack> DROP = Collections.singletonList(new ItemStack(Material.CAULDRON_ITEM));
 
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
@@ -51,7 +51,7 @@ public class BlockCauldron extends BlockNeedsTool {
         }
     }
 
-    private void fillCauldron(GlowPlayer player, GlowBlock block) {
+    private static void fillCauldron(GlowPlayer player, GlowBlock block) {
         if (block.getData() < 3) {
             if (player.getGameMode() != GameMode.CREATIVE) {
                 player.getItemInHand().setType(Material.BUCKET);
@@ -61,7 +61,7 @@ public class BlockCauldron extends BlockNeedsTool {
         }
     }
 
-    private void fillBottle(GlowPlayer player, GlowBlock block) {
+    private static void fillBottle(GlowPlayer player, GlowBlock block) {
         if (block.getData() > 0) {
             block.setData((byte) (block.getData() - 1));
 
@@ -76,7 +76,7 @@ public class BlockCauldron extends BlockNeedsTool {
         }
     }
 
-    private boolean bleachBanner(GlowPlayer player, GlowBlock block) {
+    private static boolean bleachBanner(GlowPlayer player, GlowBlock block) {
         if (player.getGameMode() == GameMode.CREATIVE)
             return false;
 
@@ -98,7 +98,7 @@ public class BlockCauldron extends BlockNeedsTool {
         }
     }
 
-    private boolean bleachLeatherArmor(GlowPlayer player, GlowBlock block) {
+    private static boolean bleachLeatherArmor(GlowPlayer player, GlowBlock block) {
         if (block.getData() > 0) {
             ItemStack inHand = player.getItemInHand();
             LeatherArmorMeta im = (LeatherArmorMeta) inHand.getItemMeta();

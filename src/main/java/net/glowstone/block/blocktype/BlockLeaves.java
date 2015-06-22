@@ -12,7 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +31,7 @@ public class BlockLeaves extends BlockType {
         int data = block.getData() & 0x03; //ignore "non-decay" and "check-decay" data.
 
         if (tool != null && tool.getType() == Material.SHEARS) {
-            return Collections.unmodifiableList(Arrays.asList(
+            return Collections.unmodifiableList(Collections.singletonList(
                     new ItemStack(block.getType(), 1, (short) data)
             ));
         }
