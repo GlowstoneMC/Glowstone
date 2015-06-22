@@ -31,7 +31,7 @@ public class BlockHugeMushroom extends BlockType {
         if (rnd < 80) {
             return BlockDropless.EMPTY_STACK;
         } else {
-            return Collections.unmodifiableList(Arrays.asList(new ItemStack(mushroomType, rnd > 90 ? 2 : 1, data)));
+            return Collections.unmodifiableList(Collections.singletonList(new ItemStack(mushroomType, rnd > 90 ? 2 : 1, data)));
         }
     }
 }

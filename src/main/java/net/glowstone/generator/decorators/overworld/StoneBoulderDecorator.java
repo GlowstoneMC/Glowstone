@@ -18,7 +18,7 @@ public class StoneBoulderDecorator extends BlockPopulator {
             int x = sourceX + random.nextInt(16);
             int z = sourceZ + random.nextInt(16);
             int y = world.getHighestBlockYAt(x, z);
-            new StoneBoulder().generate(world, random, x, y, z);
+            StoneBoulder.generate(world, random, x, y, z);
         }
     }
 }

@@ -6,8 +6,8 @@ import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 public class BlockDoubleSlab extends BlockType {
 
@@ -22,10 +22,10 @@ public class BlockDoubleSlab extends BlockType {
 
     @Override
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
-        return Arrays.asList(getDrops(block));
+        return Collections.singletonList(getDrops(block));
     }
 
-    private ItemStack getDrops(GlowBlock block) {
+    private static ItemStack getDrops(GlowBlock block) {
         switch (block.getType()) {
             case WOOD_DOUBLE_STEP:
                 return new ItemStack(Material.WOOD_STEP, 2, (short) (block.getData() % 8));

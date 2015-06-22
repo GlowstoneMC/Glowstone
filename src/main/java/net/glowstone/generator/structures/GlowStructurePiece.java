@@ -97,7 +97,7 @@ public abstract class GlowStructurePiece {
         boundingBox = new StructureBoundingBox(min, max);
     }
 
-    private BlockFace getOrientationFromOrdinal(int n) {
+    private static BlockFace getOrientationFromOrdinal(int n) {
         switch (n) {
             case 1:
                 return BlockFace.EAST;

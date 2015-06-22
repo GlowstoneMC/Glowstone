@@ -421,7 +421,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         }
     }
 
-    private ItemStack combine(ItemStack slotItem, ItemStack cursor, int amount) {
+    private static ItemStack combine(ItemStack slotItem, ItemStack cursor, int amount) {
         if (slotItem == null) {
             ItemStack stack = cursor.clone();
             stack.setAmount(amount);
@@ -434,12 +434,12 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         }
     }
 
-    private ItemStack amountOrNull(ItemStack original, int amount) {
+    private static ItemStack amountOrNull(ItemStack original, int amount) {
         original.setAmount(amount);
         return amount <= 0 ? null : original;
     }
 
-    private int maxStack(Inventory inv, Material mat) {
+    private static int maxStack(Inventory inv, Material mat) {
         return Math.min(inv.getMaxStackSize(), mat.getMaxStackSize());
     }
 

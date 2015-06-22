@@ -20,7 +20,7 @@ public class CactusDecorator extends BlockDecorator {
             int x = sourceX + random.nextInt(8) - random.nextInt(8);
             int z = sourceZ + random.nextInt(8) - random.nextInt(8);
             int y = sourceY + random.nextInt(4) - random.nextInt(4);
-            new Cactus().generate(world, random, x, y, z);
+            Cactus.generate(world, random, x, y, z);
         }
     }
 }

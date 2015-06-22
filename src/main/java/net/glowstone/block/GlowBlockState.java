@@ -117,12 +117,12 @@ public class GlowBlockState implements BlockState {
 
     @Override
     public final byte getRawData() {
-        return getData().getData();
+        return data.getData();
     }
 
     @Override
     public final void setRawData(byte data) {
-        getData().setData(data);
+        this.data.setData(data);
     }
 
     @Override

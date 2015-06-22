@@ -109,25 +109,25 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
     @Override
     public int getBlockTypeId(int x, int y, int z) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : section.types[section.index(x, y, z)] >> 4;
+        return section == null ? 0 : section.types[ChunkSection.index(x, y, z)] >> 4;
     }
 
     @Override
     public int getBlockData(int x, int y, int z) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : section.types[section.index(x, y, z)] & 0xF;
+        return section == null ? 0 : section.types[ChunkSection.index(x, y, z)] & 0xF;
     }
 
     @Override
     public int getBlockSkyLight(int x, int y, int z) {
         ChunkSection section = getSection(y);
-        return section == null ? 15 : section.skyLight.get(section.index(x, y, z));
+        return section == null ? 15 : section.skyLight.get(ChunkSection.index(x, y, z));
     }
 
     @Override
     public int getBlockEmittedLight(int x, int y, int z) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : section.blockLight.get(section.index(x, y, z));
+        return section == null ? 0 : section.blockLight.get(ChunkSection.index(x, y, z));
     }
 
     @Override
@@ -150,7 +150,7 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
         return humid[coordToIndex(x, z)];
     }
 
-    private int coordToIndex(int x, int z) {
+    private static int coordToIndex(int x, int z) {
         if (x < 0 || z < 0 || x >= GlowChunk.WIDTH || z >= GlowChunk.HEIGHT)
             throw new IndexOutOfBoundsException();
 

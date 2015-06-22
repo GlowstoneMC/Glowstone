@@ -8,12 +8,11 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
 public class BlockWoodenTrapDoor extends BlockOpenable {
-    private static final Collection<ItemStack> DROP = Collections.unmodifiableCollection(Arrays.asList(new ItemStack(Material.TRAP_DOOR)));
+    private static final Collection<ItemStack> DROP = Collections.unmodifiableCollection(Collections.singletonList(new ItemStack(Material.TRAP_DOOR)));
     private BlockTrapDoor trapDoor;
 
     public BlockWoodenTrapDoor() {
@@ -33,6 +32,6 @@ public class BlockWoodenTrapDoor extends BlockOpenable {
 
     @Override
     public void onRedstoneUpdate(GlowBlock block) {
-        trapDoor.onRedstoneUpdate(block);
+        BlockTrapDoor.onRedstoneUpdate(block);
     }
 }

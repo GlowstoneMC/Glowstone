@@ -6,6 +6,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 public class BlockDirt extends BlockType {
     @Override
@@ -13,10 +14,10 @@ public class BlockDirt extends BlockType {
         //TODO switch to MaterialData instead of using magic values
         if (block.getData() == 1) {
             //Coarse dirt
-            return Arrays.asList(new ItemStack(Material.DIRT, 1, (short) 1));
+            return Collections.singletonList(new ItemStack(Material.DIRT, 1, (short) 1));
         } else {
             //normal dirt and podsol drop normal dirt
-            return Arrays.asList(new ItemStack(Material.DIRT));
+            return Collections.singletonList(new ItemStack(Material.DIRT));
         }
     }
 }

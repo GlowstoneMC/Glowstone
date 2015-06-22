@@ -15,7 +15,7 @@ public class SugarCane {
 
     private static final BlockFace[] FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
 
-    public void generate(World world, Random random, int x, int y, int z) {
+    public static void generate(World world, Random random, int x, int y, int z) {
         if (world.getBlockAt(x, y, z).isEmpty()) {
             Block block = world.getBlockAt(x, y, z).getRelative(BlockFace.DOWN);
             boolean adjacentWater = false;

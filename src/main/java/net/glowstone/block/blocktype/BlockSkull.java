@@ -18,6 +18,7 @@ import org.bukkit.util.Vector;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 public class BlockSkull extends BlockType {
 
@@ -82,7 +83,7 @@ public class BlockSkull extends BlockType {
         }
         drop.setDurability((short) skull.getSkullType().ordinal());
 
-        return Arrays.asList(drop);
+        return Collections.singletonList(drop);
     }
 
     public static SkullType getType(int id) {

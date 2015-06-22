@@ -318,7 +318,7 @@ public class RegionFile {
     }
 
     /* is this an invalid chunk coordinate? */
-    private void checkBounds(int x, int z) {
+    private static void checkBounds(int x, int z) {
         if (x < 0 || x >= 32 || z < 0 || z >= 32) {
             throw new IllegalArgumentException("Chunk out of bounds: (" + x + ", " + z + ")");
         }

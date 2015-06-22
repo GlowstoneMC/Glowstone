@@ -17,7 +17,7 @@ public class StoneBoulder {
     private static final Material[] PLANT_TYPES = {Material.LONG_GRASS, Material.YELLOW_FLOWER, Material.RED_ROSE,
             Material.DOUBLE_PLANT, Material.BROWN_MUSHROOM, Material.RED_MUSHROOM};
 
-    public void generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
+    public static void generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
         boolean groundReached = false;
         while (!groundReached && sourceY > 3) {
             final Block block = world.getBlockAt(sourceX, sourceY - 1, sourceZ);

@@ -122,7 +122,7 @@ public class NetherGenerator extends GlowChunkGenerator {
     }
 
     @SuppressWarnings("deprecation")
-    private void set(short[][] buf, int x, int y, int z, Material id) {
+    private static void set(short[][] buf, int x, int y, int z, Material id) {
         if (buf[y >> 4] == null) {
             buf[y >> 4] = new short[4096];
         }

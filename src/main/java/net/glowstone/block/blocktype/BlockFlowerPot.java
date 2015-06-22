@@ -1,6 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -26,7 +25,7 @@ public class BlockFlowerPot extends BlockType {
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        List<ItemStack> drops = Arrays.asList(new ItemStack(Material.FLOWER_POT));
+        List<ItemStack> drops = Collections.singletonList(new ItemStack(Material.FLOWER_POT));
         GlowBlockState state = block.getState();
 
         if (state instanceof GlowFlowerPot) {
@@ -65,7 +64,7 @@ public class BlockFlowerPot extends BlockType {
         return false;
     }
 
-    private boolean isValidContents(MaterialData contents) {
+    private static boolean isValidContents(MaterialData contents) {
         if (contents == null) {
             return false;
         }

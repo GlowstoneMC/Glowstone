@@ -163,7 +163,7 @@ public class GlowHorse extends GlowTameable implements Horse {
     public List<Message> createSpawnMessage() {
         List<Message> messages = super.createSpawnMessage();
         MetadataMap map = new MetadataMap(GlowHorse.class);
-        map.set(MetadataIndex.HORSE_TYPE, (byte) this.getVariant().ordinal());
+        map.set(MetadataIndex.HORSE_TYPE, (byte) this.variant.ordinal());
         map.set(MetadataIndex.HORSE_FLAGS, getHorseFlags());
         map.set(MetadataIndex.HORSE_STYLE, getHorseStyleData());
         map.set(MetadataIndex.HORSE_ARMOR, getHorseArmorData());
@@ -176,7 +176,7 @@ public class GlowHorse extends GlowTameable implements Horse {
         if (isTamed()) {
             value |= 0x02;
         }
-        if (getInventory() != null && getInventory().getSaddle() != null) {
+        if (inventory != null && inventory.getSaddle() != null) {
             value |= 0x04;
         }
         if (hasChest) {
@@ -185,7 +185,7 @@ public class GlowHorse extends GlowTameable implements Horse {
         if (hasReproduced) {
             value |= 0x10;
         }
-        if (isEatingHay()) {
+        if (eatingHay) {
             value |= 0x20;
         }
         return value;
@@ -196,12 +196,12 @@ public class GlowHorse extends GlowTameable implements Horse {
     }
 
     private int getHorseArmorData() {
-        if (getInventory().getArmor() != null) {
-            if (getInventory().getArmor().getType() == Material.DIAMOND_BARDING) {
+        if (inventory.getArmor() != null) {
+            if (inventory.getArmor().getType() == Material.DIAMOND_BARDING) {
                 return 3;
-            } else if (getInventory().getArmor().getType() == Material.GOLD_BARDING) {
+            } else if (inventory.getArmor().getType() == Material.GOLD_BARDING) {
                 return 2;
-            } else if (getInventory().getArmor().getType() == Material.IRON_BARDING) {
+            } else if (inventory.getArmor().getType() == Material.IRON_BARDING) {
                 return 1;
             }
         }

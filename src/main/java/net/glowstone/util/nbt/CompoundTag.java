@@ -272,7 +272,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
         ListTag<?> tag = getTag(key, ListTag.class);
         if (tag.getValue().size() == 0) {
             // empty lists are allowed to be the wrong type
-            return Arrays.asList();
+            return Collections.emptyList();
         }
         if (tag.getChildType() != type) {
             throw new IllegalArgumentException("List \"" + key + "\" contains " + tag.getChildType() + ", not " + type);

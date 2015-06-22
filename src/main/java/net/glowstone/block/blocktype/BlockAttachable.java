@@ -8,7 +8,7 @@ import org.bukkit.material.SimpleAttachableMaterialData;
 
 public class BlockAttachable extends BlockNeedsAttached {
 
-    public void setAttachedFace(BlockState state, BlockFace attachedFace) {
+    public static void setAttachedFace(BlockState state, BlockFace attachedFace) {
         byte data = state.getRawData();
         switch (attachedFace) {
             case UP:

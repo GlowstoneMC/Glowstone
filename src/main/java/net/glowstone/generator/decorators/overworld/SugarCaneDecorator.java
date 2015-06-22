@@ -18,7 +18,7 @@ public class SugarCaneDecorator extends BlockDecorator {
         for (int j = 0; j < 20; j++) {
             int x = sourceX + random.nextInt(4) - random.nextInt(4);
             int z = sourceZ + random.nextInt(4) - random.nextInt(4);
-            new SugarCane().generate(world, random, x, sourceY, z);
+            SugarCane.generate(world, random, x, sourceY, z);
         }
     }
 }

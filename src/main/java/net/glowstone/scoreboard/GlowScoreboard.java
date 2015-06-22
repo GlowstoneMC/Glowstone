@@ -191,10 +191,10 @@ public final class GlowScoreboard implements Scoreboard {
         GlowTeam previous = playerTeamMap.put(player, team);
         if (previous != null && previous.hasPlayer(player)) {
             previous.rawRemovePlayer(player);
-            broadcast(ScoreboardTeamMessage.removePlayers(previous.getName(), Arrays.asList(player.getName())));
+            broadcast(ScoreboardTeamMessage.removePlayers(previous.getName(), Collections.singletonList(player.getName())));
         }
         if (team != null) {
-            broadcast(ScoreboardTeamMessage.addPlayers(team.getName(), Arrays.asList(player.getName())));
+            broadcast(ScoreboardTeamMessage.addPlayers(team.getName(), Collections.singletonList(player.getName())));
         }
     }
 

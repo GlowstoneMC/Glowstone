@@ -55,7 +55,7 @@ public class BlockType extends ItemType {
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (drops == null) {
             // default calculation
-            return Arrays.asList(new ItemStack(block.getType(), 1, block.getData()));
+            return Collections.singletonList(new ItemStack(block.getType(), 1, block.getData()));
         } else {
             return Collections.unmodifiableList(drops);
         }

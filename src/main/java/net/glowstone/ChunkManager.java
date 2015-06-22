@@ -319,7 +319,7 @@ public final class ChunkManager {
                 for (int cz = 0; cz < 16; ++cz) {
                     for (int cy = by; cy < by + 16; ++cy) {
                         char type = (char) types[(cx * 16 + cz) * 128 + cy];
-                        sec.types[sec.index(cx, cy, cz)] = (char) (type << 4);
+                        sec.types[GlowChunk.ChunkSection.index(cx, cy, cz)] = (char) (type << 4);
                     }
                 }
             }

@@ -11,6 +11,7 @@ import org.bukkit.util.Vector;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 public class BlockAnvil extends BlockFalling {
 
@@ -36,6 +37,6 @@ public class BlockAnvil extends BlockFalling {
     @Override
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
         ItemStack drop = new ItemStack(Material.ANVIL, 1, (short) (block.getData() / 4));
-        return Arrays.asList(drop);
+        return Collections.singletonList(drop);
     }
 }

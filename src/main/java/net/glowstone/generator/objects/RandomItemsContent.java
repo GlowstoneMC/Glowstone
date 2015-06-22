@@ -81,7 +81,7 @@ public class RandomItemsContent {
             if (amount <= stack.getMaxStackSize()) {
                 final ItemStack adjustedStack = stack.clone();
                 adjustedStack.setAmount(amount);
-                return Collections.unmodifiableList(Arrays.asList(adjustedStack));
+                return Collections.unmodifiableList(Collections.singletonList(adjustedStack));
             } else {
                 final ItemStack[] stacks = new ItemStack[amount];
                 for (int i = 0; i < amount; i++) {

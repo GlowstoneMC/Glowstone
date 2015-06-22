@@ -39,7 +39,7 @@ public class IceDecorator extends BlockPopulator {
                 y--;
             }
             //if (world.getBlockAt(x, y, z).getType() == Material.SNOW_BLOCK) {
-                new IceSpike().generate(world, random, x, y, z);
+                IceSpike.generate(world, random, x, y, z);
             //}
         }
     }

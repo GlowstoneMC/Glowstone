@@ -44,7 +44,7 @@ public class BlockSoil extends BlockType {
         }
     }
 
-    private boolean isNearWater(GlowBlock block) {
+    private static boolean isNearWater(GlowBlock block) {
         // check around for some water blocks
         final GlowWorld world = block.getWorld();
         for (int x = block.getX() - 4; x <= block.getX() + 4; x++) {

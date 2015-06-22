@@ -142,11 +142,11 @@ public class Lake {
         return true;
     }
 
-    private boolean isLakeBlock(byte[] lakeMap, int x, int y, int z) {
+    private static boolean isLakeBlock(byte[] lakeMap, int x, int y, int z) {
         return lakeMap[(x * (int) MAX_DIAMETER + z) * (int) MAX_HEIGHT + y] != 0;
     }
 
-    private void setLakeBlock(byte[] lakeMap, int x, int y, int z) {
+    private static void setLakeBlock(byte[] lakeMap, int x, int y, int z) {
         lakeMap[(int) ((x * (int) MAX_DIAMETER + z) * (int) MAX_HEIGHT + y)] = 1;
     }
 }

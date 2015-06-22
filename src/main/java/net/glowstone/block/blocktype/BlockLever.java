@@ -53,7 +53,7 @@ public class BlockLever extends BlockAttachable {
     
     private static final BlockFace[] ADJACENT = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
 
-    private void extraUpdate(GlowBlock block) {
+    private static void extraUpdate(GlowBlock block) {
         Lever lever = (Lever) block.getState().getData();
         ItemTable itemTable = ItemTable.instance();
         GlowBlock target = block.getRelative(lever.getAttachedFace());

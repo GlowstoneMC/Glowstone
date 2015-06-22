@@ -21,7 +21,7 @@ public class ItemWrittenBook extends ItemType {
         openBook(player);
     }
 
-    private void openBook(GlowPlayer player) {
+    private static void openBook(GlowPlayer player) {
         player.getSession().send(new PluginMessage("MC|BOpen", EMPTY));
     }
 }

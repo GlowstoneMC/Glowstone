@@ -201,7 +201,7 @@ public class GlowInventory implements Inventory {
                 } else if (currentStack.isSimilar(stack)) { // Non empty slot of similar items, try to fill stack
                     // Calculate the amount of transferable items
                     int amount = currentStack.getAmount();
-                    int maxStackSize = Math.min(currentStack.getMaxStackSize(), getMaxStackSize());
+                    int maxStackSize = Math.min(currentStack.getMaxStackSize(), this.maxStackSize);
                     int transfer = Math.min(stack.getAmount(), maxStackSize - amount);
                     if (transfer > 0) {
                         // And if there are any, transfer them
@@ -426,7 +426,7 @@ public class GlowInventory implements Inventory {
         return null;
     }
 
-    private boolean compareItems(ItemStack a, ItemStack b, boolean ignoreMeta) {
+    private static boolean compareItems(ItemStack a, ItemStack b, boolean ignoreMeta) {
         if (ignoreMeta) {
             return a.getTypeId() == b.getTypeId() && a.getDurability() == b.getDurability();
         }

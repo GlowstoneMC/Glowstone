@@ -65,7 +65,7 @@ public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
             if (((CocoaPlant) data).getSize() == CocoaPlantSize.LARGE) {
                 amount = 3;
             }
-            return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.INK_SACK, amount, (short) 3)));
+            return Collections.unmodifiableList(Collections.singletonList(new ItemStack(Material.INK_SACK, amount, (short) 3)));
         } else {
             warnMaterialData(CocoaPlant.class, data);
         }

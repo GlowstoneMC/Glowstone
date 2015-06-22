@@ -709,7 +709,7 @@ public final class GlowServer implements Server {
         // clear plugins and prepare to load (Bukkit)
         pluginManager.clearPlugins();
         pluginManager.registerInterface(JavaPluginLoader.class);
-        Plugin[] plugins = pluginManager.loadPlugins(pluginTypeDetector.bukkitPlugins.toArray(new File[0]), folder.getPath());
+        Plugin[] plugins = pluginManager.loadPlugins(pluginTypeDetector.bukkitPlugins.toArray(new File[pluginTypeDetector.bukkitPlugins.size()]), folder.getPath());
 
         // call onLoad methods
         for (Plugin plugin : plugins) {
@@ -783,7 +783,7 @@ public final class GlowServer implements Server {
                     try {
                         pluginManager.addPermission(perm);
                     } catch (IllegalArgumentException ex) {
-                        getLogger().log(Level.WARNING, "Plugin " + plugin.getDescription().getFullName() + " tried to register permission '" + perm.getName() + "' but it's already registered", ex);
+                        logger.log(Level.WARNING, "Plugin " + plugin.getDescription().getFullName() + " tried to register permission '" + perm.getName() + "' but it's already registered", ex);
                     }
                 }
 
@@ -809,7 +809,7 @@ public final class GlowServer implements Server {
                 try {
                     pluginManager.addPermission(perm);
                 } catch (IllegalArgumentException ex) {
-                    getLogger().log(Level.WARNING, "Permission config tried to register '" + perm.getName() + "' but it's already registered", ex);
+                    logger.log(Level.WARNING, "Permission config tried to register '" + perm.getName() + "' but it's already registered", ex);
                 }
             }
         }
@@ -1524,7 +1524,7 @@ public final class GlowServer implements Server {
 
     @Override
     public void sendPluginMessage(Plugin source, String channel, byte[] message) {
-        StandardMessenger.validatePluginMessage(getMessenger(), source, channel, message);
+        StandardMessenger.validatePluginMessage(messenger, source, channel, message);
         for (Player player : getOnlinePlayers()) {
             player.sendPluginMessage(source, channel, message);
         }

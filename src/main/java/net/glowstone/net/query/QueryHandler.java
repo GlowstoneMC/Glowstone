@@ -150,7 +150,7 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket> {
         ctx.write(new DatagramPacket(buf, packet.sender()));
     }
 
-    private void writeString(ByteBuf out, String str) {
+    private static void writeString(ByteBuf out, String str) {
         out.writeBytes(str.getBytes(StandardCharsets.UTF_8)).writeByte(0);
     }
 

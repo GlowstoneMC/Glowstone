@@ -37,7 +37,7 @@ public class GenericTree {
                 Material.SAPLING,
                 Material.VINE
         );
-        setHeight(random.nextInt(3) + 4);
+        this.height = random.nextInt(3) + 4;
         setTypes(0, 0);
     }
 

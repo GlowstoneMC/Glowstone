@@ -29,7 +29,7 @@ public class DoublePlantDecorator extends BlockDecorator {
         new DoubleTallPlant(species).generate(world, random, sourceX, sourceY, sourceZ);
     }
 
-    private DoublePlantSpecies getRandomDoublePlant(Random random, List<DoublePlantDecoration> decorations) {
+    private static DoublePlantSpecies getRandomDoublePlant(Random random, List<DoublePlantDecoration> decorations) {
         int totalWeight = 0;
         for (DoublePlantDecoration decoration : decorations) {
             totalWeight += decoration.getWeigth();

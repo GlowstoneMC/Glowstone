@@ -77,7 +77,7 @@ public class BlockRedstoneRepeater extends BlockNeedsAttached {
 
     private static final BlockFace[] ADJACENT = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
 
-    private void extraUpdate(GlowBlock block) {
+    private static void extraUpdate(GlowBlock block) {
         Diode diode = (Diode) block.getState().getData();
         ItemTable itemTable = ItemTable.instance();
         GlowBlock target = block.getRelative(diode.getFacing());

@@ -13,7 +13,7 @@ public class Cactus {
 
     private static final BlockFace[] FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
 
-    public void generate(World world, Random random, int x, int y, int z) {
+    public static void generate(World world, Random random, int x, int y, int z) {
         if (world.getBlockAt(x, y, z).isEmpty()) {
             int height = random.nextInt(random.nextInt(3) + 1) + 1;
             for (int n = y; n < y + height; n++) {

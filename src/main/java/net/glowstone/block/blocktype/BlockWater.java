@@ -40,7 +40,7 @@ public class BlockWater extends BlockLiquid {
         }
     }
 
-    private boolean hasNearSolidBlock(GlowBlock block) {
+    private static boolean hasNearSolidBlock(GlowBlock block) {
         // check there's at least a solid block around
         for (BlockFace face : SOLID_FACES) {
             if (block.getRelative(face).getType().isSolid()) {

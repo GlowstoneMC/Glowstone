@@ -45,7 +45,7 @@ public class BlockDirectDrops extends BlockNeedsTool {
 
     @Override
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
-        return Collections.unmodifiableList(Arrays.asList(getDrops(block)));
+        return Collections.unmodifiableList(Collections.singletonList(getDrops(block)));
     }
 
     @Override

@@ -75,7 +75,7 @@ public abstract class BlockLiquid extends BlockType {
     private static final int TICK_RATE_WATER = 5;
     private static final int TICK_RATE_LAVA = 20;
 
-    private void calculateFlow(GlowBlock block) {
+    private static void calculateFlow(GlowBlock block) {
 
         GlowBlockState oldState = block.getState();
         GlowBlockState newState = block.getState();

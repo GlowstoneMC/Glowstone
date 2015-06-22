@@ -12,6 +12,7 @@ import org.bukkit.util.Vector;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 public class BlockQuartz extends BlockNeedsTool {
 
@@ -41,7 +42,7 @@ public class BlockQuartz extends BlockNeedsTool {
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
         //TODO use MaterialData instead of magic value if possible
         byte data = (byte) Math.min(2, block.getData());
-        return Arrays.asList(new ItemStack(Material.QUARTZ_BLOCK, 1, data));
+        return Collections.singletonList(new ItemStack(Material.QUARTZ_BLOCK, 1, data));
     }
 
     @Override

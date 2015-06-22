@@ -7,9 +7,10 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 public class BlockWeb extends BlockType {
-    private static final Collection<ItemStack> DROP_STRING = Arrays.asList(new ItemStack(Material.STRING));
+    private static final Collection<ItemStack> DROP_STRING = Collections.singletonList(new ItemStack(Material.STRING));
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {

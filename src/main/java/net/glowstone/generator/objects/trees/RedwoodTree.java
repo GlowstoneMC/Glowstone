@@ -21,8 +21,8 @@ public class RedwoodTree extends GenericTree {
                 Material.LEAVES
         );
         setHeight(random.nextInt(4) + 6);
-        setLeavesHeight(random.nextInt(2) + 1);
-        setMaxRadius(random.nextInt(2) + 2);
+        this.leavesHeight = random.nextInt(2) + 1;
+        this.maxRadius = random.nextInt(2) + 2;
         setTypes(1, 1);
     }
 

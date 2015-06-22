@@ -94,7 +94,7 @@ public final class GlowHelpMap implements HelpMap {
         }
     }
 
-    private String color(String text) {
+    private static String color(String text) {
         return text == null ? null : ChatColor.translateAlternateColorCodes('&', text);
     }
 
@@ -250,7 +250,7 @@ public final class GlowHelpMap implements HelpMap {
         }
     }
 
-    private String getCommandPluginName(Command command) {
+    private static String getCommandPluginName(Command command) {
         if (command instanceof BukkitCommand || command instanceof VanillaCommand) {
             return "Bukkit";
         }

@@ -14,6 +14,7 @@ import org.bukkit.util.Vector;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 public class BlockSnow extends BlockNeedsAttached {
 
@@ -49,7 +50,7 @@ public class BlockSnow extends BlockNeedsAttached {
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (tool != null && ToolType.SPADE.matches(tool.getType())) {
-            return Arrays.asList(new ItemStack(Material.SNOW_BALL, block.getData() + 1));
+            return Collections.singletonList(new ItemStack(Material.SNOW_BALL, block.getData() + 1));
         } else {
             return BlockDropless.EMPTY_STACK;
         }

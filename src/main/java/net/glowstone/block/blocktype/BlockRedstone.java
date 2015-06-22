@@ -191,7 +191,7 @@ public class BlockRedstone extends BlockNeedsAttached {
         }
     }
 
-    private void extraUpdate(GlowBlock block) {
+    private static void extraUpdate(GlowBlock block) {
         ItemTable itemTable = ItemTable.instance();
         for (BlockFace face : calculateConnections(block)) {
             GlowBlock target = block.getRelative(face);

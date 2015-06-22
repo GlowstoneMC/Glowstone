@@ -11,6 +11,7 @@ import org.bukkit.util.Vector;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 public class BlockFenceGate extends BlockOpenable {
 
@@ -62,7 +63,7 @@ public class BlockFenceGate extends BlockOpenable {
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        return Arrays.asList(new ItemStack(block.getType()));
+        return Collections.singletonList(new ItemStack(block.getType()));
     }
 
     private static BlockFace getOpenDirection(float yaw, BlockFace oldFacing) {

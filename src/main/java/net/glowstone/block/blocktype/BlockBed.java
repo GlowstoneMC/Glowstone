@@ -129,7 +129,7 @@ public class BlockBed extends BlockType {
      * @param z maximum distance on z axis
      * @return Whether the entity is within distance
      */
-    private boolean isWithinDistance(Entity entity, Block block, int x, int y, int z) {
+    private static boolean isWithinDistance(Entity entity, Block block, int x, int y, int z) {
         Location loc = entity.getLocation();
         return Math.abs(loc.getX() - block.getX()) <= x
                 && Math.abs(loc.getY() - block.getY()) <= y

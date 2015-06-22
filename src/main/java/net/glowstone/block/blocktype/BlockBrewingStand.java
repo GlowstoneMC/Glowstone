@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 public class BlockBrewingStand extends BlockContainer {
 
@@ -21,7 +22,7 @@ public class BlockBrewingStand extends BlockContainer {
 
     @Override
     protected Collection<ItemStack> getBlockDrops(GlowBlock block) {
-        return Arrays.asList(new ItemStack(Material.BREWING_STAND_ITEM));
+        return Collections.singletonList(new ItemStack(Material.BREWING_STAND_ITEM));
     }
 
     @Override

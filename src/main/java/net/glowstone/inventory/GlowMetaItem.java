@@ -68,10 +68,10 @@ class GlowMetaItem implements ItemMeta {
         result.put("meta-type", "UNSPECIFIC");
 
         if (hasDisplayName()) {
-            result.put("display-name", getDisplayName());
+            result.put("display-name", displayName);
         }
         if (hasLore()) {
-            result.put("lore", getLore());
+            result.put("lore", lore);
         }
 
         if (hasEnchants()) {
@@ -97,10 +97,10 @@ class GlowMetaItem implements ItemMeta {
     void writeNbt(CompoundTag tag) {
         CompoundTag displayTags = new CompoundTag();
         if (hasDisplayName()) {
-            displayTags.putString("Name", getDisplayName());
+            displayTags.putString("Name", displayName);
         }
         if (hasLore()) {
-            displayTags.putList("Lore", TagType.STRING, getLore());
+            displayTags.putList("Lore", TagType.STRING, lore);
         }
 
         if (!displayTags.isEmpty()) {
@@ -133,10 +133,11 @@ class GlowMetaItem implements ItemMeta {
         if (tag.isCompound("display")) {
             CompoundTag display = tag.getCompound("display");
             if (display.isString("Name")) {
-                setDisplayName(display.getString("Name"));
+                displayName = display.getString("Name");
             }
             if (display.isList("Lore", TagType.STRING)) {
-                setLore(display.<String>getList("Lore", TagType.STRING));
+                // todo: fancy validation things
+                this.lore = display.<String>getList("Lore", TagType.STRING);
             }
         }
 
