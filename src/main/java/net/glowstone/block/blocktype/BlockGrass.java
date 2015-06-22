@@ -42,15 +42,12 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
 
         int i = 0;
         do {
-            int x = block.getX();
-            int y = block.getY() + 1;
-            int z = block.getZ();
             int j = 0;
 
             while (true) {
                 // if there's available space
-                if (world.getBlockAt(x, y, z).getType() == Material.AIR) {
-                    final GlowBlock b = world.getBlockAt(x, y, z);
+                if (block.getRelative(BlockFace.UP).getType() == Material.AIR) {
+                    final GlowBlock b = block.getRelative(BlockFace.UP);
                     final GlowBlockState blockState = b.getState();
                     if (random.nextFloat() < 0.125D) {
                         // sometimes grow random flower
@@ -79,10 +76,13 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
                         blockState.update(true);
                     }
                 } else if (j < i / 16) { // look around for grass block
+                    int x = block.getX();
+                    int y = block.getY();
+                    int z = block.getZ();
                     x += random.nextInt(3) - 1;
-                    y += (random.nextInt(3) - 1) * random.nextInt(3) / 2;
+                    y += (random.nextInt(3)) * random.nextInt(3) / 2;
                     z += random.nextInt(3) - 1;
-                    if (world.getBlockAt(x, y - 1, z).getType() == Material.GRASS) {
+                    if (world.getBlockAt(x, y, z).getType() == Material.GRASS) {
                         j++;
                         continue;
                     }
