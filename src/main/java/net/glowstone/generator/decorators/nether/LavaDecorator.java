@@ -11,7 +11,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 
 import net.glowstone.block.GlowBlock;
-import net.glowstone.block.ItemTable;
 import net.glowstone.generator.decorators.BlockDecorator;
 
 public class LavaDecorator extends BlockDecorator {
