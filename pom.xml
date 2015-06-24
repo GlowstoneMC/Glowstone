@@ -42,7 +42,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>${bukkit.version}</version> <!-- Use https://github.com/deathcap/Glowkit/tree/bukkit+glowkit -->
+            <version>${bukkit.version}</version> <!-- Use https://github.com/GlowstonePlusPlus/Glowkit/tree/bukkit+glowkit -->
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -65,7 +65,7 @@
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
-        <!--
+        <!-- Automatically downloaded by Glowstone++'s library manager
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
