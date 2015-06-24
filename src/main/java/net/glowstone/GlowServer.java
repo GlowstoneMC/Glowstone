@@ -954,6 +954,14 @@ public final class GlowServer implements Server {
     }
 
     /**
+     * Get whether to populate chunks when they are anchored.
+     * @return Whether to populate chunks when they are anchored.
+     */
+    public boolean populateAnchoredChunks() {
+        return config.getBoolean(ServerConfig.Key.POPULATE_ANCHORED_CHUNKS);
+    }
+
+    /**
      * Get whether parsing of data provided by a proxy is enabled.
      * @return True if a proxy is providing data to use.
      */

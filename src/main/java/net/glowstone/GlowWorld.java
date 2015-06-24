@@ -159,9 +159,14 @@ public final class GlowWorld implements World {
     private Location spawnLocation;
 
     /**
-     * Whether to keep the spawn chunks in memory (prevent them from being unloaded)
+     * Whether to keep the spawn chunks in memory (prevent them from being unloaded).
      */
     private boolean keepSpawnLoaded = true;
+
+    /**
+     * Whether to populate chunks when they are anchored.
+     */
+    private boolean populateAnchoredChunks = false;
 
     /**
      * Whether PvP is allowed in this world.
@@ -284,6 +289,7 @@ public final class GlowWorld implements World {
         waterAnimalLimit = server.getWaterAnimalSpawnLimit();
         ambientLimit = server.getAmbientSpawnLimit();
         keepSpawnLoaded = server.keepSpawnLoaded();
+        populateAnchoredChunks = server.populateAnchoredChunks();
         difficulty = server.getDifficulty();
         maxBuildHeight = server.getMaxBuildHeight();
 
@@ -325,7 +331,6 @@ public final class GlowWorld implements World {
 
         // determine the spawn location if we need to
         if (spawnLocation == null) {
-            GlowServer.logger.info("Spawn not found!");
             // no location loaded, look for fixed spawn
             spawnLocation = generator.getFixedSpawnLocation(this, random);
 
@@ -729,6 +734,9 @@ public final class GlowWorld implements World {
                     for (int z = centerZ - radius; z <= centerZ + radius; ++z) {
                         ++current;
                         loadChunk(x, z);
+                        if (populateAnchoredChunks) {
+                            getChunkManager().forcePopulation(x, z);
+                        }
                         spawnChunkLock.acquire(new GlowChunk.Key(x, z));
                         if (System.currentTimeMillis() >= loadTime + 1000) {
                             int progress = 100 * current / total;
@@ -737,7 +745,6 @@ public final class GlowWorld implements World {
                         }
                     }
                 }
-                GlowServer.logger.info("Preparing spawn for " + name +  ": done");
             } else {
                 // attempt to immediately unload the spawn
                 chunks.unloadOldChunks();
