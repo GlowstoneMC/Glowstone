@@ -26,11 +26,7 @@ public class BlockNeedsAttached extends BlockType {
 
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
-        if (ItemTable.instance().getBlock(block.getRelative(against).getType()) instanceof BlockNeedsAttached) {
-            return false;
-        } else {
-            return true;
-        }
+        return ItemTable.instance().getBlock(block.getRelative(against).getType()) instanceof BlockNeedsAttached;
     }
 
     protected void dropMe(GlowBlock me) {
