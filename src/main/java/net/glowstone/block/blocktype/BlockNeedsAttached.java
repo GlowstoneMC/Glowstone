@@ -1,10 +1,14 @@
 package net.glowstone.block.blocktype;
 
 import net.glowstone.block.GlowBlock;
+import net.glowstone.block.ItemTable;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.material.MaterialData;
+import org.bukkit.material.SimpleAttachableMaterialData;
 
 public class BlockNeedsAttached extends BlockType {
+
     @Override
     public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
         if (face == getAttachedFace(block)) {
@@ -20,11 +24,25 @@ public class BlockNeedsAttached extends BlockType {
         }
     }
 
+    @Override
+    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+        if (ItemTable.instance().getBlock(block.getRelative(against).getType()) instanceof BlockNeedsAttached) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     protected void dropMe(GlowBlock me) {
         me.breakNaturally();
     }
 
     protected BlockFace getAttachedFace(GlowBlock me) {
-        return BlockFace.DOWN;
+        MaterialData data = me.getState().getData();
+        if (data instanceof SimpleAttachableMaterialData) {
+            return ((SimpleAttachableMaterialData) data).getAttachedFace();
+        } else {
+            return BlockFace.DOWN;
+        }
     }
 }
