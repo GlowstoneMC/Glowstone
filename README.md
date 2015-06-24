@@ -6,6 +6,8 @@ The enhanced Glowstone fork with an emphasis on performance, control and compati
 
 [![Join the chat at https://gitter.im/GlowstonePlusPlus/GlowstonePlusPlus](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GlowstonePlusPlus/GlowstonePlusPlus?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+![Built with Love](http://forthebadge.com/images/badges/built-with-love.svg)
+
 (Warning: may be unstable, this is only an experiment, use at your own risk)
 
 
