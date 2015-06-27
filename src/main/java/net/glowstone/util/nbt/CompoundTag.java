@@ -1,6 +1,6 @@
 package net.glowstone.util.nbt;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 
 import java.lang.reflect.Constructor;
 import java.util.*;

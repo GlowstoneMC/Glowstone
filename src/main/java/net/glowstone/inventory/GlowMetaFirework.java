@@ -3,7 +3,7 @@ package net.glowstone.inventory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import net.glowstone.util.nbt.CompoundTag;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.FireworkMeta;

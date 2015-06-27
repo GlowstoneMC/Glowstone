@@ -3,7 +3,7 @@ package net.glowstone.scoreboard;
 import com.flowpowered.networking.Message;
 import com.google.common.collect.ImmutableSet;
 import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.NameTagVisibility;
