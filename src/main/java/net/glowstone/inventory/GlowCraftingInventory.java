@@ -65,29 +65,13 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
             }
             clickedItem = recipe.getResult();
 
-            // First calculate how many crafted items could fit in the player's inventory
-            int freeSpace = 0;
-            int maxStackSize = Math.min(clickedItem.getMaxStackSize(), playerInv.getMaxStackSize());
-            for (ItemStack stack : playerInv.getContents()) {
-                if (stack == null) {
-                    freeSpace += maxStackSize;
-                } else if (stack.isSimilar(clickedItem)) {
-                    freeSpace += maxStackSize - stack.getAmount();
-                }
-            }
+            // Place the items in the player's inventory (right to left). tryToFillSlots takes care of filling inventory.
+            player.getInventory().tryToFillSlots(clickedItem, 8, -1, 35, 8);
 
-            // Then try to craft as many as possible
+            // Craft the items, removing the ingredients from the crafting matrix
             CraftingManager cm = ((GlowServer) Bukkit.getServer()).getCraftingManager();
-            while (freeSpace >= clickedItem.getAmount() && getRecipe() == recipe) {
-                clickedItem = recipe.getResult().clone();
-                freeSpace -= clickedItem.getAmount();
+            craft(cm, recipe);
 
-                // Place the items in the player's inventory (right to left)
-                player.getInventory().tryToFillSlots(clickedItem, 8, -1, 35, 8);
-
-                // Craft the items, removing the ingredients from the crafting matrix
-                craft(cm, recipe);
-            }
         } else {
             // Clicked in the crafting grid, no special handling required (just place them left to right)
             clickedItem = player.getInventory().tryToFillSlots(clickedItem, 9, 36, 0, 9);
