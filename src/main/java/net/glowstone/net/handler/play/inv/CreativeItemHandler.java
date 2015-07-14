@@ -11,7 +11,6 @@ import net.glowstone.net.message.play.inv.CreativeItemMessage;
 import net.glowstone.net.message.play.inv.SetWindowSlotMessage;
 import org.bukkit.GameMode;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -25,7 +24,7 @@ public final class CreativeItemHandler implements MessageHandler<GlowSession, Cr
         final GlowInventory inv = player.getInventory();
         // CraftBukkit does use a inventory view with both inventories set to the player's inventory
         // for the creative inventory as there is no second inventory (no crafting) visible for the client
-        final InventoryView view = new GlowInventoryView(player, InventoryType.CREATIVE, inv, inv);
+        final InventoryView view = player.getOpenInventory();
         final int viewSlot = message.getSlot();
         final int slot = view.convertSlot(viewSlot);
         ItemStack stack = ItemIds.sanitize(message.getItem());
@@ -69,7 +68,6 @@ public final class CreativeItemHandler implements MessageHandler<GlowSession, Cr
             return;
         }
 
-        view.setItem(viewSlot, event.getCursor());
-        player.getOpenInventory().setItem(message.getSlot(), message.getItem());
+        view.setItem(viewSlot, stack);
     }
 }
