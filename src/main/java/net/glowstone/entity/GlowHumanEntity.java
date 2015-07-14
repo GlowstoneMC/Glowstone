@@ -386,8 +386,16 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     @Override
     public void closeInventory() {
-        if (getGameMode() != GameMode.CREATIVE && getItemOnCursor() != null) {
-            drop(getItemOnCursor());
+        if (getGameMode() != GameMode.CREATIVE) {
+            if (getItemOnCursor() != null) {
+                drop(getItemOnCursor());
+            }
+            for (int i = 1; i <= 4; i++) {
+                if (getOpenInventory().getItem(i) != null) {
+                    drop(getOpenInventory().getItem(i));
+                    getOpenInventory().setItem(i, null);
+                }
+            }
         }
         setItemOnCursor(null);
         openInventory(new GlowInventoryView(this));

@@ -106,6 +106,20 @@ public final class CraftingManager implements Iterable<Recipe> {
     }
 
     /**
+     * Get the amount of layers in the crafting matrix.
+     * @param items The items in the crafting matrix.
+     */
+    public int getLayers(ItemStack[] items) {
+        int layers = 0;
+        for (ItemStack item: items) {
+            if (item != null && (item.getAmount() < layers || layers == 0)) {
+                layers = item.getAmount();
+            }
+        }
+        return layers;
+    }
+
+    /**
      * Get a crafting recipe from the crafting manager.
      * @param items An array of items with null being empty slots. Length should be a perfect square.
      * @return The Recipe that matches the input, or null if none match.

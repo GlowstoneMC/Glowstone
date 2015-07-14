@@ -109,7 +109,7 @@ public class GlowInventory implements Inventory {
 
     /**
      * Returns a certain slot.
-     * @param Slot index.
+     * @param slot index.
      * @return The requested slot.
      */
     public GlowInventorySlot getSlot(int slot) {
