@@ -38,7 +38,7 @@ public class NetherGenerator extends GlowChunkGenerator {
         int cz = chunkZ << 4;
 
         final double[] surfaceNoise = ((PerlinOctaveGenerator) getWorldOctaves(world).get("surface")).fBm(cx, cz, 0, 0.5D, 2.0D);
-        final double[] soulsandNoise = ((PerlinOctaveGenerator) getWorldOctaves(world).get("soulsand")).fBm(cx, cz, 0, 0.5D, 2.0D);
+        final double[] soulsandNoise = ((PerlinOctaveGenerator) getWorldOctaves(world).get("soulsand")).fBm(cx, cz, 0, 0.000095D, 2.0D);
         final double[] gravelNoise = ((PerlinOctaveGenerator) getWorldOctaves(world).get("gravel")).fBm(cx, 0, cz, 0.5D, 2.0D);
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
@@ -258,7 +258,7 @@ public class NetherGenerator extends GlowChunkGenerator {
                         if (surfaceHeight <= 0) {
                             topMat = Material.AIR;
                             groundMat = Material.NETHERRACK;
-                        } else if (y >= 60 && y <= 65) {
+                        } else if (y >= 32 && y <= 96) {
                             topMat = Material.NETHERRACK;
                             groundMat = Material.NETHERRACK;
                             if (gravel) {
