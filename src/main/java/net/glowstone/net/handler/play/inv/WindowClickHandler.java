@@ -196,7 +196,8 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                 action = InventoryAction.NOTHING;
             }
 
-            if (slotItem != null && slotItem.getAmount() <= slotItem.getMaxStackSize()) {
+            int cursorAmount = cursor == null ? 0 : cursor.getAmount();
+            if (slotItem != null && cursorAmount + slotItem.getAmount() <= slotItem.getMaxStackSize()) {
                 // if the player can take the whole result
                 if (WindowClickLogic.isPickupAction(action) || WindowClickLogic.isPlaceAction(action)) {
                     // always take the whole crafting result out of the crafting inventories
