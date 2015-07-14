@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    
+
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.glowstoneplusplus</groupId>
     <artifactId>glowstoneplusplus</artifactId>
     <version>1.8.7-SNAPSHOT</version>
     <name>GlowstonePlusPlus</name>
     <url>https://github.com/GlowstonePlusPlus/GlowstonePlusPlus</url>
-    
+
     <scm>
         <connection>scm:git:git://github.com/GlowstonePlusPlus/GlowstonePlusPlus.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/GlowstonePlusPlus/GlowstonePlusPlus.git</developerConnection>
@@ -32,7 +32,7 @@
             <url>https://oss.sonatype.org/content/repositories/public/</url>
         </repository>
     </repositories>
-    
+
     <dependencies>
         <dependency>
             <groupId>org.ow2.asm</groupId>
@@ -43,8 +43,6 @@
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
             <version>${bukkit.version}</version> <!-- Use https://github.com/GlowstonePlusPlus/Glowkit/tree/bukkit+glowkit -->
-            <type>jar</type>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.flowpowered</groupId>
@@ -55,14 +53,11 @@
             <groupId>jline</groupId>
             <artifactId>jline</artifactId>
             <version>2.11</version>
-            <type>jar</type>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.14.8</version>
-            <type>jar</type>
             <scope>provided</scope>
         </dependency>
         <!-- Automatically downloaded by Glowstone++'s library manager
@@ -85,6 +80,7 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
             <version>1.7.7</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -93,7 +89,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    
+
     <build>
         <finalName>glowstone++-${project.version}</finalName>
 
@@ -129,7 +125,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>2.15</version>
-	            <executions>
+                <executions>
                     <execution>
                         <phase>compile</phase>
                         <goals>
@@ -141,23 +137,6 @@
                     <configLocation>${project.basedir}/etc/checkstyle.xml</configLocation>
                     <headerLocation>${project.basedir}/LICENSE</headerLocation>
                 </configuration>
-            </plugin>
-           
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.9.1</version>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals><goal>add-source</goal></goals>
-                        <configuration>
-                            <sources>
-                                <source>${project.basedir}/src/main/java</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
 
             <plugin>
@@ -187,14 +166,14 @@
                     </archive>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>2.3</version>
                 <executions>
-                <execution>
-                    <phase>package</phase>
+                    <execution>
+                        <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
                         </goals>
