@@ -53,12 +53,19 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
         final MaterialData data = block.getState().getData();
         if (data instanceof DoublePlant) {
             if (((DoublePlant) data).getSpecies() == DoublePlantSpecies.PLANT_APEX) {
+                block.setType(Material.AIR);
+                block.setData((byte) 0);
                 block = block.getRelative(BlockFace.DOWN);
                 if (!(block.getState().getData() instanceof DoublePlant)) {
                     return;
                 }
             } else {
+                block.setType(Material.AIR);
+                block.setData((byte) 0);
                 block = block.getRelative(BlockFace.UP);
+                if (!(block.getState().getData() instanceof DoublePlant)) {
+                    return;
+                }
             }
             block.setType(Material.AIR);
             block.setData((byte) 0);
