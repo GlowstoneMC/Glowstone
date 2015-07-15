@@ -30,7 +30,7 @@ public final class LibraryManager {
 
     public LibraryManager(GlowServer server) {
         // todo: allow configuration of repository, libraries, and directory
-        repository = "http://repo.glowstone.net/content/groups/public/";
+        repository = "https://repo.therealms.us/repo/content/groups/public/";
         directory = new File("lib");
     }
 

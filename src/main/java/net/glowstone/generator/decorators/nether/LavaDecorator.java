@@ -2,6 +2,7 @@ package net.glowstone.generator.decorators.nether;
 
 import java.util.Random;
 
+import net.glowstone.GlowWorld;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -10,7 +11,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 
 import net.glowstone.block.GlowBlock;
-import net.glowstone.block.ItemTable;
 import net.glowstone.generator.decorators.BlockDecorator;
 
 public class LavaDecorator extends BlockDecorator {
@@ -53,7 +53,8 @@ public class LavaDecorator extends BlockDecorator {
                 final BlockState state = block.getState();
                 state.setType(Material.LAVA);
                 state.update(true);
-                ItemTable.instance().getBlock(block.getType()).receivePulse((GlowBlock) block);
+                // 10 instead of the default 5 because lava should flow faster in the nether
+                ((GlowWorld) block.getWorld()).requestPulse((GlowBlock) block, 10);
             }
         }
     }

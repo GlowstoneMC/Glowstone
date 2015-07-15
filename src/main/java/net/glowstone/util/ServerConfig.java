@@ -1,7 +1,7 @@
 package net.glowstone.util;
 
 import net.glowstone.GlowServer;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -391,6 +391,7 @@ public final class ServerConfig {
         ALLOW_NETHER("world.allow-nether", true, Migrate.PROPS, "allow-nether"),
         ALLOW_END("world.allow-end", true, Migrate.BUKKIT, "settings.allow-end"),
         PERSIST_SPAWN("world.keep-spawn-loaded", true),
+        POPULATE_ANCHORED_CHUNKS("world.populate-anchored-chunks", false),
 
         // database
         DB_DRIVER("database.driver", "org.sqlite.JDBC", Migrate.BUKKIT, "database.driver"),

@@ -3,7 +3,7 @@ package net.glowstone.scoreboard;
 import com.flowpowered.networking.Message;
 import com.google.common.collect.ImmutableSet;
 import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.NameTagVisibility;
@@ -150,6 +150,11 @@ public final class GlowTeam implements Team {
         return deathMessageVisibility;
     }
 
+    @Override
+    public boolean hasEntry(String s) throws IllegalArgumentException, IllegalStateException {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     public void setDeathMessageVisibility(NameTagVisibility deathMessageVisibility) throws IllegalStateException, IllegalArgumentException {
         Validate.notNull(deathMessageVisibility, "NameTagVisibility cannot be null!");
         checkValid();
@@ -164,6 +169,11 @@ public final class GlowTeam implements Team {
         return ImmutableSet.copyOf(players);
     }
 
+    @Override
+    public Set<String> getEntries() throws IllegalStateException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     public int getSize() throws IllegalStateException {
         checkValid();
         return players.size();
@@ -174,6 +184,11 @@ public final class GlowTeam implements Team {
         checkValid();
         players.add(player);
         scoreboard.setPlayerTeam(player, this);
+    }
+
+    @Override
+    public void addEntry(String s) throws IllegalStateException, IllegalArgumentException {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public ChatColor getColor() {
@@ -195,6 +210,11 @@ public final class GlowTeam implements Team {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean removeEntry(String s) throws IllegalStateException, IllegalArgumentException {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public boolean hasPlayer(OfflinePlayer player) throws IllegalArgumentException, IllegalStateException {

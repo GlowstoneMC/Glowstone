@@ -56,43 +56,30 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
 
     @Override
     public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot, ItemStack clickedItem) {
-        GlowInventory playerInv = player.getInventory();
         if (getSlotType(view.convertSlot(clickedSlot)) == SlotType.RESULT) {
             // If the player clicked on the result give it to them
             Recipe recipe = getRecipe();
             if (recipe == null) {
                 return; // No complete recipe in crafting grid
             }
-            clickedItem = recipe.getResult();
 
-            // First calculate how many crafted items could fit in the player's inventory
-            int freeSpace = 0;
-            int maxStackSize = Math.min(clickedItem.getMaxStackSize(), playerInv.getMaxStackSize());
-            for (ItemStack stack : playerInv.getContents()) {
-                if (stack == null) {
-                    freeSpace += maxStackSize;
-                } else if (stack.isSimilar(clickedItem)) {
-                    freeSpace += maxStackSize - stack.getAmount();
-                }
-            }
+            // Set to correct amount (tricking the client and click handler)
+            int recipeAmount = ((GlowServer) Bukkit.getServer()).getCraftingManager().getLayers(getMatrix());
+            clickedItem.setAmount(clickedItem.getAmount() * recipeAmount);
 
-            // Then try to craft as many as possible
-            CraftingManager cm = ((GlowServer) Bukkit.getServer()).getCraftingManager();
-            while (freeSpace >= clickedItem.getAmount() && getRecipe() == recipe) {
-                clickedItem = recipe.getResult().clone();
-                freeSpace -= clickedItem.getAmount();
+            // Place the items in the player's inventory (right to left)
+            player.getInventory().tryToFillSlots(clickedItem, 8, -1, 35, 8);
 
-                // Place the items in the player's inventory (right to left)
-                player.getInventory().tryToFillSlots(clickedItem, 8, -1, 35, 8);
-
-                // Craft the items, removing the ingredients from the crafting matrix
-                craft(cm, recipe);
+            // Craft the items, removing the ingredients from the crafting matrix
+            for (int i = 0; i < recipeAmount; i++) {
+                craft();
             }
         } else {
             // Clicked in the crafting grid, no special handling required (just place them left to right)
             clickedItem = player.getInventory().tryToFillSlots(clickedItem, 9, 36, 0, 9);
             view.setItem(clickedSlot, clickedItem);
         }
+
     }
 
     @Override
@@ -101,7 +88,7 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
     }
 
     /**
-     * Remove a layer of items from the inventory according to the current recipe.
+     * Remove a layer of items from the inventory.
      */
     public void craft() {
         ItemStack[] matrix = getMatrix();
@@ -109,19 +96,16 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
         Recipe recipe = cm.getCraftingRecipe(matrix);
 
         if (recipe != null) {
-            craft(cm, recipe);
+            craft(cm);
         }
     }
 
     /**
-     * Remove a layer of items from the inventory according to the current recipe.
-     * This makes no check for whether the supplied recipe is valid for the
-     * current crafting matrix. These checks must be performed beforehand.
+     * Remove a layer of items from the inventory.
      */
-    protected void craft(CraftingManager cm, Recipe recipe) {
+    protected void craft(CraftingManager cm) {
         ItemStack[] matrix = getMatrix();
-        cm.removeItems(matrix, recipe);
-        setMatrix(matrix);
+        cm.removeItems(matrix, this);
     }
 
     @Override

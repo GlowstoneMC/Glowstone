@@ -16,16 +16,18 @@ public class GlowMapZoomMatcher extends ItemMatcher {
         ItemStack original = null;
 
         for (int i = 0; i < matrix.length; i++) {
-            switch (RECIPE.charAt(i)) {
-                case PAPER:
-                    if (matrix[i].getType() != Material.PAPER) return null;
-                    break;
-                case MAP:
-                    if (matrix[i].getType() != Material.MAP) return null;
-                    original = matrix[i];
-                    break;
-                default:
-                    return null; // Does not match recipe
+            if (matrix[i] != null) {
+                switch (RECIPE.charAt(i)) {
+                    case PAPER:
+                        if (matrix[i].getType() != Material.PAPER) return null;
+                        break;
+                    case MAP:
+                        if (matrix[i].getType() != Material.MAP) return null;
+                        original = matrix[i];
+                        break;
+                    default:
+                        return null; // Does not match recipe
+                }
             }
         }
 

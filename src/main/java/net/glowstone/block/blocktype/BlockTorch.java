@@ -28,6 +28,11 @@ public class BlockTorch extends BlockNeedsAttached {
     }
 
     @Override
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
+        updatePhysics(block);
+    }
+
+    @Override
     protected BlockFace getAttachedFace(GlowBlock me) {
         return ((Torch) me.getState().getData()).getAttachedFace();
     }

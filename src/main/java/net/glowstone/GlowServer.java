@@ -34,7 +34,7 @@ import net.glowstone.scoreboard.GlowScoreboardManager;
 import net.glowstone.util.*;
 import net.glowstone.util.bans.GlowBanList;
 import net.glowstone.util.bans.UuidListFile;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
 import org.bukkit.command.*;
@@ -82,7 +82,7 @@ public final class GlowServer implements Server {
     /**
      * The game version supported by the server.
      */
-    public static final String GAME_VERSION = "1.8.4";
+    public static final String GAME_VERSION = "1.8.7";
 
     /**
      * The protocol version supported by the server.
@@ -951,6 +951,14 @@ public final class GlowServer implements Server {
      */
     public boolean keepSpawnLoaded() {
         return config.getBoolean(ServerConfig.Key.PERSIST_SPAWN);
+    }
+
+    /**
+     * Get whether to populate chunks when they are anchored.
+     * @return Whether to populate chunks when they are anchored.
+     */
+    public boolean populateAnchoredChunks() {
+        return config.getBoolean(ServerConfig.Key.POPULATE_ANCHORED_CHUNKS);
     }
 
     /**

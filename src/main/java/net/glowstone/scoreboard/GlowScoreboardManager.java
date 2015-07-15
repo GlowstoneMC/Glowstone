@@ -23,7 +23,7 @@ public final class GlowScoreboardManager implements ScoreboardManager {
             try {
                 newScoreboard = server.getScoreboardIoService().readMainScoreboard();
             } catch (IOException e) {
-                newScoreboard = new GlowScoreboard(server);
+                newScoreboard = new GlowScoreboard();
             }
             mainScoreboard = newScoreboard;
         }
@@ -32,6 +32,6 @@ public final class GlowScoreboardManager implements ScoreboardManager {
     }
 
     public GlowScoreboard getNewScoreboard() {
-        return new GlowScoreboard(server);
+        return new GlowScoreboard();
     }
 }

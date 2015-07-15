@@ -3,7 +3,7 @@ package net.glowstone.util;
 import net.glowstone.constants.GlowAchievement;
 import net.glowstone.constants.GlowStatistic;
 import net.glowstone.net.message.play.game.StatisticMessage;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.Achievement;
 import org.bukkit.Material;
 import org.bukkit.Statistic;

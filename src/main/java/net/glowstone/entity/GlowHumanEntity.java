@@ -8,7 +8,7 @@ import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.SpawnPlayerMessage;
 import net.glowstone.util.Position;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -386,8 +386,16 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     @Override
     public void closeInventory() {
-        if (getGameMode() != GameMode.CREATIVE && getItemOnCursor() != null) {
-            drop(getItemOnCursor());
+        if (getGameMode() != GameMode.CREATIVE) {
+            if (getItemOnCursor() != null) {
+                drop(getItemOnCursor());
+            }
+            for (int i = 1; i <= 4; i++) {
+                if (getOpenInventory().getItem(i) != null) {
+                    drop(getOpenInventory().getItem(i));
+                    getOpenInventory().setItem(i, null);
+                }
+            }
         }
         setItemOnCursor(null);
         openInventory(new GlowInventoryView(this));

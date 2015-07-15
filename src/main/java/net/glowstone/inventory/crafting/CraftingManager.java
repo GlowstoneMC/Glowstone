@@ -2,6 +2,7 @@ package net.glowstone.inventory.crafting;
 
 import com.google.common.collect.Iterators;
 import net.glowstone.GlowServer;
+import net.glowstone.inventory.GlowCraftingInventory;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -84,12 +85,38 @@ public final class CraftingManager implements Iterable<Recipe> {
     }
 
     /**
-     * Remove enough items from the given item list to form the given recipe.
+     * Remove a layer of items from the crafting matrix and recipe result.
      * @param items The items to remove the ingredients from.
-     * @param recipe A recipe known to match the items.
+     * @param inv The inventory to remove the items from.
      */
-    public void removeItems(ItemStack[] items, Recipe recipe) {
-        // todo
+    public void removeItems(ItemStack[] items, GlowCraftingInventory inv) {
+        for (int i = 0; i < items.length; i++) {
+            if (items[i] != null) {
+                int amount = items[i].getAmount();
+                if (!(amount <= 0)) {
+                    items[i].setAmount(amount - 1);
+                    if (items[i].getAmount() == 0) {
+                        inv.setItem(i + 1, null);
+                    }
+                } else {
+                    inv.setItem(i + 1, null);
+                }
+            }
+        }
+    }
+
+    /**
+     * Get the amount of layers in the crafting matrix.
+     * @param items The items in the crafting matrix.
+     */
+    public int getLayers(ItemStack[] items) {
+        int layers = 0;
+        for (ItemStack item: items) {
+            if (item != null && (item.getAmount() < layers || layers == 0)) {
+                layers = item.getAmount();
+            }
+        }
+        return layers;
     }
 
     /**

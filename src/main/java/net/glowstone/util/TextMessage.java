@@ -1,7 +1,7 @@
 package net.glowstone.util;
 
 import lombok.EqualsAndHashCode;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.ChatColor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

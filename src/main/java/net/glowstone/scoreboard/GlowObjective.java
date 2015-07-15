@@ -1,7 +1,7 @@
 package net.glowstone.scoreboard;
 
 import net.glowstone.net.message.play.scoreboard.ScoreboardObjectiveMessage;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.*;
 

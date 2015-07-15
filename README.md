@@ -6,12 +6,14 @@ The enhanced Glowstone fork with an emphasis on performance, control and compati
 
 [![Join the chat at https://gitter.im/GlowstonePlusPlus/GlowstonePlusPlus](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GlowstonePlusPlus/GlowstonePlusPlus?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+![Built with Love](http://forthebadge.com/images/badges/built-with-love.svg)
+
 (Warning: may be unstable, this is only an experiment, use at your own risk)
 
 
 Currently the major changes from Glowstone include:
 
-* Tracks the [Spigot 1.8.3 update of the Bukkit API](https://hub.spigotmc.org/javadocs/bukkit/)
+* Tracks the [Spigot 1.8.7 update of the Bukkit API](https://hub.spigotmc.org/javadocs/bukkit/)
 * New features merged in, adapted for Spigot's update of the Bukkit API (see [features](#features) below for details)
 * Multi-API plugin support, integrates with [Bukkit2Sponge](https://github.com/GlowstonePlusPlus/Bukkit2Sponge) for [SpongeAPI](https://github.com/SpongePowered/SpongeAPI) plugin loading
 * Builds using Maven
@@ -31,10 +33,10 @@ cd GlowstonePlusPlus
 ###2. Build
 
 ```sh
-setup.sh
+setup-no-sponge.sh
 ```
 
-The final jar will be placed in `target/` named `glowstone++-1.8.4-SNAPSHOT.jar`.
+The final jar will be placed in `target/` named `glowstone++-1.8.7-SNAPSHOT.jar`.
 
 ##Downloads
 
@@ -42,7 +44,8 @@ The final jar will be placed in `target/` named `glowstone++-1.8.4-SNAPSHOT.jar`
 If you don't want to build from source, prebuilt jar files are available to download from:
 
 * **[CircleCI downloads](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus/tree/master)** - click the latest build then expand "Artifacts" (if it does not show, try logging in with GitHub)
-[![Build Status](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus/tree/master.png)](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus/tree/master)
+
+* Build Status: [![Build Status](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus.svg?style=svg)](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus)
 
 ##Running
 

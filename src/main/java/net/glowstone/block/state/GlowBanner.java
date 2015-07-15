@@ -3,7 +3,7 @@ package net.glowstone.block.state;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.TEBanner;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.DyeColor;
 import org.bukkit.block.Banner;

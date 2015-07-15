@@ -74,4 +74,16 @@ public class BlockFenceGate extends BlockOpenable {
             return oldFacing;
         }
     }
+
+    @Override
+    public void onRedstoneUpdate(GlowBlock block) {
+        GlowBlockState state = block.getState();
+        Gate gate = (Gate) state.getData();
+
+        boolean powered = block.isBlockIndirectlyPowered();
+        if (powered != gate.isOpen()) {
+            gate.setOpen(powered);
+            state.update();
+        }
+    }
 }
