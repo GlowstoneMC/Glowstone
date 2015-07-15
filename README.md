@@ -18,6 +18,8 @@ Currently the major changes from Glowstone include:
 * Multi-API plugin support, integrates with [Bukkit2Sponge](https://github.com/GlowstonePlusPlus/Bukkit2Sponge) for [SpongeAPI](https://github.com/SpongePowered/SpongeAPI) plugin loading
 * Builds using Maven
 
+[MC Server Bank](https://www.mcserverbank.com/index.html) - Official Server Host of Glowstone++
+
 ##Building
 
 
