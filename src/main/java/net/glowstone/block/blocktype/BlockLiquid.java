@@ -1,7 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
@@ -10,14 +8,12 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+
+import static org.bukkit.block.BlockFace.*;
+
 public abstract class BlockLiquid extends BlockType {
 
     private final Material bucketType;
-
-    private static final BlockFace[] dirNESW = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
-    private static final BlockFace[] dirNESWU = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP};
-    private static final BlockFace[] dirNESWD = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.DOWN};
-    private static final BlockFace[] dirNESWUD = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
 
     protected BlockLiquid(Material bucketType) {
         this.bucketType = bucketType;
@@ -71,143 +67,72 @@ public abstract class BlockLiquid extends BlockType {
     private static final byte STRENGTH_SOURCE = 0;
     private static final byte STRENGTH_MAX = 1;
     private static final byte STRENGTH_MIN_WATER = 7;
-    private static final byte STRENGTH_MIN_LAVA = 4;
+    private static final byte STRENGTH_MIN_LAVA = 3;
     private static final int TICK_RATE_WATER = 5;
-    private static final int TICK_RATE_LAVA = 20;
+    private static final int TICK_RATE_LAVA = 30;
 
     private void calculateFlow(GlowBlock block) {
+        GlowBlockState state = block.getState();
+        // see if we can flow down
+        if (!calculateTarget(block.getRelative(DOWN), DOWN, block.getType(), state.getRawData())) {
+            // we can't flow down, let's flow horizontally
+            BlockFace[] faces = {NORTH, EAST, SOUTH, WEST};
+            // for each horizontal face,
+            for (BlockFace face : faces) {
+                // search 5 blocks out for
+                int shortest = 5;
+                for (int j = 1; j <= 5; j++) {
+                    int m = j;
+                    switch (face) {
+                        case NORTH:
+                        case WEST:
+                            m = -j;
 
-        GlowBlockState oldState = block.getState();
-        GlowBlockState newState = block.getState();
-        boolean isWater = isWater(newState.getType());
-        List<GlowBlock> updates = new ArrayList<>(6);
-
-        if (isSource(isWater, newState.getRawData())) {
-            // We are a source block, let's spread.
-
-            for (BlockFace face : dirNESWD) {
-                GlowBlock target = block.getRelative(face);
-
-                // Check mixing liquid types.
-                if (target.isLiquid() && !isWater(target.getType()) && isWater) {
-                    target.setType(isSource(isWater, target.getData()) ? Material.OBSIDIAN : Material.COBBLESTONE, true);
-                    updates.add(target);
-                } else if (target.isLiquid() && isWater(target.getType()) && !isWater) {
-                    target.setType(face == BlockFace.DOWN ? Material.STONE : Material.COBBLESTONE, true);
-                    updates.add(target);
-                } else if (target.isLiquid() && target.getData() > STRENGTH_MAX || target.getType().isTransparent()) {
-                    // No mixes, just spread normally!
-                    target.setType(newState.getType(), STRENGTH_MAX, false);
-                    target.getWorld().requestPulse(target, isWater ? TICK_RATE_WATER : TICK_RATE_LAVA);
-                }
-            }
-
-        } else {
-            // We are flowing, let's calculate!
-
-            // Let's check that we can still stand.
-            int sourceBlocks = 0;
-            boolean sourceAbove = false;
-            boolean fluidAbove = false;
-            byte strength = isWater ? STRENGTH_MIN_WATER : STRENGTH_MIN_LAVA;
-            for (BlockFace face : dirNESWU) {
-                GlowBlock target = block.getRelative(face);
-
-                // Check that we are touching liquid.
-                if (target.isLiquid() && isWater(target.getType()) == isWater) {
-
-                    // Found sources? Lets score them.
-                    if (isSource(isWater, target.getData())) {
-                        strength = STRENGTH_MAX;
-                        sourceBlocks++;
-                        if (face == BlockFace.UP) {
-                            sourceAbove = true;
-                        }
-                    } else {
-                        // No source, lets get strength.
-                        if (face == BlockFace.UP) {
-                            strength = STRENGTH_SOURCE;
-                            fluidAbove = true;
-                        } else if (target.getData() < strength) {
-                            strength = target.getData();
+                    }
+                    if (block.getWorld().getBlockAt(block.getX() + (face == EAST || face == WEST ? m : 0), block.getY() - 1, block.getZ() + (face == NORTH || face == SOUTH ? m : 0)).getType() == Material.AIR) {
+                        if (j < shortest) {
+                            calculateTarget(block.getRelative(face), face, block.getType(), state.getRawData());
                         }
                     }
                 }
             }
+        }
+    }
 
-            if (isWater && sourceBlocks > (sourceAbove ? 2 : 1)) {
-                // We can now become a source.
-                newState.setRawData(STRENGTH_SOURCE);
-            } else if (sourceBlocks > 0 && newState.getRawData() != STRENGTH_MAX) {
-                // We are attached to the source, max strength.
-                newState.setRawData(STRENGTH_MAX);
-            } else if (sourceBlocks < 1 && strength == (isWater ? STRENGTH_MIN_WATER : STRENGTH_MIN_LAVA)) {
-                // Water is now too weak to continue!
-                newState.setType(Material.AIR);
-            } else if (!fluidAbove && sourceBlocks < 1 && newState.getRawData() != strength + 1) {
-                // We should correct our water strength now.
-                newState.setRawData((byte) (strength + 1));
+    private boolean calculateTarget(GlowBlock target, BlockFace direction, Material type, byte strength) {
+        if (target.getType() == Material.AIR) {
+            // we flowed
+            flow(target, direction, type, strength);
+            return true;
+        } else if (target.isLiquid()) {
+            // let's mix
+            mix(target, direction, type, target.getType());
+            return true;
+        }
+        // it is solid, we can't flow
+        return false;
+    }
+
+    private void flow(GlowBlock target, BlockFace direction, Material type, byte strength) {
+        // if we're not going down
+        if (DOWN != direction) {
+            if (((Byte) strength).compareTo(isWater(type) ? STRENGTH_MIN_WATER : STRENGTH_MIN_LAVA) < 0) {
+                // decrease the strength
+                strength += 1;
             } else {
-                // The water stream is stable, let's spread!
-                byte newData = (byte) (newState.getRawData() + 1);
-
-                // Start with flowing down, otherwise outwards.
-                GlowBlock down = block.getRelative(BlockFace.DOWN);
-                // Check mixing liquid types.
-                if (down.isLiquid() && !isWater(down.getType()) && isWater) {
-                    down.setType(isSource(isWater, down.getData()) ? Material.OBSIDIAN : Material.COBBLESTONE, true);
-                    updates.add(down);
-                } else if (down.isLiquid() && isWater(down.getType()) && !isWater) {
-                    down.setType(Material.STONE, true);
-                    updates.add(down);
-                } else if (down.isLiquid() && down.getData() > STRENGTH_MAX || down.getType().isTransparent()) {
-                    // No mixes, just spread normally!
-                    down.setType(newState.getType(), STRENGTH_MAX, false);
-                    down.getWorld().requestPulse(down, isWater ? TICK_RATE_WATER : TICK_RATE_LAVA);
-                } else if (!down.isLiquid() && newData <= (isWater ? STRENGTH_MIN_WATER : STRENGTH_MIN_LAVA)) { // No downwards? Check outwards.
-
-                    for (BlockFace face : dirNESW) {
-                        GlowBlock target = block.getRelative(face);
-
-                        // Check mixing liquid types.
-                        if (target.isLiquid() && !isWater(target.getType()) && isWater) {
-                            target.setType(isSource(isWater, target.getData()) ? Material.OBSIDIAN : Material.COBBLESTONE, true);
-                            updates.add(target);
-                        } else if (target.isLiquid() && isWater(target.getType()) && !isWater) {
-                            target.setType(Material.COBBLESTONE, true);
-                            updates.add(target);
-                        } else if (target.isLiquid() && target.getData() > newData || target.getType().isTransparent()) {
-                            // No mixes, just spread normally!
-                            target.setType(newState.getType(), newData, false);
-                            target.getWorld().requestPulse(target, isWater ? TICK_RATE_WATER : TICK_RATE_LAVA);
-                        }
-                    }
-                }
+                // no strength, can't flow
+                return;
             }
-        }
-
-        // Nothing changed? Lets stop pulsing.
-        if (oldState.getType() == newState.getType()
-                && oldState.getRawData() == newState.getRawData()) {
-            newState.setType(getOpposite(oldState.getType()));
-            newState.setData(oldState.getData());
-            block.getWorld().cancelPulse(block);
         } else {
-            for (BlockFace face : dirNESWUD) {
-                GlowBlock target = block.getRelative(face);
-                if (target.isLiquid()) {
-                    block.getWorld().requestPulse(target, isWater ? TICK_RATE_WATER : TICK_RATE_LAVA);
-                }
-            }
+            // reset the strength if we're going down
+            strength = STRENGTH_MAX;
         }
+        // flow to the target
+        target.setType(type, strength, false);
+    }
 
-        // Lets update our changes.
-        newState.update(true, false);
+    private void mix(GlowBlock target, BlockFace direction, Material flowingMaterial, Material targetMaterial) {
 
-        // Update any other changes afterwards to force pulses for other sources.
-        for (GlowBlock update : updates) {
-            update.setType(update.getType());
-        }
     }
 
     private static boolean isSource(boolean isWater, byte data) {
