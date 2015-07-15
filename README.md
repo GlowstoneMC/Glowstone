@@ -140,24 +140,23 @@ or visit Spigot's [Bukkit Javadocs](https://hub.spigotmc.org/javadocs/bukkit/).
 
 ##Credits
 
- * [The Minecraft Coalition](http://wiki.vg/) and [`#mcdevs`](http://mcdevs.org/) -
+ * [MC Server Bank](https://www.mcserverbank.com/index.html) for donating a server of theirs to Glowstone++.
+ * [The Minecraft Coalition](http://wiki.vg/) and [`#mcdevs`](https://github.com/mcdevs) -
    protocol and file formats research.
- * [The Bukkit team](http://bukkit.org) for their outstandingly well-designed
+ * [The Bukkit team](https://bukkit.org) for their outstandingly well-designed
    plugin API.
- * [The SpigotMC team](https://github.com/SpigotMC) for updating and enhancing
+ * [The SpigotMC team](https://spigotmc.org/) for updating and enhancing
    the Bukkit plugin API.
- * [The SpongePowered Team](https://github.com/SpongePowered) for
-   creating [SpongeAPI](https://github.com/SpongePowered/SpongeAPI).
- * [Trustin Lee](http://gleamynode.net) - author of the
+ * [The SpongePowered Team](https://www.spongepowered.org/) for
+   creating the Sponge API.
+ * [Trustin Lee](https://github.com/trustin) - author of the
    [Netty](http://netty.io/) library.
  * [Graham Edgecombe](https://github.com/grahamedgecombe/) - author of the
    original [Lightstone](https://github.com/grahamedgecombe/lightstone).
- * [Tad Hardesty](https://github.com/SpaceManiac) and all the contributors to
-   [Glowstone](https://github.com/GlowstoneMC/Glowstone).
- * All the people behind [Maven](https://maven.apache.org) and
-   [Java](http://java.oracle.com).
- * [Notch](http://mojang.com/notch) and the rest of
-   [Mojang](http://mojang.com) - for making such an awesome game in the first
+ * [Tad Hardesty](https://github.com/SpaceManiac) and [all the contributors](https://github.com/GlowstoneMC/Glowstone/graphs/contributors) to Glowstone.
+ * All the people behind [Maven](https://maven.apache.org/team-list.html) and [Java](https://java.net/people).
+ * [Notch](http://notch.net/) and the rest of
+   [Mojang](http://mojang.com/about) - for making such an awesome game in the first
    place!
 
 ##Copyright
