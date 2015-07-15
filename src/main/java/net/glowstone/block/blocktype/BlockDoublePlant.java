@@ -52,16 +52,14 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
     public void blockDestroy(GlowPlayer player, GlowBlock block, BlockFace face) {
         final MaterialData data = block.getState().getData();
         if (data instanceof DoublePlant) {
+            block.setType(Material.AIR);
+            block.setData((byte) 0);
             if (((DoublePlant) data).getSpecies() == DoublePlantSpecies.PLANT_APEX) {
-                block.setType(Material.AIR);
-                block.setData((byte) 0);
                 block = block.getRelative(BlockFace.DOWN);
                 if (!(block.getState().getData() instanceof DoublePlant)) {
                     return;
                 }
             } else {
-                block.setType(Material.AIR);
-                block.setData((byte) 0);
                 block = block.getRelative(BlockFace.UP);
                 if (!(block.getState().getData() instanceof DoublePlant)) {
                     return;
