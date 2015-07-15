@@ -1,7 +1,9 @@
 package net.glowstone.block.blocktype;
 
+import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.ItemTable;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -77,30 +79,42 @@ public abstract class BlockLiquid extends BlockType {
         if (!calculateTarget(block.getRelative(DOWN), DOWN, block.getType(), state.getRawData())) {
             // we can't flow down, let's flow horizontally
             BlockFace[] faces = {NORTH, EAST, SOUTH, WEST};
-            // for each horizontal face,
-            for (BlockFace face : faces) {
-                // search 5 blocks out for
-                int shortest = 5;
-                for (int j = 1; j <= 5; j++) {
+            // search 5 blocks out
+            boolean flowed = false;
+            for (int j = 1; j <= 5; j++) {
+                // from each horizontal face
+                for (BlockFace face : faces) {
                     int m = j;
                     switch (face) {
                         case NORTH:
                         case WEST:
-                            m = -j;
-
+                            m *= -1;
+                            break;
                     }
+                    // check for a depression in the land
                     if (block.getWorld().getBlockAt(block.getX() + (face == EAST || face == WEST ? m : 0), block.getY() - 1, block.getZ() + (face == NORTH || face == SOUTH ? m : 0)).getType() == Material.AIR) {
-                        if (j < shortest) {
-                            calculateTarget(block.getRelative(face), face, block.getType(), state.getRawData());
+                        if (!flowed && calculateTarget(block.getRelative(face), face, block.getType(), state.getRawData())) {
+                            // mark that we found a match already
+                            flowed = true;
                         }
                     }
+                }
+                // if we already found a match at this radius, stop
+                if (flowed) {
+                    break;
+                }
+            }
+            // if we didn't find a match, spread like normal
+            if (!flowed) {
+                for (BlockFace face : faces) {
+                    calculateTarget(block.getRelative(face), face, block.getType(), state.getRawData());
                 }
             }
         }
     }
 
     private boolean calculateTarget(GlowBlock target, BlockFace direction, Material type, byte strength) {
-        if (target.getType() == Material.AIR) {
+        if (target.getType() == Material.AIR || ItemTable.instance().getBlock(target.getType()) instanceof BlockNeedsAttached) {
             // we flowed
             flow(target, direction, type, strength);
             return true;
@@ -129,6 +143,8 @@ public abstract class BlockLiquid extends BlockType {
         }
         // flow to the target
         target.setType(type, strength, false);
+        // let's flow again
+        target.getWorld().requestPulse(target, isWater(target.getType()) ? TICK_RATE_WATER : TICK_RATE_LAVA);
     }
 
     private void mix(GlowBlock target, BlockFace direction, Material flowingMaterial, Material targetMaterial) {
