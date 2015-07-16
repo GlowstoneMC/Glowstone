@@ -61,10 +61,10 @@ public final class ServerConfig {
         this.parameters = parameters;
 
         config.options().indent(4).copyHeader(true).header(
-            "glowstone.yml is the main configuration file for a Glowstone server\n" +
+            "glowstone.yml is the main configuration file for a Glowstone++ server\n" +
             "It contains everything from server.properties and bukkit.yml in a\n" +
             "normal CraftBukkit installation.\n\n" +
-            "For help, join us on IRC: #glowstone @ esper.net");
+            "For help, join us on Gitter: https://gitter.im/GlowstonePlusPlus/GlowstonePlusPlus");
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -313,12 +313,12 @@ public final class ServerConfig {
         // server
         SERVER_IP("server.ip", "", Migrate.PROPS, "server-ip"),
         SERVER_PORT("server.port", 25565, Migrate.PROPS, "server-port"),
-        SERVER_NAME("server.name", "Glowstone Server", Migrate.PROPS, "server-name"),
+        SERVER_NAME("server.name", "Glowstone++ Server", Migrate.PROPS, "server-name"),
         LOG_FILE("server.log-file", "logs/log-%D.txt"),
         ONLINE_MODE("server.online-mode", true, Migrate.PROPS, "online-mode"),
         MAX_PLAYERS("server.max-players", 20, Migrate.PROPS, "max-players"),
         WHITELIST("server.whitelisted", false, Migrate.PROPS, "white-list"),
-        MOTD("server.motd", "Glowstone Server", Migrate.PROPS, "motd"),
+        MOTD("server.motd", "Glowstone++ server", Migrate.PROPS, "motd"),
         SHUTDOWN_MESSAGE("server.shutdown-message", "Server shutting down.", Migrate.BUKKIT, "settings.shutdown-message"),
         USE_JLINE("server.use-jline", true),
 
@@ -391,7 +391,7 @@ public final class ServerConfig {
         ALLOW_NETHER("world.allow-nether", true, Migrate.PROPS, "allow-nether"),
         ALLOW_END("world.allow-end", true, Migrate.BUKKIT, "settings.allow-end"),
         PERSIST_SPAWN("world.keep-spawn-loaded", true),
-        POPULATE_ANCHORED_CHUNKS("world.populate-anchored-chunks", false),
+        POPULATE_ANCHORED_CHUNKS("world.populate-anchored-chunks", true),
 
         // database
         DB_DRIVER("database.driver", "org.sqlite.JDBC", Migrate.BUKKIT, "database.driver"),
