@@ -31,6 +31,21 @@ public final class GlowItem extends GlowEntity implements Item {
     private static final int LIFETIME = 5 * 60 * 20;
 
     /**
+     * Velocity reduction applied each tick.
+     */
+    private static final double AIR_DRAG = 0.99;
+
+    /**
+     * Velocity reduction applied each tick.
+     */
+    private static final double LIQUID_DRAG = 0.8;
+
+    /**
+     * Gravity acceleration applied each tick.
+     */
+    private static final Vector GRAVITY = new Vector(0, -0.05, 0);
+
+    /**
      * The remaining delay until this item may be picked up.
      */
     private int pickupDelay;
@@ -108,13 +123,13 @@ public final class GlowItem extends GlowEntity implements Item {
                 if (entity instanceof GlowPlayer && getPickedUp((GlowPlayer) entity)) {
                     break;
                 }
+                if (entity instanceof GlowItem) {
+                    if ((GlowItem) entity != this && ((GlowItem) entity).getItemStack().getType() == getItemStack().getType()) {
+                        getItemStack().setAmount(((GlowItem) entity).getItemStack().getAmount() + getItemStack().getAmount());
+                        ((GlowItem) entity).remove();
+                    }
+                }
             }
-        }
-
-        // teleport to actual position fairly frequently in order to account
-        // for missing/incorrect physics simulation
-        if (getTicksLived() % (2 * 20) == 0) {
-            teleported = true;
         }
 
         // disappear if we've lived too long
@@ -127,19 +142,17 @@ public final class GlowItem extends GlowEntity implements Item {
     protected void pulsePhysics() {
         // simple temporary gravity - should eventually be improved to be real
         // physics and moved up to GlowEntity
-
-        // continuously set velocity to 0 to make things look more normal
-        setVelocity(new Vector(0, 0, 0));
-
         if (location.getBlock().getType().isSolid()) {
-            // float up out of solid blocks
             setRawLocation(location.clone().add(0, 0.2, 0));
-        } else {
-            // fall down on top of solid blocks
-            Location down = location.clone().add(0, -0.1, 0);
-            if (!down.getBlock().getType().isSolid()) {
-                setRawLocation(down);
+        }
+        if (!location.clone().add(getVelocity()).getBlock().getType().isSolid()) {
+            location.add(getVelocity());
+            if (location.getBlock().isLiquid()) {
+                velocity.multiply(LIQUID_DRAG);
+            } else {
+                velocity.multiply(AIR_DRAG);
             }
+            velocity.add(GRAVITY);
         }
 
         super.pulsePhysics();
