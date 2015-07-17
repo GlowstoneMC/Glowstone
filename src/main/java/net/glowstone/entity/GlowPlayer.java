@@ -423,7 +423,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void damage(double amount, DamageCause cause) {
-        if (getGameMode().equals(GameMode.CREATIVE) || cause == DamageCause.VOID) {
+        if (getGameMode().equals(GameMode.CREATIVE) && !(cause == DamageCause.VOID)) {
             return;
         }
         super.damage(amount, cause);
