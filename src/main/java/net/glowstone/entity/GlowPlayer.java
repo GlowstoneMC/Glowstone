@@ -1818,7 +1818,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         if (server.getAnnounceAchievements()) {
             // todo: make message fancier (hover, translated names)
-            server.broadcastMessage(getName() + " earned achievement " + ChatColor.GREEN + "[" + achievement.name() + "]");
+            server.broadcastMessage(getName() + " has just earned the achievement " + ChatColor.GREEN + "[" + GlowAchievement.getFancyName(achievement) + "]");
         }
         return true;
     }

@@ -13,6 +13,7 @@ public final class GlowAchievement {
     private GlowAchievement() {}
 
     private static final String[] names = new String[Achievement.values().length];
+    private static final String[] fancyNames = new String[Achievement.values().length];
 
     /**
      * Get the achievement name for a specified Achievement.
@@ -24,12 +25,22 @@ public final class GlowAchievement {
         return names[achievement.ordinal()];
     }
 
+    public static String getFancyName(Achievement achievement) {
+        Validate.notNull(achievement, "Achievement cannot be null");
+        return fancyNames[achievement.ordinal()];
+    }
+
     private static void set(Achievement achievement, String key) {
         names[achievement.ordinal()] = "achievement." + key;
     }
 
+    private static void set(Achievement achievement, String key, String fancyName) {
+        names[achievement.ordinal()] = "achievement." + key;
+        fancyNames[achievement.ordinal()] = fancyName;
+    }
+
     static {
-        set(OPEN_INVENTORY, "openInventory");
+        set(OPEN_INVENTORY, "openInventory", "Taking Inventory");
         set(MINE_WOOD, "mineWood");
         set(BUILD_WORKBENCH, "buildWorkBench");
         set(BUILD_PICKAXE, "buildPickaxe");
