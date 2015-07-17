@@ -51,8 +51,11 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.InventoryView;
@@ -397,6 +400,37 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     public String toString() {
         return "GlowPlayer{name=" + getName() + "}";
     }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Damages
+
+    @Override
+    public void damage(double amount) {
+        if (getGameMode().equals(GameMode.CREATIVE)) {
+            return;
+        }
+        damage(amount, DamageCause.CUSTOM);
+    }
+
+    @Override
+    public void damage(double amount, Entity cause) {
+        if (getGameMode().equals(GameMode.CREATIVE)) {
+            return;
+        }
+        super.damage(amount, cause);
+        sendHealth();
+    }
+
+    @Override
+    public void damage(double amount, DamageCause cause) {
+        if (getGameMode().equals(GameMode.CREATIVE)) {
+            return;
+        }
+        super.damage(amount, cause);
+        sendHealth();
+    }
+
 
     ////////////////////////////////////////////////////////////////////////////
     // Internals

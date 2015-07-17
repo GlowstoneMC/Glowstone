@@ -24,6 +24,7 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
             return;
         }
 
+
         // call move event if movement actually occurred and there are handlers registered
         if (!oldLocation.equals(newLocation) && PlayerMoveEvent.getHandlerList().getRegisteredListeners().length > 0) {
             final PlayerMoveEvent event = EventFactory.callEvent(new PlayerMoveEvent(session.getPlayer(), oldLocation, newLocation));
@@ -42,6 +43,13 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
         }
 
         // move event was not fired or did nothing, simply update location
+        session.getPlayer().setRawLocation(newLocation);
+
+        // do stuff with onGround if we need to
+        if (session.getPlayer().isOnGround() != message.isOnGround()) {
+            session.getPlayer().setOnGround(message.isOnGround());
+        }
+
         session.getPlayer().setRawLocation(newLocation);
     }
 }

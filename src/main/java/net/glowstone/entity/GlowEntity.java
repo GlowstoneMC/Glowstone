@@ -14,10 +14,7 @@ import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.Position;
 import org.apache.commons.lang3.Validate;
-import org.bukkit.EntityEffect;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
@@ -135,6 +132,11 @@ public abstract class GlowEntity implements Entity {
      * The distance the entity is currently falling without touching the ground.
      */
     private float fallDistance;
+
+    /**
+     * The distance the entity fell in a packet to add to the total fall distance.
+     */
+    private double toFall;
 
     /**
      * A counter of how long this entity has existed
@@ -401,8 +403,38 @@ public abstract class GlowEntity implements Entity {
         if (location.getWorld() != world) {
             throw new IllegalArgumentException("Cannot setRawLocation to a different world (got " + location.getWorld() + ", expected " + world + ")");
         }
+
+        if (location.equals(previousLocation)) {
+            return;
+        }
+
         world.getEntityManager().move(this, location);
         Position.copyLocation(location, this.location);
+
+        if (this instanceof GlowPlayer) {
+            if (((GlowPlayer) this).getGameMode() == GameMode.CREATIVE) {
+                return;
+            }
+        }
+
+        // check if the entity is climbing, or in a liquid
+        if (location.getBlock().getType() != Material.AIR) {
+            fallDistance = 0;
+            return;
+        }
+
+        if (location.getY() < previousLocation.getY()) {
+            if (toFall != previousLocation.getY() - location.getY()) {
+                toFall = previousLocation.getY() - location.getY();
+                fallDistance += toFall;
+                // check if entity is on the ground and did not fall the sufficient amount
+                if (new Location(location.getWorld(), location.getX(), location.getY() - 1, location.getZ()).getBlock().getType().isSolid() && !(fallDistance > 3)) {
+                    fallDistance = 0;
+                }
+            }
+        } else if (location.getY() > this.previousLocation.getY()) {
+            fallDistance = 0;
+        }
     }
 
     /**
