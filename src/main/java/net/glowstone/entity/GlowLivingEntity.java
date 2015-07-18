@@ -656,6 +656,28 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return Collections.unmodifiableCollection(potionEffects.values());
     }
 
+    @Override
+    public void setOnGround(boolean onGround) {
+        super.setOnGround(onGround);
+        if (onGround && getFallDistance() > 3) {
+            float damage = this.getFallDistance() - 3;
+            damage = Math.round(damage);
+            if (damage == 0) {
+                setFallDistance(0);
+                return;
+            }
+            EntityDamageEvent ev = new EntityDamageEvent(this, EntityDamageEvent.DamageCause.FALL, damage);
+            this.getServer().getPluginManager().callEvent(ev);
+            if (ev.isCancelled()) {
+                setFallDistance(0);
+                return;
+            }
+            this.setLastDamageCause(ev);
+            this.damage(ev.getDamage());
+        }
+        this.setFallDistance(0);
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Custom name
 
