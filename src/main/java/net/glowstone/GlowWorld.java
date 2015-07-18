@@ -556,10 +556,12 @@ public final class GlowWorld implements World {
                     time = 0;
                     for (GlowPlayer player : players) {
                         player.sendTime();
-                        player.leaveBed(true);
+                        if (player.isSleeping()) {
+                            player.leaveBed(true);
+                        }
                     }
                     setStorm(false);
-                    setThundering(false);
+                        setThundering(false);
                 }
             }
         }
