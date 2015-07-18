@@ -42,14 +42,12 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
             }
         }
 
-        // move event was not fired or did nothing, simply update location
-        session.getPlayer().setRawLocation(newLocation);
-
         // do stuff with onGround if we need to
         if (session.getPlayer().isOnGround() != message.isOnGround()) {
             session.getPlayer().setOnGround(message.isOnGround());
         }
 
+        // move event was not fired or did nothing, simply update location
         session.getPlayer().setRawLocation(newLocation);
     }
 }
