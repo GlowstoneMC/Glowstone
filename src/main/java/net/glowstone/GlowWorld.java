@@ -561,7 +561,7 @@ public final class GlowWorld implements World {
                         }
                     }
                     setStorm(false);
-                        setThundering(false);
+                    setThundering(false);
                 }
             }
         }
