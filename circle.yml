@@ -9,9 +9,9 @@ test:
     post:
         - cp -r target/glowstone*.jar $CIRCLE_ARTIFACTS/
 # deploy to test server
-deployment:
-  devel:
-    branch: master
-    commands:
-      - scp -P 2299 $CIRCLE_ARTIFACTS/glowstone++-1.8.7-SNAPSHOT.jar slog@therealms.us:g++/glowstone++.jar
-      - ssh slog@therealms.us -p 2299 'g++/start.sh'
+#deployment:
+#  devel:
+#    branch: master
+#    commands:
+#      - scp -P 2299 $CIRCLE_ARTIFACTS/glowstone++-1.8.7-SNAPSHOT.jar ?:g++/glowstone++.jar
+#      - ssh ? -p ? 'g++/start.sh'

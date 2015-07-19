@@ -108,6 +108,9 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
         buf.writeByte(0);
         buf.writeByte(0);
         ctx.write(buf);
+        if (buf.refCnt() > 0) {
+            buf.release(buf.refCnt());
+        }
     }
 
     private void sendLargeResponse(ChannelHandlerContext ctx, int requestId, String payload) {
