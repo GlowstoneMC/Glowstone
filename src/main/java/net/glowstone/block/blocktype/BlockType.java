@@ -10,6 +10,7 @@ import net.glowstone.block.entity.TileEntity;
 import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowPlayer;
 
+import net.glowstone.util.SoundInfo;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -36,6 +37,8 @@ public class BlockType extends ItemType {
     protected static final Random random = new Random();
     protected List<ItemStack> drops = null;
 
+    protected SoundInfo placeSound = new SoundInfo(Sound.DIG_WOOD, 1F, 0.75F);
+
     ////////////////////////////////////////////////////////////////////////////
     // Setters for subclass use
 
@@ -59,6 +62,22 @@ public class BlockType extends ItemType {
         } else {
             return Collections.unmodifiableList(drops);
         }
+    }
+
+    /**
+     * Gets the sound that will be played when a player places the block.
+     * @return The sound to be played
+     */
+    public SoundInfo getPlaceSound() {
+        return placeSound;
+    }
+
+    /**
+     * Gets the sound that will be played when a player places the block.
+     * @return The sound to be played
+     */
+    public void setPlaceSound(Sound sound) {
+        placeSound = new SoundInfo(sound, 1F, 0.75F);
     }
 
     /**
@@ -269,8 +288,7 @@ public class BlockType extends ItemType {
         }
 
         // play a sound effect
-        // todo: vary sound effect based on block type
-        target.getWorld().playSound(target.getLocation(), Sound.DIG_WOOD, 1, 1);
+        getPlaceSound().play(target.getLocation());
 
         // do any after-place actions
         afterPlace(player, target, holding, oldState);
