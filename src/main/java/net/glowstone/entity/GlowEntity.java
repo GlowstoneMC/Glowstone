@@ -134,11 +134,6 @@ public abstract class GlowEntity implements Entity {
     private float fallDistance;
 
     /**
-     * The distance the entity fell in a packet to add to the total fall distance.
-     */
-    private double toFall;
-
-    /**
      * A counter of how long this entity has existed
      */
     protected int ticksLived = 0;
@@ -424,15 +419,12 @@ public abstract class GlowEntity implements Entity {
         }
 
         if (location.getY() < previousLocation.getY()) {
-            if (toFall != previousLocation.getY() - location.getY()) {
-                toFall = previousLocation.getY() - location.getY();
-                fallDistance += toFall;
-                // check if entity is on the ground and did not fall the sufficient amount
-                if (new Location(location.getWorld(), location.getX(), location.getY() - 1, location.getZ()).getBlock().getType().isSolid() && !(fallDistance > 3)) {
-                    fallDistance = 0;
-                }
+            fallDistance += previousLocation.getY() - location.getY();
+            // check if entity is on the ground and did not fall the sufficient amount
+            if (new Location(location.getWorld(), location.getX(), location.getY() - 1, location.getZ()).getBlock().getType().isSolid() && !(fallDistance > 3)) {
+                fallDistance = 0;
             }
-        } else if (location.getY() > this.previousLocation.getY()) {
+        } else if (location.getY() > previousLocation.getY()) {
             fallDistance = 0;
         }
     }

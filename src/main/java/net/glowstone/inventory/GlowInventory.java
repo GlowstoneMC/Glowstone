@@ -113,6 +113,9 @@ public class GlowInventory implements Inventory {
      * @return The requested slot.
      */
     public GlowInventorySlot getSlot(int slot) {
+        if (slot < 0 || slot > slots.size()) {
+            return null;
+        }
         return slots.get(slot);
     }
 
