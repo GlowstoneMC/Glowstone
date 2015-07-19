@@ -91,7 +91,7 @@ public class PlayProtocolTest extends BaseProtocolTest {
             new EntityRotationMessage(1, 2, 3),
             new EntityRotationMessage(1, 2, 3, false),
             new EntityStatusMessage(1, 2),
-            new EntityStatusMessage(1, EntityStatusMessage.Status.FALL_IN_LOVE),
+            new EntityStatusMessage(1, EntityStatusMessage.ANIMAL_HEARTS),
             new EntityTeleportMessage(1, 2, 3, 4, 5, 6),
             new EntityTeleportMessage(1, 2, 3, 4, 5, 6, false),
             new RelativeEntityPositionRotationMessage(1, 2, 3, 4, 5, 6),
