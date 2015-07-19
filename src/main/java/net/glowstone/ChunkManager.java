@@ -174,13 +174,11 @@ public final class ChunkManager {
                     GlowServer.logger.warning("Failed to unload chunk " + world.getName() + ":" + entry.getKey());
                 }
             }
-            // cannot remove old chunks from cache - GlowBlock and GlowBlockState keep references.
-            // they must either be changed to look up the chunk again all the time, or this code left out.
-            /*if (!entry.getValue().isLoaded()) {
+            if (!entry.getValue().isLoaded()) {
                 //GlowServer.logger.info("Removing from cache " + entry.getKey());
                 chunks.entrySet().remove(entry);
                 locks.remove(entry.getKey());
-            }*/
+            }
         }
     }
 

@@ -627,7 +627,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         // second step: package chunks into bulk packets
-        final int maxSize = 0x1fff00;  // slightly under protocol max size of 0x200000
+        final int maxSize = 0x1fffef;  // slightly under protocol max size of 0x200000
         final boolean skylight = world.getEnvironment() == World.Environment.NORMAL;
         List<ChunkDataMessage> messages = new LinkedList<>();
         int bulkSize = 6; // size of bulk header
