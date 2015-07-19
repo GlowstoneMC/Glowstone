@@ -18,7 +18,6 @@ import java.util.List;
 public class GlowBlockState implements BlockState {
 
     private final GlowWorld world;
-    private final GlowChunk chunk;
     private final int x;
     private final int y;
     private final int z;
@@ -33,7 +32,6 @@ public class GlowBlockState implements BlockState {
         z = block.getZ();
         type = block.getTypeId();
         light = block.getLightLevel();
-        chunk = block.getChunk();
         makeData(block.getData());
     }
 
@@ -47,7 +45,7 @@ public class GlowBlockState implements BlockState {
 
     @Override
     public GlowChunk getChunk() {
-        return chunk;
+        return getBlock().getChunk();
     }
 
     @Override
