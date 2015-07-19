@@ -153,6 +153,9 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
                 GlowServer.logger.info(session + " used unknown Minecraft channel: " + channel);
                 break;
         }
+        if (buf.refCnt() > 0) {
+            buf.release(buf.refCnt());
+        }
     }
 
     private String string(byte[] data) {

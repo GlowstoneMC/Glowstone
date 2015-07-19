@@ -93,6 +93,9 @@ public abstract class GlowProtocol extends AbstractProtocol {
         ByteBufUtils.writeVarInt(opcodeBuffer, codec.getOpcode());
         ByteBufUtils.writeVarInt(out, opcodeBuffer.readableBytes() + data.readableBytes());
         ByteBufUtils.writeVarInt(out, codec.getOpcode());
+        if (opcodeBuffer.refCnt() > 0) {
+            opcodeBuffer.release(opcodeBuffer.refCnt());
+        }
         return out;
     }
 

@@ -2210,6 +2210,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
                 buf.writeByte(0);
             }
             session.send(new PluginMessage("REGISTER", buf.array()));
+            if (buf.refCnt() > 0) {
+                buf.release(buf.refCnt());
+            }
         }
     }
 
