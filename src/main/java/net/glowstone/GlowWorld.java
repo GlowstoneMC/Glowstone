@@ -500,7 +500,9 @@ public final class GlowWorld implements World {
         }
 
         for (GlowEntity entity : players) {
-            entity.pulse();
+            if (entity != null) {
+                entity.pulse();
+            }
         }
 
         for (GlowEntity entity : temp) {
