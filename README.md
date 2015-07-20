@@ -18,7 +18,7 @@ Currently the major changes from Glowstone include:
 * Multi-API plugin support, integrates with [Bukkit2Sponge](https://github.com/GlowstonePlusPlus/Bukkit2Sponge) for [SpongeAPI](https://github.com/SpongePowered/SpongeAPI) plugin loading
 * Builds using Maven
 
-[MC Server Bank](https://www.mcserverbank.com/index.html) - Official Server Host of Glowstone++
+Sponsored by [MC Server Bank](https://www.mcserverbank.com/index.html), the Official Server Host of Glowstone++. Thanks for the server, it is wonderful!
 
 ##Building
 
@@ -104,7 +104,7 @@ However, there are several drawbacks:
    to produce quality work, Glowstone++ does not undergo the same rigorious testing
    as the Bukkit project.
    
-For a current list of faetures, [check the wiki](https://github.com/GlowstonePlusPlus/GlowstonePlusPlus/wiki/Current-Features)
+For a current list of features, [check the wiki](https://github.com/GlowstonePlusPlus/GlowstonePlusPlus/wiki/Current-Features)
 
 ##Docs and Support
 
