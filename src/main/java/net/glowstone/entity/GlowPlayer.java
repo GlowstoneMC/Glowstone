@@ -1283,6 +1283,21 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public Entity getSpectatorTarget() {
+        return null;
+    }
+
+    @Override
+    public void setSpectatorTarget(Entity entity) {
+
+    }
+
+    @Override
+    public void sendTitle(String title, String subtitle) {
+
+    }
+
+    @Override
     public void setHealthScale(double scale) throws IllegalArgumentException {
         healthScaled = true;
         healthScale = scale;

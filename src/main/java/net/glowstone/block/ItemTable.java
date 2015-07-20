@@ -162,9 +162,9 @@ public final class ItemTable {
         reg(Material.STONE_SLAB2, new BlockSlab());
         reg(Material.HAY_BLOCK, new BlockHay());
         reg(Material.QUARTZ_BLOCK, new BlockQuartz());
-        reg(Material.LOG, new BlockLog());
-        reg(Material.LOG_2, new BlockLog2());
-        reg(Material.LADDER, new BlockLadder());
+        reg(Material.LOG, new BlockLog(), Sound.DIG_WOOD);
+        reg(Material.LOG_2, new BlockLog2(), Sound.DIG_WOOD);
+        reg(Material.LADDER, new BlockLadder(), Sound.DIG_WOOD);
         reg(Material.VINE, new BlockVine());
         reg(Material.STONE_BUTTON, new BlockButton(Material.STONE_BUTTON));
         reg(Material.WOOD_BUTTON, new BlockButton(Material.WOOD_BUTTON), Sound.DIG_WOOD);
@@ -186,7 +186,7 @@ public final class ItemTable {
         reg(Material.ACTIVATOR_RAIL, new BlockRails());
         reg(Material.DETECTOR_RAIL, new BlockRails());
         reg(Material.POWERED_RAIL, new BlockRails());
-        reg(Material.CARPET, new BlockCarpet());
+        reg(Material.CARPET, new BlockCarpet(), Sound.DIG_WOOL);
         reg(Material.ENCHANTMENT_TABLE, new BlockEnchantmentTable());
         reg(Material.BREWING_STAND, new BlockBrewingStand());
         reg(Material.CACTUS, new BlockCactus());
