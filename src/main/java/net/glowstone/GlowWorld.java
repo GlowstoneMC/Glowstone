@@ -1035,6 +1035,21 @@ public final class GlowWorld implements World {
         return getChunkAt(block.getX() >> 4, block.getZ() >> 4);
     }
 
+    @Override
+    public void getChunkAtAsync(int x, int z, ChunkLoadCallback cb) {
+
+    }
+
+    @Override
+    public void getChunkAtAsync(Location location, ChunkLoadCallback cb) {
+
+    }
+
+    @Override
+    public void getChunkAtAsync(Block block, ChunkLoadCallback cb) {
+
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Chunk loading and unloading
 

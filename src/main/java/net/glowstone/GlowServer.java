@@ -1092,6 +1092,11 @@ public final class GlowServer implements Server {
     }
 
     @Override
+    public Spigot spigot() {
+        return null;
+    }
+
+    @Override
     public BanList getBanList(BanList.Type type) {
         switch (type) {
             case NAME:

@@ -516,6 +516,11 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public Spigot spigot() {
+        return null;
+    }
+
+    @Override
     public void sendPluginMessage(Plugin source, String channel, byte[] message) {
 
     }

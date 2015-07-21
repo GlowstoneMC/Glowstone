@@ -52,6 +52,11 @@ class GlowMetaItem implements ItemMeta {
         return new GlowMetaItem(this);
     }
 
+    @Override
+    public Spigot spigot() {
+        return null;
+    }
+
     protected static void serializeEnchants(String name, Map<String, Object> map, Map<Enchantment, Integer> enchants) {
         Map<String, Object> enchantList = new HashMap<>();
 
