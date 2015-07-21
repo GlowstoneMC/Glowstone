@@ -36,20 +36,17 @@ public class BlockDoor extends BlockType {
             return;
         }
 
-        // remove the other half of the door
-        GlowBlockState state = block.getState();
-        MaterialData data = state.getData();
-
-        if (data instanceof Door) {
-            Door door = (Door) data;
+        if (oldType.getData() == Door.class) {
+            Door door = new Door(oldType);
+            door.setData(oldData);
             if (door.isTopHalf()) {
                 Block b = block.getRelative(BlockFace.DOWN);
-                if (b.getType() == block.getType()) {
+                if (b.getState().getData() instanceof Door) {
                     b.setType(Material.AIR);
                 }
             } else {
                 Block b = block.getRelative(BlockFace.UP);
-                if (b.getType() == block.getType()) {
+                if (b.getState().getData() instanceof Door) {
                     b.setType(Material.AIR);
                 }
             }
@@ -66,6 +63,7 @@ public class BlockDoor extends BlockType {
             warnMaterialData(Door.class, data);
             return;
         }
+
         BlockFace facing = player.getDirection();
         ((Door) data).setFacingDirection(facing.getOppositeFace());
 
