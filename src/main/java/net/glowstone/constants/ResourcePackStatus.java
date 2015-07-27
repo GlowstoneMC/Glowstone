@@ -26,7 +26,7 @@ public final class ResourcePackStatus {
     }
 
     static {
-        set(0, Status.SUCCESS);
+        set(0, Status.SUCCESSFULLY_LOADED);
         set(1, Status.DECLINED);
         set(2, Status.FAILED_DOWNLOAD);
         set(3, Status.ACCEPTED);
