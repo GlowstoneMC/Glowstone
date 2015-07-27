@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.glowstoneplusplus</groupId>
     <artifactId>glowstoneplusplus</artifactId>
-    <version>1.8.7-SNAPSHOT</version>
+    <version>1.8.8-SNAPSHOT</version>
     <name>GlowstonePlusPlus</name>
     <url>https://github.com/GlowstonePlusPlus/GlowstonePlusPlus</url>
 
@@ -15,7 +15,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <bukkit.version>1.8.7-R0.1-SNAPSHOT</bukkit.version>
+        <bukkit.version>1.8.8-R0.1-SNAPSHOT</bukkit.version>
     </properties>
 
     <parent>
@@ -40,8 +40,8 @@
             <version>5.0.3</version>
         </dependency>
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
+            <groupId>net.glowstone</groupId>
+            <artifactId>glowkit</artifactId>
             <version>${bukkit.version}</version> <!-- Use https://github.com/GlowstonePlusPlus/Glowkit/tree/bukkit+glowkit -->
         </dependency>
         <dependency>
