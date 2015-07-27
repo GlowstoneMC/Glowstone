@@ -139,7 +139,7 @@ or visit Spigot's [Bukkit Javadocs](https://hub.spigotmc.org/javadocs/bukkit/).
    original [Lightstone](https://github.com/grahamedgecombe/lightstone).
  * [Tad Hardesty](https://github.com/SpaceManiac) and [all the contributors](https://github.com/GlowstoneMC/Glowstone/graphs/contributors) to Glowstone.
  * All the people behind [Maven](https://maven.apache.org/team-list.html) and [Java](https://java.net/people).
- * [Notch](http://notch.net/) and the rest of
+ * [Notch](http://notch.tumblr.com/) and
    [Mojang](http://mojang.com/about) - for making such an awesome game in the first
    place!
 
