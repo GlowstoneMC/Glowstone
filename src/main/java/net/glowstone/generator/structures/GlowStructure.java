@@ -1,15 +1,14 @@
 package net.glowstone.generator.structures;
 
+import net.glowstone.generator.structures.util.StructureBoundingBox;
+import net.glowstone.util.BlockStateDelegate;
+import org.bukkit.World;
+import org.bukkit.util.Vector;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-
-import net.glowstone.generator.structures.util.StructureBoundingBox;
-import net.glowstone.util.BlockStateDelegate;
-
-import org.bukkit.World;
-import org.bukkit.util.Vector;
 
 public abstract class GlowStructure {
 

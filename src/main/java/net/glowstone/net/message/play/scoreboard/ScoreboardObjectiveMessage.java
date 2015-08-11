@@ -1,10 +1,10 @@
 package net.glowstone.net.message.play.scoreboard;
 
 import com.flowpowered.networking.Message;
-import org.bukkit.scoreboard.RenderType;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.scoreboard.RenderType;
 
 @Data
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)

@@ -1,17 +1,16 @@
 package net.glowstone.generator;
 
-import java.util.Map;
-import java.util.Random;
-
 import net.glowstone.generator.populators.NetherPopulator;
 import net.glowstone.util.noise.PerlinOctaveGenerator;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.noise.OctaveGenerator;
+
+import java.util.Map;
+import java.util.Random;
 
 public class NetherGenerator extends GlowChunkGenerator {
 

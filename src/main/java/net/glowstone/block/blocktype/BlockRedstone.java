@@ -1,8 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
@@ -11,11 +8,11 @@ import net.glowstone.net.message.play.game.BlockChangeMessage;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.Button;
-import org.bukkit.material.Diode;
-import org.bukkit.material.Lever;
-import org.bukkit.material.Stairs;
-import org.bukkit.material.Step;
+import org.bukkit.material.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *

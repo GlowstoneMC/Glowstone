@@ -4,11 +4,11 @@ import net.glowstone.GlowWorld;
 import net.glowstone.constants.GlowBiome;
 import net.glowstone.generator.ground.*;
 import net.glowstone.generator.ground.MesaGroundGenerator.MesaType;
-import net.glowstone.generator.populators.*;
-import net.glowstone.generator.populators.overworld.*;
+import net.glowstone.generator.populators.OverworldPopulator;
+import net.glowstone.generator.populators.StructurePopulator;
+import net.glowstone.generator.populators.overworld.SnowPopulator;
 import net.glowstone.util.noise.PerlinOctaveGenerator;
 import net.glowstone.util.noise.SimplexOctaveGenerator;
-
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldType;

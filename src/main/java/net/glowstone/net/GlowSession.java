@@ -5,7 +5,6 @@ import com.flowpowered.networking.ConnectionManager;
 import com.flowpowered.networking.Message;
 import com.flowpowered.networking.MessageHandler;
 import com.flowpowered.networking.session.BasicSession;
-
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -29,12 +28,10 @@ import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.LoginProtocol;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.ProtocolType;
-
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
 import javax.crypto.SecretKey;
-
 import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.logging.Level;

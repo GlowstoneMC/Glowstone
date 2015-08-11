@@ -1,15 +1,11 @@
 package net.glowstone;
 
 import lombok.ToString;
-import net.glowstone.GlowChunk.*;
+import net.glowstone.GlowChunk.ChunkSection;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
-import net.glowstone.constants.GlowBiome;
-import net.glowstone.constants.GlowBiomeClimate;
-import net.glowstone.constants.GlowEffect;
-import net.glowstone.constants.GlowParticle;
-import net.glowstone.constants.GlowTree;
+import net.glowstone.constants.*;
 import net.glowstone.entity.*;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.entity.physics.BoundingBox;
@@ -21,7 +17,6 @@ import net.glowstone.net.message.play.entity.EntityStatusMessage;
 import net.glowstone.net.message.play.player.ServerDifficultyMessage;
 import net.glowstone.util.BlockStateDelegate;
 import net.glowstone.util.GameRuleManager;
-
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;

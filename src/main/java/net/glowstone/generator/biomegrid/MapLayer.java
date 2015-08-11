@@ -1,13 +1,12 @@
 package net.glowstone.generator.biomegrid;
 
-import java.util.Random;
-
+import net.glowstone.generator.biomegrid.WhittakerMapLayer.ClimateType;
+import net.glowstone.generator.biomegrid.ZoomMapLayer.ZoomType;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldType;
 import org.bukkit.block.Biome;
 
-import net.glowstone.generator.biomegrid.WhittakerMapLayer.ClimateType;
-import net.glowstone.generator.biomegrid.ZoomMapLayer.ZoomType;
+import java.util.Random;
 
 public abstract class MapLayer {
 

@@ -1,12 +1,11 @@
 package net.glowstone.block.state;
 
-import org.bukkit.block.FlowerPot;
-import org.bukkit.material.MaterialData;
-
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.TEFlowerPot;
 import net.glowstone.block.entity.TileEntity;
+import org.bukkit.block.FlowerPot;
+import org.bukkit.material.MaterialData;
 
 public class GlowFlowerPot extends GlowBlockState implements FlowerPot {
 

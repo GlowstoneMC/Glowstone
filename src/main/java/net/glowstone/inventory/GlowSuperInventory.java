@@ -1,10 +1,10 @@
 package net.glowstone.inventory;
 
+import net.glowstone.util.collection.SuperList;
+import net.glowstone.util.collection.SuperSet;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryHolder;
-import net.glowstone.util.collection.SuperSet;
-import net.glowstone.util.collection.SuperList;
 
 import java.util.List;
 

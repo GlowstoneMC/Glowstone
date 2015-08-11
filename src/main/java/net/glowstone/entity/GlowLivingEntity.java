@@ -18,10 +18,10 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scoreboard.Criterias;
+import org.bukkit.scoreboard.Objective;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Criterias;
 
 import java.util.*;
 

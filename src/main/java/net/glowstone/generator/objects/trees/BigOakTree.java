@@ -1,14 +1,13 @@
 package net.glowstone.generator.objects.trees;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Random;
-
 import net.glowstone.util.BlockStateDelegate;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.util.Vector;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Random;
 
 public class BigOakTree extends GenericTree {
 

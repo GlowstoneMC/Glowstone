@@ -1,8 +1,8 @@
 package net.glowstone.inventory.crafting;
 
-import org.bukkit.block.banner.Pattern;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.inventory.ItemMatcher;
 import org.bukkit.inventory.ItemStack;

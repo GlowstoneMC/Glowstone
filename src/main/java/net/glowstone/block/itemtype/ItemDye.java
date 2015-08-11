@@ -1,11 +1,10 @@
 package net.glowstone.block.itemtype;
 
 import net.glowstone.block.GlowBlock;
-import net.glowstone.entity.GlowPlayer;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.blocktype.IBlockGrowable;
-
+import net.glowstone.entity.GlowPlayer;
 import org.bukkit.DyeColor;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;

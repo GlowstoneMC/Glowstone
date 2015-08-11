@@ -1,19 +1,14 @@
 package net.glowstone.generator.objects;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
-
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.DirectionalContainer;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 public class RandomItemsContent {
 

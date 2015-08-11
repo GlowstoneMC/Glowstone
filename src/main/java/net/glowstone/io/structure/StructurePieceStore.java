@@ -1,10 +1,9 @@
 package net.glowstone.io.structure;
 
-import org.bukkit.util.Vector;
-
 import net.glowstone.generator.structures.GlowStructurePiece;
 import net.glowstone.generator.structures.util.StructureBoundingBox;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.util.Vector;
 
 /**
  * The base for structure piece store classes.

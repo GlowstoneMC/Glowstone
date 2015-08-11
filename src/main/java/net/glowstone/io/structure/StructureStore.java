@@ -1,17 +1,16 @@
 package net.glowstone.io.structure;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import org.bukkit.util.Vector;
-
 import net.glowstone.GlowWorld;
 import net.glowstone.generator.structures.GlowStructure;
 import net.glowstone.generator.structures.GlowStructurePiece;
 import net.glowstone.generator.structures.util.StructureBoundingBox;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
+import org.bukkit.util.Vector;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * The base for structure store classes.
