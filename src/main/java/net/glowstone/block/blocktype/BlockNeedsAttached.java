@@ -19,14 +19,14 @@ public class BlockNeedsAttached extends BlockType {
     @Override
     public void updatePhysics(GlowBlock me) {
         BlockFace attachedTo = getAttachedFace(me);
-        if (me.getRelative(attachedTo).getType() == Material.AIR || !canPlaceAt(me, attachedTo)) {
+        if (me.getRelative(attachedTo).getType() == Material.AIR || !canPlaceAt(me, attachedTo.getOppositeFace())) {
             dropMe(me);
         }
     }
 
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
-        return !(ItemTable.instance().getBlock(block.getRelative(against).getType()) instanceof BlockNeedsAttached);
+        return !(ItemTable.instance().getBlock(block.getRelative(against.getOppositeFace()).getType()) instanceof BlockNeedsAttached);
     }
 
     protected void dropMe(GlowBlock me) {
