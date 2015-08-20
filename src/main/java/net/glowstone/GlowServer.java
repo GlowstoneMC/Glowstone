@@ -7,6 +7,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import net.glowstone.block.BuiltinMaterialValueManager;
 import net.glowstone.block.MaterialValueManager;
+import net.glowstone.block.state.GlowDispenser;
 import net.glowstone.command.ColorCommand;
 import net.glowstone.command.TellrawCommand;
 import net.glowstone.command.TitleCommand;
@@ -105,6 +106,7 @@ public final class GlowServer implements Server {
             ConfigurationSerialization.registerClass(GlowOfflinePlayer.class);
             GlowPotionEffect.register();
             GlowEnchantment.register();
+            GlowDispenser.register();
 
             // start server
             final GlowServer server = new GlowServer(config);

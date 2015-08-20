@@ -22,6 +22,10 @@ public class ItemFilledBucket extends ItemType {
         setMaxStackSize(1);
     }
 
+    public BlockType getLiquid() {
+        return liquid;
+    }
+
     @Override
     public void rightClickBlock(GlowPlayer player, GlowBlock against, BlockFace face, ItemStack holding, Vector clickedLoc) {
         GlowBlock target = against.getRelative(face);
