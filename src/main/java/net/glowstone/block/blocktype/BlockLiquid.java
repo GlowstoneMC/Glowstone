@@ -98,7 +98,7 @@ public abstract class BlockLiquid extends BlockType {
                     updates.add(target);
                 } else if (target.isLiquid() && target.getData() > STRENGTH_MAX || target.getType().isTransparent()) {
                     // No mixes, just spread normally!
-                    target.setType(newState.getType(), STRENGTH_MAX, false);
+                    target.setType(newState.getType(), STRENGTH_MAX, true);
                     target.getWorld().requestPulse(target, isWater ? TICK_RATE_WATER : TICK_RATE_LAVA);
                 }
             }
@@ -163,7 +163,7 @@ public abstract class BlockLiquid extends BlockType {
                     updates.add(down);
                 } else if (down.isLiquid() && down.getData() > STRENGTH_MAX || down.getType().isTransparent()) {
                     // No mixes, just spread normally!
-                    down.setType(newState.getType(), STRENGTH_MAX, false);
+                    down.setType(newState.getType(), STRENGTH_MAX, true);
                     down.getWorld().requestPulse(down, isWater ? TICK_RATE_WATER : TICK_RATE_LAVA);
                 } else if (!down.isLiquid() && newData <= (isWater ? STRENGTH_MIN_WATER : STRENGTH_MIN_LAVA)) { // No downwards? Check outwards.
 
@@ -179,7 +179,7 @@ public abstract class BlockLiquid extends BlockType {
                             updates.add(target);
                         } else if (target.isLiquid() && target.getData() > newData || target.getType().isTransparent()) {
                             // No mixes, just spread normally!
-                            target.setType(newState.getType(), newData, false);
+                            target.setType(newState.getType(), newData, true);
                             target.getWorld().requestPulse(target, isWater ? TICK_RATE_WATER : TICK_RATE_LAVA);
                         }
                     }
