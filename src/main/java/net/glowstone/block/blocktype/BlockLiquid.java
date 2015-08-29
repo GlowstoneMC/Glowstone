@@ -71,7 +71,7 @@ public abstract class BlockLiquid extends BlockType {
     private static final byte STRENGTH_MAX = 1;
     private static final byte STRENGTH_MIN_WATER = 7;
     private static final byte STRENGTH_MIN_LAVA = 3;
-    private static final int TICK_RATE_WATER = 4;
+    private static final int TICK_RATE_WATER = 5;
     private static final int TICK_RATE_LAVA = 20;
     private BlockFace[] hfaces = {NORTH, EAST, SOUTH, WEST};
 
