@@ -153,6 +153,16 @@ public class GlowBlockState implements BlockState {
         return (block.getTypeId() == type || force) && block.setTypeIdAndData(type, getRawData(), applyPhysics);
     }
 
+    private boolean flowed;
+
+    public boolean getFlowed() {
+        return flowed;
+    }
+
+    public void setFlowed(boolean flowed) {
+        this.flowed = flowed;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Internals
 
