@@ -151,7 +151,7 @@ public abstract class BlockLiquid extends BlockType {
         if (flowingMaterial == Material.WATER && targetMaterial == Material.LAVA) {
             if (target.getState().getRawData() == STRENGTH_SOURCE) {
                 target.setType(Material.OBSIDIAN);
-            } else {
+            } else if (direction == DOWN) {
                 target.setType(Material.COBBLESTONE);
             }
         }
