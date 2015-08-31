@@ -18,6 +18,10 @@ public class ItemTool extends ItemType {
         this.maxDurability = maxDurability;
     }
 
+    public int getMaxDurability() {
+        return maxDurability;
+    }
+
     @Override
     public final void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc) {
         if (onToolRightClick(player, holding, target, face, clickedLoc)) {
