@@ -379,8 +379,6 @@ public abstract class GlowEntity implements Entity {
                 }
             }
         }
-
-        pulsePhysics();
     }
 
     /**
