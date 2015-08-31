@@ -6,28 +6,20 @@ import org.bukkit.entity.Enderman;
 import org.bukkit.entity.EntityType;
 import org.bukkit.material.MaterialData;
 
-/**
- *
- * @author TheMCPEGamer
- */
-public class GlowEnderman extends GlowMonster implements Enderman
-{
+public class GlowEnderman extends GlowMonster implements Enderman {
     private MaterialData carriedMaterial = new MaterialData(Material.AIR);
     
-    public GlowEnderman(Location loc)
-    {
+    public GlowEnderman(Location loc) {
         super(loc, EntityType.ENDERMAN);
     }
     
     @Override
-    public MaterialData getCarriedMaterial()
-    {
+    public MaterialData getCarriedMaterial() {
         return this.carriedMaterial;
     }
     
     @Override
-    public void setCarriedMaterial(MaterialData type)
-    {
+    public void setCarriedMaterial(MaterialData type) {
         this.carriedMaterial = type;
     }
 }

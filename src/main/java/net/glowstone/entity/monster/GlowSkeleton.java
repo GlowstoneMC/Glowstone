@@ -4,28 +4,20 @@ import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Skeleton;
 
-/**
- *
- * @author TheMCPEGamer
- */
-public class GlowSkeleton extends GlowMonster implements Skeleton
-{
+public class GlowSkeleton extends GlowMonster implements Skeleton {
     private SkeletonType skeletonType = SkeletonType.NORMAL;
     
-    public GlowSkeleton(Location loc)
-    {
+    public GlowSkeleton(Location loc) {
         super(loc, EntityType.SKELETON);
     }
     
     @Override
-    public SkeletonType getSkeletonType()
-    {
+    public SkeletonType getSkeletonType() {
         return this.skeletonType;
     }
     
     @Override
-    public void setSkeletonType(SkeletonType type)
-    {
+    public void setSkeletonType(SkeletonType type) {
         this.skeletonType = type;
     }
 }
