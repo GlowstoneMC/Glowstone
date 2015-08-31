@@ -230,6 +230,7 @@ public final class ItemTable {
         reg(Material.IRON_HOE, new ItemHoe());
         reg(Material.GOLD_HOE, new ItemHoe());
         reg(Material.DIAMOND_HOE, new ItemHoe());
+        reg(Material.MONSTER_EGG, new ItemSpawn());
         reg(Material.SEEDS, new ItemSeeds(Material.CROPS, Material.SOIL));
         reg(Material.MELON_SEEDS, new ItemSeeds(Material.MELON_STEM, Material.SOIL));
         reg(Material.PUMPKIN_SEEDS, new ItemSeeds(Material.PUMPKIN_STEM, Material.SOIL));

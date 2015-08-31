@@ -379,6 +379,8 @@ public abstract class GlowEntity implements Entity {
                 }
             }
         }
+
+        pulsePhysics();
     }
 
     /**
@@ -571,7 +573,7 @@ public abstract class GlowEntity implements Entity {
     }
 
     protected void setSize(float xz, float y) {
-        //todo Size stuff with bounding boxes.
+        setBoundingBox(xz, y);
     }
 
     /**
@@ -605,7 +607,6 @@ public abstract class GlowEntity implements Entity {
         }
         return false;
     }
-
     ////////////////////////////////////////////////////////////////////////////
     // Physics stuff
 
