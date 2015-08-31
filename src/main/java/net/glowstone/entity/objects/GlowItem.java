@@ -64,7 +64,7 @@ public final class GlowItem extends GlowEntity implements Item {
         super(location);
         setItemStack(item);
         setBoundingBox(0.25, 0.25);
-        pickupDelay = 40;
+        pickupDelay = 20;
     }
 
     private boolean getPickedUp(GlowPlayer player) {

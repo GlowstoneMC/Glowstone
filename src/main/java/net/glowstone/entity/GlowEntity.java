@@ -379,6 +379,8 @@ public abstract class GlowEntity implements Entity {
                 }
             }
         }
+
+        pulsePhysics();
     }
 
     /**
@@ -605,7 +607,6 @@ public abstract class GlowEntity implements Entity {
         }
         return false;
     }
-
     ////////////////////////////////////////////////////////////////////////////
     // Physics stuff
 
