@@ -10,6 +10,10 @@ public class TEDispenser extends TEContainer {
 
     public TEDispenser(GlowBlock block) {
         super(block, new GlowInventory(new GlowDispenser(block), InventoryType.DISPENSER));
+        setOwnSaveId();
+    }
+
+    protected void setOwnSaveId() {
         setSaveId("Trap");
     }
 
