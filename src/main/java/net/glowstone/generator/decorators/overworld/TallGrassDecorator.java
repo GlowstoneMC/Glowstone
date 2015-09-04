@@ -21,7 +21,7 @@ public class TallGrassDecorator extends BlockDecorator {
     public void decorate(World world, Random random, Chunk source) {
         int sourceX = (source.getX() << 4) + random.nextInt(16);
         int sourceZ = (source.getZ() << 4) + random.nextInt(16);
-        int sourceY = random.nextInt(world.getHighestBlockYAt(sourceX, sourceZ) << 1);
+        int sourceY = random.nextInt(Math.abs(world.getHighestBlockYAt(sourceX, sourceZ) << 1));
 
         // the grass species can change on each decoration pass
         GrassSpecies species = GrassSpecies.NORMAL;
