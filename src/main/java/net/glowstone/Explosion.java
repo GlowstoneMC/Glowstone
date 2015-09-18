@@ -7,18 +7,17 @@ import net.glowstone.entity.GlowHumanEntity;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.ExplosionMessage;
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 
@@ -42,6 +41,7 @@ public final class Explosion {
     private final boolean breakBlocks;
     private final GlowWorld world;
     private float yield = 0.3f;
+    private int range;
 
     private static final Random random = new Random();
 
@@ -166,6 +166,7 @@ public final class Explosion {
             }
 
             current.add(direction);
+            range =+ (int) current.getDirection().length();
             currentPower -= 0.225f;
         }
     }
@@ -200,17 +201,18 @@ public final class Explosion {
     }
 
     private void setBlockOnFire(GlowBlock block) {
-        if (random.nextInt(3) != 0)
+        if (random.nextInt(3) != 0) {
             return;
-
+        }
         Block below = block.getRelative(BlockFace.DOWN);
-        // TODO: check for flammable blocks
         Material belowType = below.getType();
-        if (belowType == Material.AIR || belowType == Material.FIRE) return;
-
-        BlockIgniteEvent event = EventFactory.callEvent(new BlockIgniteEvent(block, BlockIgniteEvent.IgniteCause.EXPLOSION, source));
-        if (event.isCancelled())
+        if (belowType == Material.AIR || belowType == Material.FIRE || !belowType.isFlammable()) {
             return;
+        }
+        BlockIgniteEvent event = EventFactory.callEvent(new BlockIgniteEvent(block, BlockIgniteEvent.IgniteCause.EXPLOSION, source));
+        if (event.isCancelled()) {
+            return;
+        }
 
         block.setType(Material.FIRE);
     }
@@ -265,7 +267,10 @@ public final class Explosion {
     }
 
     private double calculateEnchantedDamage(double basicDamage, GlowLivingEntity entity) {
-        int level = 0; // TODO: calculate explosion protection level of entity's equipment
+        int level = 0;
+        for (ItemStack stack : entity.getEquipment().getArmorContents()) {
+            level =+ stack.getEnchantmentLevel(Enchantment.PROTECTION_EXPLOSIONS);
+        }
 
         if (level > 0) {
             float sub = level * 0.15f;
@@ -283,16 +288,27 @@ public final class Explosion {
     }
 
     private Collection<GlowLivingEntity> getNearbyEntities() {
-        // TODO: fetch only necessary entities
-        List<LivingEntity> entities = world.getLivingEntities();
-        List<GlowLivingEntity> nearbyEntities = new ArrayList<>();
-
-        for (LivingEntity entity : entities) {
-            if (distanceTo(entity) / (double) power < 1.) {
-                nearbyEntities.add((GlowLivingEntity) entity);
+        ArrayList<Chunk> chunks = new ArrayList<>();
+        chunks.add(location.getChunk());
+        for (int i = 0; i <= 1; i++) {
+            for (int j = 0; j <= 1; j++) {
+                if (!chunks.contains(location.clone().add(i * range, 0, j * range).getChunk())) {
+                    chunks.add(location.clone().add(i * range, 0, j * range).getChunk());
+                }
             }
         }
-
+        ArrayList<Entity> entities = new ArrayList<>();
+        for (Chunk chunk : chunks) {
+            entities.addAll(Arrays.asList(chunk.getEntities()));
+        }
+        List<GlowLivingEntity> nearbyEntities = new ArrayList<>();
+        for (Entity entity : entities) {
+            if (entity instanceof LivingEntity) {
+                if (entity instanceof LivingEntity && distanceTo((LivingEntity) entity) / power < 1. && entity instanceof LivingEntity) {
+                    nearbyEntities.add((GlowLivingEntity) entity);
+                }
+            }
+        }
         return nearbyEntities;
     }
 
