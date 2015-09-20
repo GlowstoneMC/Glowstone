@@ -317,7 +317,7 @@ public class GlowInventory implements Inventory {
 
     @Override
     public ItemStack getItem(int index) {
-        return slots.get(index).getItem();
+        return slots.get(index).getItem() == null ? new ItemStack(Material.AIR, 0) : slots.get(index).getItem();
     }
 
     @Override
