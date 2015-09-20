@@ -11,6 +11,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.RedstoneTorch;
+import org.bukkit.material.SimpleAttachableMaterialData;
 import org.bukkit.util.Vector;
 
 public class BlockRedstoneTorch extends BlockNeedsAttached {
@@ -40,13 +41,13 @@ public class BlockRedstoneTorch extends BlockNeedsAttached {
         }
     }
 
-    @Override
-    protected BlockFace getAttachedFace(GlowBlock me) {
-        return ((RedstoneTorch) me.getState().getData()).getAttachedFace();
-    }
-
     public static BlockFace getAttachedBlockFace(GlowBlock block) {
-        return ((RedstoneTorch) block.getState().getData()).getAttachedFace();
+        MaterialData data = block.getState().getData();
+        if (data instanceof SimpleAttachableMaterialData) {
+            return ((SimpleAttachableMaterialData) data).getAttachedFace();
+        } else {
+            return BlockFace.DOWN;
+        }
     }
 
     @Override
