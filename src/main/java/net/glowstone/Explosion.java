@@ -253,7 +253,7 @@ public final class Explosion {
             vecDistance.multiply(enchantedDamage);
 
             Vector currentVelocity = entity.getVelocity();
-            currentVelocity.add(vecDistance);
+            currentVelocity.add(vecDistance).multiply(0.075);
             entity.setVelocity(currentVelocity);
 
             if (entity instanceof GlowPlayer) {
