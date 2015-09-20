@@ -166,7 +166,7 @@ public final class Explosion {
             }
 
             current.add(direction);
-            range =+ (int) current.getDirection().length();
+            range = + (int) current.getDirection().length();
             currentPower -= 0.225f;
         }
     }
@@ -269,7 +269,7 @@ public final class Explosion {
     private double calculateEnchantedDamage(double basicDamage, GlowLivingEntity entity) {
         int level = 0;
         for (ItemStack stack : entity.getEquipment().getArmorContents()) {
-            level =+ stack.getEnchantmentLevel(Enchantment.PROTECTION_EXPLOSIONS);
+            level = + stack.getEnchantmentLevel(Enchantment.PROTECTION_EXPLOSIONS);
         }
 
         if (level > 0) {
