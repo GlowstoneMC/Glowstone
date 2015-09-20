@@ -269,7 +269,9 @@ public final class Explosion {
     private double calculateEnchantedDamage(double basicDamage, GlowLivingEntity entity) {
         int level = 0;
         for (ItemStack stack : entity.getEquipment().getArmorContents()) {
-            level = + stack.getEnchantmentLevel(Enchantment.PROTECTION_EXPLOSIONS);
+            if (stack != null) {
+                level = + stack.getEnchantmentLevel(Enchantment.PROTECTION_EXPLOSIONS);
+            }
         }
 
         if (level > 0) {
