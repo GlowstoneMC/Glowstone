@@ -1,4 +1,6 @@
-
+machine:
+   java:
+       version: oraclejdk8
 checkout:
     post:
         # clone the Glowkit submodule (see https://circleci.com/docs/configuration)
