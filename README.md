@@ -33,7 +33,7 @@ cd GlowstonePlusPlus
 ###2. Build
 
 ```sh
-setup.sh
+./setup.sh
 ```
 
 The final jar will be placed in `target/` named `glowstone++-1.8.8-SNAPSHOT.jar`.
