@@ -391,7 +391,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
                 drop(getItemOnCursor());
             }
             for (int i = 1; i <= 4; i++) {
-                if (getOpenInventory().getItem(i) != null && (((GlowInventory) getOpenInventory().getTopInventory()).getSlot(i).getType() == InventoryType.SlotType.CRAFTING || ((GlowInventory) getOpenInventory().getBottomInventory()).getSlot(i).getType() == InventoryType.SlotType.CRAFTING)) {
+                if ((getOpenInventory().getItem(i) != null || getOpenInventory().getItem(i).getType() != Material.AIR) && (((GlowInventory) getOpenInventory().getTopInventory()).getSlot(i).getType() == InventoryType.SlotType.CRAFTING || ((GlowInventory) getOpenInventory().getBottomInventory()).getSlot(i).getType() == InventoryType.SlotType.CRAFTING)) {
                     drop(getOpenInventory().getItem(i));
                     getOpenInventory().setItem(i, null);
                 }
