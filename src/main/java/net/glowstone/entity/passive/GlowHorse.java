@@ -18,9 +18,9 @@ import java.util.UUID;
 
 public class GlowHorse extends GlowTameable implements Horse {
 
-    private Variant variant;
-    private Color horseColor;
-    private Style horseStyle;
+    private Variant variant = Variant.values()[new Random().nextInt(4)];
+    private Color horseColor = Color.values()[new Random().nextInt(6)];
+    private Style horseStyle = Style.values()[new Random().nextInt(3)];
     private boolean hasChest;
     private int domestication;
     private int maxDomestication;
@@ -157,10 +157,6 @@ public class GlowHorse extends GlowTameable implements Horse {
 
     @Override
     public List<Message> createSpawnMessage() {
-        Random rand = new Random();
-        this.variant = Variant.values()[rand.nextInt(4)];
-        this.horseStyle = Style.values()[rand.nextInt(3)];
-        this.horseColor = Color.values()[rand.nextInt(6)];
         List<Message> messages = super.createSpawnMessage();
         MetadataMap map = new MetadataMap(GlowHorse.class);
         map.set(MetadataIndex.HORSE_TYPE, (byte) this.getVariant().ordinal());
