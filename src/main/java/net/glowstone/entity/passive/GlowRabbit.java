@@ -29,7 +29,7 @@ public class GlowRabbit extends GlowAnimal implements Rabbit {
 
     public GlowRabbit(Location location) {
         super(location, EntityType.RABBIT);
-        setSize(0.3F, 0.7F);
+        setSize(0.6F, 0.7F);
     }
 
     @Override

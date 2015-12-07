@@ -21,6 +21,7 @@ public class GlowBat extends GlowAmbient implements Bat {
 
     public GlowBat(Location location) {
         super(location);
+        setSize(0.5F, 0.9F);
     }
 
     @Override

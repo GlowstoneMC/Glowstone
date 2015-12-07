@@ -33,16 +33,12 @@ public class GlowHorse extends GlowTameable implements Horse {
 
     public GlowHorse(Location location) {
         this(location, null);
+        setSize(1.4F, 1.6F);
     }
 
     protected GlowHorse(Location location, AnimalTamer owner) {
         super(location, EntityType.HORSE, owner);
-        this.ownerUUID = owner.getUniqueId();
-        Random rand = new Random();
-        // Todo make this cleaner and safer to use for spawning random horses
-        this.variant = Variant.values()[rand.nextInt(4)];
-        this.horseStyle = Style.values()[rand.nextInt(3)];
-        this.horseColor = Color.values()[rand.nextInt(6)];
+        if (owner != null) this.ownerUUID = owner.getUniqueId();
     }
 
     @Override
@@ -161,6 +157,10 @@ public class GlowHorse extends GlowTameable implements Horse {
 
     @Override
     public List<Message> createSpawnMessage() {
+        Random rand = new Random();
+        this.variant = Variant.values()[rand.nextInt(4)];
+        this.horseStyle = Style.values()[rand.nextInt(3)];
+        this.horseColor = Color.values()[rand.nextInt(6)];
         List<Message> messages = super.createSpawnMessage();
         MetadataMap map = new MetadataMap(GlowHorse.class);
         map.set(MetadataIndex.HORSE_TYPE, (byte) this.getVariant().ordinal());

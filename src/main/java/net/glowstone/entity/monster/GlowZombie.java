@@ -5,11 +5,16 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Zombie;
 
 public class GlowZombie extends GlowMonster implements Zombie {
+
     private boolean baby = false;
     private boolean villager = false;
     
     public GlowZombie(Location loc) {
         super(loc, EntityType.ZOMBIE);
+    }
+
+    public GlowZombie(Location loc, EntityType type) {
+        super(loc, type);
     }
     
     @Override
