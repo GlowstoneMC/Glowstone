@@ -97,24 +97,14 @@ public final class GlowServer implements Server {
      */
     public static void main(String[] args) {
         try {
-            // parse arguments and read config
-            final ServerConfig config = parseArguments(args);
-            if (config == null) {
+            final GlowServer server = createFromArguments(args);
+
+            // we don't want to run a server when called with --version
+            if (server == null) {
                 return;
             }
 
-            ConfigurationSerialization.registerClass(GlowOfflinePlayer.class);
-            GlowPotionEffect.register();
-            GlowEnchantment.register();
-            GlowDispenser.register();
-
-            // start server
-            final GlowServer server = new GlowServer(config);
-            server.start();
-            server.bind();
-            server.bindQuery();
-            server.bindRcon();
-            logger.info("Ready for connections.");
+            server.run();
         } catch (BindException ex) {
             // descriptive bind error messages
             logger.severe("The server could not bind to the requested address.");
@@ -136,6 +126,30 @@ public final class GlowServer implements Server {
             logger.log(Level.SEVERE, "Error during server startup.", t);
             System.exit(1);
         }
+    }
+
+    public void run() throws BindException {
+        start();
+        bind();
+        bindQuery();
+        bindRcon();
+        logger.info("Ready for connections.");
+    }
+
+    public static GlowServer createFromArguments(String[] args) {
+        ServerConfig config = GlowServer.parseArguments(args);
+
+        // we don't want to create a server when called with --version
+        if (config == null) {
+            return null;
+        }
+
+        ConfigurationSerialization.registerClass(GlowOfflinePlayer.class);
+        GlowPotionEffect.register();
+        GlowEnchantment.register();
+        GlowDispenser.register();
+
+        return new GlowServer(config);
     }
 
     private static ServerConfig parseArguments(String[] args) {
