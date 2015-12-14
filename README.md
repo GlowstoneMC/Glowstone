@@ -36,7 +36,7 @@ cd GlowstonePlusPlus
 ./setup.sh
 ```
 
-The final jar will be placed in `target/` named `glowstone++-1.8.8-SNAPSHOT.jar`.
+The final jar will be placed in `target/` named `glowstone++-1.8.9-SNAPSHOT.jar`.
 
 ##Downloads
 
@@ -49,7 +49,7 @@ If you don't want to build from source, prebuilt jar files are available to down
 ##Running
 
 Running Glowstone++ is simple because its dependencies are shaded into the output
-jar at compile time. Simply execute `java -jar glowstone++.jar` along with any
+jar at compile time. Simply execute `java -jar glowstone++-1.8.9-SNAPSHOT.jar` along with any
 extra JVM options desired. A variety of command-line options are also available -
 run `java -jar glowstone++.jar --help` for more information.
 
