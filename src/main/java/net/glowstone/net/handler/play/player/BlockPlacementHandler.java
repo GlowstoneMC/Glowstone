@@ -78,7 +78,10 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         ItemStack holding = player.getItemInHand();
 
         // check that held item matches
-        if (!Objects.equals(holding, message.getHeldItem())) {
+        // apparently the "message" container has comprehends held item as null,
+        // whereas the "holding" item is Material.AIR * 0 (hence the exceptional if statement here)
+        if ((!(holding != null && holding.getType() == Material.AIR && message.getHeldItem() == null))
+                && !Objects.equals(holding, message.getHeldItem())) {
             // above handles cases where holding and/or message's item are null
             // todo: inform player their item is wrong
             return;
@@ -113,7 +116,8 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
             if (clicked == null) {
                 type.rightClickAir(player, holding);
             } else {
-                type.rightClickBlock(player, clicked, face, holding, clickedLoc);
+                if (holding.getType() != Material.AIR)
+                    type.rightClickBlock(player, clicked, face, holding, clickedLoc);
             }
         }
 
