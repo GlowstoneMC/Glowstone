@@ -155,7 +155,6 @@
                                     <mainClass>net.glowstone.GlowServer</mainClass>
                                 </transformer>
                             </transformers>
-                            <minimizeJar>true</minimizeJar>
                         </configuration>
                     </execution>
                 </executions>
