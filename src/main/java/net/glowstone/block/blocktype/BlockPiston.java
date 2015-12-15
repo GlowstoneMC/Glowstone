@@ -9,7 +9,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 public class BlockPiston extends BlockType {
+    private final boolean sticky;
+
+    public BlockPiston() {
+        sticky = false;
+        setDrops(new ItemStack(Material.PISTON_BASE));
+    }
+
     public BlockPiston(boolean sticky) {
+        this.sticky = sticky;
+
         if (!sticky) {
             setDrops(new ItemStack(Material.PISTON_BASE));
         } else {
@@ -23,6 +32,14 @@ public class BlockPiston extends BlockType {
 
         BlockFace faceHead = calculateFace(player, state); // the direction of the piston head
         state.setRawData((byte) getRawFace(faceHead));
+    }
+
+    /**
+     * The piston is either non-sticky (default), or has a sticky behavior
+     * @return true if the piston has a sticky base
+     */
+    public boolean isSticky() {
+        return sticky;
     }
 
     private BlockFace calculateFace(GlowPlayer player, GlowBlockState state) {
