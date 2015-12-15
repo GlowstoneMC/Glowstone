@@ -142,9 +142,9 @@ public final class ItemTable {
         reg(Material.BURNING_FURNACE, new BlockFurnace());
         reg(Material.LEVER, new BlockLever());
         reg(Material.HOPPER, new BlockHopper());
-        reg(Material.PISTON_EXTENSION, new BlockPiston());
-        reg(Material.PISTON_BASE, new BlockPiston());
-        reg(Material.PISTON_STICKY_BASE, new BlockPiston());
+        reg(Material.PISTON_EXTENSION, new ItemPlaceAs(Material.PISTON_EXTENSION));
+        reg(Material.PISTON_BASE, new BlockPiston(false));
+        reg(Material.PISTON_STICKY_BASE, new BlockPiston(true));
         reg(Material.ACACIA_STAIRS, new BlockStairs());
         reg(Material.BIRCH_WOOD_STAIRS, new BlockStairs(), Sound.DIG_WOOD);
         reg(Material.BRICK_STAIRS, new BlockStairs());

@@ -9,8 +9,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 public class BlockPiston extends BlockType {
-    public BlockPiston() {
-        setDrops(new ItemStack(Material.PISTON_EXTENSION));
+    public BlockPiston(boolean sticky) {
+        if (!sticky) {
+            setDrops(new ItemStack(Material.PISTON_BASE));
+        } else {
+            setDrops(new ItemStack(Material.PISTON_STICKY_BASE));
+        }
     }
 
     @Override
@@ -18,7 +22,7 @@ public class BlockPiston extends BlockType {
         super.placeBlock(player, state, face, holding, clickedLoc);
 
         BlockFace faceHead = calculateFace(player, state); // the direction of the piston head
-        state.setRawData((byte) rawFace(faceHead));
+        state.setRawData((byte) getRawFace(faceHead));
     }
 
     private BlockFace calculateFace(GlowPlayer player, GlowBlockState state) {
@@ -36,7 +40,7 @@ public class BlockPiston extends BlockType {
         return player.getDirection().getOppositeFace();
     }
 
-    private int rawFace(BlockFace face) {
+    private int getRawFace(BlockFace face) {
         switch (face) {
             case DOWN: return 0;
             case UP: return 1;
