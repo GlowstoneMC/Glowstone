@@ -19,16 +19,16 @@ public class ItemFlintAndSteel extends ItemTool {
 
     @Override
     public boolean onToolRightClick(GlowPlayer player, ItemStack holding, GlowBlock target, BlockFace face, Vector clickedLoc) {
-    	if(target.getType() == Material.OBSIDIAN){
-    		fireNetherPortal();
-    	}
-    	if(target.getType() == Material.TNT){
-    		fireTnt(target);
-    	}
-    	if(target.isFlammable()){
-    		setBlockOnFire(player, target, face, holding, clickedLoc);
-    	}
-    	return true;
+        if (target.getType() == Material.OBSIDIAN) {
+            fireNetherPortal();
+        } 
+        if (target.getType() == Material.TNT) {
+            fireTnt(target);
+        } 
+            if (target.isFlammable()) {
+            setBlockOnFire(player, target, face, holding, clickedLoc);
+        } 
+        return true;
     }
 
     private void fireNetherPortal() {
