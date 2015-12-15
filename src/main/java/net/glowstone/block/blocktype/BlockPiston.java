@@ -19,10 +19,10 @@ public class BlockPiston extends BlockType {
     public BlockPiston(boolean sticky) {
         this.sticky = sticky;
 
-        if (!sticky) {
-            setDrops(new ItemStack(Material.PISTON_BASE));
-        } else {
+        if (sticky) {
             setDrops(new ItemStack(Material.PISTON_STICKY_BASE));
+        } else {
+            setDrops(new ItemStack(Material.PISTON_BASE));
         }
     }
 
