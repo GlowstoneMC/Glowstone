@@ -16,9 +16,9 @@ import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.EntityIdManager;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.profile.PlayerProfile;
-import net.glowstone.generator.CakeTownGenerator;
 import net.glowstone.generator.NetherGenerator;
 import net.glowstone.generator.OverworldGenerator;
+import net.glowstone.generator.TheEndGenerator;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.inventory.crafting.CraftingManager;
@@ -1420,7 +1420,7 @@ public final class GlowServer implements Server {
         if (environment == Environment.NETHER) {
             return new NetherGenerator();
         } else if (environment == Environment.THE_END) {
-            return new CakeTownGenerator();
+            return new TheEndGenerator();
         } else {
             return new OverworldGenerator();
         }
