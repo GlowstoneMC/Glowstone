@@ -1,5 +1,6 @@
 package net.glowstone.block.blocktype;
 
+import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Location;
@@ -29,9 +30,12 @@ public class BlockPiston extends BlockType {
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
-
         BlockFace faceHead = calculateFace(player, state); // the direction of the piston head
-        state.setRawData((byte) getRawFace(faceHead));
+        state.setRawData(getRawFace(faceHead));
+
+        getTargetBlock(state.getBlock()).setType(Material.REDSTONE_BLOCK);
+
+        System.out.println(getTargetBlock(state.getBlock()));
     }
 
     /**
@@ -40,6 +44,15 @@ public class BlockPiston extends BlockType {
      */
     public boolean isSticky() {
         return sticky;
+    }
+
+    /**
+     * The block the piston is facing to with its head
+     */
+    public GlowBlock getTargetBlock(GlowBlock piston) {
+        BlockFace face = getBlockFace(piston.getState().getRawData());
+        Location target = piston.getLocation().clone().add(face.getModX(), face.getModY(), face.getModZ());
+        return (GlowBlock) target.getBlock();
     }
 
     private BlockFace calculateFace(GlowPlayer player, GlowBlockState state) {
@@ -57,15 +70,33 @@ public class BlockPiston extends BlockType {
         return player.getDirection().getOppositeFace();
     }
 
-    private int getRawFace(BlockFace face) {
+    private byte getRawFace(BlockFace face) {
         switch (face) {
-            case DOWN: return 0;
-            case UP: return 1;
-            case NORTH: return 2;
-            case SOUTH: return 3;
-            case WEST: return 4;
-            case EAST: return 5;
+            case DOWN: return 0x0;
+            case UP: return 0x1;
+            case NORTH: return 0x2;
+            case SOUTH: return 0x3;
+            case WEST: return 0x4;
+            case EAST: return 0x5;
         }
         return 0;
+    }
+
+    private BlockFace getBlockFace(byte raw) {
+        switch (raw) {
+            case 0x0:
+                return BlockFace.DOWN;
+            case 0x1:
+                return BlockFace.UP;
+            case 0x2:
+                return BlockFace.NORTH;
+            case 0x3:
+                return BlockFace.SOUTH;
+            case 0x4:
+                return BlockFace.WEST;
+            case 0x5:
+                return BlockFace.EAST;
+        }
+        return BlockFace.DOWN;
     }
 }
