@@ -25,10 +25,7 @@ public class ItemFlintAndSteel extends ItemTool {
         if (target.getType() == Material.TNT) {
             fireTnt(target);
         } 
-        if (target.getType() == Material.STONE) {
-            setBlockOnFire(player, target, face, holding, clickedLoc);
-        } 
-        if (target.isFlammable()) {
+        if (target.isFlammable() || target.getType().isOccluding() || target.getType() == Material.STONE) {
             setBlockOnFire(player, target, face, holding, clickedLoc);
         } 
         return true;
