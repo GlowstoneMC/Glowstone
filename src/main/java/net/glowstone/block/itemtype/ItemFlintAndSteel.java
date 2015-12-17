@@ -31,7 +31,7 @@ public class ItemFlintAndSteel extends ItemTool {
             setBlockOnFire(player, target, face, holding, clickedLoc);
             return true;
         } 
-            return false;
+        return false;
     }
 
     private void fireNetherPortal() {
