@@ -884,7 +884,13 @@ public final class GlowWorld implements World {
 
     @Override
     public int getSeaLevel() {
-        return SEA_LEVEL;
+        if (worldType == WorldType.FLAT) {
+            return 4;
+        } else if (environment == Environment.THE_END) {
+            return 50;
+        } else {
+            return SEA_LEVEL;
+        }
     }
 
     @Override

@@ -23,7 +23,7 @@ public class NetherGenerator extends GlowChunkGenerator {
     private static final double DETAIL_NOISE_SCALE_Z = 80.0D;  // mainNoiseScaleZ
     private static final double SURFACE_SCALE = 0.0625D;
 
-    private final double[] density = new double[5 * 17 * 5];
+    private final double[][][] density = new double[5][5][17];
 
     public NetherGenerator() {
         super(new NetherPopulator());
@@ -136,14 +136,14 @@ public class NetherGenerator extends GlowChunkGenerator {
         for (int i = 0; i < 5 - 1; i++) {
             for (int j = 0; j < 5 - 1; j++) {
                 for (int k = 0; k < 17 - 1; k++) {
-                    double d1 = density[k + (j + i * 5) * 17];
-                    double d2 = density[k + (j + (i + 1) * 5) * 17];
-                    double d3 = density[k + (j + 1 + i * 5) * 17];
-                    double d4 = density[k + (j + 1 + (i + 1) * 5) * 17];
-                    double d5 = (density[k + 1 + (j + i * 5) * 17] - d1) / 8;
-                    double d6 = (density[k + 1 + (j + (i + 1) * 5) * 17] - d2) / 8;
-                    double d7 = (density[k + 1 + (j + 1 + i * 5) * 17] - d3) / 8;
-                    double d8 = (density[k + 1 + (j + 1 + (i + 1) * 5) * 17] - d4) / 8;
+                    double d1 = density[i][j][k];
+                    double d2 = density[i + 1][j][k];
+                    double d3 = density[i][j + 1][k];
+                    double d4 = density[i + 1][j + 1][k];
+                    double d5 = (density[i][j][k + 1] - d1) / 8;
+                    double d6 = (density[i + 1][j][k + 1] - d2) / 8;
+                    double d7 = (density[i][j + 1][k + 1] - d3) / 8;
+                    double d8 = (density[i + 1][j + 1][k + 1] - d4) / 8;
 
                     for (int l = 0; l < 8; l++) {
                         double d9 = d1;
@@ -227,7 +227,7 @@ public class NetherGenerator extends GlowChunkGenerator {
                         double lowering = (k - 13) / 3.0D;
                         dens = dens * (1.0D - lowering) + lowering * -10.0D;
                     }
-                    density[k + (j + i * 5) * 17] = dens;
+                    density[i][j][k] = dens;
                 }
             }
         }
