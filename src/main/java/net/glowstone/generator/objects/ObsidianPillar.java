@@ -1,10 +1,8 @@
 package net.glowstone.generator.objects;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.EntityType;
 
 import java.util.Random;
 
@@ -38,8 +36,9 @@ public class ObsidianPillar {
             }
 
             // spawn a crystal and bedrock on top of pillar
-            final Location loc = new Location(world, sourceX + 0.5D, sourceY + height, sourceZ + 0.5D, random.nextFloat() * 360, 0);
-            world.spawnEntity(loc, EntityType.ENDER_CRYSTAL);
+            // TODO: uncomment when entities are functional
+            //final Location loc = new Location(world, sourceX + 0.5D, sourceY + height, sourceZ + 0.5D, random.nextFloat() * 360, 0);
+            //world.spawnEntity(loc, EntityType.ENDER_CRYSTAL);
             final Block block = world.getBlockAt(sourceX, sourceY + height, sourceZ);
             block.setType(Material.BEDROCK);
         }
