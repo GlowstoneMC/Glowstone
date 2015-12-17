@@ -21,14 +21,17 @@ public class ItemFlintAndSteel extends ItemTool {
     public boolean onToolRightClick(GlowPlayer player, ItemStack holding, GlowBlock target, BlockFace face, Vector clickedLoc) {
         if (target.getType() == Material.OBSIDIAN) {
             fireNetherPortal();
+            return true;
         } 
         if (target.getType() == Material.TNT) {
             fireTnt(target);
+            return true;
         } 
         if (target.isFlammable() || target.getType().isOccluding()) {
             setBlockOnFire(player, target, face, holding, clickedLoc);
+            return true
         } 
-        return true;
+        return false;
     }
 
     private void fireNetherPortal() {
