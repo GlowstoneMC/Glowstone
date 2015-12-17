@@ -18,6 +18,7 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.generator.NetherGenerator;
 import net.glowstone.generator.OverworldGenerator;
+import net.glowstone.generator.SuperflatGenerator;
 import net.glowstone.generator.TheEndGenerator;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowItemFactory;
@@ -1422,7 +1423,11 @@ public final class GlowServer implements Server {
         } else if (environment == Environment.THE_END) {
             return new TheEndGenerator();
         } else {
-            return new OverworldGenerator();
+            if (type == WorldType.FLAT) {
+                return new SuperflatGenerator();
+            } else {
+                return new OverworldGenerator();
+            }
         }
     }
 

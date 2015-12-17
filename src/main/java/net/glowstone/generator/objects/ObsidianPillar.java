@@ -35,10 +35,12 @@ public class ObsidianPillar {
                 }
             }
 
-            // spawn a crystal and bedrock on top of pillar
             // TODO: uncomment when entities are functional
             //final Location loc = new Location(world, sourceX + 0.5D, sourceY + height, sourceZ + 0.5D, random.nextFloat() * 360, 0);
             //world.spawnEntity(loc, EntityType.ENDER_CRYSTAL);
+            //
+            // It still unclear to me what they are doing with a bedrock inlaid with obsidian under
+            // the endercrystals. I've let that bedrock on top of the pillar to remember about this...
             final Block block = world.getBlockAt(sourceX, sourceY + height, sourceZ);
             block.setType(Material.BEDROCK);
         }

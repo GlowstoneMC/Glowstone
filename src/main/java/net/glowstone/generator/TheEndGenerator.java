@@ -28,18 +28,7 @@ public class TheEndGenerator extends GlowChunkGenerator {
 
     @Override
     public short[][] generateExtBlockSectionsWithData(World world, Random random, int chunkX, int chunkZ, BiomeGrid biomes) {
-        final short[][] buf = generateRawTerrain(world, chunkX, chunkZ);
-
-        int cx = chunkX << 4;
-        int cz = chunkZ << 4;
-
-        for (int x = 0; x < 16; x++) {
-            for (int z = 0; z < 16; z++) {
-                generateTerrainColumn(buf, world, random, cx + x, cz + z);
-            }
-        }
-
-        return buf;
+        return generateRawTerrain(world, chunkX, chunkZ);
     }
 
     @Override
@@ -172,27 +161,6 @@ public class TheEndGenerator extends GlowChunkGenerator {
                         dens = dens * (1.0D - lowering) + lowering * -3000.0D;
                     }
                     density[i][j][k] = dens;
-                }
-            }
-        }
-    }
-
-    public void generateTerrainColumn(short[][] buf, World world, Random random, int x, int z) {
-        x = x & 0xF;
-        z = z & 0xF;
-
-        int deep = -1;
-        for (int y = 127; y >= 0; y--) {
-            Material mat = get(buf, x, y, z);
-            if (mat == Material.AIR) {
-                deep = -1;
-            } else if (mat == Material.STONE) {
-                if (deep == -1) {
-                    deep = 1;
-                    set(buf, x, y, z, Material.ENDER_STONE);
-                } else if (deep > 0) {
-                    deep--;
-                    set(buf, x, y, z, Material.ENDER_STONE);
                 }
             }
         }

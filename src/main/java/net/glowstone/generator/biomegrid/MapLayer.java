@@ -29,7 +29,9 @@ public abstract class MapLayer {
     public abstract int[] generateValues(int x, int z, int sizeX, int sizeZ);
 
     public static MapLayer[] initialize(long seed, Environment environment, WorldType worldType) {
-        if (environment == Environment.NETHER) {
+        if (environment == Environment.NORMAL && worldType == WorldType.FLAT) {
+            return new MapLayer[] {new ConstantBiomeMapLayer(seed, Biome.PLAINS), null};
+        } else if (environment == Environment.NETHER) {
             return new MapLayer[] {new ConstantBiomeMapLayer(seed, Biome.HELL), null};
         } else if (environment == Environment.THE_END) {
             return new MapLayer[] {new ConstantBiomeMapLayer(seed, Biome.SKY), null};
