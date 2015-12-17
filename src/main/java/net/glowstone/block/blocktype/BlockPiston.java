@@ -57,22 +57,41 @@ public class BlockPiston extends BlockType {
     }
 
     @Override
+    public void onNearBlockChanged(GlowBlock piston, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
+        // the following prevents a Stackoverflow error (onNearBlockChanged->updatePiston->onNearBlockChanged...)
+        // also, it magically prevents redstone from powering the piston from the front side!
+
+        BlockFace direction = getBlockFace(piston.getState().getRawData());
+
+        for (int i = 1; i < 2; i++) {
+            Location location = piston.getLocation().clone().add(direction.getModX() * i, direction.getModY() * i, direction.getModZ() * i);
+            if (changedBlock.getLocation().equals(location)) return;
+        }
+
+        updatePiston(piston);
+    }
+
+    @Override
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
         updatePiston(block);
     }
 
     /**
      * Forces the extension state of the piston
-     * @see #push to attempt to push the target block
+     *
+     * @see #updatePiston to attempt to push the target block
      */
     public void extend(GlowBlock piston) {
         BlockFace head = getBlockFace(piston.getState().getRawData());
         GlowBlock target = getFacingBlock(piston, head);
-        target.setType(Material.AIR); // temporary
+        if (target.getType() != Material.AIR) target.setType(Material.AIR); // temporary
 
         //TODO: extend the piston (with the proper block state too)
     }
 
+    /**
+     * Updates the "physics" (features) of the piston
+     */
     public void updatePiston(GlowBlock piston) {
         BlockFace head = getBlockFace(piston.getState().getRawData());
         GlowBlock target = getFacingBlock(piston, head);
@@ -115,12 +134,16 @@ public class BlockPiston extends BlockType {
             for (int count = blocksToPush - 1; count >= 0; count--) {
                 int i = count + 1;
                 Location location = piston.getLocation().clone().add(direction.getModX() * i, direction.getModY() * i, direction.getModZ() * i);
-                location.getBlock().setType(piston.getLocation().clone().add(direction.getModX() * (i - 1), direction.getModY() * (i - 1), direction.getModZ() * (i - 1)).getBlock().getType());
-                location.getBlock().getState().setRawData(piston.getLocation().clone().add(direction.getModX() * (i - 1), direction.getModY() * (i - 1), direction.getModZ() * (i - 1)).getBlock().getState().getRawData());
+                Location prev = piston.getLocation().clone().add(direction.getModX() * (i - 1), direction.getModY() * (i - 1), direction.getModZ() * (i - 1));
+
+                Material type = prev.getBlock().getType();
+                byte data = prev.getBlock().getState().getRawData();
+
+                location.getBlock().setType(type);
+                location.getBlock().getState().setRawData(data);
             }
             extend(piston);
         }
-
     }
 
     public void retract(GlowBlock piston) {
