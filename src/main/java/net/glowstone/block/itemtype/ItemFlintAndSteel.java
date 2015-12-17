@@ -29,7 +29,7 @@ public class ItemFlintAndSteel extends ItemTool {
         } 
         if (target.isFlammable() || target.getType().isOccluding()) {
             setBlockOnFire(player, target, face, holding, clickedLoc);
-            return true
+            return true;
         } 
             return false;
     }
