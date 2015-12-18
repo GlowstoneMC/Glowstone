@@ -13,8 +13,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.bukkit.block.Biome;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.util.noise.OctaveGenerator;
 
 import java.util.HashMap;
@@ -73,12 +71,6 @@ public class OverworldGenerator extends GlowChunkGenerator {
             }
         }
         return buf;
-    }
-
-    @Override
-    public boolean canSpawn(World world, int x, int z) {
-        final Block block = world.getHighestBlockAt(x, z).getRelative(BlockFace.DOWN);
-        return block.getType() == Material.GRASS;
     }
 
     @Override

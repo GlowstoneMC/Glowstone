@@ -9,7 +9,7 @@ import net.glowstone.constants.*;
 import net.glowstone.entity.*;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.entity.physics.BoundingBox;
-import net.glowstone.generator.*;
+import net.glowstone.generator.GlowChunkGenerator;
 import net.glowstone.generator.structures.GlowStructure;
 import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
@@ -256,7 +256,7 @@ public final class GlowWorld implements World {
      */
     private int maxBuildHeight;
 
-    private Set<GlowChunk.Key> activeChunksSet = new HashSet<GlowChunk.Key>();
+    private Set<GlowChunk.Key> activeChunksSet = new HashSet<>();
 
     /**
      * Creates a new world from the options in the given WorldCreator.
@@ -320,35 +320,15 @@ public final class GlowWorld implements World {
         server.getLogger().info("Preparing spawn for " + name + "...");
         EventFactory.callEvent(new WorldInitEvent(this));
 
-        if (keepSpawnLoaded) {
-            spawnChunkLock = newChunkLock("spawn");
-        } else {
-            spawnChunkLock = null;
-        }
+        spawnChunkLock = keepSpawnLoaded ? newChunkLock("spawn") : null;
 
         // determine the spawn location if we need to
         if (spawnLocation == null) {
             // no location loaded, look for fixed spawn
-            spawnLocation = generator.getFixedSpawnLocation(this, random);
-
-            if (spawnLocation == null) {
-                GlowServer.logger.info("Spawn not found! (1)");
-                // determine a location randomly
-                int spawnX = random.nextInt(128) - 64, spawnZ = random.nextInt(128) - 64;
-                GlowChunk chunk = getChunkAt(spawnX >> 4, spawnZ >> 4);
-                //GlowServer.logger.info("determining spawn: " + chunk.getX() + " " + chunk.getZ());
-                chunk.load(true);  // I'm not sure there's a sane way around this
-
-                for (int tries = 0; tries < 1000 && !generator.canSpawn(this, spawnX, spawnZ); ++tries) {
-                    spawnX += random.nextInt(128) - 64;
-                    spawnZ += random.nextInt(128) - 64;
-                }
-                setSpawnLocation(spawnX, getHighestBlockYAt(spawnX, spawnZ), spawnZ);
-            }
-        }
-
-        if (spawnLocation == null) {
-            GlowServer.logger.info("Spawn not found!");
+            Location spawn = generator.getFixedSpawnLocation(this, random);
+            setSpawnLocation(spawn.getBlockX(), spawn.getBlockY(), spawn.getBlockZ());
+        } else {
+            setKeepSpawnInMemory(keepSpawnLoaded);
         }
 
         server.getLogger().info("Preparing spawn for " + name + ": done");

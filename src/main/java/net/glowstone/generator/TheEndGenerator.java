@@ -2,7 +2,6 @@ package net.glowstone.generator;
 
 import net.glowstone.generator.populators.TheEndPopulator;
 import net.glowstone.util.noise.PerlinOctaveGenerator;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -35,14 +34,6 @@ public class TheEndGenerator extends GlowChunkGenerator {
     public boolean canSpawn(World world, int x, int z) {
         final Block block = world.getHighestBlockAt(x, z).getRelative(BlockFace.DOWN);
         return block.getType() == Material.ENDER_STONE;
-    }
-
-    @Override
-    public Location getFixedSpawnLocation(World world, Random random) {
-        int x = random.nextInt(128) - 64;
-        int z = random.nextInt(128) - 64;
-
-        return new Location(world, x, world.getHighestBlockYAt(x, z), z);
     }
 
     @Override

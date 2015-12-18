@@ -1,6 +1,7 @@
 package net.glowstone.generator;
 
 import net.glowstone.GlowChunk;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -19,7 +20,7 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
     // distinct from GlowChunk.DEPTH, only used in the wgen
     protected static final int WORLD_DEPTH = 128;
 
-    private static final Set<Material> noSpawnFloors = new HashSet<>(Arrays.asList(Material.FIRE, Material.CACTUS, Material.LEAVES));
+    private static final Set<Material> noSpawnFloors = new HashSet<>(Arrays.asList(Material.FIRE, Material.CACTUS));
     private final Map<String, Map<String, OctaveGenerator>> octaveCache = new HashMap<>();
     private final List<BlockPopulator> populators;
 
@@ -110,6 +111,18 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
     public boolean canSpawn(World world, int x, int z) {
         Block block = world.getHighestBlockAt(x, z).getRelative(BlockFace.DOWN);
         return !block.isLiquid() && !block.isEmpty() && !noSpawnFloors.contains(block.getType());
+    }
+
+    @Override
+    public Location getFixedSpawnLocation(World world, Random random) {
+        int spawnX = random.nextInt(128) - 64, spawnZ = random.nextInt(128) - 64;
+
+        for (int tries = 0; tries < 1000 && !canSpawn(world, spawnX, spawnZ); ++tries) {
+            spawnX += random.nextInt(128) - 64;
+            spawnZ += random.nextInt(128) - 64;
+        }
+
+        return new Location(world, spawnX, world.getHighestBlockYAt(spawnX, spawnZ), spawnZ);
     }
 
     public short[][] generateExtBlockSectionsWithData(World world, Random random, int x, int z, BiomeGrid biomes) {
