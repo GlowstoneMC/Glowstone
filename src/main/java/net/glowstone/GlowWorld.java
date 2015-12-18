@@ -1043,7 +1043,7 @@ public final class GlowWorld implements World {
             public void run() {
                 cb.onLoad(chunks.getChunk(x, z));
             }
-        };
+        }.start();
     }
 
     @Override
