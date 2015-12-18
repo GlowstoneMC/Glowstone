@@ -52,7 +52,8 @@ public class GlowBiomeClimate {
     }
 
     public static boolean isSnowy(Biome biome, int x, int y, int z) {
-        return isRainy(biome, x, y, z) && isCold(biome, x, y, z);
+        boolean rainy = CLIMATE_MAP.get(biome).isRainy();
+        return rainy && isCold(biome, x, y, z);
     }
 
     public static boolean isSnowy(Block block) {
