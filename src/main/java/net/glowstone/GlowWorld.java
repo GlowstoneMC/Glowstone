@@ -335,14 +335,13 @@ public final class GlowWorld implements World {
                 GlowChunk chunk = getChunkAt(spawnX >> 4, spawnZ >> 4);
                 //GlowServer.logger.info("determining spawn: " + chunk.getX() + " " + chunk.getZ());
                 chunk.load(true);  // I'm not sure there's a sane way around this
+
                 for (int tries = 0; tries < 1000 && !generator.canSpawn(this, spawnX, spawnZ); ++tries) {
                     spawnX += random.nextInt(128) - 64;
                     spawnZ += random.nextInt(128) - 64;
                 }
                 setSpawnLocation(spawnX, getHighestBlockYAt(spawnX, spawnZ), spawnZ);
             }
-        } else if (keepSpawnLoaded) {
-            setKeepSpawnInMemory(keepSpawnLoaded);
         }
 
         server.getLogger().info("Preparing spawn for " + name + ": done");
@@ -720,7 +719,7 @@ public final class GlowWorld implements World {
         if (spawnChunkLock != null) {
             // update the chunk lock as needed
             spawnChunkLock.clear();
-            if (keepLoaded) {
+            if (keepSpawnLoaded) {
                 int centerX = spawnLocation.getBlockX() >> 4;
                 int centerZ = spawnLocation.getBlockZ() >> 4;
                 int radius = 4 * server.getViewDistance() / 3;
@@ -732,9 +731,10 @@ public final class GlowWorld implements World {
                 for (int x = centerX - radius; x <= centerX + radius; ++x) {
                     for (int z = centerZ - radius; z <= centerZ + radius; ++z) {
                         ++current;
-                        loadChunk(x, z);
                         if (populateAnchoredChunks) {
                             getChunkManager().forcePopulation(x, z);
+                        } else {
+                            loadChunk(x, z);
                         }
                         spawnChunkLock.acquire(new GlowChunk.Key(x, z));
                         if (System.currentTimeMillis() >= loadTime + 1000) {
@@ -918,12 +918,9 @@ public final class GlowWorld implements World {
         writeWorldData(async);
 
         // save chunks
-        maybeAsync(async, new Runnable() {
-            @Override
-            public void run() {
-                for (GlowChunk chunk : chunks.getLoadedChunks()) {
-                    chunks.performSave(chunk);
-                }
+        maybeAsync(async, () -> {
+            for (GlowChunk chunk : chunks.getLoadedChunks()) {
+                chunks.performSave(chunk);
             }
         });
 
@@ -1043,7 +1040,7 @@ public final class GlowWorld implements World {
             public void run() {
                 cb.onLoad(chunks.getChunk(x, z));
             }
-        };
+        }.start();
     }
 
     @Override
@@ -1086,7 +1083,7 @@ public final class GlowWorld implements World {
 
     @Override
     public void loadChunk(int x, int z) {
-        getChunkAt(x, z).load();
+        getChunkAtAsync(x, z, chunk -> chunk.load());
     }
 
     @Override
@@ -1180,7 +1177,7 @@ public final class GlowWorld implements World {
 
     @Override
     public void setBiome(int x, int z, Biome bio) {
-        getChunkAt(x >> 4, z >> 4).setBiome(x & 0xF, z & 0xF, GlowBiome.getId(bio));
+        getChunkAtAsync(x, z, chunk -> ((GlowChunk) chunk).setBiome(x & 0xF, z & 0xF, GlowBiome.getId(bio)));
     }
 
     @Override
