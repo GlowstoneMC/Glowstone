@@ -9,6 +9,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.help.HelpMap;
 import org.bukkit.inventory.*;
 import org.bukkit.map.MapView;
@@ -508,6 +509,11 @@ public class ServerShim implements Server {
     @Override
     public int getIdleTimeout() {
         return 0;
+    }
+
+    @Override
+    public ChunkGenerator.ChunkData createChunkData(World world) {
+        return null;
     }
 
     @Override

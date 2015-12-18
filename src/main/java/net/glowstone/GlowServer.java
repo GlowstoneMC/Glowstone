@@ -36,6 +36,7 @@ import net.glowstone.scoreboard.GlowScoreboardManager;
 import net.glowstone.util.*;
 import net.glowstone.util.bans.GlowBanList;
 import net.glowstone.util.bans.UuidListFile;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
@@ -47,6 +48,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.help.HelpMap;
 import org.bukkit.inventory.*;
+import org.bukkit.material.MaterialData;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
@@ -1110,7 +1112,9 @@ public final class GlowServer implements Server {
 
     @Override
     public Spigot spigot() {
-        return null;
+        return new Server.Spigot() {
+
+        };
     }
 
     @Override
@@ -1621,6 +1625,81 @@ public final class GlowServer implements Server {
     @Override
     public int getIdleTimeout() {
         return idleTimeout;
+    }
+
+    @Override
+    public ChunkGenerator.ChunkData createChunkData(World world) {
+        return new ChunkGenerator.ChunkData() {
+
+            @Override
+            public int getMaxHeight() {
+                return world.getMaxHeight();
+            }
+
+            @Override
+            public void setBlock(int x, int y, int z, Material material) {
+                world.getBlockAt(x, y, z).setType(material);
+            }
+
+            @Override
+            public void setBlock(int x, int y, int z, MaterialData material) {
+                world.getBlockAt(x, y, z).getState().setData(material);
+            }
+
+            @Override
+            public void setRegion(int xMin, int yMin, int zMin, int xMax, int yMax, int zMax, Material material) {
+                // TODO
+                throw new NotImplementedException("Not implemented yet!");
+            }
+
+            @Override
+            public void setRegion(int xMin, int yMin, int zMin, int xMax, int yMax, int zMax, MaterialData material) {
+                // TODO
+                throw new NotImplementedException("Not implemented yet!");
+            }
+
+            @Override
+            public Material getType(int x, int y, int z) {
+                return world.getBlockAt(x, y, z).getType();
+            }
+
+            @Override
+            public MaterialData getTypeAndData(int x, int y, int z) {
+                return world.getBlockAt(x, y, z).getState().getData();
+            }
+
+            @Override
+            public void setRegion(int xMin, int yMin, int zMin, int xMax, int yMax, int zMax, int blockId) {
+                // TODO
+                throw new NotImplementedException("Not implemented yet!");
+            }
+
+            @Override
+            public void setRegion(int xMin, int yMin, int zMin, int xMax, int yMax, int zMax, int blockId, int data) {
+                // TODO
+                throw new NotImplementedException("Not implemented yet!");
+            }
+
+            @Override
+            public void setBlock(int x, int y, int z, int blockId) {
+                world.getBlockAt(x, y, z).setTypeId(blockId);
+            }
+
+            @Override
+            public void setBlock(int x, int y, int z, int blockId, byte data) {
+                world.getBlockAt(x, y, z).setTypeIdAndData(blockId, data, false);
+            }
+
+            @Override
+            public int getTypeId(int x, int y, int z) {
+                return world.getBlockAt(x, y, z).getTypeId();
+            }
+
+            @Override
+            public byte getData(int x, int y, int z) {
+                return world.getBlockAt(x, y, z).getData();
+            }
+        };
     }
 
     @Override

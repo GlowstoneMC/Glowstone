@@ -1038,17 +1038,22 @@ public final class GlowWorld implements World {
 
     @Override
     public void getChunkAtAsync(int x, int z, ChunkLoadCallback cb) {
-
+        new Thread() {
+            @Override
+            public void run() {
+                cb.onLoad(chunks.getChunk(x, z));
+            }
+        };
     }
 
     @Override
     public void getChunkAtAsync(Location location, ChunkLoadCallback cb) {
-
+        getChunkAtAsync(location.getBlockX() >> 4, location.getBlockZ() >> 4, cb);
     }
 
     @Override
     public void getChunkAtAsync(Block block, ChunkLoadCallback cb) {
-
+        getChunkAtAsync(block.getX() >> 4, block.getZ() >> 4, cb);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1678,7 +1683,7 @@ public final class GlowWorld implements World {
 
     @Override
     public WorldBorder getWorldBorder() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     public GameRuleManager getGameRuleMap() {
