@@ -9,6 +9,7 @@ import net.glowstone.constants.*;
 import net.glowstone.entity.*;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.entity.physics.BoundingBox;
+import net.glowstone.generator.*;
 import net.glowstone.generator.structures.GlowStructure;
 import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
@@ -271,7 +272,8 @@ public final class GlowWorld implements World {
         worldType = creator.type();
         generateStructures = creator.generateStructures();
 
-        final ChunkGenerator generator = creator.generator();
+        final GlowChunkGenerator generator = (GlowChunkGenerator) creator.generator();
+
         storageProvider = new AnvilWorldStorageProvider(new File(server.getWorldContainer(), name));
         storageProvider.setWorld(this);
         populators = generator.getDefaultPopulators(this);
@@ -330,6 +332,7 @@ public final class GlowWorld implements World {
             spawnLocation = generator.getFixedSpawnLocation(this, random);
 
             if (spawnLocation == null) {
+                GlowServer.logger.info("Spawn not found! (1)");
                 // determine a location randomly
                 int spawnX = random.nextInt(128) - 64, spawnZ = random.nextInt(128) - 64;
                 GlowChunk chunk = getChunkAt(spawnX >> 4, spawnZ >> 4);
@@ -342,6 +345,10 @@ public final class GlowWorld implements World {
                 }
                 setSpawnLocation(spawnX, getHighestBlockYAt(spawnX, spawnZ), spawnZ);
             }
+        }
+
+        if (spawnLocation == null) {
+            GlowServer.logger.info("Spawn not found!");
         }
 
         server.getLogger().info("Preparing spawn for " + name + ": done");
