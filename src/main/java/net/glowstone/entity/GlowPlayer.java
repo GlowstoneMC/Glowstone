@@ -1607,12 +1607,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     public void saveData(boolean async) {
         if (async) {
-            server.getScheduler().runTaskAsynchronously(null, new Runnable() {
+            new Thread() {
                 @Override
                 public void run() {
                     server.getPlayerDataService().writeData(GlowPlayer.this);
                 }
-            });
+            }.start();
         } else {
             server.getPlayerDataService().writeData(this);
         }
