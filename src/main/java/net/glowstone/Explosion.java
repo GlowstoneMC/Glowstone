@@ -3,7 +3,6 @@ package net.glowstone;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.blocktype.BlockTNT;
 import net.glowstone.entity.GlowEntity;
-import net.glowstone.entity.GlowHumanEntity;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.ExplosionMessage;
@@ -15,7 +14,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
@@ -237,23 +236,20 @@ public final class Explosion {
             vecDistance.normalize();
 
             double basicDamage = calculateDamage(entity, disDivPower);
-            int explosionDamage = (int) ((basicDamage * basicDamage + basicDamage) * 4 * (double) power + 1.0D);
+            double explosionDamage = calculateEnchantedDamage((int) ((basicDamage * basicDamage + basicDamage) * 4 * (double) power + 1.0D), entity);
 
-            if (!(entity instanceof GlowHumanEntity)) {
-                EntityDamageEvent.DamageCause damageCause;
-                if (source == null || source.getType() == EntityType.PRIMED_TNT) {
-                    damageCause = EntityDamageEvent.DamageCause.BLOCK_EXPLOSION;
-                } else {
-                    damageCause = EntityDamageEvent.DamageCause.ENTITY_EXPLOSION;
-                }
-                entity.damage(explosionDamage, source, damageCause);
+            DamageCause damageCause;
+            if (source == null || source.getType() == EntityType.PRIMED_TNT) {
+                damageCause = DamageCause.BLOCK_EXPLOSION;
+            } else {
+                damageCause = DamageCause.ENTITY_EXPLOSION;
             }
+            entity.damage(explosionDamage, source, damageCause);
 
-            double enchantedDamage = calculateEnchantedDamage(basicDamage, entity);
-            vecDistance.multiply(enchantedDamage);
+            vecDistance.multiply(explosionDamage);
 
             Vector currentVelocity = entity.getVelocity();
-            currentVelocity.add(vecDistance).multiply(0.075);
+            currentVelocity.add(vecDistance).multiply(0.2);
             entity.setVelocity(currentVelocity);
 
             if (entity instanceof GlowPlayer) {
@@ -266,7 +262,7 @@ public final class Explosion {
         return affectedPlayers;
     }
 
-    private double calculateEnchantedDamage(double basicDamage, GlowLivingEntity entity) {
+    private double calculateEnchantedDamage(double explosionDamage, GlowLivingEntity entity) {
         int level = 0;
         for (ItemStack stack : entity.getEquipment().getArmorContents()) {
             if (stack != null) {
@@ -276,12 +272,12 @@ public final class Explosion {
 
         if (level > 0) {
             float sub = level * 0.15f;
-            double damage = basicDamage * sub;
+            double damage = explosionDamage * sub;
             damage = Math.floor(damage);
-            return basicDamage - damage;
+            return explosionDamage - damage;
         }
 
-        return basicDamage;
+        return explosionDamage;
     }
 
     private double calculateDamage(GlowEntity entity, double disDivPower) {

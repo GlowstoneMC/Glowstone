@@ -22,15 +22,15 @@ public class ItemFlintAndSteel extends ItemTool {
         if (target.getType() == Material.OBSIDIAN) {
             fireNetherPortal();
             return true;
-        } 
+        }
         if (target.getType() == Material.TNT) {
             fireTnt(target);
             return true;
-        } 
+        }
         if (target.isFlammable() || target.getType().isOccluding()) {
             setBlockOnFire(player, target, face, holding, clickedLoc);
             return true;
-        } 
+        }
         return false;
     }
 
