@@ -5,3 +5,6 @@
 [submodule "SpongeAPI"]
 	path = SpongeAPI
 	url = https://github.com/SpongePowered/SpongeAPI
+[submodule "FlowNetworking"]
+	path = FlowNetworking
+	url = git@github.com:GlowstonePlusPlus/network.git
