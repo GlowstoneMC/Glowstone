@@ -11,9 +11,6 @@ public final class ProfileCache {
     private static Map<String, UUID> uuidCache = new HashMap<>();
     private static Map<UUID, PlayerProfile> profileCache = new HashMap<>();
 
-    private ProfileCache() {
-    }
-
     /**
      * Look up the PlayerProfile for a given UUID.
      * @param uuid The UUID to look up.

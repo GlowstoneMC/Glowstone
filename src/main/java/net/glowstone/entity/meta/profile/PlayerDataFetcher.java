@@ -30,9 +30,6 @@ final class PlayerDataFetcher {
 
     private static final String UUID_URL = "https://api.mojang.com/profiles/minecraft";
 
-    private PlayerDataFetcher() {
-    }
-
     /**
      * Look up the PlayerProfile for a given UUID.
      * @param uuid The UUID to look up.
