@@ -40,7 +40,6 @@ public final class Explosion {
     private final boolean breakBlocks;
     private final GlowWorld world;
     private float yield = 0.3f;
-    private int range;
 
     private static final Random random = new Random();
 
@@ -165,7 +164,6 @@ public final class Explosion {
             }
 
             current.add(direction);
-            range += (int) current.getDirection().length();
             currentPower -= 0.225f;
         }
     }
@@ -246,11 +244,9 @@ public final class Explosion {
             }
             entity.damage(explosionDamage, source, damageCause);
 
-            vecDistance.multiply(explosionDamage);
+            vecDistance.multiply(explosionDamage).multiply(0.05);
 
-            Vector currentVelocity = entity.getVelocity();
-            currentVelocity.add(vecDistance).multiply(0.2);
-            entity.setVelocity(currentVelocity);
+            entity.setVelocity(entity.getVelocity().add(vecDistance));
 
             if (entity instanceof GlowPlayer) {
                 affectedPlayers.add((GlowPlayer) entity);
@@ -288,11 +284,14 @@ public final class Explosion {
     private Collection<GlowLivingEntity> getNearbyEntities() {
         ArrayList<Chunk> chunks = new ArrayList<>();
         chunks.add(location.getChunk());
-        for (int i = 0; i <= 1; i++) {
-            for (int j = 0; j <= 1; j++) {
-                if (!chunks.contains(location.clone().add(i * range, 0, j * range).getChunk())) {
-                    chunks.add(location.clone().add(i * range, 0, j * range).getChunk());
-                }
+        for (int i = (int) -power; i <= power; i++) {
+            if (i == 0 || !chunks.contains(location.clone().add(i, 0, 0).getChunk())) {
+                chunks.add(location.clone().add(i, 0, 0).getChunk());
+            }
+        }
+        for (int i = (int) -power; i <= power; i++) {
+            if (i == 0 || !chunks.contains(location.clone().add(0, 0, i).getChunk())) {
+                chunks.add(location.clone().add(0, 0, i).getChunk());
             }
         }
         ArrayList<Entity> entities = new ArrayList<>();
@@ -301,10 +300,8 @@ public final class Explosion {
         }
         List<GlowLivingEntity> nearbyEntities = new ArrayList<>();
         for (Entity entity : entities) {
-            if (entity instanceof LivingEntity) {
-                if (entity instanceof LivingEntity && distanceTo((LivingEntity) entity) / power < 1. && entity instanceof LivingEntity) {
-                    nearbyEntities.add((GlowLivingEntity) entity);
-                }
+            if (entity instanceof LivingEntity && distanceTo((LivingEntity) entity) / power < 1) {
+                nearbyEntities.add((GlowLivingEntity) entity);
             }
         }
         return nearbyEntities;
