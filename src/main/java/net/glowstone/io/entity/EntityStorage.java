@@ -2,6 +2,7 @@ package net.glowstone.io.entity;
 
 import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowEntity;
+import net.glowstone.entity.monster.*;
 import net.glowstone.entity.passive.GlowChicken;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
@@ -45,6 +46,18 @@ public final class EntityStorage {
         bind(new PigStore());
         bind(new RabbitStore());
         bind(new SheepStore());
+
+        // LivingEntities - Agressive Entities
+        bind(new ZombieStorage());
+        bind(new SkeletonStore());
+        bind(new EndermanStore());
+        bind(new CreeperStore());
+        bind(new SlimeStore());
+        bind(new MonsterStore<>(GlowBlaze.class, "Blaze"));
+        bind(new MonsterStore<>(GlowWitch.class, "Witch"));
+        bind(new MonsterStore<>(GlowSpider.class, "Spider"));
+        bind(new MonsterStore<>(GlowSilverfish.class, "Silverfish"));
+        bind(new MonsterStore<>(GlowGhast.class, "Ghast"));
 
         bind(new ItemStore());
         bind(new TNTPrimedStorage());

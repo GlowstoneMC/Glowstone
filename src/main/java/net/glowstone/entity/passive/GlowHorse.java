@@ -37,7 +37,7 @@ public class GlowHorse extends GlowTameable implements Horse {
 
     protected GlowHorse(Location location, AnimalTamer owner) {
         super(location, EntityType.HORSE, owner);
-        this.ownerUUID = owner.getUniqueId();
+        this.ownerUUID = owner == null ? null : owner.getUniqueId();
         Random rand = new Random();
         // Todo make this cleaner and safer to use for spawning random horses
         this.variant = Variant.values()[rand.nextInt(4)];

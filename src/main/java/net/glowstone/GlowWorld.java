@@ -7,7 +7,9 @@ import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.constants.*;
 import net.glowstone.entity.*;
+import net.glowstone.entity.monster.*;
 import net.glowstone.entity.objects.GlowItem;
+import net.glowstone.entity.passive.*;
 import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.generator.GlowChunkGenerator;
 import net.glowstone.generator.structures.GlowStructure;
@@ -1184,8 +1186,52 @@ public final class GlowWorld implements World {
     public <T extends Entity> T spawn(Location location, Class<T> clazz) throws IllegalArgumentException {
         GlowEntity entity = null;
 
-        if (TNTPrimed.class.isAssignableFrom(clazz)) {
+        if (LivingEntity.class.isAssignableFrom(clazz)) {
+            if (Chicken.class.isAssignableFrom(clazz)) {
+                entity = new GlowChicken(location);
+            } else if (Creeper.class.isAssignableFrom(clazz)) {
+                entity = new GlowCreeper(location);
+            } else if (Ghast.class.isAssignableFrom(clazz)) {
+                entity = new GlowGhast(location);
+            } else if (Pig.class.isAssignableFrom(clazz)) {
+                entity = new GlowPig(location);
+            } else if (Sheep.class.isAssignableFrom(clazz)) {
+                entity = new GlowSheep(location);
+            } else if (Tameable.class.isAssignableFrom(clazz)) {
+                if (Horse.class.isAssignableFrom(clazz)) {
+                    entity = new GlowHorse(location);
+                }
+            } else if (Skeleton.class.isAssignableFrom(clazz)) {
+                entity = new GlowSkeleton(location);
+            } else if (Spider.class.isAssignableFrom(clazz)) {
+                //TODO: Cave Spider
+                entity = new GlowSpider(location);
+            } else if (Slime.class.isAssignableFrom(clazz)) {
+                //TODO: Magma Cube
+                entity = new GlowSlime(location);
+            } else if (Zombie.class.isAssignableFrom(clazz)) {
+                entity = new GlowZombie(location);
+            } else if (Silverfish.class.isAssignableFrom(clazz)) {
+                entity = new GlowSilverfish(location);
+            } else if (Enderman.class.isAssignableFrom(clazz)) {
+                entity = new GlowEnderman(location);
+            } else if (Blaze.class.isAssignableFrom(clazz)) {
+                entity = new GlowBlaze(location);
+            } else if (Witch.class.isAssignableFrom(clazz)) {
+                entity = new GlowWitch(location);
+            } else if (Ambient.class.isAssignableFrom(clazz)) {
+                if (Bat.class.isAssignableFrom(clazz)) {
+                    entity = new GlowBat(location);
+                }
+            } else if (Rabbit.class.isAssignableFrom(clazz)) {
+                entity = new GlowRabbit(location);
+            }
+        } else if (TNTPrimed.class.isAssignableFrom(clazz)) {
             entity = new GlowTNTPrimed(location, null);
+        } else if (Weather.class.isAssignableFrom(clazz)) {
+            if (LightningStrike.class.isAssignableFrom(clazz)) {
+                entity = new GlowLightningStrike(location, true, new Random());
+            }
         }
 
         if (entity != null) {
