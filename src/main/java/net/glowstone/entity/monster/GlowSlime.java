@@ -7,6 +7,7 @@ import org.bukkit.entity.Slime;
 public class GlowSlime extends GlowMonster implements Slime {
 
     private int size;
+    private boolean onGround;
 
     public GlowSlime(Location loc) {
         this(loc, EntityType.SLIME);

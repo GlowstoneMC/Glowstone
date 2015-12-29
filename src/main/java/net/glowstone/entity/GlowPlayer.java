@@ -454,19 +454,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      */
     @Override
     public void remove() {
-        knownChunks.clear();
-        chunkLock.clear();
-        saveData();
-        getInventory().removeViewer(this);
-        getInventory().getCraftingInventory().removeViewer(this);
-        permissions.clearPermissions();
-        getServer().setPlayerOnline(this, false);
-
-        if (scoreboard != null) {
-            scoreboard.unsubscribe(this);
-            scoreboard = null;
-        }
-        super.remove();
+        remove(true);
     }
     
     public void remove(boolean asyncSave) {

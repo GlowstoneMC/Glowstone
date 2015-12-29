@@ -6,8 +6,10 @@ import org.bukkit.entity.Zombie;
 
 public class GlowZombie extends GlowMonster implements Zombie {
 
-    private boolean baby = false;
-    private boolean villager = false;
+    private boolean baby;
+    private boolean villager;
+    private int conversionTime = -1;
+    private boolean canBreakDoors;
     
     public GlowZombie(Location loc) {
         super(loc, EntityType.ZOMBIE);
@@ -35,5 +37,21 @@ public class GlowZombie extends GlowMonster implements Zombie {
     @Override
     public void setVillager(boolean value) {
         this.villager = value;
+    }
+
+    public int getConversionTime() {
+        return conversionTime;
+    }
+
+    public void setConversionTime(int conversionTime) {
+        this.conversionTime = conversionTime;
+    }
+
+    public boolean isCanBreakDoors() {
+        return canBreakDoors;
+    }
+
+    public void setCanBreakDoors(boolean canBreakDoors) {
+        this.canBreakDoors = canBreakDoors;
     }
 }

@@ -4,10 +4,13 @@ import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.PigZombie;
 
+import java.util.Random;
+import java.util.UUID;
+
 public class GlowPigZombie extends GlowZombie implements PigZombie {
 
     private int anger;
-    private boolean angry;
+    private UUID hurtBy;
 
     public GlowPigZombie(Location loc) {
         super(loc, EntityType.PIG_ZOMBIE);
@@ -25,11 +28,20 @@ public class GlowPigZombie extends GlowZombie implements PigZombie {
 
     @Override
     public void setAngry(boolean angry) {
-        this.angry = angry;
+        if (!angry) anger = 0;
+        else if (isAngry()) anger = ((int) (new Random().nextGaussian() * 400)) + 400;
     }
 
     @Override
     public boolean isAngry() {
-        return angry;
+        return anger > 0;
+    }
+
+    public UUID getHurtBy() {
+        return hurtBy;
+    }
+
+    public void setHurtBy(UUID hurtBy) {
+        this.hurtBy = hurtBy;
     }
 }
