@@ -42,7 +42,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         final InventoryView view = player.getOpenInventory();
         final GlowInventory top = (GlowInventory) view.getTopInventory();
         final GlowInventory bottom = (GlowInventory) view.getBottomInventory();
-        final ItemStack slotItem = view.getItem(viewSlot);
+        final ItemStack slotItem = message.getItem();
         final ItemStack cursor = player.getItemOnCursor();
 
         // check that the player has a correct view of the item
@@ -53,6 +53,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                 // in mode 1 (shift click), client does not send item in slot under cursor if the
                 // action did not result in any change on the client side (inventory full) or
                 // if there's an item under the cursor
+
                 player.sendItemChange(viewSlot, slotItem);
                 return false;
             }
@@ -396,7 +397,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
             // we need to check whether the crafting result was used
             // and if it was consume the ingredients
             GlowCraftingInventory craftingInv = (GlowCraftingInventory) top;
-            if (craftingInv.getResult() == null) {
+            if (craftingInv.getResult() != null) {
                 // it was used -> consume ingredients
                 craftingInv.craft();
             }

@@ -390,14 +390,36 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
             if (getItemOnCursor() != null) {
                 drop(getItemOnCursor());
             }
-            for (int i = 1; i <= 4; i++) {
-                if (getOpenInventory().getItem(i).getAmount() > 0 && (getOpenInventory().getItem(i) != null || getOpenInventory().getItem(i).getType() != Material.AIR) && (((GlowInventory) getOpenInventory().getTopInventory()).getSlot(i).getType() == InventoryType.SlotType.CRAFTING || ((GlowInventory) getOpenInventory().getBottomInventory()).getSlot(i).getType() == InventoryType.SlotType.CRAFTING)) {
-                    drop(getOpenInventory().getItem(i));
-                    getOpenInventory().setItem(i, null);
-                }
-            }
+            dropUnusedInputs();
         }
         setItemOnCursor(null);
+        resetInventoryView();
+    }
+
+    // Drop items left in crafting area.
+    private void dropUnusedInputs() {
+        for (int i = 0; i <= getTopInventory().getSlots().size(); i++) {
+            final ItemStack itemStack = getOpenInventory().getItem(i);
+            if (itemStack == null || itemStack.getAmount() == 0 || itemStack.getType() == Material.AIR) {
+                continue;
+            }
+
+            if (isCraftingInputSlot(i)) {
+                drop(itemStack);
+                getOpenInventory().setItem(i, null);
+            }
+        }
+    }
+
+    private boolean isCraftingInputSlot(int i) {
+        return getTopInventory().getSlot(i).getType() == InventoryType.SlotType.CRAFTING;
+    }
+
+    private GlowInventory getTopInventory() {
+        return (GlowInventory) getOpenInventory().getTopInventory();
+    }
+
+    private void resetInventoryView() {
         openInventory(new GlowInventoryView(this));
     }
 
