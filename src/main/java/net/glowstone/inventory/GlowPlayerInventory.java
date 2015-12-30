@@ -252,15 +252,18 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
 
     @Override
     public int clear(int id, int data) {
-        int cleared = 0;
+        int numCleared = 0;
         for (int i = 0; i < getSize(); ++i) {
             ItemStack stack = getItem(i);
             if (stack != null && (stack.getTypeId() == id || id == -1) && (stack.getDurability() == data || data == -1)) {
                 setItem(i, null);
-                ++cleared;
+                if (stack.getType() != Material.AIR) {
+                    // never report AIR as removed - else will report all empty slots cleared
+                    numCleared += stack.getAmount(); // report # items, not # stacks removed
+                }
             }
         }
-        return cleared;
+        return numCleared;
     }
 
     ////////////////////////////////////////////////////////////////////////////
