@@ -44,7 +44,7 @@ public final class GlowAchievement {
         set(MINE_WOOD, "mineWood", "Getting Wood");
         set(BUILD_WORKBENCH, "buildWorkBench", "Benchmarking");
         set(BUILD_PICKAXE, "buildPickaxe", "Time to Mine!");
-        set(BUILD_FURNACE, "buildFurnace", "Hot Topic!");
+        set(BUILD_FURNACE, "buildFurnace", "Hot Topic");
         set(ACQUIRE_IRON, "acquireIron", "Acquire Hardware");
         set(BUILD_HOE, "buildHoe", "Time to Farm!");
         set(MAKE_BREAD, "makeBread", "Bake Bread");
@@ -58,8 +58,7 @@ public final class GlowAchievement {
         set(FLY_PIG, "flyPig", "When Pigs Fly");
         set(SNIPE_SKELETON, "snipeSkeleton", "Sniper Duel");
         set(GET_DIAMONDS, "diamonds", "DIAMONDS!");
-        set(DIAMONDS_TO_YOU, "diamondsToYou", "Diamonds to you!");
-        set(NETHER_PORTAL, "portal", "");
+        set(NETHER_PORTAL, "portal", "We Need to Go Deeper");
         set(GHAST_RETURN, "ghast", "Return to Sender");
         set(GET_BLAZE_ROD, "blazeRod", "Into Fire");
         set(BREW_POTION, "potion", "Local Brewery");
@@ -68,17 +67,13 @@ public final class GlowAchievement {
         set(ENCHANTMENTS, "enchantments", "Enchanter");
         set(OVERKILL, "overkill", "Overkill");
         set(BOOKCASE, "bookcase", "Librarian");
-        set(BREED_COW, "breedCow", "Repopulation");
-        set(SPAWN_WITHER, "spawnWither", "");
-        set(KILL_WITHER, "killWither", "The Beginning.");
-        set(FULL_BEACON, "fullBeacon", "Beaconator");
         set(EXPLORE_ALL_BIOMES, "exploreAllBiomes", "Adventuring Time");
-        set(SPAWN_WITHER, "spawnWither");
+        set(SPAWN_WITHER, "spawnWither", "The Beginning?");
         set(KILL_WITHER, "killWither", "The Beginning.");
         set(FULL_BEACON, "fullBeacon", "Beaconator");
         set(BREED_COW, "breedCow", "Repopulation");
         set(DIAMONDS_TO_YOU, "diamondsToYou", "Diamonds to you!");
-        set(OVERPOWERED, "overpowered", "OVERPOWERED!");
+        set(OVERPOWERED, "overpowered", "Overpowered");
     }
 
 }
