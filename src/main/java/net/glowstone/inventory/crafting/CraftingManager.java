@@ -93,11 +93,8 @@ public final class CraftingManager implements Iterable<Recipe> {
         for (int i = 0; i < items.length; i++) {
             if (items[i] != null) {
                 int amount = items[i].getAmount();
-                if (amount > 0) {
+                if (amount > 1) {
                     items[i].setAmount(amount - 1);
-                    if (items[i].getAmount() == 0) {
-                        inv.setItem(i + 1, null);
-                    }
                 } else {
                     inv.setItem(i + 1, null);
                 }

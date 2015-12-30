@@ -42,7 +42,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         final InventoryView view = player.getOpenInventory();
         final GlowInventory top = (GlowInventory) view.getTopInventory();
         final GlowInventory bottom = (GlowInventory) view.getBottomInventory();
-        final ItemStack slotItem = message.getItem();
+        final ItemStack slotItem = view.getItem(viewSlot);
         final ItemStack cursor = player.getItemOnCursor();
 
         // check that the player has a correct view of the item

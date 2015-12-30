@@ -30,10 +30,6 @@ public final class GlowAchievement {
         return fancyNames[achievement.ordinal()];
     }
 
-    private static void set(Achievement achievement, String key) {
-        names[achievement.ordinal()] = "achievement." + key;
-    }
-
     private static void set(Achievement achievement, String key, String fancyName) {
         names[achievement.ordinal()] = "achievement." + key;
         fancyNames[achievement.ordinal()] = fancyName;

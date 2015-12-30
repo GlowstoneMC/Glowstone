@@ -4,7 +4,6 @@ import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.crafting.CraftingManager;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.*;
@@ -64,6 +63,7 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
             int recipeAmount = ((GlowServer) Bukkit.getServer()).getCraftingManager().getLayers(getMatrix());
             clickedItem.setAmount(clickedItem.getAmount() * recipeAmount);
 
+
             // Place the items in the player's inventory (right to left)
             player.getInventory().tryToFillSlots(clickedItem, 8, -1, 35, 8);
 
@@ -112,22 +112,7 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
 
     @Override
     public ItemStack[] getMatrix() {
-        return replaceAirWithNull(Arrays.copyOfRange(getContents(), MATRIX_START, getSize()));
-    }
-
-    /**
-     * CraftingManager expects null for empty slots, not AIRx0. Convert our internal representation to something
-     * compatible to correct an error where after crafting the original inputs were dropped (because the craft()
-     * method failed to find a matching recipe and thus never decremented the input counts - leaving them "hidden"
-     * in the crafting squares but yielding output --> item duplication).
-     */
-    private ItemStack[] replaceAirWithNull(ItemStack[] items) {
-        for (int i = 0; i < items.length; i++) {
-            if (items[i].getType() == Material.AIR) {
-                items[i] = null;
-            }
-        }
-        return items;
+        return Arrays.copyOfRange(getContents(), MATRIX_START, getSize());
     }
 
     @Override
