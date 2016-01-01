@@ -199,7 +199,7 @@ public abstract class BlockLiquid extends BlockType {
                 return;
             }
         }
-        block.getWorld().requestPulse(block, isWater(block.getType()) ? TICK_RATE_WATER : TICK_RATE_LAVA);
+        block.getWorld().requestPulse(block, isWater(block.getType()) || block.getBiome() == Biome.HELL ? TICK_RATE_WATER : TICK_RATE_LAVA);
     }
     
     @Override
