@@ -4,7 +4,7 @@ import net.glowstone.entity.passive.GlowVillager;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.entity.Villager;
 
-public class VillagerStore extends AgeableStore<GlowVillager> {
+class VillagerStore extends AgeableStore<GlowVillager> {
 
     public VillagerStore() {
         super(GlowVillager.class, "Villager");

@@ -3,7 +3,7 @@ package net.glowstone.io.entity;
 import net.glowstone.entity.monster.GlowSlime;
 import net.glowstone.util.nbt.CompoundTag;
 
-public class SlimeStore<T extends GlowSlime> extends MonsterStore<GlowSlime> {
+class SlimeStore<T extends GlowSlime> extends MonsterStore<GlowSlime> {
 
     public SlimeStore(Class<GlowSlime> clazz, String id) {
         super(clazz, id);

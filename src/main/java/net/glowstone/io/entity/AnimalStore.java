@@ -6,7 +6,7 @@ import org.bukkit.Location;
 
 import java.lang.reflect.Constructor;
 
-public class AnimalStore<T extends GlowAnimal> extends EntityStore<T> {
+class AnimalStore<T extends GlowAnimal> extends EntityStore<T> {
 
     private final Constructor<T> constructor;
 

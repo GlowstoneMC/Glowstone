@@ -3,7 +3,7 @@ package net.glowstone.io.entity;
 import net.glowstone.entity.monster.GlowEndermite;
 import net.glowstone.util.nbt.CompoundTag;
 
-public class EndermiteStore extends MonsterStore<GlowEndermite> {
+class EndermiteStore extends MonsterStore<GlowEndermite> {
 
     public EndermiteStore() {
         super(GlowEndermite.class, "Endermite");

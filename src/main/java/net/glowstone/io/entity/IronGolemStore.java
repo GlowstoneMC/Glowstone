@@ -3,7 +3,7 @@ package net.glowstone.io.entity;
 import net.glowstone.entity.monster.GlowIronGolem;
 import net.glowstone.util.nbt.CompoundTag;
 
-public class IronGolemStore extends MonsterStore<GlowIronGolem> {
+class IronGolemStore extends MonsterStore<GlowIronGolem> {
 
     public IronGolemStore() {
         super(GlowIronGolem.class, "VillagerGolem");

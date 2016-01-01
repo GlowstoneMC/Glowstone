@@ -4,7 +4,7 @@ import net.glowstone.entity.monster.GlowSkeleton;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.entity.Skeleton;
 
-public class SkeletonStore extends MonsterStore<GlowSkeleton> {
+class SkeletonStore extends MonsterStore<GlowSkeleton> {
 
     public SkeletonStore() {
         super(GlowSkeleton.class, "Skeleton");

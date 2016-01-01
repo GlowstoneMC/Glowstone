@@ -3,7 +3,7 @@ package net.glowstone.io.entity;
 import net.glowstone.entity.monster.GlowGhast;
 import net.glowstone.util.nbt.CompoundTag;
 
-public class GhastStore extends MonsterStore<GlowGhast> {
+class GhastStore extends MonsterStore<GlowGhast> {
 
     public GhastStore() {
         super(GlowGhast.class, "Ghast");

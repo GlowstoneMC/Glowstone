@@ -4,7 +4,7 @@ import net.glowstone.entity.passive.GlowWolf;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.DyeColor;
 
-public class WolfStore extends TameableStore<GlowWolf> {
+class WolfStore extends TameableStore<GlowWolf> {
 
     public WolfStore() {
         super(GlowWolf.class, "Ozelot");

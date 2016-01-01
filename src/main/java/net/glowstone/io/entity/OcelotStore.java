@@ -4,7 +4,7 @@ import net.glowstone.entity.passive.GlowOcelot;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.entity.Ocelot;
 
-public class OcelotStore extends TameableStore<GlowOcelot> {
+class OcelotStore extends TameableStore<GlowOcelot> {
 
     public OcelotStore() {
         super(GlowOcelot.class, "Ozelot");

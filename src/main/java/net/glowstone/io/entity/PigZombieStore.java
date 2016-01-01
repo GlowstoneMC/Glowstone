@@ -6,7 +6,7 @@ import net.glowstone.util.nbt.CompoundTag;
 
 import java.util.UUID;
 
-public class PigZombieStore extends ZombieStore<GlowPigZombie> {
+class PigZombieStore extends ZombieStore<GlowPigZombie> {
 
     public PigZombieStore() {
         super(GlowPigZombie.class, "PigZombie");

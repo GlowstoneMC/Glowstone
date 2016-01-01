@@ -3,7 +3,7 @@ package net.glowstone.io.entity;
 import net.glowstone.entity.monster.GlowZombie;
 import net.glowstone.util.nbt.CompoundTag;
 
-public class ZombieStore<T extends GlowZombie> extends MonsterStore<GlowZombie> {
+class ZombieStore<T extends GlowZombie> extends MonsterStore<GlowZombie> {
 
     public ZombieStore() {
         super(GlowZombie.class, "Zombie");

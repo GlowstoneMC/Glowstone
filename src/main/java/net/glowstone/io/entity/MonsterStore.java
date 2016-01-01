@@ -6,7 +6,7 @@ import org.bukkit.Location;
 
 import java.lang.reflect.Constructor;
 
-public class MonsterStore<T extends GlowMonster> extends EntityStore<T> {
+class MonsterStore<T extends GlowMonster> extends EntityStore<T> {
 
     private final Constructor<T> constructor;
 
