@@ -2,7 +2,10 @@ package net.glowstone.io.entity;
 
 import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowEntity;
-import net.glowstone.entity.passive.GlowChicken;
+import net.glowstone.entity.monster.*;
+import net.glowstone.entity.passive.GlowCow;
+import net.glowstone.entity.passive.GlowMooshroom;
+import net.glowstone.entity.passive.GlowSquid;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
@@ -40,11 +43,37 @@ public final class EntityStorage {
 
         // LivingEntities - Passive Entities
         bind(new BatStore());
-        bind(new AgeableStore<>(GlowChicken.class, "Chicken"));
+        bind(new ChickenStore());
         bind(new HorseStore());
         bind(new PigStore());
         bind(new RabbitStore());
         bind(new SheepStore());
+        bind(new OcelotStore());
+        bind(new WolfStore());
+        bind(new VillagerStore());
+        bind(new AgeableStore<>(GlowCow.class, "Cow"));
+        bind(new AgeableStore<>(GlowMooshroom.class, "MushroomCow"));
+        bind(new AnimalStore<>(GlowSquid.class, "Squid"));
+
+        // LivingEntities - Hostile Entities
+        bind(new CreeperStore());
+        bind(new EndermiteStore());
+        bind(new GhastStore());
+        bind(new GuardianStore());
+        bind(new IronGolemStore());
+        bind(new SlimeStore(GlowSlime.class, "Slime"));
+        bind(new SlimeStore(GlowMagmaCube.class, "LavaSlime"));
+        bind(new ZombieStore<>());
+        bind(new PigZombieStore());
+        bind(new SkeletonStore());
+        bind(new MonsterStore<>(GlowBlaze.class, "Blaze"));
+        bind(new MonsterStore<>(GlowCaveSpider.class, "CaveSpider"));
+        bind(new MonsterStore<>(GlowSpider.class, "Spider"));
+        bind(new MonsterStore<>(GlowSnowman.class, "Snowman"));
+        bind(new MonsterStore<>(GlowGiant.class, "Giant"));
+        bind(new MonsterStore<>(GlowSilverfish.class, "Silverfish"));
+        bind(new MonsterStore<>(GlowWitch.class, "Witch"));
+
 
         bind(new ItemStore());
         bind(new TNTPrimedStorage());

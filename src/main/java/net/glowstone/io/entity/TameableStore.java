@@ -7,7 +7,7 @@ import org.bukkit.OfflinePlayer;
 
 import java.util.UUID;
 
-public abstract class TameableStore<T extends GlowTameable> extends AgeableStore<T> {
+abstract class TameableStore<T extends GlowTameable> extends AgeableStore<T> {
 
     public TameableStore(Class<T> clazz, String id) {
         super(clazz, id);

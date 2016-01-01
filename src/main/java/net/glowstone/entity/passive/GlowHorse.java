@@ -18,9 +18,9 @@ import java.util.UUID;
 
 public class GlowHorse extends GlowTameable implements Horse {
 
-    private Variant variant;
-    private Color horseColor;
-    private Style horseStyle;
+    private Variant variant = Variant.values()[new Random().nextInt(4)];
+    private Color horseColor = Color.values()[new Random().nextInt(6)];
+    private Style horseStyle = Style.values()[new Random().nextInt(3)];
     private boolean hasChest;
     private int domestication;
     private int maxDomestication;
@@ -33,16 +33,12 @@ public class GlowHorse extends GlowTameable implements Horse {
 
     public GlowHorse(Location location) {
         this(location, null);
+        setSize(1.4F, 1.6F);
     }
 
     protected GlowHorse(Location location, AnimalTamer owner) {
         super(location, EntityType.HORSE, owner);
-        this.ownerUUID = owner.getUniqueId();
-        Random rand = new Random();
-        // Todo make this cleaner and safer to use for spawning random horses
-        this.variant = Variant.values()[rand.nextInt(4)];
-        this.horseStyle = Style.values()[rand.nextInt(3)];
-        this.horseColor = Color.values()[rand.nextInt(6)];
+        if (owner != null) this.ownerUUID = owner.getUniqueId();
     }
 
     @Override
