@@ -4,7 +4,7 @@ import net.glowstone.entity.GlowTNTPrimed;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 
-public class TNTPrimedStorage extends EntityStore<GlowTNTPrimed> {
+class TNTPrimedStorage extends EntityStore<GlowTNTPrimed> {
 
     public TNTPrimedStorage() {
         super(GlowTNTPrimed.class, "PrimedTnt");

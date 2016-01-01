@@ -21,6 +21,8 @@ public class GlowAgeable extends GlowCreature implements Ageable {
     protected float width, height;
     private int age = 0;
     private boolean ageLocked = false;
+    private int forcedAge;
+    private int inLove = 0;
 
     /**
      * Creates a new ageable monster.
@@ -117,5 +119,21 @@ public class GlowAgeable extends GlowCreature implements Ageable {
 
     protected final void setScale(float scale) {
         setSize(this.height * scale, this.width * scale);
+    }
+
+    public int getForcedAge() {
+        return forcedAge;
+    }
+
+    public void setForcedAge(int forcedAge) {
+        this.forcedAge = forcedAge;
+    }
+
+    public int getInLove() {
+        return inLove;
+    }
+
+    public void setInLove(int inLove) {
+        this.inLove = inLove;
     }
 }

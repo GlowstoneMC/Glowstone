@@ -19,7 +19,6 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
 
     public GlowTameable(Location location, EntityType type) {
         super(location, type);
-        setSize(0.3F, 0.7F);
     }
 
     protected GlowTameable(Location location, EntityType type, AnimalTamer owner) {
