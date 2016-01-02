@@ -104,6 +104,18 @@ public final class GlowSound {
         set(GHAST_FIREBALL, "mob.ghast.fireball");
         set(GHAST_MOAN, "mob.ghast.moan");
         set(GHAST_SCREAM, "mob.ghast.scream");
+        set(GUARDIAN_HIT, "mob.guardian.hit");
+        set(GUARDIAN_IDLE, "mob.guardian.idle");
+        set(GUARDIAN_DEATH, "mob.guardian.death");
+        set(GUARDIAN_ELDER_HIT, "mob.guardian.elder.hit");
+        set(GUARDIAN_ELDER_IDLE, "mob.guardian.elder.idle");
+        set(GUARDIAN_ELDER_DEATH, "mob.guardian.elder.death");
+        set(GUARDIAN_LAND_HIT, "mob.guardian.land.hit");
+        set(GUARDIAN_LAND_IDLE, "mob.guardian.land.idle");
+        set(GUARDIAN_LAND_DEATH, "mob.guardian.death");
+        set(GUARDIAN_CURSE, "mob.guardian.curse");
+        set(GUARDIAN_ATTACK, "mob.guardian.attack");
+        set(GUARDIAN_FLOP, "mob.guardian.flop");
         set(HORSE_ANGRY, "mob.horse.angry");
         set(HORSE_ARMOR, "mob.horse.armor");
         set(HORSE_BREATHE, "mob.horse.breathe");
@@ -136,6 +148,10 @@ public final class GlowSound {
         set(PIG_IDLE, "mob.pig.say");
         set(PIG_DEATH, "mob.pig.death");
         set(PIG_WALK, "mob.pig.step");
+        set(RABBIT_HURT, "mob.rabbit.hurt");
+        set(RABBIT_IDLE, "mob.rabbit.idle");
+        set(RABBIT_HOP, "mob.rabbit.hop");
+        set(RABBIT_DEATH, "mob.rabbit.death");
         set(SHEEP_IDLE, "mob.sheep.say");
         set(SHEEP_SHEAR, "mob.sheep.shear");
         set(SHEEP_WALK, "mob.sheep.step");
@@ -187,6 +203,9 @@ public final class GlowSound {
         set(ZOMBIE_PIG_ANGRY, "mob.zombiepig.zpigangry");
         set(ZOMBIE_PIG_DEATH, "mob.zombiepig.zpigdeath");
         set(ZOMBIE_PIG_HURT, "mob.zombiepig.zpighurt");
+        set(NEUTRAL_DIE, "game.neutral.die");
+        set(HOSTILE_HURT, "game.neutral.hurt");
+        set(HOSTILE_DIE, "game.neutral.die");
         // Note (blocks)
         set(NOTE_BASS_GUITAR, "note.bassattack");
         set(NOTE_SNARE_DRUM, "note.snare");
@@ -195,6 +214,13 @@ public final class GlowSound {
         set(NOTE_PIANO, "note.harp");
         set(NOTE_BASS_DRUM, "note.bd");
         set(NOTE_STICKS, "note.hat");
+        // Player
+        set(PLAYER_FALL_BIG, "game.player.hurt.fall.big");
+        set(PLAYER_FALL_SMALL, "game.player.hurt.fall.small");
+        set(PLAYER_HURT, "game.player.hurt");
+        set(PLAYER_DIE, "game.player.die");
+        set(PLAYER_SWIM_SPLASH, "game.player.swim.splash");
+        set(PLAYER_SWIM, "game.player.swim");
         // Portal
         set(PORTAL, "portal.portal");
         set(PORTAL_TRAVEL, "portal.travel");
