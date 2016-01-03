@@ -1,5 +1,6 @@
 package net.glowstone.block.blocktype;
 
+import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
@@ -12,6 +13,7 @@ import org.bukkit.util.Vector;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 import static org.bukkit.block.BlockFace.*;
 
@@ -101,7 +103,7 @@ public abstract class BlockLiquid extends BlockType {
                 try {
                     latch.await(1, TimeUnit.SECONDS);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    GlowServer.logger.log(Level.SEVERE, "Thread interruption: ", e);
                 }
                 // if we already found a match at this radius, stop
                 if (state.getFlowed()) {
