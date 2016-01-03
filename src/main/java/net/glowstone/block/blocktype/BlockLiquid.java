@@ -9,6 +9,9 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import static org.bukkit.block.BlockFace.*;
 
 public abstract class BlockLiquid extends BlockType {
@@ -74,6 +77,7 @@ public abstract class BlockLiquid extends BlockType {
     private static final int TICK_RATE_WATER = 4;
     private static final int TICK_RATE_LAVA = 20;
     private BlockFace[] hfaces = {NORTH, EAST, SOUTH, WEST};
+    CountDownLatch latch = new CountDownLatch(4);
 
     private void calculateFlow(GlowBlock block) {
         GlowBlockState state = block.getState();
@@ -91,12 +95,12 @@ public abstract class BlockLiquid extends BlockType {
                             m *= -1;
                             break;
                     }
-                    // check for a depression in the land
-                    if (calculateTarget(block.getWorld().getBlockAt(block.getX() + (face == EAST || face == WEST ? m : 0), block.getY() - 1, block.getZ() + (face == NORTH || face == SOUTH ? m : 0)), face, block.getType(), state.getRawData(), false)) {
-                        if (calculateTarget(block.getRelative(face), face, block.getType(), state.getRawData(), true)) {
-                            state.setFlowed(true);
-                        }
-                    }
+                    new BlockLiquidSearchThread(face, block, m).start();
+                }
+                try {
+                    latch.await(1, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
                 // if we already found a match at this radius, stop
                 if (state.getFlowed()) {
@@ -107,6 +111,30 @@ public abstract class BlockLiquid extends BlockType {
                 calculateTarget(block.getRelative(face), face, block.getType(), state.getRawData(), true);
             }
             state.setFlowed(true);
+        }
+    }
+
+    public class BlockLiquidSearchThread extends Thread {
+
+        BlockFace face;
+        GlowBlock block;
+        GlowBlockState state;
+        int m;
+
+        public BlockLiquidSearchThread(BlockFace face, GlowBlock block, int m) {
+            this.face = face;
+            this.block = block;
+            state = this.block.getState();
+            this.m = m;
+        }
+
+        public void run() {
+            if (calculateTarget(block.getWorld().getBlockAt(block.getX() + (face == EAST || face == WEST ? m : 0), block.getY() - 1, block.getZ() + (face == NORTH || face == SOUTH ? m : 0)), face, block.getType(), state.getRawData(), false)) {
+                if (calculateTarget(block.getRelative(face), face, block.getType(), state.getRawData(), true) && !state.getFlowed()) {
+                    state.setFlowed(true);
+                }
+            }
+            latch.countDown();
         }
     }
 
