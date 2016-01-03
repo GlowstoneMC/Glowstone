@@ -5,6 +5,7 @@ import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
+import org.bukkit.block.Biome;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -70,8 +71,8 @@ public abstract class BlockLiquid extends BlockType {
     private static final byte STRENGTH_SOURCE = 0;
     private static final byte STRENGTH_MAX = 1;
     private static final byte STRENGTH_MIN_WATER = 7;
-    private static final byte STRENGTH_MIN_LAVA = 3;
-    private static final int TICK_RATE_WATER = 4;
+    private static final byte STRENGTH_MIN_LAVA = 4;
+    private static final int TICK_RATE_WATER = 5;
     private static final int TICK_RATE_LAVA = 20;
     private BlockFace[] hfaces = {NORTH, EAST, SOUTH, WEST};
 
@@ -117,7 +118,8 @@ public abstract class BlockLiquid extends BlockType {
                 flow(target, direction, type, strength);
             }
             return true;
-        } else if (target.isLiquid()) {
+        }
+        if (target.isLiquid()) {
             // let's mix
             if (flow) {
                 mix(target, direction, type, target.getType());
@@ -131,7 +133,7 @@ public abstract class BlockLiquid extends BlockType {
     private void flow(GlowBlock target, BlockFace direction, Material type, byte strength) {
         // if we're not going down
         if (DOWN != direction) {
-            if (Byte.compare(strength, isWater(type) ? STRENGTH_MIN_WATER : STRENGTH_MIN_LAVA) < 0) {
+            if (Byte.compare(strength, isWater(type) || target.getBiome() == Biome.HELL ? STRENGTH_MIN_WATER : STRENGTH_MIN_LAVA) < 0) {
                 // decrease the strength
                 strength += 1;
             } else {
@@ -144,7 +146,7 @@ public abstract class BlockLiquid extends BlockType {
         }
         // flow to the target
         target.setType(type, strength, true);
-        target.getWorld().requestPulse(target, isWater(target.getType()) ? TICK_RATE_WATER : TICK_RATE_LAVA);
+        target.getWorld().requestPulse(target, isWater(target.getType()) || target.getBiome() == Biome.HELL ? TICK_RATE_WATER : TICK_RATE_LAVA);
     }
 
     private void mix(GlowBlock target, BlockFace direction, Material flowingMaterial, Material targetMaterial) {
@@ -197,7 +199,7 @@ public abstract class BlockLiquid extends BlockType {
                 return;
             }
         }
-        block.getWorld().requestPulse(block, isWater(block.getType()) ? TICK_RATE_WATER : TICK_RATE_LAVA);
+        block.getWorld().requestPulse(block, isWater(block.getType()) || block.getBiome() == Biome.HELL ? TICK_RATE_WATER : TICK_RATE_LAVA);
     }
     
     @Override
