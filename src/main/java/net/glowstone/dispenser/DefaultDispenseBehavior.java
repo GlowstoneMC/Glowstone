@@ -1,11 +1,13 @@
 package net.glowstone.dispenser;
 
+import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.blocktype.BlockDispenser;
 import net.glowstone.entity.objects.GlowItem;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
+import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -36,6 +38,7 @@ public class DefaultDispenseBehavior implements DispenseBehavior {
     }
 
     private void doDispense(GlowBlock block, ItemStack items, int power, BlockFace facing, Vector target) {
+
         double x = target.getX();
         double y = target.getY();
         double z = target.getZ();
@@ -46,7 +49,7 @@ public class DefaultDispenseBehavior implements DispenseBehavior {
             y -= 0.15625;
         }
 
-        GlowItem item = new GlowItem(new Location(block.getWorld(), x, y, z), items);
+
         double velocity = random.nextDouble() * 0.1 + 0.2;
         double velocityX = facing.getModX() * velocity;
         double velocityY = 0.2;
@@ -54,7 +57,13 @@ public class DefaultDispenseBehavior implements DispenseBehavior {
         velocityX += random.nextGaussian() * 0.0075 * power;
         velocityY += random.nextGaussian() * 0.0075 * power;
         velocityZ += random.nextGaussian() * 0.0075 * power;
-        item.setVelocity(new Vector(velocityX, velocityY, velocityZ));
+
+        BlockDispenseEvent dispenseEvent = new BlockDispenseEvent(block, items, new Vector(velocityX, velocityY, velocityZ));
+        EventFactory.callEvent(dispenseEvent);
+        if (!dispenseEvent.isCancelled()) {
+            GlowItem item = new GlowItem(new Location(block.getWorld(), x, y, z), dispenseEvent.getItem());
+            item.setVelocity(dispenseEvent.getVelocity());
+        }
     }
 
     private int getParticleMetadataForFace(BlockFace face) {

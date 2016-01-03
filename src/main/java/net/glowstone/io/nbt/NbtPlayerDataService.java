@@ -80,8 +80,6 @@ public class NbtPlayerDataService implements PlayerDataService {
 
     @Override
     public UUID lookupUUID(String name) {
-        // todo: caching or something
-
         if (uuidCache.containsKey(name)) {
             return uuidCache.get(name);
         }
