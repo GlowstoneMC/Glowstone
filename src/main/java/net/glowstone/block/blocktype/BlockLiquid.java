@@ -85,7 +85,7 @@ public abstract class BlockLiquid extends BlockType {
     private void calculateFlow(GlowBlock block) {
         GlowBlockState state = block.getState();
         // see if we can flow down
-        if (!calculateTarget(block.getRelative(DOWN), DOWN, block.getType(), state.getRawData(), true)) {
+        if (block.getY() > 0 && !calculateTarget(block.getRelative(DOWN), DOWN, block.getType(), state.getRawData(), true)) {
             // we can't flow down, let's flow horizontally
             // search 5 blocks out
             for (int j = 1; j <= 5; j++) {
