@@ -69,10 +69,16 @@ public final class GlowWorld implements World {
      */
     public static final long DAY_LENGTH = 24000;
 
+    private static final int TICKS_PER_SECOND = 20;
+
+    private static final int HALF_DAY_IN_TICKS = 12000;
+
+    private static final int WEEK_IN_TICKS = 14 * HALF_DAY_IN_TICKS;
+
     /**
      * The length in ticks between autosaves (5 minutes).
      */
-    private static final int AUTOSAVE_TIME = 20 * 60 * 5;
+    private static final int AUTOSAVE_TIME = TICKS_PER_SECOND * 60 * 5;
 
     /**
      * The maximum height of ocean water.
@@ -485,8 +491,8 @@ public final class GlowWorld implements World {
     }
 
     private void informPlayersOfTime() {
-        if (worldAge % (30 * 20) == 0) {
-            // Only send the time every so often; clients are smart.
+        if (worldAge % (30 * TICKS_PER_SECOND) == 0) {
+            // Only send the time every 30 seconds; clients are smart.
             for (GlowPlayer player : getRawPlayers()) {
                 player.sendTime();
             }
@@ -1390,9 +1396,9 @@ public final class GlowWorld implements World {
 
         // Numbers borrowed from CraftBukkit.
         if (currentlyRaining) {
-            setWeatherDuration(random.nextInt(12000) + 12000);
+            setWeatherDuration(random.nextInt(HALF_DAY_IN_TICKS) + HALF_DAY_IN_TICKS);
         } else {
-            setWeatherDuration(random.nextInt(168000) + 12000);
+            setWeatherDuration(random.nextInt(WEEK_IN_TICKS) + HALF_DAY_IN_TICKS);
         }
 
         // update players
@@ -1431,9 +1437,9 @@ public final class GlowWorld implements World {
 
         // Numbers borrowed from CraftBukkit.
         if (currentlyThundering) {
-            setThunderDuration(random.nextInt(12000) + 3600);
+            setThunderDuration(random.nextInt(HALF_DAY_IN_TICKS) + (180 * TICKS_PER_SECOND));
         } else {
-            setThunderDuration(random.nextInt(168000) + 12000);
+            setThunderDuration(random.nextInt(WEEK_IN_TICKS) + HALF_DAY_IN_TICKS);
         }
     }
 
