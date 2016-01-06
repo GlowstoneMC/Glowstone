@@ -3,12 +3,6 @@ language: java
 jdk: oraclejdk8
 
 install:
-  # Required for fetch_glowkit_pr.sh
-  - "[[ $TRAVIS_PULL_REQUEST == false ]] || sudo apt-get install jq"
-
-  # Try to fetch required glowkit PRs, if any.
-  - "./etc/fetch_glowkit_pr.sh $TRAVIS_PULL_REQUEST || echo 'Glowkit build failed - trying to continue anyway'"
-
   - "(cd Glowkit && mvn install)"
 
 script:
@@ -16,7 +10,7 @@ script:
 
 after_success:
   # Check if commit is not a pull request, if repo is official, and branch is master, generate and deploy artifacts and reports
-  - "[[ $TRAVIS_PULL_REQUEST == false ]] && [[ $TRAVIS_REPO_SLUG == GlowstoneMC/Glowstone ]] && [[ $TRAVIS_BRANCH == master ]] && gradle publish"
+  - "[[ $TRAVIS_PULL_REQUEST == false ]] && [[ $TRAVIS_REPO_SLUG == GlowstonePlusPlus/GlowstonePlusPlus ]] && [[ $TRAVIS_BRANCH == master ]]"
 
 # Notification services
 notifications:
