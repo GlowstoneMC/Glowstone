@@ -3,6 +3,7 @@ language: java
 jdk: oraclejdk8
 
 install:
+  - "(cd FlowNetworking && mvn install)"
   - "(cd Glowkit && mvn install)"
 
 script:
