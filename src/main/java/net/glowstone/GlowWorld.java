@@ -496,6 +496,9 @@ public final class GlowWorld implements World {
     // Tick the world age and time of day
     private void updateWorldTime() {
         worldAge++;
+            // worldAge is used to determine when to (periodically) update clients of server time (time of day - "time")
+            // also used to occasionally pulse some blocks (see "tickMap" and "requestPulse()")
+
         // Modulus by 24000, the tick length of a day
         if (gameRules.getBoolean("doDaylightCycle")) {
             time = (time + 1) % DAY_LENGTH;
@@ -525,8 +528,9 @@ public final class GlowWorld implements World {
                 wakeUpAllPlayers(players);
                     // no need to send them the time - handle that normally
             } else { // otherwise check whether everyone is asleep
-                boolean allSleeping = areAllPlayersSleeping(players);
-                if (allSleeping && gameRules.getBoolean("doDaylightCycle")) {
+                final boolean skipNight = gameRules.getBoolean("doDaylightCycle") && areAllPlayersSleeping(players);
+                    // check gamerule before iterating players (micro-optimization)
+                if (skipNight) {
                     skipRestOfNight(players);
                 }
             }
