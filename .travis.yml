@@ -1,6 +1,6 @@
 # Source language and JDK version to use
 language: java
-jdk: oraclejdk7
+jdk: oraclejdk8
 
 install:
   # Required for fetch_glowkit_pr.sh
@@ -9,12 +9,10 @@ install:
   # Try to fetch required glowkit PRs, if any.
   - "./etc/fetch_glowkit_pr.sh $TRAVIS_PULL_REQUEST || echo 'Glowkit build failed - trying to continue anyway'"
 
-  # Fetch gradle stuff, so it doesn't appear in the script step
-  - "gradle clean"
+  - "(cd Glowkit && mvn install)"
 
 script:
-  # Compile and package JAR and set build properties
-  - "gradle build remap"
+  - "mvn package"
 
 after_success:
   # Check if commit is not a pull request, if repo is official, and branch is master, generate and deploy artifacts and reports
@@ -24,9 +22,6 @@ after_success:
 notifications:
   # Disable build status email notifications, until the issue with forks is fixed
   email: false
-  webhooks:
-    # Send build information and status to Notifico
-    - http://n.tkte.ch/h/1918/S53Phouna3jUVXcxFc3VjQ83
 
 # Environmental system variables
 env:
