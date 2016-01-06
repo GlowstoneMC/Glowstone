@@ -49,7 +49,7 @@ public class NbtScoreboardIoReader {
     }
 
     private static void registerObjective(CompoundTag data, GlowScoreboard scoreboard) {
-        String criteria = data.getString("Criteria");
+        String criteria = data.getString("CriteriaName");
         String displayName = data.getString("DisplayName");
         String name = data.getString("Name");
         String renderType = data.getString("RenderType");
