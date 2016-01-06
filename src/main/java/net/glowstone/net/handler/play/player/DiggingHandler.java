@@ -23,6 +23,8 @@ import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Objects;
+
 public final class DiggingHandler implements MessageHandler<GlowSession, DiggingMessage> {
     @Override
     public void handle(GlowSession session, DiggingMessage message) {
@@ -54,11 +56,11 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             if (!BlockPlacementHandler.selectResult(interactEvent.useItemInHand(), true)) {
                 // the event was cancelled, get out of here
                 revert = true;
-            } else {
+            } else if (player.getGameMode() != GameMode.SPECTATOR) {
                 // emit damage event - cancel by default if holding a sword
                 boolean instaBreak = player.getGameMode() == GameMode.CREATIVE || block.getMaterialValues().getHardness() == 0;
                 BlockDamageEvent damageEvent = new BlockDamageEvent(player, block, player.getItemInHand(), instaBreak);
-                if (player.getGameMode() == GameMode.CREATIVE && holding != null && EnchantmentTarget.WEAPON.includes(holding.getType())) {
+                if (player.getGameMode() != GameMode.CREATIVE && player.getDigging() != null || player.getGameMode() == GameMode.CREATIVE && holding != null && EnchantmentTarget.WEAPON.includes(holding.getType())) {
                     damageEvent.setCancelled(true);
                 }
                 EventFactory.callEvent(damageEvent);
@@ -69,16 +71,18 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                 } else {
                     // in creative, break even if denied in the event, or the block
                     // can never be broken (client does not send DONE_DIGGING).
-                    blockBroken = damageEvent.getInstaBreak() || instaBreak;
+                    blockBroken = damageEvent.getInstaBreak();
+                    if (!blockBroken) {
+                        /// TODO: add a delay here based on hardness
+                        player.setDigging(block);
+                    }
                 }
             }
         } else if (message.getState() == DiggingMessage.FINISH_DIGGING) {
             // shouldn't happen in creative mode
 
             // todo: verification against malicious clients
-            // also, if the block dig was denied, this break might still happen
-            // because a player's digging status isn't yet tracked. this is bad.
-            blockBroken = true;
+            blockBroken = Objects.equals(block.toString(), player.getDigging().toString());
         } else if (message.getState() == DiggingMessage.STATE_DROP_ITEM) {
             player.dropItemInHand(false);
             return;
@@ -89,7 +93,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             return;
         }
 
-        if (blockBroken) {
+        if (blockBroken && !revert) {
             // fire the block break event
             BlockBreakEvent breakEvent = EventFactory.callEvent(new BlockBreakEvent(block, player));
             if (breakEvent.isCancelled()) {
@@ -124,5 +128,6 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             BlockType blockType = ItemTable.instance().getBlock(block.getType());
             blockType.leftClickBlock(player, block, holding);
         }
+        player.setDigging(null);
     }
 }

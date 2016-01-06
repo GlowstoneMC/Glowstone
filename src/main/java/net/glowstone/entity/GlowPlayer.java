@@ -288,6 +288,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     private TitleOptions titleOptions = new TitleOptions();
 
     /**
+     * The one block the player is currently digging.
+     */
+    private Block digging;
+
+    /**
      * Creates a new player and adds it to the world.
      *
      * @param session The player's session.
@@ -2293,5 +2298,13 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         currentTitle = new Title(currentTitle.getHeading());
         titleOptions = new TitleOptions();
         session.send(new TitleMessage(TitleMessage.Action.RESET));
+    }
+
+    public GlowBlock getDigging() {
+        return (GlowBlock) digging;
+    }
+
+    public void setDigging(Block block) {
+        digging = block;
     }
 }
