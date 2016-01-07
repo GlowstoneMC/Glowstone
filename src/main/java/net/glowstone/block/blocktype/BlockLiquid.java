@@ -1,6 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
@@ -10,10 +9,6 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 import static org.bukkit.block.BlockFace.*;
 
@@ -58,7 +53,7 @@ public abstract class BlockLiquid extends BlockType {
 
     @Override
     public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
-        if (!(isWater(newType) || newType == Material.LAVA || newType == Material.STATIONARY_LAVA)) {
+        if (block.getState().getFlowed() && !(isWater(newType) || newType == Material.LAVA || newType == Material.STATIONARY_LAVA)) {
             block.getState().setFlowed(false);
         }
         updatePhysics(block);
@@ -80,64 +75,41 @@ public abstract class BlockLiquid extends BlockType {
     private static final int TICK_RATE_WATER = 5;
     private static final int TICK_RATE_LAVA = 20;
     private BlockFace[] hfaces = {NORTH, EAST, SOUTH, WEST};
-    CountDownLatch latch = new CountDownLatch(4);
 
     private void calculateFlow(GlowBlock block) {
-        GlowBlockState state = block.getState();
-        // see if we can flow down
-        if (block.getY() > 0 && !calculateTarget(block.getRelative(DOWN), DOWN, block.getType(), state.getRawData(), true)) {
-            // we can't flow down, let's flow horizontally
-            // search 5 blocks out
-            for (int j = 1; j <= 5; j++) {
-                // from each horizontal face
-                for (BlockFace face : hfaces) {
-                    int m = j;
-                    switch (face) {
-                        case NORTH:
-                        case WEST:
-                            m *= -1;
-                            break;
+        if (!block.getState().getFlowed()) {
+            GlowBlockState state = block.getState();
+            // see if we can flow down
+            if (block.getY() > 0 && !calculateTarget(block.getRelative(DOWN), DOWN, block.getType(), state.getRawData(), true)) {
+                // we can't flow down, let's flow horizontally
+                // search 5 blocks out
+
+                for (int j = 1; j <= 5; j++) {
+                    // from each horizontal face
+                    for (BlockFace face : hfaces) {
+                        int m = j;
+                        switch (face) {
+                            case NORTH:
+                            case WEST:
+                                m *= -1;
+                                break;
+                        }
+                        if (calculateTarget(block.getWorld().getBlockAt(block.getX() + (face == EAST || face == WEST ? m : 0), block.getY() - 1, block.getZ() + (face == NORTH || face == SOUTH ? m : 0)), face, block.getType(), state.getRawData(), false)) {
+                            if (calculateTarget(block.getRelative(face), face, block.getType(), state.getRawData(), true)) {
+                                state.setFlowed(true);
+                            }
+                        }
                     }
-                    new BlockLiquidSearchThread(face, block, m).start();
+                    // if we already found a match at this radius, stop
+                    if (state.getFlowed()) {
+                        return;
+                    }
                 }
-                try {
-                    latch.await(1, TimeUnit.SECONDS);
-                } catch (InterruptedException e) {
-                    GlowServer.logger.log(Level.SEVERE, "Thread interruption: ", e);
+                for (BlockFace face : hfaces) {
+                    calculateTarget(block.getRelative(face), face, block.getType(), state.getRawData(), true);
                 }
-                // if we already found a match at this radius, stop
-                if (state.getFlowed()) {
-                    return;
-                }
+                state.setFlowed(true);
             }
-            for (BlockFace face : hfaces) {
-                calculateTarget(block.getRelative(face), face, block.getType(), state.getRawData(), true);
-            }
-            state.setFlowed(true);
-        }
-    }
-
-    public class BlockLiquidSearchThread extends Thread {
-
-        BlockFace face;
-        GlowBlock block;
-        GlowBlockState state;
-        int m;
-
-        public BlockLiquidSearchThread(BlockFace face, GlowBlock block, int m) {
-            this.face = face;
-            this.block = block;
-            state = this.block.getState();
-            this.m = m;
-        }
-
-        public void run() {
-            if (calculateTarget(block.getWorld().getBlockAt(block.getX() + (face == EAST || face == WEST ? m : 0), block.getY() - 1, block.getZ() + (face == NORTH || face == SOUTH ? m : 0)), face, block.getType(), state.getRawData(), false)) {
-                if (calculateTarget(block.getRelative(face), face, block.getType(), state.getRawData(), true) && !state.getFlowed()) {
-                    state.setFlowed(true);
-                }
-            }
-            latch.countDown();
         }
     }
 
