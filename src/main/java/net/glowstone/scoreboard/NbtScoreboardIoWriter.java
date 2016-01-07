@@ -44,7 +44,7 @@ public class NbtScoreboardIoWriter {
         List<CompoundTag> objectives = new ArrayList<>();
         for (Objective objective: scoreboard.getObjectives()) {
             CompoundTag objectiveNbt = new CompoundTag();
-            objectiveNbt.putString("Criteria", objective.getCriteria());
+            objectiveNbt.putString("CriteriaName", objective.getCriteria());
             objectiveNbt.putString("DisplayName", objective.getDisplayName());
             objectiveNbt.putString("Name", objective.getName());
             objectiveNbt.putString("RenderType", objective.getType().name());
