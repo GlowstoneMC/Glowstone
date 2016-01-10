@@ -329,7 +329,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         //creates InventoryMonitor to avoid NullPointerException
         invMonitor = new InventoryMonitor(getOpenInventory());
-        updateInventory(); // send inventory contents
     }
 
     public void join(GlowSession session, PlayerDataService.PlayerReader reader) {
