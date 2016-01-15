@@ -605,7 +605,7 @@ public final class GlowBlock implements Block {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof GlowBlock) {
+        if (o != null && getClass() == o.getClass()) {
             GlowBlock block = (GlowBlock) o;
             return Objects.equals(block.getLocation(), getLocation()) && Objects.equals(block.getState().getData(), getState().getData());
         } else {
