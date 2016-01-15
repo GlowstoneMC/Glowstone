@@ -1,6 +1,7 @@
 package net.glowstone.entity;
 
 import com.flowpowered.networking.Message;
+
 import net.glowstone.EventFactory;
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowServer;
@@ -13,6 +14,7 @@ import net.glowstone.entity.physics.EntityBoundingBox;
 import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.Position;
+
 import org.apache.commons.lang3.Validate;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -883,5 +885,25 @@ public abstract class GlowEntity implements Entity {
 
     public Entity.Spigot spigot() {
         return null; // TODO: support entity isInvulnerable() API
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + id;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof GlowEntity))
+            return false;
+        GlowEntity other = (GlowEntity) obj;
+        return id == other.id;
     }
 }

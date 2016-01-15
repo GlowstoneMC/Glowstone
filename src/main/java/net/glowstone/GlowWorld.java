@@ -1820,4 +1820,21 @@ public final class GlowWorld implements World {
     public void cancelPulse(GlowBlock block) {
         requestPulse(block, 0);
     }
+
+    @Override
+    public int hashCode() {
+        return getUID().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        GlowWorld other = (GlowWorld) obj;
+        return getUID() == other.getUID();
+    }
 }

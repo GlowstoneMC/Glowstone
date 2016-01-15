@@ -9,6 +9,7 @@ import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -604,12 +605,17 @@ public final class GlowBlock implements Block {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o instanceof GlowBlock) {
-            GlowBlock block = (GlowBlock) o;
-            return Objects.equals(block.getLocation(), getLocation()) && Objects.equals(block.getState().getData(), getState().getData());
-        } else {
+    public int hashCode() {
+        return this.y << 24 ^ this.x ^ this.z ^ getWorld().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!(obj instanceof GlowBlock)) 
             return false;
-        }
+        GlowBlock other = (GlowBlock) obj;
+        return this.x == other.x && this.y == other.y && this.z == other.z && getWorld().equals(other.getWorld());
     }
 }

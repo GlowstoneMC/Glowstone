@@ -2,6 +2,7 @@ package net.glowstone.block;
 
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowWorld;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -196,5 +197,48 @@ public class GlowBlockState implements BlockState {
     @Override
     public void removeMetadata(String metadataKey, Plugin owningPlugin) {
         getBlock().removeMetadata(metadataKey, owningPlugin);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (world != null ? world.hashCode() : 0);
+        result = prime * result + x;
+        result = prime * result + y;
+        result = prime * result + z;
+        result = prime * result + type;
+        result = prime * result + (data != null ? data.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof GlowBlockState))
+            return false;
+        GlowBlockState other = (GlowBlockState) obj;
+        if (data == null) {
+            if (other.data != null)
+                return false;
+        } else if (!data.equals(other.data))
+            return false;
+        if (type != other.type)
+            return false;
+        if (world == null) {
+            if (other.world != null)
+                return false;
+        } else if (!world.equals(other.world))
+            return false;
+        if (x != other.x)
+            return false;
+        if (y != other.y)
+            return false;
+        if (z != other.z)
+            return false;
+        return true;
     }
 }
