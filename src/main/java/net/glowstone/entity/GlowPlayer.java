@@ -290,7 +290,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * The one block the player is currently digging.
      */
-    private Block digging;
+    private GlowBlock digging;
 
     /**
      * Creates a new player and adds it to the world.
@@ -2301,10 +2301,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     public GlowBlock getDigging() {
-        return (GlowBlock) digging;
+        return digging;
     }
 
-    public void setDigging(Block block) {
+    public void setDigging(GlowBlock block) {
         digging = block;
     }
 }

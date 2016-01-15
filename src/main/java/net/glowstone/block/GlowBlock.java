@@ -602,4 +602,14 @@ public final class GlowBlock implements Block {
         counterMap.put(target, gameTicks);
         return gameTicks.size();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof GlowBlock) {
+            GlowBlock block = (GlowBlock) o;
+            return Objects.equals(block.getLocation(), getLocation()) && Objects.equals(block.getState().getData(), getState().getData());
+        } else {
+            return false;
+        }
+    }
 }
