@@ -1828,13 +1828,6 @@ public final class GlowWorld implements World {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        GlowWorld other = (GlowWorld) obj;
-        return getUID() == other.getUID();
+        return obj == this;
     }
 }
