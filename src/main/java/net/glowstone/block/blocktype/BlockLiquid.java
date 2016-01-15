@@ -205,11 +205,6 @@ public abstract class BlockLiquid extends BlockType {
     }
     
     @Override
-    public void updateBlock(GlowBlock block) {
-        updatePhysics(block);
-    }
-    
-    @Override
     public boolean canTickRandomly() {
         return true;
     }
