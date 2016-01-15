@@ -901,7 +901,7 @@ public abstract class GlowEntity implements Entity {
             return true;
         if (obj == null)
             return false;
-        if (!(obj instanceof GlowEntity))
+        if (getClass() != obj.getClass())
             return false;
         GlowEntity other = (GlowEntity) obj;
         return id == other.id;

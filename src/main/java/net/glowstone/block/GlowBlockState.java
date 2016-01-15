@@ -218,7 +218,7 @@ public class GlowBlockState implements BlockState {
             return true;
         if (obj == null)
             return false;
-        if (!(obj instanceof GlowBlockState))
+        if (getClass() != obj.getClass())
             return false;
         GlowBlockState other = (GlowBlockState) obj;
         if (data == null) {
