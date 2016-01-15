@@ -609,13 +609,12 @@ public final class GlowBlock implements Block {
         return this.y << 24 ^ this.x ^ this.z ^ getWorld().hashCode();
     }
 
-    @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!(obj instanceof GlowBlock)) 
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
+        }
         GlowBlock other = (GlowBlock) obj;
         return this.x == other.x && this.y == other.y && this.z == other.z && getWorld().equals(other.getWorld());
     }
 }
+
