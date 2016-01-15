@@ -69,10 +69,16 @@ public final class GlowWorld implements World {
      */
     public static final long DAY_LENGTH = 24000;
 
+    private static final int TICKS_PER_SECOND = 20;
+
+    private static final int HALF_DAY_IN_TICKS = 12000;
+
+    private static final int WEEK_IN_TICKS = 14 * HALF_DAY_IN_TICKS;
+
     /**
      * The length in ticks between autosaves (5 minutes).
      */
-    private static final int AUTOSAVE_TIME = 20 * 60 * 5;
+    private static final int AUTOSAVE_TIME = TICKS_PER_SECOND * 60 * 5;
 
     /**
      * The maximum height of ocean water.
@@ -366,7 +372,7 @@ public final class GlowWorld implements World {
      * Updates all the entities within this world.
      */
     public void pulse() {
-        List<GlowEntity> temp = new ArrayList<>(entities.getAll());
+        List<GlowEntity> allEntities = new ArrayList<>(entities.getAll());
         List<GlowPlayer> players = new LinkedList<>();
 
         activeChunksSet.clear();
@@ -377,30 +383,49 @@ public final class GlowWorld implements World {
         // pulse players last so they actually see that other entities have
         // moved. unfortunately pretty hacky. not a problem for players b/c
         // their position is modified by session ticking.
-        for (GlowEntity entity : temp) {
+        for (GlowEntity entity : allEntities) {
             if (entity instanceof GlowPlayer) {
                 players.add((GlowPlayer) entity);
-
-                // build a set of chunks around each player in this world, the
-                // server view distance is taken here
-                final int radius = server.getViewDistance();
-                final Location playerLocation = entity.getLocation();
-                if (playerLocation.getWorld() == this) {
-                    final int cx = playerLocation.getBlockX() >> 4;
-                    final int cz = playerLocation.getBlockZ() >> 4;
-                    for (int x = cx - radius; x <= cx + radius; x++) {
-                        for (int z = cz - radius; z <= cz + radius; z++) {
-                            if (isChunkLoaded(cx, cz)) {
-                                activeChunksSet.add(new GlowChunk.Key(x, z));
-                            }
-                        }
-                    }
-                }
+                updateActiveChunkCollection(entity);
             } else {
                 entity.pulse();
             }
         }
 
+        updateBlocksInActiveChunks();
+        // why update blocks before Players or Entities? if there is a specific reason we should document it here.
+
+        pulsePlayers(players);
+        resetEntities(allEntities);
+
+        updateWorldTime();
+        informPlayersOfTime();
+        updateOverworldWeather();
+
+        handleSleepAndWake(players);
+
+        saveWorld();
+    }
+
+    private void updateActiveChunkCollection(GlowEntity entity) {
+        // build a set of chunks around each player in this world, the
+        // server view distance is taken here
+        final int radius = server.getViewDistance();
+        final Location playerLocation = entity.getLocation();
+        if (playerLocation.getWorld() == this) {
+            final int cx = playerLocation.getBlockX() >> 4;
+            final int cz = playerLocation.getBlockZ() >> 4;
+            for (int x = cx - radius; x <= cx + radius; x++) {
+                for (int z = cz - radius; z <= cz + radius; z++) {
+                    if (isChunkLoaded(cx, cz)) {
+                        activeChunksSet.add(new GlowChunk.Key(x, z));
+                    }
+                }
+            }
+        }
+    }
+
+    private void updateBlocksInActiveChunks() {
         for (GlowChunk.Key key : activeChunksSet) {
             final int cx = key.getX();
             final int cz = key.getZ();
@@ -409,100 +434,48 @@ public final class GlowWorld implements World {
                 final GlowChunk chunk = getChunkAt(cx, cz);
 
                 // thunder
-                if (environment == Environment.NORMAL &&
-                        currentlyRaining && currentlyThundering) {
-                    if (random.nextInt(25000) == 0) {
-                        final int n = random.nextInt();
-                        // get lightning target block
-                        int x = (cx << 4) + (n & 0xF);
-                        int z = (cz << 4) + (n >> 8 & 0xF);
-                        int y = getHighestBlockYAt(x, z);
-
-                        // search for living entities in a 6×6×h (there's an error in the wiki!) region from 3 below the
-                        // target block up to the world height
-                        final BoundingBox searchBox = BoundingBox.fromPositionAndSize(new Vector(x, y, z), new Vector(0, 0, 0));
-                        final Vector vec = new Vector(3, 3, 3);
-                        final Vector vec2 = new Vector(0, getMaxHeight(), 0);
-                        searchBox.minCorner.subtract(vec);
-                        searchBox.maxCorner.add(vec).add(vec2);
-                        final List<LivingEntity> livingEntities = new LinkedList<>();
-                        for (Entity entity : getEntityManager().getEntitiesInside(searchBox, null)) {
-                            if (entity instanceof LivingEntity && !entity.isDead()) {
-                                // make sure entity can see sky
-                                final Vector pos = entity.getLocation().toVector();
-                                int minY = getHighestBlockYAt(pos.getBlockX(), pos.getBlockZ());
-                                if (pos.getBlockY() >= minY) {
-                                    livingEntities.add((LivingEntity) entity);
-                                }
-                            }
-                        }
-
-                        // re-target lightning if required
-                        if (!livingEntities.isEmpty()) {
-                            // randomly choose an entity
-                            final LivingEntity entity = livingEntities.get(random.nextInt(livingEntities.size()));
-                            // re-target lightning on this living entity
-                            final Vector newTarget = entity.getLocation().toVector();
-                            x = newTarget.getBlockX();
-                            z = newTarget.getBlockZ();
-                            y = newTarget.getBlockY();
-                        }
-
-                        // lightning strike if the target block is under rain
-                        if (GlowBiomeClimate.isRainy(getBiome(x, z), x, y, z)) {
-                            strikeLightning(new Location(this, x, y, z));
-                        }
-                    }
-                }
+                maybeStrikeLightningInChunk(cx, cz);
 
                 // block ticking
                 // we will choose 3 blocks per chunk's section
                 final ChunkSection[] sections = chunk.getSections();
                 for (int i = 0; i < sections.length; i++) {
-                    final ChunkSection section = sections[i];
-                    if (section != null) {
-                        for (int j = 0; j < 3; j++) {
-                            final int n = random.nextInt();
-                            final int x = n & 0xF;
-                            final int z = n >> 8 & 0xF;
-                            final int y = n >> 16 & 0xF;
-                            final int type = section.types[(y << 8) | (z << 4) | x] >> 4;
-                            if (type != 0) { // filter air blocks
-                                final BlockType blockType = ItemTable.instance().getBlock(type);
-                                // does this block needs random tick ?
-                                if (blockType != null && blockType.canTickRandomly()) {
-                                    blockType.updateBlock(chunk.getBlock(x, y + (i << 4), z));
-                                }
-                            }
-                        }
+                    updateBlocksInSection(chunk, sections[i], i);
+                }
+            }
+        }
+    }
+
+    private void updateBlocksInSection(GlowChunk chunk, ChunkSection section, int i) {
+        if (section != null) {
+            for (int j = 0; j < 3; j++) {
+                final int n = random.nextInt();
+                final int x = n & 0xF;
+                final int z = n >> 8 & 0xF;
+                final int y = n >> 16 & 0xF;
+                final int type = section.types[(y << 8) | (z << 4) | x] >> 4;
+                if (type != 0) { // filter air blocks
+                    final BlockType blockType = ItemTable.instance().getBlock(type);
+                    // does this block needs random tick ?
+                    if (blockType != null && blockType.canTickRandomly()) {
+                        blockType.updateBlock(chunk.getBlock(x, y + (i << 4), z));
                     }
                 }
             }
         }
+    }
 
-        for (GlowEntity entity : players) {
-            if (entity != null) {
-                entity.pulse();
+    private void saveWorld() {
+        if (--saveTimer <= 0) {
+            saveTimer = AUTOSAVE_TIME;
+            chunks.unloadOldChunks();
+            if (autosave) {
+                save(true);
             }
         }
+    }
 
-        for (GlowEntity entity : temp) {
-            entity.reset();
-        }
-
-        // Tick the world age and time of day
-        // Modulus by 24000, the tick length of a day
-        worldAge++;
-        if (gameRules.getBoolean("doDaylightCycle")) {
-            time = (time + 1) % DAY_LENGTH;
-        }
-        if (worldAge % (30 * 20) == 0) {
-            // Only send the time every so often; clients are smart.
-            for (GlowPlayer player : getRawPlayers()) {
-                player.sendTime();
-            }
-        }
-
+    private void updateOverworldWeather() {
         // only tick weather in a NORMAL world
         if (environment == Environment.NORMAL) {
             if (--rainingTicks <= 0) {
@@ -515,46 +488,142 @@ public final class GlowWorld implements World {
 
             updateWeather();
         }
+    }
 
+    private void informPlayersOfTime() {
+        if (worldAge % (30 * TICKS_PER_SECOND) == 0) {
+            // Only send the time every 30 seconds; clients are smart.
+            for (GlowPlayer player : getRawPlayers()) {
+                player.sendTime();
+            }
+        }
+    }
+
+    // Tick the world age and time of day
+    private void updateWorldTime() {
+        worldAge++;
+            // worldAge is used to determine when to (periodically) update clients of server time (time of day - "time")
+            // also used to occasionally pulse some blocks (see "tickMap" and "requestPulse()")
+
+        // Modulus by 24000, the tick length of a day
+        if (gameRules.getBoolean("doDaylightCycle")) {
+            time = (time + 1) % DAY_LENGTH;
+        }
+    }
+
+    private void resetEntities(List<GlowEntity> entities) {
+        for (GlowEntity entity : entities) {
+            entity.reset();
+        }
+    }
+
+    private void pulsePlayers(List<GlowPlayer> players) {
+        for (GlowEntity entity : players) {
+            if (entity != null) {
+                entity.pulse();
+            }
+        }
+    }
+
+    private void handleSleepAndWake(List<GlowPlayer> players) {
         // Skip checking for sleeping players if no one is online
         if (!players.isEmpty()) {
             // If the night is over, wake up all players
             // Tick values for day/night time taken from the minecraft wiki
             if (getTime() < 12541 || getTime() > 23458) {
-                for (GlowPlayer player : players) {
-                    if (player.isSleeping()) {
-                        player.leaveBed(true);
-                    }
-                }
+                wakeUpAllPlayers(players);
+                    // no need to send them the time - handle that normally
             } else { // otherwise check whether everyone is asleep
-                boolean allSleeping = true;
-                for (GlowPlayer player : players) {
-                    if (!(player.isSleeping() && player.getSleepTicks() >= 100) && !player.isSleepingIgnored()) {
-                        allSleeping = false;
-                        break;
-                    }
+                final boolean skipNight = gameRules.getBoolean("doDaylightCycle") && areAllPlayersSleeping(players);
+                    // check gamerule before iterating players (micro-optimization)
+                if (skipNight) {
+                    skipRestOfNight(players);
                 }
-                if (allSleeping && gameRules.getBoolean("doDaylightCycle")) {
-                    worldAge = (worldAge / DAY_LENGTH + 1) * DAY_LENGTH;
-                    time = 0;
-                    for (GlowPlayer player : players) {
-                        player.sendTime();
-                        if (player.isSleeping()) {
-                            player.leaveBed(true);
-                        }
-                    }
-                    setStorm(false);
-                    setThundering(false);
+            }
+        }
+    }
+
+    private void skipRestOfNight(List<GlowPlayer> players) {
+        worldAge = (worldAge / DAY_LENGTH + 1) * DAY_LENGTH;
+        time = 0;
+        wakeUpAllPlayers(players, true);
+            // true = send time to all players because we just changed it (to 0), above
+        setStorm(false);
+        setThundering(false);
+    }
+
+    private void wakeUpAllPlayers(List<GlowPlayer> players) {
+        wakeUpAllPlayers(players, false);
+    }
+
+    private void wakeUpAllPlayers(List<GlowPlayer> players, boolean sendTime) {
+        for (GlowPlayer player : players) {
+            if (sendTime) {
+                player.sendTime();
+            }
+            if (player.isSleeping()) {
+                player.leaveBed(true);
+            }
+        }
+    }
+
+    private boolean areAllPlayersSleeping(List<GlowPlayer> players) {
+        for (GlowPlayer player : players) {
+            if (!(player.isSleeping() && player.getSleepTicks() >= 100) && !player.isSleepingIgnored()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void maybeStrikeLightningInChunk(int cx, int cz) {
+        if (environment == Environment.NORMAL && currentlyRaining && currentlyThundering) {
+            if (random.nextInt(25000) == 0) {
+                strikeLightningInChunk(cx, cz);
+            }
+        }
+    }
+
+    private void strikeLightningInChunk(int cx, int cz) {
+        final int n = random.nextInt();
+        // get lightning target block
+        int x = (cx << 4) + (n & 0xF);
+        int z = (cz << 4) + (n >> 8 & 0xF);
+        int y = getHighestBlockYAt(x, z);
+
+        // search for living entities in a 6×6×h (there's an error in the wiki!) region from 3 below the
+        // target block up to the world height
+        final BoundingBox searchBox = BoundingBox.fromPositionAndSize(new Vector(x, y, z), new Vector(0, 0, 0));
+        final Vector vec = new Vector(3, 3, 3);
+        final Vector vec2 = new Vector(0, getMaxHeight(), 0);
+        searchBox.minCorner.subtract(vec);
+        searchBox.maxCorner.add(vec).add(vec2);
+        final List<LivingEntity> livingEntities = new LinkedList<>();
+        for (Entity entity : getEntityManager().getEntitiesInside(searchBox, null)) {
+            if (entity instanceof LivingEntity && !entity.isDead()) {
+                // make sure entity can see sky
+                final Vector pos = entity.getLocation().toVector();
+                int minY = getHighestBlockYAt(pos.getBlockX(), pos.getBlockZ());
+                if (pos.getBlockY() >= minY) {
+                    livingEntities.add((LivingEntity) entity);
                 }
             }
         }
 
-        if (--saveTimer <= 0) {
-            saveTimer = AUTOSAVE_TIME;
-            chunks.unloadOldChunks();
-            if (autosave) {
-                save(true);
-            }
+        // re-target lightning if required
+        if (!livingEntities.isEmpty()) {
+            // randomly choose an entity
+            final LivingEntity entity = livingEntities.get(random.nextInt(livingEntities.size()));
+            // re-target lightning on this living entity
+            final Vector newTarget = entity.getLocation().toVector();
+            x = newTarget.getBlockX();
+            z = newTarget.getBlockZ();
+            y = newTarget.getBlockY();
+        }
+
+        // lightning strike if the target block is under rain
+        if (GlowBiomeClimate.isRainy(getBiome(x, z), x, y, z)) {
+            strikeLightning(new Location(this, x, y, z));
         }
     }
 
@@ -1327,9 +1396,9 @@ public final class GlowWorld implements World {
 
         // Numbers borrowed from CraftBukkit.
         if (currentlyRaining) {
-            setWeatherDuration(random.nextInt(12000) + 12000);
+            setWeatherDuration(random.nextInt(HALF_DAY_IN_TICKS) + HALF_DAY_IN_TICKS);
         } else {
-            setWeatherDuration(random.nextInt(168000) + 12000);
+            setWeatherDuration(random.nextInt(WEEK_IN_TICKS) + HALF_DAY_IN_TICKS);
         }
 
         // update players
@@ -1368,9 +1437,9 @@ public final class GlowWorld implements World {
 
         // Numbers borrowed from CraftBukkit.
         if (currentlyThundering) {
-            setThunderDuration(random.nextInt(12000) + 3600);
+            setThunderDuration(random.nextInt(HALF_DAY_IN_TICKS) + (180 * TICKS_PER_SECOND));
         } else {
-            setThunderDuration(random.nextInt(168000) + 12000);
+            setThunderDuration(random.nextInt(WEEK_IN_TICKS) + HALF_DAY_IN_TICKS);
         }
     }
 
@@ -1716,7 +1785,7 @@ public final class GlowWorld implements World {
         }
         return result;
     }
-    
+
     private void pulseTickMap() {
         ItemTable itemTable = ItemTable.instance();
         Map<Location, Long> map = getTickMap();
@@ -1729,7 +1798,7 @@ public final class GlowWorld implements World {
             }
         }
     }
-    
+
     private Map<Location, Long> getTickMap() {
         return new HashMap<>(tickMap);
     }
@@ -1740,14 +1809,14 @@ public final class GlowWorld implements World {
      */
     public void requestPulse(GlowBlock block, long tickRate) {
         Location target = block.getLocation();
-    
-    
+
+
             if (tickRate > 0)
                 tickMap.put(target, tickRate);
             else if (tickMap.containsKey(target))
                 tickMap.remove(target);
     }
-    
+
     public void cancelPulse(GlowBlock block) {
         requestPulse(block, 0);
     }
