@@ -29,7 +29,7 @@ env:
 deploy:
   provider: releases
   api_key: "003dc93f79221cfa45d59f66b3307ea9561b0341"
-  file: "stone-1.8.9-SNAPSHOT-shaded.jar"
+  file: "stone-0.1.0-shaded.jar"
   skip_cleanup: true
   on:
     tags: true
