@@ -70,8 +70,4 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
 
         return new Location(world, spawnX, world.getHighestBlockYAt(spawnX, spawnZ), spawnZ);
     }
-
-    public short[][] generateExtBlockSectionsWithData(World world, Random random, int x, int z, BiomeGrid biomes) {
-        return null;
-    }
 }

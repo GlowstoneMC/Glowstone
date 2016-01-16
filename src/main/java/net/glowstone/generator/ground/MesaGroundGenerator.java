@@ -4,18 +4,21 @@ import net.glowstone.util.noise.SimplexOctaveGenerator;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
+import org.bukkit.generator.ChunkGenerator.ChunkData;
+import org.bukkit.material.MaterialData;
 
 import java.util.Arrays;
 import java.util.Random;
 
 public class MesaGroundGenerator extends GroundGenerator {
 
+    protected static final MaterialData RED_SAND = new MaterialData(Material.SAND, (byte) 1);
+    protected static final MaterialData ORANGE_STAINED_CLAY = new MaterialData(Material.STAINED_CLAY, (byte) 1);
+
     private final MesaType type;
     private final int[] colorLayer = new int[64];
-    private Material topMaterial;
-    private int topMaterialData;
-    private Material groundMaterial;
-    private int groundMaterialData;
+    private MaterialData topMaterial;
+    private MaterialData groundMaterial;
     private SimplexOctaveGenerator colorNoise;
     private SimplexOctaveGenerator canyonHeightNoise;
     private SimplexOctaveGenerator canyonScaleNoise;
@@ -42,23 +45,19 @@ public class MesaGroundGenerator extends GroundGenerator {
 
     public MesaGroundGenerator(MesaType type) {
         this.type = type;
-        topMaterial = Material.SAND;
-        topMaterialData = 1;    // orange sand
-        groundMaterial = Material.STAINED_CLAY;
-        groundMaterialData = 1; // orange stained clay
+        topMaterial = RED_SAND;
+        groundMaterial = ORANGE_STAINED_CLAY;
     }
 
     @Override
-    public void generateTerrainColumn(short[][] buf, World world, Random random, int x, int z, Biome biome, double surfaceNoise) {
+    public void generateTerrainColumn(ChunkData chunkData, World world, Random random, int x, int z, Biome biome, double surfaceNoise) {
 
         initialize(world.getSeed());
 
         int seaLevel = world.getSeaLevel();
 
-        Material topMat = topMaterial;
-        int topMatData = topMaterialData;
-        Material groundMat = groundMaterial;
-        int groundMatData = groundMaterialData;
+        MaterialData topMat = topMaterial;
+        MaterialData groundMat = groundMaterial;
 
         int surfaceHeight = Math.max((int) (surfaceNoise / 3.0D + 3.0D + random.nextDouble() * 0.25D), 1);
         boolean colored = Math.cos(surfaceNoise / 3.0D * Math.PI) > 0 ? false : true;
@@ -85,13 +84,13 @@ public class MesaGroundGenerator extends GroundGenerator {
         int deep = -1;
         boolean groundSet = false;
         for (int y = 255; y >= 0; y--) {
-            if (y < (int) bryceCanyonHeight && get(buf, x, y, z) == Material.AIR) {
-                set(buf, x, y, z, Material.STONE);
+            if (y < (int) bryceCanyonHeight && chunkData.getType(x, y, z) == Material.AIR) {
+                chunkData.setBlock(x, y, z, Material.STONE);
             }
             if (y <= random.nextInt(5)) {
-                set(buf, x, y, z, Material.BEDROCK);
+                chunkData.setBlock(x, y, z, Material.BEDROCK);
             } else {
-                Material mat = get(buf, x, y, z);
+                Material mat = chunkData.getType(x, y, z);
                 if (mat == Material.AIR) {
                     deep = -1;
                 } else if (mat == Material.STONE) {
@@ -99,32 +98,30 @@ public class MesaGroundGenerator extends GroundGenerator {
                         groundSet = false;
                         if (y >= seaLevel - 5 && y <= seaLevel) {
                             groundMat = groundMaterial;
-                            groundMatData = groundMaterialData;
                         }
 
                         deep = surfaceHeight + Math.max(0, y - seaLevel - 1);
                         if (y >= seaLevel - 2) {
                             if (type == MesaType.FOREST && y > seaLevel + 22 + surfaceHeight * 2) {
-                                topMat = colored ? Material.GRASS : Material.DIRT;
-                                topMatData = colored ? 0 : 1; // grass or coarse dirt
-                                set(buf, x, y, z, topMat, topMatData);
+                                topMat = colored ? GRASS : COARSE_DIRT;
+                                chunkData.setBlock(x, y, z, topMat);
                             } else if (y > seaLevel + 2 + surfaceHeight) {
                                 int color = colorLayer[(y + (int) Math.round(colorNoise.noise(chunkX, chunkX, 0.5D, 2.0D) * 2.0D)) % colorLayer.length];
-                                setColoredGroundLayer(buf, x, y, z, y < seaLevel || y > 128 ? 1 : colored ? color : -1);
+                                setColoredGroundLayer(chunkData, x, y, z, y < seaLevel || y > 128 ? 1 : colored ? color : -1);
                             } else {
-                                set(buf, x, y, z, topMaterial, topMaterialData);
+                                chunkData.setBlock(x, y, z, topMaterial);
                                 groundSet = true;
                             }
                         } else {
-                            set(buf, x, y, z, groundMat, groundMatData);
+                            chunkData.setBlock(x, y, z, groundMat);
                         }
                     } else if (deep > 0) {
                         deep--;
                         if (groundSet) {
-                            set(buf, x, y, z, groundMaterial, groundMaterialData);
+                            chunkData.setBlock(x, y, z, groundMaterial);
                         } else {
                             int color = colorLayer[(y + (int) Math.round(colorNoise.noise(chunkX, chunkX, 0.5D, 2.0D) * 2.0D)) % colorLayer.length];
-                            setColoredGroundLayer(buf, x, y, z, color);
+                            setColoredGroundLayer(chunkData, x, y, z, color);
                         }
                     }
                 }
@@ -138,11 +135,11 @@ public class MesaGroundGenerator extends GroundGenerator {
         FOREST
     }
 
-    private void setColoredGroundLayer(short[][] buf, int x, int y, int z, int color) {
+    private void setColoredGroundLayer(ChunkData chunkData, int x, int y, int z, int color) {
         if (color >= 0) {
-            set(buf, x, y, z, Material.STAINED_CLAY, color);
+            chunkData.setBlock(x, y, z, new MaterialData(Material.STAINED_CLAY, (byte) color));
         } else {
-            set(buf, x, y, z, Material.HARD_CLAY);
+            chunkData.setBlock(x, y, z, Material.HARD_CLAY);
         }
     }
 

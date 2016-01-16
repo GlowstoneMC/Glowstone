@@ -11,12 +11,18 @@ import org.bukkit.material.MaterialData;
 @SuppressWarnings("deprecation")
 public class GlowChunkData implements ChunkData {
 
+    public static final int SECTIONS_SIZE = 16;
+
     private final int maxHeight;
     private short[][] sections;
 
     public GlowChunkData(World world) {
         maxHeight = world.getMaxHeight();
-        sections = new short[16][];
+        sections = new short[SECTIONS_SIZE][];
+    }
+
+    public short[][] getSections() {
+        return sections;
     }
 
     @Override

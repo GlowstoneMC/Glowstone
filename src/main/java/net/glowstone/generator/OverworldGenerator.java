@@ -54,8 +54,8 @@ public class OverworldGenerator extends GlowChunkGenerator {
     }
 
     @Override
-    public short[][] generateExtBlockSectionsWithData(World world, Random random, int chunkX, int chunkZ, BiomeGrid biomes) {
-        final short[][] buf = generateRawTerrain(world, chunkX, chunkZ);
+    public ChunkData generateChunkData(World world, Random random, int chunkX, int chunkZ, BiomeGrid biomes) {
+        final ChunkData chunkData = generateRawTerrain(world, chunkX, chunkZ);
 
         int cx = chunkX << 4;
         int cz = chunkZ << 4;
@@ -64,13 +64,13 @@ public class OverworldGenerator extends GlowChunkGenerator {
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 if (GROUND_MAP.containsKey(biomes.getBiome(x, z))) {
-                    GROUND_MAP.get(biomes.getBiome(x, z)).generateTerrainColumn(buf, world, random, cx + x, cz + z, biomes.getBiome(x, z), surfaceNoise[x | (z << 4)]);
+                    GROUND_MAP.get(biomes.getBiome(x, z)).generateTerrainColumn(chunkData, world, random, cx + x, cz + z, biomes.getBiome(x, z), surfaceNoise[x | (z << 4)]);
                 } else {
-                    groundGen.generateTerrainColumn(buf, world, random, cx + x, cz + z, biomes.getBiome(x, z), surfaceNoise[x | (z << 4)]);
+                    groundGen.generateTerrainColumn(chunkData, world, random, cx + x, cz + z, biomes.getBiome(x, z), surfaceNoise[x | (z << 4)]);
                 }
             }
         }
-        return buf;
+        return chunkData;
     }
 
     @Override
@@ -105,20 +105,12 @@ public class OverworldGenerator extends GlowChunkGenerator {
         octaves.put("surface", gen);
     }
 
-    @SuppressWarnings("deprecation")
-    private void set(short[][] buf, int x, int y, int z, Material id) {
-        if (buf[y >> 4] == null) {
-            buf[y >> 4] = new short[4096];
-        }
-        buf[y >> 4][((y & 0xF) << 8) | (z << 4) | x] = (short) (id.getId() << 4);
-    }
-
-    private short[][] generateRawTerrain(World world, int chunkX, int chunkZ) {
+    private ChunkData generateRawTerrain(World world, int chunkX, int chunkZ) {
         generateTerrainDensity(world, chunkX, chunkZ);
 
         int seaLevel = world.getSeaLevel();
 
-        final short[][] buf = new short[16][];
+        final ChunkData chunkData = createChunkData(world);
 
         // Terrain densities where sampled at a lower res (scaled 4x along vertical, 8x along horizontal)
         // so it's needed to re-scale it. Linear interpolation is used to fill in the gaps.
@@ -145,9 +137,9 @@ public class OverworldGenerator extends GlowChunkGenerator {
                                 // any density higher than 0 is ground, any density lower or equal to 0 is air
                                 // (or water if under the sea level).
                                 if (dens > 0) {
-                                    set(buf, m + (i << 2), l + (k << 3), n + (j << 2), Material.STONE);
+                                    chunkData.setBlock(m + (i << 2), l + (k << 3), n + (j << 2), Material.STONE);
                                 } else if (l + (k << 3) < seaLevel - 1) {
-                                    set(buf, m + (i << 2), l + (k << 3), n + (j << 2), Material.STATIONARY_WATER);
+                                    chunkData.setBlock(m + (i << 2), l + (k << 3), n + (j << 2), Material.STATIONARY_WATER);
                                 }
                                 // interpolation along z
                                 dens += (d10 - d9) / 4;
@@ -167,7 +159,7 @@ public class OverworldGenerator extends GlowChunkGenerator {
             }
         }
 
-        return buf;
+        return chunkData;
     }
 
     private void generateTerrainDensity(World world, int x, int z) {

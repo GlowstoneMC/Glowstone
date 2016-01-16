@@ -7,6 +7,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.generator.ChunkGenerator.BiomeGrid;
+import org.bukkit.generator.ChunkGenerator.ChunkData;
 import org.bukkit.util.noise.OctaveGenerator;
 
 import java.util.Map;
@@ -30,8 +32,8 @@ public class NetherGenerator extends GlowChunkGenerator {
     }
 
     @Override
-    public short[][] generateExtBlockSectionsWithData(World world, Random random, int chunkX, int chunkZ, BiomeGrid biomes) {
-        final short[][] buf = generateRawTerrain(world, chunkX, chunkZ);
+    public ChunkData generateChunkData(World world, Random random, int chunkX, int chunkZ, BiomeGrid biomes) {
+        final ChunkData chunkData = generateRawTerrain(world, chunkX, chunkZ);
 
         int cx = chunkX << 4;
         int cz = chunkZ << 4;
@@ -41,11 +43,11 @@ public class NetherGenerator extends GlowChunkGenerator {
         final double[] gravelNoise = ((PerlinOctaveGenerator) getWorldOctaves(world).get("gravel")).fBm(cx, 0, cz, 0.5D, 2.0D);
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
-                generateTerrainColumn(buf, world, random, cx + x, cz + z, surfaceNoise[x | (z << 4)], soulsandNoise[x | (z << 4)], gravelNoise[x | (z << 4)]);
+                generateTerrainColumn(chunkData, world, random, cx + x, cz + z, surfaceNoise[x | (z << 4)], soulsandNoise[x | (z << 4)], gravelNoise[x | (z << 4)]);
             }
         }
 
-        return buf;
+        return chunkData;
     }
 
     @Override
@@ -112,26 +114,10 @@ public class NetherGenerator extends GlowChunkGenerator {
         octaves.put("gravel", gen);
     }
 
-    @SuppressWarnings("deprecation")
-    protected final Material get(short[][] buf, int x, int y, int z) {
-        if (buf[y >> 4] == null) {
-            return Material.AIR;
-        }
-        return Material.getMaterial(buf[y >> 4][((y & 0xF) << 8) | (z << 4) | x] >> 4);
-    }
-
-    @SuppressWarnings("deprecation")
-    private void set(short[][] buf, int x, int y, int z, Material id) {
-        if (buf[y >> 4] == null) {
-            buf[y >> 4] = new short[4096];
-        }
-        buf[y >> 4][((y & 0xF) << 8) | (z << 4) | x] = (short) (id.getId() << 4);
-    }
-
-    private short[][] generateRawTerrain(World world, int chunkX, int chunkZ) {
+    private ChunkData generateRawTerrain(World world, int chunkX, int chunkZ) {
         generateTerrainDensity(world, chunkX * 4, chunkZ * 4);
 
-        final short[][] buf = new short[16][];
+        final ChunkData chunkData = createChunkData(world);
 
         for (int i = 0; i < 5 - 1; i++) {
             for (int j = 0; j < 5 - 1; j++) {
@@ -154,9 +140,9 @@ public class NetherGenerator extends GlowChunkGenerator {
                                 // any density higher than 0 is ground, any density lower or equal to 0 is air
                                 // (or lava if under the lava level).
                                 if (dens > 0) {
-                                    set(buf, m + (i << 2), l + (k << 3), n + (j << 2), Material.NETHERRACK);
+                                    chunkData.setBlock(m + (i << 2), l + (k << 3), n + (j << 2), Material.NETHERRACK);
                                 } else if (l + (k << 3) < 32) {
-                                    set(buf, m + (i << 2), l + (k << 3), n + (j << 2), Material.STATIONARY_LAVA);
+                                    chunkData.setBlock(m + (i << 2), l + (k << 3), n + (j << 2), Material.STATIONARY_LAVA);
                                 }
                                 // interpolation along z
                                 dens += (d10 - d9) / 4;
@@ -176,7 +162,7 @@ public class NetherGenerator extends GlowChunkGenerator {
             }
         }
 
-        return buf;
+        return chunkData;
     }
 
     private void generateTerrainDensity(World world, int x, int z) {
@@ -233,7 +219,7 @@ public class NetherGenerator extends GlowChunkGenerator {
         }
     }
 
-    public void generateTerrainColumn(short[][] buf, World world, Random random, int x, int z, double surfaceNoise, double soulsandNoise, double gravelNoise) {
+    public void generateTerrainColumn(ChunkData chunkData, World world, Random random, int x, int z, double surfaceNoise, double soulsandNoise, double gravelNoise) {
         Material topMat = Material.NETHERRACK;
         Material groundMat = Material.NETHERRACK;
 
@@ -247,9 +233,9 @@ public class NetherGenerator extends GlowChunkGenerator {
         int deep = -1;
         for (int y = 127; y >= 0; y--) {
             if (y <= random.nextInt(5) || y >= 127 - random.nextInt(5)) {
-                set(buf, x, y, z, Material.BEDROCK);
+                chunkData.setBlock(x, y, z, Material.BEDROCK);
             } else {
-                Material mat = get(buf, x, y, z);
+                Material mat = chunkData.getType(x, y, z);
                 if (mat == Material.AIR) {
                     deep = -1;
                 } else if (mat == Material.NETHERRACK) {
@@ -272,13 +258,13 @@ public class NetherGenerator extends GlowChunkGenerator {
 
                         deep = surfaceHeight;
                         if (y >= 63) {
-                            set(buf, x, y, z, topMat);
+                            chunkData.setBlock(x, y, z, topMat);
                         } else {
-                            set(buf, x, y, z, groundMat);
+                            chunkData.setBlock(x, y, z, groundMat);
                         }
                     } else if (deep > 0) {
                         deep--;
-                        set(buf, x, y, z, groundMat);
+                        chunkData.setBlock(x, y, z, groundMat);
                     }
                 }
             }
