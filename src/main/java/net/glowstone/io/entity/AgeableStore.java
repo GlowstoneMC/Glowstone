@@ -37,7 +37,9 @@ class AgeableStore<T extends GlowAgeable> extends CreatureStore<T> {
         if (compound.containsKey("AgeLocked")) {
             entity.setAgeLock(compound.getBool("AgeLocked"));
         }
-        entity.setInLove(compound.getInt("InLove"));
+        if (compound.containsKey("InLove")) {
+            entity.setInLove(compound.getInt("InLove"));
+        }
         entity.setForcedAge(compound.getInt("ForcedAge"));
     }
 
