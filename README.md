@@ -2,9 +2,9 @@
 
 The enhanced Glowstone fork with an emphasis on performance, control and compatibility.
 
-[![Build Status](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus/tree/master.png)](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus/tree/master)
+[![Build Status](https://img.shields.io/circleci/project/Merryfurr/Stone.svg)](https://circleci.com/gh/Merryfurr/Stone)
 
-[![Join the chat at https://gitter.im/GlowstonePlusPlus/GlowstonePlusPlus](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GlowstonePlusPlus/GlowstonePlusPlus?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat on Discord!]<iframe src="https://discordapp.com/widget?id=137727728949526530&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0"></iframe>
 
 ![Built with Love](http://forthebadge.com/images/badges/built-with-love.svg)
 
@@ -24,8 +24,8 @@ After installing [Oracle JDK](http://oracle.com/technetwork/java/javase/download
 [Maven](https://maven.apache.org), checkout the source:
 
 ```sh
-git clone --recursive https://github.com/GlowstonePlusPlus/GlowstonePlusPlus
-cd GlowstonePlusPlus
+git clone --recursive https://github.com/Merryfurr/Stone/
+cd Stone
 ```
 
 ###2. Build
@@ -40,13 +40,11 @@ The final jar will be placed in `target/` named `glowstone++-1.8.9-SNAPSHOT.jar`
 
 
 If you don't want to build from source, prebuilt jar files are available to download from:
-* [![Build Status](https://drone.io/github.com/GlowstonePlusPlus/GlowstonePlusPlus/status.png)](https://drone.io/github.com/GlowstonePlusPlus/GlowstonePlusPlus/latest) **[drone.io](https://drone.io/github.com/GlowstonePlusPlus/GlowstonePlusPlus/files)** - recommended, no login required
-
-* [![Build Status](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus.svg?style=svg)](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus) **[CircleCI](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus/tree/master)** - click the latest build then expand "Artifacts" (if it does not show, try logging in with GitHub)
+* [![Build Status](https://img.shields.io/circleci/project/Merryfurr/Stone.svg)](https://circleci.com/gh/Merryfurr/Stone) **[CircleCI](https://circleci.com/gh/Merryfurr/Stone)** - click the latest build then expand "Artifacts" (if it does not show, try logging in with GitHub)
 
 ##Running
 
-Running Glowstone++ is simple because its dependencies are shaded into the output
+Running Stone is simple because its dependencies are shaded into the output
 jar at compile time. Simply execute `java -jar glowstone++-1.8.9-SNAPSHOT.jar` along with any
 extra JVM options desired. A variety of command-line options are also available -
 run `java -jar glowstone++.jar --help` for more information.
