@@ -8,6 +8,7 @@ The enhanced Glowstone fork with an emphasis on performance, control and compati
 
 ![Built with Love](http://forthebadge.com/images/badges/built-with-love.svg)
 
+[![Brick List](https://raw.githubusercontent.com/Merryfurr/Stone/master/etc/img/BricksPlugins%20List.png}]
 
 Currently the major changes from Glowstone include:
 
