@@ -252,7 +252,7 @@ public final class ChunkManager {
             short[][] extSections = chunkData.getSections();
             if (extSections != null) {
                 GlowChunk.ChunkSection[] sections = new GlowChunk.ChunkSection[extSections.length];
-                for (int i = 0; i < GlowChunkData.SECTIONS_SIZE; ++i) {
+                for (int i = 0; i < extSections.length; ++i) {
                     // this is sort of messy.
                     if (extSections[i] != null) {
                         sections[i] = new GlowChunk.ChunkSection();
