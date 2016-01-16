@@ -1,4 +1,4 @@
-#Glowstone++
+#Stone
 
 The enhanced Glowstone fork with an emphasis on performance, control and compatibility.
 
