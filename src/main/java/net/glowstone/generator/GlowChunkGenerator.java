@@ -1,6 +1,5 @@
 package net.glowstone.generator;
 
-import net.glowstone.GlowChunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -47,59 +46,6 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
             return octaves;
         }
         return octaveCache.get(world.getName());
-    }
-
-    /**
-     * Create a new byte[] buffer of the proper size.
-     * @param fill The Material to fill with.
-     * @return A new filled byte[16 * 16 * 128];
-     */
-    protected byte[] start(Material fill) {
-        if (fill == null) {
-            throw new IllegalArgumentException("Invalid block type!");
-        }
-        byte[] data = new byte[GlowChunk.HEIGHT * GlowChunk.WIDTH * WORLD_DEPTH];
-        Arrays.fill(data, (byte) fill.getId());
-        return data;
-    }
-
-    /**
-     * Set the given block to the given type.
-     * @param data The buffer to write to.
-     * @param x The chunk X coordinate.
-     * @param y The Y coordinate.
-     * @param z The chunk Z coordinate.
-     * @param id The block type.
-     */
-    protected void set(byte[] data, int x, int y, int z, Material id) {
-        if (data == null) {
-            throw new IllegalStateException();
-        }
-        if (id == null) {
-            throw new IllegalArgumentException("Unknown block type!");
-        }
-        if (x < 0 || y < 0 || z < 0 || x >= GlowChunk.HEIGHT || y >= GlowChunk.DEPTH || z >= GlowChunk.WIDTH) {
-            return;
-        }
-        data[(x * 16 + z) * 128 + y] = (byte) id.getId();
-    }
-
-    /**
-     * Get the given block type.
-     * @param data The buffer to read from.
-     * @param x The chunk X coordinate.
-     * @param y The Y coordinate.
-     * @param z The chunk Z coordinate.
-     * @return The type of block at the location.
-     */
-    protected Material get(byte[] data, int x, int y, int z) {
-        if (data == null) {
-            throw new IllegalStateException();
-        }
-        if (x < 0 || y < 0 || z < 0 || x >= GlowChunk.HEIGHT || y >= GlowChunk.DEPTH || z >= GlowChunk.WIDTH) {
-            return Material.AIR;
-        }
-        return Material.getMaterial(data[(x * 16 + z) * 128 + y]);
     }
 
     @Override
