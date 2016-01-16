@@ -2,12 +2,13 @@
 
 The enhanced Glowstone fork with an emphasis on performance, control and compatibility.
 
-[![Build Status](https://img.shields.io/circleci/project/Merryfurr/Stone.svg)](https://circleci.com/gh/Merryfurr/Stone)
+[![Build Status](https://img.shields.io/travis/Merryfurr/Stone.svg)](https://travis-ci.org/Merryfurr/Stone)
 
 [![Join the chat on Discord](http://s27.postimg.org/ku633gv5v/Captu22222re.png)](https://discord.gg/0lhG1Y9lMRwn2SfQ)
 
 ![Built with Love](http://forthebadge.com/images/badges/built-with-love.svg)
 
+[![Brick List](https://raw.githubusercontent.com/Merryfurr/Stone/master/etc/img/BricksPlugins%20List.png)](https://docs.google.com/spreadsheets/d/1615v8892t4ClFtLJeVPxAABvsxv9WbtIax0kxh_b48o/edit?usp=sharing)
 
 Currently the major changes from Glowstone include:
 
@@ -40,7 +41,7 @@ The final jar will be placed in `target/` named `glowstone++-1.8.9-SNAPSHOT.jar`
 
 
 If you don't want to build from source, prebuilt jar files are available to download from:
-* [![Build Status](https://img.shields.io/circleci/project/Merryfurr/Stone.svg)](https://circleci.com/gh/Merryfurr/Stone) **[CircleCI](https://circleci.com/gh/Merryfurr/Stone)** - click the latest build then expand "Artifacts" (if it does not show, try logging in with GitHub)
+* [![Build Status](https://img.shields.io/travis/Merryfurr/Stone.svg)](https://travis-ci.org/Merryfurr/Stone) **[Travis CI](https://travis-ci.org/Merryfurr/Stone)** - This automagically sends the builds to releases. Check out https://github.com/Merryfurr/Stone/releases)
 
 ##Running
 
@@ -142,4 +143,5 @@ the `LICENSE` file for details.
 
 Glowkit is open-source software released under the GPL license. Please see
 the `LICENSE.txt` file in the Glowkit repository for details.
+
 

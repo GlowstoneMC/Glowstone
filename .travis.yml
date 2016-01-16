@@ -25,3 +25,11 @@ env:
     - TERM=dumb
     - secure: "WZNE+iO7GxF8qShmApOHx01EYnDObeW0D1t/UJhDLnTHwPdIiHltDgL4l2zb9jmHn21Cy3WCdfFr2XrSmLG+Y+8sFcb6//JvqDW5E79LHNJohDQyJFz3t2gTABrzgS4FVwjRKIw/Hlwdrkukfn4uqs/xxoyl3FAfmSmn2YgFTB0="
     - secure: "Y5+AXavZO15haO0bWucP4JoX5L8i5vTG2LsSeVCG6oDTAcE/RX5CpCLZxL6BT2qYHDDQL+ICF6ovp0qWjuLq0U3nvQz/7hJMlQDWOiGzX4rVHbljBlZzjNxAnk9GE8o7oYnNjvwtiMWqD930dfJ8mJvqzRKG/Q8Ye0mQ9VlrN/w="
+
+deploy:
+  provider: releases
+  api_key: "003dc93f79221cfa45d59f66b3307ea9561b0341"
+  file: "stone-1.8.9-SNAPSHOT-shaded.jar"
+  skip_cleanup: true
+  on:
+    tags: true
