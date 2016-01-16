@@ -4,6 +4,8 @@ The enhanced Glowstone fork with an emphasis on performance, control and compati
 
 [![Build Status](https://img.shields.io/travis/Merryfurr/Stone.svg)](https://travis-ci.org/Merryfurr/Stone)
 
+[![Downloads](https://img.shields.io/github/downloads/merryfurr/stone/Latest%20Release.svg)] (https://github.com/Merryfurr/Stone/releases)
+
 [![Join the chat on Discord](http://s27.postimg.org/ku633gv5v/Captu22222re.png)](https://discord.gg/0lhG1Y9lMRwn2SfQ)
 
 ![Built with Love](http://forthebadge.com/images/badges/built-with-love.svg)
