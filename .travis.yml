@@ -32,4 +32,4 @@ deploy:
   file: "stone-0.1.0-shaded.jar"
   skip_cleanup: true
   on:
-    tags: true
+	branch: release
