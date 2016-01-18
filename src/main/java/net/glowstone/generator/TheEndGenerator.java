@@ -6,6 +6,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.generator.ChunkGenerator.BiomeGrid;
+import org.bukkit.generator.ChunkGenerator.ChunkData;
 import org.bukkit.util.noise.OctaveGenerator;
 
 import java.util.Map;
@@ -26,7 +28,7 @@ public class TheEndGenerator extends GlowChunkGenerator {
     }
 
     @Override
-    public short[][] generateExtBlockSectionsWithData(World world, Random random, int chunkX, int chunkZ, BiomeGrid biomes) {
+    public ChunkData generateChunkData(World world, Random random, int chunkX, int chunkZ, BiomeGrid biomes) {
         return generateRawTerrain(world, chunkX, chunkZ);
     }
 
@@ -59,26 +61,10 @@ public class TheEndGenerator extends GlowChunkGenerator {
         octaves.put("detail", gen);
     }
 
-    @SuppressWarnings("deprecation")
-    protected final Material get(short[][] buf, int x, int y, int z) {
-        if (buf[y >> 4] == null) {
-            return Material.AIR;
-        }
-        return Material.getMaterial(buf[y >> 4][((y & 0xF) << 8) | (z << 4) | x] >> 4);
-    }
-
-    @SuppressWarnings("deprecation")
-    private void set(short[][] buf, int x, int y, int z, Material id) {
-        if (buf[y >> 4] == null) {
-            buf[y >> 4] = new short[4096];
-        }
-        buf[y >> 4][((y & 0xF) << 8) | (z << 4) | x] = (short) (id.getId() << 4);
-    }
-
-    private short[][] generateRawTerrain(World world, int chunkX, int chunkZ) {
+    private ChunkData generateRawTerrain(World world, int chunkX, int chunkZ) {
         generateTerrainDensity(world, chunkX * 2, chunkZ * 2);
 
-        final short[][] buf = new short[16][];
+        final ChunkData chunkData = createChunkData(world);
 
         for (int i = 0; i < 3 - 1; i++) {
             for (int j = 0; j < 3 - 1; j++) {
@@ -100,7 +86,7 @@ public class TheEndGenerator extends GlowChunkGenerator {
                             for (int n = 0; n < 8; n++) {
                                 // any density higher than 0 is ground, any density lower or equal to 0 is air.
                                 if (dens > 0) {
-                                    set(buf, m + (i << 3), l + (k << 2), n + (j << 3), Material.ENDER_STONE);
+                                    chunkData.setBlock(m + (i << 3), l + (k << 2), n + (j << 3), Material.ENDER_STONE);
                                 }
                                 // interpolation along z
                                 dens += (d10 - d9) / 8;
@@ -120,7 +106,7 @@ public class TheEndGenerator extends GlowChunkGenerator {
             }
         }
 
-        return buf;
+        return chunkData;
     }
 
     private void generateTerrainDensity(World world, int x, int z) {

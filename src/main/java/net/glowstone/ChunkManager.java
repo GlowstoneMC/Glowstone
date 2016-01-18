@@ -1,6 +1,7 @@
 package net.glowstone;
 
 import net.glowstone.constants.GlowBiome;
+import net.glowstone.generator.GlowChunkData;
 import net.glowstone.generator.GlowChunkGenerator;
 import net.glowstone.generator.biomegrid.MapLayer;
 import net.glowstone.io.ChunkIoService;
@@ -247,7 +248,8 @@ public final class ChunkManager {
 
         // extended sections with data
         if (generator instanceof GlowChunkGenerator) {
-            short[][] extSections = ((GlowChunkGenerator) generator).generateExtBlockSectionsWithData(world, random, x, z, biomes);
+            GlowChunkData chunkData = (GlowChunkData) ((GlowChunkGenerator) generator).generateChunkData(world, random, x, z, biomes);
+            short[][] extSections = chunkData.getSections();
             if (extSections != null) {
                 GlowChunk.ChunkSection[] sections = new GlowChunk.ChunkSection[extSections.length];
                 for (int i = 0; i < extSections.length; ++i) {

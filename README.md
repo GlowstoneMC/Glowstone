@@ -8,8 +8,6 @@ The enhanced Glowstone fork with an emphasis on performance, control and compati
 
 ![Built with Love](http://forthebadge.com/images/badges/built-with-love.svg)
 
-(Warning: may be unstable, this is only an experiment, use at your own risk)
-
 
 Currently the major changes from Glowstone include:
 

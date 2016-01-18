@@ -4,29 +4,39 @@ import net.glowstone.constants.GlowBiomeClimate;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
+import org.bukkit.generator.ChunkGenerator.ChunkData;
+import org.bukkit.material.MaterialData;
 
 import java.util.Random;
 
 public class GroundGenerator {
 
-    private Material topMaterial;
-    private int topMaterialData;
-    private Material groundMaterial;
-    private int groundMaterialData;
+    protected static final MaterialData AIR = new MaterialData(Material.AIR);
+    protected static final MaterialData STONE = new MaterialData(Material.STONE);
+    protected static final MaterialData SANDSTONE = new MaterialData(Material.SANDSTONE);
+    protected static final MaterialData GRASS = new MaterialData(Material.GRASS);
+    protected static final MaterialData DIRT = new MaterialData(Material.DIRT);
+    protected static final MaterialData COARSE_DIRT = new MaterialData(Material.DIRT, (byte) 1);
+    protected static final MaterialData PODZOL = new MaterialData(Material.DIRT, (byte) 2);
+    protected static final MaterialData GRAVEL = new MaterialData(Material.GRAVEL);
+    protected static final MaterialData MYCEL = new MaterialData(Material.MYCEL);
+    protected static final MaterialData SAND = new MaterialData(Material.SAND);
+    protected static final MaterialData SNOW = new MaterialData(Material.SNOW_BLOCK);
+
+    private MaterialData topMaterial;
+    private MaterialData groundMaterial;
 
     public GroundGenerator() {
-        setTopMaterial(Material.GRASS);
-        setGroundMaterial(Material.DIRT);
+        setTopMaterial(GRASS);
+        setGroundMaterial(DIRT);
     }
 
-    public void generateTerrainColumn(short[][] buf, World world, Random random, int x, int z, Biome biome, double surfaceNoise) {
+    public void generateTerrainColumn(ChunkData chunkData, World world, Random random, int x, int z, Biome biome, double surfaceNoise) {
 
         int seaLevel = world.getSeaLevel();
 
-        Material topMat = topMaterial;
-        int topMatData = topMaterialData;
-        Material groundMat = groundMaterial;
-        int groundMatData = groundMaterialData;
+        MaterialData topMat = topMaterial;
+        MaterialData groundMat = groundMaterial;
 
         int chunkX = x;
         int chunkZ = z;
@@ -37,87 +47,50 @@ public class GroundGenerator {
         int deep = -1;
         for (int y = 255; y >= 0; y--) {
             if (y <= random.nextInt(5)) {
-                set(buf, x, y, z, Material.BEDROCK);
+                chunkData.setBlock(x, y, z, Material.BEDROCK);
             } else {
-                Material mat = get(buf, x, y, z);
+                Material mat = chunkData.getType(x, y, z);
                 if (mat == Material.AIR) {
                     deep = -1;
                 } else if (mat == Material.STONE) {
                     if (deep == -1) {
                         if (y >= seaLevel - 5 && y <= seaLevel) {
                             topMat = topMaterial;
-                            topMatData = topMaterialData;
                             groundMat = groundMaterial;
-                            groundMatData = groundMaterialData;
                         }
 
                         deep = surfaceHeight;
                         if (y >= seaLevel - 2) {
-                            set(buf, x, y, z, topMat, topMatData);
+                            chunkData.setBlock(x, y, z, topMat);
                         } else if (y < seaLevel - 8 - surfaceHeight) {
-                            topMat = Material.AIR;
-                            topMatData = 0;
-                            groundMat = Material.STONE;
-                            groundMatData = 0;
-                            set(buf, x, y, z, Material.GRAVEL);
+                            topMat = AIR;
+                            groundMat = STONE;
+                            chunkData.setBlock(x, y, z, Material.GRAVEL);
                         } else {
-                            set(buf, x, y, z, groundMat, groundMatData);
+                            chunkData.setBlock(x, y, z, groundMat);
                         }
                     } else if (deep > 0) {
                         deep--;
-                        set(buf, x, y, z, groundMat, groundMatData);
+                        chunkData.setBlock(x, y, z, groundMat);
 
-                        if (deep == 0 && groundMat == Material.SAND) {
+                        if (deep == 0 && groundMat.getItemType() == Material.SAND) {
                             deep = random.nextInt(4) + Math.max(0, y - seaLevel - 1);
-                            groundMat = Material.SANDSTONE;
+                            groundMat = SANDSTONE;
                         }
                     }
                 } else if (mat == Material.STATIONARY_WATER && y == seaLevel - 2 &&
                         GlowBiomeClimate.isCold(biome, chunkX, y, chunkZ)) {
-                    set(buf, x, y, z, Material.ICE);
+                    chunkData.setBlock(x, y, z, Material.ICE);
                 }
             }
         }
     }
 
-    @SuppressWarnings("deprecation")
-    protected final Material get(short[][] buf, int x, int y, int z) {
-        if (buf[y >> 4] == null) {
-            return Material.AIR;
-        }
-        return Material.getMaterial(buf[y >> 4][((y & 0xF) << 8) | (z << 4) | x] >> 4);
-    }
-
-    protected final void set(short[][] buf, int x, int y, int z, Material id) {
-        set(buf, x, y, z, id, 0);
-    }
-
-    @SuppressWarnings("deprecation")
-    protected final void set(short[][] buf, int x, int y, int z, Material id, int data) {
-        if (id.getId() == 0) {
-            return;
-        }
-        if (buf[y >> 4] == null) {
-            buf[y >> 4] = new short[4096];
-        }
-        buf[y >> 4][((y & 0xF) << 8) | (z << 4) | x] = (short) (((id.getId() << 4) & 0xFFF0) | data);
-    }
-
-    protected final void setTopMaterial(Material topMaterial) {
-        setTopMaterial(topMaterial, 0);
-    }
-
-    protected final void setTopMaterial(Material topMaterial, int topMaterialData) {
+    protected final void setTopMaterial(MaterialData topMaterial) {
         this.topMaterial = topMaterial;
-        this.topMaterialData = topMaterialData;
     }
 
-    protected final void setGroundMaterial(Material groundMaterial) {
-        setGroundMaterial(groundMaterial, 0);
-    }
-
-    protected final void setGroundMaterial(Material groundMaterial, int groundMaterialData) {
+    protected final void setGroundMaterial(MaterialData groundMaterial) {
         this.groundMaterial = groundMaterial;
-        this.groundMaterialData = groundMaterialData;
     }
 }

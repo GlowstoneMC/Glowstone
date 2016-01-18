@@ -1,10 +1,8 @@
 package net.glowstone.generator.ground;
 
-import org.bukkit.Material;
-
 public class SnowyGroundGenerator extends GroundGenerator {
     public SnowyGroundGenerator() {
         super();
-        setTopMaterial(Material.SNOW_BLOCK);
+        setTopMaterial(SNOW);
     }
 }
