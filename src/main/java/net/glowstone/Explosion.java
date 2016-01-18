@@ -225,35 +225,35 @@ public final class Explosion {
 
         Collection<GlowLivingEntity> entities = getNearbyEntities();
         for (GlowLivingEntity entity : entities) {
-            double disDivPower = distanceTo(entity) / (double) this.power;
-            if (disDivPower > 1.0D) continue;
-
-            Vector vecDistance = distanceToHead(entity);
-            if (vecDistance.length() == 0.0) continue;
-
-            vecDistance.normalize();
-
-            double basicDamage = calculateDamage(entity, disDivPower);
-            double explosionDamage = calculateEnchantedDamage((int) ((basicDamage * basicDamage + basicDamage) * 4 * (double) power + 1.0D), entity);
-
-            DamageCause damageCause;
-            if (source == null || source.getType() == EntityType.PRIMED_TNT) {
-                damageCause = DamageCause.BLOCK_EXPLOSION;
-            } else {
-                damageCause = DamageCause.ENTITY_EXPLOSION;
-            }
-            entity.damage(explosionDamage, source, damageCause);
-
-            vecDistance.multiply(explosionDamage).multiply(0.05);
-
-            entity.setVelocity(entity.getVelocity().add(vecDistance));
-
             if (entity instanceof GlowPlayer) {
                 affectedPlayers.add((GlowPlayer) entity);
+            } else {
+                double disDivPower = distanceTo(entity) / (double) this.power;
+                if (disDivPower > 1.0D) continue;
+
+                Vector vecDistance = distanceToHead(entity);
+                if (vecDistance.length() == 0.0) continue;
+
+                vecDistance.normalize();
+
+                double basicDamage = calculateDamage(entity, disDivPower);
+                double explosionDamage = calculateEnchantedDamage((int) ((basicDamage * basicDamage + basicDamage) * 4 * (double) power + 1.0D), entity);
+
+                DamageCause damageCause;
+                if (source == null || source.getType() == EntityType.PRIMED_TNT) {
+                    damageCause = DamageCause.BLOCK_EXPLOSION;
+                } else {
+                    damageCause = DamageCause.ENTITY_EXPLOSION;
+                }
+                entity.damage(explosionDamage, source, damageCause);
+
+                vecDistance.multiply(explosionDamage).multiply(0.25);
+
+                Vector currentVelocity = entity.getVelocity();
+                currentVelocity.add(vecDistance);
+                entity.setVelocity(currentVelocity);
             }
         }
-
-        this.power = power;
 
         return affectedPlayers;
     }
@@ -285,14 +285,23 @@ public final class Explosion {
     private Collection<GlowLivingEntity> getNearbyEntities() {
         ArrayList<Chunk> chunks = new ArrayList<>();
         chunks.add(location.getChunk());
-        for (int i = (int) -power; i <= power; i++) {
-            if (i == 0 || !chunks.contains(location.clone().add(i, 0, 0).getChunk())) {
-                chunks.add(location.clone().add(i, 0, 0).getChunk());
+        int relX = location.getBlockX() - 16 * (int) Math.floor(location.getBlockX() / 16);
+        int relZ = location.getBlockZ() - 16 * (int) Math.floor(location.getBlockZ() / 16);
+        if (relX < power || relZ < power) {
+            if (relX < power) {
+                chunks.add(location.getWorld().getChunkAt(location.getBlockX() - 1 >> 4, location.getBlockZ() >> 4));
             }
-        }
-        for (int i = (int) -power; i <= power; i++) {
-            if (i == 0 || !chunks.contains(location.clone().add(0, 0, i).getChunk())) {
-                chunks.add(location.clone().add(0, 0, i).getChunk());
+            if (relZ < power) {
+                chunks.add(location.getWorld().getChunkAt(location.getBlockX() >> 4, location.getBlockZ() - 1 >> 4));
+            }
+        } else {
+            int invRelX = Math.abs(location.getBlockX() - 16 * (int) Math.floor(location.getBlockX() / 16));
+            int invRelZ = Math.abs(location.getBlockZ() - 16 * (int) Math.floor(location.getBlockZ() / 16));
+            if (invRelX < power) {
+                chunks.add(location.getWorld().getChunkAt(location.getBlockX() + 1 >> 4, location.getBlockZ() >> 4));
+            }
+            if (invRelZ < power) {
+                chunks.add(location.getWorld().getChunkAt(location.getBlockX() >> 4, location.getBlockZ() + 1 >> 4));
             }
         }
         ArrayList<Entity> entities = new ArrayList<>();
@@ -347,7 +356,7 @@ public final class Explosion {
 
         Vector velocity = player.getVelocity();
         ExplosionMessage message = new ExplosionMessage((float) location.getX(), (float) location.getY(), (float) location.getZ(),
-                5,
+                power,
                 (float) velocity.getX(), (float) velocity.getY(), (float) velocity.getZ(),
                 records);
 
