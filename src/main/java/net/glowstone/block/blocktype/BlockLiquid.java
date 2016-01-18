@@ -83,21 +83,11 @@ public abstract class BlockLiquid extends BlockType {
             if (block.getY() > 0 && !calculateTarget(block.getRelative(DOWN), DOWN, block.getType(), state.getRawData(), true)) {
                 // we can't flow down, let's flow horizontally
                 // search 5 blocks out
-
-                for (int j = 1; j <= 5; j++) {
+                for (int j = 1; j < 6; j++) {
                     // from each horizontal face
                     for (BlockFace face : hfaces) {
-                        int m = j;
-                        switch (face) {
-                            case NORTH:
-                            case WEST:
-                                m *= -1;
-                                break;
-                        }
-                        if (calculateTarget(block.getWorld().getBlockAt(block.getX() + (face == EAST || face == WEST ? m : 0), block.getY() - 1, block.getZ() + (face == NORTH || face == SOUTH ? m : 0)), face, block.getType(), state.getRawData(), false)) {
-                            if (calculateTarget(block.getRelative(face), face, block.getType(), state.getRawData(), true)) {
-                                state.setFlowed(true);
-                            }
+                        if (calculateTarget(block.getRelative(face, j).getRelative(DOWN), face, block.getType(), state.getRawData(), false) && calculateTarget(block.getRelative(face), face, block.getType(), state.getRawData(), true)) {
+                            state.setFlowed(true);
                         }
                     }
                     // if we already found a match at this radius, stop
