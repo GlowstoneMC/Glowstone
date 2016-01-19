@@ -107,6 +107,11 @@ public final class NBTInputStream implements Closeable {
      */
     @SuppressWarnings("unchecked")
     private Tag readTagPayload(TagType type, int depth, NBTReadLimiter readLimiter) throws IOException {
+
+        if (depth > 512) {
+            throw new IllegalStateException("Tried to read NBT tag with too high complexity, depth > 512");
+        }
+
         switch (type) {
             case BYTE:
                 readLimiter.read(1);
