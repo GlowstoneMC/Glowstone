@@ -7,11 +7,14 @@ import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.status.StatusRequestMessage;
 import net.glowstone.net.message.status.StatusResponseMessage;
 import net.glowstone.util.GlowServerIcon;
+import org.bukkit.entity.Player;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.util.CachedServerIcon;
 import org.json.simple.JSONObject;
 
 import java.net.InetAddress;
+import java.util.Collection;
+import java.util.Iterator;
 
 public final class StatusRequestHandler implements MessageHandler<GlowSession, StatusRequestMessage> {
 
@@ -23,7 +26,7 @@ public final class StatusRequestHandler implements MessageHandler<GlowSession, S
         int online = server.getOnlinePlayers().size();
         InetAddress address = session.getAddress().getAddress();
 
-        StatusEvent event = new StatusEvent(address, server.getMotd(), online, server.getMaxPlayers());
+        StatusEvent event = new StatusEvent(address, server.getMotd(), online, server.getMaxPlayers(), server.getOnlinePlayers());
         event.icon = server.getServerIcon();
         EventFactory.callEvent(event);
 
@@ -55,9 +58,11 @@ public final class StatusRequestHandler implements MessageHandler<GlowSession, S
     private static class StatusEvent extends ServerListPingEvent {
 
         private GlowServerIcon icon;
+        private Collection<Player> players;
 
-        private StatusEvent(InetAddress address, String motd, int numPlayers, int maxPlayers) {
+        private StatusEvent(InetAddress address, String motd, int numPlayers, int maxPlayers, Collection<? extends Player> players) {
             super(address, motd, numPlayers, maxPlayers);
+            this.players =  (Collection<Player>) players;
         }
 
         @Override
@@ -68,6 +73,9 @@ public final class StatusRequestHandler implements MessageHandler<GlowSession, S
             this.icon = (GlowServerIcon) icon;
         }
 
-        // todo: player list iteration handling
+        @Override
+        public Iterator<Player> iterator() {
+            return players.iterator();
+        }
     }
 }
