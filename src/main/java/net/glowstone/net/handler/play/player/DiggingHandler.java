@@ -2,7 +2,6 @@ package net.glowstone.net.handler.play.player;
 
 import com.flowpowered.networking.MessageHandler;
 import net.glowstone.EventFactory;
-import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
