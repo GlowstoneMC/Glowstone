@@ -82,7 +82,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             // shouldn't happen in creative mode
 
             // todo: verification against malicious clients
-            if(player.getDigging() != null) {
+            if (player.getDigging() != null) {
                 //block state could be different
                 blockBroken = block.getLocation().equals(player.getDigging().getLocation());
             }
