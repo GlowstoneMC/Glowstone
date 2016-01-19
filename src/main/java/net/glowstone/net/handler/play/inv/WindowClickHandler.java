@@ -394,13 +394,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         }
 
         if (handled && top == inv && top instanceof GlowCraftingInventory && top.getSlotType(invSlot) == SlotType.RESULT) {
-            // we need to check whether the crafting result was used
-            // and if it was consume the ingredients
-            GlowCraftingInventory craftingInv = (GlowCraftingInventory) top;
-            if (craftingInv.getResult() != null) {
-                // it was used -> consume ingredients
-                craftingInv.craft();
-            }
+            ((GlowCraftingInventory) top).craft();
         }
 
         if (!handled) {
