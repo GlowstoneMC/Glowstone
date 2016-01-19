@@ -122,9 +122,6 @@
         <module name="ParameterName">
             <message key="name.invalidPattern" value="Parameter name ''{0}'' must match pattern ''{1}''."/>
         </module>
-        <module name="StaticVariableName">
-            <message key="name.invalidPattern" value="Static variable name ''{0}'' must match pattern ''{1}''."/>
-        </module>
         <module name="TypeName">
             <message key="name.invalidPattern" value="Type name ''{0}'' must match pattern ''{1}''."/>
         </module>

@@ -23,8 +23,6 @@ import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Objects;
-
 public final class DiggingHandler implements MessageHandler<GlowSession, DiggingMessage> {
     @Override
     public void handle(GlowSession session, DiggingMessage message) {
@@ -41,7 +39,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
 
         boolean blockBroken = false;
         boolean revert = false;
-        if (message.getState() == DiggingMessage.START_DIGGING) {
+        if (message.getState() == DiggingMessage.START_DIGGING || player.getDigging() == null) {
             // call interact event
             Action action = Action.LEFT_CLICK_BLOCK;
             Block eventBlock = block;
@@ -82,7 +80,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             // shouldn't happen in creative mode
 
             // todo: verification against malicious clients
-            blockBroken = Objects.equals(block.toString(), player.getDigging().toString());
+            blockBroken = block.equals(player.getDigging());
         } else if (message.getState() == DiggingMessage.STATE_DROP_ITEM) {
             player.dropItemInHand(false);
             return;

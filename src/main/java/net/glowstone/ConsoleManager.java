@@ -29,8 +29,9 @@ import java.util.logging.Formatter;
  */
 public final class ConsoleManager {
 
-    private static final String CONSOLE_DATE = "HH:mm:ss";
-    private static final String FILE_DATE = "yyyy/MM/dd HH:mm:ss";
+    private static String CONSOLE_DATE = "HH:mm:ss";
+    private static String FILE_DATE = "yyyy/MM/dd HH:mm:ss";
+    private static String CONSOLE_PROMPT = ">";
     private static final Logger logger = Logger.getLogger("");
 
     private final GlowServer server;
@@ -101,6 +102,13 @@ public final class ConsoleManager {
         this.jLine = jLine;
 
         sender = new ColoredCommandSender();
+        CONSOLE_DATE = server.getConsoleDateFormat();
+        for (Handler handler : logger.getHandlers()) {
+            if (handler.getClass() == FancyConsoleHandler.class) {
+                handler.setFormatter(new DateOutputFormatter(CONSOLE_DATE, true));
+            }
+        }
+        CONSOLE_PROMPT = server.getConsolePrompt();
         Thread thread = new ConsoleCommandThread();
         thread.setName("ConsoleCommandThread");
         thread.setDaemon(true);
@@ -113,6 +121,7 @@ public final class ConsoleManager {
             logger.warning("Could not create log folder: " + parent);
         }
         Handler fileHandler = new RotatingFileHandler(logfile);
+        FILE_DATE = server.getConsoleLogDateFormat();
         fileHandler.setFormatter(new DateOutputFormatter(FILE_DATE, false));
         logger.addHandler(fileHandler);
     }
@@ -174,7 +183,7 @@ public final class ConsoleManager {
             while (running) {
                 try {
                     if (jLine) {
-                        command = reader.readLine(">", null);
+                        command = reader.readLine(CONSOLE_PROMPT, null);
                     } else {
                         command = reader.readLine();
                     }

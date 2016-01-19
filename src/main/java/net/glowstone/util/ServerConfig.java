@@ -320,7 +320,12 @@ public final class ServerConfig {
         WHITELIST("server.whitelisted", false, Migrate.PROPS, "white-list"),
         MOTD("server.motd", "Glowstone++ server", Migrate.PROPS, "motd"),
         SHUTDOWN_MESSAGE("server.shutdown-message", "Server shutting down.", Migrate.BUKKIT, "settings.shutdown-message"),
-        USE_JLINE("server.use-jline", true),
+
+        // console
+        USE_JLINE("console.use-jline", true),
+        CONSOLE_PROMPT("console.prompt", ">"),
+        CONSOLE_DATE("console.date-format", "HH:mm:ss"),
+        CONSOLE_LOG_DATE("console.log-date-format", "yyyy/MM/dd HH:mm:ss"),
 
         // game props
         GAMEMODE("game.gamemode", "SURVIVAL", Migrate.PROPS, "gamemode"),

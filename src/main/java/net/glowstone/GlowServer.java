@@ -1785,4 +1785,16 @@ public final class GlowServer implements Server {
         return Math.max(64, Math.min(256, config.getInt(ServerConfig.Key
                 .MAX_BUILD_HEIGHT)));
     }
+
+    public String getConsolePrompt() {
+        return config.getString(ServerConfig.Key.CONSOLE_PROMPT);
+    }
+
+    public String getConsoleDateFormat() {
+        return config.getString(ServerConfig.Key.CONSOLE_DATE);
+    }
+
+    public String getConsoleLogDateFormat() {
+        return config.getString(ServerConfig.Key.CONSOLE_LOG_DATE);
+    }
 }
