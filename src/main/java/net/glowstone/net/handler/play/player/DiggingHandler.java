@@ -81,6 +81,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
 
             // todo: verification against malicious clients
             blockBroken = block.equals(player.getDigging());
+            player.setDigging(null);
         } else if (message.getState() == DiggingMessage.STATE_DROP_ITEM) {
             player.dropItemInHand(false);
             return;
@@ -126,6 +127,5 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             BlockType blockType = ItemTable.instance().getBlock(block.getType());
             blockType.leftClickBlock(player, block, holding);
         }
-        player.setDigging(null);
     }
 }
