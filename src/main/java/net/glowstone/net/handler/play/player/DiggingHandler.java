@@ -55,10 +55,11 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                 // the event was cancelled, get out of here
                 revert = true;
             } else if (player.getGameMode() != GameMode.SPECTATOR) {
+                player.setDigging(null);
                 // emit damage event - cancel by default if holding a sword
                 boolean instaBreak = player.getGameMode() == GameMode.CREATIVE || block.getMaterialValues().getHardness() == 0;
                 BlockDamageEvent damageEvent = new BlockDamageEvent(player, block, player.getItemInHand(), instaBreak);
-                if (player.getGameMode() != GameMode.CREATIVE && player.getDigging() != null || player.getGameMode() == GameMode.CREATIVE && holding != null && EnchantmentTarget.WEAPON.includes(holding.getType())) {
+                if (player.getGameMode() == GameMode.CREATIVE && holding != null && EnchantmentTarget.WEAPON.includes(holding.getType())) {
                     damageEvent.setCancelled(true);
                 }
                 EventFactory.callEvent(damageEvent);
