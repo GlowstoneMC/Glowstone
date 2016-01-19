@@ -43,7 +43,7 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
     }
 
     @Override
-    protected void messageReceived(ChannelHandlerContext ctx, ByteBuf buf) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, ByteBuf buf) throws Exception {
         buf = buf.order(ByteOrder.LITTLE_ENDIAN);
         if (buf.readableBytes() < 8) {
             return;
@@ -128,4 +128,5 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
             start += truncated;
         }
     }
+
 }

@@ -2,9 +2,6 @@
 	path = Glowkit
 	url = https://github.com/GlowstonePlusPlus/Glowkit
 	branch = bukkit+glowkit
-[submodule "FlowNetworking"]
-	path = FlowNetworking
-	url = https://github.com/GlowstonePlusPlus/network.git
 [submodule "FML"]
 	path = FML
 	url = https://github.com/deathcap/FML
