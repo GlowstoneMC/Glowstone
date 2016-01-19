@@ -329,8 +329,6 @@ public final class GlowSession extends BasicSession {
             server.broadcastMessage(message);
         }
 
-        // todo: display names are included in the outgoing messages here, but
-        // don't show up on the client. A workaround or proper fix is needed.
         Message addMessage = new UserListItemMessage(UserListItemMessage.Action.ADD_PLAYER, player.getUserListEntry());
         List<UserListItemMessage.Entry> entries = new ArrayList<>();
         for (GlowPlayer other : server.getOnlinePlayers()) {
