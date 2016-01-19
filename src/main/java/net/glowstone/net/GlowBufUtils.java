@@ -12,6 +12,7 @@ import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
+import net.glowstone.util.nbt.NBTReadLimiter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
@@ -116,6 +117,10 @@ public final class GlowBufUtils {
      * @return The tag read, or null.
      */
     public static CompoundTag readCompound(ByteBuf buf) {
+        return readCompound(buf, false);
+    }
+
+    private static CompoundTag readCompound(ByteBuf buf, boolean network) {
         int idx = buf.readerIndex();
         if (buf.readByte() == 0) {
             return null;
@@ -123,7 +128,7 @@ public final class GlowBufUtils {
 
         buf.readerIndex(idx);
         try (NBTInputStream str = new NBTInputStream(new ByteBufInputStream(buf), false)) {
-            return str.readCompound();
+            return str.readCompound(network ? new NBTReadLimiter(2097152L) : NBTReadLimiter.UNLIMITED);
         } catch (IOException e) {
             return null;
         }
@@ -157,6 +162,16 @@ public final class GlowBufUtils {
      * @return The stack read, or null.
      */
     public static ItemStack readSlot(ByteBuf buf) {
+        return readSlot(buf, false);
+    }
+
+    /**
+     * Read an item stack from the buffer.
+     * @param buf The buffer.
+     * @param network Mark network source.
+     * @return The stack read, or null.
+     */
+    public static ItemStack readSlot(ByteBuf buf, boolean network) {
         short type = buf.readShort();
         if (type == -1) {
             return null;
@@ -170,7 +185,7 @@ public final class GlowBufUtils {
             return null;
         }
 
-        CompoundTag tag = readCompound(buf);
+        CompoundTag tag = readCompound(buf, network);
         ItemStack stack = new ItemStack(material, amount, durability);
         stack.setItemMeta(GlowItemFactory.instance().readNbt(material, tag));
         return stack;

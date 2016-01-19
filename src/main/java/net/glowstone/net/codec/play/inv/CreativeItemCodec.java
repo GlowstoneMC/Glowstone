@@ -12,7 +12,7 @@ public final class CreativeItemCodec implements Codec<CreativeItemMessage> {
     @Override
     public CreativeItemMessage decode(ByteBuf buf) throws IOException {
         int slot = buf.readShort();
-        ItemStack item = GlowBufUtils.readSlot(buf);
+        ItemStack item = GlowBufUtils.readSlot(buf, true);
         return new CreativeItemMessage(slot, item);
     }
 
