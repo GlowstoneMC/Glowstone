@@ -23,8 +23,6 @@ import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Objects;
-
 public final class DiggingHandler implements MessageHandler<GlowSession, DiggingMessage> {
     @Override
     public void handle(GlowSession session, DiggingMessage message) {
