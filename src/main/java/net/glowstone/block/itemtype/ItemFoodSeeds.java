@@ -14,6 +14,7 @@ public class ItemFoodSeeds extends ItemFood {
     private Material soilType;
 
     public ItemFoodSeeds(Material cropsType, Material soilType) {
+        super(1, 0.0f);
         this.cropsType = cropsType;
         this.soilType = soilType;
     }

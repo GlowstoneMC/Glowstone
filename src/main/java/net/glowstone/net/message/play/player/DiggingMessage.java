@@ -10,6 +10,7 @@ public final class DiggingMessage implements Message {
     public static final int FINISH_DIGGING = 2;
     public static final int STATE_DROP_ITEMSTACK = 3;
     public static final int STATE_DROP_ITEM = 4;
+    public static final int STATE_SHOT_ARROW_FINISH_EATING = 5;
 
     private final int state, x, y, z, face;
 

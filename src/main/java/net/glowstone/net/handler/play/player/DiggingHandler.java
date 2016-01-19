@@ -2,11 +2,14 @@ package net.glowstone.net.handler.play.player;
 
 import com.flowpowered.networking.MessageHandler;
 import net.glowstone.EventFactory;
+import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
+import net.glowstone.block.itemtype.ItemTimedUsage;
+import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.net.GlowSession;
@@ -89,6 +92,15 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
         } else if (message.getState() == DiggingMessage.STATE_DROP_ITEMSTACK) {
             player.dropItemInHand(true);
             return;
+        } else if (message.getState() == DiggingMessage.STATE_SHOT_ARROW_FINISH_EATING && player.getUsageItem() != null) {
+            if (player.getUsageItem().equals(holding)) {
+                ItemType type = ItemTable.instance().getItem(player.getUsageItem().getType());
+                ((ItemTimedUsage) type).endUse(player, player.getUsageItem());
+            } else {
+                // todo: verification against malicious clients
+                // todo: inform player their item is wrong
+            }
+            return;
         } else {
             return;
         }
@@ -114,6 +126,9 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                     item.setBias(player);
                 }
             }
+
+            player.addExhaustion(0.025f);
+
             // STEP_SOUND actually is the block break particles
             world.playEffectExceptTo(block.getLocation(), Effect.STEP_SOUND, block.getTypeId(), 64, player);
             GlowBlockState state = block.getState();
