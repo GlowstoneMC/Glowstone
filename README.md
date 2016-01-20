@@ -42,7 +42,7 @@ The final jar will be placed in `target/` named `glowstone++-1.8.9-SNAPSHOT.jar`
 If you don't want to build from source, prebuilt jar files are available to download from:
 * [![Build Status](https://drone.io/github.com/GlowstonePlusPlus/GlowstonePlusPlus/status.png)](https://drone.io/github.com/GlowstonePlusPlus/GlowstonePlusPlus/latest) **[drone.io](https://drone.io/github.com/GlowstonePlusPlus/GlowstonePlusPlus/files)** - recommended, no login required
 
-* [![Build Status](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus.svg?style=svg)](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus) **[CircleCI](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus/tree/master)** - click the latest build then expand "Artifacts" (if it does not show, try logging in with GitHub)
+* [![Build Status](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus.svg?style=svg)](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus/tree/master) **[CircleCI](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus/tree/master)** - click the latest build then expand "Artifacts" (if it does not show, try logging in with GitHub)
 
 ##Running
 

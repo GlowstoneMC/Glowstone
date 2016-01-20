@@ -314,7 +314,9 @@ public abstract class GlowEntity implements Entity {
      * not.
      */
     public boolean isWithinDistance(GlowEntity other) {
-        return !other.isDead() && (isWithinDistance(other.location) || other instanceof GlowLightningStrike);
+        if (other instanceof GlowLivingEntity) {
+            return ((GlowLivingEntity) other).getDeathTicks() <= 20 && isWithinDistance(other.location);
+        } else return !other.isDead() && (isWithinDistance(other.location) || other instanceof GlowLightningStrike);
     }
 
     /**
