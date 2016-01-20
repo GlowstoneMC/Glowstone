@@ -302,8 +302,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * The one itemstack the player is currently usage and associated time.
      */
-    @Getter @Setter private ItemStack usageItem;
-    @Getter @Setter private long usageTime;
+    @Getter
+    @Setter
+    private ItemStack usageItem;
+    @Getter
+    @Setter
+    private long usageTime;
 
     /**
      * Creates a new player and adds it to the world.
@@ -477,7 +481,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     public void remove() {
         remove(true);
     }
-    
+
     public void remove(boolean asyncSave) {
         knownChunks.clear();
         chunkLock.clear();
@@ -880,6 +884,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     /**
      * Send a UserListItemMessage to every player that can see this player.
+     *
      * @param updateMessage The message to send.
      */
     private void updateUserListEntries(UserListItemMessage updateMessage) {
@@ -1067,6 +1072,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     /**
      * Returns whether the player spawns at their bed even if there is no bed block.
+     *
      * @return Whether the player is forced to spawn at their bed.
      */
     public boolean isBedSpawnForced() {
@@ -1373,7 +1379,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         sendHealth();
     }
 
-    public void setFoodLevelAndSaturdation(int food, float saturation) {
+    public void setFoodLevelAndSaturation(int food, float saturation) {
         this.food = Math.max(Math.min(food, 20), 0);
         this.saturation = Math.min(this.saturation + food * saturation * 2.0F, this.food);
         sendHealth();
@@ -1394,7 +1400,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     // todo: swim
     // todo: jump
     // todo: food poisioning
-    // todo: hump and sprint
+    // todo: jump and sprint
     public void addExhaustion(float exhaustion) {
         this.exhaustion = Math.min(this.exhaustion + exhaustion, 40f);
     }
@@ -1515,6 +1521,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     /**
      * This player enters the specified bed and is marked as sleeping.
+     *
      * @param block the bed
      */
     public void enterBed(GlowBlock block) {
@@ -1544,11 +1551,13 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     /**
      * This player leaves their bed causing them to quit sleeping.
+     *
      * @param setSpawn Whether to set the bed spawn of the player
      */
     public void leaveBed(boolean setSpawn) {
         Preconditions.checkState(bed != null, "Player is not in bed");
-        GlowBlock head = BlockBed.getHead(bed);;
+        GlowBlock head = BlockBed.getHead(bed);
+        ;
         GlowBlock foot = BlockBed.getFoot(bed);
 
         // Determine exit location
@@ -1777,7 +1786,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     private final Player.Spigot spigot = new Player.Spigot() {
         @Override
-        public void playEffect(Location location, Effect effect, int id, int data, float offsetX, float offsetY, float offsetZ, float speed, int particleCount, int radius)  {
+        public void playEffect(Location location, Effect effect, int id, int data, float offsetX, float offsetY, float offsetZ, float speed, int particleCount, int radius) {
             if (effect.getType() == Effect.Type.PARTICLE) {
                 MaterialData material = new MaterialData(id, (byte) data);
                 showParticle(location, effect, material, offsetX, offsetY, offsetZ, speed, particleCount);
@@ -1842,8 +1851,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * Send a sign change, similar to {@link #sendSignChange(Location, String[])},
      * but using complete TextMessages instead of strings.
+     *
      * @param location the location of the sign
-     * @param lines the new text on the sign or null to clear it
+     * @param lines    the new text on the sign or null to clear it
      * @throws IllegalArgumentException if location is null
      * @throws IllegalArgumentException if lines is non-null and has a length less than 4
      */
@@ -1857,9 +1867,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     /**
      * Send a block entity change to the given location.
+     *
      * @param location The location of the block entity.
-     * @param type The type of block entity being sent.
-     * @param nbt The NBT structure to send to the client.
+     * @param type     The type of block entity being sent.
+     * @param nbt      The NBT structure to send to the client.
      */
     public void sendBlockEntityChange(Location location, GlowBlockEntity type, CompoundTag nbt) {
         Validate.notNull(location, "Location cannot be null");
@@ -1892,7 +1903,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * otherwise does nothing. If {@code awardParents} is true, award the player all
      * parent achievements and the given achievement, making this method equivalent
      * to {@link #awardAchievement(Achievement)}.
-     * @param achievement the achievement to award.
+     *
+     * @param achievement  the achievement to award.
      * @param awardParents whether parent achievements should be awarded.
      * @return {@code true} if the achievement was awarded, {@code false} otherwise
      */

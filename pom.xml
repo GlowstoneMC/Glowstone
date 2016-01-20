@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.glowstoneplusplus</groupId>
@@ -42,7 +43,8 @@
         <dependency>
             <groupId>net.glowstone</groupId>
             <artifactId>glowkit</artifactId>
-            <version>${bukkit.version}</version> <!-- Use https://github.com/GlowstonePlusPlus/Glowkit/tree/bukkit+glowkit -->
+            <version>${bukkit.version}
+            </version> <!-- Use https://github.com/GlowstonePlusPlus/Glowkit/tree/bukkit+glowkit -->
         </dependency>
         <dependency>
             <groupId>com.flowpowered</groupId>
@@ -151,7 +153,8 @@
                         </goals>
                         <configuration>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>net.glowstone.GlowServer</mainClass>
                                 </transformer>
                             </transformers>
