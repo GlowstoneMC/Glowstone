@@ -2,6 +2,7 @@ package net.glowstone.block.itemtype;
 
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowPlayer;
+import org.bukkit.GameMode;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
@@ -44,19 +45,27 @@ public class ItemFood extends ItemTimedUsage {
 
         player.setUsageItem(null);
         player.setUsageTime(0);
-        item.setAmount(item.getAmount() - 1);
+        if (item.getAmount() > 1) {
+            item.setAmount(item.getAmount() - 1);
+        } else {
+            player.getInventory().clear(player.getInventory().getHeldItemSlot());
+        }
         return true;
     }
 
     @Override
     public void startUse(GlowPlayer player, ItemStack item) {
-        player.setUsageItem(item);
-        player.setUsageTime(39);
+        if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
+            player.setUsageItem(item);
+            player.setUsageTime(39);
+        }
     }
 
     @Override
     public void endUse(GlowPlayer player, ItemStack item) {
-        player.setUsageItem(null);
-        player.setUsageTime(0);
+        if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
+            player.setUsageItem(null);
+            player.setUsageTime(0);
+        }
     }
 }

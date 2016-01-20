@@ -252,7 +252,7 @@ public final class ItemTable {
         reg(Material.BAKED_POTATO, new ItemFood(5, 7.2f));
         reg(Material.BREAD, new ItemFood(5, 6f));
         reg(Material.COOKED_CHICKEN, new ItemFood(6, 7.2f));
-        reg(Material.COOKED_FISH, new ItemFish350());
+        reg(Material.COOKED_FISH, new ItemFishCooked());
         reg(Material.COOKED_MUTTON, new ItemFood(6, 9.6f));
         reg(Material.COOKED_BEEF, new ItemFood(8, 12.8f));
         reg(Material.COOKED_RABBIT, new ItemFood(5, 6f));
@@ -266,7 +266,7 @@ public final class ItemTable {
         reg(Material.RABBIT_STEW, new ItemFood(10, 12f));
         reg(Material.RAW_BEEF, new ItemFood(3, 1.8f));
         reg(Material.RAW_CHICKEN, new ItemRawChicken());
-        reg(Material.RAW_FISH, new ItemFish349());
+        reg(Material.RAW_FISH, new ItemFishRaw());
         reg(Material.MUTTON, new ItemFood(2, 1.2f));
         reg(Material.PORK, new ItemFood(3, 1.8f));
         reg(Material.RABBIT, new ItemFood(3, 1.8f));

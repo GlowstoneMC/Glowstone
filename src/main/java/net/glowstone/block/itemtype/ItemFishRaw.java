@@ -4,7 +4,7 @@ import net.glowstone.entity.GlowPlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 
-public class ItemFish349 extends ItemFood {
+public class ItemFishRaw extends ItemFood {
 
     @Override
     protected float getSaturation(ItemStack stack) {

@@ -2,7 +2,7 @@ package net.glowstone.block.itemtype;
 
 import org.bukkit.inventory.ItemStack;
 
-public class ItemFish350 extends ItemFood {
+public class ItemFishCooked extends ItemFood {
 
     @Override
     protected float getSaturation(ItemStack stack) {
