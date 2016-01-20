@@ -376,6 +376,7 @@ public final class ServerConfig {
         WARNING_STATE("advanced.deprecated-verbose", "false", Migrate.BUKKIT, "settings.deprecated-verbose"),
         COMPRESSION_THRESHOLD("advanced.compression-threshold", 256, Migrate.PROPS, "network-compression-threshold"),
         PROXY_SUPPORT("advanced.proxy-support", false),
+        PLAYER_SAMPLE_COUNT("advanced.player-sample-count", 12),
 
         // query rcon etc
         QUERY_ENABLED("extras.query-enabled", false, Migrate.PROPS, "enable-query"),

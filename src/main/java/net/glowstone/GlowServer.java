@@ -1805,4 +1805,8 @@ public final class GlowServer implements Server {
     public boolean getAllowClientMods() {
         return config.getBoolean(ServerConfig.Key.ALLOW_CLIENT_MODS);
     }
+
+    public int getPlayerSampleCount() {
+        return config.getInt(ServerConfig.Key.PLAYER_SAMPLE_COUNT);
+    }
 }
