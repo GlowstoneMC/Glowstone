@@ -1797,4 +1797,12 @@ public final class GlowServer implements Server {
     public String getConsoleLogDateFormat() {
         return config.getString(ServerConfig.Key.CONSOLE_LOG_DATE);
     }
+
+    public String getServerType() {
+        return "BUKKIT"; // TODO: configurable? may want to advertise as VANILLA or FML in some cases?
+    }
+
+    public boolean getAllowClientMods() {
+        return config.getBoolean(ServerConfig.Key.ALLOW_CLIENT_MODS);
+    }
 }
