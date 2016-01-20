@@ -1,6 +1,7 @@
 package net.glowstone.entity;
 
 import com.flowpowered.networking.Message;
+import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.inventory.EquipmentMonitor;
@@ -98,6 +99,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     private final AttributeManager attributeManager;
 
     /**
+     * The LivingEntity's number of ticks since death
+     */
+    @Getter
+    private int deathTicks = 0;
+
+    /**
      * Creates a mob within the specified world.
      *
      * @param location The location.
@@ -115,6 +122,13 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Override
     public void pulse() {
         super.pulse();
+
+        if (isDead()) {
+            deathTicks++;
+            if (deathTicks >= 20) {
+                remove();
+            }
+        }
 
         // invulnerability
         if (noDamageTicks > 0) {
@@ -143,7 +157,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }
 
         if (isWithinSolidBlock())
-                damage(1, EntityDamageEvent.DamageCause.SUFFOCATION);
+            damage(1, EntityDamageEvent.DamageCause.SUFFOCATION);
 
         // potion effects
         List<PotionEffect> effects = new ArrayList<>(potionEffects.values());
@@ -438,12 +452,13 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         if (health > getMaxHealth()) health = getMaxHealth();
         this.health = health;
 
-        //TODO: Once Glowstone has proper entity support, entities can have UUID names on the scoreboard
-        if (this instanceof GlowPlayer) {
-            GlowPlayer player = (GlowPlayer) this;
-            for (Objective objective: getServer().getScoreboardManager().getMainScoreboard().getObjectivesByCriteria(Criterias.HEALTH)) {
-                objective.getScore(player.getName()).setScore((int) health);
-            }
+        for (Objective objective: getServer().getScoreboardManager().getMainScoreboard().getObjectivesByCriteria(Criterias.HEALTH)) {
+            objective.getScore(this.getName()).setScore((int) health);
+        }
+
+        if (health == 0) {
+            playEffect(EntityEffect.DEATH);
+            active = false;
         }
     }
 
