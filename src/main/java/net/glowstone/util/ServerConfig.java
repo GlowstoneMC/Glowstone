@@ -326,6 +326,7 @@ public final class ServerConfig {
         CONSOLE_PROMPT("console.prompt", ">"),
         CONSOLE_DATE("console.date-format", "HH:mm:ss"),
         CONSOLE_LOG_DATE("console.log-date-format", "yyyy/MM/dd HH:mm:ss"),
+        ALLOW_CLIENT_MODS("server.allow-client-mods", true),
 
         // game props
         GAMEMODE("game.gamemode", "SURVIVAL", Migrate.PROPS, "gamemode"),
