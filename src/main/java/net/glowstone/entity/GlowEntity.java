@@ -148,7 +148,7 @@ public abstract class GlowEntity implements Entity {
     /**
      * Passanger
      */
-    private GlowEntity passanger;
+    private GlowEntity passenger;
 
     /**
      * Vehicle
@@ -785,19 +785,19 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public Entity getPassenger() {
-        return passanger;
+        return passenger;
     }
 
     @Override
     public boolean setPassenger(Entity bPassenger) {
         Preconditions.checkArgument(bPassenger != this, "Entity cannot ride itself.");
 
-        if (this.passanger == bPassenger) return false; // nothing changed
+        if (this.passenger == bPassenger) return false; // nothing changed
 
         if (bPassenger == null) {
-            this.passanger.vehicleChanged = true;
-            this.passanger.vehicle = null;
-            this.passanger = null;
+            this.passenger.vehicleChanged = true;
+            this.passenger.vehicle = null;
+            this.passenger = null;
         } else {
 
             if (!(bPassenger instanceof GlowEntity)) {
@@ -806,18 +806,18 @@ public abstract class GlowEntity implements Entity {
 
             GlowEntity passanger = (GlowEntity) bPassenger;
 
-            if (this.passanger != null) {
-                this.passanger.vehicleChanged = true;
-                this.passanger.vehicle = null;
+            if (this.passenger != null) {
+                this.passenger.vehicleChanged = true;
+                this.passenger.vehicle = null;
             }
 
             if (passanger.vehicle != null) {
-                passanger.vehicle.passanger = null;
+                passanger.vehicle.passenger = null;
             }
 
-            this.passanger = passanger;
-            this.passanger.vehicle = this;
-            this.passanger.vehicleChanged = true;
+            this.passenger = passanger;
+            this.passenger.vehicle = this;
+            this.passenger.vehicleChanged = true;
         }
         return true;
     }
