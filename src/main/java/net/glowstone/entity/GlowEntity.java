@@ -1,6 +1,7 @@
 package net.glowstone.entity;
 
 import com.flowpowered.networking.Message;
+import com.google.common.base.Preconditions;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowServer;
@@ -143,6 +144,17 @@ public abstract class GlowEntity implements Entity {
      * How long the entity has been on fire, or 0 if it is not.
      */
     private int fireTicks = 0;
+
+    /**
+     * Passanger
+     */
+    private GlowEntity passanger;
+
+    /**
+     * Vehicle
+     */
+    protected GlowEntity vehicle;
+    protected boolean vehicleChanged;
 
     /**
      * Creates an entity and adds it to the specified world.
@@ -389,6 +401,7 @@ public abstract class GlowEntity implements Entity {
         metadata.resetChanges();
         teleported = false;
         velocityChanged = false;
+        vehicleChanged = false;
     }
 
     /**
@@ -501,6 +514,11 @@ public abstract class GlowEntity implements Entity {
         // send velocity if needed
         if (velocityChanged) {
             result.add(new EntityVelocityMessage(id, velocity));
+        }
+
+        if (vehicleChanged) {
+            //this method will not call for this player, we don't need check SELF_ID
+            result.add(new AttachEntityMessage(getEntityId(), vehicle != null ? vehicle.getEntityId() : -1, false));
         }
 
         return result;
@@ -737,12 +755,12 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public boolean leaveVehicle() {
-        return false;
+        return isInsideVehicle() && vehicle.setPassenger(null);
     }
 
     @Override
     public Entity getVehicle() {
-        return null;
+        return vehicle;
     }
 
     @Override
@@ -767,12 +785,41 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public Entity getPassenger() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return passanger;
     }
 
     @Override
-    public boolean setPassenger(Entity passenger) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public boolean setPassenger(Entity bPassenger) {
+        Preconditions.checkArgument(bPassenger != this, "Entity cannot ride itself.");
+
+        if (this.passanger == bPassenger) return false; // nothing changed
+
+        if (bPassenger == null) {
+            this.passanger.vehicleChanged = true;
+            this.passanger.vehicle = null;
+            this.passanger = null;
+        } else {
+
+            if (!(bPassenger instanceof GlowEntity)) {
+                return false;
+            }
+
+            GlowEntity passanger = (GlowEntity) bPassenger;
+
+            if (this.passanger != null) {
+                this.passanger.vehicleChanged = true;
+                this.passanger.vehicle = null;
+            }
+
+            if (passanger.vehicle != null) {
+                passanger.vehicle.passanger = null;
+            }
+
+            this.passanger = passanger;
+            this.passanger.vehicle = this;
+            this.passanger.vehicleChanged = true;
+        }
+        return true;
     }
 
     @Override
