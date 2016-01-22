@@ -18,7 +18,7 @@ public class NBTReadLimiter {
     public void read(int length) {
         this.read += length;
         if (this.read > this.limit) {
-            throw new IllegalStateException("Readed more than " + this.limit + " bytes from NBT tag");
+            throw new IllegalStateException("Read more than " + this.limit + " bytes from NBT tag");
         }
     }
 }
