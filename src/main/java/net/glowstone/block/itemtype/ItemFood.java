@@ -57,7 +57,7 @@ public class ItemFood extends ItemTimedUsage {
     public void startUse(GlowPlayer player, ItemStack item) {
         if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
             player.setUsageItem(item);
-            player.setUsageTime(39);
+            player.setUsageTime(32);
         }
     }
 

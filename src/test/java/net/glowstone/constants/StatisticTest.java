@@ -8,7 +8,7 @@ import org.junit.runners.Parameterized;
 
 import java.util.Collection;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Tests for {@link GlowStatistic}.

@@ -4,9 +4,7 @@ import com.google.common.collect.ImmutableList;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Tests for {@link SuperList}, {@link SuperIterator} and {@link SuperListIterator}.

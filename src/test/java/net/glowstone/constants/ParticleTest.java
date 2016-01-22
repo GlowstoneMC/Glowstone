@@ -10,8 +10,7 @@ import org.junit.runners.Parameterized;
 
 import java.util.Collection;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * Tests for {@link GlowParticle}.
