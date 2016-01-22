@@ -2200,6 +2200,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * @param channel The channel to add.
      */
     public void addChannel(String channel) {
+        Preconditions.checkArgument(listeningChannels.size() < 128, "Cannot add more than 127 channels!");
         if (listeningChannels.add(channel)) {
             EventFactory.callEvent(new PlayerRegisterChannelEvent(this, channel));
         }
