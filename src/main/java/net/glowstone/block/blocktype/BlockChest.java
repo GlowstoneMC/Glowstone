@@ -88,7 +88,6 @@ public class BlockChest extends BlockContainer {
         BlockState state = block.getState();
         if (state instanceof org.bukkit.block.Chest) {
             org.bukkit.block.Chest chest = (org.bukkit.block.Chest) state;
-            //todo animation etc.
             player.openInventory(chest.getInventory());
             return true;
         }
