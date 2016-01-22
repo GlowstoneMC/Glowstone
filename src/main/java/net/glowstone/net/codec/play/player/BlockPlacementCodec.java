@@ -14,7 +14,7 @@ public final class BlockPlacementCodec implements Codec<BlockPlacementMessage> {
     public BlockPlacementMessage decode(ByteBuf buf) throws IOException {
         BlockVector pos = GlowBufUtils.readBlockPosition(buf);
         int direction = buf.readByte();
-        ItemStack heldItem = GlowBufUtils.readSlot(buf);
+        ItemStack heldItem = GlowBufUtils.readSlot(buf, true);
         int cursorX = buf.readByte();
         int cursorY = buf.readByte();
         int cursorZ = buf.readByte();
