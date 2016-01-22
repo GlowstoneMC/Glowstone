@@ -33,6 +33,8 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
+import org.spigotmc.event.entity.EntityDismountEvent;
+import org.spigotmc.event.entity.EntityMountEvent;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -795,6 +797,9 @@ public abstract class GlowEntity implements Entity {
         if (this.passenger == bPassenger) return false; // nothing changed
 
         if (bPassenger == null) {
+
+            EventFactory.callEvent(new EntityDismountEvent(this.passenger, this));
+
             this.passenger.vehicleChanged = true;
             this.passenger.vehicle = null;
             this.passenger = null;
@@ -804,18 +809,27 @@ public abstract class GlowEntity implements Entity {
                 return false;
             }
 
-            GlowEntity passanger = (GlowEntity) bPassenger;
+            GlowEntity passenger = (GlowEntity) bPassenger;
+
+            if (passenger.vehicle != null) {
+                EventFactory.callEvent(new EntityDismountEvent(passenger, passenger.vehicle));
+                passenger.vehicle.passenger = null;
+                passenger.vehicle = null;
+            }
+
+            EntityMountEvent event = new EntityMountEvent(passenger, this);
+            EventFactory.callEvent(event);
+            if (event.isCancelled()) {
+                return false;
+            }
 
             if (this.passenger != null) {
+                EventFactory.callEvent(new EntityDismountEvent(this.passenger, this));
                 this.passenger.vehicleChanged = true;
                 this.passenger.vehicle = null;
             }
 
-            if (passanger.vehicle != null) {
-                passanger.vehicle.passenger = null;
-            }
-
-            this.passenger = passanger;
+            this.passenger = passenger;
             this.passenger.vehicle = this;
             this.passenger.vehicleChanged = true;
         }

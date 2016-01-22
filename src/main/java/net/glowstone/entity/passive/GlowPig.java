@@ -7,6 +7,7 @@ import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -68,11 +69,12 @@ public class GlowPig extends GlowAnimal implements Pig {
             ItemStack hand = player.getItemInHand();
             if (hand.getType() == Material.SADDLE) {
                 setSaddle(true);
-                if (hand.getAmount() > 1) {
-                    hand.setAmount(hand.getAmount() - 1);
-                    player.setItemInHand(hand);
-                } else {
-                    player.setItemInHand(null);
+                if (player.getGameMode() != GameMode.CREATIVE) {
+                    if (hand.getAmount() > 1) {
+                        hand.setAmount(hand.getAmount() - 1);
+                    } else {
+                        player.setItemInHand(null);
+                    }
                 }
                 return true;
             }
