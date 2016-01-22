@@ -124,9 +124,9 @@ public final class GlowItem extends GlowEntity implements Item {
                     break;
                 }
                 if (entity instanceof GlowItem) {
-                    if ((GlowItem) entity != this && ((GlowItem) entity).getItemStack().getType() == getItemStack().getType()) {
+                    if (entity != this && ((GlowItem) entity).getItemStack().isSimilar(getItemStack())) {
                         getItemStack().setAmount(((GlowItem) entity).getItemStack().getAmount() + getItemStack().getAmount());
-                        ((GlowItem) entity).remove();
+                        entity.remove();
                     }
                 }
             }
