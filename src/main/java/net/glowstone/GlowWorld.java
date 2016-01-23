@@ -129,7 +129,7 @@ public final class GlowWorld implements World {
     /**
      * Contains how regular blocks should be pulsed.
      */
-    private final Map tickMap = new HashMap<>();
+    private final HashMap<Location, Long> tickMap = new HashMap<>();
     private final Spigot spigot = new Spigot() {
         @Override
         public void playEffect(Location location, Effect effect) {
@@ -217,7 +217,7 @@ public final class GlowWorld implements World {
      * Per-chunk spawn limits on various types of entities.
      */
     private int monsterLimit, animalLimit, waterAnimalLimit, ambientLimit;
-    private Map<Integer, GlowStructure> structures;
+    private Map<Integer, GlowStructure> structures = null;
 
     /**
      * The maximum height at which players may place blocks.
@@ -730,7 +730,7 @@ public final class GlowWorld implements World {
 
                 long loadTime = System.currentTimeMillis();
 
-                int total = (radius * 2 + 1) * (radius * 2 + 1), current = 0;
+                int total = ((radius << 1) + 1) * ((radius << 1) + 1), current = 0;
 
                 for (int x = centerX - radius; x <= centerX + radius; ++x) {
                     for (int z = centerZ - radius; z <= centerZ + radius; ++z) {
@@ -743,7 +743,7 @@ public final class GlowWorld implements World {
                         spawnChunkLock.acquire(new GlowChunk.Key(x, z));
                         if (System.currentTimeMillis() >= loadTime + 1000) {
                             int progress = 100 * current / total;
-                            GlowServer.logger.info("Preparing spawn for " + name + ": " + progress + "%");
+                            GlowServer.logger.info("Preparing spawn for " + name + ": " + progress + '%');
                             loadTime = System.currentTimeMillis();
                         }
                     }
@@ -1193,7 +1193,7 @@ public final class GlowWorld implements World {
     // Entity spawning
 
     @Override
-    public <T extends Entity> T spawn(Location location, Class<T> clazz) throws IllegalArgumentException {
+    public <T extends Entity> T spawn(Location location, Class<T> clazz) {
         GlowEntity entity = null;
 
         if (TNTPrimed.class.isAssignableFrom(clazz)) {
@@ -1216,9 +1216,9 @@ public final class GlowWorld implements World {
 
     @Override
     public GlowItem dropItemNaturally(Location location, ItemStack item) {
-        double xs = random.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
-        double ys = random.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
-        double zs = random.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
+        double xs = random.nextFloat() * 0.7F + 0.15;
+        double ys = random.nextFloat() * 0.7F + 0.15;
+        double zs = random.nextFloat() * 0.7F + 0.15;
         location = location.clone().add(xs, ys, zs);
         GlowItem dropItem = new GlowItem(location, item);
         dropItem.setVelocity(new Vector(0, 0.1F, 0));
@@ -1231,7 +1231,7 @@ public final class GlowWorld implements World {
 
         // Transformative magic
         Vector randVec = new Vector(random.nextGaussian(), random.nextGaussian(), random.nextGaussian());
-        randVec.multiply(0.0075 * (double) spread);
+        randVec.multiply(0.0075 * spread);
 
         velocity.normalize();
         velocity.add(randVec);
@@ -1245,12 +1245,12 @@ public final class GlowWorld implements World {
     }
 
     @Override
-    public FallingBlock spawnFallingBlock(Location location, Material material, byte data) throws IllegalArgumentException {
+    public FallingBlock spawnFallingBlock(Location location, Material material, byte data) {
         return null;
     }
 
     @Override
-    public FallingBlock spawnFallingBlock(Location location, int blockId, byte blockData) throws IllegalArgumentException {
+    public FallingBlock spawnFallingBlock(Location location, int blockId, byte blockData) {
         return null;
     }
 
@@ -1582,6 +1582,7 @@ public final class GlowWorld implements World {
             storageProvider.getChunkIoService().unload();
             storageProvider.getScoreboardIoService().unload();
         } catch (IOException e) {
+            GlowServer.logger.log(Level.SEVERE, "IO error while unloading world: ", e);
             return false;
         }
         return true;
@@ -1706,7 +1707,7 @@ public final class GlowWorld implements World {
     }
 
     private Map<Location, Long> getTickMap() {
-        return new HashMap<>(tickMap);
+        return tickMap;
     }
 
     /**
@@ -1742,7 +1743,7 @@ public final class GlowWorld implements World {
     private static final class WorldMetadataStore extends MetadataStoreBase<World> implements MetadataStore<World> {
         @Override
         protected String disambiguate(World subject, String metadataKey) {
-            return subject.getName() + ":" + metadataKey;
+            return subject.getName() + ':' + metadataKey;
         }
     }
 }
