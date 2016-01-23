@@ -140,10 +140,13 @@ public final class ChunkManager {
                 EventFactory.callEvent(new ChunkLoadEvent(chunk, false));
                 return true;
             }
-        } catch (Exception e) {
-            GlowServer.logger.log(Level.SEVERE, "Error while loading chunk (" + x + ',' + z + ')', e);
-            // an error in chunk reading may have left the chunk in an invalid state
-            // (i.e. double initialization errors), so it's forcibly unloaded here
+        // an error in chunk reading may have left the chunk in an invalid state
+        // (i.e. double initialization errors), so it's forcibly unloaded here
+        } catch (IOException e) {
+            GlowServer.logger.log(Level.SEVERE, "IO error while loading chunk (" + x + ',' + z + ')', e);
+            chunk.unload(false, false);
+        } catch (RuntimeException e) {
+            GlowServer.logger.log(Level.SEVERE, "Runtime error while loading chunk (" + x + ',' + z + ')', e);
             chunk.unload(false, false);
         }
 
