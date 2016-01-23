@@ -141,7 +141,7 @@ public final class ChunkManager {
                 return true;
             }
         } catch (Exception e) {
-            GlowServer.logger.log(Level.SEVERE, "Error while loading chunk (" + x + "," + z + ")", e);
+            GlowServer.logger.log(Level.SEVERE, "Error while loading chunk (" + x + ',' + z + ')', e);
             // an error in chunk reading may have left the chunk in an invalid state
             // (i.e. double initialization errors), so it's forcibly unloaded here
             chunk.unload(false, false);
@@ -156,7 +156,7 @@ public final class ChunkManager {
         try {
             generateChunk(chunk, x, z);
         } catch (Throwable ex) {
-            GlowServer.logger.log(Level.SEVERE, "Error while generating chunk (" + x + "," + z + ")", ex);
+            GlowServer.logger.log(Level.SEVERE, "Error while generating chunk (" + x + ',' + z + ')', ex);
             return false;
         }
 
@@ -179,7 +179,7 @@ public final class ChunkManager {
             Set<ChunkLock> lockSet = locks.get(entry.getKey());
             if (lockSet == null || lockSet.size() == 0) {
                 if (!entry.getValue().unload(true, true)) {
-                    GlowServer.logger.warning("Failed to unload chunk " + world.getName() + ":" + entry.getKey());
+                    GlowServer.logger.warning("Failed to unload chunk " + world.getName() + ':' + entry.getKey());
                 }
             }
             if (!entry.getValue().isLoaded()) {
@@ -216,9 +216,9 @@ public final class ChunkManager {
         chunk.setPopulated(true);
 
         Random random = new Random(world.getSeed());
-        long xRand = random.nextLong() / 2 * 2 + 1;
-        long zRand = random.nextLong() / 2 * 2 + 1;
-        random.setSeed((long) x * xRand + (long) z * zRand ^ world.getSeed());
+        long xRand = (random.nextLong() >> 1 << 1) + 1;
+        long zRand = (random.nextLong() >> 1 << 1) + 1;
+        random.setSeed(x * xRand + z * zRand ^ world.getSeed());
 
         for (BlockPopulator p : world.getPopulators()) {
             p.populate(world, random, chunk);
@@ -238,7 +238,7 @@ public final class ChunkManager {
         try {
             populateChunk(x, z, true);
         } catch (Throwable ex) {
-            GlowServer.logger.log(Level.SEVERE, "Error while populating chunk (" + x + "," + z + ")", ex);
+            GlowServer.logger.log(Level.SEVERE, "Error while populating chunk (" + x + ',' + z + ')', ex);
         }
     }
 
@@ -246,7 +246,7 @@ public final class ChunkManager {
      * Initialize a single chunk from the chunk generator.
      */
     private void generateChunk(GlowChunk chunk, int x, int z) {
-        Random random = new Random((long) x * 341873128712L + (long) z * 132897987541L);
+        Random random = new Random(x * 341873128712L + z * 132897987541L);
         BiomeGrid biomes = new BiomeGrid();
 
         int[] biomeValues = biomeGrid[0].generateValues(x * GlowChunk.WIDTH, z * GlowChunk.HEIGHT, GlowChunk.WIDTH, GlowChunk.HEIGHT);
@@ -256,7 +256,7 @@ public final class ChunkManager {
 
         // extended sections with data
         if (generator instanceof GlowChunkGenerator) {
-            GlowChunkData chunkData = (GlowChunkData) ((GlowChunkGenerator) generator).generateChunkData(world, random, x, z, biomes);
+            GlowChunkData chunkData = (GlowChunkData) generator.generateChunkData(world, random, x, z, biomes);
             short[][] extSections = chunkData.getSections();
             if (extSections != null) {
                 GlowChunk.ChunkSection[] sections = new GlowChunk.ChunkSection[extSections.length];
@@ -326,7 +326,7 @@ public final class ChunkManager {
             for (int cx = 0; cx < 16; ++cx) {
                 for (int cz = 0; cz < 16; ++cz) {
                     for (int cy = by; cy < by + 16; ++cy) {
-                        char type = (char) types[(cx * 16 + cz) * 128 + cy];
+                        char type = (char) types[(((cx << 4) + cz) << 7) + cy];
                         sec.types[sec.index(cx, cy, cz)] = (char) (type << 4);
                     }
                 }
@@ -358,7 +358,7 @@ public final class ChunkManager {
             generateChunk(chunk, x, z);
             populateChunk(x, z, false);  // should this be forced?
         } catch (Throwable ex) {
-            GlowServer.logger.log(Level.SEVERE, "Error while regenerating chunk (" + x + "," + z + ")", ex);
+            GlowServer.logger.log(Level.SEVERE, "Error while regenerating chunk (" + x + ',' + z + ')', ex);
             return false;
         }
         return true;
@@ -451,7 +451,7 @@ public final class ChunkManager {
 
         @Override
         public String toString() {
-            return "ChunkLock{" + desc + "}";
+            return "ChunkLock{" + desc + '}';
         }
 
         @Override
