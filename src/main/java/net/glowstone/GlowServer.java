@@ -164,7 +164,7 @@ public final class GlowServer implements Server {
     /**
      * An empty player array used for deprecated getOnlinePlayers.
      */
-    private final Player[] emptyPlayerArray = new Player[0];
+    public static final Player[] PLAYERS = new Player[0];
     /**
      * A RSA key pair used for encryption and authentication
      */
@@ -316,7 +316,7 @@ public final class GlowServer implements Server {
         for (int i = 0; i < args.length; i++) {
             final String opt = args[i];
 
-            if (!opt.startsWith("-")) {
+            if (!(opt.length() > 0 && opt.charAt(0) == '-')) {
                 System.err.println("Ignored invalid option: " + opt);
                 continue;
             }
@@ -1181,7 +1181,7 @@ public final class GlowServer implements Server {
     @Override
     @Deprecated
     public Player[] _INVALID_getOnlinePlayers() {
-        return getOnlinePlayers().toArray(emptyPlayerArray);
+        return getOnlinePlayers().toArray(PLAYERS);
     }
 
     @Override
