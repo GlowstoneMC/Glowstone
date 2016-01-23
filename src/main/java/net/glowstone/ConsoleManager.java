@@ -19,8 +19,12 @@ import org.fusesource.jansi.AnsiConsole;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.*;
 import java.util.logging.Formatter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A meta-class to handle all logging and input-related console improvements.
@@ -39,7 +43,7 @@ public final class ConsoleManager {
     private ConsoleCommandSender sender;
 
     private boolean running = true;
-    private boolean jLine = false;
+    private final AtomicBoolean jLine = new AtomicBoolean(false);
 
     public ConsoleManager(GlowServer server) {
         this.server = server;
@@ -96,7 +100,7 @@ public final class ConsoleManager {
     }
 
     public void startConsole(boolean jLine) {
-        this.jLine = jLine;
+        this.jLine.set(jLine);
 
         sender = new ColoredCommandSender();
         CONSOLE_DATE = server.getConsoleDateFormat();
@@ -134,18 +138,14 @@ public final class ConsoleManager {
     private String colorize(String string) {
         if (string.indexOf(ChatColor.COLOR_CHAR) < 0) {
             return string;  // no colors in the message
-        } else if (!jLine || !reader.getTerminal().isAnsiSupported()) {
+        } else if (!jLine.get() || !reader.getTerminal().isAnsiSupported()) {
             return ChatColor.stripColor(string);  // color not supported
         } else {
             // colorize or strip all colors
             for (ChatColor color : colors) {
-                if (replacements.containsKey(color)) {
-                    string = string.replaceAll("(?i)" + color.toString(), replacements.get(color));
-                } else {
-                    string = string.replaceAll("(?i)" + color.toString(), "");
-                }
+                string = replacements.containsKey(color) ? string.replaceAll("(?i)" + color.toString(), replacements.get(color)) : string.replaceAll("(?i)" + color.toString(), "");
             }
-            return string + Ansi.ansi().reset().toString();
+            return String.format("%s%s", string, Ansi.ansi().reset().toString());
         }
     }
 
@@ -171,41 +171,42 @@ public final class ConsoleManager {
     }
 
     private static class RotatingFileHandler extends StreamHandler {
+        private static final Pattern DATE_PATTERN = Pattern.compile("%D", Pattern.LITERAL);
         private final SimpleDateFormat dateFormat;
         private final String template;
         private final boolean rotate;
-        private String filename;
+        private final AtomicReference<String> filename = new AtomicReference<>();
 
         public RotatingFileHandler(String template) {
             this.template = template;
             rotate = template.contains("%D");
             dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            filename = calculateFilename();
+            filename.set(calculateFilename());
             updateOutput();
         }
 
         private void updateOutput() {
             try {
-                setOutputStream(new FileOutputStream(filename, true));
-            } catch (IOException ex) {
-                logger.log(Level.SEVERE, "Unable to open " + filename + " for writing", ex);
+                setOutputStream(new FileOutputStream(filename.get(), true));
+            } catch (FileNotFoundException e) {
+                logger.log(Level.SEVERE, "Unable to open " + filename.get() + " for writing", e);
             }
         }
 
         private void checkRotate() {
             if (rotate) {
                 String newFilename = calculateFilename();
-                if (!filename.equals(newFilename)) {
-                    filename = newFilename;
+                if (!filename.get().equals(newFilename)) {
+                    filename.set(newFilename);
                     // note that the console handler doesn't see this message
-                    super.publish(new LogRecord(Level.INFO, "Log rotating to: " + filename));
+                    super.publish(new LogRecord(Level.INFO, "Log rotating to: " + filename.get()));
                     updateOutput();
                 }
             }
         }
 
         private String calculateFilename() {
-            return template.replace("%D", dateFormat.format(new Date()));
+            return DATE_PATTERN.matcher(template).replaceAll(Matcher.quoteReplacement(dateFormat.format(new Date())));
         }
 
         @Override
@@ -237,8 +238,8 @@ public final class ConsoleManager {
 
                 // location to position the cursor at (before autofilling takes place)
                 return buffer.lastIndexOf(' ') + 1;
-            } catch (Throwable t) {
-                logger.log(Level.WARNING, "Error while tab completing", t);
+            } catch (Exception e) {
+                logger.log(Level.WARNING, "Error while tab completing", e);
                 return cursor;
             }
         }
@@ -250,11 +251,7 @@ public final class ConsoleManager {
             String command = "";
             while (running) {
                 try {
-                    if (jLine) {
-                        command = reader.readLine(CONSOLE_PROMPT, null);
-                    } else {
-                        command = reader.readLine();
-                    }
+                    command = jLine.get() ? reader.readLine(CONSOLE_PROMPT, null) : reader.readLine();
 
                     if (command == null || command.trim().length() == 0)
                         continue;
@@ -262,8 +259,10 @@ public final class ConsoleManager {
                     server.getScheduler().runTask(null, new CommandTask(command.trim()));
                 } catch (CommandException ex) {
                     logger.log(Level.WARNING, "Exception while executing command: " + command, ex);
-                } catch (Exception ex) {
-                    logger.log(Level.SEVERE, "Error while reading commands", ex);
+                } catch (IOException e) {
+                    logger.log(Level.SEVERE, "IO error while reading commands", e);
+                } catch (IllegalArgumentException e) {
+                    logger.log(Level.SEVERE, "Wrong arguments while reading commands", e);
                 }
             }
         }
@@ -422,13 +421,13 @@ public final class ConsoleManager {
         @Override
         public synchronized void flush() {
             try {
-                if (jLine) {
+                if (jLine.get()) {
                     reader.print(ConsoleReader.RESET_LINE + "");
                     reader.flush();
                     super.flush();
                     try {
                         reader.drawLine();
-                    } catch (Throwable ex) {
+                    } catch (IOException e) {
                         reader.getCursorBuffer().clear();
                     }
                     reader.flush();
