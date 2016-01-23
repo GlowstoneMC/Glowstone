@@ -18,9 +18,10 @@ public final class WindowClickLogic {
     /**
      * Determine the ClickType of a window click message based on the raw
      * mode, button, and slot values if possible.
-     * @param mode The raw mode number.
+     *
+     * @param mode   The raw mode number.
      * @param button The raw button number.
-     * @param slot The raw slot number.
+     * @param slot   The raw slot number.
      * @return The ClickType of the window click, or UNKNOWN.
      */
     public static ClickType getClickType(final int mode, final int button, final int slot) {
@@ -89,10 +90,11 @@ public final class WindowClickLogic {
     /**
      * Determine the InventoryAction to be performed for a window click based
      * on the click type, slot type, and items involved.
+     *
      * @param clickType The click type.
-     * @param slot The slot clicked.
-     * @param cursor The item on the cursor.
-     * @param slotItem The item in the slot.
+     * @param slot      The slot clicked.
+     * @param cursor    The item on the cursor.
+     * @param slotItem  The item in the slot.
      * @return The InventoryAction to perform, or UNKNOWN.
      */
     public static InventoryAction getAction(ClickType clickType, InventoryType.SlotType slot, ItemStack cursor, ItemStack slotItem) {
@@ -212,6 +214,7 @@ public final class WindowClickLogic {
 
     /**
      * Check if a given InventoryAction involves placing items into the slot.
+     *
      * @param action The InventoryAction.
      * @return True if the cursor is to be added to the slot.
      */
@@ -228,6 +231,7 @@ public final class WindowClickLogic {
 
     /**
      * Check if a given InventoryAction involves taking items from the slot.
+     *
      * @param action The InventoryAction.
      * @return True if the slot is to be added to the cursor.
      */

@@ -56,11 +56,11 @@ public final class GlowScore implements Score {
         return objective.getScoreboard().getScores(entry).contains(score);
     }
 
-    public void setLocked(boolean locked) {
-        this.locked = locked;
-    }
-
     public boolean getLocked() {
         return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 }

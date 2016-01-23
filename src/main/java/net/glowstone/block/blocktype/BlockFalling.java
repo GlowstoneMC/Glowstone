@@ -44,19 +44,16 @@ public class BlockFalling extends BlockType {
         me.setTypeId(0, false);
         // todo: replace with me.getWorld().spawnFallingBlock(me.getLocation(), drop, me.getData());
         // on a delay to prevent the block not being visible because its new location was just dug
-        me.getWorld().getServer().getScheduler().runTask(null, new Runnable() {
-            @Override
-            public void run() {
-                int x = me.getX(), y = me.getY(), z = me.getZ();
-                for (; y > 0; --y) {
-                    Material check = me.getWorld().getBlockAt(x, y - 1, z).getType();
-                    if (supportingBlock(check)) {
-                        me.getWorld().getBlockAt(x, y, z).setTypeIdAndData(drop.getId(), data, true);
-                        break;
-                    }
+        me.getWorld().getServer().getScheduler().runTask(null, () -> {
+            int x = me.getX(), y = me.getY(), z = me.getZ();
+            for (; y > 0; --y) {
+                Material check = me.getWorld().getBlockAt(x, y - 1, z).getType();
+                if (supportingBlock(check)) {
+                    me.getWorld().getBlockAt(x, y, z).setTypeIdAndData(drop.getId(), data, true);
+                    break;
                 }
-                me.applyPhysics(oldType, 0, data, (byte) 0);
             }
+            me.applyPhysics(oldType, 0, data, (byte) 0);
         });
     }
 

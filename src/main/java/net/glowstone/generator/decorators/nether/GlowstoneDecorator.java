@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class GlowstoneDecorator extends BlockDecorator {
 
-    private static final BlockFace[] SIDES = new BlockFace[] {BlockFace.EAST, BlockFace.WEST, BlockFace.DOWN, BlockFace.UP, BlockFace.SOUTH, BlockFace.NORTH};
+    private static final BlockFace[] SIDES = new BlockFace[]{BlockFace.EAST, BlockFace.WEST, BlockFace.DOWN, BlockFace.UP, BlockFace.SOUTH, BlockFace.NORTH};
 
     private boolean variableAmount;
 

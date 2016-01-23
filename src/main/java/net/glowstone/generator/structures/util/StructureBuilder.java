@@ -32,7 +32,7 @@ public class StructureBuilder {
     }
 
     public void addRandomMaterial(Map<StructureMaterial, Integer> materials, int weigth, Material type, int data) {
-        materials.put(new StructureMaterial(type,  data), weigth);
+        materials.put(new StructureMaterial(type, data), weigth);
     }
 
     public StructureMaterial getRandomMaterial(Random random, Map<StructureMaterial, Integer> materials) {
@@ -230,10 +230,7 @@ public class StructureBuilder {
 
     public boolean spawnMob(Vector pos, EntityType entityType) {
         final Vector vec = translate(pos);
-        if (boundingBox.isVectorInside(vec)) {
-            return world.spawnEntity(new Location(world, vec.getBlockX(), vec.getBlockY(), vec.getBlockZ()), entityType) != null;
-        }
-        return false;
+        return boundingBox.isVectorInside(vec) && world.spawnEntity(new Location(world, vec.getBlockX(), vec.getBlockY(), vec.getBlockZ()), entityType) != null;
     }
 
     private Vector translate(Vector pos) {

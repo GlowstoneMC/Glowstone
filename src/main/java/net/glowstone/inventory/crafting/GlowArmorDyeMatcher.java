@@ -14,15 +14,10 @@ import java.util.List;
 
 public class GlowArmorDyeMatcher extends ItemMatcher {
 
-    public static final MaterialMatcher LEATHERS = new MaterialMatcher() {
-        @Override
-        public boolean matches(Material material) {
-            return material.equals(Material.LEATHER_HELMET)
-                    || material.equals(Material.LEATHER_CHESTPLATE)
-                    || material.equals(Material.LEATHER_LEGGINGS)
-                    || material.equals(Material.LEATHER_BOOTS);
-        }
-    };
+    public static final MaterialMatcher LEATHERS = material -> material.equals(Material.LEATHER_HELMET)
+            || material.equals(Material.LEATHER_CHESTPLATE)
+            || material.equals(Material.LEATHER_LEGGINGS)
+            || material.equals(Material.LEATHER_BOOTS);
 
     @Override
     public ItemStack getResult(ItemStack[] matrix) {

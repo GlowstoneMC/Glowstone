@@ -22,8 +22,8 @@ public class DungeonPopulator extends BlockPopulator {
         SimplexNoiseGenerator noise = new SimplexNoiseGenerator(world);
         double density = noise.noise(source.getX(), source.getZ());
         if (density > 0.8) {
-        // TODO later switch to this loop to have 8 attempts of dungeon placement per chunk, once we get caves and ravines
-        //for (int i = 0; i < 8; i++) {
+            // TODO later switch to this loop to have 8 attempts of dungeon placement per chunk, once we get caves and ravines
+            //for (int i = 0; i < 8; i++) {
             int x = (source.getX() << 4) + random.nextInt(16);
             int z = (source.getZ() << 4) + random.nextInt(16);
             int y = random.nextInt(256);
@@ -33,7 +33,7 @@ public class DungeonPopulator extends BlockPopulator {
             if (dungeon.generate(world, random, new StructureBoundingBox(new Vector(x - 15, 1, z - 15), new Vector(x + 15, 511, z + 15)), delegate)) {
                 delegate.updateBlockStates();
             }
-        //}
+            //}
         }
     }
 }

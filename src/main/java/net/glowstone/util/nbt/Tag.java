@@ -12,6 +12,7 @@ public abstract class Tag<T> {
 
     /**
      * Creates the tag with the specified type.
+     *
      * @param type The type.
      */
     protected Tag(TagType type) {
@@ -20,6 +21,7 @@ public abstract class Tag<T> {
 
     /**
      * Gets the type of this tag.
+     *
      * @return The type of this tag.
      */
     public final TagType getType() {
@@ -28,6 +30,7 @@ public abstract class Tag<T> {
 
     /**
      * Gets the value of this tag.
+     *
      * @return The value of this tag.
      */
     public abstract T getValue();

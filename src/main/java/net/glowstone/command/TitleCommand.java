@@ -23,6 +23,68 @@ public class TitleCommand extends BukkitCommand {
         this.setPermission("glowstone.command.title");
     }
 
+    /**
+     * Converts a valid JSON chat component to a basic colored string. This does not parse
+     * components like hover or click events. This returns null on parse failure.
+     *
+     * @param json the json chat component
+     * @return the colored string, or null
+     */
+    // TODO: Replace with proper chat components when possible
+    public static String convertJson(JSONObject json) {
+        if (json == null || !json.containsKey("text") && !(json.get("text") instanceof String))
+            return null; // We can't even parse this
+
+        ChatColor color = ChatColor.WHITE;
+        if (json.containsKey("color")) {
+            if (!(json.get("color") instanceof String)) return null;
+            color = toColor((String) json.get("color"));
+        }
+        if (color == null) return null; // Invalid color
+
+        String text = color + (String) json.get("text");
+
+        // Check for "extra"
+        if (json.containsKey("extra")) {
+            Object extraObj = json.get("extra");
+
+            // Check to make sure it's a valid component
+            if (!(extraObj instanceof JSONArray)) return null;
+
+            // Check all components in 'extra'
+            JSONArray extra = (JSONArray) extraObj;
+            if (extra.isEmpty()) return null;
+            for (Object o : extra) {
+                if (!(o instanceof JSONObject)) return null;
+
+                JSONObject e = (JSONObject) o;
+
+                // Attempt to parse the component
+                String temp = convertJson(e);
+                if (temp == null) return null; // Could not parse 'extra'
+
+                // It's valid, append it
+                text += temp;
+            }
+        }
+
+        return text;
+    }
+
+    private static ChatColor toColor(String name) {
+        if (name.equals("obfuscated"))
+            return ChatColor.MAGIC;
+
+        // Loop to avoid exceptions, we'll just return null if it can't be parsed
+        for (ChatColor color : ChatColor.values()) {
+            if (color == ChatColor.MAGIC) continue; // This isn't a valid value for color anyways
+
+            if (color.name().equals(name.toUpperCase()))
+                return color;
+        }
+        return null;
+    }
+
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         if (!testPermission(sender)) return true;
@@ -166,68 +228,5 @@ public class TitleCommand extends BukkitCommand {
 
         // If we made it this far then it has a pretty good chance at being valid
         return true;
-    }
-
-    /**
-     * Converts a valid JSON chat component to a basic colored string. This does not parse
-     * components like hover or click events. This returns null on parse failure.
-     *
-     * @param json the json chat component
-     *
-     * @return the colored string, or null
-     */
-    // TODO: Replace with proper chat components when possible
-    public static String convertJson(JSONObject json) {
-        if (json == null || !json.containsKey("text") && !(json.get("text") instanceof String))
-            return null; // We can't even parse this
-
-        ChatColor color = ChatColor.WHITE;
-        if (json.containsKey("color")) {
-            if (!(json.get("color") instanceof String)) return null;
-            color = toColor((String) json.get("color"));
-        }
-        if (color == null) return null; // Invalid color
-
-        String text = color + (String) json.get("text");
-
-        // Check for "extra"
-        if (json.containsKey("extra")) {
-            Object extraObj = json.get("extra");
-
-            // Check to make sure it's a valid component
-            if (!(extraObj instanceof JSONArray)) return null;
-
-            // Check all components in 'extra'
-            JSONArray extra = (JSONArray) extraObj;
-            if (extra.isEmpty()) return null;
-            for (Object o : extra) {
-                if (!(o instanceof JSONObject)) return null;
-
-                JSONObject e = (JSONObject) o;
-
-                // Attempt to parse the component
-                String temp = convertJson(e);
-                if (temp == null) return null; // Could not parse 'extra'
-
-                // It's valid, append it
-                text += temp;
-            }
-        }
-
-        return text;
-    }
-
-    private static ChatColor toColor(String name) {
-        if (name.equals("obfuscated"))
-            return ChatColor.MAGIC;
-
-        // Loop to avoid exceptions, we'll just return null if it can't be parsed
-        for (ChatColor color : ChatColor.values()) {
-            if (color == ChatColor.MAGIC) continue; // This isn't a valid value for color anyways
-
-            if (color.name().equals(name.toUpperCase()))
-                return color;
-        }
-        return null;
     }
 }

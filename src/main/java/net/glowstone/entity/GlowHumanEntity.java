@@ -47,27 +47,22 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
      * The ender chest inventory of this human.
      */
     private final GlowInventory enderChest = new GlowInventory(this, InventoryType.ENDER_CHEST);
-
-    /**
-     * The item the player has on their cursor.
-     */
-    private ItemStack itemOnCursor;
-
     /**
      * Whether this human is sleeping or not.
      */
     protected boolean sleeping = false;
-
-    /**
-     * How long this human has been sleeping.
-     */
-    private int sleepingTicks = 0;
-
     /**
      * This human's PermissibleBase for permissions.
      */
     protected PermissibleBase permissions;
-
+    /**
+     * The item the player has on their cursor.
+     */
+    private ItemStack itemOnCursor;
+    /**
+     * How long this human has been sleeping.
+     */
+    private int sleepingTicks = 0;
     /**
      * Whether this human is considered an op.
      */
@@ -84,14 +79,15 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     private InventoryView inventoryView;
 
     /**
-     *  The player's xpSeed. Used for calculation of enchantments.
+     * The player's xpSeed. Used for calculation of enchantments.
      */
     private int xpSeed;
 
     /**
      * Creates a human within the specified world and with the specified name.
+     *
      * @param location The location.
-     * @param profile The human's profile with name and UUID information.
+     * @param profile  The human's profile with name and UUID information.
      */
     public GlowHumanEntity(Location location, PlayerProfile profile) {
         super(location);
@@ -107,14 +103,6 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     ////////////////////////////////////////////////////////////////////////////
     // Internals
-
-    @Override
-    public void setUniqueId(UUID uuid) {
-        // silently allow setting the same UUID again
-        if (!profile.getUniqueId().equals(uuid)) {
-            throw new IllegalStateException("UUID of " + this + " is already " + profile.getUniqueId());
-        }
-    }
 
     @Override
     public List<Message> createSpawnMessage() {
@@ -152,31 +140,40 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     /**
      * Get this human entity's PlayerProfile with associated data.
+     *
      * @return The PlayerProfile.
      */
     public final PlayerProfile getProfile() {
         return profile;
     }
 
-    public void setXpSeed(int xpSeed) {
-        this.xpSeed = xpSeed;
-    }
-
     public int getXpSeed() {
         return xpSeed;
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Properties
+    public void setXpSeed(int xpSeed) {
+        this.xpSeed = xpSeed;
+    }
 
     @Override
     public String getName() {
         return profile.getName();
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Properties
+
     @Override
     public UUID getUniqueId() {
         return profile.getUniqueId();
+    }
+
+    @Override
+    public void setUniqueId(UUID uuid) {
+        // silently allow setting the same UUID again
+        if (!profile.getUniqueId().equals(uuid)) {
+            throw new IllegalStateException("UUID of " + this + " is already " + profile.getUniqueId());
+        }
     }
 
     @Override
@@ -221,7 +218,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         }
     }
 
-     ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
     // Permissions
 
     @Override
@@ -438,6 +435,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     /**
      * Drops the item this entity currently has in its hands and remove the
      * item from the HumanEntity's inventory.
+     *
      * @param wholeStack True if the whole stack should be dropped
      */
     public void dropItemInHand(boolean wholeStack) {
@@ -468,9 +466,10 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     /**
      * Spawns a new {@link GlowItem} in the world, as if this HumanEntity had
      * dropped it. Note that this does NOT remove the item from the inventory.
+     *
      * @param stack The item to drop
      * @return the GlowItem that was generated, or null if the spawning was cancelled
-     * @throws NullPointerException if the stack is null
+     * @throws NullPointerException     if the stack is null
      * @throws IllegalArgumentException if the stack has an amount less than one
      */
     public GlowItem drop(ItemStack stack) {

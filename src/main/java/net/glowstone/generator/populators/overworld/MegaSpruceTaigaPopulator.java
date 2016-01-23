@@ -14,7 +14,7 @@ public class MegaSpruceTaigaPopulator extends MegaTaigaPopulator {
 
     private static final Biome[] BIOMES = {Biome.MEGA_SPRUCE_TAIGA, Biome.MEGA_SPRUCE_TAIGA_HILLS};
     private static final TreeDecoration[] TREES = {new TreeDecoration(RedwoodTree.class, 44), new TreeDecoration(TallRedwoodTree.class, 22),
-        new TreeDecoration(MegaSpruceTree.class, 33)};
+            new TreeDecoration(MegaSpruceTree.class, 33)};
 
     public MegaSpruceTaigaPopulator() {
         super();

@@ -25,6 +25,7 @@ import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A GlowLivingEntity is a {@link org.bukkit.entity.Player} or {@link org.bukkit.entity.Monster}.
@@ -37,57 +38,57 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * Potion effects on the entity.
      */
     private final Map<PotionEffectType, PotionEffect> potionEffects = new HashMap<>();
-
-    /**
-     * The entity's health.
-     */
-    protected double health;
-
-    /**
-     * The magnitude of the last damage the entity took.
-     */
-    private double lastDamage;
-
-    /**
-     * How long the entity has until it runs out of air.
-     */
-    private int airTicks = 300;
-
-    /**
-     * The maximum amount of air the entity can hold.
-     */
-    private int maximumAir = 300;
-
-    /**
-     * The number of ticks remaining in the invincibility period.
-     */
-    private int noDamageTicks = 0;
-
-    /**
-     * The default length of the invincibility period.
-     */
-    private int maxNoDamageTicks = 10;
-
-    /**
-     * Whether the entity should be removed if it is too distant from players.
-     */
-    private boolean removeDistance;
-
-    /**
-     * Whether the (non-Player) entity can pick up armor and tools.
-     */
-    private boolean pickupItems;
-
-    /**
-     * Monitor for the equipment of this entity.
-     */
-    private EquipmentMonitor equipmentMonitor = new EquipmentMonitor(this);
-
     /**
      * The LivingEntity's AttributeManager.
      */
     private final AttributeManager attributeManager;
-
+    /**
+     * The entity's health.
+     */
+    protected double health;
+    /**
+     * The magnitude of the last damage the entity took.
+     */
+    private double lastDamage;
+    /**
+     * How long the entity has until it runs out of air.
+     */
+    private int airTicks = 300;
+    /**
+     * The maximum amount of air the entity can hold.
+     */
+    private int maximumAir = 300;
+    /**
+     * The number of ticks remaining in the invincibility period.
+     */
+    private int noDamageTicks = 0;
+    /**
+     * The default length of the invincibility period.
+     */
+    private int maxNoDamageTicks = 10;
+    /**
+<<<<<<< c52d7197e59ebcffb26c3cb6330c7145236e78cc
+=======
+     * A custom overhead name to be shown for non-Players.
+     */
+    private String customName;
+    /**
+     * Whether the custom name is shown.
+     */
+    private boolean customNameVisible;
+    /**
+>>>>>>> Cleanup code
+     * Whether the entity should be removed if it is too distant from players.
+     */
+    private boolean removeDistance;
+    /**
+     * Whether the (non-Player) entity can pick up armor and tools.
+     */
+    private boolean pickupItems;
+    /**
+     * Monitor for the equipment of this entity.
+     */
+    private EquipmentMonitor equipmentMonitor = new EquipmentMonitor(this);
     /**
      * The LivingEntity's number of ticks since death
      */
@@ -179,9 +180,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     public List<Message> createUpdateMessage() {
         List<Message> messages = super.createUpdateMessage();
 
-        for (EquipmentMonitor.Entry change : equipmentMonitor.getChanges()) {
-            messages.add(new EntityEquipmentMessage(id, change.slot, change.item));
-        }
+        messages.addAll(equipmentMonitor.getChanges().stream().map(change -> new EntityEquipmentMessage(id, change.slot, change.item)).collect(Collectors.toList()));
 
         attributeManager.applyMessages(messages);
 
@@ -290,6 +289,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     /**
      * Get the hurt sound of this entity, or null for silence.
+     *
      * @return the hurt sound if available
      */
     protected Sound getHurtSound() {
@@ -298,6 +298,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     /**
      * Get the death sound of this entity, or null for silence.
+     *
      * @return the death sound if available
      */
     protected Sound getDeathSound() {
@@ -307,6 +308,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     /**
      * Get whether this entity should take damage from the specified source.
      * Usually used to check environmental sources such as drowning.
+     *
      * @param damageCause the damage source to check
      * @return whether this entity can take damage from the source
      */
@@ -346,13 +348,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     private List<Block> getLineOfSight(HashSet<Byte> transparent, int maxDistance, int maxLength) {
-        Set<Material> materials = new HashSet<Material>();
-        Iterator<Byte> itr = transparent.iterator();
-
-        while (itr.hasNext()) {
-            byte b = itr.next().byteValue();
-            materials.add(Material.getMaterial((int) b));
-        }
+        Set<Material> materials = transparent.stream().map(b -> Material.getMaterial((int) b)).collect(Collectors.toSet());
 
         return getLineOfSight(materials, maxDistance, maxLength);
     }
@@ -442,7 +438,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         if (health > getMaxHealth()) health = getMaxHealth();
         this.health = health;
 
-        for (Objective objective: getServer().getScoreboardManager().getMainScoreboard().getObjectivesByCriteria(Criterias.HEALTH)) {
+        for (Objective objective : getServer().getScoreboardManager().getMainScoreboard().getObjectivesByCriteria(Criterias.HEALTH)) {
             objective.getScore(this.getName()).setScore((int) health);
         }
 
@@ -685,6 +681,28 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             this.damage(ev.getDamage());
         }
         this.setFallDistance(0);
+    }
+
+    // Custom name
+
+    @Override
+    public String getCustomName() {
+        return customName;
+    }
+
+    @Override
+    public void setCustomName(String name) {
+        customName = name;
+    }
+
+    @Override
+    public boolean isCustomNameVisible() {
+        return customNameVisible;
+    }
+
+    @Override
+    public void setCustomNameVisible(boolean flag) {
+        customNameVisible = flag;
     }
 
     ////////////////////////////////////////////////////////////////////////////

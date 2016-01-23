@@ -61,6 +61,7 @@ public class BlockContainer extends BlockType {
 
     /**
      * Returns the drops for block itself, WITHOUT it's contents.
+     *
      * @param block The block the drops should be calculated for
      * @return the drops
      */

@@ -86,7 +86,7 @@ public final class UserListItemMessage implements Message {
 
     // inner classes
 
-    public static enum Action {
+    public enum Action {
         ADD_PLAYER,
         UPDATE_GAMEMODE,
         UPDATE_LATENCY,

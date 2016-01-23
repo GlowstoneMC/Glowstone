@@ -10,8 +10,8 @@ import java.io.IOException;
  */
 public final class GlowScoreboardManager implements ScoreboardManager {
 
-    private GlowScoreboard mainScoreboard = null;
     private final GlowServer server;
+    private GlowScoreboard mainScoreboard = null;
 
     public GlowScoreboardManager(GlowServer server) {
         this.server = server;

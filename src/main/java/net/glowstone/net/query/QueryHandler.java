@@ -17,6 +17,7 @@ import java.util.logging.Level;
 
 /**
  * Class for handling UDP packets according to the minecraft server query protocol.
+ *
  * @see QueryServer
  * @see <a href="http://wiki.vg/Query">Protocol Specifications</a>
  */

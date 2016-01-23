@@ -14,17 +14,16 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Implementation for scoreboard teams.
  */
 public final class GlowTeam implements Team {
 
-    private GlowScoreboard scoreboard;
     private final String name;
-
     private final HashSet<OfflinePlayer> players = new HashSet<>();
-
+    private GlowScoreboard scoreboard;
     // properties
     private String displayName;
     private String prefix = "";
@@ -59,9 +58,7 @@ public final class GlowTeam implements Team {
 
     Message getCreateMessage() {
         List<String> playerNames = new ArrayList<>(players.size());
-        for (OfflinePlayer player : players) {
-            playerNames.add(player.getName());
-        }
+        playerNames.addAll(players.stream().map(OfflinePlayer::getName).collect(Collectors.toList()));
         return ScoreboardTeamMessage.create(name, displayName, prefix, suffix, friendlyFire, seeInvisible, nameTagVisibility, color, playerNames);
     }
 
@@ -150,15 +147,15 @@ public final class GlowTeam implements Team {
         return deathMessageVisibility;
     }
 
-    @Override
-    public boolean hasEntry(String s) throws IllegalArgumentException, IllegalStateException {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
     public void setDeathMessageVisibility(NameTagVisibility deathMessageVisibility) throws IllegalStateException, IllegalArgumentException {
         Validate.notNull(deathMessageVisibility, "NameTagVisibility cannot be null!");
         checkValid();
         this.deathMessageVisibility = deathMessageVisibility;
+    }
+
+    @Override
+    public boolean hasEntry(String s) throws IllegalArgumentException, IllegalStateException {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -229,6 +226,7 @@ public final class GlowTeam implements Team {
 
     /**
      * Remove a player without propagating the change to the scoreboard.
+     *
      * @param player The player to remove.
      */
     void rawRemovePlayer(OfflinePlayer player) {

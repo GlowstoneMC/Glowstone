@@ -3,7 +3,7 @@ package net.glowstone.constants;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for the {@link GlowDisplaySlot} class.

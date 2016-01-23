@@ -15,13 +15,62 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- *
  * @author Sam
  */
 public class BlockRedstone extends BlockNeedsAttached {
 
+    private static final BlockFace[] ADJACENT = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
+    private static final BlockFace[] SIDES = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
+
     public BlockRedstone() {
         setDrops(new ItemStack(Material.REDSTONE));
+    }
+
+    public static List<BlockFace> calculateConnections(GlowBlock block) {
+        List<BlockFace> value = new ArrayList<>();
+        List<BlockFace> connections = new ArrayList<>();
+        value.add(BlockFace.DOWN);
+        for (BlockFace face : SIDES) {
+            GlowBlock target = block.getRelative(face);
+            switch (target.getType()) {
+                case DIODE_BLOCK_ON:
+                case DIODE_BLOCK_OFF:
+                    Diode diode = (Diode) target.getState().getData();
+                    if (face == diode.getFacing() || face == diode.getFacing().getOppositeFace()) {
+                        connections.add(face);
+                    }
+                    break;
+                case REDSTONE_BLOCK:
+                case REDSTONE_TORCH_ON:
+                case REDSTONE_TORCH_OFF:
+                case REDSTONE_WIRE:
+                case WOOD_BUTTON:
+                case STONE_BUTTON:
+                case LEVER:
+                    connections.add(face);
+                    break;
+                default:
+                    if (target.getType().isSolid() && !block.getRelative(BlockFace.UP).getType().isSolid()
+                            && target.getRelative(BlockFace.UP).getType() == Material.REDSTONE_WIRE) {
+                        connections.add(face);
+                    } else if (!target.getType().isSolid()
+                            && target.getRelative(BlockFace.DOWN).getType() == Material.REDSTONE_WIRE) {
+                        connections.add(face);
+                    }
+                    break;
+            }
+        }
+
+        if (connections.isEmpty()) {
+            value.addAll(Arrays.asList(SIDES));
+        } else {
+            value.addAll(connections);
+            if (connections.size() == 1) {
+                value.add(connections.get(0).getOppositeFace());
+            }
+        }
+
+        return value;
     }
 
     @Override
@@ -213,56 +262,6 @@ public class BlockRedstone extends BlockNeedsAttached {
         for (GlowPlayer p : me.getWorld().getRawPlayers()) {
             p.sendBlockChange(bcmsg);
         }
-    }
-
-    private static final BlockFace[] ADJACENT = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
-    private static final BlockFace[] SIDES = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
-
-    public static List<BlockFace> calculateConnections(GlowBlock block) {
-        List<BlockFace> value = new ArrayList<>();
-        List<BlockFace> connections = new ArrayList<>();
-        value.add(BlockFace.DOWN);
-        for (BlockFace face : SIDES) {
-            GlowBlock target = block.getRelative(face);
-            switch (target.getType()) {
-                case DIODE_BLOCK_ON:
-                case DIODE_BLOCK_OFF:
-                    Diode diode = (Diode) target.getState().getData();
-                    if (face == diode.getFacing() || face == diode.getFacing().getOppositeFace()) {
-                        connections.add(face);
-                    }
-                    break;
-                case REDSTONE_BLOCK:
-                case REDSTONE_TORCH_ON:
-                case REDSTONE_TORCH_OFF:
-                case REDSTONE_WIRE:
-                case WOOD_BUTTON:
-                case STONE_BUTTON:
-                case LEVER:
-                    connections.add(face);
-                    break;
-                default:
-                    if (target.getType().isSolid() && !block.getRelative(BlockFace.UP).getType().isSolid()
-                            && target.getRelative(BlockFace.UP).getType() == Material.REDSTONE_WIRE) {
-                        connections.add(face);
-                    } else if (!target.getType().isSolid()
-                            && target.getRelative(BlockFace.DOWN).getType() == Material.REDSTONE_WIRE) {
-                        connections.add(face);
-                    }
-                    break;
-            }
-        }
-
-        if (connections.isEmpty()) {
-            value.addAll(Arrays.asList(SIDES));
-        } else {
-            value.addAll(connections);
-            if (connections.size() == 1) {
-                value.add(connections.get(0).getOppositeFace());
-            }
-        }
-
-        return value;
     }
 
 }

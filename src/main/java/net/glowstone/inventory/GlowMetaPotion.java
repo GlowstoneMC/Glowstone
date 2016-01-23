@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
 
@@ -24,6 +25,28 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
 
         GlowMetaPotion potion = (GlowMetaPotion) meta;
         effects.addAll(potion.effects);
+    }
+
+    public static PotionEffect fromNBT(CompoundTag tag) {
+        PotionEffectType type = PotionEffectType.getById(tag.getByte("Id"));
+        int duration = tag.getInt("Duration");
+        int amplifier = tag.getByte("Amplifier");
+        boolean ambient = tag.isByte("Ambient") && tag.getBool("Ambient");
+        boolean particles = !tag.isByte("ShowParticles") || tag.getBool("ShowParticles");
+
+        return new PotionEffect(type, duration, amplifier, ambient, particles);
+    }
+
+    public static CompoundTag toNBT(PotionEffect effect) {
+        CompoundTag tag = new CompoundTag();
+
+        tag.putByte("Id", effect.getType().getId());
+        tag.putInt("Duration", effect.getDuration());
+        tag.putByte("Amplifier", effect.getAmplifier());
+        tag.putBool("Ambient", effect.isAmbient());
+        tag.putBool("ShowParticles", effect.hasParticles());
+
+        return tag;
     }
 
     @Override
@@ -53,10 +76,7 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         super.writeNbt(tag);
 
         if (hasCustomEffects()) {
-            List<CompoundTag> customEffects = new ArrayList<>();
-            for (PotionEffect effect : effects) {
-                customEffects.add(toNBT(effect));
-            }
+            List<CompoundTag> customEffects = effects.stream().map(GlowMetaPotion::toNBT).collect(Collectors.toList());
             tag.putCompoundList("CustomEffects", customEffects);
         }
     }
@@ -140,27 +160,5 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         if (effects.isEmpty()) return false;
         effects.clear();
         return true;
-    }
-
-    public static PotionEffect fromNBT(CompoundTag tag) {
-        PotionEffectType type = PotionEffectType.getById(tag.getByte("Id"));
-        int duration = tag.getInt("Duration");
-        int amplifier = tag.getByte("Amplifier");
-        boolean ambient = tag.isByte("Ambient") ? tag.getBool("Ambient") : false;
-        boolean particles = tag.isByte("ShowParticles") ? tag.getBool("ShowParticles") : true;
-
-        return new PotionEffect(type, duration, amplifier, ambient, particles);
-    }
-
-    public static CompoundTag toNBT(PotionEffect effect) {
-        CompoundTag tag = new CompoundTag();
-
-        tag.putByte("Id", effect.getType().getId());
-        tag.putInt("Duration", effect.getDuration());
-        tag.putByte("Amplifier", effect.getAmplifier());
-        tag.putBool("Ambient", effect.isAmbient());
-        tag.putBool("ShowParticles", effect.hasParticles());
-
-        return tag;
     }
 }

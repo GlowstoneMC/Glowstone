@@ -21,7 +21,7 @@ import java.util.Random;
 public class PlainsPopulator extends BiomePopulator {
 
     private static final FlowerType[] FLOWERS = {FlowerType.POPPY, FlowerType.HOUSTONIA, FlowerType.OXEYE_DAISY};
-    private static final FlowerType[] TULIPS = {FlowerType.TULIP_RED, FlowerType.TULIP_ORANGE, FlowerType.TULIP_WHITE, FlowerType.TULIP_PINK}; 
+    private static final FlowerType[] TULIPS = {FlowerType.TULIP_RED, FlowerType.TULIP_ORANGE, FlowerType.TULIP_WHITE, FlowerType.TULIP_PINK};
     private final OctaveGenerator noiseGen;
 
     public PlainsPopulator() {
@@ -34,7 +34,7 @@ public class PlainsPopulator extends BiomePopulator {
 
     @Override
     public Collection<Biome> getBiomes() {
-        return Collections.unmodifiableList(Arrays.asList(new Biome[] {Biome.PLAINS}));
+        return Collections.unmodifiableList(Arrays.asList(new Biome[]{Biome.PLAINS}));
     }
 
     @Override

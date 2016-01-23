@@ -24,9 +24,7 @@ public class SuperList<E> extends SuperCollection<E> implements List<E> {
     public List<E> asClone() {
         List<E> output = new ArrayList<>();
 
-        for (List<E> parent : getParents()) {
-            output.addAll(parent);
-        }
+        getParents().forEach(output::addAll);
 
         return output;
     }

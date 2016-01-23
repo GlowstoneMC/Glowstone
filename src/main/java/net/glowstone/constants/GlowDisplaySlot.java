@@ -10,12 +10,21 @@ import java.util.Arrays;
  */
 public final class GlowDisplaySlot {
 
-    private GlowDisplaySlot() {}
-
     private static final int[] ids = new int[DisplaySlot.values().length];
+
+    static {
+        Arrays.fill(ids, -1);
+        set(DisplaySlot.PLAYER_LIST, 0);
+        set(DisplaySlot.SIDEBAR, 1);
+        set(DisplaySlot.BELOW_NAME, 2);
+    }
+
+    private GlowDisplaySlot() {
+    }
 
     /**
      * Get the id for a specified DisplaySlot.
+     *
      * @param slot the DisplaySlot.
      * @return the id number.
      */
@@ -26,13 +35,6 @@ public final class GlowDisplaySlot {
 
     private static void set(DisplaySlot slot, int id) {
         ids[slot.ordinal()] = id;
-    }
-
-    static {
-        Arrays.fill(ids, -1);
-        set(DisplaySlot.PLAYER_LIST, 0);
-        set(DisplaySlot.SIDEBAR, 1);
-        set(DisplaySlot.BELOW_NAME, 2);
     }
 
 }

@@ -20,16 +20,15 @@ import static org.junit.Assert.*;
 public class TestItemTypes {
 
     private static ItemTable table;
-
-    @BeforeClass
-    public static void staticSetup() {
-        table = ItemTable.instance();
-    }
-
     private final Material material;
 
     public TestItemTypes(Material material) {
         this.material = material;
+    }
+
+    @BeforeClass
+    public static void staticSetup() {
+        table = ItemTable.instance();
     }
 
     @Parameterized.Parameters

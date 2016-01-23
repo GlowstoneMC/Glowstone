@@ -15,15 +15,11 @@ import java.util.Map;
  */
 public final class StructureStorage {
 
-    private StructureStorage() {
-    }
-
     /**
      * A table which maps structure ids to compound readers. This is generally used
      * to map stored structures to actual structures.
      */
     private static final Map<String, StructureStore<?>> idTable = new HashMap<>();
-
     /**
      * A table which maps structures to stores. This is generally used to map
      * structures being stored.
@@ -40,10 +36,14 @@ public final class StructureStorage {
         //bind(new MineshaftStore());
     }
 
+    private StructureStorage() {
+    }
+
     /**
      * Binds a store by adding entries for it to the tables.
+     *
      * @param store The store object.
-     * @param <T> The type of structure.
+     * @param <T>   The type of structure.
      */
     private static <T extends GlowStructure> void bind(StructureStore<T> store) {
         idTable.put(store.getId(), store);
@@ -52,6 +52,7 @@ public final class StructureStorage {
 
     /**
      * Returns all known structure stores.
+     *
      * @return A collection containing all structure stores.
      */
     public static Collection<StructureStore<?>> getStructureStores() {
@@ -60,7 +61,8 @@ public final class StructureStorage {
 
     /**
      * Load a structure in the given world from the given data tag.
-     * @param world The target world.
+     *
+     * @param world    The target world.
      * @param compound The tag to load from.
      * @return The newly constructed structure.
      * @throws IllegalArgumentException if there is an error in the data.
@@ -88,8 +90,9 @@ public final class StructureStorage {
 
     /**
      * Save a structure data to the given compound tag.
+     *
      * @param structure The structure to save.
-     * @param compound The target tag.
+     * @param compound  The target tag.
      */
     public static StructureStore<GlowStructure> saveStructure(GlowStructure structure, CompoundTag compound) {
         // look up the store for the structure

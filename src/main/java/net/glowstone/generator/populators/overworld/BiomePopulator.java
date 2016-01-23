@@ -18,10 +18,6 @@ public class BiomePopulator extends BlockPopulator {
 
     private static final TreeDecoration[] TREES = {new TreeDecoration(BigOakTree.class, 1), new TreeDecoration(GenericTree.class, 9)};
     private static final FlowerDecoration[] FLOWERS = {new FlowerDecoration(FlowerType.DANDELION, 2), new FlowerDecoration(FlowerType.POPPY, 1)};
-
-    private final List<BlockPopulator> inGroundPopulators = new ArrayList<>();
-    private final List<BlockPopulator> onGroundPopulators = new ArrayList<>();
-
     protected final LakeDecorator waterLakeDecorator = new LakeDecorator(Material.STATIONARY_WATER);
     protected final LakeDecorator lavaLakeDecorator = new LakeDecorator(Material.STATIONARY_LAVA);
     protected final DungeonPopulator dungeonPopulator = new DungeonPopulator();
@@ -29,7 +25,6 @@ public class BiomePopulator extends BlockPopulator {
     protected final UnderwaterDecorator sandPatchDecorator = new UnderwaterDecorator(Material.SAND);
     protected final UnderwaterDecorator clayPatchDecorator = new UnderwaterDecorator(Material.CLAY);
     protected final UnderwaterDecorator gravelPatchDecorator = new UnderwaterDecorator(Material.GRAVEL);
-
     protected final DoublePlantDecorator doublePlantDecorator = new DoublePlantDecorator();
     protected final TreeDecorator treeDecorator = new TreeDecorator();
     protected final DesertWellDecorator desertWellDecorator = new DesertWellDecorator();
@@ -37,12 +32,14 @@ public class BiomePopulator extends BlockPopulator {
     protected final TallGrassDecorator tallGrassDecorator = new TallGrassDecorator();
     protected final DeadBushDecorator deadBushDecorator = new DeadBushDecorator();
     protected final MushroomDecorator brownMushroomDecorator = new MushroomDecorator(Material.BROWN_MUSHROOM);
-    protected final MushroomDecorator redMushroomDecorator = new MushroomDecorator(Material.RED_MUSHROOM);   
+    protected final MushroomDecorator redMushroomDecorator = new MushroomDecorator(Material.RED_MUSHROOM);
     protected final SugarCaneDecorator sugarCaneDecorator = new SugarCaneDecorator();
     protected final PumpkinDecorator pumpkinDecorator = new PumpkinDecorator();
     protected final CactusDecorator cactusDecorator = new CactusDecorator();
     protected final FlowingLiquidDecorator flowingWaterDecorator = new FlowingLiquidDecorator(Material.WATER);
     protected final FlowingLiquidDecorator flowingLavaDecorator = new FlowingLiquidDecorator(Material.LAVA);
+    private final List<BlockPopulator> inGroundPopulators = new ArrayList<>();
+    private final List<BlockPopulator> onGroundPopulators = new ArrayList<>();
 
     public BiomePopulator(Biome... biome) {
         inGroundPopulators.add(waterLakeDecorator);

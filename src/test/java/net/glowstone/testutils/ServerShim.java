@@ -502,13 +502,13 @@ public class ServerShim implements Server {
     }
 
     @Override
-    public void setIdleTimeout(int threshold) {
-
+    public int getIdleTimeout() {
+        return 0;
     }
 
     @Override
-    public int getIdleTimeout() {
-        return 0;
+    public void setIdleTimeout(int threshold) {
+
     }
 
     @Override

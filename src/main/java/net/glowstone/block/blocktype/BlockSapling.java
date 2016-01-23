@@ -56,7 +56,7 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
             } else {
                 generateTree(TreeType.BIG_TREE, block, player);
             }
-        } else if (data ==  TreeSpecies.REDWOOD.ordinal()) {
+        } else if (data == TreeSpecies.REDWOOD.ordinal()) {
             // check saplings around to grow a mega redwood
             final GlowBlock hugeTreeBlock = searchSourceBlockForHugeTree(block);
             if (hugeTreeBlock == null) {
@@ -64,9 +64,9 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
             } else {
                 generateTree(TreeType.MEGA_REDWOOD, hugeTreeBlock, player);
             }
-        } else if (data ==  TreeSpecies.BIRCH.ordinal()) {
+        } else if (data == TreeSpecies.BIRCH.ordinal()) {
             generateTree(TreeType.BIRCH, block, player);
-        } else if (data ==  TreeSpecies.JUNGLE.ordinal()) {
+        } else if (data == TreeSpecies.JUNGLE.ordinal()) {
             // check saplings around to grow a mega jungle tree
             final GlowBlock hugeTreeBlock = searchSourceBlockForHugeTree(block);
             if (hugeTreeBlock == null) {
@@ -74,9 +74,9 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
             } else {
                 generateTree(TreeType.JUNGLE, hugeTreeBlock, player);
             }
-        } else if (data ==  TreeSpecies.ACACIA.ordinal()) {
+        } else if (data == TreeSpecies.ACACIA.ordinal()) {
             generateTree(TreeType.ACACIA, block, player);
-        } else if (data ==  TreeSpecies.DARK_OAK.ordinal()) {
+        } else if (data == TreeSpecies.DARK_OAK.ordinal()) {
             // check saplings around to grow a dark oak tree
             final GlowBlock hugeTreeBlock = searchSourceBlockForHugeTree(block);
             if (hugeTreeBlock != null) {
@@ -103,9 +103,9 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
         final BlockStateDelegate blockStateDelegate = new BlockStateDelegate();
         boolean canGrow = false;
         if (GlowTree.newInstance(type, random, loc, blockStateDelegate).generate()) {
-            final List<BlockState> blockStates = new ArrayList<BlockState>(blockStateDelegate.getBlockStates());
+            final List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
             StructureGrowEvent growEvent =
-                    new StructureGrowEvent(loc, type, player == null ? false : true, player, blockStates);
+                    new StructureGrowEvent(loc, type, player != null, player, blockStates);
             EventFactory.callEvent(growEvent);
             if (!growEvent.isCancelled()) {
                 canGrow = true;

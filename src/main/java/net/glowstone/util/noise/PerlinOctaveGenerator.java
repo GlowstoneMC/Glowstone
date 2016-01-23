@@ -27,6 +27,20 @@ public class PerlinOctaveGenerator extends OctaveGenerator {
         noise = new double[xSize * ySize * zSize];
     }
 
+    protected static NoiseGenerator[] createOctaves(Random rand, int octaves) {
+        NoiseGenerator[] result = new NoiseGenerator[octaves];
+
+        for (int i = 0; i < octaves; i++) {
+            result[i] = new PerlinNoise(rand);
+        }
+
+        return result;
+    }
+
+    protected static long floor(double x) {
+        return x >= 0 ? (long) x : (long) x - 1;
+    }
+
     public double[] fBm(double x, double z, double lacunarity, double persistence) {
         return fBm(x, 0, z, lacunarity, persistence);
     }
@@ -69,19 +83,5 @@ public class PerlinOctaveGenerator extends OctaveGenerator {
         }
 
         return noise;
-    }
-
-    protected static NoiseGenerator[] createOctaves(Random rand, int octaves) {
-        NoiseGenerator[] result = new NoiseGenerator[octaves];
-
-        for (int i = 0; i < octaves; i++) {
-            result[i] = new PerlinNoise(rand);
-        }
-
-        return result;
-    }
-
-    protected static long floor(double x) {
-        return x >= 0 ? (long) x : (long) x - 1;
     }
 }

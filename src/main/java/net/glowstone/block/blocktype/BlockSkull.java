@@ -25,6 +25,21 @@ public class BlockSkull extends BlockType {
         setDrops(new ItemStack(Material.SKULL_ITEM));
     }
 
+    public static SkullType getType(int id) {
+        if (id < 0 || id >= SkullType.values().length) {
+            throw new IllegalArgumentException("ID not a Skull type: " + id);
+        }
+        return SkullType.values()[id];
+    }
+
+    public static byte getType(SkullType type) {
+        return (byte) type.ordinal();
+    }
+
+    public static boolean canRotate(Skull skull) {
+        return skull.getFacing() == BlockFace.SELF;
+    }
+
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
         return BlockFace.DOWN != against; // Skulls can't be placed on bottom of block
@@ -83,20 +98,5 @@ public class BlockSkull extends BlockType {
         drop.setDurability((short) skull.getSkullType().ordinal());
 
         return Arrays.asList(drop);
-    }
-
-    public static SkullType getType(int id) {
-        if (id < 0 || id >= SkullType.values().length) {
-            throw new IllegalArgumentException("ID not a Skull type: " + id);
-        }
-        return SkullType.values()[id];
-    }
-
-    public static byte getType(SkullType type) {
-        return (byte) type.ordinal();
-    }
-
-    public static boolean canRotate(Skull skull) {
-        return skull.getFacing() == BlockFace.SELF;
     }
 }

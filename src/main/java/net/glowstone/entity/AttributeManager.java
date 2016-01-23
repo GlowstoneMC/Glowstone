@@ -64,6 +64,27 @@ public class AttributeManager {
         return properties;
     }
 
+    @RequiredArgsConstructor
+    public enum Key {
+        KEY_MAX_HEALTH("generic.maxHealth", 20, Double.MAX_VALUE),
+        KEY_FOLLOW_RANGE("generic.followRange", 32, 2048),
+        KEY_KNOCKBACK_RESISTANCE("generic.knockbackResistance", 0, 1),
+        KEY_MOVEMENT_SPEED("generic.movementSpeed", 0.699999988079071, Double.MAX_VALUE),
+        KEY_ATTACK_DAMAGE("generic.attackDamage", 2, Double.MAX_VALUE),
+        KEY_HORSE_JUMP_STRENGTH("horse.jumpStrength", 0.7, 2),
+        KEY_ZOMBIE_SPAWN_REINFORCEMENTS("zombie.spawnReinforcements", 0, 1);
+
+
+        private final String name;
+        @Getter
+        private final double def, max;
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+
     public static final class Property {
         @Getter
         private double value;
@@ -82,27 +103,5 @@ public class AttributeManager {
         private final UUID uuid;
         private final double amount;
         private final byte operation;
-    }
-
-    @RequiredArgsConstructor
-    public static enum Key {
-        KEY_MAX_HEALTH("generic.maxHealth", 20, Double.MAX_VALUE),
-        KEY_FOLLOW_RANGE("generic.followRange", 32, 2048),
-        KEY_KNOCKBACK_RESISTANCE("generic.knockbackResistance", 0, 1),
-        KEY_MOVEMENT_SPEED("generic.movementSpeed", 0.699999988079071, Double.MAX_VALUE),
-        KEY_ATTACK_DAMAGE("generic.attackDamage", 2, Double.MAX_VALUE),
-        KEY_HORSE_JUMP_STRENGTH("horse.jumpStrength", 0.7, 2),
-        KEY_ZOMBIE_SPAWN_REINFORCEMENTS("zombie.spawnReinforcements", 0, 1),
-        ;
-
-
-        private final String name;
-        @Getter
-        private final double def, max;
-
-        @Override
-        public String toString() {
-            return name;
-        }
     }
 }

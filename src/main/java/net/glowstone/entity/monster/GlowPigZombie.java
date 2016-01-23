@@ -27,14 +27,14 @@ public class GlowPigZombie extends GlowZombie implements PigZombie {
     }
 
     @Override
-    public void setAngry(boolean angry) {
-        if (!angry) anger = 0;
-        else if (isAngry()) anger = ((int) (new Random().nextGaussian() * 400)) + 400;
+    public boolean isAngry() {
+        return anger > 0;
     }
 
     @Override
-    public boolean isAngry() {
-        return anger > 0;
+    public void setAngry(boolean angry) {
+        if (!angry) anger = 0;
+        else if (isAngry()) anger = ((int) (new Random().nextGaussian() * 400)) + 400;
     }
 
     public UUID getHurtBy() {

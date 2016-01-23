@@ -1,7 +1,6 @@
 package net.glowstone.generator;
 
 import net.glowstone.GlowChunk;
-
 import org.apache.commons.lang3.NotImplementedException;
 import org.bukkit.Material;
 import org.bukkit.World;

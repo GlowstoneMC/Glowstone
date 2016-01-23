@@ -11,8 +11,9 @@ public class GlowAnimal extends GlowAgeable implements Animals {
 
     /**
      * Creates a new ageable animal.
+     *
      * @param location The location of the animal.
-     * @param type The type of animal.
+     * @param type     The type of animal.
      */
     public GlowAnimal(Location location, EntityType type) {
         super(location, type);

@@ -16,54 +16,6 @@ public class WindowClickLogicTest {
 
     // maybe use parameterized tests sometime
 
-    @BeforeClass
-    public static void initShim() {
-        ServerShim.install();
-    }
-
-    @Test
-    public void testClickType() {
-        for (String[] testCase : clickMap) {
-            int mode = Integer.parseInt(testCase[0]);
-            int button = Integer.parseInt(testCase[1]);
-            int slot = Integer.parseInt(testCase[2]);
-            String expected = testCase[3];
-
-            String actual = String.valueOf(WindowClickLogic.getClickType(mode, button, slot));
-            Assert.assertEquals("Failure for mode=" + mode + ", button=" + button + ", slot=" + slot, expected, actual);
-        }
-    }
-
-    @Test
-    public void testAction() {
-        for (String[] testCase : actionMap) {
-            ClickType clickType = ClickType.valueOf(testCase[0]);
-            int slot = Integer.parseInt(testCase[1]);
-            ItemStack cursor = parseItemStack(testCase[2]);
-            ItemStack slotItem = parseItemStack(testCase[3]);
-            String expected = testCase[4];
-
-            InventoryType.SlotType slotType = (slot < 0) ? InventoryType.SlotType.OUTSIDE : InventoryType.SlotType.CONTAINER;
-
-            String actual = String.valueOf(WindowClickLogic.getAction(clickType, slotType, cursor, slotItem));
-            Assert.assertEquals("Failure for click=" + clickType + ", slot=" + slot + ", cursor=" + testCase[2] + ", slotItem=" + testCase[3], expected, actual);
-        }
-    }
-
-    private ItemStack parseItemStack(String s) {
-        if (s.equalsIgnoreCase("null")) {
-            return null;
-        }
-        int index = s.indexOf(" x ");
-        String before = s.substring(0, index);
-        String after = s.substring(index + 3);
-        Material mat = Material.getMaterial(before);
-        int amount = Integer.parseInt(after);
-        return new ItemStack(mat, amount);
-    }
-
-    // slot numbers are normalized: slot > 0 is 0 instead
-
     // mode, button, slot, clickType
     private static final String[][] clickMap = {
             {"0", "0", "-1", "WINDOW_BORDER_LEFT"},
@@ -88,7 +40,6 @@ public class WindowClickLogicTest {
             {"4", "1", "0", "CONTROL_DROP"},
             {"6", "0", "0", "DOUBLE_CLICK"},
     };
-
     // clickType, slot, cursor, slot item, action
     private static final String[][] actionMap = {
             {"CONTROL_DROP", "0", "null", "COBBLESTONE x 1", "DROP_ALL_SLOT"},
@@ -297,5 +248,53 @@ public class WindowClickLogicTest {
             {"WINDOW_BORDER_RIGHT", "-1", "RAILS x 1", "null", "NOTHING"},
             {"WINDOW_BORDER_RIGHT", "-1", "RAILS x 63", "null", "NOTHING"},
     };
+
+    @BeforeClass
+    public static void initShim() {
+        ServerShim.install();
+    }
+
+    @Test
+    public void testClickType() {
+        for (String[] testCase : clickMap) {
+            int mode = Integer.parseInt(testCase[0]);
+            int button = Integer.parseInt(testCase[1]);
+            int slot = Integer.parseInt(testCase[2]);
+            String expected = testCase[3];
+
+            String actual = String.valueOf(WindowClickLogic.getClickType(mode, button, slot));
+            Assert.assertEquals("Failure for mode=" + mode + ", button=" + button + ", slot=" + slot, expected, actual);
+        }
+    }
+
+    // slot numbers are normalized: slot > 0 is 0 instead
+
+    @Test
+    public void testAction() {
+        for (String[] testCase : actionMap) {
+            ClickType clickType = ClickType.valueOf(testCase[0]);
+            int slot = Integer.parseInt(testCase[1]);
+            ItemStack cursor = parseItemStack(testCase[2]);
+            ItemStack slotItem = parseItemStack(testCase[3]);
+            String expected = testCase[4];
+
+            InventoryType.SlotType slotType = (slot < 0) ? InventoryType.SlotType.OUTSIDE : InventoryType.SlotType.CONTAINER;
+
+            String actual = String.valueOf(WindowClickLogic.getAction(clickType, slotType, cursor, slotItem));
+            Assert.assertEquals("Failure for click=" + clickType + ", slot=" + slot + ", cursor=" + testCase[2] + ", slotItem=" + testCase[3], expected, actual);
+        }
+    }
+
+    private ItemStack parseItemStack(String s) {
+        if (s.equalsIgnoreCase("null")) {
+            return null;
+        }
+        int index = s.indexOf(" x ");
+        String before = s.substring(0, index);
+        String after = s.substring(index + 3);
+        Material mat = Material.getMaterial(before);
+        int amount = Integer.parseInt(after);
+        return new ItemStack(mat, amount);
+    }
 
 }

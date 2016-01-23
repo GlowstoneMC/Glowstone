@@ -15,53 +15,16 @@ import java.util.logging.Level;
 
 /**
  * Manager for world thread pool.
- * <p/>
+ * <p>
  * This is a little magical and finnicky, so tread with caution when messing with the phasers
  */
 public class WorldScheduler {
-    private static class WorldEntry {
-        private final GlowWorld world;
-        private WorldThread task;
-
-        private WorldEntry(GlowWorld world) {
-            this.world = world;
-        }
-    }
-
     private final Object advanceCondition = new Object();
     private final ExecutorService worldExecutor = Executors.newCachedThreadPool();
     private final Phaser tickBegin = new Phaser(1);
     private final Phaser tickEnd = new Phaser(1);
     private final List<WorldEntry> worlds = new CopyOnWriteArrayList<>();
     private volatile int currentTick = -1;
-
-    private class WorldThread extends Thread {
-        private final GlowWorld world;
-
-        public WorldThread(GlowWorld world) {
-            super("Glowstone-world-" + world.getName());
-            this.world = world;
-        }
-
-        @Override
-        public void run() {
-            try {
-                while (!isInterrupted() && !tickEnd.isTerminated()) {
-                    tickBegin.arriveAndAwaitAdvance();
-                    try {
-                        world.pulse();
-                    } catch (Exception e) {
-                        GlowServer.logger.log(Level.SEVERE, "Error occurred while pulsing world " + world.getName(), e);
-                    } finally {
-                        tickEnd.arriveAndAwaitAdvance();
-                    }
-                }
-            } finally {
-                tickBegin.arriveAndDeregister();
-                tickEnd.arriveAndDeregister();
-            }
-        }
-    }
 
     public List<GlowWorld> getWorlds() {
         Builder<GlowWorld> ret = ImmutableList.builder();
@@ -148,5 +111,42 @@ public class WorldScheduler {
 
     public Object getAdvanceCondition() {
         return advanceCondition;
+    }
+
+    private static class WorldEntry {
+        private final GlowWorld world;
+        private WorldThread task;
+
+        private WorldEntry(GlowWorld world) {
+            this.world = world;
+        }
+    }
+
+    private class WorldThread extends Thread {
+        private final GlowWorld world;
+
+        public WorldThread(GlowWorld world) {
+            super("Glowstone-world-" + world.getName());
+            this.world = world;
+        }
+
+        @Override
+        public void run() {
+            try {
+                while (!isInterrupted() && !tickEnd.isTerminated()) {
+                    tickBegin.arriveAndAwaitAdvance();
+                    try {
+                        world.pulse();
+                    } catch (Exception e) {
+                        GlowServer.logger.log(Level.SEVERE, "Error occurred while pulsing world " + world.getName(), e);
+                    } finally {
+                        tickEnd.arriveAndAwaitAdvance();
+                    }
+                }
+            } finally {
+                tickBegin.arriveAndDeregister();
+                tickEnd.arriveAndDeregister();
+            }
+        }
     }
 }

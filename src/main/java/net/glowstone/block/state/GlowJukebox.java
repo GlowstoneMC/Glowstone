@@ -49,6 +49,11 @@ public class GlowJukebox extends GlowBlockState implements Jukebox {
     }
 
     @Override
+    public boolean isPlaying() {
+        return getRawData() == 1;
+    }
+
+    @Override
     public void setPlaying(Material record) {
         int id = 0;
         if (record == null || record == Material.AIR) {
@@ -62,11 +67,6 @@ public class GlowJukebox extends GlowBlockState implements Jukebox {
             player.playEffect(getLocation(), Effect.RECORD_PLAY, id);
         }
         this.setRawData((byte) (id > 0 ? 1 : 0));
-    }
-
-    @Override
-    public boolean isPlaying() {
-        return getRawData() == 1;
     }
 
     @Override
