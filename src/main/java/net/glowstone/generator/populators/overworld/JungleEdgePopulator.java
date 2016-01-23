@@ -14,7 +14,7 @@ public class JungleEdgePopulator extends JunglePopulator {
 
     private static final Biome[] BIOMES = {Biome.JUNGLE_EDGE, Biome.JUNGLE_EDGE_MOUNTAINS};
     private static final TreeDecoration[] TREES = {new TreeDecoration(BigOakTree.class, 10),
-        new TreeDecoration(JungleBush.class, 50), new TreeDecoration(CocoaTree.class, 45)};
+            new TreeDecoration(JungleBush.class, 50), new TreeDecoration(CocoaTree.class, 45)};
 
     public JungleEdgePopulator() {
         super();

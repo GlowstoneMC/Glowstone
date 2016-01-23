@@ -9,7 +9,6 @@ import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -37,35 +36,23 @@ public final class GlowBlock implements Block {
      * The BlockFaces of a single-layer 3x3 area.
      */
     private static final BlockFace[] LAYER = new BlockFace[]{
-        BlockFace.NORTH_WEST, BlockFace.NORTH, BlockFace.NORTH_EAST,
-        BlockFace.EAST, BlockFace.SELF, BlockFace.WEST,
-        BlockFace.SOUTH_WEST, BlockFace.SOUTH, BlockFace.SOUTH_EAST};
+            BlockFace.NORTH_WEST, BlockFace.NORTH, BlockFace.NORTH_EAST,
+            BlockFace.EAST, BlockFace.SELF, BlockFace.WEST,
+            BlockFace.SOUTH_WEST, BlockFace.SOUTH, BlockFace.SOUTH_EAST};
 
     /**
      * The BlockFaces of all directly adjacent.
      */
     private static final BlockFace[] ADJACENT = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
-
-    /**
-     * The metadata store class for blocks.
-     */
-    private static final class BlockMetadataStore extends MetadataStoreBase<Block> implements MetadataStore<Block> {
-
-        @Override
-        protected String disambiguate(Block subject, String metadataKey) {
-            return subject.getWorld() + "," + subject.getX() + "," + subject.getY() + "," + subject.getZ() + ":" + metadataKey;
-        }
-    }
-
     /**
      * The metadata store for blocks.
      */
     private static final MetadataStore<Block> metadata = new BlockMetadataStore();
-
-    private GlowWorld world;
+    private static final Map<GlowBlock, List<Long>> counterMap = new HashMap<>();
     private final int x;
     private final int y;
     private final int z;
+    private GlowWorld world;
 
     public GlowBlock(GlowChunk chunk, int x, int y, int z) {
         world = chunk.getWorld();
@@ -191,13 +178,13 @@ public final class GlowBlock implements Block {
     }
 
     @Override
-    public int getTypeId() {
-        return ((GlowChunk) world.getChunkAt(this)).getType(x & 0xf, z & 0xf, y);
+    public void setType(Material type) {
+        setTypeId(type.getId());
     }
 
     @Override
-    public void setType(Material type) {
-        setTypeId(type.getId());
+    public int getTypeId() {
+        return ((GlowChunk) world.getChunkAt(this)).getType(x & 0xf, z & 0xf, y);
     }
 
     /**
@@ -442,6 +429,7 @@ public final class GlowBlock implements Block {
 
     ////////////////////////////////////////////////////////////////////////////
     // Drops and breaking
+
     /**
      * Break the block naturally, randomly dropping only some of the drops.
      *
@@ -457,11 +445,7 @@ public final class GlowBlock implements Block {
 
         Location location = getLocation();
         Collection<ItemStack> toDrop = ItemTable.instance().getBlock(getType()).getMinedDrops(this);
-        for (ItemStack stack : toDrop) {
-            if (r.nextFloat() < yield) {
-                getWorld().dropItemNaturally(location, stack);
-            }
-        }
+        toDrop.stream().filter(stack -> r.nextFloat() < yield).forEach(stack -> getWorld().dropItemNaturally(location, stack));
 
         setType(Material.AIR);
         return true;
@@ -515,14 +499,15 @@ public final class GlowBlock implements Block {
 
     /////////////////////////////////////////////////////////////////////////////
     // Physics
+
     /**
      * Notify this block and its surrounding blocks that this block has changed
      * type and data.
      *
-     * @param oldType the old block type
+     * @param oldType   the old block type
      * @param newTypeId the new block type
-     * @param oldData the old data
-     * @param newData the new data
+     * @param oldData   the old data
+     * @param newData   the new data
      */
     public void applyPhysics(Material oldType, int newTypeId, byte oldData, byte newData) {
         // notify the surrounding blocks that this block has changed
@@ -561,8 +546,6 @@ public final class GlowBlock implements Block {
         }
     }
 
-    private static final Map<GlowBlock, List<Long>> counterMap = new HashMap<>();
-
     public void count(int timeout) {
         GlowBlock target = this;
         List<Long> gameTicks = new ArrayList<>();
@@ -593,7 +576,7 @@ public final class GlowBlock implements Block {
 
         long time = getWorld().getFullTime();
 
-        for (Iterator<Long> it = gameTicks.iterator(); it.hasNext();) {
+        for (Iterator<Long> it = gameTicks.iterator(); it.hasNext(); ) {
             long rate = it.next();
             if (rate < time) {
                 it.remove();
@@ -615,6 +598,17 @@ public final class GlowBlock implements Block {
         }
         GlowBlock other = (GlowBlock) obj;
         return this.x == other.x && this.y == other.y && this.z == other.z && getWorld().equals(other.getWorld());
+    }
+
+    /**
+     * The metadata store class for blocks.
+     */
+    private static final class BlockMetadataStore extends MetadataStoreBase<Block> implements MetadataStore<Block> {
+
+        @Override
+        protected String disambiguate(Block subject, String metadataKey) {
+            return subject.getWorld() + "," + subject.getX() + "," + subject.getY() + "," + subject.getZ() + ":" + metadataKey;
+        }
     }
 }
 

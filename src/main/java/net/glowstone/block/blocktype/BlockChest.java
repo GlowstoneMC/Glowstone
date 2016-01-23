@@ -20,10 +20,10 @@ import java.util.Collection;
 
 public class BlockChest extends BlockContainer {
 
-    private final boolean isTrapped;
-    private static final BlockFace[] NEAR_CHESTS = new BlockFace[] {
-        BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST
+    private static final BlockFace[] NEAR_CHESTS = new BlockFace[]{
+            BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST
     };
+    private final boolean isTrapped;
 
     public BlockChest() {
         this(false);
@@ -31,6 +31,31 @@ public class BlockChest extends BlockContainer {
 
     public BlockChest(boolean isTrapped) {
         this.isTrapped = isTrapped;
+    }
+
+    private static BlockFace getFacingDirection(BlockFace myFacing, BlockFace otherFacing, BlockFace connection, GlowPlayer player) {
+        if (connection != myFacing && connection != myFacing.getOppositeFace()) {
+            return myFacing;
+        }
+
+        if (connection != otherFacing && connection != otherFacing.getOppositeFace()) {
+            return otherFacing;
+        }
+
+        float yaw = player.getLocation().getYaw() % 360;
+        yaw = yaw < 0 ? yaw + 360 : yaw;
+
+        switch (connection) {
+            case NORTH:
+            case SOUTH:
+                return yaw < 180 ? BlockFace.EAST : BlockFace.WEST;
+            case EAST:
+            case WEST:
+                return yaw > 90 && yaw < 270 ? BlockFace.SOUTH : BlockFace.NORTH;
+            default:
+                GlowServer.logger.warning("Can only handle N/O/S/W BlockFaces, getting face: " + connection);
+                return BlockFace.NORTH;
+        }
     }
 
     @Override
@@ -101,11 +126,8 @@ public class BlockChest extends BlockContainer {
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
         Collection<BlockFace> nearChests = searchChests(block);
-        if (nearChests.size() > 1) {
-            return false;
-        }
+        return nearChests.size() <= 1;
 
-        return true;
     }
 
     private Collection<BlockFace> searchChests(GlowBlock block) {
@@ -131,30 +153,5 @@ public class BlockChest extends BlockContainer {
         }
 
         return attachedChests.iterator().next();
-    }
-
-    private static BlockFace getFacingDirection(BlockFace myFacing, BlockFace otherFacing, BlockFace connection, GlowPlayer player) {
-        if (connection != myFacing && connection != myFacing.getOppositeFace()) {
-            return myFacing;
-        }
-
-        if (connection != otherFacing && connection != otherFacing.getOppositeFace()) {
-            return otherFacing;
-        }
-
-        float yaw = player.getLocation().getYaw() % 360;
-        yaw = yaw < 0 ? yaw + 360 : yaw;
-
-        switch (connection) {
-            case NORTH:
-            case SOUTH:
-                return yaw < 180 ? BlockFace.EAST : BlockFace.WEST;
-            case EAST:
-            case WEST:
-                return yaw > 90 && yaw < 270 ? BlockFace.SOUTH : BlockFace.NORTH;
-            default:
-                GlowServer.logger.warning("Can only handle N/O/S/W BlockFaces, getting face: " + connection);
-                return BlockFace.NORTH;
-        }
     }
 }

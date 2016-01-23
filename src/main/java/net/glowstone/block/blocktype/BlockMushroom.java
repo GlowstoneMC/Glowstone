@@ -73,7 +73,7 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
         final Location loc = block.getLocation();
         final BlockStateDelegate blockStateDelegate = new BlockStateDelegate();
         if (GlowTree.newInstance(type, random, loc, blockStateDelegate).generate()) {
-            final List<BlockState> blockStates = new ArrayList<BlockState>(blockStateDelegate.getBlockStates());
+            final List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
             StructureGrowEvent growEvent = new StructureGrowEvent(loc, type, true, player, blockStates);
             EventFactory.callEvent(growEvent);
             if (!growEvent.isCancelled()) {
@@ -107,11 +107,15 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
             nY = block.getY() + random.nextInt(2) - random.nextInt(2);
             nZ = block.getZ() + random.nextInt(3) - 1;
 
-            x = block.getX(); y = block.getY(); z = block.getZ();
+            x = block.getX();
+            y = block.getY();
+            z = block.getZ();
             for (i = 0; i < 4; i++) {
                 if (world.getBlockAt(nX, nY, nZ).getType() == Material.AIR
                         && canPlaceAt(world.getBlockAt(nX, nY, nZ), BlockFace.DOWN)) {
-                    x = nX; y = nY; z = nZ;
+                    x = nX;
+                    y = nY;
+                    z = nZ;
                 }
                 nX = x + random.nextInt(3) - 1;
                 nY = y + random.nextInt(2) - random.nextInt(2);

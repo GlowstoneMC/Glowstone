@@ -10,9 +10,10 @@ import static org.junit.Assert.assertTrue;
  */
 class Checks {
 
-    private Checks() {}
-
     public static final String BYTE_ARRAY_NAME = "byteArrayTest (the first 1000 values of (n*n*255+n*7)%100, starting with n=0 (0, 62, 34, 16, 8, ...))";
+
+    private Checks() {
+    }
 
     static void checkHelloWorld(CompoundTag compound) {
         assertEquals("incorrect size", compound.getValue().size(), 1);

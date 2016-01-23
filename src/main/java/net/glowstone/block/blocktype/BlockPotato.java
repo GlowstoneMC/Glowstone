@@ -15,7 +15,7 @@ public class BlockPotato extends BlockCrops {
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (block.getData() >= CropState.RIPE.ordinal()) {
             if (random.nextInt(100) < 2) {
-                return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.POTATO_ITEM, random.nextInt(4) + 1), 
+                return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.POTATO_ITEM, random.nextInt(4) + 1),
                         new ItemStack(Material.POISONOUS_POTATO, 1)));
             } else {
                 return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.POTATO_ITEM, random.nextInt(4) + 1)));

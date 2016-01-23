@@ -6,6 +6,12 @@ import java.util.Map;
 public class WhittakerMapLayer extends MapLayer {
 
     private static final Map<ClimateType, Climate> MAP = new HashMap<>();
+
+    static {
+        MAP.put(ClimateType.WARM_WET, new Climate(2, new int[]{3, 1}, 4));
+        MAP.put(ClimateType.COLD_DRY, new Climate(3, new int[]{2, 4}, 1));
+    }
+
     private final MapLayer belowLayer;
     private final ClimateType type;
 
@@ -72,15 +78,10 @@ public class WhittakerMapLayer extends MapLayer {
         return finalValues;
     }
 
-    public static enum ClimateType {
+    public enum ClimateType {
         WARM_WET,
         COLD_DRY,
         LARGER_BIOMES
-    }
-
-    static {
-        MAP.put(ClimateType.WARM_WET, new Climate(2, new int[] {3, 1}, 4));
-        MAP.put(ClimateType.COLD_DRY, new Climate(3, new int[] {2, 4}, 1));
     }
 
     private static class Climate {

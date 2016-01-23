@@ -30,36 +30,36 @@ public class GlowDesertTemple extends GlowTemplePiece {
         super(random, location.add(0, -18, 0), new Vector(21, 29, 21));
     }
 
-    public void setHasPlacedChest0(boolean placedChest) {
-        this.hasPlacedChest0 = placedChest;
-    }
-
     public boolean getHasPlacedChest0() {
         return hasPlacedChest0;
     }
 
-    public void setHasPlacedChest1(boolean placedChest) {
-        this.hasPlacedChest1 = placedChest;
+    public void setHasPlacedChest0(boolean placedChest) {
+        this.hasPlacedChest0 = placedChest;
     }
 
     public boolean getHasPlacedChest1() {
         return hasPlacedChest1;
     }
 
-    public void setHasPlacedChest2(boolean placedChest) {
-        this.hasPlacedChest2 = placedChest;
+    public void setHasPlacedChest1(boolean placedChest) {
+        this.hasPlacedChest1 = placedChest;
     }
 
     public boolean getHasPlacedChest2() {
         return hasPlacedChest2;
     }
 
-    public void setHasPlacedChest3(boolean placedChest) {
-        this.hasPlacedChest3 = placedChest;
+    public void setHasPlacedChest2(boolean placedChest) {
+        this.hasPlacedChest2 = placedChest;
     }
 
     public boolean getHasPlacedChest3() {
         return hasPlacedChest3;
+    }
+
+    public void setHasPlacedChest3(boolean placedChest) {
+        this.hasPlacedChest3 = placedChest;
     }
 
     @Override
@@ -76,8 +76,8 @@ public class GlowDesertTemple extends GlowTemplePiece {
         }
         builder.fill(new Vector(0, 14, 0), new Vector(20, 18, 20), Material.SANDSTONE);
         for (int i = 1; i <= 9; i++) {
-           builder.fill(new Vector(i, i + 18, i), new Vector(20 - i, i + 18, 20 - i), Material.SANDSTONE);
-           builder.fill(new Vector(i + 1, i + 18, i + 1), new Vector(19 - i, i + 18, 19 - i), Material.AIR);
+            builder.fill(new Vector(i, i + 18, i), new Vector(20 - i, i + 18, 20 - i), Material.SANDSTONE);
+            builder.fill(new Vector(i + 1, i + 18, i + 1), new Vector(19 - i, i + 18, 19 - i), Material.AIR);
         }
         // east tower
         builder.fill(new Vector(0, 18, 0), new Vector(4, 27, 4), Material.SANDSTONE, Material.AIR);
@@ -175,7 +175,7 @@ public class GlowDesertTemple extends GlowTemplePiece {
         // west entrance
         builder.fill(new Vector(15, 23, 9), new Vector(15, 25, 11), Material.SANDSTONE, 2);
         builder.fill(new Vector(14, 25, 9), new Vector(14, 25, 11), Material.SANDSTONE);
-        builder.fill(new Vector(14, 23, 10), new Vector(15, 24, 10), Material.AIR);       
+        builder.fill(new Vector(14, 23, 10), new Vector(15, 24, 10), Material.AIR);
         // corridor to east tower
         builder.fill(new Vector(4, 19, 1), new Vector(8, 21, 3), Material.SANDSTONE, Material.AIR);
         builder.fill(new Vector(4, 19, 2), new Vector(8, 20, 2), Material.AIR);

@@ -29,11 +29,21 @@ public enum TagType {
     private final Class<? extends Tag> tagClass;
     private final Class<?> valueClass;
 
-    private <V, T extends Tag<? extends V>> TagType(String name, Class<T> tagClass, Class<V> valueClass) {
+    <V, T extends Tag<? extends V>> TagType(String name, Class<T> tagClass, Class<V> valueClass) {
         // ? extends V is needed to get Compound to work for some reason
         this.name = name;
         this.tagClass = tagClass;
         this.valueClass = valueClass;
+    }
+
+    public static TagType byId(int id) {
+        if (id < 0 || id >= values().length) return null;
+        return values()[id];
+    }
+
+    static TagType byIdOrError(int id) throws IOException {
+        if (id < 0 || id >= values().length) throw new IOException("Invalid tag type: " + id);
+        return values()[id];
     }
 
     public byte getId() {
@@ -50,16 +60,6 @@ public enum TagType {
 
     public Class<?> getValueClass() {
         return valueClass;
-    }
-
-    public static TagType byId(int id) {
-        if (id < 0 || id >= values().length) return null;
-        return values()[id];
-    }
-
-    static TagType byIdOrError(int id) throws IOException {
-        if (id < 0 || id >= values().length) throw new IOException("Invalid tag type: " + id);
-        return values()[id];
     }
 
     public Constructor<? extends Tag> getConstructor() throws NoSuchMethodException {

@@ -33,16 +33,14 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
      * The crafting inventory.
      */
     private final GlowCraftingInventory crafting;
-
-    /**
-     * The current held item slot.
-     */
-    private int heldSlot = 0;
-
     /**
      * Tracker for inventory drags.
      */
     private final DragTracker tracker = new DragTracker();
+    /**
+     * The current held item slot.
+     */
+    private int heldSlot = 0;
 
     public GlowPlayerInventory(GlowHumanEntity owner) {
         // all player inventories are ID 0
@@ -58,8 +56,13 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     ////////////////////////////////////////////////////////////////////////////
     // Internals
 
+    public static boolean canEquipInHelmetSlot(Material material) {
+        return EnchantmentTarget.ARMOR_HEAD.includes(material) || material == Material.PUMPKIN || material == Material.SKULL_ITEM;
+    }
+
     /**
      * Get the crafting inventory.
+     *
      * @return The GlowCraftingInventory attached to this player
      */
     public GlowCraftingInventory getCraftingInventory() {
@@ -134,16 +137,17 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         view.setItem(clickedSlot, clickedItem);
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Overrides
+
     /**
      * Get the DragTracker associated with this player.
+     *
      * @return The DragTracker.
      */
     public DragTracker getDragTracker() {
         return tracker;
     }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Overrides
 
     @Override
     public HumanEntity getHolder() {
@@ -159,6 +163,9 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Interface implementation
+
     @Override
     public ItemStack getItem(int index) {
         if (index >= SIZE) {
@@ -167,9 +174,6 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
             return super.getItem(index);
         }
     }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Interface implementation
 
     @Override
     public ItemStack[] getArmorContents() {
@@ -192,23 +196,13 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     @Override
-    public ItemStack getChestplate() {
-        return getItem(CHESTPLATE_SLOT);
-    }
-
-    @Override
-    public ItemStack getLeggings() {
-        return getItem(LEGGINGS_SLOT);
-    }
-
-    @Override
-    public ItemStack getBoots() {
-        return getItem(BOOTS_SLOT);
-    }
-
-    @Override
     public void setHelmet(ItemStack helmet) {
         setItem(HELMET_SLOT, helmet);
+    }
+
+    @Override
+    public ItemStack getChestplate() {
+        return getItem(CHESTPLATE_SLOT);
     }
 
     @Override
@@ -217,8 +211,18 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     @Override
+    public ItemStack getLeggings() {
+        return getItem(LEGGINGS_SLOT);
+    }
+
+    @Override
     public void setLeggings(ItemStack leggings) {
         setItem(LEGGINGS_SLOT, leggings);
+    }
+
+    @Override
+    public ItemStack getBoots() {
+        return getItem(BOOTS_SLOT);
     }
 
     @Override
@@ -250,6 +254,9 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // EntityEquipment implementation
+
     @Override
     public int clear(int id, int data) {
         int numCleared = 0;
@@ -265,9 +272,6 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         }
         return numCleared;
     }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // EntityEquipment implementation
 
     @Override
     public float getItemInHandDropChance() {
@@ -317,9 +321,5 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     @Override
     public void setBootsDropChance(float chance) {
         throw new UnsupportedOperationException();
-    }
-
-    public static boolean canEquipInHelmetSlot(Material material) {
-        return EnchantmentTarget.ARMOR_HEAD.includes(material) || material == Material.PUMPKIN || material == Material.SKULL_ITEM;
     }
 }

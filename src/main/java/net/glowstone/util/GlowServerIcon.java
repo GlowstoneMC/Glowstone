@@ -31,6 +31,7 @@ public final class GlowServerIcon implements CachedServerIcon {
 
     /**
      * Create icon from a file.
+     *
      * @param file The file to load from.
      */
     public GlowServerIcon(File file) throws Exception {
@@ -39,6 +40,7 @@ public final class GlowServerIcon implements CachedServerIcon {
 
     /**
      * Create icon from an image.
+     *
      * @param image The image to load from.
      */
     public GlowServerIcon(BufferedImage image) throws Exception {

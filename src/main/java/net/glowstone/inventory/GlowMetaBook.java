@@ -162,14 +162,14 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
     }
 
     @Override
-    public void setPages(List<String> pages) {
-        this.pages = new ArrayList<>(pages);
+    public void setPages(String... pages) {
+        this.pages = new ArrayList<>(Arrays.asList(pages));
         filterPages();
     }
 
     @Override
-    public void setPages(String... pages) {
-        this.pages = new ArrayList<>(Arrays.asList(pages));
+    public void setPages(List<String> pages) {
+        this.pages = new ArrayList<>(pages);
         filterPages();
     }
 

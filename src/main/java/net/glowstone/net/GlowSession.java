@@ -39,6 +39,7 @@ import java.util.logging.Level;
 /**
  * A single connection to the server, which may or may not be associated with a
  * player.
+ *
  * @author Graham Edgecombe
  */
 public final class GlowSession extends BasicSession {
@@ -118,7 +119,7 @@ public final class GlowSession extends BasicSession {
      * The number of ticks until previousPlacement must be cleared.
      */
     private int previousPlacementTicks;
-    
+
     /**
      * If the connection has been disconnected
      */
@@ -126,7 +127,8 @@ public final class GlowSession extends BasicSession {
 
     /**
      * Creates a new session.
-     * @param server The server this session belongs to.
+     *
+     * @param server  The server this session belongs to.
      * @param channel The channel associated with this session.
      */
     public GlowSession(GlowServer server, Channel channel, ConnectionManager connectionManager) {
@@ -138,6 +140,7 @@ public final class GlowSession extends BasicSession {
 
     /**
      * Gets the server associated with this session.
+     *
      * @return The server.
      */
     public GlowServer getServer() {
@@ -149,6 +152,7 @@ public final class GlowSession extends BasicSession {
 
     /**
      * Get the randomly-generated verify token for this session.
+     *
      * @return The verify token
      */
     public byte[] getVerifyToken() {
@@ -157,6 +161,7 @@ public final class GlowSession extends BasicSession {
 
     /**
      * Sets the verify token of this session.
+     *
      * @param verifyToken The verify token.
      */
     public void setVerifyToken(byte[] verifyToken) {
@@ -165,6 +170,7 @@ public final class GlowSession extends BasicSession {
 
     /**
      * Gets the verify username for this session.
+     *
      * @return The verify username.
      */
     public String getVerifyUsername() {
@@ -173,6 +179,7 @@ public final class GlowSession extends BasicSession {
 
     /**
      * Sets the verify username for this session.
+     *
      * @param verifyUsername The verify username.
      */
     public void setVerifyUsername(String verifyUsername) {
@@ -181,6 +188,7 @@ public final class GlowSession extends BasicSession {
 
     /**
      * Get the {@link ProxyData} for this session if available.
+     *
      * @return The proxy data to use, or null for an unproxied connection.
      */
     public ProxyData getProxyData() {
@@ -189,6 +197,7 @@ public final class GlowSession extends BasicSession {
 
     /**
      * Set the {@link ProxyData} for this session.
+     *
      * @param proxyData The proxy data to use.
      */
     public void setProxyData(ProxyData proxyData) {
@@ -199,6 +208,7 @@ public final class GlowSession extends BasicSession {
 
     /**
      * Set the hostname the player used to connect to the server.
+     *
      * @param hostname Hostname in "addr:port" format.
      */
     public void setHostname(String hostname) {
@@ -222,6 +232,7 @@ public final class GlowSession extends BasicSession {
 
     /**
      * Note that the client has responded to a keep-alive.
+     *
      * @param pingId The pingId to check for validity.
      */
     public void pong(long pingId) {
@@ -232,6 +243,7 @@ public final class GlowSession extends BasicSession {
 
     /**
      * Get the saved previous BlockPlacementMessage for this session.
+     *
      * @return The message.
      */
     public BlockPlacementMessage getPreviousPlacement() {
@@ -240,6 +252,7 @@ public final class GlowSession extends BasicSession {
 
     /**
      * Set the previous BlockPlacementMessage for this session.
+     *
      * @param message The message.
      */
     public void setPreviousPlacement(BlockPlacementMessage message) {
@@ -257,6 +270,7 @@ public final class GlowSession extends BasicSession {
 
     /**
      * Get session online state
+     *
      * @return true if this session's state is online
      */
     public boolean isOnline() {
@@ -265,6 +279,7 @@ public final class GlowSession extends BasicSession {
 
     /**
      * Gets the player associated with this session.
+     *
      * @return The player, or {@code null} if no player is associated with it.
      */
     public GlowPlayer getPlayer() {
@@ -273,9 +288,10 @@ public final class GlowSession extends BasicSession {
 
     /**
      * Sets the player associated with this session.
+     *
      * @param profile The player's profile with name and UUID information.
      * @throws IllegalStateException if there is already a player associated
-     * with this session.
+     *                               with this session.
      */
     public void setPlayer(PlayerProfile profile) {
         if (player != null) {
@@ -361,6 +377,7 @@ public final class GlowSession extends BasicSession {
      * Disconnects the session with the specified reason. This causes a
      * KickMessage to be sent. When it has been delivered, the channel
      * is closed.
+     *
      * @param reason The reason for disconnection.
      */
     public void disconnect(String reason) {
@@ -371,7 +388,8 @@ public final class GlowSession extends BasicSession {
      * Disconnects the session with the specified reason. This causes a
      * KickMessage to be sent. When it has been delivered, the channel
      * is closed.
-     * @param reason The reason for disconnection.
+     *
+     * @param reason       The reason for disconnection.
      * @param overrideKick Whether to skip the kick event.
      */
     public void disconnect(String reason, boolean overrideKick) {

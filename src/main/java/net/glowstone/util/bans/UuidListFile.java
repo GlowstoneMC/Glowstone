@@ -6,6 +6,7 @@ import org.bukkit.OfflinePlayer;
 
 import java.io.File;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Common management for whitelist and ops list files.
@@ -18,9 +19,7 @@ public final class UuidListFile extends JsonListFile {
 
     public List<UUID> getUUIDs() {
         List<UUID> result = new ArrayList<>(entries.size());
-        for (BaseEntry baseEntry : entries) {
-            result.add(((Entry) baseEntry).uuid);
-        }
+        result.addAll(entries.stream().map(baseEntry -> ((Entry) baseEntry).uuid).collect(Collectors.toList()));
         return result;
     }
 

@@ -4,7 +4,9 @@ import com.google.common.collect.ImmutableList;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Tests for {@link SuperSet}.
@@ -30,9 +32,8 @@ public class SuperSetTest {
         populateSet(duplicatedSetB, "B");
 
         List<Set<String>> sets = ImmutableList.of(setA, setB, duplicatedSetB);
-        SuperSet<String> superSet = new SuperSet(sets);
 
-        return superSet;
+        return new SuperSet(sets);
     }
 
     private void checkContains(Set<String> set, String prefix) {

@@ -33,17 +33,55 @@ public class BlockType extends ItemType {
     ////////////////////////////////////////////////////////////////////////////
     // Setters for subclass use
 
-    protected final void setDrops(ItemStack... drops) {
-        this.drops = Arrays.asList(drops);
+    /**
+     * Gets the BlockFace opposite of the direction the location is facing.
+     * Usually used to set the way container blocks face when being placed.
+     *
+     * @param location Location to get opposite of
+     * @param inverted If up/down should be used
+     * @return Opposite BlockFace or EAST if yaw is invalid
+     */
+    protected static BlockFace getOppositeBlockFace(Location location, boolean inverted) {
+        double rot = location.getYaw() % 360;
+        if (inverted) {
+            // todo: Check the 67.5 pitch in source. This is based off of WorldEdit's number for this.
+            double pitch = location.getPitch();
+            if (pitch < -67.5D) {
+                return BlockFace.DOWN;
+            } else if (pitch > 67.5D) {
+                return BlockFace.UP;
+            }
+        }
+        if (rot < 0) {
+            rot += 360.0;
+        }
+        if (0 <= rot && rot < 45) {
+            return BlockFace.NORTH;
+        } else if (45 <= rot && rot < 135) {
+            return BlockFace.EAST;
+        } else if (135 <= rot && rot < 225) {
+            return BlockFace.SOUTH;
+        } else if (225 <= rot && rot < 315) {
+            return BlockFace.WEST;
+        } else if (315 <= rot && rot < 360.0) {
+            return BlockFace.NORTH;
+        } else {
+            return BlockFace.EAST;
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // Public accessors
 
+    protected final void setDrops(ItemStack... drops) {
+        this.drops = Arrays.asList(drops);
+    }
+
     /**
      * Get the items that will be dropped by digging the block.
+     *
      * @param block The block being dug.
-     * @param tool The tool used or {@code null} if fists or no tool was used.
+     * @param tool  The tool used or {@code null} if fists or no tool was used.
      * @return The drops that should be returned.
      */
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
@@ -57,6 +95,7 @@ public class BlockType extends ItemType {
 
     /**
      * Gets the sound that will be played when a player places the block.
+     *
      * @return The sound to be played
      */
     public SoundInfo getPlaceSound() {
@@ -65,15 +104,19 @@ public class BlockType extends ItemType {
 
     /**
      * Gets the sound that will be played when a player places the block.
-     * @return The sound to be played
+     *
      */
     public void setPlaceSound(Sound sound) {
         placeSound = new SoundInfo(sound, 1F, 0.75F);
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Actions
+
     /**
      * Get the items that will be dropped as if the block would be successfully mined.
      * This is used f.e. to calculate TNT drops.
+     *
      * @param block The block.
      * @return The drops from that block.
      */
@@ -81,15 +124,13 @@ public class BlockType extends ItemType {
         return getDrops(block, null);
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Actions
-
     /**
      * Create a new tile entity at the given location.
+     *
      * @param chunk The chunk to create the tile entity at.
-     * @param cx The x coordinate in the chunk.
-     * @param cy The y coordinate in the chunk.
-     * @param cz The z coordinate in the chunk.
+     * @param cx    The x coordinate in the chunk.
+     * @param cy    The y coordinate in the chunk.
+     * @param cz    The z coordinate in the chunk.
      * @return The new TileEntity, or null if no tile entity is used.
      */
     public TileEntity createTileEntity(GlowChunk chunk, int cx, int cy, int cz) {
@@ -98,7 +139,8 @@ public class BlockType extends ItemType {
 
     /**
      * Check whether the block can be placed at the given location.
-     * @param block The location the block is being placed at.
+     *
+     * @param block   The location the block is being placed at.
      * @param against The face the block is being placed against.
      * @return Whether the placement is valid.
      */
@@ -108,10 +150,11 @@ public class BlockType extends ItemType {
 
     /**
      * Called when a block is placed to calculate what the block will become.
-     * @param player the player who placed the block
-     * @param state the BlockState to edit
-     * @param holding the ItemStack that was being held
-     * @param face the face off which the block is being placed
+     *
+     * @param player     the player who placed the block
+     * @param state      the BlockState to edit
+     * @param holding    the ItemStack that was being held
+     * @param face       the face off which the block is being placed
      * @param clickedLoc where in the block the click occurred
      */
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
@@ -121,8 +164,9 @@ public class BlockType extends ItemType {
 
     /**
      * Called after a block has been placed by a player.
-     * @param player the player who placed the block
-     * @param block the block that was placed
+     *
+     * @param player  the player who placed the block
+     * @param block   the block that was placed
      * @param holding the the ItemStack that was being held
      */
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
@@ -132,9 +176,10 @@ public class BlockType extends ItemType {
     /**
      * Called when a player attempts to interact with (right-click) a block of
      * this type already in the world.
-     * @param player the player interacting
-     * @param block the block interacted with
-     * @param face the clicked face
+     *
+     * @param player     the player interacting
+     * @param block      the block interacted with
+     * @param face       the clicked face
      * @param clickedLoc where in the block the click occurred
      * @return Whether the interaction occurred.
      */
@@ -144,9 +189,10 @@ public class BlockType extends ItemType {
 
     /**
      * Called when a player attempts to destroy a block.
+     *
      * @param player The player interacting
-     * @param block The block the player destroyed
-     * @param face The block face
+     * @param block  The block the player destroyed
+     * @param face   The block face
      */
     public void blockDestroy(GlowPlayer player, GlowBlock block, BlockFace face) {
         // do nothing
@@ -154,9 +200,10 @@ public class BlockType extends ItemType {
 
     /**
      * Called after a player succesfully destroys a block.
+     *
      * @param player The player interacting
-     * @param block The block the player destroyed
-     * @param face The block face
+     * @param block  The block the player destroyed
+     * @param face   The block face
      */
     public void afterDestroy(GlowPlayer player, GlowBlock block, BlockFace face, GlowBlockState oldState) {
         block.applyPhysics(oldState.getType(), block.getTypeId(), oldState.getRawData(), block.getData());
@@ -164,9 +211,10 @@ public class BlockType extends ItemType {
 
     /**
      * Called when the BlockType gets pulsed as requested.
+     *
      * @param block The block that was pulsed pulsed
      */
-     public void receivePulse(GlowBlock block) {
+    public void receivePulse(GlowBlock block) {
         // Cancel if pulse sent to empty block data (caused when updated and not removed).
         block.getWorld().cancelPulse(block);
     }
@@ -176,8 +224,9 @@ public class BlockType extends ItemType {
      * this type. Used to determine if the placement should occur into the air
      * adjacent to the block (normal behavior), or absorbed into the block
      * clicked on.
-     * @param block The block the player right-clicked
-     * @param face The face on which the click occurred
+     *
+     * @param block   The block the player right-clicked
+     * @param face    The face on which the click occurred
      * @param holding The ItemStack the player was holding
      * @return Whether the place should occur into the block given.
      */
@@ -188,8 +237,9 @@ public class BlockType extends ItemType {
     /**
      * Called to check if this block can be overridden by a block place
      * which would occur inside it.
-     * @param block The block being targeted by the placement
-     * @param face The face on which the click occurred
+     *
+     * @param block   The block being targeted by the placement
+     * @param face    The face on which the click occurred
      * @param holding The ItemStack the player was holding
      * @return Whether this block can be overridden.
      */
@@ -200,13 +250,14 @@ public class BlockType extends ItemType {
     /**
      * Called when a neighboring block (within a 3x3x3 cube) has changed its
      * type or data and physics checks should occur.
-     * @param block The block to perform physics checks for
-     * @param face The BlockFace to the changed block, or null if unavailable
+     *
+     * @param block        The block to perform physics checks for
+     * @param face         The BlockFace to the changed block, or null if unavailable
      * @param changedBlock The neighboring block that has changed
-     * @param oldType The old type of the changed block
-     * @param oldData The old data of the changed block
-     * @param newType The new type of the changed block
-     * @param newData The new data of the changed block
+     * @param oldType      The old type of the changed block
+     * @param oldData      The old data of the changed block
+     * @param newType      The new type of the changed block
+     * @param newData      The new data of the changed block
      */
     public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
 
@@ -217,11 +268,12 @@ public class BlockType extends ItemType {
      * called whenever {@link GlowBlock#setTypeIdAndData}, {@link GlowBlock#setType}
      * or {@link GlowBlock#setData} is called with physics enabled, and might
      * be called from plugins or other means of changing the block.
-     * @param block The block that was changed
+     *
+     * @param block   The block that was changed
      * @param oldType The old Material
      * @param oldData The old data
      * @param newType The new Material
-     * @param data The new data
+     * @param data    The new data
      */
     public void onBlockChanged(GlowBlock block, Material oldType, byte oldData, Material newType, byte data) {
         // do nothing
@@ -229,6 +281,7 @@ public class BlockType extends ItemType {
 
     /**
      * Called when the BlockType should calculate the current physics.
+     *
      * @param block The block
      */
     public void updatePhysics(GlowBlock block) {
@@ -292,6 +345,7 @@ public class BlockType extends ItemType {
 
     /**
      * Called to check if this block can perform random tick updates.
+     *
      * @return Whether this block updates on tick.
      */
     public boolean canTickRandomly() {
@@ -300,19 +354,10 @@ public class BlockType extends ItemType {
 
     /**
      * Called when this block needs to be updated.
+     *
      * @param block The block that needs an update
      */
     public void updateBlock(GlowBlock block) {
-        // do nothing
-    }
-
-    /**
-     * Called when a player left clicks a block
-     * @param player the player who clicked the block
-     * @param block the block that was clicked
-     * @param holding the ItemStack that was being held
-     */
-    public void leftClickBlock(GlowPlayer player, GlowBlock block, ItemStack holding) {
         // do nothing
     }
 
@@ -320,50 +365,26 @@ public class BlockType extends ItemType {
     // Helper methods
 
     /**
+     * Called when a player left clicks a block
+     *
+     * @param player  the player who clicked the block
+     * @param block   the block that was clicked
+     * @param holding the ItemStack that was being held
+     */
+    public void leftClickBlock(GlowPlayer player, GlowBlock block, ItemStack holding) {
+        // do nothing
+    }
+
+    /**
      * Display the warning for finding the wrong MaterialData subclass.
+     *
      * @param clazz The expected subclass of MaterialData.
-     * @param data The actual MaterialData found.
+     * @param data  The actual MaterialData found.
      */
     protected void warnMaterialData(Class<?> clazz, MaterialData data) {
         GlowServer.logger.warning("Wrong MaterialData for " + getMaterial() + " (" + getClass().getSimpleName() + "): expected " + clazz.getSimpleName() + ", got " + data);
     }
 
-    /**
-     * Gets the BlockFace opposite of the direction the location is facing.
-     * Usually used to set the way container blocks face when being placed.
-     * @param location Location to get opposite of
-     * @param inverted If up/down should be used
-     * @return Opposite BlockFace or EAST if yaw is invalid
-     */
-    protected static BlockFace getOppositeBlockFace(Location location, boolean inverted) {
-        double rot = location.getYaw() % 360;
-        if (inverted) {
-            // todo: Check the 67.5 pitch in source. This is based off of WorldEdit's number for this.
-            double pitch = location.getPitch();
-            if (pitch < -67.5D) {
-                return BlockFace.DOWN;
-            } else if (pitch > 67.5D) {
-                return BlockFace.UP;
-            }
-        }
-        if (rot < 0) {
-            rot += 360.0;
-        }
-        if (0 <= rot && rot < 45) {
-            return BlockFace.NORTH;
-        } else if (45 <= rot && rot < 135) {
-            return BlockFace.EAST;
-        } else if (135 <= rot && rot < 225) {
-            return BlockFace.SOUTH;
-        } else if (225 <= rot && rot < 315) {
-            return BlockFace.WEST;
-        } else if (315 <= rot && rot < 360.0) {
-            return BlockFace.NORTH;
-        } else {
-            return BlockFace.EAST;
-        }
-    }
-    
     public void onRedstoneUpdate(GlowBlock block) {
         // do nothing
     }

@@ -12,15 +12,11 @@ import java.util.Map;
  */
 public final class StructurePieceStorage {
 
-    private StructurePieceStorage() {
-    }
-
     /**
      * A table which maps structure pieces ids to compound readers. This is generally used
      * to map stored structure pieces to actual structure pieces.
      */
     private static final Map<String, StructurePieceStore<?>> idTable = new HashMap<>();
-
     /**
      * A table which maps structure pieces to stores. This is generally used to map
      * structure pieces being stored.
@@ -36,10 +32,14 @@ public final class StructurePieceStorage {
         bind(new WitchHutStore());
     }
 
+    private StructurePieceStorage() {
+    }
+
     /**
      * Binds a store by adding entries for it to the tables.
+     *
      * @param store The store object.
-     * @param <T> The type of structure piece.
+     * @param <T>   The type of structure piece.
      */
     private static <T extends GlowStructurePiece> void bind(StructurePieceStore<T> store) {
         idTable.put(store.getId(), store);
@@ -48,6 +48,7 @@ public final class StructurePieceStorage {
 
     /**
      * Load a structure piece from the given data tag.
+     *
      * @param compound The tag to load from.
      * @return The newly constructed structure piece.
      * @throws IllegalArgumentException if there is an error in the data.
@@ -67,8 +68,9 @@ public final class StructurePieceStorage {
 
     /**
      * Save a structure piece data to the given compound tag.
+     *
      * @param structurePiece The structure piece to save.
-     * @param compound The target tag.
+     * @param compound       The target tag.
      */
     public static void saveStructurePiece(GlowStructurePiece structurePiece, CompoundTag compound) {
         // look up the store for the structure piece

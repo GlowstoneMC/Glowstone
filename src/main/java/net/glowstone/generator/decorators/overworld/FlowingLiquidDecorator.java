@@ -14,7 +14,7 @@ import java.util.Random;
 
 public class FlowingLiquidDecorator extends BlockDecorator {
 
-    private static final BlockFace[] SIDES = new BlockFace[] {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST}; 
+    private static final BlockFace[] SIDES = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
     private final Material type;
 
     public FlowingLiquidDecorator(Material type) {

@@ -10,30 +10,8 @@ import static org.bukkit.Achievement.*;
  */
 public final class GlowAchievement {
 
-    private GlowAchievement() {}
-
     private static final String[] names = new String[Achievement.values().length];
     private static final String[] fancyNames = new String[Achievement.values().length];
-
-    /**
-     * Get the achievement name for a specified Achievement.
-     * @param achievement the Achievement.
-     * @return the achievement name.
-     */
-    public static String getName(Achievement achievement) {
-        Validate.notNull(achievement, "Achievement cannot be null");
-        return names[achievement.ordinal()];
-    }
-
-    public static String getFancyName(Achievement achievement) {
-        Validate.notNull(achievement, "Achievement cannot be null");
-        return fancyNames[achievement.ordinal()];
-    }
-
-    private static void set(Achievement achievement, String key, String fancyName) {
-        names[achievement.ordinal()] = "achievement." + key;
-        fancyNames[achievement.ordinal()] = fancyName;
-    }
 
     static {
         set(OPEN_INVENTORY, "openInventory", "Taking Inventory");
@@ -70,6 +48,30 @@ public final class GlowAchievement {
         set(BREED_COW, "breedCow", "Repopulation");
         set(DIAMONDS_TO_YOU, "diamondsToYou", "Diamonds to you!");
         set(OVERPOWERED, "overpowered", "Overpowered");
+    }
+
+    private GlowAchievement() {
+    }
+
+    /**
+     * Get the achievement name for a specified Achievement.
+     *
+     * @param achievement the Achievement.
+     * @return the achievement name.
+     */
+    public static String getName(Achievement achievement) {
+        Validate.notNull(achievement, "Achievement cannot be null");
+        return names[achievement.ordinal()];
+    }
+
+    public static String getFancyName(Achievement achievement) {
+        Validate.notNull(achievement, "Achievement cannot be null");
+        return fancyNames[achievement.ordinal()];
+    }
+
+    private static void set(Achievement achievement, String key, String fancyName) {
+        names[achievement.ordinal()] = "achievement." + key;
+        fancyNames[achievement.ordinal()] = fancyName;
     }
 
 }

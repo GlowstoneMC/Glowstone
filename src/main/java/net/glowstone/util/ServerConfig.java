@@ -47,7 +47,8 @@ public final class ServerConfig {
 
     /**
      * Initialize a new ServerConfig and associated settings.
-     * @param configDir The config directory, or null for default.
+     *
+     * @param configDir  The config directory, or null for default.
      * @param configFile The config file, or null for default.
      * @param parameters The command-line parameters used as overrides.
      */
@@ -61,10 +62,10 @@ public final class ServerConfig {
         this.parameters = parameters;
 
         config.options().indent(4).copyHeader(true).header(
-            "glowstone.yml is the main configuration file for a Glowstone++ server\n" +
-            "It contains everything from server.properties and bukkit.yml in a\n" +
-            "normal CraftBukkit installation.\n\n" +
-            "For help, join us on Gitter: https://gitter.im/GlowstonePlusPlus/GlowstonePlusPlus");
+                "glowstone.yml is the main configuration file for a Glowstone++ server\n" +
+                        "It contains everything from server.properties and bukkit.yml in a\n" +
+                        "normal CraftBukkit installation.\n\n" +
+                        "For help, join us on Gitter: https://gitter.im/GlowstonePlusPlus/GlowstonePlusPlus");
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -83,9 +84,10 @@ public final class ServerConfig {
 
     /**
      * Change a configuration value at runtime.
-     * @see ServerConfig#save()
-     * @param key the config key to write the value to
+     *
+     * @param key   the config key to write the value to
      * @param value value to write to config key
+     * @see ServerConfig#save()
      */
     public void set(Key key, Object value) {
         config.set(key.path, value);
@@ -309,7 +311,7 @@ public final class ServerConfig {
     /**
      * An enum containing configuration keys used by the server.
      */
-    public static enum Key {
+    public enum Key {
         // server
         SERVER_IP("server.ip", "", Migrate.PROPS, "server-ip"),
         SERVER_PORT("server.port", 25565, Migrate.PROPS, "server-port"),
@@ -411,11 +413,11 @@ public final class ServerConfig {
         private final Migrate migrate;
         private final String migratePath;
 
-        private Key(String path, Object def) {
+        Key(String path, Object def) {
             this(path, def, null, null);
         }
 
-        private Key(String path, Object def, Migrate migrate, String migratePath) {
+        Key(String path, Object def, Migrate migrate, String migratePath) {
             this.path = path;
             this.def = def;
             this.migrate = migrate;
@@ -428,7 +430,7 @@ public final class ServerConfig {
         }
     }
 
-    private static enum Migrate {
+    private enum Migrate {
         BUKKIT, PROPS
     }
 

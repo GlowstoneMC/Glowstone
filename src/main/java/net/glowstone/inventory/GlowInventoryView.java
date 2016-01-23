@@ -18,6 +18,7 @@ public class GlowInventoryView extends InventoryView {
 
     /**
      * Create the default inventory view for this player.
+     *
      * @param player The player.
      */
     public GlowInventoryView(GlowHumanEntity player) {
@@ -26,6 +27,7 @@ public class GlowInventoryView extends InventoryView {
 
     /**
      * Create an inventory view for this player looking at a given top inventory.
+     *
      * @param player The player.
      * @param top    The top inventory.
      */
@@ -35,6 +37,7 @@ public class GlowInventoryView extends InventoryView {
 
     /**
      * Create an inventory view for a player.
+     *
      * @param player The player.
      * @param type   The inventory type.
      * @param top    The top inventory.
@@ -45,6 +48,16 @@ public class GlowInventoryView extends InventoryView {
         this.type = type;
         this.top = top;
         this.bottom = bottom;
+    }
+
+    /**
+     * Check if an inventory view is the player's default inventory view.
+     *
+     * @param view The view to check.
+     * @return Whether it is a player's default inventory view.
+     */
+    public static boolean isDefault(InventoryView view) {
+        return view.getBottomInventory() instanceof GlowPlayerInventory && view.getTopInventory() == ((GlowPlayerInventory) view.getBottomInventory()).getCraftingInventory();
     }
 
     @Override
@@ -61,6 +74,7 @@ public class GlowInventoryView extends InventoryView {
 
     /**
      * Verify that the given slot is within the bounds of this inventory view.
+     *
      * @param slot The slot to check.
      */
     private void checkSlot(int slot) {
@@ -94,15 +108,6 @@ public class GlowInventoryView extends InventoryView {
         // but this messes up the calculations in InventoryView which expect CRAFTING but also
         // apply to CREATIVE.
         return type;
-    }
-
-    /**
-     * Check if an inventory view is the player's default inventory view.
-     * @param view The view to check.
-     * @return Whether it is a player's default inventory view.
-     */
-    public static boolean isDefault(InventoryView view) {
-        return view.getBottomInventory() instanceof GlowPlayerInventory && view.getTopInventory() == ((GlowPlayerInventory) view.getBottomInventory()).getCraftingInventory();
     }
 
 }

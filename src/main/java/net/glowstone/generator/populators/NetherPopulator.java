@@ -19,26 +19,24 @@ public class NetherPopulator extends BlockPopulator {
     private final List<BlockPopulator> inGroundPopulators = new ArrayList<>();
     private final List<BlockPopulator> onGroundPopulators = new ArrayList<>();
 
-    private final OrePopulator orePopulator = new OrePopulator();
-
-    private final LavaDecorator flowingLavaDecorator = new LavaDecorator(true);
-    private final FireDecorator fireDecorator = new FireDecorator();
-    private final GlowstoneDecorator glowstoneDecorator1 = new GlowstoneDecorator(true);
-    private final GlowstoneDecorator glowstoneDecorator2 = new GlowstoneDecorator();
-    private final MushroomDecorator brownMushroomDecorator = new MushroomDecorator(Material.BROWN_MUSHROOM);
-    private final MushroomDecorator redMushroomDecorator = new MushroomDecorator(Material.RED_MUSHROOM);
-    private final LavaDecorator lavaDecorator = new LavaDecorator();
-
     public NetherPopulator() {
+        OrePopulator orePopulator = new OrePopulator();
         inGroundPopulators.add(orePopulator);
 
+        LavaDecorator flowingLavaDecorator = new LavaDecorator(true);
         onGroundPopulators.add(flowingLavaDecorator);
+        FireDecorator fireDecorator = new FireDecorator();
         onGroundPopulators.add(fireDecorator);
+        GlowstoneDecorator glowstoneDecorator1 = new GlowstoneDecorator(true);
         onGroundPopulators.add(glowstoneDecorator1);
+        GlowstoneDecorator glowstoneDecorator2 = new GlowstoneDecorator();
         onGroundPopulators.add(glowstoneDecorator2);
         onGroundPopulators.add(fireDecorator);
+        MushroomDecorator brownMushroomDecorator = new MushroomDecorator(Material.BROWN_MUSHROOM);
         onGroundPopulators.add(brownMushroomDecorator);
+        MushroomDecorator redMushroomDecorator = new MushroomDecorator(Material.RED_MUSHROOM);
         onGroundPopulators.add(redMushroomDecorator);
+        LavaDecorator lavaDecorator = new LavaDecorator();
         onGroundPopulators.add(lavaDecorator);
 
         flowingLavaDecorator.setAmount(8);

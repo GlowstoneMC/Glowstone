@@ -103,17 +103,27 @@ public enum MetadataIndex {
 
     ENDER_CRYSTAL_HEALTH(8, INT, EnderCrystal.class),
 
-    RABBIT_TYPE(18, BYTE, Rabbit.class),
-    ;
+    RABBIT_TYPE(18, BYTE, Rabbit.class);
 
     private final int index;
     private final MetadataType type;
     private final Class<? extends Entity> appliesTo;
 
-    private MetadataIndex(int index, MetadataType type, Class<? extends Entity> appliesTo) {
+    MetadataIndex(int index, MetadataType type, Class<? extends Entity> appliesTo) {
         this.index = index;
         this.type = type;
         this.appliesTo = appliesTo;
+    }
+
+    public static MetadataIndex getIndex(int index, MetadataType type) {
+        MetadataIndex output = null;
+        for (MetadataIndex entry : values()) {
+            if (entry.getIndex() == index && entry.getType().equals(type)) {
+                output = entry;
+                break;
+            }
+        }
+        return output;
     }
 
     public int getIndex() {
@@ -130,17 +140,6 @@ public enum MetadataIndex {
 
     public boolean appliesTo(Class<? extends Entity> clazz) {
         return appliesTo.isAssignableFrom(clazz);
-    }
-
-    public static MetadataIndex getIndex(int index, MetadataType type) {
-        MetadataIndex output = null;
-        for (MetadataIndex entry : values()) {
-            if (entry.getIndex() == index && entry.getType().equals(type)) {
-                output = entry;
-                break;
-            }
-        }
-        return output;
     }
 
     public interface StatusFlags {

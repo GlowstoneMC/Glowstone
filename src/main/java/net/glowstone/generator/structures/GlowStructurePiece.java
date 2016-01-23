@@ -11,11 +11,12 @@ import java.util.Random;
 
 public abstract class GlowStructurePiece {
 
-    private BlockFace orientation;
     protected StructureBoundingBox boundingBox;
+    private BlockFace orientation;
     private int unknownGD;
 
-    public GlowStructurePiece() { }
+    public GlowStructurePiece() {
+    }
 
     public GlowStructurePiece(Location location, Vector size) {
         orientation = BlockFace.NORTH;
@@ -35,24 +36,20 @@ public abstract class GlowStructurePiece {
         createNewBoundingBox(location, size);
     }
 
-    public void setBoundingBox(StructureBoundingBox boundingBox) {
-        this.boundingBox = boundingBox;
-    }
-
     public StructureBoundingBox getBoundingBox() {
         return boundingBox;
     }
 
-    public void setGD(int gd) {
-        this.unknownGD = gd;
+    public void setBoundingBox(StructureBoundingBox boundingBox) {
+        this.boundingBox = boundingBox;
     }
 
     public int getGD() {
         return unknownGD;
     }
 
-    public void setNumericOrientation(int orientation) {
-        this.orientation = getOrientationFromOrdinal(orientation);
+    public void setGD(int gd) {
+        this.unknownGD = gd;
     }
 
     public int getNumericOrientation() {
@@ -66,6 +63,10 @@ public abstract class GlowStructurePiece {
             default:
                 return 0;
         }
+    }
+
+    public void setNumericOrientation(int orientation) {
+        this.orientation = getOrientationFromOrdinal(orientation);
     }
 
     public BlockFace getOrientation() {
@@ -82,10 +83,7 @@ public abstract class GlowStructurePiece {
     }
 
     public boolean generate(World world, Random random, StructureBoundingBox boundingBox, BlockStateDelegate delegate) {
-        if (boundingBox == null) {
-            return false;
-        }
-        return true;
+        return boundingBox != null;
     }
 
     private void createNewBoundingBox(Location location, Vector size) {

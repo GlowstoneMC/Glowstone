@@ -17,7 +17,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Base tests for each {@link GlowProtocol}.
@@ -42,6 +43,13 @@ public abstract class BaseProtocolTest {
         }
 
         ServerShim.install();
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> T getField(Object object, Class<?> clazz, String name) throws ReflectiveOperationException {
+        Field field = clazz.getDeclaredField(name);
+        field.setAccessible(true);
+        return (T) field.get(object);
     }
 
     @Test
@@ -98,12 +106,5 @@ public abstract class BaseProtocolTest {
         } catch (IOException e) {
             throw new AssertionError("Error in I/O for " + reg.getOpcode() + "/" + message.getClass().getName(), e);
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T> T getField(Object object, Class<?> clazz, String name) throws ReflectiveOperationException {
-        Field field = clazz.getDeclaredField(name);
-        field.setAccessible(true);
-        return (T) field.get(object);
     }
 }

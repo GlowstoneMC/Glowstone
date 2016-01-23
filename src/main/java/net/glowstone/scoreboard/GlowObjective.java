@@ -14,15 +14,13 @@ import java.util.Set;
  */
 public final class GlowObjective implements Objective {
 
-    private GlowScoreboard scoreboard;
     private final String name;
     private final String criteria;
-
     private final HashMap<String, GlowScore> scores = new HashMap<>();
-
+    DisplaySlot displaySlot;
+    private GlowScoreboard scoreboard;
     private String displayName;
     private RenderType renderType;
-    DisplaySlot displaySlot;
 
     public GlowObjective(GlowScoreboard scoreboard, String name, String criteria) {
         this.scoreboard = scoreboard;
@@ -83,6 +81,18 @@ public final class GlowObjective implements Objective {
         return displaySlot;
     }
 
+    public void setDisplaySlot(DisplaySlot slot) throws IllegalStateException {
+        checkValid();
+        if (slot != displaySlot) {
+            if (displaySlot != null) {
+                scoreboard.setDisplaySlot(displaySlot, null);
+            }
+            if (slot != null) {
+                scoreboard.setDisplaySlot(slot, this);
+            }
+        }
+    }
+
     @Override
     public RenderType getType() throws IllegalStateException {
         checkValid();
@@ -95,18 +105,6 @@ public final class GlowObjective implements Objective {
         Validate.notNull(renderType, "RenderType cannot be null");
         this.renderType = renderType;
         scoreboard.broadcast(ScoreboardObjectiveMessage.update(name, displayName, renderType));
-    }
-
-    public void setDisplaySlot(DisplaySlot slot) throws IllegalStateException {
-        checkValid();
-        if (slot != displaySlot) {
-            if (displaySlot != null) {
-                scoreboard.setDisplaySlot(displaySlot, null);
-            }
-            if (slot != null) {
-                scoreboard.setDisplaySlot(slot, this);
-            }
-        }
     }
 
     public boolean isModifiable() throws IllegalStateException {
@@ -132,6 +130,7 @@ public final class GlowObjective implements Objective {
 
     /**
      * Deletes a score directly.
+     *
      * @param entry The key to delete.
      */
     void deleteScore(String entry) {

@@ -1,7 +1,6 @@
 package net.glowstone.entity;
 
 import com.flowpowered.networking.Message;
-
 import net.glowstone.EventFactory;
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowServer;
@@ -14,7 +13,6 @@ import net.glowstone.entity.physics.EntityBoundingBox;
 import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.Position;
-
 import org.apache.commons.lang3.Validate;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -42,85 +40,67 @@ import java.util.UUID;
 
 /**
  * Represents some entity in the world such as an item on the floor or a player.
+ *
  * @author Graham Edgecombe
  */
 public abstract class GlowEntity implements Entity {
 
     /**
-     * The metadata store class for entities.
-     */
-    private static final class EntityMetadataStore extends MetadataStoreBase<Entity> implements MetadataStore<Entity> {
-        @Override
-        protected String disambiguate(Entity subject, String metadataKey) {
-            return subject.getUniqueId() + ":" + metadataKey;
-        }
-    }
-
-    /**
      * The metadata store for entities.
      */
     private static final MetadataStore<Entity> bukkitMetadata = new EntityMetadataStore();
-
     /**
      * The server this entity belongs to.
      */
     protected final GlowServer server;
-
     /**
      * The entity's metadata.
      */
     protected final MetadataMap metadata = new MetadataMap(getClass());
-
-    /**
-     * The world this entity belongs to.
-     */
-    protected GlowWorld world;
-
-    /**
-     * A flag indicating if this entity is currently active.
-     */
-    protected boolean active = true;
-
-    /**
-     * This entity's unique id.
-     */
-    private UUID uuid;
-
-    /**
-     * This entity's current identifier for its world.
-     */
-    protected int id;
-
     /**
      * The current position.
      */
     protected final Location location;
-
     /**
      * The position in the last cycle.
      */
     protected final Location previousLocation;
-
     /**
      * The entity's velocity, applied each tick.
      */
     protected final Vector velocity = new Vector();
-
     /**
-     * The entity's bounding box, or null if it has no physical presence.
+     * The world this entity belongs to.
      */
-    private EntityBoundingBox boundingBox;
-
+    protected GlowWorld world;
+    /**
+     * A flag indicating if this entity is currently active.
+     */
+    protected boolean active = true;
+    /**
+     * This entity's current identifier for its world.
+     */
+    protected int id;
     /**
      * Whether the entity should have its position resent as if teleported.
      */
     protected boolean teleported = false;
-
     /**
      * Whether the entity should have its velocity resent.
      */
     protected boolean velocityChanged = false;
-
+    /**
+     * A counter of how long this entity has existed
+     */
+    protected int ticksLived = 0;
+    /**
+     * This entity's unique id.
+     */
+    private UUID uuid;
+    /**
+     * The entity's bounding box, or null if it has no physical presence.
+     */
+    private EntityBoundingBox boundingBox;
     /**
      * An EntityDamageEvent representing the last damage cause on this entity.
      */
@@ -135,12 +115,6 @@ public abstract class GlowEntity implements Entity {
      * The distance the entity is currently falling without touching the ground.
      */
     private float fallDistance;
-
-    /**
-     * A counter of how long this entity has existed
-     */
-    protected int ticksLived = 0;
-
     /**
      * How long the entity has been on fire, or 0 if it is not.
      */
@@ -148,6 +122,7 @@ public abstract class GlowEntity implements Entity {
 
     /**
      * Creates an entity and adds it to the specified world.
+     *
      * @param location The location of the entity.
      */
     public GlowEntity(Location location) {
@@ -164,14 +139,14 @@ public abstract class GlowEntity implements Entity {
         return getClass().getSimpleName();
     }
 
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Command sender
-
     @Override
     public void sendMessage(String s) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Command sender
 
     @Override
     public void sendMessage(String[] strings) {
@@ -188,13 +163,13 @@ public abstract class GlowEntity implements Entity {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Core properties
-
     @Override
     public final GlowWorld getWorld() {
         return world;
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Core properties
 
     @Override
     public final int getEntityId() {
@@ -207,6 +182,24 @@ public abstract class GlowEntity implements Entity {
             uuid = UUID.randomUUID();
         }
         return uuid;
+    }
+
+    /**
+     * Sets this entity's unique identifier if possible.
+     *
+     * @param uuid The new UUID. Must not be null.
+     * @throws IllegalArgumentException if the passed UUID is null.
+     * @throws IllegalStateException    if a UUID has already been set.
+     */
+    public void setUniqueId(UUID uuid) {
+        Validate.notNull(uuid, "uuid must not be null");
+        if (this.uuid == null) {
+            this.uuid = uuid;
+        } else if (!this.uuid.equals(uuid)) {
+            // silently allow setting the same UUID, since
+            // it can't be checked with getUniqueId()
+            throw new IllegalStateException("UUID of " + this + " is already " + this.uuid);
+        }
     }
 
     @Override
@@ -234,6 +227,7 @@ public abstract class GlowEntity implements Entity {
 
     /**
      * Get the direction (SOUTH, WEST, NORTH, or EAST) this entity is facing.
+     *
      * @return The cardinal BlockFace of this entity.
      */
     public BlockFace getDirection() {
@@ -258,6 +252,7 @@ public abstract class GlowEntity implements Entity {
 
     /**
      * Gets the full direction (including SOUTH_SOUTH_EAST etc) this entity is facing.
+     *
      * @return The intercardinal BlockFace of this entity
      */
     public BlockFace getFacing() {
@@ -266,14 +261,14 @@ public abstract class GlowEntity implements Entity {
     }
 
     @Override
-    public void setVelocity(Vector velocity) {
-        this.velocity.copy(velocity);
-        velocityChanged = true;
+    public Vector getVelocity() {
+        return velocity.clone();
     }
 
     @Override
-    public Vector getVelocity() {
-        return velocity.clone();
+    public void setVelocity(Vector velocity) {
+        this.velocity.copy(velocity);
+        velocityChanged = true;
     }
 
     @Override
@@ -311,6 +306,7 @@ public abstract class GlowEntity implements Entity {
 
     /**
      * Checks if this entity is within the visible radius of another.
+     *
      * @param other The other entity.
      * @return {@code true} if the entities can see each other, {@code false} if
      * not.
@@ -323,6 +319,7 @@ public abstract class GlowEntity implements Entity {
 
     /**
      * Checks if this entity is within the visible radius of a location.
+     *
      * @param loc The location.
      * @return {@code true} if the entities can see each other, {@code false} if
      * not.
@@ -335,6 +332,7 @@ public abstract class GlowEntity implements Entity {
 
     /**
      * Checks whether this entity should be saved as part of the world.
+     *
      * @return True if the entity should be saved.
      */
     public boolean shouldSave() {
@@ -397,6 +395,7 @@ public abstract class GlowEntity implements Entity {
 
     /**
      * Sets this entity's location.
+     *
      * @param location The new location.
      */
     public void setRawLocation(Location location) {
@@ -435,25 +434,9 @@ public abstract class GlowEntity implements Entity {
     }
 
     /**
-     * Sets this entity's unique identifier if possible.
-     * @param uuid The new UUID. Must not be null.
-     * @throws IllegalArgumentException if the passed UUID is null.
-     * @throws IllegalStateException if a UUID has already been set.
-     */
-    public void setUniqueId(UUID uuid) {
-        Validate.notNull(uuid, "uuid must not be null");
-        if (this.uuid == null) {
-            this.uuid = uuid;
-        } else if (!this.uuid.equals(uuid)) {
-            // silently allow setting the same UUID, since
-            // it can't be checked with getUniqueId()
-            throw new IllegalStateException("UUID of " + this + " is already " + this.uuid);
-        }
-    }
-
-    /**
      * Creates a {@link Message} which can be sent to a client to spawn this
      * entity.
+     *
      * @return A message which can spawn this entity.
      */
     public abstract List<Message> createSpawnMessage();
@@ -461,6 +444,7 @@ public abstract class GlowEntity implements Entity {
     /**
      * Creates a {@link Message} which can be sent to a client to update this
      * entity.
+     *
      * @return A message which can update this entity.
      */
     public List<Message> createUpdateMessage() {
@@ -512,6 +496,7 @@ public abstract class GlowEntity implements Entity {
 
     /**
      * Checks if this entity has moved this cycle.
+     *
      * @return {@code true} if so, {@code false} if not.
      */
     public boolean hasMoved() {
@@ -520,6 +505,7 @@ public abstract class GlowEntity implements Entity {
 
     /**
      * Checks if this entity has rotated this cycle.
+     *
      * @return {@code true} if so, {@code false} if not.
      */
     public boolean hasRotated() {
@@ -529,6 +515,7 @@ public abstract class GlowEntity implements Entity {
     /**
      * Teleport this entity to the spawn point of the main world.
      * This is used to teleport out of the End.
+     *
      * @return {@code true} if the teleport was successful.
      */
     protected boolean teleportToSpawn() {
@@ -547,6 +534,7 @@ public abstract class GlowEntity implements Entity {
     /**
      * Teleport this entity to the End.
      * If no End world is loaded this does nothing.
+     *
      * @return {@code true} if the teleport was successful.
      */
     protected boolean teleportToEnd() {
@@ -582,6 +570,7 @@ public abstract class GlowEntity implements Entity {
      * Determine if this entity is intersecting a block of the specified type.
      * If the entity has a defined bounding box, that is used to check for
      * intersection. Otherwise,
+     *
      * @param material The material to check for.
      * @return True if the entity is intersecting
      */
@@ -609,12 +598,12 @@ public abstract class GlowEntity implements Entity {
         }
         return false;
     }
-    ////////////////////////////////////////////////////////////////////////////
-    // Physics stuff
 
     protected final void setBoundingBox(double xz, double y) {
         boundingBox = new EntityBoundingBox(xz, y);
     }
+    ////////////////////////////////////////////////////////////////////////////
+    // Physics stuff
 
     public boolean intersects(BoundingBox box) {
         return boundingBox != null && boundingBox.intersects(box);
@@ -630,13 +619,13 @@ public abstract class GlowEntity implements Entity {
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Various properties
-
     @Override
     public int getFireTicks() {
         return fireTicks;
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Various properties
 
     @Override
     public void setFireTicks(int ticks) {
@@ -659,13 +648,13 @@ public abstract class GlowEntity implements Entity {
     }
 
     @Override
-    public void setLastDamageCause(EntityDamageEvent event) {
-        lastDamageCause = event;
+    public EntityDamageEvent getLastDamageCause() {
+        return lastDamageCause;
     }
 
     @Override
-    public EntityDamageEvent getLastDamageCause() {
-        return lastDamageCause;
+    public void setLastDamageCause(EntityDamageEvent event) {
+        lastDamageCause = event;
     }
 
     @Override
@@ -687,15 +676,15 @@ public abstract class GlowEntity implements Entity {
         this.onGround = onGround;
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Miscellaneous actions
-
     @Override
     public void remove() {
         active = false;
         world.getEntityManager().unregister(this);
         server.getEntityIdManager().deallocate(this);
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Miscellaneous actions
 
     @Override
     public List<Entity> getNearbyEntities(double x, double y, double z) {
@@ -719,11 +708,7 @@ public abstract class GlowEntity implements Entity {
     @Override
     public void playEffect(EntityEffect type) {
         EntityStatusMessage message = new EntityStatusMessage(id, type);
-        for (GlowPlayer player : world.getRawPlayers()) {
-            if (player.canSeeEntity(this)) {
-                player.getSession().send(message);
-            }
-        }
+        world.getRawPlayers().stream().filter(player -> player.canSeeEntity(this)).forEach(player -> player.getSession().send(message));
     }
 
     @Override
@@ -731,13 +716,13 @@ public abstract class GlowEntity implements Entity {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Entity stacking
-
     @Override
     public boolean isInsideVehicle() {
         return getVehicle() != null;
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Entity stacking
 
     @Override
     public boolean leaveVehicle() {
@@ -750,23 +735,23 @@ public abstract class GlowEntity implements Entity {
     }
 
     @Override
-    public void setCustomName(String s) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
     public String getCustomName() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void setCustomNameVisible(boolean b) {
+    public void setCustomName(String s) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public boolean isCustomNameVisible() {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void setCustomNameVisible(boolean b) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -789,13 +774,13 @@ public abstract class GlowEntity implements Entity {
         return !isEmpty() && setPassenger(null);
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Metadata
-
     @Override
     public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
         bukkitMetadata.setMetadata(this, metadataKey, newMetadataValue);
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Metadata
 
     @Override
     public List<MetadataValue> getMetadata(String metadataKey) {
@@ -812,13 +797,13 @@ public abstract class GlowEntity implements Entity {
         bukkitMetadata.removeMetadata(this, metadataKey, owningPlugin);
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Permissions
-
     @Override
     public boolean isPermissionSet(String s) {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Permissions
 
     @Override
     public boolean isPermissionSet(Permission permission) {
@@ -907,5 +892,15 @@ public abstract class GlowEntity implements Entity {
             return false;
         GlowEntity other = (GlowEntity) obj;
         return id == other.id;
+    }
+
+    /**
+     * The metadata store class for entities.
+     */
+    private static final class EntityMetadataStore extends MetadataStoreBase<Entity> implements MetadataStore<Entity> {
+        @Override
+        protected String disambiguate(Entity subject, String metadataKey) {
+            return subject.getUniqueId() + ":" + metadataKey;
+        }
     }
 }

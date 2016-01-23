@@ -35,6 +35,7 @@ public final class GlowBufUtils {
 
     /**
      * Read a list of mob metadata entries from the buffer.
+     *
      * @param buf The buffer.
      * @return The metadata.
      */
@@ -72,7 +73,8 @@ public final class GlowBufUtils {
 
     /**
      * Write a list of mob metadata entries to the buffer.
-     * @param buf The buffer.
+     *
+     * @param buf     The buffer.
      * @param entries The metadata.
      */
     public static void writeMetadata(ByteBuf buf, List<MetadataMap.Entry> entries) throws IOException {
@@ -113,6 +115,7 @@ public final class GlowBufUtils {
 
     /**
      * Read an uncompressed compound NBT tag from the buffer.
+     *
      * @param buf The buffer.
      * @return The tag read, or null.
      */
@@ -136,7 +139,8 @@ public final class GlowBufUtils {
 
     /**
      * Write an uncompressed compound NBT tag to the buffer.
-     * @param buf The buffer.
+     *
+     * @param buf  The buffer.
      * @param data The tag to write, or null.
      */
     public static void writeCompound(ByteBuf buf, CompoundTag data) {
@@ -158,6 +162,7 @@ public final class GlowBufUtils {
 
     /**
      * Read an item stack from the buffer.
+     *
      * @param buf The buffer.
      * @return The stack read, or null.
      */
@@ -167,7 +172,8 @@ public final class GlowBufUtils {
 
     /**
      * Read an item stack from the buffer.
-     * @param buf The buffer.
+     *
+     * @param buf     The buffer.
      * @param network Mark network source.
      * @return The stack read, or null.
      */
@@ -193,7 +199,8 @@ public final class GlowBufUtils {
 
     /**
      * Write an item stack to the buffer.
-     * @param buf The buffer.
+     *
+     * @param buf   The buffer.
      * @param stack The stack to write, or null.
      */
     public static void writeSlot(ByteBuf buf, ItemStack stack) {
@@ -215,6 +222,7 @@ public final class GlowBufUtils {
 
     /**
      * Read an encoded block vector (position) from the buffer.
+     *
      * @param buf The buffer.
      * @return The vector read.
      */
@@ -229,7 +237,8 @@ public final class GlowBufUtils {
 
     /**
      * Write an encoded block vector (position) to the buffer.
-     * @param buf The buffer.
+     *
+     * @param buf    The buffer.
      * @param vector The vector to write.
      */
     public static void writeBlockPosition(ByteBuf buf, Vector vector) {
@@ -238,10 +247,11 @@ public final class GlowBufUtils {
 
     /**
      * Write an encoded block vector (position) to the buffer.
+     *
      * @param buf The buffer.
-     * @param x The x value.
-     * @param y The y value.
-     * @param z The z value.
+     * @param x   The x value.
+     * @param y   The y value.
+     * @param z   The z value.
      */
     public static void writeBlockPosition(ByteBuf buf, long x, long y, long z) {
         buf.writeLong(((x & 0x3ffffff) << 38) | ((y & 0xfff) << 26) | (z & 0x3ffffff));
@@ -249,6 +259,7 @@ public final class GlowBufUtils {
 
     /**
      * Read a UUID encoded as two longs from the buffer.
+     *
      * @param buf The buffer.
      * @return The UUID read.
      */
@@ -258,7 +269,8 @@ public final class GlowBufUtils {
 
     /**
      * Write a UUID encoded as two longs to the buffer.
-     * @param buf The buffer.
+     *
+     * @param buf  The buffer.
      * @param uuid The UUID to write.
      */
     public static void writeUuid(ByteBuf buf, UUID uuid) {
@@ -268,6 +280,7 @@ public final class GlowBufUtils {
 
     /**
      * Read an encoded chat message from the buffer.
+     *
      * @param buf The buffer.
      * @return The chat message read.
      * @throws IOException on read failure.
@@ -278,7 +291,8 @@ public final class GlowBufUtils {
 
     /**
      * Write an encoded chat message to the buffer.
-     * @param buf The buffer.
+     *
+     * @param buf  The buffer.
      * @param text The chat message to write.
      * @throws IOException on write failure.
      */

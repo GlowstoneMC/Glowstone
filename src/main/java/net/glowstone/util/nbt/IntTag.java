@@ -12,6 +12,7 @@ final class IntTag extends Tag<Integer> {
 
     /**
      * Creates the tag.
+     *
      * @param value The value.
      */
     public IntTag(int value) {

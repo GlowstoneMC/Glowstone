@@ -30,6 +30,7 @@ public final class ClientSettings {
 
     /**
      * Construct the ClientSettings from a ClientSettingsMessage.
+     *
      * @param msg The message sent by the client.
      */
     public ClientSettings(ClientSettingsMessage msg) {
@@ -38,11 +39,12 @@ public final class ClientSettings {
 
     /**
      * Construct a ClientSettings.
-     * @param locale The locale, in a form like "en_US".
+     *
+     * @param locale       The locale, in a form like "en_US".
      * @param viewDistance The view distance, in chunks.
-     * @param chatFlags The client's chat flags.
-     * @param chatColors Whether the client has chat colors enabled.
-     * @param skinFlags The client's skin flags.
+     * @param chatFlags    The client's chat flags.
+     * @param chatColors   Whether the client has chat colors enabled.
+     * @param skinFlags    The client's skin flags.
      */
     public ClientSettings(String locale, int viewDistance, int chatFlags, boolean chatColors, int skinFlags) {
         this.locale = locale;
@@ -54,6 +56,7 @@ public final class ClientSettings {
 
     /**
      * Get whether player chat should be shown based on chat flags.
+     *
      * @return Whether player chat is shown.
      */
     public boolean showChat() {
@@ -62,6 +65,7 @@ public final class ClientSettings {
 
     /**
      * Get whether command output should be shown based on chat flags.
+     *
      * @return Whether command output is shown.
      */
     public boolean showCommands() {
@@ -70,6 +74,7 @@ public final class ClientSettings {
 
     /**
      * Get if the client has chat colors enabled.
+     *
      * @return Whether chat colors are enabled.
      */
     public boolean showChatColors() {

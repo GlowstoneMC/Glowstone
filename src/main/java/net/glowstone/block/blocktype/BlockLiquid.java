@@ -14,18 +14,67 @@ import static org.bukkit.block.BlockFace.*;
 
 public abstract class BlockLiquid extends BlockType {
 
-    private final Material bucketType;
+    private static final byte STRENGTH_SOURCE = 0;
+    private static final byte STRENGTH_MAX = 1;
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Public accessors
+    private static final byte STRENGTH_MIN_WATER = 7;
+    private static final byte STRENGTH_MIN_LAVA = 4;
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Overrides
+    private static final int TICK_RATE_WATER = 5;
+    private static final int TICK_RATE_LAVA = 20;
+    private final Material bucketType;
+    private BlockFace[] hfaces = {NORTH, EAST, SOUTH, WEST};
     protected BlockLiquid(Material bucketType) {
         this.bucketType = bucketType;
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Public accessors
+    private static boolean isSource(boolean isWater, byte data) {
+        return data < STRENGTH_MAX || data > (isWater ? STRENGTH_MIN_WATER : STRENGTH_MIN_LAVA);
+    }
+
+    private static boolean isStationary(Material material) {
+        switch (material) {
+            case STATIONARY_WATER:
+            case STATIONARY_LAVA:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private static boolean isWater(Material material) {
+        switch (material) {
+            case STATIONARY_WATER:
+            case WATER:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private static Material getOpposite(Material material) {
+        switch (material) {
+            case STATIONARY_WATER:
+                return Material.WATER;
+            case STATIONARY_LAVA:
+                return Material.LAVA;
+            case WATER:
+                return Material.STATIONARY_WATER;
+            case LAVA:
+                return Material.STATIONARY_LAVA;
+            default:
+                return Material.AIR;
+        }
+    }
 
     /**
      * Get the bucket type to replace the empty bucket when the liquid has
      * been collected.
+     *
      * @return The associated bucket types material
      */
     public Material getBucketType() {
@@ -34,19 +83,17 @@ public abstract class BlockLiquid extends BlockType {
 
     /**
      * Check if the BlockState block is collectible by a bucket.
+     *
      * @param block The block state to check
      * @return Boolean representing if its collectible
      */
     public abstract boolean isCollectible(GlowBlockState block);
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Overrides
-
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
         // 0 = Full liquid block
         state.setType(getMaterial());
-    
+
         state.setRawData((byte) 0);
         updatePhysics(state.getBlock());
     }
@@ -61,20 +108,13 @@ public abstract class BlockLiquid extends BlockType {
 
     /**
      * Pulse the block to calculate its flow.
+     *
      * @param block The block to calculate flow of.
      */
     @Override
     public void receivePulse(GlowBlock block) {
         calculateFlow(block);
     }
-
-    private static final byte STRENGTH_SOURCE = 0;
-    private static final byte STRENGTH_MAX = 1;
-    private static final byte STRENGTH_MIN_WATER = 7;
-    private static final byte STRENGTH_MIN_LAVA = 4;
-    private static final int TICK_RATE_WATER = 5;
-    private static final int TICK_RATE_LAVA = 20;
-    private BlockFace[] hfaces = {NORTH, EAST, SOUTH, WEST};
 
     private void calculateFlow(GlowBlock block) {
         if (!block.getState().getFlowed()) {
@@ -159,10 +199,6 @@ public abstract class BlockLiquid extends BlockType {
         }
     }
 
-    private static boolean isSource(boolean isWater, byte data) {
-        return data < STRENGTH_MAX || data > (isWater ? STRENGTH_MIN_WATER : STRENGTH_MIN_LAVA);
-    }
-
     @Override
     public void updatePhysics(GlowBlock block) {
         if (isStationary(block.getType())) {
@@ -193,45 +229,10 @@ public abstract class BlockLiquid extends BlockType {
         }
         block.getWorld().requestPulse(block, isWater(block.getType()) || block.getBiome() == Biome.HELL ? TICK_RATE_WATER : TICK_RATE_LAVA);
     }
-    
+
     @Override
     public boolean canTickRandomly() {
         return true;
-    }
-
-    private static boolean isStationary(Material material) {
-        switch (material) {
-            case STATIONARY_WATER:
-            case STATIONARY_LAVA:
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    private static boolean isWater(Material material) {
-        switch (material) {
-            case STATIONARY_WATER:
-            case WATER:
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    private static Material getOpposite(Material material) {
-        switch (material) {
-            case STATIONARY_WATER:
-                return Material.WATER;
-            case STATIONARY_LAVA:
-                return Material.LAVA;
-            case WATER:
-                return Material.STATIONARY_WATER;
-            case LAVA:
-                return Material.STATIONARY_LAVA;
-            default:
-                return Material.AIR;
-        }
     }
 
 }

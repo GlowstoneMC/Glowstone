@@ -19,11 +19,8 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
         final Material type = block.getRelative(BlockFace.DOWN).getType();
-        if ((type == Material.GRASS || type == Material.DIRT || type == Material.SOIL) &&
-                block.getRelative(BlockFace.UP).getType() == Material.AIR) {
-            return true;
-        }
-        return false;
+        return (type == Material.GRASS || type == Material.DIRT || type == Material.SOIL) &&
+                block.getRelative(BlockFace.UP).getType() == Material.AIR;
     }
 
     @Override
@@ -82,7 +79,7 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
                     return false;
                 }
             }
-            final DoublePlantSpecies species = ((DoublePlant) data).getSpecies(); 
+            final DoublePlantSpecies species = ((DoublePlant) data).getSpecies();
             if (species != DoublePlantSpecies.DOUBLE_TALLGRASS && species != DoublePlantSpecies.LARGE_FERN) {
                 return true;
             }

@@ -37,13 +37,14 @@ public enum ToolType implements MaterialMatcher {
     private final Material bukkitMaterial;
     private final ToolType better;
 
-    private ToolType(Material bukkitMaterial, ToolType better) {
+    ToolType(Material bukkitMaterial, ToolType better) {
         this.bukkitMaterial = bukkitMaterial;
         this.better = better;
     }
 
     /**
      * Checks the given {@link org.bukkit.Material} is equal or better than this ToolType.
+     *
      * @param material The material to check
      * @return true if the material is equal or better, false otherwise
      */

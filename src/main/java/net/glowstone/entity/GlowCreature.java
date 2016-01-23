@@ -21,7 +21,7 @@ public class GlowCreature extends GlowLivingEntity implements Creature {
      * The type of monster.
      */
     private final EntityType type;
-   
+
     /**
      * The monster's target.
      */
@@ -29,8 +29,9 @@ public class GlowCreature extends GlowLivingEntity implements Creature {
 
     /**
      * Creates a new monster.
+     *
      * @param location The location of the monster.
-     * @param type The type of monster.
+     * @param type     The type of monster.
      */
     public GlowCreature(Location location, EntityType type) {
         super(location);
@@ -63,12 +64,12 @@ public class GlowCreature extends GlowLivingEntity implements Creature {
     }
 
     @Override
-    public void setTarget(LivingEntity target) {
-        this.target = target;
+    public LivingEntity getTarget() {
+        return target;
     }
 
     @Override
-    public LivingEntity getTarget() {
-        return target;
+    public void setTarget(LivingEntity target) {
+        this.target = target;
     }
 }

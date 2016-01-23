@@ -20,15 +20,11 @@ import java.util.Map;
  */
 public final class EntityStorage {
 
-    private EntityStorage() {
-    }
-
     /**
      * A table which maps entity ids to compound readers. This is generally used to map
      * stored entities to actual entities.
      */
     private static final Map<String, EntityStore<?>> idTable = new HashMap<>();
-
     /**
      * A table which maps entities to stores. This is generally used to map
      * entities being stored.
@@ -80,10 +76,14 @@ public final class EntityStorage {
         bind(new ItemFrameStore());
     }
 
+    private EntityStorage() {
+    }
+
     /**
      * Binds a store by adding entries for it to the tables.
+     *
      * @param store The store object.
-     * @param <T> The type of entity.
+     * @param <T>   The type of entity.
      */
     private static <T extends GlowEntity> void bind(EntityStore<T> store) {
         idTable.put(store.getId(), store);
@@ -92,7 +92,8 @@ public final class EntityStorage {
 
     /**
      * Load a new entity in the given world from the given data tag.
-     * @param world The target world.
+     *
+     * @param world    The target world.
      * @param compound The tag to load from.
      * @return The newly constructed entity.
      * @throws IllegalArgumentException if there is an error in the data.
@@ -154,7 +155,8 @@ public final class EntityStorage {
 
     /**
      * Save an entity's data to the given compound tag.
-     * @param entity The entity to save.
+     *
+     * @param entity   The entity to save.
      * @param compound The target tag.
      */
     public static void save(GlowEntity entity, CompoundTag compound) {
@@ -167,7 +169,8 @@ public final class EntityStorage {
 
     /**
      * Load an entity's data from the given compound tag.
-     * @param entity The target entity.
+     *
+     * @param entity   The target entity.
      * @param compound The tag to load from.
      */
     public static void load(GlowEntity entity, CompoundTag compound) {
