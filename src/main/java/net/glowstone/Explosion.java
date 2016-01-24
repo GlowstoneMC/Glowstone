@@ -227,32 +227,31 @@ public final class Explosion {
         for (GlowLivingEntity entity : entities) {
             if (entity instanceof GlowPlayer) {
                 affectedPlayers.add((GlowPlayer) entity);
-            } else {
-                double disDivPower = distanceTo(entity) / (double) this.power;
-                if (disDivPower > 1.0D) continue;
-
-                Vector vecDistance = distanceToHead(entity);
-                if (vecDistance.length() == 0.0) continue;
-
-                vecDistance.normalize();
-
-                double basicDamage = calculateDamage(entity, disDivPower);
-                double explosionDamage = calculateEnchantedDamage((int) ((basicDamage * basicDamage + basicDamage) * 4 * (double) power + 1.0D), entity);
-
-                DamageCause damageCause;
-                if (source == null || source.getType() == EntityType.PRIMED_TNT) {
-                    damageCause = DamageCause.BLOCK_EXPLOSION;
-                } else {
-                    damageCause = DamageCause.ENTITY_EXPLOSION;
-                }
-                entity.damage(explosionDamage, source, damageCause);
-
-                vecDistance.multiply(explosionDamage).multiply(0.25);
-
-                Vector currentVelocity = entity.getVelocity();
-                currentVelocity.add(vecDistance);
-                entity.setVelocity(currentVelocity);
             }
+            double disDivPower = distanceTo(entity) / (double) this.power;
+            if (disDivPower > 1.0D) continue;
+
+            Vector vecDistance = distanceToHead(entity);
+            if (vecDistance.length() == 0.0) continue;
+
+            vecDistance.normalize();
+
+            double basicDamage = calculateDamage(entity, disDivPower);
+            double explosionDamage = calculateEnchantedDamage((int) ((basicDamage * basicDamage + basicDamage) * 4 * (double) power + 1.0D), entity);
+
+            DamageCause damageCause;
+            if (source == null || source.getType() == EntityType.PRIMED_TNT) {
+                damageCause = DamageCause.BLOCK_EXPLOSION;
+            } else {
+                damageCause = DamageCause.ENTITY_EXPLOSION;
+            }
+            entity.damage(explosionDamage, source, damageCause);
+
+            vecDistance.multiply(explosionDamage).multiply(0.25);
+
+            Vector currentVelocity = entity.getVelocity();
+            currentVelocity.add(vecDistance);
+            entity.setVelocity(currentVelocity);
         }
 
         return affectedPlayers;
