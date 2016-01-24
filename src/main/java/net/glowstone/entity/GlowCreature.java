@@ -11,6 +11,7 @@ import org.bukkit.entity.LivingEntity;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Represents a creature entity such as a pig.
@@ -53,7 +54,7 @@ public class GlowCreature extends GlowLivingEntity implements Creature {
         int z = Position.getIntZ(location);
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
-        result.add(new SpawnMobMessage(id, type.getTypeId(), x, y, z, yaw, pitch, pitch, 0, 0, 0, metadata.getEntryList()));
+        result.add(new SpawnMobMessage(id, UUID.randomUUID(), type.getTypeId(), x, y, z, yaw, pitch, pitch, 0, 0, 0, metadata.getEntryList())); //TODO 1.9 - Real UUID
 
         // head facing
         result.add(new EntityHeadRotationMessage(id, yaw));

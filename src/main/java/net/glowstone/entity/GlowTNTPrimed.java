@@ -15,6 +15,7 @@ import org.bukkit.event.entity.ExplosionPrimeEvent;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
 
@@ -67,7 +68,7 @@ public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
                 yaw = Position.getIntYaw(location);
 
         LinkedList<Message> result = new LinkedList<>();
-        result.add(new SpawnObjectMessage(id, 50, x, y, z, pitch, yaw));
+        result.add(new SpawnObjectMessage(id, UUID.randomUUID(), 50, x, y, z, pitch, yaw)); //TODO 1.9 - Real UUID
         return result;
     }
 

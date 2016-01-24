@@ -13,7 +13,7 @@ public final class EntityEquipmentCodec implements Codec<EntityEquipmentMessage>
     @Override
     public EntityEquipmentMessage decode(ByteBuf buf) throws IOException {
         int id = ByteBufUtils.readVarInt(buf);
-        int slot = buf.readShort();
+        int slot = ByteBufUtils.readVarInt(buf);
         ItemStack stack = GlowBufUtils.readSlot(buf);
         return new EntityEquipmentMessage(id, slot, stack);
     }
@@ -21,7 +21,7 @@ public final class EntityEquipmentCodec implements Codec<EntityEquipmentMessage>
     @Override
     public ByteBuf encode(ByteBuf buf, EntityEquipmentMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
-        buf.writeShort(message.getSlot());
+        ByteBufUtils.writeVarInt(buf, message.getSlot());
         GlowBufUtils.writeSlot(buf, message.getStack());
         return buf;
     }

@@ -3,7 +3,9 @@ package net.glowstone.net.codec.play.player;
 import com.flowpowered.networking.Codec;
 import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.player.CombatEventMessage;
+import net.glowstone.util.TextMessage;
 
 import java.io.IOException;
 
@@ -22,7 +24,7 @@ public final class CombatEventCodec implements Codec<CombatEventMessage> {
             case ENTITY_DEAD: {
                 int playerID = ByteBufUtils.readVarInt(buffer);
                 int entityID = buffer.readInt();
-                String message = ByteBufUtils.readUTF8(buffer);
+                TextMessage message = GlowBufUtils.readChat(buffer);
                 return new CombatEventMessage(event, playerID, entityID, message);
             }
             default:
@@ -39,7 +41,7 @@ public final class CombatEventCodec implements Codec<CombatEventMessage> {
         } else if (message.getEvent() == CombatEventMessage.Event.ENTITY_DEAD) {
             ByteBufUtils.writeVarInt(buf, message.getPlayerID());
             buf.writeInt(message.getEntityID());
-            ByteBufUtils.writeUTF8(buf, message.getMessage());
+            GlowBufUtils.writeChat(buf, message.getMessage());
         }
         return buf;
     }

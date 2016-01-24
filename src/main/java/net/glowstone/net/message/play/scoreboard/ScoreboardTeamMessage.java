@@ -20,11 +20,12 @@ public final class ScoreboardTeamMessage implements Message {
     private final int flags;
     private final NameTagVisibility nametagVisibility;
     private final ChatColor color;
+    private final NameTagVisibility collisionRule;
 
     // CREATE, ADD_, and REMOVE_PLAYERS only
     private final List<String> entries;
 
-    private ScoreboardTeamMessage(String teamName, Action action, String displayName, String prefix, String suffix, boolean friendlyFire, boolean seeInvisible, NameTagVisibility nametagVisibility, ChatColor color, List<String> entries) {
+    private ScoreboardTeamMessage(String teamName, Action action, String displayName, String prefix, String suffix, boolean friendlyFire, boolean seeInvisible, NameTagVisibility nametagVisibility, NameTagVisibility collisionRule, ChatColor color, List<String> entries) {
         this.teamName = teamName;
         this.action = action;
         this.displayName = displayName;
@@ -32,28 +33,29 @@ public final class ScoreboardTeamMessage implements Message {
         this.suffix = suffix;
         this.flags = (friendlyFire ? 1 : 0) | (seeInvisible ? 2 : 0);
         this.nametagVisibility = nametagVisibility;
+        this.collisionRule = collisionRule;
         this.color = color;
         this.entries = entries;
     }
 
-    public static ScoreboardTeamMessage create(String teamName, String displayName, String prefix, String suffix, boolean friendlyFire, boolean seeInvisible, NameTagVisibility nametagVisibility, ChatColor color, List<String> players) {
-        return new ScoreboardTeamMessage(teamName, Action.CREATE, displayName, prefix, suffix, friendlyFire, seeInvisible, nametagVisibility, color, players);
+    public static ScoreboardTeamMessage create(String teamName, String displayName, String prefix, String suffix, boolean friendlyFire, boolean seeInvisible, NameTagVisibility nametagVisibility, NameTagVisibility collisionRule, ChatColor color, List<String> players) {
+        return new ScoreboardTeamMessage(teamName, Action.CREATE, displayName, prefix, suffix, friendlyFire, seeInvisible, nametagVisibility, collisionRule, color, players);
     }
 
     public static ScoreboardTeamMessage remove(String teamName) {
-        return new ScoreboardTeamMessage(teamName, Action.REMOVE, null, null, null, false, false, null, ChatColor.RESET, null);
+        return new ScoreboardTeamMessage(teamName, Action.REMOVE, null, null, null, false, false, null, null, ChatColor.RESET, null);
     }
 
-    public static ScoreboardTeamMessage update(String teamName, String displayName, String prefix, String suffix, boolean friendlyFire, boolean seeInvisible, NameTagVisibility nametagVisibility, ChatColor color) {
-        return new ScoreboardTeamMessage(teamName, Action.UPDATE, displayName, prefix, suffix, friendlyFire, seeInvisible, nametagVisibility, color, null);
+    public static ScoreboardTeamMessage update(String teamName, String displayName, String prefix, String suffix, boolean friendlyFire, boolean seeInvisible, NameTagVisibility nametagVisibility, NameTagVisibility collisionRule, ChatColor color) {
+        return new ScoreboardTeamMessage(teamName, Action.UPDATE, displayName, prefix, suffix, friendlyFire, seeInvisible, nametagVisibility, collisionRule, color, null);
     }
 
     public static ScoreboardTeamMessage addPlayers(String teamName, List<String> entries) {
-        return new ScoreboardTeamMessage(teamName, Action.ADD_PLAYERS, null, null, null, false, false, null, ChatColor.RESET, entries);
+        return new ScoreboardTeamMessage(teamName, Action.ADD_PLAYERS, null, null, null, false, false, null, null, ChatColor.RESET, entries);
     }
 
     public static ScoreboardTeamMessage removePlayers(String teamName, List<String> entries) {
-        return new ScoreboardTeamMessage(teamName, Action.REMOVE_PLAYERS, null, null, null, false, false, null, ChatColor.RESET, entries);
+        return new ScoreboardTeamMessage(teamName, Action.REMOVE_PLAYERS, null, null, null, false, false, null, null, ChatColor.RESET, entries);
     }
 
     public enum Action {
