@@ -6,7 +6,7 @@ import org.bukkit.entity.Ocelot;
 
 public class GlowOcelot extends GlowTameable implements Ocelot {
 
-    private Type catType;
+    private Type catType = Type.WILD_OCELOT;
     private boolean sitting;
 
     public GlowOcelot(Location location) {
