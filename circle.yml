@@ -10,6 +10,8 @@ checkout:
 test:
     post:
         - cp -r target/glowstone*.jar $CIRCLE_ARTIFACTS/
+        - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+        - find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
 # deploy to test server
 #deployment:
 #  devel:
