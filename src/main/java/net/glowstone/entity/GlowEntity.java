@@ -35,6 +35,7 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -695,6 +696,10 @@ public abstract class GlowEntity implements Entity {
         active = false;
         world.getEntityManager().unregister(this);
         server.getEntityIdManager().deallocate(this);
+        DestroyEntitiesMessage message = new DestroyEntitiesMessage(Arrays.asList(id));
+        for (GlowPlayer player : getWorld().getRawPlayers()) {
+            player.getSession().send(message);
+        }
     }
 
     @Override
