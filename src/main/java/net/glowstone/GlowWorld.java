@@ -130,6 +130,8 @@ public final class GlowWorld implements World {
      * Contains how regular blocks should be pulsed.
      */
     private final HashMap<Location, Long> tickMap = new HashMap<>();
+    private HashMap<Location, Long> unmodifiedTickMap = new HashMap<>();
+
     private final Spigot spigot = new Spigot() {
         @Override
         public void playEffect(Location location, Effect effect) {
@@ -1697,8 +1699,8 @@ public final class GlowWorld implements World {
 
     private void pulseTickMap() {
         ItemTable itemTable = ItemTable.instance();
-        Map<Location, Long> map = new HashMap(getTickMap());
-        map.entrySet().stream().filter(entry -> worldAge % entry.getValue() == 0).forEach(entry -> {
+        unmodifiedTickMap = (HashMap) getTickMap().clone();
+        unmodifiedTickMap.entrySet().stream().filter(entry -> worldAge % entry.getValue() == 0).forEach(entry -> {
             GlowBlock block = this.getBlockAt(entry.getKey());
             BlockType notifyType = itemTable.getBlock(block.getTypeId());
             if (notifyType != null)
@@ -1706,7 +1708,7 @@ public final class GlowWorld implements World {
         });
     }
 
-    private Map<Location, Long> getTickMap() {
+    private HashMap<Location, Long> getTickMap() {
         return tickMap;
     }
 
