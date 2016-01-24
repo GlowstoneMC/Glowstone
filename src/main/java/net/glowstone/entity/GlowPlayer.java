@@ -1805,7 +1805,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         double x = location.getBlockX() + 0.5;
         double y = location.getBlockY() + 0.5;
         double z = location.getBlockZ() + 0.5;
-        session.send(new SoundEffectMessage(sound, x, y, z, volume, pitch));
+        session.send(new NamedSoundEffectMessage(sound, NamedSoundEffectMessage.SoundCategory.MUSIC, x, y, z, volume, pitch)); //TODO: Put the real category
     }
 
     private final Player.Spigot spigot = new Player.Spigot() {
