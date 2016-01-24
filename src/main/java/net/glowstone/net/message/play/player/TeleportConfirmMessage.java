@@ -4,7 +4,7 @@ import com.flowpowered.networking.Message;
 import lombok.Data;
 
 @Data
-public final class PlayerSwingArmMessage implements Message {
+public class TeleportConfirmMessage implements Message {
 
-    private final int hand;
+    private final int teleportID;
 }

@@ -1,8 +1,11 @@
 package net.glowstone.net.message.play.entity;
 
 import com.flowpowered.networking.Message;
+import lombok.Data;
 
+@Data
 public class VehicleMoveMessage implements Message {
 
-    //TODO Currently unknown on wiki.vg
+    private final double x, y, z;
+    private final float yaw, pitch;
 }

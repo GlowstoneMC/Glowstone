@@ -687,7 +687,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             // if this chunk would make the message too big,
             if (bulkSize + messageSize > maxSize) {
                 // send out what we have so far
-                session.send(new ChunkBulkMessage(skylight, messages));
+                //session.send(new ChunkBulkMessage(skylight, messages)); //TODO Fix this
                 messages = new LinkedList<>();
                 bulkSize = 6;
             }
@@ -698,7 +698,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         // send the leftovers
         if (!messages.isEmpty()) {
-            session.send(new ChunkBulkMessage(skylight, messages));
+           // session.send(new ChunkBulkMessage(skylight, messages)); //TODO Fix this
         }
 
         // send visible tile entity data
@@ -1755,7 +1755,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         double x = location.getBlockX() + 0.5;
         double y = location.getBlockY() + 0.5;
         double z = location.getBlockZ() + 0.5;
-        session.send(new PlaySoundMessage(sound, SoundCategory.MASTER, x, y, z, volume, pitch));
+        session.send(new SoundEffectMessage(sound, x, y, z, volume, pitch));
     }
 
     @Override
@@ -1800,15 +1800,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
-    public void sendSignChange(Location location, String[] lines) throws IllegalArgumentException {
-        Validate.notNull(location, "location cannot be null");
-        Validate.notNull(lines, "lines cannot be null");
-        Validate.isTrue(lines.length == 4, "lines.length must equal 4");
-
-        afterBlockChanges.add(UpdateSignMessage.fromPlainText(location.getBlockX(), location.getBlockY(), location.getBlockZ(), lines));
-    }
-
     /**
      * Send a sign change, similar to {@link #sendSignChange(Location, String[])},
      * but using complete TextMessages instead of strings.
@@ -1818,7 +1809,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * @throws IllegalArgumentException if location is null
      * @throws IllegalArgumentException if lines is non-null and has a length less than 4
      */
-    public void sendSignChange(Location location, TextMessage... lines) {
+    @Override
+    public void sendSignChange(Location location, String[] lines) throws IllegalArgumentException {
         Validate.notNull(location, "location cannot be null");
         Validate.notNull(lines, "lines cannot be null");
         Validate.isTrue(lines.length == 4, "lines.length must equal 4");

@@ -59,13 +59,11 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
                 }
             }
         } else if (message.getAction() == InteractEntityMessage.Action.INTERACT_AT.ordinal()) {
-            PlayerInteractAtEntityEvent event = new PlayerInteractAtEntityEvent(player, possibleTarget, new Vector(message.getTargetX(), message.getTargetY(), message.getTargetZ()));
-            EventFactory.callEvent(event);
-
-            if (!event.isCancelled()) {
-                possibleTarget.entityInteract(player, message);
-            }
+            //todo: Handle hand variable
+            // todo: Interaction with entity at a specified location (X, Y, and Z are present in the message)
+            // used for adjusting specific portions of armor stands
         } else if (message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
+            //Todo: Handle hand variable
             PlayerInteractEntityEvent event = new PlayerInteractEntityEvent(player, possibleTarget);
             EventFactory.callEvent(event);
 

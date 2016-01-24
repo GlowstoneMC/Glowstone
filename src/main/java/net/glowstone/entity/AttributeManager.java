@@ -66,11 +66,12 @@ public class AttributeManager {
 
     @RequiredArgsConstructor
     public enum Key {
-        KEY_MAX_HEALTH("generic.maxHealth", 20, Double.MAX_VALUE),
+        KEY_MAX_HEALTH("generic.maxHealth", 20, 1024.0),
         KEY_FOLLOW_RANGE("generic.followRange", 32, 2048),
         KEY_KNOCKBACK_RESISTANCE("generic.knockbackResistance", 0, 1),
-        KEY_MOVEMENT_SPEED("generic.movementSpeed", 0.699999988079071, Double.MAX_VALUE),
-        KEY_ATTACK_DAMAGE("generic.attackDamage", 2, Double.MAX_VALUE),
+        KEY_MOVEMENT_SPEED("generic.movementSpeed", 0.699999988079071, 1024.0),
+        KEY_ATTACK_DAMAGE("generic.attackDamage", 2, 2048.0),
+        ATTACK_SPEED("generic.attackSpeed", 4.0, 1024.0),
         KEY_HORSE_JUMP_STRENGTH("horse.jumpStrength", 0.7, 2),
         KEY_ZOMBIE_SPAWN_REINFORCEMENTS("zombie.spawnReinforcements", 0, 1);
 
