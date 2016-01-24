@@ -69,16 +69,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     private int maxNoDamageTicks = 10;
 
     /**
-     * A custom overhead name to be shown for non-Players.
-     */
-    private String customName;
-
-    /**
-     * Whether the custom name is shown.
-     */
-    private boolean customNameVisible;
-
-    /**
      * Whether the entity should be removed if it is too distant from players.
      */
     private boolean removeDistance;
@@ -695,29 +685,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             this.damage(ev.getDamage());
         }
         this.setFallDistance(0);
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Custom name
-
-    @Override
-    public void setCustomName(String name) {
-        customName = name;
-    }
-
-    @Override
-    public String getCustomName() {
-        return customName;
-    }
-
-    @Override
-    public void setCustomNameVisible(boolean flag) {
-        customNameVisible = flag;
-    }
-
-    @Override
-    public boolean isCustomNameVisible() {
-        return customNameVisible;
     }
 
     ////////////////////////////////////////////////////////////////////////////
