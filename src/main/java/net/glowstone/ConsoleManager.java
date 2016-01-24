@@ -122,8 +122,7 @@ public final class ConsoleManager {
             logger.warning("Could not create log folder: " + parent);
         }
         Handler fileHandler = new RotatingFileHandler(logfile);
-        String fileDate = server.getConsoleLogDateFormat();
-        fileHandler.setFormatter(new DateOutputFormatter(fileDate, false));
+        fileHandler.setFormatter(new DateOutputFormatter(server.getConsoleLogDateFormat(), false));
         logger.addHandler(fileHandler);
     }
 
