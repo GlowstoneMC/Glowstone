@@ -124,7 +124,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
         } else if (revert) {
             // replace the block that wasn't really dug
             BlockPlacementHandler.revert(player, block);
-        } else {
+        } else if (block.getType() != Material.AIR) {
             BlockType blockType = ItemTable.instance().getBlock(block.getType());
             blockType.leftClickBlock(player, block, holding);
         }
