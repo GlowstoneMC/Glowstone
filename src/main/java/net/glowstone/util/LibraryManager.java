@@ -41,6 +41,7 @@ public final class LibraryManager {
 
         download("org.xerial", "sqlite-jdbc", "3.7.2");
         download("mysql", "mysql-connector-java", "5.1.34"); // was 5.1.14
+        download("org.slf4j", "slf4j-jdk14", "1.7.7");
     }
 
     private void download(String group, String library, String version) {
