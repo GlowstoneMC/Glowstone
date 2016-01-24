@@ -16,7 +16,8 @@ public class SoundEffectCodec implements Codec<SoundEffectMessage> {
 
     @Override
     public ByteBuf encode(ByteBuf buf, SoundEffectMessage message) throws IOException {
-        ByteBufUtils.writeUTF8(buf, message.getSound());
+        ByteBufUtils.writeVarInt(buf, message.getSound());
+        ByteBufUtils.writeVarInt(buf, message.getCategory().ordinal());
         buf.writeInt((int) (8 * message.getX()));
         buf.writeInt((int) (8 * message.getY()));
         buf.writeInt((int) (8 * message.getZ()));
