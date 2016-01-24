@@ -4,6 +4,7 @@ import com.flowpowered.networking.Message;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import net.glowstone.util.TextMessage;
 
 @Data
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -12,7 +13,7 @@ public final class CombatEventMessage implements Message {
     private final Event event;
     private final int duration;
     private final int entityID, playerID;
-    private final String message;
+    private final TextMessage message;
 
     // BEGIN_COMBAT
     public CombatEventMessage(Event event) {
@@ -25,7 +26,7 @@ public final class CombatEventMessage implements Message {
     }
 
     // ENTITY_DEAD
-    public CombatEventMessage(Event event, int entityID, int playerID, String message) {
+    public CombatEventMessage(Event event, int entityID, int playerID, TextMessage message) {
         this(event, 0, entityID, playerID, message);
     }
 

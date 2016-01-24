@@ -18,6 +18,7 @@ import org.bukkit.util.Vector;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Represents an item that is also an {@link net.glowstone.entity.GlowEntity} within the world.
@@ -170,7 +171,7 @@ public final class GlowItem extends GlowEntity implements Item {
         int pitch = Position.getIntPitch(location);
 
         return Arrays.asList(
-                new SpawnObjectMessage(id, SpawnObjectMessage.ITEM, x, y, z, pitch, yaw),
+                new SpawnObjectMessage(id, UUID.randomUUID(), SpawnObjectMessage.ITEM, x, y, z, pitch, yaw), //TODO: 1.9 - Have a real UUID
                 new EntityMetadataMessage(id, metadata.getEntryList()),
                 // these keep the client from assigning a random velocity
                 new EntityTeleportMessage(id, x, y, z, yaw, pitch),

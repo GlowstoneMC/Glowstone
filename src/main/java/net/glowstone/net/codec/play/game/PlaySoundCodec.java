@@ -17,6 +17,7 @@ public final class PlaySoundCodec implements Codec<PlaySoundMessage> {
     @Override
     public ByteBuf encode(ByteBuf buf, PlaySoundMessage message) throws IOException {
         ByteBufUtils.writeUTF8(buf, message.getSound());
+        ByteBufUtils.writeVarInt(buf, message.getSoundCategory().ordinal());
         buf.writeInt((int) (8 * message.getX()));
         buf.writeInt((int) (8 * message.getY()));
         buf.writeInt((int) (8 * message.getZ()));

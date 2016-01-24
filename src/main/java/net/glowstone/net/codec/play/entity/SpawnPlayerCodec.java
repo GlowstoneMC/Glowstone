@@ -21,9 +21,8 @@ public final class SpawnPlayerCodec implements Codec<SpawnPlayerMessage> {
         int z = buf.readInt();
         int rotation = buf.readByte();
         int pitch = buf.readByte();
-        int item = buf.readShort();
         List<MetadataMap.Entry> list = GlowBufUtils.readMetadata(buf);
-        return new SpawnPlayerMessage(id, uuid, x, y, z, rotation, pitch, item, list);
+        return new SpawnPlayerMessage(id, uuid, x, y, z, rotation, pitch, list);
     }
 
     @Override
@@ -35,7 +34,6 @@ public final class SpawnPlayerCodec implements Codec<SpawnPlayerMessage> {
         buf.writeInt(message.getZ());
         buf.writeByte(message.getRotation());
         buf.writeByte(message.getPitch());
-        buf.writeShort(message.getItem());
         GlowBufUtils.writeMetadata(buf, message.getMetadata());
         return buf;
     }
