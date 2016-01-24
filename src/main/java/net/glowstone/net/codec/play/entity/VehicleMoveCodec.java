@@ -9,11 +9,21 @@ import java.io.IOException;
 public class VehicleMoveCodec implements Codec<VehicleMoveMessage> {
     @Override
     public VehicleMoveMessage decode(ByteBuf buffer) throws IOException {
-        return new VehicleMoveMessage(); //TODO: Unknown on wiki.vg so far
+        double x = buffer.readDouble();
+        double y = buffer.readDouble();
+        double z = buffer.readDouble();
+        float yaw = buffer.readFloat();
+        float pitch = buffer.readFloat();
+        return new VehicleMoveMessage(x, y, z, yaw, pitch);
     }
 
     @Override
     public ByteBuf encode(ByteBuf buf, VehicleMoveMessage message) throws IOException {
-        return buf; //TODO: Unknown on wiki.vg so far
+        buf.writeDouble(message.getX());
+        buf.writeDouble(message.getY());
+        buf.writeDouble(message.getZ());
+        buf.writeFloat(message.getYaw());
+        buf.writeFloat(message.getPitch());
+        return buf;
     }
 }

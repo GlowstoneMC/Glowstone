@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.player;
 
 import com.flowpowered.networking.Codec;
+import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.player.BlockPlacementMessage;
@@ -14,18 +15,18 @@ public final class BlockPlacementCodec implements Codec<BlockPlacementMessage> {
     public BlockPlacementMessage decode(ByteBuf buf) throws IOException {
         BlockVector pos = GlowBufUtils.readBlockPosition(buf);
         int direction = buf.readByte();
-        ItemStack heldItem = GlowBufUtils.readSlot(buf, true);
+        int hand = ByteBufUtils.readVarInt(buf);
         int cursorX = buf.readByte();
         int cursorY = buf.readByte();
         int cursorZ = buf.readByte();
-        return new BlockPlacementMessage(pos.getBlockX(), pos.getBlockY(), pos.getBlockZ(), direction, heldItem, cursorX, cursorY, cursorZ);
+        return new BlockPlacementMessage(pos.getBlockX(), pos.getBlockY(), pos.getBlockZ(), direction, hand, cursorX, cursorY, cursorZ);
     }
 
     @Override
     public ByteBuf encode(ByteBuf buf, BlockPlacementMessage message) throws IOException {
         GlowBufUtils.writeBlockPosition(buf, message.getX(), message.getY(), message.getZ());
         buf.writeByte(message.getDirection());
-        GlowBufUtils.writeSlot(buf, message.getHeldItem());
+        ByteBufUtils.writeVarInt(buf, message.getHand());
         buf.writeByte(message.getCursorX());
         buf.writeByte(message.getCursorY());
         buf.writeByte(message.getCursorZ());

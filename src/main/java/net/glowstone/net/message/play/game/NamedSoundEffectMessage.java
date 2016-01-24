@@ -4,7 +4,7 @@ import com.flowpowered.networking.Message;
 import lombok.Data;
 
 @Data
-public final class PlaySoundMessage implements Message {
+public final class NamedSoundEffectMessage implements Message {
 
     private final String sound;
     private final SoundCategory soundCategory;

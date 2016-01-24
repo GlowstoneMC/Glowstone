@@ -13,18 +13,19 @@ public final class TabCompleteCodec implements Codec<TabCompleteMessage> {
     @Override
     public TabCompleteMessage decode(ByteBuf buf) throws IOException {
         String text = ByteBufUtils.readUTF8(buf);
-
+        boolean assumeCommand = buf.readBoolean();
         boolean hasLocation = buf.readBoolean();
         BlockVector location = null;
         if (hasLocation) {
             location = GlowBufUtils.readBlockPosition(buf);
         }
-        return new TabCompleteMessage(text, location);
+        return new TabCompleteMessage(text, assumeCommand, location);
     }
 
     @Override
     public ByteBuf encode(ByteBuf buf, TabCompleteMessage message) throws IOException {
         ByteBufUtils.writeUTF8(buf, message.getText());
+        buf.writeBoolean(message.isAssumeCommand());
         final BlockVector location = message.getLocation();
         if (location != null) {
             buf.writeBoolean(true);

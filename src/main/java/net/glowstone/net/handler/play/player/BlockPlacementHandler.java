@@ -23,6 +23,7 @@ import java.util.Objects;
 public final class BlockPlacementHandler implements MessageHandler<GlowSession, BlockPlacementMessage> {
     @Override
     public void handle(GlowSession session, BlockPlacementMessage message) {
+        //TODO: Hand handling instead of .getHeldItem()
         final GlowPlayer player = session.getPlayer();
         if (player == null)
             return;
@@ -58,15 +59,15 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
          */
         if (message.getDirection() == -1) {
             BlockPlacementMessage previous = session.getPreviousPlacement();
-            if (previous == null || !previous.getHeldItem().equals(message.getHeldItem())) {
+            //if (previous == null || !previous.getHeldItem().equals(message.getHeldItem())) {
                 // perform normal right-click-air actions
-                action = Action.RIGHT_CLICK_AIR;
-                clicked = null;
-            } else {
+             //   action = Action.RIGHT_CLICK_AIR;
+             //   clicked = null;
+            //} else {
                 // terminate processing of this event
-                session.setPreviousPlacement(null);
+             //   session.setPreviousPlacement(null);
                 return;
-            }
+           // }
         }
 
         // Set previous placement message
@@ -80,12 +81,12 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         // check that held item matches
         // apparently the "message" container has comprehends held item as null,
         // whereas the "holding" item is Material.AIR * 0 (hence the exceptional if statement here)
-        if ((!(holding != null && holding.getType() == Material.AIR && message.getHeldItem() == null))
-                && !Objects.equals(holding, message.getHeldItem())) {
+        //if ((!(holding != null && holding.getType() == Material.AIR && message.getHeldItem() == null))
+        //        && !Objects.equals(holding, message.getHeldItem())) {
             // above handles cases where holding and/or message's item are null
             // todo: inform player their item is wrong
-            return;
-        }
+        //    return;
+        //}
 
         // check that a block-click wasn't against air
         if (clicked != null && clicked.getType() == Material.AIR) {

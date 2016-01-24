@@ -12,19 +12,21 @@ public final class ClientSettingsCodec implements Codec<ClientSettingsMessage> {
     public ClientSettingsMessage decode(ByteBuf buf) throws IOException {
         String locale = ByteBufUtils.readUTF8(buf);
         int viewDistance = buf.readByte();
-        int chatFlags = buf.readByte();
+        int chatFlags = ByteBufUtils.readVarInt(buf);
         boolean colors = buf.readBoolean();
         int skinFlags = buf.readUnsignedByte();
-        return new ClientSettingsMessage(locale, viewDistance, chatFlags, colors, skinFlags);
+        int hand = ByteBufUtils.readVarInt(buf);
+        return new ClientSettingsMessage(locale, viewDistance, chatFlags, colors, skinFlags, hand);
     }
 
     @Override
     public ByteBuf encode(ByteBuf buf, ClientSettingsMessage message) throws IOException {
         ByteBufUtils.writeUTF8(buf, message.getLocale());
         buf.writeByte(message.getViewDistance());
-        buf.writeByte(message.getChatFlags());
+        ByteBufUtils.writeVarInt(buf, message.getChatFlags());
         buf.writeBoolean(message.isChatColors());
         buf.writeByte(message.getSkinFlags());
+        ByteBufUtils.writeVarInt(buf, message.getHand());
         return buf;
     }
 }
