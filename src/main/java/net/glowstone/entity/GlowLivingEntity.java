@@ -513,6 +513,10 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             return;
         }
 
+        if (source != null && source instanceof GlowPlayer) {
+            ((GlowPlayer) source).addExhaustion(0.3f);
+        }
+
         // apply damage
         amount = event.getFinalDamage();
         lastDamage = amount;
