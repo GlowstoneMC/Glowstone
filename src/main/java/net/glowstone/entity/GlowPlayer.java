@@ -574,7 +574,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         List<Integer> destroyIds = new LinkedList<>();
         for (Iterator<GlowEntity> it = knownEntities.iterator(); it.hasNext(); ) {
             GlowEntity entity = it.next();
-            if (isWithinDistance(entity)) {
+            if (isWithinDistance(entity) && !entity.isDead()) {
                 for (Message msg : entity.createUpdateMessage()) {
                     session.send(msg);
                 }
