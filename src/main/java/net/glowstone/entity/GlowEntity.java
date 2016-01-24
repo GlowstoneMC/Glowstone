@@ -698,7 +698,9 @@ public abstract class GlowEntity implements Entity {
         server.getEntityIdManager().deallocate(this);
         DestroyEntitiesMessage message = new DestroyEntitiesMessage(Arrays.asList(id));
         for (GlowPlayer player : getWorld().getRawPlayers()) {
-            player.getSession().send(message);
+            if (player.canSeeEntity(this)) {
+                player.getSession().send(message);
+            }
         }
     }
 
