@@ -1,7 +1,7 @@
 package net.glowstone.entity;
 
 import com.flowpowered.networking.Message;
-
+import com.google.common.base.Preconditions;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowServer;
@@ -34,6 +34,8 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
+import org.spigotmc.event.entity.EntityDismountEvent;
+import org.spigotmc.event.entity.EntityMountEvent;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -145,6 +147,17 @@ public abstract class GlowEntity implements Entity {
      * How long the entity has been on fire, or 0 if it is not.
      */
     private int fireTicks = 0;
+
+    /**
+     * Passanger
+     */
+    private GlowEntity passenger;
+
+    /**
+     * Vehicle
+     */
+    protected GlowEntity vehicle;
+    protected boolean vehicleChanged;
 
     /**
      * Creates an entity and adds it to the specified world.
@@ -393,6 +406,7 @@ public abstract class GlowEntity implements Entity {
         metadata.resetChanges();
         teleported = false;
         velocityChanged = false;
+        vehicleChanged = false;
     }
 
     /**
@@ -519,6 +533,11 @@ public abstract class GlowEntity implements Entity {
         // send velocity if needed
         if (velocityChanged) {
             result.add(new EntityVelocityMessage(id, velocity));
+        }
+
+        if (vehicleChanged) {
+            //this method will not call for this player, we don't need check SELF_ID
+            result.add(new AttachEntityMessage(getEntityId(), vehicle != null ? vehicle.getEntityId() : -1, false));
         }
 
         return result;
@@ -755,12 +774,12 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public boolean leaveVehicle() {
-        return false;
+        return isInsideVehicle() && vehicle.setPassenger(null);
     }
 
     @Override
     public Entity getVehicle() {
-        return null;
+        return vehicle;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -800,12 +819,53 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public Entity getPassenger() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return passenger;
     }
 
     @Override
-    public boolean setPassenger(Entity passenger) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public boolean setPassenger(Entity bPassenger) {
+        Preconditions.checkArgument(bPassenger != this, "Entity cannot ride itself.");
+
+        if (this.passenger == bPassenger) return false; // nothing changed
+
+        if (bPassenger == null) {
+
+            EventFactory.callEvent(new EntityDismountEvent(this.passenger, this));
+
+            this.passenger.vehicleChanged = true;
+            this.passenger.vehicle = null;
+            this.passenger = null;
+        } else {
+
+            if (!(bPassenger instanceof GlowEntity)) {
+                return false;
+            }
+
+            GlowEntity passenger = (GlowEntity) bPassenger;
+
+            if (passenger.vehicle != null) {
+                EventFactory.callEvent(new EntityDismountEvent(passenger, passenger.vehicle));
+                passenger.vehicle.passenger = null;
+                passenger.vehicle = null;
+            }
+
+            EntityMountEvent event = new EntityMountEvent(passenger, this);
+            EventFactory.callEvent(event);
+            if (event.isCancelled()) {
+                return false;
+            }
+
+            if (this.passenger != null) {
+                EventFactory.callEvent(new EntityDismountEvent(this.passenger, this));
+                this.passenger.vehicleChanged = true;
+                this.passenger.vehicle = null;
+            }
+
+            this.passenger = passenger;
+            this.passenger.vehicle = this;
+            this.passenger.vehicleChanged = true;
+        }
+        return true;
     }
 
     @Override

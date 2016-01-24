@@ -24,10 +24,7 @@ import net.glowstone.inventory.InventoryMonitor;
 import net.glowstone.io.PlayerDataService;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.login.LoginSuccessMessage;
-import net.glowstone.net.message.play.entity.AnimateEntityMessage;
-import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
-import net.glowstone.net.message.play.entity.EntityMetadataMessage;
-import net.glowstone.net.message.play.entity.EntityVelocityMessage;
+import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.game.*;
 import net.glowstone.net.message.play.inv.*;
 import net.glowstone.net.message.play.player.PlayerAbilitiesMessage;
@@ -599,6 +596,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
                     session.send(msg);
                 }
             }
+        }
+
+        if (vehicleChanged) {
+            session.send(new AttachEntityMessage(GlowPlayer.SELF_ID, vehicle != null ? vehicle.getEntityId() : -1, false));
         }
 
         getAttributeManager().sendMessages(session);
