@@ -286,7 +286,7 @@ public abstract class GlowEntity implements Entity {
             world = (GlowWorld) location.getWorld();
             world.getEntityManager().register(this);
         }
-        setRawLocation(location);
+        setRawLocation(location, false);
         teleported = true;
         return true;
     }
@@ -398,8 +398,9 @@ public abstract class GlowEntity implements Entity {
     /**
      * Sets this entity's location.
      * @param location The new location.
+     * @param fall Whether to calculate fall damage or not.
      */
-    public void setRawLocation(Location location) {
+    public void setRawLocation(Location location, boolean fall) {
         if (location.getWorld() != world) {
             throw new IllegalArgumentException("Cannot setRawLocation to a different world (got " + location.getWorld() + ", expected " + world + ")");
         }
@@ -410,6 +411,11 @@ public abstract class GlowEntity implements Entity {
 
         world.getEntityManager().move(this, location);
         Position.copyLocation(location, this.location);
+
+        if (!fall) {
+            fallDistance = 0;
+            return;
+        }
 
         if (this instanceof GlowPlayer) {
             if (((GlowPlayer) this).getGameMode() == GameMode.CREATIVE) {
@@ -432,6 +438,14 @@ public abstract class GlowEntity implements Entity {
         } else if (location.getY() > previousLocation.getY()) {
             fallDistance = 0;
         }
+    }
+
+    /**
+     * Sets this entity's location and applies fall damage calculations.
+     * @param location The new location.
+     */
+    public void setRawLocation(Location location) {
+        setRawLocation(location, true);
     }
 
     /**

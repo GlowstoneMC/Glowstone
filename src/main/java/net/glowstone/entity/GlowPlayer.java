@@ -700,7 +700,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         // spawn into world
         String type = world.getWorldType().getName().toLowerCase();
         session.send(new RespawnMessage(world.getEnvironment().getId(), world.getDifficulty().getValue(), getGameMode().getValue(), type));
-        setRawLocation(location); // take us to spawn position
+        setRawLocation(location, false); // take us to spawn position
         streamBlocks(); // stream blocks
         setCompassTarget(world.getSpawnLocation()); // set our compass target
         session.send(new PositionRotationMessage(location));
@@ -1377,7 +1377,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             spawnAt(location);
         } else {
             session.send(new PositionRotationMessage(location));
-            setRawLocation(location);
+            setRawLocation(location, false);
         }
 
         teleported = true;
@@ -1451,7 +1451,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         BlockBed.setOccupied(head, foot, true);
         bed = head;
         sleeping = true;
-        setRawLocation(head.getLocation());
+        setRawLocation(head.getLocation(), false);
 
         getSession().send(new UseBedMessage(SELF_ID, head.getX(), head.getY(), head.getZ()));
         UseBedMessage msg = new UseBedMessage(getEntityId(), head.getX(), head.getY(), head.getZ());
@@ -1489,7 +1489,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         sleeping = false;
 
         // And eject the player
-        setRawLocation(exitLocation);
+        setRawLocation(exitLocation, false);
         teleported = true;
 
         // Call event

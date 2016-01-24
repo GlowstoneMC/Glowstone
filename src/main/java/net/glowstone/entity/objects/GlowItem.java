@@ -143,7 +143,7 @@ public final class GlowItem extends GlowEntity implements Item {
         // simple temporary gravity - should eventually be improved to be real
         // physics and moved up to GlowEntity
         if (location.getBlock().getType().isSolid()) {
-            setRawLocation(location.clone().add(0, 0.2, 0));
+            setRawLocation(location.clone().add(0, 0.2, 0), false);
         }
         if (!location.clone().add(getVelocity()).getBlock().getType().isSolid()) {
             location.add(getVelocity());
