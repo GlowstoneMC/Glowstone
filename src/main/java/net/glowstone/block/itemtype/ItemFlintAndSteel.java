@@ -48,6 +48,10 @@ public class ItemFlintAndSteel extends ItemTool {
             return true;
         }
 
+        if (clicked.getType() != Material.LEAVES && fireBlock.getRelative(BlockFace.DOWN).getType() == Material.AIR) {
+            return false;
+        }
+
         BlockIgniteEvent event = EventFactory.callEvent(new BlockIgniteEvent(fireBlock, BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL, player, null));
         if (event.isCancelled()) {
             player.setItemInHand(holding);
