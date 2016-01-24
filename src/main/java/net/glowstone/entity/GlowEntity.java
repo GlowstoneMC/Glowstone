@@ -763,24 +763,39 @@ public abstract class GlowEntity implements Entity {
         return null;
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Custom name
+
     @Override
-    public void setCustomName(String s) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void setCustomName(String name) {
+        if (name == null) {
+            name = "";
+        }
+
+        if (name.length() > 64) {
+            name = name.substring(0, 64);
+        }
+
+        metadata.set(MetadataIndex.NAME_TAG, name); // remove ?
     }
 
     @Override
     public String getCustomName() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        String name = metadata.getString(MetadataIndex.NAME_TAG);
+        if (name == null || name.length() == 0) {
+            name = "";
+        }
+        return name;
     }
 
     @Override
-    public void setCustomNameVisible(boolean b) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void setCustomNameVisible(boolean flag) {
+        metadata.set(MetadataIndex.SHOW_NAME_TAG, flag ? 1 : 0);
     }
 
     @Override
     public boolean isCustomNameVisible() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return metadata.getByte(MetadataIndex.SHOW_NAME_TAG) == 1;
     }
 
     @Override

@@ -19,7 +19,7 @@ public class GlowChest extends GlowBlockState implements Chest {
         super(block);
     }
 
-    private TEChest getTileEntity() {
+    public TEChest getTileEntity() {
         return (TEChest) getBlock().getTileEntity();
     }
 

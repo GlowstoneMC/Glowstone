@@ -13,12 +13,13 @@ public enum MetadataIndex {
     STATUS(0, BYTE, Entity.class),
     AIR_TIME(1, SHORT, Entity.class),
 
+    NAME_TAG(2, STRING, Entity.class),
+    SHOW_NAME_TAG(3, BYTE, Entity.class),
+
     HEALTH(6, FLOAT, LivingEntity.class),
     POTION_COLOR(7, INT, LivingEntity.class),
     POTION_AMBIENT(8, BYTE, LivingEntity.class),
     ARROW_COUNT(9, BYTE, LivingEntity.class),
-    NAME_TAG(10, STRING, LivingEntity.class),
-    SHOW_NAME_TAG(11, BYTE, LivingEntity.class),
 
     // allowed to override NAME_TAG from LivingEntity
     PLAYER_SKIN_FLAGS(10, BYTE, HumanEntity.class),

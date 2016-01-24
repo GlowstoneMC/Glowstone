@@ -235,8 +235,8 @@ public final class ItemTable {
         reg(Material.MELON_SEEDS, new ItemSeeds(Material.MELON_STEM, Material.SOIL));
         reg(Material.PUMPKIN_SEEDS, new ItemSeeds(Material.PUMPKIN_STEM, Material.SOIL));
         reg(Material.NETHER_STALK, new ItemSeeds(Material.NETHER_WARTS, Material.SOUL_SAND));
-        reg(Material.CARROT_ITEM, new ItemFoodSeeds(Material.CARROT, Material.SOIL));
-        reg(Material.POTATO_ITEM, new ItemFoodSeeds(Material.POTATO, Material.SOIL));
+        reg(Material.CARROT_ITEM, new ItemFoodSeeds(Material.CARROT, Material.SOIL, 3, 4.8f));
+        reg(Material.POTATO_ITEM, new ItemFoodSeeds(Material.POTATO, Material.SOIL, 1, 0.6f));
         reg(Material.INK_SACK, new ItemDye());
         reg(Material.BANNER, new ItemBanner());
         reg(Material.WOOD_DOOR, new ItemPlaceAs(Material.WOODEN_DOOR));
@@ -248,6 +248,30 @@ public final class ItemTable {
         reg(Material.DARK_OAK_DOOR_ITEM, new ItemPlaceAs(Material.DARK_OAK_DOOR));
         reg(Material.WRITTEN_BOOK, new ItemWrittenBook());
         reg(Material.ITEM_FRAME, new ItemItemFrame());
+        reg(Material.APPLE, new ItemFood(4, 12.4f));
+        reg(Material.BAKED_POTATO, new ItemFood(5, 7.2f));
+        reg(Material.BREAD, new ItemFood(5, 6f));
+        reg(Material.COOKED_CHICKEN, new ItemFood(6, 7.2f));
+        reg(Material.COOKED_FISH, new ItemFishCooked());
+        reg(Material.COOKED_MUTTON, new ItemFood(6, 9.6f));
+        reg(Material.COOKED_BEEF, new ItemFood(8, 12.8f));
+        reg(Material.COOKED_RABBIT, new ItemFood(5, 6f));
+        reg(Material.COOKIE, new ItemFood(2, 0.4f));
+        reg(Material.GOLDEN_APPLE, new ItemGoldenApple());
+        reg(Material.GOLDEN_CARROT, new ItemFood(6, 14.4f));
+        reg(Material.MELON, new ItemFood(2, 1.2f));
+        reg(Material.MUSHROOM_SOUP, new ItemFood(6, 7.2f));
+        reg(Material.POISONOUS_POTATO, new ItemPoisonousPotato());
+        reg(Material.PUMPKIN_PIE, new ItemFood(8, 4.8f));
+        reg(Material.RABBIT_STEW, new ItemFood(10, 12f));
+        reg(Material.RAW_BEEF, new ItemFood(3, 1.8f));
+        reg(Material.RAW_CHICKEN, new ItemRawChicken());
+        reg(Material.RAW_FISH, new ItemFishRaw());
+        reg(Material.MUTTON, new ItemFood(2, 1.2f));
+        reg(Material.PORK, new ItemFood(3, 1.8f));
+        reg(Material.RABBIT, new ItemFood(3, 1.8f));
+        reg(Material.ROTTEN_FLESH, new ItemRotternFlesh());
+        reg(Material.SPIDER_EYE, new ItemFood(2, 3.2f)); // todo: effect
     }
 
     private void reg(Material material, ItemType type) {
@@ -296,6 +320,7 @@ public final class ItemTable {
 
     /**
      * Register a new, non-Vanilla ItemType. It will be assigned an ID automatically.
+     *
      * @param type the ItemType to register.
      */
     public void register(ItemType type) {

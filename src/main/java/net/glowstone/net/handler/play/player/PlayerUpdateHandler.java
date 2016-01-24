@@ -2,6 +2,7 @@ package net.glowstone.net.handler.play.player;
 
 import com.flowpowered.networking.MessageHandler;
 import net.glowstone.EventFactory;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.game.PositionRotationMessage;
 import net.glowstone.net.message.play.player.PlayerUpdateMessage;
@@ -13,7 +14,10 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
 
     @Override
     public void handle(GlowSession session, PlayerUpdateMessage message) {
-        Location oldLocation = session.getPlayer().getLocation();
+
+        GlowPlayer player = session.getPlayer();
+
+        Location oldLocation = player.getLocation();
         Location newLocation = oldLocation.clone();
         message.update(newLocation);
 
@@ -27,7 +31,7 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
 
         // call move event if movement actually occurred and there are handlers registered
         if (!oldLocation.equals(newLocation) && PlayerMoveEvent.getHandlerList().getRegisteredListeners().length > 0) {
-            final PlayerMoveEvent event = EventFactory.callEvent(new PlayerMoveEvent(session.getPlayer(), oldLocation, newLocation));
+            final PlayerMoveEvent event = EventFactory.callEvent(new PlayerMoveEvent(player, oldLocation, newLocation));
             if (event.isCancelled()) {
                 // tell client they're back where they started
                 session.send(new PositionRotationMessage(oldLocation));
@@ -37,17 +41,23 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
             if (!event.getTo().equals(newLocation)) {
                 // teleport to the set destination: fires PlayerTeleportEvent and
                 // handles if the destination is in another world
-                session.getPlayer().teleport(event.getTo(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                player.teleport(event.getTo(), PlayerTeleportEvent.TeleportCause.PLUGIN);
                 return;
             }
         }
 
         // do stuff with onGround if we need to
-        if (session.getPlayer().isOnGround() != message.isOnGround()) {
-            session.getPlayer().setOnGround(message.isOnGround());
+        if (player.isOnGround() != message.isOnGround()) {
+            player.setOnGround(message.isOnGround());
+        }
+
+        if (player.isSprinting()) {
+            player.addExhaustion(0.1f);
+        } else {
+            player.addExhaustion(0.01f);
         }
 
         // move event was not fired or did nothing, simply update location
-        session.getPlayer().setRawLocation(newLocation);
+        player.setRawLocation(newLocation);
     }
 }
