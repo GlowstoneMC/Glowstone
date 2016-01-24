@@ -69,14 +69,15 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.34</version>
+            <version>5.1.14</version>
         </dependency>
+        -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
             <version>1.7.7</version>
+            <scope>provided</scope>
         </dependency>
-        -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
