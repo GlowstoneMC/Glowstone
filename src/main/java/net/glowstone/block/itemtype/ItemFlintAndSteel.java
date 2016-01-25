@@ -47,17 +47,19 @@ public class ItemFlintAndSteel extends ItemTool {
         if (fireBlock.getType() != Material.AIR) {
             return true;
         }
+        player.sendMessage(clicked.getType().name());
         if (!(clicked.getType() == Material.LEAVES
-                || clicked.getType() == Material.GRASS
-                || clicked.getType() == Material.WOOL
+                || clicked.getType() == Material.LONG_GRASS
                 || clicked.getType() == Material.YELLOW_FLOWER
-                || clicked.getType() == Material.DEAD_BUSH
                 || clicked.getType() == Material.RED_ROSE
+                || clicked.getType() == Material.DOUBLE_PLANT
+                || clicked.getType() == Material.DEAD_BUSH
                 || clicked.getType() == Material.VINE
                 || clicked.getType() == Material.WOOD
-                || clicked.getType() == Material.LONG_GRASS
+                || clicked.getType() == Material.LOG
                 || clicked.getType() == Material.FENCE
-                || clicked.getType() == Material.LOG)) {
+                || clicked.getType() == Material.WOOL)) {
+            player.sendMessage(clicked.getType().name());
             if (fireBlock.getRelative(BlockFace.DOWN).getType() == Material.AIR) {
                 return false;
             }
