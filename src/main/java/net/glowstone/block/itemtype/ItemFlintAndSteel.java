@@ -47,12 +47,20 @@ public class ItemFlintAndSteel extends ItemTool {
         if (fireBlock.getType() != Material.AIR) {
             return true;
         }
-
-        if ((clicked.getType() != Material.LEAVES
-                || clicked.getType() != Material.GRASS
-                || clicked.getType() != Material.WOOL)
-                && fireBlock.getRelative(BlockFace.DOWN).getType() == Material.AIR) {
-            return false;
+        if (!(clicked.getType() == Material.LEAVES
+                || clicked.getType() == Material.GRASS
+                || clicked.getType() == Material.WOOL
+                || clicked.getType() == Material.YELLOW_FLOWER
+                || clicked.getType() == Material.DEAD_BUSH
+                || clicked.getType() == Material.RED_ROSE
+                || clicked.getType() == Material.VINE
+                || clicked.getType() == Material.WOOD
+                || clicked.getType() == Material.LONG_GRASS
+                || clicked.getType() == Material.FENCE
+                || clicked.getType() == Material.LOG)) {
+            if (fireBlock.getRelative(BlockFace.DOWN).getType() == Material.AIR) {
+                return false;
+            }
         }
 
         BlockIgniteEvent event = EventFactory.callEvent(new BlockIgniteEvent(fireBlock, BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL, player, null));
