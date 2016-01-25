@@ -1,6 +1,7 @@
 package net.glowstone.entity.meta;
 
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
 /**
@@ -13,7 +14,8 @@ public enum MetadataType {
     FLOAT(Float.class),
     STRING(String.class),
     ITEM(ItemStack.class),
-    VECTOR(Vector.class);
+    VECTOR(Vector.class),
+    EULER_ANGLE(EulerAngle.class);
 
     private final Class<?> dataType;
 
