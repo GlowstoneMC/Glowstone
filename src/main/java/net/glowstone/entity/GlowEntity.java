@@ -170,7 +170,7 @@ public abstract class GlowEntity implements Entity {
         // this is so dirty I washed my hands after writing it.
         if (this instanceof GlowPlayer) {
             // spawn location event
-            location = EventFactory.callEvent(new PlayerSpawnLocationEvent((Player) this, getLocation())).getSpawnLocation();
+            location = EventFactory.callEvent(new PlayerSpawnLocationEvent((Player) this, location)).getSpawnLocation();
         }
         this.location = location.clone();
         this.world = (GlowWorld) location.getWorld();
