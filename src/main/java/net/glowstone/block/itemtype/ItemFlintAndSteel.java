@@ -50,7 +50,7 @@ public class ItemFlintAndSteel extends ItemTool {
 
         if ((clicked.getType() != Material.LEAVES
                 || clicked.getType() != Material.GRASS
-                || clicked.getType() != Material.WOOL
+                || clicked.getType() != Material.WOOL)
                 && fireBlock.getRelative(BlockFace.DOWN).getType() == Material.AIR) {
             return false;
         }
