@@ -47,6 +47,10 @@ public class ItemFlintAndSteel extends ItemTool {
         if (fireBlock.getType() != Material.AIR) {
             return true;
         }
+        
+        if (!clicked.isFlammable() && clicked.getRelative(BlockFace.DOWN).getType() == Material.AIR) {
+            return true;
+        }
 
         BlockIgniteEvent event = EventFactory.callEvent(new BlockIgniteEvent(fireBlock, BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL, player, null));
         if (event.isCancelled()) {
