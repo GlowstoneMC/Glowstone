@@ -82,7 +82,7 @@ public abstract class BlockLiquid extends BlockType {
             // see if we can flow down
             if (block.getY() > 0) {
                 // try to flow down
-                calculateTarget(block.getRelative(DOWN), DOWN, block.getType(), state.getRawData(), true)
+                calculateTarget(block.getRelative(DOWN), DOWN, block.getType(), state.getRawData(), true);
                 // search 5 blocks out
                 for (int j = 1; j < 6; j++) {
                     // from each horizontal face
