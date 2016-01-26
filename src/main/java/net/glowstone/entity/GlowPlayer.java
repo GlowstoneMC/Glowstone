@@ -1403,7 +1403,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     // todo: food poisioning
     // todo: jump and sprint
     public void addExhaustion(float exhaustion) {
-        this.exhaustion = Math.min(this.exhaustion + exhaustion, 40f);
+        if (getGameMode() == GameMode.SURVIVAL || getGameMode() == GameMode.ADVENTURE) {
+            this.exhaustion = Math.min(this.exhaustion + exhaustion, 40f);
+        }
     }
 
     @Override

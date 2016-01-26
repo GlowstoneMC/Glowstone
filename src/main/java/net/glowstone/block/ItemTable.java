@@ -259,6 +259,7 @@ public final class ItemTable {
         reg(Material.COOKIE, new ItemFood(2, 0.4f));
         reg(Material.GOLDEN_APPLE, new ItemGoldenApple());
         reg(Material.GOLDEN_CARROT, new ItemFood(6, 14.4f));
+        reg(Material.GRILLED_PORK, new ItemFood(8, 12.8f));
         reg(Material.MELON, new ItemFood(2, 1.2f));
         reg(Material.MUSHROOM_SOUP, new ItemFood(6, 7.2f));
         reg(Material.POISONOUS_POTATO, new ItemPoisonousPotato());
