@@ -47,7 +47,7 @@ public class MetadataIndexTest {
         for (MetadataIndex index : MetadataIndex.values()) {
             Class<?> clazz = index.getAppliesTo();
 
-            if (index == MetadataIndex.PLAYER_SKIN_FLAGS) {
+            if (index == MetadataIndex.PLAYER_SKIN_FLAGS || index == MetadataIndex.ARMORSTAND_LEFT_LEG_POSITION) {
                 // this index is permitted to override others
                 continue;
             }

@@ -12,6 +12,7 @@ public enum MetadataIndex {
 
     STATUS(0, BYTE, Entity.class),
     AIR_TIME(1, SHORT, Entity.class),
+    SILENT(4, BYTE, Entity.class),
 
     NAME_TAG(2, STRING, Entity.class),
     SHOW_NAME_TAG(3, BYTE, Entity.class),
@@ -20,11 +21,23 @@ public enum MetadataIndex {
     POTION_COLOR(7, INT, LivingEntity.class),
     POTION_AMBIENT(8, BYTE, LivingEntity.class),
     ARROW_COUNT(9, BYTE, LivingEntity.class),
+    NO_AI(15, BYTE, LivingEntity.class),
+
+    AGE(12, BYTE, Ageable.class),
+
+    ARMORSTAND_FLAGS(10, BYTE, ArmorStand.class),
+    ARMORSTAND_HEAD_POSITION(11, EULER_ANGLE, ArmorStand.class),
+    ARMORSTAND_BODY_POSITION(12, EULER_ANGLE, ArmorStand.class),
+    ARMORSTAND_LEFT_ARM_POSITION(13, EULER_ANGLE, ArmorStand.class),
+    ARMORSTAND_RIGHT_ARM_POSITION(14, EULER_ANGLE, ArmorStand.class),
+    ARMORSTAND_LEFT_LEG_POSITION(15, EULER_ANGLE, ArmorStand.class),
+    ARMORSTAND_RIGHT_LEG_POSITION(16, EULER_ANGLE, ArmorStand.class),
 
     // allowed to override NAME_TAG from LivingEntity
     PLAYER_SKIN_FLAGS(10, BYTE, HumanEntity.class),
-
-    AGE(12, BYTE, Ageable.class),
+    PLAYER_FLAGS(16, BYTE, HumanEntity.class),
+    PLAYER_ABSORPTION_HEARTS(17, FLOAT, HumanEntity.class),
+    PLAYER_SCORE(18, INT, HumanEntity.class),
 
     HORSE_FLAGS(16, INT, Horse.class),
     HORSE_TYPE(19, BYTE, Horse.class),
@@ -45,6 +58,8 @@ public enum MetadataIndex {
     WOLF_COLOR(20, BYTE, Wolf.class),
 
     PIG_SADDLE(16, BYTE, Pig.class),
+
+    RABBIT_TYPE(18, BYTE, Rabbit.class),
 
     SHEEP_DATA(16, BYTE, Sheep.class),
 
@@ -80,13 +95,16 @@ public enum MetadataIndex {
     WITHER_TARGET_3(19, INT, Wither.class),
     WITHER_INVULN_TIME(20, INT, Wither.class),
 
+    GUARDIAN_FLAGS(16, BYTE, Guardian.class),
+    GUARDIAN_TARGET(17, INT, Guardian.class),
+    
     BOAT_HIT_TIME(17, INT, Boat.class),
     BOAT_DIRECTION(18, INT, Boat.class),
     BOAT_DAMAGE_TAKEN(19, FLOAT, Boat.class),
 
     MINECART_SHAKE_POWER(17, INT, Minecart.class),
     MINECART_SHAKE_DIRECTION(18, INT, Minecart.class),
-    MINECART_DAMAGE_TAKEN(19, INT, Minecart.class),
+    MINECART_DAMAGE_TAKEN(19, FLOAT, Minecart.class),
     MINECART_BLOCK(20, INT, Minecart.class),
     MINECART_BLOCK_OFFSET(21, INT, Minecart.class),
     MINECART_BLOCK_SHOWN(22, BYTE, Minecart.class),
@@ -103,8 +121,6 @@ public enum MetadataIndex {
     ITEM_FRAME_ROTATION(9, BYTE, ItemFrame.class),
 
     ENDER_CRYSTAL_HEALTH(8, INT, EnderCrystal.class),
-
-    RABBIT_TYPE(18, BYTE, Rabbit.class),
     ;
 
     private final int index;

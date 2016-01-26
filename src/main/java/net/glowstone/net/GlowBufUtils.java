@@ -1,8 +1,10 @@
 package net.glowstone.net;
 
 import com.flowpowered.networking.util.ByteBufUtils;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
+
 import net.glowstone.GlowServer;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
@@ -13,9 +15,11 @@ import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
 import net.glowstone.util.nbt.NBTReadLimiter;
+
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
+import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
 import java.io.ByteArrayOutputStream;
@@ -65,6 +69,20 @@ public final class GlowBufUtils {
                 case ITEM:
                     entries.add(new MetadataMap.Entry(index, readSlot(buf)));
                     break;
+                case VECTOR: {
+                    int x = buf.readInt();
+                    int y = buf.readInt();
+                    int z = buf.readInt();
+                    entries.add(new MetadataMap.Entry(index, new Vector(x, y, z)));
+                    break;
+                }
+                case EULER_ANGLE: {
+                    float x = buf.readFloat();
+                    float y = buf.readFloat();
+                    float z = buf.readFloat();
+                    entries.add(new MetadataMap.Entry(index, new EulerAngle(x, y, z)));
+                    break;
+                }
             }
         }
         return entries;
@@ -105,6 +123,20 @@ public final class GlowBufUtils {
                 case ITEM:
                     writeSlot(buf, (ItemStack) value);
                     break;
+                case VECTOR: {
+                    Vector vector = (Vector) value;
+                    buf.writeInt(vector.getBlockX());
+                    buf.writeInt(vector.getBlockY());
+                    buf.writeInt(vector.getBlockZ());
+                    break;
+                }
+                case EULER_ANGLE: {
+                    EulerAngle angle = (EulerAngle) value;
+                    buf.writeFloat((float) angle.getX());
+                    buf.writeFloat((float) angle.getY());
+                    buf.writeFloat((float) angle.getZ());
+                    break;
+                }
             }
         }
 

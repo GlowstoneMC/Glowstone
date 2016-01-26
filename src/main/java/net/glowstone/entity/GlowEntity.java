@@ -2,6 +2,7 @@ package net.glowstone.entity;
 
 import com.flowpowered.networking.Message;
 import com.google.common.base.Preconditions;
+
 import net.glowstone.EventFactory;
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowServer;
@@ -21,6 +22,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPortalEnterEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
@@ -36,6 +38,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 import org.spigotmc.event.entity.EntityDismountEvent;
 import org.spigotmc.event.entity.EntityMountEvent;
+import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -164,6 +167,11 @@ public abstract class GlowEntity implements Entity {
      * @param location The location of the entity.
      */
     public GlowEntity(Location location) {
+        // this is so dirty I washed my hands after writing it.
+        if (this instanceof GlowPlayer) {
+            // spawn location event
+            location = EventFactory.callEvent(new PlayerSpawnLocationEvent((Player) this, location)).getSpawnLocation();
+        }
         this.location = location.clone();
         this.world = (GlowWorld) location.getWorld();
         this.server = world.getServer();
