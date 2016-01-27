@@ -3,10 +3,10 @@ package net.glowstone.net;
 import com.flowpowered.networking.ConnectionManager;
 import com.flowpowered.networking.session.Session;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
+import io.netty.channel.epoll.Epoll;
+import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import net.glowstone.GlowServer;
@@ -22,16 +22,26 @@ public final class GlowNetworkServer implements ConnectionManager {
      * The {@link io.netty.bootstrap.ServerBootstrap} used to initialize Netty.
      */
     private final ServerBootstrap bootstrap = new ServerBootstrap();
-    private final EventLoopGroup bossGroup = new NioEventLoopGroup();
-    private final EventLoopGroup workerGroup = new NioEventLoopGroup();
+    private EventLoopGroup bossGroup;
+    private EventLoopGroup workerGroup;
 
     private final GlowServer server;
 
     public GlowNetworkServer(GlowServer server) {
         this.server = server;
+        Class<? extends ServerChannel> channel;
+        if (Epoll.isAvailable()) {
+            bossGroup = new EpollEventLoopGroup();
+            workerGroup = new EpollEventLoopGroup();
+            channel = EpollServerSocketChannel.class;
+        } else {
+            bossGroup = new NioEventLoopGroup();
+            workerGroup = new NioEventLoopGroup();
+            channel = NioServerSocketChannel.class;
+        }
         bootstrap
                 .group(bossGroup, workerGroup)
-                .channel(NioServerSocketChannel.class)
+                .channel(channel)
                 .childHandler(new GlowChannelInitializer(this))
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
