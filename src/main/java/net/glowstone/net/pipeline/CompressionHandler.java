@@ -17,7 +17,7 @@ import java.util.zip.Inflater;
  */
 public final class CompressionHandler extends MessageToMessageCodec<ByteBuf, ByteBuf> {
 
-    private static final int COMPRESSION_LEVEL = Deflater.DEFAULT_COMPRESSION;
+    private static final int COMPRESSION_LEVEL = Deflater.NO_FLUSH;
 
     private final int threshold;
     private final Inflater inflater;
@@ -30,7 +30,7 @@ public final class CompressionHandler extends MessageToMessageCodec<ByteBuf, Byt
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws EncoderException {
         ByteBuf prefixBuf = ctx.alloc().buffer(5);
         ByteBuf contentsBuf;
 
@@ -74,7 +74,7 @@ public final class CompressionHandler extends MessageToMessageCodec<ByteBuf, Byt
     }
 
     @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
+    protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws java.io.IOException, DecoderException, java.util.zip.DataFormatException {
         int index = msg.readerIndex();
         int uncompressedSize = ByteBufUtils.readVarInt(msg);
         if (uncompressedSize == 0) {
