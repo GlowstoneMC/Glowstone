@@ -51,11 +51,7 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
             player.setOnGround(message.isOnGround());
         }
 
-        if (player.isSprinting()) {
-            player.addExhaustion(0.1f);
-        } else {
-            player.addExhaustion(0.01f);
-        }
+        player.addMoveExhaustion(newLocation);
 
         // move event was not fired or did nothing, simply update location
         player.setRawLocation(newLocation);

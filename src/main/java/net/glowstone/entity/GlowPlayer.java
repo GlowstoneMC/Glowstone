@@ -1397,14 +1397,32 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         sendHealth();
     }
 
+    private boolean shouldCalculateExhaustion() {
+        return getGameMode() == GameMode.SURVIVAL | getGameMode() == GameMode.ADVENTURE;
+    }
+
     // todo: effects
     // todo: swim
     // todo: jump
     // todo: food poisioning
     // todo: jump and sprint
     public void addExhaustion(float exhaustion) {
-        if (getGameMode() == GameMode.SURVIVAL || getGameMode() == GameMode.ADVENTURE) {
+        if (shouldCalculateExhaustion()) {
             this.exhaustion = Math.min(this.exhaustion + exhaustion, 40f);
+        }
+    }
+
+    public void addMoveExhaustion(Location move) {
+        if (shouldCalculateExhaustion() && !teleported) {
+            double distanceSquared = location.distanceSquared(move);
+            if (distanceSquared > 0) { // update packet and rotation
+                double distance = Math.sqrt(distanceSquared);
+                if (isSprinting()) {
+                    addExhaustion((float) (0.1f * distance));
+                } else {
+                    addExhaustion((float) (0.01f * distance));
+                }
+            }
         }
     }
 
