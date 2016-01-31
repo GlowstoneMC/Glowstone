@@ -53,7 +53,7 @@ public class GlowCreature extends GlowLivingEntity implements Creature {
         int z = Position.getIntZ(location);
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
-        result.add(new SpawnMobMessage(id, UUID.randomUUID(), type.getTypeId(), x, y, z, yaw, pitch, pitch, 0, 0, 0, metadata.getEntryList())); //TODO 1.9 - Real UUID
+        result.add(new SpawnMobMessage(id, getUniqueId(), type.getTypeId(), x, y, z, yaw, pitch, pitch, 0, 0, 0, metadata.getEntryList()));
 
         // head facing
         result.add(new EntityHeadRotationMessage(id, yaw));

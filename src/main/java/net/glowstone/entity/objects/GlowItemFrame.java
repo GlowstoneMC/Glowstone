@@ -21,7 +21,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 
 public final class GlowItemFrame extends GlowEntity implements ItemFrame {
@@ -142,7 +141,7 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
                 break;
         }
 
-        return Arrays.asList((new SpawnObjectMessage(id, UUID.randomUUID(), 71, ((location.getBlockX() + xoffset) * 32), ((location.getBlockY() * 32)), ((location.getBlockZ() + zoffset) * 32), 0, yaw, getFacingNumber(face), 0, 0, 0)), new EntityMetadataMessage(id, metadata.getEntryList())); //TODO 1.9 - Real UUID
+        return Arrays.asList((new SpawnObjectMessage(id, getUniqueId(), 71, ((location.getBlockX() + xoffset) * 32), ((location.getBlockY() * 32)), ((location.getBlockZ() + zoffset) * 32), 0, yaw, getFacingNumber(face), 0, 0, 0)), new EntityMetadataMessage(id, metadata.getEntryList()));
     }
 
     private static byte getFacingNumber(BlockFace face) {
