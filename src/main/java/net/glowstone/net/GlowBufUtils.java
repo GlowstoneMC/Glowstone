@@ -101,7 +101,8 @@ public final class GlowBufUtils {
 
             int type = index.getType().getId();
             int id = index.getIndex();
-            buf.writeByte((type << 5) | id);
+            buf.writeByte(id);
+            buf.writeByte(type);
 
             switch (index.getType()) {
                 case BYTE:
@@ -139,7 +140,7 @@ public final class GlowBufUtils {
             }
         }
 
-        buf.writeByte(127);
+        buf.writeByte(0xff);
     }
 
     /**
