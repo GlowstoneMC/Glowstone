@@ -3,6 +3,7 @@ package net.glowstone.net.codec.play.game;
 import com.flowpowered.networking.Codec;
 import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import net.glowstone.net.message.play.game.ChunkDataMessage;
 
 import java.io.IOException;
@@ -20,8 +21,9 @@ public final class ChunkDataCodec implements Codec<ChunkDataMessage> {
         buf.writeInt(message.getZ());
         buf.writeBoolean(message.isContinuous());
         ByteBufUtils.writeVarInt(buf, message.getPrimaryMask());
-        ByteBufUtils.writeVarInt(buf, message.getData().length);
-        buf.writeBytes(message.getData());
+        byte[] data = message.getData();
+        ByteBufUtils.writeVarInt(buf, data.length);
+        buf.writeBytes(data);
         return buf;
     }
 }

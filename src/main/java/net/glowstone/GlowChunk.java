@@ -1,5 +1,8 @@
 package net.glowstone;
 
+import com.flowpowered.networking.util.ByteBufUtils;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import lombok.Data;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -15,6 +18,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
 import java.util.*;
+import java.util.jar.Pack200;
 import java.util.logging.Level;
 
 /**
@@ -673,6 +677,19 @@ public final class GlowChunk implements Chunk {
         return toMessage(skylight, true, 0);
     }
 
+    private static final int PACKET_DATA_ARRAY_LENGTH = (ChunkSection.ARRAY_SIZE * 2) / 8;
+    private static final byte[] PACKET_DATA_ARRAY_LENGTH_BYTES;
+
+    static {
+        final ByteBuf buf = Unpooled.buffer();
+        try {
+            ByteBufUtils.writeVarInt(buf, PACKET_DATA_ARRAY_LENGTH);
+            PACKET_DATA_ARRAY_LENGTH_BYTES = buf.array().clone();
+        } finally {
+            buf.release();
+        }
+    }
+
     /**
      * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream
      * parts of this chunk to them.
@@ -711,6 +728,9 @@ public final class GlowChunk implements Chunk {
         if (sections != null) {
             final int numBlocks = WIDTH * HEIGHT * SEC_DEPTH;
             int sectionSize = numBlocks * 5 / 2;  // (data and metadata combo) * 2 + blockLight/2
+            // +1 - Bits Per Block
+            // +? - Data Array Length (is a varInt, bit is a fixed value for now)
+            sectionSize += 1 + PACKET_DATA_ARRAY_LENGTH_BYTES.length;
             if (skylight) {
                 sectionSize += numBlocks / 2;  // + skyLight/2
             }
@@ -734,20 +754,17 @@ public final class GlowChunk implements Chunk {
             }
 
             for (ChunkSection sec : sendSections) {
+                pos++; // Bits Per Block - Currently 0
+                System.arraycopy(PACKET_DATA_ARRAY_LENGTH_BYTES, 0, tileData, pos, PACKET_DATA_ARRAY_LENGTH_BYTES.length);
+                pos += PACKET_DATA_ARRAY_LENGTH_BYTES.length;
                 for (char t : sec.types) {
                     tileData[pos++] = (byte) (t & 0xff);
                     tileData[pos++] = (byte) (t >> 8);
                 }
-            }
-
-            for (ChunkSection sec : sendSections) {
                 byte[] blockLight = sec.blockLight.getRawData();
                 System.arraycopy(blockLight, 0, tileData, pos, blockLight.length);
                 pos += blockLight.length;
-            }
-
-            if (skylight) {
-                for (ChunkSection sec : sendSections) {
+                if (skylight) {
                     byte[] skyLight = sec.skyLight.getRawData();
                     System.arraycopy(skyLight, 0, tileData, pos, skyLight.length);
                     pos += skyLight.length;
@@ -757,9 +774,8 @@ public final class GlowChunk implements Chunk {
 
         // biomes
         if (entireChunk) {
-            for (int i = 0; i < 256; ++i) {
-                tileData[pos++] = biomes[i];
-            }
+            System.arraycopy(biomes, 0, tileData, pos, biomes.length);
+            pos += biomes.length;
         }
 
         if (pos != byteSize) {
