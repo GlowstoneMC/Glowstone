@@ -4,7 +4,6 @@ import com.flowpowered.networking.Codec;
 import com.flowpowered.networking.Message;
 import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.EncoderException;
@@ -20,14 +19,13 @@ import java.util.List;
 public final class CodecsHandler extends MessageToMessageCodec<ByteBuf, Message> {
 
     private final GlowProtocol protocol;
-    private final PooledByteBufAllocator pooledAllocator = new PooledByteBufAllocator();
 
     public CodecsHandler(GlowProtocol protocol) {
         this.protocol = protocol;
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, Message msg, List<Object> out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, Message msg, List<Object> out) throws java.io.IOException {
         // find codec
         final Class<? extends Message> clazz = msg.getClass();
         Codec.CodecRegistration reg = protocol.getCodecRegistration(clazz);
@@ -36,11 +34,11 @@ public final class CodecsHandler extends MessageToMessageCodec<ByteBuf, Message>
         }
 
         // write header
-        ByteBuf headerBuf = pooledAllocator.buffer(8);
+        ByteBuf headerBuf = ctx.alloc().buffer(8);
         ByteBufUtils.writeVarInt(headerBuf, reg.getOpcode());
 
         // write body
-        ByteBuf messageBuf = pooledAllocator.buffer();
+        ByteBuf messageBuf = ctx.alloc().buffer();
         messageBuf = reg.getCodec().encode(messageBuf, msg);
 
         out.add(Unpooled.wrappedBuffer(headerBuf, messageBuf));
