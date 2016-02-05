@@ -24,9 +24,7 @@ public final class PluginMessage implements Message {
             GlowServer.logger.log(Level.WARNING, "Error converting to PluginMessage: \"" + channel + "\", \"" + text + "\"", e);
         }
         byte[] array = buf.array();
-        if (buf.refCnt() > 0) {
-            buf.release(buf.refCnt());
-        }
+        buf.release();
         return new PluginMessage(channel, array);
     }
 

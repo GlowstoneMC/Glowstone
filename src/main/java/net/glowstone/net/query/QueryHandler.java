@@ -80,9 +80,6 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket> {
                 }
             }
         }
-        if (buf.refCnt() > 0) {
-            buf.release(buf.refCnt());
-        }
     }
 
     private void handleHandshake(ChannelHandlerContext ctx, DatagramPacket packet, int sessionId) {
@@ -92,9 +89,6 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket> {
         out.writeInt(sessionId);
         writeString(out, String.valueOf(challengeToken));
         ctx.write(new DatagramPacket(out, packet.sender()));
-        if (out.refCnt() > 0) {
-            out.release();
-        }
     }
 
     private void handleBasicStats(ChannelHandlerContext ctx, DatagramPacket packet, int sessionId) {
@@ -111,9 +105,6 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket> {
         buf.order(ByteOrder.LITTLE_ENDIAN).writeShort(server.getPort());
         writeString(buf, getIpString());
         ctx.write(new DatagramPacket(buf, packet.sender()));
-        if (buf.refCnt() > 0) {
-            buf.release(buf.refCnt());
-        }
     }
 
     private void handleFullStats(ChannelHandlerContext ctx, DatagramPacket packet, int sessionId) {
@@ -157,9 +148,6 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket> {
         }
         buf.writeByte(0);
         ctx.write(new DatagramPacket(buf, packet.sender()));
-        if (buf.refCnt() > 0) {
-            buf.release(buf.refCnt());
-        }
     }
 
     private void writeString(ByteBuf out, String str) {
