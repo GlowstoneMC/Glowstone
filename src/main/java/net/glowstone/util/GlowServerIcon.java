@@ -51,14 +51,10 @@ public final class GlowServerIcon implements CachedServerIcon {
         ByteBuf png = Unpooled.buffer();
         ImageIO.write(image, "PNG", new ByteBufOutputStream(png));
         ByteBuf encoded = Base64.encode(png);
-        if (png.refCnt() > 0) {
-            png.release(png.refCnt());
-        }
+        png.release();
 
         data = "data:image/png;base64," + encoded.toString(Charsets.UTF_8);
-        if (encoded.refCnt() > 0) {
-            encoded.release(encoded.refCnt());
-        }
+        encoded.release();
     }
 
     /**
