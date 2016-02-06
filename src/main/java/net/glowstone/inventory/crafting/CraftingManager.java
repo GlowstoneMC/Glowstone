@@ -83,6 +83,10 @@ public final class CraftingManager implements Iterable<Recipe> {
             return 0;
         }
     }
+    
+    public boolean isFuel(Material material) {
+        return furnaceFuels.containsKey(material);
+    }
 
     /**
      * Remove a layer of items from the crafting matrix and recipe result.

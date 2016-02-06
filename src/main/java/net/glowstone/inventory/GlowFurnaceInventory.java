@@ -1,5 +1,6 @@
 package net.glowstone.inventory;
 
+import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.block.Furnace;
 import org.bukkit.event.inventory.InventoryType;
@@ -19,6 +20,16 @@ public class GlowFurnaceInventory extends GlowInventory implements FurnaceInvent
         getSlot(INPUT_SLOT).setType(InventoryType.SlotType.CRAFTING);
         getSlot(FUEL_SLOT).setType(InventoryType.SlotType.FUEL);
         getSlot(RESULT_SLOT).setType(InventoryType.SlotType.RESULT);
+
+        GlowBlock block = (GlowBlock) owner.getBlock();
+        block.getWorld().requestPulse(block, 1);
+    }
+
+    @Override
+    public void setItem(int index, ItemStack item) {
+        super.setItem(index, item);
+        GlowBlock block = (GlowBlock) getHolder().getBlock();
+        block.getWorld().requestPulse(block, 1);
     }
 
     @Override
