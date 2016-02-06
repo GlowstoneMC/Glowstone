@@ -9,33 +9,27 @@ furnace:
     type: COOKED_CHICKEN
   input:
     type: RAW_CHICKEN
-    damage: 32767
 - result:
     type: HARD_CLAY
   input:
     type: CLAY
-    damage: 32767
 - result:
     type: REDSTONE
   input:
     type: REDSTONE_ORE
-    damage: 32767
 - result:
     type: IRON_INGOT
   input:
     type: IRON_ORE
-    damage: 32767
 - result:
     type: INK_SACK
     damage: 4
   input:
     type: LAPIS_ORE
-    damage: 32767
 - result:
     type: COAL
   input:
     type: COAL_ORE
-    damage: 32767
 - result:
     type: COOKED_FISH
   input:
@@ -44,75 +38,61 @@ furnace:
     type: STONE
   input:
     type: COBBLESTONE
-    damage: 32767
 - result:
     type: DIAMOND
   input:
     type: DIAMOND_ORE
-    damage: 32767
 - result:
     type: EMERALD
   input:
     type: EMERALD_ORE
-    damage: 32767
 - result:
     type: BAKED_POTATO
   input:
     type: POTATO_ITEM
-    damage: 32767
 - result:
     type: COAL
     damage: 1
   input:
     type: LOG_2
-    damage: 32767
 - result:
     type: COOKED_BEEF
   input:
     type: RAW_BEEF
-    damage: 32767
 - result:
     type: GOLD_INGOT
   input:
     type: GOLD_ORE
-    damage: 32767
 - result:
     type: COAL
     damage: 1
   input:
     type: LOG
-    damage: 32767
 - result:
     type: NETHER_BRICK_ITEM
   input:
     type: NETHERRACK
-    damage: 32767
 - result:
     type: GLASS
   input:
     type: SAND
-    damage: 32767
 - result:
     type: CLAY_BRICK
   input:
     type: CLAY_BALL
-    damage: 32767
 - result:
     type: GRILLED_PORK
   input:
     type: PORK
-    damage: 32767
 - result:
     type: QUARTZ
   input:
     type: QUARTZ_ORE
-    damage: 32767
 - result:
     type: INK_SACK
     damage: 2
   input:
     type: CACTUS
-    damage: 32767
 - result:
     type: SMOOTH_BRICK
     damage: 2
@@ -123,6 +103,16 @@ furnace:
     type: COOKED_RABBIT
   input:
     type: RABBIT
+- result: 
+    type: COOKED_MUTTON
+  input:
+    type: MUTTON
+- result:
+    type: SPONGE
+    damage: 0
+  input:
+    type: SPONGE
+    damage: 1
 shapeless:
 - result:
     type: LEATHER_HELMET

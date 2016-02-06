@@ -331,7 +331,7 @@ public final class CraftingManager implements Iterable<Recipe> {
         furnaceFuels.put(Material.SAPLING, 100);
         furnaceFuels.put(Material.STICK, 100);
         furnaceFuels.put(Material.FENCE, 300);
-        furnaceFuels.put(Material.WOOD_STAIRS, 400);
+        furnaceFuels.put(Material.WOOD_STAIRS, 300);
         furnaceFuels.put(Material.TRAP_DOOR, 300);
         furnaceFuels.put(Material.LOG, 300);
         furnaceFuels.put(Material.WORKBENCH, 300);
@@ -340,6 +340,20 @@ public final class CraftingManager implements Iterable<Recipe> {
         furnaceFuels.put(Material.JUKEBOX, 300);
         furnaceFuels.put(Material.NOTE_BLOCK, 300);
         furnaceFuels.put(Material.LAVA_BUCKET, 20000);
+        furnaceFuels.put(Material.COAL_BLOCK, 16000);
+        furnaceFuels.put(Material.BLAZE_ROD, 2400);
+        furnaceFuels.put(Material.WOOD_PLATE, 300);
+        furnaceFuels.put(Material.FENCE_GATE, 300);
+        furnaceFuels.put(Material.TRAPPED_CHEST, 300);
+        furnaceFuels.put(Material.DAYLIGHT_DETECTOR, 300);
+        furnaceFuels.put(Material.DAYLIGHT_DETECTOR_INVERTED, 300);
+        furnaceFuels.put(Material.BANNER, 300);
+        furnaceFuels.put(Material.WOOD_AXE, 200);
+        furnaceFuels.put(Material.WOOD_HOE, 200);
+        furnaceFuels.put(Material.WOOD_PICKAXE, 200);
+        furnaceFuels.put(Material.WOOD_SPADE, 200);
+        furnaceFuels.put(Material.WOOD_SWORD, 200);
+        furnaceFuels.put(Material.WOOD_STEP, 150);
     }
 
     /**
