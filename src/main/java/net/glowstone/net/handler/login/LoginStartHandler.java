@@ -1,12 +1,14 @@
 package net.glowstone.net.handler.login;
 
 import com.flowpowered.networking.MessageHandler;
+import net.glowstone.EventFactory;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.ProxyData;
 import net.glowstone.net.message.login.EncryptionKeyRequestMessage;
 import net.glowstone.net.message.login.LoginStartMessage;
 import net.glowstone.util.SecurityUtils;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
@@ -30,14 +32,32 @@ public final class LoginStartHandler implements MessageHandler<GlowSession, Logi
             // Send created request message and wait for the response
             session.send(new EncryptionKeyRequestMessage(sessionId, publicKey, verifyToken));
         } else {
+            PlayerProfile profile;
             ProxyData proxy = session.getProxyData();
+
             if (proxy == null) {
                 UUID uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8));
-                session.setPlayer(new PlayerProfile(name, uuid));
+                profile = new PlayerProfile(name, uuid);
             } else {
-                PlayerProfile profile = proxy.getProfile();
-                session.setPlayer(profile == null ? proxy.getProfile(name) : profile);
+                profile = proxy.getProfile();
+                if (profile == null) {
+                    profile = proxy.getProfile(name);
+                }
             }
+
+            final AsyncPlayerPreLoginEvent event = EventFactory.onPlayerPreLogin(profile.getName(), session.getAddress(), profile.getUniqueId());
+            if (event.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) {
+                session.disconnect(event.getKickMessage(), true);
+                return;
+            }
+
+            final PlayerProfile finalProfile = profile;
+            session.getServer().getScheduler().runTask(null, new Runnable() {
+                @Override
+                public void run() {
+                    session.setPlayer(finalProfile);
+                }
+            });
         }
     }
 }
