@@ -169,7 +169,7 @@ public final class Explosion {
     }
 
     private void handleBlockExplosion(GlowBlock block) {
-        if (block.getType() == Material.AIR) {
+        if (block.getType() == Material.AIR || block.getType() == Material.BARRIER || block.getType() == Material.BEDROCK) {
             return;
         } else if (block.getType() == Material.TNT) {
             BlockTNT.igniteBlock(block, true);
