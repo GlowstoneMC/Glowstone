@@ -8,4 +8,8 @@ public final class LoginStartMessage implements AsyncableMessage {
 
     private final String username;
 
+    @Override
+    public boolean isAsync() {
+        return true;
+    }
 }
