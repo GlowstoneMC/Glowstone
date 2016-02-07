@@ -117,8 +117,9 @@ public final class Explosion {
     // Calculate all the dropping blocks
 
     private Set<BlockVector> calculateBlocks() {
-        if (!breakBlocks)
-            return new HashSet<>();
+        if (!breakBlocks) {
+            return new HashSet<>(0);
+        }
 
         Set<BlockVector> blocks = new HashSet<>();
 
@@ -154,7 +155,7 @@ public final class Explosion {
             GlowBlock block = world.getBlockAt(current);
 
             if (block.getType() != Material.AIR) {
-                double blastDurability = getBlastDurability(block) / 5d;
+                double blastDurability = getBlastDurability(block) / 5.0;
                 blastDurability += 0.3F;
                 blastDurability *= 0.3F;
                 currentPower -= blastDurability;
@@ -219,7 +220,7 @@ public final class Explosion {
 
     private Collection<GlowPlayer> damageEntities() {
         float power = this.power;
-        this.power *= 2f;
+        this.power *= 2F;
 
         Collection<GlowPlayer> affectedPlayers = new ArrayList<>();
 
@@ -237,14 +238,10 @@ public final class Explosion {
             vecDistance.normalize();
 
             double basicDamage = calculateDamage(entity, disDivPower);
-            double explosionDamage = calculateEnchantedDamage((int) ((basicDamage * basicDamage + basicDamage) * 4 * (double) power + 1.0D), entity);
+            double explosionDamage = calculateEnchantedDamage((int) ((basicDamage * basicDamage + basicDamage) * 4 * power + 1.0D), entity);
 
             DamageCause damageCause;
-            if (source == null || source.getType() == EntityType.PRIMED_TNT) {
-                damageCause = DamageCause.BLOCK_EXPLOSION;
-            } else {
-                damageCause = DamageCause.ENTITY_EXPLOSION;
-            }
+            damageCause = source == null || source.getType() == EntityType.PRIMED_TNT ? DamageCause.BLOCK_EXPLOSION : DamageCause.ENTITY_EXPLOSION;
             entity.damage(explosionDamage, source, damageCause);
 
             vecDistance.multiply(explosionDamage).multiply(0.25);
@@ -284,8 +281,8 @@ public final class Explosion {
     private Collection<GlowLivingEntity> getNearbyEntities() {
         ArrayList<Chunk> chunks = new ArrayList<>();
         chunks.add(location.getChunk());
-        int relX = location.getBlockX() - 16 * (int) Math.floor(location.getBlockX() / 16);
-        int relZ = location.getBlockZ() - 16 * (int) Math.floor(location.getBlockZ() / 16);
+        int relX = location.getBlockX() - 16 * (int) Math.floor(location.getBlockX() >> 4);
+        int relZ = location.getBlockZ() - 16 * (int) Math.floor(location.getBlockZ() >> 4);
         if (relX < power || relZ < power) {
             if (relX < power) {
                 chunks.add(location.getWorld().getChunkAt(location.getBlockX() - 1 >> 4, location.getBlockZ() >> 4));
