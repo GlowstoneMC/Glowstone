@@ -26,9 +26,6 @@ import java.util.logging.Level;
  */
 public final class EventFactory {
 
-    private EventFactory() {
-    }
-
     /**
      * Calls an event through the plugin manager.
      *
