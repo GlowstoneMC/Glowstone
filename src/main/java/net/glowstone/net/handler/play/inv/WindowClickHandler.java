@@ -6,6 +6,7 @@ import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.*;
 import net.glowstone.net.GlowSession;
+import net.glowstone.net.message.play.inv.SetWindowSlotMessage;
 import net.glowstone.net.message.play.inv.TransactionMessage;
 import net.glowstone.net.message.play.inv.WindowClickMessage;
 import org.bukkit.GameMode;
@@ -31,10 +32,11 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         } catch (IllegalArgumentException ex) {
             GlowServer.logger.warning(session.getPlayer().getName() + ": illegal argument while handling click: " + ex);
         }
-        if (!result) {
-            GlowServer.logger.info(session.getPlayer().getName() + ": [rejected] " + message);
-        }
         session.send(new TransactionMessage(message.getId(), message.getTransaction(), result));
+        if (!result) {
+            session.send(new SetWindowSlotMessage(-1, -1, null));
+            session.getPlayer().sendItemChange(message.getSlot(), session.getPlayer().getOpenInventory().getItem(message.getSlot()));
+        }
     }
 
     private boolean process(final GlowPlayer player, final WindowClickMessage message) {
