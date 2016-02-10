@@ -224,7 +224,7 @@ public final class GlowChunk implements Chunk {
      */
     public void initializeSections(ChunkSection[] initSections) {
         if (isLoaded()) {
-            GlowServer.logger.log(Level.SEVERE, "Tried to initialize already loaded chunk (" + x + "," + z + ")", new Throwable());
+            GlowServer.logger.log(Level.SEVERE, "Tried to initialize already loaded chunk (" + x + ',' + z + ')', new Throwable());
             return;
         }
         //GlowServer.logger.log(Level.INFO, "Initializing chunk ({0},{1})", new Object[]{x, z});
@@ -232,8 +232,8 @@ public final class GlowChunk implements Chunk {
         sections = new ChunkSection[DEPTH / SEC_DEPTH];
         System.arraycopy(initSections, 0, sections, 0, Math.min(sections.length, initSections.length));
 
-        biomes = new byte[WIDTH * HEIGHT];
-        heightMap = new byte[WIDTH * HEIGHT];
+        biomes = new byte[256];
+        heightMap = new byte[256];
 
         // tile entity initialization
         for (int i = 0; i < sections.length; ++i) {
@@ -562,7 +562,7 @@ public final class GlowChunk implements Chunk {
                 break;
             }
         }
-        int y = (sy + 1) * 16;
+        int y = (sy + 1) >> 2;
         for (int x = 0; x < WIDTH; ++x) {
             for (int z = 0; z < HEIGHT; ++z) {
                 heightMap[z * WIDTH + x] = (byte) lowerHeightMap(x, y, z);
@@ -648,10 +648,9 @@ public final class GlowChunk implements Chunk {
         int byteSize = 0;
 
         if (sections != null) {
-            final int numBlocks = WIDTH * HEIGHT * SEC_DEPTH;
-            int sectionSize = numBlocks * 5 / 2;  // (data and metadata combo) * 2 + blockLight/2
+            int sectionSize = 10240;  // (data and metadata combo) * 2 + blockLight/2
             if (skylight) {
-                sectionSize += numBlocks / 2;  // + skyLight/2
+                sectionSize += 2048;  // + skyLight/2
             }
             byteSize += sectionCount * sectionSize;
         }
@@ -758,7 +757,7 @@ public final class GlowChunk implements Chunk {
          */
         public ChunkSection(char[] types, NibbleArray skyLight, NibbleArray blockLight) {
             if (types.length != ARRAY_SIZE || skyLight.size() != ARRAY_SIZE || blockLight.size() != ARRAY_SIZE) {
-                throw new IllegalArgumentException("An array length was not " + ARRAY_SIZE + ": " + types.length + " " + skyLight.size() + " " + blockLight.size());
+                throw new IllegalArgumentException("An array length was not " + ARRAY_SIZE + ": " + types.length + ' ' + skyLight.size() + " " + blockLight.size());
             }
             this.types = types;
             this.skyLight = skyLight;
