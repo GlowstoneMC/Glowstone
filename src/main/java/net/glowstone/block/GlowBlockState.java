@@ -233,8 +233,6 @@ public class GlowBlockState implements BlockState {
             return false;
         if (x != other.x)
             return false;
-        if (y != other.y)
-            return false;
-        return z == other.z;
+        return y == other.y && z == other.z;
     }
 }
