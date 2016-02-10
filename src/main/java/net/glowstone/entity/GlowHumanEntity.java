@@ -1,6 +1,8 @@
 package net.glowstone.entity;
 
 import com.flowpowered.networking.Message;
+
+import net.glowstone.EventFactory;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.inventory.*;
@@ -14,6 +16,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.Inventory;
@@ -386,6 +389,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     @Override
     public void closeInventory() {
+        EventFactory.callEvent(new InventoryCloseEvent(inventoryView));
         if (getGameMode() != GameMode.CREATIVE) {
             if (getItemOnCursor() != null) {
                 drop(getItemOnCursor());
