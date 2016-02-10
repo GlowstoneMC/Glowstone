@@ -120,6 +120,7 @@ public abstract class GlowEntity implements Entity {
      * The distance the entity is currently falling without touching the ground.
      */
     private float fallDistance;
+
     /**
      * How long the entity has been on fire, or 0 if it is not.
      */
@@ -462,6 +463,7 @@ public abstract class GlowEntity implements Entity {
     }
 
     /**
+<<<<<<< HEAD
      * Sets this entity's location and applies fall damage calculations.
      * @param location The new location.
      */
@@ -470,6 +472,8 @@ public abstract class GlowEntity implements Entity {
     }
 
     /**
+=======
+>>>>>>> c30e92e7e9aa62e462c81f48a132c0bba7701823
      * Creates a {@link Message} which can be sent to a client to spawn this
      * entity.
      *
