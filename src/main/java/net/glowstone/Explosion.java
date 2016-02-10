@@ -26,13 +26,14 @@ import java.util.stream.Collectors;
 public final class Explosion {
 
     public static final int POWER_TNT = 4;
-    public static final int POWER_BED = 5;
-    public static final int POWER_CREEPER = 3;
-    public static final int POWER_CHARGED_CREEPER = 6;
-    public static final int POWER_GHAST = 1;
-    public static final int POWER_WITHER_SKULL = 1;
-    public static final int POWER_WITHER_CREATION = 7;
-    public static final int POWER_ENDER_CRYSTAL = 6;
+    /*
+       public static final int POWER_BED = 5;
+       public static final int POWER_CREEPER = 3;
+       public static final int POWER_ENERGIZED = 6; // charged creeper or ender crystal
+       public static final int POWER_EXPLOSIVE_BALL = 1; // wither skull or ghast ball
+       public static final int POWER_WITHER_CREATION = 7;
+       TODO: use these values when appropriate
+    */
     private static final Random random = new Random();
     private final Entity source;
     private final Location location;
@@ -128,7 +129,7 @@ public final class Explosion {
         for (int x = 0; x < value; x++) {
             for (int y = 0; y < value; y++) {
                 for (int z = 0; z < value; z++) {
-                    if (!(x == 0 || x == value - 1 || y == 0 || y == value - 1 || z == 0 || z == value - 1)) {
+                    if (x != 0 && x != value - 1 && y != 0 && y != value - 1 && z != 0 && z != value - 1) {
                         continue;
                     }
                     calculateRay(x, y, z, blocks);
@@ -274,8 +275,9 @@ public final class Explosion {
     }
 
     private double calculateDamage(GlowEntity entity, double disDivPower) {
-        double damage = world.rayTrace(location, entity);
-        return (damage * (1D - disDivPower));
+        // double damage = world.rayTrace(location, entity); TODO: finish ray trace
+        // return (damage * (1D - disDivPower));
+        return 1.0 - disDivPower;
     }
 
     private Collection<GlowLivingEntity> getNearbyEntities() {
@@ -291,8 +293,8 @@ public final class Explosion {
                 chunks.add(location.getWorld().getChunkAt(location.getBlockX() >> 4, location.getBlockZ() - 1 >> 4));
             }
         } else {
-            int invRelX = Math.abs(location.getBlockX() - 16 * (int) Math.floor(location.getBlockX() / 16));
-            int invRelZ = Math.abs(location.getBlockZ() - 16 * (int) Math.floor(location.getBlockZ() / 16));
+            int invRelX = Math.abs(location.getBlockX() - 16 * (int) Math.floor(location.getBlockX() >> 4));
+            int invRelZ = Math.abs(location.getBlockZ() - 16 * (int) Math.floor(location.getBlockZ() >> 4));
             if (invRelX < power) {
                 chunks.add(location.getWorld().getChunkAt(location.getBlockX() + 1 >> 4, location.getBlockZ() >> 4));
             }
