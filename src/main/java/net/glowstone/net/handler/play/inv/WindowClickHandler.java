@@ -34,7 +34,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         }
         session.send(new TransactionMessage(message.getId(), message.getTransaction(), result));
         if (!result) {
-            session.send(new SetWindowSlotMessage(-1, -1, null));
+            session.send(new SetWindowSlotMessage(-1, -1, session.getPlayer().getItemOnCursor()));
             session.getPlayer().sendItemChange(message.getSlot(), session.getPlayer().getOpenInventory().getItem(message.getSlot()));
         }
     }
