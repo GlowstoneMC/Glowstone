@@ -18,11 +18,11 @@ import org.bukkit.entity.Entity;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
 import java.util.*;
-import java.util.jar.Pack200;
 import java.util.logging.Level;
 
 /**
  * Represents a chunk of the map.
+ *
  * @author Graham Edgecombe
  */
 public final class GlowChunk implements Chunk {
@@ -161,6 +161,7 @@ public final class GlowChunk implements Chunk {
 
     /**
      * Creates a new chunk with a specified X and Z coordinate.
+     *
      * @param x The X coordinate.
      * @param z The Z coordinate.
      */
@@ -238,6 +239,7 @@ public final class GlowChunk implements Chunk {
 
     /**
      * Gets whether this chunk has been populated by special features.
+     *
      * @return Population status.
      */
     public boolean isPopulated() {
@@ -246,6 +248,7 @@ public final class GlowChunk implements Chunk {
 
     /**
      * Sets the population status of this chunk.
+     *
      * @param populated Population status.
      */
     public void setPopulated(boolean populated) {
@@ -305,6 +308,7 @@ public final class GlowChunk implements Chunk {
 
     /**
      * Initialize this chunk from the given sections.
+     *
      * @param initSections The ChunkSections to use.
      */
     public void initializeSections(ChunkSection[] initSections) {
@@ -355,6 +359,7 @@ public final class GlowChunk implements Chunk {
 
     /**
      * Attempt to get the ChunkSection at the specified height.
+     *
      * @param y the y value.
      * @return The ChunkSection, or null if it is empty.
      */
@@ -368,6 +373,7 @@ public final class GlowChunk implements Chunk {
 
     /**
      * Get all ChunkSection of this chunk.
+     *
      * @return The chunk sections array.
      */
     public ChunkSection[] getSections() {
@@ -376,6 +382,7 @@ public final class GlowChunk implements Chunk {
 
     /**
      * Attempt to get the tile entity located at the given coordinates.
+     *
      * @param x The X coordinate.
      * @param z The Z coordinate.
      * @param y The Y coordinate.
@@ -389,6 +396,7 @@ public final class GlowChunk implements Chunk {
 
     /**
      * Gets the type of a block within this chunk.
+     *
      * @param x The X coordinate.
      * @param z The Z coordinate.
      * @param y The Y coordinate.
@@ -401,9 +409,10 @@ public final class GlowChunk implements Chunk {
 
     /**
      * Sets the type of a block within this chunk.
-     * @param x The X coordinate.
-     * @param z The Z coordinate.
-     * @param y The Y coordinate.
+     *
+     * @param x    The X coordinate.
+     * @param z    The Z coordinate.
+     * @param y    The Y coordinate.
      * @param type The type.
      */
     public void setType(int x, int z, int y, int type) {
@@ -479,6 +488,7 @@ public final class GlowChunk implements Chunk {
 
     /**
      * Gets the metadata of a block within this chunk.
+     *
      * @param x The X coordinate.
      * @param z The Z coordinate.
      * @param y The Y coordinate.
@@ -491,9 +501,10 @@ public final class GlowChunk implements Chunk {
 
     /**
      * Sets the metadata of a block within this chunk.
-     * @param x The X coordinate.
-     * @param z The Z coordinate.
-     * @param y The Y coordinate.
+     *
+     * @param x        The X coordinate.
+     * @param z        The Z coordinate.
+     * @param y        The Y coordinate.
      * @param metaData The metadata.
      */
     public void setMetaData(int x, int z, int y, int metaData) {
@@ -509,6 +520,7 @@ public final class GlowChunk implements Chunk {
 
     /**
      * Gets the sky light level of a block within this chunk.
+     *
      * @param x The X coordinate.
      * @param z The Z coordinate.
      * @param y The Y coordinate.
@@ -521,9 +533,10 @@ public final class GlowChunk implements Chunk {
 
     /**
      * Sets the sky light level of a block within this chunk.
-     * @param x The X coordinate.
-     * @param z The Z coordinate.
-     * @param y The Y coordinate.
+     *
+     * @param x        The X coordinate.
+     * @param z        The Z coordinate.
+     * @param y        The Y coordinate.
      * @param skyLight The sky light level.
      */
     public void setSkyLight(int x, int z, int y, int skyLight) {
@@ -534,6 +547,7 @@ public final class GlowChunk implements Chunk {
 
     /**
      * Gets the block light level of a block within this chunk.
+     *
      * @param x The X coordinate.
      * @param z The Z coordinate.
      * @param y The Y coordinate.
@@ -546,9 +560,10 @@ public final class GlowChunk implements Chunk {
 
     /**
      * Sets the block light level of a block within this chunk.
-     * @param x The X coordinate.
-     * @param z The Z coordinate.
-     * @param y The Y coordinate.
+     *
+     * @param x          The X coordinate.
+     * @param z          The Z coordinate.
+     * @param y          The Y coordinate.
      * @param blockLight The block light level.
      */
     public void setBlockLight(int x, int z, int y, int blockLight) {
@@ -559,6 +574,7 @@ public final class GlowChunk implements Chunk {
 
     /**
      * Gets the biome of a column within this chunk.
+     *
      * @param x The X coordinate.
      * @param z The Z coordinate.
      * @return The biome.
@@ -570,8 +586,9 @@ public final class GlowChunk implements Chunk {
 
     /**
      * Sets the biome of a column within this chunk,
-     * @param x The X coordinate.
-     * @param z The Z coordinate.
+     *
+     * @param x     The X coordinate.
+     * @param z     The Z coordinate.
      * @param biome The biome.
      */
     public void setBiome(int x, int z, int biome) {
@@ -581,6 +598,7 @@ public final class GlowChunk implements Chunk {
 
     /**
      * Set the entire biome array of this chunk.
+     *
      * @param newBiomes The biome array.
      */
     public void setBiomes(byte[] newBiomes) {
@@ -595,6 +613,7 @@ public final class GlowChunk implements Chunk {
 
     /**
      * Get the height map value of a column within this chunk.
+     *
      * @param x The X coordinate.
      * @param z The Z coordinate.
      * @return The height map value.
@@ -606,6 +625,7 @@ public final class GlowChunk implements Chunk {
 
     /**
      * Set the entire height map of this chunk.
+     *
      * @param newHeightMap The height map.
      */
     public void setHeightMap(int[] newHeightMap) {
@@ -644,6 +664,7 @@ public final class GlowChunk implements Chunk {
     /**
      * Converts a three-dimensional coordinate to an index within the
      * one-dimensional arrays.
+     *
      * @param x The X coordinate.
      * @param z The Z coordinate.
      * @param y The Y coordinate.
@@ -659,6 +680,7 @@ public final class GlowChunk implements Chunk {
     /**
      * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream
      * this entire chunk to them.
+     *
      * @return The {@link ChunkDataMessage}.
      */
     public ChunkDataMessage toMessage() {
@@ -670,6 +692,7 @@ public final class GlowChunk implements Chunk {
     /**
      * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream
      * this entire chunk to them.
+     *
      * @param skylight Whether to include skylight data.
      * @return The {@link ChunkDataMessage}.
      */
@@ -693,6 +716,7 @@ public final class GlowChunk implements Chunk {
     /**
      * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream
      * parts of this chunk to them.
+     *
      * @return The {@link ChunkDataMessage}.
      */
     public ChunkDataMessage toMessage(boolean skylight, boolean entireChunk, int sectionBitmask) {
