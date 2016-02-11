@@ -152,8 +152,16 @@
                         <configuration>
                             <relocations>
                                <relocation>
+                                   <pattern>org.objectweb.asm</pattern>
+                                   <shadedPattern>net.glowstone.libs.org.objectweb.asm</shadedPattern>
+                               </relocation>
+                               <relocation>
                                     <pattern>com.flowpowered</pattern>
                                     <shadedPattern>net.glowstone.libs.com.flowpowered</shadedPattern>
+                                </relocation>
+                               <relocation>
+                                    <pattern>jline</pattern>
+                                    <shadedPattern>net.glowstone.libs.jline</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>io.netty</pattern>
