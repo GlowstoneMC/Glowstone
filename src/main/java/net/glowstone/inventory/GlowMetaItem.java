@@ -21,6 +21,7 @@ class GlowMetaItem implements ItemMeta {
 
     /**
      * Create a GlowMetaItem, copying from another if possible.
+     *
      * @param meta The meta to copy from, or null.
      */
     public GlowMetaItem(GlowMetaItem meta) {
@@ -38,8 +39,49 @@ class GlowMetaItem implements ItemMeta {
         }
     }
 
+    protected static void serializeEnchants(String name, Map<String, Object> map, Map<Enchantment, Integer> enchants) {
+        Map<String, Object> enchantList = new HashMap<>();
+
+        for (Map.Entry<Enchantment, Integer> enchantment : enchants.entrySet()) {
+            enchantList.put(enchantment.getKey().getName(), enchantment.getValue());
+        }
+
+        map.put(name, enchantList);
+    }
+
+    protected static void writeNbtEnchants(String name, CompoundTag to, Map<Enchantment, Integer> enchants) {
+        List<CompoundTag> ench = new ArrayList<>();
+
+        for (Map.Entry<Enchantment, Integer> enchantment : enchants.entrySet()) {
+            CompoundTag enchantmentTag = new CompoundTag();
+            enchantmentTag.putShort("id", enchantment.getKey().getId());
+            enchantmentTag.putShort("lvl", enchantment.getValue());
+            ench.add(enchantmentTag);
+        }
+
+        to.putCompoundList(name, ench);
+    }
+
+    protected static Map<Enchantment, Integer> readNbtEnchants(String name, CompoundTag tag) {
+        Map<Enchantment, Integer> result = null;
+
+        if (tag.isList(name, TagType.COMPOUND)) {
+            Iterable<CompoundTag> enchs = tag.getCompoundList(name);
+            for (CompoundTag enchantmentTag : enchs) {
+                if (enchantmentTag.isShort("id") && enchantmentTag.isShort("lvl")) {
+                    Enchantment enchantment = Enchantment.getById(enchantmentTag.getShort("id"));
+                    if (result == null) result = new HashMap<>(4);
+                    result.put(enchantment, (int) enchantmentTag.getShort("lvl"));
+                }
+            }
+        }
+
+        return result;
+    }
+
     /**
      * Check whether this ItemMeta can be applied to the given material.
+     *
      * @param material The Material.
      * @return True if this ItemMeta is applicable.
      */
@@ -55,16 +97,6 @@ class GlowMetaItem implements ItemMeta {
     @Override
     public Spigot spigot() {
         return null;
-    }
-
-    protected static void serializeEnchants(String name, Map<String, Object> map, Map<Enchantment, Integer> enchants) {
-        Map<String, Object> enchantList = new HashMap<>();
-
-        for (Map.Entry<Enchantment, Integer> enchantment : enchants.entrySet()) {
-            enchantList.put(enchantment.getKey().getName(), enchantment.getValue());
-        }
-
-        map.put(name, enchantList);
     }
 
     @Override
@@ -86,19 +118,6 @@ class GlowMetaItem implements ItemMeta {
         return result;
     }
 
-    protected static void writeNbtEnchants(String name, CompoundTag to, Map<Enchantment, Integer> enchants) {
-        List<CompoundTag> ench = new ArrayList<>();
-
-        for (Map.Entry<Enchantment, Integer> enchantment : enchants.entrySet()) {
-            CompoundTag enchantmentTag = new CompoundTag();
-            enchantmentTag.putShort("id", enchantment.getKey().getId());
-            enchantmentTag.putShort("lvl", enchantment.getValue());
-            ench.add(enchantmentTag);
-        }
-
-        to.putCompoundList(name, ench);
-    }
-
     void writeNbt(CompoundTag tag) {
         CompoundTag displayTags = new CompoundTag();
         if (hasDisplayName()) {
@@ -115,23 +134,6 @@ class GlowMetaItem implements ItemMeta {
         if (hasEnchants()) {
             writeNbtEnchants("ench", tag, enchants);
         }
-    }
-
-    protected static Map<Enchantment, Integer> readNbtEnchants(String name, CompoundTag tag) {
-        Map<Enchantment, Integer> result = null;
-
-        if (tag.isList(name, TagType.COMPOUND)) {
-            Iterable<CompoundTag> enchs = tag.getCompoundList(name);
-            for (CompoundTag enchantmentTag : enchs) {
-                if (enchantmentTag.isShort("id") && enchantmentTag.isShort("lvl")) {
-                    Enchantment enchantment = Enchantment.getById(enchantmentTag.getShort("id"));
-                    if (result == null) result = new HashMap<>(4);
-                    result.put(enchantment, (int) enchantmentTag.getShort("lvl"));
-                }
-            }
-        }
-
-        return result;
     }
 
     void readNbt(CompoundTag tag) {

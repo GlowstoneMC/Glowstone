@@ -147,13 +147,13 @@ public class BlockDoor extends BlockType {
 
         return true;
     }
-    
+
     @Override
     public void onRedstoneUpdate(GlowBlock block) {
         GlowBlockState state = block.getState();
         Door door = (Door) state.getData();
         if (!door.isTopHalf()) {
-            
+
             boolean powered = block.isBlockIndirectlyPowered();
             if (powered != door.isOpen()) {
                 door.setOpen(powered);

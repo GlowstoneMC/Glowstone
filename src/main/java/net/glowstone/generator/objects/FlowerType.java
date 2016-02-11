@@ -17,7 +17,7 @@ public enum FlowerType {
     private final Material type;
     private final int data;
 
-    private FlowerType(Material type, int data) {
+    FlowerType(Material type, int data) {
         this.type = type;
         this.data = data;
     }

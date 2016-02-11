@@ -55,7 +55,21 @@ public class TESign extends TileEntity {
     }
 
     /**
+     * Get the lines of text on the sign.
+     *
+     * @return The sign's lines.
+     */
+    public String[] getLines() {
+        String[] result = new String[lines.length];
+        for (int i = 0; i < result.length; ++i) {
+            result[i] = lines[i].flatten();
+        }
+        return result;
+    }
+
+    /**
      * Set the lines of text on the sign.
+     *
      * @param text The lines of text.
      * @throws IllegalArgumentException If the wrong number of lines is provided.
      */
@@ -67,18 +81,6 @@ public class TESign extends TileEntity {
         for (int i = 0; i < lines.length; ++i) {
             lines[i] = new TextMessage(text[i] == null ? "" : text[i]);
         }
-    }
-
-    /**
-     * Get the lines of text on the sign.
-     * @return The sign's lines.
-     */
-    public String[] getLines() {
-        String[] result = new String[lines.length];
-        for (int i = 0; i < result.length; ++i) {
-            result[i] = lines[i].flatten();
-        }
-        return result;
     }
 
 }

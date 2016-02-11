@@ -16,60 +16,6 @@ import java.util.Set;
  */
 public class CavePopulator extends BlockPopulator {
 
-    private static class FinishSnakeTask implements Runnable {
-
-        private final Location[] snake;
-
-        public FinishSnakeTask(Set<Location> snake) {
-            this.snake = snake.toArray(new Location[snake.size()]);
-        }
-
-        @Override
-        public void run() {
-            for (Location loc : snake) {
-                Block block = loc.getBlock();
-                if (!block.isEmpty() && !block.isLiquid() && block.getType() != Material.BEDROCK) {
-                    block.setType(Material.AIR);
-                }
-            }
-
-            for (Location loc : snake) {
-                loc.getWorld().unloadChunkRequest(loc.getBlockX() / 16, loc.getBlockZ() / 16);
-            }
-        }
-    }
-
-    @Override
-    public void populate(final World world, final Random random, Chunk source) {
-        if (random.nextInt(100) < 10) {
-            final int x = 4 + random.nextInt(8) + source.getX() * 16;
-            final int z = 4 + random.nextInt(8) + source.getZ() * 16;
-            int maxY = world.getHighestBlockYAt(x, z);
-            if (maxY < 16) {
-                maxY = 32;
-            }
-
-            final int y = random.nextInt(maxY);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Set<Location> snake = startSnake(world, random, x, y, z);
-                    // Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(GenPlugin.instance, new FinishSnake(world, snake));
-
-                    if (random.nextInt(16) > 5) {
-                        if (y > 36) {
-                            snake = startSnake(world, random, x, y / 2, z);
-                            // Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(GenPlugin.instance, new FinishSnake(world, snake));
-                        } else if (y < 24) {
-                            snake = startSnake(world, random, x, y * 2, z);
-                            // Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(GenPlugin.instance, new FinishSnake(world, snake));
-                        }
-                    }
-                }
-            }).start();
-        }
-    }
-
     private static Set<Location> startSnake(World world, Random random, int blockX, int blockY, int blockZ) {
         Set<Location> snakeBlocks = new HashSet<>();
 
@@ -135,5 +81,56 @@ public class CavePopulator extends BlockPopulator {
         }
 
         return snakeBlocks;
+    }
+
+    @Override
+    public void populate(final World world, final Random random, Chunk source) {
+        if (random.nextInt(100) < 10) {
+            final int x = 4 + random.nextInt(8) + source.getX() * 16;
+            final int z = 4 + random.nextInt(8) + source.getZ() * 16;
+            int maxY = world.getHighestBlockYAt(x, z);
+            if (maxY < 16) {
+                maxY = 32;
+            }
+
+            final int y = random.nextInt(maxY);
+            new Thread(() -> {
+                Set<Location> snake = startSnake(world, random, x, y, z);
+                // Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(GenPlugin.instance, new FinishSnake(world, snake));
+
+                if (random.nextInt(16) > 5) {
+                    if (y > 36) {
+                        snake = startSnake(world, random, x, y / 2, z);
+                        // Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(GenPlugin.instance, new FinishSnake(world, snake));
+                    } else if (y < 24) {
+                        snake = startSnake(world, random, x, y * 2, z);
+                        // Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(GenPlugin.instance, new FinishSnake(world, snake));
+                    }
+                }
+            }).start();
+        }
+    }
+
+    private static class FinishSnakeTask implements Runnable {
+
+        private final Location[] snake;
+
+        public FinishSnakeTask(Set<Location> snake) {
+            this.snake = snake.toArray(new Location[snake.size()]);
+        }
+
+        @Override
+        public void run() {
+            for (Location loc : snake) {
+                Block block = loc.getBlock();
+                if (!block.isEmpty() && !block.isLiquid() && block.getType() != Material.BEDROCK) {
+                    block.setType(Material.AIR);
+                }
+            }
+
+            for (Location loc : snake) {
+                loc.getWorld().unloadChunkRequest(loc.getBlockX() / 16, loc.getBlockZ() / 16);
+            }
+        }
     }
 }

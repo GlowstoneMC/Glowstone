@@ -41,7 +41,7 @@ public final class TitleMessage implements Message {
     }
 
     public static TitleMessage[] fromTitle(Title title) {
-        return new TitleMessage[] {
+        return new TitleMessage[]{
                 new TitleMessage(Action.TITLE, asTextMessage(title.getHeading())),
                 new TitleMessage(Action.SUBTITLE, asTextMessage(title.getSubtitle()))
         };

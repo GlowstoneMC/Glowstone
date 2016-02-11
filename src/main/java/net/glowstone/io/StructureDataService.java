@@ -12,6 +12,7 @@ public interface StructureDataService {
 
     /**
      * Reads the structures data from storage.
+     *
      * @return A map containing structures indexed by their chunk hash.
      * @throws IOException if an I/O error occurs.
      */
@@ -19,6 +20,7 @@ public interface StructureDataService {
 
     /**
      * Write the structures data to storage.
+     *
      * @throws IOException if an I/O error occurs.
      */
     void writeStructuresData(Map<Integer, GlowStructure> structures) throws IOException;

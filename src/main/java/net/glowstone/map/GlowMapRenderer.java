@@ -9,7 +9,7 @@ import org.bukkit.map.MapView;
  * Glowstone's built-in map renderer.
  */
 public final class GlowMapRenderer extends MapRenderer {
-    
+
     private final GlowMapView map;
 
     public GlowMapRenderer(GlowMapView map) {
@@ -21,5 +21,5 @@ public final class GlowMapRenderer extends MapRenderer {
     public void render(MapView map, MapCanvas canvas, Player player) {
         // todo
     }
-    
+
 }

@@ -12,34 +12,8 @@ import static org.bukkit.block.Biome.*;
  */
 public final class GlowBiome {
 
-    private GlowBiome() {}
-
     private static final int[] ids = new int[Biome.values().length];
     private static final Biome[] biomes = new Biome[256];
-
-    /**
-     * Get the biome ID for a specified Biome.
-     * @param biome the Biome.
-     * @return the biome id, or -1
-     */
-    public static int getId(Biome biome) {
-        Validate.notNull(biome, "Biome cannot be null");
-        return ids[biome.ordinal()];
-    }
-
-    /**
-     * Get the Biome for a specified id.
-     * @param id the id.
-     * @return the Biome, or null
-     */
-    public static Biome getBiome(int id) {
-        return biomes[id];
-    }
-
-    private static void set(int id, Biome biome) {
-        ids[biome.ordinal()] = id;
-        biomes[id] = biome;
-    }
 
     static {
         Arrays.fill(ids, -1);
@@ -104,6 +78,35 @@ public final class GlowBiome {
         set(165, MESA_BRYCE);
         set(166, MESA_PLATEAU_FOREST_MOUNTAINS);
         set(167, MESA_PLATEAU_MOUNTAINS);
+    }
+
+    private GlowBiome() {
+    }
+
+    /**
+     * Get the biome ID for a specified Biome.
+     *
+     * @param biome the Biome.
+     * @return the biome id, or -1
+     */
+    public static int getId(Biome biome) {
+        Validate.notNull(biome, "Biome cannot be null");
+        return ids[biome.ordinal()];
+    }
+
+    /**
+     * Get the Biome for a specified id.
+     *
+     * @param id the id.
+     * @return the Biome, or null
+     */
+    public static Biome getBiome(int id) {
+        return biomes[id];
+    }
+
+    private static void set(int id, Biome biome) {
+        ids[biome.ordinal()] = id;
+        biomes[id] = biome;
     }
 
 }

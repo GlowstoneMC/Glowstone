@@ -17,7 +17,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Base tests for each {@link GlowProtocol}.
@@ -42,6 +43,13 @@ public abstract class BaseProtocolTest {
         }
 
         ServerShim.install();
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> T getField(Object object, Class<?> clazz, String name) throws ReflectiveOperationException {
+        Field field = clazz.getDeclaredField(name);
+        field.setAccessible(true);
+        return (T) field.get(object);
     }
 
     @Test
@@ -91,19 +99,10 @@ public abstract class BaseProtocolTest {
             Codec<Message> codec = reg.getCodec();
             ByteBuf buffer = codec.encode(Unpooled.buffer(), message);
             Message decoded = codec.decode(buffer);
-            if (buffer.refCnt() > 0) {
-                buffer.release(buffer.refCnt());
-            }
+            buffer.release();
             assertEquals("Asymmetry for " + reg.getOpcode() + "/" + message.getClass().getName(), message, decoded);
         } catch (IOException e) {
             throw new AssertionError("Error in I/O for " + reg.getOpcode() + "/" + message.getClass().getName(), e);
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T> T getField(Object object, Class<?> clazz, String name) throws ReflectiveOperationException {
-        Field field = clazz.getDeclaredField(name);
-        field.setAccessible(true);
-        return (T) field.get(object);
     }
 }

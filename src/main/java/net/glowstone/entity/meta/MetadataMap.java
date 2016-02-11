@@ -8,6 +8,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A map for entity metadata.
@@ -127,9 +128,7 @@ public class MetadataMap {
 
     public List<Entry> getEntryList() {
         List<Entry> result = new ArrayList<>(map.size());
-        for (Map.Entry<MetadataIndex, Object> entry : map.entrySet()) {
-            result.add(new Entry(entry.getKey(), entry.getValue()));
-        }
+        result.addAll(map.entrySet().stream().map(entry -> new Entry(entry.getKey(), entry.getValue())).collect(Collectors.toList()));
         Collections.sort(result);
         return result;
     }

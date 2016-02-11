@@ -40,8 +40,8 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
 
         if (svTemp) {
             final int baseX = x << 4, baseZ = z << 4;
-            temp = new double[16 * 16];
-            humid = new double[16 * 16];
+            temp = new double[256];
+            humid = new double[256];
             for (int xx = 0; xx < 16; ++xx) {
                 for (int zz = 0; zz < 16; ++zz) {
                     temp[coordToIndex(xx, zz)] = world.getTemperature(baseX + xx, baseZ + zz);
@@ -63,6 +63,7 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
 
     /**
      * Get the ChunkSection array backing this snapshot. In general, it should not be modified.
+     *
      * @return The array of ChunkSections.
      */
     public ChunkSection[] getRawSections() {

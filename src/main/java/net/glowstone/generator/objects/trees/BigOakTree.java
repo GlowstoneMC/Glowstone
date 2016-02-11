@@ -11,8 +11,8 @@ import java.util.Random;
 
 public class BigOakTree extends GenericTree {
 
-    private final Random random = new Random();
     private static final float LEAF_DENSITY = 1.0F;
+    private final Random random = new Random();
     private int maxLeafDistance = 5;
     private int trunkHeight;
 
@@ -56,7 +56,7 @@ public class BigOakTree extends GenericTree {
         // generate the leaves
         for (LeafNode node : leafNodes) {
             for (int y = 0; y < maxLeafDistance; y++) {
-                float size = y > 0 && y < maxLeafDistance - 1.0F ? 3.0F : 2.0F;               
+                float size = y > 0 && y < maxLeafDistance - 1.0F ? 3.0F : 2.0F;
                 int nodeDistance = (int) (0.618D + (double) size);
                 for (int x = -nodeDistance; x <= nodeDistance; x++) {
                     for (int z = -nodeDistance; z <= nodeDistance; z++) {
@@ -131,7 +131,7 @@ public class BigOakTree extends GenericTree {
             float h = (float) height / 2.0F;
             float v = h - (float) l;
             float f = l < (float) height * 0.3D ? -1.0F :
-               v == h ? h * 0.5F : h <= Math.abs(v) ? 0.0F : (float) Math.sqrt(h * h - v * v) * 0.5F;
+                    v == h ? h * 0.5F : h <= Math.abs(v) ? 0.0F : (float) Math.sqrt(h * h - v * v) * 0.5F;
             if (f >= 0.0F) {
                 for (int i = 0; i < nodeCount; i++) {
                     double d1 = (double) f * ((double) random.nextFloat() + 0.328D);

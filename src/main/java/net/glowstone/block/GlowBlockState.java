@@ -2,7 +2,6 @@ package net.glowstone.block;
 
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowWorld;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -25,6 +24,10 @@ public class GlowBlockState implements BlockState {
     private final byte light;
     protected int type;
     protected MaterialData data;
+    private boolean flowed;
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Basics
 
     public GlowBlockState(GlowBlock block) {
         world = block.getWorld();
@@ -35,9 +38,6 @@ public class GlowBlockState implements BlockState {
         light = block.getLightLevel();
         makeData(block.getData());
     }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Basics
 
     @Override
     public GlowWorld getWorld() {
@@ -74,13 +74,13 @@ public class GlowBlockState implements BlockState {
         return getBlock().getLocation();
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Type and data
+
     @Override
     public Location getLocation(Location loc) {
         return getBlock().getLocation(loc);
     }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Type and data
 
     @Override
     public final Material getType() {
@@ -129,13 +129,13 @@ public class GlowBlockState implements BlockState {
         return world != null; // TODO: is this sufficient?
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Update
+
     @Override
     public final byte getLightLevel() {
         return light;
     }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Update
 
     @Override
     public final boolean update() {
@@ -153,8 +153,6 @@ public class GlowBlockState implements BlockState {
 
         return (block.getTypeId() == type || force) && block.setTypeIdAndData(type, getRawData(), applyPhysics);
     }
-
-    private boolean flowed;
 
     public boolean getFlowed() {
         return flowed;
@@ -235,10 +233,6 @@ public class GlowBlockState implements BlockState {
             return false;
         if (x != other.x)
             return false;
-        if (y != other.y)
-            return false;
-        if (z != other.z)
-            return false;
-        return true;
+        return y == other.y && z == other.z;
     }
 }

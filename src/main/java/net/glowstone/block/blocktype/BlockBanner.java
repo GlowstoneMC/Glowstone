@@ -19,15 +19,34 @@ import org.bukkit.material.Banner;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class BlockBanner extends BlockType {
 
     public BlockBanner() {
         setDrops(new ItemStack(Material.BANNER));
+    }
+
+    public static List<CompoundTag> toNBT(List<Pattern> banner) {
+        List<CompoundTag> patterns = new ArrayList<>();
+        for (Pattern pattern : banner) {
+            CompoundTag layerTag = new CompoundTag();
+            layerTag.putString("Pattern", pattern.getPattern().getIdentifier());
+            layerTag.putInt("Color", pattern.getColor().getDyeData());
+            patterns.add(layerTag);
+        }
+        return patterns;
+    }
+
+    public static List<Pattern> fromNBT(List<CompoundTag> tag) {
+        List<Pattern> banner = new ArrayList<>();
+        for (CompoundTag layer : tag) {
+            PatternType patternType = PatternType.getByIdentifier(layer.getString("Pattern"));
+            DyeColor color = DyeColor.getByDyeData((byte) layer.getInt("Color"));
+
+            banner.add(new Pattern(color, patternType));
+        }
+        return banner;
     }
 
     @Override
@@ -39,7 +58,7 @@ public class BlockBanner extends BlockType {
         drop.setItemMeta(meta);
         drop.setDurability(state.getBaseColor().getDyeData());
 
-        return Arrays.asList(drop);
+        return Collections.singletonList(drop);
     }
 
     @Override
@@ -70,28 +89,6 @@ public class BlockBanner extends BlockType {
         BannerMeta meta = (BannerMeta) holding.getItemMeta();
         meta.setPatterns(meta.getPatterns());
         banner.update();
-    }
-
-    public static List<CompoundTag> toNBT(List<Pattern> banner) {
-        List<CompoundTag> patterns = new ArrayList<>();
-        for (Pattern pattern : banner) {
-            CompoundTag layerTag = new CompoundTag();
-            layerTag.putString("Pattern", pattern.getPattern().getIdentifier());
-            layerTag.putInt("Color", pattern.getColor().getDyeData());
-            patterns.add(layerTag);
-        }
-        return patterns;
-    }
-
-    public static List<Pattern> fromNBT(List<CompoundTag> tag) {
-        List<Pattern> banner = new ArrayList<>();
-        for (CompoundTag layer : tag) {
-            PatternType patternType = PatternType.getByIdentifier(layer.getString("Pattern"));
-            DyeColor color = DyeColor.getByDyeData((byte) layer.getInt("Color"));
-
-            banner.add(new Pattern(color, patternType));
-        }
-        return banner;
     }
 
 }

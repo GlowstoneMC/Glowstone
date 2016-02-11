@@ -21,8 +21,8 @@ public class JunglePopulator extends BiomePopulator {
 
     private static final Biome[] BIOMES = {Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.JUNGLE_MOUNTAINS};
     private static final TreeDecoration[] TREES = {new TreeDecoration(BigOakTree.class, 10),
-        new TreeDecoration(JungleBush.class, 50), new TreeDecoration(MegaJungleTree.class, 15),
-        new TreeDecoration(CocoaTree.class, 30)};
+            new TreeDecoration(JungleBush.class, 50), new TreeDecoration(MegaJungleTree.class, 15),
+            new TreeDecoration(CocoaTree.class, 30)};
 
     private final MelonDecorator melonDecorator = new MelonDecorator();
 

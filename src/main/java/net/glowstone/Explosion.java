@@ -21,37 +21,38 @@ import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public final class Explosion {
 
     public static final int POWER_TNT = 4;
-    public static final int POWER_BED = 5;
-    public static final int POWER_CREEPER = 3;
-    public static final int POWER_CHARGED_CREEPER = 6;
-    public static final int POWER_GHAST = 1;
-    public static final int POWER_WITHER_SKULL = 1;
-    public static final int POWER_WITHER_CREATION = 7;
-    public static final int POWER_ENDER_CRYSTAL = 6;
-
-    private float power;
+    /*
+       public static final int POWER_BED = 5;
+       public static final int POWER_CREEPER = 3;
+       public static final int POWER_ENERGIZED = 6; // charged creeper or ender crystal
+       public static final int POWER_EXPLOSIVE_BALL = 1; // wither skull or ghast ball
+       public static final int POWER_WITHER_CREATION = 7;
+       TODO: use these values when appropriate
+    */
+    private static final Random random = new Random();
     private final Entity source;
     private final Location location;
     private final boolean incendiary;
     private final boolean breakBlocks;
     private final GlowWorld world;
+    private float power;
     private float yield = 0.3f;
-
-    private static final Random random = new Random();
 
     /**
      * Creates a new explosion
-     * @param source The entity causing this explosion
-     * @param world The world this explosion is in
-     * @param x The X location of the explosion
-     * @param y The Y location of the explosion
-     * @param z The Z location of the explosion
-     * @param power The power of the explosion
-     * @param incendiary Whether or not blocks should be set on fire
+     *
+     * @param source      The entity causing this explosion
+     * @param world       The world this explosion is in
+     * @param x           The X location of the explosion
+     * @param y           The Y location of the explosion
+     * @param z           The Z location of the explosion
+     * @param power       The power of the explosion
+     * @param incendiary  Whether or not blocks should be set on fire
      * @param breakBlocks Whether blocks should break through this explosion
      */
     public Explosion(Entity source, GlowWorld world, double x, double y, double z, float power, boolean incendiary, boolean breakBlocks) {
@@ -60,10 +61,11 @@ public final class Explosion {
 
     /**
      * Creates a new explosion
-     * @param source The entity causing this explosion
-     * @param location The location this explosion is occuring at. Must contain a GlowWorld
-     * @param power The power of the explosion
-     * @param incendiary Whether or not blocks should be set on fire
+     *
+     * @param source      The entity causing this explosion
+     * @param location    The location this explosion is occuring at. Must contain a GlowWorld
+     * @param power       The power of the explosion
+     * @param incendiary  Whether or not blocks should be set on fire
      * @param breakBlocks Whether blocks should break through this explosion
      */
     public Explosion(Entity source, Location location, float power, boolean incendiary, boolean breakBlocks) {
@@ -116,8 +118,9 @@ public final class Explosion {
     // Calculate all the dropping blocks
 
     private Set<BlockVector> calculateBlocks() {
-        if (!breakBlocks)
-            return new HashSet<>();
+        if (!breakBlocks) {
+            return new HashSet<>(0);
+        }
 
         Set<BlockVector> blocks = new HashSet<>();
 
@@ -126,7 +129,7 @@ public final class Explosion {
         for (int x = 0; x < value; x++) {
             for (int y = 0; y < value; y++) {
                 for (int z = 0; z < value; z++) {
-                    if (!(x == 0 || x == value - 1 || y == 0 || y == value - 1 || z == 0 || z == value - 1)) {
+                    if (x != 0 && x != value - 1 && y != 0 && y != value - 1 && z != 0 && z != value - 1) {
                         continue;
                     }
                     calculateRay(x, y, z, blocks);
@@ -153,7 +156,7 @@ public final class Explosion {
             GlowBlock block = world.getBlockAt(current);
 
             if (block.getType() != Material.AIR) {
-                double blastDurability = getBlastDurability(block) / 5d;
+                double blastDurability = getBlastDurability(block) / 5.0;
                 blastDurability += 0.3F;
                 blastDurability *= 0.3F;
                 currentPower -= blastDurability;
@@ -192,8 +195,7 @@ public final class Explosion {
 
     private List<Block> toBlockList(Collection<BlockVector> locs) {
         List<Block> blocks = new ArrayList<>(locs.size());
-        for (BlockVector location : locs)
-            blocks.add(world.getBlockAt(location.getBlockX(), location.getBlockY(), location.getBlockZ()));
+        blocks.addAll(locs.stream().map(location -> world.getBlockAt(location.getBlockX(), location.getBlockY(), location.getBlockZ())).collect(Collectors.toList()));
         return blocks;
     }
 
@@ -219,7 +221,7 @@ public final class Explosion {
 
     private Collection<GlowPlayer> damageEntities() {
         float power = this.power;
-        this.power *= 2f;
+        this.power *= 2F;
 
         Collection<GlowPlayer> affectedPlayers = new ArrayList<>();
 
@@ -237,14 +239,10 @@ public final class Explosion {
             vecDistance.normalize();
 
             double basicDamage = calculateDamage(entity, disDivPower);
-            double explosionDamage = calculateEnchantedDamage((int) ((basicDamage * basicDamage + basicDamage) * 4 * (double) power + 1.0D), entity);
+            double explosionDamage = calculateEnchantedDamage((int) ((basicDamage * basicDamage + basicDamage) * 4 * power + 1.0D), entity);
 
             DamageCause damageCause;
-            if (source == null || source.getType() == EntityType.PRIMED_TNT) {
-                damageCause = DamageCause.BLOCK_EXPLOSION;
-            } else {
-                damageCause = DamageCause.ENTITY_EXPLOSION;
-            }
+            damageCause = source == null || source.getType() == EntityType.PRIMED_TNT ? DamageCause.BLOCK_EXPLOSION : DamageCause.ENTITY_EXPLOSION;
             entity.damage(explosionDamage, source, damageCause);
 
             vecDistance.multiply(explosionDamage).multiply(0.25);
@@ -277,15 +275,16 @@ public final class Explosion {
     }
 
     private double calculateDamage(GlowEntity entity, double disDivPower) {
-        double damage = world.rayTrace(location, entity);
-        return (damage * (1D - disDivPower));
+        // double damage = world.rayTrace(location, entity); TODO: finish ray trace
+        // return (damage * (1D - disDivPower));
+        return 1.0 - disDivPower;
     }
 
     private Collection<GlowLivingEntity> getNearbyEntities() {
         ArrayList<Chunk> chunks = new ArrayList<>();
         chunks.add(location.getChunk());
-        int relX = location.getBlockX() - 16 * (int) Math.floor(location.getBlockX() / 16);
-        int relZ = location.getBlockZ() - 16 * (int) Math.floor(location.getBlockZ() / 16);
+        int relX = location.getBlockX() - 16 * (int) Math.floor(location.getBlockX() >> 4);
+        int relZ = location.getBlockZ() - 16 * (int) Math.floor(location.getBlockZ() >> 4);
         if (relX < power || relZ < power) {
             if (relX < power) {
                 chunks.add(location.getWorld().getChunkAt(location.getBlockX() - 1 >> 4, location.getBlockZ() >> 4));
@@ -294,8 +293,8 @@ public final class Explosion {
                 chunks.add(location.getWorld().getChunkAt(location.getBlockX() >> 4, location.getBlockZ() - 1 >> 4));
             }
         } else {
-            int invRelX = Math.abs(location.getBlockX() - 16 * (int) Math.floor(location.getBlockX() / 16));
-            int invRelZ = Math.abs(location.getBlockZ() - 16 * (int) Math.floor(location.getBlockZ() / 16));
+            int invRelX = Math.abs(location.getBlockX() - 16 * (int) Math.floor(location.getBlockX() >> 4));
+            int invRelZ = Math.abs(location.getBlockZ() - 16 * (int) Math.floor(location.getBlockZ() >> 4));
             if (invRelX < power) {
                 chunks.add(location.getWorld().getChunkAt(location.getBlockX() + 1 >> 4, location.getBlockZ() >> 4));
             }
@@ -307,13 +306,7 @@ public final class Explosion {
         for (Chunk chunk : chunks) {
             entities.addAll(Arrays.asList(chunk.getEntities()));
         }
-        List<GlowLivingEntity> nearbyEntities = new ArrayList<>();
-        for (Entity entity : entities) {
-            if (entity instanceof LivingEntity && distanceTo((LivingEntity) entity) / power < 1) {
-                nearbyEntities.add((GlowLivingEntity) entity);
-            }
-        }
-        return nearbyEntities;
+        return entities.stream().filter(entity -> entity instanceof LivingEntity && distanceTo((LivingEntity) entity) / power < 1).map(entity -> (GlowLivingEntity) entity).collect(Collectors.toList());
     }
 
     private double distanceTo(LivingEntity entity) {

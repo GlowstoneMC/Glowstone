@@ -11,13 +11,15 @@ import java.io.IOException;
 public interface ScoreboardIoService {
     /**
      * Loads the main scoreboard.
-     * @throws IOException if an I/O error occurs.
+     *
      * @return {@link GlowScoreboard} The {@link GlowScoreboard} read from storage
+     * @throws IOException if an I/O error occurs.
      */
     GlowScoreboard readMainScoreboard() throws IOException;
 
     /**
      * Writes the main scoreboard.
+     *
      * @param scoreboard The {@link GlowScoreboard} to write.
      * @throws IOException if an I/O error occurs.
      */
@@ -25,6 +27,7 @@ public interface ScoreboardIoService {
 
     /**
      * Unload the service, performing any cleanup necessary.
+     *
      * @throws IOException if an I/O error occurs.
      */
     void unload() throws IOException;

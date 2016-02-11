@@ -59,9 +59,9 @@ public class PerlinNoise extends PerlinNoiseGenerator {
                 dZ -= floorZ;
                 double fZ = fade(dZ);
                 // Hash coordinates of the square corners
-                int a = perm[iX] + 0;
+                int a = perm[iX];
                 int aa = perm[a] + iZ;
-                int b = perm[iX + 1] + 0;
+                int b = perm[iX + 1];
                 int ba = perm[b] + iZ;
                 double x1 = lerp(fX, grad(perm[aa], dX, 0, dZ), grad(perm[ba], dX - 1, 0, dZ));
                 double x2 = lerp(fX, grad(perm[aa + 1], dX, 0, dZ - 1), grad(perm[ba + 1], dX - 1, 0, dZ - 1));

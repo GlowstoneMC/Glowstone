@@ -18,6 +18,16 @@ public class SimplexOctaveGenerator extends PerlinOctaveGenerator {
         this(rand, octaves, 0, 0, 0);
     }
 
+    protected static NoiseGenerator[] createOctaves(Random rand, int octaves) {
+        NoiseGenerator[] result = new NoiseGenerator[octaves];
+
+        for (int i = 0; i < octaves; i++) {
+            result[i] = new SimplexNoise(rand);
+        }
+
+        return result;
+    }
+
     @Override
     public double[] fBm(double x, double y, double z, double lacunarity, double persistence) {
         for (int i = 0; i < noise.length; i++) {
@@ -35,15 +45,5 @@ public class SimplexOctaveGenerator extends PerlinOctaveGenerator {
         }
 
         return noise;
-    }
-
-    protected static NoiseGenerator[] createOctaves(Random rand, int octaves) {
-        NoiseGenerator[] result = new NoiseGenerator[octaves];
-
-        for (int i = 0; i < octaves; i++) {
-            result[i] = new SimplexNoise(rand);
-        }
-
-        return result;
     }
 }

@@ -30,7 +30,6 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
         GlowEntity possibleTarget = player.getWorld().getEntityManager().getEntity(message.getId());
         GlowLivingEntity target = possibleTarget instanceof GlowLivingEntity ? (GlowLivingEntity) possibleTarget : null;
 
-        
 
         if (message.getAction() == InteractEntityMessage.Action.ATTACK.ordinal()) {
             if (target == null) {

@@ -110,13 +110,13 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
     }
 
     @Override
-    public ItemStack[] getMatrix() {
-        return Arrays.copyOfRange(getContents(), MATRIX_START, getSize());
+    public void setResult(ItemStack newResult) {
+        setItem(RESULT_SLOT, newResult);
     }
 
     @Override
-    public void setResult(ItemStack newResult) {
-        setItem(RESULT_SLOT, newResult);
+    public ItemStack[] getMatrix() {
+        return Arrays.copyOfRange(getContents(), MATRIX_START, getSize());
     }
 
     @Override

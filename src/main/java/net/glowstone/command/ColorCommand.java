@@ -10,7 +10,7 @@ import java.util.Collections;
  * A built-in command to demonstrate all chat colors.
  */
 public class ColorCommand extends BukkitCommand {
-    
+
     public ColorCommand() {
         super("colors", "Display all colors.", "/colors", Collections.<String>emptyList());
     }

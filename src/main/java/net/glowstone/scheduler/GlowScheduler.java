@@ -1,6 +1,5 @@
 package net.glowstone.scheduler;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import net.glowstone.GlowServer;
@@ -23,68 +22,46 @@ import java.util.logging.Level;
  */
 public final class GlowScheduler implements BukkitScheduler {
 
-    private static class GlowThreadFactory implements ThreadFactory {
-        public static final GlowThreadFactory INSTANCE = new GlowThreadFactory();
-        private final AtomicInteger threadCounter = new AtomicInteger();
-
-        private GlowThreadFactory() {
-        }
-
-        @Override
-        public Thread newThread(Runnable runnable) {
-            return new Thread(runnable, "Glowstone-scheduler-" + threadCounter.getAndIncrement());
-        }
-    }
-
     /**
      * The number of milliseconds between pulses.
      */
     static final int PULSE_EVERY = 50;
-
     /**
      * The server this scheduler is managing for.
      */
     private final GlowServer server;
-
     /**
      * The scheduled executor service which backs this worlds.
      */
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(GlowThreadFactory.INSTANCE);
-
     /**
      * Executor to handle execution of async tasks
      */
     private final ExecutorService asyncTaskExecutor = Executors.newCachedThreadPool(GlowThreadFactory.INSTANCE);
-
     /**
      * A list of active tasks.
      */
     private final ConcurrentMap<Integer, GlowTask> tasks = new ConcurrentHashMap<>();
-
-    /**
-     * The primary worlds thread in which pulse() is called.
-     */
-    private Thread primaryThread;
-
     /**
      * World tick scheduler
      */
     private final WorldScheduler worlds;
-
     /**
      * Tasks to be executed during the tick
      */
     private final Deque<Runnable> inTickTasks = new ConcurrentLinkedDeque<>();
-
     /**
      * Condition to wait on when processing in tick tasks
      */
     private final Object inTickTaskCondition;
-
     /**
      * Runnable to run at end of tick
      */
     private final Runnable tickEndRun;
+    /**
+     * The primary worlds thread in which pulse() is called.
+     */
+    private Thread primaryThread;
 
     /**
      * Creates a new task scheduler.
@@ -93,24 +70,16 @@ public final class GlowScheduler implements BukkitScheduler {
         this.server = server;
         this.worlds = worlds;
         inTickTaskCondition = worlds.getAdvanceCondition();
-        tickEndRun = new Runnable() {
-            @Override
-            public void run() {
-                GlowScheduler.this.worlds.doTickEnd();
-            }
-        };
+        tickEndRun = GlowScheduler.this.worlds::doTickEnd;
         primaryThread = Thread.currentThread();
     }
 
     public void start() {
-        executor.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    pulse();
-                } catch (Exception ex) {
-                    GlowServer.logger.log(Level.SEVERE, "Error while pulsing", ex);
-                }
+        executor.scheduleAtFixedRate((Runnable) () -> {
+            try {
+                pulse();
+            } catch (Exception ex) {
+                GlowServer.logger.log(Level.SEVERE, "Error while pulsing", ex);
             }
         }, 0, PULSE_EVERY, TimeUnit.MILLISECONDS);
     }
@@ -125,17 +94,14 @@ public final class GlowScheduler implements BukkitScheduler {
         asyncTaskExecutor.shutdown();
 
         synchronized (inTickTaskCondition) {
-            for (Runnable task : inTickTasks) {
-                if (task instanceof Future) {
-                    ((Future) task).cancel(false);
-                }
-            }
+            inTickTasks.stream().filter(task -> task instanceof Future).forEach(task -> ((Future) task).cancel(false));
             inTickTasks.clear();
         }
     }
 
     /**
      * Schedules the specified task.
+     *
      * @param task The task.
      */
     private GlowTask schedule(GlowTask task) {
@@ -163,7 +129,7 @@ public final class GlowScheduler implements BukkitScheduler {
 
     /**
      * Adds new tasks and updates existing tasks, removing them if necessary.
-     * <p/>
+     * <p>
      * todo: Add watchdog system to make sure ticks advance
      */
     private void pulse() {
@@ -172,21 +138,19 @@ public final class GlowScheduler implements BukkitScheduler {
         // Process player packets
         server.getSessionRegistry().pulse();
 
-        // Run the relevant tasks.
-        for (Iterator<GlowTask> it = tasks.values().iterator(); it.hasNext(); ) {
-            GlowTask task = it.next();
-            switch (task.shouldExecute()) {
-                case RUN:
-                    if (task.isSync()) {
-                        task.run();
-                    } else {
-                        asyncTaskExecutor.submit(task);
-                    }
-                    break;
-                case STOP:
-                    it.remove();
+        tasks.entrySet().stream().forEach(integerGlowTaskEntry -> {
+            GlowTask task = integerGlowTaskEntry.getValue();
+            if (task.shouldExecute() == TaskExecutionState.RUN) {
+                if (task.isSync()) {
+                    task.run();
+                } else {
+                    asyncTaskExecutor.submit(task);
+                }
+            } else if (task.shouldExecute() == TaskExecutionState.STOP) {
+                tasks.remove(integerGlowTaskEntry.getKey());
             }
-        }
+        });
+
         try {
             int currentTick = worlds.beginTick();
             try {
@@ -378,24 +342,34 @@ public final class GlowScheduler implements BukkitScheduler {
 
     /**
      * Returns active async tasks
+     *
      * @return active async tasks
      */
     @Override
     public List<BukkitWorker> getActiveWorkers() {
-        return ImmutableList.<BukkitWorker>copyOf(Collections2.filter(tasks.values(), new Predicate<GlowTask>() {
-            @Override
-            public boolean apply(GlowTask glowTask) {
-                return glowTask != null && !glowTask.isSync() && glowTask.getLastExecutionState() == TaskExecutionState.RUN;
-            }
-        }));
+        return ImmutableList.<BukkitWorker>copyOf(Collections2.filter(tasks.values(), glowTask -> glowTask != null && !glowTask.isSync() && glowTask.getLastExecutionState() == TaskExecutionState.RUN));
     }
 
     /**
      * Returns tasks that still have at least one run remaining
+     *
      * @return the tasks to be run
      */
     @Override
     public List<BukkitTask> getPendingTasks() {
-        return new ArrayList<BukkitTask>(tasks.values());
+        return new ArrayList<>(tasks.values());
+    }
+
+    private static class GlowThreadFactory implements ThreadFactory {
+        public static final GlowThreadFactory INSTANCE = new GlowThreadFactory();
+        private final AtomicInteger threadCounter = new AtomicInteger();
+
+        private GlowThreadFactory() {
+        }
+
+        @Override
+        public Thread newThread(Runnable runnable) {
+            return new Thread(runnable, "Glowstone-scheduler-" + threadCounter.getAndIncrement());
+        }
     }
 }

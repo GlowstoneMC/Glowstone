@@ -22,12 +22,22 @@ public class GlowDispenser extends GlowBlockState implements Dispenser, BlockPro
 
     private static final DispenseBehaviorRegistry dispenseBehaviorRegistry = new DispenseBehaviorRegistry();
 
+    public GlowDispenser(GlowBlock block) {
+        super(block);
+    }
+
     public static DispenseBehaviorRegistry getDispenseBehaviorRegistry() {
         return dispenseBehaviorRegistry;
     }
 
-    public GlowDispenser(GlowBlock block) {
-        super(block);
+    public static void register() {
+        // register all dispense behaviors
+        DefaultDispenseBehavior bucketDispenseBehavior = new BucketDispenseBehavior();
+        GlowDispenser.getDispenseBehaviorRegistry().putBehavior(Material.WATER_BUCKET, bucketDispenseBehavior);
+        GlowDispenser.getDispenseBehaviorRegistry().putBehavior(Material.LAVA_BUCKET, bucketDispenseBehavior);
+        GlowDispenser.getDispenseBehaviorRegistry().putBehavior(Material.BUCKET, new EmptyBucketDispenseBehavior());
+        GlowDispenser.getDispenseBehaviorRegistry().putBehavior(Material.FLINT_AND_STEEL, new FlintAndSteelDispenseBehavior());
+        GlowDispenser.getDispenseBehaviorRegistry().putBehavior(Material.TNT, new TNTDispenseBehavior());
     }
 
     private TEDispenser getTileEntity() {
@@ -106,16 +116,6 @@ public class GlowDispenser extends GlowBlockState implements Dispenser, BlockPro
     public <T extends Projectile> T launchProjectile(Class<? extends T> projectile, Vector velocity) {
         // todo: projectile launching
         return null;
-    }
-
-    public static void register() {
-        // register all dispense behaviors
-        DefaultDispenseBehavior bucketDispenseBehavior = new BucketDispenseBehavior();
-        GlowDispenser.getDispenseBehaviorRegistry().putBehavior(Material.WATER_BUCKET, bucketDispenseBehavior);
-        GlowDispenser.getDispenseBehaviorRegistry().putBehavior(Material.LAVA_BUCKET, bucketDispenseBehavior);
-        GlowDispenser.getDispenseBehaviorRegistry().putBehavior(Material.BUCKET, new EmptyBucketDispenseBehavior());
-        GlowDispenser.getDispenseBehaviorRegistry().putBehavior(Material.FLINT_AND_STEEL, new FlintAndSteelDispenseBehavior());
-        GlowDispenser.getDispenseBehaviorRegistry().putBehavior(Material.TNT, new TNTDispenseBehavior());
     }
 
 }

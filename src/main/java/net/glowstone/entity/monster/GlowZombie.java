@@ -10,7 +10,7 @@ public class GlowZombie extends GlowMonster implements Zombie {
     private boolean villager;
     private int conversionTime = -1;
     private boolean canBreakDoors;
-    
+
     public GlowZombie(Location loc) {
         super(loc, EntityType.ZOMBIE);
     }
@@ -18,22 +18,22 @@ public class GlowZombie extends GlowMonster implements Zombie {
     public GlowZombie(Location loc, EntityType type) {
         super(loc, type);
     }
-    
+
     @Override
     public boolean isBaby() {
         return this.baby;
     }
-    
+
     @Override
     public void setBaby(boolean value) {
         this.baby = value;
     }
-    
+
     @Override
     public boolean isVillager() {
         return this.villager;
     }
-    
+
     @Override
     public void setVillager(boolean value) {
         this.villager = value;

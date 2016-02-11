@@ -36,8 +36,8 @@
     <dependencies>
         <dependency>
             <groupId>org.ow2.asm</groupId>
-            <artifactId>asm-debug-all</artifactId>
-            <version>5.0.3</version>
+            <artifactId>asm</artifactId>
+            <version>5.0.4</version>
         </dependency>
         <dependency>
             <groupId>net.glowstone</groupId>
@@ -52,12 +52,12 @@
         <dependency>
             <groupId>jline</groupId>
             <artifactId>jline</artifactId>
-            <version>2.11</version>
+            <version>2.12</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.14.8</version>
+            <version>1.16.6</version>
             <scope>provided</scope>
         </dependency>
         <!-- Automatically downloaded by Glowstone++'s library manager
@@ -65,23 +65,20 @@
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.7.2</version>
-            <type>jar</type>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.14</version>
-            <type>jar</type>
-            <scope>compile</scope>
         </dependency>
-        -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
             <version>1.7.7</version>
             <scope>provided</scope>
         </dependency>
+        -->
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

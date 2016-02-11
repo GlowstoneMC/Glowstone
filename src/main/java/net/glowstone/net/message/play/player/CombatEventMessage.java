@@ -29,7 +29,7 @@ public final class CombatEventMessage implements Message {
         this(event, 0, entityID, playerID, message);
     }
 
-    public static enum Event {
+    public enum Event {
         ENTER_COMBAT,
         END_COMBAT,
         ENTITY_DEAD;

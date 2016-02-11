@@ -16,10 +16,10 @@ public class GenericTree {
 
     protected final Random random;
     protected final Location loc;
+    protected final BlockStateDelegate delegate;
     protected int height;
     protected int logType;
     protected int leavesType;
-    protected final BlockStateDelegate delegate;
     protected Collection<Material> overridables;
 
     public GenericTree(Random random, Location location, BlockStateDelegate delegate) {

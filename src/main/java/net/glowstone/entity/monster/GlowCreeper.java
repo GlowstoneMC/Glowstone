@@ -9,16 +9,16 @@ public class GlowCreeper extends GlowMonster implements Creeper {
     private int explosionRadius;
     private int fuse;
     private boolean ignited;
-    
+
     public GlowCreeper(Location loc) {
         super(loc, EntityType.CREEPER);
     }
-    
+
     @Override
     public boolean isPowered() {
         return this.powered;
     }
-    
+
     @Override
     public void setPowered(boolean value) {
         this.powered = value;

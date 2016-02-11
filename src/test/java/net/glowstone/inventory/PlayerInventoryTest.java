@@ -21,7 +21,7 @@ public class PlayerInventoryTest {
     private static final ItemStack TEST_LEGGINGS = null;
     private static final ItemStack TEST_CHESTPLATE = new ItemStack(Material.LEATHER_CHESTPLATE);
     private static final ItemStack TEST_HELMET = new ItemStack(Material.IRON_HELMET);
-    private static final ItemStack[] TEST_ARMOR = new ItemStack[] {
+    private static final ItemStack[] TEST_ARMOR = new ItemStack[]{
             TEST_BOOTS, TEST_LEGGINGS, TEST_CHESTPLATE, TEST_HELMET
     };
 

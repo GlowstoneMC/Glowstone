@@ -37,7 +37,7 @@ public class OrePopulator extends BlockPopulator {
                 int sourceZ = cz + random.nextInt(16);
                 int sourceY = oreType.getMinY() == oreType.getMaxY() ?
                         random.nextInt(oreType.getMinY()) + random.nextInt(oreType.getMinY()) :
-                            random.nextInt(oreType.getMaxY() - oreType.getMinY()) + oreType.getMinY();
+                        random.nextInt(oreType.getMaxY() - oreType.getMinY()) + oreType.getMinY();
 
                 new OreVein(oreType).generate(world, random, sourceX, sourceY, sourceZ);
             }

@@ -27,13 +27,13 @@ public class GlowFurnaceInventory extends GlowInventory implements FurnaceInvent
     }
 
     @Override
-    public ItemStack getFuel() {
-        return getItem(FUEL_SLOT);
+    public void setResult(ItemStack stack) {
+        setItem(RESULT_SLOT, stack);
     }
 
     @Override
-    public ItemStack getSmelting() {
-        return getItem(INPUT_SLOT);
+    public ItemStack getFuel() {
+        return getItem(FUEL_SLOT);
     }
 
     @Override
@@ -42,8 +42,8 @@ public class GlowFurnaceInventory extends GlowInventory implements FurnaceInvent
     }
 
     @Override
-    public void setResult(ItemStack stack) {
-        setItem(RESULT_SLOT, stack);
+    public ItemStack getSmelting() {
+        return getItem(INPUT_SLOT);
     }
 
     @Override

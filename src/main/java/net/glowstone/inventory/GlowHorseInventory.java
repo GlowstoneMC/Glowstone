@@ -31,17 +31,17 @@ public class GlowHorseInventory extends GlowInventory implements HorseInventory 
     }
 
     @Override
-    public ItemStack getArmor() {
-        return armor != null ? armor.clone() : null;
-    }
-
-    @Override
     public void setSaddle(ItemStack itemStack) {
         if (itemStack != null) {
             this.saddle = new ItemStack(itemStack);
         } else {
             this.armor = null;
         }
+    }
+
+    @Override
+    public ItemStack getArmor() {
+        return armor != null ? armor.clone() : null;
     }
 
     @Override

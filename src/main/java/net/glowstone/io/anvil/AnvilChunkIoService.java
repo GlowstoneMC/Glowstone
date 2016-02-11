@@ -45,6 +45,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
 
     /**
      * Reads a chunk from its region file.
+     *
      * @param chunk The GlowChunk to read into.
      * @return Whether the
      * @throws IOException if an I/O error occurs.
@@ -142,6 +143,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
 
     /**
      * Writes a chunk to its region file.
+     *
      * @param chunk The {@link GlowChunk} to write from.
      * @throws IOException if an I/O error occurs.
      */

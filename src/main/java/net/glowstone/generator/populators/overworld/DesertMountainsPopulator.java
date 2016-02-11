@@ -15,6 +15,6 @@ public class DesertMountainsPopulator extends DesertPopulator {
 
     @Override
     public Collection<Biome> getBiomes() {
-        return Collections.unmodifiableList(Arrays.asList(new Biome[] {Biome.DESERT_MOUNTAINS}));
+        return Collections.unmodifiableList(Arrays.asList(new Biome[]{Biome.DESERT_MOUNTAINS}));
     }
 }

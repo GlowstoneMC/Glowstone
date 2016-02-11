@@ -13,12 +13,13 @@ public enum GlowBlockEntity {
 
     private final int value;
 
-    private GlowBlockEntity(final int value) {
+    GlowBlockEntity(final int value) {
         this.value = value;
     }
 
     /**
      * Gets the magic number associated with this GlowBlockEntity
+     *
      * @return the magic number
      */
     public int getValue() {

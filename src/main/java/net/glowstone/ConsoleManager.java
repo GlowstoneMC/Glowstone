@@ -19,9 +19,12 @@ import org.fusesource.jansi.AnsiConsole;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.*;
 import java.util.logging.Formatter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A meta-class to handle all logging and input-related console improvements.
@@ -29,11 +32,9 @@ import java.util.logging.Formatter;
  */
 public final class ConsoleManager {
 
-    private static String CONSOLE_DATE = "HH:mm:ss";
-    private static String FILE_DATE = "yyyy/MM/dd HH:mm:ss";
-    private static String CONSOLE_PROMPT = ">";
     private static final Logger logger = Logger.getLogger("");
-
+    private static String CONSOLE_DATE = "HH:mm:ss";
+    private static String CONSOLE_PROMPT = ">";
     private final GlowServer server;
     private final Map<ChatColor, String> replacements = new EnumMap<>(ChatColor.class);
     private final ChatColor[] colors = ChatColor.values();
@@ -42,7 +43,7 @@ public final class ConsoleManager {
     private ConsoleCommandSender sender;
 
     private boolean running = true;
-    private boolean jLine = false;
+    private final AtomicBoolean jLine = new AtomicBoolean(false);
 
     public ConsoleManager(GlowServer server) {
         this.server = server;
@@ -99,7 +100,7 @@ public final class ConsoleManager {
     }
 
     public void startConsole(boolean jLine) {
-        this.jLine = jLine;
+        this.jLine.set(jLine);
 
         sender = new ColoredCommandSender();
         CONSOLE_DATE = server.getConsoleDateFormat();
@@ -121,8 +122,7 @@ public final class ConsoleManager {
             logger.warning("Could not create log folder: " + parent);
         }
         Handler fileHandler = new RotatingFileHandler(logfile);
-        FILE_DATE = server.getConsoleLogDateFormat();
-        fileHandler.setFormatter(new DateOutputFormatter(FILE_DATE, false));
+        fileHandler.setFormatter(new DateOutputFormatter(server.getConsoleLogDateFormat(), false));
         logger.addHandler(fileHandler);
     }
 
@@ -137,18 +137,91 @@ public final class ConsoleManager {
     private String colorize(String string) {
         if (string.indexOf(ChatColor.COLOR_CHAR) < 0) {
             return string;  // no colors in the message
-        } else if (!jLine || !reader.getTerminal().isAnsiSupported()) {
+        } else if (!jLine.get() || !reader.getTerminal().isAnsiSupported()) {
             return ChatColor.stripColor(string);  // color not supported
         } else {
             // colorize or strip all colors
             for (ChatColor color : colors) {
-                if (replacements.containsKey(color)) {
-                    string = string.replaceAll("(?i)" + color.toString(), replacements.get(color));
-                } else {
-                    string = string.replaceAll("(?i)" + color.toString(), "");
+                string = replacements.containsKey(color) ? string.replaceAll("(?i)" + color.toString(), replacements.get(color)) : string.replaceAll("(?i)" + color.toString(), "");
+            }
+            return String.format("%s%s", string, Ansi.ansi().reset().toString());
+        }
+    }
+
+    private static class LoggerOutputStream extends ByteArrayOutputStream {
+        private final String separator = System.getProperty("line.separator");
+        private final Level level;
+
+        public LoggerOutputStream(Level level) {
+            super();
+            this.level = level;
+        }
+
+        @Override
+        public synchronized void flush() throws IOException {
+            super.flush();
+            String record = this.toString();
+            super.reset();
+
+            if (record.length() > 0 && !record.equals(separator)) {
+                logger.logp(level, "LoggerOutputStream", "log" + level, record);
+            }
+        }
+    }
+
+    private static class RotatingFileHandler extends StreamHandler {
+        private static final Pattern DATE_PATTERN = Pattern.compile("%D", Pattern.LITERAL);
+        private final SimpleDateFormat dateFormat;
+        private final String template;
+        private final boolean rotate;
+        private final AtomicReference<String> filename = new AtomicReference<>();
+
+        public RotatingFileHandler(String template) {
+            this.template = template;
+            rotate = template.contains("%D");
+            dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            filename.set(calculateFilename());
+            updateOutput();
+        }
+
+        private void updateOutput() {
+            try {
+                setOutputStream(new FileOutputStream(filename.get(), true));
+            } catch (FileNotFoundException e) {
+                logger.log(Level.SEVERE, "Unable to open " + filename.get() + " for writing", e);
+            }
+        }
+
+        private void checkRotate() {
+            if (rotate) {
+                String newFilename = calculateFilename();
+                if (!filename.get().equals(newFilename)) {
+                    filename.set(newFilename);
+                    // note that the console handler doesn't see this message
+                    super.publish(new LogRecord(Level.INFO, "Log rotating to: " + filename.get()));
+                    updateOutput();
                 }
             }
-            return string + Ansi.ansi().reset().toString();
+        }
+
+        private String calculateFilename() {
+            return DATE_PATTERN.matcher(template).replaceAll(Matcher.quoteReplacement(dateFormat.format(new Date())));
+        }
+
+        @Override
+        public synchronized void publish(LogRecord record) {
+            if (!isLoggable(record)) {
+                return;
+            }
+            checkRotate();
+            super.publish(record);
+            super.flush();
+        }
+
+        @Override
+        public synchronized void flush() {
+            checkRotate();
+            super.flush();
         }
     }
 
@@ -156,12 +229,7 @@ public final class ConsoleManager {
         @Override
         public int complete(final String buffer, int cursor, List<CharSequence> candidates) {
             try {
-                List<String> completions = server.getScheduler().syncIfNeeded(new Callable<List<String>>() {
-                    @Override
-                    public List<String> call() throws Exception {
-                        return server.getCommandMap().tabComplete(sender, buffer);
-                    }
-                });
+                List<String> completions = server.getScheduler().syncIfNeeded(() -> server.getCommandMap().tabComplete(sender, buffer));
                 if (completions == null) {
                     return cursor;  // no completions
                 }
@@ -169,8 +237,8 @@ public final class ConsoleManager {
 
                 // location to position the cursor at (before autofilling takes place)
                 return buffer.lastIndexOf(' ') + 1;
-            } catch (Throwable t) {
-                logger.log(Level.WARNING, "Error while tab completing", t);
+            } catch (Exception e) {
+                logger.log(Level.WARNING, "Error while tab completing", e);
                 return cursor;
             }
         }
@@ -182,11 +250,7 @@ public final class ConsoleManager {
             String command = "";
             while (running) {
                 try {
-                    if (jLine) {
-                        command = reader.readLine(CONSOLE_PROMPT, null);
-                    } else {
-                        command = reader.readLine();
-                    }
+                    command = jLine.get() ? reader.readLine(CONSOLE_PROMPT, null) : reader.readLine();
 
                     if (command == null || command.trim().length() == 0)
                         continue;
@@ -194,8 +258,10 @@ public final class ConsoleManager {
                     server.getScheduler().runTask(null, new CommandTask(command.trim()));
                 } catch (CommandException ex) {
                     logger.log(Level.WARNING, "Exception while executing command: " + command, ex);
-                } catch (Exception ex) {
-                    logger.log(Level.SEVERE, "Error while reading commands", ex);
+                } catch (IOException e) {
+                    logger.log(Level.SEVERE, "IO error while reading commands", e);
+                } catch (IllegalArgumentException e) {
+                    logger.log(Level.SEVERE, "Wrong arguments while reading commands", e);
                 }
             }
         }
@@ -345,27 +411,6 @@ public final class ConsoleManager {
         }
     }
 
-    private static class LoggerOutputStream extends ByteArrayOutputStream {
-        private final String separator = System.getProperty("line.separator");
-        private final Level level;
-
-        public LoggerOutputStream(Level level) {
-            super();
-            this.level = level;
-        }
-
-        @Override
-        public synchronized void flush() throws IOException {
-            super.flush();
-            String record = this.toString();
-            super.reset();
-
-            if (record.length() > 0 && !record.equals(separator)) {
-                logger.logp(level, "LoggerOutputStream", "log" + level, record);
-            }
-        }
-    }
-
     private class FancyConsoleHandler extends ConsoleHandler {
         public FancyConsoleHandler() {
             setFormatter(new DateOutputFormatter(CONSOLE_DATE, true));
@@ -375,13 +420,13 @@ public final class ConsoleManager {
         @Override
         public synchronized void flush() {
             try {
-                if (jLine) {
+                if (jLine.get()) {
                     reader.print(ConsoleReader.RESET_LINE + "");
                     reader.flush();
                     super.flush();
                     try {
                         reader.drawLine();
-                    } catch (Throwable ex) {
+                    } catch (IOException e) {
                         reader.getCursorBuffer().clear();
                     }
                     reader.flush();
@@ -391,61 +436,6 @@ public final class ConsoleManager {
             } catch (IOException ex) {
                 logger.log(Level.SEVERE, "I/O exception flushing console output", ex);
             }
-        }
-    }
-
-    private static class RotatingFileHandler extends StreamHandler {
-        private final SimpleDateFormat dateFormat;
-        private final String template;
-        private final boolean rotate;
-        private String filename;
-
-        public RotatingFileHandler(String template) {
-            this.template = template;
-            rotate = template.contains("%D");
-            dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            filename = calculateFilename();
-            updateOutput();
-        }
-
-        private void updateOutput() {
-            try {
-                setOutputStream(new FileOutputStream(filename, true));
-            } catch (IOException ex) {
-                logger.log(Level.SEVERE, "Unable to open " + filename + " for writing", ex);
-            }
-        }
-
-        private void checkRotate() {
-            if (rotate) {
-                String newFilename = calculateFilename();
-                if (!filename.equals(newFilename)) {
-                    filename = newFilename;
-                    // note that the console handler doesn't see this message
-                    super.publish(new LogRecord(Level.INFO, "Log rotating to: " + filename));
-                    updateOutput();
-                }
-            }
-        }
-
-        private String calculateFilename() {
-            return template.replace("%D", dateFormat.format(new Date()));
-        }
-
-        @Override
-        public synchronized void publish(LogRecord record) {
-            if (!isLoggable(record)) {
-                return;
-            }
-            checkRotate();
-            super.publish(record);
-            super.flush();
-        }
-
-        @Override
-        public synchronized void flush() {
-            checkRotate();
-            super.flush();
         }
     }
 

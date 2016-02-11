@@ -4,9 +4,8 @@ import net.glowstone.entity.meta.MetadataIndex;
 import org.junit.Test;
 
 import java.util.HashMap;
-import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 /**
  * Tests for {@link MetadataIndex}.
@@ -23,11 +22,7 @@ public class MetadataIndexTest {
         for (MetadataIndex index : MetadataIndex.values()) {
             Class<?> clazz = index.getAppliesTo();
 
-            for (Map.Entry<Class<?>, MetadataIndex> entry : seen.entrySet()) {
-                if (clazz != entry.getKey() && clazz.isAssignableFrom(entry.getKey())) {
-                    fail("Index " + index + "(" + clazz.getSimpleName() + ") follows index " + entry.getValue() + "(" + entry.getKey().getSimpleName() + ") which it parents");
-                }
-            }
+            seen.entrySet().stream().filter(entry -> clazz != entry.getKey() && clazz.isAssignableFrom(entry.getKey())).forEach(entry -> fail("Index " + index + "(" + clazz.getSimpleName() + ") follows index " + entry.getValue() + "(" + entry.getKey().getSimpleName() + ") which it parents"));
 
             if (!seen.containsKey(clazz)) {
                 seen.put(clazz, index);
@@ -53,15 +48,9 @@ public class MetadataIndexTest {
             }
 
             // check for duplication
-            for (Map.Entry<Class<?>, HashMap<Integer, MetadataIndex>> entry : map.entrySet()) {
-                // check that class is a parent
-                if (entry.getKey().isAssignableFrom(clazz)) {
-                    // look for matching index
-                    if (entry.getValue().containsKey(index.getIndex())) {
-                        fail("Index " + index + "(" + clazz.getSimpleName() + ") conflicts with " + entry.getValue().get(index.getIndex()) + "(" + entry.getKey().getSimpleName() + ")");
-                    }
-                }
-            }
+            // check that class is a parent
+// look for matching index
+            map.entrySet().stream().filter(entry -> entry.getKey().isAssignableFrom(clazz)).filter(entry -> entry.getValue().containsKey(index.getIndex())).forEach(entry -> fail("Index " + index + "(" + clazz.getSimpleName() + ") conflicts with " + entry.getValue().get(index.getIndex()) + "(" + entry.getKey().getSimpleName() + ")"));
 
             // insert this index
             HashMap<Integer, MetadataIndex> classMap = map.get(index.getAppliesTo());

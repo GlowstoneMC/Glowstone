@@ -25,12 +25,12 @@ public final class CodecsHandler extends MessageToMessageCodec<ByteBuf, Message>
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, Message msg, List<Object> out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, Message msg, List<Object> out) throws java.io.IOException {
         // find codec
         final Class<? extends Message> clazz = msg.getClass();
         Codec.CodecRegistration reg = protocol.getCodecRegistration(clazz);
         if (reg == null) {
-            throw new EncoderException("Unknown message type: " + clazz + ".");
+            throw new EncoderException("Unknown message type: " + clazz + '.');
         }
 
         // write header
@@ -45,7 +45,7 @@ public final class CodecsHandler extends MessageToMessageCodec<ByteBuf, Message>
     }
 
     @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
+    protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws java.io.IOException, com.flowpowered.networking.exception.IllegalOpcodeException {
         // find codec and read header
         final Codec<?> codec = protocol.newReadHeader(msg);
 

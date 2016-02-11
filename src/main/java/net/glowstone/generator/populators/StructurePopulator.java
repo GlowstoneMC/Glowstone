@@ -55,7 +55,7 @@ public class StructurePopulator extends BlockPopulator {
 
             final int x = cx << 4;
             final int z = cz << 4;
-            final Iterator<Entry<Integer, GlowStructure>> it = ((GlowWorld) world).getStructures().entrySet().iterator();            
+            final Iterator<Entry<Integer, GlowStructure>> it = ((GlowWorld) world).getStructures().entrySet().iterator();
             while (it.hasNext()) {
                 final GlowStructure structure = it.next().getValue();
                 if (structure.getBoundingBox().intersectsWith(x, z, x + 15, z + 15)) {

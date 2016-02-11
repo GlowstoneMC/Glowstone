@@ -57,7 +57,7 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
      * with the specified UUID has not played on the server before, the
      * owner is not set.
      *
-     * @param ownerUUID
+     * @param ownerUUID The player's UUID who is the owner of this entity.
      */
     public void setOwnerUUID(UUID ownerUUID) {
         OfflinePlayer player = Bukkit.getOfflinePlayer(ownerUUId);

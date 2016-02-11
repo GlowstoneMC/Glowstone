@@ -13,19 +13,15 @@ import java.net.SocketAddress;
 
 /**
  * Implementation of a server for the remote console protocol.
+ *
  * @see <a href="http://wiki.vg/Rcon">Protocol Specifications</a>
  */
 public class RconServer {
 
     private final GlowServer server;
-
-    private ServerBootstrap bootstrap = new ServerBootstrap();
     private final EventLoopGroup bossGroup = new NioEventLoopGroup();
     private final EventLoopGroup workerGroup = new NioEventLoopGroup();
-
-    public GlowServer getServer() {
-        return server;
-    }
+    private ServerBootstrap bootstrap = new ServerBootstrap();
 
     public RconServer(GlowServer server, final String password) {
         this.server = server;
@@ -43,8 +39,13 @@ public class RconServer {
                 });
     }
 
+    public GlowServer getServer() {
+        return server;
+    }
+
     /**
      * Bind the server on the specified address.
+     *
      * @param address The address.
      * @return Netty channel future for bind operation.
      */

@@ -26,11 +26,9 @@ import java.util.logging.Level;
  */
 public final class EventFactory {
 
-    private EventFactory() {
-    }
-
     /**
      * Calls an event through the plugin manager.
+     *
      * @param event The event to throw.
      * @return the called event
      */
@@ -41,12 +39,7 @@ public final class EventFactory {
             server.getPluginManager().callEvent(event);
             return event;
         } else {
-            FutureTask<T> task = new FutureTask<>(new Runnable() {
-                @Override
-                public void run() {
-                    server.getPluginManager().callEvent(event);
-                }
-            }, event);
+            FutureTask<T> task = new FutureTask<>(() -> server.getPluginManager().callEvent(event), event);
             server.getScheduler().scheduleInTickExecution(task);
             try {
                 return task.get();

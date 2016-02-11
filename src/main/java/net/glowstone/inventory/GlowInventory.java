@@ -47,7 +47,8 @@ public class GlowInventory implements Inventory {
      */
     private int maxStackSize = 64;
 
-    protected GlowInventory() { }
+    protected GlowInventory() {
+    }
 
     public GlowInventory(InventoryHolder owner, InventoryType type) {
         this(owner, type, type.getDefaultSize(), type.getDefaultTitle());
@@ -58,16 +59,17 @@ public class GlowInventory implements Inventory {
     }
 
     public GlowInventory(InventoryHolder owner, InventoryType type, int size, String title) {
-        initialize(GlowInventorySlot.createList(size), new HashSet<HumanEntity>(), owner, type, title);
+        initialize(GlowInventorySlot.createList(size), new HashSet<>(), owner, type, title);
     }
 
     /**
      * Initializes some key components of this inventory. This should be called in the constructor.
-     * @param slots List of slots this inventory has.
+     *
+     * @param slots   List of slots this inventory has.
      * @param viewers Set for storage of current inventory viewers.
-     * @param owner InventoryHolder which owns this Inventory.
-     * @param type The inventory type.
-     * @param title Inventory title, displayed in the client.
+     * @param owner   InventoryHolder which owns this Inventory.
+     * @param type    The inventory type.
+     * @param title   Inventory title, displayed in the client.
      */
     protected void initialize(List<GlowInventorySlot> slots, Set<HumanEntity> viewers, InventoryHolder owner, InventoryType type, String title) {
         this.slots = slots;
@@ -82,6 +84,7 @@ public class GlowInventory implements Inventory {
 
     /**
      * Add a viewer to the inventory.
+     *
      * @param viewer The HumanEntity to add.
      */
     public void addViewer(HumanEntity viewer) {
@@ -90,6 +93,7 @@ public class GlowInventory implements Inventory {
 
     /**
      * Remove a viewer from the inventory.
+     *
      * @param viewer The HumanEntity to remove.
      */
     public void removeViewer(HumanEntity viewer) {
@@ -98,6 +102,7 @@ public class GlowInventory implements Inventory {
 
     /**
      * Returns the set which contains viewers.
+     *
      * @return Viewers set.
      */
     public Set<HumanEntity> getViewersSet() {
@@ -109,6 +114,7 @@ public class GlowInventory implements Inventory {
 
     /**
      * Returns a certain slot.
+     *
      * @param slot index.
      * @return The requested slot.
      */
@@ -121,6 +127,7 @@ public class GlowInventory implements Inventory {
 
     /**
      * Get the type of the specified slot.
+     *
      * @param slot The slot number.
      * @return The SlotType of the slot.
      */
@@ -134,7 +141,8 @@ public class GlowInventory implements Inventory {
      * at the slot, regardless of the slot's current contents. Should return
      * false for crafting output slots or armor slots which cannot accept
      * the given item.
-     * @param slot The slot number.
+     *
+     * @param slot  The slot number.
      * @param stack The stack to add.
      * @return Whether the stack can be added there.
      */
@@ -145,7 +153,8 @@ public class GlowInventory implements Inventory {
     /**
      * Check whether, in a shift-click operation, an item of the specified type
      * may be placed in the given slot.
-     * @param slot The slot number.
+     *
+     * @param slot  The slot number.
      * @param stack The stack to add.
      * @return Whether the stack can be added there.
      */
@@ -157,8 +166,9 @@ public class GlowInventory implements Inventory {
      * Handle a shift click in this inventory by the specified player.
      * The default implementation distributes items from the right to the left
      * and from the bottom to the top.
-     * @param player The player who clicked
-     * @param view The inventory view in which was clicked
+     *
+     * @param player      The player who clicked
+     * @param view        The inventory view in which was clicked
      * @param clickedSlot The slot in the view
      * @param clickedItem The item at which was clicked
      */
@@ -175,11 +185,12 @@ public class GlowInventory implements Inventory {
      * left after doing so, it places them into the first empty slot.
      * If no empty slot was found and there are still items left, their returned
      * from this method.
+     *
      * @param stack The items to place down
      * @param slots Pairs of start/end slots
      * @return The remaining items or {@code null} if non are remaining
      */
-    public ItemStack tryToFillSlots(ItemStack stack, int...slots) {
+    public ItemStack tryToFillSlots(ItemStack stack, int... slots) {
         if (slots.length % 2 != 0) {
             throw new IllegalArgumentException("Slots must be pairs.");
         }
@@ -227,36 +238,26 @@ public class GlowInventory implements Inventory {
     }
 
     /**
-     * Set the custom title of this inventory or reset it to the default.
-     * @param title The new title, or null to reset.
-     */
-    public void setTitle(String title) {
-        if (title == null) {
-            this.title = type.getDefaultTitle();
-        } else {
-            this.title = title;
-        }
-    }
-
-    /**
      * Gets the number of slots in this inventory according to the protocol.
      * Some inventories have 0 slots in the protocol, despite having slots.
+     *
      * @return The numbers of slots
      */
     public int getRawSlots() {
         return getSize();
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Basic Stuff
-
     @Override
     public int getSize() {
         return slots.size();
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Basic Stuff
+
     /**
      * Returns the whole slot list.
+     *
      * @return Slot list.
      */
     public List<GlowInventorySlot> getSlots() {
@@ -281,6 +282,19 @@ public class GlowInventory implements Inventory {
     @Override
     public final String getTitle() {
         return title;
+    }
+
+    /**
+     * Set the custom title of this inventory or reset it to the default.
+     *
+     * @param title The new title, or null to reset.
+     */
+    public void setTitle(String title) {
+        if (title == null) {
+            this.title = type.getDefaultTitle();
+        } else {
+            this.title = title;
+        }
     }
 
     @Override
@@ -596,25 +610,19 @@ public class GlowInventory implements Inventory {
     @Override
     public void remove(int materialId) {
         HashMap<Integer, ? extends ItemStack> stacks = all(materialId);
-        for (Integer slot : stacks.keySet()) {
-            clear(slot);
-        }
+        stacks.keySet().forEach(this::clear);
     }
 
     @Override
     public void remove(Material material) {
         HashMap<Integer, ? extends ItemStack> stacks = all(material);
-        for (Integer slot : stacks.keySet()) {
-            clear(slot);
-        }
+        stacks.keySet().forEach(this::clear);
     }
 
     @Override
     public void remove(ItemStack item) {
         HashMap<Integer, ? extends ItemStack> stacks = all(item);
-        for (Integer slot : stacks.keySet()) {
-            clear(slot);
-        }
+        stacks.keySet().forEach(this::clear);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -627,9 +635,8 @@ public class GlowInventory implements Inventory {
 
     @Override
     public void clear() {
-        Iterator<GlowInventorySlot> iterator = slots.iterator();
-        while (iterator.hasNext()) {
-            iterator.next().setItem(null);
+        for (GlowInventorySlot slot : slots) {
+            slot.setItem(null);
         }
     }
 

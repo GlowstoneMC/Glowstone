@@ -70,19 +70,19 @@ public class BlockFlowerPot extends BlockType {
         }
 
         switch (contents.getItemType()) {
-        case DEAD_BUSH:
-        case RED_ROSE:
-        case YELLOW_FLOWER:
-        case RED_MUSHROOM:
-        case BROWN_MUSHROOM:
-        case CACTUS:
-        case SAPLING:
-            return true;
-        case LONG_GRASS:
-            // The only allowed tall grass type is the fern.
-            return ((LongGrass) contents).getSpecies() == GrassSpecies.FERN_LIKE;
-        default:
-            return false;
+            case DEAD_BUSH:
+            case RED_ROSE:
+            case YELLOW_FLOWER:
+            case RED_MUSHROOM:
+            case BROWN_MUSHROOM:
+            case CACTUS:
+            case SAPLING:
+                return true;
+            case LONG_GRASS:
+                // The only allowed tall grass type is the fern.
+                return ((LongGrass) contents).getSpecies() == GrassSpecies.FERN_LIKE;
+            default:
+                return false;
         }
     }
 }

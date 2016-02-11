@@ -19,8 +19,12 @@ public enum MetadataType {
 
     private final Class<?> dataType;
 
-    private MetadataType(Class<?> dataType) {
+    MetadataType(Class<?> dataType) {
         this.dataType = dataType;
+    }
+
+    public static MetadataType byId(int id) {
+        return values()[id];
     }
 
     public Class<?> getDataType() {
@@ -29,9 +33,5 @@ public enum MetadataType {
 
     public int getId() {
         return ordinal();
-    }
-
-    public static MetadataType byId(int id) {
-        return values()[id];
     }
 }

@@ -28,9 +28,9 @@ public class GlowDungeon extends GlowStructurePiece {
     private final int radiusZ;
     private final int sizeX;
     private final int sizeZ;
-    private final EntityType[] mobTypes = new EntityType[] {
-        EntityType.SKELETON, EntityType.ZOMBIE,
-        EntityType.ZOMBIE, EntityType.SPIDER
+    private final EntityType[] mobTypes = new EntityType[]{
+            EntityType.SKELETON, EntityType.ZOMBIE,
+            EntityType.ZOMBIE, EntityType.SPIDER
     };
     private final Location loc;
 
@@ -90,7 +90,7 @@ public class GlowDungeon extends GlowStructurePiece {
             return false;
         }
 
-        final Map<StructureMaterial, Integer> stones = new HashMap<StructureMaterial, Integer>();
+        final Map<StructureMaterial, Integer> stones = new HashMap<>();
         builder.addRandomMaterial(stones, 1, Material.COBBLESTONE, 0);
         builder.addRandomMaterial(stones, 3, Material.MOSSY_COBBLESTONE, 0);
 
@@ -98,7 +98,7 @@ public class GlowDungeon extends GlowStructurePiece {
             for (int z = 0; z < sizeZ; z++) {
                 for (int y = HEIGHT - 2; y >= 0; y--) {
                     final BlockState state = builder.getBlockState(new Vector(x, y, z));
-                    if (y > 0 && x > 0 && z > 0  && x < sizeX - 1 && z < sizeZ - 1) {
+                    if (y > 0 && x > 0 && z > 0 && x < sizeX - 1 && z < sizeZ - 1) {
                         // empty space inside
                         builder.setBlock(new Vector(x, y, z), Material.AIR);
                     } else if (!builder.getBlockState(new Vector(x, y - 1, z)).getType().isSolid()) {

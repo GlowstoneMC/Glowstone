@@ -94,22 +94,22 @@ public class GlowEnchantingInventory extends GlowInventory implements Enchanting
     }
 
     @Override
-    public void setItem(ItemStack item) {
-        setItem(ITEM_SLOT, item);
-    }
-
-    @Override
     public ItemStack getItem() {
         return getItem(ITEM_SLOT);
     }
 
     @Override
-    public void setSecondary(ItemStack itemStack) {
-        setItem(LAPIS_SLOT, itemStack);
+    public void setItem(ItemStack item) {
+        setItem(ITEM_SLOT, item);
     }
 
     @Override
     public ItemStack getSecondary() {
         return getItem(LAPIS_SLOT);
+    }
+
+    @Override
+    public void setSecondary(ItemStack itemStack) {
+        setItem(LAPIS_SLOT, itemStack);
     }
 }

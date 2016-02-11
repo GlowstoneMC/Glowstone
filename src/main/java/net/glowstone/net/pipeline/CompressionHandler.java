@@ -30,7 +30,7 @@ public final class CompressionHandler extends MessageToMessageCodec<ByteBuf, Byt
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) {
         ByteBuf prefixBuf = ctx.alloc().buffer(5);
         ByteBuf contentsBuf;
 
@@ -74,7 +74,7 @@ public final class CompressionHandler extends MessageToMessageCodec<ByteBuf, Byt
     }
 
     @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
+    protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws java.io.IOException, java.util.zip.DataFormatException {
         int index = msg.readerIndex();
         int uncompressedSize = ByteBufUtils.readVarInt(msg);
         if (uncompressedSize == 0) {

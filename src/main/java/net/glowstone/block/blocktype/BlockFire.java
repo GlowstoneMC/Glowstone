@@ -28,6 +28,15 @@ public class BlockFire extends BlockNeedsAttached {
     private static final int MAX_FIRE_AGE = 15;
     private static final LinkedHashMap<BlockFace, Integer> BURNRESISTANCE_MAP = new LinkedHashMap<>();
 
+    static {
+        BURNRESISTANCE_MAP.put(BlockFace.EAST, 300);
+        BURNRESISTANCE_MAP.put(BlockFace.WEST, 300);
+        BURNRESISTANCE_MAP.put(BlockFace.DOWN, 250);
+        BURNRESISTANCE_MAP.put(BlockFace.UP, 250);
+        BURNRESISTANCE_MAP.put(BlockFace.NORTH, 300);
+        BURNRESISTANCE_MAP.put(BlockFace.SOUTH, 300);
+    }
+
     @Override
     public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
         updatePhysics(block);
@@ -168,7 +177,7 @@ public class BlockFire extends BlockNeedsAttached {
 
     private boolean isRainingAround(GlowBlock block) {
         // check if it's raining on the block itself or on one of it's 4 faces
-        for (BlockFace face: RAIN_FACES) {
+        for (BlockFace face : RAIN_FACES) {
             if (GlowBiomeClimate.isRainy(block.getRelative(face))) {
                 return true;
             }
@@ -201,14 +210,5 @@ public class BlockFire extends BlockNeedsAttached {
 
     private int increaseFireAge(int age) {
         return age + random.nextInt(5) / 4;
-    }
-
-    static {
-        BURNRESISTANCE_MAP.put(BlockFace.EAST, 300);
-        BURNRESISTANCE_MAP.put(BlockFace.WEST, 300);
-        BURNRESISTANCE_MAP.put(BlockFace.DOWN, 250);
-        BURNRESISTANCE_MAP.put(BlockFace.UP, 250);
-        BURNRESISTANCE_MAP.put(BlockFace.NORTH, 300);
-        BURNRESISTANCE_MAP.put(BlockFace.SOUTH, 300);
     }
 }

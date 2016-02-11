@@ -15,13 +15,13 @@ public abstract class GlowExplosive extends GlowEntity implements Explosive {
     }
 
     @Override
-    public void setYield(float yield) {
-        this.yield = yield;
+    public float getYield() {
+        return yield;
     }
 
     @Override
-    public float getYield() {
-        return yield;
+    public void setYield(float yield) {
+        this.yield = yield;
     }
 
     @Override
