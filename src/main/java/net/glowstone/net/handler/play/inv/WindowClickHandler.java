@@ -6,6 +6,7 @@ import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.*;
 import net.glowstone.net.GlowSession;
+import net.glowstone.net.message.play.inv.SetWindowSlotMessage;
 import net.glowstone.net.message.play.inv.TransactionMessage;
 import net.glowstone.net.message.play.inv.WindowClickMessage;
 import org.bukkit.GameMode;
@@ -228,7 +229,11 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
 
         EventFactory.callEvent(event);
         if (event.isCancelled()) {
-            return false;
+            if (inv == top) {
+                player.getSession().send(new SetWindowSlotMessage(-1, -1, player.getItemOnCursor()));
+                player.sendItemChange(message.getSlot(), inv.getItem(message.getSlot()));
+            }
+            return true;
         }
 
         boolean handled = true;
