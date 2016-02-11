@@ -1181,7 +1181,8 @@ public final class GlowServer implements Server {
     @Override
     @Deprecated
     public Player[] _INVALID_getOnlinePlayers() {
-        return getOnlinePlayers().toArray(PLAYERS);
+        Collection<GlowPlayer> players = getOnlinePlayers();
+        return players.toArray(new Player[players.size()]);
     }
 
     @Override

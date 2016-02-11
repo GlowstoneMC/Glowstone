@@ -19,10 +19,7 @@ import org.bukkit.material.Banner;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class BlockBanner extends BlockType {
 
@@ -61,7 +58,7 @@ public class BlockBanner extends BlockType {
         drop.setItemMeta(meta);
         drop.setDurability(state.getBaseColor().getDyeData());
 
-        return Arrays.asList(drop);
+        return Collections.singletonList(drop);
     }
 
     @Override
