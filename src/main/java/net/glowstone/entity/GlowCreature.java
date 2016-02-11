@@ -11,7 +11,6 @@ import org.bukkit.entity.LivingEntity;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Represents a creature entity such as a pig.

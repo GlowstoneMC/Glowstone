@@ -36,9 +36,6 @@ public class MetadataMap {
                 case BYTE:
                     value = n.byteValue();
                     break;
-                case SHORT:
-                    value = n.shortValue();
-                    break;
                 case INT:
                     value = n.intValue();
                     break;
@@ -91,10 +88,6 @@ public class MetadataMap {
 
     public byte getByte(MetadataIndex index) {
         return get(index, MetadataType.BYTE, (byte) 0);
-    }
-
-    public short getShort(MetadataIndex index) {
-        return get(index, MetadataType.SHORT, (short) 0);
     }
 
     public int getInt(MetadataIndex index) {

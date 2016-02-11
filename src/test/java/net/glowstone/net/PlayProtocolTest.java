@@ -1,6 +1,7 @@
 package net.glowstone.net;
 
 import com.flowpowered.networking.Message;
+import net.glowstone.net.handler.play.player.UseItemMessage;
 import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.game.*;
@@ -25,7 +26,7 @@ public class PlayProtocolTest extends BaseProtocolTest {
     private static final Message[] TEST_MESSAGES = new Message[]{
             new PingMessage(1),
             new IncomingChatMessage("test"),
-            new InteractEntityMessage(1, 0),
+            new InteractEntityMessage(1, 1),
             new InteractEntityMessage(1, 2, 1f, 2f, 3f, 0),
             new PlayerUpdateMessage(true),
             new PlayerPositionMessage(true, 1.0, 2.0, 3.0),
@@ -124,6 +125,9 @@ public class PlayProtocolTest extends BaseProtocolTest {
             new ServerDifficultyMessage(1),
             new UseBedMessage(1, 2, 3, 4),
             //TabCompleteResponse
+            new UseItemMessage(0),
+            new VehicleMoveMessage(1.0,2.0,3.0,4f,5f),
+            new TeleportConfirmMessage(1),
     };
 
     public PlayProtocolTest() {

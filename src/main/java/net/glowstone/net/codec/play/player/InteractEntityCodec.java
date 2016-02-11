@@ -33,6 +33,9 @@ public final class InteractEntityCodec implements Codec<InteractEntityMessage> {
             buf.writeFloat(message.getTargetX());
             buf.writeFloat(message.getTargetY());
             buf.writeFloat(message.getTargetZ());
+            ByteBufUtils.writeVarInt(buf, message.getHand());
+        } else if (message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
+            ByteBufUtils.writeVarInt(buf, message.getHand());
         }
         return buf;
     }

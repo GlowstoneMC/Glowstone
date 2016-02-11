@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class UnloadChunkMessage implements Message{
+public class UnloadChunkMessage implements Message {
 
     private final int chunkX, chunkZ;
 }

@@ -3,7 +3,6 @@ package net.glowstone.net.message.play.player;
 import com.flowpowered.networking.Message;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import net.glowstone.net.GlowBufUtils;
 import net.glowstone.util.TextMessage;
 
 import java.util.UUID;
@@ -23,12 +22,12 @@ public class BossBarMessage implements Message {
 
     //For action 1, remove
     public BossBarMessage(UUID uuid, Action action) {
-        this(uuid, action, null, 0f, null, null,(byte)0);
+        this(uuid, action, null, 0f, null, null, (byte) 0);
     }
 
     //For action 2, update health
     public BossBarMessage(UUID uuid, Action action, float health) {
-        this(uuid, action, null, health, null, null, (byte)0);
+        this(uuid, action, null, health, null, null, (byte) 0);
     }
 
     //For action 3, update title
