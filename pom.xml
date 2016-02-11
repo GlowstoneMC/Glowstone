@@ -150,6 +150,24 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <relocations>
+                               <relocation>
+                                   <pattern>org.objectweb.asm</pattern>
+                                   <shadedPattern>net.glowstone.libs.org.objectweb.asm</shadedPattern>
+                               </relocation>
+                               <relocation>
+                                    <pattern>com.flowpowered</pattern>
+                                    <shadedPattern>net.glowstone.libs.com.flowpowered</shadedPattern>
+                                </relocation>
+                               <relocation>
+                                    <pattern>jline</pattern>
+                                    <shadedPattern>net.glowstone.libs.jline</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>io.netty</pattern>
+                                    <shadedPattern>net.glowstone.libs.io.netty</shadedPattern>
+                                </relocation>
+                            </relocations>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>net.glowstone.GlowServer</mainClass>
