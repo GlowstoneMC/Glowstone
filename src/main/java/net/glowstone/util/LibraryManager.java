@@ -11,6 +11,9 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 /**
@@ -28,6 +31,8 @@ public final class LibraryManager {
      */
     private final File directory;
 
+    private final ExecutorService downloaderService = Executors.newCachedThreadPool();
+
     public LibraryManager(GlowServer server) {
         // todo: allow configuration of repository, libraries, and directory
         repository = "http://repo.glowstone.net/service/local/repositories/central/content/";
@@ -39,36 +44,58 @@ public final class LibraryManager {
             GlowServer.logger.log(Level.SEVERE, "Could not create libraries directory: " + directory);
         }
 
-        download("org.xerial", "sqlite-jdbc", "3.7.2");
-        download("mysql", "mysql-connector-java", "5.1.34"); // was 5.1.14
+        downloaderService.execute(new LibraryDownloader("org.xerial", "sqlite-jdbc", "3.7.2"));
+        downloaderService.execute(new LibraryDownloader("mysql", "mysql-connector-java", "5.1.38"));
+        downloaderService.execute(new LibraryDownloader("org.slf4j", "slf4j-jdk14", "1.7.15"));
+        downloaderService.shutdown();
+        try {
+            downloaderService.awaitTermination(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            GlowServer.logger.log(Level.SEVERE, "Library Manager thread interrupted: ", e);
+        }
     }
 
-    private void download(String group, String library, String version) {
-        // check if we already have it
-        File file = new File(directory, library + "-" + version + ".jar");
-        if (!file.exists()) {
-            // download it
-            GlowServer.logger.info("Downloading " + library + " " + version + "...");
-            try {
-                URL downloadUrl = new URL(repository + group.replace('.', '/') + "/" + library + "/" + version + "/" + library + "-" + version + ".jar");
-                try (ReadableByteChannel input = Channels.newChannel(downloadUrl.openStream());
-                     FileOutputStream output = new FileOutputStream(file)) {
-                    output.getChannel().transferFrom(input, 0, Long.MAX_VALUE);
-                }
-            } catch (IOException e) {
-                GlowServer.logger.log(Level.WARNING, "Failed to download: " + library + " " + version, e);
-                return;
-            }
+    private class LibraryDownloader implements Runnable {
+
+        private final String group;
+        private final String library;
+        private final String version;
+
+        private LibraryDownloader(String group, String library, String version) {
+            this.group = group;
+            this.library = library;
+            this.version = version;
         }
 
-        // hack it onto the classpath
-        URLClassLoader sysLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-        try {
-            Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-            method.setAccessible(true);
-            method.invoke(sysLoader, file.toURI().toURL());
-        } catch (ReflectiveOperationException | MalformedURLException e) {
-            GlowServer.logger.log(Level.WARNING, "Failed to add to classpath: " + library + " " + version, e);
+        @Override
+        public void run() {
+            // check if we already have it
+            File file = new File(directory, library + "-" + version + ".jar");
+            if (!file.exists()) {
+                // download it
+                GlowServer.logger.info("Downloading " + library + " " + version + "...");
+                try {
+                    URL downloadUrl = new URL(repository + group.replace('.', '/') + "/" + library + "/" + version + "/" + library + "-" + version + ".jar");
+                    try (ReadableByteChannel input = Channels.newChannel(downloadUrl.openStream());
+                         FileOutputStream output = new FileOutputStream(file)) {
+                         output.getChannel().transferFrom(input, 0, Long.MAX_VALUE);
+                         GlowServer.logger.info("Downloaded " + library + " " + version + ".");
+                    }
+                } catch (IOException e) {
+                    GlowServer.logger.log(Level.WARNING, "Failed to download: " + library + " " + version, e);
+                    return;
+                }
+            }
+
+            // hack it onto the classpath
+            URLClassLoader sysLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+            try {
+                Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+                method.setAccessible(true);
+                method.invoke(sysLoader, file.toURI().toURL());
+            } catch (ReflectiveOperationException | MalformedURLException e) {
+                GlowServer.logger.log(Level.WARNING, "Failed to add to classpath: " + library + " " + version, e);
+            }
         }
     }
 }
