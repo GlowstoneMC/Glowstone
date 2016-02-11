@@ -232,8 +232,11 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
             if (inv == top) {
                 player.getSession().send(new SetWindowSlotMessage(-1, -1, player.getItemOnCursor()));
                 player.sendItemChange(message.getSlot(), inv.getItem(message.getSlot()));
+                return true;
+            } else {
+                return false;
             }
-            return true;
+
         }
 
         boolean handled = true;
