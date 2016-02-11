@@ -580,7 +580,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
                 }
             } else {
                 destroyIds.add(entity.getEntityId());
-                it.remove();
             }
         }
         if (destroyIds.size() > 0) {
@@ -616,14 +615,16 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         // inner map is used to only send one entry for same coordinates
         Map<GlowChunk.Key, Map<BlockVector, BlockChangeMessage>> chunks = new HashMap<>();
         for (BlockChangeMessage message : messages) {
-            GlowChunk.Key key = new GlowChunk.Key(message.getX() >> 4, message.getZ() >> 4);
-            if (canSeeChunk(key)) {
-                Map<BlockVector, BlockChangeMessage> map = chunks.get(key);
-                if (map == null) {
-                    map = new HashMap<>();
-                    chunks.put(key, map);
+            if (message != null) {
+                GlowChunk.Key key = new GlowChunk.Key(message.getX() >> 4, message.getZ() >> 4);
+                if (canSeeChunk(key)) {
+                    Map<BlockVector, BlockChangeMessage> map = chunks.get(key);
+                    if (map == null) {
+                        map = new HashMap<>();
+                        chunks.put(key, map);
+                    }
+                    map.put(new BlockVector(message.getX(), message.getY(), message.getZ()), message);
                 }
-                map.put(new BlockVector(message.getX(), message.getY(), message.getZ()), message);
             }
         }
 

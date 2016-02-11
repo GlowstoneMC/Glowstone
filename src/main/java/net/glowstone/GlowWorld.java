@@ -40,6 +40,7 @@ import org.bukkit.util.Vector;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 /**
@@ -253,7 +254,7 @@ public final class GlowWorld implements World {
     /**
      * Contains how regular blocks should be pulsed.
      */
-     private final Map tickMap = new HashMap<>();
+    private final ConcurrentHashMap tickMap = new ConcurrentHashMap<>(0);
 
     private Map<Integer, GlowStructure> structures;
 
@@ -1788,8 +1789,7 @@ public final class GlowWorld implements World {
 
     private void pulseTickMap() {
         ItemTable itemTable = ItemTable.instance();
-        Map<Location, Long> map = getTickMap();
-        for (Map.Entry<Location, Long> entry : map.entrySet()) {
+        for (ConcurrentHashMap.Entry<Location, Long> entry : getTickMap().entrySet()) {
             if (worldAge % entry.getValue() == 0) {
                 GlowBlock block = this.getBlockAt(entry.getKey());
                 BlockType notifyType = itemTable.getBlock(block.getTypeId());
@@ -1799,8 +1799,8 @@ public final class GlowWorld implements World {
         }
     }
 
-    private Map<Location, Long> getTickMap() {
-        return new HashMap<>(tickMap);
+    private ConcurrentHashMap<Location, Long> getTickMap() {
+        return tickMap;
     }
 
     /**
