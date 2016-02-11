@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class SetCooldownMessage implements Message{
+public class SetCooldownMessage implements Message {
 
     private final int itemID, cooldownTicks;
 }

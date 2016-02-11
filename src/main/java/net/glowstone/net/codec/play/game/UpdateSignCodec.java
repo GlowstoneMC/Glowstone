@@ -5,7 +5,6 @@ import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.game.UpdateSignMessage;
-import net.glowstone.util.TextMessage;
 import org.bukkit.util.BlockVector;
 
 import java.io.IOException;
