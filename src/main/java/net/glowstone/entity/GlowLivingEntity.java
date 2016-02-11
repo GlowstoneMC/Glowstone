@@ -115,7 +115,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
         if (isDead()) {
             deathTicks++;
-            if (deathTicks >= 20) {
+            if (deathTicks >= 20 && this.getClass() != GlowPlayer.class) {
                 remove();
             }
         }
