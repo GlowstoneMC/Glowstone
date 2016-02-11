@@ -18,7 +18,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
 import java.util.*;
-import java.util.jar.Pack200;
 import java.util.logging.Level;
 
 /**

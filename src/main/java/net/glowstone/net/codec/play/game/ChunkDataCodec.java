@@ -3,7 +3,6 @@ package net.glowstone.net.codec.play.game;
 import com.flowpowered.networking.Codec;
 import com.flowpowered.networking.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import net.glowstone.net.message.play.game.ChunkDataMessage;
 
 import java.io.IOException;
