@@ -580,6 +580,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
                 }
             } else {
                 destroyIds.add(entity.getEntityId());
+                it.remove();
             }
         }
         if (destroyIds.size() > 0) {
