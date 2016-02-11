@@ -20,9 +20,13 @@ public final class ChunkDataCodec implements Codec<ChunkDataMessage> {
         buf.writeInt(message.getZ());
         buf.writeBoolean(message.isContinuous());
         ByteBufUtils.writeVarInt(buf, message.getPrimaryMask());
-        byte[] data = message.getData();
-        ByteBufUtils.writeVarInt(buf, data.length);
-        buf.writeBytes(data);
+        ByteBuf data = message.getData();
+        try {
+            ByteBufUtils.writeVarInt(buf, data.writerIndex());
+            buf.writeBytes(data);
+        } finally {
+            data.release();
+        }
         return buf;
     }
 }
