@@ -668,7 +668,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Override
     public void setOnGround(boolean onGround) {
         super.setOnGround(onGround);
-        if (onGround && getFallDistance() > 3) {
+        if (onGround && getFallDistance() > 3 && getClass() == GlowPlayer.class && !((GlowPlayer) this).getAllowFlight()) {
             float damage = this.getFallDistance() - 3;
             damage = Math.round(damage);
             if (damage == 0) {
