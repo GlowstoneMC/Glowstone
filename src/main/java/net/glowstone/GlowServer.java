@@ -1194,8 +1194,8 @@ public final class GlowServer implements Server {
     }
 
     @Override
-    public Collection<GlowPlayer> getOnlinePlayers() {
-        return onlineView;
+    public Collection<? extends Player> getOnlinePlayers() {
+        return Collections.unmodifiableCollection(onlineView);
     }
 
     @Override

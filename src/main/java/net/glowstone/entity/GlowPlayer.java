@@ -891,9 +891,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * @param updateMessage The message to send.
      */
     private void updateUserListEntries(UserListItemMessage updateMessage) {
-        for (GlowPlayer player : server.getOnlinePlayers()) {
+        for (Player player : server.getOnlinePlayers()) {
             if (player.canSee(this)) {
-                player.getSession().send(updateMessage);
+                ((GlowPlayer) player).getSession().send(updateMessage);
             }
         }
     }
