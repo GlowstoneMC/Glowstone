@@ -402,7 +402,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     // Drop items left in crafting area.
     private void dropUnusedInputs() {
-        for (int i = 0; i <= getTopInventory().getSlots().size(); i++) {
+        for (int i = 0; i < getTopInventory().getSlots().size(); i++) {
             final ItemStack itemStack = getOpenInventory().getItem(i);
             if (itemStack == null || itemStack.getAmount() == 0 || itemStack.getType() == Material.AIR) {
                 continue;
