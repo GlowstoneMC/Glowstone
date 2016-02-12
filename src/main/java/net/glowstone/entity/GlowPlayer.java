@@ -2164,7 +2164,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     public void sendTime() {
         long time = getPlayerTime();
         if (!timeRelative || !world.getGameRuleMap().getBoolean("doDaylightCycle")) {
-            time = -time; // negative value indicates fixed time
+            time *= -1; // negative value indicates fixed time
         }
         session.send(new TimeMessage(world.getFullTime(), time));
     }
