@@ -1,8 +1,10 @@
 package net.glowstone.inventory;
 
+import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowHumanEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.inv.HeldItemMessage;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.HumanEntity;
@@ -118,8 +120,27 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         }
 
         if (topAllowsShiftClick) {
-            // move items to the top inventory
-            clickedItem = top.tryToFillSlots(clickedItem, 0, top.getSize());
+            if (top.getType().equals(InventoryType.FURNACE)) {
+                if (((GlowServer) Bukkit.getServer()).getCraftingManager().isFuel(clickedItem.getType())) {
+                    // move fuel items direct to fuel slot   TODO: Use of variable (FUEL_SLOT) instead of hard coded value ?
+                    clickedItem = top.tryToFillSlots(clickedItem, 1, -1);
+                } else if (((GlowServer) Bukkit.getServer()).getCraftingManager().getFurnaceRecipe(clickedItem) != null) {
+                    // move items are be burnable to the input slot  TODO: Use of variable (INPUT_SLOT) instead of hard coded value ?
+                    clickedItem = top.tryToFillSlots(clickedItem, 0, -1);
+                } else {
+                    // switch them between hotbar and main inventory depending on where they are now
+                    if (view.convertSlot(clickedSlot) < 9 || view.convertSlot(clickedSlot) >= 36) {
+                        // move from hotbar and armor to main inventory
+                        clickedItem = tryToFillSlots(clickedItem, 9, 36);
+                    } else {
+                        // move from main inventory to hotbar
+                        clickedItem = tryToFillSlots(clickedItem, 0, 9);
+                    }
+                }
+            } else {
+                // move items to the top inventory
+                clickedItem = top.tryToFillSlots(clickedItem, 0, top.getSize());
+            }
         } else {
             // switch them between hotbar and main inventory depending on where they are now
             if (view.convertSlot(clickedSlot) < 9 || view.convertSlot(clickedSlot) >= 36) {

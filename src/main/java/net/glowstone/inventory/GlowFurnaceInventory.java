@@ -1,7 +1,10 @@
 package net.glowstone.inventory;
 
+import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.block.Furnace;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.FurnaceInventory;
@@ -71,5 +74,13 @@ public class GlowFurnaceInventory extends GlowInventory implements FurnaceInvent
     public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot, ItemStack clickedItem) {
         clickedItem = player.getInventory().tryToFillSlots(clickedItem, 9, 36, 0, 9);
         view.setItem(clickedSlot, clickedItem);
+    }
+
+    @Override
+    public boolean itemPlaceAllowed(int slot, ItemStack stack) {
+        if (slot == FUEL_SLOT) {
+            return ((GlowServer) Bukkit.getServer()).getCraftingManager().isFuel(stack.getType()) || stack.getType().equals(Material.BUCKET);
+        }
+        return super.itemPlaceAllowed(slot, stack);
     }
 }

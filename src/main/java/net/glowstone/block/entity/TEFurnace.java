@@ -89,7 +89,11 @@ public class TEFurnace extends TEContainer {
                     burnTime = (short) cm.getFuelTime(inv.getFuel().getType());
                     burnTimeFuel = burnTime;
                     if (inv.getFuel().getAmount() == 1) {
-                        inv.setFuel(new ItemStack(Material.AIR));
+                        if (inv.getFuel().getType().equals(Material.LAVA_BUCKET)) {
+                            inv.setFuel(new ItemStack(Material.BUCKET));
+                        } else {
+                            inv.setFuel(null);
+                        }
                     } else {
                         inv.getFuel().setAmount(inv.getFuel().getAmount() - 1);
                     }
@@ -122,7 +126,7 @@ public class TEFurnace extends TEContainer {
                         inv.getResult().setAmount(inv.getResult().getAmount() + recipe.getResult().getAmount());
                     }
                     if (inv.getSmelting().getAmount() == 1) {
-                        inv.setSmelting(new ItemStack(Material.AIR));
+                        inv.setSmelting(null);
                     } else {
                         inv.getSmelting().setAmount(inv.getSmelting().getAmount() - 1);
                     }
