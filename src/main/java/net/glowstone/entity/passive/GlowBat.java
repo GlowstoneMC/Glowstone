@@ -22,6 +22,7 @@ public class GlowBat extends GlowAmbient implements Bat {
     public GlowBat(Location location) {
         super(location);
         setSize(0.5F, 0.9F);
+        setMaxHealthAndHealth(6);
     }
 
     @Override
@@ -42,6 +43,13 @@ public class GlowBat extends GlowAmbient implements Bat {
         map.set(MetadataIndex.BAT_HANGING, (byte) (this.isAwake ? 1 : 0));
         result.add(new EntityMetadataMessage(id, map.getEntryList()));
         return result;
+    }
+
+    @Override
+    public List<Message> createUpdateMessage() {
+        metadata.set(MetadataIndex.BAT_HANGING, (byte) (this.isAwake ? 1 : 0));
+        return super.createUpdateMessage();
+        // todo track position change
     }
 
     @Override

@@ -15,7 +15,8 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
 
     private AnimalTamer owner;
     private UUID ownerUUId;
-    private boolean tamed;
+    protected boolean tamed;
+    private boolean sitting;
 
     public GlowTameable(Location location, EntityType type) {
         super(location, type);
@@ -65,4 +66,13 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
             this.ownerUUId = ownerUUID;
         }
     }
+
+    public boolean isSitting() {
+        return sitting;
+    }
+
+    public void setSitting(boolean isSitting) {
+        this.sitting = isSitting;
+    }
+
 }

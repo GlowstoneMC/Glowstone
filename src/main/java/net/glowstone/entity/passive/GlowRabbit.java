@@ -4,8 +4,6 @@ import com.flowpowered.networking.Message;
 import com.google.common.collect.ImmutableBiMap;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.meta.MetadataIndex;
-import net.glowstone.entity.meta.MetadataMap;
-import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -30,6 +28,7 @@ public class GlowRabbit extends GlowAnimal implements Rabbit {
     public GlowRabbit(Location location) {
         super(location, EntityType.RABBIT);
         setSize(0.6F, 0.7F);
+        setMaxHealthAndHealth(10); //Needs an update with the minecraft version 1.9, then the rabbit has 3 health (1.5 hearts)
     }
 
     @Override
@@ -40,15 +39,13 @@ public class GlowRabbit extends GlowAnimal implements Rabbit {
     @Override
     public void setRabbitType(Rabbit.Type type) {
         Validate.notNull(type, "Cannot set a null rabbit type!");
+        metadata.set(MetadataIndex.RABBIT_TYPE, rabbitTypeIntegerMap.get(this.getRabbitType()).byteValue());
         this.rabbitType = type;
     }
 
     @Override
     public List<Message> createSpawnMessage() {
-        List<Message> messages = super.createSpawnMessage();
-        MetadataMap map = new MetadataMap(GlowRabbit.class);
-        map.set(MetadataIndex.RABBIT_TYPE, rabbitTypeIntegerMap.get(this.getRabbitType()).byteValue());
-        messages.add(new EntityMetadataMessage(id, map.getEntryList()));
-        return messages;
+        metadata.set(MetadataIndex.RABBIT_TYPE, rabbitTypeIntegerMap.get(this.getRabbitType()).byteValue());
+        return super.createSpawnMessage();
     }
 }

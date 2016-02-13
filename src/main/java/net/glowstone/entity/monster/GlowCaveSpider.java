@@ -7,5 +7,6 @@ import org.bukkit.entity.EntityType;
 public class GlowCaveSpider extends GlowMonster implements CaveSpider {
     public GlowCaveSpider(Location loc) {
         super(loc, EntityType.CAVE_SPIDER);
+        setMaxHealthAndHealth(12);
     }
 }

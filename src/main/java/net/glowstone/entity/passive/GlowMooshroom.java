@@ -10,5 +10,6 @@ public class GlowMooshroom extends GlowAnimal implements MushroomCow {
     public GlowMooshroom(Location location) {
         super(location, EntityType.MUSHROOM_COW);
         setSize(0.9F, 1.3F);
+        setMaxHealthAndHealth(10);
     }
 }

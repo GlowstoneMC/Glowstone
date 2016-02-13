@@ -13,6 +13,7 @@ public class GlowChicken extends GlowAnimal implements Chicken {
     public GlowChicken(Location location) {
         super(location, EntityType.CHICKEN);
         setSize(0.4F, 0.7F);
+        setMaxHealthAndHealth(4);
     }
 
     public boolean isChickenJockey() {

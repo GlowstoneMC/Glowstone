@@ -8,6 +8,7 @@ public class GlowSnowman extends GlowMonster implements Snowman {
 
     public GlowSnowman(Location loc) {
         super(loc, EntityType.SNOWMAN);
+        setMaxHealthAndHealth(4);
     }
 
 }

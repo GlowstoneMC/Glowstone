@@ -1,9 +1,14 @@
 package net.glowstone.entity.passive;
 
+import com.flowpowered.networking.Message;
 import net.glowstone.entity.GlowAgeable;
+import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
+
+import java.util.List;
+import java.util.Random;
 
 public class GlowVillager extends GlowAgeable implements Villager {
 
@@ -11,6 +16,9 @@ public class GlowVillager extends GlowAgeable implements Villager {
 
     public GlowVillager(Location location) {
         super(location, EntityType.VILLAGER);
+        setMaxHealthAndHealth(20);
+        Random r = new Random();
+        setProfession(Profession.getProfession(r.nextInt(Profession.values().length)));
     }
 
     @Override
@@ -21,5 +29,17 @@ public class GlowVillager extends GlowAgeable implements Villager {
     @Override
     public void setProfession(Profession profession) {
         this.profession = profession;
+        metadata.set(MetadataIndex.VILLAGER_TYPE, profession.getId());
+    }
+
+    @Override
+    public List<Message> createSpawnMessage() {
+        metadata.set(MetadataIndex.VILLAGER_TYPE, profession.getId());
+        return super.createSpawnMessage();
+    }
+
+    @Override
+    public List<Message> createUpdateMessage() {
+        return super.createUpdateMessage();
     }
 }

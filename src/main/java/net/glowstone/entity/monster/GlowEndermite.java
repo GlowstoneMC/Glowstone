@@ -10,6 +10,7 @@ public class GlowEndermite extends GlowMonster implements Endermite {
 
     public GlowEndermite(Location loc) {
         super(loc, EntityType.ENDERMITE);
+        setMaxHealthAndHealth(8);
     }
 
     public boolean isPlayerSpawned() {

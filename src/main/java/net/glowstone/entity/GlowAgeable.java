@@ -117,6 +117,8 @@ public class GlowAgeable extends GlowCreature implements Ageable {
         return messages;
     }
 
+
+
     protected final void setScale(float scale) {
         setSize(this.height * scale, this.width * scale);
     }

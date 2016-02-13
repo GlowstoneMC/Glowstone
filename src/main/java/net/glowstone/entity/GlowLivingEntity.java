@@ -4,6 +4,7 @@ import com.flowpowered.networking.Message;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.constants.GlowPotionEffect;
+import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.inventory.EquipmentMonitor;
 import net.glowstone.net.message.play.entity.EntityEffectMessage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
@@ -13,7 +14,14 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Egg;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Fireball;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Snowball;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EntityEquipment;
@@ -24,7 +32,16 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A GlowLivingEntity is a {@link org.bukkit.entity.Player} or {@link org.bukkit.entity.Monster}.
@@ -32,6 +49,7 @@ import java.util.*;
  * @author Graham Edgecombe.
  */
 public abstract class GlowLivingEntity extends GlowEntity implements LivingEntity {
+
 
     /**
      * Potion effects on the entity.
@@ -290,6 +308,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     /**
      * Get the hurt sound of this entity, or null for silence.
+     *
      * @return the hurt sound if available
      */
     protected Sound getHurtSound() {
@@ -298,6 +317,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     /**
      * Get the death sound of this entity, or null for silence.
+     *
      * @return the death sound if available
      */
     protected Sound getDeathSound() {
@@ -307,6 +327,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     /**
      * Get whether this entity should take damage from the specified source.
      * Usually used to check environmental sources such as drowning.
+     *
      * @param damageCause the damage source to check
      * @return whether this entity can take damage from the source
      */
@@ -441,13 +462,14 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         if (health < 0) health = 0;
         if (health > getMaxHealth()) health = getMaxHealth();
         this.health = health;
+        metadata.set(MetadataIndex.HEALTH, (float) health);
 
-        for (Objective objective: getServer().getScoreboardManager().getMainScoreboard().getObjectivesByCriteria(Criterias.HEALTH)) {
+        for (Objective objective : getServer().getScoreboardManager().getMainScoreboard().getObjectivesByCriteria(Criterias.HEALTH)) {
             objective.getScore(this.getName()).setScore((int) health);
         }
 
         if (health == 0) {
-            playEffect(EntityEffect.DEATH);
+            //playEffect(EntityEffect.DEATH);
             active = false;
         }
     }
@@ -519,6 +541,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             if (deathSound != null) {
                 world.playSound(location, deathSound, 1.0f, 1.0f);
             }
+            playEffect(EntityEffect.DEATH);
             // todo: drop items
         } else {
             Sound hurtSound = getHurtSound();
@@ -536,6 +559,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Override
     public void setMaxHealth(double health) {
         attributeManager.setProperty(AttributeManager.Key.KEY_MAX_HEALTH, health);
+    }
+
+    protected void setMaxHealthAndHealth(double health) {
+        setMaxHealth(health);
+        setHealth(health);
     }
 
     @Override

@@ -10,6 +10,7 @@ public class GlowGuardian extends GlowMonster implements Guardian {
 
     public GlowGuardian(Location loc) {
         super(loc, EntityType.GUARDIAN);
+        setMaxHealthAndHealth(30);
     }
 
     @Override
