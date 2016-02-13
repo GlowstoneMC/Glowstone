@@ -21,12 +21,6 @@ public class GlowWitch extends GlowMonster implements Witch {
         return super.createSpawnMessage();
     }
 
-    @Override
-    public List<Message> createUpdateMessage() {
-
-        return super.createUpdateMessage();
-    }
-
     public boolean isAgressive() {
         return metadata.getByte(MetadataIndex.WITCH_AGGRESSIVE) == 1;
     }

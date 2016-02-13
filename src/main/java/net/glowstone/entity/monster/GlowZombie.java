@@ -12,7 +12,7 @@ public class GlowZombie extends GlowMonster implements Zombie {
 
     private int conversionTime = -1;
     private boolean canBreakDoors;
-    
+
     public GlowZombie(Location loc) {
         super(loc, EntityType.ZOMBIE);
         setMaxHealthAndHealth(20);
@@ -34,17 +34,17 @@ public class GlowZombie extends GlowMonster implements Zombie {
     public boolean isBaby() {
         return metadata.getByte(MetadataIndex.ZOMBIE_IS_CHILD) == 1;
     }
-    
+
     @Override
     public void setBaby(boolean value) {
         metadata.set(MetadataIndex.ZOMBIE_IS_CHILD, value ? (byte) 1 : (byte) 0);
     }
-    
+
     @Override
     public boolean isVillager() {
         return metadata.getByte(MetadataIndex.ZOMBIE_IS_VILLAGER) == 1;
     }
-    
+
     @Override
     public void setVillager(boolean value) {
         metadata.set(MetadataIndex.ZOMBIE_IS_VILLAGER, value ? (byte) 1 : (byte) 0);

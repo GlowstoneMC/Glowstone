@@ -23,11 +23,6 @@ public class GlowSkeleton extends GlowMonster implements Skeleton {
     }
 
     @Override
-    public List<Message> createUpdateMessage() {
-        return super.createUpdateMessage();
-    }
-
-    @Override
     public SkeletonType getSkeletonType() {
         return this.skeletonType;
     }

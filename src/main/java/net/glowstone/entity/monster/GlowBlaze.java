@@ -21,11 +21,6 @@ public class GlowBlaze extends GlowMonster implements Blaze {
         return super.createSpawnMessage();
     }
 
-    @Override
-    public List<Message> createUpdateMessage() {
-        return super.createUpdateMessage();
-    }
-
     public boolean isOnFire() {
         return metadata.getByte(MetadataIndex.BLAZE_ON_FIRE) == 1;
     }

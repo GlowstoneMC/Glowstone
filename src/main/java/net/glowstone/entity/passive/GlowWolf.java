@@ -27,11 +27,9 @@ public class GlowWolf extends GlowTameable implements Wolf {
         metadata.setBit(MetadataIndex.WOLF_FLAGS, TameableFlags.IS_SITTING, isSitting());
         metadata.setBit(MetadataIndex.WOLF_FLAGS, TameableFlags.WOLF_IS_ANGRY, isAngry());
         metadata.setBit(MetadataIndex.WOLF_FLAGS, TameableFlags.IS_TAME, isTamed());
-
         if (isTamed()) {
             metadata.set(MetadataIndex.WOLF_OWNER, getOwner().getName());
         }
-
         metadata.set(MetadataIndex.WOLF_HEALTH, (float) getHealth());
         metadata.set(MetadataIndex.WOLF_COLOR, getCollarColor().getDyeData());
         metadata.set(MetadataIndex.WOLF_BEGGING, isBegging() ? (byte) 1 : (byte) 0);
@@ -43,7 +41,6 @@ public class GlowWolf extends GlowTameable implements Wolf {
         if (isTamed()) {
             metadata.set(MetadataIndex.WOLF_OWNER, getOwner().getName());
         }
-
         metadata.set(MetadataIndex.WOLF_HEALTH, (float) getHealth());
         return super.createUpdateMessage();
     }

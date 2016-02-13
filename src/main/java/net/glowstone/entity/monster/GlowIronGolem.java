@@ -27,11 +27,6 @@ public class GlowIronGolem extends GlowMonster implements IronGolem {
     }
 
     @Override
-    public List<Message> createUpdateMessage() {
-        return super.createUpdateMessage();
-    }
-
-    @Override
     public boolean isPlayerCreated() {
         return metadata.getByte(MetadataIndex.GOLEM_PLAYER_BUILT) == 1;
     }

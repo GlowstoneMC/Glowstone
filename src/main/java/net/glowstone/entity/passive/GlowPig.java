@@ -39,11 +39,6 @@ public class GlowPig extends GlowAnimal implements Pig {
     }
 
     @Override
-    public List<Message> createUpdateMessage() {
-        return super.createUpdateMessage();
-    }
-
-    @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         if (!hasSaddle()) {
             ItemStack hand = player.getItemInHand();
