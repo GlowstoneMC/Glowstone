@@ -31,7 +31,6 @@ import java.util.*;
  */
 public abstract class GlowLivingEntity extends GlowEntity implements LivingEntity {
 
-
     /**
      * Potion effects on the entity.
      */
@@ -450,7 +449,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }
 
         if (health == 0) {
-            //playEffect(EntityEffect.DEATH);
             active = false;
         }
     }

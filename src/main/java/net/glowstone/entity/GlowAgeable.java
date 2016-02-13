@@ -27,7 +27,7 @@ public class GlowAgeable extends GlowCreature implements Ageable {
     /**
      * Creates a new ageable monster.
      * @param location The location of the monster.
-     * @param type The type of monster.
+     * @param type     The type of monster.
      */
     public GlowAgeable(Location location, EntityType type) {
         super(location, type);
@@ -116,8 +116,6 @@ public class GlowAgeable extends GlowCreature implements Ageable {
         messages.add(new EntityMetadataMessage(id, map.getEntryList()));
         return messages;
     }
-
-
 
     protected final void setScale(float scale) {
         setSize(this.height * scale, this.width * scale);
