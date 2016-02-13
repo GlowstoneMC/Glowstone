@@ -19,7 +19,7 @@ public class GlowSheep extends GlowAnimal implements Sheep {
         setSize(0.9F, 1.3F);
         Random r = new Random();
         int colorpc = r.nextInt(10000);
-        if(colorpc < 8184) {
+        if (colorpc < 8184) {
             setColor(DyeColor.WHITE);
         } else if (colorpc >= 8184 && 8684 > colorpc) {
             setColor(DyeColor.BLACK);
