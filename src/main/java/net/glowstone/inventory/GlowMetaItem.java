@@ -18,6 +18,7 @@ class GlowMetaItem implements ItemMeta {
     private String displayName;
     private List<String> lore;
     private Map<Enchantment, Integer> enchants;
+    private int hideFlag;
 
     /**
      * Create a GlowMetaItem, copying from another if possible.
@@ -36,6 +37,8 @@ class GlowMetaItem implements ItemMeta {
         if (meta.hasEnchants()) {
             this.enchants = new HashMap<>(meta.enchants);
         }
+
+        hideFlag = meta.hideFlag;
     }
 
     /**
@@ -83,6 +86,16 @@ class GlowMetaItem implements ItemMeta {
             serializeEnchants("enchants", result, getEnchants());
         }
 
+        if (hideFlag != 0) {
+            Set<String> hideFlags = new HashSet<>();
+            for (ItemFlag itemFlag : getItemFlags()) {
+                hideFlags.add(itemFlag.name());
+            }
+            if (hideFlags.isEmpty()) {
+                result.put("ItemFlags", hideFlags);
+            }
+        }
+
         return result;
     }
 
@@ -114,6 +127,10 @@ class GlowMetaItem implements ItemMeta {
 
         if (hasEnchants()) {
             writeNbtEnchants("ench", tag, enchants);
+        }
+
+        if (hideFlag != 0) {
+            tag.putInt("HideFlags", hideFlag);
         }
     }
 
@@ -152,6 +169,10 @@ class GlowMetaItem implements ItemMeta {
                 enchants = tagEnchants;
             else
                 enchants.putAll(tagEnchants);
+        }
+
+        if (tag.isInt("HideFlags")) {
+            hideFlag = tag.getInt("HideFlags");
         }
     }
 
@@ -250,21 +271,38 @@ class GlowMetaItem implements ItemMeta {
 
     @Override
     public void addItemFlags(ItemFlag... itemFlags) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        for (ItemFlag itemFlag : itemFlags) {
+            hideFlag |= getBitModifier(itemFlag);
+        }
     }
 
     @Override
     public void removeItemFlags(ItemFlag... itemFlags) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        for (ItemFlag itemFlag : itemFlags) {
+            hideFlag &= ~getBitModifier(itemFlag);
+        }
     }
 
     @Override
     public Set<ItemFlag> getItemFlags() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    	final Set<ItemFlag> currentFlags = EnumSet.<ItemFlag>noneOf(ItemFlag.class);
+        ItemFlag[] values;
+        for (int length = (values = ItemFlag.values()).length, i = 0; i < length; ++i) {
+            final ItemFlag f = values[i];
+            if (hasItemFlag(f)) {
+                currentFlags.add(f);
+            }
+        }
+        return currentFlags;
     }
 
     @Override
     public boolean hasItemFlag(ItemFlag itemFlag) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    	final int bitModifier = getBitModifier(itemFlag);
+        return (hideFlag & bitModifier) == bitModifier;
+    }
+    
+    private byte getBitModifier(final ItemFlag hideFlag) {
+        return (byte)(1 << hideFlag.ordinal());
     }
 }
