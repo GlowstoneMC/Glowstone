@@ -285,7 +285,7 @@ class GlowMetaItem implements ItemMeta {
 
     @Override
     public Set<ItemFlag> getItemFlags() {
-    	final Set<ItemFlag> currentFlags = EnumSet.<ItemFlag>noneOf(ItemFlag.class);
+        final Set<ItemFlag> currentFlags = EnumSet.<ItemFlag>noneOf(ItemFlag.class);
         ItemFlag[] values;
         for (int length = (values = ItemFlag.values()).length, i = 0; i < length; ++i) {
             final ItemFlag f = values[i];
@@ -298,11 +298,11 @@ class GlowMetaItem implements ItemMeta {
 
     @Override
     public boolean hasItemFlag(ItemFlag itemFlag) {
-    	final int bitModifier = getBitModifier(itemFlag);
+        final int bitModifier = getBitModifier(itemFlag);
         return (hideFlag & bitModifier) == bitModifier;
     }
     
     private byte getBitModifier(final ItemFlag hideFlag) {
-        return (byte)(1 << hideFlag.ordinal());
+        return (byte) (1 << hideFlag.ordinal());
     }
 }
