@@ -28,7 +28,6 @@ import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.LoginProtocol;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.ProtocolType;
-import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
@@ -311,9 +310,9 @@ public final class GlowSession extends BasicSession {
         player.join(this, reader);
 
         // Kick other players with the same UUID
-        for (Player other : getServer().getOnlinePlayers()) {
+        for (GlowPlayer other : getServer().getRawOnlinePlayers()) {
             if (other != player && other.getUniqueId().equals(player.getUniqueId())) {
-                ((GlowPlayer) other).getSession().disconnect("You logged in from another location.", true);
+                other.getSession().disconnect("You logged in from another location.", true);
                 break;
             }
         }
@@ -332,12 +331,12 @@ public final class GlowSession extends BasicSession {
 
         Message addMessage = new UserListItemMessage(UserListItemMessage.Action.ADD_PLAYER, player.getUserListEntry());
         List<UserListItemMessage.Entry> entries = new ArrayList<>();
-        for (Player other : server.getOnlinePlayers()) {
+        for (GlowPlayer other : server.getRawOnlinePlayers()) {
             if (other != player && other.canSee(player)) {
-                ((GlowPlayer) other).getSession().send(addMessage);
+                other.getSession().send(addMessage);
             }
             if (player.canSee(other)) {
-                entries.add(((GlowPlayer) other).getUserListEntry());
+                entries.add(other.getUserListEntry());
             }
         }
         send(new UserListItemMessage(UserListItemMessage.Action.ADD_PLAYER, entries));
@@ -440,11 +439,11 @@ public final class GlowSession extends BasicSession {
             player.remove();
 
             Message userListMessage = UserListItemMessage.removeOne(player.getUniqueId());
-            for (Player player : server.getOnlinePlayers()) {
+            for (GlowPlayer player : server.getRawOnlinePlayers()) {
                 if (player.canSee(this.player)) {
-                    ((GlowPlayer) player).getSession().send(userListMessage);
+                    player.getSession().send(userListMessage);
                 } else {
-                    ((GlowPlayer) player).stopHidingDisconnectedPlayer(this.player);
+                    player.stopHidingDisconnectedPlayer(this.player);
                 }
             }
 

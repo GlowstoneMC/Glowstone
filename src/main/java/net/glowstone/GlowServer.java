@@ -1198,6 +1198,10 @@ public final class GlowServer implements Server {
         return Collections.unmodifiableCollection(onlineView);
     }
 
+    public Collection<GlowPlayer> getRawOnlinePlayers() {
+        return Collections.unmodifiableCollection(onlineView);
+    }
+
     @Override
     public OfflinePlayer[] getOfflinePlayers() {
         Set<OfflinePlayer> result = new HashSet<>();
