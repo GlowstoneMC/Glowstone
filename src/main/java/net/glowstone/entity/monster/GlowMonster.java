@@ -8,11 +8,10 @@ import org.bukkit.entity.Monster;
 public class GlowMonster extends GlowAgeable implements Monster {
     /**
      * Creates a new ageable non-passive mob.
-     *
-     * @param loc  The location of the non-passive mob.
+     * @param loc The location of the non-passive mob.
      * @param type The type of mob.
      */
-    public GlowMonster(Location loc, EntityType type) {
-        super(loc, type);
+    public GlowMonster(Location loc, EntityType type, double maxHealth) {
+        super(loc, type, maxHealth);
     }
 }

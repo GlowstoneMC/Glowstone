@@ -16,24 +16,9 @@ public class GlowWolf extends GlowTameable implements Wolf {
     private DyeColor collarColor;
 
     public GlowWolf(Location location) {
-        super(location, EntityType.WOLF);
-        setMaxHealthAndHealth(8);
+        super(location, EntityType.WOLF, 8);
         Random r = new Random();
         collarColor = DyeColor.getByData((byte) r.nextInt(DyeColor.values().length));
-    }
-
-    @Override
-    public List<Message> createSpawnMessage() {
-        metadata.setBit(MetadataIndex.WOLF_FLAGS, TameableFlags.IS_SITTING, isSitting());
-        metadata.setBit(MetadataIndex.WOLF_FLAGS, TameableFlags.WOLF_IS_ANGRY, isAngry());
-        metadata.setBit(MetadataIndex.WOLF_FLAGS, TameableFlags.IS_TAME, isTamed());
-        if (isTamed()) {
-            metadata.set(MetadataIndex.WOLF_OWNER, getOwner().getName());
-        }
-        metadata.set(MetadataIndex.WOLF_HEALTH, (float) getHealth());
-        metadata.set(MetadataIndex.WOLF_COLOR, getCollarColor().getDyeData());
-        metadata.set(MetadataIndex.WOLF_BEGGING, isBegging() ? (byte) 1 : (byte) 0);
-        return super.createSpawnMessage();
     }
 
     @Override
@@ -80,7 +65,8 @@ public class GlowWolf extends GlowTameable implements Wolf {
         if (tamed != isTamed) {
             //Change max health of wolf when he's got tamed. See MinecraftWiki for more information!
             if (isTamed && getMaxHealth() == 8) {
-                setMaxHealthAndHealth(20);
+                setMaxHealth(20);
+                setHealth(20);
             }
         }
         super.setTamed(isTamed);

@@ -14,7 +14,6 @@ public class GlowPigZombie extends GlowZombie implements PigZombie {
 
     public GlowPigZombie(Location loc) {
         super(loc, EntityType.PIG_ZOMBIE);
-        setMaxHealthAndHealth(20);
     }
 
     @Override

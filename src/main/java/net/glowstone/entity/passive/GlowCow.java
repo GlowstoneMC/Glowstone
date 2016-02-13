@@ -8,8 +8,7 @@ import org.bukkit.entity.EntityType;
 public class GlowCow extends GlowAnimal implements Cow {
 
     public GlowCow(Location location) {
-        super(location, EntityType.COW);
+        super(location, EntityType.COW, 10);
         setSize(0.9F, 1.3F);
-        setMaxHealthAndHealth(10);
     }
 }

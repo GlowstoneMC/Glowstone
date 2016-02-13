@@ -1,6 +1,5 @@
 package net.glowstone.entity.passive;
 
-import com.flowpowered.networking.Message;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -12,14 +11,11 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Pig;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-
 public class GlowPig extends GlowAnimal implements Pig {
 
     public GlowPig(Location location) {
-        super(location, EntityType.PIG);
+        super(location, EntityType.PIG, 10);
         setSize(0.9F, 0.9F);
-        setMaxHealthAndHealth(10);
     }
 
     @Override
@@ -30,12 +26,6 @@ public class GlowPig extends GlowAnimal implements Pig {
     @Override
     public void setSaddle(boolean hasSaddle) {
         metadata.set(MetadataIndex.PIG_SADDLE, (byte) (hasSaddle ? 1 : 0));
-    }
-
-    @Override
-    public List<Message> createSpawnMessage() {
-        metadata.set(MetadataIndex.PIG_SADDLE, (byte) (hasSaddle() ? 1 : 0));
-        return super.createSpawnMessage();
     }
 
     @Override

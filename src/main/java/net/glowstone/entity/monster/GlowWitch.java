@@ -1,24 +1,14 @@
 package net.glowstone.entity.monster;
 
-import com.flowpowered.networking.Message;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Witch;
 
-import java.util.List;
-
 public class GlowWitch extends GlowMonster implements Witch {
 
     public GlowWitch(Location loc) {
-        super(loc, EntityType.WITCH);
-        setMaxHealthAndHealth(26);
-    }
-
-    @Override
-    public List<Message> createSpawnMessage() {
-        metadata.set(MetadataIndex.WITCH_AGGRESSIVE, isAgressive() ? (byte) 1 : (byte) 0);
-        return super.createSpawnMessage();
+        super(loc, EntityType.WITCH, 26);
     }
 
     public boolean isAgressive() {

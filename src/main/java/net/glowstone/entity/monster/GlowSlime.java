@@ -15,6 +15,10 @@ public class GlowSlime extends GlowMonster implements Slime {
 
     public GlowSlime(Location loc) {
         this(loc, EntityType.SLIME);
+    }
+
+    protected GlowSlime(Location loc, EntityType type) {
+        super(loc, type, 1);
         Random r = new Random();
         byte size = 1;
         double health = 1;
@@ -33,17 +37,8 @@ public class GlowSlime extends GlowMonster implements Slime {
                 break;
         }
         setSize(size);
-        setMaxHealthAndHealth(health);
-    }
-
-    protected GlowSlime(Location loc, EntityType type) {
-        super(loc, type);
-    }
-
-    @Override
-    public List<Message> createSpawnMessage() {
-        metadata.set(MetadataIndex.SLIME_SIZE, (byte) getSize());
-        return super.createSpawnMessage();
+        setMaxHealth(health);
+        setHealth(health);
     }
 
     @Override

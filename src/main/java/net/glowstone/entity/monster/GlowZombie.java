@@ -14,18 +14,15 @@ public class GlowZombie extends GlowMonster implements Zombie {
     private boolean canBreakDoors;
 
     public GlowZombie(Location loc) {
-        super(loc, EntityType.ZOMBIE);
-        setMaxHealthAndHealth(20);
+        this(loc, EntityType.ZOMBIE);
     }
 
     public GlowZombie(Location loc, EntityType type) {
-        super(loc, type);
+        super(loc, type, 20);
     }
 
     @Override
     public List<Message> createSpawnMessage() {
-        metadata.set(MetadataIndex.ZOMBIE_IS_CHILD, isBaby() ? (byte) 1 : (byte) 0);
-        metadata.set(MetadataIndex.ZOMBIE_IS_VILLAGER, isVillager() ? (byte) 1 : (byte) 0);
         metadata.set(MetadataIndex.ZOMBIE_IS_CONVERTING, conversionTime > 0 ? (byte) 1 : (byte) 0);
         return super.createSpawnMessage();
     }

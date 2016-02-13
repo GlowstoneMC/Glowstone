@@ -42,6 +42,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     protected double health;
 
     /**
+     * The entity's max health.
+     */
+    protected double maxHealth;
+
+    /**
      * The magnitude of the last damage the entity took.
      */
     private double lastDamage;
@@ -98,10 +103,20 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * @param location The location.
      */
     public GlowLivingEntity(Location location) {
+        this(location, 20);
+    }
+
+    /**
+     * Creates a mob within the specified world.
+     *
+     * @param location The location.
+     */
+    protected GlowLivingEntity(Location location, double maxHealth) {
         super(location);
         attributeManager = new AttributeManager(this);
-        attributeManager.setProperty(AttributeManager.Key.KEY_MAX_HEALTH, 20);
-        health = AttributeManager.Key.KEY_MAX_HEALTH.getDef();
+        this.maxHealth = maxHealth;
+        attributeManager.setProperty(AttributeManager.Key.KEY_MAX_HEALTH, maxHealth);
+        health = maxHealth;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -450,6 +465,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
         if (health == 0) {
             active = false;
+            Sound deathSound = getDeathSound();
+            if (deathSound != null) {
+                world.playSound(location, deathSound, 1.0f, 1.0f);
+            }
+            playEffect(EntityEffect.DEATH);
+            // todo: drop items
         }
     }
 
@@ -515,14 +536,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         playEffect(EntityEffect.HURT);
 
         // play sounds, handle death
-        if (health <= 0.0) {
-            Sound deathSound = getDeathSound();
-            if (deathSound != null) {
-                world.playSound(location, deathSound, 1.0f, 1.0f);
-            }
-            playEffect(EntityEffect.DEATH);
-            // todo: drop items
-        } else {
+        if (health > 0.0) {
             Sound hurtSound = getHurtSound();
             if (hurtSound != null) {
                 world.playSound(location, hurtSound, 1.0f, 1.0f);
@@ -540,14 +554,9 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         attributeManager.setProperty(AttributeManager.Key.KEY_MAX_HEALTH, health);
     }
 
-    protected void setMaxHealthAndHealth(double health) {
-        setMaxHealth(health);
-        setHealth(health);
-    }
-
     @Override
     public void resetMaxHealth() {
-        setMaxHealth(20);
+        setMaxHealth(maxHealth);
     }
 
     @Override

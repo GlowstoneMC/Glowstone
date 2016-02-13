@@ -15,13 +15,12 @@ public class GlowCreeper extends GlowMonster implements Creeper {
     private boolean ignited;
 
     public GlowCreeper(Location loc) {
-        super(loc, EntityType.CREEPER);
-        setMaxHealthAndHealth(20);
+        super(loc, EntityType.CREEPER, 20);
     }
 
     @Override
     public List<Message> createSpawnMessage() {
-        metadata.set(MetadataIndex.CREEPER_POWERED, isPowered() ? (byte) 1 : (byte) 0); // todo Implement the fuse & Ignition later.
+        // todo Implement the fuse & Ignition later.
         return super.createSpawnMessage();
     }
 

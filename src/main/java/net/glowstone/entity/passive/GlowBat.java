@@ -20,9 +20,8 @@ public class GlowBat extends GlowAmbient implements Bat {
     private boolean isAwake;
 
     public GlowBat(Location location) {
-        super(location);
+        super(location, 6);
         setSize(0.5F, 0.9F);
-        setMaxHealthAndHealth(6);
     }
 
     @Override

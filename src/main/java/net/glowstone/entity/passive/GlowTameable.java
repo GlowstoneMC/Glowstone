@@ -15,12 +15,12 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
     protected boolean tamed;
     private boolean sitting;
 
-    public GlowTameable(Location location, EntityType type) {
-        super(location, type);
+    public GlowTameable(Location location, EntityType type, double maxHealth) {
+        super(location, type, maxHealth);
     }
 
-    protected GlowTameable(Location location, EntityType type, AnimalTamer owner) {
-        super(location, type);
+    protected GlowTameable(Location location, EntityType type, double maxHealth,  AnimalTamer owner) {
+        super(location, type, maxHealth);
         this.owner = owner;
     }
 
