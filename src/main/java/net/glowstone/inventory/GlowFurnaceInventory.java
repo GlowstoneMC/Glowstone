@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Furnace;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -72,7 +73,13 @@ public class GlowFurnaceInventory extends GlowInventory implements FurnaceInvent
 
     @Override
     public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot, ItemStack clickedItem) {
-        clickedItem = player.getInventory().tryToFillSlots(clickedItem, 9, 36, 0, 9);
+        if (getSlotType(view.convertSlot(clickedSlot)) == SlotType.RESULT) {
+            // Place the items in the player's inventory (right to left)
+            clickedItem = player.getInventory().tryToFillSlots(clickedItem, 8, -1, 35, 8);
+        } else {
+            // Clicked in the crafting grid, no special handling required (just place them left to right)
+            clickedItem = player.getInventory().tryToFillSlots(clickedItem, 9, 36, 0, 9);
+        }
         view.setItem(clickedSlot, clickedItem);
     }
 

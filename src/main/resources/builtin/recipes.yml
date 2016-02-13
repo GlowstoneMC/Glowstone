@@ -56,6 +56,12 @@ furnace:
   input:
     type: LOG_2
 - result:
+    type: COAL
+    damage: 1
+  input:
+    type: LOG_2
+    damage: 1
+- result:
     type: COOKED_BEEF
   input:
     type: RAW_BEEF
@@ -68,6 +74,24 @@ furnace:
     damage: 1
   input:
     type: LOG
+- result:
+    type: COAL
+    damage: 1
+  input:
+    type: LOG
+    damage: 1
+- result:
+    type: COAL
+    damage: 1
+  input:
+    type: LOG
+    damage: 2
+- result:
+    type: COAL
+    damage: 1
+  input:
+    type: LOG
+    damage: 3
 - result:
     type: NETHER_BRICK_ITEM
   input:

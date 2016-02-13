@@ -154,7 +154,7 @@ public class TEFurnace extends TEContainer {
             CraftingManager cm = ((GlowServer) Bukkit.getServer()).getCraftingManager();
             if (burnTime != 0 || cm.isFuel(inv.getFuel().getType())) {
                 Recipe recipe = cm.getFurnaceRecipe(inv.getSmelting());
-                if (recipe != null && (inv.getResult() == null || !inv.getResult().getType().equals(Material.AIR) || (inv.getResult().getType().equals(recipe.getResult().getType()) && (inv.getResult().getAmount() + recipe.getResult().getAmount()) <= recipe.getResult().getMaxStackSize()))) {
+                if (recipe != null && (inv.getResult() == null || (inv.getResult().getType().equals(recipe.getResult().getType()) && (inv.getResult().getAmount() + recipe.getResult().getAmount()) <= recipe.getResult().getMaxStackSize()))) {
                     return true;
                 }
             }

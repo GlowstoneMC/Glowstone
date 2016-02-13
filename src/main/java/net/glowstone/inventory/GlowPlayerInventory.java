@@ -3,6 +3,7 @@ package net.glowstone.inventory;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowHumanEntity;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.inventory.crafting.CraftingManager;
 import net.glowstone.net.message.play.inv.HeldItemMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -121,12 +122,13 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
 
         if (topAllowsShiftClick) {
             if (top.getType().equals(InventoryType.FURNACE)) {
-                if (((GlowServer) Bukkit.getServer()).getCraftingManager().isFuel(clickedItem.getType())) {
-                    // move fuel items direct to fuel slot   TODO: Use of variable (FUEL_SLOT) instead of hard coded value ?
-                    clickedItem = top.tryToFillSlots(clickedItem, 1, -1);
-                } else if (((GlowServer) Bukkit.getServer()).getCraftingManager().getFurnaceRecipe(clickedItem) != null) {
+                CraftingManager cm = ((GlowServer) Bukkit.getServer()).getCraftingManager();
+                if (cm.getFurnaceRecipe(clickedItem) != null) {
                     // move items are be burnable to the input slot  TODO: Use of variable (INPUT_SLOT) instead of hard coded value ?
                     clickedItem = top.tryToFillSlots(clickedItem, 0, -1);
+                } else if (cm.isFuel(clickedItem.getType())) {
+                    // move fuel items direct to fuel slot   TODO: Use of variable (FUEL_SLOT) instead of hard coded value ?
+                    clickedItem = top.tryToFillSlots(clickedItem, 1, -1);
                 } else {
                     // switch them between hotbar and main inventory depending on where they are now
                     if (view.convertSlot(clickedSlot) < 9 || view.convertSlot(clickedSlot) >= 36) {
