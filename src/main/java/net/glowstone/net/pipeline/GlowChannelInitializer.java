@@ -1,10 +1,10 @@
 package net.glowstone.net.pipeline;
 
-import com.flowpowered.networking.ConnectionManager;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.handler.timeout.ReadTimeoutHandler;
+import net.glowstone.net.GlowNetworkServer;
 import net.glowstone.net.protocol.ProtocolType;
 
 /**
@@ -24,9 +24,9 @@ public final class GlowChannelInitializer extends ChannelInitializer<SocketChann
      */
     private static final int WRITE_IDLE_TIMEOUT = 15;
 
-    private final ConnectionManager connectionManager;
+    private final GlowNetworkServer connectionManager;
 
-    public GlowChannelInitializer(ConnectionManager connectionManager) {
+    public GlowChannelInitializer(GlowNetworkServer connectionManager) {
         this.connectionManager = connectionManager;
     }
 

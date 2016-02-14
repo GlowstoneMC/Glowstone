@@ -1,12 +1,12 @@
 package net.glowstone.net.pipeline;
 
-import com.flowpowered.networking.ConnectionManager;
 import com.flowpowered.networking.Message;
 import com.flowpowered.networking.session.Session;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleStateEvent;
+import net.glowstone.net.GlowNetworkServer;
 import net.glowstone.net.GlowSession;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -19,20 +19,20 @@ public final class MessageHandler extends SimpleChannelInboundHandler<Message> {
     /**
      * The associated session
      */
-    private final AtomicReference<Session> session = new AtomicReference<>(null);
-    private final ConnectionManager connectionManager;
+    private final AtomicReference<GlowSession> session = new AtomicReference<>(null);
+    private final GlowNetworkServer connectionManager;
 
     /**
      * Creates a new network event handler.
      */
-    public MessageHandler(ConnectionManager connectionManager) {
+    public MessageHandler(GlowNetworkServer connectionManager) {
         this.connectionManager = connectionManager;
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         final Channel c = ctx.channel();
-        Session s = connectionManager.newSession(c);
+        GlowSession s = connectionManager.newSession(c);
         if (!session.compareAndSet(null, s)) {
             throw new IllegalStateException("Session may not be set more than once");
         }
@@ -53,7 +53,7 @@ public final class MessageHandler extends SimpleChannelInboundHandler<Message> {
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent) {
-            ((GlowSession) session.get()).idle(); // todo: find a more elegant way to do this in the future
+            session.get().idle(); // todo: find a more elegant way to do this in the future
         }
     }
 
