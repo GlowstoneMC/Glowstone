@@ -66,6 +66,7 @@ public class TEFurnace extends TEContainer {
         this.cookTime = cookTime;
     }
 
+    // TODO: Change Block on burning
     public void burn() {
         GlowFurnaceInventory inv = (GlowFurnaceInventory) getInventory();
         if (burnTime > 0) burnTime--;
@@ -85,8 +86,8 @@ public class TEFurnace extends TEContainer {
                 CraftingManager cm = ((GlowServer) Bukkit.getServer()).getCraftingManager();
                 FurnaceBurnEvent burnEvent = new FurnaceBurnEvent(block, inv.getFuel(), cm.getFuelTime(inv.getFuel().getType()));
                 EventFactory.callEvent(burnEvent);
-                if (!burnEvent.isCancelled()) {
-                    burnTime = (short) cm.getFuelTime(inv.getFuel().getType());
+                if (!burnEvent.isCancelled() && burnEvent.isBurning()) {
+                    burnTime = (short) burnEvent.getBurnTime();
                     burnTimeFuel = burnTime;
                     if (inv.getFuel().getAmount() == 1) {
                         if (inv.getFuel().getType().equals(Material.LAVA_BUCKET)) {
@@ -120,10 +121,13 @@ public class TEFurnace extends TEContainer {
                 FurnaceSmeltEvent smeltEvent = new FurnaceSmeltEvent(block, inv.getSmelting(), recipe.getResult());
                 EventFactory.callEvent(smeltEvent);
                 if (!smeltEvent.isCancelled()) {
+                    if (inv.getSmelting().getType().equals(Material.SPONGE) && inv.getSmelting().getData().getData() == 1 && inv.getFuel().getType().equals(Material.BUCKET) && inv.getFuel().getAmount() == 1) {
+                        inv.setFuel(new ItemStack(Material.WATER_BUCKET));
+                    }
                     if (inv.getResult() == null || inv.getResult().getType().equals(Material.AIR)) {
-                        inv.setResult(recipe.getResult());
-                    } else {
-                        inv.getResult().setAmount(inv.getResult().getAmount() + recipe.getResult().getAmount());
+                        inv.setResult(smeltEvent.getResult());
+                    } else if (inv.getResult().getType().equals(smeltEvent.getResult().getType())) {
+                        inv.getResult().setAmount(inv.getResult().getAmount() + smeltEvent.getResult().getAmount());
                     }
                     if (inv.getSmelting().getAmount() == 1) {
                         inv.setSmelting(null);
