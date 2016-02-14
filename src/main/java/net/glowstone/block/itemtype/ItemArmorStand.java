@@ -5,6 +5,7 @@ import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowArmorStand;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -34,6 +35,9 @@ public class ItemArmorStand extends ItemType {
             float finalYaw = Math.round((yaw / 22.5f) / 2) * 45;
             loc.setYaw(finalYaw - 180);
             new GlowArmorStand(loc);
+            if (player.getGameMode() != GameMode.CREATIVE) {
+                holding.setAmount(holding.getAmount() - 1);
+            }
         }
     }
 }
