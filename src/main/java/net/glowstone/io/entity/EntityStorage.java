@@ -76,6 +76,7 @@ public final class EntityStorage {
         bind(new MonsterStore<>(GlowWitch.class, "Witch"));
 
 
+        bind(new ArmorStandStore());
         bind(new ItemStore());
         bind(new TNTPrimedStorage());
         bind(new ItemFrameStore());

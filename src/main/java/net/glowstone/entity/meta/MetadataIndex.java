@@ -97,7 +97,7 @@ public enum MetadataIndex {
 
     GUARDIAN_FLAGS(16, BYTE, Guardian.class),
     GUARDIAN_TARGET(17, INT, Guardian.class),
-    
+
     BOAT_HIT_TIME(17, INT, Boat.class),
     BOAT_DIRECTION(18, INT, Boat.class),
     BOAT_DAMAGE_TAKEN(19, FLOAT, Boat.class),
@@ -165,6 +165,14 @@ public enum MetadataIndex {
         int SPRINTING = 0x08;
         int ARM_UP = 0x10; // eating, drinking, blocking
         int INVISIBLE = 0x20;
+    }
+
+    public interface ArmorStandFlags {
+        int IS_SMALL = 0x01;
+        int HAS_GRAVITY = 0x02;
+        int HAS_ARMS = 0x04;
+        int NO_BASE_PLATE = 0x08;
+        int IS_MARKER = 0x10;
     }
 
     public interface HorseFlags {
