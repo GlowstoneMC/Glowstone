@@ -431,6 +431,12 @@ public abstract class GlowEntity implements Entity {
             return;
         }
 
+        Block block = location.getBlock();
+        if (!block.getType().hasGravity() && block.getType().isOccluding()) {
+            teleport(location.add(0, 1, 0));
+            return;
+        }
+
         world.getEntityManager().move(this, location);
         Position.copyLocation(location, this.location);
 
