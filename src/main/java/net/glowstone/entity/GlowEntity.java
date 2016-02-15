@@ -327,6 +327,10 @@ public abstract class GlowEntity implements Entity {
         return teleport(destination.getLocation(), cause);
     }
 
+    public boolean isTeleported() {
+        return teleported;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Internals
 
@@ -430,6 +434,8 @@ public abstract class GlowEntity implements Entity {
         if (location.equals(previousLocation)) {
             return;
         }
+
+        teleported = false;
 
         Block block = location.getBlock();
         if (!block.getType().hasGravity() && block.getType().isOccluding()) {

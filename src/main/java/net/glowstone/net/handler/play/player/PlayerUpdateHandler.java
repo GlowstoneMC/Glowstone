@@ -36,13 +36,15 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
           this is NOT robust hack prevention - only to prevent client
           confusion about where its actual location is (e.g. during login)
         */
-        double distance = newLocation.distanceSquared(oldLocation);
-        if (distance > 100 * 100) {
-            GlowServer.logger.warning(session.getPlayer().getName() + " moved too quickly! (hacking)");
-            session.getPlayer().kickPlayer("You moved too quickly :( (Hacking?)");
-            return;
-        } else if (distance > 100) {
-            GlowServer.logger.warning(session.getPlayer().getName() + " moved too quickly!");
+        if (!session.getPlayer().isTeleported()) {
+            double distance = newLocation.distanceSquared(oldLocation);
+            if (distance > 100 * 100) {
+                GlowServer.logger.warning(session.getPlayer().getName() + " moved too quickly! (hacking)");
+                session.getPlayer().kickPlayer("You moved too quickly :( (Hacking?)");
+                return;
+            } else if (distance > 100) {
+                GlowServer.logger.warning(session.getPlayer().getName() + " moved too quickly!");
+            }
         }
 
 
