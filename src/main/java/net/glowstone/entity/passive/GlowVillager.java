@@ -1,13 +1,11 @@
 package net.glowstone.entity.passive;
 
-import com.flowpowered.networking.Message;
 import net.glowstone.entity.GlowAgeable;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
 
-import java.util.List;
 import java.util.Random;
 
 public class GlowVillager extends GlowAgeable implements Villager {
@@ -29,10 +27,5 @@ public class GlowVillager extends GlowAgeable implements Villager {
     public void setProfession(Profession profession) {
         this.profession = profession;
         metadata.set(MetadataIndex.VILLAGER_TYPE, profession.getId());
-    }
-
-    @Override
-    public List<Message> createUpdateMessage() {
-        return super.createUpdateMessage();
     }
 }

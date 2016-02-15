@@ -1,6 +1,8 @@
 package net.glowstone.entity.passive;
 
 import net.glowstone.entity.GlowAnimal;
+import net.glowstone.entity.meta.MetadataIndex;
+import net.glowstone.entity.meta.MetadataIndex.TameableFlags;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -14,12 +16,24 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
     private UUID ownerUUId;
     protected boolean tamed;
     private boolean sitting;
+    private MetadataIndex flagIndex;
 
     public GlowTameable(Location location, EntityType type, double maxHealth) {
         super(location, type, maxHealth);
+        switch (type) {
+            case WOLF:
+                flagIndex = MetadataIndex.WOLF_FLAGS;
+                break;
+            case HORSE:
+                flagIndex = MetadataIndex.HORSE_FLAGS;
+                break;
+            case OCELOT:
+                flagIndex = MetadataIndex.OCELOT_TYPE;
+                break;
+        }
     }
 
-    protected GlowTameable(Location location, EntityType type, double maxHealth,  AnimalTamer owner) {
+    protected GlowTameable(Location location, EntityType type, double maxHealth, AnimalTamer owner) {
         super(location, type, maxHealth);
         this.owner = owner;
     }
@@ -31,6 +45,7 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
 
     @Override
     public void setTamed(boolean isTamed) {
+        metadata.setBit(flagIndex, TameableFlags.IS_TAME, isTamed);
         this.tamed = isTamed;
     }
 
@@ -54,7 +69,6 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
      * The UUID's are validated through offline player checking. If a player
      * with the specified UUID has not played on the server before, the
      * owner is not set.
-     *
      * @param ownerUUID
      */
     public void setOwnerUUID(UUID ownerUUID) {
@@ -69,6 +83,7 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
     }
 
     public void setSitting(boolean isSitting) {
+        metadata.setBit(flagIndex, TameableFlags.IS_SITTING, isSitting);
         this.sitting = isSitting;
     }
 

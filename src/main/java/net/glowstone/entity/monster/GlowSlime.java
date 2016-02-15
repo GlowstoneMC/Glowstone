@@ -1,12 +1,10 @@
 package net.glowstone.entity.monster;
 
-import com.flowpowered.networking.Message;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Slime;
 
-import java.util.List;
 import java.util.Random;
 
 public class GlowSlime extends GlowMonster implements Slime {
@@ -39,11 +37,6 @@ public class GlowSlime extends GlowMonster implements Slime {
         setSize(size);
         setMaxHealth(health);
         setHealth(health);
-    }
-
-    @Override
-    public List<Message> createUpdateMessage() {
-        return super.createUpdateMessage();
     }
 
     @Override

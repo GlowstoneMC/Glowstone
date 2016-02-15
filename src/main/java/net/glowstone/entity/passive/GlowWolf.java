@@ -1,14 +1,13 @@
 package net.glowstone.entity.passive;
 
-import com.flowpowered.networking.Message;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataIndex.TameableFlags;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
+import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Wolf;
 
-import java.util.List;
 import java.util.Random;
 
 public class GlowWolf extends GlowTameable implements Wolf {
@@ -19,15 +18,6 @@ public class GlowWolf extends GlowTameable implements Wolf {
         super(location, EntityType.WOLF, 8);
         Random r = new Random();
         collarColor = DyeColor.getByData((byte) r.nextInt(DyeColor.values().length));
-    }
-
-    @Override
-    public List<Message> createUpdateMessage() {
-        if (isTamed()) {
-            metadata.set(MetadataIndex.WOLF_OWNER, getOwner().getName());
-        }
-        metadata.set(MetadataIndex.WOLF_HEALTH, (float) getHealth());
-        return super.createUpdateMessage();
     }
 
     @Override
@@ -72,4 +62,17 @@ public class GlowWolf extends GlowTameable implements Wolf {
         super.setTamed(isTamed);
     }
 
+    @Override
+    public void setOwner(AnimalTamer animalTamer) {
+        super.setOwner(animalTamer);
+        if (animalTamer != null) {
+            metadata.set(MetadataIndex.WOLF_OWNER, animalTamer.getName());
+        }
+    }
+
+    @Override
+    public void setHealth(double health) {
+        metadata.set(MetadataIndex.WOLF_HEALTH, (float) health);
+        super.setHealth(health);
+    }
 }
