@@ -435,7 +435,9 @@ public abstract class GlowEntity implements Entity {
             return;
         }
 
-        teleported = false;
+        if (teleported) {
+            teleported = false;
+        }
 
         Block block = location.getBlock();
         if (!block.getType().hasGravity() && block.getType().isOccluding()) {
