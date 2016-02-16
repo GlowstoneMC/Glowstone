@@ -3,9 +3,7 @@ package net.glowstone.entity.passive;
 import com.flowpowered.networking.Message;
 import net.glowstone.entity.GlowAmbient;
 import net.glowstone.entity.meta.MetadataIndex;
-import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
-import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.SpawnMobMessage;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
@@ -16,8 +14,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class GlowBat extends GlowAmbient implements Bat {
-
-    private boolean isAwake;
 
     public GlowBat(Location location) {
         super(location, 6);
@@ -38,21 +34,17 @@ public class GlowBat extends GlowAmbient implements Bat {
 
         // head facing
         result.add(new EntityHeadRotationMessage(id, yaw));
-        MetadataMap map = new MetadataMap(GlowBat.class);
-        map.set(MetadataIndex.BAT_HANGING, (byte) (this.isAwake ? 1 : 0));
-        result.add(new EntityMetadataMessage(id, map.getEntryList()));
         return result;
     }
 
     @Override
     public boolean isAwake() {
-        return isAwake;
+        return metadata.getByte(MetadataIndex.BAT_HANGING) == 1;
     }
 
     @Override
     public void setAwake(boolean isAwake) {
-        this.isAwake = isAwake;
-        metadata.set(MetadataIndex.BAT_HANGING, (byte) (this.isAwake ? 1 : 0));
+        metadata.set(MetadataIndex.BAT_HANGING, (byte) (isAwake ? 1 : 0));
     }
 
     @Override
