@@ -53,7 +53,7 @@ public class GlowWolf extends GlowTameable implements Wolf {
     public void setTamed(boolean isTamed) {
         metadata.setBit(MetadataIndex.WOLF_FLAGS, TameableFlags.IS_TAME, isTamed);
         if (tamed != isTamed) {
-            //Change max health of wolf when he's got tamed. See MinecraftWiki for more information!
+            // Change max health of wolf when he's got tamed. See MinecraftWiki for more information!
             if (isTamed && getMaxHealth() == 8) {
                 setMaxHealth(20);
                 setHealth(20);

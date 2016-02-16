@@ -45,13 +45,6 @@ public class GlowBat extends GlowAmbient implements Bat {
     }
 
     @Override
-    public List<Message> createUpdateMessage() {
-        metadata.set(MetadataIndex.BAT_HANGING, (byte) (this.isAwake ? 1 : 0));
-        return super.createUpdateMessage();
-        // todo track position change
-    }
-
-    @Override
     public boolean isAwake() {
         return isAwake;
     }
@@ -59,6 +52,7 @@ public class GlowBat extends GlowAmbient implements Bat {
     @Override
     public void setAwake(boolean isAwake) {
         this.isAwake = isAwake;
+        metadata.set(MetadataIndex.BAT_HANGING, (byte) (this.isAwake ? 1 : 0));
     }
 
     @Override

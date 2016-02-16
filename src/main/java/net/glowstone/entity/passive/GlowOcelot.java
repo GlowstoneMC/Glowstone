@@ -22,8 +22,8 @@ public class GlowOcelot extends GlowTameable implements Ocelot {
 
     @Override
     public void setCatType(Type type) {
-        metadata.set(MetadataIndex.OCELOT_TYPE, catType.getId());
         this.catType = type;
+        metadata.set(MetadataIndex.OCELOT_TYPE, type.getId());
     }
 
     @Override

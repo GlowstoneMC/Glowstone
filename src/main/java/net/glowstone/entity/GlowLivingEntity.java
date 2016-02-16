@@ -463,7 +463,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             objective.getScore(this.getName()).setScore((int) health);
         }
 
-        if (health == 0) {
+        if (health <= 0) {
             active = false;
             Sound deathSound = getDeathSound();
             if (deathSound != null) {
@@ -536,7 +536,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         playEffect(EntityEffect.HURT);
 
         // play sounds, handle death
-        if (health > 0.0) {
+        if (health > 0) {
             Sound hurtSound = getHurtSound();
             if (hurtSound != null) {
                 world.playSound(location, hurtSound, 1.0f, 1.0f);

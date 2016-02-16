@@ -57,6 +57,7 @@ public final class EntityStorage {
 
         // LivingEntities - Hostile Entities
         bind(new CreeperStore());
+        bind(new EndermanStore());
         bind(new EndermiteStore());
         bind(new GhastStore());
         bind(new GuardianStore());

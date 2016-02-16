@@ -56,6 +56,11 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
 
     @Override
     public void setOwner(AnimalTamer animalTamer) {
+        if (animalTamer == null) {
+            this.owner = null;
+            this.ownerUUId = null;
+            return;
+        }
         this.owner = animalTamer;
         this.ownerUUId = animalTamer.getUniqueId();
     }
@@ -72,8 +77,12 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
      * @param ownerUUID
      */
     public void setOwnerUUID(UUID ownerUUID) {
+        if (ownerUUID == null) {
+            this.ownerUUId = null;
+            return;
+        }
         OfflinePlayer player = Bukkit.getOfflinePlayer(ownerUUId);
-        if (player.hasPlayedBefore()) {
+        if (player != null && player.hasPlayedBefore()) {
             this.ownerUUId = ownerUUID;
         }
     }

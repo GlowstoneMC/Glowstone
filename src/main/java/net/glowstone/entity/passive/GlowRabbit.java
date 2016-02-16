@@ -23,7 +23,7 @@ public class GlowRabbit extends GlowAnimal implements Rabbit {
     private Rabbit.Type rabbitType = Rabbit.Type.BROWN;
 
     public GlowRabbit(Location location) {
-        super(location, EntityType.RABBIT, 10); //Needs an update with the minecraft version 1.9, then the rabbit has 3 health (1.5 hearts)
+        super(location, EntityType.RABBIT, 10); // Needs an update with the minecraft version 1.9, then the rabbit has 3 health (1.5 hearts)
         setSize(0.6F, 0.7F);
     }
 
