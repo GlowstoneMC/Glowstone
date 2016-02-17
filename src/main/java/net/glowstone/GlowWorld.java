@@ -579,7 +579,7 @@ public final class GlowWorld implements World {
 
     private void maybeStrikeLightningInChunk(int cx, int cz) {
         if (environment == Environment.NORMAL && currentlyRaining && currentlyThundering) {
-            if (random.nextInt(25000) == 0) {
+            if (random.nextInt(100000) == 0) {
                 strikeLightningInChunk(cx, cz);
             }
         }
