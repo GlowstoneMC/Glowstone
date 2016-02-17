@@ -41,7 +41,7 @@ class PigZombieStore extends ZombieStore<GlowPigZombie> {
         if (((GlowPigZombie) entity).getHurtBy() != null) {
             tag.putString("HurtBy", ((GlowPigZombie) entity).getHurtBy().toString());
         } else {
-            if(tag.containsKey("HurtBy")) {
+            if (tag.containsKey("HurtBy")) {
                 tag.remove("HurtBy");
             }
         }
