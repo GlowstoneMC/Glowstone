@@ -12,7 +12,12 @@ class PigStore extends AgeableStore<GlowPig> {
     @Override
     public void load(GlowPig entity, CompoundTag compound) {
         super.load(entity, compound);
-        entity.setSaddle(compound.getBool("Saddle"));
+        if (compound.isByte("Saddle")) {
+            entity.setSaddle(compound.getBool("Saddle"));
+        } else {
+            entity.setSaddle(false);
+        }
+
     }
 
     @Override

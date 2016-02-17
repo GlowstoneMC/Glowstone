@@ -3,6 +3,7 @@ package net.glowstone.io.entity;
 import net.glowstone.entity.passive.GlowVillager;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.entity.Villager;
+import org.bukkit.entity.Villager.Profession;
 
 class VillagerStore extends AgeableStore<GlowVillager> {
 
@@ -13,7 +14,12 @@ class VillagerStore extends AgeableStore<GlowVillager> {
     @Override
     public void load(GlowVillager entity, CompoundTag compound) {
         super.load(entity, compound);
-        entity.setProfession(Villager.Profession.getProfession(compound.getInt("Profession")));
+        if(compound.isInt("Profession")){
+            entity.setProfession(Villager.Profession.getProfession(compound.getInt("Profession")));
+        } else {
+            entity.setProfession(Profession.FARMER);
+        }
+
         //TODO: remaining data
     }
 

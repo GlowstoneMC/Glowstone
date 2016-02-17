@@ -17,11 +17,16 @@ class BatStore extends LivingEntityStore<GlowBat> {
 
     public void load(GlowBat entity, CompoundTag compound) {
         super.load(entity, compound);
-        entity.setAwake(compound.getByte("BatFlags") == 1);
+        if (compound.isByte("BatFlags")) {
+            entity.setAwake(compound.getBool("BatFlags"));
+        } else {
+            entity.setAwake(true);
+        }
+
     }
 
     public void save(GlowBat entity, CompoundTag tag) {
         super.save(entity, tag);
-        tag.putByte("BatFlags", entity.isAwake() ? 1 : 0);
+        tag.putBool("BatFlags", entity.isAwake());
     }
 }
