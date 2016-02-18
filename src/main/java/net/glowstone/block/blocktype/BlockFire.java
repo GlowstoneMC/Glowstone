@@ -76,6 +76,7 @@ public class BlockFire extends BlockNeedsAttached {
         if (!isInfiniteFire && world.hasStorm() && isRainingAround(block)) {
             // if it's raining around, stop fire
             block.breakNaturally();
+            world.cancelPulse(block);
             return;
         }
 
@@ -96,10 +97,12 @@ public class BlockFire extends BlockNeedsAttached {
                 // there's no flammable blocks around, stop fire
                 if (age > 3 || block.getRelative(BlockFace.DOWN).isEmpty()) {
                     block.breakNaturally();
+                    world.cancelPulse(block);
                 }
             } else if (age == MAX_FIRE_AGE && !block.getRelative(BlockFace.DOWN).isFlammable() && random.nextInt(4) == 0) {
                 // if fire reached max age, bottom block is not flammable, 25% chance to stop fire
                 block.breakNaturally();
+                world.cancelPulse(block);
             } else {
                 // fire propagation / block burning
 
@@ -152,7 +155,6 @@ public class BlockFire extends BlockNeedsAttached {
 
     @Override
     public void receivePulse(GlowBlock block) {
-        block.getWorld().cancelPulse(block);
         updateBlock(block);
     }
 
