@@ -417,6 +417,11 @@ public final class GlowServer implements Server {
     private int port;
 
     /**
+     * The server ip.
+     */
+    private String ip;
+
+    /**
      * A set of all online players.
      */
     private final Set<GlowPlayer> onlinePlayers = new HashSet<>();
@@ -573,7 +578,9 @@ public final class GlowServer implements Server {
         }
 
         logger.info("Successfully bound to: " + channel.localAddress());
-        port = ((InetSocketAddress) channel.localAddress()).getPort();
+        InetSocketAddress localAddress = (InetSocketAddress) channel.localAddress();
+        port = localAddress.getPort();
+        ip = localAddress.getHostString();
     }
 
     /**
@@ -620,7 +627,7 @@ public final class GlowServer implements Server {
      * @return The SocketAddress
      */
     private SocketAddress getBindAddress(ServerConfig.Key portKey) {
-        String ip = getIp();
+        String ip = config.getString(ServerConfig.Key.SERVER_IP);
         int port = config.getInt(portKey);
         if (ip.length() == 0) {
             return new InetSocketAddress(port);
@@ -1657,7 +1664,7 @@ public final class GlowServer implements Server {
 
     @Override
     public String getIp() {
-        return config.getString(ServerConfig.Key.SERVER_IP);
+        return ip;
     }
 
     @Override
