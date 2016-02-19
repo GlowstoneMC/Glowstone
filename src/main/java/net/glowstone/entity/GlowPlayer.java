@@ -779,6 +779,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         streamBlocks(); // stream blocks
         setCompassTarget(world.getSpawnLocation()); // set our compass target
         session.send(new PositionRotationMessage(location));
+        teleportedTo = location.clone();
+
         sendWeather();
         sendRainDensity();
         sendSkyDarkness();
@@ -1493,9 +1495,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             //Position.copyLocation(location, this.previousLocation);
             //Position.copyLocation(location, this.location);
             session.send(new PositionRotationMessage(location));
+            teleportedTo = location.clone();
         }
 
-        teleportedTo = location.clone();
         GlowServer.logger.warning("Start teleport: " + teleportedTo.toString());
         return true;
     }
