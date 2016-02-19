@@ -8,7 +8,7 @@ import org.bukkit.entity.MushroomCow;
 public class GlowMooshroom extends GlowAnimal implements MushroomCow {
 
     public GlowMooshroom(Location location) {
-        super(location, EntityType.MUSHROOM_COW);
+        super(location, EntityType.MUSHROOM_COW, 10);
         setSize(0.9F, 1.3F);
     }
 }

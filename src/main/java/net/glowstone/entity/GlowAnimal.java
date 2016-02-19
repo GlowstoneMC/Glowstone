@@ -14,7 +14,7 @@ public class GlowAnimal extends GlowAgeable implements Animals {
      * @param location The location of the animal.
      * @param type The type of animal.
      */
-    public GlowAnimal(Location location, EntityType type) {
-        super(location, type);
+    public GlowAnimal(Location location, EntityType type, double maxHealth) {
+        super(location, type, maxHealth);
     }
 }

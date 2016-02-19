@@ -1,42 +1,50 @@
 package net.glowstone.entity.monster;
 
+import com.flowpowered.networking.Message;
+import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Zombie;
 
+import java.util.List;
+
 public class GlowZombie extends GlowMonster implements Zombie {
 
-    private boolean baby;
-    private boolean villager;
     private int conversionTime = -1;
     private boolean canBreakDoors;
-    
+
     public GlowZombie(Location loc) {
-        super(loc, EntityType.ZOMBIE);
+        this(loc, EntityType.ZOMBIE);
     }
 
     public GlowZombie(Location loc, EntityType type) {
-        super(loc, type);
+        super(loc, type, 20);
     }
-    
+
+    @Override
+    public List<Message> createSpawnMessage() {
+        metadata.set(MetadataIndex.ZOMBIE_IS_CONVERTING, conversionTime > 0 ? (byte) 1 : (byte) 0);
+        return super.createSpawnMessage();
+    }
+
     @Override
     public boolean isBaby() {
-        return this.baby;
+        return metadata.getByte(MetadataIndex.ZOMBIE_IS_CHILD) == 1;
     }
-    
+
     @Override
     public void setBaby(boolean value) {
-        this.baby = value;
+        metadata.set(MetadataIndex.ZOMBIE_IS_CHILD, value ? (byte) 1 : (byte) 0);
     }
-    
+
     @Override
     public boolean isVillager() {
-        return this.villager;
+        return metadata.getByte(MetadataIndex.ZOMBIE_IS_VILLAGER) == 1;
     }
-    
+
     @Override
     public void setVillager(boolean value) {
-        this.villager = value;
+        metadata.set(MetadataIndex.ZOMBIE_IS_VILLAGER, value ? (byte) 1 : (byte) 0);
     }
 
     public int getConversionTime() {
@@ -45,6 +53,7 @@ public class GlowZombie extends GlowMonster implements Zombie {
 
     public void setConversionTime(int conversionTime) {
         this.conversionTime = conversionTime;
+        metadata.set(MetadataIndex.ZOMBIE_IS_CONVERTING, conversionTime > 0 ? (byte) 1 : (byte) 0);
     }
 
     public boolean isCanBreakDoors() {

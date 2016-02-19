@@ -3,6 +3,7 @@ package net.glowstone.io.entity;
 import net.glowstone.entity.monster.GlowSkeleton;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Skeleton.SkeletonType;
 
 class SkeletonStore extends MonsterStore<GlowSkeleton> {
 
@@ -13,7 +14,11 @@ class SkeletonStore extends MonsterStore<GlowSkeleton> {
     @Override
     public void load(GlowSkeleton entity, CompoundTag tag) {
         super.load(entity, tag);
-        entity.setSkeletonType(Skeleton.SkeletonType.getType(tag.getInt("SkeletonType")));
+        if (tag.isInt("SkeletonType")) {
+            entity.setSkeletonType(Skeleton.SkeletonType.getType(tag.getInt("SkeletonType")));
+        } else {
+            entity.setSkeletonType(SkeletonType.NORMAL);
+        }
     }
 
     @Override

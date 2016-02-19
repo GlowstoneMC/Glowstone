@@ -29,8 +29,8 @@ public class GlowAgeable extends GlowCreature implements Ageable {
      * @param location The location of the monster.
      * @param type The type of monster.
      */
-    public GlowAgeable(Location location, EntityType type) {
-        super(location, type);
+    public GlowAgeable(Location location, EntityType type, double maxHealth) {
+        super(location, type, maxHealth);
     }
 
     @Override

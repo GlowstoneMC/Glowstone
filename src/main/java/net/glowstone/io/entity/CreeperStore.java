@@ -12,10 +12,30 @@ class CreeperStore extends MonsterStore<GlowCreeper> {
     @Override
     public void load(GlowCreeper entity, CompoundTag compound) {
         super.load(entity, compound);
-        entity.setPowered(compound.getBool("powered"));
-        entity.setExplosionRadius(compound.getInt("ExplosionRadius"));
-        entity.setFuse(compound.getInt("Fuse"));
-        entity.setIgnited(compound.getBool("ignited"));
+        if (compound.isByte("powered")) {
+            entity.setPowered(compound.getBool("powered"));
+        } else {
+            entity.setPowered(false);
+        }
+
+        if (compound.isInt("ExplosionRadius")) {
+            entity.setExplosionRadius(compound.getInt("ExplosionRadius"));
+        } else {
+            entity.setExplosionRadius(3);
+        }
+
+        if (compound.isInt("Fuse")) {
+            entity.setFuse(compound.getInt("Fuse"));
+        } else {
+            entity.setFuse(30);
+        }
+
+        if (compound.isByte("ignited")) {
+            entity.setIgnited(compound.getBool("ignited"));
+        } else {
+            entity.setIgnited(false);
+        }
+
     }
 
     @Override

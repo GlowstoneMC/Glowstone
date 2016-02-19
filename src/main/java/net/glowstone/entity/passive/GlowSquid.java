@@ -8,7 +8,7 @@ import org.bukkit.entity.Squid;
 public class GlowSquid extends GlowAnimal implements Squid {
 
     public GlowSquid(Location location) {
-        super(location, EntityType.SQUID);
+        super(location, EntityType.SQUID, 10);
         setSize(0.95F, 0.95F);
     }
 }

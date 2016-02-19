@@ -11,7 +11,7 @@ public class GlowChicken extends GlowAnimal implements Chicken {
     private int eggLayTime;
 
     public GlowChicken(Location location) {
-        super(location, EntityType.CHICKEN);
+        super(location, EntityType.CHICKEN, 4);
         setSize(0.4F, 0.7F);
     }
 

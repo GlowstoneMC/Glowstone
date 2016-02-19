@@ -831,7 +831,7 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public void setCustomNameVisible(boolean flag) {
-        metadata.set(MetadataIndex.SHOW_NAME_TAG, flag ? 1 : 0);
+        metadata.set(MetadataIndex.SHOW_NAME_TAG, flag ? (byte) 1 : (byte) 0);
     }
 
     @Override

@@ -37,7 +37,7 @@ public class GlowHorse extends GlowTameable implements Horse {
     }
 
     protected GlowHorse(Location location, AnimalTamer owner) {
-        super(location, EntityType.HORSE, owner);
+        super(location, EntityType.HORSE, 15, owner); // todo change health later
         if (owner != null) this.ownerUUID = owner.getUniqueId();
     }
 

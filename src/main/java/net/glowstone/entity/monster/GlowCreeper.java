@@ -1,27 +1,37 @@
 package net.glowstone.entity.monster;
 
+import com.flowpowered.networking.Message;
+import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.EntityType;
 
+import java.util.List;
+
 public class GlowCreeper extends GlowMonster implements Creeper {
-    private boolean powered = false;
+
     private int explosionRadius;
     private int fuse;
     private boolean ignited;
-    
+
     public GlowCreeper(Location loc) {
-        super(loc, EntityType.CREEPER);
+        super(loc, EntityType.CREEPER, 20);
     }
-    
+
+    @Override
+    public List<Message> createSpawnMessage() {
+        // todo Implement the fuse & Ignition later.
+        return super.createSpawnMessage();
+    }
+
     @Override
     public boolean isPowered() {
-        return this.powered;
+        return metadata.getByte(MetadataIndex.CREEPER_POWERED) == 1;
     }
-    
+
     @Override
     public void setPowered(boolean value) {
-        this.powered = value;
+        metadata.set(MetadataIndex.CREEPER_POWERED, value ? (byte) 1 : (byte) 0);
     }
 
     public int getExplosionRadius() {

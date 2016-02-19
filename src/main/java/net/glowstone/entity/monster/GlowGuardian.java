@@ -9,7 +9,7 @@ public class GlowGuardian extends GlowMonster implements Guardian {
     private boolean elder;
 
     public GlowGuardian(Location loc) {
-        super(loc, EntityType.GUARDIAN);
+        super(loc, EntityType.GUARDIAN, 30);
     }
 
     @Override

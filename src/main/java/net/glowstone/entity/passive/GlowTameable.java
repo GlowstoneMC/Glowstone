@@ -1,13 +1,12 @@
 package net.glowstone.entity.passive;
 
 import net.glowstone.entity.GlowAnimal;
+import net.glowstone.entity.meta.MetadataIndex;
+import net.glowstone.entity.meta.MetadataIndex.TameableFlags;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.AnimalTamer;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Tameable;
+import org.bukkit.entity.*;
 
 import java.util.UUID;
 
@@ -15,14 +14,27 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
 
     private AnimalTamer owner;
     private UUID ownerUUId;
-    private boolean tamed;
+    protected boolean tamed;
+    private boolean sitting;
+    private MetadataIndex flagIndex;
 
-    public GlowTameable(Location location, EntityType type) {
-        super(location, type);
+    public GlowTameable(Location location, EntityType type, double maxHealth) {
+        super(location, type, maxHealth);
+        switch (type) {
+            case WOLF:
+                flagIndex = MetadataIndex.WOLF_FLAGS;
+                break;
+            case HORSE:
+                flagIndex = MetadataIndex.HORSE_FLAGS;
+                break;
+            case OCELOT:
+                flagIndex = MetadataIndex.OCELOT_TYPE;
+                break;
+        }
     }
 
-    protected GlowTameable(Location location, EntityType type, AnimalTamer owner) {
-        super(location, type);
+    protected GlowTameable(Location location, EntityType type, double maxHealth, AnimalTamer owner) {
+        super(location, type, maxHealth);
         this.owner = owner;
     }
 
@@ -33,6 +45,7 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
 
     @Override
     public void setTamed(boolean isTamed) {
+        metadata.setBit(flagIndex, TameableFlags.IS_TAME, isTamed);
         this.tamed = isTamed;
     }
 
@@ -43,6 +56,11 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
 
     @Override
     public void setOwner(AnimalTamer animalTamer) {
+        if (animalTamer == null) {
+            this.owner = null;
+            this.ownerUUId = null;
+            return;
+        }
         this.owner = animalTamer;
         this.ownerUUId = animalTamer.getUniqueId();
     }
@@ -56,13 +74,26 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
      * The UUID's are validated through offline player checking. If a player
      * with the specified UUID has not played on the server before, the
      * owner is not set.
-     *
      * @param ownerUUID
      */
     public void setOwnerUUID(UUID ownerUUID) {
+        if (ownerUUID == null) {
+            this.ownerUUId = null;
+            return;
+        }
         OfflinePlayer player = Bukkit.getOfflinePlayer(ownerUUId);
-        if (player.hasPlayedBefore()) {
+        if (player != null && player.hasPlayedBefore()) {
             this.ownerUUId = ownerUUID;
         }
     }
+
+    public boolean isSitting() {
+        return sitting;
+    }
+
+    public void setSitting(boolean isSitting) {
+        metadata.setBit(flagIndex, TameableFlags.IS_SITTING, isSitting);
+        this.sitting = isSitting;
+    }
+
 }

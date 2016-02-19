@@ -7,7 +7,7 @@ import org.bukkit.DyeColor;
 class WolfStore extends TameableStore<GlowWolf> {
 
     public WolfStore() {
-        super(GlowWolf.class, "Ozelot");
+        super(GlowWolf.class, "Wolf");
     }
 
     @Override

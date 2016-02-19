@@ -22,7 +22,7 @@ public final class NbtScoreboardIoService implements ScoreboardIoService {
     private final GlowServer server;
 
     private static final String SCOREBOARD_SAVE_FILE = "scoreboard.dat";
-    
+
     public NbtScoreboardIoService(GlowServer server, File dir) {
         this.server = server;
         this.dir = dir;

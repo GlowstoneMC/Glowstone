@@ -7,7 +7,7 @@ import org.bukkit.entity.Snowman;
 public class GlowSnowman extends GlowMonster implements Snowman {
 
     public GlowSnowman(Location loc) {
-        super(loc, EntityType.SNOWMAN);
+        super(loc, EntityType.SNOWMAN, 4);
     }
 
 }

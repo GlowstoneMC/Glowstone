@@ -1,12 +1,14 @@
 package net.glowstone.entity.monster;
 
+import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Slime;
 
+import java.util.Random;
+
 public class GlowSlime extends GlowMonster implements Slime {
 
-    private int size;
     private boolean onGround;
 
     public GlowSlime(Location loc) {
@@ -14,16 +16,36 @@ public class GlowSlime extends GlowMonster implements Slime {
     }
 
     protected GlowSlime(Location loc, EntityType type) {
-        super(loc, type);
+        super(loc, type, 1);
+        Random r = new Random();
+        byte size = 1;
+        double health = 1;
+        switch (r.nextInt(3)) {
+            case 0:
+                size = 1;
+                health = 1;
+                break;
+            case 1:
+                size = 2;
+                health = 4;
+                break;
+            case 2:
+                size = 4;
+                health = 16;
+                break;
+        }
+        setSize(size);
+        setMaxHealth(health);
+        setHealth(health);
     }
 
     @Override
     public int getSize() {
-        return size;
+        return metadata.getByte(MetadataIndex.SLIME_SIZE);
     }
 
     @Override
     public void setSize(int sz) {
-        this.size = sz;
+        metadata.set(MetadataIndex.SLIME_SIZE, (byte) sz);
     }
 }
