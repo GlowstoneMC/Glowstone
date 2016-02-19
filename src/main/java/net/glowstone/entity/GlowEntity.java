@@ -440,7 +440,7 @@ public abstract class GlowEntity implements Entity {
         }
 
         Block block = location.getBlock();
-        if (!block.getType().hasGravity() && block.getType().isOccluding()) {
+        if (!block.getType().hasGravity() && block.getType().isOccluding() && block.getType() != Material.SOUL_SAND && block.getType() != Material.SNOW) {
             teleport(location.add(0, 1, 0));
             return;
         }
