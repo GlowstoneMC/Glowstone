@@ -36,6 +36,7 @@ import net.glowstone.scoreboard.GlowTeam;
 import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.*;
@@ -1906,6 +1907,66 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void sendMap(MapView map) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void sendMessage(BaseComponent component) {
+
+    }
+
+    @Override
+    public void sendMessage(BaseComponent... components) {
+
+    }
+
+    @Override
+    public void setPlayerListHeaderFooter(BaseComponent[] header, BaseComponent[] footer) {
+
+    }
+
+    @Override
+    public void setPlayerListHeaderFooter(BaseComponent header, BaseComponent footer) {
+
+    }
+
+    @Override
+    public void setTitleTimes(int fadeInTicks, int stayTicks, int fadeOutTicks) {
+
+    }
+
+    @Override
+    public void setSubtitle(BaseComponent[] subtitle) {
+
+    }
+
+    @Override
+    public void setSubtitle(BaseComponent subtitle) {
+
+    }
+
+    @Override
+    public void showTitle(BaseComponent[] title) {
+
+    }
+
+    @Override
+    public void showTitle(BaseComponent title) {
+
+    }
+
+    @Override
+    public void showTitle(BaseComponent[] title, BaseComponent[] subtitle, int fadeInTicks, int stayTicks, int fadeOutTicks) {
+
+    }
+
+    @Override
+    public void showTitle(BaseComponent title, BaseComponent subtitle, int fadeInTicks, int stayTicks, int fadeOutTicks) {
+
+    }
+
+    @Override
+    public void hideTitle() {
+
     }
 
     ////////////////////////////////////////////////////////////////////////////
