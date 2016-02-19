@@ -23,6 +23,6 @@ public class GlowIronGolem extends GlowMonster implements IronGolem {
 
     @Override
     public void setPlayerCreated(boolean playerCreated) {
-        metadata.set(MetadataIndex.GOLEM_PLAYER_BUILT, playerCreated);
+        metadata.set(MetadataIndex.GOLEM_PLAYER_BUILT, playerCreated ? (byte) 1 : (byte) 0);
     }
 }
