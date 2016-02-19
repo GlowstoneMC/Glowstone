@@ -25,6 +25,11 @@ public final class PlayerPositionMessage extends PlayerUpdateMessage {
     }
 
     @Override
+    public boolean moved() {
+        return true;
+    }
+
+    @Override
     public String toString() {
         return "PlayerPositionMessage(" +
                 "onGround=" + isOnGround() +

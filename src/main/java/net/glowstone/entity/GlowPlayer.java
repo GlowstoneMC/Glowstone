@@ -33,6 +33,7 @@ import net.glowstone.net.message.play.player.UseBedMessage;
 import net.glowstone.net.protocol.ProtocolType;
 import net.glowstone.scoreboard.GlowScoreboard;
 import net.glowstone.scoreboard.GlowTeam;
+import net.glowstone.util.Position;
 import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
@@ -295,6 +296,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * The one block the player is currently digging.
      */
     private GlowBlock digging;
+
+    public Location teleportedTo = null;
 
     /**
      * The one itemstack the player is currently usage and associated time.
@@ -1485,12 +1488,22 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         if (location.getWorld() != world) {
             spawnAt(location);
         } else {
+
+            world.getEntityManager().move(this, location);
+            //Position.copyLocation(location, this.previousLocation);
+            //Position.copyLocation(location, this.location);
             session.send(new PositionRotationMessage(location));
-            setRawLocation(location, false);
         }
 
-        teleported = true;
+        teleportedTo = location.clone();
+        GlowServer.logger.warning("Start teleport: " + teleportedTo.toString());
         return true;
+    }
+
+    public void endTeleport() {
+        Position.copyLocation(teleportedTo, location);
+        teleportedTo = null;
+        teleported = true;
     }
 
     @Override
