@@ -31,6 +31,21 @@ import org.bukkit.util.EulerAngle;
 
 public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
 
+    private static final EulerAngle[] defaultPose = new EulerAngle[6];
+
+    static {
+        double ten = Math.toRadians(10);
+        double fifteen = Math.toRadians(15);
+        double one = Math.toRadians(1);
+        defaultPose[0] = EulerAngle.ZERO;
+        defaultPose[1] = EulerAngle.ZERO;
+        defaultPose[2] = new EulerAngle(-ten, 0, -ten);
+        defaultPose[3] = new EulerAngle(-fifteen, 0, ten);
+        defaultPose[4] = new EulerAngle(-one, 0, -one);
+        defaultPose[5] = new EulerAngle(one, 0, one);
+    }
+
+
     private final ItemStack[] equipment = new ItemStack[5];
     private final boolean[] changedEquip = new boolean[5];
     private final EulerAngle[] pose = new EulerAngle[6];
@@ -43,21 +58,9 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     private boolean hasArms = false;
 
     public GlowArmorStand(Location location) {
-        super(location);
-        setMaxHealth(2);
-        setHealth(2);
-        //Default angles:
-        for (int i = 0; i < 2; i++) {
-            pose[i] = EulerAngle.ZERO;
-        }
-        double ten = Math.toRadians(10);
-        double fifteen = Math.toRadians(15);
-        double one = Math.toRadians(1);
-        pose[2] = new EulerAngle(-ten, 0, -ten);
-        pose[3] = new EulerAngle(-fifteen, 0, ten);
-        pose[4] = new EulerAngle(-one, 0, -one);
-        pose[5] = new EulerAngle(one, 0, one);
+        super(location, 2);
 
+        System.arraycopy(defaultPose, 0, pose, 0, 6);
         for (int i = 0; i < 5; i++) {
             changedEquip[i] = false;
         }
