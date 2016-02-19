@@ -286,7 +286,7 @@ public final class GlowScheduler implements BukkitScheduler {
     @Override
     @Deprecated
     public BukkitTask runTaskLaterAsynchronously(Plugin plugin, BukkitRunnable task, long delay) throws IllegalArgumentException {
-        return task.runTaskLater(plugin, delay);
+        return task.runTaskLaterAsynchronously(plugin, delay);
     }
 
     @Override

@@ -18,7 +18,7 @@ import java.util.UUID;
 
 public class GlowHorse extends GlowTameable implements Horse {
 
-    private Variant variant = Variant.values()[new Random().nextInt(4)];
+    private Variant variant = Variant.values()[new Random().nextInt(2)];
     private Color horseColor = Color.values()[new Random().nextInt(6)];
     private Style horseStyle = Style.values()[new Random().nextInt(3)];
     private boolean hasChest;
