@@ -16,4 +16,7 @@ public class PlayerUpdateMessage implements Message {
         // do nothing
     }
 
+    public boolean moved() {
+        return false;
+    }
 }
