@@ -3,6 +3,7 @@ package net.glowstone;
 import com.avaje.ebean.config.DataSourceConfig;
 import com.avaje.ebean.config.dbplatform.SQLitePlatform;
 import com.avaje.ebeaninternal.server.lib.sql.TransactionIsolation;
+import com.flowpowered.networking.Message;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import net.glowstone.block.BuiltinMaterialValueManager;
@@ -29,6 +30,7 @@ import net.glowstone.io.ScoreboardIoService;
 import net.glowstone.map.GlowMapView;
 import net.glowstone.net.GlowNetworkServer;
 import net.glowstone.net.SessionRegistry;
+import net.glowstone.net.message.play.game.ChatMessage;
 import net.glowstone.net.query.QueryServer;
 import net.glowstone.net.rcon.RconServer;
 import net.glowstone.scheduler.GlowScheduler;
@@ -37,6 +39,8 @@ import net.glowstone.scoreboard.GlowScoreboardManager;
 import net.glowstone.util.*;
 import net.glowstone.util.bans.GlowBanList;
 import net.glowstone.util.bans.UuidListFile;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
@@ -1335,6 +1339,24 @@ public final class GlowServer implements Server {
     @Override
     public int broadcastMessage(String message) {
         return broadcast(message, BROADCAST_CHANNEL_USERS);
+    }
+
+    @Override
+    public void broadcast(BaseComponent component) {
+        Message packet = new ChatMessage(ComponentSerializer.toString(component));
+        broadcastPacket(packet);
+    }
+
+    @Override
+    public void broadcast(BaseComponent... components) {
+        Message packet = new ChatMessage(ComponentSerializer.toString(components));
+        broadcastPacket(packet);
+    }
+
+    public void broadcastPacket(Message message) {
+        for (GlowPlayer player : getRawOnlinePlayers()) {
+            player.getSession().send(message);
+        }
     }
 
     @Override
