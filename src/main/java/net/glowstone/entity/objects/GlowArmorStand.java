@@ -8,6 +8,7 @@ import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
+import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
@@ -27,6 +28,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.Criterias;
+import org.bukkit.scoreboard.Objective;
 import org.bukkit.util.EulerAngle;
 
 public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
@@ -57,6 +60,8 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     private boolean hasGravity = true;
     private boolean hasArms = false;
 
+    private boolean needsKill = false;
+
     public GlowArmorStand(Location location) {
         super(location, 2);
 
@@ -72,6 +77,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
         for (int i = 0; i < 5; i++) {
             changedEquip[i] = false;
         }
+        if (needsKill) needsKill = false;
     }
 
     @Override
@@ -79,6 +85,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
         super.pulse();
         if (isDead()) {
             remove();
+            needsKill = true;
         } else if (this.ticksLived % 10 == 0) { //player needs to click fast (2 times) to kill the entity
             setHealth(2);
         }
@@ -114,21 +121,31 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
             }
         }
         setLastDamage(amount);
-        if (health - amount <= 0) {
-            kill(drop);
-        }
-        super.setHealth(health - amount); //Use super to not drop items twice
+        setHealth(health - amount, drop);
     }
 
     @Override
     public void setHealth(double health) {
-        super.setHealth(health);
-        if (health <= 0) {
-            kill(false);
+        setHealth(health, false);
+    }
+
+    private void setHealth(double health, boolean drop) {
+        if (health < 0) health = 0;
+        if (health > getMaxHealth()) health = getMaxHealth();
+        this.health = health;
+
+        metadata.set(MetadataIndex.HEALTH, (float) health);
+        for (Objective objective : getServer().getScoreboardManager().getMainScoreboard().getObjectivesByCriteria(Criterias.HEALTH)) {
+            objective.getScore(this.getName()).setScore((int) health);
+        }
+
+        if (health == 0) {
+            kill(drop);
         }
     }
 
     private void kill(boolean dropArmorStand) {
+        active = false;
         ((GlowWorld) location.getWorld()).showParticle(location.clone().add(0, 1.317, 0), Effect.TILE_DUST, Material.WOOD.getId(), 0, 0.125f, 0.494f, 0.125f, 0.1f, 10, 10);
         for (ItemStack stack : equipment) {
             if (stack == null || stack.getType() == Material.AIR) continue;
@@ -296,6 +313,9 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
             if (changedEquip[i]) {
                 messages.add(new EntityEquipmentMessage(id, i, equipment[i]));
             }
+        }
+        if (needsKill) {
+            messages.add(new DestroyEntitiesMessage(Arrays.asList(this.id)));
         }
         return messages;
     }
