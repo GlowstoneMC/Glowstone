@@ -16,11 +16,7 @@ import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.EntityIdManager;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.profile.PlayerProfile;
-import net.glowstone.generator.GlowChunkData;
-import net.glowstone.generator.NetherGenerator;
-import net.glowstone.generator.OverworldGenerator;
-import net.glowstone.generator.SuperflatGenerator;
-import net.glowstone.generator.TheEndGenerator;
+import net.glowstone.generator.*;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.inventory.crafting.CraftingManager;
@@ -37,6 +33,7 @@ import net.glowstone.scoreboard.GlowScoreboardManager;
 import net.glowstone.util.*;
 import net.glowstone.util.bans.GlowBanList;
 import net.glowstone.util.bans.UuidListFile;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
@@ -299,7 +296,7 @@ public final class GlowServer implements Server {
     /**
      * The scoreboard manager for the server.
      */
-    private final GlowScoreboardManager scoreboardManager =   new GlowScoreboardManager(this);
+    private final GlowScoreboardManager scoreboardManager = new GlowScoreboardManager(this);
 
     /**
      * The crafting manager for this server.
@@ -780,7 +777,7 @@ public final class GlowServer implements Server {
 
             for (File file : pluginTypeDetector.unrecognizedPlugins)
                 logger.log(Level.WARNING, "Unrecognized plugin not supported: " + file.getPath());
-       }
+        }
 
     }
 
@@ -1335,6 +1332,20 @@ public final class GlowServer implements Server {
     @Override
     public int broadcastMessage(String message) {
         return broadcast(message, BROADCAST_CHANNEL_USERS);
+    }
+
+    @Override
+    public void broadcast(BaseComponent component) {
+        for (Player player : getOnlinePlayers()) {
+            player.spigot().sendMessage(component);
+        }
+    }
+
+    @Override
+    public void broadcast(BaseComponent... components) {
+        for (BaseComponent component : components) {
+            broadcast(component);
+        }
     }
 
     @Override
