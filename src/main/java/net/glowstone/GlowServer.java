@@ -61,6 +61,9 @@ import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.util.CachedServerIcon;
 import org.bukkit.util.permissions.DefaultPermissions;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -85,6 +88,11 @@ public final class GlowServer implements Server {
      * The logger for this class.
      */
     public static final Logger logger = Logger.getLogger("Minecraft");
+
+    /**
+     * The parser.
+     */
+    public static final JSONParser parser = new JSONParser();
 
     /**
      * The game version supported by the server.
@@ -1343,14 +1351,23 @@ public final class GlowServer implements Server {
 
     @Override
     public void broadcast(BaseComponent component) {
-        Message packet = new ChatMessage(ComponentSerializer.toString(component));
-        broadcastPacket(packet);
+        try {
+            // todo: uses gson instead json-simple
+            Message packet = new ChatMessage((JSONObject) parser.parse(ComponentSerializer.toString(component)));
+            broadcastPacket(packet);
+        } catch (ParseException e) {
+            e.printStackTrace(); //should never happen
+        }
     }
 
     @Override
     public void broadcast(BaseComponent... components) {
-        Message packet = new ChatMessage(ComponentSerializer.toString(components));
-        broadcastPacket(packet);
+        try {
+            Message packet = new ChatMessage((JSONObject) parser.parse(ComponentSerializer.toString(components)));
+            broadcastPacket(packet);
+        } catch (ParseException e) {
+            e.printStackTrace(); //should never happen
+        }
     }
 
     public void broadcastPacket(Message message) {
