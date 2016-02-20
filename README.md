@@ -16,6 +16,15 @@ Currently the major changes from Glowstone include:
 * Multi-API plugin support, integrates with [Bukkit2Sponge](https://github.com/GlowstonePlusPlus/Bukkit2Sponge) for [SpongeAPI](https://github.com/SpongePowered/SpongeAPI) plugin loading
 * Builds using Maven
 
+##Downloads
+
+If you don't want to build from source, prebuilt jar files are available to download from:
+* **[Latest successful build](https://bamboo.gserv.me/browse/GSPP-SRV/latestSuccessful/artifact/shared/Server-JAR/glowstone++-1.8.9-SNAPSHOT.jar)** - recomended
+
+* **[gserv.me](https://bamboo.gserv.me/browse/GSPP-SRV)** - all builds, no login required
+
+* [![Build Status](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus.svg?style=svg)](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus/tree/master) **[CircleCI](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus/tree/master)** - click the latest build then expand "Artifacts" (if it does not show, try logging in with GitHub)
+
 ##Building
 
 
@@ -35,14 +44,6 @@ cd GlowstonePlusPlus
 ```
 
 The final jar will be placed in `target/` named `glowstone++-1.8.9-SNAPSHOT.jar`.
-
-##Downloads
-
-
-If you don't want to build from source, prebuilt jar files are available to download from:
-* **[gserv.me](https://bamboo.gserv.me/browse/GSPP-SRV)** - recommended, no login required
-
-* [![Build Status](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus.svg?style=svg)](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus/tree/master) **[CircleCI](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus/tree/master)** - click the latest build then expand "Artifacts" (if it does not show, try logging in with GitHub)
 
 ##Running
 
