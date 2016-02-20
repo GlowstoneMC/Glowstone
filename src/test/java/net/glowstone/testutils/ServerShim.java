@@ -2,11 +2,9 @@ package net.glowstone.testutils;
 
 import com.avaje.ebean.config.ServerConfig;
 import net.glowstone.inventory.GlowItemFactory;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.*;
-import org.bukkit.command.CommandException;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.command.PluginCommand;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.generator.ChunkGenerator;
@@ -149,6 +147,16 @@ public class ServerShim implements Server {
     @Override
     public int broadcastMessage(String message) {
         return 0;
+    }
+
+    @Override
+    public void broadcast(BaseComponent component) {
+
+    }
+
+    @Override
+    public void broadcast(BaseComponent... components) {
+
     }
 
     @Override
@@ -518,6 +526,11 @@ public class ServerShim implements Server {
 
     @Override
     public UnsafeValues getUnsafe() {
+        return null;
+    }
+
+    @Override
+    public CommandMap getCommandMap() {
         return null;
     }
 
