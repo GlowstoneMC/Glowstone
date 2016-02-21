@@ -21,13 +21,10 @@ public final class SpawnObjectCodec implements Codec<SpawnObjectMessage> {
         int pitch = buf.readByte();
         int yaw = buf.readByte();
         int data = buf.readInt();
-        if (data != 0) {
-            int velX = buf.readShort();
-            int velY = buf.readShort();
-            int velZ = buf.readShort();
-            return new SpawnObjectMessage(id, uuid, type, x, y, z, pitch, yaw, data, velX, velY, velZ);
-        }
-        return new SpawnObjectMessage(id, uuid, type, x, y, z, pitch, yaw);
+        int velX = buf.readShort();
+        int velY = buf.readShort();
+        int velZ = buf.readShort();
+        return new SpawnObjectMessage(id, uuid, type, x, y, z, pitch, yaw, data, velX, velY, velZ);
     }
 
     @Override
@@ -41,11 +38,9 @@ public final class SpawnObjectCodec implements Codec<SpawnObjectMessage> {
         buf.writeByte(message.getPitch());
         buf.writeByte(message.getYaw());
         buf.writeInt(message.getData());
-        if (message.getData() != 0) {
-            buf.writeShort(message.getVelX());
-            buf.writeShort(message.getVelY());
-            buf.writeShort(message.getVelZ());
-        }
+        buf.writeShort(message.getVelX());
+        buf.writeShort(message.getVelY());
+        buf.writeShort(message.getVelZ());
         return buf;
     }
 }

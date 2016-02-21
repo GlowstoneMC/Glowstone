@@ -29,8 +29,5 @@ public class GlowOcelot extends GlowTameable implements Ocelot {
     @Override
     public void setOwner(AnimalTamer animalTamer) {
         super.setOwner(animalTamer);
-        if (animalTamer != null) {
-            metadata.set(MetadataIndex.OCELOT_OWNER, animalTamer.getName());
-        }
     }
 }

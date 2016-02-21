@@ -366,6 +366,7 @@ public final class GlowSession extends BasicSession {
             return null;
         }
         System.out.println("Sending message type: " + message.getClass().getName());
+        System.out.println("Content: " + message.toString());
         if (message instanceof EntityMetadataMessage) {
             return null;
         }
