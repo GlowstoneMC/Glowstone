@@ -6,4 +6,5 @@ import lombok.Data;
 @Data
 public final class PlayerSwingArmMessage implements Message {
 
+    private final int hand;
 }

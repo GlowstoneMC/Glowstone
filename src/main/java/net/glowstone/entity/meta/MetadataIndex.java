@@ -1,5 +1,6 @@
 package net.glowstone.entity.meta;
 
+import net.glowstone.entity.passive.GlowTameable;
 import org.bukkit.entity.*;
 import org.bukkit.entity.minecart.PoweredMinecart;
 
@@ -10,117 +11,139 @@ import static net.glowstone.entity.meta.MetadataType.*;
  */
 public enum MetadataIndex {
 
+    //Entity
     STATUS(0, BYTE, Entity.class),
-    AIR_TIME(1, SHORT, Entity.class),
-    SILENT(4, BYTE, Entity.class),
-
+    AIR_TIME(1, INT, Entity.class),
     NAME_TAG(2, STRING, Entity.class),
     SHOW_NAME_TAG(3, BYTE, Entity.class),
+    SILENT(4, BYTE, Entity.class),
 
+    //TODO 1.9 - Support this
+    //AREAEFFECTCLOUD_RADIUS(5, FLOAT, Entity.class),
+    //AREAEFFECTCLOUD_COLOR(6, INT, Entity.class),
+    //AREAEFFECTCLOUD_UNKNOWN(7, BOOLEAN, Entity.class),
+    //AREAEFFECTCLOUD_PARTICLEID(8, INT, Entity.class),
+
+    ARROW_CRITICAL(5, BYTE, Arrow.class),
+
+    TIPPEDARROW_COLOR(6, INT, Arrow.class), //TODO Proper arrow class
+
+    BOAT_HIT_TIME(5, INT, Boat.class),
+    BOAT_DIRECTION(6, INT, Boat.class),
+    BOAT_DAMAGE_TAKEN(7, FLOAT, Boat.class),
+    BOAT_TYPE(8, INT, Boat.class),
+
+    ENDERCRYSTAL_BEAM_TARGET(5, OPTPOSITION, EnderCrystal.class),
+    ENDERCRYSTAL_SHOW_BOTTOM(6, BOOLEAN, EnderCrystal.class),
+
+    WITHERSKULL_INVULNERABLE(5, BOOLEAN, WitherSkull.class),
+
+    FIREWORK_INFO(5, ITEM, Firework.class),
+
+    ITEM_FRAME_ITEM(5, ITEM, ItemFrame.class),
+    ITEM_FRAME_ROTATION(6, INT, ItemFrame.class),
+
+    ITEM_ITEM(5, ITEM, Item.class),
+
+    HAND_USED(5, BYTE, LivingEntity.class), //TODO : 1.9 - To confirm
     HEALTH(6, FLOAT, LivingEntity.class),
     POTION_COLOR(7, INT, LivingEntity.class),
-    POTION_AMBIENT(8, BYTE, LivingEntity.class),
+    POTION_AMBIENT(8, BOOLEAN, LivingEntity.class),
     ARROW_COUNT(9, BYTE, LivingEntity.class),
-    NO_AI(15, BYTE, LivingEntity.class),
-
-    AGE(12, BYTE, Ageable.class),
 
     ARMORSTAND_FLAGS(10, BYTE, ArmorStand.class),
-    ARMORSTAND_HEAD_POSITION(11, EULER_ANGLE, ArmorStand.class),
-    ARMORSTAND_BODY_POSITION(12, EULER_ANGLE, ArmorStand.class),
-    ARMORSTAND_LEFT_ARM_POSITION(13, EULER_ANGLE, ArmorStand.class),
-    ARMORSTAND_RIGHT_ARM_POSITION(14, EULER_ANGLE, ArmorStand.class),
-    ARMORSTAND_LEFT_LEG_POSITION(15, EULER_ANGLE, ArmorStand.class),
-    ARMORSTAND_RIGHT_LEG_POSITION(16, EULER_ANGLE, ArmorStand.class),
+    ARMORSTAND_HEAD_POSITION(11, VECTOR, ArmorStand.class),
+    ARMORSTAND_BODY_POSITION(12, VECTOR, ArmorStand.class),
+    ARMORSTAND_LEFT_ARM_POSITION(13, VECTOR, ArmorStand.class),
+    ARMORSTAND_RIGHT_ARM_POSITION(14, VECTOR, ArmorStand.class),
+    ARMORSTAND_LEFT_LEG_POSITION(15, VECTOR, ArmorStand.class),
+    ARMORSTAND_RIGHT_LEG_POSITION(16, VECTOR, ArmorStand.class),
 
-    // allowed to override NAME_TAG from LivingEntity
-    PLAYER_SKIN_FLAGS(10, BYTE, HumanEntity.class),
-    PLAYER_FLAGS(16, BYTE, HumanEntity.class),
-    PLAYER_ABSORPTION_HEARTS(17, FLOAT, HumanEntity.class),
-    PLAYER_SCORE(18, INT, HumanEntity.class),
+    //NO_AI(10, BYTE, Insentient.class), TODO - 1.9 "Insentient extends Living". Need more information
 
-    HORSE_FLAGS(16, INT, Horse.class),
-    HORSE_TYPE(19, BYTE, Horse.class),
-    HORSE_STYLE(20, INT, Horse.class),
-    HORSE_OWNER(21, STRING, Horse.class),
-    HORSE_ARMOR(22, INT, Horse.class),
+    BAT_HANGING(11, BYTE, Bat.class),
 
-    BAT_HANGING(16, BYTE, Bat.class),
+    AGE_ISBABY(11, BOOLEAN, Ageable.class),
 
-    OCELOT_FLAGS(16, BYTE, Ocelot.class),
-    OCELOT_OWNER(17, STRING, Ocelot.class),
-    OCELOT_TYPE(18, BYTE, Ocelot.class),
+    HORSE_FLAGS(12, BYTE, Horse.class),
+    HORSE_TYPE(13, INT, Horse.class),
+    HORSE_STYLE(14, INT, Horse.class),
+    HORSE_OWNER(15, OPTUUID, Horse.class),
+    HORSE_ARMOR(16, INT, Horse.class),
 
-    WOLF_FLAGS(16, BYTE, Wolf.class),
-    WOLF_OWNER(17, STRING, Wolf.class),
-    WOLF_HEALTH(18, FLOAT, Wolf.class),
-    WOLF_BEGGING(19, BYTE, Wolf.class),
+    PIG_SADDLE(12, BOOLEAN, Pig.class),
+
+    RABBIT_TYPE(12, INT, Rabbit.class),
+
+    SHEEP_DATA(12, BYTE, Sheep.class),
+
+    TAMEABLEAANIMAL_STATUS(12, BYTE, GlowTameable.class), //TODO 1.9 - We need a "TameableAnimal extends Animal"
+    TAMEABLEANIMAL_OWNER(13, OPTUUID, GlowTameable.class),
+
+    OCELOT_TYPE(14, INT, Ocelot.class),
+
+    WOLF_HEALTH(14, FLOAT, Wolf.class),
+    WOLF_BEGGING(15, BOOLEAN, Wolf.class),
     WOLF_COLOR(20, BYTE, Wolf.class),
 
-    PIG_SADDLE(16, BYTE, Pig.class),
+    VILLAGER_TYPE(12, INT, Villager.class), //TODO 1.9 - Currently Unknown on wiki.vg
 
-    RABBIT_TYPE(18, BYTE, Rabbit.class),
+    GOLEM_PLAYER_BUILT(11, BYTE, IronGolem.class),
 
-    SHEEP_DATA(16, BYTE, Sheep.class),
+    //SHULKER_FACING_DIRECTION(11, DIRECTION, Golem.class), //TODO 1.9 - New mob?
+    //SHULKER_ATTACHMENT_POSITION(12, OPTPOSITION, Golem.class), //TODO 1.9 - New mob?
+    //SHULKER_SHIELD_HEIGHT(13, BYTE, Golem.class), //TODO 1.9 - New mob?
 
-    VILLAGER_TYPE(16, INT, Villager.class),
+    BLAZE_ON_FIRE(11, BYTE, Blaze.class),
 
-    ENDERMAN_BLOCK(16, SHORT, Enderman.class),
-    ENDERMAN_BLOCK_DATA(17, BYTE, Enderman.class),
-    ENDERMAN_ALERTED(18, BYTE, Enderman.class),
+    CREEPER_STATE(11, INT, Creeper.class),
+    CREEPER_POWERED(12, BOOLEAN, Creeper.class),
+    CREEPER_IGNITED(13, BOOLEAN, Creeper.class),
 
-    ZOMBIE_IS_CHILD(12, BYTE, Zombie.class),
-    ZOMBIE_IS_VILLAGER(13, BYTE, Zombie.class),
-    ZOMBIE_IS_CONVERTING(14, BYTE, Zombie.class),
+    GUARDIAN_FLAGS(11, BYTE, Guardian.class),
+    GUARDIAN_TARGET(12, INT, Guardian.class),
 
-    BLAZE_ON_FIRE(16, BYTE, Blaze.class),
+    SKELETON_TYPE(11, INT, Skeleton.class),
+    SKELETON_UNKNOWN(12, BOOLEAN, Skeleton.class), //TODO 1.9 - Something hand related according to wiki.vg
 
-    SPIDER_CLIMBING(16, BYTE, Spider.class),
+    SPIDER_CLIMBING(11, BYTE, Spider.class),
 
-    CREEPER_STATE(16, BYTE, Creeper.class),
-    CREEPER_POWERED(17, BYTE, Creeper.class),
+    WITCH_AGGRESSIVE(11, BOOLEAN, Witch.class),
 
-    GHAST_ATTACKING(16, BYTE, Ghast.class),
+    WITHER_TARGET_1(11, INT, Wither.class),
+    WITHER_TARGET_2(12, INT, Wither.class),
+    WITHER_TARGET_3(13, INT, Wither.class),
+    WITHER_INVULN_TIME(14, INT, Wither.class),
 
-    SLIME_SIZE(16, BYTE, Slime.class),
+    ZOMBIE_IS_CHILD(11, BOOLEAN, Zombie.class),
+    ZOMBIE_IS_VILLAGER(12, INT, Zombie.class),
+    ZOMBIE_IS_CONVERTING(13, BOOLEAN, Zombie.class),
+    ZOMBIE_HANDS_RISED_UP(14, BOOLEAN, Zombie.class),
 
-    SKELETON_TYPE(13, BYTE, Skeleton.class),
+    ENDERMAN_BLOCK(11, BLOCKID, Enderman.class),
+    ENDERMAN_SCREAMING(12, BOOLEAN, Enderman.class),
 
-    WITCH_AGGRESSIVE(21, BYTE, Witch.class),
+    ENDERDRAGON_PHASE(11, INT, EnderDragon.class),
 
-    GOLEM_PLAYER_BUILT(16, BYTE, IronGolem.class),
+    GHAST_ATTACKING(11, BOOLEAN, Ghast.class),
 
-    WITHER_TARGET_1(17, INT, Wither.class),
-    WITHER_TARGET_2(18, INT, Wither.class),
-    WITHER_TARGET_3(19, INT, Wither.class),
-    WITHER_INVULN_TIME(20, INT, Wither.class),
+    SLIME_SIZE(11, INT, Slime.class),
 
-    GUARDIAN_FLAGS(16, BYTE, Guardian.class),
-    GUARDIAN_TARGET(17, INT, Guardian.class),
-    
-    BOAT_HIT_TIME(17, INT, Boat.class),
-    BOAT_DIRECTION(18, INT, Boat.class),
-    BOAT_DAMAGE_TAKEN(19, FLOAT, Boat.class),
+    MINECART_SHAKE_POWER(5, INT, Minecart.class),
+    MINECART_SHAKE_DIRECTION(6, INT, Minecart.class),
+    MINECART_DAMAGE_TAKEN(7, FLOAT, Minecart.class),
+    MINECART_BLOCK(8, INT, Minecart.class),
+    MINECART_BLOCK_OFFSET(9, INT, Minecart.class),
+    MINECART_BLOCK_SHOWN(10, BYTE, Minecart.class),
 
-    MINECART_SHAKE_POWER(17, INT, Minecart.class),
-    MINECART_SHAKE_DIRECTION(18, INT, Minecart.class),
-    MINECART_DAMAGE_TAKEN(19, FLOAT, Minecart.class),
-    MINECART_BLOCK(20, INT, Minecart.class),
-    MINECART_BLOCK_OFFSET(21, INT, Minecart.class),
-    MINECART_BLOCK_SHOWN(22, BYTE, Minecart.class),
+    //TODO - 1.9 When Those minecarts are implemented, uncomment this
+    //MINECARTCOMMANDBLOCK_COMMAND(11, STRING, Minecart.class), //TODO 1.9 - Command block minecraft addition
+    //MINECARTCOMMANDBLOCK_LAST_OUTPUT(12, CHAT, Minecart.class), //TODO 1.9 - Command block minecraft addition
 
-    FURNACE_MINECART_POWERED(16, BYTE, PoweredMinecart.class),
+    FURNACE_MINECART_POWERED(11, BOOLEAN, PoweredMinecart.class),
 
-    ITEM_ITEM(10, ITEM, Item.class),
+    TNT_PRIMED(5, INT, TNTPrimed.class);
 
-    ARROW_CRITICAL(16, BYTE, Arrow.class),
-
-    FIREWORK_INFO(8, ITEM, Firework.class),
-
-    ITEM_FRAME_ITEM(8, ITEM, ItemFrame.class),
-    ITEM_FRAME_ROTATION(9, BYTE, ItemFrame.class),
-
-    ENDER_CRYSTAL_HEALTH(8, INT, EnderCrystal.class);
 
     private final int index;
     private final MetadataType type;

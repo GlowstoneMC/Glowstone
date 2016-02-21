@@ -9,7 +9,7 @@ import net.glowstone.net.message.play.game.ClientSettingsMessage;
 @Data
 public final class ClientSettings {
 
-    public static final ClientSettings DEFAULT = new ClientSettings("en_US", 8, 0, true, 127);
+    public static final ClientSettings DEFAULT = new ClientSettings("en_US", 8, 0, true, 127, 0);
 
     public static final int CHAT_ENABLED = 0;
     public static final int CHAT_COMMANDS_ONLY = 1;
@@ -27,13 +27,14 @@ public final class ClientSettings {
     private final int viewDistance, chatFlags;
     private final boolean chatColors;
     private final int skinFlags;
+    private final int mainHand;
 
     /**
      * Construct the ClientSettings from a ClientSettingsMessage.
      * @param msg The message sent by the client.
      */
     public ClientSettings(ClientSettingsMessage msg) {
-        this(msg.getLocale(), msg.getViewDistance(), msg.getChatFlags(), msg.isChatColors(), msg.getSkinFlags());
+        this(msg.getLocale(), msg.getViewDistance(), msg.getChatFlags(), msg.isChatColors(), msg.getSkinFlags(), msg.getHand());
     }
 
     /**
@@ -43,13 +44,15 @@ public final class ClientSettings {
      * @param chatFlags The client's chat flags.
      * @param chatColors Whether the client has chat colors enabled.
      * @param skinFlags The client's skin flags.
+     * @param mainHand The main hand of the player.
      */
-    public ClientSettings(String locale, int viewDistance, int chatFlags, boolean chatColors, int skinFlags) {
+    public ClientSettings(String locale, int viewDistance, int chatFlags, boolean chatColors, int skinFlags, int mainHand) {
         this.locale = locale;
         this.viewDistance = viewDistance;
         this.chatFlags = chatFlags;
         this.chatColors = chatColors;
         this.skinFlags = skinFlags;
+        this.mainHand = mainHand;
     }
 
     /**

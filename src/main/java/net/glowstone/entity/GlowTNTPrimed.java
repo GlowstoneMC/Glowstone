@@ -67,7 +67,7 @@ public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
                 yaw = Position.getIntYaw(location);
 
         LinkedList<Message> result = new LinkedList<>();
-        result.add(new SpawnObjectMessage(id, 50, x, y, z, pitch, yaw));
+        result.add(new SpawnObjectMessage(id, getUniqueId(), 50, x, y, z, pitch, yaw));
         return result;
     }
 

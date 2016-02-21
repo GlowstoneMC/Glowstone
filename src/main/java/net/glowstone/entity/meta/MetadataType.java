@@ -1,21 +1,27 @@
 package net.glowstone.entity.meta;
 
+import net.glowstone.util.Position;
+import net.glowstone.util.TextMessage;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.EulerAngle;
-import org.bukkit.util.Vector;
 
 /**
  * The types of values that entity metadata can contain.
  */
 public enum MetadataType {
     BYTE(Byte.class),
-    SHORT(Short.class),
     INT(Integer.class),
     FLOAT(Float.class),
     STRING(String.class),
+    CHAT(TextMessage.class),
     ITEM(ItemStack.class),
-    VECTOR(Vector.class),
-    EULER_ANGLE(EulerAngle.class);
+    BOOLEAN(Boolean.class),
+    VECTOR(EulerAngle.class),
+    POSITION(Position.class),
+    OPTPOSITION(Position.class),
+    DIRECTION(Integer.class),
+    OPTUUID(java.util.UUID.class),
+    BLOCKID(Integer.class);
 
     private final Class<?> dataType;
 

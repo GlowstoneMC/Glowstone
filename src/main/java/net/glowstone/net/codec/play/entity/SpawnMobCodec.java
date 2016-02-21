@@ -9,11 +9,13 @@ import net.glowstone.net.message.play.entity.SpawnMobMessage;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 public final class SpawnMobCodec implements Codec<SpawnMobMessage> {
     @Override
     public SpawnMobMessage decode(ByteBuf buf) throws IOException {
         int id = ByteBufUtils.readVarInt(buf);
+        UUID uuid = GlowBufUtils.readUuid(buf);
         int type = buf.readByte();
         int x = buf.readInt();
         int y = buf.readInt();
@@ -25,12 +27,13 @@ public final class SpawnMobCodec implements Codec<SpawnMobMessage> {
         int velY = buf.readShort();
         int velZ = buf.readShort();
         List<MetadataMap.Entry> list = GlowBufUtils.readMetadata(buf);
-        return new SpawnMobMessage(id, type, x, y, z, rotation, pitch, headPitch, velX, velY, velZ, list);
+        return new SpawnMobMessage(id, uuid, type, x, y, z, rotation, pitch, headPitch, velX, velY, velZ, list);
     }
 
     @Override
     public ByteBuf encode(ByteBuf buf, SpawnMobMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
+        GlowBufUtils.writeUuid(buf, message.getUuid());
         buf.writeByte(message.getType());
         buf.writeInt(message.getX());
         buf.writeInt(message.getY());

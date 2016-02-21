@@ -16,7 +16,11 @@ public final class InteractEntityCodec implements Codec<InteractEntityMessage> {
             float targetX = buf.readFloat();
             float targetY = buf.readFloat();
             float targetZ = buf.readFloat();
-            return new InteractEntityMessage(id, action, targetX, targetY, targetZ);
+            int hand = ByteBufUtils.readVarInt(buf);
+            return new InteractEntityMessage(id, action, targetX, targetY, targetZ, hand);
+        } else if (action == InteractEntityMessage.Action.INTERACT.ordinal()) {
+            int hand = ByteBufUtils.readVarInt(buf);
+            return new InteractEntityMessage(id, action, hand);
         }
         return new InteractEntityMessage(id, action);
     }
@@ -29,6 +33,9 @@ public final class InteractEntityCodec implements Codec<InteractEntityMessage> {
             buf.writeFloat(message.getTargetX());
             buf.writeFloat(message.getTargetY());
             buf.writeFloat(message.getTargetZ());
+            ByteBufUtils.writeVarInt(buf, message.getHand());
+        } else if (message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
+            ByteBufUtils.writeVarInt(buf, message.getHand());
         }
         return buf;
     }
