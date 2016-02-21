@@ -16,26 +16,17 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
     private UUID ownerUUId;
     protected boolean tamed;
     private boolean sitting;
-    private MetadataIndex flagIndex;
+    private MetadataIndex status = MetadataIndex.TAMEABLEAANIMAL_STATUS;
+    private MetadataIndex ownerMetadata = MetadataIndex.TAMEABLEANIMAL_OWNER;
 
     public GlowTameable(Location location, EntityType type, double maxHealth) {
         super(location, type, maxHealth);
-        switch (type) {
-            case WOLF:
-                flagIndex = MetadataIndex.WOLF_FLAGS;
-                break;
-            case HORSE:
-                flagIndex = MetadataIndex.HORSE_FLAGS;
-                break;
-            case OCELOT:
-                flagIndex = MetadataIndex.OCELOT_TYPE;
-                break;
-        }
     }
 
     protected GlowTameable(Location location, EntityType type, double maxHealth, AnimalTamer owner) {
         super(location, type, maxHealth);
         this.owner = owner;
+        metadata.set(ownerMetadata, owner.getUniqueId());
     }
 
     @Override
@@ -45,7 +36,7 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
 
     @Override
     public void setTamed(boolean isTamed) {
-        metadata.setBit(flagIndex, TameableFlags.IS_TAME, isTamed);
+        metadata.setBit(status, TameableFlags.IS_TAME, isTamed); //TODO 1.9 The flag might need change
         this.tamed = isTamed;
     }
 
@@ -63,6 +54,7 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
         }
         this.owner = animalTamer;
         this.ownerUUId = animalTamer.getUniqueId();
+        metadata.set(ownerMetadata, owner.getUniqueId());
     }
 
     public UUID getOwnerUUID() {
@@ -92,7 +84,7 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
     }
 
     public void setSitting(boolean isSitting) {
-        metadata.setBit(flagIndex, TameableFlags.IS_SITTING, isSitting);
+        metadata.setBit(status, TameableFlags.IS_SITTING, isSitting); //TODO 1.9 - This flag might need change
         this.sitting = isSitting;
     }
 

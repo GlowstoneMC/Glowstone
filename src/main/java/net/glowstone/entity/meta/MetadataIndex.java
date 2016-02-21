@@ -121,7 +121,7 @@ public enum MetadataIndex {
     ZOMBIE_HANDS_RISED_UP(14, BOOLEAN, Zombie.class),
 
     ENDERMAN_BLOCK(11, BLOCKID, Enderman.class),
-    ENDERMAN_ALERTED(12, BOOLEAN, Enderman.class),
+    ENDERMAN_SCREAMING(12, BOOLEAN, Enderman.class),
 
     ENDERDRAGON_PHASE(11, INT, EnderDragon.class),
 

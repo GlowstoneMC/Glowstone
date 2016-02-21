@@ -263,7 +263,6 @@ public final class GlowBufUtils {
             buf.writeShort(stack.getTypeId());
             buf.writeByte(stack.getAmount());
             buf.writeShort(stack.getDurability());
-
             if (stack.hasItemMeta()) {
                 CompoundTag tag = GlowItemFactory.instance().writeNbt(stack.getItemMeta());
                 writeCompound(buf, tag);

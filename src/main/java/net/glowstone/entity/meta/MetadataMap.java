@@ -86,6 +86,8 @@ public class MetadataMap {
         return (Number) o;
     }
 
+    public boolean getBoolean(MetadataIndex index) {return get(index, MetadataType.BOOLEAN, false); }
+
     public byte getByte(MetadataIndex index) {
         return get(index, MetadataType.BYTE, (byte) 0);
     }
