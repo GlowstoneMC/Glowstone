@@ -40,7 +40,6 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
             double distance = newLocation.distanceSquared(oldLocation);
             if (distance > 100 * 100) {
                 GlowServer.logger.warning(session.getPlayer().getName() + " moved too quickly! (hacking)");
-                session.getPlayer().kickPlayer("You moved too quickly :( (Hacking?)");
                 return;
             } else if (distance > 100) {
                 GlowServer.logger.warning(session.getPlayer().getName() + " moved too quickly!");
