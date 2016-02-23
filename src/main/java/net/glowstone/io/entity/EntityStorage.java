@@ -35,7 +35,7 @@ public final class EntityStorage {
      */
     private static final Map<Class<? extends GlowEntity>, EntityStore<?>> classTable = new HashMap<>();
 
-    /**
+    /*
      * Populates the maps with stores.
      */
     static {

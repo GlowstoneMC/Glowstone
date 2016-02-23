@@ -30,7 +30,7 @@ public final class StructureStorage {
      */
     private static final Map<Class<? extends GlowStructure>, StructureStore<?>> classTable = new HashMap<>();
 
-    /**
+    /*
      * Populates the maps with stores.
      */
     static {

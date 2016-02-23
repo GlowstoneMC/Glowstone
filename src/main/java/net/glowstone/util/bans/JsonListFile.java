@@ -91,7 +91,7 @@ public abstract class JsonListFile {
      */
     protected abstract BaseEntry readEntry(Map<String, String> object);
 
-    /**
+    /*
      * Import data from a legacy format if possible.
      */
     //protected abstract void importLegacy();

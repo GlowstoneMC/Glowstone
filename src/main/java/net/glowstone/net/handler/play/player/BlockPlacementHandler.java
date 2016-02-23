@@ -29,7 +29,7 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
 
         //GlowServer.logger.info(session + ": " + message);
 
-        /**
+        /*
          * The client sends this packet for the following cases:
          * Right click air:
          * - Send direction=-1 packet for any non-null item
@@ -52,7 +52,7 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         Action action = Action.RIGHT_CLICK_BLOCK;
         GlowBlock clicked = player.getWorld().getBlockAt(message.getX(), message.getY(), message.getZ());
 
-        /**
+        /*
          * Check if the message is a -1. If we *just* got a message with the
          * values filled, discard it, otherwise perform right-click-air.
          */
