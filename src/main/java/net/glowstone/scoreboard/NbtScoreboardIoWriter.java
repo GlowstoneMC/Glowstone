@@ -15,6 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class NbtScoreboardIoWriter {
     public static void writeMainScoreboard(File path, GlowScoreboard scoreboard) throws IOException {
@@ -85,10 +86,7 @@ public class NbtScoreboardIoWriter {
             teamNbt.putString("TeamColor", team.getColor().name().toLowerCase());
 
 
-            List<String> players = new ArrayList<>();
-            for (OfflinePlayer player: team.getPlayers()) {
-                players.add(player.getName());
-            }
+            List<String> players = team.getPlayers().stream().map(OfflinePlayer::getName).collect(Collectors.toList());
 
             teamNbt.putList("Players", TagType.STRING, players);
             teams.add(teamNbt);

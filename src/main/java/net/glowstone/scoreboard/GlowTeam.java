@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Implementation for scoreboard teams.
@@ -59,9 +60,7 @@ public final class GlowTeam implements Team {
 
     Message getCreateMessage() {
         List<String> playerNames = new ArrayList<>(players.size());
-        for (OfflinePlayer player : players) {
-            playerNames.add(player.getName());
-        }
+        playerNames.addAll(players.stream().map(OfflinePlayer::getName).collect(Collectors.toList()));
         return ScoreboardTeamMessage.create(name, displayName, prefix, suffix, friendlyFire, seeInvisible, nameTagVisibility, color, playerNames);
     }
 

@@ -4,6 +4,7 @@ import org.apache.commons.lang3.Validate;
 
 import java.lang.reflect.Constructor;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * The {@code TAG_Compound} tag.
@@ -106,9 +107,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     public <V> List<V> getList(String key, TagType type) {
         List<? extends Tag> original = getTagList(key, type);
         List<V> result = new ArrayList<>(original.size());
-        for (Tag item : original) {
-            result.add((V) item.getValue());
-        }
+        result.addAll(original.stream().map(item -> (V) item.getValue()).collect(Collectors.toList()));
         return result;
     }
 
@@ -204,7 +203,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
         put(key, new DoubleTag(value));
     }
 
-    public void putByteArray(String key, byte[] value) {
+    public void putByteArray(String key, byte... value) {
         put(key, new ByteArrayTag(value));
     }
 
@@ -212,7 +211,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
         put(key, new StringTag(value));
     }
 
-    public void putIntArray(String key, int[] value) {
+    public void putIntArray(String key, int... value) {
         put(key, new IntArrayTag(value));
     }
 

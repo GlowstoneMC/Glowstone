@@ -58,7 +58,7 @@ public class GlowInventory implements Inventory {
     }
 
     public GlowInventory(InventoryHolder owner, InventoryType type, int size, String title) {
-        initialize(GlowInventorySlot.createList(size), new HashSet<HumanEntity>(), owner, type, title);
+        initialize(GlowInventorySlot.createList(size), new HashSet<>(), owner, type, title);
     }
 
     /**
@@ -535,7 +535,7 @@ public class GlowInventory implements Inventory {
 
         int i = 0;
         for (ItemStack slotItem : this) {
-            if (slotItem != null && slotItem.equals(item)) {
+            if (Objects.equals(slotItem, item)) {
                 result.put(i, slotItem);
             }
 
@@ -575,7 +575,7 @@ public class GlowInventory implements Inventory {
     public int first(ItemStack item) {
         int i = 0;
         for (ItemStack slotItem : this) {
-            if (slotItem != null && slotItem.equals(item)) {
+            if (Objects.equals(slotItem, item)) {
                 return i;
             }
 
@@ -596,25 +596,19 @@ public class GlowInventory implements Inventory {
     @Override
     public void remove(int materialId) {
         HashMap<Integer, ? extends ItemStack> stacks = all(materialId);
-        for (Integer slot : stacks.keySet()) {
-            clear(slot);
-        }
+        stacks.keySet().forEach(this::clear);
     }
 
     @Override
     public void remove(Material material) {
         HashMap<Integer, ? extends ItemStack> stacks = all(material);
-        for (Integer slot : stacks.keySet()) {
-            clear(slot);
-        }
+        stacks.keySet().forEach(this::clear);
     }
 
     @Override
     public void remove(ItemStack item) {
         HashMap<Integer, ? extends ItemStack> stacks = all(item);
-        for (Integer slot : stacks.keySet()) {
-            clear(slot);
-        }
+        stacks.keySet().forEach(this::clear);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -627,9 +621,8 @@ public class GlowInventory implements Inventory {
 
     @Override
     public void clear() {
-        Iterator<GlowInventorySlot> iterator = slots.iterator();
-        while (iterator.hasNext()) {
-            iterator.next().setItem(null);
+        for (GlowInventorySlot slot : slots) {
+            slot.setItem(null);
         }
     }
 

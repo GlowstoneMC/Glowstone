@@ -106,7 +106,7 @@ public final class CraftingManager implements Iterable<Recipe> {
      * Get the amount of layers in the crafting matrix.
      * @param items The items in the crafting matrix.
      */
-    public int getLayers(ItemStack[] items) {
+    public int getLayers(ItemStack... items) {
         int layers = 0;
         for (ItemStack item: items) {
             if (item != null && (item.getAmount() < layers || layers == 0)) {
@@ -121,7 +121,7 @@ public final class CraftingManager implements Iterable<Recipe> {
      * @param items An array of items with null being empty slots. Length should be a perfect square.
      * @return The Recipe that matches the input, or null if none match.
      */
-    public Recipe getCraftingRecipe(ItemStack[] items) {
+    public Recipe getCraftingRecipe(ItemStack... items) {
         int size = (int) Math.sqrt(items.length);
 
         if (size * size != items.length) {
@@ -158,7 +158,7 @@ public final class CraftingManager implements Iterable<Recipe> {
         return getShapelessRecipe(items);
     }
 
-    private ShapedRecipe getShapedRecipe(int size, ItemStack[] items) {
+    private ShapedRecipe getShapedRecipe(int size, ItemStack... items) {
         for (ShapedRecipe recipe : shapedRecipes) {
             Map<Character, ItemStack> ingredients = recipe.getIngredientMap();
             String[] shape = recipe.getShape();
@@ -221,7 +221,7 @@ public final class CraftingManager implements Iterable<Recipe> {
         return null;
     }
 
-    private ShapelessRecipe getShapelessRecipe(ItemStack[] items) {
+    private ShapelessRecipe getShapelessRecipe(ItemStack... items) {
         recipe:
         for (ShapelessRecipe recipe : shapelessRecipes) {
             boolean[] accountedFor = new boolean[items.length];

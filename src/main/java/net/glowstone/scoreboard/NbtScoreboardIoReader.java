@@ -15,6 +15,7 @@ import org.bukkit.scoreboard.Score;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class NbtScoreboardIoReader {
 
@@ -103,9 +104,7 @@ public class NbtScoreboardIoReader {
 
         List<OfflinePlayer> players = new ArrayList<>();
         List<String> playerNames = data.getList("Players", TagType.STRING);
-        for (String player: playerNames) {
-            players.add(new GlowOfflinePlayer((GlowServer) Bukkit.getServer(), player));
-        }
+        players.addAll(playerNames.stream().map(player -> new GlowOfflinePlayer((GlowServer) Bukkit.getServer(), player)).collect(Collectors.toList()));
 
         GlowTeam team = (GlowTeam) scoreboard.registerNewTeam(name);
         team.setDisplayName(displayName);
@@ -117,9 +116,7 @@ public class NbtScoreboardIoReader {
         team.setDeathMessageVisibility(deathMessageVisibility);
         team.setColor(teamColor);
 
-        for (OfflinePlayer player: players) {
-            team.addPlayer(player);
-        }
+        players.forEach(team::addPlayer);
     }
 
     private static String getOrNull(String key, CompoundTag tag) {

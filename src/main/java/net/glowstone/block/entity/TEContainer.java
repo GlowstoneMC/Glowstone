@@ -24,7 +24,7 @@ public abstract class TEContainer extends TileEntity {
         return inventory;
     }
 
-    public void setContents(ItemStack[] contents) {
+    public void setContents(ItemStack... contents) {
         this.inventory.setContents(contents);
     }
 

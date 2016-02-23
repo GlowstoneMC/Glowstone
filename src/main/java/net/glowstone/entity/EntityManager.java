@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A class which manages all of the entities within a world.
@@ -103,12 +104,7 @@ public final class EntityManager implements Iterable<GlowEntity> {
 
     public List<Entity> getEntitiesInside(BoundingBox searchBox, GlowEntity except) {
         // todo: narrow search based on the box's corners
-        List<Entity> result = new LinkedList<>();
-        for (GlowEntity entity : entities.values()) {
-            if (entity != except && entity.intersects(searchBox)) {
-                result.add(entity);
-            }
-        }
+        List<Entity> result = entities.values().stream().filter(entity -> entity != except && entity.intersects(searchBox)).collect(Collectors.toCollection(LinkedList::new));
         return result;
     }
 }

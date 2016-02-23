@@ -14,7 +14,7 @@ final class ByteArrayTag extends Tag<byte[]> {
      * Creates the tag.
      * @param value The value.
      */
-    public ByteArrayTag(byte[] value) {
+    public ByteArrayTag(byte... value) {
         super(TagType.BYTE_ARRAY);
         this.value = value;
     }

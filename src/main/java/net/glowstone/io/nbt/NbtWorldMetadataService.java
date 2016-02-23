@@ -107,11 +107,9 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         // game rules
         if (level.isCompound("GameRules")) {
             CompoundTag gameRules = level.getCompound("GameRules");
-            for (String key : gameRules.getValue().keySet()) {
-                if (gameRules.isString(key)) {
-                    world.setGameRuleValue(key, gameRules.getString(key));
-                }
-            }
+            gameRules.getValue().keySet().stream().filter(key -> gameRules.isString(key)).forEach(key -> {
+                world.setGameRuleValue(key, gameRules.getString(key));
+            });
             level.remove("GameRules");
         }
 

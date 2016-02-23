@@ -23,6 +23,7 @@ import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A GlowLivingEntity is a {@link org.bukkit.entity.Player} or {@link org.bukkit.entity.Monster}.
@@ -192,9 +193,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     public List<Message> createUpdateMessage() {
         List<Message> messages = super.createUpdateMessage();
 
-        for (EquipmentMonitor.Entry change : equipmentMonitor.getChanges()) {
-            messages.add(new EntityEquipmentMessage(id, change.slot, change.item));
-        }
+        messages.addAll(equipmentMonitor.getChanges().stream().map(change -> new EntityEquipmentMessage(id, change.slot, change.item)).collect(Collectors.toList()));
 
         attributeManager.applyMessages(messages);
 
@@ -362,14 +361,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     private List<Block> getLineOfSight(HashSet<Byte> transparent, int maxDistance, int maxLength) {
-        Set<Material> materials = new HashSet<Material>();
-        Iterator<Byte> itr = transparent.iterator();
-
-        while (itr.hasNext()) {
-            byte b = itr.next().byteValue();
-            materials.add(Material.getMaterial((int) b));
-        }
-
+        Set<Material> materials = transparent.stream().map(Material::getMaterial).collect(Collectors.toSet());
         return getLineOfSight(materials, maxDistance, maxLength);
     }
 

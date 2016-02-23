@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
 
@@ -53,10 +54,7 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         super.writeNbt(tag);
 
         if (hasCustomEffects()) {
-            List<CompoundTag> customEffects = new ArrayList<>();
-            for (PotionEffect effect : effects) {
-                customEffects.add(toNBT(effect));
-            }
+            List<CompoundTag> customEffects = effects.stream().map(GlowMetaPotion::toNBT).collect(Collectors.toList());
             tag.putCompoundList("CustomEffects", customEffects);
         }
     }

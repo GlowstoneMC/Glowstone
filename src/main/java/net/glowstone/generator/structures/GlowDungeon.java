@@ -90,7 +90,7 @@ public class GlowDungeon extends GlowStructurePiece {
             return false;
         }
 
-        final Map<StructureMaterial, Integer> stones = new HashMap<StructureMaterial, Integer>();
+        final Map<StructureMaterial, Integer> stones = new HashMap<>();
         builder.addRandomMaterial(stones, 1, Material.COBBLESTONE, 0);
         builder.addRandomMaterial(stones, 3, Material.MOSSY_COBBLESTONE, 0);
 

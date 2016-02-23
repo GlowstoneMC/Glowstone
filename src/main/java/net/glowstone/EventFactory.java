@@ -41,12 +41,7 @@ public final class EventFactory {
             server.getPluginManager().callEvent(event);
             return event;
         } else {
-            FutureTask<T> task = new FutureTask<>(new Runnable() {
-                @Override
-                public void run() {
-                    server.getPluginManager().callEvent(event);
-                }
-            }, event);
+            FutureTask<T> task = new FutureTask<>(() -> server.getPluginManager().callEvent(event), event);
             server.getScheduler().scheduleInTickExecution(task);
             try {
                 return task.get();

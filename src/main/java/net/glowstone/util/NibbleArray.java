@@ -30,7 +30,7 @@ public final class NibbleArray {
      * is created.
      * @param data The raw data to use.
      */
-    public NibbleArray(byte[] data) {
+    public NibbleArray(byte... data) {
         this.data = data;
     }
 
@@ -103,7 +103,7 @@ public final class NibbleArray {
      * @param source The array to copy from.
      * @throws IllegalArgumentException If source is not the correct length.
      */
-    public void setRawData(byte[] source) {
+    public void setRawData(byte... source) {
         Validate.isTrue(source.length == data.length, "expected byte array of length " + data.length + ", not " + source.length);
         System.arraycopy(source, 0, data, 0, source.length);
     }
