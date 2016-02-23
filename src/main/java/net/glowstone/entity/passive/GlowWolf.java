@@ -1,7 +1,7 @@
 package net.glowstone.entity.passive;
 
 import net.glowstone.entity.meta.MetadataIndex;
-import net.glowstone.entity.meta.MetadataIndex.TameableFlags;
+//import net.glowstone.entity.meta.MetadataIndex.TameableFlags;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.entity.AnimalTamer;
@@ -23,12 +23,12 @@ public class GlowWolf extends GlowTameable implements Wolf {
     @Override
     public boolean isAngry() {
         return false;
-        //metadata.getBit(MetadataIndex.WOLF_FLAGS, TameableFlags.WOLF_IS_ANGRY); //TODO 1.9 - Angry seems missing from the metadata according to wiki.vg
+        //metadata.getBit(MetadataIndex.WOLF_FLAGS, TameableFlags.WOLF_IS_ANGRY); TODO 1.9 - Angry seems missing from the metadata according to wiki.vg
     }
 
     @Override
     public void setAngry(boolean angry) {
-        //metadata.setBit(MetadataIndex.WOLF_FLAGS, TameableFlags.WOLF_IS_ANGRY, angry); //TODO 1.9 - Angry seems missing from the metadata according to wiki.vg
+        //metadata.setBit(MetadataIndex.WOLF_FLAGS, TameableFlags.WOLF_IS_ANGRY, angry); TODO 1.9 - Angry seems missing from the metadata according to wiki.vg
     }
 
     @Override
