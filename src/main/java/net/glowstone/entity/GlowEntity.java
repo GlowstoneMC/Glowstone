@@ -774,9 +774,7 @@ public abstract class GlowEntity implements Entity {
     @Override
     public void playEffect(EntityEffect type) {
         EntityStatusMessage message = new EntityStatusMessage(id, type);
-        world.getRawPlayers().stream().filter(player -> player.canSeeEntity(this)).forEach(player -> {
-            player.getSession().send(message);
-        });
+        world.getRawPlayers().stream().filter(player -> player.canSeeEntity(this)).forEach(player -> player.getSession().send(message));
     }
 
     @Override

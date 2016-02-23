@@ -1509,9 +1509,7 @@ public final class GlowWorld implements World {
     @Override
     public void playEffect(Location location, Effect effect, int data, int radius) {
         final int radiusSquared = radius * radius;
-        getRawPlayers().stream().filter(player -> player.getLocation().distanceSquared(location) <= radiusSquared).forEach(player -> {
-            player.playEffect(location, effect, data);
-        });
+        getRawPlayers().stream().filter(player -> player.getLocation().distanceSquared(location) <= radiusSquared).forEach(player -> player.playEffect(location, effect, data));
     }
 
     @Override
@@ -1526,9 +1524,7 @@ public final class GlowWorld implements World {
 
     public void playEffectExceptTo(Location location, Effect effect, int data, int radius, Player exclude) {
         final int radiusSquared = radius * radius;
-        getRawPlayers().stream().filter(player -> !player.equals(exclude) && player.getLocation().distanceSquared(location) <= radiusSquared).forEach(player -> {
-            player.playEffect(location, effect, data);
-        });
+        getRawPlayers().stream().filter(player -> !player.equals(exclude) && player.getLocation().distanceSquared(location) <= radiusSquared).forEach(player -> player.playEffect(location, effect, data));
     }
 
     @Override
@@ -1536,9 +1532,7 @@ public final class GlowWorld implements World {
         if (location == null || sound == null) return;
 
         final double radiusSquared = Math.pow(volume * 16, 2);
-        getRawPlayers().stream().filter(player -> player.getLocation().distanceSquared(location) <= radiusSquared).forEach(player -> {
-            player.playSound(location, sound, volume, pitch);
-        });
+        getRawPlayers().stream().filter(player -> player.getLocation().distanceSquared(location) <= radiusSquared).forEach(player -> player.playSound(location, sound, volume, pitch));
     }
 
     private void playEffect_(Location location, Effect effect, int data) { // fix name collision
@@ -1581,9 +1575,7 @@ public final class GlowWorld implements World {
         final double radiusSquared = radius * radius;
 
 
-        getRawPlayers().stream().filter(player -> player.getLocation().distanceSquared(loc) <= radiusSquared).forEach(player -> {
-            player.spigot().playEffect(loc, particle, id, data, offsetX, offsetY, offsetZ, speed, amount, radius);
-        });
+        getRawPlayers().stream().filter(player -> player.getLocation().distanceSquared(loc) <= radiusSquared).forEach(player -> player.spigot().playEffect(loc, particle, id, data, offsetX, offsetY, offsetZ, speed, amount, radius));
     }
 
     ////////////////////////////////////////////////////////////////////////////

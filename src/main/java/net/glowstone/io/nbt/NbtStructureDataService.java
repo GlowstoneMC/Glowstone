@@ -49,7 +49,7 @@ public class NbtStructureDataService implements StructureDataService {
                         data = data.getCompound("data");
                         if (data.isCompound("Features")) {
                             CompoundTag features = data.getCompound("Features");
-                            features.getValue().keySet().stream().filter(key -> features.isCompound(key)).forEach(key -> {
+                            features.getValue().keySet().stream().filter(features::isCompound).forEach(key -> {
                                 GlowStructure structure = StructureStorage.loadStructure(world, features.getCompound(key));
                                 structures.put(new GlowChunk.Key(structure.getChunkX(), structure.getChunkZ()).hashCode(), structure);
                             });

@@ -882,9 +882,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * @param updateMessage The message to send.
      */
     private void updateUserListEntries(UserListItemMessage updateMessage) {
-        server.getRawOnlinePlayers().stream().filter(player -> player.canSee(this)).forEach(player -> {
-            player.getSession().send(updateMessage);
-        });
+        server.getRawOnlinePlayers().stream().filter(player -> player.canSee(this)).forEach(player -> player.getSession().send(updateMessage));
     }
 
     @Override
@@ -1554,9 +1552,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         getSession().send(new UseBedMessage(SELF_ID, head.getX(), head.getY(), head.getZ()));
         UseBedMessage msg = new UseBedMessage(getEntityId(), head.getX(), head.getY(), head.getZ());
-        world.getRawPlayers().stream().filter(p -> p != this && p.canSeeEntity(this)).forEach(p -> {
-            p.getSession().send(msg);
-        });
+        world.getRawPlayers().stream().filter(p -> p != this && p.canSeeEntity(this)).forEach(p -> p.getSession().send(msg));
     }
 
     /**
@@ -1596,9 +1592,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         getSession().send(new AnimateEntityMessage(SELF_ID, AnimateEntityMessage.OUT_LEAVE_BED));
         AnimateEntityMessage msg = new AnimateEntityMessage(getEntityId(), AnimateEntityMessage.OUT_LEAVE_BED);
-        world.getRawPlayers().stream().filter(p -> p != this && p.canSeeEntity(this)).forEach(p -> {
-            p.getSession().send(msg);
-        });
+        world.getRawPlayers().stream().filter(p -> p != this && p.canSeeEntity(this)).forEach(p -> p.getSession().send(msg));
     }
 
     @Override
