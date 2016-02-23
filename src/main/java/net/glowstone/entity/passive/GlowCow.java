@@ -1,5 +1,6 @@
 package net.glowstone.entity.passive;
 
+import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowItem;
@@ -9,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Cow;
 import org.bukkit.entity.EntityType;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class GlowCow extends GlowAnimal implements Cow {
@@ -24,20 +26,23 @@ public class GlowCow extends GlowAnimal implements Cow {
             return false;
         if (!player.getItemInHand().getType().equals(Material.BUCKET)) return false;
 
+        PlayerInteractEntityEvent event = new PlayerInteractEntityEvent(player, this);
+        EventFactory.callEvent(event);
+
+        if (event.isCancelled()) return false;
+
         if (player.getItemInHand().getAmount() > 1) {
             player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
         } else {
-            player.getItemInHand().setType(Material.AIR);
+            player.getInventory().clear(player.getInventory().getHeldItemSlot());
         }
 
         if (player.getInventory().firstEmpty() == -1) {
-            Location playerheadloc = player.getLocation().clone().add(0, 1, 0);
-            GlowItem item = player.getWorld().dropItem(playerheadloc, new ItemStack(Material.MILK_BUCKET, 1));
-            item.setVelocity(playerheadloc.toVector().clone().subtract(this.getLocation().toVector().clone()));
+            GlowItem item = player.getWorld().dropItem(player.getLocation().clone().add(0, 1, 0), new ItemStack(Material.MILK_BUCKET, 1));
+            item.setVelocity(getLocation().add(0, -1, 0).clone().toVector().subtract(player.getLocation().clone().add(0, 1, 0).toVector()).multiply(0.3));
         } else {
             player.getInventory().addItem(new ItemStack(Material.MILK_BUCKET, 1));
         }
-
         return true;
     }
 }
