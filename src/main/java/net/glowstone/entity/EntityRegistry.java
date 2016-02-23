@@ -4,8 +4,7 @@ import static org.bukkit.entity.EntityType.*;
 
 import com.google.common.collect.ImmutableBiMap;
 import net.glowstone.entity.monster.*;
-import net.glowstone.entity.objects.GlowItem;
-import net.glowstone.entity.objects.GlowItemFrame;
+import net.glowstone.entity.objects.*;
 import net.glowstone.entity.passive.*;
 import org.bukkit.entity.EntityType;
 
@@ -13,7 +12,7 @@ public class EntityRegistry {
 
     public static final ImmutableBiMap<EntityType, Class<? extends GlowEntity>> ENTITIES =
             ImmutableBiMap.<EntityType, Class<? extends GlowEntity>>builder()
-            //TODO: Armor stand
+            .put(ARMOR_STAND, GlowArmorStand.class)
             //TODO: Arrow
             .put(BAT, GlowBat.class)
             .put(BLAZE, GlowBlaze.class)

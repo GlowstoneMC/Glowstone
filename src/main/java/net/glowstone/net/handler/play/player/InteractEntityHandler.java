@@ -12,8 +12,10 @@ import net.glowstone.net.message.play.player.InteractEntityMessage;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 public final class InteractEntityHandler implements MessageHandler<GlowSession, InteractEntityMessage> {
 
@@ -30,7 +32,7 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
         GlowEntity possibleTarget = player.getWorld().getEntityManager().getEntity(message.getId());
         GlowLivingEntity target = possibleTarget instanceof GlowLivingEntity ? (GlowLivingEntity) possibleTarget : null;
 
-        
+
 
         if (message.getAction() == InteractEntityMessage.Action.ATTACK.ordinal()) {
             if (target == null) {
@@ -58,8 +60,12 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
                 }
             }
         } else if (message.getAction() == InteractEntityMessage.Action.INTERACT_AT.ordinal()) {
-            // todo: Interaction with entity at a specified location (X, Y, and Z are present in the message)
-            // used for adjusting specific portions of armor stands
+            PlayerInteractAtEntityEvent event = new PlayerInteractAtEntityEvent(player, possibleTarget, new Vector(message.getTargetX(), message.getTargetY(), message.getTargetZ()));
+            EventFactory.callEvent(event);
+
+            if (!event.isCancelled()) {
+                possibleTarget.entityInteract(player, message);
+            }
         } else if (message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
             PlayerInteractEntityEvent event = new PlayerInteractEntityEvent(player, possibleTarget);
             EventFactory.callEvent(event);

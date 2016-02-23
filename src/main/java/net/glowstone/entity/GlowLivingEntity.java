@@ -152,7 +152,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             airTicks = maximumAir;
         }
 
-        if (isTouchingMaterial(Material.CACTUS) && canTakeDamage(EntityDamageEvent.DamageCause.CONTACT)) {
+        if (isTouchingMaterial(Material.CACTUS)) {
             damage(1, EntityDamageEvent.DamageCause.CONTACT);
         }
         if (location.getY() < -64) { // no canTakeDamage call - pierces through game modes

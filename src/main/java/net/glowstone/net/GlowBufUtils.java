@@ -77,9 +77,9 @@ public final class GlowBufUtils {
                     break;
                 }
                 case EULER_ANGLE: {
-                    float x = buf.readFloat();
-                    float y = buf.readFloat();
-                    float z = buf.readFloat();
+                    double x = Math.toRadians(buf.readFloat());
+                    double y = Math.toRadians(buf.readFloat());
+                    double z = Math.toRadians(buf.readFloat());
                     entries.add(new MetadataMap.Entry(index, new EulerAngle(x, y, z)));
                     break;
                 }
@@ -132,9 +132,9 @@ public final class GlowBufUtils {
                 }
                 case EULER_ANGLE: {
                     EulerAngle angle = (EulerAngle) value;
-                    buf.writeFloat((float) angle.getX());
-                    buf.writeFloat((float) angle.getY());
-                    buf.writeFloat((float) angle.getZ());
+                    buf.writeFloat((float) Math.toDegrees(angle.getX()));
+                    buf.writeFloat((float) Math.toDegrees(angle.getY()));
+                    buf.writeFloat((float) Math.toDegrees(angle.getZ()));
                     break;
                 }
             }
