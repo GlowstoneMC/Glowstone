@@ -71,7 +71,6 @@ import org.json.simple.JSONObject;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -807,7 +806,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         if (event.getRespawnLocation().getWorld().equals(getWorld()) && knownEntities.size() > 0) {
             // we need to manually reset all known entities if the player respawns in the same world
             List<Integer> entityIds = new ArrayList<>(knownEntities.size());
-            entityIds.addAll(knownEntities.stream().map((Function<GlowEntity, int>) GlowEntity::getEntityId).collect(Collectors.toList()));
+            entityIds.addAll(knownEntities.stream().map(GlowEntity::getEntityId).collect(Collectors.toList()));
             session.send(new DestroyEntitiesMessage(entityIds));
             knownEntities.clear();
         }
