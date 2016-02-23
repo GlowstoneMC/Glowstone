@@ -118,7 +118,11 @@ public final class GlowServer implements Server {
                 return;
             }
 
+            // Load Forge Mod Loader TODO: move into loadPlugins? but needs args[] TODO 2: after start?
+            loadFML(args);
+
             server.run();
+
         } catch (BindException ex) {
             // descriptive bind error messages
             logger.severe("The server could not bind to the requested address.");
@@ -164,6 +168,12 @@ public final class GlowServer implements Server {
         GlowDispenser.register();
 
         return new GlowServer(config);
+    }
+
+    private static void loadFML(String[] args) {
+        String coreMods = System.getProperty("fml.coreMods.load");
+        System.setProperty("fml.coreMods.load", (coreMods != null ? (coreMods + ",") : "") + "net.glowstone.GSFMLCoreMod");
+        net.minecraftforge.fml.relauncher.ServerLaunchWrapper.main(args);
     }
 
     private static ServerConfig parseArguments(String[] args) {

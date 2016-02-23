@@ -18,4 +18,5 @@ target
 worlds
 logs
 config
+mods
 dependency-reduced-pom.xml

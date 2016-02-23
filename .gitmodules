@@ -5,3 +5,9 @@
 [submodule "FlowNetworking"]
 	path = FlowNetworking
 	url = https://github.com/GlowstonePlusPlus/network.git
+[submodule "FML"]
+	path = FML
+	url = https://github.com/deathcap/FML
+[submodule "LegacyLauncher"]
+	path = LegacyLauncher
+	url = https://github.com/Mojang/LegacyLauncher
