@@ -595,7 +595,6 @@ public final class GlowWorld implements World {
         final List<LivingEntity> livingEntities = new LinkedList<>();
         // make sure entity can see sky
         getEntityManager().getEntitiesInside(searchBox, null).stream().filter(entity -> entity instanceof LivingEntity && !entity.isDead()).forEach(entity -> {
-            // make sure entity can see sky
             final Vector pos = entity.getLocation().toVector();
             int minY = getHighestBlockYAt(pos.getBlockX(), pos.getBlockZ());
             if (pos.getBlockY() >= minY) {
