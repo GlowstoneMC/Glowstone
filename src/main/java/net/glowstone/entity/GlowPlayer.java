@@ -1563,7 +1563,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     public void leaveBed(boolean setSpawn) {
         Preconditions.checkState(bed != null, "Player is not in bed");
         GlowBlock head = BlockBed.getHead(bed);
-        ;
         GlowBlock foot = BlockBed.getFoot(bed);
 
         // Determine exit location

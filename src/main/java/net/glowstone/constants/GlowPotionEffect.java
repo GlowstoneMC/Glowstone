@@ -89,7 +89,7 @@ public final class GlowPotionEffect extends PotionEffectType {
         }
     }
 
-    private static enum Impl {
+    private enum Impl {
         SPEED(1, false, 1.0),
         SLOW(2, false, 0.5),
         FAST_DIGGING(3, false, 1.5),

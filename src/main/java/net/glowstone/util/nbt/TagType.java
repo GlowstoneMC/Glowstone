@@ -29,7 +29,7 @@ public enum TagType {
     private final Class<? extends Tag> tagClass;
     private final Class<?> valueClass;
 
-    private <V, T extends Tag<? extends V>> TagType(String name, Class<T> tagClass, Class<V> valueClass) {
+    <V, T extends Tag<? extends V>> TagType(String name, Class<T> tagClass, Class<V> valueClass) {
         // ? extends V is needed to get Compound to work for some reason
         this.name = name;
         this.tagClass = tagClass;

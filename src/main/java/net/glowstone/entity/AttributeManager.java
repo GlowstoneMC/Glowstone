@@ -85,7 +85,7 @@ public class AttributeManager {
     }
 
     @RequiredArgsConstructor
-    public static enum Key {
+    public enum Key {
         KEY_MAX_HEALTH("generic.maxHealth", 20, Double.MAX_VALUE),
         KEY_FOLLOW_RANGE("generic.followRange", 32, 2048),
         KEY_KNOCKBACK_RESISTANCE("generic.knockbackResistance", 0, 1),

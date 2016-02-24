@@ -148,7 +148,7 @@ public class GlowBannerMatcher extends ItemMatcher {
         Material item;
         short data;
 
-        private LayerRecipe(String... rows) {
+        LayerRecipe(String... rows) {
             values = new char[9];
             int index = 0;
             for (String row : rows) {
@@ -158,11 +158,11 @@ public class GlowBannerMatcher extends ItemMatcher {
             }
         }
 
-        private LayerRecipe(Material item) {
+        LayerRecipe(Material item) {
             this.item = item;
         }
 
-        private LayerRecipe(Material item, short data) {
+        LayerRecipe(Material item, short data) {
             this.item = item;
             this.data = data;
         }

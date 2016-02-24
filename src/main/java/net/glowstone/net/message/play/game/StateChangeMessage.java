@@ -16,7 +16,7 @@ public final class StateChangeMessage implements Message {
         this.value = value;
     }
 
-    public static enum Reason {
+    public enum Reason {
         INVALID_BED,
         STOP_RAIN,
         START_RAIN,

@@ -275,14 +275,14 @@ public abstract class SuperCollection<E> implements Collection<E> {
         return asClone().toString();
     }
 
-    public static enum ResultMode {
+    public enum ResultMode {
         NEVER,
         ALL,
         ANY,
         ;
     }
 
-    public static enum AdditionMode {
+    public enum AdditionMode {
         ALL,
         LAST,
         ;

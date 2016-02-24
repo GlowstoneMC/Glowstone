@@ -309,7 +309,7 @@ public final class ServerConfig {
     /**
      * An enum containing configuration keys used by the server.
      */
-    public static enum Key {
+    public enum Key {
         // server
         SERVER_IP("server.ip", "", Migrate.PROPS, "server-ip"),
         SERVER_PORT("server.port", 25565, Migrate.PROPS, "server-port"),
@@ -412,11 +412,11 @@ public final class ServerConfig {
         private final Migrate migrate;
         private final String migratePath;
 
-        private Key(String path, Object def) {
+        Key(String path, Object def) {
             this(path, def, null, null);
         }
 
-        private Key(String path, Object def, Migrate migrate, String migratePath) {
+        Key(String path, Object def, Migrate migrate, String migratePath) {
             this.path = path;
             this.def = def;
             this.migrate = migrate;
@@ -429,7 +429,7 @@ public final class ServerConfig {
         }
     }
 
-    private static enum Migrate {
+    private enum Migrate {
         BUKKIT, PROPS
     }
 

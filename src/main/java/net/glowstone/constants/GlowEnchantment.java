@@ -107,7 +107,7 @@ public final class GlowEnchantment extends Enchantment implements WeightedRandom
     private static final int GROUP_ATTACK = 2;
     private static final int GROUP_DIG = 3;
 
-    private static enum Impl {
+    private enum Impl {
         PROTECTION_ENVIRONMENTAL(0, "Protection", 4, 10, 1, 11, 20, EnchantmentTarget.ARMOR, GROUP_PROTECT),
         PROTECTION_FIRE(1, "Fire Protection", 4, 5, 10, 8, 12, EnchantmentTarget.ARMOR, GROUP_PROTECT),
         PROTECTION_FALL(2, "Feather Falling", 4, 5, 5, 6, 10, EnchantmentTarget.ARMOR_FEET, GROUP_PROTECT),

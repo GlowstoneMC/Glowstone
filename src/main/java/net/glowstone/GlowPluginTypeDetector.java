@@ -75,8 +75,7 @@ public class GlowPluginTypeDetector {
             return;
         }
 
-        try (ZipFile zip = new ZipFile(file);
-        ) {
+        try (ZipFile zip = new ZipFile(file)) {
             Enumeration<? extends ZipEntry> entries = zip.entries();
             while (entries.hasMoreElements()) {
                 ZipEntry entryIn = entries.nextElement();

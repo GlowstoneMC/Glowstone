@@ -14,7 +14,7 @@ public interface MaterialValueManager {
      */
     ValueCollection getValues(Material material);
 
-    public interface ValueCollection {
+    interface ValueCollection {
         /**
          * Returns the hardness-component of this value.
          * @return the hardness (or Float.MAX_VALUE for infinity hardness)

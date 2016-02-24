@@ -72,7 +72,7 @@ public class WhittakerMapLayer extends MapLayer {
         return finalValues;
     }
 
-    public static enum ClimateType {
+    public enum ClimateType {
         WARM_WET,
         COLD_DRY,
         LARGER_BIOMES

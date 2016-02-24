@@ -74,7 +74,8 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
      * The UUID's are validated through offline player checking. If a player
      * with the specified UUID has not played on the server before, the
      * owner is not set.
-     * @param ownerUUID
+     *
+     * @param ownerUUID The player UUID of the owner.
      */
     public void setOwnerUUID(UUID ownerUUID) {
         if (ownerUUID == null) {
