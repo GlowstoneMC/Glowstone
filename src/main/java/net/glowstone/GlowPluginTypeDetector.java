@@ -75,8 +75,7 @@ public class GlowPluginTypeDetector {
             return;
         }
 
-        try (ZipFile zip = new ZipFile(file);
-        ) {
+        try (ZipFile zip = new ZipFile(file)) {
             Enumeration<? extends ZipEntry> entries = zip.entries();
             while (entries.hasMoreElements()) {
                 ZipEntry entryIn = entries.nextElement();
@@ -133,12 +132,16 @@ public class GlowPluginTypeDetector {
 
         @Override
         public AnnotationVisitor visitAnnotation(String name, boolean visible) {
-            if (name.equals("Lorg/spongepowered/api/plugin/Plugin;")) {
-                isSponge = true;
-            } else if (name.equals("Lcpw/mods/fml/common/Mod;")) { // older versions
-                isForgeF = true;
-            } else if (name.equals("Lnet/minecraftforge/fml/common/Mod;")) { // newer
-                isForgeN = true;
+            switch (name) {
+                case "Lorg/spongepowered/api/plugin/Plugin;":
+                    isSponge = true;
+                    break;
+                case "Lcpw/mods/fml/common/Mod;":  // older versions
+                    isForgeF = true;
+                    break;
+                case "Lnet/minecraftforge/fml/common/Mod;":  // newer
+                    isForgeN = true;
+                    break;
             }
 
             return null;

@@ -159,7 +159,7 @@ public final class GlowSession extends BasicSession {
      * Sets the verify token of this session.
      * @param verifyToken The verify token.
      */
-    public void setVerifyToken(byte[] verifyToken) {
+    public void setVerifyToken(byte... verifyToken) {
         this.verifyToken = verifyToken;
     }
 

@@ -52,12 +52,7 @@ public final class LoginStartHandler implements MessageHandler<GlowSession, Logi
             }
 
             final PlayerProfile finalProfile = profile;
-            session.getServer().getScheduler().runTask(null, new Runnable() {
-                @Override
-                public void run() {
-                    session.setPlayer(finalProfile);
-                }
-            });
+            session.getServer().getScheduler().runTask(null, () -> session.setPlayer(finalProfile));
         }
     }
 }

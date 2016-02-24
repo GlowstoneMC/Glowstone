@@ -13,7 +13,7 @@ public enum GlowBlockEntity {
 
     private final int value;
 
-    private GlowBlockEntity(final int value) {
+    GlowBlockEntity(final int value) {
         this.value = value;
     }
 

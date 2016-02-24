@@ -457,11 +457,7 @@ public final class GlowBlock implements Block {
 
         Location location = getLocation();
         Collection<ItemStack> toDrop = ItemTable.instance().getBlock(getType()).getMinedDrops(this);
-        for (ItemStack stack : toDrop) {
-            if (r.nextFloat() < yield) {
-                getWorld().dropItemNaturally(location, stack);
-            }
-        }
+        toDrop.stream().filter(stack -> r.nextFloat() < yield).forEach(stack -> getWorld().dropItemNaturally(location, stack));
 
         setType(Material.AIR);
         return true;

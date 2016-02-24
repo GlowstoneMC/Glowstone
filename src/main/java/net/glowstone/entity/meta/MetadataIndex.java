@@ -126,7 +126,7 @@ public enum MetadataIndex {
     private final MetadataType type;
     private final Class<? extends Entity> appliesTo;
 
-    private MetadataIndex(int index, MetadataType type, Class<? extends Entity> appliesTo) {
+    MetadataIndex(int index, MetadataType type, Class<? extends Entity> appliesTo) {
         this.index = index;
         this.type = type;
         this.appliesTo = appliesTo;

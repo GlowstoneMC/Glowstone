@@ -12,7 +12,7 @@ import java.util.Map.Entry;
 
 public class RandomItemsContent {
 
-    private final Map<RandomAmountItem, Integer> content = new LinkedHashMap<RandomAmountItem, Integer>();
+    private final Map<RandomAmountItem, Integer> content = new LinkedHashMap<>();
 
     public void addItem(RandomAmountItem item, int weight) {
         content.put(item, weight);

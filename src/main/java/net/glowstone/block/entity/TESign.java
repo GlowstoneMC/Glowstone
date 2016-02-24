@@ -59,7 +59,7 @@ public class TESign extends TileEntity {
      * @param text The lines of text.
      * @throws IllegalArgumentException If the wrong number of lines is provided.
      */
-    public void setLines(String[] text) {
+    public void setLines(String... text) {
         if (text.length != lines.length) {
             throw new IllegalArgumentException("Provided lines were length " + text.length + ", must be " + lines.length);
         }

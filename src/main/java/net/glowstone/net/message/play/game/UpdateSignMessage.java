@@ -10,7 +10,7 @@ public final class UpdateSignMessage implements Message {
     private final int x, y, z;
     private final TextMessage[] message;
 
-    public UpdateSignMessage(int x, int y, int z, TextMessage[] message) {
+    public UpdateSignMessage(int x, int y, int z, TextMessage... message) {
         if (message.length != 4) {
             throw new IllegalArgumentException();
         }
@@ -21,7 +21,7 @@ public final class UpdateSignMessage implements Message {
         this.message = message;
     }
 
-    public static UpdateSignMessage fromPlainText(int x, int y, int z, String[] message) {
+    public static UpdateSignMessage fromPlainText(int x, int y, int z, String... message) {
         if (message.length != 4) {
             throw new IllegalArgumentException();
         }

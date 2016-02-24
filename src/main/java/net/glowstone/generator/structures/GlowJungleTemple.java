@@ -75,7 +75,7 @@ public class GlowJungleTemple extends GlowTemplePiece {
         boundingBox.offset(new Vector(0, -4, 0));
 
         final StructureBuilder builder = new StructureBuilder(world, this, genBoundingBox, delegate);
-        final Map<StructureMaterial, Integer> stones = new HashMap<StructureMaterial, Integer>();
+        final Map<StructureMaterial, Integer> stones = new HashMap<>();
         builder.addRandomMaterial(stones, 4, Material.COBBLESTONE, 0);
         builder.addRandomMaterial(stones, 6, Material.MOSSY_COBBLESTONE, 0);
 

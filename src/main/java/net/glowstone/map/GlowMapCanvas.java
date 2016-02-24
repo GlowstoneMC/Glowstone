@@ -59,7 +59,7 @@ public final class GlowMapCanvas implements MapCanvas {
         return base[y * MAP_SIZE + x];
     }
     
-    protected void setBase(byte[] base) {
+    protected void setBase(byte... base) {
         this.base = base;
     }
     

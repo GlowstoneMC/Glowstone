@@ -19,7 +19,7 @@ public enum MetadataType {
 
     private final Class<?> dataType;
 
-    private MetadataType(Class<?> dataType) {
+    MetadataType(Class<?> dataType) {
         this.dataType = dataType;
     }
 

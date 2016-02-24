@@ -14,7 +14,7 @@ final class IntArrayTag extends Tag<int[]> {
      * Creates the tag.
      * @param value The value.
      */
-    public IntArrayTag(int[] value) {
+    public IntArrayTag(int... value) {
         super(TagType.INT_ARRAY);
         this.value = value;
     }

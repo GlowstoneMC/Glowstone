@@ -37,7 +37,7 @@ public enum ToolType implements MaterialMatcher {
     private final Material bukkitMaterial;
     private final ToolType better;
 
-    private ToolType(Material bukkitMaterial, ToolType better) {
+    ToolType(Material bukkitMaterial, ToolType better) {
         this.bukkitMaterial = bukkitMaterial;
         this.better = better;
     }

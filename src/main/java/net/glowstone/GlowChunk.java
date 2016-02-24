@@ -303,7 +303,7 @@ public final class GlowChunk implements Chunk {
      * Initialize this chunk from the given sections.
      * @param initSections The ChunkSections to use.
      */
-    public void initializeSections(ChunkSection[] initSections) {
+    public void initializeSections(ChunkSection... initSections) {
         if (isLoaded()) {
             GlowServer.logger.log(Level.SEVERE, "Tried to initialize already loaded chunk (" + x + "," + z + ")", new Throwable());
             return;
@@ -579,7 +579,7 @@ public final class GlowChunk implements Chunk {
      * Set the entire biome array of this chunk.
      * @param newBiomes The biome array.
      */
-    public void setBiomes(byte[] newBiomes) {
+    public void setBiomes(byte... newBiomes) {
         if (biomes == null) {
             throw new IllegalStateException("Must initialize chunk first");
         }
@@ -604,7 +604,7 @@ public final class GlowChunk implements Chunk {
      * Set the entire height map of this chunk.
      * @param newHeightMap The height map.
      */
-    public void setHeightMap(int[] newHeightMap) {
+    public void setHeightMap(int... newHeightMap) {
         if (heightMap == null) {
             throw new IllegalStateException("Must initialize chunk first");
         }

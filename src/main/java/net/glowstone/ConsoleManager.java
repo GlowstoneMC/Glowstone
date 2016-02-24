@@ -19,7 +19,6 @@ import org.fusesource.jansi.AnsiConsole;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.Callable;
 import java.util.logging.*;
 import java.util.logging.Formatter;
 
@@ -156,12 +155,7 @@ public final class ConsoleManager {
         @Override
         public int complete(final String buffer, int cursor, List<CharSequence> candidates) {
             try {
-                List<String> completions = server.getScheduler().syncIfNeeded(new Callable<List<String>>() {
-                    @Override
-                    public List<String> call() throws Exception {
-                        return server.getCommandMap().tabComplete(sender, buffer);
-                    }
-                });
+                List<String> completions = server.getScheduler().syncIfNeeded(() -> server.getCommandMap().tabComplete(sender, buffer));
                 if (completions == null) {
                     return cursor;  // no completions
                 }

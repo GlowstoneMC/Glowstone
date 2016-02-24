@@ -14,6 +14,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Scoreboard implementation.
@@ -147,9 +148,7 @@ public final class GlowScoreboard implements Scoreboard {
      * @param team The team to unregister.
      */
     void removeTeam(GlowTeam team) {
-        for (OfflinePlayer player : team.getPlayers()) {
-            playerTeamMap.remove(player);
-        }
+        team.getPlayers().forEach(playerTeamMap::remove);
         teams.remove(team.getName());
         broadcast(ScoreboardTeamMessage.remove(team.getName()));
     }
@@ -302,10 +301,7 @@ public final class GlowScoreboard implements Scoreboard {
 
     @Deprecated
     public Set<OfflinePlayer> getPlayers() {
-        Set<OfflinePlayer> result = new HashSet<>();
-        for (String name : getEntries()) {
-            result.add(Bukkit.getOfflinePlayer(name));
-        }
+        Set<OfflinePlayer> result = getEntries().stream().map(Bukkit::getOfflinePlayer).collect(Collectors.toSet());
         return Collections.unmodifiableSet(result);
     }
 

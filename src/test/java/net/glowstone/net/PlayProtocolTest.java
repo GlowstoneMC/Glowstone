@@ -44,7 +44,7 @@ public class PlayProtocolTest extends BaseProtocolTest {
             new CreativeItemMessage(1, new ItemStack(Material.APPLE, 1)),
             new EnchantItemMessage(1, 2),
             new UpdateSignMessage(1, 2, 3, new TextMessage[]{new TextMessage("hello"), new TextMessage("hi"), new TextMessage("third"), new TextMessage("fourth")}),
-            UpdateSignMessage.fromPlainText(1, 2, 3, new String[]{"hello", "hi", "third", "fourth"}),
+            UpdateSignMessage.fromPlainText(1, 2, 3, "hello", "hi", "third", "fourth"),
             new PlayerAbilitiesMessage(1, 2f, 3f),
             new TabCompleteMessage("text", null),
             new TabCompleteMessage("text", new BlockVector(1, 2, 3)),

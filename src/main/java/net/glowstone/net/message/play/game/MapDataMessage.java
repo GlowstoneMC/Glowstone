@@ -29,7 +29,7 @@ public final class MapDataMessage implements Message {
         public final int width, height, x, y;
         public final byte[] data;
 
-        public Section(int width, int height, int x, int y, byte[] data) {
+        public Section(int width, int height, int x, int y, byte... data) {
             Validate.isTrue(width * height == data.length, "width * height == data.length");
             this.width = width;
             this.height = height;

@@ -77,6 +77,7 @@ import java.security.KeyPair;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * The core class of the Glowstone server.
@@ -109,7 +110,7 @@ public final class GlowServer implements Server {
      * connections.
      * @param args The command-line arguments.
      */
-    public static void main(String[] args) {
+    public static void main(String... args) {
         try {
             final GlowServer server = createFromArguments(args);
 
@@ -150,7 +151,7 @@ public final class GlowServer implements Server {
         logger.info("Ready for connections.");
     }
 
-    public static GlowServer createFromArguments(String[] args) {
+    public static GlowServer createFromArguments(String... args) {
         ServerConfig config = GlowServer.parseArguments(args);
 
         // we don't want to create a server when called with --version
@@ -166,7 +167,7 @@ public final class GlowServer implements Server {
         return new GlowServer(config);
     }
 
-    private static ServerConfig parseArguments(String[] args) {
+    private static ServerConfig parseArguments(String... args) {
         final Map<ServerConfig.Key, Object> parameters = new EnumMap<>(ServerConfig.Key.class);
         String configDirName = "config";
         String configFileName = "glowstone.yml";
@@ -664,7 +665,7 @@ public final class GlowServer implements Server {
         pluginManager.clearPlugins();
 
         // Kick all players (this saves their data too)
-        for (Player player : new ArrayList<Player>(getOnlinePlayers())) {
+        for (Player player : new ArrayList<>(getOnlinePlayers())) {
             player.kickPlayer(getShutdownMessage());
         }
 
@@ -1199,10 +1200,7 @@ public final class GlowServer implements Server {
 
     @Override
     public Set<OfflinePlayer> getOperators() {
-        Set<OfflinePlayer> offlinePlayers = new HashSet<>();
-        for (UUID uuid : opsList.getUUIDs()) {
-            offlinePlayers.add(getOfflinePlayer(uuid));
-        }
+        Set<OfflinePlayer> offlinePlayers = opsList.getUUIDs().stream().map(this::getOfflinePlayer).collect(Collectors.toSet());
         return offlinePlayers;
     }
 
@@ -1235,12 +1233,10 @@ public final class GlowServer implements Server {
         }
 
         // add all offline players that aren't already online
-        for (OfflinePlayer offline : getPlayerDataService().getOfflinePlayers()) {
-            if (!uuids.contains(offline.getUniqueId())) {
-                result.add(offline);
-                uuids.add(offline.getUniqueId());
-            }
-        }
+        getPlayerDataService().getOfflinePlayers().stream().filter(offline -> !uuids.contains(offline.getUniqueId())).forEach(offline -> {
+            result.add(offline);
+            uuids.add(offline.getUniqueId());
+        });
 
         return result.toArray(new OfflinePlayer[result.size()]);
     }
@@ -1339,9 +1335,7 @@ public final class GlowServer implements Server {
 
     @Override
     public void savePlayers() {
-        for (Player player : getOnlinePlayers()) {
-            player.saveData();
-        }
+        getOnlinePlayers().forEach(Player::saveData);
     }
 
     @Override
@@ -1390,10 +1384,7 @@ public final class GlowServer implements Server {
 
     @Override
     public Set<OfflinePlayer> getWhitelistedPlayers() {
-        Set<OfflinePlayer> players = new HashSet<>();
-        for (PlayerProfile profile : whitelist.getProfiles()) {
-            players.add(getOfflinePlayer(profile));
-        }
+        Set<OfflinePlayer> players = whitelist.getProfiles().stream().map(this::getOfflinePlayer).collect(Collectors.toSet());
         return players;
     }
 
@@ -1404,10 +1395,7 @@ public final class GlowServer implements Server {
 
     @Override
     public Set<String> getIPBans() {
-        Set<String> result = new HashSet<>();
-        for (BanEntry entry : ipBans.getBanEntries()) {
-            result.add(entry.getTarget());
-        }
+        Set<String> result = ipBans.getBanEntries().stream().map(BanEntry::getTarget).collect(Collectors.toSet());
         return result;
     }
 
@@ -1423,10 +1411,7 @@ public final class GlowServer implements Server {
 
     @Override
     public Set<OfflinePlayer> getBannedPlayers() {
-        Set<OfflinePlayer> bannedPlayers = new HashSet<>();
-        for (BanEntry entry : nameBans.getBanEntries()) {
-            bannedPlayers.add(getOfflinePlayer(entry.getTarget()));
-        }
+        Set<OfflinePlayer> bannedPlayers = nameBans.getBanEntries().stream().map(entry -> getOfflinePlayer(entry.getTarget())).collect(Collectors.toSet());
         return bannedPlayers;
     }
 

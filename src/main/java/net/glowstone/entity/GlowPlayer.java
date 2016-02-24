@@ -72,6 +72,7 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 /**
  * Represents an in-game player.
@@ -576,9 +577,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         for (Iterator<GlowEntity> it = knownEntities.iterator(); it.hasNext(); ) {
             GlowEntity entity = it.next();
             if (isWithinDistance(entity)) {
-                for (Message msg : entity.createUpdateMessage()) {
-                    session.send(msg);
-                }
+                entity.createUpdateMessage().forEach(session::send);
             } else {
                 destroyIds.add(entity.getEntityId());
                 it.remove();
@@ -593,9 +592,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             if (entity != this && isWithinDistance(entity) && !entity.isDead() &&
                     !knownEntities.contains(entity) && !hiddenEntities.contains(entity.getUniqueId())) {
                 knownEntities.add(entity);
-                for (Message msg : entity.createSpawnMessage()) {
-                    session.send(msg);
-                }
+                entity.createSpawnMessage().forEach(session::send);
             }
         }
 
@@ -645,9 +642,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         // now send post-block-change messages
         List<Message> postMessages = new ArrayList<>(afterBlockChanges);
         afterBlockChanges.clear();
-        for (Message message : postMessages) {
-            session.send(message);
-        }
+        postMessages.forEach(session::send);
     }
 
     /**
@@ -678,17 +673,14 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         // sort chunks by distance from player - closer chunks sent first
-        Collections.sort(newChunks, new Comparator<GlowChunk.Key>() {
-            @Override
-            public int compare(GlowChunk.Key a, GlowChunk.Key b) {
-                double dx = 16 * a.getX() + 8 - location.getX();
-                double dz = 16 * a.getZ() + 8 - location.getZ();
-                double da = dx * dx + dz * dz;
-                dx = 16 * b.getX() + 8 - location.getX();
-                dz = 16 * b.getZ() + 8 - location.getZ();
-                double db = dx * dx + dz * dz;
-                return Double.compare(da, db);
-            }
+        Collections.sort(newChunks, (a, b) -> {
+            double dx = 16 * a.getX() + 8 - location.getX();
+            double dz = 16 * a.getZ() + 8 - location.getZ();
+            double da = dx * dx + dz * dz;
+            dx = 16 * b.getX() + 8 - location.getX();
+            dz = 16 * b.getZ() + 8 - location.getZ();
+            double db = dx * dx + dz * dz;
+            return Double.compare(da, db);
         });
 
         // populate then send chunks to the player
@@ -814,9 +806,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         if (event.getRespawnLocation().getWorld().equals(getWorld()) && knownEntities.size() > 0) {
             // we need to manually reset all known entities if the player respawns in the same world
             List<Integer> entityIds = new ArrayList<>(knownEntities.size());
-            for (GlowEntity e : knownEntities) {
-                entityIds.add(e.getEntityId());
-            }
+            entityIds.addAll(knownEntities.stream().map(GlowEntity::getEntityId).collect(Collectors.toList()));
             session.send(new DestroyEntitiesMessage(entityIds));
             knownEntities.clear();
         }
@@ -892,11 +882,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * @param updateMessage The message to send.
      */
     private void updateUserListEntries(UserListItemMessage updateMessage) {
-        for (GlowPlayer player : server.getRawOnlinePlayers()) {
-            if (player.canSee(this)) {
-                player.getSession().send(updateMessage);
-            }
-        }
+        server.getRawOnlinePlayers().stream().filter(player -> player.canSee(this)).forEach(player -> player.getSession().send(updateMessage));
     }
 
     @Override
@@ -1566,11 +1552,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         getSession().send(new UseBedMessage(SELF_ID, head.getX(), head.getY(), head.getZ()));
         UseBedMessage msg = new UseBedMessage(getEntityId(), head.getX(), head.getY(), head.getZ());
-        for (GlowPlayer p : world.getRawPlayers()) {
-            if (p != this && p.canSeeEntity(this)) {
-                p.getSession().send(msg);
-            }
-        }
+        world.getRawPlayers().stream().filter(p -> p != this && p.canSeeEntity(this)).forEach(p -> p.getSession().send(msg));
     }
 
     /**
@@ -1581,7 +1563,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     public void leaveBed(boolean setSpawn) {
         Preconditions.checkState(bed != null, "Player is not in bed");
         GlowBlock head = BlockBed.getHead(bed);
-        ;
         GlowBlock foot = BlockBed.getFoot(bed);
 
         // Determine exit location
@@ -1610,11 +1591,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         getSession().send(new AnimateEntityMessage(SELF_ID, AnimateEntityMessage.OUT_LEAVE_BED));
         AnimateEntityMessage msg = new AnimateEntityMessage(getEntityId(), AnimateEntityMessage.OUT_LEAVE_BED);
-        for (GlowPlayer p : world.getRawPlayers()) {
-            if (p != this && p.canSeeEntity(this)) {
-                p.getSession().send(msg);
-            }
-        }
+        world.getRawPlayers().stream().filter(p -> p != this && p.canSeeEntity(this)).forEach(p -> p.getSession().send(msg));
     }
 
     @Override
@@ -1668,19 +1645,16 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      */
     public void chat(final String text, boolean async) {
         if (text.startsWith("/")) {
-            Runnable task = new Runnable() {
-                @Override
-                public void run() {
-                    server.getLogger().info(getName() + " issued command: " + text);
-                    try {
-                        PlayerCommandPreprocessEvent event = new PlayerCommandPreprocessEvent(GlowPlayer.this, text);
-                        if (!EventFactory.callEvent(event).isCancelled()) {
-                            server.dispatchCommand(GlowPlayer.this, event.getMessage().substring(1));
-                        }
-                    } catch (Exception ex) {
-                        sendMessage(ChatColor.RED + "An internal error occurred while executing your command.");
-                        server.getLogger().log(Level.SEVERE, "Exception while executing command: " + text, ex);
+            Runnable task = () -> {
+                server.getLogger().info(getName() + " issued command: " + text);
+                try {
+                    PlayerCommandPreprocessEvent event = new PlayerCommandPreprocessEvent(GlowPlayer.this, text);
+                    if (!EventFactory.callEvent(event).isCancelled()) {
+                        server.dispatchCommand(GlowPlayer.this, event.getMessage().substring(1));
                     }
+                } catch (Exception ex) {
+                    sendMessage(ChatColor.RED + "An internal error occurred while executing your command.");
+                    server.getLogger().log(Level.SEVERE, "Exception while executing command: " + text, ex);
                 }
             };
 
@@ -1881,7 +1855,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * @throws IllegalArgumentException if location is null
      * @throws IllegalArgumentException if lines is non-null and has a length less than 4
      */
-    public void sendSignChange(Location location, TextMessage[] lines) {
+    public void sendSignChange(Location location, TextMessage... lines) {
         Validate.notNull(location, "location cannot be null");
         Validate.notNull(lines, "lines cannot be null");
         Validate.isTrue(lines.length == 4, "lines.length must equal 4");

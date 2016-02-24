@@ -10,7 +10,7 @@ import static org.bukkit.block.Biome.*;
 public class BiomeVariationMapLayer extends MapLayer {
 
     private static final int[] ISLANDS = new int[] {GlowBiome.getId(PLAINS), GlowBiome.getId(FOREST)};
-    private static final Map<Integer, int[]> VARIATIONS = new HashMap<Integer, int[]>();
+    private static final Map<Integer, int[]> VARIATIONS = new HashMap<>();
 
     private final MapLayer belowLayer;
     private final MapLayer variationLayer;

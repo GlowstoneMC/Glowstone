@@ -149,12 +149,7 @@ public final class EncryptionKeyResponseHandler implements MessageHandler<GlowSe
             }
 
             // spawn player
-            session.getServer().getScheduler().runTask(null, new Runnable() {
-                @Override
-                public void run() {
-                    session.setPlayer(new PlayerProfile(name, uuid, properties));
-                }
-            });
+            session.getServer().getScheduler().runTask(null, () -> session.setPlayer(new PlayerProfile(name, uuid, properties)));
         }
 
         @Override

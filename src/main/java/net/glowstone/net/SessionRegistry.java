@@ -19,9 +19,7 @@ public final class SessionRegistry {
      * Pulses all the sessions.
      */
     public void pulse() {
-        for (GlowSession session : sessions.keySet()) {
-            session.pulse();
-        }
+        sessions.keySet().forEach(GlowSession::pulse);
     }
 
     /**

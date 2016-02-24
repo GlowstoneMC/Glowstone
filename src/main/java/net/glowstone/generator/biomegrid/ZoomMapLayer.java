@@ -82,7 +82,7 @@ public class ZoomMapLayer extends MapLayer {
         return values[nextInt(values.length)];
     }
 
-    public static enum ZoomType {
+    public enum ZoomType {
         NORMAL,
         BLURRY
     }

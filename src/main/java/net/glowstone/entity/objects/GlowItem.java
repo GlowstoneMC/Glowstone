@@ -78,11 +78,7 @@ public final class GlowItem extends GlowEntity implements Item {
         } else {
             CollectItemMessage message = new CollectItemMessage(getEntityId(), player.getEntityId());
             world.playSound(location, Sound.ITEM_PICKUP, 0.3f, (float) (1 + Math.random()));
-            for (GlowPlayer other : world.getRawPlayers()) {
-                if (other.canSeeEntity(this)) {
-                    other.getSession().send(message);
-                }
-            }
+            world.getRawPlayers().stream().filter(other -> other.canSeeEntity(this)).forEach(other -> other.getSession().send(message));
             remove();
             return true;
         }

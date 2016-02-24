@@ -129,7 +129,7 @@ public class MesaGroundGenerator extends GroundGenerator {
         }
     }
 
-    public static enum MesaType {
+    public enum MesaType {
         NORMAL,
         BRYCE,
         FOREST

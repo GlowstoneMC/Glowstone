@@ -10,6 +10,7 @@ import org.bukkit.inventory.meta.FireworkEffectMeta;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class GlowMetaFireworkEffect extends GlowMetaItem implements FireworkEffectMeta {
 
@@ -121,18 +122,12 @@ public class GlowMetaFireworkEffect extends GlowMetaItem implements FireworkEffe
         explosion.putByte("Type", effect.getType().ordinal());
 
         List<Color> colors = effect.getColors();
-        List<Integer> colorInts = new ArrayList<>();
-        for (Color color : colors) {
-            colorInts.add(color.asRGB());
-        }
+        List<Integer> colorInts = colors.stream().map(Color::asRGB).collect(Collectors.toList());
         explosion.putIntArray("Colors", Ints.toArray(colorInts));
 
         List<Color> fade = effect.getFadeColors();
         if (!fade.isEmpty()) {
-            List<Integer> fadeInts = new ArrayList<>();
-            for (Color color : fade) {
-                fadeInts.add(color.asRGB());
-            }
+            List<Integer> fadeInts = fade.stream().map(Color::asRGB).collect(Collectors.toList());
             explosion.putIntArray("FadeColors", Ints.toArray(fadeInts));
         }
 

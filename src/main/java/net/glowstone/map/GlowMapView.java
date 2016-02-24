@@ -95,7 +95,7 @@ public final class GlowMapView implements MapView {
     public void addRenderer(MapRenderer renderer) {
         if (!renderers.contains(renderer)) {
             renderers.add(renderer);
-            canvases.put(renderer, new HashMap<GlowPlayer, GlowMapCanvas>());
+            canvases.put(renderer, new HashMap<>());
             renderer.initialize(this);
         }
     }

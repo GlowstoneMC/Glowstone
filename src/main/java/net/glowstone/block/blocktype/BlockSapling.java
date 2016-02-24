@@ -103,7 +103,7 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
         final BlockStateDelegate blockStateDelegate = new BlockStateDelegate();
         boolean canGrow = false;
         if (GlowTree.newInstance(type, random, loc, blockStateDelegate).generate()) {
-            final List<BlockState> blockStates = new ArrayList<BlockState>(blockStateDelegate.getBlockStates());
+            final List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
             StructureGrowEvent growEvent =
                     new StructureGrowEvent(loc, type, player == null ? false : true, player, blockStates);
             EventFactory.callEvent(growEvent);

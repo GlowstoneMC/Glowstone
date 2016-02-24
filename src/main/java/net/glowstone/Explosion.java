@@ -21,6 +21,7 @@ import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public final class Explosion {
 
@@ -192,8 +193,7 @@ public final class Explosion {
 
     private List<Block> toBlockList(Collection<BlockVector> locs) {
         List<Block> blocks = new ArrayList<>(locs.size());
-        for (BlockVector location : locs)
-            blocks.add(world.getBlockAt(location.getBlockX(), location.getBlockY(), location.getBlockZ()));
+        blocks.addAll(locs.stream().map(location -> world.getBlockAt(location.getBlockX(), location.getBlockY(), location.getBlockZ())).collect(Collectors.toList()));
         return blocks;
     }
 
@@ -307,12 +307,7 @@ public final class Explosion {
         for (Chunk chunk : chunks) {
             entities.addAll(Arrays.asList(chunk.getEntities()));
         }
-        List<GlowLivingEntity> nearbyEntities = new ArrayList<>();
-        for (Entity entity : entities) {
-            if (entity instanceof LivingEntity && distanceTo((LivingEntity) entity) / power < 1) {
-                nearbyEntities.add((GlowLivingEntity) entity);
-            }
-        }
+        List<GlowLivingEntity> nearbyEntities = entities.stream().filter(entity -> entity instanceof LivingEntity && distanceTo((LivingEntity) entity) / power < 1).map(entity -> (GlowLivingEntity) entity).collect(Collectors.toList());
         return nearbyEntities;
     }
 
