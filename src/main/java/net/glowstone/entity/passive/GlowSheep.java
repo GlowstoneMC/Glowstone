@@ -8,7 +8,6 @@ import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Sheep;
 import org.bukkit.event.entity.SheepDyeWoolEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Dye;
 
@@ -73,9 +72,6 @@ public class GlowSheep extends GlowAnimal implements Sheep {
         if (player.getItemInHand() == null) return false;
         switch (player.getItemInHand().getType()) {
             case SHEARS: {
-                PlayerInteractEntityEvent event = new PlayerInteractEntityEvent(player, this);
-                if (event.isCancelled()) return false;
-
                 if (isSheared()) return false;
 
                 if (!player.getGameMode().equals(GameMode.CREATIVE)) {
@@ -88,7 +84,7 @@ public class GlowSheep extends GlowAnimal implements Sheep {
                     }
                 }
 
-                // todo play sound
+                getWorld().playSound(getLocation(), Sound.SHEEP_SHEAR, 1, 1);
 
                 Random r = new Random();
 

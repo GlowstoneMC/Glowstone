@@ -19,15 +19,14 @@ public class ItemMilk extends ItemFood {
         EventFactory.callEvent(event1);
         if (event1.isCancelled()) return false;
 
-        // todo implement playeritemconsumeevent set item
-
         player.setUsageItem(null);
         player.setUsageTime(0);
-        player.getInventory().getItemInHand().setType(Material.BUCKET);
 
-        for(PotionEffect potionEffect : player.getActivePotionEffects()) {
+        for (PotionEffect potionEffect : player.getActivePotionEffects()) {
             player.removePotionEffect(potionEffect.getType());
         }
+
+        player.getInventory().getItemInHand().setType(Material.BUCKET);
 
         return true;
     }

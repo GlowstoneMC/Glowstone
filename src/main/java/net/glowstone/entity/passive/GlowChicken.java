@@ -3,6 +3,7 @@ package net.glowstone.entity.passive;
 import net.glowstone.entity.GlowAnimal;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Chicken;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
@@ -47,6 +48,7 @@ public class GlowChicken extends GlowAnimal implements Chicken {
         eggLayTime--;
         if (eggLayTime <= 0) {
             getWorld().dropItemNaturally(getLocation(), new ItemStack(Material.EGG, 1));
+            getWorld().playSound(getLocation(), Sound.CHICKEN_EGG_POP, 1, 1);
             generateEggLayDelay();
         }
     }

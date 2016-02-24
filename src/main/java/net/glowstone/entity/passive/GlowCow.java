@@ -1,6 +1,5 @@
 package net.glowstone.entity.passive;
 
-import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowItem;
@@ -10,7 +9,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Cow;
 import org.bukkit.entity.EntityType;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class GlowCow extends GlowAnimal implements Cow {
@@ -25,11 +23,6 @@ public class GlowCow extends GlowAnimal implements Cow {
         if (player.getGameMode().equals(GameMode.CREATIVE) || player.getGameMode().equals(GameMode.SPECTATOR))
             return false;
         if (!player.getItemInHand().getType().equals(Material.BUCKET)) return false;
-
-        PlayerInteractEntityEvent event = new PlayerInteractEntityEvent(player, this);
-        EventFactory.callEvent(event);
-
-        if (event.isCancelled()) return false;
 
         if (player.getItemInHand().getAmount() > 1) {
             player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
