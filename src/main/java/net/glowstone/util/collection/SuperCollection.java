@@ -283,11 +283,11 @@ public abstract class SuperCollection<E> implements Collection<E> {
     public enum ResultMode {
         NEVER,
         ALL,
-        ANY,;
+        ANY
     }
 
     public enum AdditionMode {
         ALL,
-        LAST,;
+        LAST
     }
 }
