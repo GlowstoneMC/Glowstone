@@ -15,7 +15,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
-import org.bukkit.material.Tree;
+import org.bukkit.material.Sapling;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -171,9 +171,9 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
                 block.setData((byte) (dataValue | 8));
             } else {
                 MaterialData data = block.getState().getData();
-                if (data instanceof Tree) {
-                    Tree tree = (Tree) data;
-                    TreeType type = getTreeType(tree.getSpecies());
+                if (data instanceof Sapling) {
+                    Sapling sapling = (Sapling) data;
+                    TreeType type = getTreeType(sapling.getSpecies());
                     block.setType(Material.AIR);
                     int saplingData = block.getData() & 0x7;
                     if (!block.getWorld().generateTree(block.getLocation(), type)) {
@@ -181,7 +181,7 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
                         block.setData((byte) saplingData);
                     }
                 } else {
-                    warnMaterialData(Tree.class, data);
+                    warnMaterialData(Sapling.class, data);
                 }
             }
         }
