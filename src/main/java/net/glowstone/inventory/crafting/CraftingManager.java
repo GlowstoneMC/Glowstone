@@ -407,7 +407,8 @@ public final class CraftingManager implements Iterable<Recipe> {
         for (Map<?, ?> data : config.getMapList("furnace")) {
             ItemStack inputStack = ItemStack.deserialize((Map<String, Object>) data.get("input"));
             ItemStack resultStack = ItemStack.deserialize((Map<String, Object>) data.get("result"));
-            furnaceRecipes.add(new FurnaceRecipe(resultStack, inputStack.getData()));
+            float xp = ((Number) data.get("xp")).floatValue();
+            furnaceRecipes.add(new FurnaceRecipe(resultStack, inputStack.getType(), inputStack.getDurability(), xp));
         }
     }
 
