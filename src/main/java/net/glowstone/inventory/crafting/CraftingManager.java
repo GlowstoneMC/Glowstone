@@ -36,6 +36,7 @@ public final class CraftingManager implements Iterable<Recipe> {
 
     /**
      * Adds a recipe to the crafting manager.
+     *
      * @param recipe The recipe to add.
      * @return Whether adding the recipe was successful.
      */
@@ -59,6 +60,7 @@ public final class CraftingManager implements Iterable<Recipe> {
 
     /**
      * Get a furnace recipe from the crafting manager.
+     *
      * @param input The furnace input.
      * @return The FurnaceRecipe, or null if none is found.
      */
@@ -73,6 +75,7 @@ public final class CraftingManager implements Iterable<Recipe> {
 
     /**
      * Get how long a given fuel material will burn for.
+     *
      * @param material The fuel material.
      * @return The time in ticks, or 0 if that material does not burn.
      */
@@ -86,8 +89,9 @@ public final class CraftingManager implements Iterable<Recipe> {
 
     /**
      * Remove a layer of items from the crafting matrix and recipe result.
+     *
      * @param items The items to remove the ingredients from.
-     * @param inv The inventory to remove the items from.
+     * @param inv   The inventory to remove the items from.
      */
     public void removeItems(ItemStack[] items, GlowCraftingInventory inv) {
         for (int i = 0; i < items.length; i++) {
@@ -104,11 +108,12 @@ public final class CraftingManager implements Iterable<Recipe> {
 
     /**
      * Get the amount of layers in the crafting matrix.
+     *
      * @param items The items in the crafting matrix.
      */
     public int getLayers(ItemStack... items) {
         int layers = 0;
-        for (ItemStack item: items) {
+        for (ItemStack item : items) {
             if (item != null && (item.getAmount() < layers || layers == 0)) {
                 layers = item.getAmount();
             }
@@ -118,6 +123,7 @@ public final class CraftingManager implements Iterable<Recipe> {
 
     /**
      * Get a crafting recipe from the crafting manager.
+     *
      * @param items An array of items with null being empty slots. Length should be a perfect square.
      * @return The Recipe that matches the input, or null if none match.
      */
@@ -276,6 +282,7 @@ public final class CraftingManager implements Iterable<Recipe> {
     /**
      * Get a list of all recipes for a given item. The stack size is ignored
      * in comparisons. If the durability is -1, it will match any data value.
+     *
      * @param result The item whose recipes you want
      * @return The list of recipes
      */

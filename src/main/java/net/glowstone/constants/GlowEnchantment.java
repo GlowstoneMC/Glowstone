@@ -12,11 +12,54 @@ import org.bukkit.inventory.ItemStack;
  */
 public final class GlowEnchantment extends Enchantment implements WeightedRandom.Choice {
 
+    private static final MaterialMatcher SWORD_OR_AXE = item -> EnchantmentTarget.WEAPON.includes(item)
+            || item.equals(Material.WOOD_AXE)
+            || item.equals(Material.STONE_AXE)
+            || item.equals(Material.IRON_AXE)
+            || item.equals(Material.DIAMOND_AXE)
+            || item.equals(Material.GOLD_AXE);
+    private static final MaterialMatcher BASE_TOOLS = item -> item.equals(Material.WOOD_SPADE)
+            || item.equals(Material.STONE_SPADE)
+            || item.equals(Material.IRON_SPADE)
+            || item.equals(Material.DIAMOND_SPADE)
+            || item.equals(Material.GOLD_SPADE)
+            || item.equals(Material.WOOD_PICKAXE)
+            || item.equals(Material.STONE_PICKAXE)
+            || item.equals(Material.IRON_PICKAXE)
+            || item.equals(Material.DIAMOND_PICKAXE)
+            || item.equals(Material.GOLD_PICKAXE)
+            || item.equals(Material.WOOD_AXE)
+            || item.equals(Material.STONE_AXE)
+            || item.equals(Material.IRON_AXE)
+            || item.equals(Material.DIAMOND_AXE)
+            || item.equals(Material.GOLD_AXE);
+    private static final MaterialMatcher DIGGING_TOOLS = material -> BASE_TOOLS.matches(material)
+            || material == Material.SHEARS;
+    private static final MaterialMatcher ALL_THINGS = material -> EnchantmentTarget.TOOL.includes(material)
+            || EnchantmentTarget.WEAPON.includes(material)
+            || EnchantmentTarget.ARMOR.includes(material)
+            || material == Material.FISHING_ROD
+            || material == Material.BOW
+            || material == Material.CARROT_STICK;
+    private static final int GROUP_NONE = 0;
+    private static final int GROUP_PROTECT = 1;
+    private static final int GROUP_ATTACK = 2;
+    private static final int GROUP_DIG = 3;
     private final Impl impl;
 
     private GlowEnchantment(Impl impl) {
         super(impl.id);
         this.impl = impl;
+    }
+
+    /**
+     * Register all enchantment types with Enchantment.
+     */
+    public static void register() {
+        for (Impl impl : Impl.values()) {
+            registerEnchantment(new GlowEnchantment(impl));
+        }
+        stopAcceptingRegistrations();
     }
 
     @Override
@@ -58,54 +101,6 @@ public final class GlowEnchantment extends Enchantment implements WeightedRandom
     public boolean isInRange(int level, int modifier) {
         return modifier >= impl.getMinRange(level) && modifier <= impl.getMaxRange(level);
     }
-
-    /**
-     * Register all enchantment types with Enchantment.
-     */
-    public static void register() {
-        for (Impl impl : Impl.values()) {
-            registerEnchantment(new GlowEnchantment(impl));
-        }
-        stopAcceptingRegistrations();
-    }
-
-    private static final MaterialMatcher SWORD_OR_AXE = item -> EnchantmentTarget.WEAPON.includes(item)
-            || item.equals(Material.WOOD_AXE)
-            || item.equals(Material.STONE_AXE)
-            || item.equals(Material.IRON_AXE)
-            || item.equals(Material.DIAMOND_AXE)
-            || item.equals(Material.GOLD_AXE);
-
-    private static final MaterialMatcher BASE_TOOLS = item -> item.equals(Material.WOOD_SPADE)
-            || item.equals(Material.STONE_SPADE)
-            || item.equals(Material.IRON_SPADE)
-            || item.equals(Material.DIAMOND_SPADE)
-            || item.equals(Material.GOLD_SPADE)
-            || item.equals(Material.WOOD_PICKAXE)
-            || item.equals(Material.STONE_PICKAXE)
-            || item.equals(Material.IRON_PICKAXE)
-            || item.equals(Material.DIAMOND_PICKAXE)
-            || item.equals(Material.GOLD_PICKAXE)
-            || item.equals(Material.WOOD_AXE)
-            || item.equals(Material.STONE_AXE)
-            || item.equals(Material.IRON_AXE)
-            || item.equals(Material.DIAMOND_AXE)
-            || item.equals(Material.GOLD_AXE);
-
-    private static final MaterialMatcher DIGGING_TOOLS = material -> BASE_TOOLS.matches(material)
-            || material == Material.SHEARS;
-
-    private static final MaterialMatcher ALL_THINGS = material -> EnchantmentTarget.TOOL.includes(material)
-            || EnchantmentTarget.WEAPON.includes(material)
-            || EnchantmentTarget.ARMOR.includes(material)
-            || material == Material.FISHING_ROD
-            || material == Material.BOW
-            || material == Material.CARROT_STICK;
-
-    private static final int GROUP_NONE = 0;
-    private static final int GROUP_PROTECT = 1;
-    private static final int GROUP_ATTACK = 2;
-    private static final int GROUP_DIG = 3;
 
     private enum Impl {
         PROTECTION_ENVIRONMENTAL(0, "Protection", 4, 10, 1, 11, 20, EnchantmentTarget.ARMOR, GROUP_PROTECT),

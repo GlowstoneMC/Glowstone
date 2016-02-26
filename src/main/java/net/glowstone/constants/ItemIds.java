@@ -12,100 +12,9 @@ import java.util.Map;
  */
 public final class ItemIds {
 
-    private ItemIds() {
-    }
-
     private static final Map<Integer, String> names = new HashMap<>();
     private static final Map<String, Integer> items = new HashMap<>();
     private static final Map<String, Integer> blocks = new HashMap<>();
-
-    /**
-     * Get the string identifier for a specified Material.
-     * @param mat the Material.
-     * @return the identifier.
-     */
-    public static String getName(Material mat) {
-        Validate.notNull(mat, "Material cannot be null");
-        return names.get(mat.getId());
-    }
-
-    /**
-     * Get the Material corresponding to the specified item identifier.
-     * @param name the identifier.
-     * @return the Material, or null.
-     */
-    public static Material getItem(String name) {
-        if (!items.containsKey(name)) {
-            return null;
-        }
-        return Material.getMaterial(items.get(name));
-    }
-
-    /**
-     * Get the Material corresponding to the specified block identifier.
-     * @param name the identifier.
-     * @return the Material, or null.
-     */
-    public static Material getBlock(String name) {
-        if (!blocks.containsKey(name)) {
-            return null;
-        }
-        return Material.getMaterial(blocks.get(name));
-    }
-
-    /**
-     * Verify that a given material is a valid item. All non-blocks are valid
-     * items, but some blocks cannot be represented as items.
-     * @param material The material to verify.
-     * @return true if the material is a valid item.
-     */
-    public static boolean isValidItem(Material material) {
-        return getItem(getName(material)) == material;
-    }
-
-    /**
-     * Convert an ItemStack which may have a type that is unrepresentable as
-     * an item to one that does, or to null if this is not possible.
-     * @param stack The stack to sanitize.
-     * @return The sanitized stack, or null.
-     */
-    public static ItemStack sanitize(ItemStack stack) {
-        if (stack == null || stack.getType() == null || stack.getType() == Material.AIR) {
-            return null;
-        }
-        Material item = getItem(getName(stack.getType()));
-        if (item == null) {
-            return null;
-        }
-        if (item != stack.getType()) {
-            stack = stack.clone();
-            stack.setType(item);
-        }
-        return stack;
-    }
-
-    private static void block(int id, String key) {
-        key = "minecraft:" + key;
-        names.put(id, key);
-        blocks.put(key, id);
-    }
-
-    private static void item(int id, String key) {
-        key = "minecraft:" + key;
-        names.put(id, key);
-        items.put(key, id);
-    }
-
-    private static void both(int id, String key) {
-        key = "minecraft:" + key;
-        names.put(id, key);
-        blocks.put(key, id);
-        items.put(key, id);
-    }
-
-    private static void alternate(int id, String key) {
-        items.put("minecraft:" + key, id);
-    }
 
     static {
         // blocks
@@ -498,6 +407,102 @@ public final class ItemIds {
         item(2265, "record_ward");
         item(2266, "record_11");
         item(2267, "record_wait");
+    }
+
+    private ItemIds() {
+    }
+
+    /**
+     * Get the string identifier for a specified Material.
+     *
+     * @param mat the Material.
+     * @return the identifier.
+     */
+    public static String getName(Material mat) {
+        Validate.notNull(mat, "Material cannot be null");
+        return names.get(mat.getId());
+    }
+
+    /**
+     * Get the Material corresponding to the specified item identifier.
+     *
+     * @param name the identifier.
+     * @return the Material, or null.
+     */
+    public static Material getItem(String name) {
+        if (!items.containsKey(name)) {
+            return null;
+        }
+        return Material.getMaterial(items.get(name));
+    }
+
+    /**
+     * Get the Material corresponding to the specified block identifier.
+     *
+     * @param name the identifier.
+     * @return the Material, or null.
+     */
+    public static Material getBlock(String name) {
+        if (!blocks.containsKey(name)) {
+            return null;
+        }
+        return Material.getMaterial(blocks.get(name));
+    }
+
+    /**
+     * Verify that a given material is a valid item. All non-blocks are valid
+     * items, but some blocks cannot be represented as items.
+     *
+     * @param material The material to verify.
+     * @return true if the material is a valid item.
+     */
+    public static boolean isValidItem(Material material) {
+        return getItem(getName(material)) == material;
+    }
+
+    /**
+     * Convert an ItemStack which may have a type that is unrepresentable as
+     * an item to one that does, or to null if this is not possible.
+     *
+     * @param stack The stack to sanitize.
+     * @return The sanitized stack, or null.
+     */
+    public static ItemStack sanitize(ItemStack stack) {
+        if (stack == null || stack.getType() == null || stack.getType() == Material.AIR) {
+            return null;
+        }
+        Material item = getItem(getName(stack.getType()));
+        if (item == null) {
+            return null;
+        }
+        if (item != stack.getType()) {
+            stack = stack.clone();
+            stack.setType(item);
+        }
+        return stack;
+    }
+
+    private static void block(int id, String key) {
+        key = "minecraft:" + key;
+        names.put(id, key);
+        blocks.put(key, id);
+    }
+
+    private static void item(int id, String key) {
+        key = "minecraft:" + key;
+        names.put(id, key);
+        items.put(key, id);
+    }
+
+    private static void both(int id, String key) {
+        key = "minecraft:" + key;
+        names.put(id, key);
+        blocks.put(key, id);
+        items.put(key, id);
+    }
+
+    private static void alternate(int id, String key) {
+        items.put("minecraft:" + key, id);
     }
 
 }

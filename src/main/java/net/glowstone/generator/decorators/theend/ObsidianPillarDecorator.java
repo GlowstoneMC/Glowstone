@@ -2,7 +2,6 @@ package net.glowstone.generator.decorators.theend;
 
 import net.glowstone.generator.decorators.BlockDecorator;
 import net.glowstone.generator.objects.ObsidianPillar;
-
 import org.bukkit.Chunk;
 import org.bukkit.World;
 

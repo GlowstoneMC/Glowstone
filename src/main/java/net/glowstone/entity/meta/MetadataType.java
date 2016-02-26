@@ -23,15 +23,15 @@ public enum MetadataType {
         this.dataType = dataType;
     }
 
+    public static MetadataType byId(int id) {
+        return values()[id];
+    }
+
     public Class<?> getDataType() {
         return dataType;
     }
 
     public int getId() {
         return ordinal();
-    }
-
-    public static MetadataType byId(int id) {
-        return values()[id];
     }
 }

@@ -12,69 +12,7 @@ import java.util.Arrays;
 public final class GlowParticle {
 
     private static final int[] EMPTY = new int[0];
-
-    private GlowParticle() {
-    }
-
     private static final int[] ids = new int[Effect.values().length];
-
-    /**
-     * Get the particle id for a specified Particle.
-     * @param particle the Particle.
-     * @return the particle id.
-     */
-    public static int getId(Effect particle) {
-        Validate.notNull(particle, "particle cannot be null");
-        return ids[particle.ordinal()];
-    }
-
-    /**
-     * Convert a MaterialData to an extData array if possible for a particle.
-     * @param particle the Particle to validate.
-     * @param material the MaterialData to convert.
-     * @return The extData array for the particle effect.
-     * @throws IllegalArgumentException if data is provided incorrectly
-     */
-    public static int[] getData(Effect particle, MaterialData material) {
-        switch (particle) {
-            case ITEM_BREAK:
-            case TILE_BREAK:
-            case TILE_DUST:
-                if (material == null) {
-                    throw new IllegalArgumentException("Particle " + particle + " requires material, null provided");
-                }
-                if (particle == Effect.ITEM_BREAK) {
-                    // http://wiki.vg/Protocol#Particle
-                    // data "Length depends on particle. "iconcrack" [Effect.ITEM_BREAK] has length of 2, "blockcrack",
-                    // and "blockdust" have lengths of 1, the rest have 0"
-                    // iconcrack_(id)_(data) 36
-                    return new int[]{material.getItemTypeId(), material.getData()};
-                }
-                return new int[]{material.getItemTypeId()};
-            default:
-                if (material != null && material.getItemTypeId() != 0) {
-                    throw new IllegalArgumentException("Particle " + particle + " does not use material, " + material + " provided");
-                }
-                return EMPTY;
-        }
-    }
-
-    /**
-     * Determine whether a particle type is considered long distance, meaning
-     * it has a higher visible range than normal.
-     * @param particle the Particle.
-     * @return True if the particle is long distance.
-     */
-    public static boolean isLongDistance(Effect particle) {
-        return particle == Effect.EXPLOSION ||
-                particle == Effect.EXPLOSION_LARGE ||
-                particle == Effect.EXPLOSION_HUGE ||
-                particle == Effect.MOB_APPEARANCE;
-    }
-
-    private static void set(Effect particle, int id) {
-        ids[particle.ordinal()] = id;
-    }
 
     static {
         Arrays.fill(ids, -1);
@@ -121,5 +59,69 @@ public final class GlowParticle {
         set(Effect.WATER_DROPLET, 39); // droplet
         set(Effect.ITEM_TAKE, 40); // take
         set(Effect.MOB_APPEARANCE, 41); // mobappearance
+    }
+
+    private GlowParticle() {
+    }
+
+    /**
+     * Get the particle id for a specified Particle.
+     *
+     * @param particle the Particle.
+     * @return the particle id.
+     */
+    public static int getId(Effect particle) {
+        Validate.notNull(particle, "particle cannot be null");
+        return ids[particle.ordinal()];
+    }
+
+    /**
+     * Convert a MaterialData to an extData array if possible for a particle.
+     *
+     * @param particle the Particle to validate.
+     * @param material the MaterialData to convert.
+     * @return The extData array for the particle effect.
+     * @throws IllegalArgumentException if data is provided incorrectly
+     */
+    public static int[] getData(Effect particle, MaterialData material) {
+        switch (particle) {
+            case ITEM_BREAK:
+            case TILE_BREAK:
+            case TILE_DUST:
+                if (material == null) {
+                    throw new IllegalArgumentException("Particle " + particle + " requires material, null provided");
+                }
+                if (particle == Effect.ITEM_BREAK) {
+                    // http://wiki.vg/Protocol#Particle
+                    // data "Length depends on particle. "iconcrack" [Effect.ITEM_BREAK] has length of 2, "blockcrack",
+                    // and "blockdust" have lengths of 1, the rest have 0"
+                    // iconcrack_(id)_(data) 36
+                    return new int[]{material.getItemTypeId(), material.getData()};
+                }
+                return new int[]{material.getItemTypeId()};
+            default:
+                if (material != null && material.getItemTypeId() != 0) {
+                    throw new IllegalArgumentException("Particle " + particle + " does not use material, " + material + " provided");
+                }
+                return EMPTY;
+        }
+    }
+
+    /**
+     * Determine whether a particle type is considered long distance, meaning
+     * it has a higher visible range than normal.
+     *
+     * @param particle the Particle.
+     * @return True if the particle is long distance.
+     */
+    public static boolean isLongDistance(Effect particle) {
+        return particle == Effect.EXPLOSION ||
+                particle == Effect.EXPLOSION_LARGE ||
+                particle == Effect.EXPLOSION_HUGE ||
+                particle == Effect.MOB_APPEARANCE;
+    }
+
+    private static void set(Effect particle, int id) {
+        ids[particle.ordinal()] = id;
     }
 }

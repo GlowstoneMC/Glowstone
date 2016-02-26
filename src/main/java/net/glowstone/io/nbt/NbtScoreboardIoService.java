@@ -15,13 +15,12 @@ import java.io.IOException;
  */
 public final class NbtScoreboardIoService implements ScoreboardIoService {
 
+    private static final String SCOREBOARD_SAVE_FILE = "scoreboard.dat";
     /**
      * The root directory of the scoreboard
      */
     private final File dir;
     private final GlowServer server;
-
-    private static final String SCOREBOARD_SAVE_FILE = "scoreboard.dat";
 
     public NbtScoreboardIoService(GlowServer server, File dir) {
         this.server = server;

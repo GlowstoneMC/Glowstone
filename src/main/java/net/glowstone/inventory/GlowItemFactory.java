@@ -18,6 +18,15 @@ public final class GlowItemFactory implements ItemFactory {
     private GlowItemFactory() {
     }
 
+    /**
+     * Get the static GlowItemFactory instance.
+     *
+     * @return The instance.
+     */
+    public static GlowItemFactory instance() {
+        return instance;
+    }
+
     @Override
     public ItemMeta getItemMeta(Material material) {
         return makeMeta(material, null);
@@ -81,15 +90,8 @@ public final class GlowItemFactory implements ItemFactory {
     }
 
     /**
-     * Get the static GlowItemFactory instance.
-     * @return The instance.
-     */
-    public static GlowItemFactory instance() {
-        return instance;
-    }
-
-    /**
      * Throw a descriptive error if the given ItemMeta does not belong to this factory.
+     *
      * @param meta The ItemMeta.
      * @return The GlowMetaItem.
      */

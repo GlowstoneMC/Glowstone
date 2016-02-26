@@ -14,7 +14,7 @@ public class GlowMetaLeatherArmor extends GlowMetaItem implements LeatherArmorMe
 
     public GlowMetaLeatherArmor(GlowMetaItem meta) {
         super(meta);
-        if (meta == null || !(meta instanceof GlowMetaLeatherArmor)) {
+        if (!(meta instanceof GlowMetaLeatherArmor)) {
             return;
         }
         GlowMetaLeatherArmor armor = (GlowMetaLeatherArmor) meta;

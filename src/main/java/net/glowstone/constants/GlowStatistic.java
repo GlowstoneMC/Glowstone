@@ -10,23 +10,7 @@ import static org.bukkit.Statistic.*;
  */
 public final class GlowStatistic {
 
-    private GlowStatistic() {}
-
     private static final String[] names = new String[Statistic.values().length];
-
-    /**
-     * Get the statistic name for a specified Statistic.
-     * @param stat the Statistic.
-     * @return the statistic name.
-     */
-    public static String getName(Statistic stat) {
-        Validate.notNull(stat, "Achievement cannot be null");
-        return names[stat.ordinal()];
-    }
-
-    private static void set(Statistic stat, String key) {
-        names[stat.ordinal()] = "stat." + key;
-    }
 
     static {
         set(LEAVE_GAME, "leaveGame");
@@ -79,6 +63,24 @@ public final class GlowStatistic {
         set(CHEST_OPENED, "chestOpened");
 
         // todo: statistics with substatistics
+    }
+
+    private GlowStatistic() {
+    }
+
+    /**
+     * Get the statistic name for a specified Statistic.
+     *
+     * @param stat the Statistic.
+     * @return the statistic name.
+     */
+    public static String getName(Statistic stat) {
+        Validate.notNull(stat, "Achievement cannot be null");
+        return names[stat.ordinal()];
+    }
+
+    private static void set(Statistic stat, String key) {
+        names[stat.ordinal()] = "stat." + key;
     }
 
 }

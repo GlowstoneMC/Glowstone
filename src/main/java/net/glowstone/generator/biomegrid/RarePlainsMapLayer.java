@@ -12,6 +12,10 @@ public class RarePlainsMapLayer extends MapLayer {
 
     private static final Map<Integer, Integer> RARE_PLAINS = new HashMap<>();
 
+    static {
+        RARE_PLAINS.put(GlowBiome.getId(PLAINS), GlowBiome.getId(SUNFLOWER_PLAINS));
+    }
+
     private final MapLayer belowLayer;
 
     public RarePlainsMapLayer(long seed, MapLayer belowLayer) {
@@ -40,9 +44,5 @@ public class RarePlainsMapLayer extends MapLayer {
             }
         }
         return finalValues;
-    }
-
-    static {
-        RARE_PLAINS.put(GlowBiome.getId(PLAINS), GlowBiome.getId(SUNFLOWER_PLAINS));
     }
 }

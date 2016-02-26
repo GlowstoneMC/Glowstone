@@ -31,16 +31,14 @@ import java.util.Random;
 public class GlowLightningStrike extends GlowWeather implements LightningStrike {
 
     /**
-     * Whether the lightning strike is just for effect.
-     */
-    private boolean effect;
-
-    /**
      * How long this lightning strike has to remain in the world.
      */
     private final int ticksToLive;
-
     private final Random random;
+    /**
+     * Whether the lightning strike is just for effect.
+     */
+    private boolean effect;
 
     public GlowLightningStrike(Location location, boolean effect, Random random) {
         super(location);

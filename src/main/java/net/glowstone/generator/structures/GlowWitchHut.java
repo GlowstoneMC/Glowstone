@@ -24,12 +24,12 @@ public class GlowWitchHut extends GlowTemplePiece {
         super(random, location, new Vector(7, 5, 9));
     }
 
-    public void setHasWitch(boolean hasWitch) {
-        this.hasWitch = hasWitch;
-    }
-
     public boolean getHasWitch() {
         return hasWitch;
+    }
+
+    public void setHasWitch(boolean hasWitch) {
+        this.hasWitch = hasWitch;
     }
 
     @Override

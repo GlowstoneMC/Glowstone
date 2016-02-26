@@ -63,6 +63,7 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
 
     /**
      * Get the ChunkSection array backing this snapshot. In general, it should not be modified.
+     *
      * @return The array of ChunkSections.
      */
     public ChunkSection[] getRawSections() {

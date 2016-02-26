@@ -81,10 +81,9 @@ public class RegionFile {
 
     private static final int CHUNK_HEADER_SIZE = 5;
     private static final byte[] emptySector = new byte[SECTOR_BYTES];
-
-    private RandomAccessFile file;
     private final int[] offsets;
     private final int[] chunkTimestamps;
+    private RandomAccessFile file;
     private ArrayList<Boolean> sectorFree;
     private int sizeDelta;
     private long lastModified = 0;
@@ -216,29 +215,6 @@ public class RegionFile {
         return new DataOutputStream(new DeflaterOutputStream(new ChunkBuffer(x, z), new Deflater(Deflater.BEST_SPEED)));
     }
 
-    /*
-     * lets chunk writing be multithreaded by not locking the whole file as a
-     * chunk is serializing -- only writes when serialization is over
-     */
-    class ChunkBuffer extends ByteArrayOutputStream {
-        private final int x, z;
-
-        public ChunkBuffer(int x, int z) {
-            super(8096); // initialize to 8KB
-            this.x = x;
-            this.z = z;
-        }
-
-        @Override
-        public void close() throws IOException {
-            try {
-                RegionFile.this.write(x, z, buf, count);
-            } finally {
-                super.close();
-            }
-        }
-    }
-
     /* write a chunk at (x,z) with length bytes of data to disk */
     protected void write(int x, int z, byte[] data, int length) throws IOException {
         int offset = getOffset(x, z);
@@ -347,5 +323,28 @@ public class RegionFile {
     public void close() throws IOException {
         file.getChannel().force(true);
         file.close();
+    }
+
+    /*
+     * lets chunk writing be multithreaded by not locking the whole file as a
+     * chunk is serializing -- only writes when serialization is over
+     */
+    class ChunkBuffer extends ByteArrayOutputStream {
+        private final int x, z;
+
+        public ChunkBuffer(int x, int z) {
+            super(8096); // initialize to 8KB
+            this.x = x;
+            this.z = z;
+        }
+
+        @Override
+        public void close() throws IOException {
+            try {
+                RegionFile.this.write(x, z, buf, count);
+            } finally {
+                super.close();
+            }
+        }
     }
 }

@@ -36,6 +36,7 @@ public class BlockPiston extends BlockType {
 
     /**
      * The piston is either non-sticky (default), or has a sticky behavior
+     *
      * @return true if the piston has a sticky base
      */
     public boolean isSticky() {
@@ -48,10 +49,10 @@ public class BlockPiston extends BlockType {
 
         if (Math.abs(pLoc.getBlockX() - bLoc.getBlockX()) < 2.0F && Math.abs(pLoc.getBlockZ() - bLoc.getBlockZ()) < 2.0F) {
             double offset = pLoc.getBlockY() + player.getEyeHeight();
-            if (offset - (double) bLoc.getBlockY() > 2.0)
+            if (offset - bLoc.getBlockY() > 2.0)
                 return BlockFace.UP;
 
-            if ((double) bLoc.getBlockY() - offset > 0.0)
+            if (bLoc.getBlockY() - offset > 0.0)
                 return BlockFace.DOWN;
         }
         return player.getDirection().getOppositeFace();
@@ -59,12 +60,18 @@ public class BlockPiston extends BlockType {
 
     private int getRawFace(BlockFace face) {
         switch (face) {
-            case DOWN: return 0;
-            case UP: return 1;
-            case NORTH: return 2;
-            case SOUTH: return 3;
-            case WEST: return 4;
-            case EAST: return 5;
+            case DOWN:
+                return 0;
+            case UP:
+                return 1;
+            case NORTH:
+                return 2;
+            case SOUTH:
+                return 3;
+            case WEST:
+                return 4;
+            case EAST:
+                return 5;
         }
         return 0;
     }

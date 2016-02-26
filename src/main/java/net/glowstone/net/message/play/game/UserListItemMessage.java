@@ -96,11 +96,11 @@ public final class UserListItemMessage implements Message {
 
     @Data
     public static final class Entry {
-        private final Action action;
         public final UUID uuid;
         public final PlayerProfile profile;
         public final int gameMode;
         public final int ping;
         public final TextMessage displayName;
+        private final Action action;
     }
 }

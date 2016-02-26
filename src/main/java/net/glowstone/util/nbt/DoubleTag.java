@@ -12,6 +12,7 @@ final class DoubleTag extends Tag<Double> {
 
     /**
      * Creates the tag.
+     *
      * @param value The value.
      */
     public DoubleTag(double value) {

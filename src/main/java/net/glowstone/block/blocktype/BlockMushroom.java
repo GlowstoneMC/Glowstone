@@ -57,7 +57,7 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
 
     @Override
     public boolean canGrowWithChance(GlowBlock block) {
-        return (double) random.nextFloat() < 0.4D;
+        return random.nextFloat() < 0.4D;
     }
 
     @Override
@@ -107,11 +107,15 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
             nY = block.getY() + random.nextInt(2) - random.nextInt(2);
             nZ = block.getZ() + random.nextInt(3) - 1;
 
-            x = block.getX(); y = block.getY(); z = block.getZ();
+            x = block.getX();
+            y = block.getY();
+            z = block.getZ();
             for (i = 0; i < 4; i++) {
                 if (world.getBlockAt(nX, nY, nZ).getType() == Material.AIR
                         && canPlaceAt(world.getBlockAt(nX, nY, nZ), BlockFace.DOWN)) {
-                    x = nX; y = nY; z = nZ;
+                    x = nX;
+                    y = nY;
+                    z = nZ;
                 }
                 nX = x + random.nextInt(3) - 1;
                 nY = y + random.nextInt(2) - random.nextInt(2);

@@ -23,7 +23,7 @@ public class GlowMetaBanner extends GlowMetaItem implements BannerMeta {
 
     public GlowMetaBanner(GlowMetaItem meta) {
         super(meta);
-        if (meta == null || !(meta instanceof GlowMetaBanner)) {
+        if (!(meta instanceof GlowMetaBanner)) {
             return;
         }
         GlowMetaBanner banner = (GlowMetaBanner) meta;
@@ -31,14 +31,14 @@ public class GlowMetaBanner extends GlowMetaItem implements BannerMeta {
     }
 
     @Override
-    public void setPatterns(List<Pattern> patterns) {
-        Validate.notNull(patterns, "Pattern cannot be null!");
-        this.patterns = patterns;
+    public List<Pattern> getPatterns() {
+        return patterns;
     }
 
     @Override
-    public List<Pattern> getPatterns() {
-        return patterns;
+    public void setPatterns(List<Pattern> patterns) {
+        Validate.notNull(patterns, "Pattern cannot be null!");
+        this.patterns = patterns;
     }
 
     @Override

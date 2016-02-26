@@ -19,6 +19,7 @@ public enum GlowBlockEntity {
 
     /**
      * Gets the magic number associated with this GlowBlockEntity
+     *
      * @return the magic number
      */
     public int getValue() {

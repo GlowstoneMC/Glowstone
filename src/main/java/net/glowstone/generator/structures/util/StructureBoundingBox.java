@@ -20,29 +20,20 @@ public class StructureBoundingBox {
     }
 
     public boolean isVectorInside(Vector vec) {
-        if (vec.getBlockX() >= min.getBlockX() && vec.getBlockX() <= max.getBlockX() &&
+        return vec.getBlockX() >= min.getBlockX() && vec.getBlockX() <= max.getBlockX() &&
                 vec.getBlockY() >= min.getBlockY() && vec.getBlockY() <= max.getBlockY() &&
-                vec.getBlockZ() >= min.getBlockZ() && vec.getBlockZ() <= max.getBlockZ()) {
-            return true;
-        }
-        return false;
+                vec.getBlockZ() >= min.getBlockZ() && vec.getBlockZ() <= max.getBlockZ();
     }
 
     public boolean intersectsWith(StructureBoundingBox boundingBox) {
-        if (boundingBox.getMin().getBlockX() <= max.getBlockX() && boundingBox.getMax().getBlockX() >= min.getBlockX() &&
+        return boundingBox.getMin().getBlockX() <= max.getBlockX() && boundingBox.getMax().getBlockX() >= min.getBlockX() &&
                 boundingBox.getMin().getBlockY() <= max.getBlockY() && boundingBox.getMax().getBlockY() >= min.getBlockY() &&
-                boundingBox.getMin().getBlockZ() <= max.getBlockZ() && boundingBox.getMax().getBlockZ() >= min.getBlockZ()) {
-            return true;
-        }
-        return false;
+                boundingBox.getMin().getBlockZ() <= max.getBlockZ() && boundingBox.getMax().getBlockZ() >= min.getBlockZ();
     }
 
     public boolean intersectsWith(int minX, int minZ, int maxX, int maxZ) {
-        if (minX <= max.getBlockX() && maxX >= min.getBlockX() &&
-                minZ <= max.getBlockZ() && maxZ >= min.getBlockZ()) {
-            return true;
-        }
-        return false;
+        return minX <= max.getBlockX() && maxX >= min.getBlockX() &&
+                minZ <= max.getBlockZ() && maxZ >= min.getBlockZ();
     }
 
     public void expandTo(StructureBoundingBox boundingBox) {

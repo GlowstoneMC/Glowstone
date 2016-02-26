@@ -6,10 +6,9 @@ import org.bukkit.inventory.ItemStack;
 
 public class GlowMapZoomMatcher extends ItemMatcher {
 
-    private static final String RECIPE = "###" + "#X#" + "###";
     public static final char PAPER = '#';
     public static final char MAP = 'X';
-
+    private static final String RECIPE = "###" + "#X#" + "###";
 
     @Override
     public ItemStack getResult(ItemStack[] matrix) {

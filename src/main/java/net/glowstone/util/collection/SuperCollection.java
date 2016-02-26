@@ -7,11 +7,11 @@ import java.util.List;
 
 /**
  * Generic super collection. This is an abstract collection which delegates (ie redirects operations) to other collections (its children). This class is employed to reduce the overhead of copying objects from several collections to create a new larger one.
- *
+ * <p>
  * This class is a generic collection which serves as a base for other super collections. It handles non-indexed accesses to collections like additions, removals, contains...
- *
+ * <p>
  * Note that because this collection holds references to other collections, modifications to children will be reflected here. Also, modifications to this collection will affect its children. If you need a collection that has the very same contents but isn't affected by operations to childrens, you can employ the {@link #asClone()} method, which returns a new collection with the same contents.
- *
+ * <p>
  * Since there are several children and not all may return the same return value for certain operations, you can control how this class behaves by means of the {@link #setResultMode(ResultMode)} method. It defaults to ANY, so operations that return booleans will return true as long as at least one children succeeded.
  */
 public abstract class SuperCollection<E> implements Collection<E> {
@@ -31,10 +31,20 @@ public abstract class SuperCollection<E> implements Collection<E> {
 
     /**
      * Returns the list of parents.
+     *
      * @return Parent list.
      */
     public List<? extends Collection<E>> getParents() {
         return parents;
+    }
+
+    /**
+     * Returns current result mode.
+     *
+     * @return Result mode.
+     */
+    public ResultMode getResultMode() {
+        return resultMode;
     }
 
     /**
@@ -47,11 +57,12 @@ public abstract class SuperCollection<E> implements Collection<E> {
     }
 
     /**
-     * Returns current result mode.
-     * @return Result mode.
+     * Returns current addition mode.
+     *
+     * @return Addition mode.
      */
-    public ResultMode getResultMode() {
-        return resultMode;
+    public AdditionMode getAdditionMode() {
+        return additionMode;
     }
 
     /**
@@ -64,21 +75,15 @@ public abstract class SuperCollection<E> implements Collection<E> {
     }
 
     /**
-     * Returns current addition mode.
-     * @return Addition mode.
-     */
-    public AdditionMode getAdditionMode() {
-        return additionMode;
-    }
-
-    /**
      * Returns a new collection with the same contents as the parents.
+     *
      * @return New mutable collection.
      */
     public abstract Collection<E> asClone();
 
     /**
      * Returns the class this SuperCollection implements.
+     *
      * @return Collection class.
      */
     protected abstract Class<? extends Collection> getCollectionClass();
@@ -94,7 +99,7 @@ public abstract class SuperCollection<E> implements Collection<E> {
 
         return false;
     }
-    
+
     @Override
     public boolean add(E object) {
         switch (additionMode) {
@@ -140,7 +145,7 @@ public abstract class SuperCollection<E> implements Collection<E> {
 
     @Override
     public void clear() {
-        parents.forEach(Collection<E>::clear);
+        parents.forEach(Collection::clear);
     }
 
     @Override
@@ -266,7 +271,7 @@ public abstract class SuperCollection<E> implements Collection<E> {
     @Override
     public <T> T[] toArray(T[] array) {
         // Override if possible
-        return asClone().<T>toArray(array);
+        return asClone().toArray(array);
     }
 
     @Override
@@ -278,13 +283,11 @@ public abstract class SuperCollection<E> implements Collection<E> {
     public enum ResultMode {
         NEVER,
         ALL,
-        ANY,
-        ;
+        ANY,;
     }
 
     public enum AdditionMode {
         ALL,
-        LAST,
-        ;
+        LAST,;
     }
 }

@@ -35,6 +35,7 @@ public final class TextMessage {
     /**
      * Construct a new chat message from a simple text string. Handles style
      * and colors in the original string, converting them to the new format.
+     *
      * @param text The text of the message.
      */
     public TextMessage(String text) {
@@ -43,43 +44,12 @@ public final class TextMessage {
 
     /**
      * Construct a chat message from a JSON structure. No validation occurs.
+     *
      * @param object The JSON structure of the message.
      */
     public TextMessage(JSONObject object) {
         Validate.notNull(object, "object must not be null");
         this.object = object;
-    }
-
-    /**
-     * Encode this chat message to its textual JSON representation.
-     * @return The encoded representation.
-     */
-    public String encode() {
-        return object.toJSONString();
-    }
-
-    /**
-     * Attempt to convert the message to its plaintext representation.
-     * @return The plain text, or the empty string on failure.
-     */
-    public String asPlaintext() {
-        if (object.containsKey("text")) {
-            Object obj = object.get("text");
-            if (obj instanceof String) {
-                return (String) obj;
-            }
-        }
-        return "";
-    }
-
-    /**
-     * Flatten this message to an approximate old-style string representation.
-     * @return The best old-style string representation for this message.
-     */
-    public String flatten() {
-        StringBuilder builder = new StringBuilder();
-        flatten(builder, object);
-        return builder.toString();
     }
 
     private static void flatten(StringBuilder dest, JSONObject obj) {
@@ -111,13 +81,9 @@ public final class TextMessage {
         }
     }
 
-    @Override
-    public String toString() {
-        return "Message" + encode();
-    }
-
     /**
      * Decode a chat message from its textual JSON representation if possible.
+     *
      * @param json The encoded representation.
      * @return The decoded TextMessage.
      */
@@ -137,6 +103,7 @@ public final class TextMessage {
 
     /**
      * Convert from an old-style to a new-style chat message.
+     *
      * @param text The The text of the message.
      * @return The converted JSON structure.
      */
@@ -221,6 +188,46 @@ public final class TextMessage {
         }
         current.setLength(0);
         items.add(object);
+    }
+
+    /**
+     * Encode this chat message to its textual JSON representation.
+     *
+     * @return The encoded representation.
+     */
+    public String encode() {
+        return object.toJSONString();
+    }
+
+    /**
+     * Attempt to convert the message to its plaintext representation.
+     *
+     * @return The plain text, or the empty string on failure.
+     */
+    public String asPlaintext() {
+        if (object.containsKey("text")) {
+            Object obj = object.get("text");
+            if (obj instanceof String) {
+                return (String) obj;
+            }
+        }
+        return "";
+    }
+
+    /**
+     * Flatten this message to an approximate old-style string representation.
+     *
+     * @return The best old-style string representation for this message.
+     */
+    public String flatten() {
+        StringBuilder builder = new StringBuilder();
+        flatten(builder, object);
+        return builder.toString();
+    }
+
+    @Override
+    public String toString() {
+        return "Message" + encode();
     }
 
 }

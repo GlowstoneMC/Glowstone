@@ -57,19 +57,19 @@ public class TEBanner extends TileEntity {
         player.sendBlockEntityChange(getBlock().getLocation(), GlowBlockEntity.BANNER, nbt);
     }
 
-    public void setPatterns(List<Pattern> patterns) {
-        this.patterns = patterns;
+    public DyeColor getBase() {
+        return base;
     }
 
     public void setBase(DyeColor base) {
         this.base = base;
     }
 
-    public DyeColor getBase() {
-        return base;
-    }
-
     public List<Pattern> getPatterns() {
         return patterns;
+    }
+
+    public void setPatterns(List<Pattern> patterns) {
+        this.patterns = patterns;
     }
 }

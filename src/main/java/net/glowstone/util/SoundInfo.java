@@ -14,6 +14,7 @@ public class SoundInfo {
 
     /**
      * Constructs a new GlowSound with the given sound and a volume and pitch of 1
+     *
      * @param sound The Bukkit sound enum constant
      */
     public SoundInfo(Sound sound) {
@@ -22,9 +23,10 @@ public class SoundInfo {
 
     /**
      * Constructs a new GlowSound with the given sound, volume and pitch
-     * @param sound The Bukkit sound enum constant
+     *
+     * @param sound  The Bukkit sound enum constant
      * @param volume Volume of sound
-     * @param pitch Pitch of sound
+     * @param pitch  Pitch of sound
      */
     public SoundInfo(Sound sound, float volume, float pitch) {
         this.sound = sound;
@@ -34,6 +36,7 @@ public class SoundInfo {
 
     /**
      * Plays the sound to all players at the given location.
+     *
      * @param location Location at which to play the sound
      */
     public void play(Location location) {
@@ -42,7 +45,8 @@ public class SoundInfo {
 
     /**
      * Plays the sound to the given player at the given location.
-     * @param player Player to which to play the sound
+     *
+     * @param player   Player to which to play the sound
      * @param location Location at which to play the sound
      */
     public void playTo(Player player, Location location) {

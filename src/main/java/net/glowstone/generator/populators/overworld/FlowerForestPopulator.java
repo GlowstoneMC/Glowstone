@@ -16,8 +16,8 @@ import java.util.Random;
 public class FlowerForestPopulator extends ForestPopulator {
 
     public static final FlowerType[] FLOWERS = {FlowerType.POPPY, FlowerType.POPPY, FlowerType.DANDELION, FlowerType.ALLIUM,
-        FlowerType.HOUSTONIA, FlowerType.TULIP_RED, FlowerType.TULIP_ORANGE, FlowerType.TULIP_WHITE, FlowerType.TULIP_PINK,
-        FlowerType.OXEYE_DAISY};
+            FlowerType.HOUSTONIA, FlowerType.TULIP_RED, FlowerType.TULIP_ORANGE, FlowerType.TULIP_WHITE, FlowerType.TULIP_PINK,
+            FlowerType.OXEYE_DAISY};
     private final OctaveGenerator noiseGen;
 
     public FlowerForestPopulator() {
@@ -31,7 +31,7 @@ public class FlowerForestPopulator extends ForestPopulator {
 
     @Override
     public Collection<Biome> getBiomes() {
-        return Collections.unmodifiableList(Arrays.asList(new Biome[] {Biome.FLOWER_FOREST}));
+        return Collections.unmodifiableList(Arrays.asList(Biome.FLOWER_FOREST));
     }
 
     @Override
@@ -47,7 +47,7 @@ public class FlowerForestPopulator extends ForestPopulator {
             int y = random.nextInt(world.getHighestBlockYAt(x, z) + 32);
             double noise = (noiseGen.noise(x, z, 0.5D, 2.0D) + 1.0D) / 2.0D;
             noise = noise < 0 ? 0 : noise > 0.9999D ? 0.9999D : noise;
-            final FlowerType flower = FLOWERS[(int) (noise * FLOWERS.length)];            
+            final FlowerType flower = FLOWERS[(int) (noise * FLOWERS.length)];
             new Flower(flower).generate(world, random, x, y, z);
         }
     }

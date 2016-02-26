@@ -31,6 +31,20 @@ public class GlowInventorySlot {
         this.type = type;
     }
 
+    public static GlowInventorySlot[] createArray(int len) {
+        GlowInventorySlot[] result = new GlowInventorySlot[len];
+
+        for (int i = 0; i < len; i++) {
+            result[i] = new GlowInventorySlot();
+        }
+
+        return result;
+    }
+
+    public static List<GlowInventorySlot> createList(int len) {
+        return Arrays.asList(createArray(len));
+    }
+
     public ItemStack getItem() {
         return item;
     }
@@ -45,19 +59,5 @@ public class GlowInventorySlot {
 
     public void setType(SlotType type) {
         this.type = type;
-    }
-
-    public static GlowInventorySlot[] createArray(int len) {
-        GlowInventorySlot[] result = new GlowInventorySlot[len];
-
-        for (int i = 0; i < len; i++) {
-            result[i] = new GlowInventorySlot();
-        }
-
-        return result;
-    }
-
-    public static List<GlowInventorySlot> createList(int len) {
-        return Arrays.asList(createArray(len));
     }
 }

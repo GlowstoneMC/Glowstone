@@ -23,10 +23,10 @@ public class EnchantmentManager {
     private final Random random = new Random();
     private final GlowPlayer player;
     private final GlowEnchantingInventory inventory;
-    private int xpSeed;
     private final int[] enchLevelCosts = new int[3];
     private final int[] enchId = new int[3];
     private final int[] enchLevel = new int[3];
+    private int xpSeed;
 
     public EnchantmentManager(GlowEnchantingInventory inventory, GlowPlayer player) {
         this.player = player;
@@ -36,6 +36,146 @@ public class EnchantmentManager {
 
     ////////////////////////////
     // Public functions
+
+    private static int calculateRandomizedModifier(Random random, ItemStack itemStack, int cost) {
+        int modifier = calculateModifier(itemStack);
+        if (modifier <= 0) return -1;
+
+        float randomValue = 1 + (random.nextFloat() + random.nextFloat() - 1.0F) * 0.15F;
+
+
+        modifier /= 4;
+        modifier += 1;
+        modifier = random.nextInt(modifier) + random.nextInt(modifier);
+        modifier += 1 + cost;
+
+        modifier = Math.round(modifier * randomValue);
+        modifier = Math.max(1, modifier);
+
+        return modifier;
+    }
+
+    private static int calculateModifier(ItemStack item) {
+        //TODO: replace this by a better system?
+        Material type = item.getType();
+
+        switch (type) {
+            case BOOK:
+            case BOW:
+            case FISHING_ROD:
+                return 1;
+        }
+
+        if (ClothType.CHAINMAIL.matches(type))
+            return 12;
+        else if (ClothType.IRON.matches(type))
+            return 9;
+        else if (ClothType.DIAMOND.matches(type))
+            return 10;
+        else if (ClothType.LEATHER.matches(type))
+            return 15;
+        else if (ClothType.GOLD.matches(type))
+            return 25;
+
+
+        else if (MaterialToolType.WOOD.matches(type))
+            return 15;
+        else if (MaterialToolType.STONE.matches(type))
+            return 5;
+        else if (MaterialToolType.DIAMOND.matches(type))
+            return 10;
+        else if (MaterialToolType.IRON.matches(type))
+            return 14;
+        else if (MaterialToolType.GOLD.matches(type))
+            return 22;
+
+        return 0;
+    }
+
+    /////////////////////////////
+    // Enchantments calculating
+
+    private static boolean canEnchant(ItemStack item) {
+        Material type = item.getType();
+
+        switch (type) {
+            case ENCHANTED_BOOK:
+                return false;
+            case BOOK:
+                return item.getAmount() == 1;
+            case FISHING_ROD:
+            case BOW:
+                return item.getEnchantments().isEmpty();
+            default:
+                return (isEnchantableTool(type) || isCloth(type) || ToolType.SWORD.matches(type)) && item.getEnchantments().isEmpty();
+
+        }
+    }
+
+    private static boolean isCloth(Material type) {
+        for (MaterialMatcher mm : ClothType.values())
+            if (mm.matches(type))
+                return true;
+
+        return false;
+    }
+
+    private static boolean isEnchantableTool(Material type) {
+        for (MaterialMatcher mm : ENCHANTABLE_TOOLS)
+            if (mm.matches(type))
+                return true;
+
+        return false;
+    }
+
+    //////////////////////////////////
+    // Modifier calculation
+
+    private static Map<Enchantment, Integer> toMap(List<LeveledEnchant> list) {
+        Map<Enchantment, Integer> map = new HashMap<>(list.size());
+        for (LeveledEnchant enchant : list)
+            map.put(enchant.getEnchantment(), enchant.getLevel());
+        return map;
+    }
+
+    private static List<LeveledEnchant> getAllPossibleEnchants(ItemStack item, int modifier) {
+        List<LeveledEnchant> enchantments = new ArrayList<>();
+
+        boolean isBook = item.getType() == Material.BOOK;
+
+        for (Enchantment enchantment : Enchantment.values()) {
+            if (isBook || enchantment.canEnchantItem(item)) {
+                for (int level = enchantment.getStartLevel(); level <= enchantment.getMaxLevel(); level++) {
+                    if (((GlowEnchantment) enchantment).isInRange(level, modifier)) {
+                        enchantments.add(new LeveledEnchant(enchantment, level));
+                    }
+                }
+            }
+        }
+
+        return enchantments;
+    }
+
+    /////////////////////////////////////
+    // Internal stuff / helper functions
+
+    private static void removeConflicting(List<LeveledEnchant> enchants, List<LeveledEnchant> toReduce) {
+        Iterator<LeveledEnchant> it = toReduce.iterator();
+
+        while (it.hasNext()) {
+            Enchantment currentEnchantment = it.next().getEnchantment();
+
+            boolean conflicts = false;
+            for (LeveledEnchant entry : enchants) {
+                if (entry.getEnchantment().conflictsWith(currentEnchantment)) {
+                    conflicts = true;
+                    break;
+                }
+            }
+            if (conflicts)
+                it.remove();
+        }
+    }
 
     public void invalidate() {
         ItemStack item = inventory.getItem();
@@ -97,9 +237,6 @@ public class EnchantmentManager {
 
         update();
     }
-
-    /////////////////////////////
-    // Enchantments calculating
 
     private void calculateNewEnchantsAndLevels() {
         random.setSeed(xpSeed);
@@ -188,67 +325,6 @@ public class EnchantmentManager {
             return result;
     }
 
-    //////////////////////////////////
-    // Modifier calculation
-
-    private static int calculateRandomizedModifier(Random random, ItemStack itemStack, int cost) {
-        int modifier = calculateModifier(itemStack);
-        if (modifier <= 0) return -1;
-
-        float randomValue = 1 + (random.nextFloat() + random.nextFloat() - 1.0F) * 0.15F;
-
-
-        modifier /= 4;
-        modifier += 1;
-        modifier = random.nextInt(modifier) + random.nextInt(modifier);
-        modifier += 1 + cost;
-
-        modifier = Math.round(modifier * randomValue);
-        modifier = Math.max(1, modifier);
-
-        return modifier;
-    }
-
-    private static int calculateModifier(ItemStack item) {
-        //TODO: replace this by a better system?
-        Material type = item.getType();
-
-        switch (type) {
-            case BOOK:
-            case BOW:
-            case FISHING_ROD:
-                return 1;
-        }
-
-        if (ClothType.CHAINMAIL.matches(type))
-            return 12;
-        else if (ClothType.IRON.matches(type))
-            return 9;
-        else if (ClothType.DIAMOND.matches(type))
-            return 10;
-        else if (ClothType.LEATHER.matches(type))
-            return 15;
-        else if (ClothType.GOLD.matches(type))
-            return 25;
-
-
-        else if (MaterialToolType.WOOD.matches(type))
-            return 15;
-        else if (MaterialToolType.STONE.matches(type))
-            return 5;
-        else if (MaterialToolType.DIAMOND.matches(type))
-            return 10;
-        else if (MaterialToolType.IRON.matches(type))
-            return 14;
-        else if (MaterialToolType.GOLD.matches(type))
-            return 22;
-
-        return 0;
-    }
-
-    /////////////////////////////////////
-    // Internal stuff / helper functions
-
     private void clearEnch() {
         for (int i = 0; i < 3; i++) {
             enchLevelCosts[i] = 0;
@@ -288,81 +364,5 @@ public class EnchantmentManager {
         }
 
         return false;
-    }
-
-    private static boolean canEnchant(ItemStack item) {
-        Material type = item.getType();
-
-        switch (type) {
-            case ENCHANTED_BOOK:
-                return false;
-            case BOOK:
-                return item.getAmount() == 1;
-            case FISHING_ROD:
-            case BOW:
-                return item.getEnchantments().isEmpty();
-            default:
-                return (isEnchantableTool(type) || isCloth(type) || ToolType.SWORD.matches(type)) && item.getEnchantments().isEmpty();
-
-        }
-    }
-
-    private static boolean isCloth(Material type) {
-        for (MaterialMatcher mm : ClothType.values())
-            if (mm.matches(type))
-                return true;
-
-        return false;
-    }
-
-    private static boolean isEnchantableTool(Material type) {
-        for (MaterialMatcher mm : ENCHANTABLE_TOOLS)
-            if (mm.matches(type))
-                return true;
-
-        return false;
-    }
-
-    private static Map<Enchantment, Integer> toMap(List<LeveledEnchant> list) {
-        Map<Enchantment, Integer> map = new HashMap<>(list.size());
-        for (LeveledEnchant enchant : list)
-            map.put(enchant.getEnchantment(), enchant.getLevel());
-        return map;
-    }
-
-    private static List<LeveledEnchant> getAllPossibleEnchants(ItemStack item, int modifier) {
-        List<LeveledEnchant> enchantments = new ArrayList<>();
-
-        boolean isBook = item.getType() == Material.BOOK;
-
-        for (Enchantment enchantment : Enchantment.values()) {
-            if (isBook || enchantment.canEnchantItem(item)) {
-                for (int level = enchantment.getStartLevel(); level <= enchantment.getMaxLevel(); level++) {
-                    if (((GlowEnchantment) enchantment).isInRange(level, modifier)) {
-                        enchantments.add(new LeveledEnchant(enchantment, level));
-                    }
-                }
-            }
-        }
-
-        return enchantments;
-    }
-
-    private static void removeConflicting(List<LeveledEnchant> enchants, List<LeveledEnchant> toReduce) {
-        Iterator<LeveledEnchant> it = toReduce.iterator();
-
-        while (it.hasNext()) {
-            Enchantment currentEnchantment = it.next().getEnchantment();
-
-            boolean conflicts = false;
-            for (LeveledEnchant entry : enchants) {
-                if (entry.getEnchantment().conflictsWith(currentEnchantment)) {
-                    conflicts = true;
-                    break;
-                }
-            }
-            if (conflicts)
-                it.remove();
-        }
     }
 }

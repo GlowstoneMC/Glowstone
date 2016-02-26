@@ -19,65 +19,10 @@ public class GlowMetaFireworkEffect extends GlowMetaItem implements FireworkEffe
     public GlowMetaFireworkEffect(GlowMetaItem meta) {
         super(meta);
 
-        if (meta == null || !(meta instanceof GlowMetaFireworkEffect)) return;
+        if (!(meta instanceof GlowMetaFireworkEffect)) return;
 
         GlowMetaFireworkEffect effect = (GlowMetaFireworkEffect) meta;
         this.effect = effect.effect;
-    }
-
-    @Override
-    public boolean isApplicable(Material material) {
-        return material == Material.FIREWORK_CHARGE;
-    }
-
-    @Override
-    public GlowMetaFireworkEffect clone() {
-        return new GlowMetaFireworkEffect(this);
-    }
-
-    @Override
-    void writeNbt(CompoundTag tag) {
-        super.writeNbt(tag);
-
-        if (hasEffect()) {
-            tag.putCompound("Explosion", toExplosion(effect));
-        }
-    }
-
-    @Override
-    void readNbt(CompoundTag tag) {
-        super.readNbt(tag);
-
-        if (tag.isCompound("Explosion")) {
-            this.effect = toEffect(tag.getCompound("Explosion"));
-        }
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> result = super.serialize();
-        result.put("meta-type", "CHARGE");
-
-        if (hasEffect()) {
-            result.put("effect", effect.serialize());
-        }
-
-        return result;
-    }
-
-    @Override
-    public void setEffect(FireworkEffect effect) {
-        this.effect = effect;
-    }
-
-    @Override
-    public boolean hasEffect() {
-        return effect != null;
-    }
-
-    @Override
-    public FireworkEffect getEffect() {
-        return effect;
     }
 
     static FireworkEffect toEffect(CompoundTag explosion) {
@@ -132,5 +77,60 @@ public class GlowMetaFireworkEffect extends GlowMetaItem implements FireworkEffe
         }
 
         return explosion;
+    }
+
+    @Override
+    public boolean isApplicable(Material material) {
+        return material == Material.FIREWORK_CHARGE;
+    }
+
+    @Override
+    public GlowMetaFireworkEffect clone() {
+        return new GlowMetaFireworkEffect(this);
+    }
+
+    @Override
+    void writeNbt(CompoundTag tag) {
+        super.writeNbt(tag);
+
+        if (hasEffect()) {
+            tag.putCompound("Explosion", toExplosion(effect));
+        }
+    }
+
+    @Override
+    void readNbt(CompoundTag tag) {
+        super.readNbt(tag);
+
+        if (tag.isCompound("Explosion")) {
+            this.effect = toEffect(tag.getCompound("Explosion"));
+        }
+    }
+
+    @Override
+    public Map<String, Object> serialize() {
+        Map<String, Object> result = super.serialize();
+        result.put("meta-type", "CHARGE");
+
+        if (hasEffect()) {
+            result.put("effect", effect.serialize());
+        }
+
+        return result;
+    }
+
+    @Override
+    public boolean hasEffect() {
+        return effect != null;
+    }
+
+    @Override
+    public FireworkEffect getEffect() {
+        return effect;
+    }
+
+    @Override
+    public void setEffect(FireworkEffect effect) {
+        this.effect = effect;
     }
 }

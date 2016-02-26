@@ -48,7 +48,7 @@ public class BlockButton extends BlockAttachable {
                 button.setPowered(false);
                 state.update();
                 if (block.getType() == Material.WOOD_BUTTON || block.getType() == Material.STONE_BUTTON)
-                extraUpdate(block);
+                    extraUpdate(block);
             }
         }).runTaskLater(null, block.getType() == Material.STONE_BUTTON ? 20 : 30);
 

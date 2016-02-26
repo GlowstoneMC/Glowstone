@@ -43,7 +43,7 @@ public class NbtScoreboardIoReader {
     private static void registerObjectives(CompoundTag root, GlowScoreboard scoreboard) {
         if (root.containsKey("Objectives")) {
             List<CompoundTag> objectives = root.getCompoundList("Objectives");
-            for (CompoundTag objective: objectives) {
+            for (CompoundTag objective : objectives) {
                 registerObjective(objective, scoreboard);
             }
         }
@@ -61,11 +61,10 @@ public class NbtScoreboardIoReader {
     }
 
 
-
     private static void registerScores(CompoundTag root, GlowScoreboard scoreboard) {
         if (root.containsKey("PlayerScores")) {
             List<CompoundTag> scores = root.getCompoundList("PlayerScores");
-            for (CompoundTag score: scores) {
+            for (CompoundTag score : scores) {
                 registerScore(score, scoreboard);
             }
         }
@@ -75,7 +74,7 @@ public class NbtScoreboardIoReader {
         int scoreNum = data.getInt("Score");
         String name = data.getString("Name");
         String objective = data.getString("Objective");
-        boolean locked = data.getByte("Locked") == 1  ? true : false;
+        boolean locked = data.getByte("Locked") == 1;
 
         Score score = scoreboard.getObjective(objective).getScore(name);
         score.setScore(scoreNum);
@@ -85,15 +84,15 @@ public class NbtScoreboardIoReader {
     private static void registerTeams(CompoundTag root, GlowScoreboard scoreboard) {
         if (root.containsKey("Teams")) {
             List<CompoundTag> teams = root.getCompoundList("Teams");
-            for (CompoundTag team: teams) {
+            for (CompoundTag team : teams) {
                 registerTeam(team, scoreboard);
             }
         }
     }
 
     private static void registerTeam(CompoundTag data, GlowScoreboard scoreboard) {
-        boolean allowFriendlyFire = data.getByte("AllowFriendlyFire") == 1 ? true : false;
-        boolean seeFriendlyInvisibles = data.getByte("SeeFriendlyInvisibles") == 1 ? true : false;
+        boolean allowFriendlyFire = data.getByte("AllowFriendlyFire") == 1;
+        boolean seeFriendlyInvisibles = data.getByte("SeeFriendlyInvisibles") == 1;
         NameTagVisibility nameTagVisibility = NameTagVisibility.get(data.getString("NameTagVisibility"));
         NameTagVisibility deathMessageVisibility = NameTagVisibility.get(data.getString("NameTagVisibility"));
         String displayName = data.getString("DisplayName");

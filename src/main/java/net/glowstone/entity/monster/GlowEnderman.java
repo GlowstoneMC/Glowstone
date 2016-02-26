@@ -23,7 +23,7 @@ public class GlowEnderman extends GlowMonster implements Enderman {
     @Override
     public void setCarriedMaterial(MaterialData type) {
         this.carriedMaterial = type;
-        metadata.set(MetadataIndex.ENDERMAN_BLOCK, new Integer(type.getItemTypeId()).shortValue());
+        metadata.set(MetadataIndex.ENDERMAN_BLOCK, Integer.valueOf(type.getItemTypeId()).shortValue());
         metadata.set(MetadataIndex.ENDERMAN_BLOCK_DATA, type.getData());
     }
 

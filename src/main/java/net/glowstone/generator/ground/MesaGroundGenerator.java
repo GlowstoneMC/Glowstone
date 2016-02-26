@@ -24,6 +24,16 @@ public class MesaGroundGenerator extends GroundGenerator {
     private SimplexOctaveGenerator canyonScaleNoise;
     private long seed;
 
+    public MesaGroundGenerator() {
+        this(MesaType.NORMAL);
+    }
+
+    public MesaGroundGenerator(MesaType type) {
+        this.type = type;
+        topMaterial = RED_SAND;
+        groundMaterial = ORANGE_STAINED_CLAY;
+    }
+
     private void initialize(long seed) {
         if (seed != this.seed || colorNoise == null || canyonScaleNoise == null || canyonHeightNoise == null) {
             final Random random = new Random(seed);
@@ -39,16 +49,6 @@ public class MesaGroundGenerator extends GroundGenerator {
         }
     }
 
-    public MesaGroundGenerator() {
-        this(MesaType.NORMAL);
-    }
-
-    public MesaGroundGenerator(MesaType type) {
-        this.type = type;
-        topMaterial = RED_SAND;
-        groundMaterial = ORANGE_STAINED_CLAY;
-    }
-
     @Override
     public void generateTerrainColumn(ChunkData chunkData, World world, Random random, int x, int z, Biome biome, double surfaceNoise) {
 
@@ -60,7 +60,7 @@ public class MesaGroundGenerator extends GroundGenerator {
         MaterialData groundMat = groundMaterial;
 
         int surfaceHeight = Math.max((int) (surfaceNoise / 3.0D + 3.0D + random.nextDouble() * 0.25D), 1);
-        boolean colored = Math.cos(surfaceNoise / 3.0D * Math.PI) > 0 ? false : true;
+        boolean colored = Math.cos(surfaceNoise / 3.0D * Math.PI) <= 0;
         double bryceCanyonHeight = 0;
         if (type == MesaType.BRYCE) {
             int nX = (x & 0xFFFFFFF0) + (z & 0xF);
@@ -129,12 +129,6 @@ public class MesaGroundGenerator extends GroundGenerator {
         }
     }
 
-    public enum MesaType {
-        NORMAL,
-        BRYCE,
-        FOREST
-    }
-
     private void setColoredGroundLayer(ChunkData chunkData, int x, int y, int z, int color) {
         if (color >= 0) {
             chunkData.setBlock(x, y, z, new MaterialData(Material.STAINED_CLAY, (byte) color));
@@ -178,5 +172,11 @@ public class MesaGroundGenerator extends GroundGenerator {
                 colorLayer[j] = 0; // white
             }
         }
+    }
+
+    public enum MesaType {
+        NORMAL,
+        BRYCE,
+        FOREST
     }
 }

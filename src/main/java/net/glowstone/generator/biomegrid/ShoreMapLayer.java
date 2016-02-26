@@ -13,6 +13,31 @@ public class ShoreMapLayer extends MapLayer {
 
     private static final Set<Integer> OCEANS = new HashSet<>();
     private static final Map<Integer, Integer> SPECIAL_SHORES = new HashMap<>();
+
+    static {
+        OCEANS.add(GlowBiome.getId(OCEAN));
+        OCEANS.add(GlowBiome.getId(DEEP_OCEAN));
+
+        SPECIAL_SHORES.put(GlowBiome.getId(EXTREME_HILLS), GlowBiome.getId(STONE_BEACH));
+        SPECIAL_SHORES.put(GlowBiome.getId(EXTREME_HILLS_PLUS), GlowBiome.getId(STONE_BEACH));
+        SPECIAL_SHORES.put(GlowBiome.getId(EXTREME_HILLS_MOUNTAINS), GlowBiome.getId(STONE_BEACH));
+        SPECIAL_SHORES.put(GlowBiome.getId(EXTREME_HILLS_PLUS_MOUNTAINS), GlowBiome.getId(STONE_BEACH));
+        SPECIAL_SHORES.put(GlowBiome.getId(ICE_PLAINS), GlowBiome.getId(COLD_BEACH));
+        SPECIAL_SHORES.put(GlowBiome.getId(ICE_MOUNTAINS), GlowBiome.getId(COLD_BEACH));
+        SPECIAL_SHORES.put(GlowBiome.getId(ICE_PLAINS_SPIKES), GlowBiome.getId(COLD_BEACH));
+        SPECIAL_SHORES.put(GlowBiome.getId(COLD_TAIGA), GlowBiome.getId(COLD_BEACH));
+        SPECIAL_SHORES.put(GlowBiome.getId(COLD_TAIGA_HILLS), GlowBiome.getId(COLD_BEACH));
+        SPECIAL_SHORES.put(GlowBiome.getId(COLD_TAIGA_MOUNTAINS), GlowBiome.getId(COLD_BEACH));
+        SPECIAL_SHORES.put(GlowBiome.getId(MUSHROOM_ISLAND), GlowBiome.getId(MUSHROOM_SHORE));
+        SPECIAL_SHORES.put(GlowBiome.getId(SWAMPLAND), GlowBiome.getId(SWAMPLAND));
+        SPECIAL_SHORES.put(GlowBiome.getId(MESA), GlowBiome.getId(MESA));
+        SPECIAL_SHORES.put(GlowBiome.getId(MESA_PLATEAU_FOREST), GlowBiome.getId(MESA_PLATEAU_FOREST));
+        SPECIAL_SHORES.put(GlowBiome.getId(MESA_PLATEAU_FOREST_MOUNTAINS), GlowBiome.getId(MESA_PLATEAU_FOREST_MOUNTAINS));
+        SPECIAL_SHORES.put(GlowBiome.getId(MESA_PLATEAU), GlowBiome.getId(MESA_PLATEAU));
+        SPECIAL_SHORES.put(GlowBiome.getId(MESA_PLATEAU_MOUNTAINS), GlowBiome.getId(MESA_PLATEAU_MOUNTAINS));
+        SPECIAL_SHORES.put(GlowBiome.getId(MESA_BRYCE), GlowBiome.getId(MESA_BRYCE));
+    }
+
     private final MapLayer belowLayer;
 
     public ShoreMapLayer(long seed, MapLayer belowLayer) {
@@ -54,29 +79,5 @@ public class ShoreMapLayer extends MapLayer {
             }
         }
         return finalValues;
-    }
-
-    static {
-        OCEANS.add(GlowBiome.getId(OCEAN));
-        OCEANS.add(GlowBiome.getId(DEEP_OCEAN));
-
-        SPECIAL_SHORES.put(GlowBiome.getId(EXTREME_HILLS), GlowBiome.getId(STONE_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(EXTREME_HILLS_PLUS), GlowBiome.getId(STONE_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(EXTREME_HILLS_MOUNTAINS), GlowBiome.getId(STONE_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(EXTREME_HILLS_PLUS_MOUNTAINS), GlowBiome.getId(STONE_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(ICE_PLAINS), GlowBiome.getId(COLD_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(ICE_MOUNTAINS), GlowBiome.getId(COLD_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(ICE_PLAINS_SPIKES), GlowBiome.getId(COLD_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(COLD_TAIGA), GlowBiome.getId(COLD_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(COLD_TAIGA_HILLS), GlowBiome.getId(COLD_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(COLD_TAIGA_MOUNTAINS), GlowBiome.getId(COLD_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(MUSHROOM_ISLAND), GlowBiome.getId(MUSHROOM_SHORE));
-        SPECIAL_SHORES.put(GlowBiome.getId(SWAMPLAND), GlowBiome.getId(SWAMPLAND));
-        SPECIAL_SHORES.put(GlowBiome.getId(MESA), GlowBiome.getId(MESA));
-        SPECIAL_SHORES.put(GlowBiome.getId(MESA_PLATEAU_FOREST), GlowBiome.getId(MESA_PLATEAU_FOREST));
-        SPECIAL_SHORES.put(GlowBiome.getId(MESA_PLATEAU_FOREST_MOUNTAINS), GlowBiome.getId(MESA_PLATEAU_FOREST_MOUNTAINS));
-        SPECIAL_SHORES.put(GlowBiome.getId(MESA_PLATEAU), GlowBiome.getId(MESA_PLATEAU));
-        SPECIAL_SHORES.put(GlowBiome.getId(MESA_PLATEAU_MOUNTAINS), GlowBiome.getId(MESA_PLATEAU_MOUNTAINS));
-        SPECIAL_SHORES.put(GlowBiome.getId(MESA_BRYCE), GlowBiome.getId(MESA_BRYCE));
     }
 }

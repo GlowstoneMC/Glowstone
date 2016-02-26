@@ -27,74 +27,6 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
         note = getTileEntity().getNote();
     }
 
-    private TENote getTileEntity() {
-        return (TENote) getBlock().getTileEntity();
-    }
-
-    @Override
-    public boolean update(boolean force, boolean applyPhysics) {
-        boolean result = super.update(force, applyPhysics);
-        if (result) {
-            getTileEntity().setNote(note);
-        }
-        return result;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Implementation
-
-    @Override
-    public Note getNote() {
-        return note;
-    }
-
-    @Override
-    public byte getRawNote() {
-        return note.getId();
-    }
-
-    @Override
-    public void setNote(Note note) {
-        Validate.notNull(note);
-        this.note = note;
-    }
-
-    @Override
-    public void setRawNote(byte note) {
-        this.note = new Note(note);
-    }
-
-    @Override
-    public boolean play() {
-        return play(instrumentOf(getBlock().getRelative(BlockFace.DOWN).getType()), getNote());
-    }
-
-    @Override
-    public boolean play(byte instrument, byte note) {
-        return play(Instrument.getByType(instrument), new Note(note));
-    }
-
-    @Override
-    public boolean play(Instrument instrument, Note note) {
-        if (getBlock().getType() != Material.NOTE_BLOCK) {
-            return false;
-        }
-        NotePlayEvent event = EventFactory.callEvent(new NotePlayEvent(getBlock(), instrument, note));
-        if (event.isCancelled()) {
-            return false;
-        }
-
-        Location location = getBlock().getLocation();
-
-        GlowChunk.Key key = new GlowChunk.Key(getX() >> 4, getZ() >> 4);
-        getWorld().getRawPlayers().stream().filter(player -> player.canSeeChunk(key)).forEach(player -> player.playNote(location, instrument, note));
-
-        return true;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Internals
-
     private static Instrument instrumentOf(Material mat) {
         // todo: check more blocks.
         switch (mat) {
@@ -119,6 +51,74 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
             default:
                 return Instrument.PIANO;
         }
+    }
+
+    private TENote getTileEntity() {
+        return (TENote) getBlock().getTileEntity();
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Implementation
+
+    @Override
+    public boolean update(boolean force, boolean applyPhysics) {
+        boolean result = super.update(force, applyPhysics);
+        if (result) {
+            getTileEntity().setNote(note);
+        }
+        return result;
+    }
+
+    @Override
+    public Note getNote() {
+        return note;
+    }
+
+    @Override
+    public void setNote(Note note) {
+        Validate.notNull(note);
+        this.note = note;
+    }
+
+    @Override
+    public byte getRawNote() {
+        return note.getId();
+    }
+
+    @Override
+    public void setRawNote(byte note) {
+        this.note = new Note(note);
+    }
+
+    @Override
+    public boolean play() {
+        return play(instrumentOf(getBlock().getRelative(BlockFace.DOWN).getType()), getNote());
+    }
+
+    @Override
+    public boolean play(byte instrument, byte note) {
+        return play(Instrument.getByType(instrument), new Note(note));
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Internals
+
+    @Override
+    public boolean play(Instrument instrument, Note note) {
+        if (getBlock().getType() != Material.NOTE_BLOCK) {
+            return false;
+        }
+        NotePlayEvent event = EventFactory.callEvent(new NotePlayEvent(getBlock(), instrument, note));
+        if (event.isCancelled()) {
+            return false;
+        }
+
+        Location location = getBlock().getLocation();
+
+        GlowChunk.Key key = new GlowChunk.Key(getX() >> 4, getZ() >> 4);
+        getWorld().getRawPlayers().stream().filter(player -> player.canSeeChunk(key)).forEach(player -> player.playNote(location, instrument, note));
+
+        return true;
     }
 
 }

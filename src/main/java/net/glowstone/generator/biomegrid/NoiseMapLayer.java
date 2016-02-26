@@ -13,7 +13,7 @@ public class NoiseMapLayer extends MapLayer {
 
     @Override
     public int[] generateValues(int x, int z, int sizeX, int sizeZ) {
-        int[] values = new int[sizeX * sizeZ]; 
+        int[] values = new int[sizeX * sizeZ];
         for (int i = 0; i < sizeZ; i++) {
             for (int j = 0; j < sizeX; j++) {
                 double noise = noiseGen.noise(x + j, z + i, 0.175D, 0.8D, true) * 4.0D;

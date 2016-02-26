@@ -15,12 +15,6 @@ public final class ScoreboardObjectiveMessage implements Message {
     private final int action;
     private final RenderType renderType;
 
-    private enum Action {
-        CREATE,
-        REMOVE,
-        UPDATE
-    }
-
     public static ScoreboardObjectiveMessage create(String name, String displayName) {
         return new ScoreboardObjectiveMessage(name, displayName, Action.CREATE.ordinal(), RenderType.INTEGER);
     }
@@ -39,5 +33,11 @@ public final class ScoreboardObjectiveMessage implements Message {
 
     public static ScoreboardObjectiveMessage update(String name, String displayName, RenderType renderType) {
         return new ScoreboardObjectiveMessage(name, displayName, Action.UPDATE.ordinal(), renderType);
+    }
+
+    private enum Action {
+        CREATE,
+        REMOVE,
+        UPDATE
     }
 }

@@ -72,13 +72,13 @@ public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
     }
 
     @Override
-    public final void setFuseTicks(int i) {
-        this.fuseTicks = i;
+    public final int getFuseTicks() {
+        return fuseTicks;
     }
 
     @Override
-    public final int getFuseTicks() {
-        return fuseTicks;
+    public final void setFuseTicks(int i) {
+        this.fuseTicks = i;
     }
 
     @Override

@@ -23,10 +23,10 @@ public class OreVein {
 
     public void generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
         float angle = random.nextFloat() * (float) Math.PI;
-        double dx1 = sourceX + Math.sin(angle) * (float) (amount / 8.0F);
-        double dx2 = sourceX - Math.sin(angle) * (float) (amount / 8.0F);
-        double dz1 = sourceZ + Math.cos(angle) * (float) (amount / 8.0F);
-        double dz2 = sourceZ - Math.cos(angle) * (float) (amount / 8.0F);
+        double dx1 = sourceX + Math.sin(angle) * amount / 8.0F;
+        double dx2 = sourceX - Math.sin(angle) * amount / 8.0F;
+        double dz1 = sourceZ + Math.cos(angle) * amount / 8.0F;
+        double dz2 = sourceZ - Math.cos(angle) * amount / 8.0F;
         double dy1 = sourceY + random.nextInt(3) - 2;
         double dy2 = sourceY + random.nextInt(3) - 2;
 

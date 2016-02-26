@@ -21,10 +21,32 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
 
     public GlowMetaPotion(GlowMetaItem meta) {
         super(meta);
-        if (meta == null || !(meta instanceof GlowMetaPotion)) return;
+        if (!(meta instanceof GlowMetaPotion)) return;
 
         GlowMetaPotion potion = (GlowMetaPotion) meta;
         effects.addAll(potion.effects);
+    }
+
+    public static PotionEffect fromNBT(CompoundTag tag) {
+        PotionEffectType type = PotionEffectType.getById(tag.getByte("Id"));
+        int duration = tag.getInt("Duration");
+        int amplifier = tag.getByte("Amplifier");
+        boolean ambient = tag.isByte("Ambient") && tag.getBool("Ambient");
+        boolean particles = !tag.isByte("ShowParticles") || tag.getBool("ShowParticles");
+
+        return new PotionEffect(type, duration, amplifier, ambient, particles);
+    }
+
+    public static CompoundTag toNBT(PotionEffect effect) {
+        CompoundTag tag = new CompoundTag();
+
+        tag.putByte("Id", effect.getType().getId());
+        tag.putInt("Duration", effect.getDuration());
+        tag.putByte("Amplifier", effect.getAmplifier());
+        tag.putBool("Ambient", effect.isAmbient());
+        tag.putBool("ShowParticles", effect.hasParticles());
+
+        return tag;
     }
 
     @Override
@@ -138,27 +160,5 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         if (effects.isEmpty()) return false;
         effects.clear();
         return true;
-    }
-
-    public static PotionEffect fromNBT(CompoundTag tag) {
-        PotionEffectType type = PotionEffectType.getById(tag.getByte("Id"));
-        int duration = tag.getInt("Duration");
-        int amplifier = tag.getByte("Amplifier");
-        boolean ambient = tag.isByte("Ambient") ? tag.getBool("Ambient") : false;
-        boolean particles = tag.isByte("ShowParticles") ? tag.getBool("ShowParticles") : true;
-
-        return new PotionEffect(type, duration, amplifier, ambient, particles);
-    }
-
-    public static CompoundTag toNBT(PotionEffect effect) {
-        CompoundTag tag = new CompoundTag();
-
-        tag.putByte("Id", effect.getType().getId());
-        tag.putInt("Duration", effect.getDuration());
-        tag.putByte("Amplifier", effect.getAmplifier());
-        tag.putBool("Ambient", effect.isAmbient());
-        tag.putBool("ShowParticles", effect.hasParticles());
-
-        return tag;
     }
 }

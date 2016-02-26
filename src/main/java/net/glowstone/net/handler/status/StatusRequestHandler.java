@@ -14,7 +14,10 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.net.InetAddress;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 public final class StatusRequestHandler implements MessageHandler<GlowSession, StatusRequestMessage> {
 

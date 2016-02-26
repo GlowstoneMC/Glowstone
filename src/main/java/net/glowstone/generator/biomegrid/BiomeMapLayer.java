@@ -6,19 +6,19 @@ import static org.bukkit.block.Biome.*;
 
 public class BiomeMapLayer extends MapLayer {
 
-    private static final int[] WARM = new int[] {GlowBiome.getId(DESERT), GlowBiome.getId(DESERT), GlowBiome.getId(DESERT),
+    private static final int[] WARM = new int[]{GlowBiome.getId(DESERT), GlowBiome.getId(DESERT), GlowBiome.getId(DESERT),
             GlowBiome.getId(SAVANNA), GlowBiome.getId(SAVANNA), GlowBiome.getId(PLAINS)};
-    private static final int[] WET = new int[] {GlowBiome.getId(PLAINS), GlowBiome.getId(PLAINS), GlowBiome.getId(FOREST),
+    private static final int[] WET = new int[]{GlowBiome.getId(PLAINS), GlowBiome.getId(PLAINS), GlowBiome.getId(FOREST),
             GlowBiome.getId(BIRCH_FOREST), GlowBiome.getId(ROOFED_FOREST), GlowBiome.getId(EXTREME_HILLS),
             GlowBiome.getId(SWAMPLAND)};
-    private static final int[] DRY = new int[] {GlowBiome.getId(PLAINS), GlowBiome.getId(FOREST), GlowBiome.getId(TAIGA),
+    private static final int[] DRY = new int[]{GlowBiome.getId(PLAINS), GlowBiome.getId(FOREST), GlowBiome.getId(TAIGA),
             GlowBiome.getId(EXTREME_HILLS)};
-    private static final int[] COLD = new int[] {GlowBiome.getId(ICE_PLAINS), GlowBiome.getId(ICE_PLAINS),
+    private static final int[] COLD = new int[]{GlowBiome.getId(ICE_PLAINS), GlowBiome.getId(ICE_PLAINS),
             GlowBiome.getId(COLD_TAIGA)};
-    private static final int[] WARM_LARGE = new int[] {GlowBiome.getId(MESA_PLATEAU_FOREST), GlowBiome.getId(MESA_PLATEAU_FOREST),
+    private static final int[] WARM_LARGE = new int[]{GlowBiome.getId(MESA_PLATEAU_FOREST), GlowBiome.getId(MESA_PLATEAU_FOREST),
             GlowBiome.getId(MESA_PLATEAU)};
-    private static final int[] DRY_LARGE = new int[] {GlowBiome.getId(MEGA_TAIGA)};
-    private static final int[] WET_LARGE = new int[] {GlowBiome.getId(JUNGLE)};
+    private static final int[] DRY_LARGE = new int[]{GlowBiome.getId(MEGA_TAIGA)};
+    private static final int[] WET_LARGE = new int[]{GlowBiome.getId(JUNGLE)};
 
     private final MapLayer belowLayer;
 

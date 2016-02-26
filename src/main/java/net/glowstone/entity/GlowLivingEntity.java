@@ -9,7 +9,10 @@ import net.glowstone.inventory.EquipmentMonitor;
 import net.glowstone.net.message.play.entity.EntityEffectMessage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityRemoveEffectMessage;
-import org.bukkit.*;
+import org.bukkit.EntityEffect;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -36,62 +39,50 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * Potion effects on the entity.
      */
     private final Map<PotionEffectType, PotionEffect> potionEffects = new HashMap<>();
-
-    /**
-     * The entity's health.
-     */
-    protected double health;
-
-    /**
-     * The entity's max health.
-     */
-    protected double maxHealth;
-
-    /**
-     * The magnitude of the last damage the entity took.
-     */
-    private double lastDamage;
-
-    /**
-     * How long the entity has until it runs out of air.
-     */
-    private int airTicks = 300;
-
-    /**
-     * The maximum amount of air the entity can hold.
-     */
-    private int maximumAir = 300;
-
-    /**
-     * The number of ticks remaining in the invincibility period.
-     */
-    private int noDamageTicks = 0;
-
-    /**
-     * The default length of the invincibility period.
-     */
-    private int maxNoDamageTicks = 10;
-
-    /**
-     * Whether the entity should be removed if it is too distant from players.
-     */
-    private boolean removeDistance;
-
-    /**
-     * Whether the (non-Player) entity can pick up armor and tools.
-     */
-    private boolean pickupItems;
-
-    /**
-     * Monitor for the equipment of this entity.
-     */
-    private EquipmentMonitor equipmentMonitor = new EquipmentMonitor(this);
-
     /**
      * The LivingEntity's AttributeManager.
      */
     private final AttributeManager attributeManager;
-
+    /**
+     * The entity's health.
+     */
+    protected double health;
+    /**
+     * The entity's max health.
+     */
+    protected double maxHealth;
+    /**
+     * The magnitude of the last damage the entity took.
+     */
+    private double lastDamage;
+    /**
+     * How long the entity has until it runs out of air.
+     */
+    private int airTicks = 300;
+    /**
+     * The maximum amount of air the entity can hold.
+     */
+    private int maximumAir = 300;
+    /**
+     * The number of ticks remaining in the invincibility period.
+     */
+    private int noDamageTicks = 0;
+    /**
+     * The default length of the invincibility period.
+     */
+    private int maxNoDamageTicks = 10;
+    /**
+     * Whether the entity should be removed if it is too distant from players.
+     */
+    private boolean removeDistance;
+    /**
+     * Whether the (non-Player) entity can pick up armor and tools.
+     */
+    private boolean pickupItems;
+    /**
+     * Monitor for the equipment of this entity.
+     */
+    private EquipmentMonitor equipmentMonitor = new EquipmentMonitor(this);
     /**
      * The LivingEntity's number of ticks since death
      */
@@ -494,7 +485,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         if (cause != null && hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
             switch (cause) {
                 case PROJECTILE:
-                    if (source == null || !(source instanceof Fireball)) {
+                    if (!(source instanceof Fireball)) {
                         break;
                     }
                 case FIRE:
@@ -517,7 +508,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             return;
         }
 
-        if (source != null && source instanceof GlowPlayer) {
+        if (source instanceof GlowPlayer) {
             ((GlowPlayer) source).addExhaustion(0.3f);
         }
 

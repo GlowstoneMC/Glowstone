@@ -21,11 +21,9 @@ import java.util.stream.Collectors;
  */
 public final class GlowTeam implements Team {
 
-    private GlowScoreboard scoreboard;
     private final String name;
-
     private final HashSet<OfflinePlayer> players = new HashSet<>();
-
+    private GlowScoreboard scoreboard;
     // properties
     private String displayName;
     private String prefix = "";
@@ -149,15 +147,15 @@ public final class GlowTeam implements Team {
         return deathMessageVisibility;
     }
 
-    @Override
-    public boolean hasEntry(String s) throws IllegalArgumentException, IllegalStateException {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
     public void setDeathMessageVisibility(NameTagVisibility deathMessageVisibility) throws IllegalStateException, IllegalArgumentException {
         Validate.notNull(deathMessageVisibility, "NameTagVisibility cannot be null!");
         checkValid();
         this.deathMessageVisibility = deathMessageVisibility;
+    }
+
+    @Override
+    public boolean hasEntry(String s) throws IllegalArgumentException, IllegalStateException {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -228,6 +226,7 @@ public final class GlowTeam implements Team {
 
     /**
      * Remove a player without propagating the change to the scoreboard.
+     *
      * @param player The player to remove.
      */
     void rawRemovePlayer(OfflinePlayer player) {

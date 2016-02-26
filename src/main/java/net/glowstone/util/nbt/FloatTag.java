@@ -12,6 +12,7 @@ final class FloatTag extends Tag<Float> {
 
     /**
      * Creates the tag.
+     *
      * @param value The value.
      */
     public FloatTag(float value) {

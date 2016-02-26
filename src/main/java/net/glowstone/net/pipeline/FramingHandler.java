@@ -12,6 +12,26 @@ import java.util.List;
  */
 public final class FramingHandler extends ByteToMessageCodec<ByteBuf> {
 
+    private static boolean readableVarInt(ByteBuf buf) {
+        if (buf.readableBytes() > 5) {
+            // maximum varint size
+            return true;
+        }
+
+        int idx = buf.readerIndex();
+        byte in;
+        do {
+            if (buf.readableBytes() < 1) {
+                buf.readerIndex(idx);
+                return false;
+            }
+            in = buf.readByte();
+        } while ((in & 0x80) != 0);
+
+        buf.readerIndex(idx);
+        return true;
+    }
+
     @Override
     protected void encode(ChannelHandlerContext ctx, ByteBuf msg, ByteBuf out) throws Exception {
         ByteBufUtils.writeVarInt(out, msg.readableBytes());
@@ -37,25 +57,5 @@ public final class FramingHandler extends ByteToMessageCodec<ByteBuf> {
         ByteBuf buf = ctx.alloc().buffer(length);
         in.readBytes(buf, length);
         out.add(buf);
-    }
-
-    private static boolean readableVarInt(ByteBuf buf) {
-        if (buf.readableBytes() > 5) {
-            // maximum varint size
-            return true;
-        }
-
-        int idx = buf.readerIndex();
-        byte in;
-        do {
-            if (buf.readableBytes() < 1) {
-                buf.readerIndex(idx);
-                return false;
-            }
-            in = buf.readByte();
-        } while ((in & 0x80) != 0);
-
-        buf.readerIndex(idx);
-        return true;
     }
 }

@@ -19,7 +19,7 @@ public class MegaTaigaPopulator extends TaigaPopulator {
 
     private static final Biome[] BIOMES = {Biome.MEGA_TAIGA, Biome.MEGA_TAIGA_HILLS};
     private static final TreeDecoration[] TREES = {new TreeDecoration(RedwoodTree.class, 52), new TreeDecoration(TallRedwoodTree.class, 26),
-        new TreeDecoration(MegaPineTree.class, 36), new TreeDecoration(MegaSpruceTree.class, 3)};
+            new TreeDecoration(MegaPineTree.class, 36), new TreeDecoration(MegaSpruceTree.class, 3)};
 
     protected final StoneBoulderDecorator stoneBoulderDecorator = new StoneBoulderDecorator();
 

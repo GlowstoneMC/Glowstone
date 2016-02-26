@@ -30,7 +30,7 @@ public class MegaRedwoodTree extends MegaJungleTree {
         int previousRadius = 0;
         for (int y = loc.getBlockY() + height - leavesHeight; y <= loc.getBlockY() + height; y++) {
             int n = loc.getBlockY() + height - y;
-            int radius = (int) Math.floor(((float) n / (float) leavesHeight) * 3.5F);
+            int radius = (int) Math.floor(((float) n / leavesHeight) * 3.5F);
             if (radius == previousRadius && n > 0 && y % 2 == 0) {
                 radius++;
             }

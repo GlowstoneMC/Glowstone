@@ -34,7 +34,7 @@ public class StructurePopulator extends BlockPopulator {
             for (int x = cx - 8; x <= cx + 8 && !placed; x++) {
                 for (int z = cz - 8; z <= cz + 8 && !placed; z++) {
                     if (world.getChunkAt(x, z).isLoaded() || world.getChunkAt(x, z).load(true)) {
-                        random.setSeed((long) x * xRand + (long) z * zRand ^ world.getSeed());
+                        random.setSeed(x * xRand + z * zRand ^ world.getSeed());
                         final Map<Integer, GlowStructure> structures = ((GlowWorld) world).getStructures();
                         final int key = new GlowChunk.Key(x, z).hashCode();
                         if (!structures.containsKey(key)) {
@@ -55,7 +55,7 @@ public class StructurePopulator extends BlockPopulator {
 
             final int x = cx << 4;
             final int z = cz << 4;
-            final Iterator<Entry<Integer, GlowStructure>> it = ((GlowWorld) world).getStructures().entrySet().iterator();            
+            final Iterator<Entry<Integer, GlowStructure>> it = ((GlowWorld) world).getStructures().entrySet().iterator();
             while (it.hasNext()) {
                 final GlowStructure structure = it.next().getValue();
                 if (structure.getBoundingBox().intersectsWith(x, z, x + 15, z + 15)) {

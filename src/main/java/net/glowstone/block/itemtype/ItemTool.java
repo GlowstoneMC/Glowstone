@@ -43,10 +43,11 @@ public class ItemTool extends ItemType {
 
     /**
      * Called when a player used (right clicked with) the tool.
-     * @param player The player using the tool
-     * @param tool The tool
-     * @param target The block right clicked with the tool
-     * @param face The clicked BlockFace
+     *
+     * @param player     The player using the tool
+     * @param tool       The tool
+     * @param target     The block right clicked with the tool
+     * @param face       The clicked BlockFace
      * @param clickedLoc The click location on the block
      * @return true if the tool's durability should be decreased, false otherwise
      */

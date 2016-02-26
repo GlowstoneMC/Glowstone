@@ -33,26 +33,25 @@ public final class Explosion {
     public static final int POWER_WITHER_SKULL = 1;
     public static final int POWER_WITHER_CREATION = 7;
     public static final int POWER_ENDER_CRYSTAL = 6;
-
-    private float power;
+    private static final Random random = new Random();
     private final Entity source;
     private final Location location;
     private final boolean incendiary;
     private final boolean breakBlocks;
     private final GlowWorld world;
+    private float power;
     private float yield = 0.3f;
-
-    private static final Random random = new Random();
 
     /**
      * Creates a new explosion
-     * @param source The entity causing this explosion
-     * @param world The world this explosion is in
-     * @param x The X location of the explosion
-     * @param y The Y location of the explosion
-     * @param z The Z location of the explosion
-     * @param power The power of the explosion
-     * @param incendiary Whether or not blocks should be set on fire
+     *
+     * @param source      The entity causing this explosion
+     * @param world       The world this explosion is in
+     * @param x           The X location of the explosion
+     * @param y           The Y location of the explosion
+     * @param z           The Z location of the explosion
+     * @param power       The power of the explosion
+     * @param incendiary  Whether or not blocks should be set on fire
      * @param breakBlocks Whether blocks should break through this explosion
      */
     public Explosion(Entity source, GlowWorld world, double x, double y, double z, float power, boolean incendiary, boolean breakBlocks) {
@@ -61,10 +60,11 @@ public final class Explosion {
 
     /**
      * Creates a new explosion
-     * @param source The entity causing this explosion
-     * @param location The location this explosion is occuring at. Must contain a GlowWorld
-     * @param power The power of the explosion
-     * @param incendiary Whether or not blocks should be set on fire
+     *
+     * @param source      The entity causing this explosion
+     * @param location    The location this explosion is occuring at. Must contain a GlowWorld
+     * @param power       The power of the explosion
+     * @param incendiary  Whether or not blocks should be set on fire
      * @param breakBlocks Whether blocks should break through this explosion
      */
     public Explosion(Entity source, Location location, float power, boolean incendiary, boolean breakBlocks) {
@@ -228,7 +228,7 @@ public final class Explosion {
             if (entity instanceof GlowPlayer) {
                 affectedPlayers.add((GlowPlayer) entity);
             }
-            double disDivPower = distanceTo(entity) / (double) this.power;
+            double disDivPower = distanceTo(entity) / this.power;
             if (disDivPower > 1.0D) continue;
 
             Vector vecDistance = distanceToHead(entity);
@@ -237,7 +237,7 @@ public final class Explosion {
             vecDistance.normalize();
 
             double basicDamage = calculateDamage(entity, disDivPower);
-            double explosionDamage = calculateEnchantedDamage((int) ((basicDamage * basicDamage + basicDamage) * 4 * (double) power + 1.0D), entity);
+            double explosionDamage = calculateEnchantedDamage((int) ((basicDamage * basicDamage + basicDamage) * 4 * power + 1.0D), entity);
 
             DamageCause damageCause;
             if (source == null || source.getType() == EntityType.PRIMED_TNT) {
@@ -307,8 +307,7 @@ public final class Explosion {
         for (Chunk chunk : chunks) {
             entities.addAll(Arrays.asList(chunk.getEntities()));
         }
-        List<GlowLivingEntity> nearbyEntities = entities.stream().filter(entity -> entity instanceof LivingEntity && distanceTo((LivingEntity) entity) / power < 1).map(entity -> (GlowLivingEntity) entity).collect(Collectors.toList());
-        return nearbyEntities;
+        return entities.stream().filter(entity -> entity instanceof LivingEntity && distanceTo((LivingEntity) entity) / power < 1).map(entity -> (GlowLivingEntity) entity).collect(Collectors.toList());
     }
 
     private double distanceTo(LivingEntity entity) {

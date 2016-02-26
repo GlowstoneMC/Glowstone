@@ -37,7 +37,8 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     /**
      * Create a new offline player for the given name. If possible, the player's
      * UUID will be found and then their data.
-     * @param server The server of the offline player. Must not be null.
+     *
+     * @param server  The server of the offline player. Must not be null.
      * @param profile The profile associated with the player. Must not be null.
      */
     public GlowOfflinePlayer(GlowServer server, PlayerProfile profile) {
@@ -51,8 +52,9 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     /**
      * Create a new offline player for the given UUID. If possible, the
      * player's data (including name) will be loaded based on the UUID.
+     *
      * @param server The server of the offline player. Must not be null.
-     * @param name The name of the player. Must not be null.
+     * @param name   The name of the player. Must not be null.
      */
     public GlowOfflinePlayer(GlowServer server, String name) {
         Validate.notNull(server, "server must not be null");
@@ -65,8 +67,9 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     /**
      * Create a new offline player for the given UUID. If possible, the player's
      * data (including name) will be loaded based on the UUID.
+     *
      * @param server The server of the offline player. Must not be null.
-     * @param uuid The UUID of the player. Must not be null.
+     * @param uuid   The UUID of the player. Must not be null.
      */
     public GlowOfflinePlayer(GlowServer server, UUID uuid) {
         Validate.notNull(server, "server must not be null");
@@ -75,6 +78,20 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
         profile = ProfileCache.getProfile(uuid);
         loadData();
     }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public static OfflinePlayer deserialize(Map<String, Object> val) {
+        if (val.get("name") != null) {
+            // use name
+            return Bukkit.getServer().getOfflinePlayer(val.get("name").toString());
+        } else {
+            // use UUID
+            return Bukkit.getServer().getOfflinePlayer(UUID.fromString(val.get("UUID").toString()));
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Core properties
 
     private void loadData() {
         try (PlayerDataService.PlayerReader reader = server.getPlayerDataService().beginReadingData(getUniqueId())) {
@@ -91,9 +108,6 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
             }
         }
     }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Core properties
 
     @Override
     public String getName() {
@@ -120,6 +134,9 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
         return getPlayer() != null;
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Player properties
+
     @Override
     public Player getPlayer() {
         if (getUniqueId() != null) {
@@ -128,9 +145,6 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
             return server.getPlayerExact(getName());
         }
     }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Player properties
 
     @Override
     public boolean hasPlayedBefore() {
@@ -147,13 +161,13 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
         return lastPlayed;
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Ban, op, whitelist
+
     @Override
     public Location getBedSpawnLocation() {
         return bedSpawn;
     }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Ban, op, whitelist
 
     @Override
     public boolean isBanned() {
@@ -185,6 +199,9 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
         return server.getOpsList().containsUUID(getUniqueId());
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Serialization
+
     @Override
     public void setOp(boolean value) {
         if (value) {
@@ -194,25 +211,11 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Serialization
-
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> ret = new HashMap<>();
         ret.put("UUID", getUniqueId().toString());
         return ret;
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    public static OfflinePlayer deserialize(Map<String, Object> val) {
-        if (val.get("name") != null) {
-            // use name
-            return Bukkit.getServer().getOfflinePlayer(val.get("name").toString());
-        } else {
-            // use UUID
-            return Bukkit.getServer().getOfflinePlayer(UUID.fromString(val.get("UUID").toString()));
-        }
     }
 
     public boolean equals(Object o) {

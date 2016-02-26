@@ -14,6 +14,7 @@ public final class AttackDamage {
     /**
      * Gets the damage an item in-hand would cause without added benefits. This
      * assumes a non-critical attack.
+     *
      * @param material the item type
      * @return the raw damage caused by that item
      */
@@ -55,6 +56,7 @@ public final class AttackDamage {
 
     /**
      * Gets the damage an item in-hand would cause without added benefits.
+     *
      * @param material the item type
      * @param critical true if critical damage should be returned
      * @return the raw damage caused by that item
@@ -66,6 +68,7 @@ public final class AttackDamage {
 
     /**
      * Gets the durability loss of the supplied type for a successful hit.
+     *
      * @param material the item type
      * @return the durability points lost, or 0
      */

@@ -31,10 +31,7 @@ public class BlockStem extends BlockCrops implements IBlockGrowable {
 
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
-        if (block.getRelative(BlockFace.DOWN).getType() == Material.SOIL) {
-            return true;
-        }
-        return false;
+        return block.getRelative(BlockFace.DOWN).getType() == Material.SOIL;
     }
 
     @Override
@@ -65,8 +62,8 @@ public class BlockStem extends BlockCrops implements IBlockGrowable {
     public void grow(GlowPlayer player, GlowBlock block) {
         final GlowBlockState state = block.getState();
         int cropState = block.getData()
-            + (random.nextInt(CropState.MEDIUM.ordinal())
-            + CropState.VERY_SMALL.ordinal());
+                + (random.nextInt(CropState.MEDIUM.ordinal())
+                + CropState.VERY_SMALL.ordinal());
         if (cropState > CropState.RIPE.ordinal()) {
             cropState = CropState.RIPE.ordinal();
         }
@@ -108,7 +105,7 @@ public class BlockStem extends BlockCrops implements IBlockGrowable {
                         face = BlockFace.SOUTH;
                         break;
                     default:
-                       face = BlockFace.EAST;
+                        face = BlockFace.EAST;
                 }
                 final GlowBlock targetBlock = block.getRelative(face);
                 final GlowBlockState targetBlockState = targetBlock.getState();

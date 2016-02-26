@@ -18,6 +18,7 @@ public abstract class TileEntity {
 
     /**
      * Create a new TileEntity at the given location.
+     *
      * @param block The block the TileEntity is attached to.
      */
     public TileEntity(GlowBlock block) {
@@ -29,6 +30,7 @@ public abstract class TileEntity {
 
     /**
      * Get the block this TileEntity is associated with.
+     *
      * @return The entity's block.
      */
     public final Block getBlock() {
@@ -49,6 +51,7 @@ public abstract class TileEntity {
     /**
      * Set the text ID this tile entity is saved to disk with. If this is not
      * set, then load and save of the "id" tag must be performed manually.
+     *
      * @param saveId The ID.
      */
     protected final void setSaveId(String saveId) {
@@ -60,6 +63,7 @@ public abstract class TileEntity {
 
     /**
      * Read this TileEntity's data from the saved tag.
+     *
      * @param tag The tag to load from.
      */
     public void loadNbt(CompoundTag tag) {
@@ -84,6 +88,7 @@ public abstract class TileEntity {
 
     /**
      * Save this TileEntity's data to NBT.
+     *
      * @param tag The tag to save to.
      */
     public void saveNbt(CompoundTag tag) {
@@ -100,6 +105,7 @@ public abstract class TileEntity {
 
     /**
      * Create a new BlockState which will correspond to this tile entity.
+     *
      * @return A GlowBlockState, or null to use a standard BlockState.
      */
     public GlowBlockState getState() {
@@ -115,6 +121,7 @@ public abstract class TileEntity {
 
     /**
      * Update this TileEntity's visible state to the given player.
+     *
      * @param player The player to update.
      */
     public void update(GlowPlayer player) {

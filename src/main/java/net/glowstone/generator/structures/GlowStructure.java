@@ -15,8 +15,8 @@ public abstract class GlowStructure {
     protected final World world;
     protected final int chunkX;
     protected final int chunkZ;
-    private StructureBoundingBox boundingBox;
     private final List<GlowStructurePiece> children = new ArrayList<>();
+    private StructureBoundingBox boundingBox;
     private boolean dirty;
 
     public GlowStructure(World world, int chunkX, int chunkZ) {
@@ -37,12 +37,12 @@ public abstract class GlowStructure {
         return chunkZ;
     }
 
-    public void setBoundingBox(StructureBoundingBox boundingBox) {
-        this.boundingBox = boundingBox;
-    }
-
     public StructureBoundingBox getBoundingBox() {
         return boundingBox;
+    }
+
+    public void setBoundingBox(StructureBoundingBox boundingBox) {
+        this.boundingBox = boundingBox;
     }
 
     public void addPiece(GlowStructurePiece piece) {
@@ -53,12 +53,12 @@ public abstract class GlowStructure {
         return children;
     }
 
-    public void setDirty(boolean dirty) {
-        this.dirty = dirty;
-    }
-
     public boolean isDirty() {
         return dirty;
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
     }
 
     public abstract boolean shouldGenerate(Random random);

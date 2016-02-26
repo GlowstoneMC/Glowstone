@@ -43,7 +43,7 @@ public class NbtScoreboardIoWriter {
 
     private static void writeObjectives(CompoundTag root, GlowScoreboard scoreboard) {
         List<CompoundTag> objectives = new ArrayList<>();
-        for (Objective objective: scoreboard.getObjectives()) {
+        for (Objective objective : scoreboard.getObjectives()) {
             CompoundTag objectiveNbt = new CompoundTag();
             objectiveNbt.putString("CriteriaName", objective.getCriteria());
             objectiveNbt.putString("DisplayName", objective.getDisplayName());
@@ -57,8 +57,8 @@ public class NbtScoreboardIoWriter {
 
     private static void writeScores(CompoundTag root, GlowScoreboard scoreboard) {
         List<CompoundTag> scores = new ArrayList<>();
-        for (String objective: scoreboard.getEntries()) {
-            for (Score score: scoreboard.getScores(objective)) {
+        for (String objective : scoreboard.getEntries()) {
+            for (Score score : scoreboard.getScores(objective)) {
                 CompoundTag scoreNbt = new CompoundTag();
                 scoreNbt.putInt("Score", score.getScore());
                 scoreNbt.putString("Name", score.getEntry());
@@ -73,7 +73,7 @@ public class NbtScoreboardIoWriter {
 
     private static void writeTeams(CompoundTag root, GlowScoreboard scoreboard) {
         List<CompoundTag> teams = new ArrayList<>();
-        for (Team team: scoreboard.getTeams()) {
+        for (Team team : scoreboard.getTeams()) {
             CompoundTag teamNbt = new CompoundTag();
             teamNbt.putByte("AllowFriendlyFire", team.allowFriendlyFire() ? 1 : 0);
             teamNbt.putByte("SeeFriendlyInvisibles", team.canSeeFriendlyInvisibles() ? 1 : 0);

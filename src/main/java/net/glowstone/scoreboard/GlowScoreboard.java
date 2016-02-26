@@ -42,6 +42,7 @@ public final class GlowScoreboard implements Scoreboard {
     /**
      * Send a player this scoreboard's contents and subscribe them to future
      * changes.
+     *
      * @param player The player to subscribe.
      */
     public void subscribe(GlowPlayer player) {
@@ -74,6 +75,7 @@ public final class GlowScoreboard implements Scoreboard {
     /**
      * Clear the player's scoreboard contents and unsubscribe them from
      * future changes.
+     *
      * @param player The player to unsubscribe.
      */
     public void unsubscribe(GlowPlayer player) {
@@ -97,6 +99,7 @@ public final class GlowScoreboard implements Scoreboard {
 
     /**
      * Broadcast a scoreboard update to all subscribed players.
+     *
      * @param message The message to send.
      */
     void broadcast(Message message) {
@@ -107,7 +110,8 @@ public final class GlowScoreboard implements Scoreboard {
 
     /**
      * Set the objective displayed in the given slot.
-     * @param slot The display slot.
+     *
+     * @param slot      The display slot.
      * @param objective The objective to display there, possibly null.
      */
     void setDisplaySlot(DisplaySlot slot, GlowObjective objective) {
@@ -131,6 +135,7 @@ public final class GlowScoreboard implements Scoreboard {
 
     /**
      * Unregister an objective from the scoreboard.
+     *
      * @param objective The objective to unregister.
      */
     void removeObjective(GlowObjective objective) {
@@ -145,6 +150,7 @@ public final class GlowScoreboard implements Scoreboard {
 
     /**
      * Unregister a team from the scoreboard.
+     *
      * @param team The team to unregister.
      */
     void removeTeam(GlowTeam team) {
@@ -155,6 +161,7 @@ public final class GlowScoreboard implements Scoreboard {
 
     /**
      * Get the internal set of objectives corresponding to a given criteria.
+     *
      * @param criteria The criteria to look up.
      * @return The set of objectives.
      */
@@ -169,6 +176,7 @@ public final class GlowScoreboard implements Scoreboard {
 
     /**
      * Get the internal set of scores corresponding to a given entry.
+     *
      * @param entry The entry to look up.
      * @return The set of scores.
      */
@@ -183,8 +191,9 @@ public final class GlowScoreboard implements Scoreboard {
 
     /**
      * Update what team a player is associated with.
+     *
      * @param player The player.
-     * @param team The team, or null for no team.
+     * @param team   The team, or null for no team.
      */
     void setPlayerTeam(OfflinePlayer player, GlowTeam team) {
         GlowTeam previous = playerTeamMap.put(player, team);
