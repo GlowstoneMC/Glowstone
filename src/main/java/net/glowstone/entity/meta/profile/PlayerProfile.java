@@ -21,14 +21,14 @@ import java.util.logging.Level;
 @Data
 public final class PlayerProfile {
 
+    public static final int MAX_USERNAME_LENGTH = 16;
     private final String name;
     private final UUID uniqueId;
     private final List<PlayerProperty> properties;
 
-    public static final int MAX_USERNAME_LENGTH = 16;
-
     /**
      * Construct a new profile with only a name and UUID.
+     *
      * @param name The player's name.
      * @param uuid The player's UUID.
      */
@@ -38,8 +38,9 @@ public final class PlayerProfile {
 
     /**
      * Construct a new profile with additional properties.
-     * @param name The player's name.
-     * @param uuid The player's UUID.
+     *
+     * @param name       The player's name.
+     * @param uuid       The player's UUID.
      * @param properties A list of extra properties.
      * @throws IllegalArgumentException if any arguments are null.
      */
@@ -59,6 +60,7 @@ public final class PlayerProfile {
 
     /**
      * Get the profile for a username.
+     *
      * @param name The username to lookup.
      * @return The profile.
      */
@@ -67,7 +69,7 @@ public final class PlayerProfile {
             return null;
         }
 
-        Player player = ((GlowServer) Bukkit.getServer()).getPlayer(name);
+        Player player = Bukkit.getServer().getPlayer(name);
         if (player != null) {
             return ((GlowPlayer) player).getProfile();
         }
@@ -78,25 +80,6 @@ public final class PlayerProfile {
         }
         GlowServer.logger.warning("Unable to get UUID for username: " + name);
         return null;
-    }
-
-    public CompoundTag toNBT() {
-        CompoundTag profileTag = new CompoundTag();
-        profileTag.putString("Id", uniqueId.toString());
-        profileTag.putString("Name", name);
-
-        CompoundTag propertiesTag = new CompoundTag();
-        for (PlayerProperty property : properties) {
-            CompoundTag propertyValueTag = new CompoundTag();
-            propertyValueTag.putString("Signature", property.getSignature());
-            propertyValueTag.putString("Value", property.getValue());
-
-            propertiesTag.putCompoundList(property.getName(), Arrays.asList(propertyValueTag));
-        }
-        if (!propertiesTag.isEmpty()) { // Only add properties if not empty
-            profileTag.putCompound("Properties", propertiesTag);
-        }
-        return profileTag;
     }
 
     public static PlayerProfile fromNBT(CompoundTag tag) {
@@ -140,6 +123,25 @@ public final class PlayerProfile {
         }
 
         return new PlayerProfile(name, uuid, properties);
+    }
+
+    public CompoundTag toNBT() {
+        CompoundTag profileTag = new CompoundTag();
+        profileTag.putString("Id", uniqueId.toString());
+        profileTag.putString("Name", name);
+
+        CompoundTag propertiesTag = new CompoundTag();
+        for (PlayerProperty property : properties) {
+            CompoundTag propertyValueTag = new CompoundTag();
+            propertyValueTag.putString("Signature", property.getSignature());
+            propertyValueTag.putString("Value", property.getValue());
+
+            propertiesTag.putCompoundList(property.getName(), Arrays.asList(propertyValueTag));
+        }
+        if (!propertiesTag.isEmpty()) { // Only add properties if not empty
+            profileTag.putCompound("Properties", propertiesTag);
+        }
+        return profileTag;
     }
 
 }

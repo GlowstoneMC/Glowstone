@@ -21,6 +21,7 @@ import java.util.List;
 
 /**
  * Represents an item that is also an {@link net.glowstone.entity.GlowEntity} within the world.
+ *
  * @author Graham Edgecombe
  */
 public final class GlowItem extends GlowEntity implements Item {
@@ -57,8 +58,9 @@ public final class GlowItem extends GlowEntity implements Item {
 
     /**
      * Creates a new item entity.
+     *
      * @param location The location of the entity.
-     * @param item The item stack the entity is carrying.
+     * @param item     The item stack the entity is carrying.
      */
     public GlowItem(Location location, ItemStack item) {
         super(location);

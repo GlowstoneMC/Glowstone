@@ -19,6 +19,25 @@ import org.bukkit.util.Vector;
 
 public class BlockDispenser extends BlockContainer {
 
+    public static Vector getDispensePosition(GlowBlock block) {
+        BlockFace facing = getFacing(block);
+        double x = block.getX() + 0.7 * facing.getModX();
+        double y = block.getY() + 0.7 * facing.getModY();
+        double z = block.getZ() + 0.7 * facing.getModZ();
+        return new Vector(x, y, z);
+    }
+
+    public static BlockFace getFacing(GlowBlock block) {
+        GlowBlockState state = block.getState();
+        MaterialData data = state.getData();
+        if (!(data instanceof Dispenser)) {
+            return BlockFace.SELF;
+        }
+        Dispenser dispenserData = (Dispenser) data;
+
+        return dispenserData.getFacing();
+    }
+
     @Override
     public TileEntity createTileEntity(GlowChunk chunk, int cx, int cy, int cz) {
         return new TEDispenser(chunk.getBlock(cx, cy, cz));
@@ -79,25 +98,6 @@ public class BlockDispenser extends BlockContainer {
             data.setData((byte) (data.getData() & ~(0x8)));
             state.update();
         }
-    }
-
-    public static Vector getDispensePosition(GlowBlock block) {
-        BlockFace facing = getFacing(block);
-        double x = block.getX() + 0.7 * facing.getModX();
-        double y = block.getY() + 0.7 * facing.getModY();
-        double z = block.getZ() + 0.7 * facing.getModZ();
-        return new Vector(x, y, z);
-    }
-
-    public static BlockFace getFacing(GlowBlock block) {
-        GlowBlockState state = block.getState();
-        MaterialData data = state.getData();
-        if (!(data instanceof Dispenser)) {
-            return BlockFace.SELF;
-        }
-        Dispenser dispenserData = (Dispenser) data;
-
-        return dispenserData.getFacing();
     }
 
     public void trigger(GlowBlock block) {

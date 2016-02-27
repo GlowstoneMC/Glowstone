@@ -1,8 +1,6 @@
 package net.glowstone.entity.objects;
 
 import com.flowpowered.networking.Message;
-import java.util.Arrays;
-import java.util.List;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowLivingEntity;
@@ -18,11 +16,7 @@ import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
@@ -32,14 +26,17 @@ import org.bukkit.scoreboard.Criterias;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.util.EulerAngle;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
 
     private static final EulerAngle[] defaultPose = new EulerAngle[6];
 
     static {
-        double ten = Math.toRadians(10);
-        double fifteen = Math.toRadians(15);
-        double one = Math.toRadians(1);
+        double ten = 0.17453292519943295; // Math.toRadians(10)
+        double fifteen = 0.2617993877991494; // Math.toRadians(15)
+        double one = 0.017453292519943295; // Math.toRadians(1)
         defaultPose[0] = EulerAngle.ZERO;
         defaultPose[1] = EulerAngle.ZERO;
         defaultPose[2] = new EulerAngle(-ten, 0, -ten);
@@ -296,13 +293,13 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
         int pitch = Position.getIntPitch(location);
 
         return Arrays.asList(
-            new SpawnObjectMessage(id, 78, x, y, z, pitch, yaw),
-            new EntityMetadataMessage(id, metadata.getEntryList()),
-            new EntityEquipmentMessage(id, EntityEquipmentMessage.HELD_ITEM, getItemInHand()),
-            new EntityEquipmentMessage(id, EntityEquipmentMessage.BOOTS_SLOT, getBoots()),
-            new EntityEquipmentMessage(id, EntityEquipmentMessage.LEGGINGS_SLOT, getLeggings()),
-            new EntityEquipmentMessage(id, EntityEquipmentMessage.CHESTPLATE_SLOT, getChestplate()),
-            new EntityEquipmentMessage(id, EntityEquipmentMessage.HELMET_SLOT, getHelmet())
+                new SpawnObjectMessage(id, 78, x, y, z, pitch, yaw),
+                new EntityMetadataMessage(id, metadata.getEntryList()),
+                new EntityEquipmentMessage(id, EntityEquipmentMessage.HELD_ITEM, getItemInHand()),
+                new EntityEquipmentMessage(id, EntityEquipmentMessage.BOOTS_SLOT, getBoots()),
+                new EntityEquipmentMessage(id, EntityEquipmentMessage.LEGGINGS_SLOT, getLeggings()),
+                new EntityEquipmentMessage(id, EntityEquipmentMessage.CHESTPLATE_SLOT, getChestplate()),
+                new EntityEquipmentMessage(id, EntityEquipmentMessage.HELMET_SLOT, getHelmet())
         );
     }
 

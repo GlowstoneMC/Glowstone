@@ -28,11 +28,10 @@ import java.util.logging.Formatter;
  */
 public final class ConsoleManager {
 
+    private static final Logger logger = Logger.getLogger("");
     private static String CONSOLE_DATE = "HH:mm:ss";
     private static String FILE_DATE = "yyyy/MM/dd HH:mm:ss";
     private static String CONSOLE_PROMPT = ">";
-    private static final Logger logger = Logger.getLogger("");
-
     private final GlowServer server;
     private final Map<ChatColor, String> replacements = new EnumMap<>(ChatColor.class);
     private final ChatColor[] colors = ChatColor.values();
@@ -148,6 +147,82 @@ public final class ConsoleManager {
                 }
             }
             return string + Ansi.ansi().reset().toString();
+        }
+    }
+
+    private static class LoggerOutputStream extends ByteArrayOutputStream {
+        private final String separator = System.getProperty("line.separator");
+        private final Level level;
+
+        public LoggerOutputStream(Level level) {
+            super();
+            this.level = level;
+        }
+
+        @Override
+        public synchronized void flush() throws IOException {
+            super.flush();
+            String record = this.toString();
+            super.reset();
+
+            if (record.length() > 0 && !record.equals(separator)) {
+                logger.logp(level, "LoggerOutputStream", "log" + level, record);
+            }
+        }
+    }
+
+    private static class RotatingFileHandler extends StreamHandler {
+        private final SimpleDateFormat dateFormat;
+        private final String template;
+        private final boolean rotate;
+        private String filename;
+
+        public RotatingFileHandler(String template) {
+            this.template = template;
+            rotate = template.contains("%D");
+            dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            filename = calculateFilename();
+            updateOutput();
+        }
+
+        private void updateOutput() {
+            try {
+                setOutputStream(new FileOutputStream(filename, true));
+            } catch (IOException ex) {
+                logger.log(Level.SEVERE, "Unable to open " + filename + " for writing", ex);
+            }
+        }
+
+        private void checkRotate() {
+            if (rotate) {
+                String newFilename = calculateFilename();
+                if (!filename.equals(newFilename)) {
+                    filename = newFilename;
+                    // note that the console handler doesn't see this message
+                    super.publish(new LogRecord(Level.INFO, "Log rotating to: " + filename));
+                    updateOutput();
+                }
+            }
+        }
+
+        private String calculateFilename() {
+            return template.replace("%D", dateFormat.format(new Date()));
+        }
+
+        @Override
+        public synchronized void publish(LogRecord record) {
+            if (!isLoggable(record)) {
+                return;
+            }
+            checkRotate();
+            super.publish(record);
+            super.flush();
+        }
+
+        @Override
+        public synchronized void flush() {
+            checkRotate();
+            super.flush();
         }
     }
 
@@ -339,27 +414,6 @@ public final class ConsoleManager {
         }
     }
 
-    private static class LoggerOutputStream extends ByteArrayOutputStream {
-        private final String separator = System.getProperty("line.separator");
-        private final Level level;
-
-        public LoggerOutputStream(Level level) {
-            super();
-            this.level = level;
-        }
-
-        @Override
-        public synchronized void flush() throws IOException {
-            super.flush();
-            String record = this.toString();
-            super.reset();
-
-            if (record.length() > 0 && !record.equals(separator)) {
-                logger.logp(level, "LoggerOutputStream", "log" + level, record);
-            }
-        }
-    }
-
     private class FancyConsoleHandler extends ConsoleHandler {
         public FancyConsoleHandler() {
             setFormatter(new DateOutputFormatter(CONSOLE_DATE, true));
@@ -385,61 +439,6 @@ public final class ConsoleManager {
             } catch (IOException ex) {
                 logger.log(Level.SEVERE, "I/O exception flushing console output", ex);
             }
-        }
-    }
-
-    private static class RotatingFileHandler extends StreamHandler {
-        private final SimpleDateFormat dateFormat;
-        private final String template;
-        private final boolean rotate;
-        private String filename;
-
-        public RotatingFileHandler(String template) {
-            this.template = template;
-            rotate = template.contains("%D");
-            dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            filename = calculateFilename();
-            updateOutput();
-        }
-
-        private void updateOutput() {
-            try {
-                setOutputStream(new FileOutputStream(filename, true));
-            } catch (IOException ex) {
-                logger.log(Level.SEVERE, "Unable to open " + filename + " for writing", ex);
-            }
-        }
-
-        private void checkRotate() {
-            if (rotate) {
-                String newFilename = calculateFilename();
-                if (!filename.equals(newFilename)) {
-                    filename = newFilename;
-                    // note that the console handler doesn't see this message
-                    super.publish(new LogRecord(Level.INFO, "Log rotating to: " + filename));
-                    updateOutput();
-                }
-            }
-        }
-
-        private String calculateFilename() {
-            return template.replace("%D", dateFormat.format(new Date()));
-        }
-
-        @Override
-        public synchronized void publish(LogRecord record) {
-            if (!isLoggable(record)) {
-                return;
-            }
-            checkRotate();
-            super.publish(record);
-            super.flush();
-        }
-
-        @Override
-        public synchronized void flush() {
-            checkRotate();
-            super.flush();
         }
     }
 

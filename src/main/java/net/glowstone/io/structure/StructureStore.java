@@ -14,6 +14,7 @@ import java.util.Random;
 
 /**
  * The base for structure store classes.
+ *
  * @param <T> The type of structure being stored.
  */
 public abstract class StructureStore<T extends GlowStructure> {
@@ -36,7 +37,8 @@ public abstract class StructureStore<T extends GlowStructure> {
     /**
      * Create a structure of this store's type in the given world. The
      * load method will be called separately.
-     * @param world The target world.
+     *
+     * @param world  The target world.
      * @param chunkX The structure chunk X.
      * @param chunkZ The structure chunk Z.
      * @return The structure.
@@ -46,7 +48,8 @@ public abstract class StructureStore<T extends GlowStructure> {
     /**
      * Create a new structure of this store's type in the given world. The
      * load method will be called separately.
-     * @param world The target world.
+     *
+     * @param world  The target world.
      * @param chunkX The structure chunk X.
      * @param chunkZ The structure chunk Z.
      * @return The new structure.
@@ -55,8 +58,9 @@ public abstract class StructureStore<T extends GlowStructure> {
 
     /**
      * Load structure data of the appropriate type from the given compound tag.
+     *
      * @param structure The target structure.
-     * @param compound The structure's tag.
+     * @param compound  The structure's tag.
      */
     public void load(T structure, CompoundTag compound) {
         if (compound.isIntArray("BB")) {
@@ -75,8 +79,9 @@ public abstract class StructureStore<T extends GlowStructure> {
 
     /**
      * Save information about this structure to the given tag.
+     *
      * @param structure The structure to save.
-     * @param compound The target tag.
+     * @param compound  The target tag.
      */
     public void save(T structure, CompoundTag compound) {
         StructureBoundingBox boundingBox = structure.getBoundingBox();

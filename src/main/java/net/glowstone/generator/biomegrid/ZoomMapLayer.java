@@ -29,7 +29,7 @@ public class ZoomMapLayer extends MapLayer {
         for (int i = 0; i < gridSizeZ - 1; i++) {
             int n = (i * 2) * zoomSizeX;
             int upperLeftVal = values[i * gridSizeX];
-            int lowerLeftVal = values[(i + 1) * gridSizeX];            
+            int lowerLeftVal = values[(i + 1) * gridSizeX];
             for (int j = 0; j < gridSizeX - 1; j++) {
                 int upperRightVal = values[j + 1 + i * gridSizeX];
                 int lowerRightVal = values[j + 1 + (i + 1) * gridSizeX];
@@ -47,7 +47,7 @@ public class ZoomMapLayer extends MapLayer {
         int[] finalValues = new int[sizeX * sizeZ];
         for (int i = 0; i < sizeZ; i++) {
             for (int j = 0; j < sizeX; j++) {
-                finalValues[j + i * sizeX] = tmpValues[j + (i + (z & 1)) * zoomSizeX + (x & 1)];  
+                finalValues[j + i * sizeX] = tmpValues[j + (i + (z & 1)) * zoomSizeX + (x & 1)];
             }
         }
 
@@ -78,7 +78,7 @@ public class ZoomMapLayer extends MapLayer {
                 return lowerLeftVal;
             }
         }
-        int[] values = new int[] {upperLeftVal, upperRightVal, lowerLeftVal, lowerRightVal};
+        int[] values = new int[]{upperLeftVal, upperRightVal, lowerLeftVal, lowerRightVal};
         return values[nextInt(values.length)];
     }
 

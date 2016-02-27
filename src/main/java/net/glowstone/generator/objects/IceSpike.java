@@ -45,7 +45,7 @@ public class IceSpike {
         }
 
         for (int y = 0; y < tipHeight; y++) {
-            float f = (1.0F - (float) y / (float) tipHeight) * (float) tipRadius;
+            float f = (1.0F - (float) y / tipHeight) * tipRadius;
             int radius = (int) Math.ceil(f);
             for (int x = -radius; x <= radius; x++) {
                 float fx = -0.25F - x;

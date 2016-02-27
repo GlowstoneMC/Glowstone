@@ -16,8 +16,19 @@ import org.bukkit.util.Vector;
 
 public class BlockRedstoneTorch extends BlockNeedsAttached {
 
+    private static final BlockFace[] ADJACENT = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
+
     public BlockRedstoneTorch() {
         setDrops(new ItemStack(Material.REDSTONE_TORCH_ON));
+    }
+
+    public static BlockFace getAttachedBlockFace(GlowBlock block) {
+        MaterialData data = block.getState().getData();
+        if (data instanceof SimpleAttachableMaterialData) {
+            return ((SimpleAttachableMaterialData) data).getAttachedFace();
+        } else {
+            return BlockFace.DOWN;
+        }
     }
 
     @Override
@@ -38,15 +49,6 @@ public class BlockRedstoneTorch extends BlockNeedsAttached {
             ((RedstoneTorch) data).setFacingDirection(face);
         } else {
             warnMaterialData(RedstoneTorch.class, data);
-        }
-    }
-
-    public static BlockFace getAttachedBlockFace(GlowBlock block) {
-        MaterialData data = block.getState().getData();
-        if (data instanceof SimpleAttachableMaterialData) {
-            return ((SimpleAttachableMaterialData) data).getAttachedFace();
-        } else {
-            return BlockFace.DOWN;
         }
     }
 
@@ -86,8 +88,6 @@ public class BlockRedstoneTorch extends BlockNeedsAttached {
 
         me.getWorld().cancelPulse(me);
     }
-    
-    private static final BlockFace[] ADJACENT = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
 
     private void extraUpdate(GlowBlock block) {
         ItemTable itemTable = ItemTable.instance();

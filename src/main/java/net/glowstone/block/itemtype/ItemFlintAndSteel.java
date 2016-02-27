@@ -47,7 +47,7 @@ public class ItemFlintAndSteel extends ItemTool {
         if (fireBlock.getType() != Material.AIR) {
             return true;
         }
-        
+
         if (!clicked.isFlammable() && clicked.getRelative(BlockFace.DOWN).getType() == Material.AIR) {
             return true;
         }

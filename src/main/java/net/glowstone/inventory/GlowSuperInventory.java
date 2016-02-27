@@ -14,7 +14,8 @@ import java.util.List;
 public class GlowSuperInventory extends GlowInventory {
     private List<GlowInventory> parents;
 
-    protected GlowSuperInventory() { }
+    protected GlowSuperInventory() {
+    }
 
     public GlowSuperInventory(List<GlowInventory> parents, InventoryHolder owner, InventoryType type) {
         initialize(parents, owner, type);
@@ -38,7 +39,7 @@ public class GlowSuperInventory extends GlowInventory {
     protected void initialize(List<GlowInventory> parents, InventoryHolder owner, InventoryType type) {
         initialize(parents, owner, type, type.getDefaultTitle());
     }
-    
+
     protected void initialize(List<GlowInventory> parents, InventoryHolder owner, InventoryType type, String title) {
         SuperList<GlowInventorySlot> slots = new SuperList<>();
         SuperSet<HumanEntity> viewers = new SuperSet<>();

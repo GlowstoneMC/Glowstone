@@ -1,13 +1,14 @@
 package net.glowstone.io.entity;
 
-import java.util.Arrays;
-import java.util.List;
 import net.glowstone.entity.objects.GlowArmorStand;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
 import org.bukkit.util.EulerAngle;
+
+import java.util.Arrays;
+import java.util.List;
 
 class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
 
@@ -63,11 +64,11 @@ class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
     public void save(GlowArmorStand entity, CompoundTag tag) {
         super.save(entity, tag);
         tag.putCompoundList("Equipment", Arrays.asList(
-            NbtSerialization.writeItem(entity.getItemInHand(), -1),
-            NbtSerialization.writeItem(entity.getBoots(), -1),
-            NbtSerialization.writeItem(entity.getLeggings(), -1),
-            NbtSerialization.writeItem(entity.getChestplate(), -1),
-            NbtSerialization.writeItem(entity.getHelmet(), -1)
+                NbtSerialization.writeItem(entity.getItemInHand(), -1),
+                NbtSerialization.writeItem(entity.getBoots(), -1),
+                NbtSerialization.writeItem(entity.getLeggings(), -1),
+                NbtSerialization.writeItem(entity.getChestplate(), -1),
+                NbtSerialization.writeItem(entity.getHelmet(), -1)
         ));
         tag.putBool("Marker", entity.isMarker());
         tag.putBool("Invisible", !entity.isVisible());
@@ -87,9 +88,9 @@ class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
 
     private List<Float> toFloatList(EulerAngle angle) {
         return Arrays.asList(
-            (float) Math.toDegrees(angle.getX()),
-            (float) Math.toDegrees(angle.getY()),
-            (float) Math.toDegrees(angle.getZ())
+                (float) Math.toDegrees(angle.getX()),
+                (float) Math.toDegrees(angle.getY()),
+                (float) Math.toDegrees(angle.getZ())
         );
     }
 

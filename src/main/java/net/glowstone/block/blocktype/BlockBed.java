@@ -23,6 +23,155 @@ public class BlockBed extends BlockType {
         setDrops(new ItemStack(Material.BED));
     }
 
+    /**
+     * Helper method for set whether the specified bed blocks are occupied.
+     *
+     * @param head head of the bed
+     * @param foot foot of the bed
+     */
+    public static void setOccupied(GlowBlock head, GlowBlock foot, boolean occupied) {
+        byte headData = head.getData();
+        byte footData = foot.getData();
+        head.setData((byte) (occupied ? (headData | 0x4) : (headData & ~0x4)));
+        foot.setData((byte) (occupied ? (footData | 0x4) : (footData & ~0x4)));
+    }
+
+    /**
+     * Return whether the specified bed block is occupied.
+     *
+     * @param block part of the bed
+     * @return true if this bed is occupied, false if it is not
+     */
+    public static boolean isOccupied(GlowBlock block) {
+        return (block.getData() & 0x4) == 0x4;
+    }
+
+    /**
+     * Returns the head of a bed given one of its blocks.
+     *
+     * @param block part of the bed
+     * @return The head of the bed
+     */
+    public static GlowBlock getHead(GlowBlock block) {
+        MaterialData data = block.getState().getData();
+        if (!(data instanceof Bed)) {
+            return null;
+        }
+        Bed bed = (Bed) data;
+        if (bed.isHeadOfBed()) {
+            return block;
+        } else {
+            return block.getRelative(bed.getFacing());
+        }
+    }
+
+    /**
+     * Returns the foot of a bed given one of its blocks.
+     *
+     * @param block part of the bed
+     * @return The foot of the bed
+     */
+    public static GlowBlock getFoot(GlowBlock block) {
+        MaterialData data = block.getState().getData();
+        if (!(data instanceof Bed)) {
+            return null;
+        }
+        Bed bed = (Bed) data;
+        if (bed.isHeadOfBed()) {
+            return block.getRelative(bed.getFacing().getOppositeFace());
+        } else {
+            return block;
+        }
+    }
+
+    /**
+     * Returns whether a player can spawn within a block of specified material.
+     *
+     * @param material the material
+     * @return Whether spawning is possible
+     */
+    public static boolean isValidSpawn(Material material) {
+        switch (material) {
+            case AIR:
+            case SAPLING:
+            case POWERED_RAIL:
+            case DETECTOR_RAIL:
+            case LONG_GRASS:
+            case DEAD_BUSH:
+            case YELLOW_FLOWER:
+            case RED_ROSE:
+            case BROWN_MUSHROOM:
+            case RED_MUSHROOM:
+            case TORCH:
+            case REDSTONE_WIRE:
+            case CROPS:
+            case RAILS:
+            case LEVER:
+            case REDSTONE_TORCH_OFF:
+            case REDSTONE_TORCH_ON:
+            case STONE_BUTTON:
+            case SNOW:
+            case SUGAR_CANE_BLOCK:
+            case DIODE_BLOCK_OFF:
+            case DIODE_BLOCK_ON:
+            case VINE:
+            case TRIPWIRE_HOOK:
+            case TRIPWIRE:
+            case FLOWER_POT:
+            case WOOD_BUTTON:
+            case SKULL:
+            case GOLD_PLATE:
+            case IRON_PLATE:
+            case REDSTONE_COMPARATOR_OFF:
+            case REDSTONE_COMPARATOR_ON:
+            case ACTIVATOR_RAIL:
+            case CARPET:
+            case DOUBLE_PLANT:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Returns an 'empty' block next to the bed used to put the player at when they exit a bed / respawn.
+     *
+     * @param head head of the bed
+     * @param foot foot of the bed
+     * @return Exit block or {@code null} if all spots are blocked
+     */
+    public static Block getExitLocation(GlowBlock head, GlowBlock foot) {
+        // First check blocks near head
+        for (int x = -1; x <= 1; x++) {
+            for (int z = -1; z <= 1; z++) {
+                Block b = head.getRelative(x, 0, z);
+                boolean floorValid = b.getRelative(BlockFace.DOWN).getType().isSolid();
+                boolean bottomValid = isValidSpawn(b.getType());
+                boolean topValid = isValidSpawn(b.getRelative(BlockFace.UP).getType());
+                if (floorValid && bottomValid && topValid) {
+                    return b;
+                }
+            }
+        }
+
+        // Then check the last three blocks near foot
+        BlockFace face = head.getFace(foot);
+        int modX = face.getModX();
+        int modZ = face.getModZ();
+        for (int x = (modX == 0 ? -1 : modX); x <= (modX == 0 ? 1 : modX); x++) {
+            for (int z = (modZ == 0 ? -1 : modZ); z <= (modZ == 0 ? 1 : modZ); z++) {
+                Block b = foot.getRelative(x, 0, z);
+                boolean floorValid = b.getRelative(BlockFace.DOWN).getType().isSolid();
+                boolean bottomValid = isValidSpawn(b.getType());
+                boolean topValid = isValidSpawn(b.getRelative(BlockFace.UP).getType());
+                if (floorValid && bottomValid && topValid) {
+                    return b;
+                }
+            }
+        }
+        return null;
+    }
+
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
         BlockFace direction = getOppositeBlockFace(player.getLocation(), false).getOppositeFace();
@@ -100,33 +249,13 @@ public class BlockBed extends BlockType {
     }
 
     /**
-     * Helper method for set whether the specified bed blocks are occupied.
-     * @param head head of the bed
-     * @param foot foot of the bed
-     */
-    public static void setOccupied(GlowBlock head, GlowBlock foot, boolean occupied) {
-        byte headData = head.getData();
-        byte footData = foot.getData();
-        head.setData((byte) (occupied ? (headData | 0x4) : (headData & ~0x4)));
-        foot.setData((byte) (occupied ? (footData | 0x4) : (footData & ~0x4)));
-    }
-
-    /**
-     * Return whether the specified bed block is occupied.
-     * @param block part of the bed
-     * @return true if this bed is occupied, false if it is not
-     */
-    public static boolean isOccupied(GlowBlock block) {
-        return (block.getData() & 0x4) == 0x4;
-    }
-
-    /**
      * Checks whether the entity is within the specified distance from the block.
+     *
      * @param entity the entity
-     * @param block the block
-     * @param x maximum distance on x axis
-     * @param y maximum distance on y axis
-     * @param z maximum distance on z axis
+     * @param block  the block
+     * @param x      maximum distance on x axis
+     * @param y      maximum distance on y axis
+     * @param z      maximum distance on z axis
      * @return Whether the entity is within distance
      */
     private boolean isWithinDistance(Entity entity, Block block, int x, int y, int z) {
@@ -134,127 +263,5 @@ public class BlockBed extends BlockType {
         return Math.abs(loc.getX() - block.getX()) <= x
                 && Math.abs(loc.getY() - block.getY()) <= y
                 && Math.abs(loc.getZ() - block.getZ()) <= z;
-    }
-
-    /**
-     * Returns the head of a bed given one of its blocks.
-     * @param block part of the bed
-     * @return The head of the bed
-     */
-    public static GlowBlock getHead(GlowBlock block) {
-        MaterialData data = block.getState().getData();
-        if (!(data instanceof Bed)) {
-            return null;
-        }
-        Bed bed = (Bed) data;
-        if (bed.isHeadOfBed()) {
-            return block;
-        } else {
-            return block.getRelative(bed.getFacing());
-        }
-    }
-
-    /**
-     * Returns the foot of a bed given one of its blocks.
-     * @param block part of the bed
-     * @return The foot of the bed
-     */
-    public static GlowBlock getFoot(GlowBlock block) {
-        MaterialData data = block.getState().getData();
-        if (!(data instanceof Bed)) {
-            return null;
-        }
-        Bed bed = (Bed) data;
-        if (bed.isHeadOfBed()) {
-            return block.getRelative(bed.getFacing().getOppositeFace());
-        } else {
-            return block;
-        }
-    }
-
-    /**
-     * Returns whether a player can spawn within a block of specified material.
-     * @param material the material
-     * @return Whether spawning is possible
-     */
-    public static boolean isValidSpawn(Material material) {
-        switch (material) {
-            case AIR:
-            case SAPLING:
-            case POWERED_RAIL:
-            case DETECTOR_RAIL:
-            case LONG_GRASS:
-            case DEAD_BUSH:
-            case YELLOW_FLOWER:
-            case RED_ROSE:
-            case BROWN_MUSHROOM:
-            case RED_MUSHROOM:
-            case TORCH:
-            case REDSTONE_WIRE:
-            case CROPS:
-            case RAILS:
-            case LEVER:
-            case REDSTONE_TORCH_OFF:
-            case REDSTONE_TORCH_ON:
-            case STONE_BUTTON:
-            case SNOW:
-            case SUGAR_CANE_BLOCK:
-            case DIODE_BLOCK_OFF:
-            case DIODE_BLOCK_ON:
-            case VINE:
-            case TRIPWIRE_HOOK:
-            case TRIPWIRE:
-            case FLOWER_POT:
-            case WOOD_BUTTON:
-            case SKULL:
-            case GOLD_PLATE:
-            case IRON_PLATE:
-            case REDSTONE_COMPARATOR_OFF:
-            case REDSTONE_COMPARATOR_ON:
-            case ACTIVATOR_RAIL:
-            case CARPET:
-            case DOUBLE_PLANT:
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    /**
-     * Returns an 'empty' block next to the bed used to put the player at when they exit a bed / respawn.
-     * @param head head of the bed
-     * @param foot foot of the bed
-     * @return Exit block or {@code null} if all spots are blocked
-     */
-    public static Block getExitLocation(GlowBlock head, GlowBlock foot) {
-        // First check blocks near head
-        for (int x = -1; x <= 1; x++) {
-            for (int z = -1; z <= 1; z++) {
-                Block b = head.getRelative(x, 0, z);
-                boolean floorValid = b.getRelative(BlockFace.DOWN).getType().isSolid();
-                boolean bottomValid = isValidSpawn(b.getType());
-                boolean topValid = isValidSpawn(b.getRelative(BlockFace.UP).getType());
-                if (floorValid && bottomValid && topValid) {
-                    return b;
-                }
-            }
-        }
-
-        // Then check the last three blocks near foot
-        BlockFace face = head.getFace(foot);
-        int modX = face.getModX();
-        int modZ = face.getModZ();
-        for (int x = (modX == 0 ? -1 : modX); x <= (modX == 0 ? 1 : modX); x++) {
-            for (int z = (modZ == 0 ? -1 : modZ); z <= (modZ == 0 ? 1 : modZ); z++) {
-                Block b = foot.getRelative(x, 0, z);
-                boolean floorValid = b.getRelative(BlockFace.DOWN).getType().isSolid();
-                boolean bottomValid = isValidSpawn(b.getType());
-                boolean topValid = isValidSpawn(b.getRelative(BlockFace.UP).getType());
-                if (floorValid && bottomValid && topValid) {
-                    return b;
-                }
-            }
-        }
-        return null;
     }
 }

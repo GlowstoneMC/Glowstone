@@ -46,6 +46,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
 
     /**
      * Check if the compound contains the given key.
+     *
      * @param key The key.
      * @return True if the key is in the map.
      */

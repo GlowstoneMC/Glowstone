@@ -46,10 +46,7 @@ public class GlowPig extends GlowAnimal implements Pig {
             return false;
         }
 
-        if (isEmpty()) {
-            return this.setPassenger(player);
-        }
+        return isEmpty() && this.setPassenger(player);
 
-        return false;
     }
 }

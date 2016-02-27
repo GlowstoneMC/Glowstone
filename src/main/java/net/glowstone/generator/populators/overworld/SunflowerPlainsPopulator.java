@@ -19,6 +19,6 @@ public class SunflowerPlainsPopulator extends PlainsPopulator {
 
     @Override
     public Collection<Biome> getBiomes() {
-        return Collections.unmodifiableList(Arrays.asList(new Biome[] {Biome.SUNFLOWER_PLAINS}));
+        return Collections.unmodifiableList(Arrays.asList(Biome.SUNFLOWER_PLAINS));
     }
 }

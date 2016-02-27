@@ -20,19 +20,18 @@ public final class ItemTable {
         INSTANCE.registerBuiltins();
     }
 
-    public static ItemTable instance() {
-        return INSTANCE;
-    }
-
-    private ItemTable() {
-    }
+    private final Map<Integer, ItemType> idToType = new HashMap<>(512);
+    private int nextBlockId, nextItemId;
 
     ////////////////////////////////////////////////////////////////////////////
     // Data
 
-    private final Map<Integer, ItemType> idToType = new HashMap<>(512);
+    private ItemTable() {
+    }
 
-    private int nextBlockId, nextItemId;
+    public static ItemTable instance() {
+        return INSTANCE;
+    }
 
     ////////////////////////////////////////////////////////////////////////////
     // Registration

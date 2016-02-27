@@ -19,7 +19,7 @@ public class ExtremeHillsPopulator extends BiomePopulator {
 
     private static final Biome[] BIOMES = {Biome.EXTREME_HILLS, Biome.EXTREME_HILLS_MOUNTAINS};
     private static final TreeDecoration[] TREES = {new TreeDecoration(RedwoodTree.class, 20), new TreeDecoration(BigOakTree.class, 1),
-        new TreeDecoration(GenericTree.class, 9)};
+            new TreeDecoration(GenericTree.class, 9)};
     protected final EmeraldOreDecorator emeraldOreDecorator = new EmeraldOreDecorator();
     protected final InfestedStoneDecorator infestedStoneDecorator = new InfestedStoneDecorator();
 

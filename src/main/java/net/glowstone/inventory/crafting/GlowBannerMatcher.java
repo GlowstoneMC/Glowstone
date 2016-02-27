@@ -41,7 +41,7 @@ public class GlowBannerMatcher extends ItemMatcher {
                 color = itemColor;
             }
         }
-        if  (banner == null) {
+        if (banner == null) {
             return null; // Couldn't found a banner to alter
         }
 

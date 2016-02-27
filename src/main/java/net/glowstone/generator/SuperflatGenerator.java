@@ -1,13 +1,10 @@
 package net.glowstone.generator;
 
-import java.util.Random;
-
+import net.glowstone.generator.populators.StructurePopulator;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.generator.ChunkGenerator.BiomeGrid;
-import org.bukkit.generator.ChunkGenerator.ChunkData;
 
-import net.glowstone.generator.populators.StructurePopulator;
+import java.util.Random;
 
 public class SuperflatGenerator extends GlowChunkGenerator {
 

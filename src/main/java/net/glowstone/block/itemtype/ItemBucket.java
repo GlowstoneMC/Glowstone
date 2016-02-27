@@ -36,7 +36,7 @@ public class ItemBucket extends ItemType {
             previousTarget = target;
             target = itr.next();
             targetBlockType = ItemTable.instance().getBlock(target.getType());
-            if (targetBlockType != null && targetBlockType instanceof BlockLiquid) {
+            if (targetBlockType instanceof BlockLiquid) {
                 if (((BlockLiquid) targetBlockType).isCollectible((GlowBlockState) target.getState())) {
                     validTarget = true;
                     break;

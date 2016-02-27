@@ -24,14 +24,6 @@ public final class ScoreboardTeamMessage implements Message {
     // CREATE, ADD_, and REMOVE_PLAYERS only
     private final List<String> entries;
 
-    public enum Action {
-        CREATE,
-        REMOVE,
-        UPDATE,
-        ADD_PLAYERS,
-        REMOVE_PLAYERS
-    }
-
     private ScoreboardTeamMessage(String teamName, Action action, String displayName, String prefix, String suffix, boolean friendlyFire, boolean seeInvisible, NameTagVisibility nametagVisibility, ChatColor color, List<String> entries) {
         this.teamName = teamName;
         this.action = action;
@@ -62,5 +54,13 @@ public final class ScoreboardTeamMessage implements Message {
 
     public static ScoreboardTeamMessage removePlayers(String teamName, List<String> entries) {
         return new ScoreboardTeamMessage(teamName, Action.REMOVE_PLAYERS, null, null, null, false, false, null, ChatColor.RESET, entries);
+    }
+
+    public enum Action {
+        CREATE,
+        REMOVE,
+        UPDATE,
+        ADD_PLAYERS,
+        REMOVE_PLAYERS
     }
 }

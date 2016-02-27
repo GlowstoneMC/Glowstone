@@ -14,6 +14,8 @@ import org.bukkit.util.Vector;
 
 public class BlockRedstoneRepeater extends BlockNeedsAttached {
 
+    private static final BlockFace[] ADJACENT = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
+
     public BlockRedstoneRepeater() {
         setDrops(new ItemStack(Material.DIODE));
     }
@@ -74,8 +76,6 @@ public class BlockRedstoneRepeater extends BlockNeedsAttached {
             }).runTaskLater(null, diode.getDelay() * 2);
         }
     }
-
-    private static final BlockFace[] ADJACENT = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
 
     private void extraUpdate(GlowBlock block) {
         Diode diode = (Diode) block.getState().getData();

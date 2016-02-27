@@ -22,68 +22,46 @@ import java.util.logging.Level;
  */
 public final class GlowScheduler implements BukkitScheduler {
 
-    private static class GlowThreadFactory implements ThreadFactory {
-        public static final GlowThreadFactory INSTANCE = new GlowThreadFactory();
-        private final AtomicInteger threadCounter = new AtomicInteger();
-
-        private GlowThreadFactory() {
-        }
-
-        @Override
-        public Thread newThread(Runnable runnable) {
-            return new Thread(runnable, "Glowstone-scheduler-" + threadCounter.getAndIncrement());
-        }
-    }
-
     /**
      * The number of milliseconds between pulses.
      */
     static final int PULSE_EVERY = 50;
-
     /**
      * The server this scheduler is managing for.
      */
     private final GlowServer server;
-
     /**
      * The scheduled executor service which backs this worlds.
      */
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(GlowThreadFactory.INSTANCE);
-
     /**
      * Executor to handle execution of async tasks
      */
     private final ExecutorService asyncTaskExecutor = Executors.newCachedThreadPool(GlowThreadFactory.INSTANCE);
-
     /**
      * A list of active tasks.
      */
     private final ConcurrentMap<Integer, GlowTask> tasks = new ConcurrentHashMap<>();
-
-    /**
-     * The primary worlds thread in which pulse() is called.
-     */
-    private Thread primaryThread;
-
     /**
      * World tick scheduler
      */
     private final WorldScheduler worlds;
-
     /**
      * Tasks to be executed during the tick
      */
     private final Deque<Runnable> inTickTasks = new ConcurrentLinkedDeque<>();
-
     /**
      * Condition to wait on when processing in tick tasks
      */
     private final Object inTickTaskCondition;
-
     /**
      * Runnable to run at end of tick
      */
     private final Runnable tickEndRun;
+    /**
+     * The primary worlds thread in which pulse() is called.
+     */
+    private Thread primaryThread;
 
     /**
      * Creates a new task scheduler.
@@ -123,6 +101,7 @@ public final class GlowScheduler implements BukkitScheduler {
 
     /**
      * Schedules the specified task.
+     *
      * @param task The task.
      */
     private GlowTask schedule(GlowTask task) {
@@ -150,7 +129,7 @@ public final class GlowScheduler implements BukkitScheduler {
 
     /**
      * Adds new tasks and updates existing tasks, removing them if necessary.
-     * <p/>
+     * <p>
      * todo: Add watchdog system to make sure ticks advance
      */
     private void pulse() {
@@ -365,6 +344,7 @@ public final class GlowScheduler implements BukkitScheduler {
 
     /**
      * Returns active async tasks
+     *
      * @return active async tasks
      */
     @Override
@@ -374,10 +354,24 @@ public final class GlowScheduler implements BukkitScheduler {
 
     /**
      * Returns tasks that still have at least one run remaining
+     *
      * @return the tasks to be run
      */
     @Override
     public List<BukkitTask> getPendingTasks() {
         return new ArrayList<>(tasks.values());
+    }
+
+    private static class GlowThreadFactory implements ThreadFactory {
+        public static final GlowThreadFactory INSTANCE = new GlowThreadFactory();
+        private final AtomicInteger threadCounter = new AtomicInteger();
+
+        private GlowThreadFactory() {
+        }
+
+        @Override
+        public Thread newThread(Runnable runnable) {
+            return new Thread(runnable, "Glowstone-scheduler-" + threadCounter.getAndIncrement());
+        }
     }
 }

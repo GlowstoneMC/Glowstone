@@ -13,7 +13,7 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
 
     public GlowMetaSkull(GlowMetaItem meta) {
         super(meta);
-        if (meta == null || !(meta instanceof GlowMetaSkull)) {
+        if (!(meta instanceof GlowMetaSkull)) {
             return;
         }
         GlowMetaSkull skull = (GlowMetaSkull) meta;
@@ -22,6 +22,14 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
 
     ////////////////////////////////////////////////////////////////////////////
     // Internal stuff
+
+    public static GlowMetaSkull deserialize(Map<String, Object> data) {
+        GlowMetaSkull result = new GlowMetaSkull(null);
+        if (data.containsKey("owner")) {
+            result.owner = (PlayerProfile) data.get("owner");
+        }
+        return result;
+    }
 
     @Override
     public SkullMeta clone() {
@@ -39,14 +47,6 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
         result.put("meta-type", "SKULL");
         if (hasOwner()) {
             result.put("owner", owner);
-        }
-        return result;
-    }
-
-    public static GlowMetaSkull deserialize(Map<String, Object> data) {
-        GlowMetaSkull result = new GlowMetaSkull(null);
-        if (data.containsKey("owner")) {
-            result.owner = (PlayerProfile) data.get("owner");
         }
         return result;
     }

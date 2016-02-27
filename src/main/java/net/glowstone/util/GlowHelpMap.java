@@ -12,6 +12,7 @@ import java.util.*;
 
 /**
  * An implementation of {@link HelpMap}.
+ *
  * @link http://wiki.bukkit.org/Help.yml
  */
 public final class GlowHelpMap implements HelpMap {
@@ -100,6 +101,7 @@ public final class GlowHelpMap implements HelpMap {
 
     /**
      * Reads the general topics from help.yml and adds them to the help index.
+     *
      * @param config The configuration to read from.
      */
     public void loadConfig(ConfigurationSection config) {
@@ -225,6 +227,7 @@ public final class GlowHelpMap implements HelpMap {
 
     /**
      * Process topic amendments from help.yml.
+     *
      * @param config The configuration to read from.
      */
     public void amendTopics(ConfigurationSection config) {

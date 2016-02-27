@@ -10,6 +10,14 @@ import java.util.List;
 
 public class GlowRepairMatcher extends ItemMatcher {
 
+    private static boolean isRepairable(ItemStack item) {
+        return EnchantmentTarget.ARMOR.includes(item)
+                || EnchantmentTarget.TOOL.includes(item)
+                || EnchantmentTarget.WEAPON.includes(item)
+                || EnchantmentTarget.BOW.includes(item)
+                || EnchantmentTarget.FISHING_ROD.includes(item);
+    }
+
     @Override
     public ItemStack getResult(ItemStack[] matrix) {
         List<ItemStack> items = new ArrayList<>();
@@ -37,13 +45,5 @@ public class GlowRepairMatcher extends ItemMatcher {
         int damage = type.getMaxDurability() - totalUses;
 
         return new ItemStack(type, 1, (short) Math.max(damage, 0));
-    }
-
-    private static boolean isRepairable(ItemStack item) {
-        return EnchantmentTarget.ARMOR.includes(item)
-                || EnchantmentTarget.TOOL.includes(item)
-                || EnchantmentTarget.WEAPON.includes(item)
-                || EnchantmentTarget.BOW.includes(item)
-                || EnchantmentTarget.FISHING_ROD.includes(item);
     }
 }

@@ -30,6 +30,28 @@ public class BlockBanner extends BlockType {
         setDrops(new ItemStack(Material.BANNER));
     }
 
+    public static List<CompoundTag> toNBT(List<Pattern> banner) {
+        List<CompoundTag> patterns = new ArrayList<>();
+        for (Pattern pattern : banner) {
+            CompoundTag layerTag = new CompoundTag();
+            layerTag.putString("Pattern", pattern.getPattern().getIdentifier());
+            layerTag.putInt("Color", pattern.getColor().getDyeData());
+            patterns.add(layerTag);
+        }
+        return patterns;
+    }
+
+    public static List<Pattern> fromNBT(List<CompoundTag> tag) {
+        List<Pattern> banner = new ArrayList<>();
+        for (CompoundTag layer : tag) {
+            PatternType patternType = PatternType.getByIdentifier(layer.getString("Pattern"));
+            DyeColor color = DyeColor.getByDyeData((byte) layer.getInt("Color"));
+
+            banner.add(new Pattern(color, patternType));
+        }
+        return banner;
+    }
+
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         GlowBanner state = (GlowBanner) block.getState();
@@ -70,28 +92,6 @@ public class BlockBanner extends BlockType {
         BannerMeta meta = (BannerMeta) holding.getItemMeta();
         meta.setPatterns(meta.getPatterns());
         banner.update();
-    }
-
-    public static List<CompoundTag> toNBT(List<Pattern> banner) {
-        List<CompoundTag> patterns = new ArrayList<>();
-        for (Pattern pattern : banner) {
-            CompoundTag layerTag = new CompoundTag();
-            layerTag.putString("Pattern", pattern.getPattern().getIdentifier());
-            layerTag.putInt("Color", pattern.getColor().getDyeData());
-            patterns.add(layerTag);
-        }
-        return patterns;
-    }
-
-    public static List<Pattern> fromNBT(List<CompoundTag> tag) {
-        List<Pattern> banner = new ArrayList<>();
-        for (CompoundTag layer : tag) {
-            PatternType patternType = PatternType.getByIdentifier(layer.getString("Pattern"));
-            DyeColor color = DyeColor.getByDyeData((byte) layer.getInt("Color"));
-
-            banner.add(new Pattern(color, patternType));
-        }
-        return banner;
     }
 
 }

@@ -12,6 +12,7 @@ final class StringTag extends Tag<String> {
 
     /**
      * Creates the tag.
+     *
      * @param value The value.
      */
     public StringTag(String value) {

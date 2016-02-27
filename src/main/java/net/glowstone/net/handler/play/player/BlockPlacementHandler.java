@@ -21,6 +21,30 @@ import org.bukkit.util.Vector;
 import java.util.Objects;
 
 public final class BlockPlacementHandler implements MessageHandler<GlowSession, BlockPlacementMessage> {
+    private static final BlockFace[] faces = {
+            BlockFace.DOWN, BlockFace.UP, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST
+    };
+
+    static boolean selectResult(Event.Result result, boolean def) {
+        return result == Event.Result.DEFAULT ? def : result == Event.Result.ALLOW;
+    }
+
+    static void revert(GlowPlayer player, GlowBlock target) {
+        player.sendBlockChange(target.getLocation(), target.getType(), target.getData());
+        TileEntity entity = target.getTileEntity();
+        if (entity != null) {
+            entity.update(player);
+        }
+    }
+
+    static BlockFace convertFace(int direction) {
+        if (direction >= 0 && direction < faces.length) {
+            return faces[direction];
+        } else {
+            return BlockFace.SELF;
+        }
+    }
+
     @Override
     public void handle(GlowSession session, BlockPlacementMessage message) {
         final GlowPlayer player = session.getPlayer();
@@ -140,28 +164,4 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         }
         player.setItemInHand(holding);
     }
-
-    static boolean selectResult(Event.Result result, boolean def) {
-        return result == Event.Result.DEFAULT ? def : result == Event.Result.ALLOW;
-    }
-
-    static void revert(GlowPlayer player, GlowBlock target) {
-        player.sendBlockChange(target.getLocation(), target.getType(), target.getData());
-        TileEntity entity = target.getTileEntity();
-        if (entity != null) {
-            entity.update(player);
-        }
-    }
-
-    static BlockFace convertFace(int direction) {
-        if (direction >= 0 && direction < faces.length) {
-            return faces[direction];
-        } else {
-            return BlockFace.SELF;
-        }
-    }
-
-    private static final BlockFace[] faces = {
-            BlockFace.DOWN, BlockFace.UP, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST
-    };
 }

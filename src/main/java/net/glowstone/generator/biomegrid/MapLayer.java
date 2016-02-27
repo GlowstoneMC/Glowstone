@@ -17,24 +17,13 @@ public abstract class MapLayer {
         this.seed = seed;
     }
 
-    public void setCoordsSeed(int x, int z) {
-        random.setSeed(seed);
-        random.setSeed(x * random.nextLong() + z * random.nextLong() ^ seed);
-    }
-
-    public int nextInt(int max) {
-        return random.nextInt(max);
-    }
-
-    public abstract int[] generateValues(int x, int z, int sizeX, int sizeZ);
-
     public static MapLayer[] initialize(long seed, Environment environment, WorldType worldType) {
         if (environment == Environment.NORMAL && worldType == WorldType.FLAT) {
-            return new MapLayer[] {new ConstantBiomeMapLayer(seed, Biome.PLAINS), null};
+            return new MapLayer[]{new ConstantBiomeMapLayer(seed, Biome.PLAINS), null};
         } else if (environment == Environment.NETHER) {
-            return new MapLayer[] {new ConstantBiomeMapLayer(seed, Biome.HELL), null};
+            return new MapLayer[]{new ConstantBiomeMapLayer(seed, Biome.HELL), null};
         } else if (environment == Environment.THE_END) {
-            return new MapLayer[] {new ConstantBiomeMapLayer(seed, Biome.SKY), null};
+            return new MapLayer[]{new ConstantBiomeMapLayer(seed, Biome.SKY), null};
         }
 
         int zoom = 2;
@@ -54,8 +43,7 @@ public abstract class MapLayer {
         }
         layer = new DeepOceanMapLayer(seed + 4, layer);
 
-        MapLayer layerVariation = new BiomeVariationMapLayer(seed + 200, layer);
-        MapLayer layerMountains = layerVariation;
+        MapLayer layerMountains = new BiomeVariationMapLayer(seed + 200, layer);
         for (int i = 0; i < 2; i++) {
             layerMountains = new ZoomMapLayer(seed + 200 + i, layerMountains);
         }
@@ -92,6 +80,17 @@ public abstract class MapLayer {
 
         layer = new SmoothMapLayer(seed + 1001, layer);
 
-        return new MapLayer[] {layer, layerLowerRes};
+        return new MapLayer[]{layer, layerLowerRes};
     }
+
+    public void setCoordsSeed(int x, int z) {
+        random.setSeed(seed);
+        random.setSeed(x * random.nextLong() + z * random.nextLong() ^ seed);
+    }
+
+    public int nextInt(int max) {
+        return random.nextInt(max);
+    }
+
+    public abstract int[] generateValues(int x, int z, int sizeX, int sizeZ);
 }

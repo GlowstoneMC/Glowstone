@@ -13,13 +13,13 @@ import net.glowstone.net.protocol.ProtocolType;
 public final class GlowChannelInitializer extends ChannelInitializer<SocketChannel> {
 
     /**
-     * The time in seconds which are elapsed before a client is disconnected due 
+     * The time in seconds which are elapsed before a client is disconnected due
      * to a read timeout.
      */
     private static final int READ_TIMEOUT = 20;
 
     /**
-     * The time in seconds which are elapsed before a client is deemed idle due 
+     * The time in seconds which are elapsed before a client is deemed idle due
      * to a write timeout.
      */
     private static final int WRITE_IDLE_TIMEOUT = 15;

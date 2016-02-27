@@ -26,7 +26,7 @@ public class SuperListIterator<E> implements ListIterator<E> {
 
         while (parentIterator.hasNext()) {
             List<E> child = parentIterator.next();
-            int childSize = child.size(); 
+            int childSize = child.size();
 
             if (index <= childSize) {
                 childIterator = child.listIterator(index);

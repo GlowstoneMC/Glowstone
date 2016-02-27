@@ -6,15 +6,18 @@ import net.glowstone.entity.meta.MetadataIndex.TameableFlags;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.*;
+import org.bukkit.entity.AnimalTamer;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Tameable;
 
 import java.util.UUID;
 
 public abstract class GlowTameable extends GlowAnimal implements Tameable {
 
+    protected boolean tamed;
     private AnimalTamer owner;
     private UUID ownerUUId;
-    protected boolean tamed;
     private boolean sitting;
     private MetadataIndex flagIndex;
 

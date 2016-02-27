@@ -15,7 +15,7 @@ public class GlowMetaEnchantedBook extends GlowMetaItem implements EnchantmentSt
     public GlowMetaEnchantedBook(GlowMetaItem meta) {
         super(meta);
 
-        if (meta == null || !(meta instanceof GlowMetaEnchantedBook)) return;
+        if (!(meta instanceof GlowMetaEnchantedBook)) return;
 
         GlowMetaEnchantedBook book = (GlowMetaEnchantedBook) meta;
         if (book.hasStoredEnchants()) {

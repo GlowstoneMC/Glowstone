@@ -21,9 +21,39 @@ public class BlockVine extends BlockClimbable {
     private static final BlockFace[] FACES = {BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST, BlockFace.DOWN, BlockFace.UP};
     private static final BlockFace[] HORIZONTAL_FACES = {BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
 
+    private static BlockFace getClockwiseFace(BlockFace face) {
+        switch (face) {
+            case NORTH:
+                return BlockFace.EAST;
+            case SOUTH:
+                return BlockFace.WEST;
+            case EAST:
+                return BlockFace.SOUTH;
+            case WEST:
+                return BlockFace.NORTH;
+            default:
+                return BlockFace.NORTH;
+        }
+    }
+
+    private static BlockFace getCounterClockwiseFace(BlockFace face) {
+        switch (face) {
+            case NORTH:
+                return BlockFace.WEST;
+            case SOUTH:
+                return BlockFace.EAST;
+            case EAST:
+                return BlockFace.NORTH;
+            case WEST:
+                return BlockFace.SOUTH;
+            default:
+                return BlockFace.NORTH;
+        }
+    }
+
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
-        switch (against)  {
+        switch (against) {
             case NORTH:
             case SOUTH:
             case EAST:
@@ -136,36 +166,6 @@ public class BlockVine extends BlockClimbable {
             } else {
                 warnMaterialData(Vine.class, data);
             }
-        }
-    }
-
-    private static BlockFace getClockwiseFace(BlockFace face) {
-        switch (face) {
-            case NORTH:
-                return BlockFace.EAST;
-            case SOUTH:
-                return BlockFace.WEST;
-            case EAST:
-                return BlockFace.SOUTH;
-            case WEST:
-                return BlockFace.NORTH;
-            default:
-                return BlockFace.NORTH;
-        }
-    }
-
-    private static BlockFace getCounterClockwiseFace(BlockFace face) {
-        switch (face) {
-            case NORTH:
-                return BlockFace.WEST;
-            case SOUTH:
-                return BlockFace.EAST;
-            case EAST:
-                return BlockFace.NORTH;
-            case WEST:
-                return BlockFace.SOUTH;
-            default:
-                return BlockFace.NORTH;
         }
     }
 

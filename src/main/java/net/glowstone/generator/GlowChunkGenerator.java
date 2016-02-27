@@ -28,7 +28,7 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
     }
 
     /**
-     * @param world The world to create OctaveGenerators for
+     * @param world   The world to create OctaveGenerators for
      * @param octaves The map to put the OctaveGenerators into
      */
     protected void createWorldOctaves(World world, Map<String, OctaveGenerator> octaves) {

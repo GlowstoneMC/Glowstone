@@ -32,6 +32,7 @@ final class PlayerDataFetcher {
 
     /**
      * Look up the PlayerProfile for a given UUID.
+     *
      * @param uuid The UUID to look up.
      * @return The resulting PlayerProfile, or null on failure.
      */
@@ -67,6 +68,7 @@ final class PlayerDataFetcher {
 
     /**
      * Look up the UUID for a given username.
+     *
      * @param playerName The name to look up.
      * @return The UUID, or null on failure.
      */

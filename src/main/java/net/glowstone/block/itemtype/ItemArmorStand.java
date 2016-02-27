@@ -26,9 +26,9 @@ public class ItemArmorStand extends ItemType {
 
         Location loc = newTarget.getLocation().add(0.5, 0, 0.5);
         if ((newTarget.isEmpty() || type == null || type.canAbsorb(target, face, holding))
-            && (upper.isEmpty() || up == null || up.canAbsorb(target, face, holding))
-            && loc.getWorld().getNearbyEntities(loc.clone().add(0, 0.5, 0), 0.5, 0.5, 0.5).isEmpty()
-            && loc.getWorld().getNearbyEntities(loc.clone().add(0, 1.5, 0), 0.5, 0.5, 0.5).isEmpty()) {
+                && (upper.isEmpty() || up == null || up.canAbsorb(target, face, holding))
+                && loc.getWorld().getNearbyEntities(loc.clone().add(0, 0.5, 0), 0.5, 0.5, 0.5).isEmpty()
+                && loc.getWorld().getNearbyEntities(loc.clone().add(0, 1.5, 0), 0.5, 0.5, 0.5).isEmpty()) {
             newTarget.setType(Material.AIR);
             upper.setType(Material.AIR);
             float yaw = player.getLocation().getYaw();

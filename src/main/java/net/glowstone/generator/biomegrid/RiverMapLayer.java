@@ -16,6 +16,15 @@ public class RiverMapLayer extends MapLayer {
     private static final int CLEAR_VALUE = 0;
     private static final int RIVER_VALUE = 1;
 
+    static {
+        OCEANS.add(GlowBiome.getId(OCEAN));
+        OCEANS.add(GlowBiome.getId(DEEP_OCEAN));
+
+        SPECIAL_RIVERS.put(GlowBiome.getId(ICE_PLAINS), GlowBiome.getId(FROZEN_RIVER));
+        SPECIAL_RIVERS.put(GlowBiome.getId(MUSHROOM_ISLAND), GlowBiome.getId(MUSHROOM_SHORE));
+        SPECIAL_RIVERS.put(GlowBiome.getId(MUSHROOM_SHORE), GlowBiome.getId(MUSHROOM_SHORE));
+    }
+
     private final MapLayer belowLayer;
     private final MapLayer mergeLayer;
 
@@ -83,14 +92,5 @@ public class RiverMapLayer extends MapLayer {
         }
 
         return finalValues;
-    }
-
-    static {
-        OCEANS.add(GlowBiome.getId(OCEAN));
-        OCEANS.add(GlowBiome.getId(DEEP_OCEAN));
-
-        SPECIAL_RIVERS.put(GlowBiome.getId(ICE_PLAINS), GlowBiome.getId(FROZEN_RIVER));
-        SPECIAL_RIVERS.put(GlowBiome.getId(MUSHROOM_ISLAND), GlowBiome.getId(MUSHROOM_SHORE));
-        SPECIAL_RIVERS.put(GlowBiome.getId(MUSHROOM_SHORE), GlowBiome.getId(MUSHROOM_SHORE));
     }
 }

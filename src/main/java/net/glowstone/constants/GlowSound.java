@@ -10,23 +10,7 @@ import static org.bukkit.Sound.*;
  */
 public final class GlowSound {
 
-    private GlowSound() {}
-
     private static final String[] names = new String[Sound.values().length];
-
-    /**
-     * Get the sound name for a specified Sound.
-     * @param sound the Sound.
-     * @return the sound name.
-     */
-    public static String getName(Sound sound) {
-        Validate.notNull(sound, "Sound cannot be null");
-        return names[sound.ordinal()];
-    }
-
-    private static void set(Sound sound, String key) {
-        names[sound.ordinal()] = key;
-    }
 
     static {
         // Ambient
@@ -262,6 +246,24 @@ public final class GlowSound {
         // Tile
         set(PISTON_EXTEND, "tile.piston.out");
         set(PISTON_RETRACT, "tile.piston.in");
+    }
+
+    private GlowSound() {
+    }
+
+    /**
+     * Get the sound name for a specified Sound.
+     *
+     * @param sound the Sound.
+     * @return the sound name.
+     */
+    public static String getName(Sound sound) {
+        Validate.notNull(sound, "Sound cannot be null");
+        return names[sound.ordinal()];
+    }
+
+    private static void set(Sound sound, String key) {
+        names[sound.ordinal()] = key;
     }
 
 }

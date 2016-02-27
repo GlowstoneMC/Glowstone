@@ -37,7 +37,7 @@ public final class UserListItemMessage implements Message {
     }
 
     public static Entry add(PlayerProfile profile, int gameMode, int ping, TextMessage displayName) {
-        return new Entry(Action.ADD_PLAYER, profile.getUniqueId(), profile, gameMode, ping, displayName);
+        return new Entry(profile.getUniqueId(), profile, gameMode, ping, displayName, Action.ADD_PLAYER);
     }
 
     public static UserListItemMessage addOne(PlayerProfile profile) {
@@ -47,7 +47,7 @@ public final class UserListItemMessage implements Message {
     // gamemode
 
     public static Entry gameMode(UUID uuid, int gameMode) {
-        return new Entry(Action.UPDATE_GAMEMODE, uuid, null, gameMode, 0, null);
+        return new Entry(uuid, null, gameMode, 0, null, Action.UPDATE_GAMEMODE);
     }
 
     public static UserListItemMessage gameModeOne(UUID uuid, int gameMode) {
@@ -57,7 +57,7 @@ public final class UserListItemMessage implements Message {
     // latency
 
     public static Entry latency(UUID uuid, int ping) {
-        return new Entry(Action.UPDATE_LATENCY, uuid, null, 0, ping, null);
+        return new Entry(uuid, null, 0, ping, null, Action.UPDATE_LATENCY);
     }
 
     public static UserListItemMessage latencyOne(UUID uuid, int ping) {
@@ -67,7 +67,7 @@ public final class UserListItemMessage implements Message {
     // display name
 
     public static Entry displayName(UUID uuid, TextMessage displayName) {
-        return new Entry(Action.UPDATE_DISPLAY_NAME, uuid, null, 0, 0, displayName);
+        return new Entry(uuid, null, 0, 0, displayName, Action.UPDATE_DISPLAY_NAME);
     }
 
     public static UserListItemMessage displayNameOne(UUID uuid, TextMessage displayName) {
@@ -77,7 +77,7 @@ public final class UserListItemMessage implements Message {
     // remove
 
     public static Entry remove(UUID uuid) {
-        return new Entry(Action.REMOVE_PLAYER, uuid, null, 0, 0, null);
+        return new Entry(uuid, null, 0, 0, null, Action.REMOVE_PLAYER);
     }
 
     public static UserListItemMessage removeOne(UUID uuid) {
@@ -96,11 +96,11 @@ public final class UserListItemMessage implements Message {
 
     @Data
     public static final class Entry {
-        private final Action action;
         public final UUID uuid;
         public final PlayerProfile profile;
         public final int gameMode;
         public final int ping;
         public final TextMessage displayName;
+        private final Action action;
     }
 }

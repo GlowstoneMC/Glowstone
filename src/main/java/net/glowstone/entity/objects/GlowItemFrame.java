@@ -49,6 +49,54 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
         itemInFrame = Material.AIR;
     }
 
+    private static byte getFacingNumber(BlockFace face) {
+        switch (face) {
+            case SOUTH:
+                return 0;
+            case WEST:
+                return 1;
+            case NORTH:
+                return 2;
+            case EAST:
+                return 3;
+            default:
+                return 0;
+        }
+    }
+
+    private static BlockFace getFace(int face) {
+        switch (face) {
+            case 0:
+                return BlockFace.SOUTH;
+            case 1:
+                return BlockFace.WEST;
+            case 2:
+                return BlockFace.NORTH;
+            case 3:
+                return BlockFace.EAST;
+            default:
+                return BlockFace.SOUTH;
+        }
+    }
+
+    // //////////////////////////////////////////////////////////////////////////
+    // Overrides
+
+    private static BlockFace inverseGetFace(int face) {
+        switch (face) {
+            case 0:
+                return BlockFace.NORTH;
+            case 1:
+                return BlockFace.EAST;
+            case 2:
+                return BlockFace.SOUTH;
+            case 3:
+                return BlockFace.WEST;
+            default:
+                return BlockFace.NORTH;
+        }
+    }
+
     public void setItemInFrame(ItemStack is) {
         if (is == null) {
             is = new ItemStack(Material.AIR, 1);
@@ -62,9 +110,6 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
     public void setItemFrameRotation(int rotation) {
         metadata.set(MetadataIndex.ITEM_FRAME_ROTATION, (rotation));
     }
-
-    // //////////////////////////////////////////////////////////////////////////
-    // Overrides
 
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
@@ -144,51 +189,6 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
         return Arrays.asList((new SpawnObjectMessage(id, 71, ((location.getBlockX() + xoffset) * 32), ((location.getBlockY() * 32)), ((location.getBlockZ() + zoffset) * 32), 0, yaw, getFacingNumber(face), 0, 0, 0)), new EntityMetadataMessage(id, metadata.getEntryList()));
     }
 
-    private static byte getFacingNumber(BlockFace face) {
-        switch (face) {
-            case SOUTH:
-                return 0;
-            case WEST:
-                return 1;
-            case NORTH:
-                return 2;
-            case EAST:
-                return 3;
-            default:
-                return 0;
-        }
-    }
-
-    private static BlockFace getFace(int face) {
-        switch (face) {
-            case 0:
-                return BlockFace.SOUTH;
-            case 1:
-                return BlockFace.WEST;
-            case 2:
-                return BlockFace.NORTH;
-            case 3:
-                return BlockFace.EAST;
-            default:
-                return BlockFace.SOUTH;
-        }
-    }
-
-    private static BlockFace inverseGetFace(int face) {
-        switch (face) {
-            case 0:
-                return BlockFace.NORTH;
-            case 1:
-                return BlockFace.EAST;
-            case 2:
-                return BlockFace.SOUTH;
-            case 3:
-                return BlockFace.WEST;
-            default:
-                return BlockFace.NORTH;
-        }
-    }
-
     @Override
     public boolean isEmpty() {
         return itemInFrame == null || itemInFrame == Material.AIR;
@@ -265,6 +265,11 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
     }
 
     @Override
+    public void setItem(ItemStack is) {
+        setItemInFrame(is);
+    }
+
+    @Override
     public Rotation getRotation() {
         switch (rot) {
             case 0:
@@ -286,11 +291,6 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
         }
 
         return Rotation.NONE;
-    }
-
-    @Override
-    public void setItem(ItemStack is) {
-        setItemInFrame(is);
     }
 
     @Override

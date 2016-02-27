@@ -8,7 +8,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 
 /**
- *
  * @author Sam
  */
 public class BlockLamp extends BlockType {
@@ -26,7 +25,7 @@ public class BlockLamp extends BlockType {
     @Override
     public void updatePhysics(GlowBlock me) {
         boolean powered = me.isBlockPowered() || me.isBlockIndirectlyPowered();
-        
+
         if (powered != (me.getType() == Material.REDSTONE_LAMP_ON)) {
             me.setType(powered ? Material.REDSTONE_LAMP_ON : Material.REDSTONE_LAMP_OFF);
         }

@@ -31,6 +31,7 @@ public final class EventFactory {
 
     /**
      * Calls an event through the plugin manager.
+     *
      * @param event The event to throw.
      * @return the called event
      */

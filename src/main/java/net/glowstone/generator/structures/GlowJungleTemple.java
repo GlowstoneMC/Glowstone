@@ -32,36 +32,36 @@ public class GlowJungleTemple extends GlowTemplePiece {
         super(random, location, new Vector(12, 14, 15));
     }
 
-    public void setHasPlacedTrap1(boolean placedTrap) {
-        this.placedTrap1 = placedTrap;
-    }
-
     public boolean getHasPlacedTrap1() {
         return placedTrap1;
     }
 
-    public void setHasPlacedTrap2(boolean placedTrap) {
-        this.placedTrap2 = placedTrap;
+    public void setHasPlacedTrap1(boolean placedTrap) {
+        this.placedTrap1 = placedTrap;
     }
 
     public boolean getHasPlacedTrap2() {
         return placedTrap2;
     }
 
-    public void setHasPlacedMainChest(boolean placedChest) {
-        this.placedMainChest = placedChest;
+    public void setHasPlacedTrap2(boolean placedTrap) {
+        this.placedTrap2 = placedTrap;
     }
 
     public boolean getHasPlacedMainChest() {
         return placedMainChest;
     }
 
-    public void setHasPlacedHiddenChest(boolean placedChest) {
-        this.placedHiddenChest = placedChest;
+    public void setHasPlacedMainChest(boolean placedChest) {
+        this.placedMainChest = placedChest;
     }
 
     public boolean getHasPlacedHiddenChest() {
         return placedHiddenChest;
+    }
+
+    public void setHasPlacedHiddenChest(boolean placedChest) {
+        this.placedHiddenChest = placedChest;
     }
 
     @Override
@@ -206,7 +206,7 @@ public class GlowJungleTemple extends GlowTemplePiece {
         builder.fillWithRandomMaterial(new Vector(8, 2, 6), new Vector(9, 2, 6), random, stones);
         builder.setBlockWithRandomMaterial(new Vector(8, 3, 6), random, stones);
         builder.fillWithRandomMaterial(new Vector(9, 1, 7), new Vector(9, 2, 7), random, stones);
-        builder.fillWithRandomMaterial(new Vector(8, 1, 7), new Vector(8, 3, 7), random, stones);       
+        builder.fillWithRandomMaterial(new Vector(8, 1, 7), new Vector(8, 3, 7), random, stones);
         builder.fillWithRandomMaterial(new Vector(10, 1, 8), new Vector(10, 1, 10), random, stones);
         builder.setBlock(new Vector(10, 2, 9), Material.MOSSY_COBBLESTONE);
         builder.fillWithRandomMaterial(new Vector(8, 1, 8), new Vector(8, 1, 10), random, stones);
@@ -222,7 +222,7 @@ public class GlowJungleTemple extends GlowTemplePiece {
         }
         final Vine vine = new Vine(BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST);
         builder.setBlock(new Vector(3, 2, 2), vine.getItemType(), vine);
-        builder.fill(new Vector(8, 2, 3), new Vector(8, 3, 3), vine.getItemType(), vine);        
+        builder.fill(new Vector(8, 2, 3), new Vector(8, 3, 3), vine.getItemType(), vine);
         builder.fill(new Vector(2, 1, 8), new Vector(3, 1, 8), Material.TRIPWIRE);
         final TripwireHook hookE = new TripwireHook(getRelativeFacing(BlockFace.WEST));
         hookE.setConnected(true);

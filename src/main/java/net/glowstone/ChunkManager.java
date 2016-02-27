@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 /**
  * A class which manages the {@link GlowChunk}s currently loaded in memory.
+ *
  * @author Graham Edgecombe
  */
 public final class ChunkManager {
@@ -58,7 +59,8 @@ public final class ChunkManager {
     /**
      * Creates a new chunk manager with the specified I/O service and world
      * generator.
-     * @param service The I/O service.
+     *
+     * @param service   The I/O service.
      * @param generator The world generator.
      */
     public ChunkManager(GlowWorld world, ChunkIoService service, ChunkGenerator generator) {
@@ -78,6 +80,7 @@ public final class ChunkManager {
     /**
      * Gets a chunk object representing the specified coordinates, which might
      * not yet be loaded.
+     *
      * @param x The X coordinate.
      * @param z The Z coordinate.
      * @return The chunk.
@@ -97,6 +100,7 @@ public final class ChunkManager {
 
     /**
      * Checks if the Chunk at the specified coordinates is loaded.
+     *
      * @param x The X coordinate.
      * @param z The Z coordinate.
      * @return true if the chunk is loaded, otherwise false.
@@ -108,6 +112,7 @@ public final class ChunkManager {
 
     /**
      * Check whether a chunk has locks on it preventing it from being unloaded.
+     *
      * @param x The X coordinate.
      * @param z The Z coordinate.
      * @return Whether the chunk is in use.
@@ -120,8 +125,9 @@ public final class ChunkManager {
 
     /**
      * Call the ChunkIoService to load a chunk, optionally generating the chunk.
-     * @param x The X coordinate of the chunk to load.
-     * @param z The Y coordinate of the chunk to load.
+     *
+     * @param x        The X coordinate of the chunk to load.
+     * @param z        The Y coordinate of the chunk to load.
      * @param generate Whether to generate the chunk if needed.
      * @return True on success, false on failure.
      */
@@ -212,7 +218,7 @@ public final class ChunkManager {
         Random random = new Random(world.getSeed());
         long xRand = random.nextLong() / 2 * 2 + 1;
         long zRand = random.nextLong() / 2 * 2 + 1;
-        random.setSeed((long) x * xRand + (long) z * zRand ^ world.getSeed());
+        random.setSeed(x * xRand + z * zRand ^ world.getSeed());
 
         for (BlockPopulator p : world.getPopulators()) {
             p.populate(world, random, chunk);
@@ -224,6 +230,7 @@ public final class ChunkManager {
     /**
      * Force a chunk to be populated by loading the chunks in an area around it. Used when streaming chunks to players
      * so that they do not have to watch chunks being populated.
+     *
      * @param x The X coordinate.
      * @param z The Z coordinate.
      */
@@ -239,17 +246,17 @@ public final class ChunkManager {
      * Initialize a single chunk from the chunk generator.
      */
     private void generateChunk(GlowChunk chunk, int x, int z) {
-        Random random = new Random((long) x * 341873128712L + (long) z * 132897987541L);
+        Random random = new Random(x * 341873128712L + z * 132897987541L);
         BiomeGrid biomes = new BiomeGrid();
 
         int[] biomeValues = biomeGrid[0].generateValues(x * GlowChunk.WIDTH, z * GlowChunk.HEIGHT, GlowChunk.WIDTH, GlowChunk.HEIGHT);
-        for (int i = 0;  i < biomeValues.length; i++) {
+        for (int i = 0; i < biomeValues.length; i++) {
             biomes.biomes[i] = (byte) biomeValues[i];
         }
 
         // extended sections with data
         if (generator instanceof GlowChunkGenerator) {
-            GlowChunkData chunkData = (GlowChunkData) ((GlowChunkGenerator) generator).generateChunkData(world, random, x, z, biomes);
+            GlowChunkData chunkData = (GlowChunkData) generator.generateChunkData(world, random, x, z, biomes);
             short[][] extSections = chunkData.getSections();
             if (extSections != null) {
                 GlowChunk.ChunkSection[] sections = new GlowChunk.ChunkSection[extSections.length];
@@ -334,6 +341,7 @@ public final class ChunkManager {
 
     /**
      * Forces generation of the given chunk.
+     *
      * @param x The X coordinate.
      * @param z The Z coordinate.
      * @return Whether the chunk was successfully regenerated.
@@ -358,6 +366,7 @@ public final class ChunkManager {
 
     /**
      * Gets a list of loaded chunks.
+     *
      * @return The currently loaded chunks.
      */
     public GlowChunk[] getLoadedChunks() {
@@ -367,6 +376,7 @@ public final class ChunkManager {
 
     /**
      * Performs the save for the given chunk using the storage provider.
+     *
      * @param chunk The chunk to save.
      */
     public boolean performSave(GlowChunk chunk) {
@@ -387,24 +397,8 @@ public final class ChunkManager {
     }
 
     /**
-     * A BiomeGrid implementation for chunk generation.
-     */
-    private class BiomeGrid implements ChunkGenerator.BiomeGrid {
-        private final byte[] biomes = new byte[256];
-
-        @Override
-        public Biome getBiome(int x, int z) {
-            return GlowBiome.getBiome(biomes[x | (z << 4)] & 0xFF); // upcasting is very important to get extended biomes
-        }
-
-        @Override
-        public void setBiome(int x, int z, Biome bio) {
-            biomes[x | (z << 4)] = (byte) GlowBiome.getId(bio);
-        }
-    }
-
-    /**
      * Look up the set of locks on a given chunk.
+     *
      * @param key The chunk key.
      * @return The set of locks for that chunk.
      */
@@ -463,6 +457,23 @@ public final class ChunkManager {
         @Override
         public Iterator<GlowChunk.Key> iterator() {
             return keys.iterator();
+        }
+    }
+
+    /**
+     * A BiomeGrid implementation for chunk generation.
+     */
+    private class BiomeGrid implements ChunkGenerator.BiomeGrid {
+        private final byte[] biomes = new byte[256];
+
+        @Override
+        public Biome getBiome(int x, int z) {
+            return GlowBiome.getBiome(biomes[x | (z << 4)] & 0xFF); // upcasting is very important to get extended biomes
+        }
+
+        @Override
+        public void setBiome(int x, int z, Biome bio) {
+            biomes[x | (z << 4)] = (byte) GlowBiome.getId(bio);
         }
     }
 }

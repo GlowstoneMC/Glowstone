@@ -5,7 +5,8 @@ public class NBTReadLimiter {
     public static final NBTReadLimiter UNLIMITED = new NBTReadLimiter(0L) {
 
         @Override
-        public void read(int length) { }
+        public void read(int length) {
+        }
     };
 
     private final long limit;

@@ -16,15 +16,8 @@ public enum ProtocolType {
     }
 
     /**
-     * Get a GlowProtocol corresponding to this protocol type.
-     * @return A matching GlowProtocol.
-     */
-    public GlowProtocol getProtocol() {
-        return protocol;
-    }
-
-    /**
      * Get the ProtocolType corresponding to the given id if possible.
+     *
      * @param id The protocol type id.
      * @return The matching ProtocolType, or null.
      */
@@ -34,5 +27,14 @@ public enum ProtocolType {
             return null;
         }
         return values[id];
+    }
+
+    /**
+     * Get a GlowProtocol corresponding to this protocol type.
+     *
+     * @return A matching GlowProtocol.
+     */
+    public GlowProtocol getProtocol() {
+        return protocol;
     }
 }

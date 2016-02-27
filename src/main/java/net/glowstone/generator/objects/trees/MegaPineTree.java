@@ -45,10 +45,10 @@ public class MegaPineTree extends MegaRedwoodTree {
         generatePodzolPatch(sourceX - 1, sourceY, sourceZ + 2);
         generatePodzolPatch(sourceX + 2, sourceY, sourceZ + 2);
         for (int i = 0; i < 5; i++) {
-           int n = random.nextInt(64);
-           if (n % 8 == 0 || n % 8 == 7 || n / 8 == 0 || n / 8 == 7) {
-               generatePodzolPatch(sourceX - 3 + (n % 8), sourceY, sourceZ - 3 + (n / 8));
-           }
+            int n = random.nextInt(64);
+            if (n % 8 == 0 || n % 8 == 7 || n / 8 == 0 || n / 8 == 7) {
+                generatePodzolPatch(sourceX - 3 + (n % 8), sourceY, sourceZ - 3 + (n / 8));
+            }
         }
     }
 

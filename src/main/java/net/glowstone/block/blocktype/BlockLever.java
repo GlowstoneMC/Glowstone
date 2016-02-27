@@ -13,6 +13,8 @@ import org.bukkit.util.Vector;
 
 public class BlockLever extends BlockAttachable {
 
+    private static final BlockFace[] ADJACENT = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
+
     public BlockLever() {
         setDrops(new ItemStack(Material.LEVER));
     }
@@ -50,8 +52,6 @@ public class BlockLever extends BlockAttachable {
         lever.setFacingDirection(face == BlockFace.UP || face == BlockFace.DOWN ? player.getDirection() : face);
 
     }
-    
-    private static final BlockFace[] ADJACENT = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
 
     private void extraUpdate(GlowBlock block) {
         Lever lever = (Lever) block.getState().getData();

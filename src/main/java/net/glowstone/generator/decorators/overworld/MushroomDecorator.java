@@ -53,9 +53,9 @@ public class MushroomDecorator extends BlockDecorator {
                 final Block blockBelow = world.getBlockAt(x, y - 1, z);
                 if (y < 255 && block.getType() == Material.AIR &&
                         (((blockBelow.getType() == Material.GRASS || (blockBelow.getState().getData() instanceof Dirt &&
-                        ((Dirt) blockBelow.getState().getData()).getType() != DirtType.PODZOL)) && block.getLightLevel() < 13) ||
-                        blockBelow.getType() == Material.MYCEL || (blockBelow.getState().getData() instanceof Dirt &&
-                        ((Dirt) blockBelow.getState().getData()).getType() == DirtType.PODZOL))) {
+                                ((Dirt) blockBelow.getState().getData()).getType() != DirtType.PODZOL)) && block.getLightLevel() < 13) ||
+                                blockBelow.getType() == Material.MYCEL || (blockBelow.getState().getData() instanceof Dirt &&
+                                ((Dirt) blockBelow.getState().getData()).getType() == DirtType.PODZOL))) {
                     final BlockState state = block.getState();
                     state.setType(type);
                     state.setData(new MaterialData(type));

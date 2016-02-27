@@ -25,7 +25,7 @@ public class RandomItemsContent {
             for (int i = 0; i < maxStacks; i++) {
                 final RandomAmountItem item = getRandomItem(random);
                 if (item != null) {
-                    for (ItemStack stack: item.getItemStacks(random)) {
+                    for (ItemStack stack : item.getItemStacks(random)) {
                         // slot can be overriden hence maxStacks can be less than what's expected
                         inventory.setItem(random.nextInt(size), stack);
                     }

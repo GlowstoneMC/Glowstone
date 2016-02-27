@@ -35,6 +35,7 @@ public final class EquipmentMonitor {
 
     /**
      * Create a new monitor for the given entity.
+     *
      * @param entity The entity whose equipment to monitor.
      */
     public EquipmentMonitor(LivingEntity entity) {
@@ -45,6 +46,7 @@ public final class EquipmentMonitor {
      * Get the item in the inventory.
      * Slot 0 is the item in the hand.
      * Slot 1 to 4 is armor (boots to helmet).
+     *
      * @return The item in that slot.
      */
     private ItemStack getItem(int slot) {
@@ -61,6 +63,7 @@ public final class EquipmentMonitor {
 
     /**
      * Update the given slot with the current value from the inventory.
+     *
      * @param slot The slot to update.
      */
     private void updateItem(int slot) {
@@ -70,6 +73,7 @@ public final class EquipmentMonitor {
 
     /**
      * Check for changes in the inventory view.
+     *
      * @return The list of changed items.
      */
     public List<Entry> getChanges() {
@@ -98,6 +102,7 @@ public final class EquipmentMonitor {
 
     /**
      * Get the entity whose equipment is being monitored.
+     *
      * @return The entity equipment.
      */
     public LivingEntity getEntity() {

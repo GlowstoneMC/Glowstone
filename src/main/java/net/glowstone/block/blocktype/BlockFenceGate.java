@@ -14,21 +14,6 @@ import java.util.Collection;
 
 public class BlockFenceGate extends BlockOpenable {
 
-    @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
-        super.placeBlock(player, state, face, holding, clickedLoc);
-
-        MaterialData materialData = state.getData();
-        if (materialData instanceof Gate) {
-            Gate gate = (Gate) materialData;
-            float yaw = player.getLocation().getYaw();
-            gate.setFacingDirection(blockFaceFromYaw(yaw));
-            state.update(true);
-        } else {
-            warnMaterialData(Gate.class, materialData);
-        }
-    }
-
     private static BlockFace blockFaceFromYaw(float yaw) {
         // nb: opposite from getOppositeBlockFace in BlockType
         yaw = yaw % 360;
@@ -50,6 +35,31 @@ public class BlockFenceGate extends BlockOpenable {
         }
     }
 
+    private static BlockFace getOpenDirection(float yaw, BlockFace oldFacing) {
+        BlockFace facingDirection = blockFaceFromYaw(yaw);
+
+        if (facingDirection == oldFacing.getOppositeFace()) {
+            return facingDirection;
+        } else {
+            return oldFacing;
+        }
+    }
+
+    @Override
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+        super.placeBlock(player, state, face, holding, clickedLoc);
+
+        MaterialData materialData = state.getData();
+        if (materialData instanceof Gate) {
+            Gate gate = (Gate) materialData;
+            float yaw = player.getLocation().getYaw();
+            gate.setFacingDirection(blockFaceFromYaw(yaw));
+            state.update(true);
+        } else {
+            warnMaterialData(Gate.class, materialData);
+        }
+    }
+
     @Override
     protected void onOpened(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc, GlowBlockState state, MaterialData materialData) {
         if (materialData instanceof Gate) {
@@ -63,16 +73,6 @@ public class BlockFenceGate extends BlockOpenable {
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         return Arrays.asList(new ItemStack(block.getType()));
-    }
-
-    private static BlockFace getOpenDirection(float yaw, BlockFace oldFacing) {
-        BlockFace facingDirection = blockFaceFromYaw(yaw);
-
-        if (facingDirection == oldFacing.getOppositeFace()) {
-            return facingDirection;
-        } else {
-            return oldFacing;
-        }
     }
 
     @Override
