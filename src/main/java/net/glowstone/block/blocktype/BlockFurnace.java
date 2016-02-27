@@ -42,4 +42,9 @@ public class BlockFurnace extends BlockContainer {
     protected MaterialMatcher getNeededMiningTool(GlowBlock block) {
         return ToolType.PICKAXE;
     }
+
+    @Override
+    public void receivePulse(GlowBlock block) {
+        ((TEFurnace) block.getTileEntity()).burn();
+    }
 }

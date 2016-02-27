@@ -404,15 +404,25 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
                 continue;
             }
 
-            if (isCraftingInputSlot(i)) {
+            if (isDroppableCraftingSlot(i)) {
                 drop(itemStack);
                 getOpenInventory().setItem(i, null);
             }
         }
     }
 
-    private boolean isCraftingInputSlot(int i) {
-        return getTopInventory().getSlot(i).getType() == InventoryType.SlotType.CRAFTING;
+    private boolean isDroppableCraftingSlot(int i) {
+        if (getTopInventory().getSlot(i).getType() == InventoryType.SlotType.CRAFTING) {
+            switch (getTopInventory().getType()) {
+                case BREWING:
+                case FURNACE:
+                    return false;
+                default:
+                    return true;
+            }
+        } else {
+            return false;
+        }
     }
 
     private GlowInventory getTopInventory() {
