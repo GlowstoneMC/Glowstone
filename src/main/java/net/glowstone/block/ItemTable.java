@@ -273,6 +273,7 @@ public final class ItemTable {
         reg(Material.ROTTEN_FLESH, new ItemRotternFlesh());
         reg(Material.SPIDER_EYE, new ItemFood(2, 3.2f)); // todo: effect
         reg(Material.ARMOR_STAND, new ItemArmorStand());
+        reg(Material.MILK_BUCKET, new ItemMilk());
     }
 
     private void reg(Material material, ItemType type) {

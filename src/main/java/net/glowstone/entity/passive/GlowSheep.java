@@ -1,18 +1,22 @@
 package net.glowstone.entity.passive;
 
 import net.glowstone.entity.GlowAnimal;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
-import org.bukkit.DyeColor;
-import org.bukkit.Location;
+import net.glowstone.net.message.play.player.InteractEntityMessage;
+import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Sheep;
+import org.bukkit.event.entity.SheepDyeWoolEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Dye;
 
 import java.util.Random;
 
 public class GlowSheep extends GlowAnimal implements Sheep {
 
-    private boolean sheared = false;
-    private DyeColor color = DyeColor.WHITE;
+    private boolean sheared;
+    private DyeColor color;
 
     public GlowSheep(Location location) {
         super(location, EntityType.SHEEP, 8);
@@ -32,6 +36,8 @@ public class GlowSheep extends GlowAnimal implements Sheep {
         } else {
             setColor(DyeColor.PINK);
         }
+        setSheared(false);
+        // todo implement the regrow of wool
     }
 
     @Override
@@ -57,6 +63,63 @@ public class GlowSheep extends GlowAnimal implements Sheep {
     }
 
     private byte getColorByte() {
-        return (byte) (this.getColor().getData() & (sheared ? 0x10 : 0x0F));
+        return (byte) (this.getColor().getData() | (sheared ? 0x10 : 0x00));
+    }
+
+    @Override
+    public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
+        if (player.getGameMode().equals(GameMode.SPECTATOR)) return false;
+        if (player.getItemInHand() == null) return false;
+        switch (player.getItemInHand().getType()) {
+            case SHEARS: {
+                if (isSheared()) return false;
+
+                if (!player.getGameMode().equals(GameMode.CREATIVE)) {
+                    ItemStack shears = player.getItemInHand();
+
+                    if (shears.getDurability() < 238) {
+                        shears.setDurability((short) (shears.getDurability() + 1));
+                    } else {
+                        player.getInventory().clear(player.getInventory().getHeldItemSlot());
+                    }
+                }
+
+                getWorld().playSound(getLocation(), Sound.SHEEP_SHEAR, 1, 1);
+
+                Random r = new Random();
+
+                getWorld().dropItemNaturally(getLocation(), new ItemStack(Material.WOOL, r.nextInt(3) + 1, getColor().getWoolData()));
+
+                setSheared(true);
+                return true;
+            }
+            case INK_SACK: {
+                Dye dye = (Dye) player.getItemInHand().getData();
+                DyeColor color = dye.getColor();
+
+                SheepDyeWoolEvent event = new SheepDyeWoolEvent(this, color);
+                if (event.isCancelled()) return false;
+
+                color = event.getColor();
+
+                if (color.equals(getColor())) {
+                    return false;
+                }
+
+                if (!player.getGameMode().equals(GameMode.CREATIVE)) {
+                    if (player.getItemInHand().getAmount() > 1) {
+                        player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
+                    } else {
+                        player.getInventory().clear(player.getInventory().getHeldItemSlot());
+                    }
+                }
+
+                setColor(color);
+                return true;
+            }
+            default: {
+                return false;
+            }
+        }
     }
 }
