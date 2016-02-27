@@ -25,9 +25,9 @@ public class IceDecorator extends BlockPopulator {
             while (y > 2 && world.getBlockAt(x, y, z).isEmpty()) {
                 y--;
             }
-            //if (world.getBlockAt(x, y, z).getType() == Material.SNOW_BLOCK) {
-            new BlockPatch(Material.PACKED_ICE, 4, 1, OVERRIDABLES).generate(world, random, x, y, z);
-            //}
+            if (world.getBlockAt(x, y, z).getType() == Material.SNOW_BLOCK) {
+              new BlockPatch(Material.PACKED_ICE, 4, 1, OVERRIDABLES).generate(world, random, x, y, z);
+            }
         }
 
         for (int i = 0; i < 2; i++) {
@@ -37,9 +37,9 @@ public class IceDecorator extends BlockPopulator {
             while (y > 2 && world.getBlockAt(x, y, z).isEmpty()) {
                 y--;
             }
-            //if (world.getBlockAt(x, y, z).getType() == Material.SNOW_BLOCK) {
-            new IceSpike().generate(world, random, x, y, z);
-            //}
+            if (world.getBlockAt(x, y, z).getType() == Material.SNOW_BLOCK) {
+              new IceSpike().generate(world, random, x, y, z);
+            }
         }
     }
 }
