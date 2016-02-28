@@ -98,9 +98,9 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
 
     @Override
     public List<Message> createSpawnMessage() {
-        int x = Position.getIntX(location);
-        int y = Position.getIntY(location);
-        int z = Position.getIntZ(location);
+        double x = Position.getDoubleX(location);
+        double y = Position.getDoubleY(location);
+        double z = Position.getDoubleZ(location);
         return Arrays.<Message>asList(new SpawnLightningStrikeMessage(id, x, y, z));
     }
 

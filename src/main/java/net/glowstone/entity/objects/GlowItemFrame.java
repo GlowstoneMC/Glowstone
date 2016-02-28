@@ -220,7 +220,10 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
         GlowChunk.Key key = new GlowChunk.Key(itemframelocation.getBlockX() >> 4, itemframelocation.getBlockZ() >> 4);
         for (GlowPlayer player : getWorld().getRawPlayers()) {
             if (player.canSeeChunk(key)) {
-                player.getSession().send(new EntityTeleportMessage(id, Position.getIntX(location) + xoffset, Position.getIntY(location), Position.getIntZ(location) + zoffset, yaw, 0));
+                double x = Position.getDoubleX(location);
+                double y = Position.getDoubleY(location);
+                double z = Position.getDoubleZ(location);
+                player.getSession().send(new EntityTeleportMessage(id, x + xoffset, y, z + zoffset, yaw, 0));
             }
         }
     }

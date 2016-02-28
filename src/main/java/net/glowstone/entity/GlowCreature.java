@@ -47,9 +47,9 @@ public class GlowCreature extends GlowLivingEntity implements Creature {
         List<Message> result = new LinkedList<>();
 
         // spawn mob
-        int x = Position.getIntX(location);
-        int y = Position.getIntY(location);
-        int z = Position.getIntZ(location);
+        double x = Position.getDoubleX(location);
+        double y = Position.getDoubleY(location);
+        double z = Position.getDoubleZ(location);
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
         result.add(new SpawnMobMessage(id, getUniqueId(), type.getTypeId(), x, y, z, yaw, pitch, pitch, 0, 0, 0, metadata.getEntryList()));

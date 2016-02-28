@@ -33,8 +33,36 @@ public final class Position {
             SOUTH_WEST, WEST_SOUTH_WEST, WEST, WEST_NORTH_WEST, NORTH_WEST, NORTH_NORTH_WEST);
 
     /**
+     * Gets the X coordinate multiplied the granularity.
+     *
+     * @return An integer approximation of the X coordinate.
+     */
+    public static double getDoubleX(Location loc) {
+        return loc.getX() * GRANULARITY;
+    }
+
+    /**
+     * Gets the Y coordinate multiplied the granularity.
+     *
+     * @return An integer approximation of the Y coordinate.
+     */
+    public static double getDoubleY(Location loc) {
+        return loc.getY() * GRANULARITY;
+    }
+
+    /**
+     * Gets the Z coordinate multiplied the granularity.
+     *
+     * @return An integer approximation of the Z coordinate.
+     */
+    public static double getDoubleZ(Location loc) {
+        return loc.getZ() * GRANULARITY;
+    }
+
+    /**
      * Gets the X coordinate multiplied the granularity and rounded to an
      * integer.
+     *
      * @return An integer approximation of the X coordinate.
      */
     public static int getIntX(Location loc) {
@@ -44,6 +72,7 @@ public final class Position {
     /**
      * Gets the Y coordinate multiplied the granularity and rounded to an
      * integer.
+     *
      * @return An integer approximation of the Y coordinate.
      */
     public static int getIntY(Location loc) {
@@ -53,6 +82,7 @@ public final class Position {
     /**
      * Gets the Z coordinate multiplied the granularity and rounded to an
      * integer.
+     *
      * @return An integer approximation of the Z coordinate.
      */
     public static int getIntZ(Location loc) {

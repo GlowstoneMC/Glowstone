@@ -517,15 +517,15 @@ public abstract class GlowEntity implements Entity {
         boolean moved = hasMoved();
         boolean rotated = hasRotated();
 
-        int x = Position.getIntX(location);
-        int y = Position.getIntY(location);
-        int z = Position.getIntZ(location);
+        double x = Position.getDoubleX(location);
+        double y = Position.getDoubleY(location);
+        double z = Position.getDoubleZ(location);
 
-        int dx = x - Position.getIntX(previousLocation);
-        int dy = y - Position.getIntY(previousLocation);
-        int dz = z - Position.getIntZ(previousLocation);
+        int dx = (int) (x - Position.getIntX(previousLocation));
+        int dy = (int) (y - Position.getIntY(previousLocation));
+        int dz = (int) (z - Position.getIntZ(previousLocation));
 
-        boolean teleport = dx > Byte.MAX_VALUE || dy > Byte.MAX_VALUE || dz > Byte.MAX_VALUE || dx < Byte.MIN_VALUE || dy < Byte.MIN_VALUE || dz < Byte.MIN_VALUE;
+        boolean teleport = dx > Short.MAX_VALUE || dy > Short.MAX_VALUE || dz > Short.MAX_VALUE || dx < Short.MIN_VALUE || dy < Short.MIN_VALUE || dz < Short.MIN_VALUE;
 
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
@@ -534,9 +534,9 @@ public abstract class GlowEntity implements Entity {
         if (teleported || (moved && teleport)) {
             result.add(new EntityTeleportMessage(id, x, y, z, yaw, pitch));
         } else if (moved && rotated) {
-            result.add(new RelativeEntityPositionRotationMessage(id, dx, dy, dz, yaw, pitch));
+            result.add(new RelativeEntityPositionRotationMessage(id, (short) dx, (short) dy, (short) dz, yaw, pitch));
         } else if (moved) {
-            result.add(new RelativeEntityPositionMessage(id, dx, dy, dz));
+            result.add(new RelativeEntityPositionMessage(id, (short) dx, (short) dy, (short) dz));
         } else if (rotated) {
             result.add(new EntityRotationMessage(id, yaw, pitch));
         }
