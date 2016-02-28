@@ -52,7 +52,7 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket> {
     }
 
     @Override
-    protected void messageReceived(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
         ByteBuf buf = msg.content();
         if (buf.readableBytes() < 7) {
             return;

@@ -27,7 +27,7 @@ public class HttpHandler extends SimpleChannelInboundHandler<Object> {
 
 
     @Override
-    protected void messageReceived(ChannelHandlerContext ctx, Object msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof HttpResponse) {
             HttpResponse response = (HttpResponse) msg;
             int responseCode = response.status().code();
