@@ -17,9 +17,9 @@ public final class SpawnMobCodec implements Codec<SpawnMobMessage> {
         int id = ByteBufUtils.readVarInt(buf);
         UUID uuid = GlowBufUtils.readUuid(buf);
         int type = buf.readByte();
-        int x = buf.readInt();
-        int y = buf.readInt();
-        int z = buf.readInt();
+        double x = buf.readDouble();
+        double y = buf.readDouble();
+        double z = buf.readDouble();
         int headPitch = buf.readByte();
         int pitch = buf.readByte();
         int rotation = buf.readByte();
@@ -35,9 +35,9 @@ public final class SpawnMobCodec implements Codec<SpawnMobMessage> {
         ByteBufUtils.writeVarInt(buf, message.getId());
         GlowBufUtils.writeUuid(buf, message.getUuid());
         buf.writeByte(message.getType());
-        buf.writeInt(message.getX());
-        buf.writeInt(message.getY());
-        buf.writeInt(message.getZ());
+        buf.writeDouble(message.getX());
+        buf.writeDouble(message.getY());
+        buf.writeDouble(message.getZ());
         buf.writeByte(message.getHeadPitch());
         buf.writeByte(message.getPitch());
         buf.writeByte(message.getRotation());
