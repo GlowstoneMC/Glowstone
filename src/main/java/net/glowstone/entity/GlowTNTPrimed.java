@@ -60,9 +60,9 @@ public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
 
     @Override
     public List<Message> createSpawnMessage() {
-        double x = Position.getDoubleX(location);
-        double y = Position.getDoubleY(location);
-        double z = Position.getDoubleZ(location);
+        double x = location.getX();
+        double y = location.getY();
+        double z = location.getZ();
         int pitch = Position.getIntPitch(location);
         int yaw = Position.getIntYaw(location);
 

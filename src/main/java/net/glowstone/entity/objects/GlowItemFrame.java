@@ -9,7 +9,6 @@ import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityTeleportMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
-import net.glowstone.util.Position;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -220,9 +219,9 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
         GlowChunk.Key key = new GlowChunk.Key(itemframelocation.getBlockX() >> 4, itemframelocation.getBlockZ() >> 4);
         for (GlowPlayer player : getWorld().getRawPlayers()) {
             if (player.canSeeChunk(key)) {
-                double x = Position.getDoubleX(location);
-                double y = Position.getDoubleY(location);
-                double z = Position.getDoubleZ(location);
+                double x = location.getX();
+                double y = location.getY();
+                double z = location.getZ();
                 player.getSession().send(new EntityTeleportMessage(id, x + xoffset, y, z + zoffset, yaw, 0));
             }
         }

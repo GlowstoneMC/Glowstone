@@ -517,13 +517,17 @@ public abstract class GlowEntity implements Entity {
         boolean moved = hasMoved();
         boolean rotated = hasRotated();
 
-        double x = Position.getDoubleX(location);
-        double y = Position.getDoubleY(location);
-        double z = Position.getDoubleZ(location);
+        double x = location.getX();
+        double y = location.getY();
+        double z = location.getZ();
 
-        int dx = (int) (x - Position.getIntX(previousLocation));
-        int dy = (int) (y - Position.getIntY(previousLocation));
-        int dz = (int) (z - Position.getIntZ(previousLocation));
+        double dx = x * 32 - previousLocation.getX() * 32;
+        double dy = y * 32 - previousLocation.getY() * 32;
+        double dz = z * 32 - previousLocation.getZ() * 32;
+
+        dx *= 128;
+        dy *= 128;
+        dz *= 128;
 
         boolean teleport = dx > Short.MAX_VALUE || dy > Short.MAX_VALUE || dz > Short.MAX_VALUE || dx < Short.MIN_VALUE || dy < Short.MIN_VALUE || dz < Short.MIN_VALUE;
 
