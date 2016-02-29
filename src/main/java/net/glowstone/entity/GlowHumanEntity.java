@@ -124,9 +124,9 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         List<Message> result = new LinkedList<>();
 
         // spawn player
-        int x = Position.getIntX(location);
-        int y = Position.getIntY(location);
-        int z = Position.getIntZ(location);
+        double x = location.getX();
+        double y = location.getY();
+        double z = location.getZ();
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
         result.add(new SpawnPlayerMessage(id, profile.getUniqueId(), x, y, z, yaw, pitch, metadata.getEntryList()));

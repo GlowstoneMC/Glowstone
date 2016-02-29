@@ -8,10 +8,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public final class RelativeEntityPositionMessage implements Message {
 
-    private final int id, deltaX, deltaY, deltaZ;
+    private final int id;
+    private final short deltaX, deltaY, deltaZ;
     private final boolean onGround;
 
-    public RelativeEntityPositionMessage(int id, int deltaX, int deltaY, int deltaZ) {
+    public RelativeEntityPositionMessage(int id, short deltaX, short deltaY, short deltaZ) {
         this(id, deltaX, deltaY, deltaZ, true);
     }
 

@@ -11,9 +11,9 @@ public final class RelativeEntityPositionRotationCodec implements Codec<Relative
     @Override
     public RelativeEntityPositionRotationMessage decode(ByteBuf buf) throws IOException {
         int id = ByteBufUtils.readVarInt(buf);
-        int x = buf.readByte();
-        int y = buf.readByte();
-        int z = buf.readByte();
+        short x = buf.readShort();
+        short y = buf.readShort();
+        short z = buf.readShort();
         int rotation = buf.readByte();
         int pitch = buf.readByte();
         boolean ground = buf.readBoolean();
@@ -23,9 +23,9 @@ public final class RelativeEntityPositionRotationCodec implements Codec<Relative
     @Override
     public ByteBuf encode(ByteBuf buf, RelativeEntityPositionRotationMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
-        buf.writeByte(message.getDeltaX());
-        buf.writeByte(message.getDeltaY());
-        buf.writeByte(message.getDeltaZ());
+        buf.writeShort(message.getDeltaX());
+        buf.writeShort(message.getDeltaY());
+        buf.writeShort(message.getDeltaZ());
         buf.writeByte(message.getRotation());
         buf.writeByte(message.getPitch());
         buf.writeBoolean(message.isOnGround());

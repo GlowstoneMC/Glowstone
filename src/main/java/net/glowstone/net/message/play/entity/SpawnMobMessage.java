@@ -12,7 +12,9 @@ public final class SpawnMobMessage implements Message {
 
     private final int id;
     private final UUID uuid; //TODO: Handle UUID
-    private final int type, x, y, z, rotation, pitch, headPitch, velX, velY, velZ;
+    private final int type;
+    private final double x, y, z;
+    private final int rotation, pitch, headPitch, velX, velY, velZ;
     private final List<MetadataMap.Entry> metadata;
 
 }

@@ -162,9 +162,9 @@ public final class GlowItem extends GlowEntity implements Item {
 
     @Override
     public List<Message> createSpawnMessage() {
-        int x = Position.getIntX(location);
-        int y = Position.getIntY(location);
-        int z = Position.getIntZ(location);
+        double x = location.getX();
+        double y = location.getY();
+        double z = location.getZ();
 
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);

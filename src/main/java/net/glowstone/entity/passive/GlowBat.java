@@ -26,9 +26,9 @@ public class GlowBat extends GlowAmbient implements Bat {
         List<Message> result = new LinkedList<>();
 
         // spawn mob
-        int x = Position.getIntX(location);
-        int y = Position.getIntY(location);
-        int z = Position.getIntZ(location);
+        double x = location.getX();
+        double y = location.getY();
+        double z = location.getZ();
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
         result.add(new SpawnMobMessage(id, UUID.randomUUID(), getType().getTypeId(), x, y, z, yaw, pitch, pitch, 0, 0, 0, metadata.getEntryList())); //TODO 1.9 - Real UUID

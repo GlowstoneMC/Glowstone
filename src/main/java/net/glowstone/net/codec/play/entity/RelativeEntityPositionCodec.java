@@ -11,9 +11,9 @@ public final class RelativeEntityPositionCodec implements Codec<RelativeEntityPo
     @Override
     public RelativeEntityPositionMessage decode(ByteBuf buf) throws IOException {
         int id = ByteBufUtils.readVarInt(buf);
-        int deltaX = buf.readByte();
-        int deltaY = buf.readByte();
-        int deltaZ = buf.readByte();
+        short deltaX = buf.readShort();
+        short deltaY = buf.readShort();
+        short deltaZ = buf.readShort();
         boolean onGround = buf.readBoolean();
         return new RelativeEntityPositionMessage(id, deltaX, deltaY, deltaZ, onGround);
     }
@@ -21,9 +21,9 @@ public final class RelativeEntityPositionCodec implements Codec<RelativeEntityPo
     @Override
     public ByteBuf encode(ByteBuf buf, RelativeEntityPositionMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
-        buf.writeByte(message.getDeltaX());
-        buf.writeByte(message.getDeltaY());
-        buf.writeByte(message.getDeltaZ());
+        buf.writeShort(message.getDeltaX());
+        buf.writeShort(message.getDeltaY());
+        buf.writeShort(message.getDeltaZ());
         buf.writeBoolean(message.isOnGround());
         return buf;
     }

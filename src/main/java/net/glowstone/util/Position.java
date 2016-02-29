@@ -18,46 +18,12 @@ public final class Position {
     }
 
     /**
-     * The number of integer values between each double value. For example, if
-     * the coordinate was {@code 1.5}, this would be sent as
-     * {@code 1.5 * 32 = 48} within certain packets.
-     */
-    public static final int GRANULARITY = 32;
-
-    /**
      * Common Rotation values used blocks such as Signs, Skulls, and Banners.
      * The order relates to the data/tag that is applied to the block on placing.
      */
     public static final List<BlockFace> ROTATIONS = ImmutableList.of(NORTH, NORTH_NORTH_EAST, NORTH_EAST,
             EAST_NORTH_EAST, EAST, EAST_SOUTH_EAST, SOUTH_EAST, SOUTH_SOUTH_EAST, SOUTH, SOUTH_SOUTH_WEST,
             SOUTH_WEST, WEST_SOUTH_WEST, WEST, WEST_NORTH_WEST, NORTH_WEST, NORTH_NORTH_WEST);
-
-    /**
-     * Gets the X coordinate multiplied the granularity and rounded to an
-     * integer.
-     * @return An integer approximation of the X coordinate.
-     */
-    public static int getIntX(Location loc) {
-        return (int) (loc.getX() * GRANULARITY);
-    }
-
-    /**
-     * Gets the Y coordinate multiplied the granularity and rounded to an
-     * integer.
-     * @return An integer approximation of the Y coordinate.
-     */
-    public static int getIntY(Location loc) {
-        return (int) (loc.getY() * GRANULARITY);
-    }
-
-    /**
-     * Gets the Z coordinate multiplied the granularity and rounded to an
-     * integer.
-     * @return An integer approximation of the Z coordinate.
-     */
-    public static int getIntZ(Location loc) {
-        return (int) (loc.getZ() * GRANULARITY);
-    }
 
     /**
      * Gets an integer approximation of the yaw between 0 and 255.
