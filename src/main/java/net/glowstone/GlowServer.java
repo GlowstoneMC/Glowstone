@@ -4,8 +4,11 @@ import com.avaje.ebean.config.DataSourceConfig;
 import com.avaje.ebean.config.dbplatform.SQLitePlatform;
 import com.avaje.ebeaninternal.server.lib.sql.TransactionIsolation;
 import com.flowpowered.networking.Message;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import lombok.Getter;
 import net.glowstone.block.BuiltinMaterialValueManager;
 import net.glowstone.block.MaterialValueManager;
 import net.glowstone.block.state.GlowDispenser;
@@ -18,6 +21,7 @@ import net.glowstone.entity.EntityIdManager;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.generator.*;
+import net.glowstone.guice.GlowGuiceModule;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.inventory.crafting.CraftingManager;
@@ -29,6 +33,7 @@ import net.glowstone.net.SessionRegistry;
 import net.glowstone.net.message.play.game.ChatMessage;
 import net.glowstone.net.query.QueryServer;
 import net.glowstone.net.rcon.RconServer;
+import net.glowstone.plugin.GlowPluginManager;
 import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.scheduler.WorldScheduler;
 import net.glowstone.scoreboard.GlowScoreboardManager;
@@ -120,7 +125,7 @@ public final class GlowServer implements Server {
     /**
      * The plugin manager of this server.
      */
-    private final SimplePluginManager pluginManager = new SimplePluginManager(this, commandMap);
+    private final GlowPluginManager pluginManager;
     /**
      * The plugin channel messenger for the server.
      */
@@ -194,10 +199,6 @@ public final class GlowServer implements Server {
      */
     private final Set<GlowPlayer> onlineView = Collections.unmodifiableSet(onlinePlayers);
     /**
-     * The plugin type detector of thi server.
-     */
-    private GlowPluginTypeDetector pluginTypeDetector;
-    /**
      * The server's default game mode
      */
     private GameMode defaultGameMode = GameMode.CREATIVE;
@@ -251,6 +252,9 @@ public final class GlowServer implements Server {
      */
     private MaterialValueManager materialValueManager;
 
+    @Getter
+    private Injector injector;
+
     /**
      * Creates a new server.
      */
@@ -263,6 +267,9 @@ public final class GlowServer implements Server {
         whitelist = new UuidListFile(config.getFile("whitelist.json"));
         nameBans = new GlowBanList(this, BanList.Type.NAME);
         ipBans = new GlowBanList(this, BanList.Type.IP);
+
+        pluginManager = new GlowPluginManager(this, commandMap);
+        injector = Guice.createInjector(new GlowGuiceModule(this, org.slf4j.LoggerFactory.getLogger(GlowServer.class)));
 
         Bukkit.setServer(this);
         loadConfig();
@@ -708,14 +715,10 @@ public final class GlowServer implements Server {
             logger.log(Level.SEVERE, "Could not create plugins directory: " + folder);
         }
 
-        // detect plugin types
-        pluginTypeDetector = new GlowPluginTypeDetector(folder, logger);
-        pluginTypeDetector.scan();
-
         // clear plugins and prepare to load (Bukkit)
         pluginManager.clearPlugins();
         pluginManager.registerInterface(JavaPluginLoader.class);
-        Plugin[] plugins = pluginManager.loadPlugins(pluginTypeDetector.bukkitPlugins.toArray(new File[0]), folder.getPath());
+        Plugin[] plugins = pluginManager.loadPlugins(folder);
 
         // call onLoad methods
         for (Plugin plugin : plugins) {
@@ -725,49 +728,6 @@ public final class GlowServer implements Server {
                 logger.log(Level.SEVERE, "Error loading " + plugin.getDescription().getFullName(), ex);
             }
         }
-
-        if (pluginTypeDetector.spongePlugins.size() != 0) {
-            boolean hasSponge = false;
-            for (Plugin plugin : plugins) {
-                if (plugin.getName().equals("Bukkit2Sponge")) {
-                    hasSponge = true; // TODO: better detection method, plugin description file annotation APIs?
-                    break;
-                }
-            }
-
-            if (!hasSponge) {
-                logger.log(Level.WARNING, "SpongeAPI plugins found, but no Sponge bridge present! They will be ignored.");
-                for (File file : pluginTypeDetector.spongePlugins) {
-                    logger.log(Level.WARNING, "Ignored SpongeAPI plugin: " + file.getPath());
-                }
-                logger.log(Level.WARNING, "Suggestion: install https://github.com/deathcap/Bukkit2Sponge to load these plugins");
-            }
-        }
-
-        if (pluginTypeDetector.canaryPlugins.size() != 0 ||
-                pluginTypeDetector.forgefPlugins.size() != 0 ||
-                pluginTypeDetector.forgenPlugins.size() != 0 ||
-                pluginTypeDetector.unrecognizedPlugins.size() != 0) {
-            logger.log(Level.WARNING, "Unsupported plugin types found, will be ignored:");
-
-            for (File file : pluginTypeDetector.canaryPlugins)
-                logger.log(Level.WARNING, "Canary plugin not supported: " + file.getPath());
-
-            for (File file : pluginTypeDetector.forgefPlugins)
-                logger.log(Level.WARNING, "Forge plugin not supported: " + file.getPath());
-
-            for (File file : pluginTypeDetector.forgenPlugins)
-                logger.log(Level.WARNING, "Forge plugin not supported: " + file.getPath());
-
-            for (File file : pluginTypeDetector.unrecognizedPlugins)
-                logger.log(Level.WARNING, "Unrecognized plugin not supported: " + file.getPath());
-        }
-
-    }
-
-    // API for Bukkit2Sponge
-    public List<File> getSpongePlugins() {
-        return pluginTypeDetector.spongePlugins;
     }
 
     /**
@@ -1082,7 +1042,7 @@ public final class GlowServer implements Server {
     }
 
     @Override
-    public PluginManager getPluginManager() {
+    public GlowPluginManager getPluginManager() {
         return pluginManager;
     }
 
@@ -1826,5 +1786,13 @@ public final class GlowServer implements Server {
 
     public int getPlayerSampleCount() {
         return config.getInt(ServerConfig.Key.PLAYER_SAMPLE_COUNT);
+    }
+
+    public InetSocketAddress getBoundAddress() {
+        String ip = getIp();
+        if (ip != null) {
+            return new InetSocketAddress(ip, getPort());
+        }
+        return null;
     }
 }

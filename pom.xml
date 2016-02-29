@@ -16,6 +16,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <bukkit.version>1.8.8-R0.1-SNAPSHOT</bukkit.version>
+        <spongeapi.version>3.0.1-SNAPSHOT</spongeapi.version>
     </properties>
 
     <parent>
@@ -31,6 +32,26 @@
             <layout>default</layout>
             <url>https://oss.sonatype.org/content/repositories/public/</url>
         </repository>
+
+        <repository>
+            <id>sponge</id>
+            <url>http://repo.spongepowered.org/maven</url>
+        </repository>
+
+        <repository>
+            <id>mojang</id>
+            <url>https://libraries.minecraft.net/</url>
+        </repository>
+
+        <repository>
+            <id>forge</id>
+            <url>http://files.minecraftforge.net/maven</url>
+        </repository>
+
+        <repository>
+            <id>eclipse</id>
+            <url>https://repo.eclipse.org/content/groups/eclipse/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -43,6 +64,21 @@
             <groupId>net.glowstone</groupId>
             <artifactId>glowkit</artifactId>
             <version>${bukkit.version}</version> <!-- Use https://github.com/GlowstonePlusPlus/Glowkit/tree/bukkit+glowkit -->
+        </dependency>
+        <dependency>
+            <groupId>net.minecraft</groupId>
+            <artifactId>launchwrapper</artifactId>
+            <version>1.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.spongepowered</groupId>
+            <artifactId>spongeapi</artifactId>
+            <version>${spongeapi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.spongepowered</groupId>
+            <artifactId>mixin</artifactId>
+            <version>0.4.7-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.flowpowered</groupId>
@@ -119,7 +155,7 @@
                 </executions>
             </plugin>
 
-            <plugin>
+            <!--<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>2.16</version>
@@ -134,8 +170,9 @@
                 <configuration>
                     <configLocation>${project.basedir}/etc/checkstyle.xml</configLocation>
                     <headerLocation>${project.basedir}/LICENSE</headerLocation>
+                    <excludes>net/glowstone/mixin/player/*</excludes>
                 </configuration>
-            </plugin>
+            </plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -149,15 +186,15 @@
                         </goals>
                         <configuration>
                             <relocations>
-                               <relocation>
-                                   <pattern>org.objectweb.asm</pattern>
-                                   <shadedPattern>net.glowstone.libs.org.objectweb.asm</shadedPattern>
-                               </relocation>
-                               <relocation>
+                                <relocation>
+                                    <pattern>org.objectweb.asm</pattern>
+                                    <shadedPattern>net.glowstone.libs.org.objectweb.asm</shadedPattern>
+                                </relocation>
+                                <relocation>
                                     <pattern>com.flowpowered</pattern>
                                     <shadedPattern>net.glowstone.libs.com.flowpowered</shadedPattern>
                                 </relocation>
-                               <relocation>
+                                <relocation>
                                     <pattern>jline</pattern>
                                     <shadedPattern>net.glowstone.libs.jline</shadedPattern>
                                 </relocation>
@@ -166,14 +203,34 @@
                                     <shadedPattern>net.glowstone.libs.io.netty</shadedPattern>
                                 </relocation>
                             </relocations>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>net.glowstone.GlowServer</mainClass>
-                                </transformer>
-                            </transformers>
                         </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Main-Class>net.glowstone.launch.Main</Main-Class>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
             </plugin>
 
             <plugin>

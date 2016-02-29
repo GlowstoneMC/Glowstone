@@ -1,0 +1,20 @@
+{
+  "required": true,
+  "package": "net.glowstone.mixin",
+  "priority": 1000,
+  "mixins": [
+    "MixinServer",
+    "block.MixinItemType",
+    "block.MixinBlockType",
+    "block.MixinGlowBlock",
+    "entity.MixinPlayer",
+    "event.MixinHandlerList",
+    "event.chunk.MixinChunkLoadEvent",
+    "plugin.MixinPluginBase",
+    "plugin.MixinGlowPluginManager",
+    "plugin.MixinGlowPluginContainer",
+    "scoreboard.MixinScoreboard",
+    "world.MixinGlowChunk",
+    "world.MixinGlowWorld"
+  ]
+}
