@@ -56,11 +56,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm-debug-all</artifactId>
-            <version>5.0.3</version>
-        </dependency>
-        <dependency>
             <groupId>net.glowstone</groupId>
             <artifactId>glowkit</artifactId>
             <version>${bukkit.version}</version> <!-- Use https://github.com/GlowstonePlusPlus/Glowkit/tree/bukkit+glowkit -->
@@ -207,6 +202,14 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <artifactSet>
+                        <excludes>
+                            <exclude>org.eclipse.*</exclude>
+                            <exclude>org.lwjgl.*</exclude>
+                            <exclude>junit:junit</exclude>
+                            <exclude>net.minecraftforge.*</exclude>
+                        </excludes>
+                    </artifactSet>
                     <filters>
                         <filter>
                             <artifact>*:*</artifact>
