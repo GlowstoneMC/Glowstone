@@ -142,7 +142,7 @@ public final class EncryptionKeyResponseHandler implements MessageHandler<GlowSe
                 properties.add(new PlayerProperty(propName, value, signature));
             }
 
-            final AsyncPlayerPreLoginEvent event = EventFactory.onPlayerPreLogin(name, session.getAddress(), uuid);
+            final AsyncPlayerPreLoginEvent event = EventFactory.onPlayerPreLogin(session, name, session.getAddress(), uuid);
             if (event.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) {
                 session.disconnect(event.getKickMessage(), true);
                 return;

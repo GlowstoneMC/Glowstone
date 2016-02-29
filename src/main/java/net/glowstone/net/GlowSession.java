@@ -30,6 +30,7 @@ import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.ProtocolType;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.spongepowered.api.network.RemoteConnection;
 
 import javax.crypto.SecretKey;
 import java.net.InetSocketAddress;
@@ -42,7 +43,7 @@ import java.util.logging.Level;
  *
  * @author Graham Edgecombe
  */
-public final class GlowSession extends BasicSession {
+public final class GlowSession extends BasicSession implements RemoteConnection {
 
     /**
      * The server this session belongs to.
@@ -263,6 +264,11 @@ public final class GlowSession extends BasicSession {
     @Override
     public InetSocketAddress getAddress() {
         return address;
+    }
+
+    @Override
+    public InetSocketAddress getVirtualHost() {
+        return new InetSocketAddress(hostname, getAddress().getPort());
     }
 
     ////////////////////////////////////////////////////////////////////////////

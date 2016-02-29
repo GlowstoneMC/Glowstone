@@ -37,6 +37,7 @@ import net.glowstone.plugin.GlowPluginManager;
 import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.scheduler.WorldScheduler;
 import net.glowstone.scoreboard.GlowScoreboardManager;
+import net.glowstone.sponge.SpongeConstants;
 import net.glowstone.util.*;
 import net.glowstone.util.bans.GlowBanList;
 import net.glowstone.util.bans.UuidListFile;
@@ -504,6 +505,8 @@ public final class GlowServer implements Server {
         enablePlugins(PluginLoadOrder.POSTWORLD);
         commandMap.registerServerAliases();
         scheduler.start();
+
+        SpongeConstants.register();
     }
 
     private void checkTransfer(String name, String suffix, Environment environment) {

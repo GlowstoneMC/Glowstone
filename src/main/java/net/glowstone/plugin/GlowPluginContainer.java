@@ -22,7 +22,7 @@ public class GlowPluginContainer implements IGlowPlugin {
 
     public GlowPluginContainer(Class<?> pluginClass, Injector parent) {
         this.pluginClass = pluginClass;
-        this.logger = LoggerFactory.getLogger(pluginClass);
+        this.logger = LoggerFactory.getLogger(getId());
 
         this.injector = parent.createChildInjector(new GlowPluginGuiceModule(this, pluginClass));
         this.instance = Optional.of(this.injector.getInstance(pluginClass));

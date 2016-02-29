@@ -41,6 +41,7 @@ import net.glowstone.event.gen.DefineableClassLoader;
 import net.glowstone.interfaces.IGlowPlugin;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.Sys;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.EventListener;
@@ -255,8 +256,10 @@ public class SpongeEventManager implements EventManager {
         return this.handlersCache.getUnchecked(checkNotNull(event, "event").getClass());
     }
 
+
+
     @SuppressWarnings("unchecked")
-    protected static boolean post(Event event, List<RegisteredListener<?>> handlers) {
+    private static boolean post0(Event event, List<RegisteredListener<?>> handlers) {
         for (@SuppressWarnings("rawtypes") RegisteredListener handler : handlers) {
             try {
                 handler.handle(event);
@@ -269,20 +272,16 @@ public class SpongeEventManager implements EventManager {
     }
 
     public boolean post0(Event event) {
-        return post(event, getHandlerCache(event).getListeners());
+        return post0(event, getHandlerCache(event).getListeners());
     }
 
     @Override
     public boolean post(Event event) {
         return eventRegister.callEvent(event);
     }
-    
-    public boolean post(Event event, boolean allowClientThread) {
-        return post(event);
-    }
 
     public boolean post(Event event, Order order) {
-        return post(event, getHandlerCache(event).getListenersByOrder(order));
+        return post0(event, getHandlerCache(event).getListenersByOrder(order));
     }
 
     public static Logger getLogger() {

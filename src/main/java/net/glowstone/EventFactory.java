@@ -1,6 +1,8 @@
 package net.glowstone;
 
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.interfaces.event.player.IAsyncPlayerPreLoginEvent;
+import net.glowstone.net.GlowSession;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -62,9 +64,10 @@ public final class EventFactory {
     // Player Events
 
     @SuppressWarnings("deprecation")
-    public static AsyncPlayerPreLoginEvent onPlayerPreLogin(String name, InetSocketAddress address, UUID uuid) {
+    public static AsyncPlayerPreLoginEvent onPlayerPreLogin(GlowSession session, String name, InetSocketAddress address, UUID uuid) {
         // call async event
         final AsyncPlayerPreLoginEvent event = new AsyncPlayerPreLoginEvent(name, address.getAddress(), uuid);
+        ((IAsyncPlayerPreLoginEvent) event).init(session);
         callEvent(event);
 
         // call sync event only if needed
