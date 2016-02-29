@@ -16,7 +16,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <bukkit.version>1.8.8-R0.1-SNAPSHOT</bukkit.version>
-        <spongeapi.version>3.0.1-SNAPSHOT</spongeapi.version>
+        <spongeapi.version>3.1.0-SNAPSHOT</spongeapi.version>
     </properties>
 
     <parent>
