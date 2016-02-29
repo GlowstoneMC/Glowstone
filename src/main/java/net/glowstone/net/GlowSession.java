@@ -17,7 +17,6 @@ import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.io.PlayerDataService;
 import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.SetCompressionMessage;
-import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.game.PingMessage;
 import net.glowstone.net.message.play.game.UserListItemMessage;
 import net.glowstone.net.message.play.player.BlockPlacementMessage;
@@ -367,9 +366,6 @@ public final class GlowSession extends BasicSession {
         }
         System.out.println("Sending message type: " + message.getClass().getName());
         System.out.println("Content: " + message.toString());
-        if (message instanceof EntityMetadataMessage) {
-            return null;
-        }
         return super.sendWithFuture(message);
     }
 
