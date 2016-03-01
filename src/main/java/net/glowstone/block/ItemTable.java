@@ -125,7 +125,7 @@ public final class ItemTable {
         reg(Material.POTATO, new BlockPotato(), Sound.BLOCK_GRASS_BREAK);
         reg(Material.PUMPKIN_STEM, new BlockStem(Material.PUMPKIN_STEM), Sound.BLOCK_GRASS_BREAK);
         reg(Material.CROPS, new BlockCrops(), Sound.BLOCK_GRASS_BREAK);
-        reg(Material.CAKE_BLOCK, new BlockDropless(), Sound.BLOCK_SNOW_BREAK);
+        reg(Material.CAKE_BLOCK, new BlockDropless(), Sound.BLOCK_CLOTH_BREAK);
         reg(Material.WEB, new BlockWeb());
         reg(Material.FIRE, new BlockFire());
         reg(Material.ENDER_PORTAL_FRAME, new BlockEnderPortalFrame());
@@ -185,7 +185,7 @@ public final class ItemTable {
         reg(Material.ACTIVATOR_RAIL, new BlockRails());
         reg(Material.DETECTOR_RAIL, new BlockRails());
         reg(Material.POWERED_RAIL, new BlockRails());
-        reg(Material.CARPET, new BlockCarpet(), Sound.BLOCK_SNOW_BREAK);
+        reg(Material.CARPET, new BlockCarpet(), Sound.BLOCK_CLOTH_BREAK);
         reg(Material.ENCHANTMENT_TABLE, new BlockEnchantmentTable());
         reg(Material.BREWING_STAND, new BlockBrewingStand());
         reg(Material.CACTUS, new BlockCactus());
