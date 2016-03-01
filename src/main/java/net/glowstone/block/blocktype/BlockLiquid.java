@@ -222,6 +222,12 @@ public abstract class BlockLiquid extends BlockType {
                     }
                     if (!connected && face == UP || Byte.compare(block.getRelative(face).getState().getRawData(), block.getState().getRawData()) < 0) {
                         connected = true;
+                        if (block.getWorld().getServer().getClassicWater()) {
+                            block.getState().setRawData(STRENGTH_SOURCE);
+                        }
+                    }
+                    if (block.getWorld().getServer().getClassicWater() && Byte.compare(block.getRelative(face).getState().getRawData(), STRENGTH_SOURCE) == 0) {
+                        block.getRelative(face).setType(Material.AIR);
                     }
                 }
             }

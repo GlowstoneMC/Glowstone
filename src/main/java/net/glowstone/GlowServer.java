@@ -1813,6 +1813,10 @@ public final class GlowServer implements Server {
                 .MAX_BUILD_HEIGHT)));
     }
 
+    public boolean getClassicWater() {
+        return config.getBoolean(ServerConfig.Key.WATER_CLASSIC);
+    }
+
     public String getConsolePrompt() {
         return config.getString(ServerConfig.Key.CONSOLE_PROMPT);
     }
