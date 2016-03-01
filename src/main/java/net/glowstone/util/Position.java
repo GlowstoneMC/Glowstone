@@ -10,10 +10,12 @@ import static org.bukkit.block.BlockFace.*;
 
 /**
  * A static class housing position-related utilities and constants.
- *
  * @author Graham Edgecombe
  */
 public final class Position {
+
+    private Position() {
+    }
 
     /**
      * Common Rotation values used blocks such as Signs, Skulls, and Banners.
@@ -23,12 +25,8 @@ public final class Position {
             EAST_NORTH_EAST, EAST, EAST_SOUTH_EAST, SOUTH_EAST, SOUTH_SOUTH_EAST, SOUTH, SOUTH_SOUTH_WEST,
             SOUTH_WEST, WEST_SOUTH_WEST, WEST, WEST_NORTH_WEST, NORTH_WEST, NORTH_NORTH_WEST);
 
-    private Position() {
-    }
-
     /**
      * Gets an integer approximation of the yaw between 0 and 255.
-     *
      * @return An integer approximation of the yaw.
      */
     public static int getIntYaw(Location loc) {
@@ -37,7 +35,6 @@ public final class Position {
 
     /**
      * Gets an integer approximation of the pitch between 0 and 255.
-     *
      * @return An integer approximation of the yaw.
      */
     public static int getIntPitch(Location loc) {
@@ -46,7 +43,6 @@ public final class Position {
 
     /**
      * Gets whether there has been a position change between the two Locations.
-     *
      * @return A boolean.
      */
     public static boolean hasMoved(Location first, Location second) {
@@ -55,7 +51,6 @@ public final class Position {
 
     /**
      * Gets whether there has been a rotation change between the two Locations.
-     *
      * @return A boolean.
      */
     public static boolean hasRotated(Location first, Location second) {
@@ -64,9 +59,8 @@ public final class Position {
 
     /**
      * Copy the contents of one Location to another.
-     *
      * @param source The Location to read from.
-     * @param dest   The Location to modify. May be null.
+     * @param dest The Location to modify. May be null.
      * @return The dest parameter, modified if not null.
      */
     public static Location copyLocation(Location source, Location dest) {
@@ -84,9 +78,8 @@ public final class Position {
 
     /**
      * Copy the position contents (x,y,z) of one Location to another.
-     *
      * @param source The Location to read the x, y and z values from.
-     * @param dest   The Location to modify the x, y and z values. May be null.
+     * @param dest The Location to modify the x, y and z values. May be null.
      * @return The dest parameter, modified if not null.
      */
     public static Location copyPosition(Location source, Location dest) {
@@ -101,7 +94,6 @@ public final class Position {
 
     /**
      * Get an intercardinal BlockFace from a rotation value, where NORTH is 0.
-     *
      * @param rotation byte value rotation to get
      * @return intercardinal BlockFace
      * @throws IndexOutOfBoundsException If 0 > value > 15
@@ -112,7 +104,6 @@ public final class Position {
 
     /**
      * Gets the byte rotation for an intercardinal BlockFace, where NORTH is 0.
-     *
      * @param rotation Rotation to get
      * @return byte data value for the given rotation, or -1 if rotation is SELF or null
      */

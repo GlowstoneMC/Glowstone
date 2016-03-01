@@ -286,9 +286,9 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
 
     @Override
     public List<Message> createSpawnMessage() {
-        int x = Position.getIntX(location);
-        int y = Position.getIntY(location);
-        int z = Position.getIntZ(location);
+        double x = location.getX();
+        double y = location.getY();
+        double z = location.getZ();
 
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
