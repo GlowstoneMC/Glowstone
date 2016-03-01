@@ -28,6 +28,7 @@ import org.bukkit.util.EulerAngle;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
 
@@ -293,7 +294,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
         int pitch = Position.getIntPitch(location);
 
         return Arrays.asList(
-                new SpawnObjectMessage(id, 78, x, y, z, pitch, yaw),
+                new SpawnObjectMessage(id, UUID.randomUUID(), 78, x, y, z, pitch, yaw), // TODO: once UUID is documented, actually use the appropriate ID here
                 new EntityMetadataMessage(id, metadata.getEntryList()),
                 new EntityEquipmentMessage(id, EntityEquipmentMessage.HELD_ITEM, getItemInHand()),
                 new EntityEquipmentMessage(id, EntityEquipmentMessage.BOOTS_SLOT, getBoots()),

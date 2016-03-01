@@ -12,10 +12,10 @@ import net.glowstone.net.message.play.player.InteractEntityMessage;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
+
+//import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 
 public final class InteractEntityHandler implements MessageHandler<GlowSession, InteractEntityMessage> {
 
