@@ -3,6 +3,8 @@ package net.glowstone.constants;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Sound;
 
+import java.util.regex.Pattern;
+
 import static org.bukkit.Sound.*;
 
 /**
@@ -11,11 +13,11 @@ import static org.bukkit.Sound.*;
 public final class GlowSound {
 
     private static final String[] names = new String[values().length];
+    private static final Pattern SOUND_ENUM_PATTERN = Pattern.compile("\\.");
 
     static {
         for (Sound sound : values()) {
-            set(sound, sound.name().toLowerCase().replaceAll("\\.", ""));
-            System.out.println(sound.name().toLowerCase().replaceAll("\\.", ""));
+            set(sound, SOUND_ENUM_PATTERN.matcher(sound.name().toLowerCase()).replaceAll(""));
         }
     }
 
