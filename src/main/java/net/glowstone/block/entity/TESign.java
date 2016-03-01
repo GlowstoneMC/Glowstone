@@ -62,7 +62,7 @@ public class TESign extends TileEntity {
     public String[] getLines() {
         String[] result = new String[lines.length];
         for (int i = 0; i < result.length; ++i) {
-            result[i] = lines[i].flatten();
+            result[i] = lines[i];
         }
         return result;
     }

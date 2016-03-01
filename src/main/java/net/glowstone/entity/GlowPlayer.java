@@ -26,7 +26,6 @@ import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.login.LoginSuccessMessage;
 import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.game.*;
-import net.glowstone.net.message.play.game.PlaySoundMessage.SoundCategory;
 import net.glowstone.net.message.play.game.TitleMessage.Action;
 import net.glowstone.net.message.play.inv.*;
 import net.glowstone.net.message.play.player.PlayerAbilitiesMessage;
