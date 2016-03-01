@@ -35,6 +35,16 @@ public class GlowBrewingStand extends GlowBlockState implements BrewingStand {
     }
 
     @Override
+    public int getFuelLevel() {
+        return 0;
+    }
+
+    @Override
+    public void setFuelLevel(int i) {
+
+    }
+
+    @Override
     public BrewerInventory getInventory() {
         return (BrewerInventory) getTileEntity().getInventory();
     }

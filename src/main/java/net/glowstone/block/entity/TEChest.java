@@ -29,7 +29,7 @@ public class TEChest extends TEContainer {
         viewers++;
         if (viewers == 1) {
             updateInRange();
-            block.getWorld().playSound(block.getLocation(), Sound.CHEST_OPEN, 5f, 2f);
+            block.getWorld().playSound(block.getLocation(), Sound.BLOCK_CHEST_OPEN, 5f, 2f);
         }
     }
 
@@ -37,7 +37,7 @@ public class TEChest extends TEContainer {
         viewers--;
         if (viewers == 0) {
             updateInRange();
-            block.getWorld().playSound(block.getLocation(), Sound.CHEST_CLOSE, 5f, 2f);
+            block.getWorld().playSound(block.getLocation(), Sound.BLOCK_CHEST_CLOSE, 5f, 2f);
         }
     }
 

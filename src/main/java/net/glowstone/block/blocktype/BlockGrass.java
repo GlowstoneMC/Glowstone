@@ -6,7 +6,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.generator.populators.overworld.FlowerForestPopulator;
+import net.glowstone.generator.objects.FlowerType;
 import org.bukkit.GrassSpecies;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -54,7 +54,10 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
                         // sometimes grow random flower
                         // would be better to call a method that choose a random
                         // flower depending on the biome
-                        Material flower = FlowerForestPopulator.FLOWERS[random.nextInt(FlowerForestPopulator.FLOWERS.length)].getType();
+                        FlowerType[] flowers = {FlowerType.POPPY, FlowerType.POPPY, FlowerType.DANDELION, FlowerType.ALLIUM,
+                                FlowerType.HOUSTONIA, FlowerType.TULIP_RED, FlowerType.TULIP_ORANGE, FlowerType.TULIP_WHITE, FlowerType.TULIP_PINK,
+                                FlowerType.OXEYE_DAISY};
+                        Material flower = flowers[random.nextInt(flowers.length)].getType();
                         if (ItemTable.instance().getBlock(flower).canPlaceAt(b, BlockFace.DOWN)) {
                             blockState.setType(flower);
                         }

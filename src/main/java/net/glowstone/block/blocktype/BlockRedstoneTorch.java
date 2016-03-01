@@ -69,7 +69,7 @@ public class BlockRedstoneTorch extends BlockNeedsAttached {
             if (!powered && me.getCounter() > 8) {
                 powered = true;
                 if (me.getCounter() == 9) {
-                    me.getWorld().playSound(me.getLocation(), Sound.FIZZ, 1, 1);
+                    me.getWorld().playSound(me.getLocation(), Sound.BLOCK_REDSTONE_TORCH_BURNOUT, 1, 1);
                     me.getWorld().playEffect(me.getLocation().add(0.5, 0.75, 0.5), Effect.SMOKE, BlockFace.UP);
                 }
             }

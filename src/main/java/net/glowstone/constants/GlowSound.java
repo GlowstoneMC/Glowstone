@@ -20,6 +20,7 @@ public final class GlowSound {
         set(ENTITY_LIGHTNING_THUNDER, "entity.lightning.thunder");
 
         // TODO: port sounds to 1.9
+        /*
         // Damage
         set(HURT, "game.neutral.hurt");
         set(FALL_BIG, "game.neutral.hurt.fall.big");
@@ -249,6 +250,7 @@ public final class GlowSound {
         // Tile
         set(PISTON_EXTEND, "tile.piston.out");
         set(PISTON_RETRACT, "tile.piston.in");
+        */
     }
 
     private GlowSound() {

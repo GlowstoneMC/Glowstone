@@ -8,7 +8,7 @@ import java.util.Collections;
 
 public class MesaPopulator extends BiomePopulator {
 
-    private static final Biome[] BIOMES = {Biome.MESA, Biome.MESA_PLATEAU, Biome.MESA_PLATEAU_MOUNTAINS, Biome.MESA_BRYCE};
+    private static final Biome[] BIOMES = {Biome.MESA};
 
     public MesaPopulator() {
         super();

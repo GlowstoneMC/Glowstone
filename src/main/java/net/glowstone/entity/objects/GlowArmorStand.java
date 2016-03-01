@@ -16,6 +16,8 @@ import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -324,6 +326,16 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     }
 
     @Override
+    public void setGlowing(boolean b) {
+
+    }
+
+    @Override
+    public boolean isGlowing() {
+        return false;
+    }
+
+    @Override
     public ItemStack getItemInHand() {
         return equipment[0];
     }
@@ -508,5 +520,10 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     public void setMarker(boolean marker) {
         isMarker = marker;
         metadata.setBit(MetadataIndex.ARMORSTAND_FLAGS, MetadataIndex.ArmorStandFlags.IS_MARKER, marker);
+    }
+
+    @Override
+    public AttributeInstance getAttribute(Attribute attribute) {
+        return null;
     }
 }

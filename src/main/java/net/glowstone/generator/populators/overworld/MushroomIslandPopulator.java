@@ -16,7 +16,7 @@ import java.util.Random;
 
 public class MushroomIslandPopulator extends BiomePopulator {
 
-    private static final Biome[] BIOMES = {Biome.MUSHROOM_ISLAND, Biome.MUSHROOM_SHORE};
+    private static final Biome[] BIOMES = {Biome.MUSHROOM_ISLAND};
     private static final TreeDecoration[] TREES = {new TreeDecoration(RedMushroomTree.class, 1), new TreeDecoration(BrownMushroomTree.class, 1)};
 
     protected final MushroomDecorator islandBrownMushroomDecorator = new MushroomDecorator(Material.BROWN_MUSHROOM);

@@ -24,7 +24,7 @@ public class BlockTNT extends BlockType {
         World world = tntBlock.getWorld();
         GlowTNTPrimed tnt = (GlowTNTPrimed) world.spawnEntity(tntBlock.getLocation().add(0.5, 0, 0.5), EntityType.PRIMED_TNT);
         tnt.setIgnitedByExplosion(ignitedByExplosion);
-        world.playSound(tntBlock.getLocation(), Sound.FUSE, 1, 1);
+        world.playSound(tntBlock.getLocation(), Sound.ENTITY_TNT_PRIMED, 1, 1);
     }
 
     @Override

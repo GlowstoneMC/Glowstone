@@ -95,4 +95,14 @@ public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
     public final EntityType getType() {
         return EntityType.PRIMED_TNT;
     }
+
+    @Override
+    public void setGlowing(boolean b) {
+
+    }
+
+    @Override
+    public boolean isGlowing() {
+        return false;
+    }
 }

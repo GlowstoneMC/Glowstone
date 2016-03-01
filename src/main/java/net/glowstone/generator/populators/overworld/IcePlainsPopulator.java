@@ -10,7 +10,7 @@ import java.util.Collections;
 
 public class IcePlainsPopulator extends BiomePopulator {
 
-    private static final Biome[] BIOMES = {Biome.ICE_PLAINS, Biome.ICE_MOUNTAINS};
+    private static final Biome[] BIOMES = {Biome.ICE_MOUNTAINS};
     private static final TreeDecoration[] TREES = {new TreeDecoration(RedwoodTree.class, 1)};
 
     public IcePlainsPopulator() {

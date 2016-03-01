@@ -17,28 +17,18 @@ public class OverworldPopulator extends BlockPopulator {
     public OverworldPopulator() {
         registerBiomePopulator(new BiomePopulator()); // defaults applied to all biomes
         registerBiomePopulator(new PlainsPopulator());
-        registerBiomePopulator(new SunflowerPlainsPopulator());
         registerBiomePopulator(new ForestPopulator());
         registerBiomePopulator(new BirchForestPopulator());
-        registerBiomePopulator(new BirchForestMountainsPopulator());
         registerBiomePopulator(new RoofedForestPopulator());
-        registerBiomePopulator(new FlowerForestPopulator());
         registerBiomePopulator(new DesertPopulator());
-        registerBiomePopulator(new DesertMountainsPopulator());
         registerBiomePopulator(new JunglePopulator());
         registerBiomePopulator(new JungleEdgePopulator());
         registerBiomePopulator(new SwamplandPopulator());
         registerBiomePopulator(new TaigaPopulator());
-        registerBiomePopulator(new MegaTaigaPopulator());
-        registerBiomePopulator(new MegaSpruceTaigaPopulator());
         registerBiomePopulator(new IcePlainsPopulator());
-        registerBiomePopulator(new IcePlainsSpikesPopulator());
         registerBiomePopulator(new SavannaPopulator());
-        registerBiomePopulator(new SavannaMountainsPopulator());
         registerBiomePopulator(new ExtremeHillsPopulator());
-        registerBiomePopulator(new ExtremeHillsPlusPopulator());
         registerBiomePopulator(new MesaPopulator());
-        registerBiomePopulator(new MesaForestPopulator());
         registerBiomePopulator(new MushroomIslandPopulator());
     }
 

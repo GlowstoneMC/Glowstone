@@ -19,23 +19,8 @@ public class ShoreMapLayer extends MapLayer {
         OCEANS.add(GlowBiome.getId(DEEP_OCEAN));
 
         SPECIAL_SHORES.put(GlowBiome.getId(EXTREME_HILLS), GlowBiome.getId(STONE_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(EXTREME_HILLS_PLUS), GlowBiome.getId(STONE_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(EXTREME_HILLS_MOUNTAINS), GlowBiome.getId(STONE_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(EXTREME_HILLS_PLUS_MOUNTAINS), GlowBiome.getId(STONE_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(ICE_PLAINS), GlowBiome.getId(COLD_BEACH));
         SPECIAL_SHORES.put(GlowBiome.getId(ICE_MOUNTAINS), GlowBiome.getId(COLD_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(ICE_PLAINS_SPIKES), GlowBiome.getId(COLD_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(COLD_TAIGA), GlowBiome.getId(COLD_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(COLD_TAIGA_HILLS), GlowBiome.getId(COLD_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(COLD_TAIGA_MOUNTAINS), GlowBiome.getId(COLD_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(MUSHROOM_ISLAND), GlowBiome.getId(MUSHROOM_SHORE));
         SPECIAL_SHORES.put(GlowBiome.getId(SWAMPLAND), GlowBiome.getId(SWAMPLAND));
-        SPECIAL_SHORES.put(GlowBiome.getId(MESA), GlowBiome.getId(MESA));
-        SPECIAL_SHORES.put(GlowBiome.getId(MESA_PLATEAU_FOREST), GlowBiome.getId(MESA_PLATEAU_FOREST));
-        SPECIAL_SHORES.put(GlowBiome.getId(MESA_PLATEAU_FOREST_MOUNTAINS), GlowBiome.getId(MESA_PLATEAU_FOREST_MOUNTAINS));
-        SPECIAL_SHORES.put(GlowBiome.getId(MESA_PLATEAU), GlowBiome.getId(MESA_PLATEAU));
-        SPECIAL_SHORES.put(GlowBiome.getId(MESA_PLATEAU_MOUNTAINS), GlowBiome.getId(MESA_PLATEAU_MOUNTAINS));
-        SPECIAL_SHORES.put(GlowBiome.getId(MESA_BRYCE), GlowBiome.getId(MESA_BRYCE));
     }
 
     private final MapLayer belowLayer;
@@ -71,8 +56,7 @@ public class ShoreMapLayer extends MapLayer {
                 int centerVal = values[j + 1 + (i + 1) * gridSizeX];
                 if (!OCEANS.contains(centerVal) && (OCEANS.contains(upperVal) || OCEANS.contains(lowerVal) ||
                         OCEANS.contains(leftVal) || OCEANS.contains(rightVal))) {
-                    finalValues[j + i * sizeX] =
-                            SPECIAL_SHORES.containsKey(centerVal) ? SPECIAL_SHORES.get(centerVal) : GlowBiome.getId(BEACH);
+                    finalValues[j + i * sizeX] = SPECIAL_SHORES.get(centerVal);
                 } else {
                     finalValues[j + i * sizeX] = centerVal;
                 }
