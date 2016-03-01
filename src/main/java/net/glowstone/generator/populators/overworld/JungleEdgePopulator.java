@@ -12,7 +12,7 @@ import java.util.Collections;
 
 public class JungleEdgePopulator extends JunglePopulator {
 
-    private static final Biome[] BIOMES = {Biome.JUNGLE_EDGE};
+    private static final Biome[] BIOMES = {Biome.JUNGLE_EDGE, Biome.MUTATED_JUNGLE_EDGE};
     private static final TreeDecoration[] TREES = {new TreeDecoration(BigOakTree.class, 10),
             new TreeDecoration(JungleBush.class, 50), new TreeDecoration(CocoaTree.class, 45)};
 

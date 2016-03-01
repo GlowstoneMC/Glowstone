@@ -19,6 +19,10 @@ public class RiverMapLayer extends MapLayer {
     static {
         OCEANS.add(GlowBiome.getId(OCEAN));
         OCEANS.add(GlowBiome.getId(DEEP_OCEAN));
+
+        SPECIAL_RIVERS.put(GlowBiome.getId(ICE_FLATS), GlowBiome.getId(FROZEN_RIVER));
+        SPECIAL_RIVERS.put(GlowBiome.getId(MUSHROOM_ISLAND), GlowBiome.getId(MUSHROOM_ISLAND_SHORE));
+        SPECIAL_RIVERS.put(GlowBiome.getId(MUSHROOM_ISLAND_SHORE), GlowBiome.getId(MUSHROOM_ISLAND_SHORE));
     }
 
     private final MapLayer belowLayer;
