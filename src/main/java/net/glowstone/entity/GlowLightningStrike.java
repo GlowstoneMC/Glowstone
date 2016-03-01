@@ -52,6 +52,16 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
     }
 
     @Override
+    public void setGlowing(boolean b) {
+
+    }
+
+    @Override
+    public boolean isGlowing() {
+        return false;
+    }
+
+    @Override
     public boolean isEffect() {
         return effect;
     }
@@ -65,8 +75,8 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
         if (getTicksLived() == 1) {
             final GlowWorld world = (GlowWorld) location.getWorld();
             // Play Sound
-            world.playSound(location, Sound.AMBIENCE_THUNDER, 10000, 0.8F + random.nextFloat() * 0.2F);
-            world.playSound(location, Sound.EXPLODE, 2, 0.5F + random.nextFloat() * 0.2F);
+            world.playSound(location, Sound.ENTITY_LIGHTNING_THUNDER, 10000, 0.8F + random.nextFloat() * 0.2F);
+            world.playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 2, 0.5F + random.nextFloat() * 0.2F);
 
             if (!effect) { // if it's not just a visual effect
                 // set target block on fire if required

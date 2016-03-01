@@ -48,7 +48,7 @@ public class GlowChicken extends GlowAnimal implements Chicken {
         eggLayTime--;
         if (eggLayTime <= 0) {
             getWorld().dropItemNaturally(getLocation(), new ItemStack(Material.EGG, 1));
-            getWorld().playSound(getLocation(), Sound.CHICKEN_EGG_POP, 1, 1);
+            getWorld().playSound(getLocation(), Sound.ENTITY_CHICKEN_EGG, 1, 1);
             generateEggLayDelay();
         }
     }

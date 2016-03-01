@@ -29,6 +29,16 @@ public class GlowBrewerInventory extends GlowInventory implements BrewerInventor
     }
 
     @Override
+    public ItemStack getFuel() {
+        return null;
+    }
+
+    @Override
+    public void setFuel(ItemStack itemStack) {
+
+    }
+
+    @Override
     public BrewingStand getHolder() {
         return (BrewingStand) super.getHolder();
     }

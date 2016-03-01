@@ -41,6 +41,8 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
@@ -49,6 +51,7 @@ import org.bukkit.conversations.ConversationAbandonedEvent;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -873,6 +876,16 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public void setGlowing(boolean b) {
+
+    }
+
+    @Override
+    public boolean isGlowing() {
+        return false;
+    }
+
+    @Override
     public InetSocketAddress getAddress() {
         return session.getAddress();
     }
@@ -1565,6 +1578,66 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public void spawnParticle(Particle particle, Location location, int i) {
+
+    }
+
+    @Override
+    public void spawnParticle(Particle particle, double v, double v1, double v2, int i) {
+
+    }
+
+    @Override
+    public <T> void spawnParticle(Particle particle, Location location, int i, T t) {
+
+    }
+
+    @Override
+    public <T> void spawnParticle(Particle particle, double v, double v1, double v2, int i, T t) {
+
+    }
+
+    @Override
+    public void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2) {
+
+    }
+
+    @Override
+    public void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5) {
+
+    }
+
+    @Override
+    public <T> void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2, T t) {
+
+    }
+
+    @Override
+    public <T> void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, T t) {
+
+    }
+
+    @Override
+    public void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2, double v3) {
+
+    }
+
+    @Override
+    public void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, double v6) {
+
+    }
+
+    @Override
+    public <T> void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2, double v3, T t) {
+
+    }
+
+    @Override
+    public <T> void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, double v6, T t) {
+
+    }
+
+    @Override
     public void kickPlayer(String message) {
         remove(true);
         session.disconnect(message == null ? "" : message);
@@ -1669,19 +1742,19 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         Sound sound;
         switch (instrument) {
             case PIANO:
-                sound = Sound.NOTE_PIANO;
+                sound = Sound.BLOCK_NOTE_HARP;
                 break;
             case BASS_DRUM:
-                sound = Sound.NOTE_BASS_DRUM;
+                sound = Sound.BLOCK_NOTE_BASEDRUM;
                 break;
             case SNARE_DRUM:
-                sound = Sound.NOTE_SNARE_DRUM;
+                sound = Sound.BLOCK_NOTE_SNARE;
                 break;
             case STICKS:
-                sound = Sound.NOTE_STICKS;
+                sound = Sound.BLOCK_NOTE_HAT;
                 break;
             case BASS_GUITAR:
-                sound = Sound.NOTE_BASS_GUITAR;
+                sound = Sound.BLOCK_NOTE_BASS;
                 break;
             default:
                 throw new IllegalArgumentException("Invalid instrument");
@@ -1722,7 +1795,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         double x = location.getBlockX() + 0.5;
         double y = location.getBlockY() + 0.5;
         double z = location.getBlockZ() + 0.5;
-        session.send(new NamedSoundEffectMessage(sound, NamedSoundEffectMessage.SoundCategory.MUSIC, x, y, z, volume, pitch)); //TODO: Put the real category
+        session.send(new NamedSoundEffectMessage(sound, NamedSoundEffectMessage.SoundCategory.MASTER, x, y, z, volume, pitch)); //TODO: Put the real category
     }
 
     @Override
@@ -2080,6 +2153,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public InventoryView openMerchant(Villager villager, boolean b) {
+        return null;
+    }
+
+    @Override
     public GlowItem drop(ItemStack stack) {
         GlowItem dropping = super.drop(stack);
         if (dropping != null) {
@@ -2354,5 +2432,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     public void setDigging(GlowBlock block) {
         digging = block;
+    }
+
+    @Override
+    public AttributeInstance getAttribute(Attribute attribute) {
+        return null;
     }
 }

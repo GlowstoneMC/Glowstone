@@ -3,7 +3,6 @@ package net.glowstone.generator;
 import net.glowstone.GlowWorld;
 import net.glowstone.constants.GlowBiome;
 import net.glowstone.generator.ground.*;
-import net.glowstone.generator.ground.MesaGroundGenerator.MesaType;
 import net.glowstone.generator.populators.OverworldPopulator;
 import net.glowstone.generator.populators.StructurePopulator;
 import net.glowstone.generator.populators.overworld.SnowPopulator;
@@ -45,39 +44,33 @@ public class OverworldGenerator extends GlowChunkGenerator {
     private static final Map<Biome, BiomeHeight> HEIGHT_MAP = new HashMap<>();
 
     static {
-        setBiomeSpecificGround(new SandyGroundGenerator(), BEACH, COLD_BEACH, DESERT, DESERT_HILLS, DESERT_MOUNTAINS);
+        setBiomeSpecificGround(new SandyGroundGenerator(), COLD_BEACH, DESERT, DESERT_HILLS);
         setBiomeSpecificGround(new RockyGroundGenerator(), STONE_BEACH);
-        setBiomeSpecificGround(new SnowyGroundGenerator(), ICE_PLAINS_SPIKES);
-        setBiomeSpecificGround(new MycelGroundGenerator(), MUSHROOM_ISLAND, MUSHROOM_SHORE);
+        setBiomeSpecificGround(new MycelGroundGenerator(), MUSHROOM_ISLAND);
         setBiomeSpecificGround(new StonePatchGroundGenerator(), EXTREME_HILLS);
-        setBiomeSpecificGround(new GravelPatchGroundGenerator(), EXTREME_HILLS_MOUNTAINS, EXTREME_HILLS_PLUS_MOUNTAINS);
-        setBiomeSpecificGround(new DirtAndStonePatchGroundGenerator(), SAVANNA_MOUNTAINS, SAVANNA_PLATEAU_MOUNTAINS);
-        setBiomeSpecificGround(new DirtPatchGroundGenerator(), MEGA_TAIGA, MEGA_TAIGA_HILLS, MEGA_SPRUCE_TAIGA, MEGA_SPRUCE_TAIGA_HILLS);
-        setBiomeSpecificGround(new MesaGroundGenerator(), MESA, MESA_PLATEAU, MESA_PLATEAU_MOUNTAINS);
-        setBiomeSpecificGround(new MesaGroundGenerator(MesaType.BRYCE), MESA_BRYCE);
-        setBiomeSpecificGround(new MesaGroundGenerator(MesaType.FOREST), MESA_PLATEAU_FOREST, MESA_PLATEAU_FOREST_MOUNTAINS);
+        setBiomeSpecificGround(new MesaGroundGenerator(), MESA);
 
         setBiomeHeight(BiomeHeight.OCEAN, OCEAN, FROZEN_OCEAN);
         setBiomeHeight(BiomeHeight.DEEP_OCEAN, DEEP_OCEAN);
         setBiomeHeight(BiomeHeight.RIVER, RIVER, FROZEN_RIVER);
-        setBiomeHeight(BiomeHeight.FLAT_SHORE, BEACH, COLD_BEACH, MUSHROOM_SHORE);
+        setBiomeHeight(BiomeHeight.FLAT_SHORE, COLD_BEACH);
         setBiomeHeight(BiomeHeight.ROCKY_SHORE, STONE_BEACH);
-        setBiomeHeight(BiomeHeight.FLATLANDS, DESERT, ICE_PLAINS, SAVANNA);
-        setBiomeHeight(BiomeHeight.EXTREME_HILLS, EXTREME_HILLS, EXTREME_HILLS_PLUS, EXTREME_HILLS_MOUNTAINS, EXTREME_HILLS_PLUS_MOUNTAINS);
-        setBiomeHeight(BiomeHeight.MID_PLAINS, TAIGA, COLD_TAIGA, MEGA_TAIGA);
+        setBiomeHeight(BiomeHeight.FLATLANDS, DESERT, SAVANNA);
+        setBiomeHeight(BiomeHeight.EXTREME_HILLS, EXTREME_HILLS);
+        setBiomeHeight(BiomeHeight.MID_PLAINS, TAIGA);
         setBiomeHeight(BiomeHeight.SWAMPLAND, SWAMPLAND);
         setBiomeHeight(BiomeHeight.LOW_HILLS, MUSHROOM_ISLAND);
-        setBiomeHeight(BiomeHeight.HILLS, ICE_MOUNTAINS, DESERT_HILLS, FOREST_HILLS, TAIGA_HILLS, SMALL_MOUNTAINS, JUNGLE_HILLS, BIRCH_FOREST_HILLS, COLD_TAIGA_HILLS, MEGA_TAIGA_HILLS, MESA_PLATEAU_FOREST_MOUNTAINS, MESA_PLATEAU_MOUNTAINS);
-        setBiomeHeight(BiomeHeight.HIGH_PLATEAU, SAVANNA_PLATEAU, MESA_PLATEAU_FOREST, MESA_PLATEAU);
-        setBiomeHeight(BiomeHeight.FLATLANDS_HILLS, DESERT_MOUNTAINS);
-        setBiomeHeight(BiomeHeight.BIG_HILLS, ICE_PLAINS_SPIKES);
-        setBiomeHeight(BiomeHeight.BIG_HILLS2, BIRCH_FOREST_HILLS_MOUNTAINS);
-        setBiomeHeight(BiomeHeight.SWAMPLAND_HILLS, SWAMPLAND_MOUNTAINS);
-        setBiomeHeight(BiomeHeight.DEFAULT_HILLS, JUNGLE_MOUNTAINS, JUNGLE_EDGE_MOUNTAINS, BIRCH_FOREST_MOUNTAINS, ROOFED_FOREST_MOUNTAINS);
-        setBiomeHeight(BiomeHeight.MID_HILLS, TAIGA_MOUNTAINS, COLD_TAIGA_MOUNTAINS, MEGA_SPRUCE_TAIGA, MEGA_SPRUCE_TAIGA_HILLS);
-        setBiomeHeight(BiomeHeight.MID_HILLS2, FLOWER_FOREST);
-        setBiomeHeight(BiomeHeight.LOW_SPIKES, SAVANNA_MOUNTAINS);
-        setBiomeHeight(BiomeHeight.HIGH_SPIKES, SAVANNA_PLATEAU_MOUNTAINS);
+        setBiomeHeight(BiomeHeight.HILLS, ICE_MOUNTAINS, DESERT_HILLS, FOREST_HILLS, TAIGA_HILLS, JUNGLE_HILLS, BIRCH_FOREST_HILLS);
+        setBiomeHeight(BiomeHeight.HIGH_PLATEAU);
+        setBiomeHeight(BiomeHeight.FLATLANDS_HILLS);
+        setBiomeHeight(BiomeHeight.BIG_HILLS);
+        setBiomeHeight(BiomeHeight.BIG_HILLS2);
+        setBiomeHeight(BiomeHeight.SWAMPLAND_HILLS);
+        setBiomeHeight(BiomeHeight.DEFAULT_HILLS);
+        setBiomeHeight(BiomeHeight.MID_HILLS);
+        setBiomeHeight(BiomeHeight.MID_HILLS2);
+        setBiomeHeight(BiomeHeight.LOW_SPIKES);
+        setBiomeHeight(BiomeHeight.HIGH_SPIKES);
 
         // fill a 5x5 array with values that acts as elevation weight on chunk neighboring,
         // this can be viewed as a parabolic field: the center gets the more weight, and the

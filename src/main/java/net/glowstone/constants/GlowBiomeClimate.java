@@ -16,24 +16,24 @@ public class GlowBiomeClimate {
 
     static {
         setBiomeClimate(BiomeClimate.DEFAULT, Biome.values());
-        setBiomeClimate(BiomeClimate.PLAINS, PLAINS, SUNFLOWER_PLAINS, BEACH);
-        setBiomeClimate(BiomeClimate.DESERT, DESERT, DESERT_HILLS, DESERT_MOUNTAINS, MESA, MESA_BRYCE, MESA_PLATEAU, MESA_PLATEAU_FOREST, MESA_PLATEAU_MOUNTAINS, MESA_PLATEAU_FOREST_MOUNTAINS, HELL);
-        setBiomeClimate(BiomeClimate.EXTREME_HILLS, EXTREME_HILLS, EXTREME_HILLS_PLUS, EXTREME_HILLS_MOUNTAINS, EXTREME_HILLS_PLUS_MOUNTAINS, STONE_BEACH, SMALL_MOUNTAINS);
-        setBiomeClimate(BiomeClimate.FOREST, FOREST, FOREST_HILLS, FLOWER_FOREST, ROOFED_FOREST, ROOFED_FOREST_MOUNTAINS);
-        setBiomeClimate(BiomeClimate.BIRCH_FOREST, BIRCH_FOREST, BIRCH_FOREST_HILLS, BIRCH_FOREST_MOUNTAINS, BIRCH_FOREST_HILLS_MOUNTAINS);
-        setBiomeClimate(BiomeClimate.TAIGA, TAIGA, TAIGA_HILLS, TAIGA_MOUNTAINS, MEGA_SPRUCE_TAIGA, MEGA_SPRUCE_TAIGA_HILLS);
-        setBiomeClimate(BiomeClimate.SWAMPLAND, SWAMPLAND, SWAMPLAND_MOUNTAINS);
-        setBiomeClimate(BiomeClimate.ICE_PLAINS, ICE_PLAINS, ICE_MOUNTAINS, ICE_PLAINS_SPIKES, FROZEN_RIVER, FROZEN_OCEAN);
-        setBiomeClimate(BiomeClimate.MUSHROOM, MUSHROOM_ISLAND, MUSHROOM_SHORE);
+        setBiomeClimate(BiomeClimate.PLAINS, PLAINS);
+        setBiomeClimate(BiomeClimate.DESERT, DESERT, DESERT_HILLS, MESA, HELL);
+        setBiomeClimate(BiomeClimate.EXTREME_HILLS, EXTREME_HILLS, STONE_BEACH);
+        setBiomeClimate(BiomeClimate.FOREST, FOREST, FOREST_HILLS, ROOFED_FOREST);
+        setBiomeClimate(BiomeClimate.BIRCH_FOREST, BIRCH_FOREST, BIRCH_FOREST_HILLS);
+        setBiomeClimate(BiomeClimate.TAIGA, TAIGA, TAIGA_HILLS);
+        setBiomeClimate(BiomeClimate.SWAMPLAND, SWAMPLAND);
+        setBiomeClimate(BiomeClimate.ICE_PLAINS, ICE_MOUNTAINS, FROZEN_RIVER, FROZEN_OCEAN);
+        setBiomeClimate(BiomeClimate.MUSHROOM, MUSHROOM_ISLAND);
         setBiomeClimate(BiomeClimate.COLD_BEACH, COLD_BEACH);
-        setBiomeClimate(BiomeClimate.JUNGLE, JUNGLE, JUNGLE_HILLS, JUNGLE_MOUNTAINS);
-        setBiomeClimate(BiomeClimate.JUNGLE_EDGE, JUNGLE_EDGE, JUNGLE_EDGE_MOUNTAINS);
-        setBiomeClimate(BiomeClimate.COLD_TAIGA, COLD_TAIGA, COLD_TAIGA_HILLS, COLD_TAIGA_MOUNTAINS);
-        setBiomeClimate(BiomeClimate.MEGA_TAIGA, MEGA_TAIGA, MEGA_TAIGA_HILLS);
+        setBiomeClimate(BiomeClimate.JUNGLE, JUNGLE, JUNGLE_HILLS);
+        setBiomeClimate(BiomeClimate.JUNGLE_EDGE, JUNGLE_EDGE);
+        setBiomeClimate(BiomeClimate.COLD_TAIGA);
+        setBiomeClimate(BiomeClimate.MEGA_TAIGA);
         setBiomeClimate(BiomeClimate.SAVANNA, SAVANNA);
-        setBiomeClimate(BiomeClimate.SAVANNA_MOUNTAINS, SAVANNA_MOUNTAINS);
-        setBiomeClimate(BiomeClimate.SAVANNA_PLATEAU, SAVANNA_PLATEAU);
-        setBiomeClimate(BiomeClimate.SAVANNA_PLATEAU_MOUNTAINS, SAVANNA_PLATEAU_MOUNTAINS);
+        setBiomeClimate(BiomeClimate.SAVANNA_MOUNTAINS);
+        setBiomeClimate(BiomeClimate.SAVANNA_PLATEAU);
+        setBiomeClimate(BiomeClimate.SAVANNA_PLATEAU_MOUNTAINS);
         setBiomeClimate(BiomeClimate.SKY, SKY);
 
         noiseGen = new SimplexOctaveGenerator(new Random(1234), 1);

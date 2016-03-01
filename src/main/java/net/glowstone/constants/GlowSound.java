@@ -14,11 +14,14 @@ public final class GlowSound {
 
     static {
         // Ambient
-        set(AMBIENCE_CAVE, "ambient.cave.cave");
-        set(AMBIENCE_RAIN, "ambient.weather.rain");
-        set(AMBIENCE_THUNDER, "ambient.weather.thunder");
+        set(AMBIENT_CAVE, "ambient.cave.cave");
+        set(WEATHER_RAIN, "weather.rain");
+        set(WEATHER_RAIN_ABOVE, "weather.rain.above");
+        set(ENTITY_LIGHTNING_THUNDER, "entity.lightning.thunder");
+
+        // TODO: port sounds to 1.9
         // Damage
-        set(HURT_FLESH, "game.neutral.hurt");
+        set(HURT, "game.neutral.hurt");
         set(FALL_BIG, "game.neutral.hurt.fall.big");
         set(FALL_SMALL, "game.neutral.hurt.fall.small");
         // Dig Sounds

@@ -1,6 +1,7 @@
 package net.glowstone.inventory;
 
 import net.glowstone.entity.GlowPlayer;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
@@ -324,6 +325,11 @@ public class GlowInventory implements Inventory {
             index += getSize() + 1;
         }
         return new InventoryIterator(this, index);
+    }
+
+    @Override
+    public Location getLocation() {
+        return null;
     }
 
     ////////////////////////////////////////////////////////////////////////////

@@ -79,7 +79,7 @@ public final class GlowItem extends GlowEntity implements Item {
             return false;
         } else {
             CollectItemMessage message = new CollectItemMessage(getEntityId(), player.getEntityId());
-            world.playSound(location, Sound.ITEM_PICKUP, 0.3f, (float) (1 + Math.random()));
+            world.playSound(location, Sound.ENTITY_ITEM_PICKUP, 0.3f, (float) (1 + Math.random()));
             world.getRawPlayers().stream().filter(other -> other.canSeeEntity(this)).forEach(other -> other.getSession().send(message));
             remove();
             return true;
@@ -96,6 +96,16 @@ public final class GlowItem extends GlowEntity implements Item {
     @Override
     public EntityType getType() {
         return EntityType.DROPPED_ITEM;
+    }
+
+    @Override
+    public void setGlowing(boolean b) {
+
+    }
+
+    @Override
+    public boolean isGlowing() {
+        return false;
     }
 
     @Override

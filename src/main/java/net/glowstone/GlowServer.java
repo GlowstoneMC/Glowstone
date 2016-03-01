@@ -40,6 +40,10 @@ import net.md_5.bungee.chat.ComponentSerializer;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarFlag;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.command.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -1647,6 +1651,11 @@ public final class GlowServer implements Server {
     @Override
     public ChunkGenerator.ChunkData createChunkData(World world) {
         return new GlowChunkData(world);
+    }
+
+    @Override
+    public BossBar createBossBar(String s, BarColor barColor, BarStyle barStyle, BarFlag... barFlags) {
+        return null;
     }
 
     @Override

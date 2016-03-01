@@ -13,7 +13,7 @@ import java.util.Collections;
 
 public class SavannaPopulator extends BiomePopulator {
 
-    private static final Biome[] BIOMES = {Biome.SAVANNA, Biome.SAVANNA_PLATEAU};
+    private static final Biome[] BIOMES = {Biome.SAVANNA};
     private static final DoublePlantDecoration[] DOUBLE_PLANTS = {new DoublePlantDecoration(DoublePlantSpecies.DOUBLE_TALLGRASS, 1)};
     private static final TreeDecoration[] TREES = {new TreeDecoration(AcaciaTree.class, 4), new TreeDecoration(GenericTree.class, 1)};
 

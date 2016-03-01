@@ -7,6 +7,8 @@ import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.SpawnMobMessage;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.EntityType;
 
@@ -51,5 +53,20 @@ public class GlowBat extends GlowAmbient implements Bat {
     @Override
     public EntityType getType() {
         return EntityType.BAT;
+    }
+
+    @Override
+    public void setGlowing(boolean b) {
+
+    }
+
+    @Override
+    public boolean isGlowing() {
+        return false;
+    }
+
+    @Override
+    public AttributeInstance getAttribute(Attribute attribute) {
+        return null;
     }
 }

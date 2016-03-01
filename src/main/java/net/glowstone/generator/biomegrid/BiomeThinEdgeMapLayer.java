@@ -19,20 +19,12 @@ public class BiomeThinEdgeMapLayer extends MapLayer {
         OCEANS.add(GlowBiome.getId(DEEP_OCEAN));
 
         MESA_EDGES.put(GlowBiome.getId(MESA), GlowBiome.getId(DESERT));
-        MESA_EDGES.put(GlowBiome.getId(MESA_BRYCE), GlowBiome.getId(DESERT));
-        MESA_EDGES.put(GlowBiome.getId(MESA_PLATEAU_FOREST), GlowBiome.getId(DESERT));
-        MESA_EDGES.put(GlowBiome.getId(MESA_PLATEAU_FOREST_MOUNTAINS), GlowBiome.getId(DESERT));
-        MESA_EDGES.put(GlowBiome.getId(MESA_PLATEAU), GlowBiome.getId(DESERT));
-        MESA_EDGES.put(GlowBiome.getId(MESA_PLATEAU_MOUNTAINS), GlowBiome.getId(DESERT));
 
         JUNGLE_EDGES.put(GlowBiome.getId(JUNGLE), GlowBiome.getId(JUNGLE_EDGE));
         JUNGLE_EDGES.put(GlowBiome.getId(JUNGLE_HILLS), GlowBiome.getId(JUNGLE_EDGE));
-        JUNGLE_EDGES.put(GlowBiome.getId(JUNGLE_MOUNTAINS), GlowBiome.getId(JUNGLE_EDGE));
-        JUNGLE_EDGES.put(GlowBiome.getId(JUNGLE_EDGE_MOUNTAINS), GlowBiome.getId(JUNGLE_EDGE));
 
         EDGES.put(MESA_EDGES, null);
         EDGES.put(JUNGLE_EDGES, Arrays.asList(GlowBiome.getId(JUNGLE), GlowBiome.getId(JUNGLE_HILLS),
-                GlowBiome.getId(JUNGLE_MOUNTAINS), GlowBiome.getId(JUNGLE_EDGE_MOUNTAINS),
                 GlowBiome.getId(FOREST), GlowBiome.getId(TAIGA)));
     }
 

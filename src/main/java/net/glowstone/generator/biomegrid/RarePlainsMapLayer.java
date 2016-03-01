@@ -1,20 +1,6 @@
 package net.glowstone.generator.biomegrid;
 
-import net.glowstone.constants.GlowBiome;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.bukkit.block.Biome.PLAINS;
-import static org.bukkit.block.Biome.SUNFLOWER_PLAINS;
-
 public class RarePlainsMapLayer extends MapLayer {
-
-    private static final Map<Integer, Integer> RARE_PLAINS = new HashMap<>();
-
-    static {
-        RARE_PLAINS.put(GlowBiome.getId(PLAINS), GlowBiome.getId(SUNFLOWER_PLAINS));
-    }
 
     private final MapLayer belowLayer;
 
@@ -36,11 +22,7 @@ public class RarePlainsMapLayer extends MapLayer {
         for (int i = 0; i < sizeZ; i++) {
             for (int j = 0; j < sizeX; j++) {
                 setCoordsSeed(x + j, z + i);
-                int centerValue = values[j + 1 + (i + 1) * gridSizeX];
-                if (nextInt(57) == 0 && RARE_PLAINS.containsKey(centerValue)) {
-                    centerValue = RARE_PLAINS.get(centerValue);
-                }
-                finalValues[j + i * sizeX] = centerValue;
+                finalValues[j + i * sizeX] = values[j + 1 + (i + 1) * gridSizeX];
             }
         }
         return finalValues;
