@@ -3,8 +3,8 @@ package net.glowstone.net.message.play.game;
 import com.flowpowered.networking.Message;
 import lombok.Data;
 import net.glowstone.util.TextMessage;
-import org.bukkit.title.Title;
-import org.bukkit.title.TitleOptions;
+import net.md_5.bungee.api.chat.BaseComponent;
+import org.github.paperspigot.Title;
 
 @Data
 public final class TitleMessage implements Message {
@@ -42,13 +42,10 @@ public final class TitleMessage implements Message {
 
     public static TitleMessage[] fromTitle(Title title) {
         return new TitleMessage[]{
-                new TitleMessage(Action.TITLE, asTextMessage(title.getHeading())),
-                new TitleMessage(Action.SUBTITLE, asTextMessage(title.getSubtitle()))
+                new TitleMessage(Action.TITLE, asTextMessage(BaseComponent.toPlainText(title.getTitle()))),
+                new TitleMessage(Action.SUBTITLE, asTextMessage(BaseComponent.toPlainText(title.getSubtitle()))),
+                new TitleMessage(Action.TIMES, title.getFadeIn(), title.getStay(), title.getFadeOut())
         };
-    }
-
-    public static TitleMessage fromOptions(TitleOptions options) {
-        return new TitleMessage(Action.TIMES, options.getFadeInTime(), options.getVisibleTime(), options.getFadeOutTime());
     }
 
     private static TextMessage asTextMessage(String rawString) {

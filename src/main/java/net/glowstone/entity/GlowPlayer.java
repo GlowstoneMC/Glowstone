@@ -26,6 +26,7 @@ import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.login.LoginSuccessMessage;
 import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.game.*;
+import net.glowstone.net.message.play.game.TitleMessage.Action;
 import net.glowstone.net.message.play.inv.*;
 import net.glowstone.net.message.play.player.PlayerAbilitiesMessage;
 import net.glowstone.net.message.play.player.ResourcePackSendMessage;
@@ -37,7 +38,6 @@ import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
 import net.md_5.bungee.api.chat.BaseComponent;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
@@ -62,10 +62,9 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.title.Title;
-import org.bukkit.title.TitleOptions;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
+import org.github.paperspigot.Title;
 import org.json.simple.JSONObject;
 
 import java.net.InetSocketAddress;
@@ -269,11 +268,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * The player's current title, if any
      */
-    private Title currentTitle = new Title();
-    /**
-     * The player's current title options
-     */
-    private TitleOptions titleOptions = new TitleOptions();
+    private Title currentTitle = new Title("");
     /**
      * The one block the player is currently digging.
      */
@@ -1734,7 +1729,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void playEffect(Location loc, Effect effect, int data) {
         int id = effect.getId();
-        boolean ignoreDistance = effect.isDistanceIgnored();
+        boolean ignoreDistance = effect == Effect.WITHER_SPAWN || effect == Effect.ENDERDRAGON_DIE;
         session.send(new PlayEffectMessage(id, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), data, ignoreDistance));
     }
 
@@ -1852,62 +1847,73 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void sendMessage(BaseComponent component) {
-
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void sendMessage(BaseComponent... components) {
-
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void setPlayerListHeaderFooter(BaseComponent[] header, BaseComponent[] footer) {
-
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void setPlayerListHeaderFooter(BaseComponent header, BaseComponent footer) {
-
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void setTitleTimes(int fadeInTicks, int stayTicks, int fadeOutTicks) {
-
+        currentTitle = new Title(currentTitle.getTitle(), currentTitle.getSubtitle(), fadeInTicks, stayTicks, fadeOutTicks);
     }
 
     @Override
     public void setSubtitle(BaseComponent[] subtitle) {
-
+        currentTitle = new Title(currentTitle.getTitle(), subtitle, currentTitle.getFadeIn(), currentTitle.getStay(), currentTitle.getFadeOut());
     }
 
     @Override
     public void setSubtitle(BaseComponent subtitle) {
-
+        currentTitle = new Title(currentTitle.getTitle(), new BaseComponent[]{subtitle}, currentTitle.getFadeIn(), currentTitle.getStay(), currentTitle.getFadeOut());
     }
 
     @Override
     public void showTitle(BaseComponent[] title) {
-
+        sendTitle(new Title(title));
     }
 
     @Override
     public void showTitle(BaseComponent title) {
-
+        sendTitle(new Title(title));
     }
 
     @Override
     public void showTitle(BaseComponent[] title, BaseComponent[] subtitle, int fadeInTicks, int stayTicks, int fadeOutTicks) {
-
+        sendTitle(new Title(title, subtitle, fadeInTicks, stayTicks, fadeOutTicks));
     }
 
     @Override
     public void showTitle(BaseComponent title, BaseComponent subtitle, int fadeInTicks, int stayTicks, int fadeOutTicks) {
+        sendTitle(new Title(title, subtitle, fadeInTicks, stayTicks, fadeOutTicks));
+    }
 
+    @Override
+    public void sendTitle(Title title) {
+        session.sendAll(TitleMessage.fromTitle(title));
+    }
+
+    @Override
+    public void updateTitle(Title title) {
+        sendTitle(title); // TODO: update existing title instead of sending a new title
     }
 
     @Override
     public void hideTitle() {
-
+        currentTitle = new Title("");
+        session.send(new TitleMessage(TitleMessage.Action.CLEAR));
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -2372,47 +2378,14 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public void setTitle(Title title) {
-        setTitle(title, false);
-    }
-
-    @Override
-    public TitleOptions getTitleOptions() {
-        return titleOptions.clone();
-    }
-
-    @Override
-    public void setTitleOptions(TitleOptions options) {
-        if (options == null) {
-            options = new TitleOptions();
-        }
-        titleOptions = options;
-        session.send(TitleMessage.fromOptions(titleOptions));
-    }
-
-    @Override
-    public void setTitle(Title title, boolean forceUpdate) {
-        Validate.notNull(title, "Title cannot be null");
-
-        String oldHeading = currentTitle.getHeading();
-        currentTitle = title;
-
-        if (forceUpdate || !StringUtils.equals(oldHeading, currentTitle.getHeading())) {
-            session.sendAll(TitleMessage.fromTitle(currentTitle));
-        }
-    }
-
-    @Override
     public void clearTitle() {
-        currentTitle = new Title();
-        session.send(new TitleMessage(TitleMessage.Action.CLEAR));
+        session.send(new TitleMessage(Action.CLEAR));
     }
 
     @Override
     public void resetTitle() {
-        currentTitle = new Title(currentTitle.getHeading());
-        titleOptions = new TitleOptions();
-        session.send(new TitleMessage(TitleMessage.Action.RESET));
+        currentTitle = new Title("");
+        session.send(new TitleMessage(Action.RESET));
     }
 
     public GlowBlock getDigging() {
