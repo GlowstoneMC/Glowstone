@@ -6,7 +6,6 @@ import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.net.message.play.entity.SpawnLightningStrikeMessage;
-import net.glowstone.util.Position;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -96,9 +95,9 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
 
     @Override
     public List<Message> createSpawnMessage() {
-        int x = Position.getIntX(location);
-        int y = Position.getIntY(location);
-        int z = Position.getIntZ(location);
+        double x = location.getX();
+        double y = location.getY();
+        double z = location.getZ();
         return Arrays.<Message>asList(new SpawnLightningStrikeMessage(id, x, y, z));
     }
 

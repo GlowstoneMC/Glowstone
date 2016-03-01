@@ -56,7 +56,6 @@ public class TESign extends TileEntity {
 
     /**
      * Get the lines of text on the sign.
-     *
      * @return The sign's lines.
      */
     public String[] getLines() {

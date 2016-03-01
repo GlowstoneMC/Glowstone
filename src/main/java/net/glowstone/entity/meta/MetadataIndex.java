@@ -42,7 +42,6 @@ public enum MetadataIndex {
 
     ITEM_FRAME_ITEM(5, ITEM, ItemFrame.class),
     ITEM_FRAME_ROTATION(6, INT, ItemFrame.class),
-
     ITEM_ITEM(5, ITEM, Item.class),
 
     HAND_USED(5, BYTE, LivingEntity.class), //TODO : 1.9 - To confirm
@@ -141,7 +140,6 @@ public enum MetadataIndex {
     //MINECARTCOMMANDBLOCK_LAST_OUTPUT(12, CHAT, Minecart.class), //TODO 1.9 - Command block minecraft addition
 
     FURNACE_MINECART_POWERED(11, BOOLEAN, PoweredMinecart.class),
-
     TNT_PRIMED(5, INT, TNTPrimed.class);
 
 
