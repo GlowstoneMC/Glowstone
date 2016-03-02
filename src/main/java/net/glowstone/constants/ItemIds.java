@@ -219,6 +219,22 @@ public final class ItemIds {
         block(195, "jungle_door"); // jungle_door is also 429
         block(196, "acacia_door"); // acacia_door is also 430
         block(197, "dark_oak_door"); // dark_oak_door is also 431
+        block(198, "end_rod");
+        block(199, "chorus_plant");
+        block(200, "chorus_flower");
+        block(201, "purpur_block");
+        block(202, "purpur_pillar");
+        block(203, "purpur_stairs");
+        block(204, "purpur_double_slab");
+        block(205, "purpur_slab");
+        block(206, "end_bricks");
+        block(207, "beetroots");
+        block(208, "grass_path");
+        block(209, "end_gateway");
+        block(210, "repeating_command_block");
+        block(211, "chain_command_block");
+        block(212, "frosted_ice");
+        block(255, "structure_block");
         // items
         item(256, "iron_shovel");
         item(257, "iron_pickaxe");
@@ -390,11 +406,29 @@ public final class ItemIds {
         item(423, "mutton");
         item(424, "cooked_mutton");
         item(425, "banner");
+        item(426, "end_crystal");
         item(427, "spruce_door");
         item(428, "birch_door");
         item(429, "jungle_door");
         item(430, "acacia_door");
         item(431, "dark_oak_door");
+        item(432, "chorus_fruit");
+        item(433, "popped_chorus_fruit");
+        item(434, "beetroot");
+        item(435, "beetroot_seeds");
+        item(436, "beetroot_soup");
+        item(437, "dragon_breath");
+        item(438, "splash_potion");
+        item(439, "spectral_arrow");
+        item(440, "tipped_arrow");
+        item(441, "lingering_potion");
+        item(442, "shield");
+        item(443, "elytra");
+        item(444, "spruce_boat");
+        item(445, "birch_boat");
+        item(446, "jungle_boat");
+        item(447, "acacia_boat");
+        item(448, "dark_oak_boat");
         item(2256, "record_13");
         item(2257, "record_cat");
         item(2258, "record_blocks");

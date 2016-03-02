@@ -10,7 +10,7 @@ import java.util.Collections;
 
 public class RoofedForestPopulator extends ForestPopulator {
 
-    private static final Biome[] BIOMES = {Biome.ROOFED_FOREST, Biome.ROOFED_FOREST_MOUNTAINS};
+    private static final Biome[] BIOMES = {Biome.ROOFED_FOREST, Biome.MUTATED_ROOFED_FOREST};
     private static final TreeDecoration[] TREES = {new TreeDecoration(GenericTree.class, 20), new TreeDecoration(BirchTree.class, 5),
             new TreeDecoration(RedMushroomTree.class, 2), new TreeDecoration(BrownMushroomTree.class, 2), new TreeDecoration(DarkOakTree.class, 50)};
 

@@ -1,5 +1,8 @@
 package net.glowstone;
 
+import com.flowpowered.networking.util.ByteBufUtils;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import lombok.Data;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -9,6 +12,7 @@ import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.game.ChunkDataMessage;
 import net.glowstone.util.NibbleArray;
+import net.glowstone.util.VariableValueArray;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -611,6 +615,19 @@ public final class GlowChunk implements Chunk {
         return toMessage(skylight, true, 0);
     }
 
+    private static final int PACKET_DATA_ARRAY_LENGTH = (ChunkSection.ARRAY_SIZE * 2) / 8;
+    private static final byte[] PACKET_DATA_ARRAY_LENGTH_BYTES;
+
+    static {
+        final ByteBuf buf = Unpooled.buffer();
+        try {
+            ByteBufUtils.writeVarInt(buf, PACKET_DATA_ARRAY_LENGTH);
+            PACKET_DATA_ARRAY_LENGTH_BYTES = buf.array().clone();
+        } finally {
+            buf.release();
+        }
+    }
+
     /**
      * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream
      * parts of this chunk to them.
@@ -621,100 +638,58 @@ public final class GlowChunk implements Chunk {
         load();
 
         // filter sectionBitmask based on actual chunk contents
-        int sectionCount;
         if (sections == null) {
             sectionBitmask = 0;
-            sectionCount = 0;
         } else {
             final int maxBitmask = (1 << sections.length) - 1;
             if (entireChunk) {
                 sectionBitmask = maxBitmask;
-                sectionCount = sections.length;
             } else {
                 sectionBitmask &= maxBitmask;
-                sectionCount = countBits(sectionBitmask);
             }
 
             for (int i = 0; i < sections.length; ++i) {
                 if (sections[i] == null || sections[i].count == 0) {
                     // remove empty sections from bitmask
                     sectionBitmask &= ~(1 << i);
-                    sectionCount--;
                 }
             }
         }
 
-        // calculate how big the data will need to be
-        int byteSize = 0;
+        ByteBuf buf = Unpooled.buffer();
 
-        if (sections != null) {
-            final int numBlocks = WIDTH * HEIGHT * SEC_DEPTH;
-            int sectionSize = numBlocks * 5 / 2;  // (data and metadata combo) * 2 + blockLight/2
-            if (skylight) {
-                sectionSize += numBlocks / 2;  // + skyLight/2
-            }
-            byteSize += sectionCount * sectionSize;
-        }
-
-        if (entireChunk) {
-            byteSize += 256;  // + biomes
-        }
-
-        byte[] tileData = new byte[byteSize];
-        int pos = 0;
-
-        if (sections != null) {
+        if (this.sections != null) {
             // get the list of sections
-            ChunkSection[] sendSections = new ChunkSection[sectionCount];
-            for (int i = 0, j = 0, mask = 1; i < sections.length; ++i, mask <<= 1) {
-                if ((sectionBitmask & mask) != 0) {
-                    sendSections[j++] = sections[i];
+            for (int i = 0; i < this.sections.length; ++i) {
+                if ((sectionBitmask & (1 << i)) == 0) {
+                    continue;
                 }
-            }
-
-            for (ChunkSection sec : sendSections) {
-                for (char t : sec.types) {
-                    tileData[pos++] = (byte) (t & 0xff);
-                    tileData[pos++] = (byte) (t >> 8);
+                ChunkSection section = this.sections[i];
+                VariableValueArray array = new VariableValueArray(13, section.types.length);
+                buf.writeByte(array.getBitsPerValue()); // Bit per value -> Currently fixed at 13!!!
+                ByteBufUtils.writeVarInt(buf, 0); // Palette size -> 0 -> Use the global palette
+                for (int j = 0; j < section.types.length; j++) {
+                    array.set(j, section.types[j]);
                 }
-            }
-
-            for (ChunkSection sec : sendSections) {
-                byte[] blockLight = sec.blockLight.getRawData();
-                System.arraycopy(blockLight, 0, tileData, pos, blockLight.length);
-                pos += blockLight.length;
-            }
-
-            if (skylight) {
-                for (ChunkSection sec : sendSections) {
-                    byte[] skyLight = sec.skyLight.getRawData();
-                    System.arraycopy(skyLight, 0, tileData, pos, skyLight.length);
-                    pos += skyLight.length;
+                long[] backing = array.getBacking();
+                ByteBufUtils.writeVarInt(buf, backing.length);
+                buf.ensureWritable(backing.length * 8 + section.blockLight.byteSize() + (skylight ? section.skyLight.byteSize() : 0));
+                for (long value : backing) {
+                    buf.writeLong(value);
+                }
+                buf.writeBytes(section.blockLight.getRawData());
+                if (skylight) {
+                    buf.writeBytes(section.skyLight.getRawData());
                 }
             }
         }
 
         // biomes
         if (entireChunk) {
-            for (int i = 0; i < 256; ++i) {
-                tileData[pos++] = biomes[i];
-            }
+            buf.writeBytes(this.biomes);
         }
 
-        if (pos != byteSize) {
-            throw new IllegalStateException("only wrote " + pos + " out of expected " + byteSize + " bytes");
-        }
-
-        return new ChunkDataMessage(x, z, entireChunk, sectionBitmask, tileData);
-    }
-
-    private int countBits(int v) {
-        // http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetKernighan
-        int c;
-        for (c = 0; v > 0; c++) {
-            v &= v - 1;
-        }
-        return c;
+        return new ChunkDataMessage(x, z, entireChunk, sectionBitmask, buf);
     }
 
     /**

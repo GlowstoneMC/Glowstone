@@ -12,7 +12,7 @@ import java.util.Collections;
 
 public class MegaSpruceTaigaPopulator extends MegaTaigaPopulator {
 
-    private static final Biome[] BIOMES = {Biome.MEGA_SPRUCE_TAIGA, Biome.MEGA_SPRUCE_TAIGA_HILLS};
+    private static final Biome[] BIOMES = {Biome.MUTATED_REDWOOD_TAIGA, Biome.MUTATED_REDWOOD_TAIGA_HILLS};
     private static final TreeDecoration[] TREES = {new TreeDecoration(RedwoodTree.class, 44), new TreeDecoration(TallRedwoodTree.class, 22),
             new TreeDecoration(MegaSpruceTree.class, 33)};
 

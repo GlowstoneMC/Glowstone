@@ -12,9 +12,9 @@ public final class SpawnLightningStrikeCodec implements Codec<SpawnLightningStri
     public SpawnLightningStrikeMessage decode(ByteBuf buf) throws IOException {
         int id = ByteBufUtils.readVarInt(buf);
         int mode = buf.readByte();
-        int x = buf.readInt();
-        int y = buf.readInt();
-        int z = buf.readInt();
+        double x = buf.readDouble();
+        double y = buf.readDouble();
+        double z = buf.readDouble();
         return new SpawnLightningStrikeMessage(id, mode, x, y, z);
     }
 
@@ -22,9 +22,9 @@ public final class SpawnLightningStrikeCodec implements Codec<SpawnLightningStri
     public ByteBuf encode(ByteBuf buf, SpawnLightningStrikeMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         buf.writeByte(message.getMode());
-        buf.writeInt(message.getX());
-        buf.writeInt(message.getY());
-        buf.writeInt(message.getZ());
+        buf.writeDouble(message.getX());
+        buf.writeDouble(message.getY());
+        buf.writeDouble(message.getZ());
         return buf;
     }
 }

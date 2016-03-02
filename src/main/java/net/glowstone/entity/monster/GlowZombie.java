@@ -4,6 +4,7 @@ import com.flowpowered.networking.Message;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Villager;
 import org.bukkit.entity.Zombie;
 
 import java.util.List;
@@ -45,6 +46,16 @@ public class GlowZombie extends GlowMonster implements Zombie {
     @Override
     public void setVillager(boolean value) {
         metadata.set(MetadataIndex.ZOMBIE_IS_VILLAGER, value ? (byte) 1 : (byte) 0);
+    }
+
+    @Override
+    public void setVillagerProfession(Villager.Profession profession) {
+
+    }
+
+    @Override
+    public Villager.Profession getVillagerProfession() {
+        return null;
     }
 
     public int getConversionTime() {

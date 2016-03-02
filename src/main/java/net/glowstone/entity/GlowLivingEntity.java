@@ -401,21 +401,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     // Projectiles
 
     @Override
-    public Egg throwEgg() {
-        return launchProjectile(Egg.class);
-    }
-
-    @Override
-    public Snowball throwSnowball() {
-        return launchProjectile(Snowball.class);
-    }
-
-    @Override
-    public Arrow shootArrow() {
-        return launchProjectile(Arrow.class);
-    }
-
-    @Override
     public <T extends Projectile> T launchProjectile(Class<? extends T> projectile) {
         return launchProjectile(projectile, getLocation().getDirection());  // todo: multiply by some speed
     }

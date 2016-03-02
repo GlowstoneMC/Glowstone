@@ -84,7 +84,7 @@ public class GlowSheep extends GlowAnimal implements Sheep {
                     }
                 }
 
-                getWorld().playSound(getLocation(), Sound.SHEEP_SHEAR, 1, 1);
+                getWorld().playSound(getLocation(), Sound.ENTITY_SHEEP_SHEAR, 1, 1);
 
                 Random r = new Random();
 

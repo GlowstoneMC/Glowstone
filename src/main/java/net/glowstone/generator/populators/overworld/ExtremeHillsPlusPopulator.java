@@ -8,7 +8,7 @@ import java.util.Collections;
 
 public class ExtremeHillsPlusPopulator extends ExtremeHillsPopulator {
 
-    private static final Biome[] BIOMES = {Biome.SMALL_MOUNTAINS, Biome.EXTREME_HILLS_PLUS, Biome.EXTREME_HILLS_PLUS_MOUNTAINS};
+    private static final Biome[] BIOMES = {Biome.SMALLER_EXTREME_HILLS, Biome.EXTREME_HILLS_WITH_TREES, Biome.MUTATED_EXTREME_HILLS_WITH_TREES};
 
     public ExtremeHillsPlusPopulator() {
         super();

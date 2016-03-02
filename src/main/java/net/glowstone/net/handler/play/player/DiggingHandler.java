@@ -28,6 +28,8 @@ import org.bukkit.inventory.ItemStack;
 public final class DiggingHandler implements MessageHandler<GlowSession, DiggingMessage> {
     @Override
     public void handle(GlowSession session, DiggingMessage message) {
+        //Todo: Implement SHOOT_ARROW_FINISH_EATING
+        //Todo: Implement SWAP_ITEM_IN_HAND
         final GlowPlayer player = session.getPlayer();
         GlowWorld world = player.getWorld();
         GlowBlock block = world.getBlockAt(message.getX(), message.getY(), message.getZ());

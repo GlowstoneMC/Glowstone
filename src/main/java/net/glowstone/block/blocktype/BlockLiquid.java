@@ -17,14 +17,10 @@ public abstract class BlockLiquid extends BlockType {
     private static final byte STRENGTH_SOURCE = 0;
     private static final byte STRENGTH_MAX = 1;
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Public accessors
     private static final byte STRENGTH_MIN_WATER = 7;
     private static final byte STRENGTH_MIN_LAVA = 4;
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Overrides
-    private static final int TICK_RATE_WATER = 5;
+    private static final int TICK_RATE_WATER = 4;
     private static final int TICK_RATE_LAVA = 20;
     private final Material bucketType;
     private BlockFace[] hfaces = {NORTH, EAST, SOUTH, WEST};
@@ -222,6 +218,12 @@ public abstract class BlockLiquid extends BlockType {
                     }
                     if (!connected && face == UP || Byte.compare(block.getRelative(face).getState().getRawData(), block.getState().getRawData()) < 0) {
                         connected = true;
+                        if (block.getWorld().getServer().getClassicWater()) {
+                            block.getState().setRawData(STRENGTH_SOURCE);
+                        }
+                    }
+                    if (block.getWorld().getServer().getClassicWater() && Byte.compare(block.getRelative(face).getState().getRawData(), STRENGTH_SOURCE) == 0) {
+                        block.getRelative(face).setType(Material.AIR);
                     }
                 }
             }
@@ -234,7 +236,9 @@ public abstract class BlockLiquid extends BlockType {
                 return;
             }
         }
-        calculateFlow(block);
+        if (!(Byte.compare(block.getState().getRawData(), isWater(block.getType()) || block.getBiome() == Biome.HELL ? STRENGTH_MIN_WATER : STRENGTH_MIN_LAVA) == 0) || block.getRelative(DOWN).getType() == Material.AIR) {
+            calculateFlow(block);
+        }
     }
 
     @Override

@@ -4,6 +4,10 @@ import com.avaje.ebean.config.ServerConfig;
 import net.glowstone.inventory.GlowItemFactory;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.*;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarFlag;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -521,6 +525,11 @@ public class ServerShim implements Server {
 
     @Override
     public ChunkGenerator.ChunkData createChunkData(World world) {
+        return null;
+    }
+
+    @Override
+    public BossBar createBossBar(String s, BarColor barColor, BarStyle barStyle, BarFlag... barFlags) {
         return null;
     }
 

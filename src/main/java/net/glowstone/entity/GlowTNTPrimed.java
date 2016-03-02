@@ -60,14 +60,14 @@ public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
 
     @Override
     public List<Message> createSpawnMessage() {
-        int x = Position.getIntX(location),
-                y = Position.getIntY(location),
-                z = Position.getIntZ(location),
-                pitch = Position.getIntPitch(location),
-                yaw = Position.getIntYaw(location);
+        double x = location.getX();
+        double y = location.getY();
+        double z = location.getZ();
+        int pitch = Position.getIntPitch(location);
+        int yaw = Position.getIntYaw(location);
 
         LinkedList<Message> result = new LinkedList<>();
-        result.add(new SpawnObjectMessage(id, 50, x, y, z, pitch, yaw));
+        result.add(new SpawnObjectMessage(id, getUniqueId(), 50, x, y, z, pitch, yaw));
         return result;
     }
 
@@ -94,5 +94,15 @@ public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
     @Override
     public final EntityType getType() {
         return EntityType.PRIMED_TNT;
+    }
+
+    @Override
+    public void setGlowing(boolean b) {
+
+    }
+
+    @Override
+    public boolean isGlowing() {
+        return false;
     }
 }

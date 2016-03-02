@@ -254,6 +254,26 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     @Override
+    public ItemStack getItemInMainHand() {
+        return null;
+    }
+
+    @Override
+    public void setItemInMainHand(ItemStack itemStack) {
+
+    }
+
+    @Override
+    public ItemStack getItemInOffHand() {
+        return null;
+    }
+
+    @Override
+    public void setItemInOffHand(ItemStack itemStack) {
+
+    }
+
+    @Override
     public ItemStack getItemInHand() {
         return getItem(heldSlot) == null ? new ItemStack(Material.AIR, 0) : getItem(heldSlot);
     }

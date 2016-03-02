@@ -9,7 +9,6 @@ import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityTeleportMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
-import net.glowstone.util.Position;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -186,7 +185,7 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
                 break;
         }
 
-        return Arrays.asList((new SpawnObjectMessage(id, 71, ((location.getBlockX() + xoffset) * 32), ((location.getBlockY() * 32)), ((location.getBlockZ() + zoffset) * 32), 0, yaw, getFacingNumber(face), 0, 0, 0)), new EntityMetadataMessage(id, metadata.getEntryList()));
+        return Arrays.asList((new SpawnObjectMessage(id, getUniqueId(), 71, ((location.getBlockX() + xoffset) * 32), ((location.getBlockY() * 32)), ((location.getBlockZ() + zoffset) * 32), 0, yaw, getFacingNumber(face), 0, 0, 0)), new EntityMetadataMessage(id, metadata.getEntryList()));
     }
 
     @Override
@@ -220,7 +219,10 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
         GlowChunk.Key key = new GlowChunk.Key(itemframelocation.getBlockX() >> 4, itemframelocation.getBlockZ() >> 4);
         for (GlowPlayer player : getWorld().getRawPlayers()) {
             if (player.canSeeChunk(key)) {
-                player.getSession().send(new EntityTeleportMessage(id, Position.getIntX(location) + xoffset, Position.getIntY(location), Position.getIntZ(location) + zoffset, yaw, 0));
+                double x = location.getX();
+                double y = location.getY();
+                double z = location.getZ();
+                player.getSession().send(new EntityTeleportMessage(id, x + xoffset, y, z + zoffset, yaw, 0));
             }
         }
     }
@@ -239,6 +241,16 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
     @Override
     public EntityType getType() {
         return EntityType.ITEM_FRAME;
+    }
+
+    @Override
+    public void setGlowing(boolean b) {
+
+    }
+
+    @Override
+    public boolean isGlowing() {
+        return false;
     }
 
     @Override

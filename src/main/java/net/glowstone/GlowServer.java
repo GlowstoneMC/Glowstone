@@ -40,6 +40,10 @@ import net.md_5.bungee.chat.ComponentSerializer;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarFlag;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.command.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -95,12 +99,12 @@ public final class GlowServer implements Server {
     /**
      * The game version supported by the server.
      */
-    public static final String GAME_VERSION = "1.8.9";
+    public static final String GAME_VERSION = "1.9";
 
     /**
      * The protocol version supported by the server.
      */
-    public static final int PROTOCOL_VERSION = 47;
+    public static final int PROTOCOL_VERSION = 107;
     /**
      * A list of all the active {@link net.glowstone.net.GlowSession}s.
      */
@@ -1650,6 +1654,11 @@ public final class GlowServer implements Server {
     }
 
     @Override
+    public BossBar createBossBar(String s, BarColor barColor, BarStyle barStyle, BarFlag... barFlags) {
+        return null;
+    }
+
+    @Override
     public void configureDbConfig(com.avaje.ebean.config.ServerConfig dbConfig) {
         DataSourceConfig ds = new DataSourceConfig();
         ds.setDriver(config.getString(ServerConfig.Key.DB_DRIVER));
@@ -1802,6 +1811,10 @@ public final class GlowServer implements Server {
     public int getMaxBuildHeight() {
         return Math.max(64, Math.min(256, config.getInt(ServerConfig.Key
                 .MAX_BUILD_HEIGHT)));
+    }
+
+    public boolean getClassicWater() {
+        return config.getBoolean(ServerConfig.Key.WATER_CLASSIC);
     }
 
     public String getConsolePrompt() {

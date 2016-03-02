@@ -18,8 +18,7 @@ import java.util.Random;
 
 public class TaigaPopulator extends BiomePopulator {
 
-    private static final Biome[] BIOMES = {Biome.TAIGA, Biome.TAIGA_HILLS, Biome.TAIGA_MOUNTAINS, Biome.COLD_TAIGA,
-            Biome.COLD_TAIGA_HILLS, Biome.COLD_TAIGA_MOUNTAINS};
+    private static final Biome[] BIOMES = {Biome.TAIGA, Biome.TAIGA_HILLS};
     private static final DoublePlantDecoration[] DOUBLE_PLANTS = {new DoublePlantDecoration(DoublePlantSpecies.LARGE_FERN, 1)};
     private static final TreeDecoration[] TREES = {new TreeDecoration(RedwoodTree.class, 2), new TreeDecoration(TallRedwoodTree.class, 1)};
 

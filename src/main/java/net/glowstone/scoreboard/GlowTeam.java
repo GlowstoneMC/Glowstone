@@ -30,6 +30,7 @@ public final class GlowTeam implements Team {
     private String suffix = "";
     private NameTagVisibility nameTagVisibility = NameTagVisibility.ALWAYS;
     private NameTagVisibility deathMessageVisibility = NameTagVisibility.ALWAYS;
+    private NameTagVisibility collisionRule = NameTagVisibility.ALWAYS;
     private ChatColor color = ChatColor.RESET;
     private boolean friendlyFire = false;
     private boolean seeInvisible = true;
@@ -59,11 +60,11 @@ public final class GlowTeam implements Team {
     Message getCreateMessage() {
         List<String> playerNames = new ArrayList<>(players.size());
         playerNames.addAll(players.stream().map(OfflinePlayer::getName).collect(Collectors.toList()));
-        return ScoreboardTeamMessage.create(name, displayName, prefix, suffix, friendlyFire, seeInvisible, nameTagVisibility, color, playerNames);
+        return ScoreboardTeamMessage.create(name, displayName, prefix, suffix, friendlyFire, seeInvisible, nameTagVisibility, collisionRule, color, playerNames);
     }
 
     private void update() {
-        scoreboard.broadcast(ScoreboardTeamMessage.update(name, displayName, prefix, suffix, friendlyFire, seeInvisible, nameTagVisibility, color));
+        scoreboard.broadcast(ScoreboardTeamMessage.update(name, displayName, prefix, suffix, friendlyFire, seeInvisible, nameTagVisibility, collisionRule, color));
     }
 
     ////////////////////////////////////////////////////////////////////////////

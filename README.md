@@ -11,7 +11,7 @@ The enhanced Glowstone fork with an emphasis on performance, control and compati
 
 Currently the major changes from Glowstone include:
 
-* Tracks the [Spigot 1.8.8 update of the Bukkit API](https://hub.spigotmc.org/javadocs/bukkit/)
+* Tracks the [Spigot 1.9 update of the Bukkit API](https://hub.spigotmc.org/javadocs/bukkit/)
 * New features merged in, adapted for PaperSpigot's update of the Bukkit API (see [features](#features) below for details)
 * Multi-API plugin support, integrates with [Bukkit2Sponge](https://github.com/GlowstonePlusPlus/Bukkit2Sponge) for [SpongeAPI](https://github.com/SpongePowered/SpongeAPI) plugin loading
 * Builds using Maven
@@ -19,11 +19,10 @@ Currently the major changes from Glowstone include:
 ##Downloads
 
 If you don't want to build from source, prebuilt jar files are available to download from:
-* **[Latest successful build](https://bamboo.gserv.me/browse/GSPP-SRV/latestSuccessful/artifact/shared/Server-JAR/glowstone++-1.8.9-SNAPSHOT.jar)** - recomended
 
-* **[gserv.me](https://bamboo.gserv.me/browse/GSPP-SRV)** - all builds, no login required
+* **[gserv.me](https://bamboo.gserv.me/browse/GSPP-SRV17)** - all builds, no login required
 
-* [![Build Status](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus.svg?style=svg)](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus/tree/master) **[CircleCI](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus/tree/master)** - click the latest build then expand "Artifacts" (if it does not show, try logging in with GitHub)
+* [![Build Status](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus.svg?style=svg)](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus/tree/master) **[CircleCI](https://circleci.com/gh/GlowstoneMC/GlowstonePlusPlus/tree/1.9)** - click the latest build then expand "Artifacts" (if it does not show, try logging in with GitHub)
 
 ##Building
 
@@ -43,12 +42,12 @@ cd GlowstonePlusPlus
 ./setup.sh
 ```
 
-The final jar will be placed in `target/` named `glowstone++-1.8.9-SNAPSHOT.jar`.
+The final jar will be placed in `target/` named `glowstone++-1.9-SNAPSHOT.jar`.
 
 ##Running
 
 Running Glowstone++ is simple because its dependencies are shaded into the output
-jar at compile time. Simply execute `java -jar glowstone++-1.8.9-SNAPSHOT.jar` along with any
+jar at compile time. Simply execute `java -jar glowstone++-1.9-SNAPSHOT.jar` along with any
 extra JVM options desired. A variety of command-line options are also available -
 run `java -jar glowstone++.jar --help` for more information.
 

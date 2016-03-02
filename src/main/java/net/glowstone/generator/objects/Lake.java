@@ -18,7 +18,7 @@ public class Lake {
     private static final int MAX_BLOCKS = (int) (MAX_DIAMETER * MAX_DIAMETER * MAX_HEIGHT);
     private static final Material[] PLANT_TYPES = {Material.LONG_GRASS, Material.YELLOW_FLOWER, Material.RED_ROSE,
             Material.DOUBLE_PLANT, Material.BROWN_MUSHROOM, Material.RED_MUSHROOM};
-    private static final Biome[] MYCEL_BIOMES = {Biome.MUSHROOM_ISLAND, Biome.MUSHROOM_SHORE};
+    private static final Biome[] MYCEL_BIOMES = {Biome.MUSHROOM_ISLAND, Biome.MUSHROOM_ISLAND_SHORE};
     private final Material type;
 
     public Lake(Material type) {

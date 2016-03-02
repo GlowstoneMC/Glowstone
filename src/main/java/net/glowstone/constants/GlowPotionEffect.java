@@ -100,7 +100,11 @@ public final class GlowPotionEffect extends PotionEffectType {
         WITHER(20, false, 0.25),
         HEALTH_BOOST(21, false, 1.0),
         ABSORPTION(22, false, 1.0),
-        SATURATION(23, true, 1.0);
+        SATURATION(23, true, 1.0),
+        GLOWING(24, false, 1.0),
+        LEVITATION(25, false, 1.0),
+        LUCK(26, false, 1.0),
+        UNLUCK(27, false, 1.0);
 
         private final int id;
         private final boolean instant;

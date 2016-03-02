@@ -18,6 +18,7 @@ public final class GlowStatistic {
         set(WALK_ONE_CM, "walkOneCm");
         set(SWIM_ONE_CM, "swimOneCm");
         set(FALL_ONE_CM, "fallOneCm");
+        set(SNEAK_TIME, "sneakTime");
         set(CLIMB_ONE_CM, "climbOneCm");
         set(FLY_ONE_CM, "flyOneCm");
         set(DIVE_ONE_CM, "diveOneCm");
@@ -38,6 +39,7 @@ public final class GlowStatistic {
         set(TREASURE_FISHED, "treasureFished");
         set(SPRINT_ONE_CM, "sprintOneCm");
         set(CROUCH_ONE_CM, "crouchOneCm");
+        set(AVIATE_ONE_CM, "aviateOneCm");
         set(TIME_SINCE_DEATH, "timeSinceDeath");
         set(TALKED_TO_VILLAGER, "talkedToVillager");
         set(TRADED_WITH_VILLAGER, "tradedWithVillager");
@@ -61,6 +63,7 @@ public final class GlowStatistic {
         set(FURNACE_INTERACTION, "furnaceInteraction");
         set(CRAFTING_TABLE_INTERACTION, "craftingTableInteraction");
         set(CHEST_OPENED, "chestOpened");
+        set(SLEEP_IN_BED, "sleepInBed");
 
         // todo: statistics with substatistics
     }

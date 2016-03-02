@@ -1,7 +1,7 @@
 package net.glowstone.entity.passive;
 
 import net.glowstone.entity.meta.MetadataIndex;
-import net.glowstone.entity.meta.MetadataIndex.TameableFlags;
+//import net.glowstone.entity.meta.MetadataIndex.TameableFlags;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.entity.AnimalTamer;
@@ -22,12 +22,13 @@ public class GlowWolf extends GlowTameable implements Wolf {
 
     @Override
     public boolean isAngry() {
-        return metadata.getBit(MetadataIndex.WOLF_FLAGS, TameableFlags.WOLF_IS_ANGRY);
+        return false;
+        //metadata.getBit(MetadataIndex.WOLF_FLAGS, TameableFlags.WOLF_IS_ANGRY); TODO 1.9 - Angry seems missing from the metadata according to wiki.vg
     }
 
     @Override
     public void setAngry(boolean angry) {
-        metadata.setBit(MetadataIndex.WOLF_FLAGS, TameableFlags.WOLF_IS_ANGRY, angry);
+        //metadata.setBit(MetadataIndex.WOLF_FLAGS, TameableFlags.WOLF_IS_ANGRY, angry); TODO 1.9 - Angry seems missing from the metadata according to wiki.vg
     }
 
     @Override
@@ -42,16 +43,15 @@ public class GlowWolf extends GlowTameable implements Wolf {
     }
 
     public boolean isBegging() {
-        return metadata.getByte(MetadataIndex.WOLF_BEGGING) == 1;
+        return metadata.getBoolean(MetadataIndex.WOLF_BEGGING);
     }
 
     public void setBegging(boolean begging) {
-        metadata.set(MetadataIndex.WOLF_BEGGING, (byte) (begging ? 1 : 0));
+        metadata.set(MetadataIndex.WOLF_BEGGING, begging);
     }
 
     @Override
     public void setTamed(boolean isTamed) {
-        metadata.setBit(MetadataIndex.WOLF_FLAGS, TameableFlags.IS_TAME, isTamed);
         if (tamed != isTamed) {
             // Change max health of wolf when he's got tamed. See MinecraftWiki for more information!
             if (isTamed && getMaxHealth() == 8) {
@@ -65,9 +65,6 @@ public class GlowWolf extends GlowTameable implements Wolf {
     @Override
     public void setOwner(AnimalTamer animalTamer) {
         super.setOwner(animalTamer);
-        if (animalTamer != null) {
-            metadata.set(MetadataIndex.WOLF_OWNER, animalTamer.getName());
-        }
     }
 
     @Override

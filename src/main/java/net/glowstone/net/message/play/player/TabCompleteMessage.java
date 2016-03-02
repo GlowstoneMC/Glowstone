@@ -8,6 +8,7 @@ import org.bukkit.util.BlockVector;
 public final class TabCompleteMessage implements Message {
 
     private final String text;
+    private final boolean assumeCommand;
     private final BlockVector location;
 
 }

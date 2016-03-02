@@ -16,6 +16,8 @@ import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -28,6 +30,7 @@ import org.bukkit.util.EulerAngle;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
 
@@ -285,15 +288,15 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
 
     @Override
     public List<Message> createSpawnMessage() {
-        int x = Position.getIntX(location);
-        int y = Position.getIntY(location);
-        int z = Position.getIntZ(location);
+        double x = location.getX();
+        double y = location.getY();
+        double z = location.getZ();
 
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
 
         return Arrays.asList(
-                new SpawnObjectMessage(id, 78, x, y, z, pitch, yaw),
+                new SpawnObjectMessage(id, UUID.randomUUID(), 78, x, y, z, pitch, yaw), // TODO: once UUID is documented, actually use the appropriate ID here
                 new EntityMetadataMessage(id, metadata.getEntryList()),
                 new EntityEquipmentMessage(id, EntityEquipmentMessage.HELD_ITEM, getItemInHand()),
                 new EntityEquipmentMessage(id, EntityEquipmentMessage.BOOTS_SLOT, getBoots()),
@@ -320,6 +323,16 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     @Override
     public EntityType getType() {
         return EntityType.ARMOR_STAND;
+    }
+
+    @Override
+    public void setGlowing(boolean b) {
+
+    }
+
+    @Override
+    public boolean isGlowing() {
+        return false;
     }
 
     @Override
@@ -507,5 +520,10 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     public void setMarker(boolean marker) {
         isMarker = marker;
         metadata.setBit(MetadataIndex.ARMORSTAND_FLAGS, MetadataIndex.ArmorStandFlags.IS_MARKER, marker);
+    }
+
+    @Override
+    public AttributeInstance getAttribute(Attribute attribute) {
+        return null;
     }
 }

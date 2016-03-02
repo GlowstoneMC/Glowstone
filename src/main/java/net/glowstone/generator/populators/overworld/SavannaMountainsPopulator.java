@@ -8,7 +8,7 @@ import java.util.Collections;
 
 public class SavannaMountainsPopulator extends SavannaPopulator {
 
-    private static final Biome[] BIOMES = {Biome.SAVANNA_MOUNTAINS, Biome.SAVANNA_PLATEAU_MOUNTAINS};
+    private static final Biome[] BIOMES = {Biome.MUTATED_SAVANNA, Biome.MUTATED_SAVANNA_ROCK};
 
     public SavannaMountainsPopulator() {
         super();

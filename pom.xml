@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.glowstoneplusplus</groupId>
     <artifactId>glowstoneplusplus</artifactId>
-    <version>1.8.9-SNAPSHOT</version>
+    <version>1.9-SNAPSHOT</version>
     <name>GlowstonePlusPlus</name>
     <url>https://github.com/GlowstonePlusPlus/GlowstonePlusPlus</url>
 
@@ -15,7 +15,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <bukkit.version>1.8.8-R0.1-SNAPSHOT</bukkit.version>
+        <bukkit.version>1.9-R0.1-SNAPSHOT</bukkit.version>
     </properties>
 
     <parent>

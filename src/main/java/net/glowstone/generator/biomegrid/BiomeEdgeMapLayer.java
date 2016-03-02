@@ -20,20 +20,20 @@ public class BiomeEdgeMapLayer extends MapLayer {
     private static final Map<Map<Integer, Integer>, List<Integer>> EDGES = new HashMap<>();
 
     static {
-        MESA_EDGES.put(GlowBiome.getId(MESA_PLATEAU_FOREST), GlowBiome.getId(MESA));
-        MESA_EDGES.put(GlowBiome.getId(MESA_PLATEAU), GlowBiome.getId(MESA));
+        MESA_EDGES.put(GlowBiome.getId(MESA_ROCK), GlowBiome.getId(MESA));
+        MESA_EDGES.put(GlowBiome.getId(MESA_CLEAR_ROCK), GlowBiome.getId(MESA));
 
-        MEGA_TAIGA_EDGES.put(GlowBiome.getId(MEGA_TAIGA), GlowBiome.getId(TAIGA));
+        MEGA_TAIGA_EDGES.put(GlowBiome.getId(REDWOOD_TAIGA), GlowBiome.getId(TAIGA));
 
-        DESERT_EDGES.put(GlowBiome.getId(DESERT), GlowBiome.getId(EXTREME_HILLS_PLUS));
+        DESERT_EDGES.put(GlowBiome.getId(DESERT), GlowBiome.getId(EXTREME_HILLS_WITH_TREES));
 
         SWAMP1_EDGES.put(GlowBiome.getId(SWAMPLAND), GlowBiome.getId(PLAINS));
         SWAMP2_EDGES.put(GlowBiome.getId(SWAMPLAND), GlowBiome.getId(JUNGLE_EDGE));
 
         EDGES.put(MESA_EDGES, null);
         EDGES.put(MEGA_TAIGA_EDGES, null);
-        EDGES.put(DESERT_EDGES, Arrays.asList(GlowBiome.getId(ICE_PLAINS)));
-        EDGES.put(SWAMP1_EDGES, Arrays.asList(GlowBiome.getId(DESERT), GlowBiome.getId(COLD_TAIGA), GlowBiome.getId(ICE_PLAINS)));
+        EDGES.put(DESERT_EDGES, Arrays.asList(GlowBiome.getId(ICE_FLATS)));
+        EDGES.put(SWAMP1_EDGES, Arrays.asList(GlowBiome.getId(DESERT), GlowBiome.getId(TAIGA_COLD), GlowBiome.getId(ICE_FLATS)));
         EDGES.put(SWAMP2_EDGES, Arrays.asList(GlowBiome.getId(JUNGLE)));
     }
 

@@ -17,6 +17,7 @@ import java.util.Set;
 public final class PlayerSwingArmHandler implements MessageHandler<GlowSession, PlayerSwingArmMessage> {
     @Override
     public void handle(GlowSession session, PlayerSwingArmMessage message) {
+        //TODO: Handle hand
         final GlowPlayer player = session.getPlayer();
 
         Block block;

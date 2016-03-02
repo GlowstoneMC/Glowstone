@@ -1259,18 +1259,6 @@ public final class GlowWorld implements World {
         return spawn(loc, type.getEntityClass());
     }
 
-    @Override
-    @Deprecated
-    public LivingEntity spawnCreature(Location loc, EntityType type) {
-        return (LivingEntity) spawn(loc, type.getEntityClass());
-    }
-
-    @Override
-    @Deprecated
-    public LivingEntity spawnCreature(Location loc, CreatureType type) {
-        return (LivingEntity) spawn(loc, type.getEntityClass());
-    }
-
     private GlowLightningStrike strikeLightningFireEvent(final Location loc, final boolean effect) {
         final GlowLightningStrike strike = new GlowLightningStrike(loc, effect, random);
         final LightningStrikeEvent event = new LightningStrikeEvent(this, strike);
@@ -1645,6 +1633,66 @@ public final class GlowWorld implements World {
     @Override
     public WorldBorder getWorldBorder() {
         return null;
+    }
+
+    @Override
+    public void spawnParticle(Particle particle, Location location, int i) {
+
+    }
+
+    @Override
+    public void spawnParticle(Particle particle, double v, double v1, double v2, int i) {
+
+    }
+
+    @Override
+    public <T> void spawnParticle(Particle particle, Location location, int i, T t) {
+
+    }
+
+    @Override
+    public <T> void spawnParticle(Particle particle, double v, double v1, double v2, int i, T t) {
+
+    }
+
+    @Override
+    public void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2) {
+
+    }
+
+    @Override
+    public void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5) {
+
+    }
+
+    @Override
+    public <T> void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2, T t) {
+
+    }
+
+    @Override
+    public <T> void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, T t) {
+
+    }
+
+    @Override
+    public void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2, double v3) {
+
+    }
+
+    @Override
+    public void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, double v6) {
+
+    }
+
+    @Override
+    public <T> void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2, double v3, T t) {
+
+    }
+
+    @Override
+    public <T> void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, double v6, T t) {
+
     }
 
     public GameRuleManager getGameRuleMap() {

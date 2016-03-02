@@ -43,20 +43,17 @@ public final class GlowBufUtils {
     public static List<MetadataMap.Entry> readMetadata(ByteBuf buf) throws IOException {
         List<MetadataMap.Entry> entries = new ArrayList<>();
         byte item;
-        while ((item = buf.readByte()) != 0x7F) {
-            MetadataType type = MetadataType.byId(item >> 5);
-            int id = item & 0x1f;
+        while ((item = buf.readByte()) != -1) {
+            MetadataType type = MetadataType.byId(buf.readByte());
+            int id = item;
             MetadataIndex index = MetadataIndex.getIndex(id, type);
 
             switch (type) {
                 case BYTE:
                     entries.add(new MetadataMap.Entry(index, buf.readByte()));
                     break;
-                case SHORT:
-                    entries.add(new MetadataMap.Entry(index, buf.readShort()));
-                    break;
                 case INT:
-                    entries.add(new MetadataMap.Entry(index, buf.readInt()));
+                    entries.add(new MetadataMap.Entry(index, ByteBufUtils.readVarInt(buf)));
                     break;
                 case FLOAT:
                     entries.add(new MetadataMap.Entry(index, buf.readFloat()));
@@ -67,20 +64,33 @@ public final class GlowBufUtils {
                 case ITEM:
                     entries.add(new MetadataMap.Entry(index, readSlot(buf)));
                     break;
-                case VECTOR: {
-                    int x = buf.readInt();
-                    int y = buf.readInt();
-                    int z = buf.readInt();
-                    entries.add(new MetadataMap.Entry(index, new Vector(x, y, z)));
+                case BOOLEAN:
+                    entries.add(new MetadataMap.Entry(index, buf.readBoolean()));
                     break;
-                }
-                case EULER_ANGLE: {
-                    double x = Math.toRadians(buf.readFloat());
-                    double y = Math.toRadians(buf.readFloat());
-                    double z = Math.toRadians(buf.readFloat());
+                case VECTOR: {
+                    float x = buf.readFloat();
+                    float y = buf.readFloat();
+                    float z = buf.readFloat();
                     entries.add(new MetadataMap.Entry(index, new EulerAngle(x, y, z)));
                     break;
                 }
+                case POSITION:
+                    break; //TODO
+                case OPTPOSITION:
+                    if (buf.readBoolean()) {
+                        //TODO
+                    }
+                    break;
+                case DIRECTION:
+                    entries.add(new MetadataMap.Entry(index, ByteBufUtils.readVarInt(buf)));
+                    break;
+                case OPTUUID:
+                    if (buf.readBoolean()) {
+                        entries.add(new MetadataMap.Entry(index, GlowBufUtils.readUuid(buf)));
+                    }
+                    break;
+                case BLOCKID:
+                    entries.add(new MetadataMap.Entry(index, ByteBufUtils.readVarInt(buf)));
             }
         }
         return entries;
@@ -101,17 +111,15 @@ public final class GlowBufUtils {
 
             int type = index.getType().getId();
             int id = index.getIndex();
-            buf.writeByte((type << 5) | id);
+            buf.writeByte(id);
+            buf.writeByte(type);
 
             switch (index.getType()) {
                 case BYTE:
                     buf.writeByte((Byte) value);
                     break;
-                case SHORT:
-                    buf.writeShort((Short) value);
-                    break;
                 case INT:
-                    buf.writeInt((Integer) value);
+                    ByteBufUtils.writeVarInt(buf, (Integer) value);
                     break;
                 case FLOAT:
                     buf.writeFloat((Float) value);
@@ -119,27 +127,47 @@ public final class GlowBufUtils {
                 case STRING:
                     ByteBufUtils.writeUTF8(buf, (String) value);
                     break;
+                case CHAT:
+                    GlowBufUtils.writeChat(buf, (TextMessage) value);
+                    break;
                 case ITEM:
                     writeSlot(buf, (ItemStack) value);
                     break;
-                case VECTOR: {
-                    Vector vector = (Vector) value;
-                    buf.writeInt(vector.getBlockX());
-                    buf.writeInt(vector.getBlockY());
-                    buf.writeInt(vector.getBlockZ());
+                case BOOLEAN:
+                    buf.writeBoolean((Boolean) value);
                     break;
-                }
-                case EULER_ANGLE: {
+                case VECTOR: {
                     EulerAngle angle = (EulerAngle) value;
                     buf.writeFloat((float) Math.toDegrees(angle.getX()));
                     buf.writeFloat((float) Math.toDegrees(angle.getY()));
                     buf.writeFloat((float) Math.toDegrees(angle.getZ()));
                     break;
                 }
+                case POSITION:
+                    break; //TODO
+                case OPTPOSITION:
+                    buf.writeBoolean(value != null);
+                    if (value != null) {
+                        //TODO
+                    }
+                    break;
+                case DIRECTION:
+                    ByteBufUtils.writeVarInt(buf, (Integer) value);
+                    break;
+                case OPTUUID:
+                    buf.writeBoolean(value != null);
+                    if (value != null) {
+
+                        GlowBufUtils.writeUuid(buf, (UUID) value);
+                    }
+                    break;
+                case BLOCKID:
+                    ByteBufUtils.writeVarInt(buf, (Integer) value);
+                    break;
             }
         }
 
-        buf.writeByte(127);
+        buf.writeByte(0xff);
     }
 
     /**
@@ -239,7 +267,6 @@ public final class GlowBufUtils {
             buf.writeShort(stack.getTypeId());
             buf.writeByte(stack.getAmount());
             buf.writeShort(stack.getDurability());
-
             if (stack.hasItemMeta()) {
                 CompoundTag tag = GlowItemFactory.instance().writeNbt(stack.getItemMeta());
                 writeCompound(buf, tag);

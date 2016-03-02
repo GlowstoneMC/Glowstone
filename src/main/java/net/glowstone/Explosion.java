@@ -321,7 +321,7 @@ public final class Explosion {
     ///////////////////////////////////////
     // Visualize
     private void playOutSoundAndParticles() {
-        world.playSound(location, Sound.EXPLODE, 4, (1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F) * 0.7F);
+        world.playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 4, (1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F) * 0.7F);
 
         if (this.power >= 2.0F && this.breakBlocks) {
             // send huge explosion

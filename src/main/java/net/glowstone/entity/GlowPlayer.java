@@ -41,6 +41,8 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
@@ -49,6 +51,7 @@ import org.bukkit.conversations.ConversationAbandonedEvent;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -670,34 +673,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             chunkLock.acquire(key);
         }
 
-        // second step: package chunks into bulk packets
-        final int maxSize = 0x1fffef;  // slightly under protocol max size of 0x200000
         final boolean skylight = world.getEnvironment() == World.Environment.NORMAL;
-        List<ChunkDataMessage> messages = new LinkedList<>();
-        int bulkSize = 6; // size of bulk header
 
-        // split the chunks into bulk packets based on how many fit
         for (GlowChunk.Key key : newChunks) {
             GlowChunk chunk = world.getChunkAt(key.getX(), key.getZ());
-            ChunkDataMessage message = chunk.toMessage(skylight);
-            // 10 bytes of header in bulk packet, plus data length
-            int messageSize = 10 + message.getData().length;
-
-            // if this chunk would make the message too big,
-            if (bulkSize + messageSize > maxSize) {
-                // send out what we have so far
-                session.send(new ChunkBulkMessage(skylight, messages));
-                messages = new LinkedList<>();
-                bulkSize = 6;
-            }
-
-            bulkSize += messageSize;
-            messages.add(message);
-        }
-
-        // send the leftovers
-        if (!messages.isEmpty()) {
-            session.send(new ChunkBulkMessage(skylight, messages));
+            session.send(chunk.toMessage(skylight));
         }
 
         // send visible tile entity data
@@ -710,7 +690,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         // and remove old chunks
         for (GlowChunk.Key key : previousChunks) {
-            session.send(ChunkDataMessage.empty(key.getX(), key.getZ()));
+            session.send(new UnloadChunkMessage(key.getX(), key.getZ()));
             knownChunks.remove(key);
             chunkLock.release(key);
         }
@@ -875,18 +855,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      *
      * @return The player's client settings.
      */
-    public ClientSettings getSettings() {
-        return settings;
-    }
-
-    /**
-     * Set the client settings for this player.
-     *
-     * @param settings The new client settings.
-     */
     public void setSettings(ClientSettings settings) {
         this.settings = settings;
-        metadata.set(MetadataIndex.PLAYER_SKIN_FLAGS, settings.getSkinFlags());
+       // metadata.set(MetadataIndex.PLAYER_SKIN_FLAGS, settings.getSkinFlags()); // TODO 1.9 - This has been removed
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -902,6 +873,16 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public EntityType getType() {
         return EntityType.PLAYER;
+    }
+
+    @Override
+    public void setGlowing(boolean b) {
+
+    }
+
+    @Override
+    public boolean isGlowing() {
+        return false;
     }
 
     @Override
@@ -1597,6 +1578,66 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public void spawnParticle(Particle particle, Location location, int i) {
+
+    }
+
+    @Override
+    public void spawnParticle(Particle particle, double v, double v1, double v2, int i) {
+
+    }
+
+    @Override
+    public <T> void spawnParticle(Particle particle, Location location, int i, T t) {
+
+    }
+
+    @Override
+    public <T> void spawnParticle(Particle particle, double v, double v1, double v2, int i, T t) {
+
+    }
+
+    @Override
+    public void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2) {
+
+    }
+
+    @Override
+    public void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5) {
+
+    }
+
+    @Override
+    public <T> void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2, T t) {
+
+    }
+
+    @Override
+    public <T> void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, T t) {
+
+    }
+
+    @Override
+    public void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2, double v3) {
+
+    }
+
+    @Override
+    public void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, double v6) {
+
+    }
+
+    @Override
+    public <T> void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2, double v3, T t) {
+
+    }
+
+    @Override
+    public <T> void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, double v6, T t) {
+
+    }
+
+    @Override
     public void kickPlayer(String message) {
         remove(true);
         session.disconnect(message == null ? "" : message);
@@ -1701,19 +1742,19 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         Sound sound;
         switch (instrument) {
             case PIANO:
-                sound = Sound.NOTE_PIANO;
+                sound = Sound.BLOCK_NOTE_HARP;
                 break;
             case BASS_DRUM:
-                sound = Sound.NOTE_BASS_DRUM;
+                sound = Sound.BLOCK_NOTE_BASEDRUM;
                 break;
             case SNARE_DRUM:
-                sound = Sound.NOTE_SNARE_DRUM;
+                sound = Sound.BLOCK_NOTE_SNARE;
                 break;
             case STICKS:
-                sound = Sound.NOTE_STICKS;
+                sound = Sound.BLOCK_NOTE_HAT;
                 break;
             case BASS_GUITAR:
-                sound = Sound.NOTE_BASS_GUITAR;
+                sound = Sound.BLOCK_NOTE_BASS;
                 break;
             default:
                 throw new IllegalArgumentException("Invalid instrument");
@@ -1754,7 +1795,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         double x = location.getBlockX() + 0.5;
         double y = location.getBlockY() + 0.5;
         double z = location.getBlockZ() + 0.5;
-        session.send(new PlaySoundMessage(sound, x, y, z, volume, pitch));
+        session.send(new NamedSoundEffectMessage(sound, NamedSoundEffectMessage.SoundCategory.MASTER, x, y, z, volume, pitch)); //TODO: Put the real category
     }
 
     @Override
@@ -1799,15 +1840,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
-    public void sendSignChange(Location location, String[] lines) throws IllegalArgumentException {
-        Validate.notNull(location, "location cannot be null");
-        Validate.notNull(lines, "lines cannot be null");
-        Validate.isTrue(lines.length == 4, "lines.length must equal 4");
-
-        afterBlockChanges.add(UpdateSignMessage.fromPlainText(location.getBlockX(), location.getBlockY(), location.getBlockZ(), lines));
-    }
-
     /**
      * Send a sign change, similar to {@link #sendSignChange(Location, String[])},
      * but using complete TextMessages instead of strings.
@@ -1817,7 +1849,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * @throws IllegalArgumentException if location is null
      * @throws IllegalArgumentException if lines is non-null and has a length less than 4
      */
-    public void sendSignChange(Location location, TextMessage... lines) {
+    @Override
+    public void sendSignChange(Location location, String[] lines) throws IllegalArgumentException {
         Validate.notNull(location, "location cannot be null");
         Validate.notNull(lines, "lines cannot be null");
         Validate.isTrue(lines.length == 4, "lines.length must equal 4");
@@ -2120,6 +2153,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public InventoryView openMerchant(Villager villager, boolean b) {
+        return null;
+    }
+
+    @Override
     public GlowItem drop(ItemStack stack) {
         GlowItem dropping = super.drop(stack);
         if (dropping != null) {
@@ -2394,5 +2432,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     public void setDigging(GlowBlock block) {
         digging = block;
+    }
+
+    @Override
+    public AttributeInstance getAttribute(Attribute attribute) {
+        return null;
     }
 }

@@ -12,7 +12,7 @@ import java.util.Arrays;
 
 public class TESign extends TileEntity {
 
-    private final TextMessage[] lines = new TextMessage[4];
+    private final String[] lines = new String[4];
 
     public TESign(GlowBlock block) {
         super(block);
@@ -36,7 +36,7 @@ public class TESign extends TileEntity {
         for (int i = 0; i < lines.length; ++i) {
             String key = "Text" + (i + 1);
             if (tag.isString(key)) {
-                lines[i] = TextMessage.decode(tag.getString(key));
+                lines[i] = tag.getString(key);
             }
         }
     }
@@ -45,7 +45,7 @@ public class TESign extends TileEntity {
     public void saveNbt(CompoundTag tag) {
         super.saveNbt(tag);
         for (int i = 0; i < lines.length; ++i) {
-            tag.putString("Text" + (i + 1), lines[i].encode());
+            tag.putString("Text" + (i + 1), lines[i]);
         }
     }
 
@@ -56,13 +56,12 @@ public class TESign extends TileEntity {
 
     /**
      * Get the lines of text on the sign.
-     *
      * @return The sign's lines.
      */
     public String[] getLines() {
         String[] result = new String[lines.length];
         for (int i = 0; i < result.length; ++i) {
-            result[i] = lines[i].flatten();
+            result[i] = lines[i];
         }
         return result;
     }
@@ -79,8 +78,7 @@ public class TESign extends TileEntity {
         }
 
         for (int i = 0; i < lines.length; ++i) {
-            lines[i] = new TextMessage(text[i] == null ? "" : text[i]);
+            lines[i] = text[i];
         }
     }
-
 }

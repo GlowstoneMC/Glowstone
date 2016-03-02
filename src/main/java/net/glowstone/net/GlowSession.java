@@ -364,6 +364,8 @@ public final class GlowSession extends BasicSession {
             // discard messages sent if we're closed, since this happens a lot
             return null;
         }
+        System.out.println("Sending message type: " + message.getClass().getName());
+        System.out.println("Content: " + message.toString());
         return super.sendWithFuture(message);
     }
 

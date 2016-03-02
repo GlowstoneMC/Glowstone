@@ -90,6 +90,7 @@ public final class ServerConfig {
      * @see ServerConfig#save()
      */
     public void set(Key key, Object value) {
+        parameters.replace(key, value);
         config.set(key.path, value);
     }
 
@@ -100,15 +101,17 @@ public final class ServerConfig {
         if (parameters.containsKey(key)) {
             return parameters.get(key).toString();
         }
-
-        return config.getString(key.path, key.def.toString());
+        String string = config.getString(key.path, key.def.toString());
+        parameters.put(key, string);
+        return string;
     }
 
     public int getInt(Key key) {
         if (parameters.containsKey(key)) {
             return (Integer) parameters.get(key);
         }
-
+        int integer = config.getInt(key.path, (Integer) key.def);
+        parameters.put(key, integer);
         return config.getInt(key.path, (Integer) key.def);
     }
 
@@ -116,8 +119,9 @@ public final class ServerConfig {
         if (parameters.containsKey(key)) {
             return (Boolean) parameters.get(key);
         }
-
-        return config.getBoolean(key.path, (Boolean) key.def);
+        boolean bool = config.getBoolean(key.path, (Boolean) key.def);
+        parameters.put(key, bool);
+        return bool;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -401,6 +405,7 @@ public final class ServerConfig {
         ALLOW_END("world.allow-end", true, Migrate.BUKKIT, "settings.allow-end"),
         PERSIST_SPAWN("world.keep-spawn-loaded", true),
         POPULATE_ANCHORED_CHUNKS("world.populate-anchored-chunks", true),
+        WATER_CLASSIC("world.classic-style-water", false),
 
         // database
         DB_DRIVER("database.driver", "org.sqlite.JDBC", Migrate.BUKKIT, "database.driver"),

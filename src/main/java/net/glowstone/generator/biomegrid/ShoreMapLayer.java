@@ -19,23 +19,23 @@ public class ShoreMapLayer extends MapLayer {
         OCEANS.add(GlowBiome.getId(DEEP_OCEAN));
 
         SPECIAL_SHORES.put(GlowBiome.getId(EXTREME_HILLS), GlowBiome.getId(STONE_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(EXTREME_HILLS_PLUS), GlowBiome.getId(STONE_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(EXTREME_HILLS_MOUNTAINS), GlowBiome.getId(STONE_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(EXTREME_HILLS_PLUS_MOUNTAINS), GlowBiome.getId(STONE_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(ICE_PLAINS), GlowBiome.getId(COLD_BEACH));
+        SPECIAL_SHORES.put(GlowBiome.getId(EXTREME_HILLS_WITH_TREES), GlowBiome.getId(STONE_BEACH));
+        SPECIAL_SHORES.put(GlowBiome.getId(MUTATED_EXTREME_HILLS), GlowBiome.getId(STONE_BEACH));
+        SPECIAL_SHORES.put(GlowBiome.getId(MUTATED_EXTREME_HILLS_WITH_TREES), GlowBiome.getId(STONE_BEACH));
+        SPECIAL_SHORES.put(GlowBiome.getId(ICE_FLATS), GlowBiome.getId(COLD_BEACH));
         SPECIAL_SHORES.put(GlowBiome.getId(ICE_MOUNTAINS), GlowBiome.getId(COLD_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(ICE_PLAINS_SPIKES), GlowBiome.getId(COLD_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(COLD_TAIGA), GlowBiome.getId(COLD_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(COLD_TAIGA_HILLS), GlowBiome.getId(COLD_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(COLD_TAIGA_MOUNTAINS), GlowBiome.getId(COLD_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(MUSHROOM_ISLAND), GlowBiome.getId(MUSHROOM_SHORE));
+        SPECIAL_SHORES.put(GlowBiome.getId(MUTATED_ICE_FLATS), GlowBiome.getId(COLD_BEACH));
+        SPECIAL_SHORES.put(GlowBiome.getId(TAIGA_COLD), GlowBiome.getId(COLD_BEACH));
+        SPECIAL_SHORES.put(GlowBiome.getId(TAIGA_COLD_HILLS), GlowBiome.getId(COLD_BEACH));
+        SPECIAL_SHORES.put(GlowBiome.getId(MUTATED_TAIGA_COLD), GlowBiome.getId(COLD_BEACH));
+        SPECIAL_SHORES.put(GlowBiome.getId(MUSHROOM_ISLAND), GlowBiome.getId(MUSHROOM_ISLAND_SHORE));
         SPECIAL_SHORES.put(GlowBiome.getId(SWAMPLAND), GlowBiome.getId(SWAMPLAND));
         SPECIAL_SHORES.put(GlowBiome.getId(MESA), GlowBiome.getId(MESA));
-        SPECIAL_SHORES.put(GlowBiome.getId(MESA_PLATEAU_FOREST), GlowBiome.getId(MESA_PLATEAU_FOREST));
-        SPECIAL_SHORES.put(GlowBiome.getId(MESA_PLATEAU_FOREST_MOUNTAINS), GlowBiome.getId(MESA_PLATEAU_FOREST_MOUNTAINS));
-        SPECIAL_SHORES.put(GlowBiome.getId(MESA_PLATEAU), GlowBiome.getId(MESA_PLATEAU));
-        SPECIAL_SHORES.put(GlowBiome.getId(MESA_PLATEAU_MOUNTAINS), GlowBiome.getId(MESA_PLATEAU_MOUNTAINS));
-        SPECIAL_SHORES.put(GlowBiome.getId(MESA_BRYCE), GlowBiome.getId(MESA_BRYCE));
+        SPECIAL_SHORES.put(GlowBiome.getId(MESA_ROCK), GlowBiome.getId(MESA_ROCK));
+        SPECIAL_SHORES.put(GlowBiome.getId(MUTATED_MESA_ROCK), GlowBiome.getId(MUTATED_MESA_ROCK));
+        SPECIAL_SHORES.put(GlowBiome.getId(MESA_CLEAR_ROCK), GlowBiome.getId(MESA_CLEAR_ROCK));
+        SPECIAL_SHORES.put(GlowBiome.getId(MUTATED_MESA_CLEAR_ROCK), GlowBiome.getId(MUTATED_MESA_CLEAR_ROCK));
+        SPECIAL_SHORES.put(GlowBiome.getId(MUTATED_MESA), GlowBiome.getId(MUTATED_MESA));
     }
 
     private final MapLayer belowLayer;
@@ -72,7 +72,7 @@ public class ShoreMapLayer extends MapLayer {
                 if (!OCEANS.contains(centerVal) && (OCEANS.contains(upperVal) || OCEANS.contains(lowerVal) ||
                         OCEANS.contains(leftVal) || OCEANS.contains(rightVal))) {
                     finalValues[j + i * sizeX] =
-                            SPECIAL_SHORES.containsKey(centerVal) ? SPECIAL_SHORES.get(centerVal) : GlowBiome.getId(BEACH);
+                            SPECIAL_SHORES.containsKey(centerVal) ? SPECIAL_SHORES.get(centerVal) : GlowBiome.getId(BEACHES);
                 } else {
                     finalValues[j + i * sizeX] = centerVal;
                 }

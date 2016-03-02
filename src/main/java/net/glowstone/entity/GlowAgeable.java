@@ -113,7 +113,7 @@ public class GlowAgeable extends GlowCreature implements Ageable {
     public List<Message> createSpawnMessage() {
         List<Message> messages = super.createSpawnMessage();
         MetadataMap map = new MetadataMap(GlowAgeable.class);
-        map.set(MetadataIndex.AGE, this.getAge());
+        map.set(MetadataIndex.AGE_ISBABY, !this.isAdult());
         messages.add(new EntityMetadataMessage(id, map.getEntryList()));
         return messages;
     }
