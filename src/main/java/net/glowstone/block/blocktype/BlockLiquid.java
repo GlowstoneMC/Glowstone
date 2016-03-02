@@ -17,14 +17,10 @@ public abstract class BlockLiquid extends BlockType {
     private static final byte STRENGTH_SOURCE = 0;
     private static final byte STRENGTH_MAX = 1;
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Public accessors
     private static final byte STRENGTH_MIN_WATER = 7;
     private static final byte STRENGTH_MIN_LAVA = 4;
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Overrides
-    private static final int TICK_RATE_WATER = 5;
+    private static final int TICK_RATE_WATER = 4;
     private static final int TICK_RATE_LAVA = 20;
     private final Material bucketType;
     private BlockFace[] hfaces = {NORTH, EAST, SOUTH, WEST};
@@ -240,7 +236,9 @@ public abstract class BlockLiquid extends BlockType {
                 return;
             }
         }
-        calculateFlow(block);
+        if (!(Byte.compare(block.getState().getRawData(), isWater(block.getType()) || block.getBiome() == Biome.HELL ? STRENGTH_MIN_WATER : STRENGTH_MIN_LAVA) == 0) || block.getRelative(DOWN).getType() == Material.AIR) {
+            calculateFlow(block);
+        }
     }
 
     @Override
