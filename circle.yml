@@ -1,21 +1,14 @@
 machine:
    java:
        version: oraclejdk8
-checkout:
-    post:
-        # clone the Glowkit submodule (see https://circleci.com/docs/configuration)
+dependencies:
+    override:
         - git submodule sync
         - git submodule update --init
-
 test:
+    override:
+        - ./setup.sh
     post:
         - cp -r target/glowstone*.jar $CIRCLE_ARTIFACTS/
         - mkdir -p $CIRCLE_TEST_REPORTS/junit/
         - find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
-# deploy to test server
-#deployment:
-#  devel:
-#    branch: master
-#    commands:
-#      - scp -P 2299 $CIRCLE_ARTIFACTS/glowstone++-1.8.7-SNAPSHOT.jar ?:g++/glowstone++.jar
-#      - ssh ? -p ? 'g++/start.sh'
