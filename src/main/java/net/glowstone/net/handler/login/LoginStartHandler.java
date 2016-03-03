@@ -1,6 +1,6 @@
 package net.glowstone.net.handler.login;
 
-import com.flowpowered.networking.MessageHandler;
+import com.flowpowered.network.MessageHandler;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.net.GlowSession;

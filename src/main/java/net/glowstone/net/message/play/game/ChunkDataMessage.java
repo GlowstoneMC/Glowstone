@@ -1,6 +1,6 @@
 package net.glowstone.net.message.play.game;
 
-import com.flowpowered.networking.Message;
+import com.flowpowered.network.Message;
 import io.netty.buffer.ByteBuf;
 import lombok.Data;
 

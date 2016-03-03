@@ -1,6 +1,6 @@
 package net.glowstone.entity.objects;
 
-import com.flowpowered.networking.Message;
+import com.flowpowered.network.Message;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowLivingEntity;

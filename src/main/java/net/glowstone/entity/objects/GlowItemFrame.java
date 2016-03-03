@@ -1,6 +1,6 @@
 package net.glowstone.entity.objects;
 
-import com.flowpowered.networking.Message;
+import com.flowpowered.network.Message;
 import net.glowstone.GlowChunk;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;

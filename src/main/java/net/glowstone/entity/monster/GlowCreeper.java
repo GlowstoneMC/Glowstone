@@ -1,6 +1,6 @@
 package net.glowstone.entity.monster;
 
-import com.flowpowered.networking.Message;
+import com.flowpowered.network.Message;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.entity.Creeper;

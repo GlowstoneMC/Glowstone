@@ -1,6 +1,6 @@
 package net.glowstone.entity;
 
-import com.flowpowered.networking.Message;
+import com.flowpowered.network.Message;
 import com.google.common.base.Preconditions;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowChunk;

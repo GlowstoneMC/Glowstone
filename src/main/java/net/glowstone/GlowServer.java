@@ -3,7 +3,7 @@ package net.glowstone;
 import com.avaje.ebean.config.DataSourceConfig;
 import com.avaje.ebean.config.dbplatform.SQLitePlatform;
 import com.avaje.ebeaninternal.server.lib.sql.TransactionIsolation;
-import com.flowpowered.networking.Message;
+import com.flowpowered.network.Message;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import net.glowstone.block.BuiltinMaterialValueManager;

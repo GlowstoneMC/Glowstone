@@ -60,7 +60,7 @@ public class HttpClient {
                         if (future.isSuccess()) {
                             String path = uri.getRawPath() + (uri.getRawQuery() == null ? "" : "?" + uri.getRawQuery());
                             HttpRequest request = new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, path);
-                            request.headers().set(HttpHeaderNames.HOST, host);
+                            request.headers().set("host", host);
                             future.channel().writeAndFlush(request);
                         } else {
                             callback.error(future.cause());

@@ -1,6 +1,6 @@
 package net.glowstone.net.codec.play.inv;
 
-import com.flowpowered.networking.Codec;
+import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import net.glowstone.net.message.play.inv.WindowPropertyMessage;

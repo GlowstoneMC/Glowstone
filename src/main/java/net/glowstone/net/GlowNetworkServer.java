@@ -1,7 +1,7 @@
 package net.glowstone.net;
 
-import com.flowpowered.networking.ConnectionManager;
-import com.flowpowered.networking.session.Session;
+import com.flowpowered.network.ConnectionManager;
+import com.flowpowered.network.session.Session;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -15,7 +15,7 @@ import net.glowstone.net.pipeline.GlowChannelInitializer;
 import java.net.SocketAddress;
 
 /**
- * Modified implementation of {@link com.flowpowered.networking.NetworkServer}.
+ * Modified implementation of {@link com.flowpowered.network.NetworkServer}.
  */
 public final class GlowNetworkServer implements ConnectionManager {
     /**

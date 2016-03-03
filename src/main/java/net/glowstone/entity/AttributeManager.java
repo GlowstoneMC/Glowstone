@@ -1,6 +1,6 @@
 package net.glowstone.entity;
 
-import com.flowpowered.networking.Message;
+import com.flowpowered.network.Message;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
