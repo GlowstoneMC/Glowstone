@@ -49,9 +49,9 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
     public void blockDestroy(GlowPlayer player, GlowBlock block, BlockFace face) {
         final MaterialData data = block.getState().getData();
         if (data instanceof DoublePlant) {
+            DoublePlantSpecies species = ((DoublePlant) data).getSpecies();
             block.setType(Material.AIR);
-            block.setData((byte) 0);
-            if (((DoublePlant) data).getSpecies() == DoublePlantSpecies.PLANT_APEX) {
+            if (species == DoublePlantSpecies.PLANT_APEX) {
                 block = block.getRelative(BlockFace.DOWN);
                 if (!(block.getState().getData() instanceof DoublePlant)) {
                     return;
@@ -63,7 +63,6 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
                 }
             }
             block.setType(Material.AIR);
-            block.setData((byte) 0);
         } else {
             warnMaterialData(DoublePlant.class, data);
         }
