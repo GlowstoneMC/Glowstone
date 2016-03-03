@@ -20,18 +20,15 @@ public class BlockFenceGate extends BlockOpenable {
         if (yaw < 0) {
             yaw += 360.0;
         }
-        if (0 <= yaw && yaw < 45) {
-            return BlockFace.SOUTH;
+        System.out.println(yaw);
+        if (yaw < 45 || yaw >= 315) {
+            return BlockFace.EAST;
         } else if (45 <= yaw && yaw < 135) {
-            return BlockFace.WEST;
-        } else if (135 <= yaw && yaw < 225) {
-            return BlockFace.NORTH;
-        } else if (225 <= yaw && yaw < 315) {
-            return BlockFace.EAST;
-        } else if (315 <= yaw && yaw < 360.0) {
             return BlockFace.SOUTH;
+        } else if (135 <= yaw && yaw < 225) {
+            return BlockFace.WEST;
         } else {
-            return BlockFace.EAST;
+            return BlockFace.NORTH;
         }
     }
 
