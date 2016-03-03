@@ -53,6 +53,7 @@ public final class GlowBlock implements Block {
     private final int y;
     private final int z;
     private GlowWorld world;
+    private Material type;
 
     public GlowBlock(GlowChunk chunk, int x, int y, int z) {
         world = chunk.getWorld();
@@ -174,7 +175,11 @@ public final class GlowBlock implements Block {
     // Type and typeid getters/setters
     @Override
     public Material getType() {
-        return Material.getMaterial(getTypeId());
+        if (type != null) {
+            return type;
+        }
+        type = Material.getMaterial(getTypeIdNoCache());
+        return type;
     }
 
     @Override
@@ -184,6 +189,14 @@ public final class GlowBlock implements Block {
 
     @Override
     public int getTypeId() {
+        if (type != null) {
+            return type.getId();
+        }
+        type = Material.getMaterial(((GlowChunk) world.getChunkAt(this)).getType(x & 0xf, z & 0xf, y));
+        return type.getId();
+    }
+
+    private int getTypeIdNoCache() {
         return ((GlowChunk) world.getChunkAt(this)).getType(x & 0xf, z & 0xf, y);
     }
 
@@ -192,6 +205,7 @@ public final class GlowBlock implements Block {
      */
     @Override
     public void setType(Material type, boolean applyPhysics) {
+        this.type = type;
         setTypeId(type.getId(), applyPhysics);
     }
 
