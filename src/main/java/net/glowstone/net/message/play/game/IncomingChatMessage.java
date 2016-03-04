@@ -1,6 +1,6 @@
 package net.glowstone.net.message.play.game;
 
-import com.flowpowered.networking.AsyncableMessage;
+import com.flowpowered.network.AsyncableMessage;
 import lombok.Data;
 
 @Data

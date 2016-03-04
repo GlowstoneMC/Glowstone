@@ -30,7 +30,7 @@ public class HttpHandler extends SimpleChannelInboundHandler<Object> {
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof HttpResponse) {
             HttpResponse response = (HttpResponse) msg;
-            int responseCode = response.status().code();
+            int responseCode = response.getStatus().code();
 
             if (responseCode == HttpResponseStatus.NO_CONTENT.code()) {
                 done(ctx);

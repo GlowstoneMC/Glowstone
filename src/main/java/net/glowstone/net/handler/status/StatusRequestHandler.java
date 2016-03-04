@@ -1,6 +1,6 @@
 package net.glowstone.net.handler.status;
 
-import com.flowpowered.networking.MessageHandler;
+import com.flowpowered.network.MessageHandler;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.net.GlowSession;

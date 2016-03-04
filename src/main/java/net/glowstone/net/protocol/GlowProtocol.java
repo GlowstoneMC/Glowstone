@@ -1,14 +1,14 @@
 package net.glowstone.net.protocol;
 
-import com.flowpowered.networking.Codec;
-import com.flowpowered.networking.Message;
-import com.flowpowered.networking.MessageHandler;
-import com.flowpowered.networking.exception.IllegalOpcodeException;
-import com.flowpowered.networking.exception.UnknownPacketException;
-import com.flowpowered.networking.protocol.AbstractProtocol;
-import com.flowpowered.networking.service.CodecLookupService;
-import com.flowpowered.networking.service.HandlerLookupService;
-import com.flowpowered.networking.util.ByteBufUtils;
+import com.flowpowered.network.Codec;
+import com.flowpowered.network.Message;
+import com.flowpowered.network.MessageHandler;
+import com.flowpowered.network.exception.IllegalOpcodeException;
+import com.flowpowered.network.exception.UnknownPacketException;
+import com.flowpowered.network.protocol.AbstractProtocol;
+import com.flowpowered.network.service.CodecLookupService;
+import com.flowpowered.network.service.HandlerLookupService;
+import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.glowstone.GlowServer;

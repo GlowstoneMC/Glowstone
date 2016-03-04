@@ -1,6 +1,6 @@
 package net.glowstone;
 
-import com.flowpowered.networking.util.ByteBufUtils;
+import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.Data;

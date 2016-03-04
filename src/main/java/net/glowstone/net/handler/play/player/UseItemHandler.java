@@ -1,6 +1,6 @@
 package net.glowstone.net.handler.play.player;
 
-import com.flowpowered.networking.MessageHandler;
+import com.flowpowered.network.MessageHandler;
 import net.glowstone.net.GlowSession;
 
 public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessage> {
