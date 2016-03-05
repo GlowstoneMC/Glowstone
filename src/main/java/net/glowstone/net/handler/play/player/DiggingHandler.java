@@ -86,6 +86,57 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
 
             // todo: verification against malicious clients
             blockBroken = block.equals(player.getDigging());
+
+            if (blockBroken && holding.getType() != Material.AIR && holding.getDurability() != holding.getType().getMaxDurability()) {
+                switch (block.getType()) {
+                    case GRASS:
+                    case DIRT:
+                    case SAND:
+                    case GRAVEL:
+                    case MYCEL:
+                    case SOUL_SAND:
+                        switch(holding.getType()) {
+                            case WOOD_SPADE:
+                            case STONE_SPADE:
+                            case IRON_SPADE:
+                            case GOLD_SPADE:
+                            case DIAMOND_SPADE:
+                                holding.setDurability((short) (holding.getDurability() + 1));
+                                break;
+                            default:
+                                holding.setDurability((short) (holding.getDurability() + 2));
+                                break;
+                        }
+                        break;
+                    case LOG:
+                    case LOG_2:
+                    case WOOD:
+                    case CHEST:
+                        switch (holding.getType()) {
+                            case WOOD_AXE:
+                            case STONE_AXE:
+                            case IRON_AXE:
+                            case GOLD_AXE:
+                            case DIAMOND_AXE:
+                                holding.setDurability((short) (holding.getDurability() + 1));
+                                break;
+                            default:
+                                holding.setDurability((short) (holding.getDurability() + 2));
+                                break;
+                        }
+                        break;
+                    case STONE:
+                    case COBBLESTONE:
+                        break;
+                    default:
+                        holding.setDurability((short) (holding.getDurability() + 2));
+                        break;
+                }
+                if (holding.getDurability() >= holding.getType().getMaxDurability()) {
+                    player.getInventory().remove(holding);
+                    //player.getItemInHand().setType(Material.AIR);
+                }
+            }
             player.setDigging(null);
         } else if (message.getState() == DiggingMessage.STATE_DROP_ITEM) {
             player.dropItemInHand(false);
