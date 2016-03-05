@@ -11,6 +11,7 @@ public class GlowMonster extends GlowAgeable implements Monster {
      *
      * @param loc  The location of the non-passive mob.
      * @param type The type of mob.
+     * @param maxHealth The max health for this mob.
      */
     public GlowMonster(Location loc, EntityType type, double maxHealth) {
         super(loc, type, maxHealth);

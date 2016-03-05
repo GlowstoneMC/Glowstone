@@ -212,6 +212,10 @@ public final class GlowBlock implements Block {
     /**
      * Set the Material type of a block with metadata? and optionally apply
      * physics.
+     *
+     * @param type The type to set the block to.
+     * @param data The raw data to set the block to.
+     * @param applyPhysics notify this block and surrounding blocks to update physics
      */
     public void setType(Material type, byte data, boolean applyPhysics) {
         setTypeIdAndData(type.getId(), data, applyPhysics);
@@ -268,14 +272,18 @@ public final class GlowBlock implements Block {
     }
 
     /**
-     * Get block material's flammable ability.
+     * Get block material's flammable ability. (ability to have fire spread to it)
+     *
+     * @return if this block is flammable
      */
     public boolean isFlammable() {
         return getMaterialValues().getFlameResistance() >= 0;
     }
 
     /**
-     * Get block material's burn ability.
+     * Get block material's burn ability. (ability to have fire consume it)
+     *
+     * @return if this block is burnable
      */
     public boolean isBurnable() {
         return getMaterialValues().getFireResistance() >= 0;

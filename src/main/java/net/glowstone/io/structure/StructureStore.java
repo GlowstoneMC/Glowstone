@@ -50,6 +50,7 @@ public abstract class StructureStore<T extends GlowStructure> {
      * load method will be called separately.
      *
      * @param world  The target world.
+     * @param random The seeded random.
      * @param chunkX The structure chunk X.
      * @param chunkZ The structure chunk Z.
      * @return The new structure.

@@ -61,6 +61,7 @@ public final class NBTInputStream implements Closeable {
     /**
      * Reads the root NBT {@link CompoundTag} from the stream.
      *
+     * @param readLimiter The read limiter to prevent overflow when reading the NBT data.
      * @return The tag that was read.
      * @throws IOException if an I/O error occurs.
      */

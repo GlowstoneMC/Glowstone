@@ -33,6 +33,7 @@ public final class EventFactory {
      * Calls an event through the plugin manager.
      *
      * @param event The event to throw.
+     * @param <T> The type of the event.
      * @return the called event
      */
     public static <T extends Event> T callEvent(final T event) {

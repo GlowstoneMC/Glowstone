@@ -93,6 +93,7 @@ public final class StructureStorage {
      *
      * @param structure The structure to save.
      * @param compound  The target tag.
+     * @return The structure store for the saved structure.
      */
     public static StructureStore<GlowStructure> saveStructure(GlowStructure structure, CompoundTag compound) {
         // look up the store for the structure

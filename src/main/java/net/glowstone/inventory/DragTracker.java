@@ -33,6 +33,7 @@ public final class DragTracker {
      * Add a slot to an in-progress drag operation if possible.
      *
      * @param right True if the drag is a right-click drag.
+     * @param slot The slot to add to the drag operation.
      * @return True if the slot was accepted.
      */
     public boolean addSlot(boolean right, int slot) {

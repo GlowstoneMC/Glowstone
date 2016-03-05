@@ -65,6 +65,9 @@ public final class GlowScheduler implements BukkitScheduler {
 
     /**
      * Creates a new task scheduler.
+     *
+     * @param server The server that will use this scheduler.
+     * @param worlds The {@link WorldScheduler} this scheduler will use for ticking the server's worlds.
      */
     public GlowScheduler(GlowServer server, WorldScheduler worlds) {
         this.server = server;
@@ -110,7 +113,9 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     /**
-     * Returns true if the current {@link Thread} is the server's primary thread.
+     * Checks if the current {@link Thread} is the server's primary thread.
+     *
+     * @return If the current {@link Thread} is the server's primary thread.
      */
     public boolean isPrimaryThread() {
         return Thread.currentThread() == primaryThread;
@@ -129,7 +134,7 @@ public final class GlowScheduler implements BukkitScheduler {
 
     /**
      * Adds new tasks and updates existing tasks, removing them if necessary.
-     * <p>
+     * <br>
      * todo: Add watchdog system to make sure ticks advance
      */
     private void pulse() {

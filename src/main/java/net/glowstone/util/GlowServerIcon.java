@@ -33,6 +33,7 @@ public final class GlowServerIcon implements CachedServerIcon {
      * Create icon from a file.
      *
      * @param file The file to load from.
+     * @throws Exception if the file cannot be read.
      */
     public GlowServerIcon(File file) throws Exception {
         this(ImageIO.read(file));
@@ -42,6 +43,7 @@ public final class GlowServerIcon implements CachedServerIcon {
      * Create icon from an image.
      *
      * @param image The image to load from.
+     * @throws Exception if the image cannot be read, or is not the correct size
      */
     public GlowServerIcon(BufferedImage image) throws Exception {
         Validate.notNull(image, "Image must not be null");

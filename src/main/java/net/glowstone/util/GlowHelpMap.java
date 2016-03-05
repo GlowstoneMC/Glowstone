@@ -13,7 +13,7 @@ import java.util.*;
 /**
  * An implementation of {@link HelpMap}.
  *
- * @link http://wiki.bukkit.org/Help.yml
+ * See <a href="http://wiki.bukkit.org/Help.yml">http://wiki.bukkit.org/Help.yml</a>
  */
 public final class GlowHelpMap implements HelpMap {
 

@@ -28,6 +28,7 @@ public class BlockBed extends BlockType {
      *
      * @param head head of the bed
      * @param foot foot of the bed
+     * @param occupied if the bed is occupied by a player
      */
     public static void setOccupied(GlowBlock head, GlowBlock foot, boolean occupied) {
         byte headData = head.getData();

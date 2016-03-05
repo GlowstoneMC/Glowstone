@@ -130,6 +130,7 @@ public final class GlowSession extends BasicSession {
      *
      * @param server  The server this session belongs to.
      * @param channel The channel associated with this session.
+     * @param connectionManager The connection manager to manage connections for this session.
      */
     public GlowSession(GlowServer server, Channel channel, ConnectionManager connectionManager) {
         super(channel, ProtocolType.HANDSHAKE.getProtocol());

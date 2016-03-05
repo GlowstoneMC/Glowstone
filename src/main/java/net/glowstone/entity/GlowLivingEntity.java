@@ -102,6 +102,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * Creates a mob within the specified world.
      *
      * @param location The location.
+     * @param maxHealth The max health of this mob.
      */
     protected GlowLivingEntity(Location location, double maxHealth) {
         super(location);
@@ -392,6 +393,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     /**
      * Returns whether the entity's eye location is within a solid block
+     *
+     * @return if the entity is in a solid block
      */
     public boolean isWithinSolidBlock() {
         return getEyeLocation().getBlock().getType().isOccluding();

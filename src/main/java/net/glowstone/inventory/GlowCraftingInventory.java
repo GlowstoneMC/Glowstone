@@ -98,6 +98,8 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
 
     /**
      * Remove a layer of items from the inventory.
+     *
+     * @param cm The crafting manager instance for the server.
      */
     protected void craft(CraftingManager cm) {
         ItemStack[] matrix = getMatrix();

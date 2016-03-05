@@ -34,6 +34,8 @@ public class ItemType {
 
     /**
      * Assign an id number to this ItemType (for internal use only).
+     *
+     * @param id The internal item id for this item.
      */
     public final void setId(int id) {
         if (this.id != -1) {

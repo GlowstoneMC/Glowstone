@@ -612,7 +612,7 @@ public final class GlowChunk implements Chunk {
      * @return The {@link ChunkDataMessage}.
      */
     public ChunkDataMessage toMessage(boolean skylight) {
-        return toMessage(skylight, true, 0);
+        return toMessage(skylight, true);
     }
 
     private static final int PACKET_DATA_ARRAY_LENGTH = (ChunkSection.ARRAY_SIZE * 2) / 8;
@@ -632,15 +632,16 @@ public final class GlowChunk implements Chunk {
      * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream
      * parts of this chunk to them.
      *
+     * @param skylight Whether to include skylight data.
+     * @param entireChunk Whether to send all chunk sections.
      * @return The {@link ChunkDataMessage}.
      */
-    public ChunkDataMessage toMessage(boolean skylight, boolean entireChunk, int sectionBitmask) {
+    public ChunkDataMessage toMessage(boolean skylight, boolean entireChunk) {
         load();
+        int sectionBitmask = 0;
 
         // filter sectionBitmask based on actual chunk contents
-        if (sections == null) {
-            sectionBitmask = 0;
-        } else {
+        if (sections != null) {
             final int maxBitmask = (1 << sections.length) - 1;
             if (entireChunk) {
                 sectionBitmask = maxBitmask;
@@ -730,6 +731,10 @@ public final class GlowChunk implements Chunk {
          * Create a ChunkSection with the specified chunk data. This
          * ChunkSection assumes ownership of the arrays passed in, and they
          * should not be further modified.
+         *
+         * @param types An array of block types for this chunk section.
+         * @param skyLight An array for skylight data for this chunk section.
+         * @param blockLight An array for blocklight data for this chunk section.
          */
         public ChunkSection(char[] types, NibbleArray skyLight, NibbleArray blockLight) {
             if (types.length != ARRAY_SIZE || skyLight.size() != ARRAY_SIZE || blockLight.size() != ARRAY_SIZE) {
@@ -743,6 +748,10 @@ public final class GlowChunk implements Chunk {
 
         /**
          * Calculate the index into internal arrays for the given coordinates.
+         *
+         * @param x The x coordinate, for east and west.
+         * @param y The y coordinate, for up and down.
+         * @param z The z coordinate, for north and south.
          */
         public int index(int x, int y, int z) {
             if (x < 0 || z < 0 || x >= WIDTH || z >= HEIGHT) {
@@ -765,6 +774,8 @@ public final class GlowChunk implements Chunk {
 
         /**
          * Take a snapshot of this section which will not reflect future changes.
+         *
+         * @return The snapshot for this section.
          */
         public ChunkSection snapshot() {
             return new ChunkSection(types.clone(), skyLight.snapshot(), blockLight.snapshot());

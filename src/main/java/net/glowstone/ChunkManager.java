@@ -60,6 +60,7 @@ public final class ChunkManager {
      * Creates a new chunk manager with the specified I/O service and world
      * generator.
      *
+     * @param world The chunk manager's world.
      * @param service   The I/O service.
      * @param generator The world generator.
      */
@@ -72,6 +73,8 @@ public final class ChunkManager {
 
     /**
      * Get the chunk generator.
+     *
+     * @return The chunk generator.
      */
     public ChunkGenerator getGenerator() {
         return generator;
@@ -378,6 +381,7 @@ public final class ChunkManager {
      * Performs the save for the given chunk using the storage provider.
      *
      * @param chunk The chunk to save.
+     * @return True if the save was successful.
      */
     public boolean performSave(GlowChunk chunk) {
         if (chunk.isLoaded()) {

@@ -21,6 +21,7 @@ public interface StructureDataService {
     /**
      * Write the structures data to storage.
      *
+     * @param structures The structures to write to storage.
      * @throws IOException if an I/O error occurs.
      */
     void writeStructuresData(Map<Integer, GlowStructure> structures) throws IOException;

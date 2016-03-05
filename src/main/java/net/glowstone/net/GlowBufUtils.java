@@ -39,6 +39,7 @@ public final class GlowBufUtils {
      *
      * @param buf The buffer.
      * @return The metadata.
+     * @throws IOException if the buffer could not be read
      */
     public static List<MetadataMap.Entry> readMetadata(ByteBuf buf) throws IOException {
         List<MetadataMap.Entry> entries = new ArrayList<>();
@@ -101,6 +102,7 @@ public final class GlowBufUtils {
      *
      * @param buf     The buffer.
      * @param entries The metadata.
+     * @throws IOException if the buffer could not be written to
      */
     public static void writeMetadata(ByteBuf buf, List<MetadataMap.Entry> entries) throws IOException {
         for (MetadataMap.Entry entry : entries) {

@@ -27,6 +27,8 @@ public final class Position {
 
     /**
      * Gets an integer approximation of the yaw between 0 and 255.
+     *
+     * @param loc The location to get the value from.
      * @return An integer approximation of the yaw.
      */
     public static int getIntYaw(Location loc) {
@@ -35,6 +37,8 @@ public final class Position {
 
     /**
      * Gets an integer approximation of the pitch between 0 and 255.
+     *
+     * @param loc The location to get the value from.
      * @return An integer approximation of the yaw.
      */
     public static int getIntPitch(Location loc) {
@@ -43,6 +47,9 @@ public final class Position {
 
     /**
      * Gets whether there has been a position change between the two Locations.
+     *
+     * @param first The initial location.
+     * @param second The final location.
      * @return A boolean.
      */
     public static boolean hasMoved(Location first, Location second) {
@@ -51,6 +58,9 @@ public final class Position {
 
     /**
      * Gets whether there has been a rotation change between the two Locations.
+     *
+     * @param first The initial location.
+     * @param second The final location.
      * @return A boolean.
      */
     public static boolean hasRotated(Location first, Location second) {
@@ -96,7 +106,7 @@ public final class Position {
      * Get an intercardinal BlockFace from a rotation value, where NORTH is 0.
      * @param rotation byte value rotation to get
      * @return intercardinal BlockFace
-     * @throws IndexOutOfBoundsException If 0 > value > 15
+     * @throws IndexOutOfBoundsException If the value is less than 0 or greater than 15
      */
     public static BlockFace getDirection(byte rotation) {
         return ROTATIONS.get(rotation);

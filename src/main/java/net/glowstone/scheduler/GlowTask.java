@@ -66,6 +66,12 @@ public class GlowTask extends FutureTask<Void> implements BukkitTask, BukkitWork
     /**
      * Creates a new task with the specified number of ticks between
      * consecutive calls to execute().
+     *
+     * @param owner The plugin which started the task.
+     * @param task The runnable for this task.
+     * @param sync If the task should be run synchronously.
+     * @param delay The delay in ticks before running this task.
+     * @param period The delay in ticks before running this task again. -1 for no repeat.
      */
     public GlowTask(Plugin owner, Runnable task, boolean sync, long delay, long period) {
         super(task, null);

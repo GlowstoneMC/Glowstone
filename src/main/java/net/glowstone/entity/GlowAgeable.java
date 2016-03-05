@@ -25,10 +25,11 @@ public class GlowAgeable extends GlowCreature implements Ageable {
     private int inLove = 0;
 
     /**
-     * Creates a new ageable monster.
+     * Creates a new ageable creature.
      *
-     * @param location The location of the monster.
+     * @param location The location of the creature.
      * @param type     The type of monster.
+     * @param maxHealth The max health of the creature.
      */
     public GlowAgeable(Location location, EntityType type, double maxHealth) {
         super(location, type, maxHealth);

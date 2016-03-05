@@ -329,6 +329,7 @@ public final class GlowWorld implements World {
     /**
      * Get a new chunk lock object a player or other party can use to keep chunks loaded.
      *
+     * @param desc A description for this chunk lock.
      * @return The ChunkLock.
      */
     public ChunkManager.ChunkLock newChunkLock(String desc) {
@@ -1759,6 +1760,9 @@ public final class GlowWorld implements World {
     /**
      * Calling this method will request that the block is ticked on the next iteration
      * that applies to the specified tick rate.
+     *
+     * @param block The block to tick.
+     * @param tickRate The tick rate to tick the block at.
      */
     public void requestPulse(GlowBlock block, long tickRate) {
         Location target = block.getLocation();

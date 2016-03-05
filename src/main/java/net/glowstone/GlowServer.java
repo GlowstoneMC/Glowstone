@@ -257,6 +257,8 @@ public final class GlowServer implements Server {
 
     /**
      * Creates a new server.
+     *
+     * @param config This server's config.
      */
     public GlowServer(ServerConfig config) {
         this.materialValueManager = new BuiltinMaterialValueManager();
@@ -887,7 +889,9 @@ public final class GlowServer implements Server {
     }
 
     /**
-     * Returns the list of OPs on this server.
+     * Returns the list of operators on this server.
+     *
+     * @return A file containing a list of UUIDs for this server's operators.
      */
     public UuidListFile getOpsList() {
         return opsList;
@@ -895,6 +899,7 @@ public final class GlowServer implements Server {
 
     /**
      * Returns the list of whitelisted players on this server.
+     * @return A file containing a list of UUIDs for this server's whitelisted players.
      */
     public UuidListFile getWhitelist() {
         return whitelist;
@@ -909,6 +914,8 @@ public final class GlowServer implements Server {
 
     /**
      * Returns the folder where configuration files are stored
+     *
+     * @return The server's configuration folder.
      */
     public File getConfigDir() {
         return config.getDirectory();

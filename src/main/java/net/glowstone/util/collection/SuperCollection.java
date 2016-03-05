@@ -51,6 +51,8 @@ public abstract class SuperCollection<E> implements Collection<E> {
      * Sets what will this collection returns for certain operations.
      * If mode is set to ANY, operations will return "true" as long as the parents returned "true" at least once.
      * If mode is set to ALL, operations will only return "true" if all parents also returned "true".
+     *
+     * @param resultMode Result mode.
      */
     public void setResultMode(ResultMode resultMode) {
         this.resultMode = resultMode;
@@ -69,6 +71,8 @@ public abstract class SuperCollection<E> implements Collection<E> {
      * Sets how this collection will behave to additions.
      * If mode is set to ALL, the addition will be performed on every parent. Default for sets.
      * If mode is set to LAST, the operation will be performed on the last parent only. Default for lists.
+     *
+     * @param additionMode Addition mode.
      */
     public void setAdditionMode(AdditionMode additionMode) {
         this.additionMode = additionMode;

@@ -112,8 +112,10 @@ public final class CraftingManager implements Iterable<Recipe> {
 
     /**
      * Get the amount of layers in the crafting matrix.
+     * This assumes all Minecraft recipes have an item stack of 1 for all items in the recipe.
      *
      * @param items The items in the crafting matrix.
+     * @return The number of stacks for a recipe.
      */
     public int getLayers(ItemStack... items) {
         int layers = 0;

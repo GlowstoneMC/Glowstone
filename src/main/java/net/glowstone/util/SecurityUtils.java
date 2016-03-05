@@ -18,6 +18,8 @@ public final class SecurityUtils {
 
     /**
      * Generate a RSA key pair
+     *
+     * @return The RSA key pair.
      */
     public static KeyPair generateKeyPair() {
         KeyPair keyPair = null;
@@ -34,6 +36,8 @@ public final class SecurityUtils {
 
     /**
      * Generate a random verify token
+     *
+     * @return An array of 4 random bytes.
      */
     public static byte[] generateVerifyToken() {
         byte[] token = new byte[4];
@@ -43,6 +47,9 @@ public final class SecurityUtils {
 
     /**
      * Generates an X509 formatted key used in authentication
+     *
+     * @param base The key to use to generate a public key from its key spec.
+     * @return The X509 formatted key.
      */
     public static Key generateX509Key(Key base) {
         Key key = null;

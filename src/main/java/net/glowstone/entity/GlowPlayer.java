@@ -774,6 +774,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * Checks whether the player can see the given chunk.
      *
+     * @param chunk The chunk to check.
      * @return If the chunk is known to the player's client.
      */
     public boolean canSeeChunk(GlowChunk.Key chunk) {
@@ -783,6 +784,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * Checks whether the player can see the given entity.
      *
+     * @param entity The entity to check.
      * @return If the entity is known to the player's client.
      */
     public boolean canSeeEntity(GlowEntity entity) {
@@ -851,9 +853,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     /**
-     * Get this player's client settings.
+     * Set this player's client settings.
      *
-     * @return The player's client settings.
+     * @param settings The settings to set.
      */
     public void setSettings(ClientSettings settings) {
         this.settings = settings;
