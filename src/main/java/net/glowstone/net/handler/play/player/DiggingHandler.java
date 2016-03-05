@@ -95,7 +95,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                     case GRAVEL:
                     case MYCEL:
                     case SOUL_SAND:
-                        switch(holding.getType()) {
+                        switch (holding.getType()) {
                             case WOOD_SPADE:
                             case STONE_SPADE:
                             case IRON_SPADE:
