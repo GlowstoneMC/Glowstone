@@ -1,6 +1,6 @@
 package net.glowstone.net.handler.status;
 
-import com.flowpowered.networking.MessageHandler;
+import com.flowpowered.network.MessageHandler;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.status.StatusPingMessage;
 

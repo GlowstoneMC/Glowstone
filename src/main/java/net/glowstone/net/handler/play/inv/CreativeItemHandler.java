@@ -1,6 +1,6 @@
 package net.glowstone.net.handler.play.inv;
 
-import com.flowpowered.networking.MessageHandler;
+import com.flowpowered.network.MessageHandler;
 import net.glowstone.EventFactory;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.entity.GlowPlayer;

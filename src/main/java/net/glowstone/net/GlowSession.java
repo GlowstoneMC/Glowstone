@@ -1,10 +1,10 @@
 package net.glowstone.net;
 
-import com.flowpowered.networking.AsyncableMessage;
-import com.flowpowered.networking.ConnectionManager;
-import com.flowpowered.networking.Message;
-import com.flowpowered.networking.MessageHandler;
-import com.flowpowered.networking.session.BasicSession;
+import com.flowpowered.network.AsyncableMessage;
+import com.flowpowered.network.ConnectionManager;
+import com.flowpowered.network.Message;
+import com.flowpowered.network.MessageHandler;
+import com.flowpowered.network.session.BasicSession;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;

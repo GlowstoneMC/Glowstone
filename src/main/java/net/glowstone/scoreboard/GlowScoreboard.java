@@ -1,6 +1,6 @@
 package net.glowstone.scoreboard;
 
-import com.flowpowered.networking.Message;
+import com.flowpowered.network.Message;
 import com.google.common.collect.ImmutableSet;
 import net.glowstone.constants.GlowDisplaySlot;
 import net.glowstone.entity.GlowPlayer;

@@ -1,7 +1,7 @@
 package net.glowstone.net.handler.play.game;
 
-import com.flowpowered.networking.MessageHandler;
-import com.flowpowered.networking.util.ByteBufUtils;
+import com.flowpowered.network.MessageHandler;
+import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.glowstone.GlowServer;

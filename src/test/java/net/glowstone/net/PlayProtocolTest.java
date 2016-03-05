@@ -1,6 +1,6 @@
 package net.glowstone.net;
 
-import com.flowpowered.networking.Message;
+import com.flowpowered.network.Message;
 import net.glowstone.net.handler.play.player.UseItemMessage;
 import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.play.entity.*;

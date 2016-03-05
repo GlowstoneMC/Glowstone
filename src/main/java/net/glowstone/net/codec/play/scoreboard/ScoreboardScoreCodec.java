@@ -1,7 +1,7 @@
 package net.glowstone.net.codec.play.scoreboard;
 
-import com.flowpowered.networking.Codec;
-import com.flowpowered.networking.util.ByteBufUtils;
+import com.flowpowered.network.Codec;
+import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import net.glowstone.net.message.play.scoreboard.ScoreboardScoreMessage;
 

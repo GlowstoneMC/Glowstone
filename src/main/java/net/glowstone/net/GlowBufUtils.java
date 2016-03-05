@@ -1,6 +1,6 @@
 package net.glowstone.net;
 
-import com.flowpowered.networking.util.ByteBufUtils;
+import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import net.glowstone.GlowServer;

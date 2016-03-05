@@ -1,6 +1,6 @@
 package net.glowstone.entity;
 
-import com.flowpowered.networking.Message;
+import com.flowpowered.network.Message;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.constants.GlowPotionEffect;
