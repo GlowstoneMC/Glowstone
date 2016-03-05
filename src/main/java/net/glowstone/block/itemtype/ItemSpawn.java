@@ -5,6 +5,7 @@ import net.glowstone.entity.EntityRegistry;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.block.BlockFace;
+import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -14,7 +15,7 @@ public class ItemSpawn extends ItemType {
         GlowBlock target = against.getRelative(face);
 
         Class<? extends GlowEntity> spawn = EntityRegistry.getEntity(holding.getDurability());
-        target.getWorld().spawn(target.getLocation(), spawn);
+        target.getWorld().spawn(target.getLocation(), spawn, SpawnReason.SPAWNER_EGG);
 
     }
 }

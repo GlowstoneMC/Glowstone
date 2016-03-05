@@ -1199,6 +1199,10 @@ public final class GlowWorld implements World {
 
     @Override
     public <T extends Entity> T spawn(Location location, Class<T> clazz) throws IllegalArgumentException {
+        return spawn(location, clazz, SpawnReason.CUSTOM);
+    }
+
+    public <T extends Entity> T spawn(Location location, Class<T> clazz, SpawnReason reason) throws IllegalArgumentException {
         GlowEntity entity = null;
 
         if (TNTPrimed.class.isAssignableFrom(clazz)) {
@@ -1208,7 +1212,7 @@ public final class GlowWorld implements World {
         try {
             Constructor<T> constructor = clazz.getConstructor(Location.class);
             entity = (GlowEntity) constructor.newInstance(location);
-            CreatureSpawnEvent spawnEvent = new CreatureSpawnEvent((LivingEntity) entity, SpawnReason.SPAWNER_EGG);
+            CreatureSpawnEvent spawnEvent = new CreatureSpawnEvent((LivingEntity) entity, reason);
             if (!spawnEvent.isCancelled()) {
                 entity.createSpawnMessage();
             } else {
