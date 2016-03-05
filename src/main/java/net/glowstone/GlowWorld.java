@@ -23,6 +23,8 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
@@ -39,6 +41,8 @@ import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -1199,6 +1203,22 @@ public final class GlowWorld implements World {
 
         if (TNTPrimed.class.isAssignableFrom(clazz)) {
             entity = new GlowTNTPrimed(location, null);
+        }
+
+        try {
+            Constructor<T> constructor = clazz.getConstructor(Location.class);
+            entity = (GlowEntity) constructor.newInstance(location);
+            CreatureSpawnEvent spawnEvent = new CreatureSpawnEvent((LivingEntity) entity, SpawnReason.SPAWNER_EGG);
+            if (!spawnEvent.isCancelled()) {
+                entity.createSpawnMessage();
+            } else {
+                // TODO: separate spawning and construction for better event cancellation
+                entity.remove();
+            }
+        } catch (NoSuchMethodException e) {
+            GlowServer.logger.log(Level.WARNING, "Invalid entity spawn: ", e);
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            GlowServer.logger.log(Level.SEVERE, "Unable to spawn entity: ", e);
         }
 
         if (entity != null) {
