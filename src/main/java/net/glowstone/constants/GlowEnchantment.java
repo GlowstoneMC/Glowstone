@@ -93,9 +93,32 @@ public final class GlowEnchantment extends Enchantment implements WeightedRandom
         return impl.matcher.matches(item.getType());
     }
 
+    /**
+     * The rarity of the enchantment, kept for compatibility with Bukkit.
+     *
+     * @see #getRarity()
+     */
     @Override
     public int getWeight() {
-        return impl.weight;
+        return getRarity().getWeight();
+    }
+
+    /**
+     * Treasure enchantments can only be obtained from chest loot, fishing, or trading for enchanted books.
+     *
+     * @return true if the enchantment is a treasure, otherwise false
+     */
+    public boolean isTreasure() {
+        return impl.treasure;
+    }
+
+    /**
+     * Represents the rarity of obtaining an enchantment.
+     *
+     * @return the rarity of the enchantment
+     */
+    public Rarity getRarity() {
+        return impl.rarity;
     }
 
     public boolean isInRange(int level, int modifier) {
@@ -103,31 +126,33 @@ public final class GlowEnchantment extends Enchantment implements WeightedRandom
     }
 
     private enum Impl {
-        PROTECTION_ENVIRONMENTAL(0, "Protection", 4, 10, 1, 11, 20, EnchantmentTarget.ARMOR, GROUP_PROTECT),
-        PROTECTION_FIRE(1, "Fire Protection", 4, 5, 10, 8, 12, EnchantmentTarget.ARMOR, GROUP_PROTECT),
-        PROTECTION_FALL(2, "Feather Falling", 4, 5, 5, 6, 10, EnchantmentTarget.ARMOR_FEET, GROUP_PROTECT),
-        PROTECTION_EXPLOSIONS(3, "Blast Protection", 4, 2, 5, 8, 12, EnchantmentTarget.ARMOR),
-        PROTECTION_PROJECTILE(4, "Projectile Protection", 4, 5, 3, 6, 15, EnchantmentTarget.ARMOR, GROUP_PROTECT),
-        OXYGEN(5, "Respiration", 3, 2, 10, 10, 30, EnchantmentTarget.ARMOR_HEAD),
-        WATER_WORKER(6, "Aqua Affinity", 1, 2, 1, 0, 40, EnchantmentTarget.ARMOR_HEAD),
-        THORNS(7, "Thorns", 3, 1, 10, 20, 50, false, EnchantmentTarget.ARMOR_TORSO, new MatcherAdapter(EnchantmentTarget.ARMOR)),
-        DEPTH_STRIDER(8, "Depth Strider", 3, 2, 10, 10, 15, EnchantmentTarget.ARMOR_FEET),
-        DAMAGE_ALL(16, "Sharpness", 5, 10, 1, 11, 20, EnchantmentTarget.WEAPON, SWORD_OR_AXE, GROUP_ATTACK),
-        DAMAGE_UNDEAD(17, "Smite", 5, 5, 5, 8, 20, EnchantmentTarget.WEAPON, SWORD_OR_AXE, GROUP_ATTACK),
-        DAMAGE_ARTHROPODS(18, "Bane of Arthropods", 5, 5, 5, 8, 20, EnchantmentTarget.WEAPON, SWORD_OR_AXE, GROUP_ATTACK),
-        KNOCKBACK(19, "Knockback", 2, 5, 5, 20, 50, false, EnchantmentTarget.WEAPON),
-        FIRE_ASPECT(20, "Fire Aspect", 2, 2, 10, 20, 50, false, EnchantmentTarget.WEAPON),
-        LOOT_BONUS_MOBS(21, "Looting", 3, 2, 15, 9, 50, false, EnchantmentTarget.WEAPON),
-        DIG_SPEED(32, "Efficiency", 5, 10, 1, 10, 50, false, EnchantmentTarget.TOOL, DIGGING_TOOLS),
-        SILK_TOUCH(33, "Silk Touch", 1, 1, 15, 0, 50, false, EnchantmentTarget.TOOL, DIGGING_TOOLS, GROUP_DIG),
-        DURABILITY(34, "Unbreaking", 3, 5, 5, 8, 50, false, EnchantmentTarget.TOOL, ALL_THINGS),
-        LOOT_BONUS_BLOCKS(35, "Fortune", 3, 2, 15, 9, 50, EnchantmentTarget.TOOL, BASE_TOOLS, GROUP_DIG),
-        ARROW_DAMAGE(48, "Power", 5, 10, 1, 10, 15, EnchantmentTarget.BOW),
-        ARROW_KNOCKBACK(49, "Punch", 2, 2, 12, 20, 25, EnchantmentTarget.BOW),
-        ARROW_FIRE(50, "Flame", 1, 2, 20, 0, 30, EnchantmentTarget.BOW),
-        ARROW_INFINITE(51, "Infinity", 1, 1, 20, 0, 30, EnchantmentTarget.BOW),
-        LUCK(61, "Luck of the Sea", 3, 2, 15, 9, 50, false, EnchantmentTarget.FISHING_ROD),
-        LURE(62, "Lure", 3, 2, 15, 9, 50, false, EnchantmentTarget.FISHING_ROD);
+        PROTECTION_ENVIRONMENTAL(0, "Protection", 4, Rarity.COMMON, 1, 11, 20, EnchantmentTarget.ARMOR, GROUP_PROTECT),
+        PROTECTION_FIRE(1, "Fire Protection", 4, Rarity.UNCOMMON, 10, 8, 12, EnchantmentTarget.ARMOR, GROUP_PROTECT),
+        PROTECTION_FALL(2, "Feather Falling", 4, Rarity.UNCOMMON, 5, 6, 10, EnchantmentTarget.ARMOR_FEET, GROUP_PROTECT),
+        PROTECTION_EXPLOSIONS(3, "Blast Protection", 4, Rarity.RARE, 5, 8, 12, EnchantmentTarget.ARMOR),
+        PROTECTION_PROJECTILE(4, "Projectile Protection", 4, Rarity.UNCOMMON, 3, 6, 15, EnchantmentTarget.ARMOR, GROUP_PROTECT),
+        OXYGEN(5, "Respiration", 3, Rarity.RARE, 10, 10, 30, EnchantmentTarget.ARMOR_HEAD),
+        WATER_WORKER(6, "Aqua Affinity", 1, Rarity.RARE, 1, 0, 40, EnchantmentTarget.ARMOR_HEAD),
+        THORNS(7, "Thorns", 3, Rarity.VERY_RARE, 10, 20, 50, false, EnchantmentTarget.ARMOR_TORSO, new MatcherAdapter(EnchantmentTarget.ARMOR)),
+        DEPTH_STRIDER(8, "Depth Strider", 3, Rarity.RARE, 10, 10, 15, EnchantmentTarget.ARMOR_FEET),
+        FROST_WALKER(9, "Frost Walker", 2, Rarity.RARE, 10, 10, 15, EnchantmentTarget.ARMOR_FEET),
+        DAMAGE_ALL(16, "Sharpness", 5, Rarity.COMMON, 1, 11, 20, EnchantmentTarget.WEAPON, SWORD_OR_AXE, GROUP_ATTACK),
+        DAMAGE_UNDEAD(17, "Smite", 5, Rarity.UNCOMMON, 5, 8, 20, EnchantmentTarget.WEAPON, SWORD_OR_AXE, GROUP_ATTACK),
+        DAMAGE_ARTHROPODS(18, "Bane of Arthropods", 5, Rarity.UNCOMMON, 5, 8, 20, EnchantmentTarget.WEAPON, SWORD_OR_AXE, GROUP_ATTACK),
+        KNOCKBACK(19, "Knockback", 2, Rarity.UNCOMMON, 5, 20, 50, false, EnchantmentTarget.WEAPON),
+        FIRE_ASPECT(20, "Fire Aspect", 2, Rarity.RARE, 10, 20, 50, false, EnchantmentTarget.WEAPON),
+        LOOT_BONUS_MOBS(21, "Looting", 3, Rarity.RARE, 15, 9, 50, false, EnchantmentTarget.WEAPON),
+        DIG_SPEED(32, "Efficiency", 5, Rarity.COMMON, 1, 10, 50, false, EnchantmentTarget.TOOL, DIGGING_TOOLS),
+        SILK_TOUCH(33, "Silk Touch", 1, Rarity.VERY_RARE, false, 15, 0, 50, false, EnchantmentTarget.TOOL, DIGGING_TOOLS, GROUP_DIG),
+        DURABILITY(34, "Unbreaking", 3, Rarity.UNCOMMON, 5, 8, 50, false, EnchantmentTarget.TOOL, ALL_THINGS),
+        LOOT_BONUS_BLOCKS(35, "Fortune", 3, Rarity.RARE, 15, 9, 50, EnchantmentTarget.TOOL, BASE_TOOLS, GROUP_DIG),
+        ARROW_DAMAGE(48, "Power", 5, Rarity.COMMON, 1, 10, 15, EnchantmentTarget.BOW),
+        ARROW_KNOCKBACK(49, "Punch", 2, Rarity.RARE, 12, 20, 25, EnchantmentTarget.BOW),
+        ARROW_FIRE(50, "Flame", 1, Rarity.RARE, 20, 0, 30, EnchantmentTarget.BOW),
+        ARROW_INFINITE(51, "Infinity", 1, Rarity.VERY_RARE, 20, 0, 30, EnchantmentTarget.BOW),
+        LUCK(61, "Luck of the Sea", 3, Rarity.RARE, 15, 9, 50, false, EnchantmentTarget.FISHING_ROD),
+        LURE(62, "Lure", 3, Rarity.RARE, 15, 9, 50, false, EnchantmentTarget.FISHING_ROD),
+        MENDING(70, "Mending", 1, Rarity.RARE, 25, 25, 50, EnchantmentTarget.ALL);
 
         private final int id;
         private final String name;
@@ -135,40 +160,41 @@ public final class GlowEnchantment extends Enchantment implements WeightedRandom
         private final EnchantmentTarget target;
         private final MaterialMatcher matcher;
         private final int group;
-        private final int weight;
+        private final Rarity rarity;
         private final int minValue, minIncrement;
         private final int maxIncrement;
+        private final boolean treasure;
         private final boolean simpleRange;
 
-        Impl(int id, String name, int max, int weight, int minValue, int minInc, int maxInc, EnchantmentTarget target) {
-            this(id, name, max, weight, minValue, minInc, maxInc, true, target);
+        Impl(int id, String name, int max, Rarity rarity, int minValue, int minInc, int maxInc, EnchantmentTarget target) {
+            this(id, name, max, rarity, false, minValue, minInc, maxInc, true, target, new MatcherAdapter(target), GROUP_NONE);
         }
 
-        Impl(int id, String name, int max, int weight, int minValue, int minInc, int maxInc, boolean simpleRange, EnchantmentTarget target) {
-            this(id, name, max, weight, minValue, minInc, maxInc, simpleRange, target, new MatcherAdapter(target), GROUP_NONE);
+        Impl(int id, String name, int max, Rarity rarity, int minValue, int minInc, int maxInc, boolean simpleRange, EnchantmentTarget target) {
+            this(id, name, max, rarity, false, minValue, minInc, maxInc, simpleRange, target, new MatcherAdapter(target), GROUP_NONE);
         }
 
-        Impl(int id, String name, int max, int weight, int minValue, int minInc, int maxInc, EnchantmentTarget target, int group) {
-            this(id, name, max, weight, minValue, minInc, maxInc, true, target, new MatcherAdapter(target), group);
+        Impl(int id, String name, int max, Rarity rarity, int minValue, int minInc, int maxInc, EnchantmentTarget target, int group) {
+            this(id, name, max, rarity, false, minValue, minInc, maxInc, true, target, new MatcherAdapter(target), group);
         }
 
-        Impl(int id, String name, int max, int weight, int minValue, int minInc, int maxInc, boolean simpleRange, EnchantmentTarget target, MaterialMatcher matcher) {
-            this(id, name, max, weight, minValue, minInc, maxInc, simpleRange, target, matcher, GROUP_NONE);
+        Impl(int id, String name, int max, Rarity rarity, int minValue, int minInc, int maxInc, boolean simpleRange, EnchantmentTarget target, MaterialMatcher matcher) {
+            this(id, name, max, rarity, false, minValue, minInc, maxInc, simpleRange, target, matcher, GROUP_NONE);
         }
 
-        Impl(int id, String name, int max, int weight, int minValue, int minInc, int maxInc, boolean simpleRange, EnchantmentTarget target, MatcherAdapter matcher) {
-            this(id, name, max, weight, minValue, minInc, maxInc, simpleRange, target, matcher, GROUP_NONE);
+        Impl(int id, String name, int max, Rarity rarity, int minValue, int minInc, int maxInc, boolean simpleRange, EnchantmentTarget target, MatcherAdapter matcher) {
+            this(id, name, max, rarity, false, minValue, minInc, maxInc, simpleRange, target, matcher, GROUP_NONE);
         }
 
-        Impl(int id, String name, int max, int weight, int minValue, int minInc, int maxInc, EnchantmentTarget target, MaterialMatcher matcher, int group) {
-            this(id, name, max, weight, minValue, minInc, maxInc, true, target, matcher, group);
+        Impl(int id, String name, int max, Rarity rarity, int minValue, int minInc, int maxInc, EnchantmentTarget target, MaterialMatcher matcher, int group) {
+            this(id, name, max, rarity, false, minValue, minInc, maxInc, true, target, matcher, group);
         }
 
-        Impl(int id, String name, int max, int weight, int minValue, int minInc, int maxInc, boolean simpleRange, EnchantmentTarget target, MaterialMatcher matcher, int group) {
+        Impl(int id, String name, int max, Rarity rarity, boolean treasure, int minValue, int minInc, int maxInc, boolean simpleRange, EnchantmentTarget target, MaterialMatcher matcher, int group) {
             this.id = id;
             this.name = name;
             this.maxLevel = max;
-            this.weight = weight;
+            this.rarity = rarity;
             this.target = target;
             this.matcher = matcher;
             this.group = group;
@@ -176,6 +202,7 @@ public final class GlowEnchantment extends Enchantment implements WeightedRandom
             this.minIncrement = minInc;
             this.maxIncrement = maxInc;
             this.simpleRange = simpleRange;
+            this.treasure = treasure;
         }
 
         int getMinRange(int modifier) {
@@ -198,6 +225,23 @@ public final class GlowEnchantment extends Enchantment implements WeightedRandom
         @Override
         public boolean matches(Material material) {
             return target.includes(material);
+        }
+    }
+
+    private enum Rarity {
+        COMMON(10),
+        UNCOMMON(5),
+        RARE(2),
+        VERY_RARE(1);
+
+        private final int weight;
+
+        Rarity(int weight) {
+            this.weight = weight;
+        }
+
+        public int getWeight() {
+            return weight;
         }
     }
 }
