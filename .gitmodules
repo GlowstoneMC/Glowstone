@@ -2,6 +2,6 @@
 	path = Glowkit
 	url = https://github.com/GlowstonePlusPlus/Glowkit
 	branch = bukkit+glowkit
-[submodule "FlowNetworking"]
-	path = FlowNetworking
+[submodule "FlowNetwork"]
+	path = FlowNetwork
 	url = https://github.com/GlowstonePlusPlus/network.git
