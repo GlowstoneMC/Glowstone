@@ -1,28 +1,31 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
     <modelVersion>4.0.0</modelVersion>
+
+    <name>Glowstone++</name>
     <groupId>net.glowstoneplusplus</groupId>
     <artifactId>glowstoneplusplus</artifactId>
     <version>1.9-SNAPSHOT</version>
-    <name>GlowstonePlusPlus</name>
-    <url>https://github.com/GlowstonePlusPlus/GlowstonePlusPlus</url>
+    <packaging>jar</packaging>
+    <inceptionYear>2015</inceptionYear>
+    <url>https://www.glowstone.net</url>
+    <description>The enhanced Glowstone fork with an emphasis on performance, control and compatibility.</description>
 
     <scm>
-        <connection>scm:git:git://github.com/GlowstonePlusPlus/GlowstonePlusPlus.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/GlowstonePlusPlus/GlowstonePlusPlus.git</developerConnection>
-        <url>https://github.com/GlowstonePlusPlus/GlowstonePlusPlus</url>
+        <connection>scm:git:git://github.com/GlowstoneMC/GlowstonePlusPlus.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/GlowstoneMC/GlowstonePlusPlus.git</developerConnection>
+        <url>https://github.com/GlowstoneMC/GlowstonePlusPlus</url>
     </scm>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <bukkit.version>1.9-R0.1-SNAPSHOT</bukkit.version>
-    </properties>
 
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
         <version>9</version>
     </parent>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <bukkit.version>1.9-R0.1-SNAPSHOT</bukkit.version>
+    </properties>
 
     <repositories>
         <repository>
@@ -36,8 +39,8 @@
     <dependencies>
         <dependency>
             <groupId>org.ow2.asm</groupId>
-            <artifactId>asm-debug-all</artifactId>
-            <version>5.0.3</version>
+            <artifactId>asm</artifactId>
+            <version>5.0.4</version>
         </dependency>
         <dependency>
             <groupId>net.glowstone</groupId>
@@ -83,7 +86,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -99,7 +102,7 @@
             </resource>
         </resources>
 
-        <defaultGoal>clean install</defaultGoal>
+        <defaultGoal>package</defaultGoal>
         <plugins>
             <plugin>
                 <groupId>com.lukegb.mojo</groupId>
@@ -112,9 +115,6 @@
                         </goals>
                         <id>git-describe</id>
                         <phase>initialize</phase>
-                        <configuration>
-                            <outputPrefix>Glowstone++-git-</outputPrefix>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -183,6 +183,24 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
+                    <compilerArguments>
+                        <O>-Xlint:all</O>
+                    </compilerArguments>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Implementation-Title>${project.name}</Implementation-Title>
+                            <Implementation-Version>${project.version}-${describe}</Implementation-Version>
+                            <Specification-Version>${bukkit.version}</Specification-Version>
+                        </manifestEntries>
+                    </archive>
                 </configuration>
             </plugin>
 
