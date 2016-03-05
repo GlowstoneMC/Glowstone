@@ -24,6 +24,8 @@ public final class MessageHandler extends SimpleChannelInboundHandler<Message> {
 
     /**
      * Creates a new network event handler.
+     *
+     * @param connectionManager The connection manager to manage connections for this message handler.
      */
     public MessageHandler(GlowNetworkServer connectionManager) {
         this.connectionManager = connectionManager;

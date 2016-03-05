@@ -34,6 +34,7 @@ public class GlowCreature extends GlowLivingEntity implements Creature {
      *
      * @param location The location of the monster.
      * @param type     The type of monster.
+     * @param maxHealth The max health of the monster.
      */
     public GlowCreature(Location location, EntityType type, double maxHealth) {
         super(location, maxHealth);

@@ -752,6 +752,8 @@ public final class GlowChunk implements Chunk {
          * @param x The x coordinate, for east and west.
          * @param y The y coordinate, for up and down.
          * @param z The z coordinate, for north and south.
+         *
+         * @return The index.
          */
         public int index(int x, int y, int z) {
             if (x < 0 || z < 0 || x >= WIDTH || z >= HEIGHT) {
