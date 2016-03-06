@@ -68,6 +68,7 @@ public class GlowSheep extends GlowAnimal implements Sheep {
 
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
+        super.entityInteract(player, message);
         if (player.getGameMode().equals(GameMode.SPECTATOR)) return false;
         if (player.getItemInHand() == null) return false;
         switch (player.getItemInHand().getType()) {
