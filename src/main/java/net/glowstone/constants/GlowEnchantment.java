@@ -112,6 +112,7 @@ public final class GlowEnchantment extends Enchantment implements WeightedRandom
         WATER_WORKER(6, "Aqua Affinity", 1, 2, 1, 0, 40, EnchantmentTarget.ARMOR_HEAD),
         THORNS(7, "Thorns", 3, 1, 10, 20, 50, false, EnchantmentTarget.ARMOR_TORSO, new MatcherAdapter(EnchantmentTarget.ARMOR)),
         DEPTH_STRIDER(8, "Depth Strider", 3, 2, 10, 10, 15, EnchantmentTarget.ARMOR_FEET),
+        FROST_WALKER(9, "Frost Walker", 2, 2, 10, 10, 20, EnchantmentTarget.ARMOR_FEET),
         DAMAGE_ALL(16, "Sharpness", 5, 10, 1, 11, 20, EnchantmentTarget.WEAPON, SWORD_OR_AXE, GROUP_ATTACK),
         DAMAGE_UNDEAD(17, "Smite", 5, 5, 5, 8, 20, EnchantmentTarget.WEAPON, SWORD_OR_AXE, GROUP_ATTACK),
         DAMAGE_ARTHROPODS(18, "Bane of Arthropods", 5, 5, 5, 8, 20, EnchantmentTarget.WEAPON, SWORD_OR_AXE, GROUP_ATTACK),
@@ -127,7 +128,9 @@ public final class GlowEnchantment extends Enchantment implements WeightedRandom
         ARROW_FIRE(50, "Flame", 1, 2, 20, 0, 30, EnchantmentTarget.BOW),
         ARROW_INFINITE(51, "Infinity", 1, 1, 20, 0, 30, EnchantmentTarget.BOW),
         LUCK(61, "Luck of the Sea", 3, 2, 15, 9, 50, false, EnchantmentTarget.FISHING_ROD),
-        LURE(62, "Lure", 3, 2, 15, 9, 50, false, EnchantmentTarget.FISHING_ROD);
+        LURE(62, "Lure", 3, 2, 15, 9, 50, false, EnchantmentTarget.FISHING_ROD),
+        MENDING(70, "Mending", 1, 2, 10, 10, 20, EnchantmentTarget.ALL);
+
 
         private final int id;
         private final String name;

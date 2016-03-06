@@ -1667,6 +1667,11 @@ public final class GlowServer implements Server {
     }
 
     @Override
+    public double[] getTPS() {
+        return new double[0];
+    }
+
+    @Override
     public void configureDbConfig(com.avaje.ebean.config.ServerConfig dbConfig) {
         DataSourceConfig ds = new DataSourceConfig();
         ds.setDriver(config.getString(ServerConfig.Key.DB_DRIVER));

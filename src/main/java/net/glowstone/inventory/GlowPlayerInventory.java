@@ -327,6 +327,26 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     @Override
+    public float getItemInMainHandDropChance() {
+        return 0;
+    }
+
+    @Override
+    public void setItemInMainHandDropChance(float chance) {
+
+    }
+
+    @Override
+    public float getItemInOffHandDropChance() {
+        return 0;
+    }
+
+    @Override
+    public void setItemInOffHandDropChance(float chance) {
+
+    }
+
+    @Override
     public float getHelmetDropChance() {
         return 1;
     }

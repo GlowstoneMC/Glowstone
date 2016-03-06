@@ -160,6 +160,16 @@ public final class GlowTeam implements Team {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    @Override
+    public OptionStatus getOption(Option option) throws IllegalStateException {
+        return null;
+    }
+
+    @Override
+    public void setOption(Option option, OptionStatus status) throws IllegalStateException {
+
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Player management
 

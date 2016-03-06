@@ -66,7 +66,7 @@ import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
-import org.github.paperspigot.Title;
+import com.destroystokyo.paper.Title;
 import org.json.simple.JSONObject;
 
 import java.net.InetSocketAddress;
@@ -1638,6 +1638,26 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public <T> void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, double v6, T t) {
+
+    }
+
+    @Override
+    public boolean getAffectsSpawning() {
+        return false;
+    }
+
+    @Override
+    public void setAffectsSpawning(boolean affects) {
+
+    }
+
+    @Override
+    public int getViewDistance() {
+        return 0;
+    }
+
+    @Override
+    public void setViewDistance(int viewDistance) {
 
     }
 

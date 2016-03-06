@@ -534,6 +534,11 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public double[] getTPS() {
+        return new double[0];
+    }
+
+    @Override
     public UnsafeValues getUnsafe() {
         return null;
     }
