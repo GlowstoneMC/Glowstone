@@ -2,7 +2,6 @@ package net.glowstone.util.bans;
 
 import net.glowstone.util.bans.JsonListFile.BaseEntry;
 import org.bukkit.BanEntry;
-import org.bukkit.BanList;
 import org.bukkit.BanList.Type;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;

@@ -1,7 +1,6 @@
 package net.glowstone.entity.passive;
 
 import net.glowstone.entity.meta.MetadataIndex;
-//import net.glowstone.entity.meta.MetadataIndex.TameableFlags;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.entity.AnimalTamer;
@@ -9,6 +8,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Wolf;
 
 import java.util.Random;
+
+//import net.glowstone.entity.meta.MetadataIndex.TameableFlags;
 
 public class GlowWolf extends GlowTameable implements Wolf {
 

@@ -1,7 +1,5 @@
 package net.glowstone.util.collection;
 
-import net.glowstone.util.collection.SuperCollection.AdditionMode;
-
 import java.util.*;
 
 /**

@@ -8,7 +8,6 @@ import net.glowstone.net.message.play.entity.AnimateEntityMessage;
 import net.glowstone.net.message.play.player.PlayerSwingArmMessage;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.event.Event;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerAnimationEvent;

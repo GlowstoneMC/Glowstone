@@ -1,7 +1,6 @@
 package net.glowstone.block.state;
 
 import net.glowstone.EventFactory;
-import net.glowstone.GlowChunk;
 import net.glowstone.GlowChunk.Key;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;

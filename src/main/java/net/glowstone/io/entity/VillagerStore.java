@@ -2,7 +2,6 @@ package net.glowstone.io.entity;
 
 import net.glowstone.entity.passive.GlowVillager;
 import net.glowstone.util.nbt.CompoundTag;
-import org.bukkit.entity.Villager;
 import org.bukkit.entity.Villager.Profession;
 
 class VillagerStore extends AgeableStore<GlowVillager> {

@@ -6,7 +6,6 @@ import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Rabbit;
-import org.bukkit.entity.Rabbit.Type;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

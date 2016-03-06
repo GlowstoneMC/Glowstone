@@ -2,7 +2,6 @@ package net.glowstone.net.message.play.entity;
 
 import com.flowpowered.network.Message;
 import lombok.Data;
-import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.entity.meta.MetadataMap.Entry;
 
 import java.util.List;

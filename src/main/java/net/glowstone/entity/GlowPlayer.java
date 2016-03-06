@@ -1,14 +1,18 @@
 package net.glowstone.entity;
 
+import com.destroystokyo.paper.Title;
 import com.flowpowered.network.Message;
 import com.google.common.base.Preconditions;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.Getter;
 import lombok.Setter;
-import net.glowstone.*;
 import net.glowstone.ChunkManager.ChunkLock;
+import net.glowstone.EventFactory;
+import net.glowstone.GlowChunk;
 import net.glowstone.GlowChunk.Key;
+import net.glowstone.GlowOfflinePlayer;
+import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockBed;
@@ -24,7 +28,6 @@ import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.InventoryMonitor;
-import net.glowstone.io.PlayerDataService;
 import net.glowstone.io.PlayerDataService.PlayerReader;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.login.LoginSuccessMessage;
@@ -76,7 +79,6 @@ import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
-import com.destroystokyo.paper.Title;
 import org.json.simple.JSONObject;
 
 import java.net.InetSocketAddress;

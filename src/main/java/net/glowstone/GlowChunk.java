@@ -14,7 +14,6 @@ import net.glowstone.net.message.play.game.ChunkDataMessage;
 import net.glowstone.util.NibbleArray;
 import net.glowstone.util.VariableValueArray;
 import org.bukkit.Chunk;
-import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.world.ChunkUnloadEvent;

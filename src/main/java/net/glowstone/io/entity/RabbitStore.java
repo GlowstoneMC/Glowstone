@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import net.glowstone.entity.passive.GlowRabbit;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
-import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Rabbit.Type;
 
 import java.util.Map;

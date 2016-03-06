@@ -1,10 +1,10 @@
 package net.glowstone.net.message.play.game;
 
+import com.destroystokyo.paper.Title;
 import com.flowpowered.network.Message;
 import lombok.Data;
 import net.glowstone.util.TextMessage;
 import net.md_5.bungee.api.chat.BaseComponent;
-import com.destroystokyo.paper.Title;
 
 @Data
 public final class TitleMessage implements Message {

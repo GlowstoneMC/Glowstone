@@ -5,7 +5,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.*;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 

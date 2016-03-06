@@ -1,6 +1,5 @@
 package net.glowstone.io.nbt;
 
-import net.glowstone.GlowChunk;
 import net.glowstone.GlowChunk.Key;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
