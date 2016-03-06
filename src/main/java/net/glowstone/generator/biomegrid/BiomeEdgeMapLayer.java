@@ -59,7 +59,7 @@ public class BiomeEdgeMapLayer extends MapLayer {
                 int centerVal = values[j + 1 + (i + 1) * gridSizeX];
                 int val = centerVal;
                 for (Entry<Map<Integer, Integer>, List<Integer>> entry : EDGES.entrySet()) {
-                    final Map<Integer, Integer> map = entry.getKey();
+                    Map<Integer, Integer> map = entry.getKey();
                     if (map.containsKey(centerVal)) {
                         int upperVal = values[j + 1 + i * gridSizeX];
                         int lowerVal = values[j + 1 + (i + 2) * gridSizeX];

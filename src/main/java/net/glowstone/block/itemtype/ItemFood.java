@@ -18,8 +18,8 @@ public class ItemFood extends ItemTimedUsage {
     }
 
     ItemFood() { // class should override getFoodLevel and getSaturation
-        this.foodLevel = 0;
-        this.saturation = 0;
+        foodLevel = 0;
+        saturation = 0;
     }
 
     protected int getFoodLevel(ItemStack stack) {

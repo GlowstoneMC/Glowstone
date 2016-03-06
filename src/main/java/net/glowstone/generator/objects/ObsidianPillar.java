@@ -17,7 +17,7 @@ public class ObsidianPillar {
             // check under the pillar that there's no gap
             for (int i = -radius; i <= radius; i++) {
                 for (int j = -radius; j <= radius; j++) {
-                    if (i * i + j * j <= (radius * radius + 1) && world.getBlockAt(sourceX + i, sourceY - 1, sourceZ + j).getType() != Material.ENDER_STONE) {
+                    if (i * i + j * j <= radius * radius + 1 && world.getBlockAt(sourceX + i, sourceY - 1, sourceZ + j).getType() != Material.ENDER_STONE) {
                         return;
                     }
                 }
@@ -28,7 +28,7 @@ public class ObsidianPillar {
                 for (int i = -radius; i <= radius; i++) {
                     for (int j = -radius; j <= radius; j++) {
                         if (i * i + j * j <= radius * radius + 1) {
-                            final Block block = world.getBlockAt(sourceX + i, sourceY + k, sourceZ + j);
+                            Block block = world.getBlockAt(sourceX + i, sourceY + k, sourceZ + j);
                             block.setType(Material.OBSIDIAN);
                         }
                     }
@@ -41,7 +41,7 @@ public class ObsidianPillar {
             //
             // It still unclear to me what they are doing with a bedrock inlaid with obsidian under
             // the endercrystals. I've let that bedrock on top of the pillar to remember about this...
-            final Block block = world.getBlockAt(sourceX, sourceY + height, sourceZ);
+            Block block = world.getBlockAt(sourceX, sourceY + height, sourceZ);
             block.setType(Material.BEDROCK);
         }
     }

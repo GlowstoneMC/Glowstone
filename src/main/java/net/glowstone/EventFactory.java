@@ -2,6 +2,7 @@ package net.glowstone;
 
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.BanList;
+import org.bukkit.BanList.Type;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -10,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerLoginEvent.Result;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -36,8 +38,8 @@ public final class EventFactory {
      * @param <T> The type of the event.
      * @return the called event
      */
-    public static <T extends Event> T callEvent(final T event) {
-        final GlowServer server = (GlowServer) Bukkit.getServer();
+    public static <T extends Event> T callEvent(T event) {
+        GlowServer server = (GlowServer) Bukkit.getServer();
 
         if (event.isAsynchronous()) {
             server.getPluginManager().callEvent(event);
@@ -65,13 +67,13 @@ public final class EventFactory {
     @SuppressWarnings("deprecation")
     public static AsyncPlayerPreLoginEvent onPlayerPreLogin(String name, InetSocketAddress address, UUID uuid) {
         // call async event
-        final AsyncPlayerPreLoginEvent event = new AsyncPlayerPreLoginEvent(name, address.getAddress(), uuid);
+        AsyncPlayerPreLoginEvent event = new AsyncPlayerPreLoginEvent(name, address.getAddress(), uuid);
         callEvent(event);
 
         // call sync event only if needed
         if (PlayerPreLoginEvent.getHandlerList().getRegisteredListeners().length > 0) {
             // initialize event to match current state from async event
-            final PlayerPreLoginEvent syncEvent = new PlayerPreLoginEvent(name, address.getAddress(), uuid);
+            PlayerPreLoginEvent syncEvent = new PlayerPreLoginEvent(name, address.getAddress(), uuid);
             if (event.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) {
                 syncEvent.disallow(event.getResult(), event.getKickMessage());
             }
@@ -85,25 +87,25 @@ public final class EventFactory {
     }
 
     public static PlayerLoginEvent onPlayerLogin(GlowPlayer player, String hostname) {
-        final GlowServer server = player.getServer();
-        final InetAddress address = player.getAddress().getAddress();
-        final String addressString = address.getHostAddress();
-        final PlayerLoginEvent event = new PlayerLoginEvent(player, hostname, address);
+        GlowServer server = player.getServer();
+        InetAddress address = player.getAddress().getAddress();
+        String addressString = address.getHostAddress();
+        PlayerLoginEvent event = new PlayerLoginEvent(player, hostname, address);
 
-        final BanList nameBans = server.getBanList(BanList.Type.NAME);
-        final BanList ipBans = server.getBanList(BanList.Type.IP);
+        BanList nameBans = server.getBanList(Type.NAME);
+        BanList ipBans = server.getBanList(Type.IP);
 
         if (nameBans.isBanned(player.getName())) {
-            event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
+            event.disallow(Result.KICK_BANNED,
                     "Banned: " + nameBans.getBanEntry(player.getName()).getReason());
         } else if (ipBans.isBanned(addressString)) {
-            event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
+            event.disallow(Result.KICK_BANNED,
                     "Banned: " + ipBans.getBanEntry(addressString).getReason());
         } else if (server.hasWhitelist() && !player.isWhitelisted()) {
-            event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST,
+            event.disallow(Result.KICK_WHITELIST,
                     "You are not whitelisted on this server.");
         } else if (server.getOnlinePlayers().size() >= server.getMaxPlayers()) {
-            event.disallow(PlayerLoginEvent.Result.KICK_FULL,
+            event.disallow(Result.KICK_FULL,
                     "The server is full (" + player.getServer().getMaxPlayers() + " players).");
         }
 
@@ -113,14 +115,14 @@ public final class EventFactory {
     @SuppressWarnings("deprecation")
     public static AsyncPlayerChatEvent onPlayerChat(boolean async, Player player, String message) {
         // call async event
-        final Set<Player> recipients = new HashSet<>(player.getServer().getOnlinePlayers());
-        final AsyncPlayerChatEvent event = new AsyncPlayerChatEvent(async, player, message, recipients);
+        Set<Player> recipients = new HashSet<>(player.getServer().getOnlinePlayers());
+        AsyncPlayerChatEvent event = new AsyncPlayerChatEvent(async, player, message, recipients);
         callEvent(event);
 
         // call sync event only if needed
         if (PlayerChatEvent.getHandlerList().getRegisteredListeners().length > 0) {
             // initialize event to match current state from async event
-            final PlayerChatEvent syncEvent = new PlayerChatEvent(player, event.getMessage(), event.getFormat(), recipients);
+            PlayerChatEvent syncEvent = new PlayerChatEvent(player, event.getMessage(), event.getFormat(), recipients);
             syncEvent.setCancelled(event.isCancelled());
 
             // call event synchronously and copy data back to original event

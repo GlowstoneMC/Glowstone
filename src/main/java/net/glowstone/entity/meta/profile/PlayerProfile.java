@@ -12,6 +12,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -55,7 +56,7 @@ public final class PlayerProfile {
         }
 
         this.name = name;
-        this.uniqueId = uuid;
+        uniqueId = uuid;
         this.properties = properties;
     }
 
@@ -90,7 +91,7 @@ public final class PlayerProfile {
 
         List<PlayerProperty> properties = new ArrayList<>();
         if (tag.containsKey("Properties")) {
-            for (Map.Entry<String, Tag> property : tag.getCompound("Properties").getValue().entrySet()) {
+            for (Entry<String, Tag> property : tag.getCompound("Properties").getValue().entrySet()) {
                 @SuppressWarnings("unchecked")
                 CompoundTag propertyValueTag = ((List<CompoundTag>) property.getValue().getValue()).get(0);
                 properties.add(new PlayerProperty(property.getKey(), propertyValueTag.getString("Value"), propertyValueTag.getString("Signature")));
@@ -100,12 +101,12 @@ public final class PlayerProfile {
     }
 
     public static PlayerProfile fromJson(JSONObject json) {
-        final String name = (String) json.get("name");
-        final String id = (String) json.get("id");
-        final JSONArray propsArray = (JSONArray) json.get("properties");
+        String name = (String) json.get("name");
+        String id = (String) json.get("id");
+        JSONArray propsArray = (JSONArray) json.get("properties");
 
         // Parse UUID
-        final UUID uuid;
+        UUID uuid;
         try {
             uuid = UuidUtils.fromFlatString(id);
         } catch (IllegalArgumentException ex) {
@@ -114,7 +115,7 @@ public final class PlayerProfile {
         }
 
         // Parse properties
-        final List<PlayerProperty> properties = new ArrayList<>(propsArray.size());
+        List<PlayerProperty> properties = new ArrayList<>(propsArray.size());
         for (Object obj : propsArray) {
             JSONObject propJson = (JSONObject) obj;
             String propName = (String) propJson.get("name");

@@ -30,7 +30,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
     public void handle(GlowSession session, DiggingMessage message) {
         //Todo: Implement SHOOT_ARROW_FINISH_EATING
         //Todo: Implement SWAP_ITEM_IN_HAND
-        final GlowPlayer player = session.getPlayer();
+        GlowPlayer player = session.getPlayer();
         GlowWorld world = player.getWorld();
         GlowBlock block = world.getBlockAt(message.getX(), message.getY(), message.getZ());
         BlockFace face = BlockPlacementHandler.convertFace(message.getFace());

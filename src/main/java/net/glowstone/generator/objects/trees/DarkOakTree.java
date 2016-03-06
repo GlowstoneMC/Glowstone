@@ -30,7 +30,7 @@ public class DarkOakTree extends GenericTree {
 
     @Override
     public boolean canPlaceOn() {
-        final BlockState state = delegate.getBlockState(loc.getBlock().getRelative(BlockFace.DOWN).getLocation());
+        BlockState state = delegate.getBlockState(loc.getBlock().getRelative(BlockFace.DOWN).getLocation());
         return state.getType() == Material.GRASS || state.getType() == Material.DIRT;
     }
 
@@ -41,8 +41,8 @@ public class DarkOakTree extends GenericTree {
         }
 
         float d = (float) (random.nextFloat() * Math.PI * 2.0F); // random direction
-        int dx = ((int) (Math.cos(d) + 1.5F)) - 1;
-        int dz = ((int) (Math.sin(d) + 1.5F)) - 1;
+        int dx = (int) (Math.cos(d) + 1.5F) - 1;
+        int dz = (int) (Math.sin(d) + 1.5F) - 1;
         if (Math.abs(dx) > 0 && Math.abs(dz) > 0) { // reduce possible directions to NSEW
             if (random.nextBoolean()) {
                 dx = 0;
@@ -65,7 +65,7 @@ public class DarkOakTree extends GenericTree {
                 twistCount--;
             }
 
-            final Material material = delegate.getBlockState(loc.getWorld(), centerX, loc.getBlockY() + y, centerZ).getType();
+            Material material = delegate.getBlockState(loc.getWorld(), centerX, loc.getBlockY() + y, centerZ).getType();
             if (material == Material.AIR || material == Material.LEAVES) {
                 trunkTopY = loc.getBlockY() + y;
                 // SELF, SOUTH, EAST, SOUTH EAST
@@ -106,7 +106,7 @@ public class DarkOakTree extends GenericTree {
             for (int z = -1; z <= 2; z++) {
                 if ((x == -1 || z == -1 || x == 2 || z == 2) && random.nextInt(3) == 0) {
                     for (int y = 0; y < random.nextInt(3) + 2; y++) {
-                        final Material material = delegate.getBlockState(loc.getWorld(), loc.getBlockX() + x, trunkTopY - y - 1, loc.getBlockZ() + z).getType();
+                        Material material = delegate.getBlockState(loc.getWorld(), loc.getBlockX() + x, trunkTopY - y - 1, loc.getBlockZ() + z).getType();
                         if (material == Material.AIR || material == Material.LEAVES) {
                             delegate.setTypeAndRawData(loc.getWorld(), loc.getBlockX() + x, trunkTopY - y - 1, loc.getBlockZ() + z, Material.LOG_2, 1);
                         }
@@ -120,7 +120,7 @@ public class DarkOakTree extends GenericTree {
                     }
                     for (int i = -2; i <= 2; i++) {
                         for (int j = -2; j <= 2; j++) {
-                            if ((Math.abs(i) < 2) || (Math.abs(j) < 2)) {
+                            if (Math.abs(i) < 2 || Math.abs(j) < 2) {
                                 setLeaves(centerX + x + i, trunkTopY - 1, centerZ + z + j);
                             }
                         }
@@ -138,7 +138,7 @@ public class DarkOakTree extends GenericTree {
         }
 
         // block below trunk is always dirt (SELF, SOUTH, EAST, SOUTH EAST)
-        final Dirt dirt = new Dirt(DirtType.NORMAL);
+        Dirt dirt = new Dirt(DirtType.NORMAL);
         delegate.setTypeAndData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ(), Material.DIRT, dirt);
         delegate.setTypeAndData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ() + 1, Material.DIRT, dirt);
         delegate.setTypeAndData(loc.getWorld(), loc.getBlockX() + 1, loc.getBlockY() - 1, loc.getBlockZ(), Material.DIRT, dirt);

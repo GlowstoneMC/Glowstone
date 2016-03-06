@@ -12,6 +12,7 @@ import net.glowstone.net.http.HttpClient;
 import net.glowstone.net.message.login.EncryptionKeyResponseMessage;
 import net.glowstone.util.UuidUtils;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -38,7 +39,7 @@ public final class EncryptionKeyResponseHandler implements MessageHandler<GlowSe
 
     @Override
     public void handle(GlowSession session, EncryptionKeyResponseMessage message) {
-        final PrivateKey privateKey = session.getServer().getKeyPair().getPrivate();
+        PrivateKey privateKey = session.getServer().getKeyPair().getPrivate();
 
         // create rsaCipher
         Cipher rsaCipher;
@@ -84,7 +85,7 @@ public final class EncryptionKeyResponseHandler implements MessageHandler<GlowSe
         // create hash for auth
         String hash;
         try {
-            final MessageDigest digest = MessageDigest.getInstance("SHA-1");
+            MessageDigest digest = MessageDigest.getInstance("SHA-1");
             digest.update(session.getSessionId().getBytes());
             digest.update(sharedSecret.getEncoded());
             digest.update(session.getServer().getKeyPair().getPublic().getEncoded());
@@ -117,11 +118,11 @@ public final class EncryptionKeyResponseHandler implements MessageHandler<GlowSe
                 return;
             }
 
-            final String name = (String) json.get("name");
-            final String id = (String) json.get("id");
+            String name = (String) json.get("name");
+            String id = (String) json.get("id");
 
             // parse UUID
-            final UUID uuid;
+            UUID uuid;
             try {
                 uuid = UuidUtils.fromFlatString(id);
             } catch (IllegalArgumentException ex) {
@@ -130,10 +131,10 @@ public final class EncryptionKeyResponseHandler implements MessageHandler<GlowSe
                 return;
             }
 
-            final JSONArray propsArray = (JSONArray) json.get("properties");
+            JSONArray propsArray = (JSONArray) json.get("properties");
 
             // parse properties
-            final List<PlayerProperty> properties = new ArrayList<>(propsArray.size());
+            List<PlayerProperty> properties = new ArrayList<>(propsArray.size());
             for (Object obj : propsArray) {
                 JSONObject propJson = (JSONObject) obj;
                 String propName = (String) propJson.get("name");
@@ -142,8 +143,8 @@ public final class EncryptionKeyResponseHandler implements MessageHandler<GlowSe
                 properties.add(new PlayerProperty(propName, value, signature));
             }
 
-            final AsyncPlayerPreLoginEvent event = EventFactory.onPlayerPreLogin(name, session.getAddress(), uuid);
-            if (event.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) {
+            AsyncPlayerPreLoginEvent event = EventFactory.onPlayerPreLogin(name, session.getAddress(), uuid);
+            if (event.getLoginResult() != Result.ALLOWED) {
                 session.disconnect(event.getKickMessage(), true);
                 return;
             }

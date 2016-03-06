@@ -21,7 +21,7 @@ public class ItemDye extends ItemType {
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc) {
         MaterialData data = holding.getData();
         if (data instanceof Dye) {
-            final Dye dye = (Dye) data;
+            Dye dye = (Dye) data;
 
             if (dye.getColor() == DyeColor.WHITE && player.getGameMode() != GameMode.ADVENTURE) { // player interacts with bone meal in hand
                 BlockType blockType = ItemTable.instance().getBlock(target.getType());

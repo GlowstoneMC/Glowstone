@@ -51,7 +51,7 @@ public class StructureBuilder {
     }
 
     public BlockState getBlockState(Vector pos) {
-        final Vector vec = translate(pos);
+        Vector vec = translate(pos);
         return delegate.getBlockState(world, vec.getBlockX(), vec.getBlockY(), vec.getBlockZ());
     }
 
@@ -60,14 +60,14 @@ public class StructureBuilder {
     }
 
     public void setBlock(Vector pos, Material type, int data) {
-        final Vector vec = translate(pos);
+        Vector vec = translate(pos);
         if (boundingBox.isVectorInside(vec)) {
             delegate.setTypeAndRawData(world, vec.getBlockX(), vec.getBlockY(), vec.getBlockZ(), type, data);
         }
     }
 
     public void setBlock(Vector pos, Material type, MaterialData data) {
-        final Vector vec = translate(pos);
+        Vector vec = translate(pos);
         if (boundingBox.isVectorInside(vec)) {
             delegate.setTypeAndData(world, vec.getBlockX(), vec.getBlockY(), vec.getBlockZ(), type, data);
         }
@@ -78,7 +78,7 @@ public class StructureBuilder {
     }
 
     public void setBlockDownward(Vector pos, Material type, int data) {
-        final Vector vec = translate(pos);
+        Vector vec = translate(pos);
         if (boundingBox.isVectorInside(vec)) {
             int y = vec.getBlockY();
             while (!world.getBlockAt(vec.getBlockX(), y, vec.getBlockZ()).getType().isSolid() && y > 1) {
@@ -89,7 +89,7 @@ public class StructureBuilder {
     }
 
     public void setBlockDownward(Vector pos, Material type, MaterialData data) {
-        final Vector vec = translate(pos);
+        Vector vec = translate(pos);
         if (boundingBox.isVectorInside(vec)) {
             int y = vec.getBlockY();
             while (!world.getBlockAt(vec.getBlockX(), y, vec.getBlockZ()).getType().isSolid() && y > 1) {
@@ -100,7 +100,7 @@ public class StructureBuilder {
     }
 
     public void setBlockWithRandomMaterial(Vector pos, Random random, Map<StructureMaterial, Integer> materials) {
-        final StructureMaterial material = getRandomMaterial(random, materials);
+        StructureMaterial material = getRandomMaterial(random, materials);
         setBlock(pos, material.getType(), material.getData());
     }
 
@@ -148,8 +148,8 @@ public class StructureBuilder {
         for (int y = min.getBlockY(); y <= max.getBlockY(); y++) {
             for (int x = min.getBlockX(); x <= max.getBlockX(); x++) {
                 for (int z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
-                    final Material type;
-                    final int data;
+                    Material type;
+                    int data;
                     if (x != min.getBlockX() && x != max.getBlockX() &&
                             z != min.getBlockZ() && z != max.getBlockZ() &&
                             y != min.getBlockY() && y != max.getBlockY()) {
@@ -169,8 +169,8 @@ public class StructureBuilder {
         for (int y = min.getBlockY(); y <= max.getBlockY(); y++) {
             for (int x = min.getBlockX(); x <= max.getBlockX(); x++) {
                 for (int z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
-                    final Material type;
-                    final MaterialData data;
+                    Material type;
+                    MaterialData data;
                     if (x != min.getBlockX() && x != max.getBlockX() &&
                             z != min.getBlockZ() && z != max.getBlockZ() &&
                             y != min.getBlockY() && y != max.getBlockY()) {
@@ -190,7 +190,7 @@ public class StructureBuilder {
         for (int y = min.getBlockY(); y <= max.getBlockY(); y++) {
             for (int x = min.getBlockX(); x <= max.getBlockX(); x++) {
                 for (int z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
-                    final StructureMaterial material = getRandomMaterial(random, materials);
+                    StructureMaterial material = getRandomMaterial(random, materials);
                     setBlock(new Vector(x, y, z), material.getType(), material.getData());
                 }
             }
@@ -198,9 +198,9 @@ public class StructureBuilder {
     }
 
     public boolean createRandomItemsContainer(Vector pos, Random random, RandomItemsContent content, DirectionalContainer container, int maxStacks) {
-        final Vector vec = translate(pos);
+        Vector vec = translate(pos);
         if (boundingBox.isVectorInside(vec)) {
-            final BlockState state = world.getBlockAt(vec.getBlockX(), vec.getBlockY(), vec.getBlockZ()).getState();
+            BlockState state = world.getBlockAt(vec.getBlockX(), vec.getBlockY(), vec.getBlockZ()).getState();
             delegate.backupBlockState(state.getBlock());
 
             state.setType(container.getItemType());
@@ -213,7 +213,7 @@ public class StructureBuilder {
     }
 
     public void createMobSpawner(Vector pos, EntityType entityType) {
-        final Vector vec = translate(pos);
+        Vector vec = translate(pos);
         if (boundingBox.isVectorInside(vec)) {
             BlockState state = world.getBlockAt(vec.getBlockX(), vec.getBlockY(), vec.getBlockZ()).getState();
             delegate.backupBlockState(state.getBlock());
@@ -229,12 +229,12 @@ public class StructureBuilder {
     }
 
     public boolean spawnMob(Vector pos, EntityType entityType) {
-        final Vector vec = translate(pos);
+        Vector vec = translate(pos);
         return boundingBox.isVectorInside(vec) && world.spawnEntity(new Location(world, vec.getBlockX(), vec.getBlockY(), vec.getBlockZ()), entityType) != null;
     }
 
     private Vector translate(Vector pos) {
-        final StructureBoundingBox boundingBox = structure.getBoundingBox();
+        StructureBoundingBox boundingBox = structure.getBoundingBox();
         switch (structure.getOrientation()) {
             case EAST:
                 return new Vector(boundingBox.getMax().getBlockX() - pos.getBlockZ(),

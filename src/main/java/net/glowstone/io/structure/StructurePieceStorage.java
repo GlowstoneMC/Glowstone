@@ -98,6 +98,6 @@ public final class StructurePieceStorage {
      */
     @SuppressWarnings("unchecked")
     private static StructurePieceStore<GlowStructurePiece> getBaseStore(StructurePieceStore<?> store) {
-        return ((StructurePieceStore<GlowStructurePiece>) store);
+        return (StructurePieceStore<GlowStructurePiece>) store;
     }
 }

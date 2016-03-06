@@ -68,7 +68,7 @@ public final class TextMessage {
             }
         }
         if (obj.containsKey("text")) {
-            dest.append(obj.get("text").toString());
+            dest.append(obj.get("text"));
         }
         if (obj.containsKey("extra")) {
             JSONArray array = (JSONArray) obj.get("extra");
@@ -111,9 +111,9 @@ public final class TextMessage {
     @SuppressWarnings("unchecked")
     private static JSONObject convert(String text) {
         // state
-        final List<JSONObject> items = new LinkedList<>();
-        final Set<ChatColor> formatting = EnumSet.noneOf(ChatColor.class);
-        final StringBuilder current = new StringBuilder();
+        List<JSONObject> items = new LinkedList<>();
+        Set<ChatColor> formatting = EnumSet.noneOf(ChatColor.class);
+        StringBuilder current = new StringBuilder();
         ChatColor color = null;
 
         // work way through text, converting colors

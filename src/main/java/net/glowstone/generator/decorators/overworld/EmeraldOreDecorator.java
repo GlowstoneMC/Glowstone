@@ -11,8 +11,8 @@ public class EmeraldOreDecorator extends BlockPopulator {
 
     @Override
     public void populate(World world, Random random, Chunk chunk) {
-        int sourceX = (chunk.getX() << 4);
-        int sourceZ = (chunk.getZ() << 4);
+        int sourceX = chunk.getX() << 4;
+        int sourceZ = chunk.getZ() << 4;
 
         for (int i = 0; i < random.nextInt(6) + 3; i++) {
             int x = sourceX + random.nextInt(16);

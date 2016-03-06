@@ -21,15 +21,15 @@ public class BlockLever extends BlockAttachable {
 
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
-        final GlowBlockState state = block.getState();
-        final MaterialData data = state.getData();
+        GlowBlockState state = block.getState();
+        MaterialData data = state.getData();
 
         if (!(data instanceof Lever)) {
             warnMaterialData(Lever.class, data);
             return false;
         }
 
-        final Lever lever = (Lever) data;
+        Lever lever = (Lever) data;
         lever.setPowered(!lever.isPowered());
         state.update();
         extraUpdate(block);
@@ -40,14 +40,14 @@ public class BlockLever extends BlockAttachable {
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
 
-        final MaterialData data = state.getData();
+        MaterialData data = state.getData();
 
         if (!(data instanceof Lever)) {
             warnMaterialData(Lever.class, data);
             return;
         }
 
-        final Lever lever = (Lever) data;
+        Lever lever = (Lever) data;
         setAttachedFace(state, face.getOppositeFace());
         lever.setFacingDirection(face == BlockFace.UP || face == BlockFace.DOWN ? player.getDirection() : face);
 

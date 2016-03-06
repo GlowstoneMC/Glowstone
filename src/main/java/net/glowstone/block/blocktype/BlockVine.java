@@ -109,15 +109,15 @@ public class BlockVine extends BlockClimbable {
     @Override
     public void updateBlock(GlowBlock block) {
         if (random.nextInt(4) == 0) {
-            final GlowBlockState state = block.getState();
-            final MaterialData data = state.getData();
+            GlowBlockState state = block.getState();
+            MaterialData data = state.getData();
             if (data instanceof Vine) {
-                final Vine vine = (Vine) data;
-                final boolean hasNearVineBlocks = hasNearVineBlocks(block);
-                final BlockFace face = FACES[random.nextInt(FACES.length)];
+                Vine vine = (Vine) data;
+                boolean hasNearVineBlocks = hasNearVineBlocks(block);
+                BlockFace face = FACES[random.nextInt(FACES.length)];
                 if (block.getY() < 255 && face == BlockFace.UP && block.getRelative(face).isEmpty()) {
                     if (!hasNearVineBlocks) {
-                        final Vine v = (Vine) data;
+                        Vine v = (Vine) data;
                         for (BlockFace f : HORIZONTAL_FACES) {
                             if (random.nextInt(2) == 0 || !block.getRelative(f).getRelative(face).getType().isSolid()) {
                                 v.removeFromFace(f);
@@ -127,14 +127,14 @@ public class BlockVine extends BlockClimbable {
                     }
                 } else if (Arrays.asList(HORIZONTAL_FACES).contains(face) && !vine.isOnFace(face)) {
                     if (!hasNearVineBlocks) {
-                        final GlowBlock b = block.getRelative(face);
+                        GlowBlock b = block.getRelative(face);
                         if (b.isEmpty()) {
-                            final BlockFace fcw = getClockwiseFace(face);
-                            final BlockFace fccw = getCounterClockwiseFace(face);
-                            final GlowBlock bcw = b.getRelative(fcw);
-                            final GlowBlock bccw = b.getRelative(fccw);
-                            final boolean isOnCWFace = vine.isOnFace(fcw);
-                            final boolean isOnCCWFace = vine.isOnFace(fccw);
+                            BlockFace fcw = getClockwiseFace(face);
+                            BlockFace fccw = getCounterClockwiseFace(face);
+                            GlowBlock bcw = b.getRelative(fcw);
+                            GlowBlock bccw = b.getRelative(fccw);
+                            boolean isOnCWFace = vine.isOnFace(fcw);
+                            boolean isOnCCWFace = vine.isOnFace(fccw);
                             if (isOnCWFace && bcw.getType().isSolid()) {
                                 putVine(b, new Vine(fcw), block);
                             } else if (isOnCCWFace && bccw.getType().isSolid()) {
@@ -152,8 +152,8 @@ public class BlockVine extends BlockClimbable {
                         }
                     }
                 } else if (block.getY() > 1) {
-                    final GlowBlock b = block.getRelative(BlockFace.DOWN);
-                    final Vine v = (Vine) data;
+                    GlowBlock b = block.getRelative(BlockFace.DOWN);
+                    Vine v = (Vine) data;
                     if (b.getType() == Material.VINE || b.isEmpty()) {
                         for (BlockFace f : HORIZONTAL_FACES) {
                             if (random.nextInt(2) == 0) {
@@ -170,7 +170,7 @@ public class BlockVine extends BlockClimbable {
     }
 
     private void putVine(GlowBlock block, Vine vine, GlowBlock fromBlock) {
-        final GlowBlockState state = block.getState();
+        GlowBlockState state = block.getState();
         state.setType(Material.VINE);
         state.setData(vine);
         if (fromBlock != null) {
@@ -198,7 +198,7 @@ public class BlockVine extends BlockClimbable {
     }
 
     private boolean hasNearVineBlocks(GlowBlock block) {
-        final GlowWorld world = block.getWorld();
+        GlowWorld world = block.getWorld();
         int vineCount = 0;
         for (int x = 0; x < 9; x++) {
             for (int z = 0; z < 9; z++) {

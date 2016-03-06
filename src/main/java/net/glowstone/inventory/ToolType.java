@@ -43,13 +43,13 @@ public enum ToolType implements MaterialMatcher {
     }
 
     /**
-     * Checks the given {@link org.bukkit.Material} is equal or better than this ToolType.
+     * Checks the given {@link Material} is equal or better than this ToolType.
      *
      * @param material The material to check
      * @return true if the material is equal or better, false otherwise
      */
     @Override
     public boolean matches(Material material) {
-        return bukkitMaterial == material || (better != null && better.matches(material));
+        return bukkitMaterial == material || better != null && better.matches(material);
     }
 }

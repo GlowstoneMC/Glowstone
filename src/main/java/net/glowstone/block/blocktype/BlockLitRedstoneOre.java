@@ -15,7 +15,7 @@ public class BlockLitRedstoneOre extends BlockRedstoneOre {
 
     @Override
     public void updateBlock(GlowBlock block) {
-        final GlowBlockState state = block.getState();
+        GlowBlockState state = block.getState();
         state.setType(Material.REDSTONE_ORE);
         BlockFadeEvent fadeEvent = new BlockFadeEvent(block, state);
         EventFactory.callEvent(fadeEvent);

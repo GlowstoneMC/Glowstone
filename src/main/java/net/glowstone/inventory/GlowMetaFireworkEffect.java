@@ -4,6 +4,7 @@ import com.google.common.primitives.Ints;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
+import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.FireworkEffectMeta;
 
@@ -28,7 +29,7 @@ public class GlowMetaFireworkEffect extends GlowMetaItem implements FireworkEffe
     static FireworkEffect toEffect(CompoundTag explosion) {
         boolean flicker = false;
         boolean trail = false;
-        FireworkEffect.Type type;
+        Type type;
         List<Color> colors = new ArrayList<>();
         List<Color> fadeColors = new ArrayList<>();
 
@@ -37,7 +38,7 @@ public class GlowMetaFireworkEffect extends GlowMetaItem implements FireworkEffe
             colors.add(Color.fromRGB(color));
         }
 
-        type = FireworkEffect.Type.values()[explosion.getByte("Type")];
+        type = Type.values()[explosion.getByte("Type")];
 
         if (explosion.isByte("Flicker")) flicker = explosion.getBool("Flicker");
         if (explosion.isByte("Trail")) trail = explosion.getBool("Trail");
@@ -103,7 +104,7 @@ public class GlowMetaFireworkEffect extends GlowMetaItem implements FireworkEffe
         super.readNbt(tag);
 
         if (tag.isCompound("Explosion")) {
-            this.effect = toEffect(tag.getCompound("Explosion"));
+            effect = toEffect(tag.getCompound("Explosion"));
         }
     }
 

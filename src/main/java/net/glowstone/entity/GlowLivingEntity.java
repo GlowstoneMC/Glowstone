@@ -4,6 +4,7 @@ import com.flowpowered.network.Message;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.constants.GlowPotionEffect;
+import net.glowstone.entity.AttributeManager.Key;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.inventory.EquipmentMonitor;
 import net.glowstone.net.message.play.entity.EntityEffectMessage;
@@ -17,6 +18,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -29,7 +31,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * A GlowLivingEntity is a {@link org.bukkit.entity.Player} or {@link org.bukkit.entity.Monster}.
+ * A GlowLivingEntity is a {@link Player} or {@link Monster}.
  *
  * @author Graham Edgecombe.
  */
@@ -66,7 +68,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     /**
      * The number of ticks remaining in the invincibility period.
      */
-    private int noDamageTicks = 0;
+    private int noDamageTicks;
     /**
      * The default length of the invincibility period.
      */
@@ -87,7 +89,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * The LivingEntity's number of ticks since death
      */
     @Getter
-    private int deathTicks = 0;
+    private int deathTicks;
 
     /**
      * Creates a mob within the specified world.
@@ -108,7 +110,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         super(location);
         attributeManager = new AttributeManager(this);
         this.maxHealth = maxHealth;
-        attributeManager.setProperty(AttributeManager.Key.KEY_MAX_HEALTH, maxHealth);
+        attributeManager.setProperty(Key.KEY_MAX_HEALTH, maxHealth);
         health = maxHealth;
     }
 
@@ -121,7 +123,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
         if (isDead()) {
             deathTicks++;
-            if (deathTicks >= 20 && this.getClass() != GlowPlayer.class) {
+            if (deathTicks >= 20 && getClass() != GlowPlayer.class) {
                 remove();
             }
         }
@@ -134,11 +136,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         Material mat = getEyeLocation().getBlock().getType();
         // breathing
         if (mat == Material.WATER || mat == Material.STATIONARY_WATER) {
-            if (canTakeDamage(EntityDamageEvent.DamageCause.DROWNING)) {
+            if (canTakeDamage(DamageCause.DROWNING)) {
                 --airTicks;
                 if (airTicks <= -20) {
                     airTicks = 0;
-                    damage(1, EntityDamageEvent.DamageCause.DROWNING);
+                    damage(1, DamageCause.DROWNING);
                 }
             }
         } else {
@@ -146,14 +148,14 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }
 
         if (isTouchingMaterial(Material.CACTUS)) {
-            damage(1, EntityDamageEvent.DamageCause.CONTACT);
+            damage(1, DamageCause.CONTACT);
         }
         if (location.getY() < -64) { // no canTakeDamage call - pierces through game modes
-            damage(4, EntityDamageEvent.DamageCause.VOID);
+            damage(4, DamageCause.VOID);
         }
 
         if (isWithinSolidBlock())
-            damage(1, EntityDamageEvent.DamageCause.SUFFOCATION);
+            damage(1, DamageCause.SUFFOCATION);
 
         // potion effects
         List<PotionEffect> effects = new ArrayList<>(potionEffects.values());
@@ -317,7 +319,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * @param damageCause the damage source to check
      * @return whether this entity can take damage from the source
      */
-    public boolean canTakeDamage(EntityDamageEvent.DamageCause damageCause) {
+    public boolean canTakeDamage(DamageCause damageCause) {
         return true;
     }
 
@@ -431,7 +433,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         metadata.set(MetadataIndex.HEALTH, (float) health);
 
         for (Objective objective : getServer().getScoreboardManager().getMainScoreboard().getObjectivesByCriteria(Criterias.HEALTH)) {
-            objective.getScore(this.getName()).setScore((int) health);
+            objective.getScore(getName()).setScore((int) health);
         }
 
         if (health <= 0) {
@@ -447,21 +449,21 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     @Override
     public void damage(double amount) {
-        damage(amount, null, EntityDamageEvent.DamageCause.CUSTOM);
+        damage(amount, null, DamageCause.CUSTOM);
     }
 
     @Override
     public void damage(double amount, Entity source) {
-        damage(amount, source, EntityDamageEvent.DamageCause.CUSTOM);
+        damage(amount, source, DamageCause.CUSTOM);
     }
 
     @Override
-    public void damage(double amount, EntityDamageEvent.DamageCause cause) {
+    public void damage(double amount, DamageCause cause) {
         damage(amount, null, cause);
     }
 
     @Override
-    public void damage(double amount, Entity source, EntityDamageEvent.DamageCause cause) {
+    public void damage(double amount, Entity source, DamageCause cause) {
         // invincibility timer
         if (noDamageTicks > 0 || health <= 0 || !canTakeDamage(cause)) {
             return;
@@ -517,12 +519,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     @Override
     public double getMaxHealth() {
-        return attributeManager.getPropertyValue(AttributeManager.Key.KEY_MAX_HEALTH);
+        return attributeManager.getPropertyValue(Key.KEY_MAX_HEALTH);
     }
 
     @Override
     public void setMaxHealth(double health) {
-        attributeManager.setProperty(AttributeManager.Key.KEY_MAX_HEALTH, health);
+        attributeManager.setProperty(Key.KEY_MAX_HEALTH, health);
     }
 
     @Override
@@ -659,22 +661,22 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             if (getClass() == GlowPlayer.class && ((GlowPlayer) this).getAllowFlight()) {
                 return;
             }
-            float damage = this.getFallDistance() - 3;
+            float damage = getFallDistance() - 3;
             damage = Math.round(damage);
             if (damage == 0) {
                 setFallDistance(0);
                 return;
             }
-            EntityDamageEvent ev = new EntityDamageEvent(this, EntityDamageEvent.DamageCause.FALL, damage);
-            this.getServer().getPluginManager().callEvent(ev);
+            EntityDamageEvent ev = new EntityDamageEvent(this, DamageCause.FALL, damage);
+            getServer().getPluginManager().callEvent(ev);
             if (ev.isCancelled()) {
                 setFallDistance(0);
                 return;
             }
-            this.setLastDamageCause(ev);
-            this.damage(ev.getDamage());
+            setLastDamageCause(ev);
+            damage(ev.getDamage());
         }
-        this.setFallDistance(0);
+        setFallDistance(0);
     }
 
     ////////////////////////////////////////////////////////////////////////////

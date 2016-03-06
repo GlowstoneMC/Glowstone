@@ -15,7 +15,6 @@ public class RoofedForestPopulator extends ForestPopulator {
             new TreeDecoration(RedMushroomTree.class, 2), new TreeDecoration(BrownMushroomTree.class, 2), new TreeDecoration(DarkOakTree.class, 50)};
 
     public RoofedForestPopulator() {
-        super();
         treeDecorator.setAmount(50);
         treeDecorator.setTrees(TREES);
         tallGrassDecorator.setAmount(4);

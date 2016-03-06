@@ -14,7 +14,7 @@ public class SuperflatGenerator extends GlowChunkGenerator {
 
     @Override
     public ChunkData generateChunkData(World world, Random random, int chunkX, int chunkZ, BiomeGrid biomes) {
-        final ChunkData chunkData = createChunkData(world);
+        ChunkData chunkData = createChunkData(world);
 
         int cx = chunkX << 4;
         int cz = chunkZ << 4;

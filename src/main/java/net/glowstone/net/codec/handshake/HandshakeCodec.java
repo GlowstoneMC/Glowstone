@@ -10,10 +10,10 @@ import java.io.IOException;
 public final class HandshakeCodec implements Codec<HandshakeMessage> {
     @Override
     public HandshakeMessage decode(ByteBuf buffer) throws IOException {
-        final int version = ByteBufUtils.readVarInt(buffer);
-        final String address = ByteBufUtils.readUTF8(buffer);
-        final int port = buffer.readUnsignedShort();
-        final int state = ByteBufUtils.readVarInt(buffer);
+        int version = ByteBufUtils.readVarInt(buffer);
+        String address = ByteBufUtils.readUTF8(buffer);
+        int port = buffer.readUnsignedShort();
+        int state = ByteBufUtils.readVarInt(buffer);
 
         return new HandshakeMessage(version, address, port, state);
     }

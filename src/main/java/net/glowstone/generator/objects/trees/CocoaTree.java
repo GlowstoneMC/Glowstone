@@ -100,8 +100,8 @@ public class CocoaTree extends JungleTree {
             for (int y = 0; y < 2; y++) {
                 for (BlockFace cocoaFace : COCOA_FACES) { // rotate the 4 trunk faces
                     if (random.nextInt(COCOA_FACES.length - y) == 0) { // higher it is, more chances there is
-                        final CocoaPlantSize size = COCOA_SIZE[random.nextInt(COCOA_SIZE.length)];
-                        final Block block = delegate.getBlockState(loc.getWorld(), sourceX, sourceY + height - 5 + y, sourceZ)
+                        CocoaPlantSize size = COCOA_SIZE[random.nextInt(COCOA_SIZE.length)];
+                        Block block = delegate.getBlockState(loc.getWorld(), sourceX, sourceY + height - 5 + y, sourceZ)
                                 .getBlock().getRelative(cocoaFace);
                         delegate.setTypeAndData(loc.getWorld(), block.getX(), block.getY(), block.getZ(),
                                 Material.COCOA, new CocoaPlant(size, cocoaFace.getOppositeFace()));

@@ -36,14 +36,14 @@ public class TreeDecorator extends BlockDecorator {
     public void decorate(World world, Random random, Chunk source) {
         int sourceX = (source.getX() << 4) + random.nextInt(16);
         int sourceZ = (source.getZ() << 4) + random.nextInt(16);
-        final Block sourceBlock = world.getBlockAt(sourceX, world.getHighestBlockYAt(sourceX, sourceZ), sourceZ);
+        Block sourceBlock = world.getBlockAt(sourceX, world.getHighestBlockYAt(sourceX, sourceZ), sourceZ);
 
-        final Class<? extends GenericTree> clazz = getRandomTree(random, trees);
+        Class<? extends GenericTree> clazz = getRandomTree(random, trees);
         if (clazz != null) {
-            final BlockStateDelegate delegate = new BlockStateDelegate();
+            BlockStateDelegate delegate = new BlockStateDelegate();
             GenericTree tree;
             try {
-                final Constructor<? extends GenericTree> c = clazz.getConstructor(Random.class, Location.class, BlockStateDelegate.class);
+                Constructor<? extends GenericTree> c = clazz.getConstructor(Random.class, Location.class, BlockStateDelegate.class);
                 tree = c.newInstance(random, sourceBlock.getLocation(), delegate);
             } catch (Exception ex) {
                 tree = new GenericTree(random, sourceBlock.getLocation(), delegate);

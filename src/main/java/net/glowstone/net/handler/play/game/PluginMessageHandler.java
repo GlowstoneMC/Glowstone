@@ -20,7 +20,7 @@ import java.util.logging.Level;
 public final class PluginMessageHandler implements MessageHandler<GlowSession, PluginMessage> {
     @Override
     public void handle(GlowSession session, PluginMessage message) {
-        final String channel = message.getChannel();
+        String channel = message.getChannel();
 
         // register and unregister: NUL-separated list of channels
 
@@ -67,7 +67,7 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
 
         ByteBuf buf = Unpooled.wrappedBuffer(data);
         switch (channel) {
-            case "MC|Brand": {
+            case "MC|Brand":
                 // vanilla server doesn't handle this, for now just log it
                 String brand = null;
                 try {
@@ -79,7 +79,6 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
                     GlowServer.logger.info("Client brand of " + session.getPlayer().getName() + " is: " + brand);
                 }
                 break;
-            }
             case "MC|BEdit": {
                 // read and verify stack
                 ItemStack item = GlowBufUtils.readSlot(buf);
@@ -113,7 +112,7 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
                 session.getPlayer().setItemInHand(inHand);
                 break;
             }
-            case "MC|BSign": {
+            case "MC|BSign":
                 // read and verify stack
                 ItemStack item = GlowBufUtils.readSlot(buf);
                 //GlowServer.logger.info("BookSign [" + session.getPlayer().getName() + "]: " + item);
@@ -148,7 +147,6 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
                 inHand.setItemMeta(handBook);
                 session.getPlayer().setItemInHand(inHand);
                 break;
-            }
             default:
                 GlowServer.logger.info(session + " used unknown Minecraft channel: " + channel);
                 break;

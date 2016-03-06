@@ -20,7 +20,7 @@ public class BlockSnow extends BlockNeedsAttached {
     @Override
     public boolean canAbsorb(GlowBlock block, BlockFace face, ItemStack holding) {
         // can absorb snow layers if non-full, or all blocks if single layer
-        return (holding.getType() == Material.SNOW && block.getData() < 7) || block.getData() == 0;
+        return holding.getType() == Material.SNOW && block.getData() < 7 || block.getData() == 0;
     }
 
     @Override
@@ -63,7 +63,7 @@ public class BlockSnow extends BlockNeedsAttached {
     @Override
     public void updateBlock(GlowBlock block) {
         if (block.getLightFromBlocks() > 11) {
-            final GlowBlockState state = block.getState();
+            GlowBlockState state = block.getState();
             state.setType(Material.AIR);
             state.setData(new MaterialData(Material.AIR));
             BlockFadeEvent fadeEvent = new BlockFadeEvent(block, state);

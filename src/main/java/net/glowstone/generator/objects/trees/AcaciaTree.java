@@ -19,7 +19,7 @@ public class AcaciaTree extends GenericTree {
 
     @Override
     public boolean canPlaceOn() {
-        final BlockState state = delegate.getBlockState(loc.getBlock().getRelative(BlockFace.DOWN).getLocation());
+        BlockState state = delegate.getBlockState(loc.getBlock().getRelative(BlockFace.DOWN).getLocation());
         return state.getType() == Material.GRASS || state.getType() == Material.DIRT;
     }
 
@@ -31,8 +31,8 @@ public class AcaciaTree extends GenericTree {
         }
 
         float d = (float) (random.nextFloat() * Math.PI * 2.0F); // random direction
-        int dx = ((int) (Math.cos(d) + 1.5F)) - 1;
-        int dz = ((int) (Math.sin(d) + 1.5F)) - 1;
+        int dx = (int) (Math.cos(d) + 1.5F) - 1;
+        int dz = (int) (Math.sin(d) + 1.5F) - 1;
         if (Math.abs(dx) > 0 && Math.abs(dz) > 0) { // reduce possible directions to NSEW
             if (random.nextBoolean()) {
                 dx = 0;
@@ -55,7 +55,7 @@ public class AcaciaTree extends GenericTree {
                 twistCount--;
             }
 
-            final Material material = delegate.getBlockState(loc.getWorld(), centerX, loc.getBlockY() + y, centerZ).getType();
+            Material material = delegate.getBlockState(loc.getWorld(), centerX, loc.getBlockY() + y, centerZ).getType();
             if (material == Material.AIR || material == Material.LEAVES) {
                 trunkTopY = loc.getBlockY() + y;
                 delegate.setTypeAndRawData(loc.getWorld(), centerX, loc.getBlockY() + y, centerZ, Material.LOG_2, 0);
@@ -71,7 +71,7 @@ public class AcaciaTree extends GenericTree {
                 if (Math.abs(x) < 2 && Math.abs(z) < 2) {
                     setLeaves(centerX + x, trunkTopY + 1, centerZ + z);
                 }
-                if ((Math.abs(x) == 2 && Math.abs(z) == 0) || (Math.abs(x) == 0 && Math.abs(z) == 2)) {
+                if (Math.abs(x) == 2 && Math.abs(z) == 0 || Math.abs(x) == 0 && Math.abs(z) == 2) {
                     setLeaves(centerX + x, trunkTopY + 1, centerZ + z);
                 }
             }
@@ -79,8 +79,8 @@ public class AcaciaTree extends GenericTree {
 
         // try to choose a different direction for second branching and canopy
         d = (float) (random.nextFloat() * Math.PI * 2.0F);
-        int dxB = ((int) (Math.cos(d) + 1.5F)) - 1;
-        int dzB = ((int) (Math.sin(d) + 1.5F)) - 1;
+        int dxB = (int) (Math.cos(d) + 1.5F) - 1;
+        int dzB = (int) (Math.sin(d) + 1.5F) - 1;
         if (Math.abs(dxB) > 0 && Math.abs(dzB) > 0) {
             if (random.nextBoolean()) {
                 dxB = 0;
@@ -100,7 +100,7 @@ public class AcaciaTree extends GenericTree {
                 if (twistCount > 0) {
                     centerX += dxB;
                     centerZ += dzB;
-                    final Material material = delegate.getBlockState(loc.getWorld(), centerX, loc.getBlockY() + y, centerZ).getType();
+                    Material material = delegate.getBlockState(loc.getWorld(), centerX, loc.getBlockY() + y, centerZ).getType();
                     if (material == Material.AIR || material == Material.LEAVES) {
                         trunkTopY = loc.getBlockY() + y;
                         delegate.setTypeAndRawData(loc.getWorld(), centerX, loc.getBlockY() + y, centerZ, Material.LOG_2, 0);
@@ -113,7 +113,7 @@ public class AcaciaTree extends GenericTree {
             if (trunkTopY > 0) {
                 for (int x = -2; x <= 2; x++) {
                     for (int z = -2; z <= 2; z++) {
-                        if ((Math.abs(x) < 2) || (Math.abs(z) < 2)) {
+                        if (Math.abs(x) < 2 || Math.abs(z) < 2) {
                             setLeaves(centerX + x, trunkTopY, centerZ + z);
                         }
                     }
@@ -127,7 +127,7 @@ public class AcaciaTree extends GenericTree {
         }
 
         // block below trunk is always dirt
-        final Dirt dirt = new Dirt(DirtType.NORMAL);
+        Dirt dirt = new Dirt(DirtType.NORMAL);
         delegate.setTypeAndData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ(), Material.DIRT, dirt);
 
         return true;

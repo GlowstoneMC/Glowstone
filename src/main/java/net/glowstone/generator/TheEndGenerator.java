@@ -32,13 +32,13 @@ public class TheEndGenerator extends GlowChunkGenerator {
 
     @Override
     public boolean canSpawn(World world, int x, int z) {
-        final Block block = world.getHighestBlockAt(x, z).getRelative(BlockFace.DOWN);
+        Block block = world.getHighestBlockAt(x, z).getRelative(BlockFace.DOWN);
         return block.getType() == Material.ENDER_STONE;
     }
 
     @Override
     protected void createWorldOctaves(World world, Map<String, OctaveGenerator> octaves) {
-        final Random seed = new Random(world.getSeed());
+        Random seed = new Random(world.getSeed());
 
         OctaveGenerator gen = new PerlinOctaveGenerator(seed, 16, 3, 33, 3);
         gen.setXScale(COORDINATE_SCALE);
@@ -62,7 +62,7 @@ public class TheEndGenerator extends GlowChunkGenerator {
     private ChunkData generateRawTerrain(World world, int chunkX, int chunkZ) {
         generateTerrainDensity(world, chunkX * 2, chunkZ * 2);
 
-        final ChunkData chunkData = createChunkData(world);
+        ChunkData chunkData = createChunkData(world);
 
         for (int i = 0; i < 3 - 1; i++) {
             for (int j = 0; j < 3 - 1; j++) {
@@ -108,10 +108,10 @@ public class TheEndGenerator extends GlowChunkGenerator {
     }
 
     private void generateTerrainDensity(World world, int x, int z) {
-        final Map<String, OctaveGenerator> octaves = getWorldOctaves(world);
-        final double[] roughnessNoise = ((PerlinOctaveGenerator) octaves.get("roughness")).fBm(x, 0, z, 0.5D, 2.0D);
-        final double[] roughnessNoise2 = ((PerlinOctaveGenerator) octaves.get("roughness2")).fBm(x, 0, z, 0.5D, 2.0D);
-        final double[] detailNoise = ((PerlinOctaveGenerator) octaves.get("detail")).fBm(x, 0, z, 0.5D, 2.0D);
+        Map<String, OctaveGenerator> octaves = getWorldOctaves(world);
+        double[] roughnessNoise = ((PerlinOctaveGenerator) octaves.get("roughness")).fBm(x, 0, z, 0.5D, 2.0D);
+        double[] roughnessNoise2 = ((PerlinOctaveGenerator) octaves.get("roughness2")).fBm(x, 0, z, 0.5D, 2.0D);
+        double[] detailNoise = ((PerlinOctaveGenerator) octaves.get("detail")).fBm(x, 0, z, 0.5D, 2.0D);
 
         int index = 0;
 

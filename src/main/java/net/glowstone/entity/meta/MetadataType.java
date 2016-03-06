@@ -5,6 +5,8 @@ import net.glowstone.util.TextMessage;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.EulerAngle;
 
+import java.util.UUID;
+
 /**
  * The types of values that entity metadata can contain.
  */
@@ -20,7 +22,7 @@ public enum MetadataType {
     POSITION(Position.class),
     OPTPOSITION(Position.class),
     DIRECTION(Integer.class),
-    OPTUUID(java.util.UUID.class),
+    OPTUUID(UUID.class),
     BLOCKID(Integer.class);
 
     private final Class<?> dataType;

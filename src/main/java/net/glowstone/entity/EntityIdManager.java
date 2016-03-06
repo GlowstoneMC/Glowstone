@@ -16,7 +16,7 @@ public final class EntityIdManager {
     /**
      * The last assigned id value.
      */
-    private int lastId = 0;
+    private int lastId;
 
     /**
      * Allocates the id for an entity.

@@ -25,7 +25,7 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
         this.x = x;
         this.z = z;
         this.world = world.getName();
-        this.time = world.getFullTime();
+        time = world.getFullTime();
 
         int numSections = sections != null ? sections.length : 0;
         this.sections = new ChunkSection[numSections];
@@ -39,7 +39,7 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
         this.biomes = biomes;
 
         if (svTemp) {
-            final int baseX = x << 4, baseZ = z << 4;
+            int baseX = x << 4, baseZ = z << 4;
             temp = new double[16 * 16];
             humid = new double[16 * 16];
             for (int xx = 0; xx < 16; ++xx) {
@@ -104,7 +104,7 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
 
     @Override
     public boolean isSectionEmpty(int sy) {
-        return sy < 0 || sy >= sections.length || (sections[sy] == null);
+        return sy < 0 || sy >= sections.length || sections[sy] == null;
     }
 
     @Override

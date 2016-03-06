@@ -75,7 +75,7 @@ public class EntityRegistry {
                     .build();
 
     public static Class<? extends GlowEntity> getEntity(short id) {
-        return ENTITIES.get(EntityType.fromId(id));
+        return ENTITIES.get(fromId(id));
     }
 
 }

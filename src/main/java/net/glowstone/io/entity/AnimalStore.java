@@ -18,7 +18,7 @@ class AnimalStore<T extends GlowAnimal> extends EntityStore<T> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        this.constructor = ctor;
+        constructor = ctor;
     }
 
     @Override

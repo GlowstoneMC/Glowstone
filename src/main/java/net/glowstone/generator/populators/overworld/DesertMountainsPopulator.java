@@ -9,7 +9,6 @@ import java.util.Collections;
 public class DesertMountainsPopulator extends DesertPopulator {
 
     public DesertMountainsPopulator() {
-        super();
         waterLakeDecorator.setAmount(1);
     }
 

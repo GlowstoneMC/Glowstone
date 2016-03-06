@@ -10,7 +10,7 @@ import org.bukkit.Achievement;
 public final class ClientStatusHandler implements MessageHandler<GlowSession, ClientStatusMessage> {
     @Override
     public void handle(GlowSession session, ClientStatusMessage message) {
-        final GlowPlayer player = session.getPlayer();
+        GlowPlayer player = session.getPlayer();
 
         switch (message.getAction()) {
             case ClientStatusMessage.RESPAWN:

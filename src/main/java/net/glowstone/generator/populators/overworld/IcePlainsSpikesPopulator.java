@@ -15,7 +15,6 @@ public class IcePlainsSpikesPopulator extends IcePlainsPopulator {
     protected final IceDecorator iceDecorator = new IceDecorator();
 
     public IcePlainsSpikesPopulator() {
-        super();
         tallGrassDecorator.setAmount(0);
     }
 

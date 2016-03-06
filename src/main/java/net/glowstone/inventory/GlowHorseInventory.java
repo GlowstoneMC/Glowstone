@@ -33,9 +33,9 @@ public class GlowHorseInventory extends GlowInventory implements HorseInventory 
     @Override
     public void setSaddle(ItemStack itemStack) {
         if (itemStack != null) {
-            this.saddle = new ItemStack(itemStack);
+            saddle = new ItemStack(itemStack);
         } else {
-            this.armor = null;
+            armor = null;
         }
     }
 
@@ -47,9 +47,9 @@ public class GlowHorseInventory extends GlowInventory implements HorseInventory 
     @Override
     public void setArmor(ItemStack itemStack) {
         if (itemStack != null) {
-            this.armor = new ItemStack(itemStack);
+            armor = new ItemStack(itemStack);
         } else {
-            this.armor = null;
+            armor = null;
         }
     }
 }

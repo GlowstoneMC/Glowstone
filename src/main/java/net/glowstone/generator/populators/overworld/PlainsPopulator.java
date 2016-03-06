@@ -25,7 +25,6 @@ public class PlainsPopulator extends BiomePopulator {
     private final OctaveGenerator noiseGen;
 
     public PlainsPopulator() {
-        super();
         flowerDecorator.setAmount(0);
         tallGrassDecorator.setAmount(0);
         noiseGen = new SimplexOctaveGenerator(new Random(2345), 1);
@@ -39,8 +38,8 @@ public class PlainsPopulator extends BiomePopulator {
 
     @Override
     public void populateOnGround(World world, Random random, Chunk chunk) {
-        int sourceX = (chunk.getX() << 4);
-        int sourceZ = (chunk.getZ() << 4);
+        int sourceX = chunk.getX() << 4;
+        int sourceZ = chunk.getZ() << 4;
 
         int flowerAmount = 15;
         int tallGrassAmount = 5;

@@ -15,7 +15,7 @@ class SkeletonStore extends MonsterStore<GlowSkeleton> {
     public void load(GlowSkeleton entity, CompoundTag tag) {
         super.load(entity, tag);
         if (tag.isInt("SkeletonType")) {
-            entity.setSkeletonType(Skeleton.SkeletonType.getType(tag.getInt("SkeletonType")));
+            entity.setSkeletonType(SkeletonType.getType(tag.getInt("SkeletonType")));
         } else {
             entity.setSkeletonType(SkeletonType.NORMAL);
         }

@@ -74,7 +74,7 @@ public class GlowMetaLeatherArmor extends GlowMetaItem implements LeatherArmorMe
         if (tag.isCompound("display")) {
             CompoundTag display = tag.getCompound("display");
             if (display.isInt("color")) {
-                this.color = Color.fromRGB(display.getInt("color"));
+                color = Color.fromRGB(display.getInt("color"));
             }
         }
     }

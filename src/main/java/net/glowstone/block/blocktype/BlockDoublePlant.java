@@ -18,14 +18,14 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
 
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
-        final Material type = block.getRelative(BlockFace.DOWN).getType();
+        Material type = block.getRelative(BlockFace.DOWN).getType();
         return (type == Material.GRASS || type == Material.DIRT || type == Material.SOIL) &&
                 block.getRelative(BlockFace.UP).getType() == Material.AIR;
     }
 
     @Override
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
-        final GlowBlockState headBlockState = block.getRelative(BlockFace.UP).getState();
+        GlowBlockState headBlockState = block.getRelative(BlockFace.UP).getState();
         headBlockState.setType(Material.DOUBLE_PLANT);
         headBlockState.setData(new DoublePlant(DoublePlantSpecies.PLANT_APEX));
         headBlockState.update(true);
@@ -33,9 +33,9 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        final MaterialData data = block.getState().getData();
+        MaterialData data = block.getState().getData();
         if (data instanceof DoublePlant) {
-            final DoublePlantSpecies species = ((DoublePlant) data).getSpecies();
+            DoublePlantSpecies species = ((DoublePlant) data).getSpecies();
             if (species != DoublePlantSpecies.DOUBLE_TALLGRASS && species != DoublePlantSpecies.LARGE_FERN && species != DoublePlantSpecies.PLANT_APEX) {
                 return Collections.unmodifiableList(Arrays.asList(data.toItemStack(1)));
             }
@@ -47,7 +47,7 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
 
     @Override
     public void blockDestroy(GlowPlayer player, GlowBlock block, BlockFace face) {
-        final MaterialData data = block.getState().getData();
+        MaterialData data = block.getState().getData();
         if (data instanceof DoublePlant) {
             DoublePlantSpecies species = ((DoublePlant) data).getSpecies();
             block.setType(Material.AIR);
@@ -78,7 +78,7 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
                     return false;
                 }
             }
-            final DoublePlantSpecies species = ((DoublePlant) data).getSpecies();
+            DoublePlantSpecies species = ((DoublePlant) data).getSpecies();
             if (species != DoublePlantSpecies.DOUBLE_TALLGRASS && species != DoublePlantSpecies.LARGE_FERN) {
                 return true;
             }
@@ -103,7 +103,7 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
                     return;
                 }
             }
-            final DoublePlantSpecies species = ((DoublePlant) data).getSpecies();
+            DoublePlantSpecies species = ((DoublePlant) data).getSpecies();
             switch (species) {
                 case SUNFLOWER:
                 case LILAC:

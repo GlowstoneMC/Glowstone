@@ -16,10 +16,10 @@ public class TitleCommand extends BukkitCommand {
 
     public TitleCommand() {
         super("title");
-        this.description = "Sends a title to the specified player(s)";
-        this.usageMessage = "/title <player> <title|clear|reset> ...";
-        this.setAliases(Arrays.<String>asList());
-        this.setPermission("glowstone.command.title");
+        description = "Sends a title to the specified player(s)";
+        usageMessage = "/title <player> <title|clear|reset> ...";
+        setAliases(Arrays.<String>asList());
+        setPermission("glowstone.command.title");
     }
 
     /**
@@ -95,7 +95,7 @@ public class TitleCommand extends BukkitCommand {
 
         Player player = Bukkit.getPlayerExact(args[0]);
 
-        if (player == null || (sender instanceof Player && !((Player) sender).canSee(player))) {
+        if (player == null || sender instanceof Player && !((Player) sender).canSee(player)) {
             sender.sendMessage("There's no player by that name online.");
             return false;
         }

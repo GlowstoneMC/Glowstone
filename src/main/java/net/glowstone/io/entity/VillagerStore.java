@@ -15,7 +15,7 @@ class VillagerStore extends AgeableStore<GlowVillager> {
     public void load(GlowVillager entity, CompoundTag compound) {
         super.load(entity, compound);
         if (compound.isInt("Profession")) {
-            entity.setProfession(Villager.Profession.getProfession(compound.getInt("Profession")));
+            entity.setProfession(Profession.getProfession(compound.getInt("Profession")));
         } else {
             entity.setProfession(Profession.FARMER);
         }

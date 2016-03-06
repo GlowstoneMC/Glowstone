@@ -6,22 +6,23 @@ import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Rabbit;
+import org.bukkit.entity.Rabbit.Type;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class GlowRabbit extends GlowAnimal implements Rabbit {
 
-    private static final ImmutableBiMap<Rabbit.Type, Integer> rabbitTypeIntegerMap = ImmutableBiMap.<Rabbit.Type, Integer>builder()
-            .put(Rabbit.Type.BROWN, 0)
-            .put(Rabbit.Type.WHITE, 1)
-            .put(Rabbit.Type.BLACK, 2)
-            .put(Rabbit.Type.BLACK_AND_WHITE, 3)
-            .put(Rabbit.Type.GOLD, 4)
-            .put(Rabbit.Type.SALT_AND_PEPPER, 5)
+    private static final ImmutableBiMap<Type, Integer> rabbitTypeIntegerMap = ImmutableBiMap.<Type, Integer>builder()
+            .put(Type.BROWN, 0)
+            .put(Type.WHITE, 1)
+            .put(Type.BLACK, 2)
+            .put(Type.BLACK_AND_WHITE, 3)
+            .put(Type.GOLD, 4)
+            .put(Type.SALT_AND_PEPPER, 5)
             .put(Type.THE_KILLER_BUNNY, 99)
             .build();
 
-    private Rabbit.Type rabbitType = Rabbit.Type.BROWN;
+    private Type rabbitType = Type.BROWN;
 
     public GlowRabbit(Location location) {
         super(location, EntityType.RABBIT, 10); // Needs an update with the minecraft version 1.9, then the rabbit has 3 health (1.5 hearts)
@@ -29,14 +30,14 @@ public class GlowRabbit extends GlowAnimal implements Rabbit {
     }
 
     @Override
-    public Rabbit.Type getRabbitType() {
+    public Type getRabbitType() {
         return rabbitType;
     }
 
     @Override
-    public void setRabbitType(Rabbit.Type type) {
+    public void setRabbitType(Type type) {
         checkNotNull(type, "Cannot set a null rabbit type!");
-        metadata.set(MetadataIndex.RABBIT_TYPE, rabbitTypeIntegerMap.get(this.getRabbitType()).byteValue());
-        this.rabbitType = type;
+        metadata.set(MetadataIndex.RABBIT_TYPE, rabbitTypeIntegerMap.get(getRabbitType()).byteValue());
+        rabbitType = type;
     }
 }

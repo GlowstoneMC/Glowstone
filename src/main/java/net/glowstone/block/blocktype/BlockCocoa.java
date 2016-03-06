@@ -26,9 +26,9 @@ public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
         state.setType(getMaterial());
-        final MaterialData data = state.getData();
+        MaterialData data = state.getData();
         if (data instanceof CocoaPlant) {
-            final CocoaPlant cocoa = (CocoaPlant) data;
+            CocoaPlant cocoa = (CocoaPlant) data;
             cocoa.setFacingDirection(face.getOppositeFace());
             cocoa.setSize(CocoaPlantSize.SMALL);
         } else {
@@ -43,9 +43,9 @@ public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
 
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
-        final BlockFace face = against.getOppositeFace();
+        BlockFace face = against.getOppositeFace();
         if (Arrays.asList(FACES).contains(face) && block.getRelative(face).getType() == Material.LOG) {
-            final MaterialData data = block.getRelative(face).getState().getData();
+            MaterialData data = block.getRelative(face).getState().getData();
             if (data instanceof Tree) {
                 if (((Tree) data).getSpecies() == TreeSpecies.JUNGLE) {
                     return true;
@@ -59,7 +59,7 @@ public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        final MaterialData data = block.getState().getData();
+        MaterialData data = block.getState().getData();
         if (data instanceof CocoaPlant) {
             int amount = 1;
             if (((CocoaPlant) data).getSize() == CocoaPlantSize.LARGE) {
@@ -74,7 +74,7 @@ public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
 
     @Override
     public boolean isFertilizable(GlowBlock block) {
-        final MaterialData data = block.getState().getData();
+        MaterialData data = block.getState().getData();
         if (data instanceof CocoaPlant) {
             if (((CocoaPlant) data).getSize() != CocoaPlantSize.LARGE) {
                 return true;
@@ -97,9 +97,9 @@ public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
 
     @Override
     public void grow(GlowPlayer player, GlowBlock block) {
-        final MaterialData data = block.getState().getData();
+        MaterialData data = block.getState().getData();
         if (data instanceof CocoaPlant) {
-            final CocoaPlant cocoa = (CocoaPlant) data;
+            CocoaPlant cocoa = (CocoaPlant) data;
             CocoaPlantSize size = cocoa.getSize();
             if (size == CocoaPlantSize.SMALL) {
                 cocoa.setSize(CocoaPlantSize.MEDIUM);
@@ -108,7 +108,7 @@ public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
             } else {
                 return;
             }
-            final GlowBlockState state = block.getState();
+            GlowBlockState state = block.getState();
             state.setData(cocoa);
             BlockGrowEvent growEvent = new BlockGrowEvent(block, state);
             EventFactory.callEvent(growEvent);
@@ -122,10 +122,10 @@ public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
 
     @Override
     public void updateBlock(GlowBlock block) {
-        final MaterialData data = block.getState().getData();
+        MaterialData data = block.getState().getData();
         if (data instanceof CocoaPlant) {
-            final CocoaPlant cocoa = (CocoaPlant) data;
-            final CocoaPlantSize size = cocoa.getSize();
+            CocoaPlant cocoa = (CocoaPlant) data;
+            CocoaPlantSize size = cocoa.getSize();
             if (size != CocoaPlantSize.LARGE && random.nextInt(5) == 0) {
                 if (size == CocoaPlantSize.SMALL) {
                     cocoa.setSize(CocoaPlantSize.MEDIUM);
@@ -134,7 +134,7 @@ public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
                 } else {
                     return;
                 }
-                final GlowBlockState state = block.getState();
+                GlowBlockState state = block.getState();
                 state.setData(cocoa);
                 BlockGrowEvent growEvent = new BlockGrowEvent(block, state);
                 EventFactory.callEvent(growEvent);

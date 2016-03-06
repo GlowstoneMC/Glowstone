@@ -38,12 +38,12 @@ public class GlowHorse extends GlowTameable implements Horse {
 
     protected GlowHorse(Location location, AnimalTamer owner) {
         super(location, EntityType.HORSE, 15, owner); // todo change health later
-        if (owner != null) this.ownerUUID = owner.getUniqueId();
+        if (owner != null) ownerUUID = owner.getUniqueId();
     }
 
     @Override
     public Variant getVariant() {
-        return this.variant;
+        return variant;
     }
 
     @Override
@@ -58,7 +58,7 @@ public class GlowHorse extends GlowTameable implements Horse {
 
     @Override
     public void setColor(Color color) {
-        this.horseColor = color;
+        horseColor = color;
     }
 
     @Override
@@ -68,7 +68,7 @@ public class GlowHorse extends GlowTameable implements Horse {
 
     @Override
     public void setStyle(Style style) {
-        this.horseStyle = style;
+        horseStyle = style;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class GlowHorse extends GlowTameable implements Horse {
         if (b) {
             // TODO Manipulate the HorseInventory somehow
         }
-        this.hasChest = b;
+        hasChest = b;
     }
 
     @Override
@@ -91,7 +91,7 @@ public class GlowHorse extends GlowTameable implements Horse {
 
     @Override
     public void setDomestication(int i) {
-        this.domestication = i;
+        domestication = i;
     }
 
     @Override
@@ -101,7 +101,7 @@ public class GlowHorse extends GlowTameable implements Horse {
 
     @Override
     public void setMaxDomestication(int i) {
-        this.maxDomestication = i;
+        maxDomestication = i;
     }
 
     @Override
@@ -111,7 +111,7 @@ public class GlowHorse extends GlowTameable implements Horse {
 
     @Override
     public void setJumpStrength(double v) {
-        this.jumpStrength = v;
+        jumpStrength = v;
     }
 
     @Override
@@ -159,7 +159,7 @@ public class GlowHorse extends GlowTameable implements Horse {
     public List<Message> createSpawnMessage() {
         List<Message> messages = super.createSpawnMessage();
         MetadataMap map = new MetadataMap(GlowHorse.class);
-        map.set(MetadataIndex.HORSE_TYPE, (byte) this.getVariant().ordinal());
+        map.set(MetadataIndex.HORSE_TYPE, (byte) getVariant().ordinal());
         map.set(MetadataIndex.HORSE_FLAGS, getHorseFlags());
         map.set(MetadataIndex.HORSE_STYLE, getHorseStyleData());
         map.set(MetadataIndex.HORSE_ARMOR, getHorseArmorData());
@@ -188,7 +188,7 @@ public class GlowHorse extends GlowTameable implements Horse {
     }
 
     private int getHorseStyleData() {
-        return this.horseColor.ordinal() & 0xFF | this.horseStyle.ordinal() << 8;
+        return horseColor.ordinal() & 0xFF | horseStyle.ordinal() << 8;
     }
 
     private int getHorseArmorData() {

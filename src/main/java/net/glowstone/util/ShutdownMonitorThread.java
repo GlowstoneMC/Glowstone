@@ -3,6 +3,7 @@ package net.glowstone.util;
 import net.glowstone.GlowServer;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 
 /**
@@ -32,10 +33,10 @@ public class ShutdownMonitorThread extends Thread {
 
         GlowServer.logger.warning("Still running after shutdown, finding rogue threads...");
 
-        final Map<Thread, StackTraceElement[]> traces = Thread.getAllStackTraces();
-        for (Map.Entry<Thread, StackTraceElement[]> entry : traces.entrySet()) {
-            final Thread thread = entry.getKey();
-            final StackTraceElement[] stack = entry.getValue();
+        Map<Thread, StackTraceElement[]> traces = Thread.getAllStackTraces();
+        for (Entry<Thread, StackTraceElement[]> entry : traces.entrySet()) {
+            Thread thread = entry.getKey();
+            StackTraceElement[] stack = entry.getValue();
 
             if (thread.isDaemon() || !thread.isAlive() || stack.length == 0) {
                 // won't keep JVM from exiting

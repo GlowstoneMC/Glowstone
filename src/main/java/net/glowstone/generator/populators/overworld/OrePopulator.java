@@ -37,12 +37,12 @@ public class OrePopulator extends BlockPopulator {
 
     @Override
     public void populate(World world, Random random, Chunk chunk) {
-        final int cx = (chunk.getX() << 4);
-        final int cz = (chunk.getZ() << 4);
+        int cx = chunk.getX() << 4;
+        int cz = chunk.getZ() << 4;
 
         for (Entry<OreType, Integer> entry : ores.entrySet()) {
 
-            final OreType oreType = entry.getKey();
+            OreType oreType = entry.getKey();
             for (int n = 0; n < entry.getValue(); n++) {
 
                 int sourceX = cx + random.nextInt(16);

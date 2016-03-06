@@ -17,7 +17,7 @@ public class Cactus {
         if (world.getBlockAt(x, y, z).isEmpty()) {
             int height = random.nextInt(random.nextInt(3) + 1) + 1;
             for (int n = y; n < y + height; n++) {
-                final Block block = world.getBlockAt(x, n, z);
+                Block block = world.getBlockAt(x, n, z);
                 if ((block.getRelative(BlockFace.DOWN).getType() == Material.SAND ||
                         block.getRelative(BlockFace.DOWN).getType() == Material.CACTUS) &&
                         block.getRelative(BlockFace.UP).isEmpty()) {
@@ -26,7 +26,7 @@ public class Cactus {
                             return;
                         }
                     }
-                    final BlockState state = block.getState();
+                    BlockState state = block.getState();
                     state.setType(Material.CACTUS);
                     state.setData(new MaterialData(Material.CACTUS));
                     state.update(true);

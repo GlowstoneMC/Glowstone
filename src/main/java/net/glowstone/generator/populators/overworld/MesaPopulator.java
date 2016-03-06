@@ -11,7 +11,6 @@ public class MesaPopulator extends BiomePopulator {
     private static final Biome[] BIOMES = {Biome.MESA, Biome.MESA_CLEAR_ROCK, Biome.MUTATED_MESA_CLEAR_ROCK, Biome.MUTATED_MESA};
 
     public MesaPopulator() {
-        super();
         flowerDecorator.setAmount(0);
         deadBushDecorator.setAmount(20);
         sugarCaneDecorator.setAmount(13);

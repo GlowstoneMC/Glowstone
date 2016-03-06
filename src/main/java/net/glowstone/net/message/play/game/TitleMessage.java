@@ -17,9 +17,9 @@ public final class TitleMessage implements Message {
     public TitleMessage(Action action, TextMessage text) {
         this.action = action;
         this.text = text;
-        this.fadeIn = 0;
-        this.stay = 0;
-        this.fadeOut = 0;
+        fadeIn = 0;
+        stay = 0;
+        fadeOut = 0;
     }
 
     // TIMES
@@ -28,16 +28,16 @@ public final class TitleMessage implements Message {
         this.fadeIn = fadeIn;
         this.stay = stay;
         this.fadeOut = fadeOut;
-        this.text = null;
+        text = null;
     }
 
     // CLEAR, RESET
     public TitleMessage(Action action) {
         this.action = action;
-        this.text = null;
-        this.fadeIn = 0;
-        this.stay = 0;
-        this.fadeOut = 0;
+        text = null;
+        fadeIn = 0;
+        stay = 0;
+        fadeOut = 0;
     }
 
     public static TitleMessage[] fromTitle(Title title) {

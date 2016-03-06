@@ -2,6 +2,7 @@ package net.glowstone.constants;
 
 import net.glowstone.inventory.MaterialMatcher;
 import net.glowstone.util.WeightedRandom;
+import net.glowstone.util.WeightedRandom.Choice;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
@@ -10,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 /**
  * Definitions of enchantment types.
  */
-public final class GlowEnchantment extends Enchantment implements WeightedRandom.Choice {
+public final class GlowEnchantment extends Enchantment implements Choice {
 
     private static final MaterialMatcher SWORD_OR_AXE = item -> EnchantmentTarget.WEAPON.includes(item)
             || item.equals(Material.WOOD_AXE)
@@ -170,20 +171,20 @@ public final class GlowEnchantment extends Enchantment implements WeightedRandom
         Impl(int id, String name, int max, int weight, int minValue, int minInc, int maxInc, boolean simpleRange, EnchantmentTarget target, MaterialMatcher matcher, int group) {
             this.id = id;
             this.name = name;
-            this.maxLevel = max;
+            maxLevel = max;
             this.weight = weight;
             this.target = target;
             this.matcher = matcher;
             this.group = group;
             this.minValue = minValue;
-            this.minIncrement = minInc;
-            this.maxIncrement = maxInc;
+            minIncrement = minInc;
+            maxIncrement = maxInc;
             this.simpleRange = simpleRange;
         }
 
         int getMinRange(int modifier) {
             modifier = modifier - 1; // Formula depends on input 1 being 0 for "no offset"
-            return (minIncrement * modifier) + minValue;
+            return minIncrement * modifier + minValue;
         }
 
         int getMaxRange(int modifier) {

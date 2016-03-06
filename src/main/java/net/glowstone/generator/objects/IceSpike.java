@@ -29,7 +29,7 @@ public class IceSpike {
                     stackHeight = random.nextInt(5);
                 }
                 for (int y = tipOffset - 1; y >= -3; y--) {
-                    final Block block = world.getBlockAt(sourceX + x, sourceY + y, sourceZ + z);
+                    Block block = world.getBlockAt(sourceX + x, sourceY + y, sourceZ + z);
                     if (Arrays.asList(MATERIALS).contains(block.getType()) || block.getType() == Material.PACKED_ICE) {
                         block.setType(Material.PACKED_ICE);
                         stackHeight--;
@@ -51,7 +51,7 @@ public class IceSpike {
                 float fx = -0.25F - x;
                 for (int z = -radius; z <= radius; z++) {
                     float fz = -0.25F - z;
-                    if ((x == 0 && z == 0) || ((fx * fx + fz * fz <= f * f) && ((x != Math.abs(radius) && z != Math.abs(radius)) || random.nextFloat() <= 0.75F))) {
+                    if (x == 0 && z == 0 || fx * fx + fz * fz <= f * f && (x != Math.abs(radius) && z != Math.abs(radius) || random.nextFloat() <= 0.75F)) {
                         // tip shape in top direction
                         Block block = world.getBlockAt(sourceX + x, sourceY + tipOffset + y, sourceZ + z);
                         if (Arrays.asList(MATERIALS).contains(block.getType())) {

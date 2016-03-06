@@ -9,9 +9,11 @@ import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
+import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -33,14 +35,14 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
         GlowLivingEntity target = possibleTarget instanceof GlowLivingEntity ? (GlowLivingEntity) possibleTarget : null;
 
 
-        if (message.getAction() == InteractEntityMessage.Action.ATTACK.ordinal()) {
+        if (message.getAction() == Action.ATTACK.ordinal()) {
             if (target == null) {
                 if (possibleTarget != null) {
                     possibleTarget.entityInteract(player, message);
                 } else {
                     GlowServer.logger.info("Player " + player.getName() + " tried to attack an entity that does not exist");
                 }
-            } else if (!target.isDead() && target.canTakeDamage(EntityDamageEvent.DamageCause.ENTITY_ATTACK)) {
+            } else if (!target.isDead() && target.canTakeDamage(DamageCause.ENTITY_ATTACK)) {
                 // Calculate damage amount
                 ItemStack hand = player.getItemInHand();
                 Material type = hand == null ? Material.AIR : hand.getType();
@@ -49,7 +51,7 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
                 float damage = AttackDamage.getMeleeDamage(type, false);
 
                 // Apply damage. Calls the EntityDamageByEntityEvent
-                target.damage(damage, player, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
+                target.damage(damage, player, DamageCause.ENTITY_ATTACK);
 
                 // Apply durability loss (if applicable)
                 short durabilityLoss = AttackDamage.getMeleeDurabilityLoss(type);
@@ -58,11 +60,11 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
                     hand.setDurability((short) (hand.getDurability() + durabilityLoss));
                 }
             }
-        } else if (message.getAction() == InteractEntityMessage.Action.INTERACT_AT.ordinal()) {
+        } else if (message.getAction() == Action.INTERACT_AT.ordinal()) {
             //todo: Handle hand variable
             // todo: Interaction with entity at a specified location (X, Y, and Z are present in the message)
             // used for adjusting specific portions of armor stands
-        } else if (message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
+        } else if (message.getAction() == Action.INTERACT.ordinal()) {
             //Todo: Handle hand variable
             PlayerInteractEntityEvent event = new PlayerInteractEntityEvent(player, possibleTarget);
             EventFactory.callEvent(event);

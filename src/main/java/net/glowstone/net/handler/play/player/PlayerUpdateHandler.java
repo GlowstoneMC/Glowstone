@@ -10,6 +10,7 @@ import net.glowstone.net.message.play.player.PlayerUpdateMessage;
 import org.bukkit.Location;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import java.util.Objects;
 
@@ -49,7 +50,7 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
 
         // call move event if movement actually occurred and there are handlers registered
         if (!oldLocation.equals(newLocation) && PlayerMoveEvent.getHandlerList().getRegisteredListeners().length > 0) {
-            final PlayerMoveEvent event = EventFactory.callEvent(new PlayerMoveEvent(player, oldLocation, newLocation));
+            PlayerMoveEvent event = EventFactory.callEvent(new PlayerMoveEvent(player, oldLocation, newLocation));
             if (event.isCancelled()) {
                 // tell client they're back where they started
                 session.send(new PositionRotationMessage(oldLocation));
@@ -59,7 +60,7 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
             if (!event.getTo().equals(newLocation)) {
                 // teleport to the set destination: fires PlayerTeleportEvent and
                 // handles if the destination is in another world
-                player.teleport(event.getTo(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                player.teleport(event.getTo(), TeleportCause.PLUGIN);
                 return;
             }
 

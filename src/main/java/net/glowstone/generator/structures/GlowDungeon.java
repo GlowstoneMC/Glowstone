@@ -53,7 +53,7 @@ public class GlowDungeon extends GlowStructurePiece {
         for (int x = 0; x < sizeX; x++) {
             for (int z = 0; z < sizeZ; z++) {
                 for (int y = 0; y < HEIGHT; y++) {
-                    final Material type = builder.getBlockState(new Vector(x, y, z)).getType();
+                    Material type = builder.getBlockState(new Vector(x, y, z)).getType();
                     // checks we are between 2 solid material layers
                     if ((y == 0 || y == HEIGHT - 1) && !type.isSolid()) {
                         return false;
@@ -84,20 +84,20 @@ public class GlowDungeon extends GlowStructurePiece {
 
         boundingBox.offset(new Vector(-radiusX, -1, -radiusZ));
 
-        final StructureBuilder builder = new StructureBuilder(world, this, genBoundingBox, delegate);
+        StructureBuilder builder = new StructureBuilder(world, this, genBoundingBox, delegate);
 
         if (!canPlace(builder)) {
             return false;
         }
 
-        final Map<StructureMaterial, Integer> stones = new HashMap<>();
+        Map<StructureMaterial, Integer> stones = new HashMap<>();
         builder.addRandomMaterial(stones, 1, Material.COBBLESTONE, 0);
         builder.addRandomMaterial(stones, 3, Material.MOSSY_COBBLESTONE, 0);
 
         for (int x = 0; x < sizeX; x++) {
             for (int z = 0; z < sizeZ; z++) {
                 for (int y = HEIGHT - 2; y >= 0; y--) {
-                    final BlockState state = builder.getBlockState(new Vector(x, y, z));
+                    BlockState state = builder.getBlockState(new Vector(x, y, z));
                     if (y > 0 && x > 0 && z > 0 && x < sizeX - 1 && z < sizeZ - 1) {
                         // empty space inside
                         builder.setBlock(new Vector(x, y, z), Material.AIR);
@@ -117,7 +117,7 @@ public class GlowDungeon extends GlowStructurePiece {
             }
         }
 
-        final RandomItemsContent chestContent = new RandomItemsContent();
+        RandomItemsContent chestContent = new RandomItemsContent();
         chestContent.addItem(new RandomAmountItem(Material.SADDLE, 1, 1), 10);
         chestContent.addItem(new RandomAmountItem(Material.IRON_INGOT, 1, 4), 10);
         chestContent.addItem(new RandomAmountItem(Material.BREAD, 1, 1), 10);

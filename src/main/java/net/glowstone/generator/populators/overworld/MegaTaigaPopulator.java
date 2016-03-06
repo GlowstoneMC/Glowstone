@@ -24,7 +24,6 @@ public class MegaTaigaPopulator extends TaigaPopulator {
     protected final StoneBoulderDecorator stoneBoulderDecorator = new StoneBoulderDecorator();
 
     public MegaTaigaPopulator() {
-        super();
         treeDecorator.setTrees(TREES);
         tallGrassDecorator.setAmount(7);
         deadBushDecorator.setAmount(0);

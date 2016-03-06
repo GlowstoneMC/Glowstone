@@ -22,7 +22,7 @@ class ItemFrameStore extends EntityStore<GlowItemFrame> {
         super.load(entity, tag);
 
         if (tag.isInt("Facing")) {
-            entity.setFacingDirectionNumber((tag.getInt("Facing")));
+            entity.setFacingDirectionNumber(tag.getInt("Facing"));
         }
         if (tag.isCompound("Item")) {
             entity.setItemInFrame(NbtSerialization.readItem(tag.getCompound("Item")));

@@ -11,7 +11,6 @@ public class DesertPopulator extends BiomePopulator {
     private static final Biome[] BIOMES = {Biome.DESERT, Biome.DESERT_HILLS};
 
     public DesertPopulator() {
-        super();
         waterLakeDecorator.setAmount(0);
         deadBushDecorator.setAmount(2);
         sugarCaneDecorator.setAmount(60);

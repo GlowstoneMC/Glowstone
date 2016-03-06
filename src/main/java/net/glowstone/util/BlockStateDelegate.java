@@ -32,7 +32,7 @@ public class BlockStateDelegate {
      * @param type  the new type of this block
      */
     public void setType(World world, int x, int y, int z, Material type) {
-        final GlowBlockState state = (GlowBlockState) world.getBlockAt(x, y, z).getState();
+        GlowBlockState state = (GlowBlockState) world.getBlockAt(x, y, z).getState();
         state.setType(type);
         blockStateMap.put(world.getBlockAt(x, y, z).getLocation(), state);
     }
@@ -48,7 +48,7 @@ public class BlockStateDelegate {
      * @param data  the new MaterialData of this block
      */
     public void setTypeAndData(World world, int x, int y, int z, Material type, MaterialData data) {
-        final GlowBlockState state = (GlowBlockState) world.getBlockAt(x, y, z).getState();
+        GlowBlockState state = (GlowBlockState) world.getBlockAt(x, y, z).getState();
         state.setType(type);
         state.setData(data);
         blockStateMap.put(world.getBlockAt(x, y, z).getLocation(), state);
@@ -65,7 +65,7 @@ public class BlockStateDelegate {
      * @param data  the new data value of this block
      */
     public void setTypeAndRawData(World world, int x, int y, int z, Material type, int data) {
-        final GlowBlockState state = (GlowBlockState) world.getBlockAt(x, y, z).getState();
+        GlowBlockState state = (GlowBlockState) world.getBlockAt(x, y, z).getState();
         state.setType(type);
         state.setRawData((byte) data);
         blockStateMap.put(world.getBlockAt(x, y, z).getLocation(), state);
@@ -120,7 +120,7 @@ public class BlockStateDelegate {
      * @return The {@link BlockState} state.
      */
     public BlockState getBlockState(World world, int x, int y, int z) {
-        final Location loc = world.getBlockAt(x, y, z).getLocation();
+        Location loc = world.getBlockAt(x, y, z).getLocation();
         if (blockStateMap.containsKey(loc)) {
             return blockStateMap.get(loc);
         } else {

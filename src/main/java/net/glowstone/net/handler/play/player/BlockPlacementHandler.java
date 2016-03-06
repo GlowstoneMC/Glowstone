@@ -13,6 +13,7 @@ import net.glowstone.net.message.play.player.BlockPlacementMessage;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.Event;
+import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -23,8 +24,8 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
             BlockFace.DOWN, BlockFace.UP, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST
     };
 
-    static boolean selectResult(Event.Result result, boolean def) {
-        return result == Event.Result.DEFAULT ? def : result == Event.Result.ALLOW;
+    static boolean selectResult(Result result, boolean def) {
+        return result == Result.DEFAULT ? def : result == Result.ALLOW;
     }
 
     static void revert(GlowPlayer player, GlowBlock target) {
@@ -46,7 +47,7 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
     @Override
     public void handle(GlowSession session, BlockPlacementMessage message) {
         //TODO: Hand handling instead of .getHeldItem()
-        final GlowPlayer player = session.getPlayer();
+        GlowPlayer player = session.getPlayer();
         if (player == null)
             return;
 
@@ -123,7 +124,7 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
 
         // attempt to use interacted block
         // DEFAULT is treated as ALLOW, and sneaking is always considered
-        boolean useInteractedBlock = event.useInteractedBlock() != Event.Result.DENY;
+        boolean useInteractedBlock = event.useInteractedBlock() != Result.DENY;
         if (useInteractedBlock && clicked != null && (!player.isSneaking() || holding == null)) {
             BlockType blockType = ItemTable.instance().getBlock(clicked.getType());
             useInteractedBlock = blockType.blockInteract(player, clicked, face, clickedLoc);

@@ -27,7 +27,6 @@ public class SwamplandPopulator extends BiomePopulator {
     protected final WaterLilyDecorator waterlilyDecorator = new WaterLilyDecorator();
 
     public SwamplandPopulator() {
-        super();
         sandPatchDecorator.setAmount(0);
         gravelPatchDecorator.setAmount(0);
         treeDecorator.setAmount(2);

@@ -12,7 +12,7 @@ import static org.bukkit.block.Biome.*;
  */
 public final class GlowBiome {
 
-    private static final int[] ids = new int[Biome.values().length];
+    private static final int[] ids = new int[values().length];
     private static final Biome[] biomes = new Biome[256];
 
     static {

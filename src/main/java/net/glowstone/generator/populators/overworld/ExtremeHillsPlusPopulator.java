@@ -11,7 +11,6 @@ public class ExtremeHillsPlusPopulator extends ExtremeHillsPopulator {
     private static final Biome[] BIOMES = {Biome.SMALLER_EXTREME_HILLS, Biome.EXTREME_HILLS_WITH_TREES, Biome.MUTATED_EXTREME_HILLS_WITH_TREES};
 
     public ExtremeHillsPlusPopulator() {
-        super();
         treeDecorator.setAmount(3);
     }
 

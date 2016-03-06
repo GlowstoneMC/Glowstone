@@ -54,8 +54,8 @@ public final class AnvilChunkIoService implements ChunkIoService {
     public boolean read(GlowChunk chunk) throws IOException {
         int x = chunk.getX(), z = chunk.getZ();
         RegionFile region = cache.getRegionFile(x, z);
-        int regionX = x & (REGION_SIZE - 1);
-        int regionZ = z & (REGION_SIZE - 1);
+        int regionX = x & REGION_SIZE - 1;
+        int regionZ = z & REGION_SIZE - 1;
         if (!region.hasChunk(regionX, regionZ)) {
             return false;
         }
@@ -81,7 +81,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
 
             char[] types = new char[rawTypes.length];
             for (int i = 0; i < rawTypes.length; i++) {
-                types[i] = (char) (((extTypes == null ? 0 : extTypes.get(i)) << 12) | ((rawTypes[i] & 0xff) << 4) | data.get(i));
+                types[i] = (char) ((extTypes == null ? 0 : extTypes.get(i)) << 12 | (rawTypes[i] & 0xff) << 4 | data.get(i));
             }
             sections[y] = new ChunkSection(types, skyLight, blockLight);
         }
@@ -151,8 +151,8 @@ public final class AnvilChunkIoService implements ChunkIoService {
     public void write(GlowChunk chunk) throws IOException {
         int x = chunk.getX(), z = chunk.getZ();
         RegionFile region = cache.getRegionFile(x, z);
-        int regionX = x & (REGION_SIZE - 1);
-        int regionZ = z & (REGION_SIZE - 1);
+        int regionX = x & REGION_SIZE - 1;
+        int regionZ = z & REGION_SIZE - 1;
 
         CompoundTag levelTags = new CompoundTag();
 
@@ -177,7 +177,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
             NibbleArray extTypes = null;
             NibbleArray data = new NibbleArray(sec.types.length);
             for (int j = 0; j < sec.types.length; j++) {
-                rawTypes[j] = (byte) ((sec.types[j] >> 4) & 0xFF);
+                rawTypes[j] = (byte) (sec.types[j] >> 4 & 0xFF);
                 byte extType = (byte) (sec.types[j] >> 12);
                 if (extType > 0) {
                     if (extTypes == null) {

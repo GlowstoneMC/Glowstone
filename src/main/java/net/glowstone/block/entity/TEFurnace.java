@@ -13,14 +13,15 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.InventoryView.Property;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
 public class TEFurnace extends TEContainer {
 
-    private short burnTime = 0;
-    private short cookTime = 0;
-    private short burnTimeFuel = 0;
+    private short burnTime;
+    private short cookTime;
+    private short burnTimeFuel;
 
     public TEFurnace(GlowBlock block) {
         super(block, new GlowFurnaceInventory(new GlowFurnace(block, (short) 0, (short) 0)));
@@ -138,11 +139,11 @@ public class TEFurnace extends TEContainer {
                 cookTime = 0;
             }
         }
-        inv.getViewersSet().stream().forEach((human) -> {
-            human.setWindowProperty(InventoryView.Property.BURN_TIME, burnTime);
-            human.setWindowProperty(InventoryView.Property.TICKS_FOR_CURRENT_FUEL, burnTimeFuel);
-            human.setWindowProperty(InventoryView.Property.COOK_TIME, cookTime);
-            human.setWindowProperty(InventoryView.Property.TICKS_FOR_CURRENT_SMELTING, 200);
+        inv.getViewersSet().stream().forEach(human -> {
+            human.setWindowProperty(Property.BURN_TIME, burnTime);
+            human.setWindowProperty(Property.TICKS_FOR_CURRENT_FUEL, burnTimeFuel);
+            human.setWindowProperty(Property.COOK_TIME, cookTime);
+            human.setWindowProperty(Property.TICKS_FOR_CURRENT_SMELTING, 200);
         });
         if (!isBurnable && burnTime == 0 && cookTime == 0) {
             getState().getBlock().getWorld().requestPulse(getState().getBlock(), 0);
@@ -152,13 +153,13 @@ public class TEFurnace extends TEContainer {
     private boolean isBurnable() {
         GlowFurnaceInventory inv = (GlowFurnaceInventory) getInventory();
         if ((burnTime != 0 || inv.getFuel() != null) && inv.getSmelting() != null) {
-            if (((inv.getFuel() == null || inv.getFuel().getType().equals(Material.AIR)) || inv.getSmelting().getType().equals(Material.AIR)) && burnTime == 0) {
+            if ((inv.getFuel() == null || inv.getFuel().getType().equals(Material.AIR) || inv.getSmelting().getType().equals(Material.AIR)) && burnTime == 0) {
                 return false;
             }
             CraftingManager cm = ((GlowServer) Bukkit.getServer()).getCraftingManager();
             if (burnTime != 0 || cm.isFuel(inv.getFuel().getType())) {
                 Recipe recipe = cm.getFurnaceRecipe(inv.getSmelting());
-                if (recipe != null && (inv.getResult() == null || (inv.getResult().getType().equals(recipe.getResult().getType()) && (inv.getResult().getAmount() + recipe.getResult().getAmount()) <= recipe.getResult().getMaxStackSize()))) {
+                if (recipe != null && (inv.getResult() == null || inv.getResult().getType().equals(recipe.getResult().getType()) && inv.getResult().getAmount() + recipe.getResult().getAmount() <= recipe.getResult().getMaxStackSize())) {
                     return true;
                 }
             }

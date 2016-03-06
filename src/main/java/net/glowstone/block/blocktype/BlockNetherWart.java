@@ -24,7 +24,7 @@ public class BlockNetherWart extends BlockNeedsAttached {
         int cropState = block.getData();
         if (cropState < NetherWartsState.RIPE.ordinal() && random.nextInt(10) == 0) {
             cropState++;
-            final GlowBlockState state = block.getState();
+            GlowBlockState state = block.getState();
             state.setRawData((byte) cropState);
             BlockGrowEvent growEvent = new BlockGrowEvent(block, state);
             EventFactory.callEvent(growEvent);

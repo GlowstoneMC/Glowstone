@@ -32,7 +32,7 @@ public final class Position {
      * @return An integer approximation of the yaw.
      */
     public static int getIntYaw(Location loc) {
-        return (int) (((loc.getYaw() % 360) / 360) * 256);
+        return (int) (loc.getYaw() % 360 / 360 * 256);
     }
 
     /**
@@ -42,7 +42,7 @@ public final class Position {
      * @return An integer approximation of the yaw.
      */
     public static int getIntPitch(Location loc) {
-        return (int) (((loc.getPitch() % 360) / 360) * 256);
+        return (int) (loc.getPitch() % 360 / 360 * 256);
     }
 
     /**

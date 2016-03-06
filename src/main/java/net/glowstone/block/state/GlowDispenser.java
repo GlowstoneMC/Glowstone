@@ -33,11 +33,11 @@ public class GlowDispenser extends GlowBlockState implements Dispenser, BlockPro
     public static void register() {
         // register all dispense behaviors
         DefaultDispenseBehavior bucketDispenseBehavior = new BucketDispenseBehavior();
-        GlowDispenser.getDispenseBehaviorRegistry().putBehavior(Material.WATER_BUCKET, bucketDispenseBehavior);
-        GlowDispenser.getDispenseBehaviorRegistry().putBehavior(Material.LAVA_BUCKET, bucketDispenseBehavior);
-        GlowDispenser.getDispenseBehaviorRegistry().putBehavior(Material.BUCKET, new EmptyBucketDispenseBehavior());
-        GlowDispenser.getDispenseBehaviorRegistry().putBehavior(Material.FLINT_AND_STEEL, new FlintAndSteelDispenseBehavior());
-        GlowDispenser.getDispenseBehaviorRegistry().putBehavior(Material.TNT, new TNTDispenseBehavior());
+        getDispenseBehaviorRegistry().putBehavior(Material.WATER_BUCKET, bucketDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.LAVA_BUCKET, bucketDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.BUCKET, new EmptyBucketDispenseBehavior());
+        getDispenseBehaviorRegistry().putBehavior(Material.FLINT_AND_STEEL, new FlintAndSteelDispenseBehavior());
+        getDispenseBehaviorRegistry().putBehavior(Material.TNT, new TNTDispenseBehavior());
     }
 
     private TEDispenser getTileEntity() {

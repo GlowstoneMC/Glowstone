@@ -13,6 +13,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.*;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -60,7 +61,7 @@ public final class GlowScoreboard implements Scoreboard {
             player.getSession().send(new ScoreboardDisplayMessage(GlowDisplaySlot.getId(slot), name));
         }
         // scores
-        for (Map.Entry<String, Set<GlowScore>> entry : scoreMap.entrySet()) {
+        for (Entry<String, Set<GlowScore>> entry : scoreMap.entrySet()) {
             for (GlowScore score : entry.getValue()) {
                 player.getSession().send(new ScoreboardScoreMessage(entry.getKey(), score.getObjective().getName(), score.getScore()));
             }

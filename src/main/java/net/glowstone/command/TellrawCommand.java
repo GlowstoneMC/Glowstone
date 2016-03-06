@@ -32,7 +32,7 @@ public class TellrawCommand extends BukkitCommand {
 
         Player player = Bukkit.getPlayerExact(args[0]);
 
-        if (player == null || (sender instanceof Player && !((Player) sender).canSee(player))) {
+        if (player == null || sender instanceof Player && !((Player) sender).canSee(player)) {
             sender.sendMessage("There's no player by that name online.");
         } else {
             StringBuilder message = new StringBuilder();

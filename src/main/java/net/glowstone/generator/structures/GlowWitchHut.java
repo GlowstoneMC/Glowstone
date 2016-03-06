@@ -17,7 +17,6 @@ public class GlowWitchHut extends GlowTemplePiece {
     private boolean hasWitch;
 
     public GlowWitchHut() {
-        super();
     }
 
     public GlowWitchHut(Random random, Location location) {
@@ -40,7 +39,7 @@ public class GlowWitchHut extends GlowTemplePiece {
 
         adjustHPos(world);
 
-        final StructureBuilder builder = new StructureBuilder(world, this, genBoundingBox, delegate);
+        StructureBuilder builder = new StructureBuilder(world, this, genBoundingBox, delegate);
         builder.fill(new Vector(1, 1, 2), new Vector(5, 4, 7), Material.WOOD, 1, Material.AIR); // hut body
         builder.fill(new Vector(1, 1, 1), new Vector(5, 1, 1), Material.WOOD, 1); // hut steps
         builder.fill(new Vector(2, 1, 0), new Vector(4, 1, 0), Material.WOOD, 1); // hut steps
@@ -51,16 +50,16 @@ public class GlowWitchHut extends GlowTemplePiece {
         builder.setBlock(new Vector(2, 3, 2), Material.FENCE);
         builder.setBlock(new Vector(3, 3, 7), Material.FENCE);
 
-        final Stairs stairsN = new Stairs(Material.SPRUCE_WOOD_STAIRS);
+        Stairs stairsN = new Stairs(Material.SPRUCE_WOOD_STAIRS);
         stairsN.setFacingDirection(getRelativeFacing(BlockFace.SOUTH));
         builder.fill(new Vector(0, 4, 1), new Vector(6, 4, 1), stairsN.getItemType(), stairsN);
-        final Stairs stairsE = new Stairs(Material.SPRUCE_WOOD_STAIRS);
+        Stairs stairsE = new Stairs(Material.SPRUCE_WOOD_STAIRS);
         stairsE.setFacingDirection(getRelativeFacing(BlockFace.WEST));
         builder.fill(new Vector(6, 4, 2), new Vector(6, 4, 7), stairsE.getItemType(), stairsE);
-        final Stairs stairsS = new Stairs(Material.SPRUCE_WOOD_STAIRS);
+        Stairs stairsS = new Stairs(Material.SPRUCE_WOOD_STAIRS);
         stairsS.setFacingDirection(getRelativeFacing(BlockFace.NORTH));
         builder.fill(new Vector(0, 4, 8), new Vector(6, 4, 8), stairsS.getItemType(), stairsS);
-        final Stairs stairsW = new Stairs(Material.SPRUCE_WOOD_STAIRS);
+        Stairs stairsW = new Stairs(Material.SPRUCE_WOOD_STAIRS);
         stairsW.setFacingDirection(getRelativeFacing(BlockFace.EAST));
         builder.fill(new Vector(0, 4, 2), new Vector(0, 4, 7), stairsW.getItemType(), stairsW);
 

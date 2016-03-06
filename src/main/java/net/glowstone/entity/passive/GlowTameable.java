@@ -40,28 +40,28 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
     @Override
     public void setTamed(boolean isTamed) {
         metadata.setBit(status, TameableFlags.IS_TAME, isTamed); //TODO 1.9 The flag might need change
-        this.tamed = isTamed;
+        tamed = isTamed;
     }
 
     @Override
     public AnimalTamer getOwner() {
-        return owner instanceof Player ? owner : Bukkit.getPlayer(this.ownerUUId);
+        return owner instanceof Player ? owner : Bukkit.getPlayer(ownerUUId);
     }
 
     @Override
     public void setOwner(AnimalTamer animalTamer) {
         if (animalTamer == null) {
-            this.owner = null;
-            this.ownerUUId = null;
+            owner = null;
+            ownerUUId = null;
             return;
         }
-        this.owner = animalTamer;
-        this.ownerUUId = animalTamer.getUniqueId();
+        owner = animalTamer;
+        ownerUUId = animalTamer.getUniqueId();
         metadata.set(ownerMetadata, owner.getUniqueId());
     }
 
     public UUID getOwnerUUID() {
-        return this.ownerUUId;
+        return ownerUUId;
     }
 
     /**
@@ -74,12 +74,12 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
      */
     public void setOwnerUUID(UUID ownerUUID) {
         if (ownerUUID == null) {
-            this.ownerUUId = null;
+            ownerUUId = null;
             return;
         }
         OfflinePlayer player = Bukkit.getOfflinePlayer(ownerUUId);
         if (player != null && player.hasPlayedBefore()) {
-            this.ownerUUId = ownerUUID;
+            ownerUUId = ownerUUID;
         }
     }
 
@@ -89,7 +89,7 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
 
     public void setSitting(boolean isSitting) {
         metadata.setBit(status, TameableFlags.IS_SITTING, isSitting); //TODO 1.9 - This flag might need change
-        this.sitting = isSitting;
+        sitting = isSitting;
     }
 
 }

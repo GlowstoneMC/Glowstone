@@ -199,7 +199,7 @@ public class GlowBlockState implements BlockState {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
+        int prime = 31;
         int result = 1;
         result = prime * result + (world != null ? world.hashCode() : 0);
         result = prime * result + x;

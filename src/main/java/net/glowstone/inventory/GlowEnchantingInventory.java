@@ -4,6 +4,7 @@ import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.EnchantingInventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -19,10 +20,10 @@ public class GlowEnchantingInventory extends GlowInventory implements Enchanting
     public GlowEnchantingInventory(Location location, GlowPlayer player) {
         super(player, InventoryType.ENCHANTING);
 
-        getSlot(ITEM_SLOT).setType(InventoryType.SlotType.CRAFTING);
-        getSlot(LAPIS_SLOT).setType(InventoryType.SlotType.CRAFTING);
+        getSlot(ITEM_SLOT).setType(SlotType.CRAFTING);
+        getSlot(LAPIS_SLOT).setType(SlotType.CRAFTING);
 
-        this.enchantmentManager = new EnchantmentManager(this, player);
+        enchantmentManager = new EnchantmentManager(this, player);
 
         this.location = location;
 
@@ -36,13 +37,13 @@ public class GlowEnchantingInventory extends GlowInventory implements Enchanting
     public int getBookshelfCount() {
         int count = 0;
 
-        Location loc = this.location.clone();
+        Location loc = location.clone();
 
         for (int y = 0; y <= 1; y++) {
             for (int x = -1; x <= 1; x++) {
                 for (int z = -1; z <= 1; z++) {
                     if (z == 0 && x == 0) continue;
-                    copyPosition(this.location, loc);
+                    copyPosition(location, loc);
                     loc.add(x, 0, z);
                     if (loc.getBlock().isEmpty()) {
                         loc.add(0, 1, 0);

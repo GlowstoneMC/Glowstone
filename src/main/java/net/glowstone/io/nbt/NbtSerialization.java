@@ -31,7 +31,7 @@ public final class NbtSerialization {
      * @return The resulting ItemStack, or null.
      */
     public static ItemStack readItem(CompoundTag tag) {
-        final Material material;
+        Material material;
         if (tag.isString("id")) {
             material = ItemIds.getItem(tag.getString("id"));
         } else if (tag.isShort("id")) {
@@ -39,8 +39,8 @@ public final class NbtSerialization {
         } else {
             return null;
         }
-        final short damage = tag.isShort("Damage") ? tag.getShort("Damage") : 0;
-        final byte count = tag.isByte("Count") ? tag.getByte("Count") : 0;
+        short damage = tag.isShort("Damage") ? tag.getShort("Damage") : 0;
+        byte count = tag.isByte("Count") ? tag.getByte("Count") : 0;
 
         if (material == null || material == Material.AIR || count == 0) {
             return null;

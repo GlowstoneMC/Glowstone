@@ -20,8 +20,8 @@ public class InfestedStoneDecorator extends BlockDecorator {
 
     @Override
     public void decorate(World world, Random random, Chunk chunk) {
-        final int cx = (chunk.getX() << 4);
-        final int cz = (chunk.getZ() << 4);
+        int cx = chunk.getX() << 4;
+        int cz = chunk.getZ() << 4;
 
         for (int n = 0; n < 7; n++) {
             int sourceX = cx + random.nextInt(16);

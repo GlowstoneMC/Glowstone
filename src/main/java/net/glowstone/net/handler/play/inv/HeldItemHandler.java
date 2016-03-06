@@ -10,14 +10,14 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 public final class HeldItemHandler implements MessageHandler<GlowSession, HeldItemMessage> {
     @Override
     public void handle(GlowSession session, HeldItemMessage message) {
-        final int slot = message.getSlot();
+        int slot = message.getSlot();
         if (slot < 0 || slot > 8) {
             // sanity check
             return;
         }
 
-        final GlowPlayer player = session.getPlayer();
-        final int oldSlot = player.getInventory().getHeldItemSlot();
+        GlowPlayer player = session.getPlayer();
+        int oldSlot = player.getInventory().getHeldItemSlot();
         if (slot == oldSlot) {
             // ignore
             return;

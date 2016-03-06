@@ -16,12 +16,12 @@ public final class InventoryIterator implements ListIterator<ItemStack> {
 
     public InventoryIterator(Inventory inventory) {
         this.inventory = inventory;
-        this.nextIndex = 0;
+        nextIndex = 0;
     }
 
     public InventoryIterator(Inventory inventory, int position) {
         this.inventory = inventory;
-        this.nextIndex = position;
+        nextIndex = position;
     }
 
     @Override

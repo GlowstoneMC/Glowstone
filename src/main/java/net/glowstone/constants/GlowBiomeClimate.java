@@ -15,7 +15,7 @@ public class GlowBiomeClimate {
     private static final SimplexOctaveGenerator noiseGen;
 
     static {
-        setBiomeClimate(BiomeClimate.DEFAULT, Biome.values());
+        setBiomeClimate(BiomeClimate.DEFAULT, values());
         setBiomeClimate(BiomeClimate.PLAINS, PLAINS, MUTATED_PLAINS, BEACHES);
         setBiomeClimate(BiomeClimate.DESERT, DESERT, DESERT_HILLS, MUTATED_DESERT, MESA, MUTATED_MESA, MESA_CLEAR_ROCK, MESA_ROCK, MUTATED_MESA_CLEAR_ROCK, MUTATED_MESA_ROCK, HELL);
         setBiomeClimate(BiomeClimate.EXTREME_HILLS, EXTREME_HILLS, EXTREME_HILLS_WITH_TREES, MUTATED_EXTREME_HILLS, MUTATED_EXTREME_HILLS_WITH_TREES, STONE_BEACH, SMALLER_EXTREME_HILLS);

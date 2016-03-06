@@ -41,7 +41,7 @@ public class BlockRedstoneRepeater extends BlockNeedsAttached {
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
-        final MaterialData data = state.getData();
+        MaterialData data = state.getData();
         if (data instanceof Diode) {
             ((Diode) data).setFacingDirection(player.getDirection());
             state.setData(data);
@@ -51,18 +51,18 @@ public class BlockRedstoneRepeater extends BlockNeedsAttached {
     }
 
     @Override
-    public void updatePhysics(final GlowBlock me) {
+    public void updatePhysics(GlowBlock me) {
         super.updatePhysics(me);
 
         Diode diode = (Diode) me.getState().getData();
         GlowBlock target = me.getRelative(diode.getFacing().getOppositeFace());
 
-        final boolean powered = target.getType() == Material.REDSTONE_TORCH_ON || target.isBlockPowered() || (target.getType() == Material.REDSTONE_WIRE
-                && target.getData() > 0 && BlockRedstone.calculateConnections(target).contains(diode.getFacing()))
-                || (target.getType() == Material.DIODE_BLOCK_ON && ((Diode) target.getState().getData()).getFacing() == diode.getFacing());
+        boolean powered = target.getType() == Material.REDSTONE_TORCH_ON || target.isBlockPowered() || target.getType() == Material.REDSTONE_WIRE
+                && target.getData() > 0 && BlockRedstone.calculateConnections(target).contains(diode.getFacing())
+                || target.getType() == Material.DIODE_BLOCK_ON && ((Diode) target.getState().getData()).getFacing() == diode.getFacing();
 
         if (powered != (me.getType() == Material.DIODE_BLOCK_ON)) {
-            (new BukkitRunnable() {
+            new BukkitRunnable() {
                 @Override
                 public void run() {
                     if (!powered && me.getType() == Material.DIODE_BLOCK_ON) {
@@ -73,7 +73,7 @@ public class BlockRedstoneRepeater extends BlockNeedsAttached {
                         extraUpdate(me);
                     }
                 }
-            }).runTaskLater(null, diode.getDelay() * 2);
+            }.runTaskLater(null, diode.getDelay() * 2);
         }
     }
 

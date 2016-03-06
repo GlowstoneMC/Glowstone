@@ -9,6 +9,7 @@ import net.glowstone.net.message.play.player.PlayerSwingArmMessage;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.Event;
+import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerAnimationEvent;
 
@@ -18,7 +19,7 @@ public final class PlayerSwingArmHandler implements MessageHandler<GlowSession, 
     @Override
     public void handle(GlowSession session, PlayerSwingArmMessage message) {
         //TODO: Handle hand
-        final GlowPlayer player = session.getPlayer();
+        GlowPlayer player = session.getPlayer();
 
         Block block;
         try {
@@ -29,7 +30,7 @@ public final class PlayerSwingArmHandler implements MessageHandler<GlowSession, 
         }
 
         if (block == null || block.isEmpty()) {
-            if (EventFactory.onPlayerInteract(player, Action.LEFT_CLICK_AIR).useItemInHand() == Event.Result.DENY)
+            if (EventFactory.onPlayerInteract(player, Action.LEFT_CLICK_AIR).useItemInHand() == Result.DENY)
                 return;
             // todo: item interactions with air
         }

@@ -23,7 +23,6 @@ public class GlowDesertTemple extends GlowTemplePiece {
     private boolean hasPlacedChest3;
 
     public GlowDesertTemple() {
-        super();
     }
 
     public GlowDesertTemple(Random random, Location location) {
@@ -35,7 +34,7 @@ public class GlowDesertTemple extends GlowTemplePiece {
     }
 
     public void setHasPlacedChest0(boolean placedChest) {
-        this.hasPlacedChest0 = placedChest;
+        hasPlacedChest0 = placedChest;
     }
 
     public boolean getHasPlacedChest1() {
@@ -43,7 +42,7 @@ public class GlowDesertTemple extends GlowTemplePiece {
     }
 
     public void setHasPlacedChest1(boolean placedChest) {
-        this.hasPlacedChest1 = placedChest;
+        hasPlacedChest1 = placedChest;
     }
 
     public boolean getHasPlacedChest2() {
@@ -51,7 +50,7 @@ public class GlowDesertTemple extends GlowTemplePiece {
     }
 
     public void setHasPlacedChest2(boolean placedChest) {
-        this.hasPlacedChest2 = placedChest;
+        hasPlacedChest2 = placedChest;
     }
 
     public boolean getHasPlacedChest3() {
@@ -59,7 +58,7 @@ public class GlowDesertTemple extends GlowTemplePiece {
     }
 
     public void setHasPlacedChest3(boolean placedChest) {
-        this.hasPlacedChest3 = placedChest;
+        hasPlacedChest3 = placedChest;
     }
 
     @Override
@@ -68,7 +67,7 @@ public class GlowDesertTemple extends GlowTemplePiece {
             return false;
         }
 
-        final StructureBuilder builder = new StructureBuilder(world, this, genBoundingBox, delegate);
+        StructureBuilder builder = new StructureBuilder(world, this, genBoundingBox, delegate);
         for (int x = 0; x < 21; x++) {
             for (int z = 0; z < 21; z++) {
                 builder.setBlockDownward(new Vector(x, 13, z), Material.SANDSTONE);
@@ -82,23 +81,23 @@ public class GlowDesertTemple extends GlowTemplePiece {
         // east tower
         builder.fill(new Vector(0, 18, 0), new Vector(4, 27, 4), Material.SANDSTONE, Material.AIR);
         builder.fill(new Vector(1, 28, 1), new Vector(3, 28, 3), Material.SANDSTONE);
-        final Stairs stairsN = new Stairs(Material.SANDSTONE_STAIRS);
+        Stairs stairsN = new Stairs(Material.SANDSTONE_STAIRS);
         stairsN.setFacingDirection(getRelativeFacing(BlockFace.SOUTH));
         builder.setBlock(new Vector(2, 28, 0), stairsN.getItemType(), stairsN);
-        final Stairs stairsE = new Stairs(Material.SANDSTONE_STAIRS);
+        Stairs stairsE = new Stairs(Material.SANDSTONE_STAIRS);
         stairsE.setFacingDirection(getRelativeFacing(BlockFace.WEST));
         builder.setBlock(new Vector(4, 28, 2), stairsE.getItemType(), stairsE);
-        final Stairs stairsS = new Stairs(Material.SANDSTONE_STAIRS);
+        Stairs stairsS = new Stairs(Material.SANDSTONE_STAIRS);
         stairsS.setFacingDirection(getRelativeFacing(BlockFace.NORTH));
         builder.setBlock(new Vector(2, 28, 4), stairsS.getItemType(), stairsS);
-        final Stairs stairsW = new Stairs(Material.SANDSTONE_STAIRS);
+        Stairs stairsW = new Stairs(Material.SANDSTONE_STAIRS);
         stairsW.setFacingDirection(getRelativeFacing(BlockFace.EAST));
         builder.setBlock(new Vector(0, 28, 2), stairsW.getItemType(), stairsW);
         builder.fill(new Vector(1, 19, 5), new Vector(3, 22, 11), Material.SANDSTONE);
         builder.fill(new Vector(2, 22, 4), new Vector(2, 24, 4), Material.AIR);
         builder.fill(new Vector(1, 19, 3), new Vector(2, 20, 3), Material.SANDSTONE);
         builder.setBlock(new Vector(1, 19, 2), Material.SANDSTONE);
-        final Step step = new Step(Material.SANDSTONE);
+        Step step = new Step(Material.SANDSTONE);
         builder.setBlock(new Vector(1, 20, 2), step.getItemType(), step);
         builder.setBlock(new Vector(2, 19, 2), stairsE.getItemType(), stairsE);
         for (int i = 0; i < 2; i++) {
@@ -236,7 +235,7 @@ public class GlowDesertTemple extends GlowTemplePiece {
         builder.setBlock(new Vector(7, 4, 10), Material.SANDSTONE, 1);
         builder.setBlock(new Vector(10, 3, 10), Material.STONE_PLATE);
 
-        final RandomItemsContent chestContent = getChestContent();
+        RandomItemsContent chestContent = getChestContent();
         if (!hasPlacedChest0) {
             hasPlacedChest0 = builder.createRandomItemsContainer(new Vector(10, 3, 12), random, chestContent, new Chest(getRelativeFacing(BlockFace.NORTH)), random.nextInt(5) + 2);
         }

@@ -75,12 +75,12 @@ public class GlowTask extends FutureTask<Void> implements BukkitTask, BukkitWork
      */
     public GlowTask(Plugin owner, Runnable task, boolean sync, long delay, long period) {
         super(task, null);
-        this.taskId = nextTaskId.getAndIncrement();
-        this.description = task.toString();
+        taskId = nextTaskId.getAndIncrement();
+        description = task.toString();
         this.owner = owner;
         this.delay = delay;
         this.period = period;
-        this.counter = 0;
+        counter = 0;
         this.sync = sync;
     }
 
@@ -122,7 +122,7 @@ public class GlowTask extends FutureTask<Void> implements BukkitTask, BukkitWork
      */
     @Override
     public void cancel() {
-        this.cancel(false);
+        cancel(false);
     }
 
     /**
@@ -132,7 +132,7 @@ public class GlowTask extends FutureTask<Void> implements BukkitTask, BukkitWork
      * @return Execution state for this task
      */
     TaskExecutionState shouldExecute() {
-        final TaskExecutionState execState = shouldExecuteUpdate();
+        TaskExecutionState execState = shouldExecuteUpdate();
         lastExecutionState = execState;
         return execState;
     }

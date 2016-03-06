@@ -1,5 +1,7 @@
 package net.glowstone.util.collection;
 
+import net.glowstone.util.collection.SuperCollection.AdditionMode;
+
 import java.util.*;
 
 /**
@@ -8,11 +10,11 @@ import java.util.*;
 public class SuperList<E> extends SuperCollection<E> implements List<E> {
 
     public SuperList() {
-        super(SuperCollection.AdditionMode.LAST);
+        super(AdditionMode.LAST);
     }
 
     public SuperList(List<List<E>> parents) {
-        super(parents, SuperCollection.AdditionMode.LAST);
+        super(parents, AdditionMode.LAST);
     }
 
     @Override

@@ -20,10 +20,10 @@ public class RandomItemsContent {
 
     public boolean fillContainer(Random random, DirectionalContainer container, BlockState state, int maxStacks) {
         if (state.getBlock().getState() instanceof InventoryHolder) {
-            final Inventory inventory = ((InventoryHolder) state.getBlock().getState()).getInventory();
-            final int size = inventory.getSize();
+            Inventory inventory = ((InventoryHolder) state.getBlock().getState()).getInventory();
+            int size = inventory.getSize();
             for (int i = 0; i < maxStacks; i++) {
-                final RandomAmountItem item = getRandomItem(random);
+                RandomAmountItem item = getRandomItem(random);
                 if (item != null) {
                     for (ItemStack stack : item.getItemStacks(random)) {
                         // slot can be overriden hence maxStacks can be less than what's expected
@@ -74,11 +74,11 @@ public class RandomItemsContent {
             int minAmount = stack.getAmount();
             int amount = random.nextInt(maxAmount - minAmount + 1) + minAmount;
             if (amount <= stack.getMaxStackSize()) {
-                final ItemStack adjustedStack = stack.clone();
+                ItemStack adjustedStack = stack.clone();
                 adjustedStack.setAmount(amount);
                 return Collections.unmodifiableList(Arrays.asList(adjustedStack));
             } else {
-                final ItemStack[] stacks = new ItemStack[amount];
+                ItemStack[] stacks = new ItemStack[amount];
                 for (int i = 0; i < amount; i++) {
                     stacks[i] = stack.clone();
                     stacks[i].setAmount(1);

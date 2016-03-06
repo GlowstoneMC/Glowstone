@@ -49,14 +49,14 @@ public class MushroomDecorator extends BlockDecorator {
                 int z = sourceZ + random.nextInt(8) - random.nextInt(8);
                 int y = sourceY + random.nextInt(4) - random.nextInt(4);
 
-                final Block block = world.getBlockAt(x, y, z);
-                final Block blockBelow = world.getBlockAt(x, y - 1, z);
+                Block block = world.getBlockAt(x, y, z);
+                Block blockBelow = world.getBlockAt(x, y - 1, z);
                 if (y < 255 && block.getType() == Material.AIR &&
-                        (((blockBelow.getType() == Material.GRASS || (blockBelow.getState().getData() instanceof Dirt &&
-                                ((Dirt) blockBelow.getState().getData()).getType() != DirtType.PODZOL)) && block.getLightLevel() < 13) ||
-                                blockBelow.getType() == Material.MYCEL || (blockBelow.getState().getData() instanceof Dirt &&
-                                ((Dirt) blockBelow.getState().getData()).getType() == DirtType.PODZOL))) {
-                    final BlockState state = block.getState();
+                        ((blockBelow.getType() == Material.GRASS || blockBelow.getState().getData() instanceof Dirt &&
+                                ((Dirt) blockBelow.getState().getData()).getType() != DirtType.PODZOL) && block.getLightLevel() < 13 ||
+                                blockBelow.getType() == Material.MYCEL || blockBelow.getState().getData() instanceof Dirt &&
+                                ((Dirt) blockBelow.getState().getData()).getType() == DirtType.PODZOL)) {
+                    BlockState state = block.getState();
                     state.setType(type);
                     state.setData(new MaterialData(type));
                     state.update(true);

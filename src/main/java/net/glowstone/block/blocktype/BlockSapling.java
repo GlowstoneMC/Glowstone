@@ -47,7 +47,7 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
     private void growSapling(GlowBlock block, GlowPlayer player) {
 
         // get data but filters sapling age
-        final int data = block.getData() & 0x7;
+        int data = block.getData() & 0x7;
 
         if (data == TreeSpecies.GENERIC.ordinal()) {
             // 1 chance on 10 to grow a big oak tree
@@ -58,7 +58,7 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
             }
         } else if (data == TreeSpecies.REDWOOD.ordinal()) {
             // check saplings around to grow a mega redwood
-            final GlowBlock hugeTreeBlock = searchSourceBlockForHugeTree(block);
+            GlowBlock hugeTreeBlock = searchSourceBlockForHugeTree(block);
             if (hugeTreeBlock == null) {
                 generateTree(TreeType.REDWOOD, block, player);
             } else {
@@ -68,7 +68,7 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
             generateTree(TreeType.BIRCH, block, player);
         } else if (data == TreeSpecies.JUNGLE.ordinal()) {
             // check saplings around to grow a mega jungle tree
-            final GlowBlock hugeTreeBlock = searchSourceBlockForHugeTree(block);
+            GlowBlock hugeTreeBlock = searchSourceBlockForHugeTree(block);
             if (hugeTreeBlock == null) {
                 generateTree(TreeType.SMALL_JUNGLE, block, player);
             } else {
@@ -78,7 +78,7 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
             generateTree(TreeType.ACACIA, block, player);
         } else if (data == TreeSpecies.DARK_OAK.ordinal()) {
             // check saplings around to grow a dark oak tree
-            final GlowBlock hugeTreeBlock = searchSourceBlockForHugeTree(block);
+            GlowBlock hugeTreeBlock = searchSourceBlockForHugeTree(block);
             if (hugeTreeBlock != null) {
                 generateTree(TreeType.DARK_OAK, hugeTreeBlock, player);
             }
@@ -88,7 +88,7 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
     private void generateTree(TreeType type, GlowBlock block, GlowPlayer player) {
 
         // get data but filters sapling age
-        final int data = block.getData() & 0x7;
+        int data = block.getData() & 0x7;
 
         // replaces the sapling block(s)
         block.setType(Material.AIR);
@@ -99,11 +99,11 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
         }
 
         // try to generate a tree
-        final Location loc = block.getLocation();
-        final BlockStateDelegate blockStateDelegate = new BlockStateDelegate();
+        Location loc = block.getLocation();
+        BlockStateDelegate blockStateDelegate = new BlockStateDelegate();
         boolean canGrow = false;
         if (GlowTree.newInstance(type, random, loc, blockStateDelegate).generate()) {
-            final List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
+            List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
             StructureGrowEvent growEvent =
                     new StructureGrowEvent(loc, type, player != null, player, blockStates);
             EventFactory.callEvent(growEvent);
@@ -134,14 +134,14 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
 
     private GlowBlock searchSourceBlockForHugeTree(GlowBlock block) {
 
-        final GlowWorld world = block.getWorld();
-        final int sourceX = block.getX();
-        final int sourceY = block.getY();
-        final int sourceZ = block.getZ();
-        final int data = block.getData();
+        GlowWorld world = block.getWorld();
+        int sourceX = block.getX();
+        int sourceY = block.getY();
+        int sourceZ = block.getZ();
+        int data = block.getData();
         for (int x = -1; x <= 0; x++) {
             for (int z = -1; z <= 0; z++) {
-                final GlowBlock b = world.getBlockAt(sourceX + x, sourceY, sourceZ + z);
+                GlowBlock b = world.getBlockAt(sourceX + x, sourceY, sourceZ + z);
                 if (b.getType() == Material.SAPLING && b.getData() == data &&
                         b.getRelative(BlockFace.SOUTH).getType() == Material.SAPLING &&
                         b.getRelative(BlockFace.SOUTH).getData() == data &&
@@ -170,12 +170,12 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
             if ((dataValue & 8) == 0) {
                 block.setData((byte) (dataValue | 8));
             } else {
-                final MaterialData data = block.getState().getData();
+                MaterialData data = block.getState().getData();
                 if (data instanceof Tree) {
-                    final Tree tree = (Tree) data;
-                    final TreeType type = getTreeType(tree.getSpecies());
+                    Tree tree = (Tree) data;
+                    TreeType type = getTreeType(tree.getSpecies());
                     block.setType(Material.AIR);
-                    final int saplingData = block.getData() & 0x7;
+                    int saplingData = block.getData() & 0x7;
                     if (!block.getWorld().generateTree(block.getLocation(), type)) {
                         block.setType(Material.SAPLING);
                         block.setData((byte) saplingData);

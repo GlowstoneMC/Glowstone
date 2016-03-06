@@ -17,7 +17,6 @@ public class MegaSpruceTaigaPopulator extends MegaTaigaPopulator {
             new TreeDecoration(MegaSpruceTree.class, 33)};
 
     public MegaSpruceTaigaPopulator() {
-        super();
         treeDecorator.setTrees(TREES);
     }
 

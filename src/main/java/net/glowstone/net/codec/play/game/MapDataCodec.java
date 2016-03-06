@@ -5,6 +5,8 @@ import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import net.glowstone.net.message.play.game.MapDataMessage;
+import net.glowstone.net.message.play.game.MapDataMessage.Icon;
+import net.glowstone.net.message.play.game.MapDataMessage.Section;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,15 +19,15 @@ public final class MapDataCodec implements Codec<MapDataMessage> {
 
     @Override
     public ByteBuf encode(ByteBuf buf, MapDataMessage message) throws IOException {
-        final List<MapDataMessage.Icon> icons = message.getIcons();
-        final MapDataMessage.Section section = message.getSection();
+        List<Icon> icons = message.getIcons();
+        Section section = message.getSection();
 
         ByteBufUtils.writeVarInt(buf, message.getId());
         buf.writeByte(message.getScale());
 
         ByteBufUtils.writeVarInt(buf, icons.size());
-        for (MapDataMessage.Icon icon : icons) {
-            buf.writeByte((icon.facing << 4) | icon.type);
+        for (Icon icon : icons) {
+            buf.writeByte(icon.facing << 4 | icon.type);
             buf.writeByte(icon.x);
             buf.writeByte(icon.y);
         }

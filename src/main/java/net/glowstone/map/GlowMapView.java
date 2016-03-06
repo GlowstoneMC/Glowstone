@@ -27,9 +27,9 @@ public final class GlowMapView implements MapView {
     protected GlowMapView(GlowWorld world, short id) {
         this.world = world;
         this.id = id;
-        this.x = world.getSpawnLocation().getBlockX();
-        this.z = world.getSpawnLocation().getBlockZ();
-        this.scale = Scale.FAR;
+        x = world.getSpawnLocation().getBlockX();
+        z = world.getSpawnLocation().getBlockZ();
+        scale = Scale.FAR;
         addRenderer(new GlowMapRenderer(this));
     }
 

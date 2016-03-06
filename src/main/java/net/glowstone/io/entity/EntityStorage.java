@@ -152,7 +152,7 @@ public final class EntityStorage {
      */
     @SuppressWarnings("unchecked")
     private static EntityStore<GlowEntity> getBaseStore(EntityStore<?> store) {
-        return ((EntityStore<GlowEntity>) store);
+        return (EntityStore<GlowEntity>) store;
     }
 
     /**

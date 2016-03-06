@@ -40,7 +40,7 @@ public class BlockTallGrass extends BlockNeedsAttached implements IBlockGrowable
 
     @Override
     public boolean isFertilizable(GlowBlock block) {
-        final MaterialData data = block.getState().getData();
+        MaterialData data = block.getState().getData();
         if (data instanceof LongGrass) {
             if (((LongGrass) data).getSpecies() != GrassSpecies.DEAD) {
                 return true;
@@ -58,15 +58,15 @@ public class BlockTallGrass extends BlockNeedsAttached implements IBlockGrowable
 
     @Override
     public void grow(GlowPlayer player, GlowBlock block) {
-        final MaterialData data = block.getState().getData();
+        MaterialData data = block.getState().getData();
         if (data instanceof LongGrass) {
-            final GrassSpecies species = ((LongGrass) data).getSpecies();
+            GrassSpecies species = ((LongGrass) data).getSpecies();
             if (species == GrassSpecies.NORMAL || species == GrassSpecies.FERN_LIKE) {
-                final GlowBlockState headBlockState = block.getRelative(BlockFace.UP).getState();
+                GlowBlockState headBlockState = block.getRelative(BlockFace.UP).getState();
                 if (headBlockState.getType() == Material.AIR) {
-                    final DoublePlantSpecies doublePlantSpecies = species == GrassSpecies.FERN_LIKE ?
+                    DoublePlantSpecies doublePlantSpecies = species == GrassSpecies.FERN_LIKE ?
                             DoublePlantSpecies.LARGE_FERN : DoublePlantSpecies.DOUBLE_TALLGRASS;
-                    final GlowBlockState blockState = block.getState();
+                    GlowBlockState blockState = block.getState();
                     blockState.setType(Material.DOUBLE_PLANT);
                     blockState.setData(new DoublePlant(doublePlantSpecies));
                     headBlockState.setType(Material.DOUBLE_PLANT);

@@ -58,12 +58,12 @@ public class GlowSheep extends GlowAnimal implements Sheep {
 
     @Override
     public void setColor(DyeColor dyeColor) {
-        this.color = dyeColor;
+        color = dyeColor;
         metadata.set(MetadataIndex.SHEEP_DATA, getColorByte());
     }
 
     private byte getColorByte() {
-        return (byte) (this.getColor().getData() | (sheared ? 0x10 : 0x00));
+        return (byte) (getColor().getData() | (sheared ? 0x10 : 0x00));
     }
 
     @Override
@@ -71,7 +71,7 @@ public class GlowSheep extends GlowAnimal implements Sheep {
         if (player.getGameMode().equals(GameMode.SPECTATOR)) return false;
         if (player.getItemInHand() == null) return false;
         switch (player.getItemInHand().getType()) {
-            case SHEARS: {
+            case SHEARS:
                 if (isSheared()) return false;
 
                 if (!player.getGameMode().equals(GameMode.CREATIVE)) {
@@ -92,7 +92,6 @@ public class GlowSheep extends GlowAnimal implements Sheep {
 
                 setSheared(true);
                 return true;
-            }
             case INK_SACK: {
                 Dye dye = (Dye) player.getItemInHand().getData();
                 DyeColor color = dye.getColor();
@@ -117,9 +116,8 @@ public class GlowSheep extends GlowAnimal implements Sheep {
                 setColor(color);
                 return true;
             }
-            default: {
+            default:
                 return false;
-            }
         }
     }
 }

@@ -20,15 +20,15 @@ import java.util.Objects;
 public final class CreativeItemHandler implements MessageHandler<GlowSession, CreativeItemMessage> {
     @Override
     public void handle(GlowSession session, CreativeItemMessage message) {
-        final GlowPlayer player = session.getPlayer();
-        final GlowInventory inv = player.getInventory();
+        GlowPlayer player = session.getPlayer();
+        GlowInventory inv = player.getInventory();
         // CraftBukkit does use a inventory view with both inventories set to the player's inventory
         // for the creative inventory as there is no second inventory (no crafting) visible for the client
-        final InventoryView view = player.getOpenInventory();
-        final int viewSlot = message.getSlot();
-        final int slot = view.convertSlot(viewSlot);
+        InventoryView view = player.getOpenInventory();
+        int viewSlot = message.getSlot();
+        int slot = view.convertSlot(viewSlot);
         ItemStack stack = ItemIds.sanitize(message.getItem());
-        final SlotType type = inv.getSlotType(slot);
+        SlotType type = inv.getSlotType(slot);
 
         // only if creative mode
         if (player.getGameMode() != GameMode.CREATIVE) {

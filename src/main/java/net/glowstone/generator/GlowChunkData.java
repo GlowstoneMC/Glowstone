@@ -31,7 +31,7 @@ public class GlowChunkData implements ChunkData {
         if (sections[y >> 4] == null) {
             return (byte) 0;
         }
-        return (byte) (sections[y >> 4][((y & 0xF) << 8) | (z << 4) | x] & 0xF);
+        return (byte) (sections[y >> 4][(y & 0xF) << 8 | z << 4 | x] & 0xF);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class GlowChunkData implements ChunkData {
         if (sections[y >> 4] == null) {
             return 0;
         }
-        return sections[y >> 4][((y & 0xF) << 8) | (z << 4) | x] >> 4;
+        return sections[y >> 4][(y & 0xF) << 8 | z << 4 | x] >> 4;
     }
 
     @Override
@@ -83,7 +83,7 @@ public class GlowChunkData implements ChunkData {
         if (sections[y >> 4] == null) {
             sections[y >> 4] = new short[4096];
         }
-        sections[y >> 4][((y & 0xF) << 8) | (z << 4) | x] = (short) ((blockId << 4) | data);
+        sections[y >> 4][(y & 0xF) << 8 | z << 4 | x] = (short) (blockId << 4 | data);
     }
 
     @Override

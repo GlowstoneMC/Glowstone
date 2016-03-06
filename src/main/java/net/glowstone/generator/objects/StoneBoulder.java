@@ -20,7 +20,7 @@ public class StoneBoulder {
     public void generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
         boolean groundReached = false;
         while (!groundReached && sourceY > 3) {
-            final Block block = world.getBlockAt(sourceX, sourceY - 1, sourceZ);
+            Block block = world.getBlockAt(sourceX, sourceY - 1, sourceZ);
             if (!block.isEmpty()) {
                 for (Material mat : GROUND_TYPES) {
                     if (mat == block.getType()) {
@@ -42,8 +42,8 @@ public class StoneBoulder {
                     for (int z = -radiusZ; z <= radiusZ; z++) {
                         for (int y = -radiusY; y <= radiusY; y++) {
                             if (x * x + z * z + y * y <= f * f) {
-                                final BlockState state = world.getBlockAt(sourceX + x, sourceY + y, sourceZ + z).getState();
-                                final Block blockAbove = state.getBlock().getRelative(BlockFace.UP);
+                                BlockState state = world.getBlockAt(sourceX + x, sourceY + y, sourceZ + z).getState();
+                                Block blockAbove = state.getBlock().getRelative(BlockFace.UP);
                                 for (Material mat : PLANT_TYPES) {
                                     if (blockAbove.getType() == mat) {
                                         if (mat == Material.DOUBLE_PLANT && blockAbove.getState().getData() instanceof DoublePlant &&

@@ -6,6 +6,7 @@ import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.ExplosionMessage;
+import net.glowstone.net.message.play.game.ExplosionMessage.Record;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -14,6 +15,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.ItemStack;
@@ -77,7 +79,7 @@ public final class Explosion {
         this.power = power;
         this.incendiary = incendiary;
         this.breakBlocks = breakBlocks;
-        this.world = (GlowWorld) location.getWorld();
+        world = (GlowWorld) location.getWorld();
     }
 
     public boolean explodeWithEvent() {
@@ -89,7 +91,7 @@ public final class Explosion {
         EntityExplodeEvent event = EventFactory.callEvent(new EntityExplodeEvent(source, location, toBlockList(droppedBlocks), yield));
         if (event.isCancelled()) return false;
 
-        this.yield = event.getYield();
+        yield = event.getYield();
 
         playOutSoundAndParticles();
 
@@ -122,7 +124,7 @@ public final class Explosion {
 
         Set<BlockVector> blocks = new HashSet<>();
 
-        final int value = 16;
+        int value = 16;
 
         for (int x = 0; x < value; x++) {
             for (int y = 0; y < value; y++) {
@@ -206,7 +208,7 @@ public final class Explosion {
         if (belowType == Material.AIR || belowType == Material.FIRE || !belowType.isFlammable()) {
             return;
         }
-        BlockIgniteEvent event = EventFactory.callEvent(new BlockIgniteEvent(block, BlockIgniteEvent.IgniteCause.EXPLOSION, source));
+        BlockIgniteEvent event = EventFactory.callEvent(new BlockIgniteEvent(block, IgniteCause.EXPLOSION, source));
         if (event.isCancelled()) {
             return;
         }
@@ -278,7 +280,7 @@ public final class Explosion {
 
     private double calculateDamage(GlowEntity entity, double disDivPower) {
         double damage = world.rayTrace(location, entity);
-        return (damage * (1D - disDivPower));
+        return damage * (1D - disDivPower);
     }
 
     private Collection<GlowLivingEntity> getNearbyEntities() {
@@ -323,7 +325,7 @@ public final class Explosion {
     private void playOutSoundAndParticles() {
         world.playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 4, (1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F) * 0.7F);
 
-        if (this.power >= 2.0F && this.breakBlocks) {
+        if (power >= 2.0F && breakBlocks) {
             // send huge explosion
             world.spigot().playEffect(location, Effect.EXPLOSION_HUGE);
         } else {
@@ -333,7 +335,7 @@ public final class Explosion {
     }
 
     private void playOutExplosion(GlowPlayer player, Iterable<BlockVector> blocks) {
-        Collection<ExplosionMessage.Record> records = new ArrayList<>();
+        Collection<Record> records = new ArrayList<>();
 
         Location clientLoc = location.clone();
         clientLoc.setX((int) clientLoc.getX());
@@ -344,7 +346,7 @@ public final class Explosion {
             byte x = (byte) (block.getBlockX() - clientLoc.getBlockX());
             byte y = (byte) (block.getBlockY() - clientLoc.getBlockY());
             byte z = (byte) (block.getBlockZ() - clientLoc.getBlockZ());
-            records.add(new ExplosionMessage.Record(x, y, z));
+            records.add(new Record(x, y, z));
         }
 
         Vector velocity = player.getVelocity();

@@ -8,6 +8,7 @@ import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -52,7 +53,7 @@ public class ItemFlintAndSteel extends ItemTool {
             return true;
         }
 
-        BlockIgniteEvent event = EventFactory.callEvent(new BlockIgniteEvent(fireBlock, BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL, player, null));
+        BlockIgniteEvent event = EventFactory.callEvent(new BlockIgniteEvent(fireBlock, IgniteCause.FLINT_AND_STEEL, player, null));
         if (event.isCancelled()) {
             player.setItemInHand(holding);
             return false;

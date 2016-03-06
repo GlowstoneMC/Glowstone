@@ -11,7 +11,6 @@ public class SavannaMountainsPopulator extends SavannaPopulator {
     private static final Biome[] BIOMES = {Biome.MUTATED_SAVANNA, Biome.MUTATED_SAVANNA_ROCK};
 
     public SavannaMountainsPopulator() {
-        super();
         treeDecorator.setAmount(2);
         flowerDecorator.setAmount(2);
         tallGrassDecorator.setAmount(5);

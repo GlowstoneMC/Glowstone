@@ -8,7 +8,7 @@ import net.glowstone.util.nbt.CompoundTag;
 
 public class TEBrewingStand extends TEContainer {
 
-    private int brewTime = 0;
+    private int brewTime;
 
     public TEBrewingStand(GlowBlock block) {
         super(block, new GlowBrewerInventory(new GlowBrewingStand(block, 0)));

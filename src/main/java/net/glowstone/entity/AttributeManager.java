@@ -19,8 +19,8 @@ public class AttributeManager {
 
     public AttributeManager(GlowLivingEntity entity) {
         this.entity = entity;
-        this.properties = new HashMap<>();
-        this.needsUpdate = false;
+        properties = new HashMap<>();
+        needsUpdate = false;
     }
 
     public void applyMessages(Collection<Message> messages) {

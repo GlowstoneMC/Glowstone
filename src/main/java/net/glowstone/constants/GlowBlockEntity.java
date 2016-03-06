@@ -13,7 +13,7 @@ public enum GlowBlockEntity {
 
     private final int value;
 
-    GlowBlockEntity(final int value) {
+    GlowBlockEntity(int value) {
         this.value = value;
     }
 
@@ -23,6 +23,6 @@ public enum GlowBlockEntity {
      * @return the magic number
      */
     public int getValue() {
-        return this.value;
+        return value;
     }
 }

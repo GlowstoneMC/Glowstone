@@ -49,7 +49,7 @@ public class GlowSuperInventory extends GlowInventory {
             viewers.getParents().add(parent.getViewersSet());
         }
 
-        super.initialize(slots, viewers, owner, type, title);
+        initialize(slots, viewers, owner, type, title);
         this.parents = parents;
     }
 

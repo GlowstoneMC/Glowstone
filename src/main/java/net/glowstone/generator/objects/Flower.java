@@ -23,7 +23,7 @@ public class Flower {
             int z = sourceZ + random.nextInt(8) - random.nextInt(8);
             int y = sourceY + random.nextInt(4) - random.nextInt(4);
 
-            final Block block = world.getBlockAt(x, y, z);
+            Block block = world.getBlockAt(x, y, z);
             if (y < 255 && block.getType() == Material.AIR &&
                     block.getRelative(BlockFace.DOWN).getType() == Material.GRASS) {
                 block.setType(type);

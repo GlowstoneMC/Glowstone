@@ -9,6 +9,7 @@ import net.glowstone.net.message.login.EncryptionKeyRequestMessage;
 import net.glowstone.net.message.login.LoginStartMessage;
 import net.glowstone.util.SecurityUtils;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
@@ -17,13 +18,13 @@ public final class LoginStartHandler implements MessageHandler<GlowSession, Logi
 
     @Override
     public void handle(GlowSession session, LoginStartMessage message) {
-        final String name = message.getUsername();
+        String name = message.getUsername();
 
         if (session.getServer().getOnlineMode()) {
             // Get necessary information to create our request message
-            final String sessionId = session.getSessionId();
-            final byte[] publicKey = SecurityUtils.generateX509Key(session.getServer().getKeyPair().getPublic()).getEncoded(); //Convert to X509 format
-            final byte[] verifyToken = SecurityUtils.generateVerifyToken();
+            String sessionId = session.getSessionId();
+            byte[] publicKey = SecurityUtils.generateX509Key(session.getServer().getKeyPair().getPublic()).getEncoded(); //Convert to X509 format
+            byte[] verifyToken = SecurityUtils.generateVerifyToken();
 
             // Set verify data on session for use in the response handler
             session.setVerifyToken(verifyToken);
@@ -45,13 +46,13 @@ public final class LoginStartHandler implements MessageHandler<GlowSession, Logi
                 }
             }
 
-            final AsyncPlayerPreLoginEvent event = EventFactory.onPlayerPreLogin(profile.getName(), session.getAddress(), profile.getUniqueId());
-            if (event.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) {
+            AsyncPlayerPreLoginEvent event = EventFactory.onPlayerPreLogin(profile.getName(), session.getAddress(), profile.getUniqueId());
+            if (event.getLoginResult() != Result.ALLOWED) {
                 session.disconnect(event.getKickMessage(), true);
                 return;
             }
 
-            final PlayerProfile finalProfile = profile;
+            PlayerProfile finalProfile = profile;
             session.getServer().getScheduler().runTask(null, () -> session.setPlayer(finalProfile));
         }
     }

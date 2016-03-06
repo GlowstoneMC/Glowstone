@@ -7,6 +7,7 @@ import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Horse;
+import org.bukkit.entity.Horse.Color;
 import org.bukkit.entity.Horse.Style;
 import org.bukkit.entity.Horse.Variant;
 import org.bukkit.inventory.ItemStack;
@@ -44,7 +45,7 @@ class HorseStore extends AgeableStore<GlowHorse> {
         entity.setCarryingChest(compound.getBool(CHESTED_HORSE_KEY));
         entity.setHasReproduced(compound.getBool(HAS_REPRODUCED_KEY));
         entity.setStyle(Style.values()[compound.getInt(VARIANT_KEY) >>> 8]);
-        entity.setColor(Horse.Color.values()[compound.getInt(VARIANT_KEY) & 0xFF]);
+        entity.setColor(Color.values()[compound.getInt(VARIANT_KEY) & 0xFF]);
         entity.setVariant(Variant.values()[compound.getInt(TYPE_KEY)]);
         entity.setTemper(compound.getInt(TEMPER_Key));
         entity.setTamed(compound.getBool(TAME_KEY));

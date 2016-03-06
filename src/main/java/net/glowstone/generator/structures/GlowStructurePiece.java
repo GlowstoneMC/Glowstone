@@ -49,7 +49,7 @@ public abstract class GlowStructurePiece {
     }
 
     public void setGD(int gd) {
-        this.unknownGD = gd;
+        unknownGD = gd;
     }
 
     public int getNumericOrientation() {
@@ -74,7 +74,7 @@ public abstract class GlowStructurePiece {
     }
 
     protected final BlockFace getRelativeFacing(BlockFace face) {
-        final BlockFace f = getOrientationFromOrdinal((orientation.ordinal() + face.ordinal()) & 0x3);
+        BlockFace f = getOrientationFromOrdinal(orientation.ordinal() + face.ordinal() & 0x3);
         if ((orientation == BlockFace.SOUTH || orientation == BlockFace.WEST) &&
                 (face == BlockFace.EAST || face == BlockFace.WEST)) {
             return f.getOppositeFace();
@@ -87,8 +87,8 @@ public abstract class GlowStructurePiece {
     }
 
     private void createNewBoundingBox(Location location, Vector size) {
-        final Vector min = new Vector(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-        final Vector max = new Vector(location.getBlockX() + size.getBlockX() - 1,
+        Vector min = new Vector(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+        Vector max = new Vector(location.getBlockX() + size.getBlockX() - 1,
                 location.getBlockY() + size.getBlockY() - 1,
                 location.getBlockZ() + size.getBlockZ() - 1);
         boundingBox = new StructureBoundingBox(min, max);

@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Represents an item that is also an {@link net.glowstone.entity.GlowEntity} within the world.
+ * Represents an item that is also an {@link GlowEntity} within the world.
  *
  * @author Graham Edgecombe
  */

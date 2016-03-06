@@ -38,9 +38,9 @@ public class BlockFalling extends BlockType {
         }
     }
 
-    protected void transformToFallingEntity(final GlowBlock me) {
-        final Material oldType = me.getType();
-        final byte data = me.getData();
+    protected void transformToFallingEntity(GlowBlock me) {
+        Material oldType = me.getType();
+        byte data = me.getData();
         me.setTypeId(0, false);
         // todo: replace with me.getWorld().spawnFallingBlock(me.getLocation(), drop, me.getData());
         // on a delay to prevent the block not being visible because its new location was just dug

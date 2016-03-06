@@ -13,9 +13,9 @@ public class BoundingBox implements Cloneable {
     public static boolean intersects(BoundingBox a, BoundingBox b) {
         Vector minA = a.minCorner, maxA = a.maxCorner;
         Vector minB = b.minCorner, maxB = b.maxCorner;
-        return (maxA.getX() >= minB.getX() && minA.getX() <= maxB.getX() &&
+        return maxA.getX() >= minB.getX() && minA.getX() <= maxB.getX() &&
                 maxA.getY() >= minB.getY() && minA.getY() <= maxB.getY() &&
-                maxA.getZ() >= minB.getZ() && minA.getZ() <= maxB.getZ());
+                maxA.getZ() >= minB.getZ() && minA.getZ() <= maxB.getZ();
     }
 
     public static BoundingBox fromCorners(Vector a, Vector b) {

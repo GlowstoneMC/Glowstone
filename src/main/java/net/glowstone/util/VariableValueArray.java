@@ -17,61 +17,61 @@ public final class VariableValueArray {
         if (bitsPerValue > 64) {
             throw new IllegalArgumentException(String.format("bitsPerValue (%s) must not be greater then 64", bitsPerValue));
         }
-        this.backing = new long[(int) Math.ceil((bitsPerValue * capacity) / 64.0)];
+        backing = new long[(int) Math.ceil((bitsPerValue * capacity) / 64.0)];
         this.bitsPerValue = bitsPerValue;
-        this.valueMask = (1L << bitsPerValue) - 1L;
+        valueMask = (1L << bitsPerValue) - 1L;
         this.capacity = capacity;
     }
 
     public long[] getBacking() {
-        return this.backing;
+        return backing;
     }
 
     public int getCapacity() {
-        return this.capacity;
+        return capacity;
     }
 
     public int getBitsPerValue() {
-        return this.bitsPerValue;
+        return bitsPerValue;
     }
 
     public int get(int index) {
-        this.checkIndex(index);
+        checkIndex(index);
 
-        index *= this.bitsPerValue;
+        index *= bitsPerValue;
         int i0 = index >> 6;
         int i1 = index & 0x3f;
 
-        long value = this.backing[i0] >>> i1;
-        int i2 = i1 + this.bitsPerValue;
+        long value = backing[i0] >>> i1;
+        int i2 = i1 + bitsPerValue;
         // The value is divided over two long values
         if (i2 > 64) {
-            value |= this.backing[++i0] << (64 - i1);
+            value |= backing[++i0] << 64 - i1;
         }
 
-        return (int) (value & this.valueMask);
+        return (int) (value & valueMask);
     }
 
     public void set(int index, int value) {
-        this.checkIndex(index);
+        checkIndex(index);
 
         if (value < 0) {
             throw new IllegalArgumentException(String.format("value (%s) must not be negative", value));
         }
-        if (value > this.valueMask) {
-            throw new IllegalArgumentException(String.format("value (%s) must not be greater then %s", value, this.valueMask));
+        if (value > valueMask) {
+            throw new IllegalArgumentException(String.format("value (%s) must not be greater then %s", value, valueMask));
         }
 
-        index *= this.bitsPerValue;
+        index *= bitsPerValue;
         int i0 = index >> 6;
         int i1 = index & 0x3f;
 
-        this.backing[i0] = (this.backing[i0] & ~(this.valueMask << i1)) | (value & this.valueMask) << i1;
-        int i2 = i1 + this.bitsPerValue;
+        backing[i0] = this.backing[i0] & ~(this.valueMask << i1) | (value & valueMask) << i1;
+        int i2 = i1 + bitsPerValue;
         // The value is divided over two long values
         if (i2 > 64) {
             i0++;
-            this.backing[i0] = this.backing[i0] & ~((1L << (i2 - 64)) - 1L) | value >> (64 - i1);
+            backing[i0] = backing[i0] & ~((1L << i2 - 64) - 1L) | value >> 64 - i1;
         }
     }
 
@@ -79,8 +79,8 @@ public final class VariableValueArray {
         if (index < 0) {
             throw new IndexOutOfBoundsException(String.format("index (%s) must not be negative", index));
         }
-        if (index >= this.capacity) {
-            throw new IndexOutOfBoundsException(String.format("index (%s) must not be greater then the capacity (%s)", index, this.capacity));
+        if (index >= capacity) {
+            throw new IndexOutOfBoundsException(String.format("index (%s) must not be greater then the capacity (%s)", index, capacity));
         }
     }
 }

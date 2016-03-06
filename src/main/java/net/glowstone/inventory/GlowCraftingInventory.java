@@ -24,9 +24,9 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
             throw new IllegalArgumentException("GlowCraftingInventory cannot be " + type + ", only CRAFTING or WORKBENCH.");
         }
 
-        getSlot(RESULT_SLOT).setType(InventoryType.SlotType.RESULT);
+        getSlot(RESULT_SLOT).setType(SlotType.RESULT);
         for (int i = MATRIX_START; i < getSize(); i++) {
-            getSlot(i).setType(InventoryType.SlotType.CRAFTING);
+            getSlot(i).setType(SlotType.CRAFTING);
         }
     }
 

@@ -43,10 +43,10 @@ public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
 
     @Override
     public void grow(GlowPlayer player, GlowBlock block) {
-        final GlowBlockState state = block.getState();
+        GlowBlockState state = block.getState();
         int cropState = block.getData()
-                + (random.nextInt(CropState.MEDIUM.ordinal())
-                + CropState.VERY_SMALL.ordinal());
+                + random.nextInt(CropState.MEDIUM.ordinal())
+                + CropState.VERY_SMALL.ordinal();
         if (cropState > CropState.RIPE.ordinal()) {
             cropState = CropState.RIPE.ordinal();
         }
@@ -65,7 +65,7 @@ public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
 
     @Override
     public void updateBlock(GlowBlock block) {
-        final GlowBlockState state = block.getState();
+        GlowBlockState state = block.getState();
         int cropState = block.getData();
         // we check light level on the above block, meaning crops needs at least one free block above it
         // in order to grow naturally (vanilla behavior)
@@ -94,7 +94,7 @@ public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
         // check for soil around (increase the chance modifier to 10 in the best conditions)
         for (int x = -1; x <= 1; x++) {
             for (int z = -1; z <= 1; z++) {
-                final GlowBlock b = block.getWorld().getBlockAt(block.getX() + x, block.getY() - 1, block.getZ() + z);
+                GlowBlock b = block.getWorld().getBlockAt(block.getX() + x, block.getY() - 1, block.getZ() + z);
                 float soilBonus = 0;
                 if (b.getType() == Material.SOIL) {
                     soilBonus = 1;
@@ -134,7 +134,7 @@ public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
             }
         }
 
-        if ((cropOnNorthOrSouth && cropOnEastOrWest) || cropOnDiagonalBlock) {
+        if (cropOnNorthOrSouth && cropOnEastOrWest || cropOnDiagonalBlock) {
             return modifier / 2.0F;
         }
 

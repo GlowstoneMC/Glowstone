@@ -41,7 +41,7 @@ public class GlowRepairMatcher extends ItemMatcher {
 
         int usesA = type.getMaxDurability() - itemA.getDurability();
         int usesB = type.getMaxDurability() - itemB.getDurability();
-        int totalUses = (int) (usesA + usesB + (type.getMaxDurability() * 0.05));
+        int totalUses = (int) (usesA + usesB + type.getMaxDurability() * 0.05);
         int damage = type.getMaxDurability() - totalUses;
 
         return new ItemStack(type, 1, (short) Math.max(damage, 0));

@@ -33,7 +33,7 @@ public final class GlowTeam implements Team {
     private NameTagVisibility deathMessageVisibility = NameTagVisibility.ALWAYS;
     private NameTagVisibility collisionRule = NameTagVisibility.ALWAYS;
     private ChatColor color = ChatColor.RESET;
-    private boolean friendlyFire = false;
+    private boolean friendlyFire;
     private boolean seeInvisible = true;
 
     public GlowTeam(GlowScoreboard scoreboard, String name) {

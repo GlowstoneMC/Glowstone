@@ -23,18 +23,18 @@ public class ZoomMapLayer extends MapLayer {
         int gridSizeZ = (sizeZ >> 1) + 2;
         int[] values = belowLayer.generateValues(gridX, gridZ, gridSizeX, gridSizeZ);
 
-        int zoomSizeX = (gridSizeX - 1) << 1;
-        int zoomSizeZ = (gridSizeZ - 1) << 1;
+        int zoomSizeX = gridSizeX - 1 << 1;
+        int zoomSizeZ = gridSizeZ - 1 << 1;
         int[] tmpValues = new int[zoomSizeX * zoomSizeZ];
         for (int i = 0; i < gridSizeZ - 1; i++) {
-            int n = (i * 2) * zoomSizeX;
+            int n = i * 2 * zoomSizeX;
             int upperLeftVal = values[i * gridSizeX];
             int lowerLeftVal = values[(i + 1) * gridSizeX];
             for (int j = 0; j < gridSizeX - 1; j++) {
                 int upperRightVal = values[j + 1 + i * gridSizeX];
                 int lowerRightVal = values[j + 1 + (i + 1) * gridSizeX];
 
-                setCoordsSeed((gridX + j) << 1, (gridZ + i) << 1);
+                setCoordsSeed(gridX + j << 1, gridZ + i << 1);
                 tmpValues[n] = upperLeftVal;
                 tmpValues[n + zoomSizeX] = nextInt(2) > 0 ? upperLeftVal : lowerLeftVal;
                 tmpValues[n + 1] = nextInt(2) > 0 ? upperLeftVal : upperRightVal;

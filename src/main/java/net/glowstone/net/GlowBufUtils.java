@@ -6,6 +6,7 @@ import io.netty.buffer.ByteBufInputStream;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
+import net.glowstone.entity.meta.MetadataMap.Entry;
 import net.glowstone.entity.meta.MetadataType;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.util.TextMessage;
@@ -41,8 +42,8 @@ public final class GlowBufUtils {
      * @return The metadata.
      * @throws IOException if the buffer could not be read
      */
-    public static List<MetadataMap.Entry> readMetadata(ByteBuf buf) throws IOException {
-        List<MetadataMap.Entry> entries = new ArrayList<>();
+    public static List<Entry> readMetadata(ByteBuf buf) throws IOException {
+        List<Entry> entries = new ArrayList<>();
         byte item;
         while ((item = buf.readByte()) != -1) {
             MetadataType type = MetadataType.byId(buf.readByte());
@@ -51,30 +52,29 @@ public final class GlowBufUtils {
 
             switch (type) {
                 case BYTE:
-                    entries.add(new MetadataMap.Entry(index, buf.readByte()));
+                    entries.add(new Entry(index, buf.readByte()));
                     break;
                 case INT:
-                    entries.add(new MetadataMap.Entry(index, ByteBufUtils.readVarInt(buf)));
+                    entries.add(new Entry(index, ByteBufUtils.readVarInt(buf)));
                     break;
                 case FLOAT:
-                    entries.add(new MetadataMap.Entry(index, buf.readFloat()));
+                    entries.add(new Entry(index, buf.readFloat()));
                     break;
                 case STRING:
-                    entries.add(new MetadataMap.Entry(index, ByteBufUtils.readUTF8(buf)));
+                    entries.add(new Entry(index, ByteBufUtils.readUTF8(buf)));
                     break;
                 case ITEM:
-                    entries.add(new MetadataMap.Entry(index, readSlot(buf)));
+                    entries.add(new Entry(index, readSlot(buf)));
                     break;
                 case BOOLEAN:
-                    entries.add(new MetadataMap.Entry(index, buf.readBoolean()));
+                    entries.add(new Entry(index, buf.readBoolean()));
                     break;
-                case VECTOR: {
+                case VECTOR:
                     float x = buf.readFloat();
                     float y = buf.readFloat();
                     float z = buf.readFloat();
                     entries.add(new MetadataMap.Entry(index, new EulerAngle(x, y, z)));
                     break;
-                }
                 case POSITION:
                     break; //TODO
                 case OPTPOSITION:
@@ -83,15 +83,15 @@ public final class GlowBufUtils {
                     }
                     break;
                 case DIRECTION:
-                    entries.add(new MetadataMap.Entry(index, ByteBufUtils.readVarInt(buf)));
+                    entries.add(new Entry(index, ByteBufUtils.readVarInt(buf)));
                     break;
                 case OPTUUID:
                     if (buf.readBoolean()) {
-                        entries.add(new MetadataMap.Entry(index, GlowBufUtils.readUuid(buf)));
+                        entries.add(new Entry(index, readUuid(buf)));
                     }
                     break;
                 case BLOCKID:
-                    entries.add(new MetadataMap.Entry(index, ByteBufUtils.readVarInt(buf)));
+                    entries.add(new Entry(index, ByteBufUtils.readVarInt(buf)));
             }
         }
         return entries;
@@ -104,8 +104,8 @@ public final class GlowBufUtils {
      * @param entries The metadata.
      * @throws IOException if the buffer could not be written to
      */
-    public static void writeMetadata(ByteBuf buf, List<MetadataMap.Entry> entries) throws IOException {
-        for (MetadataMap.Entry entry : entries) {
+    public static void writeMetadata(ByteBuf buf, List<Entry> entries) throws IOException {
+        for (Entry entry : entries) {
             MetadataIndex index = entry.index;
             Object value = entry.value;
 
@@ -130,7 +130,7 @@ public final class GlowBufUtils {
                     ByteBufUtils.writeUTF8(buf, (String) value);
                     break;
                 case CHAT:
-                    GlowBufUtils.writeChat(buf, (TextMessage) value);
+                    writeChat(buf, (TextMessage) value);
                     break;
                 case ITEM:
                     writeSlot(buf, (ItemStack) value);
@@ -138,13 +138,12 @@ public final class GlowBufUtils {
                 case BOOLEAN:
                     buf.writeBoolean((Boolean) value);
                     break;
-                case VECTOR: {
+                case VECTOR:
                     EulerAngle angle = (EulerAngle) value;
                     buf.writeFloat((float) Math.toDegrees(angle.getX()));
                     buf.writeFloat((float) Math.toDegrees(angle.getY()));
                     buf.writeFloat((float) Math.toDegrees(angle.getZ()));
                     break;
-                }
                 case POSITION:
                     break; //TODO
                 case OPTPOSITION:
@@ -160,7 +159,7 @@ public final class GlowBufUtils {
                     buf.writeBoolean(value != null);
                     if (value != null) {
 
-                        GlowBufUtils.writeUuid(buf, (UUID) value);
+                        writeUuid(buf, (UUID) value);
                     }
                     break;
                 case BLOCKID:
@@ -286,10 +285,10 @@ public final class GlowBufUtils {
      */
     public static BlockVector readBlockPosition(ByteBuf buf) {
         long val = buf.readLong();
-        long x = (val >> 38); // signed
-        long y = (val >> 26) & 0xfff; // unsigned
+        long x = val >> 38; // signed
+        long y = val >> 26 & 0xfff; // unsigned
         // this shifting madness is used to preserve sign
-        long z = (val << 38) >> 38; // signed
+        long z = val << 38 >> 38; // signed
         return new BlockVector((double) x, y, z);
     }
 
@@ -312,7 +311,7 @@ public final class GlowBufUtils {
      * @param z   The z value.
      */
     public static void writeBlockPosition(ByteBuf buf, long x, long y, long z) {
-        buf.writeLong(((x & 0x3ffffff) << 38) | ((y & 0xfff) << 26) | (z & 0x3ffffff));
+        buf.writeLong((x & 0x3ffffff) << 38 | (y & 0xfff) << 26 | z & 0x3ffffff);
     }
 
     /**

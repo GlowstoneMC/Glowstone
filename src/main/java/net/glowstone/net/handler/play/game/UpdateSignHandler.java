@@ -12,7 +12,7 @@ import org.bukkit.block.Sign;
 public final class UpdateSignHandler implements MessageHandler<GlowSession, UpdateSignMessage> {
     @Override
     public void handle(GlowSession session, UpdateSignMessage message) {
-        final GlowPlayer player = session.getPlayer();
+        GlowPlayer player = session.getPlayer();
 
         // filter out json messages that aren't plaintext
         String[] lines = new String[4];

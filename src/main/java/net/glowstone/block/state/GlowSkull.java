@@ -33,7 +33,7 @@ public class GlowSkull extends GlowBlockState implements Skull {
         if (result) {
             TESkull skull = getTileEntity();
             skull.setType(BlockSkull.getType(type));
-            if (BlockSkull.canRotate((org.bukkit.material.Skull) (getBlock().getState().getData()))) {
+            if (BlockSkull.canRotate((org.bukkit.material.Skull) getBlock().getState().getData())) {
                 skull.setRotation(Position.getDirection(rotation));
             }
             if (type == SkullType.PLAYER) {
@@ -51,7 +51,7 @@ public class GlowSkull extends GlowBlockState implements Skull {
 
     @Override
     public String getOwner() {
-        return (hasOwner() ? owner.getName() : null);
+        return hasOwner() ? owner.getName() : null;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class GlowSkull extends GlowBlockState implements Skull {
             return false;
         }
         this.owner = owner;
-        this.setSkullType(SkullType.PLAYER);
+        setSkullType(SkullType.PLAYER);
         return true;
     }
 

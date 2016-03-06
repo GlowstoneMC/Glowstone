@@ -23,14 +23,14 @@ public final class NamedSoundEffectMessage implements Message {
         AMBIENT,
         VOICE;
 
-        private static SoundCategory[] values = null;
+        private static SoundCategory[] values;
 
         //Since values() is expensive, let's cache it.
         public static SoundCategory fromInt(int i) {
-            if (SoundCategory.values == null) {
-                SoundCategory.values = SoundCategory.values();
+            if (values == null) {
+                values = SoundCategory.values();
             }
-            return SoundCategory.values[i];
+            return values[i];
         }
     }
 }

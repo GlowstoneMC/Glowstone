@@ -19,10 +19,10 @@ public class GlowAgeable extends GlowCreature implements Ageable {
     private static final int AGE_ADULT = 0;
     private static final int BREEDING_AGE = 6000;
     protected float width, height;
-    private int age = 0;
-    private boolean ageLocked = false;
+    private int age;
+    private boolean ageLocked;
     private int forcedAge;
-    private int inLove = 0;
+    private int inLove;
 
     /**
      * Creates a new ageable creature.
@@ -38,10 +38,10 @@ public class GlowAgeable extends GlowCreature implements Ageable {
     @Override
     public void pulse() {
         super.pulse();
-        if (this.ageLocked) {
+        if (ageLocked) {
             setScaleForAge(!isAdult());
         } else {
-            int currentAge = this.age;
+            int currentAge = age;
             if (currentAge < AGE_ADULT) {
                 currentAge++;
                 setAge(currentAge);
@@ -54,18 +54,18 @@ public class GlowAgeable extends GlowCreature implements Ageable {
 
     @Override
     public final int getAge() {
-        return this.age;
+        return age;
     }
 
     @Override
     public final void setAge(int age) {
         this.age = age;
-        this.setScaleForAge(isAdult());
+        setScaleForAge(isAdult());
     }
 
     @Override
     public final boolean getAgeLock() {
-        return this.ageLocked;
+        return ageLocked;
     }
 
     @Override
@@ -89,12 +89,12 @@ public class GlowAgeable extends GlowCreature implements Ageable {
 
     @Override
     public final boolean isAdult() {
-        return this.age >= AGE_ADULT;
+        return age >= AGE_ADULT;
     }
 
     @Override
     public final boolean canBreed() {
-        return this.age == AGE_ADULT;
+        return age == AGE_ADULT;
     }
 
     @Override
@@ -114,13 +114,13 @@ public class GlowAgeable extends GlowCreature implements Ageable {
     public List<Message> createSpawnMessage() {
         List<Message> messages = super.createSpawnMessage();
         MetadataMap map = new MetadataMap(GlowAgeable.class);
-        map.set(MetadataIndex.AGE_ISBABY, !this.isAdult());
+        map.set(MetadataIndex.AGE_ISBABY, !isAdult());
         messages.add(new EntityMetadataMessage(id, map.getEntryList()));
         return messages;
     }
 
     protected final void setScale(float scale) {
-        setSize(this.height * scale, this.width * scale);
+        setSize(height * scale, width * scale);
     }
 
     public int getForcedAge() {

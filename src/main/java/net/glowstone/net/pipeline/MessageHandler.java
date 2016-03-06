@@ -33,7 +33,7 @@ public final class MessageHandler extends SimpleChannelInboundHandler<Message> {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-        final Channel c = ctx.channel();
+        Channel c = ctx.channel();
         GlowSession s = connectionManager.newSession(c);
         if (!session.compareAndSet(null, s)) {
             throw new IllegalStateException("Session may not be set more than once");

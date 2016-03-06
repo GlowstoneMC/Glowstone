@@ -1,7 +1,10 @@
 package net.glowstone;
 
 import lombok.ToString;
+import net.glowstone.ChunkManager.ChunkLock;
 import net.glowstone.GlowChunk.ChunkSection;
+import net.glowstone.GlowChunk.Key;
+import net.glowstone.GlowChunkSnapshot.EmptySnapshot;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
@@ -90,7 +93,7 @@ public final class GlowWorld implements World {
     /**
      * A lock kept on the spawn chunks.
      */
-    private final ChunkManager.ChunkLock spawnChunkLock;
+    private final ChunkLock spawnChunkLock;
     /**
      * The world metadata service used.
      */
@@ -157,7 +160,7 @@ public final class GlowWorld implements World {
     /**
      * Whether to populate chunks when they are anchored.
      */
-    private boolean populateAnchoredChunks = false;
+    private boolean populateAnchoredChunks;
     /**
      * Whether PvP is allowed in this world.
      */
@@ -177,7 +180,7 @@ public final class GlowWorld implements World {
     /**
      * How many ticks until the rain/snow status is expected to change.
      */
-    private int rainingTicks = 0;
+    private int rainingTicks;
     /**
      * Whether it is currently thundering on this world.
      */
@@ -185,23 +188,23 @@ public final class GlowWorld implements World {
     /**
      * How many ticks until the thundering status is expected to change.
      */
-    private int thunderingTicks = 0;
+    private int thunderingTicks;
     /**
      * The rain density on the current world tick.
      */
-    private float currentRainDensity = 0;
+    private float currentRainDensity;
     /**
      * The sky darkness on the current world tick.
      */
-    private float currentSkyDarkness = 0;
+    private float currentSkyDarkness;
     /**
      * The age of the world, in ticks.
      */
-    private long worldAge = 0;
+    private long worldAge;
     /**
      * The current world time.
      */
-    private long time = 0;
+    private long time;
     /**
      * The time until the next full-save.
      */
@@ -229,7 +232,7 @@ public final class GlowWorld implements World {
      */
     private int maxBuildHeight;
 
-    private Set<GlowChunk.Key> activeChunksSet = new HashSet<>();
+    private Set<Key> activeChunksSet = new HashSet<>();
 
     /**
      * Creates a new world from the options in the given WorldCreator.
@@ -246,7 +249,7 @@ public final class GlowWorld implements World {
         worldType = creator.type();
         generateStructures = creator.generateStructures();
 
-        final GlowChunkGenerator generator = (GlowChunkGenerator) creator.generator();
+        GlowChunkGenerator generator = (GlowChunkGenerator) creator.generator();
 
         storageProvider = new AnvilWorldStorageProvider(new File(server.getWorldContainer(), name));
         storageProvider.setWorld(this);
@@ -273,14 +276,14 @@ public final class GlowWorld implements World {
         }
         if (values != null) {
             if (values.getSeed() == 0L) {
-                this.seed = creator.seed();
+                seed = creator.seed();
             } else {
-                this.seed = values.getSeed();
+                seed = values.getSeed();
             }
-            this.uid = values.getUuid();
+            uid = values.getUuid();
         } else {
-            this.seed = creator.seed();
-            this.uid = UUID.randomUUID();
+            seed = creator.seed();
+            uid = UUID.randomUUID();
         }
 
         chunks = new ChunkManager(this, storageProvider.getChunkIoService(), generator);
@@ -336,8 +339,8 @@ public final class GlowWorld implements World {
      * @param desc A description for this chunk lock.
      * @return The ChunkLock.
      */
-    public ChunkManager.ChunkLock newChunkLock(String desc) {
-        return new ChunkManager.ChunkLock(chunks, name + ": " + desc);
+    public ChunkLock newChunkLock(String desc) {
+        return new ChunkLock(chunks, name + ": " + desc);
     }
 
     /**
@@ -350,7 +353,7 @@ public final class GlowWorld implements World {
         activeChunksSet.clear();
 
         // We should pulse our tickmap, so blocks get updated.
-        this.pulseTickMap();
+        pulseTickMap();
 
         // pulse players last so they actually see that other entities have
         // moved. unfortunately pretty hacky. not a problem for players b/c
@@ -382,15 +385,15 @@ public final class GlowWorld implements World {
     private void updateActiveChunkCollection(GlowEntity entity) {
         // build a set of chunks around each player in this world, the
         // server view distance is taken here
-        final int radius = server.getViewDistance();
-        final Location playerLocation = entity.getLocation();
+        int radius = server.getViewDistance();
+        Location playerLocation = entity.getLocation();
         if (playerLocation.getWorld() == this) {
-            final int cx = playerLocation.getBlockX() >> 4;
-            final int cz = playerLocation.getBlockZ() >> 4;
+            int cx = playerLocation.getBlockX() >> 4;
+            int cz = playerLocation.getBlockZ() >> 4;
             for (int x = cx - radius; x <= cx + radius; x++) {
                 for (int z = cz - radius; z <= cz + radius; z++) {
                     if (isChunkLoaded(cx, cz)) {
-                        activeChunksSet.add(new GlowChunk.Key(x, z));
+                        activeChunksSet.add(new Key(x, z));
                     }
                 }
             }
@@ -398,19 +401,19 @@ public final class GlowWorld implements World {
     }
 
     private void updateBlocksInActiveChunks() {
-        for (GlowChunk.Key key : activeChunksSet) {
-            final int cx = key.getX();
-            final int cz = key.getZ();
+        for (Key key : activeChunksSet) {
+            int cx = key.getX();
+            int cz = key.getZ();
             // check the chunk is loaded
             if (isChunkLoaded(cx, cz)) {
-                final GlowChunk chunk = getChunkAt(cx, cz);
+                GlowChunk chunk = getChunkAt(cx, cz);
 
                 // thunder
                 maybeStrikeLightningInChunk(cx, cz);
 
                 // block ticking
                 // we will choose 3 blocks per chunk's section
-                final ChunkSection[] sections = chunk.getSections();
+                ChunkSection[] sections = chunk.getSections();
                 for (int i = 0; i < sections.length; i++) {
                     updateBlocksInSection(chunk, sections[i], i);
                 }
@@ -421,13 +424,13 @@ public final class GlowWorld implements World {
     private void updateBlocksInSection(GlowChunk chunk, ChunkSection section, int i) {
         if (section != null) {
             for (int j = 0; j < 3; j++) {
-                final int n = random.nextInt();
-                final int x = n & 0xF;
-                final int z = n >> 8 & 0xF;
-                final int y = n >> 16 & 0xF;
-                final int type = section.types[(y << 8) | (z << 4) | x] >> 4;
+                int n = random.nextInt();
+                int x = n & 0xF;
+                int z = n >> 8 & 0xF;
+                int y = n >> 16 & 0xF;
+                int type = section.types[y << 8 | z << 4 | x] >> 4;
                 if (type != 0) { // filter air blocks
-                    final BlockType blockType = ItemTable.instance().getBlock(type);
+                    BlockType blockType = ItemTable.instance().getBlock(type);
                     // does this block needs random tick ?
                     if (blockType != null && blockType.canTickRandomly()) {
                         blockType.updateBlock(chunk.getBlock(x, y + (i << 4), z));
@@ -498,7 +501,7 @@ public final class GlowWorld implements World {
                 wakeUpAllPlayers(players);
                 // no need to send them the time - handle that normally
             } else { // otherwise check whether everyone is asleep
-                final boolean skipNight = gameRules.getBoolean("doDaylightCycle") && areAllPlayersSleeping(players);
+                boolean skipNight = gameRules.getBoolean("doDaylightCycle") && areAllPlayersSleeping(players);
                 // check gamerule before iterating players (micro-optimization)
                 if (skipNight) {
                     skipRestOfNight(players);
@@ -549,7 +552,7 @@ public final class GlowWorld implements World {
     }
 
     private void strikeLightningInChunk(int cx, int cz) {
-        final int n = random.nextInt();
+        int n = random.nextInt();
         // get lightning target block
         int x = (cx << 4) + (n & 0xF);
         int z = (cz << 4) + (n >> 8 & 0xF);
@@ -557,15 +560,15 @@ public final class GlowWorld implements World {
 
         // search for living entities in a 6×6×h (there's an error in the wiki!) region from 3 below the
         // target block up to the world height
-        final BoundingBox searchBox = BoundingBox.fromPositionAndSize(new Vector(x, y, z), new Vector(0, 0, 0));
-        final Vector vec = new Vector(3, 3, 3);
-        final Vector vec2 = new Vector(0, getMaxHeight(), 0);
+        BoundingBox searchBox = BoundingBox.fromPositionAndSize(new Vector(x, y, z), new Vector(0, 0, 0));
+        Vector vec = new Vector(3, 3, 3);
+        Vector vec2 = new Vector(0, getMaxHeight(), 0);
         searchBox.minCorner.subtract(vec);
         searchBox.maxCorner.add(vec).add(vec2);
-        final List<LivingEntity> livingEntities = new LinkedList<>();
+        List<LivingEntity> livingEntities = new LinkedList<>();
         // make sure entity can see sky
         getEntityManager().getEntitiesInside(searchBox, null).stream().filter(entity -> entity instanceof LivingEntity && !entity.isDead()).forEach(entity -> {
-            final Vector pos = entity.getLocation().toVector();
+            Vector pos = entity.getLocation().toVector();
             int minY = getHighestBlockYAt(pos.getBlockX(), pos.getBlockZ());
             if (pos.getBlockY() >= minY) {
                 livingEntities.add((LivingEntity) entity);
@@ -575,9 +578,9 @@ public final class GlowWorld implements World {
         // re-target lightning if required
         if (!livingEntities.isEmpty()) {
             // randomly choose an entity
-            final LivingEntity entity = livingEntities.get(random.nextInt(livingEntities.size()));
+            LivingEntity entity = livingEntities.get(random.nextInt(livingEntities.size()));
             // re-target lightning on this living entity
-            final Vector newTarget = entity.getLocation().toVector();
+            Vector newTarget = entity.getLocation().toVector();
             x = newTarget.getBlockX();
             z = newTarget.getBlockZ();
             y = newTarget.getBlockY();
@@ -745,7 +748,7 @@ public final class GlowWorld implements World {
                         } else {
                             loadChunk(x, z);
                         }
-                        spawnChunkLock.acquire(new GlowChunk.Key(x, z));
+                        spawnChunkLock.acquire(new Key(x, z));
                         if (System.currentTimeMillis() >= loadTime + 1000) {
                             int progress = 100 * current / total;
                             GlowServer.logger.info("Preparing spawn for " + name + ": " + progress + "%");
@@ -959,9 +962,9 @@ public final class GlowWorld implements World {
 
     @Override
     public boolean generateTree(Location loc, TreeType type, BlockChangeDelegate delegate) {
-        final BlockStateDelegate blockStateDelegate = new BlockStateDelegate();
+        BlockStateDelegate blockStateDelegate = new BlockStateDelegate();
         if (GlowTree.newInstance(type, random, loc, blockStateDelegate).generate()) {
-            final List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
+            List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
             StructureGrowEvent growEvent = new StructureGrowEvent(loc, type, false, null, blockStates);
             EventFactory.callEvent(growEvent);
             if (!growEvent.isCancelled()) {
@@ -1126,7 +1129,7 @@ public final class GlowWorld implements World {
     }
 
     @Override
-    public boolean unloadChunkRequest(final int x, final int z, final boolean safe) {
+    public boolean unloadChunkRequest(int x, int z, boolean safe) {
         if (safe && isChunkInUse(x, z)) return false;
 
         server.getScheduler().runTask(null, () -> unloadChunk(x, z, safe));
@@ -1147,7 +1150,7 @@ public final class GlowWorld implements World {
             return false;
         }
 
-        GlowChunk.Key key = new GlowChunk.Key(x, z);
+        Key key = new Key(x, z);
         boolean result = false;
 
         for (GlowPlayer player : getRawPlayers()) {
@@ -1162,7 +1165,7 @@ public final class GlowWorld implements World {
 
     @Override
     public ChunkSnapshot getEmptyChunkSnapshot(int x, int z, boolean includeBiome, boolean includeBiomeTempRain) {
-        return new GlowChunkSnapshot.EmptySnapshot(x, z, this, includeBiome, includeBiomeTempRain);
+        return new EmptySnapshot(x, z, this, includeBiome, includeBiomeTempRain);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1284,9 +1287,9 @@ public final class GlowWorld implements World {
         return spawn(loc, type.getEntityClass());
     }
 
-    private GlowLightningStrike strikeLightningFireEvent(final Location loc, final boolean effect) {
-        final GlowLightningStrike strike = new GlowLightningStrike(loc, effect, random);
-        final LightningStrikeEvent event = new LightningStrikeEvent(this, strike);
+    private GlowLightningStrike strikeLightningFireEvent(Location loc, boolean effect) {
+        GlowLightningStrike strike = new GlowLightningStrike(loc, effect, random);
+        LightningStrikeEvent event = new LightningStrikeEvent(this, strike);
         if (EventFactory.callEvent(event).isCancelled()) {
             return null;
         }
@@ -1389,7 +1392,7 @@ public final class GlowWorld implements World {
 
         // Numbers borrowed from CraftBukkit.
         if (currentlyThundering) {
-            setThunderDuration(random.nextInt(HALF_DAY_IN_TICKS) + (180 * TICKS_PER_SECOND));
+            setThunderDuration(random.nextInt(HALF_DAY_IN_TICKS) + 180 * TICKS_PER_SECOND);
         } else {
             setThunderDuration(random.nextInt(WEEK_IN_TICKS) + HALF_DAY_IN_TICKS);
         }
@@ -1414,10 +1417,10 @@ public final class GlowWorld implements World {
     }
 
     private void updateWeather() {
-        final float previousRainDensity = currentRainDensity;
-        final float previousSkyDarkness = currentSkyDarkness;
-        final float rainDensityModifier = currentlyRaining ? .01F : -.01F;
-        final float skyDarknessModifier = currentlyThundering ? .01F : -.01F;
+        float previousRainDensity = currentRainDensity;
+        float previousSkyDarkness = currentSkyDarkness;
+        float rainDensityModifier = currentlyRaining ? .01F : -.01F;
+        float skyDarknessModifier = currentlyThundering ? .01F : -.01F;
         currentRainDensity = Math.max(0, Math.min(1, previousRainDensity + rainDensityModifier));
         currentSkyDarkness = Math.max(0, Math.min(1, previousSkyDarkness + skyDarknessModifier));
 
@@ -1485,7 +1488,7 @@ public final class GlowWorld implements World {
 
     @Override
     public void playEffect(Location location, Effect effect, int data, int radius) {
-        final int radiusSquared = radius * radius;
+        int radiusSquared = radius * radius;
         getRawPlayers().stream().filter(player -> player.getLocation().distanceSquared(location) <= radiusSquared).forEach(player -> player.playEffect(location, effect, data));
     }
 
@@ -1500,7 +1503,7 @@ public final class GlowWorld implements World {
     }
 
     public void playEffectExceptTo(Location location, Effect effect, int data, int radius, Player exclude) {
-        final int radiusSquared = radius * radius;
+        int radiusSquared = radius * radius;
         getRawPlayers().stream().filter(player -> !player.equals(exclude) && player.getLocation().distanceSquared(location) <= radiusSquared).forEach(player -> player.playEffect(location, effect, data));
     }
 
@@ -1508,7 +1511,7 @@ public final class GlowWorld implements World {
     public void playSound(Location location, Sound sound, float volume, float pitch) {
         if (location == null || sound == null) return;
 
-        final double radiusSquared = Math.pow(volume * 16, 2);
+        double radiusSquared = Math.pow(volume * 16, 2);
         getRawPlayers().stream().filter(player -> player.getLocation().distanceSquared(location) <= radiusSquared).forEach(player -> player.playSound(location, sound, volume, pitch));
     }
 
@@ -1523,7 +1526,7 @@ public final class GlowWorld implements World {
 
     //@Override
     public void showParticle(Location loc, Effect particle, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
-        final int radius;
+        int radius;
         if (GlowParticle.isLongDistance(particle)) {
             radius = 48;
         } else {
@@ -1537,7 +1540,7 @@ public final class GlowWorld implements World {
     public void showParticle(Location loc, Effect particle, int id, int data, float offsetX, float offsetY, float offsetZ, float speed, int amount, int radius) {
         if (loc == null || particle == null) return;
 
-        final double radiusSquared = radius * radius;
+        double radiusSquared = radius * radius;
 
 
         getRawPlayers().stream().filter(player -> player.getLocation().distanceSquared(loc) <= radiusSquared).forEach(player -> player.spigot().playEffect(loc, particle, id, data, offsetX, offsetY, offsetZ, speed, amount, radius));
@@ -1770,7 +1773,7 @@ public final class GlowWorld implements World {
     private void pulseTickMap() {
         ItemTable itemTable = ItemTable.instance();
         getTickMap().entrySet().stream().filter(entry -> worldAge % entry.getValue() == 0).forEach(entry -> {
-            GlowBlock block = this.getBlockAt(entry.getKey());
+            GlowBlock block = getBlockAt(entry.getKey());
             BlockType notifyType = itemTable.getBlock(block.getTypeId());
             if (notifyType != null)
                 notifyType.receivePulse(block);

@@ -32,14 +32,14 @@ public class SugarCane {
                     block = world.getBlockAt(x, y + n, z).getRelative(BlockFace.DOWN);
                     if (block.getType() == Material.SUGAR_CANE_BLOCK
                             || block.getType() == Material.GRASS
-                            || (block.getType() == Material.DIRT && block.getState().getData() instanceof Dirt
-                            && ((Dirt) block.getState().getData()).getType() == DirtType.NORMAL)
+                            || block.getType() == Material.DIRT && block.getState().getData() instanceof Dirt
+                            && ((Dirt) block.getState().getData()).getType() == DirtType.NORMAL
                             || block.getType() == Material.SAND) {
-                        final Block caneBlock = block.getRelative(BlockFace.UP);
+                        Block caneBlock = block.getRelative(BlockFace.UP);
                         if (!caneBlock.isEmpty() && !caneBlock.getRelative(BlockFace.UP).isEmpty()) {
                             return;
                         }
-                        final BlockState state = caneBlock.getState();
+                        BlockState state = caneBlock.getState();
                         state.setType(Material.SUGAR_CANE_BLOCK);
                         state.setData(new MaterialData(Material.SUGAR_CANE_BLOCK));
                         state.update(true);

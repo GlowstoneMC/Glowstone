@@ -25,7 +25,6 @@ public class GlowJungleTemple extends GlowTemplePiece {
     private boolean placedHiddenChest;
 
     public GlowJungleTemple() {
-        super();
     }
 
     public GlowJungleTemple(Random random, Location location) {
@@ -37,7 +36,7 @@ public class GlowJungleTemple extends GlowTemplePiece {
     }
 
     public void setHasPlacedTrap1(boolean placedTrap) {
-        this.placedTrap1 = placedTrap;
+        placedTrap1 = placedTrap;
     }
 
     public boolean getHasPlacedTrap2() {
@@ -45,7 +44,7 @@ public class GlowJungleTemple extends GlowTemplePiece {
     }
 
     public void setHasPlacedTrap2(boolean placedTrap) {
-        this.placedTrap2 = placedTrap;
+        placedTrap2 = placedTrap;
     }
 
     public boolean getHasPlacedMainChest() {
@@ -53,7 +52,7 @@ public class GlowJungleTemple extends GlowTemplePiece {
     }
 
     public void setHasPlacedMainChest(boolean placedChest) {
-        this.placedMainChest = placedChest;
+        placedMainChest = placedChest;
     }
 
     public boolean getHasPlacedHiddenChest() {
@@ -61,7 +60,7 @@ public class GlowJungleTemple extends GlowTemplePiece {
     }
 
     public void setHasPlacedHiddenChest(boolean placedChest) {
-        this.placedHiddenChest = placedChest;
+        placedHiddenChest = placedChest;
     }
 
     @Override
@@ -74,13 +73,13 @@ public class GlowJungleTemple extends GlowTemplePiece {
 
         boundingBox.offset(new Vector(0, -4, 0));
 
-        final StructureBuilder builder = new StructureBuilder(world, this, genBoundingBox, delegate);
-        final Map<StructureMaterial, Integer> stones = new HashMap<>();
+        StructureBuilder builder = new StructureBuilder(world, this, genBoundingBox, delegate);
+        Map<StructureMaterial, Integer> stones = new HashMap<>();
         builder.addRandomMaterial(stones, 4, Material.COBBLESTONE, 0);
         builder.addRandomMaterial(stones, 6, Material.MOSSY_COBBLESTONE, 0);
 
-        final RandomItemsContent chestContent = getChestContent();
-        final RandomItemsContent dispenserContent = new RandomItemsContent();
+        RandomItemsContent chestContent = getChestContent();
+        RandomItemsContent dispenserContent = new RandomItemsContent();
         dispenserContent.addItem(new RandomAmountItem(Material.ARROW, 2, 7), 30);
 
         // 1st floor
@@ -90,7 +89,7 @@ public class GlowJungleTemple extends GlowTemplePiece {
         builder.fillWithRandomMaterial(new Vector(0, 1, 1), new Vector(0, 3, 13), random, stones);
         builder.fillWithRandomMaterial(new Vector(0, 1, 14), new Vector(11, 3, 14), random, stones);
         builder.fillWithRandomMaterial(new Vector(0, 4, 0), new Vector(11, 4, 14), random, stones);
-        final Stairs entranceStairs = new Stairs(Material.COBBLESTONE_STAIRS);
+        Stairs entranceStairs = new Stairs(Material.COBBLESTONE_STAIRS);
         entranceStairs.setFacingDirection(getRelativeFacing(BlockFace.SOUTH));
         builder.fill(new Vector(4, 4, 0), new Vector(7, 4, 0), entranceStairs.getItemType(), entranceStairs);
         builder.fill(new Vector(1, 1, 1), new Vector(10, 3, 13), Material.AIR);
@@ -161,11 +160,11 @@ public class GlowJungleTemple extends GlowTemplePiece {
         builder.setBlockWithRandomMaterial(new Vector(7, 13, 4), random, stones);
         builder.setBlockWithRandomMaterial(new Vector(7, 13, 10), random, stones);
         builder.setBlockWithRandomMaterial(new Vector(4, 13, 10), random, stones);
-        final Stairs roofStairsN = new Stairs(Material.COBBLESTONE_STAIRS);
+        Stairs roofStairsN = new Stairs(Material.COBBLESTONE_STAIRS);
         roofStairsN.setFacingDirection(getRelativeFacing(BlockFace.SOUTH));
         builder.fill(new Vector(5, 13, 6), new Vector(6, 13, 6), roofStairsN.getItemType(), roofStairsN);
         builder.fillWithRandomMaterial(new Vector(5, 13, 7), new Vector(6, 13, 7), random, stones);
-        final Stairs roofStairsS = new Stairs(Material.COBBLESTONE_STAIRS);
+        Stairs roofStairsS = new Stairs(Material.COBBLESTONE_STAIRS);
         roofStairsS.setFacingDirection(getRelativeFacing(BlockFace.NORTH));
         builder.fill(new Vector(5, 13, 8), new Vector(6, 13, 8), roofStairsS.getItemType(), roofStairsS);
 
@@ -211,7 +210,7 @@ public class GlowJungleTemple extends GlowTemplePiece {
         builder.setBlock(new Vector(10, 2, 9), Material.MOSSY_COBBLESTONE);
         builder.fillWithRandomMaterial(new Vector(8, 1, 8), new Vector(8, 1, 10), random, stones);
         builder.fill(new Vector(8, 2, 11), new Vector(10, 2, 11), Material.SMOOTH_BRICK, 3);
-        final Lever lever = new Lever(Material.LEVER, (byte) 4); // workaround for bukkit, can't set an attached BlockFace
+        Lever lever = new Lever(Material.LEVER, (byte) 4); // workaround for bukkit, can't set an attached BlockFace
         lever.setFacingDirection(getRelativeFacing(BlockFace.SOUTH));
         builder.fill(new Vector(8, 2, 12), new Vector(10, 2, 12), lever.getItemType(), lever);
         if (!placedTrap1) {
@@ -220,37 +219,37 @@ public class GlowJungleTemple extends GlowTemplePiece {
         if (!placedTrap2) {
             placedTrap2 = builder.createRandomItemsContainer(new Vector(9, 2, 3), random, dispenserContent, new Dispenser(getRelativeFacing(BlockFace.WEST)), 2);
         }
-        final Vine vine = new Vine(BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST);
+        Vine vine = new Vine(BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST);
         builder.setBlock(new Vector(3, 2, 2), vine.getItemType(), vine);
         builder.fill(new Vector(8, 2, 3), new Vector(8, 3, 3), vine.getItemType(), vine);
         builder.fill(new Vector(2, 1, 8), new Vector(3, 1, 8), Material.TRIPWIRE);
-        final TripwireHook hookE = new TripwireHook(getRelativeFacing(BlockFace.WEST));
+        TripwireHook hookE = new TripwireHook(getRelativeFacing(BlockFace.WEST));
         hookE.setConnected(true);
         builder.setBlock(new Vector(4, 1, 8), hookE.getItemType(), hookE);
-        final TripwireHook hookW = new TripwireHook(getRelativeFacing(BlockFace.EAST));
+        TripwireHook hookW = new TripwireHook(getRelativeFacing(BlockFace.EAST));
         hookW.setConnected(true);
         builder.setBlock(new Vector(1, 1, 8), hookW.getItemType(), hookW);
         builder.fill(new Vector(5, 1, 1), new Vector(5, 1, 7), Material.REDSTONE_WIRE);
         builder.setBlock(new Vector(4, 1, 1), Material.REDSTONE_WIRE);
         builder.fill(new Vector(7, 1, 2), new Vector(7, 1, 4), Material.TRIPWIRE);
-        final TripwireHook hookN = new TripwireHook(getRelativeFacing(BlockFace.SOUTH));
+        TripwireHook hookN = new TripwireHook(getRelativeFacing(BlockFace.SOUTH));
         hookN.setConnected(true);
         builder.setBlock(new Vector(7, 1, 1), hookN.getItemType(), hookN);
-        final TripwireHook hookS = new TripwireHook(getRelativeFacing(BlockFace.NORTH));
+        TripwireHook hookS = new TripwireHook(getRelativeFacing(BlockFace.NORTH));
         hookS.setConnected(true);
         builder.setBlock(new Vector(7, 1, 5), hookS.getItemType(), hookS);
         builder.fill(new Vector(8, 1, 6), new Vector(9, 1, 6), Material.REDSTONE_WIRE);
         builder.setBlock(new Vector(9, 1, 5), Material.REDSTONE_WIRE);
         builder.setBlock(new Vector(9, 2, 4), Material.REDSTONE_WIRE);
-        final PistonBaseMaterial pistonE = new PistonBaseMaterial(Material.PISTON_STICKY_BASE);
+        PistonBaseMaterial pistonE = new PistonBaseMaterial(Material.PISTON_STICKY_BASE);
         pistonE.setFacingDirection(getRelativeFacing(BlockFace.WEST));
         builder.fill(new Vector(10, 2, 8), new Vector(10, 3, 8), pistonE.getItemType(), pistonE);
-        final PistonBaseMaterial pistonUp = new PistonBaseMaterial(Material.PISTON_STICKY_BASE);
+        PistonBaseMaterial pistonUp = new PistonBaseMaterial(Material.PISTON_STICKY_BASE);
         pistonUp.setFacingDirection(BlockFace.UP);
         builder.setBlock(new Vector(9, 2, 8), pistonUp.getItemType(), pistonUp);
         builder.setBlock(new Vector(10, 3, 9), Material.REDSTONE_WIRE);
         builder.fill(new Vector(8, 2, 9), new Vector(8, 2, 10), Material.REDSTONE_WIRE);
-        final Diode repeater = new Diode(Material.DIODE_BLOCK_OFF);
+        Diode repeater = new Diode(Material.DIODE_BLOCK_OFF);
         repeater.setDelay(1);
         repeater.setFacingDirection(getRelativeFacing(BlockFace.SOUTH));
         builder.setBlock(new Vector(10, 2, 10), repeater.getItemType(), repeater);
@@ -263,7 +262,7 @@ public class GlowJungleTemple extends GlowTemplePiece {
 
         // 2nd floor inside
         for (int i = 0; i < 4; i++) {
-            final Stairs stairsS = new Stairs(Material.COBBLESTONE_STAIRS);
+            Stairs stairsS = new Stairs(Material.COBBLESTONE_STAIRS);
             stairsS.setFacingDirection(getRelativeFacing(BlockFace.NORTH));
             builder.fill(new Vector(5, 4 - i, 6 + i), new Vector(6, 4 - i, 6 + i), stairsS.getItemType(), stairsS);
         }
@@ -271,20 +270,20 @@ public class GlowJungleTemple extends GlowTemplePiece {
         builder.setBlockWithRandomMaterial(new Vector(4, 5, 9), random, stones);
         builder.setBlockWithRandomMaterial(new Vector(7, 5, 9), random, stones);
         for (int i = 0; i < 3; i++) {
-            final Stairs leftStairs = new Stairs(Material.COBBLESTONE_STAIRS);
+            Stairs leftStairs = new Stairs(Material.COBBLESTONE_STAIRS);
             leftStairs.setFacingDirection(getRelativeFacing(BlockFace.SOUTH));
             builder.setBlock(new Vector(7, 5 + i, 8 + i), leftStairs.getItemType(), leftStairs);
-            final Stairs rightStairs = new Stairs(Material.COBBLESTONE_STAIRS);
+            Stairs rightStairs = new Stairs(Material.COBBLESTONE_STAIRS);
             rightStairs.setFacingDirection(getRelativeFacing(BlockFace.SOUTH));
             builder.setBlock(new Vector(4, 5 + i, 8 + i), rightStairs.getItemType(), rightStairs);
         }
 
         // 3rd floor inside
         builder.fillWithRandomMaterial(new Vector(5, 8, 5), new Vector(6, 8, 5), random, stones);
-        final Stairs stairsE = new Stairs(Material.COBBLESTONE_STAIRS);
+        Stairs stairsE = new Stairs(Material.COBBLESTONE_STAIRS);
         stairsE.setFacingDirection(getRelativeFacing(BlockFace.WEST));
         builder.setBlock(new Vector(7, 8, 5), stairsE.getItemType(), stairsE);
-        final Stairs stairsW = new Stairs(Material.COBBLESTONE_STAIRS);
+        Stairs stairsW = new Stairs(Material.COBBLESTONE_STAIRS);
         stairsW.setFacingDirection(getRelativeFacing(BlockFace.EAST));
         builder.setBlock(new Vector(4, 8, 5), stairsW.getItemType(), stairsW);
 

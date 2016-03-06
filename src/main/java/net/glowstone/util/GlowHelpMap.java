@@ -9,6 +9,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.help.*;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * An implementation of {@link HelpMap}.
@@ -219,7 +220,7 @@ public final class GlowHelpMap implements HelpMap {
                 }
             }
         }
-        for (Map.Entry<String, Set<HelpTopic>> entry : pluginIndexes.entrySet()) {
+        for (Entry<String, Set<HelpTopic>> entry : pluginIndexes.entrySet()) {
             String key = entry.getKey();
             addTopic(new IndexHelpTopic(key, "All commands for " + key, null, entry.getValue(), "Below is a list of all " + key + " commands:"));
         }
@@ -315,7 +316,7 @@ public final class GlowHelpMap implements HelpMap {
 
         public AliasTopic(String name, HelpTopic original) {
             this.name = name;
-            this.shortText = ChatColor.YELLOW + "Alias for " + ChatColor.WHITE + original.getName();
+            shortText = ChatColor.YELLOW + "Alias for " + ChatColor.WHITE + original.getName();
             this.original = original;
         }
 

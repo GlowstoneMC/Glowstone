@@ -23,7 +23,7 @@ public class RconServer {
     private final EventLoopGroup workerGroup = new NioEventLoopGroup();
     private ServerBootstrap bootstrap = new ServerBootstrap();
 
-    public RconServer(GlowServer server, final String password) {
+    public RconServer(GlowServer server, String password) {
         this.server = server;
 
         bootstrap
@@ -49,7 +49,7 @@ public class RconServer {
      * @param address The address.
      * @return Netty channel future for bind operation.
      */
-    public ChannelFuture bind(final SocketAddress address) {
+    public ChannelFuture bind(SocketAddress address) {
         return bootstrap.bind(address);
     }
 

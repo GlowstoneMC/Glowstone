@@ -126,6 +126,6 @@ public final class StructureStorage {
      */
     @SuppressWarnings("unchecked")
     private static StructureStore<GlowStructure> getBaseStore(StructureStore<?> store) {
-        return ((StructureStore<GlowStructure>) store);
+        return (StructureStore<GlowStructure>) store;
     }
 }

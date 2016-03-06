@@ -1,5 +1,7 @@
 package net.glowstone.util.collection;
 
+import net.glowstone.util.collection.SuperCollection.AdditionMode;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -11,11 +13,11 @@ import java.util.Set;
 public class SuperSet<E> extends SuperCollection<E> implements Set<E> {
 
     public SuperSet() {
-        super(SuperCollection.AdditionMode.ALL);
+        super(AdditionMode.ALL);
     }
 
     public SuperSet(List<Set<E>> parents) {
-        super(parents, SuperCollection.AdditionMode.ALL);
+        super(parents, AdditionMode.ALL);
     }
 
     @Override

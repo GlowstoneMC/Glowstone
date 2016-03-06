@@ -46,7 +46,7 @@ public class BlockDispenser extends BlockContainer {
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
-        final MaterialData data = state.getData();
+        MaterialData data = state.getData();
         if (data instanceof Dispenser) {
             ((Dispenser) data).setFacingDirection(getOppositeBlockFace(player.getLocation(), true));
             state.setData(data);
@@ -71,7 +71,7 @@ public class BlockDispenser extends BlockContainer {
     }
 
     @Override
-    public void updatePhysics(final GlowBlock block) {
+    public void updatePhysics(GlowBlock block) {
         GlowBlock up = block.getRelative(BlockFace.UP);
         boolean powered = block.isBlockPowered() | block.isBlockIndirectlyPowered() |
                 up.isBlockPowered() | up.isBlockIndirectlyPowered();
@@ -84,18 +84,18 @@ public class BlockDispenser extends BlockContainer {
 
         boolean isTriggered = (data.getData() >> 3 & 1) != 0;
         if (powered && !isTriggered) {
-            (new BukkitRunnable() {
+            new BukkitRunnable() {
                 @Override
                 public void run() {
                     trigger(block);
                 }
-            }).runTaskLater(null, 4);
+            }.runTaskLater(null, 4);
 
             // TODO replace this with dispenser materialdata class (as soon as it provides access to this property)
             data.setData((byte) (data.getData() | 0x8));
             state.update();
         } else if (!powered && isTriggered) {
-            data.setData((byte) (data.getData() & ~(0x8)));
+            data.setData((byte) (data.getData() & ~0x8));
             state.update();
         }
     }

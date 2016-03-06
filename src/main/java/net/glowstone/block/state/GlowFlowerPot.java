@@ -49,7 +49,7 @@ public class GlowFlowerPot extends GlowBlockState implements FlowerPot {
         boolean result = super.update(force, applyPhysics);
         // Post-1.7 uses NBT data.
         if (result && getTileEntity() != null) {
-            TEFlowerPot pot = ((TEFlowerPot) getTileEntity());
+            TEFlowerPot pot = (TEFlowerPot) getTileEntity();
 
             pot.setContents(contents);
             pot.updateInRange();

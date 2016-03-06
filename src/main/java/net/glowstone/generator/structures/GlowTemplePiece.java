@@ -17,7 +17,6 @@ public abstract class GlowTemplePiece extends GlowStructurePiece {
     private int hPos = -1;
 
     public GlowTemplePiece() {
-        super();
     }
 
     public GlowTemplePiece(Random random, Location location, Vector size) {
@@ -83,7 +82,7 @@ public abstract class GlowTemplePiece extends GlowStructurePiece {
     }
 
     protected RandomItemsContent getChestContent() {
-        final RandomItemsContent chestContent = new RandomItemsContent();
+        RandomItemsContent chestContent = new RandomItemsContent();
         chestContent.addItem(new RandomAmountItem(Material.DIAMOND, 1, 3), 3);
         chestContent.addItem(new RandomAmountItem(Material.IRON_INGOT, 1, 5), 10);
         chestContent.addItem(new RandomAmountItem(Material.GOLD_INGOT, 2, 7), 15);

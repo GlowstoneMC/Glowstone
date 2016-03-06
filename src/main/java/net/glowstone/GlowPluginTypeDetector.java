@@ -53,7 +53,7 @@ public class GlowPluginTypeDetector {
                 canaryPlugins.size() + " Canary, " +
                 unrecognizedPlugins.size() + " unknown plugins (total " + files.length + ")");
 
-        if (unrecognizedPlugins.size() != 0) {
+        if (!unrecognizedPlugins.isEmpty()) {
             for (File file : unrecognizedPlugins) {
                 logger.warning("Unrecognized plugin: " + file.getPath());
             }

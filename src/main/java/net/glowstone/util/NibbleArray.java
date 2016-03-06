@@ -80,9 +80,9 @@ public final class NibbleArray {
         int half = index / 2;
         byte previous = data[half];
         if (index % 2 == 0) {
-            data[half] = (byte) ((previous & 0xf0) | value);
+            data[half] = (byte) (previous & 0xf0 | value);
         } else {
-            data[half] = (byte) ((previous & 0x0f) | (value << 4));
+            data[half] = (byte) (previous & 0x0f | value << 4);
         }
     }
 
@@ -93,7 +93,7 @@ public final class NibbleArray {
      */
     public void fill(byte value) {
         value &= 0xf;
-        Arrays.fill(data, (byte) ((value << 4) | value));
+        Arrays.fill(data, (byte) (value << 4 | value));
     }
 
     /**

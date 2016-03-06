@@ -50,22 +50,22 @@ public class BiomeThinEdgeMapLayer extends MapLayer {
                 int centerVal = values[j + 1 + (i + 1) * gridSizeX];
                 int val = centerVal;
                 for (Entry<Map<Integer, Integer>, List<Integer>> entry : EDGES.entrySet()) {
-                    final Map<Integer, Integer> map = entry.getKey();
+                    Map<Integer, Integer> map = entry.getKey();
                     if (map.containsKey(centerVal)) {
                         int upperVal = values[j + 1 + i * gridSizeX];
                         int lowerVal = values[j + 1 + (i + 2) * gridSizeX];
                         int leftVal = values[j + (i + 1) * gridSizeX];
                         int rightVal = values[j + 2 + (i + 1) * gridSizeX];
-                        if (entry.getValue() == null && ((!OCEANS.contains(upperVal) && !map.containsKey(upperVal)) ||
-                                (!OCEANS.contains(lowerVal) && !map.containsKey(lowerVal)) ||
-                                (!OCEANS.contains(leftVal) && !map.containsKey(leftVal)) ||
-                                (!OCEANS.contains(rightVal) && !map.containsKey(rightVal)))) {
+                        if (entry.getValue() == null && (!OCEANS.contains(upperVal) && !map.containsKey(upperVal) ||
+                                !OCEANS.contains(lowerVal) && !map.containsKey(lowerVal) ||
+                                !OCEANS.contains(leftVal) && !map.containsKey(leftVal) ||
+                                !OCEANS.contains(rightVal) && !map.containsKey(rightVal))) {
                             val = map.get(centerVal);
                             break;
-                        } else if (entry.getValue() != null && ((!OCEANS.contains(upperVal) && !entry.getValue().contains(upperVal)) ||
-                                (!OCEANS.contains(lowerVal) && !entry.getValue().contains(lowerVal)) ||
-                                (!OCEANS.contains(leftVal) && !entry.getValue().contains(leftVal)) ||
-                                (!OCEANS.contains(rightVal) && !entry.getValue().contains(rightVal)))) {
+                        } else if (entry.getValue() != null && (!OCEANS.contains(upperVal) && !entry.getValue().contains(upperVal) ||
+                                !OCEANS.contains(lowerVal) && !entry.getValue().contains(lowerVal) ||
+                                !OCEANS.contains(leftVal) && !entry.getValue().contains(leftVal) ||
+                                !OCEANS.contains(rightVal) && !entry.getValue().contains(rightVal))) {
                             val = map.get(centerVal);
                             break;
                         }

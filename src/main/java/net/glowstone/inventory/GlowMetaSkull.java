@@ -17,7 +17,7 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
             return;
         }
         GlowMetaSkull skull = (GlowMetaSkull) meta;
-        this.owner = skull.owner;
+        owner = skull.owner;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -76,7 +76,7 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
 
     @Override
     public String getOwner() {
-        return (hasOwner() ? owner.getName() : null);
+        return hasOwner() ? owner.getName() : null;
     }
 
     @Override

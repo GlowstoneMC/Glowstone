@@ -18,7 +18,6 @@ public class SavannaPopulator extends BiomePopulator {
     private static final TreeDecoration[] TREES = {new TreeDecoration(AcaciaTree.class, 4), new TreeDecoration(GenericTree.class, 1)};
 
     public SavannaPopulator() {
-        super();
         doublePlantDecorator.setAmount(7);
         doublePlantDecorator.setDoublePlants(DOUBLE_PLANTS);
         treeDecorator.setAmount(1);

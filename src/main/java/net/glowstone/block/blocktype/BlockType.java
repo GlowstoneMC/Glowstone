@@ -26,7 +26,7 @@ import java.util.*;
 public class BlockType extends ItemType {
 
     protected static final Random random = new Random();
-    protected List<ItemStack> drops = null;
+    protected List<ItemStack> drops;
 
     protected SoundInfo placeSound = new SoundInfo(Sound.BLOCK_WOOD_BREAK, 1F, 0.75F);
 

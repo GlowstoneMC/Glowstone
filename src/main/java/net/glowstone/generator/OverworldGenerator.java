@@ -118,18 +118,18 @@ public class OverworldGenerator extends GlowChunkGenerator {
 
     @Override
     public ChunkData generateChunkData(World world, Random random, int chunkX, int chunkZ, BiomeGrid biomes) {
-        final ChunkData chunkData = generateRawTerrain(world, chunkX, chunkZ);
+        ChunkData chunkData = generateRawTerrain(world, chunkX, chunkZ);
 
         int cx = chunkX << 4;
         int cz = chunkZ << 4;
 
-        final double[] surfaceNoise = ((SimplexOctaveGenerator) getWorldOctaves(world).get("surface")).fBm(cx, cz, 0.5D, 0.5D);
+        double[] surfaceNoise = ((SimplexOctaveGenerator) getWorldOctaves(world).get("surface")).fBm(cx, cz, 0.5D, 0.5D);
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 if (GROUND_MAP.containsKey(biomes.getBiome(x, z))) {
-                    GROUND_MAP.get(biomes.getBiome(x, z)).generateTerrainColumn(chunkData, world, random, cx + x, cz + z, biomes.getBiome(x, z), surfaceNoise[x | (z << 4)]);
+                    GROUND_MAP.get(biomes.getBiome(x, z)).generateTerrainColumn(chunkData, world, random, cx + x, cz + z, biomes.getBiome(x, z), surfaceNoise[x | z << 4]);
                 } else {
-                    groundGen.generateTerrainColumn(chunkData, world, random, cx + x, cz + z, biomes.getBiome(x, z), surfaceNoise[x | (z << 4)]);
+                    groundGen.generateTerrainColumn(chunkData, world, random, cx + x, cz + z, biomes.getBiome(x, z), surfaceNoise[x | z << 4]);
                 }
             }
         }
@@ -138,7 +138,7 @@ public class OverworldGenerator extends GlowChunkGenerator {
 
     @Override
     protected void createWorldOctaves(World world, Map<String, OctaveGenerator> octaves) {
-        final Random seed = new Random(world.getSeed());
+        Random seed = new Random(world.getSeed());
 
         OctaveGenerator gen = new PerlinOctaveGenerator(seed, 16, 5, 5);
         gen.setXScale(HEIGHT_NOISE_SCALE_X);
@@ -173,7 +173,7 @@ public class OverworldGenerator extends GlowChunkGenerator {
 
         int seaLevel = world.getSeaLevel();
 
-        final ChunkData chunkData = createChunkData(world);
+        ChunkData chunkData = createChunkData(world);
 
         // Terrain densities where sampled at a lower res (scaled 4x along vertical, 8x along horizontal)
         // so it's needed to re-scale it. Linear interpolation is used to fill in the gaps.
@@ -227,7 +227,7 @@ public class OverworldGenerator extends GlowChunkGenerator {
 
     private void generateTerrainDensity(World world, int x, int z) {
 
-        final WorldType type = world.getWorldType();
+        WorldType type = world.getWorldType();
 
         // Scaling chunk x and z coordinates (4x, see below)
         x <<= 2;
@@ -240,13 +240,13 @@ public class OverworldGenerator extends GlowChunkGenerator {
         // 4 + 1 + 2 + 2 = 9 columns but the biomegrid generator needs a multiple of 2 so we ask 10 columns wide
         // to the biomegrid generator.
         // This gives a total of 81 biome grid columns to work with, and this includes the chunk neighborhood.
-        final int[] biomeGrid = ((GlowWorld) world).getChunkManager().getBiomeGridAtLowerRes(x - 2, z - 2, 10, 10);
+        int[] biomeGrid = ((GlowWorld) world).getChunkManager().getBiomeGridAtLowerRes(x - 2, z - 2, 10, 10);
 
-        final Map<String, OctaveGenerator> octaves = getWorldOctaves(world);
-        final double[] heightNoise = ((PerlinOctaveGenerator) octaves.get("height")).fBm(x, z, 0.5D, 2.0D);
-        final double[] roughnessNoise = ((PerlinOctaveGenerator) octaves.get("roughness")).fBm(x, 0, z, 0.5D, 2.0D);
-        final double[] roughnessNoise2 = ((PerlinOctaveGenerator) octaves.get("roughness2")).fBm(x, 0, z, 0.5D, 2.0D);
-        final double[] detailNoise = ((PerlinOctaveGenerator) octaves.get("detail")).fBm(x, 0, z, 0.5D, 2.0D);
+        Map<String, OctaveGenerator> octaves = getWorldOctaves(world);
+        double[] heightNoise = ((PerlinOctaveGenerator) octaves.get("height")).fBm(x, z, 0.5D, 2.0D);
+        double[] roughnessNoise = ((PerlinOctaveGenerator) octaves.get("roughness")).fBm(x, 0, z, 0.5D, 2.0D);
+        double[] roughnessNoise2 = ((PerlinOctaveGenerator) octaves.get("roughness2")).fBm(x, 0, z, 0.5D, 2.0D);
+        double[] detailNoise = ((PerlinOctaveGenerator) octaves.get("detail")).fBm(x, 0, z, 0.5D, 2.0D);
 
         int index = 0;
         int indexHeight = 0;
@@ -266,14 +266,14 @@ public class OverworldGenerator extends GlowChunkGenerator {
                 double avgHeightScale = 0;
                 double avgHeightBase = 0;
                 double totalWeight = 0;
-                final Biome biome = GlowBiome.getBiome(biomeGrid[i + 2 + (j + 2) * 10]);
-                final BiomeHeight biomeHeight = HEIGHT_MAP.containsKey(biome) ? HEIGHT_MAP.get(biome) : defaultHeight;
+                Biome biome = GlowBiome.getBiome(biomeGrid[i + 2 + (j + 2) * 10]);
+                BiomeHeight biomeHeight = HEIGHT_MAP.containsKey(biome) ? HEIGHT_MAP.get(biome) : defaultHeight;
                 // Sampling an average height base and scale by visiting the neighborhood
                 // of the current biomegrid column.
                 for (int m = 0; m < 5; m++) {
                     for (int n = 0; n < 5; n++) {
-                        final Biome nearBiome = GlowBiome.getBiome(biomeGrid[i + m + (j + n) * 10]);
-                        final BiomeHeight nearBiomeHeight = HEIGHT_MAP.containsKey(nearBiome) ? HEIGHT_MAP.get(nearBiome) : defaultHeight;
+                        Biome nearBiome = GlowBiome.getBiome(biomeGrid[i + m + (j + n) * 10]);
+                        BiomeHeight nearBiomeHeight = HEIGHT_MAP.containsKey(nearBiome) ? HEIGHT_MAP.get(nearBiome) : defaultHeight;
                         double heightBase = BIOME_HEIGHT_OFFSET + nearBiomeHeight.getHeight() * BIOME_HEIGHT_WEIGHT;
                         double heightScale = BIOME_SCALE_OFFSET + nearBiomeHeight.getScale() * BIOME_SCALE_WEIGHT;
                         if (type == WorldType.AMPLIFIED && heightBase > 0) {
@@ -305,7 +305,7 @@ public class OverworldGenerator extends GlowChunkGenerator {
                     noiseH = Math.min(noiseH, 1) / 8.0D;
                 }
 
-                noiseH = ((noiseH * 0.2D + avgHeightBase) * BASE_SIZE / 8.0D) * 4.0D + BASE_SIZE;
+                noiseH = (noiseH * 0.2D + avgHeightBase) * BASE_SIZE / 8.0D * 4.0D + BASE_SIZE;
                 for (int k = 0; k < 33; k++) {
                     // density should be lower and lower as we climb up, this gets a height value to
                     // substract from the noise.
@@ -323,7 +323,7 @@ public class OverworldGenerator extends GlowChunkGenerator {
                     if (k > 29) {
                         double lowering = (k - 29) / 3.0D;
                         // linear interpolation
-                        dens = dens * (1.0D - lowering) + (-10.0D * lowering);
+                        dens = dens * (1.0D - lowering) + -10.0D * lowering;
                     }
                     density[i][j][k] = dens;
                 }

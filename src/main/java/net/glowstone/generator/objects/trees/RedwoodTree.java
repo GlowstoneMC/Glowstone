@@ -48,7 +48,7 @@ public class RedwoodTree extends GenericTree {
                 for (int z = loc.getBlockZ() - radius; z <= loc.getBlockZ() + radius; z++) {
                     if (y >= 0 && y < 256) {
                         // we can overlap some blocks around
-                        final Material type = delegate.getBlockState(loc.getWorld(), x, y, z).getType();
+                        Material type = delegate.getBlockState(loc.getWorld(), x, y, z).getType();
                         if (!overridables.contains(type)) {
                             return false;
                         }
@@ -95,14 +95,14 @@ public class RedwoodTree extends GenericTree {
 
         // generate the trunk
         for (int y = 0; y < height - random.nextInt(3); y++) {
-            final Material type = delegate.getBlockState(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + y, loc.getBlockZ()).getType();
+            Material type = delegate.getBlockState(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + y, loc.getBlockZ()).getType();
             if (overridables.contains(type)) {
                 delegate.setTypeAndRawData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + y, loc.getBlockZ(), Material.LOG, logType);
             }
         }
 
         // block below trunk is always dirt
-        final Dirt dirt = new Dirt(DirtType.NORMAL);
+        Dirt dirt = new Dirt(DirtType.NORMAL);
         delegate.setTypeAndData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ(), Material.DIRT, dirt);
 
         return true;

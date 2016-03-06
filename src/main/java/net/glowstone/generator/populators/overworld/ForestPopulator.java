@@ -23,7 +23,6 @@ public class ForestPopulator extends BiomePopulator {
     protected int doublePlantLoweringAmount = 3;
 
     public ForestPopulator() {
-        super();
         doublePlantDecorator.setAmount(0);
         treeDecorator.setAmount(10);
         treeDecorator.setTrees(TREES);
@@ -37,8 +36,8 @@ public class ForestPopulator extends BiomePopulator {
 
     @Override
     public void populateOnGround(World world, Random random, Chunk chunk) {
-        int sourceX = (chunk.getX() << 4);
-        int sourceZ = (chunk.getZ() << 4);
+        int sourceX = chunk.getX() << 4;
+        int sourceZ = chunk.getZ() << 4;
         int amount = random.nextInt(5) - doublePlantLoweringAmount;
         int i = 0;
         while (i < amount) {
@@ -46,7 +45,7 @@ public class ForestPopulator extends BiomePopulator {
                 int x = sourceX + random.nextInt(16);
                 int z = sourceZ + random.nextInt(16);
                 int y = random.nextInt(world.getHighestBlockYAt(x, z) + 32);
-                final DoublePlantSpecies species = DOUBLE_PLANTS[random.nextInt(DOUBLE_PLANTS.length)];
+                DoublePlantSpecies species = DOUBLE_PLANTS[random.nextInt(DOUBLE_PLANTS.length)];
                 if (new DoubleTallPlant(species).generate(world, random, x, y, z)) {
                     i++;
                     break;

@@ -67,7 +67,7 @@ public class AnvilWorldStorageProvider implements WorldStorageProvider {
     @Override
     public ScoreboardIoService getScoreboardIoService() {
         if (scoreboard == null) {
-            this.scoreboard = new NbtScoreboardIoService(world.getServer(), new File(dir, "data"));
+            scoreboard = new NbtScoreboardIoService(world.getServer(), new File(dir, "data"));
         }
         return scoreboard;
     }

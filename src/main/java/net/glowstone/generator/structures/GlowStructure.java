@@ -76,9 +76,9 @@ public abstract class GlowStructure {
             return false;
         }
 
-        final Iterator<GlowStructurePiece> it = children.iterator();
+        Iterator<GlowStructurePiece> it = children.iterator();
         while (it.hasNext()) {
-            final GlowStructurePiece piece = it.next();
+            GlowStructurePiece piece = it.next();
             if (piece.getBoundingBox().intersectsWith(x, z, x + 15, z + 15) &&
                     !piece.generate(world, random, new StructureBoundingBox(new Vector(x, 1, z), new Vector(x + 15, 511, z + 15)), delegate)) {
                 it.remove();

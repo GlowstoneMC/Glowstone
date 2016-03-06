@@ -19,7 +19,7 @@ public class HttpClient {
 
     public static void connect(String url, EventLoop eventLoop, HttpCallback callback) {
 
-        final URI uri = URI.create(url);
+        URI uri = URI.create(url);
 
         String scheme = uri.getScheme() == null ? "http" : uri.getScheme();
         String host = uri.getHost() == null ? "127.0.0.1" : uri.getHost();

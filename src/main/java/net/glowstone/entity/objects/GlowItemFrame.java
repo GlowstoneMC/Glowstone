@@ -2,6 +2,7 @@ package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
 import net.glowstone.GlowChunk;
+import net.glowstone.GlowChunk.Key;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -9,6 +10,7 @@ import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityTeleportMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
+import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,12 +28,12 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
 
     private BlockFace face;
     private Material itemInFrame;
-    private int rot = 0;
+    private int rot;
 
     public GlowItemFrame(GlowPlayer player, Location location, BlockFace clickedface) {
 
         super(location);
-        this.face = clickedface;
+        face = clickedface;
         if (player != null) { // could be Anvil loading....
             if (player.getGameMode() != GameMode.CREATIVE) {
                 ItemStack is = player.getItemInHand();
@@ -107,12 +109,12 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
     }
 
     public void setItemFrameRotation(int rotation) {
-        metadata.set(MetadataIndex.ITEM_FRAME_ROTATION, (rotation));
+        metadata.set(MetadataIndex.ITEM_FRAME_ROTATION, rotation);
     }
 
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
-        if (message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
+        if (message.getAction() == Action.INTERACT.ordinal()) {
             if (itemInFrame == Material.AIR) {
                 ItemStack isInHand = player.getItemInHand();
                 if (isInHand != null) {
@@ -134,7 +136,7 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
                 setItemFrameRotation(rot);
             }
         }
-        if (message.getAction() == InteractEntityMessage.Action.ATTACK.ordinal()) {
+        if (message.getAction() == Action.ATTACK.ordinal()) {
             if (isEmpty()) {
                 remove();
             } else {
@@ -149,8 +151,8 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
     public void pulse() {
         super.pulse();
 
-        if (ticksLived % (11) == 0) {
-            if ((world.getBlockAt(new Location(getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ()))).getType() == Material.AIR) {
+        if (ticksLived % 11 == 0) {
+            if (world.getBlockAt(new Location(getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ())).getType() == Material.AIR) {
                 world.dropItemNaturally(location, new ItemStack(Material.ITEM_FRAME));
                 if (!isEmpty()) {
                     world.dropItemNaturally(location, new ItemStack(itemInFrame));
@@ -185,7 +187,7 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
                 break;
         }
 
-        return Arrays.asList((new SpawnObjectMessage(id, getUniqueId(), 71, ((location.getBlockX() + xoffset) * 32), ((location.getBlockY() * 32)), ((location.getBlockZ() + zoffset) * 32), 0, yaw, getFacingNumber(face), 0, 0, 0)), new EntityMetadataMessage(id, metadata.getEntryList()));
+        return Arrays.asList(new SpawnObjectMessage(id, getUniqueId(), 71, (location.getBlockX() + xoffset) * 32, location.getBlockY() * 32, (location.getBlockZ() + zoffset) * 32, 0, yaw, getFacingNumber(face), 0, 0, 0), new EntityMetadataMessage(id, metadata.getEntryList()));
     }
 
     @Override
@@ -216,7 +218,7 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
                 break;
         }
         Location itemframelocation = location;
-        GlowChunk.Key key = new GlowChunk.Key(itemframelocation.getBlockX() >> 4, itemframelocation.getBlockZ() >> 4);
+        Key key = new Key(itemframelocation.getBlockX() >> 4, itemframelocation.getBlockZ() >> 4);
         for (GlowPlayer player : getWorld().getRawPlayers()) {
             if (player.canSeeChunk(key)) {
                 double x = location.getX();

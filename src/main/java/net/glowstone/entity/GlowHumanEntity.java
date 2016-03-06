@@ -14,11 +14,14 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.InventoryView.Property;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissibleBase;
 import org.bukkit.permissions.Permission;
@@ -54,7 +57,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     /**
      * Whether this human is sleeping or not.
      */
-    protected boolean sleeping = false;
+    protected boolean sleeping;
     /**
      * This human's PermissibleBase for permissions.
      */
@@ -66,7 +69,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     /**
      * How long this human has been sleeping.
      */
-    private int sleepingTicks = 0;
+    private int sleepingTicks;
     /**
      * Whether this human is considered an op.
      */
@@ -96,7 +99,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     public GlowHumanEntity(Location location, PlayerProfile profile) {
         super(location);
         this.profile = profile;
-        this.xpSeed = new Random().nextInt(); //TODO: use entity's random instance
+        xpSeed = new Random().nextInt(); //TODO: use entity's random instance
         permissions = new PermissibleBase(this);
         gameMode = server.getDefaultGameMode();
 
@@ -295,7 +298,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     // Health
 
     @Override
-    public boolean canTakeDamage(EntityDamageEvent.DamageCause damageCause) {
+    public boolean canTakeDamage(DamageCause damageCause) {
         return (gameMode == GameMode.SURVIVAL || gameMode == GameMode.ADVENTURE) && super.canTakeDamage(damageCause);
     }
 
@@ -333,7 +336,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     }
 
     @Override
-    public boolean setWindowProperty(InventoryView.Property prop, int value) {
+    public boolean setWindowProperty(Property prop, int value) {
         // nb: does not actually send anything
         return prop.getType() == inventoryView.getType();
     }
@@ -401,7 +404,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     // Drop items left in crafting area.
     private void dropUnusedInputs() {
         for (int i = 0; i < getTopInventory().getSlots().size(); i++) {
-            final ItemStack itemStack = getOpenInventory().getItem(i);
+            ItemStack itemStack = getOpenInventory().getItem(i);
             if (itemStack == null || itemStack.getAmount() == 0 || itemStack.getType() == Material.AIR) {
                 continue;
             }
@@ -414,7 +417,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     }
 
     private boolean isDroppableCraftingSlot(int i) {
-        if (getTopInventory().getSlot(i).getType() == InventoryType.SlotType.CRAFTING) {
+        if (getTopInventory().getSlot(i).getType() == SlotType.CRAFTING) {
             switch (getTopInventory().getType()) {
                 case BREWING:
                 case FURNACE:

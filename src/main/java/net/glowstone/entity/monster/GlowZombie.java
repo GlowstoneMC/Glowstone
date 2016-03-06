@@ -5,6 +5,7 @@ import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
+import org.bukkit.entity.Villager.Profession;
 import org.bukkit.entity.Zombie;
 
 import java.util.List;
@@ -49,12 +50,12 @@ public class GlowZombie extends GlowMonster implements Zombie {
     }
 
     @Override
-    public void setVillagerProfession(Villager.Profession profession) {
+    public void setVillagerProfession(Profession profession) {
 
     }
 
     @Override
-    public Villager.Profession getVillagerProfession() {
+    public Profession getVillagerProfession() {
         return null;
     }
 

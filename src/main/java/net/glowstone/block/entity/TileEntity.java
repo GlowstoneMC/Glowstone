@@ -1,6 +1,7 @@
 package net.glowstone.block.entity;
 
 import net.glowstone.GlowChunk;
+import net.glowstone.GlowChunk.Key;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
@@ -41,7 +42,7 @@ public abstract class TileEntity {
      * Update this TileEntity's visible state to all players in range.
      */
     public final void updateInRange() {
-        GlowChunk.Key key = new GlowChunk.Key(block.getChunk().getX(), block.getChunk().getZ());
+        Key key = new Key(block.getChunk().getX(), block.getChunk().getZ());
         block.getWorld().getRawPlayers().stream().filter(player -> player.canSeeChunk(key)).forEach(this::update);
     }
 

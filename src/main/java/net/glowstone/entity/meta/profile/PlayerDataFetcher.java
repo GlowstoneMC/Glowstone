@@ -97,11 +97,11 @@ final class PlayerDataFetcher {
 
             json = (JSONArray) JSONValue.parse(new InputStreamReader(conn.getInputStream()));
         } catch (IOException e) {
-            GlowServer.logger.warning("Couldn't get UUID due to IO error: " + e.toString());
+            GlowServer.logger.warning("Couldn't get UUID due to IO error: " + e);
             return null;
         }
 
-        if (json.size() > 0) {
+        if (!json.isEmpty()) {
             String uuid = (String) ((JSONObject) json.get(0)).get("id");
             return UuidUtils.fromFlatString(uuid);
         }

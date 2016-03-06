@@ -34,10 +34,10 @@ public class BlockPatch {
             for (int z = sourceZ - n; z <= sourceZ + n; z++) {
                 if ((x - sourceX) * (x - sourceX) + (z - sourceZ) * (z - sourceZ) <= n * n) {
                     for (int y = sourceY - vRadius; y <= sourceY + vRadius; y++) {
-                        final Block block = world.getBlockAt(x, y, z);
+                        Block block = world.getBlockAt(x, y, z);
                         for (Material overridable : overridables) {
                             if (block.getType() == overridable) {
-                                final Block blockAbove = block.getRelative(BlockFace.UP);
+                                Block blockAbove = block.getRelative(BlockFace.UP);
                                 for (Material mat : PLANT_TYPES) {
                                     if (blockAbove.getType() == mat) {
                                         if (mat == Material.DOUBLE_PLANT && blockAbove.getState().getData() instanceof DoublePlant &&
@@ -48,7 +48,7 @@ public class BlockPatch {
                                         break;
                                     }
                                 }
-                                final BlockState state = block.getState();
+                                BlockState state = block.getState();
                                 state.setType(type);
                                 state.setData(new MaterialData(type));
                                 state.update(true);

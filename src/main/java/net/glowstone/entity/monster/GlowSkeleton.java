@@ -14,12 +14,12 @@ public class GlowSkeleton extends GlowMonster implements Skeleton {
 
     @Override
     public SkeletonType getSkeletonType() {
-        return this.skeletonType;
+        return skeletonType;
     }
 
     @Override
     public void setSkeletonType(SkeletonType type) {
-        this.skeletonType = type;
+        skeletonType = type;
         metadata.set(MetadataIndex.SKELETON_TYPE, skeletonType.getId());
     }
 }

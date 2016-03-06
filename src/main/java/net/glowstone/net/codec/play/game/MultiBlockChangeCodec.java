@@ -18,7 +18,7 @@ public final class MultiBlockChangeCodec implements Codec<MultiBlockChangeMessag
 
     @Override
     public ByteBuf encode(ByteBuf buf, MultiBlockChangeMessage message) throws IOException {
-        final List<BlockChangeMessage> records = message.getRecords();
+        List<BlockChangeMessage> records = message.getRecords();
 
         buf.writeInt(message.getChunkX());
         buf.writeInt(message.getChunkZ());
@@ -26,9 +26,9 @@ public final class MultiBlockChangeCodec implements Codec<MultiBlockChangeMessag
 
         for (BlockChangeMessage record : records) {
             // XZYY
-            int pos = ((record.getX() & 0xF) << 12) |
-                    ((record.getZ() & 0xF) << 8) |
-                    (record.getY() & 0xFF);
+            int pos = (record.getX() & 0xF) << 12 |
+                    (record.getZ() & 0xF) << 8 |
+                    record.getY() & 0xFF;
             buf.writeShort(pos);
             ByteBufUtils.writeVarInt(buf, record.getType());
         }

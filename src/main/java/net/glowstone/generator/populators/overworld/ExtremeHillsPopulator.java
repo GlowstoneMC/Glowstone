@@ -24,7 +24,6 @@ public class ExtremeHillsPopulator extends BiomePopulator {
     protected final InfestedStoneDecorator infestedStoneDecorator = new InfestedStoneDecorator();
 
     public ExtremeHillsPopulator() {
-        super();
         treeDecorator.setAmount(0);
         treeDecorator.setTrees(TREES);
     }

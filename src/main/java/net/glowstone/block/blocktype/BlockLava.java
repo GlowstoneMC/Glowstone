@@ -28,16 +28,16 @@ public class BlockLava extends BlockLiquid {
         if (!block.getWorld().getGameRuleMap().getBoolean("doFireTick")) {
             return;
         }
-        final int n = random.nextInt(3);
+        int n = random.nextInt(3);
         if (n == 0) {
             for (int i = 0; i < 3; i++) {
-                final GlowBlock b = (GlowBlock) block.getLocation().add(-1 + random.nextInt(3), 0, -1 + random.nextInt(3)).getBlock();
-                final GlowBlock bAbove = b.getRelative(BlockFace.UP);
+                GlowBlock b = (GlowBlock) block.getLocation().add(-1 + random.nextInt(3), 0, -1 + random.nextInt(3)).getBlock();
+                GlowBlock bAbove = b.getRelative(BlockFace.UP);
                 if (bAbove.isEmpty() && b.isFlammable()) {
                     BlockIgniteEvent igniteEvent = new BlockIgniteEvent(bAbove, IgniteCause.LAVA, block);
                     EventFactory.callEvent(igniteEvent);
                     if (!igniteEvent.isCancelled()) {
-                        final GlowBlockState state = bAbove.getState();
+                        GlowBlockState state = bAbove.getState();
                         state.setType(Material.FIRE);
                         state.update(true);
                     }
@@ -45,13 +45,13 @@ public class BlockLava extends BlockLiquid {
             }
         } else {
             for (int i = 0; i < n; i++) {
-                final GlowBlock b = (GlowBlock) block.getLocation().add(-1 + random.nextInt(3), 1, -1 + random.nextInt(3)).getBlock();
+                GlowBlock b = (GlowBlock) block.getLocation().add(-1 + random.nextInt(3), 1, -1 + random.nextInt(3)).getBlock();
                 if (b.isEmpty()) {
                     if (hasNearFlammableBlock(b)) {
                         BlockIgniteEvent igniteEvent = new BlockIgniteEvent(b, IgniteCause.LAVA, block);
                         EventFactory.callEvent(igniteEvent);
                         if (!igniteEvent.isCancelled()) {
-                            final GlowBlockState state = b.getState();
+                            GlowBlockState state = b.getState();
                             state.setType(Material.FIRE);
                             state.update(true);
                         }

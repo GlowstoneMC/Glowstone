@@ -15,10 +15,13 @@ import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.io.PlayerDataService;
+import net.glowstone.io.PlayerDataService.PlayerReader;
 import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.SetCompressionMessage;
 import net.glowstone.net.message.play.game.PingMessage;
 import net.glowstone.net.message.play.game.UserListItemMessage;
+import net.glowstone.net.message.play.game.UserListItemMessage.Action;
+import net.glowstone.net.message.play.game.UserListItemMessage.Entry;
 import net.glowstone.net.message.play.player.BlockPlacementMessage;
 import net.glowstone.net.pipeline.CodecsHandler;
 import net.glowstone.net.pipeline.CompressionHandler;
@@ -30,6 +33,7 @@ import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.ProtocolType;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerLoginEvent.Result;
 
 import javax.crypto.SecretKey;
 import java.net.InetSocketAddress;
@@ -72,7 +76,7 @@ public final class GlowSession extends BasicSession {
     /**
      * The state of the connection
      */
-    private boolean online = false;
+    private boolean online;
     /**
      * The verify token used in authentication
      */
@@ -306,7 +310,7 @@ public final class GlowSession extends BasicSession {
         }
 
         // initialize the player
-        PlayerDataService.PlayerReader reader = server.getPlayerDataService().beginReadingData(profile.getUniqueId());
+        PlayerReader reader = server.getPlayerDataService().beginReadingData(profile.getUniqueId());
         player = new GlowPlayer(this, profile, reader);
 
         // isActive check here in case player disconnected after authentication,
@@ -318,7 +322,7 @@ public final class GlowSession extends BasicSession {
 
         // login event
         PlayerLoginEvent event = EventFactory.onPlayerLogin(player, hostname);
-        if (event.getResult() != PlayerLoginEvent.Result.ALLOWED) {
+        if (event.getResult() != Result.ALLOWED) {
             disconnect(event.getKickMessage(), true);
             return;
         }
@@ -346,8 +350,8 @@ public final class GlowSession extends BasicSession {
             server.broadcastMessage(message);
         }
 
-        Message addMessage = new UserListItemMessage(UserListItemMessage.Action.ADD_PLAYER, player.getUserListEntry());
-        List<UserListItemMessage.Entry> entries = new ArrayList<>();
+        Message addMessage = new UserListItemMessage(Action.ADD_PLAYER, player.getUserListEntry());
+        List<Entry> entries = new ArrayList<>();
         for (GlowPlayer other : server.getRawOnlinePlayers()) {
             if (other != player && other.canSee(player)) {
                 other.getSession().send(addMessage);
@@ -356,7 +360,7 @@ public final class GlowSession extends BasicSession {
                 entries.add(other.getUserListEntry());
             }
         }
-        send(new UserListItemMessage(UserListItemMessage.Action.ADD_PLAYER, entries));
+        send(new UserListItemMessage(Action.ADD_PLAYER, entries));
     }
 
     @Override
@@ -472,7 +476,7 @@ public final class GlowSession extends BasicSession {
                 player.leaveBed(false);
             }
 
-            final String text = EventFactory.onPlayerQuit(player).getQuitMessage();
+            String text = EventFactory.onPlayerQuit(player).getQuitMessage();
             if (online && text != null && !text.isEmpty()) {
                 server.broadcastMessage(text);
             }
@@ -489,7 +493,7 @@ public final class GlowSession extends BasicSession {
 
         GlowProtocol proto = protocol.getProtocol();
         updatePipeline("codecs", new CodecsHandler(proto));
-        super.setProtocol(proto);
+        setProtocol(proto);
     }
 
     public void enableEncryption(SecretKey sharedSecret) {

@@ -15,7 +15,6 @@ public class BirchForestMountainsPopulator extends BirchForestPopulator {
     private static final TreeDecoration[] TREES = {new TreeDecoration(BirchTree.class, 1), new TreeDecoration(TallBirchTree.class, 1)};
 
     public BirchForestMountainsPopulator() {
-        super();
         treeDecorator.setTrees(TREES);
     }
 

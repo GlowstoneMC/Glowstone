@@ -39,23 +39,23 @@ public final class WorldBorderMessage implements Message {
     // SET_WARNING_TIME, SET_WARNING_BLOCKS
     public WorldBorderMessage(Action action, int warning) {
         if (action == Action.SET_WARNING_TIME) {
-            this.warningTime = warning;
-            this.warningBlocks = 0;
+            warningTime = warning;
+            warningBlocks = 0;
         } else if (action == Action.SET_WARNING_BLOCKS) {
-            this.warningBlocks = warning;
-            this.warningTime = 0;
+            warningBlocks = warning;
+            warningTime = 0;
         } else {
-            this.warningTime = 0;
-            this.warningBlocks = 0;
+            warningTime = 0;
+            warningBlocks = 0;
         }
         this.action = action;
-        this.radius = 0;
-        this.oldRadius = 0;
-        this.newRadius = 0;
-        this.speed = 0;
-        this.x = 0;
-        this.z = 0;
-        this.portalTeleportBoundary = 0;
+        radius = 0;
+        oldRadius = 0;
+        newRadius = 0;
+        speed = 0;
+        x = 0;
+        z = 0;
+        portalTeleportBoundary = 0;
     }
 
     public enum Action {

@@ -26,7 +26,7 @@ public final class TabCompleteCodec implements Codec<TabCompleteMessage> {
     public ByteBuf encode(ByteBuf buf, TabCompleteMessage message) throws IOException {
         ByteBufUtils.writeUTF8(buf, message.getText());
         buf.writeBoolean(message.isAssumeCommand());
-        final BlockVector location = message.getLocation();
+        BlockVector location = message.getLocation();
         if (location != null) {
             buf.writeBoolean(true);
             GlowBufUtils.writeBlockPosition(buf, location);

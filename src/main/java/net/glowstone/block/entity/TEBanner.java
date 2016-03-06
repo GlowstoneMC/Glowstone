@@ -29,11 +29,11 @@ public class TEBanner extends TileEntity {
         super.loadNbt(tag);
         if (tag.isList("Patterns", TagType.COMPOUND)) {
             List<CompoundTag> pattern = tag.getCompoundList("Patterns");
-            this.patterns = BlockBanner.fromNBT(pattern);
+            patterns = BlockBanner.fromNBT(pattern);
         }
 
         if (tag.isInt("Base")) {
-            this.base = DyeColor.getByDyeData((byte) tag.getInt("Base"));
+            base = DyeColor.getByDyeData((byte) tag.getInt("Base"));
         }
     }
 

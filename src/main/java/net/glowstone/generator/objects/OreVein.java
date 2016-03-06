@@ -50,7 +50,7 @@ public class OreVein {
                                 double pZ = (z + 0.5D - originZ) / hRadius;
                                 pZ *= pZ;
                                 if (pX + pY + pZ < 1 && world.getBlockAt(x, y, z).getType() == targetType) {
-                                    final BlockState state = world.getBlockAt(x, y, z).getState();
+                                    BlockState state = world.getBlockAt(x, y, z).getState();
                                     state.setType(type);
                                     state.setData(data);
                                     state.update(true);

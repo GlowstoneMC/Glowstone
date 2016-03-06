@@ -4,6 +4,7 @@ import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import net.glowstone.entity.meta.MetadataMap;
+import net.glowstone.entity.meta.MetadataMap.Entry;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.entity.SpawnPlayerMessage;
 
@@ -21,7 +22,7 @@ public final class SpawnPlayerCodec implements Codec<SpawnPlayerMessage> {
         double z = buf.readDouble();
         int rotation = buf.readByte();
         int pitch = buf.readByte();
-        List<MetadataMap.Entry> list = GlowBufUtils.readMetadata(buf);
+        List<Entry> list = GlowBufUtils.readMetadata(buf);
         return new SpawnPlayerMessage(id, uuid, x, y, z, rotation, pitch, list);
     }
 

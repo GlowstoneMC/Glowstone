@@ -22,16 +22,16 @@ public class BlockButton extends BlockAttachable {
     }
 
     @Override
-    public boolean blockInteract(GlowPlayer player, final GlowBlock block, BlockFace face, Vector clickedLoc) {
-        final GlowBlockState state = block.getState();
-        final MaterialData data = state.getData();
+    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
+        GlowBlockState state = block.getState();
+        MaterialData data = state.getData();
 
         if (!(data instanceof Button)) {
             warnMaterialData(Button.class, data);
             return false;
         }
 
-        final Button button = (Button) data;
+        Button button = (Button) data;
 
         if (button.isPowered()) {
             return true;
@@ -42,7 +42,7 @@ public class BlockButton extends BlockAttachable {
         extraUpdate(block);
 
         // todo: switch to block scheduling system when one is available
-        (new BukkitRunnable() {
+        new BukkitRunnable() {
             @Override
             public void run() {
                 button.setPowered(false);
@@ -50,7 +50,7 @@ public class BlockButton extends BlockAttachable {
                 if (block.getType() == Material.WOOD_BUTTON || block.getType() == Material.STONE_BUTTON)
                     extraUpdate(block);
             }
-        }).runTaskLater(null, block.getType() == Material.STONE_BUTTON ? 20 : 30);
+        }.runTaskLater(null, block.getType() == Material.STONE_BUTTON ? 20 : 30);
 
         return true;
     }

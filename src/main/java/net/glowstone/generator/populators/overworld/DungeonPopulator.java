@@ -28,8 +28,8 @@ public class DungeonPopulator extends BlockPopulator {
             int z = (source.getZ() << 4) + random.nextInt(16);
             int y = random.nextInt(256);
 
-            final GlowDungeon dungeon = new GlowDungeon(random, new Location(world, x, y, z));
-            final BlockStateDelegate delegate = new BlockStateDelegate();
+            GlowDungeon dungeon = new GlowDungeon(random, new Location(world, x, y, z));
+            BlockStateDelegate delegate = new BlockStateDelegate();
             if (dungeon.generate(world, random, new StructureBoundingBox(new Vector(x - 15, 1, z - 15), new Vector(x + 15, 511, z + 15)), delegate)) {
                 delegate.updateBlockStates();
             }

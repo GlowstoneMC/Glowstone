@@ -79,9 +79,9 @@ public class BlockFire extends BlockNeedsAttached {
             return;
         }
 
-        final GlowWorld world = block.getWorld();
-        final Material type = block.getRelative(BlockFace.DOWN).getType();
-        boolean isInfiniteFire = type == Material.NETHERRACK || (world.getEnvironment() == Environment.THE_END && type == Material.BEDROCK);
+        GlowWorld world = block.getWorld();
+        Material type = block.getRelative(BlockFace.DOWN).getType();
+        boolean isInfiniteFire = type == Material.NETHERRACK || world.getEnvironment() == Environment.THE_END && type == Material.BEDROCK;
         if (!isInfiniteFire && world.hasStorm() && isRainingAround(block)) {
             // if it's raining around, stop fire
             block.breakNaturally();
@@ -94,7 +94,7 @@ public class BlockFire extends BlockNeedsAttached {
         int age = state.getRawData();
         if (age < MAX_FIRE_AGE) {
             // increase fire age
-            state.setRawData((byte) (age + (random.nextInt(3) / 2)));
+            state.setRawData((byte) (age + random.nextInt(3) / 2));
             state.update(true);
         }
 
@@ -121,15 +121,15 @@ public class BlockFire extends BlockNeedsAttached {
                     burnBlock(block.getRelative(entry.getKey()), entry.getValue() - (isWet ? 50 : 0), age);
                 }
 
-                final Difficulty difficulty = world.getDifficulty();
-                final int difficultyModifier = difficulty == Difficulty.EASY ? 7 : difficulty == Difficulty.NORMAL ? 14 : difficulty == Difficulty.HARD ? 21 : 0;
+                Difficulty difficulty = world.getDifficulty();
+                int difficultyModifier = difficulty == Difficulty.EASY ? 7 : difficulty == Difficulty.NORMAL ? 14 : difficulty == Difficulty.HARD ? 21 : 0;
 
                 // try to propagate fire in a 3x3x6 box
                 for (int x = 0; x < 3; x++) {
                     for (int z = 0; z < 3; z++) {
                         for (int y = 0; y < 6; y++) {
                             if (x != 1 || z != 1 || y != 1) {
-                                final GlowBlock propagationBlock = world.getBlockAt(block.getLocation().add(x - 1, y - 1, z - 1));
+                                GlowBlock propagationBlock = world.getBlockAt(block.getLocation().add(x - 1, y - 1, z - 1));
                                 int flameResistance = propagationBlock.getMaterialValues().getFlameResistance();
                                 if (flameResistance >= 0) {
                                     int resistance = 40 + difficultyModifier + flameResistance;
@@ -195,7 +195,7 @@ public class BlockFire extends BlockNeedsAttached {
                 if (block.getType() == Material.TNT) {
                     BlockTNT.igniteBlock(block, false);
                 } else {
-                    final GlowBlockState state = block.getState();
+                    GlowBlockState state = block.getState();
                     if (random.nextInt(10 + fireAge) < 5 && !GlowBiomeClimate.isRainy(block)) {
                         int increasedAge = increaseFireAge(fireAge);
                         state.setType(Material.FIRE);

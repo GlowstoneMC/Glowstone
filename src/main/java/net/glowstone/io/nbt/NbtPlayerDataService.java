@@ -138,7 +138,7 @@ public class NbtPlayerDataService implements PlayerDataService {
 
     private class NbtPlayerReader implements PlayerReader {
         private CompoundTag tag = new CompoundTag();
-        private boolean hasPlayed = false;
+        private boolean hasPlayed;
 
         public NbtPlayerReader(File playerFile) {
             if (playerFile.exists()) {

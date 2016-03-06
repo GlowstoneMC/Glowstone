@@ -15,7 +15,7 @@ import org.bukkit.util.Vector;
 
 public class BlockHopper extends BlockContainer {
 
-    public void setFacingDirection(final BlockState bs, final BlockFace face) {
+    public void setFacingDirection(BlockState bs, BlockFace face) {
         byte data;
         switch (face) {
             case DOWN:

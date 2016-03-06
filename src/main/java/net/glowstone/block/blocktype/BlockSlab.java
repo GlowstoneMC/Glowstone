@@ -36,11 +36,11 @@ public class BlockSlab extends BlockType {
 
         super.placeBlock(player, state, face, holding, clickedLoc);
 
-        if (face == BlockFace.DOWN || (face != BlockFace.UP && clickedLoc.getY() >= 8.0D)) {
+        if (face == BlockFace.DOWN || face != BlockFace.UP && clickedLoc.getY() >= 8.0D) {
             MaterialData data = state.getData();
-            if ((data instanceof Step)) {
+            if (data instanceof Step) {
                 ((Step) data).setInverted(true);
-            } else if ((data instanceof WoodenStep)) {
+            } else if (data instanceof WoodenStep) {
                 ((WoodenStep) data).setInverted(true);
             } else if (data.getItemType() == Material.STONE_SLAB2) {
                 Step slab = new Step(Material.STONE_SLAB2);
@@ -58,9 +58,9 @@ public class BlockSlab extends BlockType {
         Material blockType = block.getType();
         return (blockType == Material.STEP || blockType == Material.WOOD_STEP || blockType == Material.STONE_SLAB2) &&
                 blockType == holding.getType() &&
-                ((face == BlockFace.UP && blockData == holdingData) ||
-                        (face == BlockFace.DOWN && blockData - 8 == holdingData) ||
-                        (ignoreFace && blockData % 8 == holdingData));
+                (face == BlockFace.UP && blockData == holdingData ||
+                        face == BlockFace.DOWN && blockData - 8 == holdingData ||
+                        ignoreFace && blockData % 8 == holdingData);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class BlockSlab extends BlockType {
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (block.getType() == Material.WOOD_STEP ||
-                (tool != null && ToolType.PICKAXE.matches(tool.getType()))) {
+                tool != null && ToolType.PICKAXE.matches(tool.getType())) {
             return getMinedDrops(block);
         }
         return BlockDropless.EMPTY_STACK;

@@ -21,6 +21,7 @@ import org.bukkit.inventory.Recipe;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 
 public final class WindowClickHandler implements MessageHandler<GlowSession, WindowClickMessage> {
@@ -38,13 +39,13 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         session.send(new TransactionMessage(message.getId(), message.getTransaction(), result));
     }
 
-    private boolean process(final GlowPlayer player, final WindowClickMessage message) {
-        final int viewSlot = message.getSlot();
-        final InventoryView view = player.getOpenInventory();
-        final GlowInventory top = (GlowInventory) view.getTopInventory();
-        final GlowInventory bottom = (GlowInventory) view.getBottomInventory();
-        final ItemStack slotItem = view.getItem(viewSlot);
-        final ItemStack cursor = player.getItemOnCursor();
+    private boolean process(GlowPlayer player, WindowClickMessage message) {
+        int viewSlot = message.getSlot();
+        InventoryView view = player.getOpenInventory();
+        GlowInventory top = (GlowInventory) view.getTopInventory();
+        GlowInventory bottom = (GlowInventory) view.getBottomInventory();
+        ItemStack slotItem = view.getItem(viewSlot);
+        ItemStack cursor = player.getItemOnCursor();
 
         // check that the player has a correct view of the item
         if (!Objects.equals(message.getItem(), slotItem) && (message.getMode() == 0 || message.getMode() == 1)) {
@@ -64,14 +65,14 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         // todo: attempt to allow for users to implement their own inventory?
         // CraftBukkit does not allow this but it may be worth the trouble for
         // the extensibility.
-        final GlowInventory inv;
+        GlowInventory inv;
         if (viewSlot < top.getSize()) {
             inv = top;
         } else {
             inv = bottom;
         }
-        final int invSlot = view.convertSlot(viewSlot);
-        final InventoryType.SlotType slotType = inv.getSlotType(invSlot);
+        int invSlot = view.convertSlot(viewSlot);
+        SlotType slotType = inv.getSlotType(invSlot);
 
         // handle dragging
         if (message.getMode() == 5) {
@@ -83,7 +84,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
             // 5 6 * end right drag
 
             DragTracker drag = player.getInventory().getDragTracker();
-            boolean right = (message.getButton() >= 4);
+            boolean right = message.getButton() >= 4;
 
             switch (message.getButton()) {
                 case 0: // start left drag
@@ -125,7 +126,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                         return false;
                     }
 
-                    for (Map.Entry<Integer, ItemStack> entry : newSlots.entrySet()) {
+                    for (Entry<Integer, ItemStack> entry : newSlots.entrySet()) {
                         view.setItem(entry.getKey(), entry.getValue());
                     }
                     player.setItemOnCursor(newCursor);
@@ -136,7 +137,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         }
 
         // determine what action will be taken and fire event
-        final ClickType clickType = WindowClickLogic.getClickType(message.getMode(), message.getButton(), viewSlot);
+        ClickType clickType = WindowClickLogic.getClickType(message.getMode(), message.getButton(), viewSlot);
         InventoryAction action = WindowClickLogic.getAction(clickType, slotType, cursor, slotItem);
 
         if (clickType == ClickType.UNKNOWN || action == InventoryAction.UNKNOWN) {
@@ -256,7 +257,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                 int cursorAmount = cursor == null ? 0 : cursor.getAmount();
                 player.setItemOnCursor(amountOrNull(slotItem, cursorAmount + slotItem.getAmount()));
                 break;
-            case PICKUP_HALF: {
+            case PICKUP_HALF:
                 // pick up half (favor picking up)
                 int keepAmount = slotItem.getAmount() / 2;
                 ItemStack newCursor = slotItem.clone();
@@ -265,7 +266,6 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                 inv.setItem(invSlot, amountOrNull(slotItem, keepAmount));
                 player.setItemOnCursor(newCursor);
                 break;
-            }
             case PICKUP_SOME:
                 // pick up as many items as possible
                 int pickUp = Math.min(cursor.getMaxStackSize() - cursor.getAmount(), slotItem.getAmount());

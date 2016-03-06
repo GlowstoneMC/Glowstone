@@ -3,6 +3,7 @@ package net.glowstone.block;
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
+import net.glowstone.block.MaterialValueManager.ValueCollection;
 import net.glowstone.block.blocktype.BlockRedstone;
 import net.glowstone.block.blocktype.BlockRedstoneTorch;
 import net.glowstone.block.blocktype.BlockType;
@@ -147,9 +148,9 @@ public final class GlowBlock implements Block {
     @Override
     public BlockFace getFace(Block block) {
         for (BlockFace face : BlockFace.values()) {
-            if ((x + face.getModX() == block.getX())
-                    && (y + face.getModY() == block.getY())
-                    && (z + face.getModZ() == block.getZ())) {
+            if (x + face.getModX() == block.getX()
+                    && y + face.getModY() == block.getY()
+                    && z + face.getModZ() == block.getZ()) {
                 return face;
             }
         }
@@ -239,7 +240,7 @@ public final class GlowBlock implements Block {
         ((GlowChunk) world.getChunkAt(this)).setType(x & 0xf, z & 0xf, y, type);
         ((GlowChunk) world.getChunkAt(this)).setMetaData(x & 0xf, z & 0xf, y, data);
 
-        if (oldTypeId == Material.DOUBLE_PLANT && this.getRelative(BlockFace.UP).getType() == Material.DOUBLE_PLANT) {
+        if (oldTypeId == Material.DOUBLE_PLANT && getRelative(BlockFace.UP).getType() == Material.DOUBLE_PLANT) {
             ((GlowChunk) world.getChunkAt(this)).setType(x & 0xf, z & 0xf, y + 1, 0);
             ((GlowChunk) world.getChunkAt(this)).setMetaData(x & 0xf, z & 0xf, y, 0);
             BlockChangeMessage bcmsg = new BlockChangeMessage(x, y + 1, z, 0, 0);
@@ -289,7 +290,7 @@ public final class GlowBlock implements Block {
         return getMaterialValues().getFireResistance() >= 0;
     }
 
-    public MaterialValueManager.ValueCollection getMaterialValues() {
+    public ValueCollection getMaterialValues() {
         return ((GlowServer) Bukkit.getServer()).getMaterialValueManager().getValues(getType());
     }
 
@@ -542,7 +543,7 @@ public final class GlowBlock implements Block {
                     continue;
                 }
 
-                GlowBlock notify = this.getRelative(face.getModX(), face.getModY() + y, face.getModZ());
+                GlowBlock notify = getRelative(face.getModX(), face.getModY() + y, face.getModZ());
 
                 BlockFace blockFace;
                 if (y == 0) {
@@ -572,7 +573,7 @@ public final class GlowBlock implements Block {
         GlowBlock target = this;
         List<Long> gameTicks = new ArrayList<>();
         for (GlowBlock block : counterMap.keySet()) {
-            if (block.getLocation().equals(this.getLocation())) {
+            if (block.getLocation().equals(getLocation())) {
                 gameTicks = counterMap.get(block);
                 target = block;
                 break;
@@ -589,7 +590,7 @@ public final class GlowBlock implements Block {
         GlowBlock target = this;
         List<Long> gameTicks = new ArrayList<>();
         for (GlowBlock block : counterMap.keySet()) {
-            if (block.getLocation().equals(this.getLocation())) {
+            if (block.getLocation().equals(getLocation())) {
                 gameTicks = counterMap.get(block);
                 target = block;
                 break;
@@ -611,7 +612,7 @@ public final class GlowBlock implements Block {
 
     @Override
     public int hashCode() {
-        return this.y << 24 ^ this.x ^ this.z ^ getWorld().hashCode();
+        return y << 24 ^ x ^ z ^ getWorld().hashCode();
     }
 
     public boolean equals(Object obj) {
@@ -619,7 +620,7 @@ public final class GlowBlock implements Block {
             return false;
         }
         GlowBlock other = (GlowBlock) obj;
-        return this.x == other.x && this.y == other.y && this.z == other.z && getWorld().equals(other.getWorld());
+        return x == other.x && y == other.y && z == other.z && getWorld().equals(other.getWorld());
     }
 
     /**

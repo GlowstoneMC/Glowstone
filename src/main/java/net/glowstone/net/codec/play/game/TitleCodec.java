@@ -4,6 +4,7 @@ import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import net.glowstone.net.message.play.game.TitleMessage;
+import net.glowstone.net.message.play.game.TitleMessage.Action;
 import net.glowstone.util.TextMessage;
 
 import java.io.IOException;
@@ -13,7 +14,7 @@ public final class TitleCodec implements Codec<TitleMessage> {
     @Override
     public TitleMessage decode(ByteBuf buffer) throws IOException {
         int actionId = ByteBufUtils.readVarInt(buffer);
-        TitleMessage.Action action = TitleMessage.Action.getAction(actionId);
+        Action action = Action.getAction(actionId);
         switch (action) {
             case TITLE:
             case SUBTITLE:

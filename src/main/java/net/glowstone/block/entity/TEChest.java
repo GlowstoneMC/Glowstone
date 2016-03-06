@@ -13,7 +13,7 @@ import org.bukkit.Sound;
  */
 public class TEChest extends TEContainer {
 
-    private int viewers = 0;
+    private int viewers;
 
     public TEChest(GlowBlock block) {
         super(block, new GlowChestInventory(new GlowChest(block)));

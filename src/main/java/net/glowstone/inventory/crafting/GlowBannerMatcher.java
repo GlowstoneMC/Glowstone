@@ -185,7 +185,7 @@ public class GlowBannerMatcher extends ItemMatcher {
 
         public Pattern getPattern() {
             DyeColor dyeColor = DyeColor.getByDyeData((byte) data);
-            PatternType patternType = PatternType.getByIdentifier(this.toString());
+            PatternType patternType = PatternType.getByIdentifier(toString());
             return new Pattern(dyeColor, patternType);
         }
     }

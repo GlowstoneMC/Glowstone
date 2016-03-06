@@ -19,7 +19,7 @@ import java.net.SocketAddress;
  */
 public final class GlowNetworkServer implements ConnectionManager {
     /**
-     * The {@link io.netty.bootstrap.ServerBootstrap} used to initialize Netty.
+     * The {@link ServerBootstrap} used to initialize Netty.
      */
     private final ServerBootstrap bootstrap = new ServerBootstrap();
     private final EventLoopGroup bossGroup = new NioEventLoopGroup();
@@ -49,7 +49,7 @@ public final class GlowNetworkServer implements ConnectionManager {
         server.getSessionRegistry().remove((GlowSession) session);
     }
 
-    public ChannelFuture bind(final SocketAddress address) {
+    public ChannelFuture bind(SocketAddress address) {
         return bootstrap.bind(address);
     }
 

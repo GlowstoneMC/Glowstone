@@ -1,6 +1,7 @@
 package net.glowstone.generator.populators;
 
 import net.glowstone.GlowChunk;
+import net.glowstone.GlowChunk.Key;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.generator.structures.GlowStructure;
@@ -23,23 +24,23 @@ public class StructurePopulator extends BlockPopulator {
 
         if (world.canGenerateStructures()) {
 
-            final int cx = source.getX();
-            final int cz = source.getZ();
+            int cx = source.getX();
+            int cz = source.getZ();
 
             random.setSeed(world.getSeed());
-            final long xRand = random.nextLong();
-            final long zRand = random.nextLong();
+            long xRand = random.nextLong();
+            long zRand = random.nextLong();
 
             boolean placed = false;
             for (int x = cx - 8; x <= cx + 8 && !placed; x++) {
                 for (int z = cz - 8; z <= cz + 8 && !placed; z++) {
                     if (world.getChunkAt(x, z).isLoaded() || world.getChunkAt(x, z).load(true)) {
                         random.setSeed(x * xRand + z * zRand ^ world.getSeed());
-                        final Map<Integer, GlowStructure> structures = ((GlowWorld) world).getStructures();
-                        final int key = new GlowChunk.Key(x, z).hashCode();
+                        Map<Integer, GlowStructure> structures = ((GlowWorld) world).getStructures();
+                        int key = new Key(x, z).hashCode();
                         if (!structures.containsKey(key)) {
                             for (StructureStore<?> store : StructureStorage.getStructureStores()) {
-                                final GlowStructure structure = store.createNewStructure((GlowWorld) world, random, x, z);
+                                GlowStructure structure = store.createNewStructure((GlowWorld) world, random, x, z);
                                 if (structure.shouldGenerate(random)) {
                                     structure.setDirty(true);
                                     structures.put(key, structure);
@@ -53,13 +54,13 @@ public class StructurePopulator extends BlockPopulator {
                 }
             }
 
-            final int x = cx << 4;
-            final int z = cz << 4;
-            final Iterator<Entry<Integer, GlowStructure>> it = ((GlowWorld) world).getStructures().entrySet().iterator();
+            int x = cx << 4;
+            int z = cz << 4;
+            Iterator<Entry<Integer, GlowStructure>> it = ((GlowWorld) world).getStructures().entrySet().iterator();
             while (it.hasNext()) {
-                final GlowStructure structure = it.next().getValue();
+                GlowStructure structure = it.next().getValue();
                 if (structure.getBoundingBox().intersectsWith(x, z, x + 15, z + 15)) {
-                    final BlockStateDelegate delegate = new BlockStateDelegate();
+                    BlockStateDelegate delegate = new BlockStateDelegate();
                     if (structure.generate(random, x, z, delegate)) { // maybe later trigger a StructureGeneratedEvent event and cancel
                         delegate.updateBlockStates();
                     } else {

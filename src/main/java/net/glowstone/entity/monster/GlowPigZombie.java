@@ -23,7 +23,7 @@ public class GlowPigZombie extends GlowZombie implements PigZombie {
 
     @Override
     public void setAnger(int level) {
-        this.anger = level;
+        anger = level;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class GlowPigZombie extends GlowZombie implements PigZombie {
     @Override
     public void setAngry(boolean angry) {
         if (!angry) anger = 0;
-        else if (isAngry()) anger = ((int) (new Random().nextGaussian() * 400)) + 400;
+        else if (isAngry()) anger = (int) (new Random().nextGaussian() * 400) + 400;
     }
 
     public UUID getHurtBy() {

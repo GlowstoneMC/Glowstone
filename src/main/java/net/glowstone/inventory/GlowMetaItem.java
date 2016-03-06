@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * An implementation of {@link ItemMeta}, created through {@link GlowItemFactory}.
@@ -33,10 +34,10 @@ class GlowMetaItem implements ItemMeta {
         displayName = meta.displayName;
 
         if (meta.hasLore()) {
-            this.lore = new ArrayList<>(meta.lore);
+            lore = new ArrayList<>(meta.lore);
         }
         if (meta.hasEnchants()) {
-            this.enchants = new HashMap<>(meta.enchants);
+            enchants = new HashMap<>(meta.enchants);
         }
 
         hideFlag = meta.hideFlag;
@@ -45,7 +46,7 @@ class GlowMetaItem implements ItemMeta {
     protected static void serializeEnchants(String name, Map<String, Object> map, Map<Enchantment, Integer> enchants) {
         Map<String, Object> enchantList = new HashMap<>();
 
-        for (Map.Entry<Enchantment, Integer> enchantment : enchants.entrySet()) {
+        for (Entry<Enchantment, Integer> enchantment : enchants.entrySet()) {
             enchantList.put(enchantment.getKey().getName(), enchantment.getValue());
         }
 
@@ -55,7 +56,7 @@ class GlowMetaItem implements ItemMeta {
     protected static void writeNbtEnchants(String name, CompoundTag to, Map<Enchantment, Integer> enchants) {
         List<CompoundTag> ench = new ArrayList<>();
 
-        for (Map.Entry<Enchantment, Integer> enchantment : enchants.entrySet()) {
+        for (Entry<Enchantment, Integer> enchantment : enchants.entrySet()) {
             CompoundTag enchantmentTag = new CompoundTag();
             enchantmentTag.putShort("id", enchantment.getKey().getId());
             enchantmentTag.putShort("lvl", enchantment.getValue());
@@ -287,10 +288,10 @@ class GlowMetaItem implements ItemMeta {
 
     @Override
     public Set<ItemFlag> getItemFlags() {
-        final Set<ItemFlag> currentFlags = EnumSet.<ItemFlag>noneOf(ItemFlag.class);
+        Set<ItemFlag> currentFlags = EnumSet.noneOf(ItemFlag.class);
         ItemFlag[] values;
         for (int length = (values = ItemFlag.values()).length, i = 0; i < length; ++i) {
-            final ItemFlag f = values[i];
+            ItemFlag f = values[i];
             if (hasItemFlag(f)) {
                 currentFlags.add(f);
             }
@@ -300,11 +301,11 @@ class GlowMetaItem implements ItemMeta {
 
     @Override
     public boolean hasItemFlag(ItemFlag itemFlag) {
-        final int bitModifier = getBitModifier(itemFlag);
+        int bitModifier = getBitModifier(itemFlag);
         return (hideFlag & bitModifier) == bitModifier;
     }
     
-    private byte getBitModifier(final ItemFlag hideFlag) {
+    private byte getBitModifier(ItemFlag hideFlag) {
         return (byte) (1 << hideFlag.ordinal());
     }
 }

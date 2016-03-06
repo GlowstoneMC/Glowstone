@@ -31,14 +31,14 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
 
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
-        final GlowBlock belowBlock = block.getRelative(BlockFace.DOWN);
-        final Material type = belowBlock.getType();
-        final MaterialData data = belowBlock.getState().getData();
-        if (type == Material.GRASS || (data instanceof Dirt && ((Dirt) data).getType() != DirtType.PODZOL)) {
+        GlowBlock belowBlock = block.getRelative(BlockFace.DOWN);
+        Material type = belowBlock.getType();
+        MaterialData data = belowBlock.getState().getData();
+        if (type == Material.GRASS || data instanceof Dirt && ((Dirt) data).getType() != DirtType.PODZOL) {
             if (block.getLightLevel() < 13) { // checking light level for dirt, coarse dirt and grass
                 return true;
             }
-        } else if (type == Material.MYCEL || (data instanceof Dirt && ((Dirt) data).getType() == DirtType.PODZOL)) {
+        } else if (type == Material.MYCEL || data instanceof Dirt && ((Dirt) data).getType() == DirtType.PODZOL) {
             // not checking light level if mycel or podzol
             return true;
         }
@@ -70,10 +70,10 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
         } else {
             return;
         }
-        final Location loc = block.getLocation();
-        final BlockStateDelegate blockStateDelegate = new BlockStateDelegate();
+        Location loc = block.getLocation();
+        BlockStateDelegate blockStateDelegate = new BlockStateDelegate();
         if (GlowTree.newInstance(type, random, loc, blockStateDelegate).generate()) {
-            final List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
+            List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
             StructureGrowEvent growEvent = new StructureGrowEvent(loc, type, true, player, blockStates);
             EventFactory.callEvent(growEvent);
             if (!growEvent.isCancelled()) {
@@ -87,7 +87,7 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
     @Override
     public void updateBlock(GlowBlock block) {
         if (random.nextInt(25) == 0) {
-            final GlowWorld world = block.getWorld();
+            GlowWorld world = block.getWorld();
             int x, y, z;
             int i = 0;
             for (x = block.getX() - 4; x <= block.getX() + 4; x++) {
@@ -124,7 +124,7 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
 
             if (world.getBlockAt(nX, nY, nZ).getType() == Material.AIR
                     && canPlaceAt(world.getBlockAt(nX, nY, nZ), BlockFace.DOWN)) {
-                final GlowBlockState state = world.getBlockAt(nX, nY, nZ).getState();
+                GlowBlockState state = world.getBlockAt(nX, nY, nZ).getState();
                 state.setType(mushroomType);
                 BlockSpreadEvent spreadEvent = new BlockSpreadEvent(state.getBlock(), block, state);
                 EventFactory.callEvent(spreadEvent);

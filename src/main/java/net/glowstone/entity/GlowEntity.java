@@ -7,7 +7,9 @@ import net.glowstone.GlowChunk;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.entity.meta.MetadataIndex;
+import net.glowstone.entity.meta.MetadataIndex.StatusFlags;
 import net.glowstone.entity.meta.MetadataMap;
+import net.glowstone.entity.meta.MetadataMap.Entry;
 import net.glowstone.entity.objects.GlowItemFrame;
 import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.entity.physics.EntityBoundingBox;
@@ -15,9 +17,11 @@ import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.Position;
 import org.bukkit.*;
+import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Entity.Spigot;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -90,15 +94,15 @@ public abstract class GlowEntity implements Entity {
     /**
      * Whether the entity should have its position resent as if teleported.
      */
-    protected boolean teleported = false;
+    protected boolean teleported;
     /**
      * Whether the entity should have its velocity resent.
      */
-    protected boolean velocityChanged = false;
+    protected boolean velocityChanged;
     /**
      * A counter of how long this entity has existed
      */
-    protected int ticksLived = 0;
+    protected int ticksLived;
     /**
      * Vehicle
      */
@@ -127,7 +131,7 @@ public abstract class GlowEntity implements Entity {
     /**
      * How long the entity has been on fire, or 0 if it is not.
      */
-    private int fireTicks = 0;
+    private int fireTicks;
     /**
      * Passanger
      */
@@ -144,8 +148,8 @@ public abstract class GlowEntity implements Entity {
             location = EventFactory.callEvent(new PlayerSpawnLocationEvent((Player) this, location)).getSpawnLocation();
         }
         this.location = location.clone();
-        this.world = (GlowWorld) location.getWorld();
-        this.server = world.getServer();
+        world = (GlowWorld) location.getWorld();
+        server = world.getServer();
         server.getEntityIdManager().allocate(this);
         world.getEntityManager().register(this);
         previousLocation = location.clone();
@@ -348,7 +352,7 @@ public abstract class GlowEntity implements Entity {
     public boolean isWithinDistance(Location loc) {
         double dx = Math.abs(location.getX() - loc.getX());
         double dz = Math.abs(location.getZ() - loc.getZ());
-        return loc.getWorld() == getWorld() && dx <= (server.getViewDistance() * GlowChunk.WIDTH) && dz <= (server.getViewDistance() * GlowChunk.HEIGHT);
+        return loc.getWorld() == getWorld() && dx <= server.getViewDistance() * GlowChunk.WIDTH && dz <= server.getViewDistance() * GlowChunk.HEIGHT;
     }
 
     /**
@@ -370,7 +374,7 @@ public abstract class GlowEntity implements Entity {
         if (fireTicks > 0) {
             --fireTicks;
         }
-        metadata.setBit(MetadataIndex.STATUS, MetadataIndex.StatusFlags.ON_FIRE, fireTicks > 0);
+        metadata.setBit(MetadataIndex.STATUS, StatusFlags.ON_FIRE, fireTicks > 0);
 
         // resend position if it's been a while, causes ItemFrames to disappear.
         if (ticksLived % (30 * 20) == 0) {
@@ -388,7 +392,7 @@ public abstract class GlowEntity implements Entity {
                 if (server.getAllowEnd()) {
                     Location previousLocation = location.clone();
                     boolean success;
-                    if (getWorld().getEnvironment() == World.Environment.THE_END) {
+                    if (getWorld().getEnvironment() == Environment.THE_END) {
                         success = teleportToSpawn();
                     } else {
                         success = teleportToEnd();
@@ -516,7 +520,7 @@ public abstract class GlowEntity implements Entity {
         int pitch = Position.getIntPitch(location);
 
         List<Message> result = new LinkedList<>();
-        if (teleported || (moved && teleport)) {
+        if (teleported || moved && teleport) {
             result.add(new EntityTeleportMessage(id, x, y, z, yaw, pitch));
         } else if (moved && rotated) {
             result.add(new RelativeEntityPositionRotationMessage(id, (short) dx, (short) dy, (short) dz, yaw, pitch));
@@ -532,8 +536,8 @@ public abstract class GlowEntity implements Entity {
         }
 
         // send changed metadata
-        List<MetadataMap.Entry> changes = metadata.getChanges();
-        if (changes.size() > 0) {
+        List<Entry> changes = metadata.getChanges();
+        if (!changes.isEmpty()) {
             result.add(new EntityMetadataMessage(id, changes));
         }
 
@@ -599,7 +603,7 @@ public abstract class GlowEntity implements Entity {
         }
         Location target = null;
         for (World world : server.getWorlds()) {
-            if (world.getEnvironment() == World.Environment.THE_END) {
+            if (world.getEnvironment() == Environment.THE_END) {
                 target = world.getSpawnLocation();
                 break;
             }
@@ -720,7 +724,7 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public void setTicksLived(int value) {
-        this.ticksLived = value;
+        ticksLived = value;
     }
 
     @Override
@@ -793,7 +797,7 @@ public abstract class GlowEntity implements Entity {
     @Override
     public String getCustomName() {
         String name = metadata.getString(MetadataIndex.NAME_TAG);
-        if (name == null || name.length() == 0) {
+        if (name == null || name.isEmpty()) {
             name = "";
         }
         return name;
@@ -834,15 +838,15 @@ public abstract class GlowEntity implements Entity {
     public boolean setPassenger(Entity bPassenger) {
         Preconditions.checkArgument(bPassenger != this, "Entity cannot ride itself.");
 
-        if (this.passenger == bPassenger) return false; // nothing changed
+        if (passenger == bPassenger) return false; // nothing changed
 
         if (bPassenger == null) {
 
-            EventFactory.callEvent(new EntityDismountEvent(this.passenger, this));
+            EventFactory.callEvent(new EntityDismountEvent(passenger, this));
 
-            this.passenger.vehicleChanged = true;
-            this.passenger.vehicle = null;
-            this.passenger = null;
+            passenger.vehicleChanged = true;
+            passenger.vehicle = null;
+            passenger = null;
         } else {
 
             if (!(bPassenger instanceof GlowEntity)) {
@@ -982,13 +986,13 @@ public abstract class GlowEntity implements Entity {
         return false;
     }
 
-    public Entity.Spigot spigot() {
+    public Spigot spigot() {
         return null; // TODO: support entity isInvulnerable() API
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
+        int prime = 31;
         int result = 1;
         result = prime * result + id;
         return result;

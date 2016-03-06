@@ -39,7 +39,7 @@ public class GlowWolf extends GlowTameable implements Wolf {
     @Override
     public void setCollarColor(DyeColor color) {
         metadata.set(MetadataIndex.WOLF_COLOR, color.getDyeData());
-        this.collarColor = color;
+        collarColor = color;
     }
 
     public boolean isBegging() {

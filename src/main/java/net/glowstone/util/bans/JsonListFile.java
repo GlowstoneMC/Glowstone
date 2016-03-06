@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 
 /**
@@ -49,7 +50,7 @@ public abstract class JsonListFile {
                     JSONObject jsonObj = (JSONObject) object;
                     Map<String, String> map = new HashMap<>(jsonObj.size());
                     for (Object jsonEntry : jsonObj.entrySet()) {
-                        Map.Entry<?, ?> entry = ((Map.Entry<?, ?>) jsonEntry);
+                        Entry<?, ?> entry = (Map.Entry<?, ?>) jsonEntry;
                         map.put(entry.getKey().toString(), entry.getValue().toString());
                     }
 
@@ -72,7 +73,7 @@ public abstract class JsonListFile {
         JSONArray array = new JSONArray();
         for (BaseEntry entry : entries) {
             JSONObject obj = new JSONObject();
-            for (Map.Entry<String, String> mapEntry : entry.write().entrySet()) {
+            for (Entry<String, String> mapEntry : entry.write().entrySet()) {
                 obj.put(mapEntry.getKey(), mapEntry.getValue());
             }
             array.add(obj);

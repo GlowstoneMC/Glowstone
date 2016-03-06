@@ -12,10 +12,12 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.InventoryView.Property;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 public class EnchantmentManager {
     private static final MaterialMatcher[] ENCHANTABLE_TOOLS = new MaterialMatcher[]{ToolType.AXE, ToolType.PICKAXE, ToolType.SPADE};
@@ -31,7 +33,7 @@ public class EnchantmentManager {
     public EnchantmentManager(GlowEnchantingInventory inventory, GlowPlayer player) {
         this.player = player;
         this.inventory = inventory;
-        this.xpSeed = player.getXpSeed();
+        xpSeed = player.getXpSeed();
     }
 
     ////////////////////////////
@@ -197,7 +199,7 @@ public class EnchantmentManager {
         if (enchants == null) enchants = new ArrayList<>();
 
         EnchantItemEvent event = EventFactory.callEvent(new EnchantItemEvent(player, player.getOpenInventory(), inventory.getLocation().getBlock(), item.clone(), enchLevelCosts[clicked], toMap(enchants), clicked));
-        if (event.isCancelled() || (player.getGameMode() != GameMode.CREATIVE && event.getExpLevelCost() > player.getLevel()))
+        if (event.isCancelled() || player.getGameMode() != GameMode.CREATIVE && event.getExpLevelCost() > player.getLevel())
             return;
 
         boolean isBook = item.getType() == Material.BOOK;
@@ -210,7 +212,7 @@ public class EnchantmentManager {
             return;
         }
 
-        for (Map.Entry<Enchantment, Integer> enchantment : toAdd.entrySet()) {
+        for (Entry<Enchantment, Integer> enchantment : toAdd.entrySet()) {
             try {
                 if (isBook) {
                     EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
@@ -233,7 +235,7 @@ public class EnchantmentManager {
                 inventory.setSecondary(null);
         }
 
-        this.xpSeed = player.getXpSeed();
+        xpSeed = player.getXpSeed();
 
         update();
     }
@@ -263,8 +265,8 @@ public class EnchantmentManager {
                 List<LeveledEnchant> enchants = calculateCurrentEnchants(item, i, enchLevelCosts[i]);
                 if (enchants != null && !enchants.isEmpty()) {
                     LeveledEnchant chosen = WeightedRandom.getRandom(random, enchants);
-                    this.enchId[i] = chosen.getEnchantment().getId();
-                    this.enchLevel[i] = chosen.getLevel();
+                    enchId[i] = chosen.getEnchantment().getId();
+                    enchLevel[i] = chosen.getLevel();
                 }
             }
         }
@@ -336,13 +338,13 @@ public class EnchantmentManager {
     }
 
     private void update() {
-        player.setWindowProperty(InventoryView.Property.ENCHANT_BUTTON1, enchLevelCosts[0]);
-        player.setWindowProperty(InventoryView.Property.ENCHANT_BUTTON2, enchLevelCosts[1]);
-        player.setWindowProperty(InventoryView.Property.ENCHANT_BUTTON3, enchLevelCosts[2]);
-        player.setWindowProperty(InventoryView.Property.ENCHANT_XP_SEED, xpSeed & -16);
-        player.setWindowProperty(InventoryView.Property.ENCHANT_ID_AND_LEVEL1, enchId[0] | enchLevel[0] << 8);
-        player.setWindowProperty(InventoryView.Property.ENCHANT_ID_AND_LEVEL2, enchId[1] | enchLevel[1] << 8);
-        player.setWindowProperty(InventoryView.Property.ENCHANT_ID_AND_LEVEL3, enchId[2] | enchLevel[2] << 8);
+        player.setWindowProperty(Property.ENCHANT_BUTTON1, enchLevelCosts[0]);
+        player.setWindowProperty(Property.ENCHANT_BUTTON2, enchLevelCosts[1]);
+        player.setWindowProperty(Property.ENCHANT_BUTTON3, enchLevelCosts[2]);
+        player.setWindowProperty(Property.ENCHANT_XP_SEED, xpSeed & -16);
+        player.setWindowProperty(Property.ENCHANT_ID_AND_LEVEL1, enchId[0] | enchLevel[0] << 8);
+        player.setWindowProperty(Property.ENCHANT_ID_AND_LEVEL2, enchId[1] | enchLevel[1] << 8);
+        player.setWindowProperty(Property.ENCHANT_ID_AND_LEVEL3, enchId[2] | enchLevel[2] << 8);
     }
 
     private boolean isMaliciousClicked(int clicked) {

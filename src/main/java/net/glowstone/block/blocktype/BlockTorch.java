@@ -19,7 +19,7 @@ public class BlockTorch extends BlockNeedsAttached {
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
-        final MaterialData data = state.getData();
+        MaterialData data = state.getData();
         if (data instanceof Torch) {
             ((Torch) data).setFacingDirection(face);
         } else {

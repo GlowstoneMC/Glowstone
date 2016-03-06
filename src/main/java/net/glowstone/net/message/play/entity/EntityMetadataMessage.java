@@ -3,6 +3,7 @@ package net.glowstone.net.message.play.entity;
 import com.flowpowered.network.Message;
 import lombok.Data;
 import net.glowstone.entity.meta.MetadataMap;
+import net.glowstone.entity.meta.MetadataMap.Entry;
 
 import java.util.List;
 
@@ -10,6 +11,6 @@ import java.util.List;
 public final class EntityMetadataMessage implements Message {
 
     private final int id;
-    private final List<MetadataMap.Entry> entries;
+    private final List<Entry> entries;
 
 }

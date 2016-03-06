@@ -18,13 +18,13 @@ public class TEJukebox extends TileEntity {
     @Override
     public void loadNbt(CompoundTag tag) {
         super.loadNbt(tag);
-        this.playing = tag.containsKey("RecordItem") ? NbtSerialization.readItem(tag.getCompound("RecordItem")) : null;
+        playing = tag.containsKey("RecordItem") ? NbtSerialization.readItem(tag.getCompound("RecordItem")) : null;
     }
 
     @Override
     public void saveNbt(CompoundTag tag) {
         super.saveNbt(tag);
-        tag.putCompound("RecordItem", NbtSerialization.writeItem(this.playing, 0));
+        tag.putCompound("RecordItem", NbtSerialization.writeItem(playing, 0));
     }
 
     @Override

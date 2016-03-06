@@ -15,6 +15,7 @@ import net.glowstone.util.NibbleArray;
 import net.glowstone.util.VariableValueArray;
 import org.bukkit.Chunk;
 import org.bukkit.World;
+import org.bukkit.World.Environment;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
@@ -72,7 +73,7 @@ public final class GlowChunk implements Chunk {
      * Whether the chunk has been populated by special features.
      * Used in map generation.
      */
-    private boolean populated = false;
+    private boolean populated;
 
     /**
      * Creates a new chunk with a specified X and Z coordinate.
@@ -110,7 +111,7 @@ public final class GlowChunk implements Chunk {
 
     @Override
     public GlowBlock getBlock(int x, int y, int z) {
-        return new GlowBlock(this, (this.x << 4) | (x & 0xf), y & 0xff, (this.z << 4) | (z & 0xf));
+        return new GlowBlock(this, this.x << 4 | x & 0xf, y & 0xff, this.z << 4 | z & 0xf);
     }
 
     @Override
@@ -319,7 +320,7 @@ public final class GlowChunk implements Chunk {
      */
     public int getType(int x, int z, int y) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : (section.types[section.index(x, y, z)] >> 4);
+        return section == null ? 0 : section.types[section.index(x, y, z)] >> 4;
     }
 
     /**
@@ -430,7 +431,7 @@ public final class GlowChunk implements Chunk {
         int index = section.index(x, y, z);
         int type = section.types[index];
         if (type == 0) return;  // can't set metadata on air
-        section.types[index] = (char) ((type & 0xfff0) | metaData);
+        section.types[index] = (char) (type & 0xfff0 | metaData);
     }
 
     /**
@@ -599,7 +600,7 @@ public final class GlowChunk implements Chunk {
     public ChunkDataMessage toMessage() {
         // this may need to be changed to "true" depending on resolution of
         // some inconsistencies on the wiki
-        return toMessage(world.getEnvironment() == World.Environment.NORMAL);
+        return toMessage(world.getEnvironment() == Environment.NORMAL);
     }
 
     // ======== Helper functions ========
@@ -615,11 +616,11 @@ public final class GlowChunk implements Chunk {
         return toMessage(skylight, true);
     }
 
-    private static final int PACKET_DATA_ARRAY_LENGTH = (ChunkSection.ARRAY_SIZE * 2) / 8;
+    private static final int PACKET_DATA_ARRAY_LENGTH = ChunkSection.ARRAY_SIZE * 2 / 8;
     private static final byte[] PACKET_DATA_ARRAY_LENGTH_BYTES;
 
     static {
-        final ByteBuf buf = Unpooled.buffer();
+        ByteBuf buf = Unpooled.buffer();
         try {
             ByteBufUtils.writeVarInt(buf, PACKET_DATA_ARRAY_LENGTH);
             PACKET_DATA_ARRAY_LENGTH_BYTES = buf.array().clone();
@@ -642,7 +643,7 @@ public final class GlowChunk implements Chunk {
 
         // filter sectionBitmask based on actual chunk contents
         if (sections != null) {
-            final int maxBitmask = (1 << sections.length) - 1;
+            int maxBitmask = (1 << sections.length) - 1;
             if (entireChunk) {
                 sectionBitmask = maxBitmask;
             } else {
@@ -659,13 +660,13 @@ public final class GlowChunk implements Chunk {
 
         ByteBuf buf = Unpooled.buffer();
 
-        if (this.sections != null) {
+        if (sections != null) {
             // get the list of sections
-            for (int i = 0; i < this.sections.length; ++i) {
-                if ((sectionBitmask & (1 << i)) == 0) {
+            for (int i = 0; i < sections.length; ++i) {
+                if ((sectionBitmask & 1 << i) == 0) {
                     continue;
                 }
-                ChunkSection section = this.sections[i];
+                ChunkSection section = sections[i];
                 VariableValueArray array = new VariableValueArray(13, section.types.length);
                 buf.writeByte(array.getBitsPerValue()); // Bit per value -> Currently fixed at 13!!!
                 ByteBufUtils.writeVarInt(buf, 0); // Palette size -> 0 -> Use the global palette
@@ -687,7 +688,7 @@ public final class GlowChunk implements Chunk {
 
         // biomes
         if (entireChunk) {
-            buf.writeBytes(this.biomes);
+            buf.writeBytes(biomes);
         }
 
         return new ChunkDataMessage(x, z, entireChunk, sectionBitmask, buf);
@@ -759,7 +760,7 @@ public final class GlowChunk implements Chunk {
             if (x < 0 || z < 0 || x >= WIDTH || z >= HEIGHT) {
                 throw new IndexOutOfBoundsException("Coords (x=" + x + ",z=" + z + ") out of section bounds");
             }
-            return ((y & 0xf) << 8) | (z << 4) | x;
+            return (y & 0xf) << 8 | z << 4 | x;
         }
 
         /**

@@ -14,6 +14,8 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.fusesource.jansi.Ansi;
+import org.fusesource.jansi.Ansi.Attribute;
+import org.fusesource.jansi.Ansi.Color;
 import org.fusesource.jansi.AnsiConsole;
 
 import java.io.*;
@@ -40,7 +42,7 @@ public final class ConsoleManager {
     private ConsoleCommandSender sender;
 
     private boolean running = true;
-    private boolean jLine = false;
+    private boolean jLine;
 
     public ConsoleManager(GlowServer server) {
         this.server = server;
@@ -68,28 +70,28 @@ public final class ConsoleManager {
         System.setErr(new PrintStream(new LoggerOutputStream(Level.WARNING), true));
 
         // set up colorization replacements
-        replacements.put(ChatColor.BLACK, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.BLACK).boldOff().toString());
-        replacements.put(ChatColor.DARK_BLUE, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.BLUE).boldOff().toString());
-        replacements.put(ChatColor.DARK_GREEN, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.GREEN).boldOff().toString());
-        replacements.put(ChatColor.DARK_AQUA, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.CYAN).boldOff().toString());
-        replacements.put(ChatColor.DARK_RED, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.RED).boldOff().toString());
-        replacements.put(ChatColor.DARK_PURPLE, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.MAGENTA).boldOff().toString());
-        replacements.put(ChatColor.GOLD, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.YELLOW).boldOff().toString());
-        replacements.put(ChatColor.GRAY, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.WHITE).boldOff().toString());
-        replacements.put(ChatColor.DARK_GRAY, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.BLACK).bold().toString());
-        replacements.put(ChatColor.BLUE, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.BLUE).bold().toString());
-        replacements.put(ChatColor.GREEN, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.GREEN).bold().toString());
-        replacements.put(ChatColor.AQUA, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.CYAN).bold().toString());
-        replacements.put(ChatColor.RED, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.RED).bold().toString());
-        replacements.put(ChatColor.LIGHT_PURPLE, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.MAGENTA).bold().toString());
-        replacements.put(ChatColor.YELLOW, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.YELLOW).bold().toString());
-        replacements.put(ChatColor.WHITE, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.WHITE).bold().toString());
-        replacements.put(ChatColor.MAGIC, Ansi.ansi().a(Ansi.Attribute.BLINK_SLOW).toString());
-        replacements.put(ChatColor.BOLD, Ansi.ansi().a(Ansi.Attribute.UNDERLINE_DOUBLE).toString());
-        replacements.put(ChatColor.STRIKETHROUGH, Ansi.ansi().a(Ansi.Attribute.STRIKETHROUGH_ON).toString());
-        replacements.put(ChatColor.UNDERLINE, Ansi.ansi().a(Ansi.Attribute.UNDERLINE).toString());
-        replacements.put(ChatColor.ITALIC, Ansi.ansi().a(Ansi.Attribute.ITALIC).toString());
-        replacements.put(ChatColor.RESET, Ansi.ansi().a(Ansi.Attribute.RESET).toString());
+        replacements.put(ChatColor.BLACK, Ansi.ansi().a(Attribute.RESET).fg(Color.BLACK).boldOff().toString());
+        replacements.put(ChatColor.DARK_BLUE, Ansi.ansi().a(Attribute.RESET).fg(Color.BLUE).boldOff().toString());
+        replacements.put(ChatColor.DARK_GREEN, Ansi.ansi().a(Attribute.RESET).fg(Color.GREEN).boldOff().toString());
+        replacements.put(ChatColor.DARK_AQUA, Ansi.ansi().a(Attribute.RESET).fg(Color.CYAN).boldOff().toString());
+        replacements.put(ChatColor.DARK_RED, Ansi.ansi().a(Attribute.RESET).fg(Color.RED).boldOff().toString());
+        replacements.put(ChatColor.DARK_PURPLE, Ansi.ansi().a(Attribute.RESET).fg(Color.MAGENTA).boldOff().toString());
+        replacements.put(ChatColor.GOLD, Ansi.ansi().a(Attribute.RESET).fg(Color.YELLOW).boldOff().toString());
+        replacements.put(ChatColor.GRAY, Ansi.ansi().a(Attribute.RESET).fg(Color.WHITE).boldOff().toString());
+        replacements.put(ChatColor.DARK_GRAY, Ansi.ansi().a(Attribute.RESET).fg(Color.BLACK).bold().toString());
+        replacements.put(ChatColor.BLUE, Ansi.ansi().a(Attribute.RESET).fg(Color.BLUE).bold().toString());
+        replacements.put(ChatColor.GREEN, Ansi.ansi().a(Attribute.RESET).fg(Color.GREEN).bold().toString());
+        replacements.put(ChatColor.AQUA, Ansi.ansi().a(Attribute.RESET).fg(Color.CYAN).bold().toString());
+        replacements.put(ChatColor.RED, Ansi.ansi().a(Attribute.RESET).fg(Color.RED).bold().toString());
+        replacements.put(ChatColor.LIGHT_PURPLE, Ansi.ansi().a(Attribute.RESET).fg(Color.MAGENTA).bold().toString());
+        replacements.put(ChatColor.YELLOW, Ansi.ansi().a(Attribute.RESET).fg(Color.YELLOW).bold().toString());
+        replacements.put(ChatColor.WHITE, Ansi.ansi().a(Attribute.RESET).fg(Color.WHITE).bold().toString());
+        replacements.put(ChatColor.MAGIC, Ansi.ansi().a(Attribute.BLINK_SLOW).toString());
+        replacements.put(ChatColor.BOLD, Ansi.ansi().a(Attribute.UNDERLINE_DOUBLE).toString());
+        replacements.put(ChatColor.STRIKETHROUGH, Ansi.ansi().a(Attribute.STRIKETHROUGH_ON).toString());
+        replacements.put(ChatColor.UNDERLINE, Ansi.ansi().a(Attribute.UNDERLINE).toString());
+        replacements.put(ChatColor.ITALIC, Ansi.ansi().a(Attribute.ITALIC).toString());
+        replacements.put(ChatColor.RESET, Ansi.ansi().a(Attribute.RESET).toString());
     }
 
     public ConsoleCommandSender getSender() {
@@ -141,12 +143,12 @@ public final class ConsoleManager {
             // colorize or strip all colors
             for (ChatColor color : colors) {
                 if (replacements.containsKey(color)) {
-                    string = string.replaceAll("(?i)" + color.toString(), replacements.get(color));
+                    string = string.replaceAll("(?i)" + color, replacements.get(color));
                 } else {
-                    string = string.replaceAll("(?i)" + color.toString(), "");
+                    string = string.replaceAll("(?i)" + color, "");
                 }
             }
-            return string + Ansi.ansi().reset().toString();
+            return string + Ansi.ansi().reset();
         }
     }
 
@@ -155,17 +157,16 @@ public final class ConsoleManager {
         private final Level level;
 
         public LoggerOutputStream(Level level) {
-            super();
             this.level = level;
         }
 
         @Override
         public synchronized void flush() throws IOException {
             super.flush();
-            String record = this.toString();
-            super.reset();
+            String record = toString();
+            reset();
 
-            if (record.length() > 0 && !record.equals(separator)) {
+            if (!record.isEmpty() && !record.equals(separator)) {
                 logger.logp(level, "LoggerOutputStream", "log" + level, record);
             }
         }
@@ -228,7 +229,7 @@ public final class ConsoleManager {
 
     private class CommandCompleter implements Completer {
         @Override
-        public int complete(final String buffer, int cursor, List<CharSequence> candidates) {
+        public int complete(String buffer, int cursor, List<CharSequence> candidates) {
             try {
                 List<String> completions = server.getScheduler().syncIfNeeded(() -> server.getCommandMap().tabComplete(sender, buffer));
                 if (completions == null) {
@@ -257,7 +258,7 @@ public final class ConsoleManager {
                         command = reader.readLine();
                     }
 
-                    if (command == null || command.trim().length() == 0)
+                    if (command == null || command.trim().isEmpty())
                         continue;
 
                     server.getScheduler().runTask(null, new CommandTask(command.trim()));
@@ -447,7 +448,7 @@ public final class ConsoleManager {
         private final boolean color;
 
         public DateOutputFormatter(String pattern, boolean color) {
-            this.date = new SimpleDateFormat(pattern);
+            date = new SimpleDateFormat(pattern);
             this.color = color;
         }
 
@@ -472,7 +473,7 @@ public final class ConsoleManager {
                 @SuppressWarnings("resource")
                 StringWriter writer = new StringWriter();
                 record.getThrown().printStackTrace(new PrintWriter(writer));
-                builder.append(writer.toString());
+                builder.append(writer);
             }
 
             return builder.toString();

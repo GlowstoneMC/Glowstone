@@ -26,9 +26,9 @@ public class GlowTemple extends GlowStructure {
     public GlowTemple(World world, Random random, int chunkX, int chunkZ) {
         this(world, chunkX, chunkZ);
 
-        final int x = chunkX << 4;
-        final int z = chunkZ << 4;
-        final Biome biome = world.getBiome(x + 8, z + 8);
+        int x = chunkX << 4;
+        int z = chunkZ << 4;
+        Biome biome = world.getBiome(x + 8, z + 8);
 
         if (types.containsKey(biome)) {
             switch (types.get(biome)) {
@@ -47,7 +47,7 @@ public class GlowTemple extends GlowStructure {
 
     @Override
     public boolean shouldGenerate(Random random) {
-        final Biome biome = world.getBiome((chunkX << 4) + 8, (chunkZ << 4) + 8);
+        Biome biome = world.getBiome((chunkX << 4) + 8, (chunkZ << 4) + 8);
         if (types.containsKey(biome)) {
             int x = chunkX < 0 ? (chunkX - MAX_DISTANCE - 1) / MAX_DISTANCE : chunkX / MAX_DISTANCE;
             int z = chunkZ < 0 ? (chunkZ - MAX_DISTANCE - 1) / MAX_DISTANCE : chunkZ / MAX_DISTANCE;

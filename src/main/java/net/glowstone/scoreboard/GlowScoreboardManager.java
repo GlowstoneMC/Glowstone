@@ -11,7 +11,7 @@ import java.io.IOException;
 public final class GlowScoreboardManager implements ScoreboardManager {
 
     private final GlowServer server;
-    private GlowScoreboard mainScoreboard = null;
+    private GlowScoreboard mainScoreboard;
 
     public GlowScoreboardManager(GlowServer server) {
         this.server = server;

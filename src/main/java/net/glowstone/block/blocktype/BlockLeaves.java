@@ -56,13 +56,13 @@ public class BlockLeaves extends BlockType {
     @Override
     public void blockDestroy(GlowPlayer player, GlowBlock block, BlockFace face) {
         // vanilla set decay check in a 3x3x3 neighboring when a leaves block is removed
-        final GlowWorld world = block.getWorld();
+        GlowWorld world = block.getWorld();
         for (int x = 0; x < 3; x++) {
             for (int z = 0; z < 3; z++) {
                 for (int y = 0; y < 3; y++) {
-                    final GlowBlock b = world.getBlockAt(block.getLocation().add(x - 1, y - 1, z - 1));
+                    GlowBlock b = world.getBlockAt(block.getLocation().add(x - 1, y - 1, z - 1));
                     if (b.getType() == Material.LEAVES || b.getType() == Material.LEAVES_2) {
-                        final GlowBlockState state = b.getState();
+                        GlowBlockState state = b.getState();
                         if ((state.getRawData() & 0x08) == 0 && (state.getRawData() & 0x04) == 0) { // check decay is off and decay is on
                             // set decay check on for this leaves block
                             state.setRawData((byte) (state.getRawData() | 0x08));
@@ -76,15 +76,15 @@ public class BlockLeaves extends BlockType {
 
     @Override
     public void updateBlock(GlowBlock block) {
-        final GlowBlockState state = block.getState();
+        GlowBlockState state = block.getState();
         if ((state.getRawData() & 0x08) != 0 && (state.getRawData() & 0x04) == 0) { // check decay is on and decay is on
-            final GlowWorld world = block.getWorld();
+            GlowWorld world = block.getWorld();
 
             // build a 9x9x9 box to map neighboring blocks
             for (int x = 0; x < 9; x++) {
                 for (int z = 0; z < 9; z++) {
                     for (int y = 0; y < 9; y++) {
-                        final GlowBlock b = world.getBlockAt(block.getLocation().add(x - 4, y - 4, z - 4));
+                        GlowBlock b = world.getBlockAt(block.getLocation().add(x - 4, y - 4, z - 4));
                         byte val = 127;
                         if (b.getType() == Material.LOG || b.getType() == Material.LOG_2) {
                             val = 0;
@@ -142,10 +142,10 @@ public class BlockLeaves extends BlockType {
     }
 
     private byte getBlockInMap(int x, int y, int z) {
-        return blockMap[((x + 1) * 11 + (z + 1)) * 11 + (y + 1)];
+        return blockMap[((x + 1) * 11 + z + 1) * 11 + y + 1];
     }
 
     private void setBlockInMap(byte val, int x, int y, int z) {
-        blockMap[((x + 1) * 11 + (z + 1)) * 11 + (y + 1)] = val;
+        blockMap[((x + 1) * 11 + z + 1) * 11 + y + 1] = val;
     }
 }

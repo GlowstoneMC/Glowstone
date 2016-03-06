@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.zip.GZIPOutputStream;
 
 /**
@@ -143,7 +144,7 @@ public final class NBTOutputStream implements Closeable {
 
             case COMPOUND:
                 Map<String, Tag> map = ((CompoundTag) tag).getValue();
-                for (Map.Entry<String, Tag> entry : map.entrySet()) {
+                for (Entry<String, Tag> entry : map.entrySet()) {
                     writeTag(entry.getKey(), entry.getValue());
                 }
                 os.writeByte((byte) 0); // end tag

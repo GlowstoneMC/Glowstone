@@ -52,8 +52,8 @@ public class WorldScheduler {
         return null;
     }
 
-    public GlowWorld addWorld(final GlowWorld world) {
-        final WorldEntry went = new WorldEntry(world);
+    public GlowWorld addWorld(GlowWorld world) {
+        WorldEntry went = new WorldEntry(world);
         worlds.add(went);
         try {
             went.task = new WorldThread(world);
@@ -69,7 +69,7 @@ public class WorldScheduler {
         }
     }
 
-    public boolean removeWorld(final GlowWorld world) {
+    public boolean removeWorld(GlowWorld world) {
         for (WorldEntry entry : worlds) {
             if (entry.world.equals(world)) {
                 if (entry.task != null) {
@@ -98,7 +98,7 @@ public class WorldScheduler {
     }
 
     void doTickEnd() {
-        final int currentTick = this.currentTick;
+        int currentTick = this.currentTick;
         // Mark ourselves as arrived so world threads automatically trigger advance once done
         int endPhase = tickEnd.arriveAndAwaitAdvance();
         if (endPhase != currentTick + 1) {

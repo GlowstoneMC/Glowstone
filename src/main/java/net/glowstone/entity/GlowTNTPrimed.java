@@ -23,7 +23,7 @@ public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
 
     public GlowTNTPrimed(Location location, Entity source) {
         super(location, Explosion.POWER_TNT);
-        this.fuseTicks = 80;
+        fuseTicks = 80;
         this.source = source;
     }
 
@@ -78,7 +78,7 @@ public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
 
     @Override
     public final void setFuseTicks(int i) {
-        this.fuseTicks = i;
+        fuseTicks = i;
     }
 
     @Override

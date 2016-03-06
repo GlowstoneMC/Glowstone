@@ -2,6 +2,7 @@ package net.glowstone.inventory;
 
 import org.bukkit.block.BrewingStand;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.BrewerInventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -12,9 +13,9 @@ public class GlowBrewerInventory extends GlowInventory implements BrewerInventor
     public GlowBrewerInventory(BrewingStand holder) {
         super(holder, InventoryType.BREWING);
 
-        getSlot(INGREDIENT_SLOT).setType(InventoryType.SlotType.FUEL);
+        getSlot(INGREDIENT_SLOT).setType(SlotType.FUEL);
         for (int slot = 1; slot < 4; slot++) {
-            getSlot(slot).setType(InventoryType.SlotType.CRAFTING);
+            getSlot(slot).setType(SlotType.CRAFTING);
         }
     }
 

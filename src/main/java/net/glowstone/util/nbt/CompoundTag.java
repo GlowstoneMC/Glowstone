@@ -2,6 +2,7 @@ package net.glowstone.util.nbt;
 
 import java.lang.reflect.Constructor;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -31,7 +32,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     @Override
     protected void valueToString(StringBuilder bldr) {
         bldr.append(value.size()).append(" entries\n{\n");
-        for (Map.Entry<String, Tag> entry : value.entrySet()) {
+        for (Entry<String, Tag> entry : value.entrySet()) {
             bldr.append("    ").append(entry.getKey()).append(": ").append(entry.getValue().toString().replaceAll("\n", "\n    ")).append("\n");
         }
         bldr.append("}");
@@ -246,7 +247,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
 
     private <T extends Tag<?>> boolean is(String key, Class<T> clazz) {
         if (!containsKey(key)) return false;
-        final Tag tag = value.get(key);
+        Tag tag = value.get(key);
         return tag != null && clazz == tag.getClass();
     }
 
@@ -270,7 +271,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
 
     private List<? extends Tag> getTagList(String key, TagType type) {
         ListTag<?> tag = getTag(key, ListTag.class);
-        if (tag.getValue().size() == 0) {
+        if (tag.getValue().isEmpty()) {
             // empty lists are allowed to be the wrong type
             return Arrays.asList();
         }

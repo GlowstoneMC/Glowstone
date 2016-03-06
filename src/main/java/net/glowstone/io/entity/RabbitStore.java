@@ -5,28 +5,29 @@ import net.glowstone.entity.passive.GlowRabbit;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.entity.Rabbit;
+import org.bukkit.entity.Rabbit.Type;
 
 import java.util.Map;
 
 class RabbitStore extends AgeableStore<GlowRabbit> {
 
-    private final Map<Integer, Rabbit.Type> rabbitTypeMap = ImmutableMap.<Integer, Rabbit.Type>builder()
-            .put(0, Rabbit.Type.BROWN)
-            .put(1, Rabbit.Type.WHITE)
-            .put(2, Rabbit.Type.BLACK)
-            .put(3, Rabbit.Type.BLACK_AND_WHITE)
-            .put(4, Rabbit.Type.GOLD)
-            .put(5, Rabbit.Type.SALT_AND_PEPPER)
-            .put(99, Rabbit.Type.THE_KILLER_BUNNY)
+    private final Map<Integer, Type> rabbitTypeMap = ImmutableMap.<Integer, Type>builder()
+            .put(0, Type.BROWN)
+            .put(1, Type.WHITE)
+            .put(2, Type.BLACK)
+            .put(3, Type.BLACK_AND_WHITE)
+            .put(4, Type.GOLD)
+            .put(5, Type.SALT_AND_PEPPER)
+            .put(99, Type.THE_KILLER_BUNNY)
             .build();
-    private final Map<Rabbit.Type, Integer> rabbitTypeIntegerMap = ImmutableMap.<Rabbit.Type, Integer>builder()
-            .put(Rabbit.Type.BROWN, 0)
-            .put(Rabbit.Type.WHITE, 1)
-            .put(Rabbit.Type.BLACK, 2)
-            .put(Rabbit.Type.BLACK_AND_WHITE, 3)
-            .put(Rabbit.Type.GOLD, 4)
-            .put(Rabbit.Type.SALT_AND_PEPPER, 5)
-            .put(Rabbit.Type.THE_KILLER_BUNNY, 99)
+    private final Map<Type, Integer> rabbitTypeIntegerMap = ImmutableMap.<Type, Integer>builder()
+            .put(Type.BROWN, 0)
+            .put(Type.WHITE, 1)
+            .put(Type.BLACK, 2)
+            .put(Type.BLACK_AND_WHITE, 3)
+            .put(Type.GOLD, 4)
+            .put(Type.SALT_AND_PEPPER, 5)
+            .put(Type.THE_KILLER_BUNNY, 99)
             .build();
 
     public RabbitStore() {
@@ -41,12 +42,12 @@ class RabbitStore extends AgeableStore<GlowRabbit> {
     @Override
     public void load(GlowRabbit entity, CompoundTag compound) {
         super.load(entity, compound);
-        Rabbit.Type rabbitType;
+        Type rabbitType;
         int rabbitId = compound.getInt("RabbitType");
         if (rabbitTypeMap.containsKey(rabbitId)) {
             rabbitType = rabbitTypeMap.get(rabbitId);
         } else {
-            rabbitType = Rabbit.Type.BROWN;
+            rabbitType = Type.BROWN;
         }
         entity.setRabbitType(rabbitType);
         // TODO "MoreCarrotTicks" -> int
@@ -55,9 +56,9 @@ class RabbitStore extends AgeableStore<GlowRabbit> {
     @Override
     public void save(GlowRabbit entity, CompoundTag tag) {
         super.save(entity, tag);
-        Rabbit.Type rabbitType = entity.getRabbitType();
+        Type rabbitType = entity.getRabbitType();
         if (rabbitType == null) {
-            rabbitType = Rabbit.Type.BROWN;
+            rabbitType = Type.BROWN;
         }
         tag.putInt("RabbitType", rabbitTypeIntegerMap.get(rabbitType));
     }

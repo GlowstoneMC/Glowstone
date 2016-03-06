@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
-public class BlockStem extends BlockCrops implements IBlockGrowable {
+public class BlockStem extends BlockCrops {
     private Material fruitType;
     private Material seedsType;
 
@@ -60,10 +60,10 @@ public class BlockStem extends BlockCrops implements IBlockGrowable {
 
     @Override
     public void grow(GlowPlayer player, GlowBlock block) {
-        final GlowBlockState state = block.getState();
+        GlowBlockState state = block.getState();
         int cropState = block.getData()
-                + (random.nextInt(CropState.MEDIUM.ordinal())
-                + CropState.VERY_SMALL.ordinal());
+                + random.nextInt(CropState.MEDIUM.ordinal())
+                + CropState.VERY_SMALL.ordinal();
         if (cropState > CropState.RIPE.ordinal()) {
             cropState = CropState.RIPE.ordinal();
         }
@@ -107,9 +107,9 @@ public class BlockStem extends BlockCrops implements IBlockGrowable {
                     default:
                         face = BlockFace.EAST;
                 }
-                final GlowBlock targetBlock = block.getRelative(face);
-                final GlowBlockState targetBlockState = targetBlock.getState();
-                final GlowBlock belowTargetBlock = targetBlock.getRelative(BlockFace.DOWN);
+                GlowBlock targetBlock = block.getRelative(face);
+                GlowBlockState targetBlockState = targetBlock.getState();
+                GlowBlock belowTargetBlock = targetBlock.getRelative(BlockFace.DOWN);
                 if (targetBlock.getType() == Material.AIR
                         && (belowTargetBlock.getType() == Material.SOIL
                         || belowTargetBlock.getType() == Material.DIRT
@@ -122,7 +122,7 @@ public class BlockStem extends BlockCrops implements IBlockGrowable {
                 }
             } else {
                 cropState++;
-                final GlowBlockState state = block.getState();
+                GlowBlockState state = block.getState();
                 state.setRawData((byte) cropState);
                 BlockGrowEvent growEvent = new BlockGrowEvent(block, state);
                 EventFactory.callEvent(growEvent);

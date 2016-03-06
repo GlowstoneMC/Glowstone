@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -43,7 +44,7 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     /**
      * The current held item slot.
      */
-    private int heldSlot = 0;
+    private int heldSlot;
 
     public GlowPlayerInventory(GlowHumanEntity owner) {
         // all player inventories are ID 0
@@ -52,7 +53,7 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         super(owner, InventoryType.PLAYER, SIZE);
         crafting = new GlowCraftingInventory(owner, InventoryType.CRAFTING);
         for (int i = 0; i < 9; i++) {
-            getSlot(i).setType(InventoryType.SlotType.QUICKBAR);
+            getSlot(i).setType(SlotType.QUICKBAR);
         }
     }
 
@@ -80,9 +81,9 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     @Override
-    public InventoryType.SlotType getSlotType(int slot) {
+    public SlotType getSlotType(int slot) {
         if (slot >= SIZE && slot - SIZE < 4) {
-            return InventoryType.SlotType.ARMOR;
+            return SlotType.ARMOR;
         } else {
             return super.getSlotType(slot);
         }

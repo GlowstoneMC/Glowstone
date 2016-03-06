@@ -10,7 +10,7 @@ import static org.bukkit.Statistic.*;
  */
 public final class GlowStatistic {
 
-    private static final String[] names = new String[Statistic.values().length];
+    private static final String[] names = new String[values().length];
 
     static {
         set(LEAVE_GAME, "leaveGame");

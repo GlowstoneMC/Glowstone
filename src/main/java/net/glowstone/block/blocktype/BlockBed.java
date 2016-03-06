@@ -33,8 +33,8 @@ public class BlockBed extends BlockType {
     public static void setOccupied(GlowBlock head, GlowBlock foot, boolean occupied) {
         byte headData = head.getData();
         byte footData = foot.getData();
-        head.setData((byte) (occupied ? (headData | 0x4) : (headData & ~0x4)));
-        foot.setData((byte) (occupied ? (footData | 0x4) : (footData & ~0x4)));
+        head.setData((byte) (occupied ? headData | 0x4 : headData & ~0x4));
+        foot.setData((byte) (occupied ? footData | 0x4 : footData & ~0x4));
     }
 
     /**
@@ -159,8 +159,8 @@ public class BlockBed extends BlockType {
         BlockFace face = head.getFace(foot);
         int modX = face.getModX();
         int modZ = face.getModZ();
-        for (int x = (modX == 0 ? -1 : modX); x <= (modX == 0 ? 1 : modX); x++) {
-            for (int z = (modZ == 0 ? -1 : modZ); z <= (modZ == 0 ? 1 : modZ); z++) {
+        for (int x = modX == 0 ? -1 : modX; x <= (modX == 0 ? 1 : modX); x++) {
+            for (int z = modZ == 0 ? -1 : modZ; z <= (modZ == 0 ? 1 : modZ); z++) {
                 Block b = foot.getRelative(x, 0, z);
                 boolean floorValid = b.getRelative(BlockFace.DOWN).getType().isSolid();
                 boolean bottomValid = isValidSpawn(b.getType());
@@ -178,7 +178,7 @@ public class BlockBed extends BlockType {
         BlockFace direction = getOppositeBlockFace(player.getLocation(), false).getOppositeFace();
         if (state.getBlock().getRelative(direction).getType() == Material.AIR && state.getBlock().getRelative(direction).getRelative(BlockFace.DOWN).getType().isSolid()) {
             super.placeBlock(player, state, face, holding, clickedLoc);
-            final MaterialData data = state.getData();
+            MaterialData data = state.getData();
             if (data instanceof Bed) {
                 ((Bed) data).setFacingDirection(direction);
                 state.setData(data);

@@ -20,7 +20,7 @@ public class GlowJukebox extends GlowBlockState implements Jukebox {
         if (block.getType() != Material.JUKEBOX) {
             throw new IllegalArgumentException("GlowNoteBlock: expected JUKEBOX, got " + block.getType());
         }
-        this.playing = getTileEntity().getPlaying();
+        playing = getTileEntity().getPlaying();
     }
 
     private TEJukebox getTileEntity() {
@@ -31,13 +31,13 @@ public class GlowJukebox extends GlowBlockState implements Jukebox {
     public boolean update(boolean force, boolean applyPhysics) {
         boolean result = super.update(force, applyPhysics);
         if (result) {
-            getTileEntity().setPlaying(this.playing);
+            getTileEntity().setPlaying(playing);
         }
         return result;
     }
 
     public ItemStack getPlayingItem() {
-        return this.playing;
+        return playing;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -45,7 +45,7 @@ public class GlowJukebox extends GlowBlockState implements Jukebox {
 
     @Override
     public Material getPlaying() {
-        return this.playing.getType();
+        return playing.getType();
     }
 
     @Override
@@ -57,22 +57,22 @@ public class GlowJukebox extends GlowBlockState implements Jukebox {
     public void setPlaying(Material record) {
         int id = 0;
         if (record == null || record == Material.AIR) {
-            this.playing = null;
+            playing = null;
         } else {
-            this.playing = new ItemStack(record);
+            playing = new ItemStack(record);
             id = record.getId();
         }
         Collection<GlowPlayer> players = getWorld().getRawPlayers();
         for (GlowPlayer player : players) {
             player.playEffect(getLocation(), Effect.RECORD_PLAY, id);
         }
-        this.setRawData((byte) (id > 0 ? 1 : 0));
+        setRawData((byte) (id > 0 ? 1 : 0));
     }
 
     @Override
     public boolean eject() {
         if (isPlaying()) {
-            getWorld().dropItemNaturally(getLocation(), this.playing);
+            getWorld().dropItemNaturally(getLocation(), playing);
             setPlaying(null);
             return true;
         }

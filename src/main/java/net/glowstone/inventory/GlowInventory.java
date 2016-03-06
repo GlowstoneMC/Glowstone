@@ -305,7 +305,7 @@ public class GlowInventory implements Inventory {
 
     @Override
     public void setMaxStackSize(int size) {
-        this.maxStackSize = size;
+        maxStackSize = size;
     }
 
     @Override

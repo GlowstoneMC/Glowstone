@@ -28,7 +28,7 @@ public class GlowMetaBanner extends GlowMetaItem implements BannerMeta {
             return;
         }
         GlowMetaBanner banner = (GlowMetaBanner) meta;
-        this.patterns = banner.patterns;
+        patterns = banner.patterns;
     }
 
     @Override

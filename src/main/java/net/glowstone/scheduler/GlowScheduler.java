@@ -73,7 +73,7 @@ public final class GlowScheduler implements BukkitScheduler {
         this.server = server;
         this.worlds = worlds;
         inTickTaskCondition = worlds.getAdvanceCondition();
-        tickEndRun = GlowScheduler.this.worlds::doTickEnd;
+        tickEndRun = this.worlds::doTickEnd;
         primaryThread = Thread.currentThread();
     }
 
@@ -370,9 +370,6 @@ public final class GlowScheduler implements BukkitScheduler {
     private static class GlowThreadFactory implements ThreadFactory {
         public static final GlowThreadFactory INSTANCE = new GlowThreadFactory();
         private final AtomicInteger threadCounter = new AtomicInteger();
-
-        private GlowThreadFactory() {
-        }
 
         @Override
         public Thread newThread(Runnable runnable) {

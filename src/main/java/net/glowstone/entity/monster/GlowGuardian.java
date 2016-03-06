@@ -19,6 +19,6 @@ public class GlowGuardian extends GlowMonster implements Guardian {
 
     @Override
     public void setElder(boolean shouldBeElder) {
-        this.elder = shouldBeElder;
+        elder = shouldBeElder;
     }
 }

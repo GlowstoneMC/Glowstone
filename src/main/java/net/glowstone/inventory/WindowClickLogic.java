@@ -24,7 +24,7 @@ public final class WindowClickLogic {
      * @param slot   The raw slot number.
      * @return The ClickType of the window click, or UNKNOWN.
      */
-    public static ClickType getClickType(final int mode, final int button, final int slot) {
+    public static ClickType getClickType(int mode, int button, int slot) {
         // mode ; button ; slot (* = -999)
         // m b s
         // 0 0   lmb
@@ -97,8 +97,8 @@ public final class WindowClickLogic {
      * @param slotItem  The item in the slot.
      * @return The InventoryAction to perform, or UNKNOWN.
      */
-    public static InventoryAction getAction(ClickType clickType, InventoryType.SlotType slot, ItemStack cursor, ItemStack slotItem) {
-        final boolean outside = (slot == InventoryType.SlotType.OUTSIDE);
+    public static InventoryAction getAction(ClickType clickType, SlotType slot, ItemStack cursor, ItemStack slotItem) {
+        boolean outside = slot == SlotType.OUTSIDE;
         switch (clickType) {
             case LEFT:
                 // "SWAP_WITH_CURSOR", "PLACE_ONE", "DROP_ALL_CURSOR", "PLACE_ALL", "PLACE_SOME", "NOTHING", "PICKUP_ALL"

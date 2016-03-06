@@ -54,7 +54,7 @@ public class GlowArmorDyeMatcher extends ItemMatcher {
         Color newColor = base.mixColors(colors.toArray(new Color[colors.size()]));
 
         ItemStack ret = armor.clone();
-        LeatherArmorMeta retMeta = ((LeatherArmorMeta) ret.getItemMeta());
+        LeatherArmorMeta retMeta = (LeatherArmorMeta) ret.getItemMeta();
         retMeta.setColor(newColor);
         ret.setItemMeta(retMeta);
 

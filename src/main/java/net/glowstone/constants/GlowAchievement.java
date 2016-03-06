@@ -10,8 +10,8 @@ import static org.bukkit.Achievement.*;
  */
 public final class GlowAchievement {
 
-    private static final String[] names = new String[Achievement.values().length];
-    private static final String[] fancyNames = new String[Achievement.values().length];
+    private static final String[] names = new String[values().length];
+    private static final String[] fancyNames = new String[values().length];
 
     static {
         set(OPEN_INVENTORY, "openInventory", "Taking Inventory");

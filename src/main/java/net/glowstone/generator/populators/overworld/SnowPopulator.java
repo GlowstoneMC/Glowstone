@@ -20,8 +20,8 @@ public class SnowPopulator extends BlockPopulator {
             for (int z = sourceZ; z < sourceZ + 16; z++) {
                 int y = world.getHighestBlockYAt(x, z) - 1;
                 if (GlowBiomeClimate.isSnowy(world.getBiome(x, z), sourceX + x, y, sourceZ + z)) {
-                    final Block block = world.getBlockAt(x, y, z);
-                    final Block blockAbove = block.getRelative(BlockFace.UP);
+                    Block block = world.getBlockAt(x, y, z);
+                    Block blockAbove = block.getRelative(BlockFace.UP);
                     switch (block.getType()) {
                         case WATER:
                         case STATIONARY_WATER:

@@ -32,10 +32,10 @@ public class DeadBushDecorator extends BlockDecorator {
             int y = sourceY + random.nextInt(4) - random.nextInt(4);
 
             if (world.getBlockAt(x, y, z).isEmpty()) {
-                final Block blockBelow = world.getBlockAt(x, y - 1, z);
+                Block blockBelow = world.getBlockAt(x, y - 1, z);
                 for (Material soil : SOIL_TYPES) {
                     if (soil == blockBelow.getType()) {
-                        final BlockState state = world.getBlockAt(x, y, z).getState();
+                        BlockState state = world.getBlockAt(x, y, z).getState();
                         state.setType(Material.DEAD_BUSH);
                         state.setData(new LongGrass(GrassSpecies.DEAD));
                         state.update(true);

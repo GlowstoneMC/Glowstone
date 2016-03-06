@@ -185,7 +185,7 @@ public abstract class SuperCollection<E> implements Collection<E> {
             return true;
         }
 
-        if (!(getCollectionClass().isInstance(object))) {
+        if (!getCollectionClass().isInstance(object)) {
             return false;
         }
 

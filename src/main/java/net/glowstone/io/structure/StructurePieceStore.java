@@ -51,7 +51,7 @@ public abstract class StructurePieceStore<T extends GlowStructurePiece> {
         if (compound.isIntArray("BB")) {
             int[] bb = compound.getIntArray("BB");
             if (bb.length == 6) {
-                final StructureBoundingBox boundingBox = new StructureBoundingBox(new Vector(bb[0], bb[1], bb[2]), new Vector(bb[3], bb[4], bb[5]));
+                StructureBoundingBox boundingBox = new StructureBoundingBox(new Vector(bb[0], bb[1], bb[2]), new Vector(bb[3], bb[4], bb[5]));
                 structurePiece.setBoundingBox(boundingBox);
             }
         }

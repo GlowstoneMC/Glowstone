@@ -5,7 +5,9 @@ import lombok.ToString;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.entity.meta.profile.ProfileCache;
 import net.glowstone.io.PlayerDataService;
+import net.glowstone.io.PlayerDataService.PlayerReader;
 import org.bukkit.BanList;
+import org.bukkit.BanList.Type;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -29,7 +31,7 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     private final GlowServer server;
     private PlayerProfile profile;
 
-    private boolean hasPlayed = false;
+    private boolean hasPlayed;
     private long firstPlayed;
     private long lastPlayed;
     private String lastName;
@@ -95,7 +97,7 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     // Core properties
 
     private void loadData() {
-        try (PlayerDataService.PlayerReader reader = server.getPlayerDataService().beginReadingData(getUniqueId())) {
+        try (PlayerReader reader = server.getPlayerDataService().beginReadingData(getUniqueId())) {
             hasPlayed = reader.hasPlayedBefore();
             if (hasPlayed) {
                 firstPlayed = reader.getFirstPlayed();
@@ -172,13 +174,13 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
 
     @Override
     public boolean isBanned() {
-        return server.getBanList(BanList.Type.NAME).isBanned(getName());
+        return server.getBanList(Type.NAME).isBanned(getName());
     }
 
     @Override
     @Deprecated
     public void setBanned(boolean banned) {
-        server.getBanList(BanList.Type.NAME).addBan(getName(), null, null, null);
+        server.getBanList(Type.NAME).addBan(getName(), null, null, null);
     }
 
     @Override

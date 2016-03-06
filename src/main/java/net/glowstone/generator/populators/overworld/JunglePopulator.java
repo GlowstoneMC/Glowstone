@@ -27,7 +27,6 @@ public class JunglePopulator extends BiomePopulator {
     private final MelonDecorator melonDecorator = new MelonDecorator();
 
     public JunglePopulator() {
-        super();
         treeDecorator.setAmount(65);
         treeDecorator.setTrees(TREES);
         flowerDecorator.setAmount(4);
@@ -43,16 +42,16 @@ public class JunglePopulator extends BiomePopulator {
     @Override
     public void populateOnGround(World world, Random random, Chunk chunk) {
 
-        int sourceX = (chunk.getX() << 4);
-        int sourceZ = (chunk.getZ() << 4);
+        int sourceX = chunk.getX() << 4;
+        int sourceZ = chunk.getZ() << 4;
 
         for (int i = 0; i < 7; i++) {
             int x = sourceX + random.nextInt(16);
             int z = sourceZ + random.nextInt(16);
             int y = world.getHighestBlockYAt(x, z);
-            final Block sourceBlock = world.getBlockAt(x, y, z);
-            final BlockStateDelegate delegate = new BlockStateDelegate();
-            final JungleBush bush = new JungleBush(random, sourceBlock.getLocation(), delegate);
+            Block sourceBlock = world.getBlockAt(x, y, z);
+            BlockStateDelegate delegate = new BlockStateDelegate();
+            JungleBush bush = new JungleBush(random, sourceBlock.getLocation(), delegate);
             if (bush.generate()) {
                 delegate.updateBlockStates();
             }

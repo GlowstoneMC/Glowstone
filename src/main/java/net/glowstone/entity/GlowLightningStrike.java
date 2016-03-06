@@ -18,6 +18,7 @@ import org.bukkit.entity.LightningStrike;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.util.Vector;
 
 import java.util.Arrays;
@@ -42,7 +43,7 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
     public GlowLightningStrike(Location location, boolean effect, Random random) {
         super(location);
         this.effect = effect;
-        this.ticksToLive = 30;
+        ticksToLive = 30;
         this.random = random;
     }
 
@@ -73,7 +74,7 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
             remove();
         }
         if (getTicksLived() == 1) {
-            final GlowWorld world = (GlowWorld) location.getWorld();
+            GlowWorld world = (GlowWorld) location.getWorld();
             // Play Sound
             world.playSound(location, Sound.ENTITY_LIGHTNING_THUNDER, 10000, 0.8F + random.nextFloat() * 0.2F);
             world.playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 2, 0.5F + random.nextFloat() * 0.2F);
@@ -95,7 +96,7 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
                 // deal damage to nearby entities
                 for (Entity entity : getNearbyEntities(3, 6, 3)) {
                     if (entity instanceof Damageable) {
-                        ((Damageable) entity).damage(5, this, EntityDamageEvent.DamageCause.LIGHTNING);
+                        ((Damageable) entity).damage(5, this, DamageCause.LIGHTNING);
                     }
                     entity.setFireTicks(entity.getMaxFireTicks());
                 }
@@ -122,9 +123,9 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
         // (0, 0, 0) finds any entities whose bounding boxes intersect that of
         // this entity.
 
-        final BoundingBox searchBox = BoundingBox.fromPositionAndSize(location.toVector(), new Vector(0, 0, 0));
-        final Vector vec = new Vector(x, y, z);
-        final Vector vec2 = new Vector(0, 0.5 * y, 0);
+        BoundingBox searchBox = BoundingBox.fromPositionAndSize(location.toVector(), new Vector(0, 0, 0));
+        Vector vec = new Vector(x, y, z);
+        Vector vec2 = new Vector(0, 0.5 * y, 0);
         searchBox.minCorner.subtract(vec).add(vec2);
         searchBox.maxCorner.add(vec).add(vec2);
 
@@ -136,7 +137,7 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
             BlockIgniteEvent igniteEvent = new BlockIgniteEvent(block, IgniteCause.LIGHTNING, this);
             EventFactory.callEvent(igniteEvent);
             if (!igniteEvent.isCancelled()) {
-                final BlockState state = block.getState();
+                BlockState state = block.getState();
                 state.setType(Material.FIRE);
                 state.update(true);
             }

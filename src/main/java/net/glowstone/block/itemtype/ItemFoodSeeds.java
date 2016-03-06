@@ -23,7 +23,7 @@ public class ItemFoodSeeds extends ItemFood {
     @Override
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc) {
         if (target.getType() == soilType && target.getRelative(BlockFace.UP).getType() == Material.AIR && face == BlockFace.UP) {
-            final GlowBlockState state = target.getRelative(BlockFace.UP).getState();
+            GlowBlockState state = target.getRelative(BlockFace.UP).getState();
             state.setType(cropsType);
             state.setRawData((byte) 0);
             state.update(true);

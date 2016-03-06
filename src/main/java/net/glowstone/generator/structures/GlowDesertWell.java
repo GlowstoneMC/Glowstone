@@ -24,7 +24,7 @@ public class GlowDesertWell extends GlowStructurePiece {
 
         boundingBox.offset(new Vector(-2, -2, -2));
 
-        final StructureBuilder builder = new StructureBuilder(world, this, genBoundingBox, delegate);
+        StructureBuilder builder = new StructureBuilder(world, this, genBoundingBox, delegate);
         while (builder.getBlockState(new Vector(2, 1, 2)).getType() == Material.AIR && boundingBox.getMin().getBlockY() > 0) {
             boundingBox.offset(new Vector(0, -1, 0));
         }

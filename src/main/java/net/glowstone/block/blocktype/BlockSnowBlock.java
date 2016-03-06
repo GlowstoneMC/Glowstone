@@ -31,7 +31,7 @@ public class BlockSnowBlock extends BlockType {
     @Override
     public void updateBlock(GlowBlock block) {
         if (block.getLightFromBlocks() > 11) {
-            final GlowBlockState state = block.getState();
+            GlowBlockState state = block.getState();
             state.setType(Material.AIR);
             state.setData(new MaterialData(Material.AIR));
             BlockFadeEvent fadeEvent = new BlockFadeEvent(block, state);

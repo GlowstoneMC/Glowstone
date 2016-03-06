@@ -16,9 +16,9 @@ import java.util.List;
 public final class TabCompleteHandler implements MessageHandler<GlowSession, TabCompleteMessage> {
     @Override
     public void handle(GlowSession session, TabCompleteMessage message) {
-        final Player sender = session.getPlayer();
-        final String buffer = message.getText();
-        final List<String> completions = new ArrayList<>();
+        Player sender = session.getPlayer();
+        String buffer = message.getText();
+        List<String> completions = new ArrayList<>();
 
         // complete command or username
         if (buffer.startsWith("/") || message.isAssumeCommand()) {

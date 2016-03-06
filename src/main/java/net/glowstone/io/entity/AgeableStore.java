@@ -18,7 +18,7 @@ class AgeableStore<T extends GlowAgeable> extends CreatureStore<T> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        this.constructor = ctor;
+        constructor = ctor;
     }
 
     @Override

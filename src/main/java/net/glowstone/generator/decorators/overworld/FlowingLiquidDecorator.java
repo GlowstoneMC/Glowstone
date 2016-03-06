@@ -30,7 +30,7 @@ public class FlowingLiquidDecorator extends BlockDecorator {
         int sourceZ = (source.getZ() << 4) + random.nextInt(16);
         int sourceY = random.nextInt(random.nextInt(type == Material.LAVA ? random.nextInt(240) + 8 : 248) + 8);
 
-        final Block block = world.getBlockAt(sourceX, sourceY, sourceZ);
+        Block block = world.getBlockAt(sourceX, sourceY, sourceZ);
         if ((block.getType() == Material.STONE || block.getType() == Material.AIR) &&
                 block.getRelative(BlockFace.DOWN).getType() == Material.STONE &&
                 block.getRelative(BlockFace.UP).getType() == Material.STONE) {
@@ -48,7 +48,7 @@ public class FlowingLiquidDecorator extends BlockDecorator {
                     }
                 }
                 if (airBlockCount == 1) {
-                    final BlockState state = block.getState();
+                    BlockState state = block.getState();
                     state.setType(type);
                     state.update(true);
                     ((GlowWorld) block.getWorld()).requestPulse((GlowBlock) block, 20);

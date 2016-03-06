@@ -2,6 +2,7 @@ package net.glowstone.block.state;
 
 import net.glowstone.EventFactory;
 import net.glowstone.GlowChunk;
+import net.glowstone.GlowChunk.Key;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.TENote;
@@ -116,7 +117,7 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
 
         Location location = getBlock().getLocation();
 
-        GlowChunk.Key key = new GlowChunk.Key(getX() >> 4, getZ() >> 4);
+        Key key = new Key(getX() >> 4, getZ() >> 4);
         getWorld().getRawPlayers().stream().filter(player -> player.canSeeChunk(key)).forEach(player -> player.playNote(location, instrument, note));
 
         return true;

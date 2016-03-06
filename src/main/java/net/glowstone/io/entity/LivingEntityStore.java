@@ -1,6 +1,8 @@
 package net.glowstone.io.entity;
 
 import net.glowstone.entity.AttributeManager;
+import net.glowstone.entity.AttributeManager.Modifier;
+import net.glowstone.entity.AttributeManager.Property;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
@@ -10,6 +12,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore<T> {
 
@@ -115,7 +118,7 @@ abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore
 
             for (CompoundTag tag : attributes) {
                 if (tag.isString("Name") && tag.isDouble("Base")) {
-                    List<AttributeManager.Modifier> modifiers = null;
+                    List<Modifier> modifiers = null;
                     if (tag.isList("Modifiers", TagType.COMPOUND)) {
                         modifiers = new ArrayList<>();
 
@@ -124,7 +127,7 @@ abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore
                             if (modifierTag.isDouble("Amount") && modifierTag.isString("Name") &&
                                     modifierTag.isInt("Operation") && modifierTag.isLong("UUIDLeast") &&
                                     modifierTag.isLong("UUIDMost")) {
-                                modifiers.add(new AttributeManager.Modifier(
+                                modifiers.add(new Modifier(
                                         modifierTag.getString("Name"), new UUID(modifierTag.getLong("UUIDLeast"), modifierTag.getLong("UUIDMost")),
                                         modifierTag.getDouble("Amount"), (byte) modifierTag.getInt("Operation")));
                             }
@@ -152,19 +155,19 @@ abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore
         tag.putShort("AttackTime", entity.getNoDamageTicks());
 
         AttributeManager am = entity.getAttributeManager();
-        Map<String, AttributeManager.Property> properties = am.getAllProperties();
+        Map<String, Property> properties = am.getAllProperties();
         if (!properties.isEmpty()) {
             List<CompoundTag> attributes = new ArrayList<>();
 
-            for (Map.Entry<String, AttributeManager.Property> property : properties.entrySet()) {
+            for (Entry<String, Property> property : properties.entrySet()) {
                 CompoundTag attribute = new CompoundTag();
                 attribute.putString("Name", property.getKey());
 
-                AttributeManager.Property p = property.getValue();
+                Property p = property.getValue();
                 attribute.putDouble("Base", p.getValue());
                 if (p.getModifiers() != null && !p.getModifiers().isEmpty()) {
                     List<CompoundTag> modifiers = new ArrayList<>();
-                    for (AttributeManager.Modifier modifier : p.getModifiers()) {
+                    for (Modifier modifier : p.getModifiers()) {
                         CompoundTag modifierTag = new CompoundTag();
                         modifierTag.putDouble("Amount", modifier.getAmount());
                         modifierTag.putString("Name", modifier.getName());

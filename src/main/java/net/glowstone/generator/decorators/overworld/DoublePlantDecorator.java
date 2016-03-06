@@ -24,7 +24,7 @@ public class DoublePlantDecorator extends BlockDecorator {
         int sourceZ = (source.getZ() << 4) + random.nextInt(16);
         int sourceY = random.nextInt(world.getHighestBlockYAt(sourceX, sourceZ) + 32);
 
-        final DoublePlantSpecies species = getRandomDoublePlant(random, doublePlants);
+        DoublePlantSpecies species = getRandomDoublePlant(random, doublePlants);
         new DoubleTallPlant(species).generate(world, random, sourceX, sourceY, sourceZ);
     }
 

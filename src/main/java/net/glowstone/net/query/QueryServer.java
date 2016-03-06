@@ -66,7 +66,7 @@ public class QueryServer {
      * @param address The address.
      * @return Netty channel future for bind operation.
      */
-    public ChannelFuture bind(final SocketAddress address) {
+    public ChannelFuture bind(SocketAddress address) {
         if (flushTask == null) {
             flushTask = new ChallengeTokenFlushTask();
             flushTask.runTaskTimerAsynchronously(null, 600, 600);

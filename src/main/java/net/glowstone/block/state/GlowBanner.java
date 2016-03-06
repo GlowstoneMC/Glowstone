@@ -46,7 +46,7 @@ public class GlowBanner extends GlowBlockState implements Banner {
     @Override
     public void setBaseColor(DyeColor dyeColor) {
         checkNotNull(base, "Base cannot be null");
-        this.base = dyeColor;
+        base = dyeColor;
     }
 
     @Override

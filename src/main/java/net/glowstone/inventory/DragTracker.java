@@ -20,7 +20,7 @@ public final class DragTracker {
      * @return True if the drag start was accepted.
      */
     public boolean start(boolean right) {
-        if (this.active) {
+        if (active) {
             return false;
         } else {
             active = true;
@@ -56,7 +56,7 @@ public final class DragTracker {
     public List<Integer> finish(boolean right) {
         if (!active || right != this.right) {
             return null;
-        } else if (slots.size() == 0) {
+        } else if (slots.isEmpty()) {
             return null;
         } else {
             List<Integer> result = new ArrayList<>(slots);

@@ -22,7 +22,7 @@ public class GlowOcelot extends GlowTameable implements Ocelot {
 
     @Override
     public void setCatType(Type type) {
-        this.catType = type;
+        catType = type;
         metadata.set(MetadataIndex.OCELOT_TYPE, type.getId());
     }
 

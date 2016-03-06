@@ -35,7 +35,7 @@ public class BlockContainer extends BlockType {
 
         MaterialMatcher neededTool = getNeededMiningTool(block);
         if (neededTool == null ||
-                (tool != null && neededTool.matches(tool.getType()))) {
+                tool != null && neededTool.matches(tool.getType())) {
             drops.addAll(getBlockDrops(block));
         }
 

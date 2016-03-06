@@ -39,7 +39,7 @@ public class UnderwaterDecorator extends BlockDecorator {
                 world.getBlockAt(sourceX, sourceY - 1, sourceZ).getType() == Material.WATER && sourceY > 1) {
             sourceY--;
         }
-        final Material material = world.getBlockAt(sourceX, sourceY, sourceZ).getType();
+        Material material = world.getBlockAt(sourceX, sourceY, sourceZ).getType();
         if (material == Material.STATIONARY_WATER || material == Material.WATER) {
             new BlockPatch(type, hRadius, vRadius, overridables).generate(world, random, sourceX, sourceY, sourceZ);
         }

@@ -14,7 +14,7 @@ public class BlockDoubleSlab extends BlockType {
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (block.getType() == Material.WOOD_DOUBLE_STEP ||
-                (tool != null && ToolType.PICKAXE.matches(tool.getType()))) {
+                tool != null && ToolType.PICKAXE.matches(tool.getType())) {
             return getMinedDrops(block);
         }
         return BlockDropless.EMPTY_STACK;

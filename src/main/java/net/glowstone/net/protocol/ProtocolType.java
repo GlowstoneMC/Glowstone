@@ -22,7 +22,7 @@ public enum ProtocolType {
      * @return The matching ProtocolType, or null.
      */
     public static ProtocolType getById(int id) {
-        final ProtocolType[] values = values();
+        ProtocolType[] values = values();
         if (id < 0 || id >= values.length) {
             return null;
         }

@@ -6,6 +6,7 @@ import org.bukkit.scoreboard.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -28,7 +29,7 @@ public final class GlowObjective implements Objective {
         this.scoreboard = scoreboard;
         this.name = name;
         this.criteria = criteria;
-        this.renderType = RenderType.INTEGER;
+        renderType = RenderType.INTEGER;
         displayName = name;
     }
 
@@ -38,7 +39,7 @@ public final class GlowObjective implements Objective {
 
     public void unregister() throws IllegalStateException {
         checkValid();
-        for (Map.Entry<String, GlowScore> entry : scores.entrySet()) {
+        for (Entry<String, GlowScore> entry : scores.entrySet()) {
             scoreboard.getScoresForName(entry.getKey()).remove(entry.getValue());
         }
         scoreboard.removeObjective(this);
@@ -111,7 +112,7 @@ public final class GlowObjective implements Objective {
 
     public boolean isModifiable() throws IllegalStateException {
         checkValid();
-        return !(criteria.equalsIgnoreCase(Criterias.HEALTH));
+        return !criteria.equalsIgnoreCase(Criterias.HEALTH);
     }
 
     ////////////////////////////////////////////////////////////////////////////

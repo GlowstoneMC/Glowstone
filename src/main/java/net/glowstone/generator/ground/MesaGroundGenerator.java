@@ -36,7 +36,7 @@ public class MesaGroundGenerator extends GroundGenerator {
 
     private void initialize(long seed) {
         if (seed != this.seed || colorNoise == null || canyonScaleNoise == null || canyonHeightNoise == null) {
-            final Random random = new Random(seed);
+            Random random = new Random(seed);
             colorNoise = new SimplexOctaveGenerator(random, 1);
             colorNoise.setScale(1 / 512.0D);
             initializeColorLayers(random);
@@ -166,7 +166,7 @@ public class MesaGroundGenerator extends GroundGenerator {
             if (j >= colorLayer.length) {
                 break;
             }
-            if (random.nextInt(2) == 0 || (j < colorLayer.length - 1 && random.nextInt(2) == 0)) {
+            if (random.nextInt(2) == 0 || j < colorLayer.length - 1 && random.nextInt(2) == 0) {
                 colorLayer[j - 1] = 8; // light gray
             } else {
                 colorLayer[j] = 0; // white

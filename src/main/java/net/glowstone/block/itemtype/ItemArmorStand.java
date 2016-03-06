@@ -32,7 +32,7 @@ public class ItemArmorStand extends ItemType {
             newTarget.setType(Material.AIR);
             upper.setType(Material.AIR);
             float yaw = player.getLocation().getYaw();
-            float finalYaw = Math.round((yaw / 22.5f) / 2) * 45;
+            float finalYaw = Math.round(yaw / 22.5f / 2) * 45;
             loc.setYaw(finalYaw - 180);
             new GlowArmorStand(loc);
             if (player.getGameMode() != GameMode.CREATIVE) {

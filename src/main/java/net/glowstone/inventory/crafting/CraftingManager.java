@@ -10,6 +10,7 @@ import org.bukkit.inventory.*;
 
 import java.io.InputStream;
 import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Manager for crafting and smelting recipes
@@ -391,7 +392,7 @@ public final class CraftingManager implements Iterable<Recipe> {
             recipe.shape(shape.toArray(new String[shape.size()]));
 
             Map<String, Map<String, Object>> ingreds = (Map<String, Map<String, Object>>) data.get("ingredients");
-            for (Map.Entry<String, Map<String, Object>> entry : ingreds.entrySet()) {
+            for (Entry<String, Map<String, Object>> entry : ingreds.entrySet()) {
                 ItemStack stack = ItemStack.deserialize(entry.getValue());
                 recipe.setIngredient(entry.getKey().charAt(0), stack.getData());
             }

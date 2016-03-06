@@ -2,6 +2,7 @@ package net.glowstone.inventory;
 
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
@@ -16,9 +17,9 @@ public class GlowAnvilInventory extends GlowInventory implements AnvilInventory 
     public GlowAnvilInventory(InventoryHolder holder) {
         super(holder, InventoryType.ANVIL);
 
-        getSlot(FIRST_ITEM_SLOT).setType(InventoryType.SlotType.CRAFTING);
-        getSlot(SECOND_ITEM_SLOT).setType(InventoryType.SlotType.CRAFTING);
-        getSlot(RESULT_SLOT).setType(InventoryType.SlotType.RESULT);
+        getSlot(FIRST_ITEM_SLOT).setType(SlotType.CRAFTING);
+        getSlot(SECOND_ITEM_SLOT).setType(SlotType.CRAFTING);
+        getSlot(RESULT_SLOT).setType(SlotType.RESULT);
     }
 
     @Override

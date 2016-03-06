@@ -21,7 +21,6 @@ public class FlowerForestPopulator extends ForestPopulator {
     private final OctaveGenerator noiseGen;
 
     public FlowerForestPopulator() {
-        super();
         treeDecorator.setAmount(6);
         flowerDecorator.setAmount(0);
         doublePlantLoweringAmount = 1;
@@ -38,8 +37,8 @@ public class FlowerForestPopulator extends ForestPopulator {
     public void populateOnGround(World world, Random random, Chunk chunk) {
         super.populateOnGround(world, random, chunk);
 
-        int sourceX = (chunk.getX() << 4);
-        int sourceZ = (chunk.getZ() << 4);
+        int sourceX = chunk.getX() << 4;
+        int sourceZ = chunk.getZ() << 4;
 
         for (int i = 0; i < 100; i++) {
             int x = sourceX + random.nextInt(16);
@@ -47,7 +46,7 @@ public class FlowerForestPopulator extends ForestPopulator {
             int y = random.nextInt(world.getHighestBlockYAt(x, z) + 32);
             double noise = (noiseGen.noise(x, z, 0.5D, 2.0D) + 1.0D) / 2.0D;
             noise = noise < 0 ? 0 : noise > 0.9999D ? 0.9999D : noise;
-            final FlowerType flower = FLOWERS[(int) (noise * FLOWERS.length)];
+            FlowerType flower = FLOWERS[(int) (noise * FLOWERS.length)];
             new Flower(flower).generate(world, random, x, y, z);
         }
     }

@@ -29,7 +29,7 @@ public class BlockFurnace extends BlockContainer {
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
-        final MaterialData data = state.getData();
+        MaterialData data = state.getData();
         if (data instanceof Furnace) {
             ((Furnace) data).setFacingDirection(getOppositeBlockFace(player.getLocation(), false));
             state.setData(data);

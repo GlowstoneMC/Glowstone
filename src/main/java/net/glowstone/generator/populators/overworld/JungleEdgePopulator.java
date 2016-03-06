@@ -17,7 +17,6 @@ public class JungleEdgePopulator extends JunglePopulator {
             new TreeDecoration(JungleBush.class, 50), new TreeDecoration(CocoaTree.class, 45)};
 
     public JungleEdgePopulator() {
-        super();
         treeDecorator.setAmount(2);
         treeDecorator.setTrees(TREES);
     }

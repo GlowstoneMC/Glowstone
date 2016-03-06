@@ -18,7 +18,7 @@ class MonsterStore<T extends GlowMonster> extends EntityStore<T> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        this.constructor = ctor;
+        constructor = ctor;
     }
 
     @Override

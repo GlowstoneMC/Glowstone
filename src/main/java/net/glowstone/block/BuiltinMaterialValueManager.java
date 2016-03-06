@@ -19,7 +19,7 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
         YamlConfiguration builtinValues = YamlConfiguration.loadConfiguration(
                 new InputStreamReader(getClass().getClassLoader().getResourceAsStream("builtin/materialValues.yml")));
 
-        this.defaultValue = new BuiltinValueCollection(builtinValues.getConfigurationSection("default"));
+        defaultValue = new BuiltinValueCollection(builtinValues.getConfigurationSection("default"));
         registerBuiltins(builtinValues);
     }
 

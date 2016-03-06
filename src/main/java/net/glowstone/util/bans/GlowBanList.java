@@ -51,7 +51,7 @@ public class GlowBanList extends JsonListFile implements BanList {
 
         entryMap.clear();
         for (BaseEntry entry : entries) {
-            GlowBanEntry banEntry = ((GlowBanEntry) entry);
+            GlowBanEntry banEntry = (GlowBanEntry) entry;
             entryMap.put(banEntry.getTarget(), banEntry);
         }
     }

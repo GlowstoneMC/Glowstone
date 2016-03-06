@@ -37,7 +37,7 @@ public class BlockCactus extends BlockType {
 
     @Override
     public void updateBlock(GlowBlock block) {
-        final GlowBlock blockAbove = block.getRelative(BlockFace.UP);
+        GlowBlock blockAbove = block.getRelative(BlockFace.UP);
         // check it's the highest block of cactus
         if (blockAbove.isEmpty()) {
             // check the current cactus height

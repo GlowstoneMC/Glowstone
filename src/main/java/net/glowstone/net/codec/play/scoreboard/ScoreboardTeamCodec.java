@@ -16,7 +16,7 @@ public final class ScoreboardTeamCodec implements Codec<ScoreboardTeamMessage> {
     }
 
     public ByteBuf encode(ByteBuf buf, ScoreboardTeamMessage message) throws IOException {
-        final Action action = message.getAction();
+        Action action = message.getAction();
 
         ByteBufUtils.writeUTF8(buf, message.getTeamName());
         buf.writeByte(action.ordinal());
@@ -34,7 +34,7 @@ public final class ScoreboardTeamCodec implements Codec<ScoreboardTeamMessage> {
 
         // CREATE, ADD_, and REMOVE_PLAYERS
         if (action == Action.CREATE || action == Action.ADD_PLAYERS || action == Action.REMOVE_PLAYERS) {
-            final List<String> entries = message.getEntries();
+            List<String> entries = message.getEntries();
             ByteBufUtils.writeVarInt(buf, entries.size());
             for (String entry : entries) {
                 ByteBufUtils.writeUTF8(buf, entry);

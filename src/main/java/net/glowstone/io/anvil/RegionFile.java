@@ -86,7 +86,7 @@ public class RegionFile {
     private RandomAccessFile file;
     private ArrayList<Boolean> sectorFree;
     private int sizeDelta;
-    private long lastModified = 0;
+    private long lastModified;
 
     public RegionFile(File path) throws IOException {
         offsets = new int[SECTOR_INTS];
@@ -142,8 +142,8 @@ public class RegionFile {
             int offset = file.readInt();
             offsets[i] = offset;
 
-            int startSector = (offset >> 8);
-            int numSectors = (offset & 0xff);
+            int startSector = offset >> 8;
+            int numSectors = offset & 0xff;
 
             if (offset != 0 && startSector >= 0 && startSector + numSectors <= sectorFree.size()) {
                 for (int sectorNum = 0; sectorNum < numSectors; ++sectorNum) {
@@ -193,7 +193,7 @@ public class RegionFile {
         file.seek(sectorNumber * SECTOR_BYTES);
         int length = file.readInt();
         if (length > SECTOR_BYTES * numSectors) {
-            throw new IOException("Invalid length: " + length + " > " + (SECTOR_BYTES * numSectors));
+            throw new IOException("Invalid length: " + length + " > " + SECTOR_BYTES * numSectors);
         }
 
         byte version = file.readByte();
@@ -259,7 +259,7 @@ public class RegionFile {
             if (runLength >= sectorsNeeded) {
                 /* we found a free space large enough */
                 sectorNumber = runStart;
-                setOffset(x, z, (sectorNumber << 8) | sectorsNeeded);
+                setOffset(x, z, sectorNumber << 8 | sectorsNeeded);
                 for (int i = 0; i < sectorsNeeded; ++i) {
                     sectorFree.set(sectorNumber + i, false);
                 }
@@ -278,7 +278,7 @@ public class RegionFile {
                 sizeDelta += SECTOR_BYTES * sectorsNeeded;
 
                 write(sectorNumber, data, length);
-                setOffset(x, z, (sectorNumber << 8) | sectorsNeeded);
+                setOffset(x, z, sectorNumber << 8 | sectorsNeeded);
             }
         }
         setTimestamp(x, z, (int) (System.currentTimeMillis() / 1000L));

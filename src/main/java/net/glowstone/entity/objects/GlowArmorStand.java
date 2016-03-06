@@ -6,11 +6,14 @@ import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
+import net.glowstone.entity.meta.MetadataIndex.ArmorStandFlags;
+import net.glowstone.entity.meta.MetadataIndex.StatusFlags;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
+import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
 import net.glowstone.util.Position;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
@@ -21,6 +24,7 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -53,14 +57,14 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     private final boolean[] changedEquip = new boolean[5];
     private final EulerAngle[] pose = new EulerAngle[6];
 
-    private boolean isMarker = false;
+    private boolean isMarker;
     private boolean isVisible = true;
-    private boolean isSmall = false;
+    private boolean isSmall;
     private boolean hasBasePlate = true;
     private boolean hasGravity = true;
-    private boolean hasArms = false;
+    private boolean hasArms;
 
-    private boolean needsKill = false;
+    private boolean needsKill;
 
     public GlowArmorStand(Location location) {
         super(location, 2);
@@ -86,13 +90,13 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
         if (isDead()) {
             remove();
             needsKill = true;
-        } else if (this.ticksLived % 10 == 0) { //player needs to click fast (2 times) to kill the entity
+        } else if (ticksLived % 10 == 0) { //player needs to click fast (2 times) to kill the entity
             setHealth(2);
         }
     }
 
     @Override
-    public void damage(double amount, Entity source, EntityDamageEvent.DamageCause cause) {
+    public void damage(double amount, Entity source, DamageCause cause) {
         if (getNoDamageTicks() > 0 || health <= 0 || !canTakeDamage(cause)) {
             return;
         }
@@ -110,7 +114,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
             return;
         }
         boolean drop = false;
-        if (source instanceof GlowPlayer || (source instanceof Arrow && ((Projectile) source).getShooter() instanceof GlowPlayer)) {
+        if (source instanceof GlowPlayer || source instanceof Arrow && ((Projectile) source).getShooter() instanceof GlowPlayer) {
             GlowPlayer damager = (GlowPlayer) (source instanceof GlowPlayer ? source : ((Arrow) source).getShooter());
             if (damager.getGameMode() == GameMode.ADVENTURE) return;
             else if (damager.getGameMode() == GameMode.CREATIVE) {
@@ -136,7 +140,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
 
         metadata.set(MetadataIndex.HEALTH, (float) health);
         for (Objective objective : getServer().getScoreboardManager().getMainScoreboard().getObjectivesByCriteria(Criterias.HEALTH)) {
-            objective.getScore(this.getName()).setScore((int) health);
+            objective.getScore(getName()).setScore((int) health);
         }
 
         if (health == 0) {
@@ -159,7 +163,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage msg) {
         if (player.getGameMode() == GameMode.SPECTATOR || isMarker) return false;
-        if (msg.getAction() == InteractEntityMessage.Action.INTERACT_AT.ordinal()) {
+        if (msg.getAction() == Action.INTERACT_AT.ordinal()) {
             if (player.getItemInHand() == null || player.getItemInHand().getType() == Material.AIR) {
                 int slot = getEditSlot(msg.getTargetY());
                 PlayerArmorStandManipulateEvent event = new PlayerArmorStandManipulateEvent(player, this, checkNullStack(null), checkNullStack(equipment[slot]), EquipmentSlot.values()[slot]);
@@ -272,7 +276,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     }
 
     @Override
-    public boolean canTakeDamage(EntityDamageEvent.DamageCause cause) {
+    public boolean canTakeDamage(DamageCause cause) {
         switch (cause) {
             case ENTITY_ATTACK:
             case PROJECTILE:
@@ -315,7 +319,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
             }
         }
         if (needsKill) {
-            messages.add(new DestroyEntitiesMessage(Arrays.asList(this.id)));
+            messages.add(new DestroyEntitiesMessage(Arrays.asList(id)));
         }
         return messages;
     }
@@ -464,7 +468,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     @Override
     public void setBasePlate(boolean basePlate) {
         hasBasePlate = basePlate;
-        metadata.setBit(MetadataIndex.ARMORSTAND_FLAGS, MetadataIndex.ArmorStandFlags.NO_BASE_PLATE, !basePlate);
+        metadata.setBit(MetadataIndex.ARMORSTAND_FLAGS, ArmorStandFlags.NO_BASE_PLATE, !basePlate);
     }
 
     @Override
@@ -475,7 +479,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     @Override
     public void setGravity(boolean gravity) {
         hasGravity = gravity;
-        metadata.setBit(MetadataIndex.ARMORSTAND_FLAGS, MetadataIndex.ArmorStandFlags.HAS_GRAVITY, gravity);
+        metadata.setBit(MetadataIndex.ARMORSTAND_FLAGS, ArmorStandFlags.HAS_GRAVITY, gravity);
     }
 
     @Override
@@ -486,7 +490,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     @Override
     public void setVisible(boolean visible) {
         isVisible = visible;
-        metadata.setBit(MetadataIndex.STATUS, MetadataIndex.StatusFlags.INVISIBLE, !visible);
+        metadata.setBit(MetadataIndex.STATUS, StatusFlags.INVISIBLE, !visible);
     }
 
     @Override
@@ -497,7 +501,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     @Override
     public void setArms(boolean arms) {
         hasArms = arms;
-        metadata.setBit(MetadataIndex.ARMORSTAND_FLAGS, MetadataIndex.ArmorStandFlags.HAS_ARMS, arms);
+        metadata.setBit(MetadataIndex.ARMORSTAND_FLAGS, ArmorStandFlags.HAS_ARMS, arms);
     }
 
     @Override
@@ -508,7 +512,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     @Override
     public void setSmall(boolean small) {
         isSmall = small;
-        metadata.setBit(MetadataIndex.ARMORSTAND_FLAGS, MetadataIndex.ArmorStandFlags.IS_SMALL, small);
+        metadata.setBit(MetadataIndex.ARMORSTAND_FLAGS, ArmorStandFlags.IS_SMALL, small);
     }
 
     @Override
@@ -519,7 +523,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     @Override
     public void setMarker(boolean marker) {
         isMarker = marker;
-        metadata.setBit(MetadataIndex.ARMORSTAND_FLAGS, MetadataIndex.ArmorStandFlags.IS_MARKER, marker);
+        metadata.setBit(MetadataIndex.ARMORSTAND_FLAGS, ArmorStandFlags.IS_MARKER, marker);
     }
 
     @Override

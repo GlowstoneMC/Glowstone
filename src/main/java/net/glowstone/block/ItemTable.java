@@ -277,7 +277,7 @@ public final class ItemTable {
     }
 
     private void reg(Material material, ItemType type) {
-        if (material.isBlock() != (type instanceof BlockType)) {
+        if (material.isBlock() != type instanceof BlockType) {
             throw new IllegalArgumentException("Cannot mismatch item and block: " + material + ", " + type);
         }
 
@@ -300,7 +300,7 @@ public final class ItemTable {
     }
 
     private void reg(Material material, ItemType type, Sound sound) {
-        if (material.isBlock() != (type instanceof BlockType)) {
+        if (material.isBlock() != type instanceof BlockType) {
             throw new IllegalArgumentException("Cannot mismatch item and block: " + material + ", " + type);
         }
 

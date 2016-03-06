@@ -26,7 +26,6 @@ public class TaigaPopulator extends BiomePopulator {
     protected final MushroomDecorator taigaRedMushroomDecorator = new MushroomDecorator(Material.RED_MUSHROOM);
 
     public TaigaPopulator() {
-        super();
         doublePlantDecorator.setAmount(7);
         doublePlantDecorator.setDoublePlants(DOUBLE_PLANTS);
         treeDecorator.setAmount(10);

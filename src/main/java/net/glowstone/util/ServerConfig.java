@@ -134,8 +134,8 @@ public final class ServerConfig {
             return extraConfig.get(filename);
         }
 
-        final YamlConfiguration conf = new YamlConfiguration();
-        final File file = getFile(filename), migrateFrom = new File(key.def.toString());
+        YamlConfiguration conf = new YamlConfiguration();
+        File file = getFile(filename), migrateFrom = new File(key.def.toString());
 
         // create file if it doesn't exist
         if (!file.exists()) {
@@ -225,7 +225,7 @@ public final class ServerConfig {
     }
 
     private void copyDefaults(String source, File dest) {
-        final URL resource = getClass().getClassLoader().getResource("defaults/" + source);
+        URL resource = getClass().getClassLoader().getResource("defaults/" + source);
         if (resource == null) {
             GlowServer.logger.warning("Could not find default " + source + " on classpath");
             return;
@@ -233,7 +233,7 @@ public final class ServerConfig {
 
         try (final InputStream in = resource.openStream();
              final OutputStream out = new FileOutputStream(dest)) {
-            final byte[] buf = new byte[2048];
+            byte[] buf = new byte[2048];
             int len;
             while ((len = in.read(buf)) > 0) {
                 out.write(buf, 0, len);
@@ -249,7 +249,7 @@ public final class ServerConfig {
     private void report(File file, InvalidConfigurationException e) {
         if (e.getCause() instanceof YAMLException) {
             GlowServer.logger.severe("Config file " + file + " isn't valid! " + e.getCause());
-        } else if ((e.getCause() == null) || (e.getCause() instanceof ClassCastException)) {
+        } else if (e.getCause() == null || e.getCause() instanceof ClassCastException) {
             GlowServer.logger.severe("Config file " + file + " isn't valid!");
         } else {
             GlowServer.logger.log(Level.SEVERE, "Cannot load " + file + ": " + e.getCause().getClass(), e);
@@ -259,7 +259,7 @@ public final class ServerConfig {
     private boolean migrate() {
         boolean migrateStatus = false;
 
-        final File bukkitYml = new File("bukkit.yml");
+        File bukkitYml = new File("bukkit.yml");
         if (bukkitYml.exists()) {
             YamlConfiguration bukkit = new YamlConfiguration();
             try {
@@ -281,7 +281,7 @@ public final class ServerConfig {
             config.set("worlds", bukkit.get("worlds"));
         }
 
-        final File serverProps = new File("server.properties");
+        File serverProps = new File("server.properties");
         if (serverProps.exists()) {
             Properties props = new Properties();
             try {

@@ -24,7 +24,7 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
     private final String password;
 
-    private boolean loggedIn = false;
+    private boolean loggedIn;
 
     /**
      * The {@link RconServer} this handler belongs to.
@@ -39,7 +39,7 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
     public RconHandler(RconServer rconServer, String password) {
         this.rconServer = rconServer;
         this.password = password;
-        this.commandSender = new RconCommandSender(rconServer.getServer());
+        commandSender = new RconCommandSender(rconServer.getServer());
     }
 
     @Override
@@ -111,7 +111,7 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
     }
 
     private void sendLargeResponse(ChannelHandlerContext ctx, int requestId, String payload) {
-        if (payload.length() == 0) {
+        if (payload.isEmpty()) {
             sendResponse(ctx, requestId, TYPE_RESPONSE, "");
             return;
         }

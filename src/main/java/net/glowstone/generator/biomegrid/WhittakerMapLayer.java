@@ -37,7 +37,7 @@ public class WhittakerMapLayer extends MapLayer {
         int gridSizeZ = sizeZ + 2;
         int[] values = belowLayer.generateValues(gridX, gridZ, gridSizeX, gridSizeZ);
 
-        final Climate climate = MAP.get(type);
+        Climate climate = MAP.get(type);
         int[] finalValues = new int[sizeX * sizeZ];
         for (int i = 0; i < sizeZ; i++) {
             for (int j = 0; j < sizeX; j++) {

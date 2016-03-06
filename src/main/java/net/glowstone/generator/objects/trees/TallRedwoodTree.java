@@ -54,14 +54,14 @@ public class TallRedwoodTree extends RedwoodTree {
 
         // generate the trunk
         for (int y = 0; y < height - 1; y++) {
-            final Material type = delegate.getBlockState(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + y, loc.getBlockZ()).getType();
+            Material type = delegate.getBlockState(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + y, loc.getBlockZ()).getType();
             if (type == Material.AIR || type == Material.LEAVES) {
                 delegate.setTypeAndRawData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + y, loc.getBlockZ(), Material.LOG, logType);
             }
         }
 
         // block below trunk is always dirt
-        final Dirt dirt = new Dirt(DirtType.NORMAL);
+        Dirt dirt = new Dirt(DirtType.NORMAL);
         delegate.setTypeAndData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ(), Material.DIRT, dirt);
 
         return true;

@@ -53,14 +53,14 @@ public class BossBarMessage implements Message {
         UPDATE_STYLE,
         UPDATE_FLAGS;
 
-        private static Action[] values = null;
+        private static Action[] values;
 
         //Since values() is expensive, let's cache it.
         public static Action fromInt(int i) {
-            if (Action.values == null) {
-                Action.values = Action.values();
+            if (values == null) {
+                values = Action.values();
             }
-            return Action.values[i];
+            return values[i];
         }
     }
 
@@ -73,14 +73,14 @@ public class BossBarMessage implements Message {
         PURPLE,
         WHITE;
 
-        private static Color[] values = null;
+        private static Color[] values;
 
         //Since values() is expensive, let's cache it.
         public static Color fromInt(int i) {
-            if (Color.values == null) {
-                Color.values = Color.values();
+            if (values == null) {
+                values = Color.values();
             }
-            return Color.values[i];
+            return values[i];
         }
     }
 
@@ -91,14 +91,14 @@ public class BossBarMessage implements Message {
         TWELVE_NOTCHES,
         TWENTY_NOTCHES;
 
-        private static Division[] values = null;
+        private static Division[] values;
 
         //Since values() is expensive, let's cache it.
         public static Division fromInt(int i) {
-            if (Division.values == null) {
-                Division.values = Division.values();
+            if (values == null) {
+                values = Division.values();
             }
-            return Division.values[i];
+            return values[i];
         }
     }
 }

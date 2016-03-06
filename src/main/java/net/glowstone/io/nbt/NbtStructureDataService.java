@@ -1,6 +1,7 @@
 package net.glowstone.io.nbt;
 
 import net.glowstone.GlowChunk;
+import net.glowstone.GlowChunk.Key;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.generator.structures.GlowStructure;
@@ -38,7 +39,7 @@ public class NbtStructureDataService implements StructureDataService {
 
     @Override
     public Map<Integer, GlowStructure> readStructuresData() throws IOException {
-        final Map<Integer, GlowStructure> structures = new HashMap<>();
+        Map<Integer, GlowStructure> structures = new HashMap<>();
         for (StructureStore<?> store : StructureStorage.getStructureStores()) {
             File structureFile = new File(structureDir, store.getId() + ".dat");
             if (structureFile.exists()) {
@@ -51,7 +52,7 @@ public class NbtStructureDataService implements StructureDataService {
                             CompoundTag features = data.getCompound("Features");
                             features.getValue().keySet().stream().filter(features::isCompound).forEach(key -> {
                                 GlowStructure structure = StructureStorage.loadStructure(world, features.getCompound(key));
-                                structures.put(new GlowChunk.Key(structure.getChunkX(), structure.getChunkZ()).hashCode(), structure);
+                                structures.put(new Key(structure.getChunkX(), structure.getChunkZ()).hashCode(), structure);
                             });
                         }
                     } else {
@@ -89,7 +90,7 @@ public class NbtStructureDataService implements StructureDataService {
                         server.getLogger().log(Level.SEVERE, "Failed to read structure data from " + structureFile, e);
                     }
                 }
-                final String key = "[" + structure.getChunkX() + "," + structure.getChunkZ() + "]";
+                String key = "[" + structure.getChunkX() + "," + structure.getChunkZ() + "]";
                 features.putCompound(key, feature);
                 data.putCompound("Features", features);
                 root.putCompound("data", data);

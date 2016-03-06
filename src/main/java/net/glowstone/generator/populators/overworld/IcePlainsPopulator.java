@@ -14,7 +14,6 @@ public class IcePlainsPopulator extends BiomePopulator {
     private static final TreeDecoration[] TREES = {new TreeDecoration(RedwoodTree.class, 1)};
 
     public IcePlainsPopulator() {
-        super();
         treeDecorator.setAmount(0);
         treeDecorator.setTrees(TREES);
         flowerDecorator.setAmount(0);

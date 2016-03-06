@@ -44,7 +44,7 @@ public class OverworldPopulator extends BlockPopulator {
 
     @Override
     public void populate(World world, Random random, Chunk chunk) {
-        final Biome biome = world.getBiome((chunk.getX() << 4) + 8, (chunk.getZ() << 4) + 8);
+        Biome biome = world.getBiome((chunk.getX() << 4) + 8, (chunk.getZ() << 4) + 8);
         if (biomePopulators.containsKey(biome)) {
             biomePopulators.get(biome).populate(world, random, chunk);
         }

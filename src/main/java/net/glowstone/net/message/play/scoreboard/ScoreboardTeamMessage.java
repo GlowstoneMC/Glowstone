@@ -31,7 +31,7 @@ public final class ScoreboardTeamMessage implements Message {
         this.displayName = displayName;
         this.prefix = prefix;
         this.suffix = suffix;
-        this.flags = (friendlyFire ? 1 : 0) | (seeInvisible ? 2 : 0);
+        flags = (friendlyFire ? 1 : 0) | (seeInvisible ? 2 : 0);
         this.nametagVisibility = nametagVisibility;
         this.collisionRule = collisionRule;
         this.color = color;
