@@ -130,6 +130,8 @@ public final class GlowItemFactory implements ItemFactory {
                 return new GlowMetaFireworkEffect(meta);
             case POTION:
                 return new GlowMetaPotion(meta);
+            case MONSTER_EGG:
+                return new GlowMetaSpawn(meta);
             default:
                 return new GlowMetaItem(meta);
         }
