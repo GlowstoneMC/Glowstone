@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import net.glowstone.block.blocktype.BlockBanner;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
@@ -16,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class GlowMetaBanner extends GlowMetaItem implements BannerMeta {
 
@@ -37,7 +38,7 @@ public class GlowMetaBanner extends GlowMetaItem implements BannerMeta {
 
     @Override
     public void setPatterns(List<Pattern> patterns) {
-        Validate.notNull(patterns, "Pattern cannot be null!");
+        checkNotNull(patterns, "Pattern cannot be null!");
         this.patterns = patterns;
     }
 

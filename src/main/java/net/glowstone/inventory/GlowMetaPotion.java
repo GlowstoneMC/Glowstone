@@ -3,7 +3,6 @@ package net.glowstone.inventory;
 import com.google.common.collect.ImmutableList;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
@@ -14,6 +13,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
 
@@ -105,7 +106,7 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
 
     @Override
     public boolean addCustomEffect(PotionEffect effect, boolean overwrite) {
-        Validate.notNull(effect, "PotionEffect cannot be null.");
+        checkNotNull(effect, "PotionEffect cannot be null.");
 
         for (PotionEffect eff : effects) {
             if (eff.getType() == effect.getType() && !overwrite) return false;

@@ -1,8 +1,8 @@
 package net.glowstone.util;
 
-import org.apache.commons.lang3.Validate;
-
 import java.util.Arrays;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * An array of nibbles (4-bit values) stored efficiently as a byte array of
@@ -22,7 +22,7 @@ public final class NibbleArray {
      * @throws IllegalArgumentException If size is not positive and even.
      */
     public NibbleArray(int size) {
-        Validate.isTrue(size > 0 && size % 2 == 0, "size must be positive even number, not " + size);
+        checkArgument(size > 0 && size % 2 == 0, "size must be positive even number, not " + size);
         data = new byte[size / 2];
     }
 
@@ -113,7 +113,7 @@ public final class NibbleArray {
      * @throws IllegalArgumentException If source is not the correct length.
      */
     public void setRawData(byte... source) {
-        Validate.isTrue(source.length == data.length, "expected byte array of length " + data.length + ", not " + source.length);
+        checkArgument(source.length == data.length, "expected byte array of length " + data.length + ", not " + source.length);
         System.arraycopy(source, 0, data, 0, source.length);
     }
 

@@ -1,7 +1,6 @@
 package net.glowstone.util;
 
 import lombok.EqualsAndHashCode;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.ChatColor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -12,6 +11,8 @@ import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Simple container for chat message structures until more advanced chat
@@ -48,7 +49,7 @@ public final class TextMessage {
      * @param object The JSON structure of the message.
      */
     public TextMessage(JSONObject object) {
-        Validate.notNull(object, "object must not be null");
+        checkNotNull(object, "object must not be null");
         this.object = object;
     }
 

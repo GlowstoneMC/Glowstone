@@ -1,11 +1,12 @@
 package net.glowstone.constants;
 
-import org.apache.commons.lang3.Validate;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.*;
 
 import java.util.Collection;
 import java.util.Collections;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Definitions of potion effect types.
@@ -71,7 +72,7 @@ public final class GlowPotionEffect extends PotionEffectType {
      */
     public void pulse(LivingEntity entity, PotionEffect effect) {
         // todo: implement pulse() for effects which need it
-        Validate.notNull(entity, "entity must not be null");
+        checkNotNull(entity, "entity must not be null");
         if (!impl.instant || effect.getDuration() != 0) {
             impl.pulse(entity, effect.getAmplifier(), effect.getDuration());
         }

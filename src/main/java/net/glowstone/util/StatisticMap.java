@@ -3,7 +3,6 @@ package net.glowstone.util;
 import net.glowstone.constants.GlowAchievement;
 import net.glowstone.constants.GlowStatistic;
 import net.glowstone.net.message.play.game.StatisticMessage;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.Achievement;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
@@ -11,6 +10,8 @@ import org.bukkit.entity.EntityType;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * A container for achievement and statistic tracking.
@@ -48,15 +49,15 @@ public final class StatisticMap {
 
     private String name(Statistic stat, Material mat) {
         if (mat.isBlock()) {
-            Validate.isTrue(stat.getType() == Statistic.Type.BLOCK, "Statistic " + stat + " is not a block statistic");
+            checkArgument(stat.getType() == Statistic.Type.BLOCK, "Statistic " + stat + " is not a block statistic");
         } else {
-            Validate.isTrue(stat.getType() == Statistic.Type.ITEM, "Statistic " + stat + " is not an item statistic");
+            checkArgument(stat.getType() == Statistic.Type.ITEM, "Statistic " + stat + " is not an item statistic");
         }
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
     private String name(Statistic stat, EntityType type) {
-        Validate.isTrue(stat.getType() == Statistic.Type.ENTITY, "Statistic " + stat + " is not an entity statistic");
+        checkArgument(stat.getType() == Statistic.Type.ENTITY, "Statistic " + stat + " is not an entity statistic");
         throw new UnsupportedOperationException("Not yet implemented");
     }
 

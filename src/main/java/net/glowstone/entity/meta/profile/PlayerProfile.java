@@ -6,7 +6,6 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.UuidUtils;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.Tag;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONArray;
@@ -14,6 +13,8 @@ import org.json.simple.JSONObject;
 
 import java.util.*;
 import java.util.logging.Level;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Information about a player's name, UUID, and other properties.
@@ -45,8 +46,8 @@ public final class PlayerProfile {
      * @throws IllegalArgumentException if any arguments are null.
      */
     public PlayerProfile(String name, UUID uuid, List<PlayerProperty> properties) {
-        Validate.notNull(uuid, "uuid must not be null");
-        Validate.notNull(properties, "properties must not be null");
+        checkNotNull(uuid, "uuid must not be null");
+        checkNotNull(properties, "properties must not be null");
 
         if (null == name) {
             PlayerProfile profile = ProfileCache.getProfile(uuid);

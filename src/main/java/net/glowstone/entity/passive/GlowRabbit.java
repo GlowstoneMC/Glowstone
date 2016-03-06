@@ -3,10 +3,11 @@ package net.glowstone.entity.passive;
 import com.google.common.collect.ImmutableBiMap;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.meta.MetadataIndex;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Rabbit;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class GlowRabbit extends GlowAnimal implements Rabbit {
 
@@ -34,7 +35,7 @@ public class GlowRabbit extends GlowAnimal implements Rabbit {
 
     @Override
     public void setRabbitType(Rabbit.Type type) {
-        Validate.notNull(type, "Cannot set a null rabbit type!");
+        checkNotNull(type, "Cannot set a null rabbit type!");
         metadata.set(MetadataIndex.RABBIT_TYPE, rabbitTypeIntegerMap.get(this.getRabbitType()).byteValue());
         this.rabbitType = type;
     }

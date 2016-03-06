@@ -5,9 +5,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-import org.apache.commons.lang3.Validate;
 
 import java.util.List;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 @Data
 public final class MapDataMessage implements Message {
@@ -30,7 +31,7 @@ public final class MapDataMessage implements Message {
         public final byte[] data;
 
         public Section(int width, int height, int x, int y, byte... data) {
-            Validate.isTrue(width * height == data.length, "width * height == data.length");
+            checkArgument(width * height == data.length, "width * height == data.length");
             this.width = width;
             this.height = height;
             this.x = x;

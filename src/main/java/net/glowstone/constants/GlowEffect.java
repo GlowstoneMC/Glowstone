@@ -1,10 +1,11 @@
 package net.glowstone.constants;
 
-import org.apache.commons.lang3.Validate;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.potion.Potion;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * Conversion of data classes to raw values for Effects.
@@ -30,7 +31,7 @@ public final class GlowEffect {
                 result = ((Potion) data).toDamageValue() & 0x3f;
                 break;
             case RECORD_PLAY:
-                Validate.isTrue(((Material) data).isRecord(), "Invalid record type!");
+                checkArgument(((Material) data).isRecord(), "Invalid record type!");
                 result = ((Material) data).getId();
                 break;
             case SMOKE:
@@ -70,7 +71,7 @@ public final class GlowEffect {
                 }
                 break;
             case STEP_SOUND:
-                Validate.isTrue(((Material) data).isBlock(), "Material is not a block!");
+                checkArgument(((Material) data).isBlock(), "Material is not a block!");
                 result = ((Material) data).getId();
                 break;
             default:

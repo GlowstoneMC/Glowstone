@@ -14,7 +14,6 @@ import net.glowstone.entity.physics.EntityBoundingBox;
 import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.Position;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -42,6 +41,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Represents some entity in the world such as an item on the floor or a player.
@@ -208,7 +209,7 @@ public abstract class GlowEntity implements Entity {
      * @throws IllegalStateException    if a UUID has already been set.
      */
     public void setUniqueId(UUID uuid) {
-        Validate.notNull(uuid, "uuid must not be null");
+        checkNotNull(uuid, "uuid must not be null");
         if (this.uuid == null) {
             this.uuid = uuid;
         } else if (!this.uuid.equals(uuid)) {
@@ -289,8 +290,8 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public boolean teleport(Location location) {
-        Validate.notNull(location, "location cannot be null");
-        Validate.notNull(location.getWorld(), "location's world cannot be null");
+        checkNotNull(location, "location cannot be null");
+        checkNotNull(location.getWorld(), "location's world cannot be null");
 
         if (location.getWorld() != world) {
             world.getEntityManager().unregister(this);

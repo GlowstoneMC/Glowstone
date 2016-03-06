@@ -5,12 +5,14 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.base64.Base64;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.util.CachedServerIcon;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A {@link CachedServerIcon} implementation.
@@ -46,9 +48,9 @@ public final class GlowServerIcon implements CachedServerIcon {
      * @throws Exception if the image cannot be read, or is not the correct size
      */
     public GlowServerIcon(BufferedImage image) throws Exception {
-        Validate.notNull(image, "Image must not be null");
-        Validate.isTrue(image.getWidth() == 64, "Must be 64 pixels wide");
-        Validate.isTrue(image.getHeight() == 64, "Must be 64 pixels high");
+        checkNotNull(image, "Image must not be null");
+        checkArgument(image.getWidth() == 64, "Must be 64 pixels wide");
+        checkArgument(image.getHeight() == 64, "Must be 64 pixels high");
 
         ByteBuf png = Unpooled.buffer();
         ImageIO.write(image, "PNG", new ByteBufOutputStream(png));

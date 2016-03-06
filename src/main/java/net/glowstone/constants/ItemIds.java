@@ -1,11 +1,12 @@
 package net.glowstone.constants;
 
-import org.apache.commons.lang3.Validate;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Temporary mappings for Minecraft's string-based item ids.
@@ -453,7 +454,7 @@ public final class ItemIds {
      * @return the identifier.
      */
     public static String getName(Material mat) {
-        Validate.notNull(mat, "Material cannot be null");
+        checkNotNull(mat, "Material cannot be null");
         return names.get(mat.getId());
     }
 

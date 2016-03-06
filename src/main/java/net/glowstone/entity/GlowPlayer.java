@@ -38,7 +38,6 @@ import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
 import net.md_5.bungee.api.chat.BaseComponent;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
 import org.bukkit.attribute.Attribute;
@@ -75,6 +74,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Represents an in-game player.
@@ -1415,9 +1417,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public boolean teleport(Location location, TeleportCause cause) {
-        Validate.notNull(location, "location cannot be null");
-        Validate.notNull(location.getWorld(), "location's world cannot be null");
-        Validate.notNull(cause, "cause cannot be null");
+        checkNotNull(location, "location cannot be null");
+        checkNotNull(location.getWorld(), "location's world cannot be null");
+        checkNotNull(cause, "cause cannot be null");
 
         if (this.location != null && this.location.getWorld() != null) {
             PlayerTeleportEvent event = new PlayerTeleportEvent(this, this.location, location, cause);
@@ -1493,7 +1495,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * @param block the bed
      */
     public void enterBed(GlowBlock block) {
-        Validate.notNull(block, "Bed block cannot be null");
+        checkNotNull(block, "Bed block cannot be null");
         Preconditions.checkState(bed == null, "Player already in bed");
 
         GlowBlock head = BlockBed.getHead(block);
@@ -1853,9 +1855,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      */
     @Override
     public void sendSignChange(Location location, String[] lines) throws IllegalArgumentException {
-        Validate.notNull(location, "location cannot be null");
-        Validate.notNull(lines, "lines cannot be null");
-        Validate.isTrue(lines.length == 4, "lines.length must equal 4");
+        checkNotNull(location, "location cannot be null");
+        checkNotNull(lines, "lines cannot be null");
+        checkArgument(lines.length == 4, "lines.length must equal 4");
 
         afterBlockChanges.add(new UpdateSignMessage(location.getBlockX(), location.getBlockY(), location.getBlockZ(), lines));
     }
@@ -1868,9 +1870,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * @param nbt      The NBT structure to send to the client.
      */
     public void sendBlockEntityChange(Location location, GlowBlockEntity type, CompoundTag nbt) {
-        Validate.notNull(location, "Location cannot be null");
-        Validate.notNull(type, "Type cannot be null");
-        Validate.notNull(nbt, "NBT cannot be null");
+        checkNotNull(location, "Location cannot be null");
+        checkNotNull(type, "Type cannot be null");
+        checkNotNull(nbt, "NBT cannot be null");
 
         afterBlockChanges.add(new UpdateBlockEntityMessage(location.getBlockX(), location.getBlockY(), location.getBlockZ(), type.getValue(), nbt));
     }
@@ -2254,7 +2256,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void hidePlayer(Player player) {
-        Validate.notNull(player, "player cannot be null");
+        checkNotNull(player, "player cannot be null");
         if (equals(player) || !player.isOnline() || !session.isActive()) return;
         if (hiddenEntities.contains(player.getUniqueId())) return;
 
@@ -2267,7 +2269,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void showPlayer(Player player) {
-        Validate.notNull(player, "player cannot be null");
+        checkNotNull(player, "player cannot be null");
         if (equals(player) || !player.isOnline() || !session.isActive()) return;
         if (!hiddenEntities.contains(player.getUniqueId())) return;
 
@@ -2300,7 +2302,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void setScoreboard(Scoreboard scoreboard) throws IllegalArgumentException, IllegalStateException {
-        Validate.notNull(scoreboard, "Scoreboard must not be null");
+        checkNotNull(scoreboard, "Scoreboard must not be null");
         if (!(scoreboard instanceof GlowScoreboard)) {
             throw new IllegalArgumentException("Scoreboard must be GlowScoreboard");
         }
@@ -2363,7 +2365,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * @param channel The channel to add.
      */
     public void addChannel(String channel) {
-        Preconditions.checkArgument(listeningChannels.size() < 128, "Cannot add more than 127 channels!");
+        checkArgument(listeningChannels.size() < 128, "Cannot add more than 127 channels!");
         if (listeningChannels.add(channel)) {
             EventFactory.callEvent(new PlayerRegisterChannelEvent(this, channel));
         }

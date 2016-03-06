@@ -1,9 +1,10 @@
 package net.glowstone.constants;
 
-import org.apache.commons.lang3.Validate;
 import org.bukkit.scoreboard.DisplaySlot;
 
 import java.util.Arrays;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * ID number mappings for {@link DisplaySlot}s.
@@ -29,7 +30,7 @@ public final class GlowDisplaySlot {
      * @return the id number.
      */
     public static int getId(DisplaySlot slot) {
-        Validate.notNull(slot, "Slot cannot be null");
+        checkNotNull(slot, "Slot cannot be null");
         return ids[slot.ordinal()];
     }
 

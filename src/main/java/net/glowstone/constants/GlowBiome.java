@@ -1,10 +1,10 @@
 package net.glowstone.constants;
 
-import org.apache.commons.lang3.Validate;
 import org.bukkit.block.Biome;
 
 import java.util.Arrays;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static org.bukkit.block.Biome.*;
 
 /**
@@ -92,7 +92,7 @@ public final class GlowBiome {
      * @return the biome id, or -1
      */
     public static int getId(Biome biome) {
-        Validate.notNull(biome, "Biome cannot be null");
+        checkNotNull(biome, "Biome cannot be null");
         return ids[biome.ordinal()];
     }
 

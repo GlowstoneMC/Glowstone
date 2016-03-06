@@ -5,7 +5,6 @@ import lombok.ToString;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.entity.meta.profile.ProfileCache;
 import net.glowstone.io.PlayerDataService;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -16,6 +15,8 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Represents a player which is not connected to the server.
@@ -42,8 +43,8 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
      * @param profile The profile associated with the player. Must not be null.
      */
     public GlowOfflinePlayer(GlowServer server, PlayerProfile profile) {
-        Validate.notNull(server, "server must not be null");
-        Validate.notNull(profile, "profile must not be null");
+        checkNotNull(server, "server must not be null");
+        checkNotNull(profile, "profile must not be null");
         this.server = server;
         this.profile = profile;
         loadData();
@@ -57,8 +58,8 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
      * @param name   The name of the player. Must not be null.
      */
     public GlowOfflinePlayer(GlowServer server, String name) {
-        Validate.notNull(server, "server must not be null");
-        Validate.notNull(name, "name cannot be null");
+        checkNotNull(server, "server must not be null");
+        checkNotNull(name, "name cannot be null");
         this.server = server;
         profile = PlayerProfile.getProfile(name);
         loadData();
@@ -72,8 +73,8 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
      * @param uuid   The UUID of the player. Must not be null.
      */
     public GlowOfflinePlayer(GlowServer server, UUID uuid) {
-        Validate.notNull(server, "server must not be null");
-        Validate.notNull(uuid, "UUID must not be null");
+        checkNotNull(server, "server must not be null");
+        checkNotNull(uuid, "UUID must not be null");
         this.server = server;
         profile = ProfileCache.getProfile(uuid);
         loadData();

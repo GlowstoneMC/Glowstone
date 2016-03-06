@@ -3,7 +3,6 @@ package net.glowstone.inventory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import net.glowstone.util.nbt.CompoundTag;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.FireworkMeta;
@@ -13,6 +12,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class GlowMetaFirework extends GlowMetaItem implements FireworkMeta {
 
@@ -77,15 +79,17 @@ public class GlowMetaFirework extends GlowMetaItem implements FireworkMeta {
 
     @Override
     public void addEffect(FireworkEffect effect) {
-        Validate.notNull(effect, "Effect cannot be null.");
+        checkNotNull(effect, "Effect cannot be null.");
 
         effects.add(effect);
     }
 
     @Override
     public void addEffects(FireworkEffect... effects) {
-        Validate.notNull(effects, "Effects cannot be null.");
-        Validate.noNullElements(effects, "Null element in effects.");
+        checkNotNull(effects, "Effects cannot be null.");
+        for (FireworkEffect effect : effects) {
+            checkNotNull(effect, "Null element in effects.");
+        }
 
         this.effects.addAll(Arrays.asList(effects));
     }
@@ -127,7 +131,7 @@ public class GlowMetaFirework extends GlowMetaItem implements FireworkMeta {
 
     @Override
     public void setPower(int power) {
-        Validate.isTrue(power >= 0 && power <= 128, "Power must be 0-128, inclusive");
+        checkArgument(power >= 0 && power <= 128, "Power must be 0-128, inclusive");
 
         this.power = power;
     }

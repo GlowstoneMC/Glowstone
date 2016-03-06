@@ -8,13 +8,15 @@ import net.glowstone.net.message.play.scoreboard.ScoreboardDisplayMessage;
 import net.glowstone.net.message.play.scoreboard.ScoreboardObjectiveMessage;
 import net.glowstone.net.message.play.scoreboard.ScoreboardScoreMessage;
 import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Scoreboard implementation.
@@ -210,9 +212,9 @@ public final class GlowScoreboard implements Scoreboard {
     // Objectives
 
     public Objective registerNewObjective(String name, String criteria) throws IllegalArgumentException {
-        Validate.notNull(name, "Name cannot be null");
-        Validate.notNull(criteria, "Criteria cannot be null");
-        Validate.isTrue(!objectives.containsKey(name), "Objective \"" + name + "\" already exists");
+        checkNotNull(name, "Name cannot be null");
+        checkNotNull(criteria, "Criteria cannot be null");
+        checkArgument(!objectives.containsKey(name), "Objective \"" + name + "\" already exists");
 
         GlowObjective objective = new GlowObjective(this, name, criteria);
         objectives.put(name, objective);
@@ -236,12 +238,12 @@ public final class GlowScoreboard implements Scoreboard {
     }
 
     public Objective getObjective(DisplaySlot slot) throws IllegalArgumentException {
-        Validate.notNull(slot, "Slot cannot be null");
+        checkNotNull(slot, "Slot cannot be null");
         return displaySlots.get(slot);
     }
 
     public void clearSlot(DisplaySlot slot) throws IllegalArgumentException {
-        Validate.notNull(slot, "Slot cannot be null");
+        checkNotNull(slot, "Slot cannot be null");
         setDisplaySlot(slot, null);
     }
 
@@ -249,8 +251,8 @@ public final class GlowScoreboard implements Scoreboard {
     // Teams
 
     public Team registerNewTeam(String name) throws IllegalArgumentException {
-        Validate.notNull(name, "Name cannot be null");
-        Validate.isTrue(!teams.containsKey(name), "Team \"" + name + "\" already exists");
+        checkNotNull(name, "Name cannot be null");
+        checkArgument(!teams.containsKey(name), "Team \"" + name + "\" already exists");
 
         GlowTeam team = new GlowTeam(this, name);
         teams.put(name, team);
@@ -259,7 +261,7 @@ public final class GlowScoreboard implements Scoreboard {
     }
 
     public Team getPlayerTeam(OfflinePlayer player) throws IllegalArgumentException {
-        Validate.notNull(player, "Player cannot be null");
+        checkNotNull(player, "Player cannot be null");
         return playerTeamMap.get(player);
     }
 
@@ -269,7 +271,7 @@ public final class GlowScoreboard implements Scoreboard {
     }
 
     public Team getTeam(String teamName) throws IllegalArgumentException {
-        Validate.notNull(teamName, "Team name cannot be null");
+        checkNotNull(teamName, "Team name cannot be null");
         return teams.get(teamName);
     }
 
@@ -285,7 +287,7 @@ public final class GlowScoreboard implements Scoreboard {
     }
 
     public Set<Score> getScores(String entry) throws IllegalArgumentException {
-        Validate.notNull(entry, "Entry cannot be null");
+        checkNotNull(entry, "Entry cannot be null");
 
         Set<GlowScore> scoreSet = scoreMap.get(entry);
         if (scoreSet == null) {
@@ -296,7 +298,7 @@ public final class GlowScoreboard implements Scoreboard {
     }
 
     public void resetScores(String entry) throws IllegalArgumentException {
-        Validate.notNull(entry, "Entry cannot be null");
+        checkNotNull(entry, "Entry cannot be null");
 
         for (GlowObjective objective : objectives.values()) {
             broadcast(ScoreboardScoreMessage.remove(entry, objective.getName()));
@@ -316,13 +318,13 @@ public final class GlowScoreboard implements Scoreboard {
 
     @Deprecated
     public Set<Score> getScores(OfflinePlayer player) throws IllegalArgumentException {
-        Validate.notNull(player, "Player cannot be null");
+        checkNotNull(player, "Player cannot be null");
         return getScores(player.getName());
     }
 
     @Deprecated
     public void resetScores(OfflinePlayer player) throws IllegalArgumentException {
-        Validate.notNull(player, "Player cannot be null");
+        checkNotNull(player, "Player cannot be null");
         resetScores(player.getName());
     }
 }

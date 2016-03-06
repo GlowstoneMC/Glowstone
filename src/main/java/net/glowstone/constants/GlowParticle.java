@@ -1,10 +1,11 @@
 package net.glowstone.constants;
 
-import org.apache.commons.lang3.Validate;
 import org.bukkit.Effect;
 import org.bukkit.material.MaterialData;
 
 import java.util.Arrays;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Id mappings for particles.
@@ -71,7 +72,7 @@ public final class GlowParticle {
      * @return the particle id.
      */
     public static int getId(Effect particle) {
-        Validate.notNull(particle, "particle cannot be null");
+        checkNotNull(particle, "particle cannot be null");
         return ids[particle.ordinal()];
     }
 

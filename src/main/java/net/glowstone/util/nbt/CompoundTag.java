@@ -1,10 +1,10 @@
 package net.glowstone.util.nbt;
 
-import org.apache.commons.lang3.Validate;
-
 import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * The {@code TAG_Compound} tag.
@@ -251,8 +251,8 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     }
 
     void put(String key, Tag tag) {
-        Validate.notNull(key, "Key cannot be null");
-        Validate.notNull(tag, "Tag cannot be null");
+        checkNotNull(key, "Key cannot be null");
+        checkNotNull(tag, "Tag cannot be null");
         value.put(key, tag);
     }
 

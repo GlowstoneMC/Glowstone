@@ -1,8 +1,8 @@
 package net.glowstone.constants;
 
-import org.apache.commons.lang3.Validate;
 import org.bukkit.Statistic;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static org.bukkit.Statistic.*;
 
 /**
@@ -78,7 +78,7 @@ public final class GlowStatistic {
      * @return the statistic name.
      */
     public static String getName(Statistic stat) {
-        Validate.notNull(stat, "Achievement cannot be null");
+        checkNotNull(stat, "Achievement cannot be null");
         return names[stat.ordinal()];
     }
 

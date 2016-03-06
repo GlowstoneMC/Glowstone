@@ -1,11 +1,11 @@
 package net.glowstone.constants;
 
-import org.apache.commons.lang3.Validate;
 import org.bukkit.Sound;
 
 import java.util.regex.Pattern;
 
-import static org.bukkit.Sound.*;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static org.bukkit.Sound.values;
 
 /**
  * Mappings from the Sound enum to individual sound names.
@@ -31,7 +31,7 @@ public final class GlowSound {
      * @return the sound name.
      */
     public static String getName(Sound sound) {
-        Validate.notNull(sound, "Sound cannot be null");
+        checkNotNull(sound, "Sound cannot be null");
         return names[sound.ordinal()];
     }
 

@@ -5,7 +5,6 @@ import net.glowstone.GlowChunk;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.TENote;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.Instrument;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,6 +12,8 @@ import org.bukkit.Note;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.NoteBlock;
 import org.bukkit.event.block.NotePlayEvent;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
 
@@ -76,7 +77,7 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
 
     @Override
     public void setNote(Note note) {
-        Validate.notNull(note);
+        checkNotNull(note);
         this.note = note;
     }
 

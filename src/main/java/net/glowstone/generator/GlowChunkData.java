@@ -1,7 +1,6 @@
 package net.glowstone.generator;
 
 import net.glowstone.GlowChunk;
-import org.apache.commons.lang3.NotImplementedException;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.generator.ChunkGenerator.ChunkData;
@@ -89,21 +88,21 @@ public class GlowChunkData implements ChunkData {
 
     @Override
     public void setRegion(int xMin, int yMin, int zMin, int xMax, int yMax, int zMax, Material material) {
-        throw new NotImplementedException("Not implemented yet!");
+        throw new UnsupportedOperationException("Not implemented yet!");
     }
 
     @Override
     public void setRegion(int xMin, int yMin, int zMin, int xMax, int yMax, int zMax, MaterialData materialData) {
-        throw new NotImplementedException("Not implemented yet!");
+        throw new UnsupportedOperationException("Not implemented yet!");
     }
 
     @Override
     public void setRegion(int xMin, int yMin, int zMin, int xMax, int yMax, int zMax, int blockId) {
-        throw new NotImplementedException("Not implemented yet!");
+        throw new UnsupportedOperationException("Not implemented yet!");
     }
 
     @Override
     public void setRegion(int xMin, int yMin, int zMin, int xMax, int yMax, int zMax, int blockId, int data) {
-        throw new NotImplementedException("Not implemented yet!");
+        throw new UnsupportedOperationException("Not implemented yet!");
     }
 }

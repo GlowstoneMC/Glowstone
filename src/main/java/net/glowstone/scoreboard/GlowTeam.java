@@ -3,7 +3,6 @@ package net.glowstone.scoreboard;
 import com.flowpowered.network.Message;
 import com.google.common.collect.ImmutableSet;
 import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.NameTagVisibility;
@@ -15,6 +14,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Implementation for scoreboard teams.
@@ -81,7 +82,7 @@ public final class GlowTeam implements Team {
     }
 
     public void setDisplayName(String displayName) throws IllegalStateException, IllegalArgumentException {
-        Validate.notNull(displayName, "Display name cannot be null");
+        checkNotNull(displayName, "Display name cannot be null");
         checkValid();
         this.displayName = displayName;
         update();
@@ -93,7 +94,7 @@ public final class GlowTeam implements Team {
     }
 
     public void setPrefix(String prefix) throws IllegalStateException, IllegalArgumentException {
-        Validate.notNull(prefix, "Prefix cannot be null");
+        checkNotNull(prefix, "Prefix cannot be null");
         checkValid();
         this.prefix = prefix;
         update();
@@ -105,7 +106,7 @@ public final class GlowTeam implements Team {
     }
 
     public void setSuffix(String suffix) throws IllegalStateException, IllegalArgumentException {
-        Validate.notNull(suffix, "Suffix cannot be null");
+        checkNotNull(suffix, "Suffix cannot be null");
         checkValid();
         this.suffix = suffix;
         update();
@@ -149,7 +150,7 @@ public final class GlowTeam implements Team {
     }
 
     public void setDeathMessageVisibility(NameTagVisibility deathMessageVisibility) throws IllegalStateException, IllegalArgumentException {
-        Validate.notNull(deathMessageVisibility, "NameTagVisibility cannot be null!");
+        checkNotNull(deathMessageVisibility, "NameTagVisibility cannot be null!");
         checkValid();
         this.deathMessageVisibility = deathMessageVisibility;
     }
@@ -178,7 +179,7 @@ public final class GlowTeam implements Team {
     }
 
     public void addPlayer(OfflinePlayer player) throws IllegalStateException, IllegalArgumentException {
-        Validate.notNull(player, "Player cannot be null");
+        checkNotNull(player, "Player cannot be null");
         checkValid();
         players.add(player);
         scoreboard.setPlayerTeam(player, this);
@@ -201,7 +202,7 @@ public final class GlowTeam implements Team {
     }
 
     public boolean removePlayer(OfflinePlayer player) throws IllegalStateException, IllegalArgumentException {
-        Validate.notNull(player, "Player cannot be null");
+        checkNotNull(player, "Player cannot be null");
         checkValid();
         if (players.remove(player)) {
             scoreboard.setPlayerTeam(player, null);
@@ -216,7 +217,7 @@ public final class GlowTeam implements Team {
     }
 
     public boolean hasPlayer(OfflinePlayer player) throws IllegalArgumentException, IllegalStateException {
-        Validate.notNull(player, "Player cannot be null");
+        checkNotNull(player, "Player cannot be null");
         checkValid();
         return players.contains(player);
     }

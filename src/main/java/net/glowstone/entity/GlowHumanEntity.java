@@ -9,7 +9,6 @@ import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.SpawnPlayerMessage;
 import net.glowstone.util.Position;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -29,6 +28,9 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Represents a human entity, such as an NPC or a player.
@@ -372,7 +374,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     @Override
     public void openInventory(InventoryView inventory) {
-        Validate.notNull(inventory);
+        checkNotNull(inventory);
         this.inventory.getDragTracker().reset();
 
         // stop viewing the old inventory and start viewing the new one
@@ -486,8 +488,8 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
      * @throws IllegalArgumentException if the stack has an amount less than one
      */
     public GlowItem drop(ItemStack stack) {
-        Validate.notNull(stack, "stack must not be null");
-        Validate.isTrue(stack.getAmount() > 0, "stack amount must be greater than zero");
+        checkNotNull(stack, "stack must not be null");
+        checkArgument(stack.getAmount() > 0, "stack amount must be greater than zero");
 
         Location dropLocation = location.clone().add(0, getEyeHeight(true) - 0.3, 0);
         GlowItem dropItem = world.dropItem(dropLocation, stack);

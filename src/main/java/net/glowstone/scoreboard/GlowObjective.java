@@ -1,13 +1,15 @@
 package net.glowstone.scoreboard;
 
 import net.glowstone.net.message.play.scoreboard.ScoreboardObjectiveMessage;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.*;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Scoreboard objective and associated data.
@@ -69,8 +71,8 @@ public final class GlowObjective implements Objective {
 
     public void setDisplayName(String displayName) throws IllegalStateException, IllegalArgumentException {
         checkValid();
-        Validate.notNull(displayName, "displayName cannot be null");
-        Validate.isTrue(displayName.length() <= 32, "displayName cannot be longer than 32 characters");
+        checkNotNull(displayName, "displayName cannot be null");
+        checkArgument(displayName.length() <= 32, "displayName cannot be longer than 32 characters");
 
         this.displayName = displayName;
         scoreboard.broadcast(ScoreboardObjectiveMessage.update(name, displayName, renderType));
@@ -102,7 +104,7 @@ public final class GlowObjective implements Objective {
     @Override
     public void setType(RenderType renderType) throws IllegalStateException {
         checkValid();
-        Validate.notNull(renderType, "RenderType cannot be null");
+        checkNotNull(renderType, "RenderType cannot be null");
         this.renderType = renderType;
         scoreboard.broadcast(ScoreboardObjectiveMessage.update(name, displayName, renderType));
     }
@@ -116,7 +118,7 @@ public final class GlowObjective implements Objective {
     // Score management
 
     public Score getScore(String entry) throws IllegalArgumentException, IllegalStateException {
-        Validate.notNull(entry, "Entry cannot be null");
+        checkNotNull(entry, "Entry cannot be null");
         checkValid();
 
         GlowScore score = scores.get(entry);
@@ -139,7 +141,7 @@ public final class GlowObjective implements Objective {
 
     @Deprecated
     public Score getScore(OfflinePlayer player) throws IllegalArgumentException, IllegalStateException {
-        Validate.notNull(player, "Player cannot be null");
+        checkNotNull(player, "Player cannot be null");
         return getScore(player.getName());
     }
 
@@ -147,7 +149,7 @@ public final class GlowObjective implements Objective {
     }
 
     public boolean hasScore(String entry) throws IllegalArgumentException, IllegalStateException {
-        Validate.notNull(entry, "Entry cannot be null");
+        checkNotNull(entry, "Entry cannot be null");
         checkValid();
 
         return scores.containsKey(entry);

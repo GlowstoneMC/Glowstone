@@ -1,12 +1,13 @@
 package net.glowstone.inventory;
 
 import net.glowstone.util.nbt.CompoundTag;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import java.util.Map;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class GlowMetaLeatherArmor extends GlowMetaItem implements LeatherArmorMeta {
 
@@ -28,7 +29,7 @@ public class GlowMetaLeatherArmor extends GlowMetaItem implements LeatherArmorMe
 
     @Override
     public void setColor(Color color) {
-        Validate.notNull(color, "Armor color cannot be null");
+        checkNotNull(color, "Armor color cannot be null");
         this.color = color;
     }
 

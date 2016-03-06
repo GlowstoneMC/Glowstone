@@ -3,13 +3,14 @@ package net.glowstone.block.state;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.TEBanner;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.DyeColor;
 import org.bukkit.block.Banner;
 import org.bukkit.block.banner.Pattern;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class GlowBanner extends GlowBlockState implements Banner {
 
@@ -28,7 +29,7 @@ public class GlowBanner extends GlowBlockState implements Banner {
 
     @Override
     public void setPattern(int i, Pattern pattern) {
-        Validate.notNull(pattern, "Pattern cannot be null");
+        checkNotNull(pattern, "Pattern cannot be null");
         patterns.set(i, pattern);
     }
 
@@ -44,7 +45,7 @@ public class GlowBanner extends GlowBlockState implements Banner {
 
     @Override
     public void setBaseColor(DyeColor dyeColor) {
-        Validate.notNull(base, "Base cannot be null");
+        checkNotNull(base, "Base cannot be null");
         this.base = dyeColor;
     }
 
@@ -60,7 +61,7 @@ public class GlowBanner extends GlowBlockState implements Banner {
 
     @Override
     public void addPattern(Pattern pattern) {
-        Validate.notNull(pattern, "Pattern cannot be null");
+        checkNotNull(pattern, "Pattern cannot be null");
         patterns.add(pattern);
     }
 

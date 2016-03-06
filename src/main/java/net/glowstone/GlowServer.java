@@ -37,7 +37,6 @@ import net.glowstone.util.bans.GlowBanList;
 import net.glowstone.util.bans.UuidListFile;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
 import org.bukkit.boss.BarColor;
@@ -78,6 +77,8 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * The core class of the Glowstone server.
@@ -1056,7 +1057,7 @@ public final class GlowServer implements Server {
      * @param online whether the player is online or offline
      */
     public void setPlayerOnline(GlowPlayer player, boolean online) {
-        Validate.notNull(player);
+        checkNotNull(player);
         if (online) {
             onlinePlayers.add(player);
         } else {

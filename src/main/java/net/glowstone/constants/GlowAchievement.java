@@ -1,8 +1,8 @@
 package net.glowstone.constants;
 
-import org.apache.commons.lang3.Validate;
 import org.bukkit.Achievement;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static org.bukkit.Achievement.*;
 
 /**
@@ -60,12 +60,12 @@ public final class GlowAchievement {
      * @return the achievement name.
      */
     public static String getName(Achievement achievement) {
-        Validate.notNull(achievement, "Achievement cannot be null");
+        checkNotNull(achievement, "Achievement cannot be null");
         return names[achievement.ordinal()];
     }
 
     public static String getFancyName(Achievement achievement) {
-        Validate.notNull(achievement, "Achievement cannot be null");
+        checkNotNull(achievement, "Achievement cannot be null");
         return fancyNames[achievement.ordinal()];
     }
 
