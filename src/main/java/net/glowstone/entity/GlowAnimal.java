@@ -1,6 +1,7 @@
 package net.glowstone.entity;
 
 import net.glowstone.net.message.play.player.InteractEntityMessage;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Animals;
@@ -30,6 +31,9 @@ public class GlowAnimal extends GlowAgeable implements Animals {
         super.entityInteract(player, message);
         ItemStack item = player.getItemInHand();
 
+        if (player.getGameMode() == GameMode.SPECTATOR)
+            return false;
+
         if (item != null && item.getType() == Material.MONSTER_EGG && item.hasItemMeta()) {
             SpawnMeta meta = (SpawnMeta) item.getItemMeta();
             if (meta.hasEntityType() && meta.getEntityType() == this.getType()) {
@@ -37,14 +41,17 @@ public class GlowAnimal extends GlowAgeable implements Animals {
                 GlowAnimal animal = (GlowAnimal) getWorld().spawn(getLocation(), spawn, CreatureSpawnEvent.SpawnReason.SPAWNER_EGG);
                 animal.setBaby();
 
-                // Consume the egg
-                item.setAmount(item.getAmount() - 1);
-                if (item.getAmount() < 1)
-                    player.getInventory().remove(item);
+                if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
+                    // Consume the egg
+                    if (item.getAmount() > 1) {
+                        item.setAmount(item.getAmount() - 1);
+                    } else {
+                        player.getInventory().clear(player.getInventory().getHeldItemSlot());
+                    }
+                }
                 return true;
             }
         }
-
         return false;
     }
 }
