@@ -31,9 +31,6 @@ public class GlowAnimal extends GlowAgeable implements Animals {
         super.entityInteract(player, message);
         ItemStack item = player.getItemInHand();
 
-        if (player.getGameMode() == GameMode.SPECTATOR)
-            return false;
-
         if (item != null && item.getType() == Material.MONSTER_EGG && item.hasItemMeta()) {
             SpawnMeta meta = (SpawnMeta) item.getItemMeta();
             if (meta.hasEntityType() && meta.getEntityType() == this.getType()) {
