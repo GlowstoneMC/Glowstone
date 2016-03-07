@@ -255,6 +255,10 @@ public final class ServerConfig {
             GlowServer.logger.log(Level.SEVERE, "Cannot load " + file + ": " + e.getCause().getClass(), e);
         }
     }
+    
+    public YamlConfiguration getConfig() {
+        return config;
+    }
 
     private boolean migrate() {
         boolean migrateStatus = false;
