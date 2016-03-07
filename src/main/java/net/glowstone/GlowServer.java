@@ -1141,7 +1141,9 @@ public final class GlowServer implements Server {
     @Override
     public Spigot spigot() {
         return new Spigot() {
-
+            public org.bukkit.configuration.file.YamlConfiguration getConfig() {
+                return config.getConfig();
+            }
         };
     }
 
