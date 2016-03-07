@@ -20,6 +20,7 @@ public class GlowCow extends GlowAnimal implements Cow {
 
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
+        super.entityInteract(player, message);
         if (player.getGameMode().equals(GameMode.CREATIVE) || player.getGameMode().equals(GameMode.SPECTATOR))
             return false;
         if (!player.getItemInHand().getType().equals(Material.BUCKET)) return false;
