@@ -23,6 +23,9 @@ public class GlowCow extends GlowAnimal implements Cow {
         super.entityInteract(player, message);
         if (player.getGameMode().equals(GameMode.CREATIVE) || player.getGameMode().equals(GameMode.SPECTATOR))
             return false;
+
+        if (!isAdult()) return false;
+
         if (!player.getItemInHand().getType().equals(Material.BUCKET)) return false;
 
         if (player.getItemInHand().getAmount() > 1) {
