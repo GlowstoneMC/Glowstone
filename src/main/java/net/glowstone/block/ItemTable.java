@@ -48,6 +48,7 @@ public final class ItemTable {
         reg(Material.WORKBENCH, new BlockWorkbench(), Sound.BLOCK_WOOD_BREAK);
         reg(Material.ENDER_CHEST, new BlockEnderchest());
         reg(Material.CHEST, new BlockChest(), Sound.BLOCK_WOOD_BREAK);
+        reg(Material.TRAPPED_CHEST, new BlockChest(true), Sound.BLOCK_WOOD_BREAK);
         reg(Material.DISPENSER, new BlockDispenser());
         reg(Material.DROPPER, new BlockDropper());
         reg(Material.BOOKSHELF, new BlockDirectDrops(Material.BOOK, 3), Sound.BLOCK_WOOD_BREAK);
