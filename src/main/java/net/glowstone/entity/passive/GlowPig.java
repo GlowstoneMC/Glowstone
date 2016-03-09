@@ -31,6 +31,9 @@ public class GlowPig extends GlowAnimal implements Pig {
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         super.entityInteract(player, message);
+
+        if (!isAdult()) return false;
+
         if (!hasSaddle()) {
             ItemStack hand = player.getItemInHand();
             if (hand.getType() == Material.SADDLE) {
