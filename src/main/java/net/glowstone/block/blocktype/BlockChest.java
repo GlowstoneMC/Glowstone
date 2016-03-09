@@ -87,6 +87,12 @@ public class BlockChest extends BlockContainer {
             BlockFace otherPart = attachedChests.iterator().next();
 
             GlowBlock otherPartBlock = chestBlock.getRelative(otherPart);
+
+            if (getAttachedChest(otherPartBlock) != null) {
+                GlowServer.logger.warning("Chest placed near already attached chest!");
+                return;
+            }
+
             BlockState otherPartState = otherPartBlock.getState();
             MaterialData otherPartData = otherPartState.getData();
 
@@ -125,6 +131,14 @@ public class BlockChest extends BlockContainer {
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
         Collection<BlockFace> nearChests = searchChests(block);
+
+        if (nearChests.size() == 1) {
+            GlowBlock otherPartBlock = block.getRelative(nearChests.iterator().next());
+
+            if (getAttachedChest(otherPartBlock) != null) {
+                return false;
+            }
+        }
         return nearChests.size() <= 1;
 
     }
