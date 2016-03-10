@@ -22,7 +22,7 @@ If you don't want to build from source, prebuilt jar files are available to down
 
 * **[Direct gserv.me download](https://bamboo.gserv.me/browse/GSPP-SRV/latestSuccessful/artifact/shared/Server-JAR/glowstone%2B%2B-1.9-SNAPSHOT.jar)** - recommended, direct link to latest build
 
-* **[gserv.me](https://bamboo.gserv.me/browse/GSPP-SRV17)** - all builds, no login required
+* **[gserv.me](https://bamboo.gserv.me/browse/GSPP-SRV)** - all builds, no login required
 
 * [![Build Status](https://circleci.com/gh/GlowstoneMC/GlowstonePlusPlus.svg?style=svg)](https://circleci.com/gh/GlowstonePlusPlus/GlowstonePlusPlus/tree/master) **[CircleCI](https://circleci.com/gh/GlowstoneMC/GlowstonePlusPlus/tree/master)** - click the latest build then expand "Artifacts" (if it does not show, try logging in with GitHub)
 
