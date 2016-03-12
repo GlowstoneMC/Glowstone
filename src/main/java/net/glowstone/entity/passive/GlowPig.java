@@ -20,12 +20,12 @@ public class GlowPig extends GlowAnimal implements Pig {
 
     @Override
     public boolean hasSaddle() {
-        return metadata.getByte(MetadataIndex.PIG_SADDLE) == 1;
+        return metadata.getBoolean(MetadataIndex.PIG_SADDLE);
     }
 
     @Override
     public void setSaddle(boolean hasSaddle) {
-        metadata.set(MetadataIndex.PIG_SADDLE, (byte) (hasSaddle ? 1 : 0));
+        metadata.set(MetadataIndex.PIG_SADDLE, hasSaddle);
     }
 
     @Override

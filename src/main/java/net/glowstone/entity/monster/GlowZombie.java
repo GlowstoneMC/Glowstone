@@ -13,6 +13,7 @@ public class GlowZombie extends GlowMonster implements Zombie {
 
     private int conversionTime = -1;
     private boolean canBreakDoors;
+    private Profession villagerProfession = Profession.FARMER;
 
     public GlowZombie(Location loc) {
         this(loc, EntityType.ZOMBIE);
@@ -24,38 +25,39 @@ public class GlowZombie extends GlowMonster implements Zombie {
 
     @Override
     public List<Message> createSpawnMessage() {
-        metadata.set(MetadataIndex.ZOMBIE_IS_CONVERTING, conversionTime > 0 ? (byte) 1 : (byte) 0);
+        metadata.set(MetadataIndex.ZOMBIE_IS_CONVERTING, conversionTime > 0);
         return super.createSpawnMessage();
     }
 
     @Override
     public boolean isBaby() {
-        return metadata.getByte(MetadataIndex.ZOMBIE_IS_CHILD) == 1;
+        return metadata.getBoolean(MetadataIndex.ZOMBIE_IS_CHILD);
     }
 
     @Override
     public void setBaby(boolean value) {
-        metadata.set(MetadataIndex.ZOMBIE_IS_CHILD, value ? (byte) 1 : (byte) 0);
+        metadata.set(MetadataIndex.ZOMBIE_IS_CHILD, value);
     }
 
     @Override
     public boolean isVillager() {
-        return metadata.getByte(MetadataIndex.ZOMBIE_IS_VILLAGER) == 1;
+        return metadata.getInt(MetadataIndex.ZOMBIE_IS_VILLAGER) > 0;
     }
 
     @Override
     public void setVillager(boolean value) {
-        metadata.set(MetadataIndex.ZOMBIE_IS_VILLAGER, value ? (byte) 1 : (byte) 0);
+        metadata.set(MetadataIndex.ZOMBIE_IS_VILLAGER, value ? villagerProfession.getId() + 1 : 0);
     }
 
     @Override
     public void setVillagerProfession(Profession profession) {
-
+        this.villagerProfession = profession;
+        metadata.set(MetadataIndex.ZOMBIE_IS_VILLAGER, profession.getId() + 1);
     }
 
     @Override
     public Profession getVillagerProfession() {
-        return null;
+        return villagerProfession;
     }
 
     public int getConversionTime() {
@@ -64,7 +66,7 @@ public class GlowZombie extends GlowMonster implements Zombie {
 
     public void setConversionTime(int conversionTime) {
         this.conversionTime = conversionTime;
-        metadata.set(MetadataIndex.ZOMBIE_IS_CONVERTING, conversionTime > 0 ? (byte) 1 : (byte) 0);
+        metadata.set(MetadataIndex.ZOMBIE_IS_CONVERTING, conversionTime > 0);
     }
 
     public boolean isCanBreakDoors() {

@@ -22,10 +22,10 @@ public class GlowGhast extends GlowMonster implements Ghast {
     }
 
     public boolean isAttacking() {
-        return metadata.getByte(MetadataIndex.GHAST_ATTACKING) == 1;
+        return metadata.getBoolean(MetadataIndex.GHAST_ATTACKING);
     }
 
     public void setAttacking(boolean attacking) {
-        metadata.set(MetadataIndex.GHAST_ATTACKING, attacking ? (byte) 1 : (byte) 0);
+        metadata.set(MetadataIndex.GHAST_ATTACKING, attacking);
     }
 }
