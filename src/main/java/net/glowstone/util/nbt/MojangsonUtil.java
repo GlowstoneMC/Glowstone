@@ -9,6 +9,18 @@ import java.util.List;
 public class MojangsonUtil {
 
     /**
+     * Converts a JSON Object into a standart Mojangson string
+     * @param json The JSON Object to convert
+     * @return the resulting Mojangson string
+     */
+    public static String convertJSONtoMojangson(JSONObject json) {
+        // This removes double-quotes from key names.
+        // For example, the JSON string {"foo":"bar"} would be
+        // changed to {foo:"bar"}
+        return json.toJSONString().replaceAll("\"+([^\"]+)\"+(?=:)", "$1");
+    }
+
+    /**
      * Transforms a CompoundTag into a JSON Object
      * @param compound The CompoundTag to convert
      * @return the resulting JSON Object
@@ -65,9 +77,9 @@ public class MojangsonUtil {
             Tag tag = toTag(value);
 
             if (tag == null) {
-                if (value instanceof JSONArray) {
+                if (value.getClass() == JSONArray.class) {
                     tag = parseList((JSONArray) value);
-                } else if (value instanceof JSONObject) {
+                } else if (value.getClass() == JSONObject.class) {
                     tag = parseCompound((JSONObject) value);
                 }
             }
@@ -89,9 +101,9 @@ public class MojangsonUtil {
         Object firstValue = array.get(0);
         Tag firstTag = toTag(firstValue);
         if (firstTag == null) {
-            if (firstValue instanceof JSONArray) {
+            if (firstValue.getClass() == JSONArray.class) {
                 firstTag = parseList((JSONArray) firstValue);
-            } else if (firstValue instanceof JSONObject) {
+            } else if (firstValue.getClass() == JSONObject.class) {
                 firstTag = parseCompound((JSONObject) firstValue);
             }
         }
@@ -100,9 +112,9 @@ public class MojangsonUtil {
         for (Object object : array) {
             Tag tag = toTag(object);
             if (tag == null) {
-                if (object instanceof JSONArray) {
+                if (object.getClass() == JSONArray.class) {
                     tag = parseList((JSONArray) object);
-                } else if (object instanceof JSONObject) {
+                } else if (object.getClass() == JSONObject.class) {
                     tag = parseCompound((JSONObject) object);
                 }
             }
@@ -115,26 +127,26 @@ public class MojangsonUtil {
     /**
      * Transforms a value into the appropriate NBT tag
      * @param value The value of the NBT tag
-     * @return the resultant NBT tag, null if the given value is not of an appropriate type or if it is a JSONObject or JSON Array
+     * @return the resultant NBT tag, null if the given value is not of an appropriate type or if it is a JSON Object or JSON Array
      */
     private static Tag toTag(Object value) {
-        if (value instanceof Integer) {
+        if (value.getClass() == int.class) {
             return new IntTag((int) value);
-        } else if (value instanceof Byte) {
+        } else if (value.getClass() == byte.class) {
             return new ByteTag((byte) value);
-        } else if (value instanceof Short) {
+        } else if (value.getClass() == short.class) {
             return new ShortTag((short) value);
-        } else if (value instanceof Long) {
+        } else if (value.getClass() == long.class) {
             return new LongTag((long) value);
-        } else if (value instanceof Float) {
+        } else if (value.getClass() == float.class) {
             return new FloatTag((float) value);
-        } else if (value instanceof Double) {
+        } else if (value.getClass() == double.class) {
             return new DoubleTag((double) value);
-        } else if (value instanceof byte[]) {
+        } else if (value.getClass() == byte[].class) {
             return new ByteArrayTag((byte[]) value);
-        } else if (value instanceof String) {
+        } else if (value.getClass() == String.class) {
             return new StringTag((String) value);
-        } else if (value instanceof int[]) {
+        } else if (value.getClass() == int[].class) {
             return new IntArrayTag((int[]) value);
         }
         return null;
