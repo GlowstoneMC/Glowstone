@@ -67,7 +67,9 @@ public abstract class GlowStructure {
         boundingBox = new StructureBoundingBox(new Vector(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE),
                 new Vector(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE));
         for (GlowStructurePiece piece : children) {
-            boundingBox.expandTo(piece.getBoundingBox());
+            if (piece != null) {
+                boundingBox.expandTo(piece.getBoundingBox());
+            }
         }
     }
 
@@ -79,9 +81,11 @@ public abstract class GlowStructure {
         Iterator<GlowStructurePiece> it = children.iterator();
         while (it.hasNext()) {
             GlowStructurePiece piece = it.next();
-            if (piece.getBoundingBox().intersectsWith(x, z, x + 15, z + 15) &&
+            if (piece != null && piece.getBoundingBox().intersectsWith(x, z, x + 15, z + 15) &&
                     !piece.generate(world, random, new StructureBoundingBox(new Vector(x, 1, z), new Vector(x + 15, 511, z + 15)), delegate)) {
                 it.remove();
+            } else {
+                return false;
             }
         }
 
