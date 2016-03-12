@@ -46,7 +46,7 @@ public class GlowZombie extends GlowMonster implements Zombie {
 
     @Override
     public void setVillager(boolean value) {
-        metadata.set(MetadataIndex.ZOMBIE_IS_VILLAGER, value ? villagerProfession.getId() : 0);
+        metadata.set(MetadataIndex.ZOMBIE_IS_VILLAGER, value ? villagerProfession.getId() + 1 : 0);
     }
 
     @Override
