@@ -12,10 +12,10 @@ public class GlowWitch extends GlowMonster implements Witch {
     }
 
     public boolean isAgressive() {
-        return metadata.getByte(MetadataIndex.WITCH_AGGRESSIVE) == 1;
+        return metadata.getBoolean(MetadataIndex.WITCH_AGGRESSIVE);
     }
 
     public void setAgressive(boolean agressive) {
-        metadata.set(MetadataIndex.WITCH_AGGRESSIVE, agressive ? (byte) 1 : (byte) 0);
+        metadata.set(MetadataIndex.WITCH_AGGRESSIVE, agressive);
     }
 }

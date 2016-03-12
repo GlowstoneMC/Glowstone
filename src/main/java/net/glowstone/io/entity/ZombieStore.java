@@ -2,6 +2,7 @@ package net.glowstone.io.entity;
 
 import net.glowstone.entity.monster.GlowZombie;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.entity.Villager;
 
 class ZombieStore<T extends GlowZombie> extends MonsterStore<GlowZombie> {
 
@@ -27,6 +28,10 @@ class ZombieStore<T extends GlowZombie> extends MonsterStore<GlowZombie> {
             entity.setBaby(tag.getBool("IsBaby"));
         } else {
             entity.setBaby(false);
+        }
+
+        if (tag.isInt("VillagerProfession")) {
+            entity.setVillagerProfession(Villager.Profession.getProfession(tag.getInt("VillagerProfession")));
         }
 
         if (tag.isInt("ConversionTime")) {

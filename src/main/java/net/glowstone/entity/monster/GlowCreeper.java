@@ -26,12 +26,12 @@ public class GlowCreeper extends GlowMonster implements Creeper {
 
     @Override
     public boolean isPowered() {
-        return metadata.getByte(MetadataIndex.CREEPER_POWERED) == 1;
+        return metadata.getBoolean(MetadataIndex.CREEPER_POWERED);
     }
 
     @Override
     public void setPowered(boolean value) {
-        metadata.set(MetadataIndex.CREEPER_POWERED, value ? (byte) 1 : (byte) 0);
+        metadata.set(MetadataIndex.CREEPER_POWERED, value);
     }
 
     public int getExplosionRadius() {

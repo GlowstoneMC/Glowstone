@@ -41,11 +41,11 @@ public class GlowSlime extends GlowMonster implements Slime {
 
     @Override
     public int getSize() {
-        return metadata.getByte(MetadataIndex.SLIME_SIZE);
+        return metadata.getInt(MetadataIndex.SLIME_SIZE);
     }
 
     @Override
     public void setSize(int sz) {
-        metadata.set(MetadataIndex.SLIME_SIZE, (byte) sz);
+        metadata.set(MetadataIndex.SLIME_SIZE, sz);
     }
 }

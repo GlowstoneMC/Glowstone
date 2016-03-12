@@ -13,6 +13,7 @@ public class GlowZombie extends GlowMonster implements Zombie {
 
     private int conversionTime = -1;
     private boolean canBreakDoors;
+    private Profession villagerProfession = Profession.FARMER;
 
     public GlowZombie(Location loc) {
         this(loc, EntityType.ZOMBIE);
@@ -45,17 +46,18 @@ public class GlowZombie extends GlowMonster implements Zombie {
 
     @Override
     public void setVillager(boolean value) {
-        metadata.set(MetadataIndex.ZOMBIE_IS_VILLAGER, value ? 1 : 0);
+        metadata.set(MetadataIndex.ZOMBIE_IS_VILLAGER, value ? villagerProfession.getId() : 0);
     }
 
     @Override
     public void setVillagerProfession(Profession profession) {
+        this.villagerProfession = profession;
         metadata.set(MetadataIndex.ZOMBIE_IS_VILLAGER, profession.getId() + 1);
     }
 
     @Override
     public Profession getVillagerProfession() {
-        return Profession.getProfession(metadata.getInt(MetadataIndex.ZOMBIE_IS_VILLAGER) - 1);
+        return villagerProfession;
     }
 
     public int getConversionTime() {
