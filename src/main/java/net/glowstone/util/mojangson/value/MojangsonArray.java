@@ -88,6 +88,7 @@ public class MojangsonArray<T extends MojangsonValue> extends ArrayList<T> imple
                     if (this.getType() == null)
                         this.type = val.getClass();
 
+                    add(val);
                     tmpval = "";
                     continue;
                 }
