@@ -2,6 +2,8 @@ package net.glowstone.util.nbt;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +20,52 @@ public class MojangsonUtil {
         // For example, the JSON string {"foo":"bar"} would be
         // changed to {foo:"bar"}
         return json.toJSONString().replaceAll("\"+([^\"]+)\"+(?=:)", "$1");
+    }
+
+    /**
+     * Converts a Mojangson string into a JSON Object
+     * @param mojangson The Mojangson string to convert
+     * @return the resulting JSON object
+     * @throws ParseException if the conversion of the Mojangson string into valid JSON was unsuccessful.
+     */
+    public static JSONObject convertMojangsonToJSON(String mojangson) throws ParseException {
+        int len = mojangson.length();
+        StringBuilder builder = new StringBuilder();
+        List<Integer> indexes = new ArrayList<>();
+        boolean inArray = false;
+
+        for (int index = 0; index < len; index++) {
+            if (index == 0 || index == len - 1) continue;
+            char symbol = mojangson.charAt(index);
+            char prec = mojangson.charAt(index - 1);
+            char next = mojangson.charAt(index + 1);
+
+            if (symbol == '\"') {
+                continue;
+            }
+            if (symbol == '[') {
+                inArray = true;
+            } else if (symbol == ']' || symbol == '{') {
+                inArray = false;
+            }
+            if (inArray) {
+                continue;
+            }
+            if (prec == '{' || prec == ',') {
+                indexes.add(index - 1);
+            } else if (next == ':') {
+                indexes.add(index);
+            }
+        }
+
+        for (int index = 0; index < len; index++) {
+            builder.append(mojangson.charAt(index));
+            if (indexes.contains(index)) {
+                builder.append('\"');
+            }
+        }
+        JSONParser parser = new JSONParser();
+        return (JSONObject) parser.parse(builder.toString());
     }
 
     /**
