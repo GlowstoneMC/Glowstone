@@ -40,6 +40,6 @@ public enum MojangsonToken {
 
     @Override
     public String toString() {
-        return "" + getSymbol();
+        return String.valueOf(symbol);
     }
 }
