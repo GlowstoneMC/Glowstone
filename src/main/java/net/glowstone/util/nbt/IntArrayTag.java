@@ -3,7 +3,7 @@ package net.glowstone.util.nbt;
 /**
  * The {@code TAG_Int_Array} tag.
  */
-final class IntArrayTag extends Tag<int[]> {
+public final class IntArrayTag extends Tag<int[]> {
 
     /**
      * The value.
