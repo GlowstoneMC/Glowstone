@@ -27,4 +27,5 @@ public interface MojangsonValue<T> {
      */
     T getValue();
 
+    Class getValueClass();
 }

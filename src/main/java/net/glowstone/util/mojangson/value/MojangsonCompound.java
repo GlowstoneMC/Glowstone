@@ -88,6 +88,11 @@ public class MojangsonCompound extends HashMap<String, MojangsonValue> implement
         return this;
     }
 
+    @Override
+    public Class getValueClass() {
+        return Map.class;
+    }
+
     private void parseException(int index, char symbol) throws MojangsonParseException {
         throw new MojangsonParseException("Index: " + index + ", symbol: \'" + symbol + "\'", MojangsonParseException.ParseExceptionReason.UNEXPECTED_SYMBOL);
     }

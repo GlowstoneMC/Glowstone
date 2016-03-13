@@ -13,11 +13,18 @@ public class MojangsonArray<T extends MojangsonValue> extends ArrayList<T> imple
     private static final int C_ARRAY_START = 0;   // Parsing context
     private static final int C_ARRAY_ELEMENT = 1; // Parsing context
 
+    private Class<? extends MojangsonValue> type;
+
     public MojangsonArray() {
 
     }
 
-    public MojangsonArray(List<T> list) {
+    public MojangsonArray(Class<? extends MojangsonValue> type) {
+        this.type = type;
+    }
+
+    public MojangsonArray(Class<? extends MojangsonValue> type, List<T> list) {
+        this.type = type;
         addAll(list);
     }
 
@@ -40,6 +47,15 @@ public class MojangsonArray<T extends MojangsonValue> extends ArrayList<T> imple
     @Override
     public List<T> getValue() {
         return this;
+    }
+
+    public Class<? extends MojangsonValue> getType() {
+        return type;
+    }
+
+    @Override
+    public Class getValueClass() {
+        return List.class;
     }
 
     @Override
@@ -67,7 +83,11 @@ public class MojangsonArray<T extends MojangsonValue> extends ArrayList<T> imple
             }
             if (context == C_ARRAY_ELEMENT) {
                 if ((character == ELEMENT_SEPERATOR.getSymbol() || character == ARRAY_END.getSymbol()) && scope <= 1) {
-                    add((T) MojangsonFinder.readFromValue(tmpval));
+                    T val = (T) MojangsonFinder.readFromValue(tmpval);
+
+                    if (this.getType() == null)
+                        this.type = val.getClass();
+
                     tmpval = "";
                     continue;
                 }

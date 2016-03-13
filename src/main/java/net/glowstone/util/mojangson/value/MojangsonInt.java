@@ -22,6 +22,11 @@ public class MojangsonInt implements MojangsonValue<Integer> {
     }
 
     @Override
+    public Class getValueClass() {
+        return int.class;
+    }
+
+    @Override
     public void write(StringBuilder builder) {
         builder.append(value);
     }

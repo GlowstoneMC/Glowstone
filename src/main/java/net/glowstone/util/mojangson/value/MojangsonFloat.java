@@ -23,6 +23,11 @@ public class MojangsonFloat implements MojangsonValue<Float> {
     }
 
     @Override
+    public Class getValueClass() {
+        return float.class;
+    }
+
+    @Override
     public void write(StringBuilder builder) {
         builder.append(value).append(MojangsonToken.FLOAT_SUFFIX);
     }

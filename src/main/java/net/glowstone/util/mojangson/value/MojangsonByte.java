@@ -23,6 +23,11 @@ public class MojangsonByte implements MojangsonValue<Byte> {
     }
 
     @Override
+    public Class getValueClass() {
+        return byte.class;
+    }
+
+    @Override
     public void write(StringBuilder builder) {
         builder.append(value).append(MojangsonToken.BYTE_SUFFIX);
     }

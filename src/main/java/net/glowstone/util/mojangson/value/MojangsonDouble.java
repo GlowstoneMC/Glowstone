@@ -23,6 +23,11 @@ public class MojangsonDouble implements MojangsonValue<Double> {
     }
 
     @Override
+    public Class getValueClass() {
+        return double.class;
+    }
+
+    @Override
     public void write(StringBuilder builder) {
         builder.append(value).append(MojangsonToken.DOUBLE_SUFFIX);
     }

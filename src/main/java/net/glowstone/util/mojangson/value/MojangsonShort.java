@@ -23,6 +23,11 @@ public class MojangsonShort implements MojangsonValue<Short> {
     }
 
     @Override
+    public Class getValueClass() {
+        return short.class;
+    }
+
+    @Override
     public void write(StringBuilder builder) {
         builder.append(value).append(MojangsonToken.SHORT_SUFFIX);
     }

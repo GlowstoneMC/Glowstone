@@ -23,10 +23,14 @@ public class MojangsonString implements MojangsonValue<String> {
     }
 
     @Override
+    public Class getValueClass() {
+        return String.class;
+    }
+
+    @Override
     public void write(StringBuilder builder) {
         builder.append(MojangsonToken.STRING_QUOTES).append(value).append(MojangsonToken.STRING_QUOTES);
     }
-
 
     @Override
     public void read(String string) throws MojangsonParseException {

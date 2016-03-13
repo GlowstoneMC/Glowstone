@@ -23,6 +23,11 @@ public class MojangsonLong implements MojangsonValue<Long> {
     }
 
     @Override
+    public Class getValueClass() {
+        return long.class;
+    }
+
+    @Override
     public void write(StringBuilder builder) {
         builder.append(value).append(MojangsonToken.LONG_SUFFIX);
     }
