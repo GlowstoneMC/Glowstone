@@ -14,7 +14,9 @@ public enum MojangsonToken {
     BYTE_SUFFIX(9, "Byte_Suffix", 'b'),
     FLOAT_SUFFIX(10, "Float_Suffix", 'f'),
     SHORT_SUFFIX(11, "Short_Suffix", 's'),
-    LONG_SUFFIX(12, "Long_Suffix", 'l');
+    LONG_SUFFIX(12, "Long_Suffix", 'l'),
+
+    WHITE_SPACE(13, "WhiteSpace", ' ');
 
     private int id;
     private String name;

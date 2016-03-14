@@ -46,13 +46,22 @@ public class MojangsonCompound extends HashMap<String, MojangsonValue> implement
         int context = C_COMPOUND_START;
         String tmpkey = "", tmpval = "";
         int scope = 0;
+        boolean inString = false;
 
         for (int index = 0; index < string.length(); index++) {
             Character character = string.charAt(index);
-            if (character == COMPOUND_START.getSymbol() || character == ARRAY_START.getSymbol()) {
+
+            if (character == STRING_QUOTES.getSymbol()) {
+                inString = !inString;
+            }
+            if (character == WHITE_SPACE.getSymbol()) {
+                if (!inString)
+                    continue;
+            }
+            if ((character == COMPOUND_START.getSymbol() || character == ARRAY_START.getSymbol()) && !inString) {
                 scope++;
             }
-            if (character == COMPOUND_END.getSymbol() || character == ARRAY_END.getSymbol()) {
+            if ((character == COMPOUND_END.getSymbol() || character == ARRAY_END.getSymbol()) && !inString) {
                 scope--;
             }
             if (context == C_COMPOUND_START) {
@@ -72,7 +81,7 @@ public class MojangsonCompound extends HashMap<String, MojangsonValue> implement
                 continue;
             }
             if (context == C_COMPOUND_PAIR_VALUE) {
-                if ((character == ELEMENT_SEPERATOR.getSymbol() || character == COMPOUND_END.getSymbol()) && scope <= 1) {
+                if ((character == ELEMENT_SEPERATOR.getSymbol() || character == COMPOUND_END.getSymbol()) && scope <= 1 && !inString) {
                     context = C_COMPOUND_PAIR_KEY;
                     put(tmpkey, MojangsonFinder.readFromValue(tmpval));
                     tmpkey = tmpval = "";

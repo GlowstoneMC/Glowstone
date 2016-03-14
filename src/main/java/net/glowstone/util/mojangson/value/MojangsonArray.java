@@ -63,14 +63,22 @@ public class MojangsonArray<T extends MojangsonValue> extends ArrayList<T> imple
         int context = C_ARRAY_START;
         String tmpval = "";
         int scope = 0;
+        boolean inString = false;
 
         for (int index = 0; index < string.length(); index++) {
             Character character = string.charAt(index);
 
-            if (character == COMPOUND_START.getSymbol() || character == ARRAY_START.getSymbol()) {
+            if (character == STRING_QUOTES.getSymbol()) {
+                inString = !inString;
+            }
+            if (character == WHITE_SPACE.getSymbol()) {
+                if (!inString)
+                    continue;
+            }
+            if ((character == COMPOUND_START.getSymbol() || character == ARRAY_START.getSymbol()) && !inString) {
                 scope++;
             }
-            if (character == COMPOUND_END.getSymbol() || character == ARRAY_END.getSymbol()) {
+            if ((character == COMPOUND_END.getSymbol() || character == ARRAY_END.getSymbol()) && !inString) {
                 scope--;
             }
             if (context == C_ARRAY_START) {
@@ -82,7 +90,7 @@ public class MojangsonArray<T extends MojangsonValue> extends ArrayList<T> imple
                 continue;
             }
             if (context == C_ARRAY_ELEMENT) {
-                if ((character == ELEMENT_SEPERATOR.getSymbol() || character == ARRAY_END.getSymbol()) && scope <= 1) {
+                if ((character == ELEMENT_SEPERATOR.getSymbol() || character == ARRAY_END.getSymbol()) && scope <= 1 && !inString) {
                     T val = (T) MojangsonFinder.readFromValue(tmpval);
 
                     if (this.getType() == null)
