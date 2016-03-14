@@ -63,6 +63,7 @@ public final class StructurePieceStorage {
         StructurePieceStore<?> store = idTable.get(compound.getString("id"));
         if (store == null) {
             GlowServer.logger.severe(MessageFormat.format("Unknown structure piece type to load: \"{0}\"", compound.getString("id")));
+            return null;
         }
 
         return createStructurePiece(store, compound);
