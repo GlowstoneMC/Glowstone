@@ -1,7 +1,9 @@
 package net.glowstone.constants;
 
+import net.glowstone.GlowServer;
 import org.bukkit.block.Biome;
 
+import java.text.MessageFormat;
 import java.util.Arrays;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -103,7 +105,12 @@ public final class GlowBiome {
      * @return the Biome, or null
      */
     public static Biome getBiome(int id) {
-        return biomes[id];
+        if (id < biomes.length) {
+            return biomes[id];
+        } else {
+            GlowServer.logger.severe(MessageFormat.format("Unknown biome id: {0}!", id));
+            return null;
+        }
     }
 
     private static void set(int id, Biome biome) {
