@@ -25,5 +25,11 @@ public final class IntTag extends Tag<Integer> {
         return value;
     }
 
+    @Override
+    public String toMojangson() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(value);
+        return builder.toString();
+    }
 }
 

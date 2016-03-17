@@ -1,5 +1,7 @@
 package net.glowstone.util.nbt;
 
+import net.glowstone.util.mojangson.MojangsonToken;
+
 /**
  * The {@code TAG_Byte} tag.
  */
@@ -25,5 +27,11 @@ public class ByteTag extends Tag<Byte> {
         return value;
     }
 
+    @Override
+    public String toMojangson() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(value).append(MojangsonToken.BYTE_SUFFIX);
+        return builder.toString();
+    }
 }
 

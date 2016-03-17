@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static net.glowstone.util.mojangson.MojangsonToken.*;
 
 /**
  * The {@code TAG_Compound} tag.
@@ -279,6 +280,27 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
             throw new IllegalArgumentException("List \"" + key + "\" contains " + tag.getChildType() + ", not " + type);
         }
         return tag.getValue();
+    }
+
+    @Override
+    public String toMojangson() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(COMPOUND_START);
+        boolean start = true;
+
+        for (String key : getValue().keySet()) {
+            if (start) {
+                start = false;
+            } else {
+                builder.append(ELEMENT_SEPERATOR);
+            }
+
+            builder.append(key).append(ELEMENT_PAIR_SEPERATOR);
+            Tag value = getValue().get(key);
+            builder.append(value.toMojangson());
+        }
+        builder.append(COMPOUND_END);
+        return builder.toString();
     }
 }
 

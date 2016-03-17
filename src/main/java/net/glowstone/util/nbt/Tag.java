@@ -63,5 +63,13 @@ public abstract class Tag<T> {
     protected void valueToString(StringBuilder builder) {
         builder.append(getValue());
     }
+
+    /**
+     * The Mojangson representation of this Tag
+     * @return the Mojangson string representation
+     */
+    public String toMojangson() {
+        return String.valueOf(getValue());
+    }
 }
 

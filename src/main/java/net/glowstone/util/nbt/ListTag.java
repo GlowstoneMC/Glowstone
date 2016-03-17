@@ -3,6 +3,8 @@ package net.glowstone.util.nbt;
 import java.util.ArrayList;
 import java.util.List;
 
+import static net.glowstone.util.mojangson.MojangsonToken.*;
+
 /**
  * The {@code TAG_List} tag.
  */
@@ -60,5 +62,22 @@ public final class ListTag<T extends Tag> extends Tag<List<T>> {
         bldr.append("}");
     }
 
+    @Override
+    public String toMojangson() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(ARRAY_START);
+        boolean start = true;
+
+        for (Tag value : this.getValue()) {
+            if (start) {
+                start = false;
+            } else {
+                builder.append(ELEMENT_SEPERATOR);
+            }
+            builder.append(value.toMojangson());
+        }
+        builder.append(ARRAY_END);
+        return builder.toString();
+    }
 }
 

@@ -1,5 +1,7 @@
 package net.glowstone.util.nbt;
 
+import net.glowstone.util.mojangson.MojangsonToken;
+
 /**
  * The {@code TAG_Long} tag.
  */
@@ -23,6 +25,13 @@ public final class LongTag extends Tag<Long> {
     @Override
     public Long getValue() {
         return value;
+    }
+
+    @Override
+    public String toMojangson() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(value).append(MojangsonToken.LONG_SUFFIX);
+        return builder.toString();
     }
 
 }
