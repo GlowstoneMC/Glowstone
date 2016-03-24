@@ -20,7 +20,8 @@ public class MojangsonParseException extends Exception {
 
     public enum ParseExceptionReason {
         INVALID_FORMAT_NUM("Given value is not numerical"),
-        UNEXPECTED_SYMBOL("Unexpected symbol in Mojangson string");
+        UNEXPECTED_SYMBOL("Unexpected symbol in Mojangson string"),
+        INCOMPATIBLE_TYPE("List does not support given tag type.");
 
         private String message;
 
