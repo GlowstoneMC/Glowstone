@@ -13,7 +13,6 @@ import net.glowstone.entity.*;
 import net.glowstone.entity.objects.GlowFallingBlock;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.entity.physics.BoundingBox;
-import net.glowstone.generator.GlowChunkGenerator;
 import net.glowstone.generator.structures.GlowStructure;
 import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
@@ -250,7 +249,7 @@ public final class GlowWorld implements World {
         worldType = creator.type();
         generateStructures = creator.generateStructures();
 
-        GlowChunkGenerator generator = (GlowChunkGenerator) creator.generator();
+        ChunkGenerator generator = creator.generator();
 
         storageProvider = new AnvilWorldStorageProvider(new File(server.getWorldContainer(), name));
         storageProvider.setWorld(this);

@@ -2,9 +2,12 @@ package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
 
+import net.glowstone.block.GlowBlock;
+import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.util.Position;
+import net.glowstone.util.nbt.CompoundTag;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,8 +22,6 @@ import java.util.List;
 import java.util.Random;
 
 public class GlowFallingBlock extends GlowEntity implements FallingBlock {
-
-    //todo: Find actual drag and falling speeds
 
     /**
      * Air and Water resistance are the same
@@ -37,9 +38,28 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
     private boolean dropItem;
     private byte blockData;
     private Location sourceLocation;
+    private CompoundTag tileEntityCompoundTag;
+
+    // todo: implement falling block damage
+    /*
+    private boolean fallHurtMax;
+    private boolean fallHurtAmount;
+    also FallingBlockStore values
+     */
+    // todo: implement slow in cobwebs (might just be global entity thing)
+    // todo: implement anvils sometimes taking damage
 
     public GlowFallingBlock(Location location, Material material, byte blockData) {
+        this(location, material, blockData, null);
+    }
+
+    public GlowFallingBlock(Location location, Material material, byte blockData, TileEntity tileEntity) {
         super(location);
+        tileEntityCompoundTag = null;
+        if (tileEntity != null) {
+            tileEntityCompoundTag = new CompoundTag();
+            tileEntity.saveNbt(tileEntityCompoundTag);
+        }
         this.sourceLocation = location.clone();
         setBoundingBox(0.98, 0.98);
 
@@ -83,6 +103,10 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
         return blockData;
     }
 
+    public void setBlockData(byte blockData) {
+        this.blockData = blockData;
+    }
+
     @Override
     public boolean isGlowing() {
         return false;
@@ -91,6 +115,14 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
     @Override
     public void setGlowing(boolean isGlowing) {
 
+    }
+
+    public CompoundTag getTileEntityCompoundTag() {
+        return tileEntityCompoundTag;
+    }
+
+    public void setTileEntityCompoundTag(CompoundTag tileEntityCompoundTag) {
+        this.tileEntityCompoundTag = tileEntityCompoundTag;
     }
 
     @Override
@@ -111,6 +143,8 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
 
+        // Note the shift amount has changed previously,
+        // if block data doesn't appear to work check this value.
         int blockIdData = getBlockId() | getBlockData() << 12;
 
         return Arrays.asList(
@@ -132,12 +166,30 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
             velocity.multiply(DRAG);
         } else {
             if (supportingBlock(location.getBlock().getType())) {
+                boolean replaceBlock;
+                switch (location.getBlock().getType()) {
+                    case DEAD_BUSH:
+                    case LONG_GRASS:
+                    case DOUBLE_PLANT:
+                        replaceBlock = true;
+                        break;
+                    default:
+                        replaceBlock = false;
+                        break;
+                }
+                if (replaceBlock) {
+                    setDropItem(false);
+                }
+                // todo: add event if desired
                 if (getDropItem()) {
                     world.dropItemNaturally(location, new ItemStack(material, 1, (short) 0, getBlockData()));
                 }
+                if (replaceBlock) {
+                    placeFallingBlock();
+                }
                 remove();
             } else {
-                location.getBlock().setTypeIdAndData(material.getId(), getBlockData(), true);
+                placeFallingBlock();
                 if (material == Material.ANVIL) {
                     Random random = new Random();
                     world.playSound(location, Sound.BLOCK_ANVIL_FALL, 4, (1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F) * 0.7F);
@@ -147,6 +199,19 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
         }
 
         super.pulsePhysics();
+    }
+
+    private void placeFallingBlock() {
+        location.getBlock().setTypeIdAndData(material.getId(), getBlockData(), true);
+        if (getTileEntityCompoundTag() != null) {
+            if (location.getBlock() instanceof GlowBlock) {
+                GlowBlock block = (GlowBlock) location.getBlock();
+                TileEntity tileEntity = block.getTileEntity();
+                if (tileEntity != null) {
+                    tileEntity.loadNbt(getTileEntityCompoundTag());
+                }
+            }
+        }
     }
 
 
