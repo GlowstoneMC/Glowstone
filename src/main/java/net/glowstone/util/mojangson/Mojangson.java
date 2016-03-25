@@ -11,7 +11,9 @@ import static net.glowstone.util.mojangson.MojangsonToken.*;
 public class Mojangson {
 
     /**
-     * Detects the Tag type of the Mojangson string, and parses it.
+     * Detects the Tag type of the Mojangson string, and parses it. Convenience method for other parse methods.
+     * This method will fall back to an IntTag if it could not find an appropriate Tag type, and to String if the value
+     * could not be parsed as an Integer either.
      * @param mojangson The Mojangson string
      * @return The parsed NBT Tag
      * @throws MojangsonParseException if the given Mojangson string could not be parsed.
@@ -36,10 +38,10 @@ public class Mojangson {
             return parseShort(mojangson);
         }
         if (mojangson.startsWith(String.valueOf(ARRAY_START.getSymbol())) && mojangson.endsWith(String.valueOf(ARRAY_END.getSymbol()))) {
-            // return parseArray(mojangson);
+            return parseArray(mojangson);
         }
         if (mojangson.startsWith(String.valueOf(COMPOUND_START.getSymbol())) && mojangson.endsWith(String.valueOf(COMPOUND_END.getSymbol()))) {
-            // return parseCompound(mojangson);
+            return parseCompound(mojangson);
         }
         try {
             return parseInt(mojangson);
@@ -48,6 +50,12 @@ public class Mojangson {
         }
     }
 
+    /**
+     * Parses an Integer value from a Mojangson string as an NBT IntTag
+     * @param mojangson The Mojangson string
+     * @return the parsed IntTag NBT value
+     * @throws MojangsonParseException if the Mojangson string could not be parsed as an Integer value.
+     */
     public static IntTag parseInt(String mojangson) throws MojangsonParseException {
         try {
             return new IntTag(Integer.valueOf(mojangson));
@@ -56,6 +64,11 @@ public class Mojangson {
         }
     }
 
+    /**
+     * Parses an String value from a Mojangson string as an NBT StringTag
+     * @param mojangson The Mojangson string
+     * @return the parsed StringTag NBT value
+     */
     public static StringTag parseString(String mojangson) {
         Character lastChar = mojangson.charAt(mojangson.length() - 1);
         Character firstChar = mojangson.charAt(0);
@@ -67,6 +80,12 @@ public class Mojangson {
         }
     }
 
+    /**
+     * Parses a Long value from a Mojangson string as an NBT LongTag
+     * @param mojangson The Mojangson string
+     * @return the parsed LongTag NBT value
+     * @throws MojangsonParseException if the Mojangson string could not be parsed as a Long value.
+     */
     public static LongTag parseLong(String mojangson) throws MojangsonParseException {
         Character lastChar = mojangson.charAt(mojangson.length() - 1);
         if (lastChar.toString().toLowerCase().charAt(0) == MojangsonToken.LONG_SUFFIX.getSymbol()) {
@@ -80,6 +99,12 @@ public class Mojangson {
         }
     }
 
+    /**
+     * Parses a Double value from a Mojangson string as an NBT DoubleTag
+     * @param mojangson The Mojangson string
+     * @return the parsed DoubleTag NBT value
+     * @throws MojangsonParseException if the Mojangson string could not be parsed as a Double value.
+     */
     public static DoubleTag parseDouble(String mojangson) throws MojangsonParseException {
         Character lastChar = mojangson.charAt(mojangson.length() - 1);
         if (lastChar.toString().toLowerCase().charAt(0) == MojangsonToken.DOUBLE_SUFFIX.getSymbol()) {
@@ -93,6 +118,12 @@ public class Mojangson {
         }
     }
 
+    /**
+     * Parses a Float value from a Mojangson string as an NBT FloatTag
+     * @param mojangson The Mojangson string
+     * @return the parsed FloatTag NBT value
+     * @throws MojangsonParseException if the Mojangson string could not be parsed as a Flaot value.
+     */
     public static FloatTag parseFloat(String mojangson) throws MojangsonParseException {
         Character lastChar = mojangson.charAt(mojangson.length() - 1);
         if (lastChar.toString().toLowerCase().charAt(0) == MojangsonToken.FLOAT_SUFFIX.getSymbol()) {
@@ -106,6 +137,12 @@ public class Mojangson {
         }
     }
 
+    /**
+     * Parses a Short value from a Mojangson string as an NBT ShortTag
+     * @param mojangson The Mojangson string
+     * @return the parsed ShortTag NBT value
+     * @throws MojangsonParseException if the Mojangson string could not be parsed as a Short value.
+     */
     public static ShortTag parseShort(String mojangson) throws MojangsonParseException {
         Character lastChar = mojangson.charAt(mojangson.length() - 1);
         if (lastChar.toString().toLowerCase().charAt(0) == MojangsonToken.SHORT_SUFFIX.getSymbol()) {
@@ -119,6 +156,12 @@ public class Mojangson {
         }
     }
 
+    /**
+     * Parses a Byte value from a Mojangson string as an NBT ByteTag
+     * @param mojangson The Mojangson string
+     * @return the parsed ByteTag NBT value
+     * @throws MojangsonParseException if the Mojangson string could not be parsed as a Byte value.
+     */
     public static ByteTag parseByte(String mojangson) throws MojangsonParseException {
         Character lastChar = mojangson.charAt(mojangson.length() - 1);
         if (lastChar.toString().toLowerCase().charAt(0) == BYTE_SUFFIX.getSymbol()) {
@@ -132,6 +175,12 @@ public class Mojangson {
         }
     }
 
+    /**
+     * Parses a Compound from a Mojangson string as an NBT CompoundTag
+     * @param mojangson The Mojangson string
+     * @return the parsed CompoundTag NBT value
+     * @throws MojangsonParseException if the Mojangson string could not be parsed as a Compound value.
+     */
     public static CompoundTag parseCompound(String mojangson) throws MojangsonParseException {
         final int parseCompoundStart = 0;      // Parsing context magic value
         final int parseCompoundPairKey = 1;   // Parsing context magic value
@@ -187,6 +236,12 @@ public class Mojangson {
         return tag;
     }
 
+    /**
+     * Parses an Array value from a Mojangson string
+     * @param mojangson The Mojangson string
+     * @return a ByteArrayTag value if the array contains byte values, an IntArrayTag value if the array contains int values or a ListTag with the array's elements.
+     * @throws MojangsonParseException if the Mojangson string could not be parsed as an Array value.
+     */
     public static Tag parseArray(String mojangson) throws MojangsonParseException {
         final int parseArrayStart = 0;   // Parsing context magic value
         final int parseArrayElement = 1; // Parsing context magic value
