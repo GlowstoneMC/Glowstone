@@ -2,6 +2,7 @@ package net.glowstone.util;
 
 import net.glowstone.GlowServer;
 
+import javax.net.ssl.HttpsURLConnection;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -35,7 +36,7 @@ public final class LibraryManager {
 
     public LibraryManager(GlowServer server) {
         // todo: allow configuration of repository, libraries, and directory
-        repository = "http://repo.glowstone.net/service/local/repositories/central/content/";
+        repository = "https://repo.glowstone.net/service/local/repositories/central/content/";
         directory = new File("lib");
     }
 
@@ -76,7 +77,10 @@ public final class LibraryManager {
                 GlowServer.logger.info("Downloading " + library + " " + version + "...");
                 try {
                     URL downloadUrl = new URL(repository + group.replace('.', '/') + "/" + library + "/" + version + "/" + library + "-" + version + ".jar");
-                    try (ReadableByteChannel input = Channels.newChannel(downloadUrl.openStream());
+                    HttpsURLConnection connection = (HttpsURLConnection) downloadUrl.openConnection();
+                    connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+
+                    try (ReadableByteChannel input = Channels.newChannel(connection.getInputStream());
                          FileOutputStream output = new FileOutputStream(file)) {
                         output.getChannel().transferFrom(input, 0, Long.MAX_VALUE);
                         GlowServer.logger.info("Downloaded " + library + " " + version + ".");
