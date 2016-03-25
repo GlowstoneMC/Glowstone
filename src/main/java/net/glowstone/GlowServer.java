@@ -67,6 +67,7 @@ import org.bukkit.util.permissions.DefaultPermissions;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.mcstats.Metrics;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -442,6 +443,13 @@ public final class GlowServer implements Server {
         bindQuery();
         bindRcon();
         logger.info("Ready for connections.");
+
+        try {
+            Metrics metrics = new Metrics(this);
+            metrics.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -1076,12 +1084,12 @@ public final class GlowServer implements Server {
 
     @Override
     public String getVersion() {
-        return getClass().getPackage().getImplementationVersion();
+        return GlowServer.class.getPackage().getImplementationVersion() + " (MC: " + GAME_VERSION + ")";
     }
 
     @Override
     public String getBukkitVersion() {
-        return getClass().getPackage().getSpecificationVersion();
+        return GlowServer.class.getPackage().getSpecificationVersion();
     }
 
     @Override
