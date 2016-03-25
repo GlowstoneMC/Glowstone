@@ -103,7 +103,7 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
             if (!fadeEvent.isCancelled()) {
                 state.update(true);
             }
-        } else if (block.getLightLevel() >= 9) {
+        } else if (blockAbove.getLightLevel() >= 9) {
             GlowWorld world = block.getWorld();
             int sourceX = block.getX();
             int sourceY = block.getY();
@@ -116,14 +116,15 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
                 int y = sourceY + random.nextInt(5) - 3;
 
                 GlowBlock targetBlock = world.getBlockAt(x, y, z);
+                GlowBlock targetAbove = targetBlock.getRelative(BlockFace.UP);
                 if (targetBlock.getType() == Material.DIRT &&
                         targetBlock.getData() == 0 && // only spread on normal dirt
-                        targetBlock.getRelative(BlockFace.UP).getMaterialValues().getLightOpacity() <= 2 &&
-                        targetBlock.getRelative(BlockFace.UP).getLightLevel() >= 4) {
+                        targetAbove.getMaterialValues().getLightOpacity() <= 2 &&
+                        targetAbove.getLightLevel() >= 4) {
                     GlowBlockState state = targetBlock.getState();
                     state.setType(Material.GRASS);
                     state.setRawData((byte) 0);
-                    BlockSpreadEvent spreadEvent = new BlockSpreadEvent(state.getBlock(), block, state);
+                    BlockSpreadEvent spreadEvent = new BlockSpreadEvent(targetBlock, block, state);
                     EventFactory.callEvent(spreadEvent);
                     if (!spreadEvent.isCancelled()) {
                         state.update(true);
