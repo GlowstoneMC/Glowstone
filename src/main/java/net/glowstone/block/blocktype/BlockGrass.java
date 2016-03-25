@@ -93,8 +93,8 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
 
     @Override
     public void updateBlock(GlowBlock block) {
-        if (block.getLightLevel() < 4 ||
-                block.getRelative(BlockFace.UP).getMaterialValues().getLightOpacity() > 2) {
+        GlowBlock blockAbove = block.getRelative(BlockFace.UP);
+        if (blockAbove.getLightLevel() < 4 && blockAbove.getMaterialValues().getLightOpacity() > 2) {
             // grass block turns into dirt block
             GlowBlockState state = block.getState();
             state.setType(Material.DIRT);
