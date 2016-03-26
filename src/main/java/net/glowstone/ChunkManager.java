@@ -7,15 +7,22 @@ import net.glowstone.generator.GlowChunkData;
 import net.glowstone.generator.GlowChunkGenerator;
 import net.glowstone.generator.biomegrid.MapLayer;
 import net.glowstone.io.ChunkIoService;
+
+import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkPopulateEvent;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.material.MaterialData;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
@@ -261,9 +268,31 @@ public final class ChunkManager {
         }
 
         // extended sections with data
+        GlowChunkData glowChunkData = null;
         if (generator instanceof GlowChunkGenerator) {
-            GlowChunkData chunkData = (GlowChunkData) generator.generateChunkData(world, random, x, z, biomes);
-            short[][] extSections = chunkData.getSections();
+            glowChunkData = (GlowChunkData) generator.generateChunkData(world, random, x, z, biomes);
+        } else {
+            ChunkGenerator.ChunkData chunkData = generator.generateChunkData(world, random, x, z, biomes);
+            if (chunkData != null) {
+                glowChunkData = new GlowChunkData(world);
+                for (int i = 0; i < 16; ++i) {
+                    for (int j = 0; j < 16; ++j) {
+                        int maxHeight = chunkData.getMaxHeight();
+                        for (int k = 0; k < maxHeight; ++k) {
+                            MaterialData materialData = chunkData.getTypeAndData(i, k, j);
+                            if (materialData != null) {
+                                glowChunkData.setBlock(i, k, j, materialData);
+                            } else {
+                                glowChunkData.setBlock(i, k, j, new MaterialData(Material.AIR));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (glowChunkData != null) {
+            short[][] extSections = glowChunkData.getSections();
             if (extSections != null) {
                 ChunkSection[] sections = new ChunkSection[extSections.length];
                 for (int i = 0; i < extSections.length; ++i) {
