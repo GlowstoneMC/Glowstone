@@ -10,6 +10,7 @@ import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.constants.*;
 import net.glowstone.entity.*;
+import net.glowstone.entity.objects.GlowFallingBlock;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.generator.structures.GlowStructure;
@@ -1273,12 +1274,17 @@ public final class GlowWorld implements World {
 
     @Override
     public FallingBlock spawnFallingBlock(Location location, Material material, byte data) throws IllegalArgumentException {
-        return null;
+        if (location == null || material == null) {
+            throw new IllegalArgumentException();
+        }
+        GlowFallingBlock glowFallingBlock = new GlowFallingBlock(location, material, data);
+        return glowFallingBlock;
     }
 
     @Override
     public FallingBlock spawnFallingBlock(Location location, int blockId, byte blockData) throws IllegalArgumentException {
-        return null;
+        Material material = Material.getMaterial(blockId);
+        return spawnFallingBlock(location, material, blockData);
     }
 
     @Override

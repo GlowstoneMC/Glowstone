@@ -22,6 +22,10 @@ public final class SpawnObjectMessage implements Message {
         this(id, uuid, type, x, y, z, pitch, yaw, 0, 0, 0, 0);
     }
 
+    public SpawnObjectMessage(int id, UUID uuid, int type, double x, double y, double z, int pitch, int yaw, int data) {
+        this(id, uuid, type, x, y, z, pitch, yaw, data, 0, 0, 0);
+    }
+
     public boolean hasFireball() {
         return data != 0;
     }

@@ -73,9 +73,10 @@ public final class EntityStorage {
 
 
         bind(new ArmorStandStore());
+        bind(new FallingBlockStore());
+        bind(new ItemFrameStore());
         bind(new ItemStore());
         bind(new TNTPrimedStorage());
-        bind(new ItemFrameStore());
     }
 
     private EntityStorage() {

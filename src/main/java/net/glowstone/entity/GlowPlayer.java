@@ -1453,7 +1453,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             session.send(new PositionRotationMessage(location));
             teleportedTo = location.clone();
         }
-        
+
         teleportedTo = location.clone();
         return true;
     }
