@@ -23,8 +23,8 @@ public class BlockMycel extends BlockType {
 
     @Override
     public void updateBlock(GlowBlock block) {
-        if (block.getLightLevel() < 4 ||
-                block.getRelative(BlockFace.UP).getMaterialValues().getLightOpacity() > 2) {
+        GlowBlock blockAbove = block.getRelative(BlockFace.UP);
+        if (blockAbove.getLightLevel() < 4 && blockAbove.getMaterialValues().getLightOpacity() > 2) {
             // mycel block turns into dirt block
             GlowBlockState state = block.getState();
             state.setType(Material.DIRT);
@@ -33,7 +33,7 @@ public class BlockMycel extends BlockType {
             if (!fadeEvent.isCancelled()) {
                 state.update(true);
             }
-        } else if (block.getLightLevel() >= 9) {
+        } else if (blockAbove.getLightLevel() >= 9) {
             GlowWorld world = block.getWorld();
             int sourceX = block.getX();
             int sourceY = block.getY();
@@ -46,10 +46,11 @@ public class BlockMycel extends BlockType {
                 int y = sourceY + random.nextInt(5) - 3;
 
                 GlowBlock targetBlock = world.getBlockAt(x, y, z);
+                GlowBlock targetAbove = targetBlock.getRelative(BlockFace.UP);
                 if (targetBlock.getType() == Material.DIRT &&
                         targetBlock.getData() == 0 && // only spread on normal dirt
-                        targetBlock.getRelative(BlockFace.UP).getMaterialValues().getLightOpacity() <= 2 &&
-                        targetBlock.getRelative(BlockFace.UP).getLightLevel() >= 4) {
+                        targetAbove.getMaterialValues().getLightOpacity() <= 2 &&
+                        targetAbove.getLightLevel() >= 4) {
                     GlowBlockState state = targetBlock.getState();
                     state.setType(Material.MYCEL);
                     state.setRawData((byte) 0);
