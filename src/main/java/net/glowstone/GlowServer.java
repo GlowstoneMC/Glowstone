@@ -950,6 +950,15 @@ public final class GlowServer implements Server {
     }
 
     /**
+     * Returns the structure template manager
+     *
+     * @return The server's structure template manager.
+     */
+    public TemplateManager getTemplateManager() {
+        return templateManager;
+    }
+
+    /**
      * The key pair generated at server start up
      *
      * @return The key pair generated at server start up

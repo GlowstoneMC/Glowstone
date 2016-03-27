@@ -21,6 +21,8 @@ public class GlowTemple extends GlowStructure {
         types.put(Biome.JUNGLE, TempleType.JUNGLE_TEMPLE);
         types.put(Biome.JUNGLE_HILLS, TempleType.JUNGLE_TEMPLE);
         types.put(Biome.SWAMPLAND, TempleType.WITCH_HUT);
+        types.put(Biome.FOREST, TempleType.IGLOO);        //TODO: Temporary, change to ICE_FLAT
+        types.put(Biome.FOREST_HILLS, TempleType.IGLOO);  //TODO: Temporary, change to TAIGA_COLD
     }
 
     public GlowTemple(World world, Random random, int chunkX, int chunkZ) {
@@ -37,6 +39,9 @@ public class GlowTemple extends GlowStructure {
                     break;
                 case WITCH_HUT:
                     addPiece(new GlowWitchHut(random, new Location(world, x, world.getSeaLevel(), z)));
+                    break;
+                case IGLOO:
+                    addPiece(new GlowIgloo(random, new Location(world, x, world.getSeaLevel(), z)));
                     break;
                 default:
                     addPiece(new GlowDesertTemple(random, new Location(world, x, world.getSeaLevel(), z)));
@@ -63,6 +68,7 @@ public class GlowTemple extends GlowStructure {
     public enum TempleType {
         DESERT_TEMPLE,
         JUNGLE_TEMPLE,
-        WITCH_HUT
+        WITCH_HUT,
+        IGLOO
     }
 }
