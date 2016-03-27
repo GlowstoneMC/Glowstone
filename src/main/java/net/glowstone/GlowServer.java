@@ -18,6 +18,7 @@ import net.glowstone.entity.EntityIdManager;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.generator.*;
+import net.glowstone.generator.structures.template.TemplateManager;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.inventory.crafting.CraftingManager;
@@ -148,6 +149,10 @@ public final class GlowServer implements Server {
      */
     private final CraftingManager craftingManager = new CraftingManager();
     /**
+     * The structure template manager for this server.
+     */
+    private final TemplateManager templateManager = new TemplateManager();
+    /**
      * The configuration for the server.
      */
     private final ServerConfig config;
@@ -268,6 +273,7 @@ public final class GlowServer implements Server {
      */
     public GlowServer(ServerConfig config) {
         materialValueManager = new BuiltinMaterialValueManager();
+        templateManager.initialize();
 
         this.config = config;
         // stuff based on selected config directory
