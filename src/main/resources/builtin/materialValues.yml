@@ -371,6 +371,7 @@ values:
     lightOpacity: 0
     flameResistance: 60
     fireResistance: 100
+    hardness: 0
   STANDING_BANNER:
   WALL_BANNER:
   DAYLIGHT_DETECTOR_INVERTED:
