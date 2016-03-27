@@ -49,18 +49,25 @@ public final class TemplateManager {
             JSONObject json;
             json = (JSONObject) jsonParser.parse(templateStream);
 
-            long version = (long) json.get("version");
-            JSONArray sizeArray = (JSONArray) json.get("size");
+            long version = (long) json.get("Int_version");
+            JSONArray sizeArray = (JSONArray) json.get("List_Int_size");
             Vector size = new Vector((long) sizeArray.get(0), (long) sizeArray.get(1), (long) sizeArray.get(2));
             ArrayList<TemplateBlock> blocks = new ArrayList<>();
 
-            JSONArray blocksArray = (JSONArray) json.get("blocks");
+            JSONArray blocksArray = (JSONArray) json.get("List_Compound_blocks");
             for (Object o : blocksArray) {
                 JSONObject blockEntry = (JSONObject) o;
-                JSONArray posArray = (JSONArray) blockEntry.get("pos");
+                JSONArray posArray = (JSONArray) blockEntry.get("List_Int_pos");
                 Vector pos = new Vector((long) posArray.get(0), (long) posArray.get(1), (long) posArray.get(2));
-                long state = (long) blockEntry.get("state");
-                TemplateBlock block = new TemplateBlock(pos, (int) state);
+                long state = (long) blockEntry.get("Int_state");
+                TemplateBlock block;
+
+                if (blockEntry.get("Compound_nbt") != null) {
+                    block = new TemplateTileEntity(pos, (int) state, (JSONObject) blockEntry.get("Compound_nbt"));
+                } else {
+                    block = new TemplateBlock(pos, (int) state);
+                }
+
                 blocks.add(block);
             }
 
