@@ -237,11 +237,6 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     public void putValue(String key, TagType type, Object value) {
         try {
             Constructor<? extends Tag> constructor = type.getConstructor();
-
-            String construct = "[ ";
-            for (Class<?> aClass : type.getConstructor().getParameterTypes()) {
-                construct += aClass.getSimpleName() + " ";
-            }
             put(key, constructor.newInstance(value));
         } catch (ReflectiveOperationException e) {
             throw new IllegalArgumentException("Unable to create NBT value of type " + type, e);
