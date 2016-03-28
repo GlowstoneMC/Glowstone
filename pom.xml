@@ -99,6 +99,11 @@
         <resources>
             <resource>
                 <directory>${project.basedir}/src/main/resources</directory>
+                <excludes>
+                    <exclude>
+                        assets/structures/*/max/
+                    </exclude>
+                </excludes>
             </resource>
         </resources>
 

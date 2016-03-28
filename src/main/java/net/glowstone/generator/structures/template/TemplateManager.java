@@ -39,7 +39,7 @@ public final class TemplateManager {
             return;
         }
 
-        InputStream stream = getClass().getClassLoader().getResourceAsStream(TEMPLATES_LCOATION + name + ".json");
+        InputStream stream = getClass().getClassLoader().getResourceAsStream(TEMPLATES_LCOATION + name + ".min.json");
 
         if (stream == null) {
             GlowServer.logger.severe("Could not find structure template from name '" + name + "'.");
