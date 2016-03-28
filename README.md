@@ -18,7 +18,7 @@ Currently the major changes from Glowstone include:
 
 ##Downloads
 
-If you don't want to build from source, prebuilt jar files are available to download from:
+If you don't want to build from source, pre-built jar files are available to download from:
 
 * **[Direct gserv.me download](https://bamboo.gserv.me/browse/GSPP-SRV/latestSuccessful/artifact/shared/Server-JAR/glowstone%2B%2B-1.9-SNAPSHOT.jar)** - recommended, direct link to latest build
 
