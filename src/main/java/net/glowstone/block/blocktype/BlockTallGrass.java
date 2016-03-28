@@ -21,6 +21,13 @@ import java.util.Collections;
 public class BlockTallGrass extends BlockNeedsAttached implements IBlockGrowable {
 
     @Override
+    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+        int typeIdBelow = block.getWorld().getBlockTypeIdAt(block.getX(), block.getY() - 1, block.getZ());
+        Material typeBelow = Material.getMaterial(typeIdBelow);
+        return typeBelow == Material.GRASS || typeBelow == Material.DIRT || typeBelow == Material.SOIL;
+    }
+
+    @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (random.nextFloat() < .125) {
             return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.SEEDS, 1)));
