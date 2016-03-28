@@ -3,15 +3,20 @@ package net.glowstone.generator.structures;
 import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.TileEntity;
+import net.glowstone.entity.EntityRegistry;
+import net.glowstone.entity.GlowEntity;
 import net.glowstone.generator.structures.template.Template;
 import net.glowstone.generator.structures.template.TemplateBlock;
+import net.glowstone.generator.structures.template.TemplateEntity;
 import net.glowstone.generator.structures.template.TemplateTileEntity;
 import net.glowstone.generator.structures.util.StructureBoundingBox;
+import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.EntityType;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
@@ -86,6 +91,12 @@ public class GlowIgloo extends GlowTemplePiece {
                 te.loadNbt(tte.getNBT());
                 te.updateInRange();
             }
+        }
+        for (TemplateEntity tEntity : template.getEntities()) {
+            Location location = origin.clone().add(tEntity.getPos());
+            EntityType type = tEntity.getType();
+            GlowEntity entity = world.spawn(location, EntityRegistry.getEntity(type.getName()));
+            EntityStorage.save(entity, tEntity.getNBT());
         }
     }
 }

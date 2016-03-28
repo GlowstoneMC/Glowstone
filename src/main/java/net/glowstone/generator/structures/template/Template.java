@@ -10,12 +10,14 @@ public class Template {
     private int version;
     private Vector size;
     private ArrayList<TemplateBlock> blocks;
+    private ArrayList<TemplateEntity> entities;
 
-    public Template(String name, int version, Vector size, ArrayList<TemplateBlock> blocks) {
+    public Template(String name, int version, Vector size, ArrayList<TemplateBlock> blocks, ArrayList<TemplateEntity> entities) {
         this.name = name;
         this.version = version;
         this.size = size;
         this.blocks = blocks;
+        this.entities = entities;
     }
 
     public String getName() {
@@ -32,5 +34,9 @@ public class Template {
 
     public ArrayList<TemplateBlock> getBlocks() {
         return blocks;
+    }
+
+    public ArrayList<TemplateEntity> getEntities() {
+        return entities;
     }
 }
