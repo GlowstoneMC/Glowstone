@@ -19,7 +19,7 @@ import java.util.Random;
 
 public class JunglePopulator extends BiomePopulator {
 
-    private static final Biome[] BIOMES = {Biome.JUNGLE, Biome.JUNGLE_HILLS};
+    private static final Biome[] BIOMES = {Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.MUTATED_JUNGLE};
     private static final TreeDecoration[] TREES = {new TreeDecoration(BigOakTree.class, 10),
             new TreeDecoration(JungleBush.class, 50), new TreeDecoration(MegaJungleTree.class, 15),
             new TreeDecoration(CocoaTree.class, 30)};
