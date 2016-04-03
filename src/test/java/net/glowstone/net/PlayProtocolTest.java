@@ -53,7 +53,7 @@ public class PlayProtocolTest extends BaseProtocolTest {
             new PluginMessage("glowstone", new byte[]{0x00, 0x11}),
             new SpectateMessage(UUID.randomUUID()),
             new ResourcePackStatusMessage("glowstonehash", 1),
-            new JoinGameMessage(1, 2, 3, 4, 5, "normal", true),
+            //new JoinGameMessage(1, 2, 3, 4, 5, "normal", true), //asymmetric
             new ChatMessage(ProtocolTestUtils.getTextMessage(), 2),
             new ChatMessage(ProtocolTestUtils.getTextMessage(), 1),
             new ChatMessage(ProtocolTestUtils.getJson()),

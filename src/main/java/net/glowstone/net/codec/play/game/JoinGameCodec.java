@@ -24,7 +24,7 @@ public final class JoinGameCodec implements Codec<JoinGameMessage> {
     public ByteBuf encode(ByteBuf buf, JoinGameMessage message) throws IOException {
         buf.writeInt(message.getId());
         buf.writeByte(message.getMode());
-        buf.writeByte(message.getDimension());
+        buf.writeInt(message.getDimension());
         buf.writeByte(message.getDifficulty());
         buf.writeByte(message.getMaxPlayers());
         ByteBufUtils.writeUTF8(buf, message.getLevelType());
