@@ -11,10 +11,7 @@ import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
-import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.InventoryView;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.*;
 
 /**
  * An Inventory representing the items a player is holding.
@@ -179,6 +176,16 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     @Override
+    public ItemStack getItem(EquipmentSlot equipmentSlot) {
+        return null;
+    }
+
+    @Override
+    public void setItem(EquipmentSlot equipmentSlot, ItemStack itemStack) {
+
+    }
+
+    @Override
     public void setItem(int index, ItemStack item) {
         if (index >= SIZE) {
             armor[index - SIZE] = item;
@@ -205,6 +212,11 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     @Override
+    public ItemStack[] getExtraContents() {
+        return new ItemStack[0];
+    }
+
+    @Override
     public void setArmorContents(ItemStack[] items) {
         if (items.length != 4) {
             throw new IllegalArgumentException("Length of armor must be 4");
@@ -212,6 +224,11 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         for (int i = 0; i < 4; ++i) {
             setItem(SIZE + i, items[i]);
         }
+    }
+
+    @Override
+    public void setExtraContents(ItemStack[] itemStacks) {
+
     }
 
     @Override

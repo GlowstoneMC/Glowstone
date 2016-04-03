@@ -1273,6 +1273,11 @@ public final class GlowWorld implements World {
     }
 
     @Override
+    public <T extends Arrow> T spawnArrow(Location location, Vector vector, float v, float v1, Class<T> aClass) {
+        return null;
+    }
+
+    @Override
     public FallingBlock spawnFallingBlock(Location location, Material material, byte data) throws IllegalArgumentException {
         if (location == null || material == null) {
             throw new IllegalArgumentException();
@@ -1518,6 +1523,11 @@ public final class GlowWorld implements World {
 
         double radiusSquared = Math.pow(volume * 16, 2);
         getRawPlayers().stream().filter(player -> player.getLocation().distanceSquared(location) <= radiusSquared).forEach(player -> player.playSound(location, sound, volume, pitch));
+    }
+
+    @Override
+    public void playSound(Location location, String s, float v, float v1) {
+
     }
 
     private void playEffect_(Location location, Effect effect, int data) { // fix name collision

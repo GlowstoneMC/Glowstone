@@ -9,6 +9,7 @@ import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.command.*;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.generator.ChunkGenerator;
@@ -550,6 +551,16 @@ public class ServerShim implements Server {
 
     @Override
     public Spigot spigot() {
+        return null;
+    }
+
+    @Override
+    public void reloadPermissions() {
+
+    }
+
+    @Override
+    public Entity getEntity(UUID uuid) {
         return null;
     }
 

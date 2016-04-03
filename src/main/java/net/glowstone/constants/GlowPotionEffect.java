@@ -133,5 +133,10 @@ public final class GlowPotionEffect extends PotionEffectType {
             // todo: convert damage value to potion effects
             return Collections.emptySet();
         }
+
+        @Override
+        public Collection<PotionEffect> getEffects(PotionType potionType, boolean b, boolean b1) {
+            return null;
+        }
     }
 }

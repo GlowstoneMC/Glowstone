@@ -49,6 +49,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.command.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.generator.ChunkGenerator;
@@ -1153,6 +1154,16 @@ public final class GlowServer implements Server {
                 return config.getConfig();
             }
         };
+    }
+
+    @Override
+    public void reloadPermissions() {
+
+    }
+
+    @Override
+    public Entity getEntity(UUID uuid) {
+        return null;
     }
 
     ////////////////////////////////////////////////////////////////////////////

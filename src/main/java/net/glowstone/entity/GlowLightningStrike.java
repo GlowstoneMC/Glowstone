@@ -62,6 +62,16 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
     }
 
     @Override
+    public void setInvulnerable(boolean b) {
+
+    }
+
+    @Override
+    public boolean isInvulnerable() {
+        return false;
+    }
+
+    @Override
     public boolean isEffect() {
         return effect;
     }
@@ -144,6 +154,11 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
     }
 
     public LightningStrike.Spigot spigot() {
+        return null;
+    }
+
+    @Override
+    public Location getOrigin() {
         return null;
     }
 }

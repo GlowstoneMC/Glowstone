@@ -69,6 +69,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.InventoryView.Property;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.MainHand;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.map.MapView;
 import org.bukkit.material.MaterialData;
@@ -904,6 +905,16 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public void setInvulnerable(boolean b) {
+
+    }
+
+    @Override
+    public boolean isInvulnerable() {
+        return false;
+    }
+
+    @Override
     public InetSocketAddress getAddress() {
         return session.getAddress();
     }
@@ -1160,6 +1171,46 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         } else {
             return 1.54;
         }
+    }
+
+    @Override
+    public boolean isGliding() {
+        return false;
+    }
+
+    @Override
+    public void setGliding(boolean b) {
+
+    }
+
+    @Override
+    public void setAI(boolean b) {
+
+    }
+
+    @Override
+    public boolean hasAI() {
+        return false;
+    }
+
+    @Override
+    public void setCollidable(boolean b) {
+
+    }
+
+    @Override
+    public boolean isCollidable() {
+        return false;
+    }
+
+    @Override
+    public int getArrowsStuck() {
+        return 0;
+    }
+
+    @Override
+    public void setArrowsStuck(int i) {
+
     }
 
     @Override
@@ -1786,6 +1837,21 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public PlayerResourcePackStatusEvent.Status getResourcePackStatus() {
+        return null;
+    }
+
+    @Override
+    public String getResourcePackHash() {
+        return null;
+    }
+
+    @Override
+    public boolean hasResourcePack() {
+        return false;
+    }
+
+    @Override
     public void playNote(Location loc, Instrument instrument, Note note) {
         Sound sound;
         switch (instrument) {
@@ -1849,6 +1915,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public Player.Spigot spigot() {
         return spigot;
+    }
+
+    @Override
+    public Location getOrigin() {
+        return null;
     }
 
 
@@ -2178,6 +2249,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     public void setItemOnCursor(ItemStack item) {
         super.setItemOnCursor(item);
         session.send(new SetWindowSlotMessage(-1, -1, item));
+    }
+
+    @Override
+    public MainHand getMainHand() {
+        return null;
     }
 
     @Override

@@ -105,4 +105,19 @@ public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
     public boolean isGlowing() {
         return false;
     }
+
+    @Override
+    public void setInvulnerable(boolean b) {
+
+    }
+
+    @Override
+    public boolean isInvulnerable() {
+        return false;
+    }
+
+    @Override
+    public Location getOrigin() {
+        return null;
+    }
 }

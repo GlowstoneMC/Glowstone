@@ -109,6 +109,21 @@ public final class GlowItem extends GlowEntity implements Item {
     }
 
     @Override
+    public void setInvulnerable(boolean b) {
+
+    }
+
+    @Override
+    public boolean isInvulnerable() {
+        return false;
+    }
+
+    @Override
+    public Location getOrigin() {
+        return null;
+    }
+
+    @Override
     public void pulse() {
         super.pulse();
 

@@ -255,6 +255,21 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
     }
 
     @Override
+    public void setInvulnerable(boolean b) {
+
+    }
+
+    @Override
+    public boolean isInvulnerable() {
+        return false;
+    }
+
+    @Override
+    public Location getOrigin() {
+        return null;
+    }
+
+    @Override
     public BlockFace getAttachedFace() {
         return inverseGetFace(getFacingNumber());
     }

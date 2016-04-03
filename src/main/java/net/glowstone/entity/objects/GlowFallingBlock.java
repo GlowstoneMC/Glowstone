@@ -113,6 +113,21 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
     }
 
     @Override
+    public void setInvulnerable(boolean b) {
+
+    }
+
+    @Override
+    public boolean isInvulnerable() {
+        return false;
+    }
+
+    @Override
+    public Location getOrigin() {
+        return null;
+    }
+
+    @Override
     public void setGlowing(boolean isGlowing) {
 
     }

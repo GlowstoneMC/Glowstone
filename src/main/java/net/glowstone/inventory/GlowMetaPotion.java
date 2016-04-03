@@ -5,6 +5,7 @@ import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -92,6 +93,16 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
                 addCustomEffect(fromNBT(effect), true);
             }
         }
+    }
+
+    @Override
+    public void setBasePotionData(PotionData potionData) {
+
+    }
+
+    @Override
+    public PotionData getBasePotionData() {
+        return null;
     }
 
     @Override
