@@ -10,6 +10,12 @@ import static net.glowstone.util.mojangson.MojangsonToken.*;
 
 public class Mojangson {
 
+    /*
+     * You shall not construct.
+     */
+    private Mojangson() {
+    }
+
     /**
      * Detects the Tag type of the Mojangson string, and parses it. Convenience method for other parse methods.
      * This method will fall back to an IntTag if it could not find an appropriate Tag type, and to String if the value
@@ -311,6 +317,16 @@ public class Mojangson {
         } else {
             return new ListTag<>(tagType, values);
         }
+    }
+
+    /**
+     * Creates a Mojangosn string from the given NBT tag.
+     *
+     * @param nbt the NBT to convert
+     * @return the converted Mojangson string
+     */
+    public static String fromNBT(Tag nbt) {
+        return nbt.toMojangson();
     }
 
 }
