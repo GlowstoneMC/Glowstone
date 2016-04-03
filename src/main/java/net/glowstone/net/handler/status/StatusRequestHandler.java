@@ -41,7 +41,9 @@ public final class StatusRequestHandler implements MessageHandler<GlowSession, S
 
         JSONObject version = new JSONObject();
         version.put("name", "Glowstone++ " + GlowServer.GAME_VERSION);
-        version.put("protocol", GlowServer.PROTOCOL_VERSION);
+        int protocolVersion = session.getVersion();
+        if (protocolVersion > 109 || protocolVersion < 107) protocolVersion = GlowServer.PROTOCOL_VERSION;
+        version.put("protocol", protocolVersion);
         json.put("version", version);
 
         JSONObject players = new JSONObject();

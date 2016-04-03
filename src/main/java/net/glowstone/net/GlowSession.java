@@ -10,6 +10,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.handler.codec.CodecException;
+import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
@@ -26,9 +27,9 @@ import net.glowstone.net.pipeline.CodecsHandler;
 import net.glowstone.net.pipeline.CompressionHandler;
 import net.glowstone.net.pipeline.EncryptionHandler;
 import net.glowstone.net.pipeline.NoopHandler;
+import net.glowstone.net.protocol.AbstractPlayProtocol;
 import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.LoginProtocol;
-import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.ProtocolType;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -95,6 +96,12 @@ public final class GlowSession extends BasicSession {
      * The hostname used to connect.
      */
     private String hostname;
+
+    /**
+     * The version used to connect.
+     */
+    @Getter
+    private int version = -1;
 
     /**
      * Data regarding a user who has connected through a proxy, used to
@@ -219,11 +226,16 @@ public final class GlowSession extends BasicSession {
         this.hostname = hostname;
     }
 
+    public void setVersion(int version) {
+        if (this.version != -1) throw new IllegalStateException("Cannot set version twice");
+        this.version = version;
+    }
+
     /**
      * Notify that the session is currently idle.
      */
     public void idle() {
-        if (pingMessageId == 0 && getProtocol() instanceof PlayProtocol) {
+        if (pingMessageId == 0 && getProtocol() instanceof AbstractPlayProtocol) {
             pingMessageId = random.nextInt();
             if (pingMessageId == 0) {
                 pingMessageId++;
@@ -422,7 +434,7 @@ public final class GlowSession extends BasicSession {
         }
 
         // perform the kick, sending a kick message if possible
-        if (isActive() && (getProtocol() instanceof LoginProtocol || getProtocol() instanceof PlayProtocol)) {
+        if (isActive() && (getProtocol() instanceof LoginProtocol || getProtocol() instanceof AbstractPlayProtocol)) {
             // channel is both currently connected and in a protocol state allowing kicks
             sendWithFuture(new KickMessage(reason)).addListener(ChannelFutureListener.CLOSE);
         } else {

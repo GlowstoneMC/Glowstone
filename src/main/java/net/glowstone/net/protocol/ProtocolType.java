@@ -7,26 +7,13 @@ public enum ProtocolType {
     HANDSHAKE(new HandshakeProtocol()),
     STATUS(new StatusProtocol()),
     LOGIN(new LoginProtocol()),
-    PLAY(new PlayProtocol());
+    PLAY(new AbstractPlayProtocol.PlayProtocol()),
+    PLAY_LEGACY(new AbstractPlayProtocol.PlayLegacyProtocol());
 
     private final GlowProtocol protocol;
 
     ProtocolType(GlowProtocol protocol) {
         this.protocol = protocol;
-    }
-
-    /**
-     * Get the ProtocolType corresponding to the given id if possible.
-     *
-     * @param id The protocol type id.
-     * @return The matching ProtocolType, or null.
-     */
-    public static ProtocolType getById(int id) {
-        ProtocolType[] values = values();
-        if (id < 0 || id >= values.length) {
-            return null;
-        }
-        return values[id];
     }
 
     /**

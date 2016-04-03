@@ -7,12 +7,12 @@ import net.glowstone.net.message.play.game.JoinGameMessage;
 
 import java.io.IOException;
 
-public final class JoinGameCodec implements Codec<JoinGameMessage> {
+public final class JoinGameLegacyCodec implements Codec<JoinGameMessage> {
     @Override
     public JoinGameMessage decode(ByteBuf buffer) throws IOException {
         int id = buffer.readInt();
         byte gameMode = buffer.readByte();
-        int dimension = buffer.readInt();
+        byte dimension = buffer.readByte();
         byte difficulty = buffer.readByte();
         byte maxPlayers = buffer.readByte();
         String levelType = ByteBufUtils.readUTF8(buffer);
@@ -24,7 +24,7 @@ public final class JoinGameCodec implements Codec<JoinGameMessage> {
     public ByteBuf encode(ByteBuf buf, JoinGameMessage message) throws IOException {
         buf.writeInt(message.getId());
         buf.writeByte(message.getMode());
-        buf.writeInt(message.getDimension());
+        buf.writeByte(message.getDimension());
         buf.writeByte(message.getDifficulty());
         buf.writeByte(message.getMaxPlayers());
         ByteBufUtils.writeUTF8(buf, message.getLevelType());

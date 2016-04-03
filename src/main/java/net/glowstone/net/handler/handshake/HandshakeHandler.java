@@ -13,12 +13,17 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
 
     @Override
     public void handle(GlowSession session, HandshakeMessage message) {
-        ProtocolType protocol = ProtocolType.getById(message.getState());
-        if (protocol != ProtocolType.LOGIN && protocol != ProtocolType.STATUS) {
+        ProtocolType protocol;
+        if (message.getState() == 1) {
+            protocol = ProtocolType.STATUS;
+        } else if (message.getState() == 2) {
+            protocol = ProtocolType.LOGIN;
+        } else {
             session.disconnect("Invalid state");
             return;
         }
 
+        session.setVersion(message.getVersion());
         session.setHostname(message.getAddress() + ":" + message.getPort());
 
         // Proxies modify the hostname in the HandshakeMessage to contain
@@ -44,7 +49,7 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
         session.setProtocol(protocol);
 
         if (protocol == ProtocolType.LOGIN) {
-            if (message.getVersion() < GlowServer.PROTOCOL_VERSION) {
+            if (message.getVersion() < 107) {
                 session.disconnect("Outdated client! I'm running " + GlowServer.GAME_VERSION);
             } else if (message.getVersion() > GlowServer.PROTOCOL_VERSION) {
                 session.disconnect("Outdated server! I'm running " + GlowServer.GAME_VERSION);

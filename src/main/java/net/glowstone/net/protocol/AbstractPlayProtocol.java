@@ -22,8 +22,8 @@ import net.glowstone.net.message.play.scoreboard.ScoreboardObjectiveMessage;
 import net.glowstone.net.message.play.scoreboard.ScoreboardScoreMessage;
 import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
 
-public final class PlayProtocol extends GlowProtocol {
-    public PlayProtocol() {
+public abstract class AbstractPlayProtocol extends GlowProtocol {
+    private AbstractPlayProtocol() {
         super("PLAY", 0x4C);
 
         inbound(0x00, TeleportConfirmMessage.class, TeleportConfirmCodec.class, TeleportConfirmHandler.class);
@@ -92,7 +92,7 @@ public final class PlayProtocol extends GlowProtocol {
         outbound(0x20, ChunkDataMessage.class, ChunkDataCodec.class);
         outbound(0x21, PlayEffectMessage.class, PlayEffectCodec.class);
         outbound(0x22, PlayParticleMessage.class, PlayParticleCodec.class);
-        outbound(0x23, JoinGameMessage.class, JoinGameCodec.class);
+        // join bellow
         outbound(0x24, MapDataMessage.class, MapDataCodec.class);
         outbound(0x25, RelativeEntityPositionMessage.class, RelativeEntityPositionCodec.class);
         outbound(0x26, RelativeEntityPositionRotationMessage.class, RelativeEntityPositionRotationCodec.class);
@@ -135,5 +135,19 @@ public final class PlayProtocol extends GlowProtocol {
         outbound(0x4B, EntityPropertyMessage.class, EntityPropertyCodec.class);
         outbound(0x4C, EntityEffectMessage.class, EntityEffectCodec.class);
 
+    }
+
+    public static final class PlayProtocol extends AbstractPlayProtocol {
+        public PlayProtocol() {
+            super();
+            outbound(0x23, JoinGameMessage.class, JoinGameCodec.class);
+        }
+    }
+
+    public static final class PlayLegacyProtocol extends AbstractPlayProtocol {
+        public PlayLegacyProtocol() {
+            super();
+            outbound(0x23, JoinGameMessage.class, JoinGameLegacyCodec.class);
+        }
     }
 }
