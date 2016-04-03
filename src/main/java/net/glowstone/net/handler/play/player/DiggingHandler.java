@@ -13,6 +13,7 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.DiggingMessage;
+import org.bukkit.DoublePlantSpecies;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -24,6 +25,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.DoublePlant;
+import org.bukkit.material.MaterialData;
 
 public final class DiggingHandler implements MessageHandler<GlowSession, DiggingMessage> {
     @Override
@@ -165,6 +168,13 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                 return;
             }
 
+            MaterialData data = block.getState().getData();
+            if (data instanceof DoublePlant) {
+                if (((DoublePlant) data).getSpecies() == DoublePlantSpecies.PLANT_APEX && block.getRelative(BlockFace.DOWN).getState().getData() instanceof DoublePlant) {
+                    block = block.getRelative(BlockFace.DOWN);
+                }
+            }
+
             BlockType blockType = ItemTable.instance().getBlock(block.getType());
             if (blockType != null) {
                 blockType.blockDestroy(player, block, face);
@@ -172,7 +182,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
 
             // destroy the block
             if (!block.isEmpty() && !block.isLiquid() && player.getGameMode() != GameMode.CREATIVE && world.getGameRuleMap().getBoolean("doTileDrops")) {
-                for (ItemStack drop : block.getDrops(holding)) {
+                for (ItemStack drop : blockType.getDrops(block, holding)) {
                     GlowItem item = world.dropItemNaturally(block.getLocation(), drop);
                     item.setPickupDelay(30);
                     item.setBias(player);
