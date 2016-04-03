@@ -13,8 +13,7 @@ public class Mojangson {
     /*
      * You shall not construct.
      */
-    private Mojangson() {
-    }
+    private Mojangson() {}
 
     /**
      * Detects the Tag type of the Mojangson string, and parses it. Convenience method for other parse methods.
