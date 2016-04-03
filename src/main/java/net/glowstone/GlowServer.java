@@ -105,12 +105,12 @@ public final class GlowServer implements Server {
     /**
      * The game version supported by the server.
      */
-    public static final String GAME_VERSION = "1.9";
+    public static final String GAME_VERSION = "1.9.2";
 
     /**
      * The protocol version supported by the server.
      */
-    public static final int PROTOCOL_VERSION = 107;
+    public static final int PROTOCOL_VERSION = 109;
     /**
      * A list of all the active {@link net.glowstone.net.GlowSession}s.
      */
@@ -1084,7 +1084,7 @@ public final class GlowServer implements Server {
 
     @Override
     public String getVersion() {
-        return GlowServer.class.getPackage().getImplementationVersion() + " (MC: " + GAME_VERSION + ")";
+        return GlowServer.class.getPackage().getImplementationVersion() + "-MC" + GAME_VERSION;
     }
 
     @Override
