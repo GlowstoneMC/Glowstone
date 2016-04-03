@@ -54,7 +54,7 @@ public final class GlowBlock implements Block {
     private final int y;
     private final int z;
     private GlowWorld world;
-    private Material type;
+    private int type = -1;
 
     public GlowBlock(GlowChunk chunk, int x, int y, int z) {
         world = chunk.getWorld();
@@ -176,11 +176,11 @@ public final class GlowBlock implements Block {
     // Type and typeid getters/setters
     @Override
     public Material getType() {
-        if (type != null) {
-            return type;
+        if (type != -1) {
+            return Material.getMaterial(type);
         }
-        type = Material.getMaterial(getTypeIdNoCache());
-        return type;
+        type = getTypeIdNoCache();
+        return Material.getMaterial(type);
     }
 
     @Override
@@ -190,11 +190,11 @@ public final class GlowBlock implements Block {
 
     @Override
     public int getTypeId() {
-        if (type != null) {
-            return type.getId();
+        if (type != -1) {
+            return type;
         }
-        type = Material.getMaterial(((GlowChunk) world.getChunkAt(this)).getType(x & 0xf, z & 0xf, y));
-        return type.getId();
+        type = getTypeIdNoCache();
+        return type;
     }
 
     private int getTypeIdNoCache() {
@@ -206,7 +206,6 @@ public final class GlowBlock implements Block {
      */
     @Override
     public void setType(Material type, boolean applyPhysics) {
-        this.type = type;
         setTypeId(type.getId(), applyPhysics);
     }
 
@@ -238,6 +237,7 @@ public final class GlowBlock implements Block {
         byte oldData = getData();
 
         ((GlowChunk) world.getChunkAt(this)).setType(x & 0xf, z & 0xf, y, type);
+        this.type = type;
         ((GlowChunk) world.getChunkAt(this)).setMetaData(x & 0xf, z & 0xf, y, data);
 
         if (oldTypeId == Material.DOUBLE_PLANT && getRelative(BlockFace.UP).getType() == Material.DOUBLE_PLANT) {
