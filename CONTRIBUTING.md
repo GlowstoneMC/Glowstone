@@ -18,6 +18,10 @@ There are a few basic ground-rules for contributors:
 
 Declaring formal releases remains the prerogative of the project maintainer.
 
+## How?
+
+For more information on how to start contributing to Glowstone, please view our [pull request how-to](https://github.com/GlowstoneMC/GlowstonePlusPlus/wiki/PR-Handling).
+
 ## Changes to this arrangement
 
 This is an experiment and feedback is welcome! This document may also be subject to pull-requests or changes by contributors where you believe you have something valuable to add or change.
