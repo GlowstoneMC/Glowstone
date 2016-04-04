@@ -11,8 +11,8 @@ The enhanced Glowstone fork with an emphasis on performance, control and compati
 
 Currently the major changes from Glowstone include:
 
-* Tracks the [Spigot 1.9 update of the Bukkit API](https://hub.spigotmc.org/javadocs/bukkit/)
-* New features merged in, adapted for PaperSpigot's update of the Bukkit API (see [features](#features) below for details)
+* Tracks the [Spigot 1.9.2 update of the Bukkit API](https://hub.spigotmc.org/javadocs/bukkit/)
+* New features merged in, adapted for Paper's update of the Bukkit API (see [features](#features) below for details)
 * Multi-API plugin support, integrates with [Bukkit2Sponge](https://github.com/GlowstonePlusPlus/Bukkit2Sponge) for [SpongeAPI](https://github.com/SpongePowered/SpongeAPI) plugin loading
 * Builds using Maven
 
@@ -20,7 +20,7 @@ Currently the major changes from Glowstone include:
 
 If you don't want to build from source, pre-built jar files are available to download from:
 
-* **[Direct gserv.me download](https://bamboo.gserv.me/browse/GSPP-SRV/latestSuccessful/artifact/shared/Server-JAR/glowstone%2B%2B-1.9-SNAPSHOT.jar)** - recommended, direct link to latest build
+* **[Direct gserv.me download](https://bamboo.gserv.me/browse/GSPP-SRV/latestSuccessful/artifact/shared/Server-JAR/glowstone%2B%2B-1.9.2-SNAPSHOT.jar)** - recommended, direct link to latest build
 
 * **[gserv.me](https://bamboo.gserv.me/browse/GSPP-SRV)** - all builds, no login required
 
@@ -44,12 +44,12 @@ cd GlowstonePlusPlus
 ./setup.sh
 ```
 
-The final jar will be placed in `target/` named `glowstone++-1.9-SNAPSHOT.jar`.
+The final jar will be placed in `target/` named `glowstone++-1.9.2-SNAPSHOT.jar`.
 
 ##Running
 
 Running Glowstone++ is simple because its dependencies are shaded into the output
-jar at compile time. Simply execute `java -jar glowstone++-1.9-SNAPSHOT.jar` along with any
+jar at compile time. Simply execute `java -jar glowstone++-1.9.2-SNAPSHOT.jar` along with any
 extra JVM options desired. A variety of command-line options are also available -
 run `java -jar glowstone++.jar --help` for more information.
 
