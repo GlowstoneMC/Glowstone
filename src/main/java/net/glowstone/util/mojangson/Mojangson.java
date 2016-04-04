@@ -49,15 +49,15 @@ public class Mojangson {
             return parseCompound(mojangson);
         }
         try {
-            return parseInt(mojangson);
+            return parseInt(mojangson); // Check if the value is a valid integer
         } catch (MojangsonParseException e) {
             try {
-                return parseLong(mojangson);
+                return parseLong(mojangson); // Could be a long if the number is too large
             } catch (MojangsonParseException e1) {
                 try {
-                    return parseDouble(mojangson);
+                    return parseDouble(mojangson); // Could be a decimal number without a type assignation, defaults to double
                 } catch (MojangsonParseException e2) {
-                    return parseString(mojangson);
+                    return parseString(mojangson); // Couldn't find anything matching it, assuming it is a String.
                 }
             }
         }

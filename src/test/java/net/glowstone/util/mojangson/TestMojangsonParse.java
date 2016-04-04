@@ -27,7 +27,7 @@ public class TestMojangsonParse {
     public static Collection<Object[]> getCases() {
         return Arrays.asList(
                 new Object[]{TagType.BYTE, "{value:1b}"},
-                new Object[]{TagType.DOUBLE, "{value:1.0d}"},
+                new Object[]{TagType.DOUBLE, "{value:1.0}"},
                 new Object[]{TagType.FLOAT, "{value:1.0f}"},
                 new Object[]{TagType.INT, "{value:1}"},
                 new Object[]{TagType.LIST, "{value:[\"1\",\"2\"]}"},
