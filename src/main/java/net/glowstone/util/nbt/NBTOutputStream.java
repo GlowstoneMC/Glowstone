@@ -1,5 +1,7 @@
 package net.glowstone.util.nbt;
 
+import net.glowstone.util.UnsafeMemory;
+
 import java.io.Closeable;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -24,6 +26,7 @@ public final class NBTOutputStream implements Closeable {
      * The output stream.
      */
     private final DataOutputStream os;
+    private final UnsafeMemory um;
 
     /**
      * Creates a new NBTOutputStream, which will write data to the
@@ -49,6 +52,12 @@ public final class NBTOutputStream implements Closeable {
     @SuppressWarnings("resource")
     public NBTOutputStream(OutputStream os, boolean compressed) throws IOException {
         this.os = new DataOutputStream(compressed ? new GZIPOutputStream(os) : os);
+        um = null;
+    }
+
+    public NBTOutputStream(byte[] buffer) {
+        um = new UnsafeMemory(buffer);
+        os = null;
     }
 
     /**
@@ -76,10 +85,20 @@ public final class NBTOutputStream implements Closeable {
             throw new IOException("Named TAG_End not permitted.");
         }
 
-        os.writeByte(type.getId());
-        os.writeShort(nameBytes.length);
-        os.write(nameBytes);
+        if (os == null) {
+            //GlowServer.logger.info("putting id");
+            um.putByte(type.getId());
+            //GlowServer.logger.info("putting name bytes length");
+            um.putShort((short) nameBytes.length);
+            //GlowServer.logger.info("putting name bytes");
+            um.putByteArray(nameBytes);
+        } else {
+            os.writeByte(type.getId());
+            os.writeShort(nameBytes.length);
+            os.write(nameBytes);
+        }
 
+        //GlowServer.logger.info("Writing tag payload...");
         writeTagPayload(tag);
     }
 
@@ -96,19 +115,39 @@ public final class NBTOutputStream implements Closeable {
 
         switch (type) {
             case BYTE:
-                os.writeByte((byte) tag.getValue());
+                if (os == null) {
+                    //GlowServer.logger.info("1");
+                    um.putByte((byte) tag.getValue());
+                } else {
+                    os.writeByte((byte) tag.getValue());
+                }
                 break;
 
             case SHORT:
-                os.writeShort((short) tag.getValue());
+                if (os == null) {
+                    //GlowServer.logger.info("2");
+                    um.putShort((short) tag.getValue());
+                } else {
+                    os.writeShort((short) tag.getValue());
+                }
                 break;
 
             case INT:
-                os.writeInt((int) tag.getValue());
+                if (os == null) {
+                    //GlowServer.logger.info("3");
+                    um.putInt((int) tag.getValue());
+                } else {
+                    os.writeInt((int) tag.getValue());
+                }
                 break;
 
             case LONG:
-                os.writeLong((long) tag.getValue());
+                if (os == null) {
+                    //GlowServer.logger.info("4");
+                    um.putLong((long) tag.getValue());
+                } else {
+                    os.writeLong((long) tag.getValue());
+                }
                 break;
 
             case FLOAT:
@@ -116,45 +155,82 @@ public final class NBTOutputStream implements Closeable {
                 break;
 
             case DOUBLE:
-                os.writeDouble((double) tag.getValue());
+                if (os == null) {
+                    //GlowServer.logger.info("5");
+                    um.putDouble((double) tag.getValue());
+                } else {
+                    os.writeDouble((double) tag.getValue());
+                }
                 break;
 
             case BYTE_ARRAY:
                 bytes = (byte[]) tag.getValue();
-                os.writeInt(bytes.length);
-                os.write(bytes);
+                if (os == null) {
+                    //GlowServer.logger.info("6");
+                    um.putByteArray(bytes);
+                    //GlowServer.logger.info("end 6");
+                } else {
+                    os.writeInt(bytes.length);
+                    os.write(bytes);
+                }
                 break;
 
             case STRING:
                 bytes = ((StringTag) tag).getValue().getBytes(StandardCharsets.UTF_8);
-                os.writeShort(bytes.length);
-                os.write(bytes);
+                if (os == null) {
+                    //GlowServer.logger.info("7");
+                    um.putShort((short) bytes.length);
+                    um.putByteArray(bytes);
+                } else {
+                    os.writeShort(bytes.length);
+                    os.write(bytes);
+                }
                 break;
 
             case LIST:
                 ListTag<Tag> listTag = (ListTag<Tag>) tag;
                 List<Tag> tags = listTag.getValue();
-
-                os.writeByte(listTag.getChildType().getId());
-                os.writeInt(tags.size());
+                if (os == null) {
+                    //GlowServer.logger.info("8");
+                    um.putByte(listTag.getChildType().getId());
+                    um.putInt(tags.size());
+                } else {
+                    os.writeByte(listTag.getChildType().getId());
+                    os.writeInt(tags.size());
+                }
                 for (Tag child : tags) {
                     writeTagPayload(child);
                 }
                 break;
 
             case COMPOUND:
+                if (os == null) {
+                    //GlowServer.logger.info("========9========");
+                }
                 Map<String, Tag> map = ((CompoundTag) tag).getValue();
                 for (Entry<String, Tag> entry : map.entrySet()) {
                     writeTag(entry.getKey(), entry.getValue());
                 }
-                os.writeByte((byte) 0); // end tag
+                if (os == null) {
+                    //GlowServer.logger.info("ending 9");
+                    um.putByte((byte) 0);
+                    //GlowServer.logger.info("=======end 9======");
+                } else {
+                    os.writeByte((byte) 0);
+                }
+                // end tag
                 break;
 
             case INT_ARRAY:
                 int[] ints = (int[]) tag.getValue();
-                os.writeInt(ints.length);
-                for (int value : ints) {
-                    os.writeInt(value);
+                if (os == null) {
+                    //GlowServer.logger.info("a");
+                    um.putIntArray(ints);
+                } else {
+                    os.writeInt(ints.length);
+                    for (int value : ints) {
+                        os.writeInt(value);
+                    }
                 }
                 break;
 
@@ -163,9 +239,15 @@ public final class NBTOutputStream implements Closeable {
         }
     }
 
+    public UnsafeMemory getUm() {
+        return um;
+    }
+
     @Override
     public void close() throws IOException {
-        os.close();
+        if (os != null) {
+            os.close();
+        }
     }
 
 }

@@ -66,9 +66,9 @@ import net.glowstone.GlowServer;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
 public class RegionFile {
@@ -81,19 +81,14 @@ public class RegionFile {
 
     private static final int CHUNK_HEADER_SIZE = 5;
     private static final byte[] emptySector = new byte[SECTOR_BYTES];
-    private final int[] offsets;
-    private final int[] chunkTimestamps;
+    private final int[] offsets = new int[SECTOR_INTS];
+    private final int[] chunkTimestamps = new int[SECTOR_INTS];
     private RandomAccessFile file;
     private ArrayList<Boolean> sectorFree;
     private int sizeDelta;
     private long lastModified;
 
     public RegionFile(File path) throws IOException {
-        offsets = new int[SECTOR_INTS];
-        chunkTimestamps = new int[SECTOR_INTS];
-
-        sizeDelta = 0;
-
         if (path.exists()) {
             lastModified = path.lastModified();
         }
@@ -102,6 +97,12 @@ public class RegionFile {
 
         // seek to the end to prepare size checking
         file.seek(file.length());
+
+        if (file.length() < 4096) {
+            file.write(RegionFile.emptySector);
+            file.write(RegionFile.emptySector);
+            sizeDelta += 8192;
+        }
 
         // if the file size is under 8KB, grow it (4K chunk offset table, 4K timestamp table)
         if (file.length() < 2 * SECTOR_BYTES) {
@@ -200,11 +201,11 @@ public class RegionFile {
         if (version == VERSION_GZIP) {
             byte[] data = new byte[length - 1];
             file.read(data);
-            return new DataInputStream(new GZIPInputStream(new ByteArrayInputStream(data)));
+            return new DataInputStream(new GZIPInputStream(new ByteArrayInputStream(data), 4096));
         } else if (version == VERSION_DEFLATE) {
             byte[] data = new byte[length - 1];
             file.read(data);
-            return new DataInputStream(new InflaterInputStream(new ByteArrayInputStream(data)));
+            return new DataInputStream(new InflaterInputStream(new ByteArrayInputStream(data), new Inflater(), 4096));
         }
 
         throw new IOException("Unknown version: " + version);
@@ -212,11 +213,11 @@ public class RegionFile {
 
     public DataOutputStream getChunkDataOutputStream(int x, int z) {
         checkBounds(x, z);
-        return new DataOutputStream(new DeflaterOutputStream(new ChunkBuffer(x, z), new Deflater(Deflater.BEST_SPEED)));
+        return new DataOutputStream(new BufferedOutputStream(new DeflaterOutputStream(new ChunkBuffer(x, z))));
     }
 
     /* write a chunk at (x,z) with length bytes of data to disk */
-    protected void write(int x, int z, byte[] data, int length) throws IOException {
+    public void write(int x, int z, byte[] data, int length) throws IOException {
         int offset = getOffset(x, z);
         int sectorNumber = offset >> 8;
         int sectorsAllocated = offset & 0xFF;

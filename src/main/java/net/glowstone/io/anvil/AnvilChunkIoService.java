@@ -235,9 +235,13 @@ public final class AnvilChunkIoService implements ChunkIoService {
         CompoundTag levelOut = new CompoundTag();
         levelOut.putCompound("Level", levelTags);
 
-        try (NBTOutputStream nbt = new NBTOutputStream(region.getChunkDataOutputStream(regionX, regionZ), false)) {
+        try (NBTOutputStream nbt = new NBTOutputStream(new byte[8096])) {
             nbt.writeTag(levelOut);
+            //GlowServer.logger.info("Writing..");
+            region.write(regionX, regionZ, nbt.getUm().getBuffer(), nbt.getUm().getLength());
         }
+
+        //GlowServer.logger.info("writing done");
     }
 
     @Override

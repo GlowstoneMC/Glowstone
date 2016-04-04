@@ -1,6 +1,5 @@
 package net.glowstone.scheduler;
 
-import net.glowstone.GlowServer;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scheduler.BukkitWorker;
@@ -8,8 +7,6 @@ import org.bukkit.scheduler.BukkitWorker;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Represents a task which is executed periodically.
@@ -179,11 +176,9 @@ public class GlowTask extends FutureTask<Void> implements BukkitTask, BukkitWork
 
         try {
             get();
-        } catch (ExecutionException ex) {
-            Logger log = owner == null ? GlowServer.logger : owner.getLogger();
-            log.log(Level.SEVERE, "Error while executing " + this, ex.getCause());
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException ignored) {
             // Task is already done, see the fact that we're in done() method
+            // and you can't print an execution exception..
         }
     }
 }
