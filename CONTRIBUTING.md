@@ -1,7 +1,5 @@
 # Glowstone++ is an OPEN Open Source Project
 
------------------------------------------
-
 ## What?
 
 Individuals making significant and valuable contributions are given commit-access to the project to contribute as they see fit. This project is more like an open wiki than a standard guarded open source project.
@@ -23,5 +21,3 @@ Declaring formal releases remains the prerogative of the project maintainer.
 ## Changes to this arrangement
 
 This is an experiment and feedback is welcome! This document may also be subject to pull-requests or changes by contributors where you believe you have something valuable to add or change.
-
------------------------------------------
