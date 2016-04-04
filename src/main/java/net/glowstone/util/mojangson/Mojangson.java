@@ -51,7 +51,15 @@ public class Mojangson {
         try {
             return parseInt(mojangson);
         } catch (MojangsonParseException e) {
-            return parseString(mojangson);
+            try {
+                return parseLong(mojangson);
+            } catch (MojangsonParseException e1) {
+                try {
+                    return parseDouble(mojangson);
+                } catch (MojangsonParseException e2) {
+                    return parseString(mojangson);
+                }
+            }
         }
     }
 
@@ -319,13 +327,216 @@ public class Mojangson {
     }
 
     /**
-     * Creates a Mojangosn string from the given NBT tag.
+     * Creates a Mojangson string from the given NBT Tag. Convenience method for other fromX(Tag) methods.
      *
-     * @param nbt the NBT to convert
+     * @param tag the NBT Tag to convert
      * @return the converted Mojangson string
      */
-    public static String fromNBT(Tag nbt) {
-        return nbt.toMojangson();
+    public static String fromTag(Tag tag) {
+        if (tag.getType() == TagType.BYTE) {
+            return fromByteTag((ByteTag) tag);
+        } else if (tag.getType() == TagType.BYTE_ARRAY) {
+            return fromByteArrayTag((ByteArrayTag) tag);
+        } else if (tag.getType() == TagType.COMPOUND) {
+            return fromCompoundTag((CompoundTag) tag);
+        } else if (tag.getType() == TagType.DOUBLE) {
+            return fromDoubleTag((DoubleTag) tag);
+        } else if (tag.getType() == TagType.FLOAT) {
+            return fromFloatTag((FloatTag) tag);
+        } else if (tag.getType() == TagType.INT) {
+            return fromIntTag((IntTag) tag);
+        } else if (tag.getType() == TagType.INT_ARRAY) {
+            return fromIntArrayTag((IntArrayTag) tag);
+        } else if (tag.getType() == TagType.LIST) {
+            return fromListTag((ListTag) tag);
+        } else if (tag.getType() == TagType.LONG) {
+            return fromLongTag((LongTag) tag);
+        } else if (tag.getType() == TagType.SHORT) {
+            return fromShortTag((ShortTag) tag);
+        } else if (tag.getType() == TagType.STRING) {
+            return fromStringTag((StringTag) tag);
+        }
+        return String.valueOf(tag.getValue());
     }
 
+    /**
+     * Creates a Mojangson string from the given Byte Tag.
+     *
+     * @param tag the Byte Tag to convert
+     * @return the converted Mojangson string
+     */
+    public static String fromByteTag(ByteTag tag) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(tag.getValue()).append(BYTE_SUFFIX);
+        return builder.toString();
+    }
+
+    /**
+     * Creates a Mojangson string from the given ByteArray Tag.
+     *
+     * @param tag the ByteArray Tag to convert
+     * @return the converted Mojangson string
+     */
+    public static String fromByteArrayTag(ByteArrayTag tag) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(ARRAY_START);
+        boolean start = true;
+
+        for (byte value : tag.getValue()) {
+            ByteTag b = new ByteTag(value);
+            if (start) {
+                start = false;
+            } else {
+                builder.append(ELEMENT_SEPERATOR);
+            }
+            builder.append(fromByteTag(b));
+        }
+        builder.append(ARRAY_END);
+        return builder.toString();
+    }
+
+    /**
+     * Creates a Mojangson string from the given Compound Tag.
+     *
+     * @param tag the Compound Tag to convert
+     * @return the converted Mojangson string
+     */
+    public static String fromCompoundTag(CompoundTag tag) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(COMPOUND_START);
+        boolean start = true;
+
+        for (String key : tag.getValue().keySet()) {
+            if (start) {
+                start = false;
+            } else {
+                builder.append(ELEMENT_SEPERATOR);
+            }
+
+            builder.append(key).append(ELEMENT_PAIR_SEPERATOR);
+            Tag value = tag.getValue().get(key);
+            builder.append(fromTag(value));
+        }
+        builder.append(COMPOUND_END);
+        return builder.toString();
+    }
+
+    /**
+     * Creates a Mojangson string from the given Double Tag.
+     *
+     * @param tag the Double Tag to convert
+     * @return the converted Mojangson string
+     */
+    public static String fromDoubleTag(DoubleTag tag) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(tag.getValue()).append(MojangsonToken.DOUBLE_SUFFIX);
+        return builder.toString();
+    }
+
+    /**
+     * Creates a Mojangson string from the given Float Tag.
+     *
+     * @param tag the Float Tag to convert
+     * @return the converted Mojangson string
+     */
+    public static String fromFloatTag(FloatTag tag) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(tag.getValue()).append(MojangsonToken.FLOAT_SUFFIX);
+        return builder.toString();
+    }
+
+    /**
+     * Creates a Mojangson string from the given Int Tag.
+     *
+     * @param tag the Int Tag to convert
+     * @return the converted Mojangson string
+     */
+    public static String fromIntTag(IntTag tag) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(tag.getValue());
+        return builder.toString();
+    }
+
+    /**
+     * Creates a Mojangson string from the given IntArray Tag.
+     *
+     * @param tag the IntArray Tag to convert
+     * @return the converted Mojangson string
+     */
+    public static String fromIntArrayTag(IntArrayTag tag) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(ARRAY_START);
+        boolean start = true;
+
+        for (int value : tag.getValue()) {
+            IntTag i = new IntTag(value);
+            if (start) {
+                start = false;
+            } else {
+                builder.append(ELEMENT_SEPERATOR);
+            }
+            builder.append(fromIntTag(i));
+        }
+        builder.append(ARRAY_END);
+        return builder.toString();
+    }
+
+    /**
+     * Creates a Mojangson string from the given List Tag.
+     *
+     * @param tag the List Tag to convert
+     * @return the converted Mojangson string
+     */
+    public static String fromListTag(ListTag<Tag> tag) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(ARRAY_START);
+        boolean start = true;
+
+        for (Tag value : tag.getValue()) {
+            if (start) {
+                start = false;
+            } else {
+                builder.append(ELEMENT_SEPERATOR);
+            }
+            builder.append(fromTag(value));
+        }
+        builder.append(ARRAY_END);
+        return builder.toString();
+    }
+
+    /**
+     * Creates a Mojangson string from the given Long Tag.
+     *
+     * @param tag the Long Tag to convert
+     * @return the converted Mojangson string
+     */
+    public static String fromLongTag(LongTag tag) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(tag.getValue()).append(MojangsonToken.LONG_SUFFIX);
+        return builder.toString();
+    }
+
+    /**
+     * Creates a Mojangson string from the given Short Tag.
+     *
+     * @param tag the Short Tag to convert
+     * @return the converted Mojangson string
+     */
+    public static String fromShortTag(ShortTag tag) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(tag.getValue()).append(MojangsonToken.SHORT_SUFFIX);
+        return builder.toString();
+    }
+
+    /**
+     * Creates a Mojangson string from the given String Tag.
+     *
+     * @param tag the String Tag to convert
+     * @return the converted Mojangson string
+     */
+    public static String fromStringTag(StringTag tag) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(MojangsonToken.STRING_QUOTES).append(tag.getValue()).append(MojangsonToken.STRING_QUOTES);
+        return builder.toString();
+    }
 }
