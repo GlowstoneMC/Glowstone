@@ -79,4 +79,8 @@ public class EntityRegistry {
         return ENTITIES.get(fromId(id));
     }
 
+    public static Class<? extends GlowEntity> getEntity(String name) {
+        return ENTITIES.get(fromName(name));
+    }
+
 }

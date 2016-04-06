@@ -130,7 +130,7 @@ public final class EntityStorage {
     /**
      * Helper method to call EntityStore methods for type safety.
      */
-    private static <T extends GlowEntity> T createEntity(EntityStore<T> store, Location location, CompoundTag compound) {
+    public static <T extends GlowEntity> T createEntity(EntityStore<T> store, Location location, CompoundTag compound) {
         T entity = store.createEntity(location, compound);
         store.load(entity, compound);
         return entity;
@@ -139,7 +139,7 @@ public final class EntityStorage {
     /**
      * Finds a store by entity class, throwing an exception if not found.
      */
-    private static EntityStore<?> find(Class<? extends GlowEntity> clazz, String type) {
+    public static EntityStore<?> find(Class<? extends GlowEntity> clazz, String type) {
         EntityStore<?> store = classTable.get(clazz);
         if (store == null) {
             // todo: maybe try to look up a parent class's store if one isn't found

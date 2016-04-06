@@ -32,6 +32,7 @@ public final class StructurePieceStorage {
         bind(new DesertTempleStore());
         bind(new JungleTempleStore());
         bind(new WitchHutStore());
+        bind(new IglooStore());
     }
 
     private StructurePieceStorage() {
