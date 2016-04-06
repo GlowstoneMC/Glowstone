@@ -11,6 +11,7 @@ import org.json.simple.parser.JSONParser;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public final class TemplateManager {
@@ -115,6 +116,7 @@ public final class TemplateManager {
 
             if (tagType == TagType.LIST) {
                 JSONArray jarray = (JSONArray) object.get(key);
+                HashMap<Integer, Object> alternate = new HashMap();
                 TagType arrayType = null;
 
                 for (TagType t : TagType.values()) {
@@ -140,8 +142,24 @@ public final class TemplateManager {
                 if (arrayType == TagType.END) {
                     continue;
                 }
+                if (arrayType == TagType.FLOAT) {
+                    for (int i = 0; i < jarray.size(); i++) {
+                        Double d = (Double) jarray.get(i);
+                        Float floatDouble = d.floatValue();
+                        alternate.put(i, floatDouble);
+                    }
+                }
                 try {
-                    compound.putList(nbtKey, arrayType, jarray);
+
+                    List<Object> finalList = new ArrayList<>();
+                    for (int i = 0; i < jarray.size(); i++) {
+                        if (alternate.containsKey(i)) {
+                            finalList.add(alternate.get(i));
+                        } else {
+                            finalList.add(jarray.get(i));
+                        }
+                    }
+                    compound.putList(nbtKey, arrayType, finalList);
                 } catch (Exception e) {
                     GlowServer.logger.severe("Cannot save array '" + nbtKey + "' (" + arrayType + ").");
                     e.printStackTrace();

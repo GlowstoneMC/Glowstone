@@ -95,8 +95,8 @@ public class GlowIgloo extends GlowTemplePiece {
         for (TemplateEntity tEntity : template.getEntities()) {
             Location location = origin.clone().add(tEntity.getPos());
             EntityType type = tEntity.getType();
-            GlowEntity entity = world.spawn(location, EntityRegistry.getEntity(type.getName()));
-            EntityStorage.save(entity, tEntity.getNBT());
+            GlowEntity entity = EntityStorage.createEntity(EntityStorage.find(EntityRegistry.getEntity(type.getName()), type.getName()), location, tEntity.getNBT());
+            entity.createSpawnMessage();
         }
     }
 }

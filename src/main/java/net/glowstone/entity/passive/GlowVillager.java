@@ -18,12 +18,14 @@ public class GlowVillager extends GlowAgeable implements Villager {
 
     public GlowVillager(Location location) {
         super(location, EntityType.VILLAGER, 20);
-        Random r = new Random();
-        setProfession(Profession.getProfession(r.nextInt(Profession.values().length)));
     }
 
     @Override
     public Profession getProfession() {
+        if (profession == null) {
+            Random r = new Random(location.getWorld().getSeed());
+            setProfession(Profession.getProfession(r.nextInt(Profession.values().length)));
+        }
         return profession;
     }
 
