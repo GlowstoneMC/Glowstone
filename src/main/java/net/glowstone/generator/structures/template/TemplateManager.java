@@ -1,8 +1,18 @@
 package net.glowstone.generator.structures.template;
 
 import net.glowstone.GlowServer;
+import net.glowstone.block.GlowBlock;
+import net.glowstone.block.entity.TileEntity;
+import net.glowstone.entity.EntityRegistry;
+import net.glowstone.entity.GlowEntity;
+import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.entity.EntityType;
+import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -11,7 +21,6 @@ import org.json.simple.parser.JSONParser;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public final class TemplateManager {
@@ -98,6 +107,46 @@ public final class TemplateManager {
         }
     }
 
+    public void place(World world, Location origin, Template template) {
+        for (TemplateBlock tBlock : template.getBlocks()) {
+            Location location = origin.clone().add(tBlock.getPosition());
+            Material type = tBlock.getBlockType();
+            MaterialData data = tBlock.getData();
+            GlowBlock block = (GlowBlock) world.getBlockAt(location);
+
+            if (type == Material.STRUCTURE_BLOCK) {
+                block.setType(Material.AIR);
+                continue;
+            }
+
+            block.setType(type);
+            block.setData(data.getData());
+
+            if (tBlock instanceof TemplateTileEntity) {
+                TemplateTileEntity tte = (TemplateTileEntity) tBlock;
+                TileEntity te = block.getTileEntity();
+
+                if (te == null) {
+                    GlowServer.logger.severe("Cannot find TileEntity for " + type + " (" + location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ());
+                    continue;
+                }
+
+                te.loadNbt(tte.getNBT());
+                te.updateInRange();
+            }
+        }
+        for (TemplateEntity tEntity : template.getEntities()) {
+            Location location = origin.clone().add(tEntity.getPos());
+            spawnEntityWithNBT(location, tEntity.getType(), tEntity.getNBT());
+        }
+    }
+
+    private GlowEntity spawnEntityWithNBT(Location location, EntityType type, CompoundTag nbt) {
+        GlowEntity entity = EntityStorage.createEntity(EntityStorage.find(EntityRegistry.getEntity(type.getName()), type.getName()), location, nbt);
+        entity.createSpawnMessage();
+        return entity;
+    }
+
     private CompoundTag jsonToNBT(JSONObject object) {
         CompoundTag compound = new CompoundTag();
         for (Object o : object.keySet()) {
@@ -116,7 +165,6 @@ public final class TemplateManager {
 
             if (tagType == TagType.LIST) {
                 JSONArray jarray = (JSONArray) object.get(key);
-                HashMap<Integer, Object> alternate = new HashMap();
                 TagType arrayType = null;
 
                 for (TagType t : TagType.values()) {
@@ -146,20 +194,11 @@ public final class TemplateManager {
                     for (int i = 0; i < jarray.size(); i++) {
                         Double d = (Double) jarray.get(i);
                         Float floatDouble = d.floatValue();
-                        alternate.put(i, floatDouble);
+                        jarray.set(i, floatDouble);
                     }
                 }
                 try {
-
-                    List<Object> finalList = new ArrayList<>();
-                    for (int i = 0; i < jarray.size(); i++) {
-                        if (alternate.containsKey(i)) {
-                            finalList.add(alternate.get(i));
-                        } else {
-                            finalList.add(jarray.get(i));
-                        }
-                    }
-                    compound.putList(nbtKey, arrayType, finalList);
+                    compound.putList(nbtKey, arrayType, jarray);
                 } catch (Exception e) {
                     GlowServer.logger.severe("Cannot save array '" + nbtKey + "' (" + arrayType + ").");
                     e.printStackTrace();
