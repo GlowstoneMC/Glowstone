@@ -327,45 +327,12 @@ public class Mojangson {
     }
 
     /**
-     * Creates a Mojangson string from the given NBT Tag. Convenience method for other fromX(Tag) methods.
-     *
-     * @param tag the NBT Tag to convert
-     * @return the converted Mojangson string
-     */
-    public static String fromTag(Tag tag) {
-        if (tag.getType() == TagType.BYTE) {
-            return fromByteTag((ByteTag) tag);
-        } else if (tag.getType() == TagType.BYTE_ARRAY) {
-            return fromByteArrayTag((ByteArrayTag) tag);
-        } else if (tag.getType() == TagType.COMPOUND) {
-            return fromCompoundTag((CompoundTag) tag);
-        } else if (tag.getType() == TagType.DOUBLE) {
-            return fromDoubleTag((DoubleTag) tag);
-        } else if (tag.getType() == TagType.FLOAT) {
-            return fromFloatTag((FloatTag) tag);
-        } else if (tag.getType() == TagType.INT) {
-            return fromIntTag((IntTag) tag);
-        } else if (tag.getType() == TagType.INT_ARRAY) {
-            return fromIntArrayTag((IntArrayTag) tag);
-        } else if (tag.getType() == TagType.LIST) {
-            return fromListTag((ListTag) tag);
-        } else if (tag.getType() == TagType.LONG) {
-            return fromLongTag((LongTag) tag);
-        } else if (tag.getType() == TagType.SHORT) {
-            return fromShortTag((ShortTag) tag);
-        } else if (tag.getType() == TagType.STRING) {
-            return fromStringTag((StringTag) tag);
-        }
-        return String.valueOf(tag.getValue());
-    }
-
-    /**
      * Creates a Mojangson string from the given Byte Tag.
      *
      * @param tag the Byte Tag to convert
      * @return the converted Mojangson string
      */
-    public static String fromByteTag(ByteTag tag) {
+    public static String fromTag(ByteTag tag) {
         StringBuilder builder = new StringBuilder();
         builder.append(tag.getValue()).append(BYTE_SUFFIX);
         return builder.toString();
@@ -377,7 +344,7 @@ public class Mojangson {
      * @param tag the ByteArray Tag to convert
      * @return the converted Mojangson string
      */
-    public static String fromByteArrayTag(ByteArrayTag tag) {
+    public static String fromTag(ByteArrayTag tag) {
         StringBuilder builder = new StringBuilder();
         builder.append(ARRAY_START);
         boolean start = true;
@@ -389,7 +356,7 @@ public class Mojangson {
             } else {
                 builder.append(ELEMENT_SEPERATOR);
             }
-            builder.append(fromByteTag(b));
+            builder.append(fromTag(b));
         }
         builder.append(ARRAY_END);
         return builder.toString();
@@ -401,7 +368,7 @@ public class Mojangson {
      * @param tag the Compound Tag to convert
      * @return the converted Mojangson string
      */
-    public static String fromCompoundTag(CompoundTag tag) {
+    public static String fromTag(CompoundTag tag) {
         StringBuilder builder = new StringBuilder();
         builder.append(COMPOUND_START);
         boolean start = true;
@@ -427,7 +394,7 @@ public class Mojangson {
      * @param tag the Double Tag to convert
      * @return the converted Mojangson string
      */
-    public static String fromDoubleTag(DoubleTag tag) {
+    public static String fromTag(DoubleTag tag) {
         StringBuilder builder = new StringBuilder();
         builder.append(tag.getValue()).append(MojangsonToken.DOUBLE_SUFFIX);
         return builder.toString();
@@ -439,7 +406,7 @@ public class Mojangson {
      * @param tag the Float Tag to convert
      * @return the converted Mojangson string
      */
-    public static String fromFloatTag(FloatTag tag) {
+    public static String fromTag(FloatTag tag) {
         StringBuilder builder = new StringBuilder();
         builder.append(tag.getValue()).append(MojangsonToken.FLOAT_SUFFIX);
         return builder.toString();
@@ -451,7 +418,7 @@ public class Mojangson {
      * @param tag the Int Tag to convert
      * @return the converted Mojangson string
      */
-    public static String fromIntTag(IntTag tag) {
+    public static String fromTag(IntTag tag) {
         StringBuilder builder = new StringBuilder();
         builder.append(tag.getValue());
         return builder.toString();
@@ -463,7 +430,7 @@ public class Mojangson {
      * @param tag the IntArray Tag to convert
      * @return the converted Mojangson string
      */
-    public static String fromIntArrayTag(IntArrayTag tag) {
+    public static String fromTag(IntArrayTag tag) {
         StringBuilder builder = new StringBuilder();
         builder.append(ARRAY_START);
         boolean start = true;
@@ -475,7 +442,7 @@ public class Mojangson {
             } else {
                 builder.append(ELEMENT_SEPERATOR);
             }
-            builder.append(fromIntTag(i));
+            builder.append(fromTag(i));
         }
         builder.append(ARRAY_END);
         return builder.toString();
@@ -487,7 +454,7 @@ public class Mojangson {
      * @param tag the List Tag to convert
      * @return the converted Mojangson string
      */
-    public static String fromListTag(ListTag<Tag> tag) {
+    public static String fromTag(ListTag<Tag> tag) {
         StringBuilder builder = new StringBuilder();
         builder.append(ARRAY_START);
         boolean start = true;
@@ -510,7 +477,7 @@ public class Mojangson {
      * @param tag the Long Tag to convert
      * @return the converted Mojangson string
      */
-    public static String fromLongTag(LongTag tag) {
+    public static String fromTag(LongTag tag) {
         StringBuilder builder = new StringBuilder();
         builder.append(tag.getValue()).append(MojangsonToken.LONG_SUFFIX);
         return builder.toString();
@@ -522,7 +489,7 @@ public class Mojangson {
      * @param tag the Short Tag to convert
      * @return the converted Mojangson string
      */
-    public static String fromShortTag(ShortTag tag) {
+    public static String fromTag(ShortTag tag) {
         StringBuilder builder = new StringBuilder();
         builder.append(tag.getValue()).append(MojangsonToken.SHORT_SUFFIX);
         return builder.toString();
@@ -534,7 +501,7 @@ public class Mojangson {
      * @param tag the String Tag to convert
      * @return the converted Mojangson string
      */
-    public static String fromStringTag(StringTag tag) {
+    public static String fromTag(StringTag tag) {
         StringBuilder builder = new StringBuilder();
         builder.append(MojangsonToken.STRING_QUOTES).append(tag.getValue()).append(MojangsonToken.STRING_QUOTES);
         return builder.toString();
