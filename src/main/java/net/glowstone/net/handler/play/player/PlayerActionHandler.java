@@ -29,10 +29,16 @@ public final class PlayerActionHandler implements MessageHandler<GlowSession, Pl
             case 4: // stop sprinting
                 player.setSprinting(false);
                 break;
-            case 5: //jump with horse
+            case 5: // start jump with horse
                 break;
-            default:
-                GlowServer.logger.info("Player " + player + " sent unknown PlayerAction: " + message.getAction());
+            case 6: // stop jump with horse
+                break;
+            case 7: // open horse inventory
+                break;
+            case 8: // start gliding
+                if (!player.isOnGround() && !player.isGliding() && !player.isInWater()) {
+                    player.setGliding(true);
+                }
         }
     }
 }
