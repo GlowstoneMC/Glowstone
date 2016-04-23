@@ -8,8 +8,10 @@ import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.game.PositionRotationMessage;
 import net.glowstone.net.message.play.player.PlayerUpdateMessage;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Objects;
 
@@ -83,7 +85,10 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
             player.setOnGround(message.isOnGround());
         }
 
-        if (player.isGliding() && player.isOnGround()) {
+        // Checks if the player is still wearing the Elytra
+        ItemStack chestplate = player.getInventory().getChestplate();
+        boolean hasElytra = chestplate != null && chestplate.getType() == Material.ELYTRA && chestplate.getDurability() > 1;
+        if (player.isGliding() && (player.isOnGround() || !hasElytra)) {
             player.setGliding(false);
         }
 
