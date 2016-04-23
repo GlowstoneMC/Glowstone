@@ -327,6 +327,41 @@ public class Mojangson {
     }
 
     /**
+     * Creates a Mojangson string from the given NBT Tag.
+     * Convenience method for generic tags (Tag).
+     *
+     * @param tag the NBT Tag to convert
+     * @return the converted Mojangson string
+     */
+    public static String fromGenericTag(Tag tag) {
+        switch (tag.getType()) {
+            case BYTE:
+                return fromTag((ByteTag) tag);
+            case BYTE_ARRAY:
+                return fromTag((ByteArrayTag) tag);
+            case COMPOUND:
+                return fromTag((CompoundTag) tag);
+            case DOUBLE:
+                return fromTag((DoubleTag) tag);
+            case FLOAT:
+                return fromTag((FloatTag) tag);
+            case INT:
+                return fromTag((IntTag) tag);
+            case INT_ARRAY:
+                return fromTag((IntArrayTag) tag);
+            case LIST:
+                return fromTag((ListTag) tag);
+            case LONG:
+                return fromTag((LongTag) tag);
+            case SHORT:
+                return fromTag((ShortTag) tag);
+            case STRING:
+                return fromTag((StringTag) tag);
+        }
+        return null;
+    }
+
+    /**
      * Creates a Mojangson string from the given Byte Tag.
      *
      * @param tag the Byte Tag to convert
@@ -382,7 +417,7 @@ public class Mojangson {
 
             builder.append(key).append(ELEMENT_PAIR_SEPERATOR);
             Tag value = tag.getValue().get(key);
-            builder.append(fromTag(value));
+            builder.append(fromGenericTag(value));
         }
         builder.append(COMPOUND_END);
         return builder.toString();
@@ -465,7 +500,7 @@ public class Mojangson {
             } else {
                 builder.append(ELEMENT_SEPERATOR);
             }
-            builder.append(fromTag(value));
+            builder.append(fromGenericTag(value));
         }
         builder.append(ARRAY_END);
         return builder.toString();

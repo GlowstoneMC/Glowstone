@@ -38,7 +38,7 @@ public class TestMojangsonWrite {
     public void canWriteTag() {
         CompoundTag top = new CompoundTag();
         top.getValue().put("value", testCase.getKey());
-        String result = Mojangson.fromCompoundTag(top);
+        String result = Mojangson.fromTag(top);
         Assert.assertEquals("Could not write case for " + testCase.getKey().getType().getName() + ": Wrong output.", testCase.getValue(), result);
     }
 
