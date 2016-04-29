@@ -329,7 +329,7 @@ public class Metrics {
         String pluginName = "GlowstonePlusPlus";
         boolean onlineMode = Bukkit.getServer().getOnlineMode(); // TRUE if online mode is enabled
         String pluginVersion = (Metrics.class.getPackage().getImplementationVersion() != null) ? Metrics.class.getPackage().getImplementationVersion() : "unknown";
-        String serverVersion = Bukkit.getVersion();
+        String serverVersion = Bukkit.getBukkitVersion();
         int playersOnline = getOnlinePlayers();
 
         // END server software specific section -- all code below does not use any code outside of this class / Java
