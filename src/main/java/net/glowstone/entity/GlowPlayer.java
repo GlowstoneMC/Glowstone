@@ -323,7 +323,18 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         // send login response
         session.send(new LoginSuccessMessage(profile.getUniqueId().toString(), profile.getName()));
-        session.setProtocol(session.getVersion() == 107 ? ProtocolType.PLAY_LEGACY : ProtocolType.PLAY); // 108 and 109 are same
+
+        switch (session.getVersion()) {
+            case GlowServer.LEGACY_PROTOCOL_VERSION:
+                session.setProtocol(ProtocolType.PLAY_LEGACY);
+                break;
+            case GlowServer.COMPATIBLE_PROTOCOL_VERSION:
+                session.setProtocol(ProtocolType.PLAY_COMPATIBLE);
+                break;
+            default:
+                session.setProtocol(ProtocolType.PLAY);
+                break;
+        }
 
         // read data from player reader
         hasPlayedBefore = reader.hasPlayedBefore();
@@ -692,7 +703,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         for (Key key : newChunks) {
             GlowChunk chunk = world.getChunkAt(key.getX(), key.getZ());
-            session.send(chunk.toMessage(skylight));
+            if (session.getVersion() == GlowServer.LEGACY_PROTOCOL_VERSION || session.getVersion() == GlowServer.COMPATIBLE_PROTOCOL_VERSION) {
+                session.send(chunk.toMessage(skylight).toLegacy());
+            } else {
+                session.send(chunk.toMessage(skylight));
+            }
         }
 
         // send visible tile entity data
