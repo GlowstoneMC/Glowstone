@@ -1,11 +1,17 @@
 package net.glowstone.command;
 
+import com.flowpowered.network.util.ByteBufUtils;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import net.glowstone.entity.GlowPlayer;
+import net.glowstone.net.message.play.game.PluginMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
+import java.io.IOException;
 import java.util.Collections;
 
 public class StopsoundCommand extends BukkitCommand {
@@ -39,6 +45,18 @@ public class StopsoundCommand extends BukkitCommand {
             sound = args[2];
             message = "Stopped sound '" + sound + "' for player '" + player.getName() + "'.";
         }
+
+        ByteBuf buffer = Unpooled.buffer();
+        try {
+            ByteBufUtils.writeUTF8(buffer, source);
+            ByteBufUtils.writeUTF8(buffer, sound);
+            ((GlowPlayer) player).getSession().send(new PluginMessage("MC|StopSound", buffer.array()));
+            buffer.release();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        sender.sendMessage(message);
         return true;
     }
 }
