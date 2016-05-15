@@ -27,7 +27,7 @@ public class TESign extends TileEntity {
 
     @Override
     public void update(GlowPlayer player) {
-        player.sendSignChange(getBlock().getLocation(), lines);
+        player.sendSignChange(this, getBlock().getLocation(), lines);
     }
 
     @Override

@@ -374,6 +374,16 @@ public final class GlowSession extends BasicSession {
         send(new UserListItemMessage(Action.ADD_PLAYER, entries));
     }
 
+    public ProtocolType getProtocolType() {
+        if (version == GlowServer.PROTOCOL_VERSION)
+            return ProtocolType.PLAY;
+        if (version == GlowServer.LEGACY_PROTOCOL_VERSION)
+            return ProtocolType.PLAY_LEGACY;
+        if (version == GlowServer.COMPATIBLE_PROTOCOL_VERSION)
+            return ProtocolType.PLAY_COMPATIBLE;
+        return null;
+    }
+
     @Override
     public ChannelFuture sendWithFuture(Message message) {
         if (!isActive()) {
