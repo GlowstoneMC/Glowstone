@@ -327,10 +327,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         switch (session.getVersion()) {
             case GlowServer.LEGACY_PROTOCOL_VERSION:
-                session.setProtocol(ProtocolType.PLAY_LEGACY);
+                session.setProtocol(ProtocolType.PLAY_107);
                 break;
             case GlowServer.COMPATIBLE_PROTOCOL_VERSION:
-                session.setProtocol(ProtocolType.PLAY_COMPATIBLE);
+                session.setProtocol(ProtocolType.PLAY_109);
                 break;
             default:
                 session.setProtocol(ProtocolType.PLAY);

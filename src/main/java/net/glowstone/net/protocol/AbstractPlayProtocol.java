@@ -145,9 +145,9 @@ public abstract class AbstractPlayProtocol extends GlowProtocol {
     }
 
     // 1.9.2
-    public static final class PlayCompatibleProtocol extends AbstractPlayProtocol {
-        public PlayCompatibleProtocol() {
-            super("PLAY_COMPATIBLE", 0x4C);
+    public static final class Play109Protocol extends AbstractPlayProtocol {
+        public Play109Protocol() {
+            super("PLAY_109", 0x4C);
             outbound(0x20, ChunkDataLegacyMessage.class, ChunkDataLegacyCodec.class);
             outbound(0x23, JoinGameMessage.class, JoinGameCodec.class);
             outbound(0x46, UpdateSignMessage.class, UpdateSignCodec.class);
@@ -161,9 +161,9 @@ public abstract class AbstractPlayProtocol extends GlowProtocol {
     }
 
     // 1.9
-    public static final class PlayLegacyProtocol extends AbstractPlayProtocol {
-        public PlayLegacyProtocol() {
-            super("PLAY_LEGACY", 0x4C);
+    public static final class Play107Protocol extends AbstractPlayProtocol {
+        public Play107Protocol() {
+            super("PLAY_107", 0x4C);
             outbound(0x20, ChunkDataLegacyMessage.class, ChunkDataLegacyCodec.class);
             outbound(0x23, JoinGameMessage.class, JoinGameLegacyCodec.class);
             outbound(0x46, UpdateSignMessage.class, UpdateSignCodec.class);

@@ -8,8 +8,8 @@ public enum ProtocolType {
     STATUS(new StatusProtocol()),
     LOGIN(new LoginProtocol()),
     PLAY(new AbstractPlayProtocol.PlayProtocol()),
-    PLAY_COMPATIBLE(new AbstractPlayProtocol.PlayCompatibleProtocol()),
-    PLAY_LEGACY(new AbstractPlayProtocol.PlayLegacyProtocol());
+    PLAY_109(new AbstractPlayProtocol.Play109Protocol()),
+    PLAY_107(new AbstractPlayProtocol.Play107Protocol());
 
     private final GlowProtocol protocol;
 
