@@ -15,6 +15,7 @@ public class GlowInventoryView extends InventoryView {
     private final HumanEntity player;
     private final InventoryType type;
     private final Inventory top, bottom;
+    private final int deleteSlot = 45;
 
     /**
      * Create the default inventory view for this player.
@@ -79,6 +80,7 @@ public class GlowInventoryView extends InventoryView {
      */
     private void checkSlot(int slot) {
         if (slot == OUTSIDE) return;
+        if (slot == deleteSlot) return;
 
         int size = countSlots();
         if (isDefault(this)) size += 4; // armor slots
