@@ -144,7 +144,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * The player's statistics, achievements, and related data.
      */
-    private StatisticMap stats = new StatisticMap();
+    private final StatisticMap stats = new StatisticMap();
 
     /**
      * Whether the player has played before (will be false on first join).
