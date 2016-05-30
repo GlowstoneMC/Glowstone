@@ -107,4 +107,8 @@ public final class StatisticMap {
         String name = name(stat, entityType);
         setValue(name, getValue(name) + modify);
     }
+
+    public Map<String, Integer> getValues() {
+        return values;
+    }
 }

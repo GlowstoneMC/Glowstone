@@ -8,8 +8,11 @@ import io.netty.buffer.Unpooled;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.ChunkManager.ChunkLock;
-import net.glowstone.*;
+import net.glowstone.EventFactory;
+import net.glowstone.GlowChunk;
 import net.glowstone.GlowChunk.Key;
+import net.glowstone.GlowOfflinePlayer;
+import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockBed;
@@ -141,7 +144,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * The player's statistics, achievements, and related data.
      */
-    private final StatisticMap stats = new StatisticMap();
+    private StatisticMap stats = new StatisticMap();
 
     /**
      * Whether the player has played before (will be false on first join).
@@ -338,6 +341,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         //creates InventoryMonitor to avoid NullPointerException
         invMonitor = new InventoryMonitor(getOpenInventory());
+        server.getPlayerStatisticIoService().readStats(this);
     }
 
     /**
@@ -1805,16 +1809,19 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
                 @Override
                 public void run() {
                     server.getPlayerDataService().writeData(GlowPlayer.this);
+                    server.getPlayerStatisticIoService().writeStats(GlowPlayer.this);
                 }
             }.start();
         } else {
             server.getPlayerDataService().writeData(this);
+            server.getPlayerStatisticIoService().writeStats(this);
         }
     }
 
     @Override
     public void loadData() {
         server.getPlayerDataService().readData(this);
+        server.getPlayerStatisticIoService().readStats(this);
     }
 
     @Override
@@ -2227,6 +2234,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void decrementStatistic(Statistic statistic, EntityType entityType, int amount) {
         stats.add(statistic, entityType, -amount);
+    }
+
+    public StatisticMap getStatisticMap() {
+        return stats;
     }
 
     public void sendStats() {
