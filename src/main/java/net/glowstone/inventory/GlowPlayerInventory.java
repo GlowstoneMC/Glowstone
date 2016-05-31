@@ -18,12 +18,13 @@ import org.bukkit.inventory.*;
  */
 public class GlowPlayerInventory extends GlowInventory implements PlayerInventory, EntityEquipment {
 
-    private static final int SIZE = 36;
+    private static final int SIZE = 37;
 
-    private static final int BOOTS_SLOT = 36;
-    private static final int LEGGINGS_SLOT = 37;
-    private static final int CHESTPLATE_SLOT = 38;
-    private static final int HELMET_SLOT = 39;
+    private static final int OFF_HAND_SLOT = 36;
+    private static final int BOOTS_SLOT = 37;
+    private static final int LEGGINGS_SLOT = 38;
+    private static final int CHESTPLATE_SLOT = 39;
+    private static final int HELMET_SLOT = 40;
 
     /**
      * The armor contents.
@@ -273,22 +274,22 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
 
     @Override
     public ItemStack getItemInMainHand() {
-        return null;
+        return getItemInHand();
     }
 
     @Override
     public void setItemInMainHand(ItemStack itemStack) {
-
+        setItemInHand(itemStack);
     }
 
     @Override
     public ItemStack getItemInOffHand() {
-        return null;
+        return getItem(OFF_HAND_SLOT);
     }
 
     @Override
     public void setItemInOffHand(ItemStack itemStack) {
-
+        setItem(OFF_HAND_SLOT, itemStack);
     }
 
     @Override

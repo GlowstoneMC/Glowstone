@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class PlayerInventoryTest {
 
-    private static final int SIZE = 36;
+    private static final int SIZE = 37;
 
     private static final ItemStack TEST_BOOTS = new ItemStack(Material.DIAMOND_BOOTS);
     private static final ItemStack TEST_LEGGINGS = null;
