@@ -33,10 +33,11 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         } catch (IllegalArgumentException ex) {
             GlowServer.logger.warning(session.getPlayer().getName() + ": illegal argument while handling click: " + ex);
         }
+        session.send(new TransactionMessage(message.getId(), message.getTransaction(), result));
         if (!result) {
             GlowServer.logger.info(session.getPlayer().getName() + ": [rejected] " + message);
+            session.getPlayer().updateInventory();
         }
-        session.send(new TransactionMessage(message.getId(), message.getTransaction(), result));
     }
 
     private boolean process(GlowPlayer player, WindowClickMessage message) {
@@ -231,13 +232,6 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         EventFactory.callEvent(event);
         if (event.isCancelled()) {
             player.getSession().send(new SetWindowSlotMessage(-1, -1, player.getItemOnCursor()));
-            if (message.getSlot() >= 0) {
-                if (inv == top) {
-                    player.sendItemChange(message.getSlot(), inv.getItem(message.getSlot()));
-                } else {
-                    player.sendItemChange(message.getSlot(), inv.getItem(view.convertSlot(message.getSlot())));
-                }
-            }
             return true;
         }
 
