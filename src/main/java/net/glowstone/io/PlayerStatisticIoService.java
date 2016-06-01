@@ -50,7 +50,7 @@ public class PlayerStatisticIoService {
                 JSONObject json = (JSONObject) parser.parse(new FileReader(statsFile));
                 for (Object o : json.keySet()) {
                     String key = (String) o;
-                    int value = (int) (long) json.get(o);
+                    int value = ((Long) json.get(o)).intValue();
                     player.getStatisticMap().getValues().put(key, value);
                 }
             } catch (ParseException | IOException e) {
