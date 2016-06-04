@@ -3,7 +3,7 @@ package net.glowstone.util.nbt;
 /**
  * The {@code TAG_Double} tag.
  */
-final class DoubleTag extends Tag<Double> {
+public final class DoubleTag extends Tag<Double> {
 
     /**
      * The value.
@@ -24,6 +24,5 @@ final class DoubleTag extends Tag<Double> {
     public Double getValue() {
         return value;
     }
-
 }
 

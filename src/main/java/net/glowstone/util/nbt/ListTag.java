@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * The {@code TAG_List} tag.
  */
-final class ListTag<T extends Tag> extends Tag<List<T>> {
+public final class ListTag<T extends Tag> extends Tag<List<T>> {
 
     /**
      * The type of entries within this list.
@@ -59,6 +59,5 @@ final class ListTag<T extends Tag> extends Tag<List<T>> {
         }
         bldr.append("}");
     }
-
 }
 
