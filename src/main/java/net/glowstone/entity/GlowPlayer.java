@@ -66,6 +66,7 @@ import org.bukkit.entity.Villager;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
+import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -1179,12 +1180,16 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public boolean isGliding() {
-        return false;
+        return metadata.getBit(MetadataIndex.STATUS, StatusFlags.GLIDING);
     }
 
     @Override
-    public void setGliding(boolean b) {
+    public void setGliding(boolean gliding) {
+        if (EventFactory.callEvent(new EntityToggleGlideEvent(this, gliding)).isCancelled()) {
+            return;
+        }
 
+        metadata.setBit(MetadataIndex.STATUS, StatusFlags.GLIDING, gliding);
     }
 
     @Override
@@ -2580,5 +2585,15 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public AttributeInstance getAttribute(Attribute attribute) {
         return null;
+    }
+
+    /**
+     * Returns true if the player is inside a water block
+     *
+     * @return True if entity is in water.
+     */
+    public boolean isInWater() {
+        Material mat = getLocation().getBlock().getType();
+        return mat == Material.WATER || mat == Material.STATIONARY_WATER;
     }
 }

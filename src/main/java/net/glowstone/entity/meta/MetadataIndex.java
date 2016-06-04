@@ -186,6 +186,7 @@ public enum MetadataIndex {
         int SPRINTING = 0x08;
         int ARM_UP = 0x10; // eating, drinking, blocking
         int INVISIBLE = 0x20;
+        int GLIDING = 0x80;
     }
 
     public interface ArmorStandFlags {
