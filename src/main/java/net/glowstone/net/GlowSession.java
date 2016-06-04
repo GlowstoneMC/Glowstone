@@ -375,12 +375,14 @@ public final class GlowSession extends BasicSession {
     }
 
     public ProtocolType getProtocolType() {
-        if (version == GlowServer.PROTOCOL_VERSION)
-            return ProtocolType.PLAY;
-        if (version == GlowServer.LEGACY_PROTOCOL_VERSION)
-            return ProtocolType.PLAY_107;
-        if (version == GlowServer.COMPATIBLE_PROTOCOL_VERSION)
-            return ProtocolType.PLAY_109;
+        switch (version) {
+            case GlowServer.PROTOCOL_VERSION:
+                return ProtocolType.PLAY;
+            case GlowServer.LEGACY_PROTOCOL_VERSION:
+                return ProtocolType.PLAY_107;
+            case GlowServer.COMPATIBLE_PROTOCOL_VERSION:
+                return ProtocolType.PLAY_109;
+        }
         return null;
     }
 
