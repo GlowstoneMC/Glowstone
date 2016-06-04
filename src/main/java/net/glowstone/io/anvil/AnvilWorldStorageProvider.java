@@ -21,6 +21,7 @@ public class AnvilWorldStorageProvider implements WorldStorageProvider {
     private StructureDataService structures;
     private PlayerDataService players;
     private ScoreboardIoService scoreboard;
+    private PlayerStatisticIoService statitic;
 
     public AnvilWorldStorageProvider(File dir) {
         this.dir = dir;
@@ -70,5 +71,13 @@ public class AnvilWorldStorageProvider implements WorldStorageProvider {
             scoreboard = new NbtScoreboardIoService(world.getServer(), new File(dir, "data"));
         }
         return scoreboard;
+    }
+
+    @Override
+    public PlayerStatisticIoService getPlayerStatisticIoService() {
+        if (statitic == null) {
+            statitic = new PlayerStatisticIoService(world.getServer(), new File(dir, "stats"));
+        }
+        return statitic;
     }
 }

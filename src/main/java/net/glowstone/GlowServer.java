@@ -22,6 +22,7 @@ import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.inventory.crafting.CraftingManager;
 import net.glowstone.io.PlayerDataService;
+import net.glowstone.io.PlayerStatisticIoService;
 import net.glowstone.io.ScoreboardIoService;
 import net.glowstone.map.GlowMapView;
 import net.glowstone.net.GlowNetworkServer;
@@ -969,6 +970,15 @@ public final class GlowServer implements Server {
      */
     public ScoreboardIoService getScoreboardIoService() {
         return worlds.getWorlds().get(0).getStorage().getScoreboardIoService();
+    }
+
+    /**
+     * Returns the player statitics I/O service attached to the first world.
+     *
+     * @return the server's statistics I/O service
+     */
+    public PlayerStatisticIoService getPlayerStatisticIoService() {
+        return worlds.getWorlds().get(0).getStorage().getPlayerStatisticIoService();
     }
 
     /**
