@@ -378,9 +378,9 @@ public final class GlowSession extends BasicSession {
         switch (version) {
             case GlowServer.PROTOCOL_VERSION:
                 return ProtocolType.PLAY;
-            case GlowServer.LEGACY_PROTOCOL_VERSION:
+            case GlowServer.LEGACY_PROTOCOL_1_9:
                 return ProtocolType.PLAY_107;
-            case GlowServer.COMPATIBLE_PROTOCOL_VERSION:
+            case GlowServer.LEGACY_PROTOCOL_1_9_2:
                 return ProtocolType.PLAY_109;
         }
         return null;

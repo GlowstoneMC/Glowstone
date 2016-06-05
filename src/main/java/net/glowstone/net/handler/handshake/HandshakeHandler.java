@@ -49,7 +49,7 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
         session.setProtocol(protocol);
 
         if (protocol == ProtocolType.LOGIN) {
-            if ((message.getVersion() < GlowServer.LEGACY_PROTOCOL_VERSION) || (message.getVersion() == GlowServer.LEGACY_PROTOCOL_VERSION && !session.getServer().canSupportLegacyClients())) {
+            if ((message.getVersion() < GlowServer.LEGACY_PROTOCOL_1_9) || (message.getVersion() == GlowServer.LEGACY_PROTOCOL_1_9 && !session.getServer().canSupportLegacyClients())) {
                 session.disconnect("Outdated client! I'm running " + GlowServer.GAME_VERSION);
             } else if (message.getVersion() > GlowServer.PROTOCOL_VERSION) {
                 session.disconnect("Outdated server! I'm running " + GlowServer.GAME_VERSION);

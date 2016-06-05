@@ -117,12 +117,12 @@ public final class GlowServer implements Server {
     /**
      * The legacy version supported by the server.
      */
-    public static final int LEGACY_PROTOCOL_VERSION = 107;
+    public static final int LEGACY_PROTOCOL_1_9 = 107;
 
     /**
      * The compatible version supported by the server.
      */
-    public static final int COMPATIBLE_PROTOCOL_VERSION = 109;
+    public static final int LEGACY_PROTOCOL_1_9_2 = 109;
     /**
      * A list of all the active {@link net.glowstone.net.GlowSession}s.
      */

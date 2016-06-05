@@ -326,10 +326,10 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(new LoginSuccessMessage(profile.getUniqueId().toString(), profile.getName()));
 
         switch (session.getVersion()) {
-            case GlowServer.LEGACY_PROTOCOL_VERSION:
+            case GlowServer.LEGACY_PROTOCOL_1_9:
                 session.setProtocol(ProtocolType.PLAY_107);
                 break;
-            case GlowServer.COMPATIBLE_PROTOCOL_VERSION:
+            case GlowServer.LEGACY_PROTOCOL_1_9_2:
                 session.setProtocol(ProtocolType.PLAY_109);
                 break;
             default:
@@ -704,7 +704,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         for (Key key : newChunks) {
             GlowChunk chunk = world.getChunkAt(key.getX(), key.getZ());
-            if (session.getVersion() == GlowServer.LEGACY_PROTOCOL_VERSION || session.getVersion() == GlowServer.COMPATIBLE_PROTOCOL_VERSION) {
+            if (session.getVersion() == GlowServer.LEGACY_PROTOCOL_1_9 || session.getVersion() == GlowServer.LEGACY_PROTOCOL_1_9_2) {
                 session.send(chunk.toMessage(skylight).toLegacy());
             } else {
                 session.send(chunk.toMessage(skylight));
