@@ -138,6 +138,7 @@ public final class GlowWorld implements World {
      * Contains how regular blocks should be pulsed.
      */
     private final ConcurrentHashMap tickMap = new ConcurrentHashMap<>(0);
+    private final ConcurrentHashMap singleTickMap = new ConcurrentHashMap<>(0);
     private final Spigot spigot = new Spigot() {
         @Override
         public void playEffect(Location location, Effect effect) {
@@ -354,6 +355,7 @@ public final class GlowWorld implements World {
 
         // We should pulse our tickmap, so blocks get updated.
         pulseTickMap();
+        pulseSingleTickMap();
 
         // pulse players last so they actually see that other entities have
         // moved. unfortunately pretty hacky. not a problem for players b/c
@@ -1795,8 +1797,23 @@ public final class GlowWorld implements World {
         });
     }
 
+    private void pulseSingleTickMap() {
+        ItemTable itemTable = ItemTable.instance();
+        getSingleTickMap().entrySet().stream().filter(entry -> entry.getValue() - worldAge <= 0).forEach(entry -> {
+            GlowBlock block = getBlockAt(entry.getKey());
+            BlockType notifyType = itemTable.getBlock(block.getTypeId());
+            if (notifyType != null)
+                notifyType.receivePulse(block);
+            getSingleTickMap().remove(entry.getKey(), entry.getValue());
+        });
+    }
+
     private ConcurrentHashMap<Location, Long> getTickMap() {
         return tickMap;
+    }
+
+    private ConcurrentHashMap<Location, Long> getSingleTickMap() {
+        return singleTickMap;
     }
 
     /**
@@ -1809,11 +1826,25 @@ public final class GlowWorld implements World {
     public void requestPulse(GlowBlock block, long tickRate) {
         Location target = block.getLocation();
 
-
         if (tickRate > 0)
             tickMap.put(target, tickRate);
         else if (tickMap.containsKey(target))
             tickMap.remove(target);
+    }
+
+    /**
+     * Calling this method will request that the block is ticked after the specified
+     * tick delay
+     *
+     * @param block The block to tick.
+     * @param tickRate The tick delay after which to pulse the block.
+     */
+    public void requestSinglePulse(GlowBlock block, long tickDelay) {
+        Location target = block.getLocation();
+
+        if (tickDelay < 0)
+            tickDelay = 0;
+        singleTickMap.put(target, worldAge + tickDelay);
     }
 
     public void cancelPulse(GlowBlock block) {

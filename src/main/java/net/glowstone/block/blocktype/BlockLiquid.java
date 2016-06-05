@@ -92,7 +92,7 @@ public abstract class BlockLiquid extends BlockType {
         // 0 = Full liquid block
         state.setType(getMaterial());
         state.setRawData((byte) 0);
-        state.getBlock().getWorld().requestPulse(state.getBlock(), isWater(state.getBlock().getType()) || state.getBlock().getBiome() == Biome.HELL ? TICK_RATE_WATER : TICK_RATE_LAVA);
+        state.getBlock().getWorld().requestSinglePulse(state.getBlock(), 0);
     }
 
     @Override
@@ -100,7 +100,7 @@ public abstract class BlockLiquid extends BlockType {
         if (block.getState().getFlowed() && !(isWater(newType) || newType == Material.LAVA || newType == Material.STATIONARY_LAVA)) {
             block.getState().setFlowed(false);
         }
-        block.getWorld().requestPulse(block, isWater(block.getType()) || block.getBiome() == Biome.HELL ? TICK_RATE_WATER : TICK_RATE_LAVA);
+        block.getWorld().requestSinglePulse(block, isWater(block.getType()) || block.getBiome() == Biome.HELL ? TICK_RATE_WATER : TICK_RATE_LAVA);
     }
 
     /**
@@ -188,7 +188,7 @@ public abstract class BlockLiquid extends BlockType {
         }
         // flow to the target
         ((GlowBlock) fromToEvent.getToBlock()).setType(fromToEvent.getBlock().getType(), strength, true);
-        ((GlowWorld) fromToEvent.getToBlock().getWorld()).requestPulse(((GlowBlock) fromToEvent.getToBlock()), isWater(fromToEvent.getToBlock().getType()) || fromToEvent.getToBlock().getBiome() == Biome.HELL ? TICK_RATE_WATER : TICK_RATE_LAVA);
+        ((GlowWorld) fromToEvent.getToBlock().getWorld()).requestSinglePulse(((GlowBlock) fromToEvent.getToBlock()), isWater(fromToEvent.getToBlock().getType()) || fromToEvent.getToBlock().getBiome() == Biome.HELL ? TICK_RATE_WATER : TICK_RATE_LAVA);
     }
 
     private void mix(GlowBlock target, BlockFace direction, Material flowingMaterial, Material targetMaterial) {
