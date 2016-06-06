@@ -1,10 +1,6 @@
 machine:
    java:
        version: oraclejdk8
-dependencies:
-    override:
-        - git submodule sync
-        - git submodule update --init
 test:
     override:
         - ./setup.sh
