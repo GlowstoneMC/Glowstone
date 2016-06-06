@@ -38,7 +38,7 @@
             <id>glowstone-snapshots</id>
             <name>Glowstone Snapshots</name>
             <layout>default</layout>
-            <url>https://oss.sonatype.org/content/repositories/public/</url>
+            <url>https://repo.glowstone.net/content/repositories/snapshots/</url>
         </repository>
     </repositories>
     
