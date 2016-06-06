@@ -7,6 +7,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.Getter;
 import lombok.Setter;
+import net.glowstone.GlowServer;
 import net.glowstone.ChunkManager.ChunkLock;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowChunk;
