@@ -34,6 +34,12 @@
             <layout>default</layout>
             <url>https://oss.sonatype.org/content/repositories/public/</url>
         </repository>
+        <repository>
+            <id>glowstone-snapshots</id>
+            <name>Glowstone Snapshots</name>
+            <layout>default</layout>
+            <url>https://oss.sonatype.org/content/repositories/public/</url>
+        </repository>
     </repositories>
     
 	<distributionManagement>
