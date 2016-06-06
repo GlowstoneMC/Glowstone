@@ -13,6 +13,7 @@ import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.game.ChunkDataMessage;
 import net.glowstone.util.NibbleArray;
 import net.glowstone.util.VariableValueArray;
+import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Chunk;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Entity;
@@ -690,7 +691,14 @@ public final class GlowChunk implements Chunk {
             buf.writeBytes(biomes);
         }
 
-        return new ChunkDataMessage(x, z, entireChunk, sectionBitmask, buf);
+        ArrayList<CompoundTag> tiles = new ArrayList<>();
+        for (TileEntity tileEntity : getRawTileEntities()) {
+            CompoundTag tag = new CompoundTag();
+            tileEntity.saveNbt(tag);
+            tiles.add(tag);
+        }
+
+        return new ChunkDataMessage(x, z, entireChunk, sectionBitmask, buf, tiles.toArray(new CompoundTag[tiles.size()]));
     }
 
     /**

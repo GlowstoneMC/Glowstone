@@ -16,6 +16,7 @@ import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockBed;
+import net.glowstone.block.entity.TESign;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.block.itemtype.ItemFood;
 import net.glowstone.block.itemtype.ItemType;
@@ -327,7 +328,18 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         // send login response
         session.send(new LoginSuccessMessage(profile.getUniqueId().toString(), profile.getName()));
-        session.setProtocol(session.getVersion() == 107 ? ProtocolType.PLAY_LEGACY : ProtocolType.PLAY); // 108 and 109 are same
+
+        switch (session.getVersion()) {
+            case GlowServer.LEGACY_PROTOCOL_1_9:
+                session.setProtocol(ProtocolType.PLAY_107);
+                break;
+            case GlowServer.LEGACY_PROTOCOL_1_9_2:
+                session.setProtocol(ProtocolType.PLAY_109);
+                break;
+            default:
+                session.setProtocol(ProtocolType.PLAY);
+                break;
+        }
 
         // read data from player reader
         hasPlayedBefore = reader.hasPlayedBefore();
@@ -697,7 +709,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         for (Key key : newChunks) {
             GlowChunk chunk = world.getChunkAt(key.getX(), key.getZ());
-            session.send(chunk.toMessage(skylight));
+            if (session.getVersion() == GlowServer.LEGACY_PROTOCOL_1_9 || session.getVersion() == GlowServer.LEGACY_PROTOCOL_1_9_2) {
+                session.send(chunk.toMessage(skylight).toLegacy());
+            } else {
+                session.send(chunk.toMessage(skylight));
+            }
         }
 
         // send visible tile entity data
@@ -1989,12 +2005,18 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * @throws IllegalArgumentException if location is null
      * @throws IllegalArgumentException if lines is non-null and has a length less than 4
      */
-    public void sendSignChange(Location location, TextMessage[] lines) throws IllegalArgumentException {
+    public void sendSignChange(TESign sign, Location location, TextMessage[] lines) throws IllegalArgumentException {
         checkNotNull(location, "location cannot be null");
         checkNotNull(lines, "lines cannot be null");
         checkArgument(lines.length == 4, "lines.length must equal 4");
 
-        afterBlockChanges.add(new UpdateSignMessage(location.getBlockX(), location.getBlockY(), location.getBlockZ(), lines));
+        if (session.getProtocolType() == ProtocolType.PLAY) {
+            CompoundTag tag = new CompoundTag();
+            sign.saveNbt(tag);
+            afterBlockChanges.add(new UpdateBlockEntityMessage(location.getBlockX(), location.getBlockY(), location.getBlockZ(), GlowBlockEntity.SIGN.getValue(), tag));
+        } else {
+            afterBlockChanges.add(new UpdateSignMessage(location.getBlockX(), location.getBlockY(), location.getBlockZ(), lines));
+        }
     }
 
     /**

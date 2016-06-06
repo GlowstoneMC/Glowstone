@@ -9,7 +9,10 @@ public enum GlowBlockEntity {
     BEACON(3),
     SKULL(4),
     FLOWER_POT(5),
-    BANNER(6);
+    BANNER(6),
+    STRUCTURE(7),
+    END_GATEWAY(8),
+    SIGN(9);
 
     private final int value;
 

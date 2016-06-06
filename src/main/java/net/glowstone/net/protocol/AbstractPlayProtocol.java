@@ -23,8 +23,8 @@ import net.glowstone.net.message.play.scoreboard.ScoreboardScoreMessage;
 import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
 
 public abstract class AbstractPlayProtocol extends GlowProtocol {
-    private AbstractPlayProtocol() {
-        super("PLAY", 0x4C);
+    private AbstractPlayProtocol(String name, int max) {
+        super(name, max);
 
         inbound(0x00, TeleportConfirmMessage.class, TeleportConfirmCodec.class, TeleportConfirmHandler.class);
         inbound(0x01, TabCompleteMessage.class, TabCompleteCodec.class, TabCompleteHandler.class);
@@ -89,7 +89,6 @@ public abstract class AbstractPlayProtocol extends GlowProtocol {
         outbound(0x1D, UnloadChunkMessage.class, UnloadChunkCodec.class);
         outbound(0x1E, StateChangeMessage.class, StateChangeCodec.class);
         outbound(0x1F, PingMessage.class, PingCodec.class);
-        outbound(0x20, ChunkDataMessage.class, ChunkDataCodec.class);
         outbound(0x21, PlayEffectMessage.class, PlayEffectCodec.class);
         outbound(0x22, PlayParticleMessage.class, PlayParticleCodec.class);
         // join bellow
@@ -127,27 +126,53 @@ public abstract class AbstractPlayProtocol extends GlowProtocol {
         outbound(0x43, SpawnPositionMessage.class, SpawnPositionCodec.class);
         outbound(0x44, TimeMessage.class, TimeCodec.class);
         outbound(0x45, TitleMessage.class, TitleCodec.class);
-        outbound(0x46, UpdateSignMessage.class, UpdateSignCodec.class);
-        outbound(0x47, SoundEffectMessage.class, SoundEffectCodec.class);
-        outbound(0x48, UserListHeaderFooterMessage.class, UserListHeaderFooterCodec.class);
-        outbound(0x49, CollectItemMessage.class, CollectItemCodec.class);
-        outbound(0x4A, EntityTeleportMessage.class, EntityTeleportCodec.class);
-        outbound(0x4B, EntityPropertyMessage.class, EntityPropertyCodec.class);
-        outbound(0x4C, EntityEffectMessage.class, EntityEffectCodec.class);
 
     }
 
+    // 1.9.4
     public static final class PlayProtocol extends AbstractPlayProtocol {
         public PlayProtocol() {
-            super();
+            super("PLAY", 0x4B);
+            outbound(0x20, ChunkDataMessage.class, ChunkDataCodec.class);
             outbound(0x23, JoinGameMessage.class, JoinGameCodec.class);
+            outbound(0x46, SoundEffectMessage.class, SoundEffectCodec.class);
+            outbound(0x47, UserListHeaderFooterMessage.class, UserListHeaderFooterCodec.class);
+            outbound(0x48, CollectItemMessage.class, CollectItemCodec.class);
+            outbound(0x49, EntityTeleportMessage.class, EntityTeleportCodec.class);
+            outbound(0x4A, EntityPropertyMessage.class, EntityPropertyCodec.class);
+            outbound(0x4B, EntityEffectMessage.class, EntityEffectCodec.class);
         }
     }
 
-    public static final class PlayLegacyProtocol extends AbstractPlayProtocol {
-        public PlayLegacyProtocol() {
-            super();
+    // 1.9.2
+    public static final class Play109Protocol extends AbstractPlayProtocol {
+        public Play109Protocol() {
+            super("PLAY_109", 0x4C);
+            outbound(0x20, ChunkDataLegacyMessage.class, ChunkDataLegacyCodec.class);
+            outbound(0x23, JoinGameMessage.class, JoinGameCodec.class);
+            outbound(0x46, UpdateSignMessage.class, UpdateSignCodec.class);
+            outbound(0x47, SoundEffectMessage.class, SoundEffectCodec.class);
+            outbound(0x48, UserListHeaderFooterMessage.class, UserListHeaderFooterCodec.class);
+            outbound(0x49, CollectItemMessage.class, CollectItemCodec.class);
+            outbound(0x4A, EntityTeleportMessage.class, EntityTeleportCodec.class);
+            outbound(0x4B, EntityPropertyMessage.class, EntityPropertyCodec.class);
+            outbound(0x4C, EntityEffectMessage.class, EntityEffectCodec.class);
+        }
+    }
+
+    // 1.9
+    public static final class Play107Protocol extends AbstractPlayProtocol {
+        public Play107Protocol() {
+            super("PLAY_107", 0x4C);
+            outbound(0x20, ChunkDataLegacyMessage.class, ChunkDataLegacyCodec.class);
             outbound(0x23, JoinGameMessage.class, JoinGameLegacyCodec.class);
+            outbound(0x46, UpdateSignMessage.class, UpdateSignCodec.class);
+            outbound(0x47, SoundEffectMessage.class, SoundEffectCodec.class);
+            outbound(0x48, UserListHeaderFooterMessage.class, UserListHeaderFooterCodec.class);
+            outbound(0x49, CollectItemMessage.class, CollectItemCodec.class);
+            outbound(0x4A, EntityTeleportMessage.class, EntityTeleportCodec.class);
+            outbound(0x4B, EntityPropertyMessage.class, EntityPropertyCodec.class);
+            outbound(0x4C, EntityEffectMessage.class, EntityEffectCodec.class);
         }
     }
 }

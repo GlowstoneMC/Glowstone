@@ -331,6 +331,7 @@ public final class ServerConfig {
         WHITELIST("server.whitelisted", false, Migrate.PROPS, "white-list"),
         MOTD("server.motd", "Glowstone++ server", Migrate.PROPS, "motd"),
         SHUTDOWN_MESSAGE("server.shutdown-message", "Server shutting down.", Migrate.BUKKIT, "settings.shutdown-message"),
+        ALLOW_LEGACY_CLIENTS("server.allow-legacy-clients", true),
 
         // console
         USE_JLINE("console.use-jline", true),
