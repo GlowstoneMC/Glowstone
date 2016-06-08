@@ -1,7 +1,7 @@
 /*
- * This file is part of Sponge, licensed under the MIT License (MIT).
+ * This file is part of SpongeAPI, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered.org <http://www.spongepowered.org>
+ * Copyright (c) SpongePowered <https://www.spongepowered.org>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,28 +22,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package org.spongepowered.api.block;
 
-package net.glowstone.block.block2.sponge;
-
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableMap;
+import org.spongepowered.api.CatalogType;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.block.tileentity.TileEntity;
+import org.spongepowered.api.block.trait.BlockTrait;
+import org.spongepowered.api.data.ImmutableDataBuilder;
+import org.spongepowered.api.data.ImmutableDataHolder;
+import org.spongepowered.api.data.key.Key;
+import org.spongepowered.api.data.manipulator.DataManipulator;
+import org.spongepowered.api.data.property.DirectionRelativePropertyHolder;
+import org.spongepowered.api.data.value.BaseValue;
+import org.spongepowered.api.data.value.immutable.ImmutableValue;
+import org.spongepowered.api.data.value.mutable.Value;
+import org.spongepowered.api.util.Cycleable;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
 
 /**
- * Represents a block using {@link BlockType} and a list of
- * {@link BlockProperty} instances.
- *
- * <p>This interface represents the Mojang interpretation of
- * "block state."</p>
- *
- * <p>States do not refer to extra data, such as chest contents. That is
- * considered extra data and can be accessed via DataHolder.</p>
+ * Represents a particular "state" that can exist at a {@link Location} with
+ * a particular {@link BlockType} and various {@link ImmutableValue}s defining
+ * the information for the "block". Note that normally, there may exist only
+ * a single instance of a particular {@link BlockState} as they are immutable,
+ * a particular instance may be cached for various uses.
  */
 public interface BlockState {
 
     /**
-     * Get the base type of block.
+     * Gets the base type of block.
      *
      * <p>The type does not include block data such as the contents of
      * inventories.</p>
@@ -53,76 +64,109 @@ public interface BlockState {
     BlockType getType();
 
     /**
-     * Get all properties defined on this BlockState, with their current values.
+     * Applies extended properties for the current @{link BlockType} if any to
+     * the current {@link BlockState}. This usually is gathered from surrounding
+     * {@link BlockState}'s.
      *
-     * @return Map of all current properties
+     * <p>Note: This should only be called for live {@link BlockState}'s at
+     * a specific {@link Location} for accurate results.</p>
+     *
+     * <p>
+     * Examples of some extended properties are:
+     * </p>
+     *
+     * <ul>
+     *     <li>snow on podzul dirt block</li>
+     *     <li>occupied status for beds</li>
+     *     <li>fence connections</li>
+     * </ul>
+     *
+     * @param location The location used to search for extended properties
+     * @return The blockstate with extended properties included if any
      */
-    ImmutableMap<BlockProperty<?>, ? extends Comparable<?>> getProperties();
+    BlockState withExtendedProperties(Location location);
 
     /**
-     * Get all property names defined on this BlockState
+     * Gets the associated {@link BlockState} with the cycled
+     * {@link BaseValue}. Note that only {@link Cycleable} values can be
+     * cycled. To change a particular {@link Key}'ed {@link Value}, usage
+     * of the {@link BlockState#with(Key, Object)} is recommended.
      *
-     * @return Collection of property names
+     * @param key The key to cycle
+     * @return The blockstate instance with the cycled value
      */
-    Collection<String> getPropertyNames();
+    BlockState cycleValue(BlockTrait<?> trait);
 
     /**
-     * Get a property from its name.
+     * Creates a new {@link BlockSnapshot} with this current {@link BlockState}
+     * at the desired {@link Location}. If the {@link Location} has the same
+     * {@link BlockState}, and the {@link BlockType} can house a
+     * {@link TileEntity}, the data from the tile entity may be included in the
+     * returned  {@link BlockSnapshot}.
      *
-     * @param name The name of the property
-     * @return The property with the given name or Optional.absent() if not found
+     * @param location The location for the snapshot
+     * @return The newly created snapshot
      */
-    Optional<BlockProperty<?>> getPropertyByName(String name);
+    BlockSnapshot snapshotFor(Location location);
 
     /**
-     * Get the current value of a given property.
+     * Gets the {@link Comparable} value for the specific {@link BlockTrait}
+     * such that if the {@link BlockState} does not support the
+     * {@link BlockTrait}, {@link Optional#empty()} is returned.
      *
-     * @param name Property to get value of
-     * @return Current value of the property or Optional.absent() if not found
+     * @param blockTrait The block trait instance
+     * @param <T> The generic type of block trait
+     * @return The comparable value, if available and compatible
      */
-    Optional<? extends Comparable<?>> getPropertyValue(String name);
+    <T extends Comparable<T>> Optional<T> getTraitValue(BlockTrait<T> blockTrait);
 
     /**
-     * Get an altered BlockState with the given property set to the given value.
+     * Attempts to retrieve the {@link BlockTrait} instance associated with
+     * this {@link BlockState}s {@link BlockType} by string id. If there is no
+     * {@link BlockTrait} available, {@link Optional#empty()} is returned.
      *
-     * <p>This does not alter the current BlockState instance</p>
-     *
-     * @param property Property to change value of
-     * @param value New value of property
-     * @return A BlockState with the property's value modified
+     * @param blockTrait The block trait id
+     * @return The block trait, if available
      */
-    BlockState withProperty(BlockProperty<?> property, Comparable<?> value);
+    Optional<BlockTrait<?>> getTrait(String blockTrait);
 
     /**
-     * Get an altered BlockState with the given property set to the next valid
-     * value for that property, cycling to the lowest value after the highest
-     * value.
+     * Gets the {@link BlockState} with the appropriate value for the given
+     * {@link BlockTrait}. If the {@link BlockTrait} is not supported,
+     * {@link Optional#empty()} is returned. If the object is not either
+     * an instance contained in {@link BlockTrait#getPossibleValues()} or
+     * an instance {@link Object#toString()}, {@link Optional#empty()} may be
+     * returned.
      *
-     * <p>This does not alter the current BlockState instance</p>
-     *
-     * @param property Property to change value of
-     * @return A BlockState with the property's value modified
+     * @param trait The trait
+     * @param value The value
+     * @return The blockstate, if supported
      */
-    BlockState cycleProperty(BlockProperty<?> property);
+    Optional<BlockState> withTrait(BlockTrait<?> trait, Object value);
 
     /**
-     * Get the data value of the block at the given position.
+     * Gets an immutable {@link Collection} of all applicable
+     * {@link BlockTrait}s for this {@link BlockState}.
      *
-     * <p>The data value is a number between 0 and 15 (inclusive) that
-     * represents a value for differentiation with certain blocks. For example,
-     * the base dirt block has a data value that changes the variant of dirt.
-     * The base data value is generally 0.</p>
-     *
-     * <p>However, be aware that data values are being deprecated in
-     * Minecraft because they are a waste of bytes and add extra complexity to
-     * block differentiation. Most blocks don't use a data value, so that's
-     * a waste of four bits of data per block. In the future, there will
-     * only be <em>one</em> number to represent each 'state' of a block.</p>
-     *
-     * @return The data value
-     * @deprecated Exists for backwards-compatibility/transitional use
+     * @return An immutable collection of all applicable block traits
      */
-    @Deprecated
-    byte getDataValue();
+    Collection<BlockTrait<?>> getTraits();
 
+    /**
+     * Gets an immutable {@link Collection} of all the values for all
+     * {@link BlockTrait}s for this {@link BlockState}.
+     *
+     * @return An immutable collection of all the values for all applicable
+     *     traits
+     */
+    Collection<?> getTraitValues();
+
+    /**
+     * Gets an immutable or unmodifiable {@link Map} of the known {@link BlockTrait}s
+     * to their current values for this {@link BlockState}.
+     *
+     * @return The immutable map of block traits to their values representing
+     *     this block state
+     */
+    Map<BlockTrait<?>, ?> getTraitMap();
 }
