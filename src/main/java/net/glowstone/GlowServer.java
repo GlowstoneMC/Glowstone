@@ -116,15 +116,6 @@ public final class GlowServer implements Server {
     public static final int PROTOCOL_VERSION = 210;
 
     /**
-     * The legacy version supported by the server.
-     */
-    public static final int LEGACY_PROTOCOL_1_9 = 107;
-
-    /**
-     * The compatible version supported by the server.
-     */
-    public static final int LEGACY_PROTOCOL_1_9_2 = 109;
-    /**
      * A list of all the active {@link net.glowstone.net.GlowSession}s.
      */
     private final SessionRegistry sessions = new SessionRegistry();
@@ -1080,10 +1071,6 @@ public final class GlowServer implements Server {
      */
     public boolean getAnnounceAchievements() {
         return config.getBoolean(Key.ANNOUNCE_ACHIEVEMENTS);
-    }
-
-    public boolean canSupportLegacyClients() {
-        return config.getBoolean(Key.ALLOW_LEGACY_CLIENTS);
     }
 
     ////////////////////////////////////////////////////////////////////////////

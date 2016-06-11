@@ -6,7 +6,7 @@ import com.flowpowered.network.service.CodecLookupService;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.glowstone.net.message.play.inv.HeldItemMessage;
-import net.glowstone.net.protocol.AbstractPlayProtocol;
+import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.testutils.ServerShim;
 import org.junit.Test;
@@ -80,7 +80,7 @@ public abstract class BaseProtocolTest {
 
         assertTrue("Did not test inbound classes: " + inboundSet, inboundSet.isEmpty());
         // todo: enable the outbound check for PlayProtocol
-        if (!(protocol instanceof AbstractPlayProtocol)) {
+        if (!(protocol instanceof PlayProtocol)) {
             assertTrue("Did not test outbound classes: " + outboundSet, outboundSet.isEmpty());
         }
     }
