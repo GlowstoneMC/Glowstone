@@ -220,21 +220,25 @@ public final class ItemIds {
         block(195, "jungle_door"); // jungle_door is also 429
         block(196, "acacia_door"); // acacia_door is also 430
         block(197, "dark_oak_door"); // dark_oak_door is also 431
-        block(198, "end_rod");
-        block(199, "chorus_plant");
-        block(200, "chorus_flower");
-        block(201, "purpur_block");
-        block(202, "purpur_pillar");
-        block(203, "purpur_stairs");
+        both(198, "end_rod");
+        both(199, "chorus_plant");
+        both(200, "chorus_flower");
+        both(201, "purpur_block");
+        both(202, "purpur_pillar");
+        both(203, "purpur_stairs");
         block(204, "purpur_double_slab");
-        block(205, "purpur_slab");
-        block(206, "end_bricks");
+        both(205, "purpur_slab");
+        both(206, "end_bricks");
         block(207, "beetroots");
         block(208, "grass_path");
         block(209, "end_gateway");
         block(210, "repeating_command_block");
         block(211, "chain_command_block");
         block(212, "frosted_ice");
+        both(213, "magma");
+        both(214, "nether_wart_block");
+        both(215, "red_nether_brick");
+        both(216, "bone_block");
         block(255, "structure_block");
         // items
         item(256, "iron_shovel");

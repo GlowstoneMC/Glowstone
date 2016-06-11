@@ -10,14 +10,12 @@ import java.io.IOException;
 public final class ResourcePackStatusCodec implements Codec<ResourcePackStatusMessage> {
     @Override
     public ResourcePackStatusMessage decode(ByteBuf buf) throws IOException {
-        String hash = ByteBufUtils.readUTF8(buf);
         int result = ByteBufUtils.readVarInt(buf);
-        return new ResourcePackStatusMessage(hash, result);
+        return new ResourcePackStatusMessage(result);
     }
 
     @Override
     public ByteBuf encode(ByteBuf buf, ResourcePackStatusMessage message) throws IOException {
-        ByteBufUtils.writeUTF8(buf, message.getHash());
         ByteBufUtils.writeVarInt(buf, message.getResult());
         return buf;
     }
