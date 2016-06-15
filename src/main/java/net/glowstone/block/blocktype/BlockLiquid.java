@@ -92,7 +92,7 @@ public abstract class BlockLiquid extends BlockType {
         // 0 = Full liquid block
         state.setType(getMaterial());
         state.setRawData((byte) 0);
-        state.getBlock().getWorld().requestSinglePulse(state.getBlock(), 0);
+        state.getBlock().getWorld().requestSinglePulse(state.getBlock(), isWater(state.getType()) || state.getBlock().getBiome() == Biome.HELL ? TICK_RATE_WATER : TICK_RATE_LAVA);
     }
 
     @Override
