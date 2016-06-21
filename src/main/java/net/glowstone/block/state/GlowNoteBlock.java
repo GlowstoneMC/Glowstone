@@ -29,22 +29,91 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
     }
 
     private static Instrument instrumentOf(Material mat) {
-        // todo: check more blocks.
         switch (mat) {
             case WOOD:
+            case ACACIA_STAIRS:
+            case BIRCH_WOOD_STAIRS:
+            case JUNGLE_WOOD_STAIRS:
+            case SPRUCE_WOOD_STAIRS:
+            case DARK_OAK_STAIRS:
+            case WOOD_STAIRS:
+            case BOOKSHELF:
+            case CHEST:
+            case FENCE:
+            case ACACIA_FENCE:
+            case BIRCH_FENCE:
+            case DARK_OAK_FENCE:
+            case JUNGLE_FENCE:
+            case NETHER_FENCE:
+            case SPRUCE_FENCE:
+            case TRAP_DOOR:
+            case ACACIA_FENCE_GATE:
+            case BIRCH_FENCE_GATE:
+            case DARK_OAK_FENCE_GATE:
+            case FENCE_GATE:
+            case JUNGLE_FENCE_GATE:
+            case SPRUCE_FENCE_GATE:
+            case DAYLIGHT_DETECTOR:
+            case DAYLIGHT_DETECTOR_INVERTED:
+            case TRAPPED_CHEST:
             case NOTE_BLOCK:
             case WORKBENCH:
             case LOG:
                 return Instrument.BASS_GUITAR;
             case SAND:
             case GRAVEL:
+            case GLOWSTONE:
             case SOUL_SAND:
                 return Instrument.SNARE_DRUM;
             case GLASS:
+            case BEACON:
+            case SEA_LANTERN:
                 return Instrument.STICKS;
             case STONE:
+            case DIAMOND_ORE:
+            case COBBLESTONE:
+            case DROPPER:
+            case REDSTONE_ORE:
+            case STONE_SLAB2:
+            case COAL_ORE:
+            case LAPIS_ORE:
+            case IRON_ORE:
+            case DISPENSER:
+            case GOLD_ORE:
+            case BEDROCK:
+            case COBBLESTONE_STAIRS:
+            case MOSSY_COBBLESTONE:
+            case SMOOTH_BRICK:
+            case COBBLE_WALL:
+            case QUARTZ_ORE:
+            case QUARTZ_BLOCK:
+            case QUARTZ_STAIRS:
+            case SMOOTH_STAIRS:
+            case QUARTZ:
+            case BRICK_STAIRS:
+            case SANDSTONE:
+            case SANDSTONE_STAIRS:
+            case EMERALD_ORE:
+            case NETHER_BRICK:
+            case NETHER_BRICK_STAIRS:
+            case ENDER_STONE:
+            case RED_SANDSTONE:
+            case RED_SANDSTONE_STAIRS:
             case OBSIDIAN:
+            case ENDER_PORTAL_FRAME:
+            case FURNACE:
+            case ENDER_CHEST:
+            case END_BRICKS:
+            case PURPUR_BLOCK:
+            case PRISMARINE:
+            case PURPUR_PILLAR:
+            case PURPUR_STAIRS:
+            case PURPUR_SLAB:
+            case PURPUR_DOUBLE_SLAB:
+            case HARD_CLAY:
+            case STAINED_CLAY:
             case NETHERRACK:
+            case COAL_BLOCK:
             case BRICK:
                 return Instrument.BASS_DRUM;
             case DIRT:
