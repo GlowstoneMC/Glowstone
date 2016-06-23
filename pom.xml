@@ -4,7 +4,7 @@
     <name>Glowstone++</name>
     <groupId>net.glowstoneplusplus</groupId>
     <artifactId>glowstoneplusplus</artifactId>
-    <version>1.10.1-SNAPSHOT</version>
+    <version>1.10.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <inceptionYear>2015</inceptionYear>
     <url>https://www.glowstone.net</url>
@@ -26,7 +26,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <bukkit.version>1.9.4-R0.1-SNAPSHOT</bukkit.version>
         <!-- TODO: 1.10
-        <bukkit.version>1.10.1-R0.1-SNAPSHOT</bukkit.version>
+        <bukkit.version>1.10.2-R0.1-SNAPSHOT</bukkit.version>
         -->
     </properties>
 
