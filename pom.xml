@@ -77,6 +77,16 @@
             <version>1.14.8</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-runtime</artifactId>
+            <version>1.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-reflect</artifactId>
+            <version>1.1-SNAPSHOT</version>
+        </dependency>
         <!-- Automatically downloaded by Glowstone++'s library manager
         <dependency>
             <groupId>org.xerial</groupId>
