@@ -59,5 +59,9 @@ public final class GlowNetworkServer implements ConnectionManager {
         bossGroup.shutdownGracefully();
     }
 
+    public GlowServer getServer() {
+        return server;
+    }
+
 }
 
