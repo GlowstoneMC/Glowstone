@@ -21,6 +21,7 @@ public class OrePopulator extends BlockPopulator {
 
     public OrePopulator() {
         ores.put(new OreType(Material.QUARTZ_ORE, 10, 118, 13, Material.NETHERRACK), 16);
+        ores.put(new OreType(Material.MAGMA, 26, 37, 32, Material.NETHERRACK), 16);
     }
 
     @Override
