@@ -24,10 +24,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <bukkit.version>1.9.4-R0.1-SNAPSHOT</bukkit.version>
-        <!-- TODO: 1.10
         <bukkit.version>1.10.2-R0.1-SNAPSHOT</bukkit.version>
-        -->
     </properties>
 
     <repositories>

@@ -5,7 +5,7 @@ import net.glowstone.generator.objects.DoubleTallPlant;
 import net.glowstone.generator.objects.trees.BirchTree;
 import net.glowstone.generator.objects.trees.GenericTree;
 import org.bukkit.Chunk;
-import org.bukkit.DoublePlantSpecies;
+import org.bukkit.material.types.DoublePlantSpecies;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 

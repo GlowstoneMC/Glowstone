@@ -1,7 +1,7 @@
 package net.glowstone.generator.objects;
 
 import net.glowstone.constants.GlowBiomeClimate;
-import org.bukkit.DoublePlantSpecies;
+import org.bukkit.material.types.DoublePlantSpecies;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;

@@ -14,7 +14,7 @@ class SkeletonStore extends MonsterStore<GlowSkeleton> {
     public void load(GlowSkeleton entity, CompoundTag tag) {
         super.load(entity, tag);
         if (tag.isInt("SkeletonType")) {
-            entity.setSkeletonType(SkeletonType.getType(tag.getInt("SkeletonType")));
+            entity.setSkeletonType(SkeletonType.values()[tag.getInt("SkeletonType")]);
         } else {
             entity.setSkeletonType(SkeletonType.NORMAL);
         }
@@ -23,7 +23,7 @@ class SkeletonStore extends MonsterStore<GlowSkeleton> {
     @Override
     public void save(GlowSkeleton entity, CompoundTag tag) {
         super.save(entity, tag);
-        tag.putInt("SkeletonType", entity.getSkeletonType().getId());
+        tag.putInt("SkeletonType", entity.getSkeletonType().ordinal());
     }
 
 }

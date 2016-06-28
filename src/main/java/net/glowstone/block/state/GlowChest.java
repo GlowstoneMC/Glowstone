@@ -2,7 +2,6 @@ package net.glowstone.block.state;
 
 import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
-import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockChest;
 import net.glowstone.block.entity.TEChest;
@@ -13,7 +12,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class GlowChest extends GlowBlockState implements Chest {
+public class GlowChest extends GlowLootableBlock implements Chest {
 
     public GlowChest(GlowBlock block) {
         super(block);

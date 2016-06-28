@@ -4,7 +4,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.inventory.MaterialMatcher;
 import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
-import org.bukkit.StoneType;
+import org.bukkit.material.types.StoneType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Stone;
 

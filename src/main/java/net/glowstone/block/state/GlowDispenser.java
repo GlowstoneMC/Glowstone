@@ -1,7 +1,6 @@
 package net.glowstone.block.state;
 
 import net.glowstone.block.GlowBlock;
-import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.TEDispenser;
 import net.glowstone.dispenser.*;
 import org.bukkit.Effect;
@@ -16,7 +15,7 @@ import org.bukkit.util.Vector;
 import java.util.Map;
 import java.util.Random;
 
-public class GlowDispenser extends GlowBlockState implements Dispenser, BlockProjectileSource {
+public class GlowDispenser extends GlowLootableBlock implements Dispenser, BlockProjectileSource {
 
     private static final Random random = new Random();
 

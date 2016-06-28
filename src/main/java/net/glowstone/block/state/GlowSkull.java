@@ -6,6 +6,8 @@ import net.glowstone.block.blocktype.BlockSkull;
 import net.glowstone.block.entity.TESkull;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.util.Position;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.SkullType;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Skull;
@@ -63,6 +65,16 @@ public class GlowSkull extends GlowBlockState implements Skull {
         this.owner = owner;
         setSkullType(SkullType.PLAYER);
         return true;
+    }
+
+    @Override
+    public OfflinePlayer getOwningPlayer() {
+        return Bukkit.getOfflinePlayer(owner.getUniqueId());
+    }
+
+    @Override
+    public void setOwningPlayer(OfflinePlayer offlinePlayer) {
+        this.owner = new PlayerProfile(offlinePlayer.getName(), offlinePlayer.getUniqueId());
     }
 
     @Override

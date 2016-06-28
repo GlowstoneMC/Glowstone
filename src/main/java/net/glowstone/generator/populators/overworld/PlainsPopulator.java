@@ -6,7 +6,7 @@ import net.glowstone.generator.objects.FlowerType;
 import net.glowstone.generator.objects.TallGrass;
 import net.glowstone.util.noise.SimplexOctaveGenerator;
 import org.bukkit.Chunk;
-import org.bukkit.DoublePlantSpecies;
+import org.bukkit.material.types.DoublePlantSpecies;
 import org.bukkit.GrassSpecies;
 import org.bukkit.World;
 import org.bukkit.block.Biome;

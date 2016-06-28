@@ -49,6 +49,7 @@ import net.glowstone.util.Position;
 import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
+import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.*;
 import org.bukkit.Effect.Type;
@@ -1657,7 +1658,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(new ChatMessage(message));
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public void sendActionBarMessage(String message) {
         // "old" formatting workaround because apparently "new" styling doesn't work as of 01/18/2015
@@ -1897,8 +1897,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void playEffect(Location loc, Effect effect, int data) {
         int id = effect.getId();
-        boolean ignoreDistance = effect == Effect.WITHER_SPAWN || effect == Effect.ENDERDRAGON_DIE;
-        session.send(new PlayEffectMessage(id, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), data, ignoreDistance));
+        session.send(new PlayEffectMessage(id, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), data, false));
     }
 
     private void playEffect_(Location loc, Effect effect, int data) { // fix name collision with Spigot below
@@ -1923,6 +1922,16 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         double y = location.getBlockY() + 0.5;
         double z = location.getBlockZ() + 0.5;
         session.send(new NamedSoundEffectMessage(sound, SoundCategory.MASTER, x, y, z, volume, pitch)); //TODO: Put the real category
+    }
+
+    @Override
+    public void stopSound(Sound sound) {
+
+    }
+
+    @Override
+    public void stopSound(String sound) {
+
     }
 
     @Override
@@ -2028,6 +2037,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void sendMessage(BaseComponent... components) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void sendMessage(ChatMessageType chatMessageType, BaseComponent... baseComponents) {
+
     }
 
     @Override
@@ -2563,10 +2577,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public Title getTitle() {
-        return currentTitle.clone();
+        return currentTitle;
     }
 
-    @Override
     public void clearTitle() {
         session.send(new TitleMessage(Action.CLEAR));
     }

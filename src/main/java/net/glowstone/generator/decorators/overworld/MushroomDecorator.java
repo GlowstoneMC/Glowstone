@@ -2,7 +2,7 @@ package net.glowstone.generator.decorators.overworld;
 
 import net.glowstone.generator.decorators.BlockDecorator;
 import org.bukkit.Chunk;
-import org.bukkit.DirtType;
+import org.bukkit.material.types.DirtType;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;

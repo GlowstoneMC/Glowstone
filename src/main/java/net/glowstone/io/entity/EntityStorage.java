@@ -5,6 +5,7 @@ import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.monster.*;
 import net.glowstone.entity.passive.GlowCow;
 import net.glowstone.entity.passive.GlowMooshroom;
+import net.glowstone.entity.passive.GlowPolarBear;
 import net.glowstone.entity.passive.GlowSquid;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
@@ -50,6 +51,7 @@ public final class EntityStorage {
         bind(new AgeableStore<>(GlowCow.class, "Cow"));
         bind(new AgeableStore<>(GlowMooshroom.class, "MushroomCow"));
         bind(new WaterMobStore<>(GlowSquid.class, "Squid"));
+        bind(new AgeableStore<>(GlowPolarBear.class, "PolarBear"));
 
         // LivingEntities - Hostile Entities
         bind(new CreeperStore());

@@ -136,6 +136,14 @@ public abstract class GlowEntity implements Entity {
      */
     private GlowEntity passenger;
     /**
+     * Whether gravity applies to the entity.
+     */
+    private boolean gravity;
+    /**
+     * Whether
+     */
+    private boolean silent;
+    /**
      * Creates an entity and adds it to the specified world.
      *
      * @param location The location of the entity.
@@ -887,6 +895,26 @@ public abstract class GlowEntity implements Entity {
     @Override
     public boolean eject() {
         return !isEmpty() && setPassenger(null);
+    }
+
+    @Override
+    public boolean hasGravity() {
+        return gravity;
+    }
+
+    @Override
+    public void setGravity(boolean gravity) {
+        this.gravity = gravity;
+    }
+
+    @Override
+    public boolean isSilent() {
+        return silent;
+    }
+
+    @Override
+    public void setSilent(boolean silent) {
+        this.silent = silent;
     }
 
     @Override

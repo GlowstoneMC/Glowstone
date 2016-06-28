@@ -1,7 +1,7 @@
 package net.glowstone.generator.populators.overworld;
 
 import net.glowstone.generator.decorators.overworld.DoublePlantDecorator.DoublePlantDecoration;
-import org.bukkit.DoublePlantSpecies;
+import org.bukkit.material.types.DoublePlantSpecies;
 import org.bukkit.block.Biome;
 
 import java.util.Arrays;

@@ -13,7 +13,7 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.DiggingMessage;
-import org.bukkit.DoublePlantSpecies;
+import org.bukkit.material.types.DoublePlantSpecies;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Material;

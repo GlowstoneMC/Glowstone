@@ -91,6 +91,8 @@ public enum MetadataIndex {
 
     GOLEM_PLAYER_BUILT(12, BYTE, IronGolem.class),
 
+    SNOWMAN_NOHAT(12, BYTE, Snowman.class),
+
     //SHULKER_FACING_DIRECTION(11, DIRECTION, Golem.class), //TODO 1.9 - New mob?
     //SHULKER_ATTACHMENT_POSITION(12, OPTPOSITION, Golem.class), //TODO 1.9 - New mob?
     //SHULKER_SHIELD_HEIGHT(13, BYTE, Golem.class), //TODO 1.9 - New mob?
@@ -130,8 +132,7 @@ public enum MetadataIndex {
 
     SLIME_SIZE(12, INT, Slime.class),
 
-    //TODO - 1.10 (polar bear)
-    //POLARBEAR_STANDING(13, BOOLEAN, PolarBear.class),
+    POLARBEAR_STANDING(13, BOOLEAN, PolarBear.class),
 
     MINECART_SHAKE_POWER(6, INT, Minecart.class),
     MINECART_SHAKE_DIRECTION(7, INT, Minecart.class),

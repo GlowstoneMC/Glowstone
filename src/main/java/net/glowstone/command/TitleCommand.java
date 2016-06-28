@@ -1,6 +1,7 @@
 package net.glowstone.command;
 
 import com.destroystokyo.paper.Title;
+import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -101,7 +102,7 @@ public class TitleCommand extends BukkitCommand {
         }
 
         if (args[1].equalsIgnoreCase("clear")) {
-            player.clearTitle();
+            ((GlowPlayer) player).clearTitle();
             sender.sendMessage("Cleared " + player.getName() + "'s title");
         } else if (args[1].equalsIgnoreCase("reset")) {
             player.resetTitle();

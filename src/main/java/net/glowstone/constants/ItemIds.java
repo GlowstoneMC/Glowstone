@@ -239,6 +239,7 @@ public final class ItemIds {
         both(214, "nether_wart_block");
         both(215, "red_nether_brick");
         both(216, "bone_block");
+        both(217, "structure_void");
         block(255, "structure_block");
         // items
         item(256, "iron_shovel");

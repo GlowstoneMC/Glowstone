@@ -41,18 +41,18 @@ public class GlowZombie extends GlowMonster implements Zombie {
 
     @Override
     public boolean isVillager() {
-        return metadata.getInt(MetadataIndex.ZOMBIE_IS_VILLAGER) > 0;
+        return !villagerProfession.isZombie();
     }
 
     @Override
     public void setVillager(boolean value) {
-        metadata.set(MetadataIndex.ZOMBIE_IS_VILLAGER, value ? villagerProfession.getId() + 1 : 0);
+        metadata.set(MetadataIndex.ZOMBIE_IS_VILLAGER, value ? villagerProfession.ordinal() + 1 : 0);
     }
 
     @Override
     public void setVillagerProfession(Profession profession) {
         this.villagerProfession = profession;
-        metadata.set(MetadataIndex.ZOMBIE_IS_VILLAGER, profession.getId() + 1);
+        metadata.set(MetadataIndex.ZOMBIE_IS_VILLAGER, profession.ordinal() + 1);
     }
 
     @Override
