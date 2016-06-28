@@ -90,6 +90,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      */
     @Getter
     private int deathTicks;
+    /**
+     * Whether the entity can automatically glide when falling with an Elytra equipped.
+     * This value is ignored for players.
+     */
+    private boolean fallFlying;
 
     /**
      * Creates a mob within the specified world.
@@ -677,6 +682,14 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             damage(ev.getDamage());
         }
         setFallDistance(0);
+    }
+
+    public boolean isFallFlying() {
+        return fallFlying;
+    }
+
+    public void setFallFlying(boolean fallFlying) {
+        this.fallFlying = fallFlying;
     }
 
     ////////////////////////////////////////////////////////////////////////////

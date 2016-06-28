@@ -57,6 +57,9 @@ abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore
         if (compound.isShort("AttackTime")) {
             entity.setNoDamageTicks(compound.getShort("AttackTime"));
         }
+        if (compound.isByte("FallFlying")) {
+            entity.setFallFlying(compound.getBool("FallFlying"));
+        }
 
         if (compound.isList("ActiveEffects", TagType.COMPOUND)) {
             for (CompoundTag effect : compound.getCompoundList("ActiveEffects")) {
@@ -153,6 +156,7 @@ abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore
         tag.putFloat("HealF", entity.getHealth());
         tag.putShort("Health", (int) entity.getHealth());
         tag.putShort("AttackTime", entity.getNoDamageTicks());
+        tag.putBool("FallFlying", entity.isFallFlying());
 
         AttributeManager am = entity.getAttributeManager();
         Map<String, Property> properties = am.getAllProperties();
