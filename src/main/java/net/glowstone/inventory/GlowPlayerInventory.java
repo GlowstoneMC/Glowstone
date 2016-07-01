@@ -18,13 +18,13 @@ import org.bukkit.inventory.*;
  */
 public class GlowPlayerInventory extends GlowInventory implements PlayerInventory, EntityEquipment {
 
-    private static final int SIZE = 37;
+    private static final int SIZE = 36;
 
-    private static final int OFF_HAND_SLOT = 36;
-    private static final int BOOTS_SLOT = 37;
-    private static final int LEGGINGS_SLOT = 38;
-    private static final int CHESTPLATE_SLOT = 39;
-    private static final int HELMET_SLOT = 40;
+    private static final int OFF_HAND_SLOT = 40;
+    private static final int BOOTS_SLOT = 36;
+    private static final int LEGGINGS_SLOT = 37;
+    private static final int CHESTPLATE_SLOT = 38;
+    private static final int HELMET_SLOT = 39;
 
     /**
      * The armor contents.
@@ -43,6 +43,10 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
      * The current held item slot.
      */
     private int heldSlot;
+    /**
+     * Item in off-hand slot.
+     */
+    private ItemStack offHand;
 
     public GlowPlayerInventory(GlowHumanEntity owner) {
         // all player inventories are ID 0
@@ -80,7 +84,9 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
 
     @Override
     public SlotType getSlotType(int slot) {
-        if (slot >= SIZE && slot - SIZE < 4) {
+        if (slot == OFF_HAND_SLOT) {
+            return SlotType.CONTAINER;
+        } else if (slot >= SIZE) {
             return SlotType.ARMOR;
         } else {
             return super.getSlotType(slot);
@@ -188,7 +194,9 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
 
     @Override
     public void setItem(int index, ItemStack item) {
-        if (index >= SIZE) {
+        if (index == OFF_HAND_SLOT) {
+            offHand = item;
+        } else if (index >= SIZE) {
             armor[index - SIZE] = item;
         } else {
             super.setItem(index, item);
@@ -200,7 +208,9 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
 
     @Override
     public ItemStack getItem(int index) {
-        if (index >= SIZE) {
+        if (index == OFF_HAND_SLOT) {
+            return offHand;
+        } else if (index >= SIZE) {
             return armor[index - SIZE];
         } else {
             return super.getItem(index);
@@ -284,12 +294,12 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
 
     @Override
     public ItemStack getItemInOffHand() {
-        return getItem(OFF_HAND_SLOT);
+        return offHand;
     }
 
     @Override
     public void setItemInOffHand(ItemStack itemStack) {
-        setItem(OFF_HAND_SLOT, itemStack);
+        this.offHand = itemStack;
     }
 
     @Override

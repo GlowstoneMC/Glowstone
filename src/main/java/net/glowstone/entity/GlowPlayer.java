@@ -2272,6 +2272,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void updateInventory() {
         session.send(new SetWindowContentsMessage(invMonitor.getId(), invMonitor.getContents()));
+        ItemStack offHand = getInventory().getItemInOffHand();
+        session.send(new SetWindowSlotMessage(invMonitor.getId(), 45, offHand != null ? offHand : new ItemStack(Material.AIR)));
     }
 
     public void sendItemChange(int slot, ItemStack item) {
