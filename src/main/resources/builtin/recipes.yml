@@ -3794,3 +3794,39 @@ shaped:
   - aba
   - bbb
   - aba
+- result:
+    type: MAGMA
+  ingredients:
+    a:
+      type: MAGMA_CREAM
+  shape:
+  - aa
+  - aa
+- result:
+    type: NETHER_WART_BLOCK
+  ingredients:
+    a:
+      type: NETHER_WART
+  shape:
+  - aaa
+  - aaa
+  - aaa
+- result:
+    type: RED_NETHER_BRICK
+  ingredients:
+    a:
+      type: NETHER_BRICK
+    b:
+      type: NETHER_WART
+  shape:
+  - ba
+  - ab
+- result:
+    type: BONE_BLOCK
+  ingredients:
+    a:
+      type: BONE
+  shape:
+  - aaa
+  - aaa
+  - aaa
