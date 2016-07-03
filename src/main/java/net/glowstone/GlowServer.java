@@ -139,7 +139,7 @@ public final class GlowServer implements Server {
      * The services manager of this server.
      */
     private final SimpleServicesManager servicesManager = new SimpleServicesManager();
-    /**sw
+    /**
      * The command map of this server.
      */
     private final SimpleCommandMap commandMap = new SimpleCommandMap(this);
