@@ -332,6 +332,8 @@ public final class ServerConfig {
         MOTD("server.motd", "Glowstone++ server", Migrate.PROPS, "motd"),
         SHUTDOWN_MESSAGE("server.shutdown-message", "Server shutting down.", Migrate.BUKKIT, "settings.shutdown-message"),
         ALLOW_LEGACY_CLIENTS("server.allow-legacy-clients", true),
+        DEFAULT_LOCALE("server.default-locale", "en-US"),
+        LOCK_LOCALE("server.lock-locale", false),
 
         // console
         USE_JLINE("console.use-jline", true),
@@ -377,7 +379,7 @@ public final class ServerConfig {
         PERMISSIONS_FILE("files.permissions", "permissions.yml", Migrate.BUKKIT, "settings.permissions-file"),
         COMMANDS_FILE("files.commands", "commands.yml"),
         HELP_FILE("files.help", "help.yml"),
-
+        
         // advanced
         CONNECTION_THROTTLE("advanced.connection-throttle", 4000, Migrate.BUKKIT, "settings.connection-throttle"),
         //PING_PACKET_LIMIT("advanced.ping-packet-limit", 100, Migrate.BUKKIT, "settings.ping-packet-limit"),
