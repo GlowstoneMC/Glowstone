@@ -236,9 +236,6 @@ public final class GlowServer implements Server {
      * The plugin type detector of this server.
      */
     private GlowPluginTypeDetector pluginTypeDetector;
-    /*
-     * The internationalization/languages manager for the server.
-     */
    
     /**
      * The server's default game mode
