@@ -3806,7 +3806,7 @@ shaped:
     type: NETHER_WART_BLOCK
   ingredients:
     a:
-      type: NETHER_WART
+      type: NETHER_WARTS
   shape:
   - aaa
   - aaa
@@ -3815,9 +3815,9 @@ shaped:
     type: RED_NETHER_BRICK
   ingredients:
     a:
-      type: NETHER_BRICK
+      type: NETHER_BRICK_ITEM
     b:
-      type: NETHER_WART
+      type: NETHER_WARTS
   shape:
   - ba
   - ab
