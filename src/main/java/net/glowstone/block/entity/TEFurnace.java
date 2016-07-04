@@ -121,7 +121,7 @@ public class TEFurnace extends TEContainer {
                 FurnaceSmeltEvent smeltEvent = new FurnaceSmeltEvent(block, inv.getSmelting(), recipe.getResult());
                 EventFactory.callEvent(smeltEvent);
                 if (!smeltEvent.isCancelled()) {
-                    if (inv.getSmelting().getType().equals(Material.SPONGE) && inv.getSmelting().getData().getData() == 1 && inv.getFuel().getType().equals(Material.BUCKET) && inv.getFuel().getAmount() == 1) {
+                    if (inv.getSmelting().getType().equals(Material.SPONGE) && inv.getSmelting().getData().getData() == 1 && inv.getFuel() != null && inv.getFuel().getType().equals(Material.BUCKET) && inv.getFuel().getAmount() == 1) {
                         inv.setFuel(new ItemStack(Material.WATER_BUCKET));
                     }
                     if (inv.getResult() == null || inv.getResult().getType().equals(Material.AIR)) {
@@ -144,8 +144,8 @@ public class TEFurnace extends TEContainer {
             human.setWindowProperty(Property.COOK_TIME, cookTime);
             human.setWindowProperty(Property.TICKS_FOR_CURRENT_SMELTING, 200);
         });
-        if (!isBurnable && burnTime == 0 && cookTime == 0) {
-            getState().getBlock().getWorld().requestPulse(getState().getBlock(), 0);
+        if (!(!isBurnable && burnTime == 0 && cookTime == 0)) {
+            getState().getBlock().getWorld().requestSinglePulse(getState().getBlock(), 1);
         }
     }
 

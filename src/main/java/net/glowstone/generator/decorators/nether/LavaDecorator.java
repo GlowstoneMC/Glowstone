@@ -52,8 +52,7 @@ public class LavaDecorator extends BlockDecorator {
                 BlockState state = block.getState();
                 state.setType(Material.LAVA);
                 state.update(true);
-                // 10 instead of the default 5 because lava should flow faster in the nether
-                ((GlowWorld) block.getWorld()).requestPulse((GlowBlock) block, 10);
+                ((GlowWorld) block.getWorld()).requestSinglePulse((GlowBlock) block, 0);
             }
         }
     }
