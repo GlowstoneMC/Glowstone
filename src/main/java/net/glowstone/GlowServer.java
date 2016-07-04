@@ -380,7 +380,7 @@ public final class GlowServer implements Server {
             String opt = args[i];
 
             if (!opt.startsWith("-")) {
-                logger.warning(lang.getString("ignoredInvalidOption") + opt);
+                logger.warning(lang.getString("ignoredInvalidOption", opt));
                 continue;
             }
 
@@ -411,7 +411,7 @@ public final class GlowServer implements Server {
 
             // Below this point, options require parameters
             if (i == args.length - 1) {
-                logger.warning(lang.getString("ignoredInvalidOptionWithoutValue") + opt);
+                logger.warning(lang.getString("ignoredInvalidOptionWithoutValue", opt));
                 continue;
             }
 
@@ -462,7 +462,7 @@ public final class GlowServer implements Server {
                     parameters.put(Key.LOG_FILE, args[++i]);
                     break;
                 default:
-                    logger.warning(lang.getString("ignoredInvalidOption") + opt);
+                    logger.warning(lang.getString("ignoredInvalidOption", opt));
             }
         }
 
@@ -611,7 +611,7 @@ public final class GlowServer implements Server {
             throw new RuntimeException("Failed to bind to address", cause);
         }
 
-        logger.info(lang.getString("bindSuccess") + channel.localAddress());
+        logger.info(lang.getString("bindSuccess", channel.localAddress()));
         InetSocketAddress localAddress = (InetSocketAddress) channel.localAddress();
         port = localAddress.getPort();
         ip = localAddress.getHostString();
@@ -777,7 +777,7 @@ public final class GlowServer implements Server {
             try {
                 plugin.onLoad();
             } catch (Exception ex) {
-                logger.log(Level.SEVERE,lang.getString("errorLoading") + plugin.getDescription().getFullName(), ex);
+                logger.log(Level.SEVERE,lang.getString("errorLoading", plugin.getDescription().getFullName()), ex);
             }
         }
 
@@ -852,7 +852,7 @@ public final class GlowServer implements Server {
                 try {
                     pluginManager.enablePlugin(plugin);
                 } catch (Throwable ex) {
-                    logger.log(Level.SEVERE, lang.getString("errorLoading") + plugin.getDescription().getFullName(), ex);
+                    logger.log(Level.SEVERE, lang.getString("errorLoading", plugin.getDescription().getFullName()), ex);
                 }
             }
         }

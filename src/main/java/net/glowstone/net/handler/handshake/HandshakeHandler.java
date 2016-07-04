@@ -39,7 +39,7 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
                 session.setProtocol(protocol);
                 return;
             } catch (Exception ex) {
-                GlowServer.logger.log(Level.SEVERE, "Error parsing proxy data for " + session, ex);
+                GlowServer.logger.log(Level.SEVERE, GlowServer.lang.getString("parseProxyDataFailureFor", session), ex);
                 session.disconnect(GlowServer.lang.getString("parseProxyDataFailure"));
                 session.setProtocol(protocol);
                 return;
