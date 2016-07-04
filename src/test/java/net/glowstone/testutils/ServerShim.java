@@ -44,7 +44,7 @@ public class ServerShim implements Server {
 
     @Override
     public String getName() {
-        return "Glowstone++";
+        return "Glowstone";
     }
 
     @Override

@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <name>Glowstone++</name>
+    <name>Glowstone</name>
     <groupId>net.glowstoneplusplus</groupId>
     <artifactId>glowstoneplusplus</artifactId>
     <version>1.9.4-SNAPSHOT</version>
@@ -11,9 +11,9 @@
     <description>The enhanced Glowstone fork with an emphasis on performance, control and compatibility.</description>
 
     <scm>
-        <connection>scm:git:git://github.com/GlowstoneMC/GlowstonePlusPlus.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/GlowstoneMC/GlowstonePlusPlus.git</developerConnection>
-        <url>https://github.com/GlowstoneMC/GlowstonePlusPlus</url>
+        <connection>scm:git:git://github.com/GlowstoneMC/Glowstone.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/GlowstoneMC/Glowstone.git</developerConnection>
+        <url>https://github.com/GlowstoneMC/Glowstone</url>
     </scm>
 
     <parent>
@@ -41,7 +41,7 @@
             <url>https://repo.glowstone.net/content/repositories/snapshots/</url>
         </repository>
     </repositories>
-    
+
 	<distributionManagement>
 		<repository>
 			<id>glowstone-upstream</id>
@@ -59,7 +59,7 @@
         <dependency>
             <groupId>net.glowstone</groupId>
             <artifactId>glowkit</artifactId>
-            <version>${bukkit.version}</version> <!-- Use https://github.com/GlowstonePlusPlus/Glowkit/tree/bukkit+glowkit -->
+            <version>${bukkit.version}</version>
         </dependency>
         <dependency>
             <groupId>com.flowpowered</groupId>
@@ -87,7 +87,7 @@
             <artifactId>kotlin-reflect</artifactId>
             <version>1.1-SNAPSHOT</version>
         </dependency>
-        <!-- Automatically downloaded by Glowstone++'s library manager
+        <!-- Automatically downloaded by Glowstone's library manager
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>

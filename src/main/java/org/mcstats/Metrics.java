@@ -326,7 +326,7 @@ public class Metrics {
      */
     private void postPlugin(final boolean isPing) throws IOException {
         // Server software specific section
-        String pluginName = "GlowstonePlusPlus";
+        String pluginName = "Glowstone";
         boolean onlineMode = Bukkit.getServer().getOnlineMode(); // TRUE if online mode is enabled
         String pluginVersion = (Metrics.class.getPackage().getImplementationVersion() != null) ? Metrics.class.getPackage().getImplementationVersion() : "unknown";
         String serverVersion = Bukkit.getBukkitVersion();
