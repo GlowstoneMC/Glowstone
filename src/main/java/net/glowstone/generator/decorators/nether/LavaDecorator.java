@@ -52,7 +52,7 @@ public class LavaDecorator extends BlockDecorator {
                 BlockState state = block.getState();
                 state.setType(Material.LAVA);
                 state.update(true);
-                ((GlowWorld) block.getWorld()).requestSinglePulse((GlowBlock) block, 0);
+                ((GlowWorld) block.getWorld()).requestPulse((GlowBlock) block, 1, true);
             }
         }
     }

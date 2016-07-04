@@ -145,7 +145,7 @@ public class TEFurnace extends TEContainer {
             human.setWindowProperty(Property.TICKS_FOR_CURRENT_SMELTING, 200);
         });
         if (!(!isBurnable && burnTime == 0 && cookTime == 0)) {
-            getState().getBlock().getWorld().requestSinglePulse(getState().getBlock(), 1);
+            getState().getBlock().getWorld().requestPulse(getState().getBlock(), 1, true);
         }
     }
 

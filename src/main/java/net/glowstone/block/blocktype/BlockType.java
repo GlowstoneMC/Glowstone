@@ -218,7 +218,7 @@ public class BlockType extends ItemType {
      * @param block The block that was pulsed pulsed
      */
     public void receivePulse(GlowBlock block) {
-
+        block.getWorld().cancelPulse(block);
     }
 
     /**

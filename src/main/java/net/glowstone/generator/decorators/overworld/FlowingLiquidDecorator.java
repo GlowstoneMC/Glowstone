@@ -51,7 +51,7 @@ public class FlowingLiquidDecorator extends BlockDecorator {
                     BlockState state = block.getState();
                     state.setType(type);
                     state.update(true);
-                    ((GlowWorld) block.getWorld()).requestSinglePulse((GlowBlock) block, 0);
+                    ((GlowWorld) block.getWorld()).requestPulse((GlowBlock) block, 1, true);
                 }
             }
         }

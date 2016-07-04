@@ -38,16 +38,6 @@ public class BlockFire extends BlockNeedsAttached {
     }
 
     @Override
-    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
-        updatePhysics(block);
-    }
-
-    @Override
-    public void onBlockChanged(GlowBlock block, Material oldType, byte oldData, Material newType, byte data) {
-        block.getWorld().requestSinglePulse(block, TICK_RATE);
-    }
-
-    @Override
     public boolean canOverride(GlowBlock block, BlockFace face, ItemStack holding) {
         return true;
     }
@@ -56,7 +46,7 @@ public class BlockFire extends BlockNeedsAttached {
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         state.setRawData((byte) 0);
-        updateBlock(state.getBlock());
+        state.getBlock().getWorld().requestPulse(state.getBlock(), TICK_RATE);
     }
 
     @Override
@@ -118,17 +108,16 @@ public class BlockFire extends BlockNeedsAttached {
 
         if (!isInfiniteFire) {
             if (!hasNearFlammableBlock(block)) {
-                if (block.getRelative(BlockFace.DOWN).isEmpty() || age > 3) {
-                    // no nearby flammable blocks and nothing below it
+                // there's no flammable blocks around, stop fire
+                if (age > 3 || block.getRelative(BlockFace.DOWN).isEmpty()) {
                     block.breakNaturally();
-                } else {
-                    world.requestSinglePulse(block, TICK_RATE);
+                    world.cancelPulse(block);
                 }
             } else if (age == MAX_FIRE_AGE && !block.getRelative(BlockFace.DOWN).isFlammable() && random.nextInt(4) == 0) {
                 // if fire reached max age, bottom block is not flammable, 25% chance to stop fire
                 block.breakNaturally();
+                world.cancelPulse(block);
             } else {
-                world.requestSinglePulse(block, TICK_RATE);
                 // fire propagation / block burning
 
                 // burn blocks around
@@ -179,6 +168,7 @@ public class BlockFire extends BlockNeedsAttached {
                                                 state.setType(Material.FIRE);
                                                 state.setRawData((byte) (increasedAge > MAX_FIRE_AGE ? MAX_FIRE_AGE : increasedAge));
                                                 state.update(true);
+                                                world.requestPulse(propagationBlock, TICK_RATE);
                                             }
                                         }
                                     }
