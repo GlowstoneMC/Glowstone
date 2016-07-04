@@ -39,7 +39,7 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
                 session.setProtocol(protocol);
                 return;
             } catch (Exception ex) {
-                GlowServer.logger.log(Level.SEVERE, GlowServer.lang.getString("parseProxyDataFailureFor", session), ex);
+                GlowServer.logger.log(Level.SEVERE, GlowServer.lang.getString("parseProxyDataFailureFor", session.toString()), ex);
                 session.disconnect(GlowServer.lang.getString("parseProxyDataFailure"));
                 session.setProtocol(protocol);
                 return;
@@ -50,9 +50,9 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
 
         if (protocol == ProtocolType.LOGIN) {
             if ((message.getVersion() < GlowServer.LEGACY_PROTOCOL_1_9) || (message.getVersion() == GlowServer.LEGACY_PROTOCOL_1_9 && !session.getServer().canSupportLegacyClients())) {
-                session.disconnect(GlowServer.lang.getString("outdatedClient") + GlowServer.GAME_VERSION);
+                session.disconnect(GlowServer.lang.getString("outdatedClient", GlowServer.GAME_VERSION));
             } else if (message.getVersion() > GlowServer.PROTOCOL_VERSION) {
-                session.disconnect(GlowServer.lang.getString("outdatedServer") + GlowServer.GAME_VERSION);
+                session.disconnect(GlowServer.lang.getString("outdatedServer", GlowServer.GAME_VERSION));
             }
         }
     }
