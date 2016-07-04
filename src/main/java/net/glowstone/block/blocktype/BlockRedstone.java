@@ -233,7 +233,7 @@ public class BlockRedstone extends BlockNeedsAttached {
         if (power != me.getData()) {
             me.setData(power);
             extraUpdate(me);
-            me.getWorld().requestPulse(me, 1);
+            me.getWorld().requestPulse(me, 1, true);
         }
     }
 

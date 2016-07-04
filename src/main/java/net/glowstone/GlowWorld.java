@@ -137,7 +137,7 @@ public final class GlowWorld implements World {
     /**
      * Contains how regular blocks should be pulsed.
      */
-    private final ConcurrentHashMap tickMap = new ConcurrentHashMap<>(0);
+    private final ConcurrentHashMap<Location, Long> tickMap = new ConcurrentHashMap<>();
     private final Spigot spigot = new Spigot() {
         @Override
         public void playEffect(Location location, Effect effect) {
@@ -1790,8 +1790,9 @@ public final class GlowWorld implements World {
         getTickMap().entrySet().stream().filter(entry -> worldAge % entry.getValue() == 0).forEach(entry -> {
             GlowBlock block = getBlockAt(entry.getKey());
             BlockType notifyType = itemTable.getBlock(block.getTypeId());
-            if (notifyType != null)
+            if (notifyType != null) {
                 notifyType.receivePulse(block);
+            }
         });
     }
 
@@ -1801,7 +1802,30 @@ public final class GlowWorld implements World {
 
     /**
      * Calling this method will request that the block is ticked on the next iteration
-     * that applies to the specified tick rate.
+     * that applies to the specific tick rate.
+     *
+     * @param block The block to tick.
+     * @param tickRate The tick rate to tick the block at.
+     * @param single Whether to tick once.
+     */
+    public void requestPulse(GlowBlock block, long tickRate, boolean single) {
+        Location target = block.getLocation();
+
+        if (tickRate > 0) {
+            if (single) {
+                tickMap.put(target, tickRate);
+                cancelPulse(block);
+            } else {
+                tickMap.put(target, tickRate);
+            }
+        } else if (tickMap.contains(target)) {
+            tickMap.remove(target);
+        }
+    }
+
+    /**
+     * Calling this method will request that the block is ticked on the next iteration
+     * that applies to the specific tick rate.
      *
      * @param block The block to tick.
      * @param tickRate The tick rate to tick the block at.
@@ -1809,15 +1833,16 @@ public final class GlowWorld implements World {
     public void requestPulse(GlowBlock block, long tickRate) {
         Location target = block.getLocation();
 
-
-        if (tickRate > 0)
+        if (tickRate > 0) {
             tickMap.put(target, tickRate);
-        else if (tickMap.containsKey(target))
+        } else if (tickMap.contains(target)) {
             tickMap.remove(target);
+        }
     }
 
+
     public void cancelPulse(GlowBlock block) {
-        requestPulse(block, 0);
+        requestPulse(block, 0, false);
     }
 
     @Override
