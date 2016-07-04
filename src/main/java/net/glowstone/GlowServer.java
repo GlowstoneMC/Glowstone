@@ -231,7 +231,8 @@ public final class GlowServer implements Server {
     /**
      * The LanguageManager for the server. Used for internationalization.
      */
-    public static LanguageManager languageManager;
+    public static LanguageManager lang;
+
     /**
      * The plugin type detector of this server.
      */
@@ -307,7 +308,7 @@ public final class GlowServer implements Server {
         ipBans = new GlowBanList(this, Type.IP);
         defaultLocale = this.config.getString(Key.DEFAULT_LOCALE);
         lockLocale = this.config.getBoolean(Key.LOCK_LOCALE);
-        languageManager = new LanguageManager();
+        lang= new LanguageManager();
 
         Bukkit.setServer(this);
         loadConfig();
@@ -342,12 +343,13 @@ public final class GlowServer implements Server {
                 logger.severe("Java processes using Task Manager or similar.");
                 logger.severe(ex.toString());
             } else {
-                logger.log(Level.SEVERE, languageManager.getString("unknownBindError"), ex);
+                logger.log(Level.SEVERE,lang.getString("unknownBindError"), ex);
             }
             System.exit(1);
         } catch (Throwable t) {
             // general server startup crash
-            logger.log(Level.SEVERE, languageManager.getString("serverStartUpError"), t);
+
+            logger.log(Level.SEVERE,lang.getString("serverStartUpError"), t);
             System.exit(1);
         }
     }
@@ -378,7 +380,7 @@ public final class GlowServer implements Server {
             String opt = args[i];
 
             if (!opt.startsWith("-")) {
-                System.err.println(languageManager.getString("ignoredInvalidOption") + opt);
+                logger.warning(lang.getString("ignoredInvalidOption") + opt);
                 continue;
             }
 
@@ -409,7 +411,7 @@ public final class GlowServer implements Server {
 
             // Below this point, options require parameters
             if (i == args.length - 1) {
-                System.err.println(languageManager.getString("ignoredInvalidOptionWithoutValue") + opt);
+                logger.warning(lang.getString("ignoredInvalidOptionWithoutValue") + opt);
                 continue;
             }
 
@@ -460,7 +462,7 @@ public final class GlowServer implements Server {
                     parameters.put(Key.LOG_FILE, args[++i]);
                     break;
                 default:
-                    System.err.println(languageManager.getString("ignoredInvalidOption") + opt);
+                    logger.warning(lang.getString("ignoredInvalidOption") + opt);
             }
         }
 
@@ -475,7 +477,7 @@ public final class GlowServer implements Server {
         bind();
         bindQuery();
         bindRcon();
-        logger.info(languageManager.getString("readyForConnections"));
+        logger.info(lang.getString("readyForConnections"));
 
         try {
             Metrics metrics = new Metrics(this);
@@ -497,10 +499,10 @@ public final class GlowServer implements Server {
             if (getOnlineMode()) {
                 logger.warning("Proxy support is enabled, but online mode is enabled.");
             } else {
-                logger.info(languageManager.getString("proxySupportEnabled"));
+                logger.info(lang.getString("proxySupportEnabled"));
             }
         } else if (!getOnlineMode()) {
-            logger.warning(languageManager.getString("offlineMessage"));
+            logger.warning(lang.getString("offlineMessage"));
         }
 
         // Load player lists
@@ -598,7 +600,7 @@ public final class GlowServer implements Server {
     private void bind() throws BindException {
         SocketAddress address = getBindAddress(Key.SERVER_PORT);
 
-        logger.info(languageManager.getString("bindingToAddress") + address + "...");
+        logger.info(lang.getString("bindingToAddress") + address + "...");
         ChannelFuture future = networkServer.bind(address);
         Channel channel = future.awaitUninterruptibly().channel();
         if (!channel.isActive()) {
@@ -609,7 +611,7 @@ public final class GlowServer implements Server {
             throw new RuntimeException("Failed to bind to address", cause);
         }
 
-        logger.info(languageManager.getString("bindSuccess") + channel.localAddress());
+        logger.info(lang.getString("bindSuccess") + channel.localAddress());
         InetSocketAddress localAddress = (InetSocketAddress) channel.localAddress();
         port = localAddress.getPort();
         ip = localAddress.getHostString();
@@ -630,7 +632,7 @@ public final class GlowServer implements Server {
         ChannelFuture future = queryServer.bind(address);
         Channel channel = future.awaitUninterruptibly().channel();
         if (!channel.isActive()) {
-            logger.warning(languageManager.getString("queryBindFailed"));
+            logger.warning(lang.getString("queryBindFailed"));
         }
     }
 
@@ -649,7 +651,7 @@ public final class GlowServer implements Server {
         ChannelFuture future = rconServer.bind(address);
         Channel channel = future.awaitUninterruptibly().channel();
         if (!channel.isActive()) {
-            logger.warning(languageManager.getString("rconBindFailed"));
+            logger.warning(lang.getString("rconBindFailed"));
         }
     }
 
@@ -679,7 +681,7 @@ public final class GlowServer implements Server {
             return;
         }
         isShuttingDown = true;
-        logger.info(languageManager.getString("shuttingDownConsole"));
+        logger.info(lang.getString("shuttingDownConsole"));
 
         // Disable plugins
         pluginManager.clearPlugins();
@@ -775,7 +777,7 @@ public final class GlowServer implements Server {
             try {
                 plugin.onLoad();
             } catch (Exception ex) {
-                logger.log(Level.SEVERE, languageManager.getString("errorLoading") + plugin.getDescription().getFullName(), ex);
+                logger.log(Level.SEVERE,lang.getString("errorLoading") + plugin.getDescription().getFullName(), ex);
             }
         }
 
@@ -850,7 +852,7 @@ public final class GlowServer implements Server {
                 try {
                     pluginManager.enablePlugin(plugin);
                 } catch (Throwable ex) {
-                    logger.log(Level.SEVERE, languageManager.getString("errorLoading") + plugin.getDescription().getFullName(), ex);
+                    logger.log(Level.SEVERE, lang.getString("errorLoading") + plugin.getDescription().getFullName(), ex);
                 }
             }
         }
@@ -896,7 +898,7 @@ public final class GlowServer implements Server {
             enablePlugins(PluginLoadOrder.STARTUP);
             enablePlugins(PluginLoadOrder.POSTWORLD);
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, languageManager.getString("uncaughtReloadError"), ex);
+            logger.log(Level.SEVERE, lang.getString("uncaughtReloadError"), ex);
         }
     }
 
