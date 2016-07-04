@@ -137,7 +137,7 @@ public final class GlowWorld implements World {
     /**
      * Contains how regular blocks should be pulsed.
      */
-    private final ConcurrentHashMap<Location, Long> tickMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Location, Map.Entry<Long, Boolean>> tickMap = new ConcurrentHashMap<>();
     private final Spigot spigot = new Spigot() {
         @Override
         public void playEffect(Location location, Effect effect) {
@@ -1787,22 +1787,25 @@ public final class GlowWorld implements World {
 
     private void pulseTickMap() {
         ItemTable itemTable = ItemTable.instance();
-        getTickMap().entrySet().stream().filter(entry -> worldAge % entry.getValue() == 0).forEach(entry -> {
+        getTickMap().entrySet().stream().filter(entry -> worldAge % entry.getValue().getKey() == 0).forEach(entry -> {
             GlowBlock block = getBlockAt(entry.getKey());
             BlockType notifyType = itemTable.getBlock(block.getTypeId());
             if (notifyType != null) {
                 notifyType.receivePulse(block);
             }
+            if (entry.getValue().getValue()) {
+                cancelPulse(block);
+            }
         });
     }
 
-    private ConcurrentHashMap<Location, Long> getTickMap() {
+    private ConcurrentHashMap<Location, Map.Entry<Long, Boolean>> getTickMap() {
         return tickMap;
     }
 
     /**
      * Calling this method will request that the block is ticked on the next iteration
-     * that applies to the specific tick rate.
+     * that applies to the specified tick rate.
      *
      * @param block The block to tick.
      * @param tickRate The tick rate to tick the block at.
@@ -1812,20 +1815,15 @@ public final class GlowWorld implements World {
         Location target = block.getLocation();
 
         if (tickRate > 0) {
-            if (single) {
-                tickMap.put(target, tickRate);
-                cancelPulse(block);
-            } else {
-                tickMap.put(target, tickRate);
-            }
-        } else if (tickMap.contains(target)) {
+            tickMap.put(target, new AbstractMap.SimpleEntry<>(tickRate, single));
+        } else if (tickMap.containsKey(target)) {
             tickMap.remove(target);
         }
     }
 
     /**
      * Calling this method will request that the block is ticked on the next iteration
-     * that applies to the specific tick rate.
+     * that applies to the specified tick rate.
      *
      * @param block The block to tick.
      * @param tickRate The tick rate to tick the block at.
@@ -1834,15 +1832,14 @@ public final class GlowWorld implements World {
         Location target = block.getLocation();
 
         if (tickRate > 0) {
-            tickMap.put(target, tickRate);
-        } else if (tickMap.contains(target)) {
+            tickMap.put(target, new AbstractMap.SimpleEntry<>(tickRate, false));
+        } else if (tickMap.containsKey(target)) {
             tickMap.remove(target);
         }
     }
 
-
     public void cancelPulse(GlowBlock block) {
-        requestPulse(block, 0, false);
+        requestPulse(block, 0);
     }
 
     @Override
