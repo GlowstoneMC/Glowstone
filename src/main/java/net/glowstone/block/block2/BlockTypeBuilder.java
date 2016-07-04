@@ -4,7 +4,7 @@ import net.glowstone.block.block2.details.BlockFacing;
 import net.glowstone.block.block2.details.DefaultBlockBehavior;
 import net.glowstone.block.block2.details.ListBlockBehavior;
 import net.glowstone.block.block2.details.SlabHalf;
-import net.glowstone.block.block2.sponge.BlockProperty;
+import org.spongepowered.api.block.trait.BlockTrait;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -17,7 +17,7 @@ import java.util.Map;
 public final class BlockTypeBuilder {
 
     private final String id;
-    private final List<BlockProperty<?>> propertyList = new LinkedList<>();
+    private final List<BlockTrait<?>> propertyList = new LinkedList<>();
     private final List<BlockBehavior> behaviors = new LinkedList<>();
 
     public BlockTypeBuilder(String id) {
@@ -41,7 +41,7 @@ public final class BlockTypeBuilder {
     ////////////////////////////////////////////////////////////////////////////
     // BlockProperties
 
-    public BlockTypeBuilder property(BlockProperty<?> prop) {
+    public BlockTypeBuilder property(BlockTrait<?> prop) {
         propertyList.add(prop);
         return this;
     }

@@ -2,7 +2,7 @@ package net.glowstone.block.block2;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import net.glowstone.block.block2.sponge.BlockState;
+import org.spongepowered.api.block.BlockState;
 
 import java.util.IdentityHashMap;
 import java.util.List;

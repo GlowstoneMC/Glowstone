@@ -1,7 +1,7 @@
 package net.glowstone.block.block2;
 
-import net.glowstone.block.block2.sponge.BlockState;
 import org.bukkit.TreeSpecies;
+import org.spongepowered.api.block.BlockState;
 
 import static net.glowstone.block.block2.Blocks.*;
 

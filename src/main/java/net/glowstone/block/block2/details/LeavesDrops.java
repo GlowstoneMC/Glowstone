@@ -1,10 +1,10 @@
 package net.glowstone.block.block2.details;
 
 import net.glowstone.block.GlowBlock;
-import net.glowstone.block.block2.sponge.BlockState;
 import org.bukkit.Material;
 import org.bukkit.TreeSpecies;
 import org.bukkit.inventory.ItemStack;
+import org.spongepowered.api.block.BlockState;
 
 import java.util.*;
 
@@ -14,7 +14,7 @@ public class LeavesDrops extends BaseBlockBehavior {
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         BlockState state = block.getNewState();
-        TreeSpecies species = (TreeSpecies) state.getPropertyValue("variant").get();
+        TreeSpecies species = (TreeSpecies) state.getTraitValue(state.getTrait("variant").get()).get();
 
         if (tool != null && tool.getType() == Material.SHEARS) {
             return Collections.unmodifiableList(Arrays.asList(

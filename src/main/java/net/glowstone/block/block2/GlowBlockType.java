@@ -2,14 +2,17 @@ package net.glowstone.block.block2;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
-import net.glowstone.block.block2.sponge.BlockProperty;
-import net.glowstone.block.block2.sponge.BlockState;
-import net.glowstone.block.block2.sponge.BlockType;
+import org.spongepowered.api.block.BlockState;
+import org.spongepowered.api.block.BlockType;
+import org.spongepowered.api.block.trait.BlockTrait;
+import org.spongepowered.api.data.Property;
+import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.text.translation.Translation;
 
 import java.util.*;
 
 /**
- * Implementation of {@link BlockType}.
+ * Implementation of {@link org.spongepowered.api.block.BlockType}.
  */
 public class GlowBlockType implements BlockType {
 
@@ -17,33 +20,33 @@ public class GlowBlockType implements BlockType {
     private final BlockBehavior behavior;
 
     private final List<GlowBlockState> states;
-    private final Map<String, BlockProperty<?>> properties;
+    private final Map<String, BlockTrait<?>> properties;
 
-    public GlowBlockType(String id, BlockBehavior behavior, List<BlockProperty<?>> propertyList) {
+    public GlowBlockType(String id, BlockBehavior behavior, List<BlockTrait<?>> propertyList) {
         this.id = id;
         this.behavior = behavior;
 
         if (propertyList.isEmpty()) {
             properties = new HashMap<>();
-            states = Arrays.asList(new GlowBlockState(this, ImmutableMap.<BlockProperty<?>, Comparable<?>>of()));
+            states = Arrays.asList(new GlowBlockState(this, Collections.EMPTY_LIST));
             return;
         }
 
         properties = new HashMap<>();
         states = new ArrayList<>();
 
-        List<Pair<BlockProperty<?>, List<Comparable<?>>>> allValues = new LinkedList<>();
-        for (BlockProperty<?> prop : propertyList) {
+        List<Pair<BlockTrait<?>, List<Comparable<?>>>> allValues = new LinkedList<>();
+        for (BlockTrait<?> prop : propertyList) {
             properties.put(prop.getName(), prop);
-            allValues.add(0, new Pair<BlockProperty<?>, List<Comparable<?>>>(prop, new ArrayList<Comparable<?>>(prop.getValidValues())));
+            allValues.add(0, new Pair<>(prop, new ArrayList<>(prop.getPossibleValues())));
         }
 
         // generate all possible states from list of properties
         int i = 0;
         while (true) {
-            ImmutableMap.Builder<BlockProperty<?>, Comparable<?>> builder = ImmutableMap.builder();
+            ImmutableMap.Builder<BlockTrait<?>, Comparable<?>> builder = ImmutableMap.builder();
             int j = i;
-            for (Pair<BlockProperty<?>, List<Comparable<?>>> pair : allValues) {
+            for (Pair<BlockTrait<?>, List<Comparable<?>>> pair : allValues) {
                 List<Comparable<?>> list = pair.second;
                 builder.put(pair.first, list.get(j % list.size()));
                 j /= list.size();
@@ -68,30 +71,36 @@ public class GlowBlockType implements BlockType {
     }
 
     @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
     public BlockState getDefaultState() {
-        return DefaultIdTable.INSTANCE.getChildType(this, 0);
+        return null;
     }
 
     @Override
-    public BlockState getStateFromDataValue(byte data) {
-        // nb: according to Sponge, always returns a value, but may
-        // return null here if that value is invalid
-        return DefaultIdTable.INSTANCE.getChildType(this, data & 0xf);
+    public java.util.Optional<ItemType> getItem() {
+        return null;
     }
 
-    @Override
     public boolean getTickRandomly() {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public void setTickRandomly(boolean tickRandomly) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public final String toString() {
-        return "GlowBlockType[" + id + "]";
+    public Collection<BlockTrait<?>> getTraits() {
+        return null;
+    }
+
+    @Override
+    public java.util.Optional<BlockTrait<?>> getTrait(String blockTrait) {
+        return null;
     }
 
     List<GlowBlockState> getAllStates() {
@@ -102,22 +111,20 @@ public class GlowBlockType implements BlockType {
         return Collections.unmodifiableCollection(properties.keySet());
     }
 
-    Optional<BlockProperty<?>> getPropertyByName(String name) {
-        return Optional.<BlockProperty<?>>fromNullable(properties.get(name));
+    Optional<BlockTrait<?>> getPropertyByName(String name) {
+        return Optional.fromNullable(properties.get(name));
     }
 
-    BlockState withProperty(GlowBlockState state, BlockProperty<?> property, Comparable<?> value) {
-        ImmutableMap.Builder<BlockProperty<?>, Comparable<?>> builder = ImmutableMap.builder();
-        for (Map.Entry<BlockProperty<?>, ? extends Comparable<?>> entry : state.getProperties().entrySet()) {
-            if (!entry.getKey().equals(property)) {
-                builder.put(entry.getKey(), entry.getValue());
-            }
-        }
+    public BlockState withTrait(GlowBlockState state, BlockTrait<?> property, Object value) {
+        ImmutableMap.Builder<BlockTrait<?>, Object> builder = ImmutableMap.builder();
+        state.getTraitMap().entrySet().stream().filter(entry -> !entry.getKey().equals(property)).forEach(entry -> {
+            builder.put(entry.getKey(), entry.getValue());
+        });
         builder.put(property, value);
-        ImmutableMap<BlockProperty<?>, Comparable<?>> map = builder.build();
+        ImmutableMap<BlockTrait<?>, Object> map = builder.build();
 
         for (BlockState available : states) {
-            if (available != null && available.getProperties().equals(map)) {
+            if (available != null && available.getTraits().equals(map)) {
                 return available;
             }
         }
@@ -125,11 +132,26 @@ public class GlowBlockType implements BlockType {
         throw new IllegalArgumentException("No state of " + this + " with values " + map);
     }
 
+    @Override
+    public <T extends Property<?, ?>> java.util.Optional<T> getProperty(Class<T> propertyClass) {
+        return null;
+    }
+
+    @Override
+    public Collection<Property<?, ?>> getApplicableProperties() {
+        return null;
+    }
+
+    @Override
+    public Translation getTranslation() {
+        return null;
+    }
+
     private static class Pair<A, B> {
         final A first;
         final B second;
 
-        public Pair(A first, B second) {
+        Pair(A first, B second) {
             this.first = first;
             this.second = second;
         }
