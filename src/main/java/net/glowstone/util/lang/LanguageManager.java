@@ -10,6 +10,7 @@ import net.glowstone.entity.GlowPlayer;
 public class LanguageManager {
     private String baseName = "lang/messages";
     private ResourceBundle defaultBundle = ResourceBundle.getBundle(baseName, Locale.forLanguageTag(GlowServer.defaultLocale));
+
     /*
      * Returns the locale that should be used for commands and messages according to the server settings.
      */
@@ -23,15 +24,16 @@ public class LanguageManager {
     /*
      * Returns the internationalized message according to the effective locale of the player.
      */
-    public String getString(String key, GlowPlayer p) {
+    public String getString(String key, GlowPlayer p, Object ... args) {
         String locale = this.getEffectiveLocale(p);
         ResourceBundle rb = ResourceBundle.getBundle(baseName, Locale.forLanguageTag(locale));
-        return rb.getString(key);
+        return String.format(rb.getString(key), args);
     }
+
     /**
     * Returns the internationalized message according to the default locale of the server. Used when a GlowPlayer object is unavailable.
     */
-    public String getString(String key) {
-        return defaultBundle.getString(key);
+    public String getString(String key, Object ... args) {
+        return String.format(defaultBundle.getString(key), args);
     }
 }
