@@ -73,7 +73,7 @@ import org.bukkit.util.permissions.DefaultPermissions;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.mcstats.Metrics;
+import net.glowstone.util.Metrics;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
