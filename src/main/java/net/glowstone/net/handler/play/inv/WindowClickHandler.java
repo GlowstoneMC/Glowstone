@@ -274,6 +274,13 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
             // PLACE_*
             case PLACE_ALL:
                 view.setItem(viewSlot, combine(slotItem, cursor, cursor.getAmount()));
+                if (view.getTopInventory().getType() == InventoryType.CRAFTING && viewSlot < view.getTopInventory().getSize() && ((GlowInventory) view.getTopInventory()).getSlot(viewSlot).getType() == SlotType.CRAFTING) {
+                    ItemStack result = ((GlowCraftingInventory) view.getTopInventory()).getResult();
+                    if (result != null) {
+                        player.sendItemChange(viewSlot, result);
+                    }
+                    GlowServer.logger.info("Attempted item slot update!");
+                }
                 player.setItemOnCursor(null);
                 break;
             case PLACE_SOME: {

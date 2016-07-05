@@ -40,6 +40,7 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
                 super.setItem(RESULT_SLOT, null);
             } else {
                 super.setItem(RESULT_SLOT, recipe.getResult());
+                GlowServer.logger.info("Amount: " + getItem(RESULT_SLOT));
             }
         }
     }
@@ -92,18 +93,8 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
         Recipe recipe = cm.getCraftingRecipe(matrix);
 
         if (recipe != null) {
-            craft(cm);
+            cm.removeItems(matrix, this);
         }
-    }
-
-    /**
-     * Remove a layer of items from the inventory.
-     *
-     * @param cm The crafting manager instance for the server.
-     */
-    protected void craft(CraftingManager cm) {
-        ItemStack[] matrix = getMatrix();
-        cm.removeItems(matrix, this);
     }
 
     @Override
