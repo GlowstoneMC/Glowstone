@@ -173,7 +173,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
                 playEffect_(location, effect, data);
             }
         }
-
     };
     /**
      * The time the player joined.
@@ -295,7 +294,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * The one block the player is currently digging.
      */
     private GlowBlock digging;
-
+    
     public Location teleportedTo = null;
     /**
      * The one itemstack the player is currently usage and associated time.
@@ -482,7 +481,14 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     public long getJoinTime() {
         return joinTime;
     }
-
+    
+    /*
+     * Returns the player's current locale setting.
+     */
+    public String getLocale() {
+        return this.spigot.getLocale();
+    }
+    
     /**
      * Destroys this entity by removing it from the world and marking it as not
      * being active.
@@ -1794,7 +1800,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
                         server.dispatchCommand(this, event.getMessage().substring(1));
                     }
                 } catch (Exception ex) {
-                    sendMessage(ChatColor.RED + "An internal error occurred while executing your command.");
+                    sendMessage(ChatColor.RED + GlowServer.lang.getString("internalErrorDuringCommand"));
                     server.getLogger().log(Level.SEVERE, "Exception while executing command: " + text, ex);
                 }
             };
