@@ -91,52 +91,9 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             // todo: verification against malicious clients
             blockBroken = block.equals(player.getDigging());
 
-            if (blockBroken && holding.getType() != Material.AIR && EnchantmentTarget.TOOL.includes(holding) && holding.getDurability() < holding.getType().getMaxDurability()) {
-                ItemTool tool = ((ItemTool) ItemTable.instance().getItem(holding.getType()));
-                switch (block.getType()) {
-                    case GRASS:
-                    case DIRT:
-                    case SAND:
-                    case GRAVEL:
-                    case MYCEL:
-                    case SOUL_SAND:
-                        switch (holding.getType()) {
-                            case WOOD_SPADE:
-                            case STONE_SPADE:
-                            case IRON_SPADE:
-                            case GOLD_SPADE:
-                            case DIAMOND_SPADE:
-                                tool.damageTool(player, holding, 1);
-                                break;
-                            default:
-                                tool.damageTool(player, holding, 2);
-                                break;
-                        }
-                        break;
-                    case LOG:
-                    case LOG_2:
-                    case WOOD:
-                    case CHEST:
-                        switch (holding.getType()) {
-                            case WOOD_AXE:
-                            case STONE_AXE:
-                            case IRON_AXE:
-                            case GOLD_AXE:
-                            case DIAMOND_AXE:
-                                tool.damageTool(player, holding, 1);
-                                break;
-                            default:
-                                tool.damageTool(player, holding, 2);
-                                break;
-                        }
-                        break;
-                    case STONE:
-                    case COBBLESTONE:
-                        break;
-                    default:
-                        tool.damageTool(player, holding, 2);
-                        break;
-                }
+            if (blockBroken && holding.getType() != Material.AIR && EnchantmentTarget.TOOL.includes(holding.getType()) && holding.getDurability() < holding.getType().getMaxDurability()) {
+                ItemTool tool = (ItemTool) ItemTable.instance().getItem(holding.getType());
+                tool.breakBlock(player, block, face, holding, null);
             }
             player.setDigging(null);
         } else if (message.getState() == DiggingMessage.STATE_DROP_ITEM) {
