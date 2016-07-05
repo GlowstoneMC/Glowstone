@@ -9,6 +9,7 @@ import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.itemtype.ItemTimedUsage;
 import net.glowstone.block.itemtype.ItemType;
+import net.glowstone.block.itemtype.ItemTool;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.net.GlowSession;
@@ -90,7 +91,8 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             // todo: verification against malicious clients
             blockBroken = block.equals(player.getDigging());
 
-            if (blockBroken && holding.getType() != Material.AIR && holding.getDurability() != holding.getType().getMaxDurability()) {
+            if (blockBroken && holding.getType() != Material.AIR && EnchantmentTarget.TOOL.includes(holding) && holding.getDurability() < holding.getType().getMaxDurability()) {
+                ItemTool tool = ((ItemTool) ItemTable.instance().getItem(holding.getType()));
                 switch (block.getType()) {
                     case GRASS:
                     case DIRT:
@@ -104,10 +106,10 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                             case IRON_SPADE:
                             case GOLD_SPADE:
                             case DIAMOND_SPADE:
-                                holding.setDurability((short) (holding.getDurability() + 1));
+                                tool.damageTool(player, holding, 1);
                                 break;
                             default:
-                                holding.setDurability((short) (holding.getDurability() + 2));
+                                tool.damageTool(player, holding, 2);
                                 break;
                         }
                         break;
@@ -121,10 +123,10 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                             case IRON_AXE:
                             case GOLD_AXE:
                             case DIAMOND_AXE:
-                                holding.setDurability((short) (holding.getDurability() + 1));
+                                tool.damageTool(player, holding, 1);
                                 break;
                             default:
-                                holding.setDurability((short) (holding.getDurability() + 2));
+                                tool.damageTool(player, holding, 2);
                                 break;
                         }
                         break;
@@ -132,12 +134,8 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                     case COBBLESTONE:
                         break;
                     default:
-                        holding.setDurability((short) (holding.getDurability() + 2));
+                        tool.damageTool(player, holding, 2);
                         break;
-                }
-                if (holding.getDurability() >= holding.getType().getMaxDurability()) {
-                    player.getInventory().remove(holding);
-                    //player.getItemInHand().setType(Material.AIR);
                 }
             }
             player.setDigging(null);

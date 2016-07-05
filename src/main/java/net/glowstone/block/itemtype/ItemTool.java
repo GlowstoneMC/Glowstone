@@ -29,13 +29,25 @@ public class ItemTool extends ItemType {
         }
     }
 
-    private void damageTool(GlowPlayer player, ItemStack holding) {
+    public void damageTool(GlowPlayer player, ItemStack holding) {
         if (player.getGameMode() == GameMode.CREATIVE) {
             return;
         }
 
         holding.setDurability((short) (holding.getDurability() + 1));
-        if (holding.getDurability() == maxDurability + 1) {
+        if (holding.getDurability() > maxDurability) {
+            EventFactory.callEvent(new PlayerItemBreakEvent(player, holding));
+            holding.setAmount(0);
+        }
+    }
+
+    public void damageTool(GlowPlayer player, ItemStack holding, int damageAmount) {
+        if (player.getGameMode() == GameMode.CREATIVE) {
+            return;
+        }
+
+        holding.setDurability((short) (holding.getDurability() + damageAmount));
+        if (holding.getDurability() > maxDurability) {
             EventFactory.callEvent(new PlayerItemBreakEvent(player, holding));
             holding.setAmount(0);
         }
