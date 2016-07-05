@@ -90,7 +90,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             // todo: verification against malicious clients
             blockBroken = block.equals(player.getDigging());
 
-            if (blockBroken && holding.getType() != Material.AIR && holding.getDurability() != holding.getType().getMaxDurability()) {
+            if (blockBroken && holding.getType().getMaxDurability() != 0 && holding.getType() != Material.AIR && holding.getDurability() != holding.getType().getMaxDurability()) {
                 switch (block.getType()) {
                     case GRASS:
                     case DIRT:
@@ -130,14 +130,25 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                         break;
                     case STONE:
                     case COBBLESTONE:
+                        switch (holding.getType()) {
+                            case WOOD_PICKAXE:
+                            case STONE_PICKAXE:
+                            case IRON_PICKAXE:
+                            case GOLD_PICKAXE:
+                            case DIAMOND_PICKAXE:
+                                holding.setDurability((short) (holding.getDurability() + 1));
+                                break;
+                            default:
+                                holding.setDurability((short) (holding.getDurability() + 2));
+                                break;
+                        }
                         break;
                     default:
                         holding.setDurability((short) (holding.getDurability() + 2));
                         break;
                 }
-                if (holding.getDurability() >= holding.getType().getMaxDurability()) {
-                    player.getInventory().remove(holding);
-                    //player.getItemInHand().setType(Material.AIR);
+                if (holding.getType().getMaxDurability() != 0 && holding.getDurability() >= holding.getType().getMaxDurability()) {
+                    player.getItemInHand().setType(Material.AIR);
                 }
             }
             player.setDigging(null);
