@@ -1212,20 +1212,22 @@ public final class GlowWorld implements World {
             entity = new GlowTNTPrimed(location, null);
         }
 
-        try {
-            Constructor<T> constructor = clazz.getConstructor(Location.class);
-            entity = (GlowEntity) constructor.newInstance(location);
-            CreatureSpawnEvent spawnEvent = new CreatureSpawnEvent((LivingEntity) entity, reason);
-            if (!spawnEvent.isCancelled()) {
-                entity.createSpawnMessage();
-            } else {
-                // TODO: separate spawning and construction for better event cancellation
-                entity.remove();
+        if (entity == null) {
+            try {
+                Constructor<T> constructor = clazz.getConstructor(Location.class);
+                entity = (GlowEntity) constructor.newInstance(location);
+                CreatureSpawnEvent spawnEvent = new CreatureSpawnEvent((LivingEntity) entity, reason);
+                if (!spawnEvent.isCancelled()) {
+                    entity.createSpawnMessage();
+                } else {
+                    // TODO: separate spawning and construction for better event cancellation
+                    entity.remove();
+                }
+            } catch (NoSuchMethodException e) {
+                GlowServer.logger.log(Level.WARNING, "Invalid entity spawn: ", e);
+            } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+                GlowServer.logger.log(Level.SEVERE, "Unable to spawn entity: ", e);
             }
-        } catch (NoSuchMethodException e) {
-            GlowServer.logger.log(Level.WARNING, "Invalid entity spawn: ", e);
-        } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            GlowServer.logger.log(Level.SEVERE, "Unable to spawn entity: ", e);
         }
 
         if (entity != null) {
