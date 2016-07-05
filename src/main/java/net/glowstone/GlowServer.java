@@ -4,6 +4,7 @@ import com.avaje.ebean.config.DataSourceConfig;
 import com.avaje.ebean.config.dbplatform.SQLitePlatform;
 import com.avaje.ebeaninternal.server.lib.sql.TransactionIsolation;
 import com.flowpowered.network.Message;
+
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import net.glowstone.block.BuiltinMaterialValueManager;
@@ -38,8 +39,10 @@ import net.glowstone.util.*;
 import net.glowstone.util.ServerConfig.Key;
 import net.glowstone.util.bans.GlowBanList;
 import net.glowstone.util.bans.UuidListFile;
+import net.glowstone.util.lang.LanguageManager;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
+
 import org.bukkit.*;
 import org.bukkit.BanList.Type;
 import org.bukkit.Warning.WarningState;
@@ -70,7 +73,7 @@ import org.bukkit.util.permissions.DefaultPermissions;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import net.glowstone.util.Metrics;
+import org.mcstats.Metrics;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -216,10 +219,25 @@ public final class GlowServer implements Server {
      * A view of all online players.
      */
     private final Set<GlowPlayer> onlineView = Collections.unmodifiableSet(onlinePlayers);
+    
+   /**
+    * The default locale to be used in the console and with the locked locale; read from the config.
+    */
+    public static String defaultLocale;
     /**
-     * The plugin type detector of thi server.
+     * Boolean if the default locale in the config should always be used.
+     */
+    public static boolean lockLocale;
+    /**
+     * The LanguageManager for the server. Used for internationalization.
+     */
+    public static LanguageManager lang;
+
+    /**
+     * The plugin type detector of this server.
      */
     private GlowPluginTypeDetector pluginTypeDetector;
+   
     /**
      * The server's default game mode
      */
@@ -288,6 +306,9 @@ public final class GlowServer implements Server {
         whitelist = new UuidListFile(config.getFile("whitelist.json"));
         nameBans = new GlowBanList(this, Type.NAME);
         ipBans = new GlowBanList(this, Type.IP);
+        defaultLocale = this.config.getString(Key.DEFAULT_LOCALE);
+        lockLocale = this.config.getBoolean(Key.LOCK_LOCALE);
+        lang = new LanguageManager();
 
         Bukkit.setServer(this);
         loadConfig();
@@ -322,12 +343,13 @@ public final class GlowServer implements Server {
                 logger.severe("Java processes using Task Manager or similar.");
                 logger.severe(ex.toString());
             } else {
-                logger.log(Level.SEVERE, "An unknown bind error has occurred.", ex);
+                logger.log(Level.SEVERE, lang.getString("unknownBindError"), ex);
             }
             System.exit(1);
         } catch (Throwable t) {
             // general server startup crash
-            logger.log(Level.SEVERE, "Error during server startup.", t);
+
+            logger.log(Level.SEVERE, lang.getString("serverStartUpError"), t);
             System.exit(1);
         }
     }
@@ -358,38 +380,38 @@ public final class GlowServer implements Server {
             String opt = args[i];
 
             if (!opt.startsWith("-")) {
-                System.err.println("Ignored invalid option: " + opt);
+                logger.warning(lang.getString("ignoredInvalidOption", opt));
                 continue;
             }
 
             // Help and version
             if ("--help".equals(opt) || "-h".equals(opt) || "-?".equals(opt)) {
-                System.out.println("Available command-line options:");
-                System.out.println("  --help, -h, -?                 Shows this help message and exits.");
-                System.out.println("  --version, -v                  Shows version information and exits.");
-                System.out.println("  --configdir <directory>        Sets the configuration directory.");
-                System.out.println("  --configfile <file>            Sets the configuration file.");
-                System.out.println("  --port, -p <port>              Sets the server listening port.");
-                System.out.println("  --host, -H <ip | hostname>     Sets the server listening address.");
-                System.out.println("  --onlinemode, -o <onlinemode>  Sets the server's online-mode.");
-                System.out.println("  --jline <true/false>           Enables or disables JLine console.");
-                System.out.println("  --plugins-dir, -P <directory>  Sets the plugin directory to use.");
-                System.out.println("  --worlds-dir, -W <directory>   Sets the world directory to use.");
-                System.out.println("  --update-dir, -U <directory>   Sets the plugin update folder to use.");
-                System.out.println("  --max-players, -M <director>   Sets the maximum amount of players.");
-                System.out.println("  --world-name, -N <name>        Sets the main world name.");
-                System.out.println("  --log-pattern, -L <pattern>    Sets the log file pattern (%D for date).");
+                logger.info("Available command-line options:");
+                logger.info("  --help, -h, -?                 Shows this help message and exits.");
+                logger.info("  --version, -v                  Shows version information and exits.");
+                logger.info("  --configdir <directory>        Sets the configuration directory.");
+                logger.info("  --configfile <file>            Sets the configuration file.");
+                logger.info("  --port, -p <port>              Sets the server listening port.");
+                logger.info("  --host, -H <ip | hostname>     Sets the server listening address.");
+                logger.info("  --onlinemode, -o <onlinemode>  Sets the server's online-mode.");
+                logger.info("  --jline <true/false>           Enables or disables JLine console.");
+                logger.info("  --plugins-dir, -P <directory>  Sets the plugin directory to use.");
+                logger.info("  --worlds-dir, -W <directory>   Sets the world directory to use.");
+                logger.info("  --update-dir, -U <directory>   Sets the plugin update folder to use.");
+                logger.info("  --max-players, -M <director>   Sets the maximum amount of players.");
+                logger.info("  --world-name, -N <name>        Sets the main world name.");
+                logger.info("  --log-pattern, -L <pattern>    Sets the log file pattern (%D for date).");
                 return null;
             } else if ("--version".equals(opt) || "-v".equals(opt)) {
-                System.out.println("Glowstone version: " + GlowServer.class.getPackage().getImplementationVersion());
-                System.out.println("Bukkit version:    " + GlowServer.class.getPackage().getSpecificationVersion());
-                System.out.println("Minecraft version: " + GAME_VERSION + " protocol " + PROTOCOL_VERSION);
+                logger.info("Glowstone version: " + GlowServer.class.getPackage().getImplementationVersion()); //glowstoneVersion
+                logger.info("Bukkit version:    " + GlowServer.class.getPackage().getSpecificationVersion()); //bukkitVersion
+                logger.info("Minecraft version: " + GAME_VERSION + " protocol " + PROTOCOL_VERSION); //minecraftVersion
                 return null;
             }
 
             // Below this point, options require parameters
             if (i == args.length - 1) {
-                System.err.println("Ignored option specified without value: " + opt);
+                logger.warning(lang.getString("ignoredInvalidOptionWithoutValue", opt));
                 continue;
             }
 
@@ -440,7 +462,7 @@ public final class GlowServer implements Server {
                     parameters.put(Key.LOG_FILE, args[++i]);
                     break;
                 default:
-                    System.err.println("Ignored invalid option: " + opt);
+                    logger.warning(lang.getString("ignoredInvalidOption", opt));
             }
         }
 
@@ -455,7 +477,7 @@ public final class GlowServer implements Server {
         bind();
         bindQuery();
         bindRcon();
-        logger.info("Ready for connections.");
+        logger.info(lang.getString("readyForConnections"));
 
         try {
             Metrics metrics = new Metrics(this);
@@ -475,12 +497,12 @@ public final class GlowServer implements Server {
 
         if (getProxySupport()) {
             if (getOnlineMode()) {
-                logger.warning("Proxy support is enabled, but online mode is enabled.");
+                logger.warning(lang.getString("proxyEnabledOnlineMode")); //proxyEnabledOnlineMode
             } else {
-                logger.info("Proxy support is enabled.");
+                logger.info(lang.getString("proxySupportEnabled"));
             }
         } else if (!getOnlineMode()) {
-            logger.warning("The server is running in offline mode! Only do this if you know what you're doing.");
+            logger.warning(lang.getString("offlineMessage"));
         }
 
         // Load player lists
@@ -536,7 +558,7 @@ public final class GlowServer implements Server {
         Path srcPath = new File(new File(getWorldContainer(), name), "DIM" + environment.getId()).toPath();
         Path destPath = new File(getWorldContainer(), name + suffix).toPath();
         if (Files.exists(srcPath) && !Files.exists(destPath)) {
-            logger.info("Importing " + destPath + " from " + srcPath);
+            logger.info(lang.getString("importDestFromSource", destPath.toString(), srcPath.toString()));
             try {
                 Files.walkFileTree(srcPath, new FileVisitor<Path>() {
                     @Override
@@ -556,7 +578,7 @@ public final class GlowServer implements Server {
 
                     @Override
                     public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-                        logger.warning("Importing file " + srcPath.relativize(file) + " + failed: " + exc);
+                        logger.warning(lang.getString("importFileFailedReason",  srcPath.relativize(file).toString(), exc.toString())); //importFileFailedReason
                         return FileVisitResult.CONTINUE;
                     }
 
@@ -567,7 +589,7 @@ public final class GlowServer implements Server {
                 });
                 Files.copy(srcPath.resolve("../level.dat"), destPath.resolve("level.dat"));
             } catch (IOException e) {
-                logger.log(Level.WARNING, "Import of " + srcPath + " failed", e);
+                logger.log(Level.WARNING, lang.getString("importFileFailed", srcPath.toString()), e);
             }
         }
     }
@@ -578,7 +600,7 @@ public final class GlowServer implements Server {
     private void bind() throws BindException {
         SocketAddress address = getBindAddress(Key.SERVER_PORT);
 
-        logger.info("Binding to address: " + address + "...");
+        logger.info(lang.getString("bindingToAddress", address.toString() + "..."));
         ChannelFuture future = networkServer.bind(address);
         Channel channel = future.awaitUninterruptibly().channel();
         if (!channel.isActive()) {
@@ -589,7 +611,7 @@ public final class GlowServer implements Server {
             throw new RuntimeException("Failed to bind to address", cause);
         }
 
-        logger.info("Successfully bound to: " + channel.localAddress());
+        logger.info(lang.getString("bindSuccess", channel.localAddress().toString()));
         InetSocketAddress localAddress = (InetSocketAddress) channel.localAddress();
         port = localAddress.getPort();
         ip = localAddress.getHostString();
@@ -606,11 +628,11 @@ public final class GlowServer implements Server {
         SocketAddress address = getBindAddress(Key.QUERY_PORT);
         queryServer = new QueryServer(this, config.getBoolean(Key.QUERY_PLUGINS));
 
-        logger.info("Binding query to address: " + address + "...");
+        logger.info("Binding query to address: " + address + "..."); //bindingQueryToAddress
         ChannelFuture future = queryServer.bind(address);
         Channel channel = future.awaitUninterruptibly().channel();
         if (!channel.isActive()) {
-            logger.warning("Failed to bind query. Address already in use?");
+            logger.warning(lang.getString("queryBindFailed"));
         }
     }
 
@@ -629,7 +651,7 @@ public final class GlowServer implements Server {
         ChannelFuture future = rconServer.bind(address);
         Channel channel = future.awaitUninterruptibly().channel();
         if (!channel.isActive()) {
-            logger.warning("Failed to bind rcon. Address already in use?");
+            logger.warning(lang.getString("rconBindFailed"));
         }
     }
 
@@ -659,7 +681,7 @@ public final class GlowServer implements Server {
             return;
         }
         isShuttingDown = true;
-        logger.info("The server is shutting down...");
+        logger.info(lang.getString("shuttingDownConsole"));
 
         // Disable plugins
         pluginManager.clearPlugins();
@@ -755,7 +777,7 @@ public final class GlowServer implements Server {
             try {
                 plugin.onLoad();
             } catch (Exception ex) {
-                logger.log(Level.SEVERE, "Error loading " + plugin.getDescription().getFullName(), ex);
+                logger.log(Level.SEVERE, lang.getString("errorLoading", plugin.getDescription().getFullName()), ex);
             }
         }
 
@@ -783,17 +805,21 @@ public final class GlowServer implements Server {
                 !pluginTypeDetector.unrecognizedPlugins.isEmpty()) {
             logger.log(Level.WARNING, "Unsupported plugin types found, will be ignored:");
 
-            for (File file : pluginTypeDetector.canaryPlugins)
+            for (File file : pluginTypeDetector.canaryPlugins) {
                 logger.log(Level.WARNING, "Canary plugin not supported: " + file.getPath());
+            }
 
-            for (File file : pluginTypeDetector.forgefPlugins)
+            for (File file : pluginTypeDetector.forgefPlugins) {
                 logger.log(Level.WARNING, "Forge plugin not supported: " + file.getPath());
+            }
 
-            for (File file : pluginTypeDetector.forgenPlugins)
+            for (File file : pluginTypeDetector.forgenPlugins) {
                 logger.log(Level.WARNING, "Forge plugin not supported: " + file.getPath());
+            }
 
-            for (File file : pluginTypeDetector.unrecognizedPlugins)
+            for (File file : pluginTypeDetector.unrecognizedPlugins) {
                 logger.log(Level.WARNING, "Unrecognized plugin not supported: " + file.getPath());
+            }
         }
 
     }
@@ -830,7 +856,7 @@ public final class GlowServer implements Server {
                 try {
                     pluginManager.enablePlugin(plugin);
                 } catch (Throwable ex) {
-                    logger.log(Level.SEVERE, "Error loading " + plugin.getDescription().getFullName(), ex);
+                    logger.log(Level.SEVERE, lang.getString("errorLoading", plugin.getDescription().getFullName()), ex);
                 }
             }
         }
@@ -876,7 +902,7 @@ public final class GlowServer implements Server {
             enablePlugins(PluginLoadOrder.STARTUP);
             enablePlugins(PluginLoadOrder.POSTWORLD);
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, "Uncaught error while reloading", ex);
+            logger.log(Level.SEVERE, lang.getString("uncaughtReloadError"), ex);
         }
     }
 

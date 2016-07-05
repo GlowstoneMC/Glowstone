@@ -63,10 +63,10 @@ public final class ServerConfig {
         this.parameters = parameters;
 
         config.options().indent(4).copyHeader(true).header(
-                "glowstone.yml is the main configuration file for a Glowstone server\n" +
+                "glowstone.yml is the main configuration file for a Glowstone++ server\n" +
                         "It contains everything from server.properties and bukkit.yml in a\n" +
                         "normal CraftBukkit installation.\n\n" +
-                        "For help, join us on Gitter: https://gitter.im/GlowstoneMC/Glowstone");
+                        "For help, join us on Gitter: https://gitter.im/GlowstonePlusPlus/GlowstonePlusPlus");
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -255,7 +255,7 @@ public final class ServerConfig {
             GlowServer.logger.log(Level.SEVERE, "Cannot load " + file + ": " + e.getCause().getClass(), e);
         }
     }
-
+    
     public YamlConfiguration getConfig() {
         return config;
     }
@@ -324,14 +324,16 @@ public final class ServerConfig {
         // server
         SERVER_IP("server.ip", "", Migrate.PROPS, "server-ip"),
         SERVER_PORT("server.port", 25565, Migrate.PROPS, "server-port"),
-        SERVER_NAME("server.name", "Glowstone Server", Migrate.PROPS, "server-name"),
+        SERVER_NAME("server.name", "Glowstone++ Server", Migrate.PROPS, "server-name"),
         LOG_FILE("server.log-file", "logs/log-%D.txt"),
         ONLINE_MODE("server.online-mode", true, Migrate.PROPS, "online-mode"),
         MAX_PLAYERS("server.max-players", 20, Migrate.PROPS, "max-players"),
         WHITELIST("server.whitelisted", false, Migrate.PROPS, "white-list"),
-        MOTD("server.motd", "Glowstone server", Migrate.PROPS, "motd"),
+        MOTD("server.motd", "Glowstone++ server", Migrate.PROPS, "motd"),
         SHUTDOWN_MESSAGE("server.shutdown-message", "Server shutting down.", Migrate.BUKKIT, "settings.shutdown-message"),
         ALLOW_LEGACY_CLIENTS("server.allow-legacy-clients", true),
+        DEFAULT_LOCALE("server.default-locale", "en-US"),
+        LOCK_LOCALE("server.lock-locale", false),
 
         // console
         USE_JLINE("console.use-jline", true),
@@ -377,7 +379,7 @@ public final class ServerConfig {
         PERMISSIONS_FILE("files.permissions", "permissions.yml", Migrate.BUKKIT, "settings.permissions-file"),
         COMMANDS_FILE("files.commands", "commands.yml"),
         HELP_FILE("files.help", "help.yml"),
-
+        
         // advanced
         CONNECTION_THROTTLE("advanced.connection-throttle", 4000, Migrate.BUKKIT, "settings.connection-throttle"),
         //PING_PACKET_LIMIT("advanced.ping-packet-limit", 100, Migrate.BUKKIT, "settings.ping-packet-limit"),
