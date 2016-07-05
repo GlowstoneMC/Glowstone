@@ -39,8 +39,8 @@ import net.glowstone.util.*;
 import net.glowstone.util.ServerConfig.Key;
 import net.glowstone.util.bans.GlowBanList;
 import net.glowstone.util.bans.UuidListFile;
+import net.glowstone.util.lang.LanguageProvider;
 import net.glowstone.util.lang.LanguageManager;
-import net.glowstone.util.lang.DefaultLanguageManager;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 
@@ -309,7 +309,7 @@ public final class GlowServer implements Server {
         ipBans = new GlowBanList(this, Type.IP);
         defaultLocale = this.config.getString(Key.DEFAULT_LOCALE);
         lockLocale = this.config.getBoolean(Key.LOCK_LOCALE);
-        lang = new DefaultLanguageManager();
+        lang = new LanguageManager();
 
         Bukkit.setServer(this);
         loadConfig();
