@@ -40,6 +40,7 @@ import net.glowstone.util.ServerConfig.Key;
 import net.glowstone.util.bans.GlowBanList;
 import net.glowstone.util.bans.UuidListFile;
 import net.glowstone.util.lang.LanguageManager;
+import net.glowstone.util.lang.DefaultLanguageManager;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 
@@ -308,7 +309,7 @@ public final class GlowServer implements Server {
         ipBans = new GlowBanList(this, Type.IP);
         defaultLocale = this.config.getString(Key.DEFAULT_LOCALE);
         lockLocale = this.config.getBoolean(Key.LOCK_LOCALE);
-        lang = new LanguageManager();
+        lang = new DefaultLanguageManager();
 
         Bukkit.setServer(this);
         loadConfig();
@@ -386,26 +387,26 @@ public final class GlowServer implements Server {
 
             // Help and version
             if ("--help".equals(opt) || "-h".equals(opt) || "-?".equals(opt)) {
-                System.out.println("Available command-line options:");
-                System.out.println("  --help, -h, -?                 Shows this help message and exits.");
-                System.out.println("  --version, -v                  Shows version information and exits.");
-                System.out.println("  --configdir <directory>        Sets the configuration directory.");
-                System.out.println("  --configfile <file>            Sets the configuration file.");
-                System.out.println("  --port, -p <port>              Sets the server listening port.");
-                System.out.println("  --host, -H <ip | hostname>     Sets the server listening address.");
-                System.out.println("  --onlinemode, -o <onlinemode>  Sets the server's online-mode.");
-                System.out.println("  --jline <true/false>           Enables or disables JLine console.");
-                System.out.println("  --plugins-dir, -P <directory>  Sets the plugin directory to use.");
-                System.out.println("  --worlds-dir, -W <directory>   Sets the world directory to use.");
-                System.out.println("  --update-dir, -U <directory>   Sets the plugin update folder to use.");
-                System.out.println("  --max-players, -M <director>   Sets the maximum amount of players.");
-                System.out.println("  --world-name, -N <name>        Sets the main world name.");
-                System.out.println("  --log-pattern, -L <pattern>    Sets the log file pattern (%D for date).");
+                logger.info("Available command-line options:");
+                logger.info("  --help, -h, -?                 Shows this help message and exits.");
+                logger.info("  --version, -v                  Shows version information and exits.");
+                logger.info("  --configdir <directory>        Sets the configuration directory.");
+                logger.info("  --configfile <file>            Sets the configuration file.");
+                logger.info("  --port, -p <port>              Sets the server listening port.");
+                logger.info("  --host, -H <ip | hostname>     Sets the server listening address.");
+                logger.info("  --onlinemode, -o <onlinemode>  Sets the server's online-mode.");
+                logger.info("  --jline <true/false>           Enables or disables JLine console.");
+                logger.info("  --plugins-dir, -P <directory>  Sets the plugin directory to use.");
+                logger.info("  --worlds-dir, -W <directory>   Sets the world directory to use.");
+                logger.info("  --update-dir, -U <directory>   Sets the plugin update folder to use.");
+                logger.info("  --max-players, -M <director>   Sets the maximum amount of players.");
+                logger.info("  --world-name, -N <name>        Sets the main world name.");
+                logger.info("  --log-pattern, -L <pattern>    Sets the log file pattern (%D for date).");
                 return null;
             } else if ("--version".equals(opt) || "-v".equals(opt)) {
-                System.out.println("Glowstone version: " + GlowServer.class.getPackage().getImplementationVersion());
-                System.out.println("Bukkit version:    " + GlowServer.class.getPackage().getSpecificationVersion());
-                System.out.println("Minecraft version: " + GAME_VERSION + " protocol " + PROTOCOL_VERSION);
+                logger.info("Glowstone version: " + GlowServer.class.getPackage().getImplementationVersion()); //glowstoneVersion
+                logger.info("Bukkit version:    " + GlowServer.class.getPackage().getSpecificationVersion()); //bukkitVersion
+                logger.info("Minecraft version: " + GAME_VERSION + " protocol " + PROTOCOL_VERSION); //minecraftVersion
                 return null;
             }
 
@@ -497,7 +498,7 @@ public final class GlowServer implements Server {
 
         if (getProxySupport()) {
             if (getOnlineMode()) {
-                logger.warning("Proxy support is enabled, but online mode is enabled.");
+                logger.warning(lang.getString("proxyEnabledOnlineMode")); //proxyEnabledOnlineMode
             } else {
                 logger.info(lang.getString("proxySupportEnabled"));
             }
@@ -558,7 +559,7 @@ public final class GlowServer implements Server {
         Path srcPath = new File(new File(getWorldContainer(), name), "DIM" + environment.getId()).toPath();
         Path destPath = new File(getWorldContainer(), name + suffix).toPath();
         if (Files.exists(srcPath) && !Files.exists(destPath)) {
-            logger.info("Importing " + destPath + " from " + srcPath);
+            logger.info(lang.getString("importDestFromSource", destPath.toString(), srcPath.toString()));
             try {
                 Files.walkFileTree(srcPath, new FileVisitor<Path>() {
                     @Override
@@ -578,7 +579,7 @@ public final class GlowServer implements Server {
 
                     @Override
                     public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-                        logger.warning("Importing file " + srcPath.relativize(file) + " + failed: " + exc);
+                        logger.warning(lang.getString("importFileFailedReason",  srcPath.relativize(file).toString(), exc.toString())); //importFileFailedReason
                         return FileVisitResult.CONTINUE;
                     }
 
@@ -589,7 +590,7 @@ public final class GlowServer implements Server {
                 });
                 Files.copy(srcPath.resolve("../level.dat"), destPath.resolve("level.dat"));
             } catch (IOException e) {
-                logger.log(Level.WARNING, "Import of " + srcPath + " failed", e);
+                logger.log(Level.WARNING, lang.getString("importFileFailed", srcPath.toString()), e);
             }
         }
     }
@@ -628,7 +629,7 @@ public final class GlowServer implements Server {
         SocketAddress address = getBindAddress(Key.QUERY_PORT);
         queryServer = new QueryServer(this, config.getBoolean(Key.QUERY_PLUGINS));
 
-        logger.info("Binding query to address: " + address + "...");
+        logger.info("Binding query to address: " + address + "..."); //bindingQueryToAddress
         ChannelFuture future = queryServer.bind(address);
         Channel channel = future.awaitUninterruptibly().channel();
         if (!channel.isActive()) {
