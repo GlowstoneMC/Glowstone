@@ -25,7 +25,7 @@
  * authors and contributors and should not be interpreted as representing official policies,
  * either expressed or implied, of anybody else.
  */
-package org.mcstats;
+package net.glowstone.util;
 
 import net.glowstone.GlowServer;
 import org.bukkit.Bukkit;
@@ -199,9 +199,7 @@ public class Metrics {
                                 task.cancel();
                                 task = null;
                                 // Tell all plotters to stop gathering information.
-                                for (Graph graph : graphs) {
-                                    graph.onOptOut();
-                                }
+                                graphs.forEach(Graph::onOptOut);
                             }
                         }
 
@@ -329,7 +327,7 @@ public class Metrics {
         String pluginName = "Glowstone";
         boolean onlineMode = Bukkit.getServer().getOnlineMode(); // TRUE if online mode is enabled
         String pluginVersion = (Metrics.class.getPackage().getImplementationVersion() != null) ? Metrics.class.getPackage().getImplementationVersion() : "unknown";
-        String serverVersion = Bukkit.getBukkitVersion();
+        String serverVersion = GlowServer.GAME_VERSION;
         int playersOnline = getOnlinePlayers();
 
         // END server software specific section -- all code below does not use any code outside of this class / Java
@@ -473,9 +471,7 @@ public class Metrics {
                     while (iter.hasNext()) {
                         final Graph graph = iter.next();
 
-                        for (Plotter plotter : graph.getPlotters()) {
-                            plotter.reset();
-                        }
+                        graph.getPlotters().forEach(Plotter::reset);
                     }
                 }
             }
