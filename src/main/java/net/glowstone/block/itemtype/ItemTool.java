@@ -24,18 +24,32 @@ public class ItemTool extends ItemType {
 
     @Override
     public final void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc) {
-        if (onToolRightClick(player, holding, target, face, clickedLoc)) {
-            damageTool(player, holding);
-        }
+            damageTool(player, holding, onToolRightClick(player, holding, target, face, clickedLoc));
     }
 
-    private void damageTool(GlowPlayer player, ItemStack holding) {
+    public final void breakBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc) {
+            damageTool(player, holding, onToolBreakBlock(player, holding, target, face, clickedLoc));
+    }
+
+    protected void damageTool(GlowPlayer player, ItemStack holding) {
         if (player.getGameMode() == GameMode.CREATIVE) {
             return;
         }
 
         holding.setDurability((short) (holding.getDurability() + 1));
-        if (holding.getDurability() == maxDurability + 1) {
+        if (holding.getDurability() > maxDurability) {
+            EventFactory.callEvent(new PlayerItemBreakEvent(player, holding));
+            holding.setAmount(0);
+        }
+    }
+
+    protected void damageTool(GlowPlayer player, ItemStack holding, int damageAmount) {
+        if (player.getGameMode() == GameMode.CREATIVE) {
+            return;
+        }
+
+        holding.setDurability((short) (holding.getDurability() + damageAmount));
+        if (holding.getDurability() > maxDurability) {
             EventFactory.callEvent(new PlayerItemBreakEvent(player, holding));
             holding.setAmount(0);
         }
@@ -49,10 +63,26 @@ public class ItemTool extends ItemType {
      * @param target     The block right clicked with the tool
      * @param face       The clicked BlockFace
      * @param clickedLoc The click location on the block
-     * @return true if the tool's durability should be decreased, false otherwise
+     * @return the amount the tool's durability should be increased by
      */
-    protected boolean onToolRightClick(GlowPlayer player, ItemStack tool, GlowBlock target, BlockFace face, Vector clickedLoc) {
+    protected int onToolRightClick(GlowPlayer player, ItemStack tool, GlowBlock target, BlockFace face, Vector clickedLoc) {
         // to be overridden in subclasses
-        return false;
+        return 0;
+    }
+
+
+    /**
+     * Called when a player breaks a block with the tool.
+     *
+     * @param player     The player using the tool
+     * @param tool       The tool
+     * @param target     The block left clicked with the tool
+     * @param face       The clicked BlockFace
+     * @param clickedLoc The click location on the block
+     * @return the amount the tool's durability should be increased by
+     */
+    protected int onToolBreakBlock(GlowPlayer player, ItemStack tool, GlowBlock target, BlockFace face, Vector clickedLoc) {
+        // to be overridden in subclasses
+        return 0;
     }
 }
