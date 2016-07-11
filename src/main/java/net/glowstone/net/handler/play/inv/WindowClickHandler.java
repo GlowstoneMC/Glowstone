@@ -58,7 +58,13 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                 // if there's an item under the cursor
 
                 player.sendItemChange(viewSlot, slotItem);
-                return false;
+                if (view.getTopInventory().getType() == InventoryType.CRAFTING && viewSlot < view.getTopInventory().getSize() && ((GlowInventory) view.getTopInventory()).getSlot(viewSlot).getType() == SlotType.RESULT) {
+                    GlowServer.logger.info("here's your result, cursor");
+                    player.setItemOnCursor(slotItem);
+                    cursor = player.getItemOnCursor();
+                } else {
+                    return false;
+                }
             }
         }
 
@@ -274,24 +280,20 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
             // PLACE_*
             case PLACE_ALL:
                 view.setItem(viewSlot, combine(slotItem, cursor, cursor.getAmount()));
-                if (view.getTopInventory().getType() == InventoryType.CRAFTING && viewSlot < view.getTopInventory().getSize() && ((GlowInventory) view.getTopInventory()).getSlot(viewSlot).getType() == SlotType.CRAFTING) {
-                    ItemStack result = ((GlowCraftingInventory) view.getTopInventory()).getResult();
-                    if (result != null) {
-                        player.sendItemChange(viewSlot, result);
-                    }
-                    GlowServer.logger.info("Attempted item slot update!");
-                }
+                updateRecipeSlot(view, viewSlot, player);
                 player.setItemOnCursor(null);
                 break;
             case PLACE_SOME: {
                 // slotItem *should* never be null in this situation?
                 int transfer = Math.min(cursor.getAmount(), maxStack(inv, slotItem.getType()) - slotItem.getAmount());
                 view.setItem(viewSlot, combine(slotItem, cursor, transfer));
+                updateRecipeSlot(view, viewSlot, player);
                 player.setItemOnCursor(amountOrNull(cursor, cursor.getAmount() - transfer));
                 break;
             }
             case PLACE_ONE:
                 view.setItem(viewSlot, combine(slotItem, cursor, 1));
+                updateRecipeSlot(view, viewSlot, player);
                 player.setItemOnCursor(amountOrNull(cursor, cursor.getAmount() - 1));
                 break;
 
@@ -441,6 +443,20 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
 
     private int maxStack(Inventory inv, Material mat) {
         return Math.min(inv.getMaxStackSize(), mat.getMaxStackSize());
+    }
+
+    private void updateRecipeSlot(InventoryView view, int viewSlot, GlowPlayer player) {
+        GlowServer.logger.info("Checking for crafting inventory...");
+        if (view.getTopInventory().getType() == InventoryType.CRAFTING && viewSlot < view.getTopInventory().getSize() && ((GlowInventory) view.getTopInventory()).getSlot(viewSlot).getType() == SlotType.CRAFTING) {
+            GlowServer.logger.info("Attempting item slot update...");
+            ItemStack result = ((GlowCraftingInventory) view.getTopInventory()).getResult();
+            if (result != null) {
+                GlowServer.logger.info("Result slot not null, updating item slot to " + result);
+                player.sendItemChange(viewSlot, result);
+                GlowServer.logger.info("Forcing inventory update...");
+                player.updateInventory();
+            }
+        }
     }
 
 }
