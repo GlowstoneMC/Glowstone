@@ -40,7 +40,6 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
                 super.setItem(RESULT_SLOT, null);
             } else {
                 super.setItem(RESULT_SLOT, recipe.getResult());
-                GlowServer.logger.info("Amount: " + getItem(RESULT_SLOT));
             }
         }
     }
