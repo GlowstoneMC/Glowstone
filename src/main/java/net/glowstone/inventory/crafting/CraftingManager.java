@@ -226,9 +226,7 @@ public final class CraftingManager implements Iterable<Recipe> {
                     }
 
                     // recipe matches and zero items outside the recipe part.
-                    ItemStack result = recipe.getResult();
-                    result.setAmount(result.getAmount() * getLayers(items));
-                    return new ShapedRecipe(result);
+                    return recipe;
                 }
             } // end position loop
         } // end recipe loop

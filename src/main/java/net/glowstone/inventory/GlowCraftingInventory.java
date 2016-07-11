@@ -62,6 +62,7 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
 
             // Set to correct amount (tricking the client and click handler)
             int recipeAmount = CraftingManager.getLayers(getMatrix());
+            clickedItem.setAmount(clickedItem.getAmount() * recipeAmount);
 
             // Place the items in the player's inventory (right to left)
             player.getInventory().tryToFillSlots(clickedItem, 8, -1, 35, 8);
