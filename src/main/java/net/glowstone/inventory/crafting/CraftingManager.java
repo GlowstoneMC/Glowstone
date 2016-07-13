@@ -87,7 +87,7 @@ public final class CraftingManager implements Iterable<Recipe> {
             return 0;
         }
     }
-    
+
     public boolean isFuel(Material material) {
         return furnaceFuels.containsKey(material);
     }
@@ -118,7 +118,7 @@ public final class CraftingManager implements Iterable<Recipe> {
      * @param items The items in the crafting matrix.
      * @return The number of stacks for a recipe.
      */
-    public int getLayers(ItemStack... items) {
+    public static int getLayers(ItemStack... items) {
         int layers = 0;
         for (ItemStack item : items) {
             if (item != null && (item.getAmount() < layers || layers == 0)) {
