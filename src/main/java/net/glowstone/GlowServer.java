@@ -386,26 +386,26 @@ public final class GlowServer implements Server {
 
             // Help and version
             if ("--help".equals(opt) || "-h".equals(opt) || "-?".equals(opt)) {
-                logger.info("Available command-line options:");
-                logger.info("  --help, -h, -?                 Shows this help message and exits.");
-                logger.info("  --version, -v                  Shows version information and exits.");
-                logger.info("  --configdir <directory>        Sets the configuration directory.");
-                logger.info("  --configfile <file>            Sets the configuration file.");
-                logger.info("  --port, -p <port>              Sets the server listening port.");
-                logger.info("  --host, -H <ip | hostname>     Sets the server listening address.");
-                logger.info("  --onlinemode, -o <onlinemode>  Sets the server's online-mode.");
-                logger.info("  --jline <true/false>           Enables or disables JLine console.");
-                logger.info("  --plugins-dir, -P <directory>  Sets the plugin directory to use.");
-                logger.info("  --worlds-dir, -W <directory>   Sets the world directory to use.");
-                logger.info("  --update-dir, -U <directory>   Sets the plugin update folder to use.");
-                logger.info("  --max-players, -M <director>   Sets the maximum amount of players.");
-                logger.info("  --world-name, -N <name>        Sets the main world name.");
-                logger.info("  --log-pattern, -L <pattern>    Sets the log file pattern (%D for date).");
+                System.out.println("Available command-line options:");
+                System.out.println("  --help, -h, -?                 Shows this help message and exits.");
+                System.out.println("  --version, -v                  Shows version information and exits.");
+                System.out.println("  --configdir <directory>        Sets the configuration directory.");
+                System.out.println("  --configfile <file>            Sets the configuration file.");
+                System.out.println("  --port, -p <port>              Sets the server listening port.");
+                System.out.println("  --host, -H <ip | hostname>     Sets the server listening address.");
+                System.out.println("  --onlinemode, -o <onlinemode>  Sets the server's online-mode.");
+                System.out.println("  --jline <true/false>           Enables or disables JLine console.");
+                System.out.println("  --plugins-dir, -P <directory>  Sets the plugin directory to use.");
+                System.out.println("  --worlds-dir, -W <directory>   Sets the world directory to use.");
+                System.out.println("  --update-dir, -U <directory>   Sets the plugin update folder to use.");
+                System.out.println("  --max-players, -M <director>   Sets the maximum amount of players.");
+                System.out.println("  --world-name, -N <name>        Sets the main world name.");
+                System.out.println("  --log-pattern, -L <pattern>    Sets the log file pattern (%D for date).");
                 return null;
             } else if ("--version".equals(opt) || "-v".equals(opt)) {
-                logger.info("Glowstone version: " + GlowServer.class.getPackage().getImplementationVersion()); //glowstoneVersion
-                logger.info("Bukkit version:    " + GlowServer.class.getPackage().getSpecificationVersion()); //bukkitVersion
-                logger.info("Minecraft version: " + GAME_VERSION + " protocol " + PROTOCOL_VERSION); //minecraftVersion
+                System.out.println("Glowstone++ version: " + GlowServer.class.getPackage().getImplementationVersion()); //glowstoneVersion
+                System.out.println("Bukkit version:    " + GlowServer.class.getPackage().getSpecificationVersion()); //bukkitVersion
+                System.out.println("Minecraft version: " + GAME_VERSION + " protocol " + PROTOCOL_VERSION); //minecraftVersion
                 return null;
             }
 
