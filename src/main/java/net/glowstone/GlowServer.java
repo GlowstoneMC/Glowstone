@@ -70,7 +70,6 @@ import org.bukkit.util.permissions.DefaultPermissions;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import net.glowstone.util.Metrics;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -926,6 +925,7 @@ public final class GlowServer implements Server {
 
     /**
      * Returns the list of whitelisted players on this server.
+     *
      * @return A file containing a list of UUIDs for this server's whitelisted players.
      */
     public UuidListFile getWhitelist() {
@@ -1106,17 +1106,20 @@ public final class GlowServer implements Server {
 
     @Override
     public String getName() {
-        return getClass().getPackage().getImplementationTitle();
+        String implementationTitle = GlowServer.class.getClass().getPackage().getImplementationTitle();
+        return implementationTitle != null ? implementationTitle : "UNKNOWN";
     }
 
     @Override
     public String getVersion() {
-        return GlowServer.class.getPackage().getImplementationVersion() + "-MC" + GAME_VERSION;
+        String implementationVersion = GlowServer.class.getPackage().getImplementationVersion();
+        return implementationVersion != null ? implementationVersion + "-MC" + GAME_VERSION : "UNKNOWN";
     }
 
     @Override
     public String getBukkitVersion() {
-        return GlowServer.class.getPackage().getSpecificationVersion();
+        String specificationVersion = GlowServer.class.getPackage().getSpecificationVersion();
+        return specificationVersion != null ? specificationVersion : "UNKNOWN";
     }
 
     @Override
