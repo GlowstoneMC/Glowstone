@@ -1086,12 +1086,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         GlowBlock block = (GlowBlock) bedSpawn.getBlock();
         GlowBlock head = BlockBed.getHead(block);
         GlowBlock foot = BlockBed.getFoot(block);
-        // If there is a bed, try to find an empty spot next to the bed
-        if (head != null && head.getType() == Material.BED_BLOCK) {
-            Block spawn = BlockBed.getExitLocation(head, foot);
-            return spawn == null ? null : spawn.getLocation().add(0.5, 0.1, 0.5);
-        } else {
-            // If there is no bed and spawning is forced and there is space to spawn
+        if (head != null) {
+            // If there is a bed, try to find an empty spot next to the bed
+            if (head.getType() == Material.BED_BLOCK) {
+                Block spawn = BlockBed.getExitLocation(head, foot);
+                return spawn == null ? null : spawn.getLocation().add(0.5, 0.1, 0.5);
+            }
             if (bedSpawnForced) {
                 Material bottom = head.getType();
                 Material top = head.getRelative(BlockFace.UP).getType();
@@ -1100,8 +1100,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
                     return bedSpawn.clone().add(0.5, 0.1, 0.5); // No blocks are blocking the spawn
                 }
             }
-            return null;
         }
+        return null;
     }
 
     @Override
