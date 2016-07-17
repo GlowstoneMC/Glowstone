@@ -28,6 +28,7 @@ public class GlowOcelot extends GlowTameable implements Ocelot {
 
     @Override
     public void setOwner(AnimalTamer animalTamer) {
+        // TODO
         super.setOwner(animalTamer);
     }
 }

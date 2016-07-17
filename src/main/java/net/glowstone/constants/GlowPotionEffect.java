@@ -118,6 +118,7 @@ public final class GlowPotionEffect extends PotionEffectType {
         }
 
         protected void pulse(LivingEntity entity, int amplifier, int ticks) {
+            // TODO implement potion pulse
         }
     }
 
