@@ -496,8 +496,7 @@ public class Metrics {
         } finally {
             if (gzos != null) try {
                 gzos.close();
-            } catch (IOException ignore) {
-                ;
+            } catch (IOException ignored) {
             }
         }
 
