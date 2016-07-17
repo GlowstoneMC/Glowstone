@@ -735,6 +735,10 @@ public abstract class GlowEntity implements Entity {
         this.onGround = onGround;
     }
 
+    /**
+     * Destroys this entity by removing it from the world and marking it as not
+     * being active.
+     */
     @Override
     public void remove() {
         active = false;

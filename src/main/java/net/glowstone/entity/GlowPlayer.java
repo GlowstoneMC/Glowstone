@@ -484,18 +484,13 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     /**
-     * Destroys this entity by removing it from the world and marking it as not
-     * being active.
+     * Kicks this player
      */
     @Override
     public void remove() {
-        remove(true);
-    }
-
-    public void remove(boolean asyncSave) {
         knownChunks.clear();
         chunkLock.clear();
-        saveData(asyncSave);
+        saveData(true);
         getInventory().removeViewer(this);
         getInventory().getCraftingInventory().removeViewer(this);
         permissions.clearPermissions();
@@ -1764,7 +1759,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void kickPlayer(String message) {
-        remove(true);
+        remove();
         session.disconnect(message == null ? "" : message);
     }
 
