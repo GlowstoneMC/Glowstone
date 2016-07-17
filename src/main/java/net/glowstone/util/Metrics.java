@@ -674,7 +674,7 @@ public class Metrics {
          * Called when the server owner decides to opt-out of BukkitMetrics while the server is running.
          */
         protected void onOptOut() {
-            // TODO do  we want to do or say anything when someone opts out?
+            // TODO do we want to do or say anything when someone opts out?
         }
     }
 
