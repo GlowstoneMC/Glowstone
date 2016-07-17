@@ -30,9 +30,8 @@ public class SuperSetTest {
         populateSet(duplicatedSetB, "B");
 
         List<Set<String>> sets = ImmutableList.of(setA, setB, duplicatedSetB);
-        SuperSet<String> superSet = new SuperSet(sets);
 
-        return superSet;
+        return new SuperSet(sets);
     }
 
     private void checkContains(Set<String> set, String prefix) {

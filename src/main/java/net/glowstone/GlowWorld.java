@@ -1284,8 +1284,7 @@ public final class GlowWorld implements World {
         if (location == null || material == null) {
             throw new IllegalArgumentException();
         }
-        GlowFallingBlock glowFallingBlock = new GlowFallingBlock(location, material, data);
-        return glowFallingBlock;
+        return new GlowFallingBlock(location, material, data);
     }
 
     @Override
