@@ -10,15 +10,12 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 public class TitleCommand extends BukkitCommand {
 
     public TitleCommand() {
-        super("title");
-        description = "Sends a title to the specified player(s)";
-        usageMessage = "/title <player> <title|clear|reset> ...";
-        setAliases(Arrays.asList());
+        super("title", "Sends a title to the specified player(s)", "/title <player> <title|clear|reset> ...", Collections.emptyList());
         setPermission("glowstone.command.title");
     }
 

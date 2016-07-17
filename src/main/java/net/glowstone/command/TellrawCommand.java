@@ -15,10 +15,7 @@ import java.util.Collections;
 public class TellrawCommand extends BukkitCommand {
 
     public TellrawCommand() {
-        super("tellraw",
-                "Send a private JSON message to the given player",
-                "/tellraw <player> <raw-json-message>",
-                Collections.emptyList());
+        super("tellraw", "Send a private JSON message to the given player", "/tellraw <player> <raw-json-message>", Collections.emptyList());
         setPermission("glowstone.command.tellraw");
     }
 
