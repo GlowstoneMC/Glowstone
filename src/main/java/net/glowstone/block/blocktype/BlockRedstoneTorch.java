@@ -82,7 +82,6 @@ public class BlockRedstoneTorch extends BlockNeedsAttached {
 
                 me.setTypeIdAndData((powered ? Material.REDSTONE_TORCH_OFF : Material.REDSTONE_TORCH_ON).getId(), me.getData(), true);
                 extraUpdate(me);
-                return;
             }
         }
     }
