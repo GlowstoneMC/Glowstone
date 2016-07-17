@@ -161,7 +161,7 @@ class GlowMetaItem implements ItemMeta {
                 setDisplayName(display.getString("Name"));
             }
             if (display.isList("Lore", TagType.STRING)) {
-                setLore(display.<String>getList("Lore", TagType.STRING));
+                setLore(display.getList("Lore", TagType.STRING));
             }
         }
 
@@ -239,7 +239,7 @@ class GlowMetaItem implements ItemMeta {
 
     @Override
     public Map<Enchantment, Integer> getEnchants() {
-        return hasEnchants() ? Collections.unmodifiableMap(enchants) : Collections.<Enchantment, Integer>emptyMap();
+        return hasEnchants() ? Collections.unmodifiableMap(enchants) : Collections.emptyMap();
     }
 
     @Override
@@ -304,7 +304,7 @@ class GlowMetaItem implements ItemMeta {
         int bitModifier = getBitModifier(itemFlag);
         return (hideFlag & bitModifier) == bitModifier;
     }
-    
+
     private byte getBitModifier(ItemFlag hideFlag) {
         return (byte) (1 << hideFlag.ordinal());
     }

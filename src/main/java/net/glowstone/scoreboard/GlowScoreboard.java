@@ -231,11 +231,11 @@ public final class GlowScoreboard implements Scoreboard {
     }
 
     public Set<Objective> getObjectivesByCriteria(String criteria) throws IllegalArgumentException {
-        return ImmutableSet.<Objective>copyOf(getForCriteria(criteria));
+        return ImmutableSet.copyOf(getForCriteria(criteria));
     }
 
     public Set<Objective> getObjectives() {
-        return ImmutableSet.<Objective>copyOf(objectives.values());
+        return ImmutableSet.copyOf(objectives.values());
     }
 
     public Objective getObjective(DisplaySlot slot) throws IllegalArgumentException {
@@ -277,7 +277,7 @@ public final class GlowScoreboard implements Scoreboard {
     }
 
     public Set<Team> getTeams() {
-        return ImmutableSet.<Team>copyOf(teams.values());
+        return ImmutableSet.copyOf(teams.values());
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -294,7 +294,7 @@ public final class GlowScoreboard implements Scoreboard {
         if (scoreSet == null) {
             return ImmutableSet.of();
         } else {
-            return ImmutableSet.<Score>copyOf(scoreSet);
+            return ImmutableSet.copyOf(scoreSet);
         }
     }
 

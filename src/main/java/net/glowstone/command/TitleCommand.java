@@ -18,7 +18,7 @@ public class TitleCommand extends BukkitCommand {
         super("title");
         description = "Sends a title to the specified player(s)";
         usageMessage = "/title <player> <title|clear|reset> ...";
-        setAliases(Arrays.<String>asList());
+        setAliases(Arrays.asList());
         setPermission("glowstone.command.title");
     }
 

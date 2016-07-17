@@ -35,7 +35,7 @@ public final class PlayerProfile {
      * @param uuid The player's UUID.
      */
     public PlayerProfile(String name, UUID uuid) {
-        this(name, uuid, Collections.<PlayerProperty>emptyList());
+        this(name, uuid, Collections.emptyList());
     }
 
     /**
