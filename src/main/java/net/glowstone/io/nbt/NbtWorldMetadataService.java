@@ -32,7 +32,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
     }
 
     @Override
-    public WorldFinalValues readWorldData() throws IOException {
+    public WorldFinalValues readWorldData() {
         // determine UUID of world
         UUID uid = null;
         File uuidFile = new File(dir, "uid.dat");
