@@ -27,7 +27,7 @@ public final class GlowParticle {
         set(Effect.WAKE, 6); // wake
         set(Effect.SUSPENDED, 7); // suspended
         set(Effect.VOID_FOG, 8); // depthsuspend
-        set(Effect.CRIT, 9); // critnot if the block is
+        set(Effect.CRIT, 9); // crit
         set(Effect.MAGIC_CRIT, 10); // magicCrit
         set(Effect.PARTICLE_SMOKE, 11); // smoke
         set(Effect.LARGE_SMOKE, 12); // largesmoke
