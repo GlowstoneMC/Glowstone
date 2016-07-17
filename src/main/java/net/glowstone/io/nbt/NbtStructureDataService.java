@@ -37,7 +37,7 @@ public class NbtStructureDataService implements StructureDataService {
     }
 
     @Override
-    public Map<Integer, GlowStructure> readStructuresData() throws IOException {
+    public Map<Integer, GlowStructure> readStructuresData() {
         Map<Integer, GlowStructure> structures = new HashMap<>();
         for (StructureStore<?> store : StructureStorage.getStructureStores()) {
             File structureFile = new File(structureDir, store.getId() + ".dat");
@@ -66,7 +66,7 @@ public class NbtStructureDataService implements StructureDataService {
     }
 
     @Override
-    public void writeStructuresData(Map<Integer, GlowStructure> structures) throws IOException {
+    public void writeStructuresData(Map<Integer, GlowStructure> structures) {
         for (GlowStructure structure : structures.values()) {
             if (structure.isDirty()) {
                 CompoundTag root = new CompoundTag();

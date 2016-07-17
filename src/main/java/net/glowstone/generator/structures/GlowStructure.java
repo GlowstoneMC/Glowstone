@@ -66,11 +66,7 @@ public abstract class GlowStructure {
     public void wrapAllPieces() {
         boundingBox = new StructureBoundingBox(new Vector(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE),
                 new Vector(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE));
-        for (GlowStructurePiece piece : children) {
-            if (piece != null) {
-                boundingBox.expandTo(piece.getBoundingBox());
-            }
-        }
+        children.stream().filter(piece -> piece != null).forEach(piece -> boundingBox.expandTo(piece.getBoundingBox()));
     }
 
     public boolean generate(Random random, int x, int z, BlockStateDelegate delegate) {

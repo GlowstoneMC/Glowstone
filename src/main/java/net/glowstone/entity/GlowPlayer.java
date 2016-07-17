@@ -7,13 +7,9 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.Getter;
 import lombok.Setter;
-import net.glowstone.GlowServer;
 import net.glowstone.ChunkManager.ChunkLock;
-import net.glowstone.EventFactory;
-import net.glowstone.GlowChunk;
+import net.glowstone.*;
 import net.glowstone.GlowChunk.Key;
-import net.glowstone.GlowOfflinePlayer;
-import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockBed;
@@ -484,18 +480,13 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     /**
-     * Destroys this entity by removing it from the world and marking it as not
-     * being active.
+     * Kicks this player
      */
     @Override
     public void remove() {
-        remove(true);
-    }
-
-    public void remove(boolean asyncSave) {
         knownChunks.clear();
         chunkLock.clear();
-        saveData(asyncSave);
+        saveData(true);
         getInventory().removeViewer(this);
         getInventory().getCraftingInventory().removeViewer(this);
         permissions.clearPermissions();
@@ -1444,7 +1435,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     // todo: effects
     // todo: swim
     // todo: jump
-    // todo: food poisioning
+    // todo: food poisoning
     // todo: jump and sprint
     public void addExhaustion(float exhaustion) {
         if (shouldCalculateExhaustion()) {
@@ -1764,7 +1755,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void kickPlayer(String message) {
-        remove(true);
+        remove();
         session.disconnect(message == null ? "" : message);
     }
 

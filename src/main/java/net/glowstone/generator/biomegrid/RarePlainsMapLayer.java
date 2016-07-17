@@ -5,7 +5,8 @@ import net.glowstone.constants.GlowBiome;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.bukkit.block.Biome.*;
+import static org.bukkit.block.Biome.MUTATED_PLAINS;
+import static org.bukkit.block.Biome.PLAINS;
 
 public class RarePlainsMapLayer extends MapLayer {
 

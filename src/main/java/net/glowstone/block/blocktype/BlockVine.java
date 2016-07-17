@@ -129,20 +129,20 @@ public class BlockVine extends BlockClimbable {
                     if (!hasNearVineBlocks) {
                         GlowBlock b = block.getRelative(face);
                         if (b.isEmpty()) {
-                            BlockFace fcw = getClockwiseFace(face);
-                            BlockFace fccw = getCounterClockwiseFace(face);
-                            GlowBlock bcw = b.getRelative(fcw);
-                            GlowBlock bccw = b.getRelative(fccw);
-                            boolean isOnCWFace = vine.isOnFace(fcw);
-                            boolean isOnCCWFace = vine.isOnFace(fccw);
-                            if (isOnCWFace && bcw.getType().isSolid()) {
-                                putVine(b, new Vine(fcw), block);
-                            } else if (isOnCCWFace && bccw.getType().isSolid()) {
-                                putVine(b, new Vine(fccw), block);
-                            } else if (isOnCWFace && bcw.isEmpty() && block.getRelative(fcw).getType().isSolid()) {
-                                putVine(bcw, new Vine(face.getOppositeFace()), block);
-                            } else if (isOnCCWFace && bccw.isEmpty() && block.getRelative(fccw).getType().isSolid()) {
-                                putVine(bccw, new Vine(face.getOppositeFace()), block);
+                            BlockFace clockwiseFace = getClockwiseFace(face);
+                            BlockFace counterClockwiseFace = getCounterClockwiseFace(face);
+                            GlowBlock clockwiseBlock = b.getRelative(clockwiseFace);
+                            GlowBlock counterClockwiseBlock = b.getRelative(counterClockwiseFace);
+                            boolean isOnCWFace = vine.isOnFace(clockwiseFace);
+                            boolean isOnCCWFace = vine.isOnFace(counterClockwiseFace);
+                            if (isOnCWFace && clockwiseBlock.getType().isSolid()) {
+                                putVine(b, new Vine(clockwiseFace), block);
+                            } else if (isOnCCWFace && counterClockwiseBlock.getType().isSolid()) {
+                                putVine(b, new Vine(counterClockwiseFace), block);
+                            } else if (isOnCWFace && clockwiseBlock.isEmpty() && block.getRelative(clockwiseFace).getType().isSolid()) {
+                                putVine(clockwiseBlock, new Vine(face.getOppositeFace()), block);
+                            } else if (isOnCCWFace && counterClockwiseBlock.isEmpty() && block.getRelative(counterClockwiseFace).getType().isSolid()) {
+                                putVine(counterClockwiseBlock, new Vine(face.getOppositeFace()), block);
                             } else if (b.getRelative(BlockFace.UP).getType().isSolid()) {
                                 putVine(b, new Vine(), block);
                             }

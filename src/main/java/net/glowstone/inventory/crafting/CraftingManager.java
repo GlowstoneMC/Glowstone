@@ -391,8 +391,8 @@ public final class CraftingManager implements Iterable<Recipe> {
             List<String> shape = (List<String>) data.get("shape");
             recipe.shape(shape.toArray(new String[shape.size()]));
 
-            Map<String, Map<String, Object>> ingreds = (Map<String, Map<String, Object>>) data.get("ingredients");
-            for (Entry<String, Map<String, Object>> entry : ingreds.entrySet()) {
+            Map<String, Map<String, Object>> ingredients = (Map<String, Map<String, Object>>) data.get("ingredients");
+            for (Entry<String, Map<String, Object>> entry : ingredients.entrySet()) {
                 ItemStack stack = ItemStack.deserialize(entry.getValue());
                 recipe.setIngredient(entry.getKey().charAt(0), stack.getData());
             }

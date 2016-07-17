@@ -57,11 +57,11 @@ public class TreeDecorator extends BlockDecorator {
     private Class<? extends GenericTree> getRandomTree(Random random, List<TreeDecoration> decorations) {
         int totalWeight = 0;
         for (TreeDecoration decoration : decorations) {
-            totalWeight += decoration.getWeigth();
+            totalWeight += decoration.getWeight();
         }
         int weight = random.nextInt(totalWeight);
         for (TreeDecoration decoration : decorations) {
-            weight -= decoration.getWeigth();
+            weight -= decoration.getWeight();
             if (weight < 0) {
                 return decoration.getTree();
             }
@@ -83,7 +83,7 @@ public class TreeDecorator extends BlockDecorator {
             return tree;
         }
 
-        public int getWeigth() {
+        public int getWeight() {
             return weight;
         }
     }

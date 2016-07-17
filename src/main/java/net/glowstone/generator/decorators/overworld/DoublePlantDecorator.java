@@ -31,11 +31,11 @@ public class DoublePlantDecorator extends BlockDecorator {
     private DoublePlantSpecies getRandomDoublePlant(Random random, List<DoublePlantDecoration> decorations) {
         int totalWeight = 0;
         for (DoublePlantDecoration decoration : decorations) {
-            totalWeight += decoration.getWeigth();
+            totalWeight += decoration.getWeight();
         }
         int weight = random.nextInt(totalWeight);
         for (DoublePlantDecoration decoration : decorations) {
-            weight -= decoration.getWeigth();
+            weight -= decoration.getWeight();
             if (weight < 0) {
                 return decoration.getSpecies();
             }
@@ -57,7 +57,7 @@ public class DoublePlantDecorator extends BlockDecorator {
             return species;
         }
 
-        public int getWeigth() {
+        public int getWeight() {
             return weight;
         }
     }

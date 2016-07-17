@@ -66,7 +66,7 @@ public final class ServerConfig {
                 "glowstone.yml is the main configuration file for a Glowstone server\n" +
                         "It contains everything from server.properties and bukkit.yml in a\n" +
                         "normal CraftBukkit installation.\n\n" +
-                        "For help, join us on Gitter: https://gitter.im/GlowstoneMC/Glowstone");
+                        "For help, join us on Discord: https://discord.gg/TFJqhsC");
     }
 
     ////////////////////////////////////////////////////////////////////////////

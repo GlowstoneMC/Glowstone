@@ -31,14 +31,14 @@ public class StructureBuilder {
         this.structure = structure;
     }
 
-    public void addRandomMaterial(Map<StructureMaterial, Integer> materials, int weigth, Material type, int data) {
-        materials.put(new StructureMaterial(type, data), weigth);
+    public void addRandomMaterial(Map<StructureMaterial, Integer> materials, int weight, Material type, int data) {
+        materials.put(new StructureMaterial(type, data), weight);
     }
 
     public StructureMaterial getRandomMaterial(Random random, Map<StructureMaterial, Integer> materials) {
         int totalWeight = 0;
-        for (int weigth : materials.values()) {
-            totalWeight += weigth;
+        for (int weight : materials.values()) {
+            totalWeight += weight;
         }
         int weight = random.nextInt(totalWeight);
         for (Entry<StructureMaterial, Integer> entry : materials.entrySet()) {

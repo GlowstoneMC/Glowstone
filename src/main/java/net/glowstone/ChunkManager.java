@@ -7,7 +7,6 @@ import net.glowstone.generator.GlowChunkData;
 import net.glowstone.generator.GlowChunkGenerator;
 import net.glowstone.generator.biomegrid.MapLayer;
 import net.glowstone.io.ChunkIoService;
-
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -17,12 +16,8 @@ import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.material.MaterialData;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;

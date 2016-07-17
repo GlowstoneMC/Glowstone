@@ -65,6 +65,7 @@ public class GlowWolf extends GlowTameable implements Wolf {
 
     @Override
     public void setOwner(AnimalTamer animalTamer) {
+        // TODO
         super.setOwner(animalTamer);
     }
 

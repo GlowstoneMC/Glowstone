@@ -193,9 +193,9 @@ public final class Explosion {
         return block.getMaterialValues().getBlastResistance();
     }
 
-    private List<Block> toBlockList(Collection<BlockVector> locs) {
-        List<Block> blocks = new ArrayList<>(locs.size());
-        blocks.addAll(locs.stream().map(location -> world.getBlockAt(location.getBlockX(), location.getBlockY(), location.getBlockZ())).collect(Collectors.toList()));
+    private List<Block> toBlockList(Collection<BlockVector> locations) {
+        List<Block> blocks = new ArrayList<>(locations.size());
+        blocks.addAll(locations.stream().map(location -> world.getBlockAt(location.getBlockX(), location.getBlockY(), location.getBlockZ())).collect(Collectors.toList()));
         return blocks;
     }
 

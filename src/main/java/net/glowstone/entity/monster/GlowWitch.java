@@ -11,11 +11,11 @@ public class GlowWitch extends GlowMonster implements Witch {
         super(loc, EntityType.WITCH, 26);
     }
 
-    public boolean isAgressive() {
+    public boolean isAggressive() {
         return metadata.getBoolean(MetadataIndex.WITCH_AGGRESSIVE);
     }
 
-    public void setAgressive(boolean agressive) {
-        metadata.set(MetadataIndex.WITCH_AGGRESSIVE, agressive);
+    public void setAggressive(boolean aggressive) {
+        metadata.set(MetadataIndex.WITCH_AGGRESSIVE, aggressive);
     }
 }

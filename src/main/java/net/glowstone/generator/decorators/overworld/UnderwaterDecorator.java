@@ -19,7 +19,7 @@ public class UnderwaterDecorator extends BlockDecorator {
         this.type = type;
     }
 
-    public final UnderwaterDecorator setRadiuses(int hRadius, int vRadius) {
+    public final UnderwaterDecorator setRadii(int hRadius, int vRadius) {
         this.hRadius = hRadius;
         this.vRadius = vRadius;
         return this;

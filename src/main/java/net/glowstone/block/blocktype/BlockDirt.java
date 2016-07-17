@@ -15,7 +15,7 @@ public class BlockDirt extends BlockType {
             //Coarse dirt
             return Arrays.asList(new ItemStack(Material.DIRT, 1, (short) 1));
         } else {
-            //normal dirt and podsol drop normal dirt
+            //normal dirt and podzol drop normal dirt
             return Arrays.asList(new ItemStack(Material.DIRT));
         }
     }

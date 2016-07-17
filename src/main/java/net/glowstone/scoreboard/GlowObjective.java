@@ -146,6 +146,7 @@ public final class GlowObjective implements Objective {
     }
 
     public void setRenderType(String renderType) {
+        // TODO
     }
 
     public boolean hasScore(String entry) throws IllegalArgumentException, IllegalStateException {

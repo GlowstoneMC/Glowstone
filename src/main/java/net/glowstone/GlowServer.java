@@ -70,7 +70,6 @@ import org.bukkit.util.permissions.DefaultPermissions;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import net.glowstone.util.Metrics;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -742,7 +741,7 @@ public final class GlowServer implements Server {
         }
 
         // detect plugin types
-        pluginTypeDetector = new GlowPluginTypeDetector(folder, logger);
+        pluginTypeDetector = new GlowPluginTypeDetector(folder);
         pluginTypeDetector.scan();
 
         // clear plugins and prepare to load (Bukkit)

@@ -78,7 +78,7 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     public void start() {
-        executor.scheduleAtFixedRate((Runnable) () -> {
+        executor.scheduleAtFixedRate(() -> {
             try {
                 pulse();
             } catch (Exception ex) {
@@ -354,7 +354,7 @@ public final class GlowScheduler implements BukkitScheduler {
      */
     @Override
     public List<BukkitWorker> getActiveWorkers() {
-        return ImmutableList.<BukkitWorker>copyOf(Collections2.filter(tasks.values(), glowTask -> glowTask != null && !glowTask.isSync() && glowTask.getLastExecutionState() == TaskExecutionState.RUN));
+        return ImmutableList.copyOf(Collections2.filter(tasks.values(), glowTask -> glowTask != null && !glowTask.isSync() && glowTask.getLastExecutionState() == TaskExecutionState.RUN));
     }
 
     /**

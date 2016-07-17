@@ -377,11 +377,7 @@ public class Metrics {
 
                 boolean firstGraph = true;
 
-                final Iterator<Graph> iter = graphs.iterator();
-
-                while (iter.hasNext()) {
-                    Graph graph = iter.next();
-
+                for (Graph graph : graphs) {
                     StringBuilder graphJson = new StringBuilder();
                     graphJson.append('{');
 
@@ -466,11 +462,8 @@ public class Metrics {
             // Is this the first update this hour?
             if (response.equals("1") || response.contains("This is your first update this hour")) {
                 synchronized (graphs) {
-                    final Iterator<Graph> iter = graphs.iterator();
 
-                    while (iter.hasNext()) {
-                        final Graph graph = iter.next();
-
+                    for (Graph graph : graphs) {
                         graph.getPlotters().forEach(Plotter::reset);
                     }
                 }
@@ -496,8 +489,7 @@ public class Metrics {
         } finally {
             if (gzos != null) try {
                 gzos.close();
-            } catch (IOException ignore) {
-                ;
+            } catch (IOException ignored) {
             }
         }
 
@@ -524,9 +516,8 @@ public class Metrics {
      * @param json
      * @param key
      * @param value
-     * @throws UnsupportedEncodingException
      */
-    private static void appendJSONPair(StringBuilder json, String key, String value) throws UnsupportedEncodingException {
+    private static void appendJSONPair(StringBuilder json, String key, String value) {
         boolean isValueNumeric = false;
 
         try {
@@ -586,7 +577,7 @@ public class Metrics {
                 default:
                     if (chr < ' ') {
                         String t = "000" + Integer.toHexString(chr);
-                        builder.append("\\u" + t.substring(t.length() - 4));
+                        builder.append("\\u").append(t.substring(t.length() - 4));
                     } else {
                         builder.append(chr);
                     }
@@ -622,7 +613,7 @@ public class Metrics {
         /**
          * The set of plotters that are contained within this graph
          */
-        private final Set<Plotter> plotters = new LinkedHashSet<Plotter>();
+        private final Set<Plotter> plotters = new LinkedHashSet<>();
 
         private Graph(final String name) {
             this.name = name;
@@ -683,6 +674,7 @@ public class Metrics {
          * Called when the server owner decides to opt-out of BukkitMetrics while the server is running.
          */
         protected void onOptOut() {
+            // TODO do we want to do or say anything when someone opts out?
         }
     }
 
