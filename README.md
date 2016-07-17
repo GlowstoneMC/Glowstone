@@ -1,5 +1,5 @@
 ![Built with Love](http://forthebadge.com/images/badges/built-with-love.svg)
-[![Join the chat at https://gitter.im/GlowstoneMC/Glowstone](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GlowstoneMC/Glowstone)
+[![Join the Discord chat](https://img.shields.io/badge/discord-glowstone-738bd7.svg?style=flat-square)](https://discord.gg/TFJqhsC)
 [![Build Status](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/master.png)](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/master)
 
 #Glowstone
