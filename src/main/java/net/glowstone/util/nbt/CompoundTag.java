@@ -30,12 +30,12 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     }
 
     @Override
-    protected void valueToString(StringBuilder bldr) {
-        bldr.append(value.size()).append(" entries\n{\n");
+    protected void valueToString(StringBuilder builder) {
+        builder.append(value.size()).append(" entries\n{\n");
         for (Entry<String, Tag> entry : value.entrySet()) {
-            bldr.append("    ").append(entry.getKey()).append(": ").append(entry.getValue().toString().replaceAll("\n", "\n    ")).append("\n");
+            builder.append("    ").append(entry.getKey()).append(": ").append(entry.getValue().toString().replaceAll("\n", "\n    ")).append("\n");
         }
-        bldr.append("}");
+        builder.append("}");
     }
 
     ////////////////////////////////////////////////////////////////////////////
