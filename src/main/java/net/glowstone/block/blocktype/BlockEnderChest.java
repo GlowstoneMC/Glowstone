@@ -12,8 +12,8 @@ import org.bukkit.material.EnderChest;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
-public class BlockEnderchest extends BlockNeedsTool {
-    public BlockEnderchest() {
+public class BlockEnderChest extends BlockNeedsTool {
+    public BlockEnderChest() {
         setDrops(new ItemStack(Material.OBSIDIAN, 8));
     }
 

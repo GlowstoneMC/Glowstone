@@ -1439,7 +1439,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     // todo: effects
     // todo: swim
     // todo: jump
-    // todo: food poisioning
+    // todo: food poisoning
     // todo: jump and sprint
     public void addExhaustion(float exhaustion) {
         if (shouldCalculateExhaustion()) {

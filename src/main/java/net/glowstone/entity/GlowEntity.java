@@ -132,7 +132,7 @@ public abstract class GlowEntity implements Entity {
      */
     private int fireTicks;
     /**
-     * Passanger
+     * Passenger
      */
     private GlowEntity passenger;
     /**
