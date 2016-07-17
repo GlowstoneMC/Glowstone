@@ -78,7 +78,7 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     public void start() {
-        executor.scheduleAtFixedRate((Runnable) () -> {
+        executor.scheduleAtFixedRate(() -> {
             try {
                 pulse();
             } catch (Exception ex) {

@@ -294,7 +294,7 @@ public class Mojangson {
                     if (tmpval.length() == 0) {
                         continue;
                     }
-                    Tag val = (Tag) parseTag(tmpval);
+                    Tag val = parseTag(tmpval);
 
                     if (tagType == null) {
                         tagType = val.getType();
