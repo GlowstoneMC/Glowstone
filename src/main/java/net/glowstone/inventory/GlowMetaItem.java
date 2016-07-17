@@ -10,6 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * An implementation of {@link ItemMeta}, created through {@link GlowItemFactory}.
@@ -120,10 +121,7 @@ class GlowMetaItem implements ItemMeta {
         }
 
         if (hideFlag != 0) {
-            Set<String> hideFlags = new HashSet<>();
-            for (ItemFlag itemFlag : getItemFlags()) {
-                hideFlags.add(itemFlag.name());
-            }
+            Set<String> hideFlags = getItemFlags().stream().map(Enum::name).collect(Collectors.toSet());
             if (hideFlags.isEmpty()) {
                 result.put("ItemFlags", hideFlags);
             }
