@@ -4,7 +4,7 @@
 
 #Glowstone
 
-A fast, customizable, and compatible open source Minecraft server.
+A fast, customizable and compatible open source Minecraft server.
 
 ##Introduction
 
