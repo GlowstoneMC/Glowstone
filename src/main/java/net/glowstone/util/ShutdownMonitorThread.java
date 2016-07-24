@@ -46,14 +46,12 @@ public class ShutdownMonitorThread extends Thread {
             // ask nicely to kill them
             thread.interrupt();
             // wait for them to die on their own
-            if (thread.isAlive()) {
-                try {
-                    thread.join(1000);
-                } catch (InterruptedException e) {
-                    GlowServer.logger.log(Level.SEVERE, "Shutdown monitor interrupted", e);
-                    System.exit(0);
-                    return;
-                }
+            try {
+                thread.join(1000);
+            } catch (InterruptedException e) {
+                GlowServer.logger.log(Level.SEVERE, "Shutdown monitor interrupted", e);
+                System.exit(0);
+                return;
             }
         }
         // kill them forcefully
