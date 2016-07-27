@@ -1789,9 +1789,11 @@ public final class GlowWorld implements World {
         ItemTable itemTable = ItemTable.instance();
         getTickMap().entrySet().stream().filter(entry -> worldAge % entry.getValue() == 0).forEach(entry -> {
             GlowBlock block = getBlockAt(entry.getKey());
-            BlockType notifyType = itemTable.getBlock(block.getTypeId());
-            if (notifyType != null)
-                notifyType.receivePulse(block);
+            if (block.getChunk().isLoaded()) {
+                BlockType notifyType = itemTable.getBlock(block.getTypeId());
+                if (notifyType != null)
+                    notifyType.receivePulse(block);
+            }
         });
     }
 

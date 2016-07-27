@@ -1,11 +1,13 @@
 package net.glowstone.command;
 
-import net.glowstone.util.CommandUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.CommandTarget;
+import org.bukkit.command.CommandUtils;
 import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;
@@ -33,21 +35,31 @@ public class TeleportCommand extends BukkitCommand {
         }
 
         Player player = (Player) sender;
-        // TODO: Change this to command targets (@a, @e, @p, etc.)
-        Player target = Bukkit.getPlayerExact(args[0]);
-
-        if (target == null || !player.canSee(target)) {
-            sender.sendMessage("There's no player by that name online.");
+        Entity[] targets;
+        if (args[0].startsWith("@")) {
+            targets = new CommandTarget(args[0]).getMatched(player.getLocation());
         } else {
-            String x = args[1], y = args[2], z = args[3];
-            Location initial = player.getLocation();
-            Location targetLocation = CommandUtils.getLocation(initial, x, y, z);
-            if (args.length > 4) {
-                String yaw = args[4], pitch = args[5];
-                targetLocation = CommandUtils.getRotation(target.getLocation(), yaw, pitch);
+            Player targetPlayer = Bukkit.getPlayerExact(args[0]);
+            targets = targetPlayer == null ? new Entity[0] : new Entity[]{targetPlayer};
+        }
+
+        if (targets.length == 0) {
+            sender.sendMessage(ChatColor.RED + "There's no entity matching the target.");
+        } else {
+            for (Entity target : targets) {
+                String x = args[1], y = args[2], z = args[3];
+                Location initial = player.getLocation();
+                Location targetLocation = CommandUtils.getLocation(initial, x, y, z);
+                if (args.length > 4) {
+                    String yaw = args[4], pitch = args[5];
+                    targetLocation = CommandUtils.getRotation(target.getLocation(), yaw, pitch);
+                } else {
+                    targetLocation.setYaw(target.getLocation().getYaw());
+                    targetLocation.setPitch(target.getLocation().getPitch());
+                }
+                target.teleport(targetLocation);
+                player.sendMessage("Teleported " + target.getName() + " to " + targetLocation.getX() + " " + targetLocation.getY() + " " + targetLocation.getZ());
             }
-            target.teleport(targetLocation);
-            player.sendMessage("Teleported " + sender.getName() + " to " + targetLocation.getX() + " " + targetLocation.getY() + " " + targetLocation.getZ());
         }
 
         return true;
