@@ -193,9 +193,9 @@ public final class Explosion {
         return block.getMaterialValues().getBlastResistance();
     }
 
-    private List<Block> toBlockList(Collection<BlockVector> locs) {
-        List<Block> blocks = new ArrayList<>(locs.size());
-        blocks.addAll(locs.stream().map(location -> world.getBlockAt(location.getBlockX(), location.getBlockY(), location.getBlockZ())).collect(Collectors.toList()));
+    private List<Block> toBlockList(Collection<BlockVector> locations) {
+        List<Block> blocks = new ArrayList<>(locations.size());
+        blocks.addAll(locations.stream().map(location -> world.getBlockAt(location.getBlockX(), location.getBlockY(), location.getBlockZ())).collect(Collectors.toList()));
         return blocks;
     }
 
@@ -229,7 +229,9 @@ public final class Explosion {
         for (GlowLivingEntity entity : entities) {
             if (entity instanceof GlowPlayer) {
                 affectedPlayers.add((GlowPlayer) entity);
+                continue;
             }
+
             double disDivPower = distanceTo(entity) / this.power;
             if (disDivPower > 1.0D) continue;
 
@@ -286,25 +288,24 @@ public final class Explosion {
     private Collection<GlowLivingEntity> getNearbyEntities() {
         ArrayList<Chunk> chunks = new ArrayList<>();
         chunks.add(location.getChunk());
-        int relX = location.getBlockX() - 16 * (int) Math.floor(location.getBlockX() / 16);
-        int relZ = location.getBlockZ() - 16 * (int) Math.floor(location.getBlockZ() / 16);
-        if (relX < power || relZ < power) {
-            if (relX < power) {
-                chunks.add(location.getWorld().getChunkAt(location.getBlockX() - 1 >> 4, location.getBlockZ() >> 4));
-            }
-            if (relZ < power) {
-                chunks.add(location.getWorld().getChunkAt(location.getBlockX() >> 4, location.getBlockZ() - 1 >> 4));
-            }
-        } else {
-            int invRelX = Math.abs(location.getBlockX() - 16 * (int) Math.floor(location.getBlockX() / 16));
-            int invRelZ = Math.abs(location.getBlockZ() - 16 * (int) Math.floor(location.getBlockZ() / 16));
-            if (invRelX < power) {
-                chunks.add(location.getWorld().getChunkAt(location.getBlockX() + 1 >> 4, location.getBlockZ() >> 4));
-            }
-            if (invRelZ < power) {
-                chunks.add(location.getWorld().getChunkAt(location.getBlockX() >> 4, location.getBlockZ() + 1 >> 4));
-            }
-        }
+        /* TODO: select near chunks based on explosion's distance to chunk edge
+        int closestChunkEdgeX = ((location.getBlockX() - 1) | 15) + 1;
+        int closestChunkEdgeZ = ((location.getBlockZ() - 1) | 15) + 1;
+        int distanceFromClosestChunkEdgeX = Math.abs(location.getBlockX() - closestChunkEdgeX);
+        int distanceFromClosestChunkEdgeZ  = Math.abs(location.getBlockX() - closestChunkEdgeZ);
+        if (distanceFromClosestChunkEdgeX <= power || distanceFromClosestChunkEdgeZ <= power) {
+        */
+        int chunkX = location.getChunk().getX();
+        int chunkZ = location.getChunk().getZ();
+        chunks.add(location.getWorld().getChunkAt(chunkX + 1, chunkZ + 1));
+        chunks.add(location.getWorld().getChunkAt(chunkX - 1, chunkZ - 1));
+        chunks.add(location.getWorld().getChunkAt(chunkX - 1, chunkZ + 1));
+        chunks.add(location.getWorld().getChunkAt(chunkX + 1, chunkZ - 1));
+        chunks.add(location.getWorld().getChunkAt(chunkX + 1, chunkZ));
+        chunks.add(location.getWorld().getChunkAt(chunkX, chunkZ + 1));
+        chunks.add(location.getWorld().getChunkAt(chunkX - 1, chunkZ));
+        chunks.add(location.getWorld().getChunkAt(chunkX, chunkZ - 1));
+        // }
         ArrayList<Entity> entities = new ArrayList<>();
         for (Chunk chunk : chunks) {
             entities.addAll(Arrays.asList(chunk.getEntities()));

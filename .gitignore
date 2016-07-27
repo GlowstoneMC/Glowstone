@@ -1,8 +1,9 @@
-.*
 *~
 *.iml
 *.ipr
 *.iws
+.gradle
+.idea
 build
 out
 classes
@@ -19,3 +20,7 @@ worlds
 logs
 config
 dependency-reduced-pom.xml
+.classpath
+.project
+.settings/
+.db

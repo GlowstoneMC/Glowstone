@@ -265,7 +265,7 @@ public final class GlowChunk implements Chunk {
             TileEntity entity = blockType.createTileEntity(this, cx, cy, cz);
             if (entity == null) return;
 
-            tileEntities.put(coordToIndex(cx, cz, cy), entity);
+            tileEntities.put(coordinateToIndex(cx, cz, cy), entity);
         } catch (Exception ex) {
             GlowServer.logger.log(Level.SEVERE, "Unable to initialize tile entity for " + type, ex);
         }
@@ -307,7 +307,7 @@ public final class GlowChunk implements Chunk {
     public TileEntity getEntity(int x, int y, int z) {
         if (y >= DEPTH || y < 0) return null;
         load();
-        return tileEntities.get(coordToIndex(x, z, y));
+        return tileEntities.get(coordinateToIndex(x, z, y));
     }
 
     /**
@@ -352,7 +352,7 @@ public final class GlowChunk implements Chunk {
         }
 
         // destroy any tile entity there
-        int tileEntityIndex = coordToIndex(x, z, y);
+        int tileEntityIndex = coordinateToIndex(x, z, y);
         if (tileEntities.containsKey(tileEntityIndex)) {
             tileEntities.remove(tileEntityIndex).destroy();
         }
@@ -584,7 +584,7 @@ public final class GlowChunk implements Chunk {
      * @param y The Y coordinate.
      * @return The index within the arrays.
      */
-    private int coordToIndex(int x, int z, int y) {
+    private int coordinateToIndex(int x, int z, int y) {
         if (x < 0 || z < 0 || y < 0 || x >= WIDTH || z >= HEIGHT || y >= DEPTH)
             throw new IndexOutOfBoundsException("Coords (x=" + x + ",y=" + y + ",z=" + z + ") invalid");
 

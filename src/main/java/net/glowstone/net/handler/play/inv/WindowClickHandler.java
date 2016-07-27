@@ -58,7 +58,10 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                 // if there's an item under the cursor
 
                 player.sendItemChange(viewSlot, slotItem);
-                return false;
+                // recipe slot is not synced by design
+                if (view.getTopInventory().getType() != InventoryType.CRAFTING || viewSlot >= view.getTopInventory().getSize() || ((GlowInventory) view.getTopInventory()).getSlot(viewSlot).getType() != SlotType.RESULT) {
+                    return false;
+                }
             }
         }
 
@@ -435,5 +438,4 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
     private int maxStack(Inventory inv, Material mat) {
         return Math.min(inv.getMaxStackSize(), mat.getMaxStackSize());
     }
-
 }

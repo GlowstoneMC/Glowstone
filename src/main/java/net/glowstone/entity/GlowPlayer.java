@@ -8,11 +8,8 @@ import io.netty.buffer.Unpooled;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.ChunkManager.ChunkLock;
-import net.glowstone.EventFactory;
-import net.glowstone.GlowChunk;
+import net.glowstone.*;
 import net.glowstone.GlowChunk.Key;
-import net.glowstone.GlowOfflinePlayer;
-import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockBed;
@@ -473,18 +470,13 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     /**
-     * Destroys this entity by removing it from the world and marking it as not
-     * being active.
+     * Kicks this player
      */
     @Override
     public void remove() {
-        remove(true);
-    }
-
-    public void remove(boolean asyncSave) {
         knownChunks.clear();
         chunkLock.clear();
-        saveData(asyncSave);
+        saveData(true);
         getInventory().removeViewer(this);
         getInventory().getCraftingInventory().removeViewer(this);
         permissions.clearPermissions();
@@ -1071,12 +1063,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         GlowBlock block = (GlowBlock) bedSpawn.getBlock();
         GlowBlock head = BlockBed.getHead(block);
         GlowBlock foot = BlockBed.getFoot(block);
-        // If there is a bed, try to find an empty spot next to the bed
-        if (head != null && head.getType() == Material.BED_BLOCK) {
-            Block spawn = BlockBed.getExitLocation(head, foot);
-            return spawn == null ? null : spawn.getLocation().add(0.5, 0.1, 0.5);
-        } else {
-            // If there is no bed and spawning is forced and there is space to spawn
+        if (head != null) {
+            // If there is a bed, try to find an empty spot next to the bed
+            if (head.getType() == Material.BED_BLOCK) {
+                Block spawn = BlockBed.getExitLocation(head, foot);
+                return spawn == null ? null : spawn.getLocation().add(0.5, 0.1, 0.5);
+            }
             if (bedSpawnForced) {
                 Material bottom = head.getType();
                 Material top = head.getRelative(BlockFace.UP).getType();
@@ -1085,8 +1077,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
                     return bedSpawn.clone().add(0.5, 0.1, 0.5); // No blocks are blocking the spawn
                 }
             }
-            return null;
         }
+        return null;
     }
 
     @Override
@@ -1429,7 +1421,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     // todo: effects
     // todo: swim
     // todo: jump
-    // todo: food poisioning
+    // todo: food poisoning
     // todo: jump and sprint
     public void addExhaustion(float exhaustion) {
         if (shouldCalculateExhaustion()) {
@@ -1748,7 +1740,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void kickPlayer(String message) {
-        remove(true);
+        remove();
         session.disconnect(message == null ? "" : message);
     }
 

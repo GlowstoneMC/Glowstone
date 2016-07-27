@@ -290,7 +290,7 @@ public final class GlowHelpMap implements HelpMap {
         private Collection<String> topics;
 
         public LazyIndexTopic(String name, String shortText, String permission, Collection<String> topics, String preamble) {
-            super(name, shortText, permission, Collections.<HelpTopic>emptyList(), preamble);
+            super(name, shortText, permission, Collections.emptyList(), preamble);
             this.topics = topics;
         }
 

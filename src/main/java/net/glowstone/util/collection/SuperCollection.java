@@ -10,7 +10,7 @@ import java.util.List;
  * <p>
  * This class is a generic collection which serves as a base for other super collections. It handles non-indexed accesses to collections like additions, removals, contains...
  * <p>
- * Note that because this collection holds references to other collections, modifications to children will be reflected here. Also, modifications to this collection will affect its children. If you need a collection that has the very same contents but isn't affected by operations to childrens, you can employ the {@link #asClone()} method, which returns a new collection with the same contents.
+ * Note that because this collection holds references to other collections, modifications to children will be reflected here. Also, modifications to this collection will affect its children. If you need a collection that has the very same contents but isn't affected by operations to children, you can employ the {@link #asClone()} method, which returns a new collection with the same contents.
  * <p>
  * Since there are several children and not all may return the same return value for certain operations, you can control how this class behaves by means of the {@link #setResultMode(ResultMode)} method. It defaults to ANY, so operations that return booleans will return true as long as at least one children succeeded.
  */

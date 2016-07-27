@@ -33,7 +33,7 @@ public class AcaciaTree extends GenericTree {
         float d = (float) (random.nextFloat() * Math.PI * 2.0F); // random direction
         int dx = (int) (Math.cos(d) + 1.5F) - 1;
         int dz = (int) (Math.sin(d) + 1.5F) - 1;
-        if (Math.abs(dx) > 0 && Math.abs(dz) > 0) { // reduce possible directions to NSEW
+        if (Math.abs(dx) > 0 && Math.abs(dz) > 0) { // reduce possible directions to NESW
             if (random.nextBoolean()) {
                 dx = 0;
             } else {

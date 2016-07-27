@@ -47,8 +47,7 @@ public final class GlowBufUtils {
         byte item;
         while ((item = buf.readByte()) != -1) {
             MetadataType type = MetadataType.byId(buf.readByte());
-            int id = item;
-            MetadataIndex index = MetadataIndex.getIndex(id, type);
+            MetadataIndex index = MetadataIndex.getIndex((int) item, type);
 
             switch (type) {
                 case BYTE:

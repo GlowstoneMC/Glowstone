@@ -4,9 +4,9 @@ import net.glowstone.entity.GlowPlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 
-public class ItemRotternFlesh extends ItemFood {
+public class ItemRottenFlesh extends ItemFood {
 
-    public ItemRotternFlesh() {
+    public ItemRottenFlesh() {
         super(4, 0.8f);
     }
 

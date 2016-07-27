@@ -10,6 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * An implementation of {@link ItemMeta}, created through {@link GlowItemFactory}.
@@ -120,10 +121,7 @@ class GlowMetaItem implements ItemMeta {
         }
 
         if (hideFlag != 0) {
-            Set<String> hideFlags = new HashSet<>();
-            for (ItemFlag itemFlag : getItemFlags()) {
-                hideFlags.add(itemFlag.name());
-            }
+            Set<String> hideFlags = getItemFlags().stream().map(Enum::name).collect(Collectors.toSet());
             if (hideFlags.isEmpty()) {
                 result.put("ItemFlags", hideFlags);
             }
@@ -161,7 +159,7 @@ class GlowMetaItem implements ItemMeta {
                 setDisplayName(display.getString("Name"));
             }
             if (display.isList("Lore", TagType.STRING)) {
-                setLore(display.<String>getList("Lore", TagType.STRING));
+                setLore(display.getList("Lore", TagType.STRING));
             }
         }
 
@@ -239,7 +237,7 @@ class GlowMetaItem implements ItemMeta {
 
     @Override
     public Map<Enchantment, Integer> getEnchants() {
-        return hasEnchants() ? Collections.unmodifiableMap(enchants) : Collections.<Enchantment, Integer>emptyMap();
+        return hasEnchants() ? Collections.unmodifiableMap(enchants) : Collections.emptyMap();
     }
 
     @Override
@@ -304,7 +302,7 @@ class GlowMetaItem implements ItemMeta {
         int bitModifier = getBitModifier(itemFlag);
         return (hideFlag & bitModifier) == bitModifier;
     }
-    
+
     private byte getBitModifier(ItemFlag hideFlag) {
         return (byte) (1 << hideFlag.ordinal());
     }

@@ -17,7 +17,7 @@ import java.util.Collections;
 public class StopsoundCommand extends BukkitCommand {
 
     public StopsoundCommand() {
-        super("stopsound", "Stops sounds for a player.", "/stopsound <player> [source] [sound]", Collections.<String>emptyList());
+        super("stopsound", "Stops sounds for a player.", "/stopsound <player> [source] [sound]", Collections.emptyList());
         setPermission("glowstone.command.stopsound");
     }
 

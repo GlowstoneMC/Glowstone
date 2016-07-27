@@ -52,12 +52,12 @@ public final class ListTag<T extends Tag> extends Tag<List<T>> {
     }
 
     @Override
-    protected void valueToString(StringBuilder bldr) {
-        bldr.append(value.size()).append(" entries of type ").append(type.getName()).append("\n{\n");
+    protected void valueToString(StringBuilder builder) {
+        builder.append(value.size()).append(" entries of type ").append(type.getName()).append("\n{\n");
         for (T elem : value) {
-            bldr.append("    ").append(elem.toString().replaceAll("\n", "\n    ")).append("\n");
+            builder.append("    ").append(elem.toString().replaceAll("\n", "\n    ")).append("\n");
         }
-        bldr.append("}");
+        builder.append("}");
     }
 }
 

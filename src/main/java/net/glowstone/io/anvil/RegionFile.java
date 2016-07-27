@@ -340,11 +340,7 @@ public class RegionFile {
 
         @Override
         public void close() throws IOException {
-            try {
-                RegionFile.this.write(x, z, buf, count);
-            } finally {
-                super.close();
-            }
+            RegionFile.this.write(x, z, buf, count);
         }
     }
 }

@@ -1,14 +1,12 @@
 package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
-
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.util.Position;
 import net.glowstone.util.nbt.CompoundTag;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;

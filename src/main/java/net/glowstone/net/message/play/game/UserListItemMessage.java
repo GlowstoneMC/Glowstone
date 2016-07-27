@@ -37,6 +37,7 @@ public final class UserListItemMessage implements Message {
     }
 
     public static Entry add(PlayerProfile profile, int gameMode, int ping, TextMessage displayName) {
+        // TODO measure ping
         return new Entry(profile.getUniqueId(), profile, gameMode, ping, displayName, Action.ADD_PLAYER);
     }
 

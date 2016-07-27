@@ -3,7 +3,6 @@ package net.glowstone.io.entity;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.entity.objects.GlowFallingBlock;
 import net.glowstone.util.nbt.CompoundTag;
-
 import org.bukkit.Location;
 
 class FallingBlockStore extends EntityStore<GlowFallingBlock> {

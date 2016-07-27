@@ -60,7 +60,7 @@ abstract class EntityStore<T extends GlowEntity> {
         // base stuff for all entities is here:
 
         if (tag.isList("Motion", TagType.DOUBLE)) {
-            entity.setVelocity(NbtSerialization.listToVector(tag.<Double>getList("Motion", TagType.DOUBLE)));
+            entity.setVelocity(NbtSerialization.listToVector(tag.getList("Motion", TagType.DOUBLE)));
         }
         if (tag.isFloat("FallDistance")) {
             entity.setFallDistance(tag.getFloat("FallDistance"));

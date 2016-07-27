@@ -46,7 +46,7 @@ public final class ItemTable {
         reg(Material.SIGN_POST, new BlockSign(), Sound.BLOCK_WOOD_BREAK);
         reg(Material.WALL_SIGN, new BlockSign(), Sound.BLOCK_WOOD_BREAK);
         reg(Material.WORKBENCH, new BlockWorkbench(), Sound.BLOCK_WOOD_BREAK);
-        reg(Material.ENDER_CHEST, new BlockEnderchest());
+        reg(Material.ENDER_CHEST, new BlockEnderChest());
         reg(Material.CHEST, new BlockChest(), Sound.BLOCK_WOOD_BREAK);
         reg(Material.TRAPPED_CHEST, new BlockChest(true), Sound.BLOCK_WOOD_BREAK);
         reg(Material.DISPENSER, new BlockDispenser());
@@ -275,7 +275,7 @@ public final class ItemTable {
         reg(Material.MUTTON, new ItemFood(2, 1.2f));
         reg(Material.PORK, new ItemFood(3, 1.8f));
         reg(Material.RABBIT, new ItemFood(3, 1.8f));
-        reg(Material.ROTTEN_FLESH, new ItemRotternFlesh());
+        reg(Material.ROTTEN_FLESH, new ItemRottenFlesh());
         reg(Material.SPIDER_EYE, new ItemFood(2, 3.2f)); // todo: effect
         reg(Material.ARMOR_STAND, new ItemArmorStand());
         reg(Material.MILK_BUCKET, new ItemMilk());

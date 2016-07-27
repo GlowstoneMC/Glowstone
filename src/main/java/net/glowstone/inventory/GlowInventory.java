@@ -195,8 +195,8 @@ public class GlowInventory implements Inventory {
         if (slots.length % 2 != 0) {
             throw new IllegalArgumentException("Slots must be pairs.");
         }
-        // First empty slot, -1 if no empty slot was found yet
-        int firstEmpty = -1;
+        ItemStack maxStack = stack.clone();
+        maxStack.setAmount(stack.getMaxStackSize());
         for (int s = 0; s < slots.length && stack.getAmount() > 0; s += 2) {
             // Iterate through all pairs of start and end slots
             int start = slots[s];
@@ -210,8 +210,13 @@ public class GlowInventory implements Inventory {
 
                 ItemStack currentStack = getItem(i);
                 if (currentStack == null) {
-                    if (firstEmpty == -1) {
-                        firstEmpty = i; // Found first empty slot
+                    if (stack.getAmount() > stack.getMaxStackSize()) {
+                        setItem(i, maxStack);
+                        stack.setAmount(stack.getAmount() - stack.getMaxStackSize());
+                    } else {
+                        ItemStack finalStack = stack.clone();
+                        setItem(i, finalStack);
+                        stack.setAmount(0);
                     }
                 } else if (currentStack.isSimilar(stack)) { // Non empty slot of similar items, try to fill stack
                     // Calculate the amount of transferable items
@@ -225,14 +230,10 @@ public class GlowInventory implements Inventory {
                     }
                     setItem(i, currentStack);
                 }
+
             }
         }
         if (stack.getAmount() <= 0) {
-            stack = null;
-        }
-        // If there are still items left, place them in the first empty slot (if any)
-        if (stack != null && firstEmpty != -1) {
-            setItem(firstEmpty, stack);
             stack = null;
         }
         return stack;

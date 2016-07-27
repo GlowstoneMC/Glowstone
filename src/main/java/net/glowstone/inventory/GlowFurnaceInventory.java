@@ -24,16 +24,13 @@ public class GlowFurnaceInventory extends GlowInventory implements FurnaceInvent
         getSlot(INPUT_SLOT).setType(SlotType.CRAFTING);
         getSlot(FUEL_SLOT).setType(SlotType.FUEL);
         getSlot(RESULT_SLOT).setType(SlotType.RESULT);
-
-        GlowBlock block = (GlowBlock) owner.getBlock();
-        block.getWorld().requestPulse(block, 1);
     }
 
     @Override
     public void setItem(int index, ItemStack item) {
         super.setItem(index, item);
         GlowBlock block = (GlowBlock) getHolder().getBlock();
-        block.getWorld().requestPulse(block, 1);
+        block.getWorld().requestPulse(block, 1, true);
     }
 
     @Override

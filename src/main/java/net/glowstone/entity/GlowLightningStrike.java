@@ -118,7 +118,7 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
         double x = location.getX();
         double y = location.getY();
         double z = location.getZ();
-        return Arrays.<Message>asList(new SpawnLightningStrikeMessage(id, x, y, z));
+        return Arrays.asList(new SpawnLightningStrikeMessage(id, x, y, z));
     }
 
     @Override

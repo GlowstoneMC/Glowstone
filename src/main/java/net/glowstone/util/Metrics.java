@@ -25,7 +25,7 @@
  * authors and contributors and should not be interpreted as representing official policies,
  * either expressed or implied, of anybody else.
  */
-package org.mcstats;
+package net.glowstone.util;
 
 import net.glowstone.GlowServer;
 import org.bukkit.Bukkit;
@@ -199,9 +199,7 @@ public class Metrics {
                                 task.cancel();
                                 task = null;
                                 // Tell all plotters to stop gathering information.
-                                for (Graph graph : graphs) {
-                                    graph.onOptOut();
-                                }
+                                graphs.forEach(Graph::onOptOut);
                             }
                         }
 
@@ -326,10 +324,10 @@ public class Metrics {
      */
     private void postPlugin(final boolean isPing) throws IOException {
         // Server software specific section
-        String pluginName = "GlowstonePlusPlus";
+        String pluginName = "Glowstone";
         boolean onlineMode = Bukkit.getServer().getOnlineMode(); // TRUE if online mode is enabled
         String pluginVersion = (Metrics.class.getPackage().getImplementationVersion() != null) ? Metrics.class.getPackage().getImplementationVersion() : "unknown";
-        String serverVersion = Bukkit.getBukkitVersion();
+        String serverVersion = GlowServer.GAME_VERSION;
         int playersOnline = getOnlinePlayers();
 
         // END server software specific section -- all code below does not use any code outside of this class / Java
@@ -379,11 +377,7 @@ public class Metrics {
 
                 boolean firstGraph = true;
 
-                final Iterator<Graph> iter = graphs.iterator();
-
-                while (iter.hasNext()) {
-                    Graph graph = iter.next();
-
+                for (Graph graph : graphs) {
                     StringBuilder graphJson = new StringBuilder();
                     graphJson.append('{');
 
@@ -468,14 +462,9 @@ public class Metrics {
             // Is this the first update this hour?
             if (response.equals("1") || response.contains("This is your first update this hour")) {
                 synchronized (graphs) {
-                    final Iterator<Graph> iter = graphs.iterator();
 
-                    while (iter.hasNext()) {
-                        final Graph graph = iter.next();
-
-                        for (Plotter plotter : graph.getPlotters()) {
-                            plotter.reset();
-                        }
+                    for (Graph graph : graphs) {
+                        graph.getPlotters().forEach(Plotter::reset);
                     }
                 }
             }
@@ -500,8 +489,7 @@ public class Metrics {
         } finally {
             if (gzos != null) try {
                 gzos.close();
-            } catch (IOException ignore) {
-                ;
+            } catch (IOException ignored) {
             }
         }
 
@@ -528,9 +516,8 @@ public class Metrics {
      * @param json
      * @param key
      * @param value
-     * @throws UnsupportedEncodingException
      */
-    private static void appendJSONPair(StringBuilder json, String key, String value) throws UnsupportedEncodingException {
+    private static void appendJSONPair(StringBuilder json, String key, String value) {
         boolean isValueNumeric = false;
 
         try {
@@ -590,7 +577,7 @@ public class Metrics {
                 default:
                     if (chr < ' ') {
                         String t = "000" + Integer.toHexString(chr);
-                        builder.append("\\u" + t.substring(t.length() - 4));
+                        builder.append("\\u").append(t.substring(t.length() - 4));
                     } else {
                         builder.append(chr);
                     }
@@ -626,7 +613,7 @@ public class Metrics {
         /**
          * The set of plotters that are contained within this graph
          */
-        private final Set<Plotter> plotters = new LinkedHashSet<Plotter>();
+        private final Set<Plotter> plotters = new LinkedHashSet<>();
 
         private Graph(final String name) {
             this.name = name;
@@ -687,6 +674,7 @@ public class Metrics {
          * Called when the server owner decides to opt-out of BukkitMetrics while the server is running.
          */
         protected void onOptOut() {
+            // TODO do we want to do or say anything when someone opts out?
         }
     }
 

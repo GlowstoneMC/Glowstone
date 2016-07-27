@@ -294,7 +294,7 @@ public class Mojangson {
                     if (tmpval.length() == 0) {
                         continue;
                     }
-                    Tag val = (Tag) parseTag(tmpval);
+                    Tag val = parseTag(tmpval);
 
                     if (tagType == null) {
                         tagType = val.getType();
@@ -368,9 +368,7 @@ public class Mojangson {
      * @return the converted Mojangson string
      */
     public static String fromTag(ByteTag tag) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(tag.getValue()).append(BYTE_SUFFIX);
-        return builder.toString();
+        return String.valueOf(tag.getValue()) + BYTE_SUFFIX;
     }
 
     /**
@@ -430,9 +428,7 @@ public class Mojangson {
      * @return the converted Mojangson string
      */
     public static String fromTag(DoubleTag tag) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(tag.getValue()).append(MojangsonToken.DOUBLE_SUFFIX);
-        return builder.toString();
+        return String.valueOf(tag.getValue()) + MojangsonToken.DOUBLE_SUFFIX;
     }
 
     /**
@@ -442,9 +438,7 @@ public class Mojangson {
      * @return the converted Mojangson string
      */
     public static String fromTag(FloatTag tag) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(tag.getValue()).append(MojangsonToken.FLOAT_SUFFIX);
-        return builder.toString();
+        return String.valueOf(tag.getValue()) + MojangsonToken.FLOAT_SUFFIX;
     }
 
     /**
@@ -454,9 +448,7 @@ public class Mojangson {
      * @return the converted Mojangson string
      */
     public static String fromTag(IntTag tag) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(tag.getValue());
-        return builder.toString();
+        return String.valueOf(tag.getValue());
     }
 
     /**
@@ -513,9 +505,7 @@ public class Mojangson {
      * @return the converted Mojangson string
      */
     public static String fromTag(LongTag tag) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(tag.getValue()).append(MojangsonToken.LONG_SUFFIX);
-        return builder.toString();
+        return String.valueOf(tag.getValue()) + MojangsonToken.LONG_SUFFIX;
     }
 
     /**
@@ -525,9 +515,7 @@ public class Mojangson {
      * @return the converted Mojangson string
      */
     public static String fromTag(ShortTag tag) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(tag.getValue()).append(MojangsonToken.SHORT_SUFFIX);
-        return builder.toString();
+        return String.valueOf(tag.getValue()) + MojangsonToken.SHORT_SUFFIX;
     }
 
     /**
@@ -537,8 +525,6 @@ public class Mojangson {
      * @return the converted Mojangson string
      */
     public static String fromTag(StringTag tag) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(MojangsonToken.STRING_QUOTES).append(tag.getValue()).append(MojangsonToken.STRING_QUOTES);
-        return builder.toString();
+        return String.valueOf(MojangsonToken.STRING_QUOTES) + tag.getValue() + MojangsonToken.STRING_QUOTES;
     }
 }

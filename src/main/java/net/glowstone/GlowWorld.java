@@ -137,7 +137,7 @@ public final class GlowWorld implements World {
     /**
      * Contains how regular blocks should be pulsed.
      */
-    private final ConcurrentHashMap tickMap = new ConcurrentHashMap<>(0);
+    private final ConcurrentHashMap<Location, Map.Entry<Long, Boolean>> tickMap = new ConcurrentHashMap<>();
     private final Spigot spigot = new Spigot() {
         @Override
         public void playEffect(Location location, Effect effect) {
@@ -269,11 +269,7 @@ public final class GlowWorld implements World {
 
         // read in world data
         WorldFinalValues values = null;
-        try {
-            values = storageProvider.getMetadataService().readWorldData();
-        } catch (IOException e) {
-            server.getLogger().log(Level.SEVERE, "Error reading world for creation", e);
-        }
+        values = storageProvider.getMetadataService().readWorldData();
         if (values != null) {
             if (values.getSeed() == 0L) {
                 seed = creator.seed();
@@ -287,12 +283,7 @@ public final class GlowWorld implements World {
         }
 
         chunks = new ChunkManager(this, storageProvider.getChunkIoService(), generator);
-        try {
-            structures = storageProvider.getStructureDataService().readStructuresData();
-        } catch (IOException e) {
-            server.getLogger().log(Level.SEVERE, "Error reading structure data for world " + getName(), e);
-        }
-
+        structures = storageProvider.getStructureDataService().readStructuresData();
         server.addWorld(this);
         server.getLogger().info("Preparing spawn for " + name + "...");
         EventFactory.callEvent(new WorldInitEvent(this));
@@ -1212,20 +1203,22 @@ public final class GlowWorld implements World {
             entity = new GlowTNTPrimed(location, null);
         }
 
-        try {
-            Constructor<T> constructor = clazz.getConstructor(Location.class);
-            entity = (GlowEntity) constructor.newInstance(location);
-            CreatureSpawnEvent spawnEvent = new CreatureSpawnEvent((LivingEntity) entity, reason);
-            if (!spawnEvent.isCancelled()) {
-                entity.createSpawnMessage();
-            } else {
-                // TODO: separate spawning and construction for better event cancellation
-                entity.remove();
+        if (entity == null) {
+            try {
+                Constructor<T> constructor = clazz.getConstructor(Location.class);
+                entity = (GlowEntity) constructor.newInstance(location);
+                CreatureSpawnEvent spawnEvent = new CreatureSpawnEvent((LivingEntity) entity, reason);
+                if (!spawnEvent.isCancelled()) {
+                    entity.createSpawnMessage();
+                } else {
+                    // TODO: separate spawning and construction for better event cancellation
+                    entity.remove();
+                }
+            } catch (NoSuchMethodException e) {
+                GlowServer.logger.log(Level.WARNING, "Invalid entity spawn: ", e);
+            } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+                GlowServer.logger.log(Level.SEVERE, "Unable to spawn entity: ", e);
             }
-        } catch (NoSuchMethodException e) {
-            GlowServer.logger.log(Level.WARNING, "Invalid entity spawn: ", e);
-        } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            GlowServer.logger.log(Level.SEVERE, "Unable to spawn entity: ", e);
         }
 
         if (entity != null) {
@@ -1282,8 +1275,7 @@ public final class GlowWorld implements World {
         if (location == null || material == null) {
             throw new IllegalArgumentException();
         }
-        GlowFallingBlock glowFallingBlock = new GlowFallingBlock(location, material, data);
-        return glowFallingBlock;
+        return new GlowFallingBlock(location, material, data);
     }
 
     @Override
@@ -1576,12 +1568,7 @@ public final class GlowWorld implements World {
                 e.printStackTrace();
             }
 
-            try {
-                storageProvider.getStructureDataService().writeStructuresData(structures);
-            } catch (IOException e) {
-                server.getLogger().severe("Could not save structures data for world: " + getName());
-                e.printStackTrace();
-            }
+            storageProvider.getStructureDataService().writeStructuresData(structures);
         });
     }
 
@@ -1787,18 +1774,38 @@ public final class GlowWorld implements World {
 
     private void pulseTickMap() {
         ItemTable itemTable = ItemTable.instance();
-        getTickMap().entrySet().stream().filter(entry -> worldAge % entry.getValue() == 0).forEach(entry -> {
+        getTickMap().entrySet().stream().filter(entry -> worldAge % entry.getValue().getKey() == 0).forEach(entry -> {
             GlowBlock block = getBlockAt(entry.getKey());
-            if (block.getChunk().isLoaded()) {
-                BlockType notifyType = itemTable.getBlock(block.getTypeId());
-                if (notifyType != null)
-                    notifyType.receivePulse(block);
+            BlockType notifyType = itemTable.getBlock(block.getTypeId());
+            if (notifyType != null) {
+                notifyType.receivePulse(block);
+            }
+            if (entry.getValue().getValue()) {
+                cancelPulse(block);
             }
         });
     }
 
-    private ConcurrentHashMap<Location, Long> getTickMap() {
+    private ConcurrentHashMap<Location, Map.Entry<Long, Boolean>> getTickMap() {
         return tickMap;
+    }
+
+    /**
+     * Calling this method will request that the block is ticked on the next iteration
+     * that applies to the specified tick rate.
+     *
+     * @param block The block to tick.
+     * @param tickRate The tick rate to tick the block at.
+     * @param single Whether to tick once.
+     */
+    public void requestPulse(GlowBlock block, long tickRate, boolean single) {
+        Location target = block.getLocation();
+
+        if (tickRate > 0) {
+            tickMap.put(target, new AbstractMap.SimpleEntry<>(tickRate, single));
+        } else if (tickMap.containsKey(target)) {
+            tickMap.remove(target);
+        }
     }
 
     /**
@@ -1811,11 +1818,11 @@ public final class GlowWorld implements World {
     public void requestPulse(GlowBlock block, long tickRate) {
         Location target = block.getLocation();
 
-
-        if (tickRate > 0)
-            tickMap.put(target, tickRate);
-        else if (tickMap.containsKey(target))
+        if (tickRate > 0) {
+            tickMap.put(target, new AbstractMap.SimpleEntry<>(tickRate, false));
+        } else if (tickMap.containsKey(target)) {
             tickMap.remove(target);
+        }
     }
 
     public void cancelPulse(GlowBlock block) {

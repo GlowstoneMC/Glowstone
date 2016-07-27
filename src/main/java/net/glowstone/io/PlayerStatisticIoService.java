@@ -27,7 +27,7 @@ public class PlayerStatisticIoService {
      * Gets the statistics file for the given UUID
      *
      * @param uuid the UUID of the player
-     * @return the stasticics file of the given UUID
+     * @return the statistics file of the given UUID
      */
     private File getPlayerFile(UUID uuid) {
         if (!statsDir.isDirectory() && !statsDir.mkdirs()) {

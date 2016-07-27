@@ -1,6 +1,13 @@
 machine:
    java:
        version: oraclejdk8
+dependencies:
+    pre:
+        - git config --global user.email "momothereal"
+        - git config --global user.name "momothereal.mc@gmail.com"
+        - git clone --recursive https://github.com/GlowstoneMC/Glowkit.git glowkit
+        - (cd glowkit && chmod +x applyPatches.sh && ./applyPatches.sh)
+        - (cd glowkit/Glowkit-Patched && mvn package install)
 test:
     override:
         - ./setup.sh
