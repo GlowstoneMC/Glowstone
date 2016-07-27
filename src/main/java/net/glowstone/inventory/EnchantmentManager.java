@@ -341,9 +341,9 @@ public class EnchantmentManager {
         player.setWindowProperty(Property.ENCHANT_BUTTON2, enchLevelCosts[1]);
         player.setWindowProperty(Property.ENCHANT_BUTTON3, enchLevelCosts[2]);
         player.setWindowProperty(Property.ENCHANT_XP_SEED, xpSeed & -16);
-        player.setWindowProperty(Property.ENCHANT_ID_AND_LEVEL1, enchId[0] | enchLevel[0] << 8);
-        player.setWindowProperty(Property.ENCHANT_ID_AND_LEVEL2, enchId[1] | enchLevel[1] << 8);
-        player.setWindowProperty(Property.ENCHANT_ID_AND_LEVEL3, enchId[2] | enchLevel[2] << 8);
+        player.setWindowProperty(Property.ENCHANT_ID1, enchId[0]);
+        player.setWindowProperty(Property.ENCHANT_ID2, enchId[1]);
+        player.setWindowProperty(Property.ENCHANT_ID3, enchId[2]);
     }
 
     private boolean isMaliciousClicked(int clicked) {
