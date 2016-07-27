@@ -210,7 +210,7 @@ public final class ItemTable {
         reg(Material.REDSTONE_TORCH_OFF, new BlockRedstoneTorch());
         reg(Material.DIODE_BLOCK_ON, new BlockRedstoneRepeater());
         reg(Material.DIODE_BLOCK_OFF, new BlockRedstoneRepeater());
-        reg(Material.MAGMA, new BlockDirectDrops(Material.MAGMA, ToolType.PICKAXE));
+        reg(Material.MAGMA, new BlockMagma());
         reg(Material.NETHER_WART_BLOCK, new BlockDirectDrops(Material.NETHER_WART_BLOCK, ToolType.AXE));
         reg(Material.RED_NETHER_BRICK, new BlockDirectDrops(Material.RED_NETHER_BRICK, ToolType.PICKAXE));
         reg(Material.BONE_BLOCK, new BlockDirectDrops(Material.BONE_BLOCK, ToolType.PICKAXE));

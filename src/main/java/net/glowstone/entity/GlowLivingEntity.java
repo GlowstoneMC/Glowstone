@@ -3,6 +3,9 @@ package net.glowstone.entity;
 import com.flowpowered.network.Message;
 import lombok.Getter;
 import net.glowstone.EventFactory;
+import net.glowstone.block.GlowBlock;
+import net.glowstone.block.ItemTable;
+import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.AttributeManager.Key;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -15,6 +18,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -179,6 +183,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 // remove
                 removePotionEffect(type);
             }
+        }
+
+        GlowBlock under = (GlowBlock) getLocation().getBlock().getRelative(BlockFace.DOWN);
+        BlockType type = ItemTable.instance().getBlock(under.getType());
+        if (type != null) {
+            type.onEntityStep(under, this);
         }
     }
 

@@ -12,6 +12,7 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.SoundInfo;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.block.BlockCanBuildEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
@@ -388,6 +389,16 @@ public class BlockType extends ItemType {
     }
 
     public void onRedstoneUpdate(GlowBlock block) {
+        // do nothing
+    }
+
+    /**
+     * Called when an entity gets updated on top of the block
+     *
+     * @param block the block that was stepped on
+     * @param entity the entity
+     */
+    public void onEntityStep(GlowBlock block, LivingEntity entity) {
         // do nothing
     }
 }
