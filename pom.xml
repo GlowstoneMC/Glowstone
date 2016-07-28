@@ -40,6 +40,10 @@
             <layout>default</layout>
             <url>https://repo.glowstone.net/content/repositories/snapshots/</url>
         </repository>
+        <repository>
+            <id>aikar</id>
+            <url>https://ci.emc.gs/nexus/content/groups/aikar/</url>
+        </repository>
     </repositories>
 
 	<distributionManagement>
