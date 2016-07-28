@@ -12,7 +12,7 @@ class CreeperStore extends MonsterStore<GlowCreeper> {
     @Override
     public void load(GlowCreeper entity, CompoundTag compound) {
         super.load(entity, compound);
-        if (compound.isByte("powered")) {
+        if (compound.containsKey("powered")) {
             entity.setPowered(compound.getBool("powered"));
         } else {
             entity.setPowered(false);
@@ -30,7 +30,7 @@ class CreeperStore extends MonsterStore<GlowCreeper> {
             entity.setFuse(30);
         }
 
-        if (compound.isByte("ignited")) {
+        if (compound.containsKey("ignited")) {
             entity.setIgnited(compound.getBool("ignited"));
         } else {
             entity.setIgnited(false);

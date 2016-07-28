@@ -63,6 +63,11 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     // Simple gets
 
     public boolean getBool(String key) {
+        if (isInt(key)) {
+            int val = get(key, IntTag.class);
+            remove(key);
+            putByte(key, val);
+        }
         return get(key, ByteTag.class) != 0;
     }
 
