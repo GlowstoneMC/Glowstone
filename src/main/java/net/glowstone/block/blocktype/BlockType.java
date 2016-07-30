@@ -160,8 +160,9 @@ public class BlockType extends ItemType {
      * @param clickedLoc where in the block the click occurred
      */
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
-        state.setType(getMaterial());
+        state.setType(holding.getType());
         state.setData(holding.getData());
+
     }
 
     /**
