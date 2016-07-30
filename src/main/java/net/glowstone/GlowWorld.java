@@ -21,7 +21,7 @@ import net.glowstone.net.message.play.entity.EntityStatusMessage;
 import net.glowstone.net.message.play.player.ServerDifficultyMessage;
 import net.glowstone.util.BlockStateDelegate;
 import net.glowstone.util.GameRuleManager;
-import org.apache.commons.lang3.tuple.Triple;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -980,9 +980,9 @@ public final class GlowWorld implements World {
     ////////////////////////////////////////////////////////////////////////////
     // get block, chunk, id, highest methods with coords
 
-    private Map<Triple<Integer, Integer, Integer>, GlowBlock> blockCache = new WeakHashMap<>();
+    private Map<ImmutableTriple<Integer, Integer, Integer>, GlowBlock> blockCache = new WeakHashMap<>();
 
-    private Function<Triple<Integer, Integer, Integer>, GlowBlock> blockCacheLoader = triple -> {
+    private Function<ImmutableTriple<Integer, Integer, Integer>, GlowBlock> blockCacheLoader = triple -> {
         int x = triple.getLeft();
         int y = triple.getMiddle();
         int z = triple.getRight();
@@ -991,7 +991,7 @@ public final class GlowWorld implements World {
 
     @Override
     public GlowBlock getBlockAt(int x, int y, int z) {
-        Triple<Integer, Integer, Integer> triple = Triple.of(x, y, z);
+        ImmutableTriple<Integer, Integer, Integer> triple = ImmutableTriple.of(x, y, z);
         return blockCache.computeIfAbsent(triple, blockCacheLoader);
     }
 
