@@ -979,7 +979,6 @@ public final class GlowWorld implements World {
 
     ////////////////////////////////////////////////////////////////////////////
     // get block, chunk, id, highest methods with coords
-
     private Map<ImmutableTriple<Integer, Integer, Integer>, GlowBlock> blockCache = new WeakHashMap<>();
 
     private Function<ImmutableTriple<Integer, Integer, Integer>, GlowBlock> blockCacheLoader = triple -> {
