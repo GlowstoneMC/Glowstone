@@ -161,7 +161,7 @@ public class BlockType extends ItemType {
      */
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
         state.setType(getMaterial());
-        state.setRawData((byte) holding.getDurability());
+        state.setData(holding.getData());
     }
 
     /**
