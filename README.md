@@ -50,7 +50,7 @@ For a current list of features, [check the wiki](https://github.com/GlowstoneMC/
 
 If you don't want to build from source, pre-built jar files are available to download from:
 
-* **[Direct gserv.me download](https://bamboo.gserv.me/browse/GSPP-SRV/latestSuccessful/artifact/shared/Server-JAR/glowstone%2B%2B-1.9.4-SNAPSHOT.jar)** - recommended, direct link to latest build
+* **[Direct gserv.me download](https://bamboo.gserv.me/browse/GSPP-SRV/latestSuccessful/artifact/shared/Server-JAR/glowstone%2B%2B-1.10.2-SNAPSHOT.jar)** - recommended, direct link to latest build
 
 * **[gserv.me](https://bamboo.gserv.me/browse/GSPP-SRV)** - all builds, no login required
 
@@ -74,12 +74,12 @@ cd Glowstone
 ./setup.sh
 ```
 
-The final jar will be placed in `target/` named `glowstone++-1.9.4-SNAPSHOT.jar`.
+The final jar will be placed in `target/` named `glowstone++-1.10.2-SNAPSHOT.jar`.
 
 ##Running
 
 Running Glowstone++ is simple because its dependencies are shaded into the output
-jar at compile time. Simply execute `java -jar glowstone++-1.9.4-SNAPSHOT.jar` along with any
+jar at compile time. Simply execute `java -jar glowstone++-1.10.2-SNAPSHOT.jar` along with any
 extra JVM options desired. A variety of command-line options are also available -
 run `java -jar glowstone++.jar --help` for more information.
 
