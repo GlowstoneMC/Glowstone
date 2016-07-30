@@ -7,7 +7,7 @@ import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.game.*;
 import net.glowstone.net.message.play.inv.*;
 import net.glowstone.net.message.play.player.*;
-import net.glowstone.net.protocol.AbstractPlayProtocol;
+import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.util.TextMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.UUID;
 
 /**
- * Test cases for {@link net.glowstone.net.protocol.AbstractPlayProtocol.PlayProtocol}.
+ * Test cases for {@link PlayProtocol}.
  */
 public class PlayProtocolTest extends BaseProtocolTest {
 
@@ -52,7 +52,7 @@ public class PlayProtocolTest extends BaseProtocolTest {
             new ClientStatusMessage(1),
             new PluginMessage("glowstone", new byte[]{0x00, 0x11}),
             new SpectateMessage(UUID.randomUUID()),
-            new ResourcePackStatusMessage("glowstonehash", 1),
+            new ResourcePackStatusMessage(1),
             //new JoinGameMessage(1, 2, 3, 4, 5, "normal", true), //asymmetric
             new ChatMessage(ProtocolTestUtils.getTextMessage(), 2),
             new ChatMessage(ProtocolTestUtils.getTextMessage(), 1),
@@ -132,6 +132,6 @@ public class PlayProtocolTest extends BaseProtocolTest {
     };
 
     public PlayProtocolTest() {
-        super(new AbstractPlayProtocol.PlayProtocol(), TEST_MESSAGES);
+        super(new PlayProtocol(), TEST_MESSAGES);
     }
 }

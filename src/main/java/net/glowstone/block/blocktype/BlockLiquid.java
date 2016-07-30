@@ -149,6 +149,8 @@ public abstract class BlockLiquid extends BlockType {
     }
 
     private boolean calculateTarget(GlowBlock target, BlockFace direction, boolean flow) {
+        if (!target.getChunk().isLoaded()) // Don't flow inside unloaded chunks
+            return false;
         if (target.getType() == Material.AIR || ItemTable.instance().getBlock(target.getType()) instanceof BlockNeedsAttached) {
             // we flowed
             if (flow) {

@@ -71,6 +71,12 @@ abstract class EntityStore<T extends GlowEntity> {
         if (tag.isByte("OnGround")) {
             entity.setOnGround(tag.getBool("OnGround"));
         }
+        if (tag.isByte("NoGravity")) {
+            entity.setGravity(!tag.getBool("NoGravity"));
+        }
+        if (tag.isByte("Silent")) {
+            entity.setSilent(tag.getBool("Silent"));
+        }
 
         if (tag.isLong("UUIDMost") && tag.isLong("UUIDLeast")) {
             UUID uuid = new UUID(tag.getLong("UUIDMost"), tag.getLong("UUIDLeast"));
@@ -103,6 +109,9 @@ abstract class EntityStore<T extends GlowEntity> {
 
         tag.putLong("UUIDMost", entity.getUniqueId().getMostSignificantBits());
         tag.putLong("UUIDLeast", entity.getUniqueId().getLeastSignificantBits());
+
+        tag.putBool("NoGravity", !entity.hasGravity());
+        tag.putBool("Silent", entity.isSilent());
 
         // in case Vanilla or CraftBukkit expects non-living entities to have this tag
         tag.putInt("Air", 300);

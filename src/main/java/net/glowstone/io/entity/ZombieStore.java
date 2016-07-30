@@ -30,8 +30,12 @@ class ZombieStore<T extends GlowZombie> extends MonsterStore<GlowZombie> {
             entity.setBaby(false);
         }
 
-        if (tag.isInt("VillagerProfession")) {
-            entity.setVillagerProfession(Villager.Profession.getProfession(tag.getInt("VillagerProfession")));
+        if (tag.isInt("ZombieType")) {
+            entity.setVillagerProfession(Villager.Profession.values()[tag.getInt("ZombieType")]);
+        }
+
+        if (tag.isInt("VillagerProfession")) { // Legacy (< 1.10)
+            entity.setVillagerProfession(Villager.Profession.values()[tag.getInt("VillagerProfession")]);
         }
 
         if (tag.isInt("ConversionTime")) {

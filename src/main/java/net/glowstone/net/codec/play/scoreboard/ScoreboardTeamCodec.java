@@ -27,8 +27,8 @@ public final class ScoreboardTeamCodec implements Codec<ScoreboardTeamMessage> {
             ByteBufUtils.writeUTF8(buf, message.getPrefix());
             ByteBufUtils.writeUTF8(buf, message.getSuffix());
             buf.writeByte(message.getFlags());
-            ByteBufUtils.writeUTF8(buf, message.getNametagVisibility().getValue());
-            ByteBufUtils.writeUTF8(buf, message.getCollisionRule().getValue());
+            ByteBufUtils.writeUTF8(buf, message.getNametagVisibility().name().toLowerCase());
+            ByteBufUtils.writeUTF8(buf, message.getCollisionRule().name().toLowerCase());
             buf.writeByte(message.getColor() == ChatColor.RESET ? -1 : message.getColor().ordinal());
         }
 

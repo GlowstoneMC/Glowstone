@@ -22,7 +22,7 @@ public final class NamedSoundEffectCodec implements Codec<NamedSoundEffectMessag
         buf.writeInt((int) (8 * message.getY()));
         buf.writeInt((int) (8 * message.getZ()));
         buf.writeFloat(message.getVolume());
-        buf.writeByte((int) (message.getPitch() * 63));
+        buf.writeFloat(message.getPitch());
         return buf;
     }
 }

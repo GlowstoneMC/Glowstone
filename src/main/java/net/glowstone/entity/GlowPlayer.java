@@ -46,6 +46,7 @@ import net.glowstone.util.Position;
 import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
+import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.*;
 import org.bukkit.Effect.Type;
@@ -325,18 +326,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         // send login response
         session.send(new LoginSuccessMessage(profile.getUniqueId().toString(), profile.getName()));
-
-        switch (session.getVersion()) {
-            case GlowServer.LEGACY_PROTOCOL_1_9:
-                session.setProtocol(ProtocolType.PLAY_107);
-                break;
-            case GlowServer.LEGACY_PROTOCOL_1_9_2:
-                session.setProtocol(ProtocolType.PLAY_109);
-                break;
-            default:
-                session.setProtocol(ProtocolType.PLAY);
-                break;
-        }
+        session.setProtocol(ProtocolType.PLAY);
 
         // read data from player reader
         hasPlayedBefore = reader.hasPlayedBefore();
@@ -701,11 +691,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         for (Key key : newChunks) {
             GlowChunk chunk = world.getChunkAt(key.getX(), key.getZ());
-            if (session.getVersion() == GlowServer.LEGACY_PROTOCOL_1_9 || session.getVersion() == GlowServer.LEGACY_PROTOCOL_1_9_2) {
-                session.send(chunk.toMessage(skylight).toLegacy());
-            } else {
-                session.send(chunk.toMessage(skylight));
-            }
+            session.send(chunk.toMessage(skylight));
         }
 
         // send visible tile entity data
@@ -889,7 +875,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      */
     public void setSettings(ClientSettings settings) {
         this.settings = settings;
-       // metadata.set(MetadataIndex.PLAYER_SKIN_FLAGS, settings.getSkinFlags()); // TODO 1.9 - This has been removed
+        // metadata.set(MetadataIndex.PLAYER_SKIN_FLAGS, settings.getSkinFlags()); // TODO 1.9 - This has been removed
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1664,7 +1650,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(new ChatMessage(message));
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public void sendActionBarMessage(String message) {
         // "old" formatting workaround because apparently "new" styling doesn't work as of 01/18/2015
@@ -1904,8 +1889,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void playEffect(Location loc, Effect effect, int data) {
         int id = effect.getId();
-        boolean ignoreDistance = effect == Effect.WITHER_SPAWN || effect == Effect.ENDERDRAGON_DIE;
-        session.send(new PlayEffectMessage(id, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), data, ignoreDistance));
+        session.send(new PlayEffectMessage(id, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), data, false));
     }
 
     private void playEffect_(Location loc, Effect effect, int data) { // fix name collision with Spigot below
@@ -1930,6 +1914,16 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         double y = location.getBlockY() + 0.5;
         double z = location.getBlockZ() + 0.5;
         session.send(new NamedSoundEffectMessage(sound, SoundCategory.MASTER, x, y, z, volume, pitch)); //TODO: Put the real category
+    }
+
+    @Override
+    public void stopSound(Sound sound) {
+
+    }
+
+    @Override
+    public void stopSound(String sound) {
+
     }
 
     @Override
@@ -2002,13 +1996,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         checkNotNull(lines, "lines cannot be null");
         checkArgument(lines.length == 4, "lines.length must equal 4");
 
-        if (session.getProtocolType() == ProtocolType.PLAY) {
-            CompoundTag tag = new CompoundTag();
-            sign.saveNbt(tag);
-            afterBlockChanges.add(new UpdateBlockEntityMessage(location.getBlockX(), location.getBlockY(), location.getBlockZ(), GlowBlockEntity.SIGN.getValue(), tag));
-        } else {
-            afterBlockChanges.add(new UpdateSignMessage(location.getBlockX(), location.getBlockY(), location.getBlockZ(), lines));
-        }
+        CompoundTag tag = new CompoundTag();
+        sign.saveNbt(tag);
+        afterBlockChanges.add(new UpdateBlockEntityMessage(location.getBlockX(), location.getBlockY(), location.getBlockZ(), GlowBlockEntity.SIGN.getValue(), tag));
     }
 
     /**
@@ -2039,6 +2029,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void sendMessage(BaseComponent... components) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void sendMessage(ChatMessageType chatMessageType, BaseComponent... baseComponents) {
+
     }
 
     @Override
@@ -2269,6 +2264,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void updateInventory() {
         session.send(new SetWindowContentsMessage(invMonitor.getId(), invMonitor.getContents()));
+        ItemStack offHand = getInventory().getItemInOffHand();
+        session.send(new SetWindowSlotMessage(invMonitor.getId(), 45, offHand != null ? offHand : new ItemStack(Material.AIR)));
     }
 
     public void sendItemChange(int slot, ItemStack item) {
@@ -2574,10 +2571,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public Title getTitle() {
-        return currentTitle.clone();
+        return currentTitle;
     }
 
-    @Override
     public void clearTitle() {
         session.send(new TitleMessage(Action.CLEAR));
     }

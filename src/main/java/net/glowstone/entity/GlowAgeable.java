@@ -189,6 +189,6 @@ public class GlowAgeable extends GlowCreature implements Ageable {
 
     @Override
     public void setParent(Ageable parent) {
-        this.parent = (GlowAnimal) parent;
+        this.parent = (GlowAgeable) parent;
     }
 }

@@ -11,6 +11,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Team;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -93,8 +94,9 @@ public class NbtScoreboardIoReader {
     private static void registerTeam(CompoundTag data, GlowScoreboard scoreboard) {
         boolean allowFriendlyFire = data.getByte("AllowFriendlyFire") == 1;
         boolean seeFriendlyInvisibles = data.getByte("SeeFriendlyInvisibles") == 1;
-        NameTagVisibility nameTagVisibility = NameTagVisibility.get(data.getString("NameTagVisibility"));
-        NameTagVisibility deathMessageVisibility = NameTagVisibility.get(data.getString("NameTagVisibility"));
+        NameTagVisibility nameTagVisibility = NameTagVisibility.valueOf(data.getString("NameTagVisibility")); // TODO: Migrate to Team.Options
+        NameTagVisibility deathMessageVisibility = NameTagVisibility.valueOf(data.getString("DeathMessageVisibility"));
+        Team.OptionStatus collisionRule = Team.OptionStatus.valueOf(data.getString("CollisionRule")); // TODO: Use this.
         String displayName = data.getString("DisplayName");
         String name = data.getString("Name");
         String prefix = data.getString("Prefix");

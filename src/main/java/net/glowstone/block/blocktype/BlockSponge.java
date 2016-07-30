@@ -7,7 +7,7 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.BlockMaterialValidator;
 import net.glowstone.util.TaxicabBlockIterator;
 import org.bukkit.Material;
-import org.bukkit.SpongeType;
+import org.bukkit.material.types.SpongeType;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;

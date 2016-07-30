@@ -4,7 +4,7 @@ import net.glowstone.generator.decorators.overworld.DoublePlantDecorator.DoubleP
 import net.glowstone.generator.decorators.overworld.TreeDecorator.TreeDecoration;
 import net.glowstone.generator.objects.trees.AcaciaTree;
 import net.glowstone.generator.objects.trees.GenericTree;
-import org.bukkit.DoublePlantSpecies;
+import org.bukkit.material.types.DoublePlantSpecies;
 import org.bukkit.block.Biome;
 
 import java.util.Arrays;

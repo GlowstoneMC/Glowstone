@@ -29,7 +29,7 @@ public class ItemDye extends ItemType {
                     IBlockGrowable growable = (IBlockGrowable) blockType;
                     if (growable.isFertilizable(target)) {
                         // spawn some green particles
-                        target.getWorld().playEffect(target.getLocation(), Effect.BONEMEAL_USE, 0);
+                        target.getWorld().playEffect(target.getLocation(), Effect.HAPPY_VILLAGER, 0);
 
                         if (growable.canGrowWithChance(target)) {
                             growable.grow(player, target);

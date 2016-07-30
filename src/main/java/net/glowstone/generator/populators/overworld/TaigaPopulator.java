@@ -6,7 +6,7 @@ import net.glowstone.generator.decorators.overworld.TreeDecorator.TreeDecoration
 import net.glowstone.generator.objects.trees.RedwoodTree;
 import net.glowstone.generator.objects.trees.TallRedwoodTree;
 import org.bukkit.Chunk;
-import org.bukkit.DoublePlantSpecies;
+import org.bukkit.material.types.DoublePlantSpecies;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;

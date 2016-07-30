@@ -25,7 +25,7 @@ public final class GlowParticle {
         set(Effect.BUBBLE, 4); // bubble
         set(Effect.SPLASH, 5); // splash
         set(Effect.WAKE, 6); // wake
-        set(Effect.SUSPENDED, 7); // suspended
+        set(Effect.UNDERWATER, 7); // suspended
         set(Effect.VOID_FOG, 8); // depthsuspend
         set(Effect.CRIT, 9); // crit
         set(Effect.MAGIC_CRIT, 10); // magicCrit
@@ -57,7 +57,7 @@ public final class GlowParticle {
         set(Effect.ITEM_BREAK, 36); // iconcrack_(id)_(data)
         set(Effect.TILE_BREAK, 37); // blockcrack_(id+(data<<12))
         set(Effect.TILE_DUST, 38); // blockdust_(id)
-        set(Effect.WATER_DROPLET, 39); // droplet
+        set(Effect.RAIN, 39); // droplet
         set(Effect.ITEM_TAKE, 40); // take
         set(Effect.MOB_APPEARANCE, 41); // mobappearance
     }

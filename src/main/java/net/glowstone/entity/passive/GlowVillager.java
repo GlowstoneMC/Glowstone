@@ -19,7 +19,7 @@ public class GlowVillager extends GlowAgeable implements Villager {
     public GlowVillager(Location location) {
         super(location, EntityType.VILLAGER, 20);
         Random r = new Random();
-        setProfession(Profession.getProfession(r.nextInt(Profession.values().length)));
+        setProfession(Profession.values()[r.nextInt(Profession.values().length - 2) + 1]);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class GlowVillager extends GlowAgeable implements Villager {
     @Override
     public void setProfession(Profession profession) {
         this.profession = profession;
-        metadata.set(MetadataIndex.VILLAGER_TYPE, profession.getId());
+        metadata.set(MetadataIndex.VILLAGER_TYPE, profession.ordinal() - 1);
     }
 
     @Override

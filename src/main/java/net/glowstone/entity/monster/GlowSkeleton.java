@@ -20,6 +20,6 @@ public class GlowSkeleton extends GlowMonster implements Skeleton {
     @Override
     public void setSkeletonType(SkeletonType type) {
         skeletonType = type;
-        metadata.set(MetadataIndex.SKELETON_TYPE, skeletonType.getId());
+        metadata.set(MetadataIndex.SKELETON_TYPE, skeletonType.ordinal());
     }
 }

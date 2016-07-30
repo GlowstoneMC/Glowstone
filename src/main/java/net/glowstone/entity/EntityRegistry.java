@@ -53,6 +53,7 @@ public class EntityRegistry {
                     .put(PIG, GlowPig.class)
                     .put(PIG_ZOMBIE, GlowPigZombie.class)
                     .put(PLAYER, GlowPlayer.class)
+                    .put(POLAR_BEAR, GlowPolarBear.class)
                     .put(PRIMED_TNT, GlowTNTPrimed.class)
                     .put(RABBIT, GlowRabbit.class)
                     .put(SHEEP, GlowSheep.class)

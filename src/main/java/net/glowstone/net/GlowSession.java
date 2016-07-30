@@ -27,7 +27,7 @@ import net.glowstone.net.pipeline.CodecsHandler;
 import net.glowstone.net.pipeline.CompressionHandler;
 import net.glowstone.net.pipeline.EncryptionHandler;
 import net.glowstone.net.pipeline.NoopHandler;
-import net.glowstone.net.protocol.AbstractPlayProtocol;
+import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.LoginProtocol;
 import net.glowstone.net.protocol.ProtocolType;
@@ -235,7 +235,7 @@ public final class GlowSession extends BasicSession {
      * Notify that the session is currently idle.
      */
     public void idle() {
-        if (pingMessageId == 0 && getProtocol() instanceof AbstractPlayProtocol) {
+        if (pingMessageId == 0 && getProtocol() instanceof PlayProtocol) {
             pingMessageId = random.nextInt();
             if (pingMessageId == 0) {
                 pingMessageId++;
@@ -374,18 +374,6 @@ public final class GlowSession extends BasicSession {
         send(new UserListItemMessage(Action.ADD_PLAYER, entries));
     }
 
-    public ProtocolType getProtocolType() {
-        switch (version) {
-            case GlowServer.PROTOCOL_VERSION:
-                return ProtocolType.PLAY;
-            case GlowServer.LEGACY_PROTOCOL_1_9:
-                return ProtocolType.PLAY_107;
-            case GlowServer.LEGACY_PROTOCOL_1_9_2:
-                return ProtocolType.PLAY_109;
-        }
-        return null;
-    }
-
     @Override
     public ChannelFuture sendWithFuture(Message message) {
         if (!isActive()) {
@@ -446,7 +434,7 @@ public final class GlowSession extends BasicSession {
         }
 
         // perform the kick, sending a kick message if possible
-        if (isActive() && (getProtocol() instanceof LoginProtocol || getProtocol() instanceof AbstractPlayProtocol)) {
+        if (isActive() && (getProtocol() instanceof LoginProtocol || getProtocol() instanceof PlayProtocol)) {
             // channel is both currently connected and in a protocol state allowing kicks
             sendWithFuture(new KickMessage(reason)).addListener(ChannelFutureListener.CLOSE);
         } else {

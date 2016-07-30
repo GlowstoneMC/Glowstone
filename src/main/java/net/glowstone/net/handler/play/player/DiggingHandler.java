@@ -13,7 +13,7 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.DiggingMessage;
-import org.bukkit.DoublePlantSpecies;
+import org.bukkit.material.types.DoublePlantSpecies;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -46,7 +46,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
 
         boolean blockBroken = false;
         boolean revert = false;
-        if (message.getState() == DiggingMessage.START_DIGGING || player.getDigging() == null) {
+        if (message.getState() == DiggingMessage.START_DIGGING) {
             // call interact event
             Action action = Action.LEFT_CLICK_BLOCK;
             Block eventBlock = block;
@@ -166,6 +166,13 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                 // todo: verification against malicious clients
                 // todo: inform player their item is wrong
             }
+            return;
+        } else if (message.getState() == DiggingMessage.SWAP_ITEM_IN_HAND) {
+            ItemStack main = player.getInventory().getItemInMainHand();
+            ItemStack off = player.getInventory().getItemInOffHand();
+            player.getInventory().setItemInOffHand(main);
+            player.getInventory().setItemInMainHand(off);
+            player.updateInventory();
             return;
         } else {
             return;

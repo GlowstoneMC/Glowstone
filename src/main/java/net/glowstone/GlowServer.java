@@ -104,22 +104,13 @@ public final class GlowServer implements Server {
     /**
      * The game version supported by the server.
      */
-    public static final String GAME_VERSION = "1.9.4";
+    public static final String GAME_VERSION = "1.10.2";
 
     /**
      * The protocol version supported by the server.
      */
-    public static final int PROTOCOL_VERSION = 110;
+    public static final int PROTOCOL_VERSION = 210;
 
-    /**
-     * The legacy version supported by the server.
-     */
-    public static final int LEGACY_PROTOCOL_1_9 = 107;
-
-    /**
-     * The compatible version supported by the server.
-     */
-    public static final int LEGACY_PROTOCOL_1_9_2 = 109;
     /**
      * A list of all the active {@link net.glowstone.net.GlowSession}s.
      */
@@ -731,6 +722,7 @@ public final class GlowServer implements Server {
         commandMap.register("glowstone", new TellrawCommand());
         commandMap.register("glowstone", new TitleCommand());
         commandMap.register("glowstone", new StopsoundCommand());
+        commandMap.register("glowstone", new TeleportCommand());
         commandMap.register("glowstone", new SummonCommand());
 
         File folder = new File(config.getString(Key.PLUGIN_FOLDER));
@@ -1077,10 +1069,6 @@ public final class GlowServer implements Server {
      */
     public boolean getAnnounceAchievements() {
         return config.getBoolean(Key.ANNOUNCE_ACHIEVEMENTS);
-    }
-
-    public boolean canSupportLegacyClients() {
-        return config.getBoolean(Key.ALLOW_LEGACY_CLIENTS);
     }
 
     ////////////////////////////////////////////////////////////////////////////

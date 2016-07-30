@@ -1,6 +1,6 @@
 package net.glowstone.generator.objects;
 
-import org.bukkit.DirtType;
+import org.bukkit.material.types.DirtType;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
