@@ -55,8 +55,8 @@ public final class GlowBlock implements Block {
     private final int z;
     private GlowWorld world;
 
-    public GlowBlock(GlowChunk chunk, int x, int y, int z) {
-        world = chunk.getWorld();
+    public GlowBlock(GlowWorld world, int x, int y, int z) {
+        this.world = world;
         this.x = x;
         this.y = y;
         this.z = z;
