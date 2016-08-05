@@ -42,7 +42,7 @@
         </repository>
         <repository>
             <id>aikar</id>
-            <url>https://ci.emc.gs/nexus/content/groups/aikar/</url>
+            <url>https://ci.emc.gs/nexus/content/repositories/aikar/</url>
         </repository>
     </repositories>
 
