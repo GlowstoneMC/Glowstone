@@ -328,7 +328,7 @@ public class BlockType extends ItemType {
         if (itemType.getPlaceAs() == null) {
             placeBlock(player, newState, face, holding, clickedLoc);
         } else {
-            placeBlock(player, newState, face, new ItemStack(itemType.getPlaceAs().getMaterial(), 1), clickedLoc);
+            placeBlock(player, newState, face, new ItemStack(itemType.getPlaceAs().getMaterial(), holding.getAmount(), holding.getDurability()), clickedLoc);
         }
         newState.update(true);
 
