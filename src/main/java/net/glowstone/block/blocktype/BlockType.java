@@ -7,7 +7,6 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.entity.TileEntity;
-import net.glowstone.block.itemtype.ItemPlaceAs;
 import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.SoundInfo;
@@ -326,9 +325,9 @@ public class BlockType extends ItemType {
         // grab states and update block
         GlowBlockState oldState = target.getState(), newState = target.getState();
         ItemType itemType = ItemTable.instance().getItem(holding.getType());
-        if (itemType != null && !(itemType instanceof ItemPlaceAs) && itemType.getPlaceAs() != null && itemType.getPlaceAs().getMaterial() != null) {
+        if (itemType.getPlaceAs() == null) {
             placeBlock(player, newState, face, holding, clickedLoc);
-        } else if (itemType instanceof ItemPlaceAs) {
+        } else {
             placeBlock(player, newState, face, new ItemStack(itemType.getPlaceAs().getMaterial(), 1), clickedLoc);
         }
         newState.update(true);
