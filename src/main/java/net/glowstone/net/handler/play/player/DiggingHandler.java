@@ -6,6 +6,7 @@ import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
+import net.glowstone.block.blocktype.BlockContainer;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.itemtype.ItemTimedUsage;
 import net.glowstone.block.itemtype.ItemType;
@@ -27,6 +28,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.DoublePlant;
 import org.bukkit.material.MaterialData;
+
+import java.util.Collection;
 
 public final class DiggingHandler implements MessageHandler<GlowSession, DiggingMessage> {
     @Override
@@ -199,8 +202,12 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             }
 
             // destroy the block
-            if (!block.isEmpty() && !block.isLiquid() && player.getGameMode() != GameMode.CREATIVE && world.getGameRuleMap().getBoolean("doTileDrops")) {
-                for (ItemStack drop : blockType.getDrops(block, holding)) {
+            if (!block.isEmpty() && !block.isLiquid() && (player.getGameMode() != GameMode.CREATIVE || blockType instanceof BlockContainer) && world.getGameRuleMap().getBoolean("doTileDrops")) {
+                Collection<ItemStack> drops = blockType.getDrops(block, holding);
+                if (blockType instanceof BlockContainer && player.getGameMode() == GameMode.CREATIVE) {
+                    drops = ((BlockContainer) blockType).getContentDrops(block);
+                }
+                for (ItemStack drop : drops) {
                     GlowItem item = world.dropItemNaturally(block.getLocation(), drop);
                     item.setPickupDelay(30);
                     item.setBias(player);
