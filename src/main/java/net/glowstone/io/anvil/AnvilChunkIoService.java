@@ -4,6 +4,9 @@ import net.glowstone.GlowChunk;
 import net.glowstone.GlowChunk.ChunkSection;
 import net.glowstone.GlowChunkSnapshot;
 import net.glowstone.GlowServer;
+import net.glowstone.block.GlowBlock;
+import net.glowstone.block.ItemTable;
+import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.io.ChunkIoService;
@@ -13,6 +16,8 @@ import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
 import net.glowstone.util.nbt.TagType;
+import org.bukkit.Location;
+import org.bukkit.Material;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -138,6 +143,28 @@ public final class AnvilChunkIoService implements ChunkIoService {
             }
         }
 
+        if (levelTag.isList("TileTicks", TagType.COMPOUND)) {
+            List<CompoundTag> tileTicks = levelTag.getCompoundList("TileTicks");
+            for (CompoundTag tileTick : tileTicks) {
+                int tileX = tileTick.getInt("x");
+                int tileY = tileTick.getInt("y");
+                int tileZ = tileTick.getInt("z");
+                String id = tileTick.getString("i");
+                Material material = Material.getMaterial(id);
+                GlowBlock block = chunk.getBlock(tileX, tileY, tileZ);
+                if (material != block.getType()) {
+                    continue;
+                }
+                // TODO tick delay: tileTick.getInt("t");
+                // TODO ordering: tileTick.getInt("p");
+                BlockType type = ItemTable.instance().getBlock(material);
+                if (type == null) {
+                    continue;
+                }
+                type.requestPulse(block.getState());
+            }
+        }
+
         return true;
     }
 
@@ -231,6 +258,23 @@ public final class AnvilChunkIoService implements ChunkIoService {
             }
         }
         levelTags.putCompoundList("TileEntities", tileEntities);
+
+        List<CompoundTag> tileTicks = new ArrayList<>();
+        for (Location location : chunk.getWorld().getTickMap().keySet()) {
+            if (location.getChunk().getX() == chunk.getX() && location.getChunk().getZ() == chunk.getZ()) {
+                int tileX = location.getBlockX();
+                int tileY = location.getBlockY();
+                int tileZ = location.getBlockZ();
+                String type = location.getBlock().getType().name();
+                CompoundTag tag = new CompoundTag();
+                tag.putInt("x", tileX);
+                tag.putInt("y", tileY);
+                tag.putInt("z", tileZ);
+                tag.putString("i", type);
+                tileTicks.add(tag);
+            }
+        }
+        levelTags.putCompoundList("TileTicks", tileTicks);
 
         CompoundTag levelOut = new CompoundTag();
         levelOut.putCompound("Level", levelTags);

@@ -1786,7 +1786,7 @@ public final class GlowWorld implements World {
         });
     }
 
-    private ConcurrentHashMap<Location, Map.Entry<Long, Boolean>> getTickMap() {
+    public ConcurrentHashMap<Location, Map.Entry<Long, Boolean>> getTickMap() {
         return tickMap;
     }
 

@@ -402,4 +402,8 @@ public class BlockType extends ItemType {
     public void onEntityStep(GlowBlock block, LivingEntity entity) {
         // do nothing
     }
+
+    public void requestPulse(GlowBlockState state) {
+        // do nothing
+    }
 }
