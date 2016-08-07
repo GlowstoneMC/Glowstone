@@ -423,4 +423,8 @@ public class BlockType extends ItemType {
     public BlockType getPlaceAs() {
         return this;
     }
+
+    public void requestPulse(GlowBlockState state) {
+        // do nothing
+    }
 }
