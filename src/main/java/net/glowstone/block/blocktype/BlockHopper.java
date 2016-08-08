@@ -75,7 +75,14 @@ public class BlockHopper extends BlockContainer {
         }
         TEHopper hopper = (TEHopper) block.getTileEntity();
         pullItems(block, hopper);
-        pushItems(block, hopper);
+        if (!((Hopper) block.getState().getData()).isPowered()) {
+            pushItems(block, hopper);
+        }
+    }
+
+    @Override
+    public void onRedstoneUpdate(GlowBlock block) {
+        ((Hopper) block.getState().getData()).setActive(!block.isBlockPowered());
     }
 
     private void pullItems(GlowBlock block, TEHopper hopper) {
