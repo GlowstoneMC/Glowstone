@@ -781,6 +781,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             session.send(new DestroyEntitiesMessage(entityIds));
             knownEntities.clear();
         }
+        active = true;
         spawnAt(event.getRespawnLocation());
 
         // just in case any items are left in their inventory after they respawn

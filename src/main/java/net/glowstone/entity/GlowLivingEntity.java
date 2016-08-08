@@ -23,6 +23,8 @@ import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -458,6 +460,13 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 world.playSound(location, deathSound, 1.0f, 1.0f);
             }
             playEffect(EntityEffect.DEATH);
+            if (this instanceof GlowPlayer) {
+                PlayerDeathEvent event = new PlayerDeathEvent((GlowPlayer) this, new ArrayList<>(), 0, this.getName() + " died.");
+                EventFactory.callEvent(event);
+                server.broadcastMessage(event.getDeathMessage());
+            } else {
+                EventFactory.callEvent(new EntityDeathEvent(this, new ArrayList<>()));
+            }
             // todo: drop items
         }
     }
