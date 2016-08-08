@@ -7,14 +7,21 @@ import net.glowstone.block.entity.TEContainer;
 import net.glowstone.block.entity.TEHopper;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.inventory.MaterialMatcher;
 import net.glowstone.inventory.ToolType;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Hopper;
 import org.bukkit.util.Vector;
+
+import java.util.HashMap;
 
 public class BlockHopper extends BlockContainer {
 
@@ -67,6 +74,47 @@ public class BlockHopper extends BlockContainer {
             return;
         }
         TEHopper hopper = (TEHopper) block.getTileEntity();
+        pullItems(block, hopper);
+        pushItems(block, hopper);
+    }
+
+    private void pullItems(GlowBlock block, TEHopper hopper) {
+        GlowBlock source = block.getRelative(BlockFace.UP);
+        if (source.getType() == null || source.getType() == Material.AIR) {
+            GlowItem item = getFirstDroppedItem(source.getLocation());
+            if (item == null) {
+                return;
+            }
+            ItemStack stack = item.getItemStack();
+            HashMap<Integer, ItemStack> add = hopper.getInventory().addItem(stack);
+            if (add.size() > 0) {
+                item.setItemStack(add.get(0));
+            } else {
+                item.remove();
+            }
+        } else if (source.getTileEntity() != null && source.getTileEntity() instanceof TEContainer) {
+            TEContainer sourceContainer = (TEContainer) source.getTileEntity();
+            if (sourceContainer.getInventory() == null || sourceContainer.getInventory().getContents().length == 0) {
+                return;
+            }
+            ItemStack item = getFirstItem(sourceContainer);
+            if (item == null) {
+                return;
+            }
+            ItemStack clone = item.clone();
+            clone.setAmount(1);
+            if (hopper.getInventory().addItem(clone).size() > 0) {
+                return;
+            }
+            if (item.getAmount() - 1 == 0) {
+                sourceContainer.getInventory().remove(item);
+            } else {
+                item.setAmount(item.getAmount() - 1);
+            }
+        }
+    }
+
+    private void pushItems(GlowBlock block, TEHopper hopper) {
         if (hopper.getInventory() == null || hopper.getInventory().getContents().length == 0) {
             return;
         }
@@ -90,8 +138,21 @@ public class BlockHopper extends BlockContainer {
         }
     }
 
-    private ItemStack getFirstItem(TEHopper hopper) {
-        Inventory inventory = hopper.getInventory();
+    private GlowItem getFirstDroppedItem(Location location) {
+        for (Entity entity : location.getChunk().getEntities()) {
+            if (location.getBlockX() != entity.getLocation().getBlockX() || location.getBlockY() != entity.getLocation().getBlockY() || location.getBlockZ() != entity.getLocation().getBlockZ()) {
+                continue;
+            }
+            if (entity.getType() != EntityType.DROPPED_ITEM) {
+                continue;
+            }
+            return ((GlowItem) entity);
+        }
+        return null;
+    }
+
+    private ItemStack getFirstItem(TEContainer container) {
+        Inventory inventory = container.getInventory();
         for (int i = 0; i < inventory.getSize(); i++) {
             if (inventory.getItem(i) == null || inventory.getItem(i).getType() == null) {
                 continue;
