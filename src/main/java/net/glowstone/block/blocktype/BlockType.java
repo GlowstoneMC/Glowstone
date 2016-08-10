@@ -324,7 +324,12 @@ public class BlockType extends ItemType {
 
         // grab states and update block
         GlowBlockState oldState = target.getState(), newState = target.getState();
-        placeBlock(player, newState, face, holding, clickedLoc);
+        ItemType itemType = ItemTable.instance().getItem(holding.getType());
+        if (itemType.getPlaceAs() == null) {
+            placeBlock(player, newState, face, holding, clickedLoc);
+        } else {
+            placeBlock(player, newState, face, new ItemStack(itemType.getPlaceAs().getMaterial(), holding.getAmount(), holding.getDurability()), clickedLoc);
+        }
         newState.update(true);
 
         // call blockPlace event
