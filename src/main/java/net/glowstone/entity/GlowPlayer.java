@@ -2,13 +2,14 @@ package net.glowstone.entity;
 
 import com.destroystokyo.paper.Title;
 import com.flowpowered.network.Message;
+import com.flowpowered.network.util.ByteBufUtils;
 import com.google.common.base.Preconditions;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.Getter;
 import lombok.Setter;
-import net.glowstone.ChunkManager.ChunkLock;
 import net.glowstone.*;
+import net.glowstone.ChunkManager.ChunkLock;
 import net.glowstone.GlowChunk.Key;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
@@ -43,6 +44,7 @@ import net.glowstone.net.protocol.ProtocolType;
 import net.glowstone.scoreboard.GlowScoreboard;
 import net.glowstone.scoreboard.GlowTeam;
 import net.glowstone.util.Position;
+import net.glowstone.util.SoundAdapter;
 import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
@@ -83,6 +85,7 @@ import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 import org.json.simple.JSONObject;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -1919,12 +1922,24 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void stopSound(Sound sound) {
-
+        stopSound(SoundAdapter.fromSound(sound));
     }
 
     @Override
     public void stopSound(String sound) {
-
+        if (sound == null || sound.equalsIgnoreCase("all")) {
+            sound = "";
+        }
+        ByteBuf buffer = Unpooled.buffer();
+        try {
+            ByteBufUtils.writeUTF8(buffer, ""); //Source
+            ByteBufUtils.writeUTF8(buffer, sound); //Sound
+            session.send(new PluginMessage("MC|StopSound", buffer.array()));
+            buffer.release();
+        } catch (IOException e) {
+            GlowServer.logger.info("Failed to send stop-sound event.");
+            e.printStackTrace();
+        }
     }
 
     @Override
