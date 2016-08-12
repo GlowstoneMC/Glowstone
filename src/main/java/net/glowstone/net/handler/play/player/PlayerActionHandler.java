@@ -38,7 +38,7 @@ public final class PlayerActionHandler implements MessageHandler<GlowSession, Pl
                 break;
             case 8: // start gliding
                 ItemStack chestplate = player.getInventory().getChestplate();
-                boolean hasElytra = chestplate != null && chestplate.getType() == Material.ELYTRA && chestplate.getDurability() > 1;
+                boolean hasElytra = chestplate != null && chestplate.getType() == Material.ELYTRA && chestplate.getDurability() < chestplate.getType().getMaxDurability();
                 if (!player.isOnGround() && !player.isGliding() && !player.isInWater() && hasElytra) {
                     player.setGliding(true);
                 }
