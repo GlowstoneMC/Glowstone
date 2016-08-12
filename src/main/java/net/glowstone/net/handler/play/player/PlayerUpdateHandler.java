@@ -87,7 +87,7 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
 
         // Checks if the player is still wearing the Elytra
         ItemStack chestplate = player.getInventory().getChestplate();
-        boolean hasElytra = chestplate != null && chestplate.getType() == Material.ELYTRA && chestplate.getDurability() > 1;
+        boolean hasElytra = chestplate != null && chestplate.getType() == Material.ELYTRA && chestplate.getDurability() < chestplate.getType().getMaxDurability();
         if (player.isGliding() && (player.isOnGround() || !hasElytra)) {
             player.setGliding(false);
         }
