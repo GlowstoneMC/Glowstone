@@ -8,8 +8,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.Getter;
 import lombok.Setter;
-import net.glowstone.*;
 import net.glowstone.ChunkManager.ChunkLock;
+import net.glowstone.*;
 import net.glowstone.GlowChunk.Key;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
@@ -44,7 +44,6 @@ import net.glowstone.net.protocol.ProtocolType;
 import net.glowstone.scoreboard.GlowScoreboard;
 import net.glowstone.scoreboard.GlowTeam;
 import net.glowstone.util.Position;
-import net.glowstone.util.SoundAdapter;
 import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
@@ -1922,17 +1921,26 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void stopSound(Sound sound) {
-        stopSound(SoundAdapter.fromSound(sound));
+        stopSound(null, sound);
     }
 
     @Override
-    public void stopSound(String sound) {
+    public void stopAllSounds() {
+        stopSound("");
+    }
+
+    @Override
+    public void stopSound(Sound.Category category, String sound) {
+        String source = "";
+        if (category != null) {
+            source = category.name().toLowerCase();
+        }
         if (sound == null || sound.equalsIgnoreCase("all")) {
             sound = "";
         }
         ByteBuf buffer = Unpooled.buffer();
         try {
-            ByteBufUtils.writeUTF8(buffer, ""); //Source
+            ByteBufUtils.writeUTF8(buffer, source); //Source
             ByteBufUtils.writeUTF8(buffer, sound); //Sound
             session.send(new PluginMessage("MC|StopSound", buffer.array()));
             buffer.release();
@@ -1940,6 +1948,24 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             GlowServer.logger.info("Failed to send stop-sound event.");
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void stopSound(Sound.Category category) {
+        stopSound(category, "");
+    }
+
+    @Override
+    public void stopSound(Sound.Category category, Sound sound) {
+        stopSound(category, sound == null ? "" : sound.getId());
+    }
+
+    @Override
+    public void stopSound(String sound) {
+        if (sound == null || sound.equalsIgnoreCase("all")) {
+            sound = "";
+        }
+        stopSound(null, sound);
     }
 
     @Override
