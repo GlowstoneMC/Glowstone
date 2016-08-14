@@ -234,6 +234,11 @@ public final class ItemTable {
         reg(Material.IRON_HOE, new ItemHoe());
         reg(Material.GOLD_HOE, new ItemHoe());
         reg(Material.DIAMOND_HOE, new ItemHoe());
+        reg(Material.WOOD_SPADE, new ItemShovel());
+        reg(Material.STONE_SPADE, new ItemShovel());
+        reg(Material.IRON_SPADE, new ItemShovel());
+        reg(Material.GOLD_SPADE, new ItemShovel());
+        reg(Material.DIAMOND_SPADE, new ItemShovel());
         reg(Material.MONSTER_EGG, new ItemSpawn());
         reg(Material.SEEDS, new ItemSeeds(Material.CROPS, Material.SOIL));
         reg(Material.MELON_SEEDS, new ItemSeeds(Material.MELON_STEM, Material.SOIL));
