@@ -721,7 +721,6 @@ public final class GlowServer implements Server {
         commandMap.register("glowstone", new ColorCommand());
         commandMap.register("glowstone", new TellrawCommand());
         commandMap.register("glowstone", new TitleCommand());
-        commandMap.register("glowstone", new StopsoundCommand());
         commandMap.register("glowstone", new TeleportCommand());
         commandMap.register("glowstone", new SummonCommand());
 

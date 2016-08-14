@@ -2,6 +2,7 @@ package net.glowstone.entity;
 
 import com.destroystokyo.paper.Title;
 import com.flowpowered.network.Message;
+import com.flowpowered.network.util.ByteBufUtils;
 import com.google.common.base.Preconditions;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -31,7 +32,6 @@ import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.login.LoginSuccessMessage;
 import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.game.*;
-import net.glowstone.net.message.play.game.NamedSoundEffectMessage.SoundCategory;
 import net.glowstone.net.message.play.game.StateChangeMessage.Reason;
 import net.glowstone.net.message.play.game.TitleMessage.Action;
 import net.glowstone.net.message.play.game.UserListItemMessage.Entry;
@@ -83,6 +83,7 @@ import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 import org.json.simple.JSONObject;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -1904,27 +1905,76 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void playSound(Location location, Sound sound, float volume, float pitch) {
-        playSound(location, GlowSound.getName(sound), volume, pitch);
+        playSound(location, sound, sound.getCategory(), volume, pitch);
     }
 
     @Override
     public void playSound(Location location, String sound, float volume, float pitch) {
+        playSound(location, Sound.fromId(sound), volume, pitch);
+    }
+
+    @Override
+    public void playSound(Location location, String sound, Sound.Category category, float volume, float pitch) {
         if (location == null || sound == null) return;
         // the loss of precision here is a bit unfortunate but it's what CraftBukkit does
         double x = location.getBlockX() + 0.5;
         double y = location.getBlockY() + 0.5;
         double z = location.getBlockZ() + 0.5;
-        session.send(new NamedSoundEffectMessage(sound, SoundCategory.MASTER, x, y, z, volume, pitch)); //TODO: Put the real category
+        session.send(new NamedSoundEffectMessage(sound, category, x, y, z, volume, pitch));
+    }
+
+    @Override
+    public void playSound(Location location, Sound sound, Sound.Category category, float volume, float pitch) {
+        playSound(location, sound.getId(), category, volume, pitch);
     }
 
     @Override
     public void stopSound(Sound sound) {
+        stopSound(null, sound);
+    }
 
+    @Override
+    public void stopAllSounds() {
+        stopSound("");
+    }
+
+    @Override
+    public void stopSound(Sound.Category category, String sound) {
+        String source = "";
+        if (category != null) {
+            source = category.name().toLowerCase();
+        }
+        if (sound == null || sound.equalsIgnoreCase("all")) {
+            sound = "";
+        }
+        ByteBuf buffer = Unpooled.buffer();
+        try {
+            ByteBufUtils.writeUTF8(buffer, source); //Source
+            ByteBufUtils.writeUTF8(buffer, sound); //Sound
+            session.send(new PluginMessage("MC|StopSound", buffer.array()));
+            buffer.release();
+        } catch (IOException e) {
+            GlowServer.logger.info("Failed to send stop-sound event.");
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void stopSound(Sound.Category category) {
+        stopSound(category, "");
+    }
+
+    @Override
+    public void stopSound(Sound.Category category, Sound sound) {
+        stopSound(category, sound == null ? "" : sound.getId());
     }
 
     @Override
     public void stopSound(String sound) {
-
+        if (sound == null || sound.equalsIgnoreCase("all")) {
+            sound = "";
+        }
+        stopSound(null, sound);
     }
 
     @Override
