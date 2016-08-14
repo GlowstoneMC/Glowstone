@@ -14,12 +14,8 @@ import org.bukkit.util.Vector;
 
 public class ItemFlintAndSteel extends ItemTool {
 
-    public ItemFlintAndSteel() {
-        super(Material.FLINT_AND_STEEL.getMaxDurability());
-    }
-
     @Override
-    public boolean onToolRightClick(GlowPlayer player, ItemStack holding, GlowBlock target, BlockFace face, Vector clickedLoc) {
+    public boolean onToolRightClick(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc) {
         if (target.getType() == Material.OBSIDIAN) {
             fireNetherPortal();
             return true;

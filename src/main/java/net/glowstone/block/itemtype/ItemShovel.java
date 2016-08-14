@@ -8,15 +8,17 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-public class ItemShovel extends ItemType {
+public class ItemShovel extends ItemTool {
 
     @Override
-    public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public boolean onToolRightClick(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc) {
         if (target.getRelative(BlockFace.UP).getType() == Material.AIR && target.getType() == Material.GRASS) {
             if (target.getType() == Material.GRASS) {
                 target.getWorld().playSound(target.getLocation().add(0.5D, 0.5D, 0.5D), Sound.BLOCK_GRAVEL_STEP, 1, 0.8F);
                 target.setType(Material.GRASS_PATH);
+                return true;
             }
         }
+        return false;
     }
 }
