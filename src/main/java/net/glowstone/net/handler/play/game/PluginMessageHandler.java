@@ -5,13 +5,17 @@ import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.glowstone.GlowServer;
+import net.glowstone.block.GlowBlock;
+import net.glowstone.block.state.GlowCommandBlock;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.game.PluginMessage;
 import org.bukkit.Material;
+import org.bukkit.block.CommandBlockType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.Command;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -146,6 +150,38 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
                 inHand.setType(Material.WRITTEN_BOOK);
                 inHand.setItemMeta(handBook);
                 session.getPlayer().setItemInHand(inHand);
+                break;
+            case "MC|AutoCmd":
+                try {
+                    int x = buf.readInt();
+                    int y = buf.readInt();
+                    int z = buf.readInt();
+                    String command = ByteBufUtils.readUTF8(buf);
+                    boolean trackOutput = buf.readBoolean();
+                    String modeName = ByteBufUtils.readUTF8(buf);
+                    boolean conditional = buf.readBoolean();
+                    boolean automatic = buf.readBoolean();
+                    GlowBlock block = session.getPlayer().getWorld().getBlockAt(x, y, z);
+                    if (!(block.getState() instanceof GlowCommandBlock)) {
+                        return;
+                    }
+                    if (!(block.getState().getData() instanceof Command)) {
+                        return;
+                    }
+                    Command cmd = (Command) block.getState().getData();
+                    GlowCommandBlock state = (GlowCommandBlock) block.getState();
+                    state.setCommand(command);
+                    state.setTrackOutput(trackOutput);
+                    block.setType(CommandBlockType.valueOf(modeName).getMaterial());
+                    state.setAuto(automatic);
+                    //cmd.setConditional(conditional);
+                    state.update();
+                    state.setData(cmd);
+                    block.setData(cmd.getData());
+                    GlowServer.logger.info(cmd.getDirection() + " / " + cmd.getData() + " / " + block.getData());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
             default:
                 GlowServer.logger.info(session + " used unknown Minecraft channel: " + channel);

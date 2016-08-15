@@ -5,6 +5,7 @@ import net.glowstone.block.itemtype.*;
 import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.CommandBlockType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -214,6 +215,9 @@ public final class ItemTable {
         reg(Material.NETHER_WART_BLOCK, new BlockDirectDrops(Material.NETHER_WART_BLOCK, ToolType.AXE));
         reg(Material.RED_NETHER_BRICK, new BlockDirectDrops(Material.RED_NETHER_BRICK, ToolType.PICKAXE));
         reg(Material.BONE_BLOCK, new BlockDirectDrops(Material.BONE_BLOCK, ToolType.PICKAXE));
+        reg(Material.COMMAND, new BlockCommandBlock());
+        reg(Material.COMMAND_REPEATING, new BlockCommandBlock(CommandBlockType.AUTO));
+        reg(Material.COMMAND_CHAIN, new BlockCommandBlock(CommandBlockType.SEQUENCE));
 
         reg(Material.FLINT_AND_STEEL, new ItemFlintAndSteel());
         reg(Material.SIGN, new ItemSign());

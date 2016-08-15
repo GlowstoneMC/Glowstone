@@ -232,8 +232,8 @@ public final class ItemIds {
         block(207, "beetroots");
         block(208, "grass_path");
         block(209, "end_gateway");
-        block(210, "repeating_command_block");
-        block(211, "chain_command_block");
+        both(210, "repeating_command_block");
+        both(211, "chain_command_block");
         block(212, "frosted_ice");
         both(213, "magma");
         both(214, "nether_wart_block");

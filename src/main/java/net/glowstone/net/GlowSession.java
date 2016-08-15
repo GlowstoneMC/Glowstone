@@ -18,6 +18,7 @@ import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.io.PlayerDataService.PlayerReader;
 import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.SetCompressionMessage;
+import net.glowstone.net.message.play.entity.EntityStatusMessage;
 import net.glowstone.net.message.play.game.PingMessage;
 import net.glowstone.net.message.play.game.UserListItemMessage;
 import net.glowstone.net.message.play.game.UserListItemMessage.Action;
@@ -27,9 +28,9 @@ import net.glowstone.net.pipeline.CodecsHandler;
 import net.glowstone.net.pipeline.CompressionHandler;
 import net.glowstone.net.pipeline.EncryptionHandler;
 import net.glowstone.net.pipeline.NoopHandler;
-import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.LoginProtocol;
+import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.ProtocolType;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -372,6 +373,7 @@ public final class GlowSession extends BasicSession {
             }
         }
         send(new UserListItemMessage(Action.ADD_PLAYER, entries));
+        send(new EntityStatusMessage(0, EntityStatusMessage.OP_LEVEL_4)); // Make that configurable
     }
 
     @Override
