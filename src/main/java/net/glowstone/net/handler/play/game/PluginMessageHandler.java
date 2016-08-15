@@ -174,11 +174,10 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
                     state.setTrackOutput(trackOutput);
                     block.setType(CommandBlockType.valueOf(modeName).getMaterial());
                     state.setAuto(automatic);
-                    //cmd.setConditional(conditional);
+                    cmd.setConditional(conditional);
                     state.update();
                     state.setData(cmd);
                     block.setData(cmd.getData());
-                    GlowServer.logger.info(cmd.getDirection() + " / " + cmd.getData() + " / " + block.getData());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
