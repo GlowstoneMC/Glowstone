@@ -1,5 +1,8 @@
 package net.glowstone;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import lombok.ToString;
 import net.glowstone.ChunkManager.ChunkLock;
 import net.glowstone.GlowChunk.ChunkSection;
@@ -21,6 +24,7 @@ import net.glowstone.net.message.play.entity.EntityStatusMessage;
 import net.glowstone.net.message.play.player.ServerDifficultyMessage;
 import net.glowstone.util.BlockStateDelegate;
 import net.glowstone.util.GameRuleManager;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -978,9 +982,20 @@ public final class GlowWorld implements World {
     ////////////////////////////////////////////////////////////////////////////
     // get block, chunk, id, highest methods with coords
 
+    private LoadingCache<ImmutableTriple<Integer, Integer, Integer>, GlowBlock> blockCache = CacheBuilder.newBuilder().weakValues().build(
+            new CacheLoader<ImmutableTriple<Integer, Integer, Integer>, GlowBlock>() {
+        @Override
+        public GlowBlock load(ImmutableTriple<Integer, Integer, Integer> triple) throws Exception {
+            int x = triple.getLeft();
+            int y = triple.getMiddle();
+            int z = triple.getRight();
+            return new GlowBlock(GlowWorld.this, x, y & 0xff, z);
+        }
+    });
+
     @Override
     public GlowBlock getBlockAt(int x, int y, int z) {
-        return new GlowBlock(getChunkAt(x >> 4, z >> 4), x, y & 0xff, z);
+        return blockCache.getUnchecked(ImmutableTriple.of(x, y, z));
     }
 
     @Override

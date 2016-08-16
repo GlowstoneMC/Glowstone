@@ -111,7 +111,7 @@ public final class GlowChunk implements Chunk {
 
     @Override
     public GlowBlock getBlock(int x, int y, int z) {
-        return new GlowBlock(this, this.x << 4 | x & 0xf, y & 0xff, this.z << 4 | z & 0xf);
+        return world.getBlockAt(this.x << 4 | x & 0xf, y & 0xff, this.z << 4 | z & 0xf);
     }
 
     @Override
