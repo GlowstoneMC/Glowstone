@@ -178,6 +178,9 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
                     state.update();
                     state.setData(cmd);
                     block.setData(cmd.getData());
+                    if (!command.replace(" ", "").equals("")) {
+                        session.getPlayer().sendMessage("Command set to '" + command + "'.");
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
