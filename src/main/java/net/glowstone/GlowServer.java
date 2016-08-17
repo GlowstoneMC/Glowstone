@@ -652,8 +652,8 @@ public final class GlowServer implements Server {
         pluginManager.clearPlugins();
 
         // Kick all players (this saves their data too)
-        for (Player player : new ArrayList<>(getOnlinePlayers())) {
-            player.kickPlayer(getShutdownMessage());
+        for (GlowPlayer player : new ArrayList<>(getRawOnlinePlayers())) {
+            player.kickPlayer(getShutdownMessage(), false);
         }
 
         // Stop the network servers - starts the shutdown process

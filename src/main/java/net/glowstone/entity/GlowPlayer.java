@@ -477,7 +477,23 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     public void remove() {
         knownChunks.clear();
         chunkLock.clear();
-        saveData(true);
+        saveData();
+        getInventory().removeViewer(this);
+        getInventory().getCraftingInventory().removeViewer(this);
+        permissions.clearPermissions();
+        getServer().setPlayerOnline(this, false);
+
+        if (scoreboard != null) {
+            scoreboard.unsubscribe(this);
+            scoreboard = null;
+        }
+        super.remove();
+    }
+
+    public void remove(boolean async) {
+        knownChunks.clear();
+        chunkLock.clear();
+        saveData(async);
         getInventory().removeViewer(this);
         getInventory().getCraftingInventory().removeViewer(this);
         permissions.clearPermissions();
@@ -1743,6 +1759,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void kickPlayer(String message) {
         remove();
+        session.disconnect(message == null ? "" : message);
+    }
+
+    public void kickPlayer(String message, boolean async) {
+        remove(async);
         session.disconnect(message == null ? "" : message);
     }
 
