@@ -8,6 +8,8 @@ import net.glowstone.inventory.GlowChestInventory;
 import net.glowstone.net.message.play.game.BlockActionMessage;
 import org.bukkit.Sound;
 
+import java.util.Random;
+
 /**
  * Tile entity for Chests.
  */
@@ -29,7 +31,7 @@ public class TEChest extends TEContainer {
         viewers++;
         if (viewers == 1) {
             updateInRange();
-            block.getWorld().playSound(block.getLocation(), Sound.BLOCK_CHEST_OPEN, 5f, 1f);
+            block.getWorld().playSound(block.getLocation(), Sound.BLOCK_CHEST_OPEN, 0.5f, new Random().nextFloat() * 0.1F + 0.9F);
         }
     }
 
@@ -37,7 +39,7 @@ public class TEChest extends TEContainer {
         viewers--;
         if (viewers == 0) {
             updateInRange();
-            block.getWorld().playSound(block.getLocation(), Sound.BLOCK_CHEST_CLOSE, 5f, 1f);
+            block.getWorld().playSound(block.getLocation(), Sound.BLOCK_CHEST_CLOSE, 0.5f, new Random().nextFloat() * 0.1F + 0.9F);
         }
     }
 
