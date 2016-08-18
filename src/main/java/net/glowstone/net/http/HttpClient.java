@@ -2,20 +2,25 @@ package net.glowstone.net.http;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
-import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.channel.epoll.EpollDatagramChannel;
+import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.resolver.dns.DnsAddressResolverGroup;
+import io.netty.resolver.dns.DnsServerAddresses;
 import lombok.AllArgsConstructor;
 
 import javax.net.ssl.SSLException;
-import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.URI;
-import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
 public class HttpClient {
+
+    private static DnsAddressResolverGroup resolverGroup = new DnsAddressResolverGroup(EpollDatagramChannel.class, DnsServerAddresses.defaultAddresses());
 
     public static void connect(String url, EventLoop eventLoop, HttpCallback callback) {
 
@@ -29,7 +34,7 @@ public class HttpClient {
         if ("https".equalsIgnoreCase(scheme)) {
             if (port == -1) port = 443;
             try {
-                sslCtx = SslContext.newClientContext(InsecureTrustManagerFactory.INSTANCE);
+                sslCtx = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
             } catch (SSLException e) {
                 callback.error(e);
                 return;
@@ -40,31 +45,21 @@ public class HttpClient {
             throw new IllegalArgumentException("Only http(s) is supported!");
         }
 
-        InetAddress address;
-        try {
-            address = InetAddress.getByName(host);
-        } catch (UnknownHostException e) {
-            callback.error(e);
-            return;
-        }
-
         new Bootstrap()
                 .group(eventLoop)
-                .channel(NioSocketChannel.class) // TODO epoll
+                .resolver(resolverGroup)
+                .channel(EpollSocketChannel.class)
                 .handler(new HttpChannelInitializer(sslCtx, callback))
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
-                .connect(address, port)
-                .addListener(new ChannelFutureListener() {
-                    @Override
-                    public void operationComplete(ChannelFuture future) throws Exception {
-                        if (future.isSuccess()) {
-                            String path = uri.getRawPath() + (uri.getRawQuery() == null ? "" : "?" + uri.getRawQuery());
-                            HttpRequest request = new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, path);
-                            request.headers().set(HttpHeaderNames.HOST, host);
-                            future.channel().writeAndFlush(request);
-                        } else {
-                            callback.error(future.cause());
-                        }
+                .connect(InetSocketAddress.createUnresolved(host, port))
+                .addListener((ChannelFutureListener) future -> {
+                    if (future.isSuccess()) {
+                        String path = uri.getRawPath() + (uri.getRawQuery() == null ? "" : "?" + uri.getRawQuery());
+                        HttpRequest request = new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, path);
+                        request.headers().set(HttpHeaderNames.HOST, host);
+                        future.channel().writeAndFlush(request);
+                    } else {
+                        callback.error(future.cause());
                     }
                 });
     }

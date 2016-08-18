@@ -4,9 +4,9 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import net.glowstone.GlowServer;
 
 import java.net.SocketAddress;
@@ -19,8 +19,8 @@ import java.net.SocketAddress;
 public class RconServer {
 
     private final GlowServer server;
-    private final EventLoopGroup bossGroup = new NioEventLoopGroup();
-    private final EventLoopGroup workerGroup = new NioEventLoopGroup();
+    private final EventLoopGroup bossGroup = new EpollEventLoopGroup();
+    private final EventLoopGroup workerGroup = new EpollEventLoopGroup();
     private ServerBootstrap bootstrap = new ServerBootstrap();
 
     public RconServer(GlowServer server, String password) {
@@ -28,7 +28,7 @@ public class RconServer {
 
         bootstrap
                 .group(bossGroup, workerGroup)
-                .channel(NioServerSocketChannel.class)
+                .channel(EpollServerSocketChannel.class)
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     public void initChannel(SocketChannel ch) throws Exception {

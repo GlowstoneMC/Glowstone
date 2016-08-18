@@ -101,6 +101,11 @@
             <artifactId>kotlin-reflect</artifactId>
             <version>1.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-transport-native-epoll</artifactId>
+            <version>4.1.0.CR7</version>
+        </dependency>
         <!-- Automatically downloaded by Glowstone's library manager
         <dependency>
             <groupId>org.xerial</groupId>
@@ -186,24 +191,6 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <relocations>
-                               <relocation>
-                                   <pattern>org.objectweb.asm</pattern>
-                                   <shadedPattern>net.glowstone.libs.org.objectweb.asm</shadedPattern>
-                               </relocation>
-                               <relocation>
-                                    <pattern>com.flowpowered</pattern>
-                                    <shadedPattern>net.glowstone.libs.com.flowpowered</shadedPattern>
-                                </relocation>
-                               <relocation>
-                                    <pattern>jline</pattern>
-                                    <shadedPattern>net.glowstone.libs.jline</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>io.netty</pattern>
-                                    <shadedPattern>net.glowstone.libs.io.netty</shadedPattern>
-                                </relocation>
-                            </relocations>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>net.glowstone.GlowServer</mainClass>
