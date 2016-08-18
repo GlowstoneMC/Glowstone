@@ -2,8 +2,11 @@ package net.glowstone.net.http;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
+import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollDatagramChannel;
 import io.netty.channel.epoll.EpollSocketChannel;
+import io.netty.channel.socket.nio.NioDatagramChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
@@ -20,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 public class HttpClient {
 
-    private static DnsAddressResolverGroup resolverGroup = new DnsAddressResolverGroup(EpollDatagramChannel.class, DnsServerAddresses.defaultAddresses());
+    private static DnsAddressResolverGroup resolverGroup = new DnsAddressResolverGroup(Epoll.isAvailable() ? EpollDatagramChannel.class : NioDatagramChannel.class, DnsServerAddresses.defaultAddresses());
 
     public static void connect(String url, EventLoop eventLoop, HttpCallback callback) {
 
@@ -48,7 +51,7 @@ public class HttpClient {
         new Bootstrap()
                 .group(eventLoop)
                 .resolver(resolverGroup)
-                .channel(EpollSocketChannel.class)
+                .channel(Epoll.isAvailable() ? EpollSocketChannel.class : NioSocketChannel.class)
                 .handler(new HttpChannelInitializer(sslCtx, callback))
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
                 .connect(InetSocketAddress.createUnresolved(host, port))
