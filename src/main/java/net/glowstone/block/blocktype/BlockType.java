@@ -313,15 +313,13 @@ public class BlockType extends ItemType {
 
         // check whether the block clicked against should absorb the placement
         BlockType againstType = ItemTable.instance().getBlock(against.getTypeId());
-        if (againstType != null) {
-            if (againstType.canAbsorb(against, face, holding)) {
-                target = against;
-            } else if (!target.isEmpty()) {
-                // air can always be overridden
-                BlockType targetType = ItemTable.instance().getBlock(target.getTypeId());
-                if (targetType != null && !targetType.canOverride(target, face, holding)) {
-                    return;
-                }
+        if (againstType.canAbsorb(against, face, holding)) {
+            target = against;
+        } else if (!target.isEmpty()) {
+            // air can always be overridden
+            BlockType targetType = ItemTable.instance().getBlock(target.getTypeId());
+            if (targetType != null && !targetType.canOverride(target, face, holding)) {
+                return;
             }
         }
 
@@ -425,6 +423,36 @@ public class BlockType extends ItemType {
     }
 
     public void requestPulse(GlowBlockState state) {
-        // do nothing
+            // do nothing
+    }
+
+    /**
+     * Request pulsing to the block
+     *
+     * @param block the block to pulse
+     */
+    public void requestPulse(GlowBlock block) {
+        if (getPulseTickSpeed() != null) {
+            block.getWorld().requestPulse(block, getPulseTickSpeed(), isPulseOnce());
+        }
+    }
+
+    /**
+     * The rate at which the block should be pulsed.
+     *
+     * @return null if the block should not pulse, or a number of ticks between pulses.
+     */
+    public Integer getPulseTickSpeed() {
+        // Override if needs pulse
+        return null;
+    }
+
+    /**
+     * Whether the block should only be pulsed once.
+     *
+     * @return true if the block should be pulsed once, false otherwise.
+     */
+    public boolean isPulseOnce() {
+        return false;
     }
 }
