@@ -78,7 +78,7 @@ The final jar will be placed in `target/` named `glowstone++-1.10.2-SNAPSHOT.jar
 
 ##Running
 
-Running Glowstone++ is simple because its dependencies are shaded into the output
+Running Glowstone is simple because its dependencies are shaded into the output
 jar at compile time. Simply execute `java -jar glowstone++-1.10.2-SNAPSHOT.jar` along with any
 extra JVM options desired. A variety of command-line options are also available -
 run `java -jar glowstone++.jar --help` for more information.

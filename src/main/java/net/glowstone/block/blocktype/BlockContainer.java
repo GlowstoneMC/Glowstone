@@ -49,7 +49,7 @@ public class BlockContainer extends BlockType {
         return drops;
     }
 
-    private Collection<ItemStack> getContentDrops(GlowBlock block) {
+    public Collection<ItemStack> getContentDrops(GlowBlock block) {
         LinkedList<ItemStack> drops = new LinkedList<>();
         for (ItemStack i : ((TEContainer) block.getTileEntity()).getInventory().getContents()) {
             if (i != null) {

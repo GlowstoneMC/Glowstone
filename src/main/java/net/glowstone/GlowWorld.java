@@ -980,7 +980,7 @@ public final class GlowWorld implements World {
 
     @Override
     public GlowBlock getBlockAt(int x, int y, int z) {
-        return new GlowBlock(getChunkAt(x >> 4, z >> 4), x, y & 0xff, z);
+        return new GlowBlock(getChunkAt(x >> 4, z >> 4), x, y, z);
     }
 
     @Override

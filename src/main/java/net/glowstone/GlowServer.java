@@ -652,8 +652,8 @@ public final class GlowServer implements Server {
         pluginManager.clearPlugins();
 
         // Kick all players (this saves their data too)
-        for (Player player : new ArrayList<>(getOnlinePlayers())) {
-            player.kickPlayer(getShutdownMessage());
+        for (GlowPlayer player : new ArrayList<>(getRawOnlinePlayers())) {
+            player.kickPlayer(getShutdownMessage(), false);
         }
 
         // Stop the network servers - starts the shutdown process
@@ -721,7 +721,6 @@ public final class GlowServer implements Server {
         commandMap.register("glowstone", new ColorCommand());
         commandMap.register("glowstone", new TellrawCommand());
         commandMap.register("glowstone", new TitleCommand());
-        commandMap.register("glowstone", new StopsoundCommand());
         commandMap.register("glowstone", new TeleportCommand());
         commandMap.register("glowstone", new SummonCommand());
 

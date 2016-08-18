@@ -88,6 +88,15 @@ public class ItemType {
     }
 
     /**
+     * The type of block to place when the item is used.
+     *
+     * @return the type of block to place
+     */
+    public BlockType getPlaceAs() {
+        return placeAs;
+    }
+
+    /**
      * Get the maximum stack size of the item.
      *
      * @return The maximum stack size.

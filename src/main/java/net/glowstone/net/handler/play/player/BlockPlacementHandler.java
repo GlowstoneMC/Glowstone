@@ -144,8 +144,9 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
             if (clicked == null) {
                 type.rightClickAir(player, holding);
             } else {
-                if (holding.getType() != Material.AIR)
+                if (holding.getType() != Material.AIR) {
                     type.rightClickBlock(player, clicked, face, holding, clickedLoc);
+                }
             }
         }
 

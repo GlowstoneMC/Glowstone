@@ -30,7 +30,7 @@ public class GlowFurnaceInventory extends GlowInventory implements FurnaceInvent
     public void setItem(int index, ItemStack item) {
         super.setItem(index, item);
         GlowBlock block = (GlowBlock) getHolder().getBlock();
-        block.getWorld().requestPulse(block, 1, true);
+        block.getWorld().requestPulse(block, 1, false);
     }
 
     @Override

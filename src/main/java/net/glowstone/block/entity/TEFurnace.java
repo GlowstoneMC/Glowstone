@@ -66,7 +66,7 @@ public class TEFurnace extends TEContainer {
         this.cookTime = cookTime;
     }
 
-    // TODO: Change Block on burning
+    // TODO: Change block on burning
     public void burn() {
         GlowFurnaceInventory inv = (GlowFurnaceInventory) getInventory();
         if (burnTime > 0) burnTime--;
@@ -138,14 +138,14 @@ public class TEFurnace extends TEContainer {
                 cookTime = 0;
             }
         }
-        inv.getViewersSet().stream().forEach(human -> {
+        inv.getViewersSet().forEach(human -> {
             human.setWindowProperty(Property.BURN_TIME, burnTime);
             human.setWindowProperty(Property.TICKS_FOR_CURRENT_FUEL, burnTimeFuel);
             human.setWindowProperty(Property.COOK_TIME, cookTime);
             human.setWindowProperty(Property.TICKS_FOR_CURRENT_SMELTING, 200);
         });
-        if (!(!isBurnable && burnTime == 0 && cookTime == 0)) {
-            getState().getBlock().getWorld().requestPulse(getState().getBlock(), 1, true);
+        if (!isBurnable && burnTime == 0 && cookTime == 0) {
+            getState().getBlock().getWorld().cancelPulse(getState().getBlock());
         }
     }
 

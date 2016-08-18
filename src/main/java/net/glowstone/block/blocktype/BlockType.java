@@ -12,6 +12,7 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.SoundInfo;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.block.BlockCanBuildEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -302,6 +303,15 @@ public class BlockType extends ItemType {
             return;
         }
 
+        // TODO: check bounding box
+        if (getMaterial().isSolid()) {
+            for (Entity entity : against.getChunk().getEntities()) {
+                if (entity.getLocation().getBlockX() == target.getX() && entity.getLocation().getBlockY() == target.getY() && entity.getLocation().getBlockZ() == target.getZ()) {
+                    return;
+                }
+            }
+        }
+
         // check whether the block clicked against should absorb the placement
         BlockType againstType = ItemTable.instance().getBlock(against.getTypeId());
         if (againstType.canAbsorb(against, face, holding)) {
@@ -311,6 +321,15 @@ public class BlockType extends ItemType {
             BlockType targetType = ItemTable.instance().getBlock(target.getTypeId());
             if (targetType != null && !targetType.canOverride(target, face, holding)) {
                 return;
+        if (againstType != null) {
+            if (againstType.canAbsorb(against, face, holding)) {
+                target = against;
+            } else if (!target.isEmpty()) {
+                // air can always be overridden
+                BlockType targetType = ItemTable.instance().getBlock(target.getTypeId());
+                if (targetType != null && !targetType.canOverride(target, face, holding)) {
+                    return;
+                }
             }
         }
 
@@ -324,7 +343,12 @@ public class BlockType extends ItemType {
 
         // grab states and update block
         GlowBlockState oldState = target.getState(), newState = target.getState();
-        placeBlock(player, newState, face, holding, clickedLoc);
+        ItemType itemType = ItemTable.instance().getItem(holding.getType());
+        if (itemType.getPlaceAs() == null) {
+            placeBlock(player, newState, face, holding, clickedLoc);
+        } else {
+            placeBlock(player, newState, face, new ItemStack(itemType.getPlaceAs().getMaterial(), holding.getAmount(), holding.getDurability()), clickedLoc);
+        }
         newState.update(true);
 
         // call blockPlace event

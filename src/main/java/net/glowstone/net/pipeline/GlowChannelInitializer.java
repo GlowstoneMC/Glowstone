@@ -5,6 +5,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import net.glowstone.net.GlowNetworkServer;
+import net.glowstone.net.handler.legacyping.LegacyPingHandler;
 import net.glowstone.net.protocol.ProtocolType;
 
 /**
@@ -37,6 +38,7 @@ public final class GlowChannelInitializer extends ChannelInitializer<SocketChann
         FramingHandler framing = new FramingHandler();
 
         c.pipeline()
+                .addLast("legacy_ping", new LegacyPingHandler(connectionManager))
                 .addLast("encryption", NoopHandler.INSTANCE)
                 .addLast("framing", framing)
                 .addLast("compression", NoopHandler.INSTANCE)
