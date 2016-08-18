@@ -309,7 +309,7 @@ public class BlockType extends ItemType {
         } else if (!target.isEmpty()) {
             // air can always be overridden
             BlockType targetType = ItemTable.instance().getBlock(target.getTypeId());
-            if (!targetType.canOverride(target, face, holding)) {
+            if (targetType != null && !targetType.canOverride(target, face, holding)) {
                 return;
             }
         }
@@ -403,7 +403,33 @@ public class BlockType extends ItemType {
         // do nothing
     }
 
-    public void requestPulse(GlowBlockState state) {
-        // do nothing
+    /**
+     * Request pulsing to the block
+     *
+     * @param block the block to pulse
+     */
+    public void requestPulse(GlowBlock block) {
+        if (getPulseTickSpeed() != null) {
+            block.getWorld().requestPulse(block, getPulseTickSpeed(), isPulseOnce());
+        }
+    }
+
+    /**
+     * The rate at which the block should be pulsed.
+     *
+     * @return null if the block should not pulse, or a number of ticks between pulses.
+     */
+    public Integer getPulseTickSpeed() {
+        // Override if needs pulse
+        return null;
+    }
+
+    /**
+     * Whether the block should only be pulsed once.
+     *
+     * @return true if the block should be pulsed once, false otherwise.
+     */
+    public boolean isPulseOnce() {
+        return true;
     }
 }

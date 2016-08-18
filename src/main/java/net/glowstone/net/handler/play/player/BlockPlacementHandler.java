@@ -2,6 +2,7 @@ package net.glowstone.net.handler.play.player;
 
 import com.flowpowered.network.MessageHandler;
 import net.glowstone.EventFactory;
+import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
@@ -126,7 +127,11 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         boolean useInteractedBlock = event.useInteractedBlock() != Result.DENY;
         if (useInteractedBlock && clicked != null && (!player.isSneaking() || holding == null)) {
             BlockType blockType = ItemTable.instance().getBlock(clicked.getType());
-            useInteractedBlock = blockType.blockInteract(player, clicked, face, clickedLoc);
+            if (blockType != null) {
+                useInteractedBlock = blockType.blockInteract(player, clicked, face, clickedLoc);
+            } else {
+                GlowServer.logger.info("Unknown clicked block, " + clicked.getType());
+            }
         } else {
             useInteractedBlock = false;
         }

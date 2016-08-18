@@ -60,7 +60,7 @@ public class BlockHopper extends BlockContainer {
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         setFacingDirection(state, face.getOppositeFace());
-        requestPulse(state);
+        requestPulse(state.getBlock());
     }
 
     @Override
@@ -170,8 +170,13 @@ public class BlockHopper extends BlockContainer {
     }
 
     @Override
-    public void requestPulse(GlowBlockState state) {
-        state.getBlock().getWorld().requestPulse(state.getBlock(), 8, false);
+    public boolean isPulseOnce() {
+        return false;
+    }
+
+    @Override
+    public Integer getPulseTickSpeed() {
+        return 8;
     }
 
     @Override
