@@ -19,9 +19,22 @@ public class SoundUtil {
         world.getRawPlayers().stream().filter(player -> player.getLocation().distanceSquared(location) <= radiusSquared).filter(player -> !Arrays.asList(exclude).contains(player)).forEach(player -> player.playSound(location, sound, volume, pitch));
     }
 
-    public static void playSoundPitchRange(Location location, Sound sound, float volume, float pitchBase, float pitchRange, GlowPlayer... exclude) {
-        float pitch = pitchBase + pitchRange * rand.nextFloat();
+    public static void playSoundPitchRange(Location location, Sound sound, float volume, float pitchBase, float pitchRange, boolean allowNegative, GlowPlayer... exclude) {
+        float pitch = pitchBase;
+        if (allowNegative) {
+            pitch += randomReal(pitchRange);
+        } else {
+            pitch += rand.nextFloat() * pitchRange;
+        }
         playSoundAtLocationExcept(location, sound, volume, pitch, exclude);
+    }
+
+    public static void playSoundPitchRange(Location location, Sound sound, float volume, float pitchBase, float pitchRange, GlowPlayer... exclude) {
+        playSoundPitchRange(location, sound, volume, pitchBase, pitchRange, true, exclude);
+    }
+
+    public static float randomReal(float range) {
+        return (rand.nextFloat() - rand.nextFloat()) * range;
     }
 
 }

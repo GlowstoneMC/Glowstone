@@ -3,6 +3,7 @@ package net.glowstone.entity.passive;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Wolf;
@@ -73,5 +74,15 @@ public class GlowWolf extends GlowTameable implements Wolf {
     public void setHealth(double health) {
         metadata.set(MetadataIndex.WOLF_HEALTH, (float) health);
         super.setHealth(health);
+    }
+
+    @Override
+    protected Sound getHurtSound() {
+        return Sound.ENTITY_WOLF_HURT;
+    }
+
+    @Override
+    protected Sound getDeathSound() {
+        return Sound.ENTITY_WOLF_DEATH;
     }
 }

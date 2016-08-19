@@ -2,6 +2,7 @@ package net.glowstone.entity.monster;
 
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Ghast;
 
@@ -27,5 +28,15 @@ public class GlowGhast extends GlowMonster implements Ghast {
 
     public void setAttacking(boolean attacking) {
         metadata.set(MetadataIndex.GHAST_ATTACKING, attacking);
+    }
+
+    @Override
+    protected Sound getDeathSound() {
+        return Sound.ENTITY_GHAST_DEATH;
+    }
+
+    @Override
+    protected Sound getHurtSound() {
+        return Sound.ENTITY_GHAST_HURT;
     }
 }

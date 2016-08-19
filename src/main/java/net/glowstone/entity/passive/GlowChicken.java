@@ -52,4 +52,14 @@ public class GlowChicken extends GlowAnimal implements Chicken {
             generateEggLayDelay();
         }
     }
+
+    @Override
+    protected Sound getHurtSound() {
+        return Sound.ENTITY_CHICKEN_HURT;
+    }
+
+    @Override
+    protected Sound getDeathSound() {
+        return Sound.ENTITY_CHICKEN_DEATH;
+    }
 }

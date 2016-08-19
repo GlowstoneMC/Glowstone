@@ -13,6 +13,7 @@ import net.glowstone.inventory.EquipmentMonitor;
 import net.glowstone.net.message.play.entity.EntityEffectMessage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityRemoveEffectMessage;
+import net.glowstone.util.SoundUtil;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -114,7 +115,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     /**
      * Creates a mob within the specified world.
      *
-     * @param location The location.
+     * @param location  The location.
      * @param maxHealth The max health of this mob.
      */
     protected GlowLivingEntity(Location location, double maxHealth) {
@@ -330,6 +331,24 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     /**
+     * The volume of the sounds this entity makes
+     *
+     * @return the volume of the sounds
+     */
+    protected float getSoundVolume() {
+        return 1.0F;
+    }
+
+    /**
+     * The pitch of the sounds this entity makes
+     *
+     * @return the pitch of the sounds
+     */
+    protected float getSoundPitch() {
+        return SoundUtil.randomReal(0.2F) + 1F;
+    }
+
+    /**
      * Get whether this entity should take damage from the specified source.
      * Usually used to check environmental sources such as drowning.
      *
@@ -457,7 +476,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             active = false;
             Sound deathSound = getDeathSound();
             if (deathSound != null) {
-                world.playSound(location, deathSound, 1.0f, 1.0f);
+                world.playSound(location, deathSound, getSoundVolume(), getSoundPitch());
             }
             playEffect(EntityEffect.DEATH);
             if (this instanceof GlowPlayer) {
@@ -536,7 +555,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         if (health > 0) {
             Sound hurtSound = getHurtSound();
             if (hurtSound != null) {
-                world.playSound(location, hurtSound, 1.0f, 1.0f);
+                world.playSound(location, hurtSound, getSoundVolume(), getSoundPitch());
             }
         }
     }

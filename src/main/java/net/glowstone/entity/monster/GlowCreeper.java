@@ -3,6 +3,7 @@ package net.glowstone.entity.monster;
 import com.flowpowered.network.Message;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.EntityType;
 
@@ -56,5 +57,15 @@ public class GlowCreeper extends GlowMonster implements Creeper {
 
     public void setIgnited(boolean ignited) {
         this.ignited = ignited;
+    }
+
+    @Override
+    protected Sound getDeathSound() {
+        return Sound.ENTITY_CREEPER_DEATH;
+    }
+
+    @Override
+    protected Sound getHurtSound() {
+        return Sound.ENTITY_CREEPER_HURT;
     }
 }

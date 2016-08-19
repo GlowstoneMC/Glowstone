@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableBiMap;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Rabbit;
 
@@ -38,5 +39,15 @@ public class GlowRabbit extends GlowAnimal implements Rabbit {
         checkNotNull(type, "Cannot set a null rabbit type!");
         metadata.set(MetadataIndex.RABBIT_TYPE, rabbitTypeIntegerMap.get(getRabbitType()).byteValue());
         rabbitType = type;
+    }
+
+    @Override
+    protected Sound getHurtSound() {
+        return Sound.ENTITY_RABBIT_HURT;
+    }
+
+    @Override
+    protected Sound getDeathSound() {
+        return Sound.ENTITY_RABBIT_DEATH;
     }
 }
