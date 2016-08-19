@@ -2,7 +2,10 @@ package net.glowstone.scoreboard;
 
 import com.flowpowered.network.Message;
 import com.google.common.collect.ImmutableSet;
+import net.glowstone.GlowOfflinePlayer;
+import net.glowstone.GlowServer;
 import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.NameTagVisibility;
@@ -23,15 +26,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class GlowTeam implements Team {
 
     private final String name;
-    private final HashSet<OfflinePlayer> players = new HashSet<>();
+    private final HashSet<String> players = new HashSet<>();
     private GlowScoreboard scoreboard;
     // properties
     private String displayName;
     private String prefix = "";
     private String suffix = "";
-    private NameTagVisibility nameTagVisibility = NameTagVisibility.ALWAYS;
-    private NameTagVisibility deathMessageVisibility = NameTagVisibility.ALWAYS;
-    private NameTagVisibility collisionRule = NameTagVisibility.ALWAYS;
+    private Team.OptionStatus nameTagVisibility = Team.OptionStatus.ALWAYS;
+    private Team.OptionStatus deathMessageVisibility = Team.OptionStatus.ALWAYS;
+    private Team.OptionStatus collisionRule = Team.OptionStatus.ALWAYS;
     private ChatColor color = ChatColor.RESET;
     private boolean friendlyFire;
     private boolean seeInvisible = true;
@@ -60,7 +63,7 @@ public final class GlowTeam implements Team {
 
     Message getCreateMessage() {
         List<String> playerNames = new ArrayList<>(players.size());
-        playerNames.addAll(players.stream().map(OfflinePlayer::getName).collect(Collectors.toList()));
+        playerNames.addAll(players);
         return ScoreboardTeamMessage.create(name, displayName, prefix, suffix, friendlyFire, seeInvisible, nameTagVisibility, collisionRule, color, playerNames);
     }
 
@@ -134,70 +137,104 @@ public final class GlowTeam implements Team {
         update();
     }
 
+    @Deprecated
     public NameTagVisibility getNameTagVisibility() throws IllegalStateException {
         checkValid();
-        return nameTagVisibility;
+        return NameTagVisibility.valueOf(nameTagVisibility.name());
     }
 
+    @Deprecated
     public void setNameTagVisibility(NameTagVisibility visibility) throws IllegalStateException {
         checkValid();
-        nameTagVisibility = visibility;
+        nameTagVisibility = OptionStatus.valueOf(visibility.name());
         update();
     }
 
+    @Deprecated
     public NameTagVisibility getDeathMessageVisibility() throws IllegalStateException {
-        return deathMessageVisibility;
+        checkValid();
+        return NameTagVisibility.valueOf(deathMessageVisibility.name());
     }
 
+    @Deprecated
     public void setDeathMessageVisibility(NameTagVisibility deathMessageVisibility) throws IllegalStateException, IllegalArgumentException {
         checkNotNull(deathMessageVisibility, "NameTagVisibility cannot be null!");
         checkValid();
-        this.deathMessageVisibility = deathMessageVisibility;
-    }
-
-    @Override
-    public boolean hasEntry(String s) throws IllegalArgumentException, IllegalStateException {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        this.deathMessageVisibility = OptionStatus.valueOf(deathMessageVisibility.name());
     }
 
     @Override
     public OptionStatus getOption(Option option) throws IllegalStateException {
-        return null;
+        checkValid();
+        if (option == Option.DEATH_MESSAGE_VISIBILITY) {
+            return deathMessageVisibility;
+        } else if (option == Option.NAME_TAG_VISIBILITY) {
+            return nameTagVisibility;
+        } else if (option == Option.COLLISION_RULE) {
+            return collisionRule;
+        } else {
+            return null;
+        }
     }
 
     @Override
     public void setOption(Option option, OptionStatus status) throws IllegalStateException {
-
+        checkValid();
+        if (option == Option.DEATH_MESSAGE_VISIBILITY) {
+            deathMessageVisibility = status;
+        } else if (option == Option.NAME_TAG_VISIBILITY) {
+            nameTagVisibility = status;
+        } else if (option == Option.COLLISION_RULE) {
+            collisionRule = status;
+        }
+        update();
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // Player management
-
-    public Set<OfflinePlayer> getPlayers() throws IllegalStateException {
+    @Override
+    public Set<String> getEntries() throws IllegalStateException {
         checkValid();
         return ImmutableSet.copyOf(players);
     }
 
     @Override
-    public Set<String> getEntries() throws IllegalStateException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    @Deprecated
+    public Set<OfflinePlayer> getPlayers() throws IllegalStateException {
+        Set<OfflinePlayer> playerObjectSet = new HashSet<>(players.size());
+        playerObjectSet.addAll(players.stream().map(s -> new GlowOfflinePlayer((GlowServer) Bukkit.getServer(), s)).collect(Collectors.toList()));
+        return playerObjectSet;
     }
 
+
+    @Override
+    public boolean hasEntry(String s) throws IllegalArgumentException, IllegalStateException {
+        checkValid();
+        return players.contains(s);
+    }
+
+    @Override
+    @Deprecated
+    public boolean hasPlayer(OfflinePlayer player) throws IllegalArgumentException, IllegalStateException {
+        return players.contains(player.getName());
+    }
+
+    @Override
     public int getSize() throws IllegalStateException {
         checkValid();
         return players.size();
     }
 
-    public void addPlayer(OfflinePlayer player) throws IllegalStateException, IllegalArgumentException {
-        checkNotNull(player, "Player cannot be null");
+    @Override
+    public void addEntry(String s) throws IllegalStateException, IllegalArgumentException {
         checkValid();
-        players.add(player);
-        scoreboard.setPlayerTeam(player, this);
+        players.add(s);
     }
 
     @Override
-    public void addEntry(String s) throws IllegalStateException, IllegalArgumentException {
-        //To change body of implemented methods use File | Settings | File Templates.
+    @Deprecated
+    public void addPlayer(OfflinePlayer player) throws IllegalStateException, IllegalArgumentException {
+        players.add(player.getName());
     }
 
     public ChatColor getColor() {
@@ -211,37 +248,19 @@ public final class GlowTeam implements Team {
         this.color = color;
     }
 
-    public boolean removePlayer(OfflinePlayer player) throws IllegalStateException, IllegalArgumentException {
-        checkNotNull(player, "Player cannot be null");
+    @Override
+    public boolean removeEntry(String s) throws IllegalStateException, IllegalArgumentException {
         checkValid();
-        if (players.remove(player)) {
-            scoreboard.setPlayerTeam(player, null);
-            return true;
-        }
-        return false;
+        return players.remove(s);
     }
 
     @Override
-    public boolean removeEntry(String s) throws IllegalStateException, IllegalArgumentException {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public boolean hasPlayer(OfflinePlayer player) throws IllegalArgumentException, IllegalStateException {
-        checkNotNull(player, "Player cannot be null");
-        checkValid();
-        return players.contains(player);
+    @Deprecated
+    public boolean removePlayer(OfflinePlayer player) throws IllegalStateException, IllegalArgumentException {
+        return players.remove(player.getName());
     }
 
     public String getPlayerDisplayName(String name) {
         return getPrefix() + name + getSuffix();
-    }
-
-    /**
-     * Remove a player without propagating the change to the scoreboard.
-     *
-     * @param player The player to remove.
-     */
-    void rawRemovePlayer(OfflinePlayer player) {
-        players.remove(player);
     }
 }

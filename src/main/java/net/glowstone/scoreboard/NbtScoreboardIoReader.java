@@ -9,7 +9,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Team;
 
@@ -94,9 +93,9 @@ public class NbtScoreboardIoReader {
     private static void registerTeam(CompoundTag data, GlowScoreboard scoreboard) {
         boolean allowFriendlyFire = data.getByte("AllowFriendlyFire") == 1;
         boolean seeFriendlyInvisibles = data.getByte("SeeFriendlyInvisibles") == 1;
-        NameTagVisibility nameTagVisibility = NameTagVisibility.valueOf(data.getString("NameTagVisibility")); // TODO: Migrate to Team.Options
-        NameTagVisibility deathMessageVisibility = NameTagVisibility.valueOf(data.getString("DeathMessageVisibility"));
-        Team.OptionStatus collisionRule = Team.OptionStatus.valueOf(data.getString("CollisionRule")); // TODO: Use this.
+        Team.OptionStatus nameTagVisibility = Team.OptionStatus.valueOf(data.getString("Team.OptionStatus"));
+        Team.OptionStatus deathMessageVisibility = Team.OptionStatus.valueOf(data.getString("DeathMessageVisibility"));
+        Team.OptionStatus collisionRule = Team.OptionStatus.valueOf(data.getString("CollisionRule"));
         String displayName = data.getString("DisplayName");
         String name = data.getString("Name");
         String prefix = data.getString("Prefix");
@@ -113,8 +112,9 @@ public class NbtScoreboardIoReader {
         team.setSuffix(suffix);
         team.setAllowFriendlyFire(allowFriendlyFire);
         team.setCanSeeFriendlyInvisibles(seeFriendlyInvisibles);
-        team.setNameTagVisibility(nameTagVisibility);
-        team.setDeathMessageVisibility(deathMessageVisibility);
+        team.setOption(Team.Option.NAME_TAG_VISIBILITY, nameTagVisibility);
+        team.setOption(Team.Option.DEATH_MESSAGE_VISIBILITY, deathMessageVisibility);
+        team.setOption(Team.Option.COLLISION_RULE, collisionRule);
         team.setColor(teamColor);
 
         players.forEach(team::addPlayer);
@@ -147,7 +147,7 @@ public class NbtScoreboardIoReader {
                 scoreboard.getObjective(belowName).setDisplaySlot(DisplaySlot.BELOW_NAME);
             }
 
-
+            /* TODO: anything need to be done with these?
             String slot3 = getOrNull("slot_3", data);
             String slot4 = getOrNull("slot_4", data);
             String slot5 = getOrNull("slot_5", data);
@@ -164,6 +164,7 @@ public class NbtScoreboardIoReader {
             String slot16 = getOrNull("slot_16", data);
             String slot17 = getOrNull("slot_17", data);
             String slot18 = getOrNull("slot_18", data);
+            */
         }
     }
 }

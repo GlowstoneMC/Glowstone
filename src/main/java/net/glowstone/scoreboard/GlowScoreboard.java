@@ -34,7 +34,7 @@ public final class GlowScoreboard implements Scoreboard {
 
     // Teams
     private final HashMap<String, GlowTeam> teams = new HashMap<>();
-    private final HashMap<OfflinePlayer, GlowTeam> playerTeamMap = new HashMap<>();
+    private final HashMap<String, GlowTeam> entryTeams = new HashMap<>();
 
     // Players who are watching this scoreboard
     private final HashSet<GlowPlayer> players = new HashSet<>();
@@ -157,7 +157,7 @@ public final class GlowScoreboard implements Scoreboard {
      * @param team The team to unregister.
      */
     void removeTeam(GlowTeam team) {
-        team.getPlayers().forEach(playerTeamMap::remove);
+        team.getEntries().forEach(entryTeams::remove);
         teams.remove(team.getName());
         broadcast(ScoreboardTeamMessage.remove(team.getName()));
     }
@@ -199,9 +199,9 @@ public final class GlowScoreboard implements Scoreboard {
      * @param team   The team, or null for no team.
      */
     void setPlayerTeam(OfflinePlayer player, GlowTeam team) {
-        GlowTeam previous = playerTeamMap.put(player, team);
+        GlowTeam previous = entryTeams.put(player.getName(), team);
         if (previous != null && previous.hasPlayer(player)) {
-            previous.rawRemovePlayer(player);
+            previous.removeEntry(player.getName());
             broadcast(ScoreboardTeamMessage.removePlayers(previous.getName(), Arrays.asList(player.getName())));
         }
         if (team != null) {
@@ -263,12 +263,13 @@ public final class GlowScoreboard implements Scoreboard {
 
     public Team getPlayerTeam(OfflinePlayer player) throws IllegalArgumentException {
         checkNotNull(player, "Player cannot be null");
-        return playerTeamMap.get(player);
+        return entryTeams.get(player.getName());
     }
 
     @Override
-    public Team getEntryTeam(String teamName) throws IllegalArgumentException {
-        return getTeam(teamName); // TODO: is this the same as getTeam?
+    public Team getEntryTeam(String entry) throws IllegalArgumentException {
+        checkNotNull(entry, "entry cannot be null");
+        return entryTeams.get(entry);
     }
 
     public Team getTeam(String teamName) throws IllegalArgumentException {

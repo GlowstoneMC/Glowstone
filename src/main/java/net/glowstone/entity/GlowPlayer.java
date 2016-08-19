@@ -1021,7 +1021,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         if (displayName != null) {
             return displayName;
         }
-        GlowTeam team = (GlowTeam) getScoreboard().getPlayerTeam(this);
+        GlowTeam team = (GlowTeam) getScoreboard().getEntryTeam(getName());
         if (team != null) {
             return team.getPlayerDisplayName(getName());
         }

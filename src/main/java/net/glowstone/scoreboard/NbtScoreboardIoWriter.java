@@ -3,7 +3,6 @@ package net.glowstone.scoreboard;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTOutputStream;
 import net.glowstone.util.nbt.TagType;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
@@ -77,17 +76,16 @@ public class NbtScoreboardIoWriter {
             CompoundTag teamNbt = new CompoundTag();
             teamNbt.putByte("AllowFriendlyFire", team.allowFriendlyFire() ? 1 : 0);
             teamNbt.putByte("SeeFriendlyInvisibles", team.canSeeFriendlyInvisibles() ? 1 : 0);
-            teamNbt.putString("NameTagVisibility", team.getOption(Team.Option.NAME_TAG_VISIBILITY).name().toLowerCase()); //TODO Change values to "hideForOtherTeams" and "hideForOwnTeam"
-            teamNbt.putString("DeathMessageVisibility", team.getOption(Team.Option.DEATH_MESSAGE_VISIBILITY).name().toLowerCase()); //TODO Change values to "hideForOtherTeams" and "hideForOwnTeam"
-            teamNbt.putString("CollisionRule", team.getOption(Team.Option.COLLISION_RULE).name().toLowerCase()); //TODO Change values to "pushOwnTeam" and "pushOtherTeams"
+            teamNbt.putString("NameTagVisibility", team.getOption(Team.Option.NAME_TAG_VISIBILITY).name().toLowerCase());
+            teamNbt.putString("DeathMessageVisibility", team.getOption(Team.Option.DEATH_MESSAGE_VISIBILITY).name().toLowerCase());
+            teamNbt.putString("CollisionRule", team.getOption(Team.Option.COLLISION_RULE).name().toLowerCase());
             teamNbt.putString("DisplayName", team.getDisplayName());
             teamNbt.putString("Name", team.getName());
             teamNbt.putString("Prefix", team.getPrefix());
             teamNbt.putString("Suffix", team.getSuffix());
             teamNbt.putString("TeamColor", team.getColor().name().toLowerCase());
 
-
-            List<String> players = team.getPlayers().stream().map(OfflinePlayer::getName).collect(Collectors.toList());
+            List<String> players = team.getEntries().stream().collect(Collectors.toList());
 
             teamNbt.putList("Players", TagType.STRING, players);
             teams.add(teamNbt);
