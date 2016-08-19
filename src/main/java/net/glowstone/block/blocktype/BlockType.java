@@ -10,6 +10,7 @@ import net.glowstone.block.entity.TileEntity;
 import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.SoundInfo;
+import net.glowstone.util.SoundUtil;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
@@ -352,8 +353,8 @@ public class BlockType extends ItemType {
             return;
         }
 
-        // play a sound effect
-        getPlaceSound().play(target.getLocation());
+        // play the placement sound, except for the current player (handled by the client)
+        SoundUtil.playSoundAtLocationExcept(target.getLocation(), getPlaceSound().getSound(), (getPlaceSound().getVolume() + 1F) / 2F, getPlaceSound().getPitch() * 0.8F, player);
 
         // do any after-place actions
         afterPlace(player, target, holding, oldState);

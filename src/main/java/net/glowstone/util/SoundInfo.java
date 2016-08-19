@@ -52,4 +52,16 @@ public class SoundInfo {
     public void playTo(Player player, Location location) {
         player.playSound(location, sound, volume, pitch);
     }
+
+    public Sound getSound() {
+        return sound;
+    }
+
+    public float getVolume() {
+        return volume;
+    }
+
+    public float getPitch() {
+        return pitch;
+    }
 }
