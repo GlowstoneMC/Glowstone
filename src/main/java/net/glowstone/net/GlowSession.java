@@ -4,6 +4,7 @@ import com.flowpowered.network.AsyncableMessage;
 import com.flowpowered.network.ConnectionManager;
 import com.flowpowered.network.Message;
 import com.flowpowered.network.MessageHandler;
+import com.flowpowered.network.exception.ChannelClosedException;
 import com.flowpowered.network.session.BasicSession;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -16,6 +17,7 @@ import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.io.PlayerDataService.PlayerReader;
+import net.glowstone.net.event.PacketSendEvent;
 import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.SetCompressionMessage;
 import net.glowstone.net.message.play.game.PingMessage;
@@ -527,6 +529,24 @@ public final class GlowSession extends BasicSession {
 
     ////////////////////////////////////////////////////////////////////////////
     // Handler overrides
+
+
+    @Override
+    public void send(Message message) throws ChannelClosedException {
+        PacketSendEvent event = new PacketSendEvent(message);
+        event = EventFactory.callEvent(event);
+        if (!event.isCancelled()) {
+            super.send(message);
+            sendAll();
+        }
+    }
+
+    @Override
+    public void sendAll(Message... messages) throws ChannelClosedException {
+        for (Message message : messages) {
+            this.send(message);
+        }
+    }
 
     @Override
     public void onDisconnect() {
