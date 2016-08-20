@@ -161,7 +161,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
                 if (type == null) {
                     continue;
                 }
-                type.requestPulse(block);
+                block.getWorld().requestPulse(block);
             }
         }
 

@@ -429,17 +429,6 @@ public class BlockType extends ItemType {
     }
 
     /**
-     * Request pulsing to the block
-     *
-     * @param block the block to pulse
-     */
-    public void requestPulse(GlowBlock block) {
-        if (getPulseTickSpeed() != null) {
-            block.getWorld().requestPulse(block, getPulseTickSpeed(), isPulseOnce());
-        }
-    }
-
-    /**
      * The rate at which the block should be pulsed.
      *
      * @return null if the block should not pulse, or a number of ticks between pulses.
