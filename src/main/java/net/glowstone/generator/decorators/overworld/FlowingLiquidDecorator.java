@@ -1,8 +1,9 @@
 package net.glowstone.generator.decorators.overworld;
 
-import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.generator.decorators.BlockDecorator;
+import net.glowstone.scheduler.PulseTask;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -51,7 +52,7 @@ public class FlowingLiquidDecorator extends BlockDecorator {
                     BlockState state = block.getState();
                     state.setType(type);
                     state.update(true);
-                    ((GlowWorld) block.getWorld()).requestPulse((GlowBlock) block, 1, true);
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(null, new PulseTask((GlowBlock) block), 1);
                 }
             }
         }

@@ -433,7 +433,7 @@ public class BlockType extends ItemType {
      *
      * @return null if the block should not pulse, or a number of ticks between pulses.
      */
-    public Integer getPulseTickSpeed() {
+    public Integer getPulseTickSpeed(GlowBlock block) {
         // Override if needs pulse
         return null;
     }
@@ -443,7 +443,7 @@ public class BlockType extends ItemType {
      *
      * @return true if the block should be pulsed once, false otherwise.
      */
-    public boolean isPulseOnce() {
-        return false;
+    public boolean isPulseOnce(GlowBlock block) {
+        return true;
     }
 }
