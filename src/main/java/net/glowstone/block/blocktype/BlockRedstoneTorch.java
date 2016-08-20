@@ -55,7 +55,7 @@ public class BlockRedstoneTorch extends BlockNeedsAttached {
     @Override
     public void updatePhysics(GlowBlock me) {
         super.updatePhysics(me);
-        me.getWorld().requestPulse(me, 2, false);
+        me.getWorld().requestPulse(me);
     }
 
     @Override
@@ -101,5 +101,15 @@ public class BlockRedstoneTorch extends BlockNeedsAttached {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean isPulseOnce(GlowBlock block) {
+        return false;
+    }
+
+    @Override
+    public Integer getPulseTickSpeed(GlowBlock block) {
+        return 2;
     }
 }

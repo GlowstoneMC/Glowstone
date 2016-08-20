@@ -46,7 +46,7 @@ public class BlockFire extends BlockNeedsAttached {
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         state.setRawData((byte) 0);
-        state.getBlock().getWorld().requestPulse(state.getBlock(), TICK_RATE);
+        state.getBlock().getWorld().requestPulse(state.getBlock());
     }
 
     @Override
@@ -168,7 +168,7 @@ public class BlockFire extends BlockNeedsAttached {
                                                 state.setType(Material.FIRE);
                                                 state.setRawData((byte) (increasedAge > MAX_FIRE_AGE ? MAX_FIRE_AGE : increasedAge));
                                                 state.update(true);
-                                                world.requestPulse(propagationBlock, TICK_RATE);
+                                                world.requestPulse(propagationBlock);
                                             }
                                         }
                                     }
@@ -243,5 +243,15 @@ public class BlockFire extends BlockNeedsAttached {
 
     private int increaseFireAge(int age) {
         return age + random.nextInt(5) / 4;
+    }
+
+    @Override
+    public Integer getPulseTickSpeed(GlowBlock block) {
+        return TICK_RATE;
+    }
+
+    @Override
+    public boolean isPulseOnce(GlowBlock block) {
+        return false;
     }
 }

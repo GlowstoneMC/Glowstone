@@ -5,6 +5,8 @@ import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
+import net.glowstone.scheduler.PulseTask;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
@@ -233,7 +235,7 @@ public class BlockRedstone extends BlockNeedsAttached {
         if (power != me.getData()) {
             me.setData(power);
             extraUpdate(me);
-            me.getWorld().requestPulse(me, 1, true);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(null, new PulseTask(me), 1);
         }
     }
 
@@ -263,5 +265,4 @@ public class BlockRedstone extends BlockNeedsAttached {
             p.sendBlockChange(bcmsg);
         }
     }
-
 }

@@ -170,12 +170,12 @@ public class BlockHopper extends BlockContainer {
     }
 
     @Override
-    public boolean isPulseOnce() {
+    public boolean isPulseOnce(GlowBlock block) {
         return false;
     }
 
     @Override
-    public Integer getPulseTickSpeed() {
+    public Integer getPulseTickSpeed(GlowBlock block) {
         return 8;
     }
 

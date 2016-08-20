@@ -260,7 +260,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
         levelTags.putCompoundList("TileEntities", tileEntities);
 
         List<CompoundTag> tileTicks = new ArrayList<>();
-        for (Location location : chunk.getWorld().getTickMap().keySet()) {
+        for (Location location : chunk.getWorld().getTickMap()) {
             if (location.getChunk().getX() == chunk.getX() && location.getChunk().getZ() == chunk.getZ()) {
                 int tileX = location.getBlockX();
                 int tileY = location.getBlockY();
