@@ -18,7 +18,10 @@ import net.glowstone.block.entity.TESign;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.block.itemtype.ItemFood;
 import net.glowstone.block.itemtype.ItemType;
-import net.glowstone.constants.*;
+import net.glowstone.constants.GlowAchievement;
+import net.glowstone.constants.GlowBlockEntity;
+import net.glowstone.constants.GlowEffect;
+import net.glowstone.constants.GlowParticle;
 import net.glowstone.entity.meta.ClientSettings;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataIndex.StatusFlags;
@@ -799,6 +802,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             knownEntities.clear();
         }
         active = true;
+        deathTicks = 0;
         spawnAt(event.getRespawnLocation());
 
         // just in case any items are left in their inventory after they respawn

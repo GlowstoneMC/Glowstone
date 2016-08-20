@@ -95,7 +95,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * The LivingEntity's number of ticks since death
      */
     @Getter
-    private int deathTicks;
+    protected int deathTicks;
     /**
      * Whether the entity can automatically glide when falling with an Elytra equipped.
      * This value is ignored for players.
