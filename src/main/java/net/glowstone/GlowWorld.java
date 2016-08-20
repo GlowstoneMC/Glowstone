@@ -1790,6 +1790,15 @@ public final class GlowWorld implements World {
         return tickMap;
     }
 
+    public void requestPulse(GlowBlock block) {
+        ItemTable itemTable = ItemTable.instance();
+        BlockType type = itemTable.getBlock(block.getType());
+        if (type == null || type.getPulseTickSpeed() == null) {
+            return;
+        }
+        requestPulse(block, type.getPulseTickSpeed(), type.isPulseOnce());
+    }
+
     /**
      * Calling this method will request that the block is ticked on the next iteration
      * that applies to the specified tick rate.

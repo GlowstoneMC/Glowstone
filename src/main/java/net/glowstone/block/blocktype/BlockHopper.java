@@ -60,7 +60,7 @@ public class BlockHopper extends BlockContainer {
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         setFacingDirection(state, face.getOppositeFace());
-        requestPulse(state.getBlock());
+        state.getBlock().getWorld().requestPulse(state.getBlock());
     }
 
     @Override
