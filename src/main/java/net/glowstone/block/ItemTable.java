@@ -65,6 +65,7 @@ public final class ItemTable {
         reg(Material.DOUBLE_STEP, new BlockDoubleSlab());
         reg(Material.DOUBLE_STONE_SLAB2, new BlockDoubleSlab());
         reg(Material.WOOD_DOUBLE_STEP, new BlockDoubleSlab(), Sound.BLOCK_WOOD_BREAK);
+        reg(Material.PURPUR_DOUBLE_SLAB, new BlockDoubleSlab());
         reg(Material.SOIL, new BlockSoil(), Sound.BLOCK_GRAVEL_BREAK);
         reg(Material.GLASS, new BlockDropless());
         reg(Material.THIN_GLASS, new BlockDropless());
@@ -160,6 +161,7 @@ public final class ItemTable {
         reg(Material.STEP, new BlockSlab());
         reg(Material.WOOD_STEP, new BlockSlab(), Sound.BLOCK_WOOD_BREAK);
         reg(Material.STONE_SLAB2, new BlockSlab());
+        reg(Material.PURPUR_SLAB, new BlockSlab());
         reg(Material.HAY_BLOCK, new BlockHay());
         reg(Material.QUARTZ_BLOCK, new BlockQuartz());
         reg(Material.LOG, new BlockLog(), Sound.BLOCK_WOOD_BREAK);

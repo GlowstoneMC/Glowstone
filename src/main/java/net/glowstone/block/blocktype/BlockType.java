@@ -163,7 +163,6 @@ public class BlockType extends ItemType {
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
         state.setType(holding.getType());
         state.setData(holding.getData());
-
     }
 
     /**
@@ -418,5 +417,10 @@ public class BlockType extends ItemType {
      */
     public void onEntityStep(GlowBlock block, LivingEntity entity) {
         // do nothing
+    }
+
+    @Override
+    public BlockType getPlaceAs() {
+        return this;
     }
 }
