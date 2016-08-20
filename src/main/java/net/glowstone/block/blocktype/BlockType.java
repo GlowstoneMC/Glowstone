@@ -306,7 +306,7 @@ public class BlockType extends ItemType {
         // TODO: check bounding box
         if (getMaterial().isSolid()) {
             for (Entity entity : against.getChunk().getEntities()) {
-                if (entity.getLocation().getBlockX() == target.getX() && entity.getLocation().getBlockY() == target.getY() && entity.getLocation().getBlockZ() == target.getZ()) {
+                if (entity instanceof LivingEntity && entity.getLocation().getBlockX() == target.getX() && entity.getLocation().getBlockY() == target.getY() && entity.getLocation().getBlockZ() == target.getZ()) {
                     return;
                 }
             }
