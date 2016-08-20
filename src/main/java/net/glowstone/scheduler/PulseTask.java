@@ -9,7 +9,9 @@ public class PulseTask extends GlowTask {
         super(null, () -> {
             ItemTable table = ItemTable.instance();
             BlockType type = table.getBlock(block.getType());
-            type.receivePulse(block);
+            if (type != null) {
+                type.receivePulse(block);
+            }
         }, true, 1, 1);
     }
 }
