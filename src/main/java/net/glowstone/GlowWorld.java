@@ -1784,7 +1784,7 @@ public final class GlowWorld implements World {
             Integer speed = type.getPulseTickSpeed(block);
             boolean once = type.isPulseOnce(block);
             if (speed == null) {
-                return;
+                continue;
             }
             if (worldAge % speed == 0) {
                 type.receivePulse(block);
