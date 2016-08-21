@@ -1,6 +1,5 @@
 package net.glowstone;
 
-import io.netty.util.internal.ConcurrentSet;
 import lombok.ToString;
 import net.glowstone.ChunkManager.ChunkLock;
 import net.glowstone.GlowChunk.ChunkSection;
@@ -22,6 +21,7 @@ import net.glowstone.net.message.play.entity.EntityStatusMessage;
 import net.glowstone.net.message.play.player.ServerDifficultyMessage;
 import net.glowstone.util.BlockStateDelegate;
 import net.glowstone.util.GameRuleManager;
+import net.glowstone.util.collection.ConcurrentSet;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
