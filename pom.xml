@@ -1,14 +1,17 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <name>Glowstone</name>
-    <groupId>net.glowstoneplusplus</groupId>
-    <artifactId>glowstoneplusplus</artifactId>
+    <groupId>net.glowstone</groupId>
+    <artifactId>glowstone</artifactId>
     <version>1.10.2-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <inceptionYear>2015</inceptionYear>
+    <inceptionYear>2011</inceptionYear>
     <url>https://www.glowstone.net</url>
-    <description>The enhanced Glowstone fork with an emphasis on performance, control and compatibility.</description>
+    <description>A fast, customizable and compatible open source Minecraft server.</description>
 
     <scm>
         <connection>scm:git:git://github.com/GlowstoneMC/Glowstone.git</connection>
@@ -135,7 +138,7 @@
     </dependencies>
 
     <build>
-        <finalName>glowstone++-${project.version}</finalName>
+        <finalName>glowstone-${project.version}</finalName>
 
         <directory>${project.basedir}/target</directory>
 
