@@ -1,6 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
@@ -190,7 +189,7 @@ public abstract class BlockLiquid extends BlockType {
         }
         // flow to the target
         ((GlowBlock) fromToEvent.getToBlock()).setType(fromToEvent.getBlock().getType(), strength, true);
-        ((GlowWorld) fromToEvent.getToBlock().getWorld()).requestPulse(((GlowBlock) fromToEvent.getToBlock()));
+        //((GlowWorld) fromToEvent.getToBlock().getWorld()).requestPulse(((GlowBlock) fromToEvent.getToBlock()));
     }
 
     private void mix(GlowBlock target, BlockFace direction, Material flowingMaterial, Material targetMaterial) {
@@ -257,7 +256,7 @@ public abstract class BlockLiquid extends BlockType {
 
     @Override
     public boolean isPulseOnce(GlowBlock block) {
-        return true;
+        return false;
     }
 
     @Override

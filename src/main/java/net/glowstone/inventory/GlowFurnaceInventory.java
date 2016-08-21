@@ -31,7 +31,7 @@ public class GlowFurnaceInventory extends GlowInventory implements FurnaceInvent
     public void setItem(int index, ItemStack item) {
         super.setItem(index, item);
         GlowBlock block = (GlowBlock) getHolder().getBlock();
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(null, new PulseTask(block), 1, 1);
+        new PulseTask(block, true, 1, false).startPulseTask();
     }
 
     @Override
