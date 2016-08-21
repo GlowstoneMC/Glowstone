@@ -17,7 +17,7 @@ import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.io.PlayerDataService.PlayerReader;
-import net.glowstone.net.event.PacketSendEvent;
+import net.glowstone.net.api.PacketSendEvent;
 import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.SetCompressionMessage;
 import net.glowstone.net.message.play.game.PingMessage;
@@ -29,9 +29,9 @@ import net.glowstone.net.pipeline.CodecsHandler;
 import net.glowstone.net.pipeline.CompressionHandler;
 import net.glowstone.net.pipeline.EncryptionHandler;
 import net.glowstone.net.pipeline.NoopHandler;
-import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.LoginProtocol;
+import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.ProtocolType;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -533,7 +533,7 @@ public final class GlowSession extends BasicSession {
 
     @Override
     public void send(Message message) throws ChannelClosedException {
-        PacketSendEvent event = new PacketSendEvent(message);
+        PacketSendEvent event = new PacketSendEvent(message, this, player);
         event = EventFactory.callEvent(event);
         if (!event.isCancelled()) {
             super.send(message);
