@@ -1,21 +1,15 @@
 package net.glowstone.scoreboard;
 
-import net.glowstone.GlowOfflinePlayer;
-import net.glowstone.GlowServer;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.TagType;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Team;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class NbtScoreboardIoReader {
 
@@ -93,18 +87,38 @@ public class NbtScoreboardIoReader {
     private static void registerTeam(CompoundTag data, GlowScoreboard scoreboard) {
         boolean allowFriendlyFire = data.getByte("AllowFriendlyFire") == 1;
         boolean seeFriendlyInvisibles = data.getByte("SeeFriendlyInvisibles") == 1;
-        Team.OptionStatus nameTagVisibility = Team.OptionStatus.valueOf(data.getString("Team.OptionStatus"));
-        Team.OptionStatus deathMessageVisibility = Team.OptionStatus.valueOf(data.getString("DeathMessageVisibility"));
-        Team.OptionStatus collisionRule = Team.OptionStatus.valueOf(data.getString("CollisionRule"));
+        Team.OptionStatus nameTagVisibility = Team.OptionStatus.valueOf(data.getString("NameTagVisibility"));
+        Team.OptionStatus deathMessageVisibility = Team.OptionStatus.ALWAYS;
+        switch (data.getString("DeathMessageVisibility")) {
+            case "never":
+                deathMessageVisibility = Team.OptionStatus.NEVER;
+                break;
+            case "hideForOtherTeams":
+                deathMessageVisibility = Team.OptionStatus.FOR_OTHER_TEAMS;
+                break;
+            case "hideForOwnTeam":
+                deathMessageVisibility = Team.OptionStatus.FOR_OWN_TEAM;
+                break;
+        }
+        Team.OptionStatus collisionRule = Team.OptionStatus.ALWAYS;
+        switch (data.getString("CollisionRule")) {
+            case "never":
+                collisionRule = Team.OptionStatus.NEVER;
+                break;
+            case "pushOtherTeams":
+                collisionRule = Team.OptionStatus.FOR_OTHER_TEAMS;
+                break;
+            case "pushOwnTeam":
+                collisionRule = Team.OptionStatus.FOR_OWN_TEAM;
+                break;
+        }
         String displayName = data.getString("DisplayName");
         String name = data.getString("Name");
         String prefix = data.getString("Prefix");
         String suffix = data.getString("Suffix");
         ChatColor teamColor = ChatColor.valueOf(data.getString("TeamColor").toUpperCase());
 
-        List<OfflinePlayer> players = new ArrayList<>();
-        List<String> playerNames = data.getList("Players", TagType.STRING);
-        players.addAll(playerNames.stream().map(player -> new GlowOfflinePlayer((GlowServer) Bukkit.getServer(), player)).collect(Collectors.toList()));
+        List<String> players = data.getList("Players", TagType.STRING);
 
         GlowTeam team = (GlowTeam) scoreboard.registerNewTeam(name);
         team.setDisplayName(displayName);
@@ -117,7 +131,7 @@ public class NbtScoreboardIoReader {
         team.setOption(Team.Option.COLLISION_RULE, collisionRule);
         team.setColor(teamColor);
 
-        players.forEach(team::addPlayer);
+        players.forEach(team::addEntry);
     }
 
     private static String getOrNull(String key, CompoundTag tag) {
@@ -147,23 +161,23 @@ public class NbtScoreboardIoReader {
                 scoreboard.getObjective(belowName).setDisplaySlot(DisplaySlot.BELOW_NAME);
             }
 
-            /* TODO: anything need to be done with these?
-            String slot3 = getOrNull("slot_3", data);
-            String slot4 = getOrNull("slot_4", data);
-            String slot5 = getOrNull("slot_5", data);
-            String slot6 = getOrNull("slot_6", data);
-            String slot7 = getOrNull("slot_7", data);
-            String slot8 = getOrNull("slot_8", data);
-            String slot9 = getOrNull("slot_9", data);
-            String slot10 = getOrNull("slot_10", data);
-            String slot11 = getOrNull("slot_11", data);
-            String slot12 = getOrNull("slot_12", data);
-            String slot13 = getOrNull("slot_13", data);
-            String slot14 = getOrNull("slot_14", data);
-            String slot15 = getOrNull("slot_15", data);
-            String slot16 = getOrNull("slot_16", data);
-            String slot17 = getOrNull("slot_17", data);
-            String slot18 = getOrNull("slot_18", data);
+            /* TODO: anything need to be done with team slots?
+            String teamBlack = getOrNull("slot_3", data);
+            String teamDarkBlue = getOrNull("slot_4", data);
+            String teamDarkGreen = getOrNull("slot_5", data);
+            String teamDarkAqua = getOrNull("slot_6", data);
+            String teamDarkRed = getOrNull("slot_7", data);
+            String teamDarkPurple = getOrNull("slot_8", data);
+            String teamGold = getOrNull("slot_9", data);
+            String teamGray = getOrNull("slot_10", data);
+            String teamDarkGray = getOrNull("slot_11", data);
+            String teamBlue = getOrNull("slot_12", data);
+            String teamGreen = getOrNull("slot_13", data);
+            String teamAqua = getOrNull("slot_14", data);
+            String teamRed = getOrNull("slot_15", data);
+            String teamLightPurple = getOrNull("slot_16", data);
+            String teamYellow = getOrNull("slot_17", data);
+            String teamWhite = getOrNull("slot_18", data);
             */
         }
     }
