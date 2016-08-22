@@ -116,7 +116,10 @@ public class NbtScoreboardIoReader {
         String name = data.getString("Name");
         String prefix = data.getString("Prefix");
         String suffix = data.getString("Suffix");
-        ChatColor teamColor = ChatColor.valueOf(data.getString("TeamColor").toUpperCase());
+        ChatColor teamColor = null;
+        if (data.containsKey("TeamColor")) {
+            teamColor = ChatColor.valueOf(data.getString("TeamColor").toUpperCase());
+        }
 
         List<String> players = data.getList("Players", TagType.STRING);
 
@@ -129,7 +132,9 @@ public class NbtScoreboardIoReader {
         team.setOption(Team.Option.NAME_TAG_VISIBILITY, nameTagVisibility);
         team.setOption(Team.Option.DEATH_MESSAGE_VISIBILITY, deathMessageVisibility);
         team.setOption(Team.Option.COLLISION_RULE, collisionRule);
-        team.setColor(teamColor);
+        if (teamColor != null) {
+            team.setColor(teamColor);
+        }
 
         players.forEach(team::addEntry);
     }
