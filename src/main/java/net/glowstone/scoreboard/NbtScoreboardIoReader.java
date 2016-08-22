@@ -87,7 +87,7 @@ public class NbtScoreboardIoReader {
     private static void registerTeam(CompoundTag data, GlowScoreboard scoreboard) {
         boolean allowFriendlyFire = data.getByte("AllowFriendlyFire") == 1;
         boolean seeFriendlyInvisibles = data.getByte("SeeFriendlyInvisibles") == 1;
-        Team.OptionStatus nameTagVisibility = Team.OptionStatus.valueOf(data.getString("NameTagVisibility"));
+        Team.OptionStatus nameTagVisibility = Team.OptionStatus.valueOf(data.getString("NameTagVisibility").toUpperCase());
         Team.OptionStatus deathMessageVisibility = Team.OptionStatus.ALWAYS;
         switch (data.getString("DeathMessageVisibility")) {
             case "never":

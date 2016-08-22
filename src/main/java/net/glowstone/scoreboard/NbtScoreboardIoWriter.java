@@ -77,8 +77,32 @@ public class NbtScoreboardIoWriter {
             teamNbt.putByte("AllowFriendlyFire", team.allowFriendlyFire() ? 1 : 0);
             teamNbt.putByte("SeeFriendlyInvisibles", team.canSeeFriendlyInvisibles() ? 1 : 0);
             teamNbt.putString("NameTagVisibility", team.getOption(Team.Option.NAME_TAG_VISIBILITY).name().toLowerCase());
-            teamNbt.putString("DeathMessageVisibility", team.getOption(Team.Option.DEATH_MESSAGE_VISIBILITY).name().toLowerCase());
-            teamNbt.putString("CollisionRule", team.getOption(Team.Option.COLLISION_RULE).name().toLowerCase());
+            switch (team.getOption(Team.Option.DEATH_MESSAGE_VISIBILITY)) {
+                case NEVER:
+                    teamNbt.putString("DeathMessageVisibility", "never");
+                    break;
+                case FOR_OTHER_TEAMS:
+                    teamNbt.putString("DeathMessageVisibility", "hideForOtherTeams");
+                    break;
+                case FOR_OWN_TEAM:
+                    teamNbt.putString("DeathMessageVisibility", "hideForOwnTeam");
+                    break;
+                default:
+                    teamNbt.putString("DeathMessageVisibility", "always");
+            }
+            switch (team.getOption(Team.Option.COLLISION_RULE)) {
+                case NEVER:
+                    teamNbt.putString("CollisionRule", "never");
+                    break;
+                case FOR_OTHER_TEAMS:
+                    teamNbt.putString("CollisionRule", "pushOtherTeams");
+                    break;
+                case FOR_OWN_TEAM:
+                    teamNbt.putString("CollisionRule", "pushOwnTeam");
+                    break;
+                default:
+                    teamNbt.putString("CollisionRule", "always");
+            }
             teamNbt.putString("DisplayName", team.getDisplayName());
             teamNbt.putString("Name", team.getName());
             teamNbt.putString("Prefix", team.getPrefix());
