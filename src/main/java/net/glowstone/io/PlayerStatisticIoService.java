@@ -50,8 +50,15 @@ public class PlayerStatisticIoService {
                 JSONObject json = (JSONObject) parser.parse(new FileReader(statsFile));
                 for (Object o : json.keySet()) {
                     String key = (String) o;
-                    int value = ((Long) json.get(o)).intValue();
-                    player.getStatisticMap().getValues().put(key, value);
+                    Long longValue = null;
+                    try {
+                        longValue = ((Long) json.get(o));
+                    } catch (ClassCastException e) {
+                        GlowServer.logger.info("Unknown statistic: (" + key + ", " + json.get(o) + ")");
+                    }
+                    if (longValue != null) {
+                        player.getStatisticMap().getValues().put(key, longValue.intValue());
+                    }
                 }
             } catch (ParseException | IOException e) {
                 e.printStackTrace();

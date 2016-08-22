@@ -87,7 +87,12 @@ public final class PlayerProfile {
     public static PlayerProfile fromNBT(CompoundTag tag) {
         // NBT: {Id: "", Name: "", Properties: {textures: [{Signature: "", Value: {}}]}}
         String uuidStr = tag.getString("Id");
-        String name = tag.getString("Name");
+        String name;
+        if (tag.containsKey("Name")) {
+            name = tag.getString("Name");
+        } else {
+            name = PlayerDataFetcher.getProfile(UUID.fromString(uuidStr)).getName();
+        }
 
         List<PlayerProperty> properties = new ArrayList<>();
         if (tag.containsKey("Properties")) {
