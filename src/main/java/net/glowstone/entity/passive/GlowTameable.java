@@ -28,8 +28,10 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
 
     protected GlowTameable(Location location, EntityType type, double maxHealth, AnimalTamer owner) {
         super(location, type, maxHealth);
-        this.owner = owner;
-        metadata.set(ownerMetadata, owner.getUniqueId());
+        if (owner != null) {
+            this.owner = owner;
+            metadata.set(ownerMetadata, owner.getUniqueId());
+        }
     }
 
     @Override
