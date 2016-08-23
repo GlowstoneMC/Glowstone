@@ -4,7 +4,7 @@ import com.flowpowered.network.Message;
 import com.google.common.collect.ImmutableSet;
 import net.glowstone.GlowOfflinePlayer;
 import net.glowstone.GlowServer;
-import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
+import net.glowstone.net.message.play.scoreboard.ScoreboardTeamPacket;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -64,11 +64,11 @@ public final class GlowTeam implements Team {
     Message getCreateMessage() {
         List<String> playerNames = new ArrayList<>(players.size());
         playerNames.addAll(players);
-        return ScoreboardTeamMessage.create(name, displayName, prefix, suffix, friendlyFire, seeInvisible, nameTagVisibility, collisionRule, color, playerNames);
+        return ScoreboardTeamPacket.create(name, displayName, prefix, suffix, friendlyFire, seeInvisible, nameTagVisibility, collisionRule, color, playerNames);
     }
 
     private void update() {
-        scoreboard.broadcast(ScoreboardTeamMessage.update(name, displayName, prefix, suffix, friendlyFire, seeInvisible, nameTagVisibility, collisionRule, color));
+        scoreboard.broadcast(ScoreboardTeamPacket.update(name, displayName, prefix, suffix, friendlyFire, seeInvisible, nameTagVisibility, collisionRule, color));
     }
 
     ////////////////////////////////////////////////////////////////////////////

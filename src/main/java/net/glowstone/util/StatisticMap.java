@@ -2,7 +2,7 @@ package net.glowstone.util;
 
 import net.glowstone.constants.GlowAchievement;
 import net.glowstone.constants.GlowStatistic;
-import net.glowstone.net.message.play.game.StatisticMessage;
+import net.glowstone.net.message.play.game.StatisticPacket;
 import org.bukkit.Achievement;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
@@ -21,8 +21,8 @@ public final class StatisticMap {
 
     private final Map<String, Integer> values = new HashMap<>();
 
-    public StatisticMessage toMessage() {
-        return new StatisticMessage(values);
+    public StatisticPacket toMessage() {
+        return new StatisticPacket(values);
     }
 
     ////////////////////////////////////////////////////////////////////////////

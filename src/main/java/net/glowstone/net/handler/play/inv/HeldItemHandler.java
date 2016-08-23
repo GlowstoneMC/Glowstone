@@ -4,12 +4,12 @@ import com.flowpowered.network.MessageHandler;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.play.inv.HeldItemMessage;
+import net.glowstone.net.message.play.inv.HeldItemPacket;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 
-public final class HeldItemHandler implements MessageHandler<GlowSession, HeldItemMessage> {
+public final class HeldItemHandler implements MessageHandler<GlowSession, HeldItemPacket> {
     @Override
-    public void handle(GlowSession session, HeldItemMessage message) {
+    public void handle(GlowSession session, HeldItemPacket message) {
         int slot = message.getSlot();
         if (slot < 0 || slot > 8) {
             // sanity check

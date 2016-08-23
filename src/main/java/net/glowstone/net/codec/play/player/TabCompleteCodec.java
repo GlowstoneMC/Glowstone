@@ -4,14 +4,14 @@ import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import net.glowstone.net.GlowBufUtils;
-import net.glowstone.net.message.play.player.TabCompleteMessage;
+import net.glowstone.net.message.play.player.TabCompletePacket;
 import org.bukkit.util.BlockVector;
 
 import java.io.IOException;
 
-public final class TabCompleteCodec implements Codec<TabCompleteMessage> {
+public final class TabCompleteCodec implements Codec<TabCompletePacket> {
     @Override
-    public TabCompleteMessage decode(ByteBuf buf) throws IOException {
+    public TabCompletePacket decode(ByteBuf buf) throws IOException {
         String text = ByteBufUtils.readUTF8(buf);
         boolean assumeCommand = buf.readBoolean();
         boolean hasLocation = buf.readBoolean();
@@ -19,11 +19,11 @@ public final class TabCompleteCodec implements Codec<TabCompleteMessage> {
         if (hasLocation) {
             location = GlowBufUtils.readBlockPosition(buf);
         }
-        return new TabCompleteMessage(text, assumeCommand, location);
+        return new TabCompletePacket(text, assumeCommand, location);
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, TabCompleteMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, TabCompletePacket message) throws IOException {
         ByteBufUtils.writeUTF8(buf, message.getText());
         buf.writeBoolean(message.isAssumeCommand());
         BlockVector location = message.getLocation();

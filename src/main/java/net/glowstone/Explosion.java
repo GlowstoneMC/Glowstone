@@ -5,8 +5,8 @@ import net.glowstone.block.blocktype.BlockTNT;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.net.message.play.game.ExplosionMessage;
-import net.glowstone.net.message.play.game.ExplosionMessage.Record;
+import net.glowstone.net.message.play.game.ExplosionPacket;
+import net.glowstone.net.message.play.game.ExplosionPacket.Record;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -351,7 +351,7 @@ public final class Explosion {
         }
 
         Vector velocity = player.getVelocity();
-        ExplosionMessage message = new ExplosionMessage((float) location.getX(), (float) location.getY(), (float) location.getZ(),
+        ExplosionPacket message = new ExplosionPacket((float) location.getX(), (float) location.getY(), (float) location.getZ(),
                 power,
                 (float) velocity.getX(), (float) velocity.getY(), (float) velocity.getZ(),
                 records);

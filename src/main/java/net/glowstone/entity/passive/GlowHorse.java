@@ -4,7 +4,7 @@ import com.flowpowered.network.Message;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.inventory.GlowHorseInventory;
-import net.glowstone.net.message.play.entity.EntityMetadataMessage;
+import net.glowstone.net.message.play.entity.EntityMetadataPacket;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.AnimalTamer;
@@ -163,7 +163,7 @@ public class GlowHorse extends GlowTameable implements Horse {
         map.set(MetadataIndex.HORSE_FLAGS, getHorseFlags());
         map.set(MetadataIndex.HORSE_STYLE, getHorseStyleData());
         map.set(MetadataIndex.HORSE_ARMOR, getHorseArmorData());
-        messages.add(new EntityMetadataMessage(id, map.getEntryList()));
+        messages.add(new EntityMetadataPacket(id, map.getEntryList()));
         return messages;
     }
 

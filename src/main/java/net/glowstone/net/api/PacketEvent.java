@@ -10,20 +10,20 @@ public abstract class PacketEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
 
-    private final Message packet;
+    private final Message packetObject;
     private final GlowSession session;
     private final GlowPlayer player;
-    private final PacketType packetType;
+    private final GlowPacket packet;
 
-    public PacketEvent(Message packet, GlowSession session, GlowPlayer player, PacketType.Destination destination) {
-        this.packet = packet;
+    public PacketEvent(Message packetObject, GlowSession session, GlowPlayer player, GlowPacket.Destination destination) {
+        this.packetObject = packetObject;
         this.session = session;
         this.player = player;
-        this.packetType = PacketType.getType(packet.getClass(), destination);
+        this.packet = GlowPacket.getPacket(packetObject.getClass(), destination);
     }
 
-    public Message getPacket() {
-        return packet;
+    public Message getPacketObject() {
+        return packetObject;
     }
 
     public HandlerList getHandlers() {
@@ -38,8 +38,12 @@ public abstract class PacketEvent extends Event {
         return player;
     }
 
-    public PacketType getPacketType() {
-        return packetType;
+    public GlowPacket getPacket() {
+        return packet;
+    }
+
+    public PacketDeconstructor deconstruct() {
+        return new PacketDeconstructor(packet, packetObject);
     }
 
     public static HandlerList getHandlerList() {

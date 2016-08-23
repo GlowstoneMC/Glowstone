@@ -3,13 +3,13 @@ package net.glowstone.net.handler.play.player;
 import com.flowpowered.network.MessageHandler;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.play.player.PlayerActionMessage;
+import net.glowstone.net.message.play.player.PlayerActionPacket;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public final class PlayerActionHandler implements MessageHandler<GlowSession, PlayerActionMessage> {
+public final class PlayerActionHandler implements MessageHandler<GlowSession, PlayerActionPacket> {
     @Override
-    public void handle(GlowSession session, PlayerActionMessage message) {
+    public void handle(GlowSession session, PlayerActionPacket message) {
         GlowPlayer player = session.getPlayer();
 
         switch (message.getAction()) {

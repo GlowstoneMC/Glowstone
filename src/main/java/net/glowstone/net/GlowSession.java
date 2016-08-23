@@ -18,13 +18,13 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.io.PlayerDataService.PlayerReader;
 import net.glowstone.net.api.PacketSendEvent;
-import net.glowstone.net.message.KickMessage;
+import net.glowstone.net.message.KickPacket;
 import net.glowstone.net.message.SetCompressionMessage;
-import net.glowstone.net.message.play.game.PingMessage;
-import net.glowstone.net.message.play.game.UserListItemMessage;
-import net.glowstone.net.message.play.game.UserListItemMessage.Action;
-import net.glowstone.net.message.play.game.UserListItemMessage.Entry;
-import net.glowstone.net.message.play.player.BlockPlacementMessage;
+import net.glowstone.net.message.play.game.PingPacket;
+import net.glowstone.net.message.play.game.PlayerListItemPacket;
+import net.glowstone.net.message.play.game.PlayerListItemPacket.Action;
+import net.glowstone.net.message.play.game.PlayerListItemPacket.Entry;
+import net.glowstone.net.message.play.player.BlockPlacePacket;
 import net.glowstone.net.pipeline.CodecsHandler;
 import net.glowstone.net.pipeline.CompressionHandler;
 import net.glowstone.net.pipeline.EncryptionHandler;
@@ -125,7 +125,7 @@ public final class GlowSession extends BasicSession {
     /**
      * Stores the last block placement message sent, see BlockPlacementHandler.
      */
-    private BlockPlacementMessage previousPlacement;
+    private BlockPlacePacket previousPlacement;
 
     /**
      * The number of ticks until previousPlacement must be cleared.
@@ -242,7 +242,7 @@ public final class GlowSession extends BasicSession {
             if (pingMessageId == 0) {
                 pingMessageId++;
             }
-            send(new PingMessage(pingMessageId));
+            send(new PingPacket(pingMessageId));
         } else {
             disconnect("Timed out");
         }
@@ -264,7 +264,7 @@ public final class GlowSession extends BasicSession {
      *
      * @return The message.
      */
-    public BlockPlacementMessage getPreviousPlacement() {
+    public BlockPlacePacket getPreviousPlacement() {
         return previousPlacement;
     }
 
@@ -273,7 +273,7 @@ public final class GlowSession extends BasicSession {
      *
      * @param message The message.
      */
-    public void setPreviousPlacement(BlockPlacementMessage message) {
+    public void setPreviousPlacement(BlockPlacePacket message) {
         previousPlacement = message;
         previousPlacementTicks = 2;
     }
@@ -363,7 +363,7 @@ public final class GlowSession extends BasicSession {
             server.broadcastMessage(message);
         }
 
-        Message addMessage = new UserListItemMessage(Action.ADD_PLAYER, player.getUserListEntry());
+        Message addMessage = new PlayerListItemPacket(Action.ADD_PLAYER, player.getUserListEntry());
         List<Entry> entries = new ArrayList<>();
         for (GlowPlayer other : server.getRawOnlinePlayers()) {
             if (other != player && other.canSee(player)) {
@@ -373,7 +373,7 @@ public final class GlowSession extends BasicSession {
                 entries.add(other.getUserListEntry());
             }
         }
-        send(new UserListItemMessage(Action.ADD_PLAYER, entries));
+        send(new PlayerListItemPacket(Action.ADD_PLAYER, entries));
     }
 
     @Override
@@ -438,7 +438,7 @@ public final class GlowSession extends BasicSession {
         // perform the kick, sending a kick message if possible
         if (isActive() && (getProtocol() instanceof LoginProtocol || getProtocol() instanceof PlayProtocol)) {
             // channel is both currently connected and in a protocol state allowing kicks
-            sendWithFuture(new KickMessage(reason)).addListener(ChannelFutureListener.CLOSE);
+            sendWithFuture(new KickPacket(reason)).addListener(ChannelFutureListener.CLOSE);
         } else {
             getChannel().close();
         }
@@ -474,7 +474,7 @@ public final class GlowSession extends BasicSession {
 
             player.remove();
 
-            Message userListMessage = UserListItemMessage.removeOne(player.getUniqueId());
+            Message userListMessage = PlayerListItemPacket.removeOne(player.getUniqueId());
             for (GlowPlayer player : server.getRawOnlinePlayers()) {
                 if (player.canSee(this.player)) {
                     player.getSession().send(userListMessage);

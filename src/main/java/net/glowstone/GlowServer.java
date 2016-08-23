@@ -25,7 +25,8 @@ import net.glowstone.io.ScoreboardIoService;
 import net.glowstone.map.GlowMapView;
 import net.glowstone.net.GlowNetworkServer;
 import net.glowstone.net.SessionRegistry;
-import net.glowstone.net.message.play.game.ChatMessage;
+import net.glowstone.net.api.GlowPacket;
+import net.glowstone.net.message.play.game.OutboundChatPacket;
 import net.glowstone.net.query.QueryServer;
 import net.glowstone.net.rcon.RconServer;
 import net.glowstone.scheduler.GlowScheduler;
@@ -278,6 +279,7 @@ public final class GlowServer implements Server {
 
         Bukkit.setServer(this);
         loadConfig();
+        GlowPacket.init();
     }
 
     /**
@@ -1385,7 +1387,7 @@ public final class GlowServer implements Server {
     public void broadcast(BaseComponent component) {
         try {
             // todo: uses gson instead json-simple
-            Message packet = new ChatMessage((JSONObject) parser.parse(ComponentSerializer.toString(component)));
+            Message packet = new OutboundChatPacket((JSONObject) parser.parse(ComponentSerializer.toString(component)));
             broadcastPacket(packet);
         } catch (ParseException e) {
             e.printStackTrace(); //should never happen
@@ -1395,7 +1397,7 @@ public final class GlowServer implements Server {
     @Override
     public void broadcast(BaseComponent... components) {
         try {
-            Message packet = new ChatMessage((JSONObject) parser.parse(ComponentSerializer.toString(components)));
+            Message packet = new OutboundChatPacket((JSONObject) parser.parse(ComponentSerializer.toString(components)));
             broadcastPacket(packet);
         } catch (ParseException e) {
             e.printStackTrace(); //should never happen

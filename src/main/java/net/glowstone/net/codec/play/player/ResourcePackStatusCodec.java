@@ -3,19 +3,19 @@ package net.glowstone.net.codec.play.player;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.message.play.player.ResourcePackStatusMessage;
+import net.glowstone.net.message.play.player.ResourcePackStatusPacket;
 
 import java.io.IOException;
 
-public final class ResourcePackStatusCodec implements Codec<ResourcePackStatusMessage> {
+public final class ResourcePackStatusCodec implements Codec<ResourcePackStatusPacket> {
     @Override
-    public ResourcePackStatusMessage decode(ByteBuf buf) throws IOException {
+    public ResourcePackStatusPacket decode(ByteBuf buf) throws IOException {
         int result = ByteBufUtils.readVarInt(buf);
-        return new ResourcePackStatusMessage(result);
+        return new ResourcePackStatusPacket(result);
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, ResourcePackStatusMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, ResourcePackStatusPacket message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getResult());
         return buf;
     }

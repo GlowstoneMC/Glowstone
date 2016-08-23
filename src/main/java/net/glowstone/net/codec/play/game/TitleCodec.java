@@ -3,35 +3,35 @@ package net.glowstone.net.codec.play.game;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.message.play.game.TitleMessage;
-import net.glowstone.net.message.play.game.TitleMessage.Action;
+import net.glowstone.net.message.play.game.TitlePacket;
+import net.glowstone.net.message.play.game.TitlePacket.Action;
 import net.glowstone.util.TextMessage;
 
 import java.io.IOException;
 
-public final class TitleCodec implements Codec<TitleMessage> {
+public final class TitleCodec implements Codec<TitlePacket> {
 
     @Override
-    public TitleMessage decode(ByteBuf buffer) throws IOException {
+    public TitlePacket decode(ByteBuf buffer) throws IOException {
         int actionId = ByteBufUtils.readVarInt(buffer);
         Action action = Action.getAction(actionId);
         switch (action) {
             case TITLE:
             case SUBTITLE:
                 String text = ByteBufUtils.readUTF8(buffer);
-                return new TitleMessage(action, TextMessage.decode(text));
+                return new TitlePacket(action, TextMessage.decode(text));
             case TIMES:
                 int fadeIn = buffer.readInt();
                 int stay = buffer.readInt();
                 int fadeOut = buffer.readInt();
-                return new TitleMessage(action, fadeIn, stay, fadeOut);
+                return new TitlePacket(action, fadeIn, stay, fadeOut);
             default:
-                return new TitleMessage(action);
+                return new TitlePacket(action);
         }
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, TitleMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, TitlePacket message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getAction().ordinal());
         switch (message.getAction()) {
             case TITLE:

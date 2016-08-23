@@ -4,14 +4,14 @@ import com.flowpowered.network.MessageHandler;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.play.game.UpdateSignMessage;
+import net.glowstone.net.message.play.game.UpdateSignPacket;
 import org.bukkit.Location;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 
-public final class UpdateSignHandler implements MessageHandler<GlowSession, UpdateSignMessage> {
+public final class UpdateSignHandler implements MessageHandler<GlowSession, UpdateSignPacket> {
     @Override
-    public void handle(GlowSession session, UpdateSignMessage message) {
+    public void handle(GlowSession session, UpdateSignPacket message) {
         GlowPlayer player = session.getPlayer();
 
         // filter out json messages that aren't plaintext

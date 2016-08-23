@@ -3,19 +3,19 @@ package net.glowstone.net.codec.play.scoreboard;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
-import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage.Action;
+import net.glowstone.net.message.play.scoreboard.ScoreboardTeamPacket;
+import net.glowstone.net.message.play.scoreboard.ScoreboardTeamPacket.Action;
 import org.bukkit.ChatColor;
 
 import java.io.IOException;
 import java.util.List;
 
-public final class ScoreboardTeamCodec implements Codec<ScoreboardTeamMessage> {
-    public ScoreboardTeamMessage decode(ByteBuf buf) throws IOException {
+public final class ScoreboardTeamCodec implements Codec<ScoreboardTeamPacket> {
+    public ScoreboardTeamPacket decode(ByteBuf buf) throws IOException {
         throw new UnsupportedOperationException("Cannot decode ScoreboardTeamMessage");
     }
 
-    public ByteBuf encode(ByteBuf buf, ScoreboardTeamMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, ScoreboardTeamPacket message) throws IOException {
         Action action = message.getAction();
 
         ByteBufUtils.writeUTF8(buf, message.getTeamName());

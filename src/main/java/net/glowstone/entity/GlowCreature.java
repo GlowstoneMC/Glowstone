@@ -1,8 +1,8 @@
 package net.glowstone.entity;
 
 import com.flowpowered.network.Message;
-import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
-import net.glowstone.net.message.play.entity.SpawnMobMessage;
+import net.glowstone.net.message.play.entity.EntityHeadRotationPacket;
+import net.glowstone.net.message.play.entity.SpawnMobPacket;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
@@ -81,10 +81,10 @@ public class GlowCreature extends GlowLivingEntity implements Creature {
         double z = location.getZ();
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
-        result.add(new SpawnMobMessage(id, getUniqueId(), type.getTypeId(), x, y, z, yaw, pitch, pitch, 0, 0, 0, metadata.getEntryList()));
+        result.add(new SpawnMobPacket(id, getUniqueId(), type.getTypeId(), x, y, z, yaw, pitch, pitch, 0, 0, 0, metadata.getEntryList()));
 
         // head facing
-        result.add(new EntityHeadRotationMessage(id, yaw));
+        result.add(new EntityHeadRotationPacket(id, yaw));
 
         // todo: equipment
         //result.add(createEquipmentMessage());

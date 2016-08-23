@@ -5,7 +5,7 @@ import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.state.GlowChest;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.GlowChestInventory;
-import net.glowstone.net.message.play.game.BlockActionMessage;
+import net.glowstone.net.message.play.game.BlockActionPacket;
 import org.bukkit.Sound;
 
 import java.util.Random;
@@ -47,6 +47,6 @@ public class TEChest extends TEContainer {
     public void update(GlowPlayer player) {
         super.update(player);
 
-        player.getSession().send(new BlockActionMessage(block.getX(), block.getY(), block.getZ(), 1, viewers == 0 ? 0 : 1, block.getTypeId()));
+        player.getSession().send(new BlockActionPacket(block.getX(), block.getY(), block.getZ(), 1, viewers == 0 ? 0 : 1, block.getTypeId()));
     }
 }

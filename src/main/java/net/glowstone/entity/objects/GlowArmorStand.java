@@ -8,12 +8,12 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataIndex.ArmorStandFlags;
 import net.glowstone.entity.meta.MetadataIndex.StatusFlags;
-import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
-import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
-import net.glowstone.net.message.play.entity.EntityMetadataMessage;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
-import net.glowstone.net.message.play.player.InteractEntityMessage;
-import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
+import net.glowstone.net.message.play.entity.DestroyEntitiesPacket;
+import net.glowstone.net.message.play.entity.EntityEquipmentPacket;
+import net.glowstone.net.message.play.entity.EntityMetadataPacket;
+import net.glowstone.net.message.play.entity.SpawnObjectPacket;
+import net.glowstone.net.message.play.player.InteractEntityPacket;
+import net.glowstone.net.message.play.player.InteractEntityPacket.Action;
 import net.glowstone.util.Position;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
@@ -161,7 +161,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     }
 
     @Override
-    public boolean entityInteract(GlowPlayer player, InteractEntityMessage msg) {
+    public boolean entityInteract(GlowPlayer player, InteractEntityPacket msg) {
         if (player.getGameMode() == GameMode.SPECTATOR || isMarker) return false;
         if (msg.getAction() == Action.INTERACT_AT.ordinal()) {
             if (player.getItemInHand() == null || player.getItemInHand().getType() == Material.AIR) {
@@ -300,13 +300,13 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
         int pitch = Position.getIntPitch(location);
 
         return Arrays.asList(
-                new SpawnObjectMessage(id, UUID.randomUUID(), 78, x, y, z, pitch, yaw), // TODO: once UUID is documented, actually use the appropriate ID here
-                new EntityMetadataMessage(id, metadata.getEntryList()),
-                new EntityEquipmentMessage(id, EntityEquipmentMessage.HELD_ITEM, getItemInHand()),
-                new EntityEquipmentMessage(id, EntityEquipmentMessage.BOOTS_SLOT, getBoots()),
-                new EntityEquipmentMessage(id, EntityEquipmentMessage.LEGGINGS_SLOT, getLeggings()),
-                new EntityEquipmentMessage(id, EntityEquipmentMessage.CHESTPLATE_SLOT, getChestplate()),
-                new EntityEquipmentMessage(id, EntityEquipmentMessage.HELMET_SLOT, getHelmet())
+                new SpawnObjectPacket(id, UUID.randomUUID(), 78, x, y, z, pitch, yaw), // TODO: once UUID is documented, actually use the appropriate ID here
+                new EntityMetadataPacket(id, metadata.getEntryList()),
+                new EntityEquipmentPacket(id, EntityEquipmentPacket.HELD_ITEM, getItemInHand()),
+                new EntityEquipmentPacket(id, EntityEquipmentPacket.BOOTS_SLOT, getBoots()),
+                new EntityEquipmentPacket(id, EntityEquipmentPacket.LEGGINGS_SLOT, getLeggings()),
+                new EntityEquipmentPacket(id, EntityEquipmentPacket.CHESTPLATE_SLOT, getChestplate()),
+                new EntityEquipmentPacket(id, EntityEquipmentPacket.HELMET_SLOT, getHelmet())
         );
     }
 
@@ -315,11 +315,11 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
         List<Message> messages = super.createUpdateMessage();
         for (int i = 0; i < 5; i++) {
             if (changedEquip[i]) {
-                messages.add(new EntityEquipmentMessage(id, i, equipment[i]));
+                messages.add(new EntityEquipmentPacket(id, i, equipment[i]));
             }
         }
         if (needsKill) {
-            messages.add(new DestroyEntitiesMessage(Arrays.asList(id)));
+            messages.add(new DestroyEntitiesPacket(Arrays.asList(id)));
         }
         return messages;
     }

@@ -4,30 +4,30 @@ import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
-import net.glowstone.net.message.play.game.WorldBorderMessage;
-import net.glowstone.net.message.play.game.WorldBorderMessage.Action;
+import net.glowstone.net.message.play.game.WorldBorderPacket;
+import net.glowstone.net.message.play.game.WorldBorderPacket.Action;
 
 import java.io.IOException;
 
-public final class WorldBorderCodec implements Codec<WorldBorderMessage> {
+public final class WorldBorderCodec implements Codec<WorldBorderPacket> {
 
     @Override
-    public WorldBorderMessage decode(ByteBuf buffer) throws IOException {
+    public WorldBorderPacket decode(ByteBuf buffer) throws IOException {
         int actionId = ByteBufUtils.readVarInt(buffer);
         Action action = Action.getAction(actionId);
         switch (action) {
             case SET_SIZE:
                 double radius = buffer.readDouble();
-                return new WorldBorderMessage(action, radius);
+                return new WorldBorderPacket(action, radius);
             case LERP_SIZE:
                 double oldRadius = buffer.readDouble();
                 double newRadius = buffer.readDouble();
                 long speed = buffer.readLong();
-                return new WorldBorderMessage(action, oldRadius, newRadius, speed);
+                return new WorldBorderPacket(action, oldRadius, newRadius, speed);
             case SET_CENTER:
                 double x = buffer.readDouble();
                 double z = buffer.readDouble();
-                return new WorldBorderMessage(action, x, z);
+                return new WorldBorderPacket(action, x, z);
             case INITIALIZE:
                 x = buffer.readDouble();
                 z = buffer.readDouble();
@@ -37,18 +37,18 @@ public final class WorldBorderCodec implements Codec<WorldBorderMessage> {
                 int portalTeleportBoundary = ByteBufUtils.readVarInt(buffer);
                 int warningTime = ByteBufUtils.readVarInt(buffer);
                 int warningBlocks = ByteBufUtils.readVarInt(buffer);
-                return new WorldBorderMessage(action, x, z, oldRadius, newRadius, speed, portalTeleportBoundary, warningTime, warningBlocks);
+                return new WorldBorderPacket(action, x, z, oldRadius, newRadius, speed, portalTeleportBoundary, warningTime, warningBlocks);
             case SET_WARNING_TIME:
             case SET_WARNING_BLOCKS:
                 warningTime = ByteBufUtils.readVarInt(buffer);
-                return new WorldBorderMessage(action, warningTime);
+                return new WorldBorderPacket(action, warningTime);
             default:
                 throw new DecoderException("Invalid WorldBorderMessage action " + actionId + "/" + action);
         }
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, WorldBorderMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, WorldBorderPacket message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getAction().ordinal());
         switch (message.getAction()) {
             case SET_SIZE:

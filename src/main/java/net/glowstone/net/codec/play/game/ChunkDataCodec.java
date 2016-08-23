@@ -4,20 +4,20 @@ import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import net.glowstone.net.GlowBufUtils;
-import net.glowstone.net.message.play.game.ChunkDataMessage;
+import net.glowstone.net.message.play.game.ChunkDataPacket;
 import net.glowstone.util.nbt.CompoundTag;
 
 import java.io.IOException;
 
-public final class ChunkDataCodec implements Codec<ChunkDataMessage> {
+public final class ChunkDataCodec implements Codec<ChunkDataPacket> {
 
     @Override
-    public ChunkDataMessage decode(ByteBuf buffer) throws IOException {
+    public ChunkDataPacket decode(ByteBuf buffer) throws IOException {
         throw new RuntimeException("Cannot decode ChunkDataMessage");
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, ChunkDataMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, ChunkDataPacket message) throws IOException {
         buf.writeInt(message.getX());
         buf.writeInt(message.getZ());
         buf.writeBoolean(message.isContinuous());

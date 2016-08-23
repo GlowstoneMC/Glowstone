@@ -10,7 +10,7 @@ public class PacketSendEvent extends PacketEvent implements Cancellable {
     private boolean cancelled;
 
     public PacketSendEvent(Message packet, GlowSession session, GlowPlayer player) {
-        super(packet, session, player, PacketType.Destination.OUT);
+        super(packet, session, player, GlowPacket.Destination.OUT);
     }
 
     /**

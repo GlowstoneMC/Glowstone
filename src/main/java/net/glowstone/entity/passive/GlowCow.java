@@ -3,7 +3,7 @@ package net.glowstone.entity.passive;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowItem;
-import net.glowstone.net.message.play.player.InteractEntityMessage;
+import net.glowstone.net.message.play.player.InteractEntityPacket;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,7 +19,7 @@ public class GlowCow extends GlowAnimal implements Cow {
     }
 
     @Override
-    public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
+    public boolean entityInteract(GlowPlayer player, InteractEntityPacket message) {
         super.entityInteract(player, message);
         if (player.getGameMode().equals(GameMode.CREATIVE) || player.getGameMode().equals(GameMode.SPECTATOR))
             return false;

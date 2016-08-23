@@ -2,19 +2,19 @@ package net.glowstone.net.codec.play.inv;
 
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.message.play.inv.CloseWindowMessage;
+import net.glowstone.net.message.play.inv.WindowClosePacket;
 
 import java.io.IOException;
 
-public final class CloseWindowCodec implements Codec<CloseWindowMessage> {
+public final class CloseWindowCodec implements Codec<WindowClosePacket> {
     @Override
-    public CloseWindowMessage decode(ByteBuf buf) throws IOException {
+    public WindowClosePacket decode(ByteBuf buf) throws IOException {
         int id = buf.readUnsignedByte();
-        return new CloseWindowMessage(id);
+        return new WindowClosePacket(id);
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, CloseWindowMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, WindowClosePacket message) throws IOException {
         buf.writeByte(message.getId());
         return buf;
     }

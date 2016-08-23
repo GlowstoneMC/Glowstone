@@ -3,19 +3,19 @@ package net.glowstone.net.codec.play.player;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.message.play.player.TeleportConfirmMessage;
+import net.glowstone.net.message.play.player.TeleportConfirmPacket;
 
 import java.io.IOException;
 
-public class TeleportConfirmCodec implements Codec<TeleportConfirmMessage> {
+public class TeleportConfirmCodec implements Codec<TeleportConfirmPacket> {
     @Override
-    public TeleportConfirmMessage decode(ByteBuf buffer) throws IOException {
+    public TeleportConfirmPacket decode(ByteBuf buffer) throws IOException {
         int id = ByteBufUtils.readVarInt(buffer);
-        return new TeleportConfirmMessage(id);
+        return new TeleportConfirmPacket(id);
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, TeleportConfirmMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, TeleportConfirmPacket message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getTeleportID());
         return buf;
     }

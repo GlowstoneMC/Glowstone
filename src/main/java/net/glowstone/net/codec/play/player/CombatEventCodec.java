@@ -4,36 +4,36 @@ import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import net.glowstone.net.GlowBufUtils;
-import net.glowstone.net.message.play.player.CombatEventMessage;
-import net.glowstone.net.message.play.player.CombatEventMessage.Event;
+import net.glowstone.net.message.play.player.CombatPacket;
+import net.glowstone.net.message.play.player.CombatPacket.Event;
 import net.glowstone.util.TextMessage;
 
 import java.io.IOException;
 
-public final class CombatEventCodec implements Codec<CombatEventMessage> {
+public final class CombatEventCodec implements Codec<CombatPacket> {
 
     @Override
-    public CombatEventMessage decode(ByteBuf buffer) throws IOException {
+    public CombatPacket decode(ByteBuf buffer) throws IOException {
         int eventId = ByteBufUtils.readVarInt(buffer);
         Event event = Event.getAction(eventId);
         switch (event) {
             case END_COMBAT: {
                 int duration = ByteBufUtils.readVarInt(buffer);
                 int entityID = buffer.readInt();
-                return new CombatEventMessage(event, duration, entityID);
+                return new CombatPacket(event, duration, entityID);
             }
             case ENTITY_DEAD:
                 int playerID = ByteBufUtils.readVarInt(buffer);
                 int entityID = buffer.readInt();
                 TextMessage message = GlowBufUtils.readChat(buffer);
-                return new CombatEventMessage(event, playerID, entityID, message);
+                return new CombatPacket(event, playerID, entityID, message);
             default:
-                return new CombatEventMessage(event);
+                return new CombatPacket(event);
         }
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, CombatEventMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, CombatPacket message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getEvent().ordinal());
         if (message.getEvent() == Event.END_COMBAT) {
             ByteBufUtils.writeVarInt(buf, message.getDuration());

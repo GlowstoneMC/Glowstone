@@ -7,7 +7,7 @@ import io.netty.buffer.Unpooled;
 import net.glowstone.GlowServer;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.play.game.PluginMessage;
+import net.glowstone.net.message.play.game.PluginLoadPacket;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -17,9 +17,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 
-public final class PluginMessageHandler implements MessageHandler<GlowSession, PluginMessage> {
+public final class PluginMessageHandler implements MessageHandler<GlowSession, PluginLoadPacket> {
     @Override
-    public void handle(GlowSession session, PluginMessage message) {
+    public void handle(GlowSession session, PluginLoadPacket message) {
         String channel = message.getChannel();
 
         // register and unregister: NUL-separated list of channels

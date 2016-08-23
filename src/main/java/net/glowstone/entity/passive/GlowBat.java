@@ -3,8 +3,8 @@ package net.glowstone.entity.passive;
 import com.flowpowered.network.Message;
 import net.glowstone.entity.GlowAmbient;
 import net.glowstone.entity.meta.MetadataIndex;
-import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
-import net.glowstone.net.message.play.entity.SpawnMobMessage;
+import net.glowstone.net.message.play.entity.EntityHeadRotationPacket;
+import net.glowstone.net.message.play.entity.SpawnMobPacket;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
@@ -33,10 +33,10 @@ public class GlowBat extends GlowAmbient implements Bat {
         double z = location.getZ();
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
-        result.add(new SpawnMobMessage(id, UUID.randomUUID(), getType().getTypeId(), x, y, z, yaw, pitch, pitch, 0, 0, 0, metadata.getEntryList())); //TODO 1.9 - Real UUID
+        result.add(new SpawnMobPacket(id, UUID.randomUUID(), getType().getTypeId(), x, y, z, yaw, pitch, pitch, 0, 0, 0, metadata.getEntryList())); //TODO 1.9 - Real UUID
 
         // head facing
-        result.add(new EntityHeadRotationMessage(id, yaw));
+        result.add(new EntityHeadRotationPacket(id, yaw));
         return result;
     }
 

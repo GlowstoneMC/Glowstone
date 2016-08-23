@@ -6,9 +6,9 @@ import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.*;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.play.inv.SetWindowSlotMessage;
-import net.glowstone.net.message.play.inv.TransactionMessage;
-import net.glowstone.net.message.play.inv.WindowClickMessage;
+import net.glowstone.net.message.play.inv.WindowSlotPacket;
+import net.glowstone.net.message.play.inv.TransactionPacket;
+import net.glowstone.net.message.play.inv.WindowClickPacket;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.*;
@@ -24,23 +24,23 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-public final class WindowClickHandler implements MessageHandler<GlowSession, WindowClickMessage> {
+public final class WindowClickHandler implements MessageHandler<GlowSession, WindowClickPacket> {
     @Override
-    public void handle(GlowSession session, WindowClickMessage message) {
+    public void handle(GlowSession session, WindowClickPacket message) {
         boolean result = false;
         try {
             result = process(session.getPlayer(), message);
         } catch (IllegalArgumentException ex) {
             GlowServer.logger.warning(session.getPlayer().getName() + ": illegal argument while handling click: " + ex);
         }
-        session.send(new TransactionMessage(message.getId(), message.getTransaction(), result));
+        session.send(new TransactionPacket(message.getId(), message.getTransaction(), result));
         if (!result) {
             GlowServer.logger.info(session.getPlayer().getName() + ": [rejected] " + message);
             session.getPlayer().updateInventory();
         }
     }
 
-    private boolean process(GlowPlayer player, WindowClickMessage message) {
+    private boolean process(GlowPlayer player, WindowClickPacket message) {
         int viewSlot = message.getSlot();
         InventoryView view = player.getOpenInventory();
         GlowInventory top = (GlowInventory) view.getTopInventory();
@@ -234,7 +234,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
 
         EventFactory.callEvent(event);
         if (event.isCancelled()) {
-            player.getSession().send(new SetWindowSlotMessage(-1, -1, player.getItemOnCursor()));
+            player.getSession().send(new WindowSlotPacket(-1, -1, player.getItemOnCursor()));
             return true;
         }
 

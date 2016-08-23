@@ -5,11 +5,11 @@ import net.glowstone.GlowChunk.Key;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
-import net.glowstone.net.message.play.entity.EntityMetadataMessage;
-import net.glowstone.net.message.play.entity.EntityTeleportMessage;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
-import net.glowstone.net.message.play.player.InteractEntityMessage;
-import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
+import net.glowstone.net.message.play.entity.EntityMetadataPacket;
+import net.glowstone.net.message.play.entity.EntityTeleportPacket;
+import net.glowstone.net.message.play.entity.SpawnObjectPacket;
+import net.glowstone.net.message.play.player.InteractEntityPacket;
+import net.glowstone.net.message.play.player.InteractEntityPacket.Action;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -112,7 +112,7 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
     }
 
     @Override
-    public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
+    public boolean entityInteract(GlowPlayer player, InteractEntityPacket message) {
         if (message.getAction() == Action.INTERACT.ordinal()) {
             if (itemInFrame == Material.AIR) {
                 ItemStack isInHand = player.getItemInHand();
@@ -186,7 +186,7 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
                 break;
         }
 
-        return Arrays.asList(new SpawnObjectMessage(id, getUniqueId(), 71, (location.getBlockX() + xoffset) * 32, location.getBlockY() * 32, (location.getBlockZ() + zoffset) * 32, 0, yaw, getFacingNumber(face), 0, 0, 0), new EntityMetadataMessage(id, metadata.getEntryList()));
+        return Arrays.asList(new SpawnObjectPacket(id, getUniqueId(), 71, (location.getBlockX() + xoffset) * 32, location.getBlockY() * 32, (location.getBlockZ() + zoffset) * 32, 0, yaw, getFacingNumber(face), 0, 0, 0), new EntityMetadataPacket(id, metadata.getEntryList()));
     }
 
     @Override
@@ -223,7 +223,7 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
                 double x = location.getX();
                 double y = location.getY();
                 double z = location.getZ();
-                player.getSession().send(new EntityTeleportMessage(id, x + xoffset, y, z + zoffset, yaw, 0));
+                player.getSession().send(new EntityTeleportPacket(id, x + xoffset, y, z + zoffset, yaw, 0));
             }
         }
     }

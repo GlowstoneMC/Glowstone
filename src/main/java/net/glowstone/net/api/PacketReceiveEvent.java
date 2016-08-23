@@ -9,7 +9,7 @@ public class PacketReceiveEvent extends PacketEvent {
     private boolean ignored;
 
     public PacketReceiveEvent(Message packet, GlowSession session, GlowPlayer player) {
-        super(packet, session, player, PacketType.Destination.IN);
+        super(packet, session, player, GlowPacket.Destination.IN);
     }
 
     /**

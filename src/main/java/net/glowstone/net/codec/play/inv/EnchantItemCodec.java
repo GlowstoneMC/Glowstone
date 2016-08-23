@@ -2,20 +2,20 @@ package net.glowstone.net.codec.play.inv;
 
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.message.play.inv.EnchantItemMessage;
+import net.glowstone.net.message.play.inv.EnchantItemPacket;
 
 import java.io.IOException;
 
-public final class EnchantItemCodec implements Codec<EnchantItemMessage> {
+public final class EnchantItemCodec implements Codec<EnchantItemPacket> {
     @Override
-    public EnchantItemMessage decode(ByteBuf buf) throws IOException {
+    public EnchantItemPacket decode(ByteBuf buf) throws IOException {
         int window = buf.readByte();
         int enchantment = buf.readByte();
-        return new EnchantItemMessage(window, enchantment);
+        return new EnchantItemPacket(window, enchantment);
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, EnchantItemMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, EnchantItemPacket message) throws IOException {
         buf.writeByte(message.getWindow());
         buf.writeByte(message.getEnchantment());
         return buf;

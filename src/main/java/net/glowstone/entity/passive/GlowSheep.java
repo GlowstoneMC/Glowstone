@@ -3,7 +3,7 @@ package net.glowstone.entity.passive;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
-import net.glowstone.net.message.play.player.InteractEntityMessage;
+import net.glowstone.net.message.play.player.InteractEntityPacket;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Sheep;
@@ -67,7 +67,7 @@ public class GlowSheep extends GlowAnimal implements Sheep {
     }
 
     @Override
-    public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
+    public boolean entityInteract(GlowPlayer player, InteractEntityPacket message) {
         super.entityInteract(player, message);
 
         if (!isAdult()) return false;

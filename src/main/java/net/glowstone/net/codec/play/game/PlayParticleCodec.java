@@ -4,18 +4,18 @@ import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
-import net.glowstone.net.message.play.game.PlayParticleMessage;
+import net.glowstone.net.message.play.game.PlayParticlePacket;
 
 import java.io.IOException;
 
-public final class PlayParticleCodec implements Codec<PlayParticleMessage> {
+public final class PlayParticleCodec implements Codec<PlayParticlePacket> {
     @Override
-    public PlayParticleMessage decode(ByteBuf buf) throws IOException {
+    public PlayParticlePacket decode(ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode PlayParticleMessage");
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, PlayParticleMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, PlayParticlePacket message) throws IOException {
         buf.writeInt(message.getParticle());
         buf.writeBoolean(message.isLongDistance());
         buf.writeFloat(message.getX());

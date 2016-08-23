@@ -4,11 +4,11 @@ import com.flowpowered.network.MessageHandler;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.play.player.SteerVehicleMessage;
+import net.glowstone.net.message.play.player.SteerVehiclePacket;
 
-public final class SteerVehicleHandler implements MessageHandler<GlowSession, SteerVehicleMessage> {
+public final class SteerVehicleHandler implements MessageHandler<GlowSession, SteerVehiclePacket> {
     @Override
-    public void handle(GlowSession session, SteerVehicleMessage message) {
+    public void handle(GlowSession session, SteerVehiclePacket message) {
         GlowServer.logger.info(session + ": " + message);
 
         GlowPlayer player = session.getPlayer();

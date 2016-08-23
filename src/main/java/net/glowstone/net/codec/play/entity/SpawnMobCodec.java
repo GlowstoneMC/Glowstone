@@ -5,15 +5,15 @@ import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import net.glowstone.entity.meta.MetadataMap.Entry;
 import net.glowstone.net.GlowBufUtils;
-import net.glowstone.net.message.play.entity.SpawnMobMessage;
+import net.glowstone.net.message.play.entity.SpawnMobPacket;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
-public final class SpawnMobCodec implements Codec<SpawnMobMessage> {
+public final class SpawnMobCodec implements Codec<SpawnMobPacket> {
     @Override
-    public SpawnMobMessage decode(ByteBuf buf) throws IOException {
+    public SpawnMobPacket decode(ByteBuf buf) throws IOException {
         int id = ByteBufUtils.readVarInt(buf);
         UUID uuid = GlowBufUtils.readUuid(buf);
         int type = buf.readByte();
@@ -27,11 +27,11 @@ public final class SpawnMobCodec implements Codec<SpawnMobMessage> {
         int velY = buf.readShort();
         int velZ = buf.readShort();
         List<Entry> list = GlowBufUtils.readMetadata(buf);
-        return new SpawnMobMessage(id, uuid, type, x, y, z, rotation, pitch, headPitch, velX, velY, velZ, list);
+        return new SpawnMobPacket(id, uuid, type, x, y, z, rotation, pitch, headPitch, velX, velY, velZ, list);
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, SpawnMobMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, SpawnMobPacket message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         GlowBufUtils.writeUuid(buf, message.getUuid());
         buf.writeByte(message.getType());

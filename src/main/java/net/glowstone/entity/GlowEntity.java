@@ -14,7 +14,7 @@ import net.glowstone.entity.objects.GlowItemFrame;
 import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.entity.physics.EntityBoundingBox;
 import net.glowstone.net.message.play.entity.*;
-import net.glowstone.net.message.play.player.InteractEntityMessage;
+import net.glowstone.net.message.play.player.InteractEntityPacket;
 import net.glowstone.util.Position;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
@@ -528,34 +528,34 @@ public abstract class GlowEntity implements Entity {
 
         List<Message> result = new LinkedList<>();
         if (teleported || moved && teleport) {
-            result.add(new EntityTeleportMessage(id, x, y, z, yaw, pitch));
+            result.add(new EntityTeleportPacket(id, x, y, z, yaw, pitch));
         } else if (moved && rotated) {
-            result.add(new RelativeEntityPositionRotationMessage(id, (short) dx, (short) dy, (short) dz, yaw, pitch));
+            result.add(new RelativeEntityPositionRotationPacket(id, (short) dx, (short) dy, (short) dz, yaw, pitch));
         } else if (moved) {
-            result.add(new RelativeEntityPositionMessage(id, (short) dx, (short) dy, (short) dz));
+            result.add(new RelativeEntityPositionPacket(id, (short) dx, (short) dy, (short) dz));
         } else if (rotated) {
-            result.add(new EntityRotationMessage(id, yaw, pitch));
+            result.add(new EntityRotationPacket(id, yaw, pitch));
         }
 
         // todo: handle head rotation as a separate value
         if (rotated) {
-            result.add(new EntityHeadRotationMessage(id, yaw));
+            result.add(new EntityHeadRotationPacket(id, yaw));
         }
 
         // send changed metadata
         List<Entry> changes = metadata.getChanges();
         if (!changes.isEmpty()) {
-            result.add(new EntityMetadataMessage(id, changes));
+            result.add(new EntityMetadataPacket(id, changes));
         }
 
         // send velocity if needed
         if (velocityChanged) {
-            result.add(new EntityVelocityMessage(id, velocity));
+            result.add(new EntityVelocityPacket(id, velocity));
         }
 
         if (vehicleChanged) {
             //this method will not call for this player, we don't need check SELF_ID
-            result.add(new AttachEntityMessage(getEntityId(), vehicle != null ? vehicle.getEntityId() : -1, false));
+            result.add(new AttachEntityPacket(getEntityId(), vehicle != null ? vehicle.getEntityId() : -1, false));
         }
 
         return result;
@@ -778,7 +778,7 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public void playEffect(EntityEffect type) {
-        EntityStatusMessage message = new EntityStatusMessage(id, type);
+        EntityStatusPacket message = new EntityStatusPacket(id, type);
         world.getRawPlayers().stream().filter(player -> player.canSeeEntity(this)).forEach(player -> player.getSession().send(message));
     }
 
@@ -1012,7 +1012,7 @@ public abstract class GlowEntity implements Entity {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
+    public boolean entityInteract(GlowPlayer player, InteractEntityPacket message) {
         // Override in subclasses to implement behavior
         return false;
     }

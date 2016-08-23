@@ -8,8 +8,8 @@ import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.play.player.InteractEntityMessage;
-import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
+import net.glowstone.net.message.play.player.InteractEntityPacket;
+import net.glowstone.net.message.play.player.InteractEntityPacket.Action;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -18,10 +18,10 @@ import org.bukkit.inventory.ItemStack;
 
 //import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 
-public final class InteractEntityHandler implements MessageHandler<GlowSession, InteractEntityMessage> {
+public final class InteractEntityHandler implements MessageHandler<GlowSession, InteractEntityPacket> {
 
     @Override
-    public void handle(GlowSession session, InteractEntityMessage message) {
+    public void handle(GlowSession session, InteractEntityPacket message) {
         GlowPlayer player = session.getPlayer();
 
         // You can't do anything when you're dead

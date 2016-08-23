@@ -7,8 +7,8 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowInventoryView;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.play.inv.CreativeItemMessage;
-import net.glowstone.net.message.play.inv.SetWindowSlotMessage;
+import net.glowstone.net.message.play.inv.CreativeItemPacket;
+import net.glowstone.net.message.play.inv.WindowSlotPacket;
 import org.bukkit.GameMode;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
@@ -17,9 +17,9 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Objects;
 
-public final class CreativeItemHandler implements MessageHandler<GlowSession, CreativeItemMessage> {
+public final class CreativeItemHandler implements MessageHandler<GlowSession, CreativeItemPacket> {
     @Override
-    public void handle(GlowSession session, CreativeItemMessage message) {
+    public void handle(GlowSession session, CreativeItemPacket message) {
         GlowPlayer player = session.getPlayer();
         GlowInventory inv = player.getInventory();
         // CraftBukkit does use a inventory view with both inventories set to the player's inventory
@@ -46,7 +46,7 @@ public final class CreativeItemHandler implements MessageHandler<GlowSession, Cr
         if (message.getSlot() < 0) {
             InventoryCreativeEvent event = EventFactory.callEvent(new InventoryCreativeEvent(view, SlotType.OUTSIDE, -999, stack));
             if (event.isCancelled()) {
-                session.send(new SetWindowSlotMessage(-1, -1, stack));
+                session.send(new WindowSlotPacket(-1, -1, stack));
             } else {
                 player.drop(event.getCursor());
             }
@@ -64,7 +64,7 @@ public final class CreativeItemHandler implements MessageHandler<GlowSession, Cr
             // send original slot to player to prevent async inventories
             player.sendItemChange(viewSlot, view.getItem(viewSlot));
             // don't keep track of player's current item, just give them back what they tried to place
-            session.send(new SetWindowSlotMessage(-1, -1, stack));
+            session.send(new WindowSlotPacket(-1, -1, stack));
             return;
         }
 

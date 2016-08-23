@@ -2,13 +2,13 @@ package net.glowstone.net.codec.play.player;
 
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.message.play.player.PlayerPositionLookMessage;
+import net.glowstone.net.message.play.player.PlayerPositionLookPacket;
 
 import java.io.IOException;
 
-public final class PlayerPositionLookCodec implements Codec<PlayerPositionLookMessage> {
+public final class PlayerPositionLookCodec implements Codec<PlayerPositionLookPacket> {
     @Override
-    public PlayerPositionLookMessage decode(ByteBuf buffer) throws IOException {
+    public PlayerPositionLookPacket decode(ByteBuf buffer) throws IOException {
         double x = buffer.readDouble();
         double y = buffer.readDouble();
         double z = buffer.readDouble();
@@ -16,11 +16,11 @@ public final class PlayerPositionLookCodec implements Codec<PlayerPositionLookMe
         float pitch = buffer.readFloat();
         boolean onGround = buffer.readBoolean();
 
-        return new PlayerPositionLookMessage(onGround, x, y, z, yaw, pitch);
+        return new PlayerPositionLookPacket(onGround, x, y, z, yaw, pitch);
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, PlayerPositionLookMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, PlayerPositionLookPacket message) throws IOException {
         buf.writeDouble(message.getX());
         buf.writeDouble(message.getY());
         buf.writeDouble(message.getZ());

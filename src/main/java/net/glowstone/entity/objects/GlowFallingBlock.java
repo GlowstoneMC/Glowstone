@@ -4,7 +4,7 @@ import com.flowpowered.network.Message;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowEntity;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.net.message.play.entity.SpawnObjectPacket;
 import net.glowstone.util.Position;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
@@ -161,7 +161,7 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
         int blockIdData = getBlockId() | getBlockData() << 12;
 
         return Arrays.asList(
-                new SpawnObjectMessage(id, getUniqueId(), 70, x, y, z, pitch, yaw, blockIdData)
+                new SpawnObjectPacket(id, getUniqueId(), 70, x, y, z, pitch, yaw, blockIdData)
         );
     }
 

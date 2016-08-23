@@ -1,6 +1,6 @@
 package net.glowstone.scoreboard;
 
-import net.glowstone.net.message.play.scoreboard.ScoreboardObjectiveMessage;
+import net.glowstone.net.message.play.scoreboard.ScoreboardObjectivePacket;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.*;
 
@@ -75,7 +75,7 @@ public final class GlowObjective implements Objective {
         checkArgument(displayName.length() <= 32, "displayName cannot be longer than 32 characters");
 
         this.displayName = displayName;
-        scoreboard.broadcast(ScoreboardObjectiveMessage.update(name, displayName, renderType));
+        scoreboard.broadcast(ScoreboardObjectivePacket.update(name, displayName, renderType));
     }
 
     public DisplaySlot getDisplaySlot() throws IllegalStateException {
@@ -106,7 +106,7 @@ public final class GlowObjective implements Objective {
         checkValid();
         checkNotNull(renderType, "RenderType cannot be null");
         this.renderType = renderType;
-        scoreboard.broadcast(ScoreboardObjectiveMessage.update(name, displayName, renderType));
+        scoreboard.broadcast(ScoreboardObjectivePacket.update(name, displayName, renderType));
     }
 
     public boolean isModifiable() throws IllegalStateException {
