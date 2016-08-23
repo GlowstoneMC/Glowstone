@@ -5,8 +5,8 @@ import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.play.game.PositionRotationMessage;
-import net.glowstone.net.message.play.player.PlayerUpdateMessage;
+import net.glowstone.net.message.play.game.PositionRotationPacket;
+import net.glowstone.net.message.play.player.PlayerUpdatePacket;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -15,10 +15,10 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Objects;
 
-public final class PlayerUpdateHandler implements MessageHandler<GlowSession, PlayerUpdateMessage> {
+public final class PlayerUpdateHandler implements MessageHandler<GlowSession, PlayerUpdatePacket> {
 
     @Override
-    public void handle(GlowSession session, PlayerUpdateMessage message) {
+    public void handle(GlowSession session, PlayerUpdatePacket message) {
 
         GlowPlayer player = session.getPlayer();
 
@@ -63,7 +63,7 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
             PlayerMoveEvent event = EventFactory.callEvent(new PlayerMoveEvent(player, oldLocation, newLocation));
             if (event.isCancelled()) {
                 // tell client they're back where they started
-                session.send(new PositionRotationMessage(oldLocation));
+                session.send(new PositionRotationPacket(oldLocation));
                 return;
             }
 

@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.play.entity.EntityPropertyMessage;
+import net.glowstone.net.message.play.entity.EntityPropertyPacket;
 
 import java.util.*;
 
@@ -26,14 +26,14 @@ public class AttributeManager {
     public void applyMessages(Collection<Message> messages) {
         if (!needsUpdate)
             return;
-        messages.add(new EntityPropertyMessage(entity.id, properties));
+        messages.add(new EntityPropertyPacket(entity.id, properties));
         needsUpdate = false;
     }
 
     public void sendMessages(GlowSession session) {
         if (!needsUpdate)
             return;
-        session.send(new EntityPropertyMessage(entity.id, properties));
+        session.send(new EntityPropertyPacket(entity.id, properties));
         needsUpdate = false;
     }
 

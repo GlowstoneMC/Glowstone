@@ -9,7 +9,7 @@ import net.glowstone.block.blocktype.BlockRedstoneTorch;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.net.message.play.game.BlockChangeMessage;
+import net.glowstone.net.message.play.game.BlockChangePacket;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -233,7 +233,7 @@ public final class GlowBlock implements Block {
         if (oldTypeId == Material.DOUBLE_PLANT && getRelative(BlockFace.UP).getType() == Material.DOUBLE_PLANT) {
             ((GlowChunk) world.getChunkAt(this)).setType(x & 0xf, z & 0xf, y + 1, 0);
             ((GlowChunk) world.getChunkAt(this)).setMetaData(x & 0xf, z & 0xf, y, 0);
-            BlockChangeMessage bcmsg = new BlockChangeMessage(x, y + 1, z, 0, 0);
+            BlockChangePacket bcmsg = new BlockChangePacket(x, y + 1, z, 0, 0);
             for (GlowPlayer p : getWorld().getRawPlayers()) {
                 p.sendBlockChange(bcmsg);
             }
@@ -243,7 +243,7 @@ public final class GlowBlock implements Block {
             applyPhysics(oldTypeId, type, oldData, data);
         }
 
-        BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, type, data);
+        BlockChangePacket bcmsg = new BlockChangePacket(x, y, z, type, data);
         for (GlowPlayer p : getWorld().getRawPlayers()) {
             p.sendBlockChange(bcmsg);
         }
@@ -303,7 +303,7 @@ public final class GlowBlock implements Block {
         if (applyPhysics) {
             applyPhysics(getType(), getTypeId(), oldData, data);
         }
-        BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, getTypeId(), data);
+        BlockChangePacket bcmsg = new BlockChangePacket(x, y, z, getTypeId(), data);
         for (GlowPlayer p : getWorld().getRawPlayers()) {
             p.sendBlockChange(bcmsg);
         }

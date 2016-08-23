@@ -2,7 +2,7 @@ package net.glowstone.block.itemtype;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.net.message.play.game.PluginMessage;
+import net.glowstone.net.message.play.game.PluginLoadPacket;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -22,6 +22,6 @@ public class ItemWrittenBook extends ItemType {
     }
 
     private void openBook(GlowPlayer player) {
-        player.getSession().send(new PluginMessage("MC|BOpen", EMPTY));
+        player.getSession().send(new PluginLoadPacket("MC|BOpen", EMPTY));
     }
 }

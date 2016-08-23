@@ -2,19 +2,19 @@ package net.glowstone.net.codec.play.player;
 
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.message.play.player.PlayerUpdateMessage;
+import net.glowstone.net.message.play.player.PlayerUpdatePacket;
 
 import java.io.IOException;
 
-public final class PlayerUpdateCodec implements Codec<PlayerUpdateMessage> {
+public final class PlayerUpdateCodec implements Codec<PlayerUpdatePacket> {
     @Override
-    public PlayerUpdateMessage decode(ByteBuf buffer) throws IOException {
+    public PlayerUpdatePacket decode(ByteBuf buffer) throws IOException {
         boolean onGround = buffer.readBoolean();
-        return new PlayerUpdateMessage(onGround);
+        return new PlayerUpdatePacket(onGround);
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, PlayerUpdateMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, PlayerUpdatePacket message) throws IOException {
         buf.writeBoolean(message.isOnGround());
         return buf;
     }

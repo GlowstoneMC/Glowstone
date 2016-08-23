@@ -6,21 +6,21 @@ import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import net.glowstone.entity.meta.profile.PlayerProperty;
 import net.glowstone.net.GlowBufUtils;
-import net.glowstone.net.message.play.game.UserListItemMessage;
-import net.glowstone.net.message.play.game.UserListItemMessage.Action;
-import net.glowstone.net.message.play.game.UserListItemMessage.Entry;
+import net.glowstone.net.message.play.game.PlayerListItemPacket;
+import net.glowstone.net.message.play.game.PlayerListItemPacket.Action;
+import net.glowstone.net.message.play.game.PlayerListItemPacket.Entry;
 
 import java.io.IOException;
 import java.util.List;
 
-public final class UserListItemCodec implements Codec<UserListItemMessage> {
+public final class UserListItemCodec implements Codec<PlayerListItemPacket> {
     @Override
-    public UserListItemMessage decode(ByteBuf buf) throws IOException {
+    public PlayerListItemPacket decode(ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode UserListItemMessage");
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, UserListItemMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, PlayerListItemPacket message) throws IOException {
         Action action = message.getAction();
         List<Entry> entries = message.getEntries();
         ByteBufUtils.writeVarInt(buf, message.getAction().ordinal());

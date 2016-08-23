@@ -3,7 +3,7 @@ package net.glowstone.entity;
 import com.flowpowered.network.Message;
 import net.glowstone.EventFactory;
 import net.glowstone.Explosion;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.net.message.play.entity.SpawnObjectPacket;
 import net.glowstone.util.Position;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -67,7 +67,7 @@ public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
         int yaw = Position.getIntYaw(location);
 
         LinkedList<Message> result = new LinkedList<>();
-        result.add(new SpawnObjectMessage(id, getUniqueId(), 50, x, y, z, pitch, yaw));
+        result.add(new SpawnObjectPacket(id, getUniqueId(), 50, x, y, z, pitch, yaw));
         return result;
     }
 

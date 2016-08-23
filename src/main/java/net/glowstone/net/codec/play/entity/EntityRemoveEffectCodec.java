@@ -3,20 +3,20 @@ package net.glowstone.net.codec.play.entity;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.message.play.entity.EntityRemoveEffectMessage;
+import net.glowstone.net.message.play.entity.EntityRemoveEffectPacket;
 
 import java.io.IOException;
 
-public final class EntityRemoveEffectCodec implements Codec<EntityRemoveEffectMessage> {
+public final class EntityRemoveEffectCodec implements Codec<EntityRemoveEffectPacket> {
     @Override
-    public EntityRemoveEffectMessage decode(ByteBuf buf) throws IOException {
+    public EntityRemoveEffectPacket decode(ByteBuf buf) throws IOException {
         int id = ByteBufUtils.readVarInt(buf);
         byte effect = buf.readByte();
-        return new EntityRemoveEffectMessage(id, effect);
+        return new EntityRemoveEffectPacket(id, effect);
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, EntityRemoveEffectMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, EntityRemoveEffectPacket message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         buf.writeByte(message.getEffect());
         return buf;

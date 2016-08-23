@@ -3,7 +3,7 @@ package net.glowstone.entity.passive;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
-import net.glowstone.net.message.play.player.InteractEntityMessage;
+import net.glowstone.net.message.play.player.InteractEntityPacket;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -29,7 +29,7 @@ public class GlowPig extends GlowAnimal implements Pig {
     }
 
     @Override
-    public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
+    public boolean entityInteract(GlowPlayer player, InteractEntityPacket message) {
         super.entityInteract(player, message);
 
         if (!isAdult()) return false;

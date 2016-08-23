@@ -5,18 +5,18 @@ import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import net.glowstone.net.GlowBufUtils;
-import net.glowstone.net.message.play.inv.OpenWindowMessage;
+import net.glowstone.net.message.play.inv.WindowOpenPacket;
 
 import java.io.IOException;
 
-public final class OpenWindowCodec implements Codec<OpenWindowMessage> {
+public final class OpenWindowCodec implements Codec<WindowOpenPacket> {
     @Override
-    public OpenWindowMessage decode(ByteBuf buf) throws IOException {
+    public WindowOpenPacket decode(ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode OpenWindowMessage");
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, OpenWindowMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, WindowOpenPacket message) throws IOException {
         buf.writeByte(message.getId());
         ByteBufUtils.writeUTF8(buf, message.getType());
         GlowBufUtils.writeChat(buf, message.getTitle());

@@ -2,21 +2,21 @@ package net.glowstone.net.codec.play.player;
 
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.message.play.player.PlayerAbilitiesMessage;
+import net.glowstone.net.message.play.player.PlayerAbilitiesPacket;
 
 import java.io.IOException;
 
-public final class PlayerAbilitiesCodec implements Codec<PlayerAbilitiesMessage> {
+public final class PlayerAbilitiesCodec implements Codec<PlayerAbilitiesPacket> {
     @Override
-    public PlayerAbilitiesMessage decode(ByteBuf buf) throws IOException {
+    public PlayerAbilitiesPacket decode(ByteBuf buf) throws IOException {
         int flags = buf.readUnsignedByte();
         float flySpeed = buf.readFloat();
         float walkSpeed = buf.readFloat();
-        return new PlayerAbilitiesMessage(flags, flySpeed, walkSpeed);
+        return new PlayerAbilitiesPacket(flags, flySpeed, walkSpeed);
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, PlayerAbilitiesMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, PlayerAbilitiesPacket message) throws IOException {
         buf.writeByte(message.getFlags());
         buf.writeFloat(message.getFlySpeed());
         buf.writeFloat(message.getWalkSpeed());

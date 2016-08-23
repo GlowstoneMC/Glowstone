@@ -4,7 +4,7 @@ import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowHumanEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.crafting.CraftingManager;
-import net.glowstone.net.message.play.inv.HeldItemMessage;
+import net.glowstone.net.message.play.inv.HeldItemPacket;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.EnchantmentTarget;
@@ -322,7 +322,7 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         setRawHeldItemSlot(slot);
 
         if (getHolder() instanceof GlowPlayer) {
-            ((GlowPlayer) getHolder()).getSession().send(new HeldItemMessage(slot));
+            ((GlowPlayer) getHolder()).getSession().send(new HeldItemPacket(slot));
         }
     }
 

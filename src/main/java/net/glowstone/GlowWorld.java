@@ -17,8 +17,8 @@ import net.glowstone.generator.structures.GlowStructure;
 import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
 import net.glowstone.io.anvil.AnvilWorldStorageProvider;
-import net.glowstone.net.message.play.entity.EntityStatusMessage;
-import net.glowstone.net.message.play.player.ServerDifficultyMessage;
+import net.glowstone.net.message.play.entity.EntityStatusPacket;
+import net.glowstone.net.message.play.player.ServerDifficultyPacket;
 import net.glowstone.util.BlockStateDelegate;
 import net.glowstone.util.GameRuleManager;
 import org.bukkit.*;
@@ -772,7 +772,7 @@ public final class GlowWorld implements World {
     @Override
     public void setDifficulty(Difficulty difficulty) {
         this.difficulty = difficulty;
-        ServerDifficultyMessage message = new ServerDifficultyMessage(difficulty.getValue());
+        ServerDifficultyPacket message = new ServerDifficultyPacket(difficulty.getValue());
         for (GlowPlayer player : getRawPlayers()) {
             player.getSession().send(message);
         }
@@ -1647,7 +1647,7 @@ public final class GlowWorld implements World {
             getRawPlayers().forEach(GlowPlayer::sendTime);
         } else if (rule.equals("reducedDebugInfo")) {
             // inform clients about the debug info change
-            EntityStatusMessage message = new EntityStatusMessage(0, gameRules.getBoolean("reducedDebugInfo") ? EntityStatusMessage.ENABLE_REDUCED_DEBUG_INFO : EntityStatusMessage.DISABLE_REDUCED_DEBUG_INFO);
+            EntityStatusPacket message = new EntityStatusPacket(0, gameRules.getBoolean("reducedDebugInfo") ? EntityStatusPacket.ENABLE_REDUCED_DEBUG_INFO : EntityStatusPacket.DISABLE_REDUCED_DEBUG_INFO);
             for (GlowPlayer player : getRawPlayers()) {
                 player.getSession().send(message);
             }

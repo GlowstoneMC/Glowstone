@@ -4,21 +4,21 @@ import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
-import net.glowstone.net.message.play.game.MapDataMessage;
-import net.glowstone.net.message.play.game.MapDataMessage.Icon;
-import net.glowstone.net.message.play.game.MapDataMessage.Section;
+import net.glowstone.net.message.play.game.MapDataPacket;
+import net.glowstone.net.message.play.game.MapDataPacket.Icon;
+import net.glowstone.net.message.play.game.MapDataPacket.Section;
 
 import java.io.IOException;
 import java.util.List;
 
-public final class MapDataCodec implements Codec<MapDataMessage> {
+public final class MapDataCodec implements Codec<MapDataPacket> {
     @Override
-    public MapDataMessage decode(ByteBuf buf) throws IOException {
+    public MapDataPacket decode(ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode MapDataMessage");
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, MapDataMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, MapDataPacket message) throws IOException {
         List<Icon> icons = message.getIcons();
         Section section = message.getSection();
 

@@ -4,10 +4,10 @@ import com.flowpowered.network.Message;
 import com.google.common.collect.ImmutableSet;
 import net.glowstone.constants.GlowDisplaySlot;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.net.message.play.scoreboard.ScoreboardDisplayMessage;
-import net.glowstone.net.message.play.scoreboard.ScoreboardObjectiveMessage;
-import net.glowstone.net.message.play.scoreboard.ScoreboardScoreMessage;
-import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
+import net.glowstone.net.message.play.scoreboard.ScoreboardDisplayPacket;
+import net.glowstone.net.message.play.scoreboard.ScoreboardObjectivePacket;
+import net.glowstone.net.message.play.scoreboard.ScoreboardScorePacket;
+import net.glowstone.net.message.play.scoreboard.ScoreboardTeamPacket;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.*;
@@ -52,18 +52,18 @@ public final class GlowScoreboard implements Scoreboard {
         // send all the setup stuff
         // objectives
         for (GlowObjective objective : objectives.values()) {
-            player.getSession().send(ScoreboardObjectiveMessage.create(objective.getName(), objective.getDisplayName()));
+            player.getSession().send(ScoreboardObjectivePacket.create(objective.getName(), objective.getDisplayName()));
         }
         // display slots
         for (DisplaySlot slot : DisplaySlot.values()) {
             GlowObjective objective = displaySlots.get(slot);
             String name = objective != null ? objective.getName() : "";
-            player.getSession().send(new ScoreboardDisplayMessage(GlowDisplaySlot.getId(slot), name));
+            player.getSession().send(new ScoreboardDisplayPacket(GlowDisplaySlot.getId(slot), name));
         }
         // scores
         for (Entry<String, Set<GlowScore>> entry : scoreMap.entrySet()) {
             for (GlowScore score : entry.getValue()) {
-                player.getSession().send(new ScoreboardScoreMessage(entry.getKey(), score.getObjective().getName(), score.getScore()));
+                player.getSession().send(new ScoreboardScorePacket(entry.getKey(), score.getObjective().getName(), score.getScore()));
             }
         }
         // teams
@@ -88,15 +88,15 @@ public final class GlowScoreboard implements Scoreboard {
         // send all the teardown stuff
         // teams
         for (GlowTeam team : teams.values()) {
-            player.getSession().send(ScoreboardTeamMessage.remove(team.getName()));
+            player.getSession().send(ScoreboardTeamPacket.remove(team.getName()));
         }
         // display slots
         for (DisplaySlot slot : DisplaySlot.values()) {
-            player.getSession().send(new ScoreboardDisplayMessage(GlowDisplaySlot.getId(slot), ""));
+            player.getSession().send(new ScoreboardDisplayPacket(GlowDisplaySlot.getId(slot), ""));
         }
         // objectives
         for (GlowObjective objective : objectives.values()) {
-            player.getSession().send(ScoreboardObjectiveMessage.remove(objective.getName()));
+            player.getSession().send(ScoreboardObjectivePacket.remove(objective.getName()));
         }
     }
 
@@ -128,11 +128,11 @@ public final class GlowScoreboard implements Scoreboard {
         // new objective is now in this display slot
         if (objective != null) {
             // update objective's display slot
-            broadcast(new ScoreboardDisplayMessage(GlowDisplaySlot.getId(slot), objective.getName()));
+            broadcast(new ScoreboardDisplayPacket(GlowDisplaySlot.getId(slot), objective.getName()));
             objective.displaySlot = slot;
         } else {
             // no objective
-            broadcast(new ScoreboardDisplayMessage(GlowDisplaySlot.getId(slot), ""));
+            broadcast(new ScoreboardDisplayPacket(GlowDisplaySlot.getId(slot), ""));
         }
     }
 
@@ -148,7 +148,7 @@ public final class GlowScoreboard implements Scoreboard {
 
         getForCriteria(objective.getCriteria()).remove(objective);
         objectives.remove(objective.getName());
-        broadcast(ScoreboardObjectiveMessage.remove(objective.getName()));
+        broadcast(ScoreboardObjectivePacket.remove(objective.getName()));
     }
 
     /**
@@ -159,7 +159,7 @@ public final class GlowScoreboard implements Scoreboard {
     void removeTeam(GlowTeam team) {
         team.getEntries().forEach(entryTeams::remove);
         teams.remove(team.getName());
-        broadcast(ScoreboardTeamMessage.remove(team.getName()));
+        broadcast(ScoreboardTeamPacket.remove(team.getName()));
     }
 
     /**
@@ -202,10 +202,10 @@ public final class GlowScoreboard implements Scoreboard {
         GlowTeam previous = entryTeams.put(player.getName(), team);
         if (previous != null && previous.hasPlayer(player)) {
             previous.removeEntry(player.getName());
-            broadcast(ScoreboardTeamMessage.removePlayers(previous.getName(), Arrays.asList(player.getName())));
+            broadcast(ScoreboardTeamPacket.removePlayers(previous.getName(), Arrays.asList(player.getName())));
         }
         if (team != null) {
-            broadcast(ScoreboardTeamMessage.addPlayers(team.getName(), Arrays.asList(player.getName())));
+            broadcast(ScoreboardTeamPacket.addPlayers(team.getName(), Arrays.asList(player.getName())));
         }
     }
 
@@ -221,7 +221,7 @@ public final class GlowScoreboard implements Scoreboard {
         objectives.put(name, objective);
         getForCriteria(criteria).add(objective);
 
-        broadcast(ScoreboardObjectiveMessage.create(name, objective.getDisplayName(), RenderType.INTEGER));
+        broadcast(ScoreboardObjectivePacket.create(name, objective.getDisplayName(), RenderType.INTEGER));
 
         return objective;
     }
@@ -303,7 +303,7 @@ public final class GlowScoreboard implements Scoreboard {
         checkNotNull(entry, "Entry cannot be null");
 
         for (GlowObjective objective : objectives.values()) {
-            broadcast(ScoreboardScoreMessage.remove(entry, objective.getName()));
+            broadcast(ScoreboardScorePacket.remove(entry, objective.getName()));
             objective.deleteScore(entry);
         }
         scoreMap.remove(entry);

@@ -3,8 +3,8 @@ package net.glowstone.entity;
 import com.flowpowered.network.Message;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
-import net.glowstone.net.message.play.entity.EntityMetadataMessage;
-import net.glowstone.net.message.play.player.InteractEntityMessage;
+import net.glowstone.net.message.play.entity.EntityMetadataPacket;
+import net.glowstone.net.message.play.player.InteractEntityPacket;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -122,7 +122,7 @@ public class GlowAgeable extends GlowCreature implements Ageable {
         List<Message> messages = super.createSpawnMessage();
         MetadataMap map = new MetadataMap(GlowAgeable.class);
         map.set(MetadataIndex.AGE_ISBABY, !isAdult());
-        messages.add(new EntityMetadataMessage(id, map.getEntryList()));
+        messages.add(new EntityMetadataPacket(id, map.getEntryList()));
         return messages;
     }
 
@@ -148,7 +148,7 @@ public class GlowAgeable extends GlowCreature implements Ageable {
 
 
     @Override
-    public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
+    public boolean entityInteract(GlowPlayer player, InteractEntityPacket message) {
         super.entityInteract(player, message);
         ItemStack item = player.getItemInHand();
 

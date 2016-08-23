@@ -5,7 +5,7 @@ import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.physics.BoundingBox;
-import net.glowstone.net.message.play.entity.SpawnLightningStrikeMessage;
+import net.glowstone.net.message.play.entity.SpawnLightningPacket;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -118,7 +118,7 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
         double x = location.getX();
         double y = location.getY();
         double z = location.getZ();
-        return Arrays.asList(new SpawnLightningStrikeMessage(id, x, y, z));
+        return Arrays.asList(new SpawnLightningPacket(id, x, y, z));
     }
 
     @Override

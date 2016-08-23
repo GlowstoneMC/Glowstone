@@ -4,20 +4,20 @@ import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
-import net.glowstone.net.message.play.game.StatisticMessage;
+import net.glowstone.net.message.play.game.StatisticPacket;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public final class StatisticCodec implements Codec<StatisticMessage> {
+public final class StatisticCodec implements Codec<StatisticPacket> {
     @Override
-    public StatisticMessage decode(ByteBuf buf) throws IOException {
+    public StatisticPacket decode(ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode StatisticMessage");
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, StatisticMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, StatisticPacket message) throws IOException {
         Map<String, Integer> map = message.getValues();
         ByteBufUtils.writeVarInt(buf, map.size());
         for (Entry<String, Integer> entry : map.entrySet()) {

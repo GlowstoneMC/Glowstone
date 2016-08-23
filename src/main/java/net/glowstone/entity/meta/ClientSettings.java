@@ -1,7 +1,7 @@
 package net.glowstone.entity.meta;
 
 import lombok.Data;
-import net.glowstone.net.message.play.game.ClientSettingsMessage;
+import net.glowstone.net.message.play.game.ClientSettingsPacket;
 
 /**
  * Container for settings which the client communicates to the server.
@@ -34,7 +34,7 @@ public final class ClientSettings {
      *
      * @param msg The message sent by the client.
      */
-    public ClientSettings(ClientSettingsMessage msg) {
+    public ClientSettings(ClientSettingsPacket msg) {
         this(msg.getLocale(), msg.getViewDistance(), msg.getChatFlags(), msg.isChatColors(), msg.getSkinFlags(), msg.getHand());
     }
 

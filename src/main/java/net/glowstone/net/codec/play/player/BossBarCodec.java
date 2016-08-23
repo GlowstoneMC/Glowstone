@@ -4,19 +4,19 @@ import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import net.glowstone.net.GlowBufUtils;
-import net.glowstone.net.message.play.player.BossBarMessage;
-import net.glowstone.net.message.play.player.BossBarMessage.Action;
-import net.glowstone.net.message.play.player.BossBarMessage.Color;
-import net.glowstone.net.message.play.player.BossBarMessage.Division;
+import net.glowstone.net.message.play.player.BossBarPacket;
+import net.glowstone.net.message.play.player.BossBarPacket.Action;
+import net.glowstone.net.message.play.player.BossBarPacket.Color;
+import net.glowstone.net.message.play.player.BossBarPacket.Division;
 import net.glowstone.util.TextMessage;
 
 import java.io.IOException;
 import java.util.UUID;
 
-public class BossBarCodec implements Codec<BossBarMessage> {
+public class BossBarCodec implements Codec<BossBarPacket> {
 
     @Override
-    public BossBarMessage decode(ByteBuf buffer) throws IOException {
+    public BossBarPacket decode(ByteBuf buffer) throws IOException {
         UUID uuid = GlowBufUtils.readUuid(buffer);
         Action action = Action.fromInt(ByteBufUtils.readVarInt(buffer));
 
@@ -27,22 +27,22 @@ public class BossBarCodec implements Codec<BossBarMessage> {
                 Color color = Color.fromInt(ByteBufUtils.readVarInt(buffer));
                 Division division = Division.fromInt(ByteBufUtils.readVarInt(buffer));
                 byte flags = buffer.readByte();
-                return new BossBarMessage(uuid, action, title, health, color, division, flags);
+                return new BossBarPacket(uuid, action, title, health, color, division, flags);
             case REMOVE:
-                return new BossBarMessage(uuid, action);
+                return new BossBarPacket(uuid, action);
             case UPDATE_HEALTH:
                 health = buffer.readFloat();
-                return new BossBarMessage(uuid, action, health);
+                return new BossBarPacket(uuid, action, health);
             case UPDATE_TITLE:
                 title = GlowBufUtils.readChat(buffer);
-                return new BossBarMessage(uuid, action, title);
+                return new BossBarPacket(uuid, action, title);
             case UPDATE_STYLE:
                 color = Color.fromInt(ByteBufUtils.readVarInt(buffer));
                 division = Division.fromInt(ByteBufUtils.readVarInt(buffer));
-                return new BossBarMessage(uuid, action, color, division);
+                return new BossBarPacket(uuid, action, color, division);
             case UPDATE_FLAGS:
                 flags = buffer.readByte();
-                return new BossBarMessage(uuid, action, flags);
+                return new BossBarPacket(uuid, action, flags);
         }
 
         //INFO: This return is dead code. We would NPE before on the action line.
@@ -50,7 +50,7 @@ public class BossBarCodec implements Codec<BossBarMessage> {
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, BossBarMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, BossBarPacket message) throws IOException {
         GlowBufUtils.writeUuid(buf, message.getUuid());
         ByteBufUtils.writeVarInt(buf, message.getAction().ordinal());
 

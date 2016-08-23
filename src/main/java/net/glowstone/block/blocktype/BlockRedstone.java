@@ -4,7 +4,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.net.message.play.game.BlockChangeMessage;
+import net.glowstone.net.message.play.game.BlockChangePacket;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
@@ -258,7 +258,7 @@ public class BlockRedstone extends BlockNeedsAttached {
 
     @Override
     public void receivePulse(GlowBlock me) {
-        BlockChangeMessage bcmsg = new BlockChangeMessage(me.getX(), me.getY(), me.getZ(), me.getTypeId(), me.getData());
+        BlockChangePacket bcmsg = new BlockChangePacket(me.getX(), me.getY(), me.getZ(), me.getTypeId(), me.getData());
         for (GlowPlayer p : me.getWorld().getRawPlayers()) {
             p.sendBlockChange(bcmsg);
         }

@@ -7,21 +7,21 @@ import io.netty.handler.codec.DecoderException;
 import net.glowstone.entity.AttributeManager.Modifier;
 import net.glowstone.entity.AttributeManager.Property;
 import net.glowstone.net.GlowBufUtils;
-import net.glowstone.net.message.play.entity.EntityPropertyMessage;
+import net.glowstone.net.message.play.entity.EntityPropertyPacket;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class EntityPropertyCodec implements Codec<EntityPropertyMessage> {
+public class EntityPropertyCodec implements Codec<EntityPropertyPacket> {
     @Override
-    public EntityPropertyMessage decode(ByteBuf buffer) throws IOException {
+    public EntityPropertyPacket decode(ByteBuf buffer) throws IOException {
         throw new DecoderException("Cannot decode EntityPropertyMessage!");
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, EntityPropertyMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, EntityPropertyPacket message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         Map<String, Property> props = message.getProperties();
         buf.writeInt(props.size());

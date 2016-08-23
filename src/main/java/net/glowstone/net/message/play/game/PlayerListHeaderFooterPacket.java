@@ -1,0 +1,12 @@
+package net.glowstone.net.message.play.game;
+
+import com.flowpowered.network.Message;
+import lombok.Data;
+import net.glowstone.util.TextMessage;
+
+@Data
+public final class PlayerListHeaderFooterPacket implements Message {
+
+    private final TextMessage header, footer;
+
+}

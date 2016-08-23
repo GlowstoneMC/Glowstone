@@ -5,9 +5,9 @@ import net.glowstone.EventFactory;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.inventory.*;
-import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
-import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
-import net.glowstone.net.message.play.entity.SpawnPlayerMessage;
+import net.glowstone.net.message.play.entity.EntityEquipmentPacket;
+import net.glowstone.net.message.play.entity.EntityHeadRotationPacket;
+import net.glowstone.net.message.play.entity.SpawnPlayerPacket;
 import net.glowstone.util.Position;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -120,16 +120,16 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         double z = location.getZ();
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
-        result.add(new SpawnPlayerMessage(id, profile.getUniqueId(), x, y, z, yaw, pitch, metadata.getEntryList()));
+        result.add(new SpawnPlayerPacket(id, profile.getUniqueId(), x, y, z, yaw, pitch, metadata.getEntryList()));
 
         // head facing
-        result.add(new EntityHeadRotationMessage(id, yaw));
+        result.add(new EntityHeadRotationPacket(id, yaw));
 
         // equipment
         EntityEquipment equipment = getEquipment();
-        result.add(new EntityEquipmentMessage(id, 0, equipment.getItemInHand()));
+        result.add(new EntityEquipmentPacket(id, 0, equipment.getItemInHand()));
         for (int i = 0; i < 4; i++) {
-            result.add(new EntityEquipmentMessage(id, i + 1, equipment.getArmorContents()[i]));
+            result.add(new EntityEquipmentPacket(id, i + 1, equipment.getArmorContents()[i]));
         }
         return result;
     }

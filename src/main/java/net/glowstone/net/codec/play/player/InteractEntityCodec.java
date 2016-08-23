@@ -3,14 +3,14 @@ package net.glowstone.net.codec.play.player;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.message.play.player.InteractEntityMessage;
-import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
+import net.glowstone.net.message.play.player.InteractEntityPacket;
+import net.glowstone.net.message.play.player.InteractEntityPacket.Action;
 
 import java.io.IOException;
 
-public final class InteractEntityCodec implements Codec<InteractEntityMessage> {
+public final class InteractEntityCodec implements Codec<InteractEntityPacket> {
     @Override
-    public InteractEntityMessage decode(ByteBuf buf) throws IOException {
+    public InteractEntityPacket decode(ByteBuf buf) throws IOException {
         int id = ByteBufUtils.readVarInt(buf);
         int action = ByteBufUtils.readVarInt(buf);
         if (action == Action.INTERACT_AT.ordinal()) {
@@ -18,16 +18,16 @@ public final class InteractEntityCodec implements Codec<InteractEntityMessage> {
             float targetY = buf.readFloat();
             float targetZ = buf.readFloat();
             int hand = ByteBufUtils.readVarInt(buf);
-            return new InteractEntityMessage(id, action, targetX, targetY, targetZ, hand);
+            return new InteractEntityPacket(id, action, targetX, targetY, targetZ, hand);
         } else if (action == Action.INTERACT.ordinal()) {
             int hand = ByteBufUtils.readVarInt(buf);
-            return new InteractEntityMessage(id, action, hand);
+            return new InteractEntityPacket(id, action, hand);
         }
-        return new InteractEntityMessage(id, action);
+        return new InteractEntityPacket(id, action);
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, InteractEntityMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, InteractEntityPacket message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         ByteBufUtils.writeVarInt(buf, message.getAction());
         if (message.getAction() == Action.INTERACT_AT.ordinal()) {

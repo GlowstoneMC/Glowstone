@@ -4,6 +4,7 @@ import com.flowpowered.network.AsyncableMessage;
 import com.flowpowered.network.ConnectionManager;
 import com.flowpowered.network.Message;
 import com.flowpowered.network.MessageHandler;
+import com.flowpowered.network.exception.ChannelClosedException;
 import com.flowpowered.network.session.BasicSession;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -16,20 +17,21 @@ import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.io.PlayerDataService.PlayerReader;
-import net.glowstone.net.message.KickMessage;
+import net.glowstone.net.api.PacketSendEvent;
+import net.glowstone.net.message.KickPacket;
 import net.glowstone.net.message.SetCompressionMessage;
-import net.glowstone.net.message.play.game.PingMessage;
-import net.glowstone.net.message.play.game.UserListItemMessage;
-import net.glowstone.net.message.play.game.UserListItemMessage.Action;
-import net.glowstone.net.message.play.game.UserListItemMessage.Entry;
-import net.glowstone.net.message.play.player.BlockPlacementMessage;
+import net.glowstone.net.message.play.game.PingPacket;
+import net.glowstone.net.message.play.game.PlayerListItemPacket;
+import net.glowstone.net.message.play.game.PlayerListItemPacket.Action;
+import net.glowstone.net.message.play.game.PlayerListItemPacket.Entry;
+import net.glowstone.net.message.play.player.BlockPlacePacket;
 import net.glowstone.net.pipeline.CodecsHandler;
 import net.glowstone.net.pipeline.CompressionHandler;
 import net.glowstone.net.pipeline.EncryptionHandler;
 import net.glowstone.net.pipeline.NoopHandler;
-import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.LoginProtocol;
+import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.ProtocolType;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -123,7 +125,7 @@ public final class GlowSession extends BasicSession {
     /**
      * Stores the last block placement message sent, see BlockPlacementHandler.
      */
-    private BlockPlacementMessage previousPlacement;
+    private BlockPlacePacket previousPlacement;
 
     /**
      * The number of ticks until previousPlacement must be cleared.
@@ -138,8 +140,8 @@ public final class GlowSession extends BasicSession {
     /**
      * Creates a new session.
      *
-     * @param server  The server this session belongs to.
-     * @param channel The channel associated with this session.
+     * @param server            The server this session belongs to.
+     * @param channel           The channel associated with this session.
      * @param connectionManager The connection manager to manage connections for this session.
      */
     public GlowSession(GlowServer server, Channel channel, ConnectionManager connectionManager) {
@@ -240,7 +242,7 @@ public final class GlowSession extends BasicSession {
             if (pingMessageId == 0) {
                 pingMessageId++;
             }
-            send(new PingMessage(pingMessageId));
+            send(new PingPacket(pingMessageId));
         } else {
             disconnect("Timed out");
         }
@@ -262,7 +264,7 @@ public final class GlowSession extends BasicSession {
      *
      * @return The message.
      */
-    public BlockPlacementMessage getPreviousPlacement() {
+    public BlockPlacePacket getPreviousPlacement() {
         return previousPlacement;
     }
 
@@ -271,7 +273,7 @@ public final class GlowSession extends BasicSession {
      *
      * @param message The message.
      */
-    public void setPreviousPlacement(BlockPlacementMessage message) {
+    public void setPreviousPlacement(BlockPlacePacket message) {
         previousPlacement = message;
         previousPlacementTicks = 2;
     }
@@ -361,7 +363,7 @@ public final class GlowSession extends BasicSession {
             server.broadcastMessage(message);
         }
 
-        Message addMessage = new UserListItemMessage(Action.ADD_PLAYER, player.getUserListEntry());
+        Message addMessage = new PlayerListItemPacket(Action.ADD_PLAYER, player.getUserListEntry());
         List<Entry> entries = new ArrayList<>();
         for (GlowPlayer other : server.getRawOnlinePlayers()) {
             if (other != player && other.canSee(player)) {
@@ -371,7 +373,7 @@ public final class GlowSession extends BasicSession {
                 entries.add(other.getUserListEntry());
             }
         }
-        send(new UserListItemMessage(Action.ADD_PLAYER, entries));
+        send(new PlayerListItemPacket(Action.ADD_PLAYER, entries));
     }
 
     @Override
@@ -436,7 +438,7 @@ public final class GlowSession extends BasicSession {
         // perform the kick, sending a kick message if possible
         if (isActive() && (getProtocol() instanceof LoginProtocol || getProtocol() instanceof PlayProtocol)) {
             // channel is both currently connected and in a protocol state allowing kicks
-            sendWithFuture(new KickMessage(reason)).addListener(ChannelFutureListener.CLOSE);
+            sendWithFuture(new KickPacket(reason)).addListener(ChannelFutureListener.CLOSE);
         } else {
             getChannel().close();
         }
@@ -472,7 +474,7 @@ public final class GlowSession extends BasicSession {
 
             player.remove();
 
-            Message userListMessage = UserListItemMessage.removeOne(player.getUniqueId());
+            Message userListMessage = PlayerListItemPacket.removeOne(player.getUniqueId());
             for (GlowPlayer player : server.getRawOnlinePlayers()) {
                 if (player.canSee(this.player)) {
                     player.getSession().send(userListMessage);
@@ -527,6 +529,27 @@ public final class GlowSession extends BasicSession {
 
     ////////////////////////////////////////////////////////////////////////////
     // Handler overrides
+
+
+    @Override
+    public void send(Message message) throws ChannelClosedException {
+        PacketSendEvent event = new PacketSendEvent(message, this, player);
+        event = EventFactory.callEvent(event);
+        if (!event.isCancelled()) {
+            super.send(message);
+            sendAll();
+            for (Message msg : event.getQueue()) {
+                send(msg);
+            }
+        }
+    }
+
+    @Override
+    public void sendAll(Message... messages) throws ChannelClosedException {
+        for (Message message : messages) {
+            this.send(message);
+        }
+    }
 
     @Override
     public void onDisconnect() {

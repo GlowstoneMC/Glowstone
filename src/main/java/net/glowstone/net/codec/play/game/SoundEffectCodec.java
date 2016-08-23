@@ -4,18 +4,18 @@ import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
-import net.glowstone.net.message.play.game.SoundEffectMessage;
+import net.glowstone.net.message.play.game.SoundEffectPacket;
 
 import java.io.IOException;
 
-public class SoundEffectCodec implements Codec<SoundEffectMessage> {
+public class SoundEffectCodec implements Codec<SoundEffectPacket> {
     @Override
-    public SoundEffectMessage decode(ByteBuf buffer) throws IOException {
+    public SoundEffectPacket decode(ByteBuf buffer) throws IOException {
         throw new DecoderException("Cannot decode SoundEffectMessage");
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, SoundEffectMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, SoundEffectPacket message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getSound());
         ByteBufUtils.writeVarInt(buf, message.getCategory().ordinal());
         buf.writeInt((int) (8 * message.getX()));

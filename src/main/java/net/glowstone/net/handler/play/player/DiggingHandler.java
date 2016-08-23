@@ -13,7 +13,7 @@ import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.play.player.DiggingMessage;
+import net.glowstone.net.message.play.player.BlockDigPacket;
 import org.bukkit.material.types.DoublePlantSpecies;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
@@ -31,9 +31,9 @@ import org.bukkit.material.MaterialData;
 
 import java.util.Collection;
 
-public final class DiggingHandler implements MessageHandler<GlowSession, DiggingMessage> {
+public final class DiggingHandler implements MessageHandler<GlowSession, BlockDigPacket> {
     @Override
-    public void handle(GlowSession session, DiggingMessage message) {
+    public void handle(GlowSession session, BlockDigPacket message) {
         //Todo: Implement SHOOT_ARROW_FINISH_EATING
         //Todo: Implement SWAP_ITEM_IN_HAND
         GlowPlayer player = session.getPlayer();
@@ -49,7 +49,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
 
         boolean blockBroken = false;
         boolean revert = false;
-        if (message.getState() == DiggingMessage.START_DIGGING) {
+        if (message.getState() == BlockDigPacket.START_DIGGING) {
             // call interact event
             Action action = Action.LEFT_CLICK_BLOCK;
             Block eventBlock = block;
@@ -87,7 +87,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                     }
                 }
             }
-        } else if (message.getState() == DiggingMessage.FINISH_DIGGING) {
+        } else if (message.getState() == BlockDigPacket.FINISH_DIGGING) {
             // shouldn't happen in creative mode
 
             // todo: verification against malicious clients
@@ -155,13 +155,13 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                 }
             }
             player.setDigging(null);
-        } else if (message.getState() == DiggingMessage.STATE_DROP_ITEM) {
+        } else if (message.getState() == BlockDigPacket.STATE_DROP_ITEM) {
             player.dropItemInHand(false);
             return;
-        } else if (message.getState() == DiggingMessage.STATE_DROP_ITEMSTACK) {
+        } else if (message.getState() == BlockDigPacket.STATE_DROP_ITEMSTACK) {
             player.dropItemInHand(true);
             return;
-        } else if (message.getState() == DiggingMessage.STATE_SHOT_ARROW_FINISH_EATING && player.getUsageItem() != null) {
+        } else if (message.getState() == BlockDigPacket.STATE_SHOT_ARROW_FINISH_EATING && player.getUsageItem() != null) {
             if (player.getUsageItem().equals(holding)) {
                 ItemType type = ItemTable.instance().getItem(player.getUsageItem().getType());
                 ((ItemTimedUsage) type).endUse(player, player.getUsageItem());
@@ -170,7 +170,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                 // todo: inform player their item is wrong
             }
             return;
-        } else if (message.getState() == DiggingMessage.SWAP_ITEM_IN_HAND) {
+        } else if (message.getState() == BlockDigPacket.SWAP_ITEM_IN_HAND) {
             ItemStack main = player.getInventory().getItemInMainHand();
             ItemStack off = player.getInventory().getItemInOffHand();
             player.getInventory().setItemInOffHand(main);

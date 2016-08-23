@@ -9,7 +9,7 @@ import net.glowstone.block.entity.TileEntity;
 import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.play.player.BlockPlacementMessage;
+import net.glowstone.net.message.play.player.BlockPlacePacket;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.Event.Result;
@@ -18,7 +18,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-public final class BlockPlacementHandler implements MessageHandler<GlowSession, BlockPlacementMessage> {
+public final class BlockPlacementHandler implements MessageHandler<GlowSession, BlockPlacePacket> {
     private static final BlockFace[] faces = {
             BlockFace.DOWN, BlockFace.UP, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST
     };
@@ -44,7 +44,7 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
     }
 
     @Override
-    public void handle(GlowSession session, BlockPlacementMessage message) {
+    public void handle(GlowSession session, BlockPlacePacket message) {
         //TODO: Hand handling instead of .getHeldItem()
         GlowPlayer player = session.getPlayer();
         if (player == null)
@@ -80,7 +80,7 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
          * values filled, discard it, otherwise perform right-click-air.
          */
         if (message.getDirection() == -1) {
-            BlockPlacementMessage previous = session.getPreviousPlacement();
+            BlockPlacePacket previous = session.getPreviousPlacement();
             //if (previous == null || !previous.getHeldItem().equals(message.getHeldItem())) {
             // perform normal right-click-air actions
             //   action = Action.RIGHT_CLICK_AIR;
@@ -103,7 +103,7 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         // check that held item matches
         // apparently the "message" container has comprehends held item as null,
         // whereas the "holding" item is Material.AIR * 0 (hence the exceptional if statement here)
-        //if ((!(holding != null && holding.getType() == Material.AIR && message.getHeldItem() == null))
+        //if ((!(holding != null && holding.getPacket() == Material.AIR && message.getHeldItem() == null))
         //        && !Objects.equals(holding, message.getHeldItem())) {
         // above handles cases where holding and/or message's item are null
         // todo: inform player their item is wrong

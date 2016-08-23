@@ -3,23 +3,23 @@ package net.glowstone.net.codec.play.entity;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.message.play.entity.RelativeEntityPositionMessage;
+import net.glowstone.net.message.play.entity.RelativeEntityPositionPacket;
 
 import java.io.IOException;
 
-public final class RelativeEntityPositionCodec implements Codec<RelativeEntityPositionMessage> {
+public final class RelativeEntityPositionCodec implements Codec<RelativeEntityPositionPacket> {
     @Override
-    public RelativeEntityPositionMessage decode(ByteBuf buf) throws IOException {
+    public RelativeEntityPositionPacket decode(ByteBuf buf) throws IOException {
         int id = ByteBufUtils.readVarInt(buf);
         short deltaX = buf.readShort();
         short deltaY = buf.readShort();
         short deltaZ = buf.readShort();
         boolean onGround = buf.readBoolean();
-        return new RelativeEntityPositionMessage(id, deltaX, deltaY, deltaZ, onGround);
+        return new RelativeEntityPositionPacket(id, deltaX, deltaY, deltaZ, onGround);
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, RelativeEntityPositionMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, RelativeEntityPositionPacket message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         buf.writeShort(message.getDeltaX());
         buf.writeShort(message.getDeltaY());

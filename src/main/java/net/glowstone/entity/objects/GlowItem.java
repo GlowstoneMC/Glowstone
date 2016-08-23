@@ -78,7 +78,7 @@ public final class GlowItem extends GlowEntity implements Item {
             setItemStack(map.values().iterator().next());
             return false;
         } else {
-            CollectItemMessage message = new CollectItemMessage(getEntityId(), player.getEntityId());
+            CollectItemPacket message = new CollectItemPacket(getEntityId(), player.getEntityId());
             world.playSound(location, Sound.ENTITY_ITEM_PICKUP, 0.3f, (float) (1 + Math.random()));
             world.getRawPlayers().stream().filter(other -> other.canSeeEntity(this)).forEach(other -> other.getSession().send(message));
             remove();
@@ -193,11 +193,11 @@ public final class GlowItem extends GlowEntity implements Item {
         int pitch = Position.getIntPitch(location);
 
         return Arrays.asList(
-                new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.ITEM, x, y, z, pitch, yaw),
-                new EntityMetadataMessage(id, metadata.getEntryList()),
+                new SpawnObjectPacket(id, getUniqueId(), SpawnObjectPacket.ITEM, x, y, z, pitch, yaw),
+                new EntityMetadataPacket(id, metadata.getEntryList()),
                 // these keep the client from assigning a random velocity
-                new EntityTeleportMessage(id, x, y, z, yaw, pitch),
-                new EntityVelocityMessage(id, getVelocity())
+                new EntityTeleportPacket(id, x, y, z, yaw, pitch),
+                new EntityVelocityPacket(id, getVelocity())
         );
     }
 

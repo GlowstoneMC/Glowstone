@@ -10,7 +10,7 @@ import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowEntity;
-import net.glowstone.net.message.play.game.ChunkDataMessage;
+import net.glowstone.net.message.play.game.ChunkDataPacket;
 import net.glowstone.util.NibbleArray;
 import net.glowstone.util.VariableValueArray;
 import net.glowstone.util.nbt.CompoundTag;
@@ -592,12 +592,12 @@ public final class GlowChunk implements Chunk {
     }
 
     /**
-     * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream
+     * Creates a new {@link ChunkDataPacket} which can be sent to a client to stream
      * this entire chunk to them.
      *
-     * @return The {@link ChunkDataMessage}.
+     * @return The {@link ChunkDataPacket}.
      */
-    public ChunkDataMessage toMessage() {
+    public ChunkDataPacket toMessage() {
         // this may need to be changed to "true" depending on resolution of
         // some inconsistencies on the wiki
         return toMessage(world.getEnvironment() == Environment.NORMAL);
@@ -606,13 +606,13 @@ public final class GlowChunk implements Chunk {
     // ======== Helper functions ========
 
     /**
-     * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream
+     * Creates a new {@link ChunkDataPacket} which can be sent to a client to stream
      * this entire chunk to them.
      *
      * @param skylight Whether to include skylight data.
-     * @return The {@link ChunkDataMessage}.
+     * @return The {@link ChunkDataPacket}.
      */
-    public ChunkDataMessage toMessage(boolean skylight) {
+    public ChunkDataPacket toMessage(boolean skylight) {
         return toMessage(skylight, true);
     }
 
@@ -630,14 +630,14 @@ public final class GlowChunk implements Chunk {
     }
 
     /**
-     * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream
+     * Creates a new {@link ChunkDataPacket} which can be sent to a client to stream
      * parts of this chunk to them.
      *
      * @param skylight Whether to include skylight data.
      * @param entireChunk Whether to send all chunk sections.
-     * @return The {@link ChunkDataMessage}.
+     * @return The {@link ChunkDataPacket}.
      */
-    public ChunkDataMessage toMessage(boolean skylight, boolean entireChunk) {
+    public ChunkDataPacket toMessage(boolean skylight, boolean entireChunk) {
         load();
         int sectionBitmask = 0;
 
@@ -698,7 +698,7 @@ public final class GlowChunk implements Chunk {
             tiles.add(tag);
         }
 
-        return new ChunkDataMessage(x, z, entireChunk, sectionBitmask, buf, tiles.toArray(new CompoundTag[tiles.size()]));
+        return new ChunkDataPacket(x, z, entireChunk, sectionBitmask, buf, tiles.toArray(new CompoundTag[tiles.size()]));
     }
 
     /**

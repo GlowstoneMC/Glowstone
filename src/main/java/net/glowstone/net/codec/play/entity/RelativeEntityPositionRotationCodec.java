@@ -3,13 +3,13 @@ package net.glowstone.net.codec.play.entity;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.message.play.entity.RelativeEntityPositionRotationMessage;
+import net.glowstone.net.message.play.entity.RelativeEntityPositionRotationPacket;
 
 import java.io.IOException;
 
-public final class RelativeEntityPositionRotationCodec implements Codec<RelativeEntityPositionRotationMessage> {
+public final class RelativeEntityPositionRotationCodec implements Codec<RelativeEntityPositionRotationPacket> {
     @Override
-    public RelativeEntityPositionRotationMessage decode(ByteBuf buf) throws IOException {
+    public RelativeEntityPositionRotationPacket decode(ByteBuf buf) throws IOException {
         int id = ByteBufUtils.readVarInt(buf);
         short x = buf.readShort();
         short y = buf.readShort();
@@ -17,11 +17,11 @@ public final class RelativeEntityPositionRotationCodec implements Codec<Relative
         int rotation = buf.readByte();
         int pitch = buf.readByte();
         boolean ground = buf.readBoolean();
-        return new RelativeEntityPositionRotationMessage(id, x, y, z, rotation, pitch, ground);
+        return new RelativeEntityPositionRotationPacket(id, x, y, z, rotation, pitch, ground);
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, RelativeEntityPositionRotationMessage message) throws IOException {
+    public ByteBuf encode(ByteBuf buf, RelativeEntityPositionRotationPacket message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         buf.writeShort(message.getDeltaX());
         buf.writeShort(message.getDeltaY());
