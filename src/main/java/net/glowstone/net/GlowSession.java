@@ -140,8 +140,8 @@ public final class GlowSession extends BasicSession {
     /**
      * Creates a new session.
      *
-     * @param server  The server this session belongs to.
-     * @param channel The channel associated with this session.
+     * @param server            The server this session belongs to.
+     * @param channel           The channel associated with this session.
      * @param connectionManager The connection manager to manage connections for this session.
      */
     public GlowSession(GlowServer server, Channel channel, ConnectionManager connectionManager) {
@@ -538,6 +538,9 @@ public final class GlowSession extends BasicSession {
         if (!event.isCancelled()) {
             super.send(message);
             sendAll();
+            for (Message msg : event.getQueue()) {
+                send(msg);
+            }
         }
     }
 

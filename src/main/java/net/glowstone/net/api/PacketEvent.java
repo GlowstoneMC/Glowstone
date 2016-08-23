@@ -6,6 +6,10 @@ import net.glowstone.net.GlowSession;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public abstract class PacketEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
@@ -14,6 +18,7 @@ public abstract class PacketEvent extends Event {
     private final GlowSession session;
     private final GlowPlayer player;
     private final GlowPacket packet;
+    private List<Message> queue = new ArrayList<>();
 
     public PacketEvent(Message packetObject, GlowSession session, GlowPlayer player, GlowPacket.Destination destination) {
         this.packetObject = packetObject;
@@ -40,6 +45,14 @@ public abstract class PacketEvent extends Event {
 
     public GlowPacket getPacket() {
         return packet;
+    }
+
+    public void queue(Message... messages) {
+        Collections.addAll(queue, messages);
+    }
+
+    public List<Message> getQueue() {
+        return queue;
     }
 
     public PacketDeconstructor deconstruct() {

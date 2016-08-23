@@ -10,5 +10,8 @@ public class EventMessageHandler<M extends Message> implements MessageHandler<Gl
     public void handle(GlowSession session, M message) {
         PacketReceiveEvent receiveEvent = new PacketReceiveEvent(message, session, session.getPlayer());
         EventFactory.callEvent(receiveEvent);
+        for (Message msg : receiveEvent.getQueue()) {
+            session.send(msg);
+        }
     }
 }
