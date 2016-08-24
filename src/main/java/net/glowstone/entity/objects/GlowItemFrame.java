@@ -46,6 +46,7 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
         }
         metadata.set(MetadataIndex.ITEM_FRAME_ROTATION, 0);
         metadata.set(MetadataIndex.ITEM_FRAME_ITEM, new ItemStack(Material.AIR));
+
         itemInFrame = Material.AIR;
     }
 
@@ -163,7 +164,6 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
 
     @Override
     public List<Message> createSpawnMessage() {
-
         int xoffset = 0;
         int zoffset = 0;
         int yaw = 0;
@@ -185,8 +185,7 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
                 yaw = 0;
                 break;
         }
-
-        return Arrays.asList(new SpawnObjectMessage(id, getUniqueId(), 71, (location.getBlockX() + xoffset) * 32, location.getBlockY() * 32, (location.getBlockZ() + zoffset) * 32, 0, yaw, getFacingNumber(face), 0, 0, 0), new EntityMetadataMessage(id, metadata.getEntryList()));
+        return Arrays.asList(new SpawnObjectMessage(id, getUniqueId(), 71, location.getBlockX() + xoffset, location.getBlockY(), location.getBlockZ() + zoffset, 0, yaw, getFacingNumber(face), 0, 0, 0), new EntityMetadataMessage(id, metadata.getEntryList()));
     }
 
     @Override

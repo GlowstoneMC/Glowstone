@@ -14,7 +14,10 @@ class ItemFrameStore extends EntityStore<GlowItemFrame> {
 
     public GlowItemFrame createEntity(Location location, CompoundTag compound) {
         // item frame will be set by loading code below
-        return new GlowItemFrame(null, location, null);
+        int facing = compound.getInt("Facing");
+        GlowItemFrame itemFrame = new GlowItemFrame(null, location, null);
+        itemFrame.setFacingDirectionNumber(facing);
+        return itemFrame;
     }
 
     @Override
