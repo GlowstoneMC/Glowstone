@@ -151,10 +151,14 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
                 session.getPlayer().setItemInHand(inHand);
                 break;
             case "MC|ItemName":
+                if (session.getPlayer().getOpenInventory() == null) {
+                    break;
+                }
                 // check if player is in an anvil inventory
                 if (session.getPlayer().getOpenInventory().getType() != InventoryType.ANVIL) {
                     break;
                 }
+                // get the new name for the item
                 String name;
                 try {
                     name = ByteBufUtils.readUTF8(buf);
@@ -166,6 +170,7 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
                 if (inv.getResultItem() == null) {
                     break;
                 }
+                // rename thje item
                 ItemMeta m = inv.getResultItem().getItemMeta();
                 m.setDisplayName(ChatColor.ITALIC + name);
                 inv.getResultItem().setItemMeta(m);
