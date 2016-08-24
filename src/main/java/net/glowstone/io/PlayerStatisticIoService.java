@@ -51,10 +51,15 @@ public class PlayerStatisticIoService {
                 for (Object o : json.keySet()) {
                     String key = (String) o;
                     Long longValue = null;
-                    try {
-                        longValue = ((Long) json.get(o));
-                    } catch (ClassCastException e) {
-                        GlowServer.logger.info("Unknown statistic: (" + key + ", " + json.get(o) + ")");
+                    if (json.get(o) instanceof Long) {
+                        longValue = (Long) json.get(o);
+                    } else if (json.get(o) instanceof JSONObject) {
+                        JSONObject object = (JSONObject) json.get(o);
+                        if (object.containsKey("value")) {
+                            longValue = (Long) object.get("value");
+                        }
+                    } else {
+                        GlowServer.logger.warning("Unknown statistic type for '" + key + "': " + json.get(o) + " (" + json.get(o).getClass().getSimpleName() + ")");
                     }
                     if (longValue != null) {
                         player.getStatisticMap().getValues().put(key, longValue.intValue());
