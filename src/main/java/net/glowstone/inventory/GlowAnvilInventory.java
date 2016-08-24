@@ -27,6 +27,18 @@ public class GlowAnvilInventory extends GlowInventory implements AnvilInventory 
         return 0;
     }
 
+    public ItemStack getFirstItem() {
+        return getSlot(FIRST_ITEM_SLOT).getItem();
+    }
+
+    public ItemStack getSecondItem() {
+        return getSlot(SECOND_ITEM_SLOT).getItem();
+    }
+
+    public ItemStack getResultItem() {
+        return getSlot(RESULT_SLOT).getItem();
+    }
+
     @Override
     public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot, ItemStack clickedItem) {
         clickedItem = player.getInventory().tryToFillSlots(clickedItem, 9, 36, 0, 9);

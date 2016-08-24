@@ -5,10 +5,13 @@ import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.glowstone.GlowServer;
+import net.glowstone.inventory.GlowAnvilInventory;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.game.PluginMessage;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -146,6 +149,26 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
                 inHand.setType(Material.WRITTEN_BOOK);
                 inHand.setItemMeta(handBook);
                 session.getPlayer().setItemInHand(inHand);
+                break;
+            case "MC|ItemName":
+                // check if player is in an anvil inventory
+                if (session.getPlayer().getOpenInventory().getType() != InventoryType.ANVIL) {
+                    break;
+                }
+                String name;
+                try {
+                    name = ByteBufUtils.readUTF8(buf);
+                } catch (IOException e) {
+                    GlowServer.logger.log(Level.WARNING, "Error reading anvil item name by " + session, e);
+                    break;
+                }
+                GlowAnvilInventory inv = (GlowAnvilInventory) session.getPlayer().getOpenInventory().getTopInventory();
+                if (inv.getResultItem() == null) {
+                    break;
+                }
+                ItemMeta m = inv.getResultItem().getItemMeta();
+                m.setDisplayName(ChatColor.ITALIC + name);
+                inv.getResultItem().setItemMeta(m);
                 break;
             default:
                 GlowServer.logger.info(session + " used unknown Minecraft channel: " + channel);
