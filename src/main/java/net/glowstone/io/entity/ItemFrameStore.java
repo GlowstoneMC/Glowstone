@@ -14,7 +14,7 @@ class ItemFrameStore extends EntityStore<GlowItemFrame> {
 
     public GlowItemFrame createEntity(Location location, CompoundTag compound) {
         // item frame will be set by loading code below
-        int facing = compound.getInt("Facing");
+        int facing = compound.getByte("Facing");
         GlowItemFrame itemFrame = new GlowItemFrame(null, location, null);
         itemFrame.setFacingDirectionNumber(facing);
         return itemFrame;
@@ -24,8 +24,8 @@ class ItemFrameStore extends EntityStore<GlowItemFrame> {
     public void load(GlowItemFrame entity, CompoundTag tag) {
         super.load(entity, tag);
 
-        if (tag.isInt("Facing")) {
-            entity.setFacingDirectionNumber(tag.getInt("Facing"));
+        if (tag.isByte("Facing")) {
+            entity.setFacingDirectionNumber(tag.getByte("Facing"));
         }
         if (tag.isCompound("Item")) {
             entity.setItemInFrame(NbtSerialization.readItem(tag.getCompound("Item")));
@@ -39,7 +39,7 @@ class ItemFrameStore extends EntityStore<GlowItemFrame> {
     @Override
     public void save(GlowItemFrame entity, CompoundTag tag) {
         super.save(entity, tag);
-        tag.putInt("Facing", entity.getFacingNumber());
+        tag.putByte("Facing", entity.getFacingNumber());
         tag.putCompound("Item", NbtSerialization.writeItem(entity.getItem(), -1));
         tag.putInt("Rotation", entity.getRotation().ordinal());
     }

@@ -12,6 +12,6 @@ public class ItemItemFrame extends ItemType {
 
     @Override
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc) {
-        new GlowItemFrame(player, target.getLocation(), face);
+        new GlowItemFrame(player, target.getLocation().getBlock().getRelative(face).getLocation(), face);
     }
 }

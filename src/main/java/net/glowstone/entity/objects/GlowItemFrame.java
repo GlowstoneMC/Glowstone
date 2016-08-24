@@ -152,7 +152,8 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
         super.pulse();
 
         if (ticksLived % 11 == 0) {
-            if (world.getBlockAt(new Location(getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ())).getType() == Material.AIR) {
+
+            if (location.getBlock().getRelative(face.getOppositeFace()).getType() == Material.AIR) {
                 world.dropItemNaturally(location, new ItemStack(Material.ITEM_FRAME));
                 if (!isEmpty()) {
                     world.dropItemNaturally(location, new ItemStack(itemInFrame));
@@ -164,28 +165,22 @@ public final class GlowItemFrame extends GlowEntity implements ItemFrame {
 
     @Override
     public List<Message> createSpawnMessage() {
-        int xoffset = 0;
-        int zoffset = 0;
         int yaw = 0;
         switch (getFacingNumber(face)) {
             case 1:
-                xoffset = -1;
                 yaw = 64;
                 break;
             case 2:
-                zoffset = -1;
                 yaw = -128;
                 break;
             case 3:
-                xoffset = 1;
                 yaw = -64;
                 break;
             case 0:
-                zoffset = 1;
                 yaw = 0;
                 break;
         }
-        return Arrays.asList(new SpawnObjectMessage(id, getUniqueId(), 71, location.getBlockX() + xoffset, location.getBlockY(), location.getBlockZ() + zoffset, 0, yaw, getFacingNumber(face), 0, 0, 0), new EntityMetadataMessage(id, metadata.getEntryList()));
+        return Arrays.asList(new SpawnObjectMessage(id, getUniqueId(), 71, location.getBlockX(), location.getBlockY(), location.getBlockZ(), 0, yaw, getFacingNumber(face), 0, 0, 0), new EntityMetadataMessage(id, metadata.getEntryList()));
     }
 
     @Override
