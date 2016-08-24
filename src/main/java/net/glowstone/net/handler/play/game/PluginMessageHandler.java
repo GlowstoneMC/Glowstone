@@ -170,7 +170,7 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
                 if (inv.getResultItem() == null) {
                     break;
                 }
-                // rename thje item
+                // rename the item
                 ItemMeta m = inv.getResultItem().getItemMeta();
                 m.setDisplayName(ChatColor.ITALIC + name);
                 inv.getResultItem().setItemMeta(m);
