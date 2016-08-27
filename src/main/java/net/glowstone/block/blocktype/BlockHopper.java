@@ -175,7 +175,7 @@ public class BlockHopper extends BlockContainer {
     }
 
     @Override
-    public Integer getPulseTickSpeed(GlowBlock block) {
+    public int getPulseTickSpeed(GlowBlock block) {
         return 8;
     }
 

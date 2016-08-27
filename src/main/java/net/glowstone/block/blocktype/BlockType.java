@@ -431,11 +431,11 @@ public class BlockType extends ItemType {
     /**
      * The rate at which the block should be pulsed.
      *
-     * @return null if the block should not pulse, or a number of ticks between pulses.
+     * @return 0 if the block should not pulse, or a number of ticks between pulses.
      */
-    public Integer getPulseTickSpeed(GlowBlock block) {
+    public int getPulseTickSpeed(GlowBlock block) {
         // Override if needs pulse
-        return null;
+        return 0;
     }
 
     /**

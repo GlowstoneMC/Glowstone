@@ -109,7 +109,7 @@ public class BlockRedstoneTorch extends BlockNeedsAttached {
     }
 
     @Override
-    public Integer getPulseTickSpeed(GlowBlock block) {
+    public int getPulseTickSpeed(GlowBlock block) {
         return 2;
     }
 }
