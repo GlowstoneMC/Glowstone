@@ -246,7 +246,7 @@ public class BlockFire extends BlockNeedsAttached {
     }
 
     @Override
-    public Integer getPulseTickSpeed(GlowBlock block) {
+    public int getPulseTickSpeed(GlowBlock block) {
         return TICK_RATE;
     }
 

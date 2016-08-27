@@ -260,7 +260,7 @@ public abstract class BlockLiquid extends BlockType {
     }
 
     @Override
-    public Integer getPulseTickSpeed(GlowBlock block) {
+    public int getPulseTickSpeed(GlowBlock block) {
         return isWater(block.getType()) || block.getBiome() == Biome.HELL ? TICK_RATE_WATER : TICK_RATE_LAVA;
     }
 }
