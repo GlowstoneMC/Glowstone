@@ -188,8 +188,9 @@ public abstract class BlockLiquid extends BlockType {
             strength = STRENGTH_MAX;
         }
         // flow to the target
-        ((GlowBlock) fromToEvent.getToBlock()).setType(fromToEvent.getBlock().getType(), strength, true);
-        //((GlowWorld) fromToEvent.getToBlock().getWorld()).requestPulse(((GlowBlock) fromToEvent.getToBlock()));
+        GlowBlock toBlock = (GlowBlock) fromToEvent.getToBlock();
+        toBlock.setType(fromToEvent.getBlock().getType(), strength, true);
+        toBlock.getWorld().requestPulse(toBlock);
     }
 
     private void mix(GlowBlock target, BlockFace direction, Material flowingMaterial, Material targetMaterial) {
@@ -256,7 +257,7 @@ public abstract class BlockLiquid extends BlockType {
 
     @Override
     public boolean isPulseOnce(GlowBlock block) {
-        return false;
+        return true;
     }
 
     @Override
