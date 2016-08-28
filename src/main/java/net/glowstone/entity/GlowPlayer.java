@@ -18,7 +18,10 @@ import net.glowstone.block.entity.TESign;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.block.itemtype.ItemFood;
 import net.glowstone.block.itemtype.ItemType;
-import net.glowstone.constants.*;
+import net.glowstone.constants.GlowAchievement;
+import net.glowstone.constants.GlowBlockEntity;
+import net.glowstone.constants.GlowEffect;
+import net.glowstone.constants.GlowParticle;
 import net.glowstone.entity.meta.ClientSettings;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataIndex.StatusFlags;
@@ -616,42 +619,41 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * Process and send pending BlockChangeMessages.
      */
     private void processBlockChanges() {
-        List<BlockChangeMessage> messages = new ArrayList<>(blockChanges);
-        blockChanges.clear();
-
-        // separate messages by chunk
-        // inner map is used to only send one entry for same coordinates
-        Map<Key, Map<BlockVector, BlockChangeMessage>> chunks = new HashMap<>();
-        for (BlockChangeMessage message : messages) {
-            if (message != null) {
-                Key key = new Key(message.getX() >> 4, message.getZ() >> 4);
-                if (canSeeChunk(key)) {
-                    Map<BlockVector, BlockChangeMessage> map = chunks.get(key);
-                    if (map == null) {
-                        map = new HashMap<>();
-                        chunks.put(key, map);
+        synchronized (blockChanges) {
+            List<BlockChangeMessage> messages = new ArrayList<>(blockChanges);
+            blockChanges.clear();
+            // separate messages by chunk
+            // inner map is used to only send one entry for same coordinates
+            Map<Key, Map<BlockVector, BlockChangeMessage>> chunks = new HashMap<>();
+            for (BlockChangeMessage message : messages) {
+                if (message != null) {
+                    Key key = new Key(message.getX() >> 4, message.getZ() >> 4);
+                    if (canSeeChunk(key)) {
+                        Map<BlockVector, BlockChangeMessage> map = chunks.get(key);
+                        if (map == null) {
+                            map = new HashMap<>();
+                            chunks.put(key, map);
+                        }
+                        map.put(new BlockVector(message.getX(), message.getY(), message.getZ()), message);
                     }
-                    map.put(new BlockVector(message.getX(), message.getY(), message.getZ()), message);
                 }
             }
-        }
+            // send away
+            for (Map.Entry<Key, Map<BlockVector, BlockChangeMessage>> entry : chunks.entrySet()) {
+                Key key = entry.getKey();
+                List<BlockChangeMessage> value = new ArrayList<>(entry.getValue().values());
 
-        // send away
-        for (Map.Entry<Key, Map<BlockVector, BlockChangeMessage>> entry : chunks.entrySet()) {
-            Key key = entry.getKey();
-            List<BlockChangeMessage> value = new ArrayList<>(entry.getValue().values());
-
-            if (value.size() == 1) {
-                session.send(value.get(0));
-            } else if (value.size() > 1) {
-                session.send(new MultiBlockChangeMessage(key.getX(), key.getZ(), value));
+                if (value.size() == 1) {
+                    session.send(value.get(0));
+                } else if (value.size() > 1) {
+                    session.send(new MultiBlockChangeMessage(key.getX(), key.getZ(), value));
+                }
             }
+            // now send post-block-change messages
+            List<Message> postMessages = new ArrayList<>(afterBlockChanges);
+            afterBlockChanges.clear();
+            postMessages.forEach(session::send);
         }
-
-        // now send post-block-change messages
-        List<Message> postMessages = new ArrayList<>(afterBlockChanges);
-        afterBlockChanges.clear();
-        postMessages.forEach(session::send);
     }
 
     /**
