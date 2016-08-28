@@ -189,7 +189,7 @@ public abstract class BlockLiquid extends BlockType {
         }
         // flow to the target
         GlowBlock toBlock = (GlowBlock) fromToEvent.getToBlock();
-        toBlock.setType(fromToEvent.getBlock().getType(), strength, true);
+        toBlock.setType(fromToEvent.getBlock().getType(), strength, false);
         toBlock.getWorld().requestPulse(toBlock);
     }
 
