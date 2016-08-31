@@ -5,18 +5,18 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Silverfish;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.Collection;
 
-public class BlockMonsterEggs extends BlockType {
+public class BlockMonsterEgg extends BlockType {
     @Override
     public void blockDestroy(GlowPlayer player, GlowBlock block, BlockFace face) {
         //only spawn silverfish if block broke by player
-        //TODO: add spawn reason SILVERFISH_BLOCK
-        block.getWorld().spawnEntity(block.getLocation().clone().add(0.5, 0, 0.5), EntityType.SILVERFISH);
+        block.getWorld().spawn(block.getLocation().add(0.5, 0, 0.5), Silverfish.class, CreatureSpawnEvent.SpawnReason.SILVERFISH_BLOCK);
     }
 
     @Override
