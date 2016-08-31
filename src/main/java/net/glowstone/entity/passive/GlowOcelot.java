@@ -2,9 +2,13 @@ package net.glowstone.entity.passive;
 
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Ocelot;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.Random;
 
 public class GlowOcelot extends GlowTameable implements Ocelot {
 
@@ -31,4 +35,6 @@ public class GlowOcelot extends GlowTameable implements Ocelot {
         // TODO
         super.setOwner(animalTamer);
     }
+
+
 }

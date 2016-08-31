@@ -124,4 +124,18 @@ public class GlowSheep extends GlowAnimal implements Sheep {
                 return false;
         }
     }
+
+    @Override
+    public void kill()
+    {
+        super.kill();
+
+        Random r = new Random();
+
+        getWorld().dropItemNaturally(getLocation(), new ItemStack(Material.MUTTON, r.nextInt(2)));
+
+        if (!sheared) {
+            getWorld().dropItemNaturally(getLocation(), new ItemStack(Material.WOOL, r.nextInt(1)));
+        }
+    }
 }

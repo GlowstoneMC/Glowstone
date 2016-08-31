@@ -11,6 +11,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Pig;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Random;
+
 public class GlowPig extends GlowAnimal implements Pig {
 
     public GlowPig(Location location) {
@@ -53,4 +55,16 @@ public class GlowPig extends GlowAnimal implements Pig {
         return isEmpty() && setPassenger(player);
 
     }
+
+    @Override
+    public void kill()
+    {
+        super.kill();
+
+        Random r = new Random();
+
+        int porkDrop = r.nextInt(3);
+        getWorld().dropItemNaturally(getLocation(), new ItemStack(Material.PORK, porkDrop));
+    }
+
 }

@@ -4,8 +4,12 @@ import com.google.common.collect.ImmutableBiMap;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Rabbit;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.Random;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -38,5 +42,16 @@ public class GlowRabbit extends GlowAnimal implements Rabbit {
         checkNotNull(type, "Cannot set a null rabbit type!");
         metadata.set(MetadataIndex.RABBIT_TYPE, rabbitTypeIntegerMap.get(getRabbitType()).byteValue());
         rabbitType = type;
+    }
+
+    @Override
+    public void kill()
+    {
+        super.kill();
+
+        Random r = new Random();
+
+        getWorld().dropItemNaturally(getLocation(), new ItemStack(Material.RABBIT, r.nextInt(1)));
+        getWorld().dropItemNaturally(getLocation(), new ItemStack(Material.RABBIT_HIDE, r.nextInt(1)));
     }
 }
