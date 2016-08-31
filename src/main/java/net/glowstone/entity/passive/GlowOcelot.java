@@ -8,8 +8,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Random;
-
 public class GlowOcelot extends GlowTameable implements Ocelot {
 
     private Type catType;

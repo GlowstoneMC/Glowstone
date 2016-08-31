@@ -206,8 +206,7 @@ public class GlowHorse extends GlowTameable implements Horse {
     }
 
     @Override
-    public void kill()
-    {
+    public void kill() {
         super.kill();
 
         Random r = new Random();

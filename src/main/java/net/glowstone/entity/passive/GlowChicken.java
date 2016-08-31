@@ -54,8 +54,7 @@ public class GlowChicken extends GlowAnimal implements Chicken {
     }
 
     @Override
-    public void kill()
-    {
+    public void kill() {
         super.kill();
 
         Random r = new Random();

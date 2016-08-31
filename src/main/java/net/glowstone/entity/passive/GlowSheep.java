@@ -126,8 +126,7 @@ public class GlowSheep extends GlowAnimal implements Sheep {
     }
 
     @Override
-    public void kill()
-    {
+    public void kill() {
         super.kill();
 
         Random r = new Random();

@@ -27,8 +27,7 @@ public class GlowPolarBear extends GlowAnimal implements PolarBear {
     }
 
     @Override
-    public void kill()
-    {
+    public void kill() {
         super.kill();
 
         Random r = new Random();

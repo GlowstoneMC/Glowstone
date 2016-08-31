@@ -45,8 +45,7 @@ public class GlowRabbit extends GlowAnimal implements Rabbit {
     }
 
     @Override
-    public void kill()
-    {
+    public void kill() {
         super.kill();
 
         Random r = new Random();

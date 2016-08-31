@@ -17,8 +17,7 @@ public class GlowMooshroom extends GlowAnimal implements MushroomCow {
     }
 
     @Override
-    public void kill()
-    {
+    public void kill() {
         super.kill();
 
         Random r = new Random();

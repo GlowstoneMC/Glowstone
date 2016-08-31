@@ -458,8 +458,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }
     }
 
-    public void kill()
-    {
+    public void kill() {
         active = false;
         Sound deathSound = getDeathSound();
         if (deathSound != null) {
