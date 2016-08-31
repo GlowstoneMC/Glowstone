@@ -7,6 +7,7 @@ import net.glowstone.entity.objects.GlowFallingBlock;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.entity.objects.GlowItemFrame;
 import net.glowstone.entity.passive.*;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
 import static org.bukkit.entity.EntityType.*;
@@ -78,6 +79,26 @@ public class EntityRegistry {
 
     public static Class<? extends GlowEntity> getEntity(short id) {
         return ENTITIES.get(fromId(id));
+    }
+
+    private static EntityType[] values;
+
+    /**
+     * Get an EntityType from its Bukkit class.
+     *
+     * @param clazz the Bukkit class of this entity (org.bukkit.entity.*)
+     * @return
+     */
+    public static EntityType fromClass(Class<? extends Entity> clazz) {
+        if (values == null) {
+            values = values(); // Cache values
+        }
+        for (EntityType value : values) {
+            if (value.getEntityClass() == clazz) {
+                return value;
+            }
+        }
+        return null;
     }
 
 }
