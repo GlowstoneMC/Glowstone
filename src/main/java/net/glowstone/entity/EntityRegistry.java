@@ -1,6 +1,7 @@
 package net.glowstone.entity;
 
 import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.Maps;
 import net.glowstone.entity.monster.*;
 import net.glowstone.entity.objects.GlowArmorStand;
 import net.glowstone.entity.objects.GlowFallingBlock;
@@ -9,6 +10,9 @@ import net.glowstone.entity.objects.GlowItemFrame;
 import net.glowstone.entity.passive.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+
+import java.util.Collections;
+import java.util.Map;
 
 import static org.bukkit.entity.EntityType.*;
 
@@ -77,28 +81,13 @@ public class EntityRegistry {
                     .put(ZOMBIE, GlowZombie.class)
                     .build();
 
-    public static Class<? extends GlowEntity> getEntity(short id) {
-        return ENTITIES.get(fromId(id));
-    }
+    public static Map<Class<? extends Entity>, Class<? extends GlowEntity>> ENTITY_CLASSES = Maps.newHashMap();
 
-    private static EntityType[] values;
-
-    /**
-     * Get an EntityType from its Bukkit class.
-     *
-     * @param clazz the Bukkit class of this entity (org.bukkit.entity.*)
-     * @return
-     */
-    public static EntityType fromClass(Class<? extends Entity> clazz) {
-        if (values == null) {
-            values = values(); // Cache values
+    static {
+        for (Map.Entry<EntityType, Class<? extends GlowEntity>> entry : ENTITIES.entrySet()) {
+            ENTITY_CLASSES.put(entry.getKey().getEntityClass(), entry.getValue());
         }
-        for (EntityType value : values) {
-            if (value.getEntityClass() == clazz) {
-                return value;
-            }
-        }
-        return null;
+        ENTITY_CLASSES = Collections.unmodifiableMap(ENTITY_CLASSES);
     }
 
 }

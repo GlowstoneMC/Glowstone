@@ -20,7 +20,7 @@ public class ItemSpawn extends ItemType {
             SpawnMeta meta = (SpawnMeta) holding.getItemMeta();
             EntityType type = meta.getEntityType();
             if (type != null) {
-                Class<? extends GlowEntity> spawn = EntityRegistry.getEntity(type.getTypeId());
+                Class<? extends GlowEntity> spawn = EntityRegistry.ENTITIES.get(type);
                 target.getWorld().spawn(target.getLocation(), spawn, SpawnReason.SPAWNER_EGG);
             }
         }

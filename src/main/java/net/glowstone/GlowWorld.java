@@ -1200,7 +1200,7 @@ public final class GlowWorld implements World {
         GlowEntity entity = null;
 
         if (!GlowEntity.class.isAssignableFrom(clazz)) { // Could be an org.bukkit.entity.* class
-            clazz = (Class<T>) EntityRegistry.ENTITIES.get(EntityRegistry.fromClass(clazz)); // Take Glowstone class from registry
+            clazz = (Class<T>) EntityRegistry.ENTITIES.get(EntityRegistry.ENTITY_CLASSES.get(clazz)); // Take Glowstone class from registry
         }
 
         if (TNTPrimed.class.isAssignableFrom(clazz)) {
