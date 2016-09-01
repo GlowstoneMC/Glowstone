@@ -1199,10 +1199,6 @@ public final class GlowWorld implements World {
     public <T extends Entity> T spawn(Location location, Class<T> clazz, SpawnReason reason) throws IllegalArgumentException {
         GlowEntity entity = null;
 
-        if (!GlowEntity.class.isAssignableFrom(clazz)) { // Could be an org.bukkit.entity.* class
-            clazz = (Class<T>) EntityRegistry.ENTITIES.get(EntityRegistry.ENTITY_CLASSES.get(clazz)); // Take Glowstone class from registry
-        }
-
         if (TNTPrimed.class.isAssignableFrom(clazz)) {
             entity = new GlowTNTPrimed(location, null);
         }
