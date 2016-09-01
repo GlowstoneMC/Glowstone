@@ -174,7 +174,7 @@ public class GlowAgeable extends GlowCreature implements Ageable {
 
     @Override
     public Ageable createBaby() {
-        Class<? extends GlowEntity> spawn = EntityRegistry.getEntity(getType().getTypeId());
+        Class<? extends GlowEntity> spawn = EntityRegistry.getEntity(getType());
         GlowAgeable ageable = (GlowAgeable) getWorld().spawn(getLocation(), spawn, CreatureSpawnEvent.SpawnReason.SPAWNER_EGG);
         ageable.setBaby();
         ageable.setParent(this);

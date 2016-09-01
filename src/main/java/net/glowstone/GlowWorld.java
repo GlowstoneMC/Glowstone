@@ -1193,7 +1193,7 @@ public final class GlowWorld implements World {
 
     @Override
     public <T extends Entity> T spawn(Location location, Class<T> clazz) throws IllegalArgumentException {
-        return spawn(location, clazz, SpawnReason.CUSTOM);
+        return spawn(location, (Class<T>) EntityRegistry.getEntity(clazz), SpawnReason.CUSTOM);
     }
 
     public <T extends Entity> T spawn(Location location, Class<T> clazz, SpawnReason reason) throws IllegalArgumentException {
@@ -1820,9 +1820,9 @@ public final class GlowWorld implements World {
 
         if (tickRate > 0) {
             tickMap.put(target, new AbstractMap.SimpleEntry<>(tickRate, false));
+        } else if (tickMap.containsKey(target)) {
+            tickMap.remove(target);
         }
-
-        tickMap.remove(target);
     }
 
     public void cancelPulse(GlowBlock block) {
