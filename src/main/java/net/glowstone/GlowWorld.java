@@ -1199,6 +1199,10 @@ public final class GlowWorld implements World {
     public <T extends Entity> T spawn(Location location, Class<T> clazz, SpawnReason reason) throws IllegalArgumentException {
         GlowEntity entity = null;
 
+        if (!GlowEntity.class.isAssignableFrom(clazz)) { // Could be an org.bukkit.entity.* class
+            clazz = (Class<T>) EntityRegistry.ENTITIES.get(EntityRegistry.ENTITY_CLASSES.get(clazz)); // Take Glowstone class from registry
+        }
+
         if (TNTPrimed.class.isAssignableFrom(clazz)) {
             entity = new GlowTNTPrimed(location, null);
         }
@@ -1794,9 +1798,9 @@ public final class GlowWorld implements World {
      * Calling this method will request that the block is ticked on the next iteration
      * that applies to the specified tick rate.
      *
-     * @param block The block to tick.
+     * @param block    The block to tick.
      * @param tickRate The tick rate to tick the block at.
-     * @param single Whether to tick once.
+     * @param single   Whether to tick once.
      */
     public void requestPulse(GlowBlock block, long tickRate, boolean single) {
         Location target = block.getLocation();
@@ -1812,7 +1816,7 @@ public final class GlowWorld implements World {
      * Calling this method will request that the block is ticked on the next iteration
      * that applies to the specified tick rate.
      *
-     * @param block The block to tick.
+     * @param block    The block to tick.
      * @param tickRate The tick rate to tick the block at.
      */
     public void requestPulse(GlowBlock block, long tickRate) {
