@@ -1718,11 +1718,6 @@ public final class GlowWorld implements World {
 
     @Override
     public <T> void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY, double offsetZ, double extra, T data) {
-        spawnParticle(particle, location.getX(), location.getY(), location.getZ(), count, offsetX, offsetY, offsetZ, extra, data);
-    }
-
-    @Override
-    public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX, double offsetY, double offsetZ, double extra, T data) {
         if (particle == null) {
             throw new IllegalArgumentException("particle cannot be null!");
         }
@@ -1733,12 +1728,21 @@ public final class GlowWorld implements World {
 
         for (Player player : getPlayers()) {
             GlowPlayer glowPlayer = (GlowPlayer) player;
-            int particleId = GlowParticle.getId(particle);
+            double distance = player.getLocation().distanceSquared(location);
             boolean isLongDistance = GlowParticle.isLongDistance(particle);
+
+            int particleId = GlowParticle.getId(particle);
             int[] particleData = GlowParticle.getData(particle, data);
 
-            glowPlayer.getSession().send(new PlayParticleMessage(particleId, isLongDistance, (float) x, (float) y, (float) z, (float) offsetX, (float) offsetY, (float) offsetZ, (float) extra, count, particleData));
+            if (distance <= 1024.0D || isLongDistance && distance <= 262144.0D) {
+                glowPlayer.getSession().send(new PlayParticleMessage(particleId, isLongDistance, (float) location.getX(), (float) location.getY(), (float) location.getZ(), (float) offsetX, (float) offsetY, (float) offsetZ, (float) extra, count, particleData));
+            }
         }
+    }
+
+    @Override
+    public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX, double offsetY, double offsetZ, double extra, T data) {
+        spawnParticle(particle, new Location(this, x, y, z), count, offsetX, offsetY, offsetZ, extra, data);
     }
 
     public GameRuleManager getGameRuleMap() {
