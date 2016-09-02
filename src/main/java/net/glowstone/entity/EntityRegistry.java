@@ -78,7 +78,7 @@ public class EntityRegistry {
         return ENTITIES.get(type.getEntityClass());
     }
 
-    public static <T extends Entity> Class<? extends GlowEntity> getEntity(Class<T> clazz) {
+    public static Class<? extends GlowEntity> getEntity(Class<? extends Entity> clazz) {
         return ENTITIES.get(clazz);
     }
 }

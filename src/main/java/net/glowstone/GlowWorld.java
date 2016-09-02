@@ -1193,10 +1193,11 @@ public final class GlowWorld implements World {
 
     @Override
     public <T extends Entity> T spawn(Location location, Class<T> clazz) throws IllegalArgumentException {
-        return spawn(location, (Class<T>) EntityRegistry.getEntity(clazz), SpawnReason.CUSTOM);
+        Class<? extends GlowEntity> entity = EntityRegistry.getEntity(clazz);
+        return (T) spawn(location, entity, SpawnReason.CUSTOM);
     }
 
-    public <T extends Entity> T spawn(Location location, Class<T> clazz, SpawnReason reason) throws IllegalArgumentException {
+    public GlowEntity spawn(Location location, Class<? extends GlowEntity> clazz, SpawnReason reason) throws IllegalArgumentException {
         GlowEntity entity = null;
 
         if (TNTPrimed.class.isAssignableFrom(clazz)) {
@@ -1205,8 +1206,8 @@ public final class GlowWorld implements World {
 
         if (entity == null) {
             try {
-                Constructor<T> constructor = clazz.getConstructor(Location.class);
-                entity = (GlowEntity) constructor.newInstance(location);
+                Constructor<? extends GlowEntity> constructor = clazz.getConstructor(Location.class);
+                entity = constructor.newInstance(location);
                 CreatureSpawnEvent spawnEvent = new CreatureSpawnEvent((LivingEntity) entity, reason);
                 if (!spawnEvent.isCancelled()) {
                     entity.createSpawnMessage();
@@ -1222,9 +1223,7 @@ public final class GlowWorld implements World {
         }
 
         if (entity != null) {
-            @SuppressWarnings("unchecked")
-            T result = (T) entity;
-            return result;
+            return entity;
         }
 
         throw new UnsupportedOperationException("Not supported yet.");
