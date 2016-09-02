@@ -1193,8 +1193,7 @@ public final class GlowWorld implements World {
 
     @Override
     public <T extends Entity> T spawn(Location location, Class<T> clazz) throws IllegalArgumentException {
-        Class<? extends GlowEntity> entity = EntityRegistry.getEntity(clazz);
-        return (T) spawn(location, entity, SpawnReason.CUSTOM);
+        return (T) spawn(location, EntityRegistry.getEntity(clazz), SpawnReason.CUSTOM);
     }
 
     public GlowEntity spawn(Location location, Class<? extends GlowEntity> clazz, SpawnReason reason) throws IllegalArgumentException {
