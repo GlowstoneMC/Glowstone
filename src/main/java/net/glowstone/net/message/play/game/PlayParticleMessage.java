@@ -10,9 +10,9 @@ public final class PlayParticleMessage implements Message {
     private final boolean longDistance;
     private final float x, y, z;
     private final float ofsX, ofsY, ofsZ;
-    private final float data;
+    private final float extData;
     private final int count;
-    private final int[] extData;
+    private final int[] data;
 
 }
 

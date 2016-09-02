@@ -24,11 +24,13 @@ public final class PlayParticleCodec implements Codec<PlayParticleMessage> {
         buf.writeFloat(message.getOfsX());
         buf.writeFloat(message.getOfsY());
         buf.writeFloat(message.getOfsZ());
-        buf.writeFloat(message.getData());
+        buf.writeFloat(message.getExtData());
         buf.writeInt(message.getCount());
-        for (int extData : message.getExtData()) {
+
+        for (int extData : message.getData()) {
             ByteBufUtils.writeVarInt(buf, extData);
         }
+
         return buf;
     }
 }
