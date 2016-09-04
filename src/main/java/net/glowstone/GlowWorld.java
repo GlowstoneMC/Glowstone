@@ -1726,8 +1726,7 @@ public final class GlowWorld implements World {
             throw new IllegalArgumentException("wrong data type " + data.getClass() + " should be " + particle.getDataType());
         }
 
-        for (Player player : getPlayers()) {
-            GlowPlayer glowPlayer = (GlowPlayer) player;
+        for (GlowPlayer player : getRawPlayers()) {
             double distance = player.getLocation().distanceSquared(location);
             boolean isLongDistance = GlowParticle.isLongDistance(particle);
 
@@ -1735,7 +1734,7 @@ public final class GlowWorld implements World {
             int[] particleData = GlowParticle.getData(particle, data);
 
             if (distance <= 1024.0D || isLongDistance && distance <= 262144.0D) {
-                glowPlayer.getSession().send(new PlayParticleMessage(particleId, isLongDistance, (float) location.getX(), (float) location.getY(), (float) location.getZ(), (float) offsetX, (float) offsetY, (float) offsetZ, (float) extra, count, particleData));
+                player.getSession().send(new PlayParticleMessage(particleId, isLongDistance, (float) location.getX(), (float) location.getY(), (float) location.getZ(), (float) offsetX, (float) offsetY, (float) offsetZ, (float) extra, count, particleData));
             }
         }
     }
