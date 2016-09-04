@@ -1731,7 +1731,7 @@ public final class GlowWorld implements World {
             boolean isLongDistance = GlowParticle.isLongDistance(particle);
 
             int particleId = GlowParticle.getId(particle);
-            int[] particleData = GlowParticle.getData(particle, data);
+            int[] particleData = GlowParticle.getExtData(particle, data);
 
             if (distance <= 1024.0D || isLongDistance && distance <= 262144.0D) {
                 player.getSession().send(new PlayParticleMessage(particleId, isLongDistance, (float) location.getX(), (float) location.getY(), (float) location.getZ(), (float) offsetX, (float) offsetY, (float) offsetZ, (float) extra, count, particleData));

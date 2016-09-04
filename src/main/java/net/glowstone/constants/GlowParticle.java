@@ -93,13 +93,13 @@ public final class GlowParticle {
     }
 
     /**
-     * Convert a MaterialData to a data array if possible for a particle.
+     * Convert a MaterialData to an extData array if possible for a particle.
      *
      * @param particle the Particle to validate.
      * @param material the MaterialData to convert.
-     * @return The data array for the particle effect.
+     * @return The extData array for the particle effect.
      */
-    public static int[] getData(Effect particle, MaterialData material) {
+    public static int[] getExtData(Effect particle, MaterialData material) {
         switch (particle) {
             case ITEM_BREAK:
                 if (material == null) {
@@ -129,13 +129,13 @@ public final class GlowParticle {
     }
 
     /**
-     * Convert an object to a data array if possible for a particle.
+     * Convert an object to an extData array if possible for a particle.
      *
      * @param particle the Particle to validate.
      * @param object the Object to convert.
-     * @return The data array for the particle effect.
+     * @return The extData array for the particle effect.
      */
-    public static int[] getData(Particle particle, Object object) {
+    public static int[] getExtData(Particle particle, Object object) {
         if (particle.getDataType() == Void.class) {
             return new int[0];
         }
