@@ -380,9 +380,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         // send server brand and supported plugin channels
         //System.out.println("server name: " + server.getName());
         try {
-        	session.send(PluginMessage.fromString("MC|Brand", server.getName()));
-        } catch (NullPointerException e)	{
-        	session.send(PluginMessage.fromString("MC|Brand", "Glowstone"));
+            session.send(PluginMessage.fromString("MC|Brand", server.getName()));
+        } catch (NullPointerException e)    {
+            session.send(PluginMessage.fromString("MC|Brand", "Glowstone"));
         }
         sendSupportedChannels();
         joinTime = System.currentTimeMillis();
