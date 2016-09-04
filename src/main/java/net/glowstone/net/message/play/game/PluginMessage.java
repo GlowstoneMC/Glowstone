@@ -19,13 +19,10 @@ public final class PluginMessage implements Message {
     public static PluginMessage fromString(String channel, String text) {
         ByteBuf buf = Unpooled.buffer(5 + text.length());
         try {
-            try {
-                ByteBufUtils.writeUTF8(buf, text);
-            } catch (NullPointerException e) {
-                ByteBufUtils.writeUTF8(buf, "Glowstone");
-            }
+            ByteBufUtils.writeUTF8(buf, text);
         } catch (IOException e) {
-            GlowServer.logger.log(Level.WARNING, "Error converting to PluginMessage: \"" + channel + "\", \"" + text + "\"", e);
+            GlowServer.logger.log(Level.WARNING,
+                    "Error converting to PluginMessage: \"" + channel + "\", \"" + text + "\"", e);
         }
         byte[] array = buf.array();
         buf.release();
@@ -33,4 +30,3 @@ public final class PluginMessage implements Message {
     }
 
 }
-
