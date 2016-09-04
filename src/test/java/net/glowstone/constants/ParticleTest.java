@@ -43,19 +43,19 @@ public class ParticleTest {
 
         switch (particle) {
             case ITEM_BREAK:
-                assertEquals("Wrong getData for " + particle, true, particle.getData() != null);
+                assertEquals("Wrong data for " + particle, true, particle.getData() != null);
                 assertArrayEquals("Wrong extData for " + particle, new int[]{Material.STONE.getId(), 1}, GlowParticle.getExtData(particle, STONE));
                 break;
             case TILE_BREAK:
-                assertEquals("Wrong getData for " + particle, true, particle.getData() != null);
+                assertEquals("Wrong data for " + particle, true, particle.getData() != null);
                 assertArrayEquals("Wrong extData for " + particle, new int[]{4097}, GlowParticle.getExtData(particle, STONE));
                 break;
             case TILE_DUST:
-                assertEquals("Wrong getData for " + particle, true, particle.getData() != null);
+                assertEquals("Wrong data for " + particle, true, particle.getData() != null);
                 assertArrayEquals("Wrong extData for " + particle, new int[]{Material.STONE.getId()}, GlowParticle.getExtData(particle, STONE));
                 break;
             default:
-                assertEquals("Wrong getData for " + particle, false, particle.getData() != null);
+                assertEquals("Wrong data for " + particle, false, particle.getData() != null);
                 assertArrayEquals("Wrong extData for " + particle, new int[0], GlowParticle.getExtData(particle, null));
         }
     }
