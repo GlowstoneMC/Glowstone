@@ -17,7 +17,6 @@ public class ItemSpawn extends ItemType {
         Location location = against.getLocation().add(face.getModX(), face.getModY(), face.getModZ());
         // TODO: change mob spawner when clicked by monster egg
         // TODO: MonsterEgg meta. Eggs can hold entire entities now.
-        // relative top or bottom +0.5 x and z
         if (holding.hasItemMeta() && holding.getItemMeta() instanceof SpawnMeta) {
             SpawnMeta meta = (SpawnMeta) holding.getItemMeta();
             EntityType type = meta.getEntityType();
