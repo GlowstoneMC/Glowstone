@@ -18,6 +18,7 @@ import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
 import net.glowstone.io.anvil.AnvilWorldStorageProvider;
 import net.glowstone.net.message.play.entity.EntityStatusMessage;
+import net.glowstone.net.message.play.game.PlayParticleMessage;
 import net.glowstone.net.message.play.player.ServerDifficultyMessage;
 import net.glowstone.util.BlockStateDelegate;
 import net.glowstone.util.GameRuleManager;
@@ -141,7 +142,7 @@ public final class GlowWorld implements World {
     private final Spigot spigot = new Spigot() {
         @Override
         public void playEffect(Location location, Effect effect) {
-            playEffect_(location, effect, 0);
+            GlowWorld.this.playEffect(location, effect, 0);
         }
 
         @Override
@@ -1526,10 +1527,6 @@ public final class GlowWorld implements World {
 
     }
 
-    private void playEffect_(Location location, Effect effect, int data) { // fix name collision
-        playEffect(location, effect, data);
-    }
-
     @Override
     public Spigot spigot() {
         return spigot;
@@ -1670,63 +1667,81 @@ public final class GlowWorld implements World {
     }
 
     @Override
-    public void spawnParticle(Particle particle, Location location, int i) {
-
+    public void spawnParticle(Particle particle, Location location, int count) {
+        spawnParticle(particle, location.getX(), location.getY(), location.getZ(), count);
     }
 
     @Override
-    public void spawnParticle(Particle particle, double v, double v1, double v2, int i) {
-
+    public void spawnParticle(Particle particle, double x, double y, double z, int count) {
+        spawnParticle(particle, x, y, z, count, null);
     }
 
     @Override
-    public <T> void spawnParticle(Particle particle, Location location, int i, T t) {
-
+    public <T> void spawnParticle(Particle particle, Location location, int count, T data) {
+        spawnParticle(particle, location.getX(), location.getY(), location.getZ(), count, data);
     }
 
     @Override
-    public <T> void spawnParticle(Particle particle, double v, double v1, double v2, int i, T t) {
-
+    public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, T data) {
+        spawnParticle(particle, x, y, z, count, 0, 0, 0, data);
     }
 
     @Override
-    public void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2) {
-
+    public void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY, double offsetZ) {
+        spawnParticle(particle, location.getX(), location.getY(), location.getZ(), count, offsetX, offsetY, offsetZ);
     }
 
     @Override
-    public void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5) {
-
+    public void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX, double offsetY, double offsetZ) {
+        spawnParticle(particle, x, y, z, count, offsetX, offsetY, offsetZ, null);
     }
 
     @Override
-    public <T> void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2, T t) {
-
+    public <T> void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY, double offsetZ, T data) {
+        spawnParticle(particle, location.getX(), location.getY(), location.getZ(), count, offsetX, offsetY, offsetZ, data);
     }
 
     @Override
-    public <T> void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, T t) {
-
+    public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX, double offsetY, double offsetZ, T data) {
+        spawnParticle(particle, x, y, z, count, offsetX, offsetY, offsetZ, 1, data);
     }
 
     @Override
-    public void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2, double v3) {
-
+    public void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY, double offsetZ, double extra) {
+        spawnParticle(particle, location.getX(), location.getY(), location.getZ(), count, offsetX, offsetY, offsetZ, extra);
     }
 
     @Override
-    public void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, double v6) {
-
+    public void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX, double offsetY, double offsetZ, double extra) {
+        spawnParticle(particle, x, y, z, count, offsetX, offsetY, offsetZ, extra, null);
     }
 
     @Override
-    public <T> void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2, double v3, T t) {
+    public <T> void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY, double offsetZ, double extra, T data) {
+        if (particle == null) {
+            throw new IllegalArgumentException("particle cannot be null!");
+        }
 
+        if (data != null && !particle.getDataType().isInstance(data)) {
+            throw new IllegalArgumentException("wrong data type " + data.getClass() + " should be " + particle.getDataType());
+        }
+
+        for (GlowPlayer player : getRawPlayers()) {
+            double distance = player.getLocation().distanceSquared(location);
+            boolean isLongDistance = GlowParticle.isLongDistance(particle);
+
+            int particleId = GlowParticle.getId(particle);
+            int[] particleData = GlowParticle.getExtData(particle, data);
+
+            if (distance <= 1024.0D || isLongDistance && distance <= 262144.0D) {
+                player.getSession().send(new PlayParticleMessage(particleId, isLongDistance, (float) location.getX(), (float) location.getY(), (float) location.getZ(), (float) offsetX, (float) offsetY, (float) offsetZ, (float) extra, count, particleData));
+            }
+        }
     }
 
     @Override
-    public <T> void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, double v6, T t) {
-
+    public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX, double offsetY, double offsetZ, double extra, T data) {
+        spawnParticle(particle, new Location(this, x, y, z), count, offsetX, offsetY, offsetZ, extra, data);
     }
 
     public GameRuleManager getGameRuleMap() {

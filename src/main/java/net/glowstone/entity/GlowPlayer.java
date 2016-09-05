@@ -2022,7 +2022,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         float x = (float) loc.getX();
         float y = (float) loc.getY();
         float z = (float) loc.getZ();
-        int[] extData = GlowParticle.getData(particle, material);
+        int[] extData = GlowParticle.getExtData(particle, material);
         session.send(new PlayParticleMessage(id, longDistance, x, y, z, offsetX, offsetY, offsetZ, speed, amount, extData));
     }
 
