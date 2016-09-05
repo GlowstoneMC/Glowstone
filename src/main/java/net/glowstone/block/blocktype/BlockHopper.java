@@ -11,14 +11,14 @@ import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.inventory.MaterialMatcher;
 import net.glowstone.inventory.ToolType;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.Hopper;
+import org.bukkit.material.*;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
@@ -74,10 +74,10 @@ public class BlockHopper extends BlockContainer {
             return;
         }
         TEHopper hopper = (TEHopper) block.getTileEntity();
-        pullItems(block, hopper);
         if (!((Hopper) block.getState().getData()).isPowered()) {
             pushItems(block, hopper);
         }
+        pullItems(block, hopper);
     }
 
     @Override
@@ -87,7 +87,12 @@ public class BlockHopper extends BlockContainer {
 
     private void pullItems(GlowBlock block, TEHopper hopper) {
         GlowBlock source = block.getRelative(BlockFace.UP);
-        if (source.getType() == null || source.getType() == Material.AIR) {
+        MaterialData data = source.getState().getData();
+        if (!source.getType().isSolid() ||
+                (data instanceof Step && !((Step) data).isInverted()) ||
+                (data instanceof WoodenStep && !((WoodenStep) data).isInverted()) ||
+                (data instanceof Sign) ||
+                (data instanceof Rails)) {
             GlowItem item = getFirstDroppedItem(source.getLocation());
             if (item == null) {
                 return;
@@ -121,20 +126,21 @@ public class BlockHopper extends BlockContainer {
         }
     }
 
-    private void pushItems(GlowBlock block, TEHopper hopper) {
+    private boolean pushItems(GlowBlock block, TEHopper hopper) {
         if (hopper.getInventory() == null || hopper.getInventory().getContents().length == 0) {
-            return;
+            return false;
         }
         GlowBlock target = block.getRelative(((Hopper) block.getState().getData()).getFacing());
-        if (target.getType() != null && target.getTileEntity() instanceof TEContainer) {
+        // Don't actually push to hoppers; they can pull by themselves (doing both will transport 2 items at a time)
+        if (target.getType() != null && target.getTileEntity() instanceof TEContainer && !(target.getTileEntity() instanceof TEHopper)) {
             ItemStack item = getFirstItem(hopper);
             if (item == null) {
-                return;
+                return false;
             }
             ItemStack clone = item.clone();
             clone.setAmount(1);
             if (((TEContainer) target.getTileEntity()).getInventory().addItem(clone).size() > 0) {
-                return;
+                return false;
             }
 
             if (item.getAmount() - 1 == 0) {
@@ -142,7 +148,9 @@ public class BlockHopper extends BlockContainer {
             } else {
                 item.setAmount(item.getAmount() - 1);
             }
+            return true;
         }
+        return false;
     }
 
     private GlowItem getFirstDroppedItem(Location location) {
@@ -177,10 +185,5 @@ public class BlockHopper extends BlockContainer {
     @Override
     public int getPulseTickSpeed(GlowBlock block) {
         return 8;
-    }
-
-    @Override
-    public boolean canTickRandomly() {
-        return true;
     }
 }
