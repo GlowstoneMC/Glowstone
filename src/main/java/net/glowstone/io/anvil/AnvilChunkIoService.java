@@ -150,7 +150,15 @@ public final class AnvilChunkIoService implements ChunkIoService {
                 int tileY = tileTick.getInt("y");
                 int tileZ = tileTick.getInt("z");
                 String id = tileTick.getString("i");
-                Material material = Material.getMaterial(id);
+                if (id.startsWith("minecraft:")) {
+                    id = id.replace("minecraft:", "");
+                    if (id.startsWith("flowing_")) {
+                        id = id.replace("flowing_", "");
+                    } else if ("id".equals("water") || id.equals("lava")) {
+                        id = "stationary_" + id;
+                    }
+                }
+                Material material = Material.getMaterial(id.toUpperCase());
                 GlowBlock block = chunk.getBlock(tileX, tileY, tileZ);
                 if (material != block.getType()) {
                     continue;
@@ -265,12 +273,17 @@ public final class AnvilChunkIoService implements ChunkIoService {
                 int tileX = location.getBlockX();
                 int tileY = location.getBlockY();
                 int tileZ = location.getBlockZ();
-                String type = location.getBlock().getType().name();
+                String type = location.getBlock().getType().name().toLowerCase();
+                if (type.startsWith("stationary_")) {
+                    type = type.replace("stationary_", "");
+                } else if (type.equals("water") || type.equals("lava")) {
+                    type = "flowing_" + type;
+                }
                 CompoundTag tag = new CompoundTag();
                 tag.putInt("x", tileX);
                 tag.putInt("y", tileY);
                 tag.putInt("z", tileZ);
-                tag.putString("i", type);
+                tag.putString("i", "minecraft:" + type);
                 tileTicks.add(tag);
             }
         }
