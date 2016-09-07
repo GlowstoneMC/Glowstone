@@ -52,4 +52,15 @@ public class GlowChicken extends GlowAnimal implements Chicken {
             generateEggLayDelay();
         }
     }
+
+    @Override
+    public void kill() {
+        super.kill();
+
+        Random r = new Random();
+
+        getWorld().dropItemNaturally(getLocation(), new ItemStack(Material.FEATHER, r.nextInt(2)));
+        getWorld().dropItemNaturally(getLocation(), new ItemStack(Material.RAW_CHICKEN, r.nextInt(1)));
+    }
+
 }

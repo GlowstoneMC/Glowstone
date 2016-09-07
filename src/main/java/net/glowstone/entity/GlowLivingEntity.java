@@ -454,20 +454,23 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }
 
         if (health <= 0) {
-            active = false;
-            Sound deathSound = getDeathSound();
-            if (deathSound != null) {
-                world.playSound(location, deathSound, 1.0f, 1.0f);
-            }
-            playEffect(EntityEffect.DEATH);
-            if (this instanceof GlowPlayer) {
-                PlayerDeathEvent event = new PlayerDeathEvent((GlowPlayer) this, new ArrayList<>(), 0, this.getName() + " died.");
-                EventFactory.callEvent(event);
-                server.broadcastMessage(event.getDeathMessage());
-            } else {
-                EventFactory.callEvent(new EntityDeathEvent(this, new ArrayList<>()));
-            }
-            // todo: drop items
+            kill();
+        }
+    }
+
+    public void kill() {
+        active = false;
+        Sound deathSound = getDeathSound();
+        if (deathSound != null) {
+            world.playSound(location, deathSound, 1.0f, 1.0f);
+        }
+        playEffect(EntityEffect.DEATH);
+        if (this instanceof GlowPlayer) {
+            PlayerDeathEvent event = new PlayerDeathEvent((GlowPlayer) this, new ArrayList<>(), 0, this.getName() + " died.");
+            EventFactory.callEvent(event);
+            server.broadcastMessage(event.getDeathMessage());
+        } else {
+            EventFactory.callEvent(new EntityDeathEvent(this, new ArrayList<>()));
         }
     }
 

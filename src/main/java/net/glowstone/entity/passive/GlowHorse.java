@@ -11,6 +11,7 @@ import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.inventory.HorseInventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.Random;
@@ -203,4 +204,15 @@ public class GlowHorse extends GlowTameable implements Horse {
         }
         return 0;
     }
+
+    @Override
+    public void kill() {
+        super.kill();
+
+        Random r = new Random();
+
+        int leatherDrop = r.nextInt(2);
+        getWorld().dropItemNaturally(getLocation(), new ItemStack(Material.LEATHER, leatherDrop));
+    }
+
 }
