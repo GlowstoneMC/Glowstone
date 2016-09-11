@@ -378,7 +378,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         setGameModeDefaults();
 
         // send server brand and supported plugin channels
-        session.send(PluginMessage.fromString("MC|Brand", server.getName()));
+        String serverImplName = server.getName();
+        if (serverImplName == null) // blame windows 10 + oracle java
+            serverImplName = "";
+
+        session.send(PluginMessage.fromString("MC|Brand", serverImplName));
         sendSupportedChannels();
         joinTime = System.currentTimeMillis();
         reader.readData(this);

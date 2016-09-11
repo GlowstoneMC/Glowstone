@@ -11,11 +11,26 @@ import org.bukkit.entity.Cow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Random;
+
 public class GlowCow extends GlowAnimal implements Cow {
 
     public GlowCow(Location location) {
         super(location, EntityType.COW, 10);
         setSize(0.9F, 1.3F);
+    }
+
+    @Override
+    public void kill() {
+        super.kill();
+
+        Random r = new Random();
+
+        int beefCnt = r.nextInt(3);
+        int leatherCnt = r.nextInt(2);
+
+        getWorld().dropItemNaturally(getLocation(), new ItemStack(Material.RAW_BEEF, beefCnt));
+        getWorld().dropItemNaturally(getLocation(), new ItemStack(Material.LEATHER, leatherCnt));
     }
 
     @Override

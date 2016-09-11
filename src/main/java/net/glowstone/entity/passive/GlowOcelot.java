@@ -31,4 +31,6 @@ public class GlowOcelot extends GlowTameable implements Ocelot {
         // TODO
         super.setOwner(animalTamer);
     }
+
+
 }
