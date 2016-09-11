@@ -154,7 +154,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
                     id = id.replace("minecraft:", "");
                     if (id.startsWith("flowing_")) {
                         id = id.replace("flowing_", "");
-                    } else if ("id".equals("water") || id.equals("lava")) {
+                    } else if (id.equals("water") || id.equals("lava")) {
                         id = "stationary_" + id;
                     }
                 }
