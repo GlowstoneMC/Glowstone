@@ -427,7 +427,6 @@ public class BlockType extends ItemType {
     public void requestPulse(GlowBlockState state) {
             // do nothing
     }
-
     /**
      * The rate at which the block should be pulsed.
      *

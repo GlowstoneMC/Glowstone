@@ -6,6 +6,7 @@ import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.TEContainer;
 import net.glowstone.block.entity.TEHopper;
 import net.glowstone.block.entity.TileEntity;
+import net.glowstone.block.state.GlowHopper;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.inventory.MaterialMatcher;
@@ -131,8 +132,13 @@ public class BlockHopper extends BlockContainer {
             return false;
         }
         GlowBlock target = block.getRelative(((Hopper) block.getState().getData()).getFacing());
-        // Don't actually push to hoppers; they can pull by themselves (doing both will transport 2 items at a time)
-        if (target.getType() != null && target.getTileEntity() instanceof TEContainer && !(target.getTileEntity() instanceof TEHopper)) {
+        if (target.getType() != null && target.getTileEntity() instanceof TEContainer) {
+            if (target.getState() instanceof GlowHopper) {
+                if (((Hopper) block.getState().getData()).getFacing() == BlockFace.DOWN) {
+                    // If the hopper is facing downwards, the target hopper can do the pulling task itself
+                    return false;
+                }
+            }
             ItemStack item = getFirstItem(hopper);
             if (item == null) {
                 return false;
