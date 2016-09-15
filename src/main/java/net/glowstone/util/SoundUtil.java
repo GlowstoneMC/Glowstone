@@ -10,8 +10,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class SoundUtil {
 
-    private static final ThreadLocalRandom rand = ThreadLocalRandom.current();
-
     public static void playSoundAtLocationExcept(Location location, Sound sound, float volume, float pitch, GlowPlayer... exclude) {
         if (location == null || sound == null) return;
         GlowWorld world = (GlowWorld) location.getWorld();
@@ -20,6 +18,7 @@ public class SoundUtil {
     }
 
     public static void playSoundPitchRange(Location location, Sound sound, float volume, float pitchBase, float pitchRange, boolean allowNegative, GlowPlayer... exclude) {
+        ThreadLocalRandom rand = ThreadLocalRandom.current();
         float pitch = pitchBase;
         if (allowNegative) {
             pitch += randomReal(pitchRange);
@@ -34,6 +33,7 @@ public class SoundUtil {
     }
 
     public static float randomReal(float range) {
+        ThreadLocalRandom rand = ThreadLocalRandom.current();
         return (rand.nextFloat() - rand.nextFloat()) * range;
     }
 }
