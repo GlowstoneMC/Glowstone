@@ -41,7 +41,7 @@ public final class ItemTable {
         reg(Material.JUKEBOX, new BlockJukebox());
         reg(Material.NOTE_BLOCK, new BlockNote());
         reg(Material.MOB_SPAWNER, new BlockMobSpawner());
-        reg(Material.MONSTER_EGGS, new BlockMonsterEggs());
+        reg(Material.MONSTER_EGGS, new BlockMonsterEgg());
         reg(Material.DRAGON_EGG, new BlockFalling(Material.DRAGON_EGG));
         reg(Material.SIGN_POST, new BlockSign(), Sound.BLOCK_WOOD_BREAK);
         reg(Material.WALL_SIGN, new BlockSign(), Sound.BLOCK_WOOD_BREAK);

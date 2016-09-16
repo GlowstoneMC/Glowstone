@@ -1,93 +1,84 @@
 package net.glowstone.entity;
 
 import com.google.common.collect.ImmutableBiMap;
-import com.google.common.collect.Maps;
 import net.glowstone.entity.monster.*;
 import net.glowstone.entity.objects.GlowArmorStand;
 import net.glowstone.entity.objects.GlowFallingBlock;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.entity.objects.GlowItemFrame;
 import net.glowstone.entity.passive.*;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-
-import java.util.Collections;
-import java.util.Map;
-
-import static org.bukkit.entity.EntityType.*;
+import org.bukkit.entity.*;
 
 public class EntityRegistry {
 
-    public static final ImmutableBiMap<EntityType, Class<? extends GlowEntity>> ENTITIES =
-            ImmutableBiMap.<EntityType, Class<? extends GlowEntity>>builder()
-                    .put(ARMOR_STAND, GlowArmorStand.class)
+    private static final ImmutableBiMap<Class<? extends Entity>, Class<? extends GlowEntity>> ENTITIES =
+            ImmutableBiMap.<Class<? extends Entity>, Class<? extends GlowEntity>>builder()
+                    .put(ArmorStand.class, GlowArmorStand.class)
                     //TODO: Arrow
-                    .put(BAT, GlowBat.class)
-                    .put(BLAZE, GlowBlaze.class)
+                    .put(Bat.class, GlowBat.class)
+                    .put(Blaze.class, GlowBlaze.class)
                     //TODO: Boat
-                    .put(CAVE_SPIDER, GlowCaveSpider.class)
-                    .put(CHICKEN, GlowChicken.class)
-                    .put(COW, GlowCow.class)
-                    .put(CREEPER, GlowCreeper.class)
-                    .put(DROPPED_ITEM, GlowItem.class)
+                    .put(CaveSpider.class, GlowCaveSpider.class)
+                    .put(Chicken.class, GlowChicken.class)
+                    .put(Cow.class, GlowCow.class)
+                    .put(Creeper.class, GlowCreeper.class)
+                    .put(Item.class, GlowItem.class)
                     //TODO: Egg
                     //TODO: Ender Crystal
                     //TODO: Ender Dragon
                     //TODO: Ender PEarl
                     //TODO: Ender Signal
-                    .put(ENDERMAN, GlowEnderman.class)
-                    .put(ENDERMITE, GlowEndermite.class)
+                    .put(Enderman.class, GlowEnderman.class)
+                    .put(Endermite.class, GlowEndermite.class)
                     //TODO: Experience orb
-                    .put(FALLING_BLOCK, GlowFallingBlock.class)
+                    .put(FallingBlock.class, GlowFallingBlock.class)
                     //TODO: Fireball
                     //TODO: Firework
                     //TODO: Fishing hook
-                    .put(GHAST, GlowGhast.class)
-                    .put(GIANT, GlowGiant.class)
-                    .put(GUARDIAN, GlowGuardian.class)
-                    .put(HORSE, GlowHorse.class)
-                    .put(IRON_GOLEM, GlowIronGolem.class)
-                    .put(ITEM_FRAME, GlowItemFrame.class)
+                    .put(Ghast.class, GlowGhast.class)
+                    .put(Giant.class, GlowGiant.class)
+                    .put(Guardian.class, GlowGuardian.class)
+                    .put(Horse.class, GlowHorse.class)
+                    .put(IronGolem.class, GlowIronGolem.class)
+                    .put(ItemFrame.class, GlowItemFrame.class)
                     //TODO: Leash hitch
                     //TODO: Lightning
-                    .put(MAGMA_CUBE, GlowMagmaCube.class)
+                    .put(MagmaCube.class, GlowMagmaCube.class)
                     //TODO: Minecarts
-                    .put(MUSHROOM_COW, GlowMooshroom.class)
-                    .put(OCELOT, GlowOcelot.class)
+                    .put(MushroomCow.class, GlowMooshroom.class)
+                    .put(Ocelot.class, GlowOcelot.class)
                     //TODO: Painting
-                    .put(PIG, GlowPig.class)
-                    .put(PIG_ZOMBIE, GlowPigZombie.class)
-                    .put(PLAYER, GlowPlayer.class)
-                    .put(POLAR_BEAR, GlowPolarBear.class)
-                    .put(PRIMED_TNT, GlowTNTPrimed.class)
-                    .put(RABBIT, GlowRabbit.class)
-                    .put(SHEEP, GlowSheep.class)
-                    .put(SILVERFISH, GlowSilverfish.class)
-                    .put(SKELETON, GlowSkeleton.class)
-                    .put(SLIME, GlowSlime.class)
+                    .put(Pig.class, GlowPig.class)
+                    .put(PigZombie.class, GlowPigZombie.class)
+                    .put(Player.class, GlowPlayer.class)
+                    .put(PolarBear.class, GlowPolarBear.class)
+                    .put(TNTPrimed.class, GlowTNTPrimed.class)
+                    .put(Rabbit.class, GlowRabbit.class)
+                    .put(Sheep.class, GlowSheep.class)
+                    .put(Silverfish.class, GlowSilverfish.class)
+                    .put(Skeleton.class, GlowSkeleton.class)
+                    .put(Slime.class, GlowSlime.class)
                     //TODO: Fireball
                     //TODO: Snowball
-                    .put(SNOWMAN, GlowSnowman.class)
-                    .put(SPIDER, GlowSpider.class)
+                    .put(Snowman.class, GlowSnowman.class)
+                    .put(Spider.class, GlowSpider.class)
                     //TODO: Splash potion
-                    .put(SQUID, GlowSquid.class)
+                    .put(Squid.class, GlowSquid.class)
                     //TODO: Experience bottle
-                    .put(VILLAGER, GlowVillager.class)
-                    .put(WEATHER, GlowWeather.class)
-                    .put(WITCH, GlowWitch.class)
+                    .put(Villager.class, GlowVillager.class)
+                    .put(Weather.class, GlowWeather.class)
+                    .put(Witch.class, GlowWitch.class)
                     //TODO: Wither
                     //TODO: Wither Skull
-                    .put(WOLF, GlowWolf.class)
-                    .put(ZOMBIE, GlowZombie.class)
+                    .put(Wolf.class, GlowWolf.class)
+                    .put(Zombie.class, GlowZombie.class)
                     .build();
 
-    public static Map<Class<? extends Entity>, Class<? extends GlowEntity>> ENTITY_CLASSES = Maps.newHashMap();
-
-    static {
-        for (Map.Entry<EntityType, Class<? extends GlowEntity>> entry : ENTITIES.entrySet()) {
-            ENTITY_CLASSES.put(entry.getKey().getEntityClass(), entry.getValue());
-        }
-        ENTITY_CLASSES = Collections.unmodifiableMap(ENTITY_CLASSES);
+    public static Class<? extends GlowEntity> getEntity(EntityType type) {
+        return ENTITIES.get(type.getEntityClass());
     }
 
+    public static Class<? extends GlowEntity> getEntity(Class<? extends Entity> clazz) {
+        return ENTITIES.get(clazz);
+    }
 }

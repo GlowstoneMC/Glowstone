@@ -73,7 +73,7 @@ public class SummonCommand extends BukkitCommand {
             sender.sendMessage(ChatColor.RED + "Unknown entity type: " + entityName);
             return true;
         }
-        Class<? extends GlowEntity> spawn = EntityRegistry.ENTITIES.get(type);
+        Class<? extends GlowEntity> spawn = EntityRegistry.getEntity(type);
         GlowEntity entity = ((GlowWorld) location.getWorld()).spawn(location, spawn);
         if (tag != null) {
             EntityStorage.load(entity, tag);
