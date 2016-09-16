@@ -11,6 +11,7 @@ import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.physics.BlockBoundingBox;
+import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.util.SoundInfo;
 import net.glowstone.util.SoundUtil;
 import org.bukkit.*;
@@ -306,27 +307,16 @@ public class BlockType extends ItemType {
         }
 
         if (getMaterial().isSolid()) {
-            GlowChunk[] chunks = new GlowChunk[]{
-                    target.getChunk(),
-                    target.getWorld().getChunkAt(target.getChunk().getX() + 1, target.getChunk().getZ()),
-                    target.getWorld().getChunkAt(target.getChunk().getX() + 1, target.getChunk().getZ() + 1),
-                    target.getWorld().getChunkAt(target.getChunk().getX(), target.getChunk().getZ() + 1),
-                    target.getWorld().getChunkAt(target.getChunk().getX() - 1, target.getChunk().getZ()),
-                    target.getWorld().getChunkAt(target.getChunk().getX() - 1, target.getChunk().getZ() - 1),
-                    target.getWorld().getChunkAt(target.getChunk().getX() - 1, target.getChunk().getZ() + 1),
-                    target.getWorld().getChunkAt(target.getChunk().getX(), target.getChunk().getZ() - 1),
-                    target.getWorld().getChunkAt(target.getChunk().getX() + 1, target.getChunk().getZ() - 1),
-            };
             BlockBoundingBox box = new BlockBoundingBox(target);
-            for (GlowChunk chunk : chunks) {
-                for (Entity e : chunk.getEntities()) {
-                    GlowEntity entity = (GlowEntity) e;
-                    if (!(entity instanceof LivingEntity)) {
-                        continue;
-                    }
-                    if (entity.intersects(box)) {
-                        return;
-                    }
+            BoundingBox searchBox = BoundingBox.copyOf(box);
+            Vector vec = new Vector(32, 32, 32);
+            searchBox.minCorner.subtract(vec);
+            searchBox.maxCorner.add(vec);
+            List<Entity> entities = target.getWorld().getEntityManager().getEntitiesInside(searchBox, null);
+            for (Entity e : entities) {
+                GlowEntity entity = (GlowEntity) e;
+                if (entity instanceof LivingEntity && entity.intersects(box)) {
+                    return;
                 }
             }
         }
