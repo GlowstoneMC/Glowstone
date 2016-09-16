@@ -8,7 +8,6 @@ import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.block.itemtype.ItemType;
-import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.physics.BlockBoundingBox;
 import net.glowstone.util.SoundInfo;
