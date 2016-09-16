@@ -35,6 +35,7 @@ public class GlowSlime extends GlowMonster implements Slime {
                 health = 16;
                 break;
         }
+        setBoundingBox(0.51000005 * size, 0.51000005 * size);
         setSize(size);
         setMaxHealth(health);
         setHealth(health);

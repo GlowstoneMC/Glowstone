@@ -8,7 +8,9 @@ import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.block.itemtype.ItemType;
+import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.entity.physics.BlockBoundingBox;
 import net.glowstone.util.SoundInfo;
 import net.glowstone.util.SoundUtil;
 import org.bukkit.*;
@@ -169,9 +171,9 @@ public class BlockType extends ItemType {
     /**
      * Called after a block has been placed by a player.
      *
-     * @param player  the player who placed the block
-     * @param block   the block that was placed
-     * @param holding the the ItemStack that was being held
+     * @param player   the player who placed the block
+     * @param block    the block that was placed
+     * @param holding  the the ItemStack that was being held
      * @param oldState The old block state before the block was placed.
      */
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
@@ -206,9 +208,9 @@ public class BlockType extends ItemType {
     /**
      * Called after a player successfully destroys a block.
      *
-     * @param player The player interacting
-     * @param block  The block the player destroyed
-     * @param face   The block face
+     * @param player   The player interacting
+     * @param block    The block the player destroyed
+     * @param face     The block face
      * @param oldState The block state of the block the player destroyed.
      */
     public void afterDestroy(GlowPlayer player, GlowBlock block, BlockFace face, GlowBlockState oldState) {
@@ -305,9 +307,28 @@ public class BlockType extends ItemType {
 
         // TODO: check bounding box
         if (getMaterial().isSolid()) {
-            for (Entity entity : against.getChunk().getEntities()) {
-                if (entity instanceof LivingEntity && entity.getLocation().getBlockX() == target.getX() && entity.getLocation().getBlockY() == target.getY() && entity.getLocation().getBlockZ() == target.getZ()) {
-                    return;
+            GlowChunk[] chunks = new GlowChunk[]
+                    {
+                            against.getChunk(),
+                            against.getWorld().getChunkAt(against.getChunk().getX() + 1, against.getChunk().getZ()),
+                            against.getWorld().getChunkAt(against.getChunk().getX() + 1, against.getChunk().getZ() + 1),
+                            against.getWorld().getChunkAt(against.getChunk().getX(), against.getChunk().getZ() + 1),
+                            against.getWorld().getChunkAt(against.getChunk().getX() - 1, against.getChunk().getZ()),
+                            against.getWorld().getChunkAt(against.getChunk().getX() - 1, against.getChunk().getZ() - 1),
+                            against.getWorld().getChunkAt(against.getChunk().getX() - 1, against.getChunk().getZ() + 1),
+                            against.getWorld().getChunkAt(against.getChunk().getX(), against.getChunk().getZ() - 1),
+                            against.getWorld().getChunkAt(against.getChunk().getX() + 1, against.getChunk().getZ() - 1),
+                    };
+            BlockBoundingBox box = new BlockBoundingBox(target);
+            for (GlowChunk chunk : chunks) {
+                for (Entity e : chunk.getEntities()) {
+                    GlowEntity entity = (GlowEntity) e;
+                    if (!(entity instanceof LivingEntity)) {
+                        continue;
+                    }
+                    if (entity.intersects(box)) {
+                        return;
+                    }
                 }
             }
         }
@@ -413,7 +434,7 @@ public class BlockType extends ItemType {
     /**
      * Called when an entity gets updated on top of the block
      *
-     * @param block the block that was stepped on
+     * @param block  the block that was stepped on
      * @param entity the entity
      */
     public void onEntityStep(GlowBlock block, LivingEntity entity) {
@@ -426,8 +447,9 @@ public class BlockType extends ItemType {
     }
 
     public void requestPulse(GlowBlockState state) {
-            // do nothing
+        // do nothing
     }
+
     /**
      * The rate at which the block should be pulsed.
      *

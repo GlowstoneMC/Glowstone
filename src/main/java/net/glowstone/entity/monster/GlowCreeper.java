@@ -17,6 +17,7 @@ public class GlowCreeper extends GlowMonster implements Creeper {
 
     public GlowCreeper(Location loc) {
         super(loc, EntityType.CREEPER, 20);
+        setBoundingBox(0.6, 1.7);
     }
 
     @Override

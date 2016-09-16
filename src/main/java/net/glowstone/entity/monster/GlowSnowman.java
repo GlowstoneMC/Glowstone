@@ -10,6 +10,7 @@ public class GlowSnowman extends GlowMonster implements Snowman {
 
     public GlowSnowman(Location loc) {
         super(loc, EntityType.SNOWMAN, 4);
+        setBoundingBox(0.7, 1.9);
     }
 
     @Override

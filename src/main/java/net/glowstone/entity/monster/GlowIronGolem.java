@@ -10,6 +10,7 @@ public class GlowIronGolem extends GlowMonster implements IronGolem {
 
     public GlowIronGolem(Location loc) {
         super(loc, EntityType.IRON_GOLEM, 100);
+        setBoundingBox(1.4, 2.7);
     }
 
     public GlowIronGolem(Location loc, boolean playerCreated) {

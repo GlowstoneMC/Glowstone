@@ -10,6 +10,7 @@ public class GlowBlaze extends GlowMonster implements Blaze {
 
     public GlowBlaze(Location loc) {
         super(loc, EntityType.BLAZE, 20);
+        setBoundingBox(0.6, 1.8);
     }
 
     public boolean isOnFire() {

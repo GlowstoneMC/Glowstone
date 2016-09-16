@@ -12,6 +12,7 @@ public class GlowGhast extends GlowMonster implements Ghast {
 
     public GlowGhast(Location loc) {
         super(loc, EntityType.GHAST, 10);
+        setBoundingBox(4, 4);
     }
 
     public int getExplosionPower() {
