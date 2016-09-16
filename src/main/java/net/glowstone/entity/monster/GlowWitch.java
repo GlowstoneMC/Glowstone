@@ -10,6 +10,7 @@ public class GlowWitch extends GlowMonster implements Witch {
 
     public GlowWitch(Location loc) {
         super(loc, EntityType.WITCH, 26);
+        setBoundingBox(0.6, 1.8);
     }
 
     public boolean isAggressive() {

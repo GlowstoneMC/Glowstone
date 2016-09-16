@@ -11,6 +11,7 @@ public class GlowEndermite extends GlowMonster implements Endermite {
 
     public GlowEndermite(Location loc) {
         super(loc, EntityType.ENDERMITE, 8);
+        setBoundingBox(0.4, 0.3);
     }
 
     public boolean isPlayerSpawned() {

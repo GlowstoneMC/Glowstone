@@ -23,6 +23,7 @@ public class GlowZombie extends GlowMonster implements Zombie {
 
     public GlowZombie(Location loc, EntityType type) {
         super(loc, type, 20);
+        setBoundingBox(0.6, 1.8);
     }
 
     @Override

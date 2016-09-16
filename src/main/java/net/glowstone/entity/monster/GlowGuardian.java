@@ -11,6 +11,7 @@ public class GlowGuardian extends GlowMonster implements Guardian {
 
     public GlowGuardian(Location loc) {
         super(loc, EntityType.GUARDIAN, 30);
+        setBoundingBox(0.85, 0.85);
     }
 
     @Override

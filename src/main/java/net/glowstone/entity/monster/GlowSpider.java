@@ -10,6 +10,7 @@ public class GlowSpider extends GlowMonster implements Spider {
 
     public GlowSpider(Location loc) {
         super(loc, EntityType.SPIDER, 16);
+        setBoundingBox(1.4, 0.9);
     }
 
     public boolean isClimbing() {

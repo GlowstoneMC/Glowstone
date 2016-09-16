@@ -143,6 +143,7 @@ public abstract class GlowEntity implements Entity {
      * Whether
      */
     private boolean silent;
+
     /**
      * Creates an entity and adds it to the specified world.
      *

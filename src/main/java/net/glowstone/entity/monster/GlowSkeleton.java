@@ -11,6 +11,7 @@ public class GlowSkeleton extends GlowMonster implements Skeleton {
 
     public GlowSkeleton(Location loc) {
         super(loc, EntityType.SKELETON, 20);
+        setBoundingBox(0.6, 1.99);
     }
 
     @Override

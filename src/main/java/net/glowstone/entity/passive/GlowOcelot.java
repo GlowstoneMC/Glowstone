@@ -14,6 +14,7 @@ public class GlowOcelot extends GlowTameable implements Ocelot {
     public GlowOcelot(Location location) {
         super(location, EntityType.OCELOT, 10);
         setCatType(Type.WILD_OCELOT);
+        setBoundingBox(0.6, 0.8);
     }
 
     @Override

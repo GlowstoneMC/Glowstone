@@ -21,6 +21,7 @@ public class GlowVillager extends GlowAgeable implements Villager {
         super(location, EntityType.VILLAGER, 20);
         Random r = new Random();
         setProfession(Profession.values()[r.nextInt(Profession.values().length - 2) + 1]);
+        setBoundingBox(0.6, 1.95);
     }
 
     @Override

@@ -14,6 +14,7 @@ public class GlowEnderman extends GlowMonster implements Enderman {
 
     public GlowEnderman(Location loc) {
         super(loc, EntityType.ENDERMAN, 40);
+        setBoundingBox(0.6, 2.9);
     }
 
     @Override

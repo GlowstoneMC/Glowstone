@@ -11,6 +11,7 @@ public class GlowPolarBear extends GlowAnimal implements PolarBear {
 
     public GlowPolarBear(Location location) {
         super(location, EntityType.POLAR_BEAR, 30);
+        setBoundingBox(1.3, 1.4);
     }
 
     @Override
