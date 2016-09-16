@@ -5,6 +5,7 @@ import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
+import net.glowstone.util.SoundUtil;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -34,8 +35,8 @@ public class GlowAgeable extends GlowCreature implements Ageable {
     /**
      * Creates a new ageable creature.
      *
-     * @param location The location of the creature.
-     * @param type     The type of monster.
+     * @param location  The location of the creature.
+     * @param type      The type of monster.
      * @param maxHealth The max health of the creature.
      */
     public GlowAgeable(Location location, EntityType type, double maxHealth) {
@@ -190,5 +191,13 @@ public class GlowAgeable extends GlowCreature implements Ageable {
     @Override
     public void setParent(Ageable parent) {
         this.parent = (GlowAgeable) parent;
+    }
+
+    @Override
+    protected float getSoundPitch() {
+        if (!isAdult()) {
+            return SoundUtil.randomReal(0.2F) + 1.5F;
+        }
+        return super.getSoundPitch();
     }
 }

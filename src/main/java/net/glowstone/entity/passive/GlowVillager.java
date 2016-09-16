@@ -3,6 +3,7 @@ package net.glowstone.entity.passive;
 import net.glowstone.entity.GlowAgeable;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Villager;
@@ -81,5 +82,15 @@ public class GlowVillager extends GlowAgeable implements Villager {
     @Override
     public void setRiches(int i) {
 
+    }
+
+    @Override
+    protected Sound getHurtSound() {
+        return Sound.ENTITY_VILLAGER_HURT;
+    }
+
+    @Override
+    protected Sound getDeathSound() {
+        return Sound.ENTITY_VILLAGER_DEATH;
     }
 }

@@ -1,6 +1,7 @@
 package net.glowstone.entity.monster;
 
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.PigZombie;
 
@@ -43,5 +44,15 @@ public class GlowPigZombie extends GlowZombie implements PigZombie {
 
     public void setHurtBy(UUID hurtBy) {
         this.hurtBy = hurtBy;
+    }
+
+    @Override
+    protected Sound getHurtSound() {
+        return Sound.ENTITY_ZOMBIE_PIG_HURT;
+    }
+
+    @Override
+    protected Sound getDeathSound() {
+        return Sound.ENTITY_ZOMBIE_PIG_DEATH;
     }
 }

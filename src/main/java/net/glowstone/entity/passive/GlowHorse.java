@@ -7,6 +7,7 @@ import net.glowstone.inventory.GlowHorseInventory;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
@@ -202,5 +203,15 @@ public class GlowHorse extends GlowTameable implements Horse {
             }
         }
         return 0;
+    }
+
+    @Override
+    protected Sound getHurtSound() {
+        return Sound.ENTITY_HORSE_HURT;
+    }
+
+    @Override
+    protected Sound getDeathSound() {
+        return Sound.ENTITY_HORSE_DEATH;
     }
 }

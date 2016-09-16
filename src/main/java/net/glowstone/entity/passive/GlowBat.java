@@ -7,6 +7,7 @@ import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.SpawnMobMessage;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Bat;
@@ -123,5 +124,15 @@ public class GlowBat extends GlowAmbient implements Bat {
     @Override
     public void setArrowsStuck(int i) {
 
+    }
+
+    @Override
+    protected Sound getHurtSound() {
+        return Sound.ENTITY_BAT_HURT;
+    }
+
+    @Override
+    protected Sound getDeathSound() {
+        return Sound.ENTITY_BAT_DEATH;
     }
 }

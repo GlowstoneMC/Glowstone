@@ -7,6 +7,7 @@ import net.glowstone.net.message.play.player.InteractEntityMessage;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Pig;
 import org.bukkit.inventory.ItemStack;
@@ -52,5 +53,15 @@ public class GlowPig extends GlowAnimal implements Pig {
 
         return isEmpty() && setPassenger(player);
 
+    }
+
+    @Override
+    protected Sound getHurtSound() {
+        return Sound.ENTITY_PIG_HURT;
+    }
+
+    @Override
+    protected Sound getDeathSound() {
+        return Sound.ENTITY_PIG_DEATH;
     }
 }

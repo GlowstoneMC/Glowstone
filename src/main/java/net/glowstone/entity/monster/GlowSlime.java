@@ -2,6 +2,7 @@ package net.glowstone.entity.monster;
 
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Slime;
 
@@ -47,5 +48,15 @@ public class GlowSlime extends GlowMonster implements Slime {
     @Override
     public void setSize(int sz) {
         metadata.set(MetadataIndex.SLIME_SIZE, sz);
+    }
+
+    @Override
+    protected Sound getHurtSound() {
+        return Sound.ENTITY_SLIME_HURT;
+    }
+
+    @Override
+    protected Sound getDeathSound() {
+        return Sound.ENTITY_SLIME_DEATH;
     }
 }

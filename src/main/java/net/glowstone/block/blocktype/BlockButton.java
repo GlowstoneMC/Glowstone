@@ -5,6 +5,7 @@ import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Button;
@@ -47,8 +48,10 @@ public class BlockButton extends BlockAttachable {
             public void run() {
                 button.setPowered(false);
                 state.update();
-                if (block.getType() == Material.WOOD_BUTTON || block.getType() == Material.STONE_BUTTON)
+                if (block.getType() == Material.WOOD_BUTTON || block.getType() == Material.STONE_BUTTON) {
                     extraUpdate(block);
+                    block.getWorld().playSound(block.getLocation(), block.getType() == Material.WOOD_BUTTON ? Sound.BLOCK_WOOD_BUTTON_CLICK_OFF : Sound.BLOCK_STONE_BUTTON_CLICK_OFF, 0.3f, 0.5f);
+                }
             }
         }.runTaskLater(null, block.getType() == Material.STONE_BUTTON ? 20 : 30);
 

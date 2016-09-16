@@ -5,6 +5,7 @@ import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Lever;
@@ -31,6 +32,7 @@ public class BlockLever extends BlockAttachable {
 
         Lever lever = (Lever) data;
         lever.setPowered(!lever.isPowered());
+        block.getWorld().playSound(block.getLocation(), Sound.BLOCK_LEVER_CLICK, 0.3F, lever.isPowered() ? 0.6F : 0.5F);
         state.update();
         extraUpdate(block);
         return true;
