@@ -2,13 +2,14 @@ package net.glowstone.block.blocktype;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.ItemTable;
 import net.glowstone.entity.GlowPlayer;
-import org.bukkit.material.types.DoublePlantSpecies;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.DoublePlant;
 import org.bukkit.material.MaterialData;
+import org.bukkit.material.types.DoublePlantSpecies;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -117,5 +118,36 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
         } else {
             warnMaterialData(DoublePlant.class, data);
         }
+    }
+
+    @Override
+    public boolean canAbsorb(GlowBlock block, BlockFace face, ItemStack holding) {
+        MaterialData data = block.getState().getData();
+        BlockType holdingType = ItemTable.instance().getBlock(holding.getType());
+        if (data instanceof DoublePlant) {
+            DoublePlantSpecies species = ((DoublePlant) data).getSpecies();
+            if (species == DoublePlantSpecies.DOUBLE_TALLGRASS) {
+                if (holdingType != null && holdingType.canPlaceAt(block, face)) {
+                    block.getRelative(BlockFace.UP).setType(Material.AIR, (byte) 0, false);
+                }
+                return true;
+            }
+            if (species == DoublePlantSpecies.PLANT_APEX) {
+                GlowBlock under = block.getRelative(BlockFace.DOWN);
+                MaterialData underData = under.getState().getData();
+                if (underData instanceof DoublePlant) {
+                    DoublePlantSpecies underSpecies = ((DoublePlant) underData).getSpecies();
+                    if (underSpecies == DoublePlantSpecies.DOUBLE_TALLGRASS) {
+                        if (holdingType != null && holdingType.canPlaceAt(block, face)) {
+                            under.setType(Material.AIR, (byte) 0, false);
+                        }
+                        return true;
+                    }
+                }
+            }
+        } else {
+            warnMaterialData(DoublePlant.class, data);
+        }
+        return false;
     }
 }
