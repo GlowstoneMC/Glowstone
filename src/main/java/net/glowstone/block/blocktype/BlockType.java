@@ -305,20 +305,18 @@ public class BlockType extends ItemType {
             return;
         }
 
-        // TODO: check bounding box
         if (getMaterial().isSolid()) {
-            GlowChunk[] chunks = new GlowChunk[]
-                    {
-                            against.getChunk(),
-                            against.getWorld().getChunkAt(against.getChunk().getX() + 1, against.getChunk().getZ()),
-                            against.getWorld().getChunkAt(against.getChunk().getX() + 1, against.getChunk().getZ() + 1),
-                            against.getWorld().getChunkAt(against.getChunk().getX(), against.getChunk().getZ() + 1),
-                            against.getWorld().getChunkAt(against.getChunk().getX() - 1, against.getChunk().getZ()),
-                            against.getWorld().getChunkAt(against.getChunk().getX() - 1, against.getChunk().getZ() - 1),
-                            against.getWorld().getChunkAt(against.getChunk().getX() - 1, against.getChunk().getZ() + 1),
-                            against.getWorld().getChunkAt(against.getChunk().getX(), against.getChunk().getZ() - 1),
-                            against.getWorld().getChunkAt(against.getChunk().getX() + 1, against.getChunk().getZ() - 1),
-                    };
+            GlowChunk[] chunks = new GlowChunk[]{
+                    target.getChunk(),
+                    target.getWorld().getChunkAt(target.getChunk().getX() + 1, target.getChunk().getZ()),
+                    target.getWorld().getChunkAt(target.getChunk().getX() + 1, target.getChunk().getZ() + 1),
+                    target.getWorld().getChunkAt(target.getChunk().getX(), target.getChunk().getZ() + 1),
+                    target.getWorld().getChunkAt(target.getChunk().getX() - 1, target.getChunk().getZ()),
+                    target.getWorld().getChunkAt(target.getChunk().getX() - 1, target.getChunk().getZ() - 1),
+                    target.getWorld().getChunkAt(target.getChunk().getX() - 1, target.getChunk().getZ() + 1),
+                    target.getWorld().getChunkAt(target.getChunk().getX(), target.getChunk().getZ() - 1),
+                    target.getWorld().getChunkAt(target.getChunk().getX() + 1, target.getChunk().getZ() - 1),
+            };
             BlockBoundingBox box = new BlockBoundingBox(target);
             for (GlowChunk chunk : chunks) {
                 for (Entity e : chunk.getEntities()) {
