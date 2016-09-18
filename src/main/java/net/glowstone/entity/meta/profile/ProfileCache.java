@@ -3,6 +3,7 @@ package net.glowstone.entity.meta.profile;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Cached methods for accessing Mojang servers to find UUIDs and player profiles.
@@ -35,7 +36,8 @@ public final class ProfileCache {
         if (uuidCache.containsKey(playerName)) {
             return uuidCache.get(playerName);
         }
-        uuidCache.put(playerName, PlayerDataFetcher.getUUID(playerName));
+        CompletableFuture<UUID> uuidFuture = CompletableFuture.supplyAsync(() -> PlayerDataFetcher.getUUID(playerName));
+        uuidFuture.thenAccept(uuid -> uuidCache.put(playerName, uuid));
         return uuidCache.get(playerName);
     }
 }
