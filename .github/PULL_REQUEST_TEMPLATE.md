@@ -2,11 +2,11 @@ Hello, and thanks for taking the time to create a pull request! There's just a f
 you get started.
 
 Firstly, our go-to documentation on how to structure and submit your pull request can be found on the wiki, here:
-https://github.com/GlowstoneMC/GlowstonePlusPlus/wiki/PR-Handling
+https://github.com/GlowstoneMC/Glowstone/wiki/PR-Handling
 
 In short, please follow these points:
 
-* Be sure you're following our code style guidelines: https://github.com/GlowstoneMC/GlowstonePlusPlus/wiki/Code-Style
+* Be sure you're following our code style guidelines: https://github.com/GlowstoneMC/Glowstone/wiki/Code-Style
 * If your PR is a work-in-progress, you should put [WIP] in the title.
 * The title of your PR should be short and sweet - "Adds cows", instead of "This set of commits adds cows and begins the animals implementation".
 * Please be descriptive in your initial PR comment. Address your changes in detail, and explain why you made each change.
@@ -25,7 +25,7 @@ In short, please follow these points:
   maintainer.
 
 If you need to find these points again at a later date, you can find them at the following location:
-https://github.com/GlowstoneMC/GlowstonePlusPlus/blob/master/.github/PULL_REQUEST_TEMPLATE.md
+https://github.com/GlowstoneMC/Glowstone/blob/master/.github/PULL_REQUEST_TEMPLATE.md
 
 When you're ready, please delete this text from your initial PR comment and replace it with your own info. Thanks for
-contributing to Glowstone++!
+contributing to Glowstone!
