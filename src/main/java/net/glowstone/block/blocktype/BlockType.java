@@ -304,16 +304,6 @@ public class BlockType extends ItemType {
             return;
         }
 
-        if (getMaterial().isSolid()) {
-            BlockBoundingBox box = new BlockBoundingBox(target);
-            List<Entity> entities = target.getWorld().getEntityManager().getEntitiesInside(box, null);
-            for (Entity e : entities) {
-                if (e instanceof LivingEntity) {
-                    return;
-                }
-            }
-        }
-
         // check whether the block clicked against should absorb the placement
         BlockType againstType = ItemTable.instance().getBlock(against.getTypeId());
         if (againstType != null) {
@@ -323,6 +313,16 @@ public class BlockType extends ItemType {
                 // air can always be overridden
                 BlockType targetType = ItemTable.instance().getBlock(target.getTypeId());
                 if (targetType != null && !targetType.canOverride(target, face, holding)) {
+                    return;
+                }
+            }
+        }
+
+        if (getMaterial().isSolid()) {
+            BlockBoundingBox box = new BlockBoundingBox(target);
+            List<Entity> entities = target.getWorld().getEntityManager().getEntitiesInside(box, null);
+            for (Entity e : entities) {
+                if (e instanceof LivingEntity) {
                     return;
                 }
             }

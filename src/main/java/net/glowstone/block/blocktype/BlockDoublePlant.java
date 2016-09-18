@@ -126,7 +126,7 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
         BlockType holdingType = ItemTable.instance().getBlock(holding.getType());
         if (data instanceof DoublePlant) {
             DoublePlantSpecies species = ((DoublePlant) data).getSpecies();
-            if (species == DoublePlantSpecies.DOUBLE_TALLGRASS) {
+            if (species == DoublePlantSpecies.DOUBLE_TALLGRASS || species == DoublePlantSpecies.LARGE_FERN) {
                 if (holdingType != null && holdingType.canPlaceAt(block, face)) {
                     block.getRelative(BlockFace.UP).setType(Material.AIR, (byte) 0, false);
                 }
@@ -137,7 +137,7 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
                 MaterialData underData = under.getState().getData();
                 if (underData instanceof DoublePlant) {
                     DoublePlantSpecies underSpecies = ((DoublePlant) underData).getSpecies();
-                    if (underSpecies == DoublePlantSpecies.DOUBLE_TALLGRASS) {
+                    if (underSpecies == DoublePlantSpecies.DOUBLE_TALLGRASS || underSpecies == DoublePlantSpecies.LARGE_FERN) {
                         if (holdingType != null && holdingType.canPlaceAt(block, face)) {
                             under.setType(Material.AIR, (byte) 0, false);
                         }
