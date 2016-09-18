@@ -3,11 +3,13 @@ package net.glowstone;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.blocktype.BlockTNT;
 import net.glowstone.entity.GlowEntity;
-import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.ExplosionMessage;
 import net.glowstone.net.message.play.game.ExplosionMessage.Record;
-import org.bukkit.*;
+import org.bukkit.Effect;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
@@ -225,11 +227,10 @@ public final class Explosion {
 
         Collection<GlowPlayer> affectedPlayers = new ArrayList<>();
 
-        Collection<GlowLivingEntity> entities = getNearbyEntities();
-        for (GlowLivingEntity entity : entities) {
+        LivingEntity[] entities = getNearbyEntities();
+        for (LivingEntity entity : entities) {
             if (entity instanceof GlowPlayer) {
                 affectedPlayers.add((GlowPlayer) entity);
-                continue;
             }
 
             double disDivPower = distanceTo(entity) / this.power;
@@ -261,7 +262,7 @@ public final class Explosion {
         return affectedPlayers;
     }
 
-    private double calculateEnchantedDamage(double explosionDamage, GlowLivingEntity entity) {
+    private double calculateEnchantedDamage(double explosionDamage, LivingEntity entity) {
         int level = 0;
         if (entity.getEquipment() != null) {
             for (ItemStack stack : entity.getEquipment().getArmorContents()) {
@@ -280,37 +281,14 @@ public final class Explosion {
         return explosionDamage;
     }
 
-    private double calculateDamage(GlowEntity entity, double disDivPower) {
-        double damage = world.rayTrace(location, entity);
+    private double calculateDamage(Entity entity, double disDivPower) {
+        double damage = world.rayTrace(location, (GlowEntity) entity);
         return damage * (1D - disDivPower);
     }
 
-    private Collection<GlowLivingEntity> getNearbyEntities() {
-        ArrayList<Chunk> chunks = new ArrayList<>();
-        chunks.add(location.getChunk());
-        /* TODO: select near chunks based on explosion's distance to chunk edge
-        int closestChunkEdgeX = ((location.getBlockX() - 1) | 15) + 1;
-        int closestChunkEdgeZ = ((location.getBlockZ() - 1) | 15) + 1;
-        int distanceFromClosestChunkEdgeX = Math.abs(location.getBlockX() - closestChunkEdgeX);
-        int distanceFromClosestChunkEdgeZ  = Math.abs(location.getBlockX() - closestChunkEdgeZ);
-        if (distanceFromClosestChunkEdgeX <= power || distanceFromClosestChunkEdgeZ <= power) {
-        */
-        int chunkX = location.getChunk().getX();
-        int chunkZ = location.getChunk().getZ();
-        chunks.add(location.getWorld().getChunkAt(chunkX + 1, chunkZ + 1));
-        chunks.add(location.getWorld().getChunkAt(chunkX - 1, chunkZ - 1));
-        chunks.add(location.getWorld().getChunkAt(chunkX - 1, chunkZ + 1));
-        chunks.add(location.getWorld().getChunkAt(chunkX + 1, chunkZ - 1));
-        chunks.add(location.getWorld().getChunkAt(chunkX + 1, chunkZ));
-        chunks.add(location.getWorld().getChunkAt(chunkX, chunkZ + 1));
-        chunks.add(location.getWorld().getChunkAt(chunkX - 1, chunkZ));
-        chunks.add(location.getWorld().getChunkAt(chunkX, chunkZ - 1));
-        // }
-        ArrayList<Entity> entities = new ArrayList<>();
-        for (Chunk chunk : chunks) {
-            entities.addAll(Arrays.asList(chunk.getEntities()));
-        }
-        return entities.stream().filter(entity -> entity instanceof LivingEntity && distanceTo((LivingEntity) entity) / power < 1).map(entity -> (GlowLivingEntity) entity).collect(Collectors.toList());
+    private LivingEntity[] getNearbyEntities() {
+        Collection<Entity> entities = location.getWorld().getNearbyEntities(location, power, power, power);
+        return entities.stream().filter(entity -> entity instanceof LivingEntity).toArray(LivingEntity[]::new);
     }
 
     private double distanceTo(LivingEntity entity) {
