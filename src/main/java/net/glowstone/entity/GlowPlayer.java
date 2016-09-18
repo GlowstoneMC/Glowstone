@@ -777,6 +777,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     public void respawn() {
         // restore health
         setHealth(getMaxHealth());
+        setFoodLevel(20);
 
         // determine spawn destination
         boolean spawnAtBed = true;
