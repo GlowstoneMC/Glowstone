@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 
 /**
@@ -44,9 +46,11 @@ public final class ProfileCache {
         CompletableFuture<UUID> uuidFuture = CompletableFuture.supplyAsync(() -> PlayerDataFetcher.getUUID(playerName));
         uuidFuture.thenAcceptAsync(uid -> uuidCache.put(playerName, uid));
         try {
-            uuid = uuidFuture.get();
+            uuid = uuidFuture.get(5, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException e) {
             GlowServer.logger.log(Level.SEVERE, "UUID Cache interrupted: ", e);
+        } catch (TimeoutException e) {
+            GlowServer.logger.log(Level.SEVERE, "UUID Cache lookup timed out: ", e);
         }
         return uuid;
     }
