@@ -1,9 +1,13 @@
 package net.glowstone.entity.meta.profile;
 
+import net.glowstone.GlowServer;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
 
 /**
  * Cached methods for accessing Mojang servers to find UUIDs and player profiles.
@@ -36,8 +40,14 @@ public final class ProfileCache {
         if (uuidCache.containsKey(playerName)) {
             return uuidCache.get(playerName);
         }
+        UUID uuid = null;
         CompletableFuture<UUID> uuidFuture = CompletableFuture.supplyAsync(() -> PlayerDataFetcher.getUUID(playerName));
-        uuidFuture.thenAccept(uuid -> uuidCache.put(playerName, uuid));
-        return uuidCache.get(playerName);
+        uuidFuture.thenAcceptAsync(uid -> uuidCache.put(playerName, uid));
+        try {
+            uuid = uuidFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            GlowServer.logger.log(Level.SEVERE, "UUID Cache interrupted: ", e);
+        }
+        return uuid;
     }
 }
