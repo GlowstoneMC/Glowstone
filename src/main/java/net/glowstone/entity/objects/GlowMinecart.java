@@ -271,9 +271,11 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
     public static class Hopper extends GlowMinecart implements HopperMinecart {
 
         private boolean enabled = true;
+        private Inventory inventory;
 
         public Hopper(Location location) {
             super(location, MinecartType.HOPPER);
+            inventory = new GlowInventory(this, InventoryType.HOPPER);
         }
 
         @Override
@@ -288,7 +290,7 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
 
         @Override
         public Inventory getInventory() {
-            return null;
+            return inventory;
         }
     }
 }
