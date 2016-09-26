@@ -3,6 +3,7 @@ package net.glowstone.io.entity;
 import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.monster.*;
+import net.glowstone.entity.objects.GlowMinecart;
 import net.glowstone.entity.passive.GlowCow;
 import net.glowstone.entity.passive.GlowMooshroom;
 import net.glowstone.entity.passive.GlowPolarBear;
@@ -81,6 +82,11 @@ public final class EntityStorage {
         bind(new ItemFrameStore());
         bind(new ItemStore());
         bind(new TNTPrimedStorage());
+        for (GlowMinecart.MinecartType type : GlowMinecart.MinecartType.values()) {
+            if (type != null) {
+                bind(new MinecartStore(type));
+            }
+        }
     }
 
     private EntityStorage() {

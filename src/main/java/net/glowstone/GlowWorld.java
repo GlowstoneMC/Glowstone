@@ -1208,12 +1208,16 @@ public final class GlowWorld implements World {
             try {
                 Constructor<? extends GlowEntity> constructor = clazz.getConstructor(Location.class);
                 entity = constructor.newInstance(location);
-                CreatureSpawnEvent spawnEvent = new CreatureSpawnEvent((LivingEntity) entity, reason);
-                if (!spawnEvent.isCancelled()) {
-                    entity.createSpawnMessage();
+                if (entity instanceof LivingEntity) {
+                    CreatureSpawnEvent spawnEvent = new CreatureSpawnEvent((LivingEntity) entity, reason);
+                    if (!spawnEvent.isCancelled()) {
+                        entity.createSpawnMessage();
+                    } else {
+                        // TODO: separate spawning and construction for better event cancellation
+                        entity.remove();
+                    }
                 } else {
-                    // TODO: separate spawning and construction for better event cancellation
-                    entity.remove();
+                    entity.createSpawnMessage();
                 }
             } catch (NoSuchMethodException e) {
                 GlowServer.logger.log(Level.WARNING, "Invalid entity spawn: ", e);
