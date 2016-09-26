@@ -68,7 +68,7 @@ public class EntityRegistry {
                     .put(Villager.class, GlowVillager.class)
                     .put(Weather.class, GlowWeather.class)
                     .put(Witch.class, GlowWitch.class)
-                    //TODO: Wither
+                    .put(Wither.class, GlowWither.class)
                     //TODO: Wither Skull
                     .put(Wolf.class, GlowWolf.class)
                     .put(Zombie.class, GlowZombie.class)

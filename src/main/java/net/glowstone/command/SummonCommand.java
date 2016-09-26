@@ -1,7 +1,5 @@
 package net.glowstone.command;
 
-import net.glowstone.GlowWorld;
-import net.glowstone.entity.EntityRegistry;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.util.mojangson.Mojangson;
@@ -73,8 +71,7 @@ public class SummonCommand extends BukkitCommand {
             sender.sendMessage(ChatColor.RED + "Unknown entity type: " + entityName);
             return true;
         }
-        Class<? extends GlowEntity> spawn = EntityRegistry.getEntity(type);
-        GlowEntity entity = ((GlowWorld) location.getWorld()).spawn(location, spawn);
+        GlowEntity entity = (GlowEntity) location.getWorld().spawnEntity(location, type);
         if (tag != null) {
             EntityStorage.load(entity, tag);
         }
