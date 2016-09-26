@@ -14,6 +14,7 @@ import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
 import net.glowstone.util.nbt.NBTReadLimiter;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
@@ -144,11 +145,17 @@ public final class GlowBufUtils {
                     buf.writeFloat((float) Math.toDegrees(angle.getZ()));
                     break;
                 case POSITION:
+                    {
+                        Location location = (Location) value;
+                        long position = ((location.getBlockX() & 0x3FFFFFF) << 38) | ((location.getBlockY() & 0xFFF) << 26) | (location.getBlockZ() & 0x3FFFFFF);
+                        buf.writeLong(position);
+                    }
                     break; //TODO
                 case OPTPOSITION:
-                    buf.writeBoolean(value != null);
                     if (value != null) {
-                        //TODO
+                        Location location = (Location) value;
+                        long position = ((location.getBlockX() & 0x3FFFFFF) << 38) | ((location.getBlockY() & 0xFFF) << 26) | (location.getBlockZ() & 0x3FFFFFF);
+                        buf.writeLong(position);
                     }
                     break;
                 case DIRECTION:
@@ -157,7 +164,6 @@ public final class GlowBufUtils {
                 case OPTUUID:
                     buf.writeBoolean(value != null);
                     if (value != null) {
-
                         writeUuid(buf, (UUID) value);
                     }
                     break;

@@ -1,7 +1,7 @@
 package net.glowstone.entity.meta;
 
-import net.glowstone.util.Position;
 import net.glowstone.util.TextMessage;
+import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.EulerAngle;
 
@@ -19,8 +19,8 @@ public enum MetadataType {
     ITEM(ItemStack.class),
     BOOLEAN(Boolean.class),
     VECTOR(EulerAngle.class),
-    POSITION(Position.class),
-    OPTPOSITION(Position.class),
+    POSITION(Location.class),
+    OPTPOSITION(Location.class),
     DIRECTION(Integer.class),
     OPTUUID(UUID.class),
     BLOCKID(Integer.class);

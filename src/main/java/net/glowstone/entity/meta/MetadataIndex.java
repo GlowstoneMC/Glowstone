@@ -93,9 +93,9 @@ public enum MetadataIndex {
 
     SNOWMAN_NOHAT(12, BYTE, Snowman.class),
 
-    //SHULKER_FACING_DIRECTION(11, DIRECTION, Golem.class), //TODO 1.9 - New mob?
-    //SHULKER_ATTACHMENT_POSITION(12, OPTPOSITION, Golem.class), //TODO 1.9 - New mob?
-    //SHULKER_SHIELD_HEIGHT(13, BYTE, Golem.class), //TODO 1.9 - New mob?
+    SHULKER_FACING_DIRECTION(12, DIRECTION, Shulker.class),
+    SHULKER_ATTACHMENT_POSITION(13, OPTPOSITION, Shulker.class),
+    SHULKER_SHIELD_HEIGHT(14, BYTE, Shulker.class),
 
     BLAZE_ON_FIRE(12, BYTE, Blaze.class),
 

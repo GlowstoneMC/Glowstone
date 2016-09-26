@@ -72,6 +72,7 @@ public final class EntityStorage {
         bind(new MonsterStore<>(GlowGiant.class, "Giant"));
         bind(new MonsterStore<>(GlowSilverfish.class, "Silverfish"));
         bind(new MonsterStore<>(GlowWitch.class, "Witch"));
+        bind(new ShulkerStore());
 
 
         bind(new ArmorStandStore());
