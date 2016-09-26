@@ -1,10 +1,14 @@
 package net.glowstone.command;
 
+import com.google.common.collect.ImmutableList;
+import net.glowstone.entity.EntityRegistry;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.util.mojangson.Mojangson;
 import net.glowstone.util.mojangson.ex.MojangsonParseException;
 import net.glowstone.util.nbt.CompoundTag;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.BlockCommandSender;
@@ -18,6 +22,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 public class SummonCommand extends BukkitCommand {
 
@@ -71,6 +76,10 @@ public class SummonCommand extends BukkitCommand {
             sender.sendMessage(ChatColor.RED + "Unknown entity type: " + entityName);
             return true;
         }
+        if (EntityRegistry.getEntity(type) == null) {
+            sender.sendMessage(ChatColor.RED + "The entity type '" + type.getName() + "' is not implemented yet.");
+            return true;
+        }
         GlowEntity entity = (GlowEntity) location.getWorld().spawnEntity(location, type);
         if (tag != null) {
             EntityStorage.load(entity, tag);
@@ -115,5 +124,27 @@ public class SummonCommand extends BukkitCommand {
         }
 
         return result;
+    }
+
+    @Override
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+        Validate.notNull(sender, "Sender cannot be null", new Object[0]);
+        Validate.notNull(args, "Arguments cannot be null", new Object[0]);
+        Validate.notNull(alias, "Alias cannot be null", new Object[0]);
+        if (args.length == 1) {
+            String arg = args[0];
+            ArrayList<String> completion = new ArrayList<>();
+            for (EntityType type : EntityType.values()) {
+                if (type.getName() == null || EntityRegistry.getEntity(type) == null) {
+                    continue;
+                }
+                if (StringUtils.startsWithIgnoreCase(type.getName(), arg)) {
+                    completion.add(type.getName());
+                }
+            }
+            return completion;
+        } else {
+            return ImmutableList.of();
+        }
     }
 }

@@ -17,10 +17,11 @@ public class GlowWither extends GlowMonster implements Wither {
 
     public GlowWither(Location loc) {
         super(loc, EntityType.WITHER, 300);
-        setInvulnerableTicks(100);
+        setInvulnerableTicks(220);
         setCenterTarget(null);
         setLeftTarget(null);
         setRightTarget(null);
+        setHealth(getMaxHealth() / 3);
     }
 
     @Override
@@ -72,12 +73,17 @@ public class GlowWither extends GlowMonster implements Wither {
         super.pulse();
         if (getInvulnerableTicks() > 0) {
             setInvulnerableTicks(getInvulnerableTicks() - 1);
-            if (getInvulnerableTicks() == 0) {
+            if (ticksLived % 10 == 0) {
+                setHealth(getHealth() + 10);
+            }
+            if (getInvulnerableTicks() == 1) {
                 getWorld().createExplosion(getLocation(), Explosion.POWER_WITHER_CREATION);
                 for (Player player : getServer().getOnlinePlayers()) {
                     player.playSound(player.getLocation(), Sound.ENTITY_WITHER_SPAWN, 1.0f, 1.0f);
                 }
             }
+        } else if (ticksLived % 20 == 0) {
+            setHealth(getHealth() + 1);
         }
     }
 
