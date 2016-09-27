@@ -178,7 +178,7 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
         CHEST(Storage.class, "MinecartChest", StorageMinecart.class),
         FURNACE(Powered.class, "MinecartFurnace", PoweredMinecart.class),
         TNT(Explosive.class, "MinecartTNT", ExplosiveMinecart.class),
-        SPAWNER(null, "MinecartSpawner", SpawnerMinecart.class), // todo
+        SPAWNER(Spawner.class, "MinecartMobSpawner", SpawnerMinecart.class),
         HOPPER(Hopper.class, "MinecartHopper", HopperMinecart.class),
         COMMAND(null, "MinecartCommandBlock", CommandMinecart.class); // todo
 
@@ -230,11 +230,11 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
 
     public static class Storage extends GlowMinecart implements StorageMinecart {
 
-        private Inventory inventory;
+        private final Inventory inventory;
 
         public Storage(Location location) {
             super(location, MinecartType.CHEST);
-            inventory = new GlowInventory(this, InventoryType.CHEST);
+            inventory = new GlowInventory(this, InventoryType.CHEST, InventoryType.CHEST.getDefaultSize(), "Minecart with Chest");
         }
 
         @Override
@@ -271,11 +271,11 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
     public static class Hopper extends GlowMinecart implements HopperMinecart {
 
         private boolean enabled = true;
-        private Inventory inventory;
+        private final Inventory inventory;
 
         public Hopper(Location location) {
             super(location, MinecartType.HOPPER);
-            inventory = new GlowInventory(this, InventoryType.HOPPER);
+            inventory = new GlowInventory(this, InventoryType.HOPPER, InventoryType.HOPPER.getDefaultSize(), "Minecart with Hopper");
         }
 
         @Override
@@ -291,6 +291,25 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
         @Override
         public Inventory getInventory() {
             return inventory;
+        }
+
+        @Override
+        public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
+            super.entityInteract(player, message);
+            if (message.getAction() != InteractEntityMessage.Action.INTERACT.ordinal()) {
+                return false;
+            }
+            if (player.isSneaking()) {
+                return false;
+            }
+            player.openInventory(inventory);
+            return true;
+        }
+    }
+
+    public static class Spawner extends GlowMinecart implements SpawnerMinecart {
+        public Spawner(Location location) {
+            super(location, MinecartType.SPAWNER);
         }
     }
 }

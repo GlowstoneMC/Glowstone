@@ -45,7 +45,9 @@ public class EntityRegistry {
                     .put(GlowMinecart.MinecartType.CHEST.getEntityClass(), GlowMinecart.MinecartType.CHEST.getMinecartClass())
                     .put(GlowMinecart.MinecartType.FURNACE.getEntityClass(), GlowMinecart.MinecartType.FURNACE.getMinecartClass())
                     .put(GlowMinecart.MinecartType.TNT.getEntityClass(), GlowMinecart.MinecartType.TNT.getMinecartClass())
-                    //TODO: Spawner and Command minecarts
+                    .put(GlowMinecart.MinecartType.HOPPER.getEntityClass(), GlowMinecart.MinecartType.HOPPER.getMinecartClass())
+                    .put(GlowMinecart.MinecartType.SPAWNER.getEntityClass(), GlowMinecart.MinecartType.SPAWNER.getMinecartClass())
+                    //TODO: Command Block minecart
                     .put(MushroomCow.class, GlowMooshroom.class)
                     .put(Ocelot.class, GlowOcelot.class)
                     //TODO: Painting
