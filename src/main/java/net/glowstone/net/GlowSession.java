@@ -26,10 +26,9 @@ import net.glowstone.net.message.play.player.BlockPlacementMessage;
 import net.glowstone.net.pipeline.CodecsHandler;
 import net.glowstone.net.pipeline.CompressionHandler;
 import net.glowstone.net.pipeline.EncryptionHandler;
-import net.glowstone.net.pipeline.NoopHandler;
-import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.LoginProtocol;
+import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.ProtocolType;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -134,6 +133,11 @@ public final class GlowSession extends BasicSession {
      * If the connection has been disconnected
      */
     private boolean disconnected;
+
+    /**
+     * If compression packet has been sent
+     */
+    private boolean compresssionSent;
 
     /**
      * Creates a new session.
@@ -349,6 +353,7 @@ public final class GlowSession extends BasicSession {
             }
         }
 
+        getServer().setPlayerOnline(player, true);
         player.getWorld().getRawPlayers().add(player);
 
         online = true;
@@ -456,7 +461,7 @@ public final class GlowSession extends BasicSession {
         while ((message = messageQueue.poll()) != null) {
             if (disconnected) {
                 // disconnected, we are just seeing extra messages now
-                continue;
+                break;
             }
 
             super.messageReceived(message);
@@ -514,11 +519,7 @@ public final class GlowSession extends BasicSession {
     public void enableCompression(int threshold) {
         send(new SetCompressionMessage(threshold));
         updatePipeline("compression", new CompressionHandler(threshold));
-    }
-
-    public void disableCompression() {
-        send(new SetCompressionMessage(-1));
-        updatePipeline("compression", NoopHandler.INSTANCE);
+        compresssionSent = true;
     }
 
     private void updatePipeline(String key, ChannelHandler handler) {

@@ -485,6 +485,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         getInventory().getCraftingInventory().removeViewer(this);
         permissions.clearPermissions();
         getServer().setPlayerOnline(this, false);
+        getWorld().getRawPlayers().remove(this);
 
         if (scoreboard != null) {
             scoreboard.unsubscribe(this);
