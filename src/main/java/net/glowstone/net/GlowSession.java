@@ -353,7 +353,6 @@ public final class GlowSession extends BasicSession {
             }
         }
 
-        getServer().setPlayerOnline(player, true);
         player.getWorld().getRawPlayers().add(player);
 
         online = true;
@@ -517,9 +516,12 @@ public final class GlowSession extends BasicSession {
     }
 
     public void enableCompression(int threshold) {
-        send(new SetCompressionMessage(threshold));
-        updatePipeline("compression", new CompressionHandler(threshold));
-        compresssionSent = true;
+        // set compression can only be sent once
+        if (compresssionSent) {
+            send(new SetCompressionMessage(threshold));
+            updatePipeline("compression", new CompressionHandler(threshold));
+            compresssionSent = true;
+        }
     }
 
     private void updatePipeline(String key, ChannelHandler handler) {
