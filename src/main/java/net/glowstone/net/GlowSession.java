@@ -517,7 +517,7 @@ public final class GlowSession extends BasicSession {
 
     public void enableCompression(int threshold) {
         // set compression can only be sent once
-        if (compresssionSent) {
+        if (!compresssionSent) {
             send(new SetCompressionMessage(threshold));
             updatePipeline("compression", new CompressionHandler(threshold));
             compresssionSent = true;
