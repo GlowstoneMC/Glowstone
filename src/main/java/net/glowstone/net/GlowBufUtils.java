@@ -9,12 +9,12 @@ import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.entity.meta.MetadataMap.Entry;
 import net.glowstone.entity.meta.MetadataType;
 import net.glowstone.inventory.GlowItemFactory;
+import net.glowstone.util.Position;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
 import net.glowstone.util.nbt.NBTReadLimiter;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
@@ -76,11 +76,8 @@ public final class GlowBufUtils {
                     entries.add(new MetadataMap.Entry(index, new EulerAngle(x, y, z)));
                     break;
                 case POSITION:
-                    break; //TODO
                 case OPTPOSITION:
-                    if (buf.readBoolean()) {
-                        //TODO
-                    }
+                    entries.add(new Entry(index, Position.getPosition(buf.readLong())));
                     break;
                 case DIRECTION:
                     entries.add(new Entry(index, ByteBufUtils.readVarInt(buf)));
@@ -146,16 +143,14 @@ public final class GlowBufUtils {
                     break;
                 case POSITION:
                     {
-                        Location location = (Location) value;
-                        long position = ((location.getBlockX() & 0x3FFFFFF) << 38) | ((location.getBlockY() & 0xFFF) << 26) | (location.getBlockZ() & 0x3FFFFFF);
-                        buf.writeLong(position);
+                        BlockVector vector = (BlockVector) value;
+                        buf.writeLong(Position.getPosition(vector));
                     }
                     break; //TODO
                 case OPTPOSITION:
                     if (value != null) {
-                        Location location = (Location) value;
-                        long position = ((location.getBlockX() & 0x3FFFFFF) << 38) | ((location.getBlockY() & 0xFFF) << 26) | (location.getBlockZ() & 0x3FFFFFF);
-                        buf.writeLong(position);
+                        BlockVector vector = (BlockVector) value;
+                        buf.writeLong(Position.getPosition(vector));
                     }
                     break;
                 case DIRECTION:

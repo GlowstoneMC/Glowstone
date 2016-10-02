@@ -3,6 +3,7 @@ package net.glowstone.util;
 import com.google.common.collect.ImmutableList;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
+import org.bukkit.util.BlockVector;
 
 import java.util.List;
 
@@ -121,4 +122,21 @@ public final class Position {
         return (byte) ROTATIONS.indexOf(rotation);
     }
 
+    /**
+     * Gets the serialized position value for a block vector.
+     * @param vector the block vector to serialize
+     * @return the serialized position value
+     */
+    public static long getPosition(BlockVector vector) {
+        return ((vector.getBlockX() & 0x3FFFFFF) << 38) | ((vector.getBlockY() & 0xFFF) << 26) | (vector.getBlockZ() & 0x3FFFFFF);
+    }
+
+    /**
+     * Decodes the block vector from a serialized position value.
+     * @param position the position to decode
+     * @return the decoded block vector
+     */
+    public static BlockVector getPosition(long position) {
+        return new BlockVector(position >> 38, (position >> 26) & 0xFFF, position << 38 >> 38);
+    }
 }

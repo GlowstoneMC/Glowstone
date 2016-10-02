@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Shulker;
+import org.bukkit.util.BlockVector;
 
 public class GlowShulker extends GlowMonster implements Shulker {
 
@@ -43,7 +44,7 @@ public class GlowShulker extends GlowMonster implements Shulker {
 
     public void setAttachment(Location attachment) {
         this.attachment = attachment;
-        this.metadata.set(MetadataIndex.SHULKER_ATTACHMENT_POSITION, attachment);
+        this.metadata.set(MetadataIndex.SHULKER_ATTACHMENT_POSITION, new BlockVector(attachment.toVector()));
     }
 
     @Override
