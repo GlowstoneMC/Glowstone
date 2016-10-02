@@ -30,6 +30,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
+import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
@@ -1209,7 +1210,7 @@ public final class GlowWorld implements World {
                 Constructor<? extends GlowEntity> constructor = clazz.getConstructor(Location.class);
                 entity = constructor.newInstance(location);
                 if (entity instanceof LivingEntity) {
-                    CreatureSpawnEvent spawnEvent = new CreatureSpawnEvent((LivingEntity) entity, reason);
+                    CreatureSpawnEvent spawnEvent = EventFactory.callEvent(new CreatureSpawnEvent((LivingEntity) entity, reason);
                     if (!spawnEvent.isCancelled()) {
                         entity.createSpawnMessage();
                     } else {
@@ -1217,7 +1218,9 @@ public final class GlowWorld implements World {
                         entity.remove();
                     }
                 } else {
-                    entity.createSpawnMessage();
+                    EntitySpawnEvent spawnEvent = EventFactory.callEvent(new EntitySpawnEvent(entity));
+                    if (!spawnEvent.isCancelled())
+                        entity.createSpawnMessage();
                 }
             } catch (NoSuchMethodException e) {
                 GlowServer.logger.log(Level.WARNING, "Invalid entity spawn: ", e);
