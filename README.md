@@ -2,11 +2,11 @@
 [![Join the Discord chat](https://img.shields.io/badge/discord-glowstone-738bd7.svg?style=flat-square)](https://discord.gg/TFJqhsC)
 [![Build Status](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/master.png)](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/master)
 
-#Glowstone
+# Glowstone
 
 A fast, customizable and compatible open source Minecraft server.
 
-##Introduction
+## Introduction
 
 Glowstone is a lightweight, from scratch, open source
 [Minecraft](http://minecraft.net) server written in Java that supports plugins
@@ -18,7 +18,7 @@ not needed or higher performance is desired than the official software can
 deliver. Glowstone makes use of a thread-per-world model and performs
 synchronization only when necessitated by the Spigot API.
 
-##Features
+## Features
 
 Glowstone has a few key advantages over CraftBukkit:
  * It is **100% open source**. While CraftBukkit and most other mods are open
@@ -46,7 +46,7 @@ However, there are several drawbacks:
    
 For a current list of features, [check the wiki](https://github.com/GlowstoneMC/Glowstone/wiki/Current-Features)
 
-##Downloads
+## Downloads
 
 If you don't want to build from source, pre-built jar files are available to download from:
 
@@ -56,10 +56,10 @@ If you don't want to build from source, pre-built jar files are available to dow
 
 * [![Build Status](https://circleci.com/gh/GlowstoneMC/Glowstone.svg?style=svg) **CircleCI**](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/master) - click the latest build and then open the "Artifacts" tab (you must be logged in for this to show)
 
-##Building
+## Building
 
 
-###1. Setup
+### 1. Setup
 After installing [Oracle JDK](http://oracle.com/technetwork/java/javase/downloads) (recommended) or [OpenJDK](http://openjdk.java.net/), and
 [Maven](https://maven.apache.org), checkout the source:
 
@@ -68,7 +68,7 @@ git clone --recursive https://github.com/GlowstoneMC/Glowstone
 cd Glowstone
 ```
 
-###2. Build
+### 2. Build
 
 ```sh
 ./setup.sh
@@ -76,7 +76,7 @@ cd Glowstone
 
 The final jar will be placed in `target/` named `glowstone-1.10.2-SNAPSHOT.jar`.
 
-##Running
+## Running
 
 Running Glowstone is simple because its dependencies are shaded into the output
 jar at compile time. Simply execute `java -jar glowstone-1.10.2-SNAPSHOT.jar` along with any
@@ -93,7 +93,12 @@ Glowstone uses [JLine](http://jline.sf.net) for console input and colored
 console output. The JLine console can be disabled in the configuration if a
 flat console is desired.
 
-##Docs and Support
+## Playing
+
+For those of you who just want to play on a Glowstone server, we have one available 
+for testing at `mc.glowstone.net`. Have fun!
+
+## Docs and Support
 
 The best place to receive support is on [GitHub issues](https://github.com/GlowstoneMC/Glowstone/issues).
 When reporting bugs, please retest and include whether the problem reproduces on:
@@ -109,7 +114,7 @@ For documentation on the Glowkit API (an updated Bukkit which is used to
 write plugins), see the Glowkit Javadocs
 or visit Spigot's [Bukkit Javadocs](https://hub.spigotmc.org/javadocs/bukkit/).
 
-##Credits
+## Credits
 
  * [The Minecraft Coalition](http://wiki.vg/) and [`#mcdevs`](https://github.com/mcdevs) -
    protocol and file formats research.
@@ -129,7 +134,7 @@ or visit Spigot's [Bukkit Javadocs](https://hub.spigotmc.org/javadocs/bukkit/).
    [Mojang](http://mojang.com/about) - for making such an awesome game in the first
    place!
 
-##Copyright
+## Copyright
 
 Glowstone is open-source software released under the MIT license. Please see
 the `LICENSE` file for details.
