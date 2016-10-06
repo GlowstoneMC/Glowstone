@@ -1,6 +1,5 @@
 package net.glowstone.util.pattern;
 
-import net.glowstone.GlowServer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -76,9 +75,7 @@ public class BlockPattern {
         }
 
         public boolean matches(Block block) {
-            boolean b = block.getType() == getType() && block.getData() == getData();
-            GlowServer.logger.info(b + " - " + toString() + " vs " + block.getType() + "/" + block.getData());
-            return b;
+            return block.getType() == getType() && block.getData() == getData();
         }
 
         @Override
@@ -96,7 +93,7 @@ public class BlockPattern {
         }
     }
 
-    public enum Alignment {
+    private enum Alignment {
         X(1, 0), Z(0, 1);
 
         private final int x;
