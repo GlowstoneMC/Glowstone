@@ -52,5 +52,4 @@ public class ItemMinecart extends ItemType {
         }
         return getYaw(BlockFace.SOUTH);
     }
-
 }

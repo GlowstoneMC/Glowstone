@@ -87,7 +87,7 @@ public enum MetadataIndex {
     WOLF_BEGGING(16, BOOLEAN, Wolf.class),
     WOLF_COLOR(21, BYTE, Wolf.class),
 
-    VILLAGER_TYPE(13, INT, Villager.class), //TODO 1.9 - Currently Unknown on wiki.vg
+    VILLAGER_PROFESSION(13, INT, Villager.class),
 
     GOLEM_PLAYER_BUILT(12, BYTE, IronGolem.class),
 
@@ -107,7 +107,7 @@ public enum MetadataIndex {
     GUARDIAN_TARGET(13, INT, Guardian.class),
 
     SKELETON_TYPE(12, INT, Skeleton.class),
-    SKELETON_UNKNOWN(13, BOOLEAN, Skeleton.class), //TODO 1.9 - Something hand related according to wiki.vg
+    SKELETON_HANDS_RISEN_UP(13, BOOLEAN, Skeleton.class),
 
     SPIDER_CLIMBING(12, BYTE, Spider.class),
 

@@ -46,11 +46,9 @@ public class MetadataMap {
                         break;
                 }
             }
-
             if (!index.getType().getDataType().isAssignableFrom(value.getClass())) {
                 throw new IllegalArgumentException("Cannot assign " + value + " to " + index + ", expects " + index.getType());
             }
-
             if (!index.appliesTo(entityClass)) {
                 throw new IllegalArgumentException("Index " + index + " does not apply to " + entityClass.getSimpleName() + ", only " + index.getAppliesTo().getSimpleName());
             }
