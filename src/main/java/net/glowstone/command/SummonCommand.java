@@ -116,10 +116,7 @@ public class SummonCommand extends BukkitCommand {
             String arg = args[0];
             ArrayList<String> completion = new ArrayList<>();
             for (EntityType type : EntityType.values()) {
-                if (!checkSummon(null, type)) {
-                    continue;
-                }
-                if (StringUtils.startsWithIgnoreCase(type.getName(), arg)) {
+                if (checkSummon(null, type) && StringUtils.startsWithIgnoreCase(type.getName(), arg)) {
                     completion.add(type.getName());
                 }
             }
