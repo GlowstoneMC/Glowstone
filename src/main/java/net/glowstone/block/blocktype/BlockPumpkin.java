@@ -65,11 +65,9 @@ public class BlockPumpkin extends BlockDirectDrops {
         return false;
     }
 
-    private boolean spawnSnowman(Location location) {
+    private void spawnSnowman(Location location) {
         if (SNOWMAN_PATTERN.matches(location, true, 0, 0)) {
             location.getWorld().spawnEntity(location.clone().subtract(-0.5, 2, -0.5), EntityType.SNOWMAN);
-            return true;
         }
-        return false;
     }
 }
