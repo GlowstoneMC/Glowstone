@@ -44,7 +44,11 @@ public class GlowShulker extends GlowMonster implements Shulker {
 
     public void setAttachment(Location attachment) {
         this.attachment = attachment;
-        this.metadata.set(MetadataIndex.SHULKER_ATTACHMENT_POSITION, new BlockVector(attachment.toVector()));
+        if (attachment != null) {
+            this.metadata.set(MetadataIndex.SHULKER_ATTACHMENT_POSITION, new BlockVector(attachment.toVector()));
+        } else {
+            this.metadata.set(MetadataIndex.SHULKER_ATTACHMENT_POSITION, null);
+        }
     }
 
     @Override
