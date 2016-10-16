@@ -472,7 +472,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             vector = getVelocity();
         }
 
-        T projectile = throwProjectile(clazz, getEyeLocation().clone().add(0, 1, 0), vector, offset, velocity);
+        T projectile = throwProjectile(clazz, getEyeLocation().clone(), vector, offset, velocity);
         projectile.setShooter(this);
         return projectile;
     }
@@ -482,7 +482,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         double x = cos(k * location.getPitch()) * sin(k * location.getYaw());
         double y = sin(k * (location.getPitch() - offset));
         double z = cos(location.getPitch() * k) * cos(location.getYaw() * k);
-        T projectile = throwProjectile(type, new Location(location.getWorld(), location.getX(), location.getY(), location.getZ()), x, y, z, velocity);
+        T projectile = throwProjectile(type, location, x, y, z, velocity);
         projectile.getVelocity().add(originalVector);
         return projectile;
     }
@@ -493,6 +493,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         x += (x * (velocity - k)) / k;
         y += (y * (velocity - k)) / k;
         z += (z * (velocity - k)) / k;
+
+        location.add(location.getDirection());
+        location.setPitch(0);
+        location.setYaw(0);
+
         projectile.setVelocity(new Vector(x, y, z));
         ((GlowProjectile) projectile).setRawLocation(location);
         return projectile;
