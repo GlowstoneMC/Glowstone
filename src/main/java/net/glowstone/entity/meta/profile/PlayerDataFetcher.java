@@ -9,10 +9,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -49,10 +46,9 @@ final class PlayerDataFetcher {
         }
 
         JSONObject json;
-        try {
-            InputStreamReader isr = new InputStreamReader(is);
-            if (isr.ready()) {
-                json = (JSONObject) new JSONParser().parse(isr);
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+            if (br.ready()) {
+                json = (JSONObject) new JSONParser().parse(br);
             } else {
                 return new PlayerProfile(null, uuid);
             }

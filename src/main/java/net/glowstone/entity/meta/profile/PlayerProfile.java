@@ -91,7 +91,7 @@ public final class PlayerProfile {
         if (tag.containsKey("Name")) {
             name = tag.getString("Name");
         } else {
-            name = PlayerDataFetcher.getProfile(UUID.fromString(uuidStr)).getName();
+            name = ProfileCache.getProfile(UUID.fromString(uuidStr)).getName();
         }
 
         List<PlayerProperty> properties = new ArrayList<>();
