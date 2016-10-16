@@ -2,10 +2,7 @@ package net.glowstone.entity;
 
 import com.google.common.collect.ImmutableBiMap;
 import net.glowstone.entity.monster.*;
-import net.glowstone.entity.objects.GlowArmorStand;
-import net.glowstone.entity.objects.GlowFallingBlock;
-import net.glowstone.entity.objects.GlowItem;
-import net.glowstone.entity.objects.GlowItemFrame;
+import net.glowstone.entity.objects.*;
 import net.glowstone.entity.passive.*;
 import org.bukkit.entity.*;
 
@@ -44,7 +41,13 @@ public class EntityRegistry {
                     //TODO: Leash hitch
                     //TODO: Lightning
                     .put(MagmaCube.class, GlowMagmaCube.class)
-                    //TODO: Minecarts
+                    .put(GlowMinecart.MinecartType.RIDEABLE.getEntityClass(), GlowMinecart.MinecartType.RIDEABLE.getMinecartClass())
+                    .put(GlowMinecart.MinecartType.CHEST.getEntityClass(), GlowMinecart.MinecartType.CHEST.getMinecartClass())
+                    .put(GlowMinecart.MinecartType.FURNACE.getEntityClass(), GlowMinecart.MinecartType.FURNACE.getMinecartClass())
+                    .put(GlowMinecart.MinecartType.TNT.getEntityClass(), GlowMinecart.MinecartType.TNT.getMinecartClass())
+                    .put(GlowMinecart.MinecartType.HOPPER.getEntityClass(), GlowMinecart.MinecartType.HOPPER.getMinecartClass())
+                    .put(GlowMinecart.MinecartType.SPAWNER.getEntityClass(), GlowMinecart.MinecartType.SPAWNER.getMinecartClass())
+                    //TODO: Command Block minecart
                     .put(MushroomCow.class, GlowMooshroom.class)
                     .put(Ocelot.class, GlowOcelot.class)
                     //TODO: Painting
@@ -68,10 +71,11 @@ public class EntityRegistry {
                     .put(Villager.class, GlowVillager.class)
                     .put(Weather.class, GlowWeather.class)
                     .put(Witch.class, GlowWitch.class)
-                    //TODO: Wither
+                    .put(Wither.class, GlowWither.class)
                     //TODO: Wither Skull
                     .put(Wolf.class, GlowWolf.class)
                     .put(Zombie.class, GlowZombie.class)
+                    .put(Shulker.class, GlowShulker.class)
                     .build();
 
     public static Class<? extends GlowEntity> getEntity(EntityType type) {

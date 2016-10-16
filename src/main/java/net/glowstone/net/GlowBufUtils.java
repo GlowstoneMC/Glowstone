@@ -9,6 +9,7 @@ import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.entity.meta.MetadataMap.Entry;
 import net.glowstone.entity.meta.MetadataType;
 import net.glowstone.inventory.GlowItemFactory;
+import net.glowstone.util.Position;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
@@ -75,11 +76,8 @@ public final class GlowBufUtils {
                     entries.add(new MetadataMap.Entry(index, new EulerAngle(x, y, z)));
                     break;
                 case POSITION:
-                    break; //TODO
                 case OPTPOSITION:
-                    if (buf.readBoolean()) {
-                        //TODO
-                    }
+                    entries.add(new Entry(index, Position.getPosition(buf.readLong())));
                     break;
                 case DIRECTION:
                     entries.add(new Entry(index, ByteBufUtils.readVarInt(buf)));
@@ -108,12 +106,20 @@ public final class GlowBufUtils {
             MetadataIndex index = entry.index;
             Object value = entry.value;
 
-            if (value == null) continue;
-
             int type = index.getType().getId();
             int id = index.getIndex();
             buf.writeByte(id);
             buf.writeByte(type);
+
+            if (!index.getType().isOptional() && value == null) {
+                continue;
+            }
+            if (index.getType().isOptional()) {
+                buf.writeBoolean(value != null);
+                if (value == null) {
+                    continue;
+                }
+            }
 
             switch (index.getType()) {
                 case BYTE:
@@ -144,22 +150,15 @@ public final class GlowBufUtils {
                     buf.writeFloat((float) Math.toDegrees(angle.getZ()));
                     break;
                 case POSITION:
-                    break; //TODO
                 case OPTPOSITION:
-                    buf.writeBoolean(value != null);
-                    if (value != null) {
-                        //TODO
-                    }
+                    BlockVector vector = (BlockVector) value;
+                    buf.writeLong(Position.getPosition(vector));
                     break;
                 case DIRECTION:
                     ByteBufUtils.writeVarInt(buf, (Integer) value);
                     break;
                 case OPTUUID:
-                    buf.writeBoolean(value != null);
-                    if (value != null) {
-
-                        writeUuid(buf, (UUID) value);
-                    }
+                    writeUuid(buf, (UUID) value);
                     break;
                 case BLOCKID:
                     ByteBufUtils.writeVarInt(buf, (Integer) value);

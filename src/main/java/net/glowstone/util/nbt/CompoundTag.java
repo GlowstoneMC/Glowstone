@@ -63,35 +63,59 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     // Simple gets
 
     public boolean getBool(String key) {
-        if (isInt(key)) {
-            int val = get(key, IntTag.class);
-            remove(key);
-            putByte(key, val);
+        if (!containsKey(key)) {
+            return false;
         }
-        return get(key, ByteTag.class) != 0;
+        return getByte(key) != 0;
     }
 
     public byte getByte(String key) {
+        if (isInt(key)) {
+            return (byte) getInt(key);
+        }
         return get(key, ByteTag.class);
     }
 
     public short getShort(String key) {
+        if (isInt(key)) {
+            return (short) getInt(key);
+        }
         return get(key, ShortTag.class);
     }
 
     public int getInt(String key) {
+        if (isByte(key)) {
+            return (int) getByte(key);
+        } else if (isShort(key)) {
+            return (int) getShort(key);
+        } else if (isLong(key)) {
+            return (int) getLong(key);
+        }
         return get(key, IntTag.class);
     }
 
     public long getLong(String key) {
+        if (isInt(key)) {
+            return (long) getInt(key);
+        }
         return get(key, LongTag.class);
     }
 
     public float getFloat(String key) {
+        if (isDouble(key)) {
+            return (float) getDouble(key);
+        } else if (isInt(key)) {
+            return (float) getInt(key);
+        }
         return get(key, FloatTag.class);
     }
 
     public double getDouble(String key) {
+        if (isFloat(key)) {
+            return (double) getFloat(key);
+        } else if (isInt(key)) {
+            return (double) getInt(key);
+        }
         return get(key, DoubleTag.class);
     }
 

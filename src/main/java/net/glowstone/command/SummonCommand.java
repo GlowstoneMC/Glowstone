@@ -1,25 +1,28 @@
 package net.glowstone.command;
 
-import net.glowstone.GlowWorld;
+import com.google.common.collect.ImmutableList;
 import net.glowstone.entity.EntityRegistry;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.util.mojangson.Mojangson;
 import net.glowstone.util.mojangson.ex.MojangsonParseException;
 import net.glowstone.util.nbt.CompoundTag;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.CommandUtils;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
-import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 public class SummonCommand extends BukkitCommand {
 
@@ -48,17 +51,18 @@ public class SummonCommand extends BukkitCommand {
             sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
             return false;
         }
-
         if (args.length >= 4) {
-            double x = this.getCoordinate(sender, location.getX(), args[1]);
-            double y = this.getCoordinate(sender, location.getY(), args[2]);
-            double z = this.getCoordinate(sender, location.getZ(), args[3]);
-            location = new Location(location.getWorld(), x, y, z);
+            location = CommandUtils.getLocation(location, args[1], args[2], args[3]);
         }
+        if (location == null) {
+            return false;
+        }
+        location.setYaw(0.0f);
+        location.setPitch(0.0f);
 
         CompoundTag tag = null;
         if (args.length >= 5) {
-            String data = String.join(" ", new ArrayList<String>(Arrays.asList(args)).subList(4, args.length));
+            String data = String.join(" ", new ArrayList<>(Arrays.asList(args)).subList(4, args.length));
             sender.sendMessage(data);
             try {
                 tag = Mojangson.parseCompound(data);
@@ -73,8 +77,10 @@ public class SummonCommand extends BukkitCommand {
             sender.sendMessage(ChatColor.RED + "Unknown entity type: " + entityName);
             return true;
         }
-        Class<? extends GlowEntity> spawn = EntityRegistry.getEntity(type);
-        GlowEntity entity = ((GlowWorld) location.getWorld()).spawn(location, spawn);
+        if (!checkSummon(sender, type)) {
+            return true;
+        }
+        GlowEntity entity = (GlowEntity) location.getWorld().spawnEntity(location, type);
         if (tag != null) {
             EntityStorage.load(entity, tag);
         }
@@ -83,40 +89,40 @@ public class SummonCommand extends BukkitCommand {
         return true;
     }
 
-    private double getCoordinate(CommandSender sender, double current, String input) {
-        return this.getCoordinate(sender, current, input, -30000000, 30000000);
+    private boolean checkSummon(CommandSender sender, EntityType type) {
+        if (!type.isSpawnable()) {
+            if (sender != null) sender.sendMessage(ChatColor.RED + "The entity '" + type.getName() + "' cannot be summoned.");
+            return false;
+        }
+        if (EntityRegistry.getEntity(type) == null) {
+            if (sender != null) sender.sendMessage(ChatColor.RED + "The entity '" + type.getName() + "' is not implemented yet.");
+            return false;
+        }
+        try {
+            EntityRegistry.getEntity(type).getConstructor(Location.class);
+        } catch (NoSuchMethodException e) {
+            if (sender != null) sender.sendMessage(ChatColor.RED + "The entity '" + type.getName() + "' cannot be summoned.");
+            return false;
+        }
+        return true;
     }
 
-    private double getCoordinate(CommandSender sender, double current, String input, int min, int max) {
-        boolean relative = input.startsWith("~");
-        double result = relative ? current : 0.0D;
-        if (!relative || input.length() > 1) {
-            boolean exact = input.contains(".");
-            if (relative) {
-                input = input.substring(1);
+    @Override
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+        Validate.notNull(sender, "Sender cannot be null", new Object[0]);
+        Validate.notNull(args, "Arguments cannot be null", new Object[0]);
+        Validate.notNull(alias, "Alias cannot be null", new Object[0]);
+        if (args.length == 1) {
+            String arg = args[0];
+            ArrayList<String> completion = new ArrayList<>();
+            for (EntityType type : EntityType.values()) {
+                if (checkSummon(null, type) && StringUtils.startsWithIgnoreCase(type.getName(), arg)) {
+                    completion.add(type.getName());
+                }
             }
-
-            double testResult = VanillaCommand.getDouble(sender, input);
-            if (testResult == -3.0000001E7D) {
-                return -3.0000001E7D;
-            }
-
-            result += testResult;
-            if (!exact && !relative) {
-                result += 0.5D;
-            }
+            return completion;
+        } else {
+            return ImmutableList.of();
         }
-
-        if (min != 0 || max != 0) {
-            if (result < (double) min) {
-                result = -3.0000001E7D;
-            }
-
-            if (result > (double) max) {
-                result = -3.0000001E7D;
-            }
-        }
-
-        return result;
     }
 }

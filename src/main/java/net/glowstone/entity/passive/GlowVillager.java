@@ -32,7 +32,7 @@ public class GlowVillager extends GlowAgeable implements Villager {
     @Override
     public void setProfession(Profession profession) {
         this.profession = profession;
-        metadata.set(MetadataIndex.VILLAGER_TYPE, profession.ordinal() - 1);
+        metadata.set(MetadataIndex.VILLAGER_PROFESSION, profession.ordinal() - 1);
     }
 
     @Override

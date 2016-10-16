@@ -1,5 +1,6 @@
 package net.glowstone;
 
+import com.flowpowered.network.Message;
 import lombok.ToString;
 import net.glowstone.ChunkManager.ChunkLock;
 import net.glowstone.GlowChunk.ChunkSection;
@@ -30,6 +31,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
+import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
@@ -1208,9 +1210,16 @@ public final class GlowWorld implements World {
             try {
                 Constructor<? extends GlowEntity> constructor = clazz.getConstructor(Location.class);
                 entity = constructor.newInstance(location);
-                CreatureSpawnEvent spawnEvent = new CreatureSpawnEvent((LivingEntity) entity, reason);
+                GlowEntity impl = entity;
+                EntitySpawnEvent spawnEvent;
+                if (entity instanceof LivingEntity) {
+                    spawnEvent = EventFactory.callEvent(new CreatureSpawnEvent((LivingEntity) entity, reason));
+                } else {
+                    spawnEvent = EventFactory.callEvent(new EntitySpawnEvent(entity));
+                }
                 if (!spawnEvent.isCancelled()) {
-                    entity.createSpawnMessage();
+                    List<Message> spawnMessage = entity.createSpawnMessage();
+                    getRawPlayers().stream().filter(player -> player.canSeeEntity(impl)).forEach(player -> player.getSession().sendAll(spawnMessage.toArray(new Message[spawnMessage.size()])));
                 } else {
                     // TODO: separate spawning and construction for better event cancellation
                     entity.remove();

@@ -2,6 +2,7 @@ package net.glowstone.block;
 
 import net.glowstone.block.blocktype.*;
 import net.glowstone.block.itemtype.*;
+import net.glowstone.entity.objects.GlowMinecart;
 import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -202,7 +203,7 @@ public final class ItemTable {
         reg(Material.SPONGE, new BlockSponge());
         reg(Material.TNT, new BlockTNT());
         reg(Material.DOUBLE_PLANT, new BlockDoublePlant());
-        reg(Material.PUMPKIN, new BlockDirectDrops(Material.PUMPKIN));
+        reg(Material.PUMPKIN, new BlockPumpkin());
         reg(Material.JACK_O_LANTERN, new BlockDirectDrops(Material.JACK_O_LANTERN));
         reg(Material.SEA_LANTERN, new BlockRandomDrops(Material.PRISMARINE_CRYSTALS, 2, 3));
         reg(Material.REDSTONE_LAMP_ON, new BlockLamp());
@@ -286,6 +287,12 @@ public final class ItemTable {
         reg(Material.SPIDER_EYE, new ItemFood(2, 3.2f)); // todo: effect
         reg(Material.ARMOR_STAND, new ItemArmorStand());
         reg(Material.MILK_BUCKET, new ItemMilk());
+        reg(Material.MINECART, new ItemMinecart(GlowMinecart.MinecartType.RIDEABLE));
+        reg(Material.COMMAND_MINECART, new ItemMinecart(GlowMinecart.MinecartType.COMMAND));
+        reg(Material.EXPLOSIVE_MINECART, new ItemMinecart(GlowMinecart.MinecartType.TNT));
+        reg(Material.HOPPER_MINECART, new ItemMinecart(GlowMinecart.MinecartType.HOPPER));
+        reg(Material.POWERED_MINECART, new ItemMinecart(GlowMinecart.MinecartType.FURNACE));
+        reg(Material.STORAGE_MINECART, new ItemMinecart(GlowMinecart.MinecartType.CHEST));
     }
 
     private void reg(Material material, ItemType type) {

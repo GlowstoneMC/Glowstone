@@ -31,27 +31,27 @@ public class MetadataMap {
 
     public void set(MetadataIndex index, Object value) {
         // take numbers down to the correct precision
-        if (value instanceof Number) {
-            Number n = (Number) value;
-            switch (index.getType()) {
-                case BYTE:
-                    value = n.byteValue();
-                    break;
-                case INT:
-                    value = n.intValue();
-                    break;
-                case FLOAT:
-                    value = n.floatValue();
-                    break;
+        if (value != null) {
+            if (value instanceof Number) {
+                Number n = (Number) value;
+                switch (index.getType()) {
+                    case BYTE:
+                        value = n.byteValue();
+                        break;
+                    case INT:
+                        value = n.intValue();
+                        break;
+                    case FLOAT:
+                        value = n.floatValue();
+                        break;
+                }
             }
-        }
-
-        if (!index.getType().getDataType().isAssignableFrom(value.getClass())) {
-            throw new IllegalArgumentException("Cannot assign " + value + " to " + index + ", expects " + index.getType());
-        }
-
-        if (!index.appliesTo(entityClass)) {
-            throw new IllegalArgumentException("Index " + index + " does not apply to " + entityClass.getSimpleName() + ", only " + index.getAppliesTo().getSimpleName());
+            if (!index.getType().getDataType().isAssignableFrom(value.getClass())) {
+                throw new IllegalArgumentException("Cannot assign " + value + " to " + index + ", expects " + index.getType());
+            }
+            if (!index.appliesTo(entityClass)) {
+                throw new IllegalArgumentException("Index " + index + " does not apply to " + entityClass.getSimpleName() + ", only " + index.getAppliesTo().getSimpleName());
+            }
         }
 
         Object prev = map.put(index, value);

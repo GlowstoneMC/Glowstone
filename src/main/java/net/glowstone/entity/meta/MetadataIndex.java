@@ -87,15 +87,15 @@ public enum MetadataIndex {
     WOLF_BEGGING(16, BOOLEAN, Wolf.class),
     WOLF_COLOR(21, BYTE, Wolf.class),
 
-    VILLAGER_TYPE(13, INT, Villager.class), //TODO 1.9 - Currently Unknown on wiki.vg
+    VILLAGER_PROFESSION(13, INT, Villager.class),
 
     GOLEM_PLAYER_BUILT(12, BYTE, IronGolem.class),
 
     SNOWMAN_NOHAT(12, BYTE, Snowman.class),
 
-    //SHULKER_FACING_DIRECTION(11, DIRECTION, Golem.class), //TODO 1.9 - New mob?
-    //SHULKER_ATTACHMENT_POSITION(12, OPTPOSITION, Golem.class), //TODO 1.9 - New mob?
-    //SHULKER_SHIELD_HEIGHT(13, BYTE, Golem.class), //TODO 1.9 - New mob?
+    SHULKER_FACING_DIRECTION(12, DIRECTION, Shulker.class),
+    SHULKER_ATTACHMENT_POSITION(13, OPTPOSITION, Shulker.class),
+    SHULKER_SHIELD_HEIGHT(14, BYTE, Shulker.class),
 
     BLAZE_ON_FIRE(12, BYTE, Blaze.class),
 
@@ -107,7 +107,7 @@ public enum MetadataIndex {
     GUARDIAN_TARGET(13, INT, Guardian.class),
 
     SKELETON_TYPE(12, INT, Skeleton.class),
-    SKELETON_UNKNOWN(13, BOOLEAN, Skeleton.class), //TODO 1.9 - Something hand related according to wiki.vg
+    SKELETON_HANDS_RISEN_UP(13, BOOLEAN, Skeleton.class),
 
     SPIDER_CLIMBING(12, BYTE, Spider.class),
 
