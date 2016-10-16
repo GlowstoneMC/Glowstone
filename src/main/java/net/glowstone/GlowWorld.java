@@ -1211,23 +1211,18 @@ public final class GlowWorld implements World {
                 Constructor<? extends GlowEntity> constructor = clazz.getConstructor(Location.class);
                 entity = constructor.newInstance(location);
                 GlowEntity impl = entity;
+                EntitySpawnEvent spawnEvent;
                 if (entity instanceof LivingEntity) {
-                    CreatureSpawnEvent spawnEvent = EventFactory.callEvent(new CreatureSpawnEvent((LivingEntity) entity, reason));
-                    if (!spawnEvent.isCancelled()) {
-                        List<Message> spawnMessage = entity.createSpawnMessage();
-                        getRawPlayers().stream().filter(player -> player.canSeeEntity(impl)).forEach(player -> player.getSession().sendAll(spawnMessage.toArray(new Message[spawnMessage.size()])));
-                    } else {
-                        // TODO: separate spawning and construction for better event cancellation
-                        entity.remove();
-                    }
+                    spawnEvent = EventFactory.callEvent(new CreatureSpawnEvent((LivingEntity) entity, reason));
                 } else {
-                    EntitySpawnEvent spawnEvent = EventFactory.callEvent(new EntitySpawnEvent(entity));
-                    if (!spawnEvent.isCancelled()) {
-                        List<Message> spawnMessage = entity.createSpawnMessage();
-                        getRawPlayers().stream().filter(player -> player.canSeeEntity(impl)).forEach(player -> player.getSession().sendAll(spawnMessage.toArray(new Message[spawnMessage.size()])));
-                    } else {
-                        entity.remove();
-                    }
+                    spawnEvent = EventFactory.callEvent(new EntitySpawnEvent(entity));
+                }
+                if (!spawnEvent.isCancelled()) {
+                    List<Message> spawnMessage = entity.createSpawnMessage();
+                    getRawPlayers().stream().filter(player -> player.canSeeEntity(impl)).forEach(player -> player.getSession().sendAll(spawnMessage.toArray(new Message[spawnMessage.size()])));
+                } else {
+                    // TODO: separate spawning and construction for better event cancellation
+                    entity.remove();
                 }
             } catch (NoSuchMethodException e) {
                 GlowServer.logger.log(Level.WARNING, "Invalid entity spawn: ", e);
