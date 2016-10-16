@@ -1789,7 +1789,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * @param async whether the message was received asynchronously.
      */
     public void chat(String text, boolean async) {
-        if (text.startsWith("/")) {
+        if (text.charAt(0) == '/') {
             Runnable task = () -> {
                 server.getLogger().info(getName() + " issued command: " + text);
                 try {

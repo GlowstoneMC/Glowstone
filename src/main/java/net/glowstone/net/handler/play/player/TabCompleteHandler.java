@@ -21,9 +21,9 @@ public final class TabCompleteHandler implements MessageHandler<GlowSession, Tab
         List<String> completions = new ArrayList<>();
 
         // complete command or username
-        if (buffer.startsWith("/") || message.isAssumeCommand()) {
+        if (!buffer.isEmpty() && buffer.charAt(0) == '/' || message.isAssumeCommand()) {
             List<String> items;
-            if (buffer.startsWith("/")) {
+            if (!buffer.isEmpty() && buffer.charAt(0) == '/') {
                 items = session.getServer().getCommandMap().tabComplete(sender, buffer.substring(1));
             } else {
                 items = session.getServer().getCommandMap().tabComplete(sender, buffer);
