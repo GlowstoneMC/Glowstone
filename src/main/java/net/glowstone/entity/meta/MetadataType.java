@@ -11,24 +11,26 @@ import java.util.UUID;
  * The types of values that entity metadata can contain.
  */
 public enum MetadataType {
-    BYTE(Byte.class),
-    INT(Integer.class),
-    FLOAT(Float.class),
-    STRING(String.class),
-    CHAT(TextMessage.class),
-    ITEM(ItemStack.class),
-    BOOLEAN(Boolean.class),
-    VECTOR(EulerAngle.class),
-    POSITION(BlockVector.class),
-    OPTPOSITION(BlockVector.class),
-    DIRECTION(Integer.class),
-    OPTUUID(UUID.class),
-    BLOCKID(Integer.class);
+    BYTE(Byte.class, false),
+    INT(Integer.class, false),
+    FLOAT(Float.class, false),
+    STRING(String.class, false),
+    CHAT(TextMessage.class, false),
+    ITEM(ItemStack.class, false),
+    BOOLEAN(Boolean.class, false),
+    VECTOR(EulerAngle.class, false),
+    POSITION(BlockVector.class, false),
+    OPTPOSITION(BlockVector.class, true),
+    DIRECTION(Integer.class, false),
+    OPTUUID(UUID.class, true),
+    BLOCKID(Integer.class, false);
 
     private final Class<?> dataType;
+    private final boolean optional;
 
-    MetadataType(Class<?> dataType) {
+    MetadataType(Class<?> dataType, boolean optional) {
         this.dataType = dataType;
+        this.optional = optional;
     }
 
     public static MetadataType byId(int id) {
@@ -41,5 +43,9 @@ public enum MetadataType {
 
     public int getId() {
         return ordinal();
+    }
+
+    public boolean isOptional() {
+        return optional;
     }
 }

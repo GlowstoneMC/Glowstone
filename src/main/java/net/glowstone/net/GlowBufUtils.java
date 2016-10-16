@@ -106,12 +106,20 @@ public final class GlowBufUtils {
             MetadataIndex index = entry.index;
             Object value = entry.value;
 
-            if (value == null) continue;
-
             int type = index.getType().getId();
             int id = index.getIndex();
             buf.writeByte(id);
             buf.writeByte(type);
+
+            if (!index.getType().isOptional() && value == null) {
+                continue;
+            }
+            if (index.getType().isOptional()) {
+                buf.writeBoolean(value != null);
+                if (value == null) {
+                    continue;
+                }
+            }
 
             switch (index.getType()) {
                 case BYTE:
@@ -142,25 +150,15 @@ public final class GlowBufUtils {
                     buf.writeFloat((float) Math.toDegrees(angle.getZ()));
                     break;
                 case POSITION:
-                    {
-                        BlockVector vector = (BlockVector) value;
-                        buf.writeLong(Position.getPosition(vector));
-                    }
-                    break; //TODO
                 case OPTPOSITION:
-                    if (value != null) {
-                        BlockVector vector = (BlockVector) value;
-                        buf.writeLong(Position.getPosition(vector));
-                    }
+                    BlockVector vector = (BlockVector) value;
+                    buf.writeLong(Position.getPosition(vector));
                     break;
                 case DIRECTION:
                     ByteBufUtils.writeVarInt(buf, (Integer) value);
                     break;
                 case OPTUUID:
-                    buf.writeBoolean(value != null);
-                    if (value != null) {
-                        writeUuid(buf, (UUID) value);
-                    }
+                    writeUuid(buf, (UUID) value);
                     break;
                 case BLOCKID:
                     ByteBufUtils.writeVarInt(buf, (Integer) value);
