@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableBiMap;
 import net.glowstone.entity.monster.*;
 import net.glowstone.entity.objects.*;
 import net.glowstone.entity.passive.*;
+import net.glowstone.entity.projectile.GlowEgg;
+import net.glowstone.entity.projectile.GlowSnowball;
 import org.bukkit.entity.*;
 
 public class EntityRegistry {
@@ -20,7 +22,7 @@ public class EntityRegistry {
                     .put(Cow.class, GlowCow.class)
                     .put(Creeper.class, GlowCreeper.class)
                     .put(Item.class, GlowItem.class)
-                    //TODO: Egg
+                    .put(Egg.class, GlowEgg.class)
                     //TODO: Ender Crystal
                     //TODO: Ender Dragon
                     //TODO: Ender PEarl
@@ -62,7 +64,7 @@ public class EntityRegistry {
                     .put(Skeleton.class, GlowSkeleton.class)
                     .put(Slime.class, GlowSlime.class)
                     //TODO: Fireball
-                    //TODO: Snowball
+                    .put(Snowball.class, GlowSnowball.class)
                     .put(Snowman.class, GlowSnowman.class)
                     .put(Spider.class, GlowSpider.class)
                     //TODO: Splash potion

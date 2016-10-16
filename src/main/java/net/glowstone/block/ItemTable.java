@@ -293,6 +293,8 @@ public final class ItemTable {
         reg(Material.HOPPER_MINECART, new ItemMinecart(GlowMinecart.MinecartType.HOPPER));
         reg(Material.POWERED_MINECART, new ItemMinecart(GlowMinecart.MinecartType.FURNACE));
         reg(Material.STORAGE_MINECART, new ItemMinecart(GlowMinecart.MinecartType.CHEST));
+        reg(Material.SNOW_BALL, new ItemSnowball());
+        reg(Material.EGG, new ItemEgg());
     }
 
     private void reg(Material material, ItemType type) {

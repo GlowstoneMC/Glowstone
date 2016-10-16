@@ -8,6 +8,8 @@ import net.glowstone.entity.passive.GlowCow;
 import net.glowstone.entity.passive.GlowMooshroom;
 import net.glowstone.entity.passive.GlowPolarBear;
 import net.glowstone.entity.passive.GlowSquid;
+import net.glowstone.entity.projectile.GlowEgg;
+import net.glowstone.entity.projectile.GlowSnowball;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
@@ -87,6 +89,8 @@ public final class EntityStorage {
                 bind(new MinecartStore(type));
             }
         }
+        bind(new ProjectileStore<GlowSnowball>(GlowSnowball.class, "Snowball"));
+        bind(new ProjectileStore<GlowEgg>(GlowEgg.class, "ThrownEgg"));
     }
 
     private EntityStorage() {
