@@ -114,7 +114,7 @@ public abstract class GlowEntity implements Entity {
     /**
      * The entity's bounding box, or null if it has no physical presence.
      */
-    private EntityBoundingBox boundingBox;
+    protected EntityBoundingBox boundingBox;
     /**
      * An EntityDamageEvent representing the last damage cause on this entity.
      */

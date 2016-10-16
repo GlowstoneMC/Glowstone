@@ -3,12 +3,14 @@ package net.glowstone.entity;
 import com.flowpowered.network.Message;
 import lombok.Getter;
 import net.glowstone.EventFactory;
+import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.AttributeManager.Key;
 import net.glowstone.entity.meta.MetadataIndex;
+import net.glowstone.entity.projectile.GlowProjectile;
 import net.glowstone.inventory.EquipmentMonitor;
 import net.glowstone.net.message.play.entity.EntityEffectMessage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
@@ -36,6 +38,9 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
 
 /**
  * A GlowLivingEntity is a {@link Player} or {@link Monster}.
@@ -443,14 +448,54 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     @Override
     public <T extends Projectile> T launchProjectile(Class<? extends T> projectile) {
-        return launchProjectile(projectile, getLocation().getDirection());  // todo: multiply by some speed
+        return launchProjectile(projectile, null);
     }
 
     @Override
-    public <T extends Projectile> T launchProjectile(Class<? extends T> projectile, Vector velocity) {
-        T entity = world.spawn(getEyeLocation(), projectile);
-        entity.setVelocity(velocity);
-        return entity;
+    public <T extends Projectile> T launchProjectile(Class<? extends T> clazz, Vector vector) {
+        float offset = 0.0F, velocity = 1.5F;
+        if (Arrow.class.isAssignableFrom(clazz)) {
+            velocity = 3.0F;
+            if (this instanceof GlowPlayer) {
+                GlowPlayer player = (GlowPlayer) this;
+                if (player.getUsageItem() != null && player.getUsageItem().getType() == Material.BOW) {
+                    int timeUsed = (int) (20 - (player.getUsageTime() <= 0 ? 0 : player.getUsageTime()));
+                    velocity = 3.0F * ((float) timeUsed / 20.0F);
+                }
+            }
+        }
+        return launchProjectile(clazz, vector, offset, velocity);
+    }
+
+    public <T extends Projectile> T launchProjectile(Class<? extends T> clazz, Vector vector, float offset, float velocity) {
+        if (vector == null) {
+            vector = getVelocity();
+        }
+
+        T projectile = throwProjectile(clazz, getEyeLocation().clone().add(0, 1, 0), vector, offset, velocity);
+        projectile.setShooter(this);
+        return projectile;
+    }
+
+    protected <T extends Projectile> T throwProjectile(Class<? extends T> type, Location location, Vector originalVector, float offset, float velocity) {
+        double k = Math.toRadians(-1);
+        double x = cos(k * location.getPitch()) * sin(k * location.getYaw());
+        double y = sin(k * (location.getPitch() - offset));
+        double z = cos(location.getPitch() * k) * cos(location.getYaw() * k);
+        T projectile = throwProjectile(type, new Location(location.getWorld(), location.getX(), location.getY(), location.getZ()), x, y, z, velocity);
+        projectile.getVelocity().add(originalVector);
+        return projectile;
+    }
+
+    private <T extends Projectile> T throwProjectile(Class<? extends T> clazz, Location location, double x, double y, double z, float velocity) {
+        T projectile = ((GlowWorld) location.getWorld()).spawn(location, clazz);
+        double k = Math.sqrt(x * x + y * y + z * z);
+        x += (x * (velocity - k)) / k;
+        y += (y * (velocity - k)) / k;
+        z += (z * (velocity - k)) / k;
+        projectile.setVelocity(new Vector(x, y, z));
+        ((GlowProjectile) projectile).setRawLocation(location);
+        return projectile;
     }
 
     ////////////////////////////////////////////////////////////////////////////

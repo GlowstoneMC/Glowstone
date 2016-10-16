@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableBiMap;
 import net.glowstone.entity.monster.*;
 import net.glowstone.entity.objects.*;
 import net.glowstone.entity.passive.*;
+import net.glowstone.entity.projectile.GlowArrow;
 import net.glowstone.entity.projectile.GlowEgg;
 import net.glowstone.entity.projectile.GlowSnowball;
 import org.bukkit.entity.*;
@@ -13,7 +14,7 @@ public class EntityRegistry {
     private static final ImmutableBiMap<Class<? extends Entity>, Class<? extends GlowEntity>> ENTITIES =
             ImmutableBiMap.<Class<? extends Entity>, Class<? extends GlowEntity>>builder()
                     .put(ArmorStand.class, GlowArmorStand.class)
-                    //TODO: Arrow
+                    .put(Arrow.class, GlowArrow.class)
                     .put(Bat.class, GlowBat.class)
                     .put(Blaze.class, GlowBlaze.class)
                     //TODO: Boat

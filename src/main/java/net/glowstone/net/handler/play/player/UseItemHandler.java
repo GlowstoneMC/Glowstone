@@ -5,9 +5,9 @@ import net.glowstone.block.ItemTable;
 import net.glowstone.block.itemtype.ItemProjectile;
 import net.glowstone.block.itemtype.ItemTimedUsage;
 import net.glowstone.block.itemtype.ItemType;
-import net.glowstone.entity.projectile.GlowProjectile;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.UseItemMessage;
+import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
 
 public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessage> {
@@ -27,8 +27,7 @@ public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessag
         if (type instanceof ItemTimedUsage) {
             ((ItemTimedUsage) type).startUse(session.getPlayer(), holding);
         } else if (type instanceof ItemProjectile) {
-            GlowProjectile projectile = ((ItemProjectile) type).throwProjectile(session.getPlayer(), holding);
-            projectile.setShooter(session.getPlayer());
+            Projectile projectile = ((ItemProjectile) type).use(session.getPlayer(), holding);
         }
     }
 }

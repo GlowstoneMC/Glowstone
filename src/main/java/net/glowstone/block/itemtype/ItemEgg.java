@@ -1,8 +1,9 @@
 package net.glowstone.block.itemtype;
 
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.entity.projectile.GlowProjectile;
+import org.bukkit.entity.Egg;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
 
 public class ItemEgg extends ItemProjectile {
@@ -11,7 +12,7 @@ public class ItemEgg extends ItemProjectile {
     }
 
     @Override
-    public GlowProjectile throwProjectile(GlowPlayer player, ItemStack stack) {
-        return super.throwProjectile(player.getEyeLocation(), player.getVelocity(), 0.0F, 1.5F);
+    public Projectile use(GlowPlayer player, ItemStack holding) {
+        return player.launchProjectile(Egg.class);
     }
 }
