@@ -21,15 +21,15 @@ public class NbtScoreboardIoWriter {
         CompoundTag root = new CompoundTag();
         CompoundTag data = new CompoundTag();
         root.putCompound("data", data);
-        NBTOutputStream nbt = new NBTOutputStream(getDataOutputStream(path), true);
+        try (NBTOutputStream nbt = new NBTOutputStream(getDataOutputStream(path), true)) {
+            writeObjectives(data, scoreboard);
+            writeScores(data, scoreboard);
+            writeTeams(data, scoreboard);
+            writeDisplaySlots(data, scoreboard);
 
-        writeObjectives(data, scoreboard);
-        writeScores(data, scoreboard);
-        writeTeams(data, scoreboard);
-        writeDisplaySlots(data, scoreboard);
-
-        nbt.writeTag(root);
-        nbt.close();
+            nbt.writeTag(root);
+            nbt.close();
+        }
     }
 
     private static DataOutputStream getDataOutputStream(File path) throws IOException {
