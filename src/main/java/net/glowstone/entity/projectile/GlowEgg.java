@@ -6,6 +6,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Egg;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.util.Vector;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -17,8 +18,17 @@ public class GlowEgg extends GlowProjectile implements Egg {
     }
 
     @Override
+    protected void pulsePhysics() {
+        super.pulsePhysics();
+        if (!isOnGround()) {
+            setVelocity(getVelocity().subtract(new Vector(0, 0.3, 0)));
+            location.add(getVelocity());
+        }
+    }
+
+    @Override
     public void collide(Block block) {
-        randomSpawnChicken(getLocation());
+        randomSpawnChicken(getLocation().add(0, 1, 0));
         remove();
     }
 

@@ -8,6 +8,7 @@ import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.projectiles.ProjectileSource;
@@ -40,12 +41,13 @@ public abstract class GlowProjectile extends GlowEntity implements Projectile {
     }
 
     @Override
-    public void pulse() {
-        if (location.clone().subtract(0, 1, 0).getBlock().getType().isSolid()) {
-            collide(location.clone().subtract(0, 1, 0).getBlock());
+    protected void pulsePhysics() {
+        if (location.getBlock().getRelative(BlockFace.DOWN).getType().isSolid()) {
+            setOnGround(true);
+            collide(location.getBlock().getRelative(BlockFace.DOWN));
             return;
         }
-        super.pulse();
+        super.pulsePhysics();
     }
 
     public abstract void collide(Block block);

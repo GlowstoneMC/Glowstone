@@ -1,6 +1,6 @@
 package net.glowstone.entity.projectile;
 
-import net.md_5.bungee.api.chat.BaseComponent;
+import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
@@ -9,18 +9,29 @@ import org.bukkit.util.Vector;
 
 public class GlowArrow extends GlowProjectile implements Arrow {
 
-    private boolean inGround = false;
-
     public GlowArrow(Location location) {
         super(location);
         setBoundingBox(0.5, 0.5);
     }
 
     @Override
+    protected void pulsePhysics() {
+        super.pulsePhysics();
+        if (!isOnGround()) {
+            setVelocity(getVelocity().subtract(new Vector(0, 0.05, 0)));
+            location.add(getVelocity());
+        }
+    }
+
+    @Override
     public void collide(Block block) {
-        if (!inGround) {
+    }
+
+    @Override
+    public void setOnGround(boolean onGround) {
+        super.setOnGround(onGround);
+        if (onGround) {
             setVelocity(new Vector(0, 0, 0));
-            inGround = true;
         }
     }
 
@@ -47,12 +58,12 @@ public class GlowArrow extends GlowProjectile implements Arrow {
 
     @Override
     public boolean isCritical() {
-        return false;
+        return metadata.getBit(MetadataIndex.ARROW_CRITICAL, 0x1);
     }
 
     @Override
     public void setCritical(boolean critical) {
-
+        metadata.setBit(MetadataIndex.ARROW_CRITICAL, 0x1, critical);
     }
 
     @Override
@@ -62,11 +73,6 @@ public class GlowArrow extends GlowProjectile implements Arrow {
 
     @Override
     public void setPickupRule(PickupRule pickupRule) {
-
-    }
-
-    @Override
-    public void sendMessage(BaseComponent... components) {
 
     }
 

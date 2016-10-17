@@ -464,7 +464,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 }
             }
         }
-        return launchProjectile(clazz, vector, offset, velocity);
+        T projectile = launchProjectile(clazz, vector, offset, velocity);
+        if (Arrow.class.isAssignableFrom(clazz) && velocity == 3.0F) {
+            ((Arrow) projectile).setCritical(true);
+        }
+        return projectile;
     }
 
     public <T extends Projectile> T launchProjectile(Class<? extends T> clazz, Vector vector, float offset, float velocity) {
