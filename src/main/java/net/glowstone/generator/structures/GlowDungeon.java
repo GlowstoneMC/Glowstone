@@ -96,9 +96,9 @@ public class GlowDungeon extends GlowStructurePiece {
 
         for (int x = 0; x < sizeX; x++) {
             for (int z = 0; z < sizeZ; z++) {
-                for (int y = HEIGHT - 2; y >= 0; y--) {
+                for (int y = HEIGHT - 1; y >= 0; y--) {
                     BlockState state = builder.getBlockState(new Vector(x, y, z));
-                    if (y > 0 && x > 0 && z > 0 && x < sizeX - 1 && z < sizeZ - 1) {
+                    if (y > 0 && x > 0 && z > 0 && x < sizeX - 1 && y < HEIGHT - 2 && z < sizeZ - 1) {
                         // empty space inside
                         builder.setBlock(new Vector(x, y, z), Material.AIR);
                     } else if (!builder.getBlockState(new Vector(x, y - 1, z)).getType().isSolid()) {
