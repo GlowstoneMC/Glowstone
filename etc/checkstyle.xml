@@ -55,7 +55,7 @@
         <module name="EmptyBlock">
             <property name="option" value="TEXT"/>
             <property name="tokens"
-                      value="LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE, LITERAL_SWITCH"/>
+                      value="LITERAL_TRY, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE, LITERAL_SWITCH"/>
         </module>
 
         <!-- Whitespace -->
@@ -80,6 +80,18 @@
             <!--<property name="allowEmptyLoops" value="true"/>-->
             <message key="ws.notFollowed" value="WhitespaceAround: ''{0}'' is not followed by whitespace."/>
             <message key="ws.notPreceded" value="WhitespaceAround: ''{0}'' is not preceded with whitespace."/>
+            <!-- RCURLY exempted due to incorrect checking on annotation array literals -->
+            <!-- See @ToString in GlowOfflinePlayer and MetadataMap -->
+            <property name="tokens"
+                      value="ASSIGN, BAND, BAND_ASSIGN, BOR, BOR_ASSIGN, BSR,
+                      BSR_ASSIGN, BXOR, BXOR_ASSIGN, COLON, DIV, DIV_ASSIGN,
+                      DO_WHILE, EQUAL, GE, GT, LAND, LCURLY, LE, LITERAL_ASSERT,
+                      LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY,
+                      LITERAL_FOR, LITERAL_IF, LITERAL_RETURN, LITERAL_SWITCH,
+                      LITERAL_SYNCHRONIZED, LITERAL_TRY, LITERAL_WHILE, LOR, LT,
+                      MINUS, MINUS_ASSIGN, MOD, MOD_ASSIGN, NOT_EQUAL, PLUS,
+                      PLUS_ASSIGN, QUESTION, SL, SLIST, SL_ASSIGN, SR,
+                      SR_ASSIGN, STAR, STAR_ASSIGN, TYPE_EXTENSION_AND"/>
         </module>
 
         <!-- Naming conventions -->
@@ -109,9 +121,6 @@
         </module>
         <module name="ParameterName">
             <message key="name.invalidPattern" value="Parameter name ''{0}'' must match pattern ''{1}''."/>
-        </module>
-        <module name="StaticVariableName">
-            <message key="name.invalidPattern" value="Static variable name ''{0}'' must match pattern ''{1}''."/>
         </module>
         <module name="TypeName">
             <message key="name.invalidPattern" value="Type name ''{0}'' must match pattern ''{1}''."/>

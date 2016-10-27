@@ -32,7 +32,7 @@ public final class ProtocolTestUtils {
 
     public static List<MetadataMap.Entry> getMetadataEntry() {
         List<MetadataMap.Entry> list = new ArrayList<>();
-        list.add(new MetadataMap.Entry(MetadataIndex.AGE, 1));
+        list.add(new MetadataMap.Entry(MetadataIndex.HEALTH, 1f));
         return list;
     }
 

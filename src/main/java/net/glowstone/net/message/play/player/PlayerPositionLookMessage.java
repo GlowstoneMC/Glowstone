@@ -30,6 +30,11 @@ public final class PlayerPositionLookMessage extends PlayerUpdateMessage {
     }
 
     @Override
+    public boolean moved() {
+        return true;
+    }
+
+    @Override
     public String toString() {
         return "PlayerPositionLookMessage(" +
                 "onGround=" + isOnGround() +

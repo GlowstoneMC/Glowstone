@@ -9,7 +9,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandException;
 import org.bukkit.event.server.RemoteServerCommandEvent;
 
-import java.io.IOException;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 
@@ -25,7 +24,7 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
     private final String password;
 
-    private boolean loggedIn = false;
+    private boolean loggedIn;
 
     /**
      * The {@link RconServer} this handler belongs to.
@@ -40,7 +39,7 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
     public RconHandler(RconServer rconServer, String password) {
         this.rconServer = rconServer;
         this.password = password;
-        this.commandSender = new RconCommandSender(rconServer.getServer());
+        commandSender = new RconCommandSender(rconServer.getServer());
     }
 
     @Override
@@ -68,7 +67,7 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
         }
     }
 
-    private void handleLogin(ChannelHandlerContext ctx, String payload, int requestId) throws IOException {
+    private void handleLogin(ChannelHandlerContext ctx, String payload, int requestId) {
         if (password.equals(payload)) {
             loggedIn = true;
             sendResponse(ctx, requestId, TYPE_COMMAND, "");
@@ -79,7 +78,7 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
         }
     }
 
-    private void handleCommand(ChannelHandlerContext ctx, String payload, int requestId) throws IOException {
+    private void handleCommand(ChannelHandlerContext ctx, String payload, int requestId) {
         if (!loggedIn) {
             sendResponse(ctx, FAILURE, TYPE_COMMAND, "");
             return;
@@ -112,7 +111,7 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
     }
 
     private void sendLargeResponse(ChannelHandlerContext ctx, int requestId, String payload) {
-        if (payload.length() == 0) {
+        if (payload.isEmpty()) {
             sendResponse(ctx, requestId, TYPE_RESPONSE, "");
             return;
         }
@@ -126,5 +125,4 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
             start += truncated;
         }
     }
-
 }

@@ -1,20 +1,24 @@
 package net.glowstone.net;
 
-import com.flowpowered.networking.util.ByteBufUtils;
+import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
+import net.glowstone.entity.meta.MetadataMap.Entry;
 import net.glowstone.entity.meta.MetadataType;
 import net.glowstone.inventory.GlowItemFactory;
+import net.glowstone.util.Position;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
+import net.glowstone.util.nbt.NBTReadLimiter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
+import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
 import java.io.ByteArrayOutputStream;
@@ -34,36 +38,57 @@ public final class GlowBufUtils {
 
     /**
      * Read a list of mob metadata entries from the buffer.
+     *
      * @param buf The buffer.
      * @return The metadata.
+     * @throws IOException if the buffer could not be read
      */
-    public static List<MetadataMap.Entry> readMetadata(ByteBuf buf) throws IOException {
-        List<MetadataMap.Entry> entries = new ArrayList<>();
+    public static List<Entry> readMetadata(ByteBuf buf) throws IOException {
+        List<Entry> entries = new ArrayList<>();
         byte item;
-        while ((item = buf.readByte()) != 0x7F) {
-            MetadataType type = MetadataType.byId(item >> 5);
-            int id = item & 0x1f;
-            MetadataIndex index = MetadataIndex.getIndex(id, type);
+        while ((item = buf.readByte()) != -1) {
+            MetadataType type = MetadataType.byId(buf.readByte());
+            MetadataIndex index = MetadataIndex.getIndex((int) item, type);
 
             switch (type) {
                 case BYTE:
-                    entries.add(new MetadataMap.Entry(index, buf.readByte()));
-                    break;
-                case SHORT:
-                    entries.add(new MetadataMap.Entry(index, buf.readShort()));
+                    entries.add(new Entry(index, buf.readByte()));
                     break;
                 case INT:
-                    entries.add(new MetadataMap.Entry(index, buf.readInt()));
+                    entries.add(new Entry(index, ByteBufUtils.readVarInt(buf)));
                     break;
                 case FLOAT:
-                    entries.add(new MetadataMap.Entry(index, buf.readFloat()));
+                    entries.add(new Entry(index, buf.readFloat()));
                     break;
                 case STRING:
-                    entries.add(new MetadataMap.Entry(index, ByteBufUtils.readUTF8(buf)));
+                    entries.add(new Entry(index, ByteBufUtils.readUTF8(buf)));
                     break;
                 case ITEM:
-                    entries.add(new MetadataMap.Entry(index, readSlot(buf)));
+                    entries.add(new Entry(index, readSlot(buf)));
                     break;
+                case BOOLEAN:
+                    entries.add(new Entry(index, buf.readBoolean()));
+                    break;
+                case VECTOR:
+                    float x = buf.readFloat();
+                    float y = buf.readFloat();
+                    float z = buf.readFloat();
+                    entries.add(new MetadataMap.Entry(index, new EulerAngle(x, y, z)));
+                    break;
+                case POSITION:
+                case OPTPOSITION:
+                    entries.add(new Entry(index, Position.getPosition(buf.readLong())));
+                    break;
+                case DIRECTION:
+                    entries.add(new Entry(index, ByteBufUtils.readVarInt(buf)));
+                    break;
+                case OPTUUID:
+                    if (buf.readBoolean()) {
+                        entries.add(new Entry(index, readUuid(buf)));
+                    }
+                    break;
+                case BLOCKID:
+                    entries.add(new Entry(index, ByteBufUtils.readVarInt(buf)));
             }
         }
         return entries;
@@ -71,29 +96,37 @@ public final class GlowBufUtils {
 
     /**
      * Write a list of mob metadata entries to the buffer.
-     * @param buf The buffer.
+     *
+     * @param buf     The buffer.
      * @param entries The metadata.
+     * @throws IOException if the buffer could not be written to
      */
-    public static void writeMetadata(ByteBuf buf, List<MetadataMap.Entry> entries) throws IOException {
-        for (MetadataMap.Entry entry : entries) {
+    public static void writeMetadata(ByteBuf buf, List<Entry> entries) throws IOException {
+        for (Entry entry : entries) {
             MetadataIndex index = entry.index;
             Object value = entry.value;
 
-            if (value == null) continue;
-
             int type = index.getType().getId();
             int id = index.getIndex();
-            buf.writeByte((type << 5) | id);
+            buf.writeByte(id);
+            buf.writeByte(type);
+
+            if (!index.getType().isOptional() && value == null) {
+                continue;
+            }
+            if (index.getType().isOptional()) {
+                buf.writeBoolean(value != null);
+                if (value == null) {
+                    continue;
+                }
+            }
 
             switch (index.getType()) {
                 case BYTE:
                     buf.writeByte((Byte) value);
                     break;
-                case SHORT:
-                    buf.writeShort((Short) value);
-                    break;
                 case INT:
-                    buf.writeInt((Integer) value);
+                    ByteBufUtils.writeVarInt(buf, (Integer) value);
                     break;
                 case FLOAT:
                     buf.writeFloat((Float) value);
@@ -101,21 +134,52 @@ public final class GlowBufUtils {
                 case STRING:
                     ByteBufUtils.writeUTF8(buf, (String) value);
                     break;
+                case CHAT:
+                    writeChat(buf, (TextMessage) value);
+                    break;
                 case ITEM:
                     writeSlot(buf, (ItemStack) value);
+                    break;
+                case BOOLEAN:
+                    buf.writeBoolean((Boolean) value);
+                    break;
+                case VECTOR:
+                    EulerAngle angle = (EulerAngle) value;
+                    buf.writeFloat((float) Math.toDegrees(angle.getX()));
+                    buf.writeFloat((float) Math.toDegrees(angle.getY()));
+                    buf.writeFloat((float) Math.toDegrees(angle.getZ()));
+                    break;
+                case POSITION:
+                case OPTPOSITION:
+                    BlockVector vector = (BlockVector) value;
+                    buf.writeLong(Position.getPosition(vector));
+                    break;
+                case DIRECTION:
+                    ByteBufUtils.writeVarInt(buf, (Integer) value);
+                    break;
+                case OPTUUID:
+                    writeUuid(buf, (UUID) value);
+                    break;
+                case BLOCKID:
+                    ByteBufUtils.writeVarInt(buf, (Integer) value);
                     break;
             }
         }
 
-        buf.writeByte(127);
+        buf.writeByte(0xff);
     }
 
     /**
      * Read an uncompressed compound NBT tag from the buffer.
+     *
      * @param buf The buffer.
      * @return The tag read, or null.
      */
     public static CompoundTag readCompound(ByteBuf buf) {
+        return readCompound(buf, false);
+    }
+
+    private static CompoundTag readCompound(ByteBuf buf, boolean network) {
         int idx = buf.readerIndex();
         if (buf.readByte() == 0) {
             return null;
@@ -123,7 +187,7 @@ public final class GlowBufUtils {
 
         buf.readerIndex(idx);
         try (NBTInputStream str = new NBTInputStream(new ByteBufInputStream(buf), false)) {
-            return str.readCompound();
+            return str.readCompound(network ? new NBTReadLimiter(2097152L) : NBTReadLimiter.UNLIMITED);
         } catch (IOException e) {
             return null;
         }
@@ -131,7 +195,8 @@ public final class GlowBufUtils {
 
     /**
      * Write an uncompressed compound NBT tag to the buffer.
-     * @param buf The buffer.
+     *
+     * @param buf  The buffer.
      * @param data The tag to write, or null.
      */
     public static void writeCompound(ByteBuf buf, CompoundTag data) {
@@ -153,10 +218,22 @@ public final class GlowBufUtils {
 
     /**
      * Read an item stack from the buffer.
+     *
      * @param buf The buffer.
      * @return The stack read, or null.
      */
     public static ItemStack readSlot(ByteBuf buf) {
+        return readSlot(buf, false);
+    }
+
+    /**
+     * Read an item stack from the buffer.
+     *
+     * @param buf     The buffer.
+     * @param network Mark network source.
+     * @return The stack read, or null.
+     */
+    public static ItemStack readSlot(ByteBuf buf, boolean network) {
         short type = buf.readShort();
         if (type == -1) {
             return null;
@@ -170,7 +247,7 @@ public final class GlowBufUtils {
             return null;
         }
 
-        CompoundTag tag = readCompound(buf);
+        CompoundTag tag = readCompound(buf, network);
         ItemStack stack = new ItemStack(material, amount, durability);
         stack.setItemMeta(GlowItemFactory.instance().readNbt(material, tag));
         return stack;
@@ -178,7 +255,8 @@ public final class GlowBufUtils {
 
     /**
      * Write an item stack to the buffer.
-     * @param buf The buffer.
+     *
+     * @param buf   The buffer.
      * @param stack The stack to write, or null.
      */
     public static void writeSlot(ByteBuf buf, ItemStack stack) {
@@ -188,7 +266,6 @@ public final class GlowBufUtils {
             buf.writeShort(stack.getTypeId());
             buf.writeByte(stack.getAmount());
             buf.writeShort(stack.getDurability());
-
             if (stack.hasItemMeta()) {
                 CompoundTag tag = GlowItemFactory.instance().writeNbt(stack.getItemMeta());
                 writeCompound(buf, tag);
@@ -200,21 +277,23 @@ public final class GlowBufUtils {
 
     /**
      * Read an encoded block vector (position) from the buffer.
+     *
      * @param buf The buffer.
      * @return The vector read.
      */
     public static BlockVector readBlockPosition(ByteBuf buf) {
         long val = buf.readLong();
-        long x = (val >> 38); // signed
-        long y = (val >> 26) & 0xfff; // unsigned
+        long x = val >> 38; // signed
+        long y = val >> 26 & 0xfff; // unsigned
         // this shifting madness is used to preserve sign
-        long z = (val << 38) >> 38; // signed
+        long z = val << 38 >> 38; // signed
         return new BlockVector((double) x, y, z);
     }
 
     /**
      * Write an encoded block vector (position) to the buffer.
-     * @param buf The buffer.
+     *
+     * @param buf    The buffer.
      * @param vector The vector to write.
      */
     public static void writeBlockPosition(ByteBuf buf, Vector vector) {
@@ -223,17 +302,19 @@ public final class GlowBufUtils {
 
     /**
      * Write an encoded block vector (position) to the buffer.
+     *
      * @param buf The buffer.
-     * @param x The x value.
-     * @param y The y value.
-     * @param z The z value.
+     * @param x   The x value.
+     * @param y   The y value.
+     * @param z   The z value.
      */
     public static void writeBlockPosition(ByteBuf buf, long x, long y, long z) {
-        buf.writeLong(((x & 0x3ffffff) << 38) | ((y & 0xfff) << 26) | (z & 0x3ffffff));
+        buf.writeLong((x & 0x3ffffff) << 38 | (y & 0xfff) << 26 | z & 0x3ffffff);
     }
 
     /**
      * Read a UUID encoded as two longs from the buffer.
+     *
      * @param buf The buffer.
      * @return The UUID read.
      */
@@ -243,7 +324,8 @@ public final class GlowBufUtils {
 
     /**
      * Write a UUID encoded as two longs to the buffer.
-     * @param buf The buffer.
+     *
+     * @param buf  The buffer.
      * @param uuid The UUID to write.
      */
     public static void writeUuid(ByteBuf buf, UUID uuid) {
@@ -253,6 +335,7 @@ public final class GlowBufUtils {
 
     /**
      * Read an encoded chat message from the buffer.
+     *
      * @param buf The buffer.
      * @return The chat message read.
      * @throws IOException on read failure.
@@ -263,7 +346,8 @@ public final class GlowBufUtils {
 
     /**
      * Write an encoded chat message to the buffer.
-     * @param buf The buffer.
+     *
+     * @param buf  The buffer.
      * @param text The chat message to write.
      * @throws IOException on write failure.
      */

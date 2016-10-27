@@ -29,8 +29,6 @@ package net.glowstone.io.anvil;
 
 import net.glowstone.GlowServer;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.Reference;
@@ -39,7 +37,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A simple cache and wrapper for efficiently accessing multiple RegionFiles simultaneously.
+ * A simple cache and wrapper for efficiently accessing multiple RegionFiles
+ * simultaneously.
  */
 public class RegionFileCache {
 
@@ -48,13 +47,14 @@ public class RegionFileCache {
     private final Map<File, Reference<RegionFile>> cache = new HashMap<>();
 
     private final String extension;
+    private final File regionDir;
 
-    public RegionFileCache(String extension) {
+    public RegionFileCache(File basePath, String extension) {
         this.extension = extension;
+        regionDir = new File(basePath, "region");
     }
 
-    public RegionFile getRegionFile(File basePath, int chunkX, int chunkZ) throws IOException {
-        File regionDir = new File(basePath, "region");
+    public RegionFile getRegionFile(int chunkX, int chunkZ) throws IOException {
         File file = new File(regionDir, "r." + (chunkX >> 5) + "." + (chunkZ >> 5) + extension);
 
         Reference<RegionFile> ref = cache.get(file);
@@ -84,21 +84,6 @@ public class RegionFileCache {
             }
         }
         cache.clear();
-    }
-
-    public int getSizeDelta(File basePath, int chunkX, int chunkZ) throws IOException {
-        RegionFile r = getRegionFile(basePath, chunkX, chunkZ);
-        return r.getSizeDelta();
-    }
-
-    public DataInputStream getChunkDataInputStream(File basePath, int chunkX, int chunkZ) throws IOException {
-        RegionFile r = getRegionFile(basePath, chunkX, chunkZ);
-        return r.getChunkDataInputStream(chunkX & 31, chunkZ & 31);
-    }
-
-    public DataOutputStream getChunkDataOutputStream(File basePath, int chunkX, int chunkZ) throws IOException {
-        RegionFile r = getRegionFile(basePath, chunkX, chunkZ);
-        return r.getChunkDataOutputStream(chunkX & 31, chunkZ & 31);
     }
 
 }

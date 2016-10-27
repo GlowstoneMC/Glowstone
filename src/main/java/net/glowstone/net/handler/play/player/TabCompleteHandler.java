@@ -1,6 +1,6 @@
 package net.glowstone.net.handler.play.player;
 
-import com.flowpowered.networking.MessageHandler;
+import com.flowpowered.network.MessageHandler;
 import net.glowstone.EventFactory;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.TabCompleteMessage;
@@ -16,13 +16,18 @@ import java.util.List;
 public final class TabCompleteHandler implements MessageHandler<GlowSession, TabCompleteMessage> {
     @Override
     public void handle(GlowSession session, TabCompleteMessage message) {
-        final Player sender = session.getPlayer();
-        final String buffer = message.getText();
-        final List<String> completions = new ArrayList<>();
+        Player sender = session.getPlayer();
+        String buffer = message.getText();
+        List<String> completions = new ArrayList<>();
 
         // complete command or username
-        if (buffer.startsWith("/")) {
-            List<String> items = session.getServer().getCommandMap().tabComplete(sender, buffer.substring(1));
+        if (!buffer.isEmpty() && buffer.charAt(0) == '/' || message.isAssumeCommand()) {
+            List<String> items;
+            if (!buffer.isEmpty() && buffer.charAt(0) == '/') {
+                items = session.getServer().getCommandMap().tabComplete(sender, buffer.substring(1));
+            } else {
+                items = session.getServer().getCommandMap().tabComplete(sender, buffer);
+            }
             if (items != null) {
                 completions.addAll(items);
             }

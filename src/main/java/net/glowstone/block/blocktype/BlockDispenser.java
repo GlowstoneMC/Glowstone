@@ -5,16 +5,38 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.TEDispenser;
 import net.glowstone.block.entity.TileEntity;
+import net.glowstone.block.state.GlowDispenser;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.MaterialMatcher;
 import net.glowstone.inventory.ToolType;
+import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Dispenser;
 import org.bukkit.material.MaterialData;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 public class BlockDispenser extends BlockContainer {
+
+    public static Vector getDispensePosition(GlowBlock block) {
+        BlockFace facing = getFacing(block);
+        double x = block.getX() + 0.7 * facing.getModX();
+        double y = block.getY() + 0.7 * facing.getModY();
+        double z = block.getZ() + 0.7 * facing.getModZ();
+        return new Vector(x, y, z);
+    }
+
+    public static BlockFace getFacing(GlowBlock block) {
+        GlowBlockState state = block.getState();
+        MaterialData data = state.getData();
+        if (!(data instanceof Dispenser)) {
+            return BlockFace.SELF;
+        }
+        Dispenser dispenserData = (Dispenser) data;
+
+        return dispenserData.getFacing();
+    }
 
     @Override
     public TileEntity createTileEntity(GlowChunk chunk, int cx, int cy, int cz) {
@@ -24,7 +46,7 @@ public class BlockDispenser extends BlockContainer {
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
-        final MaterialData data = state.getData();
+        MaterialData data = state.getData();
         if (data instanceof Dispenser) {
             ((Dispenser) data).setFacingDirection(getOppositeBlockFace(player.getLocation(), true));
             state.setData(data);
@@ -36,5 +58,56 @@ public class BlockDispenser extends BlockContainer {
     @Override
     protected MaterialMatcher getNeededMiningTool(GlowBlock block) {
         return ToolType.PICKAXE;
+    }
+
+    @Override
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
+        updatePhysics(block);
+    }
+
+    @Override
+    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
+        updatePhysics(block);
+    }
+
+    @Override
+    public void updatePhysics(GlowBlock block) {
+        GlowBlock up = block.getRelative(BlockFace.UP);
+        boolean powered = block.isBlockPowered() | block.isBlockIndirectlyPowered() |
+                up.isBlockPowered() | up.isBlockIndirectlyPowered();
+
+        GlowBlockState state = block.getState();
+        MaterialData data = state.getData();
+        if (!(data instanceof Dispenser)) {
+            return;
+        }
+
+        boolean isTriggered = (data.getData() >> 3 & 1) != 0;
+        if (powered && !isTriggered) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    trigger(block);
+                }
+            }.runTaskLater(null, 4);
+
+            // TODO replace this with dispenser materialdata class (as soon as it provides access to this property)
+            data.setData((byte) (data.getData() | 0x8));
+            state.update();
+        } else if (!powered && isTriggered) {
+            data.setData((byte) (data.getData() & ~0x8));
+            state.update();
+        }
+    }
+
+    public void trigger(GlowBlock block) {
+        TileEntity te = block.getTileEntity();
+        if (!(te instanceof TEDispenser)) {
+            return;
+        }
+        TEDispenser teDispenser = (TEDispenser) te;
+
+        GlowDispenser dispenser = (GlowDispenser) teDispenser.getState();
+        dispenser.dispense();
     }
 }

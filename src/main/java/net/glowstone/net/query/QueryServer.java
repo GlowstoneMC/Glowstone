@@ -3,6 +3,8 @@ package net.glowstone.net.query;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.epoll.Epoll;
+import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import net.glowstone.GlowServer;
@@ -17,13 +19,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Implementation of a server for the minecraft server query protocol.
+ *
  * @see <a href="http://wiki.vg/Query">Protocol Specifications</a>
  */
 public class QueryServer {
     /**
      * The {@link EventLoopGroup} used by the query server.
      */
-    private EventLoopGroup group = new NioEventLoopGroup();
+    private EventLoopGroup group = Epoll.isAvailable() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
 
     /**
      * The {@link Bootstrap} used by netty to instantiate the query server.
@@ -61,10 +64,11 @@ public class QueryServer {
 
     /**
      * Bind the server on the specified address.
+     *
      * @param address The address.
      * @return Netty channel future for bind operation.
      */
-    public ChannelFuture bind(final SocketAddress address) {
+    public ChannelFuture bind(SocketAddress address) {
         if (flushTask == null) {
             flushTask = new ChallengeTokenFlushTask();
             flushTask.runTaskTimerAsynchronously(null, 600, 600);
@@ -84,6 +88,7 @@ public class QueryServer {
 
     /**
      * Generate a new token.
+     *
      * @param address The sender address.
      * @return The generated valid token.
      */
@@ -95,8 +100,9 @@ public class QueryServer {
 
     /**
      * Verify that the request is using the correct challenge token.
+     *
      * @param address The sender address.
-     * @param token The token.
+     * @param token   The token.
      * @return {@code true} if the token is valid.
      */
     public boolean verifyChallengeToken(InetSocketAddress address, int token) {
@@ -112,6 +118,7 @@ public class QueryServer {
 
     /**
      * Get the Server whose information are distributed by this query server.
+     *
      * @return The server instance.
      */
     public GlowServer getServer() {

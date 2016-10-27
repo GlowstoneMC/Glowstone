@@ -1,111 +1,21 @@
 package net.glowstone.constants;
 
-import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Temporary mappings for Minecraft's string-based item ids.
  */
 public final class ItemIds {
 
-    private ItemIds() {
-    }
-
     private static final Map<Integer, String> names = new HashMap<>();
     private static final Map<String, Integer> items = new HashMap<>();
     private static final Map<String, Integer> blocks = new HashMap<>();
-
-    /**
-     * Get the string identifier for a specified Material.
-     * @param mat the Material.
-     * @return the identifier.
-     */
-    public static String getName(Material mat) {
-        Validate.notNull(mat, "Material cannot be null");
-        return names.get(mat.getId());
-    }
-
-    /**
-     * Get the Material corresponding to the specified item identifier.
-     * @param name the identifier.
-     * @return the Material, or null.
-     */
-    public static Material getItem(String name) {
-        if (!items.containsKey(name)) {
-            return null;
-        }
-        return Material.getMaterial(items.get(name));
-    }
-
-    /**
-     * Get the Material corresponding to the specified block identifier.
-     * @param name the identifier.
-     * @return the Material, or null.
-     */
-    public static Material getBlock(String name) {
-        if (!blocks.containsKey(name)) {
-            return null;
-        }
-        return Material.getMaterial(blocks.get(name));
-    }
-
-    /**
-     * Verify that a given material is a valid item. All non-blocks are valid
-     * items, but some blocks cannot be represented as items.
-     * @param material The material to verify.
-     * @return true if the material is a valid item.
-     */
-    public static boolean isValidItem(Material material) {
-        return getItem(getName(material)) == material;
-    }
-
-    /**
-     * Convert an ItemStack which may have a type that is unrepresentable as
-     * an item to one that does, or to null if this is not possible.
-     * @param stack The stack to sanitize.
-     * @return The sanitized stack, or null.
-     */
-    public static ItemStack sanitize(ItemStack stack) {
-        if (stack == null || stack.getType() == null || stack.getType() == Material.AIR) {
-            return null;
-        }
-        Material item = getItem(getName(stack.getType()));
-        if (item == null) {
-            return null;
-        }
-        if (item != stack.getType()) {
-            stack = stack.clone();
-            stack.setType(item);
-        }
-        return stack;
-    }
-
-    private static void block(int id, String key) {
-        key = "minecraft:" + key;
-        names.put(id, key);
-        blocks.put(key, id);
-    }
-
-    private static void item(int id, String key) {
-        key = "minecraft:" + key;
-        names.put(id, key);
-        items.put(key, id);
-    }
-
-    private static void both(int id, String key) {
-        key = "minecraft:" + key;
-        names.put(id, key);
-        blocks.put(key, id);
-        items.put(key, id);
-    }
-
-    private static void alternate(int id, String key) {
-        items.put("minecraft:" + key, id);
-    }
 
     static {
         // blocks
@@ -310,6 +220,27 @@ public final class ItemIds {
         block(195, "jungle_door"); // jungle_door is also 429
         block(196, "acacia_door"); // acacia_door is also 430
         block(197, "dark_oak_door"); // dark_oak_door is also 431
+        both(198, "end_rod");
+        both(199, "chorus_plant");
+        both(200, "chorus_flower");
+        both(201, "purpur_block");
+        both(202, "purpur_pillar");
+        both(203, "purpur_stairs");
+        block(204, "purpur_double_slab");
+        both(205, "purpur_slab");
+        both(206, "end_bricks");
+        block(207, "beetroots");
+        block(208, "grass_path");
+        block(209, "end_gateway");
+        block(210, "repeating_command_block");
+        block(211, "chain_command_block");
+        block(212, "frosted_ice");
+        both(213, "magma");
+        both(214, "nether_wart_block");
+        both(215, "red_nether_brick");
+        both(216, "bone_block");
+        both(217, "structure_void");
+        block(255, "structure_block");
         // items
         item(256, "iron_shovel");
         item(257, "iron_pickaxe");
@@ -481,11 +412,29 @@ public final class ItemIds {
         item(423, "mutton");
         item(424, "cooked_mutton");
         item(425, "banner");
+        item(426, "end_crystal");
         item(427, "spruce_door");
         item(428, "birch_door");
         item(429, "jungle_door");
         item(430, "acacia_door");
         item(431, "dark_oak_door");
+        item(432, "chorus_fruit");
+        item(433, "popped_chorus_fruit");
+        item(434, "beetroot");
+        item(435, "beetroot_seeds");
+        item(436, "beetroot_soup");
+        item(437, "dragon_breath");
+        item(438, "splash_potion");
+        item(439, "spectral_arrow");
+        item(440, "tipped_arrow");
+        item(441, "lingering_potion");
+        item(442, "shield");
+        item(443, "elytra");
+        item(444, "spruce_boat");
+        item(445, "birch_boat");
+        item(446, "jungle_boat");
+        item(447, "acacia_boat");
+        item(448, "dark_oak_boat");
         item(2256, "record_13");
         item(2257, "record_cat");
         item(2258, "record_blocks");
@@ -498,6 +447,102 @@ public final class ItemIds {
         item(2265, "record_ward");
         item(2266, "record_11");
         item(2267, "record_wait");
+    }
+
+    private ItemIds() {
+    }
+
+    /**
+     * Get the string identifier for a specified Material.
+     *
+     * @param mat the Material.
+     * @return the identifier.
+     */
+    public static String getName(Material mat) {
+        checkNotNull(mat, "Material cannot be null");
+        return names.get(mat.getId());
+    }
+
+    /**
+     * Get the Material corresponding to the specified item identifier.
+     *
+     * @param name the identifier.
+     * @return the Material, or null.
+     */
+    public static Material getItem(String name) {
+        if (!items.containsKey(name)) {
+            return null;
+        }
+        return Material.getMaterial(items.get(name));
+    }
+
+    /**
+     * Get the Material corresponding to the specified block identifier.
+     *
+     * @param name the identifier.
+     * @return the Material, or null.
+     */
+    public static Material getBlock(String name) {
+        if (!blocks.containsKey(name)) {
+            return null;
+        }
+        return Material.getMaterial(blocks.get(name));
+    }
+
+    /**
+     * Verify that a given material is a valid item. All non-blocks are valid
+     * items, but some blocks cannot be represented as items.
+     *
+     * @param material The material to verify.
+     * @return true if the material is a valid item.
+     */
+    public static boolean isValidItem(Material material) {
+        return getItem(getName(material)) == material;
+    }
+
+    /**
+     * Convert an ItemStack which may have a type that is unrepresentable as
+     * an item to one that does, or to null if this is not possible.
+     *
+     * @param stack The stack to sanitize.
+     * @return The sanitized stack, or null.
+     */
+    public static ItemStack sanitize(ItemStack stack) {
+        if (stack == null || stack.getType() == null || stack.getType() == Material.AIR) {
+            return null;
+        }
+        Material item = getItem(getName(stack.getType()));
+        if (item == null) {
+            return null;
+        }
+        if (item != stack.getType()) {
+            stack = stack.clone();
+            stack.setType(item);
+        }
+        return stack;
+    }
+
+    private static void block(int id, String key) {
+        key = "minecraft:" + key;
+        names.put(id, key);
+        blocks.put(key, id);
+    }
+
+    private static void item(int id, String key) {
+        key = "minecraft:" + key;
+        names.put(id, key);
+        items.put(key, id);
+    }
+
+    private static void both(int id, String key) {
+        key = "minecraft:" + key;
+        names.put(id, key);
+        blocks.put(key, id);
+        items.put(key, id);
+    }
+
+    private static void alternate(int id, String key) {
+        items.put("minecraft:" + key, id);
     }
 
 }

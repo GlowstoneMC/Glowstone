@@ -1,14 +1,17 @@
 package net.glowstone.net.handler.play.game;
 
-import com.flowpowered.networking.MessageHandler;
-import com.flowpowered.networking.util.ByteBufUtils;
+import com.flowpowered.network.MessageHandler;
+import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.glowstone.GlowServer;
+import net.glowstone.inventory.GlowAnvilInventory;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.game.PluginMessage;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -20,7 +23,7 @@ import java.util.logging.Level;
 public final class PluginMessageHandler implements MessageHandler<GlowSession, PluginMessage> {
     @Override
     public void handle(GlowSession session, PluginMessage message) {
-        final String channel = message.getChannel();
+        String channel = message.getChannel();
 
         // register and unregister: NUL-separated list of channels
 
@@ -42,7 +45,7 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
         }
     }
 
-    private void handleInternal(GlowSession session, String channel, byte[] data) {
+    private void handleInternal(GlowSession session, String channel, byte... data) {
         /*
         MC|Brand
             entire data: string of client's brand (e.g. "vanilla")
@@ -67,7 +70,7 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
 
         ByteBuf buf = Unpooled.wrappedBuffer(data);
         switch (channel) {
-            case "MC|Brand": {
+            case "MC|Brand":
                 // vanilla server doesn't handle this, for now just log it
                 String brand = null;
                 try {
@@ -79,7 +82,6 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
                     GlowServer.logger.info("Client brand of " + session.getPlayer().getName() + " is: " + brand);
                 }
                 break;
-            }
             case "MC|BEdit": {
                 // read and verify stack
                 ItemStack item = GlowBufUtils.readSlot(buf);
@@ -113,7 +115,7 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
                 session.getPlayer().setItemInHand(inHand);
                 break;
             }
-            case "MC|BSign": {
+            case "MC|BSign":
                 // read and verify stack
                 ItemStack item = GlowBufUtils.readSlot(buf);
                 //GlowServer.logger.info("BookSign [" + session.getPlayer().getName() + "]: " + item);
@@ -148,14 +150,39 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
                 inHand.setItemMeta(handBook);
                 session.getPlayer().setItemInHand(inHand);
                 break;
-            }
+            case "MC|ItemName":
+                if (session.getPlayer().getOpenInventory() == null) {
+                    break;
+                }
+                // check if player is in an anvil inventory
+                if (session.getPlayer().getOpenInventory().getType() != InventoryType.ANVIL) {
+                    break;
+                }
+                // get the new name for the item
+                String name;
+                try {
+                    name = ByteBufUtils.readUTF8(buf);
+                } catch (IOException e) {
+                    GlowServer.logger.log(Level.WARNING, "Error reading anvil item name by " + session, e);
+                    break;
+                }
+                GlowAnvilInventory inv = (GlowAnvilInventory) session.getPlayer().getOpenInventory().getTopInventory();
+                if (inv.getResultItem() == null) {
+                    break;
+                }
+                // rename the item
+                ItemMeta m = inv.getResultItem().getItemMeta();
+                m.setDisplayName(ChatColor.ITALIC + name);
+                inv.getResultItem().setItemMeta(m);
+                break;
             default:
                 GlowServer.logger.info(session + " used unknown Minecraft channel: " + channel);
                 break;
         }
+        buf.release();
     }
 
-    private String string(byte[] data) {
+    private String string(byte... data) {
         return new String(data, StandardCharsets.UTF_8);
     }
 }

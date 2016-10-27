@@ -1,21 +1,31 @@
 package net.glowstone;
 
+import net.glowstone.GlowChunk.ChunkSection;
+import net.glowstone.GlowChunk.Key;
 import net.glowstone.constants.GlowBiome;
+import net.glowstone.generator.GlowChunkData;
+import net.glowstone.generator.GlowChunkGenerator;
+import net.glowstone.generator.biomegrid.MapLayer;
 import net.glowstone.io.ChunkIoService;
+import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkPopulateEvent;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.material.MaterialData;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 /**
  * A class which manages the {@link GlowChunk}s currently loaded in memory.
+ *
  * @author Graham Edgecombe
  */
 public final class ChunkManager {
@@ -37,29 +47,39 @@ public final class ChunkManager {
     private final ChunkGenerator generator;
 
     /**
+     * The biome maps used to fill chunks biome grid and terrain generation.
+     */
+    private final MapLayer[] biomeGrid;
+
+    /**
      * A map of chunks currently loaded in memory.
      */
-    private final ConcurrentMap<GlowChunk.Key, GlowChunk> chunks = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Key, GlowChunk> chunks = new ConcurrentHashMap<>();
 
     /**
      * A map of chunks which are being kept loaded by players or other factors.
      */
-    private final ConcurrentMap<GlowChunk.Key, Set<ChunkLock>> locks = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Key, Set<ChunkLock>> locks = new ConcurrentHashMap<>();
 
     /**
      * Creates a new chunk manager with the specified I/O service and world
      * generator.
-     * @param service The I/O service.
+     *
+     * @param world The chunk manager's world.
+     * @param service   The I/O service.
      * @param generator The world generator.
      */
     public ChunkManager(GlowWorld world, ChunkIoService service, ChunkGenerator generator) {
         this.world = world;
         this.service = service;
         this.generator = generator;
+        biomeGrid = MapLayer.initialize(world.getSeed(), world.getEnvironment(), world.getWorldType());
     }
 
     /**
      * Get the chunk generator.
+     *
+     * @return The chunk generator.
      */
     public ChunkGenerator getGenerator() {
         return generator;
@@ -68,12 +88,13 @@ public final class ChunkManager {
     /**
      * Gets a chunk object representing the specified coordinates, which might
      * not yet be loaded.
+     *
      * @param x The X coordinate.
      * @param z The Z coordinate.
      * @return The chunk.
      */
     public GlowChunk getChunk(int x, int z) {
-        GlowChunk.Key key = new GlowChunk.Key(x, z);
+        Key key = new Key(x, z);
         if (chunks.containsKey(key)) {
             return chunks.get(key);
         } else {
@@ -87,31 +108,34 @@ public final class ChunkManager {
 
     /**
      * Checks if the Chunk at the specified coordinates is loaded.
+     *
      * @param x The X coordinate.
      * @param z The Z coordinate.
      * @return true if the chunk is loaded, otherwise false.
      */
     public boolean isChunkLoaded(int x, int z) {
-        GlowChunk.Key key = new GlowChunk.Key(x, z);
+        Key key = new Key(x, z);
         return chunks.containsKey(key) && chunks.get(key).isLoaded();
     }
 
     /**
      * Check whether a chunk has locks on it preventing it from being unloaded.
+     *
      * @param x The X coordinate.
      * @param z The Z coordinate.
      * @return Whether the chunk is in use.
      */
     public boolean isChunkInUse(int x, int z) {
-        GlowChunk.Key key = new GlowChunk.Key(x, z);
+        Key key = new Key(x, z);
         Set<ChunkLock> lockSet = locks.get(key);
-        return lockSet != null && lockSet.size() != 0;
+        return lockSet != null && !lockSet.isEmpty();
     }
 
     /**
      * Call the ChunkIoService to load a chunk, optionally generating the chunk.
-     * @param x The X coordinate of the chunk to load.
-     * @param z The Y coordinate of the chunk to load.
+     *
+     * @param x        The X coordinate of the chunk to load.
+     * @param z        The Y coordinate of the chunk to load.
      * @param generate Whether to generate the chunk if needed.
      * @return True on success, false on failure.
      */
@@ -159,20 +183,18 @@ public final class ChunkManager {
      * Unload chunks with no locks on them.
      */
     public void unloadOldChunks() {
-        for (Map.Entry<GlowChunk.Key, GlowChunk> entry : chunks.entrySet()) {
+        for (Entry<Key, GlowChunk> entry : chunks.entrySet()) {
             Set<ChunkLock> lockSet = locks.get(entry.getKey());
-            if (lockSet == null || lockSet.size() == 0) {
+            if (lockSet == null || lockSet.isEmpty()) {
                 if (!entry.getValue().unload(true, true)) {
                     GlowServer.logger.warning("Failed to unload chunk " + world.getName() + ":" + entry.getKey());
                 }
             }
-            // cannot remove old chunks from cache - GlowBlock and GlowBlockState keep references.
-            // they must either be changed to look up the chunk again all the time, or this code left out.
-            /*if (!entry.getValue().isLoaded()) {
+            if (!entry.getValue().isLoaded()) {
                 //GlowServer.logger.info("Removing from cache " + entry.getKey());
                 chunks.entrySet().remove(entry);
                 locks.remove(entry.getKey());
-            }*/
+            }
         }
     }
 
@@ -204,7 +226,7 @@ public final class ChunkManager {
         Random random = new Random(world.getSeed());
         long xRand = random.nextLong() / 2 * 2 + 1;
         long zRand = random.nextLong() / 2 * 2 + 1;
-        random.setSeed((long) x * xRand + (long) z * zRand ^ world.getSeed());
+        random.setSeed(x * xRand + z * zRand ^ world.getSeed());
 
         for (BlockPopulator p : world.getPopulators()) {
             p.populate(world, random, chunk);
@@ -216,6 +238,7 @@ public final class ChunkManager {
     /**
      * Force a chunk to be populated by loading the chunks in an area around it. Used when streaming chunks to players
      * so that they do not have to watch chunks being populated.
+     *
      * @param x The X coordinate.
      * @param z The Z coordinate.
      */
@@ -231,17 +254,67 @@ public final class ChunkManager {
      * Initialize a single chunk from the chunk generator.
      */
     private void generateChunk(GlowChunk chunk, int x, int z) {
-        Random random = new Random((long) x * 341873128712L + (long) z * 132897987541L);
+        Random random = new Random(x * 341873128712L + z * 132897987541L);
         BiomeGrid biomes = new BiomeGrid();
+
+        int[] biomeValues = biomeGrid[0].generateValues(x * GlowChunk.WIDTH, z * GlowChunk.HEIGHT, GlowChunk.WIDTH, GlowChunk.HEIGHT);
+        for (int i = 0; i < biomeValues.length; i++) {
+            biomes.biomes[i] = (byte) biomeValues[i];
+        }
+
+        // extended sections with data
+        GlowChunkData glowChunkData = null;
+        if (generator instanceof GlowChunkGenerator) {
+            glowChunkData = (GlowChunkData) generator.generateChunkData(world, random, x, z, biomes);
+        } else {
+            ChunkGenerator.ChunkData chunkData = generator.generateChunkData(world, random, x, z, biomes);
+            if (chunkData != null) {
+                glowChunkData = new GlowChunkData(world);
+                for (int i = 0; i < 16; ++i) {
+                    for (int j = 0; j < 16; ++j) {
+                        int maxHeight = chunkData.getMaxHeight();
+                        for (int k = 0; k < maxHeight; ++k) {
+                            MaterialData materialData = chunkData.getTypeAndData(i, k, j);
+                            if (materialData != null) {
+                                glowChunkData.setBlock(i, k, j, materialData);
+                            } else {
+                                glowChunkData.setBlock(i, k, j, new MaterialData(Material.AIR));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (glowChunkData != null) {
+            short[][] extSections = glowChunkData.getSections();
+            if (extSections != null) {
+                ChunkSection[] sections = new ChunkSection[extSections.length];
+                for (int i = 0; i < extSections.length; ++i) {
+                    // this is sort of messy.
+                    if (extSections[i] != null) {
+                        sections[i] = new ChunkSection();
+                        for (int j = 0; j < extSections[i].length; ++j) {
+                            sections[i].types[j] = (char) extSections[i][j];
+                        }
+                        sections[i].recount();
+                    }
+                }
+                chunk.initializeSections(sections);
+                chunk.setBiomes(biomes.biomes);
+                chunk.automaticHeightMap();
+                return;
+            }
+        }
 
         // extended sections
         short[][] extSections = generator.generateExtBlockSections(world, random, x, z, biomes);
         if (extSections != null) {
-            GlowChunk.ChunkSection[] sections = new GlowChunk.ChunkSection[extSections.length];
+            ChunkSection[] sections = new ChunkSection[extSections.length];
             for (int i = 0; i < extSections.length; ++i) {
                 // this is sort of messy.
                 if (extSections[i] != null) {
-                    sections[i] = new GlowChunk.ChunkSection();
+                    sections[i] = new ChunkSection();
                     for (int j = 0; j < extSections[i].length; ++j) {
                         sections[i].types[j] = (char) (extSections[i][j] << 4);
                     }
@@ -257,11 +330,11 @@ public final class ChunkManager {
         // normal sections
         byte[][] blockSections = generator.generateBlockSections(world, random, x, z, biomes);
         if (blockSections != null) {
-            GlowChunk.ChunkSection[] sections = new GlowChunk.ChunkSection[blockSections.length];
+            ChunkSection[] sections = new ChunkSection[blockSections.length];
             for (int i = 0; i < blockSections.length; ++i) {
                 // this is sort of messy.
                 if (blockSections[i] != null) {
-                    sections[i] = new GlowChunk.ChunkSection();
+                    sections[i] = new ChunkSection();
                     for (int j = 0; j < blockSections[i].length; ++j) {
                         sections[i].types[j] = (char) (blockSections[i][j] << 4);
                     }
@@ -276,9 +349,9 @@ public final class ChunkManager {
 
         // deprecated flat generation
         byte[] types = generator.generate(world, random, x, z);
-        GlowChunk.ChunkSection[] sections = new GlowChunk.ChunkSection[8];
+        ChunkSection[] sections = new ChunkSection[8];
         for (int sy = 0; sy < sections.length; ++sy) {
-            GlowChunk.ChunkSection sec = new GlowChunk.ChunkSection();
+            ChunkSection sec = new ChunkSection();
             int by = 16 * sy;
             for (int cx = 0; cx < 16; ++cx) {
                 for (int cz = 0; cz < 16; ++cz) {
@@ -298,6 +371,7 @@ public final class ChunkManager {
 
     /**
      * Forces generation of the given chunk.
+     *
      * @param x The X coordinate.
      * @param z The Z coordinate.
      * @return Whether the chunk was successfully regenerated.
@@ -322,21 +396,19 @@ public final class ChunkManager {
 
     /**
      * Gets a list of loaded chunks.
+     *
      * @return The currently loaded chunks.
      */
     public GlowChunk[] getLoadedChunks() {
-        ArrayList<GlowChunk> result = new ArrayList<>();
-        for (GlowChunk chunk : chunks.values()) {
-            if (chunk.isLoaded()) {
-                result.add(chunk);
-            }
-        }
+        ArrayList<GlowChunk> result = chunks.values().stream().filter(GlowChunk::isLoaded).collect(Collectors.toCollection(ArrayList::new));
         return result.toArray(new GlowChunk[result.size()]);
     }
 
     /**
      * Performs the save for the given chunk using the storage provider.
+     *
      * @param chunk The chunk to save.
+     * @return True if the save was successful.
      */
     public boolean performSave(GlowChunk chunk) {
         if (chunk.isLoaded()) {
@@ -351,29 +423,17 @@ public final class ChunkManager {
         return false;
     }
 
-    /**
-     * A BiomeGrid implementation for chunk generation.
-     */
-    private class BiomeGrid implements ChunkGenerator.BiomeGrid {
-        private final byte[] biomes = new byte[256];
-
-        @Override
-        public Biome getBiome(int x, int z) {
-            return GlowBiome.getBiome(biomes[z * 16 + x]);
-        }
-
-        @Override
-        public void setBiome(int x, int z, Biome bio) {
-            biomes[z * 16 + x] = (byte) GlowBiome.getId(bio);
-        }
+    public int[] getBiomeGridAtLowerRes(int x, int z, int sizeX, int sizeZ) {
+        return biomeGrid[1].generateValues(x, z, sizeX, sizeZ);
     }
 
     /**
      * Look up the set of locks on a given chunk.
+     *
      * @param key The chunk key.
      * @return The set of locks for that chunk.
      */
-    private Set<ChunkLock> getLockSet(GlowChunk.Key key) {
+    private Set<ChunkLock> getLockSet(Key key) {
         if (locks.containsKey(key)) {
             return locks.get(key);
         } else {
@@ -388,24 +448,24 @@ public final class ChunkManager {
     /**
      * A group of locks on chunks to prevent them from being unloaded while in use.
      */
-    public static class ChunkLock implements Iterable<GlowChunk.Key> {
+    public static class ChunkLock implements Iterable<Key> {
         private final ChunkManager cm;
         private final String desc;
-        private final Set<GlowChunk.Key> keys = new HashSet<>();
+        private final Set<Key> keys = new HashSet<>();
 
         public ChunkLock(ChunkManager cm, String desc) {
             this.cm = cm;
             this.desc = desc;
         }
 
-        public void acquire(GlowChunk.Key key) {
+        public void acquire(Key key) {
             if (keys.contains(key)) return;
             keys.add(key);
             cm.getLockSet(key).add(this);
             //GlowServer.logger.info(this + " acquires " + key);
         }
 
-        public void release(GlowChunk.Key key) {
+        public void release(Key key) {
             if (!keys.contains(key)) return;
             keys.remove(key);
             cm.getLockSet(key).remove(this);
@@ -413,7 +473,7 @@ public final class ChunkManager {
         }
 
         public void clear() {
-            for (GlowChunk.Key key : keys) {
+            for (Key key : keys) {
                 cm.getLockSet(key).remove(this);
                 //GlowServer.logger.info(this + " clearing " + key);
             }
@@ -426,8 +486,25 @@ public final class ChunkManager {
         }
 
         @Override
-        public Iterator<GlowChunk.Key> iterator() {
+        public Iterator<Key> iterator() {
             return keys.iterator();
+        }
+    }
+
+    /**
+     * A BiomeGrid implementation for chunk generation.
+     */
+    private class BiomeGrid implements ChunkGenerator.BiomeGrid {
+        private final byte[] biomes = new byte[256];
+
+        @Override
+        public Biome getBiome(int x, int z) {
+            return GlowBiome.getBiome(biomes[x | z << 4] & 0xFF); // upcasting is very important to get extended biomes
+        }
+
+        @Override
+        public void setBiome(int x, int z, Biome bio) {
+            biomes[x | z << 4] = (byte) GlowBiome.getId(bio);
         }
     }
 }

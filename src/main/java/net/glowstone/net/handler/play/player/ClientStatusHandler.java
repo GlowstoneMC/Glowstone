@@ -1,6 +1,6 @@
 package net.glowstone.net.handler.play.player;
 
-import com.flowpowered.networking.MessageHandler;
+import com.flowpowered.network.MessageHandler;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
@@ -10,7 +10,7 @@ import org.bukkit.Achievement;
 public final class ClientStatusHandler implements MessageHandler<GlowSession, ClientStatusMessage> {
     @Override
     public void handle(GlowSession session, ClientStatusMessage message) {
-        final GlowPlayer player = session.getPlayer();
+        GlowPlayer player = session.getPlayer();
 
         switch (message.getAction()) {
             case ClientStatusMessage.RESPAWN:

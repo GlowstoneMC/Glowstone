@@ -1,9 +1,11 @@
 package net.glowstone.util.nbt;
 
-import org.apache.commons.lang.Validate;
-
 import java.lang.reflect.Constructor;
 import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * The {@code TAG_Compound} tag.
@@ -28,12 +30,12 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     }
 
     @Override
-    protected void valueToString(StringBuilder bldr) {
-        bldr.append(value.size()).append(" entries\n{\n");
-        for (Map.Entry<String, Tag> entry : value.entrySet()) {
-            bldr.append("    ").append(entry.getKey()).append(": ").append(entry.getValue().toString().replaceAll("\n", "\n    ")).append("\n");
+    protected void valueToString(StringBuilder builder) {
+        builder.append(value.size()).append(" entries\n{\n");
+        for (Entry<String, Tag> entry : value.entrySet()) {
+            builder.append("    ").append(entry.getKey()).append(": ").append(entry.getValue().toString().replaceAll("\n", "\n    ")).append("\n");
         }
-        bldr.append("}");
+        builder.append("}");
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -45,6 +47,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
 
     /**
      * Check if the compound contains the given key.
+     *
      * @param key The key.
      * @return True if the key is in the map.
      */
@@ -60,30 +63,59 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     // Simple gets
 
     public boolean getBool(String key) {
-        return get(key, ByteTag.class) != 0;
+        if (!containsKey(key)) {
+            return false;
+        }
+        return getByte(key) != 0;
     }
 
     public byte getByte(String key) {
+        if (isInt(key)) {
+            return (byte) getInt(key);
+        }
         return get(key, ByteTag.class);
     }
 
     public short getShort(String key) {
+        if (isInt(key)) {
+            return (short) getInt(key);
+        }
         return get(key, ShortTag.class);
     }
 
     public int getInt(String key) {
+        if (isByte(key)) {
+            return (int) getByte(key);
+        } else if (isShort(key)) {
+            return (int) getShort(key);
+        } else if (isLong(key)) {
+            return (int) getLong(key);
+        }
         return get(key, IntTag.class);
     }
 
     public long getLong(String key) {
+        if (isInt(key)) {
+            return (long) getInt(key);
+        }
         return get(key, LongTag.class);
     }
 
     public float getFloat(String key) {
+        if (isDouble(key)) {
+            return (float) getDouble(key);
+        } else if (isInt(key)) {
+            return (float) getInt(key);
+        }
         return get(key, FloatTag.class);
     }
 
     public double getDouble(String key) {
+        if (isFloat(key)) {
+            return (double) getFloat(key);
+        } else if (isInt(key)) {
+            return (double) getInt(key);
+        }
         return get(key, DoubleTag.class);
     }
 
@@ -106,9 +138,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     public <V> List<V> getList(String key, TagType type) {
         List<? extends Tag> original = getTagList(key, type);
         List<V> result = new ArrayList<>(original.size());
-        for (Tag item : original) {
-            result.add((V) item.getValue());
-        }
+        result.addAll(original.stream().map(item -> (V) item.getValue()).collect(Collectors.toList()));
         return result;
     }
 
@@ -204,7 +234,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
         put(key, new DoubleTag(value));
     }
 
-    public void putByteArray(String key, byte[] value) {
+    public void putByteArray(String key, byte... value) {
         put(key, new ByteArrayTag(value));
     }
 
@@ -212,7 +242,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
         put(key, new StringTag(value));
     }
 
-    public void putIntArray(String key, int[] value) {
+    public void putIntArray(String key, int... value) {
         put(key, new IntArrayTag(value));
     }
 
@@ -246,13 +276,13 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
 
     private <T extends Tag<?>> boolean is(String key, Class<T> clazz) {
         if (!containsKey(key)) return false;
-        final Tag tag = value.get(key);
+        Tag tag = value.get(key);
         return tag != null && clazz == tag.getClass();
     }
 
     void put(String key, Tag tag) {
-        Validate.notNull(key, "Key cannot be null");
-        Validate.notNull(tag, "Tag cannot be null");
+        checkNotNull(key, "Key cannot be null");
+        checkNotNull(tag, "Tag cannot be null");
         value.put(key, tag);
     }
 
@@ -270,7 +300,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
 
     private List<? extends Tag> getTagList(String key, TagType type) {
         ListTag<?> tag = getTag(key, ListTag.class);
-        if (tag.getValue().size() == 0) {
+        if (tag.getValue().isEmpty()) {
             // empty lists are allowed to be the wrong type
             return Arrays.asList();
         }

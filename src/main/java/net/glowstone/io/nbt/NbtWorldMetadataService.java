@@ -32,7 +32,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
     }
 
     @Override
-    public WorldFinalValues readWorldData() throws IOException {
+    public WorldFinalValues readWorldData() {
         // determine UUID of world
         UUID uid = null;
         File uuidFile = new File(dir, "uid.dat");
@@ -107,11 +107,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         // game rules
         if (level.isCompound("GameRules")) {
             CompoundTag gameRules = level.getCompound("GameRules");
-            for (String key : gameRules.getValue().keySet()) {
-                if (gameRules.isString(key)) {
-                    world.setGameRuleValue(key, gameRules.getString(key));
-                }
-            }
+            gameRules.getValue().keySet().stream().filter(gameRules::isString).forEach(key -> world.setGameRuleValue(key, gameRules.getString(key)));
             level.remove("GameRules");
         }
 

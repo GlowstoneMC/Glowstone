@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 /**
  * Represents a task which is executed periodically.
+ *
  * @author Graham Edgecombe
  */
 public class GlowTask extends FutureTask<Void> implements BukkitTask, BukkitWorker {
@@ -41,44 +42,45 @@ public class GlowTask extends FutureTask<Void> implements BukkitTask, BukkitWork
      * The number of ticks between each call to the Runnable.
      */
     private final long period;
-
-    /**
-     * The current number of ticks since last initialization.
-     */
-    private long counter;
-
     /**
      * A flag indicating whether this task is to be run asynchronously
      */
     private final boolean sync;
-
+    /**
+     * A description of the runnable assigned to this task.
+     */
+    private final String description;
+    /**
+     * The current number of ticks since last initialization.
+     */
+    private long counter;
     /**
      * The thread this task has been last executed on, if this task is async.
      */
     private Thread executionThread;
-
     /**
      * Return the last state returned by {@link #shouldExecute()}
      */
     private volatile TaskExecutionState lastExecutionState = TaskExecutionState.WAIT;
 
     /**
-     * A description of the runnable assigned to this task.
-     */
-    private final String description;
-
-    /**
      * Creates a new task with the specified number of ticks between
      * consecutive calls to execute().
+     *
+     * @param owner The plugin which started the task.
+     * @param task The runnable for this task.
+     * @param sync If the task should be run synchronously.
+     * @param delay The delay in ticks before running this task.
+     * @param period The delay in ticks before running this task again. -1 for no repeat.
      */
     public GlowTask(Plugin owner, Runnable task, boolean sync, long delay, long period) {
         super(task, null);
-        this.taskId = nextTaskId.getAndIncrement();
-        this.description = task.toString();
+        taskId = nextTaskId.getAndIncrement();
+        description = task.toString();
         this.owner = owner;
         this.delay = delay;
         this.period = period;
-        this.counter = 0;
+        counter = 0;
         this.sync = sync;
     }
 
@@ -120,16 +122,17 @@ public class GlowTask extends FutureTask<Void> implements BukkitTask, BukkitWork
      */
     @Override
     public void cancel() {
-        this.cancel(false);
+        cancel(false);
     }
 
     /**
      * Called every 'pulse' which is around 50ms in Minecraft. This method
      * updates the counters and returns whether execute() should be called
+     *
      * @return Execution state for this task
      */
     TaskExecutionState shouldExecute() {
-        final TaskExecutionState execState = shouldExecuteUpdate();
+        TaskExecutionState execState = shouldExecuteUpdate();
         lastExecutionState = execState;
         return execState;
     }
@@ -150,6 +153,7 @@ public class GlowTask extends FutureTask<Void> implements BukkitTask, BukkitWork
 
     /**
      * Return the last execution state returned by {@link #shouldExecute()}
+     *
      * @return the last state (most likely the state the task is currently in)
      */
     public TaskExecutionState getLastExecutionState() {

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 
 /**
@@ -29,6 +30,7 @@ public abstract class JsonListFile {
 
     /**
      * Initialize the list from the given file.
+     *
      * @param file The file to use for this list.
      */
     public JsonListFile(File file) {
@@ -48,7 +50,7 @@ public abstract class JsonListFile {
                     JSONObject jsonObj = (JSONObject) object;
                     Map<String, String> map = new HashMap<>(jsonObj.size());
                     for (Object jsonEntry : jsonObj.entrySet()) {
-                        Map.Entry<?, ?> entry = ((Map.Entry<?, ?>) jsonEntry);
+                        Entry<?, ?> entry = (Map.Entry<?, ?>) jsonEntry;
                         map.put(entry.getKey().toString(), entry.getValue().toString());
                     }
 
@@ -71,7 +73,7 @@ public abstract class JsonListFile {
         JSONArray array = new JSONArray();
         for (BaseEntry entry : entries) {
             JSONObject obj = new JSONObject();
-            for (Map.Entry<String, String> mapEntry : entry.write().entrySet()) {
+            for (Entry<String, String> mapEntry : entry.write().entrySet()) {
                 obj.put(mapEntry.getKey(), mapEntry.getValue());
             }
             array.add(obj);
@@ -86,12 +88,13 @@ public abstract class JsonListFile {
 
     /**
      * Deserialize an entry from JSON format.
+     *
      * @param object The JSON object to read from.
      * @return The finished Entry.
      */
     protected abstract BaseEntry readEntry(Map<String, String> object);
 
-    /**
+    /*
      * Import data from a legacy format if possible.
      */
     //protected abstract void importLegacy();
@@ -102,6 +105,7 @@ public abstract class JsonListFile {
     protected interface BaseEntry {
         /**
          * Serialize this entry to JSON format.
+         *
          * @return The resulting JSON object.
          */
         Map<String, String> write();

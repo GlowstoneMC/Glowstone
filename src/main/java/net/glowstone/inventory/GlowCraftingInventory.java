@@ -1,12 +1,12 @@
 package net.glowstone.inventory;
 
 import net.glowstone.GlowServer;
+import net.glowstone.entity.GlowPlayer;
+import net.glowstone.inventory.crafting.CraftingManager;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.CraftingInventory;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
+import org.bukkit.event.inventory.InventoryType.SlotType;
+import org.bukkit.inventory.*;
 
 import java.util.Arrays;
 
@@ -24,8 +24,10 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
             throw new IllegalArgumentException("GlowCraftingInventory cannot be " + type + ", only CRAFTING or WORKBENCH.");
         }
 
-        slotTypes[RESULT_SLOT] = InventoryType.SlotType.RESULT;
-        Arrays.fill(slotTypes, MATRIX_START, getSize(), InventoryType.SlotType.CRAFTING);
+        getSlot(RESULT_SLOT).setType(SlotType.RESULT);
+        for (int i = MATRIX_START; i < getSize(); i++) {
+            getSlot(i).setType(SlotType.CRAFTING);
+        }
     }
 
     @Override
@@ -49,12 +51,40 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
     }
 
     @Override
+    public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot, ItemStack clickedItem) {
+        if (getSlotType(view.convertSlot(clickedSlot)) == SlotType.RESULT) {
+            // If the player clicked on the result give it to them
+            Recipe recipe = getRecipe();
+            if (recipe == null) {
+                return; // No complete recipe in crafting grid
+            }
+
+            // Set to correct amount (tricking the client and click handler)
+            int recipeAmount = CraftingManager.getLayers(getMatrix());
+            clickedItem.setAmount(clickedItem.getAmount() * recipeAmount);
+
+            // Place the items in the player's inventory (right to left)
+            player.getInventory().tryToFillSlots(clickedItem, 8, -1, 35, 8);
+
+            // Craft the items, removing the ingredients from the crafting matrix
+            for (int i = 0; i < recipeAmount; i++) {
+                craft();
+            }
+        } else {
+            // Clicked in the crafting grid, no special handling required (just place them left to right)
+            clickedItem = player.getInventory().tryToFillSlots(clickedItem, 9, 36, 0, 9);
+            view.setItem(clickedSlot, clickedItem);
+        }
+
+    }
+
+    @Override
     public int getRawSlots() {
         return 0;
     }
 
     /**
-     * Remove a layer of items from the inventory according to the current recipe.
+     * Remove a layer of items from the inventory.
      */
     public void craft() {
         ItemStack[] matrix = getMatrix();
@@ -62,8 +92,7 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
         Recipe recipe = cm.getCraftingRecipe(matrix);
 
         if (recipe != null) {
-            cm.removeItems(matrix, recipe);
-            setMatrix(matrix);
+            cm.removeItems(matrix, this);
         }
     }
 
@@ -73,13 +102,13 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
     }
 
     @Override
-    public ItemStack[] getMatrix() {
-        return Arrays.copyOfRange(getContents(), MATRIX_START, getSize());
+    public void setResult(ItemStack newResult) {
+        setItem(RESULT_SLOT, newResult);
     }
 
     @Override
-    public void setResult(ItemStack newResult) {
-        setItem(RESULT_SLOT, newResult);
+    public ItemStack[] getMatrix() {
+        return Arrays.copyOfRange(getContents(), MATRIX_START, getSize());
     }
 
     @Override
@@ -88,7 +117,15 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
             throw new IllegalArgumentException("Length must be " + (getSize() - 1));
         }
         for (int i = 0; i < contents.length; ++i) {
-            setItem(MATRIX_START + i, contents[i]);
+            // Call super method, so we only calculate the result once
+            super.setItem(MATRIX_START + i, contents[i]);
+        }
+        // Update result
+        Recipe recipe = getRecipe();
+        if (recipe == null) {
+            super.setItem(RESULT_SLOT, null);
+        } else {
+            super.setItem(RESULT_SLOT, recipe.getResult());
         }
     }
 

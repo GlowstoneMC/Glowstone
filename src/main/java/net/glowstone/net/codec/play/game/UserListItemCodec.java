@@ -1,12 +1,14 @@
 package net.glowstone.net.codec.play.game;
 
-import com.flowpowered.networking.Codec;
-import com.flowpowered.networking.util.ByteBufUtils;
+import com.flowpowered.network.Codec;
+import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import net.glowstone.entity.meta.profile.PlayerProperty;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.game.UserListItemMessage;
+import net.glowstone.net.message.play.game.UserListItemMessage.Action;
+import net.glowstone.net.message.play.game.UserListItemMessage.Entry;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,12 +21,12 @@ public final class UserListItemCodec implements Codec<UserListItemMessage> {
 
     @Override
     public ByteBuf encode(ByteBuf buf, UserListItemMessage message) throws IOException {
-        final UserListItemMessage.Action action = message.getAction();
-        final List<UserListItemMessage.Entry> entries = message.getEntries();
+        Action action = message.getAction();
+        List<Entry> entries = message.getEntries();
         ByteBufUtils.writeVarInt(buf, message.getAction().ordinal());
         ByteBufUtils.writeVarInt(buf, entries.size());
 
-        for (UserListItemMessage.Entry entry : entries) {
+        for (Entry entry : entries) {
             GlowBufUtils.writeUuid(buf, entry.uuid);
 
             // todo: implement the rest of the actions

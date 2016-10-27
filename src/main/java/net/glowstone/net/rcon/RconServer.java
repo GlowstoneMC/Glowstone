@@ -4,6 +4,9 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.epoll.Epoll;
+import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -13,26 +16,22 @@ import java.net.SocketAddress;
 
 /**
  * Implementation of a server for the remote console protocol.
+ *
  * @see <a href="http://wiki.vg/Rcon">Protocol Specifications</a>
  */
 public class RconServer {
 
     private final GlowServer server;
-
+    private final EventLoopGroup bossGroup = Epoll.isAvailable() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
+    private final EventLoopGroup workerGroup = Epoll.isAvailable() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
     private ServerBootstrap bootstrap = new ServerBootstrap();
-    private final EventLoopGroup bossGroup = new NioEventLoopGroup();
-    private final EventLoopGroup workerGroup = new NioEventLoopGroup();
 
-    public GlowServer getServer() {
-        return server;
-    }
-
-    public RconServer(GlowServer server, final String password) {
+    public RconServer(GlowServer server, String password) {
         this.server = server;
 
         bootstrap
                 .group(bossGroup, workerGroup)
-                .channel(NioServerSocketChannel.class)
+                .channel(Epoll.isAvailable() ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     public void initChannel(SocketChannel ch) throws Exception {
@@ -43,12 +42,17 @@ public class RconServer {
                 });
     }
 
+    public GlowServer getServer() {
+        return server;
+    }
+
     /**
      * Bind the server on the specified address.
+     *
      * @param address The address.
      * @return Netty channel future for bind operation.
      */
-    public ChannelFuture bind(final SocketAddress address) {
+    public ChannelFuture bind(SocketAddress address) {
         return bootstrap.bind(address);
     }
 

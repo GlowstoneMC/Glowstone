@@ -11,16 +11,13 @@ import org.bukkit.util.Vector;
 
 public class ItemTool extends ItemType {
 
-    private final int maxDurability;
-
-    public ItemTool(int maxDurability) {
-        setMaxStackSize(1);
-        this.maxDurability = maxDurability;
+    public int getMaxDurability() {
+        return getMaterial().getMaxDurability();
     }
 
     @Override
     public final void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc) {
-        if (onToolRightClick(player, holding, target, face, clickedLoc)) {
+        if (onToolRightClick(player, target, face, holding, clickedLoc)) {
             damageTool(player, holding);
         }
     }
@@ -31,7 +28,7 @@ public class ItemTool extends ItemType {
         }
 
         holding.setDurability((short) (holding.getDurability() + 1));
-        if (holding.getDurability() == maxDurability + 1) {
+        if (holding.getDurability() == getMaxDurability() + 1) {
             EventFactory.callEvent(new PlayerItemBreakEvent(player, holding));
             holding.setAmount(0);
         }
@@ -39,14 +36,15 @@ public class ItemTool extends ItemType {
 
     /**
      * Called when a player used (right clicked with) the tool.
-     * @param player The player using the tool
-     * @param tool The tool
-     * @param target The block right clicked with the tool
-     * @param face The clicked BlockFace
+     *
+     * @param player     The player using the tool
+     * @param target     The block right clicked with the tool
+     * @param face       The clicked BlockFace
+     * @param holding       The tool
      * @param clickedLoc The click location on the block
      * @return true if the tool's durability should be decreased, false otherwise
      */
-    protected boolean onToolRightClick(GlowPlayer player, ItemStack tool, GlowBlock target, BlockFace face, Vector clickedLoc) {
+    protected boolean onToolRightClick(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc) {
         // to be overridden in subclasses
         return false;
     }

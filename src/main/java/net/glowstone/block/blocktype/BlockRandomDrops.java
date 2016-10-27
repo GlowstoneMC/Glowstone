@@ -8,10 +8,8 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Random;
 
 public class BlockRandomDrops extends BlockNeedsTool {
-    private final Random random = new Random();
     private final Material dropType;
     private final short data;
     private final int minDrops;
@@ -39,7 +37,7 @@ public class BlockRandomDrops extends BlockNeedsTool {
     }
 
     @Override
-    public Collection<ItemStack> getMinedDrops(GlowBlock block, ItemStack tool) {
+    public Collection<ItemStack> getMinedDrops(GlowBlock block) {
         return Collections.unmodifiableList(Arrays.asList(new ItemStack(dropType, random.nextInt(maxDrops - minDrops + 1) + minDrops, data)));
     }
 

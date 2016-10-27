@@ -1,9 +1,10 @@
 package net.glowstone.net.codec.play.game;
 
-import com.flowpowered.networking.Codec;
+import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import net.glowstone.net.message.play.game.ExplosionMessage;
+import net.glowstone.net.message.play.game.ExplosionMessage.Record;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -21,9 +22,9 @@ public class ExplosionCodec implements Codec<ExplosionMessage> {
         buf.writeFloat(message.getZ());
         buf.writeFloat(message.getRadius());
 
-        Collection<ExplosionMessage.Record> records = message.getRecords();
+        Collection<Record> records = message.getRecords();
         buf.writeInt(records.size());
-        for (ExplosionMessage.Record record : records) {
+        for (Record record : records) {
             buf.writeByte(record.getX());
             buf.writeByte(record.getY());
             buf.writeByte(record.getZ());

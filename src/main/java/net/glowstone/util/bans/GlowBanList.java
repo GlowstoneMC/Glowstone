@@ -9,6 +9,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Ban list implementation.
@@ -24,8 +25,9 @@ public class GlowBanList extends JsonListFile implements BanList {
 
     /**
      * Creates a new BanList of the given type.
+     *
      * @param server The server this BanList belongs to.
-     * @param type The type of BanList.
+     * @param type   The type of BanList.
      */
     public GlowBanList(GlowServer server, Type type) {
         super(getFile(server, type));
@@ -49,7 +51,7 @@ public class GlowBanList extends JsonListFile implements BanList {
 
         entryMap.clear();
         for (BaseEntry entry : entries) {
-            GlowBanEntry banEntry = ((GlowBanEntry) entry);
+            GlowBanEntry banEntry = (GlowBanEntry) entry;
             entryMap.put(banEntry.getTarget(), banEntry);
         }
     }
@@ -111,6 +113,7 @@ public class GlowBanList extends JsonListFile implements BanList {
 
     /**
      * Save a modified GlowBanEntry back to the ban list.
+     *
      * @param entry The ban entry
      */
     void putEntry(GlowBanEntry entry) {
@@ -136,9 +139,7 @@ public class GlowBanList extends JsonListFile implements BanList {
     public Set<BanEntry> getBanEntries() {
         expungeBans();
         Set<BanEntry> result = new HashSet<>(entryMap.size());
-        for (GlowBanEntry entry : entryMap.values()) {
-            result.add(entry.clone());
-        }
+        result.addAll(entryMap.values().stream().map(GlowBanEntry::clone).collect(Collectors.toList()));
         return result;
     }
 

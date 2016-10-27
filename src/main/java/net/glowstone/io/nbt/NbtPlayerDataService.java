@@ -19,10 +19,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
@@ -32,6 +29,7 @@ public class NbtPlayerDataService implements PlayerDataService {
 
     private final GlowServer server;
     private final File playerDir;
+    private Map<String, UUID> uuidCache = new HashMap<>();
 
     public NbtPlayerDataService(GlowServer server, File playerDir) {
         this.server = server;
@@ -82,9 +80,13 @@ public class NbtPlayerDataService implements PlayerDataService {
 
     @Override
     public UUID lookupUUID(String name) {
-        // todo: caching or something
+        if (uuidCache.containsKey(name)) {
+            return uuidCache.get(name);
+        }
+
         for (OfflinePlayer player : getOfflinePlayers()) {
             if (name.equalsIgnoreCase(player.getName())) {
+                uuidCache.put(name, player.getUniqueId());
                 return player.getUniqueId();
             }
         }
@@ -136,7 +138,7 @@ public class NbtPlayerDataService implements PlayerDataService {
 
     private class NbtPlayerReader implements PlayerReader {
         private CompoundTag tag = new CompoundTag();
-        private boolean hasPlayed = false;
+        private boolean hasPlayed;
 
         public NbtPlayerReader(File playerFile) {
             if (playerFile.exists()) {

@@ -1,0 +1,431 @@
+default:
+  hardness: 1
+  blastResistance: 0
+  lightOpacity: 255
+  flameResistance: -1
+  fireResistance: -1
+values:
+  AIR:
+    lightOpacity: 0
+  STONE:
+    blastResistance: 30
+  GRASS:
+    blastResistance: 3
+  DIRT:
+    blastResistance: 2.5
+  COBBLESTONE:
+    blastResistance: 30
+  WOOD:
+    flameResistance: 5
+    fireResistance: 20
+  SAPLING:
+    hardness: 0
+    lightOpacity: 0
+  BEDROCK:
+    hardness: -1
+    blastResistance: 18000000
+  WATER:
+    lightOpacity: 3
+  STATIONARY_WATER:
+    lightOpacity: 3
+  LAVA:
+    lightOpacity: 0
+  STATIONARY_LAVA:
+    lightOpacity: 0
+  SAND:
+  GRAVEL:
+  GOLD_ORE:
+  IRON_ORE:
+  COAL_ORE:
+  LOG:
+    flameResistance: 5
+    fireResistance: 5
+  LEAVES:
+    lightOpacity: 1
+    flameResistance: 30
+    fireResistance: 60
+  SPONGE:
+  GLASS:
+    lightOpacity: 0
+  LAPIS_ORE:
+  LAPIS_BLOCK:
+  DISPENSER:
+  SANDSTONE:
+  NOTE_BLOCK:
+  BED_BLOCK:
+    lightOpacity: 0
+  POWERED_RAIL:
+    lightOpacity: 0
+  DETECTOR_RAIL:
+    lightOpacity: 0
+  PISTON_STICKY_BASE:
+    lightOpacity: 0
+  WEB:
+    lightOpacity: 1
+  LONG_GRASS:
+    hardness: 0
+    lightOpacity: 0
+    flameResistance: 60
+    fireResistance: 100
+  DEAD_BUSH:
+    hardness: 0
+    lightOpacity: 0
+    flameResistance: 60
+    fireResistance: 100
+  PISTON_BASE:
+    lightOpacity: 0
+  PISTON_EXTENSION:
+    lightOpacity: 0
+  WOOL:
+    flameResistance: 30
+    fireResistance: 60
+  PISTON_MOVING_PIECE:
+    lightOpacity: 0
+  YELLOW_FLOWER:
+    hardness: 0
+    lightOpacity: 0
+    flameResistance: 60
+    fireResistance: 100
+  RED_ROSE:
+    hardness: 0
+    lightOpacity: 0
+    flameResistance: 60
+    fireResistance: 100
+  BROWN_MUSHROOM:
+    hardness: 0
+    lightOpacity: 0
+  RED_MUSHROOM:
+    hardness: 0
+    lightOpacity: 0
+  GOLD_BLOCK:
+  IRON_BLOCK:
+  DOUBLE_STEP:
+  STEP:
+    lightOpacity: 0
+  BRICK:
+  TNT:
+    hardness: 0
+    flameResistance: 15
+    fireResistance: 100
+  BOOKSHELF:
+    flameResistance: 30
+    fireResistance: 20
+  MOSSY_COBBLESTONE:
+  OBSIDIAN:
+    hardness: 50
+    blastResistance: 6000
+  TORCH:
+    hardness: 0
+    lightOpacity: 0
+  FIRE:
+    lightOpacity: 0
+  MOB_SPAWNER:
+    lightOpacity: 0
+  WOOD_STAIRS:
+    lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
+  CHEST:
+    lightOpacity: 0
+  REDSTONE_WIRE:
+    hardness: 0
+    lightOpacity: 0
+  DIAMOND_ORE:
+  DIAMOND_BLOCK:
+  WORKBENCH:
+  CROPS:
+    hardness: 0
+    lightOpacity: 0
+  SOIL:
+    lightOpacity: 0
+  FURNACE:
+  BURNING_FURNACE:
+  SIGN_POST:
+    lightOpacity: 0
+  WOODEN_DOOR:
+    lightOpacity: 0
+  LADDER:
+    lightOpacity: 0
+  RAILS:
+    lightOpacity: 0
+  COBBLESTONE_STAIRS:
+    lightOpacity: 0
+  WALL_SIGN:
+    lightOpacity: 0
+  LEVER:
+    lightOpacity: 0
+  STONE_PLATE:
+    lightOpacity: 0
+  IRON_DOOR_BLOCK:
+    lightOpacity: 0
+  WOOD_PLATE:
+    lightOpacity: 0
+  REDSTONE_ORE:
+  GLOWING_REDSTONE_ORE:
+  REDSTONE_TORCH_OFF:
+    hardness: 0
+    lightOpacity: 0
+  REDSTONE_TORCH_ON:
+    hardness: 0
+    lightOpacity: 0
+  STONE_BUTTON:
+    lightOpacity: 0
+  SNOW:
+    lightOpacity: 0
+  ICE:
+    lightOpacity: 3
+  SNOW_BLOCK:
+  CACTUS:
+    lightOpacity: 0
+  CLAY:
+  SUGAR_CANE_BLOCK:
+    hardness: 0
+    lightOpacity: 0
+  JUKEBOX:
+  FENCE:
+    lightOpacity: 0
+  PUMPKIN:
+  NETHERRACK:
+  SOUL_SAND:
+  GLOWSTONE:
+  PORTAL:
+    lightOpacity: 0
+  JACK_O_LANTERN:
+  CAKE_BLOCK:
+    lightOpacity: 0
+  DIODE_BLOCK_OFF:
+    hardness: 0
+    lightOpacity: 0
+  DIODE_BLOCK_ON:
+    hardness: 0
+    lightOpacity: 0
+  STAINED_GLASS:
+    lightOpacity: 0
+  TRAP_DOOR:
+    lightOpacity: 0
+  MONSTER_EGGS:
+  SMOOTH_BRICK:
+  HUGE_MUSHROOM_1:
+  HUGE_MUSHROOM_2:
+  IRON_FENCE:
+    lightOpacity: 0
+  THIN_GLASS:
+    lightOpacity: 0
+  MELON_BLOCK:
+  PUMPKIN_STEM:
+    hardness: 0
+    lightOpacity: 0
+  MELON_STEM:
+    hardness: 0
+    lightOpacity: 0
+  VINE:
+    lightOpacity: 0
+    flameResistance: 15
+    fireResistance: 100
+  FENCE_GATE:
+    lightOpacity: 0
+  BRICK_STAIRS:
+    lightOpacity: 0
+  SMOOTH_STAIRS:
+    lightOpacity: 0
+  MYCEL:
+  WATER_LILY:
+    lightOpacity: 0
+  NETHER_BRICK:
+  NETHER_FENCE:
+    lightOpacity: 0
+  NETHER_BRICK_STAIRS:
+    lightOpacity: 0
+  NETHER_WARTS:
+    hardness: 0
+    lightOpacity: 0
+  ENCHANTMENT_TABLE:
+    lightOpacity: 0
+  BREWING_STAND:
+    lightOpacity: 0
+  CAULDRON:
+    lightOpacity: 0
+  ENDER_PORTAL:
+    lightOpacity: 0
+  ENDER_PORTAL_FRAME:
+    lightOpacity: 0
+  ENDER_STONE:
+  DRAGON_EGG:
+    lightOpacity: 0
+  REDSTONE_LAMP_OFF:
+  REDSTONE_LAMP_ON:
+  WOOD_DOUBLE_STEP:
+    flameResistance: 5
+    fireResistance: 20
+  WOOD_STEP:
+    lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
+  COCOA:
+    lightOpacity: 0
+  SANDSTONE_STAIRS:
+    lightOpacity: 0
+  EMERALD_ORE:
+  ENDER_CHEST:
+    lightOpacity: 0
+  TRIPWIRE_HOOK:
+    hardness: 0
+    lightOpacity: 0
+  TRIPWIRE:
+    hardness: 0
+    lightOpacity: 0
+  EMERALD_BLOCK:
+  SPRUCE_WOOD_STAIRS:
+    lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
+  BIRCH_WOOD_STAIRS:
+    lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
+  JUNGLE_WOOD_STAIRS:
+    lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
+  COMMAND:
+  BEACON:
+    lightOpacity: 0
+  COBBLE_WALL:
+    lightOpacity: 0
+  FLOWER_POT:
+    hardness: 0
+    lightOpacity: 0
+  CARROT:
+    hardness: 0
+    lightOpacity: 0
+  POTATO:
+    hardness: 0
+    lightOpacity: 0
+  WOOD_BUTTON:
+    lightOpacity: 0
+  SKULL:
+    lightOpacity: 0
+  ANVIL:
+    lightOpacity: 0
+  TRAPPED_CHEST:
+    lightOpacity: 0
+  GOLD_PLATE:
+    lightOpacity: 0
+  IRON_PLATE:
+    lightOpacity: 0
+  REDSTONE_COMPARATOR_OFF:
+    hardness: 0
+    lightOpacity: 0
+  REDSTONE_COMPARATOR_ON:
+    hardness: 0
+    lightOpacity: 0
+  DAYLIGHT_DETECTOR:
+    lightOpacity: 0
+  REDSTONE_BLOCK:
+  QUARTZ_ORE:
+  HOPPER:
+    lightOpacity: 0
+  QUARTZ_BLOCK:
+  QUARTZ_STAIRS:
+    lightOpacity: 0
+  ACTIVATOR_RAIL:
+    lightOpacity: 0
+  DROPPER:
+  STAINED_CLAY:
+  STAINED_GLASS_PANE:
+    lightOpacity: 0
+  LEAVES_2:
+    lightOpacity: 1
+    flameResistance: 30
+    fireResistance: 60
+  LOG_2:
+    flameResistance: 5
+    fireResistance: 5
+  ACACIA_STAIRS:
+    lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
+  DARK_OAK_STAIRS:
+    lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
+  SLIME_BLOCK:
+  BARRIER:
+  IRON_TRAPDOOR:
+    lightOpacity: 0
+  PRISMARINE:
+  SEA_LANTERN:
+  HAY_BLOCK:
+    flameResistance: 60
+    fireResistance: 20
+  CARPET:
+    lightOpacity: 0
+    flameResistance: 60
+    fireResistance: 20
+  HARD_CLAY:
+  COAL_BLOCK:
+    flameResistance: 5
+    fireResistance: 5
+  PACKED_ICE:
+  DOUBLE_PLANT:
+    lightOpacity: 0
+    flameResistance: 60
+    fireResistance: 100
+    hardness: 0
+  STANDING_BANNER:
+  WALL_BANNER:
+  DAYLIGHT_DETECTOR_INVERTED:
+    lightOpacity: 0
+  RED_SANDSTONE:
+  RED_SANDSTONE_STAIRS:
+    lightOpacity: 0
+  SPRUCE_FENCE_GATE:
+    lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
+  BIRCH_FENCE_GATE:
+    lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
+  JUNGLE_FENCE_GATE:
+    lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
+  DARK_OAK_FENCE_GATE:
+    lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
+  ACACIA_FENCE_GATE:
+    lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
+  SPRUCE_FENCE:
+    lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
+  BIRCH_FENCE:
+    lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
+  JUNGLE_FENCE:
+    lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
+  DARK_OAK_FENCE:
+    lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
+  ACACIA_FENCE:
+    lightOpacity: 0
+    flameResistance: 5
+    fireResistance: 20
+  SPRUCE_DOOR:
+    lightOpacity: 0
+  BIRCH_DOOR:
+    lightOpacity: 0
+  JUNGLE_DOOR:
+    lightOpacity: 0
+  ACACIA_DOOR:
+    lightOpacity: 0
+  DARK_OAK_DOOR:
+    lightOpacity: 0

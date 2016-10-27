@@ -13,6 +13,9 @@ import java.util.Random;
 
 public class CocoaTree extends JungleTree {
 
+    private static final BlockFace[] COCOA_FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
+    private static final CocoaPlantSize[] COCOA_SIZE = {CocoaPlantSize.SMALL, CocoaPlantSize.MEDIUM, CocoaPlantSize.LARGE};
+
     public CocoaTree(Random random, Location location, BlockStateDelegate delegate) {
         super(random, location, delegate);
     }
@@ -95,45 +98,16 @@ public class CocoaTree extends JungleTree {
     private void addCocoa(int sourceX, int sourceY, int sourceZ) {
         if (height > 5 && random.nextInt(5) == 0) {
             for (int y = 0; y < 2; y++) {
-                for (int i = 0; i < 4; i++) {         // rotate the 4 trunk faces
-                    if (random.nextInt(4 - y) == 0) { // higher it is, more chances there is
-                        final BlockFace face = getCocoaFace(i);
-                        final CocoaPlantSize size = getCocoaSize(random.nextInt(3));
-                        final Block block = delegate.getBlockState(loc.getWorld(), sourceX, sourceY + height - 5 + y, sourceZ)
-                                .getBlock().getRelative(face);
+                for (BlockFace cocoaFace : COCOA_FACES) { // rotate the 4 trunk faces
+                    if (random.nextInt(COCOA_FACES.length - y) == 0) { // higher it is, more chances there is
+                        CocoaPlantSize size = COCOA_SIZE[random.nextInt(COCOA_SIZE.length)];
+                        Block block = delegate.getBlockState(loc.getWorld(), sourceX, sourceY + height - 5 + y, sourceZ)
+                                .getBlock().getRelative(cocoaFace);
                         delegate.setTypeAndData(loc.getWorld(), block.getX(), block.getY(), block.getZ(),
-                                Material.COCOA, new CocoaPlant(size, face.getOppositeFace()));
+                                Material.COCOA, new CocoaPlant(size, cocoaFace.getOppositeFace()));
                     }
                 }
             }
-        }
-    }
-
-    private BlockFace getCocoaFace(int n) {
-        switch (n) {
-            case 0:
-                return BlockFace.NORTH;
-            case 1:
-                return BlockFace.EAST;
-            case 2:
-                return BlockFace.SOUTH;
-            case 3:
-                return BlockFace.WEST;
-            default:
-                return BlockFace.NORTH;
-        }
-    }
-
-    private CocoaPlantSize getCocoaSize(int n) {
-        switch (n) {
-            case 0:
-                return CocoaPlantSize.SMALL;
-            case 1:
-                return CocoaPlantSize.MEDIUM;
-            case 2:
-                return CocoaPlantSize.LARGE;
-            default:
-                return CocoaPlantSize.SMALL;
         }
     }
 }

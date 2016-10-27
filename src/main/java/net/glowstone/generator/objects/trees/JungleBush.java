@@ -17,7 +17,7 @@ public class JungleBush extends GenericTree {
 
     @Override
     public boolean canPlaceOn() {
-        final BlockState state = delegate.getBlockState(loc.getBlock().getRelative(BlockFace.DOWN).getLocation());
+        BlockState state = delegate.getBlockState(loc.getBlock().getRelative(BlockFace.DOWN).getLocation());
         return state.getType() == Material.GRASS || state.getType() == Material.DIRT;
     }
 

@@ -1,12 +1,12 @@
 package net.glowstone.entity;
 
-import com.flowpowered.networking.Message;
+import com.flowpowered.network.Message;
 import net.glowstone.EventFactory;
 import net.glowstone.Explosion;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.util.Position;
+import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.TNTPrimed;
@@ -23,7 +23,7 @@ public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
 
     public GlowTNTPrimed(Location location, Entity source) {
         super(location, Explosion.POWER_TNT);
-        this.fuseTicks = 80;
+        fuseTicks = 80;
         this.source = source;
     }
 
@@ -42,7 +42,7 @@ public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
         if (fuseTicks <= 0) {
             explode();
         } else {
-            world.showParticle(location.clone().add(0, 0.5D, 0), Particle.SMOKE, 0, 0, 0, 0, 0);
+            world.spigot().playEffect(location.clone().add(0, 0.5D, 0), Effect.SMOKE);
         }
     }
 
@@ -60,20 +60,15 @@ public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
 
     @Override
     public List<Message> createSpawnMessage() {
-        int x = Position.getIntX(location),
-                y = Position.getIntY(location),
-                z = Position.getIntZ(location),
-                pitch = Position.getIntPitch(location),
-                yaw = Position.getIntYaw(location);
+        double x = location.getX();
+        double y = location.getY();
+        double z = location.getZ();
+        int pitch = Position.getIntPitch(location);
+        int yaw = Position.getIntYaw(location);
 
         LinkedList<Message> result = new LinkedList<>();
-        result.add(new SpawnObjectMessage(id, 50, x, y, z, pitch, yaw));
+        result.add(new SpawnObjectMessage(id, getUniqueId(), 50, x, y, z, pitch, yaw));
         return result;
-    }
-
-    @Override
-    public final void setFuseTicks(int i) {
-        this.fuseTicks = i;
     }
 
     @Override
@@ -82,12 +77,47 @@ public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
     }
 
     @Override
+    public final void setFuseTicks(int i) {
+        fuseTicks = i;
+    }
+
+    @Override
     public final Entity getSource() {
         return source.isValid() ? source : null;
     }
 
     @Override
+    public Location getSourceLoc() {
+        return null;
+    }
+
+    @Override
     public final EntityType getType() {
         return EntityType.PRIMED_TNT;
+    }
+
+    @Override
+    public void setGlowing(boolean b) {
+
+    }
+
+    @Override
+    public boolean isGlowing() {
+        return false;
+    }
+
+    @Override
+    public void setInvulnerable(boolean b) {
+
+    }
+
+    @Override
+    public boolean isInvulnerable() {
+        return false;
+    }
+
+    @Override
+    public Location getOrigin() {
+        return null;
     }
 }

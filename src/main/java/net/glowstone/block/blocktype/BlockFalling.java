@@ -1,6 +1,7 @@
 package net.glowstone.block.blocktype;
 
 import net.glowstone.block.GlowBlock;
+import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -18,7 +19,7 @@ public class BlockFalling extends BlockType {
     }
 
     @Override
-    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding) {
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
         updatePhysics(block);
     }
 
@@ -33,30 +34,21 @@ public class BlockFalling extends BlockType {
     public void updatePhysics(GlowBlock me) {
         Block below = me.getRelative(BlockFace.DOWN);
         if (!supportingBlock(below.getType())) {
-            transformToFallingEntity(me);
+            //Simulates real Minecraft delay on block fall
+            //If possible should be changed to 2.5 ticks
+            me.getWorld().getServer().getScheduler().runTaskLater(null, () -> transformToFallingEntity(me), 2);
         }
     }
 
-    protected void transformToFallingEntity(final GlowBlock me) {
-        final Material oldType = me.getType();
-        final byte data = me.getData();
-        me.setTypeId(0, false);
-        // todo: replace with me.getWorld().spawnFallingBlock(me.getLocation(), drop, me.getData());
-        // on a delay to prevent the block not being visible because its new location was just dug
-        me.getWorld().getServer().getScheduler().runTask(null, new Runnable() {
-            @Override
-            public void run() {
-                int x = me.getX(), y = me.getY(), z = me.getZ();
-                for (; y > 0; --y) {
-                    Material check = me.getWorld().getBlockAt(x, y - 1, z).getType();
-                    if (supportingBlock(check)) {
-                        me.getWorld().getBlockAt(x, y, z).setTypeIdAndData(drop.getId(), data, true);
-                        break;
-                    }
-                }
-                me.applyPhysics(oldType, 0, data, (byte) 0);
-            }
-        });
+    protected void transformToFallingEntity(GlowBlock me) {
+        //Force block to update otherwise it can sometimes duplicate
+        me = me.getWorld().getBlockAt(me.getX(), me.getY(), me.getZ());
+
+        if (!me.isEmpty()) {
+            byte data = me.getData();
+            me.setType(Material.AIR);
+            me.getWorld().spawnFallingBlock(me.getLocation().add(0.50, 0.00, 0.50), drop, data);
+        }
     }
 
     private boolean supportingBlock(Material material) {

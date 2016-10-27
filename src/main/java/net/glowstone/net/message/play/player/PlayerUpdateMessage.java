@@ -1,6 +1,6 @@
 package net.glowstone.net.message.play.player;
 
-import com.flowpowered.networking.Message;
+import com.flowpowered.network.Message;
 import lombok.Data;
 import org.bukkit.Location;
 
@@ -16,4 +16,7 @@ public class PlayerUpdateMessage implements Message {
         // do nothing
     }
 
+    public boolean moved() {
+        return false;
+    }
 }

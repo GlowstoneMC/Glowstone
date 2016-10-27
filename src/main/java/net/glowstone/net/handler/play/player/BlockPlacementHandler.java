@@ -1,7 +1,8 @@
 package net.glowstone.net.handler.play.player;
 
-import com.flowpowered.networking.MessageHandler;
+import com.flowpowered.network.MessageHandler;
 import net.glowstone.EventFactory;
+import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
@@ -12,24 +13,47 @@ import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.BlockPlacementMessage;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
-import org.bukkit.event.Event;
+import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.Objects;
-
 public final class BlockPlacementHandler implements MessageHandler<GlowSession, BlockPlacementMessage> {
+    private static final BlockFace[] faces = {
+            BlockFace.DOWN, BlockFace.UP, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST
+    };
+
+    static boolean selectResult(Result result, boolean def) {
+        return result == Result.DEFAULT ? def : result == Result.ALLOW;
+    }
+
+    static void revert(GlowPlayer player, GlowBlock target) {
+        player.sendBlockChange(target.getLocation(), target.getType(), target.getData());
+        TileEntity entity = target.getTileEntity();
+        if (entity != null) {
+            entity.update(player);
+        }
+    }
+
+    static BlockFace convertFace(int direction) {
+        if (direction >= 0 && direction < faces.length) {
+            return faces[direction];
+        } else {
+            return BlockFace.SELF;
+        }
+    }
+
     @Override
     public void handle(GlowSession session, BlockPlacementMessage message) {
-        final GlowPlayer player = session.getPlayer();
+        //TODO: Hand handling instead of .getHeldItem()
+        GlowPlayer player = session.getPlayer();
         if (player == null)
             return;
 
         //GlowServer.logger.info(session + ": " + message);
 
-        /**
+        /*
          * The client sends this packet for the following cases:
          * Right click air:
          * - Send direction=-1 packet for any non-null item
@@ -52,21 +76,21 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         Action action = Action.RIGHT_CLICK_BLOCK;
         GlowBlock clicked = player.getWorld().getBlockAt(message.getX(), message.getY(), message.getZ());
 
-        /**
+        /*
          * Check if the message is a -1. If we *just* got a message with the
          * values filled, discard it, otherwise perform right-click-air.
          */
         if (message.getDirection() == -1) {
             BlockPlacementMessage previous = session.getPreviousPlacement();
-            if (previous == null || !previous.getHeldItem().equals(message.getHeldItem())) {
-                // perform normal right-click-air actions
-                action = Action.RIGHT_CLICK_AIR;
-                clicked = null;
-            } else {
-                // terminate processing of this event
-                session.setPreviousPlacement(null);
-                return;
-            }
+            //if (previous == null || !previous.getHeldItem().equals(message.getHeldItem())) {
+            // perform normal right-click-air actions
+            //   action = Action.RIGHT_CLICK_AIR;
+            //   clicked = null;
+            //} else {
+            // terminate processing of this event
+            //   session.setPreviousPlacement(null);
+            return;
+            // }
         }
 
         // Set previous placement message
@@ -78,11 +102,14 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         ItemStack holding = player.getItemInHand();
 
         // check that held item matches
-        if (!Objects.equals(holding, message.getHeldItem())) {
-            // above handles cases where holding and/or message's item are null
-            // todo: inform player their item is wrong
-            return;
-        }
+        // apparently the "message" container has comprehends held item as null,
+        // whereas the "holding" item is Material.AIR * 0 (hence the exceptional if statement here)
+        //if ((!(holding != null && holding.getType() == Material.AIR && message.getHeldItem() == null))
+        //        && !Objects.equals(holding, message.getHeldItem())) {
+        // above handles cases where holding and/or message's item are null
+        // todo: inform player their item is wrong
+        //    return;
+        //}
 
         // check that a block-click wasn't against air
         if (clicked != null && clicked.getType() == Material.AIR) {
@@ -97,10 +124,14 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
 
         // attempt to use interacted block
         // DEFAULT is treated as ALLOW, and sneaking is always considered
-        boolean useInteractedBlock = event.useInteractedBlock() != Event.Result.DENY;
+        boolean useInteractedBlock = event.useInteractedBlock() != Result.DENY;
         if (useInteractedBlock && clicked != null && (!player.isSneaking() || holding == null)) {
             BlockType blockType = ItemTable.instance().getBlock(clicked.getType());
-            useInteractedBlock = blockType.blockInteract(player, clicked, face, clickedLoc);
+            if (blockType != null) {
+                useInteractedBlock = blockType.blockInteract(player, clicked, face, clickedLoc);
+            } else {
+                GlowServer.logger.info("Unknown clicked block, " + clicked.getType());
+            }
         } else {
             useInteractedBlock = false;
         }
@@ -113,7 +144,9 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
             if (clicked == null) {
                 type.rightClickAir(player, holding);
             } else {
-                type.rightClickBlock(player, clicked, face, holding, clickedLoc);
+                if (holding.getType() != Material.AIR) {
+                    type.rightClickBlock(player, clicked, face, holding, clickedLoc);
+                }
             }
         }
 
@@ -136,28 +169,4 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         }
         player.setItemInHand(holding);
     }
-
-    static boolean selectResult(Event.Result result, boolean def) {
-        return result == Event.Result.DEFAULT ? def : result == Event.Result.ALLOW;
-    }
-
-    static void revert(GlowPlayer player, GlowBlock target) {
-        player.sendBlockChange(target.getLocation(), target.getType(), target.getData());
-        TileEntity entity = target.getTileEntity();
-        if (entity != null) {
-            entity.update(player);
-        }
-    }
-
-    static BlockFace convertFace(int direction) {
-        if (direction >= 0 && direction < faces.length) {
-            return faces[direction];
-        } else {
-            return BlockFace.SELF;
-        }
-    }
-
-    private static final BlockFace[] faces = {
-            BlockFace.DOWN, BlockFace.UP, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST
-    };
 }

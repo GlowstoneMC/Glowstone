@@ -1,6 +1,7 @@
 package net.glowstone.net.handler.play.player;
 
-import com.flowpowered.networking.MessageHandler;
+import com.flowpowered.network.MessageHandler;
+import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.constants.AttackDamage;
 import net.glowstone.entity.GlowEntity;
@@ -8,10 +9,14 @@ import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
+import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
+
+//import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 
 public final class InteractEntityHandler implements MessageHandler<GlowSession, InteractEntityMessage> {
 
@@ -28,10 +33,15 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
         GlowEntity possibleTarget = player.getWorld().getEntityManager().getEntity(message.getId());
         GlowLivingEntity target = possibleTarget instanceof GlowLivingEntity ? (GlowLivingEntity) possibleTarget : null;
 
-        if (message.getAction() == InteractEntityMessage.Action.ATTACK.ordinal()) {
+
+        if (message.getAction() == Action.ATTACK.ordinal()) {
             if (target == null) {
-                GlowServer.logger.info("Player " + player.getName() + " tried to attack an entity that does not exist");
-            } else if (!target.isDead() && target.canTakeDamage(EntityDamageEvent.DamageCause.ENTITY_ATTACK)) {
+                if (possibleTarget != null) {
+                    possibleTarget.entityInteract(player, message);
+                } else {
+                    GlowServer.logger.info("Player " + player.getName() + " tried to attack an entity that does not exist");
+                }
+            } else if (!target.isDead() && target.canTakeDamage(DamageCause.ENTITY_ATTACK)) {
                 // Calculate damage amount
                 ItemStack hand = player.getItemInHand();
                 Material type = hand == null ? Material.AIR : hand.getType();
@@ -40,7 +50,7 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
                 float damage = AttackDamage.getMeleeDamage(type, false);
 
                 // Apply damage. Calls the EntityDamageByEntityEvent
-                target.damage(damage, player, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
+                target.damage(damage, player, DamageCause.ENTITY_ATTACK);
 
                 // Apply durability loss (if applicable)
                 short durabilityLoss = AttackDamage.getMeleeDurabilityLoss(type);
@@ -49,11 +59,18 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
                     hand.setDurability((short) (hand.getDurability() + durabilityLoss));
                 }
             }
-        } else if (message.getAction() == InteractEntityMessage.Action.INTERACT_AT.ordinal()) {
+        } else if (message.getAction() == Action.INTERACT_AT.ordinal()) {
+            //todo: Handle hand variable
             // todo: Interaction with entity at a specified location (X, Y, and Z are present in the message)
             // used for adjusting specific portions of armor stands
-        } else if (message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
-            // todo: Interaction with something (X, Y, and Z are NOT present in the message)
+        } else if (message.getAction() == Action.INTERACT.ordinal()) {
+            //Todo: Handle hand variable
+            PlayerInteractEntityEvent event = new PlayerInteractEntityEvent(player, possibleTarget);
+            EventFactory.callEvent(event);
+
+            if (!event.isCancelled()) {
+                possibleTarget.entityInteract(player, message);
+            }
         } else {
             GlowServer.logger.info("Player " + player.getName() + " sent unknown interact action: " + message.getAction());
         }

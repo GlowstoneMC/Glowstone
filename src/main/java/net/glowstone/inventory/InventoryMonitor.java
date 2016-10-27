@@ -23,20 +23,21 @@ public final class InventoryMonitor {
 
     /**
      * Create a new monitor for the given inventory view.
+     *
      * @param view The view to monitor.
      */
     public InventoryMonitor(InventoryView view) {
         boolean isDefault = GlowInventoryView.isDefault(view);
         this.view = view;
-        this.size = view.countSlots() + (isDefault ? 4 : 0);
-        this.slots = new ItemStack[size];
+        size = view.countSlots() + (isDefault ? 4 : 0);
+        slots = new ItemStack[size];
 
         // determine id and type id
         if (isDefault) {
             id = 0;
         } else {
             id = nextId;
-            nextId = (nextId % 100) + 1;
+            nextId = nextId % 100 + 1;
         }
         type = getTypeId(view.getType());
 
@@ -47,78 +48,8 @@ public final class InventoryMonitor {
     }
 
     /**
-     * Update the given slot with the current value from the view.
-     * @param slot The slot to update.
-     */
-    private void updateItem(int slot) {
-        // sanitize() used as a last line of defense to prevent client crashes
-        // GlowInventory should generally be able to keep its contents safe
-        ItemStack source = view.getItem(slot);
-        slots[slot] = source == null ? null : ItemIds.sanitize(source.clone());
-    }
-
-    /**
-     * Check for changes in the inventory view.
-     * @return The list of changed items.
-     */
-    public List<Entry> getChanges() {
-        List<Entry> result = new LinkedList<>();
-        for (int i = 0; i < size; ++i) {
-            if (!Objects.equals(slots[i], view.getItem(i))) {
-                updateItem(i);
-                result.add(new Entry(i, slots[i]));
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Get the current contents of the viewed inventory.
-     * @return The contents.
-     */
-    public ItemStack[] getContents() {
-        return slots;
-    }
-
-    /**
-     * Get the number of slots in this inventory view.
-     * @return The number of slots.
-     */
-    public int getSize() {
-        return size;
-    }
-
-    /**
-     * Get the network ID of this inventory view.
-     * @return The id.
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * Get the network type ID of this inventory view.
-     * @return The type id.
-     */
-    public String getType() {
-        return type;
-    }
-
-    /**
-     * An entry which has been changed.
-     */
-    public static class Entry {
-        public final int slot;
-        public final ItemStack item;
-
-        public Entry(int slot, ItemStack item) {
-            this.slot = slot;
-            this.item = item;
-        }
-    }
-
-    /**
      * Get the network ID for the given inventory type.
+     *
      * @param type The type.
      * @return The id.
      */
@@ -149,6 +80,83 @@ public final class InventoryMonitor {
             case ENDER_CHEST:
             default:
                 return "minecraft:chest";
+        }
+    }
+
+    /**
+     * Update the given slot with the current value from the view.
+     *
+     * @param slot The slot to update.
+     */
+    private void updateItem(int slot) {
+        // sanitize() used as a last line of defense to prevent client crashes
+        // GlowInventory should generally be able to keep its contents safe
+        ItemStack source = view.getItem(slot);
+        slots[slot] = source == null ? null : ItemIds.sanitize(source.clone());
+    }
+
+    /**
+     * Check for changes in the inventory view.
+     *
+     * @return The list of changed items.
+     */
+    public List<Entry> getChanges() {
+        List<Entry> result = new LinkedList<>();
+        for (int i = 0; i < size; ++i) {
+            if (!Objects.equals(slots[i], view.getItem(i))) {
+                updateItem(i);
+                result.add(new Entry(i, slots[i]));
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Get the current contents of the viewed inventory.
+     *
+     * @return The contents.
+     */
+    public ItemStack[] getContents() {
+        return slots;
+    }
+
+    /**
+     * Get the number of slots in this inventory view.
+     *
+     * @return The number of slots.
+     */
+    public int getSize() {
+        return size;
+    }
+
+    /**
+     * Get the network ID of this inventory view.
+     *
+     * @return The id.
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * Get the network type ID of this inventory view.
+     *
+     * @return The type id.
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * An entry which has been changed.
+     */
+    public static class Entry {
+        public final int slot;
+        public final ItemStack item;
+
+        public Entry(int slot, ItemStack item) {
+            this.slot = slot;
+            this.item = item;
         }
     }
 }

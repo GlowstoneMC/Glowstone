@@ -1,6 +1,6 @@
 package net.glowstone.net.codec.play.inv;
 
-import com.flowpowered.networking.Codec;
+import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.inv.CreativeItemMessage;
@@ -12,7 +12,7 @@ public final class CreativeItemCodec implements Codec<CreativeItemMessage> {
     @Override
     public CreativeItemMessage decode(ByteBuf buf) throws IOException {
         int slot = buf.readShort();
-        ItemStack item = GlowBufUtils.readSlot(buf);
+        ItemStack item = GlowBufUtils.readSlot(buf, true);
         return new CreativeItemMessage(slot, item);
     }
 

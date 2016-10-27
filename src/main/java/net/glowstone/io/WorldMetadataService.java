@@ -11,13 +11,14 @@ public interface WorldMetadataService {
     /**
      * Reads the world's metadata from storage, including final values such as
      * seed and UUID that are only set on first load.
+     *
      * @return A {@link WorldFinalValues} with the seed and UUID.
-     * @throws IOException if an I/O error occurs.
      */
-    WorldFinalValues readWorldData() throws IOException;
+    WorldFinalValues readWorldData();
 
     /**
      * Write the world's metadata to storage.
+     *
      * @throws IOException if an I/O error occurs.
      */
     void writeWorldData() throws IOException;

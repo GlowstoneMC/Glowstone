@@ -1,19 +1,22 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <name>Glowstone++</name>
-    <groupId>net.glowstoneplusplus</groupId>
-    <artifactId>glowstoneplusplus</artifactId>
-    <version>1.9.4-SNAPSHOT</version>
+    <name>Glowstone</name>
+    <groupId>net.glowstone</groupId>
+    <artifactId>glowstone</artifactId>
+    <version>1.10.2-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <inceptionYear>2015</inceptionYear>
+    <inceptionYear>2011</inceptionYear>
     <url>https://www.glowstone.net</url>
-    <description>The enhanced Glowstone fork with an emphasis on performance, control and compatibility.</description>
+    <description>A fast, customizable and compatible open source Minecraft server.</description>
 
     <scm>
-        <connection>scm:git:git://github.com/GlowstoneMC/GlowstonePlusPlus.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/GlowstoneMC/GlowstonePlusPlus.git</developerConnection>
-        <url>https://github.com/GlowstoneMC/GlowstonePlusPlus</url>
+        <connection>scm:git:git://github.com/GlowstoneMC/Glowstone.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/GlowstoneMC/Glowstone.git</developerConnection>
+        <url>https://github.com/GlowstoneMC/Glowstone</url>
     </scm>
 
     <parent>
@@ -24,7 +27,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <bukkit.version>1.9.4-R0.1-SNAPSHOT</bukkit.version>
+        <bukkit.version>1.10.2-R0.1-SNAPSHOT</bukkit.version>
     </properties>
 
     <repositories>
@@ -45,6 +48,8 @@
             <name>Sponge Releases</name>
             <layout>default</layout>
             <url>https://repo.spongepowered.org/maven/</url>
+            <id>aikar</id>
+            <url>https://ci.emc.gs/nexus/content/repositories/aikar/</url>
         </repository>
     </repositories>
 
@@ -89,6 +94,16 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>net.sf.trove4j</groupId>
+            <artifactId>trove4j</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>co.aikar</groupId>
+            <artifactId>fastutil-lite</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-runtime</artifactId>
             <version>1.1-SNAPSHOT</version>
@@ -98,7 +113,12 @@
             <artifactId>kotlin-reflect</artifactId>
             <version>1.1-SNAPSHOT</version>
         </dependency>
-        <!-- Automatically downloaded by Glowstone++'s library manager
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-transport-native-epoll</artifactId>
+            <version>4.1.0.CR7</version>
+        </dependency>
+        <!-- Automatically downloaded by Glowstone's library manager
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
@@ -127,7 +147,7 @@
     </dependencies>
 
     <build>
-        <finalName>glowstone++-${project.version}</finalName>
+        <finalName>glowstone-${project.version}</finalName>
 
         <directory>${project.basedir}/target</directory>
 
@@ -183,24 +203,6 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <relocations>
-                               <relocation>
-                                   <pattern>org.objectweb.asm</pattern>
-                                   <shadedPattern>net.glowstone.libs.org.objectweb.asm</shadedPattern>
-                               </relocation>
-                               <relocation>
-                                    <pattern>com.flowpowered</pattern>
-                                    <shadedPattern>net.glowstone.libs.com.flowpowered</shadedPattern>
-                                </relocation>
-                               <relocation>
-                                    <pattern>jline</pattern>
-                                    <shadedPattern>net.glowstone.libs.jline</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>io.netty</pattern>
-                                    <shadedPattern>net.glowstone.libs.io.netty</shadedPattern>
-                                </relocation>
-                            </relocations>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>net.glowstone.GlowServer</mainClass>

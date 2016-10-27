@@ -1,10 +1,12 @@
 package net.glowstone.generator.objects.trees;
 
 import net.glowstone.util.BlockStateDelegate;
+import org.bukkit.material.types.DirtType;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.material.Dirt;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -14,15 +16,15 @@ public class GenericTree {
 
     protected final Random random;
     protected final Location loc;
+    protected final BlockStateDelegate delegate;
     protected int height;
     protected int logType;
     protected int leavesType;
-    protected final BlockStateDelegate delegate;
     protected Collection<Material> overridables;
 
     public GenericTree(Random random, Location location, BlockStateDelegate delegate) {
         this.random = random;
-        this.loc = location;
+        loc = location;
         this.delegate = delegate;
         setOverridables(
                 Material.AIR,
@@ -56,7 +58,7 @@ public class GenericTree {
     }
 
     public boolean canPlaceOn() {
-        final BlockState state = delegate.getBlockState(loc.getBlock().getRelative(BlockFace.DOWN).getLocation());
+        BlockState state = delegate.getBlockState(loc.getBlock().getRelative(BlockFace.DOWN).getLocation());
         return state.getType() == Material.GRASS || state.getType() == Material.DIRT || state.getType() == Material.SOIL;
     }
 
@@ -74,7 +76,7 @@ public class GenericTree {
                 for (int z = loc.getBlockZ() - radius; z <= loc.getBlockZ() + radius; z++) {
                     if (y >= 0 && y < 256) {
                         // we can overlap some blocks around
-                        final Material type = delegate.getBlockState(loc.getWorld(), x, y, z).getType();
+                        Material type = delegate.getBlockState(loc.getWorld(), x, y, z).getType();
                         if (!overridables.contains(type)) {
                             return false;
                         }
@@ -98,8 +100,8 @@ public class GenericTree {
             int radius = 1 - n / 2;
             for (int x = loc.getBlockX() - radius; x <= loc.getBlockX() + radius; x++) {
                 for (int z = loc.getBlockZ() - radius; z <= loc.getBlockZ() + radius; z++) {
-                    if (Math.abs(x - loc.getBlockX()) != radius || Math.abs(z - loc.getBlockZ()) != radius || (random.nextBoolean() && n != 0)) {
-                        final Material material = delegate.getBlockState(loc.getWorld(), x, y, z).getType();
+                    if (Math.abs(x - loc.getBlockX()) != radius || Math.abs(z - loc.getBlockZ()) != radius || random.nextBoolean() && n != 0) {
+                        Material material = delegate.getBlockState(loc.getWorld(), x, y, z).getType();
                         if (material == Material.AIR || material == Material.LEAVES) {
                             delegate.setTypeAndRawData(loc.getWorld(), x, y, z, Material.LEAVES, leavesType);
                         }
@@ -110,14 +112,15 @@ public class GenericTree {
 
         // generate the trunk
         for (int y = 0; y < height; y++) {
-            final Material material = delegate.getBlockState(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + y, loc.getBlockZ()).getType();
+            Material material = delegate.getBlockState(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + y, loc.getBlockZ()).getType();
             if (material == Material.AIR || material == Material.LEAVES) {
                 delegate.setTypeAndRawData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + y, loc.getBlockZ(), Material.LOG, logType);
             }
         }
 
         // block below trunk is always dirt
-        delegate.setTypeAndRawData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ(), Material.DIRT, 0);
+        Dirt dirt = new Dirt(DirtType.NORMAL);
+        delegate.setTypeAndData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ(), Material.DIRT, dirt);
 
         return true;
     }

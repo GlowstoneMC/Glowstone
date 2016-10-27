@@ -1,10 +1,12 @@
 package net.glowstone.generator.objects.trees;
 
 import net.glowstone.util.BlockStateDelegate;
+import org.bukkit.material.types.DirtType;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.material.Dirt;
 import org.bukkit.material.Vine;
 
 import java.util.Random;
@@ -19,7 +21,7 @@ public class MegaJungleTree extends GenericTree {
 
     @Override
     public boolean canPlaceOn() {
-        final BlockState state = delegate.getBlockState(loc.getBlock().getRelative(BlockFace.DOWN).getLocation());
+        BlockState state = delegate.getBlockState(loc.getBlock().getRelative(BlockFace.DOWN).getLocation());
         return state.getType() == Material.GRASS || state.getType() == Material.DIRT;
     }
 
@@ -38,7 +40,7 @@ public class MegaJungleTree extends GenericTree {
                 for (int z = loc.getBlockZ() - radius; z <= loc.getBlockZ() + radius; z++) {
                     if (y >= 0 && y < 256) {
                         // we can overlap some blocks around
-                        final Material type = delegate.getBlockState(loc.getWorld(), x, y, z).getType();
+                        Material type = delegate.getBlockState(loc.getWorld(), x, y, z).getType();
                         if (!overridables.contains(type)) {
                             return false;
                         }
@@ -110,7 +112,7 @@ public class MegaJungleTree extends GenericTree {
                 int sqZb = (radiusZ - n) * (radiusZ - n);
 
                 if (sqX + sqZ <= sqR || sqXb + sqZb <= sqR || sqX + sqZb <= sqR || sqXb + sqZ <= sqR) {
-                    final Material type = delegate.getBlockState(loc.getWorld(), x, sourceY, z).getType();
+                    Material type = delegate.getBlockState(loc.getWorld(), x, sourceY, z).getType();
                     if (type == Material.AIR || type == Material.LEAVES) {
                         delegate.setTypeAndRawData(loc.getWorld(), x, sourceY, z, Material.LEAVES, leavesType);
                     }
@@ -143,10 +145,11 @@ public class MegaJungleTree extends GenericTree {
 
     protected void generateDirtBelowTrunk() {
         // SELF, SOUTH, EAST, SOUTH EAST
-        delegate.setTypeAndRawData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ(), Material.DIRT, 0);
-        delegate.setTypeAndRawData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ() + 1, Material.DIRT, 0);
-        delegate.setTypeAndRawData(loc.getWorld(), loc.getBlockX() + 1, loc.getBlockY() - 1, loc.getBlockZ(), Material.DIRT, 0);
-        delegate.setTypeAndRawData(loc.getWorld(), loc.getBlockX() + 1, loc.getBlockY() - 1, loc.getBlockZ() + 1, Material.DIRT, 0);
+        Dirt dirt = new Dirt(DirtType.NORMAL);
+        delegate.setTypeAndData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ(), Material.DIRT, dirt);
+        delegate.setTypeAndData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ() + 1, Material.DIRT, dirt);
+        delegate.setTypeAndData(loc.getWorld(), loc.getBlockX() + 1, loc.getBlockY() - 1, loc.getBlockZ(), Material.DIRT, dirt);
+        delegate.setTypeAndData(loc.getWorld(), loc.getBlockX() + 1, loc.getBlockY() - 1, loc.getBlockZ() + 1, Material.DIRT, dirt);
     }
 
     private void addVinesOnTrunk() {

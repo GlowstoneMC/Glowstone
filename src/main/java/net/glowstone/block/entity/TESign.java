@@ -27,7 +27,7 @@ public class TESign extends TileEntity {
 
     @Override
     public void update(GlowPlayer player) {
-        player.sendSignChange(getBlock().getLocation(), lines);
+        player.sendSignChange(this, getBlock().getLocation(), lines);
     }
 
     @Override
@@ -55,11 +55,24 @@ public class TESign extends TileEntity {
     }
 
     /**
+     * Get the lines of text on the sign.
+     * @return The sign's lines.
+     */
+    public String[] getLines() {
+        String[] result = new String[lines.length];
+        for (int i = 0; i < result.length; ++i) {
+            result[i] = lines[i].asPlaintext();
+        }
+        return result;
+    }
+
+    /**
      * Set the lines of text on the sign.
+     *
      * @param text The lines of text.
      * @throws IllegalArgumentException If the wrong number of lines is provided.
      */
-    public void setLines(String[] text) {
+    public void setLines(String... text) {
         if (text.length != lines.length) {
             throw new IllegalArgumentException("Provided lines were length " + text.length + ", must be " + lines.length);
         }
@@ -68,17 +81,4 @@ public class TESign extends TileEntity {
             lines[i] = new TextMessage(text[i] == null ? "" : text[i]);
         }
     }
-
-    /**
-     * Get the lines of text on the sign.
-     * @return The sign's lines.
-     */
-    public String[] getLines() {
-        String[] result = new String[lines.length];
-        for (int i = 0; i < result.length; ++i) {
-            result[i] = lines[i].flatten();
-        }
-        return result;
-    }
-
 }

@@ -1,8 +1,9 @@
 package net.glowstone.net.pipeline;
 
-import com.flowpowered.networking.Codec;
-import com.flowpowered.networking.Message;
-import com.flowpowered.networking.util.ByteBufUtils;
+import com.flowpowered.network.Codec;
+import com.flowpowered.network.Codec.CodecRegistration;
+import com.flowpowered.network.Message;
+import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -27,8 +28,8 @@ public final class CodecsHandler extends MessageToMessageCodec<ByteBuf, Message>
     @Override
     protected void encode(ChannelHandlerContext ctx, Message msg, List<Object> out) throws Exception {
         // find codec
-        final Class<? extends Message> clazz = msg.getClass();
-        Codec.CodecRegistration reg = protocol.getCodecRegistration(clazz);
+        Class<? extends Message> clazz = msg.getClass();
+        CodecRegistration reg = protocol.getCodecRegistration(clazz);
         if (reg == null) {
             throw new EncoderException("Unknown message type: " + clazz + ".");
         }
@@ -47,7 +48,7 @@ public final class CodecsHandler extends MessageToMessageCodec<ByteBuf, Message>
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
         // find codec and read header
-        final Codec<?> codec = protocol.newReadHeader(msg);
+        Codec<?> codec = protocol.newReadHeader(msg);
 
         // read body
         Message decoded = codec.decode(msg);

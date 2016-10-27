@@ -19,28 +19,36 @@ public class BlockSlab extends BlockType {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+        super.placeBlock(player, state, face, holding, clickedLoc);
         Material blockType = state.getBlock().getType();
         if (blockType == Material.STEP) {
             state.setType(Material.DOUBLE_STEP);
-            state.setRawData((byte) holding.getDurability());
+            state.setData(holding.getData());
             return;
         } else if (blockType == Material.WOOD_STEP) {
             state.setType(Material.WOOD_DOUBLE_STEP);
-            state.setRawData((byte) holding.getDurability());
+            state.setData(holding.getData());
             return;
-        } else if (blockType == Material.STEP_2) {
-            state.setType(Material.DOUBLE_STEP_2);
+        } else if (blockType == Material.STONE_SLAB2) {
+            state.setType(Material.DOUBLE_STONE_SLAB2);
+            state.setData(holding.getData());
+            return;
+        } else if (blockType == Material.PURPUR_SLAB) {
+            state.setType(Material.PURPUR_DOUBLE_SLAB);
+            state.setData(holding.getData());
             return;
         }
 
-        super.placeBlock(player, state, face, holding, clickedLoc);
-
-        if (face == BlockFace.DOWN || (face != BlockFace.UP && clickedLoc.getY() >= 8.0D)) {
+        if (face == BlockFace.DOWN || face != BlockFace.UP && clickedLoc.getY() >= 8.0D) {
             MaterialData data = state.getData();
-            if ((data instanceof Step)) {
+            if (data instanceof Step) {
                 ((Step) data).setInverted(true);
-            } else if ((data instanceof WoodenStep)) {
+            } else if (data instanceof WoodenStep) {
                 ((WoodenStep) data).setInverted(true);
+            } else if (data.getItemType() == Material.STONE_SLAB2 || data.getItemType() == Material.PURPUR_SLAB) {
+                Step slab = new Step(data.getItemType());
+                slab.setInverted(true);
+                data = slab;
             }
             state.setData(data);
         }
@@ -48,14 +56,14 @@ public class BlockSlab extends BlockType {
 
     private boolean matchingType(GlowBlock block, BlockFace face, ItemStack holding, boolean ignoreFace) {
         if (holding == null) return false;
-        byte blockData = block.getData();
-        byte holdingData = (byte) holding.getDurability();
         Material blockType = block.getType();
-        return (blockType == Material.STEP || blockType == Material.WOOD_STEP || blockType == Material.STEP_2) &&
+        byte blockData = block.getData();
+        byte holdingData = holding.getData().getData();
+        return (blockType == Material.STEP || blockType == Material.WOOD_STEP || blockType == Material.STONE_SLAB2 || blockType == Material.PURPUR_SLAB) &&
                 blockType == holding.getType() &&
-                ((face == BlockFace.UP && blockData == holdingData) ||
-                        (face == BlockFace.DOWN && blockData - 8 == holdingData) ||
-                        (ignoreFace && blockData % 8 == holdingData));
+                (face == BlockFace.UP && blockData == holdingData ||
+                        face == BlockFace.DOWN && blockData - 8 == holdingData ||
+                        ignoreFace && blockData % 8 == holdingData);
     }
 
     @Override
@@ -71,9 +79,14 @@ public class BlockSlab extends BlockType {
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (block.getType() == Material.WOOD_STEP ||
-                (tool != null && ToolType.PICKAXE.matches(tool.getType()))) {
-            return Arrays.asList(new ItemStack(block.getType(), 1, (short) (block.getData() % 8)));
+                tool != null && ToolType.PICKAXE.matches(tool.getType())) {
+            return getMinedDrops(block);
         }
         return BlockDropless.EMPTY_STACK;
+    }
+
+    @Override
+    public Collection<ItemStack> getMinedDrops(GlowBlock block) {
+        return Arrays.asList(new ItemStack(block.getType(), 1, (short) (block.getData() % 8)));
     }
 }

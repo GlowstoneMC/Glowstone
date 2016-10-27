@@ -1,14 +1,19 @@
 package net.glowstone.entity.meta;
 
 import com.google.common.collect.ImmutableList;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A map for entity metadata.
  */
+@ToString(of = {"entityClass", "map"})
 public class MetadataMap {
 
     private final Map<MetadataIndex, Object> map = new EnumMap<>(MetadataIndex.class);
@@ -26,30 +31,27 @@ public class MetadataMap {
 
     public void set(MetadataIndex index, Object value) {
         // take numbers down to the correct precision
-        if (value instanceof Number) {
-            Number n = (Number) value;
-            switch (index.getType()) {
-                case BYTE:
-                    value = n.byteValue();
-                    break;
-                case SHORT:
-                    value = n.shortValue();
-                    break;
-                case INT:
-                    value = n.intValue();
-                    break;
-                case FLOAT:
-                    value = n.floatValue();
-                    break;
+        if (value != null) {
+            if (value instanceof Number) {
+                Number n = (Number) value;
+                switch (index.getType()) {
+                    case BYTE:
+                        value = n.byteValue();
+                        break;
+                    case INT:
+                        value = n.intValue();
+                        break;
+                    case FLOAT:
+                        value = n.floatValue();
+                        break;
+                }
             }
-        }
-
-        if (!index.getType().getDataType().isAssignableFrom(value.getClass())) {
-            throw new IllegalArgumentException("Cannot assign " + value + " to " + index + ", expects " + index.getType());
-        }
-
-        if (!index.appliesTo(entityClass)) {
-            throw new IllegalArgumentException("Index " + index + " does not apply to " + entityClass.getSimpleName() + ", only " + index.getAppliesTo().getSimpleName());
+            if (!index.getType().getDataType().isAssignableFrom(value.getClass())) {
+                throw new IllegalArgumentException("Cannot assign " + value + " to " + index + ", expects " + index.getType());
+            }
+            if (!index.appliesTo(entityClass)) {
+                throw new IllegalArgumentException("Index " + index + " does not apply to " + entityClass.getSimpleName() + ", only " + index.getAppliesTo().getSimpleName());
+            }
         }
 
         Object prev = map.put(index, value);
@@ -85,12 +87,12 @@ public class MetadataMap {
         return (Number) o;
     }
 
-    public byte getByte(MetadataIndex index) {
-        return get(index, MetadataType.BYTE, (byte) 0);
+    public boolean getBoolean(MetadataIndex index) {
+        return get(index, MetadataType.BOOLEAN, false);
     }
 
-    public short getShort(MetadataIndex index) {
-        return get(index, MetadataType.SHORT, (short) 0);
+    public byte getByte(MetadataIndex index) {
+        return get(index, MetadataType.BYTE, (byte) 0);
     }
 
     public int getInt(MetadataIndex index) {
@@ -123,9 +125,7 @@ public class MetadataMap {
 
     public List<Entry> getEntryList() {
         List<Entry> result = new ArrayList<>(map.size());
-        for (Map.Entry<MetadataIndex, Object> entry : map.entrySet()) {
-            result.add(new Entry(entry.getKey(), entry.getValue()));
-        }
+        result.addAll(map.entrySet().stream().map(entry -> new Entry(entry.getKey(), entry.getValue())).collect(Collectors.toList()));
         Collections.sort(result);
         return result;
     }
@@ -139,46 +139,15 @@ public class MetadataMap {
         changes.clear();
     }
 
-    @Override
-    public String toString() {
-        return "MetadataMap{" +
-                "map=" + map +
-                ", entityClass=" + entityClass +
-                '}';
-    }
-
-    public static class Entry implements Comparable<Entry> {
+    @RequiredArgsConstructor
+    @EqualsAndHashCode
+    public static final class Entry implements Comparable<Entry> {
         public final MetadataIndex index;
         public final Object value;
-
-        public Entry(MetadataIndex index, Object value) {
-            this.index = index;
-            this.value = value;
-        }
 
         @Override
         public int compareTo(Entry o) {
             return o.index.getIndex() - index.getIndex();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            Entry entry = (Entry) o;
-
-            if (index != entry.index) return false;
-            if (value != null ? !value.equals(entry.value) : entry.value != null) return false;
-
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = index != null ? index.hashCode() : 0;
-            result = 31 * result + (value != null ? value.hashCode() : 0);
-            return result;
         }
 
         @Override

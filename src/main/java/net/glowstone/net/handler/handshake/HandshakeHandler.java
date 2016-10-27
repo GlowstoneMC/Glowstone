@@ -1,9 +1,9 @@
 package net.glowstone.net.handler.handshake;
 
-import com.flowpowered.networking.MessageHandler;
+import com.flowpowered.network.MessageHandler;
 import net.glowstone.GlowServer;
-import net.glowstone.net.ProxyData;
 import net.glowstone.net.GlowSession;
+import net.glowstone.net.ProxyData;
 import net.glowstone.net.message.handshake.HandshakeMessage;
 import net.glowstone.net.protocol.ProtocolType;
 
@@ -13,12 +13,17 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
 
     @Override
     public void handle(GlowSession session, HandshakeMessage message) {
-        ProtocolType protocol = ProtocolType.getById(message.getState());
-        if (protocol != ProtocolType.LOGIN && protocol != ProtocolType.STATUS) {
+        ProtocolType protocol;
+        if (message.getState() == 1) {
+            protocol = ProtocolType.STATUS;
+        } else if (message.getState() == 2) {
+            protocol = ProtocolType.LOGIN;
+        } else {
             session.disconnect("Invalid state");
             return;
         }
 
+        session.setVersion(message.getVersion());
         session.setHostname(message.getAddress() + ":" + message.getPort());
 
         // Proxies modify the hostname in the HandshakeMessage to contain

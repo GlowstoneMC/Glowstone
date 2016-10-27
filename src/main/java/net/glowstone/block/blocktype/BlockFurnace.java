@@ -8,6 +8,7 @@ import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.MaterialMatcher;
 import net.glowstone.inventory.ToolType;
+import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Furnace;
@@ -15,6 +16,10 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
 public class BlockFurnace extends BlockContainer {
+
+    public BlockFurnace() {
+        setDrops(new ItemStack(Material.FURNACE));
+    }
 
     @Override
     public TileEntity createTileEntity(GlowChunk chunk, int cx, int cy, int cz) {
@@ -24,7 +29,7 @@ public class BlockFurnace extends BlockContainer {
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
-        final MaterialData data = state.getData();
+        MaterialData data = state.getData();
         if (data instanceof Furnace) {
             ((Furnace) data).setFacingDirection(getOppositeBlockFace(player.getLocation(), false));
             state.setData(data);
@@ -36,5 +41,10 @@ public class BlockFurnace extends BlockContainer {
     @Override
     protected MaterialMatcher getNeededMiningTool(GlowBlock block) {
         return ToolType.PICKAXE;
+    }
+
+    @Override
+    public void receivePulse(GlowBlock block) {
+        ((TEFurnace) block.getTileEntity()).burn();
     }
 }

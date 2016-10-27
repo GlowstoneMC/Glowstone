@@ -3,7 +3,7 @@ package net.glowstone.util.nbt;
 /**
  * The {@code TAG_Byte} tag.
  */
-final class ByteTag extends Tag<Byte> {
+public class ByteTag extends Tag<Byte> {
 
     /**
      * The value.
@@ -12,6 +12,7 @@ final class ByteTag extends Tag<Byte> {
 
     /**
      * Creates the tag.
+     *
      * @param value The value.
      */
     public ByteTag(byte value) {
@@ -23,6 +24,5 @@ final class ByteTag extends Tag<Byte> {
     public Byte getValue() {
         return value;
     }
-
 }
 

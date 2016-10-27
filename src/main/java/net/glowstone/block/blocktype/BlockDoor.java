@@ -31,21 +31,24 @@ public class BlockDoor extends BlockType {
     }
 
     @Override
-    public void blockDestroy(GlowPlayer player, GlowBlock block, BlockFace face) {
-        // remove the other half of the door
-        GlowBlockState state = block.getState();
-        MaterialData data = state.getData();
+    public void onBlockChanged(GlowBlock block, Material oldType, byte oldData, Material newType, byte newData) {
+        if (newType != Material.AIR) {
+            return;
+        }
 
-        if (data instanceof Door) {
-            Door door = (Door) data;
+        if (oldType.getData() == Door.class) {
+            Door door = new Door(oldType);
+            door.setData(oldData);
             if (door.isTopHalf()) {
                 Block b = block.getRelative(BlockFace.DOWN);
-                if (b.getType() == block.getType())
+                if (b.getState().getData() instanceof Door) {
                     b.setType(Material.AIR);
+                }
             } else {
                 Block b = block.getRelative(BlockFace.UP);
-                if (b.getType() == block.getType())
+                if (b.getState().getData() instanceof Door) {
                     b.setType(Material.AIR);
+                }
             }
         }
     }
@@ -60,6 +63,7 @@ public class BlockDoor extends BlockType {
             warnMaterialData(Door.class, data);
             return;
         }
+
         BlockFace facing = player.getDirection();
         ((Door) data).setFacingDirection(facing.getOppositeFace());
 
@@ -115,8 +119,9 @@ public class BlockDoor extends BlockType {
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
         // handles opening and closing the door
-        if (block.getType() == Material.IRON_DOOR_BLOCK)
+        if (block.getType() == Material.IRON_DOOR_BLOCK) {
             return false;
+        }
 
         GlowBlockState state = block.getState();
         MaterialData data = state.getData();
@@ -133,13 +138,28 @@ public class BlockDoor extends BlockType {
                 }
             }
 
-            if (door != null)
+            if (door != null) {
                 door.setOpen(!door.isOpen());
+            }
 
             state.update(true);
         }
 
         return true;
+    }
+
+    @Override
+    public void onRedstoneUpdate(GlowBlock block) {
+        GlowBlockState state = block.getState();
+        Door door = (Door) state.getData();
+        if (!door.isTopHalf()) {
+
+            boolean powered = block.isBlockIndirectlyPowered();
+            if (powered != door.isOpen()) {
+                door.setOpen(powered);
+                state.update();
+            }
+        }
     }
 
 }

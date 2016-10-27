@@ -1,8 +1,9 @@
-.*
 *~
 *.iml
 *.ipr
 *.iws
+.gradle
+.idea
 build
 out
 classes
@@ -15,3 +16,11 @@ target
 !.gitmodules
 !.mailmap
 !.gitattributes
+worlds
+logs
+config
+dependency-reduced-pom.xml
+.classpath
+.project
+.settings/
+.db

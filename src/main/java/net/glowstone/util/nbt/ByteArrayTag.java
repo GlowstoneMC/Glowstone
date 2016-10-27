@@ -3,7 +3,10 @@ package net.glowstone.util.nbt;
 /**
  * The {@code TAG_Byte_Array} tag.
  */
-final class ByteArrayTag extends Tag<byte[]> {
+public final class ByteArrayTag extends Tag<byte[]> {
+
+    private static final int C_ARRAY_START = 0;   // Parsing context
+    private static final int C_ARRAY_ELEMENT = 1; // Parsing context
 
     /**
      * The value.
@@ -12,9 +15,10 @@ final class ByteArrayTag extends Tag<byte[]> {
 
     /**
      * Creates the tag.
+     *
      * @param value The value.
      */
-    public ByteArrayTag(byte[] value) {
+    public ByteArrayTag(byte... value) {
         super(TagType.BYTE_ARRAY);
         this.value = value;
     }
@@ -34,6 +38,5 @@ final class ByteArrayTag extends Tag<byte[]> {
             hex.append(hexDigits).append(" ");
         }
     }
-
 }
 

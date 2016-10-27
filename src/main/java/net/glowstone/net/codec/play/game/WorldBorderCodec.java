@@ -1,10 +1,11 @@
 package net.glowstone.net.codec.play.game;
 
-import com.flowpowered.networking.Codec;
-import com.flowpowered.networking.util.ByteBufUtils;
+import com.flowpowered.network.Codec;
+import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import net.glowstone.net.message.play.game.WorldBorderMessage;
+import net.glowstone.net.message.play.game.WorldBorderMessage.Action;
 
 import java.io.IOException;
 
@@ -13,7 +14,7 @@ public final class WorldBorderCodec implements Codec<WorldBorderMessage> {
     @Override
     public WorldBorderMessage decode(ByteBuf buffer) throws IOException {
         int actionId = ByteBufUtils.readVarInt(buffer);
-        WorldBorderMessage.Action action = WorldBorderMessage.Action.getAction(actionId);
+        Action action = Action.getAction(actionId);
         switch (action) {
             case SET_SIZE:
                 double radius = buffer.readDouble();

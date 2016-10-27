@@ -1,0 +1,58 @@
+package net.glowstone.generator.populators.overworld;
+
+import net.glowstone.generator.decorators.overworld.TreeDecorator.TreeDecoration;
+import net.glowstone.generator.objects.DoubleTallPlant;
+import net.glowstone.generator.objects.trees.BirchTree;
+import net.glowstone.generator.objects.trees.GenericTree;
+import org.bukkit.Chunk;
+import org.bukkit.material.types.DoublePlantSpecies;
+import org.bukkit.World;
+import org.bukkit.block.Biome;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Random;
+
+public class ForestPopulator extends BiomePopulator {
+
+    private static final Biome[] BIOMES = {Biome.FOREST, Biome.FOREST_HILLS};
+    private static final TreeDecoration[] TREES = {new TreeDecoration(GenericTree.class, 4), new TreeDecoration(BirchTree.class, 1)};
+    private static final DoublePlantSpecies[] DOUBLE_PLANTS = {DoublePlantSpecies.LILAC, DoublePlantSpecies.ROSE_BUSH, DoublePlantSpecies.PEONY};
+
+    protected int doublePlantLoweringAmount = 3;
+
+    public ForestPopulator() {
+        doublePlantDecorator.setAmount(0);
+        treeDecorator.setAmount(10);
+        treeDecorator.setTrees(TREES);
+        tallGrassDecorator.setAmount(2);
+    }
+
+    @Override
+    public Collection<Biome> getBiomes() {
+        return Collections.unmodifiableList(Arrays.asList(BIOMES));
+    }
+
+    @Override
+    public void populateOnGround(World world, Random random, Chunk chunk) {
+        int sourceX = chunk.getX() << 4;
+        int sourceZ = chunk.getZ() << 4;
+        int amount = random.nextInt(5) - doublePlantLoweringAmount;
+        int i = 0;
+        while (i < amount) {
+            for (int j = 0; j < 5; j++, i++) {
+                int x = sourceX + random.nextInt(16);
+                int z = sourceZ + random.nextInt(16);
+                int y = random.nextInt(world.getHighestBlockYAt(x, z) + 32);
+                DoublePlantSpecies species = DOUBLE_PLANTS[random.nextInt(DOUBLE_PLANTS.length)];
+                if (new DoubleTallPlant(species).generate(world, random, x, y, z)) {
+                    i++;
+                    break;
+                }
+            }
+        }
+
+        super.populateOnGround(world, random, chunk);
+    }
+}

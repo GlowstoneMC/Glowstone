@@ -24,7 +24,18 @@ public class ItemType {
     private int maxStackSize = 64;
 
     /**
+     * Get the id assigned to this ItemType.
+     *
+     * @return The corresponding id.
+     */
+    public final int getId() {
+        return id;
+    }
+
+    /**
      * Assign an id number to this ItemType (for internal use only).
+     *
+     * @param id The internal item id for this item.
      */
     public final void setId(int id) {
         if (this.id != -1) {
@@ -40,15 +51,8 @@ public class ItemType {
     }
 
     /**
-     * Get the id assigned to this ItemType.
-     * @return The corresponding id.
-     */
-    public final int getId() {
-        return id;
-    }
-
-    /**
      * Get the Material assigned to this ItemType.
+     *
      * @return The corresponding Material.
      */
     public final Material getMaterial() {
@@ -59,15 +63,8 @@ public class ItemType {
     // Setters for subclass use
 
     /**
-     * Set the maximum stack size of the item.
-     * @param maxStackSize The new maximum stack size.
-     */
-    protected final void setMaxStackSize(int maxStackSize) {
-        this.maxStackSize = maxStackSize;
-    }
-
-    /**
      * Set this item to act like the given block type when being placed.
+     *
      * @param placeAs The block to place as.
      */
     protected final void setPlaceAs(BlockType placeAs) {
@@ -76,6 +73,7 @@ public class ItemType {
 
     /**
      * Set this item to act like the given block type when being placed.
+     *
      * @param placeAs The material to place as.
      */
     protected final void setPlaceAs(Material placeAs) {
@@ -89,15 +87,34 @@ public class ItemType {
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Public accessors
+    /**
+     * The type of block to place when the item is used.
+     *
+     * @return the type of block to place
+     */
+    public BlockType getPlaceAs() {
+        return placeAs;
+    }
 
     /**
      * Get the maximum stack size of the item.
+     *
      * @return The maximum stack size.
      */
     public int getMaxStackSize() {
         return maxStackSize;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Public accessors
+
+    /**
+     * Set the maximum stack size of the item.
+     *
+     * @param maxStackSize The new maximum stack size.
+     */
+    protected final void setMaxStackSize(int maxStackSize) {
+        this.maxStackSize = maxStackSize;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -106,7 +123,8 @@ public class ItemType {
     /**
      * Called when a player right-clicks in midair while holding this item.
      * Also called by default if rightClickBlock is not overridden.
-     * @param player The player
+     *
+     * @param player  The player
      * @param holding The ItemStack the player was holding
      */
     public void rightClickAir(GlowPlayer player, ItemStack holding) {
@@ -115,10 +133,11 @@ public class ItemType {
 
     /**
      * Called when a player right-clicks on a block while holding this item.
-     * @param player The player
-     * @param target The block the player right-clicked
-     * @param face The face on which the click occurred
-     * @param holding The ItemStack the player was holding
+     *
+     * @param player     The player
+     * @param target     The block the player right-clicked
+     * @param face       The face on which the click occurred
+     * @param holding    The ItemStack the player was holding
      * @param clickedLoc The coordinates at which the click occurred
      */
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc) {

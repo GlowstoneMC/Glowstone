@@ -1,22 +1,25 @@
 package net.glowstone.net.message.play.game;
 
-import com.flowpowered.networking.Message;
+import com.destroystokyo.paper.Title;
+import com.flowpowered.network.Message;
 import lombok.Data;
+import net.glowstone.util.TextMessage;
+import net.md_5.bungee.api.chat.BaseComponent;
 
 @Data
 public final class TitleMessage implements Message {
 
     private final Action action;
-    private final String text;
+    private final TextMessage text;
     private final int fadeIn, stay, fadeOut;
 
     // TITLE, SUBTITLE
-    public TitleMessage(Action action, String text) {
+    public TitleMessage(Action action, TextMessage text) {
         this.action = action;
         this.text = text;
-        this.fadeIn = 0;
-        this.stay = 0;
-        this.fadeOut = 0;
+        fadeIn = 0;
+        stay = 0;
+        fadeOut = 0;
     }
 
     // TIMES
@@ -25,16 +28,29 @@ public final class TitleMessage implements Message {
         this.fadeIn = fadeIn;
         this.stay = stay;
         this.fadeOut = fadeOut;
-        this.text = null;
+        text = null;
     }
 
     // CLEAR, RESET
     public TitleMessage(Action action) {
         this.action = action;
-        this.text = null;
-        this.fadeIn = 0;
-        this.stay = 0;
-        this.fadeOut = 0;
+        text = null;
+        fadeIn = 0;
+        stay = 0;
+        fadeOut = 0;
+    }
+
+    public static TitleMessage[] fromTitle(Title title) {
+        return new TitleMessage[]{
+                new TitleMessage(Action.TITLE, asTextMessage(BaseComponent.toPlainText(title.getTitle()))),
+                new TitleMessage(Action.SUBTITLE, asTextMessage(BaseComponent.toPlainText(title.getSubtitle()))),
+                new TitleMessage(Action.TIMES, title.getFadeIn(), title.getStay(), title.getFadeOut())
+        };
+    }
+
+    private static TextMessage asTextMessage(String rawString) {
+        if (rawString == null) rawString = "";
+        return new TextMessage(rawString);
     }
 
     public enum Action {

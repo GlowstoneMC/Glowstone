@@ -8,8 +8,8 @@ import org.bukkit.inventory.FurnaceInventory;
 
 public class GlowFurnace extends GlowBlockState implements Furnace {
 
-    private short burnTime = 0;
-    private short cookTime = 0;
+    private short burnTime;
+    private short cookTime;
 
     public GlowFurnace(GlowBlock block) {
         super(block);

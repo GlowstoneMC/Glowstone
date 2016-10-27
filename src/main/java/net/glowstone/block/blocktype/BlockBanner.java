@@ -8,10 +8,11 @@ import net.glowstone.block.entity.TileEntity;
 import net.glowstone.block.state.GlowBanner;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.nbt.CompoundTag;
-import org.bukkit.BannerPattern;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.banner.Pattern;
+import org.bukkit.block.banner.PatternType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.material.Banner;
@@ -29,14 +30,36 @@ public class BlockBanner extends BlockType {
         setDrops(new ItemStack(Material.BANNER));
     }
 
+    public static List<CompoundTag> toNBT(List<Pattern> banner) {
+        List<CompoundTag> patterns = new ArrayList<>();
+        for (Pattern pattern : banner) {
+            CompoundTag layerTag = new CompoundTag();
+            layerTag.putString("Pattern", pattern.getPattern().getIdentifier());
+            layerTag.putInt("Color", pattern.getColor().getDyeData());
+            patterns.add(layerTag);
+        }
+        return patterns;
+    }
+
+    public static List<Pattern> fromNBT(List<CompoundTag> tag) {
+        List<Pattern> banner = new ArrayList<>();
+        for (CompoundTag layer : tag) {
+            PatternType patternType = PatternType.getByIdentifier(layer.getString("Pattern"));
+            DyeColor color = DyeColor.getByDyeData((byte) layer.getInt("Color"));
+
+            banner.add(new Pattern(color, patternType));
+        }
+        return banner;
+    }
+
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         GlowBanner state = (GlowBanner) block.getState();
         ItemStack drop = new ItemStack(Material.BANNER, 1);
         BannerMeta meta = (BannerMeta) drop.getItemMeta();
-        meta.setPattern(state.getPattern());
+        meta.setPatterns(state.getPatterns());
         drop.setItemMeta(meta);
-        drop.setDurability(state.getBase().getDyeData());
+        drop.setDurability(state.getBaseColor().getDyeData());
 
         return Arrays.asList(drop);
     }
@@ -63,33 +86,12 @@ public class BlockBanner extends BlockType {
     }
 
     @Override
-    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding) {
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
         GlowBanner banner = (GlowBanner) block.getState();
-        banner.setBase(DyeColor.getByDyeData((byte) holding.getDurability()));
+        banner.setBaseColor(DyeColor.getByDyeData((byte) holding.getDurability()));
         BannerMeta meta = (BannerMeta) holding.getItemMeta();
-        banner.setPattern(meta.getPattern());
+        meta.setPatterns(meta.getPatterns());
         banner.update();
-    }
-
-    public static List<CompoundTag> toNBT(BannerPattern pattern) {
-        List<CompoundTag> patterns = new ArrayList<>();
-        for (BannerPattern.BannerLayer layer : pattern.getLayers()) {
-            CompoundTag layerTag = new CompoundTag();
-            layerTag.putString("Pattern", layer.getTexture().getCode());
-            layerTag.putInt("Color", layer.getColor().getDyeData());
-            patterns.add(layerTag);
-        }
-        return patterns;
-    }
-
-    public static BannerPattern fromNBT(List<CompoundTag> tag) {
-        BannerPattern.Builder builder = BannerPattern.builder();
-        for (CompoundTag layer : tag) {
-            BannerPattern.LayerTexture type = BannerPattern.LayerTexture.getByCode(layer.getString("Pattern"));
-            DyeColor color = DyeColor.getByDyeData((byte) layer.getInt("Color"));
-            builder.layer(type, color);
-        }
-        return builder.build();
     }
 
 }

@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * The {@code TAG_List} tag.
  */
-final class ListTag<T extends Tag> extends Tag<List<T>> {
+public final class ListTag<T extends Tag> extends Tag<List<T>> {
 
     /**
      * The type of entries within this list.
@@ -20,7 +20,8 @@ final class ListTag<T extends Tag> extends Tag<List<T>> {
 
     /**
      * Creates the tag.
-     * @param type The type of item in the list.
+     *
+     * @param type  The type of item in the list.
      * @param value The value.
      */
     public ListTag(TagType type, List<T> value) {
@@ -38,6 +39,7 @@ final class ListTag<T extends Tag> extends Tag<List<T>> {
 
     /**
      * Gets the type of item in this list.
+     *
      * @return The type of item in this list.
      */
     public TagType getChildType() {
@@ -50,13 +52,12 @@ final class ListTag<T extends Tag> extends Tag<List<T>> {
     }
 
     @Override
-    protected void valueToString(StringBuilder bldr) {
-        bldr.append(value.size()).append(" entries of type ").append(type.getName()).append("\n{\n");
+    protected void valueToString(StringBuilder builder) {
+        builder.append(value.size()).append(" entries of type ").append(type.getName()).append("\n{\n");
         for (T elem : value) {
-            bldr.append("    ").append(elem.toString().replaceAll("\n", "\n    ")).append("\n");
+            builder.append("    ").append(elem.toString().replaceAll("\n", "\n    ")).append("\n");
         }
-        bldr.append("}");
+        builder.append("}");
     }
-
 }
 

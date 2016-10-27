@@ -56,7 +56,6 @@ public final class GlowBlock implements Block {
     private final int y;
     private final int z;
     private GlowWorld world;
-    private int type = -1;
 
     public GlowBlock(GlowChunk chunk, int x, int y, int z) {
         world = chunk.getWorld();
@@ -186,11 +185,7 @@ public final class GlowBlock implements Block {
 
     @Override
     public Material getType() {
-        if (type != -1) {
-            return Material.getMaterial(type);
-        }
-        type = getTypeIdNoCache();
-        return Material.getMaterial(type);
+        return Material.getMaterial(getTypeIdNoCache());
     }
 
     @Override
@@ -200,11 +195,7 @@ public final class GlowBlock implements Block {
 
     @Override
     public int getTypeId() {
-        if (type != -1) {
-            return type;
-        }
-        type = getTypeIdNoCache();
-        return type;
+        return getTypeIdNoCache();
     }
 
     private int getTypeIdNoCache() {
@@ -247,7 +238,6 @@ public final class GlowBlock implements Block {
         byte oldData = getData();
 
         ((GlowChunk) world.getChunkAt(this)).setType(x & 0xf, z & 0xf, y, type);
-        this.type = type;
         ((GlowChunk) world.getChunkAt(this)).setMetaData(x & 0xf, z & 0xf, y, data);
 
         if (oldTypeId == Material.DOUBLE_PLANT && getRelative(BlockFace.UP).getType() == Material.DOUBLE_PLANT) {
@@ -536,12 +526,8 @@ public final class GlowBlock implements Block {
     /**
      * Notify this block and its surrounding blocks that this block has changed
      * type and data.
-<<<<<<< HEAD
      *
-     * @param oldType   the old block type
-=======
      * @param oldType the old block type
->>>>>>> Glowstone-Legacy/blocks
      * @param newTypeId the new block type
      * @param oldData   the old data
      * @param newData   the new data

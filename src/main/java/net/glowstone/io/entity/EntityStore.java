@@ -10,11 +10,12 @@ import java.util.UUID;
 
 /**
  * The base for entity store classes.
+ *
  * @param <T> The type of entity being stored.
  */
 abstract class EntityStore<T extends GlowEntity> {
+    protected final Class<T> clazz;
     private final String id;
-    private final Class<T> clazz;
 
     public EntityStore(Class<T> clazz, String id) {
         this.id = id;
@@ -32,6 +33,7 @@ abstract class EntityStore<T extends GlowEntity> {
     /**
      * Create a new entity of this store's type at the given location. The
      * load method will be called separately.
+     *
      * @param location The location.
      * @param compound The entity's tag, if extra data is needed.
      * @return The new entity.
@@ -49,15 +51,16 @@ abstract class EntityStore<T extends GlowEntity> {
     /**
      * Load data into an existing entity of the appropriate type from the
      * given compound tag.
+     *
      * @param entity The target entity.
-     * @param tag The entity's tag.
+     * @param tag    The entity's tag.
      */
     public void load(T entity, CompoundTag tag) {
         // id, world, and location are handled by EntityStore
         // base stuff for all entities is here:
 
         if (tag.isList("Motion", TagType.DOUBLE)) {
-            entity.setVelocity(NbtSerialization.listToVector(tag.<Double>getList("Motion", TagType.DOUBLE)));
+            entity.setVelocity(NbtSerialization.listToVector(tag.getList("Motion", TagType.DOUBLE)));
         }
         if (tag.isFloat("FallDistance")) {
             entity.setFallDistance(tag.getFloat("FallDistance"));
@@ -67,6 +70,12 @@ abstract class EntityStore<T extends GlowEntity> {
         }
         if (tag.isByte("OnGround")) {
             entity.setOnGround(tag.getBool("OnGround"));
+        }
+        if (tag.isByte("NoGravity")) {
+            entity.setGravity(!tag.getBool("NoGravity"));
+        }
+        if (tag.isByte("Silent")) {
+            entity.setSilent(tag.getBool("Silent"));
         }
 
         if (tag.isLong("UUIDMost") && tag.isLong("UUIDLeast")) {
@@ -81,8 +90,9 @@ abstract class EntityStore<T extends GlowEntity> {
 
     /**
      * Save information about this entity to the given tag.
+     *
      * @param entity The entity to save.
-     * @param tag The target tag.
+     * @param tag    The target tag.
      */
     public void save(T entity, CompoundTag tag) {
         tag.putString("id", id);
@@ -99,6 +109,9 @@ abstract class EntityStore<T extends GlowEntity> {
 
         tag.putLong("UUIDMost", entity.getUniqueId().getMostSignificantBits());
         tag.putLong("UUIDLeast", entity.getUniqueId().getLeastSignificantBits());
+
+        tag.putBool("NoGravity", !entity.hasGravity());
+        tag.putBool("Silent", entity.isSilent());
 
         // in case Vanilla or CraftBukkit expects non-living entities to have this tag
         tag.putInt("Air", 300);

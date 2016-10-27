@@ -1,11 +1,12 @@
 package net.glowstone.constants;
 
-import org.apache.commons.lang.Validate;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.*;
 
 import java.util.Collection;
 import java.util.Collections;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Definitions of potion effect types.
@@ -17,6 +18,33 @@ public final class GlowPotionEffect extends PotionEffectType {
     private GlowPotionEffect(Impl impl) {
         super(impl.id);
         this.impl = impl;
+    }
+
+    /**
+     * Register all potion effect types with PotionEffectType.
+     */
+    public static void register() {
+        Potion.setPotionBrewer(new Brewer());
+        for (Impl impl : Impl.values()) {
+            registerPotionEffectType(new GlowPotionEffect(impl));
+        }
+        stopAcceptingRegistrations();
+    }
+
+    /**
+     * Get a GlowPotionEffect from a PotionEffectType if possible.
+     *
+     * @param type The PotionEffectType.
+     * @return The associated GlowPotionEffect, or null.
+     */
+    public static GlowPotionEffect getEffect(PotionEffectType type) {
+        if (type instanceof GlowPotionEffect) {
+            return (GlowPotionEffect) type;
+        } else if (type instanceof PotionEffectTypeWrapper) {
+            return getEffect(getById(type.getId()));
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -38,58 +66,19 @@ public final class GlowPotionEffect extends PotionEffectType {
      * Pulse this potion effect on a specified entity. If the potion effect
      * is not applicable, nothing happens. For instant effects, will only
      * have an effect if 'ticks' is 0.
+     *
      * @param entity The entity to pulse on.
      * @param effect Information on the effect's state.
      */
     public void pulse(LivingEntity entity, PotionEffect effect) {
         // todo: implement pulse() for effects which need it
-        Validate.notNull(entity, "entity must not be null");
+        checkNotNull(entity, "entity must not be null");
         if (!impl.instant || effect.getDuration() != 0) {
             impl.pulse(entity, effect.getAmplifier(), effect.getDuration());
         }
     }
 
-    /**
-     * Register all potion effect types with PotionEffectType.
-     */
-    public static void register() {
-        Potion.setPotionBrewer(new Brewer());
-        for (Impl impl : Impl.values()) {
-            registerPotionEffectType(new GlowPotionEffect(impl));
-        }
-        stopAcceptingRegistrations();
-    }
-
-    /**
-     * Get a GlowPotionEffect from a PotionEffectType if possible.
-     * @param type The PotionEffectType.
-     * @return The associated GlowPotionEffect, or null.
-     */
-    public static GlowPotionEffect getEffect(PotionEffectType type) {
-        if (type instanceof GlowPotionEffect) {
-            return (GlowPotionEffect) type;
-        } else if (type instanceof PotionEffectTypeWrapper) {
-            return getEffect(getById(type.getId()));
-        } else {
-            return null;
-        }
-    }
-
-    private static class Brewer implements PotionBrewer {
-        @Override
-        public PotionEffect createEffect(PotionEffectType potion, int duration, int amplifier) {
-            // todo: apply duration modifiers, etc.
-            return new PotionEffect(potion, duration, amplifier);
-        }
-
-        @Override
-        public Collection<PotionEffect> getEffectsFromDamage(int damage) {
-            // todo: convert damage value to potion effects
-            return Collections.emptySet();
-        }
-    }
-
-    private static enum Impl {
+    private enum Impl {
         SPEED(1, false, 1.0),
         SLOW(2, false, 0.5),
         FAST_DIGGING(3, false, 1.5),
@@ -112,7 +101,11 @@ public final class GlowPotionEffect extends PotionEffectType {
         WITHER(20, false, 0.25),
         HEALTH_BOOST(21, false, 1.0),
         ABSORPTION(22, false, 1.0),
-        SATURATION(23, true, 1.0);
+        SATURATION(23, true, 1.0),
+        GLOWING(24, false, 1.0),
+        LEVITATION(25, false, 1.0),
+        LUCK(26, false, 1.0),
+        UNLUCK(27, false, 1.0);
 
         private final int id;
         private final boolean instant;
@@ -125,6 +118,26 @@ public final class GlowPotionEffect extends PotionEffectType {
         }
 
         protected void pulse(LivingEntity entity, int amplifier, int ticks) {
+            // TODO implement potion pulse
+        }
+    }
+
+    private static class Brewer implements PotionBrewer {
+        @Override
+        public PotionEffect createEffect(PotionEffectType potion, int duration, int amplifier) {
+            // todo: apply duration modifiers, etc.
+            return new PotionEffect(potion, duration, amplifier);
+        }
+
+        @Override
+        public Collection<PotionEffect> getEffectsFromDamage(int damage) {
+            // todo: convert damage value to potion effects
+            return Collections.emptySet();
+        }
+
+        @Override
+        public Collection<PotionEffect> getEffects(PotionType potionType, boolean b, boolean b1) {
+            return null;
         }
     }
 }

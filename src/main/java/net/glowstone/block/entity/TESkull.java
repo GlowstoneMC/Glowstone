@@ -89,6 +89,6 @@ public class TESkull extends TileEntity {
 
     public void setOwner(PlayerProfile owner) {
         this.owner = owner;
-        this.type = BlockSkull.getType(SkullType.PLAYER);
+        type = BlockSkull.getType(SkullType.PLAYER);
     }
 }

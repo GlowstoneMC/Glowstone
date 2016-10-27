@@ -5,9 +5,12 @@ import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * An implementation of {@link ItemMeta}, created through {@link GlowItemFactory}.
@@ -17,9 +20,11 @@ class GlowMetaItem implements ItemMeta {
     private String displayName;
     private List<String> lore;
     private Map<Enchantment, Integer> enchants;
+    private int hideFlag;
 
     /**
      * Create a GlowMetaItem, copying from another if possible.
+     *
      * @param meta The meta to copy from, or null.
      */
     public GlowMetaItem(GlowMetaItem meta) {
@@ -30,15 +35,58 @@ class GlowMetaItem implements ItemMeta {
         displayName = meta.displayName;
 
         if (meta.hasLore()) {
-            this.lore = new ArrayList<>(meta.lore);
+            lore = new ArrayList<>(meta.lore);
         }
         if (meta.hasEnchants()) {
-            this.enchants = new HashMap<>(meta.enchants);
+            enchants = new HashMap<>(meta.enchants);
         }
+
+        hideFlag = meta.hideFlag;
+    }
+
+    protected static void serializeEnchants(String name, Map<String, Object> map, Map<Enchantment, Integer> enchants) {
+        Map<String, Object> enchantList = new HashMap<>();
+
+        for (Entry<Enchantment, Integer> enchantment : enchants.entrySet()) {
+            enchantList.put(enchantment.getKey().getName(), enchantment.getValue());
+        }
+
+        map.put(name, enchantList);
+    }
+
+    protected static void writeNbtEnchants(String name, CompoundTag to, Map<Enchantment, Integer> enchants) {
+        List<CompoundTag> ench = new ArrayList<>();
+
+        for (Entry<Enchantment, Integer> enchantment : enchants.entrySet()) {
+            CompoundTag enchantmentTag = new CompoundTag();
+            enchantmentTag.putShort("id", enchantment.getKey().getId());
+            enchantmentTag.putShort("lvl", enchantment.getValue());
+            ench.add(enchantmentTag);
+        }
+
+        to.putCompoundList(name, ench);
+    }
+
+    protected static Map<Enchantment, Integer> readNbtEnchants(String name, CompoundTag tag) {
+        Map<Enchantment, Integer> result = null;
+
+        if (tag.isList(name, TagType.COMPOUND)) {
+            Iterable<CompoundTag> enchs = tag.getCompoundList(name);
+            for (CompoundTag enchantmentTag : enchs) {
+                if (enchantmentTag.isShort("id") && enchantmentTag.isShort("lvl")) {
+                    Enchantment enchantment = Enchantment.getById(enchantmentTag.getShort("id"));
+                    if (result == null) result = new HashMap<>(4);
+                    result.put(enchantment, (int) enchantmentTag.getShort("lvl"));
+                }
+            }
+        }
+
+        return result;
     }
 
     /**
      * Check whether this ItemMeta can be applied to the given material.
+     *
      * @param material The Material.
      * @return True if this ItemMeta is applicable.
      */
@@ -52,6 +100,11 @@ class GlowMetaItem implements ItemMeta {
     }
 
     @Override
+    public Spigot spigot() {
+        return null;
+    }
+
+    @Override
     public Map<String, Object> serialize() {
         Map<String, Object> result = new HashMap<>();
         result.put("meta-type", "UNSPECIFIC");
@@ -62,7 +115,17 @@ class GlowMetaItem implements ItemMeta {
         if (hasLore()) {
             result.put("lore", getLore());
         }
-        // todo: enchantments
+
+        if (hasEnchants()) {
+            serializeEnchants("enchants", result, getEnchants());
+        }
+
+        if (hideFlag != 0) {
+            Set<String> hideFlags = getItemFlags().stream().map(Enum::name).collect(Collectors.toSet());
+            if (hideFlags.isEmpty()) {
+                result.put("ItemFlags", hideFlags);
+            }
+        }
 
         return result;
     }
@@ -80,7 +143,13 @@ class GlowMetaItem implements ItemMeta {
             tag.putCompound("display", displayTags);
         }
 
-        // todo: enchantments
+        if (hasEnchants()) {
+            writeNbtEnchants("ench", tag, enchants);
+        }
+
+        if (hideFlag != 0) {
+            tag.putInt("HideFlags", hideFlag);
+        }
     }
 
     void readNbt(CompoundTag tag) {
@@ -90,11 +159,22 @@ class GlowMetaItem implements ItemMeta {
                 setDisplayName(display.getString("Name"));
             }
             if (display.isList("Lore", TagType.STRING)) {
-                setLore(display.<String>getList("Lore", TagType.STRING));
+                setLore(display.getList("Lore", TagType.STRING));
             }
         }
 
-        // todo: enchantments
+        //TODO currently ignoring level restriction, is that right?
+        Map<Enchantment, Integer> tagEnchants = readNbtEnchants("ench", tag);
+        if (tagEnchants != null) {
+            if (enchants == null)
+                enchants = tagEnchants;
+            else
+                enchants.putAll(tagEnchants);
+        }
+
+        if (tag.isInt("HideFlags")) {
+            hideFlag = tag.getInt("HideFlags");
+        }
     }
 
     @Override
@@ -157,7 +237,7 @@ class GlowMetaItem implements ItemMeta {
 
     @Override
     public Map<Enchantment, Integer> getEnchants() {
-        return hasEnchants() ? Collections.unmodifiableMap(enchants) : Collections.<Enchantment, Integer>emptyMap();
+        return hasEnchants() ? Collections.unmodifiableMap(enchants) : Collections.emptyMap();
     }
 
     @Override
@@ -180,6 +260,50 @@ class GlowMetaItem implements ItemMeta {
 
     @Override
     public boolean hasConflictingEnchant(Enchantment ench) {
+        if (!hasEnchants()) return false;
+
+        for (Enchantment e : enchants.keySet()) {
+            if (e.conflictsWith(ench))
+                return true;
+        }
+
         return false;
+    }
+
+    @Override
+    public void addItemFlags(ItemFlag... itemFlags) {
+        for (ItemFlag itemFlag : itemFlags) {
+            hideFlag |= getBitModifier(itemFlag);
+        }
+    }
+
+    @Override
+    public void removeItemFlags(ItemFlag... itemFlags) {
+        for (ItemFlag itemFlag : itemFlags) {
+            hideFlag &= ~getBitModifier(itemFlag);
+        }
+    }
+
+    @Override
+    public Set<ItemFlag> getItemFlags() {
+        Set<ItemFlag> currentFlags = EnumSet.noneOf(ItemFlag.class);
+        ItemFlag[] values;
+        for (int length = (values = ItemFlag.values()).length, i = 0; i < length; ++i) {
+            ItemFlag f = values[i];
+            if (hasItemFlag(f)) {
+                currentFlags.add(f);
+            }
+        }
+        return currentFlags;
+    }
+
+    @Override
+    public boolean hasItemFlag(ItemFlag itemFlag) {
+        int bitModifier = getBitModifier(itemFlag);
+        return (hideFlag & bitModifier) == bitModifier;
+    }
+
+    private byte getBitModifier(ItemFlag hideFlag) {
+        return (byte) (1 << hideFlag.ordinal());
     }
 }

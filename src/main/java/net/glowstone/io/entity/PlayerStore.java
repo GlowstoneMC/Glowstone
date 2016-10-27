@@ -18,7 +18,6 @@ class PlayerStore extends HumanEntityStore<GlowPlayer> {
 
     // todo: the following tags
     // - int "Score"
-    // - int "XpSeed"
     // - int "foodTickTimer"
     // in "abilities":
     // - bool "invulnerable"
@@ -64,7 +63,11 @@ class PlayerStore extends HumanEntityStore<GlowPlayer> {
             int x = tag.getInt("SpawnX");
             int y = tag.getInt("SpawnY");
             int z = tag.getInt("SpawnZ");
-            entity.setBedSpawnLocation(new Location(entity.getWorld(), x, y, z));
+            boolean forced = false;
+            if (tag.isByte("SpawnForced")) {
+                forced = tag.getBool("SpawnForced");
+            }
+            entity.setBedSpawnLocation(new Location(entity.getWorld(), x, y, z), forced);
         }
 
         // abilities
@@ -111,6 +114,7 @@ class PlayerStore extends HumanEntityStore<GlowPlayer> {
             tag.putInt("SpawnX", bed.getBlockX());
             tag.putInt("SpawnY", bed.getBlockY());
             tag.putInt("SpawnZ", bed.getBlockZ());
+            tag.putBool("SpawnForced", entity.isBedSpawnForced());
         }
 
         // abilities

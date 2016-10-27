@@ -8,28 +8,27 @@ import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 public class ItemFlintAndSteel extends ItemTool {
 
-    public ItemFlintAndSteel() {
-        super(Material.FLINT_AND_STEEL.getMaxDurability());
-    }
-
     @Override
-    public boolean onToolRightClick(GlowPlayer player, ItemStack holding, GlowBlock target, BlockFace face, Vector clickedLoc) {
-        switch (target.getType()) {
-            case TNT:
-                fireTnt(target);
-                return true;
-            case OBSIDIAN:
-                fireNetherPortal();
-                return true;
-            // TODO: check for non-flammable blocks
-            default:
-                return setBlockOnFire(player, target, face, holding, clickedLoc);
+    public boolean onToolRightClick(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc) {
+        if (target.getType() == Material.OBSIDIAN) {
+            fireNetherPortal();
+            return true;
         }
+        if (target.getType() == Material.TNT) {
+            fireTnt(target);
+            return true;
+        }
+        if (target.isFlammable() || target.getType().isOccluding()) {
+            setBlockOnFire(player, target, face, holding, clickedLoc);
+            return true;
+        }
+        return false;
     }
 
     private void fireNetherPortal() {
@@ -46,14 +45,18 @@ public class ItemFlintAndSteel extends ItemTool {
             return true;
         }
 
-        BlockIgniteEvent event = EventFactory.callEvent(new BlockIgniteEvent(fireBlock, BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL, player, null));
+        if (!clicked.isFlammable() && clicked.getRelative(BlockFace.DOWN).getType() == Material.AIR) {
+            return true;
+        }
+
+        BlockIgniteEvent event = EventFactory.callEvent(new BlockIgniteEvent(fireBlock, IgniteCause.FLINT_AND_STEEL, player, null));
         if (event.isCancelled()) {
             player.setItemInHand(holding);
             return false;
         }
 
         // clone holding to avoid decreasing of the item's amount
-        ItemTable.instance().getBlock(Material.FIRE).rightClickBlock(player, clicked, BlockFace.UP, holding.clone(), clickedLoc);
+        ItemTable.instance().getBlock(Material.FIRE).rightClickBlock(player, clicked, face, holding.clone(), clickedLoc);
 
         return true;
     }

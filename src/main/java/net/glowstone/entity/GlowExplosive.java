@@ -11,17 +11,17 @@ public abstract class GlowExplosive extends GlowEntity implements Explosive {
     public GlowExplosive(Location location, float yield) {
         super(location);
         this.yield = yield;
-        this.incendiary = false;
-    }
-
-    @Override
-    public void setYield(float yield) {
-        this.yield = yield;
+        incendiary = false;
     }
 
     @Override
     public float getYield() {
         return yield;
+    }
+
+    @Override
+    public void setYield(float yield) {
+        this.yield = yield;
     }
 
     @Override
@@ -31,6 +31,6 @@ public abstract class GlowExplosive extends GlowEntity implements Explosive {
 
     @Override
     public boolean isIncendiary() {
-        return this.incendiary;
+        return incendiary;
     }
 }

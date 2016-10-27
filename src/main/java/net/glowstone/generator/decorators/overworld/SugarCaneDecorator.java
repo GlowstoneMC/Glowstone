@@ -1,0 +1,23 @@
+package net.glowstone.generator.decorators.overworld;
+
+import net.glowstone.generator.decorators.BlockDecorator;
+import net.glowstone.generator.objects.SugarCane;
+import org.bukkit.Chunk;
+import org.bukkit.World;
+
+import java.util.Random;
+
+public class SugarCaneDecorator extends BlockDecorator {
+
+    @Override
+    public void decorate(World world, Random random, Chunk source) {
+        int sourceX = (source.getX() << 4) + random.nextInt(16);
+        int sourceZ = (source.getZ() << 4) + random.nextInt(16);
+        int sourceY = random.nextInt(world.getHighestBlockYAt(sourceX, sourceZ) << 1);
+        for (int j = 0; j < 20; j++) {
+            int x = sourceX + random.nextInt(4) - random.nextInt(4);
+            int z = sourceZ + random.nextInt(4) - random.nextInt(4);
+            new SugarCane().generate(world, random, x, sourceY, z);
+        }
+    }
+}

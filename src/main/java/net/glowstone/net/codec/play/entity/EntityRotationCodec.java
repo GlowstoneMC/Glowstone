@@ -1,9 +1,8 @@
 package net.glowstone.net.codec.play.entity;
 
-import com.flowpowered.networking.Codec;
-import com.flowpowered.networking.util.ByteBufUtils;
+import com.flowpowered.network.Codec;
+import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.DecoderException;
 import net.glowstone.net.message.play.entity.EntityRotationMessage;
 
 import java.io.IOException;
@@ -11,7 +10,11 @@ import java.io.IOException;
 public final class EntityRotationCodec implements Codec<EntityRotationMessage> {
     @Override
     public EntityRotationMessage decode(ByteBuf buf) throws IOException {
-        throw new DecoderException("Cannot decode EntityRotationMessage");
+        int id = ByteBufUtils.readVarInt(buf);
+        int rotation = buf.readByte();
+        int pitch = buf.readByte();
+        boolean ground = buf.readBoolean();
+        return new EntityRotationMessage(id, rotation, pitch, ground);
     }
 
     @Override

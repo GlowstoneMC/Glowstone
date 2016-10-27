@@ -3,7 +3,7 @@ package net.glowstone.util.nbt;
 /**
  * The {@code TAG_Int} tag.
  */
-final class IntTag extends Tag<Integer> {
+public final class IntTag extends Tag<Integer> {
 
     /**
      * The value.
@@ -12,6 +12,7 @@ final class IntTag extends Tag<Integer> {
 
     /**
      * Creates the tag.
+     *
      * @param value The value.
      */
     public IntTag(int value) {
@@ -23,6 +24,5 @@ final class IntTag extends Tag<Integer> {
     public Integer getValue() {
         return value;
     }
-
 }
 

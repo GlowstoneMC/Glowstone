@@ -1,7 +1,7 @@
 package net.glowstone.net.message.play.game;
 
-import com.flowpowered.networking.Message;
-import com.flowpowered.networking.util.ByteBufUtils;
+import com.flowpowered.network.Message;
+import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.Data;
@@ -23,7 +23,9 @@ public final class PluginMessage implements Message {
         } catch (IOException e) {
             GlowServer.logger.log(Level.WARNING, "Error converting to PluginMessage: \"" + channel + "\", \"" + text + "\"", e);
         }
-        return new PluginMessage(channel, buf.array());
+        byte[] array = buf.array();
+        buf.release();
+        return new PluginMessage(channel, array);
     }
 
 }

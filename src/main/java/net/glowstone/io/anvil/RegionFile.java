@@ -66,6 +66,7 @@ import net.glowstone.GlowServer;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
@@ -78,15 +79,14 @@ public class RegionFile {
     private static final int SECTOR_BYTES = 4096;
     private static final int SECTOR_INTS = SECTOR_BYTES / 4;
 
-    static final int CHUNK_HEADER_SIZE = 5;
+    private static final int CHUNK_HEADER_SIZE = 5;
     private static final byte[] emptySector = new byte[SECTOR_BYTES];
-
-    private RandomAccessFile file;
     private final int[] offsets;
     private final int[] chunkTimestamps;
+    private RandomAccessFile file;
     private ArrayList<Boolean> sectorFree;
     private int sizeDelta;
-    private long lastModified = 0;
+    private long lastModified;
 
     public RegionFile(File path) throws IOException {
         offsets = new int[SECTOR_INTS];
@@ -142,8 +142,8 @@ public class RegionFile {
             int offset = file.readInt();
             offsets[i] = offset;
 
-            int startSector = (offset >> 8);
-            int numSectors = (offset & 0xff);
+            int startSector = offset >> 8;
+            int numSectors = offset & 0xff;
 
             if (offset != 0 && startSector >= 0 && startSector + numSectors <= sectorFree.size()) {
                 for (int sectorNum = 0; sectorNum < numSectors; ++sectorNum) {
@@ -160,7 +160,7 @@ public class RegionFile {
     }
 
     /* the modification date of the region file when it was first opened */
-    public long lastModified() {
+    public long getLastModified() {
         return lastModified;
     }
 
@@ -176,9 +176,7 @@ public class RegionFile {
      * the chunk is not found or an error occurs
      */
     public DataInputStream getChunkDataInputStream(int x, int z) throws IOException {
-        if (outOfBounds(x, z)) {
-            throw new IndexOutOfBoundsException();
-        }
+        checkBounds(x, z);
 
         int offset = getOffset(x, z);
         if (offset == 0) {
@@ -188,16 +186,14 @@ public class RegionFile {
 
         int sectorNumber = offset >> 8;
         int numSectors = offset & 0xFF;
-
         if (sectorNumber + numSectors > sectorFree.size()) {
-            throw new IOException("Invalid sector");
+            throw new IOException("Invalid sector: " + sectorNumber + "+" + numSectors + " > " + sectorFree.size());
         }
 
         file.seek(sectorNumber * SECTOR_BYTES);
         int length = file.readInt();
-
         if (length > SECTOR_BYTES * numSectors) {
-            throw new IOException("Invalid length");
+            throw new IOException("Invalid length: " + length + " > " + SECTOR_BYTES * numSectors);
         }
 
         byte version = file.readByte();
@@ -211,36 +207,12 @@ public class RegionFile {
             return new DataInputStream(new InflaterInputStream(new ByteArrayInputStream(data)));
         }
 
-        throw new IOException("Unknown version");
+        throw new IOException("Unknown version: " + version);
     }
 
     public DataOutputStream getChunkDataOutputStream(int x, int z) {
-        if (outOfBounds(x, z)) return null;
-
-        return new DataOutputStream(new DeflaterOutputStream(new ChunkBuffer(x, z)));
-    }
-
-    /*
-     * lets chunk writing be multithreaded by not locking the whole file as a
-     * chunk is serializing -- only writes when serialization is over
-     */
-    class ChunkBuffer extends ByteArrayOutputStream {
-        private final int x, z;
-
-        public ChunkBuffer(int x, int z) {
-            super(8096); // initialize to 8KB
-            this.x = x;
-            this.z = z;
-        }
-
-        @Override
-        public void close() throws IOException {
-            try {
-                RegionFile.this.write(x, z, buf, count);
-            } finally {
-                super.close();
-            }
-        }
+        checkBounds(x, z);
+        return new DataOutputStream(new DeflaterOutputStream(new ChunkBuffer(x, z), new Deflater(Deflater.BEST_SPEED)));
     }
 
     /* write a chunk at (x,z) with length bytes of data to disk */
@@ -287,7 +259,7 @@ public class RegionFile {
             if (runLength >= sectorsNeeded) {
                 /* we found a free space large enough */
                 sectorNumber = runStart;
-                setOffset(x, z, (sectorNumber << 8) | sectorsNeeded);
+                setOffset(x, z, sectorNumber << 8 | sectorsNeeded);
                 for (int i = 0; i < sectorsNeeded; ++i) {
                     sectorFree.set(sectorNumber + i, false);
                 }
@@ -306,7 +278,7 @@ public class RegionFile {
                 sizeDelta += SECTOR_BYTES * sectorsNeeded;
 
                 write(sectorNumber, data, length);
-                setOffset(x, z, (sectorNumber << 8) | sectorsNeeded);
+                setOffset(x, z, sectorNumber << 8 | sectorsNeeded);
             }
         }
         setTimestamp(x, z, (int) (System.currentTimeMillis() / 1000L));
@@ -322,8 +294,10 @@ public class RegionFile {
     }
 
     /* is this an invalid chunk coordinate? */
-    private boolean outOfBounds(int x, int z) {
-        return x < 0 || x >= 32 || z < 0 || z >= 32;
+    private void checkBounds(int x, int z) {
+        if (x < 0 || x >= 32 || z < 0 || z >= 32) {
+            throw new IllegalArgumentException("Chunk out of bounds: (" + x + ", " + z + ")");
+        }
     }
 
     private int getOffset(int x, int z) {
@@ -349,5 +323,24 @@ public class RegionFile {
     public void close() throws IOException {
         file.getChannel().force(true);
         file.close();
+    }
+
+    /*
+     * lets chunk writing be multithreaded by not locking the whole file as a
+     * chunk is serializing -- only writes when serialization is over
+     */
+    class ChunkBuffer extends ByteArrayOutputStream {
+        private final int x, z;
+
+        public ChunkBuffer(int x, int z) {
+            super(8096); // initialize to 8KB
+            this.x = x;
+            this.z = z;
+        }
+
+        @Override
+        public void close() throws IOException {
+            RegionFile.this.write(x, z, buf, count);
+        }
     }
 }

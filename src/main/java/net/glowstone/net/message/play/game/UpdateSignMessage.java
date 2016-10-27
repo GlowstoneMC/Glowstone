@@ -1,6 +1,6 @@
 package net.glowstone.net.message.play.game;
 
-import com.flowpowered.networking.Message;
+import com.flowpowered.network.Message;
 import lombok.Data;
 import net.glowstone.util.TextMessage;
 
@@ -21,7 +21,7 @@ public final class UpdateSignMessage implements Message {
         this.message = message;
     }
 
-    public static UpdateSignMessage fromPlainText(int x, int y, int z, String[] message) {
+    public static UpdateSignMessage fromPlainText(int x, int y, int z, String... message) {
         if (message.length != 4) {
             throw new IllegalArgumentException();
         }
@@ -32,5 +32,4 @@ public final class UpdateSignMessage implements Message {
         }
         return new UpdateSignMessage(x, y, z, encoded);
     }
-
 }

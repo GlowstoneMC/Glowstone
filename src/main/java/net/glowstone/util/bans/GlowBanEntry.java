@@ -1,7 +1,8 @@
 package net.glowstone.util.bans;
 
+import net.glowstone.util.bans.JsonListFile.BaseEntry;
 import org.bukkit.BanEntry;
-import org.bukkit.BanList;
+import org.bukkit.BanList.Type;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
@@ -12,7 +13,7 @@ import java.util.Map;
 /**
  * Implementation of BanEntry.
  */
-final class GlowBanEntry implements JsonListFile.BaseEntry, BanEntry, Cloneable {
+final class GlowBanEntry implements BaseEntry, BanEntry, Cloneable {
 
     private final GlowBanList list;
     private final String target;
@@ -40,11 +41,11 @@ final class GlowBanEntry implements JsonListFile.BaseEntry, BanEntry, Cloneable 
         Map<String, String> result = new LinkedHashMap<>();
 
         // target
-        if (list.type == BanList.Type.NAME) {
+        if (list.type == Type.NAME) {
             OfflinePlayer player = Bukkit.getOfflinePlayer(target);
             result.put("uuid", player.getUniqueId().toString());
             result.put("name", player.getName());
-        } else if (list.type == BanList.Type.IP) {
+        } else if (list.type == Type.IP) {
             result.put("ip", target);
         }
 

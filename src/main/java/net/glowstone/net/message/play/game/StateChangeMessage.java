@@ -1,6 +1,6 @@
 package net.glowstone.net.message.play.game;
 
-import com.flowpowered.networking.Message;
+import com.flowpowered.network.Message;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -16,7 +16,7 @@ public final class StateChangeMessage implements Message {
         this.value = value;
     }
 
-    public static enum Reason {
+    public enum Reason {
         INVALID_BED,
         STOP_RAIN,
         START_RAIN,

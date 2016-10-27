@@ -1,6 +1,6 @@
 package net.glowstone.net.message.play.entity;
 
-import com.flowpowered.networking.Message;
+import com.flowpowered.network.Message;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -8,9 +8,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public final class SpawnLightningStrikeMessage implements Message {
 
-    private final int id, mode, x, y, z;
+    private final int id, mode;
+    private final double x, y, z;
 
-    public SpawnLightningStrikeMessage(int id, int x, int y, int z) {
+    public SpawnLightningStrikeMessage(int id, double x, double y, double z) {
         this(id, 1, x, y, z);
     }
 

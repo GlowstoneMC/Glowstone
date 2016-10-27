@@ -1,6 +1,6 @@
 package net.glowstone.net.codec.play.inv;
 
-import com.flowpowered.networking.Codec;
+import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.inv.WindowClickMessage;
@@ -16,7 +16,7 @@ public final class WindowClickCodec implements Codec<WindowClickMessage> {
         int button = buf.readByte();
         int action = buf.readShort();
         int mode = buf.readByte();
-        ItemStack item = GlowBufUtils.readSlot(buf);
+        ItemStack item = GlowBufUtils.readSlot(buf, true);
         return new WindowClickMessage(id, slot, button, action, mode, item);
     }
 

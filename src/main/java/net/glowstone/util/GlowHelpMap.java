@@ -9,10 +9,12 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.help.*;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * An implementation of {@link HelpMap}.
- * @link http://wiki.bukkit.org/Help.yml
+ *
+ * See <a href="http://wiki.bukkit.org/Help.yml">http://wiki.bukkit.org/Help.yml</a>
  */
 public final class GlowHelpMap implements HelpMap {
 
@@ -100,6 +102,7 @@ public final class GlowHelpMap implements HelpMap {
 
     /**
      * Reads the general topics from help.yml and adds them to the help index.
+     *
      * @param config The configuration to read from.
      */
     public void loadConfig(ConfigurationSection config) {
@@ -217,7 +220,7 @@ public final class GlowHelpMap implements HelpMap {
                 }
             }
         }
-        for (Map.Entry<String, Set<HelpTopic>> entry : pluginIndexes.entrySet()) {
+        for (Entry<String, Set<HelpTopic>> entry : pluginIndexes.entrySet()) {
             String key = entry.getKey();
             addTopic(new IndexHelpTopic(key, "All commands for " + key, null, entry.getValue(), "Below is a list of all " + key + " commands:"));
         }
@@ -225,6 +228,7 @@ public final class GlowHelpMap implements HelpMap {
 
     /**
      * Process topic amendments from help.yml.
+     *
      * @param config The configuration to read from.
      */
     public void amendTopics(ConfigurationSection config) {
@@ -286,7 +290,7 @@ public final class GlowHelpMap implements HelpMap {
         private Collection<String> topics;
 
         public LazyIndexTopic(String name, String shortText, String permission, Collection<String> topics, String preamble) {
-            super(name, shortText, permission, Collections.<HelpTopic>emptyList(), preamble);
+            super(name, shortText, permission, Collections.emptyList(), preamble);
             this.topics = topics;
         }
 
@@ -312,7 +316,7 @@ public final class GlowHelpMap implements HelpMap {
 
         public AliasTopic(String name, HelpTopic original) {
             this.name = name;
-            this.shortText = ChatColor.YELLOW + "Alias for " + ChatColor.WHITE + original.getName();
+            shortText = ChatColor.YELLOW + "Alias for " + ChatColor.WHITE + original.getName();
             this.original = original;
         }
 

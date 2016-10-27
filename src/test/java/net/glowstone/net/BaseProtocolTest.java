@@ -1,13 +1,13 @@
 package net.glowstone.net;
 
-import com.flowpowered.networking.Codec;
-import com.flowpowered.networking.Message;
-import com.flowpowered.networking.service.CodecLookupService;
+import com.flowpowered.network.Codec;
+import com.flowpowered.network.Message;
+import com.flowpowered.network.service.CodecLookupService;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.glowstone.net.message.play.inv.HeldItemMessage;
-import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.PlayProtocol;
+import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.testutils.ServerShim;
 import org.junit.Test;
 
@@ -17,7 +17,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Base tests for each {@link GlowProtocol}.
@@ -91,6 +92,9 @@ public abstract class BaseProtocolTest {
             Codec<Message> codec = reg.getCodec();
             ByteBuf buffer = codec.encode(Unpooled.buffer(), message);
             Message decoded = codec.decode(buffer);
+            if (buffer.refCnt() > 0) {
+                buffer.release(buffer.refCnt());
+            }
             assertEquals("Asymmetry for " + reg.getOpcode() + "/" + message.getClass().getName(), message, decoded);
         } catch (IOException e) {
             throw new AssertionError("Error in I/O for " + reg.getOpcode() + "/" + message.getClass().getName(), e);

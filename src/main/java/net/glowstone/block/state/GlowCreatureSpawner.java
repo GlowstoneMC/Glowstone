@@ -4,7 +4,6 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.TEMobSpawner;
 import org.bukkit.block.CreatureSpawner;
-import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.EntityType;
 
 public class GlowCreatureSpawner extends GlowBlockState implements CreatureSpawner {
@@ -71,36 +70,6 @@ public class GlowCreatureSpawner extends GlowBlockState implements CreatureSpawn
     @Override
     public String getCreatureTypeName() {
         return spawned.getName();
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Deprecated CreatureType
-
-    @Override
-    @Deprecated
-    public CreatureType getCreatureType() {
-        return CreatureType.fromEntityType(spawned);
-    }
-
-    @Override
-    @Deprecated
-    public void setCreatureType(CreatureType creatureType) {
-        spawned = creatureType.toEntityType();
-    }
-
-    @Override
-    @Deprecated
-    public String getCreatureTypeId() {
-        return spawned.getName();
-    }
-
-    @Override
-    @Deprecated
-    public void setCreatureTypeId(String s) {
-        CreatureType type = CreatureType.fromName(s);
-        if (type != null) {
-            spawned = type.toEntityType();
-        }
     }
 
 }

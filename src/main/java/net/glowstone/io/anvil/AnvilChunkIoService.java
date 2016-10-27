@@ -4,6 +4,9 @@ import net.glowstone.GlowChunk;
 import net.glowstone.GlowChunk.ChunkSection;
 import net.glowstone.GlowChunkSnapshot;
 import net.glowstone.GlowServer;
+import net.glowstone.block.GlowBlock;
+import net.glowstone.block.ItemTable;
+import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.io.ChunkIoService;
@@ -13,6 +16,8 @@ import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
 import net.glowstone.util.nbt.TagType;
+import org.bukkit.Location;
+import org.bukkit.Material;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -33,23 +38,19 @@ public final class AnvilChunkIoService implements ChunkIoService {
     private static final int REGION_SIZE = 32;
 
     /**
-     * The root directory of the map.
-     */
-    private final File dir;
-
-    /**
      * The region file cache.
      */
-    private final RegionFileCache cache = new RegionFileCache(".mca");
+    private final RegionFileCache cache;
 
     // todo: consider the session.lock file
 
     public AnvilChunkIoService(File dir) {
-        this.dir = dir;
+        cache = new RegionFileCache(dir, ".mca");
     }
 
     /**
      * Reads a chunk from its region file.
+     *
      * @param chunk The GlowChunk to read into.
      * @return Whether the
      * @throws IOException if an I/O error occurs.
@@ -57,9 +58,9 @@ public final class AnvilChunkIoService implements ChunkIoService {
     @Override
     public boolean read(GlowChunk chunk) throws IOException {
         int x = chunk.getX(), z = chunk.getZ();
-        RegionFile region = cache.getRegionFile(dir, x, z);
-        int regionX = x & (REGION_SIZE - 1);
-        int regionZ = z & (REGION_SIZE - 1);
+        RegionFile region = cache.getRegionFile(x, z);
+        int regionX = x & REGION_SIZE - 1;
+        int regionZ = z & REGION_SIZE - 1;
         if (!region.hasChunk(regionX, regionZ)) {
             return false;
         }
@@ -85,7 +86,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
 
             char[] types = new char[rawTypes.length];
             for (int i = 0; i < rawTypes.length; i++) {
-                types[i] = (char) (((extTypes == null ? 0 : extTypes.get(i)) << 12) | ((rawTypes[i] & 0xff) << 4) | data.get(i));
+                types[i] = (char) ((extTypes == null ? 0 : extTypes.get(i)) << 12 | (rawTypes[i] & 0xff) << 4 | data.get(i));
             }
             sections[y] = new ChunkSection(types, skyLight, blockLight);
         }
@@ -142,20 +143,51 @@ public final class AnvilChunkIoService implements ChunkIoService {
             }
         }
 
+        if (levelTag.isList("TileTicks", TagType.COMPOUND)) {
+            List<CompoundTag> tileTicks = levelTag.getCompoundList("TileTicks");
+            for (CompoundTag tileTick : tileTicks) {
+                int tileX = tileTick.getInt("x");
+                int tileY = tileTick.getInt("y");
+                int tileZ = tileTick.getInt("z");
+                String id = tileTick.getString("i");
+                if (id.startsWith("minecraft:")) {
+                    id = id.replace("minecraft:", "");
+                    if (id.startsWith("flowing_")) {
+                        id = id.replace("flowing_", "");
+                    } else if (id.equals("water") || id.equals("lava")) {
+                        id = "stationary_" + id;
+                    }
+                }
+                Material material = Material.getMaterial(id.toUpperCase());
+                GlowBlock block = chunk.getBlock(tileX, tileY, tileZ);
+                if (material != block.getType()) {
+                    continue;
+                }
+                // TODO tick delay: tileTick.getInt("t");
+                // TODO ordering: tileTick.getInt("p");
+                BlockType type = ItemTable.instance().getBlock(material);
+                if (type == null) {
+                    continue;
+                }
+                block.getWorld().requestPulse(block);
+            }
+        }
+
         return true;
     }
 
     /**
      * Writes a chunk to its region file.
+     *
      * @param chunk The {@link GlowChunk} to write from.
      * @throws IOException if an I/O error occurs.
      */
     @Override
     public void write(GlowChunk chunk) throws IOException {
         int x = chunk.getX(), z = chunk.getZ();
-        RegionFile region = cache.getRegionFile(dir, x, z);
-        int regionX = x & (REGION_SIZE - 1);
-        int regionZ = z & (REGION_SIZE - 1);
+        RegionFile region = cache.getRegionFile(x, z);
+        int regionX = x & REGION_SIZE - 1;
+        int regionZ = z & REGION_SIZE - 1;
 
         CompoundTag levelTags = new CompoundTag();
 
@@ -180,7 +212,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
             NibbleArray extTypes = null;
             NibbleArray data = new NibbleArray(sec.types.length);
             for (int j = 0; j < sec.types.length; j++) {
-                rawTypes[j] = (byte) ((sec.types[j] >> 4) & 0xFF);
+                rawTypes[j] = (byte) (sec.types[j] >> 4 & 0xFF);
                 byte extType = (byte) (sec.types[j] >> 12);
                 if (extType > 0) {
                     if (extTypes == null) {
@@ -234,6 +266,28 @@ public final class AnvilChunkIoService implements ChunkIoService {
             }
         }
         levelTags.putCompoundList("TileEntities", tileEntities);
+
+        List<CompoundTag> tileTicks = new ArrayList<>();
+        for (Location location : chunk.getWorld().getTickMap()) {
+            if (location.getChunk().getX() == chunk.getX() && location.getChunk().getZ() == chunk.getZ()) {
+                int tileX = location.getBlockX();
+                int tileY = location.getBlockY();
+                int tileZ = location.getBlockZ();
+                String type = location.getBlock().getType().name().toLowerCase();
+                if (type.startsWith("stationary_")) {
+                    type = type.replace("stationary_", "");
+                } else if (type.equals("water") || type.equals("lava")) {
+                    type = "flowing_" + type;
+                }
+                CompoundTag tag = new CompoundTag();
+                tag.putInt("x", tileX);
+                tag.putInt("y", tileY);
+                tag.putInt("z", tileZ);
+                tag.putString("i", "minecraft:" + type);
+                tileTicks.add(tag);
+            }
+        }
+        levelTags.putCompoundList("TileTicks", tileTicks);
 
         CompoundTag levelOut = new CompoundTag();
         levelOut.putCompound("Level", levelTags);

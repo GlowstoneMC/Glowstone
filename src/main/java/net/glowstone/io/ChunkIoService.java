@@ -12,13 +12,16 @@ public interface ChunkIoService {
 
     /**
      * Reads a single chunk. The provided chunk must not yet be initialized.
+     *
      * @param chunk The GlowChunk to read into.
+     * @return if the read was successful.
      * @throws IOException if an I/O error occurs.
      */
     boolean read(GlowChunk chunk) throws IOException;
 
     /**
      * Writes a single chunk.
+     *
      * @param chunk The {@link GlowChunk} to write from.
      * @throws IOException if an I/O error occurs.
      */
@@ -26,6 +29,7 @@ public interface ChunkIoService {
 
     /**
      * Unload the service, performing any cleanup necessary.
+     *
      * @throws IOException if an I/O error occurs.
      */
     void unload() throws IOException;

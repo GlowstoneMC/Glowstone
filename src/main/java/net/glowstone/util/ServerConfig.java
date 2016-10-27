@@ -1,7 +1,6 @@
 package net.glowstone.util;
 
 import net.glowstone.GlowServer;
-import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -14,6 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Utilities for handling the server configuration files.
@@ -47,20 +48,25 @@ public final class ServerConfig {
 
     /**
      * Initialize a new ServerConfig and associated settings.
-     * @param configDir The config directory, or null for default.
+     *
+     * @param configDir  The config directory, or null for default.
      * @param configFile The config file, or null for default.
      * @param parameters The command-line parameters used as overrides.
      */
     public ServerConfig(File configDir, File configFile, Map<Key, Object> parameters) {
-        Validate.notNull(configDir);
-        Validate.notNull(configFile);
-        Validate.notNull(parameters);
+        checkNotNull(configDir);
+        checkNotNull(configFile);
+        checkNotNull(parameters);
 
         this.configDir = configDir;
         this.configFile = configFile;
         this.parameters = parameters;
 
-        config.options().indent(4);
+        config.options().indent(4).copyHeader(true).header(
+                "glowstone.yml is the main configuration file for a Glowstone server\n" +
+                        "It contains everything from server.properties and bukkit.yml in a\n" +
+                        "normal CraftBukkit installation.\n\n" +
+                        "For help, join us on Discord: https://discord.gg/TFJqhsC");
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -79,11 +85,13 @@ public final class ServerConfig {
 
     /**
      * Change a configuration value at runtime.
-     * @see ServerConfig#save()
-     * @param key the config key to write the value to
+     *
+     * @param key   the config key to write the value to
      * @param value value to write to config key
+     * @see ServerConfig#save()
      */
     public void set(Key key, Object value) {
+        parameters.replace(key, value);
         config.set(key.path, value);
     }
 
@@ -94,15 +102,17 @@ public final class ServerConfig {
         if (parameters.containsKey(key)) {
             return parameters.get(key).toString();
         }
-
-        return config.getString(key.path, key.def.toString());
+        String string = config.getString(key.path, key.def.toString());
+        parameters.put(key, string);
+        return string;
     }
 
     public int getInt(Key key) {
         if (parameters.containsKey(key)) {
             return (Integer) parameters.get(key);
         }
-
+        int integer = config.getInt(key.path, (Integer) key.def);
+        parameters.put(key, integer);
         return config.getInt(key.path, (Integer) key.def);
     }
 
@@ -110,8 +120,9 @@ public final class ServerConfig {
         if (parameters.containsKey(key)) {
             return (Boolean) parameters.get(key);
         }
-
-        return config.getBoolean(key.path, (Boolean) key.def);
+        boolean bool = config.getBoolean(key.path, (Boolean) key.def);
+        parameters.put(key, bool);
+        return bool;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -123,8 +134,8 @@ public final class ServerConfig {
             return extraConfig.get(filename);
         }
 
-        final YamlConfiguration conf = new YamlConfiguration();
-        final File file = getFile(filename), migrateFrom = new File(key.def.toString());
+        YamlConfiguration conf = new YamlConfiguration();
+        File file = getFile(filename), migrateFrom = new File(key.def.toString());
 
         // create file if it doesn't exist
         if (!file.exists()) {
@@ -167,43 +178,54 @@ public final class ServerConfig {
         // load extra config files again next time they're needed
         extraConfig.clear();
 
+        boolean changed = false;
+
         // create default file if needed
-        final boolean exists = configFile.exists();
-        if (!exists) {
+        if (!configFile.exists()) {
+            GlowServer.logger.info("Creating default config: " + configFile);
+
             // create config directory
             if (!configDir.isDirectory() && !configDir.mkdirs()) {
                 GlowServer.logger.severe("Cannot create directory: " + configDir);
                 return;
             }
 
-            copyDefaults("glowstone.yml", configFile);
-        }
-
-        // load config
-        try {
-            config.load(configFile);
-        } catch (IOException e) {
-            GlowServer.logger.log(Level.SEVERE, "Failed to read config: " + configFile, e);
-        } catch (InvalidConfigurationException e) {
-            report(configFile, e);
-        }
-
-        // if we just created defaults, attempt to migrate
-        if (!exists && migrate()) {
-            // save config, including any new defaults
-            try {
-                config.save(configFile);
-            } catch (IOException e) {
-                GlowServer.logger.log(Level.SEVERE, "Failed to write config: " + configFile, e);
-                return;
+            // load default config
+            for (Key key : Key.values()) {
+                config.set(key.path, key.def);
             }
 
-            GlowServer.logger.info("Migrated configuration from CraftBukkit");
+            // attempt to migrate
+            if (migrate()) {
+                GlowServer.logger.info("Migrated configuration from previous installation");
+            }
+            changed = true;
+        } else {
+            // load config
+            try {
+                config.load(configFile);
+            } catch (IOException e) {
+                GlowServer.logger.log(Level.SEVERE, "Failed to read config: " + configFile, e);
+            } catch (InvalidConfigurationException e) {
+                report(configFile, e);
+            }
+
+            // add missing keys to the current config
+            for (Key key : Key.values()) {
+                if (!config.contains(key.path)) {
+                    config.set(key.path, key.def);
+                    changed = true;
+                }
+            }
+        }
+
+        if (changed) {
+            save();
         }
     }
 
     private void copyDefaults(String source, File dest) {
-        final URL resource = getClass().getClassLoader().getResource("defaults/" + source);
+        URL resource = getClass().getClassLoader().getResource("defaults/" + source);
         if (resource == null) {
             GlowServer.logger.warning("Could not find default " + source + " on classpath");
             return;
@@ -211,7 +233,7 @@ public final class ServerConfig {
 
         try (final InputStream in = resource.openStream();
              final OutputStream out = new FileOutputStream(dest)) {
-            final byte[] buf = new byte[2048];
+            byte[] buf = new byte[2048];
             int len;
             while ((len = in.read(buf)) > 0) {
                 out.write(buf, 0, len);
@@ -227,17 +249,21 @@ public final class ServerConfig {
     private void report(File file, InvalidConfigurationException e) {
         if (e.getCause() instanceof YAMLException) {
             GlowServer.logger.severe("Config file " + file + " isn't valid! " + e.getCause());
-        } else if ((e.getCause() == null) || (e.getCause() instanceof ClassCastException)) {
+        } else if (e.getCause() == null || e.getCause() instanceof ClassCastException) {
             GlowServer.logger.severe("Config file " + file + " isn't valid!");
         } else {
             GlowServer.logger.log(Level.SEVERE, "Cannot load " + file + ": " + e.getCause().getClass(), e);
         }
     }
 
+    public YamlConfiguration getConfig() {
+        return config;
+    }
+
     private boolean migrate() {
         boolean migrateStatus = false;
 
-        final File bukkitYml = new File("bukkit.yml");
+        File bukkitYml = new File("bukkit.yml");
         if (bukkitYml.exists()) {
             YamlConfiguration bukkit = new YamlConfiguration();
             try {
@@ -259,7 +285,7 @@ public final class ServerConfig {
             config.set("worlds", bukkit.get("worlds"));
         }
 
-        final File serverProps = new File("server.properties");
+        File serverProps = new File("server.properties");
         if (serverProps.exists()) {
             Properties props = new Properties();
             try {
@@ -294,7 +320,7 @@ public final class ServerConfig {
     /**
      * An enum containing configuration keys used by the server.
      */
-    public static enum Key {
+    public enum Key {
         // server
         SERVER_IP("server.ip", "", Migrate.PROPS, "server-ip"),
         SERVER_PORT("server.port", 25565, Migrate.PROPS, "server-port"),
@@ -303,51 +329,15 @@ public final class ServerConfig {
         ONLINE_MODE("server.online-mode", true, Migrate.PROPS, "online-mode"),
         MAX_PLAYERS("server.max-players", 20, Migrate.PROPS, "max-players"),
         WHITELIST("server.whitelisted", false, Migrate.PROPS, "white-list"),
-        MOTD("server.motd", "Glowstone Server", Migrate.PROPS, "motd"),
+        MOTD("server.motd", "Glowstone server", Migrate.PROPS, "motd"),
         SHUTDOWN_MESSAGE("server.shutdown-message", "Server shutting down.", Migrate.BUKKIT, "settings.shutdown-message"),
-        USE_JLINE("server.use-jline", true),
 
-        // folders
-        PLUGIN_FOLDER("folders.plugins", "plugins"),
-        UPDATE_FOLDER("folders.update", "update", Migrate.BUKKIT, "settings.update-folder"),
-        WORLD_FOLDER("folders.worlds", "worlds", Migrate.BUKKIT, "settings.world-container"),
-
-        // files
-        PERMISSIONS_FILE("files.permissions", "permissions.yml", Migrate.BUKKIT, "settings.permissions-file"),
-        COMMANDS_FILE("files.commands", "commands.yml"),
-        HELP_FILE("files.help", "help.yml"),
-
-        // advanced
-        CONNECTION_THROTTLE("advanced.connection-throttle", 4000, Migrate.BUKKIT, "settings.connection-throttle"),
-        //PING_PACKET_LIMIT("advanced.ping-packet-limit", 100, Migrate.BUKKIT, "settings.ping-packet-limit"),
-        PLAYER_IDLE_TIMEOUT("advanced.idle-timeout", 0, Migrate.PROPS, "player-idle-timeout"),
-        WARN_ON_OVERLOAD("advanced.warn-on-overload", true, Migrate.BUKKIT, "settings.warn-on-overload"),
-        EXACT_LOGIN_LOCATION("advanced.exact-login-location", false, Migrate.BUKKIT, "settings.use-exact-login-location"),
-        PLUGIN_PROFILING("advanced.plugin-profiling", false, Migrate.BUKKIT, "settings.plugin-profiling"),
-        WARNING_STATE("advanced.deprecated-verbose", "false", Migrate.BUKKIT, "settings.deprecated-verbose"),
-        COMPRESSION_THRESHOLD("advanced.compression-threshold", 256, Migrate.PROPS, "network-compression-threshold"),
-        PROXY_SUPPORT("advanced.proxy-support", false),
-
-        // query rcon etc
-        QUERY_ENABLED("extras.query-enabled", false, Migrate.PROPS, "enable-query"),
-        QUERY_PORT("extras.query-port", 25614, Migrate.PROPS, "query.port"),
-        QUERY_PLUGINS("extras.query-plugins", true, Migrate.BUKKIT, "settings.query-plugins"),
-        RCON_ENABLED("extras.rcon-enabled", false, Migrate.PROPS, "enable-rcon"),
-        RCON_PASSWORD("extras.rcon-password", "glowstone", Migrate.PROPS, "rcon.password"),
-        RCON_PORT("extras.rcon-port", 25575, Migrate.PROPS, "rcon.port"),
-        RCON_COLORS("extras.rcon-colors", true),
-
-        // level props
-        LEVEL_NAME("world.name", "world", Migrate.PROPS, "level-name"),
-        LEVEL_SEED("world.seed", "", Migrate.PROPS, "level-seed"),
-        LEVEL_TYPE("world.level-type", "DEFAULT", Migrate.PROPS, "level-type"),
-        SPAWN_RADIUS("world.spawn-radius", 16, Migrate.PROPS, "spawn-protection"),
-        VIEW_DISTANCE("world.view-distance", 8, Migrate.PROPS, "view-distance"),
-        GENERATE_STRUCTURES("world.gen-structures", true, Migrate.PROPS, "generate-structures"),
-        GENERATOR_SETTINGS("world.gen-settings", "", Migrate.PROPS, "generator-settings"),
-        ALLOW_NETHER("world.allow-nether", true, Migrate.PROPS, "allow-nether"),
-        ALLOW_END("world.allow-end", true, Migrate.BUKKIT, "settings.allow-end"),
-        PERSIST_SPAWN("world.keep-spawn-loaded", true),
+        // console
+        USE_JLINE("console.use-jline", true),
+        CONSOLE_PROMPT("console.prompt", ">"),
+        CONSOLE_DATE("console.date-format", "HH:mm:ss"),
+        CONSOLE_LOG_DATE("console.log-date-format", "yyyy/MM/dd HH:mm:ss"),
+        ALLOW_CLIENT_MODS("server.allow-client-mods", true),
 
         // game props
         GAMEMODE("game.gamemode", "SURVIVAL", Migrate.PROPS, "gamemode"),
@@ -377,6 +367,51 @@ public final class ServerConfig {
         MONSTER_TICKS("creatures.ticks.monsters", 1, Migrate.BUKKIT, "ticks-per.monster-spawns"),
         ANIMAL_TICKS("creatures.ticks.animal", 400, Migrate.BUKKIT, "ticks-per.animal-spawns"),
 
+        // folders
+        PLUGIN_FOLDER("folders.plugins", "plugins"),
+        UPDATE_FOLDER("folders.update", "update", Migrate.BUKKIT, "settings.update-folder"),
+        WORLD_FOLDER("folders.worlds", "worlds", Migrate.BUKKIT, "settings.world-container"),
+
+        // files
+        PERMISSIONS_FILE("files.permissions", "permissions.yml", Migrate.BUKKIT, "settings.permissions-file"),
+        COMMANDS_FILE("files.commands", "commands.yml"),
+        HELP_FILE("files.help", "help.yml"),
+
+        // advanced
+        CONNECTION_THROTTLE("advanced.connection-throttle", 4000, Migrate.BUKKIT, "settings.connection-throttle"),
+        //PING_PACKET_LIMIT("advanced.ping-packet-limit", 100, Migrate.BUKKIT, "settings.ping-packet-limit"),
+        PLAYER_IDLE_TIMEOUT("advanced.idle-timeout", 0, Migrate.PROPS, "player-idle-timeout"),
+        WARN_ON_OVERLOAD("advanced.warn-on-overload", true, Migrate.BUKKIT, "settings.warn-on-overload"),
+        EXACT_LOGIN_LOCATION("advanced.exact-login-location", false, Migrate.BUKKIT, "settings.use-exact-login-location"),
+        PLUGIN_PROFILING("advanced.plugin-profiling", false, Migrate.BUKKIT, "settings.plugin-profiling"),
+        WARNING_STATE("advanced.deprecated-verbose", "false", Migrate.BUKKIT, "settings.deprecated-verbose"),
+        COMPRESSION_THRESHOLD("advanced.compression-threshold", 256, Migrate.PROPS, "network-compression-threshold"),
+        PROXY_SUPPORT("advanced.proxy-support", false),
+        PLAYER_SAMPLE_COUNT("advanced.player-sample-count", 12),
+
+        // query rcon etc
+        QUERY_ENABLED("extras.query-enabled", false, Migrate.PROPS, "enable-query"),
+        QUERY_PORT("extras.query-port", 25614, Migrate.PROPS, "query.port"),
+        QUERY_PLUGINS("extras.query-plugins", true, Migrate.BUKKIT, "settings.query-plugins"),
+        RCON_ENABLED("extras.rcon-enabled", false, Migrate.PROPS, "enable-rcon"),
+        RCON_PASSWORD("extras.rcon-password", "glowstone", Migrate.PROPS, "rcon.password"),
+        RCON_PORT("extras.rcon-port", 25575, Migrate.PROPS, "rcon.port"),
+        RCON_COLORS("extras.rcon-colors", true),
+
+        // level props
+        LEVEL_NAME("world.name", "world", Migrate.PROPS, "level-name"),
+        LEVEL_SEED("world.seed", "", Migrate.PROPS, "level-seed"),
+        LEVEL_TYPE("world.level-type", "DEFAULT", Migrate.PROPS, "level-type"),
+        SPAWN_RADIUS("world.spawn-radius", 16, Migrate.PROPS, "spawn-protection"),
+        VIEW_DISTANCE("world.view-distance", 8, Migrate.PROPS, "view-distance"),
+        GENERATE_STRUCTURES("world.gen-structures", true, Migrate.PROPS, "generate-structures"),
+        GENERATOR_SETTINGS("world.gen-settings", "", Migrate.PROPS, "generator-settings"),
+        ALLOW_NETHER("world.allow-nether", true, Migrate.PROPS, "allow-nether"),
+        ALLOW_END("world.allow-end", true, Migrate.BUKKIT, "settings.allow-end"),
+        PERSIST_SPAWN("world.keep-spawn-loaded", true),
+        POPULATE_ANCHORED_CHUNKS("world.populate-anchored-chunks", true),
+        WATER_CLASSIC("world.classic-style-water", false),
+
         // database
         DB_DRIVER("database.driver", "org.sqlite.JDBC", Migrate.BUKKIT, "database.driver"),
         DB_URL("database.url", "jdbc:sqlite:config/database.db", Migrate.BUKKIT, "database.url"),
@@ -389,11 +424,11 @@ public final class ServerConfig {
         private final Migrate migrate;
         private final String migratePath;
 
-        private Key(String path, Object def) {
+        Key(String path, Object def) {
             this(path, def, null, null);
         }
 
-        private Key(String path, Object def, Migrate migrate, String migratePath) {
+        Key(String path, Object def, Migrate migrate, String migratePath) {
             this.path = path;
             this.def = def;
             this.migrate = migrate;
@@ -406,7 +441,7 @@ public final class ServerConfig {
         }
     }
 
-    private static enum Migrate {
+    private enum Migrate {
         BUKKIT, PROPS
     }
 

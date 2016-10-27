@@ -18,6 +18,15 @@ public final class GlowItemFactory implements ItemFactory {
     private GlowItemFactory() {
     }
 
+    /**
+     * Get the static GlowItemFactory instance.
+     *
+     * @return The instance.
+     */
+    public static GlowItemFactory instance() {
+        return instance;
+    }
+
     @Override
     public ItemMeta getItemMeta(Material material) {
         return makeMeta(material, null);
@@ -81,15 +90,8 @@ public final class GlowItemFactory implements ItemFactory {
     }
 
     /**
-     * Get the static GlowItemFactory instance.
-     * @return The instance.
-     */
-    public static GlowItemFactory instance() {
-        return instance;
-    }
-
-    /**
      * Throw a descriptive error if the given ItemMeta does not belong to this factory.
+     *
      * @param meta The ItemMeta.
      * @return The GlowMetaItem.
      */
@@ -111,6 +113,8 @@ public final class GlowItemFactory implements ItemFactory {
             case BOOK_AND_QUILL:
             case WRITTEN_BOOK:
                 return new GlowMetaBook(meta);
+            case ENCHANTED_BOOK:
+                return new GlowMetaEnchantedBook(meta);
             case SKULL_ITEM:
                 return new GlowMetaSkull(meta);
             case BANNER:
@@ -124,6 +128,13 @@ public final class GlowItemFactory implements ItemFactory {
                 return new GlowMetaFirework(meta);
             case FIREWORK_CHARGE:
                 return new GlowMetaFireworkEffect(meta);
+            case POTION:
+            case SPLASH_POTION:
+            case LINGERING_POTION:
+            case TIPPED_ARROW:
+                return new GlowMetaPotion(meta);
+            case MONSTER_EGG:
+                return new GlowMetaSpawn(meta);
             default:
                 return new GlowMetaItem(meta);
         }

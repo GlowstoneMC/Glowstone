@@ -5,7 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
 import net.glowstone.GlowServer;
-import net.glowstone.entity.GlowPlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.nio.ByteOrder;
@@ -17,6 +17,7 @@ import java.util.logging.Level;
 
 /**
  * Class for handling UDP packets according to the minecraft server query protocol.
+ *
  * @see QueryServer
  * @see <a href="http://wiki.vg/Query">Protocol Specifications</a>
  */
@@ -143,7 +144,7 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket> {
         buf.writeByte(0);
         // constant: \x01player_\x00\x00
         buf.writeBytes(new byte[]{0x01, 0x70, 0x6C, 0x61, 0x79, 0x65, 0x72, 0x5F, 0x00, 0x00});
-        for (GlowPlayer player : server.getOnlinePlayers()) {
+        for (Player player : server.getOnlinePlayers()) {
             writeString(buf, player.getName());
         }
         buf.writeByte(0);

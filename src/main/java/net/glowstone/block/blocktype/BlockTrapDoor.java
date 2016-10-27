@@ -1,5 +1,6 @@
 package net.glowstone.block.blocktype;
 
+import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.block.BlockFace;
@@ -31,6 +32,16 @@ public class BlockTrapDoor {
             state.update(true);
         } else {
             parent.warnMaterialData(TrapDoor.class, materialData);
+        }
+    }
+
+    public void onRedstoneUpdate(GlowBlock block) {
+        GlowBlockState state = block.getState();
+        TrapDoor trapdoor = (TrapDoor) state.getData();
+        boolean powered = block.isBlockIndirectlyPowered();
+        if (powered != trapdoor.isOpen()) {
+            trapdoor.setOpen(powered);
+            state.update();
         }
     }
 }

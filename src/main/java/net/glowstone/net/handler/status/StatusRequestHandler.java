@@ -1,17 +1,23 @@
 package net.glowstone.net.handler.status;
 
-import com.flowpowered.networking.MessageHandler;
+import com.flowpowered.network.MessageHandler;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.status.StatusRequestMessage;
 import net.glowstone.net.message.status.StatusResponseMessage;
 import net.glowstone.util.GlowServerIcon;
+import org.bukkit.entity.Player;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.util.CachedServerIcon;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 public final class StatusRequestHandler implements MessageHandler<GlowSession, StatusRequestMessage> {
 
@@ -24,20 +30,39 @@ public final class StatusRequestHandler implements MessageHandler<GlowSession, S
         InetAddress address = session.getAddress().getAddress();
 
         StatusEvent event = new StatusEvent(address, server.getMotd(), online, server.getMaxPlayers());
+        event.players = new ArrayList<>(server.getOnlinePlayers());
         event.icon = server.getServerIcon();
+        event.serverType = server.getServerType();
+        event.clientModsAllowed = server.getAllowClientMods();
         EventFactory.callEvent(event);
 
         // build the json
         JSONObject json = new JSONObject();
 
         JSONObject version = new JSONObject();
-        version.put("name", "Glowstone " + GlowServer.GAME_VERSION);
-        version.put("protocol", GlowServer.PROTOCOL_VERSION);
+        version.put("name", "Glowstone++ " + GlowServer.GAME_VERSION);
+        int protocolVersion = GlowServer.PROTOCOL_VERSION;
+        version.put("protocol", protocolVersion);
         json.put("version", version);
 
         JSONObject players = new JSONObject();
         players.put("max", event.getMaxPlayers());
         players.put("online", online);
+
+        if (!event.players.isEmpty()) {
+            event.players = event.players.subList(0, Math.min(event.players.size(), server.getPlayerSampleCount()));
+            Collections.shuffle(event.players);
+            JSONArray playersSample = new JSONArray();
+
+            for (Player player : event.players) {
+                JSONObject p = new JSONObject();
+                p.put("name", player.getName());
+                p.put("id", player.getUniqueId().toString());
+                playersSample.add(p);
+            }
+            players.put("sample", playersSample);
+        }
+
         json.put("players", players);
 
         JSONObject description = new JSONObject();
@@ -48,6 +73,18 @@ public final class StatusRequestHandler implements MessageHandler<GlowSession, S
             json.put("favicon", event.icon.getData());
         }
 
+        // Mod list must be included but can be empty
+        // TODO: support adding GS-ported Forge server-side mods?
+        JSONArray modList = new JSONArray();
+
+        JSONObject modinfo = new JSONObject();
+        modinfo.put("type", event.serverType);
+        modinfo.put("modList", modList);
+        if (!event.clientModsAllowed) {
+            modinfo.put("clientModsAllowed", false);
+        }
+        json.put("modinfo", modinfo);
+
         // send it off
         session.send(new StatusResponseMessage(json));
     }
@@ -55,6 +92,9 @@ public final class StatusRequestHandler implements MessageHandler<GlowSession, S
     private static class StatusEvent extends ServerListPingEvent {
 
         private GlowServerIcon icon;
+        private List<Player> players;
+        private String serverType; // VANILLA, BUKKIT, or FML
+        private boolean clientModsAllowed;
 
         private StatusEvent(InetAddress address, String motd, int numPlayers, int maxPlayers) {
             super(address, motd, numPlayers, maxPlayers);
@@ -68,6 +108,9 @@ public final class StatusRequestHandler implements MessageHandler<GlowSession, S
             this.icon = (GlowServerIcon) icon;
         }
 
-        // todo: player list iteration handling
+        @Override
+        public Iterator<Player> iterator() {
+            return players.iterator();
+        }
     }
 }

@@ -1,8 +1,16 @@
 package net.glowstone.inventory;
 
+import net.glowstone.GlowServer;
+import net.glowstone.block.GlowBlock;
+import net.glowstone.entity.GlowPlayer;
+import net.glowstone.scheduler.PulseTask;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.block.Furnace;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.FurnaceInventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 public class GlowFurnaceInventory extends GlowInventory implements FurnaceInventory {
@@ -14,9 +22,16 @@ public class GlowFurnaceInventory extends GlowInventory implements FurnaceInvent
     public GlowFurnaceInventory(Furnace owner) {
         super(owner, InventoryType.FURNACE);
 
-        slotTypes[INPUT_SLOT] = InventoryType.SlotType.CRAFTING;
-        slotTypes[FUEL_SLOT] = InventoryType.SlotType.FUEL;
-        slotTypes[RESULT_SLOT] = InventoryType.SlotType.RESULT;
+        getSlot(INPUT_SLOT).setType(SlotType.CRAFTING);
+        getSlot(FUEL_SLOT).setType(SlotType.FUEL);
+        getSlot(RESULT_SLOT).setType(SlotType.RESULT);
+    }
+
+    @Override
+    public void setItem(int index, ItemStack item) {
+        super.setItem(index, item);
+        GlowBlock block = (GlowBlock) getHolder().getBlock();
+        new PulseTask(block, true, 1, false).startPulseTask();
     }
 
     @Override
@@ -25,13 +40,13 @@ public class GlowFurnaceInventory extends GlowInventory implements FurnaceInvent
     }
 
     @Override
-    public ItemStack getFuel() {
-        return getItem(FUEL_SLOT);
+    public void setResult(ItemStack stack) {
+        setItem(RESULT_SLOT, stack);
     }
 
     @Override
-    public ItemStack getSmelting() {
-        return getItem(INPUT_SLOT);
+    public ItemStack getFuel() {
+        return getItem(FUEL_SLOT);
     }
 
     @Override
@@ -40,8 +55,8 @@ public class GlowFurnaceInventory extends GlowInventory implements FurnaceInvent
     }
 
     @Override
-    public void setResult(ItemStack stack) {
-        setItem(RESULT_SLOT, stack);
+    public ItemStack getSmelting() {
+        return getItem(INPUT_SLOT);
     }
 
     @Override
@@ -52,5 +67,25 @@ public class GlowFurnaceInventory extends GlowInventory implements FurnaceInvent
     @Override
     public Furnace getHolder() {
         return (Furnace) super.getHolder();
+    }
+
+    @Override
+    public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot, ItemStack clickedItem) {
+        if (getSlotType(view.convertSlot(clickedSlot)) == SlotType.RESULT) {
+            // Place the items in the player's inventory (right to left)
+            clickedItem = player.getInventory().tryToFillSlots(clickedItem, 8, -1, 35, 8);
+        } else {
+            // Clicked in the crafting grid, no special handling required (just place them left to right)
+            clickedItem = player.getInventory().tryToFillSlots(clickedItem, 9, 36, 0, 9);
+        }
+        view.setItem(clickedSlot, clickedItem);
+    }
+
+    @Override
+    public boolean itemPlaceAllowed(int slot, ItemStack stack) {
+        if (slot == FUEL_SLOT) {
+            return ((GlowServer) Bukkit.getServer()).getCraftingManager().isFuel(stack.getType()) || stack.getType().equals(Material.BUCKET);
+        }
+        return super.itemPlaceAllowed(slot, stack);
     }
 }

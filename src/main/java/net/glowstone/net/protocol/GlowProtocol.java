@@ -1,14 +1,15 @@
 package net.glowstone.net.protocol;
 
-import com.flowpowered.networking.Codec;
-import com.flowpowered.networking.Message;
-import com.flowpowered.networking.MessageHandler;
-import com.flowpowered.networking.exception.IllegalOpcodeException;
-import com.flowpowered.networking.exception.UnknownPacketException;
-import com.flowpowered.networking.protocol.AbstractProtocol;
-import com.flowpowered.networking.service.CodecLookupService;
-import com.flowpowered.networking.service.HandlerLookupService;
-import com.flowpowered.networking.util.ByteBufUtils;
+import com.flowpowered.network.Codec;
+import com.flowpowered.network.Codec.CodecRegistration;
+import com.flowpowered.network.Message;
+import com.flowpowered.network.MessageHandler;
+import com.flowpowered.network.exception.IllegalOpcodeException;
+import com.flowpowered.network.exception.UnknownPacketException;
+import com.flowpowered.network.protocol.AbstractProtocol;
+import com.flowpowered.network.service.CodecLookupService;
+import com.flowpowered.network.service.HandlerLookupService;
+import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.glowstone.GlowServer;
@@ -78,8 +79,8 @@ public abstract class GlowProtocol extends AbstractProtocol {
     }
 
     @Override
-    public <M extends Message> Codec.CodecRegistration getCodecRegistration(Class<M> clazz) {
-        Codec.CodecRegistration reg = outboundCodecs.find(clazz);
+    public <M extends Message> CodecRegistration getCodecRegistration(Class<M> clazz) {
+        CodecRegistration reg = outboundCodecs.find(clazz);
         if (reg == null) {
             GlowServer.logger.warning("No codec to write: " + clazz.getSimpleName() + " in " + getName());
         }
@@ -88,11 +89,12 @@ public abstract class GlowProtocol extends AbstractProtocol {
 
     @Override
     @Deprecated
-    public ByteBuf writeHeader(ByteBuf out, Codec.CodecRegistration codec, ByteBuf data) {
-        final ByteBuf opcodeBuffer = Unpooled.buffer(5);
+    public ByteBuf writeHeader(ByteBuf out, CodecRegistration codec, ByteBuf data) {
+        ByteBuf opcodeBuffer = Unpooled.buffer(5);
         ByteBufUtils.writeVarInt(opcodeBuffer, codec.getOpcode());
         ByteBufUtils.writeVarInt(out, opcodeBuffer.readableBytes() + data.readableBytes());
         ByteBufUtils.writeVarInt(out, codec.getOpcode());
+        opcodeBuffer.release();
         return out;
     }
 

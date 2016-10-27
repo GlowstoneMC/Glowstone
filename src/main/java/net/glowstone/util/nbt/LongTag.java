@@ -3,7 +3,7 @@ package net.glowstone.util.nbt;
 /**
  * The {@code TAG_Long} tag.
  */
-final class LongTag extends Tag<Long> {
+public final class LongTag extends Tag<Long> {
 
     /**
      * The value.
@@ -12,6 +12,7 @@ final class LongTag extends Tag<Long> {
 
     /**
      * Creates the tag.
+     *
      * @param value The value.
      */
     public LongTag(long value) {
@@ -23,6 +24,5 @@ final class LongTag extends Tag<Long> {
     public Long getValue() {
         return value;
     }
-
 }
 

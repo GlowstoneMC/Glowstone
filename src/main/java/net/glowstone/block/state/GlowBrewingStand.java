@@ -8,7 +8,7 @@ import org.bukkit.inventory.BrewerInventory;
 
 public class GlowBrewingStand extends GlowBlockState implements BrewingStand {
 
-    private int brewTime = 0;
+    private int brewTime;
 
     public GlowBrewingStand(GlowBlock block) {
         super(block);
@@ -32,6 +32,16 @@ public class GlowBrewingStand extends GlowBlockState implements BrewingStand {
     @Override
     public void setBrewingTime(int brewTime) {
         this.brewTime = brewTime;
+    }
+
+    @Override
+    public int getFuelLevel() {
+        return 0;
+    }
+
+    @Override
+    public void setFuelLevel(int i) {
+
     }
 
     @Override

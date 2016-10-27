@@ -15,11 +15,12 @@ public final class DragTracker {
 
     /**
      * Start tracking a drag operation if possible.
+     *
      * @param right True if the drag is a right-click drag.
      * @return True if the drag start was accepted.
      */
     public boolean start(boolean right) {
-        if (this.active) {
+        if (active) {
             return false;
         } else {
             active = true;
@@ -30,7 +31,9 @@ public final class DragTracker {
 
     /**
      * Add a slot to an in-progress drag operation if possible.
+     *
      * @param right True if the drag is a right-click drag.
+     * @param slot The slot to add to the drag operation.
      * @return True if the slot was accepted.
      */
     public boolean addSlot(boolean right, int slot) {
@@ -46,13 +49,14 @@ public final class DragTracker {
 
     /**
      * Finish an in-progress drag operation if possible.
+     *
      * @param right True if the drag is a right-click drag.
      * @return The list of slots involved in the drag, or null on failure.
      */
     public List<Integer> finish(boolean right) {
         if (!active || right != this.right) {
             return null;
-        } else if (slots.size() == 0) {
+        } else if (slots.isEmpty()) {
             return null;
         } else {
             List<Integer> result = new ArrayList<>(slots);

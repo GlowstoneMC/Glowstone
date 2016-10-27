@@ -14,12 +14,13 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.fusesource.jansi.Ansi;
+import org.fusesource.jansi.Ansi.Attribute;
+import org.fusesource.jansi.Ansi.Color;
 import org.fusesource.jansi.AnsiConsole;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.Callable;
 import java.util.logging.*;
 import java.util.logging.Formatter;
 
@@ -29,10 +30,10 @@ import java.util.logging.Formatter;
  */
 public final class ConsoleManager {
 
-    private static final String CONSOLE_DATE = "HH:mm:ss";
-    private static final String FILE_DATE = "yyyy/MM/dd HH:mm:ss";
     private static final Logger logger = Logger.getLogger("");
-
+    private static String CONSOLE_DATE = "HH:mm:ss";
+    private static String FILE_DATE = "yyyy/MM/dd HH:mm:ss";
+    private static String CONSOLE_PROMPT = ">";
     private final GlowServer server;
     private final Map<ChatColor, String> replacements = new EnumMap<>(ChatColor.class);
     private final ChatColor[] colors = ChatColor.values();
@@ -41,7 +42,7 @@ public final class ConsoleManager {
     private ConsoleCommandSender sender;
 
     private boolean running = true;
-    private boolean jLine = false;
+    private boolean jLine;
 
     public ConsoleManager(GlowServer server) {
         this.server = server;
@@ -69,28 +70,28 @@ public final class ConsoleManager {
         System.setErr(new PrintStream(new LoggerOutputStream(Level.WARNING), true));
 
         // set up colorization replacements
-        replacements.put(ChatColor.BLACK, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.BLACK).boldOff().toString());
-        replacements.put(ChatColor.DARK_BLUE, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.BLUE).boldOff().toString());
-        replacements.put(ChatColor.DARK_GREEN, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.GREEN).boldOff().toString());
-        replacements.put(ChatColor.DARK_AQUA, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.CYAN).boldOff().toString());
-        replacements.put(ChatColor.DARK_RED, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.RED).boldOff().toString());
-        replacements.put(ChatColor.DARK_PURPLE, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.MAGENTA).boldOff().toString());
-        replacements.put(ChatColor.GOLD, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.YELLOW).boldOff().toString());
-        replacements.put(ChatColor.GRAY, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.WHITE).boldOff().toString());
-        replacements.put(ChatColor.DARK_GRAY, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.BLACK).bold().toString());
-        replacements.put(ChatColor.BLUE, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.BLUE).bold().toString());
-        replacements.put(ChatColor.GREEN, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.GREEN).bold().toString());
-        replacements.put(ChatColor.AQUA, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.CYAN).bold().toString());
-        replacements.put(ChatColor.RED, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.RED).bold().toString());
-        replacements.put(ChatColor.LIGHT_PURPLE, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.MAGENTA).bold().toString());
-        replacements.put(ChatColor.YELLOW, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.YELLOW).bold().toString());
-        replacements.put(ChatColor.WHITE, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.WHITE).bold().toString());
-        replacements.put(ChatColor.MAGIC, Ansi.ansi().a(Ansi.Attribute.BLINK_SLOW).toString());
-        replacements.put(ChatColor.BOLD, Ansi.ansi().a(Ansi.Attribute.UNDERLINE_DOUBLE).toString());
-        replacements.put(ChatColor.STRIKETHROUGH, Ansi.ansi().a(Ansi.Attribute.STRIKETHROUGH_ON).toString());
-        replacements.put(ChatColor.UNDERLINE, Ansi.ansi().a(Ansi.Attribute.UNDERLINE).toString());
-        replacements.put(ChatColor.ITALIC, Ansi.ansi().a(Ansi.Attribute.ITALIC).toString());
-        replacements.put(ChatColor.RESET, Ansi.ansi().a(Ansi.Attribute.RESET).toString());
+        replacements.put(ChatColor.BLACK, Ansi.ansi().a(Attribute.RESET).fg(Color.BLACK).boldOff().toString());
+        replacements.put(ChatColor.DARK_BLUE, Ansi.ansi().a(Attribute.RESET).fg(Color.BLUE).boldOff().toString());
+        replacements.put(ChatColor.DARK_GREEN, Ansi.ansi().a(Attribute.RESET).fg(Color.GREEN).boldOff().toString());
+        replacements.put(ChatColor.DARK_AQUA, Ansi.ansi().a(Attribute.RESET).fg(Color.CYAN).boldOff().toString());
+        replacements.put(ChatColor.DARK_RED, Ansi.ansi().a(Attribute.RESET).fg(Color.RED).boldOff().toString());
+        replacements.put(ChatColor.DARK_PURPLE, Ansi.ansi().a(Attribute.RESET).fg(Color.MAGENTA).boldOff().toString());
+        replacements.put(ChatColor.GOLD, Ansi.ansi().a(Attribute.RESET).fg(Color.YELLOW).boldOff().toString());
+        replacements.put(ChatColor.GRAY, Ansi.ansi().a(Attribute.RESET).fg(Color.WHITE).boldOff().toString());
+        replacements.put(ChatColor.DARK_GRAY, Ansi.ansi().a(Attribute.RESET).fg(Color.BLACK).bold().toString());
+        replacements.put(ChatColor.BLUE, Ansi.ansi().a(Attribute.RESET).fg(Color.BLUE).bold().toString());
+        replacements.put(ChatColor.GREEN, Ansi.ansi().a(Attribute.RESET).fg(Color.GREEN).bold().toString());
+        replacements.put(ChatColor.AQUA, Ansi.ansi().a(Attribute.RESET).fg(Color.CYAN).bold().toString());
+        replacements.put(ChatColor.RED, Ansi.ansi().a(Attribute.RESET).fg(Color.RED).bold().toString());
+        replacements.put(ChatColor.LIGHT_PURPLE, Ansi.ansi().a(Attribute.RESET).fg(Color.MAGENTA).bold().toString());
+        replacements.put(ChatColor.YELLOW, Ansi.ansi().a(Attribute.RESET).fg(Color.YELLOW).bold().toString());
+        replacements.put(ChatColor.WHITE, Ansi.ansi().a(Attribute.RESET).fg(Color.WHITE).bold().toString());
+        replacements.put(ChatColor.MAGIC, Ansi.ansi().a(Attribute.BLINK_SLOW).toString());
+        replacements.put(ChatColor.BOLD, Ansi.ansi().a(Attribute.UNDERLINE_DOUBLE).toString());
+        replacements.put(ChatColor.STRIKETHROUGH, Ansi.ansi().a(Attribute.STRIKETHROUGH_ON).toString());
+        replacements.put(ChatColor.UNDERLINE, Ansi.ansi().a(Attribute.UNDERLINE).toString());
+        replacements.put(ChatColor.ITALIC, Ansi.ansi().a(Attribute.ITALIC).toString());
+        replacements.put(ChatColor.RESET, Ansi.ansi().a(Attribute.RESET).toString());
     }
 
     public ConsoleCommandSender getSender() {
@@ -101,6 +102,13 @@ public final class ConsoleManager {
         this.jLine = jLine;
 
         sender = new ColoredCommandSender();
+        CONSOLE_DATE = server.getConsoleDateFormat();
+        for (Handler handler : logger.getHandlers()) {
+            if (handler.getClass() == FancyConsoleHandler.class) {
+                handler.setFormatter(new DateOutputFormatter(CONSOLE_DATE, true));
+            }
+        }
+        CONSOLE_PROMPT = server.getConsolePrompt();
         Thread thread = new ConsoleCommandThread();
         thread.setName("ConsoleCommandThread");
         thread.setDaemon(true);
@@ -113,6 +121,7 @@ public final class ConsoleManager {
             logger.warning("Could not create log folder: " + parent);
         }
         Handler fileHandler = new RotatingFileHandler(logfile);
+        FILE_DATE = server.getConsoleLogDateFormat();
         fileHandler.setFormatter(new DateOutputFormatter(FILE_DATE, false));
         logger.addHandler(fileHandler);
     }
@@ -134,25 +143,95 @@ public final class ConsoleManager {
             // colorize or strip all colors
             for (ChatColor color : colors) {
                 if (replacements.containsKey(color)) {
-                    string = string.replaceAll("(?i)" + color.toString(), replacements.get(color));
+                    string = string.replaceAll("(?i)" + color, replacements.get(color));
                 } else {
-                    string = string.replaceAll("(?i)" + color.toString(), "");
+                    string = string.replaceAll("(?i)" + color, "");
                 }
             }
-            return string + Ansi.ansi().reset().toString();
+            return string + Ansi.ansi().reset();
+        }
+    }
+
+    private static class LoggerOutputStream extends ByteArrayOutputStream {
+        private final String separator = System.getProperty("line.separator");
+        private final Level level;
+
+        public LoggerOutputStream(Level level) {
+            this.level = level;
+        }
+
+        @Override
+        public synchronized void flush() throws IOException {
+            super.flush();
+            String record = toString();
+            reset();
+
+            if (!record.isEmpty() && !record.equals(separator)) {
+                logger.logp(level, "LoggerOutputStream", "log" + level, record);
+            }
+        }
+    }
+
+    private static class RotatingFileHandler extends StreamHandler {
+        private final SimpleDateFormat dateFormat;
+        private final String template;
+        private final boolean rotate;
+        private String filename;
+
+        public RotatingFileHandler(String template) {
+            this.template = template;
+            rotate = template.contains("%D");
+            dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            filename = calculateFilename();
+            updateOutput();
+        }
+
+        private void updateOutput() {
+            try {
+                setOutputStream(new FileOutputStream(filename, true));
+            } catch (IOException ex) {
+                logger.log(Level.SEVERE, "Unable to open " + filename + " for writing", ex);
+            }
+        }
+
+        private void checkRotate() {
+            if (rotate) {
+                String newFilename = calculateFilename();
+                if (!filename.equals(newFilename)) {
+                    filename = newFilename;
+                    // note that the console handler doesn't see this message
+                    super.publish(new LogRecord(Level.INFO, "Log rotating to: " + filename));
+                    updateOutput();
+                }
+            }
+        }
+
+        private String calculateFilename() {
+            return template.replace("%D", dateFormat.format(new Date()));
+        }
+
+        @Override
+        public synchronized void publish(LogRecord record) {
+            if (!isLoggable(record)) {
+                return;
+            }
+            checkRotate();
+            super.publish(record);
+            super.flush();
+        }
+
+        @Override
+        public synchronized void flush() {
+            checkRotate();
+            super.flush();
         }
     }
 
     private class CommandCompleter implements Completer {
         @Override
-        public int complete(final String buffer, int cursor, List<CharSequence> candidates) {
+        public int complete(String buffer, int cursor, List<CharSequence> candidates) {
             try {
-                List<String> completions = server.getScheduler().syncIfNeeded(new Callable<List<String>>() {
-                    @Override
-                    public List<String> call() throws Exception {
-                        return server.getCommandMap().tabComplete(sender, buffer);
-                    }
-                });
+                List<String> completions = server.getScheduler().syncIfNeeded(() -> server.getCommandMap().tabComplete(sender, buffer));
                 if (completions == null) {
                     return cursor;  // no completions
                 }
@@ -174,12 +253,12 @@ public final class ConsoleManager {
             while (running) {
                 try {
                     if (jLine) {
-                        command = reader.readLine(">", null);
+                        command = reader.readLine(CONSOLE_PROMPT, null);
                     } else {
                         command = reader.readLine();
                     }
 
-                    if (command == null || command.trim().length() == 0)
+                    if (command == null || command.trim().isEmpty())
                         continue;
 
                     server.getScheduler().runTask(null, new CommandTask(command.trim()));
@@ -336,27 +415,6 @@ public final class ConsoleManager {
         }
     }
 
-    private static class LoggerOutputStream extends ByteArrayOutputStream {
-        private final String separator = System.getProperty("line.separator");
-        private final Level level;
-
-        public LoggerOutputStream(Level level) {
-            super();
-            this.level = level;
-        }
-
-        @Override
-        public synchronized void flush() throws IOException {
-            super.flush();
-            String record = this.toString();
-            super.reset();
-
-            if (record.length() > 0 && !record.equals(separator)) {
-                logger.logp(level, "LoggerOutputStream", "log" + level, record);
-            }
-        }
-    }
-
     private class FancyConsoleHandler extends ConsoleHandler {
         public FancyConsoleHandler() {
             setFormatter(new DateOutputFormatter(CONSOLE_DATE, true));
@@ -385,67 +443,12 @@ public final class ConsoleManager {
         }
     }
 
-    private static class RotatingFileHandler extends StreamHandler {
-        private final SimpleDateFormat dateFormat;
-        private final String template;
-        private final boolean rotate;
-        private String filename;
-
-        public RotatingFileHandler(String template) {
-            this.template = template;
-            rotate = template.contains("%D");
-            dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            filename = calculateFilename();
-            updateOutput();
-        }
-
-        private void updateOutput() {
-            try {
-                setOutputStream(new FileOutputStream(filename, true));
-            } catch (IOException ex) {
-                logger.log(Level.SEVERE, "Unable to open " + filename + " for writing", ex);
-            }
-        }
-
-        private void checkRotate() {
-            if (rotate) {
-                String newFilename = calculateFilename();
-                if (!filename.equals(newFilename)) {
-                    filename = newFilename;
-                    // note that the console handler doesn't see this message
-                    super.publish(new LogRecord(Level.INFO, "Log rotating to: " + filename));
-                    updateOutput();
-                }
-            }
-        }
-
-        private String calculateFilename() {
-            return template.replace("%D", dateFormat.format(new Date()));
-        }
-
-        @Override
-        public synchronized void publish(LogRecord record) {
-            if (!isLoggable(record)) {
-                return;
-            }
-            checkRotate();
-            super.publish(record);
-            super.flush();
-        }
-
-        @Override
-        public synchronized void flush() {
-            checkRotate();
-            super.flush();
-        }
-    }
-
     private class DateOutputFormatter extends Formatter {
         private final SimpleDateFormat date;
         private final boolean color;
 
         public DateOutputFormatter(String pattern, boolean color) {
-            this.date = new SimpleDateFormat(pattern);
+            date = new SimpleDateFormat(pattern);
             this.color = color;
         }
 
@@ -466,9 +469,11 @@ public final class ConsoleManager {
             builder.append('\n');
 
             if (record.getThrown() != null) {
+                // StringWriter's close() is trivial
+                @SuppressWarnings("resource")
                 StringWriter writer = new StringWriter();
                 record.getThrown().printStackTrace(new PrintWriter(writer));
-                builder.append(writer.toString());
+                builder.append(writer);
             }
 
             return builder.toString();

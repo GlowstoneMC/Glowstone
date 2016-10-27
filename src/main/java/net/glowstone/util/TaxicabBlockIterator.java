@@ -15,7 +15,7 @@ public class TaxicabBlockIterator implements Iterator<Block> {
     private final Queue<Block> nextValidBlocks = new LinkedList<>();
     private final Set<Block> usedBlocks = new HashSet<>();
     private int currentDistance = 1;
-    private int validBlockCount = 0;
+    private int validBlockCount;
 
     private int maxDistance = Integer.MAX_VALUE;
     private int maxBlocks = Integer.MAX_VALUE;
@@ -94,9 +94,6 @@ public class TaxicabBlockIterator implements Iterator<Block> {
     private static final class DistanceMarker {
 
         public static final DistanceMarker INSTANCE = new DistanceMarker();
-
-        private DistanceMarker() {
-        }
 
     }
 }

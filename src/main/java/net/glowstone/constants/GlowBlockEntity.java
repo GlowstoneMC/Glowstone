@@ -9,19 +9,23 @@ public enum GlowBlockEntity {
     BEACON(3),
     SKULL(4),
     FLOWER_POT(5),
-    BANNER(6);
+    BANNER(6),
+    STRUCTURE(7),
+    END_GATEWAY(8),
+    SIGN(9);
 
     private final int value;
 
-    private GlowBlockEntity(final int value) {
+    GlowBlockEntity(int value) {
         this.value = value;
     }
 
     /**
      * Gets the magic number associated with this GlowBlockEntity
+     *
      * @return the magic number
      */
     public int getValue() {
-        return this.value;
+        return value;
     }
 }

@@ -23,6 +23,10 @@ abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityS
     public void load(T entity, CompoundTag tag) {
         super.load(entity, tag);
 
+        if (tag.isInt("XpSeed")) {
+            entity.setXpSeed(tag.getInt("XpSeed"));
+        }
+
         if (tag.isInt("playerGameType")) {
             GameMode mode = GameMode.getByValue(tag.getInt("playerGameType"));
             if (mode != null) {
@@ -39,6 +43,7 @@ abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityS
             List<CompoundTag> items = tag.getCompoundList("Inventory");
             inventory.setContents(NbtSerialization.readInventory(items, 0, inventory.getSize()));
             inventory.setArmorContents(NbtSerialization.readInventory(items, 100, 4));
+            inventory.setItemInOffHand(NbtSerialization.readInventory(items, 106, 1)[0]);
         }
         if (tag.isList("EnderItems", TagType.COMPOUND)) {
             Inventory inventory = entity.getEnderChest();
@@ -65,11 +70,13 @@ abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityS
         tag.putInt("SelectedItemSlot", entity.getInventory().getHeldItemSlot());
         tag.putBool("Sleeping", entity.isSleeping());
         tag.putShort("SleepTimer", entity.getSleepTicks());
+        tag.putInt("XpSeed", entity.getXpSeed());
 
         // inventory
         List<CompoundTag> inventory;
         inventory = NbtSerialization.writeInventory(entity.getInventory().getContents(), 0);
         inventory.addAll(NbtSerialization.writeInventory(entity.getInventory().getArmorContents(), 100));
+        inventory.add(NbtSerialization.writeItem(entity.getInventory().getItemInOffHand(), 106));
         tag.putCompoundList("Inventory", inventory);
 
         // ender items

@@ -16,12 +16,13 @@ public final class EntityIdManager {
     /**
      * The last assigned id value.
      */
-    private int lastId = 0;
+    private int lastId;
 
     /**
      * Allocates the id for an entity.
      * This method performs synchronization as it might be
      * accessed by multiple world threads simultaneously.
+     *
      * @param entity The entity.
      * @return The id.
      */
@@ -48,6 +49,7 @@ public final class EntityIdManager {
 
     /**
      * Deallocates the id for an entity.
+     *
      * @param entity The entity.
      */
     synchronized void deallocate(GlowEntity entity) {

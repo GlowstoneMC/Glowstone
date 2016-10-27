@@ -1,18 +1,21 @@
 package net.glowstone.net.codec.play.entity;
 
-import com.flowpowered.networking.Codec;
-import com.flowpowered.networking.util.ByteBufUtils;
+import com.flowpowered.network.Codec;
+import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.DecoderException;
+import net.glowstone.entity.meta.MetadataMap.Entry;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 
 import java.io.IOException;
+import java.util.List;
 
 public final class EntityMetadataCodec implements Codec<EntityMetadataMessage> {
     @Override
     public EntityMetadataMessage decode(ByteBuf buf) throws IOException {
-        throw new DecoderException("Cannot decode EntityMetadataMessage");
+        int id = ByteBufUtils.readVarInt(buf);
+        List<Entry> metadata = GlowBufUtils.readMetadata(buf);
+        return new EntityMetadataMessage(id, metadata);
     }
 
     @Override

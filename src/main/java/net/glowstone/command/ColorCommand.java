@@ -4,15 +4,15 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * A built-in command to demonstrate all chat colors.
  */
 public class ColorCommand extends BukkitCommand {
-    
-    public ColorCommand(String name) {
-        super(name, "Display all colors.", "/colors", Arrays.<String>asList());
+
+    public ColorCommand() {
+        super("colors", "Display all colors.", "/colors", Collections.emptyList());
     }
 
     @Override

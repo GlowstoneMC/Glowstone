@@ -1,5 +1,8 @@
 package net.glowstone.io.entity;
 
+import net.glowstone.entity.AttributeManager;
+import net.glowstone.entity.AttributeManager.Modifier;
+import net.glowstone.entity.AttributeManager.Property;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
@@ -8,9 +11,8 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.Map.Entry;
 
 abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore<T> {
 
@@ -28,7 +30,6 @@ abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore
     // - short "HurtTime"
     // - int "HurtByTimestamp"
     // - short "DeathTime"
-    // - compound "Attributes"
     // - bool "PersistenceRequired"
     // - bool "Leashed"
     // - compound "Leash"
@@ -55,6 +56,9 @@ abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore
         }
         if (compound.isShort("AttackTime")) {
             entity.setNoDamageTicks(compound.getShort("AttackTime"));
+        }
+        if (compound.isByte("FallFlying")) {
+            entity.setFallFlying(compound.getBool("FallFlying"));
         }
 
         if (compound.isList("ActiveEffects", TagType.COMPOUND)) {
@@ -85,28 +89,57 @@ abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore
         }
 
         EntityEquipment equip = entity.getEquipment();
-        if (compound.isList("Equipment", TagType.COMPOUND)) {
-            List<CompoundTag> list = compound.getCompoundList("Equipment");
-            if (list.size() == 5) {
-                equip.setItemInHand(NbtSerialization.readItem(list.get(0)));
-                equip.setBoots(NbtSerialization.readItem(list.get(1)));
-                equip.setLeggings(NbtSerialization.readItem(list.get(2)));
-                equip.setChestplate(NbtSerialization.readItem(list.get(3)));
-                equip.setHelmet(NbtSerialization.readItem(list.get(4)));
+        if (equip != null) {
+            if (compound.isList("Equipment", TagType.COMPOUND)) {
+                List<CompoundTag> list = compound.getCompoundList("Equipment");
+                if (list.size() == 5) {
+                    equip.setItemInHand(NbtSerialization.readItem(list.get(0)));
+                    equip.setBoots(NbtSerialization.readItem(list.get(1)));
+                    equip.setLeggings(NbtSerialization.readItem(list.get(2)));
+                    equip.setChestplate(NbtSerialization.readItem(list.get(3)));
+                    equip.setHelmet(NbtSerialization.readItem(list.get(4)));
+                }
             }
-        }
-        if (compound.isList("DropChances", TagType.FLOAT)) {
-            List<Float> list = compound.getList("DropChances", TagType.FLOAT);
-            if (list.size() == 5) {
-                equip.setItemInHandDropChance(list.get(0));
-                equip.setBootsDropChance(list.get(1));
-                equip.setLeggingsDropChance(list.get(2));
-                equip.setChestplateDropChance(list.get(3));
-                equip.setHelmetDropChance(list.get(4));
+            if (compound.isList("DropChances", TagType.FLOAT)) {
+                List<Float> list = compound.getList("DropChances", TagType.FLOAT);
+                if (list.size() == 5) {
+                    equip.setItemInHandDropChance(list.get(0));
+                    equip.setBootsDropChance(list.get(1));
+                    equip.setLeggingsDropChance(list.get(2));
+                    equip.setChestplateDropChance(list.get(3));
+                    equip.setHelmetDropChance(list.get(4));
+                }
             }
         }
         if (compound.isByte("CanPickUpLoot")) {
             entity.setCanPickupItems(compound.getBool("CanPickUpLoot"));
+        }
+
+        if (compound.isList("Attributes", TagType.COMPOUND)) {
+            List<CompoundTag> attributes = compound.getCompoundList("Attributes");
+            AttributeManager am = entity.getAttributeManager();
+
+            for (CompoundTag tag : attributes) {
+                if (tag.isString("Name") && tag.isDouble("Base")) {
+                    List<Modifier> modifiers = null;
+                    if (tag.isList("Modifiers", TagType.COMPOUND)) {
+                        modifiers = new ArrayList<>();
+
+                        List<CompoundTag> modifierTags = tag.getCompoundList("Modifiers");
+                        for (CompoundTag modifierTag : modifierTags) {
+                            if (modifierTag.isDouble("Amount") && modifierTag.isString("Name") &&
+                                    modifierTag.isInt("Operation") && modifierTag.isLong("UUIDLeast") &&
+                                    modifierTag.isLong("UUIDMost")) {
+                                modifiers.add(new Modifier(
+                                        modifierTag.getString("Name"), new UUID(modifierTag.getLong("UUIDLeast"), modifierTag.getLong("UUIDMost")),
+                                        modifierTag.getDouble("Amount"), (byte) modifierTag.getInt("Operation")));
+                            }
+                        }
+                    }
+
+                    am.setProperty(tag.getString("Name"), tag.getDouble("Base"), modifiers);
+                }
+            }
         }
     }
 
@@ -123,6 +156,38 @@ abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore
         tag.putFloat("HealF", entity.getHealth());
         tag.putShort("Health", (int) entity.getHealth());
         tag.putShort("AttackTime", entity.getNoDamageTicks());
+        tag.putBool("FallFlying", entity.isFallFlying());
+
+        AttributeManager am = entity.getAttributeManager();
+        Map<String, Property> properties = am.getAllProperties();
+        if (!properties.isEmpty()) {
+            List<CompoundTag> attributes = new ArrayList<>();
+
+            for (Entry<String, Property> property : properties.entrySet()) {
+                CompoundTag attribute = new CompoundTag();
+                attribute.putString("Name", property.getKey());
+
+                Property p = property.getValue();
+                attribute.putDouble("Base", p.getValue());
+                if (p.getModifiers() != null && !p.getModifiers().isEmpty()) {
+                    List<CompoundTag> modifiers = new ArrayList<>();
+                    for (Modifier modifier : p.getModifiers()) {
+                        CompoundTag modifierTag = new CompoundTag();
+                        modifierTag.putDouble("Amount", modifier.getAmount());
+                        modifierTag.putString("Name", modifier.getName());
+                        modifierTag.putInt("Operation", modifier.getOperation());
+                        modifierTag.putLong("UUIDLeast", modifier.getUuid().getLeastSignificantBits());
+                        modifierTag.putLong("UUIDMost", modifier.getUuid().getMostSignificantBits());
+                        modifiers.add(modifierTag);
+                    }
+                    attribute.putCompoundList("Modifiers", modifiers);
+                }
+
+                attributes.add(attribute);
+            }
+
+            tag.putCompoundList("Attributes", attributes);
+        }
 
         List<CompoundTag> effects = new LinkedList<>();
         for (PotionEffect effect : entity.getActivePotionEffects()) {
@@ -137,20 +202,22 @@ abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore
         tag.putCompoundList("ActiveEffects", effects);
 
         EntityEquipment equip = entity.getEquipment();
-        tag.putCompoundList("Equipment", Arrays.asList(
-                NbtSerialization.writeItem(equip.getItemInHand(), -1),
-                NbtSerialization.writeItem(equip.getBoots(), -1),
-                NbtSerialization.writeItem(equip.getLeggings(), -1),
-                NbtSerialization.writeItem(equip.getChestplate(), -1),
-                NbtSerialization.writeItem(equip.getHelmet(), -1)
-        ));
-        tag.putList("DropChances", TagType.FLOAT, Arrays.asList(
-                equip.getItemInHandDropChance(),
-                equip.getBootsDropChance(),
-                equip.getLeggingsDropChance(),
-                equip.getChestplateDropChance(),
-                equip.getHelmetDropChance()
-        ));
+        if (equip != null) {
+            tag.putCompoundList("Equipment", Arrays.asList(
+                    NbtSerialization.writeItem(equip.getItemInHand(), -1),
+                    NbtSerialization.writeItem(equip.getBoots(), -1),
+                    NbtSerialization.writeItem(equip.getLeggings(), -1),
+                    NbtSerialization.writeItem(equip.getChestplate(), -1),
+                    NbtSerialization.writeItem(equip.getHelmet(), -1)
+            ));
+            tag.putList("DropChances", TagType.FLOAT, Arrays.asList(
+                    equip.getItemInHandDropChance(),
+                    equip.getBootsDropChance(),
+                    equip.getLeggingsDropChance(),
+                    equip.getChestplateDropChance(),
+                    equip.getHelmetDropChance()
+            ));
+        }
         tag.putBool("CanPickUpLoot", entity.getCanPickupItems());
     }
 }

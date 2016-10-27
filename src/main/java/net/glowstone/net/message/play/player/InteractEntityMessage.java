@@ -1,6 +1,6 @@
 package net.glowstone.net.message.play.player;
 
-import com.flowpowered.networking.Message;
+import com.flowpowered.network.Message;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -10,9 +10,13 @@ public final class InteractEntityMessage implements Message {
 
     private final int id, action;
     private final float targetX, targetY, targetZ;
-
+    private final int hand; // 0 = main hand, 1 = off hand
     public InteractEntityMessage(int id, int action) {
-        this(id, action, 0, 0, 0);
+        this(id, action, 0, 0, 0, 0);
+    }
+
+    public InteractEntityMessage(int id, int action, int hand) {
+        this(id, action, 0, 0, 0, hand);
     }
 
     public enum Action {

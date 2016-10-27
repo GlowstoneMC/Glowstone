@@ -7,10 +7,8 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Random;
 
 public class BlockHugeMushroom extends BlockType {
-    private final Random random = new Random();
     private final Material mushroomType;
     private final short data;
 

@@ -1,7 +1,7 @@
 package net.glowstone.net.codec.play.game;
 
-import com.flowpowered.networking.Codec;
-import com.flowpowered.networking.util.ByteBufUtils;
+import com.flowpowered.network.Codec;
+import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import net.glowstone.net.message.play.game.PlayParticleMessage;
@@ -26,9 +26,11 @@ public final class PlayParticleCodec implements Codec<PlayParticleMessage> {
         buf.writeFloat(message.getOfsZ());
         buf.writeFloat(message.getData());
         buf.writeInt(message.getCount());
+
         for (int extData : message.getExtData()) {
             ByteBufUtils.writeVarInt(buf, extData);
         }
+
         return buf;
     }
 }

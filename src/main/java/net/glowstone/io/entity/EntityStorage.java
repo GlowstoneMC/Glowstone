@@ -2,6 +2,12 @@ package net.glowstone.io.entity;
 
 import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowEntity;
+import net.glowstone.entity.monster.*;
+import net.glowstone.entity.objects.GlowMinecart;
+import net.glowstone.entity.passive.GlowCow;
+import net.glowstone.entity.passive.GlowMooshroom;
+import net.glowstone.entity.passive.GlowPolarBear;
+import net.glowstone.entity.passive.GlowSquid;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
@@ -16,34 +22,81 @@ import java.util.Map;
  */
 public final class EntityStorage {
 
-    private EntityStorage() {
-    }
-
     /**
      * A table which maps entity ids to compound readers. This is generally used to map
      * stored entities to actual entities.
      */
     private static final Map<String, EntityStore<?>> idTable = new HashMap<>();
-
     /**
      * A table which maps entities to stores. This is generally used to map
      * entities being stored.
      */
     private static final Map<Class<? extends GlowEntity>, EntityStore<?>> classTable = new HashMap<>();
 
-    /**
+    /*
      * Populates the maps with stores.
      */
     static {
         bind(new PlayerStore());
+
+        // LivingEntities - Passive Entities
+        bind(new BatStore());
+        bind(new ChickenStore());
+        bind(new HorseStore());
+        bind(new PigStore());
+        bind(new RabbitStore());
+        bind(new SheepStore());
+        bind(new OcelotStore());
+        bind(new WolfStore());
+        bind(new VillagerStore());
+        bind(new AgeableStore<>(GlowCow.class, "Cow"));
+        bind(new AgeableStore<>(GlowMooshroom.class, "MushroomCow"));
+        bind(new WaterMobStore<>(GlowSquid.class, "Squid"));
+        bind(new AgeableStore<>(GlowPolarBear.class, "PolarBear"));
+
+        // LivingEntities - Hostile Entities
+        bind(new CreeperStore());
+        bind(new EndermanStore());
+        bind(new EndermiteStore());
+        bind(new GhastStore());
+        bind(new GuardianStore());
+        bind(new IronGolemStore());
+        bind(new SlimeStore(GlowSlime.class, "Slime"));
+        bind(new SlimeStore(GlowMagmaCube.class, "LavaSlime"));
+        bind(new ZombieStore<>());
+        bind(new PigZombieStore());
+        bind(new SkeletonStore());
+        bind(new MonsterStore<>(GlowBlaze.class, "Blaze"));
+        bind(new MonsterStore<>(GlowCaveSpider.class, "CaveSpider"));
+        bind(new MonsterStore<>(GlowSpider.class, "Spider"));
+        bind(new MonsterStore<>(GlowSnowman.class, "Snowman"));
+        bind(new MonsterStore<>(GlowGiant.class, "Giant"));
+        bind(new MonsterStore<>(GlowSilverfish.class, "Silverfish"));
+        bind(new MonsterStore<>(GlowWitch.class, "Witch"));
+        bind(new ShulkerStore());
+        bind(new WitherStore());
+
+
+        bind(new ArmorStandStore());
+        bind(new FallingBlockStore());
+        bind(new ItemFrameStore());
         bind(new ItemStore());
         bind(new TNTPrimedStorage());
+        for (GlowMinecart.MinecartType type : GlowMinecart.MinecartType.values()) {
+            if (type != null) {
+                bind(new MinecartStore(type));
+            }
+        }
+    }
+
+    private EntityStorage() {
     }
 
     /**
      * Binds a store by adding entries for it to the tables.
+     *
      * @param store The store object.
-     * @param <T> The type of entity.
+     * @param <T>   The type of entity.
      */
     private static <T extends GlowEntity> void bind(EntityStore<T> store) {
         idTable.put(store.getId(), store);
@@ -52,7 +105,8 @@ public final class EntityStorage {
 
     /**
      * Load a new entity in the given world from the given data tag.
-     * @param world The target world.
+     *
+     * @param world    The target world.
      * @param compound The tag to load from.
      * @return The newly constructed entity.
      * @throws IllegalArgumentException if there is an error in the data.
@@ -109,12 +163,13 @@ public final class EntityStorage {
      */
     @SuppressWarnings("unchecked")
     private static EntityStore<GlowEntity> getBaseStore(EntityStore<?> store) {
-        return ((EntityStore<GlowEntity>) store);
+        return (EntityStore<GlowEntity>) store;
     }
 
     /**
      * Save an entity's data to the given compound tag.
-     * @param entity The entity to save.
+     *
+     * @param entity   The entity to save.
      * @param compound The target tag.
      */
     public static void save(GlowEntity entity, CompoundTag compound) {
@@ -127,7 +182,8 @@ public final class EntityStorage {
 
     /**
      * Load an entity's data from the given compound tag.
-     * @param entity The target entity.
+     *
+     * @param entity   The target entity.
      * @param compound The tag to load from.
      */
     public static void load(GlowEntity entity, CompoundTag compound) {

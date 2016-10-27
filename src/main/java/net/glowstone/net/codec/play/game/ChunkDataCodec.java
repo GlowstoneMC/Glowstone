@@ -1,9 +1,11 @@
 package net.glowstone.net.codec.play.game;
 
-import com.flowpowered.networking.Codec;
-import com.flowpowered.networking.util.ByteBufUtils;
+import com.flowpowered.network.Codec;
+import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.game.ChunkDataMessage;
+import net.glowstone.util.nbt.CompoundTag;
 
 import java.io.IOException;
 
@@ -19,10 +21,18 @@ public final class ChunkDataCodec implements Codec<ChunkDataMessage> {
         buf.writeInt(message.getX());
         buf.writeInt(message.getZ());
         buf.writeBoolean(message.isContinuous());
-        buf.writeShort(message.getPrimaryMask());
-
-        ByteBufUtils.writeVarInt(buf, message.getData().length);
-        buf.writeBytes(message.getData());
+        ByteBufUtils.writeVarInt(buf, message.getPrimaryMask());
+        ByteBuf data = message.getData();
+        try {
+            ByteBufUtils.writeVarInt(buf, data.writerIndex());
+            buf.writeBytes(data);
+        } finally {
+            data.release();
+        }
+        ByteBufUtils.writeVarInt(buf, message.getTileEntities().length);
+        for (CompoundTag tag : message.getTileEntities()) {
+            GlowBufUtils.writeCompound(buf, tag);
+        }
         return buf;
     }
 }

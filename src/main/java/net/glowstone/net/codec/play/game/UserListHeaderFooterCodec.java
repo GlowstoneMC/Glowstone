@@ -1,10 +1,10 @@
 package net.glowstone.net.codec.play.game;
 
-import com.flowpowered.networking.Codec;
+import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.DecoderException;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.game.UserListHeaderFooterMessage;
+import net.glowstone.util.TextMessage;
 
 import java.io.IOException;
 
@@ -12,7 +12,9 @@ public final class UserListHeaderFooterCodec implements Codec<UserListHeaderFoot
 
     @Override
     public UserListHeaderFooterMessage decode(ByteBuf buffer) throws IOException {
-        throw new DecoderException("Cannot decode PlayerListHeaderFooterMessage");
+        TextMessage header = GlowBufUtils.readChat(buffer);
+        TextMessage footer = GlowBufUtils.readChat(buffer);
+        return new UserListHeaderFooterMessage(header, footer);
     }
 
     @Override

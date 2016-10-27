@@ -4,7 +4,6 @@ import java.io.Closeable;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
@@ -12,7 +11,7 @@ import java.util.zip.GZIPInputStream;
 /**
  * This class reads NBT, or Named Binary Tag streams, and produces an object
  * graph of subclasses of the {@link Tag} object.
- * <p/>
+ * <p>
  * The NBT format was created by Markus Persson, and the specification may
  * be found at <a href="http://www.minecraft.net/docs/NBT.txt">
  * http://www.minecraft.net/docs/NBT.txt</a>.
@@ -27,6 +26,7 @@ public final class NBTInputStream implements Closeable {
     /**
      * Creates a new NBTInputStream, which will source its data
      * from the specified input stream. This assumes the stream is compressed.
+     *
      * @param is The input stream.
      * @throws IOException if an I/O error occurs.
      */
@@ -38,20 +38,34 @@ public final class NBTInputStream implements Closeable {
      * Creates a new NBTInputStream, which sources its data from the
      * specified input stream. A flag must be passed which indicates if the
      * stream is compressed with GZIP or not.
-     * @param is The input stream.
+     *
+     * @param is         The input stream.
      * @param compressed A flag indicating if the stream is compressed.
      * @throws IOException if an I/O error occurs.
      */
+    @SuppressWarnings("resource")
     public NBTInputStream(InputStream is, boolean compressed) throws IOException {
         this.is = new DataInputStream(compressed ? new GZIPInputStream(is) : is);
     }
 
     /**
      * Reads the root NBT {@link CompoundTag} from the stream.
+     *
      * @return The tag that was read.
      * @throws IOException if an I/O error occurs.
      */
     public CompoundTag readCompound() throws IOException {
+        return readCompound(NBTReadLimiter.UNLIMITED);
+    }
+
+    /**
+     * Reads the root NBT {@link CompoundTag} from the stream.
+     *
+     * @param readLimiter The read limiter to prevent overflow when reading the NBT data.
+     * @return The tag that was read.
+     * @throws IOException if an I/O error occurs.
+     */
+    public CompoundTag readCompound(NBTReadLimiter readLimiter) throws IOException {
         // read type
         TagType type = TagType.byIdOrError(is.readUnsignedByte());
         if (type != TagType.COMPOUND) {
@@ -63,10 +77,10 @@ public final class NBTInputStream implements Closeable {
         is.skipBytes(nameLength);
 
         // read tag
-        return (CompoundTag) readTagPayload(type, 0);
+        return (CompoundTag) readTagPayload(type, 0, readLimiter);
     }
 
-    private CompoundTag readCompound(int depth) throws IOException {
+    private CompoundTag readCompound(int depth, NBTReadLimiter readLimiter) throws IOException {
         CompoundTag result = new CompoundTag();
 
         while (true) {
@@ -77,14 +91,12 @@ public final class NBTInputStream implements Closeable {
             }
 
             // read name
-            int nameLength = is.readUnsignedShort();
-            byte[] nameBytes = new byte[nameLength];
-            is.readFully(nameBytes);
-            String name = new String(nameBytes, StandardCharsets.UTF_8);
+            String name = is.readUTF();
+            readLimiter.read(28 + 2 * name.length());
 
             // read tag
-            Tag tag = readTagPayload(type, depth + 1);
-
+            Tag tag = readTagPayload(type, depth + 1, readLimiter);
+            readLimiter.read(36);
             result.put(name, tag);
         }
 
@@ -93,60 +105,79 @@ public final class NBTInputStream implements Closeable {
 
     /**
      * Reads the payload of a {@link Tag}, given the name and type.
-     * @param type The type.
+     *
+     * @param type  The type.
      * @param depth The depth.
      * @return The tag.
      * @throws IOException if an I/O error occurs.
      */
     @SuppressWarnings("unchecked")
-    private Tag readTagPayload(TagType type, int depth) throws IOException {
+    private Tag readTagPayload(TagType type, int depth, NBTReadLimiter readLimiter) throws IOException {
+
+        if (depth > 512) {
+            throw new IllegalStateException("Tried to read NBT tag with too high complexity, depth > 512");
+        }
+
         switch (type) {
             case BYTE:
+                readLimiter.read(1);
                 return new ByteTag(is.readByte());
 
             case SHORT:
+                readLimiter.read(2);
                 return new ShortTag(is.readShort());
 
             case INT:
+                readLimiter.read(4);
                 return new IntTag(is.readInt());
 
             case LONG:
+                readLimiter.read(8);
                 return new LongTag(is.readLong());
 
             case FLOAT:
+                readLimiter.read(4);
                 return new FloatTag(is.readFloat());
 
             case DOUBLE:
+                readLimiter.read(8);
                 return new DoubleTag(is.readDouble());
 
             case BYTE_ARRAY:
+                readLimiter.read(24);
                 int length = is.readInt();
+                readLimiter.read(length);
                 byte[] bytes = new byte[length];
                 is.readFully(bytes);
                 return new ByteArrayTag(bytes);
 
             case STRING:
-                length = is.readShort();
-                bytes = new byte[length];
-                is.readFully(bytes);
-                return new StringTag(new String(bytes, StandardCharsets.UTF_8));
+                readLimiter.read(36);
+                String s = is.readUTF();
+                readLimiter.read(2 * s.length());
+                return new StringTag(s);
 
             case LIST:
+                readLimiter.read(37);
                 TagType childType = TagType.byIdOrError(is.readUnsignedByte());
                 length = is.readInt();
+                readLimiter.read(4 * length);
 
-                List<Tag> tagList = new ArrayList<>();
+                List<Tag> tagList = new ArrayList<>(length);
                 for (int i = 0; i < length; i++) {
-                    tagList.add(readTagPayload(childType, depth + 1));
+                    tagList.add(readTagPayload(childType, depth + 1, readLimiter));
                 }
 
                 return new ListTag(childType, tagList);
 
             case COMPOUND:
-                return readCompound(depth + 1);
+                readLimiter.read(48);
+                return readCompound(depth + 1, readLimiter);
 
             case INT_ARRAY:
+                readLimiter.read(37);
                 length = is.readInt();
+                readLimiter.read(4 * length);
                 int[] ints = new int[length];
                 for (int i = 0; i < length; ++i) {
                     ints[i] = is.readInt();

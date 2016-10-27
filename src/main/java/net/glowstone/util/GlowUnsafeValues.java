@@ -32,7 +32,7 @@ public final class GlowUnsafeValues implements UnsafeValues {
     public List<String> tabCompleteInternalMaterialName(String token, List<String> completions) {
         List<String> materialNames = new ArrayList<>(Material.values().length);
         for (Material mat : Material.values()) {
-            materialNames.add(mat.name());
+            materialNames.add(mat.name().toLowerCase());
         }
         return StringUtil.copyPartialMatches(token, materialNames, completions);
     }

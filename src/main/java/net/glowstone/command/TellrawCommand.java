@@ -10,16 +10,13 @@ import org.bukkit.entity.Player;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 public class TellrawCommand extends BukkitCommand {
 
     public TellrawCommand() {
-        super("tellraw");
-        this.description = "Send a private JSON message to the given player";
-        this.usageMessage = "/tellraw <player> <raw-json-message>";
-        this.setAliases(Arrays.<String>asList());
-        this.setPermission("glowstone.command.tellraw");
+        super("tellraw", "Send a private JSON message to the given player", "/tellraw <player> <raw-json-message>", Collections.emptyList());
+        setPermission("glowstone.command.tellraw");
     }
 
     @Override
@@ -32,7 +29,7 @@ public class TellrawCommand extends BukkitCommand {
 
         Player player = Bukkit.getPlayerExact(args[0]);
 
-        if (player == null || (sender instanceof Player && !((Player) sender).canSee(player))) {
+        if (player == null || sender instanceof Player && !((Player) sender).canSee(player)) {
             sender.sendMessage("There's no player by that name online.");
         } else {
             StringBuilder message = new StringBuilder();

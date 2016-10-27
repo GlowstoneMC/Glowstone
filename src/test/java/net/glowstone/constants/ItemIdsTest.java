@@ -29,10 +29,6 @@ public class ItemIdsTest {
 
     @Test
     public void mappingExists() {
-        if (material == Material.LOCKED_CHEST) {
-            return;
-        }
-
         String nameid = ItemIds.getName(material);
         assertNotNull("Identifier missing for " + material, nameid);
         if (!nameid.startsWith("minecraft:")) {

@@ -3,7 +3,7 @@ package net.glowstone.util.nbt;
 /**
  * The {@code TAG_String} tag.
  */
-final class StringTag extends Tag<String> {
+public final class StringTag extends Tag<String> {
 
     /**
      * The value.
@@ -12,6 +12,7 @@ final class StringTag extends Tag<String> {
 
     /**
      * Creates the tag.
+     *
      * @param value The value.
      */
     public StringTag(String value) {
@@ -23,6 +24,5 @@ final class StringTag extends Tag<String> {
     public String getValue() {
         return value;
     }
-
 }
 
