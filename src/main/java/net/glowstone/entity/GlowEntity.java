@@ -447,11 +447,10 @@ public abstract class GlowEntity implements Entity {
         }
 
         Block block = location.getBlock();
-        if (!block.getType().hasGravity() && block.getType().isOccluding() && block.getType() != Material.SOUL_SAND && block.getType() != Material.SNOW && block.getType() != Material.DEAD_BUSH) {
-            if (this instanceof GlowPlayer && ((GlowPlayer) this).getGameMode() != GameMode.SPECTATOR) {
-                teleport(location.add(0, 1, 0));
-                return;
-            }
+        if (this.getClass() == GlowPlayer.class && ((GlowPlayer) this).getGameMode() != GameMode.SPECTATOR
+                && block.getType().isOccluding() && !block.getType().hasGravity() && block.getType() != Material.SOUL_SAND) {
+            teleport(location.add(0, 1, 0));
+            return;
         }
 
         world.getEntityManager().move(this, location);
@@ -462,8 +461,9 @@ public abstract class GlowEntity implements Entity {
             return;
         }
 
-        if (this instanceof GlowPlayer) {
-            if (((GlowPlayer) this).getGameMode() == GameMode.CREATIVE) {
+        if (this.getClass() == GlowPlayer.class) {
+            if (((GlowPlayer) this).getGameMode() == GameMode.CREATIVE || ((GlowPlayer) this).getGameMode() == GameMode.SPECTATOR) {
+                fallDistance = 0;
                 return;
             }
         }
