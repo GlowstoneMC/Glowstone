@@ -456,16 +456,9 @@ public abstract class GlowEntity implements Entity {
         world.getEntityManager().move(this, location);
         Position.copyLocation(location, this.location);
 
-        if (!fall) {
+        if (!fall || this.getClass() == GlowPlayer.class && (((GlowPlayer) this).getGameMode() == GameMode.CREATIVE || ((GlowPlayer) this).getGameMode() == GameMode.SPECTATOR)) {
             fallDistance = 0;
             return;
-        }
-
-        if (this.getClass() == GlowPlayer.class) {
-            if (((GlowPlayer) this).getGameMode() == GameMode.CREATIVE || ((GlowPlayer) this).getGameMode() == GameMode.SPECTATOR) {
-                fallDistance = 0;
-                return;
-            }
         }
 
         // check if the entity is climbing, or in a liquid
