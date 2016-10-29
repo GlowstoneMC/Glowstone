@@ -176,7 +176,7 @@ public class BlockType extends ItemType {
      * @param oldState The old block state before the block was placed.
      */
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
-        block.applyPhysics(oldState.getType(), block.getTypeId(), oldState.getRawData(), block.getData());
+        block.applyPhysics(oldState.getType(), block.getType(), oldState.getRawData(), block.getData());
     }
 
     /**
@@ -213,7 +213,7 @@ public class BlockType extends ItemType {
      * @param oldState The block state of the block the player destroyed.
      */
     public void afterDestroy(GlowPlayer player, GlowBlock block, BlockFace face, GlowBlockState oldState) {
-        block.applyPhysics(oldState.getType(), block.getTypeId(), oldState.getRawData(), block.getData());
+        block.applyPhysics(oldState.getType(), block.getType(), oldState.getRawData(), block.getData());
     }
 
     /**

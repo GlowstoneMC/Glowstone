@@ -45,6 +45,7 @@ public final class GlowBlock implements Block {
      * The BlockFaces of all directly adjacent.
      */
     private static final BlockFace[] ADJACENT = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
+
     /**
      * The metadata store for blocks.
      */
@@ -142,10 +143,12 @@ public final class GlowBlock implements Block {
         return getWorld().getHumidity(x, z);
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // getFace & getRelative
+    // --- Relative blocks --- \\
     @Override
     public BlockFace getFace(Block block) {
+        if (block == null || block.getWorld() != getWorld()) {
+            return null;
+        }
         for (BlockFace face : BlockFace.values()) {
             if (x + face.getModX() == block.getX()
                     && y + face.getModY() == block.getY()
@@ -158,16 +161,27 @@ public final class GlowBlock implements Block {
 
     @Override
     public GlowBlock getRelative(int modX, int modY, int modZ) {
+        if (modX == 0 && modY == 0 && modZ == 0) {
+            return this;
+        }
         return getWorld().getBlockAt(x + modX, y + modY, z + modZ);
     }
 
     @Override
     public GlowBlock getRelative(BlockFace face) {
+        if (face == BlockFace.SELF) {
+            return this;
+        }
         return getRelative(face.getModX(), face.getModY(), face.getModZ());
     }
 
     @Override
     public GlowBlock getRelative(BlockFace face, int distance) {
+        if (distance == 0) {
+            return this;
+        } else if (distance == 1) {
+            return getRelative(face);
+        }
         return getRelative(face.getModX() * distance, face.getModY() * distance, face.getModZ() * distance);
     }
 
@@ -218,7 +232,6 @@ public final class GlowBlock implements Block {
         }
         // set type to enable cache from stored value
         return type = getTypeId(true);
-
     }
 
     @Override
@@ -326,8 +339,6 @@ public final class GlowBlock implements Block {
         return ((GlowServer) Bukkit.getServer()).getMaterialValueManager().getValues(getType());
     }
 
-
-
     ////////////////////////////////////////////////////////////////////////////
     // Redstone
     // TODO: move to GlowMaterial
@@ -417,12 +428,80 @@ public final class GlowBlock implements Block {
 
     @Override
     public boolean isBlockFacePowered(BlockFace face) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // Strong powered?
+
+        if (getType() == Material.REDSTONE_BLOCK) {
+            return true;
+        }
+
+        if (getType() == Material.LEVER && ((Lever) getState().getData()).isPowered()) {
+            return true;
+        }
+
+        if ((getType() == Material.WOOD_BUTTON || getType() == Material.STONE_BUTTON)
+                && ((Button) getState().getData()).isPowered()) {
+            return true;
+        }
+
+        // Now checking for power attached, only solid blocks transmit this..
+        if (!getType().isSolid()) {
+            return false;
+        }
+
+        GlowBlock target = getRelative(face);
+        switch (target.getType()) {
+            case LEVER:
+                Lever lever = (Lever) target.getState().getData();
+                if (lever.isPowered() && lever.getAttachedFace() == target.getFace(this)) {
+                    return true;
+                }
+                break;
+            case STONE_BUTTON:
+            case WOOD_BUTTON:
+                Button button = (Button) target.getState().getData();
+                if (button.isPowered() && button.getAttachedFace() == target.getFace(this)) {
+                    return true;
+                }
+                break;
+            case DIODE_BLOCK_ON:
+                if (((Diode) target.getState().getData()).getFacing() == target.getFace(this)) {
+                    return true;
+                }
+                break;
+            case REDSTONE_TORCH_ON:
+                if (face == BlockFace.DOWN) {
+                    return true;
+                }
+                break;
+            case REDSTONE_WIRE:
+                if (target.getData() > 0 && BlockRedstone.calculateConnections(target).contains(target.getFace(this))) {
+                    return true;
+                }
+                break;
+        }
+
+        return false;
     }
 
     @Override
     public boolean isBlockFaceIndirectlyPowered(BlockFace face) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        GlowBlock block = getRelative(face);
+        if (block.isBlockPowered()) {
+            return true;
+        }
+        switch (block.getType()) {
+            case REDSTONE_TORCH_ON:
+                if (face != BlockRedstoneTorch.getAttachedBlockFace(block).getOppositeFace()) {
+                    return true;
+                }
+                break;
+            case REDSTONE_WIRE:
+                if (block.getData() > 0 && BlockRedstone.calculateConnections(block).contains(block.getFace(this))) {
+                    return true;
+                }
+                break;
+        }
+        return false;
     }
 
     @Override
@@ -455,7 +534,7 @@ public final class GlowBlock implements Block {
      * @return true if the block was destroyed
      */
     public boolean breakNaturally(float yield) {
-        if (getType() == Material.AIR) {
+        if (isEmpty()) {
             return false;
         }
 
@@ -513,8 +592,7 @@ public final class GlowBlock implements Block {
         metadata.removeMetadata(this, metadataKey, owningPlugin);
     }
 
-    /////////////////////////////////////////////////////////////////////////////
-    // Physics
+    // --- Physics --- \\
 
     /**
      * Notify this block and its surrounding blocks that this block has changed
@@ -607,6 +685,7 @@ public final class GlowBlock implements Block {
         return y << 24 ^ x ^ z ^ getWorld().hashCode();
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
