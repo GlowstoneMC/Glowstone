@@ -28,6 +28,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <bukkit.version>1.10.2-R0.1-SNAPSHOT</bukkit.version>
+        <describe>commit</describe> <!-- stop some some pom inspectors from complaining -->
     </properties>
 
     <repositories>
@@ -48,7 +49,10 @@
             <name>Sponge Releases</name>
             <layout>default</layout>
             <url>https://repo.spongepowered.org/maven/</url>
+        </repository>
+        <repository>
             <id>aikar</id>
+            <name>FastUtil Releases</name>
             <url>https://ci.emc.gs/nexus/content/repositories/aikar/</url>
         </repository>
     </repositories>
@@ -71,11 +75,6 @@
             <groupId>net.glowstone</groupId>
             <artifactId>glowkit</artifactId>
             <version>${bukkit.version}</version> <!-- Use https://github.com/GlowstonePlusPlus/Glowkit/tree/bukkit+glowkit -->
-        </dependency>
-        <dependency>
-            <groupId>org.spongepowered</groupId>
-            <artifactId>spongeapi</artifactId>
-            <version>4.0.3</version>
         </dependency>
         <dependency>
             <groupId>com.flowpowered</groupId>

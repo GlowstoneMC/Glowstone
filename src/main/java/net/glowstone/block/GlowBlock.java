@@ -4,12 +4,10 @@ import net.glowstone.GlowChunk;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.MaterialValueManager.ValueCollection;
-import net.glowstone.block.block2.DefaultIdTable;
 import net.glowstone.block.blocktype.BlockRedstone;
 import net.glowstone.block.blocktype.BlockRedstoneTorch;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.TileEntity;
-import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -26,9 +24,9 @@ import org.bukkit.metadata.MetadataStore;
 import org.bukkit.metadata.MetadataStoreBase;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
-import org.spongepowered.api.block.BlockState;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Represents a single block in a world.
@@ -55,25 +53,25 @@ public final class GlowBlock implements Block {
     private final int x;
     private final int y;
     private final int z;
-    private GlowWorld world;
+    private GlowChunk chunk;
+    private int type = -1;
 
     public GlowBlock(GlowChunk chunk, int x, int y, int z) {
-        world = chunk.getWorld();
+        this.chunk = chunk;
         this.x = x;
-        this.y = y;
+        this.y = Math.min(256, Math.max(y, 0));
         this.z = z;
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Basics
+    // --- Basics --- \\
     @Override
     public GlowWorld getWorld() {
-        return world;
+        return chunk.getWorld();
     }
 
     @Override
     public GlowChunk getChunk() {
-        return (GlowChunk) world.getChunkAt(this);
+        return chunk;
     }
 
     @Override
@@ -109,7 +107,7 @@ public final class GlowBlock implements Block {
     }
 
     public TileEntity getTileEntity() {
-        return ((GlowChunk) world.getChunkAt(this)).getEntity(x & 0xf, y, z & 0xf);
+        return getChunk().getEntity(x & 0xf, y, z & 0xf);
     }
 
     @Override
@@ -173,19 +171,11 @@ public final class GlowBlock implements Block {
         return getRelative(face.getModX() * distance, face.getModY() * distance, face.getModZ() * distance);
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Type and typeid getters/setters
-    public net.glowstone.block.block2.GlowBlockType getNewType() {
-        return DefaultIdTable.INSTANCE.getBaseType(getTypeId());
-    }
-
-    public BlockState getNewState() {
-        return getNewType().getStateFromDataValue(getData());
-    }
-
+    // --- Type (Material and ID) and data  --- \\
+    // Type (Material)
     @Override
     public Material getType() {
-        return Material.getMaterial(getTypeIdNoCache());
+        return Material.getMaterial(getTypeId());
     }
 
     @Override
@@ -194,24 +184,12 @@ public final class GlowBlock implements Block {
     }
 
     @Override
-    public int getTypeId() {
-        return getTypeIdNoCache();
-    }
-
-    private int getTypeIdNoCache() {
-        return ((GlowChunk) world.getChunkAt(this)).getType(x & 0xf, z & 0xf, y);
-    }
-
-    /**
-     * Set the Material type of a block and optionally apply physics.
-     */
-    @Override
     public void setType(Material type, boolean applyPhysics) {
         setTypeId(type.getId(), applyPhysics);
     }
 
     /**
-     * Set the Material type of a block with metadata? and optionally apply
+     * Set the Material type of a block with data and optionally apply
      * physics.
      *
      * @param type The type to set the block to.
@@ -222,6 +200,27 @@ public final class GlowBlock implements Block {
         setTypeIdAndData(type.getId(), data, applyPhysics);
     }
 
+    // Type ID
+    @Override
+    public int getTypeId() {
+        return getTypeId(false);
+    }
+
+    private int getTypeId(boolean noCache) {
+        if (noCache) {
+            // we need to read from storage, not from cache
+            // & 0xf ensures we get the location relative to the chunk [0 to 15]
+            return getChunk().getType(x & 0xf, z & 0xf, y);
+        }
+        if (type > -1) {
+            // cache has been initialized, just return the cached value
+            return type;
+        }
+        // set type to enable cache from stored value
+        return type = getTypeId(true);
+
+    }
+
     @Override
     public boolean setTypeId(int type) {
         return setTypeId(type, true);
@@ -229,41 +228,74 @@ public final class GlowBlock implements Block {
 
     @Override
     public boolean setTypeId(int type, boolean applyPhysics) {
-        return setTypeIdAndData(type, (byte) 0, applyPhysics);
+        return setTypeIdAndData(type, getData(), applyPhysics);
+    }
+
+    // Metadata
+    @Override
+    public byte getData() {
+        return (byte) getChunk().getMetaData(x & 0xf, z & 0xf, y);
     }
 
     @Override
+    public void setData(byte data) {
+        setData(data, true);
+    }
+
+    @Override
+    public void setData(byte data, boolean applyPhysics) {
+        setTypeIdAndData(getTypeId(), data, applyPhysics);
+    }
+
+    // Type and data
+    @Override
     public boolean setTypeIdAndData(int type, byte data, boolean applyPhysics) {
-        Material oldTypeId = getType();
+        Material oldType = getType();
+        Material newType = Material.getMaterial(type);
         byte oldData = getData();
+        boolean changed = false;
 
-        ((GlowChunk) world.getChunkAt(this)).setType(x & 0xf, z & 0xf, y, type);
-        ((GlowChunk) world.getChunkAt(this)).setMetaData(x & 0xf, z & 0xf, y, data);
+        if (oldType != newType) {
+            getChunk().setType(x & 0xf, z & 0xf, y, type);
+            this.type = type;
+            changed = true;
+        }
+        if (oldData != data) {
+            getChunk().setMetaData(x & 0xf, z & 0xf, y, data);
+            changed = true;
+        }
 
-        if (oldTypeId == Material.DOUBLE_PLANT && getRelative(BlockFace.UP).getType() == Material.DOUBLE_PLANT) {
-            ((GlowChunk) world.getChunkAt(this)).setType(x & 0xf, z & 0xf, y + 1, 0);
-            ((GlowChunk) world.getChunkAt(this)).setMetaData(x & 0xf, z & 0xf, y, 0);
-            BlockChangeMessage bcmsg = new BlockChangeMessage(x, y + 1, z, 0, 0);
-            for (GlowPlayer p : getWorld().getRawPlayers()) {
-                p.sendBlockChange(bcmsg);
+        if (changed) {
+            // send block change message first because it isn't so blocking
+            BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, type, data);
+            getWorld().getRawPlayers().parallelStream().forEach(p -> p.sendBlockChange(bcmsg));
+            if (applyPhysics) {
+                applyPhysics(oldType, Material.getMaterial(type), oldData, data);
             }
         }
 
-        if (applyPhysics) {
-            applyPhysics(oldTypeId, type, oldData, data);
-        }
+        return changed;
+    }
 
-        BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, type, data);
-        for (GlowPlayer p : getWorld().getRawPlayers()) {
-            p.sendBlockChange(bcmsg);
-        }
+    // Lighting data
+    @Override
+    public byte getLightLevel() {
+        return (byte) Math.max(getLightFromSky(), getLightFromBlocks());
+    }
 
-        return true;
+    @Override
+    public byte getLightFromSky() {
+        return getChunk().getSkyLight(x & 0xf, z & 0xf, y);
+    }
+
+    @Override
+    public byte getLightFromBlocks() {
+        return getChunk().getBlockLight(x & 0xf, z & 0xf, y);
     }
 
     @Override
     public boolean isEmpty() {
-        return getTypeId() == 0;
+        return getType() == Material.AIR;
     }
 
     @Override
@@ -294,48 +326,11 @@ public final class GlowBlock implements Block {
         return ((GlowServer) Bukkit.getServer()).getMaterialValueManager().getValues(getType());
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Data and light getters/setters
-    @Override
-    public byte getData() {
-        return (byte) ((GlowChunk) world.getChunkAt(this)).getMetaData(x & 0xf, z & 0xf, y);
-    }
 
-    @Override
-    public void setData(byte data) {
-        setData(data, true);
-    }
-
-    @Override
-    public void setData(byte data, boolean applyPhysics) {
-        byte oldData = getData();
-        ((GlowChunk) world.getChunkAt(this)).setMetaData(x & 0xf, z & 0xf, y & 0x7f, data);
-        if (applyPhysics) {
-            applyPhysics(getType(), getTypeId(), oldData, data);
-        }
-        BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, getTypeId(), data);
-        for (GlowPlayer p : getWorld().getRawPlayers()) {
-            p.sendBlockChange(bcmsg);
-        }
-    }
-
-    @Override
-    public byte getLightLevel() {
-        return (byte) Math.max(getLightFromSky(), getLightFromBlocks());
-    }
-
-    @Override
-    public byte getLightFromSky() {
-        return ((GlowChunk) world.getChunkAt(this)).getSkyLight(x & 0xf, z & 0xf, y);
-    }
-
-    @Override
-    public byte getLightFromBlocks() {
-        return ((GlowChunk) world.getChunkAt(this)).getBlockLight(x & 0xf, z & 0xf, y);
-    }
 
     ////////////////////////////////////////////////////////////////////////////
     // Redstone
+    // TODO: move to GlowMaterial
     @Override
     public boolean isBlockPowered() {
         // Strong powered?
@@ -460,15 +455,14 @@ public final class GlowBlock implements Block {
      * @return true if the block was destroyed
      */
     public boolean breakNaturally(float yield) {
-        Random r = new Random();
-
         if (getType() == Material.AIR) {
             return false;
         }
 
         Location location = getLocation();
+        // TODO: move to GlowMaterial
         Collection<ItemStack> toDrop = ItemTable.instance().getBlock(getType()).getMinedDrops(this);
-        toDrop.stream().filter(stack -> r.nextFloat() < yield).forEach(stack -> getWorld().dropItemNaturally(location, stack));
+        toDrop.parallelStream().filter(stack -> ThreadLocalRandom.current().nextFloat() < yield).parallel().forEach(stack -> getWorld().dropItemNaturally(location, stack));
 
         setType(Material.AIR);
         return true;
@@ -483,9 +477,8 @@ public final class GlowBlock implements Block {
     public boolean breakNaturally(ItemStack tool) {
         if (!getDrops(tool).isEmpty()) {
             return breakNaturally();
-        } else {
-            return setTypeId(Material.AIR.getId());
         }
+        return setTypeId(Material.AIR.getId());
     }
 
     @Override
@@ -528,14 +521,13 @@ public final class GlowBlock implements Block {
      * type and data.
      *
      * @param oldType the old block type
-     * @param newTypeId the new block type
-     * @param oldData   the old data
-     * @param newData   the new data
+     * @param newType the new block type
+     * @param oldData the old data
+     * @param newData the new data
      */
-    public void applyPhysics(Material oldType, int newTypeId, byte oldData, byte newData) {
+    public void applyPhysics(Material oldType, Material newType, byte oldData, byte newData) {
         // notify the surrounding blocks that this block has changed
         ItemTable itemTable = ItemTable.instance();
-        Material newType = Material.getMaterial(newTypeId);
 
         for (int y = -1; y <= 1; y++) {
             for (BlockFace face : LAYER) {
