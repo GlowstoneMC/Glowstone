@@ -65,7 +65,7 @@ package net.glowstone.io.anvil;
 import net.glowstone.GlowServer;
 
 import java.io.*;
-import java.util.Arrays;
+import java.util.BitSet;
 import java.util.zip.*;
 
 public class RegionFile {
@@ -82,7 +82,8 @@ public class RegionFile {
     private final int[] offsets;
     private final int[] chunkTimestamps;
     private RandomAccessFile file;
-    private boolean[] sectorFree;
+    private BitSet sectorsUsed;
+    private int totalSectors;
     private int sizeDelta;
     private long lastModified;
 
@@ -129,12 +130,11 @@ public class RegionFile {
         }
 
         // set up the available sector map
-        int nSectors = (int) (file.length() / SECTOR_BYTES);
-        sectorFree = new boolean[nSectors];
-        Arrays.fill(sectorFree, true);
+        totalSectors = (int) (file.length() / SECTOR_BYTES);
+        sectorsUsed = new BitSet();
 
-        sectorFree[0] = false; // chunk offset table
-        sectorFree[1] = false; // for the last modified info
+        sectorsUsed.set(0, true);
+        sectorsUsed.set(1, true);
 
         // read offsets from offset table
         file.seek(0);
@@ -145,9 +145,9 @@ public class RegionFile {
             int startSector = offset >> 8;
             int numSectors = offset & 0xff;
 
-            if (offset != 0 && startSector >= 0 && startSector + numSectors <= sectorFree.length) {
+            if (offset != 0 && startSector >= 0 && startSector + numSectors <= totalSectors) {
                 for (int sectorNum = 0; sectorNum < numSectors; ++sectorNum) {
-                    sectorFree[startSector + sectorNum] = false;
+                    sectorsUsed.set(startSector + sectorNum, true);
                 }
             } else if (offset != 0) {
                 GlowServer.logger.warning("Region \"" + path + "\": offsets[" + i + "] = " + offset + " -> " + startSector + "," + numSectors + " does not fit");
@@ -186,8 +186,8 @@ public class RegionFile {
 
         int sectorNumber = offset >> 8;
         int numSectors = offset & 0xFF;
-        if (sectorNumber + numSectors > sectorFree.length) {
-            throw new IOException("Invalid sector: " + sectorNumber + "+" + numSectors + " > " + sectorFree.length);
+        if (sectorNumber + numSectors > totalSectors) {
+            throw new IOException("Invalid sector: " + sectorNumber + "+" + numSectors + " > " + totalSectors);
         }
 
         file.seek(sectorNumber * SECTOR_BYTES);
@@ -235,31 +235,26 @@ public class RegionFile {
 
             /* mark the sectors previously used for this chunk as free */
             for (int i = 0; i < sectorsAllocated; ++i) {
-                sectorFree[sectorNumber + i] = true;
+                sectorsUsed.clear(sectorNumber + i);
             }
 
             /* scan for a free space large enough to store this chunk */
-            int runStart = -1;
-            for (int i = 0; i < sectorFree.length; i++) {
-                if (sectorFree[i]) {
-                    runStart = i;
+            int runStart = 2;
+            int runLength = 0;
+            int currentSector = 2;
+            while (runLength < sectorsNeeded) {
+                if (sectorsUsed.length() >= currentSector) {
+                    // We reached the end, and we will need to allocate a new sector.
                     break;
                 }
-            }
-            int runLength = 0;
-            if (runStart != -1) {
-                for (int i = runStart; i < sectorFree.length; ++i) {
-                    if (runLength != 0) {
-                        if (sectorFree[i]) runLength++;
-                        else runLength = 0;
-                    } else if (sectorFree[i]) {
-                        runStart = i;
-                        runLength = 1;
-                    }
-                    if (runLength >= sectorsNeeded) {
-                        break;
-                    }
+                int nextSector = sectorsUsed.nextClearBit(currentSector + 1);
+                if (currentSector + 1 == nextSector) {
+                    runLength++;
+                } else {
+                    runStart = nextSector;
+                    runLength = 1;
                 }
+                currentSector = nextSector;
             }
 
             if (runLength >= sectorsNeeded) {
@@ -267,7 +262,7 @@ public class RegionFile {
                 sectorNumber = runStart;
                 setOffset(x, z, sectorNumber << 8 | sectorsNeeded);
                 for (int i = 0; i < sectorsNeeded; ++i) {
-                    sectorFree[sectorNumber + i] = false;
+                    sectorsUsed.set(sectorNumber + i);
                 }
                 write(sectorNumber, data, length);
             } else {
@@ -276,11 +271,12 @@ public class RegionFile {
                  * file
                  */
                 file.seek(file.length());
-                sectorNumber = sectorFree.length;
+                sectorNumber = totalSectors;
                 for (int i = 0; i < sectorsNeeded; ++i) {
                     file.write(emptySector);
+                    sectorsUsed.set(totalSectors + i);
                 }
-                sectorFree = Arrays.copyOf(sectorFree, sectorFree.length + sectorsNeeded);
+                totalSectors += sectorsNeeded;
                 sizeDelta += SECTOR_BYTES * sectorsNeeded;
 
                 write(sectorNumber, data, length);
