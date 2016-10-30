@@ -77,7 +77,6 @@ public class RegionFile {
     private static final int SECTOR_INTS = SECTOR_BYTES / 4;
 
     private static final int CHUNK_HEADER_SIZE = 5;
-    private static final int COMPRESSED_BUFFER_SIZE = 8192;
 
     private static final byte[] emptySector = new byte[SECTOR_BYTES];
     private final int[] offsets;
@@ -103,25 +102,29 @@ public class RegionFile {
         file.seek(file.length());
 
         // if the file size is under 8KB, grow it (4K chunk offset table, 4K timestamp table)
-        if (file.length() < 2 * SECTOR_BYTES) {
-            sizeDelta += 2 * SECTOR_BYTES - file.length();
-            if (lastModified != 0) {
-                // only give a warning if the region file existed beforehand
+        if (lastModified == 0 || file.length() == 0) {
+            // fast path for new or zero-length region files
+            file.write(emptySector);
+            file.write(emptySector);
+            sizeDelta = 2 * SECTOR_BYTES;
+        } else {
+            if (file.length() < 2 * SECTOR_BYTES) {
+                sizeDelta += 2 * SECTOR_BYTES - file.length();
                 GlowServer.logger.warning("Region \"" + path + "\" under 8K: " + file.length() + " increasing by " + (2 * SECTOR_BYTES - file.length()));
+
+                for (long i = file.length(); i < 2 * SECTOR_BYTES; ++i) {
+                    file.write(0);
+                }
             }
 
-            for (long i = file.length(); i < 2 * SECTOR_BYTES; ++i) {
-                file.write(0);
-            }
-        }
+            // if the file size is not a multiple of 4KB, grow it
+            if ((file.length() & 0xfff) != 0) {
+                sizeDelta += SECTOR_BYTES - (file.length() & 0xfff);
+                GlowServer.logger.warning("Region \"" + path + "\" not aligned: " + file.length() + " increasing by " + (SECTOR_BYTES - (file.length() & 0xfff)));
 
-        // if the file size is not a multiple of 4KB, grow it
-        if ((file.length() & 0xfff) != 0) {
-            sizeDelta += SECTOR_BYTES - (file.length() & 0xfff);
-            GlowServer.logger.warning("Region \"" + path + "\" not aligned: " + file.length() + " increasing by " + (SECTOR_BYTES - (file.length() & 0xfff)));
-
-            for (long i = file.length() & 0xfff; i < SECTOR_BYTES; ++i) {
-                file.write(0);
+                for (long i = file.length() & 0xfff; i < SECTOR_BYTES; ++i) {
+                    file.write(0);
+                }
             }
         }
 
@@ -197,11 +200,11 @@ public class RegionFile {
         if (version == VERSION_GZIP) {
             byte[] data = new byte[length - 1];
             file.read(data);
-            return new DataInputStream(new GZIPInputStream(new ByteArrayInputStream(data), COMPRESSED_BUFFER_SIZE));
+            return new DataInputStream(new GZIPInputStream(new ByteArrayInputStream(data), 2 * SECTOR_BYTES));
         } else if (version == VERSION_DEFLATE) {
             byte[] data = new byte[length - 1];
             file.read(data);
-            return new DataInputStream(new InflaterInputStream(new ByteArrayInputStream(data), new Inflater(), COMPRESSED_BUFFER_SIZE));
+            return new DataInputStream(new InflaterInputStream(new ByteArrayInputStream(data), new Inflater(), 2 * SECTOR_BYTES));
         }
 
         throw new IOException("Unknown version: " + version);
@@ -336,7 +339,7 @@ public class RegionFile {
         private final int x, z;
 
         public ChunkBuffer(int x, int z) {
-            super(8192); // initialize to 8KB
+            super(2 * SECTOR_BYTES); // initialize to 8KB
             this.x = x;
             this.z = z;
         }
