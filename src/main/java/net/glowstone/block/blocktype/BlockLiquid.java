@@ -251,11 +251,6 @@ public abstract class BlockLiquid extends BlockType {
     }
 
     @Override
-    public boolean canTickRandomly() {
-        return true;
-    }
-
-    @Override
     public boolean isPulseOnce(GlowBlock block) {
         return true;
     }
