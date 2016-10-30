@@ -65,11 +65,8 @@ package net.glowstone.io.anvil;
 import net.glowstone.GlowServer;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.zip.Deflater;
-import java.util.zip.DeflaterOutputStream;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.InflaterInputStream;
+import java.util.Arrays;
+import java.util.zip.*;
 
 public class RegionFile {
 
@@ -80,11 +77,13 @@ public class RegionFile {
     private static final int SECTOR_INTS = SECTOR_BYTES / 4;
 
     private static final int CHUNK_HEADER_SIZE = 5;
+    private static final int COMPRESSED_BUFFER_SIZE = 8192;
+
     private static final byte[] emptySector = new byte[SECTOR_BYTES];
     private final int[] offsets;
     private final int[] chunkTimestamps;
     private RandomAccessFile file;
-    private ArrayList<Boolean> sectorFree;
+    private boolean[] sectorFree;
     private int sizeDelta;
     private long lastModified;
 
@@ -128,13 +127,11 @@ public class RegionFile {
 
         // set up the available sector map
         int nSectors = (int) (file.length() / SECTOR_BYTES);
-        sectorFree = new ArrayList<>(nSectors);
-        for (int i = 0; i < nSectors; ++i) {
-            sectorFree.add(true);
-        }
+        sectorFree = new boolean[nSectors];
+        Arrays.fill(sectorFree, true);
 
-        sectorFree.set(0, false); // chunk offset table
-        sectorFree.set(1, false); // for the last modified info
+        sectorFree[0] = false; // chunk offset table
+        sectorFree[1] = false; // for the last modified info
 
         // read offsets from offset table
         file.seek(0);
@@ -145,9 +142,9 @@ public class RegionFile {
             int startSector = offset >> 8;
             int numSectors = offset & 0xff;
 
-            if (offset != 0 && startSector >= 0 && startSector + numSectors <= sectorFree.size()) {
+            if (offset != 0 && startSector >= 0 && startSector + numSectors <= sectorFree.length) {
                 for (int sectorNum = 0; sectorNum < numSectors; ++sectorNum) {
-                    sectorFree.set(startSector + sectorNum, false);
+                    sectorFree[startSector + sectorNum] = false;
                 }
             } else if (offset != 0) {
                 GlowServer.logger.warning("Region \"" + path + "\": offsets[" + i + "] = " + offset + " -> " + startSector + "," + numSectors + " does not fit");
@@ -186,8 +183,8 @@ public class RegionFile {
 
         int sectorNumber = offset >> 8;
         int numSectors = offset & 0xFF;
-        if (sectorNumber + numSectors > sectorFree.size()) {
-            throw new IOException("Invalid sector: " + sectorNumber + "+" + numSectors + " > " + sectorFree.size());
+        if (sectorNumber + numSectors > sectorFree.length) {
+            throw new IOException("Invalid sector: " + sectorNumber + "+" + numSectors + " > " + sectorFree.length);
         }
 
         file.seek(sectorNumber * SECTOR_BYTES);
@@ -200,11 +197,11 @@ public class RegionFile {
         if (version == VERSION_GZIP) {
             byte[] data = new byte[length - 1];
             file.read(data);
-            return new DataInputStream(new GZIPInputStream(new ByteArrayInputStream(data)));
+            return new DataInputStream(new GZIPInputStream(new ByteArrayInputStream(data), COMPRESSED_BUFFER_SIZE));
         } else if (version == VERSION_DEFLATE) {
             byte[] data = new byte[length - 1];
             file.read(data);
-            return new DataInputStream(new InflaterInputStream(new ByteArrayInputStream(data)));
+            return new DataInputStream(new InflaterInputStream(new ByteArrayInputStream(data), new Inflater(), COMPRESSED_BUFFER_SIZE));
         }
 
         throw new IOException("Unknown version: " + version);
@@ -235,18 +232,24 @@ public class RegionFile {
 
             /* mark the sectors previously used for this chunk as free */
             for (int i = 0; i < sectorsAllocated; ++i) {
-                sectorFree.set(sectorNumber + i, true);
+                sectorFree[sectorNumber + i] = true;
             }
 
             /* scan for a free space large enough to store this chunk */
-            int runStart = sectorFree.indexOf(true);
+            int runStart = -1;
+            for (int i = 0; i < sectorFree.length; i++) {
+                if (sectorFree[i]) {
+                    runStart = i;
+                    break;
+                }
+            }
             int runLength = 0;
             if (runStart != -1) {
-                for (int i = runStart; i < sectorFree.size(); ++i) {
+                for (int i = runStart; i < sectorFree.length; ++i) {
                     if (runLength != 0) {
-                        if (sectorFree.get(i)) runLength++;
+                        if (sectorFree[i]) runLength++;
                         else runLength = 0;
-                    } else if (sectorFree.get(i)) {
+                    } else if (sectorFree[i]) {
                         runStart = i;
                         runLength = 1;
                     }
@@ -261,7 +264,7 @@ public class RegionFile {
                 sectorNumber = runStart;
                 setOffset(x, z, sectorNumber << 8 | sectorsNeeded);
                 for (int i = 0; i < sectorsNeeded; ++i) {
-                    sectorFree.set(sectorNumber + i, false);
+                    sectorFree[sectorNumber + i] = false;
                 }
                 write(sectorNumber, data, length);
             } else {
@@ -270,11 +273,11 @@ public class RegionFile {
                  * file
                  */
                 file.seek(file.length());
-                sectorNumber = sectorFree.size();
+                sectorNumber = sectorFree.length;
                 for (int i = 0; i < sectorsNeeded; ++i) {
                     file.write(emptySector);
-                    sectorFree.add(false);
                 }
+                sectorFree = Arrays.copyOf(sectorFree, sectorFree.length + sectorsNeeded);
                 sizeDelta += SECTOR_BYTES * sectorsNeeded;
 
                 write(sectorNumber, data, length);
@@ -333,7 +336,7 @@ public class RegionFile {
         private final int x, z;
 
         public ChunkBuffer(int x, int z) {
-            super(8096); // initialize to 8KB
+            super(8192); // initialize to 8KB
             this.x = x;
             this.z = z;
         }
