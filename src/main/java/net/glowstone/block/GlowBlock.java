@@ -58,7 +58,7 @@ public final class GlowBlock implements Block {
     public GlowBlock(GlowChunk chunk, int x, int y, int z) {
         world = chunk.getWorld();
         this.x = x;
-        this.y = y;
+        this.y = Math.min(256, Math.max(y, 0));
         this.z = z;
     }
 
@@ -107,7 +107,7 @@ public final class GlowBlock implements Block {
     }
 
     public TileEntity getTileEntity() {
-        return ((GlowChunk) world.getChunkAt(this)).getEntity(x & 0xf, y, z & 0xf);
+        return getChunk().getEntity(x & 0xf, y, z & 0xf);
     }
 
     @Override
@@ -201,7 +201,7 @@ public final class GlowBlock implements Block {
     }
 
     /**
-     * Set the Material type of a block with metadata? and optionally apply
+     * Set the Material type of a block with data and optionally apply
      * physics.
      *
      * @param type The type to set the block to.
@@ -299,7 +299,7 @@ public final class GlowBlock implements Block {
     @Override
     public void setData(byte data, boolean applyPhysics) {
         byte oldData = getData();
-        ((GlowChunk) world.getChunkAt(this)).setMetaData(x & 0xf, z & 0xf, y & 0x7f, data);
+        ((GlowChunk) world.getChunkAt(this)).setMetaData(x & 0xf, z & 0xf, y, data);
         if (applyPhysics) {
             applyPhysics(getType(), getTypeId(), oldData, data);
         }
