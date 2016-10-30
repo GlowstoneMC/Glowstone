@@ -45,6 +45,7 @@
         </repository>
         <repository>
             <id>aikar</id>
+            <name>FastUtil-Lite Releases</name>
             <url>https://ci.emc.gs/nexus/content/repositories/aikar/</url>
         </repository>
     </repositories>
