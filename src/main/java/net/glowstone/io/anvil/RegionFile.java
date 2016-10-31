@@ -200,11 +200,11 @@ public class RegionFile {
         if (version == VERSION_GZIP) {
             byte[] data = new byte[length - 1];
             file.read(data);
-            return new DataInputStream(new GZIPInputStream(new ByteArrayInputStream(data), 2 * SECTOR_BYTES));
+            return new DataInputStream(new BufferedInputStream(new GZIPInputStream(new ByteArrayInputStream(data))));
         } else if (version == VERSION_DEFLATE) {
             byte[] data = new byte[length - 1];
             file.read(data);
-            return new DataInputStream(new InflaterInputStream(new ByteArrayInputStream(data), new Inflater(), 2 * SECTOR_BYTES));
+            return new DataInputStream(new BufferedInputStream(new InflaterInputStream(new ByteArrayInputStream(data))));
         }
 
         throw new IOException("Unknown version: " + version);
@@ -212,7 +212,7 @@ public class RegionFile {
 
     public DataOutputStream getChunkDataOutputStream(int x, int z) {
         checkBounds(x, z);
-        return new DataOutputStream(new DeflaterOutputStream(new ChunkBuffer(x, z), new Deflater(Deflater.BEST_SPEED)));
+        return new DataOutputStream(new BufferedOutputStream(new DeflaterOutputStream(new ChunkBuffer(x, z))));
     }
 
     /* write a chunk at (x,z) with length bytes of data to disk */
@@ -335,7 +335,7 @@ public class RegionFile {
         private final int x, z;
 
         public ChunkBuffer(int x, int z) {
-            super(2 * SECTOR_BYTES); // initialize to 8KB
+            super(SECTOR_BYTES); // initialize to 4KB
             this.x = x;
             this.z = z;
         }
