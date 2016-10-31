@@ -1,0 +1,40 @@
+{
+  "items": [
+    {
+      "default": {
+        "count": {
+          "max": 2
+        },
+        "item": "rotten_flesh"
+      }
+    },
+    {
+      "default": {
+        "count": 1,
+        "item": [
+          {
+            "chance": 0.025,
+            "value": "iron_ingot"
+          },
+          {
+            "chance": 0.025,
+            "value": "carrot"
+          },
+          {
+            "chance": 0.025,
+            "value": "potato"
+          }
+        ]
+      }
+    }
+  ],
+  "experience": {
+    "count": 5,
+    "conditions": [
+      {
+        "condition": "$.isBaby()",
+        "count": 12
+      }
+    ]
+  }
+}

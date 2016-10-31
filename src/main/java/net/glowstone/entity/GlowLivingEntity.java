@@ -14,6 +14,8 @@ import net.glowstone.net.message.play.entity.EntityEffectMessage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityRemoveEffectMessage;
 import net.glowstone.util.SoundUtil;
+import net.glowstone.util.loot.LootData;
+import net.glowstone.util.loot.LootingManager;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -27,6 +29,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Criterias;
@@ -186,6 +189,10 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 // remove
                 removePotionEffect(type);
             }
+        }
+
+        if (getFireTicks() > 0 && getFireTicks() % 20 == 0) {
+            damage(1, DamageCause.FIRE_TICK);
         }
 
         GlowBlock under = (GlowBlock) getLocation().getBlock().getRelative(BlockFace.DOWN);
@@ -484,9 +491,13 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 EventFactory.callEvent(event);
                 server.broadcastMessage(event.getDeathMessage());
             } else {
-                EventFactory.callEvent(new EntityDeathEvent(this, new ArrayList<>()));
+                LootData data = LootingManager.generate(this);
+                EventFactory.callEvent(new EntityDeathEvent(this, Arrays.asList(data.getItems())));
+                for (ItemStack item : data.getItems()) {
+                    world.dropItemNaturally(getLocation(), item);
+                }
+                // todo: drop experience
             }
-            // todo: drop items
         }
     }
 

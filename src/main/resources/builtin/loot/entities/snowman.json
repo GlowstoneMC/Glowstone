@@ -1,0 +1,15 @@
+{
+  "items": [
+    {
+      "default": {
+        "count": {
+          "max": 15
+        },
+        "item": "snowball"
+      }
+    }
+  ],
+  "experience": {
+    "count": 0
+  }
+}

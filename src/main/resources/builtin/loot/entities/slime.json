@@ -1,0 +1,21 @@
+{
+  "items": [
+    {
+      "default": {
+        "item": "slime_ball",
+        "count": 0
+      },
+      "conditions": [
+        {
+          "condition": "net.glowstone.util.loot.LootingUtil.isNot($.getSize(), 0)",
+          "count": {
+            "max": 2
+          }
+        }
+      ]
+    }
+  ],
+  "experience": {
+    "count": "$.getSize()"
+  }
+}
