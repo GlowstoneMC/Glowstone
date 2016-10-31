@@ -38,6 +38,4 @@ public class ConditionalLootItem {
         }
         condition = (String) object.get("condition");
     }
-
-
 }

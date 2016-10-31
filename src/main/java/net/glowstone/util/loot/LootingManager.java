@@ -104,5 +104,4 @@ public class LootingManager {
         int experience = table.getExperience().generate(random);
         return new LootData(items.toArray(new ItemStack[items.size()]), experience);
     }
-
 }

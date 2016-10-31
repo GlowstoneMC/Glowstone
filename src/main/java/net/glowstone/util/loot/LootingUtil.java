@@ -26,7 +26,7 @@ public class LootingUtil {
         if (condition.equals("ENTITY_ONFIRE")) {
             return entity.getFireTicks() > 0;
         }
+        // todo: more conditions, reflection
         return false;
     }
-
 }

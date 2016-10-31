@@ -27,5 +27,4 @@ public class EntityLootTable {
             this.items = new LootItem[0];
         }
     }
-
 }
