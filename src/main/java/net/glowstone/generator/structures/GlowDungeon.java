@@ -141,19 +141,19 @@ public class GlowDungeon extends GlowStructurePiece {
                 if (builder.getBlockState(new Vector(x, 1, z)).getType() == Material.AIR) {
                     BlockFace face = null;
                     int solidBlocksCount = 0;
-                    if (builder.getBlockState(new Vector(x - 1, 1, z)).getType().equals(Material.COBBLESTONE)) {
+                    if (builder.getBlockState(new Vector(x - 1, 1, z)).getType() == Material.COBBLESTONE) {
                         solidBlocksCount++;
                         face = BlockFace.EAST;
                     }
-                    if (builder.getBlockState(new Vector(x + 1, 1, z)).getType().equals(Material.COBBLESTONE)) {
+                    if (builder.getBlockState(new Vector(x + 1, 1, z)).getType() == Material.COBBLESTONE) {
                         solidBlocksCount++;
                         face = BlockFace.WEST;
                     }
-                    if (builder.getBlockState(new Vector(x, 1, z - 1)).getType().equals(Material.COBBLESTONE)) {
+                    if (builder.getBlockState(new Vector(x, 1, z - 1)).getType() == Material.COBBLESTONE) {
                         solidBlocksCount++;
                         face = BlockFace.SOUTH;
                     }
-                    if (builder.getBlockState(new Vector(x, 1, z + 1)).getType().equals(Material.COBBLESTONE)) {
+                    if (builder.getBlockState(new Vector(x, 1, z + 1)).getType() == Material.COBBLESTONE) {
                         solidBlocksCount++;
                         face = BlockFace.NORTH;
                     }
