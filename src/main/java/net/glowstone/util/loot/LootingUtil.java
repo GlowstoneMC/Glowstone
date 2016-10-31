@@ -27,6 +27,10 @@ public class LootingUtil {
         return !b;
     }
 
+    public static boolean isNot(Object a, Object b) {
+        return !is(a, b);
+    }
+
     public static boolean conditionValue(LivingEntity entity, String condition) {
         if (condition.equals("ENTITY_ONFIRE")) {
             return entity.getFireTicks() > 0;

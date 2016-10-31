@@ -81,7 +81,7 @@ public class LootingManager {
         ArrayList<ItemStack> items = new ArrayList<>();
         for (LootItem lootItem : table.getItems()) {
             DefaultLootItem defaultItem = lootItem.getDefaultItem();
-            int count = defaultItem.getCount().generate(random);
+            int count = defaultItem.getCount().generate(random, entity);
             int data = 0;
             if (defaultItem.getData().isPresent()) {
                 data = defaultItem.getData().get().generate(random);
@@ -98,7 +98,7 @@ public class LootingManager {
             for (ConditionalLootItem condition : conditions) {
                 if (LootingUtil.conditionValue(entity, condition.getCondition())) {
                     if (condition.getCount().isPresent()) {
-                        count = condition.getCount().get().generate(random);
+                        count = condition.getCount().get().generate(random, entity);
                     }
                     if (condition.getType().isPresent()) {
                         name = condition.getType().get().generate(random);
@@ -121,7 +121,7 @@ public class LootingManager {
                 GlowServer.logger.info("Not valid: " + material + "(" + name + ")" + "x" + count + " : " + data);
             }
         }
-        int experience = table.getExperience().generate(random);
+        int experience = table.getExperience().generate(random, entity);
         return new LootData(items.toArray(new ItemStack[items.size()]), experience);
     }
 }
