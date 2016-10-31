@@ -77,13 +77,17 @@ public class LootingManager {
         for (LootItem lootItem : table.getItems()) {
             DefaultLootItem defaultItem = lootItem.getDefaultItem();
             int count = defaultItem.getCount().generate(random);
-            int data;
-            if (defaultItem.getData().getLine().isPresent()) {
-                data = ((Number) defaultItem.getData().process(entity)).intValue();
-            } else {
-                data = defaultItem.getData().getValue().get();
+            int data = 0;
+            if (defaultItem.getData().isPresent()) {
+                data = defaultItem.getData().get().generate(random);
+            } else if (defaultItem.getReflectiveData().isPresent()) {
+                data = ((Number) defaultItem.getReflectiveData().get().process(entity)).intValue();
             }
-            String name = defaultItem.getType().generate(random).toUpperCase();
+            String name = defaultItem.getType().generate(random);
+            if (name == null) {
+                name = "";
+            }
+            name = name.toUpperCase();
 
             ConditionalLootItem[] conditions = lootItem.getConditionalItems();
             for (ConditionalLootItem condition : conditions) {
@@ -92,10 +96,16 @@ public class LootingManager {
                         count = condition.getCount().get().generate(random);
                     }
                     if (condition.getType().isPresent()) {
-                        name = condition.getType().get().generate(random).toUpperCase();
+                        name = condition.getType().get().generate(random);
+                        if (name == null) {
+                            name = "";
+                        }
+                        name = name.toUpperCase();
                     }
                     if (condition.getData().isPresent()) {
                         data = condition.getData().get().generate(random);
+                    } else if (condition.getReflectiveData().isPresent()) {
+                        data = ((Number) condition.getReflectiveData().get().process(entity)).intValue();
                     }
                 }
             }

@@ -6,11 +6,11 @@
           "max": 3,
           "min": 1
         },
-        "item": "raw_porkchop"
+        "item": "pork"
       },
       "conditions": [
         {
-          "item": "cooked_porkchop",
+          "item": "grilled_pork",
           "condition": "ENTITY_ONFIRE"
         }
       ]
@@ -18,14 +18,14 @@
     {
       "default": {
         "count": 0,
-        "item": "saddle",
-        "conditions": [
-          {
-            "count": 1,
-            "condition": "$.hasSaddle()"
-          }
-        ]
-      }
+        "item": "saddle"
+      },
+      "conditions": [
+        {
+          "count": 1,
+          "condition": "$.hasSaddle()"
+        }
+      ]
     }
   ],
   "experience": {

@@ -26,7 +26,7 @@
         "item": [
           {
             "chance": 0.4,
-            "value": "fish"
+            "value": "raw_fish"
           },
           {
             "chance": 0.4,
@@ -40,7 +40,7 @@
           "item": [
             {
               "chance": 0.5,
-              "value": "fish"
+              "value": "raw_fish"
             },
             {
               "chance": 0.333,
@@ -53,9 +53,15 @@
     {
       "default": {
         "count": 1,
-        "item": "fish",
+        "item": "raw_fish",
         "data": "net.glowstone.util.loot.LootingUtil.randomFishType()"
-      }
+      },
+      "conditions": [
+        {
+          "condition": "ENTITY_ONFIRE",
+          "item": "cooked_fish"
+        }
+      ]
     }
   ],
   "experience": {

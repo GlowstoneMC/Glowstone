@@ -1,35 +1,35 @@
 package net.glowstone.util.loot;
 
 import lombok.Data;
-import net.glowstone.GlowServer;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import java.util.Optional;
 
 @Data
 public class DefaultLootItem {
 
     private final LootRandomValues count;
     private final ProbableValue<String> type;
-    private final ReflectiveValue<Integer> data;
+    private final Optional<ProbableValue<Integer>> data;
+    private final Optional<ReflectiveValue<Integer>> reflectiveData;
 
     public DefaultLootItem(JSONObject object) {
         this.type = new ProbableValue<>(object, "item");
-        if (object.get("count") instanceof JSONArray) {
-            GlowServer.logger.warning("Probable random value: not implemented!");
-            this.count = new LootRandomValues(0, 0);
-        } else {
-            this.count = new LootRandomValues(object);
-        }
+        this.count = new LootRandomValues(object);
         if (object.containsKey("data")) {
             if (object.get("data") instanceof String) {
-                data = new ReflectiveValue<>((String) object.get("data"));
+                this.reflectiveData = Optional.of(new ReflectiveValue<Integer>((String) object.get("data")));
+                this.data = Optional.empty();
             } else if (object.get("data") instanceof Long) {
-                data = new ReflectiveValue<>(((Long) object.get("data")).intValue());
+                this.reflectiveData = Optional.of(new ReflectiveValue<>(((Long) object.get("data")).intValue()));
+                this.data = Optional.empty();
             } else {
-                data = new ReflectiveValue<>(0);
+                this.reflectiveData = Optional.empty();
+                this.data = Optional.of(new ProbableValue<>(object, "data"));
             }
         } else {
-            data = new ReflectiveValue<>(0);;
+            this.reflectiveData = Optional.of(new ReflectiveValue<>(0));
+            this.data = Optional.empty();
         }
     }
 }

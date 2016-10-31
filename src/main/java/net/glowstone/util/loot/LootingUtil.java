@@ -4,8 +4,12 @@ import net.glowstone.util.ReflectionProcessor;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.Objects;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class LootingUtil {
+
+    public static final Random random = ThreadLocalRandom.current();
 
     public static boolean is(Object a, Object b) {
         return Objects.equals(a, b);
@@ -36,5 +40,9 @@ public class LootingUtil {
 
     public static Object process(LivingEntity entity, String line) {
         return new ReflectionProcessor(line, entity).process();
+    }
+
+    public static long randomFishType() {
+        return random.nextInt(4);
     }
 }

@@ -12,7 +12,7 @@
       "default": {
         "count": [
           {
-            "odd": 0.333,
+            "chance": 0.333,
             "value": 1
           }
         ],
