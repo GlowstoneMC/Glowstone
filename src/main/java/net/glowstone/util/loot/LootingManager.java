@@ -77,7 +77,12 @@ public class LootingManager {
         for (LootItem lootItem : table.getItems()) {
             DefaultLootItem defaultItem = lootItem.getDefaultItem();
             int count = defaultItem.getCount().generate(random);
-            int data = defaultItem.getData();
+            int data;
+            if (defaultItem.getData().getLine().isPresent()) {
+                data = ((Number) defaultItem.getData().process(entity)).intValue();
+            } else {
+                data = defaultItem.getData().getValue().get();
+            }
             String name = defaultItem.getType().generate(random).toUpperCase();
 
             ConditionalLootItem[] conditions = lootItem.getConditionalItems();

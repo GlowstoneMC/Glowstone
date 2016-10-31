@@ -1,5 +1,6 @@
 package net.glowstone.util.loot;
 
+import net.glowstone.util.ReflectionProcessor;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.Objects;
@@ -26,7 +27,14 @@ public class LootingUtil {
         if (condition.equals("ENTITY_ONFIRE")) {
             return entity.getFireTicks() > 0;
         }
+        if (condition.contains(".")) {
+            return (boolean) process(entity, condition);
+        }
         // todo: more conditions, reflection
         return false;
+    }
+
+    public static Object process(LivingEntity entity, String line) {
+        return new ReflectionProcessor(line, entity).process();
     }
 }

@@ -10,7 +10,7 @@ public class DefaultLootItem {
 
     private final LootRandomValues count;
     private final ProbableValue<String> type;
-    private final int data;
+    private final ReflectiveValue<Integer> data;
 
     public DefaultLootItem(JSONObject object) {
         this.type = new ProbableValue<>(object, "item");
@@ -22,14 +22,14 @@ public class DefaultLootItem {
         }
         if (object.containsKey("data")) {
             if (object.get("data") instanceof String) {
-                data = 0; // todo: reflection
+                data = new ReflectiveValue<>((String) object.get("data"));
             } else if (object.get("data") instanceof Long) {
-                data = ((Long) object.get("data")).intValue();
+                data = new ReflectiveValue<>(((Long) object.get("data")).intValue());
             } else {
-                data = 0;
+                data = new ReflectiveValue<>(0);
             }
         } else {
-            data = 0;
+            data = new ReflectiveValue<>(0);;
         }
     }
 }
