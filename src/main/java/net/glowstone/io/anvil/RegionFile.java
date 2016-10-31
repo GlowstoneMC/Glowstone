@@ -65,6 +65,8 @@ package net.glowstone.io.anvil;
 import net.glowstone.GlowServer;
 
 import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.BitSet;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPInputStream;
@@ -138,10 +140,20 @@ public class RegionFile {
         sectorsUsed.set(0, true);
         sectorsUsed.set(1, true);
 
-        // read offsets from offset table
+        // read offset table and timestamp tables
         file.seek(0);
+        ByteBuffer header = ByteBuffer.allocate(8192);
+        while (header.hasRemaining()) {
+            if (file.getChannel().read(header) == -1) {
+                throw new EOFException();
+            }
+        }
+        header.clear();
+
+        // populate the tables
+        IntBuffer headerAsInts = header.asIntBuffer();
         for (int i = 0; i < SECTOR_INTS; ++i) {
-            int offset = file.readInt();
+            int offset = headerAsInts.get();
             offsets[i] = offset;
 
             int startSector = offset >> 8;
@@ -157,7 +169,7 @@ public class RegionFile {
         }
         // read timestamps from timestamp table
         for (int i = 0; i < SECTOR_INTS; ++i) {
-            chunkTimestamps[i] = file.readInt();
+            chunkTimestamps[i] = headerAsInts.get();
         }
     }
 
