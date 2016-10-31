@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class LootingManager {
 
@@ -58,13 +57,19 @@ public class LootingManager {
     }
 
     private static void register(EntityType type, String location) throws Exception {
-        InputStream in = LootingManager.class.getClassLoader().getResourceAsStream(location);
-        if (in == null) {
-            GlowServer.logger.warning("Could not find default entity loot table '" + location + "' on classpath");
-            return;
+        try {
+            InputStream in = LootingManager.class.getClassLoader().getResourceAsStream(location);
+            if (in == null) {
+                GlowServer.logger.warning("Could not find default entity loot table '" + location + "' on classpath");
+                return;
+            }
+            JSONObject json = (JSONObject) new JSONParser().parse(new InputStreamReader(in));
+            entities.put(type, new EntityLootTable(json));
+        } catch (Exception e) {
+            Exception ex = new Exception("Failed to load loot table '" + location + "': " + e.getClass().getName() + " (" + e.getMessage() + ")");
+            ex.setStackTrace(e.getStackTrace());
+            throw ex;
         }
-        JSONObject json = (JSONObject) new JSONParser().parse(new InputStreamReader(in));
-        entities.put(type, new EntityLootTable(json));
     }
 
     public static LootData generate(LivingEntity entity) {
