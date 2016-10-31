@@ -66,7 +66,9 @@ import net.glowstone.GlowServer;
 
 import java.io.*;
 import java.util.BitSet;
-import java.util.zip.*;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.InflaterInputStream;
 
 public class RegionFile {
 
