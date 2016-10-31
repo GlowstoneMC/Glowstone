@@ -32,16 +32,9 @@ public class LootRandomValues {
             this.max = min;
             return;
         }
-        if (count instanceof String) {
-            GlowServer.logger.warning("Conditional random value not implemented!"); // todo
-            this.min = 0;
-            this.max = 0;
-            return;
-        }
         if (count instanceof JSONArray) {
             this.min = 0;
             this.max = 0;
-
             return;
         }
         object = (JSONObject) count;
