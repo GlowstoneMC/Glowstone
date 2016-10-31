@@ -39,7 +39,8 @@
     {
       "default": {
         "item": "skull",
-        "count": 0
+        "count": 0,
+        "data": 1
       },
       "conditions": [
         {
