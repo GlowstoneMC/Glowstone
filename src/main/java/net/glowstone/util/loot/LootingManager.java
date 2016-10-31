@@ -68,7 +68,7 @@ public class LootingManager {
     }
 
     public static LootData generate(LivingEntity entity) {
-        Random random = ThreadLocalRandom.current();
+        Random random = LootingUtil.random;
         if (!entities.containsKey(entity.getType())) {
             return new LootData(new ItemStack[0], 0);
         }
