@@ -135,10 +135,10 @@ public interface MaterialValueManager {
     }
 
     static GlowMaterial getValues(Material material) {
-        GlowMaterial vanillaMaterial = GlowMaterial.valueOf(material.name());
-        if (vanillaMaterial != null) {
-            return vanillaMaterial;
+        try {
+            return GlowMaterial.valueOf(material.name());
+        } catch (IllegalArgumentException ignore) {
+            return GlowMaterial.DEFAULT;
         }
-        return GlowMaterial.DEFAULT;
     }
 }
