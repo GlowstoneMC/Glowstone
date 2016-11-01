@@ -6,8 +6,6 @@ import com.avaje.ebeaninternal.server.lib.sql.TransactionIsolation;
 import com.flowpowered.network.Message;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import net.glowstone.block.BuiltinMaterialValueManager;
-import net.glowstone.block.MaterialValueManager;
 import net.glowstone.block.state.GlowDispenser;
 import net.glowstone.command.*;
 import net.glowstone.constants.GlowEnchantment;
@@ -256,11 +254,6 @@ public final class GlowServer implements Server {
      * The server ip.
      */
     private String ip;
-    /**
-     * The {@link MaterialValueManager} of this server.
-     */
-    private MaterialValueManager materialValueManager;
-
     /**
      * Creates a new server.
      *
@@ -1035,10 +1028,6 @@ public final class GlowServer implements Server {
      */
     public boolean useRconColors() {
         return config.getBoolean(Key.RCON_COLORS);
-    }
-
-    public MaterialValueManager getMaterialValueManager() {
-        return materialValueManager;
     }
 
     /**
