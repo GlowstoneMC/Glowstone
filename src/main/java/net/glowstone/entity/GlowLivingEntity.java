@@ -493,7 +493,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 PlayerDeathEvent event = new PlayerDeathEvent((GlowPlayer) this, new ArrayList<>(), 0, this.getName() + " died.");
                 EventFactory.callEvent(event);
                 server.broadcastMessage(event.getDeathMessage());
-            } else {
+            } else if (world.getGameRuleMap().getBoolean("doMobLoot")) {
                 LootData data = LootingManager.generate(this);
                 EventFactory.callEvent(new EntityDeathEvent(this, Arrays.asList(data.getItems())));
                 for (ItemStack item : data.getItems()) {
