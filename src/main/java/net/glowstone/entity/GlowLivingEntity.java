@@ -106,6 +106,9 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      */
     private boolean fallFlying;
 
+
+    private Entity lastDamager;
+
     /**
      * Creates a mob within the specified world.
      *
@@ -569,6 +572,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 world.playSound(location, hurtSound, getSoundVolume(), getSoundPitch());
             }
         }
+        setLastDamager(source);
     }
 
     @Override
@@ -594,6 +598,14 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Override
     public void setLastDamage(double damage) {
         lastDamage = damage;
+    }
+
+    public Entity getLastDamager() {
+        return lastDamager;
+    }
+
+    public void setLastDamager(Entity lastDamager) {
+        this.lastDamager = lastDamager;
     }
 
     ////////////////////////////////////////////////////////////////////////////

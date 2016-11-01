@@ -48,6 +48,7 @@ public class LootRandomValues {
             this.min = Optional.empty();
             this.max = Optional.empty();
             this.reflectiveCount = Optional.empty();
+            
             // todo: probabilities
             return;
         }

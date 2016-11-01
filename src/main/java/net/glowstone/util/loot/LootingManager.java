@@ -1,9 +1,9 @@
 package net.glowstone.util.loot;
 
 import net.glowstone.GlowServer;
+import net.glowstone.entity.GlowLivingEntity;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -72,7 +72,7 @@ public class LootingManager {
         }
     }
 
-    public static LootData generate(LivingEntity entity) {
+    public static LootData generate(GlowLivingEntity entity) {
         Random random = LootingUtil.random;
         if (!entities.containsKey(entity.getType())) {
             return new LootData(new ItemStack[0], 0);
