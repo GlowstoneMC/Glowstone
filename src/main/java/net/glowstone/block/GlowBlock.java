@@ -338,7 +338,7 @@ public final class GlowBlock implements Block {
 
     ////////////////////////////////////////////////////////////////////////////
     // Redstone
-    // TODO: move to GlowMaterial
+    // TODO: move some of the blocktype specific stuff to new blocktype system
     @Override
     public boolean isBlockPowered() {
         // Strong powered?
@@ -536,7 +536,7 @@ public final class GlowBlock implements Block {
         }
 
         Location location = getLocation();
-        // TODO: move to GlowMaterial
+        // TODO: move to new blocktype system
         Collection<ItemStack> toDrop = ItemTable.instance().getBlock(getType()).getMinedDrops(this);
         toDrop.parallelStream().filter(stack -> ThreadLocalRandom.current().nextFloat() < yield).parallel().forEach(stack -> getWorld().dropItemNaturally(location, stack));
 
