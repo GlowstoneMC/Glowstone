@@ -267,8 +267,6 @@ public final class GlowServer implements Server {
      * @param config This server's config.
      */
     public GlowServer(ServerConfig config) {
-        materialValueManager = new BuiltinMaterialValueManager();
-
         this.config = config;
         // stuff based on selected config directory
         opsList = new UuidListFile(config.getFile("ops.json"));
