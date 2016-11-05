@@ -202,7 +202,7 @@ public class BlockFire extends BlockNeedsAttached {
         } else {
             int flameResistance = 0;
             for (BlockFace face : FLAMMABLE_FACES) {
-                flameResistance = Math.max(flameResistance, block.getRelative(face).getMaterialValues().getFlameResistance());
+                flameResistance = Math.max(flameResistance, block.getRelative(face).getMaterialValues().getFlammability());
             }
             return flameResistance;
         }

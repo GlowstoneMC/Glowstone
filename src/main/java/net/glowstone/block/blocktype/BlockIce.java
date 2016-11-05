@@ -25,7 +25,7 @@ public class BlockIce extends BlockType {
 
     @Override
     public void updateBlock(GlowBlock block) {
-        if (block.getLightFromBlocks() > 11 - block.getMaterialValues().getLightOpacity()) {
+        if (block.getLightFromBlocks() > 11 - block.getMaterialValues().getLightReduction()) {
             Material type = block.getWorld().getEnvironment() == Environment.NETHER ? Material.AIR : Material.STATIONARY_WATER;
             GlowBlockState state = block.getState();
             state.setType(type);

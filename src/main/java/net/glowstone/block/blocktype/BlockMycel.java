@@ -24,7 +24,7 @@ public class BlockMycel extends BlockType {
     @Override
     public void updateBlock(GlowBlock block) {
         GlowBlock blockAbove = block.getRelative(BlockFace.UP);
-        if (blockAbove.getLightLevel() < 4 && blockAbove.getMaterialValues().getLightOpacity() > 2) {
+        if (blockAbove.getLightLevel() < 4 && blockAbove.getMaterialValues().getLightReduction() > 2) {
             // mycel block turns into dirt block
             GlowBlockState state = block.getState();
             state.setType(Material.DIRT);
@@ -49,7 +49,7 @@ public class BlockMycel extends BlockType {
                 GlowBlock targetAbove = targetBlock.getRelative(BlockFace.UP);
                 if (targetBlock.getType() == Material.DIRT &&
                         targetBlock.getData() == 0 && // only spread on normal dirt
-                        targetAbove.getMaterialValues().getLightOpacity() <= 2 &&
+                        targetAbove.getMaterialValues().getLightReduction() <= 2 &&
                         targetAbove.getLightLevel() >= 4) {
                     GlowBlockState state = targetBlock.getState();
                     state.setType(Material.MYCEL);

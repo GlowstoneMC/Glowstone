@@ -320,7 +320,7 @@ public final class GlowBlock implements Block {
      * @return if this block is flammable
      */
     public boolean isFlammable() {
-        return getMaterialValues().getFlameResistance() >= 0;
+        return getMaterialValues().getFlammability() >= 0;
     }
 
     /**
@@ -565,6 +565,13 @@ public final class GlowBlock implements Block {
     @Override
     public Collection<ItemStack> getDrops(ItemStack tool) {
         return ItemTable.instance().getBlock(getType()).getDrops(this, tool);
+    }
+
+    /**
+     * Tell this block that the chunk was loaded.
+     */
+    public void chunkUnloaded() {
+        chunk = null;
     }
 
     ////////////////////////////////////////////////////////////////////////////

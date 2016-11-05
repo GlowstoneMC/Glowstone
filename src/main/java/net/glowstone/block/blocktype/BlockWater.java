@@ -26,7 +26,7 @@ public class BlockWater extends BlockLiquid {
     @Override
     public void updateBlock(GlowBlock block) {
         super.updateBlock(block);
-        if (block.getLightFromBlocks() <= 11 - block.getMaterialValues().getLightOpacity()) {
+        if (block.getLightFromBlocks() <= 11 - block.getMaterialValues().getLightReduction()) {
             if (block.getRelative(BlockFace.UP).isEmpty() && hasNearSolidBlock(block) && GlowBiomeClimate.isCold(block)) {
                 GlowBlockState state = block.getState();
                 state.setType(Material.ICE);
