@@ -11,13 +11,15 @@ public class MaterialValueManager {
         DEFAULT(),
         AIR(new GlowMaterialBuilder()
                 .setHardness(0)
+                .setBlastResistance(0)
                 .setLightReduction(0)),
         STONE(new GlowMaterialBuilder()
                 .setHardness(1.5f)
                 .setBlastResistance(30)),
         GRASS(new GlowMaterialBuilder()
                 .setHardness(0.6f)
-                .setBlastResistance(3)),
+                .setBlastResistance(3)
+                .setRandomTicks(true)),
         DIRT(new GlowMaterialBuilder()
                 .setHardness(0.5f)
                 .setBlastResistance(2.5f)),
@@ -30,20 +32,26 @@ public class MaterialValueManager {
                 .setFireResistance(20)),
         SAPLING(new GlowMaterialBuilder()
                 .setHardness(0)
-                .setLightReduction(0)),
+                .setBlastResistance(0)
+                .setLightReduction(0)
+                .setRandomTicks(true)),
         BEDROCK(new GlowMaterialBuilder()
                 .setHardness(-1)
                 .setBlastResistance(18000000)),
         WATER(new GlowMaterialBuilder()
                 .setHardness(100)
+                .setBlastResistance(500)
                 .setLightReduction(3)),
         STATIONARY_WATER(new GlowMaterialBuilder()
                 .setHardness(100)
                 .setLightReduction(3)),
         LAVA(new GlowMaterialBuilder()
-                .setHardness(100)),
+                .setHardness(100)
+                .setRandomTicks(true)),
         STATIONARY_LAVA(new GlowMaterialBuilder()
-                .setHardness(100)),
+                .setHardness(100)
+                .setBlastResistance(500)
+                .setRandomTicks(true)),
         SAND(new GlowMaterialBuilder()
                 .setHardness(0.5f)),
         GRAVEL(new GlowMaterialBuilder()
@@ -55,10 +63,14 @@ public class MaterialValueManager {
         COAL_ORE(new GlowMaterialBuilder()
                 .setHardness(3)),
         LOG(new GlowMaterialBuilder()
-                .setHardness(2)),
+                .setHardness(2)
+                .setFireResistance(5)
+                .setFlammability(5)),
         LEAVES(new GlowMaterialBuilder()
                 .setHardness(0.2f)
-                .setLightReduction(0)),
+                .setLightReduction(0)
+                .setFireResistance(30)
+                .setFlammability(60)),
         SPONGE(new GlowMaterialBuilder()
                 .setHardness(0.6f)),
         GLASS(new GlowMaterialBuilder()
@@ -86,38 +98,65 @@ public class MaterialValueManager {
                 .setHardness(4)
                 .setLightReduction(0)),
         LONG_GRASS(new GlowMaterialBuilder()
-                .setHardness(0)),
+                .setHardness(0)
+                .setBlastResistance(0)
+                .setFireResistance(60)
+                .setFlammability(100)),
         DEAD_BUSH(new GlowMaterialBuilder()
-                .setHardness(0)),
+                .setHardness(0)
+                .setBlastResistance(0)),
         PISTON_BASE(),
         PISTON_EXTENSION(),
-        WOOL(),
+        WOOL(new GlowMaterialBuilder()
+                .setFireResistance(30)
+                .setFlammability(60)),
         PISTON_MOVING_PIECE(),
         YELLOW_FLOWER(new GlowMaterialBuilder()
-                .setHardness(0)),
+                .setHardness(0)
+                .setBlastResistance(0)
+                .setFireResistance(60)
+                .setFlammability(100)),
         RED_ROSE(new GlowMaterialBuilder()
-                .setHardness(0)),
+                .setHardness(0)
+                .setBlastResistance(0)
+                .setFireResistance(60)
+                .setFlammability(100)),
         BROWN_MUSHROOM(new GlowMaterialBuilder()
-                .setHardness(0)),
+                .setHardness(0)
+                .setBlastResistance(0)
+                .setRandomTicks(true)),
         RED_MUSHROOM(new GlowMaterialBuilder()
-                .setHardness(0)),
+                .setHardness(0)
+                .setBlastResistance(0)
+                .setRandomTicks(true)),
         GOLD_BLOCK(),
         IRON_BLOCK(),
         DOUBLE_STEP(),
         STEP(),
         BRICK(),
         TNT(new GlowMaterialBuilder()
-                .setHardness(0)),
-        BOOKSHELF(),
+                .setHardness(0)
+                .setBlastResistance(0)
+                .setFireResistance(15)
+                .setFlammability(100)),
+        BOOKSHELF(new GlowMaterialBuilder()
+                .setFireResistance(30)
+                .setFlammability(20)),
         MOSSY_COBBLESTONE(),
         OBSIDIAN(new GlowMaterialBuilder()
-                .setHardness(50)),
+                .setHardness(50)
+                .setBlastResistance(6000)),
         TORCH(new GlowMaterialBuilder()
-                .setHardness(0)),
+                .setHardness(0)
+                .setBlastResistance(0)),
         FIRE(new GlowMaterialBuilder()
-                .setHardness(0)),
+                .setHardness(0)
+                .setBlastResistance(0)
+                .setRandomTicks(true)),
         MOB_SPAWNER(),
-        WOOD_STAIRS(),
+        WOOD_STAIRS(new GlowMaterialBuilder()
+                .setFireResistance(5)
+                .setFlammability(20)),
         CHEST(),
         REDSTONE_WIRE(new GlowMaterialBuilder()
                 .setHardness(0)),
@@ -125,8 +164,11 @@ public class MaterialValueManager {
         DIAMOND_BLOCK(),
         WORKBENCH(),
         CROPS(new GlowMaterialBuilder()
-                .setHardness(0)),
-        SOIL(),
+                .setHardness(0)
+                .setBlastResistance(0)
+                .setRandomTicks(true)),
+        SOIL(new GlowMaterialBuilder()
+                .setRandomTicks(true)),
         FURNACE(),
         BURNING_FURNACE(),
         SIGN_POST(),
@@ -141,34 +183,49 @@ public class MaterialValueManager {
         IRON_DOOR_BLOCK(),
         WOOD_PLATE(),
         REDSTONE_ORE(),
-        GLOWING_REDSTONE_ORE(),
+        GLOWING_REDSTONE_ORE(new GlowMaterialBuilder()
+                .setRandomTicks(true)),
         REDSTONE_TORCH_OFF(new GlowMaterialBuilder()
-                .setHardness(0)),
+                .setHardness(0)
+                .setBlastResistance(0)),
         REDSTONE_TORCH_ON(new GlowMaterialBuilder()
-                .setHardness(0)),
+                .setHardness(0)
+                .setBlastResistance(0)),
         STONE_BUTTON(),
-        SNOW(),
-        ICE(),
+        SNOW(new GlowMaterialBuilder()
+                .setRandomTicks(true)),
+        ICE(new GlowMaterialBuilder()
+                .setRandomTicks(true)),
         SNOW_BLOCK(),
-        CACTUS(),
+        CACTUS(new GlowMaterialBuilder()
+                .setRandomTicks(true)),
         CLAY(),
         SUGAR_CANE_BLOCK(new GlowMaterialBuilder()
-                .setHardness(0)),
+                .setHardness(0)
+                .setBlastResistance(0)
+                .setRandomTicks(true)),
         JUKEBOX(),
-        FENCE(),
+        FENCE(new GlowMaterialBuilder()
+                .setFireResistance(5)
+                .setFlammability(20)),
         PUMPKIN(),
-        NETHERRACK(),
+        NETHERRACK(new GlowMaterialBuilder()
+                .setFireResistance(-1)),
         SOUL_SAND(),
         GLOWSTONE(),
         PORTAL(new GlowMaterialBuilder()
                 .setHardness(-1)
-                .setLightReduction(0)),
+                .setBlastResistance(0)
+                .setLightReduction(0)
+                .setRandomTicks(true)),
         JACK_O_LANTERN(),
         CAKE_BLOCK(),
         DIODE_BLOCK_OFF(new GlowMaterialBuilder()
-                .setHardness(0)),
+                .setHardness(0)
+                .setBlastResistance(0)),
         DIODE_BLOCK_ON(new GlowMaterialBuilder()
-                .setHardness(0)),
+                .setHardness(0)
+                .setBlastResistance(0)),
         STAINED_GLASS(),
         TRAP_DOOR(),
         MONSTER_EGGS(),
@@ -179,22 +236,32 @@ public class MaterialValueManager {
         THIN_GLASS(),
         MELON_BLOCK(),
         PUMPKIN_STEM(new GlowMaterialBuilder()
-                .setHardness(0)),
+                .setHardness(0)
+                .setBlastResistance(0)),
         MELON_STEM(new GlowMaterialBuilder()
-                .setHardness(0)),
-        VINE(),
-        FENCE_GATE(),
+                .setHardness(0)
+                .setBlastResistance(0)),
+        VINE(new GlowMaterialBuilder()
+                .setFireResistance(15)
+                .setFlammability(100)),
+        FENCE_GATE(new GlowMaterialBuilder()
+                .setFireResistance(5)
+                .setFlammability(20)),
         BRICK_STAIRS(),
         SMOOTH_STAIRS(),
-        MYCEL(),
+        MYCEL(new GlowMaterialBuilder()
+                .setRandomTicks(true)),
         WATER_LILY(new GlowMaterialBuilder()
-                .setHardness(0)),
+                .setHardness(0)
+                .setBlastResistance(0)),
         NETHER_BRICK(),
         NETHER_FENCE(),
         NETHER_BRICK_STAIRS(),
         NETHER_WARTS(new GlowMaterialBuilder()
-                .setHardness(0)),
-        ENCHANTMENT_TABLE(),
+                .setHardness(0)
+                .setBlastResistance(0)),
+        ENCHANTMENT_TABLE(new GlowMaterialBuilder()
+                .setBlastResistance(6000)),
         BREWING_STAND(),
         CAULDRON(),
         ENDER_PORTAL(new GlowMaterialBuilder()
@@ -208,35 +275,52 @@ public class MaterialValueManager {
         DRAGON_EGG(),
         REDSTONE_LAMP_OFF(),
         REDSTONE_LAMP_ON(),
-        WOOD_DOUBLE_STEP(),
-        WOOD_STEP(),
+        WOOD_DOUBLE_STEP(new GlowMaterialBuilder()
+                .setFireResistance(5)
+                .setFlammability(20)),
+        WOOD_STEP(new GlowMaterialBuilder()
+                .setFireResistance(5)
+                .setFlammability(20)),
         COCOA(),
         SANDSTONE_STAIRS(),
         EMERALD_ORE(),
         ENDER_CHEST(new GlowMaterialBuilder()
-                .setHardness(22.5f)),
+                .setHardness(22.5f)
+                .setBlastResistance(3000)),
         TRIPWIRE_HOOK(new GlowMaterialBuilder()
-                .setHardness(0)),
+                .setHardness(0)
+                .setBlastResistance(0)),
         TRIPWIRE(new GlowMaterialBuilder()
-                .setHardness(0)),
+                .setHardness(0)
+                .setBlastResistance(0)),
         EMERALD_BLOCK(),
-        SPRUCE_WOOD_STAIRS(),
-        BIRCH_WOOD_STAIRS(),
-        JUNGLE_WOOD_STAIRS(),
+        SPRUCE_WOOD_STAIRS(new GlowMaterialBuilder()
+                .setFireResistance(5)
+                .setFlammability(20)),
+        BIRCH_WOOD_STAIRS(new GlowMaterialBuilder()
+                .setFireResistance(5)
+                .setFlammability(20)),
+        JUNGLE_WOOD_STAIRS(new GlowMaterialBuilder()
+                .setFireResistance(5)
+                .setFlammability(20)),
         COMMAND(new GlowMaterialBuilder()
                 .setHardness(-1)
                 .setBlastResistance(18000000)),
         BEACON(),
         COBBLE_WALL(),
         FLOWER_POT(new GlowMaterialBuilder()
-            .setHardness(0)),
+                .setHardness(0)
+                .setBlastResistance(0)),
         CARROT(new GlowMaterialBuilder()
-            .setHardness(0)),
+                .setHardness(0)
+                .setBlastResistance(0)),
         POTATO(new GlowMaterialBuilder()
-                .setHardness(0)),
+                .setHardness(0)
+                .setBlastResistance(0)),
         WOOD_BUTTON(),
         SKULL(),
-        ANVIL(),
+        ANVIL(new GlowMaterialBuilder()
+                .setBlastResistance(6000)),
         TRAPPED_CHEST(),
         GOLD_PLATE(),
         IRON_PLATE(),
@@ -254,26 +338,46 @@ public class MaterialValueManager {
         DROPPER(),
         STAINED_CLAY(),
         STAINED_GLASS_PANE(),
-        LEAVES_2(),
-        LOG_2(),
-        ACACIA_STAIRS(),
-        DARK_OAK_STAIRS(),
+        LEAVES_2(new GlowMaterialBuilder()
+                .setHardness(0.2f)
+                .setLightReduction(0)
+                .setFireResistance(30)
+                .setFlammability(60)),
+        LOG_2(new GlowMaterialBuilder()
+                .setFireResistance(5)
+                .setFlammability(5)),
+        ACACIA_STAIRS(new GlowMaterialBuilder()
+                .setFireResistance(5)
+                .setFlammability(20)),
+        DARK_OAK_STAIRS(new GlowMaterialBuilder()
+                .setFireResistance(5)
+                .setFlammability(20)),
         SLIME_BLOCK(new GlowMaterialBuilder()
-                .setHardness(0)),
+                .setHardness(0)
+                .setBlastResistance(0)),
         BARRIER(new GlowMaterialBuilder()
                 .setHardness(-1)
                 .setBlastResistance(18000003)),
         IRON_TRAPDOOR(),
         PRISMARINE(),
         SEA_LANTERN(),
-        HAY_BLOCK(),
+        HAY_BLOCK(new GlowMaterialBuilder()
+                .setFireResistance(60)
+                .setFlammability(20)),
         CARPET(new GlowMaterialBuilder()
-                .setLightReduction(0)),
+                .setLightReduction(0)
+                .setFireResistance(60)
+                .setFlammability(20)),
         HARD_CLAY(),
-        COAL_BLOCK(),
+        COAL_BLOCK(new GlowMaterialBuilder()
+                .setFireResistance(5)
+                .setFlammability(5)),
         PACKED_ICE(),
         DOUBLE_PLANT(new GlowMaterialBuilder()
-                .setHardness(0)),
+                .setHardness(0)
+                .setBlastResistance(0)
+                .setFireResistance(60)
+                .setFlammability(100)),
         STANDING_BANNER(),
         WALL_BANNER(),
         DAYLIGHT_DETECTOR_INVERTED(),
@@ -281,24 +385,46 @@ public class MaterialValueManager {
         RED_SANDSTONE_STAIRS(),
         DOUBLE_STONE_SLAB2(),
         STONE_SLAB2(),
-        SPRUCE_FENCE_GATE(),
-        BIRCH_FENCE_GATE(),
-        JUNGLE_FENCE_GATE(),
-        DARK_OAK_FENCE_GATE(),
-        ACACIA_FENCE_GATE(),
-        SPRUCE_FENCE(),
-        BIRCH_FENCE(),
-        JUNGLE_FENCE(),
-        DARK_OAK_FENCE(),
-        ACACIA_FENCE(),
+        SPRUCE_FENCE_GATE(new GlowMaterialBuilder()
+                .setFireResistance(5)
+                .setFlammability(20)),
+        BIRCH_FENCE_GATE(new GlowMaterialBuilder()
+                .setFireResistance(5)
+                .setFlammability(20)),
+        JUNGLE_FENCE_GATE(new GlowMaterialBuilder()
+                .setFireResistance(5)
+                .setFlammability(20)),
+        DARK_OAK_FENCE_GATE(new GlowMaterialBuilder()
+                .setFireResistance(5)
+                .setFlammability(20)),
+        ACACIA_FENCE_GATE(new GlowMaterialBuilder()
+                .setFireResistance(5)
+                .setFlammability(20)),
+        SPRUCE_FENCE(new GlowMaterialBuilder()
+                .setFireResistance(5)
+                .setFlammability(20)),
+        BIRCH_FENCE(new GlowMaterialBuilder()
+                .setFireResistance(5)
+                .setFlammability(20)),
+        JUNGLE_FENCE(new GlowMaterialBuilder()
+                .setFireResistance(5)
+                .setFlammability(20)),
+        DARK_OAK_FENCE(new GlowMaterialBuilder()
+                .setFireResistance(5)
+                .setFlammability(20)),
+        ACACIA_FENCE(new GlowMaterialBuilder()
+                .setFireResistance(5)
+                .setFlammability(20)),
         SPRUCE_DOOR(),
         BIRCH_DOOR(),
         JUNGLE_DOOR(),
         ACACIA_DOOR(),
         DARK_OAK_DOOR(),
-        END_ROD(),
+        END_ROD(new GlowMaterialBuilder()
+                .setBlastResistance(0)),
         CHORUS_PLANT(),
-        CHORUS_FLOWER(),
+        CHORUS_FLOWER(new GlowMaterialBuilder()
+                .setRandomTicks(true)),
         PURPUR_BLOCK(),
         PURPUR_PILLAR(),
         PURPUR_STAIRS(),
@@ -321,7 +447,8 @@ public class MaterialValueManager {
         RED_NETHER_BRICK(),
         BONE_BLOCK(),
         STRUCTURE_VOID(new GlowMaterialBuilder()
-                .setHardness(0)),
+                .setHardness(0)
+                .setBlastResistance(0)),
         STRUCTURE_BLOCK(new GlowMaterialBuilder()
                 .setHardness(-1)
                 .setBlastResistance(18000000)),
@@ -342,13 +469,13 @@ public class MaterialValueManager {
          */
         private final int lightReduction;
         /**
-         * How quickly the block has fire spread to it.
-         */
-        private final int flammability;
-        /**
          * How long the block will burn for.
          */
         private final int fireResistance;
+        /**
+         * How quickly the block has fire spread to it.
+         */
+        private final int flammability;
         /**
          * Should this block be considered for random ticks?
          */
@@ -360,7 +487,7 @@ public class MaterialValueManager {
 
         private static class GlowMaterialBuilder {
             private float hardness = 1;
-            private float blastResistance;
+            private float blastResistance = 1;
             private int lightReduction = 15;
             private int flammability = -1;
             private int fireResistance = -1;
@@ -442,8 +569,8 @@ public class MaterialValueManager {
             this.hardness = builder.getHardness();
             this.blastResistance = builder.getBlastResistance();
             this.lightReduction = builder.getLightReduction();
-            this.flammability = builder.getFlammability();
             this.fireResistance = builder.getFireResistance();
+            this.flammability = builder.getFlammability();
             this.randomTicks = builder.doRandomTicks();
             this.pistonMoveReaction = builder.getPistonMoveReaction();
         }
