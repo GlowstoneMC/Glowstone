@@ -3,6 +3,8 @@ package net.glowstone.block;
 import org.bukkit.Material;
 import org.bukkit.block.PistonMoveReaction;
 
+import java.util.HashMap;
+
 /**
  * MaterialValueManager provides easy access to {@link Material} related values (e.g. block hardness).
  */
@@ -271,8 +273,10 @@ public class MaterialValueManager {
         ENDER_PORTAL_FRAME(new GlowMaterialBuilder()
                 .setHardness(-1)
                 .setBlastResistance(18000000)),
-        ENDER_STONE(),
-        DRAGON_EGG(),
+        ENDER_STONE(new GlowMaterialBuilder()
+                .setBlastResistance(45)),
+        DRAGON_EGG(new GlowMaterialBuilder()
+                .setBlastResistance(45)),
         REDSTONE_LAMP_OFF(),
         REDSTONE_LAMP_ON(),
         WOOD_DOUBLE_STEP(new GlowMaterialBuilder()
@@ -485,7 +489,7 @@ public class MaterialValueManager {
          */
         private final PistonMoveReaction pistonMoveReaction;
 
-        private static class GlowMaterialBuilder {
+        public static class GlowMaterialBuilder {
             private float hardness = 1;
             private float blastResistance = 1;
             private int lightReduction = 15;
@@ -497,52 +501,52 @@ public class MaterialValueManager {
             GlowMaterialBuilder() {
             }
 
-            float getHardness() {
+            public float getHardness() {
                 return hardness;
             }
 
-            GlowMaterialBuilder setHardness(float hardness) {
+            public GlowMaterialBuilder setHardness(float hardness) {
                 this.hardness = hardness;
                 return this;
             }
 
-            float getBlastResistance() {
+            public float getBlastResistance() {
                 return blastResistance;
             }
 
-            GlowMaterialBuilder setBlastResistance(float blastResistance) {
+            public GlowMaterialBuilder setBlastResistance(float blastResistance) {
                 this.blastResistance = blastResistance;
                 return this;
             }
 
-            int getLightReduction() {
+            public int getLightReduction() {
                 return lightReduction;
             }
 
-            GlowMaterialBuilder setLightReduction(int lightReduction) {
+            public GlowMaterialBuilder setLightReduction(int lightReduction) {
                 this.lightReduction = lightReduction;
                 return this;
             }
 
-            int getFlammability() {
+            public int getFlammability() {
                 return flammability;
             }
 
-            GlowMaterialBuilder setFlammability(int flammability) {
+            public GlowMaterialBuilder setFlammability(int flammability) {
                 this.flammability = flammability;
                 return this;
             }
 
-            int getFireResistance() {
+            public int getFireResistance() {
                 return fireResistance;
             }
 
-            GlowMaterialBuilder setFireResistance(int fireResistance) {
+            public GlowMaterialBuilder setFireResistance(int fireResistance) {
                 this.fireResistance = fireResistance;
                 return this;
             }
 
-            boolean doRandomTicks() {
+            public boolean doRandomTicks() {
                 return randomTicks;
             }
 
@@ -604,11 +608,92 @@ public class MaterialValueManager {
         }
     }
 
+    /**
+     * Custom materials, as defined by plugins.
+     */
+    private HashMap<String, GlowMaterial.GlowMaterialBuilder> extraMaterials = new HashMap<>();
+
+    /**
+     * Gets the properties of a vanilla material.
+     * @param material The material.
+     * @return The properties of the material.
+     */
     public static GlowMaterial getValues(Material material) {
         try {
             return GlowMaterial.valueOf(material.name());
         } catch (IllegalArgumentException ignore) {
             return GlowMaterial.DEFAULT;
+        }
+    }
+
+    /**
+     * Gets the properties of any material registered to Glowstone, vanilla or custom.
+     *
+     * @param material The name of the material.
+     * @return The properties of the material.
+     */
+    public GlowMaterial.GlowMaterialBuilder getValues(String material) {
+        try {
+            GlowMaterial mat = GlowMaterial.valueOf(material.toUpperCase());
+            return new GlowMaterial.GlowMaterialBuilder()
+                    .setHardness(mat.getHardness())
+                    .setBlastResistance(mat.getBlastResistance())
+                    .setLightReduction(mat.getLightReduction())
+                    .setFireResistance(mat.getFireResistance())
+                    .setFlammability(mat.getFlammability())
+                    .setRandomTicks(mat.doRandomTicks())
+                    .setPistonMoveReaction(mat.getPistonMoveReaction());
+        } catch (IllegalArgumentException ignore) {
+            if (extraMaterials.containsKey(material.toUpperCase())) {
+                return extraMaterials.get(material.toUpperCase());
+            } else {
+                return new GlowMaterial.GlowMaterialBuilder()
+                        .setHardness(GlowMaterial.DEFAULT.getHardness())
+                        .setBlastResistance(GlowMaterial.DEFAULT.getBlastResistance())
+                        .setLightReduction(GlowMaterial.DEFAULT.getLightReduction())
+                        .setFireResistance(GlowMaterial.DEFAULT.getFireResistance())
+                        .setFlammability(GlowMaterial.DEFAULT.getFlammability())
+                        .setRandomTicks(GlowMaterial.DEFAULT.doRandomTicks())
+                        .setPistonMoveReaction(GlowMaterial.DEFAULT.getPistonMoveReaction());
+            }
+        }
+    }
+
+    /**
+     * Adds a new, custom material to the list of materials Glowstone is aware of.
+     *
+     * NOTE: If you add a material with a vanilla name, it will be ignored.
+     *
+     * @param material The requested name for the new material.
+     * @param properties The properties for the new material.
+     * @return The name of the new material. It will be different than the material parameter
+     * if there is already a material registered with that name.
+     */
+    public String addMaterial(String material, GlowMaterial.GlowMaterialBuilder properties) {
+        String addedMaterial = material.toUpperCase();
+        if (extraMaterials.containsKey(addedMaterial)) {
+            int suffix = 1;
+            while (extraMaterials.containsKey(addedMaterial + '_' + suffix)) {
+                suffix++;
+            }
+            addedMaterial += '_' + suffix;
+        }
+        extraMaterials.put(addedMaterial, properties);
+        return addedMaterial;
+    }
+
+    /**
+     * Checks if Glowstone is aware of the specified material.
+     *
+     * @param material The name of the material.
+     * @return if this material is registered with Glowstone.
+     */
+    public boolean isMaterial(String material) {
+        try {
+            GlowMaterial.valueOf(material.toUpperCase());
+            return true;
+        } catch (IllegalArgumentException ignore) {
+            return extraMaterials.containsKey(material.toUpperCase());
         }
     }
 }
