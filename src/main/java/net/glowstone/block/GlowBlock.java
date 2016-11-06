@@ -238,7 +238,7 @@ public final class GlowBlock implements Block {
 
     @Override
     public boolean setTypeId(int type, boolean applyPhysics) {
-        return setTypeIdAndData(type, getData(), applyPhysics);
+        return setTypeIdAndData(type, (byte) 0, applyPhysics);
     }
 
     // Metadata

@@ -615,6 +615,7 @@ public class MaterialValueManager {
 
     /**
      * Gets the properties of a vanilla material.
+     *
      * @param material The material.
      * @return The properties of the material.
      */
