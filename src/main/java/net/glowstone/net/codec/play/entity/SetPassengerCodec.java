@@ -18,6 +18,7 @@ public class SetPassengerCodec implements Codec<SetPassengerMessage> {
     @Override
     public ByteBuf encode(ByteBuf buf, SetPassengerMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getEntityID());
+        ByteBufUtils.writeVarInt(buf, message.getPassengers().length);
         for (int passenger : message.getPassengers()) {
             ByteBufUtils.writeVarInt(buf, passenger);
         }

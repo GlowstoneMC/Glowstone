@@ -106,7 +106,6 @@ public abstract class GlowEntity implements Entity {
      * Vehicle
      */
     protected GlowEntity vehicle;
-    protected boolean vehicleChanged;
     /**
      * This entity's unique id.
      */
@@ -135,6 +134,7 @@ public abstract class GlowEntity implements Entity {
      * Passenger
      */
     private GlowEntity passenger;
+    protected boolean passengerChanged;
     /**
      * Whether gravity applies to the entity.
      */
@@ -424,7 +424,7 @@ public abstract class GlowEntity implements Entity {
         metadata.resetChanges();
         teleported = false;
         velocityChanged = false;
-        vehicleChanged = false;
+        passengerChanged = false;
     }
 
     /**
@@ -549,9 +549,9 @@ public abstract class GlowEntity implements Entity {
             result.add(new EntityVelocityMessage(id, velocity));
         }
 
-        if (vehicleChanged) {
+        if (passengerChanged) {
             //this method will not call for this player, we don't need check SELF_ID
-            result.add(new AttachEntityMessage(getEntityId(), vehicle != null ? vehicle.getEntityId() : -1, false));
+            result.add(new SetPassengerMessage(getEntityId(), getPassenger() == null ? new int[0] : new int[] {getPassenger().getEntityId()}));
         }
 
         return result;
@@ -851,7 +851,7 @@ public abstract class GlowEntity implements Entity {
 
             EventFactory.callEvent(new EntityDismountEvent(passenger, this));
 
-            passenger.vehicleChanged = true;
+            passengerChanged = true;
             passenger.vehicle = null;
             passenger = null;
         } else {
@@ -876,13 +876,13 @@ public abstract class GlowEntity implements Entity {
 
             if (this.passenger != null) {
                 EventFactory.callEvent(new EntityDismountEvent(this.passenger, this));
-                this.passenger.vehicleChanged = true;
+                this.passengerChanged = true;
                 this.passenger.vehicle = null;
             }
 
             this.passenger = passenger;
             this.passenger.vehicle = this;
-            this.passenger.vehicleChanged = true;
+            this.passengerChanged = true;
         }
         return true;
     }
