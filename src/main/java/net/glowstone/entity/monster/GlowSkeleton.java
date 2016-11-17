@@ -1,6 +1,5 @@
 package net.glowstone.entity.monster;
 
-import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
@@ -22,7 +21,8 @@ public class GlowSkeleton extends GlowMonster implements Skeleton {
     @Override
     public void setSkeletonType(SkeletonType type) {
         skeletonType = type;
-        metadata.set(MetadataIndex.SKELETON_TYPE, skeletonType.ordinal());
+        //TODO - 1.11 This field was removed since different types are different entities
+        //metadata.set(MetadataIndex.SKELETON_TYPE, conversionTime > 0);
     }
 
     @Override

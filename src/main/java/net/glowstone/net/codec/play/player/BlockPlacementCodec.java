@@ -15,9 +15,9 @@ public final class BlockPlacementCodec implements Codec<BlockPlacementMessage> {
         BlockVector pos = GlowBufUtils.readBlockPosition(buf);
         int direction = buf.readByte();
         int hand = ByteBufUtils.readVarInt(buf);
-        int cursorX = buf.readByte();
-        int cursorY = buf.readByte();
-        int cursorZ = buf.readByte();
+        float cursorX = buf.readFloat();
+        float cursorY = buf.readFloat();
+        float cursorZ = buf.readFloat();
         return new BlockPlacementMessage(pos.getBlockX(), pos.getBlockY(), pos.getBlockZ(), direction, hand, cursorX, cursorY, cursorZ);
     }
 
@@ -26,9 +26,9 @@ public final class BlockPlacementCodec implements Codec<BlockPlacementMessage> {
         GlowBufUtils.writeBlockPosition(buf, message.getX(), message.getY(), message.getZ());
         buf.writeByte(message.getDirection());
         ByteBufUtils.writeVarInt(buf, message.getHand());
-        buf.writeByte(message.getCursorX());
-        buf.writeByte(message.getCursorY());
-        buf.writeByte(message.getCursorZ());
+        buf.writeFloat(message.getCursorX());
+        buf.writeFloat(message.getCursorY());
+        buf.writeFloat(message.getCursorZ());
         return buf;
     }
 }

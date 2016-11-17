@@ -28,7 +28,8 @@ public class GlowZombie extends GlowMonster implements Zombie {
 
     @Override
     public List<Message> createSpawnMessage() {
-        metadata.set(MetadataIndex.ZOMBIE_IS_CONVERTING, conversionTime > 0);
+        //TODO - 1.11 Move this to ZombieVillager
+        //metadata.set(MetadataIndex.ZOMBIE_IS_CONVERTING, conversionTime > 0);
         return super.createSpawnMessage();
     }
 
@@ -49,13 +50,15 @@ public class GlowZombie extends GlowMonster implements Zombie {
 
     @Override
     public void setVillager(boolean value) {
-        metadata.set(MetadataIndex.ZOMBIE_IS_VILLAGER, value ? villagerProfession.ordinal() + 1 : 0);
+        //TODO - 1.11 Move this to ZombieVillager
+        //metadata.set(MetadataIndex.ZOMBIE_IS_VILLAGER, value ? villagerProfession.ordinal() + 1 : 0);
     }
 
     @Override
     public void setVillagerProfession(Profession profession) {
         this.villagerProfession = profession;
-        metadata.set(MetadataIndex.ZOMBIE_IS_VILLAGER, profession.ordinal() + 1);
+        //TODO - 1.11 Move this to ZombieVillager
+        //metadata.set(MetadataIndex.ZOMBIE_IS_VILLAGER, profession.ordinal() + 1);
     }
 
     @Override
@@ -69,7 +72,8 @@ public class GlowZombie extends GlowMonster implements Zombie {
 
     public void setConversionTime(int conversionTime) {
         this.conversionTime = conversionTime;
-        metadata.set(MetadataIndex.ZOMBIE_IS_CONVERTING, conversionTime > 0);
+        //TODO - 1.11 Move this to ZombieVillager
+        //metadata.set(MetadataIndex.ZOMBIE_IS_CONVERTING, conversionTime > 0);
     }
 
     public boolean isCanBreakDoors() {

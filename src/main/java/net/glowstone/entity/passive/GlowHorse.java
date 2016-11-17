@@ -160,8 +160,11 @@ public class GlowHorse extends GlowTameable implements Horse {
     public List<Message> createSpawnMessage() {
         List<Message> messages = super.createSpawnMessage();
         MetadataMap map = new MetadataMap(GlowHorse.class);
-        map.set(MetadataIndex.HORSE_TYPE, (byte) getVariant().ordinal());
-        map.set(MetadataIndex.HORSE_FLAGS, getHorseFlags());
+        //TODO - 1.11 Field has been removed
+        //map.set(MetadataIndex.HORSE_TYPE, (byte) getVariant().ordinal());
+
+        //TODO - 1.11 Move this to AbstractHorse
+        //map.set(MetadataIndex.HORSE_FLAGS, getHorseFlags());
         map.set(MetadataIndex.HORSE_STYLE, getHorseStyleData());
         map.set(MetadataIndex.HORSE_ARMOR, getHorseArmorData());
         messages.add(new EntityMetadataMessage(id, map.getEntryList()));

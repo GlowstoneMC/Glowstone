@@ -1,6 +1,5 @@
 package net.glowstone.entity.monster;
 
-import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
@@ -15,12 +14,15 @@ public class GlowGuardian extends GlowMonster implements Guardian {
 
     @Override
     public boolean isElder() {
-        return metadata.getBit(MetadataIndex.GUARDIAN_FLAGS, 0x04);
+        //TODO - 1.11 Field has been removed
+        //return metadata.getBit(MetadataIndex.GUARDIAN_FLAGS, 0x04);
+        return false;
     }
 
     @Override
     public void setElder(boolean elder) {
-        metadata.setBit(MetadataIndex.GUARDIAN_FLAGS, 0x04, elder);
+        //TODO - 1.11 Field has been removed
+        //metadata.setBit(MetadataIndex.GUARDIAN_FLAGS, 0x04, elder);
     }
 
     @Override

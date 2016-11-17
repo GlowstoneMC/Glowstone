@@ -46,7 +46,7 @@ public enum MetadataIndex {
     ITEM_FRAME_ROTATION(7, INT, ItemFrame.class),
     ITEM_ITEM(6, ITEM, Item.class),
 
-    HAND_USED(6, BYTE, LivingEntity.class), //TODO : 1.9 - To confirm
+    HAND_USED(6, BYTE, LivingEntity.class),
     HEALTH(7, FLOAT, LivingEntity.class),
     POTION_COLOR(8, INT, LivingEntity.class),
     POTION_AMBIENT(9, BOOLEAN, LivingEntity.class),
@@ -66,11 +66,17 @@ public enum MetadataIndex {
 
     AGE_ISBABY(12, BOOLEAN, Ageable.class),
 
-    HORSE_FLAGS(13, BYTE, Horse.class),
-    HORSE_TYPE(14, INT, Horse.class),
+    ABSTRACT_HORSE_FLAGS(13, BYTE, null), //TODO - 1.11 Implement AbstractHorse class
+    ABSTRACT_HORSE_OWNER(14, OPTUUID, null),
+
     HORSE_STYLE(15, INT, Horse.class),
-    HORSE_OWNER(16, OPTUUID, Horse.class),
-    HORSE_ARMOR(17, INT, Horse.class),
+    HORSE_ARMOR(16, INT, Horse.class),
+
+    CHESTED_HORSE_HAS_CHEST(15, BOOLEAN, null), //TODO - 1.11 Implement ChestedHorse class
+
+    LLAMA_STRENGTH(16, INT, null), //TODO - 1.11 Implement Llama class
+    LLAMA_CARPET(17, INT, null),
+    LLAMA_VARIANT(18, INT, null),
 
     PIG_SADDLE(13, BOOLEAN, Pig.class),
 
@@ -78,7 +84,7 @@ public enum MetadataIndex {
 
     SHEEP_DATA(13, BYTE, Sheep.class),
 
-    TAMEABLEAANIMAL_STATUS(13, BYTE, GlowTameable.class), //TODO 1.9 - We need a "TameableAnimal extends Animal"
+    TAMEABLEAANIMAL_STATUS(13, BYTE, GlowTameable.class),
     TAMEABLEANIMAL_OWNER(14, OPTUUID, GlowTameable.class),
 
     OCELOT_TYPE(15, INT, Ocelot.class),
@@ -96,6 +102,7 @@ public enum MetadataIndex {
     SHULKER_FACING_DIRECTION(12, DIRECTION, Shulker.class),
     SHULKER_ATTACHMENT_POSITION(13, OPTPOSITION, Shulker.class),
     SHULKER_SHIELD_HEIGHT(14, BYTE, Shulker.class),
+    SHULKER_COLOR(15, BYTE, Shulker.class),
 
     BLAZE_ON_FIRE(12, BYTE, Blaze.class),
 
@@ -103,11 +110,10 @@ public enum MetadataIndex {
     CREEPER_POWERED(13, BOOLEAN, Creeper.class),
     CREEPER_IGNITED(14, BOOLEAN, Creeper.class),
 
-    GUARDIAN_FLAGS(12, BYTE, Guardian.class),
+    GUARDIAN_SPIKES(12, BOOLEAN, Guardian.class),
     GUARDIAN_TARGET(13, INT, Guardian.class),
 
-    SKELETON_TYPE(12, INT, Skeleton.class),
-    SKELETON_HANDS_RISEN_UP(13, BOOLEAN, Skeleton.class),
+    SKELETON_HANDS_RISEN_UP(12, BOOLEAN, Skeleton.class),
 
     SPIDER_CLIMBING(12, BYTE, Spider.class),
 
@@ -119,9 +125,11 @@ public enum MetadataIndex {
     WITHER_INVULN_TIME(15, INT, Wither.class),
 
     ZOMBIE_IS_CHILD(12, BOOLEAN, Zombie.class),
-    ZOMBIE_IS_VILLAGER(13, INT, Zombie.class),
-    ZOMBIE_IS_CONVERTING(14, BOOLEAN, Zombie.class),
-    ZOMBIE_HANDS_RISED_UP(15, BOOLEAN, Zombie.class),
+    ZOMBIE_PROFESSION(13, INT, Zombie.class), // Unused as of 1.11
+    ZOMBIE_HANDS_RISED_UP(14, BOOLEAN, Zombie.class),
+
+    ZOMBIE_VILLAGER_IS_CONVERTING(15, BOOLEAN, null), //TODO - 1.11 Implement ZombieVillager class
+    ZOMBIE_VILLAGER_PROFESSION(15, BOOLEAN, null),
 
     ENDERMAN_BLOCK(12, BLOCKID, Enderman.class),
     ENDERMAN_SCREAMING(13, BOOLEAN, Enderman.class),
@@ -140,6 +148,12 @@ public enum MetadataIndex {
     MINECART_BLOCK(9, INT, Minecart.class),
     MINECART_BLOCK_OFFSET(10, INT, Minecart.class),
     MINECART_BLOCK_SHOWN(11, BYTE, Minecart.class),
+
+    EVOKER_SPELL(12, BYTE, null), //TODO - 1.11 Implement Evoker class
+
+    VEX_STATE(12, BYTE, null), //TODO - 1.11 Implement Vex class
+
+    VINDICATOR_STATE(12, BYTE, null), //TODO - 1.11 Implement Vindicator class
 
     //TODO - 1.9 When Those minecarts are implemented, uncomment this
     //MINECARTCOMMANDBLOCK_COMMAND(11, STRING, Minecart.class), //TODO 1.9 - Command block minecraft addition
