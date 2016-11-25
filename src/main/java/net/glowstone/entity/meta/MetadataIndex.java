@@ -66,17 +66,17 @@ public enum MetadataIndex {
 
     AGE_ISBABY(12, BOOLEAN, Ageable.class),
 
-    ABSTRACT_HORSE_FLAGS(13, BYTE, null), //TODO - 1.11 Implement AbstractHorse class
-    ABSTRACT_HORSE_OWNER(14, OPTUUID, null),
+    ABSTRACT_HORSE_FLAGS(13, BYTE, AbstractHorse.class), //TODO - 1.11 Implement AbstractHorse class
+    ABSTRACT_HORSE_OWNER(14, OPTUUID, AbstractHorse.class),
 
     HORSE_STYLE(15, INT, Horse.class),
     HORSE_ARMOR(16, INT, Horse.class),
 
-    CHESTED_HORSE_HAS_CHEST(15, BOOLEAN, null), //TODO - 1.11 Implement ChestedHorse class
+    CHESTED_HORSE_HAS_CHEST(15, BOOLEAN, ChestedHorse.class), //TODO - 1.11 Implement ChestedHorse class
 
-    LLAMA_STRENGTH(16, INT, null), //TODO - 1.11 Implement Llama class
-    LLAMA_CARPET(17, INT, null),
-    LLAMA_VARIANT(18, INT, null),
+    LLAMA_STRENGTH(16, INT, Llama.class), //TODO - 1.11 Implement Llama class
+    LLAMA_CARPET(17, INT, Llama.class),
+    LLAMA_VARIANT(18, INT, Llama.class),
 
     PIG_SADDLE(13, BOOLEAN, Pig.class),
 
@@ -128,8 +128,8 @@ public enum MetadataIndex {
     ZOMBIE_PROFESSION(13, INT, Zombie.class), // Unused as of 1.11
     ZOMBIE_HANDS_RISED_UP(14, BOOLEAN, Zombie.class),
 
-    ZOMBIE_VILLAGER_IS_CONVERTING(15, BOOLEAN, null), //TODO - 1.11 Implement ZombieVillager class
-    ZOMBIE_VILLAGER_PROFESSION(15, BOOLEAN, null),
+    ZOMBIE_VILLAGER_IS_CONVERTING(15, BOOLEAN, ZombieVillager.class), //TODO - 1.11 Implement ZombieVillager class
+    ZOMBIE_VILLAGER_PROFESSION(15, BOOLEAN, ZombieVillager.class),
 
     ENDERMAN_BLOCK(12, BLOCKID, Enderman.class),
     ENDERMAN_SCREAMING(13, BOOLEAN, Enderman.class),
@@ -149,11 +149,11 @@ public enum MetadataIndex {
     MINECART_BLOCK_OFFSET(10, INT, Minecart.class),
     MINECART_BLOCK_SHOWN(11, BYTE, Minecart.class),
 
-    EVOKER_SPELL(12, BYTE, null), //TODO - 1.11 Implement Evoker class
+    EVOKER_SPELL(12, BYTE, Evoker.class), //TODO - 1.11 Implement Evoker class
 
-    VEX_STATE(12, BYTE, null), //TODO - 1.11 Implement Vex class
+    VEX_STATE(12, BYTE, Vex.class), //TODO - 1.11 Implement Vex class
 
-    VINDICATOR_STATE(12, BYTE, null), //TODO - 1.11 Implement Vindicator class
+    VINDICATOR_STATE(12, BYTE, Vindicator.class), //TODO - 1.11 Implement Vindicator class
 
     //TODO - 1.9 When Those minecarts are implemented, uncomment this
     //MINECARTCOMMANDBLOCK_COMMAND(11, STRING, Minecart.class), //TODO 1.9 - Command block minecraft addition
