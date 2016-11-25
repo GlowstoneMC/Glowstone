@@ -6,7 +6,7 @@ dependencies:
         - git config --global user.email "circuitsoft@tuta.io"
         - git config --global user.name "mastercoms"
         - git clone --recursive https://github.com/GlowstoneMC/Glowkit.git
-        - (cd Glowkit && chmod +x applyPatches.sh && ./applyPatches.sh)
+        - (cd Glowkit && git checkout -b 1.11 remotes/origin/1.11 && chmod +x glowkit && ./glowkit p)
         - (cd Glowkit/Glowkit-Patched && mvn install)
 test:
     override:
