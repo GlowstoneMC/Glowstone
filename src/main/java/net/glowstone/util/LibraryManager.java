@@ -45,10 +45,9 @@ public final class LibraryManager {
             GlowServer.logger.log(Level.SEVERE, "Could not create libraries directory: " + directory);
         }
 
-        downloaderService.execute(new LibraryDownloader("org.xerial", "sqlite-jdbc", "3.7.2"));
-        downloaderService.execute(new LibraryDownloader("mysql", "mysql-connector-java", "5.1.38"));
+        downloaderService.execute(new LibraryDownloader("org.xerial", "sqlite-jdbc", "3.15.1"));
+        downloaderService.execute(new LibraryDownloader("mysql", "mysql-connector-java", "5.1.39"));
         downloaderService.execute(new LibraryDownloader("org.slf4j", "slf4j-jdk14", "1.7.15"));
-        downloaderService.execute(new LibraryDownloader("commons-io", "commons-io", "2.4"));
         downloaderService.shutdown();
         try {
             downloaderService.awaitTermination(5, TimeUnit.SECONDS);
