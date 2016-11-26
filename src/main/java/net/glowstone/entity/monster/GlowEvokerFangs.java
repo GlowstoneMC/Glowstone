@@ -2,7 +2,7 @@ package net.glowstone.entity.monster;
 
 import com.flowpowered.network.Message;
 import net.glowstone.entity.GlowEntity;
-import net.glowstone.net.message.play.entity.SpawnMobMessage;
+import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -29,7 +29,7 @@ public class GlowEvokerFangs extends GlowEntity implements EvokerFangs {
         double z = location.getZ();
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
-        result.add(new SpawnMobMessage(id, UUID.randomUUID(), getType().getTypeId(), x, y, z, yaw, pitch, pitch, 0, 0, 0, metadata.getEntryList()));
+        result.add(new SpawnObjectMessage(id, UUID.randomUUID(), getType().getTypeId(), x, y, z, pitch, yaw, 0, 0, 0, 0));
         return result;
     }
 
@@ -39,7 +39,7 @@ public class GlowEvokerFangs extends GlowEntity implements EvokerFangs {
     }
 
     @Override
-    public void setOwner(LivingEntity livingEntity) {
+    public void setOwner(LivingEntity owner) {
         this.owner = owner;
     }
 
