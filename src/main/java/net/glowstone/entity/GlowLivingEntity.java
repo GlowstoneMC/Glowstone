@@ -34,6 +34,7 @@ import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 /**
@@ -101,6 +102,10 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * This value is ignored for players.
      */
     private boolean fallFlying;
+    /**
+     * Ticks until the next ambient sound roll.
+     */
+    private int nextAmbientTime = 1;
 
     /**
      * Creates a mob within the specified world.
@@ -191,6 +196,16 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         BlockType type = ItemTable.instance().getBlock(under.getType());
         if (type != null) {
             type.onEntityStep(under, this);
+        }
+        nextAmbientTime--;
+        if (!isDead() && getAmbientSound() != null && nextAmbientTime == 0) {
+            double v = ThreadLocalRandom.current().nextDouble();
+            if (v <= 0.2) {
+                world.playSound(getLocation(), getAmbientSound(), getSoundVolume(), getSoundPitch());
+            }
+        }
+        if (nextAmbientTime == 0) {
+            nextAmbientTime = getAmbientDelay();
         }
     }
 
@@ -327,6 +342,24 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      */
     protected Sound getDeathSound() {
         return null;
+    }
+
+    /**
+     * Get the ambient sound this entity makes randomly, or null for silence.
+     *
+     * @return the ambient sound if available
+     */
+    protected Sound getAmbientSound() {
+        return null;
+    }
+
+    /**
+     * Get the minimal delay until the entity can produce an ambient sound.
+     *
+     * @return the minimal delay until the entity can produce an ambient sound
+     */
+    protected int getAmbientDelay() {
+        return 80;
     }
 
     /**

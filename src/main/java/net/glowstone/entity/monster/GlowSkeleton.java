@@ -36,4 +36,9 @@ public class GlowSkeleton extends GlowMonster implements Skeleton {
     protected Sound getHurtSound() {
         return Sound.ENTITY_SKELETON_HURT;
     }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_SKELETON_AMBIENT;
+    }
 }

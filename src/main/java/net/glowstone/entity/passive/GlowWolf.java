@@ -86,4 +86,9 @@ public class GlowWolf extends GlowTameable implements Wolf {
     protected Sound getDeathSound() {
         return Sound.ENTITY_WOLF_DEATH;
     }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_WOLF_AMBIENT;
+    }
 }

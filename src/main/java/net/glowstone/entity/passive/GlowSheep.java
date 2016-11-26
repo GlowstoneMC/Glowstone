@@ -134,4 +134,9 @@ public class GlowSheep extends GlowAnimal implements Sheep {
     protected Sound getDeathSound() {
         return Sound.ENTITY_SHEEP_DEATH;
     }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_SHEEP_AMBIENT;
+    }
 }

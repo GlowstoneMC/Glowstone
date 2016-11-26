@@ -32,4 +32,9 @@ public class GlowSnowman extends GlowMonster implements Snowman {
     protected Sound getHurtSound() {
         return Sound.ENTITY_SNOWMAN_HURT;
     }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_SNOWMAN_AMBIENT;
+    }
 }

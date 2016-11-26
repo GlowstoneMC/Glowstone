@@ -38,4 +38,9 @@ public class GlowGuardian extends GlowMonster implements Guardian {
     protected Sound getDeathSound() {
         return Sound.ENTITY_GUARDIAN_DEATH;
     }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_GUARDIAN_AMBIENT;
+    }
 }

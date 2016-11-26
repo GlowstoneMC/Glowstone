@@ -43,4 +43,9 @@ public class GlowVex extends GlowMonster implements Vex {
     protected Sound getHurtSound() {
         return Sound.ENTITY_VEX_HURT;
     }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_VEX_AMBIENT;
+    }
 }

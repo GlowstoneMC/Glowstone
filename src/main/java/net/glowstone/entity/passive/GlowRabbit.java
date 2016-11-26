@@ -50,4 +50,9 @@ public class GlowRabbit extends GlowAnimal implements Rabbit {
     protected Sound getDeathSound() {
         return Sound.ENTITY_RABBIT_DEATH;
     }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_RABBIT_AMBIENT;
+    }
 }

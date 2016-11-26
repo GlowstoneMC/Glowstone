@@ -70,4 +70,9 @@ public class GlowEvoker extends GlowMonster implements Evoker {
             }
         }
     }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_EVOCATION_ILLAGER_AMBIENT;
+    }
 }

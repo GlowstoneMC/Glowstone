@@ -140,4 +140,9 @@ public class GlowHorse extends GlowAbstractHorse implements Horse {
     protected Sound getDeathSound() {
         return Sound.ENTITY_HORSE_DEATH;
     }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_HORSE_AMBIENT;
+    }
 }

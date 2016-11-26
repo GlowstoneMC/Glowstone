@@ -4,10 +4,7 @@ import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.monster.*;
 import net.glowstone.entity.objects.GlowMinecart;
-import net.glowstone.entity.passive.GlowCow;
-import net.glowstone.entity.passive.GlowMooshroom;
-import net.glowstone.entity.passive.GlowPolarBear;
-import net.glowstone.entity.passive.GlowSquid;
+import net.glowstone.entity.passive.*;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
@@ -43,7 +40,6 @@ public final class EntityStorage {
         // LivingEntities - Passive Entities
         bind(new BatStore());
         bind(new ChickenStore());
-        bind(new HorseStore());
         bind(new PigStore());
         bind(new RabbitStore());
         bind(new SheepStore());
@@ -54,6 +50,12 @@ public final class EntityStorage {
         bind(new AgeableStore<>(GlowMooshroom.class, EntityType.MUSHROOM_COW));
         bind(new WaterMobStore<>(GlowSquid.class, EntityType.SQUID));
         bind(new AgeableStore<>(GlowPolarBear.class, EntityType.POLAR_BEAR));
+        bind(new AbstractHorseStore<>(GlowZombieHorse.class, EntityType.ZOMBIE_HORSE));
+        bind(new AbstractHorseStore<>(GlowSkeletonHorse.class, EntityType.SKELETON_HORSE));
+        bind(new ChestedHorseStore<>(GlowLlama.class, EntityType.LLAMA));
+        bind(new ChestedHorseStore<>(GlowMule.class, EntityType.MULE));
+        bind(new ChestedHorseStore<>(GlowDonkey.class, EntityType.DONKEY));
+        bind(new HorseStore());
 
         // LivingEntities - Hostile Entities
         bind(new CreeperStore());
@@ -62,8 +64,8 @@ public final class EntityStorage {
         bind(new GhastStore());
         bind(new GuardianStore());
         bind(new IronGolemStore());
-        bind(new SlimeStore(GlowSlime.class, EntityType.SLIME));
-        bind(new SlimeStore(GlowMagmaCube.class, EntityType.MAGMA_CUBE));
+        bind(new SlimeStore<>(GlowSlime.class, EntityType.SLIME));
+        bind(new SlimeStore<>(GlowMagmaCube.class, EntityType.MAGMA_CUBE));
         bind(new ZombieStore<>());
         bind(new PigZombieStore());
         bind(new SkeletonStore());

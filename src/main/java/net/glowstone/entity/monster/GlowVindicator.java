@@ -30,4 +30,9 @@ public class GlowVindicator extends GlowMonster implements Vindicator {
     protected Sound getDeathSound() {
         return Sound.ENTITY_VINDICATION_ILLAGER_DEATH;
     }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_VINDICATION_ILLAGER_AMBIENT;
+    }
 }
