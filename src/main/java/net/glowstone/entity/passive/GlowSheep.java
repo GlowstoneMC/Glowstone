@@ -63,7 +63,7 @@ public class GlowSheep extends GlowAnimal implements Sheep {
     }
 
     private byte getColorByte() {
-        return (byte) (getColor().getData() | (sheared ? 0x10 : 0x00));
+        return (byte) (getColor().getWoolData() | (sheared ? 0x10 : 0x00));
     }
 
     @Override

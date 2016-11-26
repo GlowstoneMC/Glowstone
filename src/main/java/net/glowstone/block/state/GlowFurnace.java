@@ -1,12 +1,11 @@
 package net.glowstone.block.state;
 
 import net.glowstone.block.GlowBlock;
-import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.TEFurnace;
 import org.bukkit.block.Furnace;
 import org.bukkit.inventory.FurnaceInventory;
 
-public class GlowFurnace extends GlowBlockState implements Furnace {
+public class GlowFurnace extends GlowLootableBlock implements Furnace {
 
     private short burnTime;
     private short cookTime;

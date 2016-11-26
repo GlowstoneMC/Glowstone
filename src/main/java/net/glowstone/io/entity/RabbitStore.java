@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import net.glowstone.entity.passive.GlowRabbit;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Rabbit.Type;
 
 import java.util.Map;
@@ -30,7 +31,7 @@ class RabbitStore extends AgeableStore<GlowRabbit> {
             .build();
 
     public RabbitStore() {
-        super(GlowRabbit.class, "Rabbit");
+        super(GlowRabbit.class, EntityType.RABBIT);
     }
 
     @Override

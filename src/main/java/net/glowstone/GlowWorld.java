@@ -1519,15 +1519,25 @@ public final class GlowWorld implements World {
 
     @Override
     public void playSound(Location location, Sound sound, float volume, float pitch) {
-        if (location == null || sound == null) return;
-
-        double radiusSquared = Math.pow(volume * 16, 2);
-        getRawPlayers().stream().filter(player -> player.getLocation().distanceSquared(location) <= radiusSquared).forEach(player -> player.playSound(location, sound, volume, pitch));
+        playSound(location, sound, sound.getCategory(), volume, pitch);
     }
 
     @Override
-    public void playSound(Location location, String s, float v, float v1) {
+    public void playSound(Location location, String sound, float volume, float pitch) {
+        playSound(location, Sound.getSound(sound), volume, pitch);
+    }
 
+    @Override
+    public void playSound(Location location, Sound sound, SoundCategory category, float volume, float pitch) {
+        if (location == null || sound == null) return;
+
+        double radiusSquared = Math.pow(volume * 16, 2);
+        getRawPlayers().stream().filter(player -> player.getLocation().distanceSquared(location) <= radiusSquared).forEach(player -> player.playSound(location, sound, category, volume, pitch));
+    }
+
+    @Override
+    public void playSound(Location location, String sound, SoundCategory category, float volume, float pitch) {
+        playSound(location, Sound.getSound(sound), category, volume, pitch);
     }
 
     @Override

@@ -2,10 +2,11 @@ package net.glowstone.io.entity;
 
 import net.glowstone.entity.monster.GlowWither;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.entity.EntityType;
 
 public class WitherStore extends MonsterStore<GlowWither> {
     public WitherStore() {
-        super(GlowWither.class, "WitherBoss");
+        super(GlowWither.class, EntityType.WITHER);
     }
 
     @Override

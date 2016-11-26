@@ -19,7 +19,7 @@ public class GlowWolf extends GlowTameable implements Wolf {
     public GlowWolf(Location location) {
         super(location, EntityType.WOLF, 8);
         Random r = new Random();
-        collarColor = DyeColor.getByData((byte) r.nextInt(DyeColor.values().length));
+        collarColor = DyeColor.getByDyeData((byte) r.nextInt(DyeColor.values().length));
         setBoundingBox(0.6, 0.85);
     }
 

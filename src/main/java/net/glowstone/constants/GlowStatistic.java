@@ -64,6 +64,7 @@ public final class GlowStatistic {
         set(CRAFTING_TABLE_INTERACTION, "craftingTableInteraction");
         set(CHEST_OPENED, "chestOpened");
         set(SLEEP_IN_BED, "sleepInBed");
+        set(SHULKER_BOX_OPENED, "shulkerBoxOpened");
 
         // todo: statistics with substatistics
     }

@@ -5,6 +5,7 @@ import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.GameMode;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -12,8 +13,8 @@ import java.util.List;
 
 abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityStore<T> {
 
-    public HumanEntityStore(Class<T> clazz, String id) {
-        super(clazz, id);
+    public HumanEntityStore(Class<T> clazz, EntityType type) {
+        super(clazz, type);
     }
 
     // documented at http://minecraft.gamepedia.com/Player.dat_Format

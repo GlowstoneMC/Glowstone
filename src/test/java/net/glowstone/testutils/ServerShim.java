@@ -345,11 +345,6 @@ public class ServerShim implements Server {
     }
 
     @Override
-    public boolean useExactLoginLocation() {
-        return false;
-    }
-
-    @Override
     public void shutdown() {
 
     }
@@ -451,6 +446,11 @@ public class ServerShim implements Server {
 
     @Override
     public Inventory createInventory(InventoryHolder owner, int size, String title) throws IllegalArgumentException {
+        return null;
+    }
+
+    @Override
+    public Merchant createMerchant(String s) {
         return null;
     }
 

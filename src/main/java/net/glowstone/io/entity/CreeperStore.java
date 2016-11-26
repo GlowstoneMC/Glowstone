@@ -2,11 +2,12 @@ package net.glowstone.io.entity;
 
 import net.glowstone.entity.monster.GlowCreeper;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.entity.EntityType;
 
 class CreeperStore extends MonsterStore<GlowCreeper> {
 
     public CreeperStore() {
-        super(GlowCreeper.class, "Creeper");
+        super(GlowCreeper.class, EntityType.CREEPER);
     }
 
     @Override

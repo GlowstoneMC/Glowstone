@@ -240,6 +240,23 @@ public final class ItemIds {
         both(215, "red_nether_brick");
         both(216, "bone_block");
         both(217, "structure_void");
+        both(218, "observer");
+        both(219, "white_shulker_box");
+        both(220, "orange_shulker_box");
+        both(221, "magenta_shulker_box");
+        both(222, "light_blue_shulker_box");
+        both(223, "yellow_shulker_box");
+        both(224, "lime_shulker_box");
+        both(225, "pink_shulker_box");
+        both(226, "gray_shulker_box");
+        both(227, "silver_shulker_box");
+        both(228, "cyan_shulker_box");
+        both(229, "purple_shulker_box");
+        both(230, "blue_shulker_box");
+        both(231, "brown_shulker_box");
+        both(232, "green_shulker_box");
+        both(233, "red_shulker_box");
+        both(234, "black_shulker_box");
         block(255, "structure_block");
         // items
         item(256, "iron_shovel");
@@ -435,6 +452,8 @@ public final class ItemIds {
         item(446, "jungle_boat");
         item(447, "acacia_boat");
         item(448, "dark_oak_boat");
+        item(449, "totem");
+        item(450, "shulker_shell");
         item(2256, "record_13");
         item(2257, "record_cat");
         item(2258, "record_blocks");

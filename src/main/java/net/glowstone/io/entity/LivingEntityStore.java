@@ -7,6 +7,7 @@ import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -16,8 +17,8 @@ import java.util.Map.Entry;
 
 abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore<T> {
 
-    public LivingEntityStore(Class<T> clazz, String id) {
-        super(clazz, id);
+    public LivingEntityStore(Class<T> clazz, EntityType type) {
+        super(clazz, type);
     }
 
     // these tags that apply to living entities only are documented as global:

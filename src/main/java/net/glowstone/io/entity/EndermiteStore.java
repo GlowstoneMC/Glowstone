@@ -2,11 +2,12 @@ package net.glowstone.io.entity;
 
 import net.glowstone.entity.monster.GlowEndermite;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.entity.EntityType;
 
 class EndermiteStore extends MonsterStore<GlowEndermite> {
 
     public EndermiteStore() {
-        super(GlowEndermite.class, "Endermite");
+        super(GlowEndermite.class, EntityType.ENDERMITE);
     }
 
     @Override

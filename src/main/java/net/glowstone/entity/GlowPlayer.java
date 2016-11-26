@@ -68,15 +68,11 @@ import org.bukkit.entity.Villager;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
-import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.*;
 import org.bukkit.inventory.InventoryView.Property;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.MainHand;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.map.MapView;
 import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
@@ -610,7 +606,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         if (passengerChanged) {
-            session.send(new SetPassengerMessage(SELF_ID, getPassenger() == null ? new int[0] : new int[] {getPassenger().getEntityId()}));
+            session.send(new SetPassengerMessage(SELF_ID, getPassenger() == null ? new int[0] : new int[]{getPassenger().getEntityId()}));
         }
 
         getAttributeManager().sendMessages(session);
@@ -1140,6 +1136,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         setGameModeDefaults();
     }
 
+    @Override
+    public boolean isHandRaised() {
+        return false;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Entity status
 
@@ -1193,20 +1194,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         } else {
             return 1.54;
         }
-    }
-
-    @Override
-    public boolean isGliding() {
-        return metadata.getBit(MetadataIndex.STATUS, StatusFlags.GLIDING);
-    }
-
-    @Override
-    public void setGliding(boolean gliding) {
-        if (EventFactory.callEvent(new EntityToggleGlideEvent(this, gliding)).isCancelled()) {
-            return;
-        }
-
-        metadata.setBit(MetadataIndex.STATUS, StatusFlags.GLIDING, gliding);
     }
 
     @Override
@@ -1940,7 +1927,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public void playSound(Location location, String sound, Sound.Category category, float volume, float pitch) {
+    public void playSound(Location location, String sound, SoundCategory category, float volume, float pitch) {
         if (location == null || sound == null) return;
         // the loss of precision here is a bit unfortunate but it's what CraftBukkit does
         double x = location.getBlockX() + 0.5;
@@ -1950,7 +1937,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public void playSound(Location location, Sound sound, Sound.Category category, float volume, float pitch) {
+    public void playSound(Location location, Sound sound, SoundCategory category, float volume, float pitch) {
         playSound(location, sound.getId(), category, volume, pitch);
     }
 
@@ -1965,7 +1952,17 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public void stopSound(Sound.Category category, String sound) {
+    public void stopSound(SoundCategory category) {
+        stopSound("", category);
+    }
+
+    @Override
+    public void stopSound(Sound sound, SoundCategory soundCategory) {
+        stopSound(sound.getId(), soundCategory);
+    }
+
+    @Override
+    public void stopSound(String sound, SoundCategory category) {
         String source = "";
         if (category != null) {
             source = category.name().toLowerCase();
@@ -1985,14 +1982,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
     }
 
-    @Override
-    public void stopSound(Sound.Category category) {
-        stopSound(category, "");
-    }
-
-    @Override
-    public void stopSound(Sound.Category category, Sound sound) {
-        stopSound(category, sound == null ? "" : sound.getId());
+    public void stopSound(SoundCategory category, Sound sound) {
+        stopSound(sound == null ? "" : sound.getId(), category);
     }
 
     @Override
@@ -2000,7 +1991,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         if (sound == null || sound.equalsIgnoreCase("all")) {
             sound = "";
         }
-        stopSound(null, sound);
+        stopSound(sound, null);
     }
 
     @Override
@@ -2390,6 +2381,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public InventoryView openMerchant(Villager villager, boolean b) {
+        return null;
+    }
+
+    @Override
+    public InventoryView openMerchant(Merchant merchant, boolean b) {
         return null;
     }
 

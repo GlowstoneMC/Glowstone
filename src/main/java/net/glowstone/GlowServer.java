@@ -1605,6 +1605,12 @@ public final class GlowServer implements Server {
         return new GlowInventory(owner, InventoryType.CHEST, size, title);
     }
 
+    @Override
+    public Merchant createMerchant(String title) {
+        // todo: 1.11... ???
+        return null;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Server icons
 
@@ -1819,11 +1825,6 @@ public final class GlowServer implements Server {
     @Override
     public boolean isHardcore() {
         return config.getBoolean(Key.HARDCORE);
-    }
-
-    @Override
-    public boolean useExactLoginLocation() {
-        return config.getBoolean(Key.EXACT_LOGIN_LOCATION);
     }
 
     @Override

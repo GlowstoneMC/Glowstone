@@ -48,7 +48,11 @@ public class GlowMetaSpawn extends GlowMetaItem implements SpawnMeta {
         if (tag.isCompound("EntityTag")) {
             CompoundTag entity = tag.getCompound("EntityTag");
             if (entity.isString("id")) {
-                type = EntityType.fromName(entity.getString("id"));
+                String id = entity.getString("id");
+                if (id.startsWith("minecraft:")) {
+                    id = id.substring("minecraft:".length());
+                }
+                type = EntityType.fromName(id);
             }
         }
     }

@@ -10,6 +10,7 @@ public class EntityRegistry {
 
     private static final ImmutableBiMap<Class<? extends Entity>, Class<? extends GlowEntity>> ENTITIES =
             ImmutableBiMap.<Class<? extends Entity>, Class<? extends GlowEntity>>builder()
+                    .put(AbstractHorse.class, GlowAbstractHorse.class)
                     .put(ArmorStand.class, GlowArmorStand.class)
                     //TODO: Arrow
                     .put(Bat.class, GlowBat.class)
@@ -19,8 +20,8 @@ public class EntityRegistry {
                     .put(Chicken.class, GlowChicken.class)
                     .put(Cow.class, GlowCow.class)
                     .put(Creeper.class, GlowCreeper.class)
-                    .put(Item.class, GlowItem.class)
                     //TODO: Egg
+                    .put(ElderGuardian.class, GlowElderGuardian.class)
                     //TODO: Ender Crystal
                     //TODO: Ender Dragon
                     //TODO: Ender PEarl
@@ -36,7 +37,9 @@ public class EntityRegistry {
                     .put(Giant.class, GlowGiant.class)
                     .put(Guardian.class, GlowGuardian.class)
                     .put(Horse.class, GlowHorse.class)
+                    .put(Husk.class, GlowHusk.class)
                     .put(IronGolem.class, GlowIronGolem.class)
+                    .put(Item.class, GlowItem.class)
                     .put(ItemFrame.class, GlowItemFrame.class)
                     //TODO: Leash hitch
                     //TODO: Lightning
@@ -58,6 +61,7 @@ public class EntityRegistry {
                     .put(TNTPrimed.class, GlowTNTPrimed.class)
                     .put(Rabbit.class, GlowRabbit.class)
                     .put(Sheep.class, GlowSheep.class)
+                    .put(Shulker.class, GlowShulker.class)
                     .put(Silverfish.class, GlowSilverfish.class)
                     .put(Skeleton.class, GlowSkeleton.class)
                     .put(Slime.class, GlowSlime.class)
@@ -67,15 +71,17 @@ public class EntityRegistry {
                     .put(Spider.class, GlowSpider.class)
                     //TODO: Splash potion
                     .put(Squid.class, GlowSquid.class)
+                    .put(Stray.class, GlowStray.class)
                     //TODO: Experience bottle
                     .put(Villager.class, GlowVillager.class)
                     .put(Weather.class, GlowWeather.class)
                     .put(Witch.class, GlowWitch.class)
                     .put(Wither.class, GlowWither.class)
+                    .put(WitherSkeleton.class, GlowWitherSkeleton.class)
                     //TODO: Wither Skull
                     .put(Wolf.class, GlowWolf.class)
                     .put(Zombie.class, GlowZombie.class)
-                    .put(Shulker.class, GlowShulker.class)
+                    .put(ZombieVillager.class, GlowZombieVillager.class)
                     .build();
 
     public static Class<? extends GlowEntity> getEntity(EntityType type) {

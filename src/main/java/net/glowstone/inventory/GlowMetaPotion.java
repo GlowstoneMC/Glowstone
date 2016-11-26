@@ -3,6 +3,7 @@ package net.glowstone.inventory;
 import com.google.common.collect.ImmutableList;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
@@ -179,6 +180,21 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         if (effects.isEmpty()) return false;
         effects.clear();
         return true;
+    }
+
+    @Override
+    public boolean hasColor() {
+        return false;
+    }
+
+    @Override
+    public Color getColor() {
+        return null;
+    }
+
+    @Override
+    public void setColor(Color color) {
+
     }
 
     /**

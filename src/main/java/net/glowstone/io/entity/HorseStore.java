@@ -6,6 +6,7 @@ import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse.Color;
 import org.bukkit.entity.Horse.Style;
 import org.bukkit.entity.Horse.Variant;
@@ -30,7 +31,7 @@ class HorseStore extends AgeableStore<GlowHorse> {
     private static final String SADDLE_KEY = "Saddle";
 
     public HorseStore() {
-        super(GlowHorse.class, "EntityHorse");
+        super(GlowHorse.class, EntityType.HORSE);
     }
 
     @Override

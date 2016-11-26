@@ -2,11 +2,12 @@ package net.glowstone.io.entity;
 
 import net.glowstone.entity.monster.GlowSlime;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.entity.EntityType;
 
 class SlimeStore<T extends GlowSlime> extends MonsterStore<GlowSlime> {
 
-    public SlimeStore(Class<GlowSlime> clazz, String id) {
-        super(clazz, id);
+    public SlimeStore(Class<GlowSlime> clazz, EntityType type) {
+        super(clazz, type);
     }
 
     @Override

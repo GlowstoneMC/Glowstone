@@ -129,7 +129,7 @@ public enum MetadataIndex {
     ZOMBIE_HANDS_RISED_UP(14, BOOLEAN, Zombie.class),
 
     ZOMBIE_VILLAGER_IS_CONVERTING(15, BOOLEAN, ZombieVillager.class), //TODO - 1.11 Implement ZombieVillager class
-    ZOMBIE_VILLAGER_PROFESSION(15, BOOLEAN, ZombieVillager.class),
+    ZOMBIE_VILLAGER_PROFESSION(16, BOOLEAN, ZombieVillager.class),
 
     ENDERMAN_BLOCK(12, BLOCKID, Enderman.class),
     ENDERMAN_SCREAMING(13, BOOLEAN, Enderman.class),
