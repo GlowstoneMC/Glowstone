@@ -29,6 +29,8 @@ public class EntityRegistry {
                     .put(Enderman.class, GlowEnderman.class)
                     .put(Endermite.class, GlowEndermite.class)
                     //TODO: Experience orb
+                    .put(Evoker.class, GlowEvoker.class)
+                    .put(EvokerFangs.class, GlowEvokerFangs.class)
                     .put(FallingBlock.class, GlowFallingBlock.class)
                     //TODO: Fireball
                     //TODO: Firework
@@ -73,7 +75,9 @@ public class EntityRegistry {
                     .put(Squid.class, GlowSquid.class)
                     .put(Stray.class, GlowStray.class)
                     //TODO: Experience bottle
+                    .put(Vex.class, GlowVex.class)
                     .put(Villager.class, GlowVillager.class)
+                    .put(Vindicator.class, GlowVindicator.class)
                     .put(Weather.class, GlowWeather.class)
                     .put(Witch.class, GlowWitch.class)
                     .put(Wither.class, GlowWither.class)

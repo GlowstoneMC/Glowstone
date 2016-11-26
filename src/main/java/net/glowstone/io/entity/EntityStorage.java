@@ -76,6 +76,9 @@ public final class EntityStorage {
         bind(new MonsterStore<>(GlowWitch.class, EntityType.WITCH));
         bind(new ShulkerStore());
         bind(new WitherStore());
+        bind(new VexStore());
+        bind(new VindicatorStore());
+        bind(new EvokerStore());
 
 
         bind(new ArmorStandStore());
