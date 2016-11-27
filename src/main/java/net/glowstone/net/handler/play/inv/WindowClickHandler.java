@@ -60,10 +60,10 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                 // in mode 1 (shift click), client does not send item in slot under cursor if the
                 // action did not result in any change on the client side (inventory full) or
                 // if there's an item under the cursor
-                GlowServer.logger.info("attempt to undesync inventory!");
-                player.sendItemChange(viewSlot, slotItem);
                 // recipe slot is not synced by design
                 if (view.getTopInventory().getType() != InventoryType.CRAFTING || viewSlot >= view.getTopInventory().getSize() || ((GlowInventory) view.getTopInventory()).getSlot(viewSlot).getType() != SlotType.RESULT) {
+                    GlowServer.logger.info("attempt to undesync inventory!");
+                    player.sendItemChange(viewSlot, slotItem);
                     return false;
                 }
             }
@@ -158,7 +158,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
             action = InventoryAction.NOTHING;
         }
 
-        // determine whether NOTHING, HOTBAR_MOVE_AND_READ or HOTBAR_SWAP should be executed
+        // determine whether NOTHING, HOTBAR_MOVE_AND_READD or HOTBAR_SWAP should be executed
         if (clickType == ClickType.NUMBER_KEY) {
             ItemStack destItem = bottom.getItem(message.getButton());
             if (InventoryUtil.isEmpty(slotItem)) {

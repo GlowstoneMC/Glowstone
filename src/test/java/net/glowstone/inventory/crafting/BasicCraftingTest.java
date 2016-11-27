@@ -7,7 +7,6 @@ import org.bukkit.inventory.Recipe;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -36,18 +35,5 @@ public class BasicCraftingTest {
         assertNotNull(recipe);
         assertEquals(recipe.getResult().getType(), Material.WOOD);
         assertEquals(recipe.getResult().getAmount(), 4);
-    }
-
-    @Test
-    public void air_in_slots_causes_recipe_lookup_to_fail() {
-        /**
-         * CraftingManager expects *null* for any empty slot but we sometimes use AIRx0 internally for empty slots.
-         * This does not work and we document this here.
-         */
-        ItemStack[] items = new ItemStack[4];
-        items[0] = new ItemStack(Material.LOG, 1, (short) 0);
-        items[1] = new ItemStack(Material.AIR, 0, (short) 0);
-        Recipe recipe = cm.getCraftingRecipe(items);
-        assertNull(recipe);
     }
 }
