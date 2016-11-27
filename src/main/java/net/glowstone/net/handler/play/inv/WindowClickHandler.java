@@ -9,6 +9,7 @@ import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.inv.SetWindowSlotMessage;
 import net.glowstone.net.message.play.inv.TransactionMessage;
 import net.glowstone.net.message.play.inv.WindowClickMessage;
+import net.glowstone.util.InventoryUtil;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.*;
@@ -45,14 +46,14 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         InventoryView view = player.getOpenInventory();
         GlowInventory top = (GlowInventory) view.getTopInventory();
         GlowInventory bottom = (GlowInventory) view.getBottomInventory();
-        ItemStack slotItem = view.getItem(viewSlot);
+        ItemStack slotItem = InventoryUtil.safeEmptyStack(view.getItem(viewSlot));
         ItemStack cursor = player.getItemOnCursor();
 
         // check that the player has a correct view of the item
         if (!Objects.equals(message.getItem(), slotItem) && (message.getMode() == 0 || message.getMode() == 1)) {
             // reject item change because of desynced inventory
             // in mode 3 (get) and 4 (drop), client does not send item in slot under cursor
-            if (message.getMode() == 0 || message.getItem() != null) {
+            if (message.getMode() == 0 || !InventoryUtil.isEmpty(message.getItem())) {
                 // in mode 1 (shift click), client does not send item in slot under cursor if the
                 // action did not result in any change on the client side (inventory full) or
                 // if there's an item under the cursor
