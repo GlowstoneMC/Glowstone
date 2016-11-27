@@ -372,7 +372,7 @@ public class GlowInventory implements Inventory {
         while (toAdd > 0 && iterator.hasNext()) {
             GlowInventorySlot slot = iterator.next();
             // Look for existing stacks to add to
-            ItemStack slotItem = InventoryUtil.safeEmptyStack(slot.getItem());
+            ItemStack slotItem = InventoryUtil.itemOrEmpty(slot.getItem());
             if (!InventoryUtil.isEmpty(slotItem) && compareItems(item, slotItem, ignoreMeta)) {
                 int space = maxStackSize - slotItem.getAmount();
                 if (space < 0) continue;
@@ -467,7 +467,7 @@ public class GlowInventory implements Inventory {
 
         int i = 0;
         for (ItemStack itemStack : this) {
-            contents[i] = InventoryUtil.safeEmptyStack(itemStack);
+            contents[i] = InventoryUtil.itemOrEmpty(itemStack);
             i++;
         }
 
@@ -549,7 +549,7 @@ public class GlowInventory implements Inventory {
         int i = 0;
         for (ItemStack slotItem : this) {
             if (!InventoryUtil.isEmpty(slotItem) && slotItem.getTypeId() == materialId) {
-                result.put(i, InventoryUtil.safeEmptyStack(slotItem));
+                result.put(i, InventoryUtil.itemOrEmpty(slotItem));
             }
 
             i++;

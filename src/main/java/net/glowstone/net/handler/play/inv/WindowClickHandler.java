@@ -46,7 +46,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         InventoryView view = player.getOpenInventory();
         GlowInventory top = (GlowInventory) view.getTopInventory();
         GlowInventory bottom = (GlowInventory) view.getBottomInventory();
-        ItemStack slotItem = InventoryUtil.safeEmptyStack(view.getItem(viewSlot));
+        ItemStack slotItem = InventoryUtil.itemOrEmpty(view.getItem(viewSlot));
         ItemStack cursor = player.getItemOnCursor();
         GlowServer.logger.info("Slot item: " + slotItem);
         GlowServer.logger.info("Message item: " + message.getItem());
@@ -158,18 +158,18 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
             action = InventoryAction.NOTHING;
         }
 
-        // determine whether NOTHING, HOTBAR_MOVE_AND_READD or HOTBAR_SWAP should be executed
+        // determine whether NOTHING, HOTBAR_MOVE_AND_READ or HOTBAR_SWAP should be executed
         if (clickType == ClickType.NUMBER_KEY) {
             ItemStack destItem = bottom.getItem(message.getButton());
-            if (slotItem == null) {
-                if (destItem == null) {
-                    // both items are null, do nothing
+            if (InventoryUtil.isEmpty(slotItem)) {
+                if (InventoryUtil.isEmpty(destItem)) {
+                    // both items are empty, do nothing
                     action = InventoryAction.NOTHING;
                 } else if (!inv.itemPlaceAllowed(invSlot, destItem)) {
-                    // current item is null and destItem cannot be moved into current slot
+                    // current item is empty and destItem cannot be moved into current slot
                     action = InventoryAction.NOTHING;
                 }
-            } else if (slotItem != null && destItem != null && (inv != bottom || !inv.itemPlaceAllowed(invSlot, destItem))) {
+            } else if (inv != bottom || !inv.itemPlaceAllowed(invSlot, destItem)) {
                 // target and source inventory are different or destItem cannot be placed in current slot
                 action = InventoryAction.HOTBAR_MOVE_AND_READD;
             }
@@ -197,12 +197,12 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         InventoryClickEvent event = null;
         if (top == inv && top instanceof GlowCraftingInventory && top.getSlotType(invSlot) == SlotType.RESULT) {
             // Clicked on output slot of crafting inventory
-            if (slotItem == null) {
+            if (InventoryUtil.isEmpty(slotItem)) {
                 // No crafting recipe result, don't do anything
                 action = InventoryAction.NOTHING;
             }
 
-            int cursorAmount =  InventoryUtil.isEmpty(cursor) ? 0 : cursor.getAmount();
+            int cursorAmount = InventoryUtil.itemOrEmpty(cursor).getAmount();
             if (slotItem != null && cursorAmount + slotItem.getAmount() <= slotItem.getMaxStackSize()) {
                 // if the player can take the whole result
                 if (WindowClickLogic.isPickupAction(action) || WindowClickLogic.isPlaceAction(action)) {

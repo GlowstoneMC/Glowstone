@@ -21,7 +21,7 @@ public class InventoryUtil {
      * @param stack the ItemStack to check and convert, if applicable
      * @return the converted ItemStack if applicable, the original ItemStack otherwise
      */
-    public static ItemStack safeEmptyStack(ItemStack stack) {
+    public static ItemStack itemOrEmpty(ItemStack stack) {
         return stack == null ? createEmptyStack() : stack;
     }
 

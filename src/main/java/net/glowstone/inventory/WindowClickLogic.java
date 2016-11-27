@@ -1,5 +1,6 @@
 package net.glowstone.inventory;
 
+import net.glowstone.util.InventoryUtil;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryType.SlotType;
@@ -102,8 +103,8 @@ public final class WindowClickLogic {
             case LEFT:
                 // "SWAP_WITH_CURSOR", "PLACE_ONE", "DROP_ALL_CURSOR", "PLACE_ALL", "PLACE_SOME", "NOTHING", "PICKUP_ALL"
 
-                if (cursor == null) {
-                    if (outside || slotItem == null) {
+                if (InventoryUtil.isEmpty(cursor)) {
+                    if (outside || InventoryUtil.isEmpty(slotItem)) {
                         return InventoryAction.NOTHING;
                     }
                     return InventoryAction.PICKUP_ALL;
@@ -117,7 +118,7 @@ public final class WindowClickLogic {
                     return InventoryAction.PLACE_ONE;
                 }
 
-                if (slotItem == null) {
+                if (InventoryUtil.isEmpty(slotItem)) {
                     return InventoryAction.PLACE_ALL;
                 }
 
@@ -164,10 +165,10 @@ public final class WindowClickLogic {
 
             case SHIFT_LEFT:
             case SHIFT_RIGHT:
-                if (slotItem != null) {
-                    return InventoryAction.MOVE_TO_OTHER_INVENTORY;
-                } else {
+                if (InventoryUtil.isEmpty(slotItem)) {
                     return InventoryAction.NOTHING;
+                } else {
+                    return InventoryAction.MOVE_TO_OTHER_INVENTORY;
                 }
 
             case WINDOW_BORDER_LEFT:
@@ -176,7 +177,7 @@ public final class WindowClickLogic {
 
             case MIDDLE:
                 // not supported yet
-                if (cursor == null) {
+                if (InventoryUtil.isEmpty(cursor)) {
                     return InventoryAction.CLONE_STACK;
                 } else {
                     return InventoryAction.NOTHING;
@@ -188,10 +189,10 @@ public final class WindowClickLogic {
                 return InventoryAction.HOTBAR_SWAP;
 
             case DOUBLE_CLICK:
-                if (cursor != null) {
-                    return InventoryAction.COLLECT_TO_CURSOR;
-                } else {
+                if (InventoryUtil.isEmpty(cursor)) {
                     return InventoryAction.NOTHING;
+                } else {
+                    return InventoryAction.COLLECT_TO_CURSOR;
                 }
 
             case DROP:
