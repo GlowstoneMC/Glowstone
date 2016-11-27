@@ -45,6 +45,7 @@ import net.glowstone.net.message.play.player.UseBedMessage;
 import net.glowstone.net.protocol.ProtocolType;
 import net.glowstone.scoreboard.GlowScoreboard;
 import net.glowstone.scoreboard.GlowTeam;
+import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
 import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextMessage;
@@ -2331,7 +2332,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     public void updateInventory() {
         session.send(new SetWindowContentsMessage(invMonitor.getId(), invMonitor.getContents()));
         ItemStack offHand = getInventory().getItemInOffHand();
-        session.send(new SetWindowSlotMessage(invMonitor.getId(), 45, offHand != null ? offHand : new ItemStack(Material.AIR)));
+        session.send(new SetWindowSlotMessage(invMonitor.getId(), 45, InventoryUtil.safeEmptyStack(offHand)));
     }
 
     public void sendItemChange(int slot, ItemStack item) {

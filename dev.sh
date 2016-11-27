@@ -1,3 +1,8 @@
 ./setup.sh
-cp target/glowstone-1.10.2-SNAPSHOT.jar target/glowstone.jar
-(cd target && ../start.sh)
+if [ $? -eq 0 ]
+then
+  cp target/glowstone-1.11-SNAPSHOT.jar target/glowstone.jar
+  (cd target && ../start.sh)
+else
+  echo "Glowstone did not compile."
+fi

@@ -48,16 +48,19 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         GlowInventory bottom = (GlowInventory) view.getBottomInventory();
         ItemStack slotItem = InventoryUtil.safeEmptyStack(view.getItem(viewSlot));
         ItemStack cursor = player.getItemOnCursor();
+        GlowServer.logger.info("Slot item: " + slotItem);
+        GlowServer.logger.info("Message item: " + message.getItem());
 
         // check that the player has a correct view of the item
         if (!Objects.equals(message.getItem(), slotItem) && (message.getMode() == 0 || message.getMode() == 1)) {
+            GlowServer.logger.info("client does not have correct view of item!");
             // reject item change because of desynced inventory
             // in mode 3 (get) and 4 (drop), client does not send item in slot under cursor
             if (message.getMode() == 0 || !InventoryUtil.isEmpty(message.getItem())) {
                 // in mode 1 (shift click), client does not send item in slot under cursor if the
                 // action did not result in any change on the client side (inventory full) or
                 // if there's an item under the cursor
-
+                GlowServer.logger.info("attempt to undesync inventory!");
                 player.sendItemChange(viewSlot, slotItem);
                 // recipe slot is not synced by design
                 if (view.getTopInventory().getType() != InventoryType.CRAFTING || viewSlot >= view.getTopInventory().getSize() || ((GlowInventory) view.getTopInventory()).getSlot(viewSlot).getType() != SlotType.RESULT) {
@@ -119,7 +122,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                             int transfer = Math.min(Math.min(perSlot, cursor.getAmount()), maxStack(dragInv, cursor.getType()) - oldItemAmount);
                             ItemStack newItem = combine(oldItem, cursor, transfer);
                             newSlots.put(dragSlot, newItem);
-                            newCursor = amountOrNull(newCursor, newCursor.getAmount() - transfer);
+                            newCursor = amountOrEmpty(newCursor, newCursor.getAmount() - transfer);
                             if (newCursor == null) {
                                 break;
                             }
@@ -199,7 +202,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                 action = InventoryAction.NOTHING;
             }
 
-            int cursorAmount = cursor == null ? 0 : cursor.getAmount();
+            int cursorAmount =  InventoryUtil.isEmpty(cursor) ? 0 : cursor.getAmount();
             if (slotItem != null && cursorAmount + slotItem.getAmount() <= slotItem.getMaxStackSize()) {
                 // if the player can take the whole result
                 if (WindowClickLogic.isPickupAction(action) || WindowClickLogic.isPlaceAction(action)) {
@@ -251,9 +254,9 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
 
             // PICKUP_*
             case PICKUP_ALL:
-                view.setItem(viewSlot, null);
-                int cursorAmount = cursor == null ? 0 : cursor.getAmount();
-                player.setItemOnCursor(amountOrNull(slotItem, cursorAmount + slotItem.getAmount()));
+                view.setItem(viewSlot, InventoryUtil.createEmptyStack());
+                int cursorAmount = InventoryUtil.isEmpty(cursor) ? 0 : cursor.getAmount();
+                player.setItemOnCursor(amountOrEmpty(slotItem, cursorAmount + slotItem.getAmount()));
                 break;
             case PICKUP_HALF:
                 // pick up half (favor picking up)
@@ -261,18 +264,18 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                 ItemStack newCursor = slotItem.clone();
                 newCursor.setAmount(slotItem.getAmount() - keepAmount);
 
-                inv.setItem(invSlot, amountOrNull(slotItem, keepAmount));
+                inv.setItem(invSlot, amountOrEmpty(slotItem, keepAmount));
                 player.setItemOnCursor(newCursor);
                 break;
             case PICKUP_SOME:
                 // pick up as many items as possible
                 int pickUp = Math.min(cursor.getMaxStackSize() - cursor.getAmount(), slotItem.getAmount());
-                view.setItem(viewSlot, amountOrNull(slotItem, slotItem.getAmount() - pickUp));
-                player.setItemOnCursor(amountOrNull(cursor, cursor.getAmount() + pickUp));
+                view.setItem(viewSlot, amountOrEmpty(slotItem, slotItem.getAmount() - pickUp));
+                player.setItemOnCursor(amountOrEmpty(cursor, cursor.getAmount() + pickUp));
                 break;
             case PICKUP_ONE:
-                view.setItem(invSlot, amountOrNull(slotItem, slotItem.getAmount() - 1));
-                player.setItemOnCursor(amountOrNull(cursor, cursor.getAmount() + 1));
+                view.setItem(invSlot, amountOrEmpty(slotItem, slotItem.getAmount() - 1));
+                player.setItemOnCursor(amountOrEmpty(cursor, cursor.getAmount() + 1));
                 break;
 
             // PLACE_*
@@ -284,12 +287,12 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                 // slotItem *should* never be null in this situation?
                 int transfer = Math.min(cursor.getAmount(), maxStack(inv, slotItem.getType()) - slotItem.getAmount());
                 view.setItem(viewSlot, combine(slotItem, cursor, transfer));
-                player.setItemOnCursor(amountOrNull(cursor, cursor.getAmount() - transfer));
+                player.setItemOnCursor(amountOrEmpty(cursor, cursor.getAmount() - transfer));
                 break;
             }
             case PLACE_ONE:
                 view.setItem(viewSlot, combine(slotItem, cursor, 1));
-                player.setItemOnCursor(amountOrNull(cursor, cursor.getAmount() - 1));
+                player.setItemOnCursor(amountOrEmpty(cursor, cursor.getAmount() - 1));
                 break;
 
             case SWAP_WITH_CURSOR:
@@ -306,8 +309,8 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                 break;
             case DROP_ONE_CURSOR:
                 if (cursor != null) {
-                    drop(player, amountOrNull(cursor.clone(), 1));
-                    player.setItemOnCursor(amountOrNull(cursor, cursor.getAmount() - 1));
+                    drop(player, amountOrEmpty(cursor.clone(), 1));
+                    player.setItemOnCursor(amountOrEmpty(cursor, cursor.getAmount() - 1));
                 }
                 break;
             case DROP_ALL_SLOT:
@@ -318,8 +321,8 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                 break;
             case DROP_ONE_SLOT:
                 if (slotItem != null) {
-                    drop(player, amountOrNull(slotItem.clone(), 1));
-                    view.setItem(viewSlot, amountOrNull(slotItem, slotItem.getAmount() - 1));
+                    drop(player, amountOrEmpty(slotItem.clone(), 1));
+                    view.setItem(viewSlot, amountOrEmpty(slotItem, slotItem.getAmount() - 1));
                 }
                 break;
 
@@ -395,7 +398,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                     }
                     int transfer = Math.min(item.getAmount(), maxStack(inv, cursor.getType()) - cursor.getAmount());
                     cursor.setAmount(cursor.getAmount() + transfer);
-                    view.setItem(i, amountOrNull(item, item.getAmount() - transfer));
+                    view.setItem(i, amountOrEmpty(item, item.getAmount() - transfer));
                 }
                 break;
         }
@@ -419,7 +422,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
     }
 
     private ItemStack combine(ItemStack slotItem, ItemStack cursor, int amount) {
-        if (slotItem == null) {
+        if (InventoryUtil.isEmpty(slotItem)) {
             ItemStack stack = cursor.clone();
             stack.setAmount(amount);
             return stack;
@@ -431,9 +434,9 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         }
     }
 
-    private ItemStack amountOrNull(ItemStack original, int amount) {
+    private ItemStack amountOrEmpty(ItemStack original, int amount) {
         original.setAmount(amount);
-        return amount <= 0 ? null : original;
+        return amount <= 0 ? InventoryUtil.createEmptyStack() : original;
     }
 
     private int maxStack(Inventory inv, Material mat) {
