@@ -11,7 +11,6 @@ import org.bukkit.GrassSpecies;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.FlowerPot;
 import org.bukkit.material.LongGrass;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
@@ -43,12 +42,6 @@ public class BlockFlowerPot extends BlockType {
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
         GlowBlockState state = block.getState();
-        MaterialData data = state.getData();
-
-        if (!(data instanceof FlowerPot)) {
-            warnMaterialData(FlowerPot.class, data);
-            return false;
-        }
         if (state instanceof GlowFlowerPot) {
             GlowFlowerPot pot = (GlowFlowerPot) state;
             ItemStack heldItem = player.getItemInHand();

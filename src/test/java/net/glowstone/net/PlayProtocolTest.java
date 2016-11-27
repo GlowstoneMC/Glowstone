@@ -9,6 +9,7 @@ import net.glowstone.net.message.play.inv.*;
 import net.glowstone.net.message.play.player.*;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.util.TextMessage;
+import org.bukkit.Difficulty;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -123,7 +124,7 @@ public class PlayProtocolTest extends BaseProtocolTest {
             new CameraMessage(1),
             //CombatEvent
             new ResourcePackSendMessage("url", "hash"),
-            new ServerDifficultyMessage(1),
+            new ServerDifficultyMessage(Difficulty.NORMAL),
             new UseBedMessage(1, 2, 3, 4),
             //TabCompleteResponse
             new UseItemMessage(0),
