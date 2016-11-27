@@ -206,13 +206,13 @@ public final class WindowClickLogic {
 
             case DROP:
                 // {"DROP", "DROP_ONE_SLOT"},
-                if (InventoryUtil.isEmpty(cursor)) {
+                if (InventoryUtil.isEmpty(slotItem)) {
                     return InventoryAction.NOTHING;
                 }
                 return InventoryAction.DROP_ONE_SLOT;
 
             case CONTROL_DROP:
-                if (InventoryUtil.isEmpty(cursor)) {
+                if (InventoryUtil.isEmpty(slotItem)) {
                     return InventoryAction.NOTHING;
                 }
                 return InventoryAction.DROP_ALL_SLOT;

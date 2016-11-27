@@ -14,10 +14,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.inventory.InventoryType.SlotType;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -218,7 +215,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
             // if we do anything, call the CraftItemEvent
             // this ignores whether the crafting process actually happens (full inventory, etc.)
             if (action != InventoryAction.NOTHING) {
-                Recipe recipe = ((GlowCraftingInventory) inv).getRecipe();
+                Recipe recipe = ((CraftingInventory) inv).getRecipe();
                 if (clickType == ClickType.NUMBER_KEY) {
                     event = new CraftItemEvent(recipe, view, slotType, viewSlot, clickType, action, message.getButton());
                 } else {
