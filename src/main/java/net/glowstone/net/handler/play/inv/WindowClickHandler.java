@@ -147,6 +147,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         // determine what action will be taken and fire event
         ClickType clickType = WindowClickLogic.getClickType(message.getMode(), message.getButton(), viewSlot);
         InventoryAction action = WindowClickLogic.getAction(clickType, slotType, cursor, slotItem);
+        GlowServer.logger.info("Action: " + action);
 
         if (clickType == ClickType.UNKNOWN || action == InventoryAction.UNKNOWN) {
             // show a warning for unknown click type
@@ -162,11 +163,9 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         if (clickType == ClickType.NUMBER_KEY) {
             ItemStack destItem = bottom.getItem(message.getButton());
             if (InventoryUtil.isEmpty(slotItem)) {
-                if (InventoryUtil.isEmpty(destItem)) {
+                if (InventoryUtil.isEmpty(destItem) || !inv.itemPlaceAllowed(invSlot, destItem)) {
                     // both items are empty, do nothing
-                    action = InventoryAction.NOTHING;
-                } else if (!inv.itemPlaceAllowed(invSlot, destItem)) {
-                    // current item is empty and destItem cannot be moved into current slot
+                    // or, current item is empty and destItem cannot be moved into current slot
                     action = InventoryAction.NOTHING;
                 }
             } else if (inv != bottom || !inv.itemPlaceAllowed(invSlot, destItem)) {
@@ -302,25 +301,25 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
 
             // DROP_*
             case DROP_ALL_CURSOR:
-                if (cursor != null) {
+                if (!InventoryUtil.isEmpty(cursor)) {
                     drop(player, cursor);
-                    player.setItemOnCursor(null);
+                    player.setItemOnCursor(InventoryUtil.createEmptyStack());
                 }
                 break;
             case DROP_ONE_CURSOR:
-                if (cursor != null) {
+                if (!InventoryUtil.isEmpty(cursor)) {
                     drop(player, amountOrEmpty(cursor.clone(), 1));
                     player.setItemOnCursor(amountOrEmpty(cursor, cursor.getAmount() - 1));
                 }
                 break;
             case DROP_ALL_SLOT:
-                if (slotItem != null) {
+                if (!InventoryUtil.isEmpty(slotItem)) {
                     drop(player, slotItem);
-                    view.setItem(viewSlot, null);
+                    view.setItem(viewSlot, InventoryUtil.createEmptyStack());
                 }
                 break;
             case DROP_ONE_SLOT:
-                if (slotItem != null) {
+                if (InventoryUtil.isEmpty(slotItem)) {
                     drop(player, amountOrEmpty(slotItem.clone(), 1));
                     view.setItem(viewSlot, amountOrEmpty(slotItem, slotItem.getAmount() - 1));
                 }
@@ -416,7 +415,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
 
     private void drop(GlowPlayer player, ItemStack stack) {
         // drop the stack if it's valid
-        if (stack != null && stack.getAmount() > 0) {
+        if (!InventoryUtil.isEmpty(stack)) {
             player.drop(stack);
         }
     }

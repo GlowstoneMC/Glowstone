@@ -487,12 +487,10 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
      *
      * @param stack The item to drop
      * @return the GlowItem that was generated, or null if the spawning was cancelled
-     * @throws NullPointerException     if the stack is null
-     * @throws IllegalArgumentException if the stack has an amount less than one
+     * @throws IllegalArgumentException if the stack is empty
      */
     public GlowItem drop(ItemStack stack) {
-        checkNotNull(stack, "stack must not be null");
-        checkArgument(stack.getAmount() > 0, "stack amount must be greater than zero");
+        checkArgument(InventoryUtil.isEmpty(stack), "stack amount must be greater than zero");
 
         Location dropLocation = location.clone().add(0, getEyeHeight(true) - 0.3, 0);
         GlowItem dropItem = world.dropItem(dropLocation, stack);
