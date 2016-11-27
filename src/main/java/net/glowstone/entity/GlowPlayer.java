@@ -447,7 +447,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         // todo: better idea
         double old = getHealth();
         super.damage(amount, cause);
-        if (old != getHealth()) addExhaustion(0.3f);
+        if (old != getHealth()) addExhaustion(0.1f);
         sendHealth();
     }
 
@@ -1446,8 +1446,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
                 double distance = Math.sqrt(distanceSquared);
                 if (isSprinting()) {
                     addExhaustion((float) (0.1f * distance));
-                } else {
-                    addExhaustion((float) (0.01f * distance));
                 }
             }
         }
