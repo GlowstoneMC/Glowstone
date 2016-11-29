@@ -2367,7 +2367,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         int viewId = invMonitor.getId();
         if (viewId != 0) {
             String title = view.getTitle();
-            boolean defaultTitle = view.getType().getDefaultTitle().equals(title);
+            boolean defaultTitle = Objects.equals(view.getType().getDefaultTitle(), title);
             if (view.getTopInventory() instanceof PlayerInventory && defaultTitle) {
                 title = ((PlayerInventory) view.getTopInventory()).getHolder().getName();
             }

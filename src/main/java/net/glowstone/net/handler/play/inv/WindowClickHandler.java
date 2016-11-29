@@ -45,12 +45,9 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         GlowInventory bottom = (GlowInventory) view.getBottomInventory();
         ItemStack slotItem = InventoryUtil.itemOrEmpty(view.getItem(viewSlot));
         ItemStack cursor = player.getItemOnCursor();
-        GlowServer.logger.info("Slot item: " + slotItem);
-        GlowServer.logger.info("Message item: " + message.getItem());
 
         // check that the player has a correct view of the item
         if (!Objects.equals(message.getItem(), slotItem) && (message.getMode() == 0 || message.getMode() == 1)) {
-            GlowServer.logger.info("client does not have correct view of item!");
             // reject item change because of desynced inventory
             // in mode 3 (get) and 4 (drop), client does not send item in slot under cursor
             if (message.getMode() == 0 || !InventoryUtil.isEmpty(message.getItem())) {
@@ -59,7 +56,6 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                 // if there's an item under the cursor
                 // recipe slot is not synced by design
                 if (view.getTopInventory().getType() != InventoryType.CRAFTING || viewSlot >= view.getTopInventory().getSize() || ((GlowInventory) view.getTopInventory()).getSlot(viewSlot).getType() != SlotType.RESULT) {
-                    GlowServer.logger.info("attempt to undesync inventory!");
                     player.sendItemChange(viewSlot, slotItem);
                     return false;
                 }
@@ -103,7 +99,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                 case 2: // end left drag
                 case 6: // end right drag
                     List<Integer> slots = drag.finish(right);
-                    if (slots == null || cursor == null) {
+                    if (slots == null || InventoryUtil.isEmpty(cursor)) {
                         return false;
                     }
 
@@ -113,20 +109,21 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                     int perSlot = right ? 1 : cursor.getAmount() / slots.size();
                     for (int dragSlot : slots) {
                         ItemStack oldItem = view.getItem(dragSlot);
-                        if (oldItem == null || cursor.isSimilar(oldItem)) {
+                        if (InventoryUtil.isEmpty(oldItem) || cursor.isSimilar(oldItem)) {
                             Inventory dragInv = dragSlot < top.getSize() ? top : bottom;
-                            int oldItemAmount = oldItem == null ? 0 : oldItem.getAmount();
+                            int oldItemAmount = InventoryUtil.itemOrEmpty(oldItem).getAmount();
                             int transfer = Math.min(Math.min(perSlot, cursor.getAmount()), maxStack(dragInv, cursor.getType()) - oldItemAmount);
                             ItemStack newItem = combine(oldItem, cursor, transfer);
                             newSlots.put(dragSlot, newItem);
                             newCursor = amountOrEmpty(newCursor, newCursor.getAmount() - transfer);
-                            if (newCursor == null) {
+                            if (InventoryUtil.isEmpty(newCursor)) {
                                 break;
                             }
                         }
                     }
 
                     InventoryDragEvent event = new InventoryDragEvent(view, newCursor, cursor, right, newSlots);
+                    EventFactory.callEvent(event);
                     if (event.isCancelled()) {
                         return false;
                     }
@@ -144,7 +141,6 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         // determine what action will be taken and fire event
         ClickType clickType = WindowClickLogic.getClickType(message.getMode(), message.getButton(), viewSlot);
         InventoryAction action = WindowClickLogic.getAction(clickType, slotType, cursor, slotItem);
-        GlowServer.logger.info("Action: " + action);
 
         if (clickType == ClickType.UNKNOWN || action == InventoryAction.UNKNOWN) {
             // show a warning for unknown click type
@@ -175,7 +171,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
             // check whether item can be dropped into the clicked slot
             if (!inv.itemPlaceAllowed(invSlot, cursor)) {
                 // placement not allowed
-                if (slotItem != null && slotItem.isSimilar(cursor)) {
+                if (!InventoryUtil.isEmpty(slotItem) && slotItem.isSimilar(cursor)) {
                     // item in slot is the same as item on cursor
                     if (cursor.getAmount() + 1 == cursor.getMaxStackSize()) {
                         // There is still space under the cursor for one item
@@ -199,7 +195,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
             }
 
             int cursorAmount = InventoryUtil.itemOrEmpty(cursor).getAmount();
-            if (slotItem != null && cursorAmount + slotItem.getAmount() <= slotItem.getMaxStackSize()) {
+            if (!InventoryUtil.isEmpty(slotItem) && cursorAmount + slotItem.getAmount() <= slotItem.getMaxStackSize()) {
                 // if the player can take the whole result
                 if (WindowClickLogic.isPickupAction(action) || WindowClickLogic.isPlaceAction(action)) {
                     // always take the whole crafting result out of the crafting inventories
@@ -277,10 +273,10 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
             // PLACE_*
             case PLACE_ALL:
                 view.setItem(viewSlot, combine(slotItem, cursor, cursor.getAmount()));
-                player.setItemOnCursor(null);
+                player.setItemOnCursor(InventoryUtil.createEmptyStack());
                 break;
             case PLACE_SOME: {
-                // slotItem *should* never be null in this situation?
+                // slotItem *should* never be empty in this situation?
                 int transfer = Math.min(cursor.getAmount(), maxStack(inv, slotItem.getType()) - slotItem.getAmount());
                 view.setItem(viewSlot, combine(slotItem, cursor, transfer));
                 player.setItemOnCursor(amountOrEmpty(cursor, cursor.getAmount() - transfer));
@@ -324,7 +320,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
 
             // shift-click
             case MOVE_TO_OTHER_INVENTORY:
-                if (slotItem != null) {
+                if (!InventoryUtil.isEmpty(slotItem)) {
                     inv.handleShiftClick(player, view, viewSlot, slotItem);
                 }
                 break;
@@ -335,9 +331,9 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                 int hotbarSlot = message.getButton();
                 ItemStack destItem = playerInv.getItem(hotbarSlot);
 
-                if (slotItem == null) {
+                if (InventoryUtil.isEmpty(slotItem)) {
                     // nothing in current slot
-                    if (destItem == null) {
+                    if (InventoryUtil.isEmpty(destItem)) {
                         // no action
                         return false;
                     } else {
@@ -345,23 +341,23 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                         // do nothing if current slots does not accept the item
                         if (action == InventoryAction.HOTBAR_SWAP) {
                             inv.setItem(invSlot, destItem);
-                            playerInv.setItem(hotbarSlot, null);
+                            playerInv.setItem(hotbarSlot, InventoryUtil.createEmptyStack());
                         }
                         return true;
                     }
                 } else {
-                    if (destItem == null) {
+                    if (InventoryUtil.isEmpty(destItem)) {
                         // move from current slot to hotbar
                         playerInv.setItem(hotbarSlot, slotItem);
-                        inv.setItem(invSlot, null);
+                        inv.setItem(invSlot, InventoryUtil.createEmptyStack());
                         return true;
                     } else {
-                        // both are non-null, swap them
+                        // both are non-empty, swap them
                         playerInv.setItem(hotbarSlot, slotItem);
                         if (action == InventoryAction.HOTBAR_SWAP) {
                             inv.setItem(invSlot, destItem);
                         } else {
-                            inv.setItem(invSlot, null);
+                            inv.setItem(invSlot, InventoryUtil.createEmptyStack());
                             playerInv.addItem(destItem);
                         }
                         return true;
@@ -377,7 +373,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                 break;
 
             case COLLECT_TO_CURSOR:
-                if (cursor == null) {
+                if (InventoryUtil.isEmpty(cursor)) {
                     return false;
                 }
 
@@ -389,7 +385,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                 for (int i = 0; i < slotCount && cursor.getAmount() < maxStack(inv, cursor.getType()); ++i) {
                     ItemStack item = view.getItem(i);
                     SlotType type = (i < top.getSize() ? top : bottom).getSlotType(view.convertSlot(i));
-                    if (item == null || !cursor.isSimilar(item) || type == SlotType.RESULT) {
+                    if (InventoryUtil.isEmpty(item) || !cursor.isSimilar(item) || type == SlotType.RESULT) {
                         continue;
                     }
                     int transfer = Math.min(item.getAmount(), maxStack(inv, cursor.getType()) - cursor.getAmount());

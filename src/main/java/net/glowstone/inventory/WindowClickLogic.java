@@ -103,11 +103,8 @@ public final class WindowClickLogic {
         switch (clickType) {
             case LEFT:
                 // "SWAP_WITH_CURSOR", "PLACE_ONE", "DROP_ALL_CURSOR", "PLACE_ALL", "PLACE_SOME", "NOTHING", "PICKUP_ALL"
-                GlowServer.logger.info("Cursor: " + InventoryUtil.isEmpty(cursor));
-                GlowServer.logger.info("Slot " + InventoryUtil.isEmpty(slotItem));
                 if (InventoryUtil.isEmpty(cursor)) {
                     if (outside || InventoryUtil.isEmpty(slotItem)) {
-                        GlowServer.logger.info("Nothing!");
                         return InventoryAction.NOTHING;
                     }
                     return InventoryAction.PICKUP_ALL;
@@ -155,7 +152,7 @@ public final class WindowClickLogic {
                     return InventoryAction.DROP_ONE_CURSOR;
                 }
 
-                if (slotItem == null) {
+                if (InventoryUtil.isEmpty(slotItem)) {
                     return InventoryAction.PLACE_ONE;
                 }
 
@@ -163,7 +160,6 @@ public final class WindowClickLogic {
                     if (slotItem.getAmount() + 1 <= slotItem.getType().getMaxStackSize()) {
                         return InventoryAction.PLACE_ONE;
                     }
-                    GlowServer.logger.info("Nothing!");
                     return InventoryAction.NOTHING;
                 }
 
@@ -172,11 +168,9 @@ public final class WindowClickLogic {
             case SHIFT_LEFT:
             case SHIFT_RIGHT:
                 if (InventoryUtil.isEmpty(slotItem)) {
-                    GlowServer.logger.info("Nothing!");
                     return InventoryAction.NOTHING;
-                } else {
-                    return InventoryAction.MOVE_TO_OTHER_INVENTORY;
                 }
+                return InventoryAction.MOVE_TO_OTHER_INVENTORY;
 
             case WINDOW_BORDER_LEFT:
             case WINDOW_BORDER_RIGHT:
@@ -184,12 +178,10 @@ public final class WindowClickLogic {
 
             case MIDDLE:
                 // not supported yet
-                if (InventoryUtil.isEmpty(cursor)) {
-                    return InventoryAction.CLONE_STACK;
-                } else {
-                    GlowServer.logger.info("Nothing!");
+                if (InventoryUtil.isEmpty(slotItem)) {
                     return InventoryAction.NOTHING;
                 }
+                return InventoryAction.CLONE_STACK;
 
             case NUMBER_KEY:
                 // {"NUMBER_KEY", "NOTHING", "HOTBAR_SWAP"},
@@ -198,11 +190,9 @@ public final class WindowClickLogic {
 
             case DOUBLE_CLICK:
                 if (InventoryUtil.isEmpty(cursor)) {
-                    GlowServer.logger.info("Nothing!");
                     return InventoryAction.NOTHING;
-                } else {
-                    return InventoryAction.COLLECT_TO_CURSOR;
                 }
+                return InventoryAction.COLLECT_TO_CURSOR;
 
             case DROP:
                 // {"DROP", "DROP_ONE_SLOT"},
