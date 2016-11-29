@@ -490,7 +490,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
      * @throws IllegalArgumentException if the stack is empty
      */
     public GlowItem drop(ItemStack stack) {
-        checkArgument(InventoryUtil.isEmpty(stack), "stack amount must be greater than zero");
+        checkArgument(InventoryUtil.isEmpty(stack), "stack must not be empty");
 
         Location dropLocation = location.clone().add(0, getEyeHeight(true) - 0.3, 0);
         GlowItem dropItem = world.dropItem(dropLocation, stack);
