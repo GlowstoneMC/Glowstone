@@ -247,7 +247,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
             // PICKUP_*
             case PICKUP_ALL:
                 view.setItem(viewSlot, InventoryUtil.createEmptyStack());
-                int cursorAmount = InventoryUtil.isEmpty(cursor) ? 0 : cursor.getAmount();
+                int cursorAmount = InventoryUtil.itemOrEmpty(cursor).getAmount();
                 player.setItemOnCursor(amountOrEmpty(slotItem, cursorAmount + slotItem.getAmount()));
                 break;
             case PICKUP_HALF:
