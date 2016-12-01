@@ -1,5 +1,6 @@
 package net.glowstone.constants;
 
+import net.glowstone.util.InventoryUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -521,14 +522,14 @@ public final class ItemIds {
 
     /**
      * Convert an ItemStack which may have a type that is unrepresentable as
-     * an item to one that does, or to null if this is not possible.
+     * an item to one that does, or to an empty stack if this is not possible.
      *
      * @param stack The stack to sanitize.
      * @return The sanitized stack, or null.
      */
     public static ItemStack sanitize(ItemStack stack) {
-        if (stack == null || stack.getType() == null || stack.getType() == Material.AIR) {
-            return null;
+        if (InventoryUtil.isEmpty(stack) || stack.getType() == null) {
+            return InventoryUtil.createEmptyStack();
         }
         Material item = getItem(getName(stack.getType()));
         if (item == null) {
