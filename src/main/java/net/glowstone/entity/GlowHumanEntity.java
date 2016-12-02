@@ -8,6 +8,7 @@ import net.glowstone.inventory.*;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.SpawnPlayerMessage;
+import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -391,12 +392,12 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     public void closeInventory() {
         EventFactory.callEvent(new InventoryCloseEvent(inventoryView));
         if (getGameMode() != GameMode.CREATIVE) {
-            if (getItemOnCursor() != null) {
+            if (!InventoryUtil.isEmpty(getItemOnCursor())) {
                 drop(getItemOnCursor());
             }
             dropUnusedInputs();
         }
-        setItemOnCursor(null);
+        setItemOnCursor(InventoryUtil.createEmptyStack());
         resetInventoryView();
     }
 
@@ -404,13 +405,13 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     private void dropUnusedInputs() {
         for (int i = 0; i < getTopInventory().getSlots().size(); i++) {
             ItemStack itemStack = getOpenInventory().getItem(i);
-            if (itemStack == null || itemStack.getAmount() == 0 || itemStack.getType() == Material.AIR) {
+            if (InventoryUtil.isEmpty(itemStack)) {
                 continue;
             }
 
             if (isDroppableCraftingSlot(i)) {
                 drop(itemStack);
-                getOpenInventory().setItem(i, null);
+                getOpenInventory().setItem(i, InventoryUtil.createEmptyStack());
             }
         }
     }
@@ -457,7 +458,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
      */
     public void dropItemInHand(boolean wholeStack) {
         ItemStack stack = getItemInHand();
-        if (stack == null || stack.getType() == Material.AIR || stack.getAmount() < 1) {
+        if (InventoryUtil.isEmpty(stack)) {
             return;
         }
 
@@ -472,7 +473,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         }
 
         if (stack.getAmount() == 1 || wholeStack) {
-            setItemInHand(null);
+            setItemInHand(InventoryUtil.createEmptyStack());
         } else {
             ItemStack now = stack.clone();
             now.setAmount(now.getAmount() - 1);
@@ -486,12 +487,10 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
      *
      * @param stack The item to drop
      * @return the GlowItem that was generated, or null if the spawning was cancelled
-     * @throws NullPointerException     if the stack is null
-     * @throws IllegalArgumentException if the stack has an amount less than one
+     * @throws IllegalArgumentException if the stack is empty
      */
     public GlowItem drop(ItemStack stack) {
-        checkNotNull(stack, "stack must not be null");
-        checkArgument(stack.getAmount() > 0, "stack amount must be greater than zero");
+        checkArgument(InventoryUtil.isEmpty(stack), "stack must not be empty");
 
         Location dropLocation = location.clone().add(0, getEyeHeight(true) - 0.3, 0);
         GlowItem dropItem = world.dropItem(dropLocation, stack);

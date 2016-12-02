@@ -16,7 +16,7 @@ public final class SpawnMobCodec implements Codec<SpawnMobMessage> {
     public SpawnMobMessage decode(ByteBuf buf) throws IOException {
         int id = ByteBufUtils.readVarInt(buf);
         UUID uuid = GlowBufUtils.readUuid(buf);
-        int type = buf.readByte();
+        int type = ByteBufUtils.readVarInt(buf);;
         double x = buf.readDouble();
         double y = buf.readDouble();
         double z = buf.readDouble();
@@ -34,7 +34,7 @@ public final class SpawnMobCodec implements Codec<SpawnMobMessage> {
     public ByteBuf encode(ByteBuf buf, SpawnMobMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         GlowBufUtils.writeUuid(buf, message.getUuid());
-        buf.writeByte(message.getType());
+        ByteBufUtils.writeVarInt(buf, message.getType());
         buf.writeDouble(message.getX());
         buf.writeDouble(message.getY());
         buf.writeDouble(message.getZ());

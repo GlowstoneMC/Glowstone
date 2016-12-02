@@ -2,11 +2,12 @@ package net.glowstone.io.entity;
 
 import net.glowstone.entity.monster.GlowIronGolem;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.entity.EntityType;
 
 class IronGolemStore extends MonsterStore<GlowIronGolem> {
 
     public IronGolemStore() {
-        super(GlowIronGolem.class, "VillagerGolem");
+        super(GlowIronGolem.class, EntityType.IRON_GOLEM);
     }
 
     @Override

@@ -18,14 +18,13 @@ import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -35,6 +34,7 @@ import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 /**
@@ -102,6 +102,10 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * This value is ignored for players.
      */
     private boolean fallFlying;
+    /**
+     * Ticks until the next ambient sound roll.
+     */
+    private int nextAmbientTime = 1;
 
     /**
      * Creates a mob within the specified world.
@@ -192,6 +196,16 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         BlockType type = ItemTable.instance().getBlock(under.getType());
         if (type != null) {
             type.onEntityStep(under, this);
+        }
+        nextAmbientTime--;
+        if (!isDead() && getAmbientSound() != null && nextAmbientTime == 0) {
+            double v = ThreadLocalRandom.current().nextDouble();
+            if (v <= 0.2) {
+                world.playSound(getLocation(), getAmbientSound(), getSoundVolume(), getSoundPitch());
+            }
+        }
+        if (nextAmbientTime == 0) {
+            nextAmbientTime = getAmbientDelay();
         }
     }
 
@@ -328,6 +342,24 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      */
     protected Sound getDeathSound() {
         return null;
+    }
+
+    /**
+     * Get the ambient sound this entity makes randomly, or null for silence.
+     *
+     * @return the ambient sound if available
+     */
+    protected Sound getAmbientSound() {
+        return null;
+    }
+
+    /**
+     * Get the minimal delay until the entity can produce an ambient sound.
+     *
+     * @return the minimal delay until the entity can produce an ambient sound
+     */
+    protected int getAmbientDelay() {
+        return 80;
     }
 
     /**
@@ -541,10 +573,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             return;
         }
 
-        if (source instanceof GlowPlayer) {
-            ((GlowPlayer) source).addExhaustion(0.3f);
-        }
-
         // apply damage
         amount = event.getFinalDamage();
         lastDamage = amount;
@@ -677,6 +705,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     @Override
+    public PotionEffect getPotionEffect(PotionEffectType potionEffectType) {
+        return null;
+    }
+
+    @Override
     public void removePotionEffect(PotionEffectType type) {
         if (!hasPotionEffect(type)) return;
         potionEffects.remove(type);
@@ -746,5 +779,58 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Override
     public boolean setLeashHolder(Entity holder) {
         return false;
+    }
+
+    @Override
+    public boolean isGliding() {
+        return metadata.getBit(MetadataIndex.STATUS, MetadataIndex.StatusFlags.GLIDING);
+    }
+
+    @Override
+    public void setGliding(boolean gliding) {
+        if (EventFactory.callEvent(new EntityToggleGlideEvent(this, gliding)).isCancelled()) {
+            return;
+        }
+
+        metadata.setBit(MetadataIndex.STATUS, MetadataIndex.StatusFlags.GLIDING, gliding);
+    }
+
+    @Override
+    public void setAI(boolean ai) {
+        // todo: 1.11
+    }
+
+    @Override
+    public boolean hasAI() {
+        // todo: 1.11
+        return true;
+    }
+
+    @Override
+    public void setCollidable(boolean collidable) {
+        // todo: 1.11
+    }
+
+    @Override
+    public boolean isCollidable() {
+        // todo: 1.11
+        return true;
+    }
+
+    @Override
+    public int getArrowsStuck() {
+        // todo: 1.11
+        return 0;
+    }
+
+    @Override
+    public void setArrowsStuck(int arrowsStuck) {
+        // todo: 1.11
+    }
+
+    @Override
+    public AttributeInstance getAttribute(Attribute attribute) {
+        // todo: 1.11
+        return null;
     }
 }

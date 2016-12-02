@@ -22,4 +22,9 @@ public class GlowSquid extends GlowWaterMob implements Squid {
     protected Sound getDeathSound() {
         return Sound.ENTITY_SQUID_DEATH;
     }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_SQUID_AMBIENT;
+    }
 }

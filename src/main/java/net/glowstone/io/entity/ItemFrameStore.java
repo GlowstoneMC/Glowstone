@@ -5,11 +5,12 @@ import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.Rotation;
+import org.bukkit.entity.EntityType;
 
 class ItemFrameStore extends EntityStore<GlowItemFrame> {
 
     public ItemFrameStore() {
-        super(GlowItemFrame.class, "ItemFrame");
+        super(GlowItemFrame.class, EntityType.ITEM_FRAME);
     }
 
     public GlowItemFrame createEntity(Location location, CompoundTag compound) {

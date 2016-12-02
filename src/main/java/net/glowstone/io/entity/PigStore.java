@@ -2,11 +2,12 @@ package net.glowstone.io.entity;
 
 import net.glowstone.entity.passive.GlowPig;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.entity.EntityType;
 
 class PigStore extends AgeableStore<GlowPig> {
 
     public PigStore() {
-        super(GlowPig.class, "Pig");
+        super(GlowPig.class, EntityType.PIG);
     }
 
     @Override

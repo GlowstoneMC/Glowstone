@@ -51,6 +51,7 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
 
                 // Apply damage. Calls the EntityDamageByEntityEvent
                 target.damage(damage, player, DamageCause.ENTITY_ATTACK);
+                player.addExhaustion(0.1f);
 
                 // Apply durability loss (if applicable)
                 short durabilityLoss = AttackDamage.getMeleeDurabilityLoss(type);

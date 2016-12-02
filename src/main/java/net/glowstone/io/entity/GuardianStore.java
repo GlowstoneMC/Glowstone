@@ -2,11 +2,12 @@ package net.glowstone.io.entity;
 
 import net.glowstone.entity.monster.GlowGuardian;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.entity.EntityType;
 
 class GuardianStore extends MonsterStore<GlowGuardian> {
 
     public GuardianStore() {
-        super(GlowGuardian.class, "Guardian");
+        super(GlowGuardian.class, EntityType.GUARDIAN);
     }
 
     @Override

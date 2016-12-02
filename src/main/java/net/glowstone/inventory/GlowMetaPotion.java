@@ -3,6 +3,7 @@ package net.glowstone.inventory;
 import com.google.common.collect.ImmutableList;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
@@ -22,6 +23,7 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
 
     PotionData potion;
     List<PotionEffect> effects = new ArrayList<>();
+    Color color = null;
 
     public GlowMetaPotion(GlowMetaItem meta) {
         super(meta);
@@ -85,6 +87,9 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
             tag.putCompoundList("CustomEffects", customEffects);
         }
         tag.putString("Potion", dataToString());
+        if (this.color != null) {
+            tag.putInt("CustomPotionColor", this.color.asRGB());
+        }
     }
 
     @Override
@@ -99,6 +104,9 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         }
         if (tag.isString("Potion")) {
             this.potion = dataFromString(tag.getString("Potion"));
+        }
+        if (tag.isInt("CustomPotionColor")) {
+            this.color = Color.fromRGB(tag.getInt("CustomPotionColor"));
         }
     }
 
@@ -179,6 +187,21 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         if (effects.isEmpty()) return false;
         effects.clear();
         return true;
+    }
+
+    @Override
+    public boolean hasColor() {
+        return color != null;
+    }
+
+    @Override
+    public Color getColor() {
+        return color;
+    }
+
+    @Override
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     /**

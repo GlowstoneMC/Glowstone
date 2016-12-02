@@ -1,6 +1,8 @@
 package net.glowstone.inventory;
 
+import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.util.InventoryUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -121,6 +123,7 @@ public class GlowInventory implements Inventory {
      */
     public GlowInventorySlot getSlot(int slot) {
         if (slot < 0 || slot > slots.size()) {
+            GlowServer.logger.info("Out of bound slot: " + slot + " (max " + slots.size() + ")");
             return null;
         }
         return slots.get(slot);
@@ -209,7 +212,7 @@ public class GlowInventory implements Inventory {
                 }
 
                 ItemStack currentStack = getItem(i);
-                if (currentStack == null) {
+                if (InventoryUtil.isEmpty(currentStack)) {
                     if (stack.getAmount() > stack.getMaxStackSize()) {
                         setItem(i, maxStack);
                         stack.setAmount(stack.getAmount() - stack.getMaxStackSize());
@@ -234,7 +237,7 @@ public class GlowInventory implements Inventory {
             }
         }
         if (stack.getAmount() <= 0) {
-            stack = null;
+            stack = InventoryUtil.createEmptyStack();
         }
         return stack;
     }
@@ -353,7 +356,7 @@ public class GlowInventory implements Inventory {
         for (int i = 0; i < items.length; ++i) {
             ItemStack remaining = addItemStack(items[i], true);
 
-            if (remaining != null) {
+            if (!InventoryUtil.isEmpty(remaining)) {
                 result.put(i, remaining);
             }
         }
@@ -369,8 +372,8 @@ public class GlowInventory implements Inventory {
         while (toAdd > 0 && iterator.hasNext()) {
             GlowInventorySlot slot = iterator.next();
             // Look for existing stacks to add to
-            ItemStack slotItem = slot.getItem();
-            if (slotItem != null && compareItems(item, slotItem, ignoreMeta)) {
+            ItemStack slotItem = InventoryUtil.itemOrEmpty(slot.getItem());
+            if (!InventoryUtil.isEmpty(slotItem) && compareItems(item, slotItem, ignoreMeta)) {
                 int space = maxStackSize - slotItem.getAmount();
                 if (space < 0) continue;
                 if (space > toAdd) space = toAdd;
@@ -387,7 +390,7 @@ public class GlowInventory implements Inventory {
             while (toAdd > 0 && iterator.hasNext()) {
                 GlowInventorySlot slot = iterator.next();
                 ItemStack slotItem = slot.getItem();
-                if (slotItem == null) {
+                if (InventoryUtil.isEmpty(slotItem)) {
                     int num = toAdd > maxStackSize ? maxStackSize : toAdd;
 
                     slotItem = item.clone();
@@ -405,7 +408,7 @@ public class GlowInventory implements Inventory {
             return remaining;
         }
 
-        return null;
+        return InventoryUtil.createEmptyStack();
     }
 
     @Override
@@ -415,7 +418,7 @@ public class GlowInventory implements Inventory {
         for (int i = 0; i < items.length; ++i) {
             ItemStack remaining = removeItemStack(items[i], true);
 
-            if (remaining != null) {
+            if (!InventoryUtil.isEmpty(remaining)) {
                 result.put(i, remaining);
             }
         }
@@ -431,12 +434,12 @@ public class GlowInventory implements Inventory {
             GlowInventorySlot slot = iterator.next();
             ItemStack slotItem = slot.getItem();
             // Look for stacks to remove from.
-            if (slotItem != null && compareItems(item, slotItem, ignoreMeta)) {
+            if (!InventoryUtil.isEmpty(slotItem) && compareItems(item, slotItem, ignoreMeta)) {
                 if (slotItem.getAmount() > toRemove) {
                     slotItem.setAmount(slotItem.getAmount() - toRemove);
                 } else {
                     toRemove -= slotItem.getAmount();
-                    slot.setItem(null);
+                    slot.setItem(new ItemStack(Material.AIR, 0));
                 }
             }
         }
@@ -447,7 +450,7 @@ public class GlowInventory implements Inventory {
             return remaining;
         }
 
-        return null;
+        return InventoryUtil.createEmptyStack();
     }
 
     private boolean compareItems(ItemStack a, ItemStack b, boolean ignoreMeta) {
@@ -464,7 +467,7 @@ public class GlowInventory implements Inventory {
 
         int i = 0;
         for (ItemStack itemStack : this) {
-            contents[i] = itemStack;
+            contents[i] = InventoryUtil.itemOrEmpty(itemStack);
             i++;
         }
 
@@ -545,8 +548,8 @@ public class GlowInventory implements Inventory {
 
         int i = 0;
         for (ItemStack slotItem : this) {
-            if (slotItem != null && slotItem.getTypeId() == materialId) {
-                result.put(i, slotItem);
+            if (!InventoryUtil.isEmpty(slotItem) && slotItem.getTypeId() == materialId) {
+                result.put(i, InventoryUtil.itemOrEmpty(slotItem));
             }
 
             i++;
@@ -653,7 +656,7 @@ public class GlowInventory implements Inventory {
     @Override
     public void clear() {
         for (GlowInventorySlot slot : slots) {
-            slot.setItem(null);
+            slot.setItem(InventoryUtil.createEmptyStack());
         }
     }
 

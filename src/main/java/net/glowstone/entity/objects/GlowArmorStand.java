@@ -14,6 +14,7 @@ import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
+import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
@@ -164,9 +165,9 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage msg) {
         if (player.getGameMode() == GameMode.SPECTATOR || isMarker) return false;
         if (msg.getAction() == Action.INTERACT_AT.ordinal()) {
-            if (player.getItemInHand() == null || player.getItemInHand().getType() == Material.AIR) {
+            if (InventoryUtil.isEmpty(player.getItemInHand())) {
                 int slot = getEditSlot(msg.getTargetY());
-                PlayerArmorStandManipulateEvent event = new PlayerArmorStandManipulateEvent(player, this, checkNullStack(null), checkNullStack(equipment[slot]), EquipmentSlot.values()[slot]);
+                PlayerArmorStandManipulateEvent event = new PlayerArmorStandManipulateEvent(player, this, InventoryUtil.itemOrEmpty(null), InventoryUtil.itemOrEmpty(equipment[slot]), EquipmentSlot.values()[slot]);
                 EventFactory.callEvent(event);
 
                 if (event.isCancelled()) {
@@ -179,7 +180,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
 
                 ItemStack stack = equipment[slot];
                 player.setItemInHand(stack);
-                equipment[slot] = null;
+                equipment[slot] = InventoryUtil.createEmptyStack();
                 changedEquip[slot] = true;
                 return true;
             } else {
@@ -188,7 +189,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
                     return false;
                 }
 
-                PlayerArmorStandManipulateEvent event = new PlayerArmorStandManipulateEvent(player, this, player.getItemInHand(), checkNullStack(equipment[slot]), EquipmentSlot.values()[slot]);
+                PlayerArmorStandManipulateEvent event = new PlayerArmorStandManipulateEvent(player, this, player.getItemInHand(), InventoryUtil.itemOrEmpty(equipment[slot]), EquipmentSlot.values()[slot]);
                 EventFactory.callEvent(event);
 
                 if (event.isCancelled()) {
@@ -202,14 +203,18 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
                         stack.setAmount(stack.getAmount() - 1);
                         back = stack;
                     } else {
-                        back = null;
+                        back = InventoryUtil.createEmptyStack();
                     }
                 } else {
-                    if (stack.getAmount() > 1) return false;
+                    if (stack.getAmount() > 1) {
+                        return false;
+                    }
                     back = equipment[slot];
                 }
 
-                if (back != null) player.setItemInHand(back);
+                if (!InventoryUtil.isEmpty(back)) {
+                    player.setItemInHand(back);
+                }
                 equipment[slot] = stack;
                 changedEquip[slot] = true;
                 return true;
@@ -267,12 +272,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     }
 
     private boolean isEmpty(int slot) {
-        return equipment[slot] == null || equipment[slot].getType() == Material.AIR;
-    }
-
-    private ItemStack checkNullStack(ItemStack stack) {
-        if (stack == null) return new ItemStack(Material.AIR);
-        else return stack;
+        return InventoryUtil.isEmpty(equipment[slot]);
     }
 
     @Override

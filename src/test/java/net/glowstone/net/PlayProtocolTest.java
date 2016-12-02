@@ -9,6 +9,7 @@ import net.glowstone.net.message.play.inv.*;
 import net.glowstone.net.message.play.player.*;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.util.TextMessage;
+import org.bukkit.Difficulty;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -68,7 +69,7 @@ public class PlayProtocolTest extends BaseProtocolTest {
             new PositionRotationMessage(new Location(null, 1.0, 2.0, 3.0, 4f, 5f)),
             new AnimateEntityMessage(1, 2),
             new SpawnPlayerMessage(1, UUID.randomUUID(), 2, 3, 4, 5, 6, ProtocolTestUtils.getMetadataEntry()),
-            new CollectItemMessage(1, 2),
+            new CollectItemMessage(1, 2, 3),
             new SpawnObjectMessage(1, UUID.randomUUID(),2, 3, 4, 5, 6, 7),
             new SpawnObjectMessage(1, UUID.randomUUID(), 2, 3, 4, 5, 6, 7, 8, 9, 10, 11),
             new SpawnMobMessage(1, UUID.randomUUID(), 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, ProtocolTestUtils.getMetadataEntry()),
@@ -123,7 +124,7 @@ public class PlayProtocolTest extends BaseProtocolTest {
             new CameraMessage(1),
             //CombatEvent
             new ResourcePackSendMessage("url", "hash"),
-            new ServerDifficultyMessage(1),
+            new ServerDifficultyMessage(Difficulty.NORMAL),
             new UseBedMessage(1, 2, 3, 4),
             //TabCompleteResponse
             new UseItemMessage(0),

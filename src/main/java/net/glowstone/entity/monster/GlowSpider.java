@@ -30,4 +30,9 @@ public class GlowSpider extends GlowMonster implements Spider {
     protected Sound getDeathSound() {
         return Sound.ENTITY_SPIDER_DEATH;
     }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_SPIDER_AMBIENT;
+    }
 }

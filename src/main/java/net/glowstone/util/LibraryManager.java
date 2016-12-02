@@ -45,10 +45,9 @@ public final class LibraryManager {
             GlowServer.logger.log(Level.SEVERE, "Could not create libraries directory: " + directory);
         }
 
-        downloaderService.execute(new LibraryDownloader("org.xerial", "sqlite-jdbc", "3.7.2"));
-        downloaderService.execute(new LibraryDownloader("mysql", "mysql-connector-java", "5.1.38"));
-        downloaderService.execute(new LibraryDownloader("org.slf4j", "slf4j-jdk14", "1.7.15"));
-        downloaderService.execute(new LibraryDownloader("commons-io", "commons-io", "2.4"));
+        downloaderService.execute(new LibraryDownloader("org.xerial", "sqlite-jdbc", "3.15.1", ""));
+        downloaderService.execute(new LibraryDownloader("mysql", "mysql-connector-java", "5.1.39", ""));
+        downloaderService.execute(new LibraryDownloader("org.slf4j", "slf4j-jdk14", "1.7.15", ""));
         downloaderService.shutdown();
         try {
             downloaderService.awaitTermination(5, TimeUnit.SECONDS);
@@ -62,18 +61,20 @@ public final class LibraryManager {
         private final String group;
         private final String library;
         private final String version;
+        private String checksum;
 
-        private LibraryDownloader(String group, String library, String version) {
+        private LibraryDownloader(String group, String library, String version, String checksum) {
             this.group = group;
             this.library = library;
             this.version = version;
+            this.checksum = checksum;
         }
 
         @Override
         public void run() {
             // check if we already have it
             File file = new File(directory, library + "-" + version + ".jar");
-            if (!file.exists()) {
+            if (!file.exists() && checksum(file, checksum)) {
                 // download it
                 GlowServer.logger.info("Downloading " + library + " " + version + "...");
                 try {
@@ -101,6 +102,11 @@ public final class LibraryManager {
             } catch (ReflectiveOperationException | MalformedURLException e) {
                 GlowServer.logger.log(Level.WARNING, "Failed to add to classpath: " + library + " " + version, e);
             }
+        }
+
+        public boolean checksum(File file, String checksum) {
+            // TODO: actually check checksum
+            return true;
         }
     }
 }

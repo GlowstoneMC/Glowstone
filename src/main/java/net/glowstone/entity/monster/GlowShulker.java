@@ -64,6 +64,11 @@ public class GlowShulker extends GlowMonster implements Shulker {
         return Sound.ENTITY_SHULKER_HURT;
     }
 
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_SHULKER_AMBIENT;
+    }
+
     public enum Facing {
         DOWN, UP, NORTH, SOUTH, WEST, EAST
     }

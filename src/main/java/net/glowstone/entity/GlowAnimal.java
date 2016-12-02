@@ -19,4 +19,9 @@ public class GlowAnimal extends GlowAgeable implements Animals {
     public GlowAnimal(Location location, EntityType type, double maxHealth) {
         super(location, type, maxHealth);
     }
+
+    @Override
+    protected int getAmbientDelay() {
+        return 120;
+    }
 }

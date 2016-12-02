@@ -21,6 +21,9 @@ public class MetadataIndexTest {
 
         for (MetadataIndex index : MetadataIndex.values()) {
             Class<?> clazz = index.getAppliesTo();
+            if (clazz == null) {
+                continue;
+            }
 
             seen.entrySet().stream().filter(entry -> clazz != entry.getKey() && clazz.isAssignableFrom(entry.getKey())).forEach(entry -> fail("Index " + index + "(" + clazz.getSimpleName() + ") follows index " + entry.getValue() + "(" + entry.getKey().getSimpleName() + ") which it parents"));
 
@@ -41,6 +44,9 @@ public class MetadataIndexTest {
 
         for (MetadataIndex index : MetadataIndex.values()) {
             Class<?> clazz = index.getAppliesTo();
+            if (clazz == null) {
+                continue;
+            }
 
             if (index == MetadataIndex.ARMORSTAND_LEFT_LEG_POSITION) { //TODO 1.9 - index == MetadataIndex.PLAYER_SKIN_FLAGS || has been removed
                 // this index is permitted to override others

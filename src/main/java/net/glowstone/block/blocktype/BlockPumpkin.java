@@ -3,10 +3,12 @@ package net.glowstone.block.blocktype;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.entity.monster.GlowIronGolem;
 import net.glowstone.inventory.ToolType;
 import net.glowstone.util.pattern.BlockPattern;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
@@ -59,7 +61,8 @@ public class BlockPumpkin extends BlockDirectDrops {
 
     private boolean spawnIronGolem(Location location) {
         if (IRONGOLEM_PATTERN.matches(location, true, 1, 0)) {
-            location.getWorld().spawnEntity(location.clone().subtract(-0.5, 2, -0.5), EntityType.IRON_GOLEM);
+            Entity entity = location.getWorld().spawnEntity(location.clone().subtract(-0.5, 2, -0.5), EntityType.IRON_GOLEM);
+            ((GlowIronGolem) entity).setPlayerCreated(true);
             return true;
         }
         return false;

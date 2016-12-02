@@ -135,4 +135,9 @@ public class GlowBat extends GlowAmbient implements Bat {
     protected Sound getDeathSound() {
         return Sound.ENTITY_BAT_DEATH;
     }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_BAT_AMBIENT;
+    }
 }

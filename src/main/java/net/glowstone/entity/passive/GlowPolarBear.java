@@ -33,4 +33,9 @@ public class GlowPolarBear extends GlowAnimal implements PolarBear {
     protected Sound getDeathSound() {
         return Sound.ENTITY_POLAR_BEAR_DEATH;
     }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_POLAR_BEAR_AMBIENT;
+    }
 }

@@ -20,4 +20,9 @@ public class GlowSilverfish extends GlowMonster implements Silverfish {
     protected Sound getHurtSound() {
         return Sound.ENTITY_SILVERFISH_HURT;
     }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_SILVERFISH_AMBIENT;
+    }
 }

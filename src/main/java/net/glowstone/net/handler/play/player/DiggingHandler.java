@@ -218,7 +218,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                 }
             }
 
-            player.addExhaustion(0.025f);
+            player.addExhaustion(0.005f);
 
             // STEP_SOUND actually is the block break particles
             world.playEffectExceptTo(block.getLocation(), Effect.STEP_SOUND, block.getTypeId(), 64, player);

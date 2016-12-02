@@ -4,11 +4,12 @@ import net.glowstone.constants.ItemIds;
 import net.glowstone.entity.objects.GlowFallingBlock;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 
 class FallingBlockStore extends EntityStore<GlowFallingBlock> {
 
     public FallingBlockStore() {
-        super(GlowFallingBlock.class, "FallingSand");
+        super(GlowFallingBlock.class, EntityType.FALLING_BLOCK);
     }
 
 

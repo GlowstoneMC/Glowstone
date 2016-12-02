@@ -1,12 +1,11 @@
 package net.glowstone.block.state;
 
 import net.glowstone.block.GlowBlock;
-import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.TEBrewingStand;
 import org.bukkit.block.BrewingStand;
 import org.bukkit.inventory.BrewerInventory;
 
-public class GlowBrewingStand extends GlowBlockState implements BrewingStand {
+public class GlowBrewingStand extends GlowLootableBlock implements BrewingStand {
 
     private int brewTime;
 

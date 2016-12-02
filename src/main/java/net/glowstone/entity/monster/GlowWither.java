@@ -96,4 +96,9 @@ public class GlowWither extends GlowMonster implements Wither {
     protected Sound getDeathSound() {
         return Sound.ENTITY_WITHER_DEATH;
     }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_WITHER_AMBIENT;
+    }
 }

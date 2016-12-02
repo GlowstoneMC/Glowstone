@@ -94,4 +94,9 @@ public class GlowVillager extends GlowAgeable implements Villager {
     protected Sound getDeathSound() {
         return Sound.ENTITY_VILLAGER_DEATH;
     }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_VILLAGER_AMBIENT;
+    }
 }

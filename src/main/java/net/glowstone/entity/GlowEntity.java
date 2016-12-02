@@ -832,6 +832,28 @@ public abstract class GlowEntity implements Entity {
     }
 
     @Override
+    public void setGlowing(boolean glowing) {
+        // todo: 1.11
+    }
+
+    @Override
+    public boolean isGlowing() {
+        // todo: 1.11
+        return false;
+    }
+
+    @Override
+    public void setInvulnerable(boolean invulnerable) {
+        // todo: 1.11
+    }
+
+    @Override
+    public boolean isInvulnerable() {
+        // todo: 1.11
+        return false;
+    }
+
+    @Override
     public void setCustomNameVisible(boolean flag) {
         metadata.set(MetadataIndex.SHOW_NAME_TAG, flag ? (byte) 1 : (byte) 0);
     }
@@ -905,6 +927,35 @@ public abstract class GlowEntity implements Entity {
     @Override
     public void setGravity(boolean gravity) {
         this.gravity = gravity;
+    }
+
+    @Override
+    public int getPortalCooldown() {
+        // todo: 1.11
+        return 0;
+    }
+
+    @Override
+    public void setPortalCooldown(int cooldown) {
+        // todo: 1.11
+    }
+
+    @Override
+    public Set<String> getScoreboardTags() {
+        // todo: 1.11
+        return null;
+    }
+
+    @Override
+    public boolean addScoreboardTag(String tag) {
+        // todo: 1.11
+        return false;
+    }
+
+    @Override
+    public boolean removeScoreboardTag(String tag) {
+        // todo: 1.11
+        return false;
     }
 
     @Override
@@ -1015,6 +1066,12 @@ public abstract class GlowEntity implements Entity {
 
     public Spigot spigot() {
         return null; // TODO: support entity isInvulnerable() API
+    }
+
+    @Override
+    public Location getOrigin() {
+        // todo: 1.11
+        return null;
     }
 
     @Override
