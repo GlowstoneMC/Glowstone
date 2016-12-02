@@ -44,20 +44,15 @@ public final class CraftingManager implements Iterable<Recipe> {
      */
     public boolean addRecipe(Recipe recipe) {
         if (recipe instanceof ShapedRecipe) {
-            shapedRecipes.add((ShapedRecipe) recipe);
-            return true;
-        } else if (recipe instanceof ShapelessRecipe) {
-            shapelessRecipes.add((ShapelessRecipe) recipe);
-            return true;
-        } else if (recipe instanceof DynamicRecipe) {
-            dynamicRecipes.add((DynamicRecipe) recipe);
-            return true;
-        } else if (recipe instanceof FurnaceRecipe) {
-            furnaceRecipes.add((FurnaceRecipe) recipe);
-            return true;
-        } else {
-            return false;
+            return shapedRecipes.add((ShapedRecipe) recipe);
         }
+        if (recipe instanceof ShapelessRecipe) {
+            return shapelessRecipes.add((ShapelessRecipe) recipe);
+        }
+        if (recipe instanceof DynamicRecipe) {
+            return dynamicRecipes.add((DynamicRecipe) recipe);
+        }
+        return recipe instanceof FurnaceRecipe && furnaceRecipes.add((FurnaceRecipe) recipe);
     }
 
     /**
