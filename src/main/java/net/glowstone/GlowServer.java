@@ -260,6 +260,8 @@ public final class GlowServer implements Server {
      * The {@link MaterialValueManager} of this server.
      */
     private MaterialValueManager materialValueManager;
+    
+    private boolean isNameNull;
 
     /**
      * Creates a new server.
@@ -618,6 +620,9 @@ public final class GlowServer implements Server {
         if (!channel.isActive()) {
             logger.warning("Failed to bind rcon. Address already in use?");
         }
+        //Decide this after everything else has been started
+        this.isNameNull = getClass().getPackage().getImplementationTitle() == null;
+
     }
 
     /**
@@ -1090,7 +1095,11 @@ public final class GlowServer implements Server {
 
     @Override
     public String getName() {
-        return getClass().getPackage().getImplementationTitle();
+        if (isNameNull)   {
+            return "Glowstone";
+        } else {
+            return getClass().getPackage().getImplementationTitle();
+        }
     }
 
     @Override
