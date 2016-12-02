@@ -114,7 +114,7 @@ public final class GlowEnchantment extends Enchantment implements Choice {
 
     @Override
     public boolean isCursed() {
-        return false;
+        return impl.cursed;
     }
 
     /**

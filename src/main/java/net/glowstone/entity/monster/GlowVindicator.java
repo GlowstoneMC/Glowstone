@@ -11,6 +11,7 @@ public class GlowVindicator extends GlowMonster implements Vindicator {
 
     public GlowVindicator(Location loc) {
         super(loc, EntityType.VINDICATOR, 24);
+        setBoundingBox(0.5, 0.8);
     }
 
     public boolean isJohnny() {

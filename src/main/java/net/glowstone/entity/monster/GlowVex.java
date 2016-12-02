@@ -14,6 +14,7 @@ public class GlowVex extends GlowMonster implements Vex {
         super(loc, EntityType.VEX, 14);
         ThreadLocalRandom random = ThreadLocalRandom.current();
         lifeTicks = (random.nextInt(75) + 33) * 20;
+        setBoundingBox(0.4, 0.8);
     }
 
     @Override

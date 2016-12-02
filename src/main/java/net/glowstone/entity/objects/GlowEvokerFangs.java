@@ -1,4 +1,4 @@
-package net.glowstone.entity.monster;
+package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
 import net.glowstone.entity.GlowEntity;
@@ -19,6 +19,7 @@ public class GlowEvokerFangs extends GlowEntity implements EvokerFangs {
 
     public GlowEvokerFangs(Location location) {
         super(location);
+        setBoundingBox(0.5, 0.8);
     }
 
     @Override
@@ -29,7 +30,7 @@ public class GlowEvokerFangs extends GlowEntity implements EvokerFangs {
         double z = location.getZ();
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
-        result.add(new SpawnObjectMessage(id, UUID.randomUUID(), getType().getTypeId(), x, y, z, pitch, yaw, 0, 0, 0, 0));
+        result.add(new SpawnObjectMessage(id, UUID.randomUUID(), 79, x, y, z, pitch, yaw, 0, 0, 0, 0));
         return result;
     }
 
