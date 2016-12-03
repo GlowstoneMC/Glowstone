@@ -27,7 +27,7 @@ public class GlowMetaSpawn extends GlowMetaItem implements SpawnMeta {
         Map<String, Object> result = super.serialize();
         result.put("meta-type", "MONSTER_EGG");
         if (hasEntityType()) {
-            result.put("entity-id", getEntityType().getName());
+            result.put("entity-id", "minecraft:" + getEntityType().getName());
         }
         return result;
     }
@@ -37,7 +37,7 @@ public class GlowMetaSpawn extends GlowMetaItem implements SpawnMeta {
         super.writeNbt(tag);
         if (hasEntityType()) {
             CompoundTag entity = new CompoundTag();
-            entity.putString("id", getEntityType().getName());
+            entity.putString("id", "minecraft:" + getEntityType().getName());
             tag.putCompound("EntityTag", entity);
         }
     }
