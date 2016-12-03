@@ -2,6 +2,7 @@ package net.glowstone.io.entity;
 
 import net.glowstone.entity.GlowHumanEntity;
 import net.glowstone.io.nbt.NbtSerialization;
+import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.GameMode;
@@ -77,7 +78,9 @@ abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityS
         List<CompoundTag> inventory;
         inventory = NbtSerialization.writeInventory(entity.getInventory().getContents(), 0);
         inventory.addAll(NbtSerialization.writeInventory(entity.getInventory().getArmorContents(), 100));
-        inventory.add(NbtSerialization.writeItem(entity.getInventory().getItemInOffHand(), 106));
+        if (!InventoryUtil.isEmpty(entity.getInventory().getItemInOffHand())) {
+            inventory.add(NbtSerialization.writeItem(entity.getInventory().getItemInOffHand(), 106));
+        }
         tag.putCompoundList("Inventory", inventory);
 
         // ender items
