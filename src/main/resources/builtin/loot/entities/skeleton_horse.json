@@ -1,0 +1,13 @@
+{
+  "items": [
+    {
+      "default": {
+        "count": 1,
+        "item": "bone"
+      }
+    }
+  ],
+  "experience": {
+    "count": 3
+  }
+}

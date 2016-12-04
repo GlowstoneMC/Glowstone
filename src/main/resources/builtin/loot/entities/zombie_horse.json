@@ -1,0 +1,13 @@
+{
+  "items": [
+    {
+      "default": {
+        "count": 1,
+        "item": "rotten_flesh"
+      }
+    }
+  ],
+  "experience": {
+    "count": 3
+  }
+}

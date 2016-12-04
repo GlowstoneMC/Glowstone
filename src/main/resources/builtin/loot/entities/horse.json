@@ -6,19 +6,7 @@
           "max": 2
         },
         "item": "leather"
-      },
-      "conditions": [
-        {
-          "item": "bone",
-          "count": 1,
-          "condition": "net.glowstone.util.loot.LootingUtil.is($.getVariant().name(), \"SKELETON_HORSE\")"
-        },
-        {
-          "item": "rotten_flesh",
-          "count": 1,
-          "condition": "net.glowstone.util.loot.LootingUtil.is($.getVariant().name(), \"UNDEAD_HORSE\")"
-        }
-      ]
+      }
     }
   ],
   "experience": {

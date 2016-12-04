@@ -10,18 +10,6 @@
     },
     {
       "default": {
-        "count": 0,
-        "item": "sponge"
-      },
-      "conditions": [
-        {
-          "condition": "$.isElder()",
-          "count": 1
-        }
-      ]
-    },
-    {
-      "default": {
         "count": 1,
         "item": [
           {
@@ -33,22 +21,7 @@
             "value": "prismarine_crystals"
           }
         ]
-      },
-      "conditions": [
-        {
-          "condition": "$.isElder()",
-          "item": [
-            {
-              "chance": 0.5,
-              "value": "raw_fish"
-            },
-            {
-              "chance": 0.333,
-              "value": "prismarine_crystals"
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "default": {

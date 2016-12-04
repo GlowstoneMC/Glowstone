@@ -14,45 +14,7 @@
         "count": {
           "max": 2
         }
-      },
-      "conditions": [
-        {
-          "condition": "net.glowstone.util.loot.LootingUtil.is($.getSkeletonType().name(), \"WITHER\")",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "default": {
-        "item": "coal",
-        "count": 0
-      },
-      "conditions": [
-        {
-          "condition": "net.glowstone.util.loot.LootingUtil.is($.getSkeletonType().name(), \"WITHER\")",
-          "count": {
-            "max": 1
-          }
-        }
-      ]
-    },
-    {
-      "default": {
-        "item": "skull",
-        "count": 0,
-        "data": 1
-      },
-      "conditions": [
-        {
-          "condition": "net.glowstone.util.loot.LootingUtil.and(net.glowstone.util.loot.LootingUtil.is($.getSkeletonType().name(), \"WITHER\"), net.glowstone.util.loot.LootingUtil.conditionValue($, \"ENTITY_KILLER_PLAYER\"))",
-          "count": [
-            {
-              "chance": "0.025",
-              "value": 1
-            }
-          ]
-        }
-      ]
+      }
     }
   ],
   "experience": {
