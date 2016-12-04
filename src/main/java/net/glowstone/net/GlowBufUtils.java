@@ -9,6 +9,7 @@ import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.entity.meta.MetadataMap.Entry;
 import net.glowstone.entity.meta.MetadataType;
 import net.glowstone.inventory.GlowItemFactory;
+import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
@@ -236,7 +237,7 @@ public final class GlowBufUtils {
     public static ItemStack readSlot(ByteBuf buf, boolean network) {
         short type = buf.readShort();
         if (type == -1) {
-            return null;
+            return InventoryUtil.createEmptyStack();
         }
 
         int amount = buf.readUnsignedByte();
@@ -244,7 +245,7 @@ public final class GlowBufUtils {
 
         Material material = Material.getMaterial(type);
         if (material == null) {
-            return null;
+            return InventoryUtil.createEmptyStack();
         }
 
         CompoundTag tag = readCompound(buf, network);
@@ -260,7 +261,7 @@ public final class GlowBufUtils {
      * @param stack The stack to write, or null.
      */
     public static void writeSlot(ByteBuf buf, ItemStack stack) {
-        if (stack == null || stack.getTypeId() == 0) {
+        if (InventoryUtil.isEmpty(stack)) {
             buf.writeShort(-1);
         } else {
             buf.writeShort(stack.getTypeId());

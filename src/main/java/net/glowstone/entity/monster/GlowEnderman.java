@@ -45,4 +45,9 @@ public class GlowEnderman extends GlowMonster implements Enderman {
     protected Sound getDeathSound() {
         return Sound.ENTITY_ENDERMEN_DEATH;
     }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_ENDERMEN_AMBIENT;
+    }
 }

@@ -3,6 +3,7 @@ package net.glowstone.io.nbt;
 import net.glowstone.GlowServer;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.inventory.GlowItemFactory;
+import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
@@ -89,7 +90,10 @@ public final class NbtSerialization {
     public static ItemStack[] readInventory(List<CompoundTag> tagList, int start, int size) {
         ItemStack[] items = new ItemStack[size];
         for (CompoundTag tag : tagList) {
-            byte slot = tag.isByte("Slot") ? tag.getByte("Slot") : 0;
+            if (!tag.isByte("Slot")) {
+                continue;
+            }
+            byte slot = tag.getByte("Slot");
             if (slot >= start && slot < start + size) {
                 items[slot - start] = readItem(tag);
             }
@@ -108,7 +112,7 @@ public final class NbtSerialization {
         List<CompoundTag> out = new ArrayList<>();
         for (int i = 0; i < items.length; i++) {
             ItemStack stack = items[i];
-            if (stack != null) {
+            if (!InventoryUtil.isEmpty(stack)) {
                 out.add(writeItem(stack, start + i));
             }
         }

@@ -65,11 +65,10 @@ package net.glowstone.io.anvil;
 import net.glowstone.GlowServer;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.zip.Deflater;
-import java.util.zip.DeflaterOutputStream;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.InflaterInputStream;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+import java.util.BitSet;
+import java.util.zip.*;
 
 public class RegionFile {
 
@@ -80,11 +79,13 @@ public class RegionFile {
     private static final int SECTOR_INTS = SECTOR_BYTES / 4;
 
     private static final int CHUNK_HEADER_SIZE = 5;
+
     private static final byte[] emptySector = new byte[SECTOR_BYTES];
     private final int[] offsets;
     private final int[] chunkTimestamps;
     private RandomAccessFile file;
-    private ArrayList<Boolean> sectorFree;
+    private BitSet sectorsUsed;
+    private int totalSectors;
     private int sizeDelta;
     private long lastModified;
 
@@ -104,50 +105,61 @@ public class RegionFile {
         file.seek(file.length());
 
         // if the file size is under 8KB, grow it (4K chunk offset table, 4K timestamp table)
-        if (file.length() < 2 * SECTOR_BYTES) {
-            sizeDelta += 2 * SECTOR_BYTES - file.length();
-            if (lastModified != 0) {
-                // only give a warning if the region file existed beforehand
+        if (lastModified == 0 || file.length() == 0) {
+            // fast path for new or zero-length region files
+            file.write(emptySector);
+            file.write(emptySector);
+            sizeDelta = 2 * SECTOR_BYTES;
+        } else {
+            if (file.length() < 2 * SECTOR_BYTES) {
+                sizeDelta += 2 * SECTOR_BYTES - file.length();
                 GlowServer.logger.warning("Region \"" + path + "\" under 8K: " + file.length() + " increasing by " + (2 * SECTOR_BYTES - file.length()));
+
+                for (long i = file.length(); i < 2 * SECTOR_BYTES; ++i) {
+                    file.write(0);
+                }
             }
 
-            for (long i = file.length(); i < 2 * SECTOR_BYTES; ++i) {
-                file.write(0);
-            }
-        }
+            // if the file size is not a multiple of 4KB, grow it
+            if ((file.length() & 0xfff) != 0) {
+                sizeDelta += SECTOR_BYTES - (file.length() & 0xfff);
+                GlowServer.logger.warning("Region \"" + path + "\" not aligned: " + file.length() + " increasing by " + (SECTOR_BYTES - (file.length() & 0xfff)));
 
-        // if the file size is not a multiple of 4KB, grow it
-        if ((file.length() & 0xfff) != 0) {
-            sizeDelta += SECTOR_BYTES - (file.length() & 0xfff);
-            GlowServer.logger.warning("Region \"" + path + "\" not aligned: " + file.length() + " increasing by " + (SECTOR_BYTES - (file.length() & 0xfff)));
-
-            for (long i = file.length() & 0xfff; i < SECTOR_BYTES; ++i) {
-                file.write(0);
+                for (long i = file.length() & 0xfff; i < SECTOR_BYTES; ++i) {
+                    file.write(0);
+                }
             }
         }
 
         // set up the available sector map
-        int nSectors = (int) (file.length() / SECTOR_BYTES);
-        sectorFree = new ArrayList<>(nSectors);
-        for (int i = 0; i < nSectors; ++i) {
-            sectorFree.add(true);
-        }
+        totalSectors = (int) (file.length() / SECTOR_BYTES);
+        sectorsUsed = new BitSet();
 
-        sectorFree.set(0, false); // chunk offset table
-        sectorFree.set(1, false); // for the last modified info
+        sectorsUsed.set(0, true);
+        sectorsUsed.set(1, true);
 
-        // read offsets from offset table
+        // read offset table and timestamp tables
         file.seek(0);
+        ByteBuffer header = ByteBuffer.allocate(8192);
+        while (header.hasRemaining()) {
+            if (file.getChannel().read(header) == -1) {
+                throw new EOFException();
+            }
+        }
+        header.clear();
+
+        // populate the tables
+        IntBuffer headerAsInts = header.asIntBuffer();
         for (int i = 0; i < SECTOR_INTS; ++i) {
-            int offset = file.readInt();
+            int offset = headerAsInts.get();
             offsets[i] = offset;
 
             int startSector = offset >> 8;
             int numSectors = offset & 0xff;
 
-            if (offset != 0 && startSector >= 0 && startSector + numSectors <= sectorFree.size()) {
+            if (offset != 0 && startSector >= 0 && startSector + numSectors <= totalSectors) {
                 for (int sectorNum = 0; sectorNum < numSectors; ++sectorNum) {
-                    sectorFree.set(startSector + sectorNum, false);
+                    sectorsUsed.set(startSector + sectorNum, true);
                 }
             } else if (offset != 0) {
                 GlowServer.logger.warning("Region \"" + path + "\": offsets[" + i + "] = " + offset + " -> " + startSector + "," + numSectors + " does not fit");
@@ -155,7 +167,7 @@ public class RegionFile {
         }
         // read timestamps from timestamp table
         for (int i = 0; i < SECTOR_INTS; ++i) {
-            chunkTimestamps[i] = file.readInt();
+            chunkTimestamps[i] = headerAsInts.get();
         }
     }
 
@@ -186,8 +198,8 @@ public class RegionFile {
 
         int sectorNumber = offset >> 8;
         int numSectors = offset & 0xFF;
-        if (sectorNumber + numSectors > sectorFree.size()) {
-            throw new IOException("Invalid sector: " + sectorNumber + "+" + numSectors + " > " + sectorFree.size());
+        if (sectorNumber + numSectors > totalSectors) {
+            throw new IOException("Invalid sector: " + sectorNumber + "+" + numSectors + " > " + totalSectors);
         }
 
         file.seek(sectorNumber * SECTOR_BYTES);
@@ -200,11 +212,11 @@ public class RegionFile {
         if (version == VERSION_GZIP) {
             byte[] data = new byte[length - 1];
             file.read(data);
-            return new DataInputStream(new GZIPInputStream(new ByteArrayInputStream(data)));
+            return new DataInputStream(new BufferedInputStream(new GZIPInputStream(new ByteArrayInputStream(data), 2048)));
         } else if (version == VERSION_DEFLATE) {
             byte[] data = new byte[length - 1];
             file.read(data);
-            return new DataInputStream(new InflaterInputStream(new ByteArrayInputStream(data)));
+            return new DataInputStream(new BufferedInputStream(new InflaterInputStream(new ByteArrayInputStream(data), new Inflater(), 2048)));
         }
 
         throw new IOException("Unknown version: " + version);
@@ -212,7 +224,7 @@ public class RegionFile {
 
     public DataOutputStream getChunkDataOutputStream(int x, int z) {
         checkBounds(x, z);
-        return new DataOutputStream(new DeflaterOutputStream(new ChunkBuffer(x, z), new Deflater(Deflater.BEST_SPEED)));
+        return new DataOutputStream(new BufferedOutputStream(new DeflaterOutputStream(new ChunkBuffer(x, z), new Deflater(), 2048)));
     }
 
     /* write a chunk at (x,z) with length bytes of data to disk */
@@ -235,25 +247,26 @@ public class RegionFile {
 
             /* mark the sectors previously used for this chunk as free */
             for (int i = 0; i < sectorsAllocated; ++i) {
-                sectorFree.set(sectorNumber + i, true);
+                sectorsUsed.clear(sectorNumber + i);
             }
 
             /* scan for a free space large enough to store this chunk */
-            int runStart = sectorFree.indexOf(true);
+            int runStart = 2;
             int runLength = 0;
-            if (runStart != -1) {
-                for (int i = runStart; i < sectorFree.size(); ++i) {
-                    if (runLength != 0) {
-                        if (sectorFree.get(i)) runLength++;
-                        else runLength = 0;
-                    } else if (sectorFree.get(i)) {
-                        runStart = i;
-                        runLength = 1;
-                    }
-                    if (runLength >= sectorsNeeded) {
-                        break;
-                    }
+            int currentSector = 2;
+            while (runLength < sectorsNeeded) {
+                if (sectorsUsed.length() >= currentSector) {
+                    // We reached the end, and we will need to allocate a new sector.
+                    break;
                 }
+                int nextSector = sectorsUsed.nextClearBit(currentSector + 1);
+                if (currentSector + 1 == nextSector) {
+                    runLength++;
+                } else {
+                    runStart = nextSector;
+                    runLength = 1;
+                }
+                currentSector = nextSector;
             }
 
             if (runLength >= sectorsNeeded) {
@@ -261,7 +274,7 @@ public class RegionFile {
                 sectorNumber = runStart;
                 setOffset(x, z, sectorNumber << 8 | sectorsNeeded);
                 for (int i = 0; i < sectorsNeeded; ++i) {
-                    sectorFree.set(sectorNumber + i, false);
+                    sectorsUsed.set(sectorNumber + i);
                 }
                 write(sectorNumber, data, length);
             } else {
@@ -270,11 +283,12 @@ public class RegionFile {
                  * file
                  */
                 file.seek(file.length());
-                sectorNumber = sectorFree.size();
+                sectorNumber = totalSectors;
                 for (int i = 0; i < sectorsNeeded; ++i) {
                     file.write(emptySector);
-                    sectorFree.add(false);
+                    sectorsUsed.set(totalSectors + i);
                 }
+                totalSectors += sectorsNeeded;
                 sizeDelta += SECTOR_BYTES * sectorsNeeded;
 
                 write(sectorNumber, data, length);
@@ -333,7 +347,7 @@ public class RegionFile {
         private final int x, z;
 
         public ChunkBuffer(int x, int z) {
-            super(8096); // initialize to 8KB
+            super(SECTOR_BYTES); // initialize to 4KB
             this.x = x;
             this.z = z;
         }

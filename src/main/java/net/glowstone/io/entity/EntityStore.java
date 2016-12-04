@@ -5,6 +5,7 @@ import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 
 import java.util.UUID;
 
@@ -15,15 +16,15 @@ import java.util.UUID;
  */
 abstract class EntityStore<T extends GlowEntity> {
     protected final Class<T> clazz;
-    private final String id;
+    protected final EntityType type;
 
-    public EntityStore(Class<T> clazz, String id) {
-        this.id = id;
+    public EntityStore(Class<T> clazz, EntityType type) {
+        this.type = type;
         this.clazz = clazz;
     }
 
-    public final String getId() {
-        return id;
+    public final EntityType getEntityType() {
+        return type;
     }
 
     public final Class<T> getType() {
@@ -95,7 +96,7 @@ abstract class EntityStore<T extends GlowEntity> {
      * @param tag    The target tag.
      */
     public void save(T entity, CompoundTag tag) {
-        tag.putString("id", id);
+        tag.putString("id", "minecraft:" + type.getName());
 
         // write world info, Pos, Rotation, and Motion
         Location loc = entity.getLocation();

@@ -96,9 +96,9 @@ public class GlowDungeon extends GlowStructurePiece {
 
         for (int x = 0; x < sizeX; x++) {
             for (int z = 0; z < sizeZ; z++) {
-                for (int y = HEIGHT - 2; y >= 0; y--) {
+                for (int y = HEIGHT - 1; y >= 0; y--) {
                     BlockState state = builder.getBlockState(new Vector(x, y, z));
-                    if (y > 0 && x > 0 && z > 0 && x < sizeX - 1 && z < sizeZ - 1) {
+                    if (y > 0 && x > 0 && z > 0 && x < sizeX - 1 && y < HEIGHT - 1 && z < sizeZ - 1) {
                         // empty space inside
                         builder.setBlock(new Vector(x, y, z), Material.AIR);
                     } else if (!builder.getBlockState(new Vector(x, y - 1, z)).getType().isSolid()) {
@@ -141,19 +141,19 @@ public class GlowDungeon extends GlowStructurePiece {
                 if (builder.getBlockState(new Vector(x, 1, z)).getType() == Material.AIR) {
                     BlockFace face = null;
                     int solidBlocksCount = 0;
-                    if (builder.getBlockState(new Vector(x - 1, 1, z)).getType().isSolid()) {
+                    if (builder.getBlockState(new Vector(x - 1, 1, z)).getType() == Material.COBBLESTONE) {
                         solidBlocksCount++;
                         face = BlockFace.EAST;
                     }
-                    if (builder.getBlockState(new Vector(x + 1, 1, z)).getType().isSolid()) {
+                    if (builder.getBlockState(new Vector(x + 1, 1, z)).getType() == Material.COBBLESTONE) {
                         solidBlocksCount++;
                         face = BlockFace.WEST;
                     }
-                    if (builder.getBlockState(new Vector(x, 1, z - 1)).getType().isSolid()) {
+                    if (builder.getBlockState(new Vector(x, 1, z - 1)).getType() == Material.COBBLESTONE) {
                         solidBlocksCount++;
                         face = BlockFace.SOUTH;
                     }
-                    if (builder.getBlockState(new Vector(x, 1, z + 1)).getType().isSolid()) {
+                    if (builder.getBlockState(new Vector(x, 1, z + 1)).getType() == Material.COBBLESTONE) {
                         solidBlocksCount++;
                         face = BlockFace.NORTH;
                     }
@@ -167,7 +167,7 @@ public class GlowDungeon extends GlowStructurePiece {
 
         builder.createMobSpawner(new Vector(radiusX, 1, radiusZ), mobTypes[random.nextInt(mobTypes.length)]);
 
-        GlowServer.logger.info("dungeon generated: " + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ());
+        GlowServer.logger.finer("dungeon generated: " + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ());
 
         return true;
     }

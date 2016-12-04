@@ -112,6 +112,11 @@ public final class GlowEnchantment extends Enchantment implements Choice {
         return impl.treasure;
     }
 
+    @Override
+    public boolean isCursed() {
+        return impl.cursed;
+    }
+
     /**
      * Represents the rarity of obtaining an enchantment.
      *
@@ -136,6 +141,7 @@ public final class GlowEnchantment extends Enchantment implements Choice {
         THORNS(7, "Thorns", 3, Rarity.VERY_RARE, 10, 20, 50, false, EnchantmentTarget.ARMOR_TORSO, new MatcherAdapter(EnchantmentTarget.ARMOR)),
         DEPTH_STRIDER(8, "Depth Strider", 3, Rarity.RARE, 10, 10, 15, EnchantmentTarget.ARMOR_FEET),
         FROST_WALKER(9, "Frost Walker", 2, Rarity.RARE, 10, 10, 15, EnchantmentTarget.ARMOR_FEET),
+        BINDING_CURSE(10, "Curse of Binding", 1, Rarity.VERY_RARE, true, true, 25, 25, 50, false, EnchantmentTarget.ARMOR, new MatcherAdapter(EnchantmentTarget.ARMOR), GROUP_NONE),
         DAMAGE_ALL(16, "Sharpness", 5, Rarity.COMMON, 1, 11, 20, EnchantmentTarget.WEAPON, SWORD_OR_AXE, GROUP_ATTACK),
         DAMAGE_UNDEAD(17, "Smite", 5, Rarity.UNCOMMON, 5, 8, 20, EnchantmentTarget.WEAPON, SWORD_OR_AXE, GROUP_ATTACK),
         DAMAGE_ARTHROPODS(18, "Bane of Arthropods", 5, Rarity.UNCOMMON, 5, 8, 20, EnchantmentTarget.WEAPON, SWORD_OR_AXE, GROUP_ATTACK),
@@ -152,7 +158,8 @@ public final class GlowEnchantment extends Enchantment implements Choice {
         ARROW_INFINITE(51, "Infinity", 1, Rarity.VERY_RARE, 20, 0, 30, EnchantmentTarget.BOW),
         LUCK(61, "Luck of the Sea", 3, Rarity.RARE, 15, 9, 50, false, EnchantmentTarget.FISHING_ROD),
         LURE(62, "Lure", 3, Rarity.RARE, 15, 9, 50, false, EnchantmentTarget.FISHING_ROD),
-        MENDING(70, "Mending", 1, Rarity.RARE, 25, 25, 50, EnchantmentTarget.ALL);
+        MENDING(70, "Mending", 1, Rarity.RARE, 25, 25, 50, EnchantmentTarget.ALL),
+        VANISHING_CURSE(71, "Curse of Vanishing", 1, Rarity.VERY_RARE, true, true, 25, 25, 50, false, EnchantmentTarget.ALL, new MatcherAdapter(EnchantmentTarget.ALL), GROUP_NONE);
 
         private final int id;
         private final String name;
@@ -165,6 +172,7 @@ public final class GlowEnchantment extends Enchantment implements Choice {
         private final int maxIncrement;
         private final boolean treasure;
         private final boolean simpleRange;
+        private final boolean cursed;
 
         Impl(int id, String name, int max, Rarity rarity, int minValue, int minInc, int maxInc, EnchantmentTarget target) {
             this(id, name, max, rarity, false, minValue, minInc, maxInc, true, target, new MatcherAdapter(target), GROUP_NONE);
@@ -191,6 +199,10 @@ public final class GlowEnchantment extends Enchantment implements Choice {
         }
 
         Impl(int id, String name, int max, Rarity rarity, boolean treasure, int minValue, int minInc, int maxInc, boolean simpleRange, EnchantmentTarget target, MaterialMatcher matcher, int group) {
+            this(id, name, max, rarity, treasure, false, minValue, minInc, maxInc, true, target, matcher, group);
+        }
+
+        Impl(int id, String name, int max, Rarity rarity, boolean treasure, boolean cursed, int minValue, int minInc, int maxInc, boolean simpleRange, EnchantmentTarget target, MaterialMatcher matcher, int group) {
             this.id = id;
             this.name = name;
             maxLevel = max;
@@ -203,6 +215,7 @@ public final class GlowEnchantment extends Enchantment implements Choice {
             maxIncrement = maxInc;
             this.simpleRange = simpleRange;
             this.treasure = treasure;
+            this.cursed = cursed;
         }
 
         int getMinRange(int modifier) {

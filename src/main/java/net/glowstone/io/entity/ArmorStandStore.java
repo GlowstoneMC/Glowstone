@@ -5,6 +5,7 @@ import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 import org.bukkit.util.EulerAngle;
 
 import java.util.Arrays;
@@ -13,7 +14,7 @@ import java.util.List;
 class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
 
     public ArmorStandStore() {
-        super(GlowArmorStand.class, "ArmorStand");
+        super(GlowArmorStand.class, EntityType.ARMOR_STAND);
     }
 
     @Override

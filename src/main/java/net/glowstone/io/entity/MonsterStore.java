@@ -3,6 +3,7 @@ package net.glowstone.io.entity;
 import net.glowstone.entity.monster.GlowMonster;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 
 import java.lang.reflect.Constructor;
 
@@ -10,8 +11,8 @@ class MonsterStore<T extends GlowMonster> extends EntityStore<T> {
 
     private final Constructor<T> constructor;
 
-    public MonsterStore(Class<T> clazz, String id) {
-        super(clazz, id);
+    public MonsterStore(Class<T> clazz, EntityType type) {
+        super(clazz, type);
         Constructor<T> ctor = null;
         try {
             ctor = clazz.getConstructor(Location.class);

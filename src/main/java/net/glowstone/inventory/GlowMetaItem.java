@@ -21,6 +21,7 @@ class GlowMetaItem implements ItemMeta {
     private List<String> lore;
     private Map<Enchantment, Integer> enchants;
     private int hideFlag;
+    private boolean unbreakable;
 
     /**
      * Create a GlowMetaItem, copying from another if possible.
@@ -108,6 +109,7 @@ class GlowMetaItem implements ItemMeta {
     public Map<String, Object> serialize() {
         Map<String, Object> result = new HashMap<>();
         result.put("meta-type", "UNSPECIFIC");
+        result.put("unbreakable", isUnbreakable());
 
         if (hasDisplayName()) {
             result.put("display-name", getDisplayName());
@@ -150,6 +152,7 @@ class GlowMetaItem implements ItemMeta {
         if (hideFlag != 0) {
             tag.putInt("HideFlags", hideFlag);
         }
+        tag.putBool("Unbreakable", isUnbreakable());
     }
 
     void readNbt(CompoundTag tag) {
@@ -174,6 +177,9 @@ class GlowMetaItem implements ItemMeta {
 
         if (tag.isInt("HideFlags")) {
             hideFlag = tag.getInt("HideFlags");
+        }
+        if (tag.isByte("Unbreakable")) {
+            unbreakable = tag.getBool("Unbreakable");
         }
     }
 
@@ -215,6 +221,16 @@ class GlowMetaItem implements ItemMeta {
     public void setLore(List<String> lore) {
         // todo: fancy validation things
         this.lore = lore;
+    }
+
+    @Override
+    public boolean isUnbreakable() {
+        return unbreakable;
+    }
+
+    @Override
+    public void setUnbreakable(boolean unbreakable) {
+        this.unbreakable = unbreakable;
     }
 
     ////////////////////////////////////////////////////////////////////////////

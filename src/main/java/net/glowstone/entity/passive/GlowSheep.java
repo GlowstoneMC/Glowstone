@@ -63,7 +63,7 @@ public class GlowSheep extends GlowAnimal implements Sheep {
     }
 
     private byte getColorByte() {
-        return (byte) (getColor().getData() | (sheared ? 0x10 : 0x00));
+        return (byte) (getColor().getWoolData() | (sheared ? 0x10 : 0x00));
     }
 
     @Override
@@ -133,5 +133,10 @@ public class GlowSheep extends GlowAnimal implements Sheep {
     @Override
     protected Sound getDeathSound() {
         return Sound.ENTITY_SHEEP_DEATH;
+    }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_SHEEP_AMBIENT;
     }
 }

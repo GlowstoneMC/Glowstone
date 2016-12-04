@@ -4,14 +4,12 @@ import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.monster.*;
 import net.glowstone.entity.objects.GlowMinecart;
-import net.glowstone.entity.passive.GlowCow;
-import net.glowstone.entity.passive.GlowMooshroom;
-import net.glowstone.entity.passive.GlowPolarBear;
-import net.glowstone.entity.passive.GlowSquid;
+import net.glowstone.entity.passive.*;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.EntityType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,17 +40,22 @@ public final class EntityStorage {
         // LivingEntities - Passive Entities
         bind(new BatStore());
         bind(new ChickenStore());
-        bind(new HorseStore());
         bind(new PigStore());
         bind(new RabbitStore());
         bind(new SheepStore());
         bind(new OcelotStore());
         bind(new WolfStore());
         bind(new VillagerStore());
-        bind(new AgeableStore<>(GlowCow.class, "Cow"));
-        bind(new AgeableStore<>(GlowMooshroom.class, "MushroomCow"));
-        bind(new WaterMobStore<>(GlowSquid.class, "Squid"));
-        bind(new AgeableStore<>(GlowPolarBear.class, "PolarBear"));
+        bind(new AgeableStore<>(GlowCow.class, EntityType.COW));
+        bind(new AgeableStore<>(GlowMooshroom.class, EntityType.MUSHROOM_COW));
+        bind(new WaterMobStore<>(GlowSquid.class, EntityType.SQUID));
+        bind(new AgeableStore<>(GlowPolarBear.class, EntityType.POLAR_BEAR));
+        bind(new AbstractHorseStore<>(GlowZombieHorse.class, EntityType.ZOMBIE_HORSE));
+        bind(new AbstractHorseStore<>(GlowSkeletonHorse.class, EntityType.SKELETON_HORSE));
+        bind(new ChestedHorseStore<>(GlowLlama.class, EntityType.LLAMA));
+        bind(new ChestedHorseStore<>(GlowMule.class, EntityType.MULE));
+        bind(new ChestedHorseStore<>(GlowDonkey.class, EntityType.DONKEY));
+        bind(new HorseStore());
 
         // LivingEntities - Hostile Entities
         bind(new CreeperStore());
@@ -61,20 +64,25 @@ public final class EntityStorage {
         bind(new GhastStore());
         bind(new GuardianStore());
         bind(new IronGolemStore());
-        bind(new SlimeStore(GlowSlime.class, "Slime"));
-        bind(new SlimeStore(GlowMagmaCube.class, "LavaSlime"));
+        bind(new SlimeStore<>(GlowSlime.class, EntityType.SLIME));
+        bind(new SlimeStore<>(GlowMagmaCube.class, EntityType.MAGMA_CUBE));
         bind(new ZombieStore<>());
         bind(new PigZombieStore());
-        bind(new SkeletonStore());
-        bind(new MonsterStore<>(GlowBlaze.class, "Blaze"));
-        bind(new MonsterStore<>(GlowCaveSpider.class, "CaveSpider"));
-        bind(new MonsterStore<>(GlowSpider.class, "Spider"));
-        bind(new MonsterStore<>(GlowSnowman.class, "Snowman"));
-        bind(new MonsterStore<>(GlowGiant.class, "Giant"));
-        bind(new MonsterStore<>(GlowSilverfish.class, "Silverfish"));
-        bind(new MonsterStore<>(GlowWitch.class, "Witch"));
+        bind(new MonsterStore<>(GlowSkeleton.class, EntityType.SKELETON));
+        bind(new MonsterStore<>(GlowSkeleton.class, EntityType.STRAY));
+        bind(new MonsterStore<>(GlowSkeleton.class, EntityType.WITHER_SKELETON));
+        bind(new MonsterStore<>(GlowBlaze.class, EntityType.BLAZE));
+        bind(new MonsterStore<>(GlowCaveSpider.class, EntityType.CAVE_SPIDER));
+        bind(new MonsterStore<>(GlowSpider.class, EntityType.SPIDER));
+        bind(new MonsterStore<>(GlowSnowman.class, EntityType.SNOWMAN));
+        bind(new MonsterStore<>(GlowGiant.class, EntityType.GIANT));
+        bind(new MonsterStore<>(GlowSilverfish.class, EntityType.SILVERFISH));
+        bind(new MonsterStore<>(GlowWitch.class, EntityType.WITCH));
         bind(new ShulkerStore());
         bind(new WitherStore());
+        bind(new VexStore());
+        bind(new VindicatorStore());
+        bind(new EvokerStore());
 
 
         bind(new ArmorStandStore());
@@ -99,7 +107,7 @@ public final class EntityStorage {
      * @param <T>   The type of entity.
      */
     private static <T extends GlowEntity> void bind(EntityStore<T> store) {
-        idTable.put(store.getId(), store);
+        idTable.put(store.getEntityType().getName(), store);
         classTable.put(store.getType(), store);
     }
 
@@ -116,7 +124,11 @@ public final class EntityStorage {
         if (!compound.isString("id")) {
             throw new IllegalArgumentException("Entity has no type");
         }
-        EntityStore<?> store = idTable.get(compound.getString("id"));
+        String id = compound.getString("id");
+        if (id.startsWith("minecraft:")) {
+            id = id.substring("minecraft:".length());
+        }
+        EntityStore<?> store = idTable.get(id);
         if (store == null) {
             throw new IllegalArgumentException("Unknown entity type to load: \"" + compound.getString("id") + "\"");
         }

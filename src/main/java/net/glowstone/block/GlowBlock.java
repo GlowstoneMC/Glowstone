@@ -58,7 +58,7 @@ public final class GlowBlock implements Block {
     public GlowBlock(GlowChunk chunk, int x, int y, int z) {
         world = chunk.getWorld();
         this.x = x;
-        this.y = y;
+        this.y = Math.min(256, Math.max(y, 0));
         this.z = z;
     }
 
@@ -107,7 +107,7 @@ public final class GlowBlock implements Block {
     }
 
     public TileEntity getTileEntity() {
-        return ((GlowChunk) world.getChunkAt(this)).getEntity(x & 0xf, y, z & 0xf);
+        return getChunk().getEntity(x & 0xf, y, z & 0xf);
     }
 
     @Override
@@ -201,7 +201,7 @@ public final class GlowBlock implements Block {
     }
 
     /**
-     * Set the Material type of a block with metadata? and optionally apply
+     * Set the Material type of a block with data and optionally apply
      * physics.
      *
      * @param type The type to set the block to.
@@ -299,7 +299,7 @@ public final class GlowBlock implements Block {
     @Override
     public void setData(byte data, boolean applyPhysics) {
         byte oldData = getData();
-        ((GlowChunk) world.getChunkAt(this)).setMetaData(x & 0xf, z & 0xf, y & 0x7f, data);
+        ((GlowChunk) world.getChunkAt(this)).setMetaData(x & 0xf, z & 0xf, y, data);
         if (applyPhysics) {
             applyPhysics(getType(), getTypeId(), oldData, data);
         }
@@ -450,6 +450,10 @@ public final class GlowBlock implements Block {
      * @return true if the block was destroyed
      */
     public boolean breakNaturally(float yield) {
+        return breakNaturally(yield, ItemTable.instance().getBlock(getType()).getMinedDrops(this));
+    }
+
+    public boolean breakNaturally(float yield, Collection<ItemStack> drops) {
         Random r = new Random();
 
         if (getType() == Material.AIR) {
@@ -457,8 +461,7 @@ public final class GlowBlock implements Block {
         }
 
         Location location = getLocation();
-        Collection<ItemStack> toDrop = ItemTable.instance().getBlock(getType()).getMinedDrops(this);
-        toDrop.stream().filter(stack -> r.nextFloat() < yield).forEach(stack -> getWorld().dropItemNaturally(location, stack));
+        drops.stream().filter(stack -> r.nextFloat() < yield).forEach(stack -> getWorld().dropItemNaturally(location, stack));
 
         setType(Material.AIR);
         return true;
@@ -471,8 +474,9 @@ public final class GlowBlock implements Block {
 
     @Override
     public boolean breakNaturally(ItemStack tool) {
-        if (!getDrops(tool).isEmpty()) {
-            return breakNaturally();
+        Collection<ItemStack> drops = getDrops(tool);
+        if (!drops.isEmpty()) {
+            return breakNaturally(1.0f, drops);
         } else {
             return setTypeId(Material.AIR.getId());
         }

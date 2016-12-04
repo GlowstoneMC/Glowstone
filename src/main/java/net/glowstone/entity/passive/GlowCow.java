@@ -53,4 +53,9 @@ public class GlowCow extends GlowAnimal implements Cow {
     protected Sound getDeathSound() {
         return Sound.ENTITY_COW_DEATH;
     }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_COW_AMBIENT;
+    }
 }

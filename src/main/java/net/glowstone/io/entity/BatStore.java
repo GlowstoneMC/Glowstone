@@ -3,11 +3,12 @@ package net.glowstone.io.entity;
 import net.glowstone.entity.passive.GlowBat;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 
 class BatStore extends LivingEntityStore<GlowBat> {
 
     public BatStore() {
-        super(GlowBat.class, "Bat");
+        super(GlowBat.class, EntityType.BAT);
     }
 
     @Override

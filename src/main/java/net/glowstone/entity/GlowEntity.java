@@ -106,7 +106,6 @@ public abstract class GlowEntity implements Entity {
      * Vehicle
      */
     protected GlowEntity vehicle;
-    protected boolean vehicleChanged;
     /**
      * This entity's unique id.
      */
@@ -135,6 +134,7 @@ public abstract class GlowEntity implements Entity {
      * Passenger
      */
     private GlowEntity passenger;
+    protected boolean passengerChanged;
     /**
      * Whether gravity applies to the entity.
      */
@@ -424,7 +424,7 @@ public abstract class GlowEntity implements Entity {
         metadata.resetChanges();
         teleported = false;
         velocityChanged = false;
-        vehicleChanged = false;
+        passengerChanged = false;
     }
 
     /**
@@ -447,7 +447,8 @@ public abstract class GlowEntity implements Entity {
         }
 
         Block block = location.getBlock();
-        if (!block.getType().hasGravity() && block.getType().isOccluding() && block.getType() != Material.SOUL_SAND && block.getType() != Material.SNOW && block.getType() != Material.DEAD_BUSH) {
+        if (this.getClass() == GlowPlayer.class && ((GlowPlayer) this).getGameMode() != GameMode.SPECTATOR
+                && block.getType().isOccluding() && !block.getType().hasGravity() && block.getType() != Material.SOUL_SAND) {
             teleport(location.add(0, 1, 0));
             return;
         }
@@ -455,15 +456,9 @@ public abstract class GlowEntity implements Entity {
         world.getEntityManager().move(this, location);
         Position.copyLocation(location, this.location);
 
-        if (!fall) {
+        if (!fall || this.getClass() == GlowPlayer.class && (((GlowPlayer) this).getGameMode() == GameMode.CREATIVE || ((GlowPlayer) this).getGameMode() == GameMode.SPECTATOR)) {
             fallDistance = 0;
             return;
-        }
-
-        if (this instanceof GlowPlayer) {
-            if (((GlowPlayer) this).getGameMode() == GameMode.CREATIVE) {
-                return;
-            }
         }
 
         // check if the entity is climbing, or in a liquid
@@ -554,9 +549,9 @@ public abstract class GlowEntity implements Entity {
             result.add(new EntityVelocityMessage(id, velocity));
         }
 
-        if (vehicleChanged) {
+        if (passengerChanged) {
             //this method will not call for this player, we don't need check SELF_ID
-            result.add(new AttachEntityMessage(getEntityId(), vehicle != null ? vehicle.getEntityId() : -1, false));
+            result.add(new SetPassengerMessage(getEntityId(), getPassenger() == null ? new int[0] : new int[] {getPassenger().getEntityId()}));
         }
 
         return result;
@@ -837,6 +832,28 @@ public abstract class GlowEntity implements Entity {
     }
 
     @Override
+    public void setGlowing(boolean glowing) {
+        // todo: 1.11
+    }
+
+    @Override
+    public boolean isGlowing() {
+        // todo: 1.11
+        return false;
+    }
+
+    @Override
+    public void setInvulnerable(boolean invulnerable) {
+        // todo: 1.11
+    }
+
+    @Override
+    public boolean isInvulnerable() {
+        // todo: 1.11
+        return false;
+    }
+
+    @Override
     public void setCustomNameVisible(boolean flag) {
         metadata.set(MetadataIndex.SHOW_NAME_TAG, flag ? (byte) 1 : (byte) 0);
     }
@@ -856,7 +873,7 @@ public abstract class GlowEntity implements Entity {
 
             EventFactory.callEvent(new EntityDismountEvent(passenger, this));
 
-            passenger.vehicleChanged = true;
+            passengerChanged = true;
             passenger.vehicle = null;
             passenger = null;
         } else {
@@ -881,13 +898,13 @@ public abstract class GlowEntity implements Entity {
 
             if (this.passenger != null) {
                 EventFactory.callEvent(new EntityDismountEvent(this.passenger, this));
-                this.passenger.vehicleChanged = true;
+                this.passengerChanged = true;
                 this.passenger.vehicle = null;
             }
 
             this.passenger = passenger;
             this.passenger.vehicle = this;
-            this.passenger.vehicleChanged = true;
+            this.passengerChanged = true;
         }
         return true;
     }
@@ -910,6 +927,35 @@ public abstract class GlowEntity implements Entity {
     @Override
     public void setGravity(boolean gravity) {
         this.gravity = gravity;
+    }
+
+    @Override
+    public int getPortalCooldown() {
+        // todo: 1.11
+        return 0;
+    }
+
+    @Override
+    public void setPortalCooldown(int cooldown) {
+        // todo: 1.11
+    }
+
+    @Override
+    public Set<String> getScoreboardTags() {
+        // todo: 1.11
+        return null;
+    }
+
+    @Override
+    public boolean addScoreboardTag(String tag) {
+        // todo: 1.11
+        return false;
+    }
+
+    @Override
+    public boolean removeScoreboardTag(String tag) {
+        // todo: 1.11
+        return false;
     }
 
     @Override
@@ -1020,6 +1066,12 @@ public abstract class GlowEntity implements Entity {
 
     public Spigot spigot() {
         return null; // TODO: support entity isInvulnerable() API
+    }
+
+    @Override
+    public Location getOrigin() {
+        // todo: 1.11
+        return null;
     }
 
     @Override

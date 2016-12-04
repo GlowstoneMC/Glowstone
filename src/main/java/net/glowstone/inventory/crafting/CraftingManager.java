@@ -3,6 +3,7 @@ package net.glowstone.inventory.crafting;
 import com.google.common.collect.Iterators;
 import net.glowstone.GlowServer;
 import net.glowstone.inventory.GlowCraftingInventory;
+import net.glowstone.util.InventoryUtil;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -43,20 +44,15 @@ public final class CraftingManager implements Iterable<Recipe> {
      */
     public boolean addRecipe(Recipe recipe) {
         if (recipe instanceof ShapedRecipe) {
-            shapedRecipes.add((ShapedRecipe) recipe);
-            return true;
-        } else if (recipe instanceof ShapelessRecipe) {
-            shapelessRecipes.add((ShapelessRecipe) recipe);
-            return true;
-        } else if (recipe instanceof DynamicRecipe) {
-            dynamicRecipes.add((DynamicRecipe) recipe);
-            return true;
-        } else if (recipe instanceof FurnaceRecipe) {
-            furnaceRecipes.add((FurnaceRecipe) recipe);
-            return true;
-        } else {
-            return false;
+            return shapedRecipes.add((ShapedRecipe) recipe);
         }
+        if (recipe instanceof ShapelessRecipe) {
+            return shapelessRecipes.add((ShapelessRecipe) recipe);
+        }
+        if (recipe instanceof DynamicRecipe) {
+            return dynamicRecipes.add((DynamicRecipe) recipe);
+        }
+        return recipe instanceof FurnaceRecipe && furnaceRecipes.add((FurnaceRecipe) recipe);
     }
 
     /**
@@ -135,6 +131,14 @@ public final class CraftingManager implements Iterable<Recipe> {
      * @return The Recipe that matches the input, or null if none match.
      */
     public Recipe getCraftingRecipe(ItemStack... items) {
+        for (int i = 0; i < items.length; i++) {
+            if (InventoryUtil.isEmpty(items[i])) {
+                // TODO: rewrite recipe matcher to respect empty items
+                items[i] = null;
+            }
+        }
+
+
         int size = (int) Math.sqrt(items.length);
 
         if (size * size != items.length) {

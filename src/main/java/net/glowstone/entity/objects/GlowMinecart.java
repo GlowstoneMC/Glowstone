@@ -9,6 +9,7 @@ import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.minecart.*;
 import org.bukkit.event.inventory.InventoryType;
@@ -174,21 +175,21 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
     }
 
     public enum MinecartType {
-        RIDEABLE(Rideable.class, "MinecartRideable", RideableMinecart.class),
-        CHEST(Storage.class, "MinecartChest", StorageMinecart.class),
-        FURNACE(Powered.class, "MinecartFurnace", PoweredMinecart.class),
-        TNT(Explosive.class, "MinecartTNT", ExplosiveMinecart.class),
-        SPAWNER(Spawner.class, "MinecartMobSpawner", SpawnerMinecart.class),
-        HOPPER(Hopper.class, "MinecartHopper", HopperMinecart.class),
-        COMMAND(null, "MinecartCommandBlock", CommandMinecart.class); // todo
+        RIDEABLE(Rideable.class, EntityType.MINECART, RideableMinecart.class),
+        CHEST(Storage.class, EntityType.MINECART_CHEST, StorageMinecart.class),
+        FURNACE(Powered.class, EntityType.MINECART_FURNACE, PoweredMinecart.class),
+        TNT(Explosive.class, EntityType.MINECART_TNT, ExplosiveMinecart.class),
+        SPAWNER(Spawner.class, EntityType.MINECART_MOB_SPAWNER, SpawnerMinecart.class),
+        HOPPER(Hopper.class, EntityType.MINECART_HOPPER, HopperMinecart.class),
+        COMMAND(null, EntityType.MINECART_COMMAND, CommandMinecart.class); // todo
 
         private final Class<? extends GlowMinecart> clazz;
-        private final String name;
+        private final EntityType type;
         private final Class<? extends Minecart> entityClass;
 
-        MinecartType(Class<? extends GlowMinecart> clazz, String name, Class<? extends Minecart> entityClass) {
+        MinecartType(Class<? extends GlowMinecart> clazz, EntityType type, Class<? extends Minecart> entityClass) {
             this.clazz = clazz;
-            this.name = name;
+            this.type = type;
             this.entityClass = entityClass;
         }
 
@@ -196,8 +197,8 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
             return clazz;
         }
 
-        public String getName() {
-            return name;
+        public EntityType getEntityType() {
+            return type;
         }
 
         public Class<? extends Minecart> getEntityClass() {

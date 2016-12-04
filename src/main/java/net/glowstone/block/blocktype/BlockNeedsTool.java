@@ -8,7 +8,7 @@ import java.util.Collection;
 
 public abstract class BlockNeedsTool extends BlockType {
     @Override
-    public final Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         MaterialMatcher neededTool = getNeededMiningTool(block);
         if (neededTool != null &&
                 (tool == null || !neededTool.matches(tool.getType())))

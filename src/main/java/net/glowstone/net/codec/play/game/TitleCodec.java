@@ -18,6 +18,7 @@ public final class TitleCodec implements Codec<TitleMessage> {
         switch (action) {
             case TITLE:
             case SUBTITLE:
+            case ACTION:
                 String text = ByteBufUtils.readUTF8(buffer);
                 return new TitleMessage(action, TextMessage.decode(text));
             case TIMES:
@@ -36,6 +37,7 @@ public final class TitleCodec implements Codec<TitleMessage> {
         switch (message.getAction()) {
             case TITLE:
             case SUBTITLE:
+            case ACTION:
                 ByteBufUtils.writeUTF8(buf, message.getText().encode());
                 break;
             case TIMES:

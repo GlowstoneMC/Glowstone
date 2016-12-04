@@ -4,6 +4,7 @@ import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
+import net.glowstone.util.InventoryUtil;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -43,7 +44,7 @@ public class GlowPig extends GlowAnimal implements Pig {
                     if (hand.getAmount() > 1) {
                         hand.setAmount(hand.getAmount() - 1);
                     } else {
-                        player.setItemInHand(null);
+                        player.setItemInHand(InventoryUtil.createEmptyStack());
                     }
                 }
                 return true;
@@ -63,5 +64,10 @@ public class GlowPig extends GlowAnimal implements Pig {
     @Override
     protected Sound getDeathSound() {
         return Sound.ENTITY_PIG_DEATH;
+    }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_PIG_AMBIENT;
     }
 }

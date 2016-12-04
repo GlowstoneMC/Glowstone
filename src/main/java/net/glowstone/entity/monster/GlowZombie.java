@@ -13,9 +13,7 @@ import java.util.List;
 
 public class GlowZombie extends GlowMonster implements Zombie {
 
-    private int conversionTime = -1;
     private boolean canBreakDoors;
-    private Profession villagerProfession = Profession.FARMER;
 
     public GlowZombie(Location loc) {
         this(loc, EntityType.ZOMBIE);
@@ -28,7 +26,8 @@ public class GlowZombie extends GlowMonster implements Zombie {
 
     @Override
     public List<Message> createSpawnMessage() {
-        metadata.set(MetadataIndex.ZOMBIE_IS_CONVERTING, conversionTime > 0);
+        //TODO - 1.11 Move this to ZombieVillager
+        //metadata.set(MetadataIndex.ZOMBIE_IS_CONVERTING, conversionTime > 0);
         return super.createSpawnMessage();
     }
 
@@ -44,32 +43,23 @@ public class GlowZombie extends GlowMonster implements Zombie {
 
     @Override
     public boolean isVillager() {
-        return !villagerProfession.isZombie();
+        return false;
     }
 
     @Override
     public void setVillager(boolean value) {
-        metadata.set(MetadataIndex.ZOMBIE_IS_VILLAGER, value ? villagerProfession.ordinal() + 1 : 0);
+        //Field has been removed as of 1.11
     }
 
     @Override
     public void setVillagerProfession(Profession profession) {
-        this.villagerProfession = profession;
-        metadata.set(MetadataIndex.ZOMBIE_IS_VILLAGER, profession.ordinal() + 1);
+        //Field has been removed as of 1.11
     }
 
     @Override
     public Profession getVillagerProfession() {
-        return villagerProfession;
-    }
-
-    public int getConversionTime() {
-        return conversionTime;
-    }
-
-    public void setConversionTime(int conversionTime) {
-        this.conversionTime = conversionTime;
-        metadata.set(MetadataIndex.ZOMBIE_IS_CONVERTING, conversionTime > 0);
+        //Field has been removed as of 1.11
+        return Profession.NORMAL;
     }
 
     public boolean isCanBreakDoors() {
@@ -96,5 +86,10 @@ public class GlowZombie extends GlowMonster implements Zombie {
     @Override
     protected Sound getDeathSound() {
         return Sound.ENTITY_ZOMBIE_DEATH;
+    }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_ZOMBIE_AMBIENT;
     }
 }

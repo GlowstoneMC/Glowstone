@@ -111,4 +111,13 @@ public final class GlowMapView implements MapView {
         }
     }
 
+    @Override
+    public boolean isUnlimitedTracking() {
+        return false;
+    }
+
+    @Override
+    public void setUnlimitedTracking(boolean unlimitedTracking) {
+
+    }
 }

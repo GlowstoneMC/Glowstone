@@ -3,6 +3,7 @@ package net.glowstone.io.entity;
 import net.glowstone.entity.GlowWaterMob;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 
 import java.lang.reflect.Constructor;
 
@@ -10,8 +11,8 @@ public class WaterMobStore<T extends GlowWaterMob> extends EntityStore<T> {
 
     private final Constructor<T> constructor;
 
-    public WaterMobStore(Class<T> clazz, String id) {
-        super(clazz, id);
+    public WaterMobStore(Class<T> clazz, EntityType type) {
+        super(clazz, type);
         Constructor<T> ctor = null;
         try {
             ctor = clazz.getConstructor(Location.class);

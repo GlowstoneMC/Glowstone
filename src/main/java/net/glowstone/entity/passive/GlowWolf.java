@@ -19,7 +19,7 @@ public class GlowWolf extends GlowTameable implements Wolf {
     public GlowWolf(Location location) {
         super(location, EntityType.WOLF, 8);
         Random r = new Random();
-        collarColor = DyeColor.getByData((byte) r.nextInt(DyeColor.values().length));
+        collarColor = DyeColor.getByDyeData((byte) r.nextInt(DyeColor.values().length));
         setBoundingBox(0.6, 0.85);
     }
 
@@ -85,5 +85,10 @@ public class GlowWolf extends GlowTameable implements Wolf {
     @Override
     protected Sound getDeathSound() {
         return Sound.ENTITY_WOLF_DEATH;
+    }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_WOLF_AMBIENT;
     }
 }

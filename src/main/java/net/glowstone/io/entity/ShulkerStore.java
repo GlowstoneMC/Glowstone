@@ -2,10 +2,11 @@ package net.glowstone.io.entity;
 
 import net.glowstone.entity.monster.GlowShulker;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.entity.EntityType;
 
 public class ShulkerStore extends MonsterStore<GlowShulker> {
     public ShulkerStore() {
-        super(GlowShulker.class, "Shulker");
+        super(GlowShulker.class, EntityType.SHULKER);
     }
 
     @Override

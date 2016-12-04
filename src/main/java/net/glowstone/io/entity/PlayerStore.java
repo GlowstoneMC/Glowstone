@@ -4,11 +4,12 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 
 class PlayerStore extends HumanEntityStore<GlowPlayer> {
 
     public PlayerStore() {
-        super(GlowPlayer.class, "Player");
+        super(GlowPlayer.class, EntityType.PLAYER);
     }
 
     @Override

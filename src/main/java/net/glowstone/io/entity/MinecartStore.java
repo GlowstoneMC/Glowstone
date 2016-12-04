@@ -14,7 +14,7 @@ public class MinecartStore extends EntityStore<GlowMinecart> {
     private GlowMinecart.MinecartType type;
 
     public MinecartStore(GlowMinecart.MinecartType type) {
-        super((Class<GlowMinecart>) type.getMinecartClass(), type.getName());
+        super((Class<GlowMinecart>) type.getMinecartClass(), type.getEntityType());
         this.type = type;
     }
 

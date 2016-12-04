@@ -3,6 +3,7 @@ package net.glowstone.inventory;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.crafting.CraftingManager;
+import net.glowstone.util.InventoryUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
@@ -37,7 +38,7 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
         if (index != RESULT_SLOT) {
             Recipe recipe = getRecipe();
             if (recipe == null) {
-                super.setItem(RESULT_SLOT, null);
+                super.setItem(RESULT_SLOT, InventoryUtil.createEmptyStack());
             } else {
                 super.setItem(RESULT_SLOT, recipe.getResult());
             }
@@ -123,7 +124,7 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
         // Update result
         Recipe recipe = getRecipe();
         if (recipe == null) {
-            super.setItem(RESULT_SLOT, null);
+            super.setItem(RESULT_SLOT, InventoryUtil.createEmptyStack());
         } else {
             super.setItem(RESULT_SLOT, recipe.getResult());
         }

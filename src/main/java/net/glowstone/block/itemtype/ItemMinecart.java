@@ -26,7 +26,7 @@ public class ItemMinecart extends ItemType {
             return;
         }
         if (minecartType.getMinecartClass() == null) {
-            player.sendMessage(ChatColor.RED + "Minecart type '" + minecartType.getName() + "' is not implemented.");
+            player.sendMessage(ChatColor.RED + "Minecart type '" + minecartType.getEntityType().getName() + "' is not implemented.");
             return;
         }
         Rails rails = (Rails) target.getState().getData();

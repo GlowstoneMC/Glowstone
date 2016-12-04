@@ -62,4 +62,9 @@ public class GlowChicken extends GlowAnimal implements Chicken {
     protected Sound getDeathSound() {
         return Sound.ENTITY_CHICKEN_DEATH;
     }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_CHICKEN_AMBIENT;
+    }
 }

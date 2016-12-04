@@ -20,4 +20,9 @@ public class GlowCaveSpider extends GlowMonster implements CaveSpider {
     protected Sound getDeathSound() {
         return Sound.ENTITY_SPIDER_DEATH;
     }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_SPIDER_AMBIENT;
+    }
 }

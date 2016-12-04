@@ -2,15 +2,16 @@ package net.glowstone.io.entity;
 
 import net.glowstone.entity.monster.GlowSlime;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.entity.EntityType;
 
-class SlimeStore<T extends GlowSlime> extends MonsterStore<GlowSlime> {
+class SlimeStore<T extends GlowSlime> extends MonsterStore<T> {
 
-    public SlimeStore(Class<GlowSlime> clazz, String id) {
-        super(clazz, id);
+    public SlimeStore(Class<T> clazz, EntityType type) {
+        super(clazz, type);
     }
 
     @Override
-    public void load(GlowSlime entity, CompoundTag tag) {
+    public void load(T entity, CompoundTag tag) {
         super.load(entity, tag);
         if (tag.isInt("Size")) {
             entity.setSize(tag.getInt("Size"));
@@ -26,7 +27,7 @@ class SlimeStore<T extends GlowSlime> extends MonsterStore<GlowSlime> {
     }
 
     @Override
-    public void save(GlowSlime entity, CompoundTag tag) {
+    public void save(T entity, CompoundTag tag) {
         super.save(entity, tag);
         tag.putInt("Size", entity.getSize());
         tag.putBool("wasOnGround", entity.isOnGround());

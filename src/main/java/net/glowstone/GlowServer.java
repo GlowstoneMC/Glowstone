@@ -105,12 +105,12 @@ public final class GlowServer implements Server {
     /**
      * The game version supported by the server.
      */
-    public static final String GAME_VERSION = "1.10.2";
+    public static final String GAME_VERSION = "1.11";
 
     /**
      * The protocol version supported by the server.
      */
-    public static final int PROTOCOL_VERSION = 210;
+    public static final int PROTOCOL_VERSION = 315;
 
     /**
      * A list of all the active {@link net.glowstone.net.GlowSession}s.
@@ -1613,6 +1613,12 @@ public final class GlowServer implements Server {
         return new GlowInventory(owner, InventoryType.CHEST, size, title);
     }
 
+    @Override
+    public Merchant createMerchant(String title) {
+        // todo: 1.11... ???
+        return null;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Server icons
 
@@ -1827,11 +1833,6 @@ public final class GlowServer implements Server {
     @Override
     public boolean isHardcore() {
         return config.getBoolean(Key.HARDCORE);
-    }
-
-    @Override
-    public boolean useExactLoginLocation() {
-        return config.getBoolean(Key.EXACT_LOGIN_LOCATION);
     }
 
     @Override

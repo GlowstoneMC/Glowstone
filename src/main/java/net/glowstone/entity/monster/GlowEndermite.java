@@ -31,4 +31,9 @@ public class GlowEndermite extends GlowMonster implements Endermite {
     protected Sound getHurtSound() {
         return Sound.ENTITY_ENDERMITE_HURT;
     }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_ENDERMITE_AMBIENT;
+    }
 }

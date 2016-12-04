@@ -1,6 +1,7 @@
 package net.glowstone.inventory;
 
 import net.glowstone.constants.ItemIds;
+import net.glowstone.util.InventoryUtil;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.ItemStack;
 
@@ -19,7 +20,7 @@ public class GlowInventorySlot {
     }
 
     public GlowInventorySlot(SlotType type) {
-        this(null, type);
+        this(InventoryUtil.createEmptyStack(), type);
     }
 
     public GlowInventorySlot(ItemStack item) {

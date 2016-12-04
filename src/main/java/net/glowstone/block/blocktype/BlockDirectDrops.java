@@ -53,7 +53,7 @@ public class BlockDirectDrops extends BlockNeedsTool {
         return neededTool;
     }
 
-    private ItemStack getDrops(GlowBlock block) {
+    protected ItemStack getDrops(GlowBlock block) {
         if (dropType == null) {
             return new ItemStack(block.getType(), amount, block.getData());
         } else {
