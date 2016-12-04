@@ -1,6 +1,5 @@
 package net.glowstone.inventory;
 
-import net.glowstone.GlowServer;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
@@ -125,7 +124,6 @@ public final class WindowClickLogic {
                 if (slotItem.isSimilar(cursor)) {
                     int transfer = Math.min(cursor.getAmount(), slotItem.getType().getMaxStackSize() - slotItem.getAmount());
                     if (transfer == 0) {
-                        GlowServer.logger.info("Nothing!");
                         return InventoryAction.NOTHING;
                     } else if (transfer == 1) {
                         return InventoryAction.PLACE_ONE;
@@ -142,7 +140,6 @@ public final class WindowClickLogic {
                 // "NOTHING", "PLACE_ONE", "PICKUP_HALF", "DROP_ONE_CURSOR", "SWAP_WITH_CURSOR"
                 if (InventoryUtil.isEmpty(cursor)) {
                     if (outside || InventoryUtil.isEmpty(slotItem)) {
-                        GlowServer.logger.info("Nothing!");
                         return InventoryAction.NOTHING;
                     }
                     return InventoryAction.PICKUP_HALF;

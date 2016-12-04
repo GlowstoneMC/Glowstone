@@ -4,8 +4,7 @@ import com.avaje.ebean.config.DataSourceConfig;
 import com.avaje.ebean.config.dbplatform.SQLitePlatform;
 import com.avaje.ebeaninternal.server.lib.sql.TransactionIsolation;
 import com.flowpowered.network.Message;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
+import io.netty.channel.epoll.Epoll;
 import net.glowstone.block.BuiltinMaterialValueManager;
 import net.glowstone.block.MaterialValueManager;
 import net.glowstone.block.state.GlowDispenser;
@@ -23,7 +22,7 @@ import net.glowstone.io.PlayerDataService;
 import net.glowstone.io.PlayerStatisticIoService;
 import net.glowstone.io.ScoreboardIoService;
 import net.glowstone.map.GlowMapView;
-import net.glowstone.net.GlowNetworkServer;
+import net.glowstone.net.GameServer;
 import net.glowstone.net.SessionRegistry;
 import net.glowstone.net.message.play.game.ChatMessage;
 import net.glowstone.net.query.QueryServer;
@@ -71,13 +70,12 @@ import org.json.simple.parser.ParseException;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.BindException;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.KeyPair;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -194,7 +192,7 @@ public final class GlowServer implements Server {
     /**
      * The network server used for network communication
      */
-    private final GlowNetworkServer networkServer = new GlowNetworkServer(this);
+    private GameServer networkServer;
     /**
      * A set of all online players.
      */
@@ -296,22 +294,6 @@ public final class GlowServer implements Server {
             }
 
             server.run();
-        } catch (BindException ex) {
-            // descriptive bind error messages
-            logger.severe("The server could not bind to the requested address.");
-            if (ex.getMessage().startsWith("Cannot assign requested address")) {
-                logger.severe("The 'server.ip' in your configuration may not be valid.");
-                logger.severe("Unless you are sure you need it, try removing it.");
-                logger.severe(ex.toString());
-            } else if (ex.getMessage().startsWith("Address already in use")) {
-                logger.severe("The address was already in use. Check that no server is");
-                logger.severe("already running on that port. If needed, try killing all");
-                logger.severe("Java processes using Task Manager or similar.");
-                logger.severe(ex.toString());
-            } else {
-                logger.log(Level.SEVERE, "An unknown bind error has occurred.", ex);
-            }
-            System.exit(1);
         } catch (Throwable t) {
             // general server startup crash
             logger.log(Level.SEVERE, "Error during server startup.", t);
@@ -437,11 +419,9 @@ public final class GlowServer implements Server {
         return new ServerConfig(configDir, configFile, parameters);
     }
 
-    public void run() throws BindException {
+    public void run() {
         start();
         bind();
-        bindQuery();
-        bindRcon();
         logger.info("Ready for connections.");
 
         try {
@@ -559,65 +539,44 @@ public final class GlowServer implements Server {
         }
     }
 
-    /**
-     * Binds this server to the address specified in the configuration.
-     */
-    private void bind() throws BindException {
-        SocketAddress address = getBindAddress(Key.SERVER_PORT);
-
-        logger.info("Binding to address: " + address + "...");
-        ChannelFuture future = networkServer.bind(address);
-        Channel channel = future.awaitUninterruptibly().channel();
-        if (!channel.isActive()) {
-            Throwable cause = future.cause();
-            if (cause instanceof BindException) {
-                throw (BindException) cause;
-            }
-            throw new RuntimeException("Failed to bind to address", cause);
+    private void bind() {
+        if (Epoll.isAvailable()) {
+            logger.info("Native epoll transport is enabled.");
         }
 
-        logger.info("Successfully bound to: " + channel.localAddress());
-        InetSocketAddress localAddress = (InetSocketAddress) channel.localAddress();
-        port = localAddress.getPort();
-        ip = localAddress.getHostString();
-    }
+        CountDownLatch latch = new CountDownLatch(3);
 
-    /**
-     * Binds the query server to the address specified in the configuration.
-     */
-    private void bindQuery() {
-        if (!config.getBoolean(Key.QUERY_ENABLED)) {
-            return;
+        networkServer = new GameServer(this, latch);
+        networkServer.bind(getBindAddress(Key.SERVER_PORT));
+
+        if (config.getBoolean(Key.QUERY_ENABLED)) {
+            queryServer = new QueryServer(this, latch, config.getBoolean(Key.QUERY_PLUGINS));
+            queryServer.bind(getBindAddress(Key.QUERY_PORT));
+        } else {
+            latch.countDown();
         }
 
-        SocketAddress address = getBindAddress(Key.QUERY_PORT);
-        queryServer = new QueryServer(this, config.getBoolean(Key.QUERY_PLUGINS));
+        if (config.getBoolean(Key.RCON_ENABLED)) {
+            rconServer = new RconServer(this, latch, config.getString(Key.RCON_PASSWORD));
+            rconServer.bind(getBindAddress(Key.RCON_PORT));
+        } else {
+            latch.countDown();
+        }
 
-        logger.info("Binding query to address: " + address + "...");
-        ChannelFuture future = queryServer.bind(address);
-        Channel channel = future.awaitUninterruptibly().channel();
-        if (!channel.isActive()) {
-            logger.warning("Failed to bind query. Address already in use?");
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            logger.log(Level.SEVERE, "Bind interrupted! ", e);
+            System.exit(1);
         }
     }
 
-    /**
-     * Binds the rcon server to the address specified in the configuration.
-     */
-    private void bindRcon() {
-        if (!config.getBoolean(Key.RCON_ENABLED)) {
-            return;
-        }
+    public void setPort(int port) {
+        this.port = port;
+    }
 
-        SocketAddress address = getBindAddress(Key.RCON_PORT);
-        rconServer = new RconServer(this, config.getString(Key.RCON_PASSWORD));
-
-        logger.info("Binding rcon to address: " + address + "...");
-        ChannelFuture future = rconServer.bind(address);
-        Channel channel = future.awaitUninterruptibly().channel();
-        if (!channel.isActive()) {
-            logger.warning("Failed to bind rcon. Address already in use?");
-        }
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 
     /**
@@ -626,7 +585,7 @@ public final class GlowServer implements Server {
      * @param portKey The configuration key for the port to use.
      * @return The SocketAddress
      */
-    private SocketAddress getBindAddress(Key portKey) {
+    private InetSocketAddress getBindAddress(Key portKey) {
         String ip = config.getString(Key.SERVER_IP);
         int port = config.getInt(portKey);
         if (ip.isEmpty()) {
@@ -758,7 +717,7 @@ public final class GlowServer implements Server {
 
             if (!hasSponge) {
                 logger.log(Level.WARNING, "SpongeAPI plugins found, but no Sponge bridge present! They will be ignored.");
-                for (File file : pluginTypeDetector.spongePlugins) {
+                for (File file : getSpongePlugins()) {
                     logger.log(Level.WARNING, "Ignored SpongeAPI plugin: " + file.getPath());
                 }
                 logger.log(Level.WARNING, "Suggestion: install https://github.com/deathcap/Bukkit2Sponge to load these plugins");
@@ -1255,7 +1214,7 @@ public final class GlowServer implements Server {
     }
 
     public Collection<GlowPlayer> getRawOnlinePlayers() {
-        return onlineView;
+        return onlinePlayers;
     }
 
     @Override
@@ -1740,6 +1699,10 @@ public final class GlowServer implements Server {
     @Override
     public int getPort() {
         return port;
+    }
+
+    public ServerConfig getConfig() {
+        return config;
     }
 
     @Override
