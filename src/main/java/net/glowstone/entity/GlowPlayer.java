@@ -52,6 +52,7 @@ import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.Effect.Type;
 import org.bukkit.World.Environment;
@@ -2090,27 +2091,28 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void sendMessage(BaseComponent component) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        sendMessage(ChatMessageType.CHAT, component);
     }
 
     @Override
     public void sendMessage(BaseComponent... components) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        sendMessage(ChatMessageType.CHAT, components);
     }
 
     @Override
     public void sendMessage(ChatMessageType chatMessageType, BaseComponent... baseComponents) {
-
+        session.send(new ChatMessage(TextMessage.decode(ComponentSerializer.toString(baseComponents)), chatMessageType.ordinal()));
     }
 
     @Override
     public void setPlayerListHeaderFooter(BaseComponent[] header, BaseComponent[] footer) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        TextMessage h = TextMessage.decode(ComponentSerializer.toString(header)), f = TextMessage.decode(ComponentSerializer.toString(footer));
+        session.send(new UserListHeaderFooterMessage(h, f));
     }
 
     @Override
     public void setPlayerListHeaderFooter(BaseComponent header, BaseComponent footer) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        setPlayerListHeaderFooter(new BaseComponent[]{header}, new BaseComponent[]{footer});
     }
 
     @Override
