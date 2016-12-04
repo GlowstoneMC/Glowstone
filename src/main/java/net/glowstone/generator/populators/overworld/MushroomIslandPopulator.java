@@ -1,5 +1,6 @@
 package net.glowstone.generator.populators.overworld;
 
+import net.glowstone.generator.decorators.EntityDecorator;
 import net.glowstone.generator.decorators.overworld.MushroomDecorator;
 import net.glowstone.generator.decorators.overworld.TreeDecorator.TreeDecoration;
 import net.glowstone.generator.objects.trees.BrownMushroomTree;
@@ -8,6 +9,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
+import org.bukkit.entity.EntityType;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,6 +34,10 @@ public class MushroomIslandPopulator extends BiomePopulator {
         islandBrownMushroomDecorator.setDensity(0.25D);
         islandRedMushroomDecorator.setAmount(1);
         islandRedMushroomDecorator.setDensity(0.125D);
+        entityDecorators.clear();
+        EntityDecorator mushroomDecorator = new EntityDecorator(EntityType.MUSHROOM_COW);
+        mushroomDecorator.setGroupSize(4, 8);
+        entityDecorators.add(mushroomDecorator);
     }
 
     @Override

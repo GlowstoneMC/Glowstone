@@ -1029,6 +1029,19 @@ public final class GlowWorld implements World {
         return getBlockAt(location.getBlockX(), getHighestBlockYAt(location), location.getBlockZ());
     }
 
+    public Block getHighestBlockAt(Location location, Material[] except) {
+        Block block = getHighestBlockAt(location);
+        List<Material> array = Arrays.asList(except);
+        for (int i = 0; i < 6; i++) {
+            block = block.getLocation().clone().subtract(0, i == 0 ? 0 : 1, 0).getBlock();
+            if (block.getType() == Material.AIR || array.contains(block.getType())) {
+                continue;
+            }
+            return block;
+        }
+        return getHighestBlockAt(location);
+    }
+
     @Override
     public Chunk getChunkAt(Location location) {
         return getChunkAt(location.getBlockX() >> 4, location.getBlockZ() >> 4);

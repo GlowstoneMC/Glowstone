@@ -8,6 +8,8 @@ import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Rabbit;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class GlowRabbit extends GlowAnimal implements Rabbit {
@@ -22,7 +24,7 @@ public class GlowRabbit extends GlowAnimal implements Rabbit {
             .put(Type.THE_KILLER_BUNNY, 99)
             .build();
 
-    private Type rabbitType = Type.BROWN;
+    private Type rabbitType = Type.values()[ThreadLocalRandom.current().nextInt(Type.values().length - 1)];
 
     public GlowRabbit(Location location) {
         super(location, EntityType.RABBIT, 10); // Needs an update with the minecraft version 1.9, then the rabbit has 3 health (1.5 hearts)
