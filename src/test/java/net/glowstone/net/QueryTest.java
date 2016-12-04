@@ -41,7 +41,7 @@ import static org.powermock.api.mockito.PowerMockito.mock;
  * Tests for the minecraft query server.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ GlowServer.class, GlowPlayer.class })
+@PrepareForTest({ GlowServer.class, GlowPlayer.class, QueryServer.class })
 public class QueryTest {
     /**
      * Test values taken from <a href="http://wiki.vg/Query">wiki.vg/Query</a>
@@ -55,7 +55,7 @@ public class QueryTest {
             + "4D696E656372616674205365727665720067616D657479706500534D500067616D655F6964004D494E4543524146540076657273696F6E00"
             + ByteBufUtil.hexDump(Unpooled.wrappedBuffer(GlowServer.GAME_VERSION.getBytes(CharsetUtil.UTF_8))) // Always use the recent game version
             + "00706C7567696E7300"
-            + ByteBufUtil.hexDump(Unpooled.wrappedBuffer("Glowstone on Bukkit xyz".getBytes(CharsetUtil.UTF_8))) // Added, the original example did not use the 'plugin' key
+            + ByteBufUtil.hexDump(Unpooled.wrappedBuffer("Glowstone 123 on Bukkit xyz".getBytes(CharsetUtil.UTF_8))) // Added, the original example did not use the 'plugin' key
             + "006D617000776F726C64006E756D706C61796572730032006D6178706C617965727300323000686F7374706F727400323535363500686F73"
             + "746970003132372E302E302E31000001706C617965725F00006261726E657967616C6500566976616C6168656C7669670000");
 
@@ -72,7 +72,8 @@ public class QueryTest {
         this.queryPlugins = true;
         server = new QueryServer(glowServer, latch, queryPlugins);
         random = mock(ThreadLocalRandom.class);
-        PowerMockito.whenNew(ThreadLocalRandom.class).withAnyArguments().thenReturn(random);
+	PowerMockito.mockStatic(ThreadLocalRandom.class);
+	when(ThreadLocalRandom.current()).thenReturn(random);
         address = InetSocketAddress.createUnresolved("somehost", 12345);
     }
 
@@ -129,20 +130,18 @@ public class QueryTest {
     public void testFullStats() throws Exception {
         World world = mock(World.class);
         when(world.getName()).thenReturn("world");
-        Set<Player> players = new HashSet<>();
         GlowPlayer p1 = mock(GlowPlayer.class);
         GlowPlayer p2 = mock(GlowPlayer.class);
         when(p1.getName()).thenReturn("barneygale");
         when(p2.getName()).thenReturn("Vivalahelvig");
-        players.add(p1);
-        players.add(p2);
         PluginManager pluginManager = mock(PluginManager.class);
         when(glowServer.getMotd()).thenReturn("A Minecraft Server");
-        Mockito.doReturn(Collections.unmodifiableSet(players)).when(glowServer).getOnlinePlayers();
+        Mockito.doReturn(Arrays.asList(p1, p2)).when(glowServer).getOnlinePlayers();
         when(glowServer.getMaxPlayers()).thenReturn(20);
         when(glowServer.getPort()).thenReturn(25565);
         when(glowServer.getWorlds()).thenReturn(Arrays.asList(world));
         when(glowServer.getIp()).thenReturn("");
+        when(glowServer.getVersion()).thenReturn("123");
         when(glowServer.getBukkitVersion()).thenReturn("xyz");
         when(glowServer.getPluginManager()).thenReturn(pluginManager);
         when(pluginManager.getPlugins()).thenReturn(new Plugin[0]);
