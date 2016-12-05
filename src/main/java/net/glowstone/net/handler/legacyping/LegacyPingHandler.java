@@ -13,13 +13,13 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
-import net.glowstone.net.GlowNetworkServer;
+import net.glowstone.net.GameServer;
 
 public class LegacyPingHandler extends ChannelInboundHandlerAdapter {
 
-    GlowNetworkServer networkServer;
+    GameServer networkServer;
 
-    public LegacyPingHandler(GlowNetworkServer networkServer) {
+    public LegacyPingHandler(GameServer networkServer) {
         this.networkServer = networkServer;
     }
 

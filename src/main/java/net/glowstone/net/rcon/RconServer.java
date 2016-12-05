@@ -3,36 +3,28 @@ package net.glowstone.net.rcon;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.epoll.Epoll;
-import io.netty.channel.epoll.EpollEventLoopGroup;
-import io.netty.channel.epoll.EpollServerSocketChannel;
-import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import net.glowstone.GlowServer;
+import net.glowstone.net.GlowSocketServer;
 
-import java.net.SocketAddress;
+import java.net.InetSocketAddress;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Implementation of a server for the remote console protocol.
  *
  * @see <a href="http://wiki.vg/Rcon">Protocol Specifications</a>
  */
-public class RconServer {
+public class RconServer extends GlowSocketServer {
 
-    private final GlowServer server;
-    private final EventLoopGroup bossGroup = Epoll.isAvailable() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
-    private final EventLoopGroup workerGroup = Epoll.isAvailable() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
+    /**
+     * The {@link ServerBootstrap} used to initialize Netty.
+     */
     private ServerBootstrap bootstrap = new ServerBootstrap();
 
-    public RconServer(GlowServer server, String password) {
-        this.server = server;
-
-        bootstrap
-                .group(bossGroup, workerGroup)
-                .channel(Epoll.isAvailable() ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
-                .childHandler(new ChannelInitializer<SocketChannel>() {
+    public RconServer(GlowServer server, CountDownLatch latch, String password) {
+        super(server, latch);
+        bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     public void initChannel(SocketChannel ch) throws Exception {
                         ch.pipeline()
@@ -42,18 +34,26 @@ public class RconServer {
                 });
     }
 
-    public GlowServer getServer() {
-        return server;
-    }
-
     /**
      * Bind the server on the specified address.
      *
      * @param address The address.
      * @return Netty channel future for bind operation.
      */
-    public ChannelFuture bind(SocketAddress address) {
-        return bootstrap.bind(address);
+    public ChannelFuture bind(InetSocketAddress address) {
+        GlowServer.logger.info("Binding rcon to " + address + "...");
+        return super.bind(address);
+    }
+
+    @Override
+    public void onBindSuccess(InetSocketAddress address) {
+        GlowServer.logger.info("Successfully bound rcon to " + address + '.');
+        super.onBindSuccess(address);
+    }
+
+    @Override
+    public void onBindFailure(InetSocketAddress address, Throwable t) {
+        GlowServer.logger.warning("Failed to bind rcon to " + address + '.');
     }
 
     /**

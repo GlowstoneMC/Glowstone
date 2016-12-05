@@ -1,65 +1,36 @@
 package net.glowstone.net.query;
 
-import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.epoll.Epoll;
-import io.netty.channel.epoll.EpollEventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioDatagramChannel;
 import net.glowstone.GlowServer;
+import net.glowstone.net.GlowDatagramServer;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Implementation of a server for the minecraft server query protocol.
  *
  * @see <a href="http://wiki.vg/Query">Protocol Specifications</a>
  */
-public class QueryServer {
-    /**
-     * The {@link EventLoopGroup} used by the query server.
-     */
-    private EventLoopGroup group = Epoll.isAvailable() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
-
-    /**
-     * The {@link Bootstrap} used by netty to instantiate the query server.
-     */
-    private Bootstrap bootstrap = new Bootstrap();
-
-    /**
-     * Instance of the GlowServer.
-     */
-    private GlowServer server;
-
+public class QueryServer extends GlowDatagramServer {
     /**
      * Maps each {@link InetSocketAddress} of a client to its challenge token.
      */
     private Map<InetSocketAddress, Integer> challengeTokens = new ConcurrentHashMap<>();
 
     /**
-     * The {@link Random} used to generate challenge tokens.
-     */
-    private Random random = new Random();
-
-    /**
      * The task used to invalidate all challenge tokens every 30 seconds.
      */
     private ChallengeTokenFlushTask flushTask;
 
-    public QueryServer(GlowServer server, boolean showPlugins) {
-        this.server = server;
-
-        bootstrap
-                .group(group)
-                .channel(NioDatagramChannel.class)
-                .handler(new QueryHandler(this, showPlugins));
+    public QueryServer(GlowServer server, CountDownLatch latch, boolean showPlugins) {
+        super(server, latch);
+        bootstrap.handler(new QueryHandler(this, showPlugins));
     }
 
     /**
@@ -68,19 +39,20 @@ public class QueryServer {
      * @param address The address.
      * @return Netty channel future for bind operation.
      */
-    public ChannelFuture bind(SocketAddress address) {
+    public ChannelFuture bind(InetSocketAddress address) {
+        GlowServer.logger.info("Binding query to address " + address + "...");
         if (flushTask == null) {
             flushTask = new ChallengeTokenFlushTask();
             flushTask.runTaskTimerAsynchronously(null, 600, 600);
         }
-        return bootstrap.bind(address);
+        return super.bind(address);
     }
 
     /**
      * Shut the query server down.
      */
     public void shutdown() {
-        group.shutdownGracefully();
+        super.shutdown();
         if (flushTask != null) {
             flushTask.cancel();
         }
@@ -93,7 +65,7 @@ public class QueryServer {
      * @return The generated valid token.
      */
     public int generateChallengeToken(InetSocketAddress address) {
-        int token = random.nextInt();
+        int token = ThreadLocalRandom.current().nextInt();
         challengeTokens.put(address, token);
         return token;
     }
@@ -116,13 +88,15 @@ public class QueryServer {
         challengeTokens.clear();
     }
 
-    /**
-     * Get the Server whose information are distributed by this query server.
-     *
-     * @return The server instance.
-     */
-    public GlowServer getServer() {
-        return server;
+    @Override
+    public void onBindSuccess(InetSocketAddress address) {
+        GlowServer.logger.info("Successfully bound query to " + address + '.');
+        super.onBindSuccess(address);
+    }
+
+    @Override
+    public void onBindFailure(InetSocketAddress address, Throwable t) {
+        GlowServer.logger.warning("Failed to bind query to" + address + '.');
     }
 
     /**

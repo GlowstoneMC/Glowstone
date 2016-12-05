@@ -6,7 +6,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleStateEvent;
-import net.glowstone.net.GlowNetworkServer;
+import net.glowstone.net.GameServer;
 import net.glowstone.net.GlowSession;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -20,14 +20,14 @@ public final class MessageHandler extends SimpleChannelInboundHandler<Message> {
      * The associated session
      */
     private final AtomicReference<GlowSession> session = new AtomicReference<>(null);
-    private final GlowNetworkServer connectionManager;
+    private final GameServer connectionManager;
 
     /**
      * Creates a new network event handler.
      *
      * @param connectionManager The connection manager to manage connections for this message handler.
      */
-    public MessageHandler(GlowNetworkServer connectionManager) {
+    public MessageHandler(GameServer connectionManager) {
         this.connectionManager = connectionManager;
     }
 

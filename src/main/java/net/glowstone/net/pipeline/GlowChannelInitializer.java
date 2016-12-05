@@ -8,7 +8,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import net.glowstone.GlowServer;
-import net.glowstone.net.GlowNetworkServer;
+import net.glowstone.net.GameServer;
 import net.glowstone.net.handler.legacyping.LegacyPingHandler;
 import net.glowstone.net.protocol.ProtocolType;
 
@@ -29,9 +29,9 @@ public final class GlowChannelInitializer extends ChannelInitializer<SocketChann
      */
     private static final int WRITE_IDLE_TIMEOUT = 15;
 
-    private final GlowNetworkServer connectionManager;
+    private final GameServer connectionManager;
 
-    public GlowChannelInitializer(GlowNetworkServer connectionManager) {
+    public GlowChannelInitializer(GameServer connectionManager) {
         this.connectionManager = connectionManager;
     }
 
