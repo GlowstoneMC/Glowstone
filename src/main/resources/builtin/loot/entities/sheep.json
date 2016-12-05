@@ -19,7 +19,7 @@
       "default": {
         "count": 1,
         "item": "wool",
-        "data": "$.getColor().getData()"
+        "data": "$.getColor().getWoolData()"
       },
       "conditions": [
         {
