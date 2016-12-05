@@ -1,0 +1,33 @@
+{
+  "items": [
+    {
+      "default": {
+        "count": {
+          "max": 3,
+          "min": 1
+        },
+        "item": "raw_beef"
+      },
+      "conditions": [
+        {
+          "item": "cooked_beef",
+          "condition": "ENTITY_ONFIRE"
+        }
+      ]
+    },
+    {
+      "default": {
+        "count": {
+          "max": 2
+        },
+        "item": "leather"
+      }
+    }
+  ],
+  "experience": {
+    "count": {
+      "max": 3,
+      "min": 1
+    }
+  }
+}

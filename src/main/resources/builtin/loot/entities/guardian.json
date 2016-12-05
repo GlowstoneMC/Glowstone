@@ -1,0 +1,43 @@
+{
+  "items": [
+    {
+      "default": {
+        "count": {
+          "max": 2
+        },
+        "item": "prismarine_shard"
+      }
+    },
+    {
+      "default": {
+        "count": 1,
+        "item": [
+          {
+            "chance": 0.4,
+            "value": "raw_fish"
+          },
+          {
+            "chance": 0.4,
+            "value": "prismarine_crystals"
+          }
+        ]
+      }
+    },
+    {
+      "default": {
+        "count": 1,
+        "item": "raw_fish",
+        "data": "net.glowstone.util.loot.LootingUtil.randomFishType()"
+      },
+      "conditions": [
+        {
+          "condition": "ENTITY_ONFIRE",
+          "item": "cooked_fish"
+        }
+      ]
+    }
+  ],
+  "experience": {
+    "count": 10
+  }
+}

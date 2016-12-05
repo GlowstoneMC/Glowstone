@@ -1,0 +1,26 @@
+{
+  "items": [
+    {
+      "default": {
+        "count": {
+          "max": 2
+        },
+        "item": "string"
+      }
+    },
+    {
+      "default": {
+        "count": [
+          {
+            "chance": 0.333,
+            "value": 1
+          }
+        ],
+        "item": "spider_eye"
+      }
+    }
+  ],
+  "experience": {
+    "count": 5
+  }
+}

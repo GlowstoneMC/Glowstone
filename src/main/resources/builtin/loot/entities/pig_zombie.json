@@ -1,0 +1,57 @@
+{
+  "items": [
+    {
+      "default": {
+        "count": 0,
+        "item": "gold_ingot"
+      },
+      "conditions": [
+        {
+          "condition": "ENTITY_KILLER_PLAYER",
+          "count": [
+            {
+              "chance": 0.025,
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "default": {
+        "count": {
+          "max": 1
+        },
+        "item": "rotten_flesh"
+      }
+    },
+    {
+      "default": {
+        "count": {
+          "max": 1
+        },
+        "item": "gold_nugget"
+      }
+    },
+    {
+      "default": {
+        "count": 0,
+        "item": "gold_sword"
+      },
+      "conditions": [
+        {
+          "condition": "ENTITY_KILLER_PLAYER",
+          "count": [
+            {
+              "chance": 0.085,
+              "value": 1
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "experience": {
+    "count": 5
+  }
+}

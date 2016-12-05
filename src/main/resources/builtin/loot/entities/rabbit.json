@@ -1,0 +1,32 @@
+{
+  "items": [
+    {
+      "default": {
+        "count": {
+          "max": 1
+        },
+        "item": "rabbit"
+      },
+      "conditions": [
+        {
+          "item": "cooked_rabbit",
+          "condition": "ENTITY_ONFIRE"
+        }
+      ]
+    },
+    {
+      "default": {
+        "count": {
+          "max": 1
+        },
+        "item": "rabbit_hide"
+      }
+    }
+  ],
+  "experience": {
+    "count": {
+      "max": 3,
+      "min": 1
+    }
+  }
+}

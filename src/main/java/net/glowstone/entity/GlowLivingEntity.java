@@ -14,6 +14,8 @@ import net.glowstone.net.message.play.entity.EntityEffectMessage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityRemoveEffectMessage;
 import net.glowstone.util.SoundUtil;
+import net.glowstone.util.loot.LootData;
+import net.glowstone.util.loot.LootingManager;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,6 +28,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Criterias;
@@ -106,6 +109,9 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * Ticks until the next ambient sound roll.
      */
     private int nextAmbientTime = 1;
+
+
+    private Entity lastDamager;
 
     /**
      * Creates a mob within the specified world.
@@ -190,6 +196,10 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 // remove
                 removePotionEffect(type);
             }
+        }
+
+        if (getFireTicks() > 0 && getFireTicks() % 20 == 0) {
+            damage(1, DamageCause.FIRE_TICK);
         }
 
         GlowBlock under = (GlowBlock) getLocation().getBlock().getRelative(BlockFace.DOWN);
@@ -515,10 +525,14 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 PlayerDeathEvent event = new PlayerDeathEvent((GlowPlayer) this, new ArrayList<>(), 0, this.getName() + " died.");
                 EventFactory.callEvent(event);
                 server.broadcastMessage(event.getDeathMessage());
-            } else {
-                EventFactory.callEvent(new EntityDeathEvent(this, new ArrayList<>()));
+            } else if (world.getGameRuleMap().getBoolean("doMobLoot")) {
+                LootData data = LootingManager.generate(this);
+                EventFactory.callEvent(new EntityDeathEvent(this, Arrays.asList(data.getItems())));
+                for (ItemStack item : data.getItems()) {
+                    world.dropItemNaturally(getLocation(), item);
+                }
+                // todo: drop experience
             }
-            // todo: drop items
         }
     }
 
@@ -586,6 +600,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 world.playSound(location, hurtSound, getSoundVolume(), getSoundPitch());
             }
         }
+        setLastDamager(source);
     }
 
     @Override
@@ -611,6 +626,14 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Override
     public void setLastDamage(double damage) {
         lastDamage = damage;
+    }
+
+    public Entity getLastDamager() {
+        return lastDamager;
+    }
+
+    public void setLastDamager(Entity lastDamager) {
+        this.lastDamager = lastDamager;
     }
 
     ////////////////////////////////////////////////////////////////////////////

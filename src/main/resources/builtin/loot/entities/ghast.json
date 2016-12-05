@@ -1,0 +1,15 @@
+{
+  "items": [
+    {
+      "default": {
+        "count": {
+          "max": 2
+        },
+        "item": "ghast_tear"
+      }
+    }
+  ],
+  "experience": {
+    "count": 5
+  }
+}

@@ -34,6 +34,7 @@ import net.glowstone.util.*;
 import net.glowstone.util.ServerConfig.Key;
 import net.glowstone.util.bans.GlowBanList;
 import net.glowstone.util.bans.UuidListFile;
+import net.glowstone.util.loot.LootingManager;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.*;
@@ -455,6 +456,13 @@ public final class GlowServer implements Server {
         whitelist.load();
         nameBans.load();
         ipBans.load();
+
+        try {
+            LootingManager.load();
+        } catch (Exception e) {
+            GlowServer.logger.severe("Failed to load looting manager: ");
+            e.printStackTrace();
+        }
 
         // Start loading plugins
         new LibraryManager(this).run();

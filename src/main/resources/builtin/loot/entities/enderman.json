@@ -1,0 +1,21 @@
+{
+  "items": [
+    {
+      "default": {
+        "count": {
+          "max": 1
+        },
+        "item": "ender_pearl"
+      }
+    },
+    {
+      "default": {
+        "count": 1,
+        "item": "$.getCarriedMaterial().getItemType().name()"
+      }
+    }
+  ],
+  "experience": {
+    "count": 5
+  }
+}

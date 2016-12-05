@@ -1,0 +1,23 @@
+{
+  "items": [
+    {
+      "default": {
+        "count": {
+          "max": 2
+        },
+        "item": "iron_ingot"
+      }
+    },
+    {
+      "default": {
+        "count": {
+          "max": 2
+        },
+        "item": "red_flower"
+      }
+    }
+  ],
+  "experience": {
+    "count": 0
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "items": [
+    {
+      "default": {
+        "item": "bone",
+        "count": {
+          "max": 2
+        }
+      }
+    },
+    {
+      "default": {
+        "item": "arrow",
+        "count": {
+          "max": 2
+        }
+      }
+    }
+  ],
+  "experience": {
+    "count": 5
+  }
+}

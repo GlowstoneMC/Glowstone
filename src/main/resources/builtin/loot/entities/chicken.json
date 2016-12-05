@@ -1,0 +1,30 @@
+{
+  "items": [
+    {
+      "default": {
+        "count": 1,
+        "item": "raw_chicken"
+      },
+      "conditions": [
+        {
+          "item": "cooked_chicken",
+          "condition": "ENTITY_ONFIRE"
+        }
+      ]
+    },
+    {
+      "default": {
+        "count": {
+          "max": 2
+        },
+        "item": "feather"
+      }
+    }
+  ],
+  "experience": {
+    "count": {
+      "max": 3,
+      "min": 1
+    }
+  }
+}
