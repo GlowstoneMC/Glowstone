@@ -1,5 +1,6 @@
 package net.glowstone.generator.populators.overworld;
 
+import net.glowstone.GlowWorld;
 import net.glowstone.generator.decorators.EntityDecorator;
 import net.glowstone.generator.decorators.overworld.*;
 import net.glowstone.generator.decorators.overworld.FlowerDecorator.FlowerDecoration;
@@ -119,6 +120,10 @@ public class BiomePopulator extends BlockPopulator {
     protected void populateOnGround(World world, Random random, Chunk chunk) {
         for (BlockPopulator populator : onGroundPopulators) {
             populator.populate(world, random, chunk);
+        }
+        boolean doMobSpawning = ((GlowWorld) world).getGameRuleMap().getBoolean("doMobSpawning");
+        if (!doMobSpawning) {
+            return;
         }
         for (EntityDecorator entityDecorator : entityDecorators) {
             entityDecorator.populate(world, random, chunk);
