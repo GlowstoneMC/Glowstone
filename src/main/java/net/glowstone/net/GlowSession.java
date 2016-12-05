@@ -18,6 +18,7 @@ import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.io.PlayerDataService.PlayerReader;
 import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.SetCompressionMessage;
+import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.game.PingMessage;
 import net.glowstone.net.message.play.game.UserListItemMessage;
 import net.glowstone.net.message.play.game.UserListItemMessage.Action;
@@ -30,6 +31,7 @@ import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.LoginProtocol;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.ProtocolType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
@@ -495,7 +497,16 @@ public final class GlowSession extends BasicSession {
             if (online && text != null && !text.isEmpty()) {
                 server.broadcastMessage(text);
             }
-
+            for (Player p : server.getOnlinePlayers()) {
+                if (p.getUniqueId().equals(player.getUniqueId())) {
+                    continue;
+                }
+                GlowPlayer other = (GlowPlayer) p;
+                if (!other.canSee(player)) {
+                    continue;
+                }
+                other.getSession().send(new DestroyEntitiesMessage(Collections.singletonList(player.getEntityId())));
+            }
             player = null; // in case we are disposed twice
         }
     }

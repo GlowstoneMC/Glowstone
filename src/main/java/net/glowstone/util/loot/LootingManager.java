@@ -55,6 +55,7 @@ public class LootingManager {
         register(EntityType.SLIME, baseDir + "slime.json");
         register(EntityType.SNOWMAN, baseDir + "snowman.json");
         register(EntityType.SPIDER, baseDir + "spider.json");
+        register(EntityType.STRAY, baseDir + "skeleton.json");
         register(EntityType.SQUID, baseDir + "squid.json");
         register(EntityType.VEX, baseDir + "vex.json");
         register(EntityType.VILLAGER, baseDir + "villager.json");
