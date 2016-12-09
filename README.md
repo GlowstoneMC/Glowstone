@@ -106,10 +106,10 @@ When reporting bugs, please retest and include whether the problem reproduces on
 * Earlier [builds](https://circleci.com/gh/GlowstoneMC/Glowstone) of Glowstone
 * [Glowstone Legacy](https://github.com/GlowstoneMC/Glowstone-Legacy), if applicable
 
-Javadocs for Glowstone can be found [here](http://jd.momoperes.ca/glowstone).
+Javadocs for Glowstone can be found [here](http://www.nox2.net/glowstone).
 
 For documentation on the Glowkit API (an updated Bukkit which is used to
-write plugins), see the [Glowkit Javadocs](http://jd.momoperes.ca/glowkit)
+write plugins), see the [Glowkit Javadocs](http://www.nox2.net/glowkit)
 or visit Spigot's [Bukkit Javadocs](https://hub.spigotmc.org/javadocs/bukkit/).
 
 ## Credits
