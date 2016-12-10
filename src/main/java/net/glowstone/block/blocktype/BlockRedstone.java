@@ -48,6 +48,7 @@ public class BlockRedstone extends BlockNeedsAttached {
                 case WOOD_BUTTON:
                 case STONE_BUTTON:
                 case LEVER:
+                case OBSERVER:
                     connections.add(face);
                     break;
                 default:
@@ -157,6 +158,13 @@ public class BlockRedstone extends BlockNeedsAttached {
                 case REDSTONE_BLOCK:
                 case REDSTONE_TORCH_ON:
                     if (me.getData() != 15) {
+                        me.setData((byte) 15);
+                        extraUpdate(me);
+                    }
+                    return;
+                case OBSERVER:
+                    boolean powered = BlockObserver.isPowered(target);
+                    if (powered && me.getData() != 15) {
                         me.setData((byte) 15);
                         extraUpdate(me);
                     }
