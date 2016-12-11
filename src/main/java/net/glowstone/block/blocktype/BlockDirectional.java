@@ -40,7 +40,7 @@ public class BlockDirectional extends BlockType {
         return player.getDirection().getOppositeFace();
     }
 
-    protected int getRawFace(BlockFace face) {
+    protected static int getRawFace(BlockFace face) {
         switch (face) {
             case DOWN:
                 return 0;
@@ -58,7 +58,7 @@ public class BlockDirectional extends BlockType {
         return 0;
     }
 
-    protected BlockFace getFace(byte raw) {
+    protected static BlockFace getFace(byte raw) {
         switch (raw) {
             case 0:
                 return DOWN;

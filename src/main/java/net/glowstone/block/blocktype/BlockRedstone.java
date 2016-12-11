@@ -164,11 +164,15 @@ public class BlockRedstone extends BlockNeedsAttached {
                     return;
                 case OBSERVER:
                     boolean powered = BlockObserver.isPowered(target);
-                    if (powered && me.getData() != 15) {
-                        me.setData((byte) 15);
-                        extraUpdate(me);
+                    BlockFace outputFace = BlockObserver.getFace(target).getOppositeFace();
+                    if (powered && target.getRelative(outputFace).getLocation().equals(me.getLocation())) {
+                        if (me.getData() != 15) {
+                            me.setData((byte) 15);
+                            extraUpdate(me);
+                        }
+                        return;
                     }
-                    return;
+                    break;
                 default:
                     if (target.getType().isSolid() && target.getRelative(BlockFace.DOWN).getType() == Material.REDSTONE_TORCH_ON) {
                         if (me.getData() != 15) {

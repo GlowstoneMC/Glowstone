@@ -42,4 +42,12 @@ public class BlockObserver extends BlockDirectional {
         }
         return ((block.getData() >> POWERED_MASK) & 1) == 1;
     }
+
+    public static BlockFace getFace(GlowBlock block) {
+        if (block.getType() != Material.OBSERVER) {
+            return null;
+        }
+        byte data = (byte) (block.getData() & ~(1 << POWERED_MASK));
+        return getFace(data);
+    }
 }
