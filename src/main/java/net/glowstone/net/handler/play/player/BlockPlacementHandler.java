@@ -11,6 +11,7 @@ import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.BlockPlacementMessage;
+import net.glowstone.util.InventoryUtil;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.Event.Result;
@@ -125,7 +126,7 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         // attempt to use interacted block
         // DEFAULT is treated as ALLOW, and sneaking is always considered
         boolean useInteractedBlock = event.useInteractedBlock() != Result.DENY;
-        if (useInteractedBlock && clicked != null && (!player.isSneaking() || holding == null)) {
+        if (useInteractedBlock && clicked != null && (!player.isSneaking() || InventoryUtil.isEmpty(holding))) {
             BlockType blockType = ItemTable.instance().getBlock(clicked.getType());
             if (blockType != null) {
                 useInteractedBlock = blockType.blockInteract(player, clicked, face, clickedLoc);

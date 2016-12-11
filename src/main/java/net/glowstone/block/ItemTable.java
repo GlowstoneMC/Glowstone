@@ -218,6 +218,8 @@ public final class ItemTable {
         reg(Material.RED_NETHER_BRICK, new BlockDirectDrops(Material.RED_NETHER_BRICK, ToolType.PICKAXE));
         reg(Material.BONE_BLOCK, new BlockDirectDrops(Material.BONE_BLOCK, ToolType.PICKAXE));
         reg(Material.OBSERVER, new BlockObserver());
+        reg(Material.REDSTONE_COMPARATOR_ON, new BlockRedstoneComparator());
+        reg(Material.REDSTONE_COMPARATOR_OFF, new BlockRedstoneComparator());
 
         reg(Material.FLINT_AND_STEEL, new ItemFlintAndSteel());
         reg(Material.SIGN, new ItemSign());
