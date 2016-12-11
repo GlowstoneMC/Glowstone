@@ -135,6 +135,9 @@ public final class GlowItem extends GlowEntity implements Item {
             if (pickupDelay < 20 && biasPlayer != null) {
                 // check for the bias player
                 for (Entity entity : getNearbyEntities(1, 0.5, 1)) {
+                    if (entity.isDead()) {
+                        continue;
+                    }
                     if (entity == biasPlayer && getPickedUp((GlowPlayer) entity)) {
                         break;
                     }
@@ -143,6 +146,9 @@ public final class GlowItem extends GlowEntity implements Item {
         } else {
             // check for nearby players
             for (Entity entity : getNearbyEntities(1, 0.5, 1)) {
+                if (entity.isDead()) {
+                    continue;
+                }
                 if (entity instanceof GlowPlayer && getPickedUp((GlowPlayer) entity)) {
                     break;
                 }

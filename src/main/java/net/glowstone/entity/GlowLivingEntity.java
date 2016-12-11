@@ -13,6 +13,7 @@ import net.glowstone.inventory.EquipmentMonitor;
 import net.glowstone.net.message.play.entity.EntityEffectMessage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityRemoveEffectMessage;
+import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.SoundUtil;
 import net.glowstone.util.loot.LootData;
 import net.glowstone.util.loot.LootingManager;
@@ -522,16 +523,42 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             }
             playEffect(EntityEffect.DEATH);
             if (this instanceof GlowPlayer) {
-                PlayerDeathEvent event = new PlayerDeathEvent((GlowPlayer) this, new ArrayList<>(), 0, this.getName() + " died.");
+                GlowPlayer player = (GlowPlayer) this;
+                ItemStack mainHand = player.getInventory().getItemInMainHand();
+                ItemStack offHand = player.getInventory().getItemInOffHand();
+                if (!InventoryUtil.isEmpty(mainHand) && mainHand.getType() == Material.TOTEM) {
+                    player.getInventory().setItemInMainHand(InventoryUtil.createEmptyStack());
+                    player.setHealth(1.0);
+                    active = true;
+                    return;
+                } else if (!InventoryUtil.isEmpty(offHand) && offHand.getType() == Material.TOTEM) {
+                    player.getInventory().setItemInOffHand(InventoryUtil.createEmptyStack());
+                    player.setHealth(1.0);
+                    active = true;
+                    return;
+                }
+                List<ItemStack> items = new ArrayList<>();
+                if (!world.getGameRuleMap().getBoolean("keepInventory")) {
+                    items = Arrays.stream(player.getInventory().getContents()).filter(stack -> !InventoryUtil.isEmpty(stack)).collect(Collectors.toList());
+                    player.getInventory().clear();
+                }
+                PlayerDeathEvent event = new PlayerDeathEvent((GlowPlayer) this, items, 0, player.getDisplayName() + " died.");
                 EventFactory.callEvent(event);
                 server.broadcastMessage(event.getDeathMessage());
-            } else if (world.getGameRuleMap().getBoolean("doMobLoot")) {
-                LootData data = LootingManager.generate(this);
-                EventFactory.callEvent(new EntityDeathEvent(this, Arrays.asList(data.getItems())));
-                for (ItemStack item : data.getItems()) {
+                for (ItemStack item : items) {
                     world.dropItemNaturally(getLocation(), item);
                 }
-                // todo: drop experience
+            } else {
+                EntityDeathEvent deathEvent = new EntityDeathEvent(this, new ArrayList<>());
+                if (world.getGameRuleMap().getBoolean("doMobLoot")) {
+                    LootData data = LootingManager.generate(this);
+                    Collections.addAll(deathEvent.getDrops(), data.getItems());
+                    // todo: drop experience
+                }
+                deathEvent = EventFactory.callEvent(deathEvent);
+                for (ItemStack item : deathEvent.getDrops()) {
+                    world.dropItemNaturally(getLocation(), item);
+                }
             }
         }
     }
