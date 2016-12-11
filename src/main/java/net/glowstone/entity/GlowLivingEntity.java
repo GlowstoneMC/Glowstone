@@ -208,7 +208,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             type.onEntityStep(under, this);
         }
         nextAmbientTime--;
-        if (!isDead() && getAmbientSound() != null && nextAmbientTime == 0) {
+        if (!isDead() && getAmbientSound() != null && nextAmbientTime == 0 && !isSilent()) {
             double v = ThreadLocalRandom.current().nextDouble();
             if (v <= 0.2) {
                 world.playSound(getLocation(), getAmbientSound(), getSoundVolume(), getSoundPitch());
@@ -517,7 +517,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         if (health <= 0) {
             active = false;
             Sound deathSound = getDeathSound();
-            if (deathSound != null) {
+            if (deathSound != null && !isSilent()) {
                 world.playSound(location, deathSound, getSoundVolume(), getSoundPitch());
             }
             playEffect(EntityEffect.DEATH);
@@ -554,7 +554,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Override
     public void damage(double amount, Entity source, DamageCause cause) {
         // invincibility timer
-        if (noDamageTicks > 0 || health <= 0 || !canTakeDamage(cause)) {
+        if (noDamageTicks > 0 || health <= 0 || !canTakeDamage(cause) || isInvulnerable()) {
             return;
         } else {
             noDamageTicks = maxNoDamageTicks;
@@ -596,7 +596,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         // play sounds, handle death
         if (health > 0) {
             Sound hurtSound = getHurtSound();
-            if (hurtSound != null) {
+            if (hurtSound != null && !isSilent()) {
                 world.playSound(location, hurtSound, getSoundVolume(), getSoundPitch());
             }
         }

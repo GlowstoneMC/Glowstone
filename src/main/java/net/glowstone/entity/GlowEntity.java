@@ -140,9 +140,13 @@ public abstract class GlowEntity implements Entity {
      */
     private boolean gravity;
     /**
-     * Whether
+     * Whether this entity is silent.
      */
     private boolean silent;
+    /**
+     * Whether this entity is invulnerable.
+     */
+    private boolean invulnerable;
 
     /**
      * Creates an entity and adds it to the specified world.
@@ -833,24 +837,22 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public void setGlowing(boolean glowing) {
-        // todo: 1.11
+        metadata.setBit(MetadataIndex.STATUS, StatusFlags.GLOWING, glowing);
     }
 
     @Override
     public boolean isGlowing() {
-        // todo: 1.11
-        return false;
+        return metadata.getBit(MetadataIndex.STATUS, StatusFlags.GLOWING);
     }
 
     @Override
     public void setInvulnerable(boolean invulnerable) {
-        // todo: 1.11
+        this.invulnerable = invulnerable;
     }
 
     @Override
     public boolean isInvulnerable() {
-        // todo: 1.11
-        return false;
+        return invulnerable;
     }
 
     @Override
