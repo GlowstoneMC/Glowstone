@@ -33,7 +33,14 @@ public class AttributeManager {
     public void sendMessages(GlowSession session) {
         if (!needsUpdate)
             return;
-        session.send(new EntityPropertyMessage(entity.id, properties));
+        int id = entity.id;
+        if (entity instanceof GlowPlayer) {
+            GlowPlayer player = (GlowPlayer) entity;
+            if (player.getUniqueId().equals(session.getPlayer().getUniqueId())) {
+                id = 0;
+            }
+        }
+        session.send(new EntityPropertyMessage(id, properties));
         needsUpdate = false;
     }
 
@@ -71,7 +78,9 @@ public class AttributeManager {
         KEY_KNOCKBACK_RESISTANCE("generic.knockbackResistance", 0, 1),
         KEY_MOVEMENT_SPEED("generic.movementSpeed", 0.699999988079071, 1024.0),
         KEY_ATTACK_DAMAGE("generic.attackDamage", 2, 2048.0),
-        ATTACK_SPEED("generic.attackSpeed", 4.0, 1024.0),
+        KEY_ATTACK_SPEED("generic.attackSpeed", 4.0, 1024.0),
+        KEY_ARMOR("generic.armor", 0.0, 30.0),
+        KEY_ARMOR_TOUGHNESS("generic.armorToughness", 0.0, 20.0),
         KEY_HORSE_JUMP_STRENGTH("horse.jumpStrength", 0.7, 2),
         KEY_ZOMBIE_SPAWN_REINFORCEMENTS("zombie.spawnReinforcements", 0, 1);
 

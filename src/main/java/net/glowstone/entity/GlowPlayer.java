@@ -28,6 +28,7 @@ import net.glowstone.entity.meta.MetadataIndex.StatusFlags;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.entity.objects.GlowItem;
+import net.glowstone.inventory.ArmorConstants;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.InventoryMonitor;
 import net.glowstone.io.PlayerDataService.PlayerReader;
@@ -610,7 +611,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         if (passengerChanged) {
             session.send(new SetPassengerMessage(SELF_ID, getPassenger() == null ? new int[0] : new int[]{getPassenger().getEntityId()}));
         }
-
+        getAttributeManager().setProperty(AttributeManager.Key.KEY_ARMOR, ArmorConstants.getDefense(getEquipment().getArmorContents()));
+        getAttributeManager().setProperty(AttributeManager.Key.KEY_ARMOR_TOUGHNESS, ArmorConstants.getToughness(getEquipment().getArmorContents()));
         getAttributeManager().sendMessages(session);
     }
 
