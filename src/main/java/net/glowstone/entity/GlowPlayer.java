@@ -28,8 +28,6 @@ import net.glowstone.entity.meta.MetadataIndex.StatusFlags;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.entity.objects.GlowItem;
-import net.glowstone.inventory.ArmorConstants;
-import net.glowstone.inventory.EquipmentMonitor;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.InventoryMonitor;
 import net.glowstone.io.PlayerDataService.PlayerReader;
@@ -612,26 +610,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         if (passengerChanged) {
             session.send(new SetPassengerMessage(SELF_ID, getPassenger() == null ? new int[0] : new int[]{getPassenger().getEntityId()}));
         }
-        processArmorChanges();
         getAttributeManager().sendMessages(session);
-    }
-
-    /**
-     * Process changes to the player's armor, and update the player's attributes accordingly.
-     */
-    private void processArmorChanges() {
-        boolean armorUpdate = false;
-        List<EquipmentMonitor.Entry> armorChanges = getEquipmentMonitor().getArmorChanges();
-        if (armorChanges.size() > 0) {
-            for (EquipmentMonitor.Entry entry : armorChanges) {
-                session.send(new EntityEquipmentMessage(SELF_ID, entry.slot, entry.item));
-                armorUpdate = true;
-            }
-        }
-        if (armorUpdate) {
-            getAttributeManager().setProperty(AttributeManager.Key.KEY_ARMOR, ArmorConstants.getDefense(getEquipment().getArmorContents()));
-            getAttributeManager().setProperty(AttributeManager.Key.KEY_ARMOR_TOUGHNESS, ArmorConstants.getToughness(getEquipment().getArmorContents()));
-        }
     }
 
     /**

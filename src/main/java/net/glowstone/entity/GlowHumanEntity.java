@@ -91,6 +91,11 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     private int xpSeed;
 
     /**
+     * Whether the client needs to be notified of armor changes (set to true after joining).
+     */
+    private boolean needsArmorUpdate = false;
+
+    /**
      * Creates a human within the specified world and with the specified name.
      *
      * @param location The location.
@@ -143,6 +148,32 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         } else {
             sleepingTicks = 0;
         }
+        processArmorChanges();
+    }
+
+    /**
+     * Process changes to the human enitity's armor, and update the entity's armor attributes accordingly.
+     */
+    private void processArmorChanges() {
+        GlowPlayer player = null;
+        if (this instanceof GlowPlayer) {
+            player = ((GlowPlayer) this);
+        }
+        boolean armorUpdate = false;
+        List<EquipmentMonitor.Entry> armorChanges = getEquipmentMonitor().getArmorChanges();
+        if (armorChanges.size() > 0) {
+            for (EquipmentMonitor.Entry entry : armorChanges) {
+                if (player != null && needsArmorUpdate) {
+                    player.getSession().send(new EntityEquipmentMessage(0, entry.slot, entry.item));
+                }
+                armorUpdate = true;
+            }
+        }
+        if (armorUpdate) {
+            getAttributeManager().setProperty(AttributeManager.Key.KEY_ARMOR, ArmorConstants.getDefense(getEquipment().getArmorContents()));
+            getAttributeManager().setProperty(AttributeManager.Key.KEY_ARMOR_TOUGHNESS, ArmorConstants.getToughness(getEquipment().getArmorContents()));
+        }
+        needsArmorUpdate = true;
     }
 
     /**
