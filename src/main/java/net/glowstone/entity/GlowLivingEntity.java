@@ -602,8 +602,13 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             }
         }
 
+        // armor damage protection
+        // formula source: http://minecraft.gamepedia.com/Armor#Damage_Protection
+        double defensePoints = getAttributeManager().getPropertyValue(Key.KEY_ARMOR);
+        double toughness = getAttributeManager().getPropertyValue(Key.KEY_ARMOR_TOUGHNESS);
+        amount = amount * (1 - Math.min(20.0, Math.max(defensePoints / 5.0, defensePoints - amount / (2.0 + toughness / 4.0))) / 25);
+
         // fire event
-        // todo: use damage modifier system
         EntityDamageEvent event;
         if (source == null) {
             event = new EntityDamageEvent(this, cause, amount);
