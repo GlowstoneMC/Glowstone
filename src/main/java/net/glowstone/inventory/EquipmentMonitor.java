@@ -4,6 +4,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -21,7 +22,7 @@ public final class EquipmentMonitor {
     /**
      * The previous equipment.
      */
-    private final ItemStack[] slots = new ItemStack[5];
+    private final ItemStack[] slots = new ItemStack[6];
 
     /**
      * All changes between the previous equipment.
@@ -56,8 +57,10 @@ public final class EquipmentMonitor {
         }
         if (slot == 0) {
             return equipment.getItemInHand();
+        } else if (slot == 1) {
+            return equipment.getItemInOffHand();
         } else {
-            return equipment.getArmorContents()[slot - 1];
+            return equipment.getArmorContents()[slot - 2];
         }
     }
 
@@ -78,7 +81,7 @@ public final class EquipmentMonitor {
      */
     public List<Entry> getChanges() {
         if (!changesCalculated) {
-            for (int i = 0; i < 5; ++i) {
+            for (int i = 0; i < 6; ++i) {
                 ItemStack item = getItem(i);
                 if (!Objects.equals(slots[i], item)) {
                     changes.add(new Entry(i, item));
@@ -90,12 +93,27 @@ public final class EquipmentMonitor {
     }
 
     /**
+     * Check for changes in the armor slots.
+     *
+     * @return The list of changed items in the armor slots.
+     */
+    public List<Entry> getArmorChanges() {
+        List<Entry> armor = new ArrayList<>();
+        for (Entry change : getChanges()) {
+            if (change.slot > 1) {
+                armor.add(change);
+            }
+        }
+        return armor;
+    }
+
+    /**
      * Reset all cached changes and update latest content.
      */
     public void resetChanges() {
         changes.clear();
         changesCalculated = false;
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 6; i++) {
             updateItem(i);
         }
     }

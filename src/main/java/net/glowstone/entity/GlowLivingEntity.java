@@ -95,6 +95,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     /**
      * Monitor for the equipment of this entity.
      */
+    @Getter
     private EquipmentMonitor equipmentMonitor = new EquipmentMonitor(this);
     /**
      * The LivingEntity's number of ticks since death
