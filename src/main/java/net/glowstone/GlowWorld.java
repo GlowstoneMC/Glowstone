@@ -19,7 +19,6 @@ import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
 import net.glowstone.io.anvil.AnvilWorldStorageProvider;
 import net.glowstone.net.message.play.entity.EntityStatusMessage;
-import net.glowstone.net.message.play.game.PlayParticleMessage;
 import net.glowstone.net.message.play.player.ServerDifficultyMessage;
 import net.glowstone.util.BlockStateDelegate;
 import net.glowstone.util.GameRuleManager;
@@ -1753,15 +1752,10 @@ public final class GlowWorld implements World {
         }
 
         for (GlowPlayer player : getRawPlayers()) {
-            double distance = player.getLocation().distanceSquared(location);
-            boolean isLongDistance = GlowParticle.isLongDistance(particle);
-
-            int particleId = GlowParticle.getId(particle);
-            int[] particleData = GlowParticle.getExtData(particle, data);
-
-            if (distance <= 1024.0D || isLongDistance && distance <= 262144.0D) {
-                player.getSession().send(new PlayParticleMessage(particleId, isLongDistance, (float) location.getX(), (float) location.getY(), (float) location.getZ(), (float) offsetX, (float) offsetY, (float) offsetZ, (float) extra, count, particleData));
+            if (!player.getWorld().equals(this)) {
+                continue;
             }
+            player.spawnParticle(particle, location, count, offsetX, offsetY, offsetZ, extra, data);
         }
     }
 

@@ -2,6 +2,7 @@ package net.glowstone.entity;
 
 import com.flowpowered.network.Message;
 import com.google.common.base.Preconditions;
+import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowChunk;
 import net.glowstone.GlowServer;
@@ -149,6 +150,12 @@ public abstract class GlowEntity implements Entity {
     private boolean invulnerable;
 
     /**
+     * The original location of this entity.
+     */
+    @Getter
+    private final Location origin;
+
+    /**
      * Creates an entity and adds it to the specified world.
      *
      * @param location The location of the entity.
@@ -159,6 +166,7 @@ public abstract class GlowEntity implements Entity {
             // spawn location event
             location = EventFactory.callEvent(new PlayerSpawnLocationEvent((Player) this, location)).getSpawnLocation();
         }
+        this.origin = location.clone();
         this.location = location.clone();
         world = (GlowWorld) location.getWorld();
         server = world.getServer();
@@ -1068,12 +1076,6 @@ public abstract class GlowEntity implements Entity {
 
     public Spigot spigot() {
         return null; // TODO: support entity isInvulnerable() API
-    }
-
-    @Override
-    public Location getOrigin() {
-        // todo: 1.11
-        return null;
     }
 
     @Override
