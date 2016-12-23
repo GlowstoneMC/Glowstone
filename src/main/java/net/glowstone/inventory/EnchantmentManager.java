@@ -9,6 +9,7 @@ import net.glowstone.util.WeightedRandom;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.enchantments.EnchantmentOffer;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.inventory.InventoryView.Property;
@@ -135,11 +136,11 @@ public class EnchantmentManager {
     private static Map<Enchantment, Integer> toMap(List<LeveledEnchant> list) {
         Map<Enchantment, Integer> map = new HashMap<>(list.size());
         for (LeveledEnchant enchant : list)
-            map.put(enchant.getEnchantment(), enchant.getLevel());
+            map.put(enchant.getEnchantment(), enchant.getEnchantmentLevel());
         return map;
     }
 
-    private static List<LeveledEnchant> getAllPossibleEnchants(ItemStack item, int modifier) {
+    private static List<LeveledEnchant> getAllPossibleEnchants(ItemStack item, int modifier, int cost) {
         List<LeveledEnchant> enchantments = new ArrayList<>();
 
         boolean isBook = item.getType() == Material.BOOK;
@@ -148,7 +149,7 @@ public class EnchantmentManager {
             if (isBook || enchantment.canEnchantItem(item)) {
                 for (int level = enchantment.getStartLevel(); level <= enchantment.getMaxLevel(); level++) {
                     if (((GlowEnchantment) enchantment).isInRange(level, modifier)) {
-                        enchantments.add(new LeveledEnchant(enchantment, level));
+                        enchantments.add(new LeveledEnchant(enchantment, level, cost));
                     }
                 }
             }
@@ -252,22 +253,31 @@ public class EnchantmentManager {
         }
 
         ItemStack item = inventory.getItem();
-        PrepareItemEnchantEvent event = new PrepareItemEnchantEvent(player, player.getOpenInventory(), inventory.getLocation().getBlock(), item, enchLevelCosts, realBookshelfs);
+
+
+        List<LeveledEnchant> enchants = null;
+        for (int i = 0; i < enchLevelCosts.length; i++) {
+            if (enchLevelCosts[i] == 0) continue;
+            enchants = calculateCurrentEnchants(item, i, enchLevelCosts[i]);
+            if (enchants != null && !enchants.isEmpty()) {
+                LeveledEnchant chosen = WeightedRandom.getRandom(random, enchants);
+                enchId[i] = chosen.getEnchantment().getId();
+                enchLevel[i] = chosen.getEnchantmentLevel();
+            }
+        }
+        EnchantmentOffer[] offers = null;
+
+        if (enchants != null) {
+            offers = new EnchantmentOffer[enchants.size()];
+            enchants.toArray(offers);
+        }
+
+        PrepareItemEnchantEvent event = new PrepareItemEnchantEvent(player, player.getOpenInventory(), inventory.getLocation().getBlock(), item, offers, realBookshelfs);
         event.setCancelled(!canEnchant(item));
         EventFactory.callEvent(event);
         if (event.isCancelled()) {
             for (int i = 0; i < enchLevelCosts.length; i++)
                 enchLevelCosts[i] = 0;
-        } else {
-            for (int i = 0; i < enchLevelCosts.length; i++) {
-                if (enchLevelCosts[i] == 0) continue;
-                List<LeveledEnchant> enchants = calculateCurrentEnchants(item, i, enchLevelCosts[i]);
-                if (enchants != null && !enchants.isEmpty()) {
-                    LeveledEnchant chosen = WeightedRandom.getRandom(random, enchants);
-                    enchId[i] = chosen.getEnchantment().getId();
-                    enchLevel[i] = chosen.getLevel();
-                }
-            }
         }
 
         update();
@@ -278,7 +288,7 @@ public class EnchantmentManager {
         int modifier = calculateRandomizedModifier(random, item, cost);
         if (modifier <= 0) return null;
 
-        List<LeveledEnchant> possibleEnchants = getAllPossibleEnchants(item, modifier);
+        List<LeveledEnchant> possibleEnchants = getAllPossibleEnchants(item, modifier, cost);
         if (possibleEnchants == null || possibleEnchants.isEmpty()) return null;
 
         LeveledEnchant chosen = WeightedRandom.getRandom(random, possibleEnchants);

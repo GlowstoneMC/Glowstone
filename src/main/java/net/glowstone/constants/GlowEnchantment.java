@@ -148,6 +148,7 @@ public final class GlowEnchantment extends Enchantment implements Choice {
         KNOCKBACK(19, "Knockback", 2, Rarity.UNCOMMON, 5, 20, 50, false, EnchantmentTarget.WEAPON),
         FIRE_ASPECT(20, "Fire Aspect", 2, Rarity.RARE, 10, 20, 50, false, EnchantmentTarget.WEAPON),
         LOOT_BONUS_MOBS(21, "Looting", 3, Rarity.RARE, 15, 9, 50, false, EnchantmentTarget.WEAPON),
+        SWEEPING_EDGE(22, "Sweeping Edge", 3, Rarity.RARE, 25, 25, 50, EnchantmentTarget.WEAPON), // TODO: correct range values
         DIG_SPEED(32, "Efficiency", 5, Rarity.COMMON, 1, 10, 50, false, EnchantmentTarget.TOOL, DIGGING_TOOLS),
         SILK_TOUCH(33, "Silk Touch", 1, Rarity.VERY_RARE, false, 15, 0, 50, false, EnchantmentTarget.TOOL, DIGGING_TOOLS, GROUP_DIG),
         DURABILITY(34, "Unbreaking", 3, Rarity.UNCOMMON, 5, 8, 50, false, EnchantmentTarget.TOOL, ALL_THINGS),

@@ -38,11 +38,13 @@ import org.bukkit.event.world.*;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 import org.bukkit.metadata.MetadataStore;
 import org.bukkit.metadata.MetadataStoreBase;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.StandardMessenger;
+import org.bukkit.util.Consumer;
 import org.bukkit.util.Vector;
 
 import java.io.File;
@@ -1211,6 +1213,11 @@ public final class GlowWorld implements World {
         return (T) spawn(location, EntityRegistry.getEntity(clazz), SpawnReason.CUSTOM);
     }
 
+    @Override
+    public <T extends Entity> T spawn(Location location, Class<T> clazz, Consumer<T> function) throws IllegalArgumentException {
+        return null; // TODO: work on type mismatches
+    }
+
     public GlowEntity spawn(Location location, Class<? extends GlowEntity> clazz, SpawnReason reason) throws IllegalArgumentException {
         GlowEntity entity = null;
 
@@ -1223,6 +1230,7 @@ public final class GlowWorld implements World {
                 Constructor<? extends GlowEntity> constructor = clazz.getConstructor(Location.class);
                 entity = constructor.newInstance(location);
                 GlowEntity impl = entity;
+                // function.accept(entity); TODO: work on type mismatches
                 EntitySpawnEvent spawnEvent;
                 if (entity instanceof LivingEntity) {
                     spawnEvent = EventFactory.callEvent(new CreatureSpawnEvent((LivingEntity) entity, reason));
@@ -1288,6 +1296,11 @@ public final class GlowWorld implements World {
     @Override
     public <T extends Arrow> T spawnArrow(Location location, Vector vector, float v, float v1, Class<T> aClass) {
         return null;
+    }
+
+    @Override
+    public FallingBlock spawnFallingBlock(Location location, MaterialData data) throws IllegalArgumentException {
+        return spawnFallingBlock(location, data.getItemType(), data.getData());
     }
 
     @Override

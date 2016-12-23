@@ -1,5 +1,6 @@
 package net.glowstone.constants;
 
+import org.bukkit.Color;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.*;
 
@@ -55,6 +56,11 @@ public final class GlowPotionEffect extends PotionEffectType {
     @Override
     public boolean isInstant() {
         return impl.instant;
+    }
+
+    @Override
+    public Color getColor() {
+        return null;
     }
 
     @Override

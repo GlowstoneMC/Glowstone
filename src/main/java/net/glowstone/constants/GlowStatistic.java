@@ -35,8 +35,6 @@ public final class GlowStatistic {
         set(ANIMALS_BRED, "animalsBred");
         set(PLAYER_KILLS, "playerKills");
         set(FISH_CAUGHT, "fishCaught");
-        set(JUNK_FISHED, "junkFished");
-        set(TREASURE_FISHED, "treasureFished");
         set(SPRINT_ONE_CM, "sprintOneCm");
         set(CROUCH_ONE_CM, "crouchOneCm");
         set(AVIATE_ONE_CM, "aviateOneCm");

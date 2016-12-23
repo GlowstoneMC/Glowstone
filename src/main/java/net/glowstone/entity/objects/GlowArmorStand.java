@@ -542,6 +542,16 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     }
 
     @Override
+    public boolean canMove() {
+        return false;
+    }
+
+    @Override
+    public void setCanMove(boolean move) {
+
+    }
+
+    @Override
     public AttributeInstance getAttribute(Attribute attribute) {
         return null;
     }

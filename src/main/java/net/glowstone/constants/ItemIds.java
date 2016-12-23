@@ -455,6 +455,7 @@ public final class ItemIds {
         item(448, "dark_oak_boat");
         item(449, "totem");
         item(450, "shulker_shell");
+        item(452, "iron_nugget");
         item(2256, "record_13");
         item(2257, "record_cat");
         item(2258, "record_blocks");

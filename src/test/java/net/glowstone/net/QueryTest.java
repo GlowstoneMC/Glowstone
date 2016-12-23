@@ -13,7 +13,6 @@ import net.glowstone.net.query.QueryHandler;
 import net.glowstone.net.query.QueryServer;
 import net.glowstone.util.Convert;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.hamcrest.BaseMatcher;
@@ -28,7 +27,8 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.net.InetSocketAddress;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -72,8 +72,8 @@ public class QueryTest {
         this.queryPlugins = true;
         server = new QueryServer(glowServer, latch, queryPlugins);
         random = mock(ThreadLocalRandom.class);
-	PowerMockito.mockStatic(ThreadLocalRandom.class);
-	when(ThreadLocalRandom.current()).thenReturn(random);
+        PowerMockito.mockStatic(ThreadLocalRandom.class);
+        when(ThreadLocalRandom.current()).thenReturn(random);
         address = InetSocketAddress.createUnresolved("somehost", 12345);
     }
 
