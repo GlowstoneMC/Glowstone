@@ -565,6 +565,11 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public void reloadCommandAliases() {
+
+    }
+
+    @Override
     public void sendPluginMessage(Plugin source, String channel, byte[] message) {
 
     }
