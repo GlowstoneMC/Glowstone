@@ -72,8 +72,8 @@ public class QueryTest {
         this.queryPlugins = true;
         server = new QueryServer(glowServer, latch, queryPlugins);
         random = mock(ThreadLocalRandom.class);
-	    PowerMockito.mockStatic(ThreadLocalRandom.class);
-	    when(ThreadLocalRandom.current()).thenReturn(random);
+        PowerMockito.mockStatic(ThreadLocalRandom.class);
+        when(ThreadLocalRandom.current()).thenReturn(random);
         address = InetSocketAddress.createUnresolved("somehost", 12345);
     }
 
