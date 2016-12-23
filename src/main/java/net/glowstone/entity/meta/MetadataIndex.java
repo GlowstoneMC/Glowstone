@@ -41,6 +41,7 @@ public enum MetadataIndex {
     WITHERSKULL_INVULNERABLE(6, BOOLEAN, WitherSkull.class),
 
     FIREWORK_INFO(6, ITEM, Firework.class),
+    FIREWORK_ENTITY(7, INT, Firework.class),
 
     ITEM_FRAME_ITEM(6, ITEM, ItemFrame.class),
     ITEM_FRAME_ROTATION(7, INT, ItemFrame.class),
@@ -79,6 +80,7 @@ public enum MetadataIndex {
     LLAMA_VARIANT(18, INT, Llama.class),
 
     PIG_SADDLE(13, BOOLEAN, Pig.class),
+    PIG_BOOST(14, INT, Pig.class),
 
     RABBIT_TYPE(13, INT, Rabbit.class),
 

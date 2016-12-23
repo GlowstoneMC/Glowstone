@@ -44,4 +44,19 @@ public class GlowAnvilInventory extends GlowInventory implements AnvilInventory 
         clickedItem = player.getInventory().tryToFillSlots(clickedItem, 9, 36, 0, 9);
         view.setItem(clickedSlot, clickedItem);
     }
+
+    @Override
+    public String getRenameText() {
+        return null;
+    }
+
+    @Override
+    public int getRepairCost() {
+        return 0;
+    }
+
+    @Override
+    public void setRepairCost(int levels) {
+
+    }
 }

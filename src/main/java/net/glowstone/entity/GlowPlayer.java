@@ -1406,7 +1406,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void sendTitle(String title, String subtitle) {
+        sendTitle(new Title(title, subtitle));
+    }
 
+    @Override
+    public void sendTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut) {
+        sendTitle(new Title(title, subtitle, fadeIn, stay, fadeOut));
     }
 
     public void setFoodLevelAndSaturation(int food, float saturation) {

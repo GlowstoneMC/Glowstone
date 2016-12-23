@@ -8,7 +8,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SpawnMeta;
+import org.bukkit.inventory.meta.SpawnEggMeta;
 import org.bukkit.util.Vector;
 
 public class ItemSpawn extends ItemType {
@@ -17,9 +17,9 @@ public class ItemSpawn extends ItemType {
         Location location = against.getLocation().add(face.getModX(), face.getModY(), face.getModZ());
         // TODO: change mob spawner when clicked by monster egg
         // TODO: MonsterEgg meta. Eggs can hold entire entities now.
-        if (holding.hasItemMeta() && holding.getItemMeta() instanceof SpawnMeta) {
-            SpawnMeta meta = (SpawnMeta) holding.getItemMeta();
-            EntityType type = meta.getEntityType();
+        if (holding.hasItemMeta() && holding.getItemMeta() instanceof SpawnEggMeta) {
+            SpawnEggMeta meta = (SpawnEggMeta) holding.getItemMeta();
+            EntityType type = meta.getSpawnedType();
 
             // TODO: check for fence/wall
             //if (face == BlockFace.UP && against instanceof BlockFence) {

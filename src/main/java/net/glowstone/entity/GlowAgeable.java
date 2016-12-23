@@ -13,7 +13,7 @@ import org.bukkit.entity.Ageable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SpawnMeta;
+import org.bukkit.inventory.meta.SpawnEggMeta;
 
 import java.util.List;
 
@@ -155,8 +155,8 @@ public class GlowAgeable extends GlowCreature implements Ageable {
 
         // Spawn eggs are used to spawn babies
         if (item != null && item.getType() == Material.MONSTER_EGG && item.hasItemMeta()) {
-            SpawnMeta meta = (SpawnMeta) item.getItemMeta();
-            if (meta.hasEntityType() && meta.getEntityType() == this.getType()) {
+            SpawnEggMeta meta = (SpawnEggMeta) item.getItemMeta();
+            if (meta.hasSpawnedType() && meta.getSpawnedType() == this.getType()) {
                 this.createBaby();
 
                 if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {

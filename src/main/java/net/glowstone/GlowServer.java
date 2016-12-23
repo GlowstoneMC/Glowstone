@@ -102,12 +102,12 @@ public final class GlowServer implements Server {
     /**
      * The game version supported by the server.
      */
-    public static final String GAME_VERSION = "1.11";
+    public static final String GAME_VERSION = "1.11.2";
 
     /**
      * The protocol version supported by the server.
      */
-    public static final int PROTOCOL_VERSION = 315;
+    public static final int PROTOCOL_VERSION = 316;
 
     /**
      * A list of all the active {@link net.glowstone.net.GlowSession}s.
@@ -1133,6 +1133,11 @@ public final class GlowServer implements Server {
     @Override
     public Entity getEntity(UUID uuid) {
         return null;
+    }
+
+    @Override
+    public void reloadCommandAliases() {
+        commandMap.registerServerAliases();
     }
 
     ////////////////////////////////////////////////////////////////////////////

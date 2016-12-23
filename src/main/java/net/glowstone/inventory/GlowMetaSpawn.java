@@ -3,11 +3,11 @@ package net.glowstone.inventory;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
-import org.bukkit.inventory.meta.SpawnMeta;
+import org.bukkit.inventory.meta.SpawnEggMeta;
 
 import java.util.Map;
 
-public class GlowMetaSpawn extends GlowMetaItem implements SpawnMeta {
+public class GlowMetaSpawn extends GlowMetaItem implements SpawnEggMeta {
     private EntityType type;
 
     public GlowMetaSpawn(GlowMetaItem meta) {
@@ -17,8 +17,8 @@ public class GlowMetaSpawn extends GlowMetaItem implements SpawnMeta {
             return;
 
         GlowMetaSpawn spawn = (GlowMetaSpawn) meta;
-        if (spawn.hasEntityType()) {
-            this.type = spawn.getEntityType();
+        if (spawn.hasSpawnedType()) {
+            this.type = spawn.getSpawnedType();
         }
     }
 
@@ -26,8 +26,8 @@ public class GlowMetaSpawn extends GlowMetaItem implements SpawnMeta {
     public Map<String, Object> serialize() {
         Map<String, Object> result = super.serialize();
         result.put("meta-type", "MONSTER_EGG");
-        if (hasEntityType()) {
-            result.put("entity-id", "minecraft:" + getEntityType().getName());
+        if (hasSpawnedType()) {
+            result.put("entity-id", "minecraft:" + getSpawnedType().getName());
         }
         return result;
     }
@@ -35,9 +35,9 @@ public class GlowMetaSpawn extends GlowMetaItem implements SpawnMeta {
     @Override
     void writeNbt(CompoundTag tag) {
         super.writeNbt(tag);
-        if (hasEntityType()) {
+        if (hasSpawnedType()) {
             CompoundTag entity = new CompoundTag();
-            entity.putString("id", "minecraft:" + getEntityType().getName());
+            entity.putString("id", "minecraft:" + getSpawnedType().getName());
             tag.putCompound("EntityTag", entity);
         }
     }
@@ -63,17 +63,17 @@ public class GlowMetaSpawn extends GlowMetaItem implements SpawnMeta {
     }
 
     @Override
-    public boolean hasEntityType() {
+    public boolean hasSpawnedType() {
         return this.type != null;
     }
 
     @Override
-    public EntityType getEntityType() {
+    public EntityType getSpawnedType() {
         return this.type;
     }
 
     @Override
-    public void setEntityType(EntityType type) {
+    public void setSpawnedType(EntityType type) {
         this.type = type;
     }
 

@@ -18,7 +18,6 @@ class PigStore extends AgeableStore<GlowPig> {
         } else {
             entity.setSaddle(false);
         }
-
     }
 
     @Override

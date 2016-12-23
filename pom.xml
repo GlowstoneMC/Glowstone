@@ -7,7 +7,7 @@
     <name>Glowstone</name>
     <groupId>net.glowstone</groupId>
     <artifactId>glowstone</artifactId>
-    <version>1.11-SNAPSHOT</version>
+    <version>1.11.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <inceptionYear>2011</inceptionYear>
     <url>https://www.glowstone.net</url>
@@ -27,7 +27,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <bukkit.version>1.11-R0.1-SNAPSHOT</bukkit.version>
+        <bukkit.version>1.11.2-R0.1-SNAPSHOT</bukkit.version>
     </properties>
 
     <repositories>
