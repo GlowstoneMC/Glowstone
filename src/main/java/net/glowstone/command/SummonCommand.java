@@ -63,7 +63,6 @@ public class SummonCommand extends BukkitCommand {
         CompoundTag tag = null;
         if (args.length >= 5) {
             String data = String.join(" ", new ArrayList<>(Arrays.asList(args)).subList(4, args.length));
-            sender.sendMessage(data);
             try {
                 tag = Mojangson.parseCompound(data);
             } catch (MojangsonParseException e) {

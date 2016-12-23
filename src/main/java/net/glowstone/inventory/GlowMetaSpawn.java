@@ -9,6 +9,7 @@ import java.util.Map;
 
 public class GlowMetaSpawn extends GlowMetaItem implements SpawnEggMeta {
     private EntityType type;
+    private CompoundTag entityTag;
 
     public GlowMetaSpawn(GlowMetaItem meta) {
         super(meta);
@@ -19,6 +20,9 @@ public class GlowMetaSpawn extends GlowMetaItem implements SpawnEggMeta {
         GlowMetaSpawn spawn = (GlowMetaSpawn) meta;
         if (spawn.hasSpawnedType()) {
             this.type = spawn.getSpawnedType();
+        }
+        if (spawn.getEntityTag() != null) {
+            this.entityTag = spawn.getEntityTag();
         }
     }
 
@@ -35,11 +39,11 @@ public class GlowMetaSpawn extends GlowMetaItem implements SpawnEggMeta {
     @Override
     void writeNbt(CompoundTag tag) {
         super.writeNbt(tag);
+        CompoundTag entityTag = getEntityTag() != null ? getEntityTag() : new CompoundTag();
         if (hasSpawnedType()) {
-            CompoundTag entity = new CompoundTag();
-            entity.putString("id", "minecraft:" + getSpawnedType().getName());
-            tag.putCompound("EntityTag", entity);
+            entityTag.putString("id", "minecraft:" + getSpawnedType().getName());
         }
+        tag.putCompound("EntityTag", entityTag);
     }
 
     @Override
@@ -54,7 +58,16 @@ public class GlowMetaSpawn extends GlowMetaItem implements SpawnEggMeta {
                 }
                 type = EntityType.fromName(id);
             }
+            this.entityTag = entity;
         }
+    }
+
+    public CompoundTag getEntityTag() {
+        return entityTag;
+    }
+
+    public void setEntityTag(CompoundTag tag) {
+        this.entityTag = tag;
     }
 
     @Override
