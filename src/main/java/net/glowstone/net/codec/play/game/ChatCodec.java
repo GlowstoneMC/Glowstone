@@ -4,14 +4,14 @@ import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.game.ChatMessage;
-import net.glowstone.util.TextMessage;
+import net.md_5.bungee.api.chat.BaseComponent;
 
 import java.io.IOException;
 
 public final class ChatCodec implements Codec<ChatMessage> {
     @Override
     public ChatMessage decode(ByteBuf buf) throws IOException {
-        TextMessage message = GlowBufUtils.readChat(buf);
+        BaseComponent[] message = GlowBufUtils.readChat(buf);
         int mode = buf.readByte();
         return new ChatMessage(message, mode);
     }

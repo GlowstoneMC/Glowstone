@@ -36,7 +36,6 @@ import net.glowstone.util.bans.GlowBanList;
 import net.glowstone.util.bans.UuidListFile;
 import net.glowstone.util.loot.LootingManager;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.BanList.Type;
 import org.bukkit.Warning.WarningState;
@@ -64,9 +63,7 @@ import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.util.CachedServerIcon;
 import org.bukkit.util.permissions.DefaultPermissions;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -1127,8 +1124,24 @@ public final class GlowServer implements Server {
     @Override
     public Spigot spigot() {
         return new Spigot() {
+            @Override
             public org.bukkit.configuration.file.YamlConfiguration getConfig() {
                 return config.getConfig();
+            }
+
+            @Override
+            public void broadcast(net.md_5.bungee.api.chat.BaseComponent component) {
+                GlowServer.this.broadcast(component);
+            }
+
+            @Override
+            public void broadcast(net.md_5.bungee.api.chat.BaseComponent... components) {
+                GlowServer.this.broadcast(components);
+            }
+
+            @Override
+            public void restart() {
+                throw new UnsupportedOperationException("Not supported yet.");
             }
         };
     }
@@ -1355,23 +1368,12 @@ public final class GlowServer implements Server {
 
     @Override
     public void broadcast(BaseComponent component) {
-        try {
-            // todo: uses gson instead json-simple
-            Message packet = new ChatMessage((JSONObject) parser.parse(ComponentSerializer.toString(component)));
-            broadcastPacket(packet);
-        } catch (ParseException e) {
-            e.printStackTrace(); //should never happen
-        }
+        spigot().broadcast(component);
     }
 
     @Override
     public void broadcast(BaseComponent... components) {
-        try {
-            Message packet = new ChatMessage((JSONObject) parser.parse(ComponentSerializer.toString(components)));
-            broadcastPacket(packet);
-        } catch (ParseException e) {
-            e.printStackTrace(); //should never happen
-        }
+        broadcastPacket(new ChatMessage(components));
     }
 
     public void broadcastPacket(Message message) {

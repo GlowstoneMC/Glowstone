@@ -1,6 +1,6 @@
 package net.glowstone.entity.meta;
 
-import net.glowstone.util.TextMessage;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.EulerAngle;
@@ -15,7 +15,7 @@ public enum MetadataType {
     INT(Integer.class, false),
     FLOAT(Float.class, false),
     STRING(String.class, false),
-    CHAT(TextMessage.class, false),
+    CHAT(BaseComponent[].class, false),
     ITEM(ItemStack.class, false),
     BOOLEAN(Boolean.class, false),
     VECTOR(EulerAngle.class, false),

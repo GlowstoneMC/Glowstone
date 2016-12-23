@@ -5,7 +5,8 @@ import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import net.glowstone.net.message.play.game.TitleMessage;
 import net.glowstone.net.message.play.game.TitleMessage.Action;
-import net.glowstone.util.TextMessage;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 
 import java.io.IOException;
 
@@ -20,7 +21,7 @@ public final class TitleCodec implements Codec<TitleMessage> {
             case SUBTITLE:
             case ACTION:
                 String text = ByteBufUtils.readUTF8(buffer);
-                return new TitleMessage(action, TextMessage.decode(text));
+                return new TitleMessage(action, TextComponent.fromLegacyText(text));
             case TIMES:
                 int fadeIn = buffer.readInt();
                 int stay = buffer.readInt();
@@ -38,7 +39,7 @@ public final class TitleCodec implements Codec<TitleMessage> {
             case TITLE:
             case SUBTITLE:
             case ACTION:
-                ByteBufUtils.writeUTF8(buf, message.getText().encode());
+                ByteBufUtils.writeUTF8(buf, ComponentSerializer.toString(message.getText()));
                 break;
             case TIMES:
                 buf.writeInt(message.getFadeIn());

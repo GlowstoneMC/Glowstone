@@ -48,11 +48,10 @@ import net.glowstone.scoreboard.GlowTeam;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
 import net.glowstone.util.StatisticMap;
-import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.Effect.Type;
 import org.bukkit.World.Environment;
@@ -82,7 +81,6 @@ import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
-import org.json.simple.JSONObject;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -862,9 +860,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * @return The entry (action ADD_PLAYER) with this player's information.
      */
     public Entry getUserListEntry() {
-        TextMessage displayName = null;
+        BaseComponent[] displayName = null;
         if (playerListName != null && !playerListName.isEmpty()) {
-            displayName = new TextMessage(playerListName);
+            displayName = TextComponent.fromLegacyText(playerListName);
         }
         return UserListItemMessage.add(getProfile(), getGameMode().getValue(), 0, displayName);
     }
@@ -1046,9 +1044,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         playerListName = name;
 
         // send update message
-        TextMessage displayName = null;
+        BaseComponent displayName = null;
         if (playerListName != null && !playerListName.isEmpty()) {
-            displayName = new TextMessage(playerListName);
+            BaseComponent[] components = TextComponent.fromLegacyText(playerListName);
         }
         updateUserListEntries(UserListItemMessage.displayNameOne(getUniqueId(), displayName));
     }
@@ -1634,12 +1632,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(new ChatMessage(message));
     }
 
-    @SuppressWarnings("unchecked")
     public void sendActionBarMessage(String message) {
-        // "old" formatting workaround because apparently "new" styling doesn't work as of 01/18/2015
-        JSONObject json = new JSONObject();
-        json.put("text", message);
-        session.send(new ChatMessage(new TextMessage(json), 2));
+        session.send(new ChatMessage(message, 2));
     }
 
     @Override
@@ -2041,7 +2035,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
      * @throws IllegalArgumentException if location is null
      * @throws IllegalArgumentException if lines is non-null and has a length less than 4
      */
-    public void sendSignChange(TESign sign, Location location, TextMessage[] lines) throws IllegalArgumentException {
+    public void sendSignChange(TESign sign, Location location, BaseComponent[] lines) throws IllegalArgumentException {
         checkNotNull(location, "location cannot be null");
         checkNotNull(lines, "lines cannot be null");
         checkArgument(lines.length == 4, "lines.length must equal 4");
@@ -2083,13 +2077,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void sendMessage(ChatMessageType chatMessageType, BaseComponent... baseComponents) {
-        session.send(new ChatMessage(TextMessage.decode(ComponentSerializer.toString(baseComponents)), chatMessageType.ordinal()));
+        session.send(new ChatMessage(baseComponents, chatMessageType.ordinal()));
     }
 
     @Override
     public void setPlayerListHeaderFooter(BaseComponent[] header, BaseComponent[] footer) {
-        TextMessage h = TextMessage.decode(ComponentSerializer.toString(header)), f = TextMessage.decode(ComponentSerializer.toString(footer));
-        session.send(new UserListHeaderFooterMessage(h, f));
+        session.send(new UserListHeaderFooterMessage(header, footer));
     }
 
     @Override

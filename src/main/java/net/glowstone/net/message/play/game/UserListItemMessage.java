@@ -3,7 +3,7 @@ package net.glowstone.net.message.play.game;
 import com.flowpowered.network.Message;
 import lombok.Data;
 import net.glowstone.entity.meta.profile.PlayerProfile;
-import net.glowstone.util.TextMessage;
+import net.md_5.bungee.api.chat.BaseComponent;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,13 +36,13 @@ public final class UserListItemMessage implements Message {
         return add(profile, 0, 0, null);
     }
 
-    public static Entry add(PlayerProfile profile, int gameMode, int ping, TextMessage displayName) {
-        // TODO measure ping
-        return new Entry(profile.getUniqueId(), profile, gameMode, ping, displayName, Action.ADD_PLAYER);
-    }
-
     public static UserListItemMessage addOne(PlayerProfile profile) {
         return new UserListItemMessage(Action.ADD_PLAYER, add(profile));
+    }
+
+    public static Entry add(PlayerProfile profile, int gameMode, int ping, BaseComponent... displayName) {
+        // TODO measure ping
+        return new Entry(profile.getUniqueId(), profile, gameMode, ping, displayName, Action.ADD_PLAYER);
     }
 
     // gamemode
@@ -67,11 +67,11 @@ public final class UserListItemMessage implements Message {
 
     // display name
 
-    public static Entry displayName(UUID uuid, TextMessage displayName) {
+    public static Entry displayName(UUID uuid, BaseComponent... displayName) {
         return new Entry(uuid, null, 0, 0, displayName, Action.UPDATE_DISPLAY_NAME);
     }
 
-    public static UserListItemMessage displayNameOne(UUID uuid, TextMessage displayName) {
+    public static UserListItemMessage displayNameOne(UUID uuid, BaseComponent... displayName) {
         return new UserListItemMessage(Action.UPDATE_DISPLAY_NAME, displayName(uuid, displayName));
     }
 
@@ -101,7 +101,7 @@ public final class UserListItemMessage implements Message {
         public final PlayerProfile profile;
         public final int gameMode;
         public final int ping;
-        public final TextMessage displayName;
+        public final BaseComponent displayName;
         private final Action action;
     }
 }
