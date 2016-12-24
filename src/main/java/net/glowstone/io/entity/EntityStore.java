@@ -16,14 +16,19 @@ import java.util.UUID;
  */
 abstract class EntityStore<T extends GlowEntity> {
     protected final Class<T> clazz;
-    protected final EntityType type;
+    protected final String type;
 
     public EntityStore(Class<T> clazz, EntityType type) {
-        this.type = type;
+        this.type = type.getName();
+        this.clazz = clazz;
+    }
+    
+    public EntityStrore(Class<T> clazz, String name) {
+        this.type = name;
         this.clazz = clazz;
     }
 
-    public final EntityType getEntityType() {
+    public final String getEntityType() {
         return type;
     }
 
@@ -102,7 +107,7 @@ abstract class EntityStore<T extends GlowEntity> {
      * @param tag    The target tag.
      */
     public void save(T entity, CompoundTag tag) {
-        tag.putString("id", "minecraft:" + type.getName());
+        tag.putString("id", "minecraft:" + type);
 
         // write world info, Pos, Rotation, and Motion
         Location loc = entity.getLocation();
