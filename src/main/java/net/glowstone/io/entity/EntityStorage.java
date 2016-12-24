@@ -107,7 +107,7 @@ public final class EntityStorage {
      * @param <T>   The type of entity.
      */
     public static <T extends GlowEntity> void bind(EntityStore<T> store) {
-        idTable.put(store.getEntityType().getName(), store);
+        idTable.put(store.getName(), store);
         classTable.put(store.getType(), store);
     }
 
