@@ -14,7 +14,7 @@ import java.util.UUID;
  *
  * @param <T> The type of entity being stored.
  */
-abstract class EntityStore<T extends GlowEntity> {
+public abstract class EntityStore<T extends GlowEntity> {
     protected final Class<T> clazz;
     protected final String type;
 
