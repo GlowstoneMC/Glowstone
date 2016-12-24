@@ -26,7 +26,7 @@ public final class EntityIdManager {
      * @param entity The entity.
      * @return The id.
      */
-    public synchronized int allocate(GlowEntity entity) {
+    synchronized int allocate(GlowEntity entity) {
         if (entity.id != 0) {
             throw new IllegalStateException("Entity already has an id assigned.");
         }
@@ -52,7 +52,7 @@ public final class EntityIdManager {
      *
      * @param entity The entity.
      */
-    public synchronized void deallocate(GlowEntity entity) {
+    synchronized void deallocate(GlowEntity entity) {
         if (entity.id == 0) {
             throw new IllegalStateException("Entity does not have an id assigned.");
         }
