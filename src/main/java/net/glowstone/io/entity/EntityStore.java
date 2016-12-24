@@ -19,7 +19,8 @@ public abstract class EntityStore<T extends GlowEntity> {
     protected final String type;
 
     public EntityStore(Class<T> clazz, EntityType type) {
-        this(clazz, type.getName());
+        this.clazz = clazz;
+        this.type = type.getName();
     }
     
     public EntityStore(Class<T> clazz, String name) {

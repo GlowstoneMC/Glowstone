@@ -9,14 +9,19 @@ import java.lang.reflect.Constructor;
 
 public class AgeableStore<T extends GlowAgeable> extends CreatureStore<T> {
 
-    private final Constructor<T> constructor;
+    private Constructor<T> constructor;
 
     public AgeableStore(Class<T> clazz, EntityType type) {
         super(clazz, type.getName());
+        init(clazz);
     }
 
     public AgeableStore(Class<T> clazz, String type) {
         super(clazz, type);
+        init(clazz);
+    }
+
+    private void init(Class<T> clazz) {
         Constructor<T> ctor = null;
         try {
             ctor = clazz.getConstructor(Location.class);

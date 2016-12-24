@@ -9,14 +9,19 @@ import java.lang.reflect.Constructor;
 
 public class AnimalStore<T extends GlowAnimal> extends EntityStore<T> {
 
-    private final Constructor<T> constructor;
+    private Constructor<T> constructor;
 
     public AnimalStore(Class<T> clazz, EntityType type) {
-        this(clazz, type.getName());
+        super(clazz, type.getName());
+        init(clazz);
     }
-	
-	public AnimalStore(Class<T> clazz, String type) {
+
+    public AnimalStore(Class<T> clazz, String type) {
         super(clazz, type);
+        init(clazz);
+    }
+
+    private void init(Class<T> clazz) {
         Constructor<T> ctor = null;
         try {
             ctor = clazz.getConstructor(Location.class);

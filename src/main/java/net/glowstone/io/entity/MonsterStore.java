@@ -9,14 +9,19 @@ import java.lang.reflect.Constructor;
 
 public class MonsterStore<T extends GlowMonster> extends EntityStore<T> {
 
-    private final Constructor<T> constructor;
+    private Constructor<T> constructor;
 
     public MonsterStore(Class<T> clazz, EntityType type) {
-        this(clazz, type.getName());
+        super(clazz, type.getName());
+        init(clazz);
     }
-	
-	public MonsterStore(Class<T> clazz, String type){
+
+    public MonsterStore(Class<T> clazz, String type) {
         super(clazz, type);
+        init(clazz);
+    }
+
+    private void init(Class<T> clazz) {
         Constructor<T> ctor = null;
         try {
             ctor = clazz.getConstructor(Location.class);
@@ -24,7 +29,7 @@ public class MonsterStore<T extends GlowMonster> extends EntityStore<T> {
             e.printStackTrace();
         }
         constructor = ctor;
-	}
+    }
 
     @Override
     public T createEntity(Location location, CompoundTag compound) {
