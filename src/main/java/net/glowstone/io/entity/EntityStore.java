@@ -23,7 +23,7 @@ abstract class EntityStore<T extends GlowEntity> {
         this.clazz = clazz;
     }
     
-    public EntityStrore(Class<T> clazz, String name) {
+    public EntityStore(Class<T> clazz, String name) {
         this.type = name;
         this.clazz = clazz;
     }
