@@ -68,7 +68,7 @@ public final class EntityManager implements Iterable<GlowEntity> {
      * @param entity The entity.
      */
     @SuppressWarnings("unchecked")
-    public void register(GlowEntity entity) {
+    void register(GlowEntity entity) {
         if (entity.id == 0) {
             throw new IllegalStateException("Entity has not been assigned an id.");
         }
@@ -82,7 +82,7 @@ public final class EntityManager implements Iterable<GlowEntity> {
      *
      * @param entity The entity.
      */
-    public void unregister(GlowEntity entity) {
+    void unregister(GlowEntity entity) {
         entities.remove(entity.id);
         getAll(entity.getClass()).remove(entity);
         ((GlowChunk) entity.location.getChunk()).getRawEntities().remove(entity);
@@ -95,7 +95,7 @@ public final class EntityManager implements Iterable<GlowEntity> {
      * @param entity      The entity.
      * @param newLocation The new location.
      */
-    public void move(GlowEntity entity, Location newLocation) {
+    void move(GlowEntity entity, Location newLocation) {
         Chunk prevChunk = entity.location.getChunk();
         Chunk newChunk = newLocation.getChunk();
         if (prevChunk != newChunk) {
