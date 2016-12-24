@@ -101,7 +101,7 @@ public final class UserListItemMessage implements Message {
         public final PlayerProfile profile;
         public final int gameMode;
         public final int ping;
-        public final BaseComponent displayName;
+        public final BaseComponent[] displayName;
         private final Action action;
     }
 }

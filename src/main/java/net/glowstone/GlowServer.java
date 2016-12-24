@@ -1368,7 +1368,7 @@ public final class GlowServer implements Server {
 
     @Override
     public void broadcast(BaseComponent component) {
-        spigot().broadcast(component);
+        broadcastPacket(new ChatMessage(component));
     }
 
     @Override

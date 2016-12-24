@@ -13,7 +13,7 @@ public final class CombatEventMessage implements Message {
     private final Event event;
     private final int duration;
     private final int entityID, playerID;
-    private final BaseComponent message;
+    private final BaseComponent[] message;
 
     // BEGIN_COMBAT
     public CombatEventMessage(Event event) {
@@ -26,7 +26,7 @@ public final class CombatEventMessage implements Message {
     }
 
     // ENTITY_DEAD
-    public CombatEventMessage(Event event, int entityID, int playerID, BaseComponent message) {
+    public CombatEventMessage(Event event, int entityID, int playerID, BaseComponent[] message) {
         this(event, 0, entityID, playerID, message);
     }
 

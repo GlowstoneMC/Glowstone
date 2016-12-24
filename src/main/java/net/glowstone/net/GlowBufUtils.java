@@ -137,7 +137,7 @@ public final class GlowBufUtils {
                     ByteBufUtils.writeUTF8(buf, (String) value);
                     break;
                 case CHAT:
-                    writeChat(buf, (BaseComponent) value);
+                    writeChat(buf, (BaseComponent[]) value);
                     break;
                 case ITEM:
                     writeSlot(buf, (ItemStack) value);
@@ -353,8 +353,11 @@ public final class GlowBufUtils {
      * @param text The chat message to write.
      * @throws IOException on write failure.
      */
-    public static void writeChat(ByteBuf buf, BaseComponent text) throws IOException {
-        ByteBufUtils.writeUTF8(buf, ComponentSerializer.toString(text));
+    public static void writeChat(ByteBuf buf, BaseComponent[] text) throws IOException {
+        for (int i = 1; i < text.length; i++) {
+            text[0].addExtra(text[i]);
+        }
+        ByteBufUtils.writeUTF8(buf, ComponentSerializer.toString(text[0]));
     }
 
 }

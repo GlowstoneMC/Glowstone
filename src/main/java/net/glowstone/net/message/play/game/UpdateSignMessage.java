@@ -9,9 +9,9 @@ import net.md_5.bungee.api.chat.TextComponent;
 public final class UpdateSignMessage implements Message {
 
     private final int x, y, z;
-    private final BaseComponent[] message;
+    private final BaseComponent[][] message;
 
-    public UpdateSignMessage(int x, int y, int z, BaseComponent... message) {
+    public UpdateSignMessage(int x, int y, int z, BaseComponent[]... message) {
         if (message.length != 4) {
             throw new IllegalArgumentException();
         }

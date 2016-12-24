@@ -13,7 +13,7 @@ public class BossBarMessage implements Message {
 
     private final UUID uuid;
     private final Action action;
-    private final BaseComponent title;
+    private final BaseComponent[] title;
     private final float health;
     private final Color color;
     private final Division division;
@@ -31,7 +31,7 @@ public class BossBarMessage implements Message {
     }
 
     //For action 3, update title
-    public BossBarMessage(UUID uuid, Action action, BaseComponent title) {
+    public BossBarMessage(UUID uuid, Action action, BaseComponent[] title) {
         this(uuid, action, title, 0f, null, null, (byte) 0);
     }
 

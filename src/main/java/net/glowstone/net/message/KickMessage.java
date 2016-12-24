@@ -10,10 +10,10 @@ import net.md_5.bungee.api.chat.TextComponent;
 @RequiredArgsConstructor
 public final class KickMessage implements Message {
 
-    private final BaseComponent text;
+    private final BaseComponent[] text;
 
     public KickMessage(String text) {
-        this(TextComponent.fromLegacyText(text)[0]);
+        this(TextComponent.fromLegacyText(text));
     }
 
 }

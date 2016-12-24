@@ -20,7 +20,7 @@ public final class UpdateSignCodec implements Codec<UpdateSignMessage> {
     @Override
     public ByteBuf encode(ByteBuf buf, UpdateSignMessage message) throws IOException {
         GlowBufUtils.writeBlockPosition(buf, message.getX(), message.getY(), message.getZ());
-        for (BaseComponent line : message.getMessage()) {
+        for (BaseComponent[] line : message.getMessage()) {
             GlowBufUtils.writeChat(buf, line);
         }
         return buf;

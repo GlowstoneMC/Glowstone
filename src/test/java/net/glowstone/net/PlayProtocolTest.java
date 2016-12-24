@@ -44,7 +44,7 @@ public class PlayProtocolTest extends BaseProtocolTest {
             new TransactionMessage(1, 2, true),
             new CreativeItemMessage(1, new ItemStack(Material.APPLE, 1)),
             new EnchantItemMessage(1, 2),
-            new UpdateSignMessage(1, 2, 3, TextComponent.fromLegacyText("hello")[0], TextComponent.fromLegacyText("hi")[0], TextComponent.fromLegacyText("third")[0], TextComponent.fromLegacyText("fourth")[0]),
+            new UpdateSignMessage(1, 2, 3, TextComponent.fromLegacyText("hello"), TextComponent.fromLegacyText("hi"), TextComponent.fromLegacyText("third"), TextComponent.fromLegacyText("fourth")),
             UpdateSignMessage.fromPlainText(1, 2, 3, "hello", "hi", "third", "fourth"),
             new PlayerAbilitiesMessage(1, 2f, 3f),
             new TabCompleteMessage("text", false, null),
