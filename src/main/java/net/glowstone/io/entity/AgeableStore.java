@@ -7,11 +7,15 @@ import org.bukkit.entity.EntityType;
 
 import java.lang.reflect.Constructor;
 
-class AgeableStore<T extends GlowAgeable> extends CreatureStore<T> {
+public class AgeableStore<T extends GlowAgeable> extends CreatureStore<T> {
 
     private final Constructor<T> constructor;
 
     public AgeableStore(Class<T> clazz, EntityType type) {
+        super(clazz, type.getName());
+    }
+
+    public AgeableStore(Class<T> clazz, String type) {
         super(clazz, type);
         Constructor<T> ctor = null;
         try {

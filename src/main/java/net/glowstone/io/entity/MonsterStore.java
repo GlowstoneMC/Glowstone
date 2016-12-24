@@ -7,11 +7,15 @@ import org.bukkit.entity.EntityType;
 
 import java.lang.reflect.Constructor;
 
-class MonsterStore<T extends GlowMonster> extends EntityStore<T> {
+public class MonsterStore<T extends GlowMonster> extends EntityStore<T> {
 
     private final Constructor<T> constructor;
 
     public MonsterStore(Class<T> clazz, EntityType type) {
+        this(clazz, type.getName());
+    }
+	
+	public MonsterStore(Class<T> clazz, String type){
         super(clazz, type);
         Constructor<T> ctor = null;
         try {
@@ -20,7 +24,7 @@ class MonsterStore<T extends GlowMonster> extends EntityStore<T> {
             e.printStackTrace();
         }
         constructor = ctor;
-    }
+	}
 
     @Override
     public T createEntity(Location location, CompoundTag compound) {

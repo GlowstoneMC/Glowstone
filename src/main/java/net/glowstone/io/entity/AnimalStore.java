@@ -7,11 +7,15 @@ import org.bukkit.entity.EntityType;
 
 import java.lang.reflect.Constructor;
 
-class AnimalStore<T extends GlowAnimal> extends EntityStore<T> {
+public class AnimalStore<T extends GlowAnimal> extends EntityStore<T> {
 
     private final Constructor<T> constructor;
 
     public AnimalStore(Class<T> clazz, EntityType type) {
+        this(clazz, type.getName());
+    }
+	
+	public AnimalStore(Class<T> clazz, String type) {
         super(clazz, type);
         Constructor<T> ctor = null;
         try {
