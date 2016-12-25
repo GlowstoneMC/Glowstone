@@ -1,6 +1,7 @@
 package net.glowstone.command;
 
 import com.google.common.collect.ImmutableList;
+import net.glowstone.GlowWorld;
 import net.glowstone.entity.EntityRegistry;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.io.entity.EntityStorage;
@@ -18,6 +19,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,15 +73,16 @@ public class SummonCommand extends BukkitCommand {
         }
 
         String entityName = args[0];
-        EntityType type = EntityType.fromName(entityName);
-        if (type == null) {
-            sender.sendMessage(ChatColor.RED + "Unknown entity type: " + entityName);
+        if (!checkSummon(sender, entityName)) {
             return true;
         }
-        if (!checkSummon(sender, type)) {
-            return true;
+        GlowEntity entity;
+        if (EntityType.fromName(entityName) != null) {
+            entity = (GlowEntity) location.getWorld().spawnEntity(location, EntityType.fromName(entityName));
+        } else {
+            Class<? extends GlowEntity> clazz = EntityRegistry.getCustomEntityDescriptor(entityName).getEntityClass();
+            entity = ((GlowWorld) location.getWorld()).spawn(location, clazz, CreatureSpawnEvent.SpawnReason.CUSTOM);
         }
-        GlowEntity entity = (GlowEntity) location.getWorld().spawnEntity(location, type);
         if (tag != null) {
             EntityStorage.load(entity, tag);
         }
@@ -88,19 +91,24 @@ public class SummonCommand extends BukkitCommand {
         return true;
     }
 
-    private boolean checkSummon(CommandSender sender, EntityType type) {
-        if (!type.isSpawnable()) {
-            if (sender != null) sender.sendMessage(ChatColor.RED + "The entity '" + type.getName() + "' cannot be summoned.");
+    private boolean checkSummon(CommandSender sender, String type) {
+        if (type == null) {
             return false;
         }
-        if (EntityRegistry.getEntity(type) == null) {
-            if (sender != null) sender.sendMessage(ChatColor.RED + "The entity '" + type.getName() + "' is not implemented yet.");
+        EntityType entityType = EntityType.fromName(type);
+        if (sender != null) sender.sendMessage(type + " == null: " + (entityType == null) + "!");
+        if (entityType != null && !EntityType.fromName(type).isSpawnable()) {
+            if (sender != null)
+                sender.sendMessage(ChatColor.RED + "The entity '" + EntityType.fromName(type).getName() + "' cannot be summoned.");
             return false;
         }
-        try {
-            EntityRegistry.getEntity(type).getConstructor(Location.class);
-        } catch (NoSuchMethodException e) {
-            if (sender != null) sender.sendMessage(ChatColor.RED + "The entity '" + type.getName() + "' cannot be summoned.");
+        if (entityType != null && EntityRegistry.getEntity(entityType) == null) {
+            if (sender != null)
+                sender.sendMessage(ChatColor.RED + "The entity '" + entityType.getName() + "' is not implemented yet.");
+            return false;
+        } else if (entityType == null && !EntityRegistry.isCustomEntityRegistered(type)) {
+            if (sender != null)
+                sender.sendMessage(ChatColor.RED + "The entity '" + type + "' is does not exist.");
             return false;
         }
         return true;
@@ -115,10 +123,14 @@ public class SummonCommand extends BukkitCommand {
             String arg = args[0];
             ArrayList<String> completion = new ArrayList<>();
             for (EntityType type : EntityType.values()) {
-                if (checkSummon(null, type) && StringUtils.startsWithIgnoreCase(type.getName(), arg)) {
+                if (checkSummon(null, type.getName()) && StringUtils.startsWithIgnoreCase(type.getName(), arg)) {
                     completion.add(type.getName());
                 }
             }
+            EntityRegistry.getRegisteredCustomEntities().forEach((d) -> {
+                if (StringUtils.startsWithIgnoreCase(d.getId(), arg))
+                    completion.add(d.getId().toLowerCase());
+            });
             return completion;
         } else {
             return ImmutableList.of();

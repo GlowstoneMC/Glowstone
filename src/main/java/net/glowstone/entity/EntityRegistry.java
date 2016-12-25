@@ -4,9 +4,14 @@ import com.google.common.collect.ImmutableBiMap;
 import net.glowstone.entity.monster.*;
 import net.glowstone.entity.objects.*;
 import net.glowstone.entity.passive.*;
+import net.glowstone.io.entity.EntityStorage;
 import org.bukkit.entity.*;
 
+import java.util.*;
+
 public class EntityRegistry {
+
+    private static final Map<String, CustomEntityDescriptor> CUSTOM_ENTITIES = new HashMap<>();
 
     private static final ImmutableBiMap<Class<? extends Entity>, Class<? extends GlowEntity>> ENTITIES =
             ImmutableBiMap.<Class<? extends Entity>, Class<? extends GlowEntity>>builder()
@@ -100,5 +105,27 @@ public class EntityRegistry {
 
     public static Class<? extends GlowEntity> getEntity(Class<? extends Entity> clazz) {
         return ENTITIES.get(clazz);
+    }
+
+    public static void registerCustomEntity(CustomEntityDescriptor<? extends GlowEntity> descriptor) {
+        if (descriptor == null || descriptor.getEntityClass() == null || descriptor.getId() == null || descriptor.getPlugin() == null)
+            return;
+        if (CUSTOM_ENTITIES.containsKey(descriptor.getId().toLowerCase())) return;
+        CUSTOM_ENTITIES.put(descriptor.getId(), descriptor);
+        EntityStorage.bind(descriptor.getStorage());
+    }
+
+    public static CustomEntityDescriptor getCustomEntityDescriptor(String id) {
+        return CUSTOM_ENTITIES.get(id.toLowerCase());
+    }
+
+    public static boolean isCustomEntityRegistered(String id) {
+        return CUSTOM_ENTITIES.containsKey(id.toLowerCase());
+    }
+
+    public static List<CustomEntityDescriptor> getRegisteredCustomEntities() {
+        List<CustomEntityDescriptor> entities = new ArrayList<>();
+        CUSTOM_ENTITIES.values().forEach(entities::add);
+        return Collections.unmodifiableList(entities);
     }
 }
