@@ -108,7 +108,7 @@ public class SummonCommand extends BukkitCommand {
             return false;
         } else if (entityType == null && !EntityRegistry.isCustomEntityRegistered(type)) {
             if (sender != null)
-                sender.sendMessage(ChatColor.RED + "The entity '" + type + "' is does not exist.");
+                sender.sendMessage(ChatColor.RED + "The entity '" + type + "' does not exist.");
             return false;
         }
         return true;
