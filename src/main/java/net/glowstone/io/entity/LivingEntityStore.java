@@ -15,10 +15,14 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.*;
 import java.util.Map.Entry;
 
-abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore<T> {
+public abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore<T> {
+
+    public LivingEntityStore(Class<T> clazz, String type) {
+        super(clazz, type);
+    }
 
     public LivingEntityStore(Class<T> clazz, EntityType type) {
-        super(clazz, type);
+        this(clazz, type.getName());
     }
 
     // these tags that apply to living entities only are documented as global:
