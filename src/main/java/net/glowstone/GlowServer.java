@@ -47,6 +47,7 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.command.*;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -799,7 +800,13 @@ public final class GlowServer implements Server {
 
             // load permissions.yml
             ConfigurationSection permConfig = config.getConfigFile(Key.PERMISSIONS_FILE);
-            List<Permission> perms = Permission.loadPermissions(permConfig.getValues(false), "Permission node '%s' in permissions config is invalid", PermissionDefault.OP);
+
+            Map<String, Map<String, Object>> data = new HashMap<>();
+
+            permConfig.getValues(false).forEach((key, value) -> data.put(key, ((MemorySection) value).getValues(false)));
+
+            List<Permission> perms = Permission.loadPermissions(data, "Permission node '%s' in permissions config is invalid", PermissionDefault.OP);
+
             for (Permission perm : perms) {
                 try {
                     pluginManager.addPermission(perm);
