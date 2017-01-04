@@ -912,26 +912,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public void setGlowing(boolean b) {
-
-    }
-
-    @Override
-    public boolean isGlowing() {
-        return false;
-    }
-
-    @Override
-    public void setInvulnerable(boolean b) {
-
-    }
-
-    @Override
-    public boolean isInvulnerable() {
-        return false;
-    }
-
-    @Override
     public InetSocketAddress getAddress() {
         return session.getAddress();
     }
@@ -1632,8 +1612,14 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(new ChatMessage(message));
     }
 
-    public void sendActionBarMessage(String message) {
+    @Override
+    public void sendActionBar(String message) {
         session.send(new ChatMessage(message, 2));
+    }
+
+    @Override
+    public void sendActionBar(char alternateChar, String message) {
+        sendActionBar(message); // TODO: don't ignore formatting codes
     }
 
     @Override

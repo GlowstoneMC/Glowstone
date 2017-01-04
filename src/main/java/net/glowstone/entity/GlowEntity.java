@@ -41,10 +41,7 @@ import org.spigotmc.event.entity.EntityDismountEvent;
 import org.spigotmc.event.entity.EntityMountEvent;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -792,7 +789,7 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public EntityType getType() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return EntityType.UNKNOWN;
     }
 
     @Override
@@ -805,7 +802,7 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public boolean leaveVehicle() {
-        return isInsideVehicle() && vehicle.setPassenger(null);
+        return isInsideVehicle() && vehicle.setPassenger(null); // TODO: multiple passengers
     }
 
     @Override
@@ -871,6 +868,21 @@ public abstract class GlowEntity implements Entity {
     @Override
     public Entity getPassenger() {
         return passenger;
+    }
+
+    @Override
+    public List<Entity> getPassengers() {
+        return Arrays.asList(new Entity[]{passenger}); // TODO: multiple passengers
+    }
+
+    @Override
+    public boolean removePassenger(Entity passenger) {
+        return passenger.leaveVehicle();
+    }
+
+    @Override
+    public boolean addPassenger(Entity passenger) {
+        return setPassenger(passenger); // TODO: multiple passengers
     }
 
     @Override
@@ -1075,7 +1087,11 @@ public abstract class GlowEntity implements Entity {
     }
 
     public Spigot spigot() {
-        return null; // TODO: support entity isInvulnerable() API
+        return new Spigot() {
+            public boolean isInvulnerable() {
+                return isInvulnerable();
+            }
+        };
     }
 
     @Override
