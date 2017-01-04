@@ -330,26 +330,6 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     }
 
     @Override
-    public void setGlowing(boolean b) {
-
-    }
-
-    @Override
-    public boolean isGlowing() {
-        return false;
-    }
-
-    @Override
-    public void setInvulnerable(boolean b) {
-
-    }
-
-    @Override
-    public boolean isInvulnerable() {
-        return false;
-    }
-
-    @Override
     public Location getOrigin() {
         return null;
     }
