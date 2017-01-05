@@ -13,7 +13,7 @@ public final class UpdateSignMessage implements Message {
 
     public UpdateSignMessage(int x, int y, int z, BaseComponent[]... message) {
         if (message.length != 4) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Expected message length was 4, got " + message.length);
         }
 
         this.x = x;
@@ -24,12 +24,12 @@ public final class UpdateSignMessage implements Message {
 
     public static UpdateSignMessage fromPlainText(int x, int y, int z, String... message) {
         if (message.length != 4) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Expected message length was 4, got " + message.length);
         }
 
-        BaseComponent[] encoded = new BaseComponent[4];
+        BaseComponent[][] encoded = new BaseComponent[4][1];
         for (int i = 0; i < 4; ++i) {
-            encoded[i] = TextComponent.fromLegacyText(message[i])[0];
+            encoded[i] = TextComponent.fromLegacyText(message[i]);
         }
         return new UpdateSignMessage(x, y, z, encoded);
     }
