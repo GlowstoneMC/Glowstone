@@ -13,9 +13,10 @@ public final class UpdateSignCodec implements Codec<UpdateSignMessage> {
     @Override
     public UpdateSignMessage decode(ByteBuf buf) throws IOException {
         BlockVector pos = GlowBufUtils.readBlockPosition(buf);
-        BaseComponent[] message = new BaseComponent[4];
-        BaseComponent[] chat = GlowBufUtils.readChat(buf);
-        System.arraycopy(chat, 0, message, 0, chat.length);
+        BaseComponent[][] message = new BaseComponent[4][];
+        for (int i = 0; i < 4; i++) {
+            message[i] = GlowBufUtils.readChat(buf);
+        }
         return new UpdateSignMessage(pos.getBlockX(), pos.getBlockY(), pos.getBlockZ(), message);
     }
 

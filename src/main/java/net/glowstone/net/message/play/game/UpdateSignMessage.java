@@ -29,7 +29,7 @@ public final class UpdateSignMessage implements Message {
 
         BaseComponent[][] encoded = new BaseComponent[4][1];
         for (int i = 0; i < 4; ++i) {
-            encoded[i] = TextComponent.fromLegacyText(message[i]);
+            encoded[i][0] = TextComponent.fromLegacyText(message[i])[0];
         }
         return new UpdateSignMessage(x, y, z, encoded);
     }
