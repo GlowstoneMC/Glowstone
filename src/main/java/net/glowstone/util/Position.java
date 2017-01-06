@@ -47,6 +47,16 @@ public final class Position {
     }
 
     /**
+     * Gets an integer approximation of the head-yaw rotation between 0 and 255.
+     *
+     * @param headYaw the head-yaw rotation value.
+     * @return An integer approximation of the head-yaw rotation value.
+     */
+    public static int getIntHeadYaw(float headYaw) {
+        return (int) (headYaw % 360 / 360 * 256);
+    }
+
+    /**
      * Gets whether there has been a position change between the two Locations.
      *
      * @param first The initial location.

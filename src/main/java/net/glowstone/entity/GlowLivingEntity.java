@@ -8,12 +8,15 @@ import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.AttributeManager.Key;
+import net.glowstone.entity.ai.TaskManager;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.inventory.EquipmentMonitor;
 import net.glowstone.net.message.play.entity.EntityEffectMessage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
+import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.EntityRemoveEffectMessage;
 import net.glowstone.util.InventoryUtil;
+import net.glowstone.util.Position;
 import net.glowstone.util.SoundUtil;
 import net.glowstone.util.loot.LootData;
 import net.glowstone.util.loot.LootingManager;
@@ -111,9 +114,22 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * Ticks until the next ambient sound roll.
      */
     private int nextAmbientTime = 1;
-
-
+    /**
+     * The last entity which damaged this living entity.
+     */
     private Entity lastDamager;
+    /**
+     * The head rotation of the living entity, if applicable.
+     */
+    private float headYaw;
+    /**
+     * Whether the headYaw value should be updated.
+     */
+    private boolean headRotated;
+    /**
+     * The entity's AI task manager.
+     */
+    protected final TaskManager taskManager;
 
     /**
      * Creates a mob within the specified world.
@@ -136,6 +152,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         this.maxHealth = maxHealth;
         attributeManager.setProperty(Key.KEY_MAX_HEALTH, maxHealth);
         health = maxHealth;
+        taskManager = new TaskManager(this);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -219,6 +236,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         if (nextAmbientTime == 0) {
             nextAmbientTime = getAmbientDelay();
         }
+        taskManager.pulse();
     }
 
     @Override
@@ -232,7 +250,10 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         List<Message> messages = super.createUpdateMessage();
 
         messages.addAll(equipmentMonitor.getChanges().stream().map(change -> new EntityEquipmentMessage(id, change.slot, change.item)).collect(Collectors.toList()));
-
+        if (headRotated) {
+            messages.add(new EntityHeadRotationMessage(id, Position.getIntHeadYaw(headYaw)));
+            headRotated = false;
+        }
         attributeManager.applyMessages(messages);
 
         return messages;
@@ -268,6 +289,15 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Override
     public boolean hasLineOfSight(Entity other) {
         return false;
+    }
+
+    public float getHeadYaw() {
+        return headYaw;
+    }
+
+    public void setHeadYaw(float headYaw) {
+        this.headYaw = headYaw;
+        this.headRotated = true;
     }
 
     @Override
@@ -888,5 +918,9 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     public AttributeInstance getAttribute(Attribute attribute) {
         // todo: 1.11
         return null;
+    }
+
+    public TaskManager getTaskManager() {
+        return taskManager;
     }
 }
