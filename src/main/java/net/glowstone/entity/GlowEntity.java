@@ -542,11 +542,6 @@ public abstract class GlowEntity implements Entity {
             result.add(new EntityRotationMessage(id, yaw, pitch));
         }
 
-        // todo: handle head rotation as a separate value
-        if (rotated) {
-            result.add(new EntityHeadRotationMessage(id, yaw));
-        }
-
         // send changed metadata
         List<Entry> changes = metadata.getChanges();
         if (!changes.isEmpty()) {
