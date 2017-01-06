@@ -97,15 +97,17 @@ public class TitleCommand extends BukkitCommand {
             return false;
         }
 
-        if (args[1].equalsIgnoreCase("clear")) {
+        String action = args[1];
+
+        if (action.equalsIgnoreCase("clear")) {
             ((GlowPlayer) player).clearTitle();
             sender.sendMessage("Cleared " + player.getName() + "'s title");
-        } else if (args[1].equalsIgnoreCase("reset")) {
+        } else if (action.equalsIgnoreCase("reset")) {
             player.resetTitle();
             sender.sendMessage("Reset " + player.getName() + "'s title");
-        } else if (args[1].equalsIgnoreCase("title")) {
+        } else if (action.equalsIgnoreCase("title")) {
             if (args.length < 3) {
-                sender.sendMessage(ChatColor.RED + "Usage: /title <player> " + args[1] + " <raw json>");
+                sender.sendMessage(ChatColor.RED + "Usage: /title <player> " + action + " <raw json>");
                 return false;
             }
 
