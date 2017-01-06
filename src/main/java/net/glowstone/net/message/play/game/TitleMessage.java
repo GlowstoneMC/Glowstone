@@ -69,5 +69,4 @@ public final class TitleMessage implements Message {
             return id < 0 || id >= values.length ? null : values[id];
         }
     }
-
 }

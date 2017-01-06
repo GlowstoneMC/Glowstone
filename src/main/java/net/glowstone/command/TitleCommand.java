@@ -16,7 +16,7 @@ import java.util.Collections;
 public class TitleCommand extends BukkitCommand {
 
     public TitleCommand() {
-        super("title", "Sends a title to the specified player(s)", "/title <player> <title|clear|reset> ...", Collections.emptyList());
+        super("title", "Sends a title to the specified player(s)", "/title <player> <title|subtitle|times|clear|reset> ...", Collections.emptyList());
         setPermission("glowstone.command.title");
     }
 
@@ -82,7 +82,6 @@ public class TitleCommand extends BukkitCommand {
         return null;
     }
 
-    // TODO: rework this to support all supported options for titles
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         if (!testPermission(sender)) return true;
@@ -132,6 +131,10 @@ public class TitleCommand extends BukkitCommand {
             player.sendTitle(new Title(component));
 
             sender.sendMessage("Updated " + player.getName() + "'s title");
+        } else if (args[1].equalsIgnoreCase("subtitle")) {
+            sender.sendMessage("This feature is not yet supported");
+        } else if (args[1].equalsIgnoreCase("times")) {
+            sender.sendMessage("This feature is not yet supported");
         } else {
             sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
             return false;
@@ -154,8 +157,8 @@ public class TitleCommand extends BukkitCommand {
         return n;
     }
 
-    // TODO: Replace with a proper JSON chat component validator
     private boolean validJson(String raw) {
+
         Object object = JSONValue.parse(raw);
 
         if (object == null) {
@@ -172,26 +175,48 @@ public class TitleCommand extends BukkitCommand {
 
         JSONObject json = (JSONObject) object;
 
-        // Needs a text component at least
-        if (!json.containsKey("text") || !(json.get("text") instanceof String))
-            return false;
+        // Run through all of the keys to see if they are valid keys,
+        // and have valid values
+        for (Object key : json.keySet()) {
+            Object value = json.get(key);
 
-        // If 'extra' is present, some extra handling needs to be done
-        if (json.containsKey("extra")) {
-            Object extraObj = json.get("extra");
+            if (!(key instanceof String))
+                return false; // The key is not a string, meaning that it is not valid
 
-            // Check to make sure it's a valid component
-            if (!(extraObj instanceof JSONArray)) return false;
+            String keyString = (String) key;
 
-            // Check all components in 'extra'
-            JSONArray extra = (JSONArray) extraObj;
-            if (extra.isEmpty()) return false; // No components
-            for (Object o : extra) {
-                if (!(o instanceof JSONObject)) return false;
-
-                // Check to make sure there's a text component
-                JSONObject e = (JSONObject) o;
-                if (!e.containsKey("text") || !(e.get("text") instanceof String))
+            switch (keyString) {
+                case "text":
+                    if (!(value instanceof String))
+                        return false; // The value is not a valid type
+                    break;
+                case "color":
+                    if (!(value instanceof String))
+                        return false; // The value is not a valid type
+                    break;
+                case "bold":
+                    if (!(value instanceof Boolean))
+                        return false; // The value is not a valid type
+                    break;
+                case "italic":
+                    if (!(value instanceof Boolean))
+                        return false; // The value is not a valid type
+                    break;
+                case "underlined":
+                    if (!(value instanceof Boolean))
+                        return false; // The value is not a valid type
+                    break;
+                case "strikethrough":
+                    if (!(value instanceof Boolean))
+                        return false; // The value is not a valid type
+                    break;
+                case "obfuscated":
+                    if (!(value instanceof Boolean))
+                        return false; // The value is not a valid type
+                    break;
+                default:
+                    // The key is not in the list of valid keys,
+                    // meaning that it is not a valid key
                     return false;
             }
         }
