@@ -96,7 +96,6 @@ public class SummonCommand extends BukkitCommand {
             return false;
         }
         EntityType entityType = EntityType.fromName(type);
-        if (sender != null) sender.sendMessage(type + " == null: " + (entityType == null) + "!");
         if (entityType != null && !EntityType.fromName(type).isSpawnable()) {
             if (sender != null)
                 sender.sendMessage(ChatColor.RED + "The entity '" + EntityType.fromName(type).getName() + "' cannot be summoned.");
