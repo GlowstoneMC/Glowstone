@@ -2214,13 +2214,12 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
                 break;
             case TIMES:
                 Preconditions.checkArgument(!(value instanceof Integer[]), "Value is not of the correct type");
-                Preconditions.checkArgument(value.length != 3, "Only expected 3 values. Got " + value.length);
+                Preconditions.checkArgument(value.length == 3, "Expected 3 values. Got " + value.length);
 
-                Integer[] formattedValue = (Integer[]) value;
-
-                currentTitle.fadeIn(formattedValue[0]);
-                currentTitle.stay(formattedValue[1]);
-                currentTitle.fadeOut(formattedValue[2]);
+                currentTitle.fadeIn((int) value[0]);
+                currentTitle.stay((int) value[1]);
+                currentTitle.fadeOut((int) value[2]);
+                
                 break;
             default:
                 Preconditions.checkArgument(true, "Action is something other than a title, subtitle, or times");
