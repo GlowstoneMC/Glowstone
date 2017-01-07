@@ -7,11 +7,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class TitleCommand extends BukkitCommand {
 
@@ -27,56 +28,51 @@ public class TitleCommand extends BukkitCommand {
      * @param json the json chat component
      * @return the colored string, or null
      */
-    // TODO: Replace with proper chat components when possible
     public static String convertJson(JSONObject json) {
         if (json == null || !json.containsKey("text") && !(json.get("text") instanceof String))
             return null; // We can't even parse this
 
         ChatColor color = ChatColor.WHITE;
-        if (json.containsKey("color")) {
-            if (!(json.get("color") instanceof String)) return null;
-            color = toColor((String) json.get("color"));
-        }
-        if (color == null) return null; // Invalid color
+        List<ChatColor> style = new ArrayList<>();
 
-        String text = color + (String) json.get("text");
+        for (Object key : json.keySet()) {
+            if (!(key instanceof String))
+                continue;
 
-        // Check for "extra"
-        if (json.containsKey("extra")) {
-            Object extraObj = json.get("extra");
+            String keyString = (String) key;
 
-            // Check to make sure it's a valid component
-            if (!(extraObj instanceof JSONArray)) return null;
-
-            // Check all components in 'extra'
-            JSONArray extra = (JSONArray) extraObj;
-            if (extra.isEmpty()) return null;
-            for (Object o : extra) {
-                if (!(o instanceof JSONObject)) return null;
-
-                JSONObject e = (JSONObject) o;
-
-                // Attempt to parse the component
-                String temp = convertJson(e);
-                if (temp == null) return null; // Could not parse 'extra'
-
-                // It's valid, append it
-                text += temp;
+            if (keyString.equalsIgnoreCase("color")) {
+                if (!(json.get("color") instanceof String)) return null;
+                color = toColor((String) json.get(keyString));
+            } else if (!keyString.equalsIgnoreCase("text")) {
+                if (toColor(keyString) == null) return null;
+                style.add(toColor(keyString));
             }
+        }
+
+        style.add(color);
+
+        String text = (String) json.get("text");
+
+        for (ChatColor c : style) {
+            text = c + text;
         }
 
         return text;
     }
 
     private static ChatColor toColor(String name) {
-        if (name.equals("obfuscated"))
+        if (name.equalsIgnoreCase("obfuscated"))
             return ChatColor.MAGIC;
+
+        if (name.equalsIgnoreCase("underlined"))
+            return ChatColor.UNDERLINE;
 
         // Loop to avoid exceptions, we'll just return null if it can't be parsed
         for (ChatColor color : ChatColor.values()) {
             if (color == ChatColor.MAGIC) continue; // This isn't a valid value for color anyways
 
-            if (color.name().equals(name.toUpperCase()))
+            if (color.name().equalsIgnoreCase(name.toUpperCase()))
                 return color;
         }
         return null;
@@ -133,9 +129,9 @@ public class TitleCommand extends BukkitCommand {
             player.sendTitle(new Title(component));
 
             sender.sendMessage("Updated " + player.getName() + "'s title");
-        } else if (args[1].equalsIgnoreCase("subtitle")) {
+        } else if (action.equalsIgnoreCase("subtitle")) {
             sender.sendMessage("This feature is not yet supported");
-        } else if (args[1].equalsIgnoreCase("times")) {
+        } else if (action.equalsIgnoreCase("times")) {
             sender.sendMessage("This feature is not yet supported");
         } else {
             sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
