@@ -1,7 +1,7 @@
 package net.glowstone.command;
 
-import com.destroystokyo.paper.Title;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.net.message.play.game.TitleMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -126,13 +126,60 @@ public class TitleCommand extends BukkitCommand {
                 component = convertJson((JSONObject) parsed);
             }
 
-            player.sendTitle(new Title(component));
+            ((GlowPlayer) player).updateTitle(TitleMessage.Action.TITLE, component);
+            ((GlowPlayer) player).sendTitle();
 
             sender.sendMessage("Updated " + player.getName() + "'s title");
         } else if (action.equalsIgnoreCase("subtitle")) {
-            sender.sendMessage("This feature is not yet supported");
+            if (args.length < 3) {
+                sender.sendMessage(ChatColor.RED + "Usage: /title <player> " + action + " <raw json>");
+                return false;
+            }
+
+            StringBuilder message = new StringBuilder();
+
+            for (int i = 2; i < args.length; i++) {
+                if (i > 2) message.append(" ");
+                message.append(args[i]);
+            }
+
+            String raw = message.toString().trim();
+            if (!validJson(raw)) {
+                sender.sendMessage(ChatColor.RED + "Invalid JSON: Could not parse, invalid format?");
+                return false;
+            }
+
+            String component = raw;
+            Object parsed = JSONValue.parse(raw);
+            if (parsed instanceof JSONObject) {
+                component = convertJson((JSONObject) parsed);
+            }
+
+            ((GlowPlayer) player).updateTitle(TitleMessage.Action.SUBTITLE, component);
+
+            sender.sendMessage("Updated " + player.getName() + "'s subtitle");
         } else if (action.equalsIgnoreCase("times")) {
-            sender.sendMessage("This feature is not yet supported");
+            if (args.length != 5) {
+                sender.sendMessage(ChatColor.RED + "Usage: /title <player> " + action + " <fade in> <stay time> <fade out>");
+                return false;
+            }
+
+            if (!tryParseInt(args[2])) {
+                sender.sendMessage(ChatColor.RED + "'" + args[2] + "' is not a number");
+                return false;
+            }
+            if (!tryParseInt(args[3])) {
+                sender.sendMessage(ChatColor.RED + "'" + args[3] + "' is not a number");
+                return false;
+            }
+            if (!tryParseInt(args[4])) {
+                sender.sendMessage(ChatColor.RED + "'" + args[4] + "' is not a number");
+                return false;
+            }
+
+            ((GlowPlayer) player).updateTitle(TitleMessage.Action.TIMES, toInt(args[2]), toInt(args[3]), toInt(args[4]));
+
+            sender.sendMessage("Updated " + player.getName() + "'s times");
         } else {
             sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
             return false;
@@ -141,18 +188,18 @@ public class TitleCommand extends BukkitCommand {
         return true;
     }
 
-    private int tryParseInt(CommandSender sender, String number, int lastParse) {
-        if (lastParse == -1) {
-            return -1;
-        }
-
-        int n = -1;
+    private boolean tryParseInt(String number) {
         try {
-            n = Integer.parseInt(number);
-        } catch (NumberFormatException e) {
-            sender.sendMessage(ChatColor.RED + "'" + number + "' is not a number");
+            Integer.parseInt(number);
+        } catch (NumberFormatException | NullPointerException e) {
+            return false;
         }
-        return n;
+        // only got here if we didn't return false
+        return true;
+    }
+
+    private int toInt(String number) {
+        return Integer.parseInt(number.trim());
     }
 
     private boolean validJson(String raw) {
