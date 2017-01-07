@@ -85,44 +85,4 @@ public class GlowCreature extends GlowLivingEntity implements Creature {
     public AttributeInstance getAttribute(Attribute attribute) {
         return null;
     }
-
-    @Override
-    public boolean isGliding() {
-        return false;
-    }
-
-    @Override
-    public void setGliding(boolean b) {
-
-    }
-
-    @Override
-    public void setAI(boolean b) {
-
-    }
-
-    @Override
-    public boolean hasAI() {
-        return false;
-    }
-
-    @Override
-    public void setCollidable(boolean b) {
-
-    }
-
-    @Override
-    public boolean isCollidable() {
-        return false;
-    }
-
-    @Override
-    public int getArrowsStuck() {
-        return 0;
-    }
-
-    @Override
-    public void setArrowsStuck(int i) {
-
-    }
 }

@@ -236,7 +236,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         if (nextAmbientTime == 0) {
             nextAmbientTime = getAmbientDelay();
         }
-        taskManager.pulse();
     }
 
     @Override
