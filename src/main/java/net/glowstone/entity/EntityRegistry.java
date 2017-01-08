@@ -110,9 +110,15 @@ public class EntityRegistry {
     public static void registerCustomEntity(CustomEntityDescriptor<? extends GlowEntity> descriptor) {
         if (descriptor == null || descriptor.getEntityClass() == null || descriptor.getId() == null || descriptor.getPlugin() == null)
             return;
+        if (descriptor.getPlugin().isEnabled()) {
+            descriptor.getPlugin().getServer().getLogger().warning("Cannot register custom entity '" + descriptor.getId() + "' for plugin '" + descriptor.getPlugin() + "', worlds are already loaded.");
+            return;
+        }
         if (CUSTOM_ENTITIES.containsKey(descriptor.getId().toLowerCase())) return;
         CUSTOM_ENTITIES.put(descriptor.getId(), descriptor);
-        EntityStorage.bind(descriptor.getStorage());
+        if (descriptor.getStorage() != null) {
+            EntityStorage.bind(descriptor.getStorage());
+        }
     }
 
     public static CustomEntityDescriptor getCustomEntityDescriptor(String id) {
