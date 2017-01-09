@@ -15,8 +15,8 @@ public enum MetadataIndex {
     STATUS(0, BYTE, Entity.class),
     AIR_TIME(1, INT, Entity.class),
     NAME_TAG(2, STRING, Entity.class),
-    SHOW_NAME_TAG(3, BYTE, Entity.class),
-    SILENT(4, BYTE, Entity.class),
+    SHOW_NAME_TAG(3, BOOLEAN, Entity.class),
+    SILENT(4, BOOLEAN, Entity.class),
     NOGRAVITY(5, BOOLEAN, Entity.class),
 
     //TODO 1.9-1.10 - Support this
