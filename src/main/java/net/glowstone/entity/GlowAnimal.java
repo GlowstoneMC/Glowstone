@@ -1,5 +1,6 @@
 package net.glowstone.entity;
 
+import net.glowstone.entity.ai.LookAroundTask;
 import net.glowstone.entity.ai.LookAtPlayerTask;
 import org.bukkit.Location;
 import org.bukkit.entity.Animals;
@@ -20,6 +21,7 @@ public class GlowAnimal extends GlowAgeable implements Animals {
     public GlowAnimal(Location location, EntityType type, double maxHealth) {
         super(location, type, maxHealth);
         getTaskManager().addTask(new LookAtPlayerTask());
+        getTaskManager().addTask(new LookAroundTask());
     }
 
     @Override

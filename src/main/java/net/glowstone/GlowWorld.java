@@ -52,6 +52,9 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -237,6 +240,10 @@ public final class GlowWorld implements World {
     private int maxBuildHeight;
 
     private Set<Key> activeChunksSet = new HashSet<>();
+    /**
+     * The ScheduledExecutorService the for entity AI tasks threading.
+     */
+    private final ScheduledExecutorService aiTaskService;
 
     /**
      * Creates a new world from the options in the given WorldCreator.
@@ -305,6 +312,17 @@ public final class GlowWorld implements World {
 
         server.getLogger().info("Preparing spawn for " + name + ": done");
         EventFactory.callEvent(new WorldLoadEvent(this));
+
+        // pulse AI tasks
+        aiTaskService = Executors.newScheduledThreadPool(1);
+        aiTaskService.scheduleAtFixedRate(() -> {
+            for (GlowEntity e : entities.getAll()) {
+                if (e instanceof GlowLivingEntity && !e.isDead() && ((GlowLivingEntity) e).hasAI()) {
+                    GlowLivingEntity entity = (GlowLivingEntity) e;
+                    entity.getTaskManager().pulse();
+                }
+            }
+        }, 50, 50, TimeUnit.MILLISECONDS);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1634,6 +1652,8 @@ public final class GlowWorld implements World {
      * @return true if successful
      */
     public boolean unload() {
+        // terminate task service
+        aiTaskService.shutdown();
         EventFactory.callEvent(new WorldUnloadEvent(this));
         try {
             storageProvider.getChunkIoService().unload();
