@@ -7,7 +7,7 @@
     <name>Glowstone</name>
     <groupId>net.glowstone</groupId>
     <artifactId>glowstone</artifactId>
-    <version>2017.0.1.1-SNAPSHOT</version>
+    <version>2017.0.1.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <inceptionYear>2011</inceptionYear>
     <url>https://www.glowstone.net</url>
@@ -32,21 +32,9 @@
 
     <repositories>
         <repository>
-            <id>sonatype</id>
-            <name>Sonatype Nexus</name>
-            <layout>default</layout>
-            <url>https://oss.sonatype.org/content/repositories/public/</url>
-        </repository>
-        <repository>
-            <id>glowstone-snapshots</id>
-            <name>Glowstone Snapshots</name>
-            <layout>default</layout>
-            <url>https://repo.glowstone.net/content/repositories/snapshots/</url>
-        </repository>
-        <repository>
-            <id>aikar</id>
-            <name>FastUtil-Lite Releases</name>
-            <url>https://ci.emc.gs/nexus/content/repositories/aikar/</url>
+            <id>glowstone</id>
+            <name>Glowstone Repo</name>
+            <url>https://repo.glowstone.net/repository/internal/</url>
         </repository>
     </repositories>
 
