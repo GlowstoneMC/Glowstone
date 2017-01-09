@@ -277,7 +277,7 @@ public class TitleCommand extends BukkitCommand {
 
             return map;
         } catch (JsonSyntaxException e) {
-            Bukkit.getLogger().log(Level.SEVERE, e.getMessage(), e);
+            // Bukkit.getLogger().log(Level.SEVERE, e.getMessage(), e);
             return null;
         }
     }
