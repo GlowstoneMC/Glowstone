@@ -2145,7 +2145,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     public void updateTitle(Title title) {
         Title builtTitle = currentTitle.build();
 
-        if (title.getTitle() != null) {
+        if (title.getTitle().length != 0) {
             currentTitle.title(title.getTitle());
         }
 

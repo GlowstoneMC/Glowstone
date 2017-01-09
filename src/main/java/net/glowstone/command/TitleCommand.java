@@ -1,5 +1,8 @@
 package net.glowstone.command;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.TitleMessage;
 import org.bukkit.Bukkit;
@@ -13,6 +16,8 @@ import org.json.simple.JSONValue;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 
 public class TitleCommand extends BukkitCommand {
 
@@ -28,7 +33,7 @@ public class TitleCommand extends BukkitCommand {
      * @param json the json chat component
      * @return the colored string, or null
      */
-    public static String convertJson(JSONObject json) {
+    public String convertJson(Map<String, Object> json) {
         if (json == null || !json.containsKey("text") && !(json.get("text") instanceof String))
             return null; // We can't even parse this
 
@@ -62,10 +67,10 @@ public class TitleCommand extends BukkitCommand {
     }
 
     private static ChatColor toColor(String name) {
-        if (name.equalsIgnoreCase("obfuscated"))
+        if (name.equals("obfuscated"))
             return ChatColor.MAGIC;
 
-        if (name.equalsIgnoreCase("underlined"))
+        if (name.equals("underlined"))
             return ChatColor.UNDERLINE;
 
         // Loop to avoid exceptions, we'll just return null if it can't be parsed
@@ -110,7 +115,6 @@ public class TitleCommand extends BukkitCommand {
             StringBuilder message = new StringBuilder();
 
             for (int i = 2; i < args.length; i++) {
-                if (i > 2) message.append(" ");
                 message.append(args[i]);
             }
 
@@ -121,9 +125,9 @@ public class TitleCommand extends BukkitCommand {
             }
 
             String component = raw;
-            Object parsed = JSONValue.parse(raw);
-            if (parsed instanceof JSONObject) {
-                component = convertJson((JSONObject) parsed);
+            Map<String, Object> parsed = getJson(raw);
+            if (parsed != null) {
+                component = convertJson(parsed);
             }
 
             ((GlowPlayer) player).updateTitle(TitleMessage.Action.TITLE, component);
@@ -139,7 +143,6 @@ public class TitleCommand extends BukkitCommand {
             StringBuilder message = new StringBuilder();
 
             for (int i = 2; i < args.length; i++) {
-                if (i > 2) message.append(" ");
                 message.append(args[i]);
             }
 
@@ -203,8 +206,7 @@ public class TitleCommand extends BukkitCommand {
     }
 
     private boolean validJson(String raw) {
-
-        Object object = JSONValue.parse(raw);
+        Map<String, Object> object = getJson(raw);
 
         if (object == null) {
             // Could not parse JSON: Check to see if it's at least a single word
@@ -215,10 +217,7 @@ public class TitleCommand extends BukkitCommand {
             return !raw.contains(" ") && raw.charAt(0) != '{' && raw.charAt(0) != '[';
         }
 
-        if (!(object instanceof JSONObject))
-            return false; // Not a valid JSON object
-
-        JSONObject json = (JSONObject) object;
+        Map<String, Object> json = object;
 
         // Run through all of the keys to see if they are valid keys,
         // and have valid values
@@ -268,5 +267,18 @@ public class TitleCommand extends BukkitCommand {
 
         // If we made it this far then it has a pretty good chance at being valid
         return true;
+    }
+
+    private Map<String, Object> getJson(String raw) {
+        Gson gson = new Gson();
+        try {
+            Map<String, Object> map = gson.fromJson(raw, new TypeToken<Map<String, Object>>() {
+            }.getType());
+
+            return map;
+        } catch (JsonSyntaxException e) {
+            Bukkit.getLogger().log(Level.SEVERE, e.getMessage(), e);
+            return null;
+        }
     }
 }

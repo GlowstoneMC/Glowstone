@@ -41,7 +41,7 @@ public final class TitleMessage implements Message {
     }
 
     public static TitleMessage[] fromTitle(Title title) {
-        TextMessage titleMessage = title.getTitle() != null ? asTextMessage(BaseComponent.toLegacyText(title.getTitle())) : asTextMessage(null);
+        TextMessage titleMessage = asTextMessage(BaseComponent.toLegacyText(title.getTitle()));
         TextMessage subTitleMessage = title.getSubtitle() != null ? asTextMessage(BaseComponent.toLegacyText(title.getSubtitle())) : asTextMessage(null);
 
         return new TitleMessage[]{
