@@ -102,7 +102,8 @@ public final class InventoryMonitor {
      */
     public List<Entry> getChanges() {
         List<Entry> result = new LinkedList<>();
-        for (int i = 0; i < size; ++i) {
+        // reverse to support crafting table.
+        for (int i = size - 1; i >= 0; --i) {
             if (!Objects.equals(slots[i], view.getItem(i))) {
                 updateItem(i);
                 result.add(new Entry(i, slots[i]));

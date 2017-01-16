@@ -1772,7 +1772,7 @@ public final class GlowServer implements Server {
 
     @Override
     public String getMotd() {
-        return config.getString(Key.MOTD);
+        return ChatColor.translateAlternateColorCodes('&', config.getString(Key.MOTD));
     }
 
     @Override

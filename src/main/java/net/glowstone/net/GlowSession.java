@@ -333,6 +333,7 @@ public final class GlowSession extends BasicSession {
         // isActive check here in case player disconnected after authentication,
         // but before the GlowPlayer initialization was completed
         if (!isActive()) {
+            reader.close();
             onDisconnect();
             return;
         }
