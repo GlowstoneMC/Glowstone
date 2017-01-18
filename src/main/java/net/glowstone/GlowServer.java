@@ -1490,6 +1490,9 @@ public final class GlowServer implements Server {
         if (world != null) {
             return world;
         }
+        if (isGenerationDisabled()) {
+            logger.warning("World generation is disabled! World '" + creator.name() + "' will be empty.");
+        }
 
         if (creator.generator() == null) {
             creator.generator(getGenerator(creator.name(), creator.environment(), creator.type()));
