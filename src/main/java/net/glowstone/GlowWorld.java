@@ -1,6 +1,8 @@
 package net.glowstone;
 
 import com.flowpowered.network.Message;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import net.glowstone.ChunkManager.ChunkLock;
 import net.glowstone.GlowChunk.ChunkSection;
@@ -132,7 +134,9 @@ public final class GlowWorld implements World {
     /**
      * The world type.
      */
-    private final WorldType worldType;
+    @Getter
+    @Setter
+    private WorldType worldType;
     /**
      * Whether structure generation is enabled.
      */
@@ -916,11 +920,6 @@ public final class GlowWorld implements World {
         } else {
             return SEA_LEVEL;
         }
-    }
-
-    @Override
-    public WorldType getWorldType() {
-        return worldType;
     }
 
     @Override

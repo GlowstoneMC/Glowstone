@@ -156,7 +156,7 @@ public final class ChunkManager {
         }
 
         // stop here if we can't generate
-        if (!generate) {
+        if (!generate || world.getServer().isGenerationDisabled()) {
             return false;
         }
 

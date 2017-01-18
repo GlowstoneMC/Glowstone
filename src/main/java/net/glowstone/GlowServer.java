@@ -1872,4 +1872,8 @@ public final class GlowServer implements Server {
     public int getPlayerSampleCount() {
         return config.getInt(Key.PLAYER_SAMPLE_COUNT);
     }
+
+    public boolean isGenerationDisabled() {
+        return config.getBoolean(Key.DISABLE_GENERATION);
+    }
 }

@@ -8,6 +8,7 @@ import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.WorldType;
 
 import java.io.*;
 import java.util.Calendar;
@@ -95,6 +96,10 @@ public class NbtWorldMetadataService implements WorldMetadataService {
             world.setTime(level.getLong("DayTime"));
             level.remove("DayTime");
         }
+        if (level.isString("generatorName")) {
+            world.setWorldType(WorldType.getByName(level.getString("generatorName")));
+            level.remove("generatorName");
+        }
 
         // spawn position
         if (level.isInt("SpawnX") && level.isInt("SpawnY") && level.isInt("SpawnZ")) {
@@ -156,6 +161,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         out.putBool("raining", world.hasStorm());
         out.putInt("thunderTime", world.getThunderDuration());
         out.putInt("rainTime", world.getWeatherDuration());
+        out.putString("generatorName", world.getWorldType().getName().toLowerCase());
 
         // Spawn location
         Location loc = world.getSpawnLocation();

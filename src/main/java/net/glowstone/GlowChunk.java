@@ -687,7 +687,7 @@ public final class GlowChunk implements Chunk {
         }
 
         // biomes
-        if (entireChunk) {
+        if (entireChunk && biomes != null) {
             buf.writeBytes(biomes);
         }
 
