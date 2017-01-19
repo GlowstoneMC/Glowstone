@@ -8,6 +8,7 @@ import net.glowstone.block.entity.TEChest;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
+import org.bukkit.Statistic;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.inventory.ItemStack;
@@ -120,6 +121,7 @@ public class BlockChest extends BlockContainer {
         if (state instanceof org.bukkit.block.Chest) {
             org.bukkit.block.Chest chest = (org.bukkit.block.Chest) state;
             player.openInventory(chest.getInventory());
+            player.incrementStatistic(Statistic.CHEST_OPENED);
             return true;
         }
 

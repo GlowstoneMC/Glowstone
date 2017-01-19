@@ -5,6 +5,7 @@ import net.glowstone.block.entity.TEContainer;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.MaterialMatcher;
+import org.bukkit.Statistic;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -22,6 +23,29 @@ public class BlockContainer extends BlockType {
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
         TileEntity te = block.getTileEntity();
         if (te instanceof TEContainer) {
+            switch (((TEContainer) te).getInventory().getType()) {
+                case CHEST:
+                    player.incrementStatistic(Statistic.CHEST_OPENED);
+                    break;
+                case CRAFTING:
+                    player.incrementStatistic(Statistic.CRAFTING_TABLE_INTERACTION);
+                    break;
+                case DROPPER:
+                    player.incrementStatistic(Statistic.DROPPER_INSPECTED);
+                    break;
+                case HOPPER:
+                    player.incrementStatistic(Statistic.HOPPER_INSPECTED);
+                    break;
+                case DISPENSER:
+                    player.incrementStatistic(Statistic.DISPENSER_INSPECTED);
+                    break;
+                case FURNACE:
+                    player.incrementStatistic(Statistic.FURNACE_INTERACTION);
+                    break;
+                case ENDER_CHEST:
+                    player.incrementStatistic(Statistic.ENDERCHEST_OPENED);
+                    break;
+            }
             // todo: animation?
             player.openInventory(((TEContainer) te).getInventory());
             return true;

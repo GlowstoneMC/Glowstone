@@ -31,6 +31,7 @@ import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.LoginProtocol;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.ProtocolType;
+import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -498,6 +499,8 @@ public final class GlowSession extends BasicSession {
             if (online && text != null && !text.isEmpty()) {
                 server.broadcastMessage(text);
             }
+            // statistics
+            player.incrementStatistic(Statistic.LEAVE_GAME);
             for (Player p : server.getOnlinePlayers()) {
                 if (p.getUniqueId().equals(player.getUniqueId())) {
                     continue;

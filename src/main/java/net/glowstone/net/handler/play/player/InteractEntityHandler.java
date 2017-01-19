@@ -12,7 +12,9 @@ import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.Statistic;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
@@ -57,7 +59,11 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
 
                 // Apply damage. Calls the EntityDamageByEntityEvent
                 target.damage(damage, player, DamageCause.ENTITY_ATTACK);
+                player.incrementStatistic(Statistic.DAMAGE_DEALT, Math.round(damage));
                 player.addExhaustion(0.1f);
+                if (target.isDead()) {
+                    player.incrementStatistic(target.getType() == EntityType.PLAYER ? Statistic.PLAYER_KILLS : Statistic.MOB_KILLS);
+                }
 
                 // Apply durability loss (if applicable)
                 short durabilityLoss = AttackDamage.getMeleeDurabilityLoss(type);

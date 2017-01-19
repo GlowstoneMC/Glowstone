@@ -9,9 +9,12 @@ import net.glowstone.net.message.play.game.PositionRotationMessage;
 import net.glowstone.net.message.play.player.PlayerUpdateMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Statistic;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.NumberConversions;
+import org.bukkit.util.Vector;
 
 import java.util.Objects;
 
@@ -101,6 +104,32 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
         }
 
         player.addMoveExhaustion(newLocation);
+
+        // track movement stats
+        Vector delta = newLocation.clone().subtract(oldLocation).toVector();
+        delta.setX(Math.abs(delta.getX()));
+        delta.setY(Math.abs(delta.getY()));
+        delta.setZ(Math.abs(delta.getZ()));
+        int flatDistance = (int) Math.round(Math.sqrt(NumberConversions.square(delta.getX()) + NumberConversions.square(delta.getZ())) * 100.0);
+        if (message.isOnGround()) {
+            if (flatDistance > 0) {
+                if (player.isSprinting()) {
+                    player.incrementStatistic(Statistic.SPRINT_ONE_CM, flatDistance);
+                } else if (player.isSneaking()) {
+                    player.incrementStatistic(Statistic.CROUCH_ONE_CM, flatDistance);
+                } else {
+                    player.incrementStatistic(Statistic.WALK_ONE_CM, flatDistance);
+                }
+            }
+        } else if (player.isFlying()) {
+            if (flatDistance > 0) {
+                player.incrementStatistic(Statistic.FLY_ONE_CM, flatDistance);
+            }
+        } else if (player.isInWater()) {
+            if (flatDistance > 0) {
+                player.incrementStatistic(Statistic.SWIM_ONE_CM, flatDistance);
+            }
+        }
 
         // move event was not fired or did nothing, simply update location
         player.setRawLocation(newLocation);

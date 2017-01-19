@@ -20,10 +20,7 @@ import net.glowstone.util.Position;
 import net.glowstone.util.SoundUtil;
 import net.glowstone.util.loot.LootData;
 import net.glowstone.util.loot.LootingManager;
-import org.bukkit.EntityEffect;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
@@ -572,12 +569,13 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                     items = Arrays.stream(player.getInventory().getContents()).filter(stack -> !InventoryUtil.isEmpty(stack)).collect(Collectors.toList());
                     player.getInventory().clear();
                 }
-                PlayerDeathEvent event = new PlayerDeathEvent((GlowPlayer) this, items, 0, player.getDisplayName() + " died.");
+                PlayerDeathEvent event = new PlayerDeathEvent(player, items, 0, player.getDisplayName() + " died.");
                 EventFactory.callEvent(event);
                 server.broadcastMessage(event.getDeathMessage());
                 for (ItemStack item : items) {
                     world.dropItemNaturally(getLocation(), item);
                 }
+                player.incrementStatistic(Statistic.DEATHS);
             } else {
                 EntityDeathEvent deathEvent = new EntityDeathEvent(this, new ArrayList<>());
                 if (world.getGameRuleMap().getBoolean("doMobLoot")) {

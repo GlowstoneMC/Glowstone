@@ -451,6 +451,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         super.damage(amount, cause);
         if (old != getHealth()) addExhaustion(0.1f);
         sendHealth();
+        incrementStatistic(Statistic.DAMAGE_TAKEN, (int) Math.round(amount));
     }
 
     /**
@@ -571,6 +572,9 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         // add to playtime
         incrementStatistic(Statistic.PLAY_ONE_TICK);
+        if (isSneaking()) {
+            incrementStatistic(Statistic.SNEAK_TIME);
+        }
 
         // update inventory
         for (InventoryMonitor.Entry entry : invMonitor.getChanges()) {
@@ -2366,6 +2370,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             if (event.isCancelled()) {
                 dropping.remove();
                 dropping = null;
+            } else {
+                incrementStatistic(Statistic.DROP, stack.getAmount());
             }
         }
         return dropping;
