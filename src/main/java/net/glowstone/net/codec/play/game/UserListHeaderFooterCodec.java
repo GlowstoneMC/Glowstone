@@ -4,7 +4,7 @@ import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.game.UserListHeaderFooterMessage;
-import net.glowstone.util.TextMessage;
+import net.md_5.bungee.api.chat.BaseComponent;
 
 import java.io.IOException;
 
@@ -12,8 +12,8 @@ public final class UserListHeaderFooterCodec implements Codec<UserListHeaderFoot
 
     @Override
     public UserListHeaderFooterMessage decode(ByteBuf buffer) throws IOException {
-        TextMessage header = GlowBufUtils.readChat(buffer);
-        TextMessage footer = GlowBufUtils.readChat(buffer);
+        BaseComponent[] header = GlowBufUtils.readChat(buffer);
+        BaseComponent[] footer = GlowBufUtils.readChat(buffer);
         return new UserListHeaderFooterMessage(header, footer);
     }
 

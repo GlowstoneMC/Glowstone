@@ -2,9 +2,10 @@ package net.glowstone.net;
 
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
-import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
@@ -26,8 +27,8 @@ public final class ProtocolTestUtils {
         return obj;
     }
 
-    public static TextMessage getTextMessage() {
-        return new TextMessage("text");
+    public static BaseComponent[] getTextMessage() {
+        return TextComponent.fromLegacyText("text");
     }
 
     public static List<MetadataMap.Entry> getMetadataEntry() {

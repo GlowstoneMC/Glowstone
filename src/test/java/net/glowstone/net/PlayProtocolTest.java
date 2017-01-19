@@ -8,7 +8,7 @@ import net.glowstone.net.message.play.game.*;
 import net.glowstone.net.message.play.inv.*;
 import net.glowstone.net.message.play.player.*;
 import net.glowstone.net.protocol.PlayProtocol;
-import net.glowstone.util.TextMessage;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Difficulty;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -44,7 +44,7 @@ public class PlayProtocolTest extends BaseProtocolTest {
             new TransactionMessage(1, 2, true),
             new CreativeItemMessage(1, new ItemStack(Material.APPLE, 1)),
             new EnchantItemMessage(1, 2),
-            new UpdateSignMessage(1, 2, 3, new TextMessage[]{new TextMessage("hello"), new TextMessage("hi"), new TextMessage("third"), new TextMessage("fourth")}),
+            new UpdateSignMessage(1, 2, 3, TextComponent.fromLegacyText("hello"), TextComponent.fromLegacyText("hi"), TextComponent.fromLegacyText("third"), TextComponent.fromLegacyText("fourth")),
             UpdateSignMessage.fromPlainText(1, 2, 3, "hello", "hi", "third", "fourth"),
             new PlayerAbilitiesMessage(1, 2f, 3f),
             new TabCompleteMessage("text", false, null),
@@ -57,7 +57,6 @@ public class PlayProtocolTest extends BaseProtocolTest {
             //new JoinGameMessage(1, 2, 3, 4, 5, "normal", true), //asymmetric
             new ChatMessage(ProtocolTestUtils.getTextMessage(), 2),
             new ChatMessage(ProtocolTestUtils.getTextMessage(), 1),
-            new ChatMessage(ProtocolTestUtils.getJson()),
             new ChatMessage("glowstone"),
             new TimeMessage(1, 2),
             new EntityEquipmentMessage(1, 2, new ItemStack(Material.APPLE, 1)),
@@ -111,10 +110,10 @@ public class PlayProtocolTest extends BaseProtocolTest {
             new StateChangeMessage(1, 2f),
             new StateChangeMessage(StateChangeMessage.Reason.GAMEMODE, 2f),
             //Statistic
-            new TitleMessage(TitleMessage.Action.TITLE, new TextMessage("Title")),
+            new TitleMessage(TitleMessage.Action.TITLE, TextComponent.fromLegacyText("Title")),
             new TitleMessage(TitleMessage.Action.TIMES, 1, 3, 4),
             new TitleMessage(TitleMessage.Action.RESET),
-            new UserListHeaderFooterMessage(new TextMessage("head"), new TextMessage("foot")),
+            new UserListHeaderFooterMessage(TextComponent.fromLegacyText("head"), TextComponent.fromLegacyText("foot")),
             //UserListItem
             //WorldBorder
             //OpenWindow

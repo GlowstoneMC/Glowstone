@@ -2,13 +2,12 @@ package net.glowstone.command;
 
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.ChatMessage;
+import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
 import java.util.Collections;
 
@@ -39,14 +38,7 @@ public class TellrawCommand extends BukkitCommand {
                 message.append(args[i]);
             }
 
-            GlowPlayer glowPlayer = (GlowPlayer) player;
-
-            Object obj = JSONValue.parse(message.toString());
-            if (!(obj instanceof JSONObject)) {
-                sender.sendMessage(ChatColor.RED + "Failed to parse JSON");
-            } else {
-                glowPlayer.getSession().send(new ChatMessage((JSONObject) obj));
-            }
+            ((GlowPlayer) player).getSession().send(new ChatMessage(ComponentSerializer.parse(message.toString())));
         }
 
         return true;

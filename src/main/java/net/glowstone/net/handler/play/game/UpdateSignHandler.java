@@ -24,7 +24,7 @@ public final class UpdateSignHandler implements MessageHandler<GlowSession, Upda
         // filter out json messages that aren't plaintext
         String[] lines = new String[4];
         for (int i = 0; i < lines.length; ++i) {
-            lines[i] = message.getMessage()[i].asPlaintext();
+            lines[i] = message.getMessage()[i][0].toPlainText();
         }
         SignChangeEvent event = new SignChangeEvent(location.getBlock(), player, lines);
         EventFactory.callEvent(event);

@@ -4,15 +4,17 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.state.GlowSign;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Material;
 
 import java.util.Arrays;
 
 public class TESign extends TileEntity {
 
-    private final TextMessage[] lines = new TextMessage[4];
+    private final BaseComponent[] lines = new BaseComponent[4];
 
     public TESign(GlowBlock block) {
         super(block);
@@ -22,7 +24,7 @@ public class TESign extends TileEntity {
             throw new IllegalArgumentException("Sign must be WALL_SIGN or SIGN_POST, got " + block.getType());
         }
 
-        Arrays.fill(lines, new TextMessage(""));
+        Arrays.fill(lines, TextComponent.fromLegacyText(""));
     }
 
     @Override
@@ -36,7 +38,7 @@ public class TESign extends TileEntity {
         for (int i = 0; i < lines.length; ++i) {
             String key = "Text" + (i + 1);
             if (tag.isString(key)) {
-                lines[i] = TextMessage.decode(tag.getString(key));
+                lines[i] = TextComponent.fromLegacyText(tag.getString(key))[0]; // TODO redo array stuff
             }
         }
     }
@@ -45,7 +47,7 @@ public class TESign extends TileEntity {
     public void saveNbt(CompoundTag tag) {
         super.saveNbt(tag);
         for (int i = 0; i < lines.length; ++i) {
-            tag.putString("Text" + (i + 1), lines[i].encode());
+            tag.putString("Text" + (i + 1), ComponentSerializer.toString(lines[i]));
         }
     }
 
@@ -61,7 +63,7 @@ public class TESign extends TileEntity {
     public String[] getLines() {
         String[] result = new String[lines.length];
         for (int i = 0; i < result.length; ++i) {
-            result[i] = lines[i].asPlaintext();
+            result[i] = lines[i].toPlainText();
         }
         return result;
     }
@@ -78,7 +80,7 @@ public class TESign extends TileEntity {
         }
 
         for (int i = 0; i < lines.length; ++i) {
-            lines[i] = new TextMessage(text[i] == null ? "" : text[i]);
+            lines[i] = TextComponent.fromLegacyText(text[i] == null ? "" : text[i])[0];
         }
     }
 }

@@ -8,7 +8,7 @@ import net.glowstone.net.message.play.player.BossBarMessage;
 import net.glowstone.net.message.play.player.BossBarMessage.Action;
 import net.glowstone.net.message.play.player.BossBarMessage.Color;
 import net.glowstone.net.message.play.player.BossBarMessage.Division;
-import net.glowstone.util.TextMessage;
+import net.md_5.bungee.api.chat.BaseComponent;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -22,7 +22,7 @@ public class BossBarCodec implements Codec<BossBarMessage> {
 
         switch (action) {
             case ADD:
-                TextMessage title = GlowBufUtils.readChat(buffer);
+                BaseComponent[] title = GlowBufUtils.readChat(buffer);
                 float health = buffer.readFloat();
                 Color color = Color.fromInt(ByteBufUtils.readVarInt(buffer));
                 Division division = Division.fromInt(ByteBufUtils.readVarInt(buffer));

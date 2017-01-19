@@ -2,17 +2,18 @@ package net.glowstone.net.message.play.game;
 
 import com.flowpowered.network.Message;
 import lombok.Data;
-import net.glowstone.util.TextMessage;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 
 @Data
 public final class UpdateSignMessage implements Message {
 
     private final int x, y, z;
-    private final TextMessage[] message;
+    private final BaseComponent[][] message;
 
-    public UpdateSignMessage(int x, int y, int z, TextMessage[] message) {
+    public UpdateSignMessage(int x, int y, int z, BaseComponent[]... message) {
         if (message.length != 4) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Expected message length was 4, got " + message.length);
         }
 
         this.x = x;
@@ -23,12 +24,12 @@ public final class UpdateSignMessage implements Message {
 
     public static UpdateSignMessage fromPlainText(int x, int y, int z, String... message) {
         if (message.length != 4) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Expected message length was 4, got " + message.length);
         }
 
-        TextMessage[] encoded = new TextMessage[4];
+        BaseComponent[][] encoded = new BaseComponent[4][1];
         for (int i = 0; i < 4; ++i) {
-            encoded[i] = new TextMessage(message[i]);
+            encoded[i][0] = TextComponent.fromLegacyText(message[i])[0];
         }
         return new UpdateSignMessage(x, y, z, encoded);
     }

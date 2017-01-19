@@ -6,7 +6,7 @@ import io.netty.buffer.ByteBuf;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.player.CombatEventMessage;
 import net.glowstone.net.message.play.player.CombatEventMessage.Event;
-import net.glowstone.util.TextMessage;
+import net.md_5.bungee.api.chat.BaseComponent;
 
 import java.io.IOException;
 
@@ -25,7 +25,7 @@ public final class CombatEventCodec implements Codec<CombatEventMessage> {
             case ENTITY_DEAD:
                 int playerID = ByteBufUtils.readVarInt(buffer);
                 int entityID = buffer.readInt();
-                TextMessage message = GlowBufUtils.readChat(buffer);
+                BaseComponent[] message = GlowBufUtils.readChat(buffer);
                 return new CombatEventMessage(event, playerID, entityID, message);
             default:
                 return new CombatEventMessage(event);

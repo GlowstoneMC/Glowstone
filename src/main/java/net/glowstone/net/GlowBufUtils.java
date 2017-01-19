@@ -11,11 +11,12 @@ import net.glowstone.entity.meta.MetadataType;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
-import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
 import net.glowstone.util.nbt.NBTReadLimiter;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
@@ -136,7 +137,7 @@ public final class GlowBufUtils {
                     ByteBufUtils.writeUTF8(buf, (String) value);
                     break;
                 case CHAT:
-                    writeChat(buf, (TextMessage) value);
+                    writeChat(buf, (BaseComponent[]) value);
                     break;
                 case ITEM:
                     writeSlot(buf, (ItemStack) value);
@@ -341,8 +342,8 @@ public final class GlowBufUtils {
      * @return The chat message read.
      * @throws IOException on read failure.
      */
-    public static TextMessage readChat(ByteBuf buf) throws IOException {
-        return TextMessage.decode(ByteBufUtils.readUTF8(buf));
+    public static BaseComponent[] readChat(ByteBuf buf) throws IOException {
+        return ComponentSerializer.parse(ByteBufUtils.readUTF8(buf));
     }
 
     /**
@@ -352,8 +353,11 @@ public final class GlowBufUtils {
      * @param text The chat message to write.
      * @throws IOException on write failure.
      */
-    public static void writeChat(ByteBuf buf, TextMessage text) throws IOException {
-        ByteBufUtils.writeUTF8(buf, text.encode());
+    public static void writeChat(ByteBuf buf, BaseComponent[] text) throws IOException {
+        for (int i = 1; i < text.length; i++) {
+            text[0].addExtra(text[i]);
+        }
+        ByteBufUtils.writeUTF8(buf, ComponentSerializer.toString(text[0]));
     }
 
 }

@@ -6,8 +6,8 @@ import com.flowpowered.network.service.CodecLookupService;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.glowstone.net.message.play.inv.HeldItemMessage;
-import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.GlowProtocol;
+import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.testutils.ServerShim;
 import org.junit.Test;
 
