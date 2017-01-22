@@ -11,6 +11,15 @@ import org.bukkit.util.Vector;
 import java.util.*;
 
 public class BlockRails extends BlockNeedsAttached {
+    private static final int NORTH = 0;
+    private static final int SOUTH = 1;
+    private static final int EAST = 2;
+    private static final int WEST = 3;
+    private static final int ASCENDING_NORTH = 4;
+    private static final int ASCENDING_SOUTH = 5;
+    private static final int ASCENDING_EAST = 6;
+    private static final int ASCENDING_WEST = 7;
+
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         return Arrays.asList(new ItemStack(block.getType()));
@@ -57,68 +66,68 @@ public class BlockRails extends BlockNeedsAttached {
 
     private static RailDirection getRailDirection(GlowBlock rail) {
         // north - 0, south - 1, east - 2, west - 3, ascending_north - 4, ascending_south - 5, ascending_east - 6, ascending_west - 7
-        boolean[] unconnectedRails = new boolean[8];
+        boolean[] unstableRails = new boolean[8];
 
         GlowBlock north = rail.getRelative(BlockFace.NORTH);
         GlowBlock south = rail.getRelative(BlockFace.SOUTH);
         GlowBlock east = rail.getRelative(BlockFace.EAST);
         GlowBlock west = rail.getRelative(BlockFace.WEST);
 
-        unconnectedRails[0] = isUnstable(north, rail) || isUnstable(north.getRelative(BlockFace.DOWN), rail);
-        unconnectedRails[1] = isUnstable(south, rail) || isUnstable(south.getRelative(BlockFace.DOWN), rail);
-        unconnectedRails[2] = isUnstable(east, rail) || isUnstable(east.getRelative(BlockFace.DOWN), rail);
-        unconnectedRails[3] = isUnstable(west, rail) || isUnstable(west.getRelative(BlockFace.DOWN), rail);
-        unconnectedRails[4] = isUnstable(north.getRelative(BlockFace.UP), rail);
-        unconnectedRails[5] = isUnstable(south.getRelative(BlockFace.UP), rail);
-        unconnectedRails[6] = isUnstable(east.getRelative(BlockFace.UP), rail);
-        unconnectedRails[7] = isUnstable(west.getRelative(BlockFace.UP), rail);
+        unstableRails[0] = isUnstable(north, rail) || isUnstable(north.getRelative(BlockFace.DOWN), rail);
+        unstableRails[1] = isUnstable(south, rail) || isUnstable(south.getRelative(BlockFace.DOWN), rail);
+        unstableRails[2] = isUnstable(east, rail) || isUnstable(east.getRelative(BlockFace.DOWN), rail);
+        unstableRails[3] = isUnstable(west, rail) || isUnstable(west.getRelative(BlockFace.DOWN), rail);
+        unstableRails[4] = isUnstable(north.getRelative(BlockFace.UP), rail);
+        unstableRails[5] = isUnstable(south.getRelative(BlockFace.UP), rail);
+        unstableRails[6] = isUnstable(east.getRelative(BlockFace.UP), rail);
+        unstableRails[7] = isUnstable(west.getRelative(BlockFace.UP), rail);
 
         // north && east || ascending_north && ascending_east || north && ascending_east || ascending_north && east
-        if (unconnectedRails[0] && unconnectedRails[2] || unconnectedRails[4] && unconnectedRails[6] || unconnectedRails[0] && unconnectedRails[6] || unconnectedRails[4] && unconnectedRails[2]) {
+        if (unstableRails[NORTH] && unstableRails[EAST] || unstableRails[ASCENDING_NORTH] && unstableRails[ASCENDING_EAST] || unstableRails[NORTH] && unstableRails[ASCENDING_EAST] || unstableRails[ASCENDING_NORTH] && unstableRails[EAST]) {
             return RailDirection.NORTH_EAST;
         }
 
         // north && west || ascending_north && ascending_west || north && ascending_west || ascending_north && west
-        if (unconnectedRails[0] && unconnectedRails[3] || unconnectedRails[4] && unconnectedRails[7] || unconnectedRails[0] && unconnectedRails[7] || unconnectedRails[4] && unconnectedRails[3]) {
+        if (unstableRails[NORTH] && unstableRails[WEST] || unstableRails[ASCENDING_NORTH] && unstableRails[ASCENDING_WEST] || unstableRails[NORTH] && unstableRails[ASCENDING_WEST] || unstableRails[ASCENDING_NORTH] && unstableRails[WEST]) {
             return RailDirection.NORTH_WEST;
         }
 
         // south && west || ascending_south && ascending_west || south && ascending_west || ascending_south && west
-        if (unconnectedRails[1] && unconnectedRails[3] || unconnectedRails[5] && unconnectedRails[7] || unconnectedRails[1] && unconnectedRails[7] || unconnectedRails[5] && unconnectedRails[3]) {
+        if (unstableRails[SOUTH] && unstableRails[WEST] || unstableRails[ASCENDING_SOUTH] && unstableRails[ASCENDING_WEST] || unstableRails[SOUTH] && unstableRails[ASCENDING_WEST] || unstableRails[ASCENDING_SOUTH] && unstableRails[WEST]) {
             return RailDirection.SOUTH_WEST;
         }
 
         // south && east || ascending_south && ascending_east || south && ascending_east || ascending_south && east
-        if (unconnectedRails[1] && unconnectedRails[2] || unconnectedRails[5] && unconnectedRails[6] || unconnectedRails[1] && unconnectedRails[6] || unconnectedRails[5] && unconnectedRails[2]) {
+        if (unstableRails[SOUTH] && unstableRails[EAST] || unstableRails[ASCENDING_SOUTH] && unstableRails[ASCENDING_EAST] || unstableRails[SOUTH] && unstableRails[ASCENDING_EAST] || unstableRails[ASCENDING_SOUTH] && unstableRails[EAST]) {
             return RailDirection.SOUTH_EAST;
         }
 
         // ascending_north && south || ascending_north
-        if (unconnectedRails[4] && unconnectedRails[1] || unconnectedRails[4]) {
+        if (unstableRails[ASCENDING_NORTH] && unstableRails[SOUTH] || unstableRails[ASCENDING_NORTH]) {
             return RailDirection.ASCENDING_NORTH;
         }
 
         // ascending_south && north || ascending_south
-        if (unconnectedRails[5] && unconnectedRails[0] || unconnectedRails[5]) {
+        if (unstableRails[ASCENDING_SOUTH] && unstableRails[NORTH] || unstableRails[ASCENDING_SOUTH]) {
             return RailDirection.ASCENDING_SOUTH;
         }
 
         // ascending_east && west || ascending_east
-        if (unconnectedRails[6] && unconnectedRails[3] || unconnectedRails[6]) {
+        if (unstableRails[ASCENDING_EAST] && unstableRails[WEST] || unstableRails[ASCENDING_EAST]) {
             return RailDirection.ASCENDING_EAST;
         }
 
         // ascending_west && east || ascending_west
-        if (unconnectedRails[7] && unconnectedRails[2] || unconnectedRails[7]) {
+        if (unstableRails[ASCENDING_WEST] && unstableRails[EAST] || unstableRails[ASCENDING_WEST]) {
             return RailDirection.ASCENDING_WEST;
         }
         // north || south
-        if (unconnectedRails[0] || unconnectedRails[1]) {
+        if (unstableRails[NORTH] || unstableRails[SOUTH]) {
             return RailDirection.NORTH_SOUTH;
         }
 
         // east || west
-        if (unconnectedRails[2] || unconnectedRails[3]) {
+        if (unstableRails[EAST] || unstableRails[WEST]) {
             return RailDirection.EAST_WEST;
         }
 
