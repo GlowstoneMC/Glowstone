@@ -73,14 +73,14 @@ public class BlockRails extends BlockNeedsAttached {
         GlowBlock east = rail.getRelative(BlockFace.EAST);
         GlowBlock west = rail.getRelative(BlockFace.WEST);
 
-        unstableRails[0] = isUnstable(north, rail) || isUnstable(north.getRelative(BlockFace.DOWN), rail);
-        unstableRails[1] = isUnstable(south, rail) || isUnstable(south.getRelative(BlockFace.DOWN), rail);
-        unstableRails[2] = isUnstable(east, rail) || isUnstable(east.getRelative(BlockFace.DOWN), rail);
-        unstableRails[3] = isUnstable(west, rail) || isUnstable(west.getRelative(BlockFace.DOWN), rail);
-        unstableRails[4] = isUnstable(north.getRelative(BlockFace.UP), rail);
-        unstableRails[5] = isUnstable(south.getRelative(BlockFace.UP), rail);
-        unstableRails[6] = isUnstable(east.getRelative(BlockFace.UP), rail);
-        unstableRails[7] = isUnstable(west.getRelative(BlockFace.UP), rail);
+        unstableRails[NORTH] = isUnstable(north, rail) || isUnstable(north.getRelative(BlockFace.DOWN), rail);
+        unstableRails[SOUTH] = isUnstable(south, rail) || isUnstable(south.getRelative(BlockFace.DOWN), rail);
+        unstableRails[EAST] = isUnstable(east, rail) || isUnstable(east.getRelative(BlockFace.DOWN), rail);
+        unstableRails[WEST] = isUnstable(west, rail) || isUnstable(west.getRelative(BlockFace.DOWN), rail);
+        unstableRails[ASCENDING_NORTH] = isUnstable(north.getRelative(BlockFace.UP), rail);
+        unstableRails[ASCENDING_SOUTH] = isUnstable(south.getRelative(BlockFace.UP), rail);
+        unstableRails[ASCENDING_WEST] = isUnstable(east.getRelative(BlockFace.UP), rail);
+        unstableRails[ASCENDING_EAST] = isUnstable(west.getRelative(BlockFace.UP), rail);
 
         // north && east || ascending_north && ascending_east || north && ascending_east || ascending_north && east
         if (unstableRails[NORTH] && unstableRails[EAST] || unstableRails[ASCENDING_NORTH] && unstableRails[ASCENDING_EAST] || unstableRails[NORTH] && unstableRails[ASCENDING_EAST] || unstableRails[ASCENDING_NORTH] && unstableRails[EAST]) {
