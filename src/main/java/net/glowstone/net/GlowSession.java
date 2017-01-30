@@ -495,6 +495,8 @@ public final class GlowSession extends BasicSession {
                 player.leaveBed(false);
             }
 
+            server.getBossBarManager().clearBossBars(player);
+
             String text = EventFactory.onPlayerQuit(player).getQuitMessage();
             if (online && text != null && !text.isEmpty()) {
                 server.broadcastMessage(text);

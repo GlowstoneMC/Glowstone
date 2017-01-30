@@ -8,6 +8,8 @@ import io.netty.channel.epoll.Epoll;
 import net.glowstone.block.BuiltinMaterialValueManager;
 import net.glowstone.block.MaterialValueManager;
 import net.glowstone.block.state.GlowDispenser;
+import net.glowstone.boss.BossBarManager;
+import net.glowstone.boss.GlowBossBar;
 import net.glowstone.command.*;
 import net.glowstone.constants.GlowEnchantment;
 import net.glowstone.constants.GlowPotionEffect;
@@ -260,6 +262,10 @@ public final class GlowServer implements Server {
      * The {@link MaterialValueManager} of this server.
      */
     private MaterialValueManager materialValueManager;
+    /**
+     * The {@link BossBarManager} of this server.
+     */
+    private BossBarManager bossBarManager;
 
     /**
      * Creates a new server.
@@ -268,6 +274,7 @@ public final class GlowServer implements Server {
      */
     public GlowServer(ServerConfig config) {
         materialValueManager = new BuiltinMaterialValueManager();
+        bossBarManager = new BossBarManager(this);
 
         this.config = config;
         // stuff based on selected config directory
@@ -1017,6 +1024,10 @@ public final class GlowServer implements Server {
         return materialValueManager;
     }
 
+    public BossBarManager getBossBarManager() {
+        return bossBarManager;
+    }
+
     /**
      * Get the resource pack url for this server, or {@code null} if not set.
      *
@@ -1685,8 +1696,10 @@ public final class GlowServer implements Server {
     }
 
     @Override
-    public BossBar createBossBar(String s, BarColor barColor, BarStyle barStyle, BarFlag... barFlags) {
-        return null;
+    public BossBar createBossBar(String title, BarColor color, BarStyle style, BarFlag... flags) {
+        GlowBossBar bossBar = new GlowBossBar(title, color, style, flags);
+        bossBarManager.register(bossBar);
+        return bossBar;
     }
 
     @Override
