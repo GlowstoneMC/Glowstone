@@ -19,7 +19,7 @@ public class TESkull extends TileEntity {
 
     public TESkull(GlowBlock block) {
         super(block);
-        setSaveId("Skull");
+        setSaveId("skull");
     }
 
     @Override

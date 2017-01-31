@@ -18,7 +18,7 @@ public class TEChest extends TEContainer {
 
     public TEChest(GlowBlock block) {
         super(block, new GlowChestInventory(new GlowChest(block)));
-        setSaveId("Chest");
+        setSaveId("chest");
     }
 
     @Override

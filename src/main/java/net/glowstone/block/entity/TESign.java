@@ -16,7 +16,7 @@ public class TESign extends TileEntity {
 
     public TESign(GlowBlock block) {
         super(block);
-        setSaveId("Sign");
+        setSaveId("sign");
 
         if (block.getType() != Material.WALL_SIGN && block.getType() != Material.SIGN_POST) {
             throw new IllegalArgumentException("Sign must be WALL_SIGN or SIGN_POST, got " + block.getType());

@@ -12,7 +12,7 @@ public class TEDropper extends TEDispenser {
 
     @Override
     protected void setOwnSaveId() {
-        setSaveId("Dropper");
+        setSaveId("dropper");
     }
 
     @Override

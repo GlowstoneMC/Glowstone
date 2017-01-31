@@ -14,7 +14,7 @@ public class TEDispenser extends TEContainer {
     }
 
     protected void setOwnSaveId() {
-        setSaveId("Trap");
+        setSaveId("dispenser");
     }
 
     @Override

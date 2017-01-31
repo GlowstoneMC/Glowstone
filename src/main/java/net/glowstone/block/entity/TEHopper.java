@@ -10,7 +10,7 @@ public class TEHopper extends TEContainer {
 
     public TEHopper(GlowBlock block) {
         super(block, new GlowInventory(new GlowHopper(block), InventoryType.HOPPER));
-        setSaveId("Hopper");
+        setSaveId("hopper");
     }
 
     @Override
