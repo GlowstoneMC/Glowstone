@@ -220,6 +220,7 @@ public final class ItemTable {
         reg(Material.OBSERVER, new BlockObserver());
         reg(Material.REDSTONE_COMPARATOR_ON, new BlockRedstoneComparator());
         reg(Material.REDSTONE_COMPARATOR_OFF, new BlockRedstoneComparator());
+        reg(Material.BEACON, new BlockBeacon());
 
         reg(Material.FLINT_AND_STEEL, new ItemFlintAndSteel());
         reg(Material.SIGN, new ItemSign());

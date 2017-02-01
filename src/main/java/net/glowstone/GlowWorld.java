@@ -1000,6 +1000,40 @@ public final class GlowWorld implements World {
     // get block, chunk, id, highest methods with coords
 
     @Override
+    public int getEntityCount() {
+        return getEntities().size();
+    }
+
+    @Override
+    public int getTileEntityCount() {
+        int length = 0;
+        for (GlowChunk chunk : getChunkManager().getLoadedChunks()) {
+            length += chunk.getTileEntities().length;
+        }
+        return length;
+    }
+
+    @Override
+    public int getTickableTileEntityCount() {
+        // TODO: distinguish between tile entity types
+        int length = 0;
+        for (GlowChunk chunk : getChunkManager().getLoadedChunks()) {
+            length += chunk.getTileEntities().length;
+        }
+        return length;
+    }
+
+    @Override
+    public int getChunkCount() {
+        return getChunkManager().getLoadedChunks().length;
+    }
+
+    @Override
+    public int getPlayerCount() {
+        return getPlayers().size();
+    }
+
+    @Override
     public GlowBlock getBlockAt(int x, int y, int z) {
         return new GlowBlock(getChunkAt(x >> 4, z >> 4), x, y, z);
     }

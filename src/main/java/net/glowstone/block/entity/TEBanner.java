@@ -21,7 +21,7 @@ public class TEBanner extends TileEntity {
 
     public TEBanner(GlowBlock block) {
         super(block);
-        setSaveId("Banner");
+        setSaveId("banner");
     }
 
     @Override

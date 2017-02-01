@@ -12,6 +12,7 @@ public class TENote extends TileEntity {
 
     public TENote(GlowBlock block) {
         super(block);
+        setSaveId("noteblock");
     }
 
     @Override

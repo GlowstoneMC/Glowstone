@@ -24,7 +24,7 @@ public class TEFurnace extends TEContainer {
 
     public TEFurnace(GlowBlock block) {
         super(block, new GlowFurnaceInventory(new GlowFurnace(block, (short) 0, (short) 0)));
-        setSaveId("Furnace");
+        setSaveId("furnace");
     }
 
     @Override

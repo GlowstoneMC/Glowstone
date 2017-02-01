@@ -15,7 +15,7 @@ public class TEMobSpawner extends TileEntity {
 
     public TEMobSpawner(GlowBlock block) {
         super(block);
-        setSaveId("MobSpawner");
+        setSaveId("mob_spawner");
     }
 
     @Override

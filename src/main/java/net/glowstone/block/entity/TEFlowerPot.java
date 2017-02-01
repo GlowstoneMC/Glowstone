@@ -16,7 +16,7 @@ public class TEFlowerPot extends TileEntity {
 
     public TEFlowerPot(GlowBlock block) {
         super(block);
-        setSaveId("FlowerPot");
+        setSaveId("flower_pot");
     }
 
     public MaterialData getContents() {

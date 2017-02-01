@@ -9,7 +9,7 @@ public class TEEnchantTable extends TileEntity {
 
     public TEEnchantTable(GlowBlock block) {
         super(block);
-        setSaveId("EnchantTable");
+        setSaveId("enchanting_table");
     }
 
     @Override

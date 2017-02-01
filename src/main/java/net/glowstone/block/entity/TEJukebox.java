@@ -13,6 +13,7 @@ public class TEJukebox extends TileEntity {
 
     public TEJukebox(GlowBlock block) {
         super(block);
+        setSaveId("jukebox");
     }
 
     @Override

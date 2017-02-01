@@ -12,7 +12,8 @@ public enum GlowBlockEntity {
     BANNER(6),
     STRUCTURE(7),
     END_GATEWAY(8),
-    SIGN(9);
+    SIGN(9),
+    SHULKER_BOX(10);
 
     private final int value;
 

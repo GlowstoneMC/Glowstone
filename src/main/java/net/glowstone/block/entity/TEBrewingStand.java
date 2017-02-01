@@ -12,7 +12,7 @@ public class TEBrewingStand extends TEContainer {
 
     public TEBrewingStand(GlowBlock block) {
         super(block, new GlowBrewerInventory(new GlowBrewingStand(block, 0)));
-        setSaveId("Cauldron");
+        setSaveId("brewing_stand");
     }
 
     public int getBrewTime() {
