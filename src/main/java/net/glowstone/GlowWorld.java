@@ -321,7 +321,7 @@ public final class GlowWorld implements World {
         aiTaskService = Executors.newScheduledThreadPool(1);
         aiTaskService.scheduleAtFixedRate(() -> {
             for (GlowEntity e : entities.getAll()) {
-                if (e instanceof GlowLivingEntity && !e.isDead() && ((GlowLivingEntity) e).hasAI()) {
+                if (e instanceof GlowLivingEntity && !e.isDead() && ((GlowLivingEntity) e).hasAI() && e.getLocation().getChunk().isLoaded()) {
                     GlowLivingEntity entity = (GlowLivingEntity) e;
                     entity.getTaskManager().pulse();
                 }
