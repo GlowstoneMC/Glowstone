@@ -35,7 +35,7 @@ public class BlockOre extends BlockNeedsTool {
     }
 
     public BlockOre(Material dropType, MaterialMatcher neededTool) {
-        this(dropType, neededTool, 1, 1);
+        this(dropType, neededTool, 0, 1);
     }
 
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
