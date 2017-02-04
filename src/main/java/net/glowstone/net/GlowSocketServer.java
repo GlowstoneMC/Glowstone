@@ -1,6 +1,7 @@
 package net.glowstone.net;
 
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -18,6 +19,11 @@ public abstract class GlowSocketServer extends GlowNetworkServer {
     protected final EventLoopGroup bossGroup;
     protected final EventLoopGroup workerGroup;
     protected final ServerBootstrap bootstrap;
+    protected final Channel channel;
+
+    public Channel getChannel() {
+        return channel;
+    }
 
     public GlowSocketServer(GlowServer server, CountDownLatch latch) {
         super(server, latch);
@@ -32,16 +38,19 @@ public abstract class GlowSocketServer extends GlowNetworkServer {
     }
 
     public ChannelFuture bind(InetSocketAddress address) {
-        return this.bootstrap.bind(address).addListener(future -> {
+        ChannelFuture future = this.bootstrap.bind(address).addListener(future -> {
             if (future.isSuccess()) {
                 onBindSuccess(address);
             } else {
                 onBindFailure(address, future.cause());
             }
         });
+        channel = future.channel();
+        return future;
     }
 
     public void shutdown() {
+        channel.close();
         bootstrap.childGroup().shutdownGracefully();
         bootstrap.group().shutdownGracefully();
     }
