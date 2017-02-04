@@ -19,7 +19,7 @@ public abstract class GlowSocketServer extends GlowNetworkServer {
     protected final EventLoopGroup bossGroup;
     protected final EventLoopGroup workerGroup;
     protected final ServerBootstrap bootstrap;
-    protected final Channel channel;
+    protected Channel channel;
 
     public Channel getChannel() {
         return channel;
@@ -38,15 +38,15 @@ public abstract class GlowSocketServer extends GlowNetworkServer {
     }
 
     public ChannelFuture bind(InetSocketAddress address) {
-        ChannelFuture future = this.bootstrap.bind(address).addListener(future -> {
+        ChannelFuture cfuture = this.bootstrap.bind(address).addListener(future -> {
             if (future.isSuccess()) {
                 onBindSuccess(address);
             } else {
                 onBindFailure(address, future.cause());
             }
         });
-        channel = future.channel();
-        return future;
+        channel = cfuture.channel();
+        return cfuture;
     }
 
     public void shutdown() {
