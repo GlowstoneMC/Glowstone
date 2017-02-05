@@ -18,6 +18,7 @@ import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.io.PlayerDataService.PlayerReader;
 import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.SetCompressionMessage;
+import net.glowstone.net.message.login.LoginSuccessMessage;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.game.PingMessage;
 import net.glowstone.net.message.play.game.UserListItemMessage;
@@ -330,6 +331,7 @@ public final class GlowSession extends BasicSession {
         // initialize the player
         PlayerReader reader = server.getPlayerDataService().beginReadingData(profile.getUniqueId());
         player = new GlowPlayer(this, profile, reader);
+        finalizeLogin(profile);
 
         // isActive check here in case player disconnected after authentication,
         // but before the GlowPlayer initialization was completed
@@ -337,6 +339,14 @@ public final class GlowSession extends BasicSession {
             reader.close();
             onDisconnect();
             return;
+        }
+
+        // Kick other players with the same UUID
+        for (GlowPlayer other : getServer().getRawOnlinePlayers()) {
+            if (other != player && other.getUniqueId().equals(player.getUniqueId())) {
+                other.getSession().disconnect("You logged in from another location.", true);
+                break;
+            }
         }
 
         // login event
@@ -348,14 +358,6 @@ public final class GlowSession extends BasicSession {
 
         //joins the player
         player.join(this, reader);
-
-        // Kick other players with the same UUID
-        for (GlowPlayer other : getServer().getRawOnlinePlayers()) {
-            if (other != player && other.getUniqueId().equals(player.getUniqueId())) {
-                other.getSession().disconnect("You logged in from another location.", true);
-                break;
-            }
-        }
 
         player.getWorld().getRawPlayers().add(player);
 
@@ -515,6 +517,18 @@ public final class GlowSession extends BasicSession {
             }
             player = null; // in case we are disposed twice
         }
+    }
+
+    private void finalizeLogin(PlayerProfile profile) {
+        // enable compression if needed
+        int compression = getServer().getCompressionThreshold();
+        if (compression > 0) {
+            enableCompression(compression);
+        }
+
+        // send login response
+        send(new LoginSuccessMessage(profile.getUniqueId().toString(), profile.getName()));
+        setProtocol(ProtocolType.PLAY);
     }
 
     ////////////////////////////////////////////////////////////////////////////
