@@ -633,7 +633,9 @@ public final class GlowServer implements Server {
 
         // Stop the network servers - starts the shutdown process
         // It may take a second or two for Netty to totally clean up
-        networkServer.shutdown();
+        if (networkServer != null) {
+            networkServer.shutdown();
+        }
         if (queryServer != null) {
             queryServer.shutdown();
         }
