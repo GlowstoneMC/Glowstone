@@ -320,11 +320,15 @@ public final class GlowWorld implements World {
         // pulse AI tasks
         aiTaskService = Executors.newScheduledThreadPool(1);
         aiTaskService.scheduleAtFixedRate(() -> {
-            for (GlowEntity e : entities.getAll()) {
-                if (e instanceof GlowLivingEntity && !e.isDead() && ((GlowLivingEntity) e).hasAI() && e.getLocation().getChunk().isLoaded()) {
-                    GlowLivingEntity entity = (GlowLivingEntity) e;
-                    entity.getTaskManager().pulse();
+            try {
+                for (GlowEntity e : entities.getAll()) {
+                    if (e instanceof GlowLivingEntity && !e.isDead() && ((GlowLivingEntity) e).hasAI() && e.getLocation().getChunk().isLoaded()) {
+                        GlowLivingEntity entity = (GlowLivingEntity) e;
+                        entity.getTaskManager().pulse();
+                    }
                 }
+            } catch (Exception e) {
+                GlowServer.logger.log(Level.SEVERE, "Error in AI task for world '" + name + "':", e);
             }
         }, 50, 50, TimeUnit.MILLISECONDS);
     }

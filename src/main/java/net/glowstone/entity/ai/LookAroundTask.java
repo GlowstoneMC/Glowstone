@@ -37,12 +37,12 @@ public class LookAroundTask extends EntityTask<GlowLivingEntity> {
 
     @Override
     public void end(GlowLivingEntity entity) {
-        delay = random.nextInt(10) + 30;
+        delay = random.nextInt(20) + 60;
     }
 
     @Override
     public void execute(GlowLivingEntity entity) {
-        if (random.nextFloat() <= 0.25 && delay == 0) {
+        if (random.nextFloat() <= 0.15 && delay == 0) {
             entity.setHeadYaw(entity.getHeadYaw() + random.nextFloat() * 179 - 90); // todo: smooth
             delay = 20;
         }
