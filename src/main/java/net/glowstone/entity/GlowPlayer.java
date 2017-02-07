@@ -591,14 +591,16 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         // add entities
-        for (GlowEntity entity : world.getEntityManager()) {
-            if (entity != this && isWithinDistance(entity) && !entity.isDead() &&
-                    !knownEntities.contains(entity) && !hiddenEntities.contains(entity.getUniqueId())) {
-                knownEntities.add(entity);
-                entity.createSpawnMessage().forEach(session::send);
-            }
-        }
-
+        world.getEntityManager().getAll().parallelStream()
+                .filter(entity -> this != entity)
+                .filter(this::isWithinDistance)
+                .filter(entity -> !entity.isDead())
+                .filter(entity -> !knownEntities.contains(entity))
+                .filter(entity -> !hiddenEntities.contains(entity.getUniqueId()))
+                .forEach((entity) -> {
+                    knownEntities.add(entity);
+                    entity.createSpawnMessage().forEach(session::send);
+                });
         if (passengerChanged) {
             session.send(new SetPassengerMessage(SELF_ID, getPassenger() == null ? new int[0] : new int[]{getPassenger().getEntityId()}));
         }
