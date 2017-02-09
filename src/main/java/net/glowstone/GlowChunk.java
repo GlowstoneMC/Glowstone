@@ -218,7 +218,12 @@ public final class GlowChunk implements Chunk {
 
         sections = null;
         biomes = null;
+        heightMap = null;
         tileEntities.clear();
+        for (GlowEntity entity : entities) {
+            entity.remove();
+        }
+        entities.clear();
         return true;
     }
 
