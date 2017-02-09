@@ -5,7 +5,7 @@ then
 fi
 if [ $? -eq 0 ];
 then
-  cp target/glowstone-2017.0.1.1-SNAPSHOT.jar target/glowstone.jar
+  cp target/glowstone-2017.1.1.*.jar target/glowstone.jar
   (cd target && ../start.sh)
 else
   echo "Glowstone did not compile."
