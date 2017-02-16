@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.generator.BlockPopulator;
 
@@ -82,6 +83,9 @@ public class EntityDecorator extends BlockPopulator {
             attempts = 5;
             Location location = block.getLocation().clone().add(0, 1, 0);
             location.setYaw(random.nextFloat() * 360 - 180);
+            if (location.getBlock().getRelative(BlockFace.DOWN).getType() == Material.AIR) {
+                location.subtract(0, 1, 0);
+            }
             world.spawnEntity(location, type);
         }
     }

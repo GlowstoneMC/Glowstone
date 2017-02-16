@@ -46,7 +46,7 @@ public class BossBarManager {
 
     public GlowBossBar getBossBar(UUID uuid) {
         for (GlowBossBar bossBar : bossBars) {
-            if (bossBar.getUniqueId() == uuid) {
+            if (bossBar.getUniqueId().equals(uuid)) {
                 return bossBar;
             }
         }

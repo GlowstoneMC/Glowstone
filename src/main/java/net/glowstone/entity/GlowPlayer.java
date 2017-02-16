@@ -32,7 +32,6 @@ import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.InventoryMonitor;
 import net.glowstone.io.PlayerDataService.PlayerReader;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.login.LoginSuccessMessage;
 import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.game.*;
 import net.glowstone.net.message.play.game.StateChangeMessage.Reason;
@@ -42,7 +41,6 @@ import net.glowstone.net.message.play.inv.*;
 import net.glowstone.net.message.play.player.PlayerAbilitiesMessage;
 import net.glowstone.net.message.play.player.ResourcePackSendMessage;
 import net.glowstone.net.message.play.player.UseBedMessage;
-import net.glowstone.net.protocol.ProtocolType;
 import net.glowstone.scoreboard.GlowScoreboard;
 import net.glowstone.scoreboard.GlowTeam;
 import net.glowstone.util.InventoryUtil;
@@ -320,16 +318,6 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
         chunkLock = world.newChunkLock(getName());
 
-        // enable compression if needed
-        int compression = session.getServer().getCompressionThreshold();
-        if (compression > 0) {
-            session.enableCompression(compression);
-        }
-
-        // send login response
-        session.send(new LoginSuccessMessage(profile.getUniqueId().toString(), profile.getName()));
-        session.setProtocol(ProtocolType.PLAY);
-
         // read data from player reader
         hasPlayedBefore = reader.hasPlayedBefore();
         if (hasPlayedBefore) {
@@ -603,13 +591,19 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         // add entities
-        for (GlowEntity entity : world.getEntityManager()) {
-            if (entity != this && isWithinDistance(entity) && !entity.isDead() &&
-                    !knownEntities.contains(entity) && !hiddenEntities.contains(entity.getUniqueId())) {
-                knownEntities.add(entity);
-                entity.createSpawnMessage().forEach(session::send);
-            }
-        }
+        knownChunks.parallelStream().forEach(key -> {
+            GlowChunk chunk = world.getChunkAt(key.getX(), key.getZ());
+            chunk.getRawEntities().stream()
+                    .filter(entity -> this != entity)
+                    .filter(this::isWithinDistance)
+                    .filter(entity -> !entity.isDead())
+                    .filter(entity -> !knownEntities.contains(entity))
+                    .filter(entity -> !hiddenEntities.contains(entity.getUniqueId()))
+                    .forEach((entity) -> {
+                        knownEntities.add(entity);
+                        entity.createSpawnMessage().forEach(session::send);
+                    });
+        });
 
         if (passengerChanged) {
             session.send(new SetPassengerMessage(SELF_ID, getPassenger() == null ? new int[0] : new int[]{getPassenger().getEntityId()}));

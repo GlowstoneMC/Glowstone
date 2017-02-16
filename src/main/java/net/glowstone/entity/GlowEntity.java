@@ -387,6 +387,9 @@ public abstract class GlowEntity implements Entity {
      */
     public void pulse() {
         ticksLived++;
+        if (!getLocation().getChunk().isLoaded()) {
+            return;
+        }
 
         if (fireTicks > 0) {
             --fireTicks;

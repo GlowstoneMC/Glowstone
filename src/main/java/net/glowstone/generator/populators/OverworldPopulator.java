@@ -40,6 +40,7 @@ public class OverworldPopulator extends BlockPopulator {
         registerBiomePopulator(new MesaPopulator());
         registerBiomePopulator(new MesaForestPopulator());
         registerBiomePopulator(new MushroomIslandPopulator());
+        registerBiomePopulator(new OceanPopulator());
     }
 
     @Override

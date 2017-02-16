@@ -25,6 +25,15 @@ public final class ProxyData {
     private UUID uuid;
     private List<PlayerProperty> properties;
 
+    public ProxyData(String securityKey, String hostname, InetSocketAddress address, String name, UUID uuid, List<PlayerProperty> properties) {
+        this.securityKey = securityKey;
+        this.hostname = hostname;
+        this.address = address;
+        this.name = name;
+        this.uuid = uuid;
+        this.properties = properties;
+    }
+
     /**
      * Create a proxy data structure for a session from the given source text.
      *

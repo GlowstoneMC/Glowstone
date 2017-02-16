@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -19,12 +20,12 @@ public final class EntityManager implements Iterable<GlowEntity> {
     /**
      * A map of all the entity ids to the corresponding entities.
      */
-    private final Map<Integer, GlowEntity> entities = new HashMap<>();
+    private final Map<Integer, GlowEntity> entities = new ConcurrentHashMap<>();
 
     /**
      * A map of entity types to a set containing all entities of that type.
      */
-    private final Map<Class<? extends GlowEntity>, Set<? extends GlowEntity>> groupedEntities = new HashMap<>();
+    private final Map<Class<? extends GlowEntity>, Set<? extends GlowEntity>> groupedEntities = new ConcurrentHashMap<>();
 
     /**
      * Gets all entities with the specified type.
