@@ -20,6 +20,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 /**
@@ -52,7 +53,7 @@ public final class GlowChunk implements Chunk {
     /**
      * The entities that reside in this chunk.
      */
-    private final Set<GlowEntity> entities = new HashSet<>(4);
+    private final Set<GlowEntity> entities = ConcurrentHashMap.newKeySet(4);
     /**
      * The array of chunk sections this chunk contains, or null if it is unloaded.
      */
