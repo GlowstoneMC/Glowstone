@@ -818,11 +818,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         super.setOnGround(onGround);
         if (onGround && getFallDistance() > 3) {
             if (getClass() == GlowPlayer.class && ((GlowPlayer) this).getAllowFlight()) {
+                setFallDistance(0);
                 return;
             }
             float damage = getFallDistance() - 3;
             damage = Math.round(damage);
-            if (damage == 0) {
+            if (damage <= 0) {
                 setFallDistance(0);
                 return;
             }
@@ -834,8 +835,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             }
             setLastDamageCause(ev);
             damage(ev.getDamage());
+            setFallDistance(0);
         }
-        setFallDistance(0);
     }
 
     public boolean isFallFlying() {
