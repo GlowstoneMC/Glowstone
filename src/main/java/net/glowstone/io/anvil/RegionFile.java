@@ -72,8 +72,8 @@ import java.util.zip.*;
 
 public class RegionFile {
 
-    private static final int VERSION_GZIP = 1;
-    private static final int VERSION_DEFLATE = 2;
+    private static final byte VERSION_GZIP = 1;
+    private static final byte VERSION_DEFLATE = 2;
 
     private static final int SECTOR_BYTES = 4096;
     private static final int SECTOR_INTS = SECTOR_BYTES / 4;
@@ -212,7 +212,16 @@ public class RegionFile {
         if (version == VERSION_GZIP) {
             byte[] data = new byte[length - 1];
             file.read(data);
-            return new DataInputStream(new BufferedInputStream(new GZIPInputStream(new ByteArrayInputStream(data), 2048)));
+            try {
+                return new DataInputStream(new BufferedInputStream(new GZIPInputStream(new ByteArrayInputStream(data), 2048)));
+            } catch (ZipException e) {
+                if (e.getMessage().equals("Not in GZIP format")) {
+                    GlowServer.logger.info("Incorrect region version, switching to zlib...");
+                    file.seek((sectorNumber * SECTOR_BYTES) + Integer.BYTES);
+                    file.write(VERSION_DEFLATE);
+                    return new DataInputStream(new BufferedInputStream(new InflaterInputStream(new ByteArrayInputStream(data), new Inflater(), 2048)));
+                }
+            }
         } else if (version == VERSION_DEFLATE) {
             byte[] data = new byte[length - 1];
             file.read(data);
