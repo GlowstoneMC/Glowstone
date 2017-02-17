@@ -43,7 +43,7 @@ public class StructurePopulator extends BlockPopulator {
                                 if (structure.shouldGenerate(random)) {
                                     structure.setDirty(true);
                                     structures.put(key, structure);
-                                    GlowServer.logger.info("structure in chunk " + x + "," + z);
+                                    GlowServer.logger.finer("structure in chunk " + x + "," + z);
                                     placed = true;
                                     break;
                                 }
@@ -63,6 +63,7 @@ public class StructurePopulator extends BlockPopulator {
                     if (structure.generate(random, x, z, delegate)) { // maybe later trigger a StructureGeneratedEvent event and cancel
                         delegate.updateBlockStates();
                     } else {
+                        delegate.rollbackBlockStates();
                         it.remove();
                     }
                 }
