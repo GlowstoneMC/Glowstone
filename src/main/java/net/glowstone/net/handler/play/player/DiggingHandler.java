@@ -30,6 +30,7 @@ import org.bukkit.material.DoublePlant;
 import org.bukkit.material.MaterialData;
 
 import java.util.Collection;
+import java.util.Objects;
 
 public final class DiggingHandler implements MessageHandler<GlowSession, DiggingMessage> {
     @Override
@@ -162,7 +163,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             player.dropItemInHand(true);
             return;
         } else if (message.getState() == DiggingMessage.STATE_SHOT_ARROW_FINISH_EATING && player.getUsageItem() != null) {
-            if (player.getUsageItem().equals(holding)) {
+            if (Objects.equals(player.getUsageItem(), holding)) {
                 ItemType type = ItemTable.instance().getItem(player.getUsageItem().getType());
                 if (type != null && type instanceof ItemTimedUsage) {
                     ((ItemTimedUsage) type).endUse(player, player.getUsageItem());

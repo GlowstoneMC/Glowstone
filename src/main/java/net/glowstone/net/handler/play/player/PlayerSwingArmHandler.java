@@ -1,5 +1,6 @@
 package net.glowstone.net.handler.play.player;
 
+import com.flowpowered.network.Message;
 import com.flowpowered.network.MessageHandler;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowPlayer;
@@ -17,7 +18,6 @@ import java.util.Set;
 public final class PlayerSwingArmHandler implements MessageHandler<GlowSession, PlayerSwingArmMessage> {
     @Override
     public void handle(GlowSession session, PlayerSwingArmMessage message) {
-        //TODO: Handle hand
         GlowPlayer player = session.getPlayer();
 
         Block block;
@@ -36,7 +36,7 @@ public final class PlayerSwingArmHandler implements MessageHandler<GlowSession, 
 
         if (!EventFactory.callEvent(new PlayerAnimationEvent(player)).isCancelled()) {
             // play the animation to others
-            AnimateEntityMessage toSend = new AnimateEntityMessage(player.getEntityId(), AnimateEntityMessage.OUT_SWING_ARM);
+            Message toSend = new AnimateEntityMessage(player.getEntityId(), message.getHand() == 1 ? AnimateEntityMessage.SWING_OFF_HAND : AnimateEntityMessage.SWING_MAIN_HAND);
             player.getWorld().getRawPlayers().stream().filter(observer -> observer != player && observer.canSeeEntity(player)).forEach(observer -> observer.getSession().send(toSend));
         }
     }

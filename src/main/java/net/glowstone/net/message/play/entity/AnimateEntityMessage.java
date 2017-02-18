@@ -6,13 +6,12 @@ import lombok.Data;
 @Data
 public final class AnimateEntityMessage implements Message {
 
-    public static final int IN_SWING_ARM = 1;
-    public static final int IN_HURT = 2;
-    public static final int IN_LEAVE_BED = 3;
-
-    public static final int OUT_SWING_ARM = 0;
-    public static final int OUT_HURT = 1;
-    public static final int OUT_LEAVE_BED = 2;
+    public static final int SWING_MAIN_HAND = 0;
+    public static final int TAKE_DAMAGE = 1;
+    public static final int LEAVE_BED = 2;
+    public static final int SWING_OFF_HAND = 3;
+    public static final int CRIT = 4;
+    public static final int MAGIC_CRIT = 5;
 
     private final int id, animation;
 

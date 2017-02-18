@@ -7,6 +7,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.TileEntity;
+import net.glowstone.block.itemtype.ItemTimedUsage;
 import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
@@ -101,6 +102,7 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         Vector clickedLoc = new Vector(message.getCursorX(), message.getCursorY(), message.getCursorZ());
         BlockFace face = convertFace(message.getDirection());
         ItemStack holding = player.getItemInHand();
+        ItemType type = ItemTable.instance().getItem(player.getUsageItem().getType());
 
         // check that held item matches
         // apparently the "message" container has comprehends held item as null,
@@ -113,7 +115,7 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         //}
 
         // check that a block-click wasn't against air
-        if (clicked != null && clicked.getType() == Material.AIR) {
+        if (!(type instanceof ItemTimedUsage) && clicked != null && clicked.getType() == Material.AIR) {
             // inform the player their perception of reality is wrong
             player.sendBlockChange(clicked.getLocation(), Material.AIR, (byte) 0);
             return;
@@ -141,7 +143,6 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         // follows ALLOW/DENY: default to if no block was interacted with
         if (selectResult(event.useItemInHand(), !useInteractedBlock) && holding != null) {
             // call out to the item type to determine the appropriate right-click action
-            ItemType type = ItemTable.instance().getItem(holding.getType());
             if (clicked == null) {
                 type.rightClickAir(player, holding);
             } else {
