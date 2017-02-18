@@ -38,11 +38,9 @@ public final class UserListItemCodec implements Codec<UserListItemMessage> {
                     for (PlayerProperty property : entry.profile.getProperties()) {
                         ByteBufUtils.writeUTF8(buf, property.getName());
                         ByteBufUtils.writeUTF8(buf, property.getValue());
-                        if (property.getSignature() != null) {
-                            buf.writeBoolean(true);
+                        buf.writeBoolean(property.isSigned());
+                        if (property.isSigned()) {
                             ByteBufUtils.writeUTF8(buf, property.getSignature());
-                        } else {
-                            buf.writeBoolean(false);
                         }
                     }
                     ByteBufUtils.writeVarInt(buf, entry.gameMode);

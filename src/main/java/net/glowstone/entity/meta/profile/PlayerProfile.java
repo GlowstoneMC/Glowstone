@@ -5,14 +5,12 @@ import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.UuidUtils;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.Tag;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -96,10 +94,11 @@ public final class PlayerProfile {
 
         List<PlayerProperty> properties = new ArrayList<>();
         if (tag.containsKey("Properties")) {
-            for (Entry<String, Tag> property : tag.getCompound("Properties").getValue().entrySet()) {
-                @SuppressWarnings("unchecked")
-                CompoundTag propertyValueTag = ((List<CompoundTag>) property.getValue().getValue()).get(0);
-                properties.add(new PlayerProperty(property.getKey(), propertyValueTag.getString("Value"), propertyValueTag.getString("Signature")));
+            CompoundTag texture = tag.getCompound("Properties").getCompoundList("textures").get(0);
+            if (texture.containsKey("Signature")) {
+                properties.add(new PlayerProperty("textures", texture.getString("Value"), texture.getString("Signature")));
+            } else {
+                properties.add(new PlayerProperty("textures", texture.getString("Value")));
             }
         }
         return new PlayerProfile(name, UUID.fromString(uuidStr), properties);
@@ -140,7 +139,9 @@ public final class PlayerProfile {
         CompoundTag propertiesTag = new CompoundTag();
         for (PlayerProperty property : properties) {
             CompoundTag propertyValueTag = new CompoundTag();
-            propertyValueTag.putString("Signature", property.getSignature());
+            if (property.isSigned()) {
+                propertyValueTag.putString("Signature", property.getSignature());
+            }
             propertyValueTag.putString("Value", property.getValue());
 
             propertiesTag.putCompoundList(property.getName(), Arrays.asList(propertyValueTag));
