@@ -1,22 +1,27 @@
 package net.glowstone.command;
 
-import com.destroystokyo.paper.Title;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.net.message.play.game.TitleMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class TitleCommand extends BukkitCommand {
 
     public TitleCommand() {
-        super("title", "Sends a title to the specified player(s)", "/title <player> <title|clear|reset> ...", Collections.emptyList());
+        super("title", "Sends a title to the specified player(s)", "/title <player> <title|subtitle|times|clear|reset> ...", Collections.emptyList());
         setPermission("glowstone.command.title");
     }
 
@@ -27,42 +32,34 @@ public class TitleCommand extends BukkitCommand {
      * @param json the json chat component
      * @return the colored string, or null
      */
-    // TODO: Replace with proper chat components when possible
-    public static String convertJson(JSONObject json) {
+    public String convertJson(Map<String, Object> json) {
         if (json == null || !json.containsKey("text") && !(json.get("text") instanceof String))
             return null; // We can't even parse this
 
         ChatColor color = ChatColor.WHITE;
-        if (json.containsKey("color")) {
-            if (!(json.get("color") instanceof String)) return null;
-            color = toColor((String) json.get("color"));
-        }
-        if (color == null) return null; // Invalid color
+        List<ChatColor> style = new ArrayList<>();
 
-        String text = color + (String) json.get("text");
+        for (Object key : json.keySet()) {
+            if (!(key instanceof String))
+                continue;
 
-        // Check for "extra"
-        if (json.containsKey("extra")) {
-            Object extraObj = json.get("extra");
+            String keyString = (String) key;
 
-            // Check to make sure it's a valid component
-            if (!(extraObj instanceof JSONArray)) return null;
-
-            // Check all components in 'extra'
-            JSONArray extra = (JSONArray) extraObj;
-            if (extra.isEmpty()) return null;
-            for (Object o : extra) {
-                if (!(o instanceof JSONObject)) return null;
-
-                JSONObject e = (JSONObject) o;
-
-                // Attempt to parse the component
-                String temp = convertJson(e);
-                if (temp == null) return null; // Could not parse 'extra'
-
-                // It's valid, append it
-                text += temp;
+            if (keyString.equalsIgnoreCase("color")) {
+                if (!(json.get("color") instanceof String)) return null;
+                color = toColor((String) json.get(keyString));
+            } else if (!keyString.equalsIgnoreCase("text")) {
+                if (toColor(keyString) == null) return null;
+                style.add(toColor(keyString));
             }
+        }
+
+        style.add(color);
+
+        String text = (String) json.get("text");
+
+        for (ChatColor c : style) {
+            text = c + text;
         }
 
         return text;
@@ -72,17 +69,19 @@ public class TitleCommand extends BukkitCommand {
         if (name.equals("obfuscated"))
             return ChatColor.MAGIC;
 
+        if (name.equals("underlined"))
+            return ChatColor.UNDERLINE;
+
         // Loop to avoid exceptions, we'll just return null if it can't be parsed
         for (ChatColor color : ChatColor.values()) {
             if (color == ChatColor.MAGIC) continue; // This isn't a valid value for color anyways
 
-            if (color.name().equals(name.toUpperCase()))
+            if (color.name().equalsIgnoreCase(name.toUpperCase()))
                 return color;
         }
         return null;
     }
 
-    // TODO: rework this to support all supported options for titles
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         if (!testPermission(sender)) return true;
@@ -98,22 +97,51 @@ public class TitleCommand extends BukkitCommand {
             return false;
         }
 
-        if (args[1].equalsIgnoreCase("clear")) {
+        String action = args[1];
+
+        if (action.equalsIgnoreCase("clear")) {
             ((GlowPlayer) player).clearTitle();
             sender.sendMessage("Cleared " + player.getName() + "'s title");
-        } else if (args[1].equalsIgnoreCase("reset")) {
+        } else if (action.equalsIgnoreCase("reset")) {
             player.resetTitle();
             sender.sendMessage("Reset " + player.getName() + "'s title");
-        } else if (args[1].equalsIgnoreCase("title")) {
+        } else if (action.equalsIgnoreCase("title")) {
             if (args.length < 3) {
-                sender.sendMessage(ChatColor.RED + "Usage: /title <player> " + args[1] + " <raw json>");
+                sender.sendMessage(ChatColor.RED + "Usage: /title <player> " + action + " <raw json>");
                 return false;
             }
 
             StringBuilder message = new StringBuilder();
 
             for (int i = 2; i < args.length; i++) {
-                if (i > 2) message.append(" ");
+                message.append(args[i]);
+            }
+
+            String raw = message.toString().trim();
+            if (!validJson(raw)) {
+                sender.sendMessage(ChatColor.RED + "Invalid JSON: Could not parse, invalid format?");
+                return false;
+            }
+
+            String component = raw;
+            Map<String, Object> parsed = getJson(raw);
+            if (parsed != null) {
+                component = convertJson(parsed);
+            }
+
+            ((GlowPlayer) player).updateTitle(TitleMessage.Action.TITLE, component);
+            ((GlowPlayer) player).sendTitle();
+
+            sender.sendMessage("Updated " + player.getName() + "'s title");
+        } else if (action.equalsIgnoreCase("subtitle")) {
+            if (args.length < 3) {
+                sender.sendMessage(ChatColor.RED + "Usage: /title <player> " + action + " <raw json>");
+                return false;
+            }
+
+            StringBuilder message = new StringBuilder();
+
+            for (int i = 2; i < args.length; i++) {
                 message.append(args[i]);
             }
 
@@ -129,9 +157,31 @@ public class TitleCommand extends BukkitCommand {
                 component = convertJson((JSONObject) parsed);
             }
 
-            player.sendTitle(new Title(component));
+            ((GlowPlayer) player).updateTitle(TitleMessage.Action.SUBTITLE, component);
 
-            sender.sendMessage("Updated " + player.getName() + "'s title");
+            sender.sendMessage("Updated " + player.getName() + "'s subtitle");
+        } else if (action.equalsIgnoreCase("times")) {
+            if (args.length != 5) {
+                sender.sendMessage(ChatColor.RED + "Usage: /title <player> " + action + " <fade in> <stay time> <fade out>");
+                return false;
+            }
+
+            if (!tryParseInt(args[2])) {
+                sender.sendMessage(ChatColor.RED + "'" + args[2] + "' is not a number");
+                return false;
+            }
+            if (!tryParseInt(args[3])) {
+                sender.sendMessage(ChatColor.RED + "'" + args[3] + "' is not a number");
+                return false;
+            }
+            if (!tryParseInt(args[4])) {
+                sender.sendMessage(ChatColor.RED + "'" + args[4] + "' is not a number");
+                return false;
+            }
+
+            ((GlowPlayer) player).updateTitle(TitleMessage.Action.TIMES, toInt(args[2]), toInt(args[3]), toInt(args[4]));
+
+            sender.sendMessage("Updated " + player.getName() + "'s times");
         } else {
             sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
             return false;
@@ -140,23 +190,22 @@ public class TitleCommand extends BukkitCommand {
         return true;
     }
 
-    private int tryParseInt(CommandSender sender, String number, int lastParse) {
-        if (lastParse == -1) {
-            return -1;
-        }
-
-        int n = -1;
+    private boolean tryParseInt(String number) {
         try {
-            n = Integer.parseInt(number);
-        } catch (NumberFormatException e) {
-            sender.sendMessage(ChatColor.RED + "'" + number + "' is not a number");
+            Integer.parseInt(number);
+        } catch (NumberFormatException | NullPointerException e) {
+            return false;
         }
-        return n;
+        // only got here if we didn't return false
+        return true;
     }
 
-    // TODO: Replace with a proper JSON chat component validator
+    private int toInt(String number) {
+        return Integer.parseInt(number.trim());
+    }
+
     private boolean validJson(String raw) {
-        Object object = JSONValue.parse(raw);
+        Map<String, Object> object = getJson(raw);
 
         if (object == null) {
             // Could not parse JSON: Check to see if it's at least a single word
@@ -167,36 +216,68 @@ public class TitleCommand extends BukkitCommand {
             return !raw.contains(" ") && raw.charAt(0) != '{' && raw.charAt(0) != '[';
         }
 
-        if (!(object instanceof JSONObject))
-            return false; // Not a valid JSON object
+        Map<String, Object> json = object;
 
-        JSONObject json = (JSONObject) object;
+        // Run through all of the keys to see if they are valid keys,
+        // and have valid values
+        for (Object key : json.keySet()) {
+            Object value = json.get(key);
 
-        // Needs a text component at least
-        if (!json.containsKey("text") || !(json.get("text") instanceof String))
-            return false;
+            if (!(key instanceof String))
+                return false; // The key is not a string, meaning that it is not valid
 
-        // If 'extra' is present, some extra handling needs to be done
-        if (json.containsKey("extra")) {
-            Object extraObj = json.get("extra");
+            String keyString = (String) key;
 
-            // Check to make sure it's a valid component
-            if (!(extraObj instanceof JSONArray)) return false;
-
-            // Check all components in 'extra'
-            JSONArray extra = (JSONArray) extraObj;
-            if (extra.isEmpty()) return false; // No components
-            for (Object o : extra) {
-                if (!(o instanceof JSONObject)) return false;
-
-                // Check to make sure there's a text component
-                JSONObject e = (JSONObject) o;
-                if (!e.containsKey("text") || !(e.get("text") instanceof String))
+            switch (keyString) {
+                case "text":
+                    if (!(value instanceof String))
+                        return false; // The value is not a valid type
+                    break;
+                case "color":
+                    if (!(value instanceof String))
+                        return false; // The value is not a valid type
+                    break;
+                case "bold":
+                    if (!(value instanceof Boolean))
+                        return false; // The value is not a valid type
+                    break;
+                case "italic":
+                    if (!(value instanceof Boolean))
+                        return false; // The value is not a valid type
+                    break;
+                case "underlined":
+                    if (!(value instanceof Boolean))
+                        return false; // The value is not a valid type
+                    break;
+                case "strikethrough":
+                    if (!(value instanceof Boolean))
+                        return false; // The value is not a valid type
+                    break;
+                case "obfuscated":
+                    if (!(value instanceof Boolean))
+                        return false; // The value is not a valid type
+                    break;
+                default:
+                    // The key is not in the list of valid keys,
+                    // meaning that it is not a valid key
                     return false;
             }
         }
 
         // If we made it this far then it has a pretty good chance at being valid
         return true;
+    }
+
+    private Map<String, Object> getJson(String raw) {
+        Gson gson = new Gson();
+        try {
+            Map<String, Object> map = gson.fromJson(raw, new TypeToken<Map<String, Object>>() {
+            }.getType());
+
+            return map;
+        } catch (JsonSyntaxException e) {
+            // Bukkit.getLogger().log(Level.SEVERE, e.getMessage(), e);
+            return null;
+        }
     }
 }

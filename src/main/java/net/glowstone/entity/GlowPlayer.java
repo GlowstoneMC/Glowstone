@@ -287,7 +287,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * The player's current title, if any
      */
-    private Title currentTitle = new Title("");
+    private Title.Builder currentTitle = new Title.Builder();
     /**
      * The one block the player is currently digging.
      */
@@ -2082,17 +2082,19 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void setTitleTimes(int fadeInTicks, int stayTicks, int fadeOutTicks) {
-        currentTitle = new Title(currentTitle.getTitle(), currentTitle.getSubtitle(), fadeInTicks, stayTicks, fadeOutTicks);
+        currentTitle.fadeIn(fadeInTicks);
+        currentTitle.stay(stayTicks);
+        currentTitle.fadeOut(fadeOutTicks);
     }
 
     @Override
     public void setSubtitle(BaseComponent[] subtitle) {
-        currentTitle = new Title(currentTitle.getTitle(), subtitle, currentTitle.getFadeIn(), currentTitle.getStay(), currentTitle.getFadeOut());
+        currentTitle.subtitle(subtitle);
     }
 
     @Override
     public void setSubtitle(BaseComponent subtitle) {
-        currentTitle = new Title(currentTitle.getTitle(), new BaseComponent[]{subtitle}, currentTitle.getFadeIn(), currentTitle.getStay(), currentTitle.getFadeOut());
+        currentTitle.subtitle(subtitle);
     }
 
     @Override
@@ -2120,14 +2122,111 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         session.sendAll(TitleMessage.fromTitle(title));
     }
 
+    /**
+     * Send the player a title base on a {@link Title.Builder}
+     *
+     * @param title the {@link Title.Builder} to send the player
+     */
+    public void sendTitle(Title.Builder title) {
+        sendTitle(title.build());
+    }
+
+    /**
+     * Send the player their current title
+     */
+    public void sendTitle() {
+        sendTitle(currentTitle);
+        currentTitle = new Title.Builder();
+    }
+
     @Override
     public void updateTitle(Title title) {
-        sendTitle(title); // TODO: update existing title instead of sending a new title
+        Title builtTitle = currentTitle.build();
+
+        if (title.getTitle().length != 0) {
+            currentTitle.title(title.getTitle());
+        }
+
+        if (title.getSubtitle() != null) {
+            currentTitle.subtitle(title.getSubtitle());
+        }
+
+        if (builtTitle.getFadeIn() != title.getFadeIn() && title.getFadeIn() != Title.DEFAULT_FADE_IN) {
+            currentTitle.fadeIn(title.getFadeIn());
+        }
+
+        if (builtTitle.getStay() != title.getStay() && title.getStay() != Title.DEFAULT_STAY) {
+            currentTitle.stay(title.getStay());
+        }
+
+        if (builtTitle.getFadeOut() != title.getFadeOut() && title.getFadeOut() != Title.DEFAULT_FADE_OUT) {
+            currentTitle.fadeOut(title.getFadeOut());
+        }
+    }
+
+    /**
+     * Update a specific attribute of the player's title
+     *
+     * @param action the attribute to update
+     * @param value  the value of the attribute
+     */
+    public void updateTitle(TitleMessage.Action action, Object... value) {
+        Preconditions.checkArgument(value.length > 0, "Expected at least one argument. Got " + value.length);
+
+        switch (action) {
+            case TITLE:
+                Preconditions.checkArgument(!(value instanceof String[] || value instanceof BaseComponent[]), "Value is not of the correct type");
+
+                if (value[0] instanceof String) {
+                    StringBuilder builder = new StringBuilder();
+
+                    for (int i = 0; i < value.length; i++) {
+                        if (i > 0) builder.append(" ");
+                        builder.append(value[i]);
+                    }
+
+                    currentTitle.title(builder.toString());
+                } else {
+                    BaseComponent[] formattedValue = (BaseComponent[]) value;
+                    currentTitle.title(formattedValue);
+                }
+
+                break;
+            case SUBTITLE:
+                Preconditions.checkArgument(!(value instanceof String[] || value instanceof BaseComponent[]), "Value is not of the correct type");
+
+                if (value[0] instanceof String) {
+                    StringBuilder builder = new StringBuilder();
+
+                    for (int i = 0; i < value.length; i++) {
+                        if (i > 0) builder.append(" ");
+                        builder.append(value[i]);
+                    }
+
+                    currentTitle.subtitle(builder.toString());
+                } else {
+                    BaseComponent[] formattedValue = (BaseComponent[]) value;
+                    currentTitle.subtitle(formattedValue);
+                }
+
+                break;
+            case TIMES:
+                Preconditions.checkArgument(!(value instanceof Integer[]), "Value is not of the correct type");
+                Preconditions.checkArgument(value.length == 3, "Expected 3 values. Got " + value.length);
+
+                currentTitle.fadeIn((int) value[0]);
+                currentTitle.stay((int) value[1]);
+                currentTitle.fadeOut((int) value[2]);
+                
+                break;
+            default:
+                Preconditions.checkArgument(true, "Action is something other than a title, subtitle, or times");
+        }
     }
 
     @Override
     public void hideTitle() {
-        currentTitle = new Title("");
+        currentTitle = new Title.Builder();
         session.send(new TitleMessage(Action.CLEAR));
     }
 
@@ -2612,7 +2711,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public Title getTitle() {
-        return currentTitle;
+        return currentTitle.build();
     }
 
     public void clearTitle() {
@@ -2621,7 +2720,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void resetTitle() {
-        currentTitle = new Title("");
+        currentTitle = new Title.Builder();
         session.send(new TitleMessage(Action.RESET));
     }
 
