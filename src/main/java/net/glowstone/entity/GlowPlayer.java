@@ -1589,8 +1589,8 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         // Call event
         EventFactory.callEvent(new PlayerBedLeaveEvent(this, head));
 
-        getSession().send(new AnimateEntityMessage(SELF_ID, AnimateEntityMessage.OUT_LEAVE_BED));
-        AnimateEntityMessage msg = new AnimateEntityMessage(getEntityId(), AnimateEntityMessage.OUT_LEAVE_BED);
+        getSession().send(new AnimateEntityMessage(SELF_ID, AnimateEntityMessage.LEAVE_BED));
+        AnimateEntityMessage msg = new AnimateEntityMessage(getEntityId(), AnimateEntityMessage.LEAVE_BED);
         world.getRawPlayers().stream().filter(p -> p != this && p.canSeeEntity(this)).forEach(p -> p.getSession().send(msg));
     }
 
