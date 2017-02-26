@@ -83,6 +83,9 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
             }
         }
 
+        // move event was not fired or did nothing, simply update location
+        player.setRawLocation(newLocation);
+
         // do stuff with onGround if we need to
         if (player.isOnGround() != message.isOnGround()) {
             if (message.isOnGround() && player.getVelocity().getY() > 0) {
@@ -131,7 +134,6 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
             }
         }
 
-        // move event was not fired or did nothing, simply update location
-        player.setRawLocation(newLocation);
+
     }
 }

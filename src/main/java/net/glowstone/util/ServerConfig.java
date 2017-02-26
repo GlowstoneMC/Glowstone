@@ -329,7 +329,7 @@ public final class ServerConfig {
         ONLINE_MODE("server.online-mode", true, Migrate.PROPS, "online-mode"),
         MAX_PLAYERS("server.max-players", 20, Migrate.PROPS, "max-players"),
         WHITELIST("server.whitelisted", false, Migrate.PROPS, "white-list"),
-        MOTD("server.motd", "Glowstone server", Migrate.PROPS, "motd"),
+        MOTD("server.motd", "A Glowstone server", Migrate.PROPS, "motd"),
         SHUTDOWN_MESSAGE("server.shutdown-message", "Server shutting down.", Migrate.BUKKIT, "settings.shutdown-message"),
 
         // console
