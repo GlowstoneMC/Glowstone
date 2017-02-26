@@ -7,7 +7,6 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.TileEntity;
-import net.glowstone.block.itemtype.ItemTimedUsage;
 import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
@@ -102,7 +101,6 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         Vector clickedLoc = new Vector(message.getCursorX(), message.getCursorY(), message.getCursorZ());
         BlockFace face = convertFace(message.getDirection());
         ItemStack holding = player.getItemInHand();
-        ItemType type = ItemTable.instance().getItem(player.getUsageItem().getType());
 
         // check that held item matches
         // apparently the "message" container has comprehends held item as null,
@@ -114,21 +112,27 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         //    return;
         //}
 
+        boolean rightClickedAir = false;
         // check that a block-click wasn't against air
-        if (!(type instanceof ItemTimedUsage) && clicked != null && clicked.getType() == Material.AIR) {
+        if (clicked == null || clicked.getType() == Material.AIR) {
+            action = Action.RIGHT_CLICK_AIR;
             // inform the player their perception of reality is wrong
-            player.sendBlockChange(clicked.getLocation(), Material.AIR, (byte) 0);
-            return;
+            if (holding.getType().isBlock()) {
+                player.sendBlockChange(clicked.getLocation(), Material.AIR, (byte) 0);
+                return;
+            } else {
+                rightClickedAir = true;
+            }
         }
 
         // call interact event
-        PlayerInteractEvent event = EventFactory.onPlayerInteract(player, action, clicked, face);
+        PlayerInteractEvent event = EventFactory.onPlayerInteract(player, action, rightClickedAir ? null : clicked, face);
         //GlowServer.logger.info("Interact: " + action + " " + clicked + " " + face);
 
         // attempt to use interacted block
         // DEFAULT is treated as ALLOW, and sneaking is always considered
         boolean useInteractedBlock = event.useInteractedBlock() != Result.DENY;
-        if (useInteractedBlock && clicked != null && (!player.isSneaking() || InventoryUtil.isEmpty(holding))) {
+        if (useInteractedBlock && !rightClickedAir && (!player.isSneaking() || InventoryUtil.isEmpty(holding))) {
             BlockType blockType = ItemTable.instance().getBlock(clicked.getType());
             if (blockType != null) {
                 useInteractedBlock = blockType.blockInteract(player, clicked, face, clickedLoc);
@@ -142,8 +146,9 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         // attempt to use item in hand
         // follows ALLOW/DENY: default to if no block was interacted with
         if (selectResult(event.useItemInHand(), !useInteractedBlock) && holding != null) {
+            ItemType type = ItemTable.instance().getItem(holding.getType());
             // call out to the item type to determine the appropriate right-click action
-            if (clicked == null) {
+            if (rightClickedAir) {
                 type.rightClickAir(player, holding);
             } else {
                 if (holding.getType() != Material.AIR) {
@@ -154,13 +159,13 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
 
         // if anything was actually clicked, make sure the player's up to date
         // in case something is unimplemented or otherwise screwy on our side
-        if (clicked != null) {
+        if (!rightClickedAir) {
             revert(player, clicked);
             revert(player, clicked.getRelative(face));
         }
 
         // if there's been a change in the held item, make it valid again
-        if (holding != null) {
+        if (!InventoryUtil.isEmpty(holding)) {
             if (holding.getType().getMaxDurability() > 0 && holding.getDurability() > holding.getType().getMaxDurability()) {
                 holding.setAmount(holding.getAmount() - 1);
                 holding.setDurability((short) 0);
