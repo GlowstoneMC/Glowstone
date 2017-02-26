@@ -71,7 +71,7 @@ public final class TextMessage {
             dest.append(obj.get("text"));
         }
         if (obj.containsKey("extra")) {
-            JSONArray array = (JSONArray) obj.get("extra");
+            LinkedList<?> array = (LinkedList<?>) obj.get("extra");
             for (Object o : array) {
                 if (o instanceof JSONObject) {
                     flatten(dest, (JSONObject) o);
