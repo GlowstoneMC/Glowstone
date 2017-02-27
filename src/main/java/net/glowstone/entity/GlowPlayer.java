@@ -535,7 +535,7 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
             }
         }
 
-        if (getHealth() < getMaxHealth()) {
+        if (getHealth() < getMaxHealth() && !isDead()) {
             if (food > 18 && ticksLived % 80 == 0 || world.getDifficulty() == Difficulty.PEACEFUL) {
 
                 EntityRegainHealthEvent event1 = new EntityRegainHealthEvent(this, 1f, RegainReason.SATIATED);
@@ -1001,9 +1001,11 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         if (displayName != null) {
             return displayName;
         }
-        GlowTeam team = (GlowTeam) getScoreboard().getEntryTeam(getName());
-        if (team != null) {
-            return team.getPlayerDisplayName(getName());
+        if (scoreboard != null) {
+            GlowTeam team = (GlowTeam) scoreboard.getEntryTeam(getName());
+            if (team != null) {
+                return team.getPlayerDisplayName(getName());
+            }
         }
         return getName();
     }

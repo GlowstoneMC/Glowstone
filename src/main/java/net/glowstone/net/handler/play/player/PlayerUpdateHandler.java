@@ -41,7 +41,7 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
           this is NOT robust hack prevention - only to prevent client
           confusion about where its actual location is (e.g. during login)
         */
-        if (message.moved()) {
+        if (message.moved() && !player.isDead()) {
             if (player.teleportedTo != null) {
                 if (newLocation.equals(player.teleportedTo)) {
                     player.endTeleport();
