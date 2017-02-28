@@ -11,10 +11,11 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
+import org.bukkit.util.Vector;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
 
@@ -23,14 +24,26 @@ public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
 
     public GlowTNTPrimed(Location location, Entity source) {
         super(location, Explosion.POWER_TNT);
-        fuseTicks = 80;
+        fuseTicks = 0;
+        ThreadLocalRandom rand = ThreadLocalRandom.current();
+        int multiplier = rand.nextBoolean() ? 1 : -1;
+        double x = 0, z = 0;
+        double mag = rand.nextDouble(0, 0.02);
+        if (rand.nextBoolean()) {
+            x = multiplier * mag;
+        } else {
+            z = multiplier * mag;
+        }
+        setVelocity(new Vector(x, 0.2, z));
         this.source = source;
     }
 
     public void setIgnitedByExplosion(boolean ignitedByExplosion) {
         if (ignitedByExplosion) {
             // if ignited by an explosion, the fuseTicks should be a random number between 10 and 30 ticks
-            fuseTicks = new Random().nextInt(21) + 10;
+            fuseTicks = ThreadLocalRandom.current().nextInt(10, 31);
+        } else {
+            fuseTicks = 80;
         }
     }
 
@@ -42,7 +55,7 @@ public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
         if (fuseTicks <= 0) {
             explode();
         } else {
-            world.spigot().playEffect(location.clone().add(0, 0.5D, 0), Effect.SMOKE);
+            world.playEffect(location.clone().add(0, 0.5, 0), Effect.SMOKE, 0);
         }
     }
 
@@ -51,7 +64,7 @@ public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
 
         if (!event.isCancelled()) {
             Location location = getLocation();
-            double x = location.getX() + 0.49, y = location.getY() + 0.49, z = location.getZ() + 0.49;
+            double x = location.getX() + 0.5, y = location.getY() + 0.5, z = location.getZ() + 0.5;
             world.createExplosion(this, x, y, z, event.getRadius(), event.getFire(), true);
         }
 

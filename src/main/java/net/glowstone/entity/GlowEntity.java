@@ -665,9 +665,33 @@ public abstract class GlowEntity implements Entity {
         return boundingBox != null && boundingBox.intersects(box);
     }
 
+    /**
+     * Velocity reduction applied each tick.
+     */
+    private static final double AIR_DRAG = 0.99;
+
+    /**
+     * Velocity reduction applied each tick.
+     */
+    private static final double LIQUID_DRAG = 0.8;
+
+    /**
+     * Gravity acceleration applied each tick.
+     */
+    private static final Vector GRAVITY = new Vector(0, -0.05, 0);
+
     protected void pulsePhysics() {
         // todo: update location based on velocity,
         // do gravity, all that other good stuff
+        if (!location.clone().add(getVelocity()).getBlock().getType().isSolid()) {
+            location.add(getVelocity());
+            if (location.getBlock().isLiquid()) {
+                velocity.multiply(LIQUID_DRAG);
+            } else {
+                velocity.multiply(AIR_DRAG);
+            }
+            velocity.add(GRAVITY);
+        }
 
         // make sure bounding box is up to date
         if (boundingBox != null) {

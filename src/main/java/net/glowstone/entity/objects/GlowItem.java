@@ -156,15 +156,6 @@ public final class GlowItem extends GlowEntity implements Item {
         if (location.getBlock().getType().isSolid()) {
             setRawLocation(location.clone().add(0, 0.2, 0), false);
         }
-        if (!location.clone().add(getVelocity()).getBlock().getType().isSolid()) {
-            location.add(getVelocity());
-            if (location.getBlock().isLiquid()) {
-                velocity.multiply(LIQUID_DRAG);
-            } else {
-                velocity.multiply(AIR_DRAG);
-            }
-            velocity.add(GRAVITY);
-        }
 
         super.pulsePhysics();
     }

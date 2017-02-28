@@ -7,7 +7,7 @@
     <name>Glowstone</name>
     <groupId>net.glowstone</groupId>
     <artifactId>glowstone</artifactId>
-    <version>2017.2.0.22-SNAPSHOT</version>
+    <version>2017.2.0.23-SNAPSHOT</version>
     <packaging>jar</packaging>
     <inceptionYear>2011</inceptionYear>
     <url>https://www.glowstone.net</url>
@@ -152,21 +152,6 @@
         <defaultGoal>package</defaultGoal>
         <plugins>
             <plugin>
-                <groupId>com.lukegb.mojo</groupId>
-                <artifactId>gitdescribe-maven-plugin</artifactId>
-                <version>3.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>gitdescribe</goal>
-                        </goals>
-                        <id>git-describe</id>
-                        <phase>initialize</phase>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>2.16</version>
@@ -226,7 +211,7 @@
                     <archive>
                         <manifestEntries>
                             <Implementation-Title>${project.name}</Implementation-Title>
-                            <Implementation-Version>${project.version}-${describe}</Implementation-Version>
+                            <Implementation-Version>${project.version}</Implementation-Version>
                             <Specification-Version>${bukkit.version}</Specification-Version>
                         </manifestEntries>
                     </archive>

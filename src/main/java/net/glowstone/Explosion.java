@@ -223,26 +223,27 @@ public final class Explosion {
 
     private Collection<GlowPlayer> damageEntities() {
         float power = this.power;
-        this.power *= 2f;
+        this.power *= 2;
 
         Collection<GlowPlayer> affectedPlayers = new ArrayList<>();
 
         LivingEntity[] entities = getNearbyEntities();
         for (LivingEntity entity : entities) {
-            if (entity instanceof GlowPlayer) {
-                affectedPlayers.add((GlowPlayer) entity);
+            // refine area to sphere, instead of box
+            if (distanceToSquared(entity) > power * power) {
+                continue;
             }
 
-            double disDivPower = distanceTo(entity) / this.power;
-            if (disDivPower > 1.0D) continue;
+            double exposure = world.rayTrace(location, (GlowEntity) entity);
+            double impact = (1 - (distanceTo(entity) / power / 2)) * exposure;
 
-            Vector vecDistance = distanceToHead(entity);
-            if (vecDistance.length() == 0.0) continue;
+            double damage = (impact * impact + impact) * 8 * power + 1;
+            int epf = getProtectionFactor(entity);
+            double reduction = calculateEnchantedReduction(epf);
 
-            vecDistance.normalize();
+            damage = damage * reduction;
 
-            double basicDamage = calculateDamage(entity, disDivPower);
-            double explosionDamage = calculateEnchantedDamage((int) ((basicDamage * basicDamage + basicDamage) * 4 * power + 1.0D), entity);
+            exposure -= exposure * epf * 0.15;
 
             DamageCause damageCause;
             if (source == null || source.getType() == EntityType.PRIMED_TNT) {
@@ -250,40 +251,53 @@ public final class Explosion {
             } else {
                 damageCause = DamageCause.ENTITY_EXPLOSION;
             }
-            entity.damage(explosionDamage, source, damageCause);
+            entity.damage(damage, source, damageCause);
 
-            vecDistance.multiply(explosionDamage).multiply(0.25);
+            if (entity instanceof GlowPlayer) {
+                affectedPlayers.add((GlowPlayer) entity);
+                if (((GlowPlayer) entity).isFlying()) {
+                    continue;
+                }
+            }
+
+            Vector rayLength = distanceToHead(entity);
+            if (rayLength.lengthSquared() == 0) {
+                rayLength = new Vector(0, 1, 0);
+            } else {
+                rayLength.normalize();
+            }
+            rayLength.multiply(exposure);
 
             Vector currentVelocity = entity.getVelocity();
-            currentVelocity.add(vecDistance);
+            currentVelocity.add(rayLength);
             entity.setVelocity(currentVelocity);
         }
 
         return affectedPlayers;
     }
 
-    private double calculateEnchantedDamage(double explosionDamage, LivingEntity entity) {
+    private double calculateEnchantedReduction(int epf) {
+        // TODO: move this to damage main (in entity)
+        double reduction = 1;
+        if (epf > 0) {
+            reduction = (1 - epf / 25);
+        }
+        return reduction;
+    }
+
+    private int getProtectionFactor(LivingEntity entity) {
         int level = 0;
         if (entity.getEquipment() != null) {
             for (ItemStack stack : entity.getEquipment().getArmorContents()) {
                 if (stack != null) {
-                    level += stack.getEnchantmentLevel(Enchantment.PROTECTION_EXPLOSIONS);
+                    int stackLevel = stack.getEnchantmentLevel(Enchantment.PROTECTION_EXPLOSIONS);
+                    if (stackLevel > level)
+                        level = stackLevel;
                 }
             }
         }
-        if (level > 0) {
-            float sub = level * 0.15f;
-            double damage = explosionDamage * sub;
-            damage = Math.floor(damage);
-            return explosionDamage - damage;
-        }
 
-        return explosionDamage;
-    }
-
-    private double calculateDamage(Entity entity, double disDivPower) {
-        double damage = world.rayTrace(location, (GlowEntity) entity);
-        return damage * (1D - disDivPower);
+        return level * 2;
     }
 
     private LivingEntity[] getNearbyEntities() {
@@ -295,8 +309,12 @@ public final class Explosion {
         return location.clone().subtract(entity.getLocation()).length();
     }
 
+    private double distanceToSquared(LivingEntity entity) {
+        return location.clone().subtract(entity.getLocation()).lengthSquared();
+    }
+
     private Vector distanceToHead(LivingEntity entity) {
-        return entity.getLocation().clone().subtract(location.clone().subtract(0, entity.getEyeHeight(), 0)).toVector();
+        return entity.getEyeLocation().subtract(location.clone()).toVector();
     }
 
     ///////////////////////////////////////
@@ -316,15 +334,10 @@ public final class Explosion {
     private void playOutExplosion(GlowPlayer player, Iterable<BlockVector> blocks) {
         Collection<Record> records = new ArrayList<>();
 
-        Location clientLoc = location.clone();
-        clientLoc.setX((int) clientLoc.getX());
-        clientLoc.setY((int) clientLoc.getY());
-        clientLoc.setZ((int) clientLoc.getZ());
-
         for (BlockVector block : blocks) {
-            byte x = (byte) (block.getBlockX() - clientLoc.getBlockX());
-            byte y = (byte) (block.getBlockY() - clientLoc.getBlockY());
-            byte z = (byte) (block.getBlockZ() - clientLoc.getBlockZ());
+            byte x = (byte) (block.getBlockX() - location.getBlockX());
+            byte y = (byte) (block.getBlockY() - location.getBlockY());
+            byte z = (byte) (block.getBlockZ() - location.getBlockZ());
             records.add(new Record(x, y, z));
         }
 
