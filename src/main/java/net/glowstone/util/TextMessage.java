@@ -2,7 +2,6 @@ package net.glowstone.util;
 
 import lombok.EqualsAndHashCode;
 import org.bukkit.ChatColor;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -71,7 +70,7 @@ public final class TextMessage {
             dest.append(obj.get("text"));
         }
         if (obj.containsKey("extra")) {
-            JSONArray array = (JSONArray) obj.get("extra");
+            LinkedList<?> array = (LinkedList<?>) obj.get("extra");
             for (Object o : array) {
                 if (o instanceof JSONObject) {
                     flatten(dest, (JSONObject) o);
