@@ -25,8 +25,6 @@ public final class GameServer extends GlowSocketServer implements ConnectionMana
 
     @Override
     public void onBindSuccess(InetSocketAddress address) {
-        getServer().setPort(address.getPort());
-        getServer().setIp(address.getHostString());
         GlowServer.logger.info("Successfully bound server to " + address + '.');
         super.onBindSuccess(address);
     }

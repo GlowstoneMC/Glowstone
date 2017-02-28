@@ -464,6 +464,8 @@ public final class GlowServer implements Server {
         whitelist.load();
         nameBans.load();
         ipBans.load();
+        setPort(config.getInt(Key.SERVER_PORT));
+        setIp(config.getString(Key.SERVER_IP));
 
         try {
             LootingManager.load();
