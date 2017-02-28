@@ -1,7 +1,9 @@
-package net.glowstone;
+package net.glowstone.chunk;
 
-import net.glowstone.GlowChunk.ChunkSection;
-import net.glowstone.GlowChunk.Key;
+import net.glowstone.EventFactory;
+import net.glowstone.GlowServer;
+import net.glowstone.GlowWorld;
+import net.glowstone.chunk.GlowChunk.Key;
 import net.glowstone.constants.GlowBiome;
 import net.glowstone.generator.GlowChunkData;
 import net.glowstone.generator.GlowChunkGenerator;

@@ -1,10 +1,10 @@
 package net.glowstone.block.state;
 
 import net.glowstone.EventFactory;
-import net.glowstone.GlowChunk.Key;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.TENote;
+import net.glowstone.chunk.GlowChunk.Key;
 import org.bukkit.Instrument;
 import org.bukkit.Location;
 import org.bukkit.Material;

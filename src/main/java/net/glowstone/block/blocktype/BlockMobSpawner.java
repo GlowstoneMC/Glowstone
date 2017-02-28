@@ -1,8 +1,8 @@
 package net.glowstone.block.blocktype;
 
-import net.glowstone.GlowChunk;
 import net.glowstone.block.entity.TEMobSpawner;
 import net.glowstone.block.entity.TileEntity;
+import net.glowstone.chunk.GlowChunk;
 
 public class BlockMobSpawner extends BlockDropless {
     @Override

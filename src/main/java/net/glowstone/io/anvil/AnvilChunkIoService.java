@@ -1,13 +1,13 @@
 package net.glowstone.io.anvil;
 
-import net.glowstone.GlowChunk;
-import net.glowstone.GlowChunk.ChunkSection;
-import net.glowstone.GlowChunkSnapshot;
 import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.TileEntity;
+import net.glowstone.chunk.ChunkSection;
+import net.glowstone.chunk.GlowChunk;
+import net.glowstone.chunk.GlowChunkSnapshot;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.io.ChunkIoService;
 import net.glowstone.io.entity.EntityStorage;

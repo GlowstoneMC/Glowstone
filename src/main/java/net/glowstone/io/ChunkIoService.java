@@ -1,6 +1,6 @@
 package net.glowstone.io;
 
-import net.glowstone.GlowChunk;
+import net.glowstone.chunk.GlowChunk;
 
 import java.io.IOException;
 

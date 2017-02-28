@@ -1,7 +1,7 @@
-package net.glowstone;
+package net.glowstone.chunk;
 
-import net.glowstone.GlowChunk.ChunkSection;
 import net.glowstone.constants.GlowBiome;
+
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.World;
 import org.bukkit.block.Biome;

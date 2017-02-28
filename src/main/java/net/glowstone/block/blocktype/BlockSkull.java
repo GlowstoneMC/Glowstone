@@ -1,11 +1,11 @@
 package net.glowstone.block.blocktype;
 
-import net.glowstone.GlowChunk;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.TESkull;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.block.state.GlowSkull;
+import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.pattern.BlockPattern;
 import org.bukkit.Material;
