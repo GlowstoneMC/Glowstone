@@ -815,28 +815,19 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     @Override
     public void setOnGround(boolean onGround) {
-        super.setOnGround(onGround);
         if (onGround && getFallDistance() > 3) {
-            if (getClass() == GlowPlayer.class && ((GlowPlayer) this).getAllowFlight()) {
-                setFallDistance(0);
-                return;
-            }
             float damage = getFallDistance() - 3;
             damage = Math.round(damage);
-            if (damage <= 0) {
-                setFallDistance(0);
-                return;
+            if (damage > 0) {
+                EntityDamageEvent ev = new EntityDamageEvent(this, DamageCause.FALL, damage);
+                getServer().getPluginManager().callEvent(ev);
+                if (!ev.isCancelled()) {
+                    setLastDamageCause(ev);
+                    damage(ev.getDamage());
+                }
             }
-            EntityDamageEvent ev = new EntityDamageEvent(this, DamageCause.FALL, damage);
-            getServer().getPluginManager().callEvent(ev);
-            if (ev.isCancelled()) {
-                setFallDistance(0);
-                return;
-            }
-            setLastDamageCause(ev);
-            damage(ev.getDamage());
-            setFallDistance(0);
         }
+        super.setOnGround(onGround);
     }
 
     public boolean isFallFlying() {

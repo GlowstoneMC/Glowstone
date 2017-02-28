@@ -41,7 +41,7 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
           this is NOT robust hack prevention - only to prevent client
           confusion about where its actual location is (e.g. during login)
         */
-        if (message.moved()) {
+        if (message.moved() && !player.isDead()) {
             if (player.teleportedTo != null) {
                 if (newLocation.equals(player.teleportedTo)) {
                     player.endTeleport();
@@ -82,6 +82,9 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
                 return;
             }
         }
+
+        // move event was not fired or did nothing, simply update location
+        player.setRawLocation(newLocation);
 
         // do stuff with onGround if we need to
         if (player.isOnGround() != message.isOnGround()) {
@@ -131,7 +134,6 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
             }
         }
 
-        // move event was not fired or did nothing, simply update location
-        player.setRawLocation(newLocation);
+
     }
 }

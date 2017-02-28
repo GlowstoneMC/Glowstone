@@ -472,11 +472,8 @@ public abstract class GlowEntity implements Entity {
             fallDistance = 0;
             return;
         }
+
         fallDistance += Math.abs(location.getY() - previousLocation.getY());
-        // check if entity is on the ground and did not fall the sufficient amount
-        if (isOnGround() && fallDistance <= 3) {
-            fallDistance = 0;
-        }
     }
 
     /**
@@ -732,6 +729,9 @@ public abstract class GlowEntity implements Entity {
     }
 
     public void setOnGround(boolean onGround) {
+        if (onGround) {
+            setFallDistance(0);
+        }
         this.onGround = onGround;
     }
 
