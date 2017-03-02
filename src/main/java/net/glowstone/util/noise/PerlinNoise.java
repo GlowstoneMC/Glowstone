@@ -1,7 +1,11 @@
 package net.glowstone.util.noise;
 
+import com.jogamp.opencl.*;
+import net.glowstone.GlowServer;
 import org.bukkit.util.noise.PerlinNoiseGenerator;
 
+import java.io.IOException;
+import java.nio.DoubleBuffer;
 import java.util.Random;
 
 public class PerlinNoise extends PerlinNoiseGenerator {
@@ -78,45 +82,91 @@ public class PerlinNoise extends PerlinNoiseGenerator {
         double x3 = 0;
         double x4 = 0;
         int index = 0;
-        for (int i = 0; i < sizeX; i++) {
-            double dX = x + offsetX + i * scaleX;
-            int floorX = floor(dX);
-            int iX = floorX & 255;
-            dX -= floorX;
-            double fX = fade(dX);
-            for (int j = 0; j < sizeZ; j++) {
-                double dZ = z + offsetZ + j * scaleZ;
-                int floorZ = floor(dZ);
-                int iZ = floorZ & 255;
-                dZ -= floorZ;
-                double fZ = fade(dZ);
-                for (int k = 0; k < sizeY; k++) {
-                    double dY = y + offsetY + k * scaleY;
-                    int floorY = floor(dY);
-                    int iY = floorY & 255;
-                    dY -= floorY;
-                    double fY = fade(dY);
-                    if (k == 0 || iY != n) {
-                        n = iY;
-                        // Hash coordinates of the cube corners
-                        int a = perm[iX] + iY;
-                        int aa = perm[a] + iZ;
-                        int ab = perm[a + 1] + iZ;
-                        int b = perm[iX + 1] + iY;
-                        int ba = perm[b] + iZ;
-                        int bb = perm[b + 1] + iZ;
-                        x1 = lerp(fX, grad(perm[aa], dX, dY, dZ), grad(perm[ba], dX - 1, dY, dZ));
-                        x2 = lerp(fX, grad(perm[ab], dX, dY - 1, dZ), grad(perm[bb], dX - 1, dY - 1, dZ));
-                        x3 = lerp(fX, grad(perm[aa + 1], dX, dY, dZ - 1), grad(perm[ba + 1], dX - 1, dY, dZ - 1));
-                        x4 = lerp(fX, grad(perm[ab + 1], dX, dY - 1, dZ - 1), grad(perm[bb + 1], dX - 1, dY - 1, dZ - 1));
-                    }
-                    double y1 = lerp(fY, x1, x2);
-                    double y2 = lerp(fY, x3, x4);
+        CLContext context = CLContext.create();
+        GlowServer.logger.info("Using OpenCL for 3D Perlin Noise generation.");
+        GlowServer.logger.info("Created OpenCL context: " + context);
+        try {
+            CLDevice device = context.getMaxFlopsDevice();
+            GlowServer.logger.info("Using OpenCL device: " + device);
 
-                    noise[index++] += lerp(fZ, y1, y2) * amplitude;
+            CLCommandQueue queue = device.createCommandQueue();
+
+            int localWorkSize = Math.min(device.getMaxWorkGroupSize(), 256);
+            int globalSize = sizeX * sizeY * sizeZ;
+            int r = globalSize % localWorkSize;
+            if (r != 0) {
+                globalSize += localWorkSize - r;
+            }
+
+            CLProgram program = context.createProgram(PerlinNoise.class.getResourceAsStream("/opencl/Lerp.cl")).build();
+
+            CLBuffer<DoubleBuffer> xBuffer = context.createDoubleBuffer(globalSize, CLMemory.Mem.READ_ONLY);
+            CLBuffer<DoubleBuffer> yBuffer = context.createDoubleBuffer(globalSize, CLMemory.Mem.READ_ONLY);
+            CLBuffer<DoubleBuffer> zBuffer = context.createDoubleBuffer(globalSize, CLMemory.Mem.READ_ONLY);
+            CLBuffer<DoubleBuffer> lerpBuffer = context.createDoubleBuffer(globalSize, CLMemory.Mem.WRITE_ONLY);
+
+            GlowServer.logger.info("Using " + (xBuffer.getCLSize() + yBuffer.getCLSize() + zBuffer.getCLSize() + lerpBuffer.getCLSize()) / 1000000D + "MB of OpenCL memory");
+
+            for (int i = 0; i < sizeX; i++) {
+                double dX = x + offsetX + i * scaleX;
+                int floorX = floor(dX);
+                int iX = floorX & 255;
+                dX -= floorX;
+                double fX = fade(dX);
+                for (int j = 0; j < sizeZ; j++) {
+                    double dZ = z + offsetZ + j * scaleZ;
+                    int floorZ = floor(dZ);
+                    int iZ = floorZ & 255;
+                    dZ -= floorZ;
+                    double fZ = fade(dZ);
+                    for (int k = 0; k < sizeY; k++) {
+                        double dY = y + offsetY + k * scaleY;
+                        int floorY = floor(dY);
+                        int iY = floorY & 255;
+                        dY -= floorY;
+                        double fY = fade(dY);
+                        if (k == 0 || iY != n) {
+                            n = iY;
+                            // Hash coordinates of the cube corners
+                            int a = perm[iX] + iY;
+                            int aa = perm[a] + iZ;
+                            int ab = perm[a + 1] + iZ;
+                            int b = perm[iX + 1] + iY;
+                            int ba = perm[b] + iZ;
+                            int bb = perm[b + 1] + iZ;
+                            x1 = lerp(fX, grad(perm[aa], dX, dY, dZ), grad(perm[ba], dX - 1, dY, dZ));
+                            x2 = lerp(fX, grad(perm[ab], dX, dY - 1, dZ), grad(perm[bb], dX - 1, dY - 1, dZ));
+                            x3 = lerp(fX, grad(perm[aa + 1], dX, dY, dZ - 1), grad(perm[ba + 1], dX - 1, dY, dZ - 1));
+                            x4 = lerp(fX, grad(perm[ab + 1], dX, dY - 1, dZ - 1), grad(perm[bb + 1], dX - 1, dY - 1, dZ - 1));
+                        }
+                        double y1 = lerp(fY, x1, x2);
+                        double y2 = lerp(fY, x3, x4);
+
+                        xBuffer.getBuffer().put(fZ);
+                        yBuffer.getBuffer().put(y1);
+                        zBuffer.getBuffer().put(y2);
+                    }
                 }
             }
+
+            CLKernel kernel = program.createCLKernel("Lerp");
+            kernel.putArgs(xBuffer, yBuffer, zBuffer, lerpBuffer).putArg(sizeX * sizeY * sizeZ).putArg(amplitude);
+
+            queue.putWriteBuffer(xBuffer, false)
+                    .putWriteBuffer(yBuffer, false)
+                    .putWriteBuffer(zBuffer, false)
+                    .put1DRangeKernel(kernel, 0, globalSize, localWorkSize)
+                    .putReadBuffer(lerpBuffer, true);
+
+            for (int i = 0; i < noise.length; i++) {
+                noise[i] = lerpBuffer.getBuffer().get();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            context.release();
         }
+
         return noise;
     }
 }
