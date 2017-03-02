@@ -12,10 +12,10 @@ public final class VariableValueArray implements Cloneable {
             throw new IllegalArgumentException(String.format("capacity (%s) must not be negative", capacity));
         }
         if (bitsPerValue < 1) {
-            throw new IllegalArgumentException(String.format("bitsPerValue (%s) must not be smaller then 1", bitsPerValue));
+            throw new IllegalArgumentException(String.format("bitsPerValue (%s) must not be less than 1", bitsPerValue));
         }
         if (bitsPerValue > 64) {
-            throw new IllegalArgumentException(String.format("bitsPerValue (%s) must not be greater then 64", bitsPerValue));
+            throw new IllegalArgumentException(String.format("bitsPerValue (%s) must not be greater than 64", bitsPerValue));
         }
         backing = new long[(int) Math.ceil((bitsPerValue * capacity) / 64.0)];
         this.bitsPerValue = bitsPerValue;
@@ -33,6 +33,10 @@ public final class VariableValueArray implements Cloneable {
 
     public int getBitsPerValue() {
         return bitsPerValue;
+    }
+
+    public long getLargestPossibleValue() {
+        return valueMask;
     }
 
     public int get(int index) {
@@ -87,7 +91,7 @@ public final class VariableValueArray implements Cloneable {
     /**
      * Creates a new VariableValueArray with the contents of this one, and the
      * given bits per value.
-     * 
+     *
      * @param newBitsPerValue
      *            The new value. Must be larger than the current value (
      *            {@link #getBitsPerValue()}).
@@ -116,5 +120,18 @@ public final class VariableValueArray implements Cloneable {
         VariableValueArray clone = new VariableValueArray(this.bitsPerValue, this.capacity);
         System.arraycopy(this.backing, 0, clone.backing, 0, this.backing.length);
         return clone;
+    }
+
+    /**
+     * Calculates the number of bits that would be needed to store the given
+     * value.
+     */
+    public static int calculateNeededBits(int number) {
+        int count = 0;
+        do {
+            count++;
+            number >>>= 1;
+        } while (number != 0);
+        return count;
     }
 }

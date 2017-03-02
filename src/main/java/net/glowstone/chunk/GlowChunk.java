@@ -1,6 +1,5 @@
 package net.glowstone.chunk;
 
-import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.Data;
@@ -14,7 +13,6 @@ import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.game.ChunkDataMessage;
-import net.glowstone.util.VariableValueArray;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Chunk;
 import org.bukkit.World.Environment;
@@ -334,7 +332,7 @@ public final class GlowChunk implements Chunk {
      */
     public int getType(int x, int z, int y) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : section.types[section.index(x, y, z)] >> 4;
+        return section == null ? 0 : section.getType(x, y, z) >> 4;
     }
 
     /**
@@ -372,29 +370,22 @@ public final class GlowChunk implements Chunk {
         }
 
         // update the air count and height map
-        int index = section.index(x, y, z);
         int heightIndex = z * WIDTH + x;
         if (type == 0) {
-            if (section.types[index] != 0) {
-                section.count--;
-            }
             if (heightMap[heightIndex] == y + 1) {
                 // erased just below old height map -> lower
                 heightMap[heightIndex] = (byte) lowerHeightMap(x, y, z);
             }
         } else {
-            if (section.types[index] == 0) {
-                section.count++;
-            }
             if (heightMap[heightIndex] <= y) {
                 // placed between old height map and top -> raise
                 heightMap[heightIndex] = (byte) Math.min(y + 1, 255);
             }
         }
         // update the type - also sets metadata to 0
-        section.types[index] = (char) (type << 4);
+        section.setType(x, y, z, (char) (type << 4));
 
-        if (type == 0 && section.count == 0) {
+        if (section.isEmpty()) {
             // destroy the empty section
             sections[y / SEC_DEPTH] = null;
             return;
@@ -426,7 +417,7 @@ public final class GlowChunk implements Chunk {
      */
     public int getMetaData(int x, int z, int y) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : section.types[section.index(x, y, z)] & 0xF;
+        return section == null ? 0 : section.getType(x, y, z) & 0xF;
     }
 
     /**
@@ -442,10 +433,9 @@ public final class GlowChunk implements Chunk {
             throw new IllegalArgumentException("Metadata out of range: " + metaData);
         ChunkSection section = getSection(y);
         if (section == null) return;  // can't set metadata on an empty section
-        int index = section.index(x, y, z);
-        int type = section.types[index];
+        int type = section.getType(x, y, z);
         if (type == 0) return;  // can't set metadata on air
-        section.types[index] = (char) (type & 0xfff0 | metaData);
+        section.setType(x, y, z, (char) (type & 0xfff0 | metaData));
     }
 
     /**
@@ -458,7 +448,7 @@ public final class GlowChunk implements Chunk {
      */
     public byte getSkyLight(int x, int z, int y) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : section.skyLight.get(section.index(x, y, z));
+        return section == null ? ChunkSection.EMPTY_SKYLIGHT : section.getSkyLight(x, y, z);
     }
 
     /**
@@ -472,7 +462,7 @@ public final class GlowChunk implements Chunk {
     public void setSkyLight(int x, int z, int y, int skyLight) {
         ChunkSection section = getSection(y);
         if (section == null) return;  // can't set light on an empty section
-        section.skyLight.set(section.index(x, y, z), (byte) skyLight);
+        section.setSkyLight(x, y, z, (byte) skyLight);
     }
 
     /**
@@ -485,7 +475,7 @@ public final class GlowChunk implements Chunk {
      */
     public byte getBlockLight(int x, int z, int y) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : section.blockLight.get(section.index(x, y, z));
+        return section == null ? ChunkSection.EMPTY_BLOCK_LIGHT : section.getBlockLight(x, y, z);
     }
 
     /**
@@ -499,7 +489,7 @@ public final class GlowChunk implements Chunk {
     public void setBlockLight(int x, int z, int y, int blockLight) {
         ChunkSection section = getSection(y);
         if (section == null) return;  // can't set light on an empty section
-        section.blockLight.set(section.index(x, y, z), (byte) blockLight);
+        section.setBlockLight(x, y, z, (byte) blockLight);
     }
 
     /**
@@ -652,7 +642,7 @@ public final class GlowChunk implements Chunk {
             }
 
             for (int i = 0; i < sections.length; ++i) {
-                if (sections[i] == null || sections[i].count == 0) {
+                if (sections[i] == null || sections[i].isEmpty()) {
                     // remove empty sections from bitmask
                     sectionBitmask &= ~(1 << i);
                 }
@@ -667,23 +657,7 @@ public final class GlowChunk implements Chunk {
                 if ((sectionBitmask & 1 << i) == 0) {
                     continue;
                 }
-                ChunkSection section = sections[i];
-                VariableValueArray array = new VariableValueArray(13, section.types.length);
-                buf.writeByte(array.getBitsPerValue()); // Bit per value -> Currently fixed at 13!!!
-                ByteBufUtils.writeVarInt(buf, 0); // Palette size -> 0 -> Use the global palette
-                for (int j = 0; j < section.types.length; j++) {
-                    array.set(j, section.types[j]);
-                }
-                long[] backing = array.getBacking();
-                ByteBufUtils.writeVarInt(buf, backing.length);
-                buf.ensureWritable(backing.length * 8 + section.blockLight.byteSize() + (skylight ? section.skyLight.byteSize() : 0));
-                for (long value : backing) {
-                    buf.writeLong(value);
-                }
-                buf.writeBytes(section.blockLight.getRawData());
-                if (skylight) {
-                    buf.writeBytes(section.skyLight.getRawData());
-                }
+                sections[i].writeToBuf(buf, skylight);
             }
         }
 

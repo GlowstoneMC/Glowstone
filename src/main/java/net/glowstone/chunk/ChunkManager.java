@@ -293,13 +293,8 @@ public final class ChunkManager {
             if (extSections != null) {
                 ChunkSection[] sections = new ChunkSection[extSections.length];
                 for (int i = 0; i < extSections.length; ++i) {
-                    // this is sort of messy.
                     if (extSections[i] != null) {
-                        sections[i] = new ChunkSection();
-                        for (int j = 0; j < extSections[i].length; ++j) {
-                            sections[i].types[j] = (char) extSections[i][j];
-                        }
-                        sections[i].recount();
+                        sections[i] = ChunkSection.fromStateArray(extSections[i]);
                     }
                 }
                 chunk.initializeSections(sections);
@@ -314,13 +309,8 @@ public final class ChunkManager {
         if (extSections != null) {
             ChunkSection[] sections = new ChunkSection[extSections.length];
             for (int i = 0; i < extSections.length; ++i) {
-                // this is sort of messy.
                 if (extSections[i] != null) {
-                    sections[i] = new ChunkSection();
-                    for (int j = 0; j < extSections[i].length; ++j) {
-                        sections[i].types[j] = (char) (extSections[i][j] << 4);
-                    }
-                    sections[i].recount();
+                    sections[i] = ChunkSection.fromIdArray(extSections[i]);
                 }
             }
             chunk.initializeSections(sections);
@@ -334,13 +324,8 @@ public final class ChunkManager {
         if (blockSections != null) {
             ChunkSection[] sections = new ChunkSection[blockSections.length];
             for (int i = 0; i < blockSections.length; ++i) {
-                // this is sort of messy.
                 if (blockSections[i] != null) {
-                    sections[i] = new ChunkSection();
-                    for (int j = 0; j < blockSections[i].length; ++j) {
-                        sections[i].types[j] = (char) (blockSections[i][j] << 4);
-                    }
-                    sections[i].recount();
+                    sections[i] = ChunkSection.fromIdArray(blockSections[i]);
                 }
             }
             chunk.initializeSections(sections);
@@ -353,17 +338,18 @@ public final class ChunkManager {
         byte[] types = generator.generate(world, random, x, z);
         ChunkSection[] sections = new ChunkSection[8];
         for (int sy = 0; sy < sections.length; ++sy) {
+            // We can't use a normal constructor here due to the "interesting"
+            // choices used for this deprecated API (blocks are in vertical columns)
             ChunkSection sec = new ChunkSection();
             int by = 16 * sy;
             for (int cx = 0; cx < 16; ++cx) {
                 for (int cz = 0; cz < 16; ++cz) {
                     for (int cy = by; cy < by + 16; ++cy) {
                         char type = (char) types[(cx * 16 + cz) * 128 + cy];
-                        sec.types[sec.index(cx, cy, cz)] = (char) (type << 4);
+                        sec.setType(cx, cy, cz, (char) (type << 4));
                     }
                 }
             }
-            sec.recount();
             sections[sy] = sec;
         }
         chunk.initializeSections(sections);

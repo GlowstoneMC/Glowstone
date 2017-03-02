@@ -208,27 +208,29 @@ public final class AnvilChunkIoService implements ChunkIoService {
             CompoundTag sectionTag = new CompoundTag();
             sectionTag.putByte("Y", i);
 
-            byte[] rawTypes = new byte[sec.types.length];
+            char[] types = sec.getTypes();
+            byte[] rawTypes = new byte[ChunkSection.ARRAY_SIZE];
             NibbleArray extTypes = null;
-            NibbleArray data = new NibbleArray(sec.types.length);
-            for (int j = 0; j < sec.types.length; j++) {
-                rawTypes[j] = (byte) (sec.types[j] >> 4 & 0xFF);
-                byte extType = (byte) (sec.types[j] >> 12);
+            NibbleArray data = new NibbleArray(ChunkSection.ARRAY_SIZE);
+            for (int j = 0; j < ChunkSection.ARRAY_SIZE; j++) {
+                char type = types[j];
+                rawTypes[j] = (byte) (type >> 4 & 0xFF);
+                byte extType = (byte) (type >> 12);
                 if (extType > 0) {
                     if (extTypes == null) {
-                        extTypes = new NibbleArray(sec.types.length);
+                        extTypes = new NibbleArray(ChunkSection.ARRAY_SIZE);
                     }
                     extTypes.set(j, extType);
                 }
-                data.set(j, (byte) (sec.types[j] & 0xF));
+                data.set(j, (byte) (type & 0xF));
             }
             sectionTag.putByteArray("Blocks", rawTypes);
             if (extTypes != null) {
                 sectionTag.putByteArray("Add", extTypes.getRawData());
             }
             sectionTag.putByteArray("Data", data.getRawData());
-            sectionTag.putByteArray("BlockLight", sec.blockLight.getRawData());
-            sectionTag.putByteArray("SkyLight", sec.skyLight.getRawData());
+            sectionTag.putByteArray("BlockLight", sec.getBlockLight().getRawData());
+            sectionTag.putByteArray("SkyLight", sec.getSkyLight().getRawData());
 
             sectionTags.add(sectionTag);
         }

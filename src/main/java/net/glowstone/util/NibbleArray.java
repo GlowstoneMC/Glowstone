@@ -22,8 +22,23 @@ public final class NibbleArray {
      * @throws IllegalArgumentException If size is not positive and even.
      */
     public NibbleArray(int size) {
+        this(size, (byte) 0);
+    }
+
+    /**
+     * Construct a new NibbleArray with the given size in nibble, filled with
+     * the specified nibble value.
+     *
+     * @param size The number of nibbles in the array.
+     * @param value The value to fill the array with.
+     * @throws IllegalArgumentException If size is not positive and even.
+     */
+    public NibbleArray(int size, byte value) {
         checkArgument(size > 0 && size % 2 == 0, "size must be positive even number, not " + size);
         data = new byte[size / 2];
+        if (value != 0) {
+            fill(value);
+        }
     }
 
     /**

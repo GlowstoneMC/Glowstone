@@ -451,7 +451,7 @@ public final class GlowWorld implements World {
                 int x = n & 0xF;
                 int z = n >> 8 & 0xF;
                 int y = n >> 16 & 0xF;
-                int type = section.types[y << 8 | z << 4 | x] >> 4;
+                int type = section.getType(x, y, z) >> 4;
                 if (type != 0) { // filter air blocks
                     BlockType blockType = ItemTable.instance().getBlock(type);
                     // does this block needs random tick ?

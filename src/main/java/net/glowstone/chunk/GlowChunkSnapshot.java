@@ -110,25 +110,25 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
     @Override
     public int getBlockTypeId(int x, int y, int z) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : section.types[section.index(x, y, z)] >> 4;
+        return section == null ? 0 : section.getType(x, y, z) >> 4;
     }
 
     @Override
     public int getBlockData(int x, int y, int z) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : section.types[section.index(x, y, z)] & 0xF;
+        return section == null ? 0 : section.getType(x, y, z) & 0xF;
     }
 
     @Override
     public int getBlockSkyLight(int x, int y, int z) {
         ChunkSection section = getSection(y);
-        return section == null ? 15 : section.skyLight.get(section.index(x, y, z));
+        return section == null ? ChunkSection.EMPTY_SKYLIGHT : section.getSkyLight(x, y, z);
     }
 
     @Override
     public int getBlockEmittedLight(int x, int y, int z) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : section.blockLight.get(section.index(x, y, z));
+        return section == null ? ChunkSection.EMPTY_BLOCK_LIGHT : section.getBlockLight(x, y, z);
     }
 
     @Override
