@@ -471,7 +471,7 @@ public final class GlowServer implements Server {
                 CLPlatform bestPlatform = null;
                 // gets the max flops device across platforms on the computer
                 for (CLPlatform platform : CLPlatform.listCLPlatforms()) {
-                    if (platform.isAtLeast(1, 2)) {
+                    if (platform.isAtLeast(2, 0)) {
                         for (CLDevice device : platform.listCLDevices()) {
                             int flops = device.getMaxComputeUnits() * device.getMaxClockFrequency();
                             if (flops > maxFlops) {
