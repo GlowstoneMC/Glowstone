@@ -2,11 +2,9 @@ package net.glowstone.util;
 
 import com.jogamp.opencl.*;
 import net.glowstone.GlowServer;
-import net.glowstone.util.noise.PerlinNoise;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.lang.ClassLoader;
 
 public class OpenCL {
     private static CLPlatform platform;
