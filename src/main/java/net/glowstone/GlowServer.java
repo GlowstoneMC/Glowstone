@@ -445,7 +445,7 @@ public final class GlowServer implements Server {
         }
     }
 
-    private boolean isCLApplicable = true;
+    private boolean isCLApplicable = CLPlatform.isAvailable();
 
     /**
      * Starts this server.
@@ -466,7 +466,7 @@ public final class GlowServer implements Server {
         }
 
         if (doesUseGPGPU()) {
-            if (CLPlatform.isAvailable()) {
+            if (isCLApplicable) {
                 int maxFlops = 0;
                 CLPlatform bestPlatform = null;
                 // gets the max flops device across platforms on the computer
