@@ -2,6 +2,7 @@ package net.glowstone.util.noise;
 
 import com.jogamp.opencl.*;
 import net.glowstone.GlowServer;
+import org.bukkit.Bukkit;
 import org.bukkit.util.noise.PerlinNoiseGenerator;
 
 import java.io.IOException;
@@ -82,12 +83,9 @@ public class PerlinNoise extends PerlinNoiseGenerator {
         double x3 = 0;
         double x4 = 0;
         int index = 0;
-        CLContext context = CLContext.create();
-        GlowServer.logger.info("Using OpenCL for 3D Perlin Noise generation.");
-        GlowServer.logger.info("Created OpenCL context: " + context);
+        CLContext context = CLContext.create(((GlowServer) Bukkit.getServer()).getBestCLPlatform());
         try {
             CLDevice device = context.getMaxFlopsDevice();
-            GlowServer.logger.info("Using OpenCL device: " + device);
 
             CLCommandQueue queue = device.createCommandQueue();
 
@@ -105,8 +103,7 @@ public class PerlinNoise extends PerlinNoiseGenerator {
             CLBuffer<DoubleBuffer> zBuffer = context.createDoubleBuffer(globalSize, CLMemory.Mem.READ_ONLY);
             CLBuffer<DoubleBuffer> lerpBuffer = context.createDoubleBuffer(globalSize, CLMemory.Mem.WRITE_ONLY);
 
-            GlowServer.logger.info("Using " + (xBuffer.getCLSize() + yBuffer.getCLSize() + zBuffer.getCLSize() + lerpBuffer.getCLSize()) / 1000000D + "MB of OpenCL memory");
-
+            long time = System.currentTimeMillis();
             for (int i = 0; i < sizeX; i++) {
                 double dX = x + offsetX + i * scaleX;
                 int floorX = floor(dX);
@@ -148,10 +145,15 @@ public class PerlinNoise extends PerlinNoiseGenerator {
                     }
                 }
             }
+            time = System.currentTimeMillis() - time;
+            GlowServer.logger.info("Noise loop: " + time);
+
+            xBuffer.getBuffer().rewind();
+            yBuffer.getBuffer().rewind();
+            zBuffer.getBuffer().rewind();
 
             CLKernel kernel = program.createCLKernel("Lerp");
             kernel.putArgs(xBuffer, yBuffer, zBuffer, lerpBuffer).putArg(sizeX * sizeY * sizeZ).putArg(amplitude);
-
             queue.putWriteBuffer(xBuffer, false)
                     .putWriteBuffer(yBuffer, false)
                     .putWriteBuffer(zBuffer, false)
@@ -159,7 +161,7 @@ public class PerlinNoise extends PerlinNoiseGenerator {
                     .putReadBuffer(lerpBuffer, true);
 
             for (int i = 0; i < noise.length; i++) {
-                noise[i] = lerpBuffer.getBuffer().get();
+                noise[i] += lerpBuffer.getBuffer().get();
             }
         } catch (IOException e) {
             e.printStackTrace();
