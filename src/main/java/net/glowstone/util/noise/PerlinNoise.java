@@ -149,10 +149,10 @@ public class PerlinNoise extends PerlinNoiseGenerator {
         CLKernel kernel = program.createCLKernel("Lerp");
         kernel.putArgs(xBuffer, yBuffer, zBuffer, lerpBuffer).putArg(sizeX * sizeY * sizeZ).putArg(amplitude);
         queue.putWriteBuffer(xBuffer, false)
-                .putWriteBuffer(yBuffer, false)
-                .putWriteBuffer(zBuffer, false)
-                .put1DRangeKernel(kernel, 0, globalSize, localWorkSize)
-                .putReadBuffer(lerpBuffer, true);
+             .putWriteBuffer(yBuffer, false)
+             .putWriteBuffer(zBuffer, false)
+             .put1DRangeKernel(kernel, 0, globalSize, localWorkSize)
+             .putReadBuffer(lerpBuffer, true);
 
         for (int i = 0; i < noise.length; i++) {
             noise[i] += lerpBuffer.getBuffer().get();
