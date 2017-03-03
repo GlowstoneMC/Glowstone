@@ -466,32 +466,30 @@ public final class GlowServer implements Server {
         }
 
         if (doesUseGPGPU()) {
-            if (isCLApplicable) {
-                int maxFlops = 0;
-                CLPlatform bestPlatform = null;
-                // gets the max flops device across platforms on the computer
-                for (CLPlatform platform :  CLPlatform.listCLPlatforms()) {
-                    if (platform.isAtLeast(2, 0)) {
-                        for (CLDevice device : platform.listCLDevices()) {
-                            if (device.getType() == CLDevice.Type.GPU) {
-                                int flops = device.getMaxComputeUnits() * device.getMaxClockFrequency();
-                                 if (flops > maxFlops) {
-                                    maxFlops = flops;
-                                    bestPlatform = platform;
-                                }
+            int maxFlops = 0;
+            CLPlatform bestPlatform = null;
+            // gets the max flops device across platforms on the computer
+            for (CLPlatform platform :  CLPlatform.listCLPlatforms()) {
+                if (platform.isAtLeast(2, 0)) {
+                    for (CLDevice device : platform.listCLDevices()) {
+                        if (device.getType() == CLDevice.Type.GPU) {
+                            int flops = device.getMaxComputeUnits() * device.getMaxClockFrequency();
+                             if (flops > maxFlops) {
+                                maxFlops = flops;
+                                bestPlatform = platform;
                             }
                         }
                     }
                 }
-
-                if (bestPlatform == null) {
-                    logger.info("Your system does not meet the OpenCL requirements for Glowstone. See if driver updates are available.");
-                } else {
-                    OpenCL.initContext(bestPlatform);
-                }
-            } else {
-                logger.info("OpenCL is not available on this machine! Check your drivers to see if it is installed.");
             }
+
+            if (bestPlatform == null) {
+                logger.info("Your system does not meet the OpenCL requirements for Glowstone. See if driver updates are available.");
+            } else {
+                OpenCL.initContext(bestPlatform);
+            }
+        } else if (!isCLApplicable) {
+            logger.info("OpenCL is not available on this machine! Check your drivers to see if it is installed.");
         }
 
         // Load player lists
