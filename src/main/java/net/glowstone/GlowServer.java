@@ -445,7 +445,7 @@ public final class GlowServer implements Server {
         }
     }
 
-    private boolean isCLApplicable = CLPlatform.isAvailable();
+    private boolean isCLApplicable = true;
 
     /**
      * Starts this server.
@@ -466,30 +466,33 @@ public final class GlowServer implements Server {
         }
 
         if (doesUseGPGPU()) {
-            int maxFlops = 0;
-            CLPlatform bestPlatform = null;
-            // gets the max flops device across platforms on the computer
-            for (CLPlatform platform :  CLPlatform.listCLPlatforms()) {
-                if (platform.isAtLeast(2, 0)) {
-                    for (CLDevice device : platform.listCLDevices()) {
-                        if (device.getType() == CLDevice.Type.GPU) {
+            if (CLPlatform.isAvailable()) {
+                int maxFlops = 0;
+                CLPlatform bestPlatform = null;
+                // gets the max flops device across platforms on the computer
+                for (CLPlatform platform : CLPlatform.listCLPlatforms()) {
+                    if (platform.isAtLeast(1, 2)) {
+                        for (CLDevice device : platform.listCLDevices()) {
                             int flops = device.getMaxComputeUnits() * device.getMaxClockFrequency();
-                             if (flops > maxFlops) {
+                            if (flops > maxFlops) {
                                 maxFlops = flops;
                                 bestPlatform = platform;
                             }
                         }
+
                     }
                 }
-            }
 
-            if (bestPlatform == null) {
-                logger.info("Your system does not meet the OpenCL requirements for Glowstone. See if driver updates are available.");
+                if (bestPlatform == null) {
+                    isCLApplicable = false;
+                    logger.info("Your system does not meet the OpenCL requirements for Glowstone. See if driver updates are available.");
+                } else {
+                    OpenCL.initContext(bestPlatform);
+                }
             } else {
-                OpenCL.initContext(bestPlatform);
+                isCLApplicable = false;
+                logger.info("OpenCL is not available on this machine! Check your drivers to see if it is installed.");
             }
-        } else if (!isCLApplicable) {
-            logger.info("OpenCL is not available on this machine! Check your drivers to see if it is installed.");
         }
 
         // Load player lists
