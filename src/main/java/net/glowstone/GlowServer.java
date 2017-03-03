@@ -4,7 +4,6 @@ import com.avaje.ebean.config.DataSourceConfig;
 import com.avaje.ebean.config.dbplatform.SQLitePlatform;
 import com.avaje.ebeaninternal.server.lib.sql.TransactionIsolation;
 import com.flowpowered.network.Message;
-import com.jogamp.opencl.CLContext;
 import com.jogamp.opencl.CLDevice;
 import com.jogamp.opencl.CLPlatform;
 import io.netty.channel.epoll.Epoll;
@@ -445,7 +444,6 @@ public final class GlowServer implements Server {
     }
 
     private boolean isCLApplicable = true;
-    private CLPlatform bestPlatform;
 
     /**
      * Starts this server.
@@ -468,6 +466,7 @@ public final class GlowServer implements Server {
         if (doesUseGPGPU()) {
             if (CLPlatform.isAvailable()) {
                 int maxFlops = 0;
+                CLPlatform bestPlatform = null;
                 // gets the max flops device across platforms on the computer
                 for (CLPlatform platform :  CLPlatform.listCLPlatforms()) {
                     if (platform.isAtLeast(2, 0)) {
@@ -486,10 +485,7 @@ public final class GlowServer implements Server {
                 if (bestPlatform == null) {
                     logger.info("Your system does not meet the OpenCL requirements for Glowstone. See if driver updates are available.");
                 } else {
-                    CLContext tempContext = CLContext.create(bestPlatform);
-
-                    logger.info("OpenCL: Using " + tempContext.getPlatform() + " on device " + tempContext.getMaxFlopsDevice() + ".");
-                    tempContext.release();
+                    OpenCL.initContext(bestPlatform);
                 }
             } else {
                 logger.info("OpenCL is not available on this machine! Check your drivers to see if it is installed.");
@@ -1936,9 +1932,5 @@ public final class GlowServer implements Server {
 
     public boolean doesUseGPGPU() {
         return isCLApplicable && config.getBoolean(Key.GPGPU);
-    }
-
-    public CLPlatform getBestCLPlatform() {
-        return bestPlatform;
     }
 }
