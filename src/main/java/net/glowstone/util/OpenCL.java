@@ -6,6 +6,7 @@ import net.glowstone.util.noise.PerlinNoise;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.lang.ClassLoader;
 
 public class OpenCL {
     private static CLPlatform platform;
@@ -19,7 +20,7 @@ public class OpenCL {
             return programs.get(name);
         } else {
             try {
-                CLProgram program = context.createProgram(PerlinNoise.class.getResourceAsStream("/opencl/" + name + ".cl")).build();
+                CLProgram program = context.createProgram(ClassLoader.getSystemResourceAsStream("/opencl/" + name + ".cl")).build();
                 programs.put(name, program);
                 return program;
             } catch (IOException e) {
