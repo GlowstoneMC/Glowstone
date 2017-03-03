@@ -467,20 +467,43 @@ public final class GlowServer implements Server {
 
         if (doesUseGPGPU()) {
             if (CLPlatform.isAvailable()) {
-                int maxFlops = 0;
+                int maxGpuFlops = 0;
+                int maxCpuFlops = 0;
                 CLPlatform bestPlatform = null;
+                CLPlatform bestCpuPlatform = null;
                 // gets the max flops device across platforms on the computer
                 for (CLPlatform platform : CLPlatform.listCLPlatforms()) {
                     if (platform.isAtLeast(1, 2)) {
                         for (CLDevice device : platform.listCLDevices()) {
-                            int flops = device.getMaxComputeUnits() * device.getMaxClockFrequency();
-                            if (flops > maxFlops) {
-                                maxFlops = flops;
-                                bestPlatform = platform;
+                            if (device.getType() == CLDevice.Type.GPU) {
+                                int flops = device.getMaxComputeUnits() * device.getMaxClockFrequency();
+                                if (flops > maxGpuFlops) {
+                                    maxGpuFlops = flops;
+                                    bestPlatform = platform;
+                                } else if (flops == maxGpuFlops) {
+                                    if (bestPlatform != null && bestPlatform.getVersion().compareTo(platform.getVersion()) < 0) {
+                                        maxGpuFlops = flops;
+                                        bestPlatform = platform;
+                                    }
+                                }
+                            } else {
+                                int flops = device.getMaxComputeUnits() * device.getMaxClockFrequency();
+                                if (flops > maxCpuFlops) {
+                                    maxCpuFlops = flops;
+                                    bestCpuPlatform = platform;
+                                } else if (flops == maxCpuFlops) {
+                                    if (bestCpuPlatform != null && bestCpuPlatform.getVersion().compareTo(platform.getVersion()) < 0) {
+                                        maxCpuFlops = flops;
+                                        bestCpuPlatform = platform;
+                                    }
+                                }
                             }
                         }
-
                     }
+                }
+
+                if (maxGpuFlops == 0) {
+                    bestPlatform = bestCpuPlatform;
                 }
 
                 if (bestPlatform == null) {
