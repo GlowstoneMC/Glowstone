@@ -465,6 +465,9 @@ public final class GlowServer implements Server {
             logger.warning("The server is running in offline mode! Only do this if you know what you're doing.");
         }
 
+        int openCLMajor = 1;
+        int openCLMinor = 2;
+
         if (doesUseGPGPU()) {
             if (CLPlatform.isAvailable()) {
                 int maxGpuFlops = 0;
@@ -473,27 +476,33 @@ public final class GlowServer implements Server {
                 CLPlatform bestCpuPlatform = null;
                 // gets the max flops device across platforms on the computer
                 for (CLPlatform platform : CLPlatform.listCLPlatforms()) {
-                    if (platform.isAtLeast(1, 2)) {
+                    if (platform.isAtLeast(openCLMajor, openCLMinor)) {
                         for (CLDevice device : platform.listCLDevices()) {
                             if (device.getType() == CLDevice.Type.GPU) {
                                 int flops = device.getMaxComputeUnits() * device.getMaxClockFrequency();
+                                logger.info("Found " + device + " with " + flops + " flops");
                                 if (flops > maxGpuFlops) {
                                     maxGpuFlops = flops;
+                                    logger.info("Device is best platform so far, on " + platform);
                                     bestPlatform = platform;
                                 } else if (flops == maxGpuFlops) {
                                     if (bestPlatform != null && bestPlatform.getVersion().compareTo(platform.getVersion()) < 0) {
                                         maxGpuFlops = flops;
+                                        logger.info("Device tied for flops, but had higher version on " + platform);
                                         bestPlatform = platform;
                                     }
                                 }
                             } else {
                                 int flops = device.getMaxComputeUnits() * device.getMaxClockFrequency();
+                                logger.info("Found " + device + " with " + flops + " flops");
                                 if (flops > maxCpuFlops) {
                                     maxCpuFlops = flops;
+                                    logger.info("Device is best platform so far, on " + platform);
                                     bestCpuPlatform = platform;
                                 } else if (flops == maxCpuFlops) {
                                     if (bestCpuPlatform != null && bestCpuPlatform.getVersion().compareTo(platform.getVersion()) < 0) {
                                         maxCpuFlops = flops;
+                                        logger.info("Device tied for flops, but had higher version on " + platform);
                                         bestCpuPlatform = platform;
                                     }
                                 }
@@ -503,12 +512,14 @@ public final class GlowServer implements Server {
                 }
 
                 if (maxGpuFlops == 0) {
+                    logger.info("No GPU found, best platform is the best CPU platform we could find..");
                     bestPlatform = bestCpuPlatform;
                 }
 
                 if (bestPlatform == null) {
                     isCLApplicable = false;
                     logger.info("Your system does not meet the OpenCL requirements for Glowstone. See if driver updates are available.");
+                    logger.info("Required version: " + openCLMajor + '.' + openCLMinor);
                 } else {
                     OpenCL.initContext(bestPlatform);
                 }

@@ -1,3 +1,5 @@
+#pragma OPENCL EXTENSION cl_khr_fp64 : enable
+
 // OpenCL Lerp function, ported from Bukkit
 kernel void Lerp(global const double* x, global const double* y, global double* z, global double* r, int numElements, double amplitude) {
     // get index into global data array
