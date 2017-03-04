@@ -388,6 +388,7 @@ public final class ServerConfig {
         COMPRESSION_THRESHOLD("advanced.compression-threshold", 256, Migrate.PROPS, "network-compression-threshold"),
         PROXY_SUPPORT("advanced.proxy-support", false),
         PLAYER_SAMPLE_COUNT("advanced.player-sample-count", 12),
+        METRICS("advanced.metrics", true),
 
         // query rcon etc
         QUERY_ENABLED("extras.query-enabled", false, Migrate.PROPS, "enable-query"),

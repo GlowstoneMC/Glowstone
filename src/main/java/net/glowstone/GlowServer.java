@@ -433,11 +433,13 @@ public final class GlowServer implements Server {
         bind();
         logger.info("Ready for connections.");
 
-        try {
-            Metrics metrics = new Metrics(this);
-            metrics.start();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (doMetrics()) {
+            try {
+                Metrics metrics = new Metrics(this);
+                metrics.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -1882,7 +1884,11 @@ public final class GlowServer implements Server {
     }
 
     public String getServerType() {
-        return "BUKKIT"; // TODO: configurable? may want to advertise as VANILLA or FML in some cases?
+        return "VANILLA";
+    }
+
+    public boolean doMetrics() {
+        return config.getBoolean(Key.METRICS);
     }
 
     public boolean getAllowClientMods() {
