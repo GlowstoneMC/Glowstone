@@ -18,7 +18,7 @@ public class OpenCL {
             return programs.get(name);
         } else {
             try {
-                CLProgram program = context.createProgram(ClassLoader.getSystemClassLoader().getResourceAsStream("/opencl/" + name + ".cl")).build();
+                CLProgram program = context.createProgram(OpenCL.class.getResourceAsStream("/opencl/" + name + ".cl")).build();
                 programs.put(name, program);
                 return program;
             } catch (IOException e) {
