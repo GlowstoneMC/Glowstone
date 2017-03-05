@@ -488,9 +488,9 @@ public final class GlowServer implements Server {
                                         maxIntelFlops = flops;
                                         logger.info("Device is best platform so far, on " + platform);
                                         bestIntelPlatform = platform;
-                                    } else if (flops == maxGpuFlops) {
+                                    } else if (flops == maxIntelFlops) {
                                         if (bestIntelPlatform != null && bestIntelPlatform.getVersion().compareTo(platform.getVersion()) < 0) {
-                                            maxGpuFlops = flops;
+                                            maxIntelFlops = flops;
                                             logger.info("Device tied for flops, but had higher version on " + platform);
                                             bestIntelPlatform = platform;
                                         }
@@ -530,6 +530,7 @@ public final class GlowServer implements Server {
                 if (maxGpuFlops == 0) {
                     if (maxIntelFlops == 0) {
                         logger.info("No Intel graphics found, best platform is the best CPU platform we could find...");
+                        bestPlatform = bestCpuPlatform;
                     } else {
                         logger.info("No GPU found, best platform is the best Intel platform we could find...");
                         bestPlatform = bestIntelPlatform;
