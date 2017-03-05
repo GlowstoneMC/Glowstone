@@ -471,25 +471,41 @@ public final class GlowServer implements Server {
         if (doesUseGPGPU()) {
             if (CLPlatform.isAvailable()) {
                 int maxGpuFlops = 0;
+                int maxIntelFlops = 0;
                 int maxCpuFlops = 0;
                 CLPlatform bestPlatform = null;
+                CLPlatform bestIntelPlatform = null;
                 CLPlatform bestCpuPlatform = null;
                 // gets the max flops device across platforms on the computer
                 for (CLPlatform platform : CLPlatform.listCLPlatforms()) {
-                    if (platform.isAtLeast(openCLMajor, openCLMinor)) {
+                    if (platform.isAtLeast(openCLMajor, openCLMinor) && platform.isExtensionAvailable("cl_khr_fp64")) {
                         for (CLDevice device : platform.listCLDevices()) {
                             if (device.getType() == CLDevice.Type.GPU) {
                                 int flops = device.getMaxComputeUnits() * device.getMaxClockFrequency();
                                 logger.info("Found " + device + " with " + flops + " flops");
-                                if (flops > maxGpuFlops) {
-                                    maxGpuFlops = flops;
-                                    logger.info("Device is best platform so far, on " + platform);
-                                    bestPlatform = platform;
-                                } else if (flops == maxGpuFlops) {
-                                    if (bestPlatform != null && bestPlatform.getVersion().compareTo(platform.getVersion()) < 0) {
+                                if (device.getVendor().contains("Intel")) {
+                                    if (flops > maxIntelFlops) {
+                                        maxIntelFlops = flops;
+                                        logger.info("Device is best platform so far, on " + platform);
+                                        bestIntelPlatform = platform;
+                                    } else if (flops == maxGpuFlops) {
+                                        if (bestIntelPlatform != null && bestIntelPlatform.getVersion().compareTo(platform.getVersion()) < 0) {
+                                            maxGpuFlops = flops;
+                                            logger.info("Device tied for flops, but had higher version on " + platform);
+                                            bestIntelPlatform = platform;
+                                        }
+                                    }
+                                } else {
+                                    if (flops > maxGpuFlops) {
                                         maxGpuFlops = flops;
-                                        logger.info("Device tied for flops, but had higher version on " + platform);
+                                        logger.info("Device is best platform so far, on " + platform);
                                         bestPlatform = platform;
+                                    } else if (flops == maxGpuFlops) {
+                                        if (bestPlatform != null && bestPlatform.getVersion().compareTo(platform.getVersion()) < 0) {
+                                            maxGpuFlops = flops;
+                                            logger.info("Device tied for flops, but had higher version on " + platform);
+                                            bestPlatform = platform;
+                                        }
                                     }
                                 }
                             } else {
@@ -512,14 +528,19 @@ public final class GlowServer implements Server {
                 }
 
                 if (maxGpuFlops == 0) {
-                    logger.info("No GPU found, best platform is the best CPU platform we could find..");
-                    bestPlatform = bestCpuPlatform;
+                    if (maxIntelFlops == 0) {
+                        logger.info("No Intel graphics found, best platform is the best CPU platform we could find...");
+                    } else {
+                        logger.info("No GPU found, best platform is the best Intel platform we could find...");
+                        bestPlatform = bestIntelPlatform;
+                    }
                 }
 
                 if (bestPlatform == null) {
                     isCLApplicable = false;
                     logger.info("Your system does not meet the OpenCL requirements for Glowstone. See if driver updates are available.");
                     logger.info("Required version: " + openCLMajor + '.' + openCLMinor);
+                    logger.info("Required extensions: [ cl_khr_fp64 ]");
                 } else {
                     OpenCL.initContext(bestPlatform);
                 }
