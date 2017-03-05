@@ -111,7 +111,7 @@ public abstract class GlowEntity implements Entity {
     /**
      * The entity's bounding box, or null if it has no physical presence.
      */
-    private EntityBoundingBox boundingBox;
+    protected EntityBoundingBox boundingBox;
     /**
      * An EntityDamageEvent representing the last damage cause on this entity.
      */
@@ -473,7 +473,9 @@ public abstract class GlowEntity implements Entity {
             return;
         }
 
-        fallDistance += Math.abs(location.getY() - previousLocation.getY());
+        if (location.getY() > previousLocation.getY()) {
+            fallDistance += location.getY() - previousLocation.getY();
+        }
     }
 
     /**
@@ -668,21 +670,19 @@ public abstract class GlowEntity implements Entity {
     /**
      * Velocity reduction applied each tick.
      */
-    private static final double AIR_DRAG = 0.99;
+    protected static final double AIR_DRAG = 0.99;
 
     /**
      * Velocity reduction applied each tick.
      */
-    private static final double LIQUID_DRAG = 0.8;
+    protected static final double LIQUID_DRAG = 0.8;
 
     /**
      * Gravity acceleration applied each tick.
      */
-    private static final Vector GRAVITY = new Vector(0, -0.05, 0);
+    protected static final Vector GRAVITY = new Vector(0, -0.05, 0);
 
     protected void pulsePhysics() {
-        // todo: update location based on velocity,
-        // do gravity, all that other good stuff
         if (!location.clone().add(getVelocity()).getBlock().getType().isSolid()) {
             location.add(getVelocity());
             if (location.getBlock().isLiquid()) {

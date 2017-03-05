@@ -611,6 +611,25 @@ public final class GlowPlayer extends GlowHumanEntity implements Player {
         getAttributeManager().sendMessages(session);
     }
 
+    protected void pulsePhysics() {
+        if (!isFlying()) {
+            if (!location.clone().add(getVelocity()).getBlock().getType().isSolid()) {
+                location.add(getVelocity());
+                if (location.getBlock().isLiquid()) {
+                    velocity.multiply(LIQUID_DRAG);
+                } else {
+                    velocity.multiply(AIR_DRAG);
+                }
+                velocity.add(GRAVITY);
+            }
+        }
+
+        // make sure bounding box is up to date
+        if (boundingBox != null) {
+            boundingBox.setCenter(location.getX(), location.getY(), location.getZ());
+        }
+    }
+
     /**
      * Process and send pending BlockChangeMessages.
      */
