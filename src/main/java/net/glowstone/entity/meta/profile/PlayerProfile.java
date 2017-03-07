@@ -19,7 +19,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Information about a player's name, UUID, and other properties.
  */
 @Data
-public final class PlayerProfile {
+public class PlayerProfile {
 
     public static final int MAX_USERNAME_LENGTH = 16;
     private final String name;

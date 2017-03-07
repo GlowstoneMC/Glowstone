@@ -95,7 +95,7 @@ public class AttributeManager {
         }
     }
 
-    public static final class Property {
+    public static class Property {
         @Getter
         private double value;
         @Getter
@@ -108,7 +108,7 @@ public class AttributeManager {
     }
 
     @Data
-    public static final class Modifier {
+    public static class Modifier {
         private final String name;
         private final UUID uuid;
         private final double amount;

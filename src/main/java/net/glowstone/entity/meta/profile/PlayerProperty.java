@@ -5,7 +5,7 @@ import lombok.Getter;
 /**
  * Container for global player properties (such as textures) returned by the auth servers.
  */
-public final class PlayerProperty {
+public class PlayerProperty {
 
     /**
      * The name of the property.

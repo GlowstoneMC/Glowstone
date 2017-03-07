@@ -4,7 +4,7 @@ import net.glowstone.entity.GlowLivingEntity;
 
 import java.util.ArrayList;
 
-public final class TaskManager {
+public class TaskManager {
 
     private final GlowLivingEntity entity;
     private final ArrayList<EntityTask<GlowLivingEntity>> tasks;

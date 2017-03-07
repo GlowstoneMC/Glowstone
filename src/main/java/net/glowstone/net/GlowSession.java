@@ -49,7 +49,7 @@ import java.util.logging.Level;
  *
  * @author Graham Edgecombe
  */
-public final class GlowSession extends BasicSession {
+public class GlowSession extends BasicSession {
 
     /**
      * The server this session belongs to.

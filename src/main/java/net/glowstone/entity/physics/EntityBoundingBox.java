@@ -5,7 +5,7 @@ import org.bukkit.util.Vector;
 /**
  * A BoundingBox which changes position over time as an entity moves.
  */
-public final class EntityBoundingBox extends BoundingBox {
+public class EntityBoundingBox extends BoundingBox {
 
     private final double hSize, vSize;
 

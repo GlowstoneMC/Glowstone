@@ -98,7 +98,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author Graham Edgecombe
  */
 @DelegateDeserialization(GlowOfflinePlayer.class)
-public final class GlowPlayer extends GlowHumanEntity implements Player {
+public class GlowPlayer extends GlowHumanEntity implements Player {
 
     /**
      * A static entity id to use when telling the client about itself.

@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public final class GlowItemFrame extends GlowEntity implements ItemFrame {
+public class GlowItemFrame extends GlowEntity implements ItemFrame {
 
     private BlockFace face;
     private Material itemInFrame;
