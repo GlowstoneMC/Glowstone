@@ -20,7 +20,7 @@ import java.util.logging.Level;
 /**
  * Methods for accessing Mojang servers to look up player profiles and UUIDs.
  */
-final class PlayerDataFetcher {
+class PlayerDataFetcher {
 
     private static final String PROFILE_URL = "https://sessionserver.mojang.com/session/minecraft/profile/";
     private static final String PROFILE_URL_SUFFIX = "?unsigned=false";

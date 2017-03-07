@@ -7,7 +7,7 @@ import net.glowstone.net.message.play.game.ClientSettingsMessage;
  * Container for settings which the client communicates to the server.
  */
 @Data
-public final class ClientSettings {
+public class ClientSettings {
 
     public static final ClientSettings DEFAULT = new ClientSettings("en_US", 8, 0, true, 127, 0);
 

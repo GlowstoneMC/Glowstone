@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  *
  * @author Graham Edgecombe
  */
-public final class EntityManager implements Iterable<GlowEntity> {
+public class EntityManager implements Iterable<GlowEntity> {
 
     /**
      * A map of all the entity ids to the corresponding entities.

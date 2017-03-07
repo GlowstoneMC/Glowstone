@@ -141,7 +141,7 @@ public class MetadataMap {
 
     @RequiredArgsConstructor
     @EqualsAndHashCode
-    public static final class Entry implements Comparable<Entry> {
+    public static class Entry implements Comparable<Entry> {
         public final MetadataIndex index;
         public final Object value;
 

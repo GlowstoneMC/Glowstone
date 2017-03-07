@@ -6,7 +6,7 @@ import java.util.Set;
 /**
  * Manager responsible for allocating all entity ids on the server.
  */
-public final class EntityIdManager {
+public class EntityIdManager {
 
     /**
      * A set containing all used entity ids.

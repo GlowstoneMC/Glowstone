@@ -24,7 +24,7 @@ import java.util.List;
  *
  * @author Graham Edgecombe
  */
-public final class GlowItem extends GlowEntity implements Item {
+public class GlowItem extends GlowEntity implements Item {
 
     /**
      * The number of ticks (equal to 5 minutes) that item entities should live for.

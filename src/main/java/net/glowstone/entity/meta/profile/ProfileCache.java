@@ -14,7 +14,7 @@ import java.util.logging.Level;
 /**
  * Cached methods for accessing Mojang servers to find UUIDs and player profiles.
  */
-public final class ProfileCache {
+public class ProfileCache {
     private static Map<String, UUID> uuidCache = new HashMap<>();
     private static Map<UUID, PlayerProfile> profileCache = new HashMap<>();
 
