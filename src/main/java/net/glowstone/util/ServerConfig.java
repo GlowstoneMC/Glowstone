@@ -389,6 +389,7 @@ public final class ServerConfig {
         PROXY_SUPPORT("advanced.proxy-support", false),
         PLAYER_SAMPLE_COUNT("advanced.player-sample-count", 12),
         GPGPU("advanced.gpgpu", false),
+        GPGPU_ANY_DEVICE("advanced.gpgpu-use-any-device", false),
 
         // query rcon etc
         QUERY_ENABLED("extras.query-enabled", false, Migrate.PROPS, "enable-query"),

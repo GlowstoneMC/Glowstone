@@ -525,13 +525,21 @@ public final class GlowServer implements Server {
                     }
                 }
 
-                if (maxGpuFlops == 0) {
-                    if (maxIntelFlops == 0) {
-                        logger.info("No Intel graphics found, best platform is the best CPU platform we could find...");
-                        bestPlatform = bestCpuPlatform;
-                    } else {
-                        logger.info("No GPU found, best platform is the best Intel platform we could find...");
+                if (config.getBoolean(Key.GPGPU_ANY_DEVICE)) {
+                    if (maxGpuFlops - maxIntelFlops < 0 && maxCpuFlops - maxIntelFlops <= 0) {
                         bestPlatform = bestIntelPlatform;
+                    } else if (maxGpuFlops - maxCpuFlops < 0 && maxIntelFlops - maxCpuFlops < 0) {
+                        bestPlatform = bestCpuPlatform;
+                    }
+                } else {
+                    if (maxGpuFlops == 0) {
+                        if (maxIntelFlops == 0) {
+                            logger.info("No Intel graphics found, best platform is the best CPU platform we could find...");
+                            bestPlatform = bestCpuPlatform;
+                        } else {
+                            logger.info("No dGPU found, best platform is the best Intel graphics we could find...");
+                            bestPlatform = bestIntelPlatform;
+                        }
                     }
                 }
 
