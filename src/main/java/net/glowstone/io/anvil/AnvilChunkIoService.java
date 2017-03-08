@@ -11,7 +11,6 @@ import net.glowstone.chunk.GlowChunkSnapshot;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.io.ChunkIoService;
 import net.glowstone.io.entity.EntityStorage;
-import net.glowstone.util.NibbleArray;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
@@ -75,20 +74,18 @@ public final class AnvilChunkIoService implements ChunkIoService {
 
         // read the vertical sections
         List<CompoundTag> sectionList = levelTag.getCompoundList("Sections");
-        ChunkSection[] sections = new ChunkSection[16];
+        ChunkSection[] sections = new ChunkSection[GlowChunk.SEC_COUNT];
         for (CompoundTag sectionTag : sectionList) {
             int y = sectionTag.getByte("Y");
-            byte[] rawTypes = sectionTag.getByteArray("Blocks");
-            NibbleArray extTypes = sectionTag.containsKey("Add") ? new NibbleArray(sectionTag.getByteArray("Add")) : null;
-            NibbleArray data = new NibbleArray(sectionTag.getByteArray("Data"));
-            NibbleArray blockLight = new NibbleArray(sectionTag.getByteArray("BlockLight"));
-            NibbleArray skyLight = new NibbleArray(sectionTag.getByteArray("SkyLight"));
-
-            char[] types = new char[rawTypes.length];
-            for (int i = 0; i < rawTypes.length; i++) {
-                types[i] = (char) ((extTypes == null ? 0 : extTypes.get(i)) << 12 | (rawTypes[i] & 0xff) << 4 | data.get(i));
+            if (sections[y] != null) {
+                GlowServer.logger.log(Level.WARNING, "Multiple chunk sections at y " + y + " in " + chunk + "!");
+                continue;
             }
-            sections[y] = new ChunkSection(types, skyLight, blockLight);
+            if (y < 0 || y > GlowChunk.SEC_COUNT) {
+                GlowServer.logger.log(Level.WARNING, "Out of bounds chunk section at y " + y + " in " + chunk + "!");
+                continue;
+            }
+            sections[y] = ChunkSection.fromNBT(sectionTag);
         }
 
         // initialize the chunk
@@ -207,30 +204,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
 
             CompoundTag sectionTag = new CompoundTag();
             sectionTag.putByte("Y", i);
-
-            char[] types = sec.getTypes();
-            byte[] rawTypes = new byte[ChunkSection.ARRAY_SIZE];
-            NibbleArray extTypes = null;
-            NibbleArray data = new NibbleArray(ChunkSection.ARRAY_SIZE);
-            for (int j = 0; j < ChunkSection.ARRAY_SIZE; j++) {
-                char type = types[j];
-                rawTypes[j] = (byte) (type >> 4 & 0xFF);
-                byte extType = (byte) (type >> 12);
-                if (extType > 0) {
-                    if (extTypes == null) {
-                        extTypes = new NibbleArray(ChunkSection.ARRAY_SIZE);
-                    }
-                    extTypes.set(j, extType);
-                }
-                data.set(j, (byte) (type & 0xF));
-            }
-            sectionTag.putByteArray("Blocks", rawTypes);
-            if (extTypes != null) {
-                sectionTag.putByteArray("Add", extTypes.getRawData());
-            }
-            sectionTag.putByteArray("Data", data.getRawData());
-            sectionTag.putByteArray("BlockLight", sec.getBlockLight().getRawData());
-            sectionTag.putByteArray("SkyLight", sec.getSkyLight().getRawData());
+            sec.writeToNBT(sectionTag);
 
             sectionTags.add(sectionTag);
         }

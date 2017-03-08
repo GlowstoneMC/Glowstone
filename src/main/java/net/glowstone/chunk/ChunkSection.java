@@ -11,6 +11,7 @@ import com.flowpowered.network.util.ByteBufUtils;
 
 import net.glowstone.util.NibbleArray;
 import net.glowstone.util.VariableValueArray;
+import net.glowstone.util.nbt.CompoundTag;
 
 /**
  * A single cubic section of a chunk, with all data.
@@ -162,6 +163,27 @@ public final class ChunkSection {
             charTypes[i] = (char) (types[i] << 4);
         }
         return new ChunkSection(charTypes);
+    }
+
+    /**
+     * Creates a new chunk section from the given NBT blob.
+     *
+     * @param sectionTag The tag to read from
+     * @return The section
+     */
+    public static ChunkSection fromNBT(CompoundTag sectionTag) {
+        byte[] rawTypes = sectionTag.getByteArray("Blocks");
+        NibbleArray extTypes = sectionTag.containsKey("Add") ? new NibbleArray(sectionTag.getByteArray("Add")) : null;
+        NibbleArray data = new NibbleArray(sectionTag.getByteArray("Data"));
+        NibbleArray blockLight = new NibbleArray(sectionTag.getByteArray("BlockLight"));
+        NibbleArray skyLight = new NibbleArray(sectionTag.getByteArray("SkyLight"));
+
+        char[] types = new char[rawTypes.length];
+        for (int i = 0; i < rawTypes.length; i++) {
+            types[i] = (char) ((extTypes == null ? 0 : extTypes.get(i)) << 12 | (rawTypes[i] & 0xff) << 4 | data.get(i));
+        }
+
+        return new ChunkSection(types, skyLight, blockLight);
     }
 
     /**
@@ -454,5 +476,37 @@ public final class ChunkSection {
         if (skylight) {
             buf.writeBytes(skyLight.getRawData());
         }
+    }
+
+    /**
+     * Writes this chunk section to a NBT compound. Note that the Y coordinate
+     * is not written.
+     *
+     * @param sectionTag The tag to write to
+     */
+    public void writeToNBT(CompoundTag sectionTag) {
+        char[] types = this.getTypes();
+        byte[] rawTypes = new byte[ChunkSection.ARRAY_SIZE];
+        NibbleArray extTypes = null;
+        NibbleArray data = new NibbleArray(ChunkSection.ARRAY_SIZE);
+        for (int j = 0; j < ChunkSection.ARRAY_SIZE; j++) {
+            char type = types[j];
+            rawTypes[j] = (byte) (type >> 4 & 0xFF);
+            byte extType = (byte) (type >> 12);
+            if (extType > 0) {
+                if (extTypes == null) {
+                    extTypes = new NibbleArray(ChunkSection.ARRAY_SIZE);
+                }
+                extTypes.set(j, extType);
+            }
+            data.set(j, (byte) (type & 0xF));
+        }
+        sectionTag.putByteArray("Blocks", rawTypes);
+        if (extTypes != null) {
+            sectionTag.putByteArray("Add", extTypes.getRawData());
+        }
+        sectionTag.putByteArray("Data", data.getRawData());
+        sectionTag.putByteArray("BlockLight", blockLight.getRawData());
+        sectionTag.putByteArray("SkyLight", skyLight.getRawData());
     }
 }

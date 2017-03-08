@@ -237,24 +237,34 @@ public final class GlowChunk implements Chunk {
     /**
      * Initialize this chunk from the given sections.
      *
-     * @param initSections The ChunkSections to use.
+     * @param initSections The {@link ChunkSection}s to use.  Should have a length of {@value #SEC_COUNT}.
      */
-    public void initializeSections(ChunkSection... initSections) {
+    public void initializeSections(ChunkSection[] initSections) {
         if (isLoaded()) {
             GlowServer.logger.log(Level.SEVERE, "Tried to initialize already loaded chunk (" + x + "," + z + ")", new Throwable());
             return;
         }
+        if (initSections.length != SEC_COUNT) {
+            GlowServer.logger.log(Level.WARNING, "Got an unexpected section length - wanted " + SEC_COUNT + ", but length was " + initSections.length, new Throwable());
+        }
         //GlowServer.logger.log(Level.INFO, "Initializing chunk ({0},{1})", new Object[]{x, z});
 
         sections = new ChunkSection[SEC_COUNT];
-        System.arraycopy(initSections, 0, sections, 0, Math.min(sections.length, initSections.length));
-
         biomes = new byte[WIDTH * HEIGHT];
         heightMap = new byte[WIDTH * HEIGHT];
 
+        for (int y = 0; y < SEC_COUNT && y < initSections.length; y++) {
+            if (initSections[y] != null) {
+                initializeSection(y, initSections[y]);
+            }
+        }
+    }
+
+    private void initializeSection(int y, ChunkSection section) {
+        sections[y] = section;
+
         // tile entity initialization
         for (int i = 0; i < sections.length; ++i) {
-            if (sections[i] == null) continue;
             int by = 16 * i;
             for (int cx = 0; cx < WIDTH; ++cx) {
                 for (int cz = 0; cz < HEIGHT; ++cz) {
