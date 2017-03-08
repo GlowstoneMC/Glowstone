@@ -25,9 +25,7 @@ import net.glowstone.net.message.play.game.UserListItemMessage;
 import net.glowstone.net.message.play.game.UserListItemMessage.Action;
 import net.glowstone.net.message.play.game.UserListItemMessage.Entry;
 import net.glowstone.net.message.play.player.BlockPlacementMessage;
-import net.glowstone.net.pipeline.CodecsHandler;
-import net.glowstone.net.pipeline.CompressionHandler;
-import net.glowstone.net.pipeline.EncryptionHandler;
+import net.glowstone.net.pipeline.*;
 import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.LoginProtocol;
 import net.glowstone.net.protocol.PlayProtocol;
@@ -552,6 +550,12 @@ public final class GlowSession extends BasicSession {
             send(new SetCompressionMessage(threshold));
             updatePipeline("compression", new CompressionHandler(threshold));
             compresssionSent = true;
+        }
+    }
+
+    public void enablePacketEvents() {
+        if (getChannel().pipeline().get("packetapi") == NoopHandler.INSTANCE) {
+            updatePipeline("packetapi", new PacketAPIHandler(this));
         }
     }
 

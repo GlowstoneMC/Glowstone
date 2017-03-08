@@ -4,7 +4,9 @@ import com.flowpowered.network.ConnectionManager;
 import com.flowpowered.network.session.Session;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
+import net.glowstone.net.event.SessionInitEvent;
 import net.glowstone.net.pipeline.GlowChannelInitializer;
 
 import java.net.InetSocketAddress;
@@ -53,6 +55,9 @@ public final class GameServer extends GlowSocketServer implements ConnectionMana
     public GlowSession newSession(Channel c) {
         GlowSession session = new GlowSession(getServer(), c, this);
         getServer().getSessionRegistry().add(session);
+
+        EventFactory.callEvent(new SessionInitEvent(session));
+
         return session;
     }
 

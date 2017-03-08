@@ -55,6 +55,7 @@ public final class GlowChannelInitializer extends ChannelInitializer<SocketChann
                 .addLast("framing", framing)
                 .addLast("compression", NoopHandler.INSTANCE)
                 .addLast("codecs", codecs)
+                .addLast("packetapi", NoopHandler.INSTANCE)
                 .addLast("readtimeout", new ReadTimeoutHandler(READ_TIMEOUT))
                 .addLast("writeidletimeout", new IdleStateHandler(0, WRITE_IDLE_TIMEOUT, 0))
                 .addLast("handler", handler);
