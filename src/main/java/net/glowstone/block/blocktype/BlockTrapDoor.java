@@ -24,7 +24,7 @@ public class BlockTrapDoor {
         if (materialData instanceof TrapDoor) {
             TrapDoor trapDoor = (TrapDoor) materialData;
             trapDoor.setFacingDirection(face);
-            if (clickedLoc.getY() >= 7.5) {
+            if (clickedLoc.getY() >= 0.5) {
                 trapDoor.setInverted(true);
             } else {
                 trapDoor.setInverted(false);
