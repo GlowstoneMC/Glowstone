@@ -15,9 +15,8 @@ public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessag
 
         if (holding != null) {
             ItemType type = ItemTable.instance().getItem(holding.getType());
-            if (type != null) {
+            if (type != null && type.canOnlyUseSelf()) {
                 type.rightClickAir(player, holding);
-
             }
         }
     }

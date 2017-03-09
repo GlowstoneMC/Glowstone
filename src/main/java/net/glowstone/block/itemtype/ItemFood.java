@@ -22,6 +22,11 @@ public class ItemFood extends ItemTimedUsage {
         saturation = 0;
     }
 
+    @Override
+    public boolean canOnlyUseSelf() {
+        return true;
+    }
+
     protected int getFoodLevel(ItemStack stack) {
         return foodLevel;
     }

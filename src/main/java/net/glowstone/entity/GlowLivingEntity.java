@@ -207,6 +207,9 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             }
         } else {
             swamInLava = false;
+            if (getLocation().getBlock().getType() == Material.WATER || getLocation().getBlock().getType() == Material.STATIONARY_WATER) {
+                setFireTicks(0);
+            }
         }
 
         // potion effects
@@ -837,7 +840,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 getServer().getPluginManager().callEvent(ev);
                 if (!ev.isCancelled()) {
                     setLastDamageCause(ev);
-                    damage(ev.getDamage());
+                    damage(ev.getDamage(), DamageCause.FALL);
                 }
             }
         }

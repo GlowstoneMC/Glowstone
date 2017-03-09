@@ -23,6 +23,11 @@ public class ItemBucket extends ItemType {
     }
 
     @Override
+    public boolean canOnlyUseSelf() {
+        return true;
+    }
+
+    @Override
     public void rightClickAir(GlowPlayer player, ItemStack holding) {
         Iterator<Block> itr = new BlockIterator(player, 5);
         Block target = null;

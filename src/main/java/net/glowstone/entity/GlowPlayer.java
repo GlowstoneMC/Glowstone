@@ -409,17 +409,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void damage(double amount) {
-        if (getGameMode().equals(GameMode.CREATIVE)) {
-            return;
-        }
         damage(amount, DamageCause.CUSTOM);
     }
 
     @Override
     public void damage(double amount, Entity cause) {
-        if (getGameMode().equals(GameMode.CREATIVE)) {
-            return;
-        }
         super.damage(amount, cause);
         sendHealth();
     }
@@ -430,16 +424,17 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void damage(double amount, DamageCause cause) {
-        if (getGameMode().equals(GameMode.CREATIVE) && !cause.equals(DamageCause.VOID)) {
-            return;
-        }
-
         // todo: better idea
         double old = getHealth();
         super.damage(amount, cause);
         if (old != getHealth()) addExhaustion(0.1f);
         sendHealth();
         incrementStatistic(Statistic.DAMAGE_TAKEN, (int) Math.round(amount));
+    }
+
+    @Override
+    public boolean canTakeDamage(DamageCause damageCause) {
+        return (damageCause == DamageCause.FALL && getAllowFlight()) && super.canTakeDamage(damageCause);
     }
 
     /**
@@ -1198,7 +1193,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void setOnGround(boolean onGround) {
-        if (getAllowFlight() || getGameMode() == GameMode.CREATIVE || getGameMode() == GameMode.SPECTATOR) {
+        if (getGameMode() == GameMode.CREATIVE || getGameMode() == GameMode.SPECTATOR) {
             setFallDistance(0);
         }
         super.setOnGround(onGround);

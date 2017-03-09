@@ -132,6 +132,14 @@ public class ItemType {
     }
 
     /**
+     * If this item can only be used without any context (essentially used in air)
+     * @return If this item can only be used without any context
+     */
+    public boolean canOnlyUseSelf() {
+        return false;
+    }
+
+    /**
      * Called when a player right-clicks on a block while holding this item.
      *
      * @param player     The player
@@ -143,8 +151,6 @@ public class ItemType {
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc) {
         if (placeAs != null) {
             placeAs.rightClickBlock(player, target, face, holding, clickedLoc);
-        } else {
-            rightClickAir(player, holding);
         }
     }
 

@@ -147,13 +147,8 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         // follows ALLOW/DENY: default to if no block was interacted with
         if (selectResult(event.useItemInHand(), !useInteractedBlock) && holding != null) {
             ItemType type = ItemTable.instance().getItem(holding.getType());
-            // call out to the item type to determine the appropriate right-click action
-            if (rightClickedAir) {
-                type.rightClickAir(player, holding);
-            } else {
-                if (holding.getType() != Material.AIR) {
-                    type.rightClickBlock(player, clicked, face, holding, clickedLoc);
-                }
+            if (!rightClickedAir && holding.getType() != Material.AIR && !type.canOnlyUseSelf()) {
+                type.rightClickBlock(player, clicked, face, holding, clickedLoc);
             }
         }
 
