@@ -127,6 +127,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * The entity's AI task manager.
      */
     protected final TaskManager taskManager;
+    private boolean swamInLava;
 
     /**
      * Creates a mob within the specified world.
@@ -194,6 +195,19 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
         if (isWithinSolidBlock())
             damage(1, DamageCause.SUFFOCATION);
+
+
+        if (getLocation().getBlock().getType() == Material.LAVA || getLocation().getBlock().getType() == Material.STATIONARY_LAVA) {
+            damage(4, DamageCause.LAVA);
+            if (swamInLava) {
+                setFireTicks(getFireTicks() + 2);
+            } else {
+                setFireTicks(getFireTicks() + 300);
+                swamInLava = true;
+            }
+        } else {
+            swamInLava = false;
+        }
 
         // potion effects
         List<PotionEffect> effects = new ArrayList<>(potionEffects.values());
