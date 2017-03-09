@@ -1,10 +1,10 @@
 package net.glowstone.block.blocktype;
 
-import net.glowstone.GlowChunk;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.TEJukebox;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.block.state.GlowJukebox;
+import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.GameMode;
 import org.bukkit.block.BlockFace;

@@ -1,12 +1,12 @@
 package net.glowstone.block.blocktype;
 
-import net.glowstone.GlowChunk;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.TEContainer;
 import net.glowstone.block.entity.TEHopper;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.block.state.GlowHopper;
+import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.inventory.MaterialMatcher;

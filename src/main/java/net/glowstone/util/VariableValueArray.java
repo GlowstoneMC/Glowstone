@@ -1,6 +1,6 @@
 package net.glowstone.util;
 
-public final class VariableValueArray {
+public final class VariableValueArray implements Cloneable {
 
     private final long[] backing;
     private final int capacity;
@@ -12,10 +12,10 @@ public final class VariableValueArray {
             throw new IllegalArgumentException(String.format("capacity (%s) must not be negative", capacity));
         }
         if (bitsPerValue < 1) {
-            throw new IllegalArgumentException(String.format("bitsPerValue (%s) must not be smaller then 1", bitsPerValue));
+            throw new IllegalArgumentException(String.format("bitsPerValue (%s) must not be less than 1", bitsPerValue));
         }
         if (bitsPerValue > 64) {
-            throw new IllegalArgumentException(String.format("bitsPerValue (%s) must not be greater then 64", bitsPerValue));
+            throw new IllegalArgumentException(String.format("bitsPerValue (%s) must not be greater than 64", bitsPerValue));
         }
         backing = new long[(int) Math.ceil((bitsPerValue * capacity) / 64.0)];
         this.bitsPerValue = bitsPerValue;
@@ -33,6 +33,10 @@ public final class VariableValueArray {
 
     public int getBitsPerValue() {
         return bitsPerValue;
+    }
+
+    public long getLargestPossibleValue() {
+        return valueMask;
     }
 
     public int get(int index) {
@@ -59,7 +63,7 @@ public final class VariableValueArray {
             throw new IllegalArgumentException(String.format("value (%s) must not be negative", value));
         }
         if (value > valueMask) {
-            throw new IllegalArgumentException(String.format("value (%s) must not be greater then %s", value, valueMask));
+            throw new IllegalArgumentException(String.format("value (%s) must not be greater than %s", value, valueMask));
         }
 
         index *= bitsPerValue;
@@ -80,7 +84,54 @@ public final class VariableValueArray {
             throw new IndexOutOfBoundsException(String.format("index (%s) must not be negative", index));
         }
         if (index >= capacity) {
-            throw new IndexOutOfBoundsException(String.format("index (%s) must not be greater then the capacity (%s)", index, capacity));
+            throw new IndexOutOfBoundsException(String.format("index (%s) must not be greater than the capacity (%s)", index, capacity));
         }
+    }
+
+    /**
+     * Creates a new VariableValueArray with the contents of this one, and the
+     * given bits per value.
+     *
+     * @param newBitsPerValue
+     *            The new value. Must be larger than the current value (
+     *            {@link #getBitsPerValue()}).
+     * @throws IllegalArgumentException
+     *             If newBitsPerValue is less than or equal to the current bits
+     *             per value. Setting it to the same size would be a waste of
+     *             resources, and decreasing could lead to data loss.
+     * @return A new VariableValueArray
+     */
+    public VariableValueArray increaseBitsPerValueTo(int newBitsPerValue) {
+        if (newBitsPerValue < this.bitsPerValue) {
+            throw new IllegalArgumentException("Cannot decrease bits per value!  (was " + this.bitsPerValue + ", new size " + newBitsPerValue + ")");
+        } else if (newBitsPerValue == this.bitsPerValue) {
+            throw new IllegalArgumentException("Cannot resize to the same size!  (size was "  + newBitsPerValue + ")");
+        }
+
+        VariableValueArray returned = new VariableValueArray(newBitsPerValue, this.capacity);
+        for (int i = 0; i < this.capacity; i++) {
+            returned.set(i, this.get(i));
+        }
+        return returned;
+    }
+
+    @Override
+    public VariableValueArray clone() {
+        VariableValueArray clone = new VariableValueArray(this.bitsPerValue, this.capacity);
+        System.arraycopy(this.backing, 0, clone.backing, 0, this.backing.length);
+        return clone;
+    }
+
+    /**
+     * Calculates the number of bits that would be needed to store the given
+     * value.
+     */
+    public static int calculateNeededBits(int number) {
+        int count = 0;
+        do {
+            count++;
+            number >>>= 1;
+        } while (number != 0);
+        return count;
     }
 }

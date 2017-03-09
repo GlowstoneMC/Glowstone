@@ -1,7 +1,7 @@
 package net.glowstone.block;
 
-import net.glowstone.GlowChunk;
 import net.glowstone.GlowWorld;
+import net.glowstone.chunk.GlowChunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;

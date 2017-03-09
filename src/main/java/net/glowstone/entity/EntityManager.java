@@ -1,6 +1,6 @@
 package net.glowstone.entity;
 
-import net.glowstone.GlowChunk;
+import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.physics.BoundingBox;
 import org.bukkit.Chunk;
 import org.bukkit.Location;

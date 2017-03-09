@@ -1,6 +1,6 @@
 package net.glowstone.generator;
 
-import net.glowstone.GlowChunk;
+import net.glowstone.chunk.GlowChunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.generator.ChunkGenerator.ChunkData;
@@ -9,14 +9,12 @@ import org.bukkit.material.MaterialData;
 @SuppressWarnings("deprecation")
 public class GlowChunkData implements ChunkData {
 
-    public static final int SECTIONS_SIZE = 16;
-
     private final int maxHeight;
     private short[][] sections;
 
     public GlowChunkData(World world) {
         maxHeight = world.getMaxHeight();
-        sections = new short[SECTIONS_SIZE][];
+        sections = new short[GlowChunk.SEC_COUNT][];
     }
 
     public short[][] getSections() {

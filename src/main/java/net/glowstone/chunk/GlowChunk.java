@@ -1,9 +1,11 @@
-package net.glowstone;
+package net.glowstone.chunk;
 
-import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.Data;
+import net.glowstone.EventFactory;
+import net.glowstone.GlowServer;
+import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
@@ -11,8 +13,6 @@ import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.game.ChunkDataMessage;
-import net.glowstone.util.NibbleArray;
-import net.glowstone.util.VariableValueArray;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Chunk;
 import org.bukkit.World.Environment;
@@ -37,7 +37,11 @@ public final class GlowChunk implements Chunk {
     /**
      * The Y depth of a single chunk section.
      */
-    private static final int SEC_DEPTH = 16;
+    public static final int SEC_DEPTH = 16;
+    /**
+     * The number of chunk sections in a single chunk column.
+     */
+    public static final int SEC_COUNT = DEPTH / SEC_DEPTH;
     /**
      * The world of this chunk.
      */
@@ -233,24 +237,34 @@ public final class GlowChunk implements Chunk {
     /**
      * Initialize this chunk from the given sections.
      *
-     * @param initSections The ChunkSections to use.
+     * @param initSections The {@link ChunkSection}s to use.  Should have a length of {@value #SEC_COUNT}.
      */
-    public void initializeSections(ChunkSection... initSections) {
+    public void initializeSections(ChunkSection[] initSections) {
         if (isLoaded()) {
             GlowServer.logger.log(Level.SEVERE, "Tried to initialize already loaded chunk (" + x + "," + z + ")", new Throwable());
             return;
         }
+        if (initSections.length != SEC_COUNT) {
+            GlowServer.logger.log(Level.WARNING, "Got an unexpected section length - wanted " + SEC_COUNT + ", but length was " + initSections.length, new Throwable());
+        }
         //GlowServer.logger.log(Level.INFO, "Initializing chunk ({0},{1})", new Object[]{x, z});
 
-        sections = new ChunkSection[DEPTH / SEC_DEPTH];
-        System.arraycopy(initSections, 0, sections, 0, Math.min(sections.length, initSections.length));
-
+        sections = new ChunkSection[SEC_COUNT];
         biomes = new byte[WIDTH * HEIGHT];
         heightMap = new byte[WIDTH * HEIGHT];
 
+        for (int y = 0; y < SEC_COUNT && y < initSections.length; y++) {
+            if (initSections[y] != null) {
+                initializeSection(y, initSections[y]);
+            }
+        }
+    }
+
+    private void initializeSection(int y, ChunkSection section) {
+        sections[y] = section;
+
         // tile entity initialization
         for (int i = 0; i < sections.length; ++i) {
-            if (sections[i] == null) continue;
             int by = 16 * i;
             for (int cx = 0; cx < WIDTH; ++cx) {
                 for (int cz = 0; cz < HEIGHT; ++cz) {
@@ -328,7 +342,7 @@ public final class GlowChunk implements Chunk {
      */
     public int getType(int x, int z, int y) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : section.types[section.index(x, y, z)] >> 4;
+        return section == null ? 0 : section.getType(x, y, z) >> 4;
     }
 
     /**
@@ -366,29 +380,22 @@ public final class GlowChunk implements Chunk {
         }
 
         // update the air count and height map
-        int index = section.index(x, y, z);
         int heightIndex = z * WIDTH + x;
         if (type == 0) {
-            if (section.types[index] != 0) {
-                section.count--;
-            }
             if (heightMap[heightIndex] == y + 1) {
                 // erased just below old height map -> lower
                 heightMap[heightIndex] = (byte) lowerHeightMap(x, y, z);
             }
         } else {
-            if (section.types[index] == 0) {
-                section.count++;
-            }
             if (heightMap[heightIndex] <= y) {
                 // placed between old height map and top -> raise
                 heightMap[heightIndex] = (byte) Math.min(y + 1, 255);
             }
         }
         // update the type - also sets metadata to 0
-        section.types[index] = (char) (type << 4);
+        section.setType(x, y, z, (char) (type << 4));
 
-        if (type == 0 && section.count == 0) {
+        if (section.isEmpty()) {
             // destroy the empty section
             sections[y / SEC_DEPTH] = null;
             return;
@@ -420,7 +427,7 @@ public final class GlowChunk implements Chunk {
      */
     public int getMetaData(int x, int z, int y) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : section.types[section.index(x, y, z)] & 0xF;
+        return section == null ? 0 : section.getType(x, y, z) & 0xF;
     }
 
     /**
@@ -436,10 +443,9 @@ public final class GlowChunk implements Chunk {
             throw new IllegalArgumentException("Metadata out of range: " + metaData);
         ChunkSection section = getSection(y);
         if (section == null) return;  // can't set metadata on an empty section
-        int index = section.index(x, y, z);
-        int type = section.types[index];
+        int type = section.getType(x, y, z);
         if (type == 0) return;  // can't set metadata on air
-        section.types[index] = (char) (type & 0xfff0 | metaData);
+        section.setType(x, y, z, (char) (type & 0xfff0 | metaData));
     }
 
     /**
@@ -452,7 +458,7 @@ public final class GlowChunk implements Chunk {
      */
     public byte getSkyLight(int x, int z, int y) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : section.skyLight.get(section.index(x, y, z));
+        return section == null ? ChunkSection.EMPTY_SKYLIGHT : section.getSkyLight(x, y, z);
     }
 
     /**
@@ -466,7 +472,7 @@ public final class GlowChunk implements Chunk {
     public void setSkyLight(int x, int z, int y, int skyLight) {
         ChunkSection section = getSection(y);
         if (section == null) return;  // can't set light on an empty section
-        section.skyLight.set(section.index(x, y, z), (byte) skyLight);
+        section.setSkyLight(x, y, z, (byte) skyLight);
     }
 
     /**
@@ -479,7 +485,7 @@ public final class GlowChunk implements Chunk {
      */
     public byte getBlockLight(int x, int z, int y) {
         ChunkSection section = getSection(y);
-        return section == null ? 0 : section.blockLight.get(section.index(x, y, z));
+        return section == null ? ChunkSection.EMPTY_BLOCK_LIGHT : section.getBlockLight(x, y, z);
     }
 
     /**
@@ -493,7 +499,7 @@ public final class GlowChunk implements Chunk {
     public void setBlockLight(int x, int z, int y, int blockLight) {
         ChunkSection section = getSection(y);
         if (section == null) return;  // can't set light on an empty section
-        section.blockLight.set(section.index(x, y, z), (byte) blockLight);
+        section.setBlockLight(x, y, z, (byte) blockLight);
     }
 
     /**
@@ -624,19 +630,6 @@ public final class GlowChunk implements Chunk {
         return toMessage(skylight, true);
     }
 
-    private static final int PACKET_DATA_ARRAY_LENGTH = ChunkSection.ARRAY_SIZE * 2 / 8;
-    private static final byte[] PACKET_DATA_ARRAY_LENGTH_BYTES;
-
-    static {
-        ByteBuf buf = Unpooled.buffer();
-        try {
-            ByteBufUtils.writeVarInt(buf, PACKET_DATA_ARRAY_LENGTH);
-            PACKET_DATA_ARRAY_LENGTH_BYTES = buf.array().clone();
-        } finally {
-            buf.release();
-        }
-    }
-
     /**
      * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream
      * parts of this chunk to them.
@@ -659,7 +652,7 @@ public final class GlowChunk implements Chunk {
             }
 
             for (int i = 0; i < sections.length; ++i) {
-                if (sections[i] == null || sections[i].count == 0) {
+                if (sections[i] == null || sections[i].isEmpty()) {
                     // remove empty sections from bitmask
                     sectionBitmask &= ~(1 << i);
                 }
@@ -674,23 +667,7 @@ public final class GlowChunk implements Chunk {
                 if ((sectionBitmask & 1 << i) == 0) {
                     continue;
                 }
-                ChunkSection section = sections[i];
-                VariableValueArray array = new VariableValueArray(13, section.types.length);
-                buf.writeByte(array.getBitsPerValue()); // Bit per value -> Currently fixed at 13!!!
-                ByteBufUtils.writeVarInt(buf, 0); // Palette size -> 0 -> Use the global palette
-                for (int j = 0; j < section.types.length; j++) {
-                    array.set(j, section.types[j]);
-                }
-                long[] backing = array.getBacking();
-                ByteBufUtils.writeVarInt(buf, backing.length);
-                buf.ensureWritable(backing.length * 8 + section.blockLight.byteSize() + (skylight ? section.skyLight.byteSize() : 0));
-                for (long value : backing) {
-                    buf.writeLong(value);
-                }
-                buf.writeBytes(section.blockLight.getRawData());
-                if (skylight) {
-                    buf.writeBytes(section.skyLight.getRawData());
-                }
+                sections[i].writeToBuf(buf, skylight);
             }
         }
 
@@ -719,85 +696,6 @@ public final class GlowChunk implements Chunk {
          * The coordinates.
          */
         private final int x, z;
-    }
-
-    /**
-     * A single cubic section of a chunk, with all data.
-     */
-    public static final class ChunkSection {
-        private static final int ARRAY_SIZE = WIDTH * HEIGHT * SEC_DEPTH;
-
-        // these probably should be made non-public
-        public final char[] types;
-        public final NibbleArray skyLight;
-        public final NibbleArray blockLight;
-        public int count; // amount of non-air blocks
-
-        /**
-         * Create a new, empty ChunkSection.
-         */
-        public ChunkSection() {
-            types = new char[ARRAY_SIZE];
-            skyLight = new NibbleArray(ARRAY_SIZE);
-            blockLight = new NibbleArray(ARRAY_SIZE);
-            skyLight.fill((byte) 0xf);
-        }
-
-        /**
-         * Create a ChunkSection with the specified chunk data. This
-         * ChunkSection assumes ownership of the arrays passed in, and they
-         * should not be further modified.
-         *
-         * @param types An array of block types for this chunk section.
-         * @param skyLight An array for skylight data for this chunk section.
-         * @param blockLight An array for blocklight data for this chunk section.
-         */
-        public ChunkSection(char[] types, NibbleArray skyLight, NibbleArray blockLight) {
-            if (types.length != ARRAY_SIZE || skyLight.size() != ARRAY_SIZE || blockLight.size() != ARRAY_SIZE) {
-                throw new IllegalArgumentException("An array length was not " + ARRAY_SIZE + ": " + types.length + " " + skyLight.size() + " " + blockLight.size());
-            }
-            this.types = types;
-            this.skyLight = skyLight;
-            this.blockLight = blockLight;
-            recount();
-        }
-
-        /**
-         * Calculate the index into internal arrays for the given coordinates.
-         *
-         * @param x The x coordinate, for east and west.
-         * @param y The y coordinate, for up and down.
-         * @param z The z coordinate, for north and south.
-         *
-         * @return The index.
-         */
-        public int index(int x, int y, int z) {
-            if (x < 0 || z < 0 || x >= WIDTH || z >= HEIGHT) {
-                throw new IndexOutOfBoundsException("Coords (x=" + x + ",z=" + z + ") out of section bounds");
-            }
-            return (y & 0xf) << 8 | z << 4 | x;
-        }
-
-        /**
-         * Recount the amount of non-air blocks in the chunk section.
-         */
-        public void recount() {
-            count = 0;
-            for (char type : types) {
-                if (type != 0) {
-                    count++;
-                }
-            }
-        }
-
-        /**
-         * Take a snapshot of this section which will not reflect future changes.
-         *
-         * @return The snapshot for this section.
-         */
-        public ChunkSection snapshot() {
-            return new ChunkSection(types.clone(), skyLight.snapshot(), blockLight.snapshot());
-        }
     }
 
 }

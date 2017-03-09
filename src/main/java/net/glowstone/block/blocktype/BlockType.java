@@ -1,13 +1,13 @@
 package net.glowstone.block.blocktype;
 
 import net.glowstone.EventFactory;
-import net.glowstone.GlowChunk;
 import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.entity.TileEntity;
 import net.glowstone.block.itemtype.ItemType;
+import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.physics.BlockBoundingBox;
 import net.glowstone.util.SoundInfo;

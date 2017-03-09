@@ -1,8 +1,8 @@
 package net.glowstone.generator.populators;
 
-import net.glowstone.GlowChunk.Key;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
+import net.glowstone.chunk.GlowChunk.Key;
 import net.glowstone.generator.structures.GlowStructure;
 import net.glowstone.io.structure.StructureStorage;
 import net.glowstone.io.structure.StructureStore;
