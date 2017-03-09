@@ -458,23 +458,16 @@ public abstract class GlowEntity implements Entity {
             teleported = false;
         }
 
-        Block block = location.getBlock();
-        if (this.getClass() == GlowPlayer.class && ((GlowPlayer) this).getGameMode() != GameMode.SPECTATOR
-                && block.getType().isOccluding() && !block.getType().hasGravity() && block.getType() != Material.SOUL_SAND) {
-            teleport(location.add(0, 1, 0));
-            return;
-        }
-
         world.getEntityManager().move(this, location);
         Position.copyLocation(location, this.location);
 
-        if (!fall || (this.getClass() == GlowPlayer.class && (((GlowPlayer) this).getGameMode() == GameMode.CREATIVE || ((GlowPlayer) this).getGameMode() == GameMode.SPECTATOR)) || location.getBlock().getType() != Material.AIR) {
+        if (!fall || location.getBlock().getType() != Material.AIR) {
             fallDistance = 0;
             return;
         }
 
-        if (location.getY() > previousLocation.getY()) {
-            fallDistance += location.getY() - previousLocation.getY();
+        if (location.getY() < previousLocation.getY()) {
+            fallDistance += previousLocation.getY() - location.getY();
         }
     }
 
