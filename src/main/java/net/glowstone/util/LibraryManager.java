@@ -34,7 +34,7 @@ public final class LibraryManager {
 
     private final ExecutorService downloaderService = Executors.newCachedThreadPool();
 
-    public LibraryManager(GlowServer server) {
+    public LibraryManager() {
         // todo: allow configuration of repository, libraries, and directory
         repository = "https://repo.glowstone.net/service/local/repositories/central/content/";
         directory = new File("lib");

@@ -6,6 +6,7 @@ import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.UseItemMessage;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessage> {
@@ -16,8 +17,14 @@ public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessag
 
         if (holding != null) {
             ItemType type = ItemTable.instance().getItem(holding.getType());
-            if (type != null && type.canOnlyUseSelf()) {
-                type.rightClickAir(player, holding);
+            if (type != null) {
+                if (type.canOnlyUseSelf()) {
+                    type.rightClickAir(player, holding);
+                } else {
+                    if (holding.getType() == Material.WATER_BUCKET || holding.getType() == Material.LAVA_BUCKET) {
+                        holding.setType(Material.BUCKET);
+                    }
+                }
             }
         }
     }

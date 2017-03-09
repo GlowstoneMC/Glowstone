@@ -477,7 +477,7 @@ public final class GlowServer implements Server {
         }
 
         // Start loading plugins
-        new LibraryManager(this).run();
+        new LibraryManager().run();
         loadPlugins();
         enablePlugins(PluginLoadOrder.STARTUP);
 

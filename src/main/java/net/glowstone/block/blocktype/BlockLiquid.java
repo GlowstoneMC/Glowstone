@@ -4,7 +4,6 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.entity.GlowPlayer;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.block.BlockFace;
@@ -93,9 +92,6 @@ public abstract class BlockLiquid extends BlockType {
         state.setType(getMaterial());
         state.setRawData((byte) 0);
         state.getBlock().getWorld().requestPulse(state.getBlock());
-        if (player.getGameMode() != GameMode.CREATIVE) {
-            holding.setType(Material.BUCKET);
-        }
     }
 
     @Override
