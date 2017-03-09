@@ -39,7 +39,7 @@ public class BlockSlab extends BlockType {
             return;
         }
 
-        if (face == BlockFace.DOWN || face != BlockFace.UP && clickedLoc.getY() >= 8.0D) {
+        if (face == BlockFace.DOWN || face != BlockFace.UP && clickedLoc.getY() >= 0.5) {
             MaterialData data = state.getData();
             if (data instanceof Step) {
                 ((Step) data).setInverted(true);
