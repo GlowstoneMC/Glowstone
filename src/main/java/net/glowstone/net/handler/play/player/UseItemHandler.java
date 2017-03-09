@@ -5,6 +5,7 @@ import net.glowstone.block.ItemTable;
 import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
+import net.glowstone.net.message.play.player.UseItemMessage;
 import org.bukkit.inventory.ItemStack;
 
 public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessage> {
