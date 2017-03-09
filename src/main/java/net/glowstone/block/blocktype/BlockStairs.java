@@ -24,7 +24,7 @@ public class BlockStairs extends BlockType {
         if (data instanceof Stairs) {
             ((Stairs) data).setFacingDirection(player.getDirection());
 
-            if (face == BlockFace.DOWN || face != BlockFace.UP && clickedLoc.getY() >= 8) {
+            if (face == BlockFace.DOWN || face != BlockFace.UP && clickedLoc.getY() >= 0.5) {
                 ((Stairs) data).setInverted(true);
             }
 
