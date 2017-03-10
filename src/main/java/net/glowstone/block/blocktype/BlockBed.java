@@ -11,6 +11,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Bed;
@@ -239,7 +240,7 @@ public class BlockBed extends BlockType {
 
         for (LivingEntity e : world.getLivingEntities()) {
             // Check for hostile mobs relative to the block below the head of the bed
-            if (e instanceof Creature && isWithinDistance(e, block.getRelative(BlockFace.DOWN), 8, 5, 8)) {
+            if (e instanceof Creature && (e.getType() != EntityType.PIG_ZOMBIE || ((PigZombie) e).isAngry()) && isWithinDistance(e, block.getRelative(BlockFace.DOWN), 8, 5, 8)) {
                 player.sendMessage("You may not rest now, there are monsters nearby");
                 return true;
             }
