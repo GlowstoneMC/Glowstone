@@ -6,16 +6,16 @@ import net.glowstone.block.state.GlowCreatureSpawner;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.entity.EntityType;
 
-public class TEMobSpawner extends TileEntity {
+public class MobSpawnerEntity extends BlockEntity {
 
     private static final EntityType DEFAULT = EntityType.PIG;
 
     private EntityType spawning;
     private int delay;
 
-    public TEMobSpawner(GlowBlock block) {
+    public MobSpawnerEntity(GlowBlock block) {
         super(block);
-        setSaveId("mob_spawner");
+        setSaveId("minecraft:mob_spawner");
     }
 
     @Override

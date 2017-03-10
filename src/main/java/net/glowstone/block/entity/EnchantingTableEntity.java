@@ -3,13 +3,13 @@ package net.glowstone.block.entity;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.util.nbt.CompoundTag;
 
-public class TEEnchantTable extends TileEntity {
+public class EnchantingTableEntity extends BlockEntity {
 
     private String name = null; // TODO name the inventory this
 
-    public TEEnchantTable(GlowBlock block) {
+    public EnchantingTableEntity(GlowBlock block) {
         super(block);
-        setSaveId("enchanting_table");
+        setSaveId("minecraft:enchanting_table");
     }
 
     @Override

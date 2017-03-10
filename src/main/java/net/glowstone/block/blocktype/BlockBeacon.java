@@ -1,7 +1,7 @@
 package net.glowstone.block.blocktype;
 
-import net.glowstone.block.entity.TEBeacon;
-import net.glowstone.block.entity.TileEntity;
+import net.glowstone.block.entity.BlockEntity;
+import net.glowstone.block.entity.BeaconEntity;
 import net.glowstone.chunk.GlowChunk;
 import org.bukkit.Material;
 
@@ -11,7 +11,7 @@ public class BlockBeacon extends BlockDirectDrops {
     }
 
     @Override
-    public TileEntity createTileEntity(GlowChunk chunk, int cx, int cy, int cz) {
-        return new TEBeacon(chunk.getBlock(cx, cy, cz));
+    public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
+        return new BeaconEntity(chunk.getBlock(cx, cy, cz));
     }
 }

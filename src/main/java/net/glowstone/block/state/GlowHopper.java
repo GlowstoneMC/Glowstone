@@ -1,7 +1,7 @@
 package net.glowstone.block.state;
 
 import net.glowstone.block.GlowBlock;
-import net.glowstone.block.entity.TEHopper;
+import net.glowstone.block.entity.HopperEntity;
 import org.bukkit.block.Hopper;
 import org.bukkit.inventory.Inventory;
 
@@ -11,12 +11,12 @@ public class GlowHopper extends GlowLootableBlock implements Hopper {
         super(block);
     }
 
-    private TEHopper getTileEntity() {
-        return (TEHopper) getBlock().getTileEntity();
+    private HopperEntity getBlockEntity() {
+        return (HopperEntity) getBlock().getBlockEntity();
     }
 
     @Override
     public Inventory getInventory() {
-        return getTileEntity().getInventory();
+        return getBlockEntity().getInventory();
     }
 }

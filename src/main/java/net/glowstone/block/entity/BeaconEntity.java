@@ -3,14 +3,14 @@ package net.glowstone.block.entity;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.util.nbt.CompoundTag;
 
-public class TEBeacon extends TileEntity {
+public class BeaconEntity extends BlockEntity {
 
     private String lock = null; // todo: support item locks
     private int levels = 0, primaryId = 0, secondaryId = 0;
 
-    public TEBeacon(GlowBlock block) {
+    public BeaconEntity(GlowBlock block) {
         super(block);
-        setSaveId("beacon");
+        setSaveId("minecraft:beacon");
     }
 
     @Override

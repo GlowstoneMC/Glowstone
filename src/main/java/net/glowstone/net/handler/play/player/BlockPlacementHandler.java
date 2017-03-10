@@ -6,7 +6,7 @@ import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
-import net.glowstone.block.entity.TileEntity;
+import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
@@ -31,7 +31,7 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
 
     static void revert(GlowPlayer player, GlowBlock target) {
         player.sendBlockChange(target.getLocation(), target.getType(), target.getData());
-        TileEntity entity = target.getTileEntity();
+        BlockEntity entity = target.getBlockEntity();
         if (entity != null) {
             entity.update(player);
         }

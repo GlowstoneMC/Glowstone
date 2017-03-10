@@ -1,7 +1,7 @@
 package net.glowstone.block.state;
 
 import net.glowstone.block.GlowBlock;
-import net.glowstone.block.entity.TEDispenser;
+import net.glowstone.block.entity.DispenserEntity;
 import net.glowstone.dispenser.*;
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -39,8 +39,8 @@ public class GlowDispenser extends GlowLootableBlock implements Dispenser, Block
         getDispenseBehaviorRegistry().putBehavior(Material.TNT, new TNTDispenseBehavior());
     }
 
-    private TEDispenser getTileEntity() {
-        return (TEDispenser) getBlock().getTileEntity();
+    private DispenserEntity getBlockEntity() {
+        return (DispenserEntity) getBlock().getBlockEntity();
     }
 
     @Override
@@ -89,7 +89,7 @@ public class GlowDispenser extends GlowLootableBlock implements Dispenser, Block
 
     @Override
     public Inventory getInventory() {
-        return getTileEntity().getInventory();
+        return getBlockEntity().getInventory();
     }
 
     @Override
@@ -99,8 +99,8 @@ public class GlowDispenser extends GlowLootableBlock implements Dispenser, Block
         boolean result = super.update(force, applyPhysics);
 
         if (result) {
-            getTileEntity().setContents(contents);
-            getTileEntity().updateInRange();
+            getBlockEntity().setContents(contents);
+            getBlockEntity().updateInRange();
         }
 
         return result;

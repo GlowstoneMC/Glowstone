@@ -4,15 +4,15 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.state.GlowDropper;
 
-public class TEDropper extends TEDispenser {
+public class DropperEntity extends DispenserEntity {
 
-    public TEDropper(GlowBlock block) {
+    public DropperEntity(GlowBlock block) {
         super(block);
     }
 
     @Override
     protected void setOwnSaveId() {
-        setSaveId("dropper");
+        setSaveId("minecraft:dropper");
     }
 
     @Override

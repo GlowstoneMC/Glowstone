@@ -2,9 +2,9 @@ package net.glowstone.block.blocktype;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.entity.TEContainer;
-import net.glowstone.block.entity.TEHopper;
-import net.glowstone.block.entity.TileEntity;
+import net.glowstone.block.entity.BlockEntity;
+import net.glowstone.block.entity.ContainerEntity;
+import net.glowstone.block.entity.HopperEntity;
 import net.glowstone.block.state.GlowHopper;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
@@ -53,8 +53,8 @@ public class BlockHopper extends BlockContainer {
     }
 
     @Override
-    public TileEntity createTileEntity(GlowChunk chunk, int cx, int cy, int cz) {
-        return new TEHopper(chunk.getBlock(cx, cy, cz));
+    public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
+        return new HopperEntity(chunk.getBlock(cx, cy, cz));
     }
 
     @Override
@@ -71,10 +71,10 @@ public class BlockHopper extends BlockContainer {
 
     @Override
     public void receivePulse(GlowBlock block) {
-        if (block.getTileEntity() == null) {
+        if (block.getBlockEntity() == null) {
             return;
         }
-        TEHopper hopper = (TEHopper) block.getTileEntity();
+        HopperEntity hopper = (HopperEntity) block.getBlockEntity();
         if (!((Hopper) block.getState().getData()).isPowered()) {
             pushItems(block, hopper);
         }
@@ -86,7 +86,7 @@ public class BlockHopper extends BlockContainer {
         ((Hopper) block.getState().getData()).setActive(!block.isBlockPowered());
     }
 
-    private void pullItems(GlowBlock block, TEHopper hopper) {
+    private void pullItems(GlowBlock block, HopperEntity hopper) {
         GlowBlock source = block.getRelative(BlockFace.UP);
         MaterialData data = source.getState().getData();
         if (!source.getType().isSolid() ||
@@ -105,8 +105,8 @@ public class BlockHopper extends BlockContainer {
             } else {
                 item.remove();
             }
-        } else if (source.getTileEntity() != null && source.getTileEntity() instanceof TEContainer) {
-            TEContainer sourceContainer = (TEContainer) source.getTileEntity();
+        } else if (source.getBlockEntity() != null && source.getBlockEntity() instanceof ContainerEntity) {
+            ContainerEntity sourceContainer = (ContainerEntity) source.getBlockEntity();
             if (sourceContainer.getInventory() == null || sourceContainer.getInventory().getContents().length == 0) {
                 return;
             }
@@ -127,12 +127,12 @@ public class BlockHopper extends BlockContainer {
         }
     }
 
-    private boolean pushItems(GlowBlock block, TEHopper hopper) {
+    private boolean pushItems(GlowBlock block, HopperEntity hopper) {
         if (hopper.getInventory() == null || hopper.getInventory().getContents().length == 0) {
             return false;
         }
         GlowBlock target = block.getRelative(((Hopper) block.getState().getData()).getFacing());
-        if (target.getType() != null && target.getTileEntity() instanceof TEContainer) {
+        if (target.getType() != null && target.getBlockEntity() instanceof ContainerEntity) {
             if (target.getState() instanceof GlowHopper) {
                 if (((Hopper) block.getState().getData()).getFacing() == BlockFace.DOWN) {
                     // If the hopper is facing downwards, the target hopper can do the pulling task itself
@@ -145,7 +145,7 @@ public class BlockHopper extends BlockContainer {
             }
             ItemStack clone = item.clone();
             clone.setAmount(1);
-            if (((TEContainer) target.getTileEntity()).getInventory().addItem(clone).size() > 0) {
+            if (((ContainerEntity) target.getBlockEntity()).getInventory().addItem(clone).size() > 0) {
                 return false;
             }
 
@@ -172,7 +172,7 @@ public class BlockHopper extends BlockContainer {
         return null;
     }
 
-    private ItemStack getFirstItem(TEContainer container) {
+    private ItemStack getFirstItem(ContainerEntity container) {
         Inventory inventory = container.getInventory();
         for (int i = 0; i < inventory.getSize(); i++) {
             if (inventory.getItem(i) == null || inventory.getItem(i).getType() == null) {

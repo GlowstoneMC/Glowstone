@@ -2,7 +2,7 @@ package net.glowstone.block.state;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.entity.TEBanner;
+import net.glowstone.block.entity.BannerEntity;
 import org.bukkit.DyeColor;
 import org.bukkit.block.Banner;
 import org.bukkit.block.banner.Pattern;
@@ -19,12 +19,12 @@ public class GlowBanner extends GlowBlockState implements Banner {
 
     public GlowBanner(GlowBlock block) {
         super(block);
-        base = getTileEntity().getBase();
-        patterns = getTileEntity().getPatterns();
+        base = getBlockEntity().getBase();
+        patterns = getBlockEntity().getPatterns();
     }
 
-    private TEBanner getTileEntity() {
-        return (TEBanner) getBlock().getTileEntity();
+    private BannerEntity getBlockEntity() {
+        return (BannerEntity) getBlock().getBlockEntity();
     }
 
     @Override
@@ -79,10 +79,10 @@ public class GlowBanner extends GlowBlockState implements Banner {
     public boolean update(boolean force, boolean applyPhysics) {
         boolean result = super.update(force, applyPhysics);
         if (result) {
-            TEBanner banner = getTileEntity();
+            BannerEntity banner = getBlockEntity();
             banner.setBase(base);
             banner.setPatterns(patterns);
-            getTileEntity().updateInRange();
+            getBlockEntity().updateInRange();
         }
         return result;
     }

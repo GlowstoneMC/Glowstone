@@ -1,7 +1,7 @@
 package net.glowstone.block.state;
 
 import net.glowstone.block.GlowBlock;
-import net.glowstone.block.entity.TEFurnace;
+import net.glowstone.block.entity.FurnaceEntity;
 import org.bukkit.block.Furnace;
 import org.bukkit.inventory.FurnaceInventory;
 
@@ -12,8 +12,8 @@ public class GlowFurnace extends GlowLootableBlock implements Furnace {
 
     public GlowFurnace(GlowBlock block) {
         super(block);
-        burnTime = getTileEntity().getBurnTime();
-        cookTime = getTileEntity().getCookTime();
+        burnTime = getBlockEntity().getBurnTime();
+        cookTime = getBlockEntity().getCookTime();
     }
 
     public GlowFurnace(GlowBlock block, short burnTime, short cookTime) {
@@ -22,8 +22,8 @@ public class GlowFurnace extends GlowLootableBlock implements Furnace {
         this.cookTime = cookTime;
     }
 
-    private TEFurnace getTileEntity() {
-        return (TEFurnace) getBlock().getTileEntity();
+    private FurnaceEntity getBlockEntity() {
+        return (FurnaceEntity) getBlock().getBlockEntity();
     }
 
     @Override
@@ -48,14 +48,14 @@ public class GlowFurnace extends GlowLootableBlock implements Furnace {
 
     @Override
     public FurnaceInventory getInventory() {
-        return (FurnaceInventory) getTileEntity().getInventory();
+        return (FurnaceInventory) getBlockEntity().getInventory();
     }
 
     @Override
     public boolean update(boolean force, boolean applyPhysics) {
         boolean result = super.update(force, applyPhysics);
         if (result) {
-            TEFurnace furnace = getTileEntity();
+            FurnaceEntity furnace = getBlockEntity();
             furnace.setBurnTime(burnTime);
             furnace.setCookTime(cookTime);
         }

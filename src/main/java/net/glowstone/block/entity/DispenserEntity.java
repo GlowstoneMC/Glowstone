@@ -6,15 +6,15 @@ import net.glowstone.block.state.GlowDispenser;
 import net.glowstone.inventory.GlowInventory;
 import org.bukkit.event.inventory.InventoryType;
 
-public class TEDispenser extends TEContainer {
+public class DispenserEntity extends ContainerEntity {
 
-    public TEDispenser(GlowBlock block) {
+    public DispenserEntity(GlowBlock block) {
         super(block, new GlowInventory(new GlowDispenser(block), InventoryType.DISPENSER));
         setOwnSaveId();
     }
 
     protected void setOwnSaveId() {
-        setSaveId("dispenser");
+        setSaveId("minecraft:dispenser");
     }
 
     @Override

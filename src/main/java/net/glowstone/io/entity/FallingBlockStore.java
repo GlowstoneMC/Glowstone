@@ -32,7 +32,7 @@ class FallingBlockStore extends EntityStore<GlowFallingBlock> {
         entity.setHurtEntities(tag.getBool("HurtEntities"));
         entity.setDropItem(tag.getBool("DropItem"));
         if (tag.isCompound("TileEntityData")) {
-            entity.setTileEntityCompoundTag(tag.getCompound("TileEntityData"));
+            entity.setBlockEntityCompoundTag(tag.getCompound("TileEntityData"));
         }
     }
 
@@ -44,8 +44,8 @@ class FallingBlockStore extends EntityStore<GlowFallingBlock> {
         tag.putByte("Data", entity.getBlockData());
         tag.putBool("DropItem", entity.getDropItem());
         tag.putBool("HurtEntities", entity.canHurtEntities());
-        if (entity.getTileEntityCompoundTag() != null) {
-            tag.putCompound("TileEntityData", entity.getTileEntityCompoundTag());
+        if (entity.getBlockEntityCompoundTag() != null) {
+            tag.putCompound("TileEntityData", entity.getBlockEntityCompoundTag());
         }
     }
 }

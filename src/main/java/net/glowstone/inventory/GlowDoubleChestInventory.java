@@ -43,13 +43,13 @@ public class GlowDoubleChestInventory extends GlowSuperInventory implements Doub
     @Override
     public void addViewer(HumanEntity viewer) {
         super.addViewer(viewer);
-        first.getTileEntity().addViewer();
+        first.getBlockEntity().addViewer();
     }
 
 
     @Override
     public void removeViewer(HumanEntity viewer) {
         super.removeViewer(viewer);
-        first.getTileEntity().removeViewer();
+        first.getBlockEntity().removeViewer();
     }
 }

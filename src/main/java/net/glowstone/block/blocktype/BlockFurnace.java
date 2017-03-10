@@ -2,8 +2,8 @@ package net.glowstone.block.blocktype;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.entity.TEFurnace;
-import net.glowstone.block.entity.TileEntity;
+import net.glowstone.block.entity.FurnaceEntity;
+import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.MaterialMatcher;
@@ -22,8 +22,8 @@ public class BlockFurnace extends BlockContainer {
     }
 
     @Override
-    public TileEntity createTileEntity(GlowChunk chunk, int cx, int cy, int cz) {
-        return new TEFurnace(chunk.getBlock(cx, cy, cz));
+    public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
+        return new FurnaceEntity(chunk.getBlock(cx, cy, cz));
     }
 
     @Override
@@ -45,6 +45,6 @@ public class BlockFurnace extends BlockContainer {
 
     @Override
     public void receivePulse(GlowBlock block) {
-        ((TEFurnace) block.getTileEntity()).burn();
+        ((FurnaceEntity) block.getBlockEntity()).burn();
     }
 }

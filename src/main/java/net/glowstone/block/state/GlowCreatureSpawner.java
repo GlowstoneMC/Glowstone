@@ -2,7 +2,7 @@ package net.glowstone.block.state;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.entity.TEMobSpawner;
+import net.glowstone.block.entity.MobSpawnerEntity;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.EntityType;
 
@@ -14,20 +14,20 @@ public class GlowCreatureSpawner extends GlowBlockState implements CreatureSpawn
     public GlowCreatureSpawner(GlowBlock block) {
         super(block);
 
-        TEMobSpawner spawner = getTileEntity();
+        MobSpawnerEntity spawner = getBlockEntity();
         spawned = spawner.getSpawning();
         delay = spawner.getDelay();
     }
 
-    private TEMobSpawner getTileEntity() {
-        return (TEMobSpawner) getBlock().getTileEntity();
+    private MobSpawnerEntity getBlockEntity() {
+        return (MobSpawnerEntity) getBlock().getBlockEntity();
     }
 
     @Override
     public boolean update(boolean force, boolean applyPhysics) {
         boolean result = super.update(force, applyPhysics);
         if (result) {
-            TEMobSpawner spawner = getTileEntity();
+            MobSpawnerEntity spawner = getBlockEntity();
             spawner.setSpawning(spawned);
             spawner.setDelay(delay);
             spawner.updateInRange();

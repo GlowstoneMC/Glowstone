@@ -19,12 +19,12 @@ public class GlowChestInventory extends GlowInventory {
     @Override
     public void addViewer(HumanEntity viewer) {
         super.addViewer(viewer);
-        chest.getTileEntity().addViewer();
+        chest.getBlockEntity().addViewer();
     }
 
     @Override
     public void removeViewer(HumanEntity viewer) {
         super.removeViewer(viewer);
-        chest.getTileEntity().removeViewer();
+        chest.getBlockEntity().removeViewer();
     }
 }

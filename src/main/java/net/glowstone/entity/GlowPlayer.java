@@ -12,8 +12,8 @@ import net.glowstone.*;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockBed;
-import net.glowstone.block.entity.TESign;
-import net.glowstone.block.entity.TileEntity;
+import net.glowstone.block.entity.SignEntity;
+import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.itemtype.ItemFood;
 import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.chunk.GlowChunk;
@@ -724,10 +724,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             session.send(chunk.toMessage(skylight));
         }
 
-        // send visible tile entity data
+        // send visible block entity data
         for (Key key : newChunks) {
             GlowChunk chunk = world.getChunkAt(key.getX(), key.getZ());
-            for (TileEntity entity : chunk.getRawTileEntities()) {
+            for (BlockEntity entity : chunk.getRawBlockEntities()) {
                 entity.update(this);
             }
         }
@@ -2049,7 +2049,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @throws IllegalArgumentException if location is null
      * @throws IllegalArgumentException if lines is non-null and has a length less than 4
      */
-    public void sendSignChange(TESign sign, Location location, TextMessage[] lines) throws IllegalArgumentException {
+    public void sendSignChange(SignEntity sign, Location location, TextMessage[] lines) throws IllegalArgumentException {
         checkNotNull(location, "location cannot be null");
         checkNotNull(lines, "lines cannot be null");
         checkArgument(lines.length == 4, "lines.length must equal 4");

@@ -2,7 +2,7 @@ package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
 import net.glowstone.block.GlowBlock;
-import net.glowstone.block.entity.TileEntity;
+import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.util.Position;
@@ -36,7 +36,7 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
     private boolean dropItem;
     private byte blockData;
     private Location sourceLocation;
-    private CompoundTag tileEntityCompoundTag;
+    private CompoundTag blockEntityCompoundTag;
 
     // todo: implement falling block damage
     /*
@@ -51,12 +51,12 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
         this(location, material, blockData, null);
     }
 
-    public GlowFallingBlock(Location location, Material material, byte blockData, TileEntity tileEntity) {
+    public GlowFallingBlock(Location location, Material material, byte blockData, BlockEntity blockEntity) {
         super(location);
-        tileEntityCompoundTag = null;
-        if (tileEntity != null) {
-            tileEntityCompoundTag = new CompoundTag();
-            tileEntity.saveNbt(tileEntityCompoundTag);
+        blockEntityCompoundTag = null;
+        if (blockEntity != null) {
+            blockEntityCompoundTag = new CompoundTag();
+            blockEntity.saveNbt(blockEntityCompoundTag);
         }
         this.sourceLocation = location.clone();
         setBoundingBox(0.98, 0.98);
@@ -110,12 +110,12 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
         return null;
     }
 
-    public CompoundTag getTileEntityCompoundTag() {
-        return tileEntityCompoundTag;
+    public CompoundTag getBlockEntityCompoundTag() {
+        return blockEntityCompoundTag;
     }
 
-    public void setTileEntityCompoundTag(CompoundTag tileEntityCompoundTag) {
-        this.tileEntityCompoundTag = tileEntityCompoundTag;
+    public void setBlockEntityCompoundTag(CompoundTag blockEntityCompoundTag) {
+        this.blockEntityCompoundTag = blockEntityCompoundTag;
     }
 
     @Override
@@ -192,12 +192,12 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
 
     private void placeFallingBlock() {
         location.getBlock().setTypeIdAndData(material.getId(), getBlockData(), true);
-        if (getTileEntityCompoundTag() != null) {
+        if (getBlockEntityCompoundTag() != null) {
             if (location.getBlock() instanceof GlowBlock) {
                 GlowBlock block = (GlowBlock) location.getBlock();
-                TileEntity tileEntity = block.getTileEntity();
-                if (tileEntity != null) {
-                    tileEntity.loadNbt(getTileEntityCompoundTag());
+                BlockEntity blockEntity = block.getBlockEntity();
+                if (blockEntity != null) {
+                    blockEntity.loadNbt(getBlockEntityCompoundTag());
                 }
             }
         }

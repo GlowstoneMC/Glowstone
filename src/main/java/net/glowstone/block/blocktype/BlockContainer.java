@@ -1,8 +1,8 @@
 package net.glowstone.block.blocktype;
 
 import net.glowstone.block.GlowBlock;
-import net.glowstone.block.entity.TEContainer;
-import net.glowstone.block.entity.TileEntity;
+import net.glowstone.block.entity.BlockEntity;
+import net.glowstone.block.entity.ContainerEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.MaterialMatcher;
 import org.bukkit.Statistic;
@@ -21,9 +21,9 @@ public class BlockContainer extends BlockType {
 
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
-        TileEntity te = block.getTileEntity();
-        if (te instanceof TEContainer) {
-            switch (((TEContainer) te).getInventory().getType()) {
+        BlockEntity te = block.getBlockEntity();
+        if (te instanceof ContainerEntity) {
+            switch (((ContainerEntity) te).getInventory().getType()) {
                 case CHEST:
                     player.incrementStatistic(Statistic.CHEST_OPENED);
                     break;
@@ -47,7 +47,7 @@ public class BlockContainer extends BlockType {
                     break;
             }
             // todo: animation?
-            player.openInventory(((TEContainer) te).getInventory());
+            player.openInventory(((ContainerEntity) te).getInventory());
             return true;
         }
         return false;
@@ -75,7 +75,7 @@ public class BlockContainer extends BlockType {
 
     public Collection<ItemStack> getContentDrops(GlowBlock block) {
         LinkedList<ItemStack> drops = new LinkedList<>();
-        for (ItemStack i : ((TEContainer) block.getTileEntity()).getInventory().getContents()) {
+        for (ItemStack i : ((ContainerEntity) block.getBlockEntity()).getInventory().getContents()) {
             if (i != null) {
                 drops.add(i);
             }

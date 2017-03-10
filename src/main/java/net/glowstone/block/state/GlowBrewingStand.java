@@ -1,7 +1,7 @@
 package net.glowstone.block.state;
 
 import net.glowstone.block.GlowBlock;
-import net.glowstone.block.entity.TEBrewingStand;
+import net.glowstone.block.entity.BrewingStandEntity;
 import org.bukkit.block.BrewingStand;
 import org.bukkit.inventory.BrewerInventory;
 
@@ -11,7 +11,7 @@ public class GlowBrewingStand extends GlowLootableBlock implements BrewingStand 
 
     public GlowBrewingStand(GlowBlock block) {
         super(block);
-        brewTime = getTileEntity().getBrewTime();
+        brewTime = getBlockEntity().getBrewTime();
     }
 
     public GlowBrewingStand(GlowBlock block, int brewTime) {
@@ -19,8 +19,8 @@ public class GlowBrewingStand extends GlowLootableBlock implements BrewingStand 
         this.brewTime = brewTime;
     }
 
-    private TEBrewingStand getTileEntity() {
-        return (TEBrewingStand) getBlock().getTileEntity();
+    private BrewingStandEntity getBlockEntity() {
+        return (BrewingStandEntity) getBlock().getBlockEntity();
     }
 
     @Override
@@ -45,14 +45,14 @@ public class GlowBrewingStand extends GlowLootableBlock implements BrewingStand 
 
     @Override
     public BrewerInventory getInventory() {
-        return (BrewerInventory) getTileEntity().getInventory();
+        return (BrewerInventory) getBlockEntity().getInventory();
     }
 
     @Override
     public boolean update(boolean force, boolean applyPhysics) {
         boolean result = super.update(force, applyPhysics);
         if (result) {
-            TEBrewingStand stand = getTileEntity();
+            BrewingStandEntity stand = getBlockEntity();
             stand.setBrewTime(brewTime);
             stand.updateInRange();
         }

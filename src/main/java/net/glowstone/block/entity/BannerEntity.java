@@ -14,14 +14,14 @@ import org.bukkit.block.banner.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TEBanner extends TileEntity {
+public class BannerEntity extends BlockEntity {
 
     private DyeColor base = DyeColor.WHITE;
     private List<Pattern> patterns = new ArrayList<>();
 
-    public TEBanner(GlowBlock block) {
+    public BannerEntity(GlowBlock block) {
         super(block);
-        setSaveId("banner");
+        setSaveId("minecraft:banner");
     }
 
     @Override

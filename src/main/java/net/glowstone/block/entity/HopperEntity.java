@@ -6,11 +6,11 @@ import net.glowstone.block.state.GlowHopper;
 import net.glowstone.inventory.GlowInventory;
 import org.bukkit.event.inventory.InventoryType;
 
-public class TEHopper extends TEContainer {
+public class HopperEntity extends ContainerEntity {
 
-    public TEHopper(GlowBlock block) {
+    public HopperEntity(GlowBlock block) {
         super(block, new GlowInventory(new GlowHopper(block), InventoryType.HOPPER));
-        setSaveId("hopper");
+        setSaveId("minecraft:hopper");
     }
 
     @Override

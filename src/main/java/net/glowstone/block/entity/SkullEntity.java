@@ -11,15 +11,15 @@ import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.SkullType;
 import org.bukkit.material.Skull;
 
-public class TESkull extends TileEntity {
+public class SkullEntity extends BlockEntity {
 
     private byte type;
     private byte rotation;
     private PlayerProfile owner;
 
-    public TESkull(GlowBlock block) {
+    public SkullEntity(GlowBlock block) {
         super(block);
-        setSaveId("skull");
+        setSaveId("minecraft:skull");
     }
 
     @Override

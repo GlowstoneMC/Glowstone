@@ -7,13 +7,13 @@ import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.inventory.ItemStack;
 
-public class TEJukebox extends TileEntity {
+public class JukeboxEntity extends BlockEntity {
 
     private ItemStack playing;
 
-    public TEJukebox(GlowBlock block) {
+    public JukeboxEntity(GlowBlock block) {
         super(block);
-        setSaveId("jukebox");
+        setSaveId("minecraft:jukebox");
     }
 
     @Override

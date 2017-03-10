@@ -2,7 +2,7 @@
 package net.glowstone.block.state;
 
 import net.glowstone.block.GlowBlock;
-import net.glowstone.block.entity.TEBeacon;
+import net.glowstone.block.entity.BeaconEntity;
 import net.glowstone.constants.GlowPotionEffect;
 import org.bukkit.block.Beacon;
 import org.bukkit.entity.LivingEntity;
@@ -20,16 +20,16 @@ public class GlowBeacon extends GlowLootableBlock implements Beacon {
 
     public GlowBeacon(GlowBlock block) {
         super(block);
-        if (getTileEntity().getPrimaryId() > 0) {
-            setPrimaryEffect(GlowPotionEffect.getById(getTileEntity().getPrimaryId()));
+        if (getBlockEntity().getPrimaryId() > 0) {
+            setPrimaryEffect(GlowPotionEffect.getById(getBlockEntity().getPrimaryId()));
         }
-        if (getTileEntity().getSecondaryId() > 0) {
-            setSecondaryEffect(GlowPotionEffect.getById(getTileEntity().getSecondaryId()));
+        if (getBlockEntity().getSecondaryId() > 0) {
+            setSecondaryEffect(GlowPotionEffect.getById(getBlockEntity().getSecondaryId()));
         }
     }
 
-    private TEBeacon getTileEntity() {
-        return (TEBeacon) getBlock().getTileEntity();
+    private BeaconEntity getBlockEntity() {
+        return (BeaconEntity) getBlock().getBlockEntity();
     }
 
     @Override
@@ -39,7 +39,7 @@ public class GlowBeacon extends GlowLootableBlock implements Beacon {
 
     @Override
     public int getTier() {
-        return getTileEntity().getLevels();
+        return getBlockEntity().getLevels();
     }
 
     @Override
@@ -50,7 +50,7 @@ public class GlowBeacon extends GlowLootableBlock implements Beacon {
     @Override
     public void setPrimaryEffect(PotionEffectType primary) {
         this.primaryEffect = new PotionEffect(primary, 7, getTier(), true);
-        getTileEntity().setPrimaryId(primary.getId());
+        getBlockEntity().setPrimaryId(primary.getId());
     }
 
     @Override
@@ -61,7 +61,7 @@ public class GlowBeacon extends GlowLootableBlock implements Beacon {
     @Override
     public void setSecondaryEffect(PotionEffectType secondary) {
         this.secondaryEffect = new PotionEffect(secondary, 7, getTier(), true);
-        getTileEntity().setSecondaryId(secondary.getId());
+        getBlockEntity().setSecondaryId(secondary.getId());
     }
 
     @Override

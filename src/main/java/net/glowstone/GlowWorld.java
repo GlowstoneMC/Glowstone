@@ -1011,20 +1011,30 @@ public final class GlowWorld implements World {
     }
 
     @Override
+    @Deprecated
     public int getTileEntityCount() {
+        return getBlockEntityCount();
+    }
+
+    public int getBlockEntityCount() {
         int length = 0;
         for (GlowChunk chunk : getChunkManager().getLoadedChunks()) {
-            length += chunk.getTileEntities().length;
+            length += chunk.getBlockEntities().length;
         }
         return length;
     }
 
     @Override
+    @Deprecated
     public int getTickableTileEntityCount() {
-        // TODO: distinguish between tile entity types
+        return getTickableBlockEntityCount();
+    }
+
+    public int getTickableBlockEntityCount() {
+        // TODO: distinguish between block entity types
         int length = 0;
         for (GlowChunk chunk : getChunkManager().getLoadedChunks()) {
-            length += chunk.getTileEntities().length;
+            length += chunk.getBlockEntities().length;
         }
         return length;
     }

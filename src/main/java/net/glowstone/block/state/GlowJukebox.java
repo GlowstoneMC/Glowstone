@@ -2,7 +2,7 @@ package net.glowstone.block.state;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.entity.TEJukebox;
+import net.glowstone.block.entity.JukeboxEntity;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -20,18 +20,18 @@ public class GlowJukebox extends GlowBlockState implements Jukebox {
         if (block.getType() != Material.JUKEBOX) {
             throw new IllegalArgumentException("GlowNoteBlock: expected JUKEBOX, got " + block.getType());
         }
-        playing = getTileEntity().getPlaying();
+        playing = getBlockEntity().getPlaying();
     }
 
-    private TEJukebox getTileEntity() {
-        return (TEJukebox) getBlock().getTileEntity();
+    private JukeboxEntity getBlockEntity() {
+        return (JukeboxEntity) getBlock().getBlockEntity();
     }
 
     @Override
     public boolean update(boolean force, boolean applyPhysics) {
         boolean result = super.update(force, applyPhysics);
         if (result) {
-            getTileEntity().setPlaying(playing);
+            getBlockEntity().setPlaying(playing);
         }
         return result;
     }

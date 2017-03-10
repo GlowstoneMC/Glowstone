@@ -10,13 +10,13 @@ import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
 
-public class TEFlowerPot extends TileEntity {
+public class FlowerPotEntity extends BlockEntity {
 
     private MaterialData contents;
 
-    public TEFlowerPot(GlowBlock block) {
+    public FlowerPotEntity(GlowBlock block) {
         super(block);
-        setSaveId("flower_pot");
+        setSaveId("minecraft:flower_pot");
     }
 
     public MaterialData getContents() {

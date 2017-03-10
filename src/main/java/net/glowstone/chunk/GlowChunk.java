@@ -10,7 +10,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
-import net.glowstone.block.entity.TileEntity;
+import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.game.ChunkDataMessage;
 import net.glowstone.util.nbt.CompoundTag;
@@ -51,9 +51,9 @@ public final class GlowChunk implements Chunk {
      */
     private final int x, z;
     /**
-     * The tile entities that reside in this chunk.
+     * The block entities that reside in this chunk.
      */
-    private final HashMap<Integer, TileEntity> tileEntities = new HashMap<>();
+    private final HashMap<Integer, BlockEntity> blockEntities = new HashMap<>();
     /**
      * The entities that reside in this chunk.
      */
@@ -129,10 +129,15 @@ public final class GlowChunk implements Chunk {
     }
 
     @Override
+    @Deprecated
     public GlowBlockState[] getTileEntities() {
-        List<GlowBlockState> states = new ArrayList<>(tileEntities.size());
-        for (TileEntity tileEntity : tileEntities.values()) {
-            GlowBlockState state = tileEntity.getState();
+        return getBlockEntities();
+    }
+
+    public GlowBlockState[] getBlockEntities() {
+        List<GlowBlockState> states = new ArrayList<>(blockEntities.size());
+        for (BlockEntity blockEntity : blockEntities.values()) {
+            GlowBlockState state = blockEntity.getState();
             if (state != null) {
                 states.add(state);
             }
@@ -141,8 +146,8 @@ public final class GlowChunk implements Chunk {
         return states.toArray(new GlowBlockState[states.size()]);
     }
 
-    public Collection<TileEntity> getRawTileEntities() {
-        return Collections.unmodifiableCollection(tileEntities.values());
+    public Collection<BlockEntity> getRawBlockEntities() {
+        return Collections.unmodifiableCollection(blockEntities.values());
     }
 
     @Override
@@ -224,7 +229,7 @@ public final class GlowChunk implements Chunk {
         sections = null;
         biomes = null;
         heightMap = null;
-        tileEntities.clear();
+        blockEntities.clear();
         if (save) {
             for (GlowEntity entity : entities) {
                 entity.remove();
@@ -263,7 +268,7 @@ public final class GlowChunk implements Chunk {
     private void initializeSection(int y, ChunkSection section) {
         sections[y] = section;
 
-        // tile entity initialization
+        // block entity initialization
         for (int i = 0; i < sections.length; ++i) {
             int by = 16 * i;
             for (int cx = 0; cx < WIDTH; ++cx) {
@@ -277,19 +282,19 @@ public final class GlowChunk implements Chunk {
     }
 
     /**
-     * If needed, create a new tile entity at the given location.
+     * If needed, create a new block entity at the given location.
      */
     private void createEntity(int cx, int cy, int cz, int type) {
         BlockType blockType = ItemTable.instance().getBlock(type);
         if (blockType == null) return;
 
         try {
-            TileEntity entity = blockType.createTileEntity(this, cx, cy, cz);
+            BlockEntity entity = blockType.createBlockEntity(this, cx, cy, cz);
             if (entity == null) return;
 
-            tileEntities.put(coordinateToIndex(cx, cz, cy), entity);
+            blockEntities.put(coordinateToIndex(cx, cz, cy), entity);
         } catch (Exception ex) {
-            GlowServer.logger.log(Level.SEVERE, "Unable to initialize tile entity for " + type, ex);
+            GlowServer.logger.log(Level.SEVERE, "Unable to initialize block entity for " + type, ex);
         }
     }
 
@@ -319,17 +324,17 @@ public final class GlowChunk implements Chunk {
     // ======== Data access ========
 
     /**
-     * Attempt to get the tile entity located at the given coordinates.
+     * Attempt to get the block entity located at the given coordinates.
      *
      * @param x The X coordinate.
      * @param z The Z coordinate.
      * @param y The Y coordinate.
      * @return A GlowBlockState if the entity exists, or null otherwise.
      */
-    public TileEntity getEntity(int x, int y, int z) {
+    public BlockEntity getEntity(int x, int y, int z) {
         if (y >= DEPTH || y < 0) return null;
         load();
-        return tileEntities.get(coordinateToIndex(x, z, y));
+        return blockEntities.get(coordinateToIndex(x, z, y));
     }
 
     /**
@@ -373,10 +378,10 @@ public final class GlowChunk implements Chunk {
             }
         }
 
-        // destroy any tile entity there
-        int tileEntityIndex = coordinateToIndex(x, z, y);
-        if (tileEntities.containsKey(tileEntityIndex)) {
-            tileEntities.remove(tileEntityIndex).destroy();
+        // destroy any block entity there
+        int blockEntityIndex = coordinateToIndex(x, z, y);
+        if (blockEntities.containsKey(blockEntityIndex)) {
+            blockEntities.remove(blockEntityIndex).destroy();
         }
 
         // update the air count and height map
@@ -401,7 +406,7 @@ public final class GlowChunk implements Chunk {
             return;
         }
 
-        // create a new tile entity if we need
+        // create a new block entity if we need
         createEntity(x, y, z, type);
     }
 
@@ -676,14 +681,14 @@ public final class GlowChunk implements Chunk {
             buf.writeBytes(biomes);
         }
 
-        ArrayList<CompoundTag> tiles = new ArrayList<>();
-        for (TileEntity tileEntity : getRawTileEntities()) {
+        ArrayList<CompoundTag> blockEntities = new ArrayList<>();
+        for (BlockEntity blockEntity : getRawBlockEntities()) {
             CompoundTag tag = new CompoundTag();
-            tileEntity.saveNbt(tag);
-            tiles.add(tag);
+            blockEntity.saveNbt(tag);
+            blockEntities.add(tag);
         }
 
-        return new ChunkDataMessage(x, z, entireChunk, sectionBitmask, buf, tiles.toArray(new CompoundTag[tiles.size()]));
+        return new ChunkDataMessage(x, z, entireChunk, sectionBitmask, buf, blockEntities.toArray(new CompoundTag[blockEntities.size()]));
     }
 
     /**

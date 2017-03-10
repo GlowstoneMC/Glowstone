@@ -6,13 +6,13 @@ import net.glowstone.block.state.GlowNoteBlock;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Note;
 
-public class TENote extends TileEntity {
+public class NoteblockEntity extends BlockEntity {
 
     private Note note = new Note(0);
 
-    public TENote(GlowBlock block) {
+    public NoteblockEntity(GlowBlock block) {
         super(block);
-        setSaveId("noteblock");
+        setSaveId("minecraft:noteblock");
     }
 
     @Override

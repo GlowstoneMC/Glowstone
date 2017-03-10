@@ -3,7 +3,7 @@ package net.glowstone.block.state;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.blocktype.BlockSkull;
-import net.glowstone.block.entity.TESkull;
+import net.glowstone.block.entity.SkullEntity;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.util.Position;
 import org.bukkit.Bukkit;
@@ -20,20 +20,20 @@ public class GlowSkull extends GlowBlockState implements Skull {
 
     public GlowSkull(GlowBlock block) {
         super(block);
-        type = BlockSkull.getType(getTileEntity().getType());
-        rotation = Position.getDirection(getTileEntity().getRotation());
-        owner = getTileEntity().getOwner();
+        type = BlockSkull.getType(getBlockEntity().getType());
+        rotation = Position.getDirection(getBlockEntity().getRotation());
+        owner = getBlockEntity().getOwner();
     }
 
-    public TESkull getTileEntity() {
-        return (TESkull) getBlock().getTileEntity();
+    public SkullEntity getBlockEntity() {
+        return (SkullEntity) getBlock().getBlockEntity();
     }
 
     @Override
     public boolean update(boolean force, boolean applyPhysics) {
         boolean result = super.update(force, applyPhysics);
         if (result) {
-            TESkull skull = getTileEntity();
+            SkullEntity skull = getBlockEntity();
             skull.setType(BlockSkull.getType(type));
             if (BlockSkull.canRotate((org.bukkit.material.Skull) getBlock().getState().getData())) {
                 skull.setRotation(Position.getDirection(rotation));
@@ -41,7 +41,7 @@ public class GlowSkull extends GlowBlockState implements Skull {
             if (type == SkullType.PLAYER) {
                 skull.setOwner(owner);
             }
-            getTileEntity().updateInRange();
+            getBlockEntity().updateInRange();
         }
         return result;
     }

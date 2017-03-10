@@ -12,6 +12,6 @@ public final class ChunkDataMessage implements Message {
     private final boolean continuous;
     private final int primaryMask;
     private final ByteBuf data;
-    private final CompoundTag[] tileEntities;
+    private final CompoundTag[] blockEntities;
 
 }

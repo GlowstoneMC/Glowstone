@@ -3,7 +3,7 @@ package net.glowstone.block.state;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.entity.TENote;
+import net.glowstone.block.entity.NoteblockEntity;
 import net.glowstone.chunk.GlowChunk.Key;
 import org.bukkit.Instrument;
 import org.bukkit.Location;
@@ -25,7 +25,7 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
             throw new IllegalArgumentException("GlowNoteBlock: expected NOTE_BLOCK, got " + block.getType());
         }
 
-        note = getTileEntity().getNote();
+        note = getBlockEntity().getNote();
     }
 
     private static Instrument instrumentOf(Material mat) {
@@ -123,8 +123,8 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
         }
     }
 
-    private TENote getTileEntity() {
-        return (TENote) getBlock().getTileEntity();
+    private NoteblockEntity getBlockEntity() {
+        return (NoteblockEntity) getBlock().getBlockEntity();
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -134,7 +134,7 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
     public boolean update(boolean force, boolean applyPhysics) {
         boolean result = super.update(force, applyPhysics);
         if (result) {
-            getTileEntity().setNote(note);
+            getBlockEntity().setNote(note);
         }
         return result;
     }

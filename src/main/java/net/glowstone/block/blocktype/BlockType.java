@@ -5,7 +5,7 @@ import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
-import net.glowstone.block.entity.TileEntity;
+import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
@@ -130,15 +130,15 @@ public class BlockType extends ItemType {
     }
 
     /**
-     * Create a new tile entity at the given location.
+     * Create a new block entity at the given location.
      *
-     * @param chunk The chunk to create the tile entity at.
+     * @param chunk The chunk to create the block entity at.
      * @param cx    The x coordinate in the chunk.
      * @param cy    The y coordinate in the chunk.
      * @param cz    The z coordinate in the chunk.
-     * @return The new TileEntity, or null if no tile entity is used.
+     * @return The new BlockEntity, or null if no block entity is used.
      */
-    public TileEntity createTileEntity(GlowChunk chunk, int cx, int cy, int cz) {
+    public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
         return null;
     }
 

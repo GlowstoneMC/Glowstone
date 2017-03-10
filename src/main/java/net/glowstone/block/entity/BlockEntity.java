@@ -8,20 +8,20 @@ import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.block.Block;
 
 /**
- * Base class for tile entities (blocks with NBT data) in the world.
- * Most access to tile entities should occur through the Bukkit BlockState API.
+ * Base class for block entities (blocks with NBT data) in the world.
+ * Most access to block entities should occur through the Bukkit BlockState API.
  */
-public abstract class TileEntity {
+public abstract class BlockEntity {
 
     protected final GlowBlock block;
     private String saveId;
 
     /**
-     * Create a new TileEntity at the given location.
+     * Create a new BlockEntity at the given location.
      *
-     * @param block The block the TileEntity is attached to.
+     * @param block The block the BlockEntity is attached to.
      */
-    public TileEntity(GlowBlock block) {
+    public BlockEntity(GlowBlock block) {
         this.block = block;
     }
 
@@ -29,7 +29,7 @@ public abstract class TileEntity {
     // Utility stuff
 
     /**
-     * Get the block this TileEntity is associated with.
+     * Get the block this BlockEntity is associated with.
      *
      * @return The entity's block.
      */
@@ -38,7 +38,7 @@ public abstract class TileEntity {
     }
 
     /**
-     * Update this TileEntity's visible state to all players in range.
+     * Update this BlockEntity's visible state to all players in range.
      */
     public final void updateInRange() {
         Key key = new Key(block.getChunk().getX(), block.getChunk().getZ());
@@ -49,7 +49,7 @@ public abstract class TileEntity {
     // World I/O
 
     /**
-     * Set the text ID this tile entity is saved to disk with. If this is not
+     * Set the text ID this block entity is saved to disk with. If this is not
      * set, then load and save of the "id" tag must be performed manually.
      *
      * @param saveId The ID.
@@ -62,7 +62,7 @@ public abstract class TileEntity {
     }
 
     /**
-     * Read this TileEntity's data from the saved tag.
+     * Read this BlockEntity's data from the saved tag.
      *
      * @param tag The tag to load from.
      */
@@ -70,7 +70,7 @@ public abstract class TileEntity {
         // verify id and coordinates
         if (saveId != null) {
             if (!tag.isString("id") || !tag.getString("id").equals(saveId)) {
-                throw new IllegalArgumentException("Expected tile entity id of " + saveId + ", got " + tag.getString("id"));
+                throw new IllegalArgumentException("Expected block entity id of " + saveId + ", got " + tag.getString("id"));
             }
         }
 
@@ -81,13 +81,13 @@ public abstract class TileEntity {
             int z = tag.getInt("z");
             int rx = block.getX(), ry = block.getY(), rz = block.getZ();
             if (x != rx || y != ry || z != rz) {
-                throw new IllegalArgumentException("Tried to load tile entity with coords (" + x + "," + y + "," + z + ") into (" + rx + "," + ry + "," + rz + ")");
+                throw new IllegalArgumentException("Tried to load block entity with coords (" + x + "," + y + "," + z + ") into (" + rx + "," + ry + "," + rz + ")");
             }
         }
     }
 
     /**
-     * Save this TileEntity's data to NBT.
+     * Save this BlockEntity's data to NBT.
      *
      * @param tag The tag to save to.
      */
@@ -104,7 +104,7 @@ public abstract class TileEntity {
     // Overridable stuff
 
     /**
-     * Create a new BlockState which will correspond to this tile entity.
+     * Create a new BlockState which will correspond to this block entity.
      *
      * @return A GlowBlockState, or null to use a standard BlockState.
      */
@@ -113,14 +113,14 @@ public abstract class TileEntity {
     }
 
     /**
-     * Destroy this TileEntity.
+     * Destroy this BlockEntity.
      */
     public void destroy() {
         // nothing by default
     }
 
     /**
-     * Update this TileEntity's visible state to the given player.
+     * Update this BlockEntity's visible state to the given player.
      *
      * @param player The player to update.
      */

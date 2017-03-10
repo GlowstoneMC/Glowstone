@@ -16,15 +16,15 @@ import org.bukkit.inventory.InventoryView.Property;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
-public class TEFurnace extends TEContainer {
+public class FurnaceEntity extends ContainerEntity {
 
     private short burnTime;
     private short cookTime;
     private short burnTimeFuel;
 
-    public TEFurnace(GlowBlock block) {
+    public FurnaceEntity(GlowBlock block) {
         super(block, new GlowFurnaceInventory(new GlowFurnace(block, (short) 0, (short) 0)));
-        setSaveId("furnace");
+        setSaveId("minecraft:furnace");
     }
 
     @Override

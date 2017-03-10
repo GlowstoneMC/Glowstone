@@ -10,13 +10,13 @@ import org.bukkit.Material;
 
 import java.util.Arrays;
 
-public class TESign extends TileEntity {
+public class SignEntity extends BlockEntity {
 
     private final TextMessage[] lines = new TextMessage[4];
 
-    public TESign(GlowBlock block) {
+    public SignEntity(GlowBlock block) {
         super(block);
-        setSaveId("sign");
+        setSaveId("minecraft:sign");
 
         if (block.getType() != Material.WALL_SIGN && block.getType() != Material.SIGN_POST) {
             throw new IllegalArgumentException("Sign must be WALL_SIGN or SIGN_POST, got " + block.getType());

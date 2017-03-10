@@ -2,8 +2,8 @@ package net.glowstone.block.blocktype;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.entity.TESkull;
-import net.glowstone.block.entity.TileEntity;
+import net.glowstone.block.entity.SkullEntity;
+import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.state.GlowSkull;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
@@ -73,8 +73,8 @@ public class BlockSkull extends BlockType {
     }
 
     @Override
-    public TileEntity createTileEntity(GlowChunk chunk, int cx, int cy, int cz) {
-        return new TESkull(chunk.getBlock(cx, cy, cz));
+    public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
+        return new SkullEntity(chunk.getBlock(cx, cy, cz));
     }
 
     @Override

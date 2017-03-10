@@ -6,13 +6,13 @@ import net.glowstone.block.state.GlowBrewingStand;
 import net.glowstone.inventory.GlowBrewerInventory;
 import net.glowstone.util.nbt.CompoundTag;
 
-public class TEBrewingStand extends TEContainer {
+public class BrewingStandEntity extends ContainerEntity {
 
     private int brewTime;
 
-    public TEBrewingStand(GlowBlock block) {
+    public BrewingStandEntity(GlowBlock block) {
         super(block, new GlowBrewerInventory(new GlowBrewingStand(block, 0)));
-        setSaveId("brewing_stand");
+        setSaveId("minecraft:brewing_stand");
     }
 
     public int getBrewTime() {

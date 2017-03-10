@@ -10,15 +10,15 @@ import net.glowstone.util.SoundUtil;
 import org.bukkit.Sound;
 
 /**
- * Tile entity for Chests.
+ * Block entity for Chests.
  */
-public class TEChest extends TEContainer {
+public class ChestEntity extends ContainerEntity {
 
     private int viewers;
 
-    public TEChest(GlowBlock block) {
+    public ChestEntity(GlowBlock block) {
         super(block, new GlowChestInventory(new GlowChest(block)));
-        setSaveId("chest");
+        setSaveId("minecraft:chest");
     }
 
     @Override

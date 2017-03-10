@@ -4,7 +4,7 @@ import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockChest;
-import net.glowstone.block.entity.TEChest;
+import net.glowstone.block.entity.ChestEntity;
 import net.glowstone.inventory.GlowDoubleChestInventory;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -18,13 +18,13 @@ public class GlowChest extends GlowLootableBlock implements Chest {
         super(block);
     }
 
-    public TEChest getTileEntity() {
-        return (TEChest) getBlock().getTileEntity();
+    public ChestEntity getBlockEntity() {
+        return (ChestEntity) getBlock().getBlockEntity();
     }
 
     @Override
     public Inventory getBlockInventory() {
-        return getTileEntity().getInventory();
+        return getBlockEntity().getInventory();
     }
 
     @Override
@@ -61,8 +61,8 @@ public class GlowChest extends GlowLootableBlock implements Chest {
         boolean result = super.update(force, applyPhysics);
 
         if (result) {
-            getTileEntity().setContents(contents);
-            getTileEntity().updateInRange();
+            getBlockEntity().setContents(contents);
+            getBlockEntity().updateInRange();
         }
 
         return result;

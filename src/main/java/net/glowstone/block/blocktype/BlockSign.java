@@ -2,8 +2,8 @@ package net.glowstone.block.blocktype;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.entity.TESign;
-import net.glowstone.block.entity.TileEntity;
+import net.glowstone.block.entity.BlockEntity;
+import net.glowstone.block.entity.SignEntity;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
@@ -19,8 +19,8 @@ public class BlockSign extends BlockType {
     }
 
     @Override
-    public TileEntity createTileEntity(GlowChunk chunk, int cx, int cy, int cz) {
-        return new TESign(chunk.getBlock(cx, cy, cz));
+    public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
+        return new SignEntity(chunk.getBlock(cx, cy, cz));
     }
 
     @Override

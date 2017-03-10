@@ -2,8 +2,8 @@ package net.glowstone.block.blocktype;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.entity.TEDispenser;
-import net.glowstone.block.entity.TileEntity;
+import net.glowstone.block.entity.BlockEntity;
+import net.glowstone.block.entity.DispenserEntity;
 import net.glowstone.block.state.GlowDispenser;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
@@ -39,8 +39,8 @@ public class BlockDispenser extends BlockContainer {
     }
 
     @Override
-    public TileEntity createTileEntity(GlowChunk chunk, int cx, int cy, int cz) {
-        return new TEDispenser(chunk.getBlock(cx, cy, cz));
+    public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
+        return new DispenserEntity(chunk.getBlock(cx, cy, cz));
     }
 
     @Override
@@ -101,11 +101,11 @@ public class BlockDispenser extends BlockContainer {
     }
 
     public void trigger(GlowBlock block) {
-        TileEntity te = block.getTileEntity();
-        if (!(te instanceof TEDispenser)) {
+        BlockEntity te = block.getBlockEntity();
+        if (!(te instanceof DispenserEntity)) {
             return;
         }
-        TEDispenser teDispenser = (TEDispenser) te;
+        DispenserEntity teDispenser = (DispenserEntity) te;
 
         GlowDispenser dispenser = (GlowDispenser) teDispenser.getState();
         dispenser.dispense();

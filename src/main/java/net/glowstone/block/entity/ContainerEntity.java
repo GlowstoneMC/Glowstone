@@ -9,13 +9,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * Base class for container tile entities (those with inventories).
+ * Base class for container block entities (those with inventories).
  */
-public abstract class TEContainer extends TileEntity {
+public abstract class ContainerEntity extends BlockEntity {
 
     private final GlowInventory inventory;
 
-    public TEContainer(GlowBlock block, GlowInventory inventory) {
+    public ContainerEntity(GlowBlock block, GlowInventory inventory) {
         super(block);
         this.inventory = inventory;
     }

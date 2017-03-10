@@ -6,7 +6,7 @@ import net.glowstone.block.MaterialValueManager.ValueCollection;
 import net.glowstone.block.blocktype.BlockRedstone;
 import net.glowstone.block.blocktype.BlockRedstoneTorch;
 import net.glowstone.block.blocktype.BlockType;
-import net.glowstone.block.entity.TileEntity;
+import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
@@ -106,13 +106,13 @@ public final class GlowBlock implements Block {
         return loc;
     }
 
-    public TileEntity getTileEntity() {
+    public BlockEntity getBlockEntity() {
         return getChunk().getEntity(x & 0xf, y, z & 0xf);
     }
 
     @Override
     public GlowBlockState getState() {
-        TileEntity entity = getTileEntity();
+        BlockEntity entity = getBlockEntity();
         if (entity != null) {
             GlowBlockState state = entity.getState();
             if (state != null) {

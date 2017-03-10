@@ -13,7 +13,7 @@ import org.bukkit.plugin.Plugin;
 import java.util.List;
 
 /**
- * Represents a state a block could be in as well as any tile entities.
+ * Represents a state a block could be in as well as any block entities.
  */
 public class GlowBlockState implements BlockState {
 
