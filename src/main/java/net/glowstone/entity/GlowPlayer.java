@@ -435,7 +435,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public boolean canTakeDamage(DamageCause damageCause) {
-        return (damageCause == DamageCause.FALL && getAllowFlight()) && super.canTakeDamage(damageCause);
+        return (damageCause == DamageCause.FALL && !getAllowFlight()) && super.canTakeDamage(damageCause);
     }
 
     /**
