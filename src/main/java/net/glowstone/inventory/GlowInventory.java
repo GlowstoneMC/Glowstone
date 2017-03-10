@@ -346,6 +346,9 @@ public class GlowInventory implements Inventory {
 
     @Override
     public void setItem(int index, ItemStack item) {
+        if (index == -1) {
+            return;
+        }
         slots.get(index).setItem(item);
     }
 
