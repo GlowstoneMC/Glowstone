@@ -385,7 +385,7 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
 
     @Override
     public void setItemInHandDropChance(float chance) {
-        throw new UnsupportedOperationException();
+        setItemInMainHandDropChance(chance);
     }
 
     @Override
