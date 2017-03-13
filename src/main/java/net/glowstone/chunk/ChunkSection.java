@@ -27,6 +27,10 @@ public final class ChunkSection {
      */
     public static final byte EMPTY_BLOCK_LIGHT = 0, EMPTY_SKYLIGHT = 0;
     /**
+     * The default values for block and sky light, used on new chunk sections.
+     */
+    public static final byte DEFAULT_BLOCK_LIGHT = 0, DEFAULT_SKYLIGHT = 0xF;
+    /**
      * The number of bits per block used in the global palette.
      */
     public static final int GLOBAL_PALETTE_BITS_PER_BLOCK = 13;
@@ -63,7 +67,7 @@ public final class ChunkSection {
      * @param types An array of block state IDs for this chunk section (containing type and metadata)
      */
     public ChunkSection(char[] types) {
-        this(types, new NibbleArray(ARRAY_SIZE), new NibbleArray(ARRAY_SIZE, (byte) 0xf));
+        this(types, new NibbleArray(ARRAY_SIZE, DEFAULT_SKYLIGHT), new NibbleArray(ARRAY_SIZE, DEFAULT_BLOCK_LIGHT));
     }
 
     /**
