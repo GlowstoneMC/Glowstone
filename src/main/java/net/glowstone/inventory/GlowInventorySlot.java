@@ -47,7 +47,7 @@ public class GlowInventorySlot {
     }
 
     public ItemStack getItem() {
-        return item;
+        return InventoryUtil.itemOrEmpty(item);
     }
 
     public void setItem(ItemStack item) {

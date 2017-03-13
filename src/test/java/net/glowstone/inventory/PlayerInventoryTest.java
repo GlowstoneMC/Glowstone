@@ -15,10 +15,10 @@ import static org.junit.Assert.assertEquals;
  */
 public class PlayerInventoryTest {
 
-    private static final int SIZE = 36;
+    private static final int SIZE = 40;
 
     private static final ItemStack TEST_BOOTS = new ItemStack(Material.DIAMOND_BOOTS);
-    private static final ItemStack TEST_LEGGINGS = null;
+    private static final ItemStack TEST_LEGGINGS = new ItemStack(Material.AIR, 0);
     private static final ItemStack TEST_CHESTPLATE = new ItemStack(Material.LEATHER_CHESTPLATE);
     private static final ItemStack TEST_HELMET = new ItemStack(Material.IRON_HELMET);
     private static final ItemStack[] TEST_ARMOR = new ItemStack[] {
@@ -44,12 +44,13 @@ public class PlayerInventoryTest {
         for (int i = 0; i < 9; ++i) {
             assertEquals("Slot type for " + i + " was wrong", SlotType.QUICKBAR, inventory.getSlotType(i));
         }
-        for (int i = 9; i < SIZE; ++i) {
+        for (int i = 9; i < SIZE - 5; ++i) {
             assertEquals("Slot type for " + i + " was wrong", SlotType.CONTAINER, inventory.getSlotType(i));
         }
-        for (int i = SIZE; i < SIZE + 4; ++i) {
+        for (int i = SIZE; i < SIZE - 1; ++i) {
             assertEquals("Slot type for " + i + " was wrong", SlotType.ARMOR, inventory.getSlotType(i));
         }
+        assertEquals("Slot type for offhand (40) was wrong", SlotType.CONTAINER, inventory.getSlotType(40));
     }
 
     /**

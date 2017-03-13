@@ -73,6 +73,11 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
             inv = bottom;
         }
         int invSlot = view.convertSlot(viewSlot);
+
+        if (invSlot == -1) {
+            return true;
+        }
+
         SlotType slotType = inv.getSlotType(invSlot);
 
         // handle dragging

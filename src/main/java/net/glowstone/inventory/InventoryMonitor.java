@@ -29,7 +29,7 @@ public final class InventoryMonitor {
     public InventoryMonitor(InventoryView view) {
         boolean isDefault = GlowInventoryView.isDefault(view);
         this.view = view;
-        size = view.countSlots() + (isDefault ? 4 : 0);
+        size = view.countSlots();
         slots = new ItemStack[size];
 
         // determine id and type id

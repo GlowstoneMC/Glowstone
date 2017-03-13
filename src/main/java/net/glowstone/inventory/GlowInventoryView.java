@@ -81,7 +81,6 @@ public class GlowInventoryView extends InventoryView {
         if (slot == OUTSIDE) return;
 
         int size = countSlots();
-        if (isDefault(this)) size += 5; // armor slots
         if (slot < 0 || slot >= size) {
             throw new IllegalArgumentException("Slot out of range [0," + size + "): " + slot);
         }
