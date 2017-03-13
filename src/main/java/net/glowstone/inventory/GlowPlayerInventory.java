@@ -312,7 +312,7 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
 
     @Override
     public ItemStack getItemInOffHand() {
-        return offHand.clone();
+        return InventoryUtil.itemOrEmpty(offHand).clone();
     }
 
     @Override
