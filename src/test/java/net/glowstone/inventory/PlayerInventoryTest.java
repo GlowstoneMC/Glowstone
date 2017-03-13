@@ -47,7 +47,7 @@ public class PlayerInventoryTest {
         for (int i = 9; i < SIZE - 5; ++i) {
             assertEquals("Slot type for " + i + " was wrong", SlotType.CONTAINER, inventory.getSlotType(i));
         }
-        for (int i = SIZE; i < SIZE - 1; ++i) {
+        for (int i = SIZE - 4; i < SIZE - 1; ++i) {
             assertEquals("Slot type for " + i + " was wrong", SlotType.ARMOR, inventory.getSlotType(i));
         }
         assertEquals("Slot type for offhand (40) was wrong", SlotType.CONTAINER, inventory.getSlotType(40));
