@@ -694,10 +694,7 @@ public abstract class GlowEntity implements Entity {
         } else {
             velocity.multiply(AIR_DRAG);
         }
-
-        if (!isOnGround()) {
-            velocity.add(GRAVITY);
-        }
+        velocity.add(GRAVITY);
 
         // make sure bounding box is up to date
         if (boundingBox != null) {
