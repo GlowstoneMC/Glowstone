@@ -8,16 +8,19 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.Getter;
 import lombok.Setter;
-import net.glowstone.*;
+import net.glowstone.EventFactory;
+import net.glowstone.GlowOfflinePlayer;
+import net.glowstone.GlowServer;
+import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockBed;
-import net.glowstone.block.entity.SignEntity;
 import net.glowstone.block.entity.BlockEntity;
+import net.glowstone.block.entity.SignEntity;
 import net.glowstone.block.itemtype.ItemFood;
 import net.glowstone.block.itemtype.ItemType;
-import net.glowstone.chunk.GlowChunk;
 import net.glowstone.chunk.ChunkManager.ChunkLock;
+import net.glowstone.chunk.GlowChunk;
 import net.glowstone.chunk.GlowChunk.Key;
 import net.glowstone.constants.GlowAchievement;
 import net.glowstone.constants.GlowBlockEntity;
@@ -44,7 +47,6 @@ import net.glowstone.net.message.play.player.ResourcePackSendMessage;
 import net.glowstone.net.message.play.player.UseBedMessage;
 import net.glowstone.scoreboard.GlowScoreboard;
 import net.glowstone.scoreboard.GlowTeam;
-import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
 import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextMessage;
@@ -2422,12 +2424,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void updateInventory() {
         session.send(new SetWindowContentsMessage(invMonitor.getId(), invMonitor.getContents()));
-        ItemStack offHand = getInventory().getItemInOffHand();
-        session.send(new SetWindowSlotMessage(invMonitor.getId(), 45, InventoryUtil.itemOrEmpty(offHand)));
     }
 
     public void sendItemChange(int slot, ItemStack item) {
-        session.send(new SetWindowSlotMessage(invMonitor.getId(), slot, item));
+        if (invMonitor != null) {
+            session.send(new SetWindowSlotMessage(invMonitor.getId(), slot, item));
+        }
     }
 
     @Override

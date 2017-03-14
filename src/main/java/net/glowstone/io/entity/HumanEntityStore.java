@@ -3,7 +3,6 @@ package net.glowstone.io.entity;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowHumanEntity;
 import net.glowstone.io.nbt.NbtSerialization;
-import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.ServerConfig;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
@@ -51,9 +50,9 @@ abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityS
         if (tag.isList("Inventory", TagType.COMPOUND)) {
             PlayerInventory inventory = entity.getInventory();
             List<CompoundTag> items = tag.getCompoundList("Inventory");
-            inventory.setContents(NbtSerialization.readInventory(items, 0, inventory.getSize()));
+            inventory.setStorageContents(NbtSerialization.readInventory(items, 0, inventory.getSize() - 5));
             inventory.setArmorContents(NbtSerialization.readInventory(items, 100, 4));
-            inventory.setItemInOffHand(NbtSerialization.readInventory(items, 106, 1)[0]);
+            inventory.setExtraContents(NbtSerialization.readInventory(items, -106, 1));
         }
         if (tag.isList("EnderItems", TagType.COMPOUND)) {
             Inventory inventory = entity.getEnderChest();
@@ -84,11 +83,9 @@ abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityS
 
         // inventory
         List<CompoundTag> inventory;
-        inventory = NbtSerialization.writeInventory(entity.getInventory().getContents(), 0);
+        inventory = NbtSerialization.writeInventory(entity.getInventory().getStorageContents(), 0);
         inventory.addAll(NbtSerialization.writeInventory(entity.getInventory().getArmorContents(), 100));
-        if (!InventoryUtil.isEmpty(entity.getInventory().getItemInOffHand())) {
-            inventory.add(NbtSerialization.writeItem(entity.getInventory().getItemInOffHand(), 106));
-        }
+        inventory.add(NbtSerialization.writeItem(entity.getInventory().getItemInOffHand(), -106));
         tag.putCompoundList("Inventory", inventory);
 
         // ender items

@@ -69,9 +69,7 @@ public final class NbtSerialization {
         tag.putString("id", ItemIds.getName(stack.getType()));
         tag.putShort("Damage", stack.getDurability());
         tag.putByte("Count", stack.getAmount());
-        if (slot >= 0) {
-            tag.putByte("Slot", slot);
-        }
+        tag.putByte("Slot", slot);
         CompoundTag meta = GlowItemFactory.instance().writeNbt(stack.getItemMeta());
         if (meta != null) {
             tag.putCompound("tag", meta);

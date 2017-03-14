@@ -7,6 +7,7 @@ import net.glowstone.inventory.crafting.CraftingManager;
 import net.glowstone.net.message.play.inv.HeldItemMessage;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.HumanEntity;
@@ -20,12 +21,19 @@ import org.bukkit.material.MaterialData;
  */
 public class GlowPlayerInventory extends GlowInventory implements PlayerInventory, EntityEquipment {
 
-    private static final int SIZE = 40;
+    private static final int SIZE = InventoryType.PLAYER.getDefaultSize();
 
+    /*
+     * Armor slots
+     */
     private static final int BOOTS_SLOT = 36;
     private static final int LEGGINGS_SLOT = 37;
     private static final int CHESTPLATE_SLOT = 38;
     private static final int HELMET_SLOT = 39;
+
+    /*
+     * Off hand slot
+     */
     private static final int OFF_HAND_SLOT = 40;
 
     /**
@@ -41,9 +49,9 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
      */
     private int heldSlot;
     /**
-     * Item in off-hand slot.
+     * The human entity for this inventory, stored for location.
      */
-    private ItemStack offHand;
+    private GlowHumanEntity owner;
 
     public GlowPlayerInventory(GlowHumanEntity owner) {
         // all player inventories are ID 0
@@ -52,13 +60,13 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         // + 1 = off hand slot
         super(owner, InventoryType.PLAYER, SIZE);
         crafting = new GlowCraftingInventory(owner, InventoryType.CRAFTING);
+        this.owner = owner;
         for (int i = 0; i <= 8; i++) {
             getSlot(i).setType(SlotType.QUICKBAR);
         }
         for (int i = BOOTS_SLOT; i <= HELMET_SLOT; i++) {
             getSlot(i).setType(SlotType.ARMOR);
         }
-        setItemInOffHand(InventoryUtil.createEmptyStack());
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -83,15 +91,6 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         }
         heldSlot = slot;
         setItemInMainHand(getItemInMainHand());  // send to player again just in case
-    }
-
-    @Override
-    public SlotType getSlotType(int slot) {
-        if (slot == OFF_HAND_SLOT) {
-            return SlotType.CONTAINER;
-        } else {
-            return super.getSlotType(slot);
-        }
     }
 
     @Override
@@ -204,29 +203,51 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     @Override
-    public void setItem(EquipmentSlot equipmentSlot, ItemStack itemStack) {
-
-    }
-
-    @Override
-    public ItemStack getItem(int index) {
-        if (index == OFF_HAND_SLOT) {
-            return offHand;
-        }
-        return super.getItem(index);
-    }
-
-    @Override
-    public void setItem(int index, ItemStack item) {
-        if (index == OFF_HAND_SLOT) {
-            offHand = item;
-        } else {
-            super.setItem(index, item);
+    public void setItem(EquipmentSlot slot, ItemStack item) {
+        switch (slot) {
+            case HAND:
+                setItemInMainHand(item);
+                break;
+            case OFF_HAND:
+                setItemInOffHand(item);
+                break;
+            case FEET:
+                setBoots(item);
+                break;
+            case LEGS:
+                setLeggings(item);
+                break;
+            case CHEST:
+                setChestplate(item);
+                break;
+            case HEAD:
+                setHelmet(item);
+                break;
         }
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // Interface implementation
+
+    @Override
+    public ItemStack[] getStorageContents() {
+        ItemStack[] storage = new ItemStack[36];
+        for (int i = 0; i < 36; i++) {
+            storage[i] = getItem(i);
+        }
+        return storage;
+    }
+
+    @Override
+    public void setStorageContents(ItemStack[] items) throws IllegalArgumentException {
+        if (items.length != 36) {
+            throw new IllegalArgumentException("Length of player storage must be 36");
+        }
+
+        for (int i = 0; i < 36; i++) {
+            setItem(i, items[i]);
+        }
+    }
 
     @Override
     public ItemStack[] getArmorContents() {
@@ -238,11 +259,6 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     @Override
-    public ItemStack[] getExtraContents() {
-        return new ItemStack[]{getItemInOffHand()};
-    }
-
-    @Override
     public void setArmorContents(ItemStack[] items) {
         if (items.length != 4) {
             throw new IllegalArgumentException("Length of armor must be 4");
@@ -250,6 +266,11 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         for (int i = 0; i < 4; i++) {
             setItem(BOOTS_SLOT + i, items[i]);
         }
+    }
+
+    @Override
+    public ItemStack[] getExtraContents() {
+        return new ItemStack[]{getItemInOffHand()};
     }
 
     @Override
@@ -312,7 +333,7 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
 
     @Override
     public ItemStack getItemInOffHand() {
-        return InventoryUtil.itemOrEmpty(offHand).clone();
+        return getItem(OFF_HAND_SLOT).clone();
     }
 
     @Override
@@ -346,11 +367,16 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         }
     }
 
-    public int clear(Material id, MaterialData data) {
+    @Override
+    public Location getLocation() {
+        return owner.getLocation();
+    }
+
+    public int clear(Material type, MaterialData data) {
         int numCleared = 0;
         for (int i = 0; i < getSize(); ++i) {
             ItemStack stack = getItem(i);
-            if (stack != null && (id == null || stack.getType() == id) && (data == null || stack.getData().equals(data))) {
+            if (stack != null && (type == null || stack.getType() == type) && (data == null || stack.getData().equals(data))) {
                 setItem(i, InventoryUtil.createEmptyStack());
                 if (!InventoryUtil.isEmpty(stack)) {
                     // never report AIR as removed - else will report all empty slots cleared

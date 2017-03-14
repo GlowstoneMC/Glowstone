@@ -383,10 +383,6 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                 }
 
                 int slotCount = view.countSlots();
-                if (GlowInventoryView.isDefault(view)) {
-                    // view.countSlots does not account for armor slots
-                    slotCount += 5;
-                }
                 for (int i = 0; i < slotCount && cursor.getAmount() < maxStack(inv, cursor.getType()); ++i) {
                     ItemStack item = view.getItem(i);
                     SlotType type = (i < top.getSize() ? top : bottom).getSlotType(view.convertSlot(i));
