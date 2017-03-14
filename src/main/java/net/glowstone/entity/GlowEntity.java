@@ -461,12 +461,20 @@ public abstract class GlowEntity implements Entity {
         world.getEntityManager().move(this, location);
         Position.copyLocation(location, this.location);
 
-        if (!fall || location.getBlock().getType() != Material.AIR) {
+        Material type = location.getBlock().getType();
+
+        if (!fall || type == Material.LADDER // todo: horses are not affected
+                || type == Material.VINE // todo: horses are not affected
+                || type == Material.WATER
+                || type == Material.STATIONARY_WATER
+                || type == Material.WEB
+                || type == Material.TRAP_DOOR
+                || type == Material.IRON_TRAPDOOR) {
             fallDistance = 0;
             return;
         }
 
-        if (location.getY() < previousLocation.getY()) {
+        if (location.getY() < previousLocation.getY() && !isInsideVehicle()) {
             fallDistance += previousLocation.getY() - location.getY();
         }
     }
@@ -746,9 +754,7 @@ public abstract class GlowEntity implements Entity {
     }
 
     public void setOnGround(boolean onGround) {
-        if (onGround) {
-            setFallDistance(0);
-        }
+        setFallDistance(0);
         this.onGround = onGround;
     }
 
