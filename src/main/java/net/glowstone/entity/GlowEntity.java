@@ -469,7 +469,8 @@ public abstract class GlowEntity implements Entity {
                 || type == Material.STATIONARY_WATER
                 || type == Material.WEB
                 || type == Material.TRAP_DOOR
-                || type == Material.IRON_TRAPDOOR) {
+                || type == Material.IRON_TRAPDOOR
+                || isOnGround()) {
             fallDistance = 0;
             return;
         }
@@ -758,7 +759,9 @@ public abstract class GlowEntity implements Entity {
     }
 
     public void setOnGround(boolean onGround) {
-        setFallDistance(0);
+        if (onGround) {
+            setFallDistance(0);
+        }
         this.onGround = onGround;
     }
 
