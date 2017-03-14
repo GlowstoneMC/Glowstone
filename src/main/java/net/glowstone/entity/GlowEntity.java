@@ -685,12 +685,16 @@ public abstract class GlowEntity implements Entity {
 
     protected void pulsePhysics() {
         if (!location.clone().add(getVelocity()).getBlock().getType().isSolid()) {
-            location.add(getVelocity());
-            if (location.getBlock().isLiquid()) {
-                velocity.multiply(LIQUID_DRAG);
-            } else {
-                velocity.multiply(AIR_DRAG);
-            }
+            location.add(getVelocity());    
+        }
+
+        if (location.getBlock().isLiquid()) {
+            velocity.multiply(LIQUID_DRAG);
+        } else {
+            velocity.multiply(AIR_DRAG);
+        }
+
+        if (!isOnGround()) {
             velocity.add(GRAVITY);
         }
 
