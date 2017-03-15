@@ -450,7 +450,7 @@ public abstract class GlowEntity implements Entity {
             throw new IllegalArgumentException("Cannot setRawLocation to a different world (got " + location.getWorld() + ", expected " + world + ")");
         }
 
-        if (location.equals(previousLocation)) {
+        if (Objects.equals(location, previousLocation)) {
             return;
         }
 
@@ -470,12 +470,9 @@ public abstract class GlowEntity implements Entity {
                 || type == Material.WEB
                 || type == Material.TRAP_DOOR
                 || type == Material.IRON_TRAPDOOR
-                || isOnGround()) {
+                || onGround) {
             fallDistance = 0;
-            return;
-        }
-
-        if (location.getY() < previousLocation.getY() && !isInsideVehicle()) {
+        } else if (location.getY() < previousLocation.getY() && !isInsideVehicle()) {
             fallDistance += previousLocation.getY() - location.getY();
         }
     }
@@ -685,8 +682,9 @@ public abstract class GlowEntity implements Entity {
     protected static final Vector GRAVITY = new Vector(0, -0.05, 0);
 
     protected void pulsePhysics() {
-        if (!location.clone().add(getVelocity()).getBlock().getType().isSolid()) {
-            location.add(getVelocity());    
+        Location velLoc = location.clone().add(getVelocity());
+        if (!velLoc.getBlock().getType().isSolid()) {
+            setRawLocation(velLoc);
         }
 
         if (location.getBlock().isLiquid()) {

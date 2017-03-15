@@ -151,8 +151,6 @@ public class GlowItem extends GlowEntity implements Item {
 
     @Override
     protected void pulsePhysics() {
-        // simple temporary gravity - should eventually be improved to be real
-        // physics and moved up to GlowEntity
         if (location.getBlock().getType().isSolid()) {
             setRawLocation(location.clone().add(0, 0.2, 0), false);
         }
