@@ -669,7 +669,7 @@ public abstract class GlowEntity implements Entity {
     /**
      * Velocity reduction applied each tick.
      */
-    protected static final double AIR_DRAG = 0.99;
+    protected static final double AIR_DRAG = 0.98;
 
     /**
      * Velocity reduction applied each tick.
@@ -679,12 +679,68 @@ public abstract class GlowEntity implements Entity {
     /**
      * Gravity acceleration applied each tick.
      */
-    protected static final Vector GRAVITY = new Vector(0, -0.05, 0);
+    protected static final Vector GRAVITY = new Vector(0, -0.04, 0);
 
     protected void pulsePhysics() {
+        // make sure bounding box is up to date
+        if (boundingBox != null) {
+            boundingBox.setCenter(location.getX(), location.getY(), location.getZ());
+        }
+
         Location velLoc = location.clone().add(getVelocity());
-        if (!velLoc.getBlock().getType().isSolid()) {
+        Location velLocOrig = velLoc.clone();
+
+        Vector vel = getVelocity();
+
+        boolean foundCandidate = false;
+
+        if (boundingBox != null) {
+            Vector min = boundingBox.minCorner.clone();
+            Vector max = boundingBox.maxCorner.clone();
+
+            if (min.getX() > velLoc.getX()) {
+                min.setX(velLoc.getX());
+            } else if (max.getX() < velLoc.getX()) {
+                max.setX(velLoc.getX());
+            }
+            if (min.getY() > velLoc.getY()) {
+                min.setY(velLoc.getY());
+            } else if (max.getY() < velLoc.getY()) {
+                max.setY(velLoc.getY());
+            }
+            if (min.getZ() > velLoc.getZ()) {
+                min.setZ(velLoc.getZ());
+            } else if (max.getZ() < velLoc.getZ()) {
+                max.setZ(velLoc.getZ());
+            }
+
+            double distance = -1;
+
+            for (int x = min.getBlockX(); x <= max.getBlockX(); ++x) {
+                for (int y = min.getBlockY(); y <= max.getBlockY(); ++y) {
+                    for (int z = min.getBlockZ(); z <= max.getBlockZ(); ++z) {
+                        if (!Material.getMaterial(world.getBlockTypeIdAt(x, y, z)).isSolid()) {
+                            Vector candidate = new Vector(x, y, z);
+                            double candidateDistance = candidate.distanceSquared(velLocOrig.toVector());
+                            if (candidateDistance < distance || distance < 0) {
+                                distance = candidateDistance;
+                                velLoc.setX(x);
+                                velLoc.setY(y);
+                                velLoc.setZ(z);
+                                foundCandidate = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (foundCandidate) {
             setRawLocation(velLoc);
+        } else {
+            velocity.setX(0);
+            velocity.setY(0);
+            velocity.setZ(0);
         }
 
         if (location.getBlock().isLiquid()) {
@@ -693,11 +749,6 @@ public abstract class GlowEntity implements Entity {
             velocity.multiply(AIR_DRAG);
         }
         velocity.add(GRAVITY);
-
-        // make sure bounding box is up to date
-        if (boundingBox != null) {
-            boundingBox.setCenter(location.getX(), location.getY(), location.getZ());
-        }
     }
 
     @Override
