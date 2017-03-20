@@ -17,6 +17,7 @@ import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.EntityRemoveEffectMessage;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
+import net.glowstone.util.RayUtil;
 import net.glowstone.util.SoundUtil;
 import net.glowstone.util.loot.LootData;
 import net.glowstone.util.loot.LootingManager;
@@ -669,6 +670,16 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         lastDamage = amount;
         setHealth(health - amount);
         playEffect(EntityEffect.HURT);
+
+        if (cause == DamageCause.ENTITY_ATTACK && source != null) {
+            Vector distance = RayUtil.distanceToHead(getLocation(), ((LivingEntity) source).getEyeLocation());
+
+            Vector rayLength = RayUtil.getVelocityRay(distance).normalize();
+
+            Vector currentVelocity = getVelocity();
+            currentVelocity.add(rayLength.multiply((amount + 1) / 2));
+            setVelocity(currentVelocity);
+        }
 
         // play sounds, handle death
         if (health > 0) {
