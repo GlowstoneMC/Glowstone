@@ -10,13 +10,13 @@ A fast, customizable and compatible open source Minecraft server.
 
 Glowstone is a lightweight, from scratch, open source
 [Minecraft](http://minecraft.net) server written in Java that supports plugins
-written for the [Spigot](https://spigotmc.org) (and Bukkit) API.
+written for the Bukkit API.
 
 The main goals of the project are to provide a lightweight implementation
-of the Spigot API and Minecraft server where exact vanilla functionality is
+of the Bukkit API and Minecraft server where exact vanilla functionality is
 not needed or higher performance is desired than the official software can
 deliver. Glowstone makes use of a thread-per-world model and performs
-synchronization only when necessitated by the Spigot API.
+synchronization only when necessitated by the Bukkit API.
 
 Still have questions? Check out our [FAQ](https://github.com/GlowstoneMC/Glowstone/wiki/Frequently-Asked-Questions).
 
@@ -29,7 +29,7 @@ Glowstone has a few key advantages over CraftBukkit:
  * Because of this, it is easy to contribute to Glowstone's development. The
    barrier of entry to contributions is lower because there is no need to work
    around decompiled source or maintain a minimal diff.
- * Glowstone supports all plugins written for the Bukkit and Spigot API natively. In
+ * Glowstone supports all plugins written for the Bukkit, Spigot and Paper APIs natively. In
    practice, some plugins may try to make use of parts of the API which are not
    yet implemented, but in a completed state Glowstone would support all Bukkit plugins.
  * Glowstone's simplicity affords it a performance improvement over CraftBukkit
@@ -111,11 +111,9 @@ When reporting bugs, please retest and include whether the problem reproduces on
 * Earlier [builds](https://circleci.com/gh/GlowstoneMC/Glowstone) of Glowstone
 * [Glowstone Legacy](https://github.com/GlowstoneMC/Glowstone-Legacy), if applicable
 
-Javadocs for Glowstone can be found [here](http://www.nox2.net/glowstone).
+Javadocs for Glowstone can be found [here](https://bamboo.gserv.me/browse/GSPP-SRV/latestSuccessful/artifact/shared/JavaDocs/index.html).
 
-For documentation on the Glowkit API (an updated Bukkit which is used to
-write plugins), see the [Glowkit Javadocs](http://www.nox2.net/glowkit)
-or visit Spigot's [Bukkit Javadocs](https://hub.spigotmc.org/javadocs/bukkit/).
+For documentation on the Glowkit API (an updated Bukkit for Glowstone, based on the Paper API, compatible with Spigot's update to Bukkit), see the [Glowkit Javadocs](https://bamboo.gserv.me/browse/GSPP-KIT/latestSuccessful/artifact/shared/JavaDocs/index.html).
 
 ## Contributing
 
@@ -129,6 +127,7 @@ First of all, thank you for your interest in advancing Glowstone! We always love
    plugin API.
  * [The SpigotMC team](https://spigotmc.org/) for updating and enhancing
    the Bukkit plugin API.
+ * [AquiferMC](https://aquifermc.org/) for further enhancing the Bukkit API.
  * [The SpongePowered Team](https://www.spongepowered.org/) for
    creating the Sponge API.
  * [Trustin Lee](https://github.com/trustin) - author of the
