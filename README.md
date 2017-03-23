@@ -18,6 +18,8 @@ not needed or higher performance is desired than the official software can
 deliver. Glowstone makes use of a thread-per-world model and performs
 synchronization only when necessitated by the Spigot API.
 
+Still have questions? Check out our [FAQ](https://github.com/GlowstoneMC/Glowstone/wiki/Frequently-Asked-Questions).
+
 ## Features
 
 Glowstone has a few key advantages over CraftBukkit:
@@ -93,6 +95,9 @@ Glowstone uses [JLine](http://jline.sf.net) for console input and colored
 console output. The JLine console can be disabled in the configuration if a
 flat console is desired.
 
+Need more help? Check out [our wiki](https://github.com/GlowstoneMC/Glowstone/wiki#using-glowstone) for some guides that will help you with running,
+maintaining and configuring your Glowstone server.
+
 ## Playing
 
 For those of you who just want to play on a Glowstone server, we have one available 
@@ -111,6 +116,10 @@ Javadocs for Glowstone can be found [here](http://www.nox2.net/glowstone).
 For documentation on the Glowkit API (an updated Bukkit which is used to
 write plugins), see the [Glowkit Javadocs](http://www.nox2.net/glowkit)
 or visit Spigot's [Bukkit Javadocs](https://hub.spigotmc.org/javadocs/bukkit/).
+
+## Contributing
+
+First of all, thank you for your interest in advancing Glowstone! We always love to see new developers work on the project! You can find all of our resources on how to get started on our [wiki](https://github.com/GlowstoneMC/Glowstone/wiki#contributing).
 
 ## Credits
 
