@@ -27,6 +27,7 @@ import net.glowstone.net.message.play.player.ServerDifficultyMessage;
 import net.glowstone.util.BlockStateDelegate;
 import net.glowstone.util.GameRuleManager;
 import net.glowstone.util.collection.ConcurrentSet;
+import net.glowstone.util.config.WorldConfig;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -88,7 +89,7 @@ public final class GlowWorld implements World {
     /**
      * The maximum height of ocean water.
      */
-    private static final int SEA_LEVEL = 64;
+    private static int seaLevel;
     /**
      * The server of this world.
      */
@@ -283,6 +284,7 @@ public final class GlowWorld implements World {
         populateAnchoredChunks = server.populateAnchoredChunks();
         difficulty = server.getDifficulty();
         maxBuildHeight = server.getMaxBuildHeight();
+        seaLevel = GlowServer.getWorldConfig().getInt(WorldConfig.Key.SEA_LEVEL);
 
         // read in world data
         WorldFinalValues values = null;
@@ -924,7 +926,7 @@ public final class GlowWorld implements World {
         } else if (environment == Environment.THE_END) {
             return 50;
         } else {
-            return SEA_LEVEL;
+            return seaLevel;
         }
     }
 

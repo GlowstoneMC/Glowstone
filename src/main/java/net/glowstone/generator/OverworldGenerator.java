@@ -1,5 +1,6 @@
 package net.glowstone.generator;
 
+import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.constants.GlowBiome;
 import net.glowstone.generator.ground.*;
@@ -7,6 +8,7 @@ import net.glowstone.generator.ground.MesaGroundGenerator.MesaType;
 import net.glowstone.generator.populators.OverworldPopulator;
 import net.glowstone.generator.populators.StructurePopulator;
 import net.glowstone.generator.populators.overworld.SnowPopulator;
+import net.glowstone.util.config.WorldConfig;
 import net.glowstone.util.noise.PerlinOctaveGenerator;
 import net.glowstone.util.noise.SimplexOctaveGenerator;
 import org.bukkit.Material;
@@ -25,20 +27,20 @@ public class OverworldGenerator extends GlowChunkGenerator {
 
     // Still need to parse ServerConfig.Key.GENERATOR_SETTINGS string
     // and set below fields from that.
-    private static final double COORDINATE_SCALE = 684.412D;   // coordinateScale
-    private static final double HEIGHT_SCALE = 684.412D;       // heightScale
-    private static final double HEIGHT_NOISE_SCALE_X = 200.0D; // depthNoiseScaleX
-    private static final double HEIGHT_NOISE_SCALE_Z = 200.0D; // depthNoiseScaleZ
-    private static final double DETAIL_NOISE_SCALE_X = 80.0D;  // mainNoiseScaleX
-    private static final double DETAIL_NOISE_SCALE_Y = 160.0D; // mainNoiseScaleY
-    private static final double DETAIL_NOISE_SCALE_Z = 80.0D;  // mainNoiseScaleZ
-    private static final double SURFACE_SCALE = 1 / 16.0D;
-    private static final double BASE_SIZE = 8.5D;              // baseSize
-    private static final double STRETCH_Y = 12.0D;             // stretchY
-    private static final double BIOME_HEIGHT_OFFSET = 0.0D;    // biomeDepthOffset
-    private static final double BIOME_HEIGHT_WEIGHT = 1.0D;    // biomeDepthWeight
-    private static final double BIOME_SCALE_OFFSET = 0.0D;     // biomeScaleOffset
-    private static final double BIOME_SCALE_WEIGHT = 1.0D;     // biomeScaleWeight
+    private static double coordinateScale;
+    private static double heightScale;
+    private static double heightNoiseScaleX; // depthNoiseScaleX
+    private static double heightNoiseScaleZ; // depthNoiseScaleZ
+    private static double detailNoiseScaleX;  // mainNoiseScaleX
+    private static double detailNoiseScaleY; // mainNoiseScaleY
+    private static double detailNoiseScaleZ;  // mainNoiseScaleZ
+    private static double surfaceScale;
+    private static double baseSize;
+    private static double stretchY;
+    private static double biomeHeightOffset;    // biomeDepthOffset
+    private static double biomeHeightWeight;    // biomeDepthWeight
+    private static double biomeScaleOffset;
+    private static double biomeScaleWeight;
 
     private static final double[][] ELEVATION_WEIGHT = new double[5][5];
     private static final Map<Biome, GroundGenerator> GROUND_MAP = new HashMap<>();
@@ -102,6 +104,23 @@ public class OverworldGenerator extends GlowChunkGenerator {
         super(new OverworldPopulator(),
                 new StructurePopulator(),
                 new SnowPopulator());
+
+        WorldConfig config = GlowServer.getWorldConfig();
+
+        coordinateScale = config.getDouble(WorldConfig.Key.OVERWORLD_COORDINATE_SCALE);
+        heightScale = config.getDouble(WorldConfig.Key.OVERWORLD_HEIGHT_SCALE);
+        heightNoiseScaleX = config.getDouble(WorldConfig.Key.OVERWORLD_HEIGHT_NOISE_SCALE_X);
+        heightNoiseScaleZ = config.getDouble(WorldConfig.Key.OVERWORLD_HEIGHT_NOISE_SCALE_Z);
+        detailNoiseScaleX = config.getDouble(WorldConfig.Key.OVERWORLD_DETAIL_NOISE_SCALE_X);
+        detailNoiseScaleY = config.getDouble(WorldConfig.Key.OVERWORLD_DETAIL_NOISE_SCALE_Y);
+        detailNoiseScaleZ = config.getDouble(WorldConfig.Key.OVERWORLD_DETAIL_NOISE_SCALE_Z);
+        surfaceScale = config.getDouble(WorldConfig.Key.OVERWORLD_SURFACE_SCALE);
+        baseSize = config.getDouble(WorldConfig.Key.OVERWORLD_BASE_SIZE);
+        stretchY = config.getDouble(WorldConfig.Key.OVERWORLD_STRETCH_Y);
+        biomeHeightOffset = config.getDouble(WorldConfig.Key.OVERWORLD_BIOME_HEIGHT_OFFSET);
+        biomeHeightWeight = config.getDouble(WorldConfig.Key.OVERWORLD_BIOME_HEIGHT_WEIGHT);
+        biomeScaleOffset = config.getDouble(WorldConfig.Key.OVERWORLD_BIOME_SCALE_OFFSET);
+        biomeScaleWeight = config.getDouble(WorldConfig.Key.OVERWORLD_BIOME_SCALE_WEIGHT);
     }
 
     private static void setBiomeSpecificGround(GroundGenerator gen, Biome... biomes) {
@@ -141,30 +160,30 @@ public class OverworldGenerator extends GlowChunkGenerator {
         Random seed = new Random(world.getSeed());
 
         OctaveGenerator gen = new PerlinOctaveGenerator(seed, 16, 5, 5);
-        gen.setXScale(HEIGHT_NOISE_SCALE_X);
-        gen.setZScale(HEIGHT_NOISE_SCALE_Z);
+        gen.setXScale(heightNoiseScaleX);
+        gen.setZScale(heightNoiseScaleZ);
         octaves.put("height", gen);
 
         gen = new PerlinOctaveGenerator(seed, 16, 5, 33, 5);
-        gen.setXScale(COORDINATE_SCALE);
-        gen.setYScale(HEIGHT_SCALE);
-        gen.setZScale(COORDINATE_SCALE);
+        gen.setXScale(coordinateScale);
+        gen.setYScale(heightScale);
+        gen.setZScale(coordinateScale);
         octaves.put("roughness", gen);
 
         gen = new PerlinOctaveGenerator(seed, 16, 5, 33, 5);
-        gen.setXScale(COORDINATE_SCALE);
-        gen.setYScale(HEIGHT_SCALE);
-        gen.setZScale(COORDINATE_SCALE);
+        gen.setXScale(coordinateScale);
+        gen.setYScale(heightScale);
+        gen.setZScale(coordinateScale);
         octaves.put("roughness2", gen);
 
         gen = new PerlinOctaveGenerator(seed, 8, 5, 33, 5);
-        gen.setXScale(COORDINATE_SCALE / DETAIL_NOISE_SCALE_X);
-        gen.setYScale(HEIGHT_SCALE / DETAIL_NOISE_SCALE_Y);
-        gen.setZScale(COORDINATE_SCALE / DETAIL_NOISE_SCALE_Z);
+        gen.setXScale(coordinateScale / detailNoiseScaleX);
+        gen.setYScale(heightScale / detailNoiseScaleY);
+        gen.setZScale(coordinateScale / detailNoiseScaleZ);
         octaves.put("detail", gen);
 
         gen = new SimplexOctaveGenerator(seed, 4, 16, 16);
-        gen.setScale(SURFACE_SCALE);
+        gen.setScale(surfaceScale);
         octaves.put("surface", gen);
     }
 
@@ -274,8 +293,8 @@ public class OverworldGenerator extends GlowChunkGenerator {
                     for (int n = 0; n < 5; n++) {
                         Biome nearBiome = GlowBiome.getBiome(biomeGrid[i + m + (j + n) * 10]);
                         BiomeHeight nearBiomeHeight = HEIGHT_MAP.containsKey(nearBiome) ? HEIGHT_MAP.get(nearBiome) : defaultHeight;
-                        double heightBase = BIOME_HEIGHT_OFFSET + nearBiomeHeight.getHeight() * BIOME_HEIGHT_WEIGHT;
-                        double heightScale = BIOME_SCALE_OFFSET + nearBiomeHeight.getScale() * BIOME_SCALE_WEIGHT;
+                        double heightBase = biomeHeightOffset + nearBiomeHeight.getHeight() * biomeHeightWeight;
+                        double heightScale = biomeScaleOffset + nearBiomeHeight.getScale() * biomeScaleWeight;
                         if (type == WorldType.AMPLIFIED && heightBase > 0) {
                             heightBase = 1.0D + heightBase * 2.0D;
                             heightScale = 1.0D + heightScale * 4.0D;
@@ -305,11 +324,11 @@ public class OverworldGenerator extends GlowChunkGenerator {
                     noiseH = Math.min(noiseH, 1) / 8.0D;
                 }
 
-                noiseH = (noiseH * 0.2D + avgHeightBase) * BASE_SIZE / 8.0D * 4.0D + BASE_SIZE;
+                noiseH = (noiseH * 0.2D + avgHeightBase) * baseSize / 8.0D * 4.0D + baseSize;
                 for (int k = 0; k < 33; k++) {
                     // density should be lower and lower as we climb up, this gets a height value to
                     // substract from the noise.
-                    double nH = (k - noiseH) * STRETCH_Y * 128.0D / 256.0D / avgHeightScale;
+                    double nH = (k - noiseH) * stretchY * 128.0D / 256.0D / avgHeightScale;
                     if (nH < 0.0D) {
                         nH *= 4.0D;
                     }

@@ -33,9 +33,11 @@ import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.scheduler.WorldScheduler;
 import net.glowstone.scoreboard.GlowScoreboardManager;
 import net.glowstone.util.*;
-import net.glowstone.util.ServerConfig.Key;
+import net.glowstone.util.config.ServerConfig;
+import net.glowstone.util.config.ServerConfig.Key;
 import net.glowstone.util.bans.GlowBanList;
 import net.glowstone.util.bans.UuidListFile;
+import net.glowstone.util.config.WorldConfig;
 import net.glowstone.util.loot.LootingManager;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
@@ -153,6 +155,10 @@ public final class GlowServer implements Server {
      * The configuration for the server.
      */
     private final ServerConfig config;
+    /**
+     * The world config for extended world customization.
+     */
+    private static WorldConfig worldConfig;
     /**
      * The list of OPs on the server.
      */
@@ -423,6 +429,7 @@ public final class GlowServer implements Server {
         }
 
         File configDir = new File(configDirName);
+        worldConfig = new WorldConfig(configDir, new File(configDir, "worlds.yml"));
         File configFile = new File(configDir, configFileName);
 
         return new ServerConfig(configDir, configFile, parameters);
@@ -666,6 +673,7 @@ public final class GlowServer implements Server {
      */
     private void loadConfig() {
         config.load();
+        worldConfig.load();
 
         // modifiable values
         spawnRadius = config.getInt(Key.SPAWN_RADIUS);
@@ -1146,6 +1154,10 @@ public final class GlowServer implements Server {
     @Deprecated
     public UnsafeValues getUnsafe() {
         return unsafeAccess;
+    }
+
+    public static WorldConfig getWorldConfig() {
+        return worldConfig;
     }
 
     @Override
