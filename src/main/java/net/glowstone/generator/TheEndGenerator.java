@@ -1,8 +1,6 @@
 package net.glowstone.generator;
 
-import net.glowstone.GlowServer;
 import net.glowstone.generator.populators.TheEndPopulator;
-import net.glowstone.util.config.WorldConfig;
 import net.glowstone.util.noise.PerlinOctaveGenerator;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -15,24 +13,16 @@ import java.util.Random;
 
 public class TheEndGenerator extends GlowChunkGenerator {
 
-    private static double coordinateScale;
-    private static double heightScale;
-    private static double detailNoiseScaleX;  // mainNoiseScaleX
-    private static double detailNoiseScaleY; // mainNoiseScaleY
-    private static double detailNoiseScaleZ;  // mainNoiseScaleZ
+    private static final double HEIGHT_SCALE = 684.412D;       // heightScale
+    private static final double COORDINATE_SCALE = HEIGHT_SCALE * 2.0D; // coordinateScale
+    private static final double DETAIL_NOISE_SCALE_X = 80.0D;  // mainNoiseScaleX
+    private static final double DETAIL_NOISE_SCALE_Y = 160.0D; // mainNoiseScaleY
+    private static final double DETAIL_NOISE_SCALE_Z = 80.0D;  // mainNoiseScaleZ
 
     private final double[][][] density = new double[3][3][33];
 
     public TheEndGenerator() {
         super(new TheEndPopulator());
-
-        WorldConfig config = GlowServer.getWorldConfig();
-
-        coordinateScale = config.getDouble(WorldConfig.Key.END_COORDINATE_SCALE);
-        heightScale = config.getDouble(WorldConfig.Key.END_HEIGHT_SCALE);
-        detailNoiseScaleX = config.getDouble(WorldConfig.Key.END_DETAIL_NOISE_SCALE_X);
-        detailNoiseScaleY = config.getDouble(WorldConfig.Key.END_DETAIL_NOISE_SCALE_Y);
-        detailNoiseScaleZ = config.getDouble(WorldConfig.Key.END_DETAIL_NOISE_SCALE_Z);
     }
 
     @Override
@@ -51,21 +41,21 @@ public class TheEndGenerator extends GlowChunkGenerator {
         Random seed = new Random(world.getSeed());
 
         OctaveGenerator gen = new PerlinOctaveGenerator(seed, 16, 3, 33, 3);
-        gen.setXScale(coordinateScale);
-        gen.setYScale(heightScale);
-        gen.setZScale(coordinateScale);
+        gen.setXScale(COORDINATE_SCALE);
+        gen.setYScale(HEIGHT_SCALE);
+        gen.setZScale(COORDINATE_SCALE);
         octaves.put("roughness", gen);
 
         gen = new PerlinOctaveGenerator(seed, 16, 3, 33, 3);
-        gen.setXScale(coordinateScale);
-        gen.setYScale(heightScale);
-        gen.setZScale(coordinateScale);
+        gen.setXScale(COORDINATE_SCALE);
+        gen.setYScale(HEIGHT_SCALE);
+        gen.setZScale(COORDINATE_SCALE);
         octaves.put("roughness2", gen);
 
         gen = new PerlinOctaveGenerator(seed, 8, 3, 33, 3);
-        gen.setXScale(coordinateScale / detailNoiseScaleX);
-        gen.setYScale(heightScale / detailNoiseScaleY);
-        gen.setZScale(coordinateScale / detailNoiseScaleZ);
+        gen.setXScale(COORDINATE_SCALE / DETAIL_NOISE_SCALE_X);
+        gen.setYScale(HEIGHT_SCALE / DETAIL_NOISE_SCALE_Y);
+        gen.setZScale(COORDINATE_SCALE / DETAIL_NOISE_SCALE_Z);
         octaves.put("detail", gen);
     }
 
