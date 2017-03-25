@@ -7,7 +7,7 @@
     <name>Glowstone</name>
     <groupId>net.glowstone</groupId>
     <artifactId>glowstone</artifactId>
-    <version>2017.3.0.30-SNAPSHOT</version>
+    <version>2017.3.0.31-SNAPSHOT</version>
     <packaging>jar</packaging>
     <inceptionYear>2011</inceptionYear>
     <url>https://www.glowstone.net</url>
@@ -28,6 +28,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <bukkit.version>1.11.2-R0.1-SNAPSHOT</bukkit.version>
+		<protocol.version>1.11.2</protocol.version>
     </properties>
 
     <repositories>
@@ -232,6 +233,23 @@
                 <artifactId>maven-source-plugin</artifactId>
                 <version>3.0.1</version>
             </plugin>
+
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<echo>VERSION: ${version} / MC${protocol.version}</echo>
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
         </plugins>
     </build>
 
