@@ -3,7 +3,6 @@ package net.glowstone.inventory;
 import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.scheduler.PulseTask;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Furnace;
@@ -31,7 +30,7 @@ public class GlowFurnaceInventory extends GlowInventory implements FurnaceInvent
     public void setItem(int index, ItemStack item) {
         super.setItem(index, item);
         GlowBlock block = (GlowBlock) getHolder().getBlock();
-        new PulseTask(block, true, 1, false).startPulseTask();
+        block.getWorld().requestPulse(block);
     }
 
     @Override

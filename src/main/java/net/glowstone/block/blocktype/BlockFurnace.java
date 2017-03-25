@@ -2,8 +2,8 @@ package net.glowstone.block.blocktype;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.entity.FurnaceEntity;
 import net.glowstone.block.entity.BlockEntity;
+import net.glowstone.block.entity.FurnaceEntity;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.MaterialMatcher;
@@ -46,5 +46,15 @@ public class BlockFurnace extends BlockContainer {
     @Override
     public void receivePulse(GlowBlock block) {
         ((FurnaceEntity) block.getBlockEntity()).burn();
+    }
+
+    @Override
+    public int getPulseTickSpeed(GlowBlock block) {
+        return 1;
+    }
+
+    @Override
+    public boolean isPulseOnce(GlowBlock block) {
+        return false;
     }
 }

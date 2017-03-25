@@ -7,6 +7,7 @@ import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.state.GlowFurnace;
 import net.glowstone.inventory.GlowFurnaceInventory;
 import net.glowstone.inventory.crafting.CraftingManager;
+import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -151,14 +152,14 @@ public class FurnaceEntity extends ContainerEntity {
 
     private boolean isBurnable() {
         GlowFurnaceInventory inv = (GlowFurnaceInventory) getInventory();
-        if ((burnTime != 0 || inv.getFuel() != null) && inv.getSmelting() != null) {
-            if ((inv.getFuel() == null || inv.getFuel().getType().equals(Material.AIR) || inv.getSmelting().getType().equals(Material.AIR)) && burnTime == 0) {
+        if ((burnTime != 0 || !InventoryUtil.isEmpty(inv.getFuel())) && !InventoryUtil.isEmpty(inv.getSmelting())) {
+            if ((InventoryUtil.isEmpty(inv.getFuel()) || InventoryUtil.isEmpty(inv.getSmelting())) && burnTime == 0) {
                 return false;
             }
             CraftingManager cm = ((GlowServer) Bukkit.getServer()).getCraftingManager();
             if (burnTime != 0 || cm.isFuel(inv.getFuel().getType())) {
                 Recipe recipe = cm.getFurnaceRecipe(inv.getSmelting());
-                if (recipe != null && (inv.getResult() == null || inv.getResult().getType().equals(recipe.getResult().getType()) && inv.getResult().getAmount() + recipe.getResult().getAmount() <= recipe.getResult().getMaxStackSize())) {
+                if (recipe != null && (InventoryUtil.isEmpty(inv.getResult()) || inv.getResult().getType().equals(recipe.getResult().getType()) && inv.getResult().getAmount() + recipe.getResult().getAmount() <= recipe.getResult().getMaxStackSize())) {
                     return true;
                 }
             }
