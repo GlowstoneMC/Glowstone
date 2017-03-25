@@ -28,7 +28,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <bukkit.version>1.11.2-R0.1-SNAPSHOT</bukkit.version>
-		<protocol.version>1.11.2</protocol.version>
+        <protocol.version>1.11.2</protocol.version>
     </properties>
 
     <repositories>
@@ -234,22 +234,22 @@
                 <version>3.0.1</version>
             </plugin>
 
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<tasks>
-								<echo>VERSION: ${version} / MC${protocol.version}</echo>
-							</tasks>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <echo>VERSION: ${version} / MC${protocol.version}</echo>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
