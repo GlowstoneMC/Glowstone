@@ -672,7 +672,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         playEffect(EntityEffect.HURT);
 
         if (cause == DamageCause.ENTITY_ATTACK && source != null) {
-            Vector distance = RayUtil.distanceToHead(getLocation(), ((LivingEntity) source).getEyeLocation());
+            Vector distance = RayUtil.getRayBetween(getLocation(), ((LivingEntity) source).getEyeLocation());
 
             Vector rayLength = RayUtil.getVelocityRay(distance).normalize();
 

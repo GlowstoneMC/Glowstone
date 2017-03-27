@@ -6,6 +6,7 @@ import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.ExplosionMessage;
 import net.glowstone.net.message.play.game.ExplosionMessage.Record;
+import net.glowstone.util.RayUtil;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -260,12 +261,7 @@ public final class Explosion {
                 }
             }
 
-            Vector rayLength = distanceToHead(entity);
-            if (rayLength.lengthSquared() == 0) {
-                rayLength = new Vector(0, 1, 0);
-            } else {
-                rayLength.normalize();
-            }
+            Vector rayLength = RayUtil.getVelocityRay(distanceToHead(entity));
             rayLength.multiply(exposure);
 
             Vector currentVelocity = entity.getVelocity();
@@ -306,15 +302,15 @@ public final class Explosion {
     }
 
     private double distanceTo(LivingEntity entity) {
-        return location.clone().subtract(entity.getLocation()).length();
+        return RayUtil.getRayBetween(location, entity.getLocation()).length();
     }
 
     private double distanceToSquared(LivingEntity entity) {
-        return location.clone().subtract(entity.getLocation()).lengthSquared();
+        return RayUtil.getRayBetween(location, entity.getLocation()).lengthSquared();
     }
 
     private Vector distanceToHead(LivingEntity entity) {
-        return entity.getEyeLocation().subtract(location.clone()).toVector();
+        return RayUtil.getRayBetween(entity.getEyeLocation(), location);
     }
 
     ///////////////////////////////////////

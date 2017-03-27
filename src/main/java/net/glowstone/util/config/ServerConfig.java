@@ -331,13 +331,13 @@ public final class ServerConfig {
         WHITELIST("server.whitelisted", false, Migrate.PROPS, "white-list"),
         MOTD("server.motd", "A Glowstone server", Migrate.PROPS, "motd"),
         SHUTDOWN_MESSAGE("server.shutdown-message", "Server shutting down.", Migrate.BUKKIT, "settings.shutdown-message"),
+        ALLOW_CLIENT_MODS("server.allow-client-mods", true),
 
         // console
         USE_JLINE("console.use-jline", true),
         CONSOLE_PROMPT("console.prompt", ">"),
         CONSOLE_DATE("console.date-format", "HH:mm:ss"),
         CONSOLE_LOG_DATE("console.log-date-format", "yyyy/MM/dd HH:mm:ss"),
-        ALLOW_CLIENT_MODS("server.allow-client-mods", true),
 
         // game props
         GAMEMODE("game.gamemode", "SURVIVAL", Migrate.PROPS, "gamemode"),

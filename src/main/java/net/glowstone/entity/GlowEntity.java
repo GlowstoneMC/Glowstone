@@ -403,7 +403,9 @@ public abstract class GlowEntity implements Entity {
             }
         }
 
-        pulsePhysics();
+        if (!isDead()) {
+            pulsePhysics();
+        }
 
         if (hasMoved()) {
             Block currentBlock = location.getBlock();
@@ -681,6 +683,11 @@ public abstract class GlowEntity implements Entity {
      */
     protected static final Vector GRAVITY = new Vector(0, -0.04, 0);
 
+    /**
+     * Acceleration applied per tick.
+     */
+    private Vector acceleration = new Vector(0, 0, 0);
+
     protected void pulsePhysics() {
         // make sure bounding box is up to date
         if (boundingBox != null) {
@@ -689,8 +696,6 @@ public abstract class GlowEntity implements Entity {
 
         Location velLoc = location.clone().add(getVelocity());
         Location velLocOrig = velLoc.clone();
-
-        Vector vel = getVelocity();
 
         boolean foundCandidate = false;
 
@@ -737,18 +742,18 @@ public abstract class GlowEntity implements Entity {
 
         if (foundCandidate) {
             setRawLocation(velLoc);
+            acceleration.add(GRAVITY);
         } else {
-            velocity.setX(0);
-            velocity.setY(0);
-            velocity.setZ(0);
+            velocity.copy(new Vector());
+            acceleration.copy(new Vector());
         }
 
+        velocity.add(acceleration);
         if (location.getBlock().isLiquid()) {
             velocity.multiply(LIQUID_DRAG);
         } else {
             velocity.multiply(AIR_DRAG);
         }
-        velocity.add(GRAVITY);
     }
 
     @Override
@@ -818,6 +823,7 @@ public abstract class GlowEntity implements Entity {
     @Override
     public void remove() {
         active = false;
+        boundingBox = null;
         world.getEntityManager().unregister(this);
         server.getEntityIdManager().deallocate(this);
     }

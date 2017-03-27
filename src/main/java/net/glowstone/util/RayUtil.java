@@ -4,18 +4,24 @@ import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
 public class RayUtil {
-    public static Vector getVelocityRay(Vector rayLength) {
-        if (rayLength.lengthSquared() == 0) {
-            rayLength = new Vector(0, 1, 0);
+    public static Vector getVelocityRay(Vector ray) {
+        Vector velocityRay = ray.clone();
+        if (velocityRay.lengthSquared() == 0) {
+            velocityRay.setX(0);
+            velocityRay.setY(1);
+            velocityRay.setZ(0);
         } else {
-            rayLength.normalize();
+            velocityRay.normalize();
         }
 
-        return rayLength;
+        return velocityRay;
     }
 
+    public static float getExposure(Location target, Location... sources) {
+        return 1;
+    }
 
-    public static Vector distanceToHead(Location loc1, Location loc2) {
-        return loc1.clone().subtract(loc2).toVector();
+    public static Vector getRayBetween(Location target, Location source) {
+        return target.clone().subtract(source).toVector();
     }
 }

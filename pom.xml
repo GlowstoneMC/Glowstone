@@ -7,7 +7,7 @@
     <name>Glowstone</name>
     <groupId>net.glowstone</groupId>
     <artifactId>glowstone</artifactId>
-    <version>2017.3.0.32-SNAPSHOT</version>
+    <version>2017.3.0.33-SNAPSHOT</version>
     <packaging>jar</packaging>
     <inceptionYear>2011</inceptionYear>
     <url>https://www.glowstone.net</url>
@@ -244,7 +244,7 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <echo>VERSION: ${version} / MC${protocol.version}</echo>
+                                <echo>VERSION: ${project.version} / MC${protocol.version}</echo>
                             </tasks>
                         </configuration>
                     </execution>

@@ -26,6 +26,7 @@ import net.glowstone.net.message.play.entity.EntityStatusMessage;
 import net.glowstone.net.message.play.player.ServerDifficultyMessage;
 import net.glowstone.util.BlockStateDelegate;
 import net.glowstone.util.GameRuleManager;
+import net.glowstone.util.RayUtil;
 import net.glowstone.util.collection.ConcurrentSet;
 import net.glowstone.util.config.WorldConfig;
 import org.bukkit.*;
@@ -632,7 +633,7 @@ public final class GlowWorld implements World {
          *
          * Return (unblockedRays / allRays)
          */
-        return 1;
+        return RayUtil.getExposure(location, entity.getLocation());
     }
 
     /**
