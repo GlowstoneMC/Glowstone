@@ -3,7 +3,7 @@ package net.glowstone.io.entity;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowHumanEntity;
 import net.glowstone.io.nbt.NbtSerialization;
-import net.glowstone.util.ServerConfig;
+import net.glowstone.util.config.ServerConfig;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Bukkit;
