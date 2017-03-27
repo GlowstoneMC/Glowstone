@@ -133,7 +133,7 @@ public final class WorldConfig {
 
         // create default file if needed
         if (!configFile.exists()) {
-            GlowServer.logger.info("Creating default config: " + configFile);
+            GlowServer.logger.info("Creating default world config: " + configFile);
 
             // create config directory
             if (!configDir.isDirectory() && !configDir.mkdirs()) {
@@ -206,6 +206,9 @@ public final class WorldConfig {
         OVERWORLD_BIOME_HEIGHT_WEIGHT("overworld.biome.height.weight", 1D),
         OVERWORLD_BIOME_SCALE_OFFSET("overworld.biome.scale.offset", 0D),
         OVERWORLD_BIOME_SCALE_WEIGHT("overworld.biome.scale.weight", 1D),
+        OVERWORLD_DENSITY_X_SIZE("overworld.density-size.x", 5),
+        OVERWORLD_DENSITY_Z_SIZE ("overworld.density-size.z", 5),
+        OVERWORLD_DENSITY_Y_SIZE("overworld.density-size.y", 33),
         // Nether generator
         NETHER_COORDINATE_SCALE("nether.coordinate-scale", 684.412),
         NETHER_HEIGHT_SCALE("nether.height.scale", 2053.236),

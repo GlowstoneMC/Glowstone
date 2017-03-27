@@ -94,9 +94,12 @@ public class OverworldGenerator extends GlowChunkGenerator {
         }
     }
 
-    private final double[][][] density = new double[5][5][33];
+    private final double[][][] density;
     private final GroundGenerator groundGen = new GroundGenerator();
     private final BiomeHeight defaultHeight = BiomeHeight.DEFAULT;
+    private final int densitySizeX;
+    private final int densitySizeZ;
+    private final int densitySizeY;
 
     public OverworldGenerator() {
         super(new OverworldPopulator(),
@@ -119,6 +122,12 @@ public class OverworldGenerator extends GlowChunkGenerator {
         biomeHeightWeight = config.getDouble(WorldConfig.Key.OVERWORLD_BIOME_HEIGHT_WEIGHT);
         biomeScaleOffset = config.getDouble(WorldConfig.Key.OVERWORLD_BIOME_SCALE_OFFSET);
         biomeScaleWeight = config.getDouble(WorldConfig.Key.OVERWORLD_BIOME_SCALE_WEIGHT);
+
+        densitySizeX = config.getInt(WorldConfig.Key.OVERWORLD_DENSITY_X_SIZE);
+        densitySizeZ = config.getInt(WorldConfig.Key.OVERWORLD_DENSITY_Z_SIZE);
+        densitySizeY = config.getInt(WorldConfig.Key.OVERWORLD_DENSITY_Y_SIZE);
+
+        density = new double[densitySizeX][densitySizeZ][densitySizeY];
     }
 
     private static void setBiomeSpecificGround(GroundGenerator gen, Biome... biomes) {
@@ -192,11 +201,11 @@ public class OverworldGenerator extends GlowChunkGenerator {
 
         ChunkData chunkData = createChunkData(world);
 
-        // Terrain densities where sampled at a lower res (scaled 4x along vertical, 8x along horizontal)
+        // Terrain densities are sampled at different resolutions (1/4x on x,z and 1/8x on y by default)
         // so it's needed to re-scale it. Linear interpolation is used to fill in the gaps.
-        for (int i = 0; i < 5 - 1; i++) {
-            for (int j = 0; j < 5 - 1; j++) {
-                for (int k = 0; k < 33 - 1; k++) {
+        for (int i = 0; i < densitySizeX - 1; i++) {
+            for (int j = 0; j < densitySizeZ - 1; j++) {
+                for (int k = 0; k < densitySizeY - 1; k++) {
                     // 2x2 grid
                     double d1 = density[i][j][k];
                     double d2 = density[i + 1][j][k];
