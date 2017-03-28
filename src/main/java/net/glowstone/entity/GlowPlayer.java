@@ -174,6 +174,27 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             }
         }
 
+        @Override
+        public InetSocketAddress getRawAddress() {
+            return session.getAddress();
+        }
+
+        @Override
+        public void respawn() {
+            if (isDead()) {
+                GlowPlayer.this.respawn();
+            }
+        }
+
+        @Override
+        public boolean getCollidesWithEntities() {
+            return isCollidable();
+        }
+
+        @Override
+        public void setCollidesWithEntities(boolean collides) {
+            setCollidable(collides);
+        }
     };
     /**
      * The time the player joined.
