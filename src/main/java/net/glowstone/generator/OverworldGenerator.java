@@ -94,12 +94,9 @@ public class OverworldGenerator extends GlowChunkGenerator {
         }
     }
 
-    private final double[][][] density;
+    private final double[][][] density = new double[5][5][33];
     private final GroundGenerator groundGen = new GroundGenerator();
     private final BiomeHeight defaultHeight = BiomeHeight.DEFAULT;
-    private final int densitySizeX;
-    private final int densitySizeZ;
-    private final int densitySizeY;
 
     public OverworldGenerator() {
         super(new OverworldPopulator(),
@@ -120,12 +117,6 @@ public class OverworldGenerator extends GlowChunkGenerator {
         biomeHeightWeight = getWorldConfig().getDouble(OVERWORLD_BIOME_HEIGHT_WEIGHT);
         biomeScaleOffset = getWorldConfig().getDouble(OVERWORLD_BIOME_SCALE_OFFSET);
         biomeScaleWeight = getWorldConfig().getDouble(OVERWORLD_BIOME_SCALE_WEIGHT);
-
-        densitySizeX = getWorldConfig().getInt(OVERWORLD_DENSITY_X_SIZE);
-        densitySizeZ = getWorldConfig().getInt(OVERWORLD_DENSITY_Z_SIZE);
-        densitySizeY = getWorldConfig().getInt(OVERWORLD_DENSITY_Y_SIZE);
-
-        density = new double[densitySizeX][densitySizeZ][densitySizeY];
     }
 
     private static void setBiomeSpecificGround(GroundGenerator gen, Biome... biomes) {
@@ -204,24 +195,22 @@ public class OverworldGenerator extends GlowChunkGenerator {
 
         int fill = getWorldConfig().getInt(OVERWORLD_DENSITY_FILL_MODE);
         int afill = Math.abs(fill);
+        int seaFill = getWorldConfig().getInt(OVERWORLD_DENSITY_FILL_SEA_MODE);
         double densityOffset = getWorldConfig().getDouble(OVERWORLD_DENSITY_FILL_OFFSET);
-        int interpolationX = (int) Math.ceil(16D / getWorldConfig().getInt(OVERWORLD_DENSITY_X_SIZE));
-        int interpolationY = (int) Math.ceil(256D / getWorldConfig().getInt(OVERWORLD_DENSITY_Y_SIZE));
-        int interpolationZ = (int) Math.ceil(16D / getWorldConfig().getInt(OVERWORLD_DENSITY_Z_SIZE));
 
-        for (int i = 0; i < densitySizeX - 1; i++) {
-            for (int j = 0; j < densitySizeZ - 1; j++) {
-                for (int k = 0; k < densitySizeY - 1; k++) {
+        for (int i = 0; i < 5 - 1; i++) {
+            for (int j = 0; j < 5 - 1; j++) {
+                for (int k = 0; k < 33 - 1; k++) {
                     // 2x2 grid
                     double d1 = density[i][j][k];
                     double d2 = density[i + 1][j][k];
                     double d3 = density[i][j + 1][k];
                     double d4 = density[i + 1][j + 1][k];
                     // 2x2 grid (row above)
-                    double d5 = (density[i][j][k + 1] - d1) / interpolationY;
-                    double d6 = (density[i + 1][j][k + 1] - d2) / interpolationY;
-                    double d7 = (density[i][j + 1][k + 1] - d3) / interpolationY;
-                    double d8 = (density[i + 1][j + 1][k + 1] - d4) / interpolationY;
+                    double d5 = (density[i][j][k + 1] - d1) / 8;
+                    double d6 = (density[i + 1][j][k + 1] - d2) / 8;
+                    double d7 = (density[i][j + 1][k + 1] - d3) / 8;
+                    double d8 = (density[i + 1][j + 1][k + 1] - d4) / 8;
 
                     for (int l = 0; l < 8; l++) {
                         double d9 = d1;
@@ -235,31 +224,31 @@ public class OverworldGenerator extends GlowChunkGenerator {
                                 // and, then data can be shifted by afill the order is air by default, ground, then water. they can shift places
                                 // within each if statement
                                 // the target is densityOffset + 0, since the default target is 0, so don't get too confused by the naming :)
-                                if (afill == 1) {
+                                if (afill == 1 || afill == 10 || afill == 13 || afill == 16) {
                                     chunkData.setBlock(m + (i << 2), l + (k << 3), n + (j << 2), Material.STATIONARY_WATER);
-                                } else if (afill == 2) {
+                                } else if (afill == 2 || afill == 9 || afill == 12 || afill == 15) {
                                     chunkData.setBlock(m + (i << 2), l + (k << 3), n + (j << 2), Material.STONE);
                                 }
                                 if (dens > densityOffset && fill > -1 || dens <= densityOffset && fill < 0) {
-                                    if (afill == 0 || afill == 3 || afill == 6 || afill == 9) {
+                                    if (afill == 0 || afill == 3 || afill == 6 || afill == 9 || afill == 12) {
                                         chunkData.setBlock(m + (i << 2), l + (k << 3), n + (j << 2), Material.STONE);
-                                    } else if (afill == 2) {
+                                    } else if (afill == 2 || afill == 7 || afill == 10 || afill == 16) {
                                         chunkData.setBlock(m + (i << 2), l + (k << 3), n + (j << 2), Material.STATIONARY_WATER);
                                     }
-                                } else if (l + (k << 3) < seaLevel - 1) {
-                                    if (afill == 0 || afill == 3) {
+                                } else if (l + (k << 3) < seaLevel - 1 && seaFill == 0 || l + (k << 3) >= seaLevel - 1 && seaFill == 1) {
+                                    if (afill == 0 || afill == 3 || afill == 7 || afill == 10 || afill == 13) {
                                         chunkData.setBlock(m + (i << 2), l + (k << 3), n + (j << 2), Material.STATIONARY_WATER);
-                                    } else if (afill == 1 || afill == 6) {
+                                    } else if (afill == 1 || afill == 6 || afill == 9 || afill == 15) {
                                         chunkData.setBlock(m + (i << 2), l + (k << 3), n + (j << 2), Material.STONE);
                                     }
                                 }
                                 // interpolation along z
-                                dens += (d10 - d9) / interpolationZ;
+                                dens += (d10 - d9) / 4;
                             }
                             // interpolation along x
-                            d9 += (d2 - d1) / interpolationX;
+                            d9 += (d2 - d1) / 4;
                             // interpolate along z
-                            d10 += (d4 - d3) / interpolationZ;
+                            d10 += (d4 - d3) / 4;
                         }
                         // interpolation along y
                         d1 += d5;
@@ -357,7 +346,7 @@ public class OverworldGenerator extends GlowChunkGenerator {
                 noiseH = (noiseH * 0.2D + avgHeightBase) * baseSize / 8.0D * 4.0D + baseSize;
                 for (int k = 0; k < 33; k++) {
                     // density should be lower and lower as we climb up, this gets a height value to
-                    // substract from the noise.
+                    // subtract from the noise.
                     double nH = (k - noiseH) * stretchY * 128.0D / 256.0D / avgHeightScale;
                     if (nH < 0.0D) {
                         nH *= 4.0D;

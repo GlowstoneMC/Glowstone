@@ -207,10 +207,8 @@ public final class WorldConfig {
         OVERWORLD_BIOME_SCALE_OFFSET("overworld.biome.scale-offset", 0D),
         OVERWORLD_BIOME_SCALE_WEIGHT("overworld.biome.scale-weight", 1D),
         OVERWORLD_DENSITY_FILL_MODE("overworld.density.fill.mode", 0),
+        OVERWORLD_DENSITY_FILL_SEA_MODE("overworld.density.fill.sea-mode", 0),
         OVERWORLD_DENSITY_FILL_OFFSET("overworld.density.fill.offset", 0D),
-        OVERWORLD_DENSITY_X_SIZE("overworld.density.size.x", 5),
-        OVERWORLD_DENSITY_Z_SIZE ("overworld.density.size.z", 5),
-        OVERWORLD_DENSITY_Y_SIZE("overworld.density.size.y", 33),
         // Overworld biome heights
         BIOME_HEIGHT_DEFAULT("overworld.biome.height.default", 0.1),
         BIOME_SCALE_DEFAULT("overworld.biome.scale.default", 0.2),

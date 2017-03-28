@@ -415,6 +415,10 @@ public final class ChunkManager {
         return biomeGrid[1].generateValues(x, z, sizeX, sizeZ);
     }
 
+    public int[] getBiomeGrid(int x, int z, int sizeX, int sizeZ) {
+        return biomeGrid[0].generateValues(x, z, sizeX, sizeZ);
+    }
+
     /**
      * Look up the set of locks on a given chunk.
      *
