@@ -96,12 +96,12 @@ public final class CraftingManager implements Iterable<Recipe> {
      */
     public void removeItems(ItemStack[] items, GlowCraftingInventory inv) {
         for (int i = 0; i < items.length; i++) {
-            if (items[i] != null) {
+            if (InventoryUtil.isEmpty(items[i])) {
                 int amount = items[i].getAmount();
                 if (amount > 1) {
                     items[i].setAmount(amount - 1);
                 } else {
-                    inv.setItem(i + 1, null);
+                    inv.setItem(i + 1, InventoryUtil.createEmptyStack());
                 }
             }
         }

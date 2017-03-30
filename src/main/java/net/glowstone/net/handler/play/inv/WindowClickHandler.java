@@ -74,7 +74,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         }
         int invSlot = view.convertSlot(viewSlot);
 
-        if (invSlot == -1) {
+        if (invSlot == -1 || viewSlot == -1) {
             return true;
         }
 

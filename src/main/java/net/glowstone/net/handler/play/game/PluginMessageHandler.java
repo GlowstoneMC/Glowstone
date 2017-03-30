@@ -9,8 +9,6 @@ import net.glowstone.inventory.GlowAnvilInventory;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.game.PluginMessage;
-import net.glowstone.util.InventoryUtil;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
@@ -167,16 +165,7 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
                     GlowServer.logger.log(Level.WARNING, "Error reading anvil item name by " + session, e);
                     break;
                 }
-                GlowAnvilInventory inv = (GlowAnvilInventory) session.getPlayer().getOpenInventory().getTopInventory();
-                ItemStack result = inv.getFirstItem().clone();
-                if (InventoryUtil.isEmpty(result)) {
-                    break;
-                }
-                // rename the item
-                ItemMeta m = result.getItemMeta();
-                m.setDisplayName(ChatColor.ITALIC + name);
-                result.setItemMeta(m);
-                inv.setItem(2, result);
+                ((GlowAnvilInventory) session.getPlayer().getOpenInventory().getTopInventory()).setRenameText(name);
                 break;
             default:
                 GlowServer.logger.info(session + " used unknown Minecraft channel: " + channel);

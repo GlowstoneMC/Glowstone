@@ -1,18 +1,27 @@
 package net.glowstone.inventory;
 
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.util.InventoryUtil;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.Objects;
 
 public class GlowAnvilInventory extends GlowInventory implements AnvilInventory {
 
     private static final int FIRST_ITEM_SLOT = 0;
     private static final int SECOND_ITEM_SLOT = 1;
     private static final int RESULT_SLOT = 2;
+    private String rename = "";
+    private int repairCost;
 
     public GlowAnvilInventory(InventoryHolder holder) {
         super(holder, InventoryType.ANVIL);
@@ -41,22 +50,98 @@ public class GlowAnvilInventory extends GlowInventory implements AnvilInventory 
 
     @Override
     public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot, ItemStack clickedItem) {
-        clickedItem = player.getInventory().tryToFillSlots(clickedItem, 9, 36, 0, 9);
-        view.setItem(clickedSlot, clickedItem);
+        if (getSlotType(view.convertSlot(clickedSlot)) == SlotType.RESULT) {
+            // If the player clicked on the result give it to them
+            ItemStack forged = getForged();
+            if (forged == null) {
+                return; // we can't smith, my liege
+            }
+
+            // Smith the item
+            smith();
+
+            // Place the item in the player's inventory (right to left)
+            player.getInventory().tryToFillSlots(clickedItem, 8, -1, 35, 8);
+        } else {
+            // Clicked in the crafting grid, no special handling required (just place them left to right)
+            clickedItem = player.getInventory().tryToFillSlots(clickedItem, 9, 36, 0, 9);
+            view.setItem(clickedSlot, clickedItem);
+        }
+    }
+
+    private void smith() {
+        setItem(FIRST_ITEM_SLOT, InventoryUtil.createEmptyStack());
+        setItem(SECOND_ITEM_SLOT, InventoryUtil.createEmptyStack());
     }
 
     @Override
-    public String getRenameText() {
+    public void setItem(int index, ItemStack item) {
+        super.setItem(index, item);
+
+        if (index != RESULT_SLOT) {
+            ItemStack forged = getForged();
+            if (forged == null) {
+                super.setItem(RESULT_SLOT, InventoryUtil.createEmptyStack());
+            } else {
+                super.setItem(RESULT_SLOT, forged);
+            }
+        }
+    }
+
+    public ItemStack getForged() {
+        if (InventoryUtil.isEmpty(getFirstItem()) || InventoryUtil.isEmpty(getSecondItem())) {
+            return null;
+        }
+        if (getSecondItem().getType() == Material.ENCHANTED_BOOK) {
+            EnchantmentStorageMeta book = (EnchantmentStorageMeta) getSecondItem().getItemMeta();
+            ItemStack result;
+            if (InventoryUtil.isEmpty(getResultItem())) {
+                result = getFirstItem().clone();
+            } else {
+                result = getResultItem();
+            }
+            book.getStoredEnchants().forEach((enchantment, level) -> {
+                if (enchantment.canEnchantItem(result) || result.getType() == Material.ENCHANTED_BOOK) {
+                    result.addUnsafeEnchantment(enchantment, level);
+                }
+            });
+            return result;
+        }
         return null;
     }
 
     @Override
+    public String getRenameText() {
+        return rename;
+    }
+
+    public void setRenameText(String name) {
+        rename = name;
+        if (rename.isEmpty()) {
+            setItem(FIRST_ITEM_SLOT, getFirstItem());
+            setItem(SECOND_ITEM_SLOT, getSecondItem());
+        } else {
+            ItemStack result = getFirstItem().clone();
+            if (!InventoryUtil.isEmpty(result)) {
+                if (Objects.equals(result.getItemMeta().getDisplayName(), name)) {
+                    setItem(RESULT_SLOT, InventoryUtil.createEmptyStack());
+                }
+                // rename the item
+                ItemMeta m = result.getItemMeta();
+                m.setDisplayName(ChatColor.ITALIC + rename);
+                result.setItemMeta(m);
+                setItem(RESULT_SLOT, result);
+            }
+        }
+    }
+
+    @Override
     public int getRepairCost() {
-        return 0;
+        return repairCost;
     }
 
     @Override
     public void setRepairCost(int levels) {
-
+        repairCost = levels;
     }
 }
