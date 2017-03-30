@@ -915,6 +915,24 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
     }
 
+    public CompoundTag getLeftShoulderTag() {
+        Object tag = metadata.get(MetadataIndex.LEFT_SHOULDER);
+        return tag == null ? new CompoundTag() : (CompoundTag) tag;
+    }
+
+    public CompoundTag getRightShoulderTag() {
+        Object tag = metadata.get(MetadataIndex.RIGHT_SHOULDER);
+        return tag == null ? new CompoundTag() : (CompoundTag) tag;
+    }
+
+    public void setLeftShoulderTag(CompoundTag tag) {
+        metadata.set(MetadataIndex.LEFT_SHOULDER, tag == null ? new CompoundTag() : tag);
+    }
+
+    public void setRightShoulderTag(CompoundTag tag) {
+        metadata.set(MetadataIndex.RIGHT_SHOULDER, tag == null ? new CompoundTag() : tag);
+    }
+
     /**
      * Set this player's client settings.
      *
@@ -2248,7 +2266,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 currentTitle.fadeIn((int) value[0]);
                 currentTitle.stay((int) value[1]);
                 currentTitle.fadeOut((int) value[2]);
-                
+
                 break;
             default:
                 Preconditions.checkArgument(true, "Action is something other than a title, subtitle, or times");
