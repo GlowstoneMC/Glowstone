@@ -1,5 +1,6 @@
 package net.glowstone.entity.meta;
 
+import net.glowstone.entity.passive.GlowParrot;
 import net.glowstone.entity.passive.GlowTameable;
 import org.bukkit.entity.*;
 import org.bukkit.entity.minecart.PoweredMinecart;
@@ -161,6 +162,8 @@ public enum MetadataIndex {
     VEX_STATE(12, BYTE, Vex.class),
 
     VINDICATOR_STATE(12, BYTE, Vindicator.class),
+
+    PARROT_COLOR(15, INT, GlowParrot.class),
 
     //TODO - 1.9 When Those minecarts are implemented, uncomment this
     //MINECARTCOMMANDBLOCK_COMMAND(11, STRING, Minecart.class), //TODO 1.9 - Command block minecraft addition
