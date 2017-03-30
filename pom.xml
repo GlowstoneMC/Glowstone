@@ -28,7 +28,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <bukkit.version>1.11.2-R0.1-SNAPSHOT</bukkit.version>
-        <protocol.version>1.11.2</protocol.version>
+        <protocol.version>17w13a</protocol.version>
     </properties>
 
     <repositories>
