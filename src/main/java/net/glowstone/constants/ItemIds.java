@@ -258,6 +258,24 @@ public final class ItemIds {
         both(232, "green_shulker_box");
         both(233, "red_shulker_box");
         both(234, "black_shulker_box");
+        block(235, "white_glazed_terracotta");
+        block(236, "orange_glazed_terracotta");
+        block(237, "magenta_glazed_terracotta");
+        block(238, "light_blue_glazed_terracotta");
+        block(239, "yellow_glazed_terracotta");
+        block(240, "lime_glazed_terracotta");
+        block(241, "pink_glazed_terracotta");
+        block(242, "gray_glazed_terracotta");
+        block(243, "silver_glazed_terracotta");
+        block(244, "cyan_glazed_terracotta");
+        block(245, "purple_glazed_terracotta");
+        block(246, "blue_glazed_terracotta");
+        block(247, "brown_glazed_terracotta");
+        block(248, "green_glazed_terracotta");
+        block(249, "red_glazed_terracotta");
+        block(250, "black_glazed_terracotta");
+        block(251, "concrete");
+        block(252, "concrete_powder");
         block(255, "structure_block");
         // items
         item(256, "iron_shovel");

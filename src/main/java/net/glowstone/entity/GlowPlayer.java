@@ -2284,6 +2284,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @param awardParents whether parent achievements should be awarded.
      * @return {@code true} if the achievement was awarded, {@code false} otherwise
      */
+
+    // TODO: advancements
     public boolean awardAchievement(Achievement achievement, boolean awardParents) {
         if (hasAchievement(achievement)) return false;
 
@@ -2317,6 +2319,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         stats.setAchievement(achievement, false);
         sendAchievement(achievement, false);
     }
+
+    // TODO: advancements
 
     private void sendAchievement(Achievement achievement, boolean has) {
         Map<String, Integer> values = new HashMap<>();

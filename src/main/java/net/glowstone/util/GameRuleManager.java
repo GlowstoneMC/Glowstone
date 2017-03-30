@@ -26,6 +26,7 @@ public final class GameRuleManager {
         setValue("reducedDebugInfo", false); // implemented
         setValue("sendCommandFeedback", true);
         setValue("showDeathMessages", true);
+        setValue("doLimitedCrafting", false);
     }
 
     /**
