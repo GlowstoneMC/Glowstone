@@ -61,7 +61,7 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
 
     @Override
     public Location getFixedSpawnLocation(World world, Random random) {
-        int spawnX = random.nextInt(128) - 64, spawnZ = random.nextInt(128) - 64;
+        int spawnX = random.nextInt(256) - 128, spawnZ = random.nextInt(256) - 128;
 
         for (int tries = 0; tries < 1000 && !canSpawn(world, spawnX, spawnZ); ++tries) {
             spawnX += random.nextInt(128) - 64;
