@@ -54,6 +54,9 @@ public enum MetadataIndex {
     POTION_AMBIENT(9, BOOLEAN, LivingEntity.class),
     ARROW_COUNT(10, BYTE, LivingEntity.class),
 
+    LEFT_SHOULDER(15, NBTTAG, Player.class),
+    RIGHT_SHOULDER(16, NBTTAG, Player.class),
+
     ARMORSTAND_FLAGS(11, BYTE, ArmorStand.class),
     ARMORSTAND_HEAD_POSITION(12, VECTOR, ArmorStand.class),
     ARMORSTAND_BODY_POSITION(13, VECTOR, ArmorStand.class),
@@ -165,8 +168,8 @@ public enum MetadataIndex {
     //MINECARTCOMMANDBLOCK_LAST_OUTPUT(12, CHAT, Minecart.class), //TODO 1.9 - Command block minecraft addition
 
     FURNACE_MINECART_POWERED(12, BOOLEAN, PoweredMinecart.class),
-    TNT_PRIMED(6, INT, TNTPrimed.class);
-
+    TNT_PRIMED(6, INT, TNTPrimed.class),
+    ;
 
     private final int index;
     private final MetadataType type;
