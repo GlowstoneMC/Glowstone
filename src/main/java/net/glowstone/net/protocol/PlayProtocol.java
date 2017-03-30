@@ -24,7 +24,7 @@ import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
 
 public class PlayProtocol extends GlowProtocol {
     public PlayProtocol() {
-        super("PLAY", 0x4B);
+        super("PLAY", 0x4D);
 
         inbound(0x00, TeleportConfirmMessage.class, TeleportConfirmCodec.class, TeleportConfirmHandler.class);
         // TODO 0x01 : Unknown packet
