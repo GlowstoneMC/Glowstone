@@ -10,6 +10,8 @@ import static org.bukkit.Achievement.*;
  */
 public final class GlowAchievement {
 
+    // TODO: advancements
+
     private static final String[] names = new String[values().length];
     private static final String[] fancyNames = new String[values().length];
 

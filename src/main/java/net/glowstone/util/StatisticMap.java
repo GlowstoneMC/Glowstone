@@ -61,6 +61,8 @@ public final class StatisticMap {
     ////////////////////////////////////////////////////////////////////////////
     // Achievement and stat accessors
 
+    // TODO: advancements
+
     public boolean hasAchievement(Achievement achievement) {
         return getValue(GlowAchievement.getName(achievement)) != 0;
     }
