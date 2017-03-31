@@ -704,13 +704,12 @@ public abstract class GlowEntity implements Entity {
      */
     protected Vector gravityAccel = new Vector(0, -0.04, 0);
 
-    /**
-     * Acceleration applied per tick.
-     */
-    protected Vector acceleration = new Vector(0, 0, 0);
-
     protected void pulsePhysics() {
-        pulsePhysics(false);
+        if (boundingBox == null) {
+            pulsePhysics(true);
+        } else {
+            pulsePhysics(false);
+        }
     }
 
     protected void pulsePhysics(boolean simple) {
@@ -765,6 +764,9 @@ public abstract class GlowEntity implements Entity {
                                     velLoc.setZ(z);
                                     foundCandidate = true;
                                 }
+                            } else {
+                                foundCandidate = false;
+                                break;
                             }
                         }
                     }
@@ -773,13 +775,11 @@ public abstract class GlowEntity implements Entity {
 
             if (foundCandidate) {
                 setRawLocation(velLoc);
-                acceleration.add(gravityAccel);
+                velocity.add(gravityAccel);
             } else {
                 velocity.copy(new Vector());
-                acceleration.copy(new Vector());
             }
 
-            velocity.add(acceleration);
             if (location.getBlock().isLiquid()) {
                 velocity.multiply(liquidDrag);
             } else {
