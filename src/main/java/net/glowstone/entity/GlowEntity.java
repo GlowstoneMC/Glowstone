@@ -309,6 +309,18 @@ public abstract class GlowEntity implements Entity {
         velocityChanged = true;
     }
 
+    public void setGravityAccel(Vector gravity) {
+        this.gravityAccel = gravity;
+    }
+
+    public void setDrag(double drag, boolean liquid) {
+        if (liquid) {
+            liquidDrag = drag;
+        } else {
+            airDrag = drag;
+        }
+    }
+
     @Override
     public boolean teleport(Location location) {
         checkNotNull(location, "location cannot be null");
@@ -403,9 +415,7 @@ public abstract class GlowEntity implements Entity {
             }
         }
 
-        if (!isDead()) {
-            pulsePhysics();
-        }
+        pulsePhysics();
 
         if (hasMoved()) {
             Block currentBlock = location.getBlock();
@@ -669,90 +679,110 @@ public abstract class GlowEntity implements Entity {
     }
 
     /**
-     * Velocity reduction applied each tick.
+     * Velocity reduction applied each tick in air.
      */
-    protected static final double AIR_DRAG = 0.98;
+    protected double airDrag = 0.98;
 
     /**
-     * Velocity reduction applied each tick.
+     * Velocity reduction applied each tick in liquids.
      */
-    protected static final double LIQUID_DRAG = 0.8;
+    protected double liquidDrag = 0.8;
 
     /**
      * Gravity acceleration applied each tick.
      */
-    protected static final Vector GRAVITY = new Vector(0, -0.04, 0);
+    protected Vector gravityAccel = new Vector(0, -0.04, 0);
 
     /**
      * Acceleration applied per tick.
      */
-    private Vector acceleration = new Vector(0, 0, 0);
+    protected Vector acceleration = new Vector(0, 0, 0);
 
     protected void pulsePhysics() {
-        // make sure bounding box is up to date
-        if (boundingBox != null) {
-            boundingBox.setCenter(location.getX(), location.getY(), location.getZ());
-        }
+        pulsePhysics(false);
+    }
 
-        Location velLoc = location.clone().add(getVelocity());
-        Location velLocOrig = velLoc.clone();
-
-        boolean foundCandidate = false;
-
-        if (boundingBox != null) {
-            Vector min = boundingBox.minCorner.clone();
-            Vector max = boundingBox.maxCorner.clone();
-
-            if (min.getX() > velLoc.getX()) {
-                min.setX(velLoc.getX());
-            } else if (max.getX() < velLoc.getX()) {
-                max.setX(velLoc.getX());
+    protected void pulsePhysics(boolean simple) {
+        if (simple) {
+            if (!location.clone().add(getVelocity()).getBlock().getType().isSolid()) {
+                location.add(getVelocity());
+                if (location.getBlock().isLiquid()) {
+                    velocity.multiply(liquidDrag);
+                } else {
+                    velocity.multiply(airDrag);
+                }
+                velocity.add(gravityAccel);
             }
-            if (min.getY() > velLoc.getY()) {
-                min.setY(velLoc.getY());
-            } else if (max.getY() < velLoc.getY()) {
-                max.setY(velLoc.getY());
-            }
-            if (min.getZ() > velLoc.getZ()) {
-                min.setZ(velLoc.getZ());
-            } else if (max.getZ() < velLoc.getZ()) {
-                max.setZ(velLoc.getZ());
-            }
+        } else {
+            Location velLoc = location.clone().add(getVelocity());
+            Location velLocOrig = velLoc.clone();
 
-            double distance = -1;
+            boolean foundCandidate = false;
 
-            for (int x = min.getBlockX(); x <= max.getBlockX(); ++x) {
-                for (int y = min.getBlockY(); y <= max.getBlockY(); ++y) {
-                    for (int z = min.getBlockZ(); z <= max.getBlockZ(); ++z) {
-                        if (!Material.getMaterial(world.getBlockTypeIdAt(x, y, z)).isSolid()) {
-                            Vector candidate = new Vector(x, y, z);
-                            double candidateDistance = candidate.distanceSquared(velLocOrig.toVector());
-                            if (candidateDistance < distance || distance < 0) {
-                                distance = candidateDistance;
-                                velLoc.setX(x);
-                                velLoc.setY(y);
-                                velLoc.setZ(z);
-                                foundCandidate = true;
+            if (boundingBox != null) {
+                Vector min = boundingBox.minCorner.clone();
+                Vector max = boundingBox.maxCorner.clone();
+
+                if (min.getX() > velLoc.getX()) {
+                    min.setX(velLoc.getX());
+                } else if (max.getX() < velLoc.getX()) {
+                    max.setX(velLoc.getX());
+                }
+                if (min.getY() > velLoc.getY()) {
+                    min.setY(velLoc.getY());
+                } else if (max.getY() < velLoc.getY()) {
+                    max.setY(velLoc.getY());
+                }
+                if (min.getZ() > velLoc.getZ()) {
+                    min.setZ(velLoc.getZ());
+                } else if (max.getZ() < velLoc.getZ()) {
+                    max.setZ(velLoc.getZ());
+                }
+
+                double distance = -1;
+
+                for (int x = min.getBlockX(); x <= max.getBlockX(); ++x) {
+                    for (int y = min.getBlockY(); y <= max.getBlockY(); ++y) {
+                        for (int z = min.getBlockZ(); z <= max.getBlockZ(); ++z) {
+                            if (!Material.getMaterial(world.getBlockTypeIdAt(x, y, z)).isSolid()) {
+                                Vector candidate = new Vector(x, y, z);
+                                double candidateDistance = candidate.distanceSquared(velLocOrig.toVector());
+                                if (candidateDistance < distance || distance < 0) {
+                                    distance = candidateDistance;
+                                    velLoc.setX(x);
+                                    velLoc.setY(y);
+                                    velLoc.setZ(z);
+                                    foundCandidate = true;
+                                }
                             }
                         }
                     }
                 }
             }
+
+            if (foundCandidate) {
+                setRawLocation(velLoc);
+                acceleration.add(gravityAccel);
+            } else {
+                velocity.copy(new Vector());
+                acceleration.copy(new Vector());
+            }
+
+            velocity.add(acceleration);
+            if (location.getBlock().isLiquid()) {
+                velocity.multiply(liquidDrag);
+            } else {
+                velocity.multiply(airDrag);
+            }
         }
 
-        if (foundCandidate) {
-            setRawLocation(velLoc);
-            acceleration.add(GRAVITY);
-        } else {
-            velocity.copy(new Vector());
-            acceleration.copy(new Vector());
-        }
+        updateBoundingBox();
+    }
 
-        velocity.add(acceleration);
-        if (location.getBlock().isLiquid()) {
-            velocity.multiply(LIQUID_DRAG);
-        } else {
-            velocity.multiply(AIR_DRAG);
+    protected void updateBoundingBox() {
+        // make sure bounding box is up to date
+        if (boundingBox != null) {
+            boundingBox.setCenter(location.getX(), location.getY(), location.getZ());
         }
     }
 

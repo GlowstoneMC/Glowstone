@@ -21,16 +21,6 @@ import java.util.Random;
 
 public class GlowFallingBlock extends GlowEntity implements FallingBlock {
 
-    /**
-     * Air and Water resistance are the same
-     */
-    private static final Vector DRAG = new Vector(0, 0.98, 0);
-
-    /**
-     * Falling speed applied each tick.
-     */
-    private static final Vector GRAVITY = new Vector(0, -0.04, 0);
-
     private Material material;
     private boolean canHurtEntities;
     private boolean dropItem;
@@ -60,6 +50,8 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
         }
         this.sourceLocation = location.clone();
         setBoundingBox(0.98, 0.98);
+        setDrag(0.98, false);
+        setGravityAccel(new Vector(0, -0.02, 0));
 
         setMaterial(material);
         setDropItem(true);
@@ -153,7 +145,11 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
         }
 
         Location nextBlock = location.clone().add(getVelocity());
-        if (nextBlock.getBlock().getType().isSolid()) {
+        if (!nextBlock.getBlock().getType().isSolid()) {
+            velocity.add(gravityAccel);
+            location.add(getVelocity());
+            velocity.multiply(airDrag);
+        } else {
             if (supportingBlock(location.getBlock().getType())) {
                 boolean replaceBlock;
                 switch (location.getBlock().getType()) {
@@ -187,7 +183,7 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
             }
         }
 
-        super.pulsePhysics();
+        updateBoundingBox();
     }
 
     private void placeFallingBlock() {
