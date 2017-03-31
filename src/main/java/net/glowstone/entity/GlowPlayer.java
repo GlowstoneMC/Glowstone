@@ -90,6 +90,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -924,7 +925,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     public void setSettings(ClientSettings settings) {
         this.settings = settings;
-        // metadata.set(MetadataIndex.PLAYER_SKIN_FLAGS, settings.getSkinFlags()); // TODO 1.9 - This has been removed
+        metadata.set(MetadataIndex.PLAYER_SKIN_PARTS, settings.getSkinFlags());
+        metadata.set(MetadataIndex.PLAYER_MAIN_HAND, settings.getMainHand());
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1374,14 +1376,17 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         sendHealth();
     }
 
+    private Entity spectating;
+
     @Override
     public Entity getSpectatorTarget() {
-        return null;
+        return spectating;
     }
 
     @Override
     public void setSpectatorTarget(Entity entity) {
-
+        teleport(entity.getLocation(), PlayerTeleportEvent.TeleportCause.SPECTATE);
+        spectating = entity;
     }
 
     @Override
@@ -2457,7 +2462,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public MainHand getMainHand() {
-        return null;
+        return metadata.getByte(MetadataIndex.PLAYER_MAIN_HAND) == 0 ? MainHand.LEFT : MainHand.RIGHT;
     }
 
     @Override
@@ -2601,7 +2606,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
         hiddenEntities.add(player.getUniqueId());
         if (knownEntities.remove(player)) {
-            session.send(new DestroyEntitiesMessage(Arrays.asList(player.getEntityId())));
+            session.send(new DestroyEntitiesMessage(Collections.singletonList(player.getEntityId())));
         }
         session.send(UserListItemMessage.removeOne(player.getUniqueId()));
     }
@@ -2656,29 +2661,41 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     ////////////////////////////////////////////////////////////////////////////
     // Conversable
 
+    private List<Conversation> conversations = new ArrayList<>();
+
     @Override
     public boolean isConversing() {
-        return false;
+        return !conversations.isEmpty();
     }
 
     @Override
     public void acceptConversationInput(String input) {
-
+        conversations.get(0).acceptInput(input);
     }
 
     @Override
     public boolean beginConversation(Conversation conversation) {
-        return false;
+        boolean noQueue = conversations.isEmpty();
+        conversations.add(conversation);
+        if (noQueue) {
+            conversation.begin();
+        }
+        return noQueue;
     }
 
     @Override
     public void abandonConversation(Conversation conversation) {
-
+        abandonConversation(conversation, null);
     }
 
     @Override
     public void abandonConversation(Conversation conversation, ConversationAbandonedEvent details) {
-
+        conversations.remove(conversation);
+        if (details == null) {
+            conversation.abandon();
+        } else {
+            conversation.abandon(details);
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -2747,7 +2764,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             totalExperience = 0;
         }
         setLevel(level);
-        setXpSeed(new Random().nextInt()); //TODO use entity's random instance?
+        setXpSeed(ThreadLocalRandom.current().nextInt()); //TODO use entity's random instance?
     }
 
     ////////////////////////////////////////////////////////////////////////////
