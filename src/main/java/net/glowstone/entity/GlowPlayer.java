@@ -47,6 +47,7 @@ import net.glowstone.net.message.play.player.ResourcePackSendMessage;
 import net.glowstone.net.message.play.player.UseBedMessage;
 import net.glowstone.scoreboard.GlowScoreboard;
 import net.glowstone.scoreboard.GlowTeam;
+import net.glowstone.util.Convert;
 import net.glowstone.util.Position;
 import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextMessage;
@@ -1870,11 +1871,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         if (hash.length != 20) {
             throw new IllegalArgumentException("Resource pack hash is of an invalid length!");
         }
-        StringBuilder sb = new StringBuilder(40);
-        for (byte b : hash) {
-            sb.append(String.format("%02X ", b));
-        }
-        setResourcePack(url, sb.toString());
+        setResourcePack(url, Convert.fromBytes(hash));
     }
 
     ////////////////////////////////////////////////////////////////////////////
