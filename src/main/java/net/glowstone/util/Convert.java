@@ -9,4 +9,12 @@ public class Convert {
         }
         return data;
     }
+
+    public static String fromBytes(byte[] bytes) {
+        StringBuilder sb = new StringBuilder(40);
+        for (byte b : bytes) {
+            sb.append(String.format("%02X ", b));
+        }
+        return sb.toString();
+    }
 }
