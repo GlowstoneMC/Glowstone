@@ -1176,6 +1176,13 @@ public final class GlowServer implements Server {
 
     @Override
     public Entity getEntity(UUID uuid) {
+        for (World world : getWorlds()) {
+            for (Entity entity : world.getEntities()) {
+                if (entity.getUniqueId().equals(uuid)) {
+                    return entity;
+                }
+            }
+        }
         return null;
     }
 
