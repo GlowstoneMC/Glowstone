@@ -638,9 +638,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     protected void pulsePhysics() {
         // trust the client with physics
         // just update the bounding box
-        if (boundingBox != null) {
-            boundingBox.setCenter(location.getX(), location.getY(), location.getZ());
-        }
+        updateBoundingBox();
     }
 
     /**
