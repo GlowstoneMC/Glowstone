@@ -207,6 +207,23 @@ class GlowMetaItem implements ItemMeta {
         displayName = name;
     }
 
+    // TODO: support localization
+
+    @Override
+    public boolean hasLocalizedName() {
+        return hasDisplayName();
+    }
+
+    @Override
+    public String getLocalizedName() {
+        return getDisplayName();
+    }
+
+    @Override
+    public void setLocalizedName(String name) {
+        displayName = name;
+    }
+
     @Override
     public boolean hasLore() {
         return lore != null && !lore.isEmpty();

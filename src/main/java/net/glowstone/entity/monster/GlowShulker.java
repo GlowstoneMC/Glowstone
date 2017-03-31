@@ -10,13 +10,13 @@ import org.bukkit.util.BlockVector;
 public class GlowShulker extends GlowMonster implements Shulker {
 
     private Facing direction;
-    private byte height;
+    private byte shieldHeight;
     private Location attachment;
 
     public GlowShulker(Location loc) {
         super(loc, EntityType.SHULKER, 30);
         setDirection(Facing.DOWN); // todo
-        setHeight((byte) 0);
+        setShieldHeight((byte) 0);
         setAttachment(null); // todo
     }
 
@@ -29,13 +29,13 @@ public class GlowShulker extends GlowMonster implements Shulker {
         this.metadata.set(MetadataIndex.SHULKER_FACING_DIRECTION, direction.ordinal());
     }
 
-    public byte getHeight() {
-        return height;
+    public byte getShieldHeight() {
+        return shieldHeight;
     }
 
-    public void setHeight(byte height) {
-        this.height = height;
-        this.metadata.set(MetadataIndex.SHULKER_SHIELD_HEIGHT, height);
+    public void setShieldHeight(byte shieldHeight) {
+        this.shieldHeight = shieldHeight;
+        this.metadata.set(MetadataIndex.SHULKER_SHIELD_HEIGHT, shieldHeight);
     }
 
     public Location getAttachment() {
@@ -58,7 +58,7 @@ public class GlowShulker extends GlowMonster implements Shulker {
 
     @Override
     protected Sound getHurtSound() {
-        if (height == 0) {
+        if (shieldHeight == 0) {
             return Sound.ENTITY_SHULKER_HURT_CLOSED;
         }
         return Sound.ENTITY_SHULKER_HURT;

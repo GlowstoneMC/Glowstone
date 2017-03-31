@@ -1844,6 +1844,21 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         setResourcePack(url, "");
     }
 
+    @Override
+    public void setResourcePack(String url, byte[] hash) {
+        if (hash == null) {
+            throw new IllegalArgumentException("Resource pack hash must not be null!");
+        }
+        if (hash.length != 20) {
+            throw new IllegalArgumentException("Resource pack hash is of an invalid length!");
+        }
+        StringBuilder sb = new StringBuilder(40);
+        for (byte b : hash) {
+            sb.append(String.format("%02X ", b));
+        }
+        setResourcePack(url, sb.toString());
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Effect and data transmission
 

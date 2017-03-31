@@ -13,7 +13,7 @@ public class ShulkerStore extends MonsterStore<GlowShulker> {
     public void load(GlowShulker entity, CompoundTag tag) {
         super.load(entity, tag);
         if (tag.isByte("Peek")) {
-            entity.setHeight(tag.getByte("Peek"));
+            entity.setShieldHeight(tag.getByte("Peek"));
         }
         if (tag.isByte("AttachFace")) {
             entity.setDirection(GlowShulker.Facing.values()[tag.getByte("AttachFace")]);
@@ -23,7 +23,7 @@ public class ShulkerStore extends MonsterStore<GlowShulker> {
     @Override
     public void save(GlowShulker entity, CompoundTag tag) {
         super.save(entity, tag);
-        tag.putByte("Peek", entity.getHeight());
+        tag.putByte("Peek", entity.getShieldHeight());
         tag.putByte("AttachFace", entity.getFacingDirection().ordinal());
         tag.putInt("APX", entity.getLocation().getBlockX());
         tag.putInt("APY", entity.getLocation().getBlockY());
