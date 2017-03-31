@@ -1180,8 +1180,9 @@ public final class GlowServer implements Server {
     }
 
     @Override
-    public void reloadCommandAliases() {
+    public boolean reloadCommandAliases() {
         commandMap.registerServerAliases();
+        return true; // TODO: better error detection?
     }
 
     ////////////////////////////////////////////////////////////////////////////

@@ -671,6 +671,17 @@ public abstract class GlowEntity implements Entity {
     protected final void setBoundingBox(double xz, double y) {
         boundingBox = new EntityBoundingBox(xz, y);
     }
+
+    @Override
+    public double getWidth() {
+        return boundingBox.getSize().getX();
+    }
+
+    @Override
+    public double getHeight() {
+        return boundingBox.getSize().getY();
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Physics stuff
 
@@ -1114,7 +1125,7 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public boolean isPermissionSet(String s) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1122,62 +1133,62 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public boolean isPermissionSet(Permission permission) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;
     }
 
     @Override
     public boolean hasPermission(String s) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;
     }
 
     @Override
     public boolean hasPermission(Permission permission) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;
     }
 
     @Override
     public PermissionAttachment addAttachment(Plugin plugin, String s, boolean b) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
     public PermissionAttachment addAttachment(Plugin plugin) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
     public PermissionAttachment addAttachment(Plugin plugin, String s, boolean b, int i) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
     public PermissionAttachment addAttachment(Plugin plugin, int i) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
     public void removeAttachment(PermissionAttachment permissionAttachment) {
-        //To change body of implemented methods use File | Settings | File Templates.
+
     }
 
     @Override
     public void recalculatePermissions() {
-        //To change body of implemented methods use File | Settings | File Templates.
+
     }
 
     @Override
     public Set<PermissionAttachmentInfo> getEffectivePermissions() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
     public boolean isOp() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;
     }
 
     @Override
     public void setOp(boolean b) {
-        //To change body of implemented methods use File | Settings | File Templates.
+
     }
 
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {

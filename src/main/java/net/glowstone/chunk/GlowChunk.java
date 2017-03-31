@@ -204,6 +204,11 @@ public final class GlowChunk implements Chunk {
     }
 
     @Override
+    public boolean isSlimeChunk() {
+        return false; // TODO: implement slime chunks
+    }
+
+    @Override
     public boolean unload(boolean save) {
         return unload(save, true);
     }
