@@ -1917,14 +1917,14 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         float pitch = (float) Math.pow(2, octave) / 2f;
         for (int i = 1; i <= step; i++) {
             if (i < 7) {
-                pitch += 1f/3f;
+                pitch += 1f / 3f;
             } else if (step < 18) {
                 pitch += 0.05f;
             } else {
                 pitch += 0.1f;
             }
         }
-        playSound(loc, sound, SoundCategory.MUSIC,3.0f, pitch);
+        playSound(loc, sound, SoundCategory.MUSIC, 3.0f, pitch);
     }
 
     @Override
