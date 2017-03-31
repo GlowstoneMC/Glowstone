@@ -164,39 +164,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * The time the player last played, or 0 if unknown.
      */
     private final long lastPlayed;
-    private final Player.Spigot spigot = new Player.Spigot() {
-        @Override
-        public void playEffect(Location location, Effect effect, int id, int data, float offsetX, float offsetY, float offsetZ, float speed, int particleCount, int radius) {
-            if (effect.getType() == Type.PARTICLE) {
-                MaterialData material = new MaterialData(id, (byte) data);
-                showParticle(location, effect, material, offsetX, offsetY, offsetZ, speed, particleCount);
-            } else {
-                playEffect_(location, effect, data);
-            }
-        }
 
-        @Override
-        public InetSocketAddress getRawAddress() {
-            return session.getAddress();
-        }
-
-        @Override
-        public void respawn() {
-            if (isDead()) {
-                GlowPlayer.this.respawn();
-            }
-        }
-
-        @Override
-        public boolean getCollidesWithEntities() {
-            return isCollidable();
-        }
-
-        @Override
-        public void setCollidesWithEntities(boolean collides) {
-            setCollidable(collides);
-        }
-    };
     /**
      * The time the player joined.
      */
@@ -443,9 +411,42 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         sendHealth();
     }
 
-
     ////////////////////////////////////////////////////////////////////////////
     // Internals
+
+    private final Player.Spigot spigot = new Player.Spigot() {
+        @Override
+        public void playEffect(Location location, Effect effect, int id, int data, float offsetX, float offsetY, float offsetZ, float speed, int particleCount, int radius) {
+            if (effect.getType() == Type.PARTICLE) {
+                MaterialData material = new MaterialData(id, (byte) data);
+                showParticle(location, effect, material, offsetX, offsetY, offsetZ, speed, particleCount);
+            } else {
+                playEffect_(location, effect, data);
+            }
+        }
+
+        @Override
+        public InetSocketAddress getRawAddress() {
+            return session.getAddress();
+        }
+
+        @Override
+        public void respawn() {
+            if (isDead()) {
+                GlowPlayer.this.respawn();
+            }
+        }
+
+        @Override
+        public boolean getCollidesWithEntities() {
+            return isCollidable();
+        }
+
+        @Override
+        public void setCollidesWithEntities(boolean collides) {
+            setCollidable(collides);
+        }
+    };
 
     @Override
     public void damage(double amount, DamageCause cause) {
