@@ -32,21 +32,6 @@ public class GlowItem extends GlowEntity implements Item {
     private static final int LIFETIME = 5 * 60 * 20;
 
     /**
-     * Velocity reduction applied each tick.
-     */
-    private static final double AIR_DRAG = 0.99;
-
-    /**
-     * Velocity reduction applied each tick.
-     */
-    private static final double LIQUID_DRAG = 0.8;
-
-    /**
-     * Gravity acceleration applied each tick.
-     */
-    private static final Vector GRAVITY = new Vector(0, -0.05, 0);
-
-    /**
      * The remaining delay until this item may be picked up.
      */
     private int pickupDelay;
@@ -66,6 +51,9 @@ public class GlowItem extends GlowEntity implements Item {
         super(location);
         setItemStack(item);
         setBoundingBox(0.25, 0.25);
+        setDrag(0.98, false);
+        setDrag(0.98, true);
+        setGravityAccel(new Vector(0, -0.02, 0));
         pickupDelay = 20;
     }
 
@@ -155,7 +143,7 @@ public class GlowItem extends GlowEntity implements Item {
             setRawLocation(location.clone().add(0, 0.2, 0), false);
         }
 
-        super.pulsePhysics();
+        pulsePhysics(true);
     }
 
     @Override
