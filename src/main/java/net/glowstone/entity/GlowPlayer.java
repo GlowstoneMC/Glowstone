@@ -1729,24 +1729,26 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         spawnParticle(particle, new Location(world, x, y, z), count, offsetX, offsetY, offsetZ, extra, data);
     }
 
+    public boolean affectsSpawning = true;
+
     @Override
     public boolean getAffectsSpawning() {
-        return false;
+        return affectsSpawning;
     }
 
     @Override
     public void setAffectsSpawning(boolean affects) {
-
+        affectsSpawning = affects;
     }
 
     @Override
     public int getViewDistance() {
-        return 0;
+        return settings.getViewDistance();
     }
 
     @Override
     public void setViewDistance(int viewDistance) {
-
+        settings.setViewDistance(viewDistance);
     }
 
     @Override
@@ -1908,9 +1910,21 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 sound = Sound.BLOCK_NOTE_BASS;
                 break;
             default:
-                throw new IllegalArgumentException("Invalid instrument");
+                sound = null;
         }
-        playSound(loc, sound, 3.0f, note.getId());
+        byte step = note.getId();
+        int octave = note.getOctave();
+        float pitch = (float) Math.pow(2, octave) / 2f;
+        for (int i = 1; i <= step; i++) {
+            if (i < 7) {
+                pitch += 1f/3f;
+            } else if (step < 18) {
+                pitch += 0.05f;
+            } else {
+                pitch += 0.1f;
+            }
+        }
+        playSound(loc, sound, SoundCategory.MUSIC,3.0f, pitch);
     }
 
     @Override

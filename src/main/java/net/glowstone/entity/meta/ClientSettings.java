@@ -24,7 +24,8 @@ public class ClientSettings {
     public static final int SKIN_HAT = 1 << 6;
 
     private final String locale;
-    private final int viewDistance, chatFlags;
+    private int viewDistance;
+    private final int chatFlags;
     private final boolean chatColors;
     private final int skinFlags;
     private final int mainHand;
