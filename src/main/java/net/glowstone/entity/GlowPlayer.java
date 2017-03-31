@@ -1819,13 +1819,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     public void saveData(boolean async) {
         if (async) {
-            new Thread() {
-                @Override
-                public void run() {
-                    server.getPlayerDataService().writeData(GlowPlayer.this);
-                    server.getPlayerStatisticIoService().writeStats(GlowPlayer.this);
-                }
-            }.start();
+            new Thread(() -> {
+                server.getPlayerDataService().writeData(GlowPlayer.this);
+                server.getPlayerStatisticIoService().writeStats(GlowPlayer.this);
+            }).start();
         } else {
             server.getPlayerDataService().writeData(this);
             server.getPlayerStatisticIoService().writeStats(this);
@@ -1837,6 +1834,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         server.getPlayerDataService().readData(this);
         server.getPlayerStatisticIoService().readStats(this);
     }
+
+    private String resourcePackHash;
+    private PlayerResourcePackStatusEvent.Status resourcePackStatus;
 
     @Override
     @Deprecated
@@ -1860,28 +1860,33 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         setResourcePack(url, Convert.fromBytes(hash));
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Effect and data transmission
-
     @Override
     public void setResourcePack(String url, String hash) {
         session.send(new ResourcePackSendMessage(url, hash));
+        resourcePackHash = hash;
+    }
+
+    public void setResourcePackStatus(PlayerResourcePackStatusEvent.Status status) {
+        resourcePackStatus = status;
     }
 
     @Override
     public PlayerResourcePackStatusEvent.Status getResourcePackStatus() {
-        return null;
+        return resourcePackStatus;
     }
 
     @Override
     public String getResourcePackHash() {
-        return null;
+        return resourcePackHash;
     }
 
     @Override
     public boolean hasResourcePack() {
-        return false;
+        return resourcePackStatus == PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED;
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Effect and data transmission
 
     @Override
     public void playNote(Location loc, Instrument instrument, Note note) {
