@@ -7,5 +7,4 @@ import lombok.Data;
 public final class ResourcePackSendMessage implements Message {
 
     private final String url, hash;
-
 }

@@ -53,6 +53,11 @@ public enum MetadataIndex {
     POTION_AMBIENT(9, BOOLEAN, LivingEntity.class),
     ARROW_COUNT(10, BYTE, LivingEntity.class),
 
+    PLAYER_EXTRA_HEARTS(11, FLOAT, Player.class),
+    PLAYER_SCORE(12, INT, Player.class),
+    PLAYER_SKIN_PARTS(13, BYTE, Player.class),
+    PLAYER_MAIN_HAND(14, BYTE, Player.class),
+
     ARMORSTAND_FLAGS(11, BYTE, ArmorStand.class),
     ARMORSTAND_HEAD_POSITION(12, VECTOR, ArmorStand.class),
     ARMORSTAND_BODY_POSITION(13, VECTOR, ArmorStand.class),

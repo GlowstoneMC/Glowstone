@@ -565,8 +565,8 @@ public class ServerShim implements Server {
     }
 
     @Override
-    public void reloadCommandAliases() {
-
+    public boolean reloadCommandAliases() {
+        return false;
     }
 
     @Override
