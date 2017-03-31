@@ -221,6 +221,24 @@ public final class ItemTable {
         reg(Material.REDSTONE_COMPARATOR_ON, new BlockRedstoneComparator());
         reg(Material.REDSTONE_COMPARATOR_OFF, new BlockRedstoneComparator());
         reg(Material.BEACON, new BlockBeacon());
+        reg(Material.CONCRETE, new BlockDirectDrops(Material.CONCRETE));
+        reg(Material.CONCRETE_POWDER, new BlockConcretePowder());
+        reg(Material.WHITE_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.WHITE_GLAZED_TERRACOTTA));
+        reg(Material.BLACK_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.BLACK_GLAZED_TERRACOTTA));
+        reg(Material.BLUE_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.BLUE_GLAZED_TERRACOTTA));
+        reg(Material.BROWN_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.BROWN_GLAZED_TERRACOTTA));
+        reg(Material.CYAN_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.CYAN_GLAZED_TERRACOTTA));
+        reg(Material.GRAY_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.GRAY_GLAZED_TERRACOTTA));
+        reg(Material.GREEN_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.GREEN_GLAZED_TERRACOTTA));
+        reg(Material.LIGHT_BLUE_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.LIGHT_BLUE_GLAZED_TERRACOTTA));
+        reg(Material.LIME_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.LIME_GLAZED_TERRACOTTA));
+        reg(Material.MAGENTA_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.MAGENTA_GLAZED_TERRACOTTA));
+        reg(Material.ORANGE_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.ORANGE_GLAZED_TERRACOTTA));
+        reg(Material.PINK_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.PINK_GLAZED_TERRACOTTA));
+        reg(Material.PURPLE_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.PURPLE_GLAZED_TERRACOTTA));
+        reg(Material.RED_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.RED_GLAZED_TERRACOTTA));
+        reg(Material.SILVER_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.SILVER_GLAZED_TERRACOTTA));
+        reg(Material.YELLOW_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.YELLOW_GLAZED_TERRACOTTA));
 
         reg(Material.FLINT_AND_STEEL, new ItemFlintAndSteel());
         reg(Material.SIGN, new ItemSign());

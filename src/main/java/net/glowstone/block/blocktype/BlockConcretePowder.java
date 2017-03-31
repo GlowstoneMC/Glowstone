@@ -5,8 +5,8 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 
 public class BlockConcretePowder extends BlockFalling {
-    public BlockConcretePowder(Material drop) {
-        super(drop);
+    public BlockConcretePowder() {
+        super(Material.CONCRETE_POWDER);
     }
 
     @Override
