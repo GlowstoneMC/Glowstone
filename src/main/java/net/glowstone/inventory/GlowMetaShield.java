@@ -16,17 +16,17 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class GlowMetaBanner extends GlowMetaItem implements BannerMeta {
+public class GlowMetaShield extends GlowMetaItem implements BannerMeta {
 
     private List<Pattern> patterns = new ArrayList<>();
     private DyeColor baseColor = null;
 
-    public GlowMetaBanner(GlowMetaItem meta) {
+    public GlowMetaShield(GlowMetaItem meta) {
         super(meta);
-        if (!(meta instanceof GlowMetaBanner)) {
+        if (!(meta instanceof GlowMetaShield)) {
             return;
         }
-        GlowMetaBanner banner = (GlowMetaBanner) meta;
+        GlowMetaShield banner = (GlowMetaShield) meta;
         patterns = banner.patterns;
         baseColor = banner.baseColor;
     }
@@ -80,44 +80,38 @@ public class GlowMetaBanner extends GlowMetaItem implements BannerMeta {
     @Override
     void writeNbt(CompoundTag tag) {
         super.writeNbt(tag);
-        CompoundTag blockEntityTag = new CompoundTag();
-
-        blockEntityTag.putCompoundList("Patterns", BlockBanner.toNBT(patterns));
         if (baseColor != null) {
-            blockEntityTag.putInt("Base", baseColor.getWoolData());
+            tag.putInt("Base", baseColor.getWoolData());
         }
-        tag.putCompound("BlockEntityTag", blockEntityTag);
+        tag.putCompoundList("Patterns", BlockBanner.toNBT(patterns));
     }
 
     @Override
     void readNbt(CompoundTag tag) {
         super.readNbt(tag);
-        if (tag.isCompound("BlockEntityTag")) {
-            CompoundTag blockEntityTag = tag.getCompound("BlockEntityTag");
-            if (blockEntityTag.isList("Patterns", TagType.COMPOUND)) {
-                List<CompoundTag> patterns = blockEntityTag.getCompoundList("Patterns");
-                this.patterns = BlockBanner.fromNBT(patterns);
-            }
-            if (blockEntityTag.isInt("Base")) {
-                this.baseColor = DyeColor.getByWoolData((byte) blockEntityTag.getInt("Base"));
-            }
+        if (tag.isList("Patterns", TagType.COMPOUND)) {
+            List<CompoundTag> patterns = tag.getCompoundList("Patterns");
+            this.patterns = BlockBanner.fromNBT(patterns);
+        }
+        if (tag.isInt("Base")) {
+            this.baseColor = DyeColor.getByWoolData((byte) tag.getInt("Base"));
         }
     }
 
     @Override
     public ItemMeta clone() {
-        return new GlowMetaBanner(this);
+        return new GlowMetaShield(this);
     }
 
     @Override
     public boolean isApplicable(Material material) {
-        return material == Material.BANNER;
+        return material == Material.SHIELD;
     }
 
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> result = super.serialize();
-        result.put("meta-type", "BANNER");
+        result.put("meta-type", "SHIELD");
         List<Map<String, String>> patternsList = new ArrayList<>();
         for (Pattern pattern : patterns) {
             patternsList.add(ImmutableMap.of(pattern.getPattern().toString(), pattern.getColor().toString()));
@@ -128,5 +122,4 @@ public class GlowMetaBanner extends GlowMetaItem implements BannerMeta {
         }
         return result;
     }
-
 }
