@@ -7,7 +7,7 @@
     <name>Glowstone</name>
     <groupId>net.glowstone</groupId>
     <artifactId>glowstone</artifactId>
-    <version>2017.3.0.49</version>
+    <version>2017.4.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <inceptionYear>2011</inceptionYear>
     <url>https://www.glowstone.net</url>
