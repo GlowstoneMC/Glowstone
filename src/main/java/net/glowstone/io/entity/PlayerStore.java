@@ -88,6 +88,14 @@ class PlayerStore extends HumanEntityStore<GlowPlayer> {
             }
         }
 
+        // shoulders (1.12)
+        if (tag.isCompound("ShoulderEntityLeft")) {
+            entity.setLeftShoulderTag(tag.getCompound("ShoulderEntityLeft"));
+        }
+        if (tag.isCompound("ShoulderEntityRight")) {
+            entity.setRightShoulderTag(tag.getCompound("ShoulderEntityRight"));
+        }
+
         // bukkit
         // cannot read firstPlayed, lastPlayed, or lastKnownName
     }
@@ -129,6 +137,14 @@ class PlayerStore extends HumanEntityStore<GlowPlayer> {
         abilities.putBool("mayBuild", entity.getGameMode() != GameMode.ADVENTURE);
         abilities.putBool("instabuild", entity.getGameMode() == GameMode.CREATIVE);
         tag.putCompound("abilities", abilities);
+
+        // shoulders
+        if (!entity.getLeftShoulderTag().isEmpty()) {
+            tag.putCompound("ShoulderEntityLeft", entity.getLeftShoulderTag());
+        }
+        if (!entity.getRightShoulderTag().isEmpty()) {
+            tag.putCompound("ShoulderEntityRight", entity.getRightShoulderTag());
+        }
 
         // bukkit
         CompoundTag bukkit = new CompoundTag();

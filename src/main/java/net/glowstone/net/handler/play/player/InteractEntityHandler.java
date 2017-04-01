@@ -81,7 +81,7 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
             PlayerInteractEntityEvent event = new PlayerInteractEntityEvent(player, possibleTarget);
             EventFactory.callEvent(event);
 
-            if (!event.isCancelled()) {
+            if (!event.isCancelled() && possibleTarget != null) {
                 possibleTarget.entityInteract(player, message);
             }
         } else {

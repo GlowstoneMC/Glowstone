@@ -43,6 +43,7 @@ public class LootingManager {
         register(EntityType.MUSHROOM_COW, baseDir + "mushroom_cow.json");
         register(EntityType.LLAMA, baseDir + "llama.json");
         register(EntityType.OCELOT, baseDir + "ocelot.json");
+        register(EntityType.PARROT, baseDir + "parrot.json");
         register(EntityType.PIG, baseDir + "pig.json");
         register(EntityType.PIG_ZOMBIE, baseDir + "pig_zombie.json");
         register(EntityType.POLAR_BEAR, baseDir + "polar_bear.json");
