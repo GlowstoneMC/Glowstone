@@ -13,7 +13,9 @@ public class ParrotStore extends TameableStore<GlowParrot> {
     @Override
     public void load(GlowParrot entity, CompoundTag compound) {
         super.load(entity, compound);
-        entity.setVariant(GlowParrot.VARIANTS[compound.getInt("Variant")]);
+        if (compound.containsKey("Variant")) {
+            entity.setVariant(GlowParrot.VARIANTS[compound.getInt("Variant")]);
+        }
     }
 
     @Override

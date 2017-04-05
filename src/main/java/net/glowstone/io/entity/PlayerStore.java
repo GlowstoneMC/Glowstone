@@ -96,6 +96,11 @@ class PlayerStore extends HumanEntityStore<GlowPlayer> {
             entity.setRightShoulderTag(tag.getCompound("ShoulderEntityRight"));
         }
 
+        // seen credits
+        if (tag.containsKey("seenCredits")) {
+            entity.setSeenCredits(tag.getBool("seenCredits"));
+        }
+
         // bukkit
         // cannot read firstPlayed, lastPlayed, or lastKnownName
     }
@@ -145,6 +150,8 @@ class PlayerStore extends HumanEntityStore<GlowPlayer> {
         if (!entity.getRightShoulderTag().isEmpty()) {
             tag.putCompound("ShoulderEntityRight", entity.getRightShoulderTag());
         }
+
+        tag.putBool("seenCredits", entity.hasSeenCredits());
 
         // bukkit
         CompoundTag bukkit = new CompoundTag();

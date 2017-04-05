@@ -2,18 +2,22 @@ package net.glowstone.entity.passive;
 
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
-import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.SoundUtil;
-import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Parrot;
+import org.bukkit.entity.Player;
 
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
+
+import static org.bukkit.entity.Parrot.Shoulder.LEFT;
+import static org.bukkit.entity.Parrot.Shoulder.RIGHT;
 
 public class GlowParrot extends GlowTameable implements Parrot {
 
@@ -47,6 +51,31 @@ public class GlowParrot extends GlowTameable implements Parrot {
     }
 
     @Override
+    public LivingEntity getImitatedEntity() {
+        return null;
+    }
+
+    @Override
+    public void setImitatedEntity(LivingEntity livingEntity) {
+
+    }
+
+    @Override
+    public Player getSittingOn() {
+        Player player = ((Player) getOwner());
+        if (Objects.equals(this, player.getShoulderEntity(RIGHT)) || Objects.equals(this, player.getShoulderEntity(LEFT))) {
+            return player;
+        }
+        return null;
+    }
+
+    @Override
+    public void setSittingOn(Player player, Shoulder shoulder) {
+        ((Player) getOwner()).setShoulderEntity(this, shoulder);
+        endOfLife = ticksLived + 1;
+    }
+
+    @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         if (endOfLife != 0) {
             return false;
@@ -67,18 +96,16 @@ public class GlowParrot extends GlowTameable implements Parrot {
             }
             return true;
         }
+        // TODO: sitting only happens on crouch
         if (isTamed() && getOwnerUUID() != null && getOwnerUUID().equals(player.getUniqueId())) {
             if (!player.getLeftShoulderTag().isEmpty() && !player.getRightShoulderTag().isEmpty()) {
                 return super.entityInteract(player, message);
             }
-            CompoundTag tag = new CompoundTag();
-            EntityStorage.save(this, tag);
             if (player.getLeftShoulderTag().isEmpty()) {
-                player.setLeftShoulderTag(tag);
+                setSittingOn(player, LEFT);
             } else {
-                player.setRightShoulderTag(tag);
+                setSittingOn(player, RIGHT);
             }
-            endOfLife = ticksLived + 1;
             return true;
         }
         return true;

@@ -35,6 +35,7 @@ import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.InventoryMonitor;
 import net.glowstone.io.PlayerDataService.PlayerReader;
+import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.game.*;
@@ -58,6 +59,7 @@ import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.Effect.Type;
 import org.bukkit.World.Environment;
+import org.bukkit.advancement.Advancement;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
@@ -65,10 +67,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
@@ -96,6 +95,7 @@ import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.bukkit.entity.Parrot.Shoulder.LEFT;
 
 /**
  * Represents an in-game player.
@@ -147,9 +147,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     private final Set<String> listeningChannels = new HashSet<>();
 
     /**
-     * The player's statistics, achievements, and related data.
+     * The player's statistics and related data.
      */
     private final StatisticMap stats = new StatisticMap();
+
+    private final List<Advancement> advancements = new ArrayList<>();
 
     /**
      * Whether the player has played before (will be false on first join).
@@ -222,6 +224,14 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * The scale at which to display the player's health.
      */
     private double healthScale = 20;
+    /**
+     * If this player has seen the end credits.
+     */
+    private boolean seenCredits;
+    /**
+     * Recipes this player has unlocked.
+     */
+    private Collection<Recipe> recipes = new ArrayList<Recipe>();
     /**
      * This player's current time offset.
      */
@@ -1406,6 +1416,49 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public Entity getShoulderEntity(Parrot.Shoulder shoulder) {
+        CompoundTag tag = shoulder == LEFT ? getLeftShoulderTag() : getRightShoulderTag();
+        if (tag.isEmpty()) {
+            return null;
+        }
+        UUID uuid = new UUID(tag.getLong("UUIDMost"), tag.getLong("UUIDLeast"));
+        return server.getEntity(uuid);
+    }
+
+    @Override
+    public void setShoulderEntity(Entity entity, Parrot.Shoulder shoulder) {
+        CompoundTag tag;
+        if (entity == null) {
+            tag = shoulder == LEFT ? getLeftShoulderTag() : getRightShoulderTag();
+            if (!tag.isEmpty()) {
+                EntityStorage.loadEntity(world, tag);
+            }
+        } else {
+            tag = new CompoundTag();
+            EntityStorage.save((GlowEntity) entity, tag);
+            if (shoulder == LEFT) {
+                setLeftShoulderTag(tag);
+            } else {
+                setRightShoulderTag(tag);
+            }
+        }
+    }
+
+    @Override
+    public boolean hasSeenCredits() {
+        return seenCredits;
+    }
+
+    public void setSeenCredits(boolean seen) {
+        this.seenCredits = seen;
+    }
+
+    @Override
+    public Collection<Recipe> getUnlockedRecipes() {
+        return null;
+    }
+
+    @Override
     public void sendTitle(String title, String subtitle) {
         sendTitle(new Title(title, subtitle));
     }
@@ -2296,7 +2349,26 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    // Achievements and statistics
+    // Advancements and statistics
+
+    @Override
+    public void grantAdvancement(Advancement advancement) {
+        if (!hasAdvancement(advancement)) {
+            advancements.add(advancement);
+        }
+    }
+
+    @Override
+    public void revokeAdvancement(Advancement advancement) {
+        if (hasAdvancement(advancement)) {
+            advancements.remove(advancement);
+        }
+    }
+
+    @Override
+    public boolean hasAdvancement(Advancement advancement) {
+        return advancements.contains(advancement);
+    }
 
     @Override
     public boolean hasAchievement(Achievement achievement) {
