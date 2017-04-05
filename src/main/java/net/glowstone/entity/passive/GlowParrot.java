@@ -71,7 +71,7 @@ public class GlowParrot extends GlowTameable implements Parrot {
 
     @Override
     public void setSittingOn(Player player, Shoulder shoulder) {
-        ((Player) getOwner()).setShoulderEntity(this, shoulder);
+        player.setShoulderEntity(this, shoulder);
         endOfLife = ticksLived + 1;
     }
 
