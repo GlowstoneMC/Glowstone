@@ -1,7 +1,7 @@
 package net.glowstone.entity;
 
-import net.glowstone.entity.ai.LookAroundTask;
-import net.glowstone.entity.ai.LookAtPlayerTask;
+import net.glowstone.entity.ai.EntityDirector;
+import net.glowstone.entity.ai.MobState;
 import org.bukkit.Location;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.EntityType;
@@ -20,8 +20,11 @@ public class GlowAnimal extends GlowAgeable implements Animals {
      */
     public GlowAnimal(Location location, EntityType type, double maxHealth) {
         super(location, type, maxHealth);
-        getTaskManager().addTask(new LookAtPlayerTask());
-        getTaskManager().addTask(new LookAroundTask());
+        if (type != null) {
+            EntityDirector.registerEntityMobState(type, MobState.IDLE, "look_around");
+            EntityDirector.registerEntityMobState(type, MobState.IDLE, "look_player");
+        }
+        setState(MobState.IDLE);
     }
 
     @Override

@@ -157,7 +157,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
             action = InventoryAction.NOTHING;
         }
 
-        // determine whether NOTHING, HOTBAR_MOVE_AND_READD or HOTBAR_SWAP should be executed
+        // determine whether NO_AI, HOTBAR_MOVE_AND_READD or HOTBAR_SWAP should be executed
         if (clickType == ClickType.NUMBER_KEY) {
             ItemStack destItem = bottom.getItem(message.getButton());
             if (InventoryUtil.isEmpty(slotItem)) {

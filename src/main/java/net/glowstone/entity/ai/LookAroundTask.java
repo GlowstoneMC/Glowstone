@@ -6,6 +6,10 @@ public class LookAroundTask extends EntityTask<GlowLivingEntity> {
 
     private int delay = random.nextInt(10) + 15;
 
+    static {
+        EntityDirector.registerEntityTask("look_around", LookAroundTask.class);
+    }
+
     public LookAroundTask() {
         super("look_around");
     }

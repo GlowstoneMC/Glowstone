@@ -8,6 +8,7 @@ import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.AttributeManager.Key;
+import net.glowstone.entity.ai.MobState;
 import net.glowstone.entity.ai.TaskManager;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.inventory.EquipmentMonitor;
@@ -128,6 +129,13 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * The entity's AI task manager.
      */
     protected final TaskManager taskManager;
+    /**
+     * The entity's current state;
+     */
+    private MobState aiState = MobState.NO_AI;
+    /**
+     * If this entity has swam in lava (for fire application).
+     */
     private boolean swamInLava;
 
     /**
@@ -908,15 +916,31 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         metadata.setBit(MetadataIndex.STATUS, MetadataIndex.StatusFlags.GLIDING, gliding);
     }
 
+    public MobState getState() {
+        return aiState;
+    }
+
+    public void setState(MobState state) {
+        if (aiState != state) {
+            aiState = state;
+            getTaskManager().updateState();
+        }
+    }
+
     @Override
     public void setAI(boolean ai) {
-        // todo: 1.11
+        if (ai) {
+            if (aiState == MobState.NO_AI) {
+                setState(MobState.IDLE);
+            }
+        } else {
+            setState(MobState.NO_AI);
+        }
     }
 
     @Override
     public boolean hasAI() {
-        // todo: 1.11
-        return true;
+        return aiState != MobState.NO_AI;
     }
 
     @Override

@@ -3,6 +3,7 @@ package net.glowstone.entity.ai;
 import net.glowstone.entity.GlowLivingEntity;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class TaskManager {
 
@@ -20,16 +21,25 @@ public class TaskManager {
                 return task;
             }
         }
-        return null;
+        return getTask(EntityDirector.getEntityTask(name));
     }
 
-    public EntityTask<GlowLivingEntity> getTask(Class<? extends EntityTask<GlowLivingEntity>> clazz) {
+    public EntityTask<GlowLivingEntity> getTask(Class<? extends EntityTask> clazz) {
         for (EntityTask<GlowLivingEntity> task : tasks) {
             if (task.getClass().equals(clazz)) {
                 return task;
             }
         }
+        try {
+            return clazz.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
         return null;
+    }
+
+    public void updateState() {
+        addTask(getTask(Objects.requireNonNull(EntityDirector.getEntityMobStateTask(entity.getType(), entity.getState()))));
     }
 
     public void cancel(EntityTask<GlowLivingEntity> task) {
