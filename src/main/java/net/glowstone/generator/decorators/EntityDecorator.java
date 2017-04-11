@@ -1,6 +1,5 @@
 package net.glowstone.generator.decorators;
 
-import net.glowstone.GlowWorld;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,7 +12,6 @@ import org.bukkit.generator.BlockPopulator;
 import java.util.Random;
 
 public class EntityDecorator extends BlockPopulator {
-    private static final Material[] SKIP_BLOCKS = new Material[]{Material.LONG_GRASS, Material.DOUBLE_PLANT, Material.YELLOW_FLOWER, Material.RED_ROSE, Material.RED_MUSHROOM, Material.BROWN_MUSHROOM, Material.LEAVES, Material.LEAVES_2, Material.SNOW};
 
     private EntityType[] entityTypes;
     private float rarity = 0.1f;
@@ -74,7 +72,7 @@ public class EntityDecorator extends BlockPopulator {
             double angle = random.nextDouble() * Math.PI;
             double x = radius * Math.sin(angle) + centerX;
             double z = radius * Math.cos(angle) + centerZ;
-            Block block = ((GlowWorld) world).getHighestBlockAt(new Location(world, x, 0, z), SKIP_BLOCKS);
+            Block block = world.getHighestBlockAt(new Location(world, x, 0, z));
             if (block.getType() == Material.WATER || block.getType() == Material.STATIONARY_WATER || block.getType() == Material.LAVA || block.getType() == Material.STATIONARY_LAVA) {
                 i--;
                 attempts--;

@@ -11,6 +11,7 @@ import java.util.List;
 public class LookAtPlayerTask extends EntityTask {
 
     private GlowPlayer target;
+    private int delay = 1;
     private static final double RANGE = 10;
 
     public LookAtPlayerTask() {
@@ -66,6 +67,10 @@ public class LookAtPlayerTask extends EntityTask {
 
     @Override
     public void execute(GlowLivingEntity entity) {
+        if (delay == 1) {
+            delay = 0;
+            return;
+        }
         if (target == null || !target.isOnline() || entity.getLocation().distanceSquared(target.getLocation()) > (RANGE * RANGE)) {
             reset(entity);
             return;
@@ -77,5 +82,6 @@ public class LookAtPlayerTask extends EntityTask {
         float yaw = (float) (Math.atan2(z, x) * (180 / Math.PI)) - 90;
         entity.setHeadYaw(yaw); // todo: smooth head rotation (delta)
         // todo: pitch rotation (head up/down)
+        delay = 1;
     }
 }
