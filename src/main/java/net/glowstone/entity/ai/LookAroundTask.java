@@ -28,7 +28,7 @@ public class LookAroundTask extends EntityTask {
     @Override
     public boolean shouldStart(GlowLivingEntity entity) {
         EntityTask task = entity.getTaskManager().getTask("look_player");
-        return (task == null || !task.isExecuting()) && random.nextFloat() <= 0.05;
+        return (task == null || !task.isExecuting()) && random.nextFloat() <= 0.1;
     }
 
     @Override
