@@ -2,13 +2,9 @@ package net.glowstone.entity.ai;
 
 import net.glowstone.entity.GlowLivingEntity;
 
-public class LookAroundTask extends EntityTask<GlowLivingEntity> {
+public class LookAroundTask extends EntityTask {
 
     private int delay = random.nextInt(10) + 15;
-
-    static {
-        EntityDirector.registerEntityTask("look_around", LookAroundTask.class);
-    }
 
     public LookAroundTask() {
         super("look_around");

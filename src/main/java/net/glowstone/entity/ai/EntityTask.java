@@ -4,7 +4,7 @@ import net.glowstone.entity.GlowLivingEntity;
 
 import java.util.Random;
 
-public abstract class EntityTask<T extends GlowLivingEntity> {
+public abstract class EntityTask {
 
     protected static final Random random = new Random();
 
@@ -17,7 +17,7 @@ public abstract class EntityTask<T extends GlowLivingEntity> {
         this.name = name;
     }
 
-    public final void pulse(T entity) {
+    public final void pulse(GlowLivingEntity entity) {
         if (paused || entity.isDead() || !entity.hasAI()) {
             return;
         }
@@ -48,7 +48,7 @@ public abstract class EntityTask<T extends GlowLivingEntity> {
      *
      * @param entity the entity in question.
      */
-    public void reset(T entity) {
+    public void reset(GlowLivingEntity entity) {
         end(entity);
         duration = 0;
         executing = false;
@@ -77,7 +77,7 @@ public abstract class EntityTask<T extends GlowLivingEntity> {
      *
      * @param entity the entity in question.
      */
-    public final void resume(T entity) {
+    public final void resume(GlowLivingEntity entity) {
         if (!isPaused()) return;
         paused = false;
     }
@@ -87,7 +87,7 @@ public abstract class EntityTask<T extends GlowLivingEntity> {
      *
      * @param entity the entity in question.
      */
-    public final void pause(T entity) {
+    public final void pause(GlowLivingEntity entity) {
         if (isPaused()) return;
         reset(entity);
         paused = true;
@@ -124,28 +124,28 @@ public abstract class EntityTask<T extends GlowLivingEntity> {
      * @param entity the entity in question.
      * @return true if the task should start, false otherwise.
      */
-    public abstract boolean shouldStart(T entity);
+    public abstract boolean shouldStart(GlowLivingEntity entity);
 
     /**
      * Invoked when this task is about to start for this entity.
      *
      * @param entity the entity in question.
      */
-    public abstract void start(T entity);
+    public abstract void start(GlowLivingEntity entity);
 
     /**
      * Invoked when this task is being ended for this entity.
      *
      * @param entity the entity in question.
      */
-    public abstract void end(T entity);
+    public abstract void end(GlowLivingEntity entity);
 
     /**
      * Invoked each tick when this task is being executed for this entity.
      *
      * @param entity the entity in question.
      */
-    public abstract void execute(T entity);
+    public abstract void execute(GlowLivingEntity entity);
 
     /**
      * Whether this task is instant.

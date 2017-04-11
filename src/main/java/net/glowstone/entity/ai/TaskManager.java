@@ -8,30 +8,37 @@ import java.util.Objects;
 public class TaskManager {
 
     private final GlowLivingEntity entity;
-    private final ArrayList<EntityTask<GlowLivingEntity>> tasks;
+    private final ArrayList<EntityTask> tasks;
 
     public TaskManager(GlowLivingEntity entity) {
         this.entity = entity;
         this.tasks = new ArrayList<>();
     }
 
-    public EntityTask<GlowLivingEntity> getTask(String name) {
-        for (EntityTask<GlowLivingEntity> task : tasks) {
-            if (task.getName().equals(name)) {
+    public EntityTask getTask(String name) {
+        for (EntityTask task : tasks) {
+            if (task != null && Objects.equals(task.getName(), name)) {
                 return task;
             }
         }
-        return getTask(EntityDirector.getEntityTask(name));
+        return null;
     }
 
-    public EntityTask<GlowLivingEntity> getTask(Class<? extends EntityTask> clazz) {
-        for (EntityTask<GlowLivingEntity> task : tasks) {
-            if (task.getClass().equals(clazz)) {
+    public EntityTask getTask(Class<? extends EntityTask> clazz) {
+        for (EntityTask task : tasks) {
+            if (Objects.equals(task.getClass(), clazz)) {
                 return task;
             }
         }
+        return null;
+    }
+
+    public EntityTask getNewTask(String name) {
+        Class<? extends EntityTask> clazz = EntityDirector.getEntityTask(name);
         try {
-            return clazz.newInstance();
+            if (clazz != null) {
+                return clazz.newInstance();
+            }
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -39,10 +46,12 @@ public class TaskManager {
     }
 
     public void updateState() {
-        addTask(getTask(Objects.requireNonNull(EntityDirector.getEntityMobStateTask(entity.getType(), entity.getState()))));
+        for (String task : EntityDirector.getEntityMobStateTask(entity.getType(), entity.getState())) {
+            addTask(task);
+        }
     }
 
-    public void cancel(EntityTask<GlowLivingEntity> task) {
+    public void cancel(EntityTask task) {
         task.reset(entity);
         tasks.remove(task);
     }
@@ -56,10 +65,19 @@ public class TaskManager {
         tasks.forEach(task -> task.pulse(entity));
     }
 
-    public void addTask(EntityTask<GlowLivingEntity> task) {
-        if (getTask(task.getName()) != null) {
-            cancel(getTask(task.getName()));
+    public void addTask(EntityTask task) {
+        if (task != null) {
+            if (getTask(task.getName()) != null) {
+                cancel(getTask(task.getName()));
+            }
+            tasks.add(task);
         }
-        tasks.add(task);
+    }
+
+    public void addTask(String task) {
+        if (getTask(task) != null) {
+            cancel(getTask(task));
+        }
+        tasks.add(getNewTask(task));
     }
 }

@@ -8,11 +8,7 @@ import org.bukkit.entity.EntityType;
 
 import java.util.List;
 
-public class LookAtPlayerTask extends EntityTask<GlowLivingEntity> {
-
-    static {
-        EntityDirector.registerEntityTask("look_player", LookAtPlayerTask.class);
-    }
+public class LookAtPlayerTask extends EntityTask {
 
     private GlowPlayer target;
     private static final double RANGE = 10;
