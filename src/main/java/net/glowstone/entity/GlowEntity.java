@@ -138,10 +138,6 @@ public abstract class GlowEntity implements Entity {
      */
     private boolean gravity;
     /**
-     * Whether this entity is silent.
-     */
-    private boolean silent;
-    /**
      * Whether this entity is invulnerable.
      */
     private boolean invulnerable;
@@ -947,7 +943,7 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public boolean isCustomNameVisible() {
-        return metadata.getByte(MetadataIndex.SHOW_NAME_TAG) == 1;
+        return metadata.getBoolean(MetadataIndex.SHOW_NAME_TAG);
     }
 
     @Override
@@ -1092,12 +1088,12 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public boolean isSilent() {
-        return silent;
+        return metadata.getBoolean(MetadataIndex.SILENT);
     }
 
     @Override
     public void setSilent(boolean silent) {
-        this.silent = silent;
+        metadata.set(MetadataIndex.SILENT, silent);
     }
 
     @Override
