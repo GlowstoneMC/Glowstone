@@ -1,11 +1,9 @@
 package net.glowstone.net.pipeline;
 
 import com.flowpowered.network.Message;
-import com.flowpowered.network.session.Session;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.timeout.IdleStateEvent;
 import net.glowstone.net.GameServer;
 import net.glowstone.net.GlowSession;
 
@@ -43,20 +41,12 @@ public final class MessageHandler extends SimpleChannelInboundHandler<Message> {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        Session session = this.session.get();
-        session.onDisconnect();
+        session.get().onDisconnect();
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Message i) {
         session.get().messageReceived(i);
-    }
-
-    @Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if (evt instanceof IdleStateEvent) {
-            session.get().idle(); // todo: find a more elegant way to do this in the future
-        }
     }
 
     @Override
