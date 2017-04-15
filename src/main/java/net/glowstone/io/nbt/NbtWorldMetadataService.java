@@ -2,6 +2,7 @@ package net.glowstone.io.nbt;
 
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
+import net.glowstone.GlowWorldBorder;
 import net.glowstone.io.WorldMetadataService;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
@@ -116,6 +117,43 @@ public class NbtWorldMetadataService implements WorldMetadataService {
             level.remove("GameRules");
         }
 
+        // world border
+        Location borderCenter = new Location(world, 0, 0, 0);
+        if (level.isDouble("BorderCenterX")) {
+            borderCenter.setX(level.getDouble("BorderCenterX"));
+            level.remove("BorderCenterX");
+        }
+        if (level.isDouble("BorderCenterZ")) {
+            borderCenter.setZ(level.getDouble("BorderCenterZ"));
+            level.remove("BorderCenterZ");
+        }
+        world.getWorldBorder().setCenter(borderCenter);
+        if (level.isDouble("BorderSize")) {
+            world.getWorldBorder().setSize(level.getDouble("BorderSize"));
+            level.remove("BorderSize");
+        }
+        if (level.isDouble("BorderSizeLerpTarget") && level.isLong("BorderSizeLerpTime")) {
+            world.getWorldBorder().setSize(level.getDouble("BorderSizeLerpTarget"), level.getLong("BorderSizeLerpTime"));
+            level.remove("BorderSizeLerpTarget");
+            level.remove("BorderSizeLerpTime");
+        }
+        if (level.isDouble("BorderSafeZone")) {
+            world.getWorldBorder().setDamageBuffer(level.getDouble("BorderSafeZone"));
+            level.remove("BorderSafeZone");
+        }
+        if (level.isDouble("BorderWarningTime")) {
+            world.getWorldBorder().setWarningTime((int) level.getDouble("BorderWarningTime"));
+            level.remove("BorderWarningTime");
+        }
+        if (level.isDouble("BorderWarningBlocks")) {
+            world.getWorldBorder().setWarningDistance((int) level.getDouble("BorderWarningBlocks"));
+            level.remove("BorderWarningBlocks");
+        }
+        if (level.isDouble("BorderDamagePerBlock")) {
+            world.getWorldBorder().setDamageAmount(level.getDouble("BorderDamagePerBlock"));
+            level.remove("BorderDamagePerBlock");
+        }
+
         // strip single-player Player tag if it exists
         if (level.isCompound("Player")) {
             server.getLogger().warning("World \"" + world.getName() + "\": removing single-player Player tag");
@@ -168,6 +206,17 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         out.putInt("SpawnX", loc.getBlockX());
         out.putInt("SpawnY", loc.getBlockY());
         out.putInt("SpawnZ", loc.getBlockZ());
+
+        // World border
+        out.putDouble("BorderCenterX", world.getWorldBorder().getCenter().getX());
+        out.putDouble("BorderCenterZ", world.getWorldBorder().getCenter().getZ());
+        out.putDouble("BorderSize", world.getWorldBorder().getSize());
+        out.putDouble("BorderSizeLerpTarget", ((GlowWorldBorder) world.getWorldBorder()).futureSize);
+        out.putLong("BorderSizeLerpTime", ((GlowWorldBorder) world.getWorldBorder()).time);
+        out.putDouble("BorderSafeZone", world.getWorldBorder().getDamageBuffer());
+        out.putDouble("BorderWarningTime", world.getWorldBorder().getWarningTime());
+        out.putDouble("BorderWarningBlocks", world.getWorldBorder().getWarningDistance());
+        out.putDouble("BorderDamagePerBlock", world.getWorldBorder().getDamageAmount());
 
         // Game rules
         CompoundTag gameRules = new CompoundTag();

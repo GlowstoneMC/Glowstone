@@ -8,10 +8,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.Getter;
 import lombok.Setter;
-import net.glowstone.EventFactory;
-import net.glowstone.GlowOfflinePlayer;
-import net.glowstone.GlowServer;
-import net.glowstone.GlowWorld;
+import net.glowstone.*;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockBed;
@@ -377,6 +374,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         sendRainDensity();
         sendSkyDarkness();
         sendAbilities();
+        session.send(((GlowWorldBorder) world.getWorldBorder()).createMessage());
 
         scoreboard = server.getScoreboardManager().getMainScoreboard();
         scoreboard.subscribe(this);
@@ -793,6 +791,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
         // fire world change if needed
         if (oldWorld != world) {
+            session.send(((GlowWorldBorder) world.getWorldBorder()).createMessage());
             EventFactory.callEvent(new PlayerChangedWorldEvent(this, oldWorld));
         }
     }

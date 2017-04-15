@@ -252,6 +252,10 @@ public final class GlowWorld implements World {
      * The ScheduledExecutorService the for entity AI tasks threading.
      */
     private final ScheduledExecutorService aiTaskService;
+    /**
+     * The world border.
+     */
+    private final GlowWorldBorder worldBorder;
 
     /**
      * Creates a new world from the options in the given WorldCreator.
@@ -286,6 +290,7 @@ public final class GlowWorld implements World {
         difficulty = server.getDifficulty();
         maxBuildHeight = server.getMaxBuildHeight();
         seaLevel = GlowServer.getWorldConfig().getInt(WorldConfig.Key.SEA_LEVEL);
+        worldBorder = new GlowWorldBorder(this);
 
         // read in world data
         WorldFinalValues values;
@@ -398,6 +403,7 @@ public final class GlowWorld implements World {
 
         pulsePlayers(players);
         resetEntities(allEntities);
+        worldBorder.pulse();
 
         updateWorldTime();
         informPlayersOfTime();
@@ -1773,7 +1779,7 @@ public final class GlowWorld implements World {
 
     @Override
     public WorldBorder getWorldBorder() {
-        return null;
+        return worldBorder;
     }
 
     @Override

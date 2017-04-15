@@ -811,6 +811,7 @@ public final class GlowServer implements Server {
         commandMap.register("glowstone", new TitleCommand());
         commandMap.register("glowstone", new TeleportCommand());
         commandMap.register("glowstone", new SummonCommand());
+        commandMap.register("glowstone", new WorldBorderCommand());
 
         File folder = new File(config.getString(Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {

@@ -22,7 +22,7 @@ public final class WorldBorderCodec implements Codec<WorldBorderMessage> {
             case LERP_SIZE:
                 double oldRadius = buffer.readDouble();
                 double newRadius = buffer.readDouble();
-                long speed = buffer.readLong();
+                long speed = ByteBufUtils.readVarLong(buffer);
                 return new WorldBorderMessage(action, oldRadius, newRadius, speed);
             case SET_CENTER:
                 double x = buffer.readDouble();
@@ -57,7 +57,7 @@ public final class WorldBorderCodec implements Codec<WorldBorderMessage> {
             case LERP_SIZE:
                 buf.writeDouble(message.getOldRadius());
                 buf.writeDouble(message.getNewRadius());
-                buf.writeLong(message.getSpeed());
+                ByteBufUtils.writeVarLong(buf, message.getSpeed());
                 break;
             case SET_CENTER:
                 buf.writeDouble(message.getX());
