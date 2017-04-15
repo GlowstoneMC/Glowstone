@@ -150,6 +150,6 @@ public class GlowWorldBorder implements WorldBorder {
     @Override
     public boolean isInside(Location location) {
         Location max = center.clone().add(size / 2, 0, size / 2), min = center.clone().subtract(size / 2, 0, size / 2);
-        return location.getX() >= max.getX() && location.getZ() >= max.getZ() && location.getX() <= min.getX() && location.getZ() <= min.getZ();
+        return location.getX() <= max.getX() && location.getZ() <= max.getZ() && location.getX() >= min.getX() && location.getZ() >= min.getZ();
     }
 }
