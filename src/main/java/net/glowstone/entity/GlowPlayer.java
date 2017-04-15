@@ -603,11 +603,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         List<Integer> destroyIds = new LinkedList<>();
         for (Iterator<GlowEntity> it = knownEntities.iterator(); it.hasNext(); ) {
             GlowEntity entity = it.next();
-            if (isWithinDistance(entity)) {
-                entity.createUpdateMessage().forEach(session::send);
-            } else {
+            if (!isWithinDistance(entity) || entity.isRemoved()) {
                 destroyIds.add(entity.getEntityId());
                 it.remove();
+            } else {
+                entity.createUpdateMessage().forEach(session::send);
             }
         }
         if (!destroyIds.isEmpty()) {

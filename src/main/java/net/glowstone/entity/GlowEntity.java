@@ -141,6 +141,11 @@ public abstract class GlowEntity implements Entity {
      * Whether this entity is invulnerable.
      */
     private boolean invulnerable;
+    /**
+     * Whether this entity was forcibly removed from the world.
+     */
+    @Getter
+    protected boolean removed;
 
     /**
      * The original location of this entity.
@@ -859,6 +864,7 @@ public abstract class GlowEntity implements Entity {
      */
     @Override
     public void remove() {
+        removed = true;
         active = false;
         boundingBox = null;
         world.getEntityManager().unregister(this);
