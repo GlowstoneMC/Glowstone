@@ -17,7 +17,10 @@ import net.glowstone.entity.physics.EntityBoundingBox;
 import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.Position;
-import org.bukkit.*;
+import org.bukkit.EntityEffect;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -414,6 +417,11 @@ public abstract class GlowEntity implements Entity {
             if (!(this instanceof GlowItemFrame)) {
                 teleported = true;
             }
+        }
+
+        if (this instanceof GlowLivingEntity && !isDead() && ((GlowLivingEntity) this).hasAI() && this.getLocation().getChunk().isLoaded()) {
+            GlowLivingEntity entity = (GlowLivingEntity) this;
+            entity.getTaskManager().pulse();
         }
 
         pulsePhysics();
