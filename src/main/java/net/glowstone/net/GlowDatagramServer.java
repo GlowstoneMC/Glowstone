@@ -25,7 +25,7 @@ public abstract class GlowDatagramServer extends GlowNetworkServer {
         super(server, latch);
         boolean epoll = Epoll.isAvailable();
         group = epoll ? new EpollEventLoopGroup() : new NioEventLoopGroup();
-        resolverGroup = new DnsAddressResolverGroup(epoll ? EpollDatagramChannel.class : NioDatagramChannel.class, DnsServerAddresses.defaultAddresses());
+        resolverGroup = new IPv4DnsAddressResolverGroup(epoll ? EpollDatagramChannel.class : NioDatagramChannel.class, DnsServerAddresses.defaultAddresses());
         bootstrap = new Bootstrap();
 
         bootstrap
