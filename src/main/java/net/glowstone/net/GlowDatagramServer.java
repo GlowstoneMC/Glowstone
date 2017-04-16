@@ -9,8 +9,6 @@ import io.netty.channel.epoll.EpollDatagramChannel;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
-import io.netty.resolver.dns.DnsAddressResolverGroup;
-import io.netty.resolver.dns.DnsServerAddresses;
 import net.glowstone.GlowServer;
 
 import java.net.InetSocketAddress;
@@ -18,20 +16,15 @@ import java.util.concurrent.CountDownLatch;
 
 public abstract class GlowDatagramServer extends GlowNetworkServer {
     protected final EventLoopGroup group;
-    protected final DnsAddressResolverGroup resolverGroup;
     protected final Bootstrap bootstrap;
 
     public GlowDatagramServer(GlowServer server, CountDownLatch latch) {
         super(server, latch);
-        boolean epoll = Epoll.isAvailable();
-        group = epoll ? new EpollEventLoopGroup() : new NioEventLoopGroup();
-        resolverGroup = new IPv4DnsAddressResolverGroup(epoll ? EpollDatagramChannel.class : NioDatagramChannel.class, DnsServerAddresses.defaultAddresses());
+        group = Epoll.isAvailable() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
         bootstrap = new Bootstrap();
 
-        bootstrap
-                .group(group)
-                .resolver(resolverGroup)
-                .channel(epoll ? EpollDatagramChannel.class : NioDatagramChannel.class)
+        bootstrap.group(group)
+                .channel(Epoll.isAvailable() ? EpollDatagramChannel.class : NioDatagramChannel.class)
                 .option(ChannelOption.SO_KEEPALIVE, true);
     }
 
@@ -46,6 +39,6 @@ public abstract class GlowDatagramServer extends GlowNetworkServer {
     }
 
     public void shutdown() {
-        bootstrap.config().group().shutdownGracefully();
+        bootstrap.group().shutdownGracefully();
     }
 }

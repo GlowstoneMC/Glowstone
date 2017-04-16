@@ -242,7 +242,6 @@ public class GlowSession extends BasicSession {
     /**
      * Notify that the session is currently idle.
      */
-    // TODO: idle detection
     public void idle() {
         if (pingMessageId == 0 && getProtocol() instanceof PlayProtocol) {
             pingMessageId = random.nextInt();
