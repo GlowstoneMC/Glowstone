@@ -27,7 +27,7 @@ public class PlayProtocol extends GlowProtocol {
         super("PLAY", 0x4D);
 
         inbound(0x00, TeleportConfirmMessage.class, TeleportConfirmCodec.class, TeleportConfirmHandler.class);
-        // TODO 0x01 : Unknown packet
+        // TODO 0x01 : Prepare Crafting grid
         inbound(0x02, TabCompleteMessage.class, TabCompleteCodec.class, TabCompleteHandler.class);
         inbound(0x03, IncomingChatMessage.class, IncomingChatCodec.class, IncomingChatHandler.class);
         inbound(0x04, ClientStatusMessage.class, ClientStatusCodec.class, ClientStatusHandler.class);
@@ -44,7 +44,7 @@ public class PlayProtocol extends GlowProtocol {
         inbound(0x0F, PlayerLookMessage.class, PlayerLookCodec.class, PlayerUpdateHandler.class);
         inbound(0x10, PlayerUpdateMessage.class, PlayerUpdateCodec.class, PlayerUpdateHandler.class);
         inbound(0x11, VehicleMoveMessage.class, VehicleMoveCodec.class, VehicleMoveHandler.class);
-        // TODO: 0x12 : Steer boat
+        // TODO: 0x12 : Steer Boat
         inbound(0x13, PlayerAbilitiesMessage.class, PlayerAbilitiesCodec.class, PlayerAbilitiesHandler.class);
         inbound(0x14, DiggingMessage.class, DiggingCodec.class, DiggingHandler.class);
         inbound(0x15, PlayerActionMessage.class, PlayerActionCodec.class, PlayerActionHandler.class);
@@ -108,7 +108,7 @@ public class PlayProtocol extends GlowProtocol {
         outbound(0x2E, UserListItemMessage.class, UserListItemCodec.class);
         outbound(0x2F, PositionRotationMessage.class, PositionRotationCodec.class);
         outbound(0x30, UseBedMessage.class, UseBedCodec.class);
-        // TODO 0x31 : Unlock Recipe
+        // TODO 0x31 : Unlock Recipes
         outbound(0x32, DestroyEntitiesMessage.class, DestroyEntitiesCodec.class);
         outbound(0x33, EntityRemoveEffectMessage.class, EntityRemoveEffectCodec.class);
         outbound(0x34, ResourcePackSendMessage.class, ResourcePackSendCodec.class);
