@@ -20,11 +20,13 @@ public abstract class GlowDatagramServer extends GlowNetworkServer {
 
     public GlowDatagramServer(GlowServer server, CountDownLatch latch) {
         super(server, latch);
-        group = Epoll.isAvailable() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
+        boolean epoll = Epoll.isAvailable();
+        group = epoll ? new EpollEventLoopGroup() : new NioEventLoopGroup();
         bootstrap = new Bootstrap();
 
-        bootstrap.group(group)
-                .channel(Epoll.isAvailable() ? EpollDatagramChannel.class : NioDatagramChannel.class)
+        bootstrap
+                .group(group)
+                .channel(epoll ? EpollDatagramChannel.class : NioDatagramChannel.class)
                 .option(ChannelOption.SO_KEEPALIVE, true);
     }
 

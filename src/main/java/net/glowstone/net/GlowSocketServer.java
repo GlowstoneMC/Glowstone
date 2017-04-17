@@ -27,12 +27,14 @@ public abstract class GlowSocketServer extends GlowNetworkServer {
 
     public GlowSocketServer(GlowServer server, CountDownLatch latch) {
         super(server, latch);
-        bossGroup = Epoll.isAvailable() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
-        workerGroup = Epoll.isAvailable() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
+        boolean epoll = Epoll.isAvailable();
+        bossGroup = epoll ? new EpollEventLoopGroup() : new NioEventLoopGroup();
+        workerGroup = epoll ? new EpollEventLoopGroup() : new NioEventLoopGroup();
         bootstrap = new ServerBootstrap();
 
-        bootstrap.group(bossGroup, workerGroup)
-                .channel(Epoll.isAvailable() ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
+        bootstrap
+                .group(bossGroup, workerGroup)
+                .channel(epoll ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
     }

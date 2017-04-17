@@ -1,2 +1,2 @@
 #!/bin/sh
-java -Xms512M -Xmx1G -XX:+UseConcMarkSweepGC -jar glowstone.jar
+java -Xms1G -Xmx1G -XX:+UseG1GC -XX:MaxGCPauseMillis=30 -jar glowstone.jar
