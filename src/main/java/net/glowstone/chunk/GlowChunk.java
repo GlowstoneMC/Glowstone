@@ -15,6 +15,7 @@ import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.game.ChunkDataMessage;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.world.ChunkUnloadEvent;
@@ -290,16 +291,68 @@ public final class GlowChunk implements Chunk {
      * If needed, create a new block entity at the given location.
      */
     private void createEntity(int cx, int cy, int cz, int type) {
-        BlockType blockType = ItemTable.instance().getBlock(type);
-        if (blockType == null) return;
+        Material material = Material.getMaterial(type);
 
-        try {
-            BlockEntity entity = blockType.createBlockEntity(this, cx, cy, cz);
-            if (entity == null) return;
+        switch (material) {
+            case SIGN:
+            case SIGN_POST:
+            case WALL_SIGN:
+            case CHEST:
+            case TRAPPED_CHEST:
+            case BURNING_FURNACE:
+            case FURNACE:
+            case DISPENSER:
+            case DROPPER:
+            case END_GATEWAY:
+            case HOPPER:
+            case MOB_SPAWNER:
+            case NOTE_BLOCK:
+            case JUKEBOX:
+            case BREWING_STAND:
+            case SKULL:
+            case COMMAND:
+            case COMMAND_CHAIN:
+            case COMMAND_REPEATING:
+            case BEACON:
+            case BANNER:
+            case WALL_BANNER:
+            case STANDING_BANNER:
+            case FLOWER_POT:
+            case STRUCTURE_BLOCK:
+            case WHITE_SHULKER_BOX:
+            case ORANGE_SHULKER_BOX:
+            case MAGENTA_SHULKER_BOX:
+            case LIGHT_BLUE_SHULKER_BOX:
+            case YELLOW_SHULKER_BOX:
+            case LIME_SHULKER_BOX:
+            case PINK_SHULKER_BOX:
+            case GRAY_SHULKER_BOX:
+            case SILVER_SHULKER_BOX:
+            case CYAN_SHULKER_BOX:
+            case PURPLE_SHULKER_BOX:
+            case BLUE_SHULKER_BOX:
+            case BROWN_SHULKER_BOX:
+            case GREEN_SHULKER_BOX:
+            case RED_SHULKER_BOX:
+            case BLACK_SHULKER_BOX:
+            case ENCHANTMENT_TABLE:
+            case ENDER_CHEST:
+            case DAYLIGHT_DETECTOR:
+            case DAYLIGHT_DETECTOR_INVERTED:
+            case REDSTONE_COMPARATOR_OFF:
+            case REDSTONE_COMPARATOR_ON:
+                BlockType blockType = ItemTable.instance().getBlock(type);
+                if (blockType == null) return;
 
-            blockEntities.put(coordinateToIndex(cx, cz, cy), entity);
-        } catch (Exception ex) {
-            GlowServer.logger.log(Level.SEVERE, "Unable to initialize block entity for " + type, ex);
+                try {
+                    BlockEntity entity = blockType.createBlockEntity(this, cx, cy, cz);
+                    if (entity == null) return;
+
+                    blockEntities.put(coordinateToIndex(cx, cz, cy), entity);
+                } catch (Exception ex) {
+                    GlowServer.logger.log(Level.SEVERE, "Unable to initialize block entity for " + type, ex);
+                }
+                break;
         }
     }
 
