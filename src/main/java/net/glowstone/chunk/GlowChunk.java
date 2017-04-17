@@ -251,6 +251,10 @@ public final class GlowChunk implements Chunk {
      * @param initSections The {@link ChunkSection}s to use.  Should have a length of {@value #SEC_COUNT}.
      */
     public void initializeSections(ChunkSection[] initSections) {
+        initializeSections(initSections, true);
+    }
+
+    public void initializeSections(ChunkSection[] initSections, boolean createBlockEnts) {
         if (isLoaded()) {
             GlowServer.logger.log(Level.SEVERE, "Tried to initialize already loaded chunk (" + x + "," + z + ")", new Throwable());
             return;
@@ -266,21 +270,27 @@ public final class GlowChunk implements Chunk {
 
         for (int y = 0; y < SEC_COUNT && y < initSections.length; y++) {
             if (initSections[y] != null) {
-                initializeSection(y, initSections[y]);
+                initializeSection(y, initSections[y], createBlockEnts);
             }
         }
     }
 
     private void initializeSection(int y, ChunkSection section) {
+        initializeSection(y, section, true);
+    }
+
+    private void initializeSection(int y, ChunkSection section, boolean createBlockEnts) {
         sections[y] = section;
 
         // block entity initialization
-        for (int i = 0; i < sections.length; ++i) {
-            int by = 16 * i;
-            for (int cx = 0; cx < WIDTH; ++cx) {
-                for (int cz = 0; cz < HEIGHT; ++cz) {
-                    for (int cy = by; cy < by + 16; ++cy) {
-                        createEntity(cx, cy, cz, getType(cx, cz, cy));
+        if (createBlockEnts) {
+            for (int i = 0; i < sections.length; ++i) {
+                int by = 16 * i;
+                for (int cx = 0; cx < WIDTH; ++cx) {
+                    for (int cz = 0; cz < HEIGHT; ++cz) {
+                        for (int cy = by; cy < by + 16; ++cy) {
+                            createEntity(cx, cy, cz, getType(cx, cz, cy));
+                        }
                     }
                 }
             }

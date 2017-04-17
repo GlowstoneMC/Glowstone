@@ -1131,12 +1131,7 @@ public final class GlowWorld implements World {
 
     @Override
     public void getChunkAtAsync(int x, int z, ChunkLoadCallback cb) {
-        new Thread() {
-            @Override
-            public void run() {
-                cb.onLoad(chunks.getChunk(x, z));
-            }
-        }.start();
+        new Thread(() -> cb.onLoad(chunks.getChunk(x, z))).start();
     }
 
     @Override

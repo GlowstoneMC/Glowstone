@@ -297,7 +297,7 @@ public final class ChunkManager {
                         sections[i] = ChunkSection.fromStateArray(extSections[i]);
                     }
                 }
-                chunk.initializeSections(sections);
+                chunk.initializeSections(sections, false);
                 chunk.setBiomes(biomes.biomes);
                 chunk.automaticHeightMap();
                 return;
@@ -313,7 +313,7 @@ public final class ChunkManager {
                     sections[i] = ChunkSection.fromIdArray(extSections[i]);
                 }
             }
-            chunk.initializeSections(sections);
+            chunk.initializeSections(sections, false);
             chunk.setBiomes(biomes.biomes);
             chunk.automaticHeightMap();
             return;
@@ -328,7 +328,7 @@ public final class ChunkManager {
                     sections[i] = ChunkSection.fromIdArray(blockSections[i]);
                 }
             }
-            chunk.initializeSections(sections);
+            chunk.initializeSections(sections, false);
             chunk.setBiomes(biomes.biomes);
             chunk.automaticHeightMap();
             return;
@@ -352,7 +352,7 @@ public final class ChunkManager {
             }
             sections[sy] = sec;
         }
-        chunk.initializeSections(sections);
+        chunk.initializeSections(sections, false);
         chunk.setBiomes(biomes.biomes);
         chunk.automaticHeightMap();
     }
