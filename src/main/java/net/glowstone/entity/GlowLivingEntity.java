@@ -3,6 +3,8 @@ package net.glowstone.entity;
 import com.flowpowered.network.Message;
 import lombok.Getter;
 import net.glowstone.EventFactory;
+import net.glowstone.GlowServer;
+import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
@@ -11,6 +13,7 @@ import net.glowstone.entity.AttributeManager.Key;
 import net.glowstone.entity.ai.MobState;
 import net.glowstone.entity.ai.TaskManager;
 import net.glowstone.entity.meta.MetadataIndex;
+import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.inventory.EquipmentMonitor;
 import net.glowstone.net.message.play.entity.EntityEffectMessage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
@@ -281,105 +284,125 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         Location loc = getLocation();
         // drag application
         movement.multiply(airDrag);
+        GlowServer.logger.info("m1 " + movement.toString());
         // convert movement x/z to a velocity
         Vector velMovement = getVelocityFromMovement();
+        GlowServer.logger.info("m2 " + movement.toString());
+        GlowServer.logger.info("velMove " + velMovement.toString());
         velocity.add(velMovement);
 
         double dx = velocity.getX();
         double dy = velocity.getY();
         double dz = velocity.getZ();
 
-        double ix = 0;
-        double iy = 0;
-        double iz = 0;
-
-        double fx = 0;
-        double fy = 0;
-        double fz = 0;
-
-        double incx = 0;
-        double incy = 0;
-        double incz = 0;
+        GlowServer.logger.info("vel " + velocity.toString());
 
         Vector min = boundingBox.minCorner.clone();
         Vector max = boundingBox.maxCorner.clone();
 
-        if (dx < 0) {
+        int ix = min.getBlockX();
+        int iy = min.getBlockY();
+        int iz = min.getBlockZ();
+
+        int fx = max.getBlockX();
+        int fy = max.getBlockY();
+        int fz = max.getBlockZ();
+
+        int incx = 0;
+        int incy = 0;
+        int incz = 0;
+
+        if (dx < 0d) {
             min.setX(min.getX() + dx);
-            ix = max.getX();
-            fx = min.getX();
+            ix = max.getBlockX();
+            fx = min.getBlockX();
             incx = -1;
-        } else if (dx > 0) {
+        } else if (dx > 0d) {
             max.setX(max.getX() + dx);
-            ix = min.getX();
-            fx = max.getX();
+            fx = max.getBlockX();
             incx = 1;
         }
 
-        if (dy < 0) {
+        if (dy < 0d) {
+            GlowServer.logger.info("hi");
             min.setY(min.getY() + dy);
-            iy = max.getY();
-            fy = min.getY();
+            iy = max.getBlockY();
+            fy = min.getBlockY();
             incy = -1;
-        } else if (dy > 0) {
+        } else if (dy > 0d) {
             max.setY(max.getY() + dy);
-            iy = min.getY();
-            fy = max.getY();
+            fy = max.getBlockY();
             incy = 1;
         }
 
-        if (dz < 0) {
+        if (dz < 0d) {
             min.setZ(min.getZ() + dz);
-            iz = max.getZ();
-            fz = min.getZ();
+            iz = max.getBlockZ();
+            fz = min.getBlockZ();
             incz = -1;
-        } else if (dz > 0) {
+        } else if (dz > 0d) {
             max.setZ(max.getZ() + dz);
-            iz = min.getZ();
-            fz = max.getZ();
+            fz = max.getBlockZ();
             incz = 1;
         }
 
-        /* TODO: entities are inhibited by boat and minecart bounding boxes
+        // find blocking entities
         BoundingBox extended = BoundingBox.fromCorners(min, max);
-        */
+        List<Entity> entities = ((GlowWorld) getLocation().getWorld()).getEntityManager().getEntitiesInside(extended, null).stream()
+                .filter(e -> e.getType() == EntityType.BOAT || e instanceof Minecart)
+                .collect(Collectors.toList());
 
         double bestDistance = -1;
-        boolean found = false;
+        int found = 0;
 
-        for (double y = iy; incy != 0 && (incy < 0 ? y >= fy : y <= fy); y += incy) {
-            for (double x = ix; incx != 0 && (incx < 0 ? x >= fx : x <= fx); x += incx) {
-                for (double z = iz; incz != 0 && (incz < 0 ? z >= fz : z <= fz); z += incz) {
-                    if (!Material.getMaterial(world.getBlockTypeIdAt((int) x, (int) y, (int) z)).isSolid()) {
+        GlowServer.logger.info("iy " + iy);
+        GlowServer.logger.info("ix " + ix);
+        GlowServer.logger.info("iz " + iz);
+
+        GlowServer.logger.info("incy " + incy);
+        GlowServer.logger.info("incx " + incx);
+        GlowServer.logger.info("incz " + incz);
+
+        GlowServer.logger.info("fy " + fy);
+        GlowServer.logger.info("fx " + fx);
+        GlowServer.logger.info("fz " + fz);
+
+        boolean firedOnceY = false;
+        boolean firedOnceX = false;
+        boolean firedOnceZ = false;
+
+        for (int y = min.getBlockY(); y <= max.getBlockY(); y++) {
+            for (int x = min.getBlockX(); x <= max.getBlockX(); x++) {
+                for (int z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
+                    if (!Material.getMaterial(world.getBlockTypeIdAt(x, y, z)).isSolid()) {
                         double distance = (x - loc.getX()) *  (x - loc.getX()) + (y - loc.getY()) *  (y - loc.getY()) + (z - loc.getZ()) *  (z - loc.getZ());
-                        world.getBlockAt((int) x, (int) y, (int) z).setType(Material.QUARTZ_BLOCK);
                         if (distance < bestDistance || distance < 0) {
                             bestDistance = distance;
                             velocity.setX(x - ix);
                             velocity.setY(y - iy);
                             velocity.setZ(z - iz);
-                            found = true;
+                            found = 1;
                         } else {
-                            break;
+                            found = -1;
                         }
                     }
                 }
-            }    
+            }
         }
 
-        if (found) {
+        if (found == 1) {
             setRawLocation(location.clone().add(velocity));
         }
 
         // apply friction and gravity
         if (location.getBlock().getType() == Material.WATER) {
             velocity.multiply(liquidDrag);
-            velocity.setY(velocity.getY() - gravityAccel.getY() / 4);
+            velocity.setY(velocity.getY() + gravityAccel.getY() / 4d);
         } else if (location.getBlock().getType() == Material.LAVA) {
             velocity.multiply(liquidDrag - 0.3);
-            velocity.setY(velocity.getY() - gravityAccel.getY() / 4);
+            velocity.setY(velocity.getY() + gravityAccel.getY() / 4d);
         } else {
-            velocity.setY(airDrag * (velocity.getY() - gravityAccel.getY()));
+            velocity.setY(velocity.getY() + airDrag * gravityAccel.getY());
             if (isOnGround()) {
                 velocity.setX(velocity.getX() * slipMultiplier);
                 velocity.setZ(velocity.getZ() * slipMultiplier);
@@ -393,13 +416,15 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     protected Vector getVelocityFromMovement() {
         // ensure movement vector is in correct format
         movement.setY(0);
-        movement.normalize();
 
-        double mag = movement.length();
+        double mag = movement.getX() * movement.getX() + movement.getZ() * movement.getZ();
         // don't do insignificant movement
         if (mag < 0.01) {
             return new Vector();
         }
+        // unit vector of movement
+        movement.setX(movement.getX() / mag);
+        movement.setZ(movement.getZ() / mag);
 
         // scale to how fast the entity can go
         mag *= speed;
