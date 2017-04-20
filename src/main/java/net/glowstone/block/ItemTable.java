@@ -221,6 +221,8 @@ public final class ItemTable {
         reg(Material.REDSTONE_COMPARATOR_ON, new BlockRedstoneComparator());
         reg(Material.REDSTONE_COMPARATOR_OFF, new BlockRedstoneComparator());
         reg(Material.BEACON, new BlockBeacon());
+        reg(Material.PURPUR_PILLAR, new BlockPurpurPillar());
+        reg(Material.PURPUR_BLOCK, new BlockDirectDrops(Material.PURPUR_BLOCK, ToolType.PICKAXE));
 
         reg(Material.FLINT_AND_STEEL, new ItemFlintAndSteel());
         reg(Material.SIGN, new ItemSign());
