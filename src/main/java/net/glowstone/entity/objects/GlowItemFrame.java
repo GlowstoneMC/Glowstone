@@ -164,6 +164,12 @@ public class GlowItemFrame extends GlowEntity implements ItemFrame {
     }
 
     @Override
+    protected void pulsePhysics() {
+        // item frames aren't affected by physics, just pulse bounding box
+        updateBoundingBox();
+    }
+
+    @Override
     public List<Message> createSpawnMessage() {
         int yaw = 0;
         switch (getFacingNumber(face)) {
