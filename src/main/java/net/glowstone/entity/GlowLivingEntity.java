@@ -11,7 +11,6 @@ import net.glowstone.entity.AttributeManager.Key;
 import net.glowstone.entity.ai.MobState;
 import net.glowstone.entity.ai.TaskManager;
 import net.glowstone.entity.meta.MetadataIndex;
-import net.glowstone.entity.physics.EntityBoundingBox;
 import net.glowstone.inventory.EquipmentMonitor;
 import net.glowstone.net.message.play.entity.EntityEffectMessage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
@@ -146,8 +145,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * and z is used for sideways movement. These values are relative
      * to the entity's current yaw.
      */
-    protected Vector movement;
-    protected double speed;
+    protected Vector movement = new Vector();
+    /**
+     * The speed multiplier of the entity.
+     */
+    protected double speed = 1;
 
     /**
      * Creates a mob within the specified world.
@@ -277,32 +279,113 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Override
     protected void pulsePhysics() {
         Location loc = getLocation();
-        Vector velocity = getVelocity();
-        Vector size = boundingBox.getSize().clone();
-        EntityBoundingBox bb = boundingBox;
         // drag application
-        movement.multiply(0.98);
+        movement.multiply(airDrag);
         // convert movement x/z to a velocity
         Vector velMovement = getVelocityFromMovement();
         velocity.add(velMovement);
 
-        // TODO: apply movement
+        double dx = velocity.getX();
+        double dy = velocity.getY();
+        double dz = velocity.getZ();
+
+        double ix = 0;
+        double iy = 0;
+        double iz = 0;
+
+        double fx = 0;
+        double fy = 0;
+        double fz = 0;
+
+        double incx = 0;
+        double incy = 0;
+        double incz = 0;
+
+        Vector min = boundingBox.minCorner.clone();
+        Vector max = boundingBox.maxCorner.clone();
+
+        if (dx < 0) {
+            min.setX(min.getX() + dx);
+            ix = max.getX();
+            fx = min.getX();
+            incx = -1;
+        } else if (dx > 0) {
+            max.setX(max.getX() + dx);
+            ix = min.getX();
+            fx = max.getX();
+            incx = 1;
+        }
+
+        if (dy < 0) {
+            min.setY(min.getY() + dy);
+            iy = max.getY();
+            fy = min.getY();
+            incy = -1;
+        } else if (dy > 0) {
+            max.setY(max.getY() + dy);
+            iy = min.getY();
+            fy = max.getY();
+            incy = 1;
+        }
+
+        if (dz < 0) {
+            min.setZ(min.getZ() + dz);
+            iz = max.getZ();
+            fz = min.getZ();
+            incz = -1;
+        } else if (dz > 0) {
+            max.setZ(max.getZ() + dz);
+            iz = min.getZ();
+            fz = max.getZ();
+            incz = 1;
+        }
+
+        /* TODO: entities are inhibited by boat and minecart bounding boxes
+        BoundingBox extended = BoundingBox.fromCorners(min, max);
+        */
+
+        double bestDistance = -1;
+        boolean found = false;
+
+        for (double y = iy; incy != 0 && (incy < 0 ? y >= fy : y <= fy); y += incy) {
+            for (double x = ix; incx != 0 && (incx < 0 ? x >= fx : x <= fx); x += incx) {
+                for (double z = iz; incz != 0 && (incz < 0 ? z >= fz : z <= fz); z += incz) {
+                    if (!Material.getMaterial(world.getBlockTypeIdAt((int) x, (int) y, (int) z)).isSolid()) {
+                        double distance = (x - loc.getX()) *  (x - loc.getX()) + (y - loc.getY()) *  (y - loc.getY()) + (z - loc.getZ()) *  (z - loc.getZ());
+                        world.getBlockAt((int) x, (int) y, (int) z).setType(Material.QUARTZ_BLOCK);
+                        if (distance < bestDistance || distance < 0) {
+                            bestDistance = distance;
+                            velocity.setX(x - ix);
+                            velocity.setY(y - iy);
+                            velocity.setZ(z - iz);
+                            found = true;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+            }    
+        }
+
+        if (found) {
+            setRawLocation(location.clone().add(velocity));
+        }
 
         // apply friction and gravity
         if (location.getBlock().getType() == Material.WATER) {
-            velocity.multiply(0.8);
-            velocity.setY(velocity.getY() - 0.02);
+            velocity.multiply(liquidDrag);
+            velocity.setY(velocity.getY() - gravityAccel.getY() / 4);
         } else if (location.getBlock().getType() == Material.LAVA) {
-            velocity.multiply(0.5);
-            velocity.setY(velocity.getY() - 0.02);
+            velocity.multiply(liquidDrag - 0.3);
+            velocity.setY(velocity.getY() - gravityAccel.getY() / 4);
         } else {
-            velocity.setY(0.98 * (velocity.getY() - 0.08));
+            velocity.setY(airDrag * (velocity.getY() - gravityAccel.getY()));
             if (isOnGround()) {
                 velocity.setX(velocity.getX() * slipMultiplier);
                 velocity.setZ(velocity.getZ() * slipMultiplier);
             } else {
-                velocity.setX(0.91);
-                velocity.setZ(0.91);
+                velocity.setX(velocity.getX() * 0.91);
+                velocity.setZ(velocity.getZ() * 0.91);
             }
         }
     }

@@ -143,7 +143,7 @@ public class GlowItem extends GlowEntity implements Item {
             setRawLocation(location.clone().add(0, 0.2, 0), false);
         }
 
-        pulsePhysics(true);
+        super.pulsePhysics();
     }
 
     @Override
