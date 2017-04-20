@@ -119,11 +119,10 @@ public class BiomePopulator extends BlockPopulator {
 
     protected void populateOnGround(World world, Random random, Chunk chunk) {
         boolean doMobSpawning = ((GlowWorld) world).getGameRuleMap().getBoolean("doMobSpawning");
-        if (!doMobSpawning) {
-            return;
-        }
-        for (EntityDecorator entityDecorator : entityDecorators) {
-            entityDecorator.populate(world, random, chunk);
+        if (doMobSpawning) {
+            for (EntityDecorator entityDecorator : entityDecorators) {
+                entityDecorator.populate(world, random, chunk);
+            }
         }
         for (BlockPopulator populator : onGroundPopulators) {
             populator.populate(world, random, chunk);
