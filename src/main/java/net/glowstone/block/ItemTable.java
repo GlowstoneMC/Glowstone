@@ -159,6 +159,7 @@ public final class ItemTable {
         reg(Material.SPRUCE_WOOD_STAIRS, new BlockStairs(), Sound.BLOCK_WOOD_BREAK);
         reg(Material.SMOOTH_STAIRS, new BlockStairs());
         reg(Material.WOOD_STAIRS, new BlockStairs(), Sound.BLOCK_WOOD_BREAK);
+        reg(Material.PURPUR_STAIRS, new BlockStairs());
         reg(Material.STEP, new BlockSlab());
         reg(Material.WOOD_STEP, new BlockSlab(), Sound.BLOCK_WOOD_BREAK);
         reg(Material.STONE_SLAB2, new BlockSlab());
