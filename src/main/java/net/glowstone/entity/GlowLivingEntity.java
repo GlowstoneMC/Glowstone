@@ -11,6 +11,7 @@ import net.glowstone.entity.AttributeManager.Key;
 import net.glowstone.entity.ai.MobState;
 import net.glowstone.entity.ai.TaskManager;
 import net.glowstone.entity.meta.MetadataIndex;
+import net.glowstone.entity.physics.EntityBoundingBox;
 import net.glowstone.inventory.EquipmentMonitor;
 import net.glowstone.net.message.play.entity.EntityEffectMessage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
@@ -137,6 +138,16 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * If this entity has swam in lava (for fire application).
      */
     private boolean swamInLava;
+    /**
+     * The entity's movement as a unit vector, applied each tick
+     * according to the entity's speed.
+     *
+     * The y value is not used. X is used for forward movement
+     * and z is used for sideways movement. These values are relative
+     * to the entity's current yaw.
+     */
+    protected Vector movement;
+    protected double speed;
 
     /**
      * Creates a mob within the specified world.
@@ -258,6 +269,92 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }
         if (nextAmbientTime == 0) {
             nextAmbientTime = getAmbientDelay();
+        }
+    }
+
+    double slipMultiplier;
+
+    @Override
+    protected void pulsePhysics() {
+        Location loc = getLocation();
+        Vector velocity = getVelocity();
+        Vector size = boundingBox.getSize().clone();
+        EntityBoundingBox bb = boundingBox;
+        // drag application
+        movement.multiply(0.98);
+        // convert movement x/z to a velocity
+        Vector velMovement = getVelocityFromMovement();
+        velocity.add(velMovement);
+
+        // TODO: apply movement
+
+        // apply friction and gravity
+        if (location.getBlock().getType() == Material.WATER) {
+            velocity.multiply(0.8);
+            velocity.setY(velocity.getY() - 0.02);
+        } else if (location.getBlock().getType() == Material.LAVA) {
+            velocity.multiply(0.5);
+            velocity.setY(velocity.getY() - 0.02);
+        } else {
+            velocity.setY(0.98 * (velocity.getY() - 0.08));
+            if (isOnGround()) {
+                velocity.setX(velocity.getX() * slipMultiplier);
+                velocity.setZ(velocity.getZ() * slipMultiplier);
+            } else {
+                velocity.setX(0.91);
+                velocity.setZ(0.91);
+            }
+        }
+    }
+
+    protected Vector getVelocityFromMovement() {
+        // ensure movement vector is in correct format
+        movement.setY(0);
+        movement.normalize();
+
+        double mag = movement.length();
+        // don't do insignificant movement
+        if (mag < 0.01) {
+            return new Vector();
+        }
+
+        // scale to how fast the entity can go
+        mag *= speed;
+        Vector movement = this.movement.clone();
+        movement.multiply(mag);
+
+        // make velocity vector relative to where the entity is facing
+        double yaw = Math.toRadians(location.getYaw());
+        double z = Math.sin(yaw);
+        double x = Math.cos(yaw);
+        movement.setX(movement.getZ() * x - movement.getX() * z);
+        movement.setZ(movement.getX() * x + movement.getZ() * z);
+
+        // apply the movement multiplier
+        if (!isOnGround() || location.getBlock().isLiquid()) {
+            // constant multiplier in liquid or not on ground
+            movement.multiply(0.02);
+        } else {
+            // default slipperiness is 0.6, implement later for specific types
+            this.slipMultiplier = 0.6;
+            double slipperiness = slipMultiplier * 0.91;
+            movement.multiply(0.1 * (0.1627714 / Math.pow(slipperiness, 3)));
+        }
+
+        return movement;
+    }
+
+    protected void jump() {
+        if (location.getBlock().isLiquid()) {
+            // jump out more when you breach the surface of the liquid
+            if (location.getBlock().getRelative(BlockFace.UP).isEmpty()) {
+                velocity.setY(velocity.getY() + 0.3);
+            }
+            // less jumping in liquid
+            velocity.setY(velocity.getY() + 0.04);
+        } else {
+            // jump normally
+            velocity.setY(velocity.getY() + 0.42);
         }
     }
 
@@ -975,3 +1072,4 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return taskManager;
     }
 }
+
