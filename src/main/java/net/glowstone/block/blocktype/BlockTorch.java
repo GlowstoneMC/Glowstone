@@ -21,7 +21,11 @@ public class BlockTorch extends BlockNeedsAttached {
         super.placeBlock(player, state, face, holding, clickedLoc);
         MaterialData data = state.getData();
         if (data instanceof Torch) {
-            ((Torch) data).setFacingDirection(face);
+            if (canAttachTo(state.getBlock(), face)) {
+                ((Torch) data).setFacingDirection(face);
+            } else {
+                ((Torch) data).setFacingDirection(BlockFace.UP);
+            }
         } else {
             warnMaterialData(Torch.class, data);
         }

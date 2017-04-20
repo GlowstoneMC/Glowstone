@@ -24,9 +24,13 @@ public class BlockNeedsAttached extends BlockType {
         }
     }
 
+    public boolean canAttachTo(GlowBlock block, BlockFace against) {
+        return !(ItemTable.instance().getBlock(block.getRelative(against.getOppositeFace()).getType()) instanceof BlockNeedsAttached);
+    }
+
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
-        return !(ItemTable.instance().getBlock(block.getRelative(against.getOppositeFace()).getType()) instanceof BlockNeedsAttached);
+        return !(!canAttachTo(block, against) && against == BlockFace.UP);
     }
 
     protected void dropMe(GlowBlock me) {
