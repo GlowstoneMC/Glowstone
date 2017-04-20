@@ -24,11 +24,12 @@ public class GlowRabbit extends GlowAnimal implements Rabbit {
             .put(Type.THE_KILLER_BUNNY, 99)
             .build();
 
-    private Type rabbitType = Type.values()[ThreadLocalRandom.current().nextInt(Type.values().length - 1)];
+    private Type rabbitType;
 
     public GlowRabbit(Location location) {
-        super(location, EntityType.RABBIT, 10); // Needs an update with the minecraft version 1.9, then the rabbit has 3 health (1.5 hearts)
-        setSize(0.6F, 0.7F);
+        super(location, EntityType.RABBIT, 3);
+        setSize(0.4F, 0.5F);
+        setRabbitType(Type.values()[ThreadLocalRandom.current().nextInt(rabbitTypeIntegerMap.size())]);
     }
 
     @Override
@@ -39,7 +40,7 @@ public class GlowRabbit extends GlowAnimal implements Rabbit {
     @Override
     public void setRabbitType(Type type) {
         checkNotNull(type, "Cannot set a null rabbit type!");
-        metadata.set(MetadataIndex.RABBIT_TYPE, rabbitTypeIntegerMap.get(getRabbitType()).byteValue());
+        metadata.set(MetadataIndex.RABBIT_TYPE, rabbitTypeIntegerMap.get(type).byteValue());
         rabbitType = type;
     }
 
