@@ -223,6 +223,7 @@ public final class ItemTable {
         reg(Material.BEACON, new BlockBeacon());
         reg(Material.PURPUR_PILLAR, new BlockPurpurPillar());
         reg(Material.PURPUR_BLOCK, new BlockDirectDrops(Material.PURPUR_BLOCK, ToolType.PICKAXE));
+        reg(Material.END_ROD, new BlockEndRod());
 
         reg(Material.FLINT_AND_STEEL, new ItemFlintAndSteel());
         reg(Material.SIGN, new ItemSign());
