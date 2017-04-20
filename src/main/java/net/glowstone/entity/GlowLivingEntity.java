@@ -3,7 +3,6 @@ package net.glowstone.entity;
 import com.flowpowered.network.Message;
 import lombok.Getter;
 import net.glowstone.EventFactory;
-import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
@@ -281,69 +280,35 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     @Override
     protected void pulsePhysics() {
-        Location loc = getLocation();
         // drag application
         movement.multiply(airDrag);
-        GlowServer.logger.info("m1 " + movement.toString());
         // convert movement x/z to a velocity
         Vector velMovement = getVelocityFromMovement();
-        GlowServer.logger.info("m2 " + movement.toString());
-        GlowServer.logger.info("velMove " + velMovement.toString());
         velocity.add(velMovement);
 
         double dx = velocity.getX();
         double dy = velocity.getY();
         double dz = velocity.getZ();
 
-        GlowServer.logger.info("vel " + velocity.toString());
-
         Vector min = boundingBox.minCorner.clone();
         Vector max = boundingBox.maxCorner.clone();
 
-        int ix = min.getBlockX();
-        int iy = min.getBlockY();
-        int iz = min.getBlockZ();
-
-        int fx = max.getBlockX();
-        int fy = max.getBlockY();
-        int fz = max.getBlockZ();
-
-        int incx = 0;
-        int incy = 0;
-        int incz = 0;
-
         if (dx < 0d) {
             min.setX(min.getX() + dx);
-            ix = max.getBlockX();
-            fx = min.getBlockX();
-            incx = -1;
         } else if (dx > 0d) {
             max.setX(max.getX() + dx);
-            fx = max.getBlockX();
-            incx = 1;
         }
 
         if (dy < 0d) {
-            GlowServer.logger.info("hi");
             min.setY(min.getY() + dy);
-            iy = max.getBlockY();
-            fy = min.getBlockY();
-            incy = -1;
         } else if (dy > 0d) {
             max.setY(max.getY() + dy);
-            fy = max.getBlockY();
-            incy = 1;
         }
 
         if (dz < 0d) {
             min.setZ(min.getZ() + dz);
-            iz = max.getBlockZ();
-            fz = min.getBlockZ();
-            incz = -1;
         } else if (dz > 0d) {
             max.setZ(max.getZ() + dz);
-            fz = max.getBlockZ();
-            incz = 1;
         }
 
         // find blocking entities
@@ -352,45 +317,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 .filter(e -> e.getType() == EntityType.BOAT || e instanceof Minecart)
                 .collect(Collectors.toList());
 
-        double bestDistance = -1;
-        int found = 0;
-
-        GlowServer.logger.info("iy " + iy);
-        GlowServer.logger.info("ix " + ix);
-        GlowServer.logger.info("iz " + iz);
-
-        GlowServer.logger.info("incy " + incy);
-        GlowServer.logger.info("incx " + incx);
-        GlowServer.logger.info("incz " + incz);
-
-        GlowServer.logger.info("fy " + fy);
-        GlowServer.logger.info("fx " + fx);
-        GlowServer.logger.info("fz " + fz);
-
-        boolean firedOnceY = false;
-        boolean firedOnceX = false;
-        boolean firedOnceZ = false;
-
-        for (int y = min.getBlockY(); y <= max.getBlockY(); y++) {
-            for (int x = min.getBlockX(); x <= max.getBlockX(); x++) {
-                for (int z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
-                    if (!Material.getMaterial(world.getBlockTypeIdAt(x, y, z)).isSolid()) {
-                        double distance = (x - loc.getX()) *  (x - loc.getX()) + (y - loc.getY()) *  (y - loc.getY()) + (z - loc.getZ()) *  (z - loc.getZ());
-                        if (distance < bestDistance || distance < 0) {
-                            bestDistance = distance;
-                            velocity.setX(x - ix);
-                            velocity.setY(y - iy);
-                            velocity.setZ(z - iz);
-                            found = 1;
-                        } else {
-                            found = -1;
-                        }
-                    }
-                }
-            }
-        }
-
-        if (found == 1) {
+        if (!location.clone().add(velocity).getBlock().getType().isSolid()) {
             setRawLocation(location.clone().add(velocity));
         }
 
