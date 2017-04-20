@@ -12,7 +12,6 @@ import net.glowstone.entity.AttributeManager.Key;
 import net.glowstone.entity.ai.MobState;
 import net.glowstone.entity.ai.TaskManager;
 import net.glowstone.entity.meta.MetadataIndex;
-import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.inventory.EquipmentMonitor;
 import net.glowstone.net.message.play.entity.EntityEffectMessage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
@@ -276,7 +275,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }
     }
 
-    double slipMultiplier;
+    protected double slipMultiplier = 0.6;
 
     @Override
     protected void pulsePhysics() {
@@ -286,40 +285,76 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         Vector velMovement = getVelocityFromMovement();
         velocity.add(velMovement);
 
-        double dx = velocity.getX();
-        double dy = velocity.getY();
-        double dz = velocity.getZ();
+        double dx = 0;
+        double dy = 0;
+        double dz = 0;
 
-        Vector min = boundingBox.minCorner.clone();
-        Vector max = boundingBox.maxCorner.clone();
+        double ndx = 0;
+        double ndy = 0;
+        double ndz = 0;
 
-        if (dx < 0d) {
-            min.setX(min.getX() + dx);
-        } else if (dx > 0d) {
-            max.setX(max.getX() + dx);
+        double x = location.getX();
+        double y = location.getY();
+        double z = location.getZ();
+
+        if (velocity.getY() < 0d) {
+            while (dy >= velocity.getY()) {
+                ndy--;
+                if (Material.getMaterial(((GlowWorld) location.getWorld()).getBlockTypeIdAt((int) x, (int) (y + ndy), (int) z)).isSolid()) {
+                    break;
+                }
+                dy = ndy;
+            }
+        } else if (velocity.getY() > 0d) {
+            while (dy <= velocity.getY()) {
+                ndy++;
+                if (Material.getMaterial(((GlowWorld) location.getWorld()).getBlockTypeIdAt((int) x, (int) (y + ndy), (int) z)).isSolid()) {
+                    break;
+                }
+                dy = ndy;
+            }
         }
+        velocity.setY(dy);
 
-        if (dy < 0d) {
-            min.setY(min.getY() + dy);
-        } else if (dy > 0d) {
-            max.setY(max.getY() + dy);
+        if (velocity.getX() < 0d) {
+            while (dx >= velocity.getX()) {
+                ndx--;
+                if (Material.getMaterial(((GlowWorld) location.getWorld()).getBlockTypeIdAt((int) (x + ndx), (int) (y + dy), (int) z)).isSolid()) {
+                    break;
+                }
+                dx = ndx;
+            }
+        } else if (velocity.getX() > 0d) {
+            while (dx <= velocity.getX()) {
+                ndx++;
+                if (Material.getMaterial(((GlowWorld) location.getWorld()).getBlockTypeIdAt((int) (x + ndx), (int) (y + dy), (int) z)).isSolid()) {
+                    break;
+                }
+                dx = ndx;
+            }
         }
+        velocity.setX(dx);
 
-        if (dz < 0d) {
-            min.setZ(min.getZ() + dz);
-        } else if (dz > 0d) {
-            max.setZ(max.getZ() + dz);
+        if (velocity.getZ() < 0d) {
+            while (dz >= velocity.getZ()) {
+                ndz--;
+                if (Material.getMaterial(((GlowWorld) location.getWorld()).getBlockTypeIdAt((int) (x + dx), (int) (y + dy), (int) (z + ndz))).isSolid()) {
+                    break;
+                }
+                dz = ndz;
+            }
+        } else if (velocity.getZ() > 0d) {
+            while (dz <= velocity.getZ()) {
+                ndz++;
+                if (Material.getMaterial(((GlowWorld) location.getWorld()).getBlockTypeIdAt((int) (x + dx), (int) (y + dy), (int) (z + ndz))).isSolid()) {
+                    break;
+                }
+                dz = ndz;
+            }
         }
+        velocity.setZ(dz);
 
-        // find blocking entities
-        BoundingBox extended = BoundingBox.fromCorners(min, max);
-        List<Entity> entities = ((GlowWorld) getLocation().getWorld()).getEntityManager().getEntitiesInside(extended, null).stream()
-                .filter(e -> e.getType() == EntityType.BOAT || e instanceof Minecart)
-                .collect(Collectors.toList());
-
-        if (!location.clone().add(velocity).getBlock().getType().isSolid()) {
-            setRawLocation(location.clone().add(velocity));
-        }
+        setRawLocation(location.clone().add(velocity));
 
         // apply friction and gravity
         if (location.getBlock().getType() == Material.WATER) {
@@ -329,7 +364,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             velocity.multiply(liquidDrag - 0.3);
             velocity.setY(velocity.getY() + gravityAccel.getY() / 4d);
         } else {
-            velocity.setY(velocity.getY() + airDrag * gravityAccel.getY());
+            velocity.setY(airDrag * (velocity.getY() + gravityAccel.getY()));
             if (isOnGround()) {
                 velocity.setX(velocity.getX() * slipMultiplier);
                 velocity.setZ(velocity.getZ() * slipMultiplier);
@@ -370,13 +405,20 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             // constant multiplier in liquid or not on ground
             movement.multiply(0.02);
         } else {
-            // default slipperiness is 0.6, implement later for specific types
-            this.slipMultiplier = 0.6;
+            this.slipMultiplier = ((GlowBlock) location.getBlock()).getMaterialValues().getSlipperiness();
             double slipperiness = slipMultiplier * 0.91;
             movement.multiply(0.1 * (0.1627714 / Math.pow(slipperiness, 3)));
         }
 
         return movement;
+    }
+
+    public Vector getMovement() {
+        return movement.clone();
+    }
+
+    public void setMovement(Vector movement) {
+        this.movement = movement;
     }
 
     protected void jump() {

@@ -50,5 +50,12 @@ public interface MaterialValueManager {
          * @return the fire resistance
          */
         int getFireResistance();
+
+        /**
+         * Returns the slipperiness-component of this value.
+         *
+         * @return the slipperiness
+         */
+        double getSlipperiness();
     }
 }

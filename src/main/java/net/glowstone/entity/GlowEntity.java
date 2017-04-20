@@ -488,6 +488,10 @@ public abstract class GlowEntity implements Entity {
         } else if (location.getY() < previousLocation.getY() && !isInsideVehicle()) {
             fallDistance += previousLocation.getY() - location.getY();
         }
+
+        if (fall && !(this instanceof GlowPlayer)) {
+            setOnGround(location.add(new Vector(0, -1, 0)).getBlock().getType().isSolid());
+        }
     }
 
     /**

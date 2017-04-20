@@ -82,5 +82,10 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
         public int getFireResistance() {
             return ((Number) get("fireResistance")).intValue();
         }
+
+        @Override
+        public double getSlipperiness() {
+            return 0.6;
+        }
     }
 }
