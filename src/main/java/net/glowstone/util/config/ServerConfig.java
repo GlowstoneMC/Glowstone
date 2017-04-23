@@ -391,6 +391,7 @@ public final class ServerConfig {
         METRICS("advanced.metrics", true),
         GPGPU("advanced.gpgpu", false),
         GPGPU_ANY_DEVICE("advanced.gpgpu-use-any-device", false),
+        RUN_CLIENT("advanced.run-glowclient", false),
 
         // query rcon etc
         QUERY_ENABLED("extras.query-enabled", false, Migrate.PROPS, "enable-query"),
@@ -420,7 +421,8 @@ public final class ServerConfig {
         DB_URL("database.url", "jdbc:sqlite:config/database.db", Migrate.BUKKIT, "database.url"),
         DB_USERNAME("database.username", "glowstone", Migrate.BUKKIT, "database.username"),
         DB_PASSWORD("database.password", "nether", Migrate.BUKKIT, "database.password"),
-        DB_ISOLATION("database.isolation", "SERIALIZABLE", Migrate.BUKKIT, "database.isolation");
+        DB_ISOLATION("database.isolation", "SERIALIZABLE", Migrate.BUKKIT, "database.isolation"),
+        ;
 
         private final String path;
         private final Object def;

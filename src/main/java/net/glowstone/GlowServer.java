@@ -7,11 +7,13 @@ import com.flowpowered.network.Message;
 import com.jogamp.opencl.CLDevice;
 import com.jogamp.opencl.CLPlatform;
 import io.netty.channel.epoll.Epoll;
+import lombok.Getter;
 import net.glowstone.block.BuiltinMaterialValueManager;
 import net.glowstone.block.MaterialValueManager;
 import net.glowstone.block.state.GlowDispenser;
 import net.glowstone.boss.BossBarManager;
 import net.glowstone.boss.GlowBossBar;
+import net.glowstone.client.GlowClient;
 import net.glowstone.command.*;
 import net.glowstone.constants.GlowEnchantment;
 import net.glowstone.constants.GlowPotionEffect;
@@ -204,6 +206,7 @@ public final class GlowServer implements Server {
     /**
      * The network server used for network communication
      */
+    @Getter
     private GameServer networkServer;
     /**
      * A set of all online players.
@@ -294,6 +297,11 @@ public final class GlowServer implements Server {
         Bukkit.setServer(this);
         loadConfig();
     }
+
+    /**
+     * The client instance backed by this server.
+     */
+    public static GlowClient client;
 
     /**
      * Creates a new server on TCP port 25565 and starts listening for
@@ -452,6 +460,11 @@ public final class GlowServer implements Server {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+
+        if (config.getBoolean(Key.RUN_CLIENT)) {
+            client = new GlowClient(this);
+            client.run();
         }
     }
 
