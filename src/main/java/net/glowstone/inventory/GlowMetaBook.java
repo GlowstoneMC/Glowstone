@@ -19,7 +19,7 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
     private String title;
     private String author;
     private List<String> pages;
-    private Integer generation;
+    private Integer generation = 0;
 
     public GlowMetaBook(GlowMetaItem meta) {
         super(meta);
