@@ -3,6 +3,7 @@ package net.glowstone.client;
 import net.glowstone.entity.GlowHumanEntity;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.MainHand;
@@ -32,6 +33,21 @@ public class GlowClientEntity extends GlowHumanEntity {
     @Override
     public InventoryView openMerchant(Merchant merchant, boolean force) {
         return null;
+    }
+
+    @Override
+    public boolean hasCooldown(Material material) {
+        return false;
+    }
+
+    @Override
+    public int getCooldown(Material material) {
+        return 0;
+    }
+
+    @Override
+    public void setCooldown(Material material, int ticks) {
+
     }
 
     @Override

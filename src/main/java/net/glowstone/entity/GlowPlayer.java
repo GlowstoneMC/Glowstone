@@ -2477,6 +2477,21 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public boolean hasCooldown(Material material) {
+        return false;
+    }
+
+    @Override
+    public int getCooldown(Material material) {
+        return 0;
+    }
+
+    @Override
+    public void setCooldown(Material material, int ticks) {
+
+    }
+
+    @Override
     public MainHand getMainHand() {
         return metadata.getByte(MetadataIndex.PLAYER_MAIN_HAND) == 0 ? MainHand.LEFT : MainHand.RIGHT;
     }
