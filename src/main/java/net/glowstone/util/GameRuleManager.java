@@ -27,6 +27,7 @@ public final class GameRuleManager {
         setValue("sendCommandFeedback", true);
         setValue("showDeathMessages", true);
         setValue("doLimitedCrafting", false);
+        setValue("maxCommandChainLength", 65536);
     }
 
     /**
