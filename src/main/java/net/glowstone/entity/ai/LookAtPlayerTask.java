@@ -83,5 +83,6 @@ public class LookAtPlayerTask extends EntityTask {
         entity.setHeadYaw(yaw); // todo: smooth head rotation (delta)
         // todo: pitch rotation (head up/down)
         delay = 1;
+        TransportHelper.moveTowards(entity, target.getLocation());
     }
 }

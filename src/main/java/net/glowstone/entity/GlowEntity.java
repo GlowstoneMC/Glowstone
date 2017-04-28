@@ -419,6 +419,11 @@ public abstract class GlowEntity implements Entity {
             }
         }
 
+        if (this instanceof GlowLivingEntity && !isDead() && ((GlowLivingEntity) this).hasAI() && this.getLocation().getChunk().isLoaded()) {
+            GlowLivingEntity entity = (GlowLivingEntity) this;
+            entity.getTaskManager().pulse();
+        }
+
         pulsePhysics();
 
         if (hasMoved()) {
