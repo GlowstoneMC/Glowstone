@@ -493,7 +493,7 @@ public abstract class GlowEntity implements Entity {
         }
 
         if (fall && !(this instanceof GlowPlayer)) {
-            setOnGround(location.add(new Vector(0, -1, 0)).getBlock().getType().isSolid());
+            setOnGround(location.clone().add(new Vector(0, -1, 0)).getBlock().getType().isSolid());
         }
     }
 
@@ -733,28 +733,31 @@ public abstract class GlowEntity implements Entity {
             Vector inc = velocity.clone().normalize();
 
             BoundingBox test;
+            boolean bbRelevant = (boundingBox == null ? 0 : boundingBox.getSize().lengthSquared()) >= 1;
 
             if (velocity.getY() < 0d) {
-                block:
-                while (dy >= velocity.getY()) {
-                    ndy += inc.getY();
-                    if (Material.getMaterial(((GlowWorld) location.getWorld()).getBlockTypeIdAt((int) x, (int) (y + ndy), (int) z)).isSolid()) {
-                        break;
-                    }
-                    if (boundingBox != null) {
-                        test = BoundingBox.fromPositionAndSize(new Vector((int) x, (int) (y + ndy), (int) z), boundingBox.getSize());
-                        Vector min = test.minCorner, max = test.maxCorner;
-                        for (int bbx = min.getBlockX(); x <= max.getBlockX(); ++x) {
-                            for (int bby = min.getBlockY(); y <= max.getBlockY(); ++y) {
-                                for (int bbz = min.getBlockZ(); z <= max.getBlockZ(); ++z) {
-                                    if (Material.getMaterial(world.getBlockTypeIdAt(bbx, bby, bbz)).isSolid()) {
-                                        break block;
+                if (!location.clone().add(new Vector(0, -1, 0)).getBlock().getType().isSolid()) {
+                    block:
+                    while (dy >= velocity.getY()) {
+                        ndy += inc.getY();
+                        if (Material.getMaterial(((GlowWorld) location.getWorld()).getBlockTypeIdAt((int) x, (int) (y + ndy), (int) z)).isSolid()) {
+                            break;
+                        }
+                        if (bbRelevant) {
+                            test = BoundingBox.fromPositionAndSize(new Vector((int) x, (int) (y + ndy), (int) z), boundingBox.getSize());
+                            Vector min = test.minCorner, max = test.maxCorner;
+                            for (int bbx = min.getBlockX(); x <= max.getBlockX(); ++x) {
+                                for (int bby = min.getBlockY(); y <= max.getBlockY(); ++y) {
+                                    for (int bbz = min.getBlockZ(); z <= max.getBlockZ(); ++z) {
+                                        if (Material.getMaterial(world.getBlockTypeIdAt(bbx, bby, bbz)).isSolid()) {
+                                            break block;
+                                        }
                                     }
                                 }
                             }
                         }
+                        dy = ndy;
                     }
-                    dy = ndy;
                 }
             } else if (velocity.getY() > 0d) {
                 block:
@@ -763,7 +766,7 @@ public abstract class GlowEntity implements Entity {
                     if (Material.getMaterial(((GlowWorld) location.getWorld()).getBlockTypeIdAt((int) x, (int) (y + ndy), (int) z)).isSolid()) {
                         break;
                     }
-                    if (boundingBox != null) {
+                    if (bbRelevant) {
                         test = BoundingBox.fromPositionAndSize(new Vector((int) x, (int) (y + ndy), (int) z), boundingBox.getSize());
                         Vector min = test.minCorner, max = test.maxCorner;
                         for (int bbx = min.getBlockX(); x <= max.getBlockX(); ++x) {
@@ -788,7 +791,7 @@ public abstract class GlowEntity implements Entity {
                     if (Material.getMaterial(((GlowWorld) location.getWorld()).getBlockTypeIdAt((int) (x + ndx), (int) (y + dy), (int) z)).isSolid()) {
                         break;
                     }
-                    if (boundingBox != null) {
+                    if (bbRelevant) {
                         test = BoundingBox.fromPositionAndSize(new Vector((int) (x + ndx), (int) (y + dy), (int) z), boundingBox.getSize());
                         Vector min = test.minCorner, max = test.maxCorner;
                         for (int bbx = min.getBlockX(); x <= max.getBlockX(); ++x) {
@@ -810,7 +813,7 @@ public abstract class GlowEntity implements Entity {
                     if (Material.getMaterial(((GlowWorld) location.getWorld()).getBlockTypeIdAt((int) (x + ndx), (int) (y + dy), (int) z)).isSolid()) {
                         break;
                     }
-                    if (boundingBox != null) {
+                    if (bbRelevant) {
                         test = BoundingBox.fromPositionAndSize(new Vector((int) (x + ndx), (int) (y + dy), (int) z), boundingBox.getSize());
                         Vector min = test.minCorner, max = test.maxCorner;
                         for (int bbx = min.getBlockX(); x <= max.getBlockX(); ++x) {
