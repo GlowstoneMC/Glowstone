@@ -1,8 +1,9 @@
 package net.glowstone.entity.ai;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 
+@Data
 @AllArgsConstructor
 public class MobState {
 
@@ -11,6 +12,5 @@ public class MobState {
     public static final MobState WANDER = new MobState("wander");
     public static final MobState ATTACKED = new MobState("attacked");
 
-    @Getter
     private String name;
 }

@@ -1,10 +1,5 @@
 package net.glowstone.entity.ai;
 
-public class HostileMobState extends MobState {
-
-    public static final HostileMobState TARGETING = new HostileMobState("targeting");
-
-    public HostileMobState(String name) {
-        super(name);
-    }
+public class HostileMobState {
+    public static final MobState TARGETING = new MobState("targeting");
 }

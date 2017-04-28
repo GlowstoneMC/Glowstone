@@ -39,7 +39,6 @@ public abstract class EntityTask {
             duration = getDurationMin() == getDurationMax() ? getDurationMin() : random.nextInt(getDurationMax() - getDurationMin()) + getDurationMin();
             executing = true;
             start(entity);
-            return;
         }
     }
 

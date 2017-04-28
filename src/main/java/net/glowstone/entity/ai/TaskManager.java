@@ -46,6 +46,7 @@ public class TaskManager {
     }
 
     public void updateState() {
+        cancelTasks();
         for (String task : EntityDirector.getEntityMobStateTask(entity.getType(), entity.getState())) {
             addTask(task);
         }
