@@ -3,7 +3,6 @@ package net.glowstone.entity;
 import com.flowpowered.network.Message;
 import lombok.Getter;
 import net.glowstone.EventFactory;
-import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
@@ -12,7 +11,6 @@ import net.glowstone.entity.AttributeManager.Key;
 import net.glowstone.entity.ai.MobState;
 import net.glowstone.entity.ai.TaskManager;
 import net.glowstone.entity.meta.MetadataIndex;
-import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.inventory.EquipmentMonitor;
 import net.glowstone.net.message.play.entity.EntityEffectMessage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
@@ -276,8 +274,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }
     }
 
-    protected double slipMultiplier = 0.6;
-
     @Override
     protected void pulsePhysics() {
         // drag application
@@ -285,181 +281,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         // convert movement x/z to a velocity
         Vector velMovement = getVelocityFromMovement();
         velocity.add(velMovement);
-
-        if (velocity.lengthSquared() > 0.01) {
-            double dx = 0;
-            double dy = 0;
-            double dz = 0;
-
-            double ndx = 0;
-            double ndy = 0;
-            double ndz = 0;
-
-            double x = location.getX();
-            double y = location.getY();
-            double z = location.getZ();
-
-            Vector inc = velocity.clone().normalize();
-
-            BoundingBox test;
-
-            if (velocity.getY() < 0d) {
-                block:
-                while (dy >= velocity.getY()) {
-                    ndy += inc.getY();
-                    if (Material.getMaterial(((GlowWorld) location.getWorld()).getBlockTypeIdAt((int) x, (int) (y + ndy), (int) z)).isSolid()) {
-                        break;
-                    }
-                    test = BoundingBox.fromPositionAndSize(new Vector((int) x, (int) (y + ndy), (int) z), boundingBox.getSize());
-                    Vector min = test.minCorner, max = test.maxCorner;
-                    for (int bbx = min.getBlockX(); x <= max.getBlockX(); ++x) {
-                        for (int bby = min.getBlockY(); y <= max.getBlockY(); ++y) {
-                            for (int bbz = min.getBlockZ(); z <= max.getBlockZ(); ++z) {
-                                if (Material.getMaterial(world.getBlockTypeIdAt(bbx, bby, bbz)).isSolid()) {
-                                    break block;
-                                }
-                            }
-                        }
-                    }
-                    dy = ndy;
-                }
-            } else if (velocity.getY() > 0d) {
-                block:
-                while (dy <= velocity.getY()) {
-                    ndy += inc.getY();
-                    if (Material.getMaterial(((GlowWorld) location.getWorld()).getBlockTypeIdAt((int) x, (int) (y + ndy), (int) z)).isSolid()) {
-                        break;
-                    }
-                    if (boundingBox != null) {
-                        test = BoundingBox.fromPositionAndSize(new Vector((int) x, (int) (y + ndy), (int) z), boundingBox.getSize());
-                        Vector min = test.minCorner, max = test.maxCorner;
-                        for (int bbx = min.getBlockX(); x <= max.getBlockX(); ++x) {
-                            for (int bby = min.getBlockY(); y <= max.getBlockY(); ++y) {
-                                for (int bbz = min.getBlockZ(); z <= max.getBlockZ(); ++z) {
-                                    if (Material.getMaterial(world.getBlockTypeIdAt(bbx, bby, bbz)).isSolid()) {
-                                        break block;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    dy = ndy;
-                }
-            }
-            velocity.setY(dy);
-
-            if (velocity.getX() < 0d) {
-                block:
-                while (dx >= velocity.getX()) {
-                    ndx += inc.getX();
-                    if (Material.getMaterial(((GlowWorld) location.getWorld()).getBlockTypeIdAt((int) (x + ndx), (int) (y + dy), (int) z)).isSolid()) {
-                        break;
-                    }
-                    if (boundingBox != null) {
-                        test = BoundingBox.fromPositionAndSize(new Vector((int) (x + ndx), (int) (y + dy), (int) z), boundingBox.getSize());
-                        Vector min = test.minCorner, max = test.maxCorner;
-                        for (int bbx = min.getBlockX(); x <= max.getBlockX(); ++x) {
-                            for (int bby = min.getBlockY(); y <= max.getBlockY(); ++y) {
-                                for (int bbz = min.getBlockZ(); z <= max.getBlockZ(); ++z) {
-                                    if (Material.getMaterial(world.getBlockTypeIdAt(bbx, bby, bbz)).isSolid()) {
-                                        break block;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    dx = ndx;
-                }
-            } else if (velocity.getX() > 0d) {
-                block:
-                while (dx <= velocity.getX()) {
-                    ndx += inc.getX();
-                    if (Material.getMaterial(((GlowWorld) location.getWorld()).getBlockTypeIdAt((int) (x + ndx), (int) (y + dy), (int) z)).isSolid()) {
-                        break;
-                    }
-                    if (boundingBox != null) {
-                        test = BoundingBox.fromPositionAndSize(new Vector((int) (x + ndx), (int) (y + dy), (int) z), boundingBox.getSize());
-                        Vector min = test.minCorner, max = test.maxCorner;
-                        for (int bbx = min.getBlockX(); x <= max.getBlockX(); ++x) {
-                            for (int bby = min.getBlockY(); y <= max.getBlockY(); ++y) {
-                                for (int bbz = min.getBlockZ(); z <= max.getBlockZ(); ++z) {
-                                    if (Material.getMaterial(world.getBlockTypeIdAt(bbx, bby, bbz)).isSolid()) {
-                                        break block;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    dx = ndx;
-                }
-            }
-            velocity.setX(dx);
-
-            if (velocity.getZ() < 0d) {
-                block:
-                while (dz >= velocity.getZ()) {
-                    ndz += inc.getZ();
-                    if (Material.getMaterial(((GlowWorld) location.getWorld()).getBlockTypeIdAt((int) (x + dx), (int) (y + dy), (int) (z + ndz))).isSolid()) {
-                        break;
-                    }
-                    if (boundingBox != null) {
-                        test = BoundingBox.fromPositionAndSize(new Vector((int) (x + dx), (int) (y + dy), (int) (z + ndz)), boundingBox.getSize());
-                        Vector min = test.minCorner, max = test.maxCorner;
-                        for (int bbx = min.getBlockX(); x <= max.getBlockX(); ++x) {
-                            for (int bby = min.getBlockY(); y <= max.getBlockY(); ++y) {
-                                for (int bbz = min.getBlockZ(); z <= max.getBlockZ(); ++z) {
-                                    if (Material.getMaterial(world.getBlockTypeIdAt(bbx, bby, bbz)).isSolid()) {
-                                        break block;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    dz = ndz;
-                }
-            } else if (velocity.getZ() > 0d) {
-                block:
-                while (dz <= velocity.getZ()) {
-                    ndz += inc.getZ();
-                    if (Material.getMaterial(((GlowWorld) location.getWorld()).getBlockTypeIdAt((int) (x + dx), (int) (y + dy), (int) (z + ndz))).isSolid()) {
-                        break;
-                    }
-                    test = BoundingBox.fromPositionAndSize(new Vector((int) (x + dx), (int) (y + dy), (int) (z + ndz)), boundingBox.getSize());
-                    Vector min = test.minCorner, max = test.maxCorner;
-                    for (int bbx = min.getBlockX(); x <= max.getBlockX(); ++x) {
-                        for (int bby = min.getBlockY(); y <= max.getBlockY(); ++y) {
-                            for (int bbz = min.getBlockZ(); z <= max.getBlockZ(); ++z) {
-                                if (Material.getMaterial(world.getBlockTypeIdAt(bbx, bby, bbz)).isSolid()) {
-                                    break block;
-                                }
-                            }
-                        }
-                    }
-                    dz = ndz;
-                }
-            }
-            velocity.setZ(dz);
-
-            setRawLocation(location.clone().add(velocity));
-        }
-
-        // apply friction and gravity
-        if (location.getBlock().getType() == Material.WATER) {
-            velocity.multiply(liquidDrag);
-            velocity.setY(velocity.getY() + gravityAccel.getY() / 4d);
-        } else if (location.getBlock().getType() == Material.LAVA) {
-            velocity.multiply(liquidDrag - 0.3);
-            velocity.setY(velocity.getY() + gravityAccel.getY() / 4d);
-        } else {
-            velocity.setY(airDrag * (velocity.getY() + gravityAccel.getY()));
-            if (isOnGround()) {
-                velocity.setX(velocity.getX() * slipMultiplier);
-                velocity.setZ(velocity.getZ() * slipMultiplier);
-            } else {
-                velocity.setX(velocity.getX() * 0.91);
-                velocity.setZ(velocity.getZ() * 0.91);
-            }
-        }
+        super.pulsePhysics();
     }
 
     protected Vector getVelocityFromMovement() {

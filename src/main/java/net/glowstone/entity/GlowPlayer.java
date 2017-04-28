@@ -633,10 +633,16 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         getAttributeManager().sendMessages(session);
     }
 
+    @Override
     protected void pulsePhysics() {
         // trust the client with physics
         // just update the bounding box
         updateBoundingBox();
+    }
+
+    @Override
+    protected void jump() {
+        // don't make the client jump, please
     }
 
     /**

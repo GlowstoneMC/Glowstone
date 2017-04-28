@@ -165,8 +165,7 @@ public class GlowItemFrame extends GlowEntity implements ItemFrame {
 
     @Override
     protected void pulsePhysics() {
-        // item frames aren't affected by physics, just pulse bounding box
-        updateBoundingBox();
+        // item frames aren't affected by physics
     }
 
     @Override
