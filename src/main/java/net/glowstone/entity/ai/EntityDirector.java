@@ -11,6 +11,7 @@ public class EntityDirector {
     static {
         registerEntityTask("look_around", LookAroundTask.class);
         registerEntityTask("look_player", LookAtPlayerTask.class);
+        registerEntityTask("follow_player", FollowPlayerTask.class);
     }
 
     public static void registerEntityMobState(EntityType entity, MobState state, String task) {

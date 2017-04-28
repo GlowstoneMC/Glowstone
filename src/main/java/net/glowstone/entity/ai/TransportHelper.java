@@ -13,7 +13,7 @@ public class TransportHelper {
         Location location = entity.getLocation();
         double deltaX = (direction.getX() - location.getX());
         double deltaZ = (direction.getZ() - location.getZ());
-        Vector vector = new Vector(deltaX, 0, deltaZ).normalize().multiply(speed);
-        entity.setRawLocation(location.add(vector)); // doesn't work on positive X/Z, why??
+        entity.setSpeed(speed);
+        entity.setMovement(new Vector(deltaX, 0, deltaZ));
     }
 }

@@ -330,6 +330,14 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         this.movement = movement;
     }
 
+    public double getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
+
     protected void jump() {
         if (location.getBlock().isLiquid()) {
             // jump out more when you breach the surface of the liquid

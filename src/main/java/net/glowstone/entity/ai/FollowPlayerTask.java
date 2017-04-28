@@ -8,14 +8,14 @@ import org.bukkit.entity.EntityType;
 
 import java.util.List;
 
-public class LookAtPlayerTask extends EntityTask {
+public class FollowPlayerTask extends EntityTask {
 
     private GlowPlayer target;
     private int delay = 1;
     private static final double RANGE = 10;
 
-    public LookAtPlayerTask() {
-        super("look_player");
+    public FollowPlayerTask() {
+        super("follow_player");
     }
 
     @Override
@@ -35,8 +35,7 @@ public class LookAtPlayerTask extends EntityTask {
 
     @Override
     public boolean shouldStart(GlowLivingEntity entity) {
-        EntityTask task = entity.getTaskManager().getTask("look_around");
-        return task != null && !task.isExecuting() && random.nextFloat() <= 0.025;
+        return entity.getState() == HostileMobState.TARGETING;
     }
 
     @Override
@@ -83,9 +82,6 @@ public class LookAtPlayerTask extends EntityTask {
         entity.setHeadYaw(yaw); // todo: smooth head rotation (delta)
         // todo: pitch rotation (head up/down)
         delay = 1;
-
-        if (entity.getType() == EntityType.ZOMBIE) {
-            entity.setState(HostileMobState.TARGETING);
-        }
+        TransportHelper.moveTowards(entity, target.getLocation());
     }
 }
