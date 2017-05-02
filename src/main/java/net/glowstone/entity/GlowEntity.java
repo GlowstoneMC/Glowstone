@@ -317,6 +317,14 @@ public abstract class GlowEntity implements Entity {
         this.gravityAccel = gravity;
     }
 
+    public Vector getGravityAccel() {
+        if (this.gravity) {
+            return this.gravityAccel;
+        } else {
+            return this.zeroG;
+        }
+    }
+
     public void setDrag(double drag, boolean liquid) {
         if (liquid) {
             liquidDrag = drag;
@@ -716,6 +724,7 @@ public abstract class GlowEntity implements Entity {
      * Gravity acceleration applied each tick.
      */
     protected Vector gravityAccel = new Vector(0, -0.04, 0);
+    private static final Vector zeroG = new Vector(0, 0, 0);
     /**
      * The slipperiness multiplier applied according to the block this entity was on.
      */
@@ -889,12 +898,12 @@ public abstract class GlowEntity implements Entity {
         // apply friction and gravity
         if (location.getBlock().getType() == Material.WATER) {
             velocity.multiply(liquidDrag);
-            velocity.setY(velocity.getY() + gravityAccel.getY() / 4d);
+            velocity.setY(velocity.getY() + getGravityAccel().getY() / 4d);
         } else if (location.getBlock().getType() == Material.LAVA) {
             velocity.multiply(liquidDrag - 0.3);
-            velocity.setY(velocity.getY() + gravityAccel.getY() / 4d);
+            velocity.setY(velocity.getY() + getGravityAccel().getY() / 4d);
         } else {
-            velocity.setY(airDrag * (velocity.getY() + gravityAccel.getY()));
+            velocity.setY(airDrag * (velocity.getY() + getGravityAccel().getY()));
             if (isOnGround()) {
                 velocity.setX(velocity.getX() * slipMultiplier);
                 velocity.setZ(velocity.getZ() * slipMultiplier);
