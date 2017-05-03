@@ -57,7 +57,7 @@ just like you and can make mistakes.
 Following these guidelines will contribute to creating a positive environment
 in our community.
 
-Example of unacceptable behavior by participants include:
+Examples of unacceptable behavior by participants include:
 
 * The use of sexualized language or imagery and unwelcome sexual attention or
 advances
@@ -84,12 +84,11 @@ that they deem inappropriate, threatening, offensive, or harmful.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported by contacting the project lead, mastercoms, at <circuitsoft at tuta.io>.
+reported by contacting the project lead, mastercoms, at circuitsoft at tuta.io.
 All complaints will be reviewed and investigated and will result in a response
 that is deemed necessary and appropriate to the circumstances. The project team
 is obligated to maintain confidentiality with regard to the reporter of
-an incident. If you have a report about mastercoms, please contact gdude2002
-at @gdude2002.
+an incident. If you have a report about mastercoms, please contact gdude2002.
 
 Project maintainers who do not follow or enforce the Code of Conduct in
 good faith may face temporary or permanent repercussions as determind by
