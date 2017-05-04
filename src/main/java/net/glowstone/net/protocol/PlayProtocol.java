@@ -27,7 +27,7 @@ public class PlayProtocol extends GlowProtocol {
         super("PLAY", 0x4D);
 
         inbound(0x00, TeleportConfirmMessage.class, TeleportConfirmCodec.class, TeleportConfirmHandler.class);
-        // TODO 0x01 : Prepare Crafting grid
+        // TODO 0x01 : Prepare Crafting Grid
         inbound(0x02, TabCompleteMessage.class, TabCompleteCodec.class, TabCompleteHandler.class);
         inbound(0x03, IncomingChatMessage.class, IncomingChatCodec.class, IncomingChatHandler.class);
         inbound(0x04, ClientStatusMessage.class, ClientStatusCodec.class, ClientStatusHandler.class);
@@ -49,7 +49,7 @@ public class PlayProtocol extends GlowProtocol {
         inbound(0x14, DiggingMessage.class, DiggingCodec.class, DiggingHandler.class);
         inbound(0x15, PlayerActionMessage.class, PlayerActionCodec.class, PlayerActionHandler.class);
         inbound(0x16, SteerVehicleMessage.class, SteerVehicleCodec.class, SteerVehicleHandler.class);
-        // TODO: 0x17 : Recipe Displayed
+        // TODO: 0x17 : Crafting Book Data
         inbound(0x18, ResourcePackStatusMessage.class, ResourcePackStatusCodec.class, ResourcePackStatusHandler.class);
         inbound(0x19, HeldItemMessage.class, HeldItemCodec.class, HeldItemHandler.class);
         inbound(0x1A, CreativeItemMessage.class, CreativeItemCodec.class, CreativeItemHandler.class);
@@ -68,7 +68,7 @@ public class PlayProtocol extends GlowProtocol {
         outbound(0x06, AnimateEntityMessage.class, AnimateEntityCodec.class);
         outbound(0x07, StatisticMessage.class, StatisticCodec.class);
         // TODO 0x08 : Advancements packet
-        // TODO 0x09 : Block break animation
+        // TODO 0x09 : Block Break Animation
         outbound(0x0A, UpdateBlockEntityMessage.class, UpdateBlockEntityCodec.class);
         outbound(0x0B, BlockActionMessage.class, BlockActionCodec.class);
         outbound(0x0C, BlockChangeMessage.class, BlockChangeCodec.class);
