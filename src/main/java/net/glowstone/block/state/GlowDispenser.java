@@ -89,17 +89,44 @@ public class GlowDispenser extends GlowLootableBlock implements Dispenser, Block
 
     public int getDispenseSlot() {
         Inventory inv = getInventory();
-
-        int slot = -1;
-        int randomChance = 1;
-
-        for (int i = 0; i < inv.getSize(); i++) {
-            if (inv.getItem(i) != null && random.nextInt(randomChance++) == 0) {
-                slot = i;
+        
+        boolean allAir = true;
+        if (inv.getItem(0).getType() != Material.AIR) allAir = false;
+        if (inv.getItem(1).getType() != Material.AIR) allAir = false;
+        if (inv.getItem(2).getType() != Material.AIR) allAir = false;
+        if (inv.getItem(3).getType() != Material.AIR) allAir = false;
+        if (inv.getItem(4).getType() != Material.AIR) allAir = false;
+        if (inv.getItem(5).getType() != Material.AIR) allAir = false;
+        if (inv.getItem(6).getType() != Material.AIR) allAir = false;
+        if (inv.getItem(7).getType() != Material.AIR) allAir = false;
+        if (inv.getItem(8).getType() != Material.AIR) allAir = false;
+        if (allAir) { //Determines if the dispenser is empty, if so return slot 0
+            return 0;
+        } else {
+            
+            int slot = 0;
+            int tries = 0;
+            while (true) {
+                //Gets a random slot and determines if that slot has an item in it
+                slot = random.nextInt(9);
+                if (inv.getItem(slot).getType() != Material.AIR) break;
+                
+                //Eliminates the possibility of an infinite loop, goes in order upon reaching 20 random tries
+                tries += 1;
+                if (tries == 20) {
+                    int i = 0;
+                    while (i < 9) {
+                        if (inv.getItem(i).getType() != Material.AIR) {
+                            slot = i;
+                            break;
+                        }
+                    }
+                    break;
+                }
             }
-        }
 
-        return slot;
+            return slot;
+        }
     }
 
     public ItemStack placeInDispenser(ItemStack toPlace) {
