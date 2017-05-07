@@ -3,6 +3,7 @@ package net.glowstone.block.state;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.DispenserEntity;
 import net.glowstone.dispenser.*;
+import net.glowstone.util.InventoryUtil;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Dispenser;
@@ -90,20 +91,11 @@ public class GlowDispenser extends GlowLootableBlock implements Dispenser, Block
     public int getDispenseSlot() {
         Inventory inv = getInventory();
         
-        boolean allAir = true;
-        if (inv.getItem(0).getType() != Material.AIR) allAir = false;
-        if (inv.getItem(1).getType() != Material.AIR) allAir = false;
-        if (inv.getItem(2).getType() != Material.AIR) allAir = false;
-        if (inv.getItem(3).getType() != Material.AIR) allAir = false;
-        if (inv.getItem(4).getType() != Material.AIR) allAir = false;
-        if (inv.getItem(5).getType() != Material.AIR) allAir = false;
-        if (inv.getItem(6).getType() != Material.AIR) allAir = false;
-        if (inv.getItem(7).getType() != Material.AIR) allAir = false;
-        if (inv.getItem(8).getType() != Material.AIR) allAir = false;
-        if (allAir) { //Determines if the dispenser is empty, if so return slot 0
-            return 0;
-        } else {
-            
+        boolean isEmpty = true;
+        for (ItemStack stack : inv.getContents()) {
+            if (InventoryUtil.isEmpty(stack) == false) isEmpty = false;
+        } 
+        if (isEmpty == false) {
             int slot = 0;
             int tries = 0;
             while (true) {
@@ -126,6 +118,8 @@ public class GlowDispenser extends GlowLootableBlock implements Dispenser, Block
             }
 
             return slot;
+        } else {
+            return 0;
         }
     }
 

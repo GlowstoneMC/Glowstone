@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.glowstone.dispenser;
 
 import net.glowstone.block.GlowBlock;
@@ -15,10 +10,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import java.util.List;
 
-/**
- *
- * @author cag45
- */
 public class ArmorDispenseBehavior extends DefaultDispenseBehavior {
     DefaultDispenseBehavior defaultBehavior = new DefaultDispenseBehavior();
     
