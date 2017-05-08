@@ -126,7 +126,7 @@ public final class GlowServer implements Server {
     /**
      * The console manager of this server.
      */
-    private ConsoleManager consoleManager = new ConsoleManager(this);
+    private ConsoleManager consoleManager;
     /**
      * The services manager of this server.
      */
@@ -478,7 +478,7 @@ public final class GlowServer implements Server {
      */
     public void start() {
         // Determine console mode and start reading input
-        consoleManager.startConsole(config.getBoolean(Key.USE_JLINE));
+        consoleManager = new ConsoleManager(this);
         //consoleManager.startFile(config.getString(Key.LOG_FILE));
 
         if (getProxySupport()) {

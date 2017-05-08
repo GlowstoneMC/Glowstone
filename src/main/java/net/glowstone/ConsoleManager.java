@@ -54,20 +54,9 @@ public final class ConsoleManager {
                     .terminal(terminal)
                     .completer(new CommandCompleter())
                     .build();
-            // set system output streams
-            //System.setOut(new PrintStream(new LoggerOutputStream(Level.INFO), true));
-            //System.setErr(new PrintStream(new LoggerOutputStream(Level.WARNING), true));
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Exception initializing terminal", e);
         }
-    }
-
-    public ConsoleCommandSender getSender() {
-        return sender;
-    }
-
-    public void startConsole(boolean jLine) {
-        this.jLine = jLine;
 
         sender = new ColoredCommandSender();
         CONSOLE_DATE = server.getConsoleDateFormat();
@@ -76,6 +65,10 @@ public final class ConsoleManager {
         thread.setName("ConsoleCommandThread");
         thread.setDaemon(true);
         thread.start();
+    }
+
+    public ConsoleCommandSender getSender() {
+        return sender;
     }
 
     public void startFile(String logfile) {
