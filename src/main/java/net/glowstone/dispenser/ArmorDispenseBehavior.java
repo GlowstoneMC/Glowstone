@@ -1,5 +1,6 @@
 package net.glowstone.dispenser;
 
+import java.util.ArrayList;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.blocktype.BlockDispenser;
 import org.bukkit.Material;
@@ -7,15 +8,17 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Entity;
 import java.util.List;
+import org.bukkit.entity.EntityType;
 
 public class ArmorDispenseBehavior extends DefaultDispenseBehavior {
     DefaultDispenseBehavior defaultBehavior = new DefaultDispenseBehavior();
     
     @Override
     protected ItemStack dispenseStack(GlowBlock block, ItemStack stack) {
-        Material armor = stack.clone().getType();
+        Material armor = stack.getType();
         BlockFace facing = BlockDispenser.getFacing(block);
         GlowBlock target = block.getRelative(facing);
         Location location1 = target.getLocation();
@@ -40,24 +43,32 @@ public class ArmorDispenseBehavior extends DefaultDispenseBehavior {
             case GOLD_CHESTPLATE: armor = Material.DIAMOND_CHESTPLATE; break;
             case IRON_CHESTPLATE: armor = Material.DIAMOND_CHESTPLATE; break;
             case CHAINMAIL_CHESTPLATE: armor = Material.DIAMOND_CHESTPLATE; break;
+            case ELYTRA: armor = Material.DIAMOND_CHESTPLATE; break;
+            case SKULL_ITEM: armor = Material.DIAMOND_HELMET; break;
+            case PUMPKIN: armor = Material.DIAMOND_HELMET; break;
         }
         
-        List<Player> players = world.getPlayers();
-        Player player;
+        //Find all nearby entities and see if they are players or armor stands
+        List<LivingEntity> entities = new ArrayList<>();
+        for (Entity cEntity : world.getNearbyEntities(location1, 3, 3, 3)) {
+            switch (cEntity.getType()) {
+                case PLAYER: entities.add((LivingEntity) cEntity); break;
+                //case ARMOR_STAND: entities.add((LivingEntity) cEntity); break;
+            }
+        }  
+        
         Location location;
         Boolean location1Test;
         Boolean location2Test;
-        int i = 0;
-        //Loop through players to see if any are in the location where armor would be dispensed
-        while (i < players.size()) {
-            player = players.get(i);            
+        //Loop through entities to see if any are in the location where armor would be dispensed
+        for (LivingEntity player : entities) {          
             location = player.getLocation().clone();
             location.setX(location.getBlockX());
             location.setY(location.getBlockY());
             location.setZ(location.getBlockZ());            
             location1Test = (location.getX() == location1.getX() && location.getY() == location1.getY() && location.getZ() == location1.getZ());
             location2Test = (location.getX() == location2.getX() && location.getY() == location2.getY() && location.getZ() == location2.getZ());
-            if (location1Test || location2Test) {
+            if ((location1Test || location2Test)) {
                 //Check if the aproperiate armor slot is empty, if so equip armor.
                 if (armor == Material.DIAMOND_BOOTS) {
                     if (player.getEquipment().getBoots().getType() == Material.AIR) {
@@ -75,6 +86,7 @@ public class ArmorDispenseBehavior extends DefaultDispenseBehavior {
                 }
                 if (armor == Material.DIAMOND_CHESTPLATE) {
                     if (player.getEquipment().getChestplate().getType() == Material.AIR) {
+                        if (stack.getType() == Material.ELYTRA && player.getType() != EntityType.PLAYER) return defaultBehavior.dispense(block, stack);
                         player.getEquipment().setChestplate(stack.clone());
                         stack.setType(Material.AIR);
                         return stack;
@@ -83,12 +95,19 @@ public class ArmorDispenseBehavior extends DefaultDispenseBehavior {
                 if (armor == Material.DIAMOND_HELMET) {
                     if (player.getEquipment().getHelmet().getType() == Material.AIR) {
                         player.getEquipment().setHelmet(stack.clone());
+                        stack.setAmount(stack.getAmount() - 1);
+                        if (stack.getAmount() == 0) stack.setType(Material.AIR);
+                        return stack;
+                    }
+                }
+                if (armor == Material.SHIELD && player.getType() == EntityType.PLAYER) {
+                    if (player.getEquipment().getItemInOffHand().getType() == Material.AIR) {
+                        player.getEquipment().setItemInOffHand(stack.clone());
                         stack.setType(Material.AIR);
                         return stack;
                     }
                 }
             }
-            i += 1; //Continue loop
         }
         return defaultBehavior.dispense(block, stack); //Fallback
     }

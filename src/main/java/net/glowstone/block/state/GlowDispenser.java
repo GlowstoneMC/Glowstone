@@ -93,9 +93,12 @@ public class GlowDispenser extends GlowLootableBlock implements Dispenser, Block
         
         boolean isEmpty = true;
         for (ItemStack stack : inv.getContents()) {
-            if (InventoryUtil.isEmpty(stack) == false) isEmpty = false;
+            if (!InventoryUtil.isEmpty(stack)) {
+                isEmpty = false;
+                break;
+            }
         } 
-        if (isEmpty == false) {
+        if (!isEmpty) {
             int slot = 0;
             int tries = 0;
             while (true) {
