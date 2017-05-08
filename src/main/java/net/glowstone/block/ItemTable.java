@@ -204,6 +204,7 @@ public final class ItemTable {
         reg(Material.SPONGE, new BlockSponge());
         reg(Material.TNT, new BlockTNT());
         reg(Material.DOUBLE_PLANT, new BlockDoublePlant());
+        reg(Material.PUMPKIN, new BlockPumpkin());
         reg(Material.JACK_O_LANTERN, new BlockDirectDrops(Material.JACK_O_LANTERN));
         reg(Material.SEA_LANTERN, new BlockRandomDrops(Material.PRISMARINE_CRYSTALS, 2, 3));
         reg(Material.REDSTONE_LAMP_ON, new BlockLamp());
@@ -233,6 +234,7 @@ public final class ItemTable {
         reg(Material.BREWING_STAND_ITEM, new ItemPlaceAs(Material.BREWING_STAND));
         reg(Material.CAULDRON_ITEM, new ItemPlaceAs(Material.CAULDRON));
         reg(Material.FLOWER_POT_ITEM, new ItemPlaceAs(Material.FLOWER_POT));
+        reg(Material.SKULL_ITEM, new ItemPlaceAs(Material.SKULL));
         reg(Material.REDSTONE_COMPARATOR, new ItemPlaceAs(Material.REDSTONE_COMPARATOR_OFF));
         reg(Material.BED, new ItemPlaceAs(Material.BED_BLOCK));
         reg(Material.BUCKET, new ItemBucket());
@@ -299,31 +301,29 @@ public final class ItemTable {
         reg(Material.HOPPER_MINECART, new ItemMinecart(GlowMinecart.MinecartType.HOPPER));
         reg(Material.POWERED_MINECART, new ItemMinecart(GlowMinecart.MinecartType.FURNACE));
         reg(Material.STORAGE_MINECART, new ItemMinecart(GlowMinecart.MinecartType.CHEST));
-        
-        //Wearable Items
-        reg(Material.LEATHER_BOOTS, new ItemType().wear(1, ItemWearablePosition.FEET, true));
-        reg(Material.LEATHER_LEGGINGS, new ItemType().wear(2, ItemWearablePosition.LEGS, true)); 
-        reg(Material.LEATHER_CHESTPLATE, new ItemType().wear(3, ItemWearablePosition.CHEST, true));
-        reg(Material.LEATHER_HELMET, new ItemType().wear(1, ItemWearablePosition.HEAD, true));
-        reg(Material.GOLD_BOOTS, new ItemType().wear(1, ItemWearablePosition.FEET, true));
-        reg(Material.GOLD_LEGGINGS, new ItemType().wear(3, ItemWearablePosition.LEGS, true));
-        reg(Material.GOLD_CHESTPLATE, new ItemType().wear(5, ItemWearablePosition.CHEST, true));
-        reg(Material.GOLD_HELMET, new ItemType().wear(2, ItemWearablePosition.HEAD, true));
-        reg(Material.IRON_BOOTS, new ItemType().wear(2, ItemWearablePosition.FEET, true));
-        reg(Material.IRON_LEGGINGS, new ItemType().wear(5, ItemWearablePosition.LEGS, true));
-        reg(Material.IRON_CHESTPLATE, new ItemType().wear(6, ItemWearablePosition.CHEST, true));
-        reg(Material.IRON_HELMET, new ItemType().wear(2, ItemWearablePosition.HEAD, true));
-        reg(Material.CHAINMAIL_BOOTS, new ItemType().wear(1, ItemWearablePosition.FEET, true));
-        reg(Material.CHAINMAIL_LEGGINGS, new ItemType().wear(4, ItemWearablePosition.LEGS, true));
-        reg(Material.CHAINMAIL_CHESTPLATE, new ItemType().wear(5, ItemWearablePosition.CHEST, true));
-        reg(Material.CHAINMAIL_HELMET, new ItemType().wear(2, ItemWearablePosition.HEAD, true));
-        reg(Material.DIAMOND_BOOTS, new ItemType().wear(3, ItemWearablePosition.FEET, true));
-        reg(Material.DIAMOND_LEGGINGS, new ItemType().wear(6, ItemWearablePosition.LEGS, true));
-        reg(Material.DIAMOND_CHESTPLATE, new ItemType().wear(8, ItemWearablePosition.CHEST, true));
-        reg(Material.DIAMOND_HELMET, new ItemType().wear(3, ItemWearablePosition.HEAD, true));
-        reg(Material.ELYTRA, new ItemType().wear(0, ItemWearablePosition.CHEST, true));
-        reg(Material.PUMPKIN, new BlockPumpkin().wear(0, ItemWearablePosition.HEAD, false));
-        reg(Material.SKULL_ITEM, new ItemPlaceAs(Material.SKULL).wear(0, ItemWearablePosition.HEAD, false));
+        reg(Material.LEATHER_BOOTS, new ItemWearable(1, ItemWearablePosition.FEET, true));
+        reg(Material.LEATHER_LEGGINGS, new ItemWearable(2, ItemWearablePosition.LEGS, true));
+        reg(Material.LEATHER_CHESTPLATE, new ItemWearable(3, ItemWearablePosition.CHEST, true));
+        reg(Material.LEATHER_HELMET, new ItemWearable(1, ItemWearablePosition.HEAD, true));
+        reg(Material.GOLD_BOOTS, new ItemWearable(1, ItemWearablePosition.FEET, true));
+        reg(Material.GOLD_LEGGINGS, new ItemWearable(3, ItemWearablePosition.LEGS, true));
+        reg(Material.GOLD_CHESTPLATE, new ItemWearable(5, ItemWearablePosition.CHEST, true));
+        reg(Material.GOLD_HELMET, new ItemWearable(2, ItemWearablePosition.HEAD, true));
+        reg(Material.IRON_BOOTS, new ItemWearable(2, ItemWearablePosition.FEET, true));
+        reg(Material.IRON_LEGGINGS, new ItemWearable(5, ItemWearablePosition.LEGS, true));
+        reg(Material.IRON_CHESTPLATE, new ItemWearable(6, ItemWearablePosition.CHEST, true));
+        reg(Material.IRON_HELMET, new ItemWearable(2, ItemWearablePosition.HEAD, true));
+        reg(Material.CHAINMAIL_BOOTS, new ItemWearable(1, ItemWearablePosition.FEET, true));
+        reg(Material.CHAINMAIL_LEGGINGS, new ItemWearable(4, ItemWearablePosition.LEGS, true));
+        reg(Material.CHAINMAIL_CHESTPLATE, new ItemWearable(5, ItemWearablePosition.CHEST, true));
+        reg(Material.CHAINMAIL_HELMET, new ItemWearable(2, ItemWearablePosition.HEAD, true));
+        reg(Material.DIAMOND_BOOTS, new ItemWearable(3, ItemWearablePosition.FEET, true));
+        reg(Material.DIAMOND_LEGGINGS, new ItemWearable(6, ItemWearablePosition.LEGS, true));
+        reg(Material.DIAMOND_CHESTPLATE, new ItemWearable(8, ItemWearablePosition.CHEST, true));
+        reg(Material.DIAMOND_HELMET, new ItemWearable(3, ItemWearablePosition.HEAD, true));
+        //reg(Material.SKULL_ITEM, new ItemWearable(0, ItemWearablePosition.HEAD, false)); Conflict with skull item defined above.
+        reg(Material.ELYTRA, new ItemWearable(0, ItemWearablePosition.CHEST, true));
+        //Pumpkins are set above
     }
 
     private void reg(Material material, ItemType type) {
