@@ -7,12 +7,10 @@ import org.bukkit.inventory.ItemStack;
 
 public class ItemWearable extends ItemType {
     private int armorPoints;
-    private boolean fastEquip;
     
-    public ItemWearable(int points, ItemWearablePosition position, boolean equip) {
+    public ItemWearable(int points, ItemWearablePosition position) {
         armorPoints = points;
         wearablePosition = position;
-        fastEquip = equip;
     }
     public int getArmorPoints() {
         return armorPoints;
@@ -23,23 +21,6 @@ public class ItemWearable extends ItemType {
     }
     public void setArmorPoints(int points) {
         this.armorPoints = points;
-    }
-    public boolean getFastEquip() {
-        return fastEquip;
-    }
-    public void setFastEquip(boolean equip) {
-        this.fastEquip = equip;
-    }
-    
-    @Override
-    public boolean canOnlyUseSelf() {
-        return fastEquip;
-    }
-    @Override
-    public void rightClickAir(GlowPlayer player, ItemStack holding) {
-        if (fastEquip) {
-            equip(player, holding);
-        }
     }
     
     public ItemStack equip(LivingEntity player, ItemStack armor) {
