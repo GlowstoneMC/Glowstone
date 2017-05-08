@@ -15,11 +15,13 @@ import org.jline.reader.*;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.*;
-import java.util.logging.Formatter;
 
 /**
  * A meta-class to handle all logging and input-related console improvements.
@@ -47,17 +49,14 @@ public final class ConsoleManager {
 
         // terminal must be initialized before standard streams are changed
         try {
-            terminal = TerminalBuilder.builder()
-                    .system(true)
-                    .name("Glowstone")
-                    .build();
+            terminal = TerminalBuilder.terminal();
             reader = LineReaderBuilder.builder()
                     .terminal(terminal)
                     .completer(new CommandCompleter())
                     .build();
             // set system output streams
-            System.setOut(new PrintStream(new LoggerOutputStream(Level.INFO), true));
-            System.setErr(new PrintStream(new LoggerOutputStream(Level.WARNING), true));
+            //System.setOut(new PrintStream(new LoggerOutputStream(Level.INFO), true));
+            //System.setErr(new PrintStream(new LoggerOutputStream(Level.WARNING), true));
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Exception initializing terminal", e);
         }
@@ -73,10 +72,10 @@ public final class ConsoleManager {
         sender = new ColoredCommandSender();
         CONSOLE_DATE = server.getConsoleDateFormat();
         CONSOLE_PROMPT = server.getConsolePrompt();
-        /*Thread thread = new ConsoleCommandThread();
+        Thread thread = new ConsoleCommandThread();
         thread.setName("ConsoleCommandThread");
         thread.setDaemon(true);
-        thread.start();*/
+        thread.start();
     }
 
     public void startFile(String logfile) {
@@ -86,7 +85,7 @@ public final class ConsoleManager {
         }
         Handler fileHandler = new RotatingFileHandler(logfile);
         FILE_DATE = server.getConsoleLogDateFormat();
-        fileHandler.setFormatter(new DateOutputFormatter(FILE_DATE, false));
+        //fileHandler.setFormatter(new DateOutputFormatter(FILE_DATE, false));
         logger.addHandler(fileHandler);
     }
 
@@ -373,7 +372,7 @@ public final class ConsoleManager {
 
         }
     }
-
+/*
     private class DateOutputFormatter extends Formatter {
         private final SimpleDateFormat date;
         private final boolean color;
@@ -409,6 +408,6 @@ public final class ConsoleManager {
 
             return builder.toString();
         }
-    }
+    }*/
 
 }
