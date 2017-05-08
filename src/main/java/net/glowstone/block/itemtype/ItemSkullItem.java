@@ -1,5 +1,5 @@
-import net.glowstone.block.itemtype.ItemWearable;
-import net.glowstone.block.itemtype.ItemWearablePosition;
+package net.glowstone.block.itemtype;
+
 import org.bukkit.Material;
 
 public class ItemSkullItem extends ItemWearable {

@@ -1,6 +1,5 @@
 package net.glowstone.block.itemtype;
 
-import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack; 
