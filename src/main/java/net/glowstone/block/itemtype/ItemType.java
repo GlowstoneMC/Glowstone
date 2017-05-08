@@ -6,6 +6,7 @@ import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -16,9 +17,8 @@ public class ItemType {
 
     private int id = -1;
 
-    private BlockType placeAs;
-    
-    protected ItemWearablePosition wearablePosition = ItemWearablePosition.NON_WEARABLE;
+    private BlockType placeAs; 
+     
 
     /**
      * The maximum stack size of the item.
@@ -130,7 +130,9 @@ public class ItemType {
      * @param holding The ItemStack the player was holding
      */
     public void rightClickAir(GlowPlayer player, ItemStack holding) {
-        // nothing by default
+        if (fastEquip) {
+            equipStack(player, holding);
+        }
     }
 
     /**
@@ -138,7 +140,7 @@ public class ItemType {
      * @return If this item can only be used without any context
      */
     public boolean canOnlyUseSelf() {
-        return false;
+        return fastEquip;
     }
 
     /**
@@ -164,10 +166,67 @@ public class ItemType {
         return getClass().getSimpleName() + "{" + getId() + " -> " + getMaterial() + "}";
     }
     
+    //Code for wearable items
+    private ItemWearablePosition wearablePosition = ItemWearablePosition.NON_WEARABLE;
+    private int armorPoints = 0;
+    private boolean fastEquip = false;
+    
     public ItemWearablePosition getWearablePosition() {
         return wearablePosition;
     }
     public void setWearablePosition(ItemWearablePosition position) {
-        //Items should be of type ItemWearable if they want to be worn
+        this.wearablePosition = position;
+    }
+    public void setArmorPoints(int points) {
+        this.armorPoints = points;
+    }
+    public boolean getFastEquip() {
+        return fastEquip;
+    }
+    public void setFastEquip(boolean equip) {
+        this.fastEquip = equip;
+    }
+    
+    public ItemStack equipStack(LivingEntity player, ItemStack armor) {
+        if (wearablePosition == ItemWearablePosition.FEET) {
+            if (player.getEquipment().getBoots().getType() == Material.AIR) {
+                player.getEquipment().setBoots(armor.clone());
+                armor.setAmount(armor.getAmount() - 1);
+                if (armor.getAmount() == 0) armor.setType(Material.AIR);
+                return armor;
+            }
+        }
+        if (wearablePosition == ItemWearablePosition.LEGS) {
+            if (player.getEquipment().getLeggings().getType() == Material.AIR) {
+                player.getEquipment().setLeggings(armor.clone());
+                armor.setAmount(armor.getAmount() - 1);
+                if (armor.getAmount() == 0) armor.setType(Material.AIR);
+                return armor;
+            }
+        }
+        if (wearablePosition == ItemWearablePosition.CHEST) {
+            if (player.getEquipment().getChestplate().getType() == Material.AIR) {
+                player.getEquipment().setChestplate(armor.clone());
+                armor.setAmount(armor.getAmount() - 1);
+                if (armor.getAmount() == 0) armor.setType(Material.AIR);
+                return armor;
+            }
+        }
+        if (wearablePosition == ItemWearablePosition.HEAD) {
+                if (player.getEquipment().getHelmet().getType() == Material.AIR) {
+                player.getEquipment().setHelmet(armor.clone());
+                armor.setAmount(armor.getAmount() - 1);
+                if (armor.getAmount() == 0) armor.setType(Material.AIR);
+                return armor;
+            }
+        }
+        return armor;
+    }
+    
+    public ItemType wear(int points, ItemWearablePosition position, boolean equip) {
+        this.wearablePosition = position;
+        this.armorPoints = points;
+        this.fastEquip = equip;
+        return this;
     }
 }
