@@ -17,8 +17,6 @@ public class ItemType {
     private int id = -1;
 
     private BlockType placeAs;
-    
-    protected ItemWearablePosition wearablePosition = ItemWearablePosition.NON_WEARABLE;
 
     /**
      * The maximum stack size of the item.
@@ -162,12 +160,5 @@ public class ItemType {
     @Override
     public final String toString() {
         return getClass().getSimpleName() + "{" + getId() + " -> " + getMaterial() + "}";
-    }
-    
-    public ItemWearablePosition getWearablePosition() {
-        return wearablePosition;
-    }
-    public void setWearablePosition(ItemWearablePosition position) {
-        //Items should be of type ItemWearable if they want to be worn
     }
 }

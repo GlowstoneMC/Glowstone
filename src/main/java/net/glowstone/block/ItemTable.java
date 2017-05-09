@@ -300,31 +300,7 @@ public final class ItemTable {
         reg(Material.HOPPER_MINECART, new ItemMinecart(GlowMinecart.MinecartType.HOPPER));
         reg(Material.POWERED_MINECART, new ItemMinecart(GlowMinecart.MinecartType.FURNACE));
         reg(Material.STORAGE_MINECART, new ItemMinecart(GlowMinecart.MinecartType.CHEST));
-        
-        //Wearable Items
-        reg(Material.LEATHER_BOOTS, new ItemWearable(1, ItemWearablePosition.FEET));
-        reg(Material.LEATHER_LEGGINGS, new ItemWearable(2, ItemWearablePosition.LEGS));
-        reg(Material.LEATHER_CHESTPLATE, new ItemWearable(3, ItemWearablePosition.CHEST));
-        reg(Material.LEATHER_HELMET, new ItemWearable(1, ItemWearablePosition.HEAD));
-        reg(Material.GOLD_BOOTS, new ItemWearable(1, ItemWearablePosition.FEET));
-        reg(Material.GOLD_LEGGINGS, new ItemWearable(3, ItemWearablePosition.LEGS));
-        reg(Material.GOLD_CHESTPLATE, new ItemWearable(5, ItemWearablePosition.CHEST));
-        reg(Material.GOLD_HELMET, new ItemWearable(2, ItemWearablePosition.HEAD));
-        reg(Material.IRON_BOOTS, new ItemWearable(2, ItemWearablePosition.FEET));
-        reg(Material.IRON_LEGGINGS, new ItemWearable(5, ItemWearablePosition.LEGS));
-        reg(Material.IRON_CHESTPLATE, new ItemWearable(6, ItemWearablePosition.CHEST));
-        reg(Material.IRON_HELMET, new ItemWearable(2, ItemWearablePosition.HEAD));
-        reg(Material.CHAINMAIL_BOOTS, new ItemWearable(1, ItemWearablePosition.FEET));
-        reg(Material.CHAINMAIL_LEGGINGS, new ItemWearable(4, ItemWearablePosition.LEGS));
-        reg(Material.CHAINMAIL_CHESTPLATE, new ItemWearable(5, ItemWearablePosition.CHEST));
-        reg(Material.CHAINMAIL_HELMET, new ItemWearable(2, ItemWearablePosition.HEAD));
-        reg(Material.DIAMOND_BOOTS, new ItemWearable(3, ItemWearablePosition.FEET));
-        reg(Material.DIAMOND_LEGGINGS, new ItemWearable(6, ItemWearablePosition.LEGS));
-        reg(Material.DIAMOND_CHESTPLATE, new ItemWearable(8, ItemWearablePosition.CHEST));
-        reg(Material.DIAMOND_HELMET, new ItemWearable(3, ItemWearablePosition.HEAD));
-        reg(Material.SKULL_ITEM, new ItemSkullItem());
-        reg(Material.ELYTRA, new ItemWearable(0, ItemWearablePosition.CHEST));
-        //Pumpkins are set above
+        reg(Material.SKULL_ITEM, new ItemPlaceAs(Material.SKULL));
     }
 
     private void reg(Material material, ItemType type) {
