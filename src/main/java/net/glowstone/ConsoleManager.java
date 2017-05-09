@@ -35,24 +35,21 @@ public final class ConsoleManager {
     private final Map<ChatColor, String> replacements = new EnumMap<>(ChatColor.class);
     private final ChatColor[] colors = ChatColor.values();
 
-    private Terminal terminal;
     private LineReader reader;
     private ConsoleCommandSender sender;
 
     private boolean running = true;
-    private boolean jLine;
 
     public ConsoleManager(GlowServer server) {
         this.server = server;
 
         // terminal must be initialized before standard streams are changed
-        try {
-            Terminal terminal = TerminalBuilder.builder()
+        try (Terminal terminal = TerminalBuilder.builder()
                     .name("Glowstone")
                     .system(true)
                     .nativeSignals(true)
                     .signalHandler(Terminal.SignalHandler.SIG_IGN)
-                    .build();
+                    .build()) {
             reader = LineReaderBuilder.builder()
                     .terminal(terminal)
                     .completer(new CommandCompleter())
