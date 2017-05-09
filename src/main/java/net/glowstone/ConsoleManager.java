@@ -64,12 +64,11 @@ public final class ConsoleManager {
 
         sender = new ColoredCommandSender();
         CONSOLE_DATE = server.getConsoleDateFormat();
-        /*
         for (Handler handler : logger.getHandlers()) {
             if (handler.getClass() == FancyConsoleHandler.class) {
                 handler.setFormatter(new DateOutputFormatter(CONSOLE_DATE, true));
             }
-        }*/
+        }
         CONSOLE_PROMPT = server.getConsolePrompt();
         Thread thread = new ConsoleCommandThread();
         thread.setName("ConsoleCommandThread");
@@ -88,7 +87,7 @@ public final class ConsoleManager {
         }
         Handler fileHandler = new RotatingFileHandler(logfile);
         FILE_DATE = server.getConsoleLogDateFormat();
-        //fileHandler.setFormatter(new DateOutputFormatter(FILE_DATE, false));
+        fileHandler.setFormatter(new DateOutputFormatter(FILE_DATE, false));
         logger.addHandler(fileHandler);
     }
 
@@ -371,7 +370,7 @@ public final class ConsoleManager {
 
         }
     }
-/*
+
      private class FancyConsoleHandler extends ConsoleHandler {
         public FancyConsoleHandler() {
             setFormatter(new DateOutputFormatter(CONSOLE_DATE, true));
@@ -380,25 +379,16 @@ public final class ConsoleManager {
 
         @Override
         public synchronized void flush() {
+            reader.callWidget(LineReader.FRESH_LINE);
+            super.flush();
             try {
-                if (jLine) {
-                    reader.print(ConsoleReader.RESET_LINE + "");
-                    reader.flush();
-                    super.flush();
-                    try {
-                        reader.drawLine();
-                    } catch (Throwable ex) {
-                        reader.getCursorBuffer().clear();
-                    }
-                    reader.flush();
-                } else {
-                    super.flush();
-                }
-            } catch (IOException ex) {
-                logger.log(Level.SEVERE, "I/O exception flushing console output", ex);
+                reader.callWidget(LineReader.REDRAW_LINE);
+            } catch (Throwable ex) {
+                reader.getBuffer().clear();
             }
+            reader.callWidget(LineReader.FRESH_LINE);
         }
-    }*/
+    }
 
     private class DateOutputFormatter extends Formatter {
         private final SimpleDateFormat date;
