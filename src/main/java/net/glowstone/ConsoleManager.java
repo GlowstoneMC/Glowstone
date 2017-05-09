@@ -54,7 +54,6 @@ public final class ConsoleManager {
                     .terminal(terminal)
                     .completer(new CommandCompleter())
                     .build();
-
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Exception initializing terminal", e);
         }
