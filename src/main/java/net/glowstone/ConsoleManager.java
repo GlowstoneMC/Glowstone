@@ -32,7 +32,7 @@ public final class ConsoleManager {
     private static final Logger logger = Logger.getLogger("");
     private static String CONSOLE_DATE = "HH:mm:ss";
     private static String FILE_DATE = "yyyy/MM/dd HH:mm:ss";
-    private static String CONSOLE_PROMPT = ">";
+    private static String CONSOLE_PROMPT = "%[38;5;3m>";
     private final GlowServer server;
     private final Map<ChatColor, String> replacements = new EnumMap<>(ChatColor.class);
     private final ChatColor[] colors = ChatColor.values();
@@ -42,7 +42,6 @@ public final class ConsoleManager {
     private ConsoleCommandSender sender;
 
     private boolean running = true;
-    private boolean jLine;
 
     public ConsoleManager(GlowServer server) {
         this.server = server;
@@ -203,11 +202,7 @@ public final class ConsoleManager {
             String command = "";
             while (running) {
                 try {
-                    if (jLine) {
-                        command = reader.readLine(CONSOLE_PROMPT, null);
-                    } else {
-                        command = reader.readLine();
-                    }
+                    command = reader.readLine(CONSOLE_PROMPT, null, server.getVersion());
 
                     if (command == null || command.trim().isEmpty())
                         continue;
@@ -365,42 +360,4 @@ public final class ConsoleManager {
 
         }
     }
-/*
-    private class DateOutputFormatter extends Formatter {
-        private final SimpleDateFormat date;
-        private final boolean color;
-
-        public DateOutputFormatter(String pattern, boolean color) {
-            date = new SimpleDateFormat(pattern);
-            this.color = color;
-        }
-
-        @Override
-        @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-        public String format(LogRecord record) {
-            StringBuilder builder = new StringBuilder();
-
-            builder.append(date.format(record.getMillis()));
-            builder.append(" [");
-            builder.append(record.getLevel().getLocalizedName().toUpperCase());
-            builder.append("] ");
-            if (color) {
-                builder.append(colorize(formatMessage(record)));
-            } else {
-                builder.append(formatMessage(record));
-            }
-            builder.append('\n');
-
-            if (record.getThrown() != null) {
-                // StringWriter's close() is trivial
-                @SuppressWarnings("resource")
-                StringWriter writer = new StringWriter();
-                record.getThrown().printStackTrace(new PrintWriter(writer));
-                builder.append(writer);
-            }
-
-            return builder.toString();
-        }
-    }*/
-
 }
