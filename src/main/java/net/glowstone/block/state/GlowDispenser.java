@@ -1,5 +1,7 @@
 package net.glowstone.block.state;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.DispenserEntity;
 import net.glowstone.dispenser.*;
@@ -93,36 +95,15 @@ public class GlowDispenser extends GlowLootableBlock implements Dispenser, Block
     public int getDispenseSlot() {
         Inventory inv = getInventory();
         
-        boolean isEmpty = true;
-        for (ItemStack stack : inv.getContents()) {
-            if (!InventoryUtil.isEmpty(stack)) {
-                isEmpty = false;
-                break;
+        List<Integer> items = new ArrayList<>();
+        int i = 0;
+        while (i < 9) {
+            if (!InventoryUtil.isEmpty(inv.getItem(i))) {
+                items.add(i);
             }
-        } 
-        if (!isEmpty) {
-            int slot = 0;
-            int tries = 0;
-            while (true) {
-                //Gets a random slot and determines if that slot has an item in it
-                slot = random.nextInt(9);
-                if (inv.getItem(slot).getType() != Material.AIR) break;
-                
-                //Eliminates the possibility of an infinite loop, goes in order upon reaching 20 random tries
-                tries += 1;
-                if (tries == 20) {
-                    int i = 0;
-                    while (i < 9) {
-                        if (inv.getItem(i).getType() != Material.AIR) {
-                            slot = i;
-                            break;
-                        }
-                    }
-                    break;
-                }
-            }
-
-            return slot;
+        }
+        if (items.size() > 0) {
+            return items.get(random.nextInt(items.size()));
         } else {
             return 0;
         }

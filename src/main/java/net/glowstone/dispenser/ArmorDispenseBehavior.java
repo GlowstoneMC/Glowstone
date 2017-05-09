@@ -23,8 +23,6 @@ public class ArmorDispenseBehavior extends DefaultDispenseBehavior {
         BlockFace facing = BlockDispenser.getFacing(block);
         GlowBlock target = block.getRelative(facing);
         Location location1 = target.getLocation();
-        Location location2 = location1.clone();
-        location2.setY(location2.getY() - 1);
         World world = location1.getWorld();
         
         //Find all nearby entities and see if they are players or armor stands
@@ -37,8 +35,8 @@ public class ArmorDispenseBehavior extends DefaultDispenseBehavior {
         }  
         
         Location location;
-        Boolean location1Test;
-        Boolean location2Test;
+        boolean location1Test;
+        boolean location2Test;
         //Loop through entities to see if any are in the location where armor would be dispensed
         for (LivingEntity player : entities) {          
             location = player.getLocation().clone();
@@ -46,7 +44,7 @@ public class ArmorDispenseBehavior extends DefaultDispenseBehavior {
             location.setY(location.getBlockY());
             location.setZ(location.getBlockZ());            
             location1Test = (location.getX() == location1.getX() && location.getY() == location1.getY() && location.getZ() == location1.getZ());
-            location2Test = (location.getX() == location2.getX() && location.getY() == location2.getY() && location.getZ() == location2.getZ());
+            location2Test = (location.getX() == player.getEyeLocation().getBlockX() && player.getEyeLocation().getBlockY() == location1.getY() && player.getEyeLocation().getBlockZ() == location1.getZ());
             if ((location1Test || location2Test)) {
                 return ((GlowInventory) ((Player) player).getInventory()).tryToFillSlots(stack, 36, 40);
             }
