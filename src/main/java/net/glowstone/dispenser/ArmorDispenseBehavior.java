@@ -11,7 +11,7 @@ import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Entity;
 import java.util.List;
-import org.bukkit.entity.EntityType;
+import net.glowstone.util.Wearable;
 
 public class ArmorDispenseBehavior extends DefaultDispenseBehavior {
     DefaultDispenseBehavior defaultBehavior = new DefaultDispenseBehavior();
@@ -26,26 +26,9 @@ public class ArmorDispenseBehavior extends DefaultDispenseBehavior {
         location2.setY(location2.getY() - 1);
         World world = location1.getWorld();
         
-        switch (armor) { //Get the type of armor in stack
-            case LEATHER_HELMET: armor = Material.DIAMOND_HELMET; break;
-            case GOLD_HELMET: armor = Material.DIAMOND_HELMET; break;
-            case IRON_HELMET: armor = Material.DIAMOND_HELMET; break;
-            case CHAINMAIL_HELMET: armor = Material.DIAMOND_HELMET; break;
-            case LEATHER_BOOTS: armor = Material.DIAMOND_BOOTS; break;
-            case GOLD_BOOTS: armor = Material.DIAMOND_BOOTS; break;
-            case IRON_BOOTS: armor = Material.DIAMOND_BOOTS; break;
-            case CHAINMAIL_BOOTS: armor = Material.DIAMOND_BOOTS; break;
-            case LEATHER_LEGGINGS: armor = Material.DIAMOND_LEGGINGS; break;
-            case GOLD_LEGGINGS: armor = Material.DIAMOND_LEGGINGS; break;
-            case IRON_LEGGINGS: armor = Material.DIAMOND_LEGGINGS; break;
-            case CHAINMAIL_LEGGINGS: armor = Material.DIAMOND_LEGGINGS; break;
-            case LEATHER_CHESTPLATE: armor = Material.DIAMOND_CHESTPLATE; break;
-            case GOLD_CHESTPLATE: armor = Material.DIAMOND_CHESTPLATE; break;
-            case IRON_CHESTPLATE: armor = Material.DIAMOND_CHESTPLATE; break;
-            case CHAINMAIL_CHESTPLATE: armor = Material.DIAMOND_CHESTPLATE; break;
-            case ELYTRA: armor = Material.DIAMOND_CHESTPLATE; break;
-            case SKULL_ITEM: armor = Material.DIAMOND_HELMET; break;
-            case PUMPKIN: armor = Material.DIAMOND_HELMET; break;
+        Wearable.intalize();
+        if (Wearable.find(stack.getType()) == null) {
+            defaultBehavior.dispense(block, stack);
         }
         
         //Find all nearby entities and see if they are players or armor stands
@@ -69,44 +52,7 @@ public class ArmorDispenseBehavior extends DefaultDispenseBehavior {
             location1Test = (location.getX() == location1.getX() && location.getY() == location1.getY() && location.getZ() == location1.getZ());
             location2Test = (location.getX() == location2.getX() && location.getY() == location2.getY() && location.getZ() == location2.getZ());
             if ((location1Test || location2Test)) {
-                //Check if the aproperiate armor slot is empty, if so equip armor.
-                if (armor == Material.DIAMOND_BOOTS) {
-                    if (player.getEquipment().getBoots().getType() == Material.AIR) {
-                        player.getEquipment().setBoots(stack.clone());
-                        stack.setType(Material.AIR);
-                        return stack;
-                    }
-                }
-                if (armor == Material.DIAMOND_LEGGINGS) {
-                    if (player.getEquipment().getLeggings().getType() == Material.AIR) {
-                        player.getEquipment().setLeggings(stack.clone());
-                        stack.setType(Material.AIR);
-                        return stack;
-                    }
-                }
-                if (armor == Material.DIAMOND_CHESTPLATE) {
-                    if (player.getEquipment().getChestplate().getType() == Material.AIR) {
-                        if (stack.getType() == Material.ELYTRA && player.getType() != EntityType.PLAYER) return defaultBehavior.dispense(block, stack);
-                        player.getEquipment().setChestplate(stack.clone());
-                        stack.setType(Material.AIR);
-                        return stack;
-                    }
-                }
-                if (armor == Material.DIAMOND_HELMET) {
-                    if (player.getEquipment().getHelmet().getType() == Material.AIR) {
-                        player.getEquipment().setHelmet(stack.clone());
-                        stack.setAmount(stack.getAmount() - 1);
-                        if (stack.getAmount() == 0) stack.setType(Material.AIR);
-                        return stack;
-                    }
-                }
-                if (armor == Material.SHIELD && player.getType() == EntityType.PLAYER) {
-                    if (player.getEquipment().getItemInOffHand().getType() == Material.AIR) {
-                        player.getEquipment().setItemInOffHand(stack.clone());
-                        stack.setType(Material.AIR);
-                        return stack;
-                    }
-                }
+                Wearable.equip(player, stack);
             }
         }
         return defaultBehavior.dispense(block, stack); //Fallback
