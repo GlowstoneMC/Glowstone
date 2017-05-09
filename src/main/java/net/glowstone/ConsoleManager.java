@@ -15,12 +15,10 @@ import org.jline.reader.*;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.Formatter;
 import java.util.logging.*;
 
 /**
@@ -49,17 +47,32 @@ public final class ConsoleManager {
 
         // terminal must be initialized before standard streams are changed
         try {
-            terminal = TerminalBuilder.terminal();
+            Terminal terminal = TerminalBuilder.builder()
+                    .name("Glowstone")
+                    .system(true)
+                    .nativeSignals(true)
+                    .signalHandler(Terminal.SignalHandler.SIG_IGN)
+                    .build();
             reader = LineReaderBuilder.builder()
                     .terminal(terminal)
                     .completer(new CommandCompleter())
                     .build();
+
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Exception initializing terminal", e);
         }
 
+        System.setOut(new PrintStream(new LoggerOutputStream(Level.INFO), true));
+        System.setErr(new PrintStream(new LoggerOutputStream(Level.WARNING), true));
+
         sender = new ColoredCommandSender();
         CONSOLE_DATE = server.getConsoleDateFormat();
+        /*
+        for (Handler handler : logger.getHandlers()) {
+            if (handler.getClass() == FancyConsoleHandler.class) {
+                handler.setFormatter(new DateOutputFormatter(CONSOLE_DATE, true));
+            }
+        }*/
         CONSOLE_PROMPT = server.getConsolePrompt();
         Thread thread = new ConsoleCommandThread();
         thread.setName("ConsoleCommandThread");
@@ -203,11 +216,7 @@ public final class ConsoleManager {
             String command = "";
             while (running) {
                 try {
-                    if (jLine) {
-                        command = reader.readLine(CONSOLE_PROMPT, null);
-                    } else {
-                        command = reader.readLine();
-                    }
+                    command = reader.readLine(CONSOLE_PROMPT);
 
                     if (command == null || command.trim().isEmpty())
                         continue;
@@ -366,6 +375,34 @@ public final class ConsoleManager {
         }
     }
 /*
+     private class FancyConsoleHandler extends ConsoleHandler {
+        public FancyConsoleHandler() {
+            setFormatter(new DateOutputFormatter(CONSOLE_DATE, true));
+            setOutputStream(System.out);
+        }
+
+        @Override
+        public synchronized void flush() {
+            try {
+                if (jLine) {
+                    reader.print(ConsoleReader.RESET_LINE + "");
+                    reader.flush();
+                    super.flush();
+                    try {
+                        reader.drawLine();
+                    } catch (Throwable ex) {
+                        reader.getCursorBuffer().clear();
+                    }
+                    reader.flush();
+                } else {
+                    super.flush();
+                }
+            } catch (IOException ex) {
+                logger.log(Level.SEVERE, "I/O exception flushing console output", ex);
+            }
+        }
+    }*/
+
     private class DateOutputFormatter extends Formatter {
         private final SimpleDateFormat date;
         private final boolean color;
@@ -401,6 +438,6 @@ public final class ConsoleManager {
 
             return builder.toString();
         }
-    }*/
+    }
 
 }
