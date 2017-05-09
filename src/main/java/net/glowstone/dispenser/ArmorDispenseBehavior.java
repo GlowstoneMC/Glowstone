@@ -11,7 +11,8 @@ import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Entity;
 import java.util.List;
-import net.glowstone.util.Wearable;
+import org.bukkit.entity.Player;
+import net.glowstone.inventory.GlowInventory;
 
 public class ArmorDispenseBehavior extends DefaultDispenseBehavior {
     DefaultDispenseBehavior defaultBehavior = new DefaultDispenseBehavior();
@@ -25,11 +26,6 @@ public class ArmorDispenseBehavior extends DefaultDispenseBehavior {
         Location location2 = location1.clone();
         location2.setY(location2.getY() - 1);
         World world = location1.getWorld();
-        
-        Wearable.intalize();
-        if (Wearable.find(stack.getType()) == null) {
-            defaultBehavior.dispense(block, stack);
-        }
         
         //Find all nearby entities and see if they are players or armor stands
         List<LivingEntity> entities = new ArrayList<>();
@@ -52,7 +48,7 @@ public class ArmorDispenseBehavior extends DefaultDispenseBehavior {
             location1Test = (location.getX() == location1.getX() && location.getY() == location1.getY() && location.getZ() == location1.getZ());
             location2Test = (location.getX() == location2.getX() && location.getY() == location2.getY() && location.getZ() == location2.getZ());
             if ((location1Test || location2Test)) {
-                Wearable.equip(player, stack);
+                return ((GlowInventory) ((Player) player).getInventory()).tryToFillSlots(stack, 36, 40);
             }
         }
         return defaultBehavior.dispense(block, stack); //Fallback

@@ -4,7 +4,6 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.DispenserEntity;
 import net.glowstone.dispenser.*;
 import net.glowstone.util.InventoryUtil;
-import net.glowstone.util.Wearable;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Dispenser;
@@ -40,10 +39,28 @@ public class GlowDispenser extends GlowLootableBlock implements Dispenser, Block
         getDispenseBehaviorRegistry().putBehavior(Material.BUCKET, new EmptyBucketDispenseBehavior());
         getDispenseBehaviorRegistry().putBehavior(Material.FLINT_AND_STEEL, new FlintAndSteelDispenseBehavior());
         getDispenseBehaviorRegistry().putBehavior(Material.TNT, new TNTDispenseBehavior());
-        Wearable.intalize();
-        for (Material material1 : Wearable.allWearables()) {
-            getDispenseBehaviorRegistry().putBehavior(material1, armorDispenseBehavior);
-        }
+        getDispenseBehaviorRegistry().putBehavior(Material.LEATHER_BOOTS, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.LEATHER_LEGGINGS, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.LEATHER_CHESTPLATE, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.LEATHER_HELMET, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.GOLD_BOOTS, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.GOLD_LEGGINGS, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.GOLD_CHESTPLATE, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.GOLD_HELMET, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.IRON_BOOTS, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.IRON_LEGGINGS, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.IRON_CHESTPLATE, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.IRON_HELMET, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.CHAINMAIL_BOOTS, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.CHAINMAIL_LEGGINGS, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.CHAINMAIL_CHESTPLATE, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.CHAINMAIL_HELMET, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.DIAMOND_BOOTS, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.DIAMOND_LEGGINGS, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.DIAMOND_CHESTPLATE, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.DIAMOND_HELMET, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.SKULL_ITEM, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.PUMPKIN, armorDispenseBehavior);
     }
 
     private DispenserEntity getBlockEntity() {
