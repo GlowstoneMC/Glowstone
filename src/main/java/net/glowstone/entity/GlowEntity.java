@@ -893,6 +893,7 @@ public abstract class GlowEntity implements Entity {
             velocity.setZ(dz);
 
             setRawLocation(location.clone().add(velocity));
+            updateBoundingBox();
         }
 
         // apply friction and gravity
