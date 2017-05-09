@@ -13,13 +13,21 @@ import org.bukkit.plugin.Plugin;
 import org.jline.reader.*;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
-import org.jline.utils.AttributedString;
+import org.jline.utils.AttributedStringBuilder;
+import org.jline.utils.AttributedStyle;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.*;
 import java.util.logging.*;
 import java.util.logging.Formatter;
+
+import static java.time.temporal.ChronoField.HOUR_OF_DAY;
+import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
 
 /**
  * A meta-class to handle all logging and input-related console improvements.
@@ -78,8 +86,23 @@ public final class ConsoleManager {
                 handler.setFormatter(new DateOutputFormatter(CONSOLE_DATE, true));
             }
         }
-        CONSOLE_PROMPT = AttributedString.fromAnsi("\u001B[33mg>\u001B[0m").toAnsi(reader.getTerminal());
-        RIGHT_PROMPT = AttributedString.fromAnsi("\u001B[33m" + server.getVersion() + "\u001B[0m").toAnsi(reader.getTerminal());
+        CONSOLE_PROMPT = new AttributedStringBuilder()
+                .style(AttributedStyle.BOLD)
+                .style(AttributedStyle.DEFAULT.background(AttributedStyle.YELLOW))
+                .append("g>")
+                .style(AttributedStyle.DEFAULT)
+                .toAnsi(reader.getTerminal());
+        RIGHT_PROMPT = new AttributedStringBuilder()
+                .style(AttributedStyle.DEFAULT.background(AttributedStyle.RED))
+                .append(LocalDate.now().format(DateTimeFormatter.ISO_DATE))
+                .append("\n")
+                .style(AttributedStyle.DEFAULT.foreground(AttributedStyle.RED | AttributedStyle.BRIGHT))
+                .append(LocalTime.now().format(new DateTimeFormatterBuilder()
+                        .appendValue(HOUR_OF_DAY, 2)
+                        .appendLiteral(':')
+                        .appendValue(MINUTE_OF_HOUR, 2)
+                        .toFormatter()))
+                .toAnsi(reader.getTerminal());
     }
 
     public ConsoleCommandSender getSender() {
@@ -393,16 +416,17 @@ public final class ConsoleManager {
 
         @Override
         public synchronized void flush() {
+            reader.callWidget(LineReader.FRESH_LINE);
             reader.getTerminal().flush();
             super.flush();
             try {
-                reader.callWidget(LineReader.REDRAW_LINE);
-            } catch (Throwable ex) {
-                reader.getBuffer().clear();
+               reader.callWidget(LineReader.REDRAW_LINE);
+           } catch (Throwable ex) {
+               reader.getBuffer().clear();
             }
             reader.getTerminal().flush();
-        }
-    }
+         }
+     }
 
     private class DateOutputFormatter extends Formatter {
         private final SimpleDateFormat date;
