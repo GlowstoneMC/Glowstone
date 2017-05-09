@@ -1,7 +1,6 @@
 package net.glowstone;
 
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandException;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
@@ -14,12 +13,13 @@ import org.bukkit.plugin.Plugin;
 import org.jline.reader.*;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
+import org.jline.utils.AttributedString;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.Formatter;
 import java.util.logging.*;
+import java.util.logging.Formatter;
 
 /**
  * A meta-class to handle all logging and input-related console improvements.
@@ -30,12 +30,14 @@ public final class ConsoleManager {
     private static final Logger logger = Logger.getLogger("");
     private static String CONSOLE_DATE = "HH:mm:ss";
     private static String FILE_DATE = "yyyy/MM/dd HH:mm:ss";
-    private static String CONSOLE_PROMPT = ">";
-    private final GlowServer server;
+    private static String CONSOLE_PROMPT = "g>";
+    private static String RIGHT_PROMPT = null;
+
+    protected final GlowServer server;
     private final Map<ChatColor, String> replacements = new EnumMap<>(ChatColor.class);
     private final ChatColor[] colors = ChatColor.values();
 
-    private LineReader reader;
+    protected LineReader reader;
     private ConsoleCommandSender sender;
 
     private boolean running = true;
@@ -44,6 +46,14 @@ public final class ConsoleManager {
         this.server = server;
 
         // terminal must be initialized before standard streams are changed
+
+        for (Handler h : logger.getHandlers()) {
+            logger.removeHandler(h);
+        }
+
+        // add log handler which writes to console
+        logger.addHandler(new FancyConsoleHandler());
+
         try (Terminal terminal = TerminalBuilder.builder()
                     .name("Glowstone")
                     .system(true)
@@ -68,15 +78,19 @@ public final class ConsoleManager {
                 handler.setFormatter(new DateOutputFormatter(CONSOLE_DATE, true));
             }
         }
-        CONSOLE_PROMPT = server.getConsolePrompt();
-        Thread thread = new ConsoleCommandThread();
-        thread.setName("ConsoleCommandThread");
-        thread.setDaemon(true);
-        thread.start();
+        CONSOLE_PROMPT = AttributedString.fromAnsi("\u001B[33mg>\u001B[0m").toAnsi(reader.getTerminal());
+        RIGHT_PROMPT = AttributedString.fromAnsi("\u001B[33m" + server.getVersion() + "\u001B[0m").toAnsi(reader.getTerminal());
     }
 
     public ConsoleCommandSender getSender() {
         return sender;
+    }
+
+    public void start() {
+        Thread thread = new ConsoleCommandThread();
+        thread.setName("ConsoleCommandThread");
+        thread.setDaemon(true);
+        thread.start();
     }
 
     public void startFile(String logfile) {
@@ -208,20 +222,21 @@ public final class ConsoleManager {
     private class ConsoleCommandThread extends Thread {
         @Override
         public void run() {
-            String command = "";
+            String command = null;
             while (running) {
                 try {
-                    command = reader.readLine(CONSOLE_PROMPT);
-
-                    if (command == null || command.trim().isEmpty())
-                        continue;
-
-                    server.getScheduler().runTask(null, new CommandTask(command.trim()));
-                } catch (CommandException ex) {
-                    logger.log(Level.WARNING, "Exception while executing command: " + command, ex);
-                } catch (Exception ex) {
-                    logger.log(Level.SEVERE, "Error while reading commands", ex);
+                    command = reader.readLine(CONSOLE_PROMPT, RIGHT_PROMPT, null, null);
+                } catch (UserInterruptException e) {
+                    logger.log(Level.WARNING, "Exception while executing command: " + command, e);
+                } catch (EndOfFileException e) {
+                    logger.log(Level.SEVERE, "Error while reading commands", e);
                 }
+
+                if (command == null || (command = command.trim()).isEmpty()) {
+                    continue;
+                }
+
+                server.getScheduler().runTask(null, new CommandTask(reader.getParser().parse(command, 0, Parser.ParseContext.ACCEPT_LINE).line()));
             }
         }
     }
@@ -378,14 +393,14 @@ public final class ConsoleManager {
 
         @Override
         public synchronized void flush() {
-            reader.callWidget(LineReader.FRESH_LINE);
+            reader.getTerminal().flush();
             super.flush();
             try {
                 reader.callWidget(LineReader.REDRAW_LINE);
             } catch (Throwable ex) {
                 reader.getBuffer().clear();
             }
-            reader.callWidget(LineReader.FRESH_LINE);
+            reader.getTerminal().flush();
         }
     }
 
