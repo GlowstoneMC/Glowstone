@@ -71,6 +71,11 @@
             <version>3.2.0</version>
         </dependency>
         <dependency>
+            <groupId>org.fusesource.jansi</groupId>
+            <artifactId>jansi</artifactId>
+            <version>1.16</version>
+        </dependency>
+        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.2.3</version>
@@ -297,7 +302,7 @@
         </resources>
 
         <defaultGoal>package</defaultGoal>
-        <plugins><!--
+        <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -314,7 +319,7 @@
                     <configLocation>${project.basedir}/etc/checkstyle.xml</configLocation>
                     <headerLocation>${project.basedir}/LICENSE</headerLocation>
                 </configuration>
-            </plugin>-->
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -398,7 +403,7 @@
             </plugin>
         </plugins>
     </build>
-<!--
+
     <reporting>
         <plugins>
             <plugin>
@@ -411,7 +416,7 @@
                 </configuration>
             </plugin>
         </plugins>
-    </reporting>-->
+    </reporting>
 
     <profiles>
         <profile>

@@ -12,6 +12,7 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
+import org.fusesource.jansi.AnsiConsole;
 import org.jline.reader.*;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
@@ -73,7 +74,12 @@ public final class ConsoleManager {
         replacements.put(formatting, ansi);
     }
 
+    private static final boolean IS_WINDOWS = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
+
     public ConsoleManager(GlowServer server) {
+        if (IS_WINDOWS) {
+            AnsiConsole.systemInstall();
+        }
         this.server = server;
         GlowServer.logger.setUseParentHandlers(false);
         handler = new ConsoleHandler();
@@ -110,6 +116,9 @@ public final class ConsoleManager {
 
     public void stop() {
         running = false;
+        if (IS_WINDOWS) {
+            AnsiConsole.systemUninstall();
+        }
     }
 
     public ConsoleCommandSender getSender() {
