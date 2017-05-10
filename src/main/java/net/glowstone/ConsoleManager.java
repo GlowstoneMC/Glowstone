@@ -1,7 +1,6 @@
 package net.glowstone;
 
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandException;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
@@ -14,14 +13,21 @@ import org.bukkit.plugin.Plugin;
 import org.jline.reader.*;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
+import org.jline.utils.AttributedStringBuilder;
+import org.jline.utils.AttributedStyle;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.*;
 import java.util.logging.*;
+import java.util.logging.Formatter;
+
+import static java.time.temporal.ChronoField.HOUR_OF_DAY;
+import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
 
 /**
  * A meta-class to handle all logging and input-related console improvements.
@@ -32,13 +38,15 @@ public final class ConsoleManager {
     private static final Logger logger = Logger.getLogger("");
     private static String CONSOLE_DATE = "HH:mm:ss";
     private static String FILE_DATE = "yyyy/MM/dd HH:mm:ss";
-    private static String CONSOLE_PROMPT = "%[38;5;3m>";
-    private final GlowServer server;
+
+    private static String CONSOLE_PROMPT = "g>";
+    private static String RIGHT_PROMPT = null;
+
+    protected final GlowServer server;
     private final Map<ChatColor, String> replacements = new EnumMap<>(ChatColor.class);
     private final ChatColor[] colors = ChatColor.values();
 
-    private Terminal terminal;
-    private LineReader reader;
+    protected LineReader reader;
     private ConsoleCommandSender sender;
 
     private boolean running = true;
@@ -47,8 +55,20 @@ public final class ConsoleManager {
         this.server = server;
 
         // terminal must be initialized before standard streams are changed
-        try {
-            terminal = TerminalBuilder.terminal();
+
+        for (Handler h : logger.getHandlers()) {
+            logger.removeHandler(h);
+        }
+
+        // add log handler which writes to console
+        logger.addHandler(new FancyConsoleHandler());
+
+        try (Terminal terminal = TerminalBuilder.builder()
+                    .name("Glowstone")
+                    .system(true)
+                    .nativeSignals(true)
+                    .signalHandler(Terminal.SignalHandler.SIG_IGN)
+                    .build()) {
             reader = LineReaderBuilder.builder()
                     .terminal(terminal)
                     .completer(new CommandCompleter())
@@ -57,17 +77,44 @@ public final class ConsoleManager {
             logger.log(Level.SEVERE, "Exception initializing terminal", e);
         }
 
+        System.setOut(new PrintStream(new LoggerOutputStream(Level.INFO), true));
+        System.setErr(new PrintStream(new LoggerOutputStream(Level.WARNING), true));
+
         sender = new ColoredCommandSender();
         CONSOLE_DATE = server.getConsoleDateFormat();
-        CONSOLE_PROMPT = server.getConsolePrompt();
-        Thread thread = new ConsoleCommandThread();
-        thread.setName("ConsoleCommandThread");
-        thread.setDaemon(true);
-        thread.start();
+        for (Handler handler : logger.getHandlers()) {
+            if (handler.getClass() == FancyConsoleHandler.class) {
+                handler.setFormatter(new DateOutputFormatter(CONSOLE_DATE, true));
+            }
+        }
+        CONSOLE_PROMPT = new AttributedStringBuilder()
+                .style(AttributedStyle.BOLD)
+                .style(AttributedStyle.DEFAULT.background(AttributedStyle.YELLOW))
+                .append("g>")
+                .style(AttributedStyle.DEFAULT)
+                .toAnsi(reader.getTerminal());
+        RIGHT_PROMPT = new AttributedStringBuilder()
+                .style(AttributedStyle.DEFAULT.background(AttributedStyle.RED))
+                .append(LocalDate.now().format(DateTimeFormatter.ISO_DATE))
+                .append("\n")
+                .style(AttributedStyle.DEFAULT.foreground(AttributedStyle.RED | AttributedStyle.BRIGHT))
+                .append(LocalTime.now().format(new DateTimeFormatterBuilder()
+                        .appendValue(HOUR_OF_DAY, 2)
+                        .appendLiteral(':')
+                        .appendValue(MINUTE_OF_HOUR, 2)
+                        .toFormatter()))
+                .toAnsi(reader.getTerminal());
     }
 
     public ConsoleCommandSender getSender() {
         return sender;
+    }
+
+    public void start() {
+        Thread thread = new ConsoleCommandThread();
+        thread.setName("ConsoleCommandThread");
+        thread.setDaemon(true);
+        thread.start();
     }
 
     public void startFile(String logfile) {
@@ -77,7 +124,7 @@ public final class ConsoleManager {
         }
         Handler fileHandler = new RotatingFileHandler(logfile);
         FILE_DATE = server.getConsoleLogDateFormat();
-        //fileHandler.setFormatter(new DateOutputFormatter(FILE_DATE, false));
+        fileHandler.setFormatter(new DateOutputFormatter(FILE_DATE, false));
         logger.addHandler(fileHandler);
     }
 
@@ -199,20 +246,21 @@ public final class ConsoleManager {
     private class ConsoleCommandThread extends Thread {
         @Override
         public void run() {
-            String command = "";
+            String command = null;
             while (running) {
                 try {
-                    command = reader.readLine(CONSOLE_PROMPT, null, server.getVersion());
-
-                    if (command == null || command.trim().isEmpty())
-                        continue;
-
-                    server.getScheduler().runTask(null, new CommandTask(command.trim()));
-                } catch (CommandException ex) {
-                    logger.log(Level.WARNING, "Exception while executing command: " + command, ex);
-                } catch (Exception ex) {
-                    logger.log(Level.SEVERE, "Error while reading commands", ex);
+                    command = reader.readLine(CONSOLE_PROMPT, RIGHT_PROMPT, null, null);
+                } catch (UserInterruptException e) {
+                    logger.log(Level.WARNING, "Exception while executing command: " + command, e);
+                } catch (EndOfFileException e) {
+                    logger.log(Level.SEVERE, "Error while reading commands", e);
                 }
+
+                if (command == null || (command = command.trim()).isEmpty()) {
+                    continue;
+                }
+
+                server.getScheduler().runTask(null, new CommandTask(reader.getParser().parse(command, 0, Parser.ParseContext.ACCEPT_LINE).line()));
             }
         }
     }
@@ -358,6 +406,63 @@ public final class ConsoleManager {
         @Override
         public void sendRawMessage(String message) {
 
+        }
+    }
+
+     private class FancyConsoleHandler extends ConsoleHandler {
+        public FancyConsoleHandler() {
+            setFormatter(new DateOutputFormatter(CONSOLE_DATE, true));
+            setOutputStream(System.out);
+        }
+
+        @Override
+        public synchronized void flush() {
+            reader.callWidget(LineReader.FRESH_LINE);
+            reader.getTerminal().flush();
+            super.flush();
+            try {
+               reader.callWidget(LineReader.REDRAW_LINE);
+           } catch (Throwable ex) {
+               reader.getBuffer().clear();
+            }
+            reader.getTerminal().flush();
+         }
+     }
+
+    private class DateOutputFormatter extends Formatter {
+        private final SimpleDateFormat date;
+        private final boolean color;
+
+        public DateOutputFormatter(String pattern, boolean color) {
+            date = new SimpleDateFormat(pattern);
+            this.color = color;
+        }
+
+        @Override
+        @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
+        public String format(LogRecord record) {
+            StringBuilder builder = new StringBuilder();
+
+            builder.append(date.format(record.getMillis()));
+            builder.append(" [");
+            builder.append(record.getLevel().getLocalizedName().toUpperCase());
+            builder.append("] ");
+            if (color) {
+                builder.append(colorize(formatMessage(record)));
+            } else {
+                builder.append(formatMessage(record));
+            }
+            builder.append('\n');
+
+            if (record.getThrown() != null) {
+                // StringWriter's close() is trivial
+                @SuppressWarnings("resource")
+                StringWriter writer = new StringWriter();
+                record.getThrown().printStackTrace(new PrintWriter(writer));
+                builder.append(writer);
+            }
+
+            return builder.toString();
         }
     }
 }
