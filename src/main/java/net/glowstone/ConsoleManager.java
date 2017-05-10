@@ -23,10 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.text.SimpleDateFormat;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
@@ -39,11 +36,13 @@ public final class ConsoleManager {
 
     private GlowServer server;
     protected LineReader reader;
+    private boolean color;
 
     private ConsoleCommandSender sender;
 
     protected boolean running;
 
+    private ConsoleHandler handler;
     private static String CONSOLE_DATE = "HH:mm:ss";
 
     private static final Map<ChatColor, String> replacements = new EnumMap<>(ChatColor.class);
@@ -79,6 +78,9 @@ public final class ConsoleManager {
 
     public ConsoleManager(GlowServer server) {
         this.server = server;
+        GlowServer.logger.setUseParentHandlers(false);
+        handler = new ConsoleHandler();
+        handler.setFormatter(new DateOutputFormatter(CONSOLE_DATE, false));
 
         try (Terminal terminal = TerminalBuilder.builder()
                     .system(true)
@@ -90,17 +92,18 @@ public final class ConsoleManager {
                     .completer(new CommandCompleter())
                     .build();
             reader.unsetOpt(LineReader.Option.INSERT_TAB);
+            color = !Objects.equals(terminal.getType(), Terminal.TYPE_DUMB);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        handler.setFormatter(new DateOutputFormatter(CONSOLE_DATE, color));
     }
 
     public void start() {
         sender = new ColoredCommandSender();
         CONSOLE_DATE = server.getConsoleDateFormat();
-        GlowServer.logger.setUseParentHandlers(false);
-        ConsoleHandler handler = new ConsoleHandler();
-        handler.setFormatter(new DateOutputFormatter(CONSOLE_DATE, true));
+        handler.setFormatter(new DateOutputFormatter(CONSOLE_DATE, color));
         GlowServer.logger.addHandler(handler);
         if (!running) {
             running = true;
