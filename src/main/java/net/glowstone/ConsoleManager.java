@@ -150,12 +150,12 @@ public final class ConsoleManager {
         }
     }
 
-    protected static String colorize(String string) {
+    protected String colorize(String string) {
         if (string.indexOf(ChatColor.COLOR_CHAR) < 0) {
             return string; // no colors in the message
         }
         for (ChatColor color : ChatColor.values()) {
-            if (replacements.containsKey(color)) {
+            if (this.color && replacements.containsKey(color)) {
                 string = string.replaceAll("(?i)" + color, replacements.get(color));
             } else {
                 string = string.replaceAll("(?i)" + color, "");
