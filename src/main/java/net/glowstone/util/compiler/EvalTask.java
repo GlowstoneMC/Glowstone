@@ -24,12 +24,12 @@ public class EvalTask implements Runnable {
         } else {
             this.command = command;
         }
-        source = "import org.bukkit.*;" +
-                "public class REPLShell {" +
-                (output ? "public static Object run() {" +
-                        "return " + this.command : "public static void run() {" +
+        source = "import org.bukkit.*;\n" +
+                "public class REPLShell {\n" +
+                (output ? "public static Object run() {\n" +
+                        "return " + this.command : "public static void run() {\n" +
                         this.command) +
-                "}}";
+                "\n}\n}\n";
     }
 
     @Override
