@@ -12,14 +12,13 @@ public class MethodInvocationUtils {
         }
         try {
             return m.invoke(null, args);
-        }
-        catch (IllegalAccessException | IllegalArgumentException | SecurityException | InvocationTargetException e) {
+        } catch (IllegalAccessException | IllegalArgumentException | SecurityException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
     }
 
     private static Method findFirstMatchingStaticMethod(Class<?> c, String methodName, Object ... args) {
-        Method methods[] = c.getDeclaredMethods();
+        Method[] methods = c.getDeclaredMethods();
         for (Method m : methods) {
             if (m.getName().equals(methodName) && Modifier.isStatic(m.getModifiers())) {
                 Class<?>[] parameterTypes = m.getParameterTypes();
@@ -31,7 +30,7 @@ public class MethodInvocationUtils {
         return null;
     }
 
-    private static boolean areAssignable(Class<?> types[], Object ...args) {
+    private static boolean areAssignable(Class<?>[] types, Object ...args) {
         if (types.length != args.length) {
             return false;
         }

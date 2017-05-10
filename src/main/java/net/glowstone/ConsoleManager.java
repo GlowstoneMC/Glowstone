@@ -95,7 +95,7 @@ public final class ConsoleManager {
                     .completer(new CommandCompleter())
                     .build();
             reader.unsetOpt(LineReader.Option.INSERT_TAB);
-            color = !Objects.equals(terminal.getType(), Terminal.TYPE_DUMB);
+            color = IS_WINDOWS || !Objects.equals(terminal.getType(), Terminal.TYPE_DUMB);
         } catch (IOException e) {
             e.printStackTrace();
         }
