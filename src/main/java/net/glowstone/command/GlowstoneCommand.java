@@ -1,10 +1,12 @@
 package net.glowstone.command;
 
+import net.glowstone.util.ReflectionProcessor;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.entity.Entity;
 import org.bukkit.util.StringUtil;
 
 import java.lang.management.ManagementFactory;
@@ -13,7 +15,7 @@ import java.util.*;
 
 public class GlowstoneCommand extends BukkitCommand {
 
-    private static final List<String> SUBCOMMANDS = Arrays.asList("about", "help", "property", "vm");
+    private static final List<String> SUBCOMMANDS = Arrays.asList("about", "eval", "help", "property", "vm");
 
     public GlowstoneCommand() {
         super("glowstone", "A handful of Glowstone commands for debugging purposes", "/glowstone help", Arrays.asList("gs"));
@@ -83,6 +85,20 @@ public class GlowstoneCommand extends BukkitCommand {
 
             return false;
         }
+        if (args[0].equals("eval")) {
+            if (args.length == 1) {
+                // no args, send usage
+                sender.sendMessage(ChatColor.RED + "Usage: /" + label + " eval <eval>");
+                return false;
+            }
+            StringBuilder builder = new StringBuilder();
+            for (int i = 1; i < args.length; i++) {
+                builder.append(args[i] + (i == args.length - 1 ? "" : " "));
+            }
+            ReflectionProcessor processor = new ReflectionProcessor(builder.toString(), sender instanceof Entity ? sender : Bukkit.getServer());
+            Object result = processor.process();
+            sender.sendMessage(ChatColor.GOLD + "Eval returned: " + (result == null ? ChatColor.RED + "<no value>" : ChatColor.AQUA + result.toString()));
+        }
         return false;
     }
 
@@ -97,7 +113,6 @@ public class GlowstoneCommand extends BukkitCommand {
         if (args.length == 1) {
             return (List) StringUtil.copyPartialMatches(args[0], SUBCOMMANDS, new ArrayList(SUBCOMMANDS.size()));
         }
-        System.out.println(args.length + " / " + Arrays.toString(args));
         if (args.length == 2 && args[0].equalsIgnoreCase("property")) {
             return (List) StringUtil.copyPartialMatches(args[1], System.getProperties().stringPropertyNames(), new ArrayList(System.getProperties().stringPropertyNames().size()));
         }
