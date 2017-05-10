@@ -1,6 +1,6 @@
 package net.glowstone;
 
-import org.bukkit.Bukkit;
+import net.glowstone.util.compiler.EvalTask;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.ConsoleCommandSender;
@@ -19,9 +19,6 @@ import org.jline.terminal.TerminalBuilder;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.ConsoleHandler;
@@ -204,7 +201,7 @@ public final class ConsoleManager {
                 if (command != null && !(command = command.trim()).isEmpty()) {
                     reader.getTerminal().writer().println(colorize("====" + ChatColor.GOLD + "g>" + ChatColor.RESET + '"' + command + '"'));
                     if (command.startsWith("$")) {
-                        server.getScheduler().runTask(null, new EvalTask(command.substring(1)));
+                        server.getScheduler().runTask(null, new EvalTask(command.substring(1), command.startsWith("$$")));
                     } else if (command.startsWith("!")) {
                         server.getScheduler().runTask(null, new ConsoleTask(command.substring(1)));
                     } else {
@@ -226,28 +223,6 @@ public final class ConsoleManager {
         public void run() {
             ServerCommandEvent event = EventFactory.callEvent(new ServerCommandEvent(sender, command));
             server.dispatchCommand(sender, event.getCommand());
-        }
-    }
-
-    private class EvalTask implements Runnable {
-        private final String command;
-
-        EvalTask(String command) {
-            this.command = command;
-        }
-
-        @Override
-        public void run() {
-            for (Method method : Bukkit.class.getDeclaredMethods()) {
-                if (Modifier.isStatic(method.getModifiers()) && method.getParameterCount() == 0 && command.startsWith(method.getName())) {
-                    try {
-                        GlowServer.logger.info("Bukkit." + command + " -> " + method.invoke(null));
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                }
-            }
         }
     }
 
