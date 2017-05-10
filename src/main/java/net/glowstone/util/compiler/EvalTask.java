@@ -16,6 +16,7 @@ public class EvalTask implements Runnable {
     private final String source;
     private byte[] classData;
     private MapClassLoader classLoader;
+    public static Object lastObject;
 
     public EvalTask(String command, boolean output) {
         this.output = output;
@@ -27,7 +28,7 @@ public class EvalTask implements Runnable {
         source = "import org.bukkit.*;\n" +
                 "public class REPLShell {\n" +
                 (output ? "public static Object run() {\n" +
-                        "return " + this.command : "public static void run() {\n" +
+                        this.command : "public static void run() {\n" +
                         this.command) +
                 "\n}\n}\n";
     }
@@ -49,7 +50,7 @@ public class EvalTask implements Runnable {
         task.call();
 
         try {
-            GlowServer.logger.info(command + " -> " + (output ? MethodInvocationUtils.invokeStaticMethod(getCompiledClass(), "run") : "no output"));
+            GlowServer.logger.info(command + " -> " + (output ? (MethodInvocationUtils.invokeStaticMethod(getCompiledClass(), "run")) : "no output"));
         } catch (Exception ignored) {
 
         }
