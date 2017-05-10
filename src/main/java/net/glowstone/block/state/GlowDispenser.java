@@ -1,7 +1,5 @@
 package net.glowstone.block.state;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.DispenserEntity;
 import net.glowstone.dispenser.*;
