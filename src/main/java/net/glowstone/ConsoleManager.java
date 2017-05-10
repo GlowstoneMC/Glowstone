@@ -18,16 +18,9 @@ import org.jline.utils.AttributedStyle;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.*;
 import java.util.logging.*;
 import java.util.logging.Formatter;
-
-import static java.time.temporal.ChronoField.HOUR_OF_DAY;
-import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
 
 /**
  * A meta-class to handle all logging and input-related console improvements.
@@ -80,30 +73,13 @@ public final class ConsoleManager {
         System.setOut(new PrintStream(new LoggerOutputStream(Level.INFO), true));
         System.setErr(new PrintStream(new LoggerOutputStream(Level.WARNING), true));
 
-        sender = new ColoredCommandSender();
-        CONSOLE_DATE = server.getConsoleDateFormat();
-        for (Handler handler : logger.getHandlers()) {
-            if (handler.getClass() == FancyConsoleHandler.class) {
-                handler.setFormatter(new DateOutputFormatter(CONSOLE_DATE, true));
-            }
-        }
         CONSOLE_PROMPT = new AttributedStringBuilder()
-                .style(AttributedStyle.BOLD)
-                .style(AttributedStyle.DEFAULT.background(AttributedStyle.YELLOW))
+                .style(AttributedStyle.BOLD.foreground(AttributedStyle.YELLOW))
                 .append("g>")
                 .style(AttributedStyle.DEFAULT)
                 .toAnsi(reader.getTerminal());
-        RIGHT_PROMPT = new AttributedStringBuilder()
-                .style(AttributedStyle.DEFAULT.background(AttributedStyle.RED))
-                .append(LocalDate.now().format(DateTimeFormatter.ISO_DATE))
-                .append("\n")
-                .style(AttributedStyle.DEFAULT.foreground(AttributedStyle.RED | AttributedStyle.BRIGHT))
-                .append(LocalTime.now().format(new DateTimeFormatterBuilder()
-                        .appendValue(HOUR_OF_DAY, 2)
-                        .appendLiteral(':')
-                        .appendValue(MINUTE_OF_HOUR, 2)
-                        .toFormatter()))
-                .toAnsi(reader.getTerminal());
+
+        registerColors();
     }
 
     public ConsoleCommandSender getSender() {
@@ -111,10 +87,43 @@ public final class ConsoleManager {
     }
 
     public void start() {
+        sender = new ColoredCommandSender();
+        CONSOLE_DATE = server.getConsoleDateFormat();
+        for (Handler handler : logger.getHandlers()) {
+            if (handler.getClass() == FancyConsoleHandler.class) {
+                handler.setFormatter(new DateOutputFormatter(CONSOLE_DATE, true));
+            }
+        }
         Thread thread = new ConsoleCommandThread();
         thread.setName("ConsoleCommandThread");
         thread.setDaemon(true);
         thread.start();
+    }
+
+    public void registerColors() {
+        replacements.put(ChatColor.AQUA, new AttributedStringBuilder().style(AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE)).toAnsi(reader.getTerminal()));
+        replacements.put(ChatColor.BLACK, new AttributedStringBuilder().style(AttributedStyle.DEFAULT.foreground(AttributedStyle.BLACK).boldOff()).toAnsi(reader.getTerminal()));
+        replacements.put(ChatColor.DARK_BLUE, new AttributedStringBuilder().style(AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE).boldOff()).toAnsi(reader.getTerminal()));
+        replacements.put(ChatColor.DARK_GREEN, new AttributedStringBuilder().style(AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN).boldOff()).toAnsi(reader.getTerminal()));
+        replacements.put(ChatColor.DARK_AQUA, new AttributedStringBuilder().style(AttributedStyle.DEFAULT.foreground(AttributedStyle.CYAN).boldOff()).toAnsi(reader.getTerminal()));
+        replacements.put(ChatColor.DARK_RED, new AttributedStringBuilder().style(AttributedStyle.DEFAULT.foreground(AttributedStyle.RED).boldOff()).toAnsi(reader.getTerminal()));
+        replacements.put(ChatColor.DARK_PURPLE, new AttributedStringBuilder().style(AttributedStyle.DEFAULT.foreground(AttributedStyle.MAGENTA).boldOff()).toAnsi(reader.getTerminal()));
+        replacements.put(ChatColor.GOLD, new AttributedStringBuilder().style(AttributedStyle.DEFAULT.foreground(AttributedStyle.YELLOW).boldOff()).toAnsi(reader.getTerminal()));
+        replacements.put(ChatColor.GRAY, new AttributedStringBuilder().style(AttributedStyle.DEFAULT.foreground(AttributedStyle.WHITE).boldOff()).toAnsi(reader.getTerminal()));
+        replacements.put(ChatColor.DARK_GRAY, new AttributedStringBuilder().style(AttributedStyle.DEFAULT.foreground(AttributedStyle.BLACK).bold()).toAnsi(reader.getTerminal()));
+        replacements.put(ChatColor.BLUE, new AttributedStringBuilder().style(AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE).bold()).toAnsi(reader.getTerminal()));
+        replacements.put(ChatColor.GREEN, new AttributedStringBuilder().style(AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN).bold()).toAnsi(reader.getTerminal()));
+        replacements.put(ChatColor.AQUA, new AttributedStringBuilder().style(AttributedStyle.DEFAULT.foreground(AttributedStyle.CYAN).bold()).toAnsi(reader.getTerminal()));
+        replacements.put(ChatColor.RED, new AttributedStringBuilder().style(AttributedStyle.DEFAULT.foreground(AttributedStyle.RED).bold()).toAnsi(reader.getTerminal()));
+        replacements.put(ChatColor.LIGHT_PURPLE, new AttributedStringBuilder().style(AttributedStyle.DEFAULT.foreground(AttributedStyle.MAGENTA).bold()).toAnsi(reader.getTerminal()));
+        replacements.put(ChatColor.YELLOW, new AttributedStringBuilder().style(AttributedStyle.DEFAULT.foreground(AttributedStyle.YELLOW).bold()).toAnsi(reader.getTerminal()));
+        replacements.put(ChatColor.WHITE, new AttributedStringBuilder().style(AttributedStyle.DEFAULT.foreground(AttributedStyle.WHITE).bold()).toAnsi(reader.getTerminal()));
+        replacements.put(ChatColor.MAGIC, new AttributedStringBuilder().style(AttributedStyle.DEFAULT.blink()).toAnsi(reader.getTerminal()));
+        replacements.put(ChatColor.BOLD, new AttributedStringBuilder().style(AttributedStyle.BOLD).toAnsi(reader.getTerminal()));
+        replacements.put(ChatColor.STRIKETHROUGH, new AttributedStringBuilder().style(AttributedStyle.DEFAULT.crossedOut()).toAnsi(reader.getTerminal()));
+        replacements.put(ChatColor.UNDERLINE, new AttributedStringBuilder().style(AttributedStyle.DEFAULT.underline()).toAnsi(reader.getTerminal()));
+        replacements.put(ChatColor.ITALIC, new AttributedStringBuilder().style(AttributedStyle.DEFAULT.italic()).toAnsi(reader.getTerminal()));
+        replacements.put(ChatColor.RESET, new AttributedStringBuilder().style(AttributedStyle.DEFAULT).toAnsi(reader.getTerminal()));
     }
 
     public void startFile(String logfile) {
@@ -130,6 +139,7 @@ public final class ConsoleManager {
 
     public void stop() {
         running = false;
+        reader.getTerminal().writer().println();
         for (Handler handler : logger.getHandlers()) {
             handler.flush();
             handler.close();
@@ -149,6 +159,53 @@ public final class ConsoleManager {
                 }
             }
             return string;
+        }
+    }
+
+    private class FancyConsoleHandler extends ConsoleHandler {
+        public FancyConsoleHandler() {
+            setFormatter(new DateOutputFormatter(CONSOLE_DATE, true));
+            setOutputStream(System.out);
+        }
+
+        @Override
+        public synchronized void flush() {
+            reader.getTerminal().flush();
+            super.flush();
+        }
+    }
+
+    private class DateOutputFormatter extends Formatter {
+        private final SimpleDateFormat date;
+        private final boolean color;
+
+        public DateOutputFormatter(String pattern, boolean color) {
+            date = new SimpleDateFormat(pattern);
+            this.color = color;
+        }
+
+        @Override
+        public String format(LogRecord record) {
+            StringBuilder builder = new StringBuilder();
+
+            builder.append(date.format(record.getMillis()));
+            builder.append(" [");
+            builder.append(record.getLevel().getLocalizedName().toUpperCase());
+            builder.append("] ");
+            if (color) {
+                builder.append(colorize(formatMessage(record)));
+            } else {
+                builder.append(formatMessage(record));
+            }
+            builder.append('\n');
+
+            if (record.getThrown() != null) {
+                StringWriter writer = new StringWriter();
+                record.getThrown().printStackTrace(new PrintWriter(writer));
+                builder.append(writer);
+            }
+
+            return builder.toString();
         }
     }
 
@@ -249,7 +306,7 @@ public final class ConsoleManager {
             String command = null;
             while (running) {
                 try {
-                    command = reader.readLine(CONSOLE_PROMPT, RIGHT_PROMPT, null, null);
+                    command = reader.readLine();
                 } catch (UserInterruptException e) {
                     logger.log(Level.WARNING, "Exception while executing command: " + command, e);
                 } catch (EndOfFileException e) {
@@ -260,7 +317,10 @@ public final class ConsoleManager {
                     continue;
                 }
 
-                server.getScheduler().runTask(null, new CommandTask(reader.getParser().parse(command, 0, Parser.ParseContext.ACCEPT_LINE).line()));
+                reader.getTerminal().writer().println(CONSOLE_PROMPT + "\"" + command + "\"");
+                reader.getTerminal().flush();
+
+                server.getScheduler().runTask(null, new CommandTask(command));
             }
         }
     }
@@ -406,63 +466,6 @@ public final class ConsoleManager {
         @Override
         public void sendRawMessage(String message) {
 
-        }
-    }
-
-     private class FancyConsoleHandler extends ConsoleHandler {
-        public FancyConsoleHandler() {
-            setFormatter(new DateOutputFormatter(CONSOLE_DATE, true));
-            setOutputStream(System.out);
-        }
-
-        @Override
-        public synchronized void flush() {
-            reader.callWidget(LineReader.FRESH_LINE);
-            reader.getTerminal().flush();
-            super.flush();
-            try {
-               reader.callWidget(LineReader.REDRAW_LINE);
-           } catch (Throwable ex) {
-               reader.getBuffer().clear();
-            }
-            reader.getTerminal().flush();
-         }
-     }
-
-    private class DateOutputFormatter extends Formatter {
-        private final SimpleDateFormat date;
-        private final boolean color;
-
-        public DateOutputFormatter(String pattern, boolean color) {
-            date = new SimpleDateFormat(pattern);
-            this.color = color;
-        }
-
-        @Override
-        @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-        public String format(LogRecord record) {
-            StringBuilder builder = new StringBuilder();
-
-            builder.append(date.format(record.getMillis()));
-            builder.append(" [");
-            builder.append(record.getLevel().getLocalizedName().toUpperCase());
-            builder.append("] ");
-            if (color) {
-                builder.append(colorize(formatMessage(record)));
-            } else {
-                builder.append(formatMessage(record));
-            }
-            builder.append('\n');
-
-            if (record.getThrown() != null) {
-                // StringWriter's close() is trivial
-                @SuppressWarnings("resource")
-                StringWriter writer = new StringWriter();
-                record.getThrown().printStackTrace(new PrintWriter(writer));
-                builder.append(writer);
-            }
-
-            return builder.toString();
         }
     }
 }
