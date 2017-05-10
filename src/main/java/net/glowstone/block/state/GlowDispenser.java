@@ -94,19 +94,7 @@ public class GlowDispenser extends GlowLootableBlock implements Dispenser, Block
 
     public int getDispenseSlot() {
         Inventory inv = getInventory();
-        
-        List<Integer> items = new ArrayList<>();
-        int i = 0;
-        while (i < 9) {
-            if (!InventoryUtil.isEmpty(inv.getItem(i))) {
-                items.add(i);
-            }
-        }
-        if (items.size() > 0) {
-            return items.get(random.nextInt(items.size()));
-        } else {
-            return 0;
-        }
+        return InventoryUtil.getRandomSlot(random, inv, true);
     }
 
     public ItemStack placeInDispenser(ItemStack toPlace) {

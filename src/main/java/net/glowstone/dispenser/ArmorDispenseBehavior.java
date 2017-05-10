@@ -27,9 +27,9 @@ public class ArmorDispenseBehavior extends DefaultDispenseBehavior {
         
         //Find all nearby entities and see if they are players or armor stands
         List<LivingEntity> entities = new ArrayList<>();
-        for (Entity cEntity : world.getNearbyEntities(location1, 3, 3, 3)) {
-            switch (cEntity.getType()) {
-                case PLAYER: entities.add((LivingEntity) cEntity); break;
+        for (Entity entity : world.getNearbyEntities(location1, 3, 3, 3)) {
+            switch (entity.getType()) {
+                case PLAYER: entities.add((LivingEntity) entity); break;
                 //case ARMOR_STAND: entities.add((LivingEntity) cEntity); break;
             }
         }  
