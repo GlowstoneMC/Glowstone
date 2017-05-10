@@ -1,5 +1,6 @@
 package net.glowstone;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.ConsoleCommandSender;
@@ -16,11 +17,20 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.text.SimpleDateFormat;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Formatter;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 
 /**
  * Handles all logging and input-related console improvements.
@@ -28,11 +38,13 @@ import java.util.logging.Level;
 public final class ConsoleManager {
 
     private GlowServer server;
-    LineReader reader;
+    protected LineReader reader;
 
     private ConsoleCommandSender sender;
 
-    boolean running;
+    protected boolean running;
+
+    private static String CONSOLE_DATE = "HH:mm:ss";
 
     private static final Map<ChatColor, String> replacements = new EnumMap<>(ChatColor.class);
 
@@ -85,6 +97,11 @@ public final class ConsoleManager {
 
     public void start() {
         sender = new ColoredCommandSender();
+        CONSOLE_DATE = server.getConsoleDateFormat();
+        GlowServer.logger.setUseParentHandlers(false);
+        ConsoleHandler handler = new ConsoleHandler();
+        handler.setFormatter(new DateOutputFormatter(CONSOLE_DATE, true));
+        GlowServer.logger.addHandler(handler);
         if (!running) {
             running = true;
             new ConsoleCommandThread().start();
@@ -97,6 +114,54 @@ public final class ConsoleManager {
 
     public ConsoleCommandSender getSender() {
         return sender;
+    }
+
+    private class DateOutputFormatter extends Formatter {
+        private final SimpleDateFormat date;
+        private final boolean color;
+
+        public DateOutputFormatter(String pattern, boolean color) {
+            date = new SimpleDateFormat(pattern);
+            this.color = color;
+        }
+
+        @Override
+        public String format(LogRecord record) {
+            StringBuilder builder = new StringBuilder();
+
+            builder.append(date.format(record.getMillis()));
+            builder.append(" [");
+            builder.append(record.getLevel().getLocalizedName().toUpperCase());
+            builder.append("] ");
+            if (color) {
+                builder.append(colorize(formatMessage(record)));
+            } else {
+                builder.append(formatMessage(record));
+            }
+            builder.append('\n');
+
+            if (record.getThrown() != null) {
+                StringWriter writer = new StringWriter();
+                record.getThrown().printStackTrace(new PrintWriter(writer));
+                builder.append(writer);
+            }
+
+            return builder.toString();
+        }
+    }
+
+    protected static String colorize(String string) {
+        if (string.indexOf(ChatColor.COLOR_CHAR) < 0) {
+            return string; // no colors in the message
+        }
+        for (ChatColor color : ChatColor.values()) {
+            if (replacements.containsKey(color)) {
+                string = string.replaceAll("(?i)" + color, replacements.get(color));
+            } else {
+                string = string.replaceAll("(?i)" + color, "");
+            }
+        }
+        return string;
     }
 
     private class CommandCompleter implements Completer {
@@ -134,7 +199,14 @@ public final class ConsoleManager {
                 }
 
                 if (command != null && !(command = command.trim()).isEmpty()) {
-                    server.getScheduler().runTaskAsynchronously(null, new CommandTask(command));
+                    reader.getTerminal().writer().println(colorize("====" + ChatColor.GOLD + "g>" + ChatColor.RESET + '"' + command + '"'));
+                    if (command.startsWith("$")) {
+                        server.getScheduler().runTask(null, new EvalTask(command.substring(1)));
+                    } else if (command.startsWith("!")) {
+                        server.getScheduler().runTask(null, new ConsoleTask(command.substring(1)));
+                    } else {
+                        server.getScheduler().runTask(null, new CommandTask(command));
+                    }
                 }
             }
         }
@@ -151,6 +223,50 @@ public final class ConsoleManager {
         public void run() {
             ServerCommandEvent event = EventFactory.callEvent(new ServerCommandEvent(sender, command));
             server.dispatchCommand(sender, event.getCommand());
+        }
+    }
+
+    private class EvalTask implements Runnable {
+        private final String command;
+
+        EvalTask(String command) {
+            this.command = command;
+        }
+
+        @Override
+        public void run() {
+            for (Method method : Bukkit.class.getDeclaredMethods()) {
+                if (Modifier.isStatic(method.getModifiers()) && method.getParameterCount() == 0 && command.startsWith(method.getName())) {
+                    try {
+                        GlowServer.logger.info("Bukkit." + command + " -> " + method.invoke(null));
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    private class ConsoleTask implements Runnable {
+        private String command;
+
+        ConsoleTask(String command) {
+            this.command = command;
+        }
+
+        @Override
+        public void run() {
+            switch (command) {
+                case "bind":
+                    // run keybind code
+                    break;
+                case "config":
+                    // run config code
+                    break;
+                default:
+                    // nothing
+            }
         }
     }
 
