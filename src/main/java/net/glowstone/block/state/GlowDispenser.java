@@ -76,7 +76,7 @@ public class GlowDispenser extends GlowLootableBlock implements Dispenser, Block
     public boolean dispense() {
         GlowBlock block = getBlock();
 
-        int dispenseSlot = getDispenseSlot();
+        int dispenseSlot = InventoryUtil.getRandomSlot(random, getInventory(), true);
         if (dispenseSlot < 0) {
             block.getWorld().playEffect(block.getLocation(), Effect.CLICK1, 0);
             return false;
@@ -88,11 +88,6 @@ public class GlowDispenser extends GlowLootableBlock implements Dispenser, Block
         ItemStack result = behavior.dispense(block, origItems);
         getInventory().setItem(dispenseSlot, result);
         return true;
-    }
-
-    public int getDispenseSlot() {
-        Inventory inv = getInventory();
-        return InventoryUtil.getRandomSlot(random, inv, true);
     }
 
     public ItemStack placeInDispenser(ItemStack toPlace) {

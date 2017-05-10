@@ -3,11 +3,9 @@ package net.glowstone.dispenser;
 import java.util.ArrayList;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.blocktype.BlockDispenser;
-import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Entity;
 import java.util.List;
@@ -19,36 +17,34 @@ public class ArmorDispenseBehavior extends DefaultDispenseBehavior {
     
     @Override
     protected ItemStack dispenseStack(GlowBlock block, ItemStack stack) {
-        Material armor = stack.getType();
         BlockFace facing = BlockDispenser.getFacing(block);
         GlowBlock target = block.getRelative(facing);
-        Location location1 = target.getLocation();
-        World world = location1.getWorld();
+        Location targetLocation = target.getLocation();
         
-        //Find all nearby entities and see if they are players or armor stands
+        // Find all nearby entities and see if they are players or armor stands
         List<LivingEntity> entities = new ArrayList<>();
-        for (Entity entity : world.getNearbyEntities(location1, 3, 3, 3)) {
+        for (Entity entity : targetLocation.getWorld().getNearbyEntities(targetLocation, 3, 3, 3)) {
             switch (entity.getType()) {
                 case PLAYER: entities.add((LivingEntity) entity); break;
-                //case ARMOR_STAND: entities.add((LivingEntity) cEntity); break;
+                // case ARMOR_STAND: entities.add((LivingEntity) cEntity); break;
             }
         }  
         
         Location location;
-        boolean location1Test;
-        boolean location2Test;
-        //Loop through entities to see if any are in the location where armor would be dispensed
+        boolean targetLocationTest1;
+        boolean targetLocationTest2;
+        // Loop through entities to see if any are in the location where armor would be dispensed
         for (LivingEntity player : entities) {          
             location = player.getLocation().clone();
             location.setX(location.getBlockX());
             location.setY(location.getBlockY());
             location.setZ(location.getBlockZ());            
-            location1Test = (location.getX() == location1.getX() && location.getY() == location1.getY() && location.getZ() == location1.getZ());
-            location2Test = (location.getX() == player.getEyeLocation().getBlockX() && player.getEyeLocation().getBlockY() == location1.getY() && player.getEyeLocation().getBlockZ() == location1.getZ());
-            if ((location1Test || location2Test)) {
+            targetLocationTest1 = (player.getLocation().getBlockX() == targetLocation.getX() && player.getLocation().getBlockY() == targetLocation.getY() && player.getLocation().getBlockZ() == targetLocation.getZ());
+            targetLocationTest2 = (player.getEyeLocation().getBlockX() == targetLocation.getX() && player.getEyeLocation().getBlockY() == targetLocation.getY() && player.getEyeLocation().getBlockZ() == targetLocation.getZ());
+            if ((targetLocationTest1 || targetLocationTest2)) {
                 return ((GlowInventory) ((Player) player).getInventory()).tryToFillSlots(stack, 36, 40);
             }
         }
-        return defaultBehavior.dispense(block, stack); //Fallback
+        return defaultBehavior.dispense(block, stack); // Fallback
     }
 }
