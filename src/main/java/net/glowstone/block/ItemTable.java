@@ -234,6 +234,7 @@ public final class ItemTable {
         reg(Material.BREWING_STAND_ITEM, new ItemPlaceAs(Material.BREWING_STAND));
         reg(Material.CAULDRON_ITEM, new ItemPlaceAs(Material.CAULDRON));
         reg(Material.FLOWER_POT_ITEM, new ItemPlaceAs(Material.FLOWER_POT));
+        reg(Material.SKULL_ITEM, new ItemPlaceAs(Material.SKULL));
         reg(Material.REDSTONE_COMPARATOR, new ItemPlaceAs(Material.REDSTONE_COMPARATOR_OFF));
         reg(Material.BED, new ItemPlaceAs(Material.BED_BLOCK));
         reg(Material.BUCKET, new ItemBucket());
@@ -300,7 +301,6 @@ public final class ItemTable {
         reg(Material.HOPPER_MINECART, new ItemMinecart(GlowMinecart.MinecartType.HOPPER));
         reg(Material.POWERED_MINECART, new ItemMinecart(GlowMinecart.MinecartType.FURNACE));
         reg(Material.STORAGE_MINECART, new ItemMinecart(GlowMinecart.MinecartType.CHEST));
-        reg(Material.SKULL_ITEM, new ItemPlaceAs(Material.SKULL));
     }
 
     private void reg(Material material, ItemType type) {

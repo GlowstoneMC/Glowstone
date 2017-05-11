@@ -33,12 +33,13 @@ public class GlowDispenser extends GlowLootableBlock implements Dispenser, Block
     public static void register() {
         // register all dispense behaviors
         DefaultDispenseBehavior bucketDispenseBehavior = new BucketDispenseBehavior();
-        ArmorDispenseBehavior armorDispenseBehavior = new ArmorDispenseBehavior();
         getDispenseBehaviorRegistry().putBehavior(Material.WATER_BUCKET, bucketDispenseBehavior);
         getDispenseBehaviorRegistry().putBehavior(Material.LAVA_BUCKET, bucketDispenseBehavior);
         getDispenseBehaviorRegistry().putBehavior(Material.BUCKET, new EmptyBucketDispenseBehavior());
         getDispenseBehaviorRegistry().putBehavior(Material.FLINT_AND_STEEL, new FlintAndSteelDispenseBehavior());
         getDispenseBehaviorRegistry().putBehavior(Material.TNT, new TNTDispenseBehavior());
+        
+        ArmorDispenseBehavior armorDispenseBehavior = new ArmorDispenseBehavior();
         getDispenseBehaviorRegistry().putBehavior(Material.LEATHER_BOOTS, armorDispenseBehavior);
         getDispenseBehaviorRegistry().putBehavior(Material.LEATHER_LEGGINGS, armorDispenseBehavior);
         getDispenseBehaviorRegistry().putBehavior(Material.LEATHER_CHESTPLATE, armorDispenseBehavior);
@@ -76,12 +77,12 @@ public class GlowDispenser extends GlowLootableBlock implements Dispenser, Block
     public boolean dispense() {
         GlowBlock block = getBlock();
 
-        int dispenseSlot = InventoryUtil.getRandomSlot(random, getInventory(), true);
+        int dispenseSlot = getDispenseSlot();
         if (dispenseSlot < 0) {
             block.getWorld().playEffect(block.getLocation(), Effect.CLICK1, 0);
             return false;
         }
-
+        
         ItemStack origItems = getInventory().getItem(dispenseSlot);
 
         DispenseBehavior behavior = getDispenseBehaviorRegistry().getBehavior(origItems.getType());
@@ -89,7 +90,11 @@ public class GlowDispenser extends GlowLootableBlock implements Dispenser, Block
         getInventory().setItem(dispenseSlot, result);
         return true;
     }
-
+    
+    public int getDispenseSlot() {
+        return InventoryUtil.getRandomSlot(random, getInventory(), true);
+    }
+    
     public ItemStack placeInDispenser(ItemStack toPlace) {
         Inventory inv = getInventory();
         Map<Integer, ItemStack> map = inv.addItem(toPlace);

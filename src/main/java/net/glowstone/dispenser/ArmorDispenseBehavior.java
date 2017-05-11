@@ -18,8 +18,7 @@ public class ArmorDispenseBehavior extends DefaultDispenseBehavior {
     @Override
     protected ItemStack dispenseStack(GlowBlock block, ItemStack stack) {
         BlockFace facing = BlockDispenser.getFacing(block);
-        GlowBlock target = block.getRelative(facing);
-        Location targetLocation = target.getLocation();
+        Location targetLocation = block.getLocation().clone().add(facing.getModX(), facing.getModY(), facing.getModZ());
         
         // Find all nearby entities and see if they are players or armor stands
         List<LivingEntity> entities = new ArrayList<>();
@@ -30,15 +29,10 @@ public class ArmorDispenseBehavior extends DefaultDispenseBehavior {
             }
         }  
         
-        Location location;
         boolean targetLocationTest1;
         boolean targetLocationTest2;
         // Loop through entities to see if any are in the location where armor would be dispensed
-        for (LivingEntity player : entities) {          
-            location = player.getLocation().clone();
-            location.setX(location.getBlockX());
-            location.setY(location.getBlockY());
-            location.setZ(location.getBlockZ());            
+        for (LivingEntity player : entities) {                    
             targetLocationTest1 = (player.getLocation().getBlockX() == targetLocation.getX() && player.getLocation().getBlockY() == targetLocation.getY() && player.getLocation().getBlockZ() == targetLocation.getZ());
             targetLocationTest2 = (player.getEyeLocation().getBlockX() == targetLocation.getX() && player.getEyeLocation().getBlockY() == targetLocation.getY() && player.getEyeLocation().getBlockZ() == targetLocation.getZ());
             if ((targetLocationTest1 || targetLocationTest2)) {
