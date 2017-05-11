@@ -29,7 +29,7 @@ public class EvalTask implements Runnable {
             evaluatedCommand = command;
         }
         source = "import org.bukkit.*;\n" +
-                "import net.glowstone.*\n" +
+                "import net.glowstone.*;\n" +
                 "public class REPLShell {\n" +
                 (output ? "public static Object run(Object last) {\n" : "public static void run(Object last) {\n") +
                 evaluatedCommand +
