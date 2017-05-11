@@ -108,12 +108,12 @@ public final class GlowServer implements Server {
     /**
      * The game version supported by the server.
      */
-    public static final String GAME_VERSION = "17w18b";
+    public static final String GAME_VERSION = "1.12-pre1";
 
     /**
      * The protocol version supported by the server.
      */
-    public static final int PROTOCOL_VERSION = 327;
+    public static final int PROTOCOL_VERSION = 328;
 
     /**
      * A list of all the active {@link net.glowstone.net.GlowSession}s.
