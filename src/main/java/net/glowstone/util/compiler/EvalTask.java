@@ -8,26 +8,30 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 
 public class EvalTask implements Runnable {
     private final boolean output;
-    private final String command;
     private final String source;
-    private byte[] classData;
+    private static Object lastOutput = null;
+    final Map<String, byte[]> classData = new HashMap<>();
     private MapClassLoader classLoader;
 
     public EvalTask(String command, boolean output) {
         this.output = output;
+        String evaluatedCommand;
         if (output) {
-            this.command = command.substring(1);
+            evaluatedCommand = command.substring(1);
         } else {
-            this.command = command;
+            evaluatedCommand = command;
         }
         source = "import org.bukkit.*;\n" +
                 "public class REPLShell {\n" +
-                (output ? "public static Object run() {\n" : "public static void run() {\n" +
-                        this.command) +
+                (output ? "public static Object run(Object last) {\n" : "public static void run(Object last) {\n") +
+                evaluatedCommand +
                 "\n}\n}\n";
     }
 
@@ -42,27 +46,31 @@ public class EvalTask implements Runnable {
         ClassDataFileManager classDataFileManager = new ClassDataFileManager(compiler.getStandardFileManager(null, null, null));
 
         List<JavaFileObject> compilationUnit = new ArrayList<>();
-        compilationUnit.add(new JavaSource(source));
+        compilationUnit.add(new JavaSource("REPLShell", source));
 
         JavaCompiler.CompilationTask task = compiler.getTask(null, classDataFileManager, null, null, null, compilationUnit);
-        task.call();
-
-        try {
-            GlowServer.logger.info(command + " -> " + MethodInvocationUtils.invokeStaticMethod(getCompiledClass(), "run"));
-        } catch (Exception ignored) {
-
+        if (task.call()) {
+            try {
+                Object returned = MethodInvocationUtils.invokeStaticMethod(getCompiledClass("REPLShell"), "run", lastOutput);
+                if (output) {
+                    lastOutput = returned;
+                }
+                GlowServer.logger.info(" -> " + returned);
+            } catch (Exception e) {
+                GlowServer.logger.log(Level.SEVERE, "Error in running REPL shell! ", e);
+            }
         }
     }
 
-    public Class<?> getCompiledClass() {
-        return classLoader.findClass("REPLShell");
+    public Class<?> getCompiledClass(String name) {
+        return classLoader.findClass(name);
     }
 
     private class JavaSource extends SimpleJavaFileObject {
         private final String source;
 
-        JavaSource(String source) {
-            super(URI.create("string:///REPLShell.java"), Kind.SOURCE);
+        JavaSource(String name, String source) {
+            super(URI.create("string:///" + name + ".java"), Kind.SOURCE);
             this.source = source;
         }
 
@@ -75,36 +83,41 @@ public class EvalTask implements Runnable {
     private class MapClassLoader extends ClassLoader {
         @Override
         protected Class<?> findClass(String name) {
-            return defineClass(name, classData, 0, classData.length);
+            return defineClass(name, classData.get(name), 0, classData.get(name).length);
         }
     }
 
-    private class JavaClass extends SimpleJavaFileObject {
-        private JavaClass() {
-            super(URI.create("string:///REPLShell.java"), Kind.CLASS);
+    public class JavaClass extends SimpleJavaFileObject {
+        private final String name;
+
+        public JavaClass(String name) {
+            super(URI.create("string:///" + name + ".java"), Kind.CLASS);
+            this.name = name;
         }
 
         @Override
         public OutputStream openOutputStream() throws IOException {
-            return new ClassDataOutputStream();
+            return new ClassDataOutputStream(name);
         }
     }
 
-    private class ClassDataFileManager extends ForwardingJavaFileManager<StandardJavaFileManager> {
-        private ClassDataFileManager(StandardJavaFileManager fileManager) {
+    public class ClassDataFileManager extends ForwardingJavaFileManager<StandardJavaFileManager> {
+        public ClassDataFileManager(StandardJavaFileManager fileManager) {
             super(fileManager);
         }
 
         @Override
         public JavaFileObject getJavaFileForOutput(Location location, String className, JavaFileObject.Kind kind, FileObject sibling) throws IOException {
-            return new JavaClass();
+            return new JavaClass(className);
         }
     }
 
-    private class ClassDataOutputStream extends OutputStream {
+    public class ClassDataOutputStream extends OutputStream {
+        private final String name;
         private final ByteArrayOutputStream bytes;
 
-        private ClassDataOutputStream() {
+        public ClassDataOutputStream(String name) {
+            this.name = name;
             bytes = new ByteArrayOutputStream();
         }
 
@@ -115,7 +128,7 @@ public class EvalTask implements Runnable {
 
         @Override
         public void close() throws IOException {
-            classData = bytes.toByteArray();
+            classData.put(name, bytes.toByteArray());
         }
     }
 }

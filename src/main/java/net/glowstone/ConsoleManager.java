@@ -189,7 +189,7 @@ public final class ConsoleManager {
         @Override
         public void run() {
             String command = null;
-            while (running && !Thread.interrupted()) {
+            while (running) {
                 try {
                     command = reader.readLine();
                 } catch (CommandException e) {
