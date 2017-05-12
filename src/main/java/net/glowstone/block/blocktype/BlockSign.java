@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Sign;
 import org.bukkit.util.Vector;
 
-public class BlockSign extends BlockType {
+public class BlockSign extends BlockNeedsAttached {
 
     public BlockSign() {
         setDrops(new ItemStack(Material.SIGN));
@@ -32,25 +32,6 @@ public class BlockSign extends BlockType {
         }
         Sign sign = (Sign) state.getData();
         sign.setFacingDirection(sign.isWallSign() ? face : player.getFacing().getOppositeFace());
-    }
-
-    @Override
-    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
-        super.onNearBlockChanged(block, face, changedBlock, oldType, oldData, newType, newData);
-        GlowBlockState state = block.getState();
-        if (!(state.getData() instanceof Sign)) {
-            warnMaterialData(Sign.class, state.getData());
-            return;
-        }
-        Sign sign = (Sign) state.getData();
-        if (!newType.isSolid() && block.getRelative(sign.getAttachedFace()).equals(changedBlock)) {
-            destroy(block);
-        }
-    }
-
-    private void destroy(GlowBlock me) {
-        me.setType(Material.AIR);
-        me.getWorld().dropItemNaturally(me.getLocation(), new ItemStack(Material.SIGN));
     }
 
     @Override
