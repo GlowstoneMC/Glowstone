@@ -35,6 +35,25 @@ public class BlockSign extends BlockType {
     }
 
     @Override
+    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
+        super.onNearBlockChanged(block, face, changedBlock, oldType, oldData, newType, newData);
+        GlowBlockState state = block.getState();
+        if (!(state.getData() instanceof Sign)) {
+            warnMaterialData(Sign.class, state.getData());
+            return;
+        }
+        Sign sign = (Sign) state.getData();
+        if (!newType.isSolid() && block.getRelative(sign.getAttachedFace()).equals(changedBlock)) {
+            destroy(block);
+        }
+    }
+
+    private void destroy(GlowBlock me) {
+        me.setType(Material.AIR);
+        me.getWorld().dropItemNaturally(me.getLocation(), new ItemStack(Material.SIGN));
+    }
+
+    @Override
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
         player.openSignEditor(block.getLocation());
     }
