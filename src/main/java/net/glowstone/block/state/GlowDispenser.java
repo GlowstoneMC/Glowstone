@@ -3,6 +3,7 @@ package net.glowstone.block.state;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.DispenserEntity;
 import net.glowstone.dispenser.*;
+import net.glowstone.util.InventoryUtil;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Dispenser;
@@ -37,6 +38,30 @@ public class GlowDispenser extends GlowLootableBlock implements Dispenser, Block
         getDispenseBehaviorRegistry().putBehavior(Material.BUCKET, new EmptyBucketDispenseBehavior());
         getDispenseBehaviorRegistry().putBehavior(Material.FLINT_AND_STEEL, new FlintAndSteelDispenseBehavior());
         getDispenseBehaviorRegistry().putBehavior(Material.TNT, new TNTDispenseBehavior());
+        
+        ArmorDispenseBehavior armorDispenseBehavior = new ArmorDispenseBehavior();
+        getDispenseBehaviorRegistry().putBehavior(Material.LEATHER_BOOTS, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.LEATHER_LEGGINGS, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.LEATHER_CHESTPLATE, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.LEATHER_HELMET, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.GOLD_BOOTS, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.GOLD_LEGGINGS, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.GOLD_CHESTPLATE, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.GOLD_HELMET, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.IRON_BOOTS, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.IRON_LEGGINGS, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.IRON_CHESTPLATE, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.IRON_HELMET, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.CHAINMAIL_BOOTS, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.CHAINMAIL_LEGGINGS, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.CHAINMAIL_CHESTPLATE, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.CHAINMAIL_HELMET, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.DIAMOND_BOOTS, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.DIAMOND_LEGGINGS, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.DIAMOND_CHESTPLATE, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.DIAMOND_HELMET, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.SKULL_ITEM, armorDispenseBehavior);
+        getDispenseBehaviorRegistry().putBehavior(Material.PUMPKIN, armorDispenseBehavior);
     }
 
     private DispenserEntity getBlockEntity() {
@@ -57,7 +82,7 @@ public class GlowDispenser extends GlowLootableBlock implements Dispenser, Block
             block.getWorld().playEffect(block.getLocation(), Effect.CLICK1, 0);
             return false;
         }
-
+        
         ItemStack origItems = getInventory().getItem(dispenseSlot);
 
         DispenseBehavior behavior = getDispenseBehaviorRegistry().getBehavior(origItems.getType());
@@ -65,22 +90,11 @@ public class GlowDispenser extends GlowLootableBlock implements Dispenser, Block
         getInventory().setItem(dispenseSlot, result);
         return true;
     }
-
+    
     public int getDispenseSlot() {
-        Inventory inv = getInventory();
-
-        int slot = -1;
-        int randomChance = 1;
-
-        for (int i = 0; i < inv.getSize(); i++) {
-            if (inv.getItem(i) != null && random.nextInt(randomChance++) == 0) {
-                slot = i;
-            }
-        }
-
-        return slot;
+        return InventoryUtil.getRandomSlot(random, getInventory(), true);
     }
-
+    
     public ItemStack placeInDispenser(ItemStack toPlace) {
         Inventory inv = getInventory();
         Map<Integer, ItemStack> map = inv.addItem(toPlace);

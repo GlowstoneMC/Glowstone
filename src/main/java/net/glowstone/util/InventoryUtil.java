@@ -57,7 +57,7 @@ public class InventoryUtil {
                 notEmpty.add(i);
             }
         }
-        if (notEmpty.size() == 0) {
+        if (notEmpty.isEmpty()) {
             return -1;
         }
         return notEmpty.get(random.nextInt(notEmpty.size()));
