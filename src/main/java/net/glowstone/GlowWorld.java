@@ -1331,7 +1331,7 @@ public final class GlowWorld implements World {
         double zs = random.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
         location = location.clone().add(xs, ys, zs);
         GlowItem dropItem = new GlowItem(location, item);
-        dropItem.setVelocity(new Vector(0, 0.1F, 0));
+        dropItem.setVelocity(new Vector(0, 0.01F, 0));
         return dropItem;
     }
 

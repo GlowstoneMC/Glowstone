@@ -731,6 +731,7 @@ public abstract class GlowEntity implements Entity {
     protected double slipMultiplier = 0.6;
 
     protected void pulsePhysics() {
+        updateBoundingBox();
         if (velocity.lengthSquared() > 0.01) {
             double dx = 0;
             double dy = 0;
