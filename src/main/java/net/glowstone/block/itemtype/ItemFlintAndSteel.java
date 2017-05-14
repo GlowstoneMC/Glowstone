@@ -6,22 +6,18 @@ import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockTNT;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ItemFlintAndSteel extends ItemTool {
 
     @Override
     public boolean onToolRightClick(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc) {
         if (target.getType() == Material.OBSIDIAN) {
-            fireNetherPortal(target);
+            fireNetherPortal(target, face);
             return true;
         }
         if (target.getType() == Material.TNT) {
@@ -35,20 +31,14 @@ public class ItemFlintAndSteel extends ItemTool {
         return false;
     }
 
-    private void fireNetherPortal(GlowBlock target) {
+    private void fireNetherPortal(GlowBlock target, BlockFace face) {
+        if (face == BlockFace.UP|| face == BlockFace.DOWN)
         target = target.getRelative(BlockFace.UP);
-        List<Block> portals = new ArrayList<>();
-        while (target.getType() == Material.AIR) {
-            portals.add(target);
-            target = target.getRelative(BlockFace.UP);
-        }
-        if (target.getType() == Material.OBSIDIAN) {
-            for (Block portal : portals) {
-                portal.getState().setType(Material.PORTAL);
-            }
-            for (Block portal : portals) {
-                portal.getState().update(true, true);
-            }
+        int limit = 0;
+        while (target.getType() == Material.AIR && limit < 23) {
+           target.setType(Material.PORTAL);
+           target = target.getRelative(BlockFace.UP);
+           limit++;
         }
     }
 
