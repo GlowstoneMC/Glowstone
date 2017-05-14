@@ -490,6 +490,8 @@ public abstract class GlowEntity implements Entity {
         world.getEntityManager().move(this, location);
         Position.copyLocation(location, this.location);
 
+        updateBoundingBox();
+
         Material type = location.getBlock().getType();
 
         if (!fall || type == Material.LADDER // todo: horses are not affected
@@ -731,7 +733,6 @@ public abstract class GlowEntity implements Entity {
     protected double slipMultiplier = 0.6;
 
     protected void pulsePhysics() {
-        updateBoundingBox();
         if (velocity.lengthSquared() > 0.01) {
             double dx = 0;
             double dy = 0;
@@ -894,7 +895,6 @@ public abstract class GlowEntity implements Entity {
             velocity.setZ(dz);
 
             setRawLocation(location.clone().add(velocity));
-            updateBoundingBox();
         }
 
         // apply friction and gravity
