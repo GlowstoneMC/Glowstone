@@ -32,7 +32,7 @@ public class ItemFlintAndSteel extends ItemTool {
     }
 
     private void fireNetherPortal(GlowBlock target, BlockFace face) {
-        if (face == BlockFace.UP|| face == BlockFace.DOWN) {
+        if (face == BlockFace.UP || face == BlockFace.DOWN) {
             target = target.getRelative(face);
             int limit = 0;
             while (target.getType() == Material.AIR && limit < 23) {
