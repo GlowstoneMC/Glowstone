@@ -357,7 +357,7 @@ public class GlowInventory implements Inventory {
         HashMap<Integer, ItemStack> result = new HashMap<>();
 
         for (int i = 0; i < items.length; ++i) {
-            ItemStack remaining = addItemStack(items[i], true);
+            ItemStack remaining = addItemStack(items[i], false);
 
             if (!InventoryUtil.isEmpty(remaining)) {
                 result.put(i, remaining);
