@@ -19,7 +19,7 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
     private String title;
     private String author;
     private List<String> pages;
-    private Integer generation = 0;
+    private Integer generation;
 
     public GlowMetaBook(GlowMetaItem meta) {
         super(meta);
@@ -33,7 +33,9 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
             pages = new ArrayList<>(book.pages);
             filterPages();
         }
-        this.generation = book.getGeneration().ordinal();
+        if (hasGeneration()) {
+            this.generation = book.getGeneration().ordinal();
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -144,11 +146,18 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
 
     @Override
     public Generation getGeneration() {
+        if (generation == null) {
+            return null;
+        }
         return Generation.values()[generation];
     }
 
     @Override
     public void setGeneration(Generation generation) {
+        if (generation == null) {
+            this.generation = null;
+            return;
+        }
         this.generation = generation.ordinal();
     }
 
