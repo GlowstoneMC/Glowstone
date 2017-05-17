@@ -1,8 +1,5 @@
 package net.glowstone;
 
-import com.avaje.ebean.config.DataSourceConfig;
-import com.avaje.ebean.config.dbplatform.SQLitePlatform;
-import com.avaje.ebeaninternal.server.lib.sql.TransactionIsolation;
 import com.flowpowered.network.Message;
 import com.jogamp.opencl.CLDevice;
 import com.jogamp.opencl.CLPlatform;
@@ -43,12 +40,11 @@ import net.glowstone.util.config.ServerConfig;
 import net.glowstone.util.config.ServerConfig.Key;
 import net.glowstone.util.config.WorldConfig;
 import net.glowstone.util.loot.LootingManager;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.BanList.Type;
 import org.bukkit.Warning.WarningState;
 import org.bukkit.World.Environment;
+import org.bukkit.advancement.Advancement;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
@@ -73,9 +69,6 @@ import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.util.CachedServerIcon;
 import org.bukkit.util.permissions.DefaultPermissions;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -89,8 +82,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * The core class of the Glowstone server.
@@ -980,6 +971,11 @@ public final class GlowServer implements Server {
     }
 
     @Override
+    public void reloadData() {
+
+    }
+
+    @Override
     public String toString() {
         return "GlowServer{name=" + getName() + ",version=" + getVersion() + ",minecraftVersion=" + GAME_VERSION + "}";
     }
@@ -994,6 +990,16 @@ public final class GlowServer implements Server {
      */
     public SimpleCommandMap getCommandMap() {
         return commandMap;
+    }
+
+    @Override
+    public Advancement getAdvancement(NamespacedKey namespacedKey) {
+        return null;
+    }
+
+    @Override
+    public Iterator<Advancement> advancementIterator() {
+        return null;
     }
 
     /**

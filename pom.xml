@@ -3,40 +3,33 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <name>Glowstone</name>
     <groupId>net.glowstone</groupId>
     <artifactId>glowstone</artifactId>
-    <version>2017.5.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <inceptionYear>2011</inceptionYear>
+    <version>2017.5.1.0-SNAPSHOT</version>
+    <name>Glowstone</name>
     <url>https://www.glowstone.net</url>
-    <description>A fast, customizable and compatible open source Minecraft server.</description>
 
-    <scm>
-        <connection>scm:git:git://github.com/GlowstoneMC/Glowstone.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/GlowstoneMC/Glowstone.git</developerConnection>
-        <url>https://github.com/GlowstoneMC/Glowstone</url>
-    </scm>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <api.version>1.12-pre2-SNAPSHOT</api.version>
+        <minecraft.version>1.12-pre2</minecraft.version>
+        <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <lwjgl.version>3.1.1</lwjgl.version>
+    </properties>
 
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
         <version>9</version>
+        <relativePath></relativePath>
     </parent>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <lwjgl.version>3.1.1</lwjgl.version>
-        <joml.version>1.9.2</joml.version>
-        <bukkit.version>1.12-pre2-SNAPSHOT</bukkit.version>
-        <protocol.version>1.12</protocol.version>
-    </properties>
 
     <repositories>
         <repository>
             <id>glowstone</id>
-            <name>Glowstone Repo</name>
             <url>https://repo.glowstone.net/repository/internal/</url>
         </repository>
     </repositories>
@@ -44,13 +37,11 @@
 	<distributionManagement>
 		<repository>
 			<id>glowstone-upstream</id>
-			<name>glowstone-releases</name>
-			<url>https://repo.glowstone.net/content/repositories/releases</url>
+			<url>https://repo.glowstone.net/content/repositories/releases/</url>
 		</repository>
 		<snapshotRepository>
 			<id>glowstone-upstream</id>
-			<name>glowstone-snapshots</name>
-			<url>https://repo.glowstone.net/content/repositories/snapshots</url>
+			<url>https://repo.glowstone.net/content/repositories/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 
@@ -58,23 +49,13 @@
         <dependency>
             <groupId>net.glowstone</groupId>
             <artifactId>glowkit</artifactId>
-            <version>${bukkit.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.flowpowered</groupId>
-            <artifactId>flow-network</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <version>${api.version}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>jline</groupId>
             <artifactId>jline</artifactId>
             <version>2.12.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.14.8</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.sf.trove4j</groupId>
@@ -87,6 +68,18 @@
             <version>1.0</version>
         </dependency>
         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.14.8</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.flowpowered</groupId>
+            <artifactId>flow-network</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+        </dependency>
+        <!-- Kotlin -->
+        <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-runtime</artifactId>
             <version>1.1-SNAPSHOT</version>
@@ -96,11 +89,7 @@
             <artifactId>kotlin-reflect</artifactId>
             <version>1.1-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.4</version>
-        </dependency>
+        <!-- OpenCL -->
         <dependency>
             <groupId>org.jogamp.gluegen</groupId>
             <artifactId>gluegen-rt-main</artifactId>
@@ -111,6 +100,7 @@
             <artifactId>jocl-main</artifactId>
             <version>2.3.2</version>
         </dependency>
+        <!-- OpenGL -->
         <dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl</artifactId>
@@ -128,11 +118,6 @@
         </dependency>
         <dependency>
             <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-nfd</artifactId>
-            <version>${lwjgl.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-openal</artifactId>
             <version>${lwjgl.version}</version>
         </dependency>
@@ -143,27 +128,7 @@
         </dependency>
         <dependency>
             <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-par</artifactId>
-            <version>${lwjgl.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-sse</artifactId>
-            <version>${lwjgl.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-stb</artifactId>
-            <version>${lwjgl.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-vulkan</artifactId>
-            <version>${lwjgl.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-xxhash</artifactId>
             <version>${lwjgl.version}</version>
         </dependency>
         <dependency>
@@ -189,13 +154,6 @@
         </dependency>
         <dependency>
             <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-nfd</artifactId>
-            <version>${lwjgl.version}</version>
-            <classifier>${lwjgl.natives}</classifier>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-openal</artifactId>
             <version>${lwjgl.version}</version>
             <classifier>${lwjgl.natives}</classifier>
@@ -210,57 +168,12 @@
         </dependency>
         <dependency>
             <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-par</artifactId>
-            <version>${lwjgl.version}</version>
-            <classifier>${lwjgl.natives}</classifier>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-sse</artifactId>
-            <version>${lwjgl.version}</version>
-            <classifier>${lwjgl.natives}</classifier>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-stb</artifactId>
             <version>${lwjgl.version}</version>
             <classifier>${lwjgl.natives}</classifier>
             <scope>runtime</scope>
         </dependency>
-        <dependency>
-            <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-xxhash</artifactId>
-            <version>${lwjgl.version}</version>
-            <classifier>${lwjgl.natives}</classifier>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.joml</groupId>
-            <artifactId>joml</artifactId>
-            <version>${joml.version}</version>
-        </dependency>
-        <!-- Automatically downloaded by Glowstone's library manager
-        <dependency>
-            <groupId>org.xerial</groupId>
-            <artifactId>sqlite-jdbc</artifactId>
-            <version>3.15.1</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.39</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-            <version>1.7.15</version>
-            <scope>runtime</scope>
-        </dependency>
-        /end library manager downloads -->
+        <!-- Tests -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -299,6 +212,7 @@
         </resources>
 
         <defaultGoal>package</defaultGoal>
+
         <plugins>
             <plugin>
                 <groupId>net.md-5</groupId>
@@ -336,9 +250,30 @@
             </plugin>
 
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>animal-sniffer-maven-plugin</artifactId>
+                <version>1.15</version>
+                <executions>
+                    <execution>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <signature>
+                        <groupId>org.codehaus.mojo.signature</groupId>
+                        <artifactId>java18</artifactId>
+                        <version>1.0</version>
+                    </signature>
+                </configuration>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.4.1</version>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -346,11 +281,16 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>net.glowstone.GlowServer</mainClass>
-                                </transformer>
-                            </transformers>
+                            <relocations>
+                                <relocation>
+                                    <pattern>jline</pattern>
+                                    <shadedPattern>org.bukkit.craftbukkit.libs.jline</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>it.unimi</pattern>
+                                    <shadedPattern>org.bukkit.craftbukkit.libs.it.unimi</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
@@ -358,27 +298,18 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.3</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <compilerArguments>
-                        <O>-Xlint:all</O>
-                    </compilerArguments>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.0.2</version>
                 <configuration>
+                    <forceCreation>true</forceCreation>
                     <archive>
                         <manifestEntries>
+                            <Main-Class>net.glowstone.GlowServer</Main-Class>
                             <Implementation-Title>${project.name}</Implementation-Title>
                             <Implementation-Version>${project.version}.${describe}</Implementation-Version>
-                            <Specification-Version>${bukkit.version}</Specification-Version>
+                            <Implementation-Vendor>${maven.build.timestamp}</Implementation-Vendor>
+                            <Specification-Title>Bukkit</Specification-Title>
+                            <Specification-Version>${api.version}</Specification-Version>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -388,10 +319,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.10.4</version>
-                <configuration>
-                    <failOnError>false</failOnError>
-                    <additionalparam>-Xdoclint:none</additionalparam>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -409,7 +336,7 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <echo>VERSION: ${project.version} / MC${protocol.version}</echo>
+                                <echo>VERSION: ${project.version} / MC${minecraft.version}</echo>
                             </tasks>
                         </configuration>
                     </execution>
