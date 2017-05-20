@@ -10,6 +10,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.*;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -382,7 +383,7 @@ public final class CraftingManager implements Iterable<Recipe> {
             return;
         }
 
-        ConfigurationSection config = YamlConfiguration.loadConfiguration(in);
+        ConfigurationSection config = YamlConfiguration.loadConfiguration(new InputStreamReader(in));
 
         // shaped
         for (Map<?, ?> data : config.getMapList("shaped")) {

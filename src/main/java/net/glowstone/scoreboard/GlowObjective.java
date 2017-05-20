@@ -95,13 +95,11 @@ public final class GlowObjective implements Objective {
         }
     }
 
-    @Override
     public RenderType getType() throws IllegalStateException {
         checkValid();
         return renderType;
     }
 
-    @Override
     public void setType(RenderType renderType) throws IllegalStateException {
         checkValid();
         checkNotNull(renderType, "RenderType cannot be null");

@@ -1,6 +1,7 @@
 package net.glowstone;
 
 import com.flowpowered.network.Message;
+import com.google.common.base.Preconditions;
 import com.jogamp.opencl.CLDevice;
 import com.jogamp.opencl.CLPlatform;
 import io.netty.channel.epoll.Epoll;
@@ -27,7 +28,6 @@ import net.glowstone.io.ScoreboardIoService;
 import net.glowstone.map.GlowMapView;
 import net.glowstone.net.GameServer;
 import net.glowstone.net.SessionRegistry;
-import net.glowstone.net.message.play.game.ChatMessage;
 import net.glowstone.net.query.QueryServer;
 import net.glowstone.net.rcon.RconServer;
 import net.glowstone.scheduler.GlowScheduler;
@@ -40,6 +40,7 @@ import net.glowstone.util.config.ServerConfig;
 import net.glowstone.util.config.ServerConfig.Key;
 import net.glowstone.util.config.WorldConfig;
 import net.glowstone.util.loot.LootingManager;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.*;
 import org.bukkit.BanList.Type;
 import org.bukkit.Warning.WarningState;
@@ -94,12 +95,6 @@ public final class GlowServer implements Server {
      * The logger for this class.
      */
     public static final Logger logger = Logger.getLogger("Minecraft");
-
-    /**
-     * The parser.
-     */
-    public static final JSONParser parser = new JSONParser();
-
     /**
      * The game version supported by the server.
      */
@@ -1201,7 +1196,7 @@ public final class GlowServer implements Server {
      * @param online whether the player is online or offline
      */
     public void setPlayerOnline(GlowPlayer player, boolean online) {
-        checkNotNull(player);
+        Preconditions.checkNotNull(player);
         if (online) {
             onlinePlayers.add(player);
         } else {
@@ -1384,12 +1379,6 @@ public final class GlowServer implements Server {
     }
 
     @Override
-    @Deprecated
-    public Player[] _INVALID_getOnlinePlayers() {
-        return getOnlinePlayers().toArray(emptyPlayerArray);
-    }
-
-    @Override
     public Collection<? extends Player> getOnlinePlayers() {
         return onlineView;
     }
@@ -1523,23 +1512,12 @@ public final class GlowServer implements Server {
 
     @Override
     public void broadcast(BaseComponent component) {
-        try {
-            // todo: uses gson instead json-simple
-            Message packet = new ChatMessage((JSONObject) parser.parse(ComponentSerializer.toString(component)));
-            broadcastPacket(packet);
-        } catch (ParseException e) {
-            e.printStackTrace(); //should never happen
-        }
+
     }
 
     @Override
     public void broadcast(BaseComponent... components) {
-        try {
-            Message packet = new ChatMessage((JSONObject) parser.parse(ComponentSerializer.toString(components)));
-            broadcastPacket(packet);
-        } catch (ParseException e) {
-            e.printStackTrace(); //should never happen
-        }
+
     }
 
     public void broadcastPacket(Message message) {
@@ -1855,23 +1833,6 @@ public final class GlowServer implements Server {
     @Override
     public double[] getTPS() {
         return new double[]{20, 20, 20}; // TODO: show TPS
-    }
-
-    @Override
-    public void configureDbConfig(com.avaje.ebean.config.ServerConfig dbConfig) {
-        DataSourceConfig ds = new DataSourceConfig();
-        ds.setDriver(config.getString(Key.DB_DRIVER));
-        ds.setUrl(config.getString(Key.DB_URL));
-        ds.setUsername(config.getString(Key.DB_USERNAME));
-        ds.setPassword(config.getString(Key.DB_PASSWORD));
-        ds.setIsolationLevel(TransactionIsolation.getLevel(config.getString(Key.DB_ISOLATION)));
-
-        if (ds.getDriver().contains("sqlite")) {
-            dbConfig.setDatabasePlatform(new SQLitePlatform());
-            dbConfig.getDatabasePlatform().getDbDdlSyntax().setIdentity("");
-        }
-
-        dbConfig.setDataSourceConfig(ds);
     }
 
     ////////////////////////////////////////////////////////////////////////////
