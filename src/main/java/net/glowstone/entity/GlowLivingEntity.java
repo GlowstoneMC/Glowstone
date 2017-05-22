@@ -718,12 +718,10 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         damage(amount, source, DamageCause.CUSTOM);
     }
 
-    @Override
     public void damage(double amount, DamageCause cause) {
         damage(amount, null, cause);
     }
 
-    @Override
     public void damage(double amount, Entity source, DamageCause cause) {
         // invincibility timer
         if (noDamageTicks > 0 || health <= 0 || !canTakeDamage(cause) || isInvulnerable()) {
@@ -821,49 +819,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     public void setLastDamager(Entity lastDamager) {
         this.lastDamager = lastDamager;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Invalid health methods
-
-    @Override
-    public void _INVALID_damage(int amount) {
-        damage(amount);
-    }
-
-    @Override
-    public int _INVALID_getLastDamage() {
-        return (int) getLastDamage();
-    }
-
-    @Override
-    public void _INVALID_setLastDamage(int damage) {
-        setLastDamage(damage);
-    }
-
-    @Override
-    public void _INVALID_setMaxHealth(int health) {
-        setMaxHealth(health);
-    }
-
-    @Override
-    public int _INVALID_getMaxHealth() {
-        return (int) getMaxHealth();
-    }
-
-    @Override
-    public void _INVALID_damage(int amount, Entity source) {
-        damage(amount, source);
-    }
-
-    @Override
-    public int _INVALID_getHealth() {
-        return (int) getHealth();
-    }
-
-    @Override
-    public void _INVALID_setHealth(int health) {
-        setHealth(health);
     }
 
     ////////////////////////////////////////////////////////////////////////////

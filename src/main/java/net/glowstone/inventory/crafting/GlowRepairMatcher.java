@@ -2,7 +2,6 @@ package net.glowstone.inventory.crafting;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.EnchantmentTarget;
-import org.bukkit.inventory.ItemMatcher;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;

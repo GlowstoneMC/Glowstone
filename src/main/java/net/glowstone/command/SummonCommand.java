@@ -1,5 +1,6 @@
 package net.glowstone.command;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import net.glowstone.GlowWorld;
 import net.glowstone.entity.EntityRegistry;
@@ -8,13 +9,10 @@ import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.util.mojangson.Mojangson;
 import net.glowstone.util.mojangson.ex.MojangsonParseException;
 import net.glowstone.util.nbt.CompoundTag;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.CommandUtils;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.EntityType;
@@ -115,19 +113,19 @@ public class SummonCommand extends BukkitCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
-        Validate.notNull(sender, "Sender cannot be null");
-        Validate.notNull(args, "Arguments cannot be null");
-        Validate.notNull(alias, "Alias cannot be null");
+        Preconditions.checkNotNull(sender, "Sender cannot be null");
+        Preconditions.checkNotNull(args, "Arguments cannot be null");
+        Preconditions.checkNotNull(alias, "Alias cannot be null");
         if (args.length == 1) {
             String arg = args[0];
             ArrayList<String> completion = new ArrayList<>();
             for (EntityType type : EntityType.values()) {
-                if (checkSummon(null, type.getName()) && StringUtils.startsWithIgnoreCase(type.getName(), arg)) {
+                if (checkSummon(null, type.getName()) && type.getName().toLowerCase().startsWith(arg)) {
                     completion.add(type.getName());
                 }
             }
             EntityRegistry.getRegisteredCustomEntities().forEach((d) -> {
-                if (StringUtils.startsWithIgnoreCase(d.getId(), arg))
+                if (d.getId().toLowerCase().startsWith(arg))
                     completion.add(d.getId().toLowerCase());
             });
             return completion;
