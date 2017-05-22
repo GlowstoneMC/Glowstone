@@ -1,7 +1,6 @@
 package net.glowstone.inventory.crafting;
 
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemMatcher;
 import org.bukkit.inventory.ItemStack;
 
 public class GlowMapZoomMatcher extends ItemMatcher {
