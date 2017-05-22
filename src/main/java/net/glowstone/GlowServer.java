@@ -859,7 +859,14 @@ public final class GlowServer implements Server {
                 }
             }
 
-            if (!hasSponge) {
+            boolean spongeOnlyPlugins = false;
+            for (File spongePlugin: pluginTypeDetector.spongePlugins) {
+                if (!pluginTypeDetector.bukkitPlugins.contains(spongePlugin)) {
+                    spongeOnlyPlugins = true;
+                }
+            }
+
+            if (!hasSponge && spongeOnlyPlugins) {
                 logger.log(Level.WARNING, "SpongeAPI plugins found, but no Sponge bridge present! They will be ignored.");
                 for (File file : getSpongePlugins()) {
                     logger.log(Level.WARNING, "Ignored SpongeAPI plugin: " + file.getPath());
