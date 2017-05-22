@@ -2873,8 +2873,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     private void pulseDigging() {
-        // TODO: take into account the tool used to mine (ineffective=5x, effective=1.5x, material multiplier, etc.)
         float hardness = digging.getMaterialValues().getHardness() * 1000;
+
+        // TODO: take into account the tool used to mine (ineffective=5x, effective=1.5x, material multiplier, etc.)
+        // for now, assuming hands are used and the block is not dropped
+        hardness *= 5;
+
         long duration = System.currentTimeMillis() - diggingStarted;
         double completion = (double) duration / hardness;
         int stage = (int) (completion * 10);
