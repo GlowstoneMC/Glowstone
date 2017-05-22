@@ -283,6 +283,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * The one block the player is currently digging.
      */
     private GlowBlock digging;
+    /**
+     * The time the player started digging.
+     */
+    private long diggingStarted = -1;
 
     public Location teleportedTo = null;
     /**
@@ -540,6 +544,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 usageItem = null;
                 usageTime = 0;
             }
+        }
+
+        if (digging != null) {
+            pulseDigging();
         }
 
         if (exhaustion > 4.0f) {
@@ -2849,11 +2857,27 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     public void setDigging(GlowBlock block) {
-        digging = block;
+        if (block == null) {
+            // remove the animation
+            broadcastBlockBreakAnimation(digging, 10);
+            diggingStarted = -1;
+        } else {
+            // show other clients the block is beginning to crack
+            broadcastBlockBreakAnimation(block, 0);
+            diggingStarted = System.currentTimeMillis();
+        }
 
-        // show other clients the block is beginning to crack
-        // TODO: show incremental stages
-        broadcastBlockBreakAnimation(block, 0);
+        digging = block;
+    }
+
+    private void pulseDigging() {
+        float hardness = digging.getMaterialValues().getHardness() * 1000;
+        long duration = System.currentTimeMillis() - diggingStarted;
+        double completion = (double) duration / hardness;
+        int stage = (int) (completion * 10);
+        if (stage > 9) stage = 9;
+
+        broadcastBlockBreakAnimation(digging, stage);
     }
 
     @Override
