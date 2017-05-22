@@ -284,9 +284,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     private GlowBlock digging;
     /**
-     * The time the player started digging.
+     * The number of ticks elapsed since the player started digging.
      */
-    private long diggingStarted = -1;
+    private long diggingTicks = 0;
 
     public Location teleportedTo = null;
     /**
@@ -2862,25 +2862,25 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         if (block == null) {
             // remove the animation
             broadcastBlockBreakAnimation(digging, 10);
-            diggingStarted = -1;
         } else {
             // show other clients the block is beginning to crack
             broadcastBlockBreakAnimation(block, 0);
-            diggingStarted = System.currentTimeMillis();
         }
 
+        diggingTicks = 0;
         digging = block;
     }
 
     private void pulseDigging() {
-        float hardness = digging.getMaterialValues().getHardness() * 1000;
+        ++diggingTicks;
+
+        float hardness = digging.getMaterialValues().getHardness() * 20; // seconds to ticks
 
         // TODO: take into account the tool used to mine (ineffective=5x, effective=1.5x, material multiplier, etc.)
         // for now, assuming hands are used and the block is not dropped
         hardness *= 5;
 
-        long duration = System.currentTimeMillis() - diggingStarted;
-        double completion = (double) duration / hardness;
+        double completion = (double) diggingTicks / hardness;
         int stage = (int) (completion * 10);
         if (stage > 9) stage = 9;
 
