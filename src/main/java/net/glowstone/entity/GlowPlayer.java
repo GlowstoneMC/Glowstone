@@ -2847,8 +2847,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     private void broadcastBlockBreakAnimation(GlowBlock block, int destroyStage) {
-        if (block == null) return;
-
         GlowChunk.Key key = new GlowChunk.Key(block.getChunk().getX(), block.getChunk().getZ());
         // TODO: should canSeeChunk filtering take place here, in GlowPlayer, or both?
         block.getWorld().getRawPlayers().stream().filter(player1 -> player1.canSeeChunk(key)).forEach(player2 -> {
@@ -2860,8 +2858,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     public void setDigging(GlowBlock block) {
         if (block == null) {
-            // remove the animation
-            broadcastBlockBreakAnimation(digging, 10);
+            if (digging != null) {
+                // remove the animation
+                broadcastBlockBreakAnimation(digging, 10);
+            }
         } else {
             // show other clients the block is beginning to crack
             broadcastBlockBreakAnimation(block, 0);
