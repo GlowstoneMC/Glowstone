@@ -29,7 +29,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.DoublePlant;
 import org.bukkit.material.MaterialData;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Objects;
 
 public final class DiggingHandler implements MessageHandler<GlowSession, DiggingMessage> {
     @Override
@@ -94,8 +95,6 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
 
             // todo: verification against malicious clients
             blockBroken = block.equals(player.getDigging());
-
-            // TODO: clear block break animation
 
             if (blockBroken && holding.getType().getMaxDurability() != 0 && holding.getType() != Material.AIR && holding.getDurability() != holding.getType().getMaxDurability()) {
                 switch (block.getType()) {
