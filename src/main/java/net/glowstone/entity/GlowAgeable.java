@@ -3,6 +3,7 @@ package net.glowstone.entity;
 import com.flowpowered.network.Message;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
+import net.glowstone.inventory.GlowMetaSpawn;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.SoundUtil;
@@ -13,7 +14,6 @@ import org.bukkit.entity.Ageable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SpawnEggMeta;
 
 import java.util.List;
 
@@ -155,7 +155,7 @@ public class GlowAgeable extends GlowCreature implements Ageable {
 
         // Spawn eggs are used to spawn babies
         if (item != null && item.getType() == Material.MONSTER_EGG && item.hasItemMeta()) {
-            SpawnEggMeta meta = (SpawnEggMeta) item.getItemMeta();
+            GlowMetaSpawn meta = (GlowMetaSpawn) item.getItemMeta();
             if (meta.hasSpawnedType() && meta.getSpawnedType() == this.getType()) {
                 this.createBaby();
 
@@ -173,7 +173,6 @@ public class GlowAgeable extends GlowCreature implements Ageable {
         return false;
     }
 
-    @Override
     public Ageable createBaby() {
         Class<? extends GlowEntity> spawn = EntityRegistry.getEntity(getType());
         GlowAgeable ageable = (GlowAgeable) getWorld().spawn(getLocation(), spawn, CreatureSpawnEvent.SpawnReason.SPAWNER_EGG);
@@ -183,12 +182,10 @@ public class GlowAgeable extends GlowCreature implements Ageable {
         return ageable;
     }
 
-    @Override
     public Ageable getParent() {
         return parent;
     }
 
-    @Override
     public void setParent(Ageable parent) {
         this.parent = (GlowAgeable) parent;
     }

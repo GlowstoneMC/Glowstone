@@ -1,6 +1,7 @@
 package net.glowstone.net.rcon;
 
 import net.glowstone.GlowServer;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Server;
 import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.permissions.PermissibleBase;
@@ -35,6 +36,23 @@ public class RconCommandSender implements RemoteConsoleCommandSender {
     @Override
     public String getName() {
         return "Rcon";
+    }
+
+    private Spigot spigot = new Spigot() {
+        @Override
+        public void sendMessage(BaseComponent component) {
+            RconCommandSender.this.sendMessage(component);
+        }
+
+        @Override
+        public void sendMessage(BaseComponent... components) {
+            RconCommandSender.this.sendMessage(components);
+        }
+    };
+
+    @Override
+    public Spigot spigot() {
+        return spigot;
     }
 
     @Override

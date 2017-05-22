@@ -58,13 +58,9 @@ public final class GlowParticle {
         set(Particle.SNOW_SHOVEL, Effect.SNOW_SHOVEL, 32); // snowshovel
         set(Particle.SLIME, Effect.SLIME, 33); // slime
         set(Particle.HEART, Effect.HEART, 34); // heart
-        set(Particle.BARRIER, Effect.BARRIER, 35); // barrier
         set(Particle.ITEM_CRACK, Effect.ITEM_BREAK, 36); // iconcrack_(id)_(data)
         set(Particle.BLOCK_CRACK, Effect.TILE_BREAK, 37); // blockcrack_(id+(data<<12))
         set(Particle.BLOCK_DUST, Effect.TILE_DUST, 38); // blockdust_(id)
-        set(Particle.WATER_DROP, Effect.RAIN, 39); // droplet
-        set(Particle.ITEM_TAKE, Effect.ITEM_TAKE, 40); // take
-        set(Particle.MOB_APPEARANCE, Effect.MOB_APPEARANCE, 41); // mobappearance
     }
 
     private GlowParticle() {
