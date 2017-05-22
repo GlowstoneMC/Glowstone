@@ -10,7 +10,6 @@ import net.glowstone.block.blocktype.BlockContainer;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.itemtype.ItemTimedUsage;
 import net.glowstone.block.itemtype.ItemType;
-import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.net.GlowSession;
@@ -30,8 +29,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.DoublePlant;
 import org.bukkit.material.MaterialData;
 
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
 
 public final class DiggingHandler implements MessageHandler<GlowSession, DiggingMessage> {
     @Override
@@ -75,10 +73,6 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                     damageEvent.setCancelled(true);
                 }
                 EventFactory.callEvent(damageEvent);
-
-                // show other clients the block is beginning to crack
-                // TODO: show incremental stages
-                broadcastBlockBreakAnimation(block, 0);
 
                 // follow orders
                 if (damageEvent.isCancelled()) {
@@ -242,15 +236,5 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             BlockType blockType = ItemTable.instance().getBlock(block.getType());
             blockType.leftClickBlock(player, block, holding);
         }
-    }
-
-    private void broadcastBlockBreakAnimation(GlowBlock block, int destroyStage) {
-        if (block == null) return;
-
-        GlowChunk.Key key = new GlowChunk.Key(block.getChunk().getX(), block.getChunk().getZ());
-        // TODO: should canSeeChunk filtering take place here, in GlowPlayer, or both?
-        block.getWorld().getRawPlayers().stream().filter(player1 -> player1.canSeeChunk(key)).forEach(player2 -> {
-            player2.sendBlockBreakAnimation(player2, block.getLocation(), destroyStage);
-        });
     }
 }
