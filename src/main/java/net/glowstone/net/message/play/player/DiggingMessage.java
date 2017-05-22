@@ -7,6 +7,7 @@ import lombok.Data;
 public final class DiggingMessage implements Message {
 
     public static final int START_DIGGING = 0;
+    public static final int CANCEL_DIGGING = 1;
     public static final int FINISH_DIGGING = 2;
     public static final int STATE_DROP_ITEMSTACK = 3;
     public static final int STATE_DROP_ITEM = 4;
