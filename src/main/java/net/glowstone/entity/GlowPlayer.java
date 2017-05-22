@@ -2080,18 +2080,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
     }
 
-    public void sendBlockBreakAnimation(Player player, Location loc, int destroyStage) {
-        sendBlockBreakAnimation(new BlockBreakAnimationMessage(player.getEntityId(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), destroyStage));
-    }
-
-    public void sendBlockBreakAnimation(BlockBreakAnimationMessage message) {
-        // only send message if the chunk is within visible range
-        Key key = new Key(message.getX() >> 4, message.getZ() >> 4);
-        if (canSeeChunk(key)) {
-            afterBlockChanges.add(message);
-        }
-    }
-
     @Override
     public boolean sendChunkChange(Location loc, int sx, int sy, int sz, byte[] data) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -2844,6 +2832,19 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     public GlowBlock getDigging() {
         return digging;
+    }
+
+
+    public void sendBlockBreakAnimation(Player player, Location loc, int destroyStage) {
+        sendBlockBreakAnimation(new BlockBreakAnimationMessage(player.getEntityId(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), destroyStage));
+    }
+
+    public void sendBlockBreakAnimation(BlockBreakAnimationMessage message) {
+        // only send message if the chunk is within visible range
+        Key key = new Key(message.getX() >> 4, message.getZ() >> 4);
+        if (canSeeChunk(key)) {
+            afterBlockChanges.add(message);
+        }
     }
 
     private void broadcastBlockBreakAnimation(GlowBlock block, int destroyStage) {
