@@ -969,12 +969,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    @Deprecated
-    public void setBanned(boolean banned) {
-        server.getBanList(BanList.Type.NAME).addBan(getName(), null, null, null);
-    }
-
-    @Override
     public boolean isWhitelisted() {
         return server.getWhitelist().containsProfile(new PlayerProfile(getName(), getUniqueId()));
     }
@@ -2015,12 +2009,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         stopSound(null, sound);
     }
 
-    @Override
     public void stopAllSounds() {
         stopSound("");
     }
 
-    @Override
     public void stopSound(SoundCategory category) {
         stopSound("", category);
     }
@@ -2839,8 +2831,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     ////////////////////////////////////////////////////////////////////////////
     // Titles
-
-    @Override
     public Title getTitle() {
         return currentTitle.build();
     }
