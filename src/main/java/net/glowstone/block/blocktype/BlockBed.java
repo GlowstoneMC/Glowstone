@@ -3,15 +3,15 @@ package net.glowstone.block.blocktype;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.entity.BlockEntity;
+import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Bed;
 import org.bukkit.material.MaterialData;
@@ -189,6 +189,11 @@ public class BlockBed extends BlockType {
     }
 
     @Override
+    public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
+        return super.createBlockEntity(chunk, cx, cy, cz);
+    }
+
+    @Override
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
         if (block.getType() == Material.BED_BLOCK) {
             BlockFace direction = ((Bed) block.getState().getData()).getFacing();
@@ -239,7 +244,7 @@ public class BlockBed extends BlockType {
 
         for (LivingEntity e : world.getLivingEntities()) {
             // Check for hostile mobs relative to the block below the head of the bed
-            if (e instanceof Creature && isWithinDistance(e, block.getRelative(BlockFace.DOWN), 8, 5, 8)) {
+            if (e instanceof Creature && (e.getType() != EntityType.PIG_ZOMBIE || ((PigZombie) e).isAngry()) && isWithinDistance(e, block.getRelative(BlockFace.DOWN), 8, 5, 8)) {
                 player.sendMessage("You may not rest now, there are monsters nearby");
                 return true;
             }
