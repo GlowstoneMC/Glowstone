@@ -1,6 +1,7 @@
 package net.glowstone.entity.monster;
 
 import net.glowstone.entity.meta.MetadataIndex;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
@@ -8,33 +9,33 @@ import org.bukkit.entity.Shulker;
 import org.bukkit.util.BlockVector;
 
 public class GlowShulker extends GlowMonster implements Shulker {
-
-    private Facing direction;
-    private byte shieldHeight;
     private Location attachment;
 
     public GlowShulker(Location loc) {
         super(loc, EntityType.SHULKER, 30);
-        setDirection(Facing.DOWN); // todo
+        setDirection(Facing.DOWN);
         setShieldHeight((byte) 0);
-        setAttachment(null); // todo
+        setAttachment(loc);
+    }
+
+    public GlowShulker(Location loc, Facing direction) {
+        this(loc);
+        setDirection(direction);
     }
 
     public Facing getFacingDirection() {
-        return direction;
+        return Facing.values()[metadata.getByte(MetadataIndex.SHULKER_FACING_DIRECTION)];
     }
 
     public void setDirection(Facing direction) {
-        this.direction = direction;
         this.metadata.set(MetadataIndex.SHULKER_FACING_DIRECTION, direction.ordinal());
     }
 
     public byte getShieldHeight() {
-        return shieldHeight;
+        return metadata.getByte(MetadataIndex.SHULKER_SHIELD_HEIGHT);
     }
 
     public void setShieldHeight(byte shieldHeight) {
-        this.shieldHeight = shieldHeight;
         this.metadata.set(MetadataIndex.SHULKER_SHIELD_HEIGHT, shieldHeight);
     }
 
@@ -58,7 +59,7 @@ public class GlowShulker extends GlowMonster implements Shulker {
 
     @Override
     protected Sound getHurtSound() {
-        if (shieldHeight == 0) {
+        if (getShieldHeight() == 0) {
             return Sound.ENTITY_SHULKER_HURT_CLOSED;
         }
         return Sound.ENTITY_SHULKER_HURT;
@@ -67,6 +68,16 @@ public class GlowShulker extends GlowMonster implements Shulker {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_SHULKER_AMBIENT;
+    }
+
+    @Override
+    public DyeColor getColor() {
+        return DyeColor.getByWoolData(metadata.getByte(MetadataIndex.SHULKER_COLOR));
+    }
+
+    @Override
+    public void setColor(DyeColor color) {
+        metadata.set(MetadataIndex.SHULKER_COLOR, color.getWoolData());
     }
 
     public enum Facing {
