@@ -55,6 +55,8 @@ import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.Effect.Type;
 import org.bukkit.World.Environment;
+import org.bukkit.advancement.Advancement;
+import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
@@ -1326,6 +1328,26 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         return getExpToLevel(level);
     }
 
+    @Override
+    public Entity getShoulderEntityLeft() {
+        return null;
+    }
+
+    @Override
+    public void setShoulderEntityLeft(Entity entity) {
+
+    }
+
+    @Override
+    public Entity getShoulderEntityRight() {
+        return null;
+    }
+
+    @Override
+    public void setShoulderEntityRight(Entity entity) {
+
+    }
+
     private int getExpToLevel(int level) {
         if (level >= 30) {
             return 62 + (level - 30) * 7;
@@ -1736,6 +1758,13 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX, double offsetY, double offsetZ, double extra, T data) {
         spawnParticle(particle, new Location(world, x, y, z), count, offsetX, offsetY, offsetZ, extra, data);
+    }
+
+    private HashMap<Advancement, AdvancementProgress> advancements;
+
+    @Override
+    public AdvancementProgress getAdvancementProgress(Advancement advancement) {
+        return advancements.get(advancement);
     }
 
     public boolean affectsSpawning = true;
