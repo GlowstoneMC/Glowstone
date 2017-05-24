@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class SoundUtil {
+
     public static void playSoundAtLocationExcept(Location location, Sound sound, float volume, float pitch, GlowPlayer... exclude) {
         if (location == null || sound == null) return;
         GlowWorld world = (GlowWorld) location.getWorld();

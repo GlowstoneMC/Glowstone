@@ -1,0 +1,18 @@
+{
+  "items": [
+    {
+      "default": {
+        "count": {
+          "max": 2
+        },
+        "item": "feather"
+      }
+    }
+  ],
+  "experience": {
+    "count": {
+      "max": 3,
+      "min": 1
+    }
+  }
+}

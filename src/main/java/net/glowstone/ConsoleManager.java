@@ -2,6 +2,7 @@ package net.glowstone;
 
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.ConsoleCommandSender;
@@ -296,9 +297,21 @@ public final class ConsoleManager {
             return "CONSOLE";
         }
 
+        private Spigot spigot = new Spigot() {
+            @Override
+            public void sendMessage(BaseComponent component) {
+                ColoredCommandSender.this.sendMessage(component);
+            }
+
+            @Override
+            public void sendMessage(BaseComponent... components) {
+                ColoredCommandSender.this.sendMessage(components);
+            }
+        };
+
         @Override
         public Spigot spigot() {
-            return null;
+            return spigot;
         }
 
         @Override
