@@ -711,10 +711,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         damage(amount, source, DamageCause.CUSTOM);
     }
 
+    @Override
     public void damage(double amount, DamageCause cause) {
         damage(amount, null, cause);
     }
 
+    @Override
     public void damage(double amount, Entity source, DamageCause cause) {
         // invincibility timer
         if (noDamageTicks > 0 || health <= 0 || !canTakeDamage(cause) || isInvulnerable()) {

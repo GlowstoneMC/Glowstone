@@ -1,9 +1,9 @@
 package net.glowstone.testutils;
 
-import com.avaje.ebean.config.ServerConfig;
 import net.glowstone.inventory.GlowItemFactory;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.*;
+import org.bukkit.advancement.Advancement;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
@@ -68,11 +68,6 @@ public class ServerShim implements Server {
     }
 
     // do nothing stubs
-
-    @Override
-    public Player[] _INVALID_getOnlinePlayers() {
-        return new Player[0];
-    }
 
     @Override
     public Collection<? extends Player> getOnlinePlayers() {
@@ -270,6 +265,11 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public void reloadData() {
+
+    }
+
+    @Override
     public PluginCommand getPluginCommand(String name) {
         return null;
     }
@@ -282,11 +282,6 @@ public class ServerShim implements Server {
     @Override
     public boolean dispatchCommand(CommandSender sender, String commandLine) throws CommandException {
         return false;
-    }
-
-    @Override
-    public void configureDbConfig(ServerConfig config) {
-
     }
 
     @Override
@@ -546,6 +541,16 @@ public class ServerShim implements Server {
 
     @Override
     public CommandMap getCommandMap() {
+        return null;
+    }
+
+    @Override
+    public Advancement getAdvancement(NamespacedKey key) {
+        return null;
+    }
+
+    @Override
+    public Iterator<Advancement> advancementIterator() {
         return null;
     }
 

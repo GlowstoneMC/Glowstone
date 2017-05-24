@@ -27,10 +27,10 @@ public final class GlowParticle {
         set(Particle.EXPLOSION_LARGE, Effect.EXPLOSION_LARGE, 1); // largeexplode
         set(Particle.EXPLOSION_HUGE, Effect.EXPLOSION_HUGE, 2);  // hugeexplosion
         set(Particle.FIREWORKS_SPARK, Effect.FIREWORKS_SPARK, 3); // fireworksSpark
-        set(Particle.WATER_BUBBLE, Effect.BUBBLE, 4); // bubble
-        set(Particle.WATER_SPLASH, Effect.SPLASH, 5); // splash
-        set(Particle.WATER_WAKE, Effect.WAKE, 6); // wake
-        set(Particle.SUSPENDED, Effect.UNDERWATER, 7); // suspended
+        set(Particle.WATER_BUBBLE, 4); // bubble
+        set(Particle.WATER_SPLASH, 5); // splash
+        set(Particle.WATER_WAKE, 6); // wake
+        set(Particle.SUSPENDED, 7); // suspended
         set(Particle.SUSPENDED_DEPTH, Effect.VOID_FOG, 8); // depthsuspend
         set(Particle.CRIT, Effect.CRIT, 9); // crit
         set(Particle.CRIT_MAGIC, Effect.MAGIC_CRIT, 10); // magicCrit
@@ -177,7 +177,6 @@ public final class GlowParticle {
             case EXPLOSION:
             case EXPLOSION_LARGE:
             case EXPLOSION_HUGE:
-            case MOB_APPEARANCE:
                 return true;
         }
 
@@ -206,5 +205,9 @@ public final class GlowParticle {
     private static void set(Particle particle, Effect effect, int id) {
         ids.put(particle, id);
         ids.put(effect, id);
+    }
+
+    private static void set(Particle particle, int id) {
+        ids.put(particle, id);
     }
 }

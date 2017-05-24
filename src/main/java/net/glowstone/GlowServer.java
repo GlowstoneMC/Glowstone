@@ -103,7 +103,7 @@ public final class GlowServer implements Server {
     /**
      * The protocol version supported by the server.
      */
-    public static final int PROTOCOL_VERSION = 331;
+    public static final int PROTOCOL_VERSION = 332;
 
     /**
      * A list of all the active {@link net.glowstone.net.GlowSession}s.
@@ -820,7 +820,7 @@ public final class GlowServer implements Server {
         // clear plugins and prepare to load (Bukkit)
         pluginManager.clearPlugins();
         pluginManager.registerInterface(JavaPluginLoader.class);
-        Plugin[] plugins = pluginManager.loadPlugins(pluginTypeDetector.bukkitPlugins.toArray(new File[pluginTypeDetector.bukkitPlugins.size()]), folder.getPath());
+        Plugin[] plugins = pluginManager.loadPlugins(folder.getPath(), pluginTypeDetector.bukkitPlugins.toArray(new File[pluginTypeDetector.bukkitPlugins.size()]));
 
         // call onLoad methods
         for (Plugin plugin : plugins) {

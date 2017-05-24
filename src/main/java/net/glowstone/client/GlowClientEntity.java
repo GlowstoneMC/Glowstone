@@ -4,6 +4,7 @@ import net.glowstone.entity.GlowHumanEntity;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.MainHand;
@@ -53,6 +54,26 @@ public class GlowClientEntity extends GlowHumanEntity {
     @Override
     public boolean isHandRaised() {
         return false;
+    }
+
+    @Override
+    public Entity getShoulderEntityLeft() {
+        return null;
+    }
+
+    @Override
+    public void setShoulderEntityLeft(Entity entity) {
+
+    }
+
+    @Override
+    public Entity getShoulderEntityRight() {
+        return null;
+    }
+
+    @Override
+    public void setShoulderEntityRight(Entity entity) {
+
     }
 
     @Override

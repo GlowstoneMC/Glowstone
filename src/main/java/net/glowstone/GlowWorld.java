@@ -27,7 +27,6 @@ import net.glowstone.net.message.play.player.ServerDifficultyMessage;
 import net.glowstone.util.BlockStateDelegate;
 import net.glowstone.util.GameRuleManager;
 import net.glowstone.util.RayUtil;
-import net.glowstone.util.SoundUtil;
 import net.glowstone.util.collection.ConcurrentSet;
 import net.glowstone.util.config.WorldConfig;
 import org.bukkit.*;
@@ -1606,12 +1605,12 @@ public final class GlowWorld implements World {
 
     @Override
     public void playSound(Location location, Sound sound, float volume, float pitch) {
-        playSound(location, sound, SoundUtil.getCategory(sound), volume, pitch);
+        playSound(location, sound, GlowSound.getSoundCategory(GlowSound.getVanillaId(sound)), volume, pitch);
     }
 
     @Override
     public void playSound(Location location, String sound, float volume, float pitch) {
-        playSound(location, Sound.getSound(sound), volume, pitch);
+        playSound(location, GlowSound.getVanillaSound(sound), volume, pitch);
     }
 
     @Override
@@ -1624,7 +1623,7 @@ public final class GlowWorld implements World {
 
     @Override
     public void playSound(Location location, String sound, SoundCategory category, float volume, float pitch) {
-        playSound(location, Sound.getSound(sound), category, volume, pitch);
+        playSound(location, GlowSound.getVanillaSound(sound), category, volume, pitch);
     }
 
     @Override

@@ -297,6 +297,11 @@ public final class ConsoleManager {
         }
 
         @Override
+        public Spigot spigot() {
+            return null;
+        }
+
+        @Override
         public void sendMessage(String text) {
             server.getLogger().info(text);
         }

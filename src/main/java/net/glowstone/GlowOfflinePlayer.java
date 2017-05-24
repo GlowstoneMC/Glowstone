@@ -172,12 +172,6 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     }
 
     @Override
-    @Deprecated
-    public void setBanned(boolean banned) {
-        server.getBanList(Type.NAME).addBan(getName(), null, null, null);
-    }
-
-    @Override
     public boolean isWhitelisted() {
         return server.getWhitelist().containsProfile(profile);
     }

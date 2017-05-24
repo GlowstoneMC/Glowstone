@@ -62,8 +62,8 @@ public class GlowEvoker extends GlowMonster implements Evoker {
                     double z = radius * Math.cos(angle) + location.getZ();
                     Location location = new Location(world, x, y, z);
                     world.spawnEntity(location, EntityType.VEX);
+                }
                 break;
-            }
             case WOLOLO:
                 // todo
                 break;

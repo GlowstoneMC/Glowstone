@@ -19,10 +19,7 @@ import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.chunk.ChunkManager.ChunkLock;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.chunk.GlowChunk.Key;
-import net.glowstone.constants.GlowAchievement;
-import net.glowstone.constants.GlowBlockEntity;
-import net.glowstone.constants.GlowEffect;
-import net.glowstone.constants.GlowParticle;
+import net.glowstone.constants.*;
 import net.glowstone.entity.meta.ClientSettings;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataIndex.StatusFlags;
@@ -1978,12 +1975,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void playSound(Location location, Sound sound, float volume, float pitch) {
-        playSound(location, sound, SoundUtil.getCategory(SoundUtil.getVanillaId(sound)), volume, pitch);
+        playSound(location, sound, GlowSound.getSoundCategory(GlowSound.getVanillaId(sound)), volume, pitch);
     }
 
     @Override
     public void playSound(Location location, String sound, float volume, float pitch) {
-        playSound(location, SoundUtil.getVanillaSound(sound), volume, pitch);
+        playSound(location, GlowSound.getVanillaSound(sound), volume, pitch);
     }
 
     @Override
@@ -1998,7 +1995,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void playSound(Location location, Sound sound, SoundCategory category, float volume, float pitch) {
-        playSound(location, SoundUtil.getVanillaId(sound), category, volume, pitch);
+        playSound(location, GlowSound.getVanillaId(sound), category, volume, pitch);
     }
 
     @Override
@@ -2016,7 +2013,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void stopSound(Sound sound, SoundCategory soundCategory) {
-        stopSound(SoundUtil.getVanillaId(sound), soundCategory);
+        stopSound(GlowSound.getVanillaId(sound), soundCategory);
     }
 
     @Override
@@ -2041,7 +2038,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     public void stopSound(SoundCategory category, Sound sound) {
-        stopSound(sound == null ? "" : SoundUtil.getVanillaId(sound), category);
+        stopSound(sound == null ? "" : GlowSound.getVanillaId(sound), category);
     }
 
     @Override
