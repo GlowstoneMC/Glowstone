@@ -95,7 +95,7 @@ public class ReflectionProcessor {
      * @param name    the name of the method
      * @return the invokation's return value
      */
-    private Object invokeMethod(Object context, String name, String[] parameters) {
+    private Object invokeMethod(Object context, String name, String... parameters) {
         try {
             ArrayList<Object> params = new ArrayList<>();
             for (String parameter : parameters) {
@@ -122,7 +122,7 @@ public class ReflectionProcessor {
         return null;
     }
 
-    private Method getMethod(String name, Class clazz, Class[] parameters) {
+    private Method getMethod(String name, Class clazz, Class... parameters) {
         try {
             return clazz.getMethod(name, parameters);
         } catch (NoSuchMethodException e) {
@@ -178,6 +178,16 @@ public class ReflectionProcessor {
                 field.setAccessible(true);
             return field.get(context);
         } catch (Exception ignored) {
+            // is it an enum?
+            if (context != null && context instanceof Class) {
+                boolean isEnum = ((Class) context).isEnum();
+                if (isEnum) {
+                    try {
+                        return getMethod("valueOf", (Class) context, String.class).invoke(null, name);
+                    } catch (Exception ignored1) {
+                    }
+                }
+            }
         }
         return null;
     }
