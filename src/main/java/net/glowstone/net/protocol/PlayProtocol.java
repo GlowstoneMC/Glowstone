@@ -39,10 +39,10 @@ public class PlayProtocol extends GlowProtocol {
         inbound(0x0A, PluginMessage.class, PluginMessageCodec.class, PluginMessageHandler.class);
         inbound(0x0B, InteractEntityMessage.class, InteractEntityCodec.class, InteractEntityHandler.class);
         inbound(0x0C, PingMessage.class, PingCodec.class, PingHandler.class);
-        inbound(0x0D, PlayerPositionMessage.class, PlayerPositionCodec.class, PlayerUpdateHandler.class);
-        inbound(0x0E, PlayerPositionLookMessage.class, PlayerPositionLookCodec.class, PlayerUpdateHandler.class);
-        inbound(0x0F, PlayerLookMessage.class, PlayerLookCodec.class, PlayerUpdateHandler.class);
-        inbound(0x10, PlayerUpdateMessage.class, PlayerUpdateCodec.class, PlayerUpdateHandler.class);
+        inbound(0x0D, PlayerUpdateMessage.class, PlayerUpdateCodec.class, PlayerUpdateHandler.class);
+        inbound(0x0E, PlayerPositionMessage.class, PlayerPositionCodec.class, PlayerUpdateHandler.class);
+        inbound(0x0F, PlayerPositionLookMessage.class, PlayerPositionLookCodec.class, PlayerUpdateHandler.class);
+        inbound(0x10, PlayerLookMessage.class, PlayerLookCodec.class, PlayerUpdateHandler.class);
         inbound(0x11, VehicleMoveMessage.class, VehicleMoveCodec.class, VehicleMoveHandler.class);
         // TODO: 0x12 : Steer Boat
         inbound(0x13, PlayerAbilitiesMessage.class, PlayerAbilitiesCodec.class, PlayerAbilitiesHandler.class);
