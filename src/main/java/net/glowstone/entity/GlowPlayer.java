@@ -29,6 +29,7 @@ import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.InventoryMonitor;
 import net.glowstone.io.PlayerDataService.PlayerReader;
+import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.game.*;
@@ -41,7 +42,10 @@ import net.glowstone.net.message.play.player.ResourcePackSendMessage;
 import net.glowstone.net.message.play.player.UseBedMessage;
 import net.glowstone.scoreboard.GlowScoreboard;
 import net.glowstone.scoreboard.GlowTeam;
-import net.glowstone.util.*;
+import net.glowstone.util.Convert;
+import net.glowstone.util.Position;
+import net.glowstone.util.StatisticMap;
+import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -1318,22 +1322,69 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public Entity getShoulderEntityLeft() {
-        return null;
+        CompoundTag tag = getLeftShoulderTag();
+        if (tag.isEmpty()) {
+            return null;
+        }
+        UUID uuid = new UUID(tag.getLong("UUIDMost"), tag.getLong("UUIDLeast"));
+        return server.getEntity(uuid);
     }
 
     @Override
     public void setShoulderEntityLeft(Entity entity) {
-
+        CompoundTag tag;
+        if (entity == null) {
+            tag = getLeftShoulderTag();
+            if (!tag.isEmpty()) {
+                EntityStorage.loadEntity(world, tag);
+            }
+        } else {
+            tag = new CompoundTag();
+            setLeftShoulderTag(tag);
+        }
     }
 
     @Override
     public Entity getShoulderEntityRight() {
-        return null;
+        CompoundTag tag = getRightShoulderTag();
+        if (tag.isEmpty()) {
+            return null;
+        }
+        UUID uuid = new UUID(tag.getLong("UUIDMost"), tag.getLong("UUIDLeast"));
+        return server.getEntity(uuid);
     }
 
     @Override
     public void setShoulderEntityRight(Entity entity) {
+        CompoundTag tag;
+        if (entity == null) {
+            tag = getRightShoulderTag();
+            if (!tag.isEmpty()) {
+                EntityStorage.loadEntity(world, tag);
+            }
+        } else {
+            tag = new CompoundTag();
+            EntityStorage.save((GlowEntity) entity, tag);
+            setRightShoulderTag(tag);
+        }
+    }
 
+    public CompoundTag getLeftShoulderTag() {
+        Object tag = metadata.get(MetadataIndex.PLAYER_LEFT_SHOULDER);
+        return tag == null ? new CompoundTag() : (CompoundTag) tag;
+    }
+
+    public CompoundTag getRightShoulderTag() {
+        Object tag = metadata.get(MetadataIndex.PLAYER_RIGHT_SHOULDER);
+        return tag == null ? new CompoundTag() : (CompoundTag) tag;
+    }
+
+    public void setLeftShoulderTag(CompoundTag tag) {
+        metadata.set(MetadataIndex.PLAYER_LEFT_SHOULDER, tag == null ? new CompoundTag() : tag);
+    }
+
+    public void setRightShoulderTag(CompoundTag tag) {
+        metadata.set(MetadataIndex.PLAYER_RIGHT_SHOULDER, tag == null ? new CompoundTag() : tag);
     }
 
     private int getExpToLevel(int level) {

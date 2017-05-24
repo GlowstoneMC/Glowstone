@@ -110,12 +110,23 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
             case PURPUR_STAIRS:
             case PURPUR_SLAB:
             case PURPUR_DOUBLE_SLAB:
-            case HARD_CLAY:
-            case STAINED_CLAY:
             case NETHERRACK:
             case COAL_BLOCK:
             case BRICK:
                 return Instrument.BASS_DRUM;
+            case CLAY:
+            case HARD_CLAY:
+            case STAINED_CLAY:
+            case CLAY_BRICK:
+                return Instrument.FLUTE;
+            case GOLD_BLOCK:
+                return Instrument.BELL;
+            case WOOL:
+                return Instrument.GUITAR;
+            case PACKED_ICE:
+                return Instrument.CHIME;
+            case BONE_BLOCK:
+                return Instrument.XYLOPHONE;
             case DIRT:
             case AIR:
             default:
