@@ -3,6 +3,7 @@ package net.glowstone;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.blocktype.BlockTNT;
 import net.glowstone.entity.GlowEntity;
+import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.ExplosionMessage;
 import net.glowstone.net.message.play.game.ExplosionMessage.Record;
@@ -252,7 +253,7 @@ public final class Explosion {
             } else {
                 damageCause = DamageCause.ENTITY_EXPLOSION;
             }
-            entity.damage(damage, source, damageCause);
+            ((GlowLivingEntity) entity).damage(damage, source, damageCause);
 
             if (entity instanceof GlowPlayer) {
                 affectedPlayers.add((GlowPlayer) entity);

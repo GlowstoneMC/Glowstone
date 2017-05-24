@@ -26,8 +26,8 @@ public class SoundUtil {
         sounds.put(id, category);
     }
 
-    public static void getCategory(String id) {
-        sounds.get(id);
+    public static SoundCategory getCategory(String id) {
+        return sounds.get(id);
     }
 
     public static String getVanillaId(Sound sound) {
@@ -37,7 +37,7 @@ public class SoundUtil {
     public static Sound getVanillaSound(String id) {
         if (id.startsWith("minecraft:")) {
         for (Sound sound : Sound.values()) {
-            if (("minecraft:" + sound.name().toLowerCase().replaceAll("_", "").equals(id)) {
+            if (("minecraft:" + sound.name().toLowerCase().replaceAll("_", "")).equals(id)) {
                 return sound;
             }
         }

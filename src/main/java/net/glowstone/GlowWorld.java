@@ -27,6 +27,7 @@ import net.glowstone.net.message.play.player.ServerDifficultyMessage;
 import net.glowstone.util.BlockStateDelegate;
 import net.glowstone.util.GameRuleManager;
 import net.glowstone.util.RayUtil;
+import net.glowstone.util.SoundUtil;
 import net.glowstone.util.collection.ConcurrentSet;
 import net.glowstone.util.config.WorldConfig;
 import org.bukkit.*;
@@ -1605,7 +1606,7 @@ public final class GlowWorld implements World {
 
     @Override
     public void playSound(Location location, Sound sound, float volume, float pitch) {
-        playSound(location, sound, sound.getCategory(), volume, pitch);
+        playSound(location, sound, SoundUtil.getCategory(sound), volume, pitch);
     }
 
     @Override

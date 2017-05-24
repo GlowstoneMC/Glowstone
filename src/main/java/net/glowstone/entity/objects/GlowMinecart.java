@@ -66,18 +66,8 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
     }
 
     @Override
-    public void _INVALID_setDamage(int i) {
-
-    }
-
-    @Override
     public void setDamage(double v) {
 
-    }
-
-    @Override
-    public int _INVALID_getDamage() {
-        return 0;
     }
 
     @Override

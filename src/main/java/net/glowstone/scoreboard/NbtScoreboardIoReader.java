@@ -72,7 +72,7 @@ public class NbtScoreboardIoReader {
 
         Score score = scoreboard.getObjective(objective).getScore(name);
         score.setScore(scoreNum);
-        score.setLocked(locked);
+        ((GlowScore) score).setLocked(locked);
     }
 
     private static void registerTeams(CompoundTag root, GlowScoreboard scoreboard) {
