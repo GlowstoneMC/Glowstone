@@ -4,6 +4,7 @@ import com.destroystokyo.paper.Title;
 import com.flowpowered.network.Message;
 import com.flowpowered.network.util.ByteBufUtils;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.Getter;
@@ -219,6 +220,16 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * The scale at which to display the player's health.
      */
     private double healthScale = 20;
+    /**
+     * If this player has seen the end credits.
+     */
+    @Getter
+    @Setter
+    private boolean seenCredits;
+    /**
+     * Recipes this player has unlocked.
+     */
+    private Collection<Recipe> recipes = new HashSet<>();
     /**
      * This player's current time offset.
      */
@@ -1385,6 +1396,46 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     public void setRightShoulderTag(CompoundTag tag) {
         metadata.set(MetadataIndex.PLAYER_RIGHT_SHOULDER, tag == null ? new CompoundTag() : tag);
+    }
+
+    /**
+     * Recipes this player has unlocked.
+     *
+     * @return An immutable list of unlocked recipes.
+     */
+    public Collection<Recipe> getUnlockedRecipes() {
+        return ImmutableList.copyOf(recipes);
+    }
+
+    /**
+     * Teach the player a new recipe.
+     *
+     * @param recipe The recipe to be added to learnt recipes
+     * @param notify If the player should be notified of the recipes learnt
+     * @return If this recipe was not learned already.
+     */
+    public boolean learnRecipe(Recipe recipe, boolean notify) {
+        return recipes.add(recipe);
+    }
+
+    /**
+     * Remove a recipe from the player's known recipes.
+     *
+     * @param recipe The recipe to be removed from learnt recipes
+     * @return If this recipe was learned before it was removed.
+     */
+    public boolean unlearnRecipe(Recipe recipe) {
+        return recipes.remove(recipe);
+    }
+
+    /**
+     * Checks to see if the player knows this recipe.
+     *
+     * @param recipe The recipe to check
+     * @return If the player knows the recipe
+     */
+    public boolean knowsRecipe(Recipe recipe) {
+        return recipes.contains(recipe);
     }
 
     private int getExpToLevel(int level) {
