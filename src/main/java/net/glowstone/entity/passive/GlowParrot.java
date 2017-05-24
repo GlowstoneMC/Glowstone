@@ -5,13 +5,12 @@ import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.SoundUtil;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Parrot;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
@@ -88,7 +87,10 @@ public class GlowParrot extends GlowTameable implements Parrot {
         if (result) {
             return false;
         }
-        if (!isTamed() && player.getItemInHand().getType() == Material.SEEDS) {
+        if (player.getItemInHand().getType() == Material.SEEDS) {
+            damage(getHealth(), player, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
+            world.spawnParticle(Particle.SPELL, location, 1);
+        } else if (!isTamed() && player.getItemInHand().getType() == Material.SEEDS) {
             if (ThreadLocalRandom.current().nextInt(3) == 0) {
                 setTamed(true);
                 setOwner(player);
