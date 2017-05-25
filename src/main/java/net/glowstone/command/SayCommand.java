@@ -43,7 +43,6 @@ public class SayCommand extends BukkitCommand {
     }
 
     private String prettyPrint(Entity[] entities) {
-        System.out.println(entities.length);
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < entities.length; i++) {
             Entity entity = entities[i];
