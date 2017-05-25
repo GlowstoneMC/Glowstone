@@ -800,13 +800,16 @@ public final class GlowServer implements Server {
     private void loadPlugins() {
         // clear the map
         commandMap.clearCommands();
+        // glowstone commands
         commandMap.register("glowstone", new ColorCommand());
-        commandMap.register("glowstone", new TellrawCommand());
-        commandMap.register("glowstone", new TitleCommand());
-        commandMap.register("glowstone", new TeleportCommand());
-        commandMap.register("glowstone", new SummonCommand());
-        commandMap.register("glowstone", new WorldBorderCommand());
         commandMap.register("glowstone", new GlowstoneCommand());
+        // vanilla commands
+        commandMap.register("minecraft", new TellrawCommand());
+        commandMap.register("minecraft", new TitleCommand());
+        commandMap.register("minecraft", new TeleportCommand());
+        commandMap.register("minecraft", new SummonCommand());
+        commandMap.register("minecraft", new WorldBorderCommand());
+        commandMap.register("minecraft", new SayCommand());
 
         File folder = new File(config.getString(Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {
