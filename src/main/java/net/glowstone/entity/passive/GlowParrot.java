@@ -87,7 +87,7 @@ public class GlowParrot extends GlowTameable implements Parrot {
         if (result) {
             return false;
         }
-        if (player.getItemInHand().getType() == Material.SEEDS) {
+        if (player.getItemInHand().getType() == Material.COOKIE) {
             damage(getHealth(), player, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
             world.spawnParticle(Particle.SPELL, location, 1);
         } else if (!isTamed() && player.getItemInHand().getType() == Material.SEEDS) {
