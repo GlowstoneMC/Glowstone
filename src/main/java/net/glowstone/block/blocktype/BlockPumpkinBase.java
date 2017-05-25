@@ -10,7 +10,7 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.material.Pumpkin;
 import org.bukkit.util.Vector;
 
-public abstract class BlockPumpkinBase extends BlockDirectDrops {
+public class BlockPumpkinBase extends BlockDirectDrops {
 
     public BlockPumpkinBase(Material material) {
         super(material, ToolType.AXE);
