@@ -8,7 +8,7 @@ import java.util.Collections;
 
 public class StopCommand extends BukkitCommand {
     public StopCommand() {
-        super("stop", "Gracefully stops the server", "/stop", Collections.emptyList());
+        super("stop", "Gracefully stops the server.", "/stop", Collections.emptyList());
         setPermission("minecraft.command.stop");
     }
 

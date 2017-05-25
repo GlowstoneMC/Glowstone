@@ -18,13 +18,13 @@ public class OpCommand extends BukkitCommand {
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (!testPermission(sender)) return false;
         if (args.length != 1) {
-            sender.sendMessage(ChatColor.RED + usageMessage);
+            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
             return false;
         }
         String name = args[0];
         OfflinePlayer player = Bukkit.getOfflinePlayer(name);
         player.setOp(true);
-        sender.sendMessage("Opped " + player.getName() + ".");
+        sender.sendMessage("Opped " + player.getName());
         return true;
     }
 }
