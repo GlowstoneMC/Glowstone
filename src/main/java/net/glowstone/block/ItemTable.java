@@ -205,7 +205,7 @@ public final class ItemTable {
         reg(Material.TNT, new BlockTNT());
         reg(Material.DOUBLE_PLANT, new BlockDoublePlant());
         reg(Material.PUMPKIN, new BlockPumpkin());
-        reg(Material.JACK_O_LANTERN, new BlockDirectDrops(Material.JACK_O_LANTERN));
+        reg(Material.JACK_O_LANTERN, new BlockJackOLantern());
         reg(Material.SEA_LANTERN, new BlockRandomDrops(Material.PRISMARINE_CRYSTALS, 2, 3));
         reg(Material.REDSTONE_LAMP_ON, new BlockLamp());
         reg(Material.REDSTONE_LAMP_OFF, new BlockLamp());

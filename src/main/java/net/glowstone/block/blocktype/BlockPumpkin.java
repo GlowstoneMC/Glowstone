@@ -4,20 +4,15 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.monster.GlowIronGolem;
-import net.glowstone.inventory.ToolType;
 import net.glowstone.util.pattern.BlockPattern;
 import org.bukkit.Location;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
-import org.bukkit.material.Pumpkin;
-import org.bukkit.util.Vector;
 
 import static org.bukkit.Material.*;
 
-public class BlockPumpkin extends BlockDirectDrops {
+public class BlockPumpkin extends BlockPumpkinBase {
 
     private static final BlockPattern IRONGOLEM_PATTERN = new BlockPattern(
             new BlockPattern.PatternItem(PUMPKIN,       (byte) -1, 1, 0),
@@ -34,19 +29,7 @@ public class BlockPumpkin extends BlockDirectDrops {
     );
 
     public BlockPumpkin() {
-        super(PUMPKIN, ToolType.AXE);
-    }
-
-    @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
-        super.placeBlock(player, state, face, holding, clickedLoc);
-        MaterialData data = state.getData();
-        if (data instanceof Pumpkin) {
-            ((Pumpkin) data).setFacingDirection(player.getDirection());
-            state.setData(data);
-        } else {
-            warnMaterialData(Pumpkin.class, data);
-        }
+        super(PUMPKIN);
     }
 
     @Override
