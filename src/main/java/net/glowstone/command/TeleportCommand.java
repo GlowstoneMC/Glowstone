@@ -19,7 +19,7 @@ public class TeleportCommand extends BukkitCommand {
                 "Teleports entities to coordinates relative to the sender",
                 "/teleport <target> <x> <y> <z> [<y-rot> <x-rot>]",
                 Collections.emptyList());
-        setPermission("glowstone.command.teleport");
+        setPermission("minecraft.command.teleport");
     }
 
     @Override

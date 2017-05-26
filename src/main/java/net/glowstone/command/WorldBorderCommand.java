@@ -11,7 +11,7 @@ public class WorldBorderCommand extends BukkitCommand {
     public WorldBorderCommand() {
         super("worldborder");
         setUsage("/worldborder <set|center|damage|warning|get|add> ...");
-        setPermission("glowstone.command.worldborder");
+        setPermission("minecraft.command.worldborder");
     }
 
     @Override

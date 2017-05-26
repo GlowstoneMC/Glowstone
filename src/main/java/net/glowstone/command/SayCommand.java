@@ -7,16 +7,25 @@ import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Entity;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
+import org.bukkit.util.permissions.DefaultPermissions;
 
 import java.util.Collections;
 
 public class SayCommand extends BukkitCommand {
+
+    private final Permission permission;
+
     public SayCommand() {
         super("say", "Say a message.", "/say <message ...>", Collections.emptyList());
+        this.permission = DefaultPermissions.registerPermission(new Permission("minecraft.command.say", description, PermissionDefault.TRUE), false);
+        setPermission(permission.getName());
     }
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
+        if (!testPermission(sender)) return false;
         if (args.length == 0) {
             sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
             return false;

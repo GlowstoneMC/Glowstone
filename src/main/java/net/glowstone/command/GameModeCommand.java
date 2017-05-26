@@ -9,10 +9,17 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.util.StringUtil;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 public class GameModeCommand extends BukkitCommand {
+
+    private static final List<String> GAMEMODES = Arrays.asList("survival", "creative", "adventure", "spectator");
+
     public GameModeCommand() {
         super("gamemode", "Change the game mode of a player.", "/gamemode <mode> [player]", Collections.emptyList());
         setPermission("minecraft.command.gamemode");
@@ -101,8 +108,16 @@ public class GameModeCommand extends BukkitCommand {
         }
         who.setGameMode(gameMode);
         if (!sender.equals(who)) {
-            sender.sendMessage(who.getDisplayName() +  "'s game mode has been updated to " + ChatColor.GRAY + "" + ChatColor.ITALIC + gameModeName + " Mode" + ChatColor.RESET);
+            sender.sendMessage(who.getDisplayName() + "'s game mode has been updated to " + ChatColor.GRAY + "" + ChatColor.ITALIC + gameModeName + " Mode" + ChatColor.RESET);
         }
         who.sendMessage("Your game mode has been updated to " + ChatColor.GRAY + "" + ChatColor.ITALIC + gameModeName + " Mode" + ChatColor.RESET);
+    }
+
+    @Override
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+        if (args.length == 1) {
+            return (List) StringUtil.copyPartialMatches(args[0], GAMEMODES, new ArrayList(GAMEMODES.size()));
+        }
+        return super.tabComplete(sender, alias, args);
     }
 }

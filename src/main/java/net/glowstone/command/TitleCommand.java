@@ -22,7 +22,7 @@ public class TitleCommand extends BukkitCommand {
 
     public TitleCommand() {
         super("title", "Sends a title to the specified player(s)", "/title <player> <title|subtitle|times|clear|reset> ...", Collections.emptyList());
-        setPermission("glowstone.command.title");
+        setPermission("minecraft.command.title");
     }
 
     /**

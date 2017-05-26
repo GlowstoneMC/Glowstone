@@ -28,7 +28,7 @@ public class SummonCommand extends BukkitCommand {
 
     public SummonCommand() {
         super("summon", "Summons an entity.", "/summon <EntityName> [x] [y] [z] [dataTag]", Collections.<String>emptyList());
-        setPermission("glowstone.command.summon");
+        setPermission("minecraft.command.summon");
     }
 
     @Override
