@@ -2835,17 +2835,15 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
 
-    private void sendBlockBreakAnimation(Player player, Location loc, int destroyStage) {
-        afterBlockChanges.add(new BlockBreakAnimationMessage(player.getEntityId(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), destroyStage));
+    private void sendBlockBreakAnimation(Location loc, int destroyStage) {
+        afterBlockChanges.add(new BlockBreakAnimationMessage(this.getEntityId(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), destroyStage));
     }
 
     private void broadcastBlockBreakAnimation(GlowBlock block, int destroyStage) {
         GlowChunk.Key key = new GlowChunk.Key(block.getChunk().getX(), block.getChunk().getZ());
-        block.getWorld().getRawPlayers().stream().filter(player1 -> player1.canSeeChunk(key)).forEach(player2 -> {
-            if (player2 != this) {
-                player2.sendBlockBreakAnimation(player2, block.getLocation(), destroyStage);
-            }
-        });
+        block.getWorld().getRawPlayers().stream()
+                .filter(player -> player.canSeeChunk(key) && player != this)
+                .forEach(player -> player.sendBlockBreakAnimation(block.getLocation(), destroyStage));
     }
 
     public void setDigging(GlowBlock block) {
