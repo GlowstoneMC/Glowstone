@@ -88,6 +88,8 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                     }
                 }
             }
+        } else if (message.getState() == DiggingMessage.CANCEL_DIGGING) {
+            player.setDigging(null);
         } else if (message.getState() == DiggingMessage.FINISH_DIGGING) {
             // shouldn't happen in creative mode
 

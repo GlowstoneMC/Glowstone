@@ -283,6 +283,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * The one block the player is currently digging.
      */
     private GlowBlock digging;
+    /**
+     * The number of ticks elapsed since the player started digging.
+     */
+    private long diggingTicks = 0;
 
     public Location teleportedTo = null;
     /**
@@ -540,6 +544,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 usageItem = null;
                 usageTime = 0;
             }
+        }
+
+        if (digging != null) {
+            pulseDigging();
         }
 
         if (exhaustion > 4.0f) {
@@ -2826,8 +2834,47 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         return digging;
     }
 
+
+    private void sendBlockBreakAnimation(Location loc, int destroyStage) {
+        afterBlockChanges.add(new BlockBreakAnimationMessage(this.getEntityId(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), destroyStage));
+    }
+
+    private void broadcastBlockBreakAnimation(GlowBlock block, int destroyStage) {
+        GlowChunk.Key key = new GlowChunk.Key(block.getChunk().getX(), block.getChunk().getZ());
+        block.getWorld().getRawPlayers().stream()
+                .filter(player -> player.canSeeChunk(key) && player != this)
+                .forEach(player -> player.sendBlockBreakAnimation(block.getLocation(), destroyStage));
+    }
+
     public void setDigging(GlowBlock block) {
+        if (block == null) {
+            if (digging != null) {
+                // remove the animation
+                broadcastBlockBreakAnimation(digging, 10);
+            }
+        } else {
+            // show other clients the block is beginning to crack
+            broadcastBlockBreakAnimation(block, 0);
+        }
+
+        diggingTicks = 0;
         digging = block;
+    }
+
+    private void pulseDigging() {
+        ++diggingTicks;
+
+        float hardness = digging.getMaterialValues().getHardness() * 20; // seconds to ticks
+
+        // TODO: take into account the tool used to mine (ineffective=5x, effective=1.5x, material multiplier, etc.)
+        // for now, assuming hands are used and the block is not dropped
+        hardness *= 5;
+
+        double completion = (double) diggingTicks / hardness;
+        int stage = (int) (completion * 10);
+        if (stage > 9) stage = 9;
+
+        broadcastBlockBreakAnimation(digging, stage);
     }
 
     @Override

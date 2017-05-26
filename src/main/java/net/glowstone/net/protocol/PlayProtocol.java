@@ -65,7 +65,7 @@ public class PlayProtocol extends GlowProtocol {
         outbound(0x05, SpawnPlayerMessage.class, SpawnPlayerCodec.class);
         outbound(0x06, AnimateEntityMessage.class, AnimateEntityCodec.class);
         outbound(0x07, StatisticMessage.class, StatisticCodec.class);
-        //TODO 0x08 : Block break animation
+        outbound(0x08, BlockBreakAnimationMessage.class, BlockBreakAnimationCodec.class);
         outbound(0x09, UpdateBlockEntityMessage.class, UpdateBlockEntityCodec.class);
         outbound(0x0A, BlockActionMessage.class, BlockActionCodec.class);
         outbound(0x0B, BlockChangeMessage.class, BlockChangeCodec.class);
