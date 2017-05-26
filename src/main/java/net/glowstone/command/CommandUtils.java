@@ -1,6 +1,7 @@
 package net.glowstone.command;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 
 public class CommandUtils {
 
@@ -81,5 +82,26 @@ public class CommandUtils {
         if (!literal)
             d += ".5";
         return Double.valueOf(d);
+    }
+
+    /**
+     * Pretty-print the result of a command target query
+     */
+    public static String prettyPrint(Entity[] entities) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < entities.length; i++) {
+            Entity entity = entities[i];
+            String name = entity.getName();
+            if (name == null || name.isEmpty()) {
+                name = entity.getType().getName();
+            }
+            if (i == entities.length - 1 && entities.length > 1) {
+                builder.append(" and ");
+            } else if (i > 0) {
+                builder.append(", ");
+            }
+            builder.append(name);
+        }
+        return builder.toString();
     }
 }

@@ -71,7 +71,7 @@ public class GameModeCommand extends BukkitCommand {
         String name = args[1];
         if (name.startsWith("@") && name.length() >= 2 && targetsSupported) {
             Location location = sender instanceof Entity ? ((Entity) sender).getLocation() : ((BlockCommandSender) sender).getBlock().getLocation();
-            CommandTarget target = new CommandTarget(name);
+            CommandTarget target = new CommandTarget(sender, name);
             Entity[] matched = target.getMatched(location);
             for (Entity entity : matched) {
                 if (entity instanceof Player) {

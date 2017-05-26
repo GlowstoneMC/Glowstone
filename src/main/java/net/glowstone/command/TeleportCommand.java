@@ -37,8 +37,8 @@ public class TeleportCommand extends BukkitCommand {
 
         Player player = (Player) sender;
         Entity[] targets;
-        if (args[0].length() > 0 && args[0].charAt(0) == '@') {
-            targets = new CommandTarget(args[0]).getMatched(player.getLocation());
+        if (args[0].startsWith("@")) {
+            targets = new CommandTarget(sender, args[0]).getMatched(player.getLocation());
         } else {
             Player targetPlayer = Bukkit.getPlayerExact(args[0]);
             targets = targetPlayer == null ? NO_ENTITY : new Entity[]{targetPlayer};

@@ -2,6 +2,7 @@ package net.glowstone.command;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -11,8 +12,9 @@ import java.util.stream.Collectors;
 
 public class CommandTarget {
 
-    private SelectorType selector;
-    private HashMap<String, SelectorValue> arguments;
+    private final CommandSender sender;
+    private final SelectorType selector;
+    private final HashMap<String, SelectorValue> arguments;
 
     /**
      * Parses the target of the command with the given argument.
@@ -20,7 +22,8 @@ public class CommandTarget {
      *
      * @param target the un-parsed command target
      */
-    public CommandTarget(String target) {
+    public CommandTarget(CommandSender sender, String target) {
+        this.sender = sender;
         this.selector = SelectorType.get(target.charAt(1));
         this.arguments = new HashMap<>();
         if (target.length() > 2 && target.charAt(2) == '[' && target.endsWith("]")) {
@@ -159,6 +162,13 @@ public class CommandTarget {
      * @return the entities matching the query
      */
     public Entity[] getMatched(Location source) {
+        if (selector == SelectorType.SENDER) {
+            if (sender instanceof Entity) {
+                return new Entity[]{(Entity) sender};
+            } else {
+                return new Entity[0];
+            }
+        }
         List<EntityType> types = getTypes();
         List<GameMode> gameModes = getGameModes();
         Integer count = getCount();
@@ -304,7 +314,8 @@ public class CommandTarget {
         NEAREST_PLAYER('p'),
         RANDOM('r'),
         ALL_PLAYERS('a'),
-        ALL_ENTITIES('e');
+        ALL_ENTITIES('e'),
+        SENDER('s');
 
         private char selector;
 
