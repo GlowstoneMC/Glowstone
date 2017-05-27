@@ -7,18 +7,14 @@ import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Entity;
-import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionDefault;
-import org.bukkit.util.permissions.DefaultPermissions;
 
 import java.util.Collections;
 
 public class SayCommand extends BukkitCommand {
 
-    public SayCommand(Permission rootPermission) {
+    public SayCommand() {
         super("say", "Say a message.", "/say <message ...>", Collections.emptyList());
-        Permission permission = DefaultPermissions.registerPermission("minecraft.command.say", description, PermissionDefault.TRUE, rootPermission);
-        setPermission(permission.getName());
+        setPermission("minecraft.command.say");
     }
 
     @Override
