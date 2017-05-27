@@ -23,8 +23,8 @@ public class CommandFunction {
     public static CommandFunction read(String namespace, String name, File file) throws IOException {
         List<FunctionLine> lines = new ArrayList<>();
         Scanner scanner = new Scanner(file);
-        while (scanner.hasNext()) {
-            String line = scanner.next();
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
             FunctionLine fl = FunctionLine.read(line);
             if (fl != null) {
                 lines.add(fl);
@@ -40,6 +40,11 @@ public class CommandFunction {
             if (!line.isComment()) count++;
         }
         sender.sendMessage("Executed " + count + " command(s) from function '" + getFullName() + "'");
+    }
+
+    @Override
+    public String toString() {
+        return getFullName() + "{lines: " + lines + "}";
     }
 
     @Data
@@ -66,6 +71,10 @@ public class CommandFunction {
                 return;
             }
             Bukkit.dispatchCommand(sender, content);
+        }
+
+        public String toString() {
+            return (comment ? "#" : "/") + content;
         }
     }
 }

@@ -35,7 +35,7 @@ public class WorldFunctionIoService implements FunctionIoService {
                 List<CommandFunction> namespaceFunctions = functionsInside(namespace, "", dir);
                 functions.addAll(namespaceFunctions);
             }
-            GlowServer.logger.info("Loaded " + functions.size() + " functions.");
+            GlowServer.logger.info("Loaded " + functions.size() + " functions: " + functions);
         } catch (IOException ex) {
             GlowServer.logger.log(Level.SEVERE, "Error while loading functions for world '" + world.getName() + "'", ex);
         }
@@ -48,7 +48,7 @@ public class WorldFunctionIoService implements FunctionIoService {
             if (file.isDirectory()) {
                 functions.addAll(functionsInside(namespace, location + file.getName() + "/", file));
             } else if (file.getName().endsWith(".mcfunction")) {
-                functions.add(CommandFunction.read(namespace, location + file.getName(), file));
+                functions.add(CommandFunction.read(namespace, location + file.getName().substring(0, file.getName().length() - ".mcfunction".length()), file));
             }
         }
         return functions;
