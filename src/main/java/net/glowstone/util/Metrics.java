@@ -72,7 +72,7 @@ public class Metrics {
                 // Don't be afraid! The connection to the bStats server is still async, only the stats collection is sync ;)
                 Bukkit.getScheduler().runTask(null, () -> submitData());
             }
-        }, 1000*60*5, 1000*60*30);
+        }, 1000 * 60 * 5, 1000 * 60 * 30);
         // Submit the data every 30 minutes, first time after 5 minutes to give other plugins enough time to start
         // WARNING: Changing the frequency has no effect but your plugin WILL be blocked/deleted!
         // WARNING: Just don't do it!
@@ -236,7 +236,7 @@ public class Metrics {
     /**
      * Represents a custom chart.
      */
-    public static abstract class CustomChart {
+    public abstract static class CustomChart {
 
         // The id of the chart
         protected final String chartId;
@@ -279,7 +279,7 @@ public class Metrics {
     /**
      * Represents a custom simple pie.
      */
-    public static abstract class SimplePie extends CustomChart {
+    public abstract static class SimplePie extends CustomChart {
 
         /**
          * Class constructor.
@@ -313,7 +313,7 @@ public class Metrics {
     /**
      * Represents a custom advanced pie.
      */
-    public static abstract class AdvancedPie extends CustomChart {
+    public abstract static class AdvancedPie extends CustomChart {
 
         /**
          * Class constructor.
@@ -362,7 +362,7 @@ public class Metrics {
     /**
      * Represents a custom single line chart.
      */
-    public static abstract class SingleLineChart extends CustomChart {
+    public abstract static class SingleLineChart extends CustomChart {
 
         /**
          * Class constructor.
@@ -397,7 +397,7 @@ public class Metrics {
     /**
      * Represents a custom multi line chart.
      */
-    public static abstract class MultiLineChart extends CustomChart {
+    public abstract static class MultiLineChart extends CustomChart {
 
         /**
          * Class constructor.
@@ -447,7 +447,7 @@ public class Metrics {
     /**
      * Represents a custom simple bar chart.
      */
-    public static abstract class SimpleBarChart extends CustomChart {
+    public abstract static class SimpleBarChart extends CustomChart {
 
         /**
          * Class constructor.
@@ -490,7 +490,7 @@ public class Metrics {
     /**
      * Represents a custom advanced bar chart.
      */
-    public static abstract class AdvancedBarChart extends CustomChart {
+    public abstract static class AdvancedBarChart extends CustomChart {
 
         /**
          * Class constructor.
@@ -544,7 +544,7 @@ public class Metrics {
     /**
      * Represents a custom simple map chart.
      */
-    public static abstract class SimpleMapChart extends CustomChart {
+    public abstract static class SimpleMapChart extends CustomChart {
 
         /**
          * Class constructor.
@@ -580,7 +580,7 @@ public class Metrics {
     /**
      * Represents a custom advanced map chart.
      */
-    public static abstract class AdvancedMapChart extends CustomChart {
+    public abstract static class AdvancedMapChart extends CustomChart {
 
         /**
          * Class constructor.
@@ -941,5 +941,4 @@ public class Metrics {
         }
 
     }
-
 }
