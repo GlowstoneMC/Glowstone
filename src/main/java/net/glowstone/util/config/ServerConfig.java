@@ -390,7 +390,7 @@ public final class ServerConfig {
         PROXY_SUPPORT("advanced.proxy-support", false),
         PLAYER_SAMPLE_COUNT("advanced.player-sample-count", 12),
         METRICS("advanced.metrics", true),
-        METRICS_UUID("advanced.metrics-server-uuid", UUID.randomUUID().toString()),
+        METRICS_UUID("advanced.metrics-uuid-do-not-touch", UUID.randomUUID()),
         GPGPU("advanced.gpgpu", false),
         GPGPU_ANY_DEVICE("advanced.gpgpu-use-any-device", false),
         RUN_CLIENT("advanced.run-glowclient", false),
