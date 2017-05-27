@@ -14,6 +14,7 @@ import net.glowstone.chunk.GlowChunk;
 import net.glowstone.chunk.GlowChunk.Key;
 import net.glowstone.chunk.GlowChunkSnapshot.EmptySnapshot;
 import net.glowstone.constants.*;
+import net.glowstone.data.CommandFunction;
 import net.glowstone.entity.*;
 import net.glowstone.entity.objects.GlowFallingBlock;
 import net.glowstone.entity.objects.GlowItem;
@@ -256,6 +257,10 @@ public final class GlowWorld implements World {
      * The world border.
      */
     private final GlowWorldBorder worldBorder;
+    /**
+     * The functions for this world.
+     */
+    private final List<CommandFunction> functions;
 
     /**
      * Creates a new world from the options in the given WorldCreator.
@@ -309,6 +314,7 @@ public final class GlowWorld implements World {
 
         chunks = new ChunkManager(this, storageProvider.getChunkIoService(), generator);
         structures = storageProvider.getStructureDataService().readStructuresData();
+        functions = storageProvider.getFunctionIoService().readFunctions();
         server.addWorld(this);
         server.getLogger().info("Preparing spawn for " + name + "...");
         EventFactory.callEvent(new WorldInitEvent(this));
@@ -1765,6 +1771,10 @@ public final class GlowWorld implements World {
     @Override
     public WorldBorder getWorldBorder() {
         return worldBorder;
+    }
+
+    public List<CommandFunction> getFunctions() {
+        return functions;
     }
 
     @Override
