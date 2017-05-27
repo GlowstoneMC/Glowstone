@@ -90,6 +90,10 @@ public final class GlowBufUtils {
                     break;
                 case BLOCKID:
                     entries.add(new Entry(index, ByteBufUtils.readVarInt(buf)));
+                    break;
+                case NBTTAG:
+                    entries.add(new Entry(index, readCompound(buf)));
+                    break;
             }
         }
         return entries;
@@ -163,6 +167,9 @@ public final class GlowBufUtils {
                     break;
                 case BLOCKID:
                     ByteBufUtils.writeVarInt(buf, (Integer) value);
+                    break;
+                case NBTTAG:
+                    writeCompound(buf, (CompoundTag) value);
                     break;
             }
         }
