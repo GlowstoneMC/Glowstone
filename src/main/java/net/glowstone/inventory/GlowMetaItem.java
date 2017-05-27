@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 /**
  * An implementation of {@link ItemMeta}, created through {@link GlowItemFactory}.
  */
-class GlowMetaItem implements ItemMeta {
+abstract class GlowMetaItem implements ItemMeta {
 
     private String displayName;
     private List<String> lore;
@@ -93,11 +93,6 @@ class GlowMetaItem implements ItemMeta {
      */
     public boolean isApplicable(Material material) {
         return material != Material.AIR;
-    }
-
-    @Override
-    public ItemMeta clone() {
-        return new GlowMetaItem(this);
     }
 
     @Override
