@@ -871,7 +871,7 @@ public final class GlowServer implements Server {
                 for (File file : getSpongePlugins()) {
                     logger.log(Level.WARNING, "Ignored SpongeAPI plugin: " + file.getPath());
                 }
-                logger.log(Level.WARNING, "Suggestion: install https://github.com/deathcap/Bukkit2Sponge to load these plugins");
+                logger.log(Level.WARNING, "Suggestion: install https://github.com/GlowstoneMC/Bukkit2Sponge to load these plugins");
             }
         }
 
