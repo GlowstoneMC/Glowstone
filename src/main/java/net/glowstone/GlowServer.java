@@ -454,12 +454,7 @@ public final class GlowServer implements Server {
         logger.info("Ready for connections.");
 
         if (doMetrics()) {
-            try {
-                Metrics metrics = new Metrics(this);
-                metrics.start();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            new Metrics(this, config.getString(Key.METRICS_UUID), false);
         }
 
         if (config.getBoolean(Key.RUN_CLIENT)) {

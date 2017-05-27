@@ -12,6 +12,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -389,6 +390,7 @@ public final class ServerConfig {
         PROXY_SUPPORT("advanced.proxy-support", false),
         PLAYER_SAMPLE_COUNT("advanced.player-sample-count", 12),
         METRICS("advanced.metrics", true),
+        METRICS_UUID("advanced.metrics-uuid-do-not-touch", UUID.randomUUID()),
         GPGPU("advanced.gpgpu", false),
         GPGPU_ANY_DEVICE("advanced.gpgpu-use-any-device", false),
         RUN_CLIENT("advanced.run-glowclient", false),
