@@ -5,6 +5,7 @@ import net.glowstone.GlowServer;
 import net.glowstone.inventory.GlowCraftingInventory;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.*;
@@ -308,6 +309,20 @@ public final class CraftingManager implements Iterable<Recipe> {
             }
         }
         return recipes;
+    }
+
+    public Recipe getRecipeByKey(NamespacedKey key) {
+        for (ShapedRecipe shapedRecipe : shapedRecipes) {
+            if (shapedRecipe.getKey().equals(key)) {
+                return shapedRecipe;
+            }
+        }
+        for (ShapelessRecipe shapelessRecipe : shapelessRecipes) {
+            if (shapelessRecipe.getKey().equals(key)) {
+                return shapelessRecipe;
+            }
+        }
+        return null;
     }
 
     /**
