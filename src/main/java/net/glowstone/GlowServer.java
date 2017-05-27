@@ -263,6 +263,10 @@ public final class GlowServer implements Server {
      * The {@link BossBarManager} of this server.
      */
     private BossBarManager bossBarManager;
+    /*
+     * Default root permissions
+     */
+    public Permission permissionRoot, permissionCommand;
 
     /**
      * Creates a new server.
@@ -576,6 +580,10 @@ public final class GlowServer implements Server {
             e.printStackTrace();
         }
 
+        // Default permissions
+        this.permissionRoot = DefaultPermissions.registerPermission("minecraft", "Root permission");
+        this.permissionCommand = DefaultPermissions.registerPermission("minecraft.command", "Parent command permission", permissionRoot);
+
         // Start loading plugins
         new LibraryManager().run();
         loadPlugins();
@@ -809,10 +817,12 @@ public final class GlowServer implements Server {
         commandMap.register("minecraft", new TeleportCommand());
         commandMap.register("minecraft", new SummonCommand());
         commandMap.register("minecraft", new WorldBorderCommand());
-        commandMap.register("minecraft", new SayCommand());
+        commandMap.register("minecraft", new SayCommand(permissionCommand));
         commandMap.register("minecraft", new StopCommand());
         commandMap.register("minecraft", new OpCommand());
         commandMap.register("minecraft", new GameModeCommand());
+        permissionCommand.recalculatePermissibles();
+        permissionRoot.recalculatePermissibles();
 
         File folder = new File(config.getString(Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {
