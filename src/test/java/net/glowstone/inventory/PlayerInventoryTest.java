@@ -1,5 +1,6 @@
 package net.glowstone.inventory;
 
+import net.glowstone.util.IsFloatCloseTo;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
@@ -8,7 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -82,10 +82,10 @@ public class PlayerInventoryTest {
 
     @Test
     public void testDropChance() {
-        assertEquals("Wrong boots drop chance", 1, inventory.getBootsDropChance(), 0.001);
-        assertEquals("Wrong leggings drop chance", 1, inventory.getLeggingsDropChance(), 0.001);
-        assertEquals("Wrong chestplate drop chance", 1, inventory.getChestplateDropChance(), 0.001);
-        assertEquals("Wrong helmet drop chance", 1, inventory.getHelmetDropChance(), 0.001);
+        assertThat("Wrong boots drop chance", inventory.getBootsDropChance(), IsFloatCloseTo.closeTo(1f, 0.001f));
+        assertThat("Wrong leggings drop chance", inventory.getLeggingsDropChance(), IsFloatCloseTo.closeTo(1f, 0.001f));
+        assertThat("Wrong chestplate drop chance", inventory.getChestplateDropChance(), IsFloatCloseTo.closeTo(1f, 0.001f));
+        assertThat("Wrong helmet drop chance", inventory.getHelmetDropChance(), IsFloatCloseTo.closeTo(1f, 0.001f));
     }
 
     @Test(expected = UnsupportedOperationException.class)
