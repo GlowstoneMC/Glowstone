@@ -580,7 +580,7 @@ public abstract class GlowEntity implements Entity {
 
         if (passengerChanged) {
             //this method will not call for this player, we don't need check SELF_ID
-            result.add(new SetPassengerMessage(getEntityId(), getPassenger() == null ? new int[0] : new int[] {getPassenger().getEntityId()}));
+            result.add(new SetPassengerMessage(getEntityId(), getPassengers().stream().mapToInt(Entity::getEntityId).toArray()));
         }
 
         return result;

@@ -10,6 +10,8 @@ import java.util.Random;
 
 public class InventoryUtil {
 
+    public static final ItemStack[] NO_ITEMS = new ItemStack[0];
+
     /**
      * Checks whether the given ItemStack is empty.
      *

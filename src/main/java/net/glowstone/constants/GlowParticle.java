@@ -137,12 +137,12 @@ public final class GlowParticle {
      */
     public static int[] getExtData(Particle particle, Object object) {
         if (particle.getDataType() == Void.class) {
-            return new int[0];
+            return EMPTY;
         }
 
         if (particle.getDataType() == MaterialData.class) {
             if (object == null) {
-                return new int[]{0};
+                return ONE_EMPTY;
             }
 
             MaterialData material = (MaterialData) object;

@@ -13,6 +13,9 @@ import org.bukkit.entity.Player;
 import java.util.Collections;
 
 public class TeleportCommand extends BukkitCommand {
+
+    private static final Entity[] NO_ENTITY = new Entity[0];
+
     public TeleportCommand() {
         super("teleport",
                 "Teleports entities to coordinates relative to the sender",
@@ -40,7 +43,7 @@ public class TeleportCommand extends BukkitCommand {
             targets = new CommandTarget(args[0]).getMatched(player.getLocation());
         } else {
             Player targetPlayer = Bukkit.getPlayerExact(args[0]);
-            targets = targetPlayer == null ? new Entity[0] : new Entity[]{targetPlayer};
+            targets = targetPlayer == null ? NO_ENTITY : new Entity[]{targetPlayer};
         }
 
         if (targets.length == 0) {

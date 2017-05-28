@@ -198,7 +198,7 @@ public final class GlowServer implements Server {
     /**
      * An empty player array used for deprecated getOnlinePlayers.
      */
-    private final Player[] emptyPlayerArray = new Player[0];
+    private static final Player[] emptyPlayerArray = new Player[0];
     /**
      * A RSA key pair used for encryption and authentication
      */
@@ -1848,7 +1848,7 @@ public final class GlowServer implements Server {
 
     @Override
     public double[] getTPS() {
-        return new double[0];
+        return new double[]{20, 20, 20}; // TODO: show TPS
     }
 
     @Override

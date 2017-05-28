@@ -491,7 +491,7 @@ public class GlowInventory implements Inventory {
 
     @Override
     public ItemStack[] getStorageContents() {
-        return new ItemStack[0];
+        return InventoryUtil.NO_ITEMS;
     }
 
     @Override

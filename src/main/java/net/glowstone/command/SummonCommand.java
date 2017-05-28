@@ -115,9 +115,9 @@ public class SummonCommand extends BukkitCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
-        Validate.notNull(sender, "Sender cannot be null", new Object[0]);
-        Validate.notNull(args, "Arguments cannot be null", new Object[0]);
-        Validate.notNull(alias, "Alias cannot be null", new Object[0]);
+        Validate.notNull(sender, "Sender cannot be null");
+        Validate.notNull(args, "Arguments cannot be null");
+        Validate.notNull(alias, "Alias cannot be null");
         if (args.length == 1) {
             String arg = args[0];
             ArrayList<String> completion = new ArrayList<>();

@@ -9,6 +9,7 @@ public class EntityLootTable {
 
     private final LootItem[] items;
     private final LootRandomValues experience;
+    private static final LootItem[] NO_ITEMS = new LootItem[0];
 
     public EntityLootTable(JSONObject object) {
         if (object.containsKey("experience")) {
@@ -24,7 +25,7 @@ public class EntityLootTable {
                 this.items[i] = new LootItem(json);
             }
         } else {
-            this.items = new LootItem[0];
+            this.items = NO_ITEMS;
         }
     }
 }
