@@ -324,11 +324,7 @@ public final class GlowScheduler implements BukkitScheduler {
 
     @Override
     public void cancelTasks(Plugin plugin) {
-        for (Iterator<GlowTask> it = tasks.values().iterator(); it.hasNext(); ) {
-            if (it.next().getOwner() == plugin) {
-                it.remove();
-            }
-        }
+        tasks.values().removeIf(glowTask -> glowTask.getOwner() == plugin);
     }
 
     @Override

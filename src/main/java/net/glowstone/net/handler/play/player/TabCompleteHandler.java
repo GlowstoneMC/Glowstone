@@ -10,7 +10,6 @@ import org.bukkit.event.player.PlayerChatTabCompleteEvent;
 import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public final class TabCompleteHandler implements MessageHandler<GlowSession, TabCompleteMessage> {
@@ -47,7 +46,7 @@ public final class TabCompleteHandler implements MessageHandler<GlowSession, Tab
                     completions.add(name);
                 }
             }
-            Collections.sort(completions, String.CASE_INSENSITIVE_ORDER);
+            completions.sort(String.CASE_INSENSITIVE_ORDER);
         }
 
         // call event and send response

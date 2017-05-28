@@ -593,12 +593,7 @@ public final class GlowBlock implements Block {
 
         long time = getWorld().getFullTime();
 
-        for (Iterator<Long> it = gameTicks.iterator(); it.hasNext(); ) {
-            long rate = it.next();
-            if (rate < time) {
-                it.remove();
-            }
-        }
+        gameTicks.removeIf(rate -> rate < time);
 
         counterMap.put(target, gameTicks);
         return gameTicks.size();

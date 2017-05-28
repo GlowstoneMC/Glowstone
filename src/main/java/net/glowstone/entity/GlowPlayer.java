@@ -722,7 +722,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         // sort chunks by distance from player - closer chunks sent first
-        Collections.sort(newChunks, (a, b) -> {
+        newChunks.sort((a, b) -> {
             double dx = 16 * a.getX() + 8 - location.getX();
             double dz = 16 * a.getZ() + 8 - location.getZ();
             double da = dx * dx + dz * dz;
