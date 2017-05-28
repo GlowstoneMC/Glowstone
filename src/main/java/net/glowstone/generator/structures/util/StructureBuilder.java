@@ -129,7 +129,7 @@ public class StructureBuilder {
     }
 
     public void fill(Vector min, Vector max, Material outerType, int outerData, Material innerType, MaterialData innerData) {
-        fill(min, max, outerType, outerData, innerType, innerData);
+        fill(min, max, outerType, outerData, innerType, innerData.getData());
     }
 
     public void fill(Vector min, Vector max, Material outerType, int outerData, Material innerType) {
@@ -141,7 +141,7 @@ public class StructureBuilder {
     }
 
     public void fill(Vector min, Vector max, Material outerType, MaterialData outerData, Material innerType, int innerData) {
-        fill(min, max, outerType, outerData, innerType, innerData);
+        fill(min, max, outerType, outerData.getData(), innerType, innerData);
     }
 
     public void fill(Vector min, Vector max, Material outerType, int outerData, Material innerType, int innerData) {
