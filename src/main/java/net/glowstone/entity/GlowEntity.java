@@ -693,6 +693,7 @@ public abstract class GlowEntity implements Entity {
 
     protected final void setBoundingBox(double xz, double y) {
         boundingBox = new EntityBoundingBox(xz, y);
+        updateBoundingBox();
     }
 
     @Override
@@ -762,9 +763,9 @@ public abstract class GlowEntity implements Entity {
                         if (bbRelevant) {
                             test = BoundingBox.fromPositionAndSize(new Vector((int) x, (int) (y + ndy), (int) z), boundingBox.getSize());
                             Vector min = test.minCorner, max = test.maxCorner;
-                            for (int bbx = min.getBlockX(); x <= max.getBlockX(); ++x) {
-                                for (int bby = min.getBlockY(); y <= max.getBlockY(); ++y) {
-                                    for (int bbz = min.getBlockZ(); z <= max.getBlockZ(); ++z) {
+                            for (int bbx = min.getBlockX(); bbx <= max.getBlockX(); ++bbx) {
+                                for (int bby = min.getBlockY(); bby <= max.getBlockY(); ++bby) {
+                                    for (int bbz = min.getBlockZ(); bbz <= max.getBlockZ(); ++bbz) {
                                         if (Material.getMaterial(world.getBlockTypeIdAt(bbx, bby, bbz)).isSolid()) {
                                             break block;
                                         }
@@ -785,9 +786,9 @@ public abstract class GlowEntity implements Entity {
                     if (bbRelevant) {
                         test = BoundingBox.fromPositionAndSize(new Vector((int) x, (int) (y + ndy), (int) z), boundingBox.getSize());
                         Vector min = test.minCorner, max = test.maxCorner;
-                        for (int bbx = min.getBlockX(); x <= max.getBlockX(); ++x) {
-                            for (int bby = min.getBlockY(); y <= max.getBlockY(); ++y) {
-                                for (int bbz = min.getBlockZ(); z <= max.getBlockZ(); ++z) {
+                        for (int bbx = min.getBlockX(); bbx <= max.getBlockX(); ++bbx) {
+                            for (int bby = min.getBlockY(); bby <= max.getBlockY(); ++bby) {
+                                for (int bbz = min.getBlockZ(); bbz <= max.getBlockZ(); ++bbz) {
                                     if (Material.getMaterial(world.getBlockTypeIdAt(bbx, bby, bbz)).isSolid()) {
                                         break block;
                                     }
@@ -810,9 +811,9 @@ public abstract class GlowEntity implements Entity {
                     if (bbRelevant) {
                         test = BoundingBox.fromPositionAndSize(new Vector((int) (x + ndx), (int) (y + dy), (int) z), boundingBox.getSize());
                         Vector min = test.minCorner, max = test.maxCorner;
-                        for (int bbx = min.getBlockX(); x <= max.getBlockX(); ++x) {
-                            for (int bby = min.getBlockY(); y <= max.getBlockY(); ++y) {
-                                for (int bbz = min.getBlockZ(); z <= max.getBlockZ(); ++z) {
+                        for (int bbx = min.getBlockX(); bbx <= max.getBlockX(); ++bbx) {
+                            for (int bby = min.getBlockY(); bby <= max.getBlockY(); ++bby) {
+                                for (int bbz = min.getBlockZ(); bbz <= max.getBlockZ(); ++bbz) {
                                     if (Material.getMaterial(world.getBlockTypeIdAt(bbx, bby, bbz)).isSolid()) {
                                         break block;
                                     }
@@ -832,9 +833,9 @@ public abstract class GlowEntity implements Entity {
                     if (bbRelevant) {
                         test = BoundingBox.fromPositionAndSize(new Vector((int) (x + ndx), (int) (y + dy), (int) z), boundingBox.getSize());
                         Vector min = test.minCorner, max = test.maxCorner;
-                        for (int bbx = min.getBlockX(); x <= max.getBlockX(); ++x) {
-                            for (int bby = min.getBlockY(); y <= max.getBlockY(); ++y) {
-                                for (int bbz = min.getBlockZ(); z <= max.getBlockZ(); ++z) {
+                        for (int bbx = min.getBlockX(); bbx <= max.getBlockX(); ++bbx) {
+                            for (int bby = min.getBlockY(); bby <= max.getBlockY(); ++bby) {
+                                for (int bbz = min.getBlockZ(); bbz <= max.getBlockZ(); ++bbz) {
                                     if (Material.getMaterial(world.getBlockTypeIdAt(bbx, bby, bbz)).isSolid()) {
                                         break block;
                                     }
@@ -854,12 +855,12 @@ public abstract class GlowEntity implements Entity {
                     if (Material.getMaterial(((GlowWorld) location.getWorld()).getBlockTypeIdAt((int) (x + dx), (int) (y + dy), (int) (z + ndz))).isSolid()) {
                         break;
                     }
-                    if (boundingBox != null) {
+                    if (bbRelevant) {
                         test = BoundingBox.fromPositionAndSize(new Vector((int) (x + dx), (int) (y + dy), (int) (z + ndz)), boundingBox.getSize());
                         Vector min = test.minCorner, max = test.maxCorner;
-                        for (int bbx = min.getBlockX(); x <= max.getBlockX(); ++x) {
-                            for (int bby = min.getBlockY(); y <= max.getBlockY(); ++y) {
-                                for (int bbz = min.getBlockZ(); z <= max.getBlockZ(); ++z) {
+                        for (int bbx = min.getBlockX(); bbx <= max.getBlockX(); ++bbx) {
+                            for (int bby = min.getBlockY(); bby <= max.getBlockY(); ++bby) {
+                                for (int bbz = min.getBlockZ(); bbz <= max.getBlockZ(); ++bbz) {
                                     if (Material.getMaterial(world.getBlockTypeIdAt(bbx, bby, bbz)).isSolid()) {
                                         break block;
                                     }
@@ -876,12 +877,12 @@ public abstract class GlowEntity implements Entity {
                     if (Material.getMaterial(((GlowWorld) location.getWorld()).getBlockTypeIdAt((int) (x + dx), (int) (y + dy), (int) (z + ndz))).isSolid()) {
                         break;
                     }
-                    if (boundingBox != null) {
+                    if (bbRelevant) {
                         test = BoundingBox.fromPositionAndSize(new Vector((int) (x + dx), (int) (y + dy), (int) (z + ndz)), boundingBox.getSize());
                         Vector min = test.minCorner, max = test.maxCorner;
-                        for (int bbx = min.getBlockX(); x <= max.getBlockX(); ++x) {
-                            for (int bby = min.getBlockY(); y <= max.getBlockY(); ++y) {
-                                for (int bbz = min.getBlockZ(); z <= max.getBlockZ(); ++z) {
+                        for (int bbx = min.getBlockX(); bbx <= max.getBlockX(); ++bbx) {
+                            for (int bby = min.getBlockY(); bby <= max.getBlockY(); ++bby) {
+                                for (int bbz = min.getBlockZ(); bbz <= max.getBlockZ(); ++bbz) {
                                     if (Material.getMaterial(world.getBlockTypeIdAt(bbx, bby, bbz)).isSolid()) {
                                         break block;
                                     }
