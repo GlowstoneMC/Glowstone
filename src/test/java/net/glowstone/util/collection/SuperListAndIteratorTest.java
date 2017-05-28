@@ -51,7 +51,7 @@ public class SuperListAndIteratorTest {
         Iterator<Integer> it = generateTestList().iterator();
         for (int i = 0; i < PARENT_COUNT * ELEMENTS_PER_PARENT; i++) {
             assertThat("Iterator hasNext returns false before reaching the end", it.hasNext(), is(true));
-            assertThat("Mismatch on position " + i, it.next().intValue(), is(i));
+            assertThat("Mismatch on position " + i, it.next(), is(i));
         }
         assertThat("Iterator hasNext returns true after reaching the end", it.hasNext(), is(false));
     }
@@ -77,7 +77,7 @@ public class SuperListAndIteratorTest {
         }
 
         for (int i = 0; i < ELEMENTS_PER_PARENT; i++) {
-            assertThat("Could not add element " + i, i, is(superList.get(i).intValue()));
+            assertThat("Could not add element " + i, i, is(superList.get(i)));
         }
     }
 }
