@@ -6,10 +6,7 @@ import org.bukkit.entity.LivingEntity;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Data
 public class LootRandomValues {
@@ -84,7 +81,7 @@ public class LootRandomValues {
             return ((Number) new ReflectionProcessor(reflectiveCount.get(), entity).process()).intValue();
         }
         if (min.isPresent() && max.isPresent()) {
-            if (min.get() == max.get()) {
+            if (Objects.equals(min.get(), max.get())) {
                 return min.get();
             }
             return random.nextInt(max.get() + 1 - min.get()) + min.get();
