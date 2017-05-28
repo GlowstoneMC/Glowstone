@@ -124,9 +124,9 @@ public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
                     if (block.getWorld().getBlockAt(block.getX() + x, block.getY(), block.getZ() + z).getType() == getMaterial()) {
                         if (x != 0 && z != 0) {
                             cropOnDiagonalBlock = true;
-                        } else if (x == 0 && z != 0) {
+                        } else if (x == 0) {
                             cropOnNorthOrSouth = true;
-                        } else if (x != 0 && z == 0) {
+                        } else {
                             cropOnEastOrWest = true;
                         }
                     }
