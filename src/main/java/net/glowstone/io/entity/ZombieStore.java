@@ -10,7 +10,7 @@ class ZombieStore<T extends GlowZombie> extends MonsterStore<GlowZombie> {
         super(GlowZombie.class, EntityType.ZOMBIE);
     }
 
-    public ZombieStore(Class clazz, EntityType type) {
+    public ZombieStore(Class<T> clazz, EntityType type) {
         super(clazz, type);
     }
 

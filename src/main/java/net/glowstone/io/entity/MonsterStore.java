@@ -9,20 +9,20 @@ import java.lang.reflect.Constructor;
 
 public class MonsterStore<T extends GlowMonster> extends EntityStore<T> {
 
-    private Constructor<T> constructor;
+    private Constructor<? extends T> constructor;
 
-    public MonsterStore(Class<T> clazz, EntityType type) {
+    public MonsterStore(Class<? extends T> clazz, EntityType type) {
         super(clazz, type.getName());
         init(clazz);
     }
 
-    public MonsterStore(Class<T> clazz, String type) {
+    public MonsterStore(Class<? extends T> clazz, String type) {
         super(clazz, type);
         init(clazz);
     }
 
-    private void init(Class<T> clazz) {
-        Constructor<T> ctor = null;
+    private void init(Class<? extends T> clazz) {
+        Constructor<? extends T> ctor = null;
         try {
             ctor = clazz.getConstructor(Location.class);
         } catch (Exception e) {

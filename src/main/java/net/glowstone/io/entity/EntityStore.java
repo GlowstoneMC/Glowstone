@@ -15,15 +15,15 @@ import java.util.UUID;
  * @param <T> The type of entity being stored.
  */
 public abstract class EntityStore<T extends GlowEntity> {
-    protected final Class<T> clazz;
+    protected final Class<? extends T> clazz;
     protected final String type;
 
-    public EntityStore(Class<T> clazz, EntityType type) {
+    public EntityStore(Class<? extends T> clazz, EntityType type) {
         this.clazz = clazz;
         this.type = type.getName();
     }
     
-    public EntityStore(Class<T> clazz, String name) {
+    public EntityStore(Class<? extends T> clazz, String name) {
         this.type = name;
         this.clazz = clazz;
     }
@@ -32,7 +32,7 @@ public abstract class EntityStore<T extends GlowEntity> {
         return type;
     }
 
-    public final Class<T> getType() {
+    public final Class<? extends T> getType() {
         return clazz;
     }
 
