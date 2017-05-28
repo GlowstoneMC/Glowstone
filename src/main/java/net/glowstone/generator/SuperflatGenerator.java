@@ -9,7 +9,7 @@ import java.util.Random;
 public class SuperflatGenerator extends GlowChunkGenerator {
 
     public SuperflatGenerator() {
-        new StructurePopulator();
+        super(new StructurePopulator());
     }
 
     @Override
