@@ -21,6 +21,7 @@ public class HttpHandler extends SimpleChannelInboundHandler<Object> {
         try {
             callback.error(cause);
         } finally {
+            content.setLength(0);
             ctx.channel().close();
         }
     }
@@ -56,6 +57,7 @@ public class HttpHandler extends SimpleChannelInboundHandler<Object> {
         try {
             callback.done(content.toString());
         } finally {
+            content.setLength(0);
             ctx.channel().close();
         }
     }
