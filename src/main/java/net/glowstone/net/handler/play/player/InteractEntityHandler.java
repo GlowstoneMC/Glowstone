@@ -10,6 +10,7 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
+import net.glowstone.util.InventoryUtil;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
@@ -67,7 +68,7 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
 
                 // Apply durability loss (if applicable)
                 short durabilityLoss = AttackDamage.getMeleeDurabilityLoss(type);
-                if (durabilityLoss > 0 && hand != null && player.getGameMode() != GameMode.CREATIVE) {
+                if (durabilityLoss > 0 && !InventoryUtil.isEmpty(hand) && player.getGameMode() != GameMode.CREATIVE) {
                     // Yes, this actually subtracts
                     hand.setDurability((short) (hand.getDurability() + durabilityLoss));
                 }
