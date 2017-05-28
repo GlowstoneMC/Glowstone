@@ -22,10 +22,6 @@ public class ReflectiveValue<T> {
     }
 
     public Object process(Object... context) {
-        if (line.isPresent()) {
-            return new ReflectionProcessor(line.get(), context).process();
-        } else {
-            return value.get();
-        }
+        return line.map(s -> new ReflectionProcessor(s, context).process()).orElseGet(value::get);
     }
 }
