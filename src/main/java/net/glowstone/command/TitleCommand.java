@@ -220,13 +220,13 @@ public class TitleCommand extends BukkitCommand {
 
         // Run through all of the keys to see if they are valid keys,
         // and have valid values
-        for (Object key : json.keySet()) {
-            Object value = json.get(key);
+        for (Map.Entry<String, Object> entry : json.entrySet()) {
+            Object value = entry.getValue();
 
-            if (!(key instanceof String))
-                return false; // The key is not a string, meaning that it is not valid
+            if (entry.getKey() == null)
+                return false; // The key is empty, meaning that it is not valid
 
-            String keyString = (String) key;
+            String keyString = entry.getKey();
 
             switch (keyString) {
                 case "text":

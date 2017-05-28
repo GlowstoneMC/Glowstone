@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Map;
 import java.util.UUID;
 
 public class PlayerStatisticIoService {
@@ -48,21 +49,21 @@ public class PlayerStatisticIoService {
             try {
                 JSONParser parser = new JSONParser();
                 JSONObject json = (JSONObject) parser.parse(new FileReader(statsFile));
-                for (Object o : json.keySet()) {
-                    String key = (String) o;
+                for (Object obj : json.entrySet()) {
+                    Map.Entry<String, Object> entry = (Map.Entry<String, Object>) obj;
                     Long longValue = null;
-                    if (json.get(o) instanceof Long) {
-                        longValue = (Long) json.get(o);
-                    } else if (json.get(o) instanceof JSONObject) {
-                        JSONObject object = (JSONObject) json.get(o);
+                    if (entry.getValue() instanceof Long) {
+                        longValue = (Long) entry.getValue();
+                    } else if (entry.getValue() instanceof JSONObject) {
+                        JSONObject object = (JSONObject) entry.getValue();
                         if (object.containsKey("value")) {
                             longValue = (Long) object.get("value");
                         }
                     } else {
-                        GlowServer.logger.warning("Unknown statistic type for '" + key + "': " + json.get(o) + " (" + json.get(o).getClass().getSimpleName() + ")");
+                        GlowServer.logger.warning("Unknown statistic type for '" + entry.getKey() + "': " + entry.getValue() + " (" + entry.getValue().getClass().getSimpleName() + ")");
                     }
                     if (longValue != null) {
-                        player.getStatisticMap().getValues().put(key, longValue.intValue());
+                        player.getStatisticMap().getValues().put(entry.getKey(), longValue.intValue());
                     }
                 }
             } catch (ParseException | IOException e) {
