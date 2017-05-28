@@ -39,10 +39,7 @@ public class LootingUtil {
         }
         if (condition.startsWith("ENTITY_KILLER_")) {
             EntityType type = EntityType.valueOf(condition.substring("ENTITY_KILLER_".length()));
-            if (entity.getLastDamager() == null) {
-                return false;
-            }
-            return entity.getLastDamager().getType() == type;
+            return entity.getLastDamager() != null && entity.getLastDamager().getType() == type;
         }
         if (condition.contains(".")) {
             return (boolean) process(entity, condition);

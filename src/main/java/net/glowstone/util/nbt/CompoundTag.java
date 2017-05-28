@@ -63,10 +63,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     // Simple gets
 
     public boolean getBool(String key) {
-        if (!containsKey(key)) {
-            return false;
-        }
-        return getByte(key) != 0;
+        return containsKey(key) && getByte(key) != 0;
     }
 
     public byte getByte(String key) {

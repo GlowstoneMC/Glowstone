@@ -217,9 +217,6 @@ public class GlowBossBar implements BossBar {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj.getClass() != GlowBossBar.class) {
-            return false;
-        }
-        return ((GlowBossBar) obj).getUniqueId() == this.getUniqueId();
+        return obj.getClass() == GlowBossBar.class && ((GlowBossBar) obj).getUniqueId() == this.getUniqueId();
     }
 }

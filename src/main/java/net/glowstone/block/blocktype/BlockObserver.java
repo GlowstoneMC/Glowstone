@@ -37,10 +37,7 @@ public class BlockObserver extends BlockDirectional {
     }
 
     public static boolean isPowered(GlowBlock block) {
-        if (block.getType() != Material.OBSERVER) {
-            return false;
-        }
-        return ((block.getData() >> POWERED_MASK) & 1) == 1;
+        return block.getType() == Material.OBSERVER && ((block.getData() >> POWERED_MASK) & 1) == 1;
     }
 
     public static BlockFace getFace(GlowBlock block) {
