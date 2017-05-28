@@ -5,9 +5,11 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * An attempt at test casing the ridiculously complicated window click logic.
@@ -30,7 +32,7 @@ public class WindowClickLogicTest {
             String expected = testCase[3];
 
             String actual = String.valueOf(WindowClickLogic.getClickType(mode, button, slot));
-            Assert.assertEquals("Failure for mode=" + mode + ", button=" + button + ", slot=" + slot, expected, actual);
+            assertThat("Failure for mode=" + mode + ", button=" + button + ", slot=" + slot, actual, is(expected));
         }
     }
 
@@ -46,7 +48,7 @@ public class WindowClickLogicTest {
             InventoryType.SlotType slotType = (slot < 0) ? InventoryType.SlotType.OUTSIDE : InventoryType.SlotType.CONTAINER;
 
             String actual = String.valueOf(WindowClickLogic.getAction(clickType, slotType, cursor, slotItem));
-            Assert.assertEquals("Failure for click=" + clickType + ", slot=" + slot + ", cursor=" + testCase[2] + ", slotItem=" + testCase[3], expected, actual);
+            assertThat("Failure for click=" + clickType + ", slot=" + slot + ", cursor=" + testCase[2] + ", slotItem=" + testCase[3], actual, is(expected));
         }
     }
 

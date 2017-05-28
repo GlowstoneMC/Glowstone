@@ -1,12 +1,12 @@
 package net.glowstone.util;
 
 import net.glowstone.block.ItemTable;
-
 import org.bukkit.Material;
 import org.junit.Test;
 
 import static org.bukkit.Material.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public class VariableValueArrayTest {
 
@@ -50,11 +50,11 @@ public class VariableValueArrayTest {
         }
         // Tautological check
         for (int i = 0; i < SAMPLE_BLOCKS.length; i++) {
-            assertEquals(array.get(i), SAMPLE_BLOCKS[i]);
+            assertThat(SAMPLE_BLOCKS[i], is(array.get(i)));
         }
         // Check the backing array
-        assertEquals(array.getBacking()[0], EXPECTED_BACKING_1);
-        assertEquals(array.getBacking()[1], EXPECTED_BACKING_2);
+        assertThat(EXPECTED_BACKING_1, is(array.getBacking()[0]));
+        assertThat(EXPECTED_BACKING_2, is(array.getBacking()[1]));
         // There is a 3rd value, but it only contains 2 bits which we don't care about
     }
 
@@ -66,28 +66,28 @@ public class VariableValueArrayTest {
             array.set(i, SAMPLE_BLOCKS[i]);
         }
         for (int i = 0; i < SAMPLE_BLOCKS.length; i++) {
-            assertEquals(array.get(i), SAMPLE_BLOCKS[i]);
+            assertThat(SAMPLE_BLOCKS[i], is(array.get(i)));
         }
         // Now resize
         VariableValueArray resized = array.increaseBitsPerValueTo(13);
         for (int i = 0; i < SAMPLE_BLOCKS.length; i++) {
-            assertEquals(resized.get(i), SAMPLE_BLOCKS[i]);
+            assertThat(SAMPLE_BLOCKS[i], is(resized.get(i)));
         }
     }
 
     @Test
     public void testCalculateNeededBits() {
-        assertEquals(VariableValueArray.calculateNeededBits(0), 1);
-        assertEquals(VariableValueArray.calculateNeededBits(1), 1);
-        assertEquals(VariableValueArray.calculateNeededBits(2), 2);
-        assertEquals(VariableValueArray.calculateNeededBits(3), 2);
-        assertEquals(VariableValueArray.calculateNeededBits(4), 3);
+        assertThat(1, is(VariableValueArray.calculateNeededBits(0)));
+        assertThat(1, is(VariableValueArray.calculateNeededBits(1)));
+        assertThat(2, is(VariableValueArray.calculateNeededBits(2)));
+        assertThat(2, is(VariableValueArray.calculateNeededBits(3)));
+        assertThat(3, is(VariableValueArray.calculateNeededBits(4)));
         // ...
-        assertEquals(VariableValueArray.calculateNeededBits(7), 3);
-        assertEquals(VariableValueArray.calculateNeededBits(8), 4);
+        assertThat(3, is(VariableValueArray.calculateNeededBits(7)));
+        assertThat(4, is(VariableValueArray.calculateNeededBits(8)));
         // ...
-        assertEquals(VariableValueArray.calculateNeededBits(Integer.MAX_VALUE), 31);
-        assertEquals(VariableValueArray.calculateNeededBits(Integer.MIN_VALUE), 32);
-        assertEquals(VariableValueArray.calculateNeededBits(-1), 32);
+        assertThat(31, is(VariableValueArray.calculateNeededBits(Integer.MAX_VALUE)));
+        assertThat(32, is(VariableValueArray.calculateNeededBits(Integer.MIN_VALUE)));
+        assertThat(32, is(VariableValueArray.calculateNeededBits(-1)));
     }
 }

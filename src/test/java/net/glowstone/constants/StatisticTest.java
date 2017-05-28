@@ -8,7 +8,9 @@ import org.junit.runners.Parameterized;
 
 import java.util.Collection;
 
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.junit.Assert.assertThat;
 
 /**
  * Tests for {@link GlowStatistic}.
@@ -33,7 +35,7 @@ public class StatisticTest {
             // typed statistics not yet tested
             return;
         }
-        assertTrue("Name missing for untyped statistic " + statistic, GlowStatistic.getName(statistic) != null);
+        assertThat("Name missing for untyped statistic " + statistic, GlowStatistic.getName(statistic), not(sameInstance(null)));
     }
 
 }

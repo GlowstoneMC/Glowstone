@@ -32,8 +32,8 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.mock;
 
@@ -84,19 +84,19 @@ public class QueryTest {
 
     @Test
     public void testChallengeTokens() throws Exception {
-        assertFalse("Accepted random challenge token.", server.verifyChallengeToken(address, 54321));
+        assertThat("Accepted random challenge token.", server.verifyChallengeToken(address, 54321), is(false));
 
         when(random.nextInt()).thenReturn(12345);
         int token1 = server.generateChallengeToken(address);
-        assertTrue("Did not add challenge token.", server.verifyChallengeToken(address, token1));
+        assertThat("Did not add challenge token.", server.verifyChallengeToken(address, token1), is(true));
 
         when(random.nextInt()).thenReturn(6789);
         int token2 = server.generateChallengeToken(address);
-        assertFalse("Expired token accepted.", server.verifyChallengeToken(address, token1));
-        assertTrue("Did not add challenge token.", server.verifyChallengeToken(address, token2));
+        assertThat("Expired token accepted.", server.verifyChallengeToken(address, token1), is(false));
+        assertThat("Did not add challenge token.", server.verifyChallengeToken(address, token2), is(true));
 
         server.flushChallengeTokens();
-        assertFalse("Flush did not remove token.", server.verifyChallengeToken(address, token2));
+        assertThat("Flush did not remove token.", server.verifyChallengeToken(address, token2), is(false));
     }
 
     @Test

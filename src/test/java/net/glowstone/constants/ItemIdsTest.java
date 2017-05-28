@@ -8,7 +8,10 @@ import org.junit.runners.Parameterized;
 
 import java.util.Collection;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 /**
  * Tests for {@link ItemIds}.
@@ -30,7 +33,7 @@ public class ItemIdsTest {
     @Test
     public void mappingExists() {
         String nameid = ItemIds.getName(material);
-        assertNotNull("Identifier missing for " + material, nameid);
+        assertThat("Identifier missing for " + material, nameid, notNullValue());
         if (!nameid.startsWith("minecraft:")) {
             fail("Identifier '" + nameid + "' does not start with 'minecraft:'");
         }
@@ -39,14 +42,14 @@ public class ItemIdsTest {
         Material block = ItemIds.getBlock(nameid);
         String base = "Material " + material + "\t-> \"" + nameid + "\"\t-> ";
         if (material.isBlock()) {
-            assertNotNull(base + "block, has no block entry", block);
-            assertEquals("wrong block material", material, block);
+            assertThat(base + "block, has no block entry", block, notNullValue());
+            assertThat("wrong block material", block, is(material));
             if (item != material) {
                 System.out.println(base + "item: " + item);
             }
         } else {
-            assertNotNull(base + "item, has no item entry", item);
-            assertEquals("wrong item material", material, item);
+            assertThat(base + "item, has no item entry", item, notNullValue());
+            assertThat("wrong item material", item, is(material));
             if (block == material) {
                 fail(base + "not block, but maps to block: " + block);
             }

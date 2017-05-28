@@ -6,8 +6,8 @@ import com.flowpowered.network.service.CodecLookupService;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.glowstone.net.message.play.inv.HeldItemMessage;
-import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.GlowProtocol;
+import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.testutils.ServerShim;
 import org.junit.Test;
 
@@ -17,8 +17,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Base tests for each {@link GlowProtocol}.
@@ -72,17 +72,17 @@ public abstract class BaseProtocolTest {
                 any = true;
             }
 
-            assertTrue("Codec missing for: " + message, any);
+            assertThat("Codec missing for: " + message, any, is(true));
         }
 
         // special case: HeldItemMessage is excluded from tests
         inboundSet.remove(HeldItemMessage.class);
         outboundSet.remove(HeldItemMessage.class);
 
-        assertTrue("Did not test inbound classes: " + inboundSet, inboundSet.isEmpty());
+        assertThat("Did not test inbound classes: " + inboundSet, inboundSet.isEmpty(), is(true));
         // todo: enable the outbound check for PlayProtocol
         if (!(protocol instanceof PlayProtocol)) {
-            assertTrue("Did not test outbound classes: " + outboundSet, outboundSet.isEmpty());
+            assertThat("Did not test outbound classes: " + outboundSet, outboundSet.isEmpty(), is(true));
         }
     }
 
@@ -95,7 +95,7 @@ public abstract class BaseProtocolTest {
             if (buffer.refCnt() > 0) {
                 buffer.release(buffer.refCnt());
             }
-            assertEquals("Asymmetry for " + reg.getOpcode() + "/" + message.getClass().getName(), message, decoded);
+            assertThat("Asymmetry for " + reg.getOpcode() + "/" + message.getClass().getName(), decoded, is(message));
         } catch (IOException e) {
             throw new AssertionError("Error in I/O for " + reg.getOpcode() + "/" + message.getClass().getName(), e);
         }

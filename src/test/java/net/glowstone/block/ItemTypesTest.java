@@ -11,13 +11,14 @@ import org.junit.runners.Parameterized;
 
 import java.util.Collection;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Tests for the contents of {@link ItemTable}.
  */
 @RunWith(Parameterized.class)
-public class TestItemTypes {
+public class ItemTypesTest {
 
     private static ItemTable table;
 
@@ -28,7 +29,7 @@ public class TestItemTypes {
 
     private final Material material;
 
-    public TestItemTypes(Material material) {
+    public ItemTypesTest(Material material) {
         this.material = material;
     }
 
@@ -43,19 +44,19 @@ public class TestItemTypes {
 
         // special cases
         if (material == Material.AIR) {
-            assertNull("ItemType exists for air: " + type, type);
+            assertThat("ItemType exists for air: " + type, type, nullValue());
             return;
         }
 
         // check that it exists
-        assertNotNull("ItemType does not exist for " + material, type);
+        assertThat("ItemType does not exist for " + material, type, notNullValue());
         // check that its block status is correct
-        assertTrue("Block status mismatch between " + material + "(" + material.isBlock() + ") and " + type, (type instanceof BlockType) == material.isBlock());
+        assertThat("Block status mismatch between " + material + "(" + material.isBlock() + ") and " + type, (type instanceof BlockType), is(material.isBlock()));
         // check that material returned matches
-        assertEquals("ItemType returned wrong material", material, type.getMaterial());
+        assertThat("ItemType returned wrong material", type.getMaterial(), is(material));
 
         // check that max stack size matches
-        assertEquals("Maximum stack size was incorrect", material.getMaxStackSize(), type.getMaxStackSize());
+        assertThat("Maximum stack size was incorrect", type.getMaxStackSize(), is(material.getMaxStackSize()));
     }
 
 }

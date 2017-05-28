@@ -13,7 +13,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
 /**
  * Tests for {@link GlowEnchantment}.
@@ -50,13 +52,13 @@ public class EnchantmentTest {
     public void effect() throws ReflectiveOperationException {
         EnchantmentWrapper wrapper = (EnchantmentWrapper) field.get(null);
         GlowEnchantment enchant = (GlowEnchantment) wrapper.getEnchantment();
-        assertNotNull("missing enchantment for " + field.getName(), enchant);
-        assertEquals("wrong name on wrapped effect", field.getName(), enchant.getName());
-        assertEquals("missing from byName", enchant, Enchantment.getByName(enchant.getName()));
-        assertEquals("missing from byId", enchant, Enchantment.getById(enchant.getId()));
-        assertEquals("wrong start level", 1, enchant.getStartLevel());
-        assertTrue("weird max level: " + enchant.getMaxLevel(), enchant.getMaxLevel() >= 1 && enchant.getMaxLevel() <= 5);
-        assertNotNull("missing item target", enchant.getItemTarget());
+        assertThat("missing enchantment for " + field.getName(), enchant, notNullValue());
+        assertThat("wrong name on wrapped effect", enchant.getName(), is(field.getName()));
+        assertThat("missing from byName", Enchantment.getByName(enchant.getName()), is(enchant));
+        assertThat("missing from byId", Enchantment.getById(enchant.getId()), is(enchant));
+        assertThat("wrong start level", enchant.getStartLevel(), is(1));
+        assertThat("weird max level: " + enchant.getMaxLevel(), enchant.getMaxLevel() >= 1 && enchant.getMaxLevel() <= 5, is(true));
+        assertThat("missing item target", enchant.getItemTarget(), notNullValue());
     }
 
 }

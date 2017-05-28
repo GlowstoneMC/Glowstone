@@ -6,7 +6,6 @@ import net.glowstone.util.nbt.Tag;
 import net.glowstone.util.nbt.TagType;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -14,12 +13,14 @@ import org.junit.runners.Parameterized;
 import java.util.Arrays;
 import java.util.Collection;
 
+import static org.junit.Assert.fail;
+
 @RunWith(Parameterized.class)
-public class TestMojangsonParse {
+public class MojangsonParseTest {
 
     private final Pair<TagType, String> testCase;
 
-    public TestMojangsonParse(TagType tag, String mojangson) {
+    public MojangsonParseTest(TagType tag, String mojangson) {
         this.testCase = new ImmutablePair<>(tag, mojangson);
     }
 
@@ -45,11 +46,11 @@ public class TestMojangsonParse {
 
             // Checks if the TagType of the case and the parsed type are equal.
             if (value.getType() != testCase.getKey()) {
-                Assert.fail("Incorrect type parsing for case " + testCase.getKey().getName() + " (Got " + value.getType().getName() + ") for Mojansgon: " + testCase.getValue());
+                fail("Incorrect type parsing for case " + testCase.getKey().getName() + " (Got " + value.getType().getName() + ") for Mojansgon: " + testCase.getValue());
             }
         } catch (MojangsonParseException e) {
             // Catches a parse failure.
-            Assert.fail("Could not parse case for " + testCase.getKey().getName() + "( " + testCase.getValue() + "): " + e.getMessage());
+            fail("Could not parse case for " + testCase.getKey().getName() + "( " + testCase.getValue() + "): " + e.getMessage());
         }
     }
 }

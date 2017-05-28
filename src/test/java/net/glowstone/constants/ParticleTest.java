@@ -10,8 +10,8 @@ import org.junit.runners.Parameterized;
 
 import java.util.Collection;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Tests for {@link GlowParticle}.
@@ -33,30 +33,25 @@ public class ParticleTest {
     }
 
     @Test
-    public void testHasId() {
-        //TODO assertTrue("Id missing for particle " + particle, GlowParticle.getId(particle) >= 0);
-    }
-
-    @Test
     public void testGetData() {
         if (particle.getType() != Effect.Type.PARTICLE) return; // this only tests particle effects
 
         switch (particle) {
             case ITEM_BREAK:
-                assertEquals("Wrong data for " + particle, true, particle.getData() != null);
-                assertArrayEquals("Wrong extra data for " + particle, new int[]{Material.STONE.getId(), 1}, GlowParticle.getExtData(particle, STONE));
+                assertThat("Wrong data for " + particle, particle.getData() != null, is(true));
+                assertThat("Wrong extra data for " + particle, GlowParticle.getExtData(particle, STONE), is(new int[]{Material.STONE.getId(), 1}));
                 break;
             case TILE_BREAK:
-                assertEquals("Wrong data for " + particle, true, particle.getData() != null);
-                assertArrayEquals("Wrong extra data for " + particle, new int[]{4097}, GlowParticle.getExtData(particle, STONE));
+                assertThat("Wrong data for " + particle, particle.getData() != null, is(true));
+                assertThat("Wrong extra data for " + particle, GlowParticle.getExtData(particle, STONE), is(new int[]{4097}));
                 break;
             case TILE_DUST:
-                assertEquals("Wrong data for " + particle, true, particle.getData() != null);
-                assertArrayEquals("Wrong extra data for " + particle, new int[]{Material.STONE.getId()}, GlowParticle.getExtData(particle, STONE));
+                assertThat("Wrong data for " + particle, particle.getData() != null, is(true));
+                assertThat("Wrong extra data for " + particle, GlowParticle.getExtData(particle, STONE), is(new int[]{Material.STONE.getId()}));
                 break;
             default:
-                assertEquals("Wrong data for " + particle, false, particle.getData() != null);
-                assertArrayEquals("Wrong extra data for " + particle, new int[0], GlowParticle.getExtData(particle, null));
+                assertThat("Wrong data for " + particle, particle.getData() != null, is(false));
+                assertThat("Wrong extra data for " + particle, GlowParticle.getExtData(particle, null), is(new int[0]));
         }
     }
 
