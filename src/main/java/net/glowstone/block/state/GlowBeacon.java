@@ -3,7 +3,6 @@ package net.glowstone.block.state;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.BeaconEntity;
-import net.glowstone.constants.GlowPotionEffect;
 import org.bukkit.block.Beacon;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.Inventory;
@@ -21,10 +20,10 @@ public class GlowBeacon extends GlowLootableBlock implements Beacon {
     public GlowBeacon(GlowBlock block) {
         super(block);
         if (getBlockEntity().getPrimaryId() > 0) {
-            setPrimaryEffect(GlowPotionEffect.getById(getBlockEntity().getPrimaryId()));
+            setPrimaryEffect(PotionEffectType.getById(getBlockEntity().getPrimaryId()));
         }
         if (getBlockEntity().getSecondaryId() > 0) {
-            setSecondaryEffect(GlowPotionEffect.getById(getBlockEntity().getSecondaryId()));
+            setSecondaryEffect(PotionEffectType.getById(getBlockEntity().getSecondaryId()));
         }
     }
 
