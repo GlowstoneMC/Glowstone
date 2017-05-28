@@ -1857,6 +1857,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         return advancements.get(advancement);
     }
 
+    @Override
+    public String getLocale() {
+        return null;
+    }
+
     public boolean affectsSpawning = true;
 
     @Override
