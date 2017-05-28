@@ -102,7 +102,7 @@ public class MesaGroundGenerator extends GroundGenerator {
 
                         deep = surfaceHeight + Math.max(0, y - seaLevel - 1);
                         if (y >= seaLevel - 2) {
-                            if (type == MesaType.FOREST && y > seaLevel + 22 + surfaceHeight * 2) {
+                            if (type == MesaType.FOREST && y > seaLevel + 22 + (surfaceHeight << 1)) {
                                 topMat = colored ? GRASS : COARSE_DIRT;
                                 chunkData.setBlock(x, y, z, topMat);
                             } else if (y > seaLevel + 2 + surfaceHeight) {

@@ -325,9 +325,9 @@ public class EnchantmentManager {
         if (stage == 0) {
             result = Math.max(rand / 3, 1);
         } else if (stage == 1) {
-            result = rand * 2 / 3 + 1;
+            result = (rand << 1) / 3 + 1;
         } else {
-            result = Math.max(rand, countBookshelf * 2);
+            result = Math.max(rand, countBookshelf << 1);
         }
 
         if (result < stage + 1)

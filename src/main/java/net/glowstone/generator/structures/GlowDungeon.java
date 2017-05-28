@@ -39,8 +39,8 @@ public class GlowDungeon extends GlowStructurePiece {
         // inner dungeon shape is 5x5, 5x7 or 7x7
         radiusX = random.nextInt(2) + MIN_RADIUS;
         radiusZ = random.nextInt(2) + MIN_RADIUS;
-        sizeX = radiusX * 2 + 1;
-        sizeZ = radiusZ * 2 + 1;
+        sizeX = (radiusX << 1) + 1;
+        sizeZ = (radiusZ << 1) + 1;
         loc = location;
     }
 
@@ -136,8 +136,8 @@ public class GlowDungeon extends GlowStructurePiece {
 
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 3; j++) {
-                int x = random.nextInt(radiusX * 2 - 1) + 1;
-                int z = random.nextInt(radiusZ * 2 - 1) + 1;
+                int x = random.nextInt((radiusX << 1) - 1) + 1;
+                int z = random.nextInt((radiusZ << 1) - 1) + 1;
                 if (builder.getBlockState(new Vector(x, 1, z)).getType() == Material.AIR) {
                     BlockFace face = null;
                     int solidBlocksCount = 0;

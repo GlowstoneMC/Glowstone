@@ -126,7 +126,7 @@ public class NetherGenerator extends GlowChunkGenerator {
     }
 
     private ChunkData generateRawTerrain(World world, int chunkX, int chunkZ) {
-        generateTerrainDensity(world, chunkX * 4, chunkZ * 4);
+        generateTerrainDensity(world, chunkX << 2, chunkZ << 2);
 
         ChunkData chunkData = createChunkData(world);
 

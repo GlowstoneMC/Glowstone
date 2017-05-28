@@ -324,7 +324,7 @@ public class RegionFile {
     }
 
     private int getOffset(int x, int z) {
-        return offsets[x + z * 32];
+        return offsets[x + (z << 5)];
     }
 
     public boolean hasChunk(int x, int z) {
@@ -332,14 +332,14 @@ public class RegionFile {
     }
 
     private void setOffset(int x, int z, int offset) throws IOException {
-        offsets[x + z * 32] = offset;
-        file.seek((x + z * 32) * 4);
+        offsets[x + (z << 5)] = offset;
+        file.seek((x + (z << 5)) << 2);
         file.writeInt(offset);
     }
 
     private void setTimestamp(int x, int z, int value) throws IOException {
-        chunkTimestamps[x + z * 32] = value;
-        file.seek(SECTOR_BYTES + (x + z * 32) * 4);
+        chunkTimestamps[x + (z << 5)] = value;
+        file.seek(SECTOR_BYTES + ((x + (z << 5)) << 2));
         file.writeInt(value);
     }
 

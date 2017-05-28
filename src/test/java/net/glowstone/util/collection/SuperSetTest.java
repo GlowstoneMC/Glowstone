@@ -61,7 +61,7 @@ public class SuperSetTest {
     @Test
     public void sizeTest() {
         Set<String> sets = generateTestSet();
-        assertThat("Populated set size test failed", CASES * 2, is(sets.size()));
+        assertThat("Populated set size test failed", CASES << 1, is(sets.size()));
         sets.clear();
         assertThat("Cleared set size test failed", 0, is(sets.size()));
     }

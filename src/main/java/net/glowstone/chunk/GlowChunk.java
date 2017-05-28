@@ -654,7 +654,7 @@ public final class GlowChunk implements Chunk {
                 break;
             }
         }
-        int y = (sy + 1) * 16;
+        int y = (sy + 1) << 4;
         for (int x = 0; x < WIDTH; ++x) {
             for (int z = 0; z < HEIGHT; ++z) {
                 heightMap[z * WIDTH + x] = (byte) lowerHeightMap(x, y, z);

@@ -122,20 +122,20 @@ public class GlowDesertTemple extends GlowTemplePiece {
         // tower symbols
         for (int i = 0; i < 2; i++) {
             // front
-            builder.fill(new Vector(1 + i * 16, 20, 0), new Vector(1 + i * 16, 21, 0), Material.SANDSTONE, 2);
-            builder.fill(new Vector(2 + i * 16, 20, 0), new Vector(2 + i * 16, 21, 0), Material.STAINED_CLAY, 1);
-            builder.fill(new Vector(3 + i * 16, 20, 0), new Vector(3 + i * 16, 21, 0), Material.SANDSTONE, 2);
-            builder.setBlock(new Vector(1 + i * 16, 22, 0), Material.STAINED_CLAY, 1);
-            builder.setBlock(new Vector(2 + i * 16, 22, 0), Material.SANDSTONE, 1);
-            builder.setBlock(new Vector(3 + i * 16, 22, 0), Material.STAINED_CLAY, 1);
-            builder.setBlock(new Vector(1 + i * 16, 23, 0), Material.SANDSTONE, 2);
-            builder.setBlock(new Vector(2 + i * 16, 23, 0), Material.STAINED_CLAY, 1);
-            builder.setBlock(new Vector(3 + i * 16, 23, 0), Material.SANDSTONE, 2);
-            builder.setBlock(new Vector(1 + i * 16, 24, 0), Material.STAINED_CLAY, 1);
-            builder.setBlock(new Vector(2 + i * 16, 24, 0), Material.SANDSTONE, 1);
-            builder.setBlock(new Vector(3 + i * 16, 24, 0), Material.STAINED_CLAY, 1);
-            builder.fill(new Vector(1 + i * 16, 25, 0), new Vector(3 + i * 16, 25, 0), Material.STAINED_CLAY, 1);
-            builder.fill(new Vector(1 + i * 16, 26, 0), new Vector(3 + i * 16, 26, 0), Material.SANDSTONE, 2);
+            builder.fill(new Vector(1 + (i << 4), 20, 0), new Vector(1 + (i << 4), 21, 0), Material.SANDSTONE, 2);
+            builder.fill(new Vector(2 + (i << 4), 20, 0), new Vector(2 + (i << 4), 21, 0), Material.STAINED_CLAY, 1);
+            builder.fill(new Vector(3 + (i << 4), 20, 0), new Vector(3 + (i << 4), 21, 0), Material.SANDSTONE, 2);
+            builder.setBlock(new Vector(1 + (i << 4), 22, 0), Material.STAINED_CLAY, 1);
+            builder.setBlock(new Vector(2 + (i << 4), 22, 0), Material.SANDSTONE, 1);
+            builder.setBlock(new Vector(3 + (i << 4), 22, 0), Material.STAINED_CLAY, 1);
+            builder.setBlock(new Vector(1 + (i << 4), 23, 0), Material.SANDSTONE, 2);
+            builder.setBlock(new Vector(2 + (i << 4), 23, 0), Material.STAINED_CLAY, 1);
+            builder.setBlock(new Vector(3 + (i << 4), 23, 0), Material.SANDSTONE, 2);
+            builder.setBlock(new Vector(1 + (i << 4), 24, 0), Material.STAINED_CLAY, 1);
+            builder.setBlock(new Vector(2 + (i << 4), 24, 0), Material.SANDSTONE, 1);
+            builder.setBlock(new Vector(3 + (i << 4), 24, 0), Material.STAINED_CLAY, 1);
+            builder.fill(new Vector(1 + (i << 4), 25, 0), new Vector(3 + (i << 4), 25, 0), Material.STAINED_CLAY, 1);
+            builder.fill(new Vector(1 + (i << 4), 26, 0), new Vector(3 + (i << 4), 26, 0), Material.SANDSTONE, 2);
             // side
             builder.fill(new Vector(i * 20, 20, 1), new Vector(i * 20, 21, 1), Material.SANDSTONE, 2);
             builder.fill(new Vector(i * 20, 20, 2), new Vector(i * 20, 21, 2), Material.STAINED_CLAY, 1);
@@ -198,10 +198,10 @@ public class GlowDesertTemple extends GlowTemplePiece {
         builder.fill(new Vector(18, 19, 12), new Vector(18, 19, 18), Material.SANDSTONE);
         builder.fill(new Vector(3, 19, 18), new Vector(18, 19, 18), Material.SANDSTONE);
         for (int i = 0; i < 7; i++) {
-            builder.setBlock(new Vector(4, 19, 5 + i * 2), Material.SANDSTONE, 2);
-            builder.setBlock(new Vector(4, 20, 5 + i * 2), Material.SANDSTONE, 1);
-            builder.setBlock(new Vector(16, 19, 5 + i * 2), Material.SANDSTONE, 2);
-            builder.setBlock(new Vector(16, 20, 5 + i * 2), Material.SANDSTONE, 1);
+            builder.setBlock(new Vector(4, 19, 5 + (i << 1)), Material.SANDSTONE, 2);
+            builder.setBlock(new Vector(4, 20, 5 + (i << 1)), Material.SANDSTONE, 1);
+            builder.setBlock(new Vector(16, 19, 5 + (i << 1)), Material.SANDSTONE, 2);
+            builder.setBlock(new Vector(16, 20, 5 + (i << 1)), Material.SANDSTONE, 1);
         }
         // floor symbols
         builder.setBlock(new Vector(9, 18, 9), Material.STAINED_CLAY, 1);

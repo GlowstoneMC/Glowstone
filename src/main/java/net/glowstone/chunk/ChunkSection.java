@@ -469,7 +469,7 @@ public final class ChunkSection {
         }
         long[] backing = data.getBacking();
         ByteBufUtils.writeVarInt(buf, backing.length);
-        buf.ensureWritable(backing.length * 8 + blockLight.byteSize() + (skylight ? skyLight.byteSize() : 0));
+        buf.ensureWritable((backing.length << 3) + blockLight.byteSize() + (skylight ? skyLight.byteSize() : 0));
         for (long value : backing) {
             buf.writeLong(value);
         }

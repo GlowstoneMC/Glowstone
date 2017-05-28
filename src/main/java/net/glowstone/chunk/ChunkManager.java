@@ -226,8 +226,8 @@ public final class ChunkManager {
         chunk.setPopulated(true);
 
         Random random = new Random(world.getSeed());
-        long xRand = random.nextLong() / 2 * 2 + 1;
-        long zRand = random.nextLong() / 2 * 2 + 1;
+        long xRand = (random.nextLong() / 2 << 1) + 1;
+        long zRand = (random.nextLong() / 2 << 1) + 1;
         random.setSeed(x * xRand + z * zRand ^ world.getSeed());
 
         for (BlockPopulator p : world.getPopulators()) {
@@ -345,7 +345,7 @@ public final class ChunkManager {
             for (int cx = 0; cx < 16; ++cx) {
                 for (int cz = 0; cz < 16; ++cz) {
                     for (int cy = by; cy < by + 16; ++cy) {
-                        char type = (char) types[(cx * 16 + cz) * 128 + cy];
+                        char type = (char) types[(((cx << 4) + cz) << 7) + cy];
                         sec.setType(cx, cy, cz, (char) (type << 4));
                     }
                 }

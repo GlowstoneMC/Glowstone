@@ -139,8 +139,8 @@ public class GlowJungleTemple extends GlowTemplePiece {
         builder.fillWithRandomMaterial(new Vector(9, 8, 0), new Vector(9, 9, 0), random, stones);
         builder.fillWithRandomMaterial(new Vector(5, 10, 0), new Vector(6, 10, 0), random, stones);
         for (int i = 0; i < 6; i++) {
-            builder.fillWithRandomMaterial(new Vector(11, 8, 2 + i * 2), new Vector(11, 9, 2 + i * 2), random, stones);
-            builder.fillWithRandomMaterial(new Vector(0, 8, 2 + i * 2), new Vector(0, 9, 2 + i * 2), random, stones);
+            builder.fillWithRandomMaterial(new Vector(11, 8, 2 + (i << 1)), new Vector(11, 9, 2 + (i << 1)), random, stones);
+            builder.fillWithRandomMaterial(new Vector(0, 8, 2 + (i << 1)), new Vector(0, 9, 2 + (i << 1)), random, stones);
         }
         builder.setBlockWithRandomMaterial(new Vector(11, 10, 5), random, stones);
         builder.setBlockWithRandomMaterial(new Vector(11, 10, 9), random, stones);
@@ -170,10 +170,10 @@ public class GlowJungleTemple extends GlowTemplePiece {
 
         // 1st floor inside
         for (int i = 0; i < 6; i++) {
-            builder.fillWithRandomMaterial(new Vector(1, 3, 2 + i * 2), new Vector(3, 3, 2 + i * 2), random, stones);
+            builder.fillWithRandomMaterial(new Vector(1, 3, 2 + (i << 1)), new Vector(3, 3, 2 + (i << 1)), random, stones);
         }
         for (int i = 0; i < 7; i++) {
-            builder.fillWithRandomMaterial(new Vector(1, 1, 1 + i * 2), new Vector(1, 2, 1 + i * 2), random, stones);
+            builder.fillWithRandomMaterial(new Vector(1, 1, 1 + (i << 1)), new Vector(1, 2, 1 + (i << 1)), random, stones);
         }
         builder.setBlockWithRandomMaterial(new Vector(2, 2, 1), random, stones);
         builder.setBlock(new Vector(3, 1, 1), Material.MOSSY_COBBLESTONE);

@@ -51,7 +51,7 @@ public class GlowEnchantingInventory extends GlowInventory implements Enchanting
                             copyPosition(location, loc);
 
                             //diagonal and straight
-                            loc.add(x * 2, y, z * 2);
+                            loc.add(x << 1, y, z << 1);
                             if (loc.getBlock().getType() == Material.BOOKSHELF) {
                                 count++;
                             }
@@ -59,13 +59,13 @@ public class GlowEnchantingInventory extends GlowInventory implements Enchanting
                             if (x != 0 && z != 0) {
                                 //one block diagonal and one straight
                                 copyPosition(location, loc);
-                                loc.add(x * 2, y, z);
+                                loc.add(x << 1, y, z);
                                 if (loc.getBlock().getType() == Material.BOOKSHELF) {
                                     ++count;
                                 }
 
                                 copyPosition(location, loc);
-                                loc.add(x, y, z * 2);
+                                loc.add(x, y, z << 1);
                                 if (loc.getBlock().getType() == Material.BOOKSHELF) {
                                     ++count;
                                 }

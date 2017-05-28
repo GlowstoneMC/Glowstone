@@ -293,7 +293,7 @@ public final class Explosion {
             }
         }
 
-        return level * 2;
+        return level << 1;
     }
 
     private LivingEntity[] getNearbyEntities() {

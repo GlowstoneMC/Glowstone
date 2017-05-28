@@ -760,7 +760,7 @@ public final class GlowWorld implements World {
 
                 long loadTime = System.currentTimeMillis();
 
-                int total = (radius * 2 + 1) * (radius * 2 + 1), current = 0;
+                int total = ((radius << 1) + 1) * ((radius << 1) + 1), current = 0;
 
                 for (int x = centerX - radius; x <= centerX + radius; ++x) {
                     for (int z = centerZ - radius; z <= centerZ + radius; ++z) {

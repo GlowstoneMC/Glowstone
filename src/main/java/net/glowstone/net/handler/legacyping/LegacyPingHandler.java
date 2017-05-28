@@ -52,14 +52,14 @@ public class LegacyPingHandler extends ChannelInboundHandlerAdapter {
                         }
                         break;
                     default:
-                        if (bytebuf.readByte() == (byte) 0x01 && bytebuf.readByte() == (byte) 0xFA && "MC|PingHost".equals(new String(bytebuf.readBytes(bytebuf.readShort() * 2).array(), Charsets.UTF_16BE))) {
+                        if (bytebuf.readByte() == (byte) 0x01 && bytebuf.readByte() == (byte) 0xFA && "MC|PingHost".equals(new String(bytebuf.readBytes(bytebuf.readShort() << 1).array(), Charsets.UTF_16BE))) {
                             int dataLength = bytebuf.readUnsignedShort();
                             short clientVersion = bytebuf.readUnsignedByte();
-                            String hostname = bytebuf.readBytes(bytebuf.readShort() * 2).toString(Charsets.UTF_16BE);
+                            String hostname = bytebuf.readBytes(bytebuf.readShort() << 1).toString(Charsets.UTF_16BE);
                             @SuppressWarnings("unused")
                             int port = bytebuf.readInt();
 
-                            if (clientVersion >= 73 && 7 + (hostname.length() * 2) == dataLength && bytebuf.readableBytes() == 0) {
+                            if (clientVersion >= 73 && 7 + (hostname.length() << 1) == dataLength && bytebuf.readableBytes() == 0) {
                                 sendByteBuf(channelHandlerContext, responseToByteBuf(channelHandlerContext, String.format("\u00a71\u0000%d\u0000%s\u0000%s\u0000%d\u0000%d", GlowServer.PROTOCOL_VERSION, GlowServer.GAME_VERSION, legacyPingEvent.getMotd(), legacyPingEvent.getNumPlayers(), legacyPingEvent.getMaxPlayers())));
                                 legacyPingProtocol = true;
                             }

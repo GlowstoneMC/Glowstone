@@ -110,6 +110,6 @@ public class BlockRedstoneRepeater extends BlockNeedsAttached {
     @Override
     public int getPulseTickSpeed(GlowBlock block) {
         Diode diode = (Diode) block.getState().getData();
-        return diode.getDelay() * 2;
+        return diode.getDelay() << 1;
     }
 }
