@@ -12,39 +12,9 @@ public class GlowSound {
 
     static {
         // register vanilla sounds
+        // as of 1.11, sounds do not have a default category
+        // instead, the category of the sound playing is determined by the source of the sound
         for (Sound sound : Sound.values()) {
-            if (sound.name().startsWith("AMBIENT")) {
-                reg(getVanillaId(sound), SoundCategory.AMBIENT);
-                continue;
-            }
-            if (sound.name().startsWith("BLOCK")) {
-                reg(getVanillaId(sound), SoundCategory.BLOCKS);
-                continue;
-            }
-            if (sound.name().startsWith("ENTITY_HOSTILE")) {
-                reg(getVanillaId(sound), SoundCategory.HOSTILE);
-                continue;
-            }
-            if (sound.name().startsWith("ENTITY_PLAYER")) {
-                reg(getVanillaId(sound), SoundCategory.PLAYERS);
-                continue;
-            }
-            if (sound.name().startsWith("ENTITY")) {
-                reg(getVanillaId(sound), SoundCategory.NEUTRAL);
-                continue;
-            }
-            if (sound.name().startsWith("MUSIC")) {
-                reg(getVanillaId(sound), SoundCategory.MUSIC);
-                continue;
-            }
-            if (sound.name().startsWith("RECORD")) {
-                reg(getVanillaId(sound), SoundCategory.RECORDS);
-                continue;
-            }
-            if (sound.name().startsWith("WEATHER")) {
-                reg(getVanillaId(sound), SoundCategory.WEATHER);
-                continue;
-            }
             reg(getVanillaId(sound), SoundCategory.MASTER);
         }
     }
