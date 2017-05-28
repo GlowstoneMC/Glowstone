@@ -918,7 +918,7 @@ public class Metrics {
          * Gets a country by it's iso tag.
          *
          * @param isoTag The iso tag of the county.
-         * @return The country with the given iso tag or <code>null</code> if unknown.
+         * @return The country with the given iso tag or {@code null} if unknown.
          */
         public static Country byIsoTag(String isoTag) {
             for (Country country : Country.values()) {
@@ -933,7 +933,7 @@ public class Metrics {
          * Gets a country by a locale.
          *
          * @param locale The locale.
-         * @return The country from the giben locale or <code>null</code> if unknown country or
+         * @return The country from the giben locale or {@code null} if unknown country or
          *         if the locale does not contain a country.
          */
         public static Country byLocale(Locale locale) {

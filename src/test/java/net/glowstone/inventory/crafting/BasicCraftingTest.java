@@ -25,7 +25,7 @@ public class BasicCraftingTest {
 
     @Test
     public void can_craft_wood_from_logs() {
-        /**
+        /*
          * Used to "prove" the CraftingManager's recipe system loads and properly finds a simple matching recipe for some inputs.
          * Sometimes needed to rule out other issues.
          */

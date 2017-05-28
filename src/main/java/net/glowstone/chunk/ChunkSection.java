@@ -1,17 +1,15 @@
 package net.glowstone.chunk;
 
-import javax.annotation.Nullable;
-
+import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntListIterator;
-
-import com.flowpowered.network.util.ByteBufUtils;
-
 import net.glowstone.util.NibbleArray;
 import net.glowstone.util.VariableValueArray;
 import net.glowstone.util.nbt.CompoundTag;
+
+import javax.annotation.Nullable;
 
 /**
  * A single cubic section of a chunk, with all data.
@@ -210,7 +208,7 @@ public final class ChunkSection {
      * Loads the contents of this chunk section from the given type array,
      * initializing the palette.
      *
-     * @param type The type array.
+     * @param types The type array.
      */
     public void loadTypeArray(char[] types) {
         if (types.length != ARRAY_SIZE) {
@@ -384,8 +382,8 @@ public final class ChunkSection {
      * @param z The z coordinate, for north and south.
      * @param light The new light level.
      */
-    public void setBlockLight(int x, int y, int z, byte value) {
-        blockLight.set(index(x, y, z), value);
+    public void setBlockLight(int x, int y, int z, byte light) {
+        blockLight.set(index(x, y, z), light);
     }
 
     /**
@@ -417,8 +415,8 @@ public final class ChunkSection {
      * @param z The z coordinate, for north and south.
      * @param light The new light level.
      */
-    public void setSkyLight(int x, int y, int z, byte value) {
-        skyLight.set(index(x, y, z), value);
+    public void setSkyLight(int x, int y, int z, byte light) {
+        skyLight.set(index(x, y, z), light);
     }
 
     /**
