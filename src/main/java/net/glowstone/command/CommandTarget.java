@@ -136,7 +136,11 @@ public class CommandTarget {
             if (!value.isInverted()) {
                 EntityType type = EntityType.fromName(value.getValue());
                 if (type == null) {
-                    type = EntityType.valueOf(value.getValue().toUpperCase());
+                    try {
+                        type = EntityType.valueOf(value.getValue().toUpperCase());
+                    } catch (IllegalArgumentException ex) {
+                        return Collections.emptyList();
+                    }
                 }
                 return Arrays.asList(type);
             } else {
