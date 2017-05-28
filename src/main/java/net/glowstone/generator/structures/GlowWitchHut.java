@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.EntityType;
 import org.bukkit.material.Stairs;
 import org.bukkit.util.Vector;
 
@@ -80,9 +81,8 @@ public class GlowWitchHut extends GlowTemplePiece {
         builder.setBlockDownward(new Vector(5, -1, 7), Material.LOG);
 
         if (!hasWitch) {
-            // TODO: uncomment this later
-            // hasWitch = builder.spawnMob(new Vector(2, 2, 5), EntityType.WITCH);
-            // I believe vanilla 1.8 tries to spawn the witch on different floor levels
+            hasWitch = builder.spawnMob(new Vector(2, 2, 5), EntityType.WITCH);
+            // TODO: I believe vanilla 1.8 tries to spawn the witch on different floor levels
         }
 
         return true;
