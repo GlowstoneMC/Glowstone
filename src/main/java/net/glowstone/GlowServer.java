@@ -182,10 +182,6 @@ public final class GlowServer implements Server {
      */
     private final UnsafeValues unsafeAccess = new GlowUnsafeValues();
     /**
-     * An empty player array used for deprecated getOnlinePlayers.
-     */
-    private static final Player[] emptyPlayerArray = new Player[0];
-    /**
      * A RSA key pair used for encryption and authentication
      */
     private final KeyPair keyPair = SecurityUtils.generateKeyPair();
