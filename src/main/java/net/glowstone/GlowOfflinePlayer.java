@@ -1,7 +1,5 @@
 package net.glowstone;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.entity.meta.profile.ProfileCache;
 import net.glowstone.io.PlayerDataService.PlayerReader;
@@ -22,8 +20,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Represents a player which is not connected to the server.
  */
 @SerializableAs("Player")
-@ToString(of = {"name", "uuid"})
-@EqualsAndHashCode(of = "uuid")
 public final class GlowOfflinePlayer implements OfflinePlayer {
 
     private final GlowServer server;
