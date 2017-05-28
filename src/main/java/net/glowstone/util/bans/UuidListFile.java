@@ -80,7 +80,7 @@ public final class UuidListFile extends JsonListFile {
         return new Entry(UUID.fromString(map.get("uuid")), map.get("name"));
     }
 
-    private class Entry implements BaseEntry {
+    private static class Entry implements BaseEntry {
         private final UUID uuid;
         private final String fallbackName;
 

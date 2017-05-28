@@ -486,7 +486,7 @@ public final class ChunkManager {
     /**
      * A BiomeGrid implementation for chunk generation.
      */
-    private class BiomeGrid implements ChunkGenerator.BiomeGrid {
+    private static class BiomeGrid implements ChunkGenerator.BiomeGrid {
         private final byte[] biomes = new byte[256];
 
         @Override

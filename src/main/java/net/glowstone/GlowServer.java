@@ -1272,13 +1272,15 @@ public final class GlowServer implements Server {
         return unsafeAccess;
     }
 
+    private Spigot spigot = new Spigot() {
+        public org.bukkit.configuration.file.YamlConfiguration getConfig() {
+            return config.getConfig();
+        }
+    };
+
     @Override
     public Spigot spigot() {
-        return new Spigot() {
-            public org.bukkit.configuration.file.YamlConfiguration getConfig() {
-                return config.getConfig();
-            }
-        };
+        return spigot;
     }
 
     public static WorldConfig getWorldConfig() {

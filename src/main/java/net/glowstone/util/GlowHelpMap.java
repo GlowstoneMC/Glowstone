@@ -272,7 +272,7 @@ public final class GlowHelpMap implements HelpMap {
     ////////////////////////////////////////////////////////////////////////////
     // Help topic subclasses
 
-    private class GeneralHelpTopic extends HelpTopic {
+    private static class GeneralHelpTopic extends HelpTopic {
         public GeneralHelpTopic(String name, String shortText, String fullText, String permission) {
             this.name = name;
             this.shortText = shortText;
@@ -311,7 +311,7 @@ public final class GlowHelpMap implements HelpMap {
         }
     }
 
-    private class AliasTopic extends HelpTopic {
+    private static class AliasTopic extends HelpTopic {
         private final HelpTopic original;
 
         public AliasTopic(String name, HelpTopic original) {

@@ -255,7 +255,7 @@ public class StructureBuilder {
         }
     }
 
-    public class StructureMaterial {
+    public static class StructureMaterial {
         private Material type;
         private int data;
 

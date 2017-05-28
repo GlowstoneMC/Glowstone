@@ -1323,12 +1323,15 @@ public abstract class GlowEntity implements Entity {
         return false;
     }
 
+    private Spigot spigot = new Spigot() {
+        @Override
+        public boolean isInvulnerable() {
+            return GlowEntity.this.isInvulnerable();
+        }
+    };
+
     public Spigot spigot() {
-        return new Spigot() {
-            public boolean isInvulnerable() {
-                return isInvulnerable();
-            }
-        };
+        return spigot;
     }
 
     @Override

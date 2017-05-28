@@ -118,7 +118,7 @@ public class GlowPluginTypeDetector {
         if (!isBukkit && !isSponge && !isCanary && !isForgeF && !isForgeN) unrecognizedPlugins.add(file);
     }
 
-    private class GlowVisitor extends ClassVisitor {
+    private static class GlowVisitor extends ClassVisitor {
         public boolean isSponge;
         public boolean isForgeF;
         public boolean isForgeN;

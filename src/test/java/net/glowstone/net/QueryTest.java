@@ -168,7 +168,7 @@ public class QueryTest {
     /**
      * Matches the content (nothing else) of two {@link DatagramPacket}s.
      */
-    private class DatagramPacketMatcher extends BaseMatcher<DatagramPacket> {
+    private static class DatagramPacketMatcher extends BaseMatcher<DatagramPacket> {
         private final byte[] content;
 
         public DatagramPacketMatcher(byte[] content) {
