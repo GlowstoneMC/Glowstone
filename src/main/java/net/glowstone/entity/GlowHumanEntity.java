@@ -441,8 +441,8 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
             }
 
             if (isDroppableCraftingSlot(i)) {
-                inventory.addItem(itemStack);
-                getOpenInventory().setItem(i, InventoryUtil.createEmptyStack());
+                getOpenInventory().getBottomInventory().addItem(itemStack);
+                getOpenInventory().getTopInventory().setItem(i, InventoryUtil.createEmptyStack());
             }
         }
     }

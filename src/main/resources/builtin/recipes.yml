@@ -3830,3 +3830,17 @@ shaped:
   - aaa
   - aaa
   - aaa
+- result:
+    type: CONCRETE_POWDER
+    damage: 15
+  ingredients:
+    a:
+      type: SAND
+    b:
+      type: GRAVEL
+    c:
+      type: INK_SACK
+  shape:
+  - aba
+  - bcb
+  - aba
