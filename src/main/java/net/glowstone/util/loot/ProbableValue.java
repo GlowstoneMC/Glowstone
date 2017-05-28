@@ -18,8 +18,8 @@ public class ProbableValue<T> {
         Object o = json.get(type);
         if (o instanceof JSONArray) {
             JSONArray array = (JSONArray) o;
-            for (int i = 0; i < array.size(); i++) {
-                JSONObject object = (JSONObject) array.get(i);
+            for (Object obj : array) {
+                JSONObject object = (JSONObject) obj;
                 Double chance = (Double) object.get("chance");
                 T val = (T) object.get("value");
                 possibilities.put(val, chance);
