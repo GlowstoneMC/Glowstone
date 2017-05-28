@@ -305,13 +305,13 @@ public class OverworldGenerator extends GlowChunkGenerator {
                 double avgHeightBase = 0;
                 double totalWeight = 0;
                 Biome biome = GlowBiome.getBiome(biomeGrid[i + 2 + (j + 2) * 10]);
-                BiomeHeight biomeHeight = HEIGHT_MAP.containsKey(biome) ? HEIGHT_MAP.get(biome) : defaultHeight;
+                BiomeHeight biomeHeight = HEIGHT_MAP.getOrDefault(biome, defaultHeight);
                 // Sampling an average height base and scale by visiting the neighborhood
                 // of the current biomegrid column.
                 for (int m = 0; m < 5; m++) {
                     for (int n = 0; n < 5; n++) {
                         Biome nearBiome = GlowBiome.getBiome(biomeGrid[i + m + (j + n) * 10]);
-                        BiomeHeight nearBiomeHeight = HEIGHT_MAP.containsKey(nearBiome) ? HEIGHT_MAP.get(nearBiome) : defaultHeight;
+                        BiomeHeight nearBiomeHeight = HEIGHT_MAP.getOrDefault(nearBiome, defaultHeight);
                         double heightBase = biomeHeightOffset + nearBiomeHeight.getHeight() * biomeHeightWeight;
                         double heightScale = biomeScaleOffset + nearBiomeHeight.getScale() * biomeScaleWeight;
                         if (type == WorldType.AMPLIFIED && heightBase > 0) {

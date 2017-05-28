@@ -667,11 +667,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 if (message != null) {
                     Key key = new Key(message.getX() >> 4, message.getZ() >> 4);
                     if (canSeeChunk(key)) {
-                        Map<BlockVector, BlockChangeMessage> map = chunks.get(key);
-                        if (map == null) {
-                            map = new HashMap<>();
-                            chunks.put(key, map);
-                        }
+                        Map<BlockVector, BlockChangeMessage> map = chunks.computeIfAbsent(key, k -> new HashMap<>());
                         map.put(new BlockVector(message.getX(), message.getY(), message.getZ()), message);
                     }
                 }

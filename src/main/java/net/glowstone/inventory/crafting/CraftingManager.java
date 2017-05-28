@@ -77,11 +77,7 @@ public final class CraftingManager implements Iterable<Recipe> {
      * @return The time in ticks, or 0 if that material does not burn.
      */
     public int getFuelTime(Material material) {
-        if (furnaceFuels.containsKey(material)) {
-            return furnaceFuels.get(material);
-        } else {
-            return 0;
-        }
+        return furnaceFuels.getOrDefault(material, 0);
     }
 
     public boolean isFuel(Material material) {

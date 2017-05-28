@@ -169,11 +169,7 @@ public final class GlowScoreboard implements Scoreboard {
      * @return The set of objectives.
      */
     Set<GlowObjective> getForCriteria(String criteria) {
-        Set<GlowObjective> result = criteriaMap.get(criteria);
-        if (result == null) {
-            result = new HashSet<>();
-            criteriaMap.put(criteria, result);
-        }
+        Set<GlowObjective> result = criteriaMap.computeIfAbsent(criteria, k -> new HashSet<>());
         return result;
     }
 
@@ -184,11 +180,7 @@ public final class GlowScoreboard implements Scoreboard {
      * @return The set of scores.
      */
     Set<GlowScore> getScoresForName(String entry) {
-        Set<GlowScore> result = scoreMap.get(entry);
-        if (result == null) {
-            result = new HashSet<>();
-            scoreMap.put(entry, result);
-        }
+        Set<GlowScore> result = scoreMap.computeIfAbsent(entry, k -> new HashSet<>());
         return result;
     }
 

@@ -59,11 +59,7 @@ public class MetadataIndexTest {
             map.entrySet().stream().filter(entry -> entry.getKey().isAssignableFrom(clazz)).filter(entry -> entry.getValue().containsKey(index.getIndex())).forEach(entry -> fail("Index " + index + "(" + clazz.getSimpleName() + ") conflicts with " + entry.getValue().get(index.getIndex()) + "(" + entry.getKey().getSimpleName() + ")"));
 
             // insert this index
-            HashMap<Integer, MetadataIndex> classMap = map.get(index.getAppliesTo());
-            if (classMap == null) {
-                classMap = new HashMap<>();
-                map.put(index.getAppliesTo(), classMap);
-            }
+            HashMap<Integer, MetadataIndex> classMap = map.computeIfAbsent(index.getAppliesTo(), k -> new HashMap<>());
             classMap.put(index.getIndex(), index);
         }
     }

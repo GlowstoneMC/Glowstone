@@ -29,11 +29,7 @@ public final class StatisticMap {
     // Helpers
 
     private int getValue(String key) {
-        if (values.containsKey(key)) {
-            return values.get(key);
-        } else {
-            return 0;
-        }
+        return values.getOrDefault(key, 0);
     }
 
     private void setValue(String key, int value) {
