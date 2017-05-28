@@ -1,5 +1,6 @@
 package net.glowstone.block.itemtype;
 
+import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
@@ -9,6 +10,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -34,7 +36,7 @@ public class ItemArmorStand extends ItemType {
             float yaw = player.getLocation().getYaw();
             float finalYaw = Math.round(yaw / 22.5f / 2) * 45;
             loc.setYaw(finalYaw - 180);
-            new GlowArmorStand(loc);
+            ((GlowWorld) loc.getWorld()).spawn(loc, GlowArmorStand.class, CreatureSpawnEvent.SpawnReason.DEFAULT);
             if (player.getGameMode() != GameMode.CREATIVE) {
                 holding.setAmount(holding.getAmount() - 1);
             }
