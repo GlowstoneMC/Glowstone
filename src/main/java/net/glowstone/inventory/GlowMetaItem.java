@@ -97,7 +97,17 @@ public class GlowMetaItem implements ItemMeta {
 
     @Override
     public Spigot spigot() {
-        return null;
+        return new Spigot() {
+            @Override
+            public boolean isUnbreakable() {
+                return GlowMetaItem.this.isUnbreakable();
+            }
+
+            @Override
+            public void setUnbreakable(boolean unbreakable) {
+                GlowMetaItem.this.setUnbreakable(unbreakable);
+            }
+        };
     }
 
     @Override
