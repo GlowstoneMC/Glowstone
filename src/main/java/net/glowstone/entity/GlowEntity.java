@@ -139,7 +139,7 @@ public abstract class GlowEntity implements Entity {
     /**
      * Whether gravity applies to the entity.
      */
-    private boolean gravity;
+    private boolean gravity = true;
     /**
      * Whether this entity is invulnerable.
      */
