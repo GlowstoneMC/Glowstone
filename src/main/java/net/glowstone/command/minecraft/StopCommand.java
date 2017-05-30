@@ -1,4 +1,4 @@
-package net.glowstone.command;
+package net.glowstone.command.minecraft;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;

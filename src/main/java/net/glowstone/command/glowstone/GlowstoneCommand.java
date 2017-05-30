@@ -1,4 +1,4 @@
-package net.glowstone.command;
+package net.glowstone.command.glowstone;
 
 import com.google.common.base.Preconditions;
 import net.glowstone.util.ReflectionProcessor;

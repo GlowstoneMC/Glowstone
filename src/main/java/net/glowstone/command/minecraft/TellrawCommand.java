@@ -1,4 +1,4 @@
-package net.glowstone.command;
+package net.glowstone.command.minecraft;
 
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.ChatMessage;

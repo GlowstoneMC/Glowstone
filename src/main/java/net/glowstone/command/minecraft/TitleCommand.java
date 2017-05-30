@@ -1,4 +1,4 @@
-package net.glowstone.command;
+package net.glowstone.command.minecraft;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;

@@ -1,8 +1,9 @@
-package net.glowstone.command;
+package net.glowstone.command.minecraft;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import net.glowstone.GlowWorld;
+import net.glowstone.command.CommandUtils;
 import net.glowstone.entity.EntityRegistry;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.io.entity.EntityStorage;

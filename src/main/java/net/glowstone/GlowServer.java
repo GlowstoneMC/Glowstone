@@ -12,7 +12,9 @@ import net.glowstone.block.state.GlowDispenser;
 import net.glowstone.boss.BossBarManager;
 import net.glowstone.boss.GlowBossBar;
 import net.glowstone.client.GlowClient;
-import net.glowstone.command.*;
+import net.glowstone.command.glowstone.ColorCommand;
+import net.glowstone.command.glowstone.GlowstoneCommand;
+import net.glowstone.command.minecraft.*;
 import net.glowstone.constants.GlowEnchantment;
 import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.EntityIdManager;
@@ -814,6 +816,7 @@ public final class GlowServer implements Server {
         commandMap.register("minecraft", new OpCommand());
         commandMap.register("minecraft", new GameModeCommand());
         commandMap.register("minecraft", new FunctionCommand());
+        commandMap.register("minecraft", new DeopCommand());
 
         File folder = new File(config.getString(Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {
