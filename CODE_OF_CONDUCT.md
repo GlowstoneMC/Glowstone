@@ -5,7 +5,7 @@
 One of the Glowstone Project's top priorities is to foster an open and
 welcoming environment. As such, it is our responsibility as contributors
 and maintainers to ensure our project is inclusive and harassment-free
-for everyone - regardless of their characteristics. This includes (but is not limited
+for everyone — regardless of their characteristics. This includes (but is not limited
 to) age, body size, disability, ethnicity, gender identity and expression,
 level of experience, nationality, personal appearance, race, religion,
 or sexual identity and orientation.
@@ -13,7 +13,7 @@ or sexual identity and orientation.
 We believe that diversity is a huge strength and in order to encourge
 everyone who participates in the Glowstone Project to help create a welcoming
 and productive atmosphere, we have outlined our expectations for this community,
-consequences for unacceptable behaviour, and where you can go for help.
+consequences for unacceptable behavior, and where you can go for help.
 
 Please keep in mind that this is not and does not intend to be an exhaustive
 list of all the things that you can't do. Rather, take it for what it was
@@ -26,7 +26,7 @@ and ideas.
 We expect all participants in our community to:
 
 * **Use welcoming and inclusive language.** We expect all members of our
-  community to conduct themselves professionally - be kind to others, don't
+  community to conduct themselves professionally — be kind to others, don't
   insult or put down other participants, and so on. Harassment and other 
   exclusionary behavior is not acceptable.
 * **Be respectful of differing viewpoints and experiences.** We are all
@@ -38,8 +38,8 @@ We expect all participants in our community to:
   bad, but it's also unproductive. Be respectful of others not just within
   our community, but when representing us to other people outside of our
   community.
-* **Gracefully accept constructive criticism.** Criticism and disagreements - 
-  both social and technical - happen all the time, but it is important
+* **Gracefully accept constructive criticism.** Criticism and disagreements — 
+  both social and technical — happen all the time, but it is important
   that we solve these conflicts constructively. Each of us is different and
   we come from a wide range of backgrounds. Consequentially, we all have
   different perspectives on issues. Even if you don't understand why someone
@@ -51,8 +51,8 @@ We expect all participants in our community to:
   decisions.
 * **Show empathy towards other community members.** We strive to be a friendly
   community that understands and supports people of all backgrounds and identities.
-  Try to understand someone's situation and fully realize they're a human - 
-  just like you - and can make mistakes.
+  Try to understand someone's situation and fully realize they're a human — 
+  just like you — and can make mistakes.
 
 Following these guidelines will contribute to creating a positive environment
 in our community.
@@ -63,8 +63,8 @@ Examples of unacceptable behavior by participants include:
   advances
 * Trolling, insulting/derogatory comments, and personal or political attacks
 * Public or private harassment (generally, if someone asks you to stop, then stop)
-* Publishing others' private information - such as a physical or electronic
-  address - without explicit permission
+* Publishing others' private information — such as a physical or electronic
+  address — without explicit permission
 * Other conduct which could reasonably be considered inappropriate in a
   professional setting
 
@@ -122,7 +122,7 @@ The following documents and projects have aided the creation of this code of con
 
 * [Contributor Covenant 1.4](http://contributor-covenant.org/version/1/4)
 * [Django Project CoC](https://www.djangoproject.com/conduct/)
-* [JQery Project CoC](https://jquery.org/conduct/)
+* [JQuery Project CoC](https://jquery.org/conduct/)
 * [khmer Project CoC](http://khmer.readthedocs.io/en/v1.2/dev/CODE_OF_CONDUCT.html)
 * [Citizen Code of Conduct](http://citizencodeofconduct.org/)
 * [ADA Initiative: "HOWTO design a code of conduct for your community"](https://adainitiative.org/2014/02/18/howto-design-a-code-of-conduct-for-your-community/)
