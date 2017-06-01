@@ -105,7 +105,6 @@ public final class GlowServer implements Server {
      * The protocol version supported by the server.
      */
     public static final int PROTOCOL_VERSION = 334;
-
     /**
      * A list of all the active {@link net.glowstone.net.GlowSession}s.
      */
