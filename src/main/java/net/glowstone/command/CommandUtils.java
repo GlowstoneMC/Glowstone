@@ -1,7 +1,15 @@
 package net.glowstone.command;
 
+import net.glowstone.GlowWorld;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.command.BlockCommandSender;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Entity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommandUtils {
 
@@ -88,20 +96,40 @@ public class CommandUtils {
      * Pretty-print the result of a command target query
      */
     public static String prettyPrint(Entity[] entities) {
-        StringBuilder builder = new StringBuilder();
+        List<String> names = new ArrayList<>();
         for (int i = 0; i < entities.length; i++) {
             Entity entity = entities[i];
             String name = entity.getName();
             if (name == null || name.isEmpty()) {
                 name = entity.getType().getName();
             }
-            if (i == entities.length - 1 && entities.length > 1) {
+            names.add(name);
+        }
+        return prettyPrint(names.toArray(new String[names.size()]));
+    }
+
+    public static String prettyPrint(String[] strings) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < strings.length; i++) {
+            String string = strings[i];
+            if (i == strings.length - 1 && strings.length > 1) {
                 builder.append(" and ");
             } else if (i > 0) {
                 builder.append(", ");
             }
-            builder.append(name);
+            builder.append(string);
         }
         return builder.toString();
+    }
+
+    public static GlowWorld getWorld(CommandSender sender) {
+        if (sender instanceof ConsoleCommandSender) {
+            return (GlowWorld) Bukkit.getServer().getWorlds().get(0); // get the default world
+        } else if (sender instanceof Entity) {
+            return (GlowWorld) ((Entity) sender).getWorld();
+        } else if (sender instanceof BlockCommandSender) {
+            return (GlowWorld) ((BlockCommandSender) sender).getBlock().getWorld();
+        }
+        return null;
     }
 }
