@@ -6,7 +6,7 @@
     <groupId>net.glowstone</groupId>
     <artifactId>glowstone</artifactId>
     <packaging>jar</packaging>
-    <version>2017.6.1.0-SNAPSHOT</version>
+    <version>2017.6.1-SNAPSHOT</version>
     <name>Glowstone</name>
     <url>https://www.glowstone.net</url>
 
