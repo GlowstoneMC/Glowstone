@@ -82,7 +82,7 @@ The final jar will be placed in `target/` named `glowstone.jar`.
 
 Running Glowstone is simple because its dependencies are shaded into the output
 jar at compile time. Simply execute `java -jar glowstone.jar` along with any
-extra JVM options desired (we recommend using `java -Xms1G -Xmx1G -XX:+UseG1GC -XX:MaxGCPauseMillis=30 -jar glowstone.jar`). A variety of command-line options are also available -
+extra JVM options desired (we recommend using `java -Xms1G -Xmx1G -XX:+UseG1GC -jar glowstone.jar`). A variety of command-line options are also available -
 run `java -jar glowstone.jar --help` for more information.
 
 By default, configuration is stored in the `config/` subdirectory and logs
