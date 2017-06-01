@@ -2,6 +2,7 @@ package net.glowstone.entity;
 
 import com.google.common.collect.ImmutableBiMap;
 import net.glowstone.entity.monster.*;
+import net.glowstone.entity.monster.complex.GlowEnderDragon;
 import net.glowstone.entity.objects.*;
 import net.glowstone.entity.passive.*;
 import net.glowstone.io.entity.EntityStorage;
@@ -30,8 +31,8 @@ public class EntityRegistry {
                     //TODO: Egg
                     .put(ElderGuardian.class, GlowElderGuardian.class)
                     //TODO: Ender Crystal
-                    //TODO: Ender Dragon
-                    //TODO: Ender PEarl
+                    .put(EnderDragon.class, GlowEnderDragon.class)
+                    //TODO: Ender Pearl
                     //TODO: Ender Signal
                     .put(Enderman.class, GlowEnderman.class)
                     .put(Endermite.class, GlowEndermite.class)
