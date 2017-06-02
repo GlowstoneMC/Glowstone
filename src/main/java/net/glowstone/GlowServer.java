@@ -817,6 +817,7 @@ public final class GlowServer implements Server {
         commandMap.register("minecraft", new DeopCommand());
         commandMap.register("minecraft", new KickCommand());
         commandMap.register("minecraft", new GameRuleCommand());
+        commandMap.register("minecraft", new TellCommand());
 
         File folder = new File(config.getString(Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {
@@ -851,7 +852,7 @@ public final class GlowServer implements Server {
             }
 
             boolean spongeOnlyPlugins = false;
-            for (File spongePlugin: pluginTypeDetector.spongePlugins) {
+            for (File spongePlugin : pluginTypeDetector.spongePlugins) {
                 if (!pluginTypeDetector.bukkitPlugins.contains(spongePlugin)) {
                     spongeOnlyPlugins = true;
                 }
@@ -931,7 +932,7 @@ public final class GlowServer implements Server {
             // Default permissions
             this.permissionRoot = DefaultPermissions.registerPermission("minecraft", "Gives the user the ability to use all Minecraft utilities and commands");
             this.permissionCommand = DefaultPermissions.registerPermission("minecraft.command", "Gives the user the ability to use all Minecraft commands", permissionRoot);
-            DefaultPermissions.registerPermission("minecraft.command.say", "Allows the user to speak using a command", PermissionDefault.TRUE, permissionCommand);
+            DefaultPermissions.registerPermission("minecraft.command.tell", "Allows the user to send a private message", PermissionDefault.TRUE, permissionCommand);
             permissionCommand.recalculatePermissibles();
             permissionRoot.recalculatePermissibles();
             helpMap.initializeCommands();
@@ -1042,6 +1043,7 @@ public final class GlowServer implements Server {
 
     /**
      * Returns the list of whitelisted players on this server.
+     *
      * @return A file containing a list of UUIDs for this server's whitelisted players.
      */
     public UuidListFile getWhitelist() {

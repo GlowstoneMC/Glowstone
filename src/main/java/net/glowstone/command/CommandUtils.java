@@ -99,10 +99,7 @@ public class CommandUtils {
         List<String> names = new ArrayList<>();
         for (int i = 0; i < entities.length; i++) {
             Entity entity = entities[i];
-            String name = entity.getName();
-            if (name == null || name.isEmpty()) {
-                name = entity.getType().getName();
-            }
+            String name = getName(entity);
             names.add(name);
         }
         return prettyPrint(names.toArray(new String[names.size()]));
@@ -131,5 +128,23 @@ public class CommandUtils {
             return (GlowWorld) ((BlockCommandSender) sender).getBlock().getWorld();
         }
         return null;
+    }
+
+    public static String getName(CommandSender sender) {
+        if (sender instanceof Entity) {
+            return getName((Entity) sender);
+        }
+        return sender.getName();
+    }
+
+    public static String getName(Entity entity) {
+        String name = entity.getName();
+        if (name == null || name.isEmpty()) {
+            name = entity.getType().getName();
+        }
+        if (entity.getCustomName() != null && !entity.getCustomName().isEmpty()) {
+            name = entity.getCustomName();
+        }
+        return name;
     }
 }
