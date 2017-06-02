@@ -1,5 +1,6 @@
 package net.glowstone.command.minecraft;
 
+import net.glowstone.entity.meta.profile.PlayerProfile;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -20,6 +21,10 @@ public class BanCommand extends BukkitCommand {
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         if (!testPermission(sender)) return false;
         if (args.length > 0) {
+            if (PlayerProfile.getProfile(args[0]) == null) {
+                sender.sendMessage(ChatColor.RED + "Could not ban player " + args[0]);
+                return false;
+            }
             if (args.length == 1) {
                 Bukkit.getBanList(BanList.Type.NAME).addBan(args[0], null, null, null);
             } else {
@@ -29,6 +34,7 @@ public class BanCommand extends BukkitCommand {
                 }
                 Bukkit.getBanList(BanList.Type.NAME).addBan(args[0], reason.toString(), null, null);
             }
+            sender.sendMessage("Banned player " + args[0]);
             return true;
         }
         sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);

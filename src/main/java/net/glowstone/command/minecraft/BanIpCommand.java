@@ -40,8 +40,11 @@ public class BanIpCommand extends BukkitCommand {
                     }
                     Bukkit.getBanList(BanList.Type.IP).addBan(target, reason.toString(), null, null);
                 }
+                sender.sendMessage("Banned IP address " + target);
                 return true;
             }
+            sender.sendMessage(ChatColor.RED + "You have entered an invalid IP address or a player that is not online");
+            return false;
         }
         sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
         return false;
