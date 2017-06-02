@@ -12,7 +12,7 @@ public class ListCommand extends BukkitCommand {
     private static final String[] EMPTY = new String[0];
 
     public ListCommand() {
-        super("list", "Lists players on the server.", "/op <player>", Collections.emptyList());
+        super("list", "Lists players on the server.", "/list [uuids]", Collections.emptyList());
         setPermission("minecraft.command.list");
     }
 
