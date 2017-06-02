@@ -1,7 +1,6 @@
 package net.glowstone.command.minecraft;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.entity.EntityRegistry;
@@ -131,7 +130,7 @@ public class SummonCommand extends BukkitCommand {
             });
             return completion;
         } else {
-            return ImmutableList.of();
+            return Collections.emptyList();
         }
     }
 }

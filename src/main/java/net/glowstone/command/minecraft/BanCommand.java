@@ -1,6 +1,5 @@
 package net.glowstone.command.minecraft;
 
-import com.google.common.collect.ImmutableList;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -41,6 +40,6 @@ public class BanCommand extends BukkitCommand {
         if (args.length == 1) {
             super.tabComplete(sender, alias, args);
         }
-        return ImmutableList.of();
+        return Collections.emptyList();
     }
 }

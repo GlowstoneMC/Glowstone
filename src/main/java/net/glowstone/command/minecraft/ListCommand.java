@@ -22,7 +22,7 @@ public class ListCommand extends BukkitCommand {
         Collection<? extends Player> players = Bukkit.getOnlinePlayers();
         Collection<String> messages = new ArrayList<>();
         messages.add("There are " + players.size() + "/" + Bukkit.getMaxPlayers() + " players online:");
-        if (args.length > 0 && Objects.equals(args[0], "uuids")) {
+        if (args.length > 0 && (Objects.equals(args[0], "uuids") || Objects.equals(args[0], "ids"))) {
             Bukkit.getOnlinePlayers().forEach(p -> messages.add(p.getName() + " (" + p.getUniqueId() + ')'));
         } else {
             Bukkit.getOnlinePlayers().forEach(p -> messages.add(p.getName()));
@@ -33,6 +33,9 @@ public class ListCommand extends BukkitCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
-        return ImmutableList.of();
+        if (args.length == 1) {
+            return ImmutableList.of("uuids");
+        }
+        return Collections.emptyList();
     }
 }

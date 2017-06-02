@@ -1,6 +1,5 @@
 package net.glowstone.command.minecraft;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.net.InetAddresses;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
@@ -53,6 +52,6 @@ public class BanIpCommand extends BukkitCommand {
         if (args.length == 1) {
             super.tabComplete(sender, alias, args);
         }
-        return ImmutableList.of();
+        return Collections.emptyList();
     }
 }
