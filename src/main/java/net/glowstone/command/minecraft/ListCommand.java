@@ -1,14 +1,12 @@
 package net.glowstone.command.minecraft;
 
+import com.google.common.collect.ImmutableList;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Objects;
+import java.util.*;
 
 public class ListCommand extends BukkitCommand {
     private static final String[] EMPTY = new String[0];
@@ -31,5 +29,10 @@ public class ListCommand extends BukkitCommand {
         }
         sender.sendMessage(messages.toArray(EMPTY));
         return true;
+    }
+
+    @Override
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+        return ImmutableList.of();
     }
 }
