@@ -2,7 +2,6 @@ package net.glowstone.util;
 
 import net.glowstone.GlowServer;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.ServicePriority;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -10,7 +9,6 @@ import javax.net.ssl.HttpsURLConnection;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.*;
 import java.util.logging.Level;
@@ -46,7 +44,6 @@ public class Metrics {
         this.server = server;
         Metrics.serverUUID = serverUUID;
         Metrics.logFailedRequests = logFailedRequests;
-        Bukkit.getServicesManager().register(Metrics.class, this, null, ServicePriority.Normal);
         startSubmitting();
     }
 
@@ -150,19 +147,7 @@ public class Metrics {
         final JSONObject data = getServerData();
 
         JSONArray pluginData = new JSONArray();
-        // Search for all other bStats Metrics classes to get their plugin data
-        for (Class<?> service : Bukkit.getServicesManager().getKnownServices()) {
-            try {
-                service.getField("B_STATS_VERSION"); // Our identifier :)
-            } catch (NoSuchFieldException ignored) {
-                continue; // Continue "searching"
-            }
-            // Found one!
-            try {
-                pluginData.add(service.getMethod("getPluginData").invoke(Bukkit.getServicesManager().load(service)));
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) { }
-        }
-
+        pluginData.add(getPluginData());
         data.put("plugins", pluginData);
 
         // Create a new thread for the connection to the bStats server
