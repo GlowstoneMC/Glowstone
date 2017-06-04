@@ -82,6 +82,9 @@ public class BlockFire extends BlockNeedsAttached {
             case NETHERRACK:
                 isInfiniteFire = true;
                 break;
+            case MAGMA:
+                isInfiniteFire = true;
+                break;
             case BEDROCK:
                 if (world.getEnvironment() == Environment.THE_END) {
                     isInfiniteFire = true;
