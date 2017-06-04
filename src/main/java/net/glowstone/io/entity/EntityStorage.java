@@ -84,7 +84,7 @@ public final class EntityStorage {
         bind(new VexStore());
         bind(new VindicatorStore());
         bind(new EvokerStore());
-
+        bind(new EnderDragonStore());
 
         bind(new ArmorStandStore());
         bind(new FallingBlockStore());

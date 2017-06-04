@@ -9,7 +9,6 @@ import javax.net.ssl.HttpsURLConnection;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.*;
 import java.util.logging.Level;
@@ -43,8 +42,8 @@ public class Metrics {
      */
     public Metrics(GlowServer server, String serverUUID, boolean logFailedRequests) {
         this.server = server;
-        this.serverUUID = serverUUID;
-        this.logFailedRequests = logFailedRequests;
+        Metrics.serverUUID = serverUUID;
+        Metrics.logFailedRequests = logFailedRequests;
         startSubmitting();
     }
 
@@ -115,8 +114,7 @@ public class Metrics {
         // Minecraft specific data
         int playerAmount = Bukkit.getOnlinePlayers().size();
         int onlineMode = Bukkit.getOnlineMode() ? 1 : 0;
-        String bukkitVersion = org.bukkit.Bukkit.getVersion();
-        bukkitVersion = bukkitVersion.substring(bukkitVersion.indexOf("MC: ") + 4, bukkitVersion.length() - 1);
+        String bukkitVersion = Bukkit.getBukkitVersion();
 
         // OS/Java specific data
         String javaVersion = System.getProperty("java.version");
@@ -149,19 +147,7 @@ public class Metrics {
         final JSONObject data = getServerData();
 
         JSONArray pluginData = new JSONArray();
-        // Search for all other bStats Metrics classes to get their plugin data
-        for (Class<?> service : Bukkit.getServicesManager().getKnownServices()) {
-            try {
-                service.getField("B_STATS_VERSION"); // Our identifier :)
-            } catch (NoSuchFieldException ignored) {
-                continue; // Continue "searching"
-            }
-            // Found one!
-            try {
-                pluginData.add(service.getMethod("getPluginData").invoke(Bukkit.getServicesManager().load(service)));
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) { }
-        }
-
+        pluginData.add(getPluginData());
         data.put("plugins", pluginData);
 
         // Create a new thread for the connection to the bStats server

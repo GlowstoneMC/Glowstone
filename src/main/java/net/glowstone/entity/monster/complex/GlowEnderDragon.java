@@ -1,5 +1,6 @@
 package net.glowstone.entity.monster.complex;
 
+import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.monster.GlowMonster;
 import org.bukkit.Location;
 import org.bukkit.entity.ComplexEntityPart;
@@ -12,8 +13,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class GlowEnderDragon extends GlowMonster implements EnderDragon {
-
-    private Phase phase = Phase.HOVER;
     private Map<String, GlowEnderDragonPart> parts = new HashMap<>();
 
     public GlowEnderDragon(Location loc, EntityType type, double maxHealth) {
@@ -36,12 +35,12 @@ public class GlowEnderDragon extends GlowMonster implements EnderDragon {
 
     @Override
     public Phase getPhase() {
-        return phase;
+        return Phase.values()[metadata.getInt(MetadataIndex.ENDERDRAGON_PHASE)];
     }
 
     @Override
     public void setPhase(Phase phase) {
-        this.phase = phase;
+        metadata.set(MetadataIndex.ENDERDRAGON_PHASE, phase.ordinal());
     }
 
     @Override
