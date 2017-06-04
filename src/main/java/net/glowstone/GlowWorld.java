@@ -60,7 +60,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -329,8 +328,6 @@ public final class GlowWorld implements World {
 
         // pulse AI tasks
         aiTaskService = Executors.newScheduledThreadPool(1);
-        aiTaskService.scheduleAtFixedRate(() -> {
-        }, 50, 50, TimeUnit.MILLISECONDS);
     }
 
     ////////////////////////////////////////////////////////////////////////////
