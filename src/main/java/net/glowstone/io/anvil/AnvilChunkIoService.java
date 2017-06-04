@@ -122,11 +122,12 @@ public final class AnvilChunkIoService implements ChunkIoService {
 
         // read block entities
         List<CompoundTag> storedBlockEntities = levelTag.getCompoundList("TileEntities");
+        BlockEntity blockEntity;
         for (CompoundTag blockEntityTag : storedBlockEntities) {
             int tx = blockEntityTag.getInt("x");
             int ty = blockEntityTag.getInt("y");
             int tz = blockEntityTag.getInt("z");
-            BlockEntity blockEntity = chunk.getEntity(tx & 0xf, ty, tz & 0xf);
+            blockEntity = chunk.createEntity(tx & 0xf, ty, tz & 0xf, chunk.getType(tx & 0xf, tz & 0xf, ty));
             if (blockEntity != null) {
                 try {
                     blockEntity.loadNbt(blockEntityTag);

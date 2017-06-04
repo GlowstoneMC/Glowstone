@@ -102,9 +102,8 @@ public final class ChunkManager {
         } else {
             // only create chunk if it's not in the map already
             GlowChunk chunk = new GlowChunk(world, x, z);
-            GlowChunk prev = chunks.putIfAbsent(key, chunk);
-            // if it was created in the intervening time, the earlier one wins
-            return prev == null ? chunk : prev;
+            chunks.put(key, chunk);
+            return chunk;
         }
     }
 
@@ -142,8 +141,10 @@ public final class ChunkManager {
      * @return True on success, false on failure.
      */
     public boolean loadChunk(int x, int z, boolean generate) {
-        GlowChunk chunk = getChunk(x, z);
+        return loadChunk(getChunk(x, z), generate);
+    }
 
+    public boolean loadChunk(GlowChunk chunk, boolean generate) {
         // try to load chunk
         try {
             if (service.read(chunk)) {
@@ -151,7 +152,7 @@ public final class ChunkManager {
                 return true;
             }
         } catch (Exception e) {
-            GlowServer.logger.log(Level.SEVERE, "Error while loading chunk (" + x + "," + z + ")", e);
+            GlowServer.logger.log(Level.SEVERE, "Error while loading chunk (" + chunk.getX() + "," + chunk.getZ() + ")", e);
             // an error in chunk reading may have left the chunk in an invalid state
             // (i.e. double initialization errors), so it's forcibly unloaded here
             chunk.unload(false, false);
@@ -164,9 +165,9 @@ public final class ChunkManager {
 
         // get generating
         try {
-            generateChunk(chunk, x, z);
+            generateChunk(chunk, chunk.getX(), chunk.getZ());
         } catch (Throwable ex) {
-            GlowServer.logger.log(Level.SEVERE, "Error while generating chunk (" + x + "," + z + ")", ex);
+            GlowServer.logger.log(Level.SEVERE, "Error while generating chunk (" + chunk.getX() + "," + chunk.getZ() + ")", ex);
             return false;
         }
 
@@ -297,7 +298,7 @@ public final class ChunkManager {
                         sections[i] = ChunkSection.fromStateArray(extSections[i]);
                     }
                 }
-                chunk.initializeSections(sections, false);
+                chunk.initializeSections(sections);
                 chunk.setBiomes(biomes.biomes);
                 chunk.automaticHeightMap();
                 return;
@@ -313,7 +314,7 @@ public final class ChunkManager {
                     sections[i] = ChunkSection.fromIdArray(extSections[i]);
                 }
             }
-            chunk.initializeSections(sections, false);
+            chunk.initializeSections(sections);
             chunk.setBiomes(biomes.biomes);
             chunk.automaticHeightMap();
             return;
@@ -328,7 +329,7 @@ public final class ChunkManager {
                     sections[i] = ChunkSection.fromIdArray(blockSections[i]);
                 }
             }
-            chunk.initializeSections(sections, false);
+            chunk.initializeSections(sections);
             chunk.setBiomes(biomes.biomes);
             chunk.automaticHeightMap();
             return;
@@ -352,7 +353,7 @@ public final class ChunkManager {
             }
             sections[sy] = sec;
         }
-        chunk.initializeSections(sections, false);
+        chunk.initializeSections(sections);
         chunk.setBiomes(biomes.biomes);
         chunk.automaticHeightMap();
     }
