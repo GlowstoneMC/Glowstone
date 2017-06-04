@@ -2,6 +2,7 @@ package net.glowstone.util;
 
 import net.glowstone.GlowServer;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.ServicePriority;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -43,8 +44,9 @@ public class Metrics {
      */
     public Metrics(GlowServer server, String serverUUID, boolean logFailedRequests) {
         this.server = server;
-        this.serverUUID = serverUUID;
-        this.logFailedRequests = logFailedRequests;
+        Metrics.serverUUID = serverUUID;
+        Metrics.logFailedRequests = logFailedRequests;
+        Bukkit.getServicesManager().register(Metrics.class, this, null, ServicePriority.Normal);
         startSubmitting();
     }
 
@@ -115,8 +117,7 @@ public class Metrics {
         // Minecraft specific data
         int playerAmount = Bukkit.getOnlinePlayers().size();
         int onlineMode = Bukkit.getOnlineMode() ? 1 : 0;
-        String bukkitVersion = org.bukkit.Bukkit.getVersion();
-        bukkitVersion = bukkitVersion.substring(bukkitVersion.indexOf("MC: ") + 4, bukkitVersion.length() - 1);
+        String bukkitVersion = Bukkit.getBukkitVersion();
 
         // OS/Java specific data
         String javaVersion = System.getProperty("java.version");
