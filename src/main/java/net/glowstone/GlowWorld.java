@@ -1253,7 +1253,7 @@ public final class GlowWorld implements World {
 
     @Override
     public void setBiome(int x, int z, Biome bio) {
-        getChunkAtAsync(x, z, chunk -> ((GlowChunk) chunk).setBiome(x & 0xF, z & 0xF, GlowBiome.getId(bio)));
+        getChunkAtAsync(x >> 4, z >> 4, chunk -> ((GlowChunk) chunk).setBiome(x & 0xF, z & 0xF, GlowBiome.getId(bio)));
     }
 
     @Override
