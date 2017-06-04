@@ -196,7 +196,7 @@ public final class GlowChunk implements Chunk {
 
     @Override
     public boolean load(boolean generate) {
-        return isLoaded() || world.getChunkManager().loadChunk(x, z, generate);
+        return isLoaded() || world.getChunkManager().loadChunk(this, generate);
     }
 
     @Override
@@ -251,10 +251,6 @@ public final class GlowChunk implements Chunk {
      * @param initSections The {@link ChunkSection}s to use.  Should have a length of {@value #SEC_COUNT}.
      */
     public void initializeSections(ChunkSection[] initSections) {
-        initializeSections(initSections, true);
-    }
-
-    public void initializeSections(ChunkSection[] initSections, boolean createBlockEnts) {
         if (isLoaded()) {
             GlowServer.logger.log(Level.SEVERE, "Tried to initialize already loaded chunk (" + x + "," + z + ")", new Throwable());
             return;
@@ -270,37 +266,19 @@ public final class GlowChunk implements Chunk {
 
         for (int y = 0; y < SEC_COUNT && y < initSections.length; y++) {
             if (initSections[y] != null) {
-                initializeSection(y, initSections[y], createBlockEnts);
+                initializeSection(y, initSections[y]);
             }
         }
     }
 
     private void initializeSection(int y, ChunkSection section) {
-        initializeSection(y, section, true);
-    }
-
-    private void initializeSection(int y, ChunkSection section, boolean createBlockEnts) {
         sections[y] = section;
-
-        // block entity initialization
-        if (createBlockEnts) {
-            for (int i = 0; i < sections.length; ++i) {
-                int by = 16 * i;
-                for (int cx = 0; cx < WIDTH; ++cx) {
-                    for (int cz = 0; cz < HEIGHT; ++cz) {
-                        for (int cy = by; cy < by + 16; ++cy) {
-                            createEntity(cx, cy, cz, getType(cx, cz, cy));
-                        }
-                    }
-                }
-            }
-        }
     }
 
     /**
      * If needed, create a new block entity at the given location.
      */
-    private void createEntity(int cx, int cy, int cz, int type) {
+    public BlockEntity createEntity(int cx, int cy, int cz, int type) {
         Material material = Material.getMaterial(type);
 
         switch (material) {
@@ -353,18 +331,20 @@ public final class GlowChunk implements Chunk {
             case REDSTONE_COMPARATOR_OFF:
             case REDSTONE_COMPARATOR_ON:
                 BlockType blockType = ItemTable.instance().getBlock(type);
-                if (blockType == null) return;
+                if (blockType == null) return null;
 
                 try {
                     BlockEntity entity = blockType.createBlockEntity(this, cx, cy, cz);
-                    if (entity == null) return;
+                    if (entity == null) return null;
 
                     blockEntities.put(coordinateToIndex(cx, cz, cy), entity);
+                    return entity;
                 } catch (Exception ex) {
                     GlowServer.logger.log(Level.SEVERE, "Unable to initialize block entity for " + type, ex);
                 }
-                break;
         }
+
+        return null;
     }
 
     /**

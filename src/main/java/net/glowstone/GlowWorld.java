@@ -61,7 +61,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -340,8 +339,6 @@ public final class GlowWorld implements World {
 
         // pulse AI tasks
         aiTaskService = Executors.newScheduledThreadPool(1);
-        aiTaskService.scheduleAtFixedRate(() -> {
-        }, 50, 50, TimeUnit.MILLISECONDS);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1132,7 +1129,7 @@ public final class GlowWorld implements World {
 
     @Override
     public void getChunkAtAsync(int x, int z, ChunkLoadCallback cb) {
-        new Thread(() -> cb.onLoad(chunks.getChunk(x, z))).start();
+        Bukkit.getServer().getScheduler().runTaskAsynchronously(null, () -> cb.onLoad(chunks.getChunk(x, z)));
     }
 
     @Override
@@ -1264,7 +1261,7 @@ public final class GlowWorld implements World {
 
     @Override
     public void setBiome(int x, int z, Biome bio) {
-        getChunkAtAsync(x, z, chunk -> ((GlowChunk) chunk).setBiome(x & 0xF, z & 0xF, GlowBiome.getId(bio)));
+        getChunkAtAsync(x >> 4, z >> 4, chunk -> ((GlowChunk) chunk).setBiome(x & 0xF, z & 0xF, GlowBiome.getId(bio)));
     }
 
     @Override

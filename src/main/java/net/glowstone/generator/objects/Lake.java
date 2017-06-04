@@ -73,6 +73,7 @@ public class Lake {
                             continue;
                         }
                         if (y >= (int) MAX_HEIGHT / 2) {
+                            type = Material.AIR;
                             for (Material mat : PLANT_TYPES) {
                                 if (blockAbove.getType() == mat) {
                                     if (mat == Material.DOUBLE_PLANT) {
@@ -86,7 +87,7 @@ public class Lake {
                                     break;
                                 }
                             }
-                            if (type == Material.STATIONARY_WATER && (block.getType() == Material.ICE || block.getType() == Material.PACKED_ICE)) {
+                            if (this.type == Material.STATIONARY_WATER && (block.getType() == Material.ICE || block.getType() == Material.PACKED_ICE)) {
                                 type = block.getType();
                             }
                         } else if (y == MAX_HEIGHT / 2 - 1) {
