@@ -11,6 +11,7 @@ import java.util.Random;
 public class InventoryUtil {
 
     public static final ItemStack[] NO_ITEMS = new ItemStack[0];
+    public static final ImmutableItemStack EMPTY_STACK = new ImmutableItemStack(Material.AIR, 0);
 
     /**
      * Checks whether the given ItemStack is empty.
@@ -19,7 +20,7 @@ public class InventoryUtil {
      * @return whether the given ItemStack is empty
      */
     public static boolean isEmpty(ItemStack stack) {
-        return stack == null || stack.getType() == Material.AIR || stack.getAmount() == 0;
+        return stack == null || stack.equals(EMPTY_STACK) || stack.getType() == Material.AIR || stack.getAmount() == 0;
     }
 
     /**
@@ -38,7 +39,7 @@ public class InventoryUtil {
      * @return an empty ItemStack
      */
     public static ItemStack createEmptyStack() {
-        return new ItemStack(Material.AIR, 0);
+        return EMPTY_STACK;
     }
 
     /**

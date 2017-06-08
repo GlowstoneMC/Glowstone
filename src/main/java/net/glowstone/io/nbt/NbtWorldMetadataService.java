@@ -104,7 +104,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
 
         // spawn position
         if (level.isInt("SpawnX") && level.isInt("SpawnY") && level.isInt("SpawnZ")) {
-            world.setSpawnLocation(level.getInt("SpawnX"), level.getInt("SpawnY"), level.getInt("SpawnZ"));
+            world.setSpawnLocation(level.getInt("SpawnX"), level.getInt("SpawnY"), level.getInt("SpawnZ"), false);
             level.remove("SpawnX");
             level.remove("SpawnY");
             level.remove("SpawnZ");
