@@ -2863,23 +2863,19 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
         float hardness = digging.getMaterialValues().getHardness() * 20; // seconds to ticks
 
-        boolean holdingEffectiveTool = false;
         ItemStack tool = getItemInHand(); // TODO: replace with getItemInMainHand
         if (tool != null) {
             ToolType effectiveTool = digging.getMaterialValues().getTool();
 
             if (effectiveTool.matches(tool.getType())) {
-                holdingEffectiveTool = true;
+                hardness *= 1.5;
+                hardness *= effectiveTool.getMiningMultiplier();
+            } else {
+                hardness *= 5;
             }
-        }
-
-        if (holdingEffectiveTool) {
-            hardness *= 1.5;
         } else {
             hardness *= 5;
         }
-        // TODO: multiply by tool class (1x=nothing, 2x=wood, 4x=stone, 6x=iron, 8x=diamond, 12x=gold)
-
 
         double completion = (double) diggingTicks / hardness;
         int stage = (int) (completion * 10);
