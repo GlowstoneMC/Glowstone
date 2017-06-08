@@ -105,7 +105,7 @@ public final class GlowWorld implements World {
     /**
      * A lock kept on the spawn chunks.
      */
-    private ChunkLock spawnChunkLock;
+    private final ChunkLock spawnChunkLock;
     /**
      * The world metadata service used.
      */
@@ -122,10 +122,6 @@ public final class GlowWorld implements World {
      * This world's Random instance.
      */
     private final Random random = new Random();
-    /**
-     * The chunk generator for this world.
-     */
-    private final ChunkGenerator generator;
     /**
      * The world populators for this world.
      */
@@ -275,7 +271,7 @@ public final class GlowWorld implements World {
         worldType = creator.type();
         generateStructures = creator.generateStructures();
 
-        generator = creator.generator();
+        ChunkGenerator generator = creator.generator();
 
         storageProvider = new AnvilWorldStorageProvider(new File(server.getWorldContainer(), name));
         storageProvider.setWorld(this);
@@ -318,7 +314,14 @@ public final class GlowWorld implements World {
 
         spawnChunkLock = keepSpawnLoaded ? newChunkLock("spawn") : null;
 
-        setKeepSpawnInMemory(keepSpawnLoaded);
+        // determine the spawn location if we need to
+        if (spawnLocation == null) {
+            // no location loaded, look for fixed spawn
+            Location spawn = generator.getFixedSpawnLocation(this, random);
+            setSpawnLocation(spawn.getBlockX(), spawn.getBlockY(), spawn.getBlockZ());
+        } else {
+            setKeepSpawnInMemory(keepSpawnLoaded);
+        }
 
         server.getLogger().info("Preparing spawn for " + name + ": done");
         EventFactory.callEvent(new WorldLoadEvent(this));
@@ -714,19 +717,13 @@ public final class GlowWorld implements World {
 
     @Override
     public boolean setSpawnLocation(int x, int y, int z) {
-        return setSpawnLocation(x, y, z, true);
-    }
-
-    public boolean setSpawnLocation(int x, int y, int z, boolean anchor) {
         Location oldSpawn = spawnLocation;
         Location newSpawn = new Location(this, x, y, z);
         if (newSpawn.equals(oldSpawn)) {
             return false;
         }
         spawnLocation = newSpawn;
-        if (anchor) {
-            setKeepSpawnInMemory(keepSpawnLoaded);
-        }
+        setKeepSpawnInMemory(keepSpawnLoaded);
         EventFactory.callEvent(new SpawnChangeEvent(this, oldSpawn));
         return true;
     }
@@ -749,60 +746,38 @@ public final class GlowWorld implements World {
     @Override
     public void setKeepSpawnInMemory(boolean keepLoaded) {
         keepSpawnLoaded = keepLoaded;
-        boolean needSpawn = spawnLocation == null;
 
-        if (needSpawn) {
-            // find a spawn if needed
-            Location spawn = generator.getFixedSpawnLocation(this, random);
-            // we're already going to anchor if told to, so don't request another anchor
-            setSpawnLocation(spawn.getBlockX(), spawn.getBlockY(), spawn.getBlockZ(), false);
-        }
-
-        if (spawnChunkLock == null) {
-            if (keepSpawnLoaded) {
-                spawnChunkLock = newChunkLock("spawn");
-                prepareSpawn();
-            }
-        } else {
+        if (spawnChunkLock != null) {
             // update the chunk lock as needed
             spawnChunkLock.clear();
             if (keepSpawnLoaded) {
-                prepareSpawn();
+                int centerX = spawnLocation.getBlockX() >> 4;
+                int centerZ = spawnLocation.getBlockZ() >> 4;
+                int radius = 4 * server.getViewDistance() / 3;
+
+                long loadTime = System.currentTimeMillis();
+
+                int total = ((radius << 1) + 1) * ((radius << 1) + 1), current = 0;
+
+                for (int x = centerX - radius; x <= centerX + radius; ++x) {
+                    for (int z = centerZ - radius; z <= centerZ + radius; ++z) {
+                        ++current;
+                        if (populateAnchoredChunks) {
+                            getChunkManager().forcePopulation(x, z);
+                        } else {
+                            loadChunk(x, z);
+                        }
+                        spawnChunkLock.acquire(new Key(x, z));
+                        if (System.currentTimeMillis() >= loadTime + 1000) {
+                            int progress = 100 * current / total;
+                            GlowServer.logger.info("Preparing spawn for " + name + ": " + progress + "%");
+                            loadTime = System.currentTimeMillis();
+                        }
+                    }
+                }
             } else {
                 // attempt to immediately unload the spawn
                 chunks.unloadOldChunks();
-                spawnChunkLock = null;
-            }
-        }
-
-        if (needSpawn) {
-            setSpawnLocation(spawnLocation.getBlockX(), getHighestBlockYAt(spawnLocation.getBlockX(), spawnLocation.getBlockZ()), spawnLocation.getBlockZ(), false);
-        }
-    }
-
-    private void prepareSpawn() {
-        int centerX = spawnLocation.getBlockX() >> 4;
-        int centerZ = spawnLocation.getBlockZ() >> 4;
-        int radius = 4 * server.getViewDistance() / 3;
-
-        long loadTime = System.currentTimeMillis();
-
-        int total = ((radius << 1) + 1) * ((radius << 1) + 1), current = 0;
-
-        for (int x = centerX - radius; x <= centerX + radius; ++x) {
-            for (int z = centerZ - radius; z <= centerZ + radius; ++z) {
-                ++current;
-                if (populateAnchoredChunks) {
-                    getChunkManager().forcePopulation(x, z);
-                } else {
-                    loadChunk(x, z);
-                }
-                spawnChunkLock.acquire(new Key(x, z));
-                if (System.currentTimeMillis() >= loadTime + 1000) {
-                    int progress = 100 * current / total;
-                    GlowServer.logger.info("Preparing spawn for " + name + ": " + progress + "%");
-                    loadTime = System.currentTimeMillis();
-                }
             }
         }
     }
@@ -1718,7 +1693,7 @@ public final class GlowWorld implements World {
      */
     public boolean unload() {
         // terminate task service
-        //aiTaskService.shutdown();
+        aiTaskService.shutdown();
         EventFactory.callEvent(new WorldUnloadEvent(this));
         try {
             storageProvider.getChunkIoService().unload();
