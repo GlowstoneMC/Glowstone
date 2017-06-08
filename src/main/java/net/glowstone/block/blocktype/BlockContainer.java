@@ -5,6 +5,7 @@ import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.ContainerEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.MaterialMatcher;
+import net.glowstone.util.InventoryUtil;
 import org.bukkit.Statistic;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
@@ -59,7 +60,7 @@ public class BlockContainer extends BlockType {
 
         MaterialMatcher neededTool = getNeededMiningTool(block);
         if (neededTool == null ||
-                tool != null && neededTool.matches(tool.getType())) {
+                !InventoryUtil.isEmpty(tool) && neededTool.matches(InventoryUtil.itemOrEmpty(tool).getType())) {
             drops.addAll(getBlockDrops(block));
         }
 
@@ -76,7 +77,7 @@ public class BlockContainer extends BlockType {
     public Collection<ItemStack> getContentDrops(GlowBlock block) {
         LinkedList<ItemStack> drops = new LinkedList<>();
         for (ItemStack i : ((ContainerEntity) block.getBlockEntity()).getInventory().getContents()) {
-            if (i != null) {
+            if (!InventoryUtil.isEmpty(i)) {
                 drops.add(i);
             }
         }
