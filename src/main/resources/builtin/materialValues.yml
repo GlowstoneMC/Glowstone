@@ -8,18 +8,22 @@ values:
   AIR:
     lightOpacity: 0
   STONE:
+    tool: PICKAXE
     blastResistance: 30
     hardness: 1.5
   GRASS:
+    tool: SPADE
     blastResistance: 3
     hardness: 0.6
   DIRT:
     blastResistance: 2.5
     hardness: 0.5
   COBBLESTONE:
+    tool: PICKAXE
     blastResistance: 30
     hardness: 2
   WOOD:
+    tool: AXE
     flameResistance: 5
     fireResistance: 20
     hardness: 2
@@ -42,16 +46,21 @@ values:
     lightOpacity: 0
     hardness: 100
   SAND:
+    tool: SPADE
     hardness: 0.5
   GRAVEL:
+    tool: SPADE
     hardness: 0.6
   GOLD_ORE:
     hardness: 3
   IRON_ORE:
+    tool: PICKAXE
     hardness: 3
   COAL_ORE:
+    tool: PICKAXE
     hardness: 3
   LOG:
+    tool: AXE
     flameResistance: 5
     fireResistance: 5
     hardness: 2
@@ -66,14 +75,19 @@ values:
     lightOpacity: 0
     hardness: 0.3
   LAPIS_ORE:
+    tool: STONE_PICKAXE
     hardness: 3
   LAPIS_BLOCK:
+    tool: STONE_PICKAXE
     hardness: 3
   DISPENSER:
+    tool: PICKAXE
     hardness: 3.5
   SANDSTONE:
+    tool: PICKAXE
     hardness: 0.8
   NOTE_BLOCK:
+    tool: AXE
     hardness: 0.8
   BED_BLOCK:
     lightOpacity: 0
@@ -130,27 +144,35 @@ values:
     hardness: 0
     lightOpacity: 0
   GOLD_BLOCK:
+    tool: IRON_PICKAXE
     hardness: 3
   IRON_BLOCK:
+    tool: STONE_PICKAXE
     hardness: 5
   DOUBLE_STEP:
+    tool: AXE
     hardness: 2
   STEP:
+    tool: PICKAXE
     lightOpacity: 0
     hardness: 2
   BRICK:
+    tool: PICKAXE
     hardness: 2
   TNT:
     hardness: 0
     flameResistance: 15
     fireResistance: 100
   BOOKSHELF:
+    tool: AXE
     flameResistance: 30
     fireResistance: 20
     hardness: 1.5
   MOSSY_COBBLESTONE:
+    tool: PICKAXE
     hardness: 2
   OBSIDIAN:
+    tool: DIAMOND_PICKAXE
     hardness: 50
     blastResistance: 6000
   TORCH:
@@ -160,66 +182,84 @@ values:
     lightOpacity: 0
     hardness: 0
   MOB_SPAWNER:
+    tool: PICKAXE
     lightOpacity: 0
     hardness: 5
   WOOD_STAIRS:
+    tool: AXE
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
     hardness: 2
   CHEST:
+    tool: AXE
     lightOpacity: 0
     hardness: 2.5
   REDSTONE_WIRE:
     hardness: 0
     lightOpacity: 0
   DIAMOND_ORE:
+    tool: IRON_PICKAXE
     hardness: 3
   DIAMOND_BLOCK:
+    tool: IRON_PICKAXE
     hardness: 5
   WORKBENCH:
+    tool: AXE
     hardness: 2.5
   CROPS:
     hardness: 0
     lightOpacity: 0
   SOIL:
+    tool: SPADE
     lightOpacity: 0
     hardness: 0.6
   FURNACE:
+    tool: PICKAXE
     hardness: 3.5
   BURNING_FURNACE:
     hardness: 3.5
   SIGN_POST:
+    tool: AXE
     lightOpacity: 0
     hardness: 1
   WOODEN_DOOR:
+    tool: AXE
     lightOpacity: 0
     hardness: 3
   LADDER:
+    tool: AXE
     lightOpacity: 0
     hardness: 0.4
   RAILS:
+    tool: PICKAXE
     lightOpacity: 0
     hardness: 0.7
   COBBLESTONE_STAIRS:
+    tool: PICKAXE
     hardness: 2
     lightOpacity: 0
   WALL_SIGN:
+    tool: AXE
     hardness: 1
     lightOpacity: 0
   LEVER:
     hardness: 0.5
     lightOpacity: 0
   STONE_PLATE:
+    tool: PICKAXE
     hardness: 0.5
     lightOpacity: 0
   IRON_DOOR_BLOCK:
+    tool: PICKAXE
     hardness: 5
     lightOpacity: 0
   WOOD_PLATE:
+    tool: AXE
     hardness: 2
     lightOpacity: 0
   REDSTONE_ORE:
+    tool: IRON_PICKAXE
     hardness: 3
   GLOWING_REDSTONE_ORE:
     hardness: 3
@@ -233,9 +273,11 @@ values:
     hardness: 0.5
     lightOpacity: 0
   SNOW:
+    tool: SPADE
     hardness: 0.1
     lightOpacity: 0
   ICE:
+    tool: PICKAXE
     hardness: 0.5
     lightOpacity: 3
   SNOW_BLOCK:
@@ -244,20 +286,26 @@ values:
     hardness: 0.4
     lightOpacity: 0
   CLAY:
+    tool: SPADE
     hardness: 0.6
   SUGAR_CANE_BLOCK:
     hardness: 0
     lightOpacity: 0
   JUKEBOX:
+    tool: AXE
     hardness: 2
   FENCE:
+    tool: AXE
     hardness: 2
     lightOpacity: 0
   PUMPKIN:
+    tool: AXE
     hardness: 1
   NETHERRACK:
+    tool: PICKAXE
     hardness: 0.4
   SOUL_SAND:
+    tool: SPADE
     hardness: 0.5
   GLOWSTONE:
     hardness: 0.3
@@ -265,6 +313,7 @@ values:
     lightOpacity: 0
     hardness: -1
   JACK_O_LANTERN:
+    tool: AXE
     hardness: 1
   CAKE_BLOCK:
     hardness: 0.5
@@ -279,23 +328,29 @@ values:
     hardness: 0.3
     lightOpacity: 0
   TRAP_DOOR:
+    tool: AXE
     hardness: 3
     lightOpacity: 0
   MONSTER_EGGS:
     hardness: 0.75
   SMOOTH_BRICK:
+    tool: PICKAXE
     hardness: 1.5
   HUGE_MUSHROOM_1:
+    tool: AXE
     hardness: 0.2
   HUGE_MUSHROOM_2:
+    tool: AXE
     hardness: 0.2
   IRON_FENCE:
+    tool: PICKAXE
     hardness: 5
     lightOpacity: 0
   THIN_GLASS:
     hardness: 0.3
     lightOpacity: 0
   MELON_BLOCK:
+    tool: AXE
     hardness: 1
   PUMPKIN_STEM:
     hardness: 0
@@ -304,41 +359,52 @@ values:
     hardness: 0
     lightOpacity: 0
   VINE:
+    tool: AXE
     hardness: 0.2
     lightOpacity: 0
     flameResistance: 15
     fireResistance: 100
   FENCE_GATE:
+    tool: AXE
     hardness: 2
     lightOpacity: 0
   BRICK_STAIRS:
+    tool: PICKAXE
     hardness: 2
     lightOpacity: 0
   SMOOTH_STAIRS:
+    tool: PICKAXE
     hardness: 1.5
     lightOpacity: 0
   MYCEL:
+    tool: SPADE
     hardness: 0.6
   WATER_LILY:
     lightOpacity: 0
   NETHER_BRICK:
+    tool: PICKAXE
     hardness: 2
   NETHER_FENCE:
+    tool: PICKAXE
     hardness: 2
     lightOpacity: 0
   NETHER_BRICK_STAIRS:
+    tool: PICKAXE
     hardness: 2
     lightOpacity: 0
   NETHER_WARTS:
     hardness: 0
     lightOpacity: 0
   ENCHANTMENT_TABLE:
+    tool: PICKAXE
     hardness: 5
     lightOpacity: 0
   BREWING_STAND:
+    tool: PICKAXE
     hardness: 0.5
     lightOpacity: 0
   CAULDRON:
+    tool: PICKAXE
     hardness: 2
     lightOpacity: 0
   ENDER_PORTAL:
@@ -348,6 +414,7 @@ values:
     hardness: -1
     lightOpacity: 0
   ENDER_STONE:
+    tool: PICKAXE
     hardness: 3
   DRAGON_EGG:
     hardness: 3
@@ -366,14 +433,18 @@ values:
     flameResistance: 5
     fireResistance: 20
   COCOA:
+    tool: AXE
     hardness: 0.2
     lightOpacity: 0
   SANDSTONE_STAIRS:
+    tool: PICKAXE
     hardness: 0.8
     lightOpacity: 0
   EMERALD_ORE:
+    tool: IRON_PICKAXE
     hardness: 3
   ENDER_CHEST:
+    tool: PICKAXE
     hardness: 22.5
     lightOpacity: 0
   TRIPWIRE_HOOK:
@@ -383,6 +454,7 @@ values:
     hardness: 0
     lightOpacity: 0
   EMERALD_BLOCK:
+    tool: IRON_PICKAXE
     hardness: 5
   SPRUCE_WOOD_STAIRS:
     hardness: 2
@@ -405,6 +477,7 @@ values:
     hardness: 3
     lightOpacity: 0
   COBBLE_WALL:
+    tool: PICKAXE
     hardness: 2
     lightOpacity: 0
   FLOWER_POT:
@@ -423,15 +496,19 @@ values:
     hardness: 1
     lightOpacity: 0
   ANVIL:
+    tool: PICKAXE
     hardness: 5
     lightOpacity: 0
   TRAPPED_CHEST:
+    tool: AXE
     hardness: 2.5
     lightOpacity: 0
   GOLD_PLATE:
+    tool: PICKAXE
     hardness: 0.5
     lightOpacity: 0
   IRON_PLATE:
+    tool: PICKAXE
     hardness: 0.5
     lightOpacity: 0
   REDSTONE_COMPARATOR_OFF:
@@ -441,24 +518,31 @@ values:
     hardness: 0
     lightOpacity: 0
   DAYLIGHT_DETECTOR:
+    tool: AXE
     hardness: 0.2
     lightOpacity: 0
   REDSTONE_BLOCK:
+    tool: PICKAXE
     hardness: 5
   QUARTZ_ORE:
+    tool: PICKAXE
     hardness: 3
   HOPPER:
+    tool: PICKAXE
     hardness: 3
     lightOpacity: 0
   QUARTZ_BLOCK:
+    tool: PICKAXE
     hardness: 0.8
   QUARTZ_STAIRS:
+    tool: PICKAXE
     hardness: 0.8
     lightOpacity: 0
   ACTIVATOR_RAIL:
     hardness: 0.7
     lightOpacity: 0
   DROPPER:
+    tool: PICKAXE
     hardness: 3.5
   STAINED_CLAY:
     hardness: 1.4
@@ -489,9 +573,11 @@ values:
   BARRIER:
     hardness: -1
   IRON_TRAPDOOR:
+    tool: PICKAXE
     hardness: 5
     lightOpacity: 0
   PRISMARINE:
+    tool: PICKAXE
     hardness: 1.5
   SEA_LANTERN:
     hardness: 0.3
@@ -507,10 +593,12 @@ values:
   HARD_CLAY:
     hardness: 1.25
   COAL_BLOCK:
+    tool: PICKAXE
     hardness: 5
     flameResistance: 5
     fireResistance: 5
   PACKED_ICE:
+    tool: PICKAXE
     hardness: 0.5
   DOUBLE_PLANT:
     lightOpacity: 0
@@ -518,15 +606,19 @@ values:
     fireResistance: 100
     hardness: 0
   STANDING_BANNER:
+    tool: AXE
     hardness: 1
   WALL_BANNER:
+    tool: AXE
     hardness: 1
   DAYLIGHT_DETECTOR_INVERTED:
     hardness: 0.2
     lightOpacity: 0
   RED_SANDSTONE:
+    tool: PICKAXE
     hardness: 0.8
   RED_SANDSTONE_STAIRS:
+    tool: PICKAXE
     hardness: 0.8
     lightOpacity: 0
   SPRUCE_FENCE_GATE:
@@ -580,17 +672,22 @@ values:
     flameResistance: 5
     fireResistance: 20
   SPRUCE_DOOR:
+    tool: AXE
     hardness: 3
     lightOpacity: 0
   BIRCH_DOOR:
+    tool: AXE
     hardness: 3
     lightOpacity: 0
   JUNGLE_DOOR:
+    tool: AXE
     hardness: 3
     lightOpacity: 0
   ACACIA_DOOR:
+    tool: AXE
     hardness: 3
     lightOpacity: 0
   DARK_OAK_DOOR:
+    tool: AXE
     hardness: 3
     lightOpacity: 0
