@@ -4,13 +4,13 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;
 import java.util.List;
 
-public class KickCommand extends BukkitCommand {
+public class KickCommand extends VanillaCommand {
     public KickCommand() {
         super("kick", "Removes a player from the server.", "/kick <player> [reason]", Collections.emptyList());
         setPermission("minecraft.command.kick");

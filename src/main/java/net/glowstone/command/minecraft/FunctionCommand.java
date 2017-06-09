@@ -9,7 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.StringUtil;
 
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class FunctionCommand extends BukkitCommand {
+public class FunctionCommand extends VanillaCommand {
 
     public FunctionCommand() {
         super("function", "Execute a function", "/function <name> [if <selector>|unless <selector>]", Collections.emptyList());

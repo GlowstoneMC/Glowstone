@@ -3,12 +3,12 @@ package net.glowstone.command.minecraft;
 import com.google.common.collect.ImmutableList;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Player;
 
 import java.util.*;
 
-public class ListCommand extends BukkitCommand {
+public class ListCommand extends VanillaCommand {
     private static final String[] EMPTY = new String[0];
 
     public ListCommand() {

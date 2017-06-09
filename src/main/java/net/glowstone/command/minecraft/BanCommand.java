@@ -5,12 +5,12 @@ import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.command.defaults.VanillaCommand;
 
 import java.util.Collections;
 import java.util.List;
 
-public class BanCommand extends BukkitCommand {
+public class BanCommand extends VanillaCommand {
 
     public BanCommand() {
         super("ban", "Bans a player from the server.", "/ban <player> [reason]", Collections.emptyList());

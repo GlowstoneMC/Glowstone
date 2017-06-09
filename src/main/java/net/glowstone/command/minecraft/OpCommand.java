@@ -4,11 +4,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.command.defaults.VanillaCommand;
 
 import java.util.Collections;
 
-public class OpCommand extends BukkitCommand {
+public class OpCommand extends VanillaCommand {
     public OpCommand() {
         super("op", "Turns a player into a server operator.", "/op <player>", Collections.emptyList());
         setPermission("minecraft.command.op");

@@ -8,7 +8,7 @@ import net.glowstone.net.message.play.game.TitleMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class TitleCommand extends BukkitCommand {
+public class TitleCommand extends VanillaCommand {
 
     public TitleCommand() {
         super("title", "Sends a title to the specified player(s)", "/title <player> <title|subtitle|times|clear|reset> ...", Collections.emptyList());

@@ -5,7 +5,7 @@ import net.glowstone.command.CommandUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class GameRuleCommand extends BukkitCommand {
+public class GameRuleCommand extends VanillaCommand {
     public GameRuleCommand() {
         super("gamerule", "Changes the rules of the server.", "/gamerule [rule] [new value]", Collections.emptyList());
         setPermission("minecraft.command.gamerule");

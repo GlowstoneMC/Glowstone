@@ -6,13 +6,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;
 
-public class TeleportCommand extends BukkitCommand {
+public class TeleportCommand extends VanillaCommand {
 
     private static final Entity[] NO_ENTITY = new Entity[0];
 

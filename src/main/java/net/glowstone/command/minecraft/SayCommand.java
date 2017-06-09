@@ -7,12 +7,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Entity;
 
 import java.util.Collections;
 
-public class SayCommand extends BukkitCommand {
+public class SayCommand extends VanillaCommand {
 
     public SayCommand() {
         super("say", "Say a message.", "/say <message ...>", Collections.emptyList());

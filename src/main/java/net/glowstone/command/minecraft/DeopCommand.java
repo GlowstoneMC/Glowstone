@@ -4,14 +4,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class DeopCommand extends BukkitCommand {
+public class DeopCommand extends VanillaCommand {
     public DeopCommand() {
         super("deop", "Removes server operator status from a player.", "/deop <player>", Collections.emptyList());
         setPermission("minecraft.command.deop");

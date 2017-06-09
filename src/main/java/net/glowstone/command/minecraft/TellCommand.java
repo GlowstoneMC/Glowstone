@@ -8,7 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class TellCommand extends BukkitCommand {
+public class TellCommand extends VanillaCommand {
 
     public TellCommand() {
         super("tell", "Send a private message.", "/tell <player> <private message ...>", Arrays.asList("msg", "w"));
