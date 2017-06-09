@@ -4,7 +4,6 @@ import net.glowstone.GlowServer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.*;
 import org.bukkit.command.defaults.BukkitCommand;
-import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.help.*;
 
@@ -255,7 +254,7 @@ public final class GlowHelpMap implements HelpMap {
     }
 
     private String getCommandPluginName(Command command) {
-        if (command instanceof BukkitCommand || command instanceof VanillaCommand) {
+        if (command instanceof BukkitCommand) {
             return "Bukkit";
         }
         if (command instanceof PluginIdentifiableCommand) {

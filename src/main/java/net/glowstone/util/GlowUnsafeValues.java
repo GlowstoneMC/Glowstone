@@ -1,9 +1,7 @@
 package net.glowstone.util;
 
-import org.bukkit.Achievement;
-import org.bukkit.Material;
-import org.bukkit.Statistic;
-import org.bukkit.UnsafeValues;
+import org.bukkit.*;
+import org.bukkit.advancement.Advancement;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
 
@@ -72,5 +70,15 @@ public final class GlowUnsafeValues implements UnsafeValues {
             names.add(achievement.name());
         }
         return StringUtil.copyPartialMatches(token, names, completions);
+    }
+
+    @Override
+    public Advancement loadAdvancement(NamespacedKey key, String advancement) {
+        return null;
+    }
+
+    @Override
+    public boolean removeAdvancement(NamespacedKey key) {
+        return false;
     }
 }

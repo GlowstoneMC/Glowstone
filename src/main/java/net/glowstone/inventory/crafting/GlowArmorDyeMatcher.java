@@ -4,7 +4,6 @@ import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.inventory.MaterialMatcher;
 import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemMatcher;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.material.Dye;

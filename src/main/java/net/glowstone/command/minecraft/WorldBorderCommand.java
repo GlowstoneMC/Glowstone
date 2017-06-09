@@ -1,18 +1,18 @@
-package net.glowstone.command;
+package net.glowstone.command.minecraft;
 
+import net.glowstone.command.CommandUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.CommandUtils;
-import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Player;
 
-public class WorldBorderCommand extends BukkitCommand {
+public class WorldBorderCommand extends VanillaCommand {
     public WorldBorderCommand() {
         super("worldborder");
         setUsage("/worldborder <set|center|damage|warning|get|add> ...");
-        setPermission("glowstone.command.worldborder");
+        setPermission("minecraft.command.worldborder");
     }
 
     @Override

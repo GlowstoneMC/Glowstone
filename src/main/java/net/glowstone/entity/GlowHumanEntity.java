@@ -426,14 +426,14 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
             if (!InventoryUtil.isEmpty(getItemOnCursor())) {
                 drop(getItemOnCursor());
             }
-            dropUnusedInputs();
+            handleUnusedInputs();
         }
         setItemOnCursor(InventoryUtil.createEmptyStack());
         resetInventoryView();
     }
 
     // Drop items left in crafting area.
-    private void dropUnusedInputs() {
+    private void handleUnusedInputs() {
         for (int i = 0; i < getTopInventory().getSlots().size(); i++) {
             ItemStack itemStack = getOpenInventory().getItem(i);
             if (InventoryUtil.isEmpty(itemStack)) {
@@ -441,8 +441,8 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
             }
 
             if (isDroppableCraftingSlot(i)) {
-                drop(itemStack);
-                getOpenInventory().setItem(i, InventoryUtil.createEmptyStack());
+                getOpenInventory().getBottomInventory().addItem(itemStack);
+                getOpenInventory().getTopInventory().setItem(i, InventoryUtil.createEmptyStack());
             }
         }
     }

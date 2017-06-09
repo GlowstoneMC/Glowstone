@@ -14,7 +14,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class NbtScoreboardIoWriter {
     public static void writeMainScoreboard(File path, GlowScoreboard scoreboard) throws IOException {
@@ -47,7 +46,7 @@ public class NbtScoreboardIoWriter {
             objectiveNbt.putString("CriteriaName", objective.getCriteria());
             objectiveNbt.putString("DisplayName", objective.getDisplayName());
             objectiveNbt.putString("Name", objective.getName());
-            objectiveNbt.putString("RenderType", objective.getType().name());
+            objectiveNbt.putString("RenderType", ((GlowObjective) objective).getType().name());
 
             objectives.add(objectiveNbt);
         }
@@ -62,7 +61,7 @@ public class NbtScoreboardIoWriter {
                 scoreNbt.putInt("Score", score.getScore());
                 scoreNbt.putString("Name", score.getEntry());
                 scoreNbt.putString("Objective", score.getObjective().getName());
-                scoreNbt.putByte("Locked", score.getLocked() ? 1 : 0);
+                scoreNbt.putByte("Locked", ((GlowScore) score).getLocked() ? 1 : 0);
 
                 scores.add(scoreNbt);
             }
@@ -107,9 +106,9 @@ public class NbtScoreboardIoWriter {
             teamNbt.putString("Name", team.getName());
             teamNbt.putString("Prefix", team.getPrefix());
             teamNbt.putString("Suffix", team.getSuffix());
-            teamNbt.putString("TeamColor", team.getColor().name().toLowerCase());
+            teamNbt.putString("TeamColor", ((GlowTeam) team).getColor().name().toLowerCase());
 
-            List<String> players = team.getEntries().stream().collect(Collectors.toList());
+            List<String> players = new ArrayList<>(team.getEntries());
 
             teamNbt.putList("Players", TagType.STRING, players);
             teams.add(teamNbt);

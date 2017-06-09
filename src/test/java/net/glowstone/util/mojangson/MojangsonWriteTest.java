@@ -1,12 +1,11 @@
 package net.glowstone.util.mojangson;
 
 import net.glowstone.util.nbt.*;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -16,10 +15,10 @@ import static org.junit.Assert.assertThat;
 @RunWith(Parameterized.class)
 public class MojangsonWriteTest {
 
-    private final Pair<Tag, String> testCase; // The tag to write, the expected output.
+    private final AbstractMap.Entry<Tag, String> testCase; // The tag to write, the expected output.
 
     public MojangsonWriteTest(Tag tag, String expected) {
-        this.testCase = new ImmutablePair<>(tag, expected);
+        this.testCase = new AbstractMap.SimpleImmutableEntry<>(tag, expected);
     }
 
     @Parameterized.Parameters

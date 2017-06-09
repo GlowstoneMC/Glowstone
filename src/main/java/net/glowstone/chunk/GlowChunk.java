@@ -285,6 +285,7 @@ public final class GlowChunk implements Chunk {
             case SIGN:
             case SIGN_POST:
             case WALL_SIGN:
+            case BED_BLOCK:
             case CHEST:
             case TRAPPED_CHEST:
             case BURNING_FURNACE:

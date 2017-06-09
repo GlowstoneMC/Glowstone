@@ -237,10 +237,12 @@ public final class GlowTeam implements Team {
         players.add(player.getName());
     }
 
+    @Override
     public ChatColor getColor() {
         return color;
     }
 
+    @Override
     public void setColor(ChatColor color) throws IllegalArgumentException {
         if (color.isFormat()) {
             throw new IllegalArgumentException("Formatting codes cannot be used as a team color!");

@@ -17,7 +17,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LightningStrike;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.util.Vector;
 
 import java.util.Arrays;
@@ -85,7 +85,7 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
                 // deal damage to nearby entities
                 for (Entity entity : getNearbyEntities(3, 6, 3)) {
                     if (entity instanceof Damageable) {
-                        ((Damageable) entity).damage(5, this, DamageCause.LIGHTNING);
+                        ((Damageable) entity).damage(5, this, EntityDamageEvent.DamageCause.LIGHTNING);
                     }
                     entity.setFireTicks(entity.getMaxFireTicks());
                 }

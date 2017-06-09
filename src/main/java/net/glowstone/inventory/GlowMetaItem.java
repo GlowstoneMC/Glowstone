@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 /**
  * An implementation of {@link ItemMeta}, created through {@link GlowItemFactory}.
  */
-class GlowMetaItem implements ItemMeta {
+public class GlowMetaItem implements ItemMeta {
 
     private String displayName;
     private List<String> lore;
@@ -96,13 +96,18 @@ class GlowMetaItem implements ItemMeta {
     }
 
     @Override
-    public ItemMeta clone() {
-        return new GlowMetaItem(this);
-    }
-
-    @Override
     public Spigot spigot() {
-        return null;
+        return new Spigot() {
+            @Override
+            public boolean isUnbreakable() {
+                return GlowMetaItem.this.isUnbreakable();
+            }
+
+            @Override
+            public void setUnbreakable(boolean unbreakable) {
+                GlowMetaItem.this.setUnbreakable(unbreakable);
+            }
+        };
     }
 
     @Override
@@ -301,6 +306,11 @@ class GlowMetaItem implements ItemMeta {
         }
 
         return false;
+    }
+
+    @Override
+    public ItemMeta clone() {
+        return new GlowMetaItem(this);
     }
 
     @Override

@@ -34,18 +34,8 @@ public class GlowEnderDragonPart extends GlowEntity implements EnderDragonPart {
     }
 
     @Override
-    public void _INVALID_damage(int i) {
-        parent._INVALID_damage(i);
-    }
-
-    @Override
     public void damage(double amount, Entity source) {
         parent.damage(amount, source);
-    }
-
-    @Override
-    public void _INVALID_damage(int i, Entity entity) {
-        parent._INVALID_damage(i, entity);
     }
 
     @Override
@@ -64,18 +54,8 @@ public class GlowEnderDragonPart extends GlowEntity implements EnderDragonPart {
     }
 
     @Override
-    public int _INVALID_getHealth() {
-        return parent._INVALID_getHealth();
-    }
-
-    @Override
     public void setHealth(double health) {
         parent.setHealth(health);
-    }
-
-    @Override
-    public void _INVALID_setHealth(int i) {
-        parent._INVALID_setHealth(i);
     }
 
     @Override
@@ -84,18 +64,8 @@ public class GlowEnderDragonPart extends GlowEntity implements EnderDragonPart {
     }
 
     @Override
-    public int _INVALID_getMaxHealth() {
-        return parent._INVALID_getMaxHealth();
-    }
-
-    @Override
     public void setMaxHealth(double health) {
         parent.setMaxHealth(health);
-    }
-
-    @Override
-    public void _INVALID_setMaxHealth(int i) {
-        parent._INVALID_setMaxHealth(i);
     }
 
     @Override

@@ -1,22 +1,20 @@
-package net.glowstone.command;
+package net.glowstone.command.minecraft;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.base.Preconditions;
 import net.glowstone.GlowWorld;
+import net.glowstone.command.CommandUtils;
 import net.glowstone.entity.EntityRegistry;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.util.mojangson.Mojangson;
 import net.glowstone.util.mojangson.ex.MojangsonParseException;
 import net.glowstone.util.nbt.CompoundTag;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.CommandUtils;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -26,11 +24,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class SummonCommand extends BukkitCommand {
+public class SummonCommand extends VanillaCommand {
 
     public SummonCommand() {
         super("summon", "Summons an entity.", "/summon <EntityName> [x] [y] [z] [dataTag]", Collections.<String>emptyList());
-        setPermission("glowstone.command.summon");
+        setPermission("minecraft.command.summon");
     }
 
     @Override
@@ -115,24 +113,24 @@ public class SummonCommand extends BukkitCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
-        Validate.notNull(sender, "Sender cannot be null");
-        Validate.notNull(args, "Arguments cannot be null");
-        Validate.notNull(alias, "Alias cannot be null");
+        Preconditions.checkNotNull(sender, "Sender cannot be null");
+        Preconditions.checkNotNull(args, "Arguments cannot be null");
+        Preconditions.checkNotNull(alias, "Alias cannot be null");
         if (args.length == 1) {
             String arg = args[0];
             ArrayList<String> completion = new ArrayList<>();
             for (EntityType type : EntityType.values()) {
-                if (checkSummon(null, type.getName()) && StringUtils.startsWithIgnoreCase(type.getName(), arg)) {
+                if (checkSummon(null, type.getName()) && type.getName().toLowerCase().startsWith(arg)) {
                     completion.add(type.getName());
                 }
             }
             EntityRegistry.getRegisteredCustomEntities().forEach((d) -> {
-                if (StringUtils.startsWithIgnoreCase(d.getId(), arg))
+                if (d.getId().toLowerCase().startsWith(arg))
                     completion.add(d.getId().toLowerCase());
             });
             return completion;
         } else {
-            return ImmutableList.of();
+            return Collections.emptyList();
         }
     }
 }

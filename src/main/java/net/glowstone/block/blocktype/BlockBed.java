@@ -3,15 +3,18 @@ package net.glowstone.block.blocktype;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.entity.BedEntity;
+import net.glowstone.block.entity.BlockEntity;
+import net.glowstone.block.state.GlowBed;
+import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Bed;
 import org.bukkit.material.MaterialData;
@@ -181,6 +184,7 @@ public class BlockBed extends BlockType {
             MaterialData data = state.getData();
             if (data instanceof Bed) {
                 ((Bed) data).setFacingDirection(direction);
+                ((Bed) data).setHeadOfBed(false);
                 state.setData(data);
             } else {
                 warnMaterialData(Bed.class, data);
@@ -189,12 +193,21 @@ public class BlockBed extends BlockType {
     }
 
     @Override
+    public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
+        return new BedEntity(chunk.getBlock(cx, cy, cz));
+    }
+
+    @Override
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
         if (block.getType() == Material.BED_BLOCK) {
-            BlockFace direction = ((Bed) block.getState().getData()).getFacing();
+            GlowBed bed = (GlowBed) block.getState();
+            bed.setColor(DyeColor.getByWoolData(holding.getData().getData()));
+            bed.update(true);
+            BlockFace direction = ((Bed) bed.getData()).getFacing();
             GlowBlock headBlock = block.getRelative(direction);
             headBlock.setType(Material.BED_BLOCK);
-            GlowBlockState headBlockState = headBlock.getState();
+            GlowBed headBlockState = (GlowBed) headBlock.getState();
+            headBlockState.setColor(DyeColor.getByWoolData(holding.getData().getData()));
             MaterialData data = headBlockState.getData();
             ((Bed) data).setHeadOfBed(true);
             ((Bed) data).setFacingDirection(direction);
@@ -239,7 +252,7 @@ public class BlockBed extends BlockType {
 
         for (LivingEntity e : world.getLivingEntities()) {
             // Check for hostile mobs relative to the block below the head of the bed
-            if (e instanceof Creature && isWithinDistance(e, block.getRelative(BlockFace.DOWN), 8, 5, 8)) {
+            if (e instanceof Creature && (e.getType() != EntityType.PIG_ZOMBIE || ((PigZombie) e).isAngry()) && isWithinDistance(e, block.getRelative(BlockFace.DOWN), 8, 5, 8)) {
                 player.sendMessage("You may not rest now, there are monsters nearby");
                 return true;
             }

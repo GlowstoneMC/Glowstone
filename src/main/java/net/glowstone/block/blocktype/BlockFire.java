@@ -80,6 +80,7 @@ public class BlockFire extends BlockNeedsAttached {
         boolean isInfiniteFire;
         switch (type) {
             case NETHERRACK:
+            case MAGMA:
                 isInfiniteFire = true;
                 break;
             case BEDROCK:

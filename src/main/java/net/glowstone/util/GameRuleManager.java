@@ -26,6 +26,10 @@ public final class GameRuleManager {
         setValue("reducedDebugInfo", false); // implemented
         setValue("sendCommandFeedback", true);
         setValue("showDeathMessages", true);
+        setValue("announceAdvancements", true);
+        setValue("doLimitedCrafting", false);
+        setValue("gameLoopFunction", "");
+        setValue("maxCommandChainLength", 65536);
     }
 
     /**

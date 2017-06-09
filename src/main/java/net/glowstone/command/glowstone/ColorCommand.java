@@ -1,4 +1,4 @@
-package net.glowstone.command;
+package net.glowstone.command.glowstone;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;

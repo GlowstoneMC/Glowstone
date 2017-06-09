@@ -1,5 +1,6 @@
 package net.glowstone.entity.meta;
 
+import net.glowstone.entity.passive.GlowParrot;
 import net.glowstone.entity.passive.GlowTameable;
 import org.bukkit.entity.*;
 import org.bukkit.entity.minecart.PoweredMinecart;
@@ -57,6 +58,8 @@ public enum MetadataIndex {
     PLAYER_SCORE(12, INT, Player.class),
     PLAYER_SKIN_PARTS(13, BYTE, Player.class),
     PLAYER_MAIN_HAND(14, BYTE, Player.class),
+    PLAYER_LEFT_SHOULDER(15, NBTTAG, Player.class),
+    PLAYER_RIGHT_SHOULDER(16, NBTTAG, Player.class),
 
     ARMORSTAND_FLAGS(11, BYTE, ArmorStand.class),
     ARMORSTAND_HEAD_POSITION(12, VECTOR, ArmorStand.class),
@@ -162,12 +165,15 @@ public enum MetadataIndex {
 
     VINDICATOR_STATE(12, BYTE, Vindicator.class),
 
+    PARROT_VARIANT(15, INT, GlowParrot.class),
+
     //TODO - 1.9 When Those minecarts are implemented, uncomment this
     //MINECARTCOMMANDBLOCK_COMMAND(11, STRING, Minecart.class), //TODO 1.9 - Command block minecraft addition
     //MINECARTCOMMANDBLOCK_LAST_OUTPUT(12, CHAT, Minecart.class), //TODO 1.9 - Command block minecraft addition
 
     FURNACE_MINECART_POWERED(12, BOOLEAN, PoweredMinecart.class),
-    TNT_PRIMED(6, INT, TNTPrimed.class);
+    TNT_PRIMED(6, INT, TNTPrimed.class),
+    ;
 
 
     private final int index;

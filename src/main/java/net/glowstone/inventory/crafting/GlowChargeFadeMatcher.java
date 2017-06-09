@@ -2,7 +2,6 @@ package net.glowstone.inventory.crafting;
 
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
-import org.bukkit.inventory.ItemMatcher;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkEffectMeta;
 import org.bukkit.material.Dye;

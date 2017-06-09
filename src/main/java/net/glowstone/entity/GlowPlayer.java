@@ -4,6 +4,7 @@ import com.destroystokyo.paper.Title;
 import com.flowpowered.network.Message;
 import com.flowpowered.network.util.ByteBufUtils;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.Getter;
@@ -19,10 +20,7 @@ import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.chunk.ChunkManager.ChunkLock;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.chunk.GlowChunk.Key;
-import net.glowstone.constants.GlowAchievement;
-import net.glowstone.constants.GlowBlockEntity;
-import net.glowstone.constants.GlowEffect;
-import net.glowstone.constants.GlowParticle;
+import net.glowstone.constants.*;
 import net.glowstone.entity.meta.ClientSettings;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataIndex.StatusFlags;
@@ -32,6 +30,7 @@ import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.InventoryMonitor;
 import net.glowstone.io.PlayerDataService.PlayerReader;
+import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.game.*;
@@ -55,6 +54,8 @@ import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.Effect.Type;
 import org.bukkit.World.Environment;
+import org.bukkit.advancement.Advancement;
+import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
@@ -219,6 +220,16 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * The scale at which to display the player's health.
      */
     private double healthScale = 20;
+    /**
+     * If this player has seen the end credits.
+     */
+    @Getter
+    @Setter
+    private boolean seenCredits;
+    /**
+     * Recipes this player has unlocked.
+     */
+    private Collection<Recipe> recipes = new HashSet<>();
     /**
      * This player's current time offset.
      */
@@ -967,12 +978,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    @Deprecated
-    public void setBanned(boolean banned) {
-        server.getBanList(BanList.Type.NAME).addBan(getName(), null, null, null);
-    }
-
-    @Override
     public boolean isWhitelisted() {
         return server.getWhitelist().containsProfile(new PlayerProfile(getName(), getUniqueId()));
     }
@@ -1324,6 +1329,113 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public int getExpToLevel() {
         return getExpToLevel(level);
+    }
+
+    @Override
+    public Entity getShoulderEntityLeft() {
+        CompoundTag tag = getLeftShoulderTag();
+        if (tag.isEmpty()) {
+            return null;
+        }
+        UUID uuid = new UUID(tag.getLong("UUIDMost"), tag.getLong("UUIDLeast"));
+        return server.getEntity(uuid);
+    }
+
+    @Override
+    public void setShoulderEntityLeft(Entity entity) {
+        CompoundTag tag;
+        if (entity == null) {
+            tag = getLeftShoulderTag();
+            if (!tag.isEmpty()) {
+                EntityStorage.loadEntity(world, tag);
+            }
+        } else {
+            tag = new CompoundTag();
+            setLeftShoulderTag(tag);
+        }
+    }
+
+    @Override
+    public Entity getShoulderEntityRight() {
+        CompoundTag tag = getRightShoulderTag();
+        if (tag.isEmpty()) {
+            return null;
+        }
+        UUID uuid = new UUID(tag.getLong("UUIDMost"), tag.getLong("UUIDLeast"));
+        return server.getEntity(uuid);
+    }
+
+    @Override
+    public void setShoulderEntityRight(Entity entity) {
+        CompoundTag tag;
+        if (entity == null) {
+            tag = getRightShoulderTag();
+            if (!tag.isEmpty()) {
+                EntityStorage.loadEntity(world, tag);
+            }
+        } else {
+            tag = new CompoundTag();
+            EntityStorage.save((GlowEntity) entity, tag);
+            setRightShoulderTag(tag);
+        }
+    }
+
+    public CompoundTag getLeftShoulderTag() {
+        Object tag = metadata.get(MetadataIndex.PLAYER_LEFT_SHOULDER);
+        return tag == null ? new CompoundTag() : (CompoundTag) tag;
+    }
+
+    public CompoundTag getRightShoulderTag() {
+        Object tag = metadata.get(MetadataIndex.PLAYER_RIGHT_SHOULDER);
+        return tag == null ? new CompoundTag() : (CompoundTag) tag;
+    }
+
+    public void setLeftShoulderTag(CompoundTag tag) {
+        metadata.set(MetadataIndex.PLAYER_LEFT_SHOULDER, tag == null ? new CompoundTag() : tag);
+    }
+
+    public void setRightShoulderTag(CompoundTag tag) {
+        metadata.set(MetadataIndex.PLAYER_RIGHT_SHOULDER, tag == null ? new CompoundTag() : tag);
+    }
+
+    /**
+     * Recipes this player has unlocked.
+     *
+     * @return An immutable list of unlocked recipes.
+     */
+    public Collection<Recipe> getUnlockedRecipes() {
+        return ImmutableList.copyOf(recipes);
+    }
+
+    /**
+     * Teach the player a new recipe.
+     *
+     * @param recipe The recipe to be added to learnt recipes
+     * @param notify If the player should be notified of the recipes learnt
+     * @return If this recipe was not learned already.
+     */
+    public boolean learnRecipe(Recipe recipe, boolean notify) {
+        return recipe != null && recipes.add(recipe);
+    }
+
+    /**
+     * Remove a recipe from the player's known recipes.
+     *
+     * @param recipe The recipe to be removed from learnt recipes
+     * @return If this recipe was learned before it was removed.
+     */
+    public boolean unlearnRecipe(Recipe recipe) {
+        return recipes.remove(recipe);
+    }
+
+    /**
+     * Checks to see if the player knows this recipe.
+     *
+     * @param recipe The recipe to check
+     * @return If the player knows the recipe
+     */
+    public boolean knowsRecipe(Recipe recipe) {
+        return recipes.contains(recipe);
     }
 
     private int getExpToLevel(int level) {
@@ -1738,6 +1850,18 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         spawnParticle(particle, new Location(world, x, y, z), count, offsetX, offsetY, offsetZ, extra, data);
     }
 
+    private HashMap<Advancement, AdvancementProgress> advancements;
+
+    @Override
+    public AdvancementProgress getAdvancementProgress(Advancement advancement) {
+        return advancements.get(advancement);
+    }
+
+    @Override
+    public String getLocale() {
+        return null;
+    }
+
     public boolean affectsSpawning = true;
 
     @Override
@@ -1958,12 +2082,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void playSound(Location location, Sound sound, float volume, float pitch) {
-        playSound(location, sound, sound.getCategory(), volume, pitch);
+        playSound(location, sound, GlowSound.getSoundCategory(GlowSound.getVanillaId(sound)), volume, pitch);
     }
 
     @Override
     public void playSound(Location location, String sound, float volume, float pitch) {
-        playSound(location, Sound.fromId(sound), volume, pitch);
+        playSound(location, GlowSound.getVanillaSound(sound), volume, pitch);
     }
 
     @Override
@@ -1978,7 +2102,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void playSound(Location location, Sound sound, SoundCategory category, float volume, float pitch) {
-        playSound(location, sound.getId(), category, volume, pitch);
+        playSound(location, GlowSound.getVanillaId(sound), category, volume, pitch);
     }
 
     @Override
@@ -1986,19 +2110,17 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         stopSound(null, sound);
     }
 
-    @Override
     public void stopAllSounds() {
         stopSound("");
     }
 
-    @Override
     public void stopSound(SoundCategory category) {
         stopSound("", category);
     }
 
     @Override
     public void stopSound(Sound sound, SoundCategory soundCategory) {
-        stopSound(sound.getId(), soundCategory);
+        stopSound(GlowSound.getVanillaId(sound), soundCategory);
     }
 
     @Override
@@ -2023,7 +2145,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     public void stopSound(SoundCategory category, Sound sound) {
-        stopSound(sound == null ? "" : sound.getId(), category);
+        stopSound(sound == null ? "" : GlowSound.getVanillaId(sound), category);
     }
 
     @Override
@@ -2810,8 +2932,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     ////////////////////////////////////////////////////////////////////////////
     // Titles
-
-    @Override
     public Title getTitle() {
         return currentTitle.build();
     }

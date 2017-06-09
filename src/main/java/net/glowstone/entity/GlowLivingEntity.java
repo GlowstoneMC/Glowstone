@@ -589,15 +589,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     @Deprecated
     @Override
-    public List<Block> getLineOfSight(HashSet<Byte> transparent, int maxDistance) {
-        return getLineOfSight(transparent, maxDistance, 0);
-    }
-
-
-    @Deprecated
-    @Override
     public Block getTargetBlock(HashSet<Byte> transparent, int maxDistance) {
-        return getLineOfSight(transparent, maxDistance).get(0);
+        return getLineOfSight(transparent, maxDistance, 0).get(0);
     }
 
     @Override
@@ -821,49 +814,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     public void setLastDamager(Entity lastDamager) {
         this.lastDamager = lastDamager;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Invalid health methods
-
-    @Override
-    public void _INVALID_damage(int amount) {
-        damage(amount);
-    }
-
-    @Override
-    public int _INVALID_getLastDamage() {
-        return (int) getLastDamage();
-    }
-
-    @Override
-    public void _INVALID_setLastDamage(int damage) {
-        setLastDamage(damage);
-    }
-
-    @Override
-    public void _INVALID_setMaxHealth(int health) {
-        setMaxHealth(health);
-    }
-
-    @Override
-    public int _INVALID_getMaxHealth() {
-        return (int) getMaxHealth();
-    }
-
-    @Override
-    public void _INVALID_damage(int amount, Entity source) {
-        damage(amount, source);
-    }
-
-    @Override
-    public int _INVALID_getHealth() {
-        return (int) getHealth();
-    }
-
-    @Override
-    public void _INVALID_setHealth(int health) {
-        setHealth(health);
     }
 
     ////////////////////////////////////////////////////////////////////////////

@@ -5,7 +5,6 @@ import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.ClientStatusMessage;
-import org.bukkit.Achievement;
 
 public final class ClientStatusHandler implements MessageHandler<GlowSession, ClientStatusMessage> {
     @Override
@@ -19,10 +18,6 @@ public final class ClientStatusHandler implements MessageHandler<GlowSession, Cl
 
             case ClientStatusMessage.REQUEST_STATS:
                 player.sendStats();
-                break;
-
-            case ClientStatusMessage.OPEN_INVENTORY:
-                player.awardAchievement(Achievement.OPEN_INVENTORY);
                 break;
 
             default:

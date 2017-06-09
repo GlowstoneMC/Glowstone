@@ -1,22 +1,22 @@
-package net.glowstone.command;
+package net.glowstone.command.minecraft;
 
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.ChatMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import java.util.Collections;
 
-public class TellrawCommand extends BukkitCommand {
+public class TellrawCommand extends VanillaCommand {
 
     public TellrawCommand() {
         super("tellraw", "Send a private JSON message to the given player", "/tellraw <player> <raw-json-message>", Collections.emptyList());
-        setPermission("glowstone.command.tellraw");
+        setPermission("minecraft.command.tellraw");
     }
 
     @Override

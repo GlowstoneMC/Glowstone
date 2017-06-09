@@ -1,9 +1,7 @@
 package net.glowstone;
 
-import com.avaje.ebean.config.DataSourceConfig;
-import com.avaje.ebean.config.dbplatform.SQLitePlatform;
-import com.avaje.ebeaninternal.server.lib.sql.TransactionIsolation;
 import com.flowpowered.network.Message;
+import com.google.common.base.Preconditions;
 import com.jogamp.opencl.CLDevice;
 import com.jogamp.opencl.CLPlatform;
 import io.netty.channel.epoll.Epoll;
@@ -14,7 +12,9 @@ import net.glowstone.block.state.GlowDispenser;
 import net.glowstone.boss.BossBarManager;
 import net.glowstone.boss.GlowBossBar;
 import net.glowstone.client.GlowClient;
-import net.glowstone.command.*;
+import net.glowstone.command.glowstone.ColorCommand;
+import net.glowstone.command.glowstone.GlowstoneCommand;
+import net.glowstone.command.minecraft.*;
 import net.glowstone.constants.GlowEnchantment;
 import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.EntityIdManager;
@@ -30,7 +30,6 @@ import net.glowstone.io.ScoreboardIoService;
 import net.glowstone.map.GlowMapView;
 import net.glowstone.net.GameServer;
 import net.glowstone.net.SessionRegistry;
-import net.glowstone.net.message.play.game.ChatMessage;
 import net.glowstone.net.query.QueryServer;
 import net.glowstone.net.rcon.RconServer;
 import net.glowstone.scheduler.GlowScheduler;
@@ -44,11 +43,11 @@ import net.glowstone.util.config.ServerConfig.Key;
 import net.glowstone.util.config.WorldConfig;
 import net.glowstone.util.loot.LootingManager;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.BanList.Type;
 import org.bukkit.Warning.WarningState;
 import org.bukkit.World.Environment;
+import org.bukkit.advancement.Advancement;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
@@ -73,9 +72,6 @@ import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.util.CachedServerIcon;
 import org.bukkit.util.permissions.DefaultPermissions;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -90,8 +86,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
  * The core class of the Glowstone server.
  *
@@ -103,22 +97,14 @@ public final class GlowServer implements Server {
      * The logger for this class.
      */
     public static final Logger logger = Logger.getLogger("Minecraft");
-
-    /**
-     * The parser.
-     */
-    public static final JSONParser parser = new JSONParser();
-
     /**
      * The game version supported by the server.
      */
-    public static final String GAME_VERSION = "1.11.2";
-
+    public static final String GAME_VERSION = "1.12";
     /**
      * The protocol version supported by the server.
      */
-    public static final int PROTOCOL_VERSION = 316;
-
+    public static final int PROTOCOL_VERSION = 335;
     /**
      * A list of all the active {@link net.glowstone.net.GlowSession}s.
      */
@@ -195,10 +181,6 @@ public final class GlowServer implements Server {
      * The Bukkit UnsafeValues implementation.
      */
     private final UnsafeValues unsafeAccess = new GlowUnsafeValues();
-    /**
-     * An empty player array used for deprecated getOnlinePlayers.
-     */
-    private static final Player[] emptyPlayerArray = new Player[0];
     /**
      * A RSA key pair used for encryption and authentication
      */
@@ -277,6 +259,10 @@ public final class GlowServer implements Server {
      * The {@link BossBarManager} of this server.
      */
     private BossBarManager bossBarManager;
+    /*
+     * Default root permissions
+     */
+    public Permission permissionRoot, permissionCommand;
 
     /**
      * Creates a new server.
@@ -814,13 +800,27 @@ public final class GlowServer implements Server {
     private void loadPlugins() {
         // clear the map
         commandMap.clearCommands();
+        // glowstone commands
         commandMap.register("glowstone", new ColorCommand());
-        commandMap.register("glowstone", new TellrawCommand());
-        commandMap.register("glowstone", new TitleCommand());
-        commandMap.register("glowstone", new TeleportCommand());
-        commandMap.register("glowstone", new SummonCommand());
-        commandMap.register("glowstone", new WorldBorderCommand());
         commandMap.register("glowstone", new GlowstoneCommand());
+        // vanilla commands
+        commandMap.register("minecraft", new TellrawCommand());
+        commandMap.register("minecraft", new TitleCommand());
+        commandMap.register("minecraft", new TeleportCommand());
+        commandMap.register("minecraft", new SummonCommand());
+        commandMap.register("minecraft", new WorldBorderCommand());
+        commandMap.register("minecraft", new SayCommand());
+        commandMap.register("minecraft", new StopCommand());
+        commandMap.register("minecraft", new OpCommand());
+        commandMap.register("minecraft", new GameModeCommand());
+        commandMap.register("minecraft", new FunctionCommand());
+        commandMap.register("minecraft", new DeopCommand());
+        commandMap.register("minecraft", new KickCommand());
+        commandMap.register("minecraft", new GameRuleCommand());
+        commandMap.register("minecraft", new TellCommand());
+        commandMap.register("minecraft", new ListCommand());
+        commandMap.register("minecraft", new BanCommand());
+        commandMap.register("minecraft", new BanIpCommand());
 
         File folder = new File(config.getString(Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {
@@ -834,7 +834,7 @@ public final class GlowServer implements Server {
         // clear plugins and prepare to load (Bukkit)
         pluginManager.clearPlugins();
         pluginManager.registerInterface(JavaPluginLoader.class);
-        Plugin[] plugins = pluginManager.loadPlugins(pluginTypeDetector.bukkitPlugins.toArray(new File[pluginTypeDetector.bukkitPlugins.size()]), folder.getPath());
+        Plugin[] plugins = pluginManager.loadPlugins(folder.getPath(), pluginTypeDetector.bukkitPlugins.toArray(new File[pluginTypeDetector.bukkitPlugins.size()]));
 
         // call onLoad methods
         for (Plugin plugin : plugins) {
@@ -855,7 +855,7 @@ public final class GlowServer implements Server {
             }
 
             boolean spongeOnlyPlugins = false;
-            for (File spongePlugin: pluginTypeDetector.spongePlugins) {
+            for (File spongePlugin : pluginTypeDetector.spongePlugins) {
                 if (!pluginTypeDetector.bukkitPlugins.contains(spongePlugin)) {
                     spongeOnlyPlugins = true;
                 }
@@ -932,6 +932,12 @@ public final class GlowServer implements Server {
             commandMap.setFallbackCommands();
             commandMap.registerServerAliases();
             DefaultPermissions.registerCorePermissions();
+            // Default permissions
+            this.permissionRoot = DefaultPermissions.registerPermission("minecraft", "Gives the user the ability to use all Minecraft utilities and commands");
+            this.permissionCommand = DefaultPermissions.registerPermission("minecraft.command", "Gives the user the ability to use all Minecraft commands", permissionRoot);
+            DefaultPermissions.registerPermission("minecraft.command.tell", "Allows the user to send a private message", PermissionDefault.TRUE, permissionCommand);
+            permissionCommand.recalculatePermissibles();
+            permissionRoot.recalculatePermissibles();
             helpMap.initializeCommands();
             helpMap.amendTopics(config.getConfigFile(Key.HELP_FILE));
 
@@ -980,6 +986,11 @@ public final class GlowServer implements Server {
     }
 
     @Override
+    public void reloadData() {
+
+    }
+
+    @Override
     public String toString() {
         return "GlowServer{name=" + getName() + ",version=" + getVersion() + ",minecraftVersion=" + GAME_VERSION + "}";
     }
@@ -994,6 +1005,16 @@ public final class GlowServer implements Server {
      */
     public SimpleCommandMap getCommandMap() {
         return commandMap;
+    }
+
+    @Override
+    public Advancement getAdvancement(NamespacedKey namespacedKey) {
+        return null;
+    }
+
+    @Override
+    public Iterator<Advancement> advancementIterator() {
+        return null;
     }
 
     /**
@@ -1025,6 +1046,7 @@ public final class GlowServer implements Server {
 
     /**
      * Returns the list of whitelisted players on this server.
+     *
      * @return A file containing a list of UUIDs for this server's whitelisted players.
      */
     public UuidListFile getWhitelist() {
@@ -1195,7 +1217,7 @@ public final class GlowServer implements Server {
      * @param online whether the player is online or offline
      */
     public void setPlayerOnline(GlowPlayer player, boolean online) {
-        checkNotNull(player);
+        Preconditions.checkNotNull(player);
         if (online) {
             onlinePlayers.add(player);
         } else {
@@ -1378,12 +1400,6 @@ public final class GlowServer implements Server {
     }
 
     @Override
-    @Deprecated
-    public Player[] _INVALID_getOnlinePlayers() {
-        return getOnlinePlayers().toArray(emptyPlayerArray);
-    }
-
-    @Override
     public Collection<? extends Player> getOnlinePlayers() {
         return onlineView;
     }
@@ -1517,23 +1533,12 @@ public final class GlowServer implements Server {
 
     @Override
     public void broadcast(BaseComponent component) {
-        try {
-            // todo: uses gson instead json-simple
-            Message packet = new ChatMessage((JSONObject) parser.parse(ComponentSerializer.toString(component)));
-            broadcastPacket(packet);
-        } catch (ParseException e) {
-            e.printStackTrace(); //should never happen
-        }
+
     }
 
     @Override
     public void broadcast(BaseComponent... components) {
-        try {
-            Message packet = new ChatMessage((JSONObject) parser.parse(ComponentSerializer.toString(components)));
-            broadcastPacket(packet);
-        } catch (ParseException e) {
-            e.printStackTrace(); //should never happen
-        }
+
     }
 
     public void broadcastPacket(Message message) {
@@ -1849,23 +1854,6 @@ public final class GlowServer implements Server {
     @Override
     public double[] getTPS() {
         return new double[]{20, 20, 20}; // TODO: show TPS
-    }
-
-    @Override
-    public void configureDbConfig(com.avaje.ebean.config.ServerConfig dbConfig) {
-        DataSourceConfig ds = new DataSourceConfig();
-        ds.setDriver(config.getString(Key.DB_DRIVER));
-        ds.setUrl(config.getString(Key.DB_URL));
-        ds.setUsername(config.getString(Key.DB_USERNAME));
-        ds.setPassword(config.getString(Key.DB_PASSWORD));
-        ds.setIsolationLevel(TransactionIsolation.getLevel(config.getString(Key.DB_ISOLATION)));
-
-        if (ds.getDriver().contains("sqlite")) {
-            dbConfig.setDatabasePlatform(new SQLitePlatform());
-            dbConfig.getDatabasePlatform().getDbDdlSyntax().setIdentity("");
-        }
-
-        dbConfig.setDataSourceConfig(ds);
     }
 
     ////////////////////////////////////////////////////////////////////////////
