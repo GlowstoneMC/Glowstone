@@ -2216,6 +2216,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * Send a sign change, similar to {@link #sendSignChange(Location, String[])},
      * but using complete TextMessages instead of strings.
      *
+     * @param sign     the sign
      * @param location the location of the sign
      * @param lines    the new text on the sign or null to clear it
      * @throws IllegalArgumentException if location is null
@@ -2414,7 +2415,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 currentTitle.fadeIn((int) value[0]);
                 currentTitle.stay((int) value[1]);
                 currentTitle.fadeOut((int) value[2]);
-                
+
                 break;
             default:
                 Preconditions.checkArgument(true, "Action is something other than a title, subtitle, or times");

@@ -433,13 +433,14 @@ public final class ChunkSection {
     /**
      * Is this chunk section empty, IE doesn't need to be sent or saved?
      *
+     * This implementation has the same issue that causes <a
+     * href="https://bugs.mojang.com/browse/MC-80966">MC-80966</a>: It
+     * assumes that a chunk section with only air blocks has no meaningful
+     * data. This assumption is incorrect for sections near light
+     * sources, which can create lighting bugs. However, it is more
+     * expensive to send additional sections with just light data.
+     *
      * @return True if this chunk section is empty and can be removed.
-     * @implNote This implementation has the same issue that causes <a
-     *           href="https://bugs.mojang.com/browse/MC-80966">MC-80966</a>: It
-     *           assumes that a chunk section with only air blocks has no meaningful
-     *           data. This assumption is incorrect for sections near light
-     *           sources, which can create lighting bugs. However, it is more
-     *           expensive to send additional sections with just light data.
      */
     public boolean isEmpty() {
         return count == 0;

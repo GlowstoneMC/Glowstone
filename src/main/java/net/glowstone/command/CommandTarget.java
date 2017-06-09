@@ -20,6 +20,7 @@ public class CommandTarget {
      * Parses the target of the command with the given argument.
      * For example, a target could be "@r[c=5]", which would get 5 random players
      *
+     * @param sender the sender that used this target selector
      * @param target the un-parsed command target
      */
     public CommandTarget(CommandSender sender, String target) {

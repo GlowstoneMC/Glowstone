@@ -92,9 +92,6 @@ public class CommandUtils {
         return Double.valueOf(d);
     }
 
-    /**
-     * Pretty-print the result of a command target query
-     */
     public static String prettyPrint(Entity[] entities) {
         List<String> names = new ArrayList<>();
         for (int i = 0; i < entities.length; i++) {

@@ -45,7 +45,7 @@ public class LootRandomValues {
             this.min = Optional.empty();
             this.max = Optional.empty();
             this.reflectiveCount = Optional.empty();
-            
+
             // todo: probabilities
             return;
         }
@@ -63,6 +63,7 @@ public class LootRandomValues {
      * Selects a random value between min and max, inclusively
      *
      * @param random the random object to generate the number from
+     * @param entity the entity
      * @return the random value
      */
     public int generate(Random random, LivingEntity entity) {

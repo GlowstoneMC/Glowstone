@@ -36,10 +36,6 @@ public class Metrics {
     // A list with all custom charts
     private final List<CustomChart> charts = new ArrayList<>();
 
-    /**
-     * Class constructor.
-     *
-     */
     public Metrics(GlowServer server, String serverUUID, boolean logFailedRequests) {
         this.server = server;
         Metrics.serverUUID = serverUUID;

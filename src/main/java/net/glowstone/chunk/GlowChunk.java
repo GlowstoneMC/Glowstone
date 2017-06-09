@@ -277,6 +277,12 @@ public final class GlowChunk implements Chunk {
 
     /**
      * If needed, create a new block entity at the given location.
+     *
+     * @param cx   the X coordinate of the BlockEntity
+     * @param cy   the Y coordinate of the BlockEntity
+     * @param cz   the Z coordinate of the BlockEntity
+     * @param type the type of BlockEntity
+     * @return     The BlockEntity that was created.
      */
     public BlockEntity createEntity(int cx, int cy, int cz, int type) {
         Material material = Material.getMaterial(type);

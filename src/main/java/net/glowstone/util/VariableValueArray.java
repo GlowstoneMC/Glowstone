@@ -125,6 +125,9 @@ public final class VariableValueArray implements Cloneable {
     /**
      * Calculates the number of bits that would be needed to store the given
      * value.
+     *
+     * @param  number the value
+     * @return The number of bits that would be needed to store the value.
      */
     public static int calculateNeededBits(int number) {
         int count = 0;
