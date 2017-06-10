@@ -4,7 +4,9 @@ import net.glowstone.util.InventoryUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -17,6 +19,7 @@ public final class ItemIds {
     private static final Map<Integer, String> names = new HashMap<>();
     private static final Map<String, Integer> items = new HashMap<>();
     private static final Map<String, Integer> blocks = new HashMap<>();
+    private static final List<String> ids = new ArrayList<>();
 
     static {
         // blocks
@@ -487,6 +490,8 @@ public final class ItemIds {
         item(2265, "record_ward");
         item(2266, "record_11");
         item(2267, "record_wait");
+
+        ids.addAll(items.keySet());
     }
 
     private ItemIds() {
@@ -560,6 +565,10 @@ public final class ItemIds {
             stack.setType(item);
         }
         return stack;
+    }
+
+    public static List<String> getIds() {
+        return ids;
     }
 
     private static void block(int id, String key) {
