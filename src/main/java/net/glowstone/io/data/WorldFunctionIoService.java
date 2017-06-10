@@ -35,7 +35,6 @@ public class WorldFunctionIoService implements FunctionIoService {
                 List<CommandFunction> namespaceFunctions = functionsInside(namespace, "", dir);
                 functions.addAll(namespaceFunctions);
             }
-            GlowServer.logger.info("Loaded " + functions.size() + " functions: " + functions);
         } catch (IOException ex) {
             GlowServer.logger.log(Level.SEVERE, "Error while loading functions for world '" + world.getName() + "'", ex);
         }
