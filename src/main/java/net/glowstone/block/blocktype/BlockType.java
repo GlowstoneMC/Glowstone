@@ -180,15 +180,6 @@ public class BlockType extends ItemType {
     }
 
     /**
-     * Called when a block is being initialized in the world.
-     *
-     * @param state the new block state
-     */
-    public void createBlock(GlowBlockState state) {
-        state.setType(getMaterial());
-    }
-
-    /**
      * Called when a player attempts to interact with (right-click) a block of
      * this type already in the world.
      *
