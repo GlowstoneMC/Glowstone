@@ -24,14 +24,28 @@ public class BlockSign extends BlockNeedsAttached {
     }
 
     @Override
+    public void createBlock(GlowBlockState state) {
+        super.createBlock(state);
+        if (!(state.getData() instanceof Sign)) {
+            warnMaterialData(Sign.class, state.getData());
+            return;
+        }
+        Sign sign = (Sign) state.getData();
+        sign.setFacingDirection(BlockFace.NORTH);
+        state.setData(sign);
+        state.update();
+    }
+
+    @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
-        state.setType(getMaterial());
         if (!(state.getData() instanceof Sign)) {
             warnMaterialData(Sign.class, state.getData());
             return;
         }
         Sign sign = (Sign) state.getData();
         sign.setFacingDirection(sign.isWallSign() ? face : player.getFacing().getOppositeFace());
+        state.setData(sign);
+        state.update();
     }
 
     @Override
