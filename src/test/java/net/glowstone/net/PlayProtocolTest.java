@@ -1,7 +1,6 @@
 package net.glowstone.net;
 
 import com.flowpowered.network.Message;
-import net.glowstone.net.message.play.player.UseItemMessage;
 import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.game.*;
@@ -130,6 +129,7 @@ public class PlayProtocolTest extends BaseProtocolTest {
             new UseItemMessage(0),
             new VehicleMoveMessage(1.0,2.0,3.0,4f,5f),
             new TeleportConfirmMessage(1),
+            new AdvancementTabMessage(0, "minecraft:test"),
     };
 
     public PlayProtocolTest() {

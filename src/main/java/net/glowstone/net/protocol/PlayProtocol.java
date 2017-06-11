@@ -51,7 +51,7 @@ public class PlayProtocol extends GlowProtocol {
         inbound(0x16, SteerVehicleMessage.class, SteerVehicleCodec.class, SteerVehicleHandler.class);
         // TODO: 0x17 : Crafting Book Data
         inbound(0x18, ResourcePackStatusMessage.class, ResourcePackStatusCodec.class, ResourcePackStatusHandler.class);
-        // TODO: 0x19 : Advancement Tab
+        inbound(0x19, AdvancementTabMessage.class, AdvancementTabCodec.class, AdvancementTabHandler.class);
         inbound(0x1A, HeldItemMessage.class, HeldItemCodec.class, HeldItemHandler.class);
         inbound(0x1B, CreativeItemMessage.class, CreativeItemCodec.class, CreativeItemHandler.class);
         inbound(0x1C, UpdateSignMessage.class, UpdateSignCodec.class, UpdateSignHandler.class);
@@ -136,7 +136,7 @@ public class PlayProtocol extends GlowProtocol {
         outbound(0x49, UserListHeaderFooterMessage.class, UserListHeaderFooterCodec.class);
         outbound(0x4A, CollectItemMessage.class, CollectItemCodec.class);
         outbound(0x4B, EntityTeleportMessage.class, EntityTeleportCodec.class);
-        // TODO 0x4C : Advancements packet
+        outbound(0x4C, AdvancementsMessage.class, AdvancementsCodec.class);
         outbound(0x4D, EntityPropertyMessage.class, EntityPropertyCodec.class);
         outbound(0x4E, EntityEffectMessage.class, EntityEffectCodec.class);
     }

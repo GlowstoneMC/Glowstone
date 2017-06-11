@@ -2,10 +2,13 @@ package net.glowstone;
 
 import com.flowpowered.network.Message;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterators;
 import com.jogamp.opencl.CLDevice;
 import com.jogamp.opencl.CLPlatform;
 import io.netty.channel.epoll.Epoll;
 import lombok.Getter;
+import net.glowstone.advancement.GlowAdvancement;
+import net.glowstone.advancement.GlowAdvancementDisplay;
 import net.glowstone.block.BuiltinMaterialValueManager;
 import net.glowstone.block.MaterialValueManager;
 import net.glowstone.block.state.GlowDispenser;
@@ -30,6 +33,7 @@ import net.glowstone.io.ScoreboardIoService;
 import net.glowstone.map.GlowMapView;
 import net.glowstone.net.GameServer;
 import net.glowstone.net.SessionRegistry;
+import net.glowstone.net.message.play.player.AdvancementsMessage;
 import net.glowstone.net.query.QueryServer;
 import net.glowstone.net.rcon.RconServer;
 import net.glowstone.scheduler.GlowScheduler;
@@ -263,6 +267,10 @@ public final class GlowServer implements Server {
      * Default root permissions
      */
     public Permission permissionRoot, permissionCommand;
+    /**
+     * The {@link GlowAdvancement}s of this server.
+     */
+    private final Map<NamespacedKey, Advancement> advancements;
 
     /**
      * Creates a new server.
@@ -272,6 +280,12 @@ public final class GlowServer implements Server {
     public GlowServer(ServerConfig config) {
         materialValueManager = new BuiltinMaterialValueManager();
         bossBarManager = new BossBarManager(this);
+        advancements = new HashMap<>();
+        // test advancement
+        GlowAdvancement advancement = new GlowAdvancement(NamespacedKey.minecraft("test"), null);
+        advancement.addCriterion("minecraft:test/criterion");
+        advancement.setDisplay(new GlowAdvancementDisplay(new TextMessage("Advancements in Glowstone"), new TextMessage("=)"), new ItemStack(Material.GLOWSTONE), GlowAdvancementDisplay.FrameType.GOAL, -10F, 0));
+        addAdvancement(advancement);
 
         this.config = config;
         // stuff based on selected config directory
@@ -1010,12 +1024,24 @@ public final class GlowServer implements Server {
 
     @Override
     public Advancement getAdvancement(NamespacedKey namespacedKey) {
-        return null;
+        return advancements.get(namespacedKey);
     }
 
     @Override
     public Iterator<Advancement> advancementIterator() {
-        return null;
+        return Iterators.cycle(advancements.values());
+    }
+
+    public void addAdvancement(Advancement advancement) {
+        advancements.put(advancement.getKey(), advancement);
+    }
+
+    public AdvancementsMessage createAdvancementsMessage(boolean clear, List<NamespacedKey> remove, Player player) {
+        return createAdvancementsMessage(advancements, clear, remove, player);
+    }
+
+    public AdvancementsMessage createAdvancementsMessage(Map<NamespacedKey, Advancement> advancements, boolean clear, List<NamespacedKey> remove, Player player) {
+        return new AdvancementsMessage(clear, advancements, remove);
     }
 
     /**
