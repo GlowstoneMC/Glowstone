@@ -32,6 +32,9 @@ public class GiveCommand extends VanillaCommand {
             return false;
         }
         String name = args[0], itemName = args[1];
+        if (!itemName.startsWith("minecraft:")) {
+            itemName = "minecraft:" + itemName;
+        }
         Material type = ItemIds.getItem(itemName);
         if (type == null) {
             sender.sendMessage(ChatColor.RED + "There is no such item with name " + itemName);
