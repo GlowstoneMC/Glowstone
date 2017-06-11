@@ -24,7 +24,7 @@ public class KickCommand extends VanillaCommand {
             return false;
         }
         String playerName = args[0];
-        Player player = Bukkit.getPlayer(playerName);
+        Player player = Bukkit.getPlayerExact(playerName);
         if (player == null) {
             sender.sendMessage(ChatColor.RED + "Player '" + playerName + "' is not online");
             return false;

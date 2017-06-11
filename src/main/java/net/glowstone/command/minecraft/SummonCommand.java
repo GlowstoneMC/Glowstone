@@ -11,12 +11,10 @@ import net.glowstone.util.mojangson.ex.MojangsonParseException;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
 import java.util.ArrayList;
@@ -40,12 +38,7 @@ public class SummonCommand extends VanillaCommand {
             return true;
         }
 
-        Location location = null;
-        if (sender instanceof Player) {
-            location = ((Player) sender).getLocation().clone();
-        } else if (sender instanceof BlockCommandSender) {
-            location = ((BlockCommandSender) sender).getBlock().getLocation().clone();
-        }
+        Location location = CommandUtils.getLocation(sender);
 
         if (args.length == 0) {
             sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);

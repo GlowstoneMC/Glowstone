@@ -6,7 +6,6 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Entity;
@@ -31,10 +30,9 @@ public class TellCommand extends VanillaCommand {
             return false;
         }
         String name = args[0];
-        boolean targetsSupported = sender instanceof Entity || sender instanceof BlockCommandSender;
         Player[] players;
-        if (name.charAt(0) == '@' && targetsSupported) {
-            Location location = sender instanceof Entity ? ((Entity) sender).getLocation() : ((BlockCommandSender) sender).getBlock().getLocation();
+        if (name.charAt(0) == '@' && CommandUtils.isPhysical(sender)) {
+            Location location = CommandUtils.getLocation(sender);
             CommandTarget target = new CommandTarget(sender, name);
             target.getArguments().put("type", new CommandTarget.SelectorValue("player")); // only players
             Entity[] matched = target.getMatched(location);

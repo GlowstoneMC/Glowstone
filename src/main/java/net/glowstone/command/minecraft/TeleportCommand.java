@@ -32,17 +32,20 @@ public class TeleportCommand extends VanillaCommand {
             return false;
         }
 
-        if (!(sender instanceof Player)) {
+        if (!CommandUtils.isPhysical(sender)) {
             sender.sendMessage("This command can only be executed by physical objects.");
             return false;
         }
 
-        Player player = (Player) sender;
+        Location location = CommandUtils.getLocation(sender);
         Entity[] targets;
         if (args[0].startsWith("@")) {
-            targets = new CommandTarget(sender, args[0]).getMatched(player.getLocation());
+            targets = new CommandTarget(sender, args[0]).getMatched(location);
         } else {
             Player targetPlayer = Bukkit.getPlayerExact(args[0]);
+            if (targetPlayer != null) {
+                location = targetPlayer.getLocation();
+            }
             targets = targetPlayer == null ? NO_ENTITY : new Entity[]{targetPlayer};
         }
 
@@ -51,8 +54,7 @@ public class TeleportCommand extends VanillaCommand {
         } else {
             for (Entity target : targets) {
                 String x = args[1], y = args[2], z = args[3];
-                Location initial = player.getLocation();
-                Location targetLocation = CommandUtils.getLocation(initial, x, y, z);
+                Location targetLocation = CommandUtils.getLocation(location, x, y, z);
                 if (args.length > 4) {
                     String yaw = args[4], pitch = args[5];
                     targetLocation = CommandUtils.getRotation(target.getLocation(), yaw, pitch);
@@ -61,7 +63,7 @@ public class TeleportCommand extends VanillaCommand {
                     targetLocation.setPitch(target.getLocation().getPitch());
                 }
                 target.teleport(targetLocation);
-                player.sendMessage("Teleported " + target.getName() + " to " + targetLocation.getX() + " " + targetLocation.getY() + " " + targetLocation.getZ());
+                sender.sendMessage("Teleported " + target.getName() + " to " + targetLocation.getX() + " " + targetLocation.getY() + " " + targetLocation.getZ());
             }
         }
 

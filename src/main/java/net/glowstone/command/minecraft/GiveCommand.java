@@ -1,6 +1,7 @@
 package net.glowstone.command.minecraft;
 
 import net.glowstone.command.CommandTarget;
+import net.glowstone.command.CommandUtils;
 import net.glowstone.constants.ItemIds;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -58,8 +59,7 @@ public class GiveCommand extends VanillaCommand {
                 return false;
             }
         }
-        boolean targetsSupported = sender instanceof Entity || sender instanceof BlockCommandSender;
-        if (name.startsWith("@") && name.length() >= 2 && targetsSupported) {
+        if (name.startsWith("@") && name.length() >= 2 && CommandUtils.isPhysical(sender)) {
             Location location = sender instanceof Entity ? ((Entity) sender).getLocation() : ((BlockCommandSender) sender).getBlock().getLocation();
             CommandTarget target = new CommandTarget(sender, name);
             Entity[] matched = target.getMatched(location);
@@ -70,7 +70,7 @@ public class GiveCommand extends VanillaCommand {
                 }
             }
         } else {
-            Player player = Bukkit.getPlayer(name);
+            Player player = Bukkit.getPlayerExact(name);
             if (player == null) {
                 sender.sendMessage(ChatColor.RED + "Player '" + name + "' is not online.");
             } else {

@@ -5,7 +5,6 @@ import net.glowstone.command.CommandUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Entity;
@@ -27,11 +26,10 @@ public class SayCommand extends VanillaCommand {
             return false;
         }
         StringBuilder message = new StringBuilder("[").append(sender.getName() == null ? "Server" : sender.getName()).append("] ");
-        boolean targetsSupported = sender instanceof Entity || sender instanceof BlockCommandSender;
         for (String arg : args) {
-            if (arg.startsWith("@") && arg.length() >= 2 && targetsSupported) {
+            if (arg.startsWith("@") && arg.length() >= 2 && CommandUtils.isPhysical(sender)) {
                 // command targets
-                Location location = sender instanceof Entity ? ((Entity) sender).getLocation() : ((BlockCommandSender) sender).getBlock().getLocation();
+                Location location = CommandUtils.getLocation(sender);
                 CommandTarget target = new CommandTarget(sender, arg);
                 Entity[] matched = target.getMatched(location);
                 if (matched.length == 0) {

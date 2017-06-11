@@ -1,11 +1,11 @@
 package net.glowstone.command.minecraft;
 
 import net.glowstone.command.CommandTarget;
+import net.glowstone.command.CommandUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Entity;
@@ -67,11 +67,9 @@ public class GameModeCommand extends VanillaCommand {
             updateGameMode(sender, player, gamemode);
             return true;
         }
-        // with target
-        boolean targetsSupported = sender instanceof Entity || sender instanceof BlockCommandSender;
         String name = args[1];
-        if (name.startsWith("@") && name.length() >= 2 && targetsSupported) {
-            Location location = sender instanceof Entity ? ((Entity) sender).getLocation() : ((BlockCommandSender) sender).getBlock().getLocation();
+        if (name.startsWith("@") && name.length() >= 2 && CommandUtils.isPhysical(sender)) {
+            Location location = CommandUtils.getLocation(sender);
             CommandTarget target = new CommandTarget(sender, name);
             Entity[] matched = target.getMatched(location);
             for (Entity entity : matched) {

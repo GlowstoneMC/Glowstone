@@ -127,6 +127,15 @@ public class CommandUtils {
         return null;
     }
 
+    public static Location getLocation(CommandSender sender) {
+        if (sender instanceof Entity) {
+            return ((Entity) sender).getLocation();
+        } else if (sender instanceof BlockCommandSender) {
+            return ((BlockCommandSender) sender).getBlock().getLocation();
+        }
+        return null;
+    }
+
     public static String getName(CommandSender sender) {
         if (sender instanceof Entity) {
             return getName((Entity) sender);
@@ -143,5 +152,9 @@ public class CommandUtils {
             name = entity.getCustomName();
         }
         return name;
+    }
+
+    public static boolean isPhysical(CommandSender sender) {
+        return sender instanceof Entity || sender instanceof BlockCommandSender;
     }
 }
