@@ -28,8 +28,11 @@ public class AdvancementsCodec implements Codec<AdvancementsMessage> {
         for (NamespacedKey key : message.getRemoveAdvancements()) {
             ByteBufUtils.writeUTF8(buf, key.toString());
         }
-        // todo: progress
-        ByteBufUtils.writeVarInt(buf, 0);
+        if (message.getProgress() == null) {
+            ByteBufUtils.writeVarInt(buf, 0);
+        } else {
+            message.getProgress().encode(buf);
+        }
         return buf;
     }
 }

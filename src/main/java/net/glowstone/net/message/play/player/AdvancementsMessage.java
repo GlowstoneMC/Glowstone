@@ -2,6 +2,7 @@ package net.glowstone.net.message.play.player;
 
 import com.flowpowered.network.Message;
 import lombok.Data;
+import net.glowstone.advancement.AdvancementTracker;
 import org.bukkit.NamespacedKey;
 import org.bukkit.advancement.Advancement;
 
@@ -14,5 +15,5 @@ public class AdvancementsMessage implements Message {
     private final boolean clear;
     private final Map<NamespacedKey, Advancement> advancements;
     private final List<NamespacedKey> removeAdvancements;
-    // todo: progress
+    private final AdvancementTracker progress;
 }

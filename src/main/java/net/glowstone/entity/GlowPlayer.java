@@ -10,6 +10,7 @@ import io.netty.buffer.Unpooled;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.*;
+import net.glowstone.advancement.AdvancementTracker;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockBed;
@@ -309,6 +310,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Getter
     @Setter
     private long usageTime;
+    @Getter
+    private final AdvancementTracker advancementTracker;
 
     /**
      * Creates a new player and adds it to the world.
@@ -338,6 +341,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         //creates InventoryMonitor to avoid NullPointerException
         invMonitor = new InventoryMonitor(getOpenInventory());
         server.getPlayerStatisticIoService().readStats(this);
+        advancementTracker = new AdvancementTracker(this, new HashMap<>());
     }
 
     /**
@@ -1850,11 +1854,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         spawnParticle(particle, new Location(world, x, y, z), count, offsetX, offsetY, offsetZ, extra, data);
     }
 
-    private HashMap<Advancement, AdvancementProgress> advancements;
-
     @Override
     public AdvancementProgress getAdvancementProgress(Advancement advancement) {
-        return advancements.get(advancement);
+        return advancementTracker.getProgress().get(advancement);
     }
 
     @Override

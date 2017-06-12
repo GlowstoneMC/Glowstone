@@ -1057,7 +1057,7 @@ public final class GlowServer implements Server {
     }
 
     public AdvancementsMessage createAdvancementsMessage(Map<NamespacedKey, Advancement> advancements, boolean clear, List<NamespacedKey> remove, Player player) {
-        return new AdvancementsMessage(clear, advancements, remove);
+        return new AdvancementsMessage(clear, advancements, remove, null);
     }
 
     /**

@@ -72,7 +72,7 @@ public final class ItemTable {
         reg(Material.THIN_GLASS, new BlockDropless());
         reg(Material.STAINED_GLASS, new BlockDropless());
         reg(Material.STAINED_GLASS_PANE, new BlockDropless());
-        reg(Material.GLOWSTONE, new BlockRandomDrops(Material.GLOWSTONE_DUST, 2, 4));
+        reg(Material.GLOWSTONE, new BlockGlowstone());
         reg(Material.MYCEL, new BlockMycel(), Sound.BLOCK_GRAVEL_BREAK);
         reg(Material.GRASS, new BlockGrass(), Sound.BLOCK_GRASS_BREAK);
         reg(Material.DIRT, new BlockDirt(), Sound.BLOCK_GRAVEL_BREAK);
