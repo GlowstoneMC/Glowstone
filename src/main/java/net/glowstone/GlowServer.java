@@ -282,9 +282,23 @@ public final class GlowServer implements Server {
         bossBarManager = new BossBarManager(this);
         advancements = new HashMap<>();
         // test advancement
-        GlowAdvancement advancement = new GlowAdvancement(NamespacedKey.minecraft("test"), null);
+        GlowAdvancement root = new GlowAdvancement(NamespacedKey.minecraft("story/root"), null);
+        root.setDisplay(new GlowAdvancementDisplay(new TextMessage("Minecraft"),
+                new TextMessage("The heart and story of the game."),
+                new ItemStack(Material.GRASS),
+                Arrays.asList(GlowAdvancementDisplay.Flags.BACKGROUND),
+                "minecraft:textures/gui/advancements/backgrounds/stone.png",
+                GlowAdvancementDisplay.FrameType.TASK, 0, 0));
+        addAdvancement(root);
+
+        GlowAdvancement advancement = new GlowAdvancement(NamespacedKey.minecraft("story/test"), root);
         advancement.addCriterion("minecraft:test/criterion");
-        advancement.setDisplay(new GlowAdvancementDisplay(new TextMessage("Advancements in Glowstone"), new TextMessage("=)"), new ItemStack(Material.GLOWSTONE), GlowAdvancementDisplay.FrameType.GOAL, -10F, 0));
+        advancement.setDisplay(new GlowAdvancementDisplay(new TextMessage("Achievement get!"),
+                new TextMessage("Glowstone <3"),
+                new ItemStack(Material.GLOWSTONE),
+                Collections.emptyList(),
+                null,
+                GlowAdvancementDisplay.FrameType.CHALLENGE, 0, 0));
         addAdvancement(advancement);
 
         this.config = config;
