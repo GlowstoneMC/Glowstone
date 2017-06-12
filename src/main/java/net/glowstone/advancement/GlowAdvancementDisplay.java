@@ -28,7 +28,7 @@ public class GlowAdvancementDisplay {
         ByteBufUtils.writeVarInt(buf, type.ordinal());
         int f = 0;
         for (Flags flag : flags) {
-            f |= (1 << flag.getFlag());  // getFlag() can be 0x1, 0x2, 0x4
+            f |= flag.getFlag();  // getFlag() can be 0x1, 0x2, 0x4
         }
         buf.writeInt(f);
         if (flags.contains(Flags.BACKGROUND) && background != null) {
