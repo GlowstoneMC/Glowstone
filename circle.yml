@@ -19,5 +19,7 @@ deployment:
   master:
     branch: master
     commands:
+      - "mvn javadoc:javadoc javadoc:jar"
+      - "mvn deploy"
       - "chmod +x .circle/*"
       - "./.circle/deploy.sh"
