@@ -40,7 +40,7 @@
 			<url>https://repo.glowstone.net/content/repositories/releases/</url>
 		</repository>
 		<snapshotRepository>
-			<id>glowstone-upstream</id>
+			<id>glowstone-snapshots</id>
 			<url>https://repo.glowstone.net/content/repositories/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
