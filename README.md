@@ -49,14 +49,9 @@ However, there are several drawbacks:
 For a current list of features, [check the wiki](https://github.com/GlowstoneMC/Glowstone/wiki/Current-Features).
 
 ## Downloads
+[![Build Status](https://circleci.com/gh/GlowstoneMC/Glowstone.svg?style=svg)](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/master)
 
-If you don't want to build from source, pre-built jar files are available to download from:
-
-* **[Direct gserv.me download](https://bamboo.gserv.me/artifact/GSPP-SRV/shared/build-latestSuccessful/Version-Independent-Server-JAR/glowstone.jar)** - recommended, direct link to latest build
-
-* **[gserv.me](https://bamboo.gserv.me/browse/GSPP-SRV)** - all builds, no login required
-
-* [![Build Status](https://circleci.com/gh/GlowstoneMC/Glowstone.svg?style=svg) **CircleCI**](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/master) - click the latest build and then open the "Artifacts" tab (you must be logged in for this to show)
+If you don't want to build from source, pre-built jar files are available to download from [**CircleCI**](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/master) - click the latest build and then open the "Artifacts" tab **(you must be logged in for this to show)**. The `glowstone.jar` artifact will be under `tmp/circle-artifacts.#######/`.
 
 ## Building
 
@@ -147,4 +142,3 @@ the `LICENSE` file for details.
 
 Glowkit is open-source software released under the GPL license. Please see
 the `LICENSE.txt` file in the Glowkit repository for details.
-
