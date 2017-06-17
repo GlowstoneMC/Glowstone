@@ -20,6 +20,6 @@ deployment:
     branch: master
     commands:
       - "mvn javadoc:javadoc javadoc:jar"
-      - "mvn -s .circleci.settings.xml -DrepositoryId=glowstone-snapshots deploy"
+      - "mvn -s .circleci.settings.xml -Dmaven.test.skip=true deploy"
       - "chmod +x .circle/*"
       - "./.circle/deploy.sh"
