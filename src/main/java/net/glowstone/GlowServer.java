@@ -842,6 +842,7 @@ public final class GlowServer implements Server {
         commandMap.register("minecraft", new PardonIpCommand());
         commandMap.register("minecraft", new WhitelistCommand());
         commandMap.register("minecraft", new TimeCommand());
+        commandMap.register("minecraft", new WeatherCommand());
 
         File folder = new File(config.getString(Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {
