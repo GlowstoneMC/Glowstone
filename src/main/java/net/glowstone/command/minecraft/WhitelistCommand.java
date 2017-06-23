@@ -42,7 +42,7 @@ public class WhitelistCommand extends VanillaCommand {
             for (OfflinePlayer p : whitelistedPlayers) {
                 names[i++] = p.getName();
             }
-            sender.sendMessage("There are " + names.length + "whitelisted players:");
+            sender.sendMessage("There are " + names.length + " whitelisted players:");
             sender.sendMessage(CommandUtils.prettyPrint(names));
             return true;
         }
