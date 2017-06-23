@@ -33,9 +33,9 @@ public class GameModeCommand extends VanillaCommand {
             sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
             return false;
         }
-        String gm = args[0].toLowerCase();
+        String gm = args[0];
         GameMode gamemode = null;
-        switch (gm) {
+        switch (gm.toLowerCase()) {
             case "c":
             case "1":
             case "creative":
@@ -79,7 +79,7 @@ public class GameModeCommand extends VanillaCommand {
                 }
             }
         } else {
-            Player player = Bukkit.getPlayer(name);
+            Player player = Bukkit.getPlayerExact(name);
             if (player == null) {
                 sender.sendMessage(ChatColor.RED + "Player '" + name + "' is not online.");
             } else {
