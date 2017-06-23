@@ -49,6 +49,10 @@ public class KillCommand extends VanillaCommand {
                 Location location = CommandUtils.getLocation(sender);
                 CommandTarget target = new CommandTarget(sender, name);
                 Entity[] matched = target.getMatched(location);
+                if (matched.length == 0) {
+                    sender.sendMessage(ChatColor.RED + "Selector '" + name + "' found nothing");
+                    return false;
+                }
                 for (Entity entity : matched) {
                     if (entity instanceof LivingEntity) {
                         LivingEntity living = (LivingEntity) entity;

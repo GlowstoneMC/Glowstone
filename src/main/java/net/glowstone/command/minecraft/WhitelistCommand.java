@@ -5,11 +5,15 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
+import org.bukkit.util.StringUtil;
 
-import java.util.Collections;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class WhitelistCommand extends VanillaCommand {
+
+    private static final List<String> SUBCOMMANDS = Arrays.asList("on", "off", "list", "add", "remove", "reload");
+
     public WhitelistCommand() {
         super("whitelist", "Manage the server whitelist.", "/whitelist <on|off|list|add|remove|reload>", Collections.emptyList());
         setPermission("minecraft.command.whitelist");
@@ -75,5 +79,25 @@ public class WhitelistCommand extends VanillaCommand {
         }
         sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
         return false;
+    }
+
+    @Override
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+        if (args.length == 1) {
+            return (List) StringUtil.copyPartialMatches(args[0], SUBCOMMANDS, new ArrayList(SUBCOMMANDS.size()));
+        }
+        if (args.length > 1) {
+            String subcommand = args[0];
+            if (subcommand.equals("add")) {
+                return super.tabComplete(sender, alias, args);
+            }
+            if (subcommand.equals("remove")) {
+                Set<OfflinePlayer> whitelistedPlayers = sender.getServer().getWhitelistedPlayers();
+                List<String> names = whitelistedPlayers.stream().map(OfflinePlayer::getName).collect(Collectors.toList());
+                return (List) StringUtil.copyPartialMatches(args[1], names, new ArrayList(names.size()));
+            }
+            return Collections.emptyList();
+        }
+        return super.tabComplete(sender, alias, args);
     }
 }
