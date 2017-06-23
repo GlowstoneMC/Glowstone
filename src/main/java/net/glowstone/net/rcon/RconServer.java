@@ -1,6 +1,5 @@
 package net.glowstone.net.rcon;
 
-import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
@@ -17,21 +16,16 @@ import java.util.concurrent.CountDownLatch;
  */
 public class RconServer extends GlowSocketServer {
 
-    /**
-     * The {@link ServerBootstrap} used to initialize Netty.
-     */
-    private ServerBootstrap bootstrap = new ServerBootstrap();
-
     public RconServer(GlowServer server, CountDownLatch latch, String password) {
         super(server, latch);
         bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
-                    @Override
-                    public void initChannel(SocketChannel ch) throws Exception {
-                        ch.pipeline()
-                                .addLast(new RconFramingHandler())
-                                .addLast(new RconHandler(RconServer.this, password));
-                    }
-                });
+            @Override
+            public void initChannel(SocketChannel ch) throws Exception {
+                ch.pipeline()
+                        .addLast(new RconFramingHandler())
+                        .addLast(new RconHandler(RconServer.this, password));
+            }
+        });
     }
 
     /**
