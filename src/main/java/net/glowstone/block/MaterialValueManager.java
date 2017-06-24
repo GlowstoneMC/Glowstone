@@ -1,5 +1,6 @@
 package net.glowstone.block;
 
+import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
 
 /**
@@ -22,6 +23,13 @@ public interface MaterialValueManager {
          * @return the hardness (or Float.MAX_VALUE for infinity hardness)
          */
         float getHardness();
+
+        /**
+         * Returns the minimum effective tool type of this value.
+         *
+         * @return the tool (or null for none)
+         */
+        ToolType getTool();
 
         /**
          * Returns the blast resistance-component of this value.

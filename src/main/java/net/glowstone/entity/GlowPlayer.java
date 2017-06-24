@@ -29,6 +29,7 @@ import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.InventoryMonitor;
+import net.glowstone.inventory.ToolType;
 import net.glowstone.io.PlayerDataService.PlayerReader;
 import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.net.GlowSession;
@@ -2983,9 +2984,19 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
         float hardness = digging.getMaterialValues().getHardness() * 20; // seconds to ticks
 
-        // TODO: take into account the tool used to mine (ineffective=5x, effective=1.5x, material multiplier, etc.)
-        // for now, assuming hands are used and the block is not dropped
-        hardness *= 5;
+        ItemStack tool = getItemInHand(); // TODO: replace with getItemInMainHand
+        if (tool != null) {
+            ToolType effectiveTool = digging.getMaterialValues().getTool();
+
+            if (effectiveTool.matches(tool.getType())) {
+                hardness *= 1.5;
+                hardness *= effectiveTool.getMiningMultiplier();
+            } else {
+                hardness *= 5;
+            }
+        } else {
+            hardness *= 5;
+        }
 
         double completion = (double) diggingTicks / hardness;
         int stage = (int) (completion * 10);
