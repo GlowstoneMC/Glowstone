@@ -73,6 +73,7 @@ public class GiveCommand extends VanillaCommand {
             Player player = Bukkit.getPlayerExact(name);
             if (player == null) {
                 sender.sendMessage(ChatColor.RED + "Player '" + name + "' is not online.");
+                return false;
             } else {
                 giveItem(sender, player, stack);
             }
