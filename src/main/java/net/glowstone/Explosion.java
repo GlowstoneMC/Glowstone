@@ -259,10 +259,8 @@ public final class Explosion {
             }
             entity.damage(damage, source, damageCause);
 
-            if (entity instanceof GlowPlayer) {
-                if (((GlowPlayer) entity).isFlying()) {
-                    continue;
-                }
+            if (entity instanceof GlowPlayer && ((GlowPlayer) entity).isFlying()) {
+                continue;
             }
 
             Vector rayLength = RayUtil.getVelocityRay(distanceToHead(entity));
