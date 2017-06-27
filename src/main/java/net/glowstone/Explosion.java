@@ -1,5 +1,12 @@
 package net.glowstone;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.blocktype.BlockTNT;
 import net.glowstone.entity.GlowEntity;
@@ -25,9 +32,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 public final class Explosion {
 
     public static final int POWER_TNT = 4;
@@ -39,6 +43,8 @@ public final class Explosion {
     public static final int POWER_WITHER_CREATION = 7;
     public static final int POWER_ENDER_CRYSTAL = 6;
     private static final Random random = new Random();
+    public static final int EXPLOSION_VISIBILITY_RADIUS = 64;
+
     private final Entity source;
     private final Location location;
     private final boolean incendiary;
@@ -110,7 +116,8 @@ public final class Explosion {
             }
         }
 
-        Collection<GlowPlayer> affectedPlayers = damageEntities();
+        damageEntities();
+        Collection<GlowPlayer> affectedPlayers = collectPlayersInRadius(EXPLOSION_VISIBILITY_RADIUS);
         for (GlowPlayer player : affectedPlayers) {
             playOutExplosion(player, droppedBlocks);
         }
@@ -222,11 +229,9 @@ public final class Explosion {
     /////////////////////////////////////////
     // Damage entities
 
-    private Collection<GlowPlayer> damageEntities() {
+    private void damageEntities() {
         float power = this.power;
         this.power *= 2;
-
-        Collection<GlowPlayer> affectedPlayers = new ArrayList<>();
 
         LivingEntity[] entities = getNearbyEntities();
         for (LivingEntity entity : entities) {
@@ -254,11 +259,8 @@ public final class Explosion {
             }
             entity.damage(damage, source, damageCause);
 
-            if (entity instanceof GlowPlayer) {
-                affectedPlayers.add((GlowPlayer) entity);
-                if (((GlowPlayer) entity).isFlying()) {
-                    continue;
-                }
+            if (entity instanceof GlowPlayer && ((GlowPlayer) entity).isFlying()) {
+                continue;
             }
 
             Vector rayLength = RayUtil.getVelocityRay(distanceToHead(entity));
@@ -268,8 +270,6 @@ public final class Explosion {
             currentVelocity.add(rayLength);
             entity.setVelocity(currentVelocity);
         }
-
-        return affectedPlayers;
     }
 
     private double calculateEnchantedReduction(int epf) {
@@ -344,5 +344,12 @@ public final class Explosion {
                 records);
 
         player.getSession().send(message);
+    }
+
+    private Collection<GlowPlayer> collectPlayersInRadius(int radius) {
+        int radiusSquared = radius * radius;
+        return world.getRawPlayers().stream()
+            .filter(player -> player.getLocation().distanceSquared(location) <= radiusSquared)
+            .collect(Collectors.toList());
     }
 }
