@@ -24,6 +24,8 @@ public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
 
     public GlowTNTPrimed(Location location, Entity source) {
         super(location, Explosion.POWER_TNT);
+        setSize(0.98f, 0.98f);
+
         fuseTicks = 0;
         ThreadLocalRandom rand = ThreadLocalRandom.current();
         int multiplier = rand.nextBoolean() ? 1 : -1;
@@ -64,7 +66,7 @@ public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
 
         if (!event.isCancelled()) {
             Location location = getLocation();
-            double x = location.getX() + 0.5, y = location.getY() + 0.5, z = location.getZ() + 0.5;
+            double x = location.getX(), y = location.getY() + 0.06125, z = location.getZ();
             world.createExplosion(this, x, y, z, event.getRadius(), event.getFire(), true);
         }
 
