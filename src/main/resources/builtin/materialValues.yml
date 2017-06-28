@@ -13,14 +13,12 @@ values:
   GRASS:
     blastResistance: 3
     hardness: 0.6
-    blastResistance: 3
   DIRT:
     blastResistance: 2.5
     hardness: 0.5
   COBBLESTONE:
     blastResistance: 30
     hardness: 2
-    blastResistance: 30
   WOOD:
     flameResistance: 5
     fireResistance: 20
@@ -557,7 +555,6 @@ values:
     blastResistance: 30
   QUARTZ_ORE:
     hardness: 3
-    blastResistance: 4
     blastResistance: 15
   HOPPER:
     hardness: 3
