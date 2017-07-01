@@ -66,6 +66,7 @@ public class EntityRegistry {
                     .put(MushroomCow.class, GlowMooshroom.class)
                     .put(Ocelot.class, GlowOcelot.class)
                     //TODO: Painting
+                    .put(Parrot.class, GlowParrot.class)
                     .put(Pig.class, GlowPig.class)
                     .put(PigZombie.class, GlowPigZombie.class)
                     .put(Player.class, GlowPlayer.class)
