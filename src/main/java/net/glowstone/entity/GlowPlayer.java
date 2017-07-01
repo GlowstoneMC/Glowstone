@@ -355,7 +355,45 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 return loc;
             }
         }
-        return session.getServer().getWorlds().get(0).getSpawnLocation();
+
+        return findSafeSpawnLocation(session.getServer().getWorlds().get(0).getSpawnLocation());
+    }
+
+    /**
+     * Find a a Location obove or below the specified Location, which
+     * is on ground.
+     * The returned Location will be at the center of the block, X and Y wise.
+     *
+     * @param spawn The Location a safe spawn position should be found at.
+     * @return The location to spawn the player at.
+     */
+    private static Location findSafeSpawnLocation(Location spawn) {
+        World world = spawn.getWorld();
+        int blockX = spawn.getBlockX();
+        int blockY = spawn.getBlockY();
+        int blockZ = spawn.getBlockZ();
+
+        int highestY = world.getHighestBlockYAt(blockX, blockZ);
+
+        int y = blockY;
+        boolean wasPreviousSafe = false;
+        for (; y <= highestY; y++) {
+            Material type = world.getBlockAt(blockX, y, blockZ).getType();
+            boolean safe = Material.AIR.equals(type);
+
+            if (wasPreviousSafe && safe) {
+                y--;
+                break;
+            }
+            wasPreviousSafe = safe;
+        }
+
+        return new Location(
+            world,
+            blockX + 0.5,
+            y,
+            blockZ + 0.5
+        );
     }
 
     public void join(GlowSession session, PlayerReader reader) {
@@ -838,6 +876,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 setBedSpawnLocation(null);
                 sendMessage("Your home bed was missing or obstructed");
             }
+        }
+
+        if (!spawnAtBed) {
+            dest = findSafeSpawnLocation(dest);
         }
 
         // fire event and perform spawn
