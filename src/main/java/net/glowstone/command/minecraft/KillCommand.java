@@ -34,8 +34,10 @@ public class KillCommand extends VanillaCommand {
                 } else if (entity instanceof LivingEntity) {
                     LivingEntity living = (LivingEntity) entity;
                     living.damage(Double.MAX_VALUE, EntityDamageEvent.DamageCause.SUICIDE);
+                    sender.sendMessage("Killed " + CommandUtils.getName(entity));
                 } else {
                     entity.remove();
+                    sender.sendMessage("Killed " + CommandUtils.getName(entity));
                 }
                 return true;
             } else {
@@ -56,7 +58,7 @@ public class KillCommand extends VanillaCommand {
                 for (Entity entity : matched) {
                     if (entity instanceof LivingEntity) {
                         LivingEntity living = (LivingEntity) entity;
-                        living.damage(Double.MAX_VALUE);
+                        living.damage(Double.MAX_VALUE, EntityDamageEvent.DamageCause.VOID);
                     } else {
                         entity.remove();
                     }
@@ -69,7 +71,7 @@ public class KillCommand extends VanillaCommand {
                     sender.sendMessage(ChatColor.RED + "Player '" + name + "' is not online.");
                     return false;
                 } else {
-                    player.damage(Double.MAX_VALUE);
+                    player.damage(Double.MAX_VALUE, EntityDamageEvent.DamageCause.VOID);
                     sender.sendMessage("Killed " + player.getName());
                     return true;
                 }
