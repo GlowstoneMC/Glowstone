@@ -25,7 +25,7 @@ public class TellCommand extends VanillaCommand {
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (!testPermission(sender)) return false;
-        if (args.length == 1) {
+        if (args.length <= 1) {
             sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
             return false;
         }
