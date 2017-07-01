@@ -5,6 +5,7 @@ import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.state.GlowFurnace;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.GlowFurnaceInventory;
 import net.glowstone.inventory.crafting.CraftingManager;
 import net.glowstone.util.InventoryUtil;
@@ -31,6 +32,12 @@ public class FurnaceEntity extends ContainerEntity {
     @Override
     public GlowBlockState getState() {
         return new GlowFurnace(block);
+    }
+
+    @Override
+    public void update(GlowPlayer player) {
+        super.update(player);
+        player.sendBlockChange(getBlock().getLocation(), getBurnTime() > 0 ? Material.BURNING_FURNACE : Material.FURNACE, getBlock().getData());
     }
 
     @Override
@@ -70,16 +77,23 @@ public class FurnaceEntity extends ContainerEntity {
     // TODO: Change block on burning
     public void burn() {
         GlowFurnaceInventory inv = (GlowFurnaceInventory) getInventory();
-        if (burnTime > 0) burnTime--;
+        boolean sendChange = false;
+        if (burnTime > 0) {
+            burnTime--;
+            sendChange = true;
+        }
         boolean isBurnable = isBurnable();
         if (cookTime > 0 && isBurnable) {
             cookTime++;
+            sendChange = true;
         } else if (burnTime != 0) {
             cookTime = 0;
+            sendChange = true;
         }
 
         if (cookTime == 0 && isBurnable) {
             cookTime = 1;
+            sendChange = true;
         }
 
         if (burnTime == 0) {
@@ -99,12 +113,14 @@ public class FurnaceEntity extends ContainerEntity {
                     } else {
                         inv.getFuel().setAmount(inv.getFuel().getAmount() - 1);
                     }
+                    sendChange = true;
                 } else if (cookTime != 0) {
                     if (cookTime % 2 == 0) {
                         cookTime = (short) (cookTime - 2);
                     } else {
                         cookTime--;
                     }
+                    sendChange = true;
                 }
             } else if (cookTime != 0) {
                 if (cookTime % 2 == 0) {
@@ -112,6 +128,7 @@ public class FurnaceEntity extends ContainerEntity {
                 } else {
                     cookTime--;
                 }
+                sendChange = true;
             }
         }
 
@@ -137,6 +154,7 @@ public class FurnaceEntity extends ContainerEntity {
                     }
                 }
                 cookTime = 0;
+                sendChange = true;
             }
         }
         inv.getViewersSet().forEach(human -> {
@@ -147,6 +165,10 @@ public class FurnaceEntity extends ContainerEntity {
         });
         if (!isBurnable && burnTime == 0 && cookTime == 0) {
             getState().getBlock().getWorld().cancelPulse(getState().getBlock());
+            sendChange = true;
+        }
+        if (sendChange) {
+            updateInRange();
         }
     }
 
