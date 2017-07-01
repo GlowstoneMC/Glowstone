@@ -383,22 +383,23 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         saveData();
 
         streamBlocks(); // stream the initial set of blocks
-        setCompassTarget(world.getSpawnLocation()); // set our compass target
-        sendTime();
         sendWeather();
         sendRainDensity();
         sendSkyDarkness();
         sendAbilities();
+
+        // send initial location
+        session.send(new PositionRotationMessage(location));
+
         session.send(((GlowWorldBorder) world.getWorldBorder()).createMessage());
+        sendTime();
+        setCompassTarget(world.getSpawnLocation()); // set our compass target
 
         scoreboard = server.getScoreboardManager().getMainScoreboard();
         scoreboard.subscribe(this);
 
         invMonitor = new InventoryMonitor(getOpenInventory());
         updateInventory(); // send inventory contents
-
-        // send initial location
-        session.send(new PositionRotationMessage(location));
 
         if (!server.getResourcePackURL().isEmpty()) {
             setResourcePack(server.getResourcePackURL(), server.getResourcePackHash());
@@ -798,11 +799,13 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         // spawn into world
         String type = world.getWorldType().getName().toLowerCase();
         session.send(new RespawnMessage(world.getEnvironment().getId(), world.getDifficulty().getValue(), getGameMode().getValue(), type));
+
         setRawLocation(location, false); // take us to spawn position
-        streamBlocks(); // stream blocks
-        setCompassTarget(world.getSpawnLocation()); // set our compass target
         session.send(new PositionRotationMessage(location));
         teleportedTo = location.clone();
+        setCompassTarget(world.getSpawnLocation()); // set our compass target
+
+        streamBlocks(); // stream blocks
 
         sendWeather();
         sendRainDensity();
