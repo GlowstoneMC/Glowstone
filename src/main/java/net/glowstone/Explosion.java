@@ -44,6 +44,28 @@ public final class Explosion {
     public static final int POWER_ENDER_CRYSTAL = 6;
     private static final Random random = new Random();
     public static final int EXPLOSION_VISIBILITY_RADIUS = 64;
+    private static final List<Vector> RAY_DIRECTIONS = new ArrayList<>();
+
+    static {
+        int value = 16;
+        for (int x = 0; x < value; x++) {
+            for (int y = 0; y < value; y++) {
+                for (int z = 0; z < value; z++) {
+                    if (!(x == 0 || x == value - 1 || y == 0 || y == value - 1 || z == 0 || z == value - 1)) {
+                        continue;
+                    }
+                    double vx = x / 7.5 - 1;
+                    double vy = y / 7.5 - 1;
+                    double vz = z / 7.5 - 1;
+                    Vector direction = new Vector(vx, vy, vz);
+                    direction.normalize();
+                    direction.multiply(0.3f); // 0.3 blocks away with each step
+
+                    RAY_DIRECTIONS.add(direction);
+                }
+            }
+        }
+    }
 
     private final Entity source;
     private final Location location;
@@ -97,14 +119,13 @@ public final class Explosion {
 
         Set<BlockVector> droppedBlocks = calculateBlocks();
 
-        EntityExplodeEvent event = EventFactory.callEvent(new EntityExplodeEvent(source, location, toBlockList(droppedBlocks), yield));
+        List<Block> blocks = toBlockList(droppedBlocks);
+        EntityExplodeEvent event = EventFactory.callEvent(new EntityExplodeEvent(source, location, blocks, yield));
         if (event.isCancelled()) return false;
 
         yield = event.getYield();
 
         playOutSoundAndParticles();
-
-        List<Block> blocks = toBlockList(droppedBlocks);
 
         for (Block block : blocks) {
             handleBlockExplosion((GlowBlock) block);
@@ -119,7 +140,7 @@ public final class Explosion {
         damageEntities();
         Collection<GlowPlayer> affectedPlayers = collectPlayersInRadius(EXPLOSION_VISIBILITY_RADIUS);
         for (GlowPlayer player : affectedPlayers) {
-            playOutExplosion(player, droppedBlocks);
+            playOutExplosion(player, blocks);
         }
 
         return true;
@@ -134,30 +155,12 @@ public final class Explosion {
 
         Set<BlockVector> blocks = new HashSet<>();
 
-        int value = 16;
-
-        for (int x = 0; x < value; x++) {
-            for (int y = 0; y < value; y++) {
-                for (int z = 0; z < value; z++) {
-                    if (!(x == 0 || x == value - 1 || y == 0 || y == value - 1 || z == 0 || z == value - 1)) {
-                        continue;
-                    }
-                    calculateRay(x, y, z, blocks);
-                }
-            }
-        }
+        RAY_DIRECTIONS.forEach(v -> calculateRay(v, blocks));
 
         return blocks;
     }
 
-    private void calculateRay(int ox, int oy, int oz, Collection<BlockVector> result) {
-        double x = ox / 7.5 - 1;
-        double y = oy / 7.5 - 1;
-        double z = oz / 7.5 - 1;
-        Vector direction = new Vector(x, y, z);
-        direction.normalize();
-        direction.multiply(0.3f); // 0.3 blocks away with each step
-
+    private void calculateRay(Vector direction, Collection<BlockVector> result) {
         Location current = location.clone();
 
         float currentPower = calculateStartPower();
@@ -327,13 +330,14 @@ public final class Explosion {
         }
     }
 
-    private void playOutExplosion(GlowPlayer player, Iterable<BlockVector> blocks) {
+    private void playOutExplosion(GlowPlayer player, Iterable<Block> blocks) {
         Collection<Record> records = new ArrayList<>();
 
-        for (BlockVector block : blocks) {
-            byte x = (byte) (block.getBlockX() - location.getBlockX());
-            byte y = (byte) (block.getBlockY() - location.getBlockY());
-            byte z = (byte) (block.getBlockZ() - location.getBlockZ());
+        for (Block block : blocks) {
+            Location blockLocation = block.getLocation();
+            byte x = (byte) (blockLocation.getBlockX() - (int) this.location.getX());
+            byte y = (byte) (blockLocation.getBlockY() - (int) this.location.getY());
+            byte z = (byte) (blockLocation.getBlockZ() - (int) this.location.getZ());
             records.add(new Record(x, y, z));
         }
 
