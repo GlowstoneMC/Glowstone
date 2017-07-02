@@ -106,11 +106,10 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
         }
         EntityDamageEvent event;
         if (source == null) {
-            event = new EntityDamageEvent(this, cause, amount);
+            event = EventFactory.onEntityDamage(new EntityDamageEvent(this, cause, amount));
         } else {
-            event = new EntityDamageByEntityEvent(source, this, cause, amount);
+            event = EventFactory.onEntityDamage(new EntityDamageByEntityEvent(source, this, cause, amount));
         }
-        EventFactory.callEvent(event);
         if (event.isCancelled()) {
             return;
         }

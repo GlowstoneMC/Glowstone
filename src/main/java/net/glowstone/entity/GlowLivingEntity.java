@@ -748,11 +748,10 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         // fire event
         EntityDamageEvent event;
         if (source == null) {
-            event = new EntityDamageEvent(this, cause, amount);
+            event = EventFactory.onEntityDamage(new EntityDamageEvent(this, cause, amount));
         } else {
-            event = new EntityDamageByEntityEvent(source, this, cause, amount);
+            event = EventFactory.onEntityDamage(new EntityDamageByEntityEvent(source, this, cause, amount));
         }
-        EventFactory.callEvent(event);
         if (event.isCancelled()) {
             return;
         }
@@ -906,12 +905,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                     damage *= 0.2f;
                 }
 
-                EntityDamageEvent ev = new EntityDamageEvent(this, DamageCause.FALL, damage);
-                getServer().getPluginManager().callEvent(ev);
-                if (!ev.isCancelled()) {
-                    setLastDamageCause(ev);
-                    damage(ev.getDamage(), DamageCause.FALL);
-                }
+                EventFactory.onEntityDamage(new EntityDamageEvent(this, DamageCause.FALL, damage));
             }
         }
         super.setOnGround(onGround);

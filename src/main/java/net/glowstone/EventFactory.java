@@ -7,9 +7,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 
@@ -155,4 +157,14 @@ public final class EventFactory {
         return callEvent(new PlayerInteractEvent(player, action, player.getItemInHand(), clicked, face));
     }
 
+    public static <T extends EntityDamageEvent> T onEntityDamage(T event) {
+        T result = callEvent(event);
+        if (!result.isCancelled()) {
+            result.getEntity().setLastDamageCause(result);
+            if (result.getEntity() instanceof LivingEntity) {
+                ((LivingEntity) result.getEntity()).setLastDamage(result.getDamage());
+            }
+        }
+        return result;
+    }
 }
