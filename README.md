@@ -2,6 +2,8 @@
 [![Join the Discord chat](https://img.shields.io/badge/discord-glowstone-738bd7.svg?style=flat-square)](https://discord.gg/TFJqhsC)
 [![Build Status](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/master.png)](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/master)
 
+<img align="right" alt="Glowstone logo" width="100" src="etc/logo/logo.png">
+
 # Glowstone
 
 A fast, customizable and compatible open source Minecraft server.
