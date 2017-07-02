@@ -29,7 +29,12 @@ public final class InventoryMonitor {
     public InventoryMonitor(InventoryView view) {
         boolean isDefault = GlowInventoryView.isDefault(view);
         this.view = view;
-        size = view.countSlots();
+        if (view.getTopInventory().getType() != InventoryType.CRAFTING && view.getBottomInventory().getType() == InventoryType.PLAYER) {
+            // Don't send armor/shield slots when looking in an inventory
+            size = view.countSlots() - 5;
+        } else {
+            size = view.countSlots();
+        }
         slots = new ItemStack[size];
 
         // determine id and type id
