@@ -1,14 +1,16 @@
 package net.glowstone.command.minecraft;
 
-import net.glowstone.entity.GlowPlayer;
-import net.glowstone.net.message.play.game.ChatMessage;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Player;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.json.simple.parser.ParseException;
 
 import java.util.Collections;
 
@@ -31,6 +33,7 @@ public class TellrawCommand extends VanillaCommand {
 
         if (player == null || sender instanceof Player && !((Player) sender).canSee(player)) {
             sender.sendMessage("There's no player by that name online.");
+            return false;
         } else {
             StringBuilder message = new StringBuilder();
 
@@ -39,16 +42,22 @@ public class TellrawCommand extends VanillaCommand {
                 message.append(args[i]);
             }
 
-            GlowPlayer glowPlayer = (GlowPlayer) player;
-
-            Object obj = JSONValue.parse(message.toString());
-            if (!(obj instanceof JSONObject)) {
-                sender.sendMessage(ChatColor.RED + "Failed to parse JSON");
+            Object obj = null;
+            String json = message.toString();
+            try {
+                obj = JSONValue.parseWithException(json);
+            } catch (ParseException e) {
+                sender.sendMessage(ChatColor.RED + "Failed to parse JSON: " + e.getMessage());
+                return false;
+            }
+            if (obj instanceof JSONArray || obj instanceof JSONObject) {
+                BaseComponent[] components = ComponentSerializer.parse(json);
+                player.sendMessage(components);
+                return true;
             } else {
-                glowPlayer.getSession().send(new ChatMessage((JSONObject) obj));
+                sender.sendMessage(ChatColor.RED + "Failed to parse JSON");
+                return false;
             }
         }
-
-        return true;
     }
 }
