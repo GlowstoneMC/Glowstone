@@ -47,7 +47,6 @@ public final class Explosion {
     private static final List<Vector> RAY_DIRECTIONS = new ArrayList<>();
 
     static {
-
         int value = 16;
         for (int x = 0; x < value; x++) {
             for (int y = 0; y < value; y++) {
@@ -335,9 +334,10 @@ public final class Explosion {
         Collection<Record> records = new ArrayList<>();
 
         for (Block block : blocks) {
-            byte x = (byte) (block.getLocation().getBlockX() - (int) location.getX());
-            byte y = (byte) (block.getLocation().getBlockY() - (int) location.getY());
-            byte z = (byte) (block.getLocation().getBlockZ() - (int) location.getZ());
+            Location blockLocation = block.getLocation();
+            byte x = (byte) (blockLocation.getBlockX() - (int) this.location.getX());
+            byte y = (byte) (blockLocation.getBlockY() - (int) this.location.getY());
+            byte z = (byte) (blockLocation.getBlockZ() - (int) this.location.getZ());
             records.add(new Record(x, y, z));
         }
 
