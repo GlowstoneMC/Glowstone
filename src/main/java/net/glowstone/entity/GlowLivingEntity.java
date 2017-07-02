@@ -905,7 +905,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                     damage *= 0.2f;
                 }
 
-                EventFactory.onEntityDamage(new EntityDamageEvent(this, DamageCause.FALL, damage));
+                damage(damage, DamageCause.FALL);
             }
         }
         super.setOnGround(onGround);
