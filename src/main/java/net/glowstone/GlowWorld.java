@@ -1730,7 +1730,9 @@ public final class GlowWorld implements World {
     public boolean unload() {
         // terminate task service
         //aiTaskService.shutdown();
-        EventFactory.callEvent(new WorldUnloadEvent(this));
+        if (EventFactory.callEvent(new WorldUnloadEvent(this)).isCancelled()) {
+            return false;
+        }
         try {
             storageProvider.getChunkIoService().unload();
             storageProvider.getScoreboardIoService().unload();

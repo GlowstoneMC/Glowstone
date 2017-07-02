@@ -85,8 +85,10 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
         }
 
         try {
-            RemoteServerCommandEvent event = new RemoteServerCommandEvent(commandSender, payload);
-            EventFactory.callEvent(event);
+            RemoteServerCommandEvent event = EventFactory.callEvent(new RemoteServerCommandEvent(commandSender, payload));
+            if (event.isCancelled()) {
+                return;
+            }
             rconServer.getServer().dispatchCommand(commandSender, event.getCommand());
 
             String message = commandSender.flush();
