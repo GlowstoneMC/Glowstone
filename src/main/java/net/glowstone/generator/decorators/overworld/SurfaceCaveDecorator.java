@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class SmallCaveDecorator extends BlockDecorator {
+public class SurfaceCaveDecorator extends BlockDecorator {
 
     @Override
     public void decorate(World world, Random random, Chunk c) {
