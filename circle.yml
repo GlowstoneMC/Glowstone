@@ -24,7 +24,6 @@ deployment:
           - "mvn -s .circleci.settings.xml -Dmaven.test.skip=true deploy"
           - "mv target/site/apidocs ./glowstone"
           - "zip -r javadocs.zip glowstone/"
+          - "cp javadocs.zip $CIRCLE_ARTIFACTS/"
           - "chmod +x .circle/*"
           - "./.circle/deploy.sh"
-        artifacts:
-          - "javadocs.zip"
