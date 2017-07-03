@@ -3,10 +3,13 @@ package net.glowstone.generator.decorators.overworld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.generator.decorators.BlockDecorator;
+import net.glowstone.util.noise.PerlinOctaveGenerator;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.util.BlockVector;
+import org.bukkit.util.NumberConversions;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,33 +24,34 @@ public class SmallCaveDecorator extends BlockDecorator {
         }
         GlowChunk chunk = (GlowChunk) c;
         final int startCx = random.nextInt(16), startCz = random.nextInt(16), startY = chunk.getHeight(startCx, startCz);
+        final GlowBlock startBlock = chunk.getBlock(startCx, startY, startCz);
         if (startY > 128) {
             return;
         }
-        final GlowBlock startBlock = chunk.getBlock(startCx, startY, startCz);
-        List<BlockVector> ray = new ArrayList<>();
-        int rayLength = random.nextInt(150) + 15;
-        BlockVector current = new BlockVector();
-        for (int i = 0; i < rayLength; i++) {
-            float depth = (float) i / (float) rayLength;
-            BlockVector vector = randomRayVector(random, depth);
-            current.add(vector);
-            if (current.getBlockY() + startY > startY + 3 || current.getBlockY() + startY < 5) {
-                break;
-            }
-            ray.add(vector);
+        PerlinOctaveGenerator octaves = new PerlinOctaveGenerator(random, 3, 4, 2, 4);
+        int cX = c.getX() << 4, cZ = c.getZ() << 4;
+        double[] noise = octaves.fBm(cX, cZ, 0, 0.5D, 0.2D);
+        double[] angles = new double[noise.length];
+        for (int i = 0; i < noise.length; i++) {
+            angles[i] = 360.0 * noise[i];
         }
-        if (ray.size() < 5) {
-            return;
+        int sectionCount = angles.length / 2;
+        List<BlockVector> nodes = new ArrayList<>();
+        BlockVector currentNode = new BlockVector(startBlock.getX(), startBlock.getY(), startBlock.getZ());
+        nodes.add(currentNode.clone());
+        int length = 5;
+        for (int i = 0; i < sectionCount; i++) {
+            double yaw = angles[i + sectionCount];
+            int deltaY = -Math.abs(NumberConversions.floor(noise[i] * length));
+            int deltaX = NumberConversions.floor((double) length * Math.cos(Math.toRadians(yaw)));
+            int deltaZ = NumberConversions.floor((double) length * Math.sin(Math.toRadians(yaw)));
+            currentNode.add(new Vector(deltaX, deltaY, deltaZ));
+            nodes.add(new BlockVector(currentNode.getBlockX(), currentNode.getBlockY(), currentNode.getBlockZ()));
         }
-        GlowBlock rayStream = startBlock;
-        for (BlockVector vector : ray) {
-            GlowBlock block = rayStream.getRelative(vector.getBlockX(), vector.getBlockY(), vector.getBlockZ());
-            if (block.getType() == Material.BEDROCK) {
-                return;
-            }
+        for (BlockVector node : nodes) {
+            if (node.getBlockY() < 4) continue;
+            GlowBlock block = (GlowBlock) world.getBlockAt(node.getBlockX(), node.getBlockY(), node.getBlockZ());
             caveAroundRay(block, random);
-            rayStream = block;
         }
     }
 
@@ -65,12 +69,5 @@ public class SmallCaveDecorator extends BlockDecorator {
                 }
             }
         }
-    }
-
-    private BlockVector randomRayVector(Random random, float depth) {
-        return new BlockVector(
-                (random.nextInt(3) + 2) * (random.nextBoolean() ? 1 : -1),
-                random.nextFloat() < depth * 0.5 ? 0 : random.nextInt(4) * (random.nextFloat() < 0.1 + (depth * 0.2) ? 1 : -1),
-                (random.nextInt(3) + 2) * (random.nextBoolean() ? 1 : -1));
     }
 }
