@@ -41,6 +41,7 @@ public class BiomePopulator extends BlockPopulator {
     protected final CactusDecorator cactusDecorator = new CactusDecorator();
     protected final FlowingLiquidDecorator flowingWaterDecorator = new FlowingLiquidDecorator(Material.WATER);
     protected final FlowingLiquidDecorator flowingLavaDecorator = new FlowingLiquidDecorator(Material.LAVA);
+    protected final SmallCaveDecorator smallCaveDecorator = new SmallCaveDecorator();
     protected final List<EntityDecorator> entityDecorators = new ArrayList<>();
     private final List<BlockPopulator> inGroundPopulators = new ArrayList<>();
     private final List<BlockPopulator> onGroundPopulators = new ArrayList<>();
@@ -48,6 +49,7 @@ public class BiomePopulator extends BlockPopulator {
     public BiomePopulator(Biome... biome) {
         inGroundPopulators.add(waterLakeDecorator);
         inGroundPopulators.add(lavaLakeDecorator);
+        inGroundPopulators.add(smallCaveDecorator);
         inGroundPopulators.add(dungeonPopulator);
         inGroundPopulators.add(orePopulator);
         inGroundPopulators.add(sandPatchDecorator);
@@ -70,6 +72,7 @@ public class BiomePopulator extends BlockPopulator {
 
         waterLakeDecorator.setAmount(1);
         lavaLakeDecorator.setAmount(1);
+        smallCaveDecorator.setAmount(1);
         sandPatchDecorator.setAmount(3);
         sandPatchDecorator.setRadii(7, 2);
         sandPatchDecorator.setOverridableBlocks(Material.DIRT, Material.GRASS);

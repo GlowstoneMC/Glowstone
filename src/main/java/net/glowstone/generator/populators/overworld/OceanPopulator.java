@@ -10,6 +10,7 @@ public class OceanPopulator extends BiomePopulator {
     private static final Biome[] BIOMES = {Biome.DEEP_OCEAN, Biome.OCEAN};
 
     public OceanPopulator() {
+        smallCaveDecorator.setAmount(0);
         entityDecorators.clear();
         // todo: squid decorator
     }
