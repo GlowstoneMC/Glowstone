@@ -21,5 +21,7 @@ deployment:
     commands:
       - "mvn javadoc:javadoc javadoc:jar"
       - "mvn -s .circleci.settings.xml -Dmaven.test.skip=true deploy"
+      - "mv target/site/apidocs ./glowstone"
+      - "zip -r javadocs.zip glowstone/"
       - "chmod +x .circle/*"
       - "./.circle/deploy.sh"
