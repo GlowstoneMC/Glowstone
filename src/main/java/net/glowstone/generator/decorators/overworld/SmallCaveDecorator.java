@@ -21,12 +21,16 @@ public class SmallCaveDecorator extends BlockDecorator {
         }
         GlowChunk chunk = (GlowChunk) c;
         final int startCx = random.nextInt(16), startCz = random.nextInt(16), startY = chunk.getHeight(startCx, startCz);
+        if (startY > 128) {
+            return;
+        }
         final GlowBlock startBlock = chunk.getBlock(startCx, startY, startCz);
         List<BlockVector> ray = new ArrayList<>();
-        int rayLength = random.nextInt(100) + 20;
+        int rayLength = random.nextInt(150) + 15;
         BlockVector current = new BlockVector();
         for (int i = 0; i < rayLength; i++) {
-            BlockVector vector = randomRayVector(random);
+            float depth = (float) i / (float) rayLength;
+            BlockVector vector = randomRayVector(random, depth);
             current.add(vector);
             if (current.getBlockY() + startY > startY + 3 || current.getBlockY() + startY < 5) {
                 break;
@@ -63,10 +67,10 @@ public class SmallCaveDecorator extends BlockDecorator {
         }
     }
 
-    private BlockVector randomRayVector(Random random) {
+    private BlockVector randomRayVector(Random random, float depth) {
         return new BlockVector(
                 (random.nextInt(3) + 2) * (random.nextBoolean() ? 1 : -1),
-                random.nextFloat() < 0.6 ? 0 : random.nextInt(4) * (random.nextFloat() < 0.2 ? 1 : -1),
+                random.nextFloat() < depth * 0.5 ? 0 : random.nextInt(4) * (random.nextFloat() < 0.1 + (depth * 0.2) ? 1 : -1),
                 (random.nextInt(3) + 2) * (random.nextBoolean() ? 1 : -1));
     }
 }
