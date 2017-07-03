@@ -54,8 +54,7 @@ public class SmallCaveDecorator extends BlockDecorator {
             for (int y = bY - radius; y <= bY + radius; y++) {
                 for (int z = bZ - radius; z <= bZ + radius; z++) {
                     double distance = (bX - x) * (bX - x) + (bY - y) * (bY - y) + (bZ - z) * (bZ - z);
-                    double chance = 1.0;
-                    if (distance < radius * radius && random.nextDouble() < chance) {
+                    if (distance < radius * radius) {
                         GlowBlock pocket = block.getWorld().getBlockAt(x, y, z);
                         pocket.setType(Material.AIR);
                     }
@@ -66,8 +65,8 @@ public class SmallCaveDecorator extends BlockDecorator {
 
     private BlockVector randomRayVector(Random random) {
         return new BlockVector(
-                random.nextInt(2) * (random.nextBoolean() ? 1 : -1),
-                random.nextFloat() < 0.4 ? 0 : random.nextInt(4) * (random.nextFloat() < 0.2 ? 1 : -1),
-                random.nextInt(2) * (random.nextBoolean() ? 1 : -1));
+                (random.nextInt(3) + 2) * (random.nextBoolean() ? 1 : -1),
+                random.nextFloat() < 0.6 ? 0 : random.nextInt(4) * (random.nextFloat() < 0.2 ? 1 : -1),
+                (random.nextInt(3) + 2) * (random.nextBoolean() ? 1 : -1));
     }
 }
