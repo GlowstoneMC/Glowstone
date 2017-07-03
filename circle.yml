@@ -1,6 +1,7 @@
 machine:
    java:
        version: oraclejdk8
+
 dependencies:
     override:
         - git config --global user.email "circuitsoft@tuta.io"
@@ -16,12 +17,14 @@ test:
         - find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
 
 deployment:
-  master:
-    branch: master
-    commands:
-      - "mvn javadoc:javadoc javadoc:jar"
-      - "mvn -s .circleci.settings.xml -Dmaven.test.skip=true deploy"
-      - "mv target/site/apidocs ./glowstone"
-      - "zip -r javadocs.zip glowstone/"
-      - "chmod +x .circle/*"
-      - "./.circle/deploy.sh"
+    master:
+        branch: master
+        commands:
+          - "mvn javadoc:javadoc javadoc:jar"
+          - "mvn -s .circleci.settings.xml -Dmaven.test.skip=true deploy"
+          - "mv target/site/apidocs ./glowstone"
+          - "zip -r javadocs.zip glowstone/"
+          - "chmod +x .circle/*"
+          - "./.circle/deploy.sh"
+        artifacts:
+          - "javadocs.zip"
