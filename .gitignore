@@ -19,3 +19,4 @@ dependency-reduced-pom.xml
 .project
 .settings
 .db
+.DS_Store
