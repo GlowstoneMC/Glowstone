@@ -20,8 +20,7 @@ deployment:
     master:
         branch: master
         commands:
-          - "mvn javadoc:javadoc javadoc:jar"
-          - "mvn -s .circleci.settings.xml -Dmaven.test.skip=true deploy"
+          - "mvn -s .circleci.settings.xml -Dmaven.test.skip=true javadoc:javadoc javadoc:jar deploy"
           - "mv target/site/apidocs ./glowstone"
           - "zip -r javadocs.zip glowstone/"
           - "cp javadocs.zip $CIRCLE_ARTIFACTS/"
