@@ -7,7 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
-import org.bukkit.util.StringUtil;
 
 import java.util.*;
 import java.util.stream.Collectors;
