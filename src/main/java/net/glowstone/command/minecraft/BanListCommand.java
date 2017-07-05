@@ -1,5 +1,6 @@
 package net.glowstone.command.minecraft;
 
+import net.glowstone.command.CommandUtils;
 import org.bukkit.BanEntry;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
@@ -9,17 +10,11 @@ import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.util.StringUtil;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class BanListCommand extends VanillaCommand {
 
-    private static final List<String> BAN_TYPES;
-
-    private static final int BAN_TYPES_SIZE;
-
-    static {
-        BAN_TYPES = Arrays.asList("ips", "players");
-        BAN_TYPES_SIZE = BAN_TYPES.size();
-    }
+    private static final List<String> BAN_TYPES = Arrays.asList("ips", "players");
 
     public BanListCommand() {
         super("banlist", "Displays the server's blacklist.", "/banlist [ips|players]", Collections.emptyList());
@@ -33,17 +28,13 @@ public class BanListCommand extends VanillaCommand {
         BanList.Type banType;
 
         if (args.length > 0) {
-            final String parameter = args[0];
-            switch (parameter) {
-                case "ips" :
-                    banType = BanList.Type.IP;
-                    break;
-                case "players" :
-                    banType = BanList.Type.NAME;
-                    break;
-                default:
-                    sender.sendMessage(ChatColor.RED + "Invalid parameter '" + parameter + "'. Usage : " + usageMessage);
-                    return false;
+            if ("ips".equalsIgnoreCase(args[0])) {
+                banType = BanList.Type.IP;
+            } else if ("players".equalsIgnoreCase(args[0])) {
+                banType = BanList.Type.NAME;
+            } else {
+                sender.sendMessage(ChatColor.RED + "Invalid parameter '" + args[0] + "'. Usage: " + usageMessage);
+                return false;
             }
         } else {
              banType = BanList.Type.NAME;
@@ -54,23 +45,9 @@ public class BanListCommand extends VanillaCommand {
         if (banEntries.isEmpty()) {
             sender.sendMessage("There are no banned players");
         } else {
-            int index = 0, size = banEntries.size();
-            final StringBuilder banList = new StringBuilder(200);
-
-            for (final BanEntry banEntry : banEntries) {
-                banList.append(banEntry.getTarget());
-                if (index != size - 1) {
-                    if (index == size - 2) {
-                        banList.append(" and ");
-                    } else {
-                        banList.append(", ");
-                    }
-                }
-                ++index;
-            }
-
-            sender.sendMessage("There are " + size + " banned players : ");
-            sender.sendMessage(banList.toString());
+            final List<String> targets = banEntries.stream().map(BanEntry::getTarget).collect(Collectors.toList());
+            sender.sendMessage("There are " + banEntries.size() + " banned players: ");
+            sender.sendMessage(CommandUtils.prettyPrint(targets.toArray(new String[targets.size()])));
         }
 
         return true;
@@ -79,8 +56,9 @@ public class BanListCommand extends VanillaCommand {
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
         if (args.length == 1) {
-            return StringUtil.copyPartialMatches(args[0], BAN_TYPES, new ArrayList(BAN_TYPES_SIZE));
+            return StringUtil.copyPartialMatches(args[0], BAN_TYPES, new ArrayList(BAN_TYPES.size()));
+        } else {
+            return Collections.emptyList();
         }
-        return super.tabComplete(sender, alias, args);
     }
 }
