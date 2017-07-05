@@ -835,6 +835,7 @@ public final class GlowServer implements Server {
         commandMap.register("minecraft", new ListCommand());
         commandMap.register("minecraft", new BanCommand());
         commandMap.register("minecraft", new BanIpCommand());
+        commandMap.register("minecraft", new BanListCommand());
         commandMap.register("minecraft", new GiveCommand());
         commandMap.register("minecraft", new DifficultyCommand());
         commandMap.register("minecraft", new KillCommand());
