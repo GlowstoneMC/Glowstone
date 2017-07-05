@@ -1,41 +1,25 @@
 package net.glowstone.entity.objects;
 
-import com.flowpowered.network.Message;
-import net.glowstone.EventFactory;
-import net.glowstone.GlowWorld;
-import net.glowstone.entity.GlowLivingEntity;
-import net.glowstone.entity.GlowPlayer;
-import net.glowstone.entity.meta.MetadataIndex;
-import net.glowstone.entity.meta.MetadataIndex.ArmorStandFlags;
-import net.glowstone.entity.meta.MetadataIndex.StatusFlags;
-import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
-import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
-import net.glowstone.net.message.play.entity.EntityMetadataMessage;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
-import net.glowstone.net.message.play.player.InteractEntityMessage;
-import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
-import net.glowstone.util.InventoryUtil;
-import net.glowstone.util.Position;
-import org.bukkit.Effect;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
+import com.flowpowered.network.*;
+import java.util.*;
+import net.glowstone.*;
+import net.glowstone.entity.*;
+import net.glowstone.entity.meta.*;
+import net.glowstone.entity.meta.MetadataIndex.*;
+import net.glowstone.inventory.*;
+import net.glowstone.net.message.play.entity.*;
+import net.glowstone.net.message.play.player.*;
+import net.glowstone.net.message.play.player.InteractEntityMessage.*;
+import net.glowstone.util.*;
+import org.bukkit.*;
+import org.bukkit.attribute.*;
 import org.bukkit.entity.*;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scoreboard.Criterias;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.util.EulerAngle;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.EntityDamageEvent.*;
+import org.bukkit.event.player.*;
+import org.bukkit.inventory.*;
+import org.bukkit.scoreboard.*;
+import org.bukkit.util.*;
 
 public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
 
@@ -54,8 +38,8 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     }
 
 
-    private final ItemStack[] equipment = new ItemStack[5];
-    private final boolean[] changedEquip = new boolean[5];
+    private final ItemStack[] equipment = new ItemStack[6];
+    private final boolean[] changedEquip = new boolean[6];
     private final EulerAngle[] pose = new EulerAngle[6];
 
     private boolean isMarker;
@@ -71,7 +55,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
         super(location, 2);
 
         System.arraycopy(defaultPose, 0, pose, 0, 6);
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < equipment.length; i++) {
             changedEquip[i] = false;
         }
     }
@@ -79,7 +63,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     @Override
     public void reset() {
         super.reset();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < equipment.length; i++) {
             changedEquip[i] = false;
         }
         if (needsKill) needsKill = false;
@@ -165,8 +149,9 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
         if (player.getGameMode() == GameMode.SPECTATOR || isMarker) return false;
         if (msg.getAction() == Action.INTERACT_AT.ordinal()) {
             if (InventoryUtil.isEmpty(player.getItemInHand())) {
-                int slot = getEditSlot(msg.getTargetY());
-                PlayerArmorStandManipulateEvent event = new PlayerArmorStandManipulateEvent(player, this, InventoryUtil.itemOrEmpty(null), InventoryUtil.itemOrEmpty(equipment[slot]), EquipmentSlot.values()[slot]);
+                EquipmentSlot slot = getEditSlot(msg.getTargetY());
+
+                PlayerArmorStandManipulateEvent event = new PlayerArmorStandManipulateEvent(player, this, InventoryUtil.itemOrEmpty(null), InventoryUtil.itemOrEmpty(getItem(slot)), slot);
                 EventFactory.callEvent(event);
 
                 if (event.isCancelled()) {
@@ -177,18 +162,17 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
                     return false;
                 }
 
-                ItemStack stack = equipment[slot];
+                ItemStack stack = getItem(slot);
                 player.setItemInHand(stack);
-                equipment[slot] = InventoryUtil.createEmptyStack();
-                changedEquip[slot] = true;
+                setItem(slot, InventoryUtil.createEmptyStack());
                 return true;
             } else {
-                int slot = getEquipType(player.getItemInHand().getType());
-                if (slot == 0 && !hasArms) {
+                EquipmentSlot slot = getEquipType(player.getItemInHand().getType());
+                if ((slot == EquipmentSlot.HAND || slot == EquipmentSlot.OFF_HAND) && !hasArms) {
                     return false;
                 }
 
-                PlayerArmorStandManipulateEvent event = new PlayerArmorStandManipulateEvent(player, this, player.getItemInHand(), InventoryUtil.itemOrEmpty(equipment[slot]), EquipmentSlot.values()[slot]);
+                PlayerArmorStandManipulateEvent event = new PlayerArmorStandManipulateEvent(player, this, player.getItemInHand(), InventoryUtil.itemOrEmpty(getItem(slot)), slot);
                 EventFactory.callEvent(event);
 
                 if (event.isCancelled()) {
@@ -208,21 +192,44 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
                     if (stack.getAmount() > 1) {
                         return false;
                     }
-                    back = equipment[slot];
+                    back = getItem(slot);
                 }
 
                 if (!InventoryUtil.isEmpty(back)) {
                     player.setItemInHand(back);
                 }
-                equipment[slot] = stack;
-                changedEquip[slot] = true;
+                setItem(slot, stack);
+                player.playSound(location, getEquipSound(stack.getType()), SoundCategory.NEUTRAL, 1, 1);
                 return true;
             }
         }
         return false;
     }
 
-    private int getEquipType(Material mat) {
+    private Sound getEquipSound(Material mat) {
+        if (mat == Material.ELYTRA) {
+            return Sound.ITEM_ARMOR_EQUIP_ELYTRA;
+        }
+        if (ClothType.LEATHER.matches(mat)) {
+            return Sound.ITEM_ARMOR_EQUIP_LEATHER;
+        }
+        if (ClothType.CHAINMAIL.matches(mat)) {
+            return Sound.ITEM_ARMOR_EQUIP_CHAIN;
+        }
+        if (ClothType.IRON.matches(mat)) {
+            return Sound.ITEM_ARMOR_EQUIP_IRON;
+        }
+        if (ClothType.GOLD.matches(mat)) {
+            return Sound.ITEM_ARMOR_EQUIP_GOLD;
+        }
+        if (ClothType.DIAMOND.matches(mat)) {
+            return Sound.ITEM_ARMOR_EQUIP_DIAMOND;
+        }
+
+        return Sound.ITEM_ARMOR_EQUIP_GENERIC;
+    }
+
+    private EquipmentSlot getEquipType(Material mat) {
         switch (mat) {
             case IRON_HELMET:
             case LEATHER_HELMET:
@@ -231,47 +238,50 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
             case DIAMOND_HELMET:
             case PUMPKIN:
             case SKULL_ITEM:
-                return 4;
+                return EquipmentSlot.HEAD;
             case IRON_CHESTPLATE:
             case GOLD_CHESTPLATE:
             case LEATHER_CHESTPLATE:
             case CHAINMAIL_CHESTPLATE:
             case DIAMOND_CHESTPLATE:
-                return 3;
+            case ELYTRA:
+                return EquipmentSlot.CHEST;
             case IRON_LEGGINGS:
             case GOLD_LEGGINGS:
             case LEATHER_LEGGINGS:
             case CHAINMAIL_LEGGINGS:
             case DIAMOND_LEGGINGS:
-                return 2;
+                return EquipmentSlot.LEGS;
             case IRON_BOOTS:
             case GOLD_BOOTS:
             case LEATHER_BOOTS:
             case CHAINMAIL_BOOTS:
             case DIAMOND_BOOTS:
-                return 1;
+                return EquipmentSlot.FEET;
+            case SHIELD:
+                return EquipmentSlot.OFF_HAND;
             default:
-                return 0;
+                return EquipmentSlot.HAND;
         }
     }
 
-    private int getEditSlot(float height) {
-        int slot = 0;
+    private EquipmentSlot getEditSlot(float height) {
         if (isSmall) height *= 2;
-        if (height >= 0.1 && height < 0.1 + (isSmall ? 0.8 : 0.45) && !isEmpty(1)) {
-            slot = 1;
-        } else if (height >= 0.9 + (isSmall ? 0.3 : 0) && height < 0.9 + (isSmall ? 1 : 0.7) && !isEmpty(3)) {
-            slot = 3;
-        } else if (height >= 0.4 && height < 0.4 + (isSmall ? 1 : 0.8) && !isEmpty(2)) {
-            slot = 2;
-        } else if (height >= 1.6 && !isEmpty(4)) {
-            slot = 4;
+
+        if (height >= 0.1 && height < 0.1 + (isSmall ? 0.8 : 0.45) && !isEmpty(EquipmentSlot.FEET)) {
+            return EquipmentSlot.FEET;
+        } else if (height >= 0.9 + (isSmall ? 0.3 : 0) && height < 0.9 + (isSmall ? 1 : 0.7) && !isEmpty(EquipmentSlot.CHEST)) {
+            return EquipmentSlot.CHEST;
+        } else if (height >= 0.4 && height < 0.4 + (isSmall ? 1 : 0.8) && !isEmpty(EquipmentSlot.LEGS)) {
+            return EquipmentSlot.LEGS;
+        } else if (height >= 1.6 && !isEmpty(EquipmentSlot.HEAD)) {
+            return EquipmentSlot.HEAD;
         }
-        return slot;
+        return EquipmentSlot.HAND;
     }
 
-    private boolean isEmpty(int slot) {
-        return InventoryUtil.isEmpty(equipment[slot]);
+    private boolean isEmpty(EquipmentSlot slot) {
+        return InventoryUtil.isEmpty(getItem(slot));
     }
 
     @Override
@@ -299,27 +309,30 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
         int pitch = Position.getIntPitch(location);
 
         return Arrays.asList(
-                new SpawnObjectMessage(id, UUID.randomUUID(), 78, x, y, z, pitch, yaw), // TODO: once UUID is documented, actually use the appropriate ID here
-                new EntityMetadataMessage(id, metadata.getEntryList()),
-                new EntityEquipmentMessage(id, EntityEquipmentMessage.HELD_ITEM, getItemInHand()),
-                new EntityEquipmentMessage(id, EntityEquipmentMessage.BOOTS_SLOT, getBoots()),
-                new EntityEquipmentMessage(id, EntityEquipmentMessage.LEGGINGS_SLOT, getLeggings()),
-                new EntityEquipmentMessage(id, EntityEquipmentMessage.CHESTPLATE_SLOT, getChestplate()),
-                new EntityEquipmentMessage(id, EntityEquipmentMessage.HELMET_SLOT, getHelmet())
+            new SpawnObjectMessage(id, UUID.randomUUID(), 78, x, y, z, pitch, yaw), // TODO: once UUID is documented, actually use the appropriate ID here
+            new EntityMetadataMessage(id, metadata.getEntryList()),
+            new EntityEquipmentMessage(id, EntityEquipmentMessage.HELD_ITEM, getItemInHand()),
+            new EntityEquipmentMessage(id, EntityEquipmentMessage.BOOTS_SLOT, getBoots()),
+            new EntityEquipmentMessage(id, EntityEquipmentMessage.LEGGINGS_SLOT, getLeggings()),
+            new EntityEquipmentMessage(id, EntityEquipmentMessage.CHESTPLATE_SLOT, getChestplate()),
+            new EntityEquipmentMessage(id, EntityEquipmentMessage.HELMET_SLOT, getHelmet())
         );
     }
 
     @Override
     public List<Message> createUpdateMessage() {
         List<Message> messages = super.createUpdateMessage();
-        for (int i = 0; i < 5; i++) {
-            if (changedEquip[i]) {
-                messages.add(new EntityEquipmentMessage(id, i, equipment[i]));
+        messages.add(new EntityMetadataMessage(id, metadata.getEntryList()));
+        for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
+            int slot = equipmentSlot.ordinal();
+            if (changedEquip[slot]) {
+                messages.add(new EntityEquipmentMessage(id, slot, getItem(equipmentSlot)));
             }
         }
         if (needsKill) {
             messages.add(new DestroyEntitiesMessage(Arrays.asList(id)));
         }
+
         return messages;
     }
 
@@ -335,57 +348,61 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
 
     @Override
     public ItemStack getItemInHand() {
-        return equipment[0];
+        return getItem(EquipmentSlot.HAND);
     }
 
     @Override
     public void setItemInHand(ItemStack item) {
-        equipment[0] = item;
-        changedEquip[0] = true;
+        setItem(EquipmentSlot.HAND, item);
     }
 
     @Override
     public ItemStack getBoots() {
-        return equipment[1];
+        return getItem(EquipmentSlot.FEET);
     }
 
     @Override
     public void setBoots(ItemStack item) {
-        equipment[1] = item;
-        changedEquip[1] = true;
+        setItem(EquipmentSlot.FEET, item);
     }
 
     @Override
     public ItemStack getLeggings() {
-        return equipment[2];
+        return getItem(EquipmentSlot.LEGS);
     }
 
     @Override
     public void setLeggings(ItemStack item) {
-        equipment[2] = item;
-        changedEquip[2] = true;
+        setItem(EquipmentSlot.LEGS, item);
     }
 
     @Override
     public ItemStack getChestplate() {
-        return equipment[3];
+        return getItem(EquipmentSlot.CHEST);
     }
 
     @Override
     public void setChestplate(ItemStack item) {
-        equipment[3] = item;
-        changedEquip[3] = true;
+        setItem(EquipmentSlot.CHEST, item);
     }
 
     @Override
     public ItemStack getHelmet() {
-        return equipment[4];
+        return getItem(EquipmentSlot.HEAD);
     }
 
     @Override
     public void setHelmet(ItemStack item) {
-        equipment[4] = item;
-        changedEquip[4] = true;
+        setItem(EquipmentSlot.HEAD, item);
+    }
+
+    private ItemStack getItem(EquipmentSlot slot) {
+        return equipment[slot.ordinal()];
+    }
+
+    private void setItem(EquipmentSlot slot, ItemStack item) {
+        equipment[slot.ordinal()] = item;
+        changedEquip[slot.ordinal()] = true;
     }
 
     @Override

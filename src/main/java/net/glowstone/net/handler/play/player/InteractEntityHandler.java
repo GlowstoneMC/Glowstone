@@ -1,24 +1,20 @@
 package net.glowstone.net.handler.play.player;
 
-import com.flowpowered.network.MessageHandler;
-import net.glowstone.EventFactory;
-import net.glowstone.GlowServer;
-import net.glowstone.constants.AttackDamage;
-import net.glowstone.entity.GlowEntity;
-import net.glowstone.entity.GlowLivingEntity;
-import net.glowstone.entity.GlowPlayer;
-import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.play.player.InteractEntityMessage;
-import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
-import net.glowstone.util.InventoryUtil;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.Statistic;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.EntityType;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.inventory.ItemStack;
+import com.flowpowered.network.*;
+import net.glowstone.*;
+import net.glowstone.constants.*;
+import net.glowstone.entity.*;
+import net.glowstone.net.*;
+import net.glowstone.net.message.play.player.*;
+import net.glowstone.net.message.play.player.InteractEntityMessage.*;
+import net.glowstone.util.*;
+import org.bukkit.*;
+import org.bukkit.enchantments.*;
+import org.bukkit.entity.*;
+import org.bukkit.event.entity.EntityDamageEvent.*;
+import org.bukkit.event.player.*;
+import org.bukkit.inventory.*;
+import org.bukkit.util.*;
 
 //import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 
@@ -74,9 +70,13 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
                 }
             }
         } else if (message.getAction() == Action.INTERACT_AT.ordinal()) {
-            //todo: Handle hand variable
-            // todo: Interaction with entity at a specified location (X, Y, and Z are present in the message)
             // used for adjusting specific portions of armor stands
+            PlayerInteractAtEntityEvent event = new PlayerInteractAtEntityEvent(player, possibleTarget, new Vector(message.getTargetX(), message.getTargetY(), message.getTargetZ()));
+            EventFactory.callEvent(event);
+
+            if (!event.isCancelled()) {
+                possibleTarget.entityInteract(player, message);
+            }
         } else if (message.getAction() == Action.INTERACT.ordinal()) {
             //Todo: Handle hand variable
             PlayerInteractEntityEvent event = new PlayerInteractEntityEvent(player, possibleTarget);
