@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
+import org.bukkit.util.StringUtil;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -54,6 +55,10 @@ public class BanListCommand extends VanillaCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
-        return args.length == 0 ? super.tabComplete(sender, alias, args) : Collections.emptyList();
+        if (args.length == 1) {
+            return StringUtil.copyPartialMatches(args[0], BAN_TYPES, new ArrayList(BAN_TYPES.size()));
+        } else {
+            return args.length == 0 ? super.tabComplete(sender, alias, args) : Collections.emptyList();
+        }
     }
 }
