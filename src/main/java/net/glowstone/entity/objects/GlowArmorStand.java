@@ -38,8 +38,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     }
 
 
-    private final ItemStack[] equipment = new ItemStack[6];
-    private final boolean[] changedEquip = new boolean[6];
+    private final GlowEntityEquipment equipment;
     private final EulerAngle[] pose = new EulerAngle[6];
 
     private boolean isMarker;
@@ -54,18 +53,16 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     public GlowArmorStand(Location location) {
         super(location, 2);
 
+        equipment = new GlowEntityEquipment(this);
+
         System.arraycopy(defaultPose, 0, pose, 0, 6);
-        for (int i = 0; i < equipment.length; i++) {
-            changedEquip[i] = false;
-        }
+        this.getEquipmentMonitor().resetChanges();
     }
 
     @Override
     public void reset() {
         super.reset();
-        for (int i = 0; i < equipment.length; i++) {
-            changedEquip[i] = false;
-        }
+        this.getEquipmentMonitor().resetChanges();
         if (needsKill) needsKill = false;
     }
 
@@ -135,8 +132,8 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     private void kill(boolean dropArmorStand) {
         active = false;
         ((GlowWorld) location.getWorld()).showParticle(location.clone().add(0, 1.317, 0), Effect.TILE_DUST, Material.WOOD.getId(), 0, 0.125f, 0.494f, 0.125f, 0.1f, 10, 10);
-        for (ItemStack stack : equipment) {
-            if (stack == null || stack.getType() == Material.AIR) continue;
+        for (ItemStack stack : equipment.getArmorContents()) {
+            if (InventoryUtil.isEmpty(stack)) continue;
             getWorld().dropItemNaturally(location, stack);
         }
         if (dropArmorStand) {
@@ -151,7 +148,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
             if (InventoryUtil.isEmpty(player.getItemInHand())) {
                 EquipmentSlot slot = getEditSlot(msg.getTargetY());
 
-                PlayerArmorStandManipulateEvent event = new PlayerArmorStandManipulateEvent(player, this, InventoryUtil.itemOrEmpty(null), InventoryUtil.itemOrEmpty(getItem(slot)), slot);
+                PlayerArmorStandManipulateEvent event = new PlayerArmorStandManipulateEvent(player, this, InventoryUtil.itemOrEmpty(null), InventoryUtil.itemOrEmpty(equipment.getItem(slot)), slot);
                 EventFactory.callEvent(event);
 
                 if (event.isCancelled()) {
@@ -162,9 +159,9 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
                     return false;
                 }
 
-                ItemStack stack = getItem(slot);
+                ItemStack stack = equipment.getItem(slot);
                 player.setItemInHand(stack);
-                setItem(slot, InventoryUtil.createEmptyStack());
+                equipment.setItem(slot, InventoryUtil.createEmptyStack());
                 return true;
             } else {
                 EquipmentSlot slot = getEquipType(player.getItemInHand().getType());
@@ -172,7 +169,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
                     return false;
                 }
 
-                PlayerArmorStandManipulateEvent event = new PlayerArmorStandManipulateEvent(player, this, player.getItemInHand(), InventoryUtil.itemOrEmpty(getItem(slot)), slot);
+                PlayerArmorStandManipulateEvent event = new PlayerArmorStandManipulateEvent(player, this, player.getItemInHand(), InventoryUtil.itemOrEmpty(equipment.getItem(slot)), slot);
                 EventFactory.callEvent(event);
 
                 if (event.isCancelled()) {
@@ -192,13 +189,13 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
                     if (stack.getAmount() > 1) {
                         return false;
                     }
-                    back = getItem(slot);
+                    back = equipment.getItem(slot);
                 }
 
                 if (!InventoryUtil.isEmpty(back)) {
                     player.setItemInHand(back);
                 }
-                setItem(slot, stack);
+                equipment.setItem(slot, stack);
                 player.playSound(location, getEquipSound(stack.getType()), SoundCategory.NEUTRAL, 1, 1);
                 return true;
             }
@@ -281,7 +278,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     }
 
     private boolean isEmpty(EquipmentSlot slot) {
-        return InventoryUtil.isEmpty(getItem(slot));
+        return InventoryUtil.isEmpty(equipment.getItem(slot));
     }
 
     @Override
@@ -322,15 +319,8 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     @Override
     public List<Message> createUpdateMessage() {
         List<Message> messages = super.createUpdateMessage();
-        messages.add(new EntityMetadataMessage(id, metadata.getEntryList()));
-        for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
-            int slot = equipmentSlot.ordinal();
-            if (changedEquip[slot]) {
-                messages.add(new EntityEquipmentMessage(id, slot, getItem(equipmentSlot)));
-            }
-        }
         if (needsKill) {
-            messages.add(new DestroyEntitiesMessage(Arrays.asList(id)));
+            messages.add(new DestroyEntitiesMessage(Collections.singletonList(id)));
         }
 
         return messages;
@@ -348,61 +338,52 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
 
     @Override
     public ItemStack getItemInHand() {
-        return getItem(EquipmentSlot.HAND);
+        return equipment.getItemInHand();
     }
 
     @Override
     public void setItemInHand(ItemStack item) {
-        setItem(EquipmentSlot.HAND, item);
+        equipment.setItemInHand(item);
     }
 
     @Override
     public ItemStack getBoots() {
-        return getItem(EquipmentSlot.FEET);
+        return equipment.getBoots();
     }
 
     @Override
     public void setBoots(ItemStack item) {
-        setItem(EquipmentSlot.FEET, item);
+        equipment.setBoots(item);
     }
 
     @Override
     public ItemStack getLeggings() {
-        return getItem(EquipmentSlot.LEGS);
+        return equipment.getLeggings();
     }
 
     @Override
     public void setLeggings(ItemStack item) {
-        setItem(EquipmentSlot.LEGS, item);
+        equipment.setLeggings(item);
     }
 
     @Override
     public ItemStack getChestplate() {
-        return getItem(EquipmentSlot.CHEST);
+        return equipment.getChestplate();
     }
 
     @Override
     public void setChestplate(ItemStack item) {
-        setItem(EquipmentSlot.CHEST, item);
+        equipment.setChestplate(item);
     }
 
     @Override
     public ItemStack getHelmet() {
-        return getItem(EquipmentSlot.HEAD);
+        return equipment.getHelmet();
     }
 
     @Override
     public void setHelmet(ItemStack item) {
-        setItem(EquipmentSlot.HEAD, item);
-    }
-
-    private ItemStack getItem(EquipmentSlot slot) {
-        return equipment[slot.ordinal()];
-    }
-
-    private void setItem(EquipmentSlot slot, ItemStack item) {
-        equipment[slot.ordinal()] = item;
-        changedEquip[slot.ordinal()] = true;
+        equipment.setHelmet(item);
     }
 
     @Override
@@ -590,5 +571,10 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     @Override
     public void setArrowsStuck(int i) {
 
+    }
+
+    @Override
+    public EntityEquipment getEquipment() {
+        return this.equipment;
     }
 }
