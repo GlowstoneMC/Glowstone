@@ -1,8 +1,10 @@
 package net.glowstone.inventory;
 
-import net.glowstone.util.*;
-import org.bukkit.entity.*;
-import org.bukkit.inventory.*;
+import net.glowstone.util.InventoryUtil;
+import org.bukkit.entity.Entity;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 
 public class GlowEntityEquipment implements EntityEquipment {
 
@@ -13,10 +15,20 @@ public class GlowEntityEquipment implements EntityEquipment {
         this.holder = holder;
     }
 
+    /**
+     * Returns the ItemStack found in the slot at the given EquipmentSlot
+     * @param slot The EquipmentSlot of the Slot's ItemStack to return
+     * @return The ItemStack in the slot, or null, if no item is in this slot.
+     */
     public ItemStack getItem(EquipmentSlot slot) {
         return slots[slot.ordinal()];
     }
 
+    /**
+     * Stores the ItemStack at the given index of the inventory.
+     * @param slot The EquipmentSlot where to put the ItemStack
+     * @param item The ItemStack to set
+     */
     public void setItem(EquipmentSlot slot, ItemStack item) {
         slots[slot.ordinal()] = item;
     }
@@ -94,8 +106,9 @@ public class GlowEntityEquipment implements EntityEquipment {
     @Override
     public ItemStack[] getArmorContents() {
         ItemStack[] armor = new ItemStack[4];
-        for (int i = 0; i < 4; i++) {
-            armor[i] = getItem(EquipmentSlot.values()[EquipmentSlot.FEET.ordinal() + i]);
+        int feet = EquipmentSlot.FEET.ordinal();
+        for (int i = feet; i < slots.length; i++) {
+            armor[i - feet] = getItem(EquipmentSlot.values()[i]);
         }
         return armor;
     }
@@ -105,8 +118,8 @@ public class GlowEntityEquipment implements EntityEquipment {
         if (itemStacks.length != slots.length) {
             throw new IllegalArgumentException("Length of armor must be " + slots.length);
         }
-        for (EquipmentSlot slot : EquipmentSlot.values()) {
-            setItem(slot, itemStacks[slot.ordinal()]);
+        for (int i = EquipmentSlot.FEET.ordinal(); i < slots.length; i++) {
+            setItem(EquipmentSlot.values()[i], itemStacks[i]);
         }
     }
 
